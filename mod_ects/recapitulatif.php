@@ -1,0 +1,346 @@
+<?php
+/*
+ * $Id: saisie_avis.php 2147 2008-07-23 09:01:04Z tbelliard $
+ *
+ * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * This file is part of GEPI.
+ *
+ * GEPI is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GEPI is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GEPI; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+// Initialisations files
+include("../lib/initialisationsPropel.inc.php");
+require_once("../lib/initialisations.inc.php");
+
+// Resume session
+$resultat_session = $session_gepi->security_check();
+if ($resultat_session == 'c') {
+    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+    die();
+} else if ($resultat_session == '0') {
+    header("Location: ../logout.php?auto=1");
+    die();
+};
+
+if (!checkAccess()) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+
+$id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] : false);
+
+// On teste si un professeur peut effectuer l'édition
+if (($_SESSION['statut'] == 'professeur') and $gepiSettings["GepiAccesRecapitulatifEctsProf"] !='yes') {
+   die("Droits insuffisants pour effectuer cette opération");
+}
+
+// On teste si le service scolarité peut effectuer la saisie
+if (($_SESSION['statut'] == 'scolarite') and $gepiSettings["GepiAccesRecapitulatifEctsScolarite"] !='yes') {
+   die("Droits insuffisants pour effectuer cette opération");
+}
+
+
+
+// Si aucune classe n'a été choisie, on affiche la liste des classes accessibles
+if (!$id_classe) {
+
+// On n'affiche le header que dans la partie de sélection de la classe,
+// car le tableau va s'ouvrir dans une nouvelle fenêtre pour pouvoir être imprimé
+
+//**************** EN-TETE *****************
+$titre_page = "Récapitulatif ECTS";
+require_once("../lib/header.inc");
+//**************** FIN EN-TETE *****************
+
+    echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+
+    if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
+
+        // On ne sélectionne que les classes qui ont au moins un enseignement ouvrant à crédits ECTS
+        if($_SESSION['statut']=='scolarite'){
+            $call_classe = mysql_query("SELECT DISTINCT c.*
+                                        FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
+                                        WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id=jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
+        } else {
+            $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE ORDER BY classe");
+        }
+
+        $nombre_classe = mysql_num_rows($call_classe);
+        if($nombre_classe==0){
+            echo "<p>Aucune classe avec paramétrage ECTS ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+        }
+    } else {
+        $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
+        $nombre_classe = mysql_num_rows($call_classe);
+        if ($nombre_classe == "0") {
+            echo "Vous n'êtes pas ".$gepiSettings['gepi_prof_suivi']." dans des classes ayant des enseignements ouvrant droits à des ECTS.";
+        }
+    }
+
+    echo "<p>Cliquez sur la classe pour laquelle vous souhaitez éditer les documents ECTS :</p>\n";
+    echo "<br/><p><a href='recapitulatif.php?id_classe=all' target='_blank'>Toutes les classes</a></p>";
+
+    $i = 0;
+    unset($tab_lien);
+    unset($tab_txt);
+    $nombreligne = mysql_num_rows($call_classe);
+    while ($i < $nombreligne){
+        $tab_lien[$i] = "recapitulatif.php?id_classe=".mysql_result($call_classe, $i, "id");
+        $tab_txt[$i] = mysql_result($call_classe, $i, "classe");
+        $i++;
+
+    }
+    tab_liste($tab_txt,$tab_lien,3);
+    echo "<p><br /></p>\n";
+
+} else {
+  // Ici, on affiche le tableau
+
+  // On load les les périodes de l'année en cours, notamment pour connaître
+  // la période actuelle
+  include "../lib/periodes.inc.php";
+
+
+  // Initialisation des tableaux
+  
+  $annees = array(); // Contient années->périodes->matieres.
+                     // C'est le tableau global de référence pour les colonnes.
+                     
+  $resultats = array(); // Contient les résultats, organisés par
+                        // élève->année->période->matiere. C'est le tableau de stockage des donnnées
+                        
+  $gepiYear = $gepiSettings['gepiYear']; // L'année courante
+
+  // On passe élève par élève. Pour chaque élève, on va extraire les ECTS
+  // archivés, puis les ECTS courant, et au fur et à mesure on stocke
+  // tout ça dans le tableau récapitulatif général, en mettant bien à jour
+  
+  
+  // Appel des élèves
+  $Classe = ClassePeer::retrieveByPK($id_classe);
+  $Eleves = $Classe->getEleves('1');
+  
+  // Boucle de remplissage des données
+  foreach ($Eleves as $Eleve) {
+    // On commence par les archives
+    $annees_precedentes = $Eleve->getEctsAnneesPrecedentes();
+    if (!array_key_exists($Eleve->getLogin(), $resultats)) {
+      $resultats[$Eleve->getLogin()] = array();
+    }
+    
+    
+    // On alimente le tableau de référence, si nécessaire
+    foreach($annees_precedentes as $a) {
+      // L'année
+      if (!array_key_exists($a['annee'], $annees)) {
+        $annees[$a['annee']] = array();
+        // Les périodes
+        foreach($a['periodes'] as $num => $periode) {
+          if (!array_key_exists($num, $annees[$a['annee']])) {
+            $annees[$a['annee']][$num] = array('nom_periode' => $periode, 'matieres' => array());
+          }
+        }
+      }
+    }
+    
+    // On va chercher les résultats
+    foreach($annees_precedentes as $a) {
+      // On initialise le tableau de l'année, si besoin
+      if (!array_key_exists($a['annee'], $resultats[$Eleve->getLogin()])) {
+        $resultats[$Eleve->getLogin()][$a['annee']] = array();
+      }
+      
+      // On passe chaque période et on récupère le crédit
+      foreach($a['periodes'] as $p_num => $p) {
+        // On initialise le tableau de la période, si besoin
+        if (!array_key_exists($p_num, $resultats[$Eleve->getLogin()][$a['annee']])) {
+          $resultats[$Eleve->getLogin()][$a['annee']][$p_num] = array(); // C'est le tableau qui va ensuite contenir les crédits par matière
+        }
+        $credits = $Eleve->getArchivedEctsCredits($a['annee'], $p_num);
+        foreach($credits as $credit) {
+          if (!array_key_exists($credit->getMatiere(), $annees[$a['annee']][$p_num]['matieres'])) {
+            $annees[$a['annee']][$p_num]['matieres'][$credit->getMatiere()] = $credit->getMatiere();
+          }
+          $resultats[$Eleve->getLogin()][$a['annee']][$p_num][$credit->getMatiere()] = $credit;
+        }
+      }
+    }
+        
+    // On continue avec l'année courante, même principe
+    
+    if (!array_key_exists($gepiYear, $annees)) {
+      $annees[$gepiYear] = array();
+    }
+    if (!array_key_exists($gepiYear, $resultats[$Eleve->getLogin()])) {
+      $resultats[$Eleve->getLogin()][$gepiYear] = array();
+    }
+    
+    // On regarde quelle est la période maxi pour laquelle l'élève a des notes
+    $periode_num = mysql_result(mysql_query("SELECT MAX(num_periode) FROM ects_credits WHERE id_eleve = '".$Eleve->getIdEleve()."'"),0);
+    
+    for($i=1;$i<=$periode_num;$i++) {
+      if (!array_key_exists($i, $annees[$gepiYear])) {
+        $annees[$gepiYear][$i] = array('periode' => $nom_periode[$i], 'matieres' => array());
+      }
+      if (!array_key_exists($i, $resultats[$Eleve->getLogin()][$gepiYear])) {
+        $resultats[$Eleve->getLogin()][$gepiYear][$i] = array();
+      }
+      // Maintenant on récupère pour chaque période les crédits pour chaque matière
+      $categories = $Eleve->getEctsGroupesByCategories($i);
+      foreach ($categories as $categorie) {
+        foreach($categorie[1] as $group) {
+          $CreditEcts = $Eleve->getEctsCredit($i,$group->getId());
+          $matiere = mysql_result(mysql_query("SELECT m.nom_complet FROM matieres m, j_groupes_matieres jgm, groupes g
+            WHERE
+              m.matiere = jgm.id_matiere AND
+              jgm.id_groupe = g.id"), 0);
+          if ($CreditEcts) {
+            $resultats[$Eleve->getLogin()][$gepiYear][$i][$matiere] = $CreditEcts;
+            if (!array_key_exists($matiere, $annees[$gepiYear][$i]['matieres'])) {
+              $annees[$gepiYear][$i]['matieres'][$matiere] = $matiere;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  
+  // Affichage des en-têtes du tableau
+  
+  
+  require('../lib/header.inc');
+  ?>
+  <style>
+        .rotate90 
+        {
+            -webkit-transform: rotate(-90deg);
+            -moz-transform: rotate(-90deg);
+            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+        }
+        .cell
+        {
+          border: 1px solid black;
+          padding: 5 5 5 5;
+          text-align: center;
+        }
+  </style>
+  <?php
+  
+  
+  
+  echo "<table style='border: 1px solid black;border-collapse: collapse;'>";
+  echo "<tr>";
+  echo "<td>Classe :</td>\n";
+  foreach($annees as $annee => $periodes) {
+    $colspan_annee = 0;
+    foreach($periodes as $periode) { 
+      $colspan_annee = $colspan_annee + count($periode['matieres']);
+    }
+    echo "<td class='cell' colspan='$colspan_annee'>";
+    echo $annee;
+    echo "</td>\n";
+  }
+  // La colonne pour le crédit global :
+  echo "<td></td>";
+  echo "</tr>";
+  
+  // Maintenant on affiche les périodes
+  echo "<tr>\n";
+  echo "<td>";
+  echo $Classe->getClasse();
+  echo "</td>\n";
+  foreach($annees as $annee => $periodes) {
+    foreach($periodes as $periode) {
+      $colspan_periode = count($periode['matieres']);
+      echo "<td class='cell' colspan='$colspan_periode'>";
+      echo $periode['nom_periode'];
+      echo "</td>\n";
+    }
+  }
+  // La colonne pour le crédit global
+  echo "<td></td>";
+  echo "</tr>\n";
+  
+  // Et enfin on affiche les matières
+  echo "<tr>\n";
+  echo "<td>&nbsp;";
+  echo "</td>\n";
+  foreach($annees as $annee => $periodes) {
+    foreach($periodes as $periode) {
+      foreach($periode['matieres'] as $matiere) {
+        echo "<td class='rotate90' style='height: 200px; width: 40px;'>";
+        echo $matiere;
+        echo "</td>";
+      }
+    }
+  }
+  echo "<td></td>";
+  echo "</tr>\n";
+  
+  
+  // Boucle d'affichage du tableau
+  foreach ($Eleves as $Eleve) {
+    echo "<tr>";
+    
+    // Nom Prénom
+    echo "<td>";
+    echo $Eleve->getNom().' '.$Eleve->getPrenom();
+    echo "</td>";
+    
+    // Les résultats
+  foreach($annees as $annee => $periodes) {
+    foreach($periodes as $num => $periode) {
+      foreach($periode['matieres'] as $matiere) {
+        echo "<td class='cell'>";
+        if (array_key_exists($annee, $resultats[$Eleve->getLogin()])
+          and array_key_exists($num, $resultats[$Eleve->getLogin()][$annee])
+          and array_key_exists($matiere, $resultats[$Eleve->getLogin()][$annee][$num])) {
+        
+          
+          $valeur = $resultats[$Eleve->getLogin()][$annee][$num][$matiere]->getValeur();
+          $mention = $resultats[$Eleve->getLogin()][$annee][$num][$matiere]->getMention();
+          if ($annee == $gepiYear) {
+            $mention_prof = $resultats[$Eleve->getLogin()][$annee][$num][$matiere]->getMentionProf();
+          } else {
+            $mention_prof = '';
+          }
+          
+          echo $valeur;
+          if (($mention == null or $mention == '') and ($mention_prof != null or $mention_prof != '')) {
+            echo '('.$mention_prof.')';
+          } else {
+            echo $mention;
+          }
+        } else {
+          echo "&nbsp;&nbsp;&nbsp;";          
+        }
+        echo "</td>";
+      }
+    }
+  }
+    
+    
+    echo "</tr>";
+    
+    
+  }
+  
+  echo "</table>";
+  
+}
+require("../lib/footer.inc.php");
+?>

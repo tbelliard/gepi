@@ -638,6 +638,14 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesSaisieEctsProf !";
 	}
 
+	if (isset($_POST['GepiAccesRecapitulatifEctsProf'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesRecapitulatifEctsProf", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesRecapitulatifEctsProf !";
+	}
 
 	if (isset($_POST['GepiAccesSaisieEctsPP'])) {
 		$temp = "yes";
@@ -656,6 +664,16 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 	if (!saveSetting("GepiAccesSaisieEctsScolarite", $temp)) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesSaisieEctsScolarite !";
 	}
+
+	if (isset($_POST['GepiAccesRecapitulatifEctsScolarite'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesRecapitulatifEctsScolarite", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesRecapitulatifEctsScolarite !";
+	}
+
 
 	if (isset($_POST['GepiAccesEditionDocsEctsPP'])) {
 		$temp = "yes";
@@ -872,7 +890,10 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesSaisieEctsProf" id="GepiAccesSaisieEctsProf" value="yes" <?php if (getSettingValue("GepiAccesSaisieEctsProf")=='yes') echo "checked"; ?> onchange='changement();' /></td>
 				<td style='border: 0px;'><label for='GepiAccesSaisieEctsProf' style='cursor: pointer;'> a accès à la pré-saisie des mentions ECTS pour ses groupes.</label></td>
 			</tr>
-      
+      <tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesRecapitulatifEctsProf" id="GepiAccesRecapitulatifEctsProf" value="yes" <?php if (getSettingValue("GepiAccesRecapitulatifEctsProf")=='yes') echo "checked"; ?> onchange='changement();' /></td>
+				<td style='border: 0px;'><label for='GepiAccesRecapitulatifEctsProf' style='cursor: pointer;'> a accès aux récapitulatifs globaux des crédits ECTS pour ses classes.</label></td>
+			</tr>
 			</table>
 		</td>
 	</tr>
@@ -1006,6 +1027,12 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesEditionDocsEctsScolarite" id="GepiAccesEditionDocsEctsScolarite" value="yes" <?php if (getSettingValue("GepiAccesEditionDocsEctsScolarite")=='yes') echo "checked"; ?> onchange='changement();' /></td>
 				<td style='border: 0px;'><label for='GepiAccesEditionDocsEctsScolarite' style='cursor: pointer;'> peut éditer les relevés d'ECTS</label></td>
 			</tr>
+      <tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesRecapitulatifEctsScolarite" id="GepiAccesRecapitulatifEctsScolarite" value="yes" <?php if (getSettingValue("GepiAccesRecapitulatifEctsScolarite")=='yes') echo "checked"; ?> onchange='changement();' /></td>
+				<td style='border: 0px;'><label for='GepiAccesRecapitulatifEctsScolarite' style='cursor: pointer;'> a accès aux récapitulatifs globaux des crédits ECTS.</label></td>
+			</tr>
+      
+      
 			</table>
 		</td>
 	</tr>

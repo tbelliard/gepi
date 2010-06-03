@@ -817,6 +817,36 @@ if ($res_test==0){
   $result .= "<font color=\"blue\">Le paramètre GepiAccesSaisieEctsProf existe déjà dans la table setting.</font><br />";
 }
 
+
+// Ajout d'un paramètre de droits d'accès au tableau récapitulatif des ECTS pour les profs
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'GepiAccesRecapitulatifEctsProf'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('GepiAccesRecapitulatifEctsProf', 'yes');");
+  if ($result_inter == '') {
+    $result.="<font color=\"green\">Initialisation du paramètre GepiAccesRecapitulatifEctsProf à 'yes': Ok !</font><br />";
+  } else {
+    $result.="<font color=\"red\">Initialisation du paramètre GepiAccesRecapitulatifEctsProf à 'yes': Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">Le paramètre GepiAccesRecapitulatifEctsProf existe déjà dans la table setting.</font><br />";
+}
+
+// Ajout d'un paramètre de droits d'accès au tableau récapitulatif des ECTS pour la scolarité
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'GepiAccesRecapitulatifEctsScolarite'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('GepiAccesRecapitulatifEctsScolarite', 'yes');");
+  if ($result_inter == '') {
+    $result.="<font color=\"green\">Initialisation du paramètre GepiAccesRecapitulatifEctsScolarite à 'yes' : Ok !</font><br />";
+  } else {
+    $result.="<font color=\"red\">Initialisation du paramètre GepiAccesRecapitulatifEctsScolarite à 'yes' : Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">Le paramètre GepiAccesRecapitulatifEctsScolarite existe déjà dans la table setting.</font><br />";
+}
+
+
 // Ajout d'un champ autoriser_inscript_multiples à la table aid_config
 $result .= "&nbsp;->Ajout d'un champ autoriser_inscript_multiples à la table 'aid_config'<br />";
 $test_autoriser_inscript_multiples=mysql_num_rows(mysql_query("SHOW COLUMNS FROM aid_config LIKE 'autoriser_inscript_multiples';"));

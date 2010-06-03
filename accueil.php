@@ -700,6 +700,9 @@ $conditions_ects = ($gepiSettings['active_mod_ects'] == 'y' and
 if ($conditions_ects) $chemin[] = "/mod_ects/index_saisie.php";
 
 
+                
+
+
 $titre = array();
 $titre[] = "Gestion des absences";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_cahiers_texte")=='y')) $titre[] = "Cahier de textes";
@@ -707,6 +710,7 @@ if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (ge
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $titre[] = "Bulletin : saisie des moyennes et des appréciations par matière";
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $titre[] = "Bulletin : saisie des avis du conseil";
 if ($conditions_ects) $titre[] = "Crédits ECTS";
+
 
 $expli = array();
 $expli[] = "Cet outil vous permet d'enregistrer les absences des ".$gepiSettings['denomination_eleves'].". Elles figureront sur le bulletin scolaire.";
@@ -993,12 +997,22 @@ $condition = ($gepiSettings['active_mod_ects'] == 'y' and ((($test_prof_suivi !=
 
 $chemin = array();
 if ($condition) $chemin[] = '/mod_ects/edition.php';
+$recap_ects = ($gepiSettings['active_mod_ects'] == 'y' and
+                (($_SESSION['statut'] == 'professeur' and $gepiSettings['GepiAccesRecapitulatifEctsProf'] == 'yes' and $test_prof_ects != '0')
+                or ($_SESSION['statut'] == 'scolarite' and $gepiSettings['GepiAccesRecapitulatifEctsScolarite'] == 'yes' and $test_scol_ects != '0')
+                ));
+
+if ($recap_ects) $chemin[] = '/mod_ects/recapitulatif.php';
+
 
 $titre = array();
 if ($condition) $titre[] = 'Génération des documents ECTS';
+if ($recap_ects) $titre[] = 'Visualiser tous les ECTS';
+
 
 $expli = array();
 if ($condition) $expli[] = 'Cet outil vous permet de générer les documents ECTS (relevé, attestation, annexe) pour les classes concernées.';
+if ($recap_ects) $expli[] = 'Visualiser les tableaux récapitulatif par classe de tous les crédits ECTS.';
 
 
 $nb_ligne = count($chemin);

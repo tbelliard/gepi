@@ -806,6 +806,8 @@ INSERT INTO setting VALUES ('active_mod_ects', 'n');
 INSERT INTO setting VALUES ('GepiAccesSaisieEctsProf', 'no');
 INSERT INTO setting VALUES ('GepiAccesSaisieEctsPP', 'no');
 INSERT INTO setting VALUES ('GepiAccesSaisieEctsScolarite', 'yes');
+INSERT INTO setting VALUES ('GepiAccesRecapitulatifEctsScolarite', 'yes');
+INSERT INTO setting VALUES ('GepiAccesRecapitulatifEctsProf', 'yes');
 INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsPP', 'no');
 INSERT INTO setting VALUES ('GepiAccesEditionDocsEctsScolarite', 'yes');
 INSERT INTO setting VALUES ('gepiSchoolStatut', 'public');
@@ -856,3 +858,9 @@ INSERT INTO droits SET id='/init_scribe_ng/etape4.php',administrateur='V',profes
 INSERT INTO droits SET id='/init_scribe_ng/etape5.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation Scribe NG - etape 5',statut='';
 INSERT INTO droits SET id='/init_scribe_ng/etape6.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation Scribe NG - etape 6',statut='';
 INSERT INTO droits SET id='/init_scribe_ng/etape7.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation Scribe NG - etape 7',statut='';
+INSERT INTO droits VALUES ( '/mod_ects/ects_admin.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Module ECTS : Admin', '');
+INSERT INTO droits VALUES ( '/mod_ects/index_saisie.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Accueil saisie', '');
+INSERT INTO droits VALUES ( '/mod_ects/saisie_ects.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Saisie', '');
+INSERT INTO droits VALUES ( '/mod_ects/edition.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Edition des documents', '');
+INSERT INTO droits VALUES ( '/mod_ooo/documents_ects.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Génération des documents', '');
+INSERT INTO droits VALUES ( '/mod_ects/recapitulatif.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Recapitulatif globaux', '');
