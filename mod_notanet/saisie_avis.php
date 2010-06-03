@@ -156,7 +156,9 @@ if(!isset($id_classe)) {
 	echo "</p>\n";
 
 
-	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, notanet n,notanet_ele_type net WHERE p.id_classe = c.id AND c.id=n.id_classe ORDER BY classe;";
+	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, notanet n,notanet_ele_type net WHERE p.id_classe = c.id AND c.id=n.id_classe ORDER BY classe;";
+	$sql="SELECT DISTINCT c.id,c.classe FROM classes c, j_eleves_classes jec,notanet_ele_type net WHERE c.id=jec.id_classe AND net.login=jec.login ORDER BY classe;";
+	//echo "$sql<br />";
 	$call_classes=mysql_query($sql);
 
 	$nb_classes=mysql_num_rows($call_classes);
@@ -233,6 +235,7 @@ else {
 		echo "<input type='hidden' name='id_classe[$i]' value='".$id_classe[$i]."' />\n";
 
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE (jec.id_classe='".$id_classe[$i]."' AND jec.login=e.login) ORDER BY e.nom,e.prenom,e.naissance;";
+		//echo "$sql<br />";
 		$res_ele=mysql_query($sql);
 		if(mysql_num_rows($res_ele)==0) {
 			echo "Aucun élève dans cette classe.</p>\n";
