@@ -30,6 +30,40 @@ class Classe extends BaseClasse {
 		return $groupes;
 	}
 
+  public function getEctsGroupesByCategories() {
+      // On commence par récupérer tous les groupes
+      $groupes = $this->getGroupes();
+      // Ensuite, il nous faut les catégories.
+      $categories = array();
+      $c = new Criteria();
+      $c->add(JCategoriesMatieresClassesPeer::CLASSE_ID,$this->getId());
+      $c->addAscendingOrderByColumn(JCategoriesMatieresClassesPeer::PRIORITY);
+      foreach(JCategoriesMatieresClassesPeer::doSelect($c) as $j) {
+          $cat = $j->getCategorieMatiere();
+          $categories[$cat->getId()] = array(0 => $cat, 1 => array());
+      }
+      // Maintenant, on mets tout ça ensemble
+      foreach($groupes as $groupe) {
+          if ($groupe->allowsEctsCredits($this->getId())) {
+              $cat = $groupe->getCategorieMatiere($this->getId());
+              $categories[$cat->getId()][1][$groupe->getId()] = $groupe;
+          }
+      }
+
+      foreach($categories as $cat) {
+          if (count($cat[1]) == 0) {
+              $id = $cat[0]->getId();
+              unset($categories[$id]);
+          }
+      }
+
+      // On renvoie un table multi-dimensionnel, qui contient les catégories
+      // dans le bon ordre, et les groupes sous chaque catégorie.
+      return $categories;
+  }
+
+
+
 	/**
 	 *
 	 * Renvoi sous forme d'une collection la liste des eleves d'une classe. 
@@ -49,6 +83,7 @@ class Classe extends BaseClasse {
 		}
 		if ($num_periode_notes != null) {
 		    $criteria->add(JEleveClassePeer::PERIODE,$num_periode_notes);
+        $criteria->addAscendingOrderByColumn(ElevePeer::NOM);
 		}
 		foreach($this->getJEleveClassesJoinEleve($criteria) as $ref) {
 		    if ($ref->getEleve() != null) {

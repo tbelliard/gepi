@@ -91,7 +91,7 @@ require_once("../lib/header.inc");
     }
 
     echo "<p>Cliquez sur la classe pour laquelle vous souhaitez éditer les documents ECTS :</p>\n";
-    echo "<br/><p><a href='recapitulatif.php?id_classe=all' target='_blank'>Toutes les classes</a></p>";
+    //echo "<br/><p><a href='recapitulatif.php?id_classe=all' target='_new'>Toutes les classes</a></p>";
 
     $i = 0;
     unset($tab_lien);
@@ -103,7 +103,7 @@ require_once("../lib/header.inc");
         $i++;
 
     }
-    tab_liste($tab_txt,$tab_lien,3);
+    tab_liste($tab_txt,$tab_lien,3,"target='_new'");
     echo "<p><br /></p>\n";
 
 } else {
@@ -122,19 +122,26 @@ require_once("../lib/header.inc");
   $resultats = array(); // Contient les résultats, organisés par
                         // élève->année->période->matiere. C'est le tableau de stockage des donnnées
                         
+  $derniere_annee_archivee = false;
+  $ignore_annees = array(); // Contient, pour chaque élève, les années
+                              // qui doivent être grisées car redoublées
+  
   $gepiYear = $gepiSettings['gepiYear']; // L'année courante
 
   // On passe élève par élève. Pour chaque élève, on va extraire les ECTS
   // archivés, puis les ECTS courant, et au fur et à mesure on stocke
   // tout ça dans le tableau récapitulatif général, en mettant bien à jour
   
-  
   // Appel des élèves
   $Classe = ClassePeer::retrieveByPK($id_classe);
   $Eleves = $Classe->getEleves('1');
   
+
   // Boucle de remplissage des données
   foreach ($Eleves as $Eleve) {
+    if (!array_key_exists($Eleve->getIdEleve(), $ignore_annees)){
+      $ignore_annees[$Eleve->getIdEleve()] = array();
+    }
     // On commence par les archives
     $annees_precedentes = $Eleve->getEctsAnneesPrecedentes();
     if (!array_key_exists($Eleve->getLogin(), $resultats)) {
@@ -177,10 +184,19 @@ require_once("../lib/header.inc");
           $resultats[$Eleve->getLogin()][$a['annee']][$p_num][$credit->getMatiere()] = $credit;
         }
       }
+      // On regarde si l'élève est redoublant
+      $redoublant = sql_count(sql_query("SELECT * FROM archivage_eleves2 WHERE ine = '".$Eleve->getNoGep()."' AND doublant = 'R'")) != "0" ? true : false;
+      if ($redoublant && $derniere_annee_archivee) {
+        $ignore_annees[$Eleve->getIdEleve()][$derniere_annee_archivee] = true;
+      }
+      $derniere_annee_archivee = $a['annee'];      
     }
         
     // On continue avec l'année courante, même principe
-    
+    $redoublant = sql_count(sql_query("SELECT * FROM j_eleves_regime WHERE login = '".$Eleve->getLogin()."' AND doublant = 'R'")) != "0" ? true : false;
+    if ($redoublant) {
+      $ignore_annees[$Eleve->getIdEleve()][$derniere_annee_archivee] = true;
+    }
     if (!array_key_exists($gepiYear, $annees)) {
       $annees[$gepiYear] = array();
     }
@@ -193,7 +209,7 @@ require_once("../lib/header.inc");
     
     for($i=1;$i<=$periode_num;$i++) {
       if (!array_key_exists($i, $annees[$gepiYear])) {
-        $annees[$gepiYear][$i] = array('periode' => $nom_periode[$i], 'matieres' => array());
+        $annees[$gepiYear][$i] = array('nom_periode' => $nom_periode[$i], 'matieres' => array());
       }
       if (!array_key_exists($i, $resultats[$Eleve->getLogin()][$gepiYear])) {
         $resultats[$Eleve->getLogin()][$gepiYear][$i] = array();
@@ -206,18 +222,21 @@ require_once("../lib/header.inc");
           $matiere = mysql_result(mysql_query("SELECT m.nom_complet FROM matieres m, j_groupes_matieres jgm, groupes g
             WHERE
               m.matiere = jgm.id_matiere AND
-              jgm.id_groupe = g.id"), 0);
+              jgm.id_groupe = '".$group->getId()."'"), 0);
+          
+          // On enregistre quoi qu'il arrive la matière dans le tableau de référence,
+          // car il s'agit de l'année en cours. Donc on doit pouvoir utiliser le tableau
+          // comme document de travail.
+          if (!array_key_exists($matiere, $annees[$gepiYear][$i]['matieres'])) {
+              $annees[$gepiYear][$i]['matieres'][$matiere] = $matiere;
+          }
           if ($CreditEcts) {
             $resultats[$Eleve->getLogin()][$gepiYear][$i][$matiere] = $CreditEcts;
-            if (!array_key_exists($matiere, $annees[$gepiYear][$i]['matieres'])) {
-              $annees[$gepiYear][$i]['matieres'][$matiere] = $matiere;
-            }
           }
         }
       }
     }
   }
-  
   
   // Affichage des en-têtes du tableau
   
@@ -231,64 +250,126 @@ require_once("../lib/header.inc");
             -moz-transform: rotate(-90deg);
             filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
         }
-        .cell
+        .cell, .central_cell, .first_cell, .last_cell, .lone_cell
         {
-          border: 1px solid black;
+          border-top: 1px solid black;
+          border-bottom: 1px solid black;
           padding: 5 5 5 5;
           text-align: center;
+        }
+        
+        .lone_cell
+        {
+          border-left: 1px solid black;
+          border-right: 1px solid black;
+        }
+        
+        .central_cell
+        {
+          border-left: 1px solid grey;
+          border-right: 1px solid grey;
+        }
+        
+        .first_cell
+        {
+          border-left: 1px solid black;
+          border-right: 1px solid grey;
+        }
+        
+        .last_cell
+        {
+          border-left: 1px solid grey;
+          border-right: 1px solid black;
+        }
+        
+        .result, .nom
+        {
+          font-size: 0.7em;
+        }
+        
+        .result_ignore
+        {
+          color: grey;
+        }
+        
+        .nom
+        {
+          text-align: left;
+          padding-left: 5px;
+          padding-right: 5px;
         }
   </style>
   <?php
   
   
   
-  echo "<table style='border: 1px solid black;border-collapse: collapse;'>";
+  echo "<table style='border: 1px solid black;border-collapse: collapse; margin: 20px;'>";
   echo "<tr>";
-  echo "<td>Classe :</td>\n";
+  echo "<td style='padding-left: 150px;'>&nbsp;</td>\n"; // Nom et prénom
   foreach($annees as $annee => $periodes) {
     $colspan_annee = 0;
     foreach($periodes as $periode) { 
       $colspan_annee = $colspan_annee + count($periode['matieres']);
     }
-    echo "<td class='cell' colspan='$colspan_annee'>";
+    echo "<td class='lone_cell' colspan='$colspan_annee'>";
     echo $annee;
     echo "</td>\n";
   }
   // La colonne pour le crédit global :
   echo "<td></td>";
+  // Et la colonne pour le rappel nom/prénom :
+  echo "<td></td>";
   echo "</tr>";
   
   // Maintenant on affiche les périodes
   echo "<tr>\n";
-  echo "<td>";
-  echo $Classe->getClasse();
-  echo "</td>\n";
+  echo "<td></td>\n";
   foreach($annees as $annee => $periodes) {
     foreach($periodes as $periode) {
       $colspan_periode = count($periode['matieres']);
-      echo "<td class='cell' colspan='$colspan_periode'>";
+      echo "<td class='lone_cell' colspan='$colspan_periode'>";
       echo $periode['nom_periode'];
       echo "</td>\n";
     }
   }
   // La colonne pour le crédit global
   echo "<td></td>";
+  // Et la colonne pour le rappel nom/prénom :
+  echo "<td style='padding-left:150px;'></td>";
   echo "</tr>\n";
   
   // Et enfin on affiche les matières
   echo "<tr>\n";
-  echo "<td>&nbsp;";
+  echo "<td class='lone_cell'>";
+  echo "Classe :<br/><br/>";
+  echo "<span style='font-weight: bold;'>";
+  echo $Classe->getClasse();
+  echo "</span>";
   echo "</td>\n";
   foreach($annees as $annee => $periodes) {
     foreach($periodes as $periode) {
+      $m = 1;
+      $nb = count($periode['matieres']);
       foreach($periode['matieres'] as $matiere) {
-        echo "<td class='rotate90' style='height: 200px; width: 40px;'>";
-        echo $matiere;
-        echo "</td>";
+        if ($m == 1) {
+          $cellstyle = 'first_cell';
+        } else if ($m == $nb) {
+          $cellstyle = 'last_cell';
+        } else {
+          $cellstyle = 'central_cell';
+        }
+        echo "<td class='$cellstyle' style='vertical-align: bottom;'>\n";
+        $nom_complet_coupe = (strlen($matiere) > 20)? urlencode(substr($matiere,0,20)."...") : urlencode($matiere);
+        echo "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
+        echo "</td>\n";
+        $m++;
       }
     }
   }
-  echo "<td></td>";
+  echo "<td class='lone_cell' style='vertical-align: bottom;'>";
+  echo "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Mention globale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Mention globale\" />";
+  echo "</td>";
+  echo "<td></td>"; // Rappel nom/prénom
   echo "</tr>\n";
   
   
@@ -297,42 +378,71 @@ require_once("../lib/header.inc");
     echo "<tr>";
     
     // Nom Prénom
-    echo "<td>";
+    echo "<td class='lone_cell nom'>";
     echo $Eleve->getNom().' '.$Eleve->getPrenom();
     echo "</td>";
     
     // Les résultats
-  foreach($annees as $annee => $periodes) {
-    foreach($periodes as $num => $periode) {
-      foreach($periode['matieres'] as $matiere) {
-        echo "<td class='cell'>";
-        if (array_key_exists($annee, $resultats[$Eleve->getLogin()])
-          and array_key_exists($num, $resultats[$Eleve->getLogin()][$annee])
-          and array_key_exists($matiere, $resultats[$Eleve->getLogin()][$annee][$num])) {
+    foreach($annees as $annee => $periodes) {
+      foreach($periodes as $num => $periode) {
         
-          
-          $valeur = $resultats[$Eleve->getLogin()][$annee][$num][$matiere]->getValeur();
-          $mention = $resultats[$Eleve->getLogin()][$annee][$num][$matiere]->getMention();
-          if ($annee == $gepiYear) {
-            $mention_prof = $resultats[$Eleve->getLogin()][$annee][$num][$matiere]->getMentionProf();
+        $m = 1;
+        $nb = count($periode['matieres']);
+        foreach($periode['matieres'] as $matiere) {
+          if ($m == 1) {
+            $cellstyle = 'first_cell';
+          } else if ($m == $nb) {
+            $cellstyle = 'last_cell';
           } else {
-            $mention_prof = '';
+            $cellstyle = 'central_cell';
           }
           
-          echo $valeur;
-          if (($mention == null or $mention == '') and ($mention_prof != null or $mention_prof != '')) {
-            echo '('.$mention_prof.')';
-          } else {
-            echo $mention;
+          if (array_key_exists($annee, $ignore_annees[$Eleve->getIdEleve()])) {
+            $cellstyle = $cellstyle.' result_ignore';
           }
-        } else {
-          echo "&nbsp;&nbsp;&nbsp;";          
+          
+          echo "<td class='$cellstyle result'>";
+          if (array_key_exists($annee, $resultats[$Eleve->getLogin()])
+            and array_key_exists($num, $resultats[$Eleve->getLogin()][$annee])
+            and array_key_exists($matiere, $resultats[$Eleve->getLogin()][$annee][$num])) {
+          
+            
+            $valeur = $resultats[$Eleve->getLogin()][$annee][$num][$matiere]->getValeur();
+            $mention = $resultats[$Eleve->getLogin()][$annee][$num][$matiere]->getMention();
+            if ($annee == $gepiYear) {
+              $mention_prof = $resultats[$Eleve->getLogin()][$annee][$num][$matiere]->getMentionProf();
+            } else {
+              $mention_prof = '';
+            }
+            
+            echo $valeur;
+            if (($mention == null or $mention == '') and ($mention_prof != null or $mention_prof != '')) {
+              echo '('.$mention_prof.')';
+            } else {
+              echo $mention;
+            }
+          } else {
+            echo "&nbsp;";
+          }
+          echo "</td>";
+          $m++;
         }
-        echo "</td>";
       }
     }
-  }
+    // Le crédit global
+    echo "<td class='lone_cell result'>";
+    $credit_global = $Eleve->getCreditEctsGlobal();
+    if ($credit_global) {
+      echo $credit_global->getMention();
+    } else {
+      echo "&nbsp;";
+    }
+    echo "</td>";
     
+    // Rappel Nom Prénom, pour la lisibilité
+    echo "<td class='cell nom'>";
+    echo $Eleve->getNom().' '.$Eleve->getPrenom();
+    echo "</td>";
     
     echo "</tr>";
     

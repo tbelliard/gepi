@@ -2064,7 +2064,7 @@ function tentative_intrusion($_niveau, $_description) {
  * @param array $tab_lien tableau des liens
  * @param integer $nbcol Nombre de colonnes
  */
-function tab_liste($tab_txt,$tab_lien,$nbcol){
+function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = null){
 
 	// Nombre d'enregistrements à afficher
 	$nombreligne=count($tab_txt);
@@ -2089,7 +2089,9 @@ function tab_liste($tab_txt,$tab_lien,$nbcol){
 		}
 
 		//echo "<br />\n";
-		echo "<a href='".$tab_lien[$i]."'>".$tab_txt[$i]."</a>";
+		echo "<a href='".$tab_lien[$i]."'";
+    if ($extra_options) echo ' '.$extra_options;
+    echo ">".$tab_txt[$i]."</a>";
 		echo "<br />\n";
 		$i++;
 	}
