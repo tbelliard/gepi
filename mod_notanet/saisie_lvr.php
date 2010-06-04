@@ -395,11 +395,13 @@ else {
 				echo "</th>\n";
 
 				$tab_id_lvr=array();
+				$tab_intitule_lvr=array();
 				$sql="SELECT DISTINCT id,intitule FROM notanet_lvr ORDER BY intitule;";
 				$res_lvr=mysql_query($sql);
 				while($lig_lvr=mysql_fetch_object($res_lvr)) {
 					echo "<th>\n";
 					echo $lig_lvr->intitule;
+					$tab_intitule_lvr[]=$lig_lvr->intitule;
 					$tab_id_lvr[]=$lig_lvr->id;
 					echo "</th>\n";
 				}
@@ -417,13 +419,17 @@ else {
 		
 					echo "<td>\n";
 					if(!isset($tab_lvr_ele[$lig_ele->login])) {$checked="checked ";} else {$checked="";}
-					echo "<input type='radio' name='lvr[$cpt]' id='lvr_$cpt' value='' $checked/>\n";
+					echo "<input type='radio' name='lvr[$cpt]' id='lvr_$cpt' value='' ";
+					echo "title='$lig_ele->login -&gt; Sans LVR' ";
+					echo "$checked/>\n";
 					echo "</td>\n";
 
 					for($i=0;$i<count($tab_id_lvr);$i++) {
 						echo "<td>\n";
 						if((isset($tab_lvr_ele[$lig_ele->login]))&&($tab_lvr_ele[$lig_ele->login]==$tab_id_lvr[$i])) {$checked="checked ";} else {$checked="";}
-						echo "<input type='radio' name='lvr[$cpt]' id='lvr_$cpt' value='".$tab_id_lvr[$i]."' $checked/>\n";
+						echo "<input type='radio' name='lvr[$cpt]' id='lvr_$cpt' value='".$tab_id_lvr[$i]."' ";
+						echo "title='$lig_ele->login -&gt; $tab_intitule_lvr[$i]' ";
+						echo "$checked/>\n";
 						echo "</td>\n";
 					}
 					echo "</tr>\n";
@@ -528,17 +534,23 @@ else {
 
 						echo "<td>\n";
 						if($tab_note_lvr_ele[$lig_ele->login]=='') {$checked="checked ";} else {$checked="";}
-						echo "<input type='radio' name='note_lvr[$cpt]' id='note_lvr_$cpt' value='' $checked/>\n";
+						echo "<input type='radio' name='note_lvr[$cpt]' id='note_lvr_$cpt' value='' ";
+						echo "title='$lig_ele->login -&gt; -' ";
+						echo "$checked/>\n";
 						echo "</td>\n";
 
 						echo "<td>\n";
 						if($tab_note_lvr_ele[$lig_ele->login]=='VA') {$checked="checked ";} else {$checked="";}
-						echo "<input type='radio' name='note_lvr[$cpt]' id='note_lvr_$cpt' value='VA' $checked/>\n";
+						echo "<input type='radio' name='note_lvr[$cpt]' id='note_lvr_$cpt' value='VA' ";
+						echo "title='$lig_ele->login -&gt; VA' ";
+						echo "$checked/>\n";
 						echo "</td>\n";
 
 						echo "<td>\n";
 						if($tab_note_lvr_ele[$lig_ele->login]=='NV') {$checked="checked ";} else {$checked="";}
-						echo "<input type='radio' name='note_lvr[$cpt]' id='note_lvr_$cpt' value='NV' $checked/>\n";
+						echo "<input type='radio' name='note_lvr[$cpt]' id='note_lvr_$cpt' value='NV' ";
+						echo "title='$lig_ele->login -&gt; NV' ";
+						echo "$checked/>\n";
 						echo "</td>\n";
 	
 						for($i=0;$i<count($tab_id_lvr);$i++) {

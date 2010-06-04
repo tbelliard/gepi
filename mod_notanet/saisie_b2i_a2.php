@@ -438,28 +438,36 @@ else {
 
 				echo "<td><input type='radio' name='b2i[$cpt]' id='b2i_MS_".$cpt."_".$i."' value='MS' onchange='changement();' ";
 				if($def_b2i=='MS') {echo "checked ";}
+				echo "title='$lig_ele->login B2i -&gt; MS' ";
 				echo "/></td>\n";
 				echo "<td><input type='radio' name='b2i[$cpt]' id='b2i_ME_".$cpt."_".$i."' value='ME' onchange='changement();' ";
 				if($def_b2i=='ME') {echo "checked ";}
+				echo "title='$lig_ele->login B2i -&gt; ME' ";
 				echo "/></td>\n";
 				echo "<td><input type='radio' name='b2i[$cpt]' id='b2i_MN_".$cpt."_".$i."' value='MN' onchange='changement();' ";
 				if($def_b2i=='MN') {echo "checked ";}
+				echo "title='$lig_ele->login B2i -&gt; MN' ";
 				echo "/></td>\n";
 				echo "<td><input type='radio' name='b2i[$cpt]' id='b2i_AB_".$cpt."_".$i."' value='AB' onchange='changement();' ";
 				if($def_b2i=='AB') {echo "checked ";}
+				echo "title='$lig_ele->login B2i -&gt; AB' ";
 				echo "/></td>\n";
 
 				echo "<td><input type='radio' name='a2[$cpt]' id='a2_MS_".$cpt."_".$i."' value='MS' onchange='changement();' ";
 				if($def_a2=='MS') {echo "checked ";}
+				echo "title='$lig_ele->login A2 -&gt; MS' ";
 				echo "/></td>\n";
 				echo "<td><input type='radio' name='a2[$cpt]' id='a2_ME_".$cpt."_".$i."' value='ME' onchange='changement();' ";
 				if($def_a2=='ME') {echo "checked ";}
+				echo "title='$lig_ele->login A2 -&gt; ME' ";
 				echo "/></td>\n";
 				echo "<td><input type='radio' name='a2[$cpt]' id='a2_MN_".$cpt."_".$i."' value='MN' onchange='changement();' ";
 				if($def_a2=='MN') {echo "checked ";}
+				echo "title='$lig_ele->login A2 -&gt; MN' ";
 				echo "/></td>\n";
 				echo "<td><input type='radio' name='a2[$cpt]' id='a2_AB_".$cpt."_".$i."' value='AB' onchange='changement();' ";
 				if($def_a2=='AB') {echo "checked ";}
+				echo "title='$lig_ele->login A2 -&gt; AB' ";
 				echo "/></td>\n";
 
 				for($j=0;$j<count($tab_mat);$j++) {
@@ -471,6 +479,7 @@ else {
 					else {
 						echo "<td><input type='radio' name='lv[$cpt]' id='lv_".$tab_mat[$j]."_".$cpt."_".$i."' value=\"".$tab_mat[$j]."\" onchange='changement();' ";
 						if($def_lv==$tab_mat[$j]) {echo "checked ";}
+						echo "title='$lig_ele->login -&gt; $tab_mat[$j]' ";
 						echo "/></td>\n";
 					}
 				}
