@@ -341,10 +341,16 @@ else {
 					$alt=$alt*(-1);
 					echo "<tr class='lig$alt'>\n";
 					if($cpt==0) {
-						echo "<td valign='top' rowspan='$nb_eleves'>".$current_group['name']."<br /><span style='font-size:small;'>(".$current_group["description"]." en ".$current_group["classlist_string"].")</span></td>\n";
+						$liste_profs="";
+						foreach($current_group["profs"]["list"] as $key => $prof_login) {
+							if($liste_profs!="") {$liste_profs.=", ";}
+							$liste_profs.=civ_nom_prenom($prof_login);
+						}
+
+						echo "<td valign='top' rowspan='$nb_eleves'>".$current_group['name']."<br /><span style='font-size:small;'>(".$current_group["description"]." en ".$current_group["classlist_string"].")</span><br /><span style='font-size:small;'>".$liste_profs."</span></td>\n";
 					}
 
-					echo "<td>$lig_ele->login<input type='hidden' name='enregistrement[$compteur]' value='".$lig_ele->login."|".$lig_ele->id_groupe."|".$lig_ele->periode."' /></td>\n";
+					echo "<td>".get_nom_prenom_eleve($lig_ele->login)."<input type='hidden' name='enregistrement[$compteur]' value='".$lig_ele->login."|".$lig_ele->id_groupe."|".$lig_ele->periode."' /></td>\n";
 					echo "<td>$lig_ele->periode</td>\n";
 					echo "<td>";
 					echo "<div style='border: 1px solid black; margin: 2px;'>\n";
