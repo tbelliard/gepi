@@ -489,7 +489,7 @@ $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/generer_csv.php','V','F','
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/choix_generation_csv.php','V','F','F','F','F','F','F','F', 'Notanet: Génération de CSV','');";
 $tab_req[] = "INSERT INTO droits VALUES('/mod_notanet/verrouillage_saisie_app.php','V','F','F','F','F','F','F','F', 'Notanet: (Dé)Verrouillage des saisies','');";
 
-$tab_req[] = "INSERT INTO droits VALUES ('/bulletin/bull_index.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Edition des bulletins', '1');";
+$tab_req[] = "INSERT INTO droits VALUES ('/bulletin/bull_index.php', 'V', 'V', 'F', 'V', 'F', 'F', 'V', 'F', 'Edition des bulletins', '1');";
 $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/visu_releve_notes_bis.php', 'V', 'V', 'V', 'V', 'V', 'V', 'V','F', 'Relevé de notes', '1');";
 $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/param_releve_html.php', 'V', 'V', 'F', 'V', 'F', 'F', 'F','F', 'Paramètres du relevé de notes', '1');";
 
@@ -658,6 +658,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisie_eleve.php', 'V', 'V',
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisie_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_discipline/saisie_incident_abs2.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'F', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');";
 
 
 

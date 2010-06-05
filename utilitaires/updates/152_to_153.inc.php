@@ -862,5 +862,18 @@ else {
 	}
 }
 
+$result .= "<br />&nbsp;->Ajout de la table table matieres_app_corrections<br />";
+$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'matieres_app_corrections'"));
+if ($test == 0) {
+	$result_inter = traite_requete("CREATE TABLE matieres_app_corrections (login varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY (login,id_groupe,periode));");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">La table matieres_app_corrections a été créée !</font><br />";
+	}
+	else {
+		$result .= $result_inter."<br />";
+	}
+} else {
+	$result .= "<font color=\"blue\">La table matieres_app_corrections existe déjà.</font><br />";
+}
 
 ?>

@@ -402,6 +402,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	//debug_var();
 
+	$preselection_eleves=isset($_POST['preselection_eleves']) ? $_POST['preselection_eleves'] : (isset($_GET['preselection_eleves']) ? $_GET['preselection_eleves'] : NULL);
+
 	echo "<p class='bold'>";
 	echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a>\n";
 	//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres périodes</a>\n";
@@ -783,7 +785,11 @@ function ToutDeCocher() {
 							jec.periode='".$tab_periode_num[$j]."';";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)>0) {
-					echo "<td><input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" checked /></td>\n";
+					echo "<td><input type='checkbox' name='tab_selection_ele_".$i."_".$j."[]' id='tab_selection_ele_".$i."_".$j."_".$cpt."' value=\"".$lig_ele->login."\" ";
+					if(!isset($preselection_eleves)) {echo "checked ";}
+					//elseif((isset($preselection_eleves[$tab_periode_num[$j]]))&&(in_array($lig_ele->login,$preselection_eleves[$tab_periode_num[$j]]))) {echo "checked ";}
+					elseif((isset($preselection_eleves[$tab_periode_num[$j]]))&&(strstr($preselection_eleves[$tab_periode_num[$j]],"|".$lig_ele->login."|"))) {echo "checked ";}
+					echo "/></td>\n";
 				}
 				else {
 					echo "<td>-</td>\n";
@@ -1326,7 +1332,8 @@ else {
 		if ($_SESSION["statut"] == "scolarite") {
 			$sql="SELECT 1=1 FROM classes c, j_scol_classes jsc, j_eleves_classes jec WHERE (jec.id_classe=c.id AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id='$id_classe');";
 		}
-		elseif ($_SESSION["statut"] == "administrateur") {
+		//elseif ($_SESSION["statut"] == "administrateur") {
+		elseif (($_SESSION["statut"] == "administrateur")||($_SESSION["statut"] == "secours")) {
 			// On selectionne toutes les classes
 			//$sql="SELECT DISTINCT c.* FROM classes c WHERE 1";
 			$sql="SELECT 1=1 FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) LIMIT 1;";

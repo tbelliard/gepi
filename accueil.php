@@ -678,11 +678,17 @@ $test_prof_matiere = sql_count(sql_query("SELECT login FROM j_groupes_professeur
 // On teste si le l'utilisateur est prof de suivi. Si oui on affiche la ligne relative remplissage de l'avis du conseil de classe
 $test_prof_suivi = sql_count(sql_query("SELECT professeur FROM j_eleves_professeurs  WHERE professeur = '".$_SESSION['login']."'"));
 
+$afficher_correction_validation="n";
+$sql="SELECT 1=1 FROM matieres_app_corrections;";
+$test_mac=mysql_query($sql);
+if(mysql_num_rows($test_mac)>0) {$afficher_correction_validation="y";}
+
 $chemin = array();
 $chemin[] = "/absences/index.php";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_cahiers_texte")=='y')) $chemin[] = "/cahier_texte/index.php";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $chemin[] = "/cahier_notes/index.php";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $chemin[] = "/saisie/index.php";
+if($afficher_correction_validation=="y") {$chemin[] = "/saisie/validation_corrections.php";}
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $chemin[] = "/saisie/saisie_avis.php";
 
 // Saisie ECTS - ne doit être affichée que si l'utilisateur a bien des classes ouvrant droit à ECTS
@@ -708,6 +714,7 @@ $titre[] = "Gestion des absences";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_cahiers_texte")=='y')) $titre[] = "Cahier de textes";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $titre[] = "Carnet de notes : saisie des notes";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $titre[] = "Bulletin : saisie des moyennes et des appréciations par matière";
+if($afficher_correction_validation=="y") {$titre[] = "Correction des bulletins";}
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $titre[] = "Bulletin : saisie des avis du conseil";
 if ($conditions_ects) $titre[] = "Crédits ECTS";
 
@@ -717,6 +724,7 @@ $expli[] = "Cet outil vous permet d'enregistrer les absences des ".$gepiSettings
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_cahiers_texte")=='y')) $expli[] = "Cet outil vous permet de constituer un cahier de textes pour chacune de vos classes.";
 if ((($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) and (getSettingValue("active_carnets_notes")=='y')) $expli[] = "Cet outil vous permet de constituer un carnet de notes pour chaque période et de saisir les notes de toutes vos évaluations.";
 if (($test_prof_matiere != "0") or ($_SESSION['statut']!='professeur')) $expli[] = "Cet outil permet de saisir directement, sans passer par le carnet de notes, les moyennes et les appréciations du bulletin";
+if($afficher_correction_validation=="y") {$expli[] = "Cet outil vous permet de valider les corrections d'appréciations proposées par des professeurs après la clôture d'une période.<br /><span style='color:red;'>Une ou des propositions requièrent votre attention.</span>\n";}
 if ((($test_prof_suivi != "0") and (getSettingValue("GepiRubConseilProf")=='yes')) or (($_SESSION['statut']!='professeur') and (getSettingValue("GepiRubConseilScol")=='yes') ) or ($_SESSION['statut']=='secours')  ) $expli[] = "Cet outil permet la saisie des avis du conseil de classe.";
 if ($conditions_ects) $expli[] = "Saisie des crédits ECTS";
 
