@@ -56,7 +56,7 @@ if($expediteur=='') {$expediteur="Mail automatique Gepi";}
 $envoi=mail($destinataire,
 	$gepiPrefixeSujetMail.$sujet_mail,
 	$message_mail,
-	"From: $expediteur\r\n"."X-Mailer: PHP/" . phpversion());
+	"From: $expediteur\r\n"."Reply-to: $expediteur\r\n"."X-Mailer: PHP/" . phpversion());
 
 if($envoi) {echo " <img src='../images/enabled.png' width='20' height='20' alt='Message envoyé avec succès' title='Message envoyé avec succès' />";}
 else {echo " <img src='../images/icons/flag.png' width='17' height='18' alt='Echec de l envoi du message' title='Echec de l envoi du message' />";}
