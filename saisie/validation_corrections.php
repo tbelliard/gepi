@@ -164,7 +164,7 @@ if(isset($_POST['action_corrections'])) {
 
 					// Recherche des profs du groupe
 					$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.email!='';";
-					echo "$sql<br />";
+					//echo "$sql<br />";
 					$req=mysql_query($sql);
 					if(mysql_num_rows($req)>0) {
 						$lig_u=mysql_fetch_object($req);
