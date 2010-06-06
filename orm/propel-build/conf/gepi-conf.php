@@ -33,6 +33,11 @@ $conf = array (
 //          array (
 //	    'value' => true,
 //          ),
+
+//          'MYSQL_ATTR_USE_BUFFERED_QUERY' =>
+//          array (
+//	    'value' => true,
+//          ),
         ),
         'settings' => 
         array (
