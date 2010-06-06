@@ -343,6 +343,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 							}
 		
 							$email_declarant="";
+							$nom_declarant="";
 							$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
 							$req=mysql_query($sql);
 							if(mysql_num_rows($req)>0) {
@@ -380,7 +381,10 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 							elseif($email_autres_profs_grp!='') {
 								$ajout_header.="Cc: $email_autres_profs_grp\r\n";
 							}
-		
+
+							$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
+							$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
+
 							$envoi = mail($email_destinataires,
 								$gepiPrefixeSujetMail.$sujet_mail,
 								$texte_mail,

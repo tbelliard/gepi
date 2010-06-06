@@ -76,6 +76,10 @@ if(isset($_POST['action_corrections'])) {
 		$current_id_groupe=$tab_tmp[1];
 		$current_periode=$tab_tmp[2];
 
+		$current_group=get_group($current_id_groupe);
+
+		$current_nom_prenom_eleve=get_nom_prenom_eleve($current_login_ele);
+
 		if((strlen(my_ereg_replace('[A-Za-z0-9._-]','',$current_login_ele))==0)&&
 		(strlen(my_ereg_replace('[0-9]','',$current_id_groupe))==0)&&
 		(strlen(my_ereg_replace('[0-9]','',$current_periode))==0)) {
@@ -94,7 +98,8 @@ if(isset($_POST['action_corrections'])) {
 							//$nb_reg++;
 							// Envoyer un mail... problème... il serait bien de n'envoyer qu'un seul mail par destinataire, plutôt que un mail par correction
 							if(!isset($texte_email[$current_id_groupe])) {$texte_email[$current_id_groupe]="";}
-							$texte_email[$current_id_groupe].="Votre proposition de correction pour $enregistrement[$i] a été refusée/supprimée.\n";
+							//$texte_email[$current_id_groupe].="Votre proposition de correction pour $enregistrement[$i] a été refusée/supprimée.\n";
+							$texte_email[$current_id_groupe].="Votre proposition de correction pour ".$current_nom_prenom_eleve." en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la période $current_periode a été refusée/supprimée.\n";
 						}
 						else {
 							$msg.="Erreur lors de la suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
@@ -111,7 +116,7 @@ if(isset($_POST['action_corrections'])) {
 								$msg.="Suppression de l'enregistrement temporaire $enregistrement[$i].<br />";
 								// Envoyer un mail... problème... il serait bien de n'envoyer qu'un seul mail par destinataire, plutôt que un mail par correction
 								if(!isset($texte_email[$current_id_groupe])) {$texte_email[$current_id_groupe]="";}
-								$texte_email[$current_id_groupe].="Votre proposition de correction pour $enregistrement[$i] a été validée.\n";
+								$texte_email[$current_id_groupe].="Votre proposition de correction pour ".$current_nom_prenom_eleve." en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].") sur la période $current_periode a été validée.\n";
 
 								if(!in_array($current_periode,$tab_periode_num)) {$tab_periode_num[]=$current_periode;}
 								//$reimprimer_bulletins.="<input type='hidden' name='preselection_eleves[$current_periode][]' value='$current_login_ele' />\n";
@@ -181,6 +186,9 @@ if(isset($_POST['action_corrections'])) {
 							$ajout_header.="Reply-to: $email_reply\r\n";
 						}
 	
+						$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
+						$texte=$salutation.",\n\n".$texte."\nCordialement.\n-- \n".civ_nom_prenom($_SESSION['login']);
+
 						$envoi = mail($email_destinataires,
 							$gepiPrefixeSujetMail.$sujet_mail,
 							$texte,
