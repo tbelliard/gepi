@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 // Check access
 
 if (!checkAccess()) {
@@ -705,6 +705,17 @@ if (isset($_POST['GepiAccesOptionsReleveEleve'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesGestElevesProf !";
 	}
 
+
+	if (isset($_POST['autoriser_correction_bulletin'])) {
+		$temp = "y";
+	} else {
+		$temp = "n";
+	}
+	if (!saveSetting("autoriser_correction_bulletin", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de autoriser_correction_bulletin!";
+	}
+
+
 	if(getSettingValue('active_mod_discipline')=='y') {
 		if (isset($_POST['visuDiscProfClasses'])) {
 			$temp = "yes";
@@ -826,6 +837,11 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="appreciations_types_profs" id="appreciations_types_profs" value="y" <?php if (getSettingValue("appreciations_types_profs")=='y') echo "checked"; ?> onchange='changement();' /></td>
 				<td style='border: 0px;'><label for='appreciations_types_profs' style='cursor: pointer;'> peut utiliser des appréciations-types sur les bulletins.</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="autoriser_correction_bulletin" id="autoriser_correction_bulletin" value="y" <?php if (getSettingValue("autoriser_correction_bulletin")=='y') echo "checked"; ?> onchange='changement();' /></td>
+				<td style='border: 0px;'><label for='autoriser_correction_bulletin' style='cursor: pointer;'> peut solliciter des corrections de ses appréciations sur les bulletins une fois la période (<i>partiellement</i>) close (<i>pour reformuler une appréciation, corriger des fautes... de frappe;</i>).</label></td>
 			</tr>
 
 			<tr valign='top'>
