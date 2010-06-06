@@ -876,4 +876,17 @@ if ($test == 0) {
 	$result .= "<font color=\"blue\">La table matieres_app_corrections existe déjà.</font><br />";
 }
 
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'autoriser_correction_bulletin'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('autoriser_correction_bulletin', 'y');");
+  if ($result_inter == '') {
+    $result.="<font color=\"green\">Définition du paramètre 'autoriser_correction_bulletin' à 'y': Ok !</font><br />";
+  } else {
+    $result.="<font color=\"red\">Définition du paramètre 'autoriser_correction_bulletin' à 'y': Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">Le paramètre 'autoriser_correction_bulletin' existe déjà dans la table 'setting'.</font><br />";
+}
+
 ?>
