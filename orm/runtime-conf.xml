@@ -63,6 +63,12 @@
 								as prepared statements support is buggy in mysql driver
 						-->
 						<option id="ATTR_EMULATE_PREPARES">true</option>
+
+						<!--
+							utiliser le code ci-dessous si vous avez l'erreur :
+							SQLSTATE[HY000]: General error: 2014 Cannot execute queries while other unbuffered queries are active
+						-->
+						<!--option id="PROPEL_ATTR_CACHE_PREPARES">true</option-->
 					</attributes>
 					
 					<settings>
