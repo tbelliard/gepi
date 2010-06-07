@@ -83,10 +83,10 @@ require_once("../lib/header.inc");
             echo "<p>Aucune classe avec paramétrage ECTS ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
         }
     } else {
-        $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs s, j_eleves_classes cc, j_groupes_classes jgc WHERE (s.professeur='" . $_SESSION['login'] . "' AND s.login = cc.login AND cc.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE)");
+        $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jgc.id_groupe = jgp.id_groupe AND jgp.login = '".$_SESSION['login']."')");
         $nombre_classe = mysql_num_rows($call_classe);
         if ($nombre_classe == "0") {
-            echo "Vous n'êtes pas ".$gepiSettings['gepi_prof_suivi']." dans des classes ayant des enseignements ouvrant droits à des ECTS.";
+            echo "Vous n'êtes pas enseignant dans une classe ayant des enseignements ouvrant droits à des ECTS.";
         }
     }
 
@@ -127,6 +127,32 @@ require_once("../lib/header.inc");
                               // qui doivent être grisées car redoublées
   
   $gepiYear = $gepiSettings['gepiYear']; // L'année courante
+
+
+  // On vérifie que l'utilisateur a bien le droit de visualiser les résultats de la classe sélectionnée
+  
+    if (($_SESSION['statut'] == 'scolarite') or ($_SESSION['statut'] == 'secours')) {
+        if($_SESSION['statut']=='scolarite'){
+            $call_classe = mysql_query("SELECT DISTINCT c.*
+                                        FROM classes c, periodes p, j_scol_classes jsc, j_groupes_classes jgc
+                                        WHERE c.id = '".$id_classe."' AND p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' AND c.id=jgc.id_classe AND jgc.saisie_ects = TRUE");
+        } else {
+            $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc WHERE c.id = '".$id_classe."' AND p.id_classe = c.id AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE");
+        }
+
+        $nombre_classe = mysql_num_rows($call_classe);
+        if($nombre_classe==0){
+            echo "<p>Aucune classe avec paramétrage ECTS ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
+            die();
+        }
+    } else {
+        $call_classe = mysql_query("SELECT DISTINCT c.* FROM classes c, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (c.id = '".$id_classe."' AND c.id = jgc.id_classe AND jgc.saisie_ects = TRUE AND jgc.id_groupe = jgp.id_groupe AND jgp.login = '".$_SESSION['login']."')");
+        $nombre_classe = mysql_num_rows($call_classe);
+        if ($nombre_classe == "0") {
+            echo "Soit vous n'êtes pas enseignant dans cette classe, soit cette classe n'ouvre pas droits à des ECTS.";
+            die();
+        }
+    }
 
   // On passe élève par élève. Pour chaque élève, on va extraire les ECTS
   // archivés, puis les ECTS courant, et au fur et à mesure on stocke
@@ -244,12 +270,6 @@ require_once("../lib/header.inc");
   require('../lib/header.inc');
   ?>
   <style>
-        .rotate90 
-        {
-            -webkit-transform: rotate(-90deg);
-            -moz-transform: rotate(-90deg);
-            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-        }
         .cell, .central_cell, .first_cell, .last_cell, .lone_cell
         {
           border-top: 1px solid black;
