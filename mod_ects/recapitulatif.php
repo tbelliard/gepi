@@ -264,9 +264,11 @@ require_once("../lib/header.inc");
     }
   }
   
+  function column_classname($annee) {
+    return preg_replace('/[^0-9a-zA-Z]/i','',$annee);
+  }
+  
   // Affichage des en-têtes du tableau
-  
-  
   require('../lib/header.inc');
   ?>
   <style>
@@ -276,6 +278,14 @@ require_once("../lib/header.inc");
           border-bottom: 1px solid black;
           padding: 5 5 5 5;
           text-align: center;
+        }
+                
+        .debut_annee {
+          border-left: 4px double black;
+        }
+        
+        .fin_annee {
+          border-right: 4px double black;
         }
         
         .lone_cell
@@ -292,14 +302,14 @@ require_once("../lib/header.inc");
         
         .first_cell
         {
-          border-left: 1px solid black;
+          border-left: 2px solid black;
           border-right: 1px solid grey;
         }
         
         .last_cell
         {
           border-left: 1px solid grey;
-          border-right: 1px solid black;
+          border-right: 2px solid black;
         }
         
         .result, .nom
@@ -318,44 +328,90 @@ require_once("../lib/header.inc");
           padding-left: 5px;
           padding-right: 5px;
         }
+        
+        .ligne_paire {
+          background-color: #C0C0C0;
+        }
+        
+        .ligne_impaire {
+          background-color: inherit;
+        }
   </style>
+  <script language="javascript">
+
+    function toggleCells(theClass) {
+
+      //Create Array of All Cells
+      var allCells=document.getElementsByTagName("td");
+
+      //Loop through all tags using a for loop
+      for (i=0; i<allCells.length; i++) {
+        for (j=0; j<allCells[i].classList.length;j++) {
+          if (allCells[i].classList[j] == theClass) {
+            if (allCells[i].style.display == 'none') {
+              allCells[i].style.display = 'table-cell'
+            } else {
+              allCells[i].style.display = 'none'
+            }
+          }
+        }
+      }
+    }  
+  </script>
+  
+  
   <?php
   
+  echo "<h1 style='margin-top: 0px; margin-bottom: 0px;margin-left: 30px;'>Crédits ECTS acquis - Classe de ".$Classe->getClasse()."</h1>";
   
+  echo "<p style='margin-left: 30px;'>Afficher/masquer par année : ";
+  
+
+  $a = 1;
+  $nb_a = count($annees);
+  foreach($annees as $annee => $periodes) {
+    $column_classname = column_classname($annee);
+    echo "<a href=\"javascript:toggleCells('".column_classname($annee)."')\">".$annee."</a>";
+    if ($a != $nb_a) echo " - ";
+    $a++;
+  }
+  echo "</p>";
   
   echo "<table style='border: 1px solid black;border-collapse: collapse; margin: 20px;'>";
   echo "<tr>";
   echo "<td style='padding-left: 150px;'>&nbsp;</td>\n"; // Nom et prénom
   foreach($annees as $annee => $periodes) {
     $colspan_annee = 0;
+    $column_classname = column_classname($annee);
     foreach($periodes as $periode) { 
       $colspan_annee = $colspan_annee + count($periode['matieres']);
     }
-    echo "<td class='lone_cell' colspan='$colspan_annee'>";
+    echo "<td class='debut_annee fin_annee cell $column_classname' colspan='$colspan_annee'>";
     echo $annee;
     echo "</td>\n";
   }
   // La colonne pour le crédit global :
-  echo "<td></td>";
-  // Et la colonne pour le rappel nom/prénom :
-  echo "<td></td>";
+  echo "<td class='debut_annee'></td>";
   echo "</tr>";
   
   // Maintenant on affiche les périodes
   echo "<tr>\n";
   echo "<td></td>\n";
   foreach($annees as $annee => $periodes) {
+    $column_classname = column_classname($annee);
+    $m = 1;
+    $nb = count($periodes);
     foreach($periodes as $periode) {
       $colspan_periode = count($periode['matieres']);
-      echo "<td class='lone_cell' colspan='$colspan_periode'>";
+      if ($m == 1) { $styles = 'cell debut_annee';}else if($m == $nb){ $styles = 'cell fin_annee';} else {$styles = 'cell';}
+      echo "<td class='$styles $column_classname' colspan='$colspan_periode'>";
       echo $periode['nom_periode'];
       echo "</td>\n";
+      $m++;
     }
   }
   // La colonne pour le crédit global
-  echo "<td></td>";
-  // Et la colonne pour le rappel nom/prénom :
-  echo "<td style='padding-left:150px;'></td>";
+  echo "<td class='debut_annee'></td>";
   echo "</tr>\n";
   
   // Et enfin on affiche les matières
@@ -366,36 +422,50 @@ require_once("../lib/header.inc");
   echo $Classe->getClasse();
   echo "</span>";
   echo "</td>\n";
+  $a = 1;
+  $nb_a = count($annees);
   foreach($annees as $annee => $periodes) {
+    $column_classname = column_classname($annee);
+    $p = 1;
+    $nb_p = count($periodes);
     foreach($periodes as $periode) {
       $m = 1;
-      $nb = count($periode['matieres']);
+      $nb_m = count($periode['matieres']);
       foreach($periode['matieres'] as $matiere) {
-        if ($m == 1) {
+        if ($m == 1 && $p == 1) {
+          $cellstyle = 'debut_annee cell';
+        } else if ($m == 1 && $p != 1) {
           $cellstyle = 'first_cell';
-        } else if ($m == $nb) {
+        } else if ($p == $nb_p && $m == $nb_m) {
+          $cellstyle = 'fin_annee cell';
+        } else if ($p < $nb_p && $m == $nb_m) {
           $cellstyle = 'last_cell';
         } else {
           $cellstyle = 'central_cell';
         }
-        echo "<td class='$cellstyle' style='vertical-align: bottom;'>\n";
+        echo "<td class='$cellstyle $column_classname' style='vertical-align: bottom;'>\n";
         $nom_complet_coupe = (strlen($matiere) > 20)? urlencode(substr($matiere,0,20)."...") : urlencode($matiere);
         echo "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
         echo "</td>\n";
         $m++;
       }
+      $p++;
     }
+    $a++;
   }
+  
   echo "<td class='lone_cell' style='vertical-align: bottom;'>";
   echo "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Mention globale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Mention globale\" />";
   echo "</td>";
-  echo "<td></td>"; // Rappel nom/prénom
   echo "</tr>\n";
   
   
   // Boucle d'affichage du tableau
+  $classe_bg = 'ligne_paire';
   foreach ($Eleves as $Eleve) {
-    echo "<tr>";
+    $total_ects = 0;
+    $classe_bg = $classe_bg == 'ligne_paire' ? 'ligne_impaire' : 'ligne_paire';
+    echo "<tr class='$classe_bg'>";
     
     // Nom Prénom
     echo "<td class='lone_cell nom'>";
@@ -403,25 +473,36 @@ require_once("../lib/header.inc");
     echo "</td>";
     
     // Les résultats
+    $a = 1;
+    $nb_a = count($annees);
     foreach($annees as $annee => $periodes) {
+      $column_classname = column_classname($annee);
+      $p = 1;
+      $nb_p = count($periodes);
       foreach($periodes as $num => $periode) {
-        
         $m = 1;
-        $nb = count($periode['matieres']);
+        $nb_m = count($periode['matieres']);
         foreach($periode['matieres'] as $matiere) {
-          if ($m == 1) {
-            $cellstyle = 'first_cell';
-          } else if ($m == $nb) {
-            $cellstyle = 'last_cell';
-          } else {
-            $cellstyle = 'central_cell';
-          }
+        if ($m == 1 && $p == 1) {
+          $cellstyle = 'debut_annee cell';
+        } else if ($m == 1 && $p != 1) {
+          $cellstyle = 'first_cell';
+        } else if ($p == $nb_p && $m == $nb_m) {
+          $cellstyle = 'fin_annee cell';
+        } else if ($p < $nb_p && $m == $nb_m) {
+          $cellstyle = 'last_cell';
+        } else {
+          $cellstyle = 'central_cell';
+        }
           
           if (array_key_exists($annee, $ignore_annees[$Eleve->getIdEleve()])) {
             $cellstyle = $cellstyle.' result_ignore';
+            $ignore_ects = true;
+          } else {
+            $ignore_ects = false;
           }
           
-          echo "<td class='$cellstyle result'>";
+          echo "<td class='$cellstyle result $column_classname'>";
           if (array_key_exists($annee, $resultats[$Eleve->getLogin()])
             and array_key_exists($num, $resultats[$Eleve->getLogin()][$annee])
             and array_key_exists($matiere, $resultats[$Eleve->getLogin()][$annee][$num])) {
@@ -434,7 +515,7 @@ require_once("../lib/header.inc");
             } else {
               $mention_prof = '';
             }
-            
+            if (is_numeric($valeur) && !$ignore_ects) $total_ects = $total_ects + $valeur;
             echo $valeur;
             if (($mention == null or $mention == '') and ($mention_prof != null or $mention_prof != '')) {
               echo '('.$mention_prof.')';
@@ -447,21 +528,19 @@ require_once("../lib/header.inc");
           echo "</td>";
           $m++;
         }
+        $p++;
       }
+      $a++;
     }
     // Le crédit global
     echo "<td class='lone_cell result'>";
+    echo $total_ects;
     $credit_global = $Eleve->getCreditEctsGlobal();
     if ($credit_global) {
       echo $credit_global->getMention();
     } else {
       echo "&nbsp;";
     }
-    echo "</td>";
-    
-    // Rappel Nom Prénom, pour la lisibilité
-    echo "<td class='cell nom'>";
-    echo $Eleve->getNom().' '.$Eleve->getPrenom();
     echo "</td>";
     
     echo "</tr>";
