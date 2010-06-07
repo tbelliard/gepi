@@ -352,7 +352,8 @@ function restoreMySqlDump($duree) {
 	global $dirname;
 	global $debug_restaure;
 
-	$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value!='log' AND value!='setting' AND value!='utilisateurs' ORDER BY name LIMIT 1;";
+	//$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value!='log' AND value!='setting' AND value!='utilisateurs' ORDER BY name LIMIT 1;";
+	$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value!='log' AND value!='setting' AND value!='utilisateurs' AND value!='a_tmp_setting' ORDER BY name LIMIT 1;";
 	if($debug_restaure=='y') {echo "<span style='color:red; font-size: x-small;'>$sql</span><br />\n";}
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
@@ -1164,7 +1165,9 @@ value VARCHAR(255) NOT NULL);";
 		}
 		else {
 
-			$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%';";
+			//$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%';";
+			// Pour nettoyer aussi une trace d'une sauvegarde consécutive à une restauration ratée... pas sûr que ce soit prudent...
+			$sql="SELECT * FROM a_tmp_setting WHERE name LIKE 'table_%' AND value!='a_tmp_setting';";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
 
@@ -1184,6 +1187,8 @@ value VARCHAR(255) NOT NULL);";
 					echo "</div>\n";
 
 				echo "</div>\n";
+
+				// Il peut rester un fichier base_extraite_table_XXX.sql correspondant à a_tmp_setting si on a restauré une sauvegarde faite après une restauration ratée/incomplète... inquiètant.
 
 				$sql="DROP TABLE a_tmp_setting;";
 				$res=mysql_query($sql);
