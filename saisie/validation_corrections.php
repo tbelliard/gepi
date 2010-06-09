@@ -106,9 +106,13 @@ if(isset($_POST['action_corrections'])) {
 						}
 					}
 					elseif($action[$i]=='valider') {
-						$sql="UPDATE matieres_appreciations SET appreciation='$app' WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
-						$update=mysql_query($sql);
-						if($update) {
+						//$sql="UPDATE matieres_appreciations SET appreciation='$app' WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
+						$sql="DELETE FROM matieres_appreciations WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
+						$menage=mysql_query($sql);
+
+						$sql="INSERT INTO matieres_appreciations SET login='$current_login_ele', id_groupe='$current_id_groupe', periode='$current_periode', appreciation='$app';";
+						$insert=mysql_query($sql);
+						if($insert) {
 							$sql="DELETE FROM matieres_app_corrections WHERE (login='$current_login_ele' AND id_groupe='$current_id_groupe' AND periode='$current_periode');";
 							$del=mysql_query($sql);
 							if($del) {
@@ -340,7 +344,9 @@ else {
 				$current_group=get_group($lig->id_groupe);
 
 				// Elèves avec correction associés au groupe
-				$sql="SELECT DISTINCT mac.*, ma.appreciation AS old_app FROM matieres_app_corrections mac, matieres_appreciations ma, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.periode=mac.periode AND jec.login=mac.login AND mac.id_groupe='$lig->id_groupe' AND mac.periode=ma.periode AND mac.id_groupe=ma.id_groupe AND mac.login=ma.login ORDER BY ma.login;";
+				//$sql="SELECT DISTINCT mac.*, ma.appreciation AS old_app FROM matieres_app_corrections mac, matieres_appreciations ma, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.periode=mac.periode AND jec.login=mac.login AND mac.id_groupe='$lig->id_groupe' AND mac.periode=ma.periode AND mac.id_groupe=ma.id_groupe AND mac.login=ma.login ORDER BY ma.login;";
+				// On ne récupérait pas d'élèves si le prof n'avait pas rempli d'appréciation pour la période (ça ne fonctionnait que pour une correction, pas pour une proposition de première saisie après la date de verrouillage)
+				$sql="SELECT DISTINCT mac.* FROM matieres_app_corrections mac, j_eleves_classes jec WHERE jec.id_classe='$tab_id_classe[$i]' AND jec.periode=mac.periode AND jec.login=mac.login AND mac.id_groupe='$lig->id_groupe' ORDER BY mac.login;";
 				//echo "$sql<br />\n";
 				$res_ele=mysql_query($sql);
 				$nb_eleves=mysql_num_rows($res_ele);
@@ -363,7 +369,16 @@ else {
 					echo "<td>";
 					echo "<div style='border: 1px solid black; margin: 2px;'>\n";
 					echo "<b>Appréciation enregistrée&nbsp;:</b> ";
-					echo nl2br($lig_ele->old_app);
+					//echo nl2br($lig_ele->old_app);
+					$sql="SELECT * FROM matieres_appreciations WHERE periode='$lig_ele->periode' AND id_groupe='$lig_ele->id_groupe' AND login='$lig_ele->login';";
+					$res_old_app=mysql_query($sql);
+					if(mysql_num_rows($res_old_app)>0) {
+						$lig_old=mysql_fetch_object($res_old_app);
+						echo nl2br($lig_old->appreciation);
+					}
+					else {
+						echo "<span style='color:red'>Aucune appréciation n'a été enregistrée avant la proposition de correction.</span>\n";
+					}
 					echo "</div>\n";
 					echo "<div style='border: 1px solid black; margin: 2px;'>\n";
 					echo "<b>Correction proposée&nbsp;:</b> ";
