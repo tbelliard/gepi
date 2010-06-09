@@ -197,7 +197,7 @@ if (isset($_POST['is_posted'])) {
 				if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 	
 				$ajout_header="";
-				if($email_declarant!="") {$ajout_header.="Cc: ".$email_declarant."\r\n";}
+				if($email_declarant!="") {$ajout_header.="Cc: $nom_declarant <".$email_declarant.">\r\n";}
 	
 				$envoi = mail(getSettingValue("gepiAdminAdress"),
 					$gepiPrefixeSujetMail.$sujet_mail,
@@ -610,6 +610,20 @@ if(count($total_eleves)>0) {
 							echo " />";
 						}
 						*/
+
+						// Test sur la présence de notes dans cn ou de notes/app sur bulletin
+						if (!test_before_eleve_removal($e_login, $current_group['id'], $period["num_periode"])) {
+							echo "<img id='img_bull_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/bulletin_16.png' width='16' height='16' title='Bulletin non vide' alt='Bulletin non vide' />";
+						}
+
+						$sql="SELECT DISTINCT id_devoir FROM cn_notes_devoirs cnd, cn_devoirs cd, cn_cahier_notes ccn WHERE (cnd.login = '".$e_login."' AND cnd.statut='' AND cnd.id_devoir=cd.id AND cd.id_racine=ccn.id_cahier_notes AND ccn.id_groupe = '".$current_group['id']."' AND ccn.periode = '".$period["num_periode"]."')";
+						$test_cn=mysql_query($sql);
+						$nb_notes_cn=mysql_num_rows($test_cn);
+						if($nb_notes_cn>0) {
+							echo "<img id='img_cn_non_vide_".$period["num_periode"]."_".$num_eleve."' src='../images/icons/cn_16.png' width='16' height='16' title='Carnet de notes non vide: $nb_notes_cn notes' alt='Carnet de notes non vide: $nb_notes_cn notes' />";
+							//echo "$sql<br />";
+						}
+
 						if (in_array($e_login, (array)$current_group["eleves"][$period["num_periode"]]["list"])) {
 							echo "<img src='../images/enabled.png' width='15' height='15' title='Elève affecté dans cet enseignement' alt='Elève affecté dans cet enseignement' />\n";
 						}
