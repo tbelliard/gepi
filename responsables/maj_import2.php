@@ -763,7 +763,7 @@ else{
 
 
 					$fp=fopen("../temp/".$tempdir."/section_structures.xml","r");
-					if($fp){
+					if($fp) {
 
 						echo "<p>\n";
 						echo "Analyse de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
@@ -893,8 +893,8 @@ else{
 						require("../lib/footer.inc.php");
 						die();
 					}
-					else{
-						echo "<p>ERREUR: Il n'a pas été possible d'ouvrir le fichier en lecture...</p>\n";
+					else {
+						echo "<p><span style='color:red;'>ERREUR&nbsp;:</span> Il n'a pas été possible d'ouvrir le fichier en lecture...<br />Avez-vous bien utilisé un export d'une année scolaire avec des classes renseignées?<br />Si vous avez exporté le XML de l'année scolaire prochaine, la section STRUCTURES risque de ne pas être encore renseignée.</p>\n";
 
 						require("../lib/footer.inc.php");
 						die();
