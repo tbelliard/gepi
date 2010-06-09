@@ -196,7 +196,8 @@ if(!isset($tab_id_classe)) {
 
 		$message_0="Aucune classe (<i>avec élève</i>) ne vous est affectée.";
 	}
-	elseif ($_SESSION["statut"] == "administrateur") {
+	//elseif ($_SESSION["statut"] == "administrateur") {
+	elseif (($_SESSION["statut"] == "administrateur")||($_SESSION["statut"] == "secours")) {
 		// On selectionne toutes les classes
 		//$sql="SELECT DISTINCT c.* FROM classes c WHERE 1";
 		$sql="SELECT DISTINCT c.* FROM j_eleves_classes jec, classes c WHERE (c.id=jec.id_classe) ORDER BY c.classe;";
