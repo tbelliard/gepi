@@ -2866,6 +2866,7 @@ function eleve_suivant(){
 			else{
 				$sql="SELECT DISTINCT jgc.id_groupe, m.* FROM matieres m,j_groupes_classes jgc,j_groupes_matieres jgm WHERE (m.matiere=jgm.id_matiere AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe') ORDER BY jgc.priorite,m.matiere";
 			}
+			//echo "$sql<br />";
 
 			$call_classe_infos = mysql_query($sql);
 			$nombre_lignes = mysql_num_rows($call_classe_infos);
@@ -2882,6 +2883,7 @@ function eleve_suivant(){
 			while($ligne=mysql_fetch_object($call_classe_infos)){
 
 				$sql="SELECT * FROM j_eleves_groupes jeg WHERE (jeg.login='$eleve1' AND jeg.id_groupe='$ligne->id_groupe');";
+				//echo "$sql<br />";
 				affiche_debug("$sql<br />");
 				$eleve_option_query=mysql_query($sql);
 				//if(mysql_num_rows($eleve_option_query)==0){
@@ -2896,6 +2898,8 @@ function eleve_suivant(){
 					else{
 						$liste_matieres=$liste_matieres."|$matiere[$cpt]";
 					}
+					// DEBUG
+					// echo "$liste_matieres<br />";
 
 					$cpt++;
 				}
@@ -2970,13 +2974,15 @@ function eleve_suivant(){
 
 					// Boucle sur les groupes:
 					for($j=0;$j<count($id_groupe);$j++) {
-						if($serie[$cpt]!="") {$serie[$cpt].="|";}
+						if($serie[$cpt]!="") {$serie[$cpt].="|";} // Cette ligne impose que si un élève n'a pas la première matière de la liste sur une période, on mette quand même quelque chose (tiret,... mais pas vide sans quoi on a un décalage dans le nombre de champs entre $liste_matieres et $serie[$cpt])
 
 						// Recherche de l'indice du groupe retourné en $current_group par calcul_moy_gen.inc.php
 						$indice_groupe=-1;
 						for($loop=0;$loop<count($current_group);$loop++) {
 							if($current_group[$loop]['id']==$id_groupe[$j]) {
 								$indice_groupe=$loop;
+								// DEBUG
+								//echo "\$current_group[$loop]['name']=".$current_group[$loop]['name']."<br />";
 								break;
 							}
 						}
@@ -3017,8 +3023,10 @@ function eleve_suivant(){
 							}
 							else{
 								// L'élève n'a pas cette matière sur la période...
-								// Pas sûr qu'on puisse arriver là
-								echo "<!-- $eleve1 n'a pas la matière ".$current_group[$indice_groupe]["matiere"]["matiere"]." -->\n";
+								// Pas sûr qu'on puisse arriver là: si, cf ci-dessous
+								echo "<!-- $eleve1 n'a pas la matière ".$current_group[$indice_groupe]["matiere"]["matiere"]." sur la période ".$num_periode[$cpt]." -->\n";
+								// mais en mode 'toutes les périodes', il faut afficher un champ (cas de l'Histoire des arts au T3 seulement)
+								$serie[$cpt].="-";
 							}
 						}
 					}
@@ -3034,10 +3042,12 @@ function eleve_suivant(){
 					$titre_bulle=htmlentities($matiere_nom[$i]);
 
 					$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Imagemap'>\n";
+					$alt=1;
 					for($j=1;$j<=count($num_periode);$j++){
 						//if($tab_imagemap[$j][$i]!=""){
 						if((isset($tab_imagemap[$j][$i]))&&($tab_imagemap[$j][$i]!="")) {
-							$texte_bulle.="<tr><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
+							$alt=$alt*(-1);
+							$texte_bulle.="<tr class='lig$alt'><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
 						}
 					}
 					$texte_bulle.="</table>\n";
