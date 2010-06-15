@@ -587,6 +587,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		*/
 		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui'  /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer, dans le calcul des moyennes générales, les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
 
+		echo "<tr><td valign='top'><input type='checkbox' name='moyennes_periodes_precedentes' id='moyennes_periodes_precedentes' value='y'  /></td><td><label for='moyennes_periodes_precedentes' style='cursor: pointer;'>Afficher les moyennes de l'élève pour les périodes précédentes (<i>incompatible avec l'affichage des moyennes min/max/classe dans la même cellule que la moyenne de l'élève</i>).</label></td></tr>\n";
+
 		echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' /></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les bulletins par établissement d'origine.</label></td></tr>\n";
 	//}
 	echo "</table>\n";
@@ -908,6 +910,9 @@ else {
 	$use_cell_ajustee=isset($_POST['use_cell_ajustee']) ? $_POST['use_cell_ajustee'] : "y";
 
 	$tri_par_etab_orig=isset($_POST['tri_par_etab_orig']) ? $_POST['tri_par_etab_orig'] : "n";
+
+	// 20100615
+	$moyennes_periodes_precedentes=isset($_POST['moyennes_periodes_precedentes']) ? $_POST['moyennes_periodes_precedentes'] : "n";
 
 	//========================================
 	/*
@@ -1396,6 +1401,7 @@ else {
 		$res_eff_total_classe=mysql_query($sql);
 		$eff_total_classe=mysql_num_rows($res_eff_total_classe);
 
+
 		// Boucle sur les périodes
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
 
@@ -1695,6 +1701,64 @@ else {
 				flush();
 			}
 			//==============================
+
+			//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			// 20100615
+			//$moyennes_periodes_precedentes="y";
+			if((isset($moyennes_periodes_precedentes))&&($periode_num>1)&&(!isset($tab_bulletin[$id_classe][$periode_num]['note_prec']))) {
+				$reserve_periode_num=$periode_num;
+				for($periode_num=1;$periode_num<$reserve_periode_num;$periode_num++) {
+					//echo "\$periode_num=$periode_num<br />";
+					include("../lib/calcul_moy_gen.inc.php");
+
+					$tab_bulletin[$id_classe][$reserve_periode_num]['login_prec'][$periode_num]=$current_eleve_login;
+					$tab_bulletin[$id_classe][$reserve_periode_num]['group_prec'][$periode_num]=$current_group;
+					$tab_bulletin[$id_classe][$reserve_periode_num]['note_prec'][$periode_num]=$current_eleve_note;
+					$tab_bulletin[$id_classe][$reserve_periode_num]['statut_prec'][$periode_num]=$current_eleve_statut;
+					$tab_bulletin[$id_classe][$reserve_periode_num]['moy_gen_eleve_prec'][$periode_num]=$moy_gen_eleve;
+
+					//============================
+					// On vide les variables de la boucle avant le calcul dans calcul_moy_gen.inc.php hors du dispositif périodes précédentes
+					unset($moy_gen_eleve);
+					unset($moy_gen_classe);
+					unset($moy_generale_classe);
+					unset($moy_max_classe);
+					unset($moy_min_classe);
+		
+					unset($moy_cat_classe);
+					unset($moy_cat_eleve);
+		
+					unset($quartile1_classe_gen);
+					unset($quartile2_classe_gen);
+					unset($quartile3_classe_gen);
+					unset($quartile4_classe_gen);
+					unset($quartile5_classe_gen);
+					unset($quartile6_classe_gen);
+					unset($place_eleve_classe);
+		
+					unset($current_eleve_login);
+					unset($current_group);
+					unset($current_eleve_note);
+					unset($current_eleve_statut);
+					unset($current_coef);
+					unset($categories);
+					unset($current_classe_matiere_moyenne);
+		
+					unset($current_coef_eleve);
+					unset($moy_min_classe_grp);
+					unset($moy_max_classe_grp);
+					unset($current_eleve_rang);
+		
+					unset($current_group_effectif_avec_note);
+		
+					unset($current_eleve_app);
+					//============================
+				}
+				$periode_num=$reserve_periode_num;
+			}
+			//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
 			//========================================
 			//if($eff_classe>0) {
 				include("../lib/calcul_moy_gen.inc.php");
