@@ -1,4 +1,8 @@
 <?php
+	/*
+		$Id$
+	*/
+
 	//========================================
 
 	if($mode_bulletin!='pdf') {
@@ -427,6 +431,10 @@
 										rp.login='".$_SESSION['login']."');";
 						$verif=mysql_query($sql);
 						if(mysql_num_rows($verif)>0) {$autorisation_acces='y';}
+					}
+					// Si c'est un compte secours
+					elseif ($_SESSION['statut'] == 'secours') {
+						$autorisation_acces='y';
 					}
 					//echo "\$current_eleve_login[$i]=$current_eleve_login[$i]<br />\n";
 					//echo "\$_SESSION['login']=".$_SESSION['login']."<br />\n";
