@@ -98,9 +98,9 @@ if ($id_classe == 'all') {
     for($i=0;$i<$nb_classes;$i++) {
         $Classe = ClassePeer::retrieveByPK(mysql_result($call_classes, $i, 'id'));
         if ($_SESSION['statut'] == 'scolarite' OR $_SESSION['statut'] == 'secours') {
-            $Eleves = array_merge($Eleves,$Classe->getEleves('1')->toArray());
+            $Eleves = array_merge($Eleves,$Classe->getEleves('1'));
         } else {
-            $Eleves = array_merge($Eleves,$Classe->getElevesByProfesseurPrincipal($_SESSION['login'])->toArray());
+            $Eleves = array_merge($Eleves,$Classe->getElevesByProfesseurPrincipal($_SESSION['login']));
         }
     }
 } else {
@@ -110,12 +110,13 @@ if ($id_classe == 'all') {
     } else {
         $Classe = ClassePeer::retrieveByPK($id_classe);
         if ($_SESSION['statut'] == 'scolarite' OR $_SESSION['statut'] == 'secours') {
-            $Eleves = $Classe->getEleves('1')->toArray();
+            $Eleves = $Classe->getEleves('1');
         } else {
-            $Eleves = $Classe->getElevesByProfesseurPrincipal($_SESSION['login'])->toArray();
+            $Eleves = $Classe->getElevesByProfesseurPrincipal($_SESSION['login']);
         }
     }
 }
+
 
 $i = 0;
 $mentions = array('A' => 'Très bien', 'B' => 'Bien', 'C' => 'Assez Bien', 'D' => 'Convenable', 'E' => 'Passable', 'F' => 'Insuffisant');
