@@ -706,7 +706,7 @@ $conditions_ects = ($gepiSettings['active_mod_ects'] == 'y' and
 if ($conditions_ects) $chemin[] = "/mod_ects/index_saisie.php";
 
 
-                
+
 
 
 $titre = array();
@@ -1263,7 +1263,7 @@ function AfficheAid($_statut,$_login,$indice_aid){
         return true;
 }
 
-$call_data = sql_query("select indice_aid, nom from aid_config WHERE outils_complementaires = 'y' order by nom_complet");
+$call_data = sql_query("select distinct ac.indice_aid, ac.nom from aid_config ac, aid a WHERE ac.outils_complementaires = 'y' and a.indice_aid=ac.indice_aid order by ac.nom_complet");
 $nb_aid = mysql_num_rows($call_data);
 $call_data2 = sql_query("select id from archivage_types_aid WHERE outils_complementaires = 'y'");
 $nb_aid_annees_anterieures = mysql_num_rows($call_data2);
@@ -1276,41 +1276,27 @@ if ($nb_total != 0) {
     $i = 0;
     while ($i<$nb_aid) {
         $indice_aid = mysql_result($call_data,$i,"indice_aid");
-        $_indice_aid[] = mysql_result($call_data,$i,"indice_aid");
         $nom_aid = mysql_result($call_data,$i,"nom");
-        $chemin[]="/aid/index_fiches.php?indice_aid=".$indice_aid;
-        $titre[] = $nom_aid;
-        $expli[] = "Tableau récapitulatif, liste des ".$gepiSettings['denomination_eleves'].", ...";
+        if (AfficheAid($_SESSION['statut'],$_SESSION['login'],$indice_aid)) {
+          $chemin[]="/aid/index_fiches.php?indice_aid=".$indice_aid;
+          $titre[] = $nom_aid;
+          $expli[] = "Tableau récapitulatif, liste des ".$gepiSettings['denomination_eleves'].", ...";
+        }
         $i++;
     }
   $affiche = 'no';
   for ($i=0;$i<$nb_aid;$i++) {
-      if ((acces($chemin[$i],$_SESSION['statut'])==1) and AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))  {$affiche = 'yes';}
+      if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
   }
   if (($nb_aid_annees_anterieures > 0) and (acces("/aid/annees_anterieures_accueil.php",$_SESSION['statut'])==1)) {
     $affiche = 'yes';
     $chemin[]="/aid/annees_anterieures_accueil.php";
     $titre[] = "Fiches projets des années antérieures";
-    $expli[]= "Accès administrateur aux fiches projets des années antérieures";
+    $expli[]= "Accès aux fiches projets des années antérieures";
   }
   $nb_ligne = count($chemin);
 
   if ($affiche=='yes') {
-/*
-	// modification Régis : créer des <h2> pour faciliter la navigation
-	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Outils de visualisation et d'édition des fiches projets</h2>\n";
-	//echo "<table width=700 border=2 cellspacing=1 bordercolor=#330033 cellpadding=5>";
-	echo "<table class='menu' summary=\"Outils complémentaires de gestion des AID. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
-      //echo "<table class='menu' summary=\"Outils complémentaires de gestion des AID\">\n";
-      //echo "<tr>\n";
-      //echo "<th colspan='2'><img src='./images/icons/document.png' alt='Outils complémentaires' class='link'/> - Outils de visualisation et d'édition des fiches projets</th>\n";
-      //echo "</tr>\n";
-      for ($i=0;$i<$nb_ligne;$i++) {
-      	if (AfficheAid($_SESSION['statut'],$_SESSION['login'],$_indice_aid[$i]))
-      		affiche_ligne($chemin[$i],$titre[$i],$expli[$i],$tab,$_SESSION['statut']);
-      	}
-      echo "</table>";
-*/
     verif_exist_ordre_menu('bloc_outil_comp_gestion_aid');
 		$tbs_menu[$ordre_menus['bloc_outil_comp_gestion_aid']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Outils de visualisation et d'édition des fiches projets");
     for ($i=0;$i<$nb_ligne;$i++) {

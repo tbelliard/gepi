@@ -2711,13 +2711,19 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 
 		if($bouton_close=="y"){
 			//$div.="<div style='$style_close'><a href='#' onClick=\"cacher_div('$id');return false;\">X</a></div>\n";
-			$div.="<div style='$style_close'><a href='#' onClick=\"cacher_div('$id');return false;\">";
+			$div.="<div style='$style_close'><a href='#' onclick=\"cacher_div('$id');return false;\">";
 			if(isset($niveau_arbo)&&$niveau_arbo==0){
 				$div.="<img src='./images/icons/close16.png' width='16' height='16' alt='Fermer' />";
 			}
-			else{
+			else if(isset($niveau_arbo)&&$niveau_arbo==1) {
 				$div.="<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />";
 			}
+			else if(isset($niveau_arbo)&&$niveau_arbo==2) {
+				$div.="<img src='../../images/icons/close16.png' width='16' height='16' alt='Fermer' />";
+			}
+      else {
+				$div.="<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />";
+      }
 			$div.="</a></div>\n";
 		}
 		$div.="<span style='padding-left: 1px;'>\n";
@@ -3139,6 +3145,26 @@ function get_class_from_id($id_classe) {
 }
 /* Outils complémentaires de gestion des AID
 fonction vérifiant les droits d'accès au module selon l'identifiant
+
+$_login :  identifiant de la personne pour laquelle on vérifie les droits
+           si le login n'est pas précisé, on est dans l'interface publique
+
+$aid_id : identifiant de l'AID
+$indice_aid : identifiant de la catégorie d'AID
+
+$champ : si non vide, on vérifie le droit sur ce champ en particulier
+         si $champ='', on vérifie le droit de modifier la fiche projet
+
+Cas particulier : $champ = 'eleves_profs'
+Cette valeur permet de gérer le fait que n'apparaissent pas sur les fiches publiques :
+    # Les elèves responsables du projet,
+    # les professeurs responsables du projet,
+    # les élèves faisant partie du projet.
+
+$mode : utilisé uniquement si $champ est non vide
+* $mode = W -> l'utilisateur a-t-il accès en écriture ?
+* Autres valeurs de W -> l'utilisateur a-t-il accès en lecture ?
+
 */
 function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='') {
  //$annee='' signifie qu'il s'agit de l'année courante
