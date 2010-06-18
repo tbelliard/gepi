@@ -44,7 +44,7 @@ class InputFilter {
 		return $source;
 	}	
 	function eraseBadTags($OriginalSource) {
-		$source = str_replace("\n", "", $OriginalSource);
+		$source = $OriginalSource;
 		$source1 = $source;
 		$decalage = 0;
 		$reach_end = false;		

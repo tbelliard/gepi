@@ -87,7 +87,7 @@ if ($login_prof != "") {
     
 	        if ($nb_rows >=1) {
                 $k = 0;
-                while ($tab_enseignement['id_groupe'][$k] != "") {
+                while (($tab_enseignement['id_groupe'][$k] != "") OR ($tab_enseignement['id_aid'][$k] != "")) {
                     $elapse_time_end = $elapse_time + $tab_enseignement['duree'][$k];
                     if ((($elapse_time<=$start_lesson) AND ($start_lesson<$elapse_time_end)) OR (($elapse_time>=$start_lesson) AND ($elapse_time<$end_lesson))){
                         $req_nom_creneau = mysql_query("SELECT nom_definie_periode FROM edt_creneaux WHERE id_definie_periode = '".$tab_id_creneaux[$j]."' ");
@@ -166,7 +166,7 @@ if (($salle != "") AND ($salle != "rie")) {
 
 	    if ($nb_rows >=1) {
             $k = 0;
-            while ($tab_enseignement['id_groupe'][$k] != "") {
+            while (($tab_enseignement['id_groupe'][$k] != "") OR ($tab_enseignement['id_aid'][$k] != "")) {
                 $elapse_time_end = $elapse_time + $tab_enseignement['duree'][$k];
                 if ((($elapse_time<=$start_lesson) AND ($start_lesson<$elapse_time_end)) OR (($elapse_time>=$start_lesson) AND ($elapse_time<$end_lesson))){
                     $req_nom_prof = mysql_query("SELECT nom FROM utilisateurs WHERE login = '".$tab_enseignement['login'][$k]."' ");
@@ -437,6 +437,7 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
         }
     }
     $tab_enseignement['id_groupe'][$k] = "";
+    $tab_enseignement['id_aid'][$k] = "";	
     return $k;
 
 }
@@ -501,6 +502,7 @@ function RecupCoursSallesCommunes($creneau_courant, $jour, $salle, $current_heur
     }
 
     $tab_enseignement['id_groupe'][$k] = "";
+    $tab_enseignement['id_aid'][$k] = "";	
     return $k;
 
 }
@@ -563,6 +565,7 @@ function RecupCoursProf($creneau_courant, $jour, $login_prof, $current_heure, $t
     }
 
     $tab_enseignement['id_groupe'][$k] = "";
+    $tab_enseignement['id_aid'][$k] = "";	
     return $k;
 
 }

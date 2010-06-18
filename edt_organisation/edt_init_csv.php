@@ -377,7 +377,7 @@ absences : <a href="../mod_absences/admin/admin_periodes_absences.php?action=vis
 
 <hr />
 	<h4 class="refus">Deuxi&egrave;me &eacute;tape</h4>
-	<p>Il faut renseigner le calendrier en cliquant sur le menu &agrave; gauche. Toutes les p&eacute;riodes
+	<p>Il faut renseigner le calendrier en cliquant dans le menu sur Cr&eacute;ation, Cr&eacute;er les p&eacute;riodes. Toutes les p&eacute;riodes
 	qui apparaissent dans l'emploi du temps doivent &ecirc;tre d&eacute;finies : trimestres, vacances, ... Si tous vos
 	cours durent le temps de l'ann&eacute;e scolaire, vous pouvez vous passer de cette &eacute;tape.</p>
 <hr />
