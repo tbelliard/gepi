@@ -1934,7 +1934,7 @@ Patientez pendant l'extraction des données... merci.
       $test_plugin = sql_query1("select ouvert from plugins where nom='gestion_autorisations_publications'");
       if ($test_plugin=='y') {
         include_once("../mod_plugins/gestion_autorisations_publications/functions_gestion_autorisations_publications.php");
-        echo verifie_autorisation_publication($ele_login);
+        echo verifie_autorisation_publication($ele_login,"professeur");
       }
 
 			echo "</div>\n";

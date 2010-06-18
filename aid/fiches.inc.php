@@ -38,6 +38,14 @@ $nb_productions = mysql_num_rows($call_productions);
 $call_public = mysql_query("select * from aid_public order by public");
 $nb_public = mysql_num_rows($call_public );
 
+// si le plugin "port_folio" existe et est activé
+$test_plugin = sql_query1("select ouvert from plugins where nom='port_folio'");
+if ($test_plugin=='y') {
+  $flag_port_folio='y';
+  $_SESSION["back_from_validation_par_aid"] = "../../aid/visu_fiches.php?indice_aid=".$indice_aid;
+  include_once("../mod_plugins/port_folio/functions_port_folio.php");
+}
+
 if ($annee=='')
     $requete = "SELECT * FROM aid WHERE indice_aid='$indice_aid' ";
 else
@@ -50,7 +58,7 @@ $requete .= " ORDER BY nom";
 $calldata = mysql_query($requete);
 $nombreligne = mysql_num_rows($calldata);
 
-echo "Cliquez sur le symbole <img src=\"../images/plier.png\" alt=\"Plus de détails\" Title=\"Plus de détails\" style=\"vertical-align: middle;\"/> devant chaque projet pour afficher ou cacher les détails du projet. Vous pouvez aussi ";
+echo "Cliquez sur le symbole <img src=\"../images/plier.png\" alt=\"Plus de détails\" title=\"Plus de détails\" style=\"vertical-align: middle;\"/> devant chaque projet pour afficher ou cacher les détails du projet. Vous pouvez aussi ";
 echo "<a href=\"#\" style=\"background-color:#FF8543; color:white; font-size:130%; font-family:serif\" onclick=\"javascript:";
 $i = 0;
 while ($i < $nombreligne){
@@ -70,7 +78,7 @@ while ($i < $nombreligne){
 echo "\" > cacher </a>";
 echo " tous les détails.<br />\n";
 if ($_login!="")
-    echo "Selon le paramétrage effectué par l'administrateur, certaines de ces fiches sont en partie <a href=\"../public/index_fiches.php\" target=\"_blank\">librement consultables et accessibles au public</a>.<br />";
+    echo "Selon le paramétrage effectué par l'administrateur, certaines de ces fiches sont en partie <a href=\"../public/index_fiches.php\">librement consultables et accessibles au public</a>.<br />";
 echo "<br />";
 $i = 0;
 while ($i < $nombreligne){
@@ -118,15 +126,18 @@ while ($i < $nombreligne){
     }
 
     echo "<span id=\"info1_".$aid_id."\" style=\"cursor:pointer;\" onclick=\"javascript:Element.show('id_".$aid_id."');Element.hide('info1_".$aid_id."');Element.show('info2_".$aid_id."');\" >
-	   <img src=\"../images/plier.png\" alt=\"Plus de détails\" Title=\"Plus de détails\"  style=\"vertical-align: middle;\" /></span>\n";
+	   <img src=\"../images/plier.png\" alt=\"Plus de détails\" title=\"Plus de détails\"  style=\"vertical-align: middle;\" /></span>\n";
     echo "<span id=\"info2_".$aid_id."\" style=\"display: none;cursor:pointer;\" onclick=\"javascript:Element.hide('id_".$aid_id."');Element.show('info1_".$aid_id."');Element.hide('info2_".$aid_id."');\" >
-	   <img src=\"../images/deplier.png\" alt=\"Moins de détails\" Title=\"Moins de détails\"  style=\"vertical-align: middle;\" /></span>\n";
+	   <img src=\"../images/deplier.png\" alt=\"Moins de détails\" title=\"Moins de détails\"  style=\"vertical-align: middle;\" /></span>\n";
+    if (isset($flag_port_folio))
+      echo lien_valide_competences_par_aid($aid_id,$indice_aid,$_SESSION['login'],1);
+
     if ($annee=='')
       $retour = "visu_fiches.php";
     else
       $retour="annees_anterieures_accueil.php";
     if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'','',$annee))
-        echo "<a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=modif&amp;annee=$annee&amp;retour=$retour'><img src=\"../images/edit.png\" alt=\"Modifier la fiche\" Title=\"Modifier la fiche\" style=\"vertical-align: middle;\" /></a>\n";
+        echo "<a href='modif_fiches.php?aid_id=$aid_id&amp;indice_aid=$indice_aid&amp;action=modif&amp;annee=$annee&amp;retour=$retour'><img src=\"../images/edit.png\" alt=\"Modifier la fiche\" title=\"Modifier la fiche\" style=\"vertical-align: middle;\" /></a>\n";
 
 
     echo "&nbsp;<b>$aid_nom</b>\n";
@@ -135,7 +146,7 @@ while ($i < $nombreligne){
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse1','',$annee)) and ($adresse1 != "")) {
         if (($affiche_adresse1 == 'y')or(($affiche_adresse1 != 'y') and ($_login!="") )) {
             if ((substr($adresse1,0,4) == "http") or (substr($adresse1,0,3) == "ftp")) {
-                echo "<span class=\"small\"> -  Accès public : <a href='".$adresse1."' title='".$adresse1."' target='_blank' ";
+                echo "<span class=\"small\"> -  Accès public : <a href='".$adresse1."' title='".$adresse1."' ";
                 if (($en_construction == 'y') and ($message_avertissement!="")) echo " onclick='alert(\"".$message_avertissement."\");' ";
                 echo ">cliquer pour accéder au site</a></span>";
              } else
@@ -146,16 +157,16 @@ while ($i < $nombreligne){
     if ((VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'adresse2','',$annee)) and ($adresse2 != "")) {
         if ($adresse2 != "")  {
             if ((substr($adresse2,0,4) == "http") or (substr($adresse2,0,3) == "ftp"))
-                echo "<span class=\"small\"> -  Accès restreint : <a href='".$adresse2."' title='".$adresse2."' target='_blank'>cliquer pour accéder au site</a></span>";
+                echo "<span class=\"small\"> -  Accès restreint : <a href='".$adresse2."' title='".$adresse2."' >cliquer pour accéder au site</a></span>";
             else
                 echo "<span class=\"small\"> -  Accès restreint : <b>".$adresse2."</b></span>";
         }
     }
     echo "<br />";
     echo "<div id=\"id_".$aid_id."\" style=\"display: none;\">\n";
-    echo "<table width=\"100%\" cellpadding=\"4\" bgcolor=\"#FFB68E\">\n";
+    echo "<table cellpadding=\"4\" style=\"background-color:#FFB68E;width:100%\">\n";
     echo "<tr>\n";
-    echo "<td width=50% style=\"vertical-align:top;\">";
+    echo "<td style=\"vertical-align:top;width:50%\">";
     if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'resume','',$annee)) {
         echo "<span class='medium'><b>Résumé : </b>";
         //Résumé
@@ -269,7 +280,7 @@ while ($i < $nombreligne){
         }
     }
     echo "</td></tr>\n";
-    echo "<tr><td colspan=2><hr />\n";
+    echo "<tr><td colspan='2'><hr />\n";
 
     //Divers
     if (VerifAccesFicheProjet($_login,$aid_id,$indice_aid,'divers','',$annee)) {

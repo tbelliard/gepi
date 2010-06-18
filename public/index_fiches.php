@@ -1,5 +1,5 @@
 <?php
-error_reporting (E_ALL);
+//error_reporting (E_ALL);
 /*
  * Last modification  : 12/05/2005
  *
@@ -124,11 +124,17 @@ if (($indice_aid =='') and ($annee_scolaire!=''))  {
 }
 
 // Vérification de la validité de $indice_aid et $aid_id
-if (!VerifAidIsAcive($indice_aid,"",$annee_courante))  {
+if ($annee_courante) {
+  if (!VerifAidIsAcive($indice_aid,"",""))  {
     echo "<p>Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
     die();
+  }
+} else {
+  if (!VerifAidIsAcive($indice_aid,"","y"))  {
+    echo "<p>* Vous tentez d'accéder à des outils qui ne sont pas activés. veuillez contacter l'administrateur.</p></body></html>";
+    die();
+  }
 }
-
 if ($annee_courante) {
   $nb_fiches_publiques = sql_query1("SELECT count(id) FROM aid WHERE indice_aid='".$indice_aid."' and fiche_publique='y'");
   $nom_projet = sql_query1("select nom from aid_config where indice_aid='".$indice_aid."'");
