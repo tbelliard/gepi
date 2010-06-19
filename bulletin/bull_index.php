@@ -2544,16 +2544,29 @@ else {
 
 					//==========================================
 					// ABSENCES
-					$sql="SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num');";
-					$current_eleve_absences_query = mysql_query($sql);
-					$current_eleve_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
-					$current_eleve_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
-					$current_eleve_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
-					$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-
-					if ($current_eleve_absences == '') { $current_eleve_absences = "?"; }
-					if ($current_eleve_nj == '') { $current_eleve_nj = "?"; }
-					if ($current_eleve_retards=='') { $current_eleve_retards = "?"; }
+					//On vérifie si le module est activé
+					if (getSettingValue("active_module_absence")!='2') {
+					    $sql="SELECT * FROM absences WHERE (login='".$current_eleve_login[$i]."' AND periode='$periode_num');";
+					    $current_eleve_absences_query = mysql_query($sql);
+					    $current_eleve_absences = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
+					    $current_eleve_nj = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
+					    $current_eleve_retards = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
+					    $current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+					} else {
+					    // Initialisations files
+					    require_once("../lib/initialisationsPropel.inc.php");
+					    $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login[$i]);
+					    if ($eleve != null) {
+						$current_eleve_absences = $eleve->getNbreDemiJourneesAbsenceParPeriode($periode_num);
+						$current_eleve_nj = $eleve->getNbreDemiJourneesNonJustifieesAbsenceParPeriode($periode_num);
+						$current_eleve_retards = $eleve->getNbreRetardsParPeriode($periode_num);
+						$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
+						$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+					    }
+					}
+					if ($current_eleve_absences === '') { $current_eleve_absences = "?"; }
+					if ($current_eleve_nj === '') { $current_eleve_nj = "?"; }
+					if ($current_eleve_retards==='') { $current_eleve_retards = "?"; }
 
 					$tab_ele['eleve_absences']=$current_eleve_absences;
 					$tab_ele['eleve_nj']=$current_eleve_nj;

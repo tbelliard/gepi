@@ -522,50 +522,33 @@ class Eleve extends BaseEleve {
 		return "";
 	}
 
-  	/**
+
+	/**
 	 *
-	 * Retourne une liste d'absence pour la période donnée
+	 * Retourne l'objet periode correspondant
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
-	 * @return PropelObjectCollection AbsenceEleveSaisie[]
+	 * @return DateTime $dt
 	 */
-	public function getAbsenceSaisiesPeriode($periode = null) {
+	public function getPeriode($periode = null) {
 	    $periode_obj = new PeriodeNote();
 	    if ($periode === null) {
 		$periode = $this->getPeriodeNoteOuverte();
 	    }
 	    if (is_numeric($periode)) {
-		    $periode_obj = PeriodeNoteQuery::create()->filterByClasse($this->getClasse($periode))->filterByNumPeriode($periode);
+		    return PeriodeNoteQuery::create()->filterByClasse($this->getClasse($periode))->filterByNumPeriode($periode)->findOne();
 	    } else if (! $periode instanceof PeriodeNote) {
 		    throw new PropelException('Argument $periode doit etre de type numerique ou une instance de PeriodeNote.');
 	    } else {
-		    $periode_obj = $periode;
+		    return $periode;
 	    }
 
-	    if ($periode_obj == null) {
-		return null;
-	    }
-	    $date_debut = $periode_obj->getDateDebut(null);
-	    if ($date_debut  == null)  {
-		return null;
-	    }
-	    
-
-	    $query =  AbsenceEleveSaisieQuery::create();
-	    $query->filterByEleve($this);
-	    $query->filterByFinAbs($date_debut, Criteria::GREATER_EQUAL);
-	    $date_fin = $periode_obj->getDateFin(null);
-	    if ($date_fin != null) {
-		$query->filterByDebutAbs($date_fin, Criteria::LESS_EQUAL);
-	    }
-
-	    return $query->find();
-	    
+	    return null;
 	}
 
-	
-  	/**
+
+	/**
 	 *
 	 * Retourne le nombre de demi journees d'absence
 	 *
@@ -650,6 +633,27 @@ class Eleve extends BaseEleve {
 	    return $demi_journees;
 
 	}
+
+ 	/**
+	 *
+	 * Retourne une liste d'absence pour la période donnée
+	 *
+	 * @param      mixed $periode numeric or PeriodeNote value.
+	 *
+	 * @return PropelObjectCollection AbsenceEleveSaisie[]
+	 */
+	public function getNbreDemiJourneesAbsenceParPeriode($periode = null) {
+	    $periode_obj = $this->getPeriode($periode);
+	    if ($periode_obj == null) {
+		return 0;
+	    }
+	    $date_debut = $periode_obj->getDateDebut(null);
+	    if ($date_debut  == null)  {
+		return 0;
+	    }
+	    return $this->getNbreDemiJourneesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
+	}
+
 
   	/**
 	 *
@@ -737,6 +741,27 @@ class Eleve extends BaseEleve {
 
 	}
 
+ 	/**
+	 *
+	 * Retourne une liste d'absence pour la période donnée
+	 *
+	 * @param      mixed $periode numeric or PeriodeNote value.
+	 *
+	 * @return PropelObjectCollection AbsenceEleveSaisie[]
+	 */
+	public function getNbreDemiJourneesNonJustifieesAbsenceParPeriode($periode = null) {
+	    $periode_obj = $this->getPeriode($periode);
+	    if ($periode_obj == null) {
+		return 0;
+	    }
+	    $date_debut = $periode_obj->getDateDebut(null);
+	    if ($date_debut  == null)  {
+		return 0;
+	    }
+	    return $this->getNbreDemiJourneesNonJustifieesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
+	}
+
+
   	/**
 	 *
 	 * Retourne le nombre de retards
@@ -814,6 +839,26 @@ class Eleve extends BaseEleve {
 
 	}
 
+ 	/**
+	 *
+	 * Retourne une liste d'absence pour la période donnée
+	 *
+	 * @param      mixed $periode numeric or PeriodeNote value.
+	 *
+	 * @return PropelObjectCollection AbsenceEleveSaisie[]
+	 */
+	public function getNbreRetardsParPeriode($periode = null) {
+	    $periode_obj = $this->getPeriode($periode);
+	    if ($periode_obj == null) {
+		return 0;
+	    }
+	    $date_debut = $periode_obj->getDateDebut(null);
+	    if ($date_debut  == null)  {
+		return 0;
+	    }
+	    return $this->getNbreRetards($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
+	}
+
 	/**
 	 *
 	 * Retourne la liste de période de notes
@@ -827,4 +872,5 @@ class Eleve extends BaseEleve {
 	    $periodeNotes->uasort(array("PeriodeNote", "comparePeriodeNote"));
 	    return $periodeNotes;
 	}
+
 } // Eleve

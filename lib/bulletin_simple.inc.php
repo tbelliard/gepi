@@ -968,19 +968,34 @@ if ($on_continue == 'yes') {
 	echo "<table width='$larg_tab' class='boireaus' cellspacing='1' cellpadding='1' summary='Absences et retards'>\n";
 	$nb=$periode1;
 	while ($nb < $periode2+1) {
-		$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
-		$eleve_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
-		$eleve_abs_nj[$nb] = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
-		$eleve_retards[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
-		$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+		//On vérifie si le module est activé
+		if (getSettingValue("active_module_absence")!='2') {
+		    $current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
+		    $eleve_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
+		    $eleve_abs_nj[$nb] = @mysql_result($current_eleve_absences_query, 0, "non_justifie");
+		    $eleve_retards[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_retards");
+		    $current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+		    $eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+		} else {
+		    // Initialisations files
+		    require_once("../lib/initialisationsPropel.inc.php");
+		    $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
+		    if ($eleve != null) {
+			$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
+			$eleve_abs[$nb] = $eleve->getNbreDemiJourneesAbsenceParPeriode($nb);
+			$eleve_abs_nj[$nb] = $eleve->getNbreDemiJourneesNonJustifieesAbsenceParPeriode($nb);
+			$eleve_retards[$nb] = $eleve->getNbreRetardsParPeriode($nb);
+			$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+			$eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
+		    }
+		}
 		if (($eleve_abs[$nb] != '') and ($eleve_abs_nj[$nb] != '')) {
 			$eleve_abs_j[$nb] = $eleve_abs[$nb]-$eleve_abs_nj[$nb];
 		} else {
 			$eleve_abs_j[$nb] = "?";
 		}
-		$eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
-		if ($eleve_abs_nj[$nb] == '') { $eleve_abs_nj[$nb] = "?"; }
-		if ($eleve_retards[$nb] == '') { $eleve_retards[$nb] = "?"; }
+		if ($eleve_abs_nj[$nb] === '') { $eleve_abs_nj[$nb] = "?"; }
+		if ($eleve_retards[$nb] === '') { $eleve_retards[$nb] = "?";}
 	
 		//====================================
 		// AJOUT: boireaus 20080317
