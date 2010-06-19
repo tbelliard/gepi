@@ -55,9 +55,9 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
-//if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
-//    die("Le module n'est pas activé.");
-//}
+if ($utilisateur->getStatut()!="cpe") {
+    die("acces interdit");
+}
 
 //récupération des paramètres de la requète
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
@@ -99,7 +99,7 @@ if (isset($message_enregistrement)) {
 echo '<table class="normal">';
 echo '<TBODY>';
 echo '<tr><TD>';
-echo 'N° de traitement : ';
+echo 'N°';
 echo '</TD><TD>';
 echo $traitement->getPrimaryKey();
 echo '</TD></tr>';
@@ -109,10 +109,16 @@ echo 'Saisies : ';
 echo '</TD><TD>';
 echo '<table>';
 $eleve_prec_id = null;
+if ($traitement->getAbsenceEleveSaisies()->isEmpty()) {
+    echo '<form method="post" action="liste_saisies_selection_traitement.php">';
+    echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+    echo '<button type="submit">Ajouter</button>';
+    echo '</form>';
+}
 foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
     //$saisie = new AbsenceEleveSaisie();
-    echo '<tr><td>';
     if ($saisie->getEleve() == null) {
+	echo '<tr><td>';
 	echo 'Aucune absence';
 	if ($saisie->getGroupe() != null) {
 	    echo ' pour le groupe ';
@@ -126,8 +132,13 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	    echo ' pour l\'aid ';
 	    echo $saisie->getClasse()->getNomComplet();
 	}
-    }
-    if ($eleve_prec_id != $saisie->getEleve()->getPrimaryKey()) {
+	echo '<tr><td>';
+    } elseif ($eleve_prec_id != $saisie->getEleve()->getPrimaryKey()) {
+	if (!$traitement->getAbsenceEleveSaisies()->isFirst()) {
+	    echo '</td></tr>';
+	}
+	echo '<tr><td>';
+	echo '<div>';
 	echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
 	if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
@@ -138,16 +149,34 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	    $valeur = redimensionne_image_petit($photos);
 	    echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
 	}
-
+	echo '<div style="float: right; margin-top:0.35em; margin-left:0.2em;">';
+	echo '<form method="post" action="liste_saisies_selection_traitement.php">';
+	echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="filter_eleve" value="'.$saisie->getEleve()->getNom().'"/>';
+	echo '<button type="submit">Ajouter</button>';
+	echo '</form>';
+	echo '</div>';
+	echo '</div>';
+	echo '<br/>';
     }
-    echo ' De : ';
-    echo (strftime("%a %d %b %Y %H:%M", $saisie->getDebutAbs('U')));
-    echo ' à : ';
-    echo (strftime("%a %d %b %Y %H:%M", $saisie->getFinAbs('U')));
-    echo '</td></tr>';
+    echo '<div>';
+    echo $saisie->getDateDescription();
+    echo '<div style="float: right;  margin-top:-0.22em; margin-left:0.2em;">';
+    echo '<form method="post" action="enregistrement_modif_traitement.php">';
+    echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+    echo '<input type="hidden" name="modif" value="enlever_saisie"/>';
+    echo '<input type="hidden" name="id_saisie" value="'.$saisie->getPrimaryKey().'"/>';
+    echo '<button type="submit">Enlever</button>';
+    echo '</form>';
+    echo '</div>';
+    echo '</div>';
+    if (!$traitement->getAbsenceEleveSaisies()->isLast()) {
+	echo '<br/>';
+    }
     $eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
 }
 echo '</table>';
+
 echo '</TD></tr>';
 
 echo '<tr><TD>';
@@ -270,9 +299,11 @@ echo '</TD></tr>';
 echo '<tr><TD>';
 echo 'Créé par : ';
 echo '</TD><TD>';
-echo $traitement->getUtilisateurProfessionnel()->getCivilite();
-echo ' ';
-echo $traitement->getUtilisateurProfessionnel()->getNom();
+if ($traitement->getUtilisateurProfessionnel() != null) {
+    echo $traitement->getUtilisateurProfessionnel()->getCivilite();
+    echo ' ';
+    echo $traitement->getUtilisateurProfessionnel()->getNom();
+}
 echo '</TD></tr>';
 
 echo '<tr><TD>';

@@ -873,7 +873,7 @@ foreach ($results as $saisie) {
     echo "</a>";
     echo '</nobr></TD>';
 
-    echo '<TD><nobr>';
+    echo '<TD>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     if ($saisie->getCreatedAt() != $saisie->getUpdatedAt()) {
 	echo (strftime("%a %d %b %Y %H:%M", $saisie->getUpdatedAt('U')));
@@ -881,7 +881,7 @@ foreach ($results as $saisie) {
 	echo "&nbsp;";
     }
     echo "</a>";
-    echo '</nobr></TD>';
+    echo '</TD>';
 
     echo '<TD>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";

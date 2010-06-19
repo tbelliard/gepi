@@ -32,12 +32,20 @@ if(($_SESSION['statut']=='cpe')||
 
     echo "<li><a href='saisie_eleve.php' ";
     if($onglet_abs=='saisie_eleve.php') {echo "class='current' ";}
-    echo "title='Saisir pour un eleve'>Saisir pour un eleve</a></li>\n";
+    echo "title='Saisir pour un eleve'>Saisir un eleve</a></li>\n";
 
     echo "<li><a href='visu_traitement.php' ";
-    if($onglet_abs=='visu_traitement.php') {echo "class='current' ";}
+    if($onglet_abs=='visu_traitement.php' || $onglet_abs=='enregistrement_modif_traitement.php') {echo "class='current' ";}
     echo "title='Traitement'>Traitement</a></li>\n";
+
+    echo "<li><a href='liste_traitements.php' ";
+    if($onglet_abs=='liste_traitements.php') {echo "class='current' ";}
+    echo "title='Traitement'>Liste des traitements</a></li>\n";
 }
+
+echo "<li><a href='visu_saisie.php' ";
+if($onglet_abs=='visu_saisie.php') {echo "class='current' ";}
+echo "title='Visualiser une saisie'>Saisie</a></li>\n";
 
 if($_SESSION['statut']=='cpe') {
     echo "<li><a href='liste_saisies_selection_traitement.php' ";
@@ -48,10 +56,6 @@ if($_SESSION['statut']=='cpe') {
     if($onglet_abs=='liste_saisies.php') {echo "class='current' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
 }
-echo "<li><a href='visu_saisie.php' ";
-if($onglet_abs=='visu_saisie.php') {echo "class='current' ";}
-echo "title='Visualiser une saisie'>Visualiser une saisie</a></li>\n";
-
 echo "</ul>\n";
 
 ?>

@@ -55,6 +55,10 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
+if ($utilisateur->getStatut()!="cpe") {
+    die("acces interdit");
+}
+
 //récupération des paramètres de la requète
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :NULL);
 $modif = isset($_POST["modif"]) ? $_POST["modif"] :(isset($_GET["modif"]) ? $_GET["modif"] :null);
@@ -81,22 +85,31 @@ if ($modif == 'type') {
     $traitement->setAbsenceEleveJustification(AbsenceEleveJustificationQuery::create()->findPk($_POST["id_justification"]));
 } elseif ($modif == 'motif') {
     $traitement->setAbsenceEleveMotif(AbsenceEleveMotifQuery::create()->findPk($_POST["id_motif"]));
+} elseif ($modif == 'enlever_saisie') {
+    $count_delete = JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($traitement)->filterByASaisieId($_POST["id_saisie"])->limit(1)->delete();
 }
-
-if ($traitement->validate()) {
-    $traitement->save();
-    $message_enregistrement .= 'Modification enregistrée';
-} else {
-    $no_br = true;
-    foreach ($traitement->getValidationFailures() as $erreurs) {
-	$message_enregistrement .= $erreurs;
-	if ($no_br) {
-	    $no_br = false;
-	} else {
-	    $message_enregistrement .= '<br/>';
-	}
+if (!$traitement->isModified()) {
+    if (isset($count_delete) && $count_delete > 0) {
+	$message_enregistrement .= 'Saisie supprimée';
+    } else {
+	$message_enregistrement .= 'Pas de modifications';
     }
-    $traitement->reload();
+} else {
+    if ($traitement->validate()) {
+	$traitement->save();
+	$message_enregistrement .= 'Modification enregistrée';
+    } else {
+	$no_br = true;
+	foreach ($traitement->getValidationFailures() as $erreurs) {
+	    $message_enregistrement .= $erreurs;
+	    if ($no_br) {
+		$no_br = false;
+	    } else {
+		$message_enregistrement .= '<br/>';
+	    }
+	}
+	$traitement->reload();
+    }
 }
 
 include("visu_traitement.php");
