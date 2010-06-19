@@ -34,8 +34,8 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='saisie_eleve.php') {echo "class='current' ";}
     echo "title='Saisir pour un eleve'>Saisir pour un eleve</a></li>\n";
 
-    echo "<li><a href='traitement.php' ";
-    if($onglet_abs=='traitement.php') {echo "class='current' ";}
+    echo "<li><a href='visu_traitement.php' ";
+    if($onglet_abs=='visu_traitement.php') {echo "class='current' ";}
     echo "title='Traitement'>Traitement</a></li>\n";
 }
 

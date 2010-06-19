@@ -72,7 +72,7 @@ if ( isset($_POST["creation_traitement"])) {
 	$message_erreur_creation_traitement = ' Erreur : aucune saisie sélectionnée';
     } else {
 	$traitement->save();
-	header("Location: ./traitement.php?id_traitement=".$traitement->getId());
+	header("Location: ./visu_traitement.php?id_traitement=".$traitement->getId());
     }
     //include '';
 }

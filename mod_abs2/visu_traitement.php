@@ -97,8 +97,6 @@ if (isset($message_enregistrement)) {
 }
 
 echo '<table class="normal">';
-echo '<form method="post" action="enregistrement_modif_traitement.php">';
-echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 echo '<TBODY>';
 echo '<tr><TD>';
 echo 'N° de traitement : ';
@@ -152,87 +150,133 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 echo '</table>';
 echo '</TD></tr>';
 
-if ($traitement->getEdtEmplacementCours() != null) {
-    echo '<tr><TD>';
-    echo 'Cours : ';
-    echo '</TD><TD>';
-    echo $traitement->getEdtEmplacementCours()->getDescription();
-    echo '</TD></tr>';
-}
-
 echo '<tr><TD>';
-echo 'Traitement : ';
+echo 'Type : ';
 echo '</TD><TD>';
-foreach ($traitement->getAbsenceEleveTraitements() as $traitement) {
-    //on affiche les traitements uniquement si ils ne sont pas modifiables, car si ils sont modifiables on va afficher un input pour pouvoir les modifier
-    if ($traitement->getUtilisateurId() != $utilisateur->getPrimaryKey() || !$modifiable) {
-	echo "<nobr>";
-	echo $traitement->getDescriptionCourte();
-	echo "</nobr><br>";
-    }
-}
-
-$total_traitements = 0;
-$type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
-foreach ($traitement->getAbsenceEleveTraitements() as $traitement) {
-    //on affiche les traitements uniquement si ils ne sont pas modifiables, car si ils sont modifiables on va afficher un input pour pouvoir les modifier
-    if ($traitement->getUtilisateurId() == $utilisateur->getPrimaryKey() && $modifiable) {
-	$total_traitements = $total_traitements + 1;
-	$type_autorises->getFirst();
-	if ($type_autorises->count() != 0) {
-		echo '<input type="hidden" name="id_traitement[';
-		echo ($total_traitements - 1);
-		echo ']" value="'.$traitement->getId().'"/>';
-		echo ("<select name=\"type_traitement[");
-		echo ($total_traitements - 1);
-		echo ("]\">");
-		echo "<option value='-1'></option>\n";
-		foreach ($type_autorises as $type) {
-		    //$type = new AbsenceEleveTypeStatutAutorise();
-			echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
-			if ($type->getAbsenceEleveType()->getId() == $traitement->getATypeId()) {
-			    echo "selected";
-			}
-			echo ">";
-			echo $type->getAbsenceEleveType()->getNom();
-			echo "</option>\n";
+//on ne modifie le type que si aucun envoi n'a ete fait
+if ($traitement->getAbsenceEleveEnvois()->isEmpty()) {
+    $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
+    if ($type_autorises->count() != 0) {
+	echo '<form method="post" action="enregistrement_modif_traitement.php">';
+	echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="modif" value="type"/>';
+	echo ("<select name=\"id_type\">");
+	echo "<option value='-1'></option>\n";
+	$type_in_list = false;
+	foreach ($type_autorises as $type) {
+	    //$type = new AbsenceEleveTypeStatutAutorise();
+		echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
+		if ($type->getAbsenceEleveType()->getId() == $traitement->getATypeId()) {
+		    echo "selected";
+		    $type_in_list = true;
 		}
-		echo "</select><br>";
+		echo ">";
+		echo $type->getAbsenceEleveType()->getNom();
+		echo "</option>\n";
 	}
-    }
-}
-echo '<input type="hidden" name="total_traitements" value="'.$total_traitements.'"/>';
-
-
-if ($modifiable && $total_traitements == 0) {
-    echo ("<select name=\"ajout_type_absence\">");
-    echo "<option value='-1'></option>\n";
-    foreach ($type_autorises as $type) {
-	//$type = new AbsenceEleveTypeStatutAutorise();
-	    echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
+	if (!$type_in_list && $traitement->getAbsenceEleveType() != null) {
+	    echo "<option value='".$traitement->getAbsenceEleveType()->getId()."'";
+	    echo "selected";
 	    echo ">";
-	    echo $type->getAbsenceEleveType()->getNom();
+	    echo $traitement->getAbsenceEleveType()->getNom();
 	    echo "</option>\n";
+	}
+	echo "</select>";
+	echo '<button type="submit">Modifier</button>';
+	echo '</form>';
     }
-    echo "</select>";
+} else {
+    if ($traitement->getAbsenceEleveType() != null) {
+	echo $traitement->getAbsenceEleveType()->getNom();
+    }
 }
-
 echo '</TD></tr>';
 
-if ($modifiable || ($traitement->getCommentaire() != null && $traitement->getCommentaire() != "")) {
-    echo '<tr><TD>';
-    echo 'Commentaire : ';
-    echo '</TD><TD>';
-    if (!$modifiable) {
-	echo ($traitement->getCommentaire());
-    } else {
-	echo '<input name="commentaire" value="'.$traitement->getCommentaire().'" type="text" maxlength="150" size="25"/>';
+echo '<tr><TD>';
+echo 'Motif : ';
+echo '</TD><TD>';
+$motifs = AbsenceEleveMotifQuery::create()->find();
+echo '<form method="post" action="enregistrement_modif_traitement.php">';
+echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+echo '<input type="hidden" name="modif" value="motif"/>';
+echo ("<select name=\"id_motif\">");
+echo "<option value='-1'></option>\n";
+foreach ($motifs as $motif) {
+    //$justification = new AbsenceEleveJustification();
+    echo "<option value='".$motif->getId()."'";
+    if ($motif->getId() == $traitement->getAMotifId()) {
+	echo "selected";
     }
-    echo '</TD></tr>';
+    echo ">";
+    echo $motif->getNom();
+    echo "</option>\n";
 }
+echo "</select>";
+echo '<button type="submit">Modifier</button>';
+echo '</form>';
+echo '</TD></tr>';
 
 echo '<tr><TD>';
-echo 'traitement le : ';
+echo 'Justification : ';
+echo '</TD><TD>';
+$justifications = AbsenceEleveJustificationQuery::create()->find();
+echo '<form method="post" action="enregistrement_modif_traitement.php">';
+echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+echo '<input type="hidden" name="modif" value="justification"/>';
+echo ("<select name=\"id_justification\">");
+echo "<option value='-1'></option>\n";
+foreach ($justifications as $justification) {
+    //$justification = new AbsenceEleveJustification();
+    echo "<option value='".$justification->getId()."'";
+    if ($justification->getId() == $traitement->getAJustificationId()) {
+	echo "selected";
+    }
+    echo ">";
+    echo $justification->getNom();
+    echo "</option>\n";
+}
+echo "</select>";
+echo '<button type="submit">Modifier</button>';
+echo '</form>';
+echo '</TD></tr>';
+
+echo '<tr><TD>';
+echo 'Commentaire : ';
+echo '</TD><TD>';
+echo '<form method="post" action="enregistrement_modif_traitement.php">';
+echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+echo '<input type="hidden" name="modif" value="commentaire"/>';
+echo '<input type="text" name="commentaire" size="30" value="'.$traitement->getCommentaire().'" />';
+echo '<button type="submit">Modifier</button>';
+echo '</form>';
+echo '</TD></tr>';
+
+echo '<tr><TD>';
+echo 'Envois : ';
+echo '</TD><TD>';
+echo '<table>';
+$eleve_prec_id = null;
+foreach ($traitement->getAbsenceEleveEnvois() as $envoi) {
+    $envoi = new AbsenceEleveEnvoi();
+    echo '<tr><td>';
+    echo (strftime("%a %d %b %Y %H:%M", $envoi->getDateEnvoi('U')));
+    echo ' '.$envoi->getCommentaire();
+    echo ' '.$envoi->getStatutEnvoi();
+    echo '</td></tr>';
+}
+echo '</table>';
+echo '</TD></tr>';
+
+echo '<tr><TD>';
+echo 'Créé par : ';
+echo '</TD><TD>';
+echo $traitement->getUtilisateurProfessionnel()->getCivilite();
+echo ' ';
+echo $traitement->getUtilisateurProfessionnel()->getNom();
+echo '</TD></tr>';
+
+echo '<tr><TD>';
+echo 'Créé le : ';
 echo '</TD><TD>';
 echo (strftime("%a %d %b %Y %H:%M", $traitement->getCreatedAt('U')));
 echo '</TD></tr>';
@@ -245,32 +289,8 @@ if ($traitement->getCreatedAt() != $traitement->getUpdatedAt()) {
     echo '</TD></tr>';
 }
 
-if ($traitement->getIdSIncidents() != null && $traitement->getIdSIncidents() != -1) {
-    echo '<tr><TD>';
-    echo 'Discipline : ';
-    echo '</TD><TD>';
-    echo "<a href='../mod_discipline/traitement_incident.php?id_incident=".
-    $traitement->getIdSIncidents()."&step=2&return_url=no_return'>Visualiser l'incident </a>";
-    echo '</TD></tr>';
-} elseif ($modifiable && $traitement->hasTypetraitementDiscipline()) {
-    echo '<tr><TD>';
-    echo 'Discipline : ';
-    echo '</TD><TD>';
-    echo "<a href='../mod_discipline/traitement_incident_abs2.php?id_absence_eleve_traitement=".
-	$traitement->getId()."&return_url=no_return'>Saisir un incident disciplinaire</a>";
-    echo '</TD></tr>';
-}
-
-echo '</TD></tr>';
-if ($modifiable) {
-    echo '<tr><TD colspan="2" style="text-align : center;">';
-    echo '<button type="submit">Enregistrer les modifications</button>';
-    echo '</TD></tr>';
-}
-
 echo '</TBODY>';
 
-echo '</form>';
 echo '</table>';
 
 //fonction redimensionne les photos petit format
