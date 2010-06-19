@@ -75,6 +75,16 @@ if ($saisie == null) {
     die();
 }
 
+if ( isset($_POST["creation_traitement"])) {
+    $traitement = new AbsenceEleveTraitement();
+    $traitement->setUtilisateurProfessionnel($utilisateur);
+    $traitement->addAbsenceEleveSaisie($saisie);
+    $traitement->save();
+    header("Location: ./visu_traitement.php?id_traitement=".$traitement->getId());
+    die();
+}
+
+
 //la saisie est-elle modifiable ?
 //Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session,
 //elle date de moins d'une heure et l'option a ete coché partie admin
@@ -186,7 +196,6 @@ if ($saisie->validate()) {
     }
     $saisie->reload();
 }
-
 
 include("visu_saisie.php");
 ?>

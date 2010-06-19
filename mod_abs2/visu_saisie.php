@@ -95,10 +95,12 @@ if ($saisie == null) {
     }
 }
 
+
 //on va mettre dans la session l'identifiant de la saisie pour faciliter la navigation par onglet
 if ($saisie != null) {
     $_SESSION['id_saisie_visu'] = $saisie->getPrimaryKey();
 }
+
 
 //la saisie est-elle modifiable ?
 //Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session,
@@ -352,6 +354,12 @@ echo '</TD></tr>';
 if ($modifiable) {
     echo '<tr><TD colspan="2" style="text-align : center;">';
     echo '<button type="submit">Enregistrer les modifications</button>';
+    echo '</TD></tr>';
+}
+
+if ($utilisateur->getStatut()=="cpe") {
+    echo '<tr><TD colspan="2" style="text-align : center;">';
+    echo '<button type="submit" name="creation_traitement" value="oui">Traiter la saisie</button>';
     echo '</TD></tr>';
 }
 
