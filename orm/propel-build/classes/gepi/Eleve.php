@@ -580,6 +580,7 @@ class Eleve extends BaseEleve {
 	    if ($date_fin != null) {
 		$query->filterByDebutAbs($date_fin, Criteria::LESS_EQUAL);
 	    }
+	    $query->orderByDebutAbs(Criteria::ASC);
 
 	    $abs_saisie_col = $query->find();
 	    //echo $abs_saisie_col->count();
@@ -588,77 +589,65 @@ class Eleve extends BaseEleve {
 		return 0;
 	    }
 	    
-	    $date_debut_iteration = clone $date_debut;
-	    $date_debut_iteration->setTime(0,0,0);
+	    $date_compteur = clone $date_debut;
+	    $date_compteur->setTime(0,0);
 	    if ($date_fin != null) {
 		$date_fin_iteration = clone $date_fin;
 	    } else {
 		$date_fin_iteration = new DateTime('now');
 	    }
-	    $date_compteur = clone $date_debut_iteration;
 
-	    $max = 0;
-	    $matinees_total = 0;
 	    $abs_saisie_col->getFirst();
-	    while ($date_compteur < $date_fin_iteration && $max < 200) {
-		//est-ce un jour de la semaine ouvert ?
-		$semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
-		$jour_semaine = $semaine_declaration[$date_compteur->format("w")];
-		$horaire = EdtHorairesEtablissementQuery::create()->filterByJourHoraireEtablissement($jour_semaine)->findOne();
-		if ($horaire == null || $horaire->getOuvertureHoraireEtablissement('H') >= 12) {
-		    //matinee fermée
-		    $date_compteur = new DateTime('@'.($date_compteur->format('U') + 86400));//86400 correspond a 24 heures
-		    $date_compteur->setTimeZone($date_debut_iteration->getTimeZone());
+	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
+	    $horaire_col = EdtHorairesEtablissementQuery::create()->find();
+	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
+	    $total = 0;
+	    
+	    foreach($abs_saisie_col as $saisie) {
+		if ($date_compteur > $date_fin_iteration) {
+		    break;
+		}
+		if ($saisie->getRetard() || $saisie->getResponsabiliteEtablissement()) {
 		    continue;
 		}
-		$date_debut_recherche = clone $date_compteur;
-		$date_debut_recherche->setTime($horaire->getOuvertureHoraireEtablissement('H'), $horaire->getOuvertureHoraireEtablissement('i'));
-		$date_fin_recherche = clone $date_compteur;
-		$date_fin_recherche->setTime(12, 0);
-		foreach($abs_saisie_col as $saisie) {
-		    if (!$saisie->getRetard() && !$saisie->getResponsabiliteEtablissement()
-			&& $saisie->getDebutAbs('U') < $date_fin_recherche->format('U') && $saisie->getFinAbs('U') > $date_debut_recherche->format('U')) {
-			$matinees_total = $matinees_total + 1;
-			break;
+		if ($date_compteur < $saisie->getDebutAbs(null)) {
+		    $date_compteur = clone $saisie->getDebutAbs(null);
+		}
+		if ($date_compteur->format('H') < 12) {
+		    $date_compteur->setTime(0, 0);
+		} else {
+		    $date_compteur->setTime(12, 30);//on calle la demi journée a 12h30
+		}
+		$max = 0;
+		while ($date_compteur < $saisie->getFinAbs(null) && $date_compteur < $date_fin_iteration && $max < 200) {
+		    //est-ce un jour de la semaine ouvert ?
+		    $jour_semaine = $semaine_declaration[$date_compteur->format("w")];
+		    $horaire = null;
+		    if (isset($horaire_tab[$jour_semaine])) {
+			$horaire = $horaire_tab[$jour_semaine];
 		    }
-		}
-		$date_compteur = new DateTime('@'.($date_compteur->format('U') + 86400));//86400 correspond a 24 heures
-		$date_compteur->setTimeZone($date_debut_iteration->getTimeZone());
-		$max = $max + 1;
-	    }
-
-	    $max = 0;
-	    $apres_midi_total = 0;
-	    $abs_saisie_col->getFirst();
-	    $date_compteur = clone $date_debut_iteration;
-	    while ($date_compteur < $date_fin_iteration && $max < 200) {
-		//est-ce un jour de la semaine ouvert ?
-		$semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
-		$jour_semaine = $semaine_declaration[$date_compteur->format("w")];
-		$horaire = EdtHorairesEtablissementQuery::create()->filterByJourHoraireEtablissement($jour_semaine)->findOne();
-		if ($horaire == null || $horaire->getFermetureHoraireEtablissement('H') <= 12) {
-		    //a-m fermée
-		    $date_compteur = new DateTime('@'.($date_compteur->format('U') + 86400));//86400 correspond a 24 heures
-		    $date_compteur->setTimeZone($date_debut_iteration->getTimeZone());
-		    continue;
-		}
-		$date_debut_recherche = clone $date_compteur;
-		$date_debut_recherche->setTime(12, 0);
-		$date_fin_recherche = clone $date_compteur;
-		$date_fin_recherche->setTime($horaire->getFermetureHoraireEtablissement('H'), $horaire->getFermetureHoraireEtablissement('i'));
-		foreach($abs_saisie_col as $saisie) {
-		    if (!$saisie->getRetard() && !$saisie->getResponsabiliteEtablissement()
-			&& $saisie->getDebutAbs('U') < $date_fin_recherche->format('U') && $saisie->getFinAbs('U') > $date_debut_recherche->format('U')) {
-			$apres_midi_total = $apres_midi_total + 1;
-			break;
+		    if ($horaire == null || $date_compteur->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')) {
+			//fermé
+			$date_compteur = new DateTime('@'.($date_compteur->format('U') + 43200));//86400 correspond a 24 heures
+			$date_compteur->setTimeZone($date_debut->getTimeZone());
+			continue;
 		    }
-		}
-		$date_compteur = new DateTime('@'.($date_compteur->format('U') + 86400));//86400 correspond a 24 heures
-		$date_compteur->setTimeZone($date_debut_iteration->getTimeZone());
-		$max = $max + 1;
-	    }
 
-	    return $matinees_total + $apres_midi_total;
+		    //ouvert
+		    $date_compteur_suivante = new DateTime('@'.($date_compteur->format('U') + 43200));//86400 correspond a 24 heures
+		    $date_compteur_suivante->setTimeZone($date_compteur->getTimeZone());
+		    if ($date_compteur_suivante->format('H') < 12) {
+			$date_compteur_suivante->setTime(0, 0);
+		    } else {
+			$date_compteur_suivante->setTime(12, 30);
+		    }
+		    if ($saisie->getDebutAbs('U') < $date_compteur_suivante->format('U') && $saisie->getFinAbs('U') > $date_compteur->format('U')) {
+			$total = $total + 1;
+		    }
+		    $date_compteur = $date_compteur_suivante;
+		}
+	    }
+	    return $total;
 
 	}
 
