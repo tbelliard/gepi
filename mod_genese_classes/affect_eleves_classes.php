@@ -1313,11 +1313,13 @@ $_POST['projet']=	4eme_vers_3eme
 	}
 
 	for(i=0;i<$cpt;i++) {
-		profil=document.getElementById('profil_'+i).value;
+		if(document.getElementById('profil_'+i)) {
+			profil=document.getElementById('profil_'+i).value;
 
-		for(m=0;m<couleur_profil.length;m++) {
-			if(document.getElementById('profil_'+cpt).value==tab_profil[m]) {
-				document.getElementById('div_profil_'+cpt).style.color=couleur_profil[m];
+			for(m=0;m<couleur_profil.length;m++) {
+				if(document.getElementById('profil_'+i).value==tab_profil[m]) {
+					document.getElementById('div_profil_'+i).style.color=couleur_profil[m];
+				}
 			}
 		}
 	}
