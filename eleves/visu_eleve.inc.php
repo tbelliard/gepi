@@ -1975,16 +1975,22 @@ Patientez pendant l'extraction des données... merci.
 				    //$periode_note = new PeriodeNote();
 				    $alt=$alt*(-1);
 				    echo "<tr class='lig$alt'>\n";
-				    echo "<td>".$periode_note->getNomPeriode()."</td>\n";
+				    echo "<td>".$periode_note->getNomPeriode();
+				    echo " du ".$periode_note->getDateDebut('d/m/Y');
+				    echo " au ";
+				    if ($periode_note->getDateFin() == null) {
+					$now = new DateTime('now');
+					echo $now->format('d/m/Y');
+				    } else {
+					echo $periode_note->getDateFin('d/m/Y');
+				    }
+				    echo "</td>\n";
 				    echo "<td>";
 				    $logger = new StackLogger();
 				    Propel::setLogger($logger);
-				    $absenceSaisies = $eleve->getAbsenceSaisiesPeriode($periode_note);
-				    if ($absenceSaisies != null) {
-					echo $absenceSaisies->count();
-				    }
+				    echo $eleve->getNbreDemiJourneeAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null));
 				    echo "</td>\n";
-				    echo "<td>".($logger->getDisplay())."</td>\n";
+				    echo "<td>"."</td>\n";
 				    echo "<td>"."</td>\n";
 				    echo "<td>"."</td>\n";
 				    echo "</tr>\n";

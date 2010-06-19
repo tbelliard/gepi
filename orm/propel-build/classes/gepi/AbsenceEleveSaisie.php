@@ -89,5 +89,36 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    return $message;
 	}
 
+	/**
+	 *
+	 * Renvoi true ou false en fonction de la saisie
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getRetard() {
+	    //est considéré retard toute absence inferieure a 30 min
+	    //todo rendre ceci configurable
+	    return (($this->getFinAbs('U') - $this->getDebutAbs('U')) < 60*30);
+	}
+
+	/**
+	 *
+	 * Renvoi true ou false si l'eleve etait sous la responsabilite de l'etablissement (infirmerie ou autre)
+	 * si aucun traitement on renvoi faux par defaut
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getResponsabiliteEtablissement() {
+	    $traitements = $this->getAbsenceEleveTraitements();
+	    foreach ($traitements as $traitement) {
+		if ($traitement->getAbsenceEleveType() != null &&
+		    $traitement->getAbsenceEleveType()->getResponsabiliteEtablissement()) {
+		    return true;
+		}
+	    }
+	    return false;
+	}
 
 } // AbsenceEleveSaisie
