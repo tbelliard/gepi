@@ -701,7 +701,7 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 
 				if($coche_possible=='y') {
 					echo "<input type='radio' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$classe_fut[$i]' ";
-					if($fut_classe==strtoupper($classe_fut[$i])) {echo "checked ";}
+					if(strtoupper($fut_classe)==strtoupper($classe_fut[$i])) {echo "checked ";}
 					//alert('bip');
 					echo "onchange=\"calcule_effectif('classe_fut',".count($classe_fut).");colorise_ligne('classe_fut',$cpt,$i);changement();\" ";
 					//echo "title=\"$lig->login/$classe_fut[$i]\" ";
