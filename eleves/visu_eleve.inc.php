@@ -1988,10 +1988,14 @@ Patientez pendant l'extraction des données... merci.
 				    echo "<td>";
 				    $logger = new StackLogger();
 				    Propel::setLogger($logger);
-				    echo $eleve->getNbreDemiJourneeAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null));
+				    echo $eleve->getNbreDemiJourneesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null));
 				    echo "</td>\n";
-				    echo "<td>"."</td>\n";
-				    echo "<td>"."</td>\n";
+				    echo "<td>";
+				    echo $eleve->getNbreDemiJourneesNonJustifieesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null));
+				    echo "</td>\n";
+				    echo "<td>";
+				    echo $eleve->getNbreRetards($periode_note->getDateDebut(null), $periode_note->getDateFin(null));
+				    echo "</td>\n";
 				    echo "<td>"."</td>\n";
 				    echo "</tr>\n";
 			    }

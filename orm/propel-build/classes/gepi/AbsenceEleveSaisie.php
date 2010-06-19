@@ -121,4 +121,20 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    return false;
 	}
 
+	/**
+	 *
+	 * Renvoi true ou false en fonction des justifications apporte
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getJustifiee() {
+	    foreach($this->getAbsenceEleveTraitements() as $traitement) {
+		$traitement = new AbsenceEleveTraitement();
+		if ($traitement->getAbsenceEleveJustification() != null) {
+		    return true;
+		}
+	    }
+	    return false;
+	}
 } // AbsenceEleveSaisie

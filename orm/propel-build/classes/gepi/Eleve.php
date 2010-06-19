@@ -567,13 +567,13 @@ class Eleve extends BaseEleve {
 	
   	/**
 	 *
-	 * Retourne le nombre de 1/2 journées d'absence
+	 * Retourne le nombre de demi journees d'absence
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
 	 * @return int $nombre_absence
 	 */
-	public function getNbreDemiJourneeAbsence($date_debut, $date_fin = null) {
+	public function getNbreDemiJourneesAbsence($date_debut, $date_fin = null) {
 	    $query =  AbsenceEleveSaisieQuery::create();
 	    $query->filterByEleve($this);
 	    $query->filterByFinAbs($date_debut, Criteria::GREATER_EQUAL);
@@ -601,7 +601,7 @@ class Eleve extends BaseEleve {
 	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 	    $horaire_col = EdtHorairesEtablissementQuery::create()->find();
 	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
-	    $total = 0;
+	    $demi_journees = 0;
 	    
 	    foreach($abs_saisie_col as $saisie) {
 		if ($date_compteur > $date_fin_iteration) {
@@ -642,16 +642,179 @@ class Eleve extends BaseEleve {
 			$date_compteur_suivante->setTime(12, 30);
 		    }
 		    if ($saisie->getDebutAbs('U') < $date_compteur_suivante->format('U') && $saisie->getFinAbs('U') > $date_compteur->format('U')) {
-			$total = $total + 1;
+			$demi_journees = $demi_journees + 1;
 		    }
 		    $date_compteur = $date_compteur_suivante;
 		}
 	    }
-	    return $total;
+	    return $demi_journees;
 
 	}
 
   	/**
+	 *
+	 * Retourne le nombre de demi journees d'absence non justifiees
+	 *
+	 * @param      mixed $periode numeric or PeriodeNote value.
+	 *
+	 * @return int $nombre_absence
+	 */
+	public function getNbreDemiJourneesNonJustifieesAbsence($date_debut, $date_fin = null) {
+	    $query =  AbsenceEleveSaisieQuery::create();
+	    $query->filterByEleve($this);
+	    $query->filterByFinAbs($date_debut, Criteria::GREATER_EQUAL);
+	    if ($date_fin != null) {
+		$query->filterByDebutAbs($date_fin, Criteria::LESS_EQUAL);
+	    }
+	    $query->orderByDebutAbs(Criteria::ASC);
+
+	    $abs_saisie_col = $query->find();
+	    //echo $abs_saisie_col->count();
+
+	    if ($abs_saisie_col->isEmpty()) {
+		return 0;
+	    }
+
+	    $date_compteur = clone $date_debut;
+	    $date_compteur->setTime(0,0);
+	    if ($date_fin != null) {
+		$date_fin_iteration = clone $date_fin;
+	    } else {
+		$date_fin_iteration = new DateTime('now');
+	    }
+
+	    $abs_saisie_col->getFirst();
+	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
+	    $horaire_col = EdtHorairesEtablissementQuery::create()->find();
+	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
+	    $demi_journees = 0;
+
+	    foreach($abs_saisie_col as $saisie) {
+		if ($date_compteur > $date_fin_iteration) {
+		    break;
+		}
+		if ($saisie->getRetard() || $saisie->getResponsabiliteEtablissement() || $saisie->getJustifiee()) {
+		    continue;
+		}
+		if ($date_compteur < $saisie->getDebutAbs(null)) {
+		    $date_compteur = clone $saisie->getDebutAbs(null);
+		}
+		if ($date_compteur->format('H') < 12) {
+		    $date_compteur->setTime(0, 0);
+		} else {
+		    $date_compteur->setTime(12, 30);//on calle la demi journée a 12h30
+		}
+		$max = 0;
+		while ($date_compteur < $saisie->getFinAbs(null) && $date_compteur < $date_fin_iteration && $max < 200) {
+		    //est-ce un jour de la semaine ouvert ?
+		    $jour_semaine = $semaine_declaration[$date_compteur->format("w")];
+		    $horaire = null;
+		    if (isset($horaire_tab[$jour_semaine])) {
+			$horaire = $horaire_tab[$jour_semaine];
+		    }
+		    if ($horaire == null || $date_compteur->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')) {
+			//fermé
+			$date_compteur = new DateTime('@'.($date_compteur->format('U') + 43200));//86400 correspond a 24 heures
+			$date_compteur->setTimeZone($date_debut->getTimeZone());
+			continue;
+		    }
+
+		    //ouvert
+		    $date_compteur_suivante = new DateTime('@'.($date_compteur->format('U') + 43200));//86400 correspond a 24 heures
+		    $date_compteur_suivante->setTimeZone($date_compteur->getTimeZone());
+		    if ($date_compteur_suivante->format('H') < 12) {
+			$date_compteur_suivante->setTime(0, 0);
+		    } else {
+			$date_compteur_suivante->setTime(12, 30);
+		    }
+		    if ($saisie->getDebutAbs('U') < $date_compteur_suivante->format('U') && $saisie->getFinAbs('U') > $date_compteur->format('U')) {
+			$demi_journees = $demi_journees + 1;
+		    }
+		    $date_compteur = $date_compteur_suivante;
+		}
+	    }
+	    return $demi_journees;
+
+	}
+
+  	/**
+	 *
+	 * Retourne le nombre de retards
+	 *
+	 * @param      mixed $periode numeric or PeriodeNote value.
+	 *
+	 * @return int $nombre_absence
+	 */
+	public function getNbreRetards($date_debut, $date_fin = null) {
+	    $query =  AbsenceEleveSaisieQuery::create();
+	    $query->filterByEleve($this);
+	    $query->filterByFinAbs($date_debut, Criteria::GREATER_EQUAL);
+	    if ($date_fin != null) {
+		$query->filterByDebutAbs($date_fin, Criteria::LESS_EQUAL);
+	    }
+	    $query->orderByDebutAbs(Criteria::ASC);
+
+	    $abs_saisie_col = $query->find();
+	    //echo $abs_saisie_col->count();
+
+	    if ($abs_saisie_col->isEmpty()) {
+		return 0;
+	    }
+
+	    $date_compteur = clone $date_debut;
+	    $date_compteur->setTime(0,0);
+	    if ($date_fin != null) {
+		$date_fin_iteration = clone $date_fin;
+	    } else {
+		$date_fin_iteration = new DateTime('now');
+	    }
+
+	    $abs_saisie_col->getFirst();
+	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
+	    $horaire_col = EdtHorairesEtablissementQuery::create()->find();
+	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
+	    $retard = 0;
+
+	    foreach($abs_saisie_col as $saisie) {
+		if ($date_compteur > $date_fin_iteration) {
+		    break;
+		}
+		if (!$saisie->getRetard() || $saisie->getResponsabiliteEtablissement()) {
+		    continue;
+		}
+		if ($date_compteur < $saisie->getDebutAbs(null)) {
+		    $date_compteur = clone $saisie->getDebutAbs(null);
+		}
+		$max = 0;
+		while ($date_compteur < $saisie->getFinAbs(null) && $date_compteur < $date_fin_iteration && $max < 200) {
+		    //est-ce un jour de la semaine ouvert ?
+		    $jour_semaine = $semaine_declaration[$date_compteur->format("w")];
+		    $horaire = null;
+		    if (isset($horaire_tab[$jour_semaine])) {
+			$horaire = $horaire_tab[$jour_semaine];
+		    }
+		    if ($horaire == null || $date_compteur->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')) {
+			//fermé
+			$date_compteur = new DateTime('@'.($date_compteur->format('U') + 3000));//3000 : 50 minutes
+			$date_compteur->setTimeZone($date_debut->getTimeZone());
+			continue;
+		    }
+
+		    //ouvert
+		    $date_compteur_suivante = new DateTime('@'.($date_compteur->format('U') + 3000));//3000 : 50 minutes
+		    $date_compteur_suivante->setTimeZone($date_compteur->getTimeZone());
+
+		    if ($saisie->getDebutAbs('U') < $date_compteur_suivante->format('U') && $saisie->getFinAbs('U') > $date_compteur->format('U')) {
+			$retard = $retard + 1;
+		    }
+		    $date_compteur = $date_compteur_suivante;
+		}
+	    }
+	    return $retard;
+
+	}
+
+	/**
 	 *
 	 * Retourne la liste de période de notes
 	 *
