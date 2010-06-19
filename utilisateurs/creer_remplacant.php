@@ -58,6 +58,7 @@ $form_email= isset($_POST["form_email"]) ? $_POST["form_email"] : (isset($_GET["
 $afficher_inactifs=isset($_POST["afficher_inactifs"]) ? $_POST["afficher_inactifs"] : (isset($_GET["afficher_inactifs"]) ? $_GET["afficher_inactifs"] : "n");
 $utiliser_compte_existant=isset($_POST["utiliser_compte_existant"]) ? $_POST["utiliser_compte_existant"] : "n";
 $compte_existant=isset($_POST["compte_existant"]) ? $_POST["compte_existant"] : "";
+$id_groupe=isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : "";
 
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
     // Cas LCS : on teste s'il s'agit d'un utilisateur local ou non
@@ -98,6 +99,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				if(!$insertion) {$temoin_erreur_affect_compte_existant="y";}
 			}
 
+			/*
 			// On recheche les groupes du prof remplacé qui ne sont pas déjà associés au remplaçant
 			//$sql_groupes = "select * from j_groupes_professeurs where login='$login_prof_remplace'";
 			$sql_groupes = "select * from j_groupes_professeurs where login='$login_prof_remplace' AND id_groupe NOT IN (SELECT id_groupe FROM j_groupes_professeurs WHERE login='$compte_existant');";
@@ -116,6 +118,22 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				//echo "<br>".$sql_groupes;
 				$insertion = mysql_query($sql_groupes);
 				if(!$insertion) {$temoin_erreur_affect_compte_existant="y";}
+			}
+			*/
+			for($i=0;$i<count($id_groupe);$i++) {
+				$sql="SELECT 1=1 FROM j_groupes_professeurs WHERE id_groupe='$id_groupe[$i]' AND login='$compte_existant';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)==0) {
+					$sql="select * from j_groupes_professeurs where login='$login_prof_remplace';";
+					$res=mysql_query($sql);
+					if(mysql_num_rows($res)>0) {
+						$lig=mysql_fetch_object($res);
+						$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupe[$i]', login='$compte_existant', ordre_prof='$lig->ordre_prof';";
+						//echo "<br>".$sql_groupes;
+						$insertion = mysql_query($sql_groupes);
+						if(!$insertion) {$temoin_erreur_affect_compte_existant="y";}
+					}
+				}
 			}
 		}
 	}
@@ -345,40 +363,53 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 						$nombre_matieres = mysql_num_rows($result_matieres);
 	
 						for ($i=0;$i<$nombre_matieres;$i++) {
-						$id_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'id_matiere');
-						$ordre_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'ordre_matieres');
-						//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
+							$id_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'id_matiere');
+							$ordre_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'ordre_matieres');
+							//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
 						}
 	
 						//on affecte les matières au prof remplaçant
 						for ($i=0;$i<sizeof($id_matiere_prof_remplace);$i++) {
-						$sql_matieres = "insert into j_professeurs_matieres set id_matiere='$id_matiere_prof_remplace[$i]', id_professeur='$login_prof', ordre_matieres='$ordre_matiere_prof_remplace[$i]'";
-						//echo "<br>".$sql_matieres;
-						$insertion = mysql_query($sql_matieres);
+							$sql_matieres = "insert into j_professeurs_matieres set id_matiere='$id_matiere_prof_remplace[$i]', id_professeur='$login_prof', ordre_matieres='$ordre_matiere_prof_remplace[$i]'";
+							//echo "<br>".$sql_matieres;
+							$insertion = mysql_query($sql_matieres);
 						}
-						//on recheche les groupes du prof remplacé
-	
+
+						/*
+						// On recheche les groupes du prof remplacé
 						$sql_groupes = "select * from j_groupes_professeurs where login='$login_prof_remplace'";
 	
 						$result_groupes = mysql_query($sql_groupes);
 						$nombre_groupes = mysql_num_rows($result_groupes);
 	
 						for ($i=0;$i<$nombre_groupes;$i++) {
-						$id_groupes_prof_remplace[$i] = mysql_result($result_groupes,$i,'id_groupe');
-						$ordre_groupes_prof_remplace[$i] = mysql_result($result_groupes,$i,'ordre_prof');
-						//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
+							$id_groupes_prof_remplace[$i] = mysql_result($result_groupes,$i,'id_groupe');
+							$ordre_groupes_prof_remplace[$i] = mysql_result($result_groupes,$i,'ordre_prof');
+							//echo "<br>".$id_matiere_prof_remplace[$i]." ".$ordre_matiere_prof_remplace[$i]."<br>";
 						}
 	
-						//on affecte les groupes au prof remplaçant
+						// On affecte les groupes au prof remplaçant
 						for ($i=0;$i<sizeof($id_groupes_prof_remplace);$i++) {
-						$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupes_prof_remplace[$i]', login='$login_prof', ordre_prof='$ordre_groupes_prof_remplace[$i]'";
-						//echo "<br>".$sql_groupes;
-						$insertion = mysql_query($sql_groupes);
+							$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupes_prof_remplace[$i]', login='$login_prof', ordre_prof='$ordre_groupes_prof_remplace[$i]'";
+							//echo "<br>".$sql_groupes;
+							$insertion = mysql_query($sql_groupes);
+						}
+						*/
+
+						for($i=0;$i<count($id_groupe);$i++) {
+							$sql="select * from j_groupes_professeurs where login='$login_prof_remplace';";
+							$res=mysql_query($sql);
+							if(mysql_num_rows($res)>0) {
+								$lig=mysql_fetch_object($res);
+								$sql_groupes = "insert into j_groupes_professeurs set id_groupe='$id_groupe[$i]', login='$login_prof', ordre_prof='$lig->ordre_prof';";
+								//echo "<br>".$sql_groupes;
+								$insertion = mysql_query($sql_groupes);
+							}
 						}
 	
-	
-					} else {
-					$msg="La personne existe déjà dans la base (même nom et même prénom)";
+					}
+					else {
+						$msg="La personne existe déjà dans la base (même nom et même prénom)";
 					}
 				}
 	//
@@ -397,11 +428,32 @@ $titre_page = "Gestion des utilisateurs | Créer un remplaçant";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>
+<p class='bold'>
 <a href="index.php?mode=personnels"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 
 <?php
+	/*
+	//$sql_groupes = "select DISTINCT g.*, c.classe from j_groupes_professeurs jgp, g.id, j_groupes_classes jgc, classes c where jgp.login='$login_prof_remplace' AND jgp.id_groupe=g.id AND g.id=jgc.id_groupe AND jgc.id_classe=c.id;";
+	$sql_groupes = "select DISTINCT g.* from j_groupes_professeurs jgp, g.id, j_groupes_classes jgc WHERE jgp.login='$login_prof_remplace' AND jgp.id_groupe=g.id AND g.id=jgc.id_groupe;";
+	$result_groupes = mysql_query($sql_groupes);
+	$nombre_groupes = mysql_num_rows($result_groupes);
+	if($nombre_groupes==0) {
+		echo "<p style='color:red'>Le professeur '$login_prof_remplace' n'a aucun enseignement.<br />Le remplacement ne se justifie pas.</p>\n";
+		require("../lib/footer.inc.php");
+	}
+	else {
+		while($lig=mysql_fetch_object($result_groupes)) {
+
+		}
+	}
+	*/
+	$groups=get_groups_for_prof($login_prof_remplace);
+	if(count($groups)==0) {
+		echo "<p style='color:red'>Le professeur '$login_prof_remplace' n'a aucun enseignement.<br />Le remplacement ne se justifie pas.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
 
 //affichage du formulaire
 if ($valid!='yes') {
@@ -451,20 +503,30 @@ if ($valid!='yes') {
 	echo "<br />\n";
 
 	echo "<input type=hidden name=valid value=\"yes\" />\n";
-	 if (isset($user_login)) echo "<input type=hidden name=user_login value=\"".$user_login."\" />\n";
+	if (isset($user_login)) echo "<input type=hidden name=user_login value=\"".$user_login."\" />\n";
+
+	echo "<p>Liste des enseignements remplacés&nbsp;:<br />";
+	$cpt=0;
+	foreach($groups as $current_group) {
+		echo "<input type='checkbox' name='id_groupe[]' id='id_groupe_$cpt' value='".$current_group['id']."' checked /><label for='id_groupe_$cpt'>".$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']."</label><br />\n";
+		$cpt++;
+	}
+	echo "</p>\n";
+
 	echo "<center><input type=submit value=\"Créer le remplaçant\" /></center>\n";
 	echo "<!--/span-->\n";
 	echo "</div>\n";
 	echo "</fieldset>\n";
 	echo "</form>\n";
 
+	//============================================================================
 	echo "<br />\n";
 
 	echo "<p class='bold'>Ou sélectionnez un utilisateur existant&nbsp:</p>\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"creer_remplacant.php?login_prof_remplace=".$login_prof_remplace."\" method=post>";
 	echo "<fieldset>\n";
 	echo "<div class = \"norme\">\n";
-	echo "<select name='compte_existant'>\n";
+	echo "Compte existant&nbsp;: <select name='compte_existant'>\n";
 	$sql="SELECT * FROM utilisateurs WHERE (statut='professeur'";
 	if($afficher_inactifs!="y") {$sql.=" AND etat='actif'";}
 	$sql.=") ORDER BY nom,prenom;";
@@ -484,6 +546,13 @@ if ($valid!='yes') {
 	echo "</select>\n";
 	echo "<br />\n";
 
+	echo "<p>Liste des enseignements remplacés&nbsp;:<br />";
+	$cpt=0;
+	foreach($groups as $current_group) {
+		echo "<input type='checkbox' name='id_groupe[]' id='id_groupe2_$cpt' value='".$current_group['id']."' checked /><label for='id_groupe2_$cpt'>".$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']."</label><br />\n";
+		$cpt++;
+	}
+	echo "</p>\n";
 	echo "<input type='hidden' name='valid' value=\"yes\" />\n";
 	echo "<input type='hidden' name='utiliser_compte_existant' value=\"y\" />\n";
 	//if (isset($user_login)) {echo "<input type=hidden name=user_login value=\"".$user_login."\" />\n";}
