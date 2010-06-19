@@ -290,10 +290,10 @@ foreach($eleve_col as $eleve) {
 			echo '<a href="./saisie_eleve.php?type_selection=id_eleve&id_eleve='.$eleve->getPrimaryKey().'">';
 			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).'&nbsp;('.$eleve->getCivilite().')</span>';
 			echo '</a>';
-					    //le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies.php
-					    if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
-						echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
-					    }
+			//echo "on est la aussi";//le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies.php
+			if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
+			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
+			}
 			echo("</td>");
 
 			

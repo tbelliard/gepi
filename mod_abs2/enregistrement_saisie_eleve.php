@@ -225,7 +225,6 @@ for($i=0; $i<$total_eleves; $i++) {
     }
 
     foreach ($saisie_col_modele as $saisie_modele) {
-	$message_erreur_eleve[$id_eleve] = "";
 
 	$saisie = clone $saisie_modele;
 	$saisie->setEleveId($_POST['id_eleve_absent'][$i]);
@@ -241,7 +240,8 @@ for($i=0; $i<$total_eleves; $i++) {
 	    }
 	}
 
-	if ($saisie->save()) {
+	if ($saisie->validate()) {
+	    $saisie->save();
 	    if (isset($traitement)) {
 		$traitement->save();
 	    }
@@ -252,7 +252,16 @@ for($i=0; $i<$total_eleves; $i++) {
 	    }
 	    $message_enregistrement .= "<br/>";
 	} else {
-	    $message_erreur_eleve[$id_eleve] .= $saisie->getValidationFailures();
+	    $message_erreur_eleve[$id_eleve] = '';
+	    foreach ($saisie->getValidationFailures() as $erreurs) {
+		$message_erreur_eleve[$id_eleve] .= $erreurs;
+		$no_br = true;
+		if ($no_br) {
+		    $no_br = false;
+		} else {
+		    $message_erreur_eleve[$id_eleve] .= '<br/>';
+		}
+	    }
 	}
     }
 }

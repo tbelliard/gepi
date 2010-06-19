@@ -249,7 +249,8 @@ for($i=0; $i<$total_eleves; $i++) {
 	}
     }
 
-    if ($saisie->save()) {
+    if ($saisie->validate()) {
+	$saisie->save();
 	if (isset($traitement)) {
 	    $traitement->save();
 	}
@@ -260,7 +261,15 @@ for($i=0; $i<$total_eleves; $i++) {
 	}
 	$message_enregistrement .= "<br/>";
     } else {
-	$message_erreur_eleve[$id_eleve] .= $saisie->getValidationFailures();
+	$no_br = true;
+	foreach ($saisie->getValidationFailures() as $erreurs) {
+	    $message_erreur_eleve[$id_eleve] .= $erreurs;
+	    if ($no_br) {
+		$no_br = false;
+	    } else {
+		$message_enregistrement .= '<br/>';
+	    }
+	}
     }
 }
 
@@ -286,10 +295,19 @@ if (!isset($saisie) || $saisie == null) {
 	$saisie->setFinAbs($date_fin);
 	
 
-	if ($saisie->save()) {
+	if ($saisie->validate()) {
+	    $saisie->save();
 	    $message_enregistrement .= "Saisie enregistrée.<br/>";
 	} else {
-	    $message_enregistrement .= $saisie->getValidationFailures();
+	    $no_br = true;
+	    foreach ($saisie->getValidationFailures() as $erreurs) {
+		$message_enregistrement .= $erreurs;
+		if ($no_br) {
+		    $no_br = false;
+		} else {
+		    $message_enregistrement .= '<br/>';
+		}
+	    }
 	}
     }
 }

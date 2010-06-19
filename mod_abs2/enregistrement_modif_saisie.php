@@ -171,10 +171,19 @@ if ($ajout_type_absence != null && $ajout_type_absence != -1) {
     }
 }
 
-if ($saisie->save()) {
+if ($saisie->validate()) {
+    $saisie->save();
     $message_enregistrement .= 'Modification enregistrée';
 } else {
-    $message_enregistrement .= $saisie->getValidationFailures();
+    $no_br = true;
+    foreach ($saisie->getValidationFailures() as $erreurs) {
+	$message_enregistrement .= $erreurs;
+	if ($no_br) {
+	    $no_br = false;
+	} else {
+	    $message_enregistrement .= '<br/>';
+	}
+    }
     $saisie->reload();
 }
 
