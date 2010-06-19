@@ -858,27 +858,29 @@ echo "<div id='div_test_aff_classe2' class='infobulle_corps' style='position:abs
 	}
 
 	for(i=0;i<$cpt;i++) {
-		profil=document.getElementById('profil_'+i).value;
-		/*
-		if(profil=='GC') {
-			document.getElementById('div_profil_'+i).style.color='red';
-		}
-		if(profil=='C') {
-			document.getElementById('div_profil_'+i).style.color='orange';
-		}
-		if(profil=='RAS') {
-			document.getElementById('div_profil_'+i).style.color='gray';
-		}
-		if(profil=='B') {
-			document.getElementById('div_profil_'+i).style.color='green';
-		}
-		if(profil=='TB') {
-			document.getElementById('div_profil_'+i).style.color='blue';
-		}
-		*/
-		for(m=0;m<couleur_profil.length;m++) {
-			if(document.getElementById('profil_'+i).value==tab_profil[m]) {
-				document.getElementById('div_profil_'+i).style.color=couleur_profil[m];
+		if(document.getElementById('profil_'+i)) {
+			profil=document.getElementById('profil_'+i).value;
+			/*
+			if(profil=='GC') {
+				document.getElementById('div_profil_'+i).style.color='red';
+			}
+			if(profil=='C') {
+				document.getElementById('div_profil_'+i).style.color='orange';
+			}
+			if(profil=='RAS') {
+				document.getElementById('div_profil_'+i).style.color='gray';
+			}
+			if(profil=='B') {
+				document.getElementById('div_profil_'+i).style.color='green';
+			}
+			if(profil=='TB') {
+				document.getElementById('div_profil_'+i).style.color='blue';
+			}
+			*/
+			for(m=0;m<couleur_profil.length;m++) {
+				if(document.getElementById('profil_'+i).value==tab_profil[m]) {
+					document.getElementById('div_profil_'+i).style.color=couleur_profil[m];
+				}
 			}
 		}
 	}
