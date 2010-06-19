@@ -16,8 +16,33 @@
 class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
     
-	public function preSave(PropelPDO $con = null) {
-	    return $this->validate();
+	/**
+	 *
+	 * Renvoi une description intelligible du traitement
+	 *
+	 * @return     String description
+	 *
+	 */
+	public function getDescription() {
+	    $desc = '';
+	    if ($this->getEleve() != null) {
+		$desc .= $this->getEleve()->getCivilite().' '.$this->getEleve()->getNom().' '.$this->getEleve()->getPrenom();
+	    }
+	    $desc .= ' '.$this->getDateDescription();
+	    $desc .= ' ';
+	    if ($this->getClasse() != null) {
+		$desc .= "; classe : ".$this->getClasse()->getNomComplet();
+	    }
+	    if ($this->getGroupe() != null) {
+		$desc .= "; groupe : ".$this->getGroupe()->getName();
+	    }
+	    if ($this->getAidDetails() != null) {
+		$desc .= "; aid : ".$this->getAidDetails()->getNom();
+	    }
+	    if ($this->getCommentaire() != null && $this->getCommentaire() != '') {
+		$desc .= "; ".$this->getCommentaire();
+	    }
+	    return $desc;
 	}
 
 	/**
@@ -37,4 +62,32 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    }
 	    return false;
 	}
+
+	/**
+	 *
+	 * Renvoi une chaine de caractere compréhensible concernant les dates de debut et de fin
+	 *
+	 * @return     string
+	 *
+	 */
+	public function getDateDescription() {
+	    $message = '';
+	    if ($this->getDebutAbs('d/m/Y') == $this->getFinAbs('d/m/Y')) {
+		$message .= 'Le ';
+		$message .= (strftime("%a %d %b", $this->getDebutAbs('U')));
+		$message .= ' de ';
+		$message .= $this->getDebutAbs('H:i');
+		$message .= ' à ';
+		$message .= $this->getFinAbs('H:i');
+
+	    } else {
+		$message .= 'De ';
+		$message .= (strftime("%a %d %b %H:%M", $this->getDebutAbs('U')));
+		$message .= ' à ';
+		$message .= (strftime("%a %d %b %H:%M", $this->getFinAbs('U')));
+	    }
+	    return $message;
+	}
+
+
 } // AbsenceEleveSaisie

@@ -15,4 +15,16 @@
  */
 class JEleveClasse extends BaseJEleveClasse {
 
+      	/**
+	 *
+	 * Retourne la periode de note associée
+	 *
+	 *
+	 * @return PeriodeNote $periode_note
+	 */
+	public function getPeriodeNote() {
+	    return PeriodeNoteQuery::create()->filterByIdClasse($this->getIdClasse())->filterByNumPeriode($this->getPeriode())->findOne();
+	}
+
+	
 } // JEleveClasse

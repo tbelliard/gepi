@@ -522,4 +522,70 @@ class Eleve extends BaseEleve {
 		return "";
 	}
 
+  	/**
+	 *
+	 * Retourne une liste d'absence pour la période donnée
+	 *
+	 * @param      mixed $periode numeric or PeriodeNote value.
+	 *
+	 * @return PropelObjectCollection AbsenceEleveSaisie[]
+	 */
+	public function getAbsenceSaisiesPeriode($periode = null) {
+	    $periode_obj = new PeriodeNote();
+	    if ($periode == null) {
+		$periode_obj = $this->getPeriodeNoteOuverte();
+	    }
+	    if (is_numeric($periode)) {
+		    $periode_obj = PeriodeNoteQuery::create()->filterByClasse($this->getClasse($periode))->filterByNumPeriode($periode);
+	    } else if (! $periode instanceof PeriodeNote) {
+		    throw new PropelException('Argument $periode doit etre de type numerique ou une instance de PeriodeNote.');
+	    } else {
+		    $periode_obj = $periode;
+	    }
+
+	    if ($periode_obj == null) {
+		return null;
+	    }
+	    $date_debut = $periode_obj->getDateDebut(null);
+	    if ($date_debut  == null)  {
+		return null;
+	    }
+	    
+
+	    $query =  AbsenceEleveSaisieQuery::create();
+	    $query->filterByEleve($this);
+	    $query->filterByFinAbs($date_debut, Criteria::GREATER_EQUAL);
+	    $date_fin = $periode_obj->getDateFin(null);
+	    if ($date_fin != null) {
+		$query->filterByDebutAbs($date_fin, Criteria::LESS_EQUAL);
+	    }
+
+	    return $query->find();
+	    
+	}
+
+	
+  	/**
+	 *
+	 * Retourne le nombre de 1/2 journées d'absence
+	 *
+	 *
+	 * @return int $nombre_absence
+	 */
+	public function getNbreDemiJourneAbsence($periode = null) {
+	}
+
+  	/**
+	 *
+	 * Retourne la liste de période de notes
+	 *
+	 *
+	 * @return PropelObjectCollection PeriodeNote[]
+	 */
+	public function getPeriodesNotes() {
+	    $periodeNotes = new PropelObjectCollection();
+	    $periodeNotes = PeriodeNoteQuery::create()->useClasseQuery()->useJEleveClasseQuery()->filterByEleve($this)->endUse()->endUse()->distinct()->find();
+	    $periodeNotes->uasort(array("PeriodeNote", "comparePeriodeNote"));
+	    return $periodeNotes;
+	}
 } // Eleve

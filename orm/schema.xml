@@ -222,7 +222,7 @@
 		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
 		<column name="id_classe" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="cle etrangere, id de la classe"/>
 		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
-		<column name="periode" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="Periode ou l'eleve est inscrit dans cette classe"/>
+		<column name="periode" required="true" primaryKey="true" type="INTEGER" size="11" default="0" description="Numéro de la periode ou l'eleve est inscrit dans cette classe"/>
 		<column name="rang" required="true" type="SMALLINT" size="6" default="0" description=""/>
 	</table>
 
