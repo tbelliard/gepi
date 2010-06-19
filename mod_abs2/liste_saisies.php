@@ -104,6 +104,9 @@ if ($reinit_filtre == 'y') {
     $filter_date_traitement_absence_debut_plage = NULL;
     $filter_date_traitement_absence_fin_plage = NULL;
     $filter_discipline = NULL;
+    $filter_discipline = NULL;
+
+    $order = NULL;
 }
 
 //on va mettre en session tout les parametres de la requete, pour la navigation par onglet
@@ -763,14 +766,19 @@ foreach ($results as $saisie) {
     echo '</TD>';*/
 
     echo '<TD>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getEleve() != null) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
 	echo ($saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom());
+	echo "</a>";
+	echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=absences' target='_blank'>";
+	echo ' (voir fiche)';
+	echo "</a>";
 	echo "</td>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
  	if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
 	    $photos = "../photos/eleves/".$nom_photo;
@@ -779,11 +787,11 @@ foreach ($results as $saisie) {
 		echo ' <img src="'.$photos.'" align="right" width="'.$valeur[0].'px" height="'.$valeur[1].'px" alt="" title="" /> ';
 	    }
 	}
+	echo "</a>";
 	echo "</td></tr></table>";
     } else {
 	echo "Aucun élève absent";
     }
-    echo "</a>";
     echo '</TD>';
 
     echo '<TD>';

@@ -106,6 +106,8 @@ if ($reinit_filtre == 'y') {
     $filter_date_traitement_absence_debut_plage = NULL;
     $filter_date_traitement_absence_fin_plage = NULL;
     $filter_discipline = NULL;
+
+    $order = NULL;
 }
 
 //on va mettre en session tout les parametres de la requete, pour la navigation par onglet
