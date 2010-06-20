@@ -40,8 +40,8 @@ class EdtCalendrierPeriodeTableMap extends TableMap {
 		$this->addPrimaryKey('ID_CALENDRIER', 'IdCalendrier', 'INTEGER', true, 11, null);
 		$this->addColumn('CLASSE_CONCERNE_CALENDRIER', 'ClasseConcerneCalendrier', 'LONGVARCHAR', true, null, null);
 		$this->addColumn('NOM_CALENDRIER', 'NomCalendrier', 'VARCHAR', true, 100, null);
-		$this->addColumn('DEBUT_CALENDRIER_TS', 'DebutCalendrierTs', 'TIME', true, null, null);
-		$this->addColumn('FIN_CALENDRIER_TS', 'FinCalendrierTs', 'TIME', true, null, null);
+		$this->addColumn('DEBUT_CALENDRIER_TS', 'DebutCalendrierTs', 'VARCHAR', true, 255, null);
+		$this->addColumn('FIN_CALENDRIER_TS', 'FinCalendrierTs', 'VARCHAR', true, 255, null);
 		$this->addColumn('JOURDEBUT_CALENDRIER', 'JourdebutCalendrier', 'DATE', true, 11, null);
 		$this->addColumn('HEUREDEBUT_CALENDRIER', 'HeuredebutCalendrier', 'TIME', true, 11, null);
 		$this->addColumn('JOURFIN_CALENDRIER', 'JourfinCalendrier', 'DATE', true, 11, null);

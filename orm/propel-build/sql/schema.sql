@@ -389,7 +389,7 @@ CREATE TABLE j_eleves_classes
 (
 	login VARCHAR(50)  NOT NULL COMMENT 'cle etrangere, Login de l\'eleve',
 	id_classe INTEGER(11) default 0 NOT NULL COMMENT 'cle etrangere, id de la classe',
-	periode INTEGER(11) default 0 NOT NULL COMMENT 'Periode ou l\'eleve est inscrit dans cette classe',
+	periode INTEGER(11) default 0 NOT NULL COMMENT 'Numéro de la periode ou l\'eleve est inscrit dans cette classe',
 	rang SMALLINT(6) default 0 NOT NULL,
 	PRIMARY KEY (login,id_classe,periode),
 	CONSTRAINT j_eleves_classes_FK_1
@@ -1321,8 +1321,8 @@ CREATE TABLE edt_calendrier
 	id_calendrier INTEGER(11)  NOT NULL COMMENT 'cle primaire',
 	classe_concerne_calendrier TEXT  NOT NULL COMMENT 'id des classes (separes par des ;) concernees par cette periode',
 	nom_calendrier VARCHAR(100)  NOT NULL COMMENT 'nom de la periode definie',
-	debut_calendrier_ts TIME  NOT NULL COMMENT 'timestamp du debut de la periode',
-	fin_calendrier_ts TIME  NOT NULL COMMENT 'timestamp de la fin de la periode',
+	debut_calendrier_ts VARCHAR(255)  NOT NULL COMMENT 'timestamp du debut de la periode',
+	fin_calendrier_ts VARCHAR(255)  NOT NULL COMMENT 'timestamp de la fin de la periode',
 	jourdebut_calendrier DATE(11)  NOT NULL COMMENT 'date du debut de la periode',
 	heuredebut_calendrier TIME(11)  NOT NULL COMMENT 'heure du debut de la periode',
 	jourfin_calendrier DATE(11)  NOT NULL COMMENT 'date de la fin de la periode',

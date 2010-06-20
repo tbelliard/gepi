@@ -240,29 +240,20 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the debut_calendrier_ts column
 	 * 
-	 * @param     string|array $debutCalendrierTs The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $debutCalendrierTs The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
 	public function filterByDebutCalendrierTs($debutCalendrierTs = null, $comparison = null)
 	{
-		if (is_array($debutCalendrierTs)) {
-			$useMinMax = false;
-			if (isset($debutCalendrierTs['min'])) {
-				$this->addUsingAlias(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS, $debutCalendrierTs['min'], Criteria::GREATER_EQUAL);
-				$useMinMax = true;
-			}
-			if (isset($debutCalendrierTs['max'])) {
-				$this->addUsingAlias(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS, $debutCalendrierTs['max'], Criteria::LESS_EQUAL);
-				$useMinMax = true;
-			}
-			if ($useMinMax) {
-				return $this;
-			}
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($debutCalendrierTs)) {
 				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $debutCalendrierTs)) {
+				$debutCalendrierTs = str_replace('*', '%', $debutCalendrierTs);
+				$comparison = Criteria::LIKE;
 			}
 		}
 		return $this->addUsingAlias(EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS, $debutCalendrierTs, $comparison);
@@ -271,29 +262,20 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the fin_calendrier_ts column
 	 * 
-	 * @param     string|array $finCalendrierTs The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $finCalendrierTs The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
 	public function filterByFinCalendrierTs($finCalendrierTs = null, $comparison = null)
 	{
-		if (is_array($finCalendrierTs)) {
-			$useMinMax = false;
-			if (isset($finCalendrierTs['min'])) {
-				$this->addUsingAlias(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS, $finCalendrierTs['min'], Criteria::GREATER_EQUAL);
-				$useMinMax = true;
-			}
-			if (isset($finCalendrierTs['max'])) {
-				$this->addUsingAlias(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS, $finCalendrierTs['max'], Criteria::LESS_EQUAL);
-				$useMinMax = true;
-			}
-			if ($useMinMax) {
-				return $this;
-			}
-			if (null === $comparison) {
+		if (null === $comparison) {
+			if (is_array($finCalendrierTs)) {
 				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $finCalendrierTs)) {
+				$finCalendrierTs = str_replace('*', '%', $finCalendrierTs);
+				$comparison = Criteria::LIKE;
 			}
 		}
 		return $this->addUsingAlias(EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS, $finCalendrierTs, $comparison);

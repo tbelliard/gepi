@@ -54,7 +54,7 @@ class PeriodeNote extends BasePeriodeNote {
 		//on essaye de récupérer la date de début dans le calendrier des périodes
 		$edt_periode = EdtCalendrierPeriodeQuery::create()->filterByNumeroPeriode($this->getNumPeriode())->orderByDebutCalendrierTs()->findOne();
 		if ($edt_periode != null) {
-		    return $edt_periode->getDebutCalendrierTs($format);
+		    return $edt_periode->getJourdebutCalendrier($format);
 		} else {
 		    //on va renvoyer par default le 31 aout
 		    $dt = new DateTime('now');

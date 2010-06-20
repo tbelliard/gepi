@@ -146,69 +146,23 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	}
 
 	/**
-	 * Get the [optionally formatted] temporal [debut_calendrier_ts] column value.
+	 * Get the [debut_calendrier_ts] column value.
 	 * timestamp du debut de la periode
-	 *
-	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
-	 *							If format is NULL, then the raw DateTime object will be returned.
-	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
-	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 * @return     string
 	 */
-	public function getDebutCalendrierTs($format = '%X')
+	public function getDebutCalendrierTs()
 	{
-		if ($this->debut_calendrier_ts === null) {
-			return null;
-		}
-
-
-
-		try {
-			$dt = new DateTime($this->debut_calendrier_ts);
-		} catch (Exception $x) {
-			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->debut_calendrier_ts, true), $x);
-		}
-
-		if ($format === null) {
-			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
-			return $dt;
-		} elseif (strpos($format, '%') !== false) {
-			return strftime($format, $dt->format('U'));
-		} else {
-			return $dt->format($format);
-		}
+		return $this->debut_calendrier_ts;
 	}
 
 	/**
-	 * Get the [optionally formatted] temporal [fin_calendrier_ts] column value.
+	 * Get the [fin_calendrier_ts] column value.
 	 * timestamp de la fin de la periode
-	 *
-	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
-	 *							If format is NULL, then the raw DateTime object will be returned.
-	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
-	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 * @return     string
 	 */
-	public function getFinCalendrierTs($format = '%X')
+	public function getFinCalendrierTs()
 	{
-		if ($this->fin_calendrier_ts === null) {
-			return null;
-		}
-
-
-
-		try {
-			$dt = new DateTime($this->fin_calendrier_ts);
-		} catch (Exception $x) {
-			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->fin_calendrier_ts, true), $x);
-		}
-
-		if ($format === null) {
-			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
-			return $dt;
-		} elseif (strpos($format, '%') !== false) {
-			return strftime($format, $dt->format('U'));
-		} else {
-			return $dt->format($format);
-		}
+		return $this->fin_calendrier_ts;
 	}
 
 	/**
@@ -444,99 +398,41 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	} // setNomCalendrier()
 
 	/**
-	 * Sets the value of [debut_calendrier_ts] column to a normalized version of the date/time value specified.
+	 * Set the value of [debut_calendrier_ts] column.
 	 * timestamp du debut de la periode
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      string $v new value
 	 * @return     EdtCalendrierPeriode The current object (for fluent API support)
 	 */
 	public function setDebutCalendrierTs($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
+		if ($v !== null) {
+			$v = (string) $v;
 		}
 
-		if ( $this->debut_calendrier_ts !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->debut_calendrier_ts !== null && $tmpDt = new DateTime($this->debut_calendrier_ts)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->debut_calendrier_ts = ($dt ? $dt->format('H:i:s') : null);
-				$this->modifiedColumns[] = EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS;
-			}
-		} // if either are not null
+		if ($this->debut_calendrier_ts !== $v) {
+			$this->debut_calendrier_ts = $v;
+			$this->modifiedColumns[] = EdtCalendrierPeriodePeer::DEBUT_CALENDRIER_TS;
+		}
 
 		return $this;
 	} // setDebutCalendrierTs()
 
 	/**
-	 * Sets the value of [fin_calendrier_ts] column to a normalized version of the date/time value specified.
+	 * Set the value of [fin_calendrier_ts] column.
 	 * timestamp de la fin de la periode
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      string $v new value
 	 * @return     EdtCalendrierPeriode The current object (for fluent API support)
 	 */
 	public function setFinCalendrierTs($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
+		if ($v !== null) {
+			$v = (string) $v;
 		}
 
-		if ( $this->fin_calendrier_ts !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->fin_calendrier_ts !== null && $tmpDt = new DateTime($this->fin_calendrier_ts)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->fin_calendrier_ts = ($dt ? $dt->format('H:i:s') : null);
-				$this->modifiedColumns[] = EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS;
-			}
-		} // if either are not null
+		if ($this->fin_calendrier_ts !== $v) {
+			$this->fin_calendrier_ts = $v;
+			$this->modifiedColumns[] = EdtCalendrierPeriodePeer::FIN_CALENDRIER_TS;
+		}
 
 		return $this;
 	} // setFinCalendrierTs()

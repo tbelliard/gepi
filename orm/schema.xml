@@ -635,8 +635,8 @@
         <!-- le champ suivant est impossible a traiter automatiquement - aucune foreign-key associable -->
 		<column name="classe_concerne_calendrier" required="true" type="LONGVARCHAR" description="id des classes (separes par des ;) concernees par cette periode"/>
 		<column name="nom_calendrier" required="true" type="VARCHAR" size="100" description="nom de la periode definie"/>
-		<column name="debut_calendrier_ts" required="true" type="TIME" description="timestamp du debut de la periode"/>
-		<column name="fin_calendrier_ts" required="true" type="TIME" description="timestamp de la fin de la periode"/>
+		<column name="debut_calendrier_ts" required="true" type="VARCHAR" description="timestamp du debut de la periode"/>
+		<column name="fin_calendrier_ts" required="true" type="VARCHAR" description="timestamp de la fin de la periode"/>
 		<column name="jourdebut_calendrier" required="true" type="DATE" size="11" description="date du debut de la periode"/>
 		<column name="heuredebut_calendrier" required="true" type="TIME" size="11" description="heure du debut de la periode"/>
 		<column name="jourfin_calendrier" required="true" type="DATE" size="11" description="date de la fin de la periode"/>
