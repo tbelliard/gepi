@@ -1777,29 +1777,30 @@ echo "'>Export CSV</a>
 // Affichage de la légende de la colorisation
 if($vtn_coloriser_resultats=='y') {
 	echo "<div class='noprint' style='float: right; width: 10em; text-align: center; padding-bottom:3px;'>\n";
+
 	echo "<p class='bold' style='text-align:center;'>Légende de la colorisation</p>\n";
-	echo "<table class='boireaus' summary='Légende de la colorisation'>\n";
-	echo "<thead>\n";
-		echo "<tr>\n";
-		echo "<th>Borne<br />supérieure</th>\n";
-		echo "<th>Couleur texte</th>\n";
-		echo "<th>Couleur cellule</th>\n";
-		echo "</tr>\n";
-	echo "</thead>\n";
-	echo "<tbody>\n";
+	$legende_colorisation="<table class='boireaus' summary='Légende de la colorisation'>\n";
+	$legende_colorisation.="<thead>\n";
+		$legende_colorisation.="<tr>\n";
+		$legende_colorisation.="<th>Borne<br />supérieure</th>\n";
+		$legende_colorisation.="<th>Couleur texte</th>\n";
+		$legende_colorisation.="<th>Couleur cellule</th>\n";
+		$legende_colorisation.="</tr>\n";
+	$legende_colorisation.="</thead>\n";
+	$legende_colorisation.="<tbody>\n";
 	$alt=1;
 	foreach($vtn_borne_couleur as $key => $value) {
 		$alt=$alt*(-1);
-		echo "<tr class='lig$alt'>\n";
-		echo "<td>$vtn_borne_couleur[$key]</td>\n";
-		echo "<td style='color:$vtn_couleur_texte[$key]'>$vtn_couleur_texte[$key]</td>\n";
-		echo "<td style='color:$vtn_couleur_cellule[$key]'>$vtn_couleur_cellule[$key]</td>\n";
-		echo "</tr>\n";
+		$legende_colorisation.="<tr class='lig$alt'>\n";
+		$legende_colorisation.="<td>$vtn_borne_couleur[$key]</td>\n";
+		$legende_colorisation.="<td style='color:$vtn_couleur_texte[$key]'>$vtn_couleur_texte[$key]</td>\n";
+		$legende_colorisation.="<td style='color:$vtn_couleur_cellule[$key]'>$vtn_couleur_cellule[$key]</td>\n";
+		$legende_colorisation.="</tr>\n";
 	}
-	echo "</tbody>\n";
-	echo "</table>\n";
+	$legende_colorisation.="</tbody>\n";
+	$legende_colorisation.="</table>\n";
 
-	
+	echo $legende_colorisation;
 echo "</div>\n";
 }
 
@@ -1834,6 +1835,10 @@ if($temoin_note_bonus=='y') {
 	}
 }
 
+if($vtn_coloriser_resultats=='y') {
+	echo "<p class='bold'>Légende de la colorisation&nbsp;:</p>\n";
+	echo $legende_colorisation;
+}
 echo "<p><br /></p>\n";
 
 
@@ -1925,7 +1930,9 @@ else {
 	$texte.="</ul>";
 	//$texte.="";
 	//$tabdiv_infobulle[]=creer_div_infobulle('div_informations',$titre,"",$texte,"",35,0,'y','y','n','n');
+	$class_special_infobulle="noprint";
 	echo creer_div_infobulle('div_informations',$titre,"",$texte,"",35,0,'y','y','n','n');
+	$class_special_infobulle="";
 
 	echo "<script type='text/javascript'>
 	// Je ne saisis pas pourquoi la capture des mouvements ne fonctionne pas correctement ici???
