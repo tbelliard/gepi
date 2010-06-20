@@ -1751,6 +1751,34 @@ if($utiliser_coef_perso=='y') {
 echo "'>Export CSV</a>
 </div>\n";
 
+// Affichage de la légende de la colorisation
+if($vtn_coloriser_resultats=='y') {
+	echo "<div class='noprint' style='float: right; width: 10em; text-align: center; padding-bottom:3px;'>\n";
+	echo "<p class='bold' style='text-align:center;'>Légende de la colorisation</p>\n";
+	echo "<table class='boireaus' summary='Légende de la colorisation'>\n";
+	echo "<thead>\n";
+		echo "<tr>\n";
+		echo "<th>Borne<br />supérieure</th>\n";
+		echo "<th>Couleur texte</th>\n";
+		echo "<th>Couleur cellule</th>\n";
+		echo "</tr>\n";
+	echo "</thead>\n";
+	echo "<tbody>\n";
+	$alt=1;
+	foreach($vtn_borne_couleur as $key => $value) {
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+		echo "<td>$vtn_borne_couleur[$key]</td>\n";
+		echo "<td style='color:$vtn_couleur_texte[$key]'>$vtn_couleur_texte[$key]</td>\n";
+		echo "<td style='color:$vtn_couleur_cellule[$key]'>$vtn_couleur_cellule[$key]</td>\n";
+		echo "</tr>\n";
+	}
+	echo "</tbody>\n";
+	echo "</table>\n";
+
+	
+echo "</div>\n";
+}
 
 if ($referent == "une_periode") {
 	echo "<p class=bold>Classe : $classe - Résultats : $nom_periode[$num_periode] - Année scolaire : ".getSettingValue("gepiYear")."</p>";
