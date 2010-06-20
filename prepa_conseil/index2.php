@@ -142,6 +142,16 @@ if (isset($id_classe)) {
 	echo "</p>\n";
 	echo "</form>\n";
 
+	if(!isset($_SESSION['vtn_pref_num_periode'])) {
+		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_pref_%';";
+		$get_pref=mysql_query($sql);
+		if(mysql_num_rows($get_pref)>0) {
+			while($lig_pref=mysql_fetch_object($get_pref)) {
+				$_SESSION[$lig_pref->name]=$lig_pref->value;
+			}
+		}
+	}
+
 	echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes.php\">\n";
 	echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\" summary=\"Choix de la période\"><tr>";
 	echo "<td valign=\"top\"><strong>Choisissez&nbsp;la&nbsp;période&nbsp;:&nbsp;</strong><br />\n";
@@ -149,14 +159,19 @@ if (isset($id_classe)) {
 	$i="1";
 	while ($i < $nb_periode) {
 		echo "<br />\n<input type=\"radio\" name=\"num_periode\" id='num_periode_$i' value=\"$i\" ";
-		if ($i == 1) echo "checked ";
+		if(isset($_SESSION['vtn_pref_num_periode'])) {
+			if($_SESSION['vtn_pref_num_periode']==$i) {echo "checked ";}
+		}
+		elseif ($i == 1) {echo "checked ";}
 		echo "/>&nbsp;";
 		echo "<label for='num_periode_$i' style='cursor:pointer;'>\n";
 		echo ucfirst($nom_periode[$i]);
 		echo "</label>\n";
 		$i++;
 	}
-	echo "<br />\n<input type=\"radio\" name=\"num_periode\" id='num_periode_annee' value=\"annee\" />&nbsp;";
+	echo "<br />\n<input type=\"radio\" name=\"num_periode\" id='num_periode_annee' value=\"annee\" ";
+	if((isset($_SESSION['vtn_pref_num_periode']))&&($_SESSION['vtn_pref_num_periode']=='annee')) {echo "checked ";}
+	echo "/>&nbsp;";
 	echo "<label for='num_periode_annee' style='cursor:pointer;'>\n";
 	echo "Année entière";
 	echo "</label>\n";
@@ -173,11 +188,25 @@ if (isset($id_classe)) {
 		echo "<table border='0' summary=\"Paramètres\">\n";
 		echo "<tr>\n";
 		echo "<td>Largeur en pixel du tableau : </td>\n";
-		echo "<td><input type=text name=larg_tab size=3 value=\"680\" /></td>\n";
+		echo "<td><input type=text name=larg_tab size=3 ";
+		if(isset($_SESSION['vtn_pref_larg_tab'])) {
+			echo "value=\"".$_SESSION['vtn_pref_larg_tab']."\"";
+		}
+		else {
+			echo "value=\"680\"";
+		}
+		echo " /></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>Bords en pixel du tableau : </td>\n";
-		echo "<td><input type=text name=bord size=3 value=\"1\" /></td>\n";
+		echo "<td><input type=text name=bord size=3 ";
+		if(isset($_SESSION['vtn_pref_bord'])) {
+			echo "value=\"".$_SESSION['vtn_pref_bord']."\"";
+		}
+		else {
+			echo "value=\"1\"";
+		}
+		echo " /></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>\n";
@@ -185,7 +214,16 @@ if (isset($id_classe)) {
 		echo "Couleurs de fond des lignes alternées : \n";
 		echo "</label>\n";
 		echo "</td>\n";
-		echo "<td><input type=\"checkbox\" name=\"couleur_alterne\" id=\"couleur_alterne\" checked /></td>\n";
+		echo "<td><input type=\"checkbox\" name=\"couleur_alterne\" id=\"couleur_alterne\" value='y' ";
+		if(isset($_SESSION['vtn_pref_couleur_alterne'])) {
+			if($_SESSION['vtn_pref_couleur_alterne']=='y') {
+				echo "checked";
+			}
+		}
+		else {
+			echo "checked";
+		}
+		echo " /></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 
@@ -194,7 +232,16 @@ if (isset($id_classe)) {
 
 		echo "<table border='0' summary=\"Affichages supplémentaires\">\n";
 		echo "<tr>\n";
-		echo "<td><input type=\"checkbox\" name=\"aff_abs\" id=\"aff_abs\" checked /></td>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_abs\" id=\"aff_abs\" value='y' ";
+		if(isset($_SESSION['vtn_pref_aff_abs'])) {
+			if($_SESSION['vtn_pref_aff_abs']=='y') {
+				echo "checked";
+			}
+		}
+		else {
+			echo "checked";
+		}
+		echo " /></td>\n";
 		echo "<td>\n";
 		echo "<label for='aff_abs' style='cursor:pointer;'>\n";
 		echo "Afficher les absences";
@@ -202,7 +249,16 @@ if (isset($id_classe)) {
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td><input type=\"checkbox\" name=\"aff_reg\" id=\"aff_reg\" checked /></td>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_reg\" id=\"aff_reg\" value='y' ";
+		if(isset($_SESSION['vtn_pref_aff_reg'])) {
+			if($_SESSION['vtn_pref_aff_reg']=='y') {
+				echo "checked ";
+			}
+		}
+		else {
+			echo "checked ";
+		}
+		echo "/></td>\n";
 		echo "<td>\n";
 		echo "<label for='aff_reg' style='cursor:pointer;'>\n";
 		echo "Afficher le régime\n";
@@ -210,7 +266,16 @@ if (isset($id_classe)) {
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td><input type=\"checkbox\" name=\"aff_doub\" id=\"aff_doub\" checked /></td>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_doub\" id=\"aff_doub\" value='y' ";
+		if(isset($_SESSION['vtn_pref_aff_doub'])) {
+			if($_SESSION['vtn_pref_aff_doub']=='y') {
+				echo "checked";
+			}
+		}
+		else {
+			echo "checked";
+		}
+		echo " /></td>\n";
 		echo "<td>\n";
 		echo "<label for='aff_doub' style='cursor:pointer;'>\n";
 		echo "Afficher la mention doublant\n";
@@ -224,7 +289,16 @@ if (isset($id_classe)) {
 
 		if (($affiche_rang == 'y') and ($test_coef != 0)) {
 			echo "<tr>\n";
-			echo "<td><input type=\"checkbox\" name=\"aff_rang\" id=\"aff_rang\" checked /></td>\n";
+			echo "<td><input type=\"checkbox\" name=\"aff_rang\" id=\"aff_rang\" value='y' ";
+			if(isset($_SESSION['vtn_pref_aff_rang'])) {
+				if($_SESSION['vtn_pref_aff_rang']=='y') {
+					echo "checked";
+				}
+			}
+			else {
+				echo "checked";
+			}
+			echo " /></td>\n";
 			echo "<td>\n";
 			echo "<label for='aff_rang' style='cursor:pointer;'>\n";
 			echo "Afficher le rang des élèves\n";
@@ -234,7 +308,16 @@ if (isset($id_classe)) {
 		}
 
 		echo "<tr>\n";
-		echo "<td valign='top'><input type=\"checkbox\" name=\"aff_date_naiss\" id=\"aff_date_naiss\" /></td>\n";
+		echo "<td valign='top'><input type=\"checkbox\" name=\"aff_date_naiss\" id=\"aff_date_naiss\" value='y' ";
+		if(isset($_SESSION['vtn_pref_aff_date_naiss'])) {
+			if($_SESSION['vtn_pref_aff_date_naiss']=='y') {
+				echo "checked";
+			}
+		}
+		else {
+			echo "checked";
+		}
+		echo " /></td>\n";
 		echo "<td>\n";
 		echo "<label for='aff_date_naiss' style='cursor:pointer;'>\n";
 		echo "Afficher la date de naissance des élèves\n";
@@ -362,7 +445,16 @@ if (isset($id_classe)) {
 
 	//============================================
 	// Colorisation des résultats
-	echo "<input type='checkbox' id='vtn_coloriser_resultats' name='vtn_coloriser_resultats' value='y' onchange=\"display_div_coloriser()\" /><label for='vtn_coloriser_resultats'> Coloriser les résultats.</label><br />\n";
+	echo "<input type='checkbox' id='vtn_coloriser_resultats' name='vtn_coloriser_resultats' value='y' onchange=\"display_div_coloriser()\" ";
+	if(isset($_SESSION['vtn_pref_coloriser_resultats'])) {
+		if($_SESSION['vtn_pref_coloriser_resultats']=='y') {
+			echo "checked";
+		}
+	}
+	else {
+		echo "checked";
+	}
+	echo "/><label for='vtn_coloriser_resultats'> Coloriser les résultats.</label><br />\n";
 	
 
 	// Tableau des couleurs HTML:

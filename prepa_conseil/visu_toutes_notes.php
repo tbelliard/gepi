@@ -44,7 +44,8 @@ if (!checkAccess()) {
 //$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] :  NULL;
 // Modifié pour pouvoir récupérer ces variables en GET pour les CSV
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
-$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
+//$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
+$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : "1");
 
 $utiliser_coef_perso=isset($_POST['utiliser_coef_perso']) ? $_POST['utiliser_coef_perso'] : (isset($_GET['utiliser_coef_perso']) ? $_GET['utiliser_coef_perso'] : "n");
 $coef_perso=isset($_POST['coef_perso']) ? $_POST['coef_perso'] : (isset($_GET['coef_perso']) ? $_GET['coef_perso'] : NULL);
@@ -1709,6 +1710,28 @@ if($vtn_coloriser_resultats=='y') {
 		$insert=mysql_query($sql);
 	}
 }
+
+//if(!isset($_SESSION['vtn_pref_num_periode'])) {
+	$sql="DELETE FROM preferences WHERE name LIKE 'vtn_pref_%' AND login='".$_SESSION['login']."';";
+	$del=mysql_query($sql);
+
+	$tab_pref=array('num_periode', 'larg_tab', 'bord', 'couleur_alterne', 'aff_abs', 'aff_reg', 'aff_doub', 'aff_date_naiss', 'aff_rang');
+	for($loop=0;$loop<count($tab_pref);$loop++) {
+		$tmp_var=$tab_pref[$loop];
+		if($$tmp_var=='') {$$tmp_var="n";}
+		$sql="INSERT INTO preferences SET name='vtn_pref_".$tmp_var."', value='".$$tmp_var."', login='".$_SESSION['login']."';";
+		//echo "$sql<br />";
+		$insert=mysql_query($sql);
+		$_SESSION['vtn_pref_'.$tmp_var]=$$tmp_var;
+	}
+
+	// Mettre aussi utiliser_coef_perso et vtn_coloriser_resultats
+	// PB pour les coef perso, ce sont des associations coef/groupe qui sont faites et le groupe n'est que rarement commun d'une classe à une autre
+	$sql="INSERT INTO preferences SET name='vtn_pref_coloriser_resultats', value='$vtn_coloriser_resultats', login='".$_SESSION['login']."';";
+	$insert=mysql_query($sql);
+	$_SESSION['vtn_pref_coloriser_resultats']=$vtn_coloriser_resultats;
+	
+//}
 
 $classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
