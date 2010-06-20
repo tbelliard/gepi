@@ -2667,9 +2667,12 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 	global $unite_div_infobulle;
 	global $niveau_arbo;
 	global $pas_de_decalage_infobulle;
+	//global $style_special_infobulle;
+	global $class_special_infobulle;
 
 	//$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute;";
 	$style_box="color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:$zindex_infobulle;";
+	//if((isset($style_special_infobulle))&&($style_special_infobulle!='')) {$style_box.=$style_special_infobulle;}
 
 	$style_bar="color: #ffffff; cursor: move; font-weight: bold; padding: 0px;";
 	//$style_close="color: #ffffff; cursor: move; font-weight: bold; float:right; width: 1em;";
@@ -2681,10 +2684,14 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 
 	// Conteneur:
 	if($bg_texte==''){
-		$div="<div id='$id' class='infobulle_corps' style='$style_box width: ".$largeur.$unite_div_infobulle."; ";
+		$div="<div id='$id' class='infobulle_corps";
+		if((isset($class_special_infobulle))&&($class_special_infobulle!='')) {$div.=" ".$class_special_infobulle;}
+		$div.="' style='$style_box width: ".$largeur.$unite_div_infobulle."; ";
 	}
 	else{
-		$div="<div id='$id' style='$style_box background-color: $bg_texte; width: ".$largeur.$unite_div_infobulle."; ";
+		$div="<div id='$id' ";
+		if((isset($class_special_infobulle))&&($class_special_infobulle!='')) {$div.="class='".$class_special_infobulle."' ";}
+		$div.="style='$style_box background-color: $bg_texte; width: ".$largeur.$unite_div_infobulle."; ";
 	}
 	if($hauteur!=0){
 		$div.="height: ".$hauteur.$unite_div_infobulle."; ";
