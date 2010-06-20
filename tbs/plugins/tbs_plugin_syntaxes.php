@@ -4,6 +4,7 @@
 ********************************************************
 TinyButStrong Plug-in: this is a template plug-in that shows syntaxes for all events
 Version 1.4 , on 2008-02-29, by Skrol29
+Version 1.5 , on 2010-02-16, by Skrol29: rename argument $HtmlCharSet into $Charset
 ********************************************************
 */
 
@@ -37,13 +38,13 @@ class clsTbsThisPlugIn {
 		// Example:  $TBS->PlugIn(TBS_THIS_PLUGIN,$x1,$x2);
 	}
 
-	function BeforeLoadTemplate(&$File,&$HtmlCharSet) {
+	function BeforeLoadTemplate(&$File,&$Charset) {
 		// Executed before a template is loaded. Arguments are those passed to method LoadTemplate().
 		// If you make this method to return value False, then the default LoadTemplate() process is not executed. But AfterLoadTemplate() is checked anyway.
 		// You can define additional arguments to this method in order to extend the syntax of method LoadTemplate().
 	}
 
-	function AfterLoadTemplate(&$File,&$HtmlCharSet) {
+	function AfterLoadTemplate(&$File,&$Charset) {
 		// Executed after a template is loaded. Arguments are those passed to method LoadTemplate().
 		// The value that you make this method to return is also returned by method LoadTemplate().
 		// You can define additional arguments to this method in order to extend the syntax of method LoadTemplate().
