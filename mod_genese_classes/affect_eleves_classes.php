@@ -343,6 +343,8 @@ if(!isset($choix_affich)) {
 	echo "</ul>\n";
 }
 else {
+	echo "<div class='noprint'>\n"; // Debut de l'entête à ne pas imprimer
+
 	echo "<p class='bold'><a href='index.php?projet=$projet'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo ">Retour</a>";
@@ -642,9 +644,12 @@ $_POST['projet']=	4eme_vers_3eme
 
 	echo "<p align='center'><input type='submit' name='valide_aff_classe_fut0' value='Valider' /></p>\n";
 
+	echo "</div>\n"; // Fin de l'entête à ne pas imprimer
+
 	echo "<table class='boireaus' border='1' summary='Tableau des options'>\n";
 
 	//==========================================
+	echo "<thead>\n";
 	echo "<tr>\n";
 	echo "<th rowspan='2'>Elève</th>\n";
 	echo "<th rowspan='2'>Sexe</th>\n";
@@ -845,6 +850,8 @@ $_POST['projet']=	4eme_vers_3eme
 	}
 	echo "</tr>\n";
 	//==========================================
+	echo "</thead>\n";
+	echo "<tbody>\n";
 
 
 
@@ -1136,6 +1143,8 @@ $_POST['projet']=	4eme_vers_3eme
 			}
 		}
 	}
+	echo "</tbody>\n";
+	echo "<tfoot>\n";
 
 	//==========================================
 	echo "<tr>\n";
@@ -1224,6 +1233,7 @@ $_POST['projet']=	4eme_vers_3eme
 	}
 	echo "</tr>\n";
 	//==========================================
+	echo "</tfoot>\n";
 
 	echo "</table>\n";
 	
@@ -1502,6 +1512,10 @@ echo "
 	//echo "<li></li>\n";
 	echo "<li>Les Redoublants (<i>Red</i>) et Partants (<i>Dep</i>) sont exclus de la sélection puisque déjà affectés.</li>\n";
 	echo "</ul>\n";
+
+	echo "<script type='text/javascript'>
+	document.getElementById('bandeau').className+=' noprint';
+</script>\n";
 }
 
 require("../lib/footer.inc.php");
