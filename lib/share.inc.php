@@ -1068,8 +1068,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a>";
 					echo " - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
 
-					$display_bulletin=mysql_result($appel_conteneurs, $j, 'display_bulletin');
-					$coef=mysql_result($appel_conteneurs, $j, 'coef');
+					$display_bulletin=mysql_result($appel_conteneurs, $i, 'display_bulletin');
+					$coef=mysql_result($appel_conteneurs, $i, 'coef');
 					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
 					if($display_bulletin==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='$gepi_denom_boite visible sur le bulletin' alt='$gepi_denom_boite visible sur le bulletin' />";}
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='$gepi_denom_boite non visible sur le bulletin' alt='$gepi_denom_boite non visible sur le bulletin' />\n";}
