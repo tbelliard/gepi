@@ -12,6 +12,7 @@
 
 	<link rel="stylesheet" type="text/css" href="./templates/origine/css/accueil.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="./templates/origine/css/bandeau.css" media="screen" />
+	<link rel="stylesheet" type="text/css" href="./style_screen_ajout.css" media="" />
 
 <!-- corrections internet Exploreur -->
 	<!--[if lte IE 7]>
