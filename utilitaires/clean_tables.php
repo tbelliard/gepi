@@ -30,7 +30,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 // Check access
 
 if (!checkAccess()) {
@@ -1622,7 +1622,95 @@ col2 varchar(100) NOT NULL default ''
 		echo "<p>Terminé.</p>\n";
 	}
 
-} else {
+} elseif(isset($_POST['action']) AND $_POST['action'] == 'verif_interclassements') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	$sql="SHOW TABLES;";
+	$res_table=mysql_query($sql);
+	if(mysql_num_rows($res_table)==0) {
+		echo "<p style='color:red;'>Aucune table n'a été trouvée???</p>\n";
+	}
+	else {
+		$tab_collations=array();
+		echo "<table class='boireaus' summary='Interclassements'>\n";
+		echo "<thead>\n";
+		echo "<tr>\n";
+		echo "<th>Table</th>\n";
+		echo "<th>Champ</th>\n";
+		echo "<th>Type</th>\n";
+		echo "<th>Interclassement</th>\n";
+		echo "</tr>\n";
+		echo "</thead>\n";
+		$alt=1;
+		while($tab=mysql_fetch_array($res_table)) {
+			$alt=$alt*(-1);
+			$alt2=$alt;
+			//echo "\$tab[0]=$tab[0]<br />";
+			//$sql="show fields from $tab[0] where type like 'varchar%' or type like 'char%';";
+			$sql="show full columns from $tab[0] where type like 'varchar%' or type like 'char%';";
+			$res_champs=mysql_query($sql);
+			$nb_champs=mysql_num_rows($res_champs);
+			echo "<tr class='lig$alt'>\n";
+			echo "<td style='vertical-align:top;'";
+			if($nb_champs>0) {
+				echo " rowspan='$nb_champs'";
+			}
+			echo ">$tab[0]</td>\n";
+			$cpt=0;
+			while($lig_champ=mysql_fetch_object($res_champs)) {
+				if($cpt>0) {
+					$alt2=$alt2*(-1);
+					echo "<tr class='lig$alt2'>\n";
+				}
+				echo "<td>$lig_champ->Field</td>\n";
+				echo "<td>$lig_champ->Type</td>\n";
+				echo "<td>\n";
+				/*
+				$sql="SELECT DISTINCT collation($lig->Field) as c FROM $tab[0];";
+				$res_collation=mysql_query($sql);
+				if(mysql_num_rows($res_collation)==0) {
+					echo "Table vide... détection de l'interclassement impossible";
+				}
+				else {
+					while($lig_collation=mysql_fetch_object($res_champs)) {
+						echo $lig_collation->c." ";
+					}
+				}
+				*/
+				echo $lig_champ->Collation;
+				if(!in_array($lig_champ->Collation,$tab_collations)) {$tab_collations[]=$lig_champ->Collation;}
+				echo "</td>\n";
+				echo "</tr>\n";
+				$cpt++;
+			}
+			if($cpt==0) {
+				echo "<td colspan='3'>Aucun champ VARCHAR ni CHAR</td>\n";
+				echo "</tr>\n";
+			}
+			flush();
+		}
+		echo "</table>\n";
+
+		$nb_collations=count($tab_collations);
+		if($nb_collations==1) {
+			echo "<p>Un seul interclassement a été trouvé dans vos tables.<br />Il n'y a pas de problème d'interclassement/collation.</p>\n";
+		}
+		elseif($nb_collations>1) {
+			echo "<p style='color:red;'>$nb_collations interclassements ont été trouvés dans vos tables.<br />Cela peut représenter un problème si deux interclassements différents sont utilisés sur une jointure de tables.<br />En cas de doute, signalez sur la liste de diffusion gepi-users les interclassements relevés (<i>en indiquant sur quels champs cela se produit</i>).</p>\n";
+			echo "<p>Voici la liste des interclassements trouvés&nbsp;: ";
+			for($loop=0;$loop<count($tab_collations);$loop++) {
+				if($loop>0) {echo ", ";}
+				echo "$tab_collations[$loop]";
+			}
+			echo "</p>\n";
+		}
+	}
+
+	echo "<p>Terminé.</p>\n";
+}
+else {
     echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
     //echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>\n";
 	echo "</p>\n";
@@ -1707,6 +1795,15 @@ col2 varchar(100) NOT NULL default ''
     echo "pour les absences antérieures au <input type='text' name='date_limite' size='10' value='31/07/$annee' />\n";
 	echo "</center>\n";
     echo "<input type='hidden' name='action' value='clean_absences' />\n";
+    echo "</form>\n";
+
+    echo "<hr />\n";
+
+    echo "<p>Contrôle de l'interclassement (<i>COLLATION</i>) des champs des tables.<br />Des interclassements différents sur des champs de deux tables intervenant dans une jointure peut provoquer des erreurs.<br />Un tel problème peut survenir avec des bases transférées d'une machine à une autre,...</p>\n";
+    echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+    echo "<center>\n";
+	echo "<input type=submit value=\"Contrôler les interclassements\" />\n";
+    echo "<input type='hidden' name='action' value='verif_interclassements' />\n";
     echo "</form>\n";
 
 }
