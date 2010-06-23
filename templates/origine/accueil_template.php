@@ -12,7 +12,18 @@
 
 	<link rel="stylesheet" type="text/css" href="./templates/origine/css/accueil.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="./templates/origine/css/bandeau.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="./style_screen_ajout.css" media="" />
+
+<!-- Style_screen_ajout.css -->
+	<?php
+		if (count($Style_CSS)) {
+			foreach ($Style_CSS as $value) {
+				if ($value!="") {
+					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
+				}
+			}
+		}
+	?>
+
 
 <!-- corrections internet Exploreur -->
 	<!--[if lte IE 7]>
