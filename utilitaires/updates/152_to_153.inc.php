@@ -748,6 +748,15 @@ if ($query) {
         $result .= "<font color=\"red\">Erreur</font><br />";
 }
 
+// Modification du type des champs id_classe pour pouvoir dépasser 127
+$result .= "&nbsp;->Modification de 'id_classe' de TINYINT en SMALLINT dans la table 'notanet_verrou'<br />";
+$query = mysql_query("ALTER TABLE notanet_verrou CHANGE id_classe id_classe SMALLINT( 6 ) NOT NULL;");
+if ($query) {
+        $result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+        $result .= "<font color=\"red\">Erreur</font><br />";
+}
+
 
 // Ajout d'une colonne sur les ECTS, pour permettre une présaisie par le prof
 $result .= "<br />Modification de la table 'ects_credits' (ajout de la colonne 'mention_prof').<br />";
