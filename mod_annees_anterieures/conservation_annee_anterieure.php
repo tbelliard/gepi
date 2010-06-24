@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id : $
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -282,6 +282,15 @@ else{
 		*/
 
 
+		$temoin_ects="n";
+		$sql="SELECT 1=1 FROM ects_credits LIMIT 1";
+		$test1=mysql_query($sql);
+		if(mysql_num_rows($test1)>0) {$temoin_ects="y";}
+		else {
+			$sql="SELECT 1=1 FROM ects_global_credits LIMIT 1";
+			$test2=mysql_query($sql);
+			if(mysql_num_rows($test2)>0) {$temoin_ects="y";}
+		}
 
 
 		//===================================
@@ -648,11 +657,13 @@ else{
 																mn.periode='$num_periode' AND
 																jgm.id_groupe=mn.id_groupe AND
 																jgm.id_matiere=m.matiere";
+						echo "<!-- $sql -->\n";
 						$res_grp=mysql_query($sql);
 
 						if(mysql_num_rows($res_grp)==0){
 							// Que faire? Est-il possible qu'il y ait quelque chose dans matieres_appreciations dans ce cas?
 							// Ca ne devrait pas...
+							echo "<!-- Aucune note sur le bulletin de période $num_periode pour l'élève $login_eleve -->\n";
 						}
 						else{
 							while($lig_grp=mysql_fetch_object($res_grp)){
@@ -673,6 +684,7 @@ else{
 														WHERE login='$login_eleve' AND
 																periode='$num_periode' AND
 																id_groupe='$id_groupe'";
+								echo "<!-- $sql -->\n";
 								$res_app=mysql_query($sql);
 
 								if(mysql_num_rows($res_app)==0){
@@ -685,6 +697,7 @@ else{
 
 								// Récupération des professeurs associés
 								$sql="SELECT login FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' ORDER BY login";
+								echo "<!-- $sql -->\n";
 								$res_prof=mysql_query($sql);
 
 								if(mysql_num_rows($res_prof)==0){
@@ -737,38 +750,39 @@ else{
 							} // Fin de la boucle matières
 
 
+							echo "<!-- Avant les crédits ECTS de l'élève $login_eleve -->\n";
 
-                                                        //--------------------
-                                                        // Les crédits ECTS
-                                                        //--------------------
-
-                                                        // On a besoin de : annee, ine, classe, num_periode, nom_periode, matiere, prof, valeur_ects, mention_ects
-                                                        // On a déjà pratiquement tout... ça ne va pas être compliqué !
-                                                        $Eleve = ElevePeer::retrieveByLOGIN($login_eleve);
-                                                        $Groupes = $Eleve->getGroupes($num_periode);
-
-                                                        foreach($Groupes as $Groupe) {
-                                                            
-                                                            $Ects = $Eleve->getEctsCredit($num_periode,$Groupe->getId());
-
-                                                            if ($Ects != null) {
-                                                                $Archive = new ArchiveEcts();
-                                                                $Archive->setAnnee($annee_scolaire);
-                                                                $Archive->setIne($ine);
-                                                                $Archive->setClasse($classe);
-                                                                $Archive->setNumPeriode($num_periode);
-                                                                $Archive->setNomPeriode($nom_periode);
-                                                                $Archive->setMatiere($Groupe->getDescription());
-                                                                $Archive->setSpecial('');
-                                                                $Archive->setProfs($prof);
-                                                                $Archive->setValeur($Ects->getValeur());
-                                                                $Archive->setMention($Ects->getMention());
-                                                                $Archive->save();
-                                                            }
-                                                        }
-
-
-
+							if($temoin_ects=="y") {
+								//--------------------
+								// Les crédits ECTS
+								//--------------------
+	
+								// On a besoin de : annee, ine, classe, num_periode, nom_periode, matiere, prof, valeur_ects, mention_ects
+								// On a déjà pratiquement tout... ça ne va pas être compliqué !
+								$Eleve = ElevePeer::retrieveByLOGIN($login_eleve);
+								$Groupes = $Eleve->getGroupes($num_periode);
+	
+								foreach($Groupes as $Groupe) {
+									
+									$Ects = $Eleve->getEctsCredit($num_periode,$Groupe->getId());
+	
+									if ($Ects != null) {
+										$Archive = new ArchiveEcts();
+										$Archive->setAnnee($annee_scolaire);
+										$Archive->setIne($ine);
+										$Archive->setClasse($classe);
+										$Archive->setNumPeriode($num_periode);
+										$Archive->setNomPeriode($nom_periode);
+										$Archive->setMatiere($Groupe->getDescription());
+										$Archive->setSpecial('');
+										$Archive->setProfs($prof);
+										$Archive->setValeur($Ects->getValeur());
+										$Archive->setMention($Ects->getMention());
+										$Archive->save();
+									}
+								}
+							}
+							echo "<!-- Après les crédits ECTS de l'élève $login_eleve -->\n";
 
 							if($erreur==0){
 								echo "<script type='text/javascript'>
