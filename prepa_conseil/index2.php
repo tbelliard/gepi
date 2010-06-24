@@ -475,6 +475,7 @@ if (isset($id_classe)) {
 	echo "</thead>\n";
 	echo "<tbody id='table_body_couleur'>\n";
 
+	$vtn_borne_couleur=array();
 	$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_%' ORDER BY name;";
 	$res_pref=mysql_query($sql);
 	if(mysql_num_rows($res_pref)>0) {
