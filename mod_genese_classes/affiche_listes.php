@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //======================================================================================
 
@@ -323,7 +323,8 @@ if(!isset($afficher_listes)) {
 	}
 	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Red' /><label for='id_clas_act_$cpt'>Redoublants</label><br />\n";
 	$cpt++;
-	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Arr' /><label for='id_clas_act_$cpt'>Arrivants</label><br />\n";
+	//echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Arr' /><label for='id_clas_act_$cpt'>Arrivants</label><br />\n";
+	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Arriv' /><label for='id_clas_act_$cpt'>Arrivants</label><br />\n";
 	$cpt++;
 	echo "</td>\n";
 
