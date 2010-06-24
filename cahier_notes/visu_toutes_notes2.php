@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 
@@ -106,6 +106,14 @@ else{
 	$temoin_graphe="non";
 }
 //================================
+
+//============================
+// Colorisation des résultats
+$vtn_couleur_texte=isset($_POST['vtn_couleur_texte']) ? $_POST['vtn_couleur_texte'] : array();
+$vtn_couleur_cellule=isset($_POST['vtn_couleur_cellule']) ? $_POST['vtn_couleur_cellule'] : array();
+$vtn_borne_couleur=isset($_POST['vtn_borne_couleur']) ? $_POST['vtn_borne_couleur'] : array();
+$vtn_coloriser_resultats=isset($_POST['vtn_coloriser_resultats']) ? $_POST['vtn_coloriser_resultats'] : "n";
+//============================
 
 include "../lib/periodes.inc.php";
 
@@ -894,35 +902,37 @@ while($i < $lignes_groupes){
 				//$col[1][$loop+$ligne_supl]="<a href='../visualisation/draw_graphe?".$chaine_matieres[$loop+$ligne_supl]."'>".$col[1][$loop+$ligne_supl]."</a>";
 				//$col[1][$loop+$ligne_supl]="<a href='draw_graphe.php?".
 
-				$tmp_col=$col[1][$loop+$ligne_supl];
-				$col[1][$loop+$ligne_supl]="<a href='../visualisation/draw_graphe.php?".
-				"temp1=".$chaine_moy_eleve1[$loop+$ligne_supl].
-				"&amp;temp2=".$chaine_moy_classe[$loop+$ligne_supl].
-				"&amp;etiquette=".$chaine_matieres[$loop+$ligne_supl].
-				"&amp;titre=$graph_title".
-				"&amp;v_legend1=".$current_eleve_login[$loop].
-				"&amp;v_legend2=moyclasse".
-				"&amp;compteur=$compteur".
-				"&amp;nb_series=$nb_series".
-				"&amp;id_classe=$id_classe".
-				"&amp;mgen1=".
-				"&amp;mgen2=";
-				//"&amp;periode=$periode".
-				$col[1][$loop+$ligne_supl].="&amp;tronquer_nom_court=$tronquer_nom_court";
-				if($referent == "une_periode"){
-					$col[1][$loop+$ligne_supl].="&amp;periode=".rawurlencode("Période ".$num_periode);
+				if(isset($chaine_moy_eleve1[$loop+$ligne_supl])) {
+					$tmp_col=$col[1][$loop+$ligne_supl];
+					//echo "\$current_eleve_login[$loop]=$current_eleve_login[$loop]<br />";
+					$col[1][$loop+$ligne_supl]="<a href='../visualisation/draw_graphe.php?".
+					"temp1=".$chaine_moy_eleve1[$loop+$ligne_supl].
+					"&amp;temp2=".$chaine_moy_classe[$loop+$ligne_supl].
+					"&amp;etiquette=".$chaine_matieres[$loop+$ligne_supl].
+					"&amp;titre=$graph_title".
+					"&amp;v_legend1=".$current_eleve_login[$loop].
+					"&amp;v_legend2=moyclasse".
+					"&amp;compteur=$compteur".
+					"&amp;nb_series=$nb_series".
+					"&amp;id_classe=$id_classe".
+					"&amp;mgen1=".
+					"&amp;mgen2=";
+					//"&amp;periode=$periode".
+					$col[1][$loop+$ligne_supl].="&amp;tronquer_nom_court=$tronquer_nom_court";
+					if($referent == "une_periode"){
+						$col[1][$loop+$ligne_supl].="&amp;periode=".rawurlencode("Période ".$num_periode);
+					}
+					else{
+						$col[1][$loop+$ligne_supl].="&amp;periode=".rawurlencode("Année");
+					}
+					$col[1][$loop+$ligne_supl].="&amp;largeur_graphe=$largeur_graphe".
+					"&amp;hauteur_graphe=$hauteur_graphe".
+					"&amp;taille_police=$taille_police".
+					"&amp;epaisseur_traits=$epaisseur_traits".
+					"&amp;temoin_image_escalier=$temoin_image_escalier".
+					"' target='_blank'>".$tmp_col.
+					"</a>";
 				}
-				else{
-					$col[1][$loop+$ligne_supl].="&amp;periode=".rawurlencode("Année");
-				}
-				$col[1][$loop+$ligne_supl].="&amp;largeur_graphe=$largeur_graphe".
-				"&amp;hauteur_graphe=$hauteur_graphe".
-				"&amp;taille_police=$taille_police".
-				"&amp;epaisseur_traits=$epaisseur_traits".
-				"&amp;temoin_image_escalier=$temoin_image_escalier".
-				"' target='_blank'>".$tmp_col.
-				"</a>";
-
 			}
 			//echo "\$chaine_moy_classe=".$chaine_moy_classe."<br /><br />\n";
 		}
@@ -1365,9 +1375,76 @@ $nb_lignes_tableau = $nb_lignes_tableau + 3 + $ligne_supl;
 //**************** EN-TETE *****************
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+//=================================================
+if($vtn_coloriser_resultats=='y') {
+	$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_%';";
+	$del=mysql_query($sql);
+
+	foreach($vtn_couleur_texte as $key => $value) {
+		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_couleur_texte$key', value='$value';";
+		$insert=mysql_query($sql);
+	}
+	foreach($vtn_couleur_cellule as $key => $value) {
+		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_couleur_cellule$key', value='$value';";
+		$insert=mysql_query($sql);
+	}
+	foreach($vtn_borne_couleur as $key => $value) {
+		$sql="INSERT INTO preferences SET login='".$_SESSION['login']."', name='vtn_borne_couleur$key', value='$value';";
+		$insert=mysql_query($sql);
+	}
+}
+//=================================================
+$sql="DELETE FROM preferences WHERE name LIKE 'vtn_pref_%' AND login='".$_SESSION['login']."';";
+$del=mysql_query($sql);
+
+//$tab_pref=array('num_periode', 'larg_tab', 'bord', 'couleur_alterne', 'aff_abs', 'aff_reg', 'aff_doub', 'aff_date_naiss', 'aff_rang');
+$tab_pref=array('num_periode', 'larg_tab', 'bord', 'couleur_alterne', 'aff_abs', 'aff_reg', 'aff_doub', 'aff_rang');
+for($loop=0;$loop<count($tab_pref);$loop++) {
+	$tmp_var=$tab_pref[$loop];
+	if($$tmp_var=='') {$$tmp_var="n";}
+	$sql="INSERT INTO preferences SET name='vtn_pref_".$tmp_var."', value='".$$tmp_var."', login='".$_SESSION['login']."';";
+	//echo "$sql<br />";
+	$insert=mysql_query($sql);
+	$_SESSION['vtn_pref_'.$tmp_var]=$$tmp_var;
+}
+$sql="INSERT INTO preferences SET name='vtn_pref_coloriser_resultats', value='$vtn_coloriser_resultats', login='".$_SESSION['login']."';";
+$insert=mysql_query($sql);
+$_SESSION['vtn_pref_coloriser_resultats']=$vtn_coloriser_resultats;
+//=================================================
+
 $classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
 $la_date=date("d/m/Y H:i");
+
+if($vtn_coloriser_resultats=='y') {
+	echo "<div class='noprint' style='float: right; width: 10em; text-align: center; padding-bottom:3px;'>\n";
+
+	echo "<p class='bold' style='text-align:center;'>Légende de la colorisation</p>\n";
+	$legende_colorisation="<table class='boireaus' summary='Légende de la colorisation'>\n";
+	$legende_colorisation.="<thead>\n";
+		$legende_colorisation.="<tr>\n";
+		$legende_colorisation.="<th>Borne<br />supérieure</th>\n";
+		$legende_colorisation.="<th>Couleur texte</th>\n";
+		$legende_colorisation.="<th>Couleur cellule</th>\n";
+		$legende_colorisation.="</tr>\n";
+	$legende_colorisation.="</thead>\n";
+	$legende_colorisation.="<tbody>\n";
+	$alt=1;
+	foreach($vtn_borne_couleur as $key => $value) {
+		$alt=$alt*(-1);
+		$legende_colorisation.="<tr class='lig$alt'>\n";
+		$legende_colorisation.="<td>$vtn_borne_couleur[$key]</td>\n";
+		$legende_colorisation.="<td style='color:$vtn_couleur_texte[$key]'>$vtn_couleur_texte[$key]</td>\n";
+		$legende_colorisation.="<td style='color:$vtn_couleur_cellule[$key]'>$vtn_couleur_cellule[$key]</td>\n";
+		$legende_colorisation.="</tr>\n";
+	}
+	$legende_colorisation.="</tbody>\n";
+	$legende_colorisation.="</table>\n";
+
+	echo $legende_colorisation;
+echo "</div>\n";
+}
 
 echo "<div>\n";
 
@@ -1388,6 +1465,7 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 	// $col_centre = 1 --> toutes les autres colonnes sont centrées.
 	// $col_centre = 0 --> toutes les autres colonnes sont alignées.
 	// $couleur_alterne --> les couleurs de fond des lignes sont alternés
+	global $num_debut_colonnes_matieres, $num_debut_lignes_eleves, $vtn_coloriser_resultats, $vtn_borne_couleur, $vtn_couleur_texte, $vtn_couleur_cellule;
 
 	echo "<table summary=\"Moyennes des carnets de notes\" border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\">\n";
 	echo "<tr>\n";
@@ -1410,9 +1488,37 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 		$j = 1;
 		while($j < $nb_col+1) {
 			if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))){
-				echo "<td class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+				echo "<td class='small' ".$bg_color;
+				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
+					if(strlen(my_ereg_replace('[0-9.,]','',$col[$j][$i]))==0) {
+						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
+							if(my_ereg_replace(',','.',$col[$j][$i])<=my_ereg_replace(',','.',$vtn_borne_couleur[$loop])) {
+								echo " style='";
+								if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
+								if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
+								echo "'";
+								break;
+							}
+						}
+					}
+				}
+				echo ">{$col[$j][$i]}</td>\n";
 			} else {
-				echo "<td align=\"center\" class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+				echo "<td align=\"center\" class='small' ".$bg_color;
+				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
+					if(strlen(my_ereg_replace('[0-9.,]','',$col[$j][$i]))==0) {
+						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
+							if(my_ereg_replace(',','.',$col[$j][$i])<=my_ereg_replace(',','.',$vtn_borne_couleur[$loop])) {
+								echo " style='";
+								if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
+								if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
+								echo "'";
+								break;
+							}
+						}
+					}
+				}
+				echo ">{$col[$j][$i]}</td>\n";
 			}
 			$j++;
 		}
@@ -1424,6 +1530,11 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 }
 
 affiche_tableau2($nb_lignes_tableau, $nb_col, $ligne1, $col, $larg_tab, $bord,0,1,$couleur_alterne);
+
+if($vtn_coloriser_resultats=='y') {
+	echo "<p class='bold'>Légende de la colorisation&nbsp;:</p>\n";
+	echo $legende_colorisation;
+}
 
 echo "<div class='noprint'>\n";
 echo "<p><b>Attention:</b> Les moyennes visualisées ici sont des photos à un instant t de ce qui a été saisi par les professeurs.<br />\n";
@@ -1456,6 +1567,19 @@ if(isset($_POST['aff_rang'])) {
 }
 if(isset($_POST['aff_date_naiss'])) {
 	echo "<input type='hidden' name='aff_date_naiss' value='".$_POST['aff_date_naiss']."' />\n";
+}
+
+if($vtn_coloriser_resultats=='y') {
+	echo "<input type='hidden' name='vtn_coloriser_resultats' value='$vtn_coloriser_resultats' />\n";
+	foreach($vtn_couleur_texte as $key => $value) {
+		echo "<input type='hidden' name='vtn_couleur_texte[$key]' value='$value' />\n";
+	}
+	foreach($vtn_couleur_cellule as $key => $value) {
+		echo "<input type='hidden' name='vtn_couleur_cellule[$key]' value='$value' />\n";
+	}
+	foreach($vtn_borne_couleur as $key => $value) {
+		echo "<input type='hidden' name='vtn_borne_couleur[$key]' value='$value' />\n";
+	}
 }
 
 echo "<input type='hidden' name='larg_tab' value='$larg_tab' />\n";

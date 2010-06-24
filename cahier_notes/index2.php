@@ -31,7 +31,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // INSERT INTO `droits` VALUES ('/cahier_notes/index2.php', 'F', 'V', 'V', 'V', 'F', 'F', 'Visualisation des moyennes des carnets de notes', '');
 if (!checkAccess()) {
@@ -76,6 +76,7 @@ if (isset($id_classe)) {
 	}
 }
 
+$javascript_specifique="prepa_conseil/colorisation_visu_toutes_notes";
 //**************** EN-TETE *****************
 $titre_page = "Visualisation des moyennes des carnets de notes";
 require_once("../lib/header.inc");
@@ -154,6 +155,16 @@ if (isset($id_classe)) {
 	echo "</p>\n";
 	echo "</form>\n";
 
+	if(!isset($_SESSION['vtn_pref_num_periode'])) {
+		$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_pref_%';";
+		$get_pref=mysql_query($sql);
+		if(mysql_num_rows($get_pref)>0) {
+			while($lig_pref=mysql_fetch_object($get_pref)) {
+				$_SESSION[$lig_pref->name]=$lig_pref->value;
+			}
+		}
+	}
+
 	echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes2.php\">\n";
 	//echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes2.php\">\n";
 	echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\" summary='Choix de la période'><tr>";
@@ -162,14 +173,19 @@ if (isset($id_classe)) {
 	$i="1";
 	while ($i < $nb_periode) {
 		echo "<br />\n<input type=\"radio\" name=\"num_periode\" id='num_periode_$i' value=\"$i\" ";
-		if ($i == 1) echo "checked ";
+		if(isset($_SESSION['vtn_pref_num_periode'])) {
+			if($_SESSION['vtn_pref_num_periode']==$i) {echo "checked ";}
+		}
+		elseif ($i == 1) {echo "checked ";}
 		echo "/>&nbsp;";
 		echo "<label for='num_periode_$i' style='cursor:pointer;'>\n";
 		echo ucfirst($nom_periode[$i]);
 		echo "</label>\n";
 		$i++;
 	}
-	echo "<br />\n<input type=\"radio\" name=\"num_periode\" id='num_periode_annee' value=\"annee\" />&nbsp;";
+	echo "<br />\n<input type=\"radio\" name=\"num_periode\" id='num_periode_annee' value=\"annee\" ";
+	if((isset($_SESSION['vtn_pref_num_periode']))&&($_SESSION['vtn_pref_num_periode']=='annee')) {echo "checked ";}
+	echo "/>&nbsp;";
 	echo "<label for='num_periode_annee' style='cursor:pointer;'>\n";
 	echo "Année entière";
 	echo "</label>\n";
@@ -186,11 +202,25 @@ if (isset($id_classe)) {
 		echo "<table border='0' summary='Paramètres'>\n";
 		echo "<tr>\n";
 		echo "<td>Largeur en pixel du tableau : </td>\n";
-		echo "<td><input type=text name=larg_tab size=3 value=\"680\" /></td>\n";
+		echo "<td><input type=text name=larg_tab size=3 ";
+		if(isset($_SESSION['vtn_pref_larg_tab'])) {
+			echo "value=\"".$_SESSION['vtn_pref_larg_tab']."\"";
+		}
+		else {
+			echo "value=\"680\"";
+		}
+		echo " /></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>Bords en pixel du tableau : </td>\n";
-		echo "<td><input type=text name=bord size=3 value=\"1\" /></td>\n";
+		echo "<td><input type=text name=bord size=3 ";
+		if(isset($_SESSION['vtn_pref_bord'])) {
+			echo "value=\"".$_SESSION['vtn_pref_bord']."\"";
+		}
+		else {
+			echo "value=\"1\"";
+		}
+		echo " /></td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
 		echo "<td>\n";
@@ -198,7 +228,16 @@ if (isset($id_classe)) {
 		echo "Couleurs de fond des lignes alternées : \n";
 		echo "</label>\n";
 		echo "</td>\n";
-		echo "<td><input type=\"checkbox\" name=\"couleur_alterne\" id=\"couleur_alterne\" checked /></td>\n";
+		echo "<td><input type=\"checkbox\" name=\"couleur_alterne\" id=\"couleur_alterne\" value='y' ";
+		if(isset($_SESSION['vtn_pref_couleur_alterne'])) {
+			if($_SESSION['vtn_pref_couleur_alterne']=='y') {
+				echo "checked";
+			}
+		}
+		else {
+			echo "checked";
+		}
+		echo " /></td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
 
@@ -207,7 +246,16 @@ if (isset($id_classe)) {
 
 		echo "<table border='0' summary='Champs'>\n";
 		echo "<tr>\n";
-		echo "<td><input type=\"checkbox\" name=\"aff_abs\" id=\"aff_abs\" checked /></td>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_abs\" id=\"aff_abs\" value='y' ";
+		if(isset($_SESSION['vtn_pref_aff_abs'])) {
+			if($_SESSION['vtn_pref_aff_abs']=='y') {
+				echo "checked";
+			}
+		}
+		else {
+			echo "checked";
+		}
+		echo " /></td>\n";
 		echo "<td>\n";
 		echo "<label for='aff_abs' style='cursor:pointer;'>\n";
 		echo "Afficher les absences";
@@ -215,7 +263,16 @@ if (isset($id_classe)) {
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td><input type=\"checkbox\" name=\"aff_reg\" id=\"aff_reg\" checked /></td>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_reg\" id=\"aff_reg\" value='y' ";
+		if(isset($_SESSION['vtn_pref_aff_reg'])) {
+			if($_SESSION['vtn_pref_aff_reg']=='y') {
+				echo "checked ";
+			}
+		}
+		else {
+			echo "checked ";
+		}
+		echo "/></td>\n";
 		echo "<td>\n";
 		echo "<label for='aff_reg' style='cursor:pointer;'>\n";
 		echo "Afficher le régime\n";
@@ -223,7 +280,16 @@ if (isset($id_classe)) {
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "<tr>\n";
-		echo "<td><input type=\"checkbox\" name=\"aff_doub\" id=\"aff_doub\" checked /></td>\n";
+		echo "<td><input type=\"checkbox\" name=\"aff_doub\" id=\"aff_doub\" value='y' ";
+		if(isset($_SESSION['vtn_pref_aff_doub'])) {
+			if($_SESSION['vtn_pref_aff_doub']=='y') {
+				echo "checked";
+			}
+		}
+		else {
+			echo "checked";
+		}
+		echo " /></td>\n";
 		echo "<td>\n";
 		echo "<label for='aff_doub' style='cursor:pointer;'>\n";
 		echo "Afficher la mention doublant\n";
@@ -237,7 +303,16 @@ if (isset($id_classe)) {
 
 		if (($affiche_rang == 'y') and ($test_coef != 0)) {
 			echo "<tr>\n";
-			echo "<td><input type=\"checkbox\" name=\"aff_rang\" id=\"aff_rang\" checked /></td>\n";
+			echo "<td><input type=\"checkbox\" name=\"aff_rang\" id=\"aff_rang\" value='y' ";
+			if(isset($_SESSION['vtn_pref_aff_rang'])) {
+				if($_SESSION['vtn_pref_aff_rang']=='y') {
+					echo "checked";
+				}
+			}
+			else {
+				echo "checked";
+			}
+			echo " /></td>\n";
 			echo "<td>\n";
 			echo "<label for='aff_rang' style='cursor:pointer;'>\n";
 			echo "Afficher le rang des élèves\n";
@@ -284,7 +359,151 @@ if (isset($id_classe)) {
 
 	echo "<br />\n<center><input type=\"submit\" name=\"ok\" value=\"Valider\" /></center>\n";
 	echo "<br />\n<span class='small'>Remarque : le tableau des notes s'affiche sans en-tête et dans une nouvelle page. Pour revenir à cet écran, il vous suffit de fermer la fenêtre du tableau des notes.</span>\n";
-	echo "</td></tr>\n</table>\n</form>\n";
+	echo "</td></tr>\n</table>\n";
+
+
+
+	//============================================
+	// Colorisation des résultats
+	echo "<input type='checkbox' id='vtn_coloriser_resultats' name='vtn_coloriser_resultats' value='y' onchange=\"display_div_coloriser()\" ";
+	if(isset($_SESSION['vtn_pref_coloriser_resultats'])) {
+		if($_SESSION['vtn_pref_coloriser_resultats']=='y') {
+			echo "checked";
+		}
+	}
+	else {
+		echo "checked";
+	}
+	echo "/><label for='vtn_coloriser_resultats'> Coloriser les résultats.</label><br />\n";
+	
+
+	// Tableau des couleurs HTML:
+	$chaine_couleurs='"aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen"';
+
+	$tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
+	//$tabcouleur=array("red","darkcyan","gold","green","blue");
+
+	echo "<div id='div_coloriser'>\n";
+	echo "<table id='table_couleur' class='boireaus' summary='Coloriser les résultats'>\n";
+	echo "<thead>\n";
+		echo "<tr>\n";
+		echo "<th><a href='#colorisation_resultats' onclick='add_tr_couleur();return false;'>Borne<br />supérieure</a></th>\n";
+		echo "<th>Couleur texte</th>\n";
+		echo "<th>Couleur cellule</th>\n";
+		echo "<th>Supprimer</th>\n";
+		echo "</tr>\n";
+	echo "</thead>\n";
+	echo "<tbody id='table_body_couleur'>\n";
+
+	$vtn_borne_couleur=array();
+	$sql="SELECT * FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_%' ORDER BY name;";
+	$res_pref=mysql_query($sql);
+	if(mysql_num_rows($res_pref)>0) {
+		while($lig_pref=mysql_fetch_object($res_pref)) {
+			if(substr($lig_pref->name,0,17)=='vtn_couleur_texte') {
+				$vtn_couleur_texte[]=$lig_pref->value;
+			}
+			elseif(substr($lig_pref->name,0,19)=='vtn_couleur_cellule') {
+				$vtn_couleur_cellule[]=$lig_pref->value;
+			}
+			elseif(substr($lig_pref->name,0,17)=='vtn_borne_couleur') {
+				$vtn_borne_couleur[]=$lig_pref->value;
+			}
+		}
+
+		//$cpt_couleur=0;
+		function add_tr_couleur() {
+			global $cpt_couleur, $tabcouleur, $vtn_borne_couleur, $vtn_couleur_texte, $vtn_couleur_cellule;
+
+			$cpt_tmp=$cpt_couleur+1;
+
+			$alt=pow((-1),$cpt_couleur);
+			echo "<tr id='tr_couleur_$cpt_tmp' class='lig$alt'>\n";
+			echo "<td>\n";
+			echo "<input size='2' value='".$vtn_borne_couleur[$cpt_couleur]."' id='vtn_borne_couleur_$cpt_tmp' name='vtn_borne_couleur[]' type='text'>\n";
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "<select id='vtn_couleur_texte_$cpt_tmp' name='vtn_couleur_texte[]'>\n";
+			echo "<option value=''>---</option>\n";
+			for($i=0;$i<count($tabcouleur);$i++) {
+				echo "<option style='background-color: $tabcouleur[$i];' value='$tabcouleur[$i]'";
+				if($tabcouleur[$i]==$vtn_couleur_texte[$cpt_couleur]) {echo " selected='true'";}
+				echo ">$tabcouleur[$i]</option>\n";
+			}
+			echo "</select>\n";
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "<select id='vtn_couleur_cellule_$cpt_tmp' name='vtn_couleur_cellule[]'>\n";
+			echo "<option value=''>---</option>\n";
+			for($i=0;$i<count($tabcouleur);$i++) {
+				echo "<option style='background-color: $tabcouleur[$i];' value='$tabcouleur[$i]'";
+				if($tabcouleur[$i]==$vtn_couleur_cellule[$cpt_couleur]) {echo " selected='true'";}
+				echo ">$tabcouleur[$i]</option>\n";
+			}
+			echo "</select>\n";
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "<a href='#colorisation_resultats' onclick='suppr_ligne_couleur($cpt_tmp);return false;'><img src='../images/delete16.png' height='16' width='16' alt='Supprimer la ligne' /></a>\n";
+			echo "</td>\n";
+
+			echo "</tr>\n";
+		}
+
+		for($cpt_couleur=0;$cpt_couleur<count($vtn_borne_couleur);$cpt_couleur++) {add_tr_couleur();}
+		$cpt_couleur++;
+
+		echo "</tbody>\n";
+		echo "</table>\n";
+		echo "<a name='colorisation_resultats'></a>\n";
+	
+		echo "<script type='text/javascript'>
+		// Couleurs prises en compte dans colorisation_visu_toutes_notes.js
+		var tab_couleur=new Array($chaine_couleurs);
+
+		var cpt_couleur=$cpt_couleur;
+
+		//retouches_tab_couleur();
+\n";
+
+	}
+	else {
+		echo "</tbody>\n";
+		echo "</table>\n";
+		echo "<a name='colorisation_resultats'></a>\n";
+	
+		echo "<script type='text/javascript'>
+		// Couleurs prises en compte dans colorisation_visu_toutes_notes.js
+		var tab_couleur=new Array($chaine_couleurs);\n";
+
+		echo "	// Pour démarrer avec trois lignes:
+	add_tr_couleur();
+	add_tr_couleur();
+	add_tr_couleur();
+	vtn_couleurs_par_defaut();\n";
+	}
+	echo "</script>\n";
+//}
+	echo "<p><br /></p>\n";
+	echo "</div>\n";
+
+	echo "<script type='text/javascript'>
+function display_div_coloriser() {
+if(document.getElementById('vtn_coloriser_resultats').checked==true) {
+document.getElementById('div_coloriser').style.display='';
+}
+else {
+document.getElementById('div_coloriser').style.display='none';
+}
+}
+display_div_coloriser();
+</script>\n";
+
+
+
+	echo "</form>\n";
 } else {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil</a>";
 
