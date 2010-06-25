@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //======================================================================================
 
@@ -335,6 +335,9 @@ $eff_tot=0;
 $eff_tot_M=0;
 $eff_tot_F=0;
 
+// Nombre max de périodes pour faire les requêtes pour les redoublants dont la classe n'est pas "connue"
+$max_nb_per=0;
+
 $chaine_id_classe="";
 $cpt=0;
 // Boucle sur les classes actuelles
@@ -347,6 +350,8 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 		$lig_per=mysql_fetch_object($res_per);
 		$nb_per_classe=$lig_per->maxper;
 	}
+	//echo "\$nb_per_classe=$nb_per_classe<br />\n";
+	if($max_nb_per<$nb_per_classe) {$max_nb_per=$nb_per_classe;}
 
 	$num_eleve1_id_classe_actuelle[$j]=$cpt;
 	$eff_tot_classe_M=0;
@@ -633,7 +638,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			$current_eleve_absences=0;
 			$current_eleve_nj=0;
 			$current_eleve_retards=0;
-			for($loop=1;$loop<=$nb_per_classe;$loop++) {
+			if($nb_per_classe==0) {$nb_per_classe_abs=$max_nb_per;}
+			else {$nb_per_classe_abs=$nb_per_classe;}
+			for($loop=1;$loop<=$nb_per_classe_abs;$loop++) {
 				$sql="SELECT * FROM absences WHERE (login='".$lig->login."' AND periode='$loop');";
 				$current_eleve_absences_query=mysql_query($sql);
 				if(mysql_num_rows($current_eleve_absences_query)>0) {
