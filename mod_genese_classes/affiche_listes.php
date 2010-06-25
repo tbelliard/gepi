@@ -117,6 +117,9 @@ if(!isset($afficher_listes)) {
 
 	// Ajout d'une requête pour l'affichage en cours
 	if(isset($_POST['ajouter'])) {
+	//if((isset($_POST['ajouter']))||
+	//((isset($_POST['modifier_requete']))&&($_POST['modifier_requete']=='y'))) {
+
 		$id_clas_act=isset($_POST['id_clas_act']) ? $_POST['id_clas_act'] : array();
 		$clas_fut=isset($_POST['clas_fut']) ? $_POST['clas_fut'] : array();
 		$avec_lv1=isset($_POST['avec_lv1']) ? $_POST['avec_lv1'] : array();
@@ -143,15 +146,38 @@ if(!isset($afficher_listes)) {
 			}
 		}
 
-		$sql="SELECT MAX(id_req) AS max_id_req FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff';";
-		//echo "$sql<br />";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
-			$id_req=1;
+		if((isset($_POST['modifier_requete']))&&($_POST['modifier_requete']=='y')) {
+			$id_req=$_POST['id_req'];
+			$sql="SELECT 1=1 FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req';";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)==0) {
+				echo "<p style='color:red'>La requête n°$id_req n'est pas associée à l'affichage n°$id_aff sur le projet $projet.</p>\n";
+
+				require("../lib/footer.inc.php");
+				die();
+			}
+
+			$sql="DELETE FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req';";
+			$menage=mysql_query($sql);
+			if(!$menage) {
+				echo "<p style='color:red'>ERREUR lors du ménage préalable de la requête n°$id_req de l'affichage n°$id_aff sur le projet $projet.</p>\n";
+
+				require("../lib/footer.inc.php");
+				die();
+			}
 		}
 		else {
-			$lig_tmp=mysql_fetch_object($res);
-			$id_req=$lig_tmp->max_id_req+1;
+			$sql="SELECT MAX(id_req) AS max_id_req FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff';";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)==0) {
+				$id_req=1;
+			}
+			else {
+				$lig_tmp=mysql_fetch_object($res);
+				$id_req=$lig_tmp->max_id_req+1;
+			}
 		}
 		//echo "id_req=$id_req<br />";
 
@@ -217,7 +243,7 @@ if(!isset($afficher_listes)) {
 			}
 		}
 
-	}
+	} // FIN DE L'AJOUT D'UNE REQUETE
 
 
 	//========================================================================
@@ -290,12 +316,29 @@ if(!isset($afficher_listes)) {
 	//=========================================================
 
 	if(isset($id_aff)) {
-		echo "<p class='bold'>Liste de requêtes pour l'affichage n°$id_aff</p>";
+		echo "<p class='bold'>Liste de requêtes pour l'affichage n°$id_aff</p>\n";
 	}
 
 	//================================
 	// Formulaire d'ajout de requêtes:
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+
+	if((isset($_GET['editer_requete']))&&(isset($_GET['id_req'])&&($_GET['id_req']!="")&&(strlen(my_ereg_replace("[0-9]","",$_GET['id_req']))==0))) {
+		$id_req=$_GET['id_req'];
+		echo "<p class='bold'>Modification de la requête n°$id_req</p>\n";
+		echo "<input type='hidden' name='modifier_requete' value='y' />\n";
+
+		$tab_ed_req=array();
+		$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req';";
+		//echo "$sql<br />\n";
+		$res_edit_req=mysql_query($sql);
+		if(mysql_num_rows($res_edit_req)>0) {
+			while($lig_edit_req=mysql_fetch_object($res_edit_req)) {
+				$tab_ed_req[$lig_edit_req->type][]=$lig_edit_req->valeur;
+				//echo "\$tab_ed_req[$lig_edit_req->type][]=$lig_edit_req->valeur<br />";
+			}
+		}
+	}
 
 	if(isset($id_aff)) {
 		echo "<input type='hidden' name='id_aff' value='$id_aff' />\n";
@@ -318,13 +361,25 @@ if(!isset($afficher_listes)) {
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
 	$cpt=0;
 	while($lig=mysql_fetch_object($res_clas_act)) {
-		echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='$lig->id_classe' /><label for='id_clas_act_$cpt'>$lig->classe</label><br />\n";
+		echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='$lig->id_classe' ";
+		if((isset($tab_ed_req['id_clas_act']))&&(in_array($lig->id_classe,$tab_ed_req['id_clas_act']))) {
+			echo "checked ";
+		}
+		echo "/><label for='id_clas_act_$cpt'>$lig->classe</label><br />\n";
 		$cpt++;
 	}
-	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Red' /><label for='id_clas_act_$cpt'>Redoublants</label><br />\n";
+	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Red' ";
+	if((isset($tab_ed_req['id_clas_act']))&&(in_array('Red',$tab_ed_req['id_clas_act']))) {
+		echo "checked ";
+	}
+	echo "/><label for='id_clas_act_$cpt'>Redoublants</label><br />\n";
 	$cpt++;
 	//echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Arr' /><label for='id_clas_act_$cpt'>Arrivants</label><br />\n";
-	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Arriv' /><label for='id_clas_act_$cpt'>Arrivants</label><br />\n";
+	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Arriv' ";
+	if((isset($tab_ed_req['id_clas_act']))&&(in_array('Arriv',$tab_ed_req['id_clas_act']))) {
+		echo "checked ";
+	}
+	echo "/><label for='id_clas_act_$cpt'>Arrivants</label><br />\n";
 	$cpt++;
 	echo "</td>\n";
 
@@ -337,7 +392,11 @@ if(!isset($afficher_listes)) {
 		$sql="SELECT 1=1 FROM gc_eleves_options WHERE projet='$projet' AND classe_future='$lig->classe';";
 		$res_test=mysql_query($sql);
 		if(mysql_num_rows($res_test)>0) {
-			echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='$lig->classe' /><label for='clas_fut_$cpt'>$lig->classe</label><br />\n";
+			echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='$lig->classe' ";
+			if((isset($tab_ed_req['clas_fut']))&&(in_array($lig->classe,$tab_ed_req['clas_fut']))) {
+				echo "checked ";
+			}
+			echo "/><label for='clas_fut_$cpt'>$lig->classe</label><br />\n";
 		}
 		else {
 			echo "_ $lig->classe<br />\n";
@@ -345,7 +404,11 @@ if(!isset($afficher_listes)) {
 
 		$cpt++;
 	}
-	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='' /><label for='clas_fut_$cpt'>Non encore affecté</label><br />\n";
+	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='' ";
+	if((isset($tab_ed_req['clas_fut']))&&(in_array("",$tab_ed_req['clas_fut']))) {
+		echo "checked ";
+	}
+	echo "/><label for='clas_fut_$cpt'>Non encore affecté</label><br />\n";
 	$cpt++;
 	/*
 	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='Red' /><label for='clas_fut_$cpt'>Red</label><br />\n";
@@ -366,10 +429,18 @@ if(!isset($afficher_listes)) {
 			while($lig=mysql_fetch_object($res_lv1)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_lv1[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='avec_lv1[]' value='$lig->opt' ";
+				if((isset($tab_ed_req['avec_lv1']))&&(in_array($lig->opt,$tab_ed_req['avec_lv1']))) {
+					echo "checked ";
+				}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_lv1[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='sans_lv1[]' value='$lig->opt' ";
+				if((isset($tab_ed_req['sans_lv1']))&&(in_array($lig->opt,$tab_ed_req['sans_lv1']))) {
+					echo "checked ";
+				}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
 				echo "$lig->opt\n";
@@ -391,10 +462,18 @@ if(!isset($afficher_listes)) {
 			while($lig=mysql_fetch_object($res_lv2)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_lv2[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='avec_lv2[]' value='$lig->opt' ";
+				if((isset($tab_ed_req['avec_lv2']))&&(in_array($lig->opt,$tab_ed_req['avec_lv2']))) {
+					echo "checked ";
+				}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_lv2[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='sans_lv2[]' value='$lig->opt' ";
+				if((isset($tab_ed_req['sans_lv2']))&&(in_array($lig->opt,$tab_ed_req['sans_lv2']))) {
+					echo "checked ";
+				}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
 				echo "$lig->opt\n";
@@ -416,10 +495,18 @@ if(!isset($afficher_listes)) {
 			while($lig=mysql_fetch_object($res_lv3)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_lv3[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='avec_lv3[]' value='$lig->opt' ";
+				if((isset($tab_ed_req['avec_lv3']))&&(in_array($lig->opt,$tab_ed_req['avec_lv3']))) {
+					echo "checked ";
+				}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_lv3[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='sans_lv3[]' value='$lig->opt' ";
+				if((isset($tab_ed_req['sans_lv3']))&&(in_array($lig->opt,$tab_ed_req['sans_lv3']))) {
+					echo "checked ";
+				}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
 				echo "$lig->opt\n";
@@ -441,10 +528,18 @@ if(!isset($afficher_listes)) {
 			while($lig=mysql_fetch_object($res_autre)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_autre[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='avec_autre[]' value='$lig->opt' ";
+				if((isset($tab_ed_req['avec_autre']))&&(in_array($lig->opt,$tab_ed_req['avec_autre']))) {
+					echo "checked ";
+				}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_autre[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='sans_autre[]' value='$lig->opt' ";
+				if((isset($tab_ed_req['sans_autre']))&&(in_array($lig->opt,$tab_ed_req['sans_autre']))) {
+					echo "checked ";
+				}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
 				echo "$lig->opt\n";
@@ -463,7 +558,12 @@ if(!isset($afficher_listes)) {
 
 	echo "<input type='hidden' name='projet' value='$projet' />\n";
 	//echo "<input type='hidden' name='is_posted' value='y' />\n";
-	echo "<p align='center'><input type='submit' name='ajouter' value='Ajouter' /></p>\n";
+	if(isset($_GET['editer_requete'])) {
+		echo "<p align='center'><input type='submit' name='ajouter' value='Modifier la requête' /></p>\n";
+	}
+	else {
+		echo "<p align='center'><input type='submit' name='ajouter' value='Ajouter' /></p>\n";
+	}
 	//================================
 
 	//echo "<input type='checkbox' name='afficher_listes' value='y' /> Finaliser et afficher les listes\n";
@@ -485,7 +585,9 @@ if(!isset($afficher_listes)) {
 				$txt_requete.="<input type='checkbox' name='suppr[]' id='suppr_$lig->id_req' value='$lig->id_req' /> ";
 				$txt_requete.="</td>\n";
 				$txt_requete.="<td>\n";
-				$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req</label></b>";
+				//$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req</label></b>";
+				$txt_requete.="<b><label for='suppr_$lig->id_req'>Requête n°$lig->id_req</label> <a href='".$_SERVER['PHP_SELF']."?editer_requete=y&amp;id_aff=$id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'><img src ='../images/edit16.png'
+width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 
 				//===========================================
 				$id_req=$lig->id_req;
