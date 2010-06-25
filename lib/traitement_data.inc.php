@@ -247,32 +247,48 @@ elseif($filtrage_html=='inputfilter') {
 
 	foreach($_GET as $key => $value) {
 		if(!is_array($value)) {
-			$_GET[$key]=$oMyFilter->process($value);
+			if((strpos($_GET[$key],"<"))||(strpos($_GET[$key],">"))) {
+				$_GET[$key]=$oMyFilter->process($value);
+			}
 		}
 		else {
 			foreach($_GET[$key] as $key2 => $value2) {
-				$_GET[$key][$key2]=$oMyFilter->process($value2);
+				if((strpos($_GET[$key][$key2],"<"))||(strpos($_GET[$key][$key2],">"))) {
+					$_GET[$key][$key2]=$oMyFilter->process($value2);
+				}
 			}
 		}
 	}
 
 	foreach($_POST as $key => $value) {
 		if(!is_array($value)) {
-			$_POST[$key]=$oMyFilter->process($value);
+			if((strpos($_POST[$key],"<"))||(strpos($_POST[$key],">"))) {
+				$_POST[$key]=$oMyFilter->process($value);
+			}
 		}
 		else {
 			foreach($_POST[$key] as $key2 => $value2) {
-				$_POST[$key][$key2]=$oMyFilter->process($value2);
+				if((strpos($_POST[$key][$key2],"<"))||(strpos($_POST[$key][$key2],">"))) {
+					$_POST[$key][$key2]=$oMyFilter->process($value2);
+				}
 			}
 		}
 	}
 
 	if(isset($NON_PROTECT)) {
 		foreach($NON_PROTECT as $key => $value) {
-			if(!is_array($value)) {$NON_PROTECT[$key]=$oMyFilter->process($value);}
+			if(!is_array($value)) {
+				//echo "strpos(\$NON_PROTECT[$key],'<')=strpos(".$NON_PROTECT[$key].",'<')=".strpos($NON_PROTECT[$key],"<")."<br />";
+				//echo "strpos(\$NON_PROTECT[$key],'>')=strpos(".$NON_PROTECT[$key].",'>')=".strpos($NON_PROTECT[$key],">")."<br />";
+				if((strpos($NON_PROTECT[$key],"<"))||(strpos($NON_PROTECT[$key],">"))) {
+					$NON_PROTECT[$key]=$oMyFilter->process($value);
+				}
+			}
 			else {
 				foreach($NON_PROTECT[$key] as $key2 => $value2) {
-					$NON_PROTECT[$key][$key2]=$oMyFilter->process($value2);;
+					if((strpos($NON_PROTECT[$key][$key2],"<"))||(strpos($NON_PROTECT[$key][$key2],">"))) {
+						$NON_PROTECT[$key][$key2]=$oMyFilter->process($value2);;
+					}
 				}
 			}
 		}
