@@ -1160,7 +1160,8 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 					$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 					if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';}
 					$delais_apres_cloture=getSettingValue('delais_apres_cloture');
-					if(!ereg("^[0-9]*$",$delais_apres_cloture)) {$delais_apres_cloture=0;}
+					// if(!ereg("^[0-9]*$",$delais_apres_cloture)) {$delais_apres_cloture=0;}
+					if(!my_ereg("^[0-9]*$",$delais_apres_cloture)) {$delais_apres_cloture=0;}
 
 					echo "<span style='font-size:x-small'>";
 					if($acces_app_ele_resp=='manuel') {
