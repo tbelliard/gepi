@@ -282,7 +282,8 @@ else{
 			// Test:
 			//if(strlen(my_ereg_replace("[A-Za-z0-9_.]","",$file))!=0) {
 			//if((strlen(my_ereg_replace("[A-Za-z0-9_.]","",$file))!=0)||(!ereg("_[A-Za-z0-9]{40}",$file))) {
-			if((strlen(my_ereg_replace("[A-Za-z0-9_.-]","",$file))!=0)||(!ereg("_",$file))) {
+			//if((strlen(my_ereg_replace("[A-Za-z0-9_.-]","",$file))!=0)||(!ereg("_",$file))) {
+			if((strlen(my_ereg_replace("[A-Za-z0-9_.-]","",$file))!=0)||(!my_ereg("_",$file))) {
 				// Il y a des caractères inattendus dans le nom de dossier
 				$bizarre++;
 
