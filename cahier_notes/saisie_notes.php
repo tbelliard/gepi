@@ -213,7 +213,8 @@ if (isset($_POST['notes'])) {
 	$tempo = '';
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
 		$car = substr($temp, $i, 1);
-		if (ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
+		//if (ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
+		if (my_ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
 			if (($fin_note=='yes') or ($i == $longueur-1)) {
 				$fin_note = 'no';
 				if (is_numeric($tempo)) {
@@ -242,8 +243,10 @@ if (isset($_POST['notes'])) {
 //-------------------------------------------------------------------------------------------------------------------
 if (isset($_POST['appreciations'])) {
 	$temp = $_POST['appreciations']." 1";
-	$temp = ereg_replace("\\\\r","`",$temp);
-	$temp = ereg_replace("\\\\n","",$temp);
+	// $temp = ereg_replace("\\\\r","`",$temp);
+	$temp = my_ereg_replace("\\\\r","`",$temp);
+	// $temp = ereg_replace("\\\\n","",$temp);
+	$temp = my_ereg_replace("\\\\n","",$temp);
 	$temp = unslashes($temp);
  	$longueur = strlen($temp);
 	$i = 0;
@@ -252,7 +255,8 @@ if (isset($_POST['appreciations'])) {
 	$tempo = "";
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
 		$car = substr($temp, $i, 1);
-		if (!ereg ("^[`]{1}$", $car)) {
+		// if (!ereg ("^[`]{1}$", $car)) {
+		if (!my_ereg ("^[`]{1}$", $car)) {
 			if (($fin_app=='yes') or ($i == $longueur-1)) {
 				$fin_app = 'no';
 				$appreciations_import[$indice] = $tempo;
@@ -335,7 +339,7 @@ if (isset($_POST['is_posted'])) {
 						$note = '0';
 						$elev_statut = '-';
 					}
-					else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
+					else if (my_ereg ("^[0-9\.\,]{1,}$", $note)) {
 						$note = str_replace(",", ".", "$note");
                                                 $appel_note_sur = mysql_query("SELECT NOTE_SUR FROM cn_devoirs WHERE id = '$id_devoir'");
                                                 $note_sur_verif = mysql_result($appel_note_sur,0 ,'note_sur');
