@@ -1492,29 +1492,84 @@ function dbase_filter($s){
 
 function detect_browser($HTTP_USER_AGENT) {
 	// D'après le fichier db_details_common.php de phpmyadmin
-	if (((function_exists("mb_ereg"))&&(mb_ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)))||((function_exists("ereg"))&&(ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)))) {
-		$BROWSER_VER = $log_version[2];
-		$BROWSER_AGENT = 'OPERA';
-	} elseif(((function_exists("mb_ereg"))&&(mb_ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)))||((function_exists("ereg"))&&(ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)))) {
-		$BROWSER_VER = $log_version[1];
-		$BROWSER_AGENT = 'Internet Explorer';
-	} elseif(((function_exists("mb_ereg"))&&(mb_ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)))||((function_exists("ereg"))&&(ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)))) {
-		$BROWSER_VER = $log_version[1];
-		$BROWSER_AGENT = 'OMNIWEB';
-	} elseif(((function_exists("mb_ereg"))&&(mb_ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)))||((function_exists("ereg"))&&(ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)))) {
-		$BROWSER_VER = $log_version[2];
-		$BROWSER_AGENT = 'KONQUEROR';
-	} elseif(((function_exists("mb_ereg"))&&(mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(mb_ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)))||((function_exists("ereg"))&&(ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2)))) {
-		$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
-		$BROWSER_AGENT = 'SAFARI';
-	} elseif(((function_exists("mb_ereg"))&&(mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)))||((function_exists("ereg"))&&(ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)))) {
-		$BROWSER_VER = $log_version[1];
-		$BROWSER_AGENT = 'MOZILLA';
-	} else {
+
+	if(function_exists('preg_match')) {
+		if (preg_match('/Opera(\/| )([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[2];
+			$BROWSER_AGENT = 'OPERA';
+		} elseif(preg_match('/MSIE ([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[1];
+			$BROWSER_AGENT = 'Internet Explorer';
+		} elseif(preg_match('/OmniWeb\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[1];
+			$BROWSER_AGENT = 'OMNIWEB';
+		} elseif(preg_match('/(Konqueror\/)(.*)(;)/', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[2];
+			$BROWSER_AGENT = 'KONQUEROR';
+		} elseif((preg_match('/Mozilla\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version))&&(preg_match('/Safari\/([0-9]*)/', $HTTP_USER_AGENT, $log_version2))) {
+			$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
+			$BROWSER_AGENT = 'SAFARI';
+		} elseif(preg_match('/Mozilla\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[1];
+			$BROWSER_AGENT = 'MOZILLA';
+		} else {
+			$BROWSER_VER = '';
+			$BROWSER_AGENT = $HTTP_USER_AGENT;
+		}
+	}
+	elseif(function_exists('mb_ereg')) {
+		if (mb_ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[2];
+			$BROWSER_AGENT = 'OPERA';
+		} elseif(mb_ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[1];
+			$BROWSER_AGENT = 'Internet Explorer';
+		} elseif(mb_ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[1];
+			$BROWSER_AGENT = 'OMNIWEB';
+		} elseif(mb_ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[2];
+			$BROWSER_AGENT = 'KONQUEROR';
+		} elseif((mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(mb_ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2))) {
+			$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
+			$BROWSER_AGENT = 'SAFARI';
+		} elseif(mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[1];
+			$BROWSER_AGENT = 'MOZILLA';
+		} else {
+			$BROWSER_VER = '';
+			$BROWSER_AGENT = $HTTP_USER_AGENT;
+		}
+	}
+	elseif(function_exists('ereg')) {
+		if (ereg('Opera(/| )([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[2];
+			$BROWSER_AGENT = 'OPERA';
+		} elseif(ereg('MSIE ([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[1];
+			$BROWSER_AGENT = 'Internet Explorer';
+		} elseif(ereg('OmniWeb/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[1];
+			$BROWSER_AGENT = 'OMNIWEB';
+		} elseif(ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[2];
+			$BROWSER_AGENT = 'KONQUEROR';
+		} elseif((ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2))) {
+			$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
+			$BROWSER_AGENT = 'SAFARI';
+		} elseif(ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
+			$BROWSER_VER = $log_version[1];
+			$BROWSER_AGENT = 'MOZILLA';
+		} else {
+			$BROWSER_VER = '';
+			$BROWSER_AGENT = $HTTP_USER_AGENT;
+		}
+	}
+	else {
 		$BROWSER_VER = '';
 		$BROWSER_AGENT = $HTTP_USER_AGENT;
 	}
-		return  $BROWSER_AGENT." - ".$BROWSER_VER;
+	return  $BROWSER_AGENT." - ".$BROWSER_VER;
 }
 
 // Retourne la version de Mysql
