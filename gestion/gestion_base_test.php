@@ -96,7 +96,8 @@ if (isset($action) and ($action == 'upload'))  {
 if (isset($action) and ($action == 'protect'))  {
     include_once("../lib/class.htaccess.php");
     // Instance of the htaccess class
-    $ht = & new htaccess(TRUE);
+    //$ht = & new htaccess(TRUE);
+    $ht = new htaccess(TRUE);
     $user = array();
     // Get the logins from the password file
     $user = $ht->get_htpasswd();

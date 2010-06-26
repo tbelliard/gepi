@@ -185,8 +185,9 @@ class htaccess
      * Load vars from an existing htaccess file.
      *
      * @return array Accosiative array with the file data. False if it fails
-     */               
-    function & get_htpasswd()
+     */
+    //function & get_htpasswd()
+    function get_htpasswd()
     {  
         if($f = @fopen($this->ht_dir.'/'.$this->htpasswd_file, "r"))
         {
