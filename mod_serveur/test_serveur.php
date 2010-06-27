@@ -137,6 +137,17 @@ if ($test->versionGd()) {
 	test_ecriture_dossier();
 	echo "Si les droits ne sont pas corrects, vous devrez les corriger en FTP, SFTP ou en console selon l'accès dont vous disposez sur le serveur.<br />\n";
 
+	echo "<br />\n";
+	echo "<p>Test d'écriture dans le fichier de personnalisation des couleurs (<i>voir <a href='../gestion/param_couleurs.php'>Gestion générale/Paramétrage des couleurs</a></i>)&nbsp;:<br />";
+	$test=test_ecriture_style_screen_ajout();
+	if($test) {
+		echo "Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi est accessible en écriture.\n";
+	}
+	else {
+		echo "<sapn style='color:red'><b>ERREUR</b>&nbsp;: Le fichier style_screen_ajout.css à la racine de l'arborescence Gepi n'a pas pu être créé ou n'est pas accessible en écriture.</span>\n";
+	}
+	echo "</p>\n";
+
 echo '<br /><br /><br />';
 
 // inclusion du footer

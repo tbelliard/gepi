@@ -4447,4 +4447,18 @@ function test_ecriture_dossier() {
 	echo "</table>\n";
 }
 
+
+function test_ecriture_style_screen_ajout() {
+	$nom_fichier='style_screen_ajout.css';
+	$f=@fopen("../".$nom_fichier, "a+");
+	if($f) {
+		$ecriture=fwrite($f, "/* Test d'ecriture dans $nom_fichier */\n");
+		fclose($f);
+		if($ecriture) {return true;} else {return false;}
+	}
+	else {
+		return false;
+	}
+}
+
 ?>
