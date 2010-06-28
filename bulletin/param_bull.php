@@ -52,7 +52,7 @@ $bgcolor = "#DEDEDE";
 
 if (isset($_POST['textsize'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['textsize'])) || $_POST['textsize'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['textsize'])) || $_POST['textsize'] < 1) {
         $_POST['textsize'] = 10;
     }
     if (!saveSetting("textsize", $_POST['textsize'])) {
@@ -65,7 +65,7 @@ if (isset($_POST['textsize'])) {
 // AJOUT: boireaus
 if (isset($_POST['p_bulletin_margin'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['p_bulletin_margin'])) || $_POST['p_bulletin_margin'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['p_bulletin_margin'])) || $_POST['p_bulletin_margin'] < 1) {
         $_POST['p_bulletin_margin'] = 5;
     }
     if (!saveSetting("p_bulletin_margin", $_POST['p_bulletin_margin'])) {
@@ -76,7 +76,7 @@ if (isset($_POST['p_bulletin_margin'])) {
 
 if (isset($_POST['bull_body_marginleft'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['bull_body_marginleft']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_body_marginleft']))) {
         $_POST['bull_body_marginleft'] = 1;
     }
     if (!saveSetting("bull_body_marginleft", $_POST['bull_body_marginleft'])) {
@@ -91,7 +91,7 @@ if (isset($_POST['bull_body_marginleft'])) {
 
 if (isset($_POST['titlesize'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['titlesize'])) || $_POST['titlesize'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['titlesize'])) || $_POST['titlesize'] < 1) {
         $_POST['titlesize'] = 16;
     }
     if (!saveSetting("titlesize", $_POST['titlesize'])) {
@@ -102,7 +102,7 @@ if (isset($_POST['titlesize'])) {
 
 if (isset($_POST['cellpadding'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['cellpadding'])) || $_POST['cellpadding'] < 0) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['cellpadding'])) || $_POST['cellpadding'] < 0) {
         $_POST['cellpadding'] = 5;
     }
     if (!saveSetting("cellpadding", $_POST['cellpadding'])) {
@@ -113,7 +113,7 @@ if (isset($_POST['cellpadding'])) {
 
 if (isset($_POST['cellspacing'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['cellspacing'])) || $_POST['cellspacing'] < 0) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['cellspacing'])) || $_POST['cellspacing'] < 0) {
         $_POST['cellspacing'] = 2;
     }
     if (!saveSetting("cellspacing", $_POST['cellspacing'])) {
@@ -123,7 +123,7 @@ if (isset($_POST['cellspacing'])) {
 }
 if (isset($_POST['largeurtableau'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['largeurtableau'])) || $_POST['largeurtableau'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['largeurtableau'])) || $_POST['largeurtableau'] < 1) {
         $_POST['largeurtableau'] = 1440;
     }
     if (!saveSetting("largeurtableau", $_POST['largeurtableau'])) {
@@ -133,7 +133,7 @@ if (isset($_POST['largeurtableau'])) {
 }
 if (isset($_POST['col_matiere_largeur'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['col_matiere_largeur'])) || $_POST['col_matiere_largeur'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_matiere_largeur'])) || $_POST['col_matiere_largeur'] < 1) {
         $_POST['col_matiere_largeur'] = 300;
     }
     if (!saveSetting("col_matiere_largeur", $_POST['col_matiere_largeur'])) {
@@ -143,7 +143,7 @@ if (isset($_POST['col_matiere_largeur'])) {
 }
 if (isset($_POST['col_note_largeur'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['col_note_largeur'])) || $_POST['col_note_largeur'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_note_largeur'])) || $_POST['col_note_largeur'] < 1) {
         $_POST['col_note_largeur'] = 50;
     }
     if (!saveSetting("col_note_largeur", $_POST['col_note_largeur'])) {
@@ -153,7 +153,7 @@ if (isset($_POST['col_note_largeur'])) {
 }
 if (isset($_POST['col_boite_largeur'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['col_boite_largeur'])) || $_POST['col_boite_largeur'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_boite_largeur'])) || $_POST['col_boite_largeur'] < 1) {
         $_POST['col_boite_largeur'] = 120;
     }
     if (!saveSetting("col_boite_largeur", $_POST['col_boite_largeur'])) {
@@ -163,7 +163,7 @@ if (isset($_POST['col_boite_largeur'])) {
 }
 if (isset($_POST['col_hauteur'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['col_hauteur'])) || $_POST['col_hauteur'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_hauteur'])) || $_POST['col_hauteur'] < 1) {
         $_POST['col_hauteur'] = 0;
     }
     if (!saveSetting("col_hauteur", $_POST['col_hauteur'])) {
@@ -173,7 +173,7 @@ if (isset($_POST['col_hauteur'])) {
 }
 if (isset($_POST['bull_ecart_entete'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['bull_ecart_entete']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_ecart_entete']))) {
         $_POST['bull_ecart_entete'] = 0;
     }
     if (!saveSetting("bull_ecart_entete", $_POST['bull_ecart_entete'])) {
@@ -184,7 +184,7 @@ if (isset($_POST['bull_ecart_entete'])) {
 
 if (isset($_POST['bull_espace_avis'])) {
 
-    if ((!(ereg ("^[0-9]{1,}$", $_POST['bull_espace_avis']))) or ($_POST['bull_espace_avis'] <= 0)) {
+    if ((!(my_ereg ("^[0-9]{1,}$", $_POST['bull_espace_avis']))) or ($_POST['bull_espace_avis'] <= 0)) {
         $_POST['bull_espace_avis'] = 1;
     }
     if (!saveSetting("bull_espace_avis", $_POST['bull_espace_avis'])) {
@@ -196,7 +196,7 @@ if (isset($_POST['bull_espace_avis'])) {
 
 if (isset($_POST['addressblock_padding_right'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_right']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_right']))) {
         $_POST['addressblock_padding_right'] = 0;
     }
     if (!saveSetting("addressblock_padding_right", $_POST['addressblock_padding_right'])) {
@@ -207,7 +207,7 @@ if (isset($_POST['addressblock_padding_right'])) {
 
 if (isset($_POST['addressblock_padding_top'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_top']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_top']))) {
         $_POST['addressblock_padding_top'] = 0;
     }
     if (!saveSetting("addressblock_padding_top", $_POST['addressblock_padding_top'])) {
@@ -218,7 +218,7 @@ if (isset($_POST['addressblock_padding_top'])) {
 
 if (isset($_POST['addressblock_padding_text'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_text']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_text']))) {
         $_POST['addressblock_padding_text'] = 0;
     }
     if (!saveSetting("addressblock_padding_text", $_POST['addressblock_padding_text'])) {
@@ -229,7 +229,7 @@ if (isset($_POST['addressblock_padding_text'])) {
 
 if (isset($_POST['addressblock_length'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['addressblock_length']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_length']))) {
         $_POST['addressblock_length'] = 0;
     }
     if (!saveSetting("addressblock_length", $_POST['addressblock_length'])) {
@@ -242,7 +242,7 @@ if (isset($_POST['addressblock_length'])) {
 //==================================
 // Ajout: boireaus
 if (isset($_POST['addressblock_font_size'])) {
-    if (!(ereg ("^[0-9]{1,}$", $_POST['addressblock_font_size']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_font_size']))) {
         $_POST['addressblock_font_size'] = 12;
     }
     if (!saveSetting("addressblock_font_size", $_POST['addressblock_font_size'])) {
@@ -252,7 +252,7 @@ if (isset($_POST['addressblock_font_size'])) {
 }
 
 if(isset($_POST['addressblock_logo_etab_prop'])) {
-	if (!(ereg ("^[0-9]{1,}$", $_POST['addressblock_logo_etab_prop']))) {
+	if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_logo_etab_prop']))) {
 			$addressblock_logo_etab_prop=50;
 	}
 	else{
@@ -269,7 +269,7 @@ else{
 }
 
 if (isset($_POST['addressblock_classe_annee'])) {
-	if (!(ereg ("^[0-9]{1,}$", $_POST['addressblock_classe_annee']))) {
+	if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_classe_annee']))) {
 			$addressblock_classe_annee=35;
 	}
 	else{
@@ -306,7 +306,7 @@ if((isset($_POST['addressblock_classe_annee']))&&(isset($_POST['addressblock_log
 
 
 if (isset($_POST['bull_ecart_bloc_nom'])) {
-    if (!(ereg ("^[0-9]{1,}$", $_POST['bull_ecart_bloc_nom']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_ecart_bloc_nom']))) {
         $_POST['bull_ecart_bloc_nom'] = 0;
     }
     if (!saveSetting("bull_ecart_bloc_nom", $_POST['bull_ecart_bloc_nom'])) {
@@ -330,7 +330,7 @@ if (isset($_POST['addressblock_debug'])) {
 
 if (isset($_POST['page_garde_padding_top'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_top']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_top']))) {
         $_POST['page_garde_padding_top'] = 0;
     }
     if (!saveSetting("page_garde_padding_top", $_POST['page_garde_padding_top'])) {
@@ -341,7 +341,7 @@ if (isset($_POST['page_garde_padding_top'])) {
 
 if (isset($_POST['page_garde_padding_left'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_left']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_left']))) {
         $_POST['page_garde_padding_left'] = 0;
     }
     if (!saveSetting("page_garde_padding_left", $_POST['page_garde_padding_left'])) {
@@ -352,7 +352,7 @@ if (isset($_POST['page_garde_padding_left'])) {
 
 if (isset($_POST['page_garde_padding_text'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_text']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_text']))) {
         $_POST['page_garde_padding_text'] = 0;
     }
     if (!saveSetting("page_garde_padding_text", $_POST['page_garde_padding_text'])) {
@@ -526,7 +526,7 @@ if(isset($_POST['bull_photo_largeur_max'])) {
 }
 
 if(isset($_POST['bull_categ_font_size'])) {
-	if (!(ereg ("^[0-9]{1,}$", $_POST['bull_categ_font_size']))) {
+	if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_categ_font_size']))) {
 		$_POST['bull_categ_font_size'] = 10;
 	}
 	if (!saveSetting("bull_categ_font_size", $_POST['bull_categ_font_size'])) {
@@ -615,7 +615,7 @@ if (isset($_POST['bull_font_style_avis'])) {
 
 //taille de la police avis
 if(isset($_POST['bull_categ_font_size_avis'])) {
-	if (!(ereg ("^[0-9]{1,}$", $_POST['bull_categ_font_size_avis']))) {
+	if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_categ_font_size_avis']))) {
 		$_POST['bull_categ_font_size_avis'] = 10;
 	}
 	if (!saveSetting("bull_categ_font_size_avis", $_POST['bull_categ_font_size_avis'])) {

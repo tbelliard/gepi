@@ -142,13 +142,13 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 			$ap=my_ereg_replace('(\\\r\\\n)+',"\r\n",$ap);
 			//=========================
 
-			if (!(ereg ("^[0-9]{1,}$", $nb_absences))) {
+			if (!(my_ereg ("^[0-9]{1,}$", $nb_absences))) {
 					$nb_absences = '';
 				}
-				if (!(ereg ("^[0-9]{1,}$", $nb_nj))) {
+				if (!(my_ereg ("^[0-9]{1,}$", $nb_nj))) {
 					$nb_nj = '';
 				}
-				if (!(ereg ("^[0-9]{1,}$", $nb_retard))) {
+				if (!(my_ereg ("^[0-9]{1,}$", $nb_retard))) {
 					$nb_retard = '';
 				}
 

@@ -177,14 +177,14 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_2')) {
     ?>
     <form enctype="multipart/form-data" action="export_csv_aid.php" method=post name=formulaire>
     <?php $csvfile=""; ?>
-    <p>Fichier CSV à Importer <a href='help_import.php'>Aide </a> : <INPUT TYPE=FILE NAME="csvfile" /></p>
-    <INPUT TYPE=HIDDEN name=is_posted value = 'sans_id_etape_3' />
+    <p>Fichier CSV à Importer <a href='help_import.php'>Aide </a> : <input TYPE=FILE NAME="csvfile" /></p>
+    <input TYPE=HIDDEN name=is_posted value = 'sans_id_etape_3' />
     <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
-    <INPUT TYPE=HIDDEN name=type_import value = "<?php echo $type_import; ?>" />
+    <input TYPE=HIDDEN name=type_import value = "<?php echo $type_import; ?>" />
     <p>Le fichier à importer comporte une première ligne d'en-tête, à ignorer&nbsp;
-    <INPUT TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED /></p>
-    <INPUT TYPE=SUBMIT value = Valider /><br />
-    </FORM>
+    <input TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED /></p>
+    <input TYPE=SUBMIT value = "Valider" /><br />
+    </form>
     <?php
     echo "<p>Le fichier d'importation doit être au format csv (séparateur : point-virgule)<br />";
     if ($type_import == 1) {
@@ -713,19 +713,19 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
 
     <p>Fichier CSV à importer <a href='help_import.php'>Aide </a> : <INPUT TYPE=FILE NAME="csvfile" /></p>
 
-    <INPUT TYPE=HIDDEN name=is_posted value = 'avec_id_etape_3' />
+    <input TYPE=HIDDEN name=is_posted value = 'avec_id_etape_3' />
 
     <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
 
-    <INPUT TYPE=HIDDEN name=type_import value = "<?php echo $type_import; ?>" />
+    <input TYPE=HIDDEN name=type_import value = "<?php echo $type_import; ?>" />
 
     <p>Le fichier à importer comporte une première ligne d'en-tête, à ignorer&nbsp;
 
-    <INPUT TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED /></p>
+    <input TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED /></p>
 
-    <INPUT TYPE=SUBMIT value = Valider /><br />
+    <input TYPE=SUBMIT value = "Valider" /><br />
 
-    </FORM>
+    </form>
 
     <?php
 
@@ -843,7 +843,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                     //
 
-                    if (!(ereg ("^[a-zA-Z0-9_]{1,10}$", $data[1]))) {
+                    if (!(my_ereg ("^[a-zA-Z0-9_]{1,10}$", $data[1]))) {
 
                         $erreur = 'yes';
 
