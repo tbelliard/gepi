@@ -333,8 +333,8 @@ if ((!isset($id_classe)) or (!isset($id_classe2))) {
 					echo "$note_eleve2";
 					if (($note_eleve1 == "-") or ($note_eleve2 == "-")) {$difference = '-';} else {$difference = $note_eleve1-$note_eleve2;}
 					echo "</p></td><td><p>$difference</p></td></tr>\n";
-					(ereg ("^[0-9\.\,]{1,}$", $note_eleve1)) ? array_push($datay1,"$note_eleve1") : array_push($datay1,"0");
-					(ereg ("^[0-9\.\,]{1,}$", $note_eleve2)) ? array_push($datay2,"$note_eleve2") : array_push($datay2,"0");
+					(my_ereg ("^[0-9\.\,]{1,}$", $note_eleve1)) ? array_push($datay1,"$note_eleve1") : array_push($datay1,"0");
+					(my_ereg ("^[0-9\.\,]{1,}$", $note_eleve2)) ? array_push($datay2,"$note_eleve2") : array_push($datay2,"0");
 					//array_push($etiquette,$current_group["matiere"]["nom_complet"]);
 					array_push($etiquette,rawurlencode($current_group["matiere"]["nom_complet"]));
 					$compteur++;

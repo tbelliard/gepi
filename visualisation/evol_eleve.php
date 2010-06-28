@@ -337,7 +337,7 @@ if (!$id_classe) {
                 if ($note_eleve == '') {$note_eleve = '-';}
                 echo "<td><p>$note_eleve";
                 echo "</p></td>\n";
-                 (ereg ("^[0-9\.\,]{1,}$", $note_eleve)) ? array_push($datay[$k],"$note_eleve") : array_push($datay[$k],"0");
+                 (my_ereg ("^[0-9\.\,]{1,}$", $note_eleve)) ? array_push($datay[$k],"$note_eleve") : array_push($datay[$k],"0");
                 if ($k == '1') {
                     //array_push($etiquette,$current_group["description"]);
                     array_push($etiquette,rawurlencode($current_group["description"]));

@@ -341,8 +341,8 @@ if (!isset($id_classe)) {
 				if ($moyenne_classe == '') {$moyenne_classe = '-';}
 				echo "<td><p>$note_eleve";
 				echo "</p></td><td><p>$moyenne_classe</p></td>\n";
-				(ereg ("^[0-9\.\,]{1,}$", $moyenne_classe)) ? array_push($datay1[$k],"$moyenne_classe") : array_push($datay1[$k],"0");
-				(ereg ("^[0-9\.\,]{1,}$", $note_eleve)) ? array_push($datay2[$k],"$note_eleve") : array_push($datay2[$k],"0");
+				(my_ereg ("^[0-9\.\,]{1,}$", $moyenne_classe)) ? array_push($datay1[$k],"$moyenne_classe") : array_push($datay1[$k],"0");
+				(my_ereg ("^[0-9\.\,]{1,}$", $note_eleve)) ? array_push($datay2[$k],"$note_eleve") : array_push($datay2[$k],"0");
 
 				if ($k == '1') {
 					//array_push($etiquette,$current_group["description"]);
