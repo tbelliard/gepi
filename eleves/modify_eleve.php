@@ -330,7 +330,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 			$msg = '';
 			$ok = 'yes';
-			if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{0,11}$", $reg_login)) {
+			if (my_ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{0,11}$", $reg_login)) {
 				if ($reg_no_gep != '') {
 					$test1 = mysql_query("SELECT login FROM eleves WHERE elenoet='$reg_no_gep'");
 					$count1 = mysql_num_rows($test1);

@@ -173,7 +173,7 @@ if (isset($_POST['is_posted'])) {
 								else if (($note == 'abs')) {
 									$note = '0';
 									$elev_statut = 'abs';
-								} else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
+								} else if (my_ereg ("^[0-9\.\,]{1,}$", $note)) {
 									$note = str_replace(",", ".", "$note");
 									if (($note < 0) or ($note > $note_max)) {
 										$note = '';

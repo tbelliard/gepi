@@ -59,12 +59,12 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
 
     <form enctype="multipart/form-data" action="import_csv.php" method=post name=formulaire>
     <?php $csv_file=""; ?>
-    <p>Fichier CSV à importer : <INPUT TYPE=FILE NAME="csv_file"></p>
-    <INPUT TYPE=HIDDEN name=is_posted value = 1>
+    <p>Fichier CSV à importer : <input TYPE=FILE NAME="csv_file"></p>
+    <input TYPE=HIDDEN name=is_posted value = 1>
     <p>Le fichier à importer comporte une première ligne d'en-tête, à ignorer&nbsp;
-    <INPUT TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED></p>
-    <INPUT TYPE=SUBMIT value = Valider><br />
-    </FORM>
+    <input TYPE=CHECKBOX NAME="en_tete" VALUE="yes" CHECKED></p>
+    <input TYPE=SUBMIT value = "Valider"><br />
+    </form>
     <?php
     echo "<p>Le fichier d'importation doit être au format csv (séparateur : point-virgule)<br />";
     echo "Le fichier doit contenir les différents champs suivants, tous obligatoires :<br />";
@@ -109,7 +109,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                     switch ($c) {
                     case 0:
                         //login
-                        if (ereg ("^[a-zA-Z0-9_]{1,".$longmax_login."}$", $data[$c])) {
+                        if (my_ereg ("^[a-zA-Z0-9_]{1,".$longmax_login."}$", $data[$c])) {
                             $reg_login = "reg_".$row."_login";
                             $reg_statut = "reg_".$row."_statut";
                             $data[$c] =    strtoupper($data[$c]);
@@ -136,7 +136,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                     case 1:
                         //Nom
                         $test_nom_prenom_existant = 'no';
-                        if (ereg ("^.{1,30}$", $data[$c])) {
+                        if (my_ereg ("^.{1,30}$", $data[$c])) {
                             $temp = $c+1;
                             $call_nom = mysql_query("SELECT nom FROM eleves WHERE (nom='$data[$c]' and prenom = '$data[$temp]')");
                             $test = @mysql_num_rows($call_nom);
@@ -155,7 +155,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                         break;
                     case 2:
                         //Prenom
-                        if (ereg ("^.{1,30}$", $data[$c])) {
+                        if (my_ereg ("^.{1,30}$", $data[$c])) {
                             if ($test_nom_prenom_existant == 'yes') {
                                 echo "<td><p><font color = blue>$data[$c]</font></p></td>";
                             } else {
@@ -172,7 +172,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                     case 3:
                         // Sexe
                         $data[$c] =    strtoupper($data[$c]);
-                        if (ereg ("^[MF]$", $data[$c])) {
+                        if (my_ereg ("^[MF]$", $data[$c])) {
                             echo "<td><p>$data[$c]</p></td>";
                             $reg_sexe = "reg_".$row."_sexe";
                             echo "<INPUT TYPE=HIDDEN name='$reg_sexe' value = $data[$c]>";
@@ -183,7 +183,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                         break;
                     case 4:
                         // Date de naissance
-                        if (ereg ("^[0-3]{1}[0-9]{1}[/]{1}[0-1]{1}[0-9]{1}[/]{1}[0-9]{4}$", $data[$c])) {
+                        if (my_ereg ("^[0-3]{1}[0-9]{1}[/]{1}[0-1]{1}[0-9]{1}[/]{1}[0-9]{4}$", $data[$c])) {
                             echo "<td><p>$data[$c]</p></td>";
                             $reg_naissance = "reg_".$row."_naissance";
                             echo "<INPUT TYPE=HIDDEN name='$reg_naissance' value = $data[$c]>";
@@ -239,7 +239,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                     case 6:
                         //Régime
                         $data[$c] =    strtolower($data[$c]);
-                        if (ereg ("^(d/p|ext.|int.|i-e)$", $data[$c])) {
+                        if (my_ereg ("^(d/p|ext.|int.|i-e)$", $data[$c])) {
                             echo "<td><p>$data[$c]</p></td>";
                             $reg_regime = "reg_".$row."_regime";
                             echo "<INPUT TYPE=HIDDEN name='$reg_regime' value = $data[$c]>";
@@ -252,7 +252,7 @@ if (!isset($is_posted) or (isset($is_posted) and ($is_posted == 'R')) ) {
                    case 7:
                         // Doublant
                         $data[$c] =    strtoupper($data[$c]);
-                        if (ereg ("^[R\-]{1}$", $data[$c])) {
+                        if (my_ereg ("^[R\-]{1}$", $data[$c])) {
                             echo "<td><p>$data[$c]</p></td>";
                             $reg_doublant = "reg_".$row."_doublant";
                             echo "<INPUT TYPE=HIDDEN name='$reg_doublant' value = $data[$c]>";

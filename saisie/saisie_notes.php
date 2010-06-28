@@ -114,7 +114,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 						$note = '0';
 						$elev_statut = '-';
 					}
-					else if (ereg ("^[0-9\.\,]{1,}$", $note)) {
+					else if (my_ereg ("^[0-9\.\,]{1,}$", $note)) {
 						$note = str_replace(",", ".", "$note");
 						if (($note < 0) or ($note > 20)) {
 							$note = '';

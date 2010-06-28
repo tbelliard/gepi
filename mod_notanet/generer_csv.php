@@ -169,7 +169,7 @@ else {
 							while($lig2=mysql_fetch_object($res2)) {
 								$ine=$lig2->ine;
 								$note=$lig2->note_notanet;
-								if (ereg ("([0-9]{2}).([0-9]{1})", $lig2->note_notanet)) {
+								if (my_ereg ("([0-9]{2}).([0-9]{1})", $lig2->note_notanet)) {
 									if($tabmatieres[$lig2->id_mat][-1]!="NOTNONCA") {
 										$TOT+=$lig2->note_notanet;
 									}
@@ -228,7 +228,7 @@ else {
 					while($lig2=mysql_fetch_object($res2)) {
 						$ine=$lig2->ine;
 						$note=$lig2->note_notanet;
-						if (ereg ("([0-9]{2}).([0-9]{1})", $lig2->note_notanet)) {
+						if (my_ereg ("([0-9]{2}).([0-9]{1})", $lig2->note_notanet)) {
 							if($tabmatieres[$lig2->id_mat][-1]!="NOTNONCA") {
 								$TOT+=$lig2->note_notanet;
 							}

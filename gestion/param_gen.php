@@ -104,7 +104,7 @@ if (isset($_POST['valid_logo'])) {
 }
 // Max session length
 if (isset($_POST['sessionMaxLength'])) {
-	if (!(ereg ("^[0-9]{1,}$", $_POST['sessionMaxLength'])) || $_POST['sessionMaxLength'] < 1) {
+	if (!(my_ereg ("^[0-9]{1,}$", $_POST['sessionMaxLength'])) || $_POST['sessionMaxLength'] < 1) {
 		$_POST['sessionMaxLength'] = 30;
 	}
 	if (!saveSetting("sessionMaxLength", $_POST['sessionMaxLength'])) {
@@ -472,7 +472,7 @@ if (isset($_POST['gepi_pmv'])) {
 
 if (isset($_POST['delais_apres_cloture'])) {
 	$delais_apres_cloture=$_POST['delais_apres_cloture'];
-	if (!(ereg ("^[0-9]{1,}$", $delais_apres_cloture)) || $delais_apres_cloture < 0) {
+	if (!(my_ereg ("^[0-9]{1,}$", $delais_apres_cloture)) || $delais_apres_cloture < 0) {
 		//$delais_apres_cloture=0;
 		$msg .= "Erreur lors de l'enregistrement de delais_apres_cloture !";
 	}

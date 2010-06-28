@@ -167,7 +167,7 @@ for ($row=1; $row<$nb_row; $row++) {
 			if (($current_group["classe"]["ver_periode"][$eleve_id_classe][$periode_num]=="N")||
 			(($current_group["classe"]["ver_periode"][$eleve_id_classe][$periode_num]!="O")&&($_SESSION['statut']=='secours'))) {
 				$reg_note_min = strtolower($reg_note);
-				if (ereg ("^[0-9\.\,]{1,}$", $reg_note)) {
+				if (my_ereg ("^[0-9\.\,]{1,}$", $reg_note)) {
 					$reg_note = str_replace(",", ".", "$reg_note");
 					//$test_num = settype($reg_note,"double");
 					if (($reg_note >= 0) and ($reg_note <= 20)) {

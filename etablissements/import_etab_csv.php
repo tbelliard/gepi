@@ -224,7 +224,7 @@ if (!isset($is_posted)) {
 						break;
 					case 4:
 						// Code postal
-						if (ereg ("^[0-9]{1,5}$", $data[$c])) {
+						if (my_ereg ("^[0-9]{1,5}$", $data[$c])) {
 							echo "<td><p>$data[$c]</p></td>\n";
 							$reg_cp=$data[$c];
 						} else {

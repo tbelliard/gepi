@@ -949,7 +949,7 @@ function WriteHTML($html)
 				}
 				else {
 					foreach($a2 as $v) {
-						if(ereg('^([^=]*)=["\']?([^"\']*)["\']?$',$v,$a3)) {
+						if(my_ereg('^([^=]*)=["\']?([^"\']*)["\']?$',$v,$a3)) {
 							$attr[strtoupper($a3[1])]=$a3[2];
 						}
 					}

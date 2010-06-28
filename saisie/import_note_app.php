@@ -229,7 +229,7 @@ if (isset($is_posted )) {
                             break;
                         case 1:
                             // Note
-                            if (ereg ("^[0-9\.\,]{1,}$", $data[$c])) {
+                            if (my_ereg ("^[0-9\.\,]{1,}$", $data[$c])) {
                                 $data[$c] = str_replace(",", ".", "$data[$c]");
                                 $test_num = settype($data[$c],"double");
                                 if ($test_num) {

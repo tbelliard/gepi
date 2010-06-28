@@ -67,7 +67,7 @@ $bgcolor = "#DEDEDE";
 
 if (isset($_POST['releve_textsize'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_textsize'])) || $_POST['releve_textsize'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_textsize'])) || $_POST['releve_textsize'] < 1) {
         $_POST['releve_textsize'] = 10;
     }
     if (!saveSetting("releve_textsize", $_POST['releve_textsize'])) {
@@ -80,7 +80,7 @@ if (isset($_POST['releve_textsize'])) {
 // AJOUT: boireaus
 if (isset($_POST['p_releve_margin'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['p_releve_margin'])) || $_POST['p_releve_margin'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['p_releve_margin'])) || $_POST['p_releve_margin'] < 1) {
         $_POST['p_releve_margin'] = 5;
     }
     if (!saveSetting("p_releve_margin", $_POST['p_releve_margin'])) {
@@ -91,7 +91,7 @@ if (isset($_POST['p_releve_margin'])) {
 
 if (isset($_POST['releve_body_marginleft'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_body_marginleft']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_body_marginleft']))) {
         $_POST['releve_body_marginleft'] = 1;
     }
     if (!saveSetting("releve_body_marginleft", $_POST['releve_body_marginleft'])) {
@@ -106,7 +106,7 @@ if (isset($_POST['releve_body_marginleft'])) {
 
 if (isset($_POST['releve_titlesize'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_titlesize'])) || $_POST['releve_titlesize'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_titlesize'])) || $_POST['releve_titlesize'] < 1) {
         $_POST['releve_titlesize'] = 16;
     }
     if (!saveSetting("releve_titlesize", $_POST['releve_titlesize'])) {
@@ -117,7 +117,7 @@ if (isset($_POST['releve_titlesize'])) {
 
 if (isset($_POST['releve_cellpadding'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_cellpadding'])) || $_POST['releve_cellpadding'] < 0) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_cellpadding'])) || $_POST['releve_cellpadding'] < 0) {
         $_POST['releve_cellpadding'] = 5;
     }
     if (!saveSetting("releve_cellpadding", $_POST['releve_cellpadding'])) {
@@ -128,7 +128,7 @@ if (isset($_POST['releve_cellpadding'])) {
 
 if (isset($_POST['releve_cellspacing'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_cellspacing'])) || $_POST['releve_cellspacing'] < 0) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_cellspacing'])) || $_POST['releve_cellspacing'] < 0) {
         $_POST['releve_cellspacing'] = 2;
     }
     if (!saveSetting("releve_cellspacing", $_POST['releve_cellspacing'])) {
@@ -139,7 +139,7 @@ if (isset($_POST['releve_cellspacing'])) {
 
 if (isset($_POST['releve_largeurtableau'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_largeurtableau'])) || $_POST['releve_largeurtableau'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_largeurtableau'])) || $_POST['releve_largeurtableau'] < 1) {
         $_POST['largeurtableau'] = 800;
     }
     if (!saveSetting("releve_largeurtableau", $_POST['releve_largeurtableau'])) {
@@ -150,7 +150,7 @@ if (isset($_POST['releve_largeurtableau'])) {
 
 if (isset($_POST['releve_col_matiere_largeur'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_col_matiere_largeur'])) || $_POST['releve_col_matiere_largeur'] < 1) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_col_matiere_largeur'])) || $_POST['releve_col_matiere_largeur'] < 1) {
         $_POST['releve_col_matiere_largeur'] = 150;
     }
     if (!saveSetting("releve_col_matiere_largeur", $_POST['releve_col_matiere_largeur'])) {
@@ -161,7 +161,7 @@ if (isset($_POST['releve_col_matiere_largeur'])) {
 
 if (isset($_POST['releve_ecart_entete'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_ecart_entete']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_ecart_entete']))) {
         $_POST['releve_ecart_entete'] = 0;
     }
     if (!saveSetting("releve_ecart_entete", $_POST['releve_ecart_entete'])) {
@@ -172,7 +172,7 @@ if (isset($_POST['releve_ecart_entete'])) {
 
 if (isset($_POST['releve_addressblock_padding_right'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_right']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_right']))) {
         $_POST['releve_addressblock_padding_right'] = 0;
     }
     if (!saveSetting("releve_addressblock_padding_right", $_POST['releve_addressblock_padding_right'])) {
@@ -183,7 +183,7 @@ if (isset($_POST['releve_addressblock_padding_right'])) {
 
 if (isset($_POST['releve_addressblock_padding_top'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_top']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_top']))) {
         $_POST['releve_addressblock_padding_top'] = 0;
     }
     if (!saveSetting("releve_addressblock_padding_top", $_POST['releve_addressblock_padding_top'])) {
@@ -194,7 +194,7 @@ if (isset($_POST['releve_addressblock_padding_top'])) {
 
 if (isset($_POST['releve_addressblock_padding_text'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_text']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_text']))) {
         $_POST['releve_addressblock_padding_text'] = 0;
     }
     if (!saveSetting("releve_addressblock_padding_text", $_POST['releve_addressblock_padding_text'])) {
@@ -205,7 +205,7 @@ if (isset($_POST['releve_addressblock_padding_text'])) {
 
 if (isset($_POST['releve_addressblock_length'])) {
 
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_length']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_length']))) {
         $_POST['releve_addressblock_length'] = 60;
     }
     if (!saveSetting("releve_addressblock_length", $_POST['releve_addressblock_length'])) {
@@ -218,7 +218,7 @@ if (isset($_POST['releve_addressblock_length'])) {
 //==================================
 // Ajout: boireaus
 if (isset($_POST['releve_addressblock_font_size'])) {
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_font_size']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_font_size']))) {
         $_POST['releve_addressblock_font_size'] = 12;
     }
     if (!saveSetting("releve_addressblock_font_size", $_POST['releve_addressblock_font_size'])) {
@@ -228,7 +228,7 @@ if (isset($_POST['releve_addressblock_font_size'])) {
 }
 
 if(isset($_POST['releve_addressblock_logo_etab_prop'])) {
-	if (!(ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_logo_etab_prop']))) {
+	if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_logo_etab_prop']))) {
 			$releve_addressblock_logo_etab_prop=50;
 	}
 	else{
@@ -245,7 +245,7 @@ else{
 }
 
 if (isset($_POST['releve_addressblock_classe_annee'])) {
-	if (!(ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_classe_annee']))) {
+	if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_classe_annee']))) {
 			$releve_addressblock_classe_annee=35;
 	}
 	else{
@@ -282,7 +282,7 @@ if((isset($_POST['releve_addressblock_classe_annee']))&&(isset($_POST['releve_ad
 
 
 if (isset($_POST['releve_ecart_bloc_nom'])) {
-    if (!(ereg ("^[0-9]{1,}$", $_POST['releve_ecart_bloc_nom']))) {
+    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_ecart_bloc_nom']))) {
         $_POST['releve_ecart_bloc_nom'] = 0;
     }
     if (!saveSetting("releve_ecart_bloc_nom", $_POST['releve_ecart_bloc_nom'])) {
@@ -395,7 +395,7 @@ if(isset($_POST['releve_photo_largeur_max'])) {
 }
 
 if(isset($_POST['releve_categ_font_size'])) {
-	if (!(ereg ("^[0-9]{1,}$", $_POST['releve_categ_font_size']))) {
+	if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_categ_font_size']))) {
 		$_POST['releve_categ_font_size'] = 10;
 	}
 	if (!saveSetting("releve_categ_font_size", $_POST['releve_categ_font_size'])) {

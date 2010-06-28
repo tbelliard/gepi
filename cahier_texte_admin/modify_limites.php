@@ -40,13 +40,13 @@ if (!checkAccess()) {
 }
 $msg = '';
 if (isset($_POST['max_size_ko'])) {
-    if (ereg ("^[0-9]{1,}$", $_POST['max_size_ko'])) {
+    if (my_ereg ("^[0-9]{1,}$", $_POST['max_size_ko'])) {
         $max_size = $_POST['max_size_ko']*1024;
         if (!saveSetting("max_size", $max_size)) $msg = "Erreur lors de l'enregistrement de la taille maximale autorisée pour un fichier !";
     }
 }
 if (isset($_POST['total_max_size_ko'])) {
-    if (ereg ("^[0-9]{1,}$", $_POST['total_max_size_ko'])) {
+    if (my_ereg ("^[0-9]{1,}$", $_POST['total_max_size_ko'])) {
         $total_max_size = $_POST['total_max_size_ko']*1024;
         if (!saveSetting("total_max_size", $total_max_size)) $msg = "Erreur lors de l'enregistrement de la taille de l'espace disque maximal autorisé pour une rubrique !";
     }

@@ -52,7 +52,7 @@ if (isset($_POST['isposted'])) {
             $matiere_categorie = $_POST['matiere_categorie'];
         }
         //if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{1,19}$", $matiere_name)) {
-        if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{1,19}$", $matiere_name)) {
+        if (my_ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{1,19}$", $matiere_name)) {
             $verify_query = mysql_query("SELECT * from matieres WHERE matiere='$matiere_name'");
             $verify = mysql_num_rows($verify_query);
             if ($verify == 0) {
