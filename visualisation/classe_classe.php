@@ -242,8 +242,8 @@ if ((!isset($id_classe)) or ($id_classe=='')) {
                 if ($moyenne_classe == '') {$moyenne_classe = '-';}
                 if ($moyenne_classe2 == '') {$moyenne_classe2 = '-';}
                 echo "<td>$moyenne_classe</td><td>$moyenne_classe2</td>\n";
-                (ereg ("^[0-9\.\,]{1,}$", $moyenne_classe)) ? array_push($datay1[$k],"$moyenne_classe") : array_push($datay1[$k],"0");
-                (ereg ("^[0-9\.\,]{1,}$", $moyenne_classe2)) ? array_push($datay2[$k],"$moyenne_classe2") : array_push($datay2[$k],"0");
+                (my_ereg ("^[0-9\.\,]{1,}$", $moyenne_classe)) ? array_push($datay1[$k],"$moyenne_classe") : array_push($datay1[$k],"0");
+                (my_ereg ("^[0-9\.\,]{1,}$", $moyenne_classe2)) ? array_push($datay2[$k],"$moyenne_classe2") : array_push($datay2[$k],"0");
                 if ($k == '1') {
                     //array_push($etiquette,$current_group["matiere"]["nom_complet"]);
                     array_push($etiquette,rawurlencode($current_group["matiere"]["nom_complet"]));
