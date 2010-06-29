@@ -50,7 +50,7 @@ if (!checkAccess()) {
 	die();
 }
 
-include "classes/class_menu_general.php";
+include "class_php/class_menu_general.php";
 
 $tab[0] = "administrateur";
 $tab[1] = "professeur";
