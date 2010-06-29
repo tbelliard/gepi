@@ -121,7 +121,7 @@ require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
-debug_var();
+//debug_var();
 
 if((!isset($projet))||($projet=="")) {
 	echo "<p style='color:red'>ERREUR: Le projet n'est pas choisi.</p>\n";
