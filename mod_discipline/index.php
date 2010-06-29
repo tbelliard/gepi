@@ -428,16 +428,37 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 	// declarant ou protagoniste
 	$sql="SELECT 1=1 FROM s_protagonistes, s_incidents WHERE ((login='".$_SESSION['login']."')||(declarant='".$_SESSION['login']."'));";
 	$test=mysql_query($sql);
-	if((mysql_num_rows($test)>0)) { //on a bien un prof ou statut autre comme déclarant ou un protagoniste 
+	if((mysql_num_rows($test)>0)) { //on a bien un prof ou statut autre comme déclarant ou un protagoniste
 		echo "<tr>\n";
 		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
 		echo "</td>\n";
 		echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
 		echo "</tr>\n";
 	} else { //le prof n'est ni déclarant ni protagoniste. Pour un elv dont il est PP y a t--il des incidents de déclaré ?
-		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
-		$test=mysql_query($sql);
-		if ((mysql_num_rows($test)>0)) { //Oui
+		$sql="SELECT 1=1 FROM j_eleves_professeurs jep, s_protagonistes sp 
+						  WHERE sp.login=jep.login
+						  AND jep.professeur='".$_SESSION['login']."';";
+		$test=mysql_query($sql); // prof principal
+		if (getSettingValue("visuDiscProfClasses")=='yes') {
+		  $sql1="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, s_protagonistes sp
+							WHERE jeg.id_groupe=jgp.id_groupe
+							AND sp.login=jeg.login
+							AND jgp.login='".$_SESSION['login']."';";
+		  $test1=mysql_query($sql1); // prof de la classe autorisé à voir
+		}
+		// $sql1="SELECT 1=1 FROM j_eleves_classes jec, s_protagonistes sp, classes c
+		//					WHERE sp.login=jep.login AND jep.professeur='".$_SESSION['login']."';";
+		// $test1=mysql_query($sql1); // prof de la classe autorisé à voir
+		if (getSettingValue("visuDiscProfGroupes")=='yes') {
+		  $sql2="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, s_protagonistes sp
+							WHERE jeg.id_groupe=jgp.id_groupe
+							AND sp.login=jeg.login
+							AND jgp.login='".$_SESSION['login']."';";
+		  $test2=mysql_query($sql2); // prof du groupe autorisé à voir
+		}
+		if ((mysql_num_rows($test)>0) ||
+				(getSettingValue("visuDiscProfClasses")=='yes' && mysql_num_rows($test1)>0) ||
+				(getSettingValue("visuDiscProfGroupes")=='yes' && mysql_num_rows($test2)>0)) { //Oui
 			echo "<tr>\n";
 			echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Consulter les suites des incidents</a>";
 			echo "</td>\n";
