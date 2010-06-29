@@ -976,6 +976,9 @@ else {
 	// Il faut que le tableaux $classe_fut soit initialisé.
 	//=============================
 
+	necessaire_bull_simple();
+
+	//=============================
 	$titre="Sélection du profil";
 	$texte="<p style='text-align:center;'>";
 	for($loop=0;$loop<count($tab_profil);$loop++) {
@@ -1009,6 +1012,7 @@ else {
 		afficher_div('div_set_profil','y',100,100);
 	}
 </script>\n";
+	//=============================
 
 //============================================================
 //============================================================
@@ -1292,8 +1296,16 @@ else {
 	
 			//==========================================
 			//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' ORDER BY e.nom,e.prenom;";
+			$num_per2=-1;
 			if(($id_classe_actuelle[$j]!='Red')&&($id_classe_actuelle[$j]!='Arriv')) {
 				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' ORDER BY e.nom,e.prenom;";
+
+				$sql_per="SELECT num_periode FROM periodes WHERE id_classe='$id_classe_actuelle[$j]' ORDER BY num_periode DESC LIMIT 1;";
+				$res_per=mysql_query($sql_per);
+				if(mysql_num_rows($res_per)>0) {
+					$lig_per=mysql_fetch_object($res_per);
+					$num_per2=$lig_per->num_periode;
+				}
 			}
 			else {
 				$sql="SELECT DISTINCT e.* FROM eleves e, gc_ele_arriv_red gc WHERE gc.login=e.login AND gc.statut='$id_classe_actuelle[$j]' AND gc.projet='$projet' ORDER BY e.nom,e.prenom;";
@@ -1387,6 +1399,9 @@ else {
 						// Niveau...
 						echo "<td>\n";
 						if(($moy!="")&&(strlen(my_ereg_replace("[0-9.,]","",$moy))==0)) {
+							if($num_per2>0) {
+								echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
+							}
 							if($moy<7) {
 								echo "<span style='color:red;'>";
 							}
@@ -1403,6 +1418,9 @@ else {
 								echo "<span style='color:blue;'>";
 							}
 							echo "$moy\n";
+							if($num_per2>0) {
+								echo "</a>\n";
+							}
 							echo "</span>";
 							echo "<input type='hidden' name='moy[$cpt]' id='moy_$cpt' value='$moy' />\n";
 						}
