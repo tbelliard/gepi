@@ -353,6 +353,7 @@ function change_display(id) {
 	if($nb_lv2>0) {echo "<th>LV2</th>\n";}
 	if($nb_lv3>0) {echo "<th>LV3</th>\n";}
 	if($nb_autre>0) {echo "<th>Autre option</th>\n";}
+	echo "<th>Profil</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -368,6 +369,7 @@ function change_display(id) {
 	$cpt++;
 	echo "</td>\n";
 
+	$classe_fut=array();
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
 	$cpt=0;
 	while($lig=mysql_fetch_object($res_clas_fut)) {
@@ -380,8 +382,16 @@ function change_display(id) {
 		else {
 			echo "_ $lig->classe<br />\n";
 		}
+
+		$classe_fut[]=$lig->classe;
+
 		$cpt++;
 	}
+	$classe_fut[]="Red";
+	$classe_fut[]="Dep";
+	$classe_fut[]=""; // Vide pour les Non Affectés
+
+
 	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='' /><label for='clas_fut_$cpt'>Non encore affecté</label><br />\n";
 	$cpt++;
 	echo "</td>\n";
@@ -486,6 +496,35 @@ function change_display(id) {
 		echo "</td>\n";
 	}
 
+
+	//=============================
+	include("lib_gc.php");
+	// On y initialise le tableau des profils
+	//=============================
+
+	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
+		echo "<table class='boireaus' border='1' summary='Profil'>\n";
+		echo "<tr>\n";
+		echo "<th>Avec</th>\n";
+		echo "<th>Sans</th>\n";
+		echo "<th>Profil</th>\n";
+		echo "</tr>\n";
+
+		for($loop=0;$loop<count($tab_profil);$loop++) {
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='checkbox' name='avec_profil[]' value='$tab_profil[$loop]' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<input type='checkbox' name='sans_profil[]' value='$tab_profil[$loop]' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "$tab_profil[$loop]\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		echo "</table>\n";
+	echo "</td>\n";
 	// Pouvoir faire une recherche par niveau aussi?
 
 
@@ -506,6 +545,10 @@ function change_display(id) {
 	Si vous cochez deux classes, les élèves pris en compte seront '<i>membre de Classe 1 OU membre de Classe 2</i>'</li>\n";
 	echo "<li>Les colonnes d'options sont traitées suivant le mode ET.<br />
 	Ce sera par exemple '<i>Avec AGL1 ET Avec ESP2 ET Avec LATIN ET Sans DECP3</i>'</li>\n";
+	echo "<li>Les lignes de la colonne avec profil sont traitées suivant le mode OU.<br />
+	Les lignes de la colonne sans profil sont traitées suivant le mode ET.<br />
+	Ce sera par exemple '<i>Avec profil RAS OU profil B</i>'
+	</li>\n";
 	echo "</ul>\n";
 }
 else {
@@ -538,6 +581,10 @@ else {
 	$avec_autre=isset($_POST['avec_autre']) ? $_POST['avec_autre'] : (isset($_GET['avec_autre']) ? $_GET['avec_autre'] : array());
 	$sans_autre=isset($_POST['sans_autre']) ? $_POST['sans_autre'] : (isset($_GET['sans_autre']) ? $_GET['sans_autre'] : array());
 
+	$avec_profil=isset($_POST['avec_profil']) ? $_POST['avec_profil'] : (isset($_GET['avec_profil']) ? $_GET['avec_profil'] : array());
+	$sans_profil=isset($_POST['sans_profil']) ? $_POST['sans_profil'] : (isset($_GET['sans_profil']) ? $_GET['sans_profil'] : array());
+
+
 
 	// Pour utiliser des listes d'affichage
 	$requete_definie=isset($_POST['requete_definie']) ? $_POST['requete_definie'] : (isset($_GET['requete_definie']) ? $_GET['requete_definie'] : 'n');
@@ -567,6 +614,9 @@ else {
 				case 'avec_autre':
 					if(!in_array($lig_tmp->valeur,$avec_autre)) {$avec_autre[]=$lig_tmp->valeur;}
 					break;
+				case 'avec_profil':
+					if(!in_array($lig_tmp->valeur,$avec_profil)) {$avec_profil[]=$lig_tmp->valeur;}
+					break;
 
 				case 'sans_lv1':
 					if(!in_array($lig_tmp->valeur,$sans_lv1)) {$sans_lv1[]=$lig_tmp->valeur;}
@@ -579,6 +629,9 @@ else {
 					break;
 				case 'sans_autre':
 					if(!in_array($lig_tmp->valeur,$sans_autre)) {$sans_autre[]=$lig_tmp->valeur;}
+					break;
+				case 'sans_profil':
+					if(!in_array($lig_tmp->valeur,$sans_profil)) {$sans_profil[]=$lig_tmp->valeur;}
 					break;
 			}
 		}
@@ -674,6 +727,35 @@ else {
 		$chaine_sans_opt.="<span style='color:red;'>".$sans_autre[$i]."</span>";
 	}
 
+
+	$chaine_avec_profil="";
+	if(count($avec_profil)>0) {
+		$sql_ele_profil="";
+		for($i=0;$i<count($avec_profil);$i++) {
+			if($i>0) {$sql_ele_profil.=" OR ";}
+			$sql_ele_profil.="profil='$avec_profil[$i]'";
+
+			if($chaine_avec_profil!="") {$chaine_avec_profil.=", ";}
+			$chaine_avec_profil.="<span style='color:red;'>".$avec_profil[$i]."</span>";
+		}
+		$sql_ele.=" AND ($sql_ele_profil)";
+	}
+
+	$chaine_sans_profil="";
+	if(count($sans_profil)>0) {
+		$sql_ele_profil="";
+		for($i=0;$i<count($sans_profil);$i++) {
+			if($i>0) {$sql_ele_profil.=" AND ";}
+			$sql_ele_profil.="profil!='$sans_profil[$i]'";
+
+			if($chaine_sans_profil!="") {$chaine_sans_profil.=", ";}
+			$chaine_sans_profil.="<span style='color:red;'>".$sans_profil[$i]."</span>";
+		}
+		$sql_ele.=" AND ($sql_ele_profil)";
+	}
+
+
+
 	$tab_ele=array();
 	$sql_ele.=";";
 	//echo "$sql_ele<br />\n";
@@ -688,6 +770,8 @@ else {
 	if($chaine_classes_futures!="") {echo "Classes futures $chaine_classes_futures<br />\n";}
 	if($chaine_avec_opt!="") {echo "Avec $chaine_avec_opt<br />\n";}
 	if($chaine_sans_opt!="") {echo "Sans $chaine_sans_opt<br />\n";}
+	if($chaine_avec_profil!="") {echo "Avec profil $chaine_avec_profil<br />\n";}
+	if($chaine_sans_profil!="") {echo "Sans profil $chaine_sans_profil<br />\n";}
 	echo "&nbsp;</p>\n";
 
 
