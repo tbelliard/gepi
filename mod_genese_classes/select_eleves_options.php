@@ -316,6 +316,10 @@ include("lib_gc.php");
 // Il faut que le tableaux $classe_fut soit initialisé.
 //=============================
 
+//=========================================
+necessaire_bull_simple();
+//=========================================
+
 echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
 // Colorisation
@@ -403,8 +407,16 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 	echo "</tr>\n";
 	//==========================================
 
+	$num_per2=-1;
 	if(($id_classe_actuelle[$j]!='Red')&&($id_classe_actuelle[$j]!='Arriv')) {
 		$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' ORDER BY e.nom,e.prenom;";
+		
+		$sql_per="SELECT num_periode FROM periodes WHERE id_classe='$id_classe_actuelle[$j]' ORDER BY num_periode DESC LIMIT 1;";
+		$res_per=mysql_query($sql_per);
+		if(mysql_num_rows($res_per)>0) {
+			$lig_per=mysql_fetch_object($res_per);
+			$num_per2=$lig_per->num_periode;
+		}
 	}
 	else {
 		$sql="SELECT DISTINCT e.* FROM eleves e, gc_ele_arriv_red gc WHERE gc.login=e.login AND gc.statut='$id_classe_actuelle[$j]' AND gc.projet='$projet' ORDER BY e.nom,e.prenom;";
@@ -607,6 +619,11 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			$res_note=mysql_query($sql);
 			if(mysql_num_rows($res_note)>0) {
 				$lig_note=mysql_fetch_object($res_note);
+
+				if($num_per2>0) {
+					echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
+				}
+
 				if($lig_note->moy<7) {
 					echo "<span style='color:red;'>";
 				}
@@ -623,6 +640,11 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 					echo "<span style='color:blue;'>";
 				}
 				if($lig_note->moy!="") {echo "$lig_note->moy\n";} else {echo "&nbsp;\n";}
+
+				if($num_per2>0) {
+					echo "</a>\n";
+				}
+
 				echo "</span>";
 				echo "<input type='hidden' name='moy[$cpt]' value='$lig_note->moy' />\n";
 			}
