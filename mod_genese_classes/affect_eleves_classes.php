@@ -121,7 +121,7 @@ require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
 
-//debug_var();
+debug_var();
 
 if((!isset($projet))||($projet=="")) {
 	echo "<p style='color:red'>ERREUR: Le projet n'est pas choisi.</p>\n";
@@ -160,6 +160,172 @@ if(!isset($choix_affich)) {
 		require("../lib/footer.inc.php");
 		die();
 	}
+
+	//=========================================
+	// Pouvoir utiliser des requêtes déjà définies dans l'affichage des listes:
+	$sql="SELECT DISTINCT id_aff FROM gc_affichages WHERE projet='$projet' ORDER BY id_aff;";
+	$res_req_aff=mysql_query($sql);
+	if(mysql_num_rows($res_req_aff)>0) {
+		echo "<script type='text/javascript'>
+function change_display(id) {
+	if(document.getElementById(id)) {
+		if(document.getElementById(id).style.display=='none') {document.getElementById(id).style.display='block'} else {document.getElementById(id).style.display='none'}
+	}
+}
+</script>\n";
+
+		echo "<div style='float:right;'>\n";
+		echo "<p class='bold'>Listes des affichages définis</p>\n";
+		while($lig_req_aff=mysql_fetch_object($res_req_aff)) {
+			echo "<p><a href='#' onclick=\"change_display('id_aff_$lig_req_aff->id_aff')\">Affichage n°$lig_req_aff->id_aff</a></p>\n";
+
+			echo "<div id='id_aff_$lig_req_aff->id_aff' style='display:none;'>\n";
+			//++++++++++++++++++++++++++++++++++++++++++++++
+			$sql="SELECT DISTINCT id_req FROM gc_affichages WHERE projet='$projet'AND id_aff='$lig_req_aff->id_aff' ORDER BY id_req;";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$txt_requete="<ul>\n";
+				while($lig=mysql_fetch_object($res)) {
+					$txt_requete.="<li>\n";
+					$txt_requete.="<b><a href='".$_SERVER['PHP_SELF']."?choix_affich=y&amp;requete_definie=y&amp;id_aff=$lig_req_aff->id_aff&amp;id_req=$lig->id_req&amp;projet=$projet'>Requête n°$lig->id_req</a></b>";
+	
+					//===========================================
+					$id_req=$lig->id_req;
+	
+					$sql_ele="SELECT DISTINCT login FROM gc_eleves_options WHERE projet='$projet' AND classe_future!='Dep' AND classe_future!='Red'";
+					$sql_ele_id_classe_act="";
+					$sql_ele_classe_fut="";
+	
+					$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$lig_req_aff->id_aff' AND id_req='$id_req' ORDER BY type;";
+					$res_tmp=mysql_query($sql);
+					while($lig_tmp=mysql_fetch_object($res_tmp)) {
+						switch($lig_tmp->type) {
+							case 'id_clas_act':
+								if($sql_ele_id_classe_act!='') {$sql_ele_id_classe_act.=" OR ";}
+								$sql_ele_id_classe_act.="id_classe_actuelle='$lig_tmp->valeur'";
+								break;
+			
+							case 'clas_fut':
+								if($sql_ele_classe_fut!='') {$sql_ele_classe_fut.=" OR ";}
+								$sql_ele_classe_fut.="classe_future='$lig_tmp->valeur'";
+								break;
+			
+							case 'avec_lv1':
+								$sql_ele.=" AND liste_opt LIKE '%|$lig_tmp->valeur|%'";
+								break;
+							case 'avec_lv2':
+								$sql_ele.=" AND liste_opt LIKE '%|$lig_tmp->valeur|%'";
+								break;
+							case 'avec_lv3':
+								$sql_ele.=" AND liste_opt LIKE '%|$lig_tmp->valeur|%'";
+								break;
+			
+							case 'avec_autre':
+								$sql_ele.=" AND liste_opt LIKE '%|$lig_tmp->valeur|%'";
+								break;
+			
+							case 'sans_lv1':
+								$sql_ele.=" AND liste_opt NOT LIKE '%|$lig_tmp->valeur|%'";
+								break;
+							case 'sans_lv2':
+								$sql_ele.=" AND liste_opt NOT LIKE '%|$lig_tmp->valeur|%'";
+								break;
+							case 'sans_lv3':
+								$sql_ele.=" AND liste_opt NOT LIKE '%|$lig_tmp->valeur|%'";
+								break;
+							case 'sans_autre':
+								$sql_ele.=" AND liste_opt NOT LIKE '%|$lig_tmp->valeur|%'";
+								break;
+						}
+					}
+			
+					//$tab_ele=array();
+			
+					if($sql_ele_id_classe_act!='') {$sql_ele.=" AND ($sql_ele_id_classe_act)";}
+					if($sql_ele_classe_fut!='') {$sql_ele.=" AND ($sql_ele_classe_fut)";}
+			
+					$sql_ele.=";";
+					//echo "$sql_ele<br />\n";
+					$res_ele=mysql_query($sql_ele);
+	
+					$txt_requete.=" <span style='font-size:small;font-style:italic;'>(".mysql_num_rows($res_ele).")</span><br />";
+	
+					//===========================================
+	
+	
+					$sql="SELECT * FROM gc_affichages WHERE projet='$projet'AND id_aff='$lig_req_aff->id_aff' AND type='id_clas_act' AND id_req='$lig->id_req';";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)>0) {
+						$txt_requete.="Classe actuelle (";
+						$cpt=0;
+						while($lig2=mysql_fetch_object($res2)) {
+							if($cpt>0) {$txt_requete.=", ";}
+							if(($lig2->valeur=='Red')||($lig2->valeur=='Arriv')) {
+								$txt_requete.=$lig2->valeur;
+							}
+							else {
+								$txt_requete.=get_class_from_id($lig2->valeur);
+							}
+							$cpt++;
+						}
+						$txt_requete.=")<br />";
+					}
+	
+					$sql="SELECT * FROM gc_affichages WHERE projet='$projet'AND id_aff='$lig_req_aff->id_aff' AND type='clas_fut' AND id_req='$lig->id_req';";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)>0) {
+						$txt_requete.="Classe future (";
+						$cpt=0;
+						while($lig2=mysql_fetch_object($res2)) {
+							if($cpt>0) {$txt_requete.=", ";}
+							$txt_requete.=$lig2->valeur;
+							$cpt++;
+						}
+						$txt_requete.=")<br />";
+					}
+	
+					$sql="SELECT * FROM gc_affichages WHERE projet='$projet'AND id_aff='$lig_req_aff->id_aff' AND type LIKE 'avec_%' AND id_req='$lig->id_req';";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)>0) {
+						$txt_requete.="Avec les options (<span style='color:green;'>";
+						$cpt=0;
+						while($lig2=mysql_fetch_object($res2)) {
+							if($cpt>0) {$txt_requete.=", ";}
+							$txt_requete.=$lig2->valeur;
+							$cpt++;
+						}
+						$txt_requete.="</span>)<br />";
+					}
+	
+					$sql="SELECT * FROM gc_affichages WHERE projet='$projet'AND id_aff='$lig_req_aff->id_aff' AND type LIKE 'sans_%' AND id_req='$lig->id_req';";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)>0) {
+						$txt_requete.="Sans les options (<span style='color:red;'>";
+						$cpt=0;
+						while($lig2=mysql_fetch_object($res2)) {
+							if($cpt>0) {$txt_requete.=", ";}
+							$txt_requete.=$lig2->valeur;
+							$cpt++;
+						}
+						$txt_requete.="</span>)<br />";
+					}
+	
+					$txt_requete.="</li>\n";
+				}
+				$txt_requete.="</ul>\n";
+				echo $txt_requete;
+
+			}
+			//++++++++++++++++++++++++++++++++++++++++++++++
+			echo "</div>\n";
+
+
+
+
+		}
+		echo "</div>\n";
+	}
+	//=========================================
 
 	$sql="SELECT DISTINCT opt FROM gc_options WHERE projet='$projet' AND type='lv1' ORDER BY opt;";
 	$res_lv1=mysql_query($sql);
@@ -372,6 +538,52 @@ else {
 	$avec_autre=isset($_POST['avec_autre']) ? $_POST['avec_autre'] : (isset($_GET['avec_autre']) ? $_GET['avec_autre'] : array());
 	$sans_autre=isset($_POST['sans_autre']) ? $_POST['sans_autre'] : (isset($_GET['sans_autre']) ? $_GET['sans_autre'] : array());
 
+
+	// Pour utiliser des listes d'affichage
+	$requete_definie=isset($_POST['requete_definie']) ? $_POST['requete_definie'] : (isset($_GET['requete_definie']) ? $_GET['requete_definie'] : 'n');
+	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
+	$id_req=isset($_POST['id_req']) ? $_POST['id_req'] : (isset($_GET['id_req']) ? $_GET['id_req'] : NULL);
+	if(($requete_definie=='y')&&(isset($id_aff))&&(isset($id_req))) {
+		$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req' ORDER BY type;";
+		$res_tmp=mysql_query($sql);
+		while($lig_tmp=mysql_fetch_object($res_tmp)) {
+			switch($lig_tmp->type) {
+				case 'id_clas_act':
+					if(!in_array($lig_tmp->valeur,$id_clas_act)) {$id_clas_act[]=$lig_tmp->valeur;}
+					break;
+				case 'clas_fut':
+					if(!in_array($lig_tmp->valeur,$clas_fut)) {$clas_fut[]=$lig_tmp->valeur;}
+					break;
+
+				case 'avec_lv1':
+					if(!in_array($lig_tmp->valeur,$avec_lv1)) {$avec_lv1[]=$lig_tmp->valeur;}
+					break;
+				case 'avec_lv2':
+					if(!in_array($lig_tmp->valeur,$avec_lv2)) {$avec_lv2[]=$lig_tmp->valeur;}
+					break;
+				case 'avec_lv3':
+					if(!in_array($lig_tmp->valeur,$avec_lv3)) {$avec_lv3[]=$lig_tmp->valeur;}
+					break;
+				case 'avec_autre':
+					if(!in_array($lig_tmp->valeur,$avec_autre)) {$avec_autre[]=$lig_tmp->valeur;}
+					break;
+
+				case 'sans_lv1':
+					if(!in_array($lig_tmp->valeur,$sans_lv1)) {$sans_lv1[]=$lig_tmp->valeur;}
+					break;
+				case 'sans_lv2':
+					if(!in_array($lig_tmp->valeur,$sans_lv2)) {$sans_lv2[]=$lig_tmp->valeur;}
+					break;
+				case 'sans_lv3':
+					if(!in_array($lig_tmp->valeur,$sans_lv3)) {$sans_lv3[]=$lig_tmp->valeur;}
+					break;
+				case 'sans_autre':
+					if(!in_array($lig_tmp->valeur,$sans_autre)) {$sans_autre[]=$lig_tmp->valeur;}
+					break;
+			}
+		}
+	}
+
 	//=========================
 	// Début de la requête à forger pour ne retenir que les élèves souhaités
 	$sql_ele="SELECT DISTINCT login FROM gc_eleves_options WHERE projet='$projet' AND classe_future!='Dep' AND classe_future!='Red'";
@@ -477,6 +689,8 @@ else {
 	if($chaine_avec_opt!="") {echo "Avec $chaine_avec_opt<br />\n";}
 	if($chaine_sans_opt!="") {echo "Sans $chaine_sans_opt<br />\n";}
 	echo "&nbsp;</p>\n";
+
+
 
 /*
 $_POST['id_clas_act']=	Array (*)
@@ -587,7 +801,11 @@ $_POST['projet']=	4eme_vers_3eme
 	// On y initialise les couleurs
 	// Il faut que le tableaux $classe_fut soit initialisé.
 	//=============================
-	
+
+	//=========================================
+	necessaire_bull_simple();
+	//=========================================
+
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
 
 	for($i=0;$i<count($avec_lv1);$i++) {
@@ -868,8 +1086,16 @@ $_POST['projet']=	4eme_vers_3eme
 
 		//==========================================
 		//$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' ORDER BY e.nom,e.prenom;";
+		$num_per2=-1;
 		if(($id_classe_actuelle[$j]!='Red')&&($id_classe_actuelle[$j]!='Arriv')) {
 			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe_actuelle[$j]' ORDER BY e.nom,e.prenom;";
+
+			$sql_per="SELECT num_periode FROM periodes WHERE id_classe='$id_classe_actuelle[$j]' ORDER BY num_periode DESC LIMIT 1;";
+			$res_per=mysql_query($sql_per);
+			if(mysql_num_rows($res_per)>0) {
+				$lig_per=mysql_fetch_object($res_per);
+				$num_per2=$lig_per->num_periode;
+			}
 		}
 		else {
 			$sql="SELECT DISTINCT e.* FROM eleves e, gc_ele_arriv_red gc WHERE gc.login=e.login AND gc.statut='$id_classe_actuelle[$j]' AND gc.projet='$projet' ORDER BY e.nom,e.prenom;";
@@ -989,6 +1215,9 @@ $_POST['projet']=	4eme_vers_3eme
 					//===================================
 					echo "<td>\n";
 					if(($moy!="")&&(strlen(my_ereg_replace("[0-9.,]","",$moy))==0)) {
+						if($num_per2>0) {
+							echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
+						}
 						if($moy<7) {
 							echo "<span style='color:red;'>";
 						}
@@ -1004,8 +1233,11 @@ $_POST['projet']=	4eme_vers_3eme
 						else {
 							echo "<span style='color:blue;'>";
 						}
-						echo "$moy\n";
-						echo "</span>";
+						echo "$moy";
+						if($num_per2>0) {
+							echo "</a>\n";
+						}
+						echo "</span>\n";
 					}
 					else {
 						echo "-\n";
