@@ -975,11 +975,48 @@ else {
 	// On y initialise les couleurs
 	// Il faut que le tableaux $classe_fut soit initialisé.
 	//=============================
+
+	$titre="Sélection du profil";
+	$texte="<p style='text-align:center;'>";
+	for($loop=0;$loop<count($tab_profil);$loop++) {
+		if($loop>0) {$texte.=" - ";}
+		$texte.="<a href='#' onclick=\"set_profil('".$tab_profil[$loop]."');return false;\">$tab_profil[$loop]</a>";
+	}
+	$texte.="</p>\n";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_set_profil',$titre,"",$texte,"",14,0,'y','y','n','n');
+
+
+	echo "<script type='text/javascript'>
+	var couleur_profil=new Array($chaine_couleur_profil);
+	var tab_profil=new Array($chaine_profil);
+
+	function set_profil(profil) {
+		var cpt=document.getElementById('profil_courant').value;
+		document.getElementById('profil_'+cpt).value=profil;
+
+		for(m=0;m<couleur_profil.length;m++) {
+			if(document.getElementById('profil_'+cpt).value==tab_profil[m]) {
+				document.getElementById('div_profil_'+cpt).style.color=couleur_profil[m];
+			}
+		}
+
+		document.getElementById('div_profil_'+cpt).innerHTML=profil;
+		cacher_div('div_set_profil');
+	}
+
+	function affiche_set_profil(cpt) {
+		document.getElementById('profil_courant').value=cpt;
+		afficher_div('div_set_profil','y',100,100);
+	}
+</script>\n";
+
 //============================================================
 //============================================================
 //============================================================
 
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+
+	echo "<input type='hidden' name='profil_courant' id='profil_courant' value='-1' />\n";
 
 	// Colorisation
 	echo "<p>Colorisation&nbsp;: ";
@@ -1340,7 +1377,9 @@ else {
 						// Profil...
 						echo "<td>\n";
 						for($m=0;$m<count($tab_profil);$m++) {if($profil==$tab_profil[$m]) {echo "<span style='color:".$tab_couleur_profil[$m].";'>";break;}}
-						echo $profil;
+						//echo $profil;
+						echo "<span id='div_profil_$cpt' onclick=\"affiche_set_profil($cpt);changement();return false;\">$profil</span>\n";
+
 						echo "</span>\n";
 						echo "<input type='hidden' name='profil[$cpt]' id='profil_$cpt' value='$profil' />\n";
 						echo "</td>\n";
