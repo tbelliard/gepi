@@ -697,10 +697,11 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 						  AND jep.professeur='".$_SESSION['login']."';";
 		$test=mysql_query($sql); // prof principal
 		if (getSettingValue("visuDiscProfClasses")=='yes') {
-		  $sql1="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_professeurs jgp, s_protagonistes sp
-							WHERE jeg.id_groupe=jgp.id_groupe
-							AND sp.login=jeg.login
-							AND jgp.login='".$_SESSION['login']."';";
+		  $sql1="SELECT 1=1	FROM j_groupes_professeurs jgp, j_groupes_classes jgc, j_eleves_classes jec, s_protagonistes sp
+	WHERE   sp.login=jec.login
+		AND jec.id_classe=jgc.id_classe
+		AND jgp.id_groupe =  jgc.id_groupe
+		AND jgp.login = '".$_SESSION['login']."';";
 		  $test1=mysql_query($sql1); // prof de la classe autorisé à voir
 		}
 		if (getSettingValue("visuDiscProfGroupes")=='yes') {
