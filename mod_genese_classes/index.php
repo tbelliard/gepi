@@ -114,7 +114,7 @@ $sql="CREATE TABLE IF NOT EXISTS gc_ele_arriv_red (
 login VARCHAR( 255 ) NOT NULL,
 statut ENUM('Arriv','Red') NOT NULL ,
 projet VARCHAR( 255 ) NOT NULL ,
-PRIMARY KEY ( login )
+PRIMARY KEY ( login , projet )
 );";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
@@ -149,6 +149,21 @@ PRIMARY KEY ( id )
 );";
 //echo "$sql<br />";
 $create_table=mysql_query($sql);
+
+
+$req_test=mysql_query("SHOW INDEXES FROM gc_ele_arriv_red WHERE Key_name='PRIMARY';");
+$res_test=mysql_num_rows($req_test);
+if ($res_test<2){
+  $query=mysql_query("ALTER TABLE gc_ele_arriv_red DROP PRIMARY KEY;");
+  if ($query) {
+    $query=mysql_query("ALTER TABLE gc_ele_arriv_red ADD PRIMARY KEY ( login , projet );");
+    if (!$query) {
+      $msg="Echec de la définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !<br />";
+    }
+  } else {
+      $msg="Echec de la définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !<br />Cela peut perturber la conservation des redoublants/arrivants lors de la copie de projet.<br />";
+  }
+}
 
 
 //=========================================================
@@ -287,33 +302,44 @@ if(!isset($projet)) {
 	echo "<h2>Projets</h2>\n";
 	echo "<blockquote>\n";
 
+	echo "<table class='boireaus' summary='Action sur les projets'>\n";
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_creer_projet'>\n";
-	echo "<p>Créer un nouveau projet&nbsp;: <input type='text' name='projet' value='' /> <input type='submit' name='creer_projet' value='Créer' /></p>\n";
+	echo "<tr class='lig1'>\n";
+	echo "<td style='text-align:left;'>\n";
+	echo "Créer un nouveau projet&nbsp;: </td><td style='text-align:left;'><input type='text' name='projet' value='' /> <input type='submit' name='creer_projet' value='Créer' />\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 	echo "</form>\n";
 
 	$sql="SELECT * FROM gc_projets ORDER BY projet;";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_select_projet'>\n";
-		echo "<p>Sélectionner un projet existant&nbsp;: ";
+		echo "<tr class='lig-1'>\n";
+		echo "<td style='text-align:left;'>\n";
+		echo "Sélectionner un projet existant&nbsp;: </td><td style='text-align:left;'>";
 		$lignes_select_projet="<select name='projet'>\n";
 		while($lig=mysql_fetch_object($res)) {
 			$lignes_select_projet.="<option value='$lig->projet'>$lig->projet</option>\n";
 		}
 		$lignes_select_projet.="</select>\n";
 		echo $lignes_select_projet;
-		echo " <input type='submit' name='choix_projet' value='Valider' /></p>\n";
+		echo " <input type='submit' name='choix_projet' value='Valider' />\n";
+		echo "</td>\n";
+		echo "</tr>\n";
 		echo "</form>\n";
 
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_suppr'>\n";
-		echo "<p>Supprimer un projet existant&nbsp;: <!--font color='red'>METTRE UN CONFIRM... ET ENSUITE VIRER LES ENREGISTREMENTS ASSOCIéS AU PROJET DANS TOUTES LES TABLES</font-->";
+		echo "<tr class='lig1'>\n";
+		echo "<td style='text-align:left;'>\n";
+		echo "<p>Supprimer un projet existant&nbsp;: <!--font color='red'>METTRE UN CONFIRM... ET ENSUITE VIRER LES ENREGISTREMENTS ASSOCIéS AU PROJET DANS TOUTES LES TABLES</font--></td><td style='text-align:left;'>";
 		echo $lignes_select_projet;
 		//echo " <input type='submit' name='suppr_projet' value='Supprimer' /></p>\n";
 		echo " <input type='hidden' name='suppr_projet' value='Supprimer' />\n";
 
 		echo " <input type='button' name='btn_suppr_projet' value='Supprimer' ";
 		$themessage="Etes-vous sûr de vouloir supprimer le projet?";
-		echo "onclick=\"confirm_submit('$themessage');\" /></p>\n";
+		echo "onclick=\"confirm_submit('$themessage');\" />\n";
 
 		echo "<script type='text/javascript'>
 	function confirm_submit(themessage)
@@ -325,18 +351,26 @@ if(!isset($projet)) {
 	}
 </script>\n";
 
+		echo "</td>\n";
+		echo "</tr>\n";
 		echo "</form>\n";
 
 
 
 		echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_copie_projet'>\n";
-		echo "<p>Faire une copie d'un projet existant&nbsp;: ";
+		echo "<tr class='lig-1'>\n";
+		echo "<td style='text-align:left;'>\n";
+		echo "Faire une copie d'un projet existant&nbsp;: </td><td style='text-align:left;'>";
 		echo $lignes_select_projet;
 		echo " sous le nom <input type='text' name='projet_new' value='' />";
 		echo " <input type='submit' name='copie_projet' value='Copier' /></p>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
 		echo "</form>\n";
 
 	}
+	echo "</table>\n";
+
 	echo "</blockquote>\n";
 
 }
