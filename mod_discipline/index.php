@@ -659,7 +659,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Effectuer des recherches/statistiques diverses" ;
-		$nouveauItem->expli="Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<i>en précisant ou non le rôle dans l'incident</i>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,...<br /><span style='color: red;'>A FAIRE</span>" ;
+		$nouveauItem->expli="Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<i>en précisant ou non le rôle dans l'incident</i>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,..." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
