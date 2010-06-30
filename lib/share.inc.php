@@ -2839,6 +2839,7 @@ function debug_var() {
 	global $debug_var_count;
 
 	$debug_var_count['POST']=0;
+	$debug_var_count['GET']=0;
 
 	// Fonction destinée à afficher les variables transmises d'une page à l'autre: GET, POST et SESSION
 	echo "<div style='border: 1px solid black; background-color: white; color: black;'>\n";
@@ -2961,7 +2962,20 @@ function debug_var() {
 	echo "<table summary=\"Tableau de debug sur GET\">";
 	foreach($_GET as $get => $val){
 		//echo "\$_GET['".$get."']=".$val."<br />\n";
-		echo "<tr><td>\$_GET['".$get."']=</td><td>".$val."</td></tr>\n";
+		//echo "<tr><td>\$_GET['".$get."']=</td><td>".$val."</td></tr>\n";
+
+		echo "<tr><td valign='top'>\$_GET['".$get."']=</td><td>".$val;
+
+		if(is_array($_GET[$get])) {
+			tab_debug_var('GET',$_GET[$get],'$_GET['.$get.']',$cpt_debug);
+
+			$cpt_debug++;
+		}
+		else {
+			$debug_var_count['GET']++;
+		}
+
+		echo "</td></tr>\n";
 	}
 	echo "</table>\n";
 	echo "</div>\n";
