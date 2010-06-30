@@ -131,6 +131,9 @@ if(!isset($afficher_listes)) {
 		$avec_autre=isset($_POST['avec_autre']) ? $_POST['avec_autre'] : array();
 		$sans_autre=isset($_POST['sans_autre']) ? $_POST['sans_autre'] : array();
 
+		$avec_profil=isset($_POST['avec_profil']) ? $_POST['avec_profil'] : array();
+		$sans_profil=isset($_POST['sans_profil']) ? $_POST['sans_profil'] : array();
+
 		//$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
 		//if((my_ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
 		if(!isset($id_aff)) {
@@ -218,6 +221,13 @@ if(!isset($afficher_listes)) {
 				$insert=mysql_query($sql);
 			}
 		}
+		if(count($avec_profil)>0) {
+			for($i=0;$i<count($avec_profil);$i++) {
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='avec_profil', valeur='$avec_profil[$i]';";
+				$insert=mysql_query($sql);
+			}
+		}
+
 		if(count($sans_lv1)>0) {
 			for($i=0;$i<count($sans_lv1);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_lv1', valeur='$sans_lv1[$i]';";
@@ -239,6 +249,12 @@ if(!isset($afficher_listes)) {
 		if(count($sans_autre)>0) {
 			for($i=0;$i<count($sans_autre);$i++) {
 				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_autre', valeur='$sans_autre[$i]';";
+				$insert=mysql_query($sql);
+			}
+		}
+		if(count($sans_profil)>0) {
+			for($i=0;$i<count($sans_profil);$i++) {
+				$sql="INSERT INTO gc_affichages SET projet='$projet', id_aff='$id_aff', id_req='$id_req', type='sans_profil', valeur='$sans_profil[$i]';";
 				$insert=mysql_query($sql);
 			}
 		}
@@ -355,6 +371,7 @@ if(!isset($afficher_listes)) {
 	if($nb_lv2>0) {echo "<th>LV2</th>\n";}
 	if($nb_lv3>0) {echo "<th>LV3</th>\n";}
 	if($nb_autre>0) {echo "<th>Autre option</th>\n";}
+	echo "<th>Profil</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr>\n";
@@ -383,6 +400,7 @@ if(!isset($afficher_listes)) {
 	$cpt++;
 	echo "</td>\n";
 
+	$classe_fut=array();
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
 	$cpt=0;
 	while($lig=mysql_fetch_object($res_clas_fut)) {
@@ -402,6 +420,8 @@ if(!isset($afficher_listes)) {
 			echo "_ $lig->classe<br />\n";
 		}
 
+		$classe_fut[]=$lig->classe;
+
 		$cpt++;
 	}
 	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='' ";
@@ -410,6 +430,11 @@ if(!isset($afficher_listes)) {
 	}
 	echo "/><label for='clas_fut_$cpt'>Non encore affecté</label><br />\n";
 	$cpt++;
+
+	$classe_fut[]="Red";
+	$classe_fut[]="Dep";
+	$classe_fut[]=""; // Vide pour les Non Affectés
+
 	/*
 	echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='Red' /><label for='clas_fut_$cpt'>Red</label><br />\n";
 	$cpt++;
@@ -550,6 +575,39 @@ if(!isset($afficher_listes)) {
 		echo "</td>\n";
 	}
 
+	//=============================
+	include("lib_gc.php");
+	// On y initialise le tableau des profils
+	//=============================
+
+	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
+		echo "<table class='boireaus' border='1' summary='Profil'>\n";
+		echo "<tr>\n";
+		echo "<th>Avec</th>\n";
+		echo "<th>Sans</th>\n";
+		echo "<th>Profil</th>\n";
+		echo "</tr>\n";
+
+		for($loop=0;$loop<count($tab_profil);$loop++) {
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='checkbox' name='avec_profil[]' value='$tab_profil[$loop]' ";
+			if((isset($tab_ed_req['avec_profil']))&&(in_array($tab_profil[$loop],$tab_ed_req['avec_profil']))) {echo "checked ";}
+			echo "/>\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<input type='checkbox' name='sans_profil[]' value='$tab_profil[$loop]' ";
+			if((isset($tab_ed_req['sans_profil']))&&(in_array($tab_profil[$loop],$tab_ed_req['sans_profil']))) {echo "checked ";}
+			echo "/>\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "$tab_profil[$loop]\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		echo "</table>\n";
+	echo "</td>\n";
+
 	// Pouvoir faire une recherche par niveau aussi?
 
 
@@ -595,6 +653,8 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 				$sql_ele="SELECT DISTINCT login FROM gc_eleves_options WHERE projet='$projet' AND classe_future!='Dep' AND classe_future!='Red'";
 				$sql_ele_id_classe_act="";
 				$sql_ele_classe_fut="";
+				$sql_avec_profil="";
+				$sql_sans_profil="";
 
 				$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req' ORDER BY type;";
 				$res_tmp=mysql_query($sql);
@@ -624,6 +684,11 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 							$sql_ele.=" AND liste_opt LIKE '%|$lig_tmp->valeur|%'";
 							break;
 		
+						case 'avec_profil':
+							if($sql_avec_profil!='') {$sql_avec_profil.=" OR ";}
+							$sql_avec_profil.="profil='$lig_tmp->valeur'";
+							break;
+		
 						case 'sans_lv1':
 							$sql_ele.=" AND liste_opt NOT LIKE '%|$lig_tmp->valeur|%'";
 							break;
@@ -636,13 +701,20 @@ width='16' height='16' alt='Editer les paramètres de la requête' /></a></b>";
 						case 'sans_autre':
 							$sql_ele.=" AND liste_opt NOT LIKE '%|$lig_tmp->valeur|%'";
 							break;
+
+						case 'sans_profil':
+							if($sql_sans_profil!='') {$sql_sans_profil.=" AND ";}
+							$sql_sans_profil.="profil!='$lig_tmp->valeur'";
+							break;
 					}
 				}
 		
 				//$tab_ele=array();
-		
+
 				if($sql_ele_id_classe_act!='') {$sql_ele.=" AND ($sql_ele_id_classe_act)";}
 				if($sql_ele_classe_fut!='') {$sql_ele.=" AND ($sql_ele_classe_fut)";}
+				if($sql_avec_profil!='') {$sql_ele.=" AND ($sql_avec_profil)";}
+				if($sql_sans_profil!='') {$sql_ele.=" AND ($sql_sans_profil)";}
 		
 				$sql_ele.=";";
 				//echo "$sql_ele<br />\n";
@@ -1071,6 +1143,8 @@ else {
 
 		$sql_ele_id_classe_act="";
 		$sql_ele_classe_fut="";
+		$sql_avec_profil="";
+		$sql_sans_profil="";
 		//=========================
 
 		$sql="SELECT * FROM gc_affichages WHERE projet='$projet' AND id_aff='$id_aff' AND id_req='$id_req' ORDER BY type;";
@@ -1152,6 +1226,17 @@ else {
 					$sql_ele.=" AND liste_opt LIKE '%|$lig->valeur|%'";
 					break;
 
+				case 'avec_profil':
+					$avec_profil[]=$lig->valeur;
+					if(!isset($tab_requete[1])) {$tab_requete[1]="Avec profil (<span style='color:black;'>";$tab_requete_csv[1]="Avec profil (";} else {$tab_requete[1].=", ";$tab_requete_csv[1].=", ";}
+					$tab_requete[1].=$lig->valeur;$tab_requete_csv[1].=$lig->valeur;
+
+					$lien_affect.="&amp;avec_profil[]=$lig->valeur";
+
+					if($sql_avec_profil!='') {$sql_avec_profil.=" OR ";}
+					$sql_avec_profil.="profil='$lig->valeur'";
+					break;
+
 				case 'sans_lv1':
 					$sans_lv1[]=$lig->valeur;
 					if(!isset($tab_requete[3])) {$tab_requete[3]="Sans les options (<span style='color:red;'>";$tab_requete_csv[3]="Sans les options (";} else {$tab_requete[3].=", ";$tab_requete_csv[3].=", ";}
@@ -1188,6 +1273,17 @@ else {
 
 					$sql_ele.=" AND liste_opt NOT LIKE '%|$lig->valeur|%'";
 					break;
+
+				case 'sans_profil':
+					$sans_profil[]=$lig->valeur;
+					if(!isset($tab_requete[1])) {$tab_requete[1]="Sans profil (<span style='color:black;'>";$tab_requete_csv[1]="Sans profil (";} else {$tab_requete[1].=", ";$tab_requete_csv[1].=", ";}
+					$tab_requete[1].=$lig->valeur;$tab_requete_csv[1].=$lig->valeur;
+
+					$lien_affect.="&amp;sans_profil[]=$lig->valeur";
+
+					if($sql_sans_profil!='') {$sql_sans_profil.=" AND ";}
+					$sql_sans_profil.="profil='$lig->valeur'";
+					break;
 			}
 		}
 
@@ -1218,6 +1314,8 @@ else {
 
 		if($sql_ele_id_classe_act!='') {$sql_ele.=" AND ($sql_ele_id_classe_act)";}
 		if($sql_ele_classe_fut!='') {$sql_ele.=" AND ($sql_ele_classe_fut)";}
+		if($sql_avec_profil!='') {$sql_ele.=" AND ($sql_avec_profil)";}
+		if($sql_sans_profil!='') {$sql_ele.=" AND ($sql_sans_profil)";}
 
 		$sql_ele.=";";
 		//echo "$sql_ele<br />\n";
@@ -1272,7 +1370,6 @@ else {
 		if(count($lv2)>0) {echo "<th>&nbsp;</th>\n";}
 		if(count($lv3)>0) {echo "<th>&nbsp;</th>\n";}
 		if(count($autre_opt)>0) {echo "<th>&nbsp;</th>\n";}
-
 		echo "</tr>\n";
 
 		//==========================================
