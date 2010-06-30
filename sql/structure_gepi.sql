@@ -259,7 +259,7 @@ CREATE TABLE IF NOT EXISTS gc_options (id int(11) unsigned NOT NULL auto_increme
 DROP TABLE IF EXISTS gc_options_classes;
 CREATE TABLE IF NOT EXISTS gc_options_classes (id int(11) unsigned NOT NULL auto_increment,projet VARCHAR( 255 ) NOT NULL ,opt_exclue VARCHAR( 255 ) NOT NULL ,classe_future VARCHAR( 255 ) NOT NULL ,commentaire TEXT NOT NULL ,PRIMARY KEY ( id ));
 DROP TABLE IF EXISTS gc_ele_arriv_red;
-CREATE TABLE IF NOT EXISTS gc_ele_arriv_red (login VARCHAR( 255 ) NOT NULL,statut ENUM('Arriv','Red') NOT NULL ,projet VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( login ));
+CREATE TABLE IF NOT EXISTS gc_ele_arriv_red (login VARCHAR( 255 ) NOT NULL,statut ENUM('Arriv','Red') NOT NULL ,projet VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( login , projet ));
 DROP TABLE IF EXISTS gc_affichages;
 CREATE TABLE IF NOT EXISTS gc_affichages (id int(11) unsigned NOT NULL auto_increment,id_aff int(11) unsigned NOT NULL,id_req int(11) unsigned NOT NULL,projet VARCHAR( 255 ) NOT NULL ,type VARCHAR(255) NOT NULL,valeur varchar(255) NOT NULL,PRIMARY KEY ( id ));
 DROP TABLE IF EXISTS gc_eleves_options;

@@ -898,4 +898,24 @@ if ($res_test==0){
   $result .= "<font color=\"blue\">Le paramètre 'autoriser_correction_bulletin' existe déjà dans la table 'setting'.</font><br />";
 }
 
+$result .= "<br />&nbsp;->Contrôle de la clé primaire de 'gc_ele_arriv_red'<br />";
+$req_test=mysql_query("SHOW INDEXES FROM gc_ele_arriv_red WHERE Key_name='PRIMARY';");
+$res_test=mysql_num_rows($req_test);
+if ($res_test<2){
+  $query=mysql_query("ALTER TABLE gc_ele_arriv_red DROP PRIMARY KEY;");
+  if ($query) {
+    $result.="<font color=\"green\">Suppression de la clé primaire sur 'login' dans 'gc_ele_arriv_red' : Ok !</font><br />";
+    $query=mysql_query("ALTER TABLE gc_ele_arriv_red ADD PRIMARY KEY ( login , projet );");
+    if ($query) {
+      $result.="<font color=\"red\">Définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !</font><br />";
+    } else {
+      $result.="<font color=\"red\">Echec de la définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !</font><br />";
+    }
+  } else {
+    $result.="<font color=\"red\">Suppression de la clé primaire sur 'login' dans 'gc_ele_arriv_red' : Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">La clé primaire de 'gc_ele_arriv_red' est déjà sur $res_test champs.</font><br />";
+}
+
 ?>
