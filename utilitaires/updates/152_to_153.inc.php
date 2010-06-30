@@ -907,7 +907,7 @@ if ($res_test<2){
     $result.="<font color=\"green\">Suppression de la clé primaire sur 'login' dans 'gc_ele_arriv_red' : Ok !</font><br />";
     $query=mysql_query("ALTER TABLE gc_ele_arriv_red ADD PRIMARY KEY ( login , projet );");
     if ($query) {
-      $result.="<font color=\"red\">Définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !</font><br />";
+      $result.="<font color=\"green\">Définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !</font><br />";
     } else {
       $result.="<font color=\"red\">Echec de la définition de la clé primaire sur 'login' et 'projet' dans 'gc_ele_arriv_red' : Erreur !</font><br />";
     }
