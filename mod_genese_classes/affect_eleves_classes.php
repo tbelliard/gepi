@@ -135,6 +135,20 @@ if((!isset($projet))||($projet=="")) {
 
 $choix_affich=isset($_POST['choix_affich']) ? $_POST['choix_affich'] : (isset($_GET['choix_affich']) ? $_GET['choix_affich'] : NULL);
 
+$id_clas_act=isset($_POST['id_clas_act']) ? $_POST['id_clas_act'] : (isset($_GET['id_clas_act']) ? $_GET['id_clas_act'] : array());
+$clas_fut=isset($_POST['clas_fut']) ? $_POST['clas_fut'] : (isset($_GET['clas_fut']) ? $_GET['clas_fut'] : array());
+$avec_lv1=isset($_POST['avec_lv1']) ? $_POST['avec_lv1'] : (isset($_GET['avec_lv1']) ? $_GET['avec_lv1'] : array());
+$sans_lv1=isset($_POST['sans_lv1']) ? $_POST['sans_lv1'] : (isset($_GET['sans_lv1']) ? $_GET['sans_lv1'] : array());
+$avec_lv2=isset($_POST['avec_lv2']) ? $_POST['avec_lv2'] : (isset($_GET['avec_lv2']) ? $_GET['avec_lv2'] : array());
+$sans_lv2=isset($_POST['sans_lv2']) ? $_POST['sans_lv2'] : (isset($_GET['sans_lv2']) ? $_GET['sans_lv2'] : array());
+$avec_lv3=isset($_POST['avec_lv3']) ? $_POST['avec_lv3'] : (isset($_GET['avec_lv3']) ? $_GET['avec_lv3'] : array());
+$sans_lv3=isset($_POST['sans_lv3']) ? $_POST['sans_lv3'] : (isset($_GET['sans_lv3']) ? $_GET['sans_lv3'] : array());
+$avec_autre=isset($_POST['avec_autre']) ? $_POST['avec_autre'] : (isset($_GET['avec_autre']) ? $_GET['avec_autre'] : array());
+$sans_autre=isset($_POST['sans_autre']) ? $_POST['sans_autre'] : (isset($_GET['sans_autre']) ? $_GET['sans_autre'] : array());
+
+$avec_profil=isset($_POST['avec_profil']) ? $_POST['avec_profil'] : (isset($_GET['avec_profil']) ? $_GET['avec_profil'] : array());
+$sans_profil=isset($_POST['sans_profil']) ? $_POST['sans_profil'] : (isset($_GET['sans_profil']) ? $_GET['sans_profil'] : array());
+
 // Choix des élèves à afficher:
 //if(!isset($_POST['choix_affich'])) {
 if(!isset($choix_affich)) {
@@ -360,12 +374,18 @@ function change_display(id) {
 	echo "<td style='vertical-align:top; padding:2px;' class='lig-1'>\n";
 	$cpt=0;
 	while($lig=mysql_fetch_object($res_clas_act)) {
-		echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='$lig->id_classe' /><label for='id_clas_act_$cpt'>$lig->classe</label><br />\n";
+		echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='$lig->id_classe' ";
+		if(in_array($lig->id_classe,$id_clas_act)) {echo "checked ";}
+		echo "/><label for='id_clas_act_$cpt'>$lig->classe</label><br />\n";
 		$cpt++;
 	}
-	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Red' /><label for='id_clas_act_$cpt'>Redoublants</label><br />\n";
+	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Red' ";
+	if(in_array('Red',$id_clas_act)) {echo "checked ";}
+	echo "/><label for='id_clas_act_$cpt'>Redoublants</label><br />\n";
 	$cpt++;
-	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Arriv' /><label for='id_clas_act_$cpt'>Arrivants</label><br />\n";
+	echo "<input type='checkbox' name='id_clas_act[]' id='id_clas_act_$cpt' value='Arriv' ";
+	if(in_array('Arriv',$id_clas_act)) {echo "checked ";}
+	echo "/><label for='id_clas_act_$cpt'>Arrivants</label><br />\n";
 	$cpt++;
 	echo "</td>\n";
 
@@ -377,7 +397,9 @@ function change_display(id) {
 		$sql="SELECT 1=1 FROM gc_eleves_options WHERE projet='$projet' AND classe_future='$lig->classe';";
 		$res_test=mysql_query($sql);
 		if(mysql_num_rows($res_test)>0) {
-			echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='$lig->classe' /><label for='clas_fut_$cpt'>$lig->classe</label><br />\n";
+			echo "<input type='checkbox' name='clas_fut[]' id='clas_fut_$cpt' value='$lig->classe' ";
+			if(in_array($lig->classe,$clas_fut)) {echo "checked ";}
+			echo "/><label for='clas_fut_$cpt'>$lig->classe</label><br />\n";
 		}
 		else {
 			echo "_ $lig->classe<br />\n";
@@ -407,10 +429,14 @@ function change_display(id) {
 			while($lig=mysql_fetch_object($res_lv1)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_lv1[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='avec_lv1[]' value='$lig->opt' ";
+				if(in_array($lig->opt,$avec_lv1)) {echo "checked ";}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_lv1[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='sans_lv1[]' value='$lig->opt' ";
+				if(in_array($lig->opt,$sans_lv1)) {echo "checked ";}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
 				echo "$lig->opt\n";
@@ -432,10 +458,14 @@ function change_display(id) {
 			while($lig=mysql_fetch_object($res_lv2)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_lv2[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='avec_lv2[]' value='$lig->opt' ";
+				if(in_array($lig->opt,$avec_lv2)) {echo "checked ";}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_lv2[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='sans_lv2[]' value='$lig->opt' ";
+				if(in_array($lig->opt,$sans_lv2)) {echo "checked ";}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
 				echo "$lig->opt\n";
@@ -457,10 +487,14 @@ function change_display(id) {
 			while($lig=mysql_fetch_object($res_lv3)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_lv3[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='avec_lv3[]' value='$lig->opt' ";
+				if(in_array($lig->opt,$avec_lv3)) {echo "checked ";}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_lv3[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='sans_lv3[]' value='$lig->opt' ";
+				if(in_array($lig->opt,$sans_lv3)) {echo "checked ";}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
 				echo "$lig->opt\n";
@@ -482,10 +516,14 @@ function change_display(id) {
 			while($lig=mysql_fetch_object($res_autre)) {
 				echo "<tr>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='avec_autre[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='avec_autre[]' value='$lig->opt' ";
+				if(in_array($lig->opt,$avec_autre)) {echo "checked ";}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
-				echo "<input type='checkbox' name='sans_autre[]' value='$lig->opt' />\n";
+				echo "<input type='checkbox' name='sans_autre[]' value='$lig->opt' ";
+				if(in_array($lig->opt,$sans_autre)) {echo "checked ";}
+				echo "/>\n";
 				echo "</td>\n";
 				echo "<td>\n";
 				echo "$lig->opt\n";
@@ -513,10 +551,14 @@ function change_display(id) {
 		for($loop=0;$loop<count($tab_profil);$loop++) {
 			echo "<tr>\n";
 			echo "<td>\n";
-			echo "<input type='checkbox' name='avec_profil[]' value='$tab_profil[$loop]' />\n";
+			echo "<input type='checkbox' name='avec_profil[]' value='$tab_profil[$loop]' ";
+			if(in_array($tab_profil[$loop],$avec_profil)) {echo "checked ";}
+			echo "/>\n";
 			echo "</td>\n";
 			echo "<td>\n";
-			echo "<input type='checkbox' name='sans_profil[]' value='$tab_profil[$loop]' />\n";
+			echo "<input type='checkbox' name='sans_profil[]' value='$tab_profil[$loop]' ";
+			if(in_array($tab_profil[$loop],$sans_profil)) {echo "checked ";}
+			echo "/>\n";
 			echo "</td>\n";
 			echo "<td>\n";
 			echo "$tab_profil[$loop]\n";
@@ -570,6 +612,7 @@ else {
 	// Affichage...
 	//Construire la requête SQL et l'afficher
 
+	/*
 	$id_clas_act=isset($_POST['id_clas_act']) ? $_POST['id_clas_act'] : (isset($_GET['id_clas_act']) ? $_GET['id_clas_act'] : array());
 	$clas_fut=isset($_POST['clas_fut']) ? $_POST['clas_fut'] : (isset($_GET['clas_fut']) ? $_GET['clas_fut'] : array());
 	$avec_lv1=isset($_POST['avec_lv1']) ? $_POST['avec_lv1'] : (isset($_GET['avec_lv1']) ? $_GET['avec_lv1'] : array());
@@ -583,7 +626,7 @@ else {
 
 	$avec_profil=isset($_POST['avec_profil']) ? $_POST['avec_profil'] : (isset($_GET['avec_profil']) ? $_GET['avec_profil'] : array());
 	$sans_profil=isset($_POST['sans_profil']) ? $_POST['sans_profil'] : (isset($_GET['sans_profil']) ? $_GET['sans_profil'] : array());
-
+	*/
 
 
 	// Pour utiliser des listes d'affichage
@@ -645,6 +688,8 @@ else {
 	$sql_ele_classe_fut="";
 	//=========================
 
+	$chaine_lien_modif_requete="projet=$projet";
+
 	$chaine_classes_actuelles="";
 	if(count($id_clas_act)>0) {
 		for($i=0;$i<count($id_clas_act);$i++) {
@@ -653,6 +698,8 @@ else {
 
 			if($i>0) {$chaine_classes_actuelles.=", ";}
 			$chaine_classes_actuelles.=get_class_from_id($id_clas_act[$i]);
+
+			$chaine_lien_modif_requete.="&amp;id_clas_act[$i]=".$id_clas_act[$i];
 		}
 		$sql_ele.=" AND ($sql_ele_id_classe_act)";
 	}
@@ -665,6 +712,8 @@ else {
 
 			if($i>0) {$chaine_classes_futures.=", ";}
 			if($clas_fut[$i]=='') {$chaine_classes_futures.='Non.aff';} else {$chaine_classes_futures.=$clas_fut[$i];}
+
+			$chaine_lien_modif_requete.="&amp;clas_fut[$i]=".$clas_fut[$i];
 		}
 		$sql_ele.=" AND ($sql_ele_classe_fut)";
 	}
@@ -675,6 +724,8 @@ else {
 
 		if($chaine_avec_opt!="") {$chaine_avec_opt.=", ";}
 		$chaine_avec_opt.="<span style='color:green;'>".$avec_lv1[$i]."</span>";
+
+		$chaine_lien_modif_requete.="&amp;avec_lv1[$i]=".$avec_lv1[$i];
 	}
 
 	for($i=0;$i<count($avec_lv2);$i++) {
@@ -682,6 +733,8 @@ else {
 
 		if($chaine_avec_opt!="") {$chaine_avec_opt.=", ";}
 		$chaine_avec_opt.="<span style='color:green;'>".$avec_lv2[$i]."</span>";
+
+		$chaine_lien_modif_requete.="&amp;avec_lv2[$i]=".$avec_lv2[$i];
 	}
 
 	for($i=0;$i<count($avec_lv3);$i++) {
@@ -689,6 +742,8 @@ else {
 
 		if($chaine_avec_opt!="") {$chaine_avec_opt.=", ";}
 		$chaine_avec_opt.="<span style='color:green;'>".$avec_lv3[$i]."</span>";
+
+		$chaine_lien_modif_requete.="&amp;avec_lv3[$i]=".$avec_lv3[$i];
 	}
 
 	for($i=0;$i<count($avec_autre);$i++) {
@@ -696,6 +751,8 @@ else {
 
 		if($chaine_avec_opt!="") {$chaine_avec_opt.=", ";}
 		$chaine_avec_opt.="<span style='color:green;'>".$avec_autre[$i]."</span>";
+
+		$chaine_lien_modif_requete.="&amp;avec_autre[$i]=".$avec_autre[$i];
 	}
 
 	$chaine_sans_opt="";
@@ -704,6 +761,8 @@ else {
 
 		if($chaine_sans_opt!="") {$chaine_sans_opt.=", ";}
 		$chaine_sans_opt.="<span style='color:red;'>".$sans_lv1[$i]."</span>";
+
+		$chaine_lien_modif_requete.="&amp;sans_lv1[$i]=".$sans_lv1[$i];
 	}
 
 	for($i=0;$i<count($sans_lv2);$i++) {
@@ -711,6 +770,8 @@ else {
 
 		if($chaine_sans_opt!="") {$chaine_sans_opt.=", ";}
 		$chaine_sans_opt.="<span style='color:red;'>".$sans_lv2[$i]."</span>";
+
+		$chaine_lien_modif_requete.="&amp;sans_lv2[$i]=".$sans_lv2[$i];
 	}
 
 	for($i=0;$i<count($sans_lv3);$i++) {
@@ -718,6 +779,8 @@ else {
 
 		if($chaine_sans_opt!="") {$chaine_sans_opt.=", ";}
 		$chaine_sans_opt.="<span style='color:red;'>".$sans_lv3[$i]."</span>";
+
+		$chaine_lien_modif_requete.="&amp;sans_lv3[$i]=".$sans_lv3[$i];
 	}
 
 	for($i=0;$i<count($sans_autre);$i++) {
@@ -725,6 +788,8 @@ else {
 
 		if($chaine_sans_opt!="") {$chaine_sans_opt.=", ";}
 		$chaine_sans_opt.="<span style='color:red;'>".$sans_autre[$i]."</span>";
+
+		$chaine_lien_modif_requete.="&amp;sans_autre[$i]=".$sans_autre[$i];
 	}
 
 
@@ -737,6 +802,8 @@ else {
 
 			if($chaine_avec_profil!="") {$chaine_avec_profil.=", ";}
 			$chaine_avec_profil.="<span style='color:red;'>".$avec_profil[$i]."</span>";
+
+			$chaine_lien_modif_requete.="&amp;avec_profil[$i]=".$avec_profil[$i];
 		}
 		$sql_ele.=" AND ($sql_ele_profil)";
 	}
@@ -750,6 +817,8 @@ else {
 
 			if($chaine_sans_profil!="") {$chaine_sans_profil.=", ";}
 			$chaine_sans_profil.="<span style='color:red;'>".$sans_profil[$i]."</span>";
+
+			$chaine_lien_modif_requete.="&amp;sans_profil[$i]=".$sans_profil[$i];
 		}
 		$sql_ele.=" AND ($sql_ele_profil)";
 	}
@@ -766,12 +835,14 @@ else {
 
 	// Rappel de la requête:
 	echo "<p>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?$chaine_lien_modif_requete'>";
 	if($chaine_classes_actuelles!="") {echo "Classes actuelles $chaine_classes_actuelles<br />\n";}
 	if($chaine_classes_futures!="") {echo "Classes futures $chaine_classes_futures<br />\n";}
 	if($chaine_avec_opt!="") {echo "Avec $chaine_avec_opt<br />\n";}
 	if($chaine_sans_opt!="") {echo "Sans $chaine_sans_opt<br />\n";}
 	if($chaine_avec_profil!="") {echo "Avec profil $chaine_avec_profil<br />\n";}
 	if($chaine_sans_profil!="") {echo "Sans profil $chaine_sans_profil<br />\n";}
+	echo "</a>\n";
 	echo "&nbsp;</p>\n";
 
 
