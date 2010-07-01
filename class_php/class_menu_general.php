@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: class_menu_general.php $
+ * $Id: $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -22,20 +22,29 @@
  */
 
 
-class itemGeneral
-{
-	// dÃ©claration des propriÃ©tÃ©s
+/**@class: itemGeneral
+ *
+ * Regroupe les éléments nécessaires à la création
+ * d'un menu du même type que la page d'accueil
+ * 
+ */
+class itemGeneral {
+	// déclaration des propriétés
 	
 	public $indexMenu = 0;
 	public $indexItem = 0;
 	public $icone = array('chemin'=>'','titre'=>'','alt'=>'');	//donnÃ©es de l'icÃ´ne
 	public $key_setting = '' ;																	//test dans setting pour choisir l'icÃ´ne
-	public $chemin="" ;																					//chemin du lien
+	public $chemin="" ;																						//chemin du lien
 	public $titre="" ;																					//titre court
-	public $expli="" ;																					//explications
+	public $expli="" ;																				//explications
 
 	
 	// constructeur
+/** * @class: itemGeneral :
+ *
+ * Regroupe les données nécessaires au remplissage d'un item de menu du type accueil.php ou accueil_modules.php
+ */
 	function __construct() 
 	{
 	}
@@ -44,19 +53,45 @@ class itemGeneral
   {
   }
 
-	// dÃ©claration des mÃ©thodes
+	// déclaration des méthodes
+
+/**
+ *
+ * Vérifie qu'un utilisateur à le droit de voir la page ne lien
+ *
+ * @var string $id l'adresse de la page
+ * telle qu'enregistrée dans la base droits
+ * @var string $statut le statut de l'utilisateur
+ *
+ * @return entier 1 si l'utilisateur a le droit de voir la page
+ * 0 sinon
+ *
+ *
+ */
 	function acces($id,$statut) 
 	{
-		$tab_id = explode("?",$id);
-    $query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
-    $droit = @mysql_result($query_droits, 0, $statut);
-    if ($droit == "V") {
-        return "1";
-    } else {
-        return "0";
-    }
+	  $tab_id = explode("?",$id);
+	  $query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
+	  $droit = @mysql_result($query_droits, 0, $statut);
+	  if ($droit == "V") {
+		  return "1";
+	  } else {
+		  return "0";
+	  }
 	}
 
+/**
+ * 
+ * Met à jour l'icone à afficher avant un item de menu
+ * en interrogeant la table setting
+ *
+ * @var string $key_setting
+ * @return
+ * images/icons/ico_question.png si vide
+ * coche selon les enregistrements dans la table setting
+ * images/enabled.png ou images/disabled.png
+ *
+ */
 	function choix_icone($key_setting) 
 	{
 		if($key_setting!='')
@@ -84,11 +119,12 @@ class itemGeneral
 		}
 	}
 
+	
 }
 
 class menuGeneral
 {
-	// dÃ©claration des propriÃ©tÃ©s
+	// déclaration des propriétés
 	
 	public $indexMenu = 0;
 	public $classe='accueil';
@@ -96,6 +132,10 @@ class menuGeneral
 	public $texte='';
 	
 	// constructeur
+/** * @class: menuGeneral :
+ *
+ * Regroupe les données nécessaires au remplissage des entêtes de menu du type accueil.php ou accueil_modules.php
+ */
 	function __construct() 
 	{
 	}
@@ -103,7 +143,7 @@ class menuGeneral
   function __destruct() 
   {
   }
-	// dÃ©claration des mÃ©thodes
+	// déclaration des méthodes
 
 }
 
