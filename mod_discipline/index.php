@@ -507,7 +507,7 @@ if($nb_incidents_incomplets>0) {
 		else {
 			$aff_incident = $nb_incidents_incomplets." incidents";
 		}
-		$nouveauItem->expli="Vous avez signalé ".$aff_incident."sans préciser la nature de l'incident.<br />Pour faciliter la gestion des incidents, il faudrait compléter." ;
+		$nouveauItem->expli="Vous avez signalé ".$aff_incident." sans préciser la nature de l'incident.<br />Pour faciliter la gestion des incidents, il faudrait compléter." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	  }
