@@ -567,7 +567,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	  {
   /*
 	if ($temoin) {
-		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'></a> (<i>avec protagonistes</i>)";
+		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'></a> (<em>avec protagonistes</em>)";
 	} else {
 		echo "<td width='30%'><a href='../mod_discipline/traiter_incident.php'>Traiter les suites d'un incident</a>";
 	}
@@ -579,7 +579,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
    */
 		
 	$ajout_titre= "";
-	if ($temoin) $ajout_titre= "(<i>avec protagonistes</i>)";
+	if ($temoin) $ajout_titre= "(<em>avec protagonistes</em>)";
 		  $nouveauItem->titre="Traiter les suites d'un incident".$ajout_titre;
 		  $nouveauItem->expli="Traiter les suites d'un incident : définir une punition ou une sanction" ;
 		  $nouveauItem->indexMenu=$a;
@@ -651,7 +651,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	//echo "<td width='30%'>Effectuer des recherches/statistiques diverses<br /><span style='color: red;'>A FAIRE</span>";
 		echo "<td width='30%'><a href='disc_stat.php'>Effectuer des recherches/statistiques diverses</a><br /><span style='color: red;'>A FAIRE</span>";
 	echo "</td>\n";
-	echo "<td>Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<i>en précisant ou non le rôle dans l'incident</i>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,...</td>\n";
+	echo "<td>Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<em>en précisant ou non le rôle dans l'incident</em>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,...</td>\n";
 	echo "</tr>\n";
 	*/
 	$nouveauItem = new itemGeneral();
@@ -659,7 +659,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Effectuer des recherches/statistiques diverses" ;
-		$nouveauItem->expli="Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<i>en précisant ou non le rôle dans l'incident</i>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,..." ;
+		$nouveauItem->expli="Pouvoir lister les incidents ayant eu tel élève pour protagoniste (<em>en précisant ou non le rôle dans l'incident</em>), le nombre de travaux, de retenues, d'exclusions,... entre telle et telle date,..." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -736,12 +736,12 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 			echo "<tr>\n";
 			echo "<td width='30%'>Consulter les suites des incidents</a>";
 			echo "</td>\n";
-			echo "<td><p>Aucun incident (<i>avec protagoniste</i>) vous concernant n'est encore déclaré.</td>\n";
+			echo "<td><p>Aucun incident (<em>avec protagoniste</em>) vous concernant n'est encore déclaré.</td>\n";
 			echo "</tr>\n";
 		   */
 			$nouveauItem->chemin='/mod_discipline/index.php';
 			$nouveauItem->titre="Consulter les suites des incidents" ;
-			$nouveauItem->expli="Aucun incident (<i>avec protagoniste</i>) vous concernant n'est encore déclaré." ;
+			$nouveauItem->expli="Aucun incident (<em>avec protagoniste</em>) vous concernant n'est encore déclaré." ;
 			$nouveauItem->indexMenu=$a;
 			$menuPage[]=$nouveauItem;
 
@@ -762,10 +762,10 @@ echo "<ul>\n";
 echo "<li><p>Une fois un incident clos, il ne peut plus être modifié et aucune sanction liée ne peut être ajoutée/modifiée/supprimée.</p></li>\n";
 echo "<li><p>Le module ne conserve pas un historique des modifications d'un incident.<br />Si plusieurs personnes modifient un incident, elles doivent le faire en bonne intelligence.</p></li>\n";
 echo "<li><p>Un professeur peut saisir un incident, mais ne peut pas saisir les sanctions.<br />
-Un professeur ne peut modifier que les incidents (<i>non clos</i>) qu'il a lui-même déclaré.<br />Il ne peut consulter que les incidents (<i>et leurs suites</i>) qu'il a déclarés, ou dont il est protagoniste, ou encore dont un des élèves, dont il est professeur principal, est protagoniste.</p></li>\n";
+Un professeur ne peut modifier que les incidents (<em>non clos</em>) qu'il a lui-même déclaré.<br />Il ne peut consulter que les incidents (<em>et leurs suites</em>) qu'il a déclarés, ou dont il est protagoniste, ou encore dont un des élèves, dont il est professeur principal, est protagoniste.</p></li>\n";
 //echo "<li><p><em>A FAIRE:</em> Ajouter des tests 'changement()' dans les pages de saisie pour ne pas quitter une étape sans enregistrer.</p></li>\n";
 echo "<li><p><em>A FAIRE:</em> Permettre de consulter d'autres incidents que les siens propres.<br />Eventuellement avec limitation aux élèves de ses classes.</p></li>\n";
-echo "<li><p><em>A FAIRE ENCORE:</em> Permettre d'archiver les incidents/sanctions d'une année et vider les tables incidents/sanctions lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<i>homonymie,...</i>)</p></li>\n";
+echo "<li><p><em>A FAIRE ENCORE:</em> Permettre d'archiver les incidents/sanctions d'une année et vider les tables incidents/sanctions lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<em>homonymie,...</em>)</p></li>\n";
 //echo "<li><p></p></li>\n";
 echo "</ul>\n";
 

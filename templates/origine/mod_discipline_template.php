@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /*
-* $Id: mod_discipline_template.php $
+* $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -75,7 +75,7 @@
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
-<body onload="show_message_deconnexion(); <?php echo $tbs_charger_observeur;?>">
+<body onload="show_message_deconnexion();<?php echo $tbs_charger_observeur;?>">
 
 <!-- on inclut le bandeau -->
 	<?php include('../templates/origine/bandeau_template.php');?>
@@ -87,7 +87,7 @@
 	<a name="contenu" class="invisible">Début de la page</a>
 
 	<p class='bold'>
-		<a href="./accueil.php">
+		<a href="../accueil.php">
 			<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Accueil
 		</a>
 	</p>
@@ -148,7 +148,7 @@
   </li>
   <li>
 	<p>Un professeur peut saisir un incident, mais ne peut pas saisir les sanctions.<br />
-Un professeur ne peut modifier que les incidents (<i>non clos</i>) qu'il a lui-même déclaré.<br />Il ne peut consulter que les incidents (<i>et leurs suites</i>) qu'il a déclarés, ou dont il est protagoniste, ou encore dont un des élèves, dont il est professeur principal, est protagoniste.
+Un professeur ne peut modifier que les incidents (<em>non clos</em>) qu'il a lui-même déclaré.<br />Il ne peut consulter que les incidents (<em>et leurs suites</em>) qu'il a déclarés, ou dont il est protagoniste, ou encore dont un des élèves, dont il est professeur principal, est protagoniste.
 	</p>
   </li>
   <li>
@@ -166,7 +166,7 @@ Un professeur ne peut modifier que les incidents (<i>non clos</i>) qu'il a lui-m
   <li>
 	<p>
 	  <em>A FAIRE ENCORE:</em>
-	  Permettre d'archiver les incidents/sanctions d'une année et vider les tables incidents/sanctions lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<i>homonymie,...</i>)
+	  Permettre d'archiver les incidents/sanctions d'une année et vider les tables incidents/sanctions lors de l'initialisation pour éviter des blagues avec les login élèves réattribués à de nouveaux élèves (<em>homonymie,...</em>)
 	</p>
   </li>
 </ul>
