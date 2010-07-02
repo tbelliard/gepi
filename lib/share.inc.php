@@ -1492,7 +1492,11 @@ function dbase_filter($s){
 
 function detect_browser($HTTP_USER_AGENT) {
 	// D'après le fichier db_details_common.php de phpmyadmin
-
+	/*
+	$f=fopen("/tmp/detect_browser.txt","a+");
+	fwrite($f,date("d/m/Y His").": $HTTP_USER_AGENT\n");
+	fclose($f);
+	*/
 	if(function_exists('preg_match')) {
 		if (preg_match('/Opera(\/| )([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version)) {
 			$BROWSER_VER = $log_version[2];
@@ -1506,12 +1510,33 @@ function detect_browser($HTTP_USER_AGENT) {
 		} elseif(preg_match('/(Konqueror\/)(.*)(;)/', $HTTP_USER_AGENT, $log_version)) {
 			$BROWSER_VER = $log_version[2];
 			$BROWSER_AGENT = 'KONQUEROR';
+		/*
+		} elseif((preg_match('/Mozilla\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version))&&(preg_match('/Chrome\/([0-9.]*)/', $HTTP_USER_AGENT, $log_version2))) {
+		//} elseif(preg_match('/Chrome/', $HTTP_USER_AGENT, $log_version2)) {
+			//$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
+			$BROWSER_VER = $log_version2[1];
+			$BROWSER_AGENT = 'GoogleChrome';
 		} elseif((preg_match('/Mozilla\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version))&&(preg_match('/Safari\/([0-9]*)/', $HTTP_USER_AGENT, $log_version2))) {
 			$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
 			$BROWSER_AGENT = 'SAFARI';
 		} elseif(preg_match('/Mozilla\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version)) {
 			$BROWSER_VER = $log_version[1];
 			$BROWSER_AGENT = 'MOZILLA';
+		*/
+		} elseif(preg_match('/Mozilla\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version)) {
+			if(preg_match('/Chrome\/([0-9.]*)/', $HTTP_USER_AGENT, $log_version2)) {
+				$BROWSER_VER = $log_version2[1];
+				$BROWSER_AGENT = 'GoogleChrome';
+			} elseif(preg_match('/Safari\/([0-9]*)/', $HTTP_USER_AGENT, $log_version2)) {
+				$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
+				$BROWSER_AGENT = 'SAFARI';
+			} elseif(preg_match('/Firefox\/([0-9.]*)/', $HTTP_USER_AGENT, $log_version2)) {
+				$BROWSER_VER = $log_version2[1];
+				$BROWSER_AGENT = 'Firefox';
+			} else {
+				$BROWSER_VER = $log_version[1];
+				$BROWSER_AGENT = 'MOZILLA';
+			}
 		} else {
 			$BROWSER_VER = '';
 			$BROWSER_AGENT = $HTTP_USER_AGENT;
@@ -1530,9 +1555,15 @@ function detect_browser($HTTP_USER_AGENT) {
 		} elseif(mb_ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)) {
 			$BROWSER_VER = $log_version[2];
 			$BROWSER_AGENT = 'KONQUEROR';
+		} elseif((mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(mb_ereg('GoogleChrome/([0-9.]*)', $HTTP_USER_AGENT, $log_version2))) {
+			$BROWSER_VER = $log_version2[1];
+			$BROWSER_AGENT = 'GoogleChrome';
 		} elseif((mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(mb_ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2))) {
 			$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
 			$BROWSER_AGENT = 'SAFARI';
+		} elseif((mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(mb_ereg('Firefox/([0-9.]*)', $HTTP_USER_AGENT, $log_version2))) {
+			$BROWSER_VER = $log_version2[1];
+			$BROWSER_AGENT = 'Firefox';
 		} elseif(mb_ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
 			$BROWSER_VER = $log_version[1];
 			$BROWSER_AGENT = 'MOZILLA';
@@ -1554,12 +1585,18 @@ function detect_browser($HTTP_USER_AGENT) {
 		} elseif(ereg('(Konqueror/)(.*)(;)', $HTTP_USER_AGENT, $log_version)) {
 			$BROWSER_VER = $log_version[2];
 			$BROWSER_AGENT = 'KONQUEROR';
+		} elseif((ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(ereg('GoogleChrome/([0-9.]*)', $HTTP_USER_AGENT, $log_version2))) {
+			$BROWSER_VER = $log_version2[1];
+			$BROWSER_AGENT = 'GoogleChrome';
 		} elseif((ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(ereg('Safari/([0-9]*)', $HTTP_USER_AGENT, $log_version2))) {
 			$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
 			$BROWSER_AGENT = 'SAFARI';
 		} elseif(ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version)) {
 			$BROWSER_VER = $log_version[1];
 			$BROWSER_AGENT = 'MOZILLA';
+		} elseif((ereg('Mozilla/([0-9].[0-9]{1,2})', $HTTP_USER_AGENT, $log_version))&&(ereg('Firefox/([0-9.]*)', $HTTP_USER_AGENT, $log_version2))) {
+			$BROWSER_VER = $log_version2[1];
+			$BROWSER_AGENT = 'Firefox';
 		} else {
 			$BROWSER_VER = '';
 			$BROWSER_AGENT = $HTTP_USER_AGENT;
@@ -1570,6 +1607,7 @@ function detect_browser($HTTP_USER_AGENT) {
 		$BROWSER_AGENT = $HTTP_USER_AGENT;
 	}
 	return  $BROWSER_AGENT." - ".$BROWSER_VER;
+	//return  $BROWSER_AGENT." - ".$BROWSER_VER." ($HTTP_USER_AGENT)";
 }
 
 // Retourne la version de Mysql

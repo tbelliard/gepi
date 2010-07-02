@@ -918,4 +918,13 @@ if ($res_test<2){
   $result .= "<font color=\"blue\">La clé primaire de 'gc_ele_arriv_red' est déjà sur $res_test champs.</font><br />";
 }
 
+$result .= "&nbsp;->Extension à 255 caractères du champ 'USER_AGENT' de la table 'log'<br />";
+$query = mysql_query("ALTER TABLE log CHANGE USER_AGENT USER_AGENT VARCHAR( 255 ) NOT NULL;");
+if ($query) {
+        $result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+        $result .= "<font color=\"red\">Erreur</font><br />";
+}
+
+
 ?>
