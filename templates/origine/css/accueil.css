@@ -91,6 +91,10 @@ color: #F00;
 background-color: #F00;
 }
 
+.invisible {
+  display: none;
+}
+
 .div_tableau {
 	display:table;
 	width:70%; 
@@ -99,8 +103,8 @@ background-color: #F00;
 }
 
 .cellule_1 {
-	width:68.1%; 
-	padding:0.5em;
+	width:98%;
+	padding:0.5em 0.5em 0.5em 0.5em;
 	border-width:thin;
 	border-style:solid; 
 	border-color:#d3d3d3; 

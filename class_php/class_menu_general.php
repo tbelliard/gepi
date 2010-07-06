@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: $
+ * $Id: class_menu_general.php $
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -22,18 +22,13 @@
  */
 
 
-/**@class: itemGeneral
- *
- * Regroupe les éléments nécessaires à la création
- * d'un menu du même type que la page d'accueil
- * 
- */
 class itemGeneral {
+ 
 	// déclaration des propriétés
 	
 	public $indexMenu = 0;
 	public $indexItem = 0;
-	public $icone = array('chemin'=>'','titre'=>'','alt'=>'');	//donnÃ©es de l'icÃ´ne
+	public $icone = array('chemin'=>'','titre'=>'','alt'=>'');	//données de l'icône
 	public $key_setting = '' ;																	//test dans setting pour choisir l'icÃ´ne
 	public $chemin="" ;																						//chemin du lien
 	public $titre="" ;																					//titre court
@@ -125,25 +120,36 @@ class itemGeneral {
 class menuGeneral
 {
 	// déclaration des propriétés
-	
+
 	public $indexMenu = 0;
 	public $classe='accueil';
 	public $icone= array('chemin'=>'./images/icons/control-center.png','titre'=>'', 'alt'=>"");
 	public $texte='';
-	
+
 	// constructeur
 /** * @class: menuGeneral :
  *
  * Regroupe les données nécessaires au remplissage des entêtes de menu du type accueil.php ou accueil_modules.php
  */
-	function __construct() 
+	function __construct()
 	{
 	}
-	
-  function __destruct() 
+
+  function __destruct()
   {
   }
 	// déclaration des méthodes
+
+}
+
+class changeMenuGeneral extends menuGeneral
+{
+
+
+}
+
+class changeItemGeneral extends itemGeneral {
+
 
 }
 

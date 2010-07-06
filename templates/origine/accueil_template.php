@@ -63,17 +63,14 @@
 <!-- droits dossiers -->
 
 <?php
-	if (count($tbs_message_admin)) {
-		$message_admin = array_values($tbs_message_admin);
-		if ("$message_admin[0]"!="") {
-			foreach ($message_admin as $value) {
-				if ("$value"!="") {
-					echo "
-<p class=\"rouge center\">
-	$value
-</p>
-";
-				}
+	if (count($afficheAccueil->message_admin)){
+		foreach ($afficheAccueil->message_admin as $value) {
+			if ($value != "") {
+?>
+	<p class="rouge center">
+		<?php echo $value; ?>
+	</p>
+<?php
 			}
 		}
 	}
@@ -84,184 +81,226 @@
 
 <!-- Connexions	-->
 <?php
-	if ($tbs_gere_connect==1) {
-		echo "
-		<p>
-			Nombre de personnes actuellement connectées :
-			<a href='$tbs_nb_connect_lien' onmouseover=\"delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);\">
-				$tbs_nb_connect
-			</a>
-			(
-			<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>
-				Gestion des connexions
-			</a>
-			)
-		</p>
-		";
+	if ($afficheAccueil->gere_connect==1) {
+?>
+	  <p>
+		Nombre de personnes actuellement connectées :
+		<a href='<?php echo $afficheAccueil->connect_lien; ?>' onmouseover="delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);">
+		  <?php echo $afficheAccueil->nb_connect; ?>
+		</a>
+		(
+		<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>
+		  Gestion des connexions
+		</a>
+		)
+	  </p>
+<?php
 	}
 ?>
 
 <!-- Alertes sécurités	-->
 <?php
-	if ($tbs_alert_sums>0) {
-		echo "
-		<p>
-			Alertes sécurité (niveaux cumulés) : $tbs_alert_sums (
-			<a href='gestion/security_panel.php'>Panneau de contrôle</a>)
-		</p>
-		";
+	if ($afficheAccueil->alert_sums>0) {
+?>
+	  <p>
+		Alertes sécurité (niveaux cumulés) : <?php echo $afficheAccueil->alert_sums; ?> (
+		<a href='gestion/security_panel.php'>Panneau de contrôle</a>)
+	  </p>
+<?php
 	}
 ?>
 
 <!-- Référencement	-->
 
-		<?php
-			if (count($tbs_referencement)) {
-				$referencement = array_values($tbs_referencement);
-				if ($referencement[0]['texte']!="") {
-					foreach ($referencement as $value) {
-						echo "
+<?php
+	if (count($afficheAccueil->referencement)) {
+	  foreach ($afficheAccueil->referencement as $value) {
+?>
 		<p class='referencement'>
 		Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.
 		<span>
 			<br />
 			<a href=\"javascript:ouvre_popup_reference('$value[lien]')\" title='$value[titre]'>
-				$value[titre]
+				<?php echo $value[titre]; ?>
 			</a>
 		</span>
 		</p>
-					";
-					}
-				}
-			}
-		?>
+<?php
+	  }
+	}
+?>
 
 <!-- messages de sécurité -->
-		<?php
-			if (count($tbs_probleme_dir)) {
-			$probleme_dir=array_values($tbs_probleme_dir);
-				if ("$probleme_dir[0]"!="") {
-					foreach ($probleme_dir as $value) {
-			echo "
-		<p  class=\"rouge center\">
-			$value
+<?php
+	if (count($afficheAccueil->probleme_dir)) {
+	  foreach ($afficheAccueil->probleme_dir as $value) {
+?>
+		<p  class="rouge center">
+			<?php echo $value; ?>
 		</p>
 
-			";
-					}
-				}
-			}
-		?>
+<?php
+	  }
+	}
+?>
 
-</div>
-<a name="contenu" class="invisible">Début de la page</a>
+	</div>
+	<a name="contenu" class="invisible">Début de la page</a>
 
 <!-- Signalements d'erreurs d'affectations -->
 <?php
-	if((isset($tbs_signalement))&&($tbs_signalement!="")) {
-		echo "<div class='infobulle_corps' style='text-align:center; margin: 3em; padding:0.5em; color:red; border: 1px dashed red;'>$tbs_signalement</div>\n";
+	if((isset($afficheAccueil->signalement))&&($afficheAccueil->signalement!="")) {
+?>
+	  <div class='infobulle_corps' style='text-align:center; margin: 3em; padding:0.5em; color:red; border: 1px dashed red;'>
+		<?php echo $afficheAccueil->signalement; ?>
+	  </div>
+
+<?php
 	}
 ?>
 
 <!-- messagerie -->
-		<?php
-			if (count($tbs_message)) {
-				$message=array_values($tbs_message);
-				if ($message[0]['message']!="") {
-						echo "
-	<div id='messagerie'>
-						";
-					foreach ($message as $value) {
-						echo "
+<?php
+	if (count($afficheAccueil->message)) {
+?>
+	  <div id='messagerie'>
+<?php
+		  foreach ($message as $afficheAccueil->message) {
+?>
 		<div>
-						";
-						if ($value['suite']=='') {
-							echo "";
-						}else{
-							echo "<hr>";
-						}
-						echo "
-		$value[message]
-						";
-						if ($value['suite']=='') {
-							echo "";
-						}else{
-							echo "</hr>";
-						}
-						echo "
+<?php
+		  if ($value['suite']=='') {
+			  echo "";
+		  }else{
+			  echo "<hr>";
+		  }
+		  echo "
+			$value[message]
+		  ";
+		  if ($value['suite']=='') {
+			  echo "";
+		  }else{
+			  echo "</hr>";
+		  }
+?>
+		  </div>
+<?php
+		}
+?>
 		</div>
-						";
-					}
-						echo "
-	</div>
-						";
-				}
-			}
-		?>
+<?php
+	}
 
-
-		<?php
-			if ($tbs_statut_utilisateur=="professeur") {
-				echo "
-	<p class='bold'>
-		<a href='accueil_simpl_prof.php'>Interface graphique</a>
-	</p>
-				";
-			}
-		?>
+	if ($_SESSION['statut'] =="professeur") {
+?>
+		<p class='bold'>
+		  <a href='accueil_simpl_prof.php'>
+			Interface graphique
+		  </a>
+		</p>
+<?php
+	}
+?>
 
 <!-- début corps menu	-->
 
+
 	<!-- menu	général -->
 
-		<?php
-			if (count($tbs_menu)) {
-				$w = 0;
-				for ($w=0;$w<max($ordre_menus)+1;$w++) {
-if (isset($tbs_menu[$w]['texte'])) {
-$value = $tbs_menu[$w];
-						echo "
-	<h2 class='$value[classe]' style='margin-bottom:0;'>
-		<img src='$value[image]' alt='' /> - $value[texte]
-	</h2>
-				";
-						if ($value['texte']=="Administration") {
-							echo "
-<!-- sauvegarde -->
-	<div class=\"div_tableau cellule_1\">
-		<form enctype=\"multipart/form-data\" action=\"gestion/accueil_sauve.php\" method=\"post\" id=\"formulaire\" >
+	<?php
+	if (count($afficheAccueil->titre_Menu)) {
+	  foreach ($afficheAccueil->titre_Menu as $newEntreeMenu) {
+?>
+		<h2 class="<?php echo $newEntreeMenu->classe ?>">
+			<img src="<?php echo $newEntreeMenu->icone['chemin'] ?>" alt="<?php echo $newEntreeMenu->icone['alt'] ?>" /> - <?php echo $newEntreeMenu->texte ?>
+		</h2>
+
+
+<?php
+		if ($newEntreeMenu->texte=="Votre flux RSS") {
+?>
+		  <div class='div_tableau'>
+<?php				  
+		  if ($afficheAccueil->canal_rss["mode"]==1) {
+?>	
+			<h3 class="colonne ie_gauche flux_rss" title="A utiliser avec un lecteur de flux rss" onclick="changementDisplay('divuri', 'divexpli')" >
+			  Votre uri pour les cahiers de textes
+			</h3>
+			<p class="colonne ie_droite vert">
+			  <span id="divexpli" style="display: block;">
+				<?php echo $afficheAccueil->canal_rss['expli']; ?>
+			  </span>
+			  <span id="divuri" style="display: none;">
+				<a href="" onclick="window.open(this.href, '_blank'); return false;"  <?php echo $afficheAccueil->canal_rss['lien']; ?> >
+				  <?php echo $afficheAccueil->canal_rss['texte']; ?>
+				</a>
+			  </span>
+			</p>
+
+<?php 		
+		  }else if ($afficheAccueil->canal_rss["mode"]==2){
+?>	
+			<h3 class="colonne ie_gauche">
+			  Votre uri pour les cahiers de textes
+			</h3>
+			<p class="colonne ie_droite vert">
+			  Veuillez la demander à l'administration de votre établissement.
+			</p>
+<?php
+		  }
+?>	
+		  </div>
+<?php
+		}else{
+		  if (count($afficheAccueil->menu_item)) {
+			foreach ($afficheAccueil->menu_item as $newentree) {
+			  if ($newentree->indexMenu==$newEntreeMenu->indexMenu) {
+?>
+				<div class='div_tableau'>
+
+<?php
+				  if ($newentree->titre=="Sauvegarde de la base") {
+?>
+	<div class="div_tableau cellule_1">
+		<form enctype="multipart/form-data" action="gestion\accueil_sauve.php" method="post" id="formulaire" >
 			<p>
 				<input type='hidden' name='action' value='system_dump' />
-				<input type=\"submit\" value=\"Lancer une sauvegarde de la base de données\" />
+				<input type="submit" value="Lancer une sauvegarde de la base de données" />
 			</p>
 		</form>
 		<p class='small'>
-			Les répertoires \"documents\" (<em>contenant les documents joints aux cahiers de texte</em>) et \"photos\" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardés.<br />
+			Les répertoires "documents" (<em>contenant les documents joints aux cahiers de texte</em>) et "photos" (<em>contenant les photos du trombinoscope</em>) ne seront pas sauvegardés.<br />
 			Un outil de sauvegarde spécifique se trouve en bas de la page <a href='./gestion/accueil_sauve.php#zip'>gestion des sauvegardes</a>.
 		</p>
 	</div>
-				";
-						}
-							echo "
-<!-- autres menus -->
-<!-- accueil_menu_template.php -->
-				";
-						if (count($value['entree'])) {
-							foreach ($value['entree'] as $newentree) {
-								include('./templates/origine/accueil_menu_template.php');
-							}
-						}
-							echo "
-<!-- Fin menu	général -->
-				";
-					}
-				}
-			}
-		?>
+<?php
+			  }else{
+?>
 
+				  <h3 class="colonne ie_gauche">
+					  <a href="<?php echo substr($newentree->chemin,1) ?>">
+						  <?php echo $newentree->titre ?>
+					  </a>
+				  </h3>
+				  <p class="colonne ie_droite">
+					  <?php echo $newentree->expli ?>
+				  </p>
+<?php
+			  }
+?>
+				</div>
+<?php
+			  }
+			}
+		  }
+		}
+	  }
+	}
+?>
 
 <!-- début RSS	-->
 		<?php
+/*
 
 
 			if ($tbs_canal_rss_flux==1) {
@@ -271,35 +310,7 @@ $value = $tbs_menu[$w];
 			<img src='./images/icons/rss.png' alt=''/> - Votre flux rss
 		</h2>
 				";
-/*
-		<table class='menu' summary="Tableau des flux RSS. Colonne de gauche : lien vers les pages, colonne de droite : rapide description">
-			<tr>
-				<td class="menu_gauche" title="A utiliser avec un lecteur de flux rss" style="cursor: pointer; color: blue;" onclick="changementDisplay('divuri', 'divexpli');">
-				[tbs_canal_rss;block=tr; when [tbs_canal_rss.mode]=1]
-					Votre uri pour les cahiers de textes
-				</td>
-				<td style="color:green">
-					<div id="divuri" style="display: none;">
-						<a onclick="window.open(this.href, '_blank'); return false;" href="[tbs_canal_rss.lien]">
-							[tbs_canal_rss.texte]
-						</a>
-					</div>
-					<div id="divexpli" style="display: block;">
-						[tbs_canal_rss.expli]
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td class="menu_gauche">
-					[tbs_canal_rss;block=(tr); when [tbs_canal_rss.mode]=2]
-					Votre uri pour les cahiers de textes
-				</td>
-				<td class="vert">
-					Veuillez la demander à l'administration de votre établissement.
-				</td>
-			</tr>
-		</table>
-*/
+
 		echo "
 <div class='div_tableau'>
 			";
@@ -335,6 +346,8 @@ $value = $tbs_menu[$w];
 				";
 		}
 	}
+ * 
+ */
 ?>
 <!-- fin RSS	-->
 
@@ -349,51 +362,54 @@ $value = $tbs_menu[$w];
 
 
 <?php
-	if (count($tbs_nom_connecte)) {
-		echo "
+	//if (count($tbs_nom_connecte)) {
+	if (count($afficheAccueil->nom_connecte)) {
+		//echo "
+?>
 	<div id='personnes_connectees' class='infobulle_corps' style='color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; z-index:1; width: 20em; left:0em;'>
-		<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: 20em;' onmousedown=\"dragStart(event, 'personnes_connectees')\">
+		<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: 20em;' onmousedown="dragStart(event, 'personnes_connectees')">
 			<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>
-				<a href='#' onclick=\"cacher_div('personnes_connectees');return false;\">
+				<a href='#' onclick="cacher_div('personnes_connectees');return false;">
 					<img src='./images/icons/close16.png' width='16' height='16' alt='Fermer' />
 				</a>
 			</div>
-			<span style=\"padding-left: 1px;\">
+			<span style="padding-left: 1px;">
 				Personnes connectées
 			</span>
 		</div>
 		<div>
-			<div style=\"padding-left: 1px;\">
-				<div style=\"text-align:center;\">
+			<div style="padding-left: 1px;">
+				<div style="text-align:center;">
 					<table class='boireaus'>
 						<tr>
 							<th>Personne</th>
 							<th>Statut</th>
 						</tr>
-   			";
-
-		foreach ($tbs_nom_connecte as $newentree) {
-		echo "
-						<tr  class='$newentree[style]'>
+<?php
+		foreach ($afficheAccueil->nom_connecte as $newentree) {
+?>
+						<tr  class='<?php echo $newentree['style']; ?>'>
 							<td>
 								<a href='mailto:$newentree[courriel]'>
-									$newentree[texte]
+									<?php echo $newentree['texte']; ?>
 								</a>
 							</td>
 							<td>
-								$newentree[statut]
+								<?php echo $newentree['statut']; ?>
 							</td>
 						</tr>
-   			";
+
+<?php
 		}
-		echo "
+?>
 
 					</table>
 				</div>
 			</div>
 		</div>
 	</div>
-   			";
+<?php
+//   			";
 	}
 ?>
 

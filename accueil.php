@@ -82,13 +82,13 @@ $gepiPathJava=".";
 
 // Initialisations files
 require_once("./lib/initialisations.inc.php");
-
+/*
 function verif_exist_ordre_menu($_item){
   global $ordre_menus;
   if (!isset($ordre_menus[$_item]))
     $ordre_menus[$_item] = max($ordre_menus)+1;
 }
-
+*/
 // On teste s'il y a une mise à jour de la base de données à effectuer
 if (test_maj()) {
     header("Location: ./utilitaires/maj.php");
@@ -142,12 +142,20 @@ else{
 	$accueil_simpl=NULL;
 }
 
+// ====== Inclusion des fichiers de classes =====
+
+
+include "class_php/class_menu_general.php";
+include "class_php/class_page_accueil.php";
+
+$afficheAccueil=new class_page_accueil($_SESSION['statut'], $gepiSettings, $niveau_arbo,$ordre_menus);
+
 
 // ====== Inclusion des balises head et du bandeau =====
 include_once("./lib/header_template.inc");
-
 $tbs_statut_utilisateur = $_SESSION['statut'];
-
+/*
+*/
 /*
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 
@@ -175,9 +183,9 @@ decompte(cpt);
 
 </script>\n";
 */
-
 	// Initialisation de $_SESSION["retour"]
 $_SESSION["retour"] = "";
+/*
 
 $tab[0] = "administrateur";
 $tab[1] = "professeur";
@@ -197,18 +205,20 @@ function acces($id,$statut) {
         return "0";
     }
 }
+*/
 
-
-
+/*
 function affiche_ligne($chemin_,$statut_) {
 	if (acces($chemin_,$statut_)==1)  {
 		$temp = substr($chemin_,1);
+ */
 		/*echo "<tr>\n";
 	// Correction Regis ajout de \" pour encadrer $temp
 		echo "<td class='menu_gauche'><a href=\"$temp\">$titre_</a>";
 		echo "</td>\n";
 		echo "<td class='menu_droit'>$expli_</td>\n";
 		echo "</tr>\n";*/
+/*
 		return $temp;
 	}else{
 		return false;
@@ -218,16 +228,17 @@ function affiche_ligne($chemin_,$statut_) {
 //********************************************************
 //initialisation des tableaux d'affichage et des variables
 //********************************************************
+ *
+ * Remplacé par la classe class_page_accueil
 $tbs_message_admin=array();
 $tbs_nom_connecte=array();
 $tbs_referencement=array();
-$tbs_probleme_dir=array();
-$tbs_interface_graphique=array();
 $tbs_message=array();
 $tbs_canal_rss=array();
-
+$tbs_probleme_dir=array();
 $tbs_gere_connect="";
 $tbs_alert_sums="";
+ */
 //*************************************************************
 // fin initialisation des tableaux d'affichage et des variables
 //*************************************************************
@@ -238,27 +249,39 @@ if ($_SESSION['statut'] == "administrateur") {
 
     // Vérification et/ou changement du répertoire de backup
 	if (!check_backup_directory()) {
+		/*
 		$tbs_message_admin[0] = "Il y a eu un problème avec la mise à jour du répertoire de sauvegarde.
+Veuillez vérifier que le répertoire /backup de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)";
+		 */
+		$afficheAccueil->message_admin[] = "Il y a eu un problème avec la mise à jour du répertoire de sauvegarde.
 Veuillez vérifier que le répertoire /backup de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)";
     }
 
 
 	if (!check_user_temp_directory()) {
+		/*
 		$tbs_message_admin[1] = "Il y a eu un problème avec la mise à jour du répertoire temp.
+Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)";
+		*/
+		$afficheAccueil->message_admin[] = "Il y a eu un problème avec la mise à jour du répertoire temp.
 Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par le serveur (le serveur *uniquement* !)";
 	}else{
 		$_SESSION['user_temp_directory']='y';
 	}
 
 	if ((getSettingValue("disable_login"))!='no'){
+	  /*
 		$tbs_message_admin[2] = "Attention : le site est en cours de maintenance et temporairement inaccessible.";
+	   */
+	  $afficheAccueil->message_admin[] = "Attention : le site est en cours de maintenance et temporairement inaccessible.";
 	}
 
     // * affichage du nombre de connecté *
     // compte le nombre d'enregistrement dans la table
 	$sql = "select LOGIN from log where END > now()";
 	$res = sql_query($sql);
-	$tbs_nb_connect = sql_count($res);
+	// $tbs_nb_connect = sql_count($res);
+	$afficheAccueil->nb_connect = sql_count($res);
 	if(mysql_num_rows($res)>1) {
 	//if(mysql_num_rows($res)==1) {
 
@@ -276,10 +299,12 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 			$res_pers=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
 				//$texte.="<tr><td style='color:red;'>$lig_log->LOGIN</td><td style='color:red;'>???</td></tr>\n";
-				$tbs_nom_connecte[]=array("style"=>'rouge',"courriel"=>"","texte"=>$lig_log->LOGIN,"statut"=>"???");
+				// $tbs_nom_connecte[]=array("style"=>'rouge',"courriel"=>"","texte"=>$lig_log->LOGIN,"statut"=>"???");
+			  $afficheAccueil->nom_connecte[]=array("style"=>'rouge',"courriel"=>"","texte"=>$lig_log->LOGIN,"statut"=>"???");
 			}else{
 				$lig_pers=mysql_fetch_object($res_pers);
 				$alt=$alt*(-1);
+ 
 /*
 				//$texte.="<tr class='lig$alt'><td>";
 				if($lig_pers->email!="") {
@@ -291,7 +316,9 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 				}
 */
 				//$texte.="</td><td>".$lig_pers->statut."</td></tr>\n";
-				$tbs_nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".ucfirst(strtolower($lig_pers->prenom)),"statut"=>$lig_pers->statut);
+
+				//$tbs_nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".ucfirst(strtolower($lig_pers->prenom)),"statut"=>$lig_pers->statut);
+				$afficheAccueil->nom_connecte[]=array("style"=>'lig'.$alt,"courriel"=>$lig_pers->email,"texte"=>strtoupper($lig_pers->nom)." ".ucfirst(strtolower($lig_pers->prenom)),"statut"=>$lig_pers->statut);
 
 			}
 		}
@@ -304,15 +331,18 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 
 
 		//echo "<p>\nNombre de personnes actuellement connectées :<a href='#' onclick='return false;' onMouseover=\"delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);\"> $nb_connect </a>";
-		$tbs_nb_connect_lien = "#";
+		// $tbs_nb_connect_lien = "#";
+		$afficheAccueil->nb_connect_lien = "#";
 	}else {
 		// echo "<p>\nNombre de personnes actuellement connectées : $nb_connect ";
-		$tbs_nb_connect_lien ="";
+		// $tbs_nb_connect_lien ="";
+		$afficheAccueil->b_connect_lien ="";
 
 	}
 
 	//echo "(<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>Gestion des connexions</a>)\n</p>\n";
-	$tbs_gere_connect= "1";
+	//$tbs_gere_connect= "1";
+	$afficheAccueil->gere_connect= "1";
 
 //}
 
@@ -320,17 +350,24 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 	$alert_sums = mysql_result(mysql_query("SELECT SUM(niveau) FROM tentatives_intrusion WHERE (statut = 'new')"), 0);
 	if (empty($alert_sums)) $alert_sums = "0";
 	// echo "<p>\nAlertes sécurité (niveaux cumulés) : $alert_sums (<a href='gestion/security_panel.php'>Panneau de contrôle</a>)</p>\n";
-	$tbs_alert_sums = $alert_sums;
+	//$tbs_alert_sums = $alert_sums;
+	$afficheAccueil->alert_sums = $alert_sums;
 
 
 // christian : demande d'enregistrement
 	//if (($force_ref) or (1==1)){
 	if (($force_ref)) {
+ 
 /*
 		?><div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #CFD7FF;  padding: 2px; margin-left: 60px; margin-right: 60px; margin-top: 2px; margin-bottom: 2px;  text-align: center; color: #1C1A8F; font-weight: bold;"><p>Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.<br /><a href="javascript:ouvre_popup_reference('<?php echo($gepiPath); ?>/referencement.php?etape=explication')" title="Pourquoi est-ce utile ?">Pourquoi est-ce utile ?</a> / <a href="javascript:ouvre_popup_reference('<?php echo($gepiPath); ?>/referencement.php?etape=1')" title="Référencer votre établissement">Référencer votre établissement</a>.</p></div><?php
-		*/
+
 		$tbs_referencement[]=array("texte"=>"Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=explication","titre"=>"Pourquoi est-ce utile ?");
 		$tbs_referencement[]=array("texte"=>"Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=1","titre"=>"Référencer votre établissement");
+ * 
+ */
+	
+		$afficheAccueil->referencement[]=array("texte"=>"Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=explication","titre"=>"Pourquoi est-ce utile ?");
+		$afficheAccueil->referencement[]=array("texte"=>"Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=1","titre"=>"Référencer votre établissement");
 	}
 
 // fin christian demande d'enregistrement
@@ -346,14 +383,16 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 		OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https")
 		) {
 		//echo "<p style=\"color: red;\">Connexion non sécurisée ! Vous *devez* accéder à Gepi en HTTPS (vérifiez la configuration de votre serveur web)</p>\n";
-		$tbs_probleme_dir[]="Connexion non sécurisée ! Vous *devez* accéder à Gepi en HTTPS (vérifiez la configuration de votre serveur web)";
+		// $tbs_probleme_dir[]="Connexion non sécurisée ! Vous *devez* accéder à Gepi en HTTPS (vérifiez la configuration de votre serveur web)";
+		$afficheAccueil->probleme_dir[]="Connexion non sécurisée ! Vous *devez* accéder à Gepi en HTTPS (vérifiez la configuration de votre serveur web)";
 		$test_https = 'n';
 	}
 
 	//if ((ini_get("register_globals") == "1") or (1==1)) {
 	if (ini_get("register_globals") == "1") {
 		//echo "<p style=\"color: red;\">PHP potentiellement mal configuré (register_globals=on)! Pour prévenir certaines failles de sécurité, vous *devez* configurer PHP avec le paramètre register_globals à off.</p>\n";
-		$tbs_probleme_dir[]="PHP potentiellement mal configuré (register_globals=on)! Pour prévenir certaines failles de sécurité, vous *devez* configurer PHP avec le paramètre register_globals à off.";
+		// $tbs_probleme_dir[]="PHP potentiellement mal configuré (register_globals=on)! Pour prévenir certaines failles de sécurité, vous *devez* configurer PHP avec le paramètre register_globals à off.";
+		$afficheAccueil->probleme_dir[]="PHP potentiellement mal configuré (register_globals=on)! Pour prévenir certaines failles de sécurité, vous *devez* configurer PHP avec le paramètre register_globals à off.";
 	}
 
 	$sql="SELECT DISTINCT id_groupe, declarant FROM j_signalement WHERE nature='erreur_affect';";
@@ -373,14 +412,18 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 	//echo "</div>\n";
 }elseif(($_SESSION['statut']=="professeur")||($_SESSION['statut']=="scolarite")||($_SESSION['statut']=="cpe")||($_SESSION['statut']=="secours")){
 	if (!check_user_temp_directory()) {
+
 /*
 		echo "<div>\n";
 		echo "<p style=\"color: red;\">Il y a eu un problème avec la mise à jour du répertoire temp.</p> \n";
 		echo "<p>Veuillez contacter l'administrateur pour résoudre ce problème.</p>\n";
 		echo "</div>\n";
 */
-		$tbs_probleme_dir[]="Il y a eu un problème avec la mise à jour du répertoire temp.";
-		$tbs_probleme_dir[]="Veuillez contacter l'administrateur pour résoudre ce problème.";
+
+		// $tbs_probleme_dir[]="Il y a eu un problème avec la mise à jour du répertoire temp.";
+		// $tbs_probleme_dir[]="Veuillez contacter l'administrateur pour résoudre ce problème.";
+		$afficheAccueil->probleme_dir[]="Il y a eu un problème avec la mise à jour du répertoire temp.";
+		$afficheAccueil->probleme_dir[]="Veuillez contacter l'administrateur pour résoudre ce problème.";
 		$_SESSION['user_temp_directory']='n';
 	}else{
 		$_SESSION['user_temp_directory']='y';
@@ -389,11 +432,13 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 
 // ----- interface graphique prof -----
 if($_SESSION['statut']=="professeur"){
+
 /*
 	echo "<p class='bold'>\n";
 	echo "<a href='accueil_simpl_prof.php'>Interface graphique</a>";
 	echo "</p>\n";
 */
+
 	$tbs_interface_graphique[]=array("classe"=>"bold","lien"=>"accueil_simpl_prof.php","titre"=>"Interface graphique");
 }
 // correction Régis balise <center> invalide, remplacée par des données dans table.menu dans style.css
@@ -459,11 +504,13 @@ $autre_message = "";
 
 		// fin _DECOMPTE_
 
-		$tbs_message[]=array("suite"=>$autre_message,"message"=>$content);
+		//$tbs_message[]=array("suite"=>$autre_message,"message"=>$content);
+		$afficheAccueil->message[]=array("suite"=>$autre_message,"message"=>$content);
 	}
 	$ind++;
 }
 // modification Régis : utilisation de div plutôt que de table pour la mise en page
+
 /*
 if ($affiche_messages == 'yes') {
 	echo "<div id='messagerie'>\n";
@@ -476,7 +523,7 @@ if ($affiche_messages == 'yes') {
 /****************************
 	Outils d'administration
 ****************************/
-
+/*
 $chemin = array(
 "/gestion/index.php",
 "/accueil_admin.php",
@@ -510,6 +557,8 @@ for ($i=0;$i<$nb_ligne;$i++) {
 	if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/configure.png' alt=''/> - Administration</h2>\n";
@@ -537,6 +586,7 @@ if ($affiche=='yes') {
 	}
 	echo "</table>\n";
 */
+/*
 		verif_exist_ordre_menu('bloc_administration');
 		$tbs_menu[$ordre_menus['bloc_administration']]=array('classe'=>'accueil'  , 'image'=>'./images/icons/configure.png'  , 'texte'=>'Administration');
 
@@ -549,7 +599,7 @@ if ($affiche=='yes') {
 	}
 }
 
-/*
+
 */
 /********************************
 	Fin outils d'administration
@@ -559,6 +609,7 @@ if ($affiche=='yes') {
 	Outils de gestion des absences : module de Christian Chapel
 *****************************************************************/
 //On vérifie si le module est activé
+/*
 if (getSettingValue("active_module_absence")=='y') {
 //
 // Gestion Absences, dispenses, retards
@@ -601,6 +652,8 @@ if (getSettingValue("active_module_absence")=='y') {
 		}
 	}
 }
+ * 
+ */
 
 
 /********************************************************************
@@ -613,6 +666,7 @@ if (getSettingValue("active_module_absence")=='y') {
 ************************************************************************************/
 
 //On vérifie si le module est activé
+/*
 if (getSettingValue("active_module_absence_professeur")=='y') {
 //
 // Gestion des ajout d'Absences par les professeurs
@@ -637,6 +691,8 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
       if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/absences.png' alt=''/> - Gestion des retards et absences</h2>\n";
@@ -652,6 +708,7 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
         }
         echo "</table>\n";
 */
+/*
 		verif_exist_ordre_menu('bloc_absences_professeur');
 		$tbs_menu[$ordre_menus['bloc_absences_professeur']]=array('classe'=>'accueil'  , 'image'=>'./images/icons/absences.png'  , 'texte'=>'Gestion des retards et absences','entree');
 
@@ -664,6 +721,8 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
     }
 	}
 }
+ * 
+ */
 
 /****************************************************************************************
 	Fin outils de gestion des absences par les professeurs : module de Christian Chapel
@@ -673,6 +732,7 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
 /***********
 	Saisie
 ***********/
+/*
 // On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de textes et au carnet de notes
 $test_prof_matiere = sql_count(sql_query("SELECT login FROM j_groupes_professeurs WHERE login = '".$_SESSION['login']."'"));
 // On teste si le l'utilisateur est prof de suivi. Si oui on affiche la ligne relative remplissage de l'avis du conseil de classe
@@ -770,6 +830,8 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/configure.png' alt=''/> - Saisie</h2>\n";
@@ -784,6 +846,7 @@ if ($affiche=='yes') {
     }
     echo "</table>\n";
 */
+/*
 	verif_exist_ordre_menu('bloc_saisie');
 	$tbs_menu[$ordre_menus['bloc_saisie']]=array('classe'=>'accueil'  , 'image'=>'./images/icons/configure.png'  , 'texte'=>'Saisie');
 
@@ -795,6 +858,8 @@ if ($affiche=='yes') {
 		}
 	}
 }
+ * 
+ */
 /******************
 	Fin de saisie
 ******************/
@@ -806,6 +871,7 @@ if ($affiche=='yes') {
 
 //On vérifie si le module est activé
 //if (getSettingValue("active_module_trombinoscopes")=='y') {
+/*
 $active_module_trombinoscopes=getSettingValue("active_module_trombinoscopes");
 $active_module_trombino_pers=getSettingValue("active_module_trombino_pers");
 if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
@@ -871,6 +937,8 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
 
 
 	if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/configure.png' alt=''/> - Trombinoscope</h2>\n";
@@ -885,6 +953,7 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
         }
         echo "</table>\n";
     */
+/*
   	verif_exist_ordre_menu('bloc_trombinoscope');
 		$tbs_menu[$ordre_menus['bloc_trombinoscope']]=array('classe'=>'accueil' , 'image'=>'./images/icons/configure.png' , 'texte'=>'Trombinoscope');
 
@@ -897,6 +966,8 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
 		}
 	}
 }
+ * 
+ */
 
 /**********************************************************************
 	Fin de gestion des trombinoscopes : module de Christian Chapel
@@ -907,7 +978,7 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
 	Outils de relevé de notes
 ******************************/
 /* $test_prof_suivi doit être défini avant */
-
+/*
 $condition = (
     (getSettingValue("active_carnets_notes")=='y')
     AND
@@ -958,6 +1029,8 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/releve.png' alt=''/> - Relevés de notes</h2>\n";
@@ -972,6 +1045,7 @@ if ($affiche=='yes') {
     }
     echo "</table>\n";
 */
+/*
   	verif_exist_ordre_menu('bloc_releve_notes');
 		$tbs_menu[$ordre_menus['bloc_releve_notes']]=array('classe'=>'accueil' , 'image'=>'./images/icons/releve.png' , 'texte'=>'Relevés de notes');
 
@@ -985,6 +1059,8 @@ if ($affiche=='yes') {
 
 
 }
+ * 
+ */
 
 /**********************************
 	Fin outils de relevé de note$
@@ -995,7 +1071,7 @@ if ($affiche=='yes') {
 	Outils de relevé ECTS
 ******************************/
 /* $test_prof_suivi et $test_prof_ects doivent être défini avant */
-
+/*
 $condition = ($gepiSettings['active_mod_ects'] == 'y' and ((($test_prof_suivi != "0") and ($gepiSettings['GepiAccesEditionDocsEctsPP'] =='yes') and $test_prof_ects != "0")
                 or (($_SESSION['statut']=='scolarite') and ($gepiSettings['GepiAccesEditionDocsEctsScolarite'] =='yes') and $test_scol_ects != "0")
                 or ($_SESSION['statut']=='secours')  ));
@@ -1026,6 +1102,8 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/releve.png' alt=''/> - Documents ECTS</h2>\n";
@@ -1036,7 +1114,7 @@ if ($affiche=='yes') {
     echo "</table>\n";
 */
 
-
+/*
  	verif_exist_ordre_menu('bloc_releve_ects');
 	$tbs_menu[$ordre_menus['bloc_releve_ects']]=array('classe'=>'accueil' , 'image'=>'./images/icons/releve.png' , 'texte'=>'Documents ECTS');
 
@@ -1048,6 +1126,8 @@ if ($affiche=='yes') {
 		}
 	}
 }
+ * 
+ */
 
 /**********************************
 	Fin outils de relevé ECTS
@@ -1058,7 +1138,7 @@ if ($affiche=='yes') {
 /********************
 	Emploi du temps
 ********************/
-
+/*
 $chemin = array();
 $chemin[] = "/edt_organisation/index_edt.php";
 if ($_SESSION["statut"] == 'responsable') {
@@ -1084,6 +1164,8 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 	// Ajout d'un test param_edt() pour savoir si l'admin a activé ou non le module EdT - Calendrier
 if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
+ * 
+ */
 /*
 	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Emploi du temps</h2>\n";
 	echo "<table class='menu' summary=\"Module Emploi du temps. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
@@ -1093,7 +1175,7 @@ if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
     }
     echo "</table>\n";
 */
-
+/*
  	verif_exist_ordre_menu('bloc_emploi_du_temps');
 	$tbs_menu[$ordre_menus['bloc_emploi_du_temps']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Emploi du temps');
 
@@ -1106,6 +1188,8 @@ if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
 	}
 
 }
+ * 
+ */
 
 /************************
 	fin emploi du temps
@@ -1115,7 +1199,7 @@ if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
 /**************************************************************
 	Outils destinés essentiellement aux parents et aux élèves
 **************************************************************/
-
+/*
 $chemin = array();
 $titre = array();
 $expli = array();
@@ -1214,6 +1298,8 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/vie_privee.png' alt='' /> - Consultation</h2>\n";
@@ -1224,7 +1310,7 @@ if ($affiche=='yes') {
     }
     echo "</table>\n";
 */
-
+/*
   verif_exist_ordre_menu('bloc_responsable');
 	$tbs_menu[$ordre_menus['bloc_responsable']]=array('classe'=>'accueil' , 'image'=>'./images/icons/vie_privee.png' , 'texte'=>'Consultation');
 
@@ -1237,6 +1323,8 @@ if ($affiche=='yes') {
 	}
 
 }
+ * 
+ */
 
 /******************************************************************
 	Fin outils destinés essentiellement aux parents et aux élèves
@@ -1249,6 +1337,7 @@ if ($affiche=='yes') {
 // Y-a-t-il des AIDs pour lesquelles les outils complémetaires sont activés ?
 
 // Dans le cas des élèves, on n'affiche que les AID dans lesquelles ils sont inscrits
+/*
 function AfficheAid($_statut,$_login,$indice_aid){
     if ($_statut == "eleve") {
         $test = sql_query1("select count(login) from j_aid_eleves where login='".$_login."' and indice_aid='".$indice_aid."' ");
@@ -1305,6 +1394,8 @@ if ($nb_total != 0) {
   	}
   }
 }
+ * 
+ */
 /**************************************************
 	Fin outils complémentaires de gestion des AID
 **************************************************/
@@ -1313,7 +1404,7 @@ if ($nb_total != 0) {
 /**********************************************
 	Outils de gestion des Bulletins scolaires
 **********************************************/
-
+/*
 // On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de textes et au carnet de notes
 $test_prof_matiere = sql_count(sql_query("SELECT login FROM j_groupes_professeurs WHERE login = '".$_SESSION['login']."'"));
 // On teste si le l'utilisateur est prof de suivi. Si oui on affiche la ligne relative remplissage de l'avis du conseil de classe
@@ -1402,6 +1493,8 @@ for ($i=0;$i<$nb_ligne;$i++) {
     //else{echo "$chemin[$i] refusé<br />";}
 }
 if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Bulletins scolaires</h2>\n";
@@ -1416,7 +1509,7 @@ if ($affiche=='yes') {
     }
     echo "</table>\n";
 */
-
+/*
    verif_exist_ordre_menu('bloc_gestion_bulletins_scolaires');
 	$tbs_menu[$ordre_menus['bloc_gestion_bulletins_scolaires']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Bulletins scolaires');
 
@@ -1429,6 +1522,8 @@ if ($affiche=='yes') {
 	}
 
 }
+ * 
+ */
 
 /*******************************************
 	Fin de gestion des Bulletins scolaires
@@ -1438,7 +1533,7 @@ if ($affiche=='yes') {
 	Visualisation / Impression
 *******************************/
 /*$test_prof_suivi et $test_prof_matiere  doivent être définis avant*/
-
+/*
 $conditions_moyennes = (
         ($_SESSION['statut'] != "professeur")
         OR
@@ -1592,6 +1687,8 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/print.png' alt=''/> - Visualisation - Impression</h2>\n";
@@ -1606,7 +1703,7 @@ if ($affiche=='yes') {
     }
     echo "</table>\n";
 */
-
+/*
   verif_exist_ordre_menu('bloc_visulation_impression');
 	$tbs_menu[$ordre_menus['bloc_visulation_impression']]=array('classe'=>'accueil' , 'image'=>'./images/icons/print.png' , 'texte'=>'Visualisation - Impression');
 
@@ -1619,6 +1716,8 @@ if ($affiche=='yes') {
 	}
 
 }
+ * 
+ */
 
 /***********************************
 	Fin visualisation / Impression
@@ -1628,7 +1727,7 @@ if ($affiche=='yes') {
 /********************
 	Gestion Notanet
 ********************/
-
+/*
 if (getSettingValue("active_notanet")=='y') {
 	$chemin = array();
 	//$chemin[] = "/mod_notanet/notanet.php";
@@ -1682,6 +1781,8 @@ L'opération renseigne également les tables nécessaires pour générer les Fiches b
 	}
 
 	if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 		echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Notanet/Fiches Brevet</h2>\n";
@@ -1696,6 +1797,7 @@ L'opération renseigne également les tables nécessaires pour générer les Fiches b
 		}
 		echo "</table>\n";
 */
+/*
   verif_exist_ordre_menu('bloc_notanet_fiches_brevet');
 	$tbs_menu[$ordre_menus['bloc_notanet_fiches_brevet']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Notanet/Fiches Brevet');
 
@@ -1709,6 +1811,8 @@ L'opération renseigne également les tables nécessaires pour générer les Fiches b
 
 	}
 }
+ * 
+ */
 
 /************************
 	Fin gestion Notanet
@@ -1718,7 +1822,7 @@ L'opération renseigne également les tables nécessaires pour générer les Fiches b
 /*******************************
 // Gestion années antérieures
 *******************************/
-
+/*
 if (getSettingValue("active_annees_anterieures")=='y') {
 	$chemin = array();
 	$titre = array();
@@ -1828,6 +1932,8 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
+ * 
+ */
 	/*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 		echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Années antérieures</h2>\n";
@@ -1842,7 +1948,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 		}
 		echo "</table>\n";
 */
-
+/*
   verif_exist_ordre_menu('bloc_annees_antérieures');
 	$tbs_menu[$ordre_menus['bloc_annees_antérieures']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>'Années antérieures');
 
@@ -1856,6 +1962,8 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 
 	}
 }
+ * 
+ */
 
 /***********************************
 	Fin gestion Années antérieures
@@ -1865,7 +1973,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 /*************************
 // Gestion des messages
 *************************/
-
+/*
 $chemin = array();
 $chemin[] = "/messagerie/index.php";
 
@@ -1882,6 +1990,8 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/mail.png' alt=''/> - Panneau d'affichage</h2>\n";
@@ -1897,7 +2007,7 @@ if ($affiche=='yes') {
     }
     echo "</table>\n";
 */
-
+/*
   verif_exist_ordre_menu('bloc_panneau_affichage');
 	$tbs_menu[$ordre_menus['bloc_panneau_affichage']]=array('classe'=>'accueil' , 'image'=>'./images/icons/mail.png' , 'texte'=>"Panneau d'affichage");
 
@@ -1910,6 +2020,8 @@ if ($affiche=='yes') {
 	}
 
 }
+ * 
+ */
 
 /*************************
 	Fin gestion des messages
@@ -1918,7 +2030,7 @@ if ($affiche=='yes') {
 /*************************
 	Module inscription
 *************************/
-
+/*
 if (getSettingValue("active_inscription")=='y') {
   $chemin = array();
   if (getSettingValue("active_inscription_utilisateurs")=='y') $chemin[]="/mod_inscription/inscription_index.php";
@@ -1938,6 +2050,8 @@ if (getSettingValue("active_inscription")=='y') {
       if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
+ * 
+ */
 /*
 		// modification Régis : créer des <h2> pour faciliter la navigation
 		echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Inscription</h2>\n";
@@ -1952,6 +2066,7 @@ if (getSettingValue("active_inscription")=='y') {
       }
       echo "</table>";
 */
+/*
   verif_exist_ordre_menu('bloc_module_inscriptions');
 		$tbs_menu[$ordre_menus['bloc_module_inscriptions']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Inscription");
 
@@ -1965,6 +2080,8 @@ if (getSettingValue("active_inscription")=='y') {
 
   }
 }
+ * 
+ */
 
 /*****************************
 	Fin module inscription
@@ -1974,7 +2091,7 @@ if (getSettingValue("active_inscription")=='y') {
 /*************************
 	Module discipline
 *************************/
-
+/*
 if (getSettingValue("active_mod_discipline")=='y') {
 
 	$chemin = array();
@@ -1991,6 +2108,8 @@ if (getSettingValue("active_mod_discipline")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
+ * 
+ */
 /*
 			echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Discipline</h2>\n";
 			echo "<table class='menu' summary=\"Module discipline. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
@@ -1999,7 +2118,7 @@ if (getSettingValue("active_mod_discipline")=='y') {
 			}
 			echo "</table>";
 			*/
-
+/*
       verif_exist_ordre_menu('bloc_module_discipline');
 			$tbs_menu[$ordre_menus['bloc_module_discipline']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Discipline");
 
@@ -2012,6 +2131,8 @@ if (getSettingValue("active_mod_discipline")=='y') {
 		}
 	}
 }
+ * 
+ */
 
 /*****************************
 	Fin module discipline
@@ -2020,7 +2141,7 @@ if (getSettingValue("active_mod_discipline")=='y') {
 /*************************
 	Module Modèle Open Office
 *************************/
-
+/*
 if (getSettingValue("active_mod_ooo")=='y') {
 
 	$chemin = array();
@@ -2037,6 +2158,8 @@ if (getSettingValue("active_mod_ooo")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
+ * 
+ */
 /*
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
@@ -2048,6 +2171,7 @@ if (getSettingValue("active_mod_ooo")=='y') {
 			}
 			echo "</table>";
 */
+/*
      verif_exist_ordre_menu('bloc_modeles_Open_Office');
 		$tbs_menu[$ordre_menus['bloc_modeles_Open_Office']]=array('classe'=>'accueil' , 'image'=>'./mod_ooo/images/ico_gene_ooo.png' , 'texte'=>"Modèles Open Office");
 
@@ -2061,6 +2185,8 @@ if (getSettingValue("active_mod_ooo")=='y') {
 
 	}
 }
+ * 
+ */
 
 /*****************************
 	Fin module modèle Open Office
@@ -2069,7 +2195,7 @@ if (getSettingValue("active_mod_ooo")=='y') {
 /*****************************
  * Module plugins : affichage des menus des plugins en fonction des droits
 *****************************/
-
+/*
 $query = mysql_query('SELECT * FROM plugins WHERE ouvert = "y" order by description');
 
 while ($plugin = mysql_fetch_object($query)){
@@ -2105,6 +2231,8 @@ while ($plugin = mysql_fetch_object($query)){
 
     if ($nb_ligne >= 1){
     	$descriptionPlugin= iconv("utf-8","iso-8859-1",$plugin->description);
+ * 
+ */
 /*
       echo "<h2 class='accueil'><img src='./images/icons/package.png' alt='#' /> - ".str_replace("_", " ", $plugin->nom)." (plugin)</h2>
     <table class='menu' summary=\"Plugins de Gepi. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
@@ -2119,23 +2247,29 @@ while ($plugin = mysql_fetch_object($query)){
 			}
 			echo "</table>";
 */
+/*
     verif_exist_ordre_menu($nomPlugin);
 		$tbs_menu[$ordre_menus[$nomPlugin]]=array('classe'=>'accueil' , 'image'=>'./images/icons/package.png' , 'texte'=>$descriptionPlugin);
 
 		for ($i=0;$i<$nb_ligne;$i++) {
 			$numitem=$i;
 			$tbs_menu[$ordre_menus[$nomPlugin]]['entree'][]=array('lien'=>$chemin[$i] , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
-/*
+
+ */
+ /*
 			$adresse=affiche_ligne($chemin[$i],$_SESSION['statut']);
 			if ($adresse != false) {
 				$tbs_menu[$nummenu]['entree'][]=array('lien'=>$adresse , 'titre'=>$titre[$i], 'expli'=>$expli[$i]);
 			}
 */
+/*
 		}
 
     }
 
 }
+ * 
+ */
 
 /*****************************
  * Fin module plugins
@@ -2144,7 +2278,7 @@ while ($plugin = mysql_fetch_object($query)){
 /*************************
 	Module Genese des classes
 *************************/
-
+/*
 if (getSettingValue("active_mod_genese_classes")=='y') {
 
 	$chemin = array();
@@ -2161,6 +2295,8 @@ if (getSettingValue("active_mod_genese_classes")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
+ * 
+ */
 /*
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
@@ -2172,7 +2308,7 @@ if (getSettingValue("active_mod_genese_classes")=='y') {
 			}
 			echo "</table>";
 			*/
-
+/*
     verif_exist_ordre_menu('bloc_Genese_classes');
 		$tbs_menu[$ordre_menus['bloc_Genese_classes']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Génèse des classes");
 
@@ -2185,6 +2321,8 @@ if (getSettingValue("active_mod_genese_classes")=='y') {
 		}
 	}
 }
+ * 
+ */
 
 /*****************************
 	Fin module Genese des classes
@@ -2193,11 +2331,14 @@ if (getSettingValue("active_mod_genese_classes")=='y') {
 /**************************************************************
 	Lien vers les flux rss pour les élèves s'ils sont activés
 **************************************************************/
+/*
 $tbs_canal_rss_flux=0;
 if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") {
 
 	// Les flux rss sont ouverts pour les élèves
 	$tbs_canal_rss_flux=1;
+ * 
+ */
 
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -2205,10 +2346,13 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 	echo "<table class='menu' summary=\"Tableau des flux RSS. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
 */
 	// A vérifier pour les cdt
+/*
 	if (getSettingValue("rss_acces_ele") == 'direct') {
 
 		$uri_el = retourneUri($_SESSION["login"], $test_https, 'cdt');
 		$tbs_canal_rss[]=array("lien"=>$uri_el["uri"] , "texte"=>$uri_el["text"], "mode"=>1 , "expli"=>"En cliquant sur la cellule de gauche, vous pourrez récupérer votre URI (si vous avez activé le javascript sur votre navigateur).");
+ * 
+ */
 /*
 		echo '
 			<tr>
@@ -2224,9 +2368,12 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 			</tr>
 		';
 */
+/*
 
 	}elseif(getSettingValue("rss_acces_ele") == 'csv'){
 		$tbs_canal_rss[]=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
+ * 
+ */
 /*
 		echo '
 			<tr>
@@ -2235,11 +2382,17 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 			</tr>
 		';
 */
+/*
 	}
+ * 
+ */
 /*
 	echo '</table>';
 */
+/*
 }
+ * 
+ */
 /******************************************************************
 	Fin lien vers les flux rss pour les élèves s'ils sont activés
 ******************************************************************/
@@ -2254,10 +2407,13 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 //=================================
 
 // ========================== Statut AUTRE =============================
+/*
 if ($_SESSION["statut"] == 'autre') {
 	// On récupère la liste des fichiers à autoriser
 	require_once("utilisateurs/creer_statut_autorisation.php");
 	$nbre_a = count($autorise);
+ * 
+ */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
 	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/>&nbsp;-&nbsp;Navigation</h2>\n";
@@ -2265,7 +2421,7 @@ if ($_SESSION["statut"] == 'autre') {
 
 	//for($a = 1 ; $a < $nbre ; $a++){
 */
-
+/*
   verif_exist_ordre_menu('bloc_navigation');
 	$tbs_menu[$ordre_menus['bloc_navigation']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Navigation");
 
@@ -2297,6 +2453,8 @@ if ($_SESSION["statut"] == 'autre') {
 				}else{
 					$var = '';
 				}
+ * 
+ */
 /*
 			echo '
 				<tr>
@@ -2305,6 +2463,7 @@ if ($_SESSION["statut"] == 'autre') {
 				</tr>
 			';
 */
+/*
 			$adresse= $gepiPath.$autorise[$a][0].$var;
 			$titre= $menu_accueil[$a][0];
 			$expli=$menu_accueil[$a][1];
@@ -2313,6 +2472,8 @@ if ($_SESSION["statut"] == 'autre') {
 		}
 		$a++;
 	}
+ * 
+ */
 /*
 	echo '</table>';
 		for ($i=0;$i<$nb_ligne;$i++) {
@@ -2323,14 +2484,17 @@ if ($_SESSION["statut"] == 'autre') {
 			}
 		}
 */
+/*
 }
+ * 
+ */
 // ========================== fin Statut AUTRE =============================
 
 
 /*************************
         Module Epreuves blanches
 *************************/
-
+/*
 //insert into setting set name='active_mod_epreuve_blanche', value='y';
 if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 	$chemin = array();
@@ -2347,6 +2511,8 @@ if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
+ * 
+ */
 /*
 	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Epreuves blanches</h2>\n";
 		echo "<table class='menu' summary=\"Module Epreuves blanches. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
@@ -2355,6 +2521,7 @@ if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 		}
 		echo "</table>";
 */
+/*
 		verif_exist_ordre_menu('bloc_epreuve_blanche');
 		$tbs_menu[$ordre_menus['bloc_epreuve_blanche']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Epreuves blanches");
 
@@ -2367,6 +2534,8 @@ if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 		}
 	}
 }
+ * 
+ */
 
 /*****************************
         Fin module Epreuves blanches
@@ -2375,7 +2544,7 @@ if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 /*************************
         Module Examen blanc
 *************************/
-
+/*
 //insert into setting set name='active_mod_epreuve_blanche', value='y';
 if (getSettingValue("active_mod_examen_blanc")=='y') {
 	$chemin = array();
@@ -2392,6 +2561,8 @@ if (getSettingValue("active_mod_examen_blanc")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
+ * 
+ */
 /*
 	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Epreuves blanches</h2>\n";
 		echo "<table class='menu' summary=\"Module Epreuves blanches. Colonne de gauche : lien vers les pages, colonne de droite : rapide description\">\n";
@@ -2400,7 +2571,7 @@ if (getSettingValue("active_mod_examen_blanc")=='y') {
 		}
 		echo "</table>";
 */
-
+/*
 		verif_exist_ordre_menu('bloc_examen_blanc');
 		$tbs_menu[$ordre_menus['bloc_examen_blanc']]=array('classe'=>'accueil' , 'image'=>'./images/icons/document.png' , 'texte'=>"Examens blancs");
 
@@ -2413,6 +2584,8 @@ if (getSettingValue("active_mod_examen_blanc")=='y') {
 		}
 	}
 }
+ * 
+ */
 
 /*****************************
         Fin module Examen blanc
@@ -2422,7 +2595,7 @@ if (getSettingValue("active_mod_examen_blanc")=='y') {
 /*********************************
     Module Admissions Post-Bac
 **********************************/
-
+/*
 if (getSettingValue("active_mod_apb")=='y') {
 	$chemin = array();
 	$chemin[]="/mod_apb/index.php";
@@ -2450,6 +2623,8 @@ if (getSettingValue("active_mod_apb")=='y') {
 		}
 	}
 }
+ * 
+ */
 
 /*****************************
       Fin module APB
@@ -2458,7 +2633,7 @@ if (getSettingValue("active_mod_apb")=='y') {
 /*******************************
       Module Gestionnaire d'AID
 *******************************/
-
+/*
 if (getSettingValue("active_mod_gest_aid")=='y') {
 	$chemin = array();
 	$titre = array();
@@ -2512,9 +2687,16 @@ if (getSettingValue("active_mod_gest_aid")=='y') {
 		}
 	}
 }
+ * 
+ */
 /*******************************
   Fin Module Gestionnaire d'AID
 *******************************/
+
+
+
+
+
 
 $tbs_microtime	="";
 $tbs_pmv="";
@@ -2529,15 +2711,18 @@ if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 
 //==================================
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
-// $affiche_debug=debug_var2();
+// $affiche_debug=debug_var();
 
 
 $nom_gabarit = './templates/'.$_SESSION['rep_gabarits'].'/accueil_template.php';
 include($nom_gabarit);
 
 // ------ on vide les tableaux -----
+/*
 unset($tbs_menu,$tbs_message_admin,$tbs_nom_connecte,$tbs_referencement,$tbs_probleme_dir,$tbs_interface_graphique,$tbs_message,$tbs_canal_rss);
 unset($tbs_refresh,$tbs_librairies,$tbs_CSS,$tbs_statut,$donnees_enfant,$tbs_premier_menu,$tbs_deux_menu);
 unset($tbs_menu_prof);
+ * 
+ */
 
 ?>
