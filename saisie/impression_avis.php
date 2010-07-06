@@ -63,10 +63,78 @@ echo "</p>\n";
 
 if ($_SESSION['statut'] == 'scolarite') { // Scolarite
 
-echo "<h3>Liste des classes : </h3>\n"; //modele imprime PDF
+	if ($id_choix_periode != 0) {
+		$periode = "Période N°".$id_choix_periode;
+		echo "<h3>".$periode;
+		echo "</h3>\n";
+	} else {
+		$periode="";
+		echo "<h3>Choix de la période : ";
+		echo "</h3>\n";
+	}
 
-// Pourle compte scolarite, possibilité d'imprimer les avis en synthèse (pour ses classes)
-echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez imprimer les avis :</p>\n";
+	// Impression multiple
+	echo "<div style=\"text-align: center;\">\n";
+	echo "<fieldset>\n";
+
+	if ($id_choix_periode == 0) {
+		echo "<legend>Sélectionnez la période pour laquelle vous souhaitez imprimer les avis en série.</legend>\n";
+		echo "<form method=\"post\" action=\"impression_avis.php\" name=\"imprime_serie\">\n";
+		$requete_periode = "SELECT DISTINCT `num_periode` FROM `periodes`";
+		$resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
+		echo "<br />\n";
+		While ( $data_periode = mysql_fetch_array ($resultat_periode)) {
+			echo "Période ".$data_periode['num_periode']." : <input type='radio' name='id_choix_periode' value='".$data_periode['num_periode']."' /> <br />\n";
+		}
+		echo "<br /><br /> <input value=\"Valider la période\" name=\"Valider\" type=\"submit\" />\n
+				<br />\n";
+	
+		echo "</form>\n";
+	} else {
+		echo "<legend>Séléctionnez la (ou les) classe(s) pour lesquels vous souhaitez imprimer les avis.</legend>\n";
+		echo "<form method=\"post\" action=\"../impression/avis_pdf.php\" target='_blank' name=\"avis_pdf\">\n";
+		if ($id_choix_periode != 0) {
+			echo "<br />\n";
+
+			echo "<select id='liste_classes' name='id_liste_classes[]' multiple='yes' size='5'>\n";
+				if($_SESSION['statut']=='scolarite'){ //n'affiche que les classes du profil scolarité
+					$login_scolarite = $_SESSION['login'];
+					$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` , jsc.login, jsc.id_classe
+									FROM `periodes`, `classes` , `j_scol_classes` jsc
+									WHERE (jsc.login='$login_scolarite'
+									AND jsc.id_classe=classes.id
+									AND `periodes`.`num_periode` = ".$id_choix_periode."
+									AND `classes`.`id` = `periodes`.`id_classe`)
+									ORDER BY `nom_complet` ASC";
+				} else {
+					$requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
+				}
+				$resultat_classe = mysql_query($requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysql_error());
+				echo "		<optgroup label=\"-- Les classes --\">\n";
+				While ( $data_classe = mysql_fetch_array ($resultat_classe)) {
+					echo "		<option value=\"";
+					echo $data_classe['id_classe'];
+					echo "\">";
+					echo $data_classe['nom_complet']." (".$data_classe['classe'].")";
+					echo "</option>\n";
+				}
+				echo "		</optgroup>\n";
+			echo "	</select>\n";
+			echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
+			echo "<br /><br /> <input value=\"Valider les classes\" name=\"Valider\" type=\"submit\" />\n";
+			echo "<br />\n";
+		}
+		echo "</form>\n";
+	}
+	echo "</fieldset>\n";
+	echo "</div>";
+
+	echo "<br />\n";
+	
+	echo "<h3>Liste des classes : </h3>\n"; //modele imprime PDF
+	
+	// Pourle compte scolarite, possibilité d'imprimer les avis en synthèse (pour ses classes)
+	echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez imprimer les avis :</p>\n";
 
 	$sql = "SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	$result_classes=mysql_query($sql);
@@ -75,7 +143,7 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 	if(mysql_num_rows($result_classes)==0){
 		echo "<p>Il semble qu'aucune classe n'ait encore été créée.</p>\n";
 	}
-	else{
+	else {
 		$nb_classes=mysql_num_rows($result_classes);
 		$nb_class_par_colonne=round($nb_classes/3);
 		echo "<table width='100%'>\n";
@@ -119,72 +187,6 @@ echo "<p>Séléctionnez la classe et la période pour lesquels vous souhaitez impri
 		echo "</table>\n";
 	}
 
-echo "<br />\n";
-if ($id_choix_periode != 0) {
-  $periode = "Période N°".$id_choix_periode;
-  echo "<h3>".$periode;
-   echo "</h3>\n";
-} else {
-  $periode="";
-  echo "<h3>Choix de la période : ";
-  echo "</h3>\n";
-}
-
-// Impression multiple
-echo "<div style=\"text-align: center;\">\n
-   <fieldset>\n";
-
-   if ($id_choix_periode == 0) {
-       echo "<legend>Séléctionnez la période pour lesquels vous souhaitez imprimer les avis en série.</legend>\n";
-	   echo "<form method=\"post\" action=\"impression_avis.php\" name=\"imprime_serie\">\n";
-	   $requete_periode = "SELECT DISTINCT `num_periode` FROM `periodes`";
-	   $resultat_periode = mysql_query($requete_periode) or die('Erreur SQL !'.$requete_periode.'<br />'.mysql_error());
-       echo "<br />\n";
-	   While ( $data_periode = mysql_fetch_array ($resultat_periode)) {
-	       echo "Période ".$data_periode['num_periode']." : <input type='radio' name='id_choix_periode' value='".$data_periode['num_periode']."' /> <br />\n";
-	   }
-	   echo "<br /><br /> <input value=\"Valider la période\" name=\"Valider\" type=\"submit\" />\n
-              <br />\n";
-
-    echo "</form>\n";
-   } else {
-       echo "<legend>Séléctionnez la (ou les) classe(s) pour lesquels vous souhaitez imprimer les avis.</legend>\n";
-	     echo "<form method=\"post\" action=\"../impression/avis_pdf.php\" target='_blank' name=\"avis_pdf\">\n";
-         if ($id_choix_periode != 0) {
-				echo "<br />\n";
-
-				echo "<select id='liste_classes' name='id_liste_classes[]' multiple='yes' size='5'>\n";
-                      if($_SESSION['statut']=='scolarite'){ //n'affiche que les classes du profil scolarité
-                      $login_scolarite = $_SESSION['login'];
-					  $requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` , jsc.login, jsc.id_classe
-					                     FROM `periodes`, `classes` , `j_scol_classes` jsc
-										 WHERE (jsc.login='$login_scolarite'
-										 AND jsc.id_classe=classes.id
-										 AND `periodes`.`num_periode` = ".$id_choix_periode."
-										 AND `classes`.`id` = `periodes`.`id_classe`)
-										 ORDER BY `nom_complet` ASC";
-                    } else {
-					  $requete_classe = "SELECT `periodes`.`id_classe`, `classes`.`classe`, `classes`.`nom_complet` FROM `periodes`, `classes` WHERE `periodes`.`num_periode` = ".$id_choix_periode." AND `classes`.`id` = `periodes`.`id_classe` ORDER BY `nom_complet` ASC";
-					}
-					$resultat_classe = mysql_query($requete_classe) or die('Erreur SQL !'.$requete_classe.'<br />'.mysql_error());
-					echo "		<optgroup label=\"-- Les classes --\">\n";
-					While ( $data_classe = mysql_fetch_array ($resultat_classe)) {
-								   echo "		<option value=\"";
-								   echo $data_classe['id_classe'];
-								   echo "\">";
-								   echo $data_classe['nom_complet']." (".$data_classe['classe'].")";
-								   echo "</option>\n";
-					}
-					echo "		</optgroup>\n";
-				echo "	</select>\n";
-				echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
-				echo "<br /><br /> <input value=\"Valider les classes\" name=\"Valider\" type=\"submit\" />\n
-          <br />\n";
-				}
-     echo "</form>\n";
-	 }
-   echo "</fieldset>\n
- </div>";
 
 
 // Module toutes les classes scolarité
