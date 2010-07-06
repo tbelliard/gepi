@@ -65,7 +65,6 @@ class class_page_accueil {
  */
   function __construct($statut, $gepiSettings, $niveau_arbo,$ordre_menus) {
 
-	$this->ordre_menus=$ordre_menus;
 
 	switch ($niveau_arbo){
 	  case 0:
@@ -87,6 +86,8 @@ class class_page_accueil {
 	$this->statutUtilisateur = $statut;
 	$this->gepiSettings=$gepiSettings;
 	$this->loginUtilisateur=$_SESSION['login'];
+	
+	$this->chargeOrdreMenu($ordre_menus);
 
 	// On teste si on l'utilisateur est un prof avec des matières. Si oui, on affiche les lignes relatives au cahier de textes et au carnet de notes
 	$this->test_prof_matiere = sql_count(sql_query("SELECT login
@@ -1489,10 +1490,43 @@ class class_page_accueil {
 	  $this->creeNouveauTitre('accueil',"Gestion des AID",'images/icons/document.png');	
   }
 
-  public function verif_exist_ordre_menu($_item){
+  private function verif_exist_ordre_menu($_item){
 	if (!isset($this->ordre_menus[$_item]))
 	  $this->ordre_menus[$_item] = max($this->ordre_menus)+1;
 	  $this->a=$this->ordre_menus[$_item];
+  }
+
+  private function chargeOrdreMenu($ordre_menus){
+	//$this->ordre_menus=$ordre_menus;
+	$sql="SHOW TABLES LIKE 'mn_ordre_accueil'";
+	$resp = mysql_query($sql);
+	if(mysql_num_rows($resp)>0) {
+/*
+	  CREATE TABLE `mn_ordre_accueil` (
+`id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
+`statut` VARCHAR( 15 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
+`bloc` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL ,
+`num_menu` INT NOT NULL ,
+`nouveau_nom` VARCHAR( 25 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
+) ENGINE = MYISAM ;
+ * 
+ */
+	  $sql2="SELECT bloc, num_menu
+			FROM mn_ordre_accueil
+			WHERE statut
+			LIKE '$this->statutUtilisateur' " ;
+	  $resp2 = mysql_query($sql2);
+	  //if (mysql_num_rows($resp2)>0){
+	  if (mysql_num_rows($resp2)>0){
+		while($lig_log=mysql_fetch_object($resp2)) {
+		  $this->ordre_menus[$lig_log->bloc]=$lig_log->num_menu;
+		}
+	  }else{
+		$this->ordre_menus=$ordre_menus;
+	  }
+	}else{
+	  $this->ordre_menus=$ordre_menus;
+	}
   }
 
 }

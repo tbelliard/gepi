@@ -278,7 +278,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 
     // * affichage du nombre de connecté *
     // compte le nombre d'enregistrement dans la table
-	$sql = "select LOGIN from log where END > now()";
+	$sql = "SELECT login FROM log WHERE END > now()";
 	$res = sql_query($sql);
 	// $tbs_nb_connect = sql_count($res);
 	$afficheAccueil->nb_connect = sql_count($res);
@@ -295,7 +295,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 		//$texte.="</tr>\n";
 		$alt=1;
 		while($lig_log=mysql_fetch_object($res)) {
-			$sql="SELECT nom,prenom,statut,email FROM utilisateurs WHERE login='$lig_log->LOGIN';";
+			$sql="SELECT nom,prenom,statut,email FROM utilisateurs WHERE login='$lig_log->login';";
 			$res_pers=mysql_query($sql);
 			if(mysql_num_rows($res)==0) {
 				//$texte.="<tr><td style='color:red;'>$lig_log->LOGIN</td><td style='color:red;'>???</td></tr>\n";
