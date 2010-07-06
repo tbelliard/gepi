@@ -569,6 +569,12 @@ if (isset($fiche)) {
 
     </form>
     <?php
+		echo "<script type='text/javascript'>
+	if(document.getElementById('no_anti_inject_current_eleve_login_ap')) {
+		//alert('1')
+		setTimeout(\"document.getElementById('no_anti_inject_current_eleve_login_ap').focus()\",500);
+	}
+</script>\n";
 
 }
 
