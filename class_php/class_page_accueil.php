@@ -400,7 +400,7 @@ class class_page_accueil {
 				AND jsc.login = '".$this->loginUtilisateur."')"));
 	}
 	$conditions_ects = ($this->gepiSettings['active_mod_ects'] == 'y' AND
-		  (($this->test_prof_suivi != "0" and $gepiSettings['GepiAccesSaisieEctsPP'] =='yes'
+		  (($this->test_prof_suivi != "0" and $this->gepiSettings['GepiAccesSaisieEctsPP'] =='yes'
 			  AND $this->test_prof_suivi_ects != "0")
 		  OR ($this->statutUtilisateur == 'professeur'
 			  AND $this->gepiSettings['GepiAccesSaisieEctsProf'] =='yes'
@@ -1011,8 +1011,8 @@ class class_page_accueil {
 	while ($i < $nb_aid) {
 	  $indice_aid = @mysql_result($call_data, $i, "indice_aid");
 	  $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs 
-								WHERE (id_utilisateur = '" .$this->loginUtilisateur. "'
-								AND indice_aid = '$indice_aid')");
+								WHERE (id_utilisateur = '".$this->loginUtilisateur."'
+								AND indice_aid = '".$indice_aid."')");
 	  $nb_result = mysql_num_rows($call_prof);
 	  if ($nb_result != 0) {
 		$nom_aid = @mysql_result($call_data, $i, "nom");	 
@@ -1417,12 +1417,12 @@ class class_page_accueil {
 //insert into setting set name='active_mod_epreuve_blanche', value='y';
 	if (getSettingValue("active_mod_examen_blanc")=='y') {
 	  $this->creeNouveauItem("/mod_examen_blanc/index.php",
-			  "Éxamens blancs",
+			  "Examens blancs",
 			  "Organisation d'examens blancs,...");
 	}
 	  
 	if ($this->b>0)
-	  $this->creeNouveauTitre('accueil',"Éxamens blancs",'images/icons/document.png');
+	  $this->creeNouveauTitre('accueil',"Examens blancs",'images/icons/document.png');
   }
   
   private function adminPostBac(){
