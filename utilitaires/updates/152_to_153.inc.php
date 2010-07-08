@@ -898,6 +898,132 @@ if ($res_test==0){
   $result .= "<font color=\"blue\">Le paramètre 'autoriser_correction_bulletin' existe déjà dans la table 'setting'.</font><br />";
 }
 
+
+
+
+$test = sql_query1("SHOW TABLES LIKE 'gc_projets'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'gc_projets'. ";
+	$sql="CREATE TABLE IF NOT EXISTS gc_projets (
+		id smallint(6) unsigned NOT NULL auto_increment,
+		projet VARCHAR( 255 ) NOT NULL ,
+		commentaire TEXT NOT NULL ,
+		PRIMARY KEY ( id )
+		);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'gc_projets': ".$result_inter."<br />";
+	}
+}
+
+$test = sql_query1("SHOW TABLES LIKE 'gc_divisions'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'gc_divisions'. ";
+	$sql="CREATE TABLE IF NOT EXISTS gc_divisions (
+		id int(11) unsigned NOT NULL auto_increment,
+		projet VARCHAR( 255 ) NOT NULL ,
+		id_classe smallint(6) unsigned NOT NULL,
+		classe varchar(100) NOT NULL default '',
+		statut enum( 'actuelle', 'future', 'red', 'arriv' ) NOT NULL DEFAULT 'future',
+		PRIMARY KEY ( id )
+		);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'gc_divisions': ".$result_inter."<br />";
+	}
+}
+
+$test = sql_query1("SHOW TABLES LIKE 'gc_options'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'gc_options'. ";
+	$sql="CREATE TABLE IF NOT EXISTS gc_options (
+		id int(11) unsigned NOT NULL auto_increment,
+		projet VARCHAR( 255 ) NOT NULL ,
+		opt VARCHAR( 255 ) NOT NULL ,
+		type ENUM('lv1','lv2','lv3','autre') NOT NULL ,
+		obligatoire ENUM('o','n') NOT NULL ,
+		exclusive smallint(6) unsigned NOT NULL,
+		PRIMARY KEY ( id )
+		);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'gc_options': ".$result_inter."<br />";
+	}
+}
+
+$test = sql_query1("SHOW TABLES LIKE 'gc_options_classes'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'gc_options_classes'. ";
+	$sql="CREATE TABLE IF NOT EXISTS gc_options_classes (
+		id int(11) unsigned NOT NULL auto_increment,
+		projet VARCHAR( 255 ) NOT NULL ,
+		opt_exclue VARCHAR( 255 ) NOT NULL ,
+		classe_future VARCHAR( 255 ) NOT NULL ,
+		commentaire TEXT NOT NULL ,
+		PRIMARY KEY ( id )
+		);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'gc_options_classes': ".$result_inter."<br />";
+	}
+}
+
+$test = sql_query1("SHOW TABLES LIKE 'gc_ele_arriv_red'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'gc_ele_arriv_red'. ";
+	$sql="CREATE TABLE IF NOT EXISTS gc_ele_arriv_red (
+		login VARCHAR( 255 ) NOT NULL,
+		statut ENUM('Arriv','Red') NOT NULL ,
+		projet VARCHAR( 255 ) NOT NULL ,
+		PRIMARY KEY ( login , projet )
+		);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'gc_ele_arriv_red': ".$result_inter."<br />";
+	}
+}
+
+$test = sql_query1("SHOW TABLES LIKE 'gc_affichages'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'gc_affichages'. ";
+	$sql="CREATE TABLE IF NOT EXISTS gc_affichages (
+		id int(11) unsigned NOT NULL auto_increment,
+		id_aff int(11) unsigned NOT NULL,
+		id_req int(11) unsigned NOT NULL,
+		projet VARCHAR( 255 ) NOT NULL ,
+		type VARCHAR(255) NOT NULL,
+		valeur varchar(255) NOT NULL,
+		PRIMARY KEY ( id )
+		);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'gc_affichages': ".$result_inter."<br />";
+	}
+}
+
+$test = sql_query1("SHOW TABLES LIKE 'gc_eleves_options'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'gc_eleves_options'. ";
+	$sql="CREATE TABLE IF NOT EXISTS gc_eleves_options (
+		id int(11) unsigned NOT NULL auto_increment,
+		login VARCHAR( 255 ) NOT NULL ,
+		profil enum('GC','C','RAS','B','TB') NOT NULL default 'RAS',
+		moy VARCHAR( 255 ) NOT NULL ,
+		nb_absences VARCHAR( 255 ) NOT NULL ,
+		non_justifie VARCHAR( 255 ) NOT NULL ,
+		nb_retards VARCHAR( 255 ) NOT NULL ,
+		projet VARCHAR( 255 ) NOT NULL ,
+		id_classe_actuelle VARCHAR(255) NOT NULL ,
+		classe_future VARCHAR(255) NOT NULL ,
+		liste_opt VARCHAR( 255 ) NOT NULL ,
+		PRIMARY KEY ( id )
+		);";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'gc_eleves_options': ".$result_inter."<br />";
+	}
+}
+
 $result .= "<br />&nbsp;->Contrôle de la clé primaire de 'gc_ele_arriv_red'<br />";
 $req_test=mysql_query("SHOW INDEXES FROM gc_ele_arriv_red WHERE Key_name='PRIMARY';");
 $res_test=mysql_num_rows($req_test);
@@ -918,7 +1044,7 @@ if ($res_test<2){
   $result .= "<font color=\"blue\">La clé primaire de 'gc_ele_arriv_red' est déjà sur $res_test champs.</font><br />";
 }
 
-$result .= "&nbsp;->Extension à 255 caractères du champ 'USER_AGENT' de la table 'log'<br />";
+$result .= "<br />&nbsp;->Extension à 255 caractères du champ 'USER_AGENT' de la table 'log'<br />";
 $query = mysql_query("ALTER TABLE log CHANGE USER_AGENT USER_AGENT VARCHAR( 255 ) NOT NULL;");
 if ($query) {
         $result .= "<font color=\"green\">Ok !</font><br />";
