@@ -271,7 +271,8 @@ if (isset($style_screen_ajout))  {
 	} elseif ($niveau_arbo == "3") {
 	   $gepiPath2="../../..";
 	}
-		
+	
+		$Style_CSS=array(); // initialisation du tableau de Style supplémentaire	
 		
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			if (@file_exists($gepiPath2.'/style_screen_ajout_'.getSettingValue("gepiSchoolRne").'.css')) {
