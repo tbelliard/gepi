@@ -336,7 +336,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 	}else {
 		// echo "<p>\nNombre de personnes actuellement connectées : $nb_connect ";
 		// $tbs_nb_connect_lien ="";
-		$afficheAccueil->b_connect_lien ="";
+		$afficheAccueil->nb_connect_lien ="";
 
 	}
 

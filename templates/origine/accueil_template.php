@@ -85,7 +85,7 @@
 ?>
 	  <p>
 		Nombre de personnes actuellement connectées :
-		<a href='<?php echo $afficheAccueil->connect_lien; ?>' onmouseover="delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);">
+		<a href='<?php echo $afficheAccueil->nb_connect_lien; ?>' onmouseover="delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);">
 		  <?php echo $afficheAccueil->nb_connect; ?>
 		</a>
 		(
