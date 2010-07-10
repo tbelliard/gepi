@@ -1051,6 +1051,34 @@ if ($query) {
 } else {
         $result .= "<font color=\"red\">Erreur</font><br />";
 }
+$result .= "<br />";
 
+$test = sql_query1("SHOW TABLES LIKE 's_categories'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 's_categories'. ";
+	$sql="CREATE TABLE IF NOT EXISTS s_categories ( id INT(11) NOT NULL
+		auto_increment, categorie varchar(50) NOT NULL
+		default '',sigle varchar(20) NOT NULL
+		default '', PRIMARY KEY (id) )
+		TYPE=MyISAM;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 's_categories': ".$result_inter."<br />";
+	}
+}
+
+$result .= "&nbsp;->Ajout d'un champ 'id_categorie' à la table 's_incidents'<br />";
+$test=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_incidents LIKE 'id_categorie';"));
+if ($test>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE s_incidents ADD id_categorie INT(11) AFTER nature;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
 
 ?>

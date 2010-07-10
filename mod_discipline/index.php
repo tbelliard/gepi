@@ -390,6 +390,19 @@ if($_SESSION['statut']=='administrateur') {
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
+
+
+	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_discipline/definir_categories.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->titre="Définition des catégories d'incidents" ;
+		$nouveauItem->expli="Définir les catégories d'incidents (à des fins de statistiques)." ;
+		$nouveauItem->indexMenu=$a;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+
 /*
 	
 
