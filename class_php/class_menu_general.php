@@ -125,6 +125,8 @@ class menuGeneral
 	public $classe='accueil';
 	public $icone= array('chemin'=>'./images/icons/control-center.png','titre'=>'', 'alt'=>"");
 	public $texte='';
+	public $bloc='';
+	public $nouveauNom='';
 
 	// constructeur
 /** * @class: menuGeneral :

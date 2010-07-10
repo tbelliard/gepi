@@ -110,91 +110,114 @@ class class_page_accueil {
 /***** Outils d'administration *****/
 	$this->verif_exist_ordre_menu('bloc_administration');
 	$this->administration();
+	$this->chargeAutreNom('bloc_administration');
 	
 /***** Outils de gestion des absences vie scolaire *****/
 	$this->verif_exist_ordre_menu('bloc_absences_vie_scol');
 	$this->absences_vie_scol();
+	$this->chargeAutreNom('bloc_absences_vie_scol');
 	
 /***** Outils de gestion des absences par les professeurs *****/
 	$this->verif_exist_ordre_menu('bloc_absences_professeur');
 	$this->absences_profs();
+	$this->chargeAutreNom('bloc_absences_professeur');
 	
 /***** Saisie ***********/
 	$this->verif_exist_ordre_menu('bloc_saisie');
 	$this->saisie();
+	$this->chargeAutreNom('bloc_saisie');
 
 /***** gestion des trombinoscopes : module de Christian Chapel ***********/
 	$this->verif_exist_ordre_menu('bloc_trombinoscope');
 	$this->trombinoscope();
+	$this->chargeAutreNom('bloc_trombinoscope');
 
 /***** Outils de relevé de notes *****/
 	$this->verif_exist_ordre_menu('bloc_releve_notes');
 	$this->releve_notes();
+	$this->chargeAutreNom('bloc_releve_notes');
 	
 /***** Outils de relevé ECTS *****/
 	$this->verif_exist_ordre_menu('bloc_releve_ects');
 	$this->releve_ECTS();
+	$this->chargeAutreNom('bloc_releve_ects');
 	
 /***** Emploi du temps *****/
 	$this->verif_exist_ordre_menu('bloc_emploi_du_temps');
 	$this->emploiDuTemps();
+	$this->chargeAutreNom('bloc_emploi_du_temps');
 
 /***** Outils destinés essentiellement aux parents et aux élèves *****/
 
 // Cahier de textes
 	$this->verif_exist_ordre_menu('bloc_cahier_texte_famille');
 	$this->cahierTexteFamille();
+	$this->chargeAutreNom('bloc_cahier_texte_famille');
 // Relevés de notes
 	$this->verif_exist_ordre_menu('bloc_carnet_notes_famille');
 	$this->releveNotesFamille();
+	$this->chargeAutreNom('bloc_carnet_notes_famille');
 // Equipes pédagogiques
 	$this->verif_exist_ordre_menu('bloc_equipe_peda_famille');
 	$this->equipePedaFamille();
+	$this->chargeAutreNom('bloc_equipe_peda_famille');
 // Bulletins simplifiés
 	$this->verif_exist_ordre_menu('bloc_bull_simple_famille');
 	$this->bulletinFamille();
+	$this->chargeAutreNom('bloc_bull_simple_famille');
 // Graphiques
 	$this->verif_exist_ordre_menu('bloc_graphique_famille');
 	$this->graphiqueFamille();
+	$this->chargeAutreNom('bloc_graphique_famille');
 // les absences
 	$this->verif_exist_ordre_menu('bloc_absences_famille');
 	$this->absencesFamille();
+	$this->chargeAutreNom('bloc_absences_famille');
 
 /***** Outils complémentaires de gestion des AID *****/
 	$this->verif_exist_ordre_menu('bloc_outil_comp_gestion_aid');
 	$this->gestionAID();
+	$this->chargeAutreNom('bloc_outil_comp_gestion_aid');
 
 /***** Outils de gestion des Bulletins scolaires *****/
 	$this->verif_exist_ordre_menu('bloc_gestion_bulletins_scolaires');
 	$this->bulletins();
+	$this->chargeAutreNom('bloc_gestion_bulletins_scolaires');
 
 /***** Visualisation / Impression *****/
 	$this->verif_exist_ordre_menu('bloc_visulation_impression');
 	$this->impression();
+	$this->chargeAutreNom('bloc_visulation_impression');
 
 /***** Gestion Notanet *****/
 	$this->verif_exist_ordre_menu('bloc_notanet_fiches_brevet');
 	$this->notanet();
+	$this->chargeAutreNom('bloc_notanet_fiches_brevet');
 
 /***** Gestion années antérieures *****/
 	$this->verif_exist_ordre_menu('bloc_annees_antérieures');
 	$this->anneeAnterieure();
+	$this->chargeAutreNom('bloc_annees_antérieures');
 
 /***** Gestion des messages *****/
 	$this->verif_exist_ordre_menu('bloc_panneau_affichage');
 	$this->messages();
+	$this->chargeAutreNom('bloc_panneau_affichage');
 
 /***** Module inscription *****/
 	$this->verif_exist_ordre_menu('bloc_module_inscriptions');
 	$this->inscription();
+	$this->chargeAutreNom('bloc_module_inscriptions');
 
 /***** Module discipline *****/
 	$this->verif_exist_ordre_menu('bloc_module_discipline');
 	$this->discipline();
+	$this->chargeAutreNom('bloc_module_discipline');
 
 /***** Module Modèle Open Office *****/
 	$this->verif_exist_ordre_menu('bloc_modeles_Open_Office');
 	$this->modeleOpenOffice();
+	$this->chargeAutreNom('bloc_modeles_Open_Office');
 	
 /***** Module plugins : affichage des menus des plugins en fonction des droits *****/
 	$this->verif_exist_ordre_menu('');
@@ -203,30 +226,37 @@ class class_page_accueil {
 /***** Module Genese des classes *****/
 	$this->verif_exist_ordre_menu('bloc_Genese_classes');
 	$this->geneseClasses();
+	$this->chargeAutreNom('bloc_Genese_classes');
 
 /***** Lien vers les flux rss pour les élèves s'ils sont activés *****/
 	$this->verif_exist_ordre_menu('bloc_RSS');
 	$this->fluxRSS();
+	$this->chargeAutreNom('bloc_RSS');
 
 /***** Statut AUTRE *****/
 	$this->verif_exist_ordre_menu('bloc_navigation');
 	$this->statutAutre();
+	$this->chargeAutreNom('bloc_navigation');
 
 /***** Module Epreuves blanches *****/
 	$this->verif_exist_ordre_menu('bloc_epreuve_blanche');
 	$this->epreuvesBlanches();
+	$this->chargeAutreNom('bloc_epreuve_blanche');
 
 /***** Module Examen blanc *****/
 	$this->verif_exist_ordre_menu('bloc_examen_blanc');
 	$this->examenBlanc();
+	$this->chargeAutreNom('bloc_examen_blanc');
 	
 /***** Module Admissions Post-Bac *****/
 	$this->verif_exist_ordre_menu('bloc_admissions_post_bac');
 	$this->adminPostBac();
+	$this->chargeAutreNom('bloc_admissions_post_bac');
 
 /***** Module Gestionnaire d'AID *****/
 	$this->verif_exist_ordre_menu('bloc_Gestionnaire_aid');
 	$this->gestionEleveAID();
+	$this->chargeAutreNom('bloc_Gestionnaire_aid');
 
 /***** Tri des menus *****/
   sort($this->titre_Menu);
@@ -1501,16 +1531,6 @@ class class_page_accueil {
 	$sql="SHOW TABLES LIKE 'mn_ordre_accueil'";
 	$resp = mysql_query($sql);
 	if(mysql_num_rows($resp)>0) {
-/*
-	  CREATE TABLE `mn_ordre_accueil` (
-`id` INT NULL AUTO_INCREMENT PRIMARY KEY ,
-`statut` VARCHAR( 15 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ,
-`bloc` VARCHAR( 50 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL ,
-`num_menu` INT NOT NULL ,
-`nouveau_nom` VARCHAR( 25 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL
-) ENGINE = MYISAM ;
- * 
- */
 	  $sql2="SELECT bloc, num_menu
 			FROM mn_ordre_accueil
 			WHERE statut
@@ -1528,6 +1548,25 @@ class class_page_accueil {
 	  $this->ordre_menus=$ordre_menus;
 	}
   }
+
+
+  private function chargeAutreNom($bloc){
+
+	$sql1="SHOW TABLES LIKE 'mn_ordre_accueil'";
+	$resp1 = mysql_query($sql1);
+	if(mysql_num_rows($resp1)>0) {
+	  $sql="SELECT nouveau_nom FROM mn_ordre_accueil
+			WHERE bloc LIKE '$bloc'
+			AND statut LIKE '$this->statutUtilisateur'
+			AND nouveau_nom NOT LIKE ''
+			;";
+	  $resp=mysql_query($sql);
+	  if (mysql_num_rows($resp)>0){
+		$this->titre_Menu[$this->a]->texte=mysql_fetch_object($resp)->nouveau_nom;
+	  }
+	}
+  }
+
 
 }
 

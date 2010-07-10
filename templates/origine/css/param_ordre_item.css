@@ -1,0 +1,53 @@
+/* 
+    Document   : param_ordre_item
+    Created on : 7 juil. 2010, 14:20:42
+    Author     : regis
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.onglet
+{
+  display:inline-block;
+  margin-left:auto;
+  margin-right:auto;
+  padding:3px;
+  border:1px solid black;
+  cursor:pointer;
+}
+.onglet_0
+{
+  background:#bbbbbb;
+  border-bottom:1px solid black;
+}
+.onglet_1
+{
+  background:#dddddd;
+  border-bottom:0px solid black;
+  padding-bottom:4px;
+}
+.contenu_onglet
+{
+  background-color:#dddddd;
+  border:1px solid black;
+  margin-top:-1px;
+  padding:5px;
+  display:none;
+}
+.contenu_onglet2
+{
+  background-color:#dddddd;
+  border:1px solid black;
+  margin-top:-1px;
+  padding:5px;
+}
+ul
+{
+  margin-top:0px;
+  margin-bottom:0px;
+  margin-left:-10px
+}
+.ecarte
+{
+  margin: 60%;
+}

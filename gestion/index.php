@@ -209,12 +209,17 @@ include_once("./../lib/header_template.inc");
   $titre = "Paramétrage de l'interface ".$gepiSettings['denomination_professeur'];
   $expli = "Paramétrage des items de l'interface simplifiée pour certaines pages. Gestion du menu en barre horizontale.";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
-  
+
   $chemin = "param_couleurs.php";
   $titre = "Paramétrage des couleurs";
   $expli = "Paramétrage des couleurs de fond d'écran et du dégradé d'entête.";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
-  
+
+  $chemin = "param_ordre_item.php";
+  $titre = "Paramétrage de l'ordre des menus";
+  $expli = "Paramétrage de l'ordre des items dans les menus";
+  $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
+
 /*
 <!--
 <table class='menu' summary='Menu gestion des BDD'>
@@ -407,7 +412,6 @@ if (LDAPServer::is_setup()) {
 //==================================
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 //debug_var();
-
 
 include('./../templates/origine/gestion_generale_template.php');
 
