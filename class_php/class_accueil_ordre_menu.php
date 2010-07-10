@@ -129,6 +129,12 @@ class class_accueil_ordre_menu {
 	if ($this->saisie())
 	$this->chargeAutreNom('bloc_saisie');
 
+/***** Cahier de texte CPE ***********/
+	$this->verif_exist_ordre_menu('bloc_Cdt_CPE');
+	if ($this->cahierTexteCPE()){
+	  $this->chargeAutreNom('bloc_Cdt_CPE');
+	}
+
 /***** gestion des trombinoscopes : module de Christian Chapel ***********/
 	$this->verif_exist_ordre_menu('bloc_trombinoscope');
 	if ($this->trombinoscope())
@@ -492,6 +498,25 @@ class class_accueil_ordre_menu {
 	  }
   }
 
+  private function cahierTexteCPE(){
+	$this->b=0;
+
+	$condition = (
+	getSettingValue("active_cahiers_texte")=='y' AND (
+		($this->statutUtilisateur == "cpe" AND getSettingValue("GepiAccesCdtCpe") == 'yes')
+	));
+
+	if ($condition) {
+	  $this->creeNouveauItem("/cahier_texte_2/see_all.php",
+			  "Cahier de textes",
+			  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements de tous les ".$this->gepiSettings['denomination_eleves']);
+	}
+	if ($this->b>0){
+	  $this->creeNouveauTitre('accueil',"Cahier de texte",'images/icons/document.png');
+	  return true;
+	}
+  }
+
   private function trombinoscope(){
 	//On vérifie si le module est activé
 
@@ -700,9 +725,11 @@ class class_accueil_ordre_menu {
 			));
 
 
-		  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_bis.php",
+	if ($condition) {
+	  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_bis.php",
 				  "Relevés de notes",
 				  "Permet de consulter vos relevés de notes détaillés.");
+	}
 		
 	
 	if ($this->b>0){
@@ -1583,6 +1610,8 @@ class class_accueil_ordre_menu {
 		$this->titre_Menu[$this->a]->nouveauNom="";
 	  }
 
+	}else{
+		$this->titre_Menu[$this->a]->nouveauNom="";
 	}
 
   }

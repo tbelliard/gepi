@@ -127,6 +127,11 @@ class class_page_accueil {
 	$this->saisie();
 	$this->chargeAutreNom('bloc_saisie');
 
+/***** Cahier de texte CPE ***********/
+	$this->verif_exist_ordre_menu('bloc_Cdt_CPE');
+	$this->cahierTexteCPE();
+	$this->chargeAutreNom('bloc_Cdt_CPE');
+
 /***** gestion des trombinoscopes : module de Christian Chapel ***********/
 	$this->verif_exist_ordre_menu('bloc_trombinoscope');
 	$this->trombinoscope();
@@ -483,6 +488,23 @@ class class_page_accueil {
 
 	  if ($this->b>0)
 	  $this->creeNouveauTitre('accueil',"Saisie",'images/icons/configure.png');
+  }
+
+  private function cahierTexteCPE(){
+	$this->b=0;
+
+	$condition = (
+	getSettingValue("active_cahiers_texte")=='y' AND (
+		($this->statutUtilisateur == "cpe" AND getSettingValue("GepiAccesCdtCpe") == 'yes')
+	));
+	
+	if ($condition) {
+	  $this->creeNouveauItem("/cahier_texte_2/see_all.php",
+			  "Cahier de textes",
+			  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements de tous les ".$this->gepiSettings['denomination_eleves']);
+	}
+	if ($this->b>0)
+	  $this->creeNouveauTitre('accueil',"Cahier de texte",'images/icons/document.png');
   }
 
   private function trombinoscope(){
@@ -1548,7 +1570,6 @@ class class_page_accueil {
 	  $this->ordre_menus=$ordre_menus;
 	}
   }
-
 
   private function chargeAutreNom($bloc){
 
