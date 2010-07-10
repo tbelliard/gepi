@@ -500,7 +500,9 @@ class class_page_accueil {
 
 	$condition = (
 	getSettingValue("active_cahiers_texte")=='y' AND (
-		($this->statutUtilisateur == "cpe" AND getSettingValue("GepiAccesCdtCpe") == 'yes')
+		($this->statutUtilisateur == "cpe" 
+			AND getSettingValue("GepiAccesCdtCpe") == 'yes'
+			AND getSettingValue("GepiAccesCdtCpeRestreint") != 'yes')
 		OR ($this->statutUtilisateur == "scolarite" 
 			AND getSettingValue("GepiAccesCdtScol") == 'yes'
 			AND getSettingValue("GepiAccesCdtScolRestreint") != 'yes')
