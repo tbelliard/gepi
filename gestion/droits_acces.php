@@ -155,6 +155,15 @@ if (isset($_POST['OK'])) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesCdtCpe !";
 	}
 
+	if (isset($_POST['GepiAccesCdtScol'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesCdtScol", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesCdtScol !";
+	}
+	
 	if (isset($_POST['GepiAccesReleveProfP'])) {
 		$temp = "yes";
 	} else {
@@ -1016,6 +1025,11 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesReleveScol" id="GepiAccesReleveScol" value="yes" <?php if (getSettingValue("GepiAccesReleveScol")=='yes') echo "checked=checked"; ?> onchange='changement();' /></td>
 				<td style='border: 0px;'><label for='GepiAccesReleveScol' style='cursor: pointer;'> a accès à tous les relevés de notes de toutes les classes</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesCdtScol" id="GepiAccesCdtScol" value="yes" <?php if (getSettingValue("GepiAccesCdtScol")=='yes') echo "checked=checked"; ?> onchange='changement();' /></td>
+				<td style='border: 0px;'><label for='GepiAccesCdtScol' style='cursor: pointer;'> a accès aux cahiers de textes</label></td>
 			</tr>
 
 			<tr valign='top'>

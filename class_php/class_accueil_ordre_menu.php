@@ -504,6 +504,7 @@ class class_accueil_ordre_menu {
 	$condition = (
 	getSettingValue("active_cahiers_texte")=='y' AND (
 		($this->statutUtilisateur == "cpe" AND getSettingValue("GepiAccesCdtCpe") == 'yes')
+		OR ($this->statutUtilisateur == "scolarite" AND getSettingValue("GepiAccesCdtScol") == 'yes')
 	));
 
 	if ($condition) {
