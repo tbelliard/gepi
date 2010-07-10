@@ -135,6 +135,12 @@ class class_accueil_ordre_menu {
 	  $this->chargeAutreNom('bloc_Cdt_CPE');
 	}
 
+/***** Cahier de texte CPE Restreint ***********/
+	$this->verif_exist_ordre_menu('bloc_Cdt_CPE_Restreint');
+	if ($this->cahierTexteCPE_Restreint()){
+	  $this->chargeAutreNom('bloc_Cdt_CPE_Restreint');
+	}
+
 /***** gestion des trombinoscopes : module de Christian Chapel ***********/
 	$this->verif_exist_ordre_menu('bloc_trombinoscope');
 	if ($this->trombinoscope())
@@ -516,6 +522,24 @@ class class_accueil_ordre_menu {
 	  $this->creeNouveauTitre('accueil',"Cahier de texte",'images/icons/document.png');
 	  return true;
 	}
+  }
+
+  private function cahierTexteCPE_Restreint(){
+	$this->b=0;
+
+	$condition = (
+	getSettingValue("active_cahiers_texte")=='y' AND (
+		($this->statutUtilisateur == "cpe" AND getSettingValue("GepiAccesCdtCpeRestrein") == 'yes')
+		OR ($this->statutUtilisateur == "scolarite" AND getSettingValue("GepiAccesCdtScolRestreint") == 'yes')
+	));
+
+	if ($condition) {
+	  $this->creeNouveauItem("/cahier_texte_2/see_all.php",
+			  "Cahier de textes des classes suivies",
+			  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements des ".$this->gepiSettings['denomination_eleves']." dont vous avez la responsabilité");
+	}
+	if ($this->b>0)
+	  $this->creeNouveauTitre('accueil',"Cahier de texte",'images/icons/document.png');
   }
 
   private function trombinoscope(){

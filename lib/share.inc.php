@@ -1837,7 +1837,24 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 	// correction W3C : onChange = onchange
   $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=-1\">(Choisissez une classe)";
   // Ligne suivante corrigée sur suggestion tout à fait pertinente de Stéphane, mail du 1er septembre 06
-  $sql = "select DISTINCT c.id, c.classe from classes c, j_groupes_classes jgc, ct_entry ct WHERE (c.id = jgc.id_classe and jgc.id_groupe = ct.id_groupe) order by classe";
+   
+  if (getSettingValue('GepiAccesCdtScolRestreint')=="yes"){
+  $sql = "SELECT DISTINCT c.id, c.classe
+	FROM classes c, j_groupes_classes jgc, ct_entry ct, j_scol_classes jsc
+	WHERE (c.id = jgc.id_classe
+	  AND jgc.id_groupe = ct.id_groupe
+	  AND jsc.id_classe=jgc.id_classe
+	  AND jsc.login='".$_SESSION ['login']."')
+	ORDER BY classe ;";
+  }else{
+	$sql = "SELECT DISTINCT c.id, c.classe
+	  FROM classes c, j_groupes_classes jgc, ct_entry ct
+	  WHERE (c.id = jgc.id_classe
+	  AND jgc.id_groupe = ct.id_groupe)
+	  ORDER BY classe";
+  }
+  
+  
 
   $res = sql_query($sql);
   if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
@@ -1879,6 +1896,8 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	<select name=\"matiere\" onchange=\"matiere_go()\">\n";
 	*/
   // Pour le multisite, on doit récupérer le RNE de l'établissement
+  $prof="";
+  
   $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
   $aff_input_rne = $aff_get_rne = NULL;
   if ($rne != 'aucun') {
@@ -1913,7 +1932,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
    $test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$row[0]."' and u.login=j.login) ORDER BY nom, prenom";
    $res_prof = sql_query($test_prof);
    $chaine = "";
-   for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
+   for ($k=0;$prof==sql_row($res_prof,$k);$k++) {
      if ($k != 0) $chaine .= ", ";
      $chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
    }

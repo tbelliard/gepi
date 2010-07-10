@@ -132,6 +132,11 @@ class class_page_accueil {
 	$this->cahierTexteCPE();
 	$this->chargeAutreNom('bloc_Cdt_CPE');
 
+/***** Cahier de texte CPE Restreint ***********/
+	$this->verif_exist_ordre_menu('bloc_Cdt_CPE_Restreint');
+	$this->cahierTexteCPE_Restreint();
+	$this->chargeAutreNom('bloc_Cdt_CPE_Restreint');
+
 /***** gestion des trombinoscopes : module de Christian Chapel ***********/
 	$this->verif_exist_ordre_menu('bloc_trombinoscope');
 	$this->trombinoscope();
@@ -496,13 +501,33 @@ class class_page_accueil {
 	$condition = (
 	getSettingValue("active_cahiers_texte")=='y' AND (
 		($this->statutUtilisateur == "cpe" AND getSettingValue("GepiAccesCdtCpe") == 'yes')
-		OR ($this->statutUtilisateur == "scolarite" AND getSettingValue("GepiAccesCdtScol") == 'yes')
+		OR ($this->statutUtilisateur == "scolarite" 
+			AND getSettingValue("GepiAccesCdtScol") == 'yes'
+			AND getSettingValue("GepiAccesCdtScolRestreint") != 'yes')
 	));
-	
+
 	if ($condition) {
 	  $this->creeNouveauItem("/cahier_texte_2/see_all.php",
 			  "Cahier de textes",
 			  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements de tous les ".$this->gepiSettings['denomination_eleves']);
+	}
+	if ($this->b>0)
+	  $this->creeNouveauTitre('accueil',"Cahier de texte",'images/icons/document.png');
+  }
+
+  private function cahierTexteCPE_Restreint(){
+	$this->b=0;
+
+	$condition = (
+	getSettingValue("active_cahiers_texte")=='y' AND (
+		($this->statutUtilisateur == "cpe" AND getSettingValue("GepiAccesCdtCpeRestrein") == 'yes')
+		OR ($this->statutUtilisateur == "scolarite" AND getSettingValue("GepiAccesCdtScolRestreint") == 'yes')
+	));
+
+	if ($condition) {
+	  $this->creeNouveauItem("/cahier_texte_2/see_all.php",
+			  "Cahier de textes des classes suivies",
+			  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements des ".$this->gepiSettings['denomination_eleves']." dont vous avez la responsabilité");
 	}
 	if ($this->b>0)
 	  $this->creeNouveauTitre('accueil',"Cahier de texte",'images/icons/document.png');

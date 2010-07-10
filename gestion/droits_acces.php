@@ -163,7 +163,16 @@ if (isset($_POST['OK'])) {
 	if (!saveSetting("GepiAccesCdtScol", $temp)) {
 		$msg .= "Erreur lors de l'enregistrement de GepiAccesCdtScol !";
 	}
-	
+
+	if (isset($_POST['GepiAccesCdtScolRestreint'])) {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("GepiAccesCdtScolRestreint", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de GepiAccesCdtScolRestreint !";
+	}
+
 	if (isset($_POST['GepiAccesReleveProfP'])) {
 		$temp = "yes";
 	} else {
@@ -1029,7 +1038,12 @@ echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 
 			<tr valign='top'>
 				<td style='border: 0px;'><input type="checkbox" name="GepiAccesCdtScol" id="GepiAccesCdtScol" value="yes" <?php if (getSettingValue("GepiAccesCdtScol")=='yes') echo "checked=checked"; ?> onchange='changement();' /></td>
-				<td style='border: 0px;'><label for='GepiAccesCdtScol' style='cursor: pointer;'> a accès aux cahiers de textes</label></td>
+				<td style='border: 0px;'><label for='GepiAccesCdtScol' style='cursor: pointer;'> a accès à tous les cahiers de textes</label></td>
+			</tr>
+
+			<tr valign='top'>
+				<td style='border: 0px;'><input type="checkbox" name="GepiAccesCdtScolRestreint" id="GepiAccesCdtScolRestreint" value="yes" <?php if (getSettingValue("GepiAccesCdtScolRestreint")=='yes') echo "checked=checked"; ?> onchange='changement();' /></td>
+				<td style='border: 0px;'><label for='GepiAccesCdtScolRestreint' style='cursor: pointer;'> a accès aux cahiers de textes des <?php echo $gepiSettings['denomination_eleves']; ?> dont il a la responsabilité<br /><em>bloque l'affichage des cahiers de textes de toutes les classes</em></label></td>
 			</tr>
 
 			<tr valign='top'>
