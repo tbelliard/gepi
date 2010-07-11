@@ -126,6 +126,7 @@ class Classe extends BaseClasse {
 		$jEleveClasse->setPeriode($num_periode_notes);
 		$this->addJEleveClasse($jEleveClasse);
 		$jEleveClasse->save();
+		$eleve->clearPeriodeNotes();
 	}
 
  	/**
@@ -133,31 +134,48 @@ class Classe extends BaseClasse {
 	 *
 	 * @return     PeriodeNote $periode la periode actuellement ouverte
 	 */
-	public function getPeriodeNoteOuverte($v = 'now') {
+	public function getPeriodeNoteOuverte() {
 		$count_verrouiller_n = 0;
 		$count_verrouiller_p = 0;
 		foreach ($this->getPeriodeNotes() as $periode) {
 		    if ($periode->getVerouiller() == 'N') {
 			$count_verrouiller_n = $count_verrouiller_n + 1;
+			if (!isset($periode_verrouiller_n)
+				|| $periode_verrouiller_n == null
+				|| $periode_verrouiller_n->getNumPeriode() > $periode->getNumPeriode())
 			$periode_verrouiller_n = $periode;
 		    }
 		    if ($periode->getVerouiller() == 'P') {
 			$count_verrouiller_p = $count_verrouiller_p + 1;
+			if (!isset($periode_verrouiller_p)
+				||$periode_verrouiller_p == null
+				|| $periode_verrouiller_p->getNumPeriode() > $periode->getNumPeriode())
 			$periode_verrouiller_p = $periode;
 		    }
 		}
+
 		if ($count_verrouiller_n == 1) {
+		    //si on a une seule periode ouverte alors c'est la periode actuelle
 		    return $periode_verrouiller_n;
 		} elseif ($count_verrouiller_n == 0 && $count_verrouiller_p == 1) {
+		    //si on a une seule periode partiellement ouverte et aucune ouverte alors c'est la periode actuelle
 		    return $periode_verrouiller_p;
 		}
 
+		//on verifie si il y a une periode du calendrier avec une periode de note precisee
 		$calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
 		if ($calendrier_periode != null && $calendrier_periode->getNumeroPeriode() != null && $calendrier_periode->getNumeroPeriode() != 0) {
 		    $criteria = new Criteria();
 		    $criteria->add(PeriodeNotePeer::NUM_PERIODE,$calendrier_periode->getNumeroPeriode());
 		    $periodes = $this->getPeriodeNotes($criteria);
 		    return $periodes->getFirst();
+		}
+
+		//on va prendre la periode de numero la plus petite non verrouillee
+		if ($periode_verrouiller_n != null) {
+		    return $periode_verrouiller_n;
+		} elseif ($periode_verrouiller_p != null) {
+		    return $periode_verrouiller_p;
 		}
 		return null;
 	}

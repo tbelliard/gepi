@@ -28,6 +28,7 @@ $niveau_arbo = "2";
 // Initialisations files
 include("../../lib/initialisationsPropel.inc.php");
 require_once("../../lib/initialisations.inc.php");
+Propel::init('../propel-build/conf/gepi-conf_debug.php');
 include('UnitTestUtilisateurProfessionnel.php');
 include('UnitTestEleve.php');
 include('UnitTestGroupe.php');
@@ -140,17 +141,17 @@ $newEleve2 = $groupe->getEleves(1);
 $newEleve3 = $newEleve2[0];
 echo ($logger->getDisplay());
 if ($newEleve3 == null) {
-	echo('test ajout de eleve au groupe a <font color="red">echoue</font> au premier test<br><br/>');
+	echo('test 1 ajout de eleve au groupe a <font color="red">echoue</font> au premier test<br><br/>');
 } else {
+	echo('test 1 ajout de eleve au groupe a reussi <br><br/>');
 	$newGroupe2 = $newEleve3->getGroupes(1);
 	echo ($logger->getDisplay());
-	echo ($newGroupe2[0]->getId());
 	if ($newGroupe2[0] != null && $newGroupe2[0]->getId() == $groupe->getId()) {
 		echo ($logger->getDisplay());
-		echo('test ajout de eleve au groupe a reussi <br><br/>');
+		echo('test 2 ajout de eleve au groupe a reussi <br><br/>');
 	} else {
 		echo ($logger->getDisplay());
-		echo('test ajout de eleve au groupe a <font color="red">echoue</font> <br><br/>');
+		echo('test 2 ajout de eleve au groupe a <font color="red">echoue</font> <br><br/>');
 	}
 }
 
@@ -160,15 +161,16 @@ $newEleve2 = $classe->getEleves(2);
 $newEleve3 = $newEleve2[0];
 echo ($logger->getDisplay());
 if ($newEleve3 == null) {
-	echo('test ajout de eleve a la classe a <font color="red">echoue</font> <br><br/>');
+	echo('test 1 ajout de eleve a la classe a <font color="red">echoue</font> <br><br/>');
 } else {
+	echo('test 1 ajout de eleve a la classe a reussi <br><br/>');
 	$newClasse2 = $newEleve3->getClasses(2);
 	if ($newClasse2[0] != null && $newClasse2[0]->getId() == $classe->getId()) {
 		echo ($logger->getDisplay());
-		echo('test ajout de eleve a la classe a reussi <br><br/>');
+		echo('test 2 ajout de eleve a la classe a reussi <br><br/>');
 	} else {
 		echo ($logger->getDisplay());
-		echo('test ajout de eleve a la classe a <font color="red">echoue</font> <br><br/>');
+		echo('test 2 ajout de eleve a la classe a <font color="red">echoue</font> <br><br/>');
 	}
 }
 

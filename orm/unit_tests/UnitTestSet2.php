@@ -31,6 +31,7 @@ require_once("../../lib/initialisations.inc.php");
 include('UnitTestUtilisateurProfessionnel.php');
 include('UnitTestEleve.php');
 include('UnitTestAbsenceSaisie.php');
+Propel::init('../propel-build/conf/gepi-conf_debug.php');
 $logger = new StackLogger();
 Propel::setLogger($logger);
 
@@ -113,16 +114,17 @@ $absenceSaisies = $newEleve->getAbsenceEleveSaisies();
 $absenceSaisie = $absenceSaisies[0];
 if ($absenceSaisie == null) {
 	echo ($logger->getDisplay());
-	echo('test recuperation absence saisie eleve a partir d\'un eleve a <font color="red">echoue</font> <br><br/>');
+	echo('test 1 recuperation absence saisie eleve a partir d\'un eleve a <font color="red">echoue</font> <br><br/>');
 } else {
+	echo('test 1 recuperation absence saisie eleve a partir d\'un eleve a reussi <br><br/>');
 	$absenceTraitements = $absenceSaisie->getAbsenceEleveTraitements();
 	$absenceTraitement = $absenceTraitements[0];
 	if ($absenceTraitement == null) {
 		echo ($logger->getDisplay());
-		echo('test recuperation absence traitement a partir d\'un eleve a <font color="red">echoue</font> <br><br/>');
+		echo('test 2 recuperation absence traitement a partir d\'un eleve a <font color="red">echoue</font> <br><br/>');
 	} else {
 		echo ($logger->getDisplay());
-		echo('test recuperation absence saisie et absence traitement a partir d\'un eleve a reussi <br><br/>');
+		echo('test 2 recuperation absence saisie et absence traitement a partir d\'un eleve a reussi <br><br/>');
 	}
 }
 
@@ -136,6 +138,9 @@ function purgeDonneesTest($logger) {
 	echo "<br/>Purge de l'utilisateur : <br/>";
 	$utilisateurProfessionnel = UtilisateurProfessionnelPeer::retrieveByPK(UnitTestUtilisateurProfessionnel::getUtilisateurProfessionnel()->getLogin());
 	if ($utilisateurProfessionnel != null)	{
+		foreach ($utilisateurProfessionnel->getAbsenceEleveTraitements() as $traitement) {
+		    $traitement->delete();
+		}
 		$utilisateurProfessionnel->delete();
 	}
 	echo ($logger->getDisplay());

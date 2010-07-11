@@ -58,12 +58,21 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 	    }
 
 	    if ($obj->getEdtEmplacementCours() !== null) {
-		//si on saisie un cours, alors le creneau et la classe doive etre vide ainsi le groupe, l'aid et la classe
+		//si on saisie un cours, alors le creneau et la classe doive etre
 		if ($obj->getIdClasse() !== null) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours la classe doit etre nuls.<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne la classe doit etre nul.<br/>";
 		}
 		if ($obj->getIdEdtCreneau() !== null) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours le creneau doit etre nuls.<br/>";
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne le creneau doit etre nul.<br/>";
+		}
+		if ($obj->getIdGroupe() === null && $obj->getIdAid() === null) {
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne alors le groupe ou l'aid doivent etre saisies.<br/>";
+		}
+		if ($obj->getIdGroupe() != null && $obj->getEdtEmplacementCours()->getIdGroupe() != $obj->getIdGroupe()) {
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne alors le groupe doit etre celui du cours.<br/>";
+		}
+		if ($obj->getIdAid() != null && $obj->getEdtEmplacementCours()->getIdAid() != $obj->getIdAid()) {
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne alors l'aid doit etre celle du cours.<br/>";
 		}
 	    }
 

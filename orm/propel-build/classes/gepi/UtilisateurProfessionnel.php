@@ -269,7 +269,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	    if ($v === null || $v === '') {
 		    $dt = new DateTime('now');
 	    } elseif ($v instanceof DateTime) {
-		    $dt = $v;
+		    $dt = clone $v;
 	    } else {
 		    // some string/numeric value passed; we normalize that so that we can
 		    // validate it.
@@ -287,14 +287,18 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		    }
 	    }
 
-	    $criteria = new Criteria();
-	    $criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $edtcreneau->getPrimaryKey());
-	    $dt->setTime(0,0,0);
-	    $criteria->add(AbsenceEleveSaisiePeer::DEBUT_ABS, $dt, Criteria::GREATER_EQUAL);
+//	    $criteria = new Criteria();
+//	    $criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $edtcreneau->getPrimaryKey());
+	    $query = AbsenceEleveSaisieQuery::create();
+	    $query->filterByUtilisateurProfessionnel($this);
+	    $dt->setTime($edtcreneau->getHeuredebutDefiniePeriode('H'), $edtcreneau->getHeuredebutDefiniePeriode('i'));
+	    $query->filterByFinAbs($dt, Criteria::GREATER_EQUAL);
+//	    $criteria->add(AbsenceEleveSaisiePeer::DEBUT_ABS, $dt, Criteria::GREATER_EQUAL);
 	    $dt_end = clone $dt;
-	    $dt_end->setTime(23,59,59);
-	    $criteria->add(AbsenceEleveSaisiePeer::FIN_ABS, $dt_end, Criteria::LESS_EQUAL);
-	    $col = $this->getAbsenceEleveSaisies($criteria);
+	    $dt_end->setTime($edtcreneau->getHeurefinDefiniePeriode('H'), $edtcreneau->getHeurefinDefiniePeriode('i'));
+	    $query->filterByDebutAbs($dt_end, Criteria::LESS_THAN);
+//	    $criteria->add(AbsenceEleveSaisiePeer::FIN_ABS, $dt_end, Criteria::LESS_EQUAL);
+	    $col = $query->find();
 	    return $col;
 	}
 
@@ -317,6 +321,8 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 				    $collClasses = ClasseQuery::create()->distinct()->orderByNomComplet()->useJGroupesClassesQuery()->useGroupeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->find();
 				} else if ($this->statut == "cpe") {
 				    $collClasses = ClasseQuery::create()->distinct()->orderByNomComplet()->useJEleveClasseQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
+				} else {
+				    $collClasses = ClasseQuery::create()->distinct()->orderByNomComplet()->find();
 				}
 				if (null !== $criteria) {
 					return $collClasses;

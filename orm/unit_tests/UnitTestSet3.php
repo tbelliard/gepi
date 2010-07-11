@@ -28,12 +28,14 @@ $niveau_arbo = "2";
 // Initialisations files
 include("../../lib/initialisationsPropel.inc.php");
 require_once("../../lib/initialisations.inc.php");
+Propel::init('../propel-build/conf/gepi-conf_debug.php');
+$logger = new StackLogger();
+Propel::setLogger($logger);
+
 include('UnitTestUtilisateurProfessionnel.php');
 include('UnitTestEleve.php');
 include('UnitTestGroupe.php');
 include('UnitTestClasse.php');
-$logger = new StackLogger();
-Propel::setLogger($logger);
 
 
 // On met le header en petit par défaut
@@ -228,21 +230,20 @@ $classe->save();
 $newClasse = ClassePeer::retrieveByPK($classe->getId());
 echo ($logger->getDisplay());
 if ($newClasse == null) {
-	echo('test creation classe a <font color="red">echoue</font> <br><br/>');
+	echo('test creation classe a <font color="red">echoue</font> <br/><br/>');
 } else {
 	echo('test creation classe a reussi avec comme retour l\'id : ' . $classe->getId() . '<br/><br/>');
 }
-$classe->addEleve($eleve, 1);
-$classe->addEleve($eleve, 2);
-echo ($logger->getDisplay());
 
 //ajout d'une periode ouverte et d'un periode fermée à une classe
 $periode_fermee = new PeriodeNote();
 $periode_fermee->setNumPeriode(1);
 $periode_fermee->setVerouiller('O');
 $periode_fermee->setNomPeriode('1 Unit test');
+$periode_fermee->setDateFin('01/01/1980');
 $classe->addPeriodeNote($periode_fermee);
 $periode_fermee->save();
+echo '<br/>ajout d\'une periode fermee a la classe<br/>';
 echo ($logger->getDisplay());
 $periode_ouverte = new PeriodeNote();
 $periode_ouverte->setNumPeriode(2);
@@ -250,32 +251,61 @@ $periode_ouverte->setVerouiller('N');
 $periode_ouverte->setNomPeriode('2 Unit test');
 $classe->addPeriodeNote($periode_ouverte);
 $periode_ouverte->save();
+echo '<br/>ajout d\'une periode ouverte a la classe<br/>';
 echo ($logger->getDisplay());
 
+echo '<br/>ajout d\'un eleve a la classe pour la periode 1<br/>';
+$classe->addEleve($eleve, 1);
+echo ($logger->getDisplay());
+
+echo '<br/>ajout d\'un eleve au groupe pour la periode 1<br/>';
 $groupe->addEleve($eleve, 1);
 $groupe->save();
 echo ($logger->getDisplay());
 
 echo("<br/>");
+$now = new DateTime('now');
+$periode = $eleve->getPeriodeNote($now);
+echo ($logger->getDisplay());
+if ($periode === null) {
+    echo('test 1 recuperation de la periode d\'un eleve a reussi<br/><br/>');
+} else {
+    echo('test 1 recuperation de la periode d\'un eleve  a <font color="red">echoue</font> <br><br/>');
+}
+
+echo("<br/>");
 $edtEmplacementCol = $eleve->getEdtEmplacementCourssPeriodeCalendrierActuelle();
 echo ($logger->getDisplay());
 if ($edtEmplacementCol->isEmpty()) {
-    echo('test recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
+    echo('test 1 recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
 } else {
-    echo('test recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
+    echo('test 1 recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
 }
 
+
+echo '<br/>ajout d\'un eleve au groupe et a la classe pour la periode 2<br/>';
+$classe->addEleve($eleve, 2);
 $groupe->addEleve($eleve, 2);
 $groupe->save();
 echo ($logger->getDisplay());
 
 echo("<br/>");
+$now = new DateTime('now');
+$periode = $eleve->getPeriodeNote($now);
+echo ($logger->getDisplay());
+if ($periode != null && $periode->getNomPeriode() == '2 Unit test') {
+    echo('test 2 recuperation de la periode d\'un eleve a reussi<br/><br/>');
+} else {
+    echo('test 2 recuperation de la periode d\'un eleve  a <font color="red">echoue</font> <br><br/>');
+}
+
+echo("<br/>");
 $edtEmplacementCol = $eleve->getEdtEmplacementCourssPeriodeCalendrierActuelle();
 echo ($logger->getDisplay());
 if ($edtEmplacementCol->count() == 2) {
-    echo('test recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
+    echo('test 2 recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
 } else {
-    echo('test recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
+    echo('test 2 recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
 }
 
 //on prend une date le lundi matin à 9h40
@@ -283,9 +313,9 @@ $now = date('Y-m-d H:i',strtotime("next Monday 9:40"));
 $edtCoursTest = $eleve->getEdtEmplacementCours($now);
 echo ($logger->getDisplay());
 if ($edtCoursTest != null && $edtCoursTest->getIdDefiniePeriode() == $edtCours2->getIdDefiniePeriode()) {
-    echo('test recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
+    echo('test 3 recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
 } else {
-    echo('test recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
+    echo('test 3 recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
 }
 
 echo("<br/>");

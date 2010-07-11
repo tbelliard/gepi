@@ -48,7 +48,7 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
 		if ($v === null || $v === '') {
 			$dt = null;
 		} elseif ($v instanceof DateTime) {
-			$dt = $v;
+			$dt = clone $v;
 		} else {
 			// some string/numeric value passed; we normalize that so that we can
 			// validate it.

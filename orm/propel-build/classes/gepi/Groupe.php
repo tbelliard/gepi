@@ -314,6 +314,7 @@ class Groupe extends BaseGroupe {
 		$jEleveGroupe->setPeriode($periode);
 		$this->addJEleveGroupe($jEleveGroupe);
 		$jEleveGroupe->save();
+		$eleve->clearPeriodeNotes();
 	}
 
 	/**
@@ -365,12 +366,12 @@ class Groupe extends BaseGroupe {
 	 *
 	 * @return     PeriodeNote $periode la periode actuellement ouverte
 	 */
-	public function getPeriodeNoteOuverte($v = 'now') {
+	public function getPeriodeNoteOuverte() {
 	    $classes = $this->getClasses();
 	    if ($classes->isEmpty()) {
 		return null;
 	    } else {
-		return $classes->getFirst()->getPeriodeNoteOuverte($v);
+		return $classes->getFirst()->getPeriodeNoteOuverte();
 	    }
 	}
 } // Groupe

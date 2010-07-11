@@ -53,7 +53,11 @@ class PeriodeNote extends BasePeriodeNote {
 	    } else {
 		//on renvoi la date de fin de la periode precedente
 		$periode_prec = PeriodeNoteQuery::create()->filterByIdClasse($this->getIdClasse())->filterByNumPeriode($this->getNumPeriode() - 1)->findOne();
-		return $periode_prec->getDateFin($format);
+		if ($periode_prec === null) {
+		    return null;
+		}else {
+		    return $periode_prec->getDateFin($format);
+		}
 	    }
 	}
 

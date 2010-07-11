@@ -15,4 +15,16 @@
  */
 class EleveQuery extends BaseEleveQuery {
 
+        public function filterByNomOrPrenomLike($string = '')
+        {
+	    if ($string != '') {
+                $this
+		->condition('cond1_filterByNomOrPrenomLike', 'Eleve.Nom LIKE ?', '%'.$string.'%')
+		->condition('cond2_filterByNomOrPrenomLik', 'Eleve.Prenom LIKE ?', '%'.$string.'%')
+		->where(array('cond1_filterByNomOrPrenomLike', 'cond2_filterByNomOrPrenomLik'), 'or');
+		return $this;
+	    } else {
+		return $this;
+	    }
+        }
 } // EleveQuery
