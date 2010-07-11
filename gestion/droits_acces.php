@@ -2073,6 +2073,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 		 *
 		 */
 
+$tbs_message = $droitAffiche->get_erreurs();
 
 if (isset($_POST['OK']) AND ($tbs_message=='')) $tbs_message = "Les modifications ont été enregistrées !";
 

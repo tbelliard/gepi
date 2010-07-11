@@ -70,5 +70,15 @@ class class_droit_acces_template {
 	return $this->item;
   }
 
+/**
+ * Renvoie les messages d'erreurs
+ *
+ */
+  public function get_erreurs(){
+
+	return $this->msg;
+  }
+
+
 }
 ?>
