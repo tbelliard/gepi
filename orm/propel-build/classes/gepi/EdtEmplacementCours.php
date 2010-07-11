@@ -114,12 +114,12 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	    if ($this->getTypeSemaine() != NULL && $this->getTypeSemaine() != '' && $this->getTypeSemaine() != '0') {
 		$desc .= " sem. ".$this->getTypeSemaine(). " ";
 	    }
-	    if ($this->getEdtSalle() != null) {
-		$desc .= "salle ". $this->getEdtSalle()->getNomSalle();
-		if ($this->getEdtSalle()->getNumeroSalle() != null) {
-		    $desc .= $this->getEdtSalle()->getNumeroSalle();
-		}
-	    }
+//	    if ($this->getEdtSalle() != null) {
+//		$desc .= "salle ". $this->getEdtSalle()->getNomSalle();
+//		if ($this->getEdtSalle()->getNumeroSalle() != null) {
+//		    $desc .= $this->getEdtSalle()->getNumeroSalle();
+//		}
+//	    }
 	    return $desc;
 	}
 

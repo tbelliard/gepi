@@ -31,15 +31,15 @@ class PeriodeNote extends BasePeriodeNote {
 	 */
 	public function getDateDebut($format = null) {
 	    if(null === $this->dateDebut) {
-		    if ($this->isNew() && null === $this->dateDebut) {
-			    return null;
+		    if ($this->isNew()) {
+			    //do nothing
 		    } else {
 			    $dateDebut = null;
 			    if ($this->getNumPeriode() == 1) {
 				//on essaye de récupérer la date de début dans le calendrier des périodes
 				$edt_periode = EdtCalendrierPeriodeQuery::create()->filterByNumeroPeriode($this->getNumPeriode())->orderByDebutCalendrierTs()->findOne();
 				if ($edt_periode != null) {
-				    return $edt_periode->getJourdebutCalendrier($format);
+				    $dateDebut = $edt_periode->getJourdebutCalendrier(null);
 				} else {
 				    //on va renvoyer par default le 31 aout
 				    $dateDebut = new DateTime('now');
@@ -62,8 +62,14 @@ class PeriodeNote extends BasePeriodeNote {
 		    }
 	    }
 	    if ($this->dateDebut === null) {
+		    //on initialise a un timestamp de 0  pour ne pas faire de nouveau la recherche
+		    $this->dateDebut == new DateTime('@0');
 		    return null;
-	    } elseif ($format === null) {
+	    } else if ($this->dateDebut->format('U') == 0) {
+		    return null;
+	    }
+
+	    if ($format === null) {
 		    //we return a DateTime object.
 		    return $this->dateDebut;
 	    } elseif (strpos($format, '%') !== false) {
