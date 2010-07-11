@@ -469,7 +469,7 @@
   <table name="j_notifications_resp_pers" phpName="JNotificationResponsableEleve" description="Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message." isCrossRef="true">
     <column name="a_notification_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere de la notification"/>
     <foreign-key foreignTable="a_notifications" onDelete="cascade"><reference local="a_notification_id" foreign="id"/></foreign-key>
-    <column name="pers_id" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere des personnes"/>
+    <column name="pers_id" required="true" primaryKey="true" type="VARCHAR" size="10" description="cle etrangere des personnes"/>
     <foreign-key foreignTable="resp_pers" onDelete="cascade"><reference local="pers_id" foreign="pers_id"/></foreign-key>
   </table>
 

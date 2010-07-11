@@ -38,7 +38,7 @@ class JNotificationResponsableEleveTableMap extends TableMap {
 		$this->setUseIdGenerator(false);
 		// columns
 		$this->addForeignPrimaryKey('A_NOTIFICATION_ID', 'ANotificationId', 'INTEGER' , 'a_notifications', 'ID', true, 12, null);
-		$this->addForeignPrimaryKey('PERS_ID', 'PersId', 'INTEGER' , 'resp_pers', 'PERS_ID', true, 12, null);
+		$this->addForeignPrimaryKey('PERS_ID', 'PersId', 'VARCHAR' , 'resp_pers', 'PERS_ID', true, 10, null);
 		// validators
 	} // initialize()
 

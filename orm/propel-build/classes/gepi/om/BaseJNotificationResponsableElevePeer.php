@@ -375,7 +375,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 	 */
 	public static function getPrimaryKeyFromRow($row, $startcol = 0)
 	{
-		return array((int) $row[$startcol], (int) $row[$startcol + 1]);
+		return array((int) $row[$startcol], (string) $row[$startcol + 1]);
 	}
 	
 	/**
@@ -1316,7 +1316,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 	/**
 	 * Retrieve object using using composite pkey values.
 	 * @param      int $a_notification_id
-	 * @param      int $pers_id
+	 * @param      string $pers_id
 	 * @param      PropelPDO $con
 	 * @return     JNotificationResponsableEleve
 	 */

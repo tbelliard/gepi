@@ -336,7 +336,7 @@ if ($test == -1) {
 CREATE TABLE j_notifications_resp_pers
 (
 	a_notification_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de la notification',
-	pers_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere des personnes',
+	pers_id VARCHAR(10)  NOT NULL COMMENT 'cle etrangere des personnes',
 	PRIMARY KEY (a_notification_id,pers_id),
 	CONSTRAINT j_notifications_resp_pers_FK_1
 		FOREIGN KEY (a_notification_id)

@@ -32,7 +32,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 
 	/**
 	 * The value for the pers_id field.
-	 * @var        int
+	 * @var        string
 	 */
 	protected $pers_id;
 
@@ -73,7 +73,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	/**
 	 * Get the [pers_id] column value.
 	 * cle etrangere des personnes
-	 * @return     int
+	 * @return     string
 	 */
 	public function getPersId()
 	{
@@ -107,13 +107,13 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	/**
 	 * Set the value of [pers_id] column.
 	 * cle etrangere des personnes
-	 * @param      int $v new value
+	 * @param      string $v new value
 	 * @return     JNotificationResponsableEleve The current object (for fluent API support)
 	 */
 	public function setPersId($v)
 	{
 		if ($v !== null) {
-			$v = (int) $v;
+			$v = (string) $v;
 		}
 
 		if ($this->pers_id !== $v) {
@@ -161,7 +161,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		try {
 
 			$this->a_notification_id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->pers_id = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+			$this->pers_id = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -819,7 +819,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	 */
 	public function getResponsableEleve(PropelPDO $con = null)
 	{
-		if ($this->aResponsableEleve === null && ($this->pers_id !== null)) {
+		if ($this->aResponsableEleve === null && (($this->pers_id !== "" && $this->pers_id !== null))) {
 			$this->aResponsableEleve = ResponsableEleveQuery::create()->findPk($this->pers_id);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference

@@ -27,10 +27,10 @@
  *
  * @method     JNotificationResponsableEleve findOne(PropelPDO $con = null) Return the first JNotificationResponsableEleve matching the query
  * @method     JNotificationResponsableEleve findOneByANotificationId(int $a_notification_id) Return the first JNotificationResponsableEleve filtered by the a_notification_id column
- * @method     JNotificationResponsableEleve findOneByPersId(int $pers_id) Return the first JNotificationResponsableEleve filtered by the pers_id column
+ * @method     JNotificationResponsableEleve findOneByPersId(string $pers_id) Return the first JNotificationResponsableEleve filtered by the pers_id column
  *
  * @method     array findByANotificationId(int $a_notification_id) Return JNotificationResponsableEleve objects filtered by the a_notification_id column
- * @method     array findByPersId(int $pers_id) Return JNotificationResponsableEleve objects filtered by the pers_id column
+ * @method     array findByPersId(string $pers_id) Return JNotificationResponsableEleve objects filtered by the pers_id column
  *
  * @package    propel.generator.gepi.om
  */
@@ -169,16 +169,21 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the pers_id column
 	 * 
-	 * @param     int|array $persId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $persId The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JNotificationResponsableEleveQuery The current query, for fluid interface
 	 */
 	public function filterByPersId($persId = null, $comparison = null)
 	{
-		if (is_array($persId) && null === $comparison) {
-			$comparison = Criteria::IN;
+		if (null === $comparison) {
+			if (is_array($persId)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $persId)) {
+				$persId = str_replace('*', '%', $persId);
+				$comparison = Criteria::LIKE;
+			}
 		}
 		return $this->addUsingAlias(JNotificationResponsableElevePeer::PERS_ID, $persId, $comparison);
 	}
