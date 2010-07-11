@@ -77,7 +77,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$message .= (strftime("%a %d %b", $this->getDebutAbs('U')));
 		$message .= ' de ';
 		$message .= $this->getDebutAbs('H:i');
-		$message .= ' à ';
+		$message .= ' a ';
 		$message .= $this->getFinAbs('H:i');
 
 	    } else {
