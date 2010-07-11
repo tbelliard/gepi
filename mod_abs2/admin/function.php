@@ -46,30 +46,6 @@ function ajoutJustificationsParDefaut() {
     }
 }
 
-function ajoutActionsParDefaut() {
-    $action = new AbsenceEleveAction();
-    $action->setNom("Appel telephonique");
-    $action->setCommentaire("Une communication telephonique a été effectuée avec la famille.");
-    if (AbsenceEleveActionQuery::create()->filterByNom($action->getNom())->find()->isEmpty()) {
-	$action->save();
-    }
-
-    $action = new AbsenceEleveAction();
-    $action->setNom("Rencontre avec la famille");
-    $action->setCommentaire("Une rencontre à ete effectuée avec la famille.");
-    if (AbsenceEleveActionQuery::create()->filterByNom($action->getNom())->find()->isEmpty()) {
-	$action->save();
-    }
-
-    $action = new AbsenceEleveAction();
-    $action->setNom("Notification à la famille");
-    $action->setCommentaire("La famille a été notifée.");
-    if (AbsenceEleveActionQuery::create()->filterByNom($action->getNom())->find()->isEmpty()) {
-	$action->save();
-    }
-
-}
-
 function ajoutTypesParDefaut() {
 
     $type = new AbsenceEleveType();

@@ -59,13 +59,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	protected $a_justification_id;
 
 	/**
-	 * The value for the a_action_id field.
-	 * Note: this column has a database default value of: -1
-	 * @var        int
-	 */
-	protected $a_action_id;
-
-	/**
 	 * The value for the commentaire field.
 	 * @var        string
 	 */
@@ -102,11 +95,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 * @var        AbsenceEleveJustification
 	 */
 	protected $aAbsenceEleveJustification;
-
-	/**
-	 * @var        AbsenceEleveAction
-	 */
-	protected $aAbsenceEleveAction;
 
 	/**
 	 * @var        array JTraitementSaisieEleve[] Collection to store aggregation of JTraitementSaisieEleve objects.
@@ -149,7 +137,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$this->a_type_id = -1;
 		$this->a_motif_id = -1;
 		$this->a_justification_id = -1;
-		$this->a_action_id = -1;
 	}
 
 	/**
@@ -210,16 +197,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function getAJustificationId()
 	{
 		return $this->a_justification_id;
-	}
-
-	/**
-	 * Get the [a_action_id] column value.
-	 * cle etrangere de l'action sur ce traitement
-	 * @return     int
-	 */
-	public function getAActionId()
-	{
-		return $this->a_action_id;
 	}
 
 	/**
@@ -425,30 +402,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	} // setAJustificationId()
 
 	/**
-	 * Set the value of [a_action_id] column.
-	 * cle etrangere de l'action sur ce traitement
-	 * @param      int $v new value
-	 * @return     AbsenceEleveTraitement The current object (for fluent API support)
-	 */
-	public function setAActionId($v)
-	{
-		if ($v !== null) {
-			$v = (int) $v;
-		}
-
-		if ($this->a_action_id !== $v || $this->isNew()) {
-			$this->a_action_id = $v;
-			$this->modifiedColumns[] = AbsenceEleveTraitementPeer::A_ACTION_ID;
-		}
-
-		if ($this->aAbsenceEleveAction !== null && $this->aAbsenceEleveAction->getId() !== $v) {
-			$this->aAbsenceEleveAction = null;
-		}
-
-		return $this;
-	} // setAActionId()
-
-	/**
 	 * Set the value of [commentaire] column.
 	 * commentaire saisi par l'utilisateur
 	 * @param      string $v new value
@@ -592,10 +545,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				return false;
 			}
 
-			if ($this->a_action_id !== -1) {
-				return false;
-			}
-
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -623,10 +572,9 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$this->a_type_id = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
 			$this->a_motif_id = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
 			$this->a_justification_id = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-			$this->a_action_id = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-			$this->commentaire = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-			$this->created_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-			$this->updated_at = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
+			$this->commentaire = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->created_at = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->updated_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -635,7 +583,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 9; // 9 = AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 8; // 8 = AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveTraitement object", $e);
@@ -669,9 +617,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		}
 		if ($this->aAbsenceEleveJustification !== null && $this->a_justification_id !== $this->aAbsenceEleveJustification->getId()) {
 			$this->aAbsenceEleveJustification = null;
-		}
-		if ($this->aAbsenceEleveAction !== null && $this->a_action_id !== $this->aAbsenceEleveAction->getId()) {
-			$this->aAbsenceEleveAction = null;
 		}
 	} // ensureConsistency
 
@@ -716,7 +661,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$this->aAbsenceEleveType = null;
 			$this->aAbsenceEleveMotif = null;
 			$this->aAbsenceEleveJustification = null;
-			$this->aAbsenceEleveAction = null;
 			$this->collJTraitementSaisieEleves = null;
 
 			$this->collAbsenceEleveNotifications = null;
@@ -875,13 +819,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				$this->setAbsenceEleveJustification($this->aAbsenceEleveJustification);
 			}
 
-			if ($this->aAbsenceEleveAction !== null) {
-				if ($this->aAbsenceEleveAction->isModified() || $this->aAbsenceEleveAction->isNew()) {
-					$affectedRows += $this->aAbsenceEleveAction->save($con);
-				}
-				$this->setAbsenceEleveAction($this->aAbsenceEleveAction);
-			}
-
 			if ($this->isNew() ) {
 				$this->modifiedColumns[] = AbsenceEleveTraitementPeer::ID;
 			}
@@ -1016,12 +953,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				}
 			}
 
-			if ($this->aAbsenceEleveAction !== null) {
-				if (!$this->aAbsenceEleveAction->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aAbsenceEleveAction->getValidationFailures());
-				}
-			}
-
 
 			if (($retval = AbsenceEleveTraitementPeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
@@ -1093,15 +1024,12 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				return $this->getAJustificationId();
 				break;
 			case 5:
-				return $this->getAActionId();
-				break;
-			case 6:
 				return $this->getCommentaire();
 				break;
-			case 7:
+			case 6:
 				return $this->getCreatedAt();
 				break;
-			case 8:
+			case 7:
 				return $this->getUpdatedAt();
 				break;
 			default:
@@ -1133,10 +1061,9 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$keys[2] => $this->getATypeId(),
 			$keys[3] => $this->getAMotifId(),
 			$keys[4] => $this->getAJustificationId(),
-			$keys[5] => $this->getAActionId(),
-			$keys[6] => $this->getCommentaire(),
-			$keys[7] => $this->getCreatedAt(),
-			$keys[8] => $this->getUpdatedAt(),
+			$keys[5] => $this->getCommentaire(),
+			$keys[6] => $this->getCreatedAt(),
+			$keys[7] => $this->getUpdatedAt(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
@@ -1150,9 +1077,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			}
 			if (null !== $this->aAbsenceEleveJustification) {
 				$result['AbsenceEleveJustification'] = $this->aAbsenceEleveJustification->toArray($keyType, $includeLazyLoadColumns, true);
-			}
-			if (null !== $this->aAbsenceEleveAction) {
-				$result['AbsenceEleveAction'] = $this->aAbsenceEleveAction->toArray($keyType, $includeLazyLoadColumns, true);
 			}
 		}
 		return $result;
@@ -1201,15 +1125,12 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				$this->setAJustificationId($value);
 				break;
 			case 5:
-				$this->setAActionId($value);
-				break;
-			case 6:
 				$this->setCommentaire($value);
 				break;
-			case 7:
+			case 6:
 				$this->setCreatedAt($value);
 				break;
-			case 8:
+			case 7:
 				$this->setUpdatedAt($value);
 				break;
 		} // switch()
@@ -1241,10 +1162,9 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if (array_key_exists($keys[2], $arr)) $this->setATypeId($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setAMotifId($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setAJustificationId($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setAActionId($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setCommentaire($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setCreatedAt($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setUpdatedAt($arr[$keys[8]]);
+		if (array_key_exists($keys[5], $arr)) $this->setCommentaire($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setCreatedAt($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setUpdatedAt($arr[$keys[7]]);
 	}
 
 	/**
@@ -1261,7 +1181,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::A_TYPE_ID)) $criteria->add(AbsenceEleveTraitementPeer::A_TYPE_ID, $this->a_type_id);
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::A_MOTIF_ID)) $criteria->add(AbsenceEleveTraitementPeer::A_MOTIF_ID, $this->a_motif_id);
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID)) $criteria->add(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, $this->a_justification_id);
-		if ($this->isColumnModified(AbsenceEleveTraitementPeer::A_ACTION_ID)) $criteria->add(AbsenceEleveTraitementPeer::A_ACTION_ID, $this->a_action_id);
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::COMMENTAIRE)) $criteria->add(AbsenceEleveTraitementPeer::COMMENTAIRE, $this->commentaire);
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::CREATED_AT)) $criteria->add(AbsenceEleveTraitementPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::UPDATED_AT)) $criteria->add(AbsenceEleveTraitementPeer::UPDATED_AT, $this->updated_at);
@@ -1330,7 +1249,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$copyObj->setATypeId($this->a_type_id);
 		$copyObj->setAMotifId($this->a_motif_id);
 		$copyObj->setAJustificationId($this->a_justification_id);
-		$copyObj->setAActionId($this->a_action_id);
 		$copyObj->setCommentaire($this->commentaire);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
@@ -1591,55 +1509,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			 */
 		}
 		return $this->aAbsenceEleveJustification;
-	}
-
-	/**
-	 * Declares an association between this object and a AbsenceEleveAction object.
-	 *
-	 * @param      AbsenceEleveAction $v
-	 * @return     AbsenceEleveTraitement The current object (for fluent API support)
-	 * @throws     PropelException
-	 */
-	public function setAbsenceEleveAction(AbsenceEleveAction $v = null)
-	{
-		if ($v === null) {
-			$this->setAActionId(-1);
-		} else {
-			$this->setAActionId($v->getId());
-		}
-
-		$this->aAbsenceEleveAction = $v;
-
-		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the AbsenceEleveAction object, it will not be re-added.
-		if ($v !== null) {
-			$v->addAbsenceEleveTraitement($this);
-		}
-
-		return $this;
-	}
-
-
-	/**
-	 * Get the associated AbsenceEleveAction object
-	 *
-	 * @param      PropelPDO Optional Connection object.
-	 * @return     AbsenceEleveAction The associated AbsenceEleveAction object.
-	 * @throws     PropelException
-	 */
-	public function getAbsenceEleveAction(PropelPDO $con = null)
-	{
-		if ($this->aAbsenceEleveAction === null && ($this->a_action_id !== null)) {
-			$this->aAbsenceEleveAction = AbsenceEleveActionQuery::create()->findPk($this->a_action_id);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAbsenceEleveAction->addAbsenceEleveTraitements($this);
-			 */
-		}
-		return $this->aAbsenceEleveAction;
 	}
 
 	/**
@@ -2058,7 +1927,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$this->a_type_id = null;
 		$this->a_motif_id = null;
 		$this->a_justification_id = null;
-		$this->a_action_id = null;
 		$this->commentaire = null;
 		$this->created_at = null;
 		$this->updated_at = null;
@@ -2100,7 +1968,6 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$this->aAbsenceEleveType = null;
 		$this->aAbsenceEleveMotif = null;
 		$this->aAbsenceEleveJustification = null;
-		$this->aAbsenceEleveAction = null;
 	}
 
 	// timestampable behavior

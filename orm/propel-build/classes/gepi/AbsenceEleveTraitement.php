@@ -40,4 +40,22 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	    return $desc;
 	}
 
+		/**
+	 *
+	 * Renvoi true / false suivant que le traitement est modifiable ou pas
+	 *
+	 * @return     String description
+	 *
+	 */
+	public function getModifiable() {
+
+	    //modifiable uniquement si aucune notifications n'a été envoyé
+	    foreach ($this->getAbsenceEleveNotifications() as $notification) {
+		if ($notification->getStatut() != AbsenceEleveNotification::$STATUT_INITIAL) {
+		    return false;
+		}
+	    }
+	    return true;
+	}
+
 } // AbsenceEleveTraitement

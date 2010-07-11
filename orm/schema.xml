@@ -371,13 +371,6 @@
     <foreign-key foreignTable="aid_config" onDelete="cascade"><reference local="indice_aid" foreign="indice_aid"/></foreign-key-->
   </table>
 
-  <table name="a_actions" phpName="AbsenceEleveAction" description="Liste des actions possibles sur une absence">
-    <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incrementee"/>
-    <column name="nom" required="true" type="VARCHAR" size="250" description="Nom de l'action"/>
-    <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
-    <behavior name="sortable" />
-  </table>
-
   <table name="a_motifs" phpName="AbsenceEleveMotif" description="Liste des motifs possibles pour une absence">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incrementee"/>
     <column name="nom" required="true" type="VARCHAR" size="250" description="Nom du motif"/>
@@ -445,8 +438,6 @@
     <column name="a_justification_id" type="INTEGER" default="-1" size="4" description="cle etrangere de la justification de l'absence"/>
     <foreign-key foreignTable="a_justifications" onDelete="setnull"><reference local="a_justification_id" foreign="id"/></foreign-key>
     <!-- column name="texte_justification" required="false" type="VARCHAR" size="250" description="Texte additionnel à ce traitement"/-->
-    <column name="a_action_id" type="INTEGER" size="4" default="-1" description="cle etrangere de l'action sur ce traitement"/>
-    <foreign-key foreignTable="a_actions" onDelete="setnull"><reference local="a_action_id" foreign="id"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
     <behavior name="timestampable" />
   </table>
