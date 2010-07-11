@@ -188,9 +188,7 @@ if ($filter_utilisateur != null && $filter_utilisateur != '') {
     $query->useUtilisateurProfessionnelQuery()->filterByNom('%'.$filter_utilisateur.'%', Criteria::LIKE)->endUse();
 }
 if ($filter_eleve != null && $filter_eleve != '') {
-    $query->useEleveQuery()->
-    addOr(ElevePeer::NOM ,'%'.$filter_eleve.'%', Criteria::LIKE)->
-    addOr(ElevePeer::PRENOM ,'%'.$filter_eleve.'%', Criteria::LIKE)->endUse();
+    $query->useEleveQuery()->filterByNomOrPrenomLike($filter_eleve)->endUse();
 }
 if ($filter_classe != null && $filter_classe != '-1') {
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
@@ -609,12 +607,6 @@ echo '</TH>';
 echo '<TH>';
 echo '<nobr>';
 echo 'type';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_type"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_type"/>';
 echo '</nobr>';
 echo '<br>';
 echo ("<select name=\"filter_type\">");
