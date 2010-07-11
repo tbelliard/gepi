@@ -33,6 +33,10 @@
  * @method     ResponsableEleveAdresseQuery rightJoinResponsableEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ResponsableEleve relation
  * @method     ResponsableEleveAdresseQuery innerJoinResponsableEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the ResponsableEleve relation
  *
+ * @method     ResponsableEleveAdresseQuery leftJoinAbsenceEleveNotification($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     ResponsableEleveAdresseQuery rightJoinAbsenceEleveNotification($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     ResponsableEleveAdresseQuery innerJoinAbsenceEleveNotification($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
+ *
  * @method     ResponsableEleveAdresse findOne(PropelPDO $con = null) Return the first ResponsableEleveAdresse matching the query
  * @method     ResponsableEleveAdresse findOneByAdrId(string $adr_id) Return the first ResponsableEleveAdresse filtered by the adr_id column
  * @method     ResponsableEleveAdresse findOneByAdr1(string $adr1) Return the first ResponsableEleveAdresse filtered by the adr1 column
@@ -398,6 +402,70 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 		return $this
 			->joinResponsableEleve($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'ResponsableEleve', 'ResponsableEleveQuery');
+	}
+
+	/**
+	 * Filter the query by a related AbsenceEleveNotification object
+	 *
+	 * @param     AbsenceEleveNotification $absenceEleveNotification  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 */
+	public function filterByAbsenceEleveNotification($absenceEleveNotification, $comparison = null)
+	{
+		return $this
+			->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $absenceEleveNotification->getAdrId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the AbsenceEleveNotification relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
+	 */
+	public function joinAbsenceEleveNotification($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('AbsenceEleveNotification');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'AbsenceEleveNotification');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the AbsenceEleveNotification relation AbsenceEleveNotification object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveNotificationQuery A secondary query class using the current class as primary query
+	 */
+	public function useAbsenceEleveNotificationQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinAbsenceEleveNotification($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'AbsenceEleveNotification', 'AbsenceEleveNotificationQuery');
 	}
 
 	/**

@@ -41,6 +41,10 @@
  * @method     ResponsableEleveQuery rightJoinResponsableInformation($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ResponsableInformation relation
  * @method     ResponsableEleveQuery innerJoinResponsableInformation($relationAlias = '') Adds a INNER JOIN clause to the query using the ResponsableInformation relation
  *
+ * @method     ResponsableEleveQuery leftJoinJNotificationResponsableEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the JNotificationResponsableEleve relation
+ * @method     ResponsableEleveQuery rightJoinJNotificationResponsableEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JNotificationResponsableEleve relation
+ * @method     ResponsableEleveQuery innerJoinJNotificationResponsableEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the JNotificationResponsableEleve relation
+ *
  * @method     ResponsableEleve findOne(PropelPDO $con = null) Return the first ResponsableEleve matching the query
  * @method     ResponsableEleve findOneByPersId(string $pers_id) Return the first ResponsableEleve filtered by the pers_id column
  * @method     ResponsableEleve findOneByLogin(string $login) Return the first ResponsableEleve filtered by the login column
@@ -520,6 +524,87 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 			->useQuery($relationAlias ? $relationAlias : 'ResponsableInformation', 'ResponsableInformationQuery');
 	}
 
+	/**
+	 * Filter the query by a related JNotificationResponsableEleve object
+	 *
+	 * @param     JNotificationResponsableEleve $jNotificationResponsableEleve  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    ResponsableEleveQuery The current query, for fluid interface
+	 */
+	public function filterByJNotificationResponsableEleve($jNotificationResponsableEleve, $comparison = null)
+	{
+		return $this
+			->addUsingAlias(ResponsableElevePeer::PERS_ID, $jNotificationResponsableEleve->getPersId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the JNotificationResponsableEleve relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    ResponsableEleveQuery The current query, for fluid interface
+	 */
+	public function joinJNotificationResponsableEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('JNotificationResponsableEleve');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'JNotificationResponsableEleve');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the JNotificationResponsableEleve relation JNotificationResponsableEleve object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    JNotificationResponsableEleveQuery A secondary query class using the current class as primary query
+	 */
+	public function useJNotificationResponsableEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinJNotificationResponsableEleve($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'JNotificationResponsableEleve', 'JNotificationResponsableEleveQuery');
+	}
+
+	/**
+	 * Filter the query by a related AbsenceEleveNotification object
+	 * using the j_notifications_resp_pers table as cross reference
+	 *
+	 * @param     AbsenceEleveNotification $absenceEleveNotification the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    ResponsableEleveQuery The current query, for fluid interface
+	 */
+	public function filterByAbsenceEleveNotification($absenceEleveNotification, $comparison = Criteria::EQUAL)
+	{
+		return $this
+			->useJNotificationResponsableEleveQuery()
+				->filterByAbsenceEleveNotification($absenceEleveNotification, $comparison)
+			->endUse();
+	}
+	
 	/**
 	 * Exclude object from result
 	 *

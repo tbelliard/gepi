@@ -78,6 +78,11 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	protected $collResponsableEleves;
 
 	/**
+	 * @var        array AbsenceEleveNotification[] Collection to store aggregation of AbsenceEleveNotification objects.
+	 */
+	protected $collAbsenceEleveNotifications;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -443,6 +448,8 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 			$this->collResponsableEleves = null;
 
+			$this->collAbsenceEleveNotifications = null;
+
 		} // if (deep)
 	}
 
@@ -576,6 +583,14 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 				}
 			}
 
+			if ($this->collAbsenceEleveNotifications !== null) {
+				foreach ($this->collAbsenceEleveNotifications as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 
 		}
@@ -649,6 +664,14 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 				if ($this->collResponsableEleves !== null) {
 					foreach ($this->collResponsableEleves as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collAbsenceEleveNotifications !== null) {
+					foreach ($this->collAbsenceEleveNotifications as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -930,6 +953,12 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 				}
 			}
 
+			foreach ($this->getAbsenceEleveNotifications() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addAbsenceEleveNotification($relObj->copy($deepCopy));
+				}
+			}
+
 		} // if ($deepCopy)
 
 
@@ -1084,6 +1113,165 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	}
 
 	/**
+	 * Clears out the collAbsenceEleveNotifications collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addAbsenceEleveNotifications()
+	 */
+	public function clearAbsenceEleveNotifications()
+	{
+		$this->collAbsenceEleveNotifications = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collAbsenceEleveNotifications collection.
+	 *
+	 * By default this just sets the collAbsenceEleveNotifications collection to an empty array (like clearcollAbsenceEleveNotifications());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initAbsenceEleveNotifications()
+	{
+		$this->collAbsenceEleveNotifications = new PropelObjectCollection();
+		$this->collAbsenceEleveNotifications->setModel('AbsenceEleveNotification');
+	}
+
+	/**
+	 * Gets an array of AbsenceEleveNotification objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this ResponsableEleveAdresse is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array AbsenceEleveNotification[] List of AbsenceEleveNotification objects
+	 * @throws     PropelException
+	 */
+	public function getAbsenceEleveNotifications($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveNotifications || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveNotifications) {
+				// return empty collection
+				$this->initAbsenceEleveNotifications();
+			} else {
+				$collAbsenceEleveNotifications = AbsenceEleveNotificationQuery::create(null, $criteria)
+					->filterByResponsableEleveAdresse($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collAbsenceEleveNotifications;
+				}
+				$this->collAbsenceEleveNotifications = $collAbsenceEleveNotifications;
+			}
+		}
+		return $this->collAbsenceEleveNotifications;
+	}
+
+	/**
+	 * Returns the number of related AbsenceEleveNotification objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related AbsenceEleveNotification objects.
+	 * @throws     PropelException
+	 */
+	public function countAbsenceEleveNotifications(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveNotifications || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveNotifications) {
+				return 0;
+			} else {
+				$query = AbsenceEleveNotificationQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByResponsableEleveAdresse($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collAbsenceEleveNotifications);
+		}
+	}
+
+	/**
+	 * Method called to associate a AbsenceEleveNotification object to this object
+	 * through the AbsenceEleveNotification foreign key attribute.
+	 *
+	 * @param      AbsenceEleveNotification $l AbsenceEleveNotification
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addAbsenceEleveNotification(AbsenceEleveNotification $l)
+	{
+		if ($this->collAbsenceEleveNotifications === null) {
+			$this->initAbsenceEleveNotifications();
+		}
+		if (!$this->collAbsenceEleveNotifications->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collAbsenceEleveNotifications[]= $l;
+			$l->setResponsableEleveAdresse($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this ResponsableEleveAdresse is new, it will return
+	 * an empty collection; or if this ResponsableEleveAdresse has previously
+	 * been saved, it will retrieve related AbsenceEleveNotifications from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in ResponsableEleveAdresse.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveNotification[] List of AbsenceEleveNotification objects
+	 */
+	public function getAbsenceEleveNotificationsJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveNotificationQuery::create(null, $criteria);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
+
+		return $this->getAbsenceEleveNotifications($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this ResponsableEleveAdresse is new, it will return
+	 * an empty collection; or if this ResponsableEleveAdresse has previously
+	 * been saved, it will retrieve related AbsenceEleveNotifications from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in ResponsableEleveAdresse.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveNotification[] List of AbsenceEleveNotification objects
+	 */
+	public function getAbsenceEleveNotificationsJoinAbsenceEleveTraitement($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveNotificationQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveTraitement', $join_behavior);
+
+		return $this->getAbsenceEleveNotifications($query, $con);
+	}
+
+	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -1120,9 +1308,15 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collAbsenceEleveNotifications) {
+				foreach ((array) $this->collAbsenceEleveNotifications as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		$this->collResponsableEleves = null;
+		$this->collAbsenceEleveNotifications = null;
 	}
 
 	/**

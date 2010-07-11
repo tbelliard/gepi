@@ -2,28 +2,28 @@
 
 
 /**
- * Base static class for performing query and update operations on the 'j_traitements_envois' table.
+ * Base static class for performing query and update operations on the 'j_notifications_resp_pers' table.
  *
- * Table de jointure entre le traitement des absences et leur envoi
+ * Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseJTraitementEnvoiElevePeer {
+abstract class BaseJNotificationResponsableElevePeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'gepi';
 
 	/** the table name for this class */
-	const TABLE_NAME = 'j_traitements_envois';
+	const TABLE_NAME = 'j_notifications_resp_pers';
 
 	/** the related Propel class for this table */
-	const OM_CLASS = 'JTraitementEnvoiEleve';
+	const OM_CLASS = 'JNotificationResponsableEleve';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'gepi.JTraitementEnvoiEleve';
+	const CLASS_DEFAULT = 'gepi.JNotificationResponsableEleve';
 
 	/** the related TableMap class for this table */
-	const TM_CLASS = 'JTraitementEnvoiEleveTableMap';
+	const TM_CLASS = 'JNotificationResponsableEleveTableMap';
 	
 	/** The total number of columns. */
 	const NUM_COLUMNS = 2;
@@ -31,17 +31,17 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
-	/** the column name for the A_ENVOI_ID field */
-	const A_ENVOI_ID = 'j_traitements_envois.A_ENVOI_ID';
+	/** the column name for the A_NOTIFICATION_ID field */
+	const A_NOTIFICATION_ID = 'j_notifications_resp_pers.A_NOTIFICATION_ID';
 
-	/** the column name for the A_TRAITEMENT_ID field */
-	const A_TRAITEMENT_ID = 'j_traitements_envois.A_TRAITEMENT_ID';
+	/** the column name for the PERS_ID field */
+	const PERS_ID = 'j_notifications_resp_pers.PERS_ID';
 
 	/**
-	 * An identiy map to hold any loaded instances of JTraitementEnvoiEleve objects.
+	 * An identiy map to hold any loaded instances of JNotificationResponsableEleve objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
 	 * queries.
-	 * @var        array JTraitementEnvoiEleve[]
+	 * @var        array JNotificationResponsableEleve[]
 	 */
 	public static $instances = array();
 
@@ -53,11 +53,11 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('AEnvoiId', 'ATraitementId', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('aEnvoiId', 'aTraitementId', ),
-		BasePeer::TYPE_COLNAME => array (self::A_ENVOI_ID, self::A_TRAITEMENT_ID, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('A_ENVOI_ID', 'A_TRAITEMENT_ID', ),
-		BasePeer::TYPE_FIELDNAME => array ('a_envoi_id', 'a_traitement_id', ),
+		BasePeer::TYPE_PHPNAME => array ('ANotificationId', 'PersId', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('aNotificationId', 'persId', ),
+		BasePeer::TYPE_COLNAME => array (self::A_NOTIFICATION_ID, self::PERS_ID, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('A_NOTIFICATION_ID', 'PERS_ID', ),
+		BasePeer::TYPE_FIELDNAME => array ('a_notification_id', 'pers_id', ),
 		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
@@ -68,11 +68,11 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('AEnvoiId' => 0, 'ATraitementId' => 1, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('aEnvoiId' => 0, 'aTraitementId' => 1, ),
-		BasePeer::TYPE_COLNAME => array (self::A_ENVOI_ID => 0, self::A_TRAITEMENT_ID => 1, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('A_ENVOI_ID' => 0, 'A_TRAITEMENT_ID' => 1, ),
-		BasePeer::TYPE_FIELDNAME => array ('a_envoi_id' => 0, 'a_traitement_id' => 1, ),
+		BasePeer::TYPE_PHPNAME => array ('ANotificationId' => 0, 'PersId' => 1, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('aNotificationId' => 0, 'persId' => 1, ),
+		BasePeer::TYPE_COLNAME => array (self::A_NOTIFICATION_ID => 0, self::PERS_ID => 1, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('A_NOTIFICATION_ID' => 0, 'PERS_ID' => 1, ),
+		BasePeer::TYPE_FIELDNAME => array ('a_notification_id' => 0, 'pers_id' => 1, ),
 		BasePeer::TYPE_NUM => array (0, 1, )
 	);
 
@@ -122,12 +122,12 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. JTraitementEnvoiElevePeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. JNotificationResponsableElevePeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(JTraitementEnvoiElevePeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(JNotificationResponsableElevePeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -145,11 +145,11 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
 		if (null === $alias) {
-			$criteria->addSelectColumn(JTraitementEnvoiElevePeer::A_ENVOI_ID);
-			$criteria->addSelectColumn(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID);
+			$criteria->addSelectColumn(JNotificationResponsableElevePeer::A_NOTIFICATION_ID);
+			$criteria->addSelectColumn(JNotificationResponsableElevePeer::PERS_ID);
 		} else {
-			$criteria->addSelectColumn($alias . '.A_ENVOI_ID');
-			$criteria->addSelectColumn($alias . '.A_TRAITEMENT_ID');
+			$criteria->addSelectColumn($alias . '.A_NOTIFICATION_ID');
+			$criteria->addSelectColumn($alias . '.PERS_ID');
 		}
 	}
 
@@ -169,21 +169,21 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementEnvoiElevePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JNotificationResponsableElevePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementEnvoiElevePeer::addSelectColumns($criteria);
+			JNotificationResponsableElevePeer::addSelectColumns($criteria);
 		}
 
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -201,7 +201,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
-	 * @return     JTraitementEnvoiEleve
+	 * @return     JNotificationResponsableEleve
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -209,7 +209,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = JTraitementEnvoiElevePeer::doSelect($critcopy, $con);
+		$objects = JNotificationResponsableElevePeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -226,7 +226,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 */
 	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return JTraitementEnvoiElevePeer::populateObjects(JTraitementEnvoiElevePeer::doSelectStmt($criteria, $con));
+		return JNotificationResponsableElevePeer::populateObjects(JNotificationResponsableElevePeer::doSelectStmt($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -244,12 +244,12 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
-			JTraitementEnvoiElevePeer::addSelectColumns($criteria);
+			JNotificationResponsableElevePeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -267,14 +267,14 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
 	 * and retrieveByPK*() calls.
 	 *
-	 * @param      JTraitementEnvoiEleve $value A JTraitementEnvoiEleve object.
+	 * @param      JNotificationResponsableEleve $value A JNotificationResponsableEleve object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(JTraitementEnvoiEleve $obj, $key = null)
+	public static function addInstanceToPool(JNotificationResponsableEleve $obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = serialize(array((string) $obj->getAEnvoiId(), (string) $obj->getATraitementId()));
+				$key = serialize(array((string) $obj->getANotificationId(), (string) $obj->getPersId()));
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -288,18 +288,18 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 * methods in your stub classes -- you may need to explicitly remove objects
 	 * from the cache in order to prevent returning objects that no longer exist.
 	 *
-	 * @param      mixed $value A JTraitementEnvoiEleve object or a primary key value.
+	 * @param      mixed $value A JNotificationResponsableEleve object or a primary key value.
 	 */
 	public static function removeInstanceFromPool($value)
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
-			if (is_object($value) && $value instanceof JTraitementEnvoiEleve) {
-				$key = serialize(array((string) $value->getAEnvoiId(), (string) $value->getATraitementId()));
+			if (is_object($value) && $value instanceof JNotificationResponsableEleve) {
+				$key = serialize(array((string) $value->getANotificationId(), (string) $value->getPersId()));
 			} elseif (is_array($value) && count($value) === 2) {
 				// assume we've been passed a primary key
 				$key = serialize(array((string) $value[0], (string) $value[1]));
 			} else {
-				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or JTraitementEnvoiEleve object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or JNotificationResponsableEleve object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
 			}
 
@@ -314,7 +314,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
 	 *
 	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-	 * @return     JTraitementEnvoiEleve Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @return     JNotificationResponsableEleve Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
 	 * @see        getPrimaryKeyHash()
 	 */
 	public static function getInstanceFromPool($key)
@@ -338,7 +338,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	}
 	
 	/**
-	 * Method to invalidate the instance pool of all tables related to j_traitements_envois
+	 * Method to invalidate the instance pool of all tables related to j_notifications_resp_pers
 	 * by a foreign key with ON DELETE CASCADE
 	 */
 	public static function clearRelatedInstancePool()
@@ -390,11 +390,11 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = JTraitementEnvoiElevePeer::getOMClass(false);
+		$cls = JNotificationResponsableElevePeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key = JTraitementEnvoiElevePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj = JTraitementEnvoiElevePeer::getInstanceFromPool($key))) {
+			$key = JNotificationResponsableElevePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = JNotificationResponsableElevePeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
@@ -403,7 +403,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
-				JTraitementEnvoiElevePeer::addInstanceToPool($obj, $key);
+				JNotificationResponsableElevePeer::addInstanceToPool($obj, $key);
 			} // if key exists
 		}
 		$stmt->closeCursor();
@@ -416,27 +416,27 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 * @param      int $startcol The 0-based offset for reading from the resultset row.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
-	 * @return     array (JTraitementEnvoiEleve object, last column rank)
+	 * @return     array (JNotificationResponsableEleve object, last column rank)
 	 */
 	public static function populateObject($row, $startcol = 0)
 	{
-		$key = JTraitementEnvoiElevePeer::getPrimaryKeyHashFromRow($row, $startcol);
-		if (null !== ($obj = JTraitementEnvoiElevePeer::getInstanceFromPool($key))) {
+		$key = JNotificationResponsableElevePeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = JNotificationResponsableElevePeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + JTraitementEnvoiElevePeer::NUM_COLUMNS;
+			$col = $startcol + JNotificationResponsableElevePeer::NUM_COLUMNS;
 		} else {
-			$cls = JTraitementEnvoiElevePeer::OM_CLASS;
+			$cls = JNotificationResponsableElevePeer::OM_CLASS;
 			$obj = new $cls();
 			$col = $obj->hydrate($row, $startcol);
-			JTraitementEnvoiElevePeer::addInstanceToPool($obj, $key);
+			JNotificationResponsableElevePeer::addInstanceToPool($obj, $key);
 		}
 		return array($obj, $col);
 	}
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related AbsenceEleveEnvoi table
+	 * Returns the number of rows matching criteria, joining the related AbsenceEleveNotification table
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -444,7 +444,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAbsenceEleveEnvoi(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAbsenceEleveNotification(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -452,14 +452,14 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementEnvoiElevePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JNotificationResponsableElevePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementEnvoiElevePeer::addSelectColumns($criteria);
+			JNotificationResponsableElevePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -468,10 +468,10 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_ENVOI_ID, AbsenceEleveEnvoiPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, AbsenceEleveNotificationPeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -486,7 +486,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related AbsenceEleveTraitement table
+	 * Returns the number of rows matching criteria, joining the related ResponsableEleve table
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -494,7 +494,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAbsenceEleveTraitement(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinResponsableEleve(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -502,14 +502,14 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementEnvoiElevePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JNotificationResponsableElevePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementEnvoiElevePeer::addSelectColumns($criteria);
+			JNotificationResponsableElevePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -518,10 +518,10 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, AbsenceEleveTraitementPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -536,15 +536,15 @@ abstract class BaseJTraitementEnvoiElevePeer {
 
 
 	/**
-	 * Selects a collection of JTraitementEnvoiEleve objects pre-filled with their AbsenceEleveEnvoi objects.
+	 * Selects a collection of JNotificationResponsableEleve objects pre-filled with their AbsenceEleveNotification objects.
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JTraitementEnvoiEleve objects.
+	 * @return     array Array of JNotificationResponsableEleve objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAbsenceEleveEnvoi(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAbsenceEleveNotification(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$criteria = clone $criteria;
 
@@ -553,44 +553,44 @@ abstract class BaseJTraitementEnvoiElevePeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JTraitementEnvoiElevePeer::addSelectColumns($criteria);
-		$startcol = (JTraitementEnvoiElevePeer::NUM_COLUMNS - JTraitementEnvoiElevePeer::NUM_LAZY_LOAD_COLUMNS);
-		AbsenceEleveEnvoiPeer::addSelectColumns($criteria);
+		JNotificationResponsableElevePeer::addSelectColumns($criteria);
+		$startcol = (JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
 
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_ENVOI_ID, AbsenceEleveEnvoiPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, AbsenceEleveNotificationPeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JTraitementEnvoiElevePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JTraitementEnvoiElevePeer::getInstanceFromPool($key1))) {
+			$key1 = JNotificationResponsableElevePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = JNotificationResponsableElevePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = JTraitementEnvoiElevePeer::getOMClass(false);
+				$cls = JNotificationResponsableElevePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				JTraitementEnvoiElevePeer::addInstanceToPool($obj1, $key1);
+				JNotificationResponsableElevePeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
-			$key2 = AbsenceEleveEnvoiPeer::getPrimaryKeyHashFromRow($row, $startcol);
+			$key2 = AbsenceEleveNotificationPeer::getPrimaryKeyHashFromRow($row, $startcol);
 			if ($key2 !== null) {
-				$obj2 = AbsenceEleveEnvoiPeer::getInstanceFromPool($key2);
+				$obj2 = AbsenceEleveNotificationPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = AbsenceEleveEnvoiPeer::getOMClass(false);
+					$cls = AbsenceEleveNotificationPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
-					AbsenceEleveEnvoiPeer::addInstanceToPool($obj2, $key2);
+					AbsenceEleveNotificationPeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (JTraitementEnvoiEleve) to $obj2 (AbsenceEleveEnvoi)
-				$obj2->addJTraitementEnvoiEleve($obj1);
+				// Add the $obj1 (JNotificationResponsableEleve) to $obj2 (AbsenceEleveNotification)
+				$obj2->addJNotificationResponsableEleve($obj1);
 
 			} // if joined row was not null
 
@@ -602,15 +602,15 @@ abstract class BaseJTraitementEnvoiElevePeer {
 
 
 	/**
-	 * Selects a collection of JTraitementEnvoiEleve objects pre-filled with their AbsenceEleveTraitement objects.
+	 * Selects a collection of JNotificationResponsableEleve objects pre-filled with their ResponsableEleve objects.
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JTraitementEnvoiEleve objects.
+	 * @return     array Array of JNotificationResponsableEleve objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAbsenceEleveTraitement(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinResponsableEleve(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$criteria = clone $criteria;
 
@@ -619,44 +619,44 @@ abstract class BaseJTraitementEnvoiElevePeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JTraitementEnvoiElevePeer::addSelectColumns($criteria);
-		$startcol = (JTraitementEnvoiElevePeer::NUM_COLUMNS - JTraitementEnvoiElevePeer::NUM_LAZY_LOAD_COLUMNS);
-		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
+		JNotificationResponsableElevePeer::addSelectColumns($criteria);
+		$startcol = (JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		ResponsableElevePeer::addSelectColumns($criteria);
 
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, AbsenceEleveTraitementPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JTraitementEnvoiElevePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JTraitementEnvoiElevePeer::getInstanceFromPool($key1))) {
+			$key1 = JNotificationResponsableElevePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = JNotificationResponsableElevePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
 
-				$cls = JTraitementEnvoiElevePeer::getOMClass(false);
+				$cls = JNotificationResponsableElevePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				JTraitementEnvoiElevePeer::addInstanceToPool($obj1, $key1);
+				JNotificationResponsableElevePeer::addInstanceToPool($obj1, $key1);
 			} // if $obj1 already loaded
 
-			$key2 = AbsenceEleveTraitementPeer::getPrimaryKeyHashFromRow($row, $startcol);
+			$key2 = ResponsableElevePeer::getPrimaryKeyHashFromRow($row, $startcol);
 			if ($key2 !== null) {
-				$obj2 = AbsenceEleveTraitementPeer::getInstanceFromPool($key2);
+				$obj2 = ResponsableElevePeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = AbsenceEleveTraitementPeer::getOMClass(false);
+					$cls = ResponsableElevePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol);
-					AbsenceEleveTraitementPeer::addInstanceToPool($obj2, $key2);
+					ResponsableElevePeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 already loaded
 
-				// Add the $obj1 (JTraitementEnvoiEleve) to $obj2 (AbsenceEleveTraitement)
-				$obj2->addJTraitementEnvoiEleve($obj1);
+				// Add the $obj1 (JNotificationResponsableEleve) to $obj2 (ResponsableEleve)
+				$obj2->addJNotificationResponsableEleve($obj1);
 
 			} // if joined row was not null
 
@@ -684,14 +684,14 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementEnvoiElevePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JNotificationResponsableElevePeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementEnvoiElevePeer::addSelectColumns($criteria);
+			JNotificationResponsableElevePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
@@ -700,12 +700,12 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_ENVOI_ID, AbsenceEleveEnvoiPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, AbsenceEleveNotificationPeer::ID, $join_behavior);
 
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, AbsenceEleveTraitementPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -719,12 +719,12 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	}
 
 	/**
-	 * Selects a collection of JTraitementEnvoiEleve objects pre-filled with all related objects.
+	 * Selects a collection of JNotificationResponsableEleve objects pre-filled with all related objects.
 	 *
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JTraitementEnvoiEleve objects.
+	 * @return     array Array of JNotificationResponsableEleve objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -737,70 +737,70 @@ abstract class BaseJTraitementEnvoiElevePeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JTraitementEnvoiElevePeer::addSelectColumns($criteria);
-		$startcol2 = (JTraitementEnvoiElevePeer::NUM_COLUMNS - JTraitementEnvoiElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		JNotificationResponsableElevePeer::addSelectColumns($criteria);
+		$startcol2 = (JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveEnvoiPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveEnvoiPeer::NUM_COLUMNS - AbsenceEleveEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		ResponsableElevePeer::addSelectColumns($criteria);
+		$startcol4 = $startcol3 + (ResponsableElevePeer::NUM_COLUMNS - ResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_ENVOI_ID, AbsenceEleveEnvoiPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, AbsenceEleveNotificationPeer::ID, $join_behavior);
 
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, AbsenceEleveTraitementPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JTraitementEnvoiElevePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JTraitementEnvoiElevePeer::getInstanceFromPool($key1))) {
+			$key1 = JNotificationResponsableElevePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = JNotificationResponsableElevePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = JTraitementEnvoiElevePeer::getOMClass(false);
+				$cls = JNotificationResponsableElevePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				JTraitementEnvoiElevePeer::addInstanceToPool($obj1, $key1);
+				JNotificationResponsableElevePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
-			// Add objects for joined AbsenceEleveEnvoi rows
+			// Add objects for joined AbsenceEleveNotification rows
 
-			$key2 = AbsenceEleveEnvoiPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+			$key2 = AbsenceEleveNotificationPeer::getPrimaryKeyHashFromRow($row, $startcol2);
 			if ($key2 !== null) {
-				$obj2 = AbsenceEleveEnvoiPeer::getInstanceFromPool($key2);
+				$obj2 = AbsenceEleveNotificationPeer::getInstanceFromPool($key2);
 				if (!$obj2) {
 
-					$cls = AbsenceEleveEnvoiPeer::getOMClass(false);
+					$cls = AbsenceEleveNotificationPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
-					AbsenceEleveEnvoiPeer::addInstanceToPool($obj2, $key2);
+					AbsenceEleveNotificationPeer::addInstanceToPool($obj2, $key2);
 				} // if obj2 loaded
 
-				// Add the $obj1 (JTraitementEnvoiEleve) to the collection in $obj2 (AbsenceEleveEnvoi)
-				$obj2->addJTraitementEnvoiEleve($obj1);
+				// Add the $obj1 (JNotificationResponsableEleve) to the collection in $obj2 (AbsenceEleveNotification)
+				$obj2->addJNotificationResponsableEleve($obj1);
 			} // if joined row not null
 
-			// Add objects for joined AbsenceEleveTraitement rows
+			// Add objects for joined ResponsableEleve rows
 
-			$key3 = AbsenceEleveTraitementPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+			$key3 = ResponsableElevePeer::getPrimaryKeyHashFromRow($row, $startcol3);
 			if ($key3 !== null) {
-				$obj3 = AbsenceEleveTraitementPeer::getInstanceFromPool($key3);
+				$obj3 = ResponsableElevePeer::getInstanceFromPool($key3);
 				if (!$obj3) {
 
-					$cls = AbsenceEleveTraitementPeer::getOMClass(false);
+					$cls = ResponsableElevePeer::getOMClass(false);
 
 					$obj3 = new $cls();
 					$obj3->hydrate($row, $startcol3);
-					AbsenceEleveTraitementPeer::addInstanceToPool($obj3, $key3);
+					ResponsableElevePeer::addInstanceToPool($obj3, $key3);
 				} // if obj3 loaded
 
-				// Add the $obj1 (JTraitementEnvoiEleve) to the collection in $obj3 (AbsenceEleveTraitement)
-				$obj3->addJTraitementEnvoiEleve($obj1);
+				// Add the $obj1 (JNotificationResponsableEleve) to the collection in $obj3 (ResponsableEleve)
+				$obj3->addJNotificationResponsableEleve($obj1);
 			} // if joined row not null
 
 			$results[] = $obj1;
@@ -811,7 +811,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related AbsenceEleveEnvoi table
+	 * Returns the number of rows matching criteria, joining the related AbsenceEleveNotification table
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -819,7 +819,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAllExceptAbsenceEleveEnvoi(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAllExceptAbsenceEleveNotification(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -827,14 +827,14 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementEnvoiElevePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JNotificationResponsableElevePeer::TABLE_NAME);
 		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementEnvoiElevePeer::addSelectColumns($criteria);
+			JNotificationResponsableElevePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
@@ -843,10 +843,10 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, AbsenceEleveTraitementPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -861,7 +861,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 
 
 	/**
-	 * Returns the number of rows matching criteria, joining the related AbsenceEleveTraitement table
+	 * Returns the number of rows matching criteria, joining the related ResponsableEleve table
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
@@ -869,7 +869,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
 	 * @return     int Number of matching rows.
 	 */
-	public static function doCountJoinAllExceptAbsenceEleveTraitement(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doCountJoinAllExceptResponsableEleve(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		// we're going to modify criteria, so copy it first
 		$criteria = clone $criteria;
@@ -877,14 +877,14 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(JTraitementEnvoiElevePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(JNotificationResponsableElevePeer::TABLE_NAME);
 		
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			JTraitementEnvoiElevePeer::addSelectColumns($criteria);
+			JNotificationResponsableElevePeer::addSelectColumns($criteria);
 		}
 		
 		$criteria->clearOrderByColumns(); // ORDER BY should not affect count
@@ -893,10 +893,10 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		$criteria->setDbName(self::DATABASE_NAME);
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 	
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_ENVOI_ID, AbsenceEleveEnvoiPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, AbsenceEleveNotificationPeer::ID, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -911,16 +911,16 @@ abstract class BaseJTraitementEnvoiElevePeer {
 
 
 	/**
-	 * Selects a collection of JTraitementEnvoiEleve objects pre-filled with all related objects except AbsenceEleveEnvoi.
+	 * Selects a collection of JNotificationResponsableEleve objects pre-filled with all related objects except AbsenceEleveNotification.
 	 *
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JTraitementEnvoiEleve objects.
+	 * @return     array Array of JNotificationResponsableEleve objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptAbsenceEleveEnvoi(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptAbsenceEleveNotification(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$criteria = clone $criteria;
 
@@ -931,48 +931,48 @@ abstract class BaseJTraitementEnvoiElevePeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JTraitementEnvoiElevePeer::addSelectColumns($criteria);
-		$startcol2 = (JTraitementEnvoiElevePeer::NUM_COLUMNS - JTraitementEnvoiElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		JNotificationResponsableElevePeer::addSelectColumns($criteria);
+		$startcol2 = (JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		ResponsableElevePeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (ResponsableElevePeer::NUM_COLUMNS - ResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, AbsenceEleveTraitementPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JTraitementEnvoiElevePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JTraitementEnvoiElevePeer::getInstanceFromPool($key1))) {
+			$key1 = JNotificationResponsableElevePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = JNotificationResponsableElevePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = JTraitementEnvoiElevePeer::getOMClass(false);
+				$cls = JNotificationResponsableElevePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				JTraitementEnvoiElevePeer::addInstanceToPool($obj1, $key1);
+				JNotificationResponsableElevePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
-				// Add objects for joined AbsenceEleveTraitement rows
+				// Add objects for joined ResponsableEleve rows
 
-				$key2 = AbsenceEleveTraitementPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				$key2 = ResponsableElevePeer::getPrimaryKeyHashFromRow($row, $startcol2);
 				if ($key2 !== null) {
-					$obj2 = AbsenceEleveTraitementPeer::getInstanceFromPool($key2);
+					$obj2 = ResponsableElevePeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = AbsenceEleveTraitementPeer::getOMClass(false);
+						$cls = ResponsableElevePeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
-					AbsenceEleveTraitementPeer::addInstanceToPool($obj2, $key2);
+					ResponsableElevePeer::addInstanceToPool($obj2, $key2);
 				} // if $obj2 already loaded
 
-				// Add the $obj1 (JTraitementEnvoiEleve) to the collection in $obj2 (AbsenceEleveTraitement)
-				$obj2->addJTraitementEnvoiEleve($obj1);
+				// Add the $obj1 (JNotificationResponsableEleve) to the collection in $obj2 (ResponsableEleve)
+				$obj2->addJNotificationResponsableEleve($obj1);
 
 			} // if joined row is not null
 
@@ -984,16 +984,16 @@ abstract class BaseJTraitementEnvoiElevePeer {
 
 
 	/**
-	 * Selects a collection of JTraitementEnvoiEleve objects pre-filled with all related objects except AbsenceEleveTraitement.
+	 * Selects a collection of JNotificationResponsableEleve objects pre-filled with all related objects except ResponsableEleve.
 	 *
 	 * @param      Criteria  $criteria
 	 * @param      PropelPDO $con
 	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of JTraitementEnvoiEleve objects.
+	 * @return     array Array of JNotificationResponsableEleve objects.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	public static function doSelectJoinAllExceptAbsenceEleveTraitement(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public static function doSelectJoinAllExceptResponsableEleve(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
 		$criteria = clone $criteria;
 
@@ -1004,48 +1004,48 @@ abstract class BaseJTraitementEnvoiElevePeer {
 			$criteria->setDbName(self::DATABASE_NAME);
 		}
 
-		JTraitementEnvoiElevePeer::addSelectColumns($criteria);
-		$startcol2 = (JTraitementEnvoiElevePeer::NUM_COLUMNS - JTraitementEnvoiElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		JNotificationResponsableElevePeer::addSelectColumns($criteria);
+		$startcol2 = (JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
 
-		AbsenceEleveEnvoiPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveEnvoiPeer::NUM_COLUMNS - AbsenceEleveEnvoiPeer::NUM_LAZY_LOAD_COLUMNS);
+		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
+		$startcol3 = $startcol2 + (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
 
-		$criteria->addJoin(JTraitementEnvoiElevePeer::A_ENVOI_ID, AbsenceEleveEnvoiPeer::ID, $join_behavior);
+		$criteria->addJoin(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, AbsenceEleveNotificationPeer::ID, $join_behavior);
 
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = JTraitementEnvoiElevePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = JTraitementEnvoiElevePeer::getInstanceFromPool($key1))) {
+			$key1 = JNotificationResponsableElevePeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj1 = JNotificationResponsableElevePeer::getInstanceFromPool($key1))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj1->hydrate($row, 0, true); // rehydrate
 			} else {
-				$cls = JTraitementEnvoiElevePeer::getOMClass(false);
+				$cls = JNotificationResponsableElevePeer::getOMClass(false);
 
 				$obj1 = new $cls();
 				$obj1->hydrate($row);
-				JTraitementEnvoiElevePeer::addInstanceToPool($obj1, $key1);
+				JNotificationResponsableElevePeer::addInstanceToPool($obj1, $key1);
 			} // if obj1 already loaded
 
-				// Add objects for joined AbsenceEleveEnvoi rows
+				// Add objects for joined AbsenceEleveNotification rows
 
-				$key2 = AbsenceEleveEnvoiPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+				$key2 = AbsenceEleveNotificationPeer::getPrimaryKeyHashFromRow($row, $startcol2);
 				if ($key2 !== null) {
-					$obj2 = AbsenceEleveEnvoiPeer::getInstanceFromPool($key2);
+					$obj2 = AbsenceEleveNotificationPeer::getInstanceFromPool($key2);
 					if (!$obj2) {
 	
-						$cls = AbsenceEleveEnvoiPeer::getOMClass(false);
+						$cls = AbsenceEleveNotificationPeer::getOMClass(false);
 
 					$obj2 = new $cls();
 					$obj2->hydrate($row, $startcol2);
-					AbsenceEleveEnvoiPeer::addInstanceToPool($obj2, $key2);
+					AbsenceEleveNotificationPeer::addInstanceToPool($obj2, $key2);
 				} // if $obj2 already loaded
 
-				// Add the $obj1 (JTraitementEnvoiEleve) to the collection in $obj2 (AbsenceEleveEnvoi)
-				$obj2->addJTraitementEnvoiEleve($obj1);
+				// Add the $obj1 (JNotificationResponsableEleve) to the collection in $obj2 (AbsenceEleveNotification)
+				$obj2->addJNotificationResponsableEleve($obj1);
 
 			} // if joined row is not null
 
@@ -1072,10 +1072,10 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 */
 	public static function buildTableMap()
 	{
-	  $dbMap = Propel::getDatabaseMap(BaseJTraitementEnvoiElevePeer::DATABASE_NAME);
-	  if (!$dbMap->hasTable(BaseJTraitementEnvoiElevePeer::TABLE_NAME))
+	  $dbMap = Propel::getDatabaseMap(BaseJNotificationResponsableElevePeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseJNotificationResponsableElevePeer::TABLE_NAME))
 	  {
-	    $dbMap->addTableObject(new JTraitementEnvoiEleveTableMap());
+	    $dbMap->addTableObject(new JNotificationResponsableEleveTableMap());
 	  }
 	}
 
@@ -1092,13 +1092,13 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 */
 	public static function getOMClass($withPrefix = true)
 	{
-		return $withPrefix ? JTraitementEnvoiElevePeer::CLASS_DEFAULT : JTraitementEnvoiElevePeer::OM_CLASS;
+		return $withPrefix ? JNotificationResponsableElevePeer::CLASS_DEFAULT : JNotificationResponsableElevePeer::OM_CLASS;
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a JTraitementEnvoiEleve or Criteria object.
+	 * Method perform an INSERT on the database, given a JNotificationResponsableEleve or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or JTraitementEnvoiEleve object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or JNotificationResponsableEleve object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -1107,13 +1107,13 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from JTraitementEnvoiEleve object
+			$criteria = $values->buildCriteria(); // build Criteria from JNotificationResponsableEleve object
 		}
 
 
@@ -1135,9 +1135,9 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a JTraitementEnvoiEleve or Criteria object.
+	 * Method perform an UPDATE on the database, given a JNotificationResponsableEleve or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or JTraitementEnvoiEleve object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or JNotificationResponsableEleve object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -1146,7 +1146,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -1154,23 +1154,23 @@ abstract class BaseJTraitementEnvoiElevePeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(JTraitementEnvoiElevePeer::A_ENVOI_ID);
-			$value = $criteria->remove(JTraitementEnvoiElevePeer::A_ENVOI_ID);
+			$comparison = $criteria->getComparison(JNotificationResponsableElevePeer::A_NOTIFICATION_ID);
+			$value = $criteria->remove(JNotificationResponsableElevePeer::A_NOTIFICATION_ID);
 			if ($value) {
-				$selectCriteria->add(JTraitementEnvoiElevePeer::A_ENVOI_ID, $value, $comparison);
+				$selectCriteria->add(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, $value, $comparison);
 			} else {
-				$selectCriteria->setPrimaryTableName(JTraitementEnvoiElevePeer::TABLE_NAME);
+				$selectCriteria->setPrimaryTableName(JNotificationResponsableElevePeer::TABLE_NAME);
 			}
 
-			$comparison = $criteria->getComparison(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID);
-			$value = $criteria->remove(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID);
+			$comparison = $criteria->getComparison(JNotificationResponsableElevePeer::PERS_ID);
+			$value = $criteria->remove(JNotificationResponsableElevePeer::PERS_ID);
 			if ($value) {
-				$selectCriteria->add(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, $value, $comparison);
+				$selectCriteria->add(JNotificationResponsableElevePeer::PERS_ID, $value, $comparison);
 			} else {
-				$selectCriteria->setPrimaryTableName(JTraitementEnvoiElevePeer::TABLE_NAME);
+				$selectCriteria->setPrimaryTableName(JNotificationResponsableElevePeer::TABLE_NAME);
 			}
 
-		} else { // $values is JTraitementEnvoiEleve object
+		} else { // $values is JNotificationResponsableEleve object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -1182,26 +1182,26 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the j_traitements_envois table.
+	 * Method to DELETE all rows from the j_notifications_resp_pers table.
 	 *
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += BasePeer::doDeleteAll(JTraitementEnvoiElevePeer::TABLE_NAME, $con, JTraitementEnvoiElevePeer::DATABASE_NAME);
+			$affectedRows += BasePeer::doDeleteAll(JNotificationResponsableElevePeer::TABLE_NAME, $con, JNotificationResponsableElevePeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
-			JTraitementEnvoiElevePeer::clearInstancePool();
-			JTraitementEnvoiElevePeer::clearRelatedInstancePool();
+			JNotificationResponsableElevePeer::clearInstancePool();
+			JNotificationResponsableElevePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1211,9 +1211,9 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a JTraitementEnvoiEleve or Criteria object OR a primary key value.
+	 * Method perform a DELETE on the database, given a JNotificationResponsableEleve or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or JTraitementEnvoiEleve object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or JNotificationResponsableEleve object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -1224,19 +1224,19 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			// invalidate the cache for all objects of this type, since we have no
 			// way of knowing (without running a query) what objects should be invalidated
 			// from the cache based on this Criteria.
-			JTraitementEnvoiElevePeer::clearInstancePool();
+			JNotificationResponsableElevePeer::clearInstancePool();
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof JTraitementEnvoiEleve) { // it's a model object
+		} elseif ($values instanceof JNotificationResponsableEleve) { // it's a model object
 			// invalidate the cache for this single object
-			JTraitementEnvoiElevePeer::removeInstanceFromPool($values);
+			JNotificationResponsableElevePeer::removeInstanceFromPool($values);
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else { // it's a primary key, or an array of pks
@@ -1248,11 +1248,11 @@ abstract class BaseJTraitementEnvoiElevePeer {
 				$values = array($values);
 			}
 			foreach ($values as $value) {
-				$criterion = $criteria->getNewCriterion(JTraitementEnvoiElevePeer::A_ENVOI_ID, $value[0]);
-				$criterion->addAnd($criteria->getNewCriterion(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, $value[1]));
+				$criterion = $criteria->getNewCriterion(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, $value[0]);
+				$criterion->addAnd($criteria->getNewCriterion(JNotificationResponsableElevePeer::PERS_ID, $value[1]));
 				$criteria->addOr($criterion);
 				// we can invalidate the cache for this single PK
-				JTraitementEnvoiElevePeer::removeInstanceFromPool($value);
+				JNotificationResponsableElevePeer::removeInstanceFromPool($value);
 			}
 		}
 
@@ -1267,7 +1267,7 @@ abstract class BaseJTraitementEnvoiElevePeer {
 			$con->beginTransaction();
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-			JTraitementEnvoiElevePeer::clearRelatedInstancePool();
+			JNotificationResponsableElevePeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -1277,24 +1277,24 @@ abstract class BaseJTraitementEnvoiElevePeer {
 	}
 
 	/**
-	 * Validates all modified columns of given JTraitementEnvoiEleve object.
+	 * Validates all modified columns of given JNotificationResponsableEleve object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      JTraitementEnvoiEleve $obj The object to validate.
+	 * @param      JNotificationResponsableEleve $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(JTraitementEnvoiEleve $obj, $cols = null)
+	public static function doValidate(JNotificationResponsableEleve $obj, $cols = null)
 	{
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(JTraitementEnvoiElevePeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(JTraitementEnvoiElevePeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(JNotificationResponsableElevePeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(JNotificationResponsableElevePeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -1310,35 +1310,35 @@ abstract class BaseJTraitementEnvoiElevePeer {
 
 		}
 
-		return BasePeer::doValidate(JTraitementEnvoiElevePeer::DATABASE_NAME, JTraitementEnvoiElevePeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(JNotificationResponsableElevePeer::DATABASE_NAME, JNotificationResponsableElevePeer::TABLE_NAME, $columns);
 	}
 
 	/**
 	 * Retrieve object using using composite pkey values.
-	 * @param      int $a_envoi_id
-	 * @param      int $a_traitement_id
+	 * @param      int $a_notification_id
+	 * @param      int $pers_id
 	 * @param      PropelPDO $con
-	 * @return     JTraitementEnvoiEleve
+	 * @return     JNotificationResponsableEleve
 	 */
-	public static function retrieveByPK($a_envoi_id, $a_traitement_id, PropelPDO $con = null) {
-		$_instancePoolKey = serialize(array((string) $a_envoi_id, (string) $a_traitement_id));
- 		if (null !== ($obj = JTraitementEnvoiElevePeer::getInstanceFromPool($_instancePoolKey))) {
+	public static function retrieveByPK($a_notification_id, $pers_id, PropelPDO $con = null) {
+		$_instancePoolKey = serialize(array((string) $a_notification_id, (string) $pers_id));
+ 		if (null !== ($obj = JNotificationResponsableElevePeer::getInstanceFromPool($_instancePoolKey))) {
  			return $obj;
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
-		$criteria = new Criteria(JTraitementEnvoiElevePeer::DATABASE_NAME);
-		$criteria->add(JTraitementEnvoiElevePeer::A_ENVOI_ID, $a_envoi_id);
-		$criteria->add(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, $a_traitement_id);
-		$v = JTraitementEnvoiElevePeer::doSelect($criteria, $con);
+		$criteria = new Criteria(JNotificationResponsableElevePeer::DATABASE_NAME);
+		$criteria->add(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, $a_notification_id);
+		$criteria->add(JNotificationResponsableElevePeer::PERS_ID, $pers_id);
+		$v = JNotificationResponsableElevePeer::doSelect($criteria, $con);
 
 		return !empty($v) ? $v[0] : null;
 	}
-} // BaseJTraitementEnvoiElevePeer
+} // BaseJNotificationResponsableElevePeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseJTraitementEnvoiElevePeer::buildTableMap();
+BaseJNotificationResponsableElevePeer::buildTableMap();
 

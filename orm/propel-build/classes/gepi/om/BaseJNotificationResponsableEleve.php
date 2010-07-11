@@ -2,49 +2,49 @@
 
 
 /**
- * Base class that represents a row from the 'j_traitements_envois' table.
+ * Base class that represents a row from the 'j_notifications_resp_pers' table.
  *
- * Table de jointure entre le traitement des absences et leur envoi
+ * Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persistent
+abstract class BaseJNotificationResponsableEleve extends BaseObject  implements Persistent
 {
 
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'JTraitementEnvoiElevePeer';
+  const PEER = 'JNotificationResponsableElevePeer';
 
 	/**
 	 * The Peer class.
 	 * Instance provides a convenient way of calling static methods on a class
 	 * that calling code may not be able to identify.
-	 * @var        JTraitementEnvoiElevePeer
+	 * @var        JNotificationResponsableElevePeer
 	 */
 	protected static $peer;
 
 	/**
-	 * The value for the a_envoi_id field.
+	 * The value for the a_notification_id field.
 	 * @var        int
 	 */
-	protected $a_envoi_id;
+	protected $a_notification_id;
 
 	/**
-	 * The value for the a_traitement_id field.
+	 * The value for the pers_id field.
 	 * @var        int
 	 */
-	protected $a_traitement_id;
+	protected $pers_id;
 
 	/**
-	 * @var        AbsenceEleveEnvoi
+	 * @var        AbsenceEleveNotification
 	 */
-	protected $aAbsenceEleveEnvoi;
+	protected $aAbsenceEleveNotification;
 
 	/**
-	 * @var        AbsenceEleveTraitement
+	 * @var        ResponsableEleve
 	 */
-	protected $aAbsenceEleveTraitement;
+	protected $aResponsableEleve;
 
 	/**
 	 * Flag to prevent endless save loop, if this object is referenced
@@ -61,72 +61,72 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	protected $alreadyInValidation = false;
 
 	/**
-	 * Get the [a_envoi_id] column value.
-	 * cle etrangere de l'envoi
+	 * Get the [a_notification_id] column value.
+	 * cle etrangere de la notification
 	 * @return     int
 	 */
-	public function getAEnvoiId()
+	public function getANotificationId()
 	{
-		return $this->a_envoi_id;
+		return $this->a_notification_id;
 	}
 
 	/**
-	 * Get the [a_traitement_id] column value.
-	 * cle etrangere du traitement de ces absences
+	 * Get the [pers_id] column value.
+	 * cle etrangere des personnes
 	 * @return     int
 	 */
-	public function getATraitementId()
+	public function getPersId()
 	{
-		return $this->a_traitement_id;
+		return $this->pers_id;
 	}
 
 	/**
-	 * Set the value of [a_envoi_id] column.
-	 * cle etrangere de l'envoi
+	 * Set the value of [a_notification_id] column.
+	 * cle etrangere de la notification
 	 * @param      int $v new value
-	 * @return     JTraitementEnvoiEleve The current object (for fluent API support)
+	 * @return     JNotificationResponsableEleve The current object (for fluent API support)
 	 */
-	public function setAEnvoiId($v)
+	public function setANotificationId($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->a_envoi_id !== $v) {
-			$this->a_envoi_id = $v;
-			$this->modifiedColumns[] = JTraitementEnvoiElevePeer::A_ENVOI_ID;
+		if ($this->a_notification_id !== $v) {
+			$this->a_notification_id = $v;
+			$this->modifiedColumns[] = JNotificationResponsableElevePeer::A_NOTIFICATION_ID;
 		}
 
-		if ($this->aAbsenceEleveEnvoi !== null && $this->aAbsenceEleveEnvoi->getId() !== $v) {
-			$this->aAbsenceEleveEnvoi = null;
+		if ($this->aAbsenceEleveNotification !== null && $this->aAbsenceEleveNotification->getId() !== $v) {
+			$this->aAbsenceEleveNotification = null;
 		}
 
 		return $this;
-	} // setAEnvoiId()
+	} // setANotificationId()
 
 	/**
-	 * Set the value of [a_traitement_id] column.
-	 * cle etrangere du traitement de ces absences
+	 * Set the value of [pers_id] column.
+	 * cle etrangere des personnes
 	 * @param      int $v new value
-	 * @return     JTraitementEnvoiEleve The current object (for fluent API support)
+	 * @return     JNotificationResponsableEleve The current object (for fluent API support)
 	 */
-	public function setATraitementId($v)
+	public function setPersId($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->a_traitement_id !== $v) {
-			$this->a_traitement_id = $v;
-			$this->modifiedColumns[] = JTraitementEnvoiElevePeer::A_TRAITEMENT_ID;
+		if ($this->pers_id !== $v) {
+			$this->pers_id = $v;
+			$this->modifiedColumns[] = JNotificationResponsableElevePeer::PERS_ID;
 		}
 
-		if ($this->aAbsenceEleveTraitement !== null && $this->aAbsenceEleveTraitement->getId() !== $v) {
-			$this->aAbsenceEleveTraitement = null;
+		if ($this->aResponsableEleve !== null && $this->aResponsableEleve->getPersId() !== $v) {
+			$this->aResponsableEleve = null;
 		}
 
 		return $this;
-	} // setATraitementId()
+	} // setPersId()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -160,8 +160,8 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	{
 		try {
 
-			$this->a_envoi_id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->a_traitement_id = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+			$this->a_notification_id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+			$this->pers_id = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -170,10 +170,10 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 2; // 2 = JTraitementEnvoiElevePeer::NUM_COLUMNS - JTraitementEnvoiElevePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 2; // 2 = JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
-			throw new PropelException("Error populating JTraitementEnvoiEleve object", $e);
+			throw new PropelException("Error populating JNotificationResponsableEleve object", $e);
 		}
 	}
 
@@ -193,11 +193,11 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	public function ensureConsistency()
 	{
 
-		if ($this->aAbsenceEleveEnvoi !== null && $this->a_envoi_id !== $this->aAbsenceEleveEnvoi->getId()) {
-			$this->aAbsenceEleveEnvoi = null;
+		if ($this->aAbsenceEleveNotification !== null && $this->a_notification_id !== $this->aAbsenceEleveNotification->getId()) {
+			$this->aAbsenceEleveNotification = null;
 		}
-		if ($this->aAbsenceEleveTraitement !== null && $this->a_traitement_id !== $this->aAbsenceEleveTraitement->getId()) {
-			$this->aAbsenceEleveTraitement = null;
+		if ($this->aResponsableEleve !== null && $this->pers_id !== $this->aResponsableEleve->getPersId()) {
+			$this->aResponsableEleve = null;
 		}
 	} // ensureConsistency
 
@@ -222,13 +222,13 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		// We don't need to alter the object instance pool; we're just modifying this instance
 		// already in the pool.
 
-		$stmt = JTraitementEnvoiElevePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+		$stmt = JNotificationResponsableElevePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
 		$row = $stmt->fetch(PDO::FETCH_NUM);
 		$stmt->closeCursor();
 		if (!$row) {
@@ -238,8 +238,8 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 
 		if ($deep) {  // also de-associate any related objects?
 
-			$this->aAbsenceEleveEnvoi = null;
-			$this->aAbsenceEleveTraitement = null;
+			$this->aAbsenceEleveNotification = null;
+			$this->aResponsableEleve = null;
 		} // if (deep)
 	}
 
@@ -259,14 +259,14 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
 			if ($ret) {
-				JTraitementEnvoiEleveQuery::create()
+				JNotificationResponsableEleveQuery::create()
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
@@ -301,7 +301,7 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(JTraitementEnvoiElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		
 		$con->beginTransaction();
@@ -321,7 +321,7 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 					$this->postUpdate($con);
 				}
 				$this->postSave($con);
-				JTraitementEnvoiElevePeer::addInstanceToPool($this);
+				JNotificationResponsableElevePeer::addInstanceToPool($this);
 			} else {
 				$affectedRows = 0;
 			}
@@ -355,18 +355,18 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aAbsenceEleveEnvoi !== null) {
-				if ($this->aAbsenceEleveEnvoi->isModified() || $this->aAbsenceEleveEnvoi->isNew()) {
-					$affectedRows += $this->aAbsenceEleveEnvoi->save($con);
+			if ($this->aAbsenceEleveNotification !== null) {
+				if ($this->aAbsenceEleveNotification->isModified() || $this->aAbsenceEleveNotification->isNew()) {
+					$affectedRows += $this->aAbsenceEleveNotification->save($con);
 				}
-				$this->setAbsenceEleveEnvoi($this->aAbsenceEleveEnvoi);
+				$this->setAbsenceEleveNotification($this->aAbsenceEleveNotification);
 			}
 
-			if ($this->aAbsenceEleveTraitement !== null) {
-				if ($this->aAbsenceEleveTraitement->isModified() || $this->aAbsenceEleveTraitement->isNew()) {
-					$affectedRows += $this->aAbsenceEleveTraitement->save($con);
+			if ($this->aResponsableEleve !== null) {
+				if ($this->aResponsableEleve->isModified() || $this->aResponsableEleve->isNew()) {
+					$affectedRows += $this->aResponsableEleve->save($con);
 				}
-				$this->setAbsenceEleveTraitement($this->aAbsenceEleveTraitement);
+				$this->setResponsableEleve($this->aResponsableEleve);
 			}
 
 
@@ -378,7 +378,7 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 					$affectedRows += 1;
 					$this->setNew(false);
 				} else {
-					$affectedRows += JTraitementEnvoiElevePeer::doUpdate($this, $con);
+					$affectedRows += JNotificationResponsableElevePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -455,20 +455,20 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 			// method.  This object relates to these object(s) by a
 			// foreign key reference.
 
-			if ($this->aAbsenceEleveEnvoi !== null) {
-				if (!$this->aAbsenceEleveEnvoi->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aAbsenceEleveEnvoi->getValidationFailures());
+			if ($this->aAbsenceEleveNotification !== null) {
+				if (!$this->aAbsenceEleveNotification->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aAbsenceEleveNotification->getValidationFailures());
 				}
 			}
 
-			if ($this->aAbsenceEleveTraitement !== null) {
-				if (!$this->aAbsenceEleveTraitement->validate($columns)) {
-					$failureMap = array_merge($failureMap, $this->aAbsenceEleveTraitement->getValidationFailures());
+			if ($this->aResponsableEleve !== null) {
+				if (!$this->aResponsableEleve->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aResponsableEleve->getValidationFailures());
 				}
 			}
 
 
-			if (($retval = JTraitementEnvoiElevePeer::doValidate($this, $columns)) !== true) {
+			if (($retval = JNotificationResponsableElevePeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
 			}
 
@@ -491,7 +491,7 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = JTraitementEnvoiElevePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = JNotificationResponsableElevePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		$field = $this->getByPosition($pos);
 		return $field;
 	}
@@ -507,10 +507,10 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	{
 		switch($pos) {
 			case 0:
-				return $this->getAEnvoiId();
+				return $this->getANotificationId();
 				break;
 			case 1:
-				return $this->getATraitementId();
+				return $this->getPersId();
 				break;
 			default:
 				return null;
@@ -534,17 +534,17 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
-		$keys = JTraitementEnvoiElevePeer::getFieldNames($keyType);
+		$keys = JNotificationResponsableElevePeer::getFieldNames($keyType);
 		$result = array(
-			$keys[0] => $this->getAEnvoiId(),
-			$keys[1] => $this->getATraitementId(),
+			$keys[0] => $this->getANotificationId(),
+			$keys[1] => $this->getPersId(),
 		);
 		if ($includeForeignObjects) {
-			if (null !== $this->aAbsenceEleveEnvoi) {
-				$result['AbsenceEleveEnvoi'] = $this->aAbsenceEleveEnvoi->toArray($keyType, $includeLazyLoadColumns, true);
+			if (null !== $this->aAbsenceEleveNotification) {
+				$result['AbsenceEleveNotification'] = $this->aAbsenceEleveNotification->toArray($keyType, $includeLazyLoadColumns, true);
 			}
-			if (null !== $this->aAbsenceEleveTraitement) {
-				$result['AbsenceEleveTraitement'] = $this->aAbsenceEleveTraitement->toArray($keyType, $includeLazyLoadColumns, true);
+			if (null !== $this->aResponsableEleve) {
+				$result['ResponsableEleve'] = $this->aResponsableEleve->toArray($keyType, $includeLazyLoadColumns, true);
 			}
 		}
 		return $result;
@@ -562,7 +562,7 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
 	{
-		$pos = JTraitementEnvoiElevePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+		$pos = JNotificationResponsableElevePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 		return $this->setByPosition($pos, $value);
 	}
 
@@ -578,10 +578,10 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	{
 		switch($pos) {
 			case 0:
-				$this->setAEnvoiId($value);
+				$this->setANotificationId($value);
 				break;
 			case 1:
-				$this->setATraitementId($value);
+				$this->setPersId($value);
 				break;
 		} // switch()
 	}
@@ -605,10 +605,10 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
 	{
-		$keys = JTraitementEnvoiElevePeer::getFieldNames($keyType);
+		$keys = JNotificationResponsableElevePeer::getFieldNames($keyType);
 
-		if (array_key_exists($keys[0], $arr)) $this->setAEnvoiId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setATraitementId($arr[$keys[1]]);
+		if (array_key_exists($keys[0], $arr)) $this->setANotificationId($arr[$keys[0]]);
+		if (array_key_exists($keys[1], $arr)) $this->setPersId($arr[$keys[1]]);
 	}
 
 	/**
@@ -618,10 +618,10 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function buildCriteria()
 	{
-		$criteria = new Criteria(JTraitementEnvoiElevePeer::DATABASE_NAME);
+		$criteria = new Criteria(JNotificationResponsableElevePeer::DATABASE_NAME);
 
-		if ($this->isColumnModified(JTraitementEnvoiElevePeer::A_ENVOI_ID)) $criteria->add(JTraitementEnvoiElevePeer::A_ENVOI_ID, $this->a_envoi_id);
-		if ($this->isColumnModified(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID)) $criteria->add(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, $this->a_traitement_id);
+		if ($this->isColumnModified(JNotificationResponsableElevePeer::A_NOTIFICATION_ID)) $criteria->add(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, $this->a_notification_id);
+		if ($this->isColumnModified(JNotificationResponsableElevePeer::PERS_ID)) $criteria->add(JNotificationResponsableElevePeer::PERS_ID, $this->pers_id);
 
 		return $criteria;
 	}
@@ -636,9 +636,9 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function buildPkeyCriteria()
 	{
-		$criteria = new Criteria(JTraitementEnvoiElevePeer::DATABASE_NAME);
-		$criteria->add(JTraitementEnvoiElevePeer::A_ENVOI_ID, $this->a_envoi_id);
-		$criteria->add(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, $this->a_traitement_id);
+		$criteria = new Criteria(JNotificationResponsableElevePeer::DATABASE_NAME);
+		$criteria->add(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, $this->a_notification_id);
+		$criteria->add(JNotificationResponsableElevePeer::PERS_ID, $this->pers_id);
 
 		return $criteria;
 	}
@@ -651,8 +651,8 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	public function getPrimaryKey()
 	{
 		$pks = array();
-		$pks[0] = $this->getAEnvoiId();
-		$pks[1] = $this->getATraitementId();
+		$pks[0] = $this->getANotificationId();
+		$pks[1] = $this->getPersId();
 		
 		return $pks;
 	}
@@ -665,8 +665,8 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function setPrimaryKey($keys)
 	{
-		$this->setAEnvoiId($keys[0]);
-		$this->setATraitementId($keys[1]);
+		$this->setANotificationId($keys[0]);
+		$this->setPersId($keys[1]);
 	}
 
 	/**
@@ -675,7 +675,7 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return (null === $this->getAEnvoiId()) && (null === $this->getATraitementId());
+		return (null === $this->getANotificationId()) && (null === $this->getPersId());
 	}
 
 	/**
@@ -684,14 +684,14 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 * If desired, this method can also make copies of all associated (fkey referrers)
 	 * objects.
 	 *
-	 * @param      object $copyObj An object of JTraitementEnvoiEleve (or compatible) type.
+	 * @param      object $copyObj An object of JNotificationResponsableEleve (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
 	 * @throws     PropelException
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-		$copyObj->setAEnvoiId($this->a_envoi_id);
-		$copyObj->setATraitementId($this->a_traitement_id);
+		$copyObj->setANotificationId($this->a_notification_id);
+		$copyObj->setPersId($this->pers_id);
 
 		$copyObj->setNew(true);
 	}
@@ -705,7 +705,7 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 * objects.
 	 *
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-	 * @return     JTraitementEnvoiEleve Clone of current object.
+	 * @return     JNotificationResponsableEleve Clone of current object.
 	 * @throws     PropelException
 	 */
 	public function copy($deepCopy = false)
@@ -724,37 +724,37 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 * same instance for all member of this class. The method could therefore
 	 * be static, but this would prevent one from overriding the behavior.
 	 *
-	 * @return     JTraitementEnvoiElevePeer
+	 * @return     JNotificationResponsableElevePeer
 	 */
 	public function getPeer()
 	{
 		if (self::$peer === null) {
-			self::$peer = new JTraitementEnvoiElevePeer();
+			self::$peer = new JNotificationResponsableElevePeer();
 		}
 		return self::$peer;
 	}
 
 	/**
-	 * Declares an association between this object and a AbsenceEleveEnvoi object.
+	 * Declares an association between this object and a AbsenceEleveNotification object.
 	 *
-	 * @param      AbsenceEleveEnvoi $v
-	 * @return     JTraitementEnvoiEleve The current object (for fluent API support)
+	 * @param      AbsenceEleveNotification $v
+	 * @return     JNotificationResponsableEleve The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setAbsenceEleveEnvoi(AbsenceEleveEnvoi $v = null)
+	public function setAbsenceEleveNotification(AbsenceEleveNotification $v = null)
 	{
 		if ($v === null) {
-			$this->setAEnvoiId(NULL);
+			$this->setANotificationId(NULL);
 		} else {
-			$this->setAEnvoiId($v->getId());
+			$this->setANotificationId($v->getId());
 		}
 
-		$this->aAbsenceEleveEnvoi = $v;
+		$this->aAbsenceEleveNotification = $v;
 
 		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the AbsenceEleveEnvoi object, it will not be re-added.
+		// If this object has already been added to the AbsenceEleveNotification object, it will not be re-added.
 		if ($v !== null) {
-			$v->addJTraitementEnvoiEleve($this);
+			$v->addJNotificationResponsableEleve($this);
 		}
 
 		return $this;
@@ -762,48 +762,48 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 
 
 	/**
-	 * Get the associated AbsenceEleveEnvoi object
+	 * Get the associated AbsenceEleveNotification object
 	 *
 	 * @param      PropelPDO Optional Connection object.
-	 * @return     AbsenceEleveEnvoi The associated AbsenceEleveEnvoi object.
+	 * @return     AbsenceEleveNotification The associated AbsenceEleveNotification object.
 	 * @throws     PropelException
 	 */
-	public function getAbsenceEleveEnvoi(PropelPDO $con = null)
+	public function getAbsenceEleveNotification(PropelPDO $con = null)
 	{
-		if ($this->aAbsenceEleveEnvoi === null && ($this->a_envoi_id !== null)) {
-			$this->aAbsenceEleveEnvoi = AbsenceEleveEnvoiQuery::create()->findPk($this->a_envoi_id);
+		if ($this->aAbsenceEleveNotification === null && ($this->a_notification_id !== null)) {
+			$this->aAbsenceEleveNotification = AbsenceEleveNotificationQuery::create()->findPk($this->a_notification_id);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aAbsenceEleveEnvoi->addJTraitementEnvoiEleves($this);
+			   $this->aAbsenceEleveNotification->addJNotificationResponsableEleves($this);
 			 */
 		}
-		return $this->aAbsenceEleveEnvoi;
+		return $this->aAbsenceEleveNotification;
 	}
 
 	/**
-	 * Declares an association between this object and a AbsenceEleveTraitement object.
+	 * Declares an association between this object and a ResponsableEleve object.
 	 *
-	 * @param      AbsenceEleveTraitement $v
-	 * @return     JTraitementEnvoiEleve The current object (for fluent API support)
+	 * @param      ResponsableEleve $v
+	 * @return     JNotificationResponsableEleve The current object (for fluent API support)
 	 * @throws     PropelException
 	 */
-	public function setAbsenceEleveTraitement(AbsenceEleveTraitement $v = null)
+	public function setResponsableEleve(ResponsableEleve $v = null)
 	{
 		if ($v === null) {
-			$this->setATraitementId(NULL);
+			$this->setPersId(NULL);
 		} else {
-			$this->setATraitementId($v->getId());
+			$this->setPersId($v->getPersId());
 		}
 
-		$this->aAbsenceEleveTraitement = $v;
+		$this->aResponsableEleve = $v;
 
 		// Add binding for other direction of this n:n relationship.
-		// If this object has already been added to the AbsenceEleveTraitement object, it will not be re-added.
+		// If this object has already been added to the ResponsableEleve object, it will not be re-added.
 		if ($v !== null) {
-			$v->addJTraitementEnvoiEleve($this);
+			$v->addJNotificationResponsableEleve($this);
 		}
 
 		return $this;
@@ -811,25 +811,25 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 
 
 	/**
-	 * Get the associated AbsenceEleveTraitement object
+	 * Get the associated ResponsableEleve object
 	 *
 	 * @param      PropelPDO Optional Connection object.
-	 * @return     AbsenceEleveTraitement The associated AbsenceEleveTraitement object.
+	 * @return     ResponsableEleve The associated ResponsableEleve object.
 	 * @throws     PropelException
 	 */
-	public function getAbsenceEleveTraitement(PropelPDO $con = null)
+	public function getResponsableEleve(PropelPDO $con = null)
 	{
-		if ($this->aAbsenceEleveTraitement === null && ($this->a_traitement_id !== null)) {
-			$this->aAbsenceEleveTraitement = AbsenceEleveTraitementQuery::create()->findPk($this->a_traitement_id);
+		if ($this->aResponsableEleve === null && ($this->pers_id !== null)) {
+			$this->aResponsableEleve = ResponsableEleveQuery::create()->findPk($this->pers_id);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
 			   undesirable since it could result in an only partially populated collection
 			   in the referenced object.
-			   $this->aAbsenceEleveTraitement->addJTraitementEnvoiEleves($this);
+			   $this->aResponsableEleve->addJNotificationResponsableEleves($this);
 			 */
 		}
-		return $this->aAbsenceEleveTraitement;
+		return $this->aResponsableEleve;
 	}
 
 	/**
@@ -837,8 +837,8 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 	 */
 	public function clear()
 	{
-		$this->a_envoi_id = null;
-		$this->a_traitement_id = null;
+		$this->a_notification_id = null;
+		$this->pers_id = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
@@ -860,8 +860,8 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 		if ($deep) {
 		} // if ($deep)
 
-		$this->aAbsenceEleveEnvoi = null;
-		$this->aAbsenceEleveTraitement = null;
+		$this->aAbsenceEleveNotification = null;
+		$this->aResponsableEleve = null;
 	}
 
 	/**
@@ -875,4 +875,4 @@ abstract class BaseJTraitementEnvoiEleve extends BaseObject  implements Persiste
 		throw new PropelException('Call to undefined method: ' . $name);
 	}
 
-} // BaseJTraitementEnvoiEleve
+} // BaseJNotificationResponsableEleve

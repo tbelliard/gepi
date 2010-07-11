@@ -3,7 +3,7 @@
 
 
 /**
- * This class defines the structure of the 'a_envois' table.
+ * This class defines the structure of the 'a_notifications' table.
  *
  *
  *
@@ -14,12 +14,12 @@
  *
  * @package    propel.generator.gepi.map
  */
-class AbsenceEleveEnvoiTableMap extends TableMap {
+class AbsenceEleveNotificationTableMap extends TableMap {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'gepi.map.AbsenceEleveEnvoiTableMap';
+	const CLASS_NAME = 'gepi.map.AbsenceEleveNotificationTableMap';
 
 	/**
 	 * Initialize the table attributes, columns and validators
@@ -31,18 +31,21 @@ class AbsenceEleveEnvoiTableMap extends TableMap {
 	public function initialize()
 	{
 	  // attributes
-		$this->setName('a_envois');
-		$this->setPhpName('AbsenceEleveEnvoi');
-		$this->setClassname('AbsenceEleveEnvoi');
+		$this->setName('a_notifications');
+		$this->setPhpName('AbsenceEleveNotification');
+		$this->setClassname('AbsenceEleveNotification');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(true);
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
 		$this->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, '-1');
-		$this->addForeignKey('ID_TYPE_ENVOI', 'IdTypeEnvoi', 'INTEGER', 'a_type_envois', 'ID', true, 4, -1);
+		$this->addForeignPrimaryKey('A_TRAITEMENT_ID', 'ATraitementId', 'INTEGER' , 'a_traitements', 'ID', true, 12, -1);
+		$this->addColumn('TYPE_NOTIFICATION', 'TypeNotification', 'INTEGER', false, 5, -1);
+		$this->addColumn('EMAIL', 'Email', 'VARCHAR', false, 100, null);
+		$this->addColumn('TELEPHONE', 'Telephone', 'VARCHAR', false, 100, null);
+		$this->addForeignKey('ADR_ID', 'AdrId', 'VARCHAR', 'resp_adr', 'ADR_ID', false, 10, null);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
-		$this->addColumn('STATUT_ENVOI', 'StatutEnvoi', 'VARCHAR', false, 20, '0');
-		$this->addColumn('DATE_ENVOI', 'DateEnvoi', 'TIMESTAMP', false, null, null);
+		$this->addColumn('STATUT_ENVOI', 'StatutEnvoi', 'INTEGER', false, 5, 0);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		// validators
@@ -54,9 +57,10 @@ class AbsenceEleveEnvoiTableMap extends TableMap {
 	public function buildRelations()
 	{
     $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('utilisateur_id' => 'login', ), 'SET NULL', null);
-    $this->addRelation('AbsenceEleveTypeEnvoi', 'AbsenceEleveTypeEnvoi', RelationMap::MANY_TO_ONE, array('id_type_envoi' => 'id', ), 'SET NULL', null);
-    $this->addRelation('JTraitementEnvoiEleve', 'JTraitementEnvoiEleve', RelationMap::ONE_TO_MANY, array('id' => 'a_envoi_id', ), 'CASCADE', null);
-    $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+    $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_ONE, array('a_traitement_id' => 'id', ), 'CASCADE', null);
+    $this->addRelation('ResponsableEleveAdresse', 'ResponsableEleveAdresse', RelationMap::MANY_TO_ONE, array('adr_id' => 'adr_id', ), 'SET NULL', null);
+    $this->addRelation('JNotificationResponsableEleve', 'JNotificationResponsableEleve', RelationMap::ONE_TO_MANY, array('id' => 'a_notification_id', ), 'CASCADE', null);
+    $this->addRelation('ResponsableEleve', 'ResponsableEleve', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 	/**
@@ -72,4 +76,4 @@ class AbsenceEleveEnvoiTableMap extends TableMap {
 		);
 	} // getBehaviors()
 
-} // AbsenceEleveEnvoiTableMap
+} // AbsenceEleveNotificationTableMap

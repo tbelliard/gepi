@@ -381,8 +381,8 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		// invalidate objects in JTraitementSaisieElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		JTraitementSaisieElevePeer::clearInstancePool();
 
-		// invalidate objects in JTraitementEnvoiElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		JTraitementEnvoiElevePeer::clearInstancePool();
+		// invalidate objects in AbsenceEleveNotificationPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveNotificationPeer::clearInstancePool();
 
 	}
 
@@ -2521,11 +2521,11 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			$criteria->add(JTraitementSaisieElevePeer::A_TRAITEMENT_ID, $obj->getId());
 			$affectedRows += JTraitementSaisieElevePeer::doDelete($criteria, $con);
 
-			// delete related JTraitementEnvoiEleve objects
-			$criteria = new Criteria(JTraitementEnvoiElevePeer::DATABASE_NAME);
+			// delete related AbsenceEleveNotification objects
+			$criteria = new Criteria(AbsenceEleveNotificationPeer::DATABASE_NAME);
 			
-			$criteria->add(JTraitementEnvoiElevePeer::A_TRAITEMENT_ID, $obj->getId());
-			$affectedRows += JTraitementEnvoiElevePeer::doDelete($criteria, $con);
+			$criteria->add(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, $obj->getId());
+			$affectedRows += AbsenceEleveNotificationPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}

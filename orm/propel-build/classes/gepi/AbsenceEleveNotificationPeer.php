@@ -3,9 +3,9 @@
 
 
 /**
- * Skeleton subclass for representing a row from the 'j_traitements_envois' table.
+ * Skeleton subclass for performing query and update operations on the 'a_notifications' table.
  *
- * Table de jointure entre le traitement des absences et leur envoi
+ * Notification (a la famille) des absences
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class JTraitementEnvoiEleve extends BaseJTraitementEnvoiEleve {
+class AbsenceEleveNotificationPeer extends BaseAbsenceEleveNotificationPeer {
 
-} // JTraitementEnvoiEleve
+} // AbsenceEleveNotificationPeer

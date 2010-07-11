@@ -60,9 +60,8 @@ class AbsenceEleveTraitementTableMap extends TableMap {
     $this->addRelation('AbsenceEleveJustification', 'AbsenceEleveJustification', RelationMap::MANY_TO_ONE, array('a_justification_id' => 'id', ), 'SET NULL', null);
     $this->addRelation('AbsenceEleveAction', 'AbsenceEleveAction', RelationMap::MANY_TO_ONE, array('a_action_id' => 'id', ), 'SET NULL', null);
     $this->addRelation('JTraitementSaisieEleve', 'JTraitementSaisieEleve', RelationMap::ONE_TO_MANY, array('id' => 'a_traitement_id', ), 'CASCADE', null);
-    $this->addRelation('JTraitementEnvoiEleve', 'JTraitementEnvoiEleve', RelationMap::ONE_TO_MANY, array('id' => 'a_traitement_id', ), 'CASCADE', null);
+    $this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::ONE_TO_MANY, array('id' => 'a_traitement_id', ), 'CASCADE', null);
     $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
-    $this->addRelation('AbsenceEleveEnvoi', 'AbsenceEleveEnvoi', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 	/**

@@ -386,6 +386,9 @@ abstract class BaseResponsableElevePeer {
 		// invalidate objects in ResponsableInformationPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		ResponsableInformationPeer::clearInstancePool();
 
+		// invalidate objects in JNotificationResponsableElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		JNotificationResponsableElevePeer::clearInstancePool();
+
 	}
 
 	/**
@@ -949,6 +952,12 @@ abstract class BaseResponsableElevePeer {
 			
 			$criteria->add(ResponsableInformationPeer::PERS_ID, $obj->getPersId());
 			$affectedRows += ResponsableInformationPeer::doDelete($criteria, $con);
+
+			// delete related JNotificationResponsableEleve objects
+			$criteria = new Criteria(JNotificationResponsableElevePeer::DATABASE_NAME);
+			
+			$criteria->add(JNotificationResponsableElevePeer::PERS_ID, $obj->getPersId());
+			$affectedRows += JNotificationResponsableElevePeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}

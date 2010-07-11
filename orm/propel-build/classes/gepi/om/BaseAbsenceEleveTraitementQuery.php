@@ -55,9 +55,9 @@
  * @method     AbsenceEleveTraitementQuery rightJoinJTraitementSaisieEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JTraitementSaisieEleve relation
  * @method     AbsenceEleveTraitementQuery innerJoinJTraitementSaisieEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the JTraitementSaisieEleve relation
  *
- * @method     AbsenceEleveTraitementQuery leftJoinJTraitementEnvoiEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the JTraitementEnvoiEleve relation
- * @method     AbsenceEleveTraitementQuery rightJoinJTraitementEnvoiEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JTraitementEnvoiEleve relation
- * @method     AbsenceEleveTraitementQuery innerJoinJTraitementEnvoiEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the JTraitementEnvoiEleve relation
+ * @method     AbsenceEleveTraitementQuery leftJoinAbsenceEleveNotification($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     AbsenceEleveTraitementQuery rightJoinAbsenceEleveNotification($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     AbsenceEleveTraitementQuery innerJoinAbsenceEleveNotification($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
  *
  * @method     AbsenceEleveTraitement findOne(PropelPDO $con = null) Return the first AbsenceEleveTraitement matching the query
  * @method     AbsenceEleveTraitement findOneById(int $id) Return the first AbsenceEleveTraitement filtered by the id column
@@ -820,31 +820,31 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query by a related JTraitementEnvoiEleve object
+	 * Filter the query by a related AbsenceEleveNotification object
 	 *
-	 * @param     JTraitementEnvoiEleve $jTraitementEnvoiEleve  the related object to use as filter
+	 * @param     AbsenceEleveNotification $absenceEleveNotification  the related object to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
 	 */
-	public function filterByJTraitementEnvoiEleve($jTraitementEnvoiEleve, $comparison = null)
+	public function filterByAbsenceEleveNotification($absenceEleveNotification, $comparison = null)
 	{
 		return $this
-			->addUsingAlias(AbsenceEleveTraitementPeer::ID, $jTraitementEnvoiEleve->getATraitementId(), $comparison);
+			->addUsingAlias(AbsenceEleveTraitementPeer::ID, $absenceEleveNotification->getATraitementId(), $comparison);
 	}
 
 	/**
-	 * Adds a JOIN clause to the query using the JTraitementEnvoiEleve relation
+	 * Adds a JOIN clause to the query using the AbsenceEleveNotification relation
 	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
 	 */
-	public function joinJTraitementEnvoiEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinAbsenceEleveNotification($relationAlias = '', $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('JTraitementEnvoiEleve');
+		$relationMap = $tableMap->getRelation('AbsenceEleveNotification');
 		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
@@ -859,14 +859,14 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
-			$this->addJoinObject($join, 'JTraitementEnvoiEleve');
+			$this->addJoinObject($join, 'AbsenceEleveNotification');
 		}
 		
 		return $this;
 	}
 
 	/**
-	 * Use the JTraitementEnvoiEleve relation JTraitementEnvoiEleve object
+	 * Use the AbsenceEleveNotification relation AbsenceEleveNotification object
 	 *
 	 * @see       useQuery()
 	 * 
@@ -874,13 +874,13 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
-	 * @return    JTraitementEnvoiEleveQuery A secondary query class using the current class as primary query
+	 * @return    AbsenceEleveNotificationQuery A secondary query class using the current class as primary query
 	 */
-	public function useJTraitementEnvoiEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useAbsenceEleveNotificationQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
-			->joinJTraitementEnvoiEleve($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'JTraitementEnvoiEleve', 'JTraitementEnvoiEleveQuery');
+			->joinAbsenceEleveNotification($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'AbsenceEleveNotification', 'AbsenceEleveNotificationQuery');
 	}
 
 	/**
@@ -897,23 +897,6 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 		return $this
 			->useJTraitementSaisieEleveQuery()
 				->filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison)
-			->endUse();
-	}
-	
-	/**
-	 * Filter the query by a related AbsenceEleveEnvoi object
-	 * using the j_traitements_envois table as cross reference
-	 *
-	 * @param     AbsenceEleveEnvoi $absenceEleveEnvoi the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
-	 */
-	public function filterByAbsenceEleveEnvoi($absenceEleveEnvoi, $comparison = Criteria::EQUAL)
-	{
-		return $this
-			->useJTraitementEnvoiEleveQuery()
-				->filterByAbsenceEleveEnvoi($absenceEleveEnvoi, $comparison)
 			->endUse();
 	}
 	

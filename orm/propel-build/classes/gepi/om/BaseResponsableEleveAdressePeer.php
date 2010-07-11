@@ -376,6 +376,9 @@ abstract class BaseResponsableEleveAdressePeer {
 		// invalidate objects in ResponsableElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		ResponsableElevePeer::clearInstancePool();
 
+		// invalidate objects in AbsenceEleveNotificationPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveNotificationPeer::clearInstancePool();
+
 	}
 
 	/**
@@ -702,6 +705,14 @@ abstract class BaseResponsableEleveAdressePeer {
 			$updateValues = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
 			$selectCriteria->add(ResponsableElevePeer::ADR_ID, $obj->getAdrId());
 			$updateValues->add(ResponsableElevePeer::ADR_ID, null);
+
+					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+			// set fkey col in related AbsenceEleveNotification rows to NULL
+			$selectCriteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
+			$updateValues = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
+			$selectCriteria->add(AbsenceEleveNotificationPeer::ADR_ID, $obj->getAdrId());
+			$updateValues->add(AbsenceEleveNotificationPeer::ADR_ID, null);
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 

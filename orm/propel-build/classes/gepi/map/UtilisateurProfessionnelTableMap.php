@@ -72,7 +72,7 @@ class UtilisateurProfessionnelTableMap extends TableMap {
     $this->addRelation('JAidUtilisateursProfessionnels', 'JAidUtilisateursProfessionnels', RelationMap::ONE_TO_MANY, array('login' => 'id_utilisateur', ), 'CASCADE', null);
     $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('login' => 'utilisateur_id', ), 'SET NULL', null);
     $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('login' => 'utilisateur_id', ), 'SET NULL', null);
-    $this->addRelation('AbsenceEleveEnvoi', 'AbsenceEleveEnvoi', RelationMap::ONE_TO_MANY, array('login' => 'utilisateur_id', ), 'SET NULL', null);
+    $this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::ONE_TO_MANY, array('login' => 'utilisateur_id', ), 'SET NULL', null);
     $this->addRelation('JProfesseursMatieres', 'JProfesseursMatieres', RelationMap::ONE_TO_MANY, array('login' => 'id_professeur', ), null, null);
     $this->addRelation('PreferenceUtilisateurProfessionnel', 'PreferenceUtilisateurProfessionnel', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
     $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('login' => 'login_prof', ), 'SET NULL', null);

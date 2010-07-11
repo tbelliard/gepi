@@ -3,9 +3,9 @@
 
 
 /**
- * Skeleton subclass for performing query and update operations on the 'a_envois' table.
+ * Skeleton subclass for performing query and update operations on the 'a_notifications' table.
  *
- * Chaque envoi est repertorie ici
+ * Notification (a la famille) des absences
  *
  * You should add additional methods to this class to meet the
  * application requirements.  This class will only be generated as
@@ -13,6 +13,6 @@
  *
  * @package    propel.generator.gepi
  */
-class AbsenceEleveEnvoiQuery extends BaseAbsenceEleveEnvoiQuery {
+class AbsenceEleveNotificationQuery extends BaseAbsenceEleveNotificationQuery {
 
-} // AbsenceEleveEnvoiQuery
+} // AbsenceEleveNotificationQuery

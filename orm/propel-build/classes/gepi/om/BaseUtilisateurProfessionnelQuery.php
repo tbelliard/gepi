@@ -85,9 +85,9 @@
  * @method     UtilisateurProfessionnelQuery rightJoinAbsenceEleveTraitement($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveTraitement relation
  * @method     UtilisateurProfessionnelQuery innerJoinAbsenceEleveTraitement($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveTraitement relation
  *
- * @method     UtilisateurProfessionnelQuery leftJoinAbsenceEleveEnvoi($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveEnvoi relation
- * @method     UtilisateurProfessionnelQuery rightJoinAbsenceEleveEnvoi($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveEnvoi relation
- * @method     UtilisateurProfessionnelQuery innerJoinAbsenceEleveEnvoi($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveEnvoi relation
+ * @method     UtilisateurProfessionnelQuery leftJoinAbsenceEleveNotification($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     UtilisateurProfessionnelQuery rightJoinAbsenceEleveNotification($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     UtilisateurProfessionnelQuery innerJoinAbsenceEleveNotification($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
  *
  * @method     UtilisateurProfessionnelQuery leftJoinJProfesseursMatieres($relationAlias = '') Adds a LEFT JOIN clause to the query using the JProfesseursMatieres relation
  * @method     UtilisateurProfessionnelQuery rightJoinJProfesseursMatieres($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JProfesseursMatieres relation
@@ -1257,31 +1257,31 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query by a related AbsenceEleveEnvoi object
+	 * Filter the query by a related AbsenceEleveNotification object
 	 *
-	 * @param     AbsenceEleveEnvoi $absenceEleveEnvoi  the related object to use as filter
+	 * @param     AbsenceEleveNotification $absenceEleveNotification  the related object to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function filterByAbsenceEleveEnvoi($absenceEleveEnvoi, $comparison = null)
+	public function filterByAbsenceEleveNotification($absenceEleveNotification, $comparison = null)
 	{
 		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveEnvoi->getUtilisateurId(), $comparison);
+			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveNotification->getUtilisateurId(), $comparison);
 	}
 
 	/**
-	 * Adds a JOIN clause to the query using the AbsenceEleveEnvoi relation
+	 * Adds a JOIN clause to the query using the AbsenceEleveNotification relation
 	 * 
 	 * @param     string $relationAlias optional alias for the relation
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function joinAbsenceEleveEnvoi($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinAbsenceEleveNotification($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('AbsenceEleveEnvoi');
+		$relationMap = $tableMap->getRelation('AbsenceEleveNotification');
 		
 		// create a ModelJoin object for this join
 		$join = new ModelJoin();
@@ -1296,14 +1296,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
 			$this->addJoinObject($join, $relationAlias);
 		} else {
-			$this->addJoinObject($join, 'AbsenceEleveEnvoi');
+			$this->addJoinObject($join, 'AbsenceEleveNotification');
 		}
 		
 		return $this;
 	}
 
 	/**
-	 * Use the AbsenceEleveEnvoi relation AbsenceEleveEnvoi object
+	 * Use the AbsenceEleveNotification relation AbsenceEleveNotification object
 	 *
 	 * @see       useQuery()
 	 * 
@@ -1311,13 +1311,13 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 *                                   to be used as main alias in the secondary query
 	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
 	 *
-	 * @return    AbsenceEleveEnvoiQuery A secondary query class using the current class as primary query
+	 * @return    AbsenceEleveNotificationQuery A secondary query class using the current class as primary query
 	 */
-	public function useAbsenceEleveEnvoiQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useAbsenceEleveNotificationQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
-			->joinAbsenceEleveEnvoi($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'AbsenceEleveEnvoi', 'AbsenceEleveEnvoiQuery');
+			->joinAbsenceEleveNotification($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'AbsenceEleveNotification', 'AbsenceEleveNotificationQuery');
 	}
 
 	/**

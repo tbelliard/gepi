@@ -184,9 +184,9 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	protected $collAbsenceEleveTraitements;
 
 	/**
-	 * @var        array AbsenceEleveEnvoi[] Collection to store aggregation of AbsenceEleveEnvoi objects.
+	 * @var        array AbsenceEleveNotification[] Collection to store aggregation of AbsenceEleveNotification objects.
 	 */
-	protected $collAbsenceEleveEnvois;
+	protected $collAbsenceEleveNotifications;
 
 	/**
 	 * @var        array JProfesseursMatieres[] Collection to store aggregation of JProfesseursMatieres objects.
@@ -1070,7 +1070,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 			$this->collAbsenceEleveTraitements = null;
 
-			$this->collAbsenceEleveEnvois = null;
+			$this->collAbsenceEleveNotifications = null;
 
 			$this->collJProfesseursMatieress = null;
 
@@ -1275,8 +1275,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
-			if ($this->collAbsenceEleveEnvois !== null) {
-				foreach ($this->collAbsenceEleveEnvois as $referrerFK) {
+			if ($this->collAbsenceEleveNotifications !== null) {
+				foreach ($this->collAbsenceEleveNotifications as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1450,8 +1450,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					}
 				}
 
-				if ($this->collAbsenceEleveEnvois !== null) {
-					foreach ($this->collAbsenceEleveEnvois as $referrerFK) {
+				if ($this->collAbsenceEleveNotifications !== null) {
+					foreach ($this->collAbsenceEleveNotifications as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1905,9 +1905,9 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
-			foreach ($this->getAbsenceEleveEnvois() as $relObj) {
+			foreach ($this->getAbsenceEleveNotifications() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-					$copyObj->addAbsenceEleveEnvoi($relObj->copy($deepCopy));
+					$copyObj->addAbsenceEleveNotification($relObj->copy($deepCopy));
 				}
 			}
 
@@ -3480,36 +3480,36 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
-	 * Clears out the collAbsenceEleveEnvois collection
+	 * Clears out the collAbsenceEleveNotifications collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
 	 * them to be refetched by subsequent calls to accessor method.
 	 *
 	 * @return     void
-	 * @see        addAbsenceEleveEnvois()
+	 * @see        addAbsenceEleveNotifications()
 	 */
-	public function clearAbsenceEleveEnvois()
+	public function clearAbsenceEleveNotifications()
 	{
-		$this->collAbsenceEleveEnvois = null; // important to set this to NULL since that means it is uninitialized
+		$this->collAbsenceEleveNotifications = null; // important to set this to NULL since that means it is uninitialized
 	}
 
 	/**
-	 * Initializes the collAbsenceEleveEnvois collection.
+	 * Initializes the collAbsenceEleveNotifications collection.
 	 *
-	 * By default this just sets the collAbsenceEleveEnvois collection to an empty array (like clearcollAbsenceEleveEnvois());
+	 * By default this just sets the collAbsenceEleveNotifications collection to an empty array (like clearcollAbsenceEleveNotifications());
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
 	 * @return     void
 	 */
-	public function initAbsenceEleveEnvois()
+	public function initAbsenceEleveNotifications()
 	{
-		$this->collAbsenceEleveEnvois = new PropelObjectCollection();
-		$this->collAbsenceEleveEnvois->setModel('AbsenceEleveEnvoi');
+		$this->collAbsenceEleveNotifications = new PropelObjectCollection();
+		$this->collAbsenceEleveNotifications->setModel('AbsenceEleveNotification');
 	}
 
 	/**
-	 * Gets an array of AbsenceEleveEnvoi objects which contain a foreign key that references this object.
+	 * Gets an array of AbsenceEleveNotification objects which contain a foreign key that references this object.
 	 *
 	 * If the $criteria is not null, it is used to always fetch the results from the database.
 	 * Otherwise the results are fetched from the database the first time, then cached.
@@ -3519,44 +3519,44 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 *
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
 	 * @param      PropelPDO $con optional connection object
-	 * @return     PropelCollection|array AbsenceEleveEnvoi[] List of AbsenceEleveEnvoi objects
+	 * @return     PropelCollection|array AbsenceEleveNotification[] List of AbsenceEleveNotification objects
 	 * @throws     PropelException
 	 */
-	public function getAbsenceEleveEnvois($criteria = null, PropelPDO $con = null)
+	public function getAbsenceEleveNotifications($criteria = null, PropelPDO $con = null)
 	{
-		if(null === $this->collAbsenceEleveEnvois || null !== $criteria) {
-			if ($this->isNew() && null === $this->collAbsenceEleveEnvois) {
+		if(null === $this->collAbsenceEleveNotifications || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveNotifications) {
 				// return empty collection
-				$this->initAbsenceEleveEnvois();
+				$this->initAbsenceEleveNotifications();
 			} else {
-				$collAbsenceEleveEnvois = AbsenceEleveEnvoiQuery::create(null, $criteria)
+				$collAbsenceEleveNotifications = AbsenceEleveNotificationQuery::create(null, $criteria)
 					->filterByUtilisateurProfessionnel($this)
 					->find($con);
 				if (null !== $criteria) {
-					return $collAbsenceEleveEnvois;
+					return $collAbsenceEleveNotifications;
 				}
-				$this->collAbsenceEleveEnvois = $collAbsenceEleveEnvois;
+				$this->collAbsenceEleveNotifications = $collAbsenceEleveNotifications;
 			}
 		}
-		return $this->collAbsenceEleveEnvois;
+		return $this->collAbsenceEleveNotifications;
 	}
 
 	/**
-	 * Returns the number of related AbsenceEleveEnvoi objects.
+	 * Returns the number of related AbsenceEleveNotification objects.
 	 *
 	 * @param      Criteria $criteria
 	 * @param      boolean $distinct
 	 * @param      PropelPDO $con
-	 * @return     int Count of related AbsenceEleveEnvoi objects.
+	 * @return     int Count of related AbsenceEleveNotification objects.
 	 * @throws     PropelException
 	 */
-	public function countAbsenceEleveEnvois(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	public function countAbsenceEleveNotifications(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
 	{
-		if(null === $this->collAbsenceEleveEnvois || null !== $criteria) {
-			if ($this->isNew() && null === $this->collAbsenceEleveEnvois) {
+		if(null === $this->collAbsenceEleveNotifications || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveNotifications) {
 				return 0;
 			} else {
-				$query = AbsenceEleveEnvoiQuery::create(null, $criteria);
+				$query = AbsenceEleveNotificationQuery::create(null, $criteria);
 				if($distinct) {
 					$query->distinct();
 				}
@@ -3565,25 +3565,25 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					->count($con);
 			}
 		} else {
-			return count($this->collAbsenceEleveEnvois);
+			return count($this->collAbsenceEleveNotifications);
 		}
 	}
 
 	/**
-	 * Method called to associate a AbsenceEleveEnvoi object to this object
-	 * through the AbsenceEleveEnvoi foreign key attribute.
+	 * Method called to associate a AbsenceEleveNotification object to this object
+	 * through the AbsenceEleveNotification foreign key attribute.
 	 *
-	 * @param      AbsenceEleveEnvoi $l AbsenceEleveEnvoi
+	 * @param      AbsenceEleveNotification $l AbsenceEleveNotification
 	 * @return     void
 	 * @throws     PropelException
 	 */
-	public function addAbsenceEleveEnvoi(AbsenceEleveEnvoi $l)
+	public function addAbsenceEleveNotification(AbsenceEleveNotification $l)
 	{
-		if ($this->collAbsenceEleveEnvois === null) {
-			$this->initAbsenceEleveEnvois();
+		if ($this->collAbsenceEleveNotifications === null) {
+			$this->initAbsenceEleveNotifications();
 		}
-		if (!$this->collAbsenceEleveEnvois->contains($l)) { // only add it if the **same** object is not already associated
-			$this->collAbsenceEleveEnvois[]= $l;
+		if (!$this->collAbsenceEleveNotifications->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collAbsenceEleveNotifications[]= $l;
 			$l->setUtilisateurProfessionnel($this);
 		}
 	}
@@ -3594,7 +3594,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * an identical criteria, it returns the collection.
 	 * Otherwise if this UtilisateurProfessionnel is new, it will return
 	 * an empty collection; or if this UtilisateurProfessionnel has previously
-	 * been saved, it will retrieve related AbsenceEleveEnvois from storage.
+	 * been saved, it will retrieve related AbsenceEleveNotifications from storage.
 	 *
 	 * This method is protected by default in order to keep the public
 	 * api reasonable.  You can provide public methods for those you
@@ -3603,14 +3603,39 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @param      Criteria $criteria optional Criteria object to narrow the query
 	 * @param      PropelPDO $con optional connection object
 	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
-	 * @return     PropelCollection|array AbsenceEleveEnvoi[] List of AbsenceEleveEnvoi objects
+	 * @return     PropelCollection|array AbsenceEleveNotification[] List of AbsenceEleveNotification objects
 	 */
-	public function getAbsenceEleveEnvoisJoinAbsenceEleveTypeEnvoi($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	public function getAbsenceEleveNotificationsJoinAbsenceEleveTraitement($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
 	{
-		$query = AbsenceEleveEnvoiQuery::create(null, $criteria);
-		$query->joinWith('AbsenceEleveTypeEnvoi', $join_behavior);
+		$query = AbsenceEleveNotificationQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveTraitement', $join_behavior);
 
-		return $this->getAbsenceEleveEnvois($query, $con);
+		return $this->getAbsenceEleveNotifications($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related AbsenceEleveNotifications from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveNotification[] List of AbsenceEleveNotification objects
+	 */
+	public function getAbsenceEleveNotificationsJoinResponsableEleveAdresse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveNotificationQuery::create(null, $criteria);
+		$query->joinWith('ResponsableEleveAdresse', $join_behavior);
+
+		return $this->getAbsenceEleveNotifications($query, $con);
 	}
 
 	/**
@@ -4630,8 +4655,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					$o->clearAllReferences($deep);
 				}
 			}
-			if ($this->collAbsenceEleveEnvois) {
-				foreach ((array) $this->collAbsenceEleveEnvois as $o) {
+			if ($this->collAbsenceEleveNotifications) {
+				foreach ((array) $this->collAbsenceEleveNotifications as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
@@ -4661,7 +4686,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$this->collJAidUtilisateursProfessionnelss = null;
 		$this->collAbsenceEleveSaisies = null;
 		$this->collAbsenceEleveTraitements = null;
-		$this->collAbsenceEleveEnvois = null;
+		$this->collAbsenceEleveNotifications = null;
 		$this->collJProfesseursMatieress = null;
 		$this->collPreferenceUtilisateurProfessionnels = null;
 		$this->collEdtEmplacementCourss = null;

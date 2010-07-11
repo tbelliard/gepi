@@ -319,84 +319,72 @@ CREATE TABLE j_traitements_saisies
 	}
 }
 
-$query = mysql_query("DROP TABLE IF EXISTS a_envois;");
-$test = sql_query1("SHOW TABLES LIKE 'a_envois'");
+$query = mysql_query("DROP TABLE IF EXISTS a_notifications;");
+$test = sql_query1("SHOW TABLES LIKE 'a_notifications'");
 if ($test == -1) {
-	$result .= "<br />Création de la table 'a_envois'. ";
+	$result .= "<br />Création de la table 'a_notifications'. ";
 	$sql="
-CREATE TABLE a_envois
+CREATE TABLE a_notifications
 (
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
-	utilisateur_id VARCHAR(100) default '-1' COMMENT 'Login de l\'utilisateur professionnel qui a lance l\'envoi',
-	id_type_envoi INTEGER(4) default -1 NOT NULL COMMENT 'id du type de l\'envoi',
+	utilisateur_id VARCHAR(100) default '-1' COMMENT 'Login de l\'utilisateur professionnel qui envoi la notification',
+	a_traitement_id INTEGER(12) default -1 NOT NULL COMMENT 'cle etrangere du traitement qu\'on notifie',
+	type_notification INTEGER(5) default -1 COMMENT 'type de notification (0 : email, 1 : courrier, 2 : sms)',
+	email VARCHAR(100) COMMENT 'email de destination (pour le type email)',
+	telephone VARCHAR(100) COMMENT 'numero du telephone de destination (pour le type sms)',
+	adr_id VARCHAR(10) COMMENT 'cle etrangere vers l\'adresse de destination (pour le type courrier)',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
-	statut_envoi VARCHAR(20) default '0' COMMENT 'Statut de cet envoi (envoye, en cours,...)',
-	date_envoi DATETIME COMMENT 'Date en timestamp UNIX de l\'envoi',
+	statut_envoi INTEGER(5) default 0 COMMENT 'Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)',
 	created_at DATETIME,
 	updated_at DATETIME,
-	PRIMARY KEY (id),
-	INDEX a_envois_FI_1 (utilisateur_id),
-	CONSTRAINT a_envois_FK_1
+	PRIMARY KEY (id,a_traitement_id),
+	INDEX a_notifications_FI_1 (utilisateur_id),
+	CONSTRAINT a_notifications_FK_1
 		FOREIGN KEY (utilisateur_id)
 		REFERENCES utilisateurs (login)
 		ON DELETE SET NULL,
-	INDEX a_envois_FI_2 (id_type_envoi),
-	CONSTRAINT a_envois_FK_2
-		FOREIGN KEY (id_type_envoi)
-		REFERENCES a_type_envois (id)
-		ON DELETE SET NULL
-)Type=MyISAM COMMENT='Chaque envoi est repertorie ici';
-";
-	$result_inter = traite_requete($sql);
-	if ($result_inter != '') {
-		$result .= "<br />Erreur sur la création de la table 'a_envois': ".$result_inter."<br />";
-	}
-}
-
-$query = mysql_query("DROP TABLE IF EXISTS a_type_envois;");
-$test = sql_query1("SHOW TABLES LIKE 'a_type_envois'");
-if ($test == -1) {
-	$result .= "<br />Création de la table 'a_type_envois'. ";
-	$sql="
-CREATE TABLE a_type_envois
-(
-	id INTEGER(11)  NOT NULL AUTO_INCREMENT,
-	nom VARCHAR(100)  NOT NULL COMMENT 'nom du type de l\'envoi',
-	contenu LONGTEXT  NOT NULL COMMENT 'Contenu modele de l\'envoi',
-	sortable_rank INTEGER,
-	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Chaque envoi dispose d\'un type qui est stocke ici';
-";
-	$result_inter = traite_requete($sql);
-	if ($result_inter != '') {
-		$result .= "<br />Erreur sur la création de la table 'a_type_envois': ".$result_inter."<br />";
-	}
-}
-
-$query = mysql_query("DROP TABLE IF EXISTS j_traitements_envois;");
-$test = sql_query1("SHOW TABLES LIKE 'j_traitements_envois'");
-if ($test == -1) {
-	$result .= "<br />Création de la table 'j_traitements_envois'. ";
-	$sql="
-CREATE TABLE j_traitements_envois
-(
-	a_envoi_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de l\'envoi',
-	a_traitement_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere du traitement de ces absences',
-	PRIMARY KEY (a_envoi_id,a_traitement_id),
-	CONSTRAINT j_traitements_envois_FK_1
-		FOREIGN KEY (a_envoi_id)
-		REFERENCES a_envois (id)
-		ON DELETE CASCADE,
-	INDEX j_traitements_envois_FI_2 (a_traitement_id),
-	CONSTRAINT j_traitements_envois_FK_2
+	INDEX a_notifications_FI_2 (a_traitement_id),
+	CONSTRAINT a_notifications_FK_2
 		FOREIGN KEY (a_traitement_id)
 		REFERENCES a_traitements (id)
-		ON DELETE CASCADE
-)Type=MyISAM COMMENT='Table de jointure entre le traitement des absences et leur envoi';
+		ON DELETE CASCADE,
+	INDEX a_notifications_FI_3 (adr_id),
+	CONSTRAINT a_notifications_FK_3
+		FOREIGN KEY (adr_id)
+		REFERENCES resp_adr (adr_id)
+		ON DELETE SET NULL
+)Type=MyISAM COMMENT='Notification (a la famille) des absences';
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
-		$result .= "<br />Erreur sur la création de la table 'j_traitements_envois': ".$result_inter."<br />";
+		$result .= "<br />Erreur sur la création de la table 'a_notifications': ".$result_inter."<br />";
+	}
+}
+
+$query = mysql_query("DROP TABLE IF EXISTS j_notifications_resp_pers;");
+$test = sql_query1("SHOW TABLES LIKE 'j_notifications_resp_pers'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'j_notifications_resp_pers'. ";
+	$sql="
+CREATE TABLE j_notifications_resp_pers
+(
+	a_notification_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere de la notification',
+	pers_id INTEGER(12)  NOT NULL COMMENT 'cle etrangere des personnes',
+	PRIMARY KEY (a_notification_id,pers_id),
+	CONSTRAINT j_notifications_resp_pers_FK_1
+		FOREIGN KEY (a_notification_id)
+		REFERENCES a_notifications (id)
+		ON DELETE CASCADE,
+	INDEX j_notifications_resp_pers_FI_2 (pers_id),
+	CONSTRAINT j_notifications_resp_pers_FK_2
+		FOREIGN KEY (pers_id)
+		REFERENCES resp_pers (pers_id)
+		ON DELETE CASCADE
+)Type=MyISAM COMMENT='Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.';
+";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'a_notifications': ".$result_inter."<br />";
 	}
 }
 

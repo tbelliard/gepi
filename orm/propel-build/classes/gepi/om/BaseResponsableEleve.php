@@ -95,6 +95,16 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	protected $collResponsableInformations;
 
 	/**
+	 * @var        array JNotificationResponsableEleve[] Collection to store aggregation of JNotificationResponsableEleve objects.
+	 */
+	protected $collJNotificationResponsableEleves;
+
+	/**
+	 * @var        array AbsenceEleveNotification[] Collection to store aggregation of AbsenceEleveNotification objects.
+	 */
+	protected $collAbsenceEleveNotifications;
+
+	/**
 	 * Flag to prevent endless save loop, if this object is referenced
 	 * by another object which falls in this transaction.
 	 * @var        boolean
@@ -530,6 +540,8 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 			$this->aResponsableEleveAdresse = null;
 			$this->collResponsableInformations = null;
 
+			$this->collJNotificationResponsableEleves = null;
+
 		} // if (deep)
 	}
 
@@ -675,6 +687,14 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->collJNotificationResponsableEleves !== null) {
+				foreach ($this->collJNotificationResponsableEleves as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			$this->alreadyInSave = false;
 
 		}
@@ -760,6 +780,14 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 
 				if ($this->collResponsableInformations !== null) {
 					foreach ($this->collResponsableInformations as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJNotificationResponsableEleves !== null) {
+					foreach ($this->collJNotificationResponsableEleves as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1067,6 +1095,12 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			foreach ($this->getJNotificationResponsableEleves() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJNotificationResponsableEleve($relObj->copy($deepCopy));
+				}
+			}
+
 		} // if ($deepCopy)
 
 
@@ -1295,6 +1329,253 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collJNotificationResponsableEleves collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJNotificationResponsableEleves()
+	 */
+	public function clearJNotificationResponsableEleves()
+	{
+		$this->collJNotificationResponsableEleves = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJNotificationResponsableEleves collection.
+	 *
+	 * By default this just sets the collJNotificationResponsableEleves collection to an empty array (like clearcollJNotificationResponsableEleves());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initJNotificationResponsableEleves()
+	{
+		$this->collJNotificationResponsableEleves = new PropelObjectCollection();
+		$this->collJNotificationResponsableEleves->setModel('JNotificationResponsableEleve');
+	}
+
+	/**
+	 * Gets an array of JNotificationResponsableEleve objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this ResponsableEleve is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array JNotificationResponsableEleve[] List of JNotificationResponsableEleve objects
+	 * @throws     PropelException
+	 */
+	public function getJNotificationResponsableEleves($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collJNotificationResponsableEleves || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJNotificationResponsableEleves) {
+				// return empty collection
+				$this->initJNotificationResponsableEleves();
+			} else {
+				$collJNotificationResponsableEleves = JNotificationResponsableEleveQuery::create(null, $criteria)
+					->filterByResponsableEleve($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJNotificationResponsableEleves;
+				}
+				$this->collJNotificationResponsableEleves = $collJNotificationResponsableEleves;
+			}
+		}
+		return $this->collJNotificationResponsableEleves;
+	}
+
+	/**
+	 * Returns the number of related JNotificationResponsableEleve objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JNotificationResponsableEleve objects.
+	 * @throws     PropelException
+	 */
+	public function countJNotificationResponsableEleves(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collJNotificationResponsableEleves || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJNotificationResponsableEleves) {
+				return 0;
+			} else {
+				$query = JNotificationResponsableEleveQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByResponsableEleve($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collJNotificationResponsableEleves);
+		}
+	}
+
+	/**
+	 * Method called to associate a JNotificationResponsableEleve object to this object
+	 * through the JNotificationResponsableEleve foreign key attribute.
+	 *
+	 * @param      JNotificationResponsableEleve $l JNotificationResponsableEleve
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addJNotificationResponsableEleve(JNotificationResponsableEleve $l)
+	{
+		if ($this->collJNotificationResponsableEleves === null) {
+			$this->initJNotificationResponsableEleves();
+		}
+		if (!$this->collJNotificationResponsableEleves->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJNotificationResponsableEleves[]= $l;
+			$l->setResponsableEleve($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this ResponsableEleve is new, it will return
+	 * an empty collection; or if this ResponsableEleve has previously
+	 * been saved, it will retrieve related JNotificationResponsableEleves from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in ResponsableEleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JNotificationResponsableEleve[] List of JNotificationResponsableEleve objects
+	 */
+	public function getJNotificationResponsableElevesJoinAbsenceEleveNotification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = JNotificationResponsableEleveQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveNotification', $join_behavior);
+
+		return $this->getJNotificationResponsableEleves($query, $con);
+	}
+
+	/**
+	 * Clears out the collAbsenceEleveNotifications collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addAbsenceEleveNotifications()
+	 */
+	public function clearAbsenceEleveNotifications()
+	{
+		$this->collAbsenceEleveNotifications = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collAbsenceEleveNotifications collection.
+	 *
+	 * By default this just sets the collAbsenceEleveNotifications collection to an empty collection (like clearAbsenceEleveNotifications());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initAbsenceEleveNotifications()
+	{
+		$this->collAbsenceEleveNotifications = new PropelObjectCollection();
+		$this->collAbsenceEleveNotifications->setModel('AbsenceEleveNotification');
+	}
+
+	/**
+	 * Gets a collection of AbsenceEleveNotification objects related by a many-to-many relationship
+	 * to the current object by way of the j_notifications_resp_pers cross-reference table.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this ResponsableEleve is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array AbsenceEleveNotification[] List of AbsenceEleveNotification objects
+	 */
+	public function getAbsenceEleveNotifications($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveNotifications || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveNotifications) {
+				// return empty collection
+				$this->initAbsenceEleveNotifications();
+			} else {
+				$collAbsenceEleveNotifications = AbsenceEleveNotificationQuery::create(null, $criteria)
+					->filterByResponsableEleve($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collAbsenceEleveNotifications;
+				}
+				$this->collAbsenceEleveNotifications = $collAbsenceEleveNotifications;
+			}
+		}
+		return $this->collAbsenceEleveNotifications;
+	}
+
+	/**
+	 * Gets the number of AbsenceEleveNotification objects related by a many-to-many relationship
+	 * to the current object by way of the j_notifications_resp_pers cross-reference table.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      boolean $distinct Set to true to force count distinct
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     int the number of related AbsenceEleveNotification objects
+	 */
+	public function countAbsenceEleveNotifications($criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveNotifications || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveNotifications) {
+				return 0;
+			} else {
+				$query = AbsenceEleveNotificationQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByResponsableEleve($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collAbsenceEleveNotifications);
+		}
+	}
+
+	/**
+	 * Associate a AbsenceEleveNotification object to this object
+	 * through the j_notifications_resp_pers cross reference table.
+	 *
+	 * @param      AbsenceEleveNotification $absenceEleveNotification The JNotificationResponsableEleve object to relate
+	 * @return     void
+	 */
+	public function addAbsenceEleveNotification($absenceEleveNotification)
+	{
+		if ($this->collAbsenceEleveNotifications === null) {
+			$this->initAbsenceEleveNotifications();
+		}
+		if (!$this->collAbsenceEleveNotifications->contains($absenceEleveNotification)) { // only add it if the **same** object is not already associated
+			$jNotificationResponsableEleve = new JNotificationResponsableEleve();
+			$jNotificationResponsableEleve->setAbsenceEleveNotification($absenceEleveNotification);
+			$this->addJNotificationResponsableEleve($jNotificationResponsableEleve);
+			
+			$this->collAbsenceEleveNotifications[]= $absenceEleveNotification;
+		}
+	}
+
+	/**
 	 * Clears the current object and sets all attributes to their default values
 	 */
 	public function clear()
@@ -1333,9 +1614,15 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collJNotificationResponsableEleves) {
+				foreach ((array) $this->collJNotificationResponsableEleves as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 		} // if ($deep)
 
 		$this->collResponsableInformations = null;
+		$this->collJNotificationResponsableEleves = null;
 		$this->aResponsableEleveAdresse = null;
 	}
 

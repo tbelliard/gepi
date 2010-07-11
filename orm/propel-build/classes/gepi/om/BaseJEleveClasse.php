@@ -120,7 +120,7 @@ abstract class BaseJEleveClasse extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [periode] column value.
-	 * Periode ou l'eleve est inscrit dans cette classe
+	 * Numéro de la periode ou l'eleve est inscrit dans cette classe
 	 * @return     int
 	 */
 	public function getPeriode()
@@ -188,7 +188,7 @@ abstract class BaseJEleveClasse extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [periode] column.
-	 * Periode ou l'eleve est inscrit dans cette classe
+	 * Numéro de la periode ou l'eleve est inscrit dans cette classe
 	 * @param      int $v new value
 	 * @return     JEleveClasse The current object (for fluent API support)
 	 */

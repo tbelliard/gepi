@@ -450,8 +450,8 @@ abstract class BaseUtilisateurProfessionnelPeer {
 		// invalidate objects in AbsenceEleveTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		AbsenceEleveTraitementPeer::clearInstancePool();
 
-		// invalidate objects in AbsenceEleveEnvoiPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
-		AbsenceEleveEnvoiPeer::clearInstancePool();
+		// invalidate objects in AbsenceEleveNotificationPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		AbsenceEleveNotificationPeer::clearInstancePool();
 
 		// invalidate objects in PreferenceUtilisateurProfessionnelPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
 		PreferenceUtilisateurProfessionnelPeer::clearInstancePool();
@@ -878,11 +878,11 @@ abstract class BaseUtilisateurProfessionnelPeer {
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
-			// set fkey col in related AbsenceEleveEnvoi rows to NULL
+			// set fkey col in related AbsenceEleveNotification rows to NULL
 			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
 			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, $obj->getLogin());
-			$updateValues->add(AbsenceEleveEnvoiPeer::UTILISATEUR_ID, null);
+			$selectCriteria->add(AbsenceEleveNotificationPeer::UTILISATEUR_ID, $obj->getLogin());
+			$updateValues->add(AbsenceEleveNotificationPeer::UTILISATEUR_ID, null);
 
 					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
