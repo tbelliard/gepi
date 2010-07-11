@@ -1973,6 +1973,10 @@ Patientez pendant l'extraction des données... merci.
 			    $alt=1;
 			    foreach($eleve->getPeriodeNotes() as $periode_note) {
 				    //$periode_note = new PeriodeNote();
+				    if ($periode_note->getDateDebut() == null) {
+					//periode non commencee
+					continue;
+				    }
 				    $alt=$alt*(-1);
 				    echo "<tr class='lig$alt'>\n";
 				    echo "<td>".$periode_note->getNomPeriode();
