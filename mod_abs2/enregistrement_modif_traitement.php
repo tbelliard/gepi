@@ -72,8 +72,8 @@ if ($traitement == null) {
 }
 
 if ($modif == 'type') {
-    if (!$traitement->getAbsenceEleveEnvois()->isEmpty()) {
-	$message_enregistrement .= 'Modification impossible : courriers déjà envoyés.';
+    if (!$traitement->getModifiable()) {
+	$message_enregistrement .= 'Modification impossible.';
 	include("visu_traitement.php");
 	die();
     } else {

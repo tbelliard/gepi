@@ -61,9 +61,6 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 
 //récupération des paramètres de la requète
 $order = isset($_POST["order"]) ? $_POST["order"] :(isset($_GET["order"]) ? $_GET["order"] :(isset($_SESSION["order"]) ? $_SESSION["order"] : NULL));
-if ($order == null) {
-    $order = 'des_id';
-}
 
 $filter_id = isset($_POST["filter_id"]) ? $_POST["filter_id"] :(isset($_GET["filter_id"]) ? $_GET["filter_id"] :(isset($_SESSION["filter_id"]) ? $_SESSION["filter_id"] : NULL));
 $filter_utilisateur = isset($_POST["filter_utilisateur"]) ? $_POST["filter_utilisateur"] :(isset($_GET["filter_utilisateur"]) ? $_GET["filter_utilisateur"] :(isset($_SESSION["filter_utilisateur"]) ? $_SESSION["filter_utilisateur"] : NULL));
@@ -109,6 +106,9 @@ if ($reinit_filtre == 'y') {
     $order = NULL;
 }
 
+if ($order == null) {
+    $order = 'des_id';
+}
 //on va mettre en session tout les parametres de la requete, pour la navigation par onglet
 if (isset($order) && $order != null) $_SESSION['order'] = $order;
 

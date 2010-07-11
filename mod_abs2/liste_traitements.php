@@ -61,14 +61,10 @@ if ($utilisateur->getStatut()!="cpe") {
 
 //récupération des paramètres de la requète
 $order = isset($_POST["order"]) ? $_POST["order"] :(isset($_GET["order"]) ? $_GET["order"] :(isset($_SESSION["order"]) ? $_SESSION["order"] : NULL));
-if ($order == null) {
-    $order = 'des_id';
-}
 
 $filter_id = isset($_POST["filter_id"]) ? $_POST["filter_id"] :(isset($_GET["filter_id"]) ? $_GET["filter_id"] :(isset($_SESSION["filter_id"]) ? $_SESSION["filter_id"] : NULL));
 $filter_utilisateur = isset($_POST["filter_utilisateur"]) ? $_POST["filter_utilisateur"] :(isset($_GET["filter_utilisateur"]) ? $_GET["filter_utilisateur"] :(isset($_SESSION["filter_utilisateur"]) ? $_SESSION["filter_utilisateur"] : NULL));
 $filter_eleve = isset($_POST["filter_eleve"]) ? $_POST["filter_eleve"] :(isset($_GET["filter_eleve"]) ? $_GET["filter_eleve"] :(isset($_SESSION["filter_eleve"]) ? $_SESSION["filter_eleve"] : NULL));
-$filter_saisie = isset($_POST["filter_saisie"]) ? $_POST["filter_saisie"] :(isset($_GET["filter_saisie"]) ? $_GET["filter_saisie"] :(isset($_SESSION["filter_saisie"]) ? $_SESSION["filter_saisie"] : NULL));
 $filter_classe = isset($_POST["filter_classe"]) ? $_POST["filter_classe"] :(isset($_GET["filter_classe"]) ? $_GET["filter_classe"] :(isset($_SESSION["filter_classe"]) ? $_SESSION["filter_classe"] : NULL));
 $filter_groupe = isset($_POST["filter_groupe"]) ? $_POST["filter_groupe"] :(isset($_GET["filter_groupe"]) ? $_GET["filter_groupe"] :(isset($_SESSION["filter_groupe"]) ? $_SESSION["filter_groupe"] : NULL));
 $filter_aid = isset($_POST["filter_aid"]) ? $_POST["filter_aid"] :(isset($_GET["filter_aid"]) ? $_GET["filter_aid"] :(isset($_SESSION["filter_aid"]) ? $_SESSION["filter_aid"] : NULL));
@@ -90,7 +86,6 @@ if ($reinit_filtre == 'y') {
     $filter_id = NULL;
     $filter_utilisateur = NULL;
     $filter_eleve = NULL;
-    $filter_saisie = NULL;
     $filter_classe = NULL;
     $filter_groupe = NULL;
     $filter_aid = NULL;
@@ -110,12 +105,14 @@ if ($reinit_filtre == 'y') {
     $order = NULL;
 }
 
+if ($order == null) {
+    $order = 'des_id';
+}
 //on va mettre en session tout les parametres de la requete, pour la navigation par onglet
 if (isset($order) && $order != null) $_SESSION['order'] = $order;
 
 if (isset($filter_id) && $filter_id != null) $_SESSION['filter_id'] = $filter_id;
 if (isset($filter_eleve) && $filter_eleve != null) $_SESSION['filter_eleve'] = $filter_eleve;
-if (isset($filter_saisie) && $filter_saisie != null) $_SESSION['filter_saisie'] = $filter_saisie;
 if (isset($filter_classe) && $filter_classe != null) $_SESSION['filter_classe'] = $filter_classe;
 if (isset($filter_groupe) && $filter_groupe != null) $_SESSION['filter_groupe'] = $filter_groupe;
 if (isset($filter_aid) && $filter_aid != null) $_SESSION['filter_aid'] = $filter_aid;
@@ -362,7 +359,6 @@ echo '<input type="image" src="../images/down.png" width="15" height="15" title=
 if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
 echo '</nobr>';
-echo '<br><input type="text" name="filter_saisie" value="'.$filter_saisie.'" size="3"/>';
 echo '</TH>';
 
 //en tete filtre classe
@@ -444,10 +440,10 @@ echo '<nobr>';
 echo 'type';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
 if ($order == "asc_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_aid"/>';
+echo 'border-width:1px;" alt="" name="order" value="asc_type"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
 if ($order == "des_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_aid"/>';
+echo 'border-width:1px;" alt="" name="order" value="des_type"/>';
 echo '</nobr>';
 echo '<br>';
 echo ("<select name=\"filter_type\">");
