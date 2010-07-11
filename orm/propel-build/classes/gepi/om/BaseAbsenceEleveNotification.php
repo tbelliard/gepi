@@ -83,6 +83,12 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	protected $statut_envoi;
 
 	/**
+	 * The value for the date_envoi field.
+	 * @var        string
+	 */
+	protected $date_envoi;
+
+	/**
 	 * The value for the created_at field.
 	 * @var        string
 	 */
@@ -245,6 +251,44 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	public function getStatutEnvoi()
 	{
 		return $this->statut_envoi;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [date_envoi] column value.
+	 * Date envoi
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getDateEnvoi($format = 'Y-m-d H:i:s')
+	{
+		if ($this->date_envoi === null) {
+			return null;
+		}
+
+
+		if ($this->date_envoi === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->date_envoi);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_envoi, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
 	}
 
 	/**
@@ -516,6 +560,55 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	} // setStatutEnvoi()
 
 	/**
+	 * Sets the value of [date_envoi] column to a normalized version of the date/time value specified.
+	 * Date envoi
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     AbsenceEleveNotification The current object (for fluent API support)
+	 */
+	public function setDateEnvoi($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->date_envoi !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->date_envoi !== null && $tmpDt = new DateTime($this->date_envoi)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->date_envoi = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+				$this->modifiedColumns[] = AbsenceEleveNotificationPeer::DATE_ENVOI;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setDateEnvoi()
+
+	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
@@ -670,8 +763,9 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$this->adr_id = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
 			$this->commentaire = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
 			$this->statut_envoi = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
-			$this->created_at = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-			$this->updated_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+			$this->date_envoi = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+			$this->created_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+			$this->updated_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -680,7 +774,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 11; // 11 = AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 12; // 12 = AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveNotification object", $e);
@@ -1098,9 +1192,12 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 				return $this->getStatutEnvoi();
 				break;
 			case 9:
-				return $this->getCreatedAt();
+				return $this->getDateEnvoi();
 				break;
 			case 10:
+				return $this->getCreatedAt();
+				break;
+			case 11:
 				return $this->getUpdatedAt();
 				break;
 			default:
@@ -1136,8 +1233,9 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$keys[6] => $this->getAdrId(),
 			$keys[7] => $this->getCommentaire(),
 			$keys[8] => $this->getStatutEnvoi(),
-			$keys[9] => $this->getCreatedAt(),
-			$keys[10] => $this->getUpdatedAt(),
+			$keys[9] => $this->getDateEnvoi(),
+			$keys[10] => $this->getCreatedAt(),
+			$keys[11] => $this->getUpdatedAt(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
@@ -1208,9 +1306,12 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 				$this->setStatutEnvoi($value);
 				break;
 			case 9:
-				$this->setCreatedAt($value);
+				$this->setDateEnvoi($value);
 				break;
 			case 10:
+				$this->setCreatedAt($value);
+				break;
+			case 11:
 				$this->setUpdatedAt($value);
 				break;
 		} // switch()
@@ -1246,8 +1347,9 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if (array_key_exists($keys[6], $arr)) $this->setAdrId($arr[$keys[6]]);
 		if (array_key_exists($keys[7], $arr)) $this->setCommentaire($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setStatutEnvoi($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setCreatedAt($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setUpdatedAt($arr[$keys[10]]);
+		if (array_key_exists($keys[9], $arr)) $this->setDateEnvoi($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setCreatedAt($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setUpdatedAt($arr[$keys[11]]);
 	}
 
 	/**
@@ -1268,6 +1370,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($this->isColumnModified(AbsenceEleveNotificationPeer::ADR_ID)) $criteria->add(AbsenceEleveNotificationPeer::ADR_ID, $this->adr_id);
 		if ($this->isColumnModified(AbsenceEleveNotificationPeer::COMMENTAIRE)) $criteria->add(AbsenceEleveNotificationPeer::COMMENTAIRE, $this->commentaire);
 		if ($this->isColumnModified(AbsenceEleveNotificationPeer::STATUT_ENVOI)) $criteria->add(AbsenceEleveNotificationPeer::STATUT_ENVOI, $this->statut_envoi);
+		if ($this->isColumnModified(AbsenceEleveNotificationPeer::DATE_ENVOI)) $criteria->add(AbsenceEleveNotificationPeer::DATE_ENVOI, $this->date_envoi);
 		if ($this->isColumnModified(AbsenceEleveNotificationPeer::CREATED_AT)) $criteria->add(AbsenceEleveNotificationPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(AbsenceEleveNotificationPeer::UPDATED_AT)) $criteria->add(AbsenceEleveNotificationPeer::UPDATED_AT, $this->updated_at);
 
@@ -1339,6 +1442,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		$copyObj->setAdrId($this->adr_id);
 		$copyObj->setCommentaire($this->commentaire);
 		$copyObj->setStatutEnvoi($this->statut_envoi);
+		$copyObj->setDateEnvoi($this->date_envoi);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
 
@@ -1806,6 +1910,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		$this->adr_id = null;
 		$this->commentaire = null;
 		$this->statut_envoi = null;
+		$this->date_envoi = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->alreadyInSave = false;

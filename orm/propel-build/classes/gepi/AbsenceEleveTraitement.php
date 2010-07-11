@@ -40,7 +40,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	    return $desc;
 	}
 
-		/**
+	/**
 	 *
 	 * Renvoi true / false suivant que le traitement est modifiable ou pas
 	 *
@@ -58,4 +58,21 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	    return true;
 	}
 
+	/**
+	 *
+	 * Renvoi la liste de tout les responsables légaux des saisies associees a ce traitement
+	 *
+	 * @return     PropelObjectCollection collection d'objets de la classe ResponsableInformation
+	 *
+	 */
+	public function getResponsablesInformationsSaisies() {
+	    $resp_col = new PropelObjectCollection();
+	    $resp_col->setModel('ResponsableInformation');
+	    foreach ($this->getAbsenceEleveSaisies() as $saisie) {
+		foreach ($saisie->getEleve()->getResponsableInformations() as $responsable_information) {
+		    $resp_col->add($responsable_information);
+		}
+	    }
+	    return $resp_col;
+	}
 } // AbsenceEleveTraitement

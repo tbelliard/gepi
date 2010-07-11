@@ -938,6 +938,7 @@ CREATE TABLE a_notifications
 	adr_id VARCHAR(10) COMMENT 'cle etrangere vers l\'adresse de destination (pour le type courrier)',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	statut_envoi INTEGER(5) default 0 COMMENT 'Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)',
+	date_envoi DATETIME COMMENT 'Date envoi',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id),

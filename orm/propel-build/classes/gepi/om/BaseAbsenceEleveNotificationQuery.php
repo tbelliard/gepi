@@ -16,6 +16,7 @@
  * @method     AbsenceEleveNotificationQuery orderByAdrId($order = Criteria::ASC) Order by the adr_id column
  * @method     AbsenceEleveNotificationQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
  * @method     AbsenceEleveNotificationQuery orderByStatutEnvoi($order = Criteria::ASC) Order by the statut_envoi column
+ * @method     AbsenceEleveNotificationQuery orderByDateEnvoi($order = Criteria::ASC) Order by the date_envoi column
  * @method     AbsenceEleveNotificationQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     AbsenceEleveNotificationQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -28,6 +29,7 @@
  * @method     AbsenceEleveNotificationQuery groupByAdrId() Group by the adr_id column
  * @method     AbsenceEleveNotificationQuery groupByCommentaire() Group by the commentaire column
  * @method     AbsenceEleveNotificationQuery groupByStatutEnvoi() Group by the statut_envoi column
+ * @method     AbsenceEleveNotificationQuery groupByDateEnvoi() Group by the date_envoi column
  * @method     AbsenceEleveNotificationQuery groupByCreatedAt() Group by the created_at column
  * @method     AbsenceEleveNotificationQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -61,6 +63,7 @@
  * @method     AbsenceEleveNotification findOneByAdrId(string $adr_id) Return the first AbsenceEleveNotification filtered by the adr_id column
  * @method     AbsenceEleveNotification findOneByCommentaire(string $commentaire) Return the first AbsenceEleveNotification filtered by the commentaire column
  * @method     AbsenceEleveNotification findOneByStatutEnvoi(int $statut_envoi) Return the first AbsenceEleveNotification filtered by the statut_envoi column
+ * @method     AbsenceEleveNotification findOneByDateEnvoi(string $date_envoi) Return the first AbsenceEleveNotification filtered by the date_envoi column
  * @method     AbsenceEleveNotification findOneByCreatedAt(string $created_at) Return the first AbsenceEleveNotification filtered by the created_at column
  * @method     AbsenceEleveNotification findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveNotification filtered by the updated_at column
  *
@@ -73,6 +76,7 @@
  * @method     array findByAdrId(string $adr_id) Return AbsenceEleveNotification objects filtered by the adr_id column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveNotification objects filtered by the commentaire column
  * @method     array findByStatutEnvoi(int $statut_envoi) Return AbsenceEleveNotification objects filtered by the statut_envoi column
+ * @method     array findByDateEnvoi(string $date_envoi) Return AbsenceEleveNotification objects filtered by the date_envoi column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveNotification objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveNotification objects filtered by the updated_at column
  *
@@ -402,6 +406,37 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(AbsenceEleveNotificationPeer::STATUT_ENVOI, $statutEnvoi, $comparison);
+	}
+
+	/**
+	 * Filter the query on the date_envoi column
+	 * 
+	 * @param     string|array $dateEnvoi The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveNotificationQuery The current query, for fluid interface
+	 */
+	public function filterByDateEnvoi($dateEnvoi = null, $comparison = null)
+	{
+		if (is_array($dateEnvoi)) {
+			$useMinMax = false;
+			if (isset($dateEnvoi['min'])) {
+				$this->addUsingAlias(AbsenceEleveNotificationPeer::DATE_ENVOI, $dateEnvoi['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($dateEnvoi['max'])) {
+				$this->addUsingAlias(AbsenceEleveNotificationPeer::DATE_ENVOI, $dateEnvoi['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveNotificationPeer::DATE_ENVOI, $dateEnvoi, $comparison);
 	}
 
 	/**

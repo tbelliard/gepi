@@ -29,4 +29,18 @@ class AbsenceEleveNotification extends BaseAbsenceEleveNotification {
     public static $TYPE_TELEPHONIQUE = 3;
 
     public static $LISTE_LABEL_TYPE = array(0 => "courrier", 1 => "email", 2 => "sms", 3 => "communication téléphonique");
+
+
+    /**
+     *
+     * Renvoi true / false suivant que la notification est modifiable ou pas
+     *
+     * @return     String description
+     *
+     */
+    public function getModifiable() {
+	//modifiable uniquement si le statut est initial
+	return $this->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL;
+    }
+
 } // AbsenceEleveNotification
