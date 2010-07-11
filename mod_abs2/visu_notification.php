@@ -501,7 +501,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     echo '<form method="post" action="generer_notification.php">';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
-	echo '<button type="submit" onClick=\'window.open("generer_notification.php?id_notification='.$notification->getPrimaryKey().'"); window.location = "visu_notification.php"; return false;\'>Génerer la notification</button>';
+	echo '<button type="submit" onClick=\'window.open("generer_notification.php?id_notification='.$notification->getPrimaryKey().'"); setTimeout("window.location = \"visu_notification.php\"", 1000); return false;\'>Génerer la notification</button>';
     } else {
 	echo '<button type="submit">Génerer la notification</button>';
     }

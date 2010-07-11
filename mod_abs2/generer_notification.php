@@ -155,7 +155,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     $notification->save();
 
     // Output as a download file (some automatic fields are merged here)
-    $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, 'absence.odt');
+    $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, 'abs_notif_'.$notification->getId().'.odt');
 
     // Save as file on the disk (code example)
     //$TBS->Show(OPENTBS_FILE+TBS_EXIT, $file_name);
