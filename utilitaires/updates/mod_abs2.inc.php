@@ -17,33 +17,6 @@
 $result .= "<br /><br /><b>Mise à jour vers la version mod_abs2 :</b><br />";
 
 $result .= "&nbsp;->Ajout des tables absence 2<br />";
-#-----------------------------------------------------------------------------
-#-- a_actions
-#-----------------------------------------------------------------------------
-
-$query = mysql_query("
-DROP TABLE IF EXISTS a_actions;
-");
-
-
-$test = sql_query1("SHOW TABLES LIKE 'a_actions'");
-if ($test == -1) {
-	$result .= "<br />Création de la table 'a_actions'. ";
-	$sql="
-CREATE TABLE a_actions
-(
-	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incrementee',
-	nom VARCHAR(250)  NOT NULL COMMENT 'Nom de l\'action',
-	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
-	sortable_rank INTEGER,
-	PRIMARY KEY (id)
-)Type=MyISAM COMMENT='Liste des actions possibles sur une absence';
-";
-	$result_inter = traite_requete($sql);
-	if ($result_inter != '') {
-		$result .= "<br />Erreur sur la création de la table 'a_actions': ".$result_inter."<br />";
-	}
-}
 
 #-----------------------------------------------------------------------------
 #-- a_motifs
@@ -254,7 +227,6 @@ CREATE TABLE a_traitements
 	a_type_id INTEGER(4) default -1 COMMENT 'cle etrangere du type d\'absence',
 	a_motif_id INTEGER(4) default -1 COMMENT 'cle etrangere du motif d\'absence',
 	a_justification_id INTEGER(4) default -1 COMMENT 'cle etrangere de la justification de l\'absence',
-	a_action_id INTEGER(4) default -1 COMMENT 'cle etrangere de l\'action sur ce traitement',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	created_at DATETIME,
 	updated_at DATETIME,
@@ -278,11 +250,6 @@ CREATE TABLE a_traitements
 	CONSTRAINT a_traitements_FK_4
 		FOREIGN KEY (a_justification_id)
 		REFERENCES a_justifications (id)
-		ON DELETE SET NULL,
-	INDEX a_traitements_FI_5 (a_action_id),
-	CONSTRAINT a_traitements_FK_5
-		FOREIGN KEY (a_action_id)
-		REFERENCES a_actions (id)
 		ON DELETE SET NULL
 )Type=MyISAM COMMENT='Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies';
 ";
@@ -337,7 +304,7 @@ CREATE TABLE a_notifications
 	statut_envoi INTEGER(5) default 0 COMMENT 'Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)',
 	created_at DATETIME,
 	updated_at DATETIME,
-	PRIMARY KEY (id,a_traitement_id),
+	PRIMARY KEY (id),
 	INDEX a_notifications_FI_1 (utilisateur_id),
 	CONSTRAINT a_notifications_FK_1
 		FOREIGN KEY (utilisateur_id)
