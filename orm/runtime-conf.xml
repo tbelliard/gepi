@@ -48,7 +48,8 @@
 				<adapter>mysql</adapter>
 				<!-- Connection parameters. See PDO documentation for DSN format and available option constants. -->
 				<connection>
-					<classname>PropelPDO</classname><!--classname>DebugPDO</classname-->
+					<classname>PropelPDO</classname>
+					<!--classname>DebugPDO</classname-->
 					<dsn>mysql:dbname=$GLOBALS["dbDb"];host=$GLOBALS["dbHost"]</dsn>
 					<!--
 					For MySQL and Oracle you must specify username + password separate from DSN:-->
@@ -87,5 +88,22 @@
 				</connection>
 			</datasource>
 		</datasources>
+
+	<!--debugpdo>
+	  <logging>
+	    <details>
+	      <method>
+		<enabled>true</enabled>
+	      </method>
+	      <time>
+		<enabled>true</enabled>
+	      </time>
+	      <mem>
+		<enabled>true</enabled>
+	      </mem>
+	    </details>
+	  </logging>
+	</debugpdo-->
+	
 	</propel>
 </config>
