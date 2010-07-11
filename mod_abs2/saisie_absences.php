@@ -505,15 +505,11 @@ foreach($eleve_col as $eleve) {
 					<input type="hidden" name="id_eleve_absent[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getIdEleve(); ?>" />
 <?php
 
-			// On vérifie si le prof a le droit de voir la fiche de l'élève
-			if ($utilisateur->getStatut() == "professeur" AND getSettingValue("voir_fiche_eleve") == "n" OR getSettingValue("voir_fiche_eleve") == '') {
-				echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).'&nbsp;('.$eleve->getCivilite().')</span>';
-			}elseif($utilisateur->getStatut() != "professeur" OR getSettingValue("voir_fiche_eleve") == "y"){
-				echo '
-				<a href="javascript:centrerpopup(\'../lib/fiche_eleve.php?select_fiche_eleve='.$eleve->getLogin().'\',550,500,\'scrollbars=yes,statusbar=no,resizable=yes\');">
-				'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom())
-				.'</a> ('.$eleve->getCivilite().')
-				';
+			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).'&nbsp;('.$eleve->getCivilite().')</span>';
+			if ($utilisateur->getStatut() == 'cpe' || (getSettingValue("voir_fiche_eleve") == "y" && $utilisateur->getEleveProfesseurPrincipals()->contains($saisie->getEleve()))) {
+			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=absences' target='_blank'>";
+			    echo ' (voir fiche)';
+			    echo "</a>";
 			}
 			echo("</td>");
 
