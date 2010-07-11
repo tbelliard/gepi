@@ -217,18 +217,13 @@ class Groupe extends BaseGroupe {
 			$periode = $this->getPeriodeNoteOuverte()->getNumPeriode();
 		    }
 		}
-		$eleves = new PropelObjectCollection();
-		$criteria = new Criteria();
+		$query = EleveQuery::create();
 		if ($periode != NULL) {
-		    $criteria->add(JEleveGroupePeer::PERIODE,$periode);
+		    $query->useJEleveGroupeQuery()->filterByPeriode($periode)->endUse();
 		}
-		$criteria->addAscendingOrderByColumn(JEleveGroupePeer::LOGIN);
-		foreach($this->getJEleveGroupesJoinEleve($criteria) as $ref) {
-		    if ($ref != null) {
-			$eleves->add($ref->getEleve());
-		    }
-		}
-		return $eleves;
+		$query->useJEleveGroupeQuery()->filterByGroupe($this)->endUse();
+		$query->orderByNom();
+		return $query->find();
 	}
 
 	/**

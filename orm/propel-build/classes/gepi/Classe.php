@@ -67,30 +67,24 @@ class Classe extends BaseClasse {
 	/**
 	 *
 	 * Renvoi sous forme d'une collection la liste des eleves d'une classe. 
-	 * Si la periode de note est null, cela renvoi les eleves de la priode actuelle, ou tous les eleves si il n'y a aucune periode actuelle
+	 * Si la periode de note est null, cela renvoi les eleves de la periode actuelle, ou tous les eleves si il n'y a aucune periode actuelle
 	 *
 	 * @return     PropelObjectCollection Eleves[]
 	 *
 	 */
-	public function getEleves($num_periode_notes = null) {
-		$eleves = new PropelObjectCollection();
-		$criteria = new Criteria();
-		if ($num_periode_notes == null) {
-        $periode_note = $this->getPeriodeNoteOuverte();
-		    if ($periode_note) {
-          $num_periode_notes = $periode_note->getNumPeriode();
-        }
-		}
-		if ($num_periode_notes != null) {
-		    $criteria->add(JEleveClassePeer::PERIODE,$num_periode_notes);
-        $criteria->addAscendingOrderByColumn(ElevePeer::NOM);
-		}
-		foreach($this->getJEleveClassesJoinEleve($criteria) as $ref) {
-		    if ($ref->getEleve() != null) {
-			$eleves->add($ref->getEleve());
+	public function getEleves($periode = NULL) {
+		if ($periode == NULL) {
+		    if ($this->getPeriodeNoteOuverte() != null) {
+			$periode = $this->getPeriodeNoteOuverte()->getNumPeriode();
 		    }
 		}
-		return $eleves;
+		$query = EleveQuery::create();
+		if ($periode != NULL) {
+		    $query->useJEleveClasseQuery()->filterByPeriode($periode)->endUse();
+		}
+		$query->useJEleveClasseQuery()->filterByClasse($this)->endUse();
+		$query->orderByNom();
+		return $query->find();
 	}
 
 	public function getElevesByProfesseurPrincipal($login_prof) {
@@ -130,7 +124,7 @@ class Classe extends BaseClasse {
 	}
 
  	/**
-	 * Retourne la periode de note actuelle pour une classe donnee.
+	 * Retourne la periode de note actuellement ouverte pour une classe donnee.
 	 *
 	 * @return     PeriodeNote $periode la periode actuellement ouverte
 	 */
@@ -163,7 +157,7 @@ class Classe extends BaseClasse {
 		}
 
 		//on verifie si il y a une periode du calendrier avec une periode de note precisee
-		$calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
+		$calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle();
 		if ($calendrier_periode != null && $calendrier_periode->getNumeroPeriode() != null && $calendrier_periode->getNumeroPeriode() != 0) {
 		    $criteria = new Criteria();
 		    $criteria->add(PeriodeNotePeer::NUM_PERIODE,$calendrier_periode->getNumeroPeriode());
