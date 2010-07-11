@@ -80,6 +80,7 @@ if (version_compare(PHP_VERSION,'5')<0) {
 }
 // load the OpenTBS plugin
 include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+include_once('../tbs/plugins/tbsdb_php.php');
 
 $TBS = new clsTinyButStrong; // new instance of TBS
 $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
@@ -103,12 +104,35 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     $adr = $notification->getResponsableEleveAdresse();
     $TBS->MergeField('adr',$adr);
 
-//on récupère la liste des noms d'eleves
+
+    $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
+    $adr_etablissement = new ResponsableEleveAdresse();
+    $adr_etablissement->setAdr1(getSettingValue("gepiSchoolAdress1"));
+    $adr_etablissement->setAdr2(getSettingValue("gepiSchoolAdress2"));
+    $adr_etablissement->setCp(getSettingValue("gepiSchoolZipCode"));
+    $adr_etablissement->setCommune(getSettingValue("gepiSchoolCity"));
+    $TBS->MergeField('adr_etab',$adr_etablissement);
+
+    //telephone fax mail
+    $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));
+    $TBS->MergeField('fax_etab',getSettingValue("gepiSchoolFax"));
+    $TBS->MergeField('mail_etab',getSettingValue("gepiSchoolEmail"));
+
+    //on récupère la liste des noms d'eleves
     $eleve_col = new PropelCollection();
     foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
 	$eleve_col->add($saisie->getEleve());
     }
-    $TBS->MergeBlock('eleve_col',$eleve_col);
+
+    $TBS->MergeBlock('el_col',$eleve_col);
+
+    $query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
+	->useJTraitementSaisieEleveQuery()
+	->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
+	    ->orderBy("DebutAbs", Criteria::ASC)
+	    ->find()';
+
+    $TBS->MergeBlock('saisies', 'php', $query_string);
 //$notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
 //$responsable = new ResponsableEleve();
 //$responsable->getPrenom()()
