@@ -120,6 +120,7 @@ class PropelObjectCollection extends PropelCollection
 	 */
 	public function toArray($keyColumn = null, $usePrefix = false)
 	{
+		$ret = array();
 		$keyGetterMethod = 'get' . $keyColumn;
 		foreach ($this as $key => $obj) {
 			$key = null === $keyColumn ? $key : $obj->$keyGetterMethod();
@@ -211,6 +212,12 @@ class PropelObjectCollection extends PropelCollection
 			throw new PropelException('populateRelation() needs instance pooling to be enabled prior to populating the collection');
 		}
 		$relationMap = $this->getFormatter()->getTableMap()->getRelation($relation);
+		if ($this->isEmpty()) {
+			// save a useless query and return an empty collection
+			$coll = new PropelObjectCollection();
+			$coll->setModel($relationMap->getRightTable()->getPhpName());
+			return $coll;
+		}
 		$symRelationMap = $relationMap->getSymmetricalRelation();
 		
 		// query the db for the related objects
