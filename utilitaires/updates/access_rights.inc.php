@@ -659,6 +659,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/visu_notification.php', 'V',
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_modif_saisie.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_modif_traitement.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Modification d un traitement', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_modif_notification.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Modification d un traitement', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/generer_notification.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Modification d un traitement', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisie_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisie_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_discipline/saisie_incident_abs2.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
