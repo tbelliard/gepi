@@ -55,7 +55,7 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
-if ($utilisateur->getStatut()!="cpe") {
+if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
     die("acces interdit");
 }
 
@@ -122,7 +122,7 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo 'Aucune absence';
 	if ($saisie->getGroupe() != null) {
 	    echo ' pour le groupe ';
-	    echo $saisie->getGroupe()->getDescription();
+	    echo $saisie->getGroupe()->getNameAvecClasses();
 	}
 	if ($saisie->getClasse() != null) {
 	    echo ' pour la classe ';
@@ -163,6 +163,7 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo '</div>';
 	echo '</div>';
 	echo '<br/>';
+	$eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
     }
     echo '<div>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='height: 100%;'> ";
@@ -182,7 +183,6 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
     if (!$traitement->getAbsenceEleveSaisies()->isLast()) {
 	echo '<br/>';
     }
-    $eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
 }
 echo '</table>';
 

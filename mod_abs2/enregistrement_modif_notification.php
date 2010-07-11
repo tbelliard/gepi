@@ -55,8 +55,8 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
-if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
-    die("Le module n'est pas activé.");
+if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
+    die("acces interdit");
 }
 
 //récupération des paramètres de la requète

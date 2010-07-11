@@ -55,7 +55,7 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
-if ($utilisateur->getStatut()!="cpe") {
+if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
     die("acces interdit");
 }
 
@@ -85,6 +85,7 @@ $filter_date_modification = isset($_POST["filter_date_modification"]) ? $_POST["
 $filter_date_traitement_absence_debut_plage = isset($_POST["filter_date_traitement_absence_debut_plage"]) ? $_POST["filter_date_traitement_absence_debut_plage"] :(isset($_GET["filter_date_traitement_absence_debut_plage"]) ? $_GET["filter_date_traitement_absence_debut_plage"] :(isset($_SESSION["filter_date_traitement_absence_debut_plage"]) ? $_SESSION["filter_date_traitement_absence_debut_plage"] : NULL));
 $filter_date_traitement_absence_fin_plage = isset($_POST["filter_date_traitement_absence_fin_plage"]) ? $_POST["filter_date_traitement_absence_fin_plage"] :(isset($_GET["filter_date_traitement_absence_fin_plage"]) ? $_GET["filter_date_traitement_absence_fin_plage"] :(isset($_SESSION["filter_date_traitement_absence_fin_plage"]) ? $_SESSION["filter_date_traitement_absence_fin_plage"] : NULL));
 $filter_discipline = isset($_POST["filter_discipline"]) ? $_POST["filter_discipline"] :(isset($_GET["filter_discipline"]) ? $_GET["filter_discipline"] :(isset($_SESSION["filter_discipline"]) ? $_SESSION["filter_discipline"] : NULL));
+$filter_type = isset($_POST["filter_type"]) ? $_POST["filter_type"] :(isset($_GET["filter_type"]) ? $_GET["filter_type"] :(isset($_SESSION["filter_type"]) ? $_SESSION["filter_type"] : NULL));
 
 $reinit_filtre = isset($_POST["reinit_filtre"]) ? $_POST["reinit_filtre"] :(isset($_GET["reinit_filtre"]) ? $_GET["reinit_filtre"] :NULL);
 if ($reinit_filtre == 'y') {
@@ -106,6 +107,7 @@ if ($reinit_filtre == 'y') {
     $filter_date_traitement_absence_debut_plage = NULL;
     $filter_date_traitement_absence_fin_plage = NULL;
     $filter_discipline = NULL;
+    $filter_type = NULL;
 
     $order = NULL;
 }
@@ -133,6 +135,7 @@ if (isset($filter_date_modification) && $filter_date_modification != null) $_SES
 if (isset($filter_date_traitement_absence_debut_plage) && $filter_date_traitement_absence_debut_plage != null) $_SESSION['filter_date_traitement_absence_debut_plage'] = $filter_date_traitement_absence_debut_plage;
 if (isset($filter_date_traitement_absence_fin_plage) && $filter_date_traitement_absence_fin_plage != null) $_SESSION['filter_date_traitement_absence_fin_plage'] = $filter_date_traitement_absence_fin_plage;
 if (isset($filter_discipline) && $filter_discipline != null) $_SESSION['filter_discipline'] = $filter_discipline;
+if (isset($filter_type) && $filter_type != null) $_SESSION['filter_type'] = $filter_type;
 
 $page_number = isset($_POST["page_number"]) ? $_POST["page_number"] :(isset($_GET["page_number"]) ? $_GET["page_number"] :(isset($_SESSION["page_number"]) ? $_SESSION["page_number"] : NULL));
 if (!is_numeric($page_number) || $reinit_filtre == 'y') {
@@ -191,9 +194,7 @@ if ($filter_utilisateur != null && $filter_utilisateur != '') {
     $query->useUtilisateurProfessionnelQuery()->filterByNom('%'.$filter_utilisateur.'%', Criteria::LIKE)->endUse();
 }
 if ($filter_eleve != null && $filter_eleve != '') {
-    $query->useEleveQuery()->
-    addOr(ElevePeer::NOM ,'%'.$filter_eleve.'%', Criteria::LIKE)->
-    addOr(ElevePeer::PRENOM ,'%'.$filter_eleve.'%', Criteria::LIKE)->endUse();
+    $query->useEleveQuery()->filterByNomOrPrenomLike($filter_eleve)->endUse();
 }
 if ($filter_classe != null && $filter_classe != '-1') {
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
@@ -263,6 +264,9 @@ if ($filter_date_traitement_absence_fin_plage != null && $filter_date_traitement
 if ($filter_discipline != null && $filter_discipline == 'y') {
     $query->filterByIdSIncidents(null, Criteria::NOT_EQUAL);
     $query->filterByIdSIncidents(-1, Criteria::NOT_EQUAL);
+}
+if ($filter_type != null && $filter_type != '-1') {
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByATypeId($filter_type)->endUse()->endUse();
 }
 
 if ($order == "asc_id") {
@@ -622,6 +626,24 @@ echo 'Cours';
 echo '</nobr>';
 echo '</TH>';
 
+//en tete type d'absence
+echo '<TH>';
+echo '<nobr>';
+echo 'type';
+echo '</nobr>';
+echo '<br>';
+echo ("<select name=\"filter_type\">");
+echo "<option value='-1'></option>\n";
+foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
+	echo "<option value='".$type->getId()."'";
+	if ($filter_type == $type->getId()) echo " SELECTED ";
+	echo ">";
+	echo $type->getNom();
+	echo "</option>\n";
+}
+echo "</select>";
+echo '</TH>';
+
 //en tete filtre date traitement
 echo '<TH>';
 echo '<nobr>';
@@ -893,6 +915,20 @@ foreach ($results as $saisie) {
 	echo "&nbsp;";
     }
     echo '</nobr>';
+    echo "</a>";
+    echo '</TD>';
+
+    echo '<TD>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+	 if ($traitement->getAbsenceEleveType() != null) {
+	    echo $traitement->getAbsenceEleveType()->getNom();
+	    echo '<br/>';
+	 }
+    }
+    if ($saisie->getAbsenceEleveTraitements()->isEmpty()) {
+	echo "&nbsp;";
+    }
     echo "</a>";
     echo '</TD>';
 

@@ -55,7 +55,7 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
-if ($utilisateur->getStatut()!="cpe") {
+if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
     die("acces interdit");
 }
 
@@ -187,9 +187,9 @@ if ($filter_utilisateur != null && $filter_utilisateur != '') {
     $query->useUtilisateurProfessionnelQuery()->filterByNom('%'.$filter_utilisateur.'%', Criteria::LIKE)->endUse();
 }
 if ($filter_eleve != null && $filter_eleve != '') {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()->
-    addOr(ElevePeer::NOM ,'%'.$filter_eleve.'%', Criteria::LIKE)->
-    addOr(ElevePeer::PRENOM ,'%'.$filter_eleve.'%', Criteria::LIKE)->endUse()->endUse()->endUse();
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()
+	    ->filterByNomOrPrenomLike($filter_eleve)
+	    ->endUse()->endUse()->endUse();
 }
 if ($filter_classe != null && $filter_classe != '-1') {
     $query->useJTraitementSaisieEleveQuery()->endUse();
