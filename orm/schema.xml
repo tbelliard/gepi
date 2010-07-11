@@ -464,6 +464,7 @@
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
     <column name="statut_envoi" required="false" type="INTEGER" size="5" default="0" description="Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)"/>
     <column name="date_envoi" required="false" type="TIMESTAMP" description="Date envoi"/>
+    <column name="erreur_message_envoi" required="false" type="LONGVARCHAR" description="Message d'erreur retourné par le service d'envoi"/>
     <behavior name="timestampable" />
   </table>
 

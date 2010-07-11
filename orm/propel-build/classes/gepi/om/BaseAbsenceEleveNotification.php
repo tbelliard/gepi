@@ -89,6 +89,12 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	protected $date_envoi;
 
 	/**
+	 * The value for the erreur_message_envoi field.
+	 * @var        string
+	 */
+	protected $erreur_message_envoi;
+
+	/**
 	 * The value for the created_at field.
 	 * @var        string
 	 */
@@ -289,6 +295,16 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		} else {
 			return $dt->format($format);
 		}
+	}
+
+	/**
+	 * Get the [erreur_message_envoi] column value.
+	 * Message d'erreur retourné par le service d'envoi
+	 * @return     string
+	 */
+	public function getErreurMessageEnvoi()
+	{
+		return $this->erreur_message_envoi;
 	}
 
 	/**
@@ -609,6 +625,26 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	} // setDateEnvoi()
 
 	/**
+	 * Set the value of [erreur_message_envoi] column.
+	 * Message d'erreur retourné par le service d'envoi
+	 * @param      string $v new value
+	 * @return     AbsenceEleveNotification The current object (for fluent API support)
+	 */
+	public function setErreurMessageEnvoi($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->erreur_message_envoi !== $v) {
+			$this->erreur_message_envoi = $v;
+			$this->modifiedColumns[] = AbsenceEleveNotificationPeer::ERREUR_MESSAGE_ENVOI;
+		}
+
+		return $this;
+	} // setErreurMessageEnvoi()
+
+	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
@@ -764,8 +800,9 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$this->commentaire = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
 			$this->statut_envoi = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
 			$this->date_envoi = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-			$this->created_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-			$this->updated_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+			$this->erreur_message_envoi = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+			$this->created_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+			$this->updated_at = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -774,7 +811,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 12; // 12 = AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 13; // 13 = AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveNotification object", $e);
@@ -1195,9 +1232,12 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 				return $this->getDateEnvoi();
 				break;
 			case 10:
-				return $this->getCreatedAt();
+				return $this->getErreurMessageEnvoi();
 				break;
 			case 11:
+				return $this->getCreatedAt();
+				break;
+			case 12:
 				return $this->getUpdatedAt();
 				break;
 			default:
@@ -1234,8 +1274,9 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$keys[7] => $this->getCommentaire(),
 			$keys[8] => $this->getStatutEnvoi(),
 			$keys[9] => $this->getDateEnvoi(),
-			$keys[10] => $this->getCreatedAt(),
-			$keys[11] => $this->getUpdatedAt(),
+			$keys[10] => $this->getErreurMessageEnvoi(),
+			$keys[11] => $this->getCreatedAt(),
+			$keys[12] => $this->getUpdatedAt(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
@@ -1309,9 +1350,12 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 				$this->setDateEnvoi($value);
 				break;
 			case 10:
-				$this->setCreatedAt($value);
+				$this->setErreurMessageEnvoi($value);
 				break;
 			case 11:
+				$this->setCreatedAt($value);
+				break;
+			case 12:
 				$this->setUpdatedAt($value);
 				break;
 		} // switch()
@@ -1348,8 +1392,9 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if (array_key_exists($keys[7], $arr)) $this->setCommentaire($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setStatutEnvoi($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setDateEnvoi($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setCreatedAt($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setUpdatedAt($arr[$keys[11]]);
+		if (array_key_exists($keys[10], $arr)) $this->setErreurMessageEnvoi($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setCreatedAt($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setUpdatedAt($arr[$keys[12]]);
 	}
 
 	/**
@@ -1371,6 +1416,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($this->isColumnModified(AbsenceEleveNotificationPeer::COMMENTAIRE)) $criteria->add(AbsenceEleveNotificationPeer::COMMENTAIRE, $this->commentaire);
 		if ($this->isColumnModified(AbsenceEleveNotificationPeer::STATUT_ENVOI)) $criteria->add(AbsenceEleveNotificationPeer::STATUT_ENVOI, $this->statut_envoi);
 		if ($this->isColumnModified(AbsenceEleveNotificationPeer::DATE_ENVOI)) $criteria->add(AbsenceEleveNotificationPeer::DATE_ENVOI, $this->date_envoi);
+		if ($this->isColumnModified(AbsenceEleveNotificationPeer::ERREUR_MESSAGE_ENVOI)) $criteria->add(AbsenceEleveNotificationPeer::ERREUR_MESSAGE_ENVOI, $this->erreur_message_envoi);
 		if ($this->isColumnModified(AbsenceEleveNotificationPeer::CREATED_AT)) $criteria->add(AbsenceEleveNotificationPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(AbsenceEleveNotificationPeer::UPDATED_AT)) $criteria->add(AbsenceEleveNotificationPeer::UPDATED_AT, $this->updated_at);
 
@@ -1443,6 +1489,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		$copyObj->setCommentaire($this->commentaire);
 		$copyObj->setStatutEnvoi($this->statut_envoi);
 		$copyObj->setDateEnvoi($this->date_envoi);
+		$copyObj->setErreurMessageEnvoi($this->erreur_message_envoi);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
 
@@ -1911,6 +1958,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		$this->commentaire = null;
 		$this->statut_envoi = null;
 		$this->date_envoi = null;
+		$this->erreur_message_envoi = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->alreadyInSave = false;

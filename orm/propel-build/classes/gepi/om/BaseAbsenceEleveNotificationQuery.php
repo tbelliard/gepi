@@ -17,6 +17,7 @@
  * @method     AbsenceEleveNotificationQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
  * @method     AbsenceEleveNotificationQuery orderByStatutEnvoi($order = Criteria::ASC) Order by the statut_envoi column
  * @method     AbsenceEleveNotificationQuery orderByDateEnvoi($order = Criteria::ASC) Order by the date_envoi column
+ * @method     AbsenceEleveNotificationQuery orderByErreurMessageEnvoi($order = Criteria::ASC) Order by the erreur_message_envoi column
  * @method     AbsenceEleveNotificationQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     AbsenceEleveNotificationQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -30,6 +31,7 @@
  * @method     AbsenceEleveNotificationQuery groupByCommentaire() Group by the commentaire column
  * @method     AbsenceEleveNotificationQuery groupByStatutEnvoi() Group by the statut_envoi column
  * @method     AbsenceEleveNotificationQuery groupByDateEnvoi() Group by the date_envoi column
+ * @method     AbsenceEleveNotificationQuery groupByErreurMessageEnvoi() Group by the erreur_message_envoi column
  * @method     AbsenceEleveNotificationQuery groupByCreatedAt() Group by the created_at column
  * @method     AbsenceEleveNotificationQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -64,6 +66,7 @@
  * @method     AbsenceEleveNotification findOneByCommentaire(string $commentaire) Return the first AbsenceEleveNotification filtered by the commentaire column
  * @method     AbsenceEleveNotification findOneByStatutEnvoi(int $statut_envoi) Return the first AbsenceEleveNotification filtered by the statut_envoi column
  * @method     AbsenceEleveNotification findOneByDateEnvoi(string $date_envoi) Return the first AbsenceEleveNotification filtered by the date_envoi column
+ * @method     AbsenceEleveNotification findOneByErreurMessageEnvoi(string $erreur_message_envoi) Return the first AbsenceEleveNotification filtered by the erreur_message_envoi column
  * @method     AbsenceEleveNotification findOneByCreatedAt(string $created_at) Return the first AbsenceEleveNotification filtered by the created_at column
  * @method     AbsenceEleveNotification findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveNotification filtered by the updated_at column
  *
@@ -77,6 +80,7 @@
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveNotification objects filtered by the commentaire column
  * @method     array findByStatutEnvoi(int $statut_envoi) Return AbsenceEleveNotification objects filtered by the statut_envoi column
  * @method     array findByDateEnvoi(string $date_envoi) Return AbsenceEleveNotification objects filtered by the date_envoi column
+ * @method     array findByErreurMessageEnvoi(string $erreur_message_envoi) Return AbsenceEleveNotification objects filtered by the erreur_message_envoi column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveNotification objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveNotification objects filtered by the updated_at column
  *
@@ -437,6 +441,28 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(AbsenceEleveNotificationPeer::DATE_ENVOI, $dateEnvoi, $comparison);
+	}
+
+	/**
+	 * Filter the query on the erreur_message_envoi column
+	 * 
+	 * @param     string $erreurMessageEnvoi The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveNotificationQuery The current query, for fluid interface
+	 */
+	public function filterByErreurMessageEnvoi($erreurMessageEnvoi = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($erreurMessageEnvoi)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $erreurMessageEnvoi)) {
+				$erreurMessageEnvoi = str_replace('*', '%', $erreurMessageEnvoi);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveNotificationPeer::ERREUR_MESSAGE_ENVOI, $erreurMessageEnvoi, $comparison);
 	}
 
 	/**

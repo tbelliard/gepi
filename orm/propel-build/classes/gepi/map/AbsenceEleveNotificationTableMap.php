@@ -47,6 +47,7 @@ class AbsenceEleveNotificationTableMap extends TableMap {
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('STATUT_ENVOI', 'StatutEnvoi', 'INTEGER', false, 5, 0);
 		$this->addColumn('DATE_ENVOI', 'DateEnvoi', 'TIMESTAMP', false, null, null);
+		$this->addColumn('ERREUR_MESSAGE_ENVOI', 'ErreurMessageEnvoi', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		// validators
