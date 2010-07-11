@@ -54,7 +54,7 @@ function ajoutTypesParDefaut() {
 	$type->setCommentaire("L'eleve n'est pas présent pour suivre sa scolarité.");
 	$type->setJustificationExigible(true);
 	$type->setResponsabiliteEtablissement(false);
-	$type->setTypeSaisie('NON_PRECISE');
+	//$type->setTypeSaisie('NON_PRECISE');
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("professeur");
@@ -63,6 +63,16 @@ function ajoutTypesParDefaut() {
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("autre");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
@@ -75,7 +85,7 @@ function ajoutTypesParDefaut() {
 	$type->setCommentaire("L'eleve est en retard lors de l'intercours");
 	$type->setJustificationExigible(false);
 	$type->setResponsabiliteEtablissement(true);
-	$type->setTypeSaisie('FIN_ABS');
+	//$type->setTypeSaisie('FIN_ABS');
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("professeur");
@@ -84,6 +94,16 @@ function ajoutTypesParDefaut() {
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("autre");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
@@ -96,10 +116,20 @@ function ajoutTypesParDefaut() {
 	$type->setCommentaire("L'eleve est en retard lors de son arrivée dans l'etablissement");
 	$type->setJustificationExigible(false);
 	$type->setResponsabiliteEtablissement(false);
-	$type->setTypeSaisie('FIN_ABS');
+	//$type->setTypeSaisie('FIN_ABS');
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("autre");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
@@ -124,6 +154,16 @@ function ajoutTypesParDefaut() {
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("autre");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
  	$type->save();
     }
 
@@ -133,7 +173,7 @@ function ajoutTypesParDefaut() {
 	$type->setCommentaire("L'eleve est à l'infirmerie.");
 	$type->setJustificationExigible(false);
 	$type->setResponsabiliteEtablissement(true);
-	$type->setTypeSaisie('DEBUT_ET_FIN_ABS');
+	//$type->setTypeSaisie('DEBUT_ET_FIN_ABS');
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("professeur");
@@ -142,6 +182,16 @@ function ajoutTypesParDefaut() {
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("autre");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
@@ -166,6 +216,11 @@ function ajoutTypesParDefaut() {
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
 	$type->save();
     }
 
@@ -182,6 +237,11 @@ function ajoutTypesParDefaut() {
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
 	$type->save();
     }
 
@@ -195,6 +255,11 @@ function ajoutTypesParDefaut() {
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
@@ -219,6 +284,11 @@ function ajoutTypesParDefaut() {
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
 	$type->save();
     }
 
@@ -235,6 +305,11 @@ function ajoutTypesParDefaut() {
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
 	$type->save();
     }
 
@@ -248,6 +323,11 @@ function ajoutTypesParDefaut() {
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
 	$type->addAbsenceEleveTypeStatutAutorise($statut);
 	$statut->save();
 

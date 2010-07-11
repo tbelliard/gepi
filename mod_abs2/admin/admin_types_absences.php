@@ -160,13 +160,13 @@ echo "</p>";
            <td><input name="justification_exigible" type="checkbox" id="justification_exigible" <?php  if ($type != null && $type->getJustificationExigible()) {echo "checked";} ?> /></td>
            <td><input name="responsabilite_etablissement" type="checkbox" id="responsabilite_etablissement" <?php  if ($type != null && $type->getResponsabiliteEtablissement()) {echo "checked";} ?> class="input_sans_bord" /></td>
            <td>
-	     <select name="type_saisie" id="type_saisie">DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE
+	     <select name="type_saisie" id="type_saisie">
 		<option value='NON_PRECISE' <?php  if ($type != null && $type->getTypeSaisie() == 'NON_PRECISE') {echo "selected";} ?>>Type de saisie non precise</option>
-		<option value='DEBUT_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'DEBUT_ABS') {echo "selected";} ?>>Saisir le moment de debut de l'absence</option>
+		<!--<option value='DEBUT_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'DEBUT_ABS') {echo "selected";} ?>>Saisir le moment de debut de l'absence</option>
 		<option value='FIN_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'FIN_ABS') {echo "selected";} ?>>Saisir le moment de fin de l'absence</option>
 		<option value='DEBUT_ET_FIN_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'DEBUT_ET_FIN_ABS') {echo "selected";} ?>>Saisir le moment de debut et de fin</option>
 		<option value='COMMENTAIRE_EXIGE' <?php  if ($type != null && $type->getTypeSaisie() == 'COMMENTAIRE_EXIGE') {echo "selected";} ?>>Saisir un commentaire</option>
-		<option value='DISCIPLINE' <?php  if ($type != null && $type->getTypeSaisie() == 'DISCIPLINE') {echo "selected";} ?>>Saisir un incident disciplinaire</option>
+		--><option value='DISCIPLINE' <?php  if ($type != null && $type->getTypeSaisie() == 'DISCIPLINE') {echo "selected";} ?>>Saisir un incident disciplinaire</option>
 	     </select>
 	   </td>
            <td>
@@ -186,6 +186,8 @@ echo "</p>";
 		<option value=''>Ajout d'un statut</option>
 		<option value='professeur'>professeur</option>
 		<option value='cpe'>cpe</option>
+		<option value='scolarite'>scolarite</option>
+		<option value='autre'>autre</option>
 	     </select>
 	   </td></tr>
 
