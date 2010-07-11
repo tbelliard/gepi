@@ -30,6 +30,12 @@ class Eleve extends BaseEleve {
 	 */
 	protected $collGroupes;
 
+	/**
+	 * @var        array AbsenceEleveSaisie[][] Collection to store aggregation of AbsenceEleveSaisie objects.
+	 * There is a collection for each day
+	 */
+	protected $collAbsenceEleveSaisiesParJour;
+
     // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
 	 *
@@ -75,7 +81,7 @@ class Eleve extends BaseEleve {
 	 * Renvoi sous forme d'un tableau la classe d'un eleves.
 	 * Manually added for N:M relationship
 	 *
-	 * @periode integer numero de la periode ou objet periodeNote
+	 * @param      integer $periode numero de la periode ou objet periodeNote
 	 * @return     Classes
 	 *
 	 */
@@ -86,12 +92,25 @@ class Eleve extends BaseEleve {
 	/**
 	 * Initializes the collClasses collection.
 	 *
+	 * @param      integer $periode numero de la periode ou objet periodeNote
 	 * @return     void
 	 */
 	public function initClasses($periode_num)
 	{
 		$this->collClasses[$periode_num] = new PropelObjectCollection();
 		$this->collClasses[$periode_num]->setModel('Classe');
+	}
+
+	/**
+	 * Initializes the collAbsenceEleveSaisiesParJour collection.
+	 *
+	 * @param      DateTime $date date du jour
+	 * @return     void
+	 */
+	public function initAbsenceEleveSaisiesParJour($date)
+	{
+		$this->collAbsenceEleveSaisiesParJour[$date->format('d/m/Y')] = new PropelObjectCollection();
+		$this->collAbsenceEleveSaisiesParJour[$date->format('d/m/Y')]->setModel('AbsenceEleveSaisie');
 	}
 
 	/**
@@ -123,6 +142,7 @@ class Eleve extends BaseEleve {
 	    $this->collPeriodeNotes = null;
 	    $this->collClasses = null;
 	    $this->collGroupes = null;
+	    $this->collAbsenceEleveSaisiesParJour = null;
 	}
 
 	/**
@@ -139,6 +159,7 @@ class Eleve extends BaseEleve {
 	    $this->collPeriodeNotes = null;
 	    $this->collClasses = null;
 	    $this->collGroupes = null;
+	    $this->collAbsenceEleveSaisiesParJour = null;
 	}
 
 	/**
@@ -202,6 +223,20 @@ class Eleve extends BaseEleve {
 	{
 		$this->collGroupes = null; // important to set this to NULL since that means it is uninitialized
 	}
+
+	/**
+	 * Clears out the collGroupes collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 */
+	public function clearAbsenceEleveSaisiesParJour()
+	{
+		$this->collAbsenceEleveSaisiesParJour = null; // important to set this to NULL since that means it is uninitialized
+	}
+
 	
     public function getGroupesByCategories($periode) {
         // On commence par récupérer tous les groupes
@@ -494,7 +529,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection AbsenceEleveSaisie[]
 	 */
-	public function getAbsenceSaisiesDuJour($v = 'now') {
+	public function getAbsenceEleveSaisiesDuJour($v = 'now') {
 	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
 	    // -- which is unexpected, to say the least.
 	    //$dt = new DateTime();
@@ -519,13 +554,30 @@ class Eleve extends BaseEleve {
 		    }
 	    }
 	    $dt->setTime(0,0,0);
-	    $criteria = new Criteria();
-	    $criteria->add(AbsenceEleveSaisiePeer::FIN_ABS, $dt, Criteria::GREATER_EQUAL);
-	    $dt_fin = clone $dt;
-	    $dt_fin->setTime(23,59,59);
-	    $criteria->add(AbsenceEleveSaisiePeer::DEBUT_ABS, $dt_fin, Criteria::LESS_EQUAL);
-	    $col =  $this->getAbsenceEleveSaisies($criteria);
-	    return $col;
+
+	    
+	    if(!isset($this->collAbsenceEleveSaisiesParJour[$dt->format('d/m/Y')]) || null === $this->collAbsenceEleveSaisiesParJour[$dt->format('d/m/Y')]) {
+		    if ($this->isNew() && null === $this->collAbsenceEleveSaisiesParJour[$dt->format('d/m/Y')]) {
+			    // return empty collection
+			    $this->initAbsenceEleveSaisiesParJour($dt->format('d/m/Y'));
+		    } else {
+			    $dt_fin = clone $dt;
+			    $dt_fin->setTime(23,59,59);
+
+			    $collAbsenceEleveSaisiesParJour = new PropelObjectCollection();
+			    $collAbsenceEleveSaisiesParJour->setModel('AbsenceEleveSaisie');
+			    $saisie_col = $this->getAbsenceEleveSaisies();
+			    foreach ($saisie_col as $saisie) {
+				if ($dt->format('U') <  $saisie->getFinAbs('U')
+					&& $dt_fin->format('U') >  $saisie->getDebutAbs('U')) {
+				    $collAbsenceEleveSaisiesParJour->append($saisie);
+				}
+			    }
+			    $this->collAbsenceEleveSaisiesParJour[$dt->format('d/m/Y')] = $collAbsenceEleveSaisiesParJour;
+		    }
+	    }
+	    return $this->collAbsenceEleveSaisiesParJour[$dt->format('d/m/Y')];
+
 	}
 
   	/**
@@ -538,7 +590,7 @@ class Eleve extends BaseEleve {
 	 *
  	 * @return PropelColection AbsenceEleveSaisie[]
 	 */
-	public function getAbsenceSaisiesDuCreneau($edtcreneau = null, $v = 'now') {
+	public function getAbsenceEleveSaisiesDuCreneau($edtcreneau = null, $v = 'now') {
 	    if ($edtcreneau == null) {
 		$edtcreneau = EdtCreneauPeer::retrieveEdtCreneauActuel($v);
 	    }
@@ -570,32 +622,21 @@ class Eleve extends BaseEleve {
 			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
 		    }
 	    }
-
-
-	    $query = AbsenceEleveSaisieQuery::create();
-	    $query->filterByEleveId($this->getIdEleve());
-
-	    $dt->setTime($edtcreneau->getHeuredebutDefiniePeriode('H'), $edtcreneau->getHeuredebutDefiniePeriode('i'), 0);
-	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
 	    
+	    $dt->setTime($edtcreneau->getHeuredebutDefiniePeriode('H'), $edtcreneau->getHeuredebutDefiniePeriode('i'), 0);
 	    $dt_fin_creneau = clone $dt;
 	    $dt_fin_creneau->setTime($edtcreneau->getHeurefinDefiniePeriode('H'), $edtcreneau->getHeurefinDefiniePeriode('i'), 0);
-	    $query->filterByDebutAbs($dt_fin_creneau, Criteria::LESS_THAN);
 
-//	    $query->leftJoin('AbsenceEleveSaisie.EdtEmplacementCours');
-//	    $query->condition('cond1', 'AbsenceEleveSaisie.IdEdtCreneau IS NULL');
-//	    $query->condition('cond2', 'AbsenceEleveSaisie.IdEdtCreneau = ?', $edtcreneau->getIdDefiniePeriode());
-//	    $query->where(array('cond1', 'cond2'), 'or');
-
-//	    $result = new PropelObjectCollection();
-//	    foreach ($query->find() as $saisie) {
-//		if ($saisie->getEdtEmplacementCours() == null ||
-//		    ($saisie->getEdtEmplacementCours()->getHeureDebut() < $edtcreneau->getHeurefinDefiniePeriode() &&
-//		    $saisie->getEdtEmplacementCours()->getHeureFin() > $edtcreneau->getHeuredebutDefiniePeriode()) ) {
-//		    $result->append($saisie);
-//		    }
-//	    }
-	    return $query->find();
+	    $result = new PropelObjectCollection();
+	    $result->setModel('AbsenceEleveSaisie');
+	    $saisie_col = $this->getAbsenceEleveSaisiesDuJour($dt);
+	    foreach ($saisie_col as $saisie) {
+		if ($dt->format('U') <  $saisie->getFinAbs('U')
+			&& $dt_fin_creneau->format('U') >  $saisie->getDebutAbs('U')) {
+		    $result->append($saisie);
+		}
+	    }
+	    return $result;
 	}
 
 	/*
@@ -1064,15 +1105,15 @@ class Eleve extends BaseEleve {
 		    }
 	    }
 
-	    //on recupere toute les saisies a cette heure
-	    $query = AbsenceEleveSaisieQuery::create();
-	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
-	    $query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
-	    $saisie_col = $query->find();
-
 	    //premierement on verifie que l'eleve n'a pas ete saisie absent a cette date
 	    $resp_etab = false;
-	    foreach ($saisie_col as $saisie) {
+	    foreach ($this->getAbsenceEleveSaisiesDuJour($dt) as $saisie) {
+		if ($dt->format('U') <=  $saisie->getDebutAbs('U')
+		    || $dt->format('U') >  $saisie->getFinAbs('U')) {
+		    //la saisie ne porte pas sur l'heure demandee
+		    continue;
+		}
+
 		if ($saisie->getEleveId() == $this->getIdEleve()) {
 		    if (!$saisie->getResponsabiliteEtablissement()) {
 			return false;
@@ -1086,6 +1127,13 @@ class Eleve extends BaseEleve {
 		//l'eleve est saisie mais sous la responsabilite de l'etablissement, c'est donc qu'il est present
 		return true;
 	    }
+
+	    //on recupere toute les saisies a cette heure
+	    $query = AbsenceEleveSaisieQuery::create();
+	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
+	    $query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
+
+	    $saisie_col = $query->find();
 
 	    if ($saisie_col->isEmpty()) {
 		//rien n'a ete saisie (aucun cours a cette heure), en renvoi non present par defaut

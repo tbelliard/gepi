@@ -39,9 +39,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    if ($this->getAidDetails() != null) {
 		$desc .= "; aid : ".$this->getAidDetails()->getNom();
 	    }
-	    if ($this->getNotifiee() != null) {
-		$desc .= "; notifiée";
-	    }
+//	    if ($this->getNotifiee() != null) { //desactive pour ameliorer les performances
+//		$desc .= "; notifiée";
+//	    }
 	    if ($this->getCommentaire() != null && $this->getCommentaire() != '') {
 		$desc .= "; ".$this->getCommentaire();
 	    }
@@ -183,6 +183,86 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		}
 	    }
 	    return false;
+	}
+
+	/**
+	 * Gets a collection of AbsenceEleveTraitement objects related by a many-to-many relationship
+	 * to the current object by way of the j_traitements_saisies cross-reference table.
+	 *
+	 * ajout d'un join pour recuperer les types en meme temps que les traitements
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AbsenceEleveSaisie is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
+	 */
+	public function getAbsenceEleveTraitements($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveTraitements || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveTraitements) {
+				// return empty collection
+				$this->initAbsenceEleveTraitements();
+			} else {
+				$collAbsenceEleveTraitements = AbsenceEleveTraitementQuery::create(null, $criteria)
+					->filterByAbsenceEleveSaisie($this)
+					->join('AbsenceEleveTraitement.AbsenceEleveType', 'left join')
+					->with('AbsenceEleveType')
+					->join('AbsenceEleveTraitement.AbsenceEleveNotification', 'left join')
+					->with('AbsenceEleveNotification')
+					->find($con);
+				if (null !== $criteria) {
+					return $collAbsenceEleveTraitements;
+				}
+				$this->collAbsenceEleveTraitements = $collAbsenceEleveTraitements;
+			}
+		}
+		return $this->collAbsenceEleveTraitements;
+	}
+
+	/**
+	 * This function performs the validation work for complex object models.
+	 *
+	 * ADDED : on ne verifie pas les objets lies car c'est exponentiel
+	 *
+	 * In addition to checking the current object, all related objects will
+	 * also be validated.  If all pass then <code>true</code> is returned; otherwise
+	 * an aggreagated array of ValidationFailed objects will be returned.
+	 *
+	 * @param      array $columns Array of column names to validate.
+	 * @return     mixed <code>true</code> if all validations pass; array of <code>ValidationFailed</code> objets otherwise.
+	 */
+	protected function doValidate($columns = null)
+	{
+		if (!$this->alreadyInValidation) {
+			$this->alreadyInValidation = true;
+			$retval = null;
+
+			$failureMap = array();
+
+			if (($retval = AbsenceEleveSaisiePeer::doValidate($this, $columns)) !== true) {
+				$failureMap = array_merge($failureMap, $retval);
+			}
+
+
+				if ($this->collJTraitementSaisieEleves !== null) {
+					foreach ($this->collJTraitementSaisieEleves as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+
+			$this->alreadyInValidation = false;
+		}
+
+		return (!empty($failureMap) ? $failureMap : true);
 	}
 
 } // AbsenceEleveSaisie

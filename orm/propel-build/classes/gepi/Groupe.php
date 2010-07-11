@@ -27,6 +27,12 @@ class Groupe extends BaseGroupe {
 	 */
 	protected $nameAvecClasses;
 
+
+	/**
+	 * @var        array Classe[] Collection to store aggregation of Classes objects.
+	 */
+	protected $collClasses;
+
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un groupe.
@@ -37,13 +43,66 @@ class Groupe extends BaseGroupe {
 	 *
 	 */
 	public function getClasses($con = null) {
-		$classes = new PropelObjectCollection();
-		foreach($this->getJGroupesClassessJoinClasse($con) as $ref) {
-		    if ($ref != null) {
-			$classes->append($ref->getClasse());
-		    }
+		if(null === $this->collClasses) {
+			if ($this->isNew() && null === $this->collClasses) {
+				// return empty collection
+				$this->initClasses();
+			} else {
+				$collClasses = new PropelObjectCollection();
+				$collClasses->setModel('Classe');
+				foreach($this->getJGroupesClassessJoinClasse($con) as $ref) {
+				    if ($ref != null) {
+					$collClasses->append($ref->getClasse());
+				    }
+				}
+				$this->collClasses = $collClasses;
+			}
 		}
-		return $classes;
+		return $this->collClasses;
+	}
+
+	/**
+	 * Initializes the collClasses collection.
+	 *
+	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @return     void
+	 */
+	public function initClasses()
+	{
+		$this->collClasses = new PropelObjectCollection();
+		$this->collClasses->setModel('Classe');
+	}
+
+	/**
+	 * Clears out the collClasses collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 */
+	public function clearClasses()
+	{
+		$this->collClasses = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
+	 *
+	 * This will only work if the object has been saved and has a valid primary key set.
+	 *
+	 * @param      boolean $deep (optional) Whether to also de-associated any related objects.
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     void
+	 * @throws     PropelException - if this object is deleted, unsaved or doesn't have pk match in db
+	 */
+	public function reload($deep = false, PropelPDO $con = null)
+	{
+	    parent::reload($deep,$con);
+	    if ($deep) {  // also de-associate any related objects?
+		$this->collClasses = null;
+		$this->clearJGroupesClassess();	
+	    }
 	}
 
 	/**
@@ -114,6 +173,7 @@ class Groupe extends BaseGroupe {
 	public function clearAllReferences($deep = false) {
 		parent::clearAllReferences($deep);
 		$this->clearJGroupesClassess();
+		$this->collClasses = null;
 	}
 
 	/**

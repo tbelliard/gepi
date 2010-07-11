@@ -16,47 +16,54 @@
 class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
-	 * @var        PropelObjectCollection $collGroupes[] Collection to store aggregation of Groupe objects.
-	 */
-	protected $collGroupes;
-
-	/**
-	 * @var        PropelObjectCollection $collGroupes[] Collection to store aggregation of Groupe objects.
+	 * @var        array Classe[] Collection to store aggregation of Classe objects.
 	 */
 	protected $collClasses;
 
 	/**
-	 * 
-	 * Renvoi sous forme d'un tableau la liste des groupes d'un utilisateur professeur. Le tableau est ordonné par le noms du groupes puis les classes du groupes.
-	 * Manually added for N:M relationship
-	 * It seems that the groupes are passed by values and not by references.
+	 * Gets a collection of Groupe objects related by a many-to-many relationship
+	 * to the current object by way of the j_groupes_professeurs cross-reference table.
 	 *
-	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     PropelObjectCollection Groupes[]
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Groupe[] List of Groupe objects
 	 */
-	public function getGroupes($con = null) {
-		if ($this->collGroupes != null) {
-			return $this->collGroupes;
-		} else {
-		    $groupes = new PropelObjectCollection();
-		    foreach($this->getJGroupesProfesseurssJoinGroupe($con) as $ref) {
-			if ($ref != NULL) {
-			    $groupes->append($ref->getGroupe());
+	public function getGroupes($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collGroupes || null !== $criteria) {
+			if ($this->isNew() && null === $this->collGroupes) {
+				// return empty collection
+				$this->initGroupes();
+			} else {
+				$collGroupes = GroupeQuery::create(null, $criteria)
+					->filterByUtilisateurProfessionnel($this)
+					->find($con);
+				if ($this->statut == "cpe") {
+				    $temp_collection = GroupeQuery::create(null, $criteria)
+					    ->distinct()->useJEleveGroupeQuery()
+					    ->useEleveQuery()->useJEleveCpeQuery()
+					    ->filterByUtilisateurProfessionnel($this)->endUse()
+					    ->endUse()->endUse()
+					    ->find();
+				    $collGroupes->addCollection($temp_collection);
+				}
+				if (null !== $criteria) {
+					return $collGroupes;
+				}
+				$this->collGroupes = $collGroupes;
 			}
-		    }
-
-		    if ($this->statut == "cpe") {
-			$temp_collection = GroupeQuery::create()->distinct()->useJEleveGroupeQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
-			$groupes->addCollection($temp_collection);
-		    }
-
-		    require_once("helpers/GroupeHelper.php");
-		    $this->collGroupes = GroupeHelper::orderByGroupNameWithClasses($groupes);
-		    return $this->collGroupes;
 		}
+		return $this->collGroupes;
 	}
 
-		/**
+	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un utilisateur. Le tableau est ordonné par les noms des classes.
 	 * Manually added for N:M relationship
@@ -72,19 +79,6 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	}
 
 	/**
-	 * Clears out the collGroupes collection (array).
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 */
-	public function clearGroupes()
-	{
-		$this->collGroupes = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
 	 * Resets all collections of referencing foreign keys.
 	 *
 	 * This method is a user-space workaround for PHP's inability to garbage collect objects
@@ -96,7 +90,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	public function clearAllReferences($deep = false)
 	{
 		parent::clearAllReferences($deep);
-		$this->collGroupes = null;
+		$this->collClasses = null;
 	}
 
 	/**
@@ -313,22 +307,39 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
 	 * @return     PropelObjectCollection Groupes[]
 	 */
-	public function getClasses($con = null) {
-		if ($this->collClasses != null) {
-			return $this->collClasses;
-		} else {
-		    $classes = new PropelObjectCollection();
-
-		    if ($this->statut == "professeur") {
-			$classes = ClasseQuery::create()->distinct()->orderByNomComplet()->useJGroupesClassesQuery()->useGroupeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->find();
-		    } else if ($this->statut == "cpe") {
-			$classes = ClasseQuery::create()->distinct()->orderByNomComplet()->useJEleveClasseQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
-		    }
-
-		    $this->collClasses = $classes;
-
-		    return $this->collClasses;
+	public function getClasses($criteria = null, $con = null) {
+		if(null === $this->collClasses || null !== $criteria) {
+			if ($this->isNew() && null === $this->collClasses) {
+				// return empty collection
+				$this->initClasses();
+			} else {
+				if ($this->statut == "professeur") {
+				    $collClasses = ClasseQuery::create()->distinct()->orderByNomComplet()->useJGroupesClassesQuery()->useGroupeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->find();
+				} else if ($this->statut == "cpe") {
+				    $collClasses = ClasseQuery::create()->distinct()->orderByNomComplet()->useJEleveClasseQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
+				}
+				if (null !== $criteria) {
+					return $collClasses;
+				}
+				$this->collClasses = $collClasses;
+			}
 		}
+		return $this->collClasses;
+	}
+
+	/**
+	 * Initializes the collClasses collection.
+	 *
+	 * By default this just sets the collGroupes collection to an empty collection (like clearGroupes());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initClasses()
+	{
+		$this->collClasses = new PropelObjectCollection();
+		$this->collClasses->setModel('Classe');
 	}
 
 	/**
