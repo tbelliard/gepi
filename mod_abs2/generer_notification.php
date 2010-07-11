@@ -78,15 +78,15 @@ if (version_compare(PHP_VERSION,'5')<0) {
 } else {
     include_once('../tbs/tbs_class_php5.php'); // TinyButStrong template engine
 }
-// load the OpenTBS plugin
-include_once('../tbs/plugins/tbs_plugin_opentbs.php');
 include_once('../tbs/plugins/tbsdb_php.php');
 
 $TBS = new clsTinyButStrong; // new instance of TBS
-$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
-     // Load the template
+    include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+    $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
+
+    // Load the template
     $TBS->LoadTemplate('modeles/modele_lettre_parents.odt');
 
     //on va mettre les champs dans des variables simple
@@ -116,7 +116,12 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     //telephone fax mail
     $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));
     $TBS->MergeField('fax_etab',getSettingValue("gepiSchoolFax"));
-    $TBS->MergeField('mail_etab',getSettingValue("gepiSchoolEmail"));
+
+    $email_abs_etab = getSettingValue("gepiAbsenceEmail");
+    if ($email_abs_etab == null || $email_abs_etab == '') {
+	$email_abs_etab = getSettingValue("gepiSchoolEmail");
+    }
+    $TBS->MergeField('mail_etab', $email_abs_etab);
 
     //on récupère la liste des noms d'eleves
     $eleve_col = new PropelCollection();
@@ -133,63 +138,228 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	    ->find()';
 
     $TBS->MergeBlock('saisies', 'php', $query_string);
-//$notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
-//$responsable = new ResponsableEleve();
-//$responsable->getPrenom()()
-    // Load the template
+
+    $notification->setDateEnvoi('now');
+    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_EN_COURS);
+    $notification->save();
 
     // Output as a download file (some automatic fields are merged here)
     $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, 'absence.odt');
 
     // Save as file on the disk (code example)
     //$TBS->Show(OPENTBS_FILE+TBS_EXIT, $file_name);
-} else if ( $modif == 'statut') {
-    if (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$_POST["statut"]])) {
-	$notification->setStatutEnvoi($_POST["statut"]);
-    } else {
-	$notification->setStatutEnvoi(0);
-    }
-} else if ( $modif == 'commentaire') {
-    $notification->setCommentaire($_POST["commentaire"]);
-} elseif ($modif == 'enlever_responsable') {
-    if (0 != JNotificationResponsableEleveQuery::create()->filterByAbsenceEleveNotification($notification)->filterByPersId($_POST["pers_id"])->limit(1)->delete()) {
-	$message_enregistrement .= 'Responsable supprimé';
-    } else {
-	$message_enregistrement .= 'Suppression impossible';
-    }
-    include("visu_notification.php");
-    die;
-} elseif ($modif == 'ajout_responsable') {
-    $responsable = ResponsableEleveQuery::create()->findOneByPersId($_POST["pers_id"]);
-    if ($responsable != null && !$notification->getResponsableEleves()->contains($responsable)) {
-	$notification->addResponsableEleve($responsable);
-	$notification->save();
-    }
-} elseif ($modif == 'email') {
-    $notification->setEmail($_POST["email"]);
-} elseif ($modif == 'tel') {
-    $notification->setTelephone($_POST["tel"]);
-}
 
-if (!$notification->isModified()) {
-    $message_enregistrement .= 'Pas de modifications';
-} else {
-    if ($notification->validate()) {
-	$notification->save();
-	$message_enregistrement .= 'Modification enregistrée';
+} else if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL) {
+     // Load the template
+    $TBS->LoadTemplate('modeles/email.txt');
+
+    //on va mettre les champs dans des variables pour remplir le modele
+    if ($notification->getResponsableEleveAdresse()->getResponsableEleves()->count() == 1) {
+	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
+	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
     } else {
-	$no_br = true;
-	foreach ($notification->getValidationFailures() as $erreurs) {
-	    $message_enregistrement .= $erreurs;
-	    if ($no_br) {
-		$no_br = false;
-	    } else {
-		$message_enregistrement .= '<br/>';
-	    }
+	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
+	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom());
+	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getNext();
+	$destinataire .= '  '.strtoupper($responsable->getCivilite()).' '.strtoupper($responsable->getNom());;
+    }
+    $TBS->MergeField('destinataire',$destinataire);
+
+    $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
+
+    //telephone fax mail
+    $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));
+    $TBS->MergeField('fax_etab',getSettingValue("gepiSchoolFax"));
+
+    $email_abs_etab = getSettingValue("gepiAbsenceEmail");
+    if ($email_abs_etab == null || $email_abs_etab == '') {
+	$email_abs_etab = getSettingValue("gepiSchoolEmail");
+    }
+    $TBS->MergeField('mail_etab', $email_abs_etab);
+
+    //on récupère la liste des noms d'eleves
+    $eleve_col = new PropelCollection();
+    foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
+	$eleve_col->add($saisie->getEleve());
+    }
+
+    $TBS->MergeBlock('el_col',$eleve_col);
+
+    $query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
+	->useJTraitementSaisieEleveQuery()
+	->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
+	    ->orderBy("DebutAbs", Criteria::ASC)
+	    ->find()';
+
+    $TBS->MergeBlock('saisies', 'php', $query_string);
+
+    // Output as a download file (some automatic fields are merged here)
+    $TBS->Show(TBS_NOTHING, 'absence.odt');
+    $message = $TBS->Source;
+
+    // On envoie le mail
+    //$envoi = mail(getSettingValue("gepiAdminAdress"),
+
+    $envoi = mail($notification->getEmail(),
+	    "absence ".getSettingValue("gepiSchoolName"),
+	    $message,
+           "From: ".$email_abs_etab."\r\n"
+           ."X-Mailer: PHP/" . phpversion());
+
+    $notification->setDateEnvoi('now');
+    if ($envoi) {
+	$notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_SUCCES);
+	$message_enregistrement = 'Email envoyé.';
+    } else {
+	$notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_ECHEC);
+	$message_enregistrement = 'Echec de l\'envoi.';
+    }
+    $notification->save();
+
+    include('visu_notification.php');
+
+} else if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS) {
+    if (getSettingValue("abs2_sms")!='y') {
+	$message_enregistrement = 'Envoi de sms désactivé.';
+	include('visu_notification.php');
+	die();
+    }
+
+    // Load the template
+    $TBS->LoadTemplate('modeles/sms.txt');
+
+    //on va mettre les champs dans des variables pour remplir le modele
+    if ($notification->getResponsableEleveAdresse()->getResponsableEleves()->count() == 1) {
+	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
+	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
+    } else {
+	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
+	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom());
+	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getNext();
+	$destinataire .= '  '.strtoupper($responsable->getCivilite()).' '.strtoupper($responsable->getNom());;
+    }
+    $TBS->MergeField('destinataire',$destinataire);
+
+    $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
+
+    //telephone fax mail
+    $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));
+    $TBS->MergeField('fax_etab',getSettingValue("gepiSchoolFax"));
+
+    $email_abs_etab = getSettingValue("gepiAbsenceEmail");
+    if ($email_abs_etab == null || $email_abs_etab == '') {
+	$email_abs_etab = getSettingValue("gepiSchoolEmail");
+    }
+    $TBS->MergeField('mail_etab', $email_abs_etab);
+
+    //on récupère la liste des noms d'eleves
+    $eleve_col = new PropelCollection();
+    foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
+	$eleve_col->add($saisie->getEleve());
+    }
+
+    $TBS->MergeBlock('el_col',$eleve_col);
+
+    $query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
+	->useJTraitementSaisieEleveQuery()
+	->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
+	    ->orderBy("DebutAbs", Criteria::ASC)
+	    ->find()';
+
+    $TBS->MergeBlock('saisies', 'php', $query_string);
+
+    // Output as a download file (some automatic fields are merged here)
+    $TBS->Show(TBS_NOTHING, 'absence.odt');
+    $message = $TBS->Source;
+
+    if (getSettingValue("abs2_sms_prestataire")=='tm4b') {
+	$url = "http://www.tm4b.com/client/api/http.php";
+	$hote = "tm4b.com";
+	$script = "/client/api/http.php";
+	$param['username'] = getSettingValue("abs2_sms_username"); // identifiant de notre compte TM4B
+	$param['password'] = getSettingValue("abs2_sms_password"); // mot de passe de notre compte TM4B
+	$param['type'] = 'broadcast'; // envoi de sms
+	$param['msg'] = $message; // message que l'on désire envoyer
+
+	$tel = $notification->getTelephone();
+	if (substr($tel, 0, 1) == '0') {
+	    $tel = '33'.substr($tel, 1, 9);
 	}
-	$traitement->reload();
+	$param['to'] = $tel; // numéros de téléphones auxquels on envoie le message
+	$param['from'] = getSettingValue("gepiSchoolName"); // expéditeur du message (first class uniquement)
+	$param['route'] = 'business'; // type de route (pour la france, business class uniquement)
+	$param['version'] = '2.1';
+	$param['sim'] = 'yes'; // on active le mode simulation, pour tester notre script
+    } else if (getSettingValue("abs2_sms_prestataire")=='123-sms') {
+	$url = "http://www.123-SMS.net/http.php";
+	$hote = "123-SMS.net";
+	$script = "/http.php";
+	$param['email'] = getSettingValue("abs2_sms_username"); // identifiant de notre compte TM4B
+	$param['pass'] = getSettingValue("abs2_sms_password"); // mot de passe de notre compte TM4B
+	$param['message'] = $message; // message que l'on désire envoyer
+	$param['numero'] = $notification->getTelephone(); // numéros de téléphones auxquels on envoie le message
+    }
+
+    $requete = '';
+    foreach($param as $clef => $valeur)  {
+	$requete .= $clef . '=' . urlencode($valeur); // il faut bien formater les valeurs
+	$requete .= '&';
+    }
+
+    if (in_array  ('curl', get_loaded_extensions())) {
+	//on utilise curl pour la requete au service sms
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, $url);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_POST, 1);
+	curl_setopt($ch, CURLOPT_POSTFIELDS, $requete);
+	$reponse = curl_exec($ch);
+	curl_close($ch);
+    } else {
+	$longueur_requete = strlen($requete);
+	$methode = "POST";
+	$entete = $methode . " " . $script . " HTTP/1.1\r\n";
+	$entete .= "Host: " . $hote . "\r\n";
+	$entete .= "Content-Type: application/x-www-form-urlencoded\r\n";
+	$entete .= "Content-Length: " . $longueur_requete . "\r\n";
+	$entete .= "Connection: close\r\n\r\n";
+	$entete .= $requete . "\r\n";
+	$socket = fsockopen($hote, 80, $errno, $errstr);
+	if($socket) {
+	    fputs($socket, $entete); // envoi de l'entete
+	    while(!feof($socket)) {
+		$reponseArray[] = fgets($socket); // recupere les resultats
+	    }
+	    $reponse = $reponseArray[8];
+	    fclose($socket);
+	} else {
+	    $reponse = 'error : no socket available.';
+	}
+    }
+
+    $notification->setDateEnvoi('now');
+
+    //traitement de la réponse
+    if (getSettingValue("abs2_sms_prestataire")=='tm4b') {
+	if (substr($reponse, 0, 5) == 'error') {
+	    $message_enregistrement .= 'Erreur : message non envoyé. Code erreur : '.$reponse;
+	    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_ECHEC);
+	} else {
+	    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_SUCCES);
+	    $message_enregistrement = 'Envoi réussi.';
+	}
+	$notification->save();
+    } else if (getSettingValue("abs2_sms_prestataire")=='123-sms') {
+	if ($reponse != '80') {
+	    $message_enregistrement .= 'Erreur : message non envoyé. Code erreur : '.$reponse;
+	    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_ECHEC);
+	} else {
+	    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_SUCCES);
+	    $message_enregistrement = 'Envoi réussi.';
+	}
+	$notification->save();
     }
 }
 
-include("visu_notification.php");
+include('visu_notification.php');
 ?>
