@@ -64,6 +64,7 @@ class UtilisateurProfessionnelTableMap extends TableMap {
 	public function buildRelations()
 	{
     $this->addRelation('JGroupesProfesseurs', 'JGroupesProfesseurs', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
+    $this->addRelation('JScolClasses', 'JScolClasses', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
     $this->addRelation('CahierTexteCompteRendu', 'CahierTexteCompteRendu', RelationMap::ONE_TO_MANY, array('login' => 'id_login', ), 'SET NULL', null);
     $this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::ONE_TO_MANY, array('login' => 'id_login', ), 'SET NULL', null);
     $this->addRelation('CahierTexteNoticePrivee', 'CahierTexteNoticePrivee', RelationMap::ONE_TO_MANY, array('login' => 'id_login', ), 'SET NULL', null);
@@ -77,7 +78,6 @@ class UtilisateurProfessionnelTableMap extends TableMap {
     $this->addRelation('PreferenceUtilisateurProfessionnel', 'PreferenceUtilisateurProfessionnel', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
     $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('login' => 'login_prof', ), 'SET NULL', null);
     $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
     $this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
     $this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
 	} // buildRelations()

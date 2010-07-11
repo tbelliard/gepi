@@ -426,6 +426,9 @@ abstract class BaseUtilisateurProfessionnelPeer {
 		// Invalidate objects in JGroupesProfesseursPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JGroupesProfesseursPeer::clearInstancePool();
+		// Invalidate objects in JScolClassesPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+		JScolClassesPeer::clearInstancePool();
 		// Invalidate objects in CahierTexteCompteRenduPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CahierTexteCompteRenduPeer::clearInstancePool();
@@ -796,6 +799,12 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			
 			$criteria->add(JGroupesProfesseursPeer::LOGIN, $obj->getLogin());
 			$affectedRows += JGroupesProfesseursPeer::doDelete($criteria, $con);
+
+			// delete related JScolClasses objects
+			$criteria = new Criteria(JScolClassesPeer::DATABASE_NAME);
+			
+			$criteria->add(JScolClassesPeer::LOGIN, $obj->getLogin());
+			$affectedRows += JScolClassesPeer::doDelete($criteria, $con);
 
 			// delete related JEleveCpe objects
 			$criteria = new Criteria(JEleveCpePeer::DATABASE_NAME);

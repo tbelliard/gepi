@@ -1258,23 +1258,6 @@ abstract class BaseEleveQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query by a related UtilisateurProfessionnel object
-	 * using the j_eleves_cpe table as cross reference
-	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    EleveQuery The current query, for fluid interface
-	 */
-	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = Criteria::EQUAL)
-	{
-		return $this
-			->useJEleveCpeQuery()
-				->filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison)
-			->endUse();
-	}
-	
-	/**
 	 * Filter the query by a related AncienEtablissement object
 	 * using the j_eleves_etablissements table as cross reference
 	 *

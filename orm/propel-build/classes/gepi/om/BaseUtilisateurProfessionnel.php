@@ -144,6 +144,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	protected $collJGroupesProfesseurss;
 
 	/**
+	 * @var        array JScolClasses[] Collection to store aggregation of JScolClasses objects.
+	 */
+	protected $collJScolClassess;
+
+	/**
 	 * @var        array CahierTexteCompteRendu[] Collection to store aggregation of CahierTexteCompteRendu objects.
 	 */
 	protected $collCahierTexteCompteRendus;
@@ -207,11 +212,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * @var        array Groupe[] Collection to store aggregation of Groupe objects.
 	 */
 	protected $collGroupes;
-
-	/**
-	 * @var        array Eleve[] Collection to store aggregation of Eleve objects.
-	 */
-	protected $collEleves;
 
 	/**
 	 * @var        array AidDetails[] Collection to store aggregation of AidDetails objects.
@@ -1064,6 +1064,8 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 			$this->collJGroupesProfesseurss = null;
 
+			$this->collJScolClassess = null;
+
 			$this->collCahierTexteCompteRendus = null;
 
 			$this->collCahierTexteTravailAFaires = null;
@@ -1215,6 +1217,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 			if ($this->collJGroupesProfesseurss !== null) {
 				foreach ($this->collJGroupesProfesseurss as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collJScolClassess !== null) {
+				foreach ($this->collJScolClassess as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1390,6 +1400,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 				if ($this->collJGroupesProfesseurss !== null) {
 					foreach ($this->collJGroupesProfesseurss as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJScolClassess !== null) {
+					foreach ($this->collJScolClassess as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1867,6 +1885,12 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			foreach ($this->getJScolClassess() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJScolClasses($relObj->copy($deepCopy));
+				}
+			}
+
 			foreach ($this->getCahierTexteCompteRendus() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addCahierTexteCompteRendu($relObj->copy($deepCopy));
@@ -2115,6 +2139,140 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$query->joinWith('Groupe', $join_behavior);
 
 		return $this->getJGroupesProfesseurss($query, $con);
+	}
+
+	/**
+	 * Clears out the collJScolClassess collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJScolClassess()
+	 */
+	public function clearJScolClassess()
+	{
+		$this->collJScolClassess = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJScolClassess collection.
+	 *
+	 * By default this just sets the collJScolClassess collection to an empty array (like clearcollJScolClassess());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initJScolClassess()
+	{
+		$this->collJScolClassess = new PropelObjectCollection();
+		$this->collJScolClassess->setModel('JScolClasses');
+	}
+
+	/**
+	 * Gets an array of JScolClasses objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array JScolClasses[] List of JScolClasses objects
+	 * @throws     PropelException
+	 */
+	public function getJScolClassess($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collJScolClassess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJScolClassess) {
+				// return empty collection
+				$this->initJScolClassess();
+			} else {
+				$collJScolClassess = JScolClassesQuery::create(null, $criteria)
+					->filterByUtilisateurProfessionnel($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJScolClassess;
+				}
+				$this->collJScolClassess = $collJScolClassess;
+			}
+		}
+		return $this->collJScolClassess;
+	}
+
+	/**
+	 * Returns the number of related JScolClasses objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JScolClasses objects.
+	 * @throws     PropelException
+	 */
+	public function countJScolClassess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collJScolClassess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJScolClassess) {
+				return 0;
+			} else {
+				$query = JScolClassesQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByUtilisateurProfessionnel($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collJScolClassess);
+		}
+	}
+
+	/**
+	 * Method called to associate a JScolClasses object to this object
+	 * through the JScolClasses foreign key attribute.
+	 *
+	 * @param      JScolClasses $l JScolClasses
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addJScolClasses(JScolClasses $l)
+	{
+		if ($this->collJScolClassess === null) {
+			$this->initJScolClassess();
+		}
+		if (!$this->collJScolClassess->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJScolClassess[]= $l;
+			$l->setUtilisateurProfessionnel($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related JScolClassess from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JScolClasses[] List of JScolClasses objects
+	 */
+	public function getJScolClassessJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = JScolClassesQuery::create(null, $criteria);
+		$query->joinWith('Classe', $join_behavior);
+
+		return $this->getJScolClassess($query, $con);
 	}
 
 	/**
@@ -4214,119 +4372,6 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
-	 * Clears out the collEleves collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addEleves()
-	 */
-	public function clearEleves()
-	{
-		$this->collEleves = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collEleves collection.
-	 *
-	 * By default this just sets the collEleves collection to an empty collection (like clearEleves());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initEleves()
-	{
-		$this->collEleves = new PropelObjectCollection();
-		$this->collEleves->setModel('Eleve');
-	}
-
-	/**
-	 * Gets a collection of Eleve objects related by a many-to-many relationship
-	 * to the current object by way of the j_eleves_cpe cross-reference table.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this UtilisateurProfessionnel is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria Optional query object to filter the query
-	 * @param      PropelPDO $con Optional connection object
-	 *
-	 * @return     PropelCollection|array Eleve[] List of Eleve objects
-	 */
-	public function getEleves($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collEleves || null !== $criteria) {
-			if ($this->isNew() && null === $this->collEleves) {
-				// return empty collection
-				$this->initEleves();
-			} else {
-				$collEleves = EleveQuery::create(null, $criteria)
-					->filterByUtilisateurProfessionnel($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collEleves;
-				}
-				$this->collEleves = $collEleves;
-			}
-		}
-		return $this->collEleves;
-	}
-
-	/**
-	 * Gets the number of Eleve objects related by a many-to-many relationship
-	 * to the current object by way of the j_eleves_cpe cross-reference table.
-	 *
-	 * @param      Criteria $criteria Optional query object to filter the query
-	 * @param      boolean $distinct Set to true to force count distinct
-	 * @param      PropelPDO $con Optional connection object
-	 *
-	 * @return     int the number of related Eleve objects
-	 */
-	public function countEleves($criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collEleves || null !== $criteria) {
-			if ($this->isNew() && null === $this->collEleves) {
-				return 0;
-			} else {
-				$query = EleveQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByUtilisateurProfessionnel($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collEleves);
-		}
-	}
-
-	/**
-	 * Associate a Eleve object to this object
-	 * through the j_eleves_cpe cross reference table.
-	 *
-	 * @param      Eleve $eleve The JEleveCpe object to relate
-	 * @return     void
-	 */
-	public function addEleve($eleve)
-	{
-		if ($this->collEleves === null) {
-			$this->initEleves();
-		}
-		if (!$this->collEleves->contains($eleve)) { // only add it if the **same** object is not already associated
-			$jEleveCpe = new JEleveCpe();
-			$jEleveCpe->setEleve($eleve);
-			$this->addJEleveCpe($jEleveCpe);
-			
-			$this->collEleves[]= $eleve;
-		}
-	}
-
-	/**
 	 * Clears out the collAidDetailss collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -4601,6 +4646,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collJScolClassess) {
+				foreach ((array) $this->collJScolClassess as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collCahierTexteCompteRendus) {
 				foreach ((array) $this->collCahierTexteCompteRendus as $o) {
 					$o->clearAllReferences($deep);
@@ -4664,6 +4714,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		} // if ($deep)
 
 		$this->collJGroupesProfesseurss = null;
+		$this->collJScolClassess = null;
 		$this->collCahierTexteCompteRendus = null;
 		$this->collCahierTexteTravailAFaires = null;
 		$this->collCahierTexteNoticePrivees = null;

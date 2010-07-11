@@ -52,6 +52,10 @@
  * @method     UtilisateurProfessionnelQuery rightJoinJGroupesProfesseurs($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesProfesseurs relation
  * @method     UtilisateurProfessionnelQuery innerJoinJGroupesProfesseurs($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesProfesseurs relation
  *
+ * @method     UtilisateurProfessionnelQuery leftJoinJScolClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JScolClasses relation
+ * @method     UtilisateurProfessionnelQuery rightJoinJScolClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JScolClasses relation
+ * @method     UtilisateurProfessionnelQuery innerJoinJScolClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JScolClasses relation
+ *
  * @method     UtilisateurProfessionnelQuery leftJoinCahierTexteCompteRendu($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteCompteRendu relation
  * @method     UtilisateurProfessionnelQuery rightJoinCahierTexteCompteRendu($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteCompteRendu relation
  * @method     UtilisateurProfessionnelQuery innerJoinCahierTexteCompteRendu($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteCompteRendu relation
@@ -743,6 +747,70 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		return $this
 			->joinJGroupesProfesseurs($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'JGroupesProfesseurs', 'JGroupesProfesseursQuery');
+	}
+
+	/**
+	 * Filter the query by a related JScolClasses object
+	 *
+	 * @param     JScolClasses $jScolClasses  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function filterByJScolClasses($jScolClasses, $comparison = null)
+	{
+		return $this
+			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jScolClasses->getLogin(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the JScolClasses relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function joinJScolClasses($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('JScolClasses');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'JScolClasses');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the JScolClasses relation JScolClasses object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    JScolClassesQuery A secondary query class using the current class as primary query
+	 */
+	public function useJScolClassesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinJScolClasses($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'JScolClasses', 'JScolClassesQuery');
 	}
 
 	/**
@@ -1527,23 +1595,6 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		return $this
 			->useJGroupesProfesseursQuery()
 				->filterByGroupe($groupe, $comparison)
-			->endUse();
-	}
-	
-	/**
-	 * Filter the query by a related Eleve object
-	 * using the j_eleves_cpe table as cross reference
-	 *
-	 * @param     Eleve $eleve the related object to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
-	 */
-	public function filterByEleve($eleve, $comparison = Criteria::EQUAL)
-	{
-		return $this
-			->useJEleveCpeQuery()
-				->filterByEleve($eleve, $comparison)
 			->endUse();
 	}
 	

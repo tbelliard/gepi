@@ -471,6 +471,9 @@ abstract class BaseClassePeer {
 		// Invalidate objects in PeriodeNotePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PeriodeNotePeer::clearInstancePool();
+		// Invalidate objects in JScolClassesPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+		JScolClassesPeer::clearInstancePool();
 		// Invalidate objects in JGroupesClassesPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JGroupesClassesPeer::clearInstancePool();
@@ -827,6 +830,12 @@ abstract class BaseClassePeer {
 			
 			$criteria->add(PeriodeNotePeer::ID_CLASSE, $obj->getId());
 			$affectedRows += PeriodeNotePeer::doDelete($criteria, $con);
+
+			// delete related JScolClasses objects
+			$criteria = new Criteria(JScolClassesPeer::DATABASE_NAME);
+			
+			$criteria->add(JScolClassesPeer::ID_CLASSE, $obj->getId());
+			$affectedRows += JScolClassesPeer::doDelete($criteria, $con);
 
 			// delete related JGroupesClasses objects
 			$criteria = new Criteria(JGroupesClassesPeer::DATABASE_NAME);

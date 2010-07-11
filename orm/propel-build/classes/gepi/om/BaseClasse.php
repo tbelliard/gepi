@@ -206,6 +206,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	protected $collPeriodeNotes;
 
 	/**
+	 * @var        array JScolClasses[] Collection to store aggregation of JScolClasses objects.
+	 */
+	protected $collJScolClassess;
+
+	/**
 	 * @var        array JGroupesClasses[] Collection to store aggregation of JGroupesClasses objects.
 	 */
 	protected $collJGroupesClassess;
@@ -1280,6 +1285,8 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 			$this->collPeriodeNotes = null;
 
+			$this->collJScolClassess = null;
+
 			$this->collJGroupesClassess = null;
 
 			$this->collJEleveClasses = null;
@@ -1431,6 +1438,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->collJScolClassess !== null) {
+				foreach ($this->collJScolClassess as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			if ($this->collJGroupesClassess !== null) {
 				foreach ($this->collJGroupesClassess as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1544,6 +1559,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 				if ($this->collPeriodeNotes !== null) {
 					foreach ($this->collPeriodeNotes as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collJScolClassess !== null) {
+					foreach ($this->collJScolClassess as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -2054,6 +2077,12 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				}
 			}
 
+			foreach ($this->getJScolClassess() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addJScolClasses($relObj->copy($deepCopy));
+				}
+			}
+
 			foreach ($this->getJGroupesClassess() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addJGroupesClasses($relObj->copy($deepCopy));
@@ -2236,6 +2265,140 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			$this->collPeriodeNotes[]= $l;
 			$l->setClasse($this);
 		}
+	}
+
+	/**
+	 * Clears out the collJScolClassess collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addJScolClassess()
+	 */
+	public function clearJScolClassess()
+	{
+		$this->collJScolClassess = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collJScolClassess collection.
+	 *
+	 * By default this just sets the collJScolClassess collection to an empty array (like clearcollJScolClassess());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initJScolClassess()
+	{
+		$this->collJScolClassess = new PropelObjectCollection();
+		$this->collJScolClassess->setModel('JScolClasses');
+	}
+
+	/**
+	 * Gets an array of JScolClasses objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Classe is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array JScolClasses[] List of JScolClasses objects
+	 * @throws     PropelException
+	 */
+	public function getJScolClassess($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collJScolClassess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJScolClassess) {
+				// return empty collection
+				$this->initJScolClassess();
+			} else {
+				$collJScolClassess = JScolClassesQuery::create(null, $criteria)
+					->filterByClasse($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collJScolClassess;
+				}
+				$this->collJScolClassess = $collJScolClassess;
+			}
+		}
+		return $this->collJScolClassess;
+	}
+
+	/**
+	 * Returns the number of related JScolClasses objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related JScolClasses objects.
+	 * @throws     PropelException
+	 */
+	public function countJScolClassess(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collJScolClassess || null !== $criteria) {
+			if ($this->isNew() && null === $this->collJScolClassess) {
+				return 0;
+			} else {
+				$query = JScolClassesQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByClasse($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collJScolClassess);
+		}
+	}
+
+	/**
+	 * Method called to associate a JScolClasses object to this object
+	 * through the JScolClasses foreign key attribute.
+	 *
+	 * @param      JScolClasses $l JScolClasses
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addJScolClasses(JScolClasses $l)
+	{
+		if ($this->collJScolClassess === null) {
+			$this->initJScolClassess();
+		}
+		if (!$this->collJScolClassess->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collJScolClassess[]= $l;
+			$l->setClasse($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Classe is new, it will return
+	 * an empty collection; or if this Classe has previously
+	 * been saved, it will retrieve related JScolClassess from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Classe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array JScolClasses[] List of JScolClasses objects
+	 */
+	public function getJScolClassessJoinUtilisateurProfessionnel($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = JScolClassesQuery::create(null, $criteria);
+		$query->joinWith('UtilisateurProfessionnel', $join_behavior);
+
+		return $this->getJScolClassess($query, $con);
 	}
 
 	/**
@@ -3254,6 +3417,11 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collJScolClassess) {
+				foreach ((array) $this->collJScolClassess as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collJGroupesClassess) {
 				foreach ((array) $this->collJGroupesClassess as $o) {
 					$o->clearAllReferences($deep);
@@ -3282,6 +3450,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		} // if ($deep)
 
 		$this->collPeriodeNotes = null;
+		$this->collJScolClassess = null;
 		$this->collJGroupesClassess = null;
 		$this->collJEleveClasses = null;
 		$this->collJEleveProfesseurPrincipals = null;

@@ -51,7 +51,6 @@
 		</foreign-key>
 	</table>
 
-
 	<table name="classes" phpName="Classe" description="Classe regroupant des eleves">
 		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire de la classe" />
 		<column name="classe" required="true" type="VARCHAR" size="100" description="nom de la classe" />
@@ -92,6 +91,17 @@
 		<column name="date_fin" type="TIMESTAMP" required="false" description="date de verrouillage de la periode" />
 	</table>
 
+	<table name="j_scol_classes" description="Table permettant le jointure entre un utilisateur scolarite et une classe.">
+		<column name="login" type="VARCHAR" size="50" required="true" primaryKey="true" description="Cle primaire de l'utilisateur" />
+		<foreign-key foreignTable="utilisateurs" onDelete="cascade">
+			<reference local="login" foreign="login"/>
+		</foreign-key>
+		<column name="id_classe" type="INTEGER" size="11" required="true" primaryKey="true" description="Cle primaire de la classe" />
+		<foreign-key foreignTable="classes" onDelete="cascade">
+			<reference local="id_classe" foreign="id"/>
+		</foreign-key>
+	</table>
+
 	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'enseignement et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
 		<column name="id_groupe" type="INTEGER" required="true" primaryKey="true" description="Cle primaire du groupe"/>
 		<foreign-key foreignTable="groupes" onDelete="cascade">
@@ -127,7 +137,7 @@
 		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
 			<reference local="id_login" foreign="login" />
 		</foreign-key>
-    <column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient le compte rendu" />
+		<column name="id_sequence" type="INTEGER" size="5" default="0" description="Cle etrangere de la sequence auquel appartient le compte rendu" />
 		<foreign-key foreignTable="ct_sequences" onDelete="setnull">
 			<reference local="id_sequence" foreign="id" />
 		</foreign-key>
@@ -227,7 +237,7 @@
 		<column name="rang" required="true" type="SMALLINT" size="6" default="0" description=""/>
 	</table>
 
-	<table name="j_eleves_cpe" phpName="JEleveCpe" description="Table de jointure entre les CPE et les eleves" isCrossRef="true">
+	<table name="j_eleves_cpe" phpName="JEleveCpe" description="Table de jointure entre les CPE et les eleves">
 		<column name="e_login" required="true" primaryKey="true" type="VARCHAR" size="50" default="" description="cle etrangere, login de l'eleve"/>
 		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="e_login" foreign="login"/></foreign-key>
 		<column name="cpe_login" required="true" primaryKey="true" type="VARCHAR" size="50" default="" description="cle etrangere, login du CPE (utilisateur professionnel)"/>

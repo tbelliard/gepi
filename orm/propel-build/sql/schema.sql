@@ -158,6 +158,29 @@ CREATE TABLE periodes
 ) ENGINE=MyISAM COMMENT='Table regroupant les periodes de notes pour les classes';
 
 #-----------------------------------------------------------------------------
+#-- j_scol_classes
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS j_scol_classes;
+
+
+CREATE TABLE j_scol_classes
+(
+	login VARCHAR(50)  NOT NULL COMMENT 'Cle primaire de l\'utilisateur',
+	id_classe INTEGER(11)  NOT NULL COMMENT 'Cle primaire de la classe',
+	PRIMARY KEY (login,id_classe),
+	CONSTRAINT j_scol_classes_FK_1
+		FOREIGN KEY (login)
+		REFERENCES utilisateurs (login)
+		ON DELETE CASCADE,
+	INDEX j_scol_classes_FI_2 (id_classe),
+	CONSTRAINT j_scol_classes_FK_2
+		FOREIGN KEY (id_classe)
+		REFERENCES classes (id)
+		ON DELETE CASCADE
+) ENGINE=MyISAM COMMENT='Table permettant le jointure entre un utilisateur scolarite et une classe.';
+
+#-----------------------------------------------------------------------------
 #-- j_groupes_classes
 #-----------------------------------------------------------------------------
 

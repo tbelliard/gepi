@@ -160,11 +160,6 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	protected $collArchiveEctss;
 
 	/**
-	 * @var        array UtilisateurProfessionnel[] Collection to store aggregation of UtilisateurProfessionnel objects.
-	 */
-	protected $collUtilisateurProfessionnels;
-
-	/**
 	 * @var        array AncienEtablissement[] Collection to store aggregation of AncienEtablissement objects.
 	 */
 	protected $collAncienEtablissements;
@@ -3201,119 +3196,6 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if (!$this->collArchiveEctss->contains($l)) { // only add it if the **same** object is not already associated
 			$this->collArchiveEctss[]= $l;
 			$l->setEleve($this);
-		}
-	}
-
-	/**
-	 * Clears out the collUtilisateurProfessionnels collection
-	 *
-	 * This does not modify the database; however, it will remove any associated objects, causing
-	 * them to be refetched by subsequent calls to accessor method.
-	 *
-	 * @return     void
-	 * @see        addUtilisateurProfessionnels()
-	 */
-	public function clearUtilisateurProfessionnels()
-	{
-		$this->collUtilisateurProfessionnels = null; // important to set this to NULL since that means it is uninitialized
-	}
-
-	/**
-	 * Initializes the collUtilisateurProfessionnels collection.
-	 *
-	 * By default this just sets the collUtilisateurProfessionnels collection to an empty collection (like clearUtilisateurProfessionnels());
-	 * however, you may wish to override this method in your stub class to provide setting appropriate
-	 * to your application -- for example, setting the initial array to the values stored in database.
-	 *
-	 * @return     void
-	 */
-	public function initUtilisateurProfessionnels()
-	{
-		$this->collUtilisateurProfessionnels = new PropelObjectCollection();
-		$this->collUtilisateurProfessionnels->setModel('UtilisateurProfessionnel');
-	}
-
-	/**
-	 * Gets a collection of UtilisateurProfessionnel objects related by a many-to-many relationship
-	 * to the current object by way of the j_eleves_cpe cross-reference table.
-	 *
-	 * If the $criteria is not null, it is used to always fetch the results from the database.
-	 * Otherwise the results are fetched from the database the first time, then cached.
-	 * Next time the same method is called without $criteria, the cached collection is returned.
-	 * If this Eleve is new, it will return
-	 * an empty collection or the current collection; the criteria is ignored on a new object.
-	 *
-	 * @param      Criteria $criteria Optional query object to filter the query
-	 * @param      PropelPDO $con Optional connection object
-	 *
-	 * @return     PropelCollection|array UtilisateurProfessionnel[] List of UtilisateurProfessionnel objects
-	 */
-	public function getUtilisateurProfessionnels($criteria = null, PropelPDO $con = null)
-	{
-		if(null === $this->collUtilisateurProfessionnels || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUtilisateurProfessionnels) {
-				// return empty collection
-				$this->initUtilisateurProfessionnels();
-			} else {
-				$collUtilisateurProfessionnels = UtilisateurProfessionnelQuery::create(null, $criteria)
-					->filterByEleve($this)
-					->find($con);
-				if (null !== $criteria) {
-					return $collUtilisateurProfessionnels;
-				}
-				$this->collUtilisateurProfessionnels = $collUtilisateurProfessionnels;
-			}
-		}
-		return $this->collUtilisateurProfessionnels;
-	}
-
-	/**
-	 * Gets the number of UtilisateurProfessionnel objects related by a many-to-many relationship
-	 * to the current object by way of the j_eleves_cpe cross-reference table.
-	 *
-	 * @param      Criteria $criteria Optional query object to filter the query
-	 * @param      boolean $distinct Set to true to force count distinct
-	 * @param      PropelPDO $con Optional connection object
-	 *
-	 * @return     int the number of related UtilisateurProfessionnel objects
-	 */
-	public function countUtilisateurProfessionnels($criteria = null, $distinct = false, PropelPDO $con = null)
-	{
-		if(null === $this->collUtilisateurProfessionnels || null !== $criteria) {
-			if ($this->isNew() && null === $this->collUtilisateurProfessionnels) {
-				return 0;
-			} else {
-				$query = UtilisateurProfessionnelQuery::create(null, $criteria);
-				if($distinct) {
-					$query->distinct();
-				}
-				return $query
-					->filterByEleve($this)
-					->count($con);
-			}
-		} else {
-			return count($this->collUtilisateurProfessionnels);
-		}
-	}
-
-	/**
-	 * Associate a UtilisateurProfessionnel object to this object
-	 * through the j_eleves_cpe cross reference table.
-	 *
-	 * @param      UtilisateurProfessionnel $utilisateurProfessionnel The JEleveCpe object to relate
-	 * @return     void
-	 */
-	public function addUtilisateurProfessionnel($utilisateurProfessionnel)
-	{
-		if ($this->collUtilisateurProfessionnels === null) {
-			$this->initUtilisateurProfessionnels();
-		}
-		if (!$this->collUtilisateurProfessionnels->contains($utilisateurProfessionnel)) { // only add it if the **same** object is not already associated
-			$jEleveCpe = new JEleveCpe();
-			$jEleveCpe->setUtilisateurProfessionnel($utilisateurProfessionnel);
-			$this->addJEleveCpe($jEleveCpe);
-			
-			$this->collUtilisateurProfessionnels[]= $utilisateurProfessionnel;
 		}
 	}
 
