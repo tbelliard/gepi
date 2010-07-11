@@ -448,14 +448,8 @@ class PropelCollection extends ArrayObject implements Serializable
 }
 
 function error_2_exception($errno, $errstr, $errfile, $errline,$context) {
-    global $catch_me;
-    foreach ($catch_me as $regexp  => $res) {
-        if(preg_match($regexp,$errstr,$match)){
-            throw new Exception($res['mesg'],$res['code']|( $errno & EMASK ) );
-        }
-    }
-    /* switch back to PHP internal error handler  */
-    return false;
+    throw new Exception('',$errno);
+    return true;
 }
 
 ?>
