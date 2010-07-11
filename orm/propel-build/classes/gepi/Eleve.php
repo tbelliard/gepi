@@ -16,6 +16,21 @@
 class Eleve extends BaseEleve {
 
 	/**
+	 * @var        array PeriodesNote[] Collection to store aggregation of PeriodesNote objects.
+	 */
+	protected $collPeriodeNotes;
+
+	/**
+	 * @var        array Classe[][] Collection to store aggregation of Classes objects. There is a collection for each periode
+	 */
+	protected $collClasses;
+
+	/**
+	 * @var        array Groupe[][] Collection to store aggregation of Groupes objects. There is a collection for each periode
+	 */
+	protected $collGroupes;
+
+	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un eleves.
 	 * Manually added for N:M relationship
@@ -28,32 +43,93 @@ class Eleve extends BaseEleve {
 	public function getClasses($periode) {
 		require_once("helpers/PeriodeNoteHelper.php");
 		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
-		$classes = new PropelObjectCollection();
-		$criteria = new Criteria();
-		$criteria->add(JEleveClassePeer::PERIODE,$periode_num);
-		foreach($this->getJEleveClassesJoinClasse($criteria) as $ref) {
-		    if ($ref->getClasse() != NULL) {
-			$classes->append($ref->getClasse());
-		    }
+		if(null === $this->collClasses[$periode_num]) {
+			if ($this->isNew() && null === $this->collClasses[$periode_num]) {
+				// return empty collection
+				$this->initClasses($periode_num);
+			} else {
+				$collClasses = new PropelObjectCollection();
+				$collClasses->setModel('Classe');
+				$criteria = new Criteria();
+				if ($periode_num != null) {
+				    $criteria = new Criteria();
+				    $criteria->add(JEleveClassePeer::PERIODE,$periode_num);
+				    $jEC_col = $this->getJEleveClassesJoinClasse($criteria);
+				} else  {
+				    $jEC_col = $this->getJEleveClassesJoinClasse();
+				}
+				foreach($jEC_col as $ref) {
+				    if ($ref->getClasse() != NULL) {
+					$collClasses->add($ref->getClasse());
+				    }
+				}
+				$this->collClasses[$periode_num] = $collClasses;
+			}
 		}
-		return $classes;
+		return $this->collClasses[$periode_num];
 	}
 
     // La méthode ci-dessous, au singulier, corrige le problème ci-dessus.
 	public function getClasse($periode = null) {
-		if ($periode == null) {
-		    $periode = $this->getPeriodeNoteOuverte();
-		}
-		require_once("helpers/PeriodeNoteHelper.php");
-		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
-		$c = new Criteria();
-		$c->add(JEleveClassePeer::PERIODE,$periode_num);
-		$jec = $this->getJEleveClassesJoinClasse($c);
-		if ($jec->isEmpty()) {
-		    return null;
-		} else {
-		    return $jec->getFirst()->getClasse();
-		}
+		return $this->getClasses($periode)->getFirst();
+	}
+
+	/**
+	 * Initializes the collClasses collection.
+	 *
+	 * @return     void
+	 */
+	public function initClasses($periode_num)
+	{
+		$this->collClasses[$periode_num] = new PropelObjectCollection();
+		$this->collClasses[$periode_num]->setModel('Classe');
+	}
+
+	/**
+	 * Clears out the collClasses collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 */
+	public function clearClasses()
+	{
+		$this->collClasses = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
+	 *
+	 * This will only work if the object has been saved and has a valid primary key set.
+	 *
+	 * @param      boolean $deep (optional) Whether to also de-associated any related objects.
+	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
+	 * @return     void
+	 * @throws     PropelException - if this object is deleted, unsaved or doesn't have pk match in db
+	 */
+	public function reload($deep = false, PropelPDO $con = null)
+	{
+	    parent::reload($deep,$con);
+	    $this->collPeriodeNotes = null;
+	    $this->collClasses = null;
+	    $this->collGroupes = null;
+	}
+
+	/**
+	 * Resets all collections of referencing foreign keys.
+	 *
+	 * This method is a user-space workaround for PHP's inability to garbage collect objects
+	 * with circular references.  This is currently necessary when using Propel in certain
+	 * daemon or large-volumne/high-memory operations.
+	 *
+	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 */
+	public function clearAllReferences($deep = false) {
+	    parent::clearAllReferences($deep);
+	    $this->collPeriodeNotes = null;
+	    $this->collClasses = null;
+	    $this->collGroupes = null;
 	}
 
 	/**
@@ -66,28 +142,58 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function getGroupes($periode = null) {
-		if ($periode == null) {
-		    $periode = $this->getPeriodeNoteOuverte();
-		}
 		require_once("helpers/PeriodeNoteHelper.php");
 		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
-		$groupes = new PropelObjectCollection();
-		$c = new Criteria();
-		if ($periode != null) {
-		    $c->add(JEleveGroupePeer::PERIODE,$periode_num);
-		}
-		
-		foreach($this->getJEleveGroupesJoinGroupe($c) as $ref) {
-			if ($ref->getGroupe() != NULL) {
-			    //ajout de l'eleve seulement si il n'y est pas deja
-			    if (!$groupes->contains($ref->getGroupe())) {
-				$groupes->append($ref->getGroupe());
-			    }
+		if(null === $this->collGroupes[$periode_num]) {
+			if ($this->isNew() && null === $this->collGroupes[$periode_num]) {
+				// return empty collection
+				$this->initGroupes($periode_num);
+			} else {
+				$collGroupes = new PropelObjectCollection();
+				$collGroupes->setModel('Groupe');
+				$criteria = new Criteria();
+				if ($periode_num != null) {
+				    $criteria = new Criteria();
+				    $criteria->add(JEleveGroupePeer::PERIODE,$periode_num);
+				    $jEG_col = $this->getJEleveGroupesJoinGroupe($criteria);
+				} else  {
+				    $jEG_col = $this->getJEleveGroupesJoinGroupe();
+				}
+				foreach($jEG_col as $ref) {
+				    if ($ref->getGroupe() != NULL) {
+					$collGroupes->add($ref->getGroupe());
+				    }
+				}
+				$this->collGroupes[$periode_num] = $collGroupes;
 			}
 		}
-		return $groupes;
+		return $this->collGroupes[$periode_num];
 	}
 
+	/**
+	 * Initializes the collGroupes collection.
+	 *
+	 * @return     void
+	 */
+	public function initGroupes($periode_num)
+	{
+		$this->collGroupes[$periode_num] = new PropelObjectCollection();
+		$this->collGroupes[$periode_num]->setModel('Groupe');
+	}
+
+	/**
+	 * Clears out the collGroupes collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 */
+	public function clearGroupes()
+	{
+		$this->collGroupes = null; // important to set this to NULL since that means it is uninitialized
+	}
+	
     public function getGroupesByCategories($periode) {
         // On commence par récupérer tous les groupes
         $groupes = $this->getGroupes($periode);
@@ -343,6 +449,26 @@ class Eleve extends BaseEleve {
 	 * @return PeriodeNote objet periode ou null si pas de periode ouverte
 	 */
 	public function getPeriodeNoteOuverte($v = 'now') {
+		//on regarde les periodes associées a l'eleve
+		$count_verrouiller_n = 0;
+		$count_verrouiller_p = 0;
+		foreach ($this->getPeriodeNotes() as $periode) {
+		    if ($periode->getVerouiller() == 'N') {
+			$count_verrouiller_n = $count_verrouiller_n + 1;
+			$periode_verrouiller_n = $periode;
+		    }
+		    if ($periode->getVerouiller() == 'P') {
+			$count_verrouiller_p = $count_verrouiller_p + 1;
+			$periode_verrouiller_p = $periode;
+		    }
+		}
+		if ($count_verrouiller_n == 1) {
+		    return $periode_verrouiller_n;
+		} elseif ($count_verrouiller_n == 0 && $count_verrouiller_p == 1) {
+		    return $periode_verrouiller_p;
+		}
+
+		//on regarde du cote des classes
 		foreach ($this->getJEleveClassesJoinClasse() as $jclasse) {
 		    $periode = $jclasse->getClasse()->getPeriodeNoteOuverte($v);
 		    if ($periode != null && $periode->getNumPeriode() == $jclasse->getPeriode()) {
@@ -536,7 +662,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
-	 * @return DateTime $dt
+	 * @return	PeriodeNote
 	 */
 	public function getPeriode($periode = null) {
 	    $periode_obj = new PeriodeNote();
@@ -875,11 +1001,18 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelObjectCollection PeriodeNote[]
 	 */
-	public function getPeriodesNotes() {
-	    $periodeNotes = new PropelObjectCollection();
-	    $periodeNotes = PeriodeNoteQuery::create()->useClasseQuery()->useJEleveClasseQuery()->filterByEleve($this)->endUse()->endUse()->distinct()->find();
-	    $periodeNotes->uasort(array("PeriodeNote", "comparePeriodeNote"));
-	    return $periodeNotes;
+	public function getPeriodeNotes() {
+	    if(null === $this->collPeriodeNotes) {
+		    if ($this->isNew() && null === $this->collPeriodeNotes) {
+			    // return empty collection
+			    $this->initPeriodeNotes();
+		    } else {
+			    $collPeriodeNotes = PeriodeNoteQuery::create()->useClasseQuery()->useJEleveClasseQuery()->filterByEleve($this)->endUse()->endUse()->distinct()->find();
+			    $collPeriodeNotes->uasort(array("PeriodeNote", "comparePeriodeNote"));
+			    $this->collPeriodeNotes = $collPeriodeNotes;
+		    }
+	    }
+	    return $this->collPeriodeNotes;
 	}
 
 

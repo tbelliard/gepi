@@ -1971,7 +1971,7 @@ Patientez pendant l'extraction des données... merci.
 			    echo "<th>Appréciation</th>\n";
 			    echo "</tr>\n";
 			    $alt=1;
-			    foreach($eleve->getPeriodesNotes() as $periode_note) {
+			    foreach($eleve->getPeriodeNotes() as $periode_note) {
 				    //$periode_note = new PeriodeNote();
 				    $alt=$alt*(-1);
 				    echo "<tr class='lig$alt'>\n";

@@ -134,28 +134,30 @@ class Classe extends BaseClasse {
 	 * @return     PeriodeNote $periode la periode actuellement ouverte
 	 */
 	public function getPeriodeNoteOuverte($v = 'now') {
-		$criteria = new Criteria();
-		$criteria->add(PeriodeNotePeer::VEROUILLER,'N');
-		$periodes = $this->getPeriodeNotes($criteria);
-		if ($periodes->isEmpty()) {
-		    $criteria = new Criteria();
-		    $criteria->add(PeriodeNotePeer::VEROUILLER,'P');
-		    $periodes = $this->getPeriodeNotes($criteria);
+		$count_verrouiller_n = 0;
+		$count_verrouiller_p = 0;
+		foreach ($this->getPeriodeNotes() as $periode) {
+		    if ($periode->getVerouiller() == 'N') {
+			$count_verrouiller_n = $count_verrouiller_n + 1;
+			$periode_verrouiller_n = $periode;
+		    }
+		    if ($periode->getVerouiller() == 'P') {
+			$count_verrouiller_p = $count_verrouiller_p + 1;
+			$periode_verrouiller_p = $periode;
+		    }
 		}
-		if ($periodes->count() == 1) {
+		if ($count_verrouiller_n == 1) {
+		    return $periode_verrouiller_n;
+		} elseif ($count_verrouiller_n == 0 && $count_verrouiller_p == 1) {
+		    return $periode_verrouiller_p;
+		}
+
+		$calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
+		if ($calendrier_periode != null && $calendrier_periode->getNumeroPeriode() != null && $calendrier_periode->getNumeroPeriode() != 0) {
+		    $criteria = new Criteria();
+		    $criteria->add(PeriodeNotePeer::NUM_PERIODE,$calendrier_periode->getNumeroPeriode());
+		    $periodes = $this->getPeriodeNotes($criteria);
 		    return $periodes->getFirst();
-		} else {
-		    $calendrier_periode = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
-		    if ($calendrier_periode != null && $calendrier_periode->getNumeroPeriode() != null && $calendrier_periode->getNumeroPeriode() != 0) {
-			$criteria = new Criteria();
-			$criteria->add(PeriodeNotePeer::NUM_PERIODE,$calendrier_periode->getNumeroPeriode());
-			$periodes = $this->getPeriodeNotes($criteria);
-		    }
-		    if ($periodes->isEmpty()) {
-			return null;
-		    } else {
-			return $periodes->getFirst();
-		    }
 		}
 		return null;
 	}

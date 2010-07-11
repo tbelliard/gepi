@@ -336,7 +336,7 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 					} else {
 					    $dt_green = clone $dt_date_absence_eleve;
 					    $dt_green->setTime($edt_creneau->getHeuredebutDefiniePeriode('H'), $edt_creneau->getHeuredebutDefiniePeriode('i'), 0);
-					    if ($eleve->getPresent($dt_green)) {
+					    if (false) {//$eleve->getPresent($dt_green)) {
 						$style = 'style="background-color : green"';
 					    } else {
 						$style = '';
