@@ -47,8 +47,8 @@ class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer {
 			}
 		}
 
-		return EdtCalendrierPeriodeQuery::create()->filterByDebutCalendrierTs($dt, Criteria::GREATER_EQUAL)
-		    ->filterByFinCalendrierTs($dt, Criteria::LESS_THAN)->findOne();
+		return EdtCalendrierPeriodeQuery::create()->filterByJourdebutCalendrier($dt, Criteria::GREATER_EQUAL)
+		    ->filterByJourfinCalendrier($dt, Criteria::LESS_EQUAL)->findOne();
 	}
 
 
