@@ -30,6 +30,7 @@ class Eleve extends BaseEleve {
 	 */
 	protected $collGroupes;
 
+    // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	/**
 	 *
 	 * Renvoi sous forme d'un tableau la liste des classes d'un eleves.
@@ -39,7 +40,6 @@ class Eleve extends BaseEleve {
 	 * @return     PropelObjectCollection Classes[]
 	 *
 	 */
-    // ERREUR ?? Il ne peut y avoir qu'une seule classe pour un élève pour une période !!
 	public function getClasses($periode) {
 		require_once("helpers/PeriodeNoteHelper.php");
 		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
@@ -70,6 +70,15 @@ class Eleve extends BaseEleve {
 	}
 
     // La méthode ci-dessous, au singulier, corrige le problème ci-dessus.
+	/**
+	 *
+	 * Renvoi sous forme d'un tableau la classe d'un eleves.
+	 * Manually added for N:M relationship
+	 *
+	 * @periode integer numero de la periode ou objet periodeNote
+	 * @return     Classes
+	 *
+	 */
 	public function getClasse($periode = null) {
 		return $this->getClasses($periode)->getFirst();
 	}
@@ -1055,51 +1064,59 @@ class Eleve extends BaseEleve {
 		    }
 	    }
 
-	    //premierement on verifie que l'eleve n'a pas ete saisie absent a cette date
+	    //on recupere toute les saisies a cette heure
 	    $query = AbsenceEleveSaisieQuery::create();
-	    $query->filterByEleveId($this->getIdEleve());
 	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
 	    $query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
 	    $saisie_col = $query->find();
+
+	    //premierement on verifie que l'eleve n'a pas ete saisie absent a cette date
+	    $resp_etab = false;
 	    foreach ($saisie_col as $saisie) {
-		$saisie = new AbsenceEleveSaisie();
-		if (!$saisie->getResponsabiliteEtablissement()) {
-		    return false;
+		if ($saisie->getEleveId() == $this->getIdEleve()) {
+		    if (!$saisie->getResponsabiliteEtablissement()) {
+			return false;
+		    } else {
+			$resp_etab = true;
+		    }
 		}
+
 	    }
-	    if (!$saisie_col->isEmpty()) {
-		//l'eleve est saisie mais sous la responsabilite de l'etablissement, on renvoi true
+	    if ($resp_etab) {
+		//l'eleve est saisie mais sous la responsabilite de l'etablissement, c'est donc qu'il est present
 		return true;
 	    }
 
-	    //on va recuperer les saisie sur l'heure precisee pour les groupes, aid, classe de l'eleve
-	    $query = AbsenceEleveSaisieQuery::create();
-	    $query->filterByIdAid($this->getAidDetailss()->toKeyValue('Id','Id'));
-	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
-	    $query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
-	    $saisie_col = $query->find();
-	    if (!$saisie_col->isEmpty()) {
-		return true;
+	    if ($saisie_col->isEmpty()) {
+		//rien n'a ete saisie (aucun cours a cette heure), en renvoi non present par defaut
+		return false;
 	    }
 
 	    $periode = $this->getPeriodeNoteOuverte($dt);
-
-	    $query = AbsenceEleveSaisieQuery::create();
-	    $query->filterByIdGroupe($this->getGroupes($periode)->getPrimaryKeys());
-	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
-	    $query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
-	    $saisie_col = $query->find();
-	    if (!$saisie_col->isEmpty()) {
-		return true;
+	    //on va verifier les saisie sur l'heure precisee pour la classe de l'eleve
+	    foreach ($saisie_col as $saisie) {
+		if ($this->getClasse($periode) != null && $saisie->getIdClasse() == $this->getClasse($periode)->getId()) {
+		    //il y a une saisie pour la classe mais pas pour l'eleve, il est donc present
+		    return true;
+		}
 	    }
 
-	    $query = AbsenceEleveSaisieQuery::create();
-	    $query->filterByIdClasse($this->getClasses($periode)->getPrimaryKeys());
-	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
-	    $query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
-	    $saisie_col = $query->find();
-	    if (!$saisie_col->isEmpty()) {
-		return true;
+	    //on va verifier les saisie sur l'heure precisee pour les groupes de l'eleve
+	    $id_array = $this->getGroupes($periode)->getPrimaryKeys();
+	    foreach ($saisie_col as $saisie) {
+		if (in_array($saisie->getIdGroupe(), $id_array)) {
+		    //il y a une saisie pour la classe mais pas pour l'eleve, il est donc present
+		    return true;
+		}
+	    }
+
+	    //on va verifier les saisie sur l'heure precisee pour les aid de l'eleve
+	    $id_array = $this->getAidDetailss()->toKeyValue('Id','Id');
+	    foreach ($saisie_col as $saisie) {
+		if (in_array($saisie->getIdAid(), $id_array)) {
+		    //il y a une saisie pour l'aid mais pas pour l'eleve, il est donc present
+		    return true;
+		}
 	    }
 
 	    //rien n'a ete saisie (aucun cours a cette heure), en renvoi non present par defaut
