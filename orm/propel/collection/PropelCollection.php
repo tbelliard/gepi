@@ -430,19 +430,32 @@ class PropelCollection extends ArrayObject implements Serializable
 			$this->append($element);
 			return true;
 		    } else if (!$this->contains($element)) {
-//				try {
-//					$this->get($element->getPrimaryKey());
-//				} catch (Exception $x) {
+				set_error_handler("error_2_exception");
+				try {
+					$this->get($element->getPrimaryKey());
+				} catch (Exception $x) {
 					//il semble que l'element ne soit pas dans la collection
 					$this->append($element);
+					restore_error_handler(); //restore the old handler
 					return true;
-//				}
+				}
 		    }
 		}
-		
+		restore_error_handler(); //restore the old handler
 		return false;
 	}
 
+}
+
+function error_2_exception($errno, $errstr, $errfile, $errline,$context) {
+    global $catch_me;
+    foreach ($catch_me as $regexp  => $res) {
+        if(preg_match($regexp,$errstr,$match)){
+            throw new Exception($res['mesg'],$res['code']|( $errno & EMASK ) );
+        }
+    }
+    /* switch back to PHP internal error handler  */
+    return false;
 }
 
 ?>

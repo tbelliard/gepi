@@ -377,11 +377,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 			->endUse()->endUse()->endUse()
 			->find();
 
-		foreach ($aid_col as $aid) {
-		    if (!in_array($aid->getPrimaryKey(), $pk_col)) {
-			$temp_collection->add($aid);
-		    }
-		}
+		$temp_collection->addCollection($aid_col);
 	    }
 	    return $temp_collection;
 	}
