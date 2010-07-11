@@ -15,6 +15,13 @@
  */
 class EleveQuery extends BaseEleveQuery {
 
+	/**
+	 * Filtre la requete sur le nom ou le prenom en recherchant une sous chaine
+	 *
+	 * @param     string $string sous chaine a rechercher
+	 *
+	 * @return    EleveQuery The current query, for fluid interface
+	 */
         public function filterByNomOrPrenomLike($string = '')
         {
 	    if ($string != '') {
@@ -24,6 +31,44 @@ class EleveQuery extends BaseEleveQuery {
 		->where(array('cond1_filterByNomOrPrenomLike', 'cond2_filterByNomOrPrenomLik'), 'or');
 		return $this;
 	    } else {
+		return $this;
+	    }
+        }
+	
+	/**
+	 * Filtre la requete pour les eleves qui sont sous la responsabilite de l'utilisateur
+	 * en tant que prof principal, cpe ou scolarite
+	 *
+	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel the related object to use as filter
+	 *
+	 * @return    EleveQuery The current query, for fluid interface
+	 */
+        public function filterByUtilisateurProfessionnel($utilisateurProfessionnel)
+        {
+	    if ($utilisateurProfessionnel == null ||
+		    ($utilisateurProfessionnel->getStatut() != "cpe"
+		    && $utilisateurProfessionnel->getStatut() != "professeur"
+		    && $utilisateurProfessionnel->getStatut() != "scolarite")) {
+		//on filtre tout
+		return $this->where('1 <> 1');
+	    } elseif ($utilisateurProfessionnel->getStatut() == "cpe") {
+		$this->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($utilisateurProfessionnel)->endUse();
+		return $this;
+	    } else if ($utilisateurProfessionnel->getStatut() == "professeur") {
+		$this->useJEleveProfesseurPrincipalQuery()->filterByUtilisateurProfessionnel($utilisateurProfessionnel)->endUse();
+		return $this;
+	    } else if ($utilisateurProfessionnel->getStatut() == "scolarite") {
+//		$this->join('JEleveClasse jel')
+//			->joinJEleveClasse()
+//			->join('j_scol_classes')
+//			->where('JEleveClasse.IdClasse = JScolClasses.IdClasse')
+//			->where('JScolClasses.login = ?', $utilisateurProfessionnel->getLogin());
+
+		$this->useJEleveClasseQuery()
+			->useClasseQuery()
+			->useJScolClassesQuery()
+			->filterByUtilisateurProfessionnel($utilisateurProfessionnel)
+			->endUse()->endUse()->endUse();
 		return $this;
 	    }
         }

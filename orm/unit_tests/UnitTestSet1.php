@@ -124,8 +124,9 @@ if ($periode_ouverte == null || $periode_ouverte->getNumPeriode() != 2) {
 
 //ajout de eleve au professeur en tant que cpe
 //$utilisateurProfessionnel = new UtilisateurProfessionnel();
-$utilisateurProfessionnel->addEleveCpe($eleve);
-$newEleve1 = $utilisateurProfessionnel->getEleveCpes();
+$utilisateurProfessionnel->setStatut('cpe');
+$utilisateurProfessionnel->addEleve($eleve);
+$newEleve1 = $utilisateurProfessionnel->getEleves();
 $newEleve11 = $newEleve1[0];
 if ($newEleve1 == null || $newEleve11->getIdEleve() != $eleve->getIdEleve()) {
 	echo ($logger->getDisplay());

@@ -20,6 +20,109 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 */
 	protected $collClasses;
 
+
+	/**
+	 * @var        array Eleve[] Collection to store aggregation of Eleve objects.
+	 */
+	protected $collEleves;
+
+	/**
+	 * Clears out the collEleves collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addEleves()
+	 */
+	public function clearEleves()
+	{
+		$this->collEleves = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collEleves collection.
+	 *
+	 * By default this just sets the collEleves collection to an empty collection (like clearEleves());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initEleves()
+	{
+		$this->collEleves = new PropelObjectCollection();
+		$this->collEleves->setModel('Eleve');
+	}
+
+	/**
+	 * Retourne les eleves dont l'utilisateur a la responsabilite
+	 * en tant que cpe, professeur principal ou compte scolarite
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria Optional query object to filter the query
+	 * @param      PropelPDO $con Optional connection object
+	 *
+	 * @return     PropelCollection|array Eleve[] List of Eleve objects
+	 */
+	public function getEleves($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collEleves || null !== $criteria) {
+			if ($this->isNew() && null === $this->collEleves) {
+				// return empty collection
+				$this->initEleves();
+			} else {
+				$collEleves = EleveQuery::create(null, $criteria)
+					    ->filterByUtilisateurProfessionnel($this)
+					    ->find($con);
+				if (null !== $criteria) {
+					return $collEleves;
+				}
+				$this->collEleves = $collEleves;
+			}
+		}
+		return $this->collEleves;
+	}
+
+	/**
+	 * Ajoute un eleve au cpe ou au professeur principal
+	 * le statut doit etre cpe ou professeur
+	 *
+	 * @param      Eleve $eleve The JEleveCpe object to relate
+	 * @return     void
+	 */
+	public function addEleve($eleve)
+	{
+		if ($this->statut != "cpe" && $this->statut != "professeur") {
+		    throw new PropelException("le statut de l'utilisateur doit etre cpe ou professeur");
+		}
+		if ($this->collEleves === null) {
+		    $this->initEleves();
+		}
+
+		if (!$this->collEleves->contains($eleve)) { // only add it if the **same** object is not already associated
+		    if ($this->statut == "cpe") {
+			$jEleveCpe = new JEleveCpe();
+			$jEleveCpe->setEleve($eleve);
+			$this->addJEleveCpe($jEleveCpe);
+
+			$this->collEleves[]= $eleve;
+		    } else if ($this->statut == "professeur") {
+			$jEleveProfesseurPrincipal = new JEleveProfesseurPrincipal();
+			$jEleveProfesseurPrincipal->setEleve($eleve);
+			$this->addJEleveProfesseurPrincipal($jEleveProfesseurPrincipal);
+
+			$this->collEleves[]= $eleve;
+
+		    }
+		}
+	}
+
 	/**
 	 * Gets a collection of Groupe objects related by a many-to-many relationship
 	 * to the current object by way of the j_groupes_professeurs cross-reference table.
@@ -46,11 +149,20 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 					->filterByUtilisateurProfessionnel($this)
 					->find($con);
 				if ($this->statut == "cpe") {
+				    //on ajoute les groupes contenant des eleves sous la responsabilite du cpe
 				    $temp_collection = GroupeQuery::create(null, $criteria)
 					    ->distinct()->useJEleveGroupeQuery()
 					    ->useEleveQuery()->useJEleveCpeQuery()
 					    ->filterByUtilisateurProfessionnel($this)->endUse()
 					    ->endUse()->endUse()
+					    ->find();
+				    $collGroupes->addCollection($temp_collection);
+				} else if ($this->statut == "scolarite") {
+				    //on ajoute les groupes des classes sous la responsabilite du compte scolalite
+				    $temp_collection = GroupeQuery::create(null, $criteria)
+					    ->useJGroupesClassesQuery()->useClasseQuery()->useJScolClassesQuery()
+					    ->filterByUtilisateurProfessionnel($this)
+					    ->endUse()->endUse()->endUse()
 					    ->find();
 				    $collGroupes->addCollection($temp_collection);
 				}
@@ -61,21 +173,6 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 			}
 		}
 		return $this->collGroupes;
-	}
-
-	/**
-	 *
-	 * Renvoi sous forme d'un tableau la liste des classes d'un utilisateur. Le tableau est ordonné par les noms des classes.
-	 * Manually added for N:M relationship
-	 * It seems that the groupes are passed by values and not by references.
-	 *
-	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     PropelObjectCollection Classe[]
-	 */
-	public function getGroupesProfesseurPrincipal($con = null) {
-		return GroupeHelper::orderByGroupNameWithClasses(
-			GroupeQuery::create()->distinct()->useJEleveGroupeQuery()->useEleveQuery()->useJEleveProfesseurPrincipalQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find()
-			);
 	}
 
 	/**
@@ -91,64 +188,26 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	{
 		parent::clearAllReferences($deep);
 		$this->collClasses = null;
+		$this->collEleves = null;
 	}
 
 	/**
+	 * Reloads this object from datastore based on primary key and (optionally) resets all associated objects.
 	 *
-	 * Renvoi sous forme d'un tableau la liste des eleves d'un utilisateur professeur principal.
-	 * Manually added for N:M relationship
-	 * It seems that the groupes are passed by values and not by references.
+	 * This will only work if the object has been saved and has a valid primary key set.
 	 *
+	 * @param      boolean $deep (optional) Whether to also de-associated any related objects.
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     PropelObjectCollection Eleves[]
+	 * @return     void
+	 * @throws     PropelException - if this object is deleted, unsaved or doesn't have pk match in db
 	 */
-	public function getEleveProfesseurPrincipals($con = null) {
-		$eleves = new PropelObjectCollection();
-		foreach($this->getJEleveProfesseurPrincipalsJoinEleve() as $ref) {
-		    if ($ref != null) {
-			$eleves->append($ref->getEleve());
-		    }
+	public function reload($deep = false, PropelPDO $con = null)
+	{
+		parent::reload($deep, $con);
+		if ($deep) {  // also de-associate any related objects?
+		    $this->collClasses = null;
+		    $this->collEleves = null;
 		}
-		return $eleves;
-	}
-
-	/**
-	 *
-	 * Ajoute un eleve a un prof principal
-	 * Manually added for N:M relationship
-	 * It seems that the groupes are passed by values and not by references.
-	 *
-	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 */
-	public function addEleveProfesseurPrincipal(Eleve $eleve) {
-		if ($eleve->getIdEleve() == null) {
-			throw new PropelException("Eleve id ne doit pas etre null");
-		}
-		$jEleveProfesseurPrincipal = new JEleveProfesseurPrincipal();
-		$jEleveProfesseurPrincipal->setEleve($eleve);
-		$this->addJEleveProfesseurPrincipal($jEleveProfesseurPrincipal);
-		$jEleveProfesseurPrincipal->save();
-	}
-
-	/**
-	 *
-	 * Renvoi sous forme d'un tableau la liste des eleves d'un utilisateur cpe
-	 *
-	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     PropelObjectCollection Eleves[]
-	 */
-	public function getEleveCpes($con = null) {
-		return $this->getEleves();
-	}
-
-	/**
-	 *
-	 * Ajoute un eleve a un cpe
-	 *
-	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 */
-	public function addEleveCpe(Eleve $eleve) {
-		$this->addEleve($eleve);
 	}
 
 	/**
@@ -317,13 +376,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 				// return empty collection
 				$this->initClasses();
 			} else {
-				if ($this->statut == "professeur") {
-				    $collClasses = ClasseQuery::create()->distinct()->orderByNomComplet()->useJGroupesClassesQuery()->useGroupeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->find();
-				} else if ($this->statut == "cpe") {
-				    $collClasses = ClasseQuery::create()->distinct()->orderByNomComplet()->useJEleveClasseQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find();
-				} else {
-				    $collClasses = ClasseQuery::create()->distinct()->orderByNomComplet()->find();
-				}
+				$collClasses = ClasseQuery::create(null, $criteria)->distinct()->orderByNomComplet()->filterByUtilisateurProfessionnel($this)->find($con);
 				if (null !== $criteria) {
 					return $collClasses;
 				}
@@ -350,19 +403,6 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 
 	/**
 	 *
-	 * Renvoi sous forme d'un tableau la liste des classes d'un utilisateur. Le tableau est ordonné par les noms des classes.
-	 * Manually added for N:M relationship
-	 * It seems that the groupes are passed by values and not by references.
-	 *
-	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
-	 * @return     PropelObjectCollection Classe[]
-	 */
-	public function getClassesProfesseurPrincipal($con = null) {
-		return ClasseQuery::create()->distinct()->orderByNomComplet()->useJGroupesClassesQuery()->useGroupeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->find();
-	}
-
-		/**
-	 *
 	 * Renvoi sous forme d'un tableau la liste des groupes d'un utilisateur professeur. Le tableau est ordonné par le noms du groupes puis les classes du groupes.
 	 * Manually added for N:M relationship
 	 * It seems that the groupes are passed by values and not by references.
@@ -370,23 +410,38 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
 	 * @return     PropelObjectCollection Groupes[]
 	 */
-	public function getAidDetailss() {
-	    $temp_collection = parent::getAidDetailss();
-	    $pk_col = $temp_collection->getPrimaryKeys();
+	public function getAidDetailss($criteria = null, PropelPDO $con = null) {
+		if(null === $this->collAidDetailss || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAidDetailss) {
+				// return empty collection
+				$this->initAidDetailss();
+			} else {
+				$collAidDetailss = parent::getAidDetailss($criteria, $con);
 
-	    if ($this->statut == "cpe") {
-		$aid_col = AidDetailsQuery::create()->distinct()
-			->useJAidElevesQuery()
-			->useEleveQuery()
-			->useJEleveCpeQuery()
-			->filterByUtilisateurProfessionnel($this)
-			->endUse()->endUse()->endUse()
-			->find();
-
-		$temp_collection->addCollection($aid_col);
-	    }
-	    return $temp_collection;
+				if ($this->statut == "cpe") {
+				    $aid_col = AidDetailsQuery::create(null, $criteria)
+					    ->useJAidElevesQuery()
+					    ->useEleveQuery()
+					    ->useJEleveCpeQuery()
+					    ->filterByUtilisateurProfessionnel($this)
+					    ->endUse()->endUse()->endUse()
+					    ->distinct()
+					    ->find($con);
+				    $collAidDetailss->addCollection($aid_col);
+				} else if ($this->statut == "scolarite") {
+				    $aid_col = AidDetailsQuery::create(null, $criteria)
+					    ->useJAidElevesQuery()->useEleveQuery()->useJEleveClasseQuery()->useClasseQuery()->useJScolClassesQuery()
+					    ->filterByUtilisateurProfessionnel($this)
+					    ->endUse()->endUse()->endUse()->endUse()->endUse()
+					    ->find($con);
+				    $collAidDetailss->addCollection($aid_col);
+				}
+				if (null !== $criteria) {
+					return $collAidDetailss;
+				}
+				$this->collAidDetailss = $collAidDetailss;
+			}
+		}
+		return $this->collAidDetailss;
 	}
-
-
 }
