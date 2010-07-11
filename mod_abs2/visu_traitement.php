@@ -109,7 +109,7 @@ echo 'Saisies : ';
 echo '</TD><TD>';
 echo '<table>';
 $eleve_prec_id = null;
-if ($traitement->getAbsenceEleveSaisies()->isEmpty()) {
+if ($traitement->getAbsenceEleveSaisies()->isEmpty() && $traitement->getModifiable()) {
     echo '<form method="post" action="liste_saisies_selection_traitement.php">';
     echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
     echo '<button type="submit">Ajouter</button>';
@@ -149,25 +149,34 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	    $valeur = redimensionne_image_petit($photos);
 	    echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
 	}
+	echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=absences' target='_blank'>";
+	echo ' (voir fiche)';
+	echo "</a>";
 	echo '<div style="float: right; margin-top:0.35em; margin-left:0.2em;">';
-	echo '<form method="post" action="liste_saisies_selection_traitement.php">';
-	echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
-	echo '<input type="hidden" name="filter_eleve" value="'.$saisie->getEleve()->getNom().'"/>';
-	echo '<button type="submit">Ajouter</button>';
-	echo '</form>';
+	if ($traitement->getModifiable()) {
+	    echo '<form method="post" action="liste_saisies_selection_traitement.php">';
+	    echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+	    echo '<input type="hidden" name="filter_eleve" value="'.$saisie->getEleve()->getNom().'"/>';
+	    echo '<button type="submit">Ajouter</button>';
+	    echo '</form>';
+	}
 	echo '</div>';
 	echo '</div>';
 	echo '<br/>';
     }
     echo '<div>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     echo $saisie->getDateDescription();
+    echo "</a>";
     echo '<div style="float: right;  margin-top:-0.22em; margin-left:0.2em;">';
-    echo '<form method="post" action="enregistrement_modif_traitement.php">';
-    echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
-    echo '<input type="hidden" name="modif" value="enlever_saisie"/>';
-    echo '<input type="hidden" name="id_saisie" value="'.$saisie->getPrimaryKey().'"/>';
-    echo '<button type="submit">Enlever</button>';
-    echo '</form>';
+    if ($traitement->getModifiable()) {
+	echo '<form method="post" action="enregistrement_modif_traitement.php">';
+	echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="modif" value="enlever_saisie"/>';
+	echo '<input type="hidden" name="id_saisie" value="'.$saisie->getPrimaryKey().'"/>';
+	echo '<button type="submit">Enlever</button>';
+	echo '</form>';
+    }
     echo '</div>';
     echo '</div>';
     if (!$traitement->getAbsenceEleveSaisies()->isLast()) {
@@ -287,9 +296,11 @@ echo '<table>';
 $eleve_prec_id = null;
 foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
     echo '<tr><td>';
+    echo "<a href='liste_notifications.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%; color: #330033'> ";
     echo (strftime("%a %d %b %Y %H:%M", $notification->getCreatedAt('U')));
     echo ' '.$notification->getCommentaire();
     echo ' statut : '.AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()];
+    echo "</a>";
     echo '</td></tr>';
 }
 echo '<tr><td>';

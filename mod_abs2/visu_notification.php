@@ -143,11 +143,16 @@ foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as
 	    $valeur = redimensionne_image_petit($photos);
 	    echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
 	}
+	echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=absences' target='_blank'>";
+	echo ' (voir fiche)';
+	echo "</a>";
 	echo '</div>';
 	echo '<br/>';
     }
     echo '<div>';
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     echo $saisie->getDateDescription();
+    echo "</a>";
     echo '</div>';
     if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isLast()) {
 	echo '<br/>';
@@ -209,6 +214,16 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     echo AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()];
 }
 echo '</TD></tr>';
+
+
+if ($notification->getErreurMessageEnvoi() != null && $notification->getErreurMessageEnvoi() != '') {
+    echo '<tr><TD>';
+    echo 'Message d\'erreur : ';
+    echo '</TD><TD>';
+    echo $notification->getErreurMessageEnvoi();
+    echo '</TD></tr>';
+}
+
 
 echo '<tr><TD>';
 echo 'Responsables : ';
@@ -445,21 +460,6 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     echo '</TD></tr>';
 }
 
-echo '<tr><TD>';
-echo 'Commentaire (ajouté à la notification) : ';
-echo '</TD><TD>';
-if ($notification->getModifiable()) {
-    echo '<form method="post" action="enregistrement_modif_notification.php">';
-    echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
-    echo '<input type="hidden" name="modif" value="commentaire"/>';
-    echo '<input type="text" name="commentaire" size="30" value="'.$notification->getCommentaire().'" />';
-    echo '<button type="submit">Modifier</button>';
-    echo '</form>';
-} else {
-    echo $notification->getCommentaire();
-}
-echo '</TD></tr>';
-
 
 echo '<tr><TD>';
 echo 'Créé par : ';
@@ -488,7 +488,11 @@ if ($notification->getCreatedAt() != $notification->getUpdatedAt()) {
 echo '<tr><TD colspan="2" style="text-align : center;">';
 echo '<form method="post" action="generer_notification.php">';
 echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
-echo '<button type="submit">Génerer la notification</button>';
+if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
+    echo '<button type="submit" onClick=\'window.open("generer_notification.php?id_notification='.$notification->getPrimaryKey().'"); window.location = "visu_notification.php"; return false;\'>Génerer la notification</button>';
+} else {
+    echo '<button type="submit">Génerer la notification</button>';
+}
 echo '</form>';
 echo '</TD></tr>';
 
