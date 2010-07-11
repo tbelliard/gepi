@@ -585,8 +585,9 @@ if(isset($periode_cn)) {
 	echo "<input type='hidden' name='periode_cn' value='$periode_cn' />\n";
 }
 echo "</form>\n";
-
-echo "<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" method=\"post\">\n";
+?>
+<form enctype="multipart/form-data" action="saisie_appreciations.php" method="post">
+<?php
 
 //=========================
 // AJOUT: boireaus 20090126
@@ -1380,7 +1381,7 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 	//============================================
 	// AJOUT: boireaus 20080520
 	// Dispositif spécifique: décommenter la ligne pour l'activer
-	if(getSettingValue('appreciations_types_profs')=='y') {include('ctp.php');}
+	if(getSettingValue('appreciations_types_profs')=='y' || getSettingValue('appreciations_types_profs')=='yes') {include('ctp.php');}
 	//============================================
 ?>
 
