@@ -74,7 +74,10 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 		}
 
 		//si on saisie un cours, alors le creneau doit etre vide ainsi le groupe, l'aid et la classe
-		if ($obj->getIdAid() != null || $obj->getIdClasse() != null || $obj->getIdGroupe() != null || $obj->getIdEdtCreneau() != null) {
+		if (($obj->getIdAid() != null && $obj->getIdAid() != -1)
+			|| ($obj->getIdClasse() != null && $obj->getIdClasse() != -1)
+			|| ($obj->getIdGroupe() != null && $obj->getIdClasse() != -1)
+			|| ($obj->getIdEdtCreneau() != null && $obj->getIdEdtCreneau() != -1) ) {
 		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est precisé, l'aid, le groupe, la classe et le creneau doivent etre nuls.<br/>";
 		}
 	    }
