@@ -41,6 +41,14 @@ if(($_SESSION['statut']=='cpe')||
     echo "<li><a href='liste_traitements.php' ";
     if($onglet_abs=='liste_traitements.php') {echo "class='current' ";}
     echo "title='Traitement'>Liste des traitements</a></li>\n";
+
+    echo "<li><a href='visu_notification.php' ";
+    if($onglet_abs=='visu_notification.php' || $onglet_abs=='enregistrement_modif_notification.php') {echo "class='current' ";}
+    echo "title='Notification'>Notification</a></li>\n";
+
+    echo "<li><a href='liste_notifications.php' ";
+    if($onglet_abs=='liste_notifications.php') {echo "class='current' ";}
+    echo "title='Notifications'>Liste des notifications</a></li>\n";
 }
 
 echo "<li><a href='visu_saisie.php' ";

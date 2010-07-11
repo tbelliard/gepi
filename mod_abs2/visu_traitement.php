@@ -99,7 +99,7 @@ if (isset($message_enregistrement)) {
 echo '<table class="normal">';
 echo '<TBODY>';
 echo '<tr><TD>';
-echo 'N°';
+echo 'N° de traitement';
 echo '</TD><TD>';
 echo $traitement->getPrimaryKey();
 echo '</TD></tr>';
@@ -183,7 +183,7 @@ echo '<tr><TD>';
 echo 'Type : ';
 echo '</TD><TD>';
 //on ne modifie le type que si aucun envoi n'a ete fait
-if ($traitement->getAbsenceEleveEnvois()->isEmpty()) {
+if ($traitement->getModifiable()) {
     $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
     if ($type_autorises->count() != 0) {
 	echo '<form method="post" action="enregistrement_modif_traitement.php">';
@@ -281,18 +281,25 @@ echo '</form>';
 echo '</TD></tr>';
 
 echo '<tr><TD>';
-echo 'Envois : ';
+echo 'Notification : ';
 echo '</TD><TD>';
 echo '<table>';
 $eleve_prec_id = null;
-foreach ($traitement->getAbsenceEleveEnvois() as $envoi) {
-    $envoi = new AbsenceEleveEnvoi();
+foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
     echo '<tr><td>';
-    echo (strftime("%a %d %b %Y %H:%M", $envoi->getDateEnvoi('U')));
-    echo ' '.$envoi->getCommentaire();
-    echo ' '.$envoi->getStatutEnvoi();
+    echo (strftime("%a %d %b %Y %H:%M", $notification->getCreatedAt('U')));
+    echo ' '.$notification->getCommentaire();
+    echo ' statut : '.AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()];
     echo '</td></tr>';
 }
+echo '<tr><td>';
+echo '<form method="post" action="enregistrement_modif_notification.php">';
+echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+echo '<input type="hidden" name="creation_notification" value="oui"/>';
+echo '<button type="submit">Nouvelle notification à la famille</button>';
+echo '</form>';
+echo '</td></tr>';
+
 echo '</table>';
 echo '</TD></tr>';
 
@@ -319,6 +326,7 @@ if ($traitement->getCreatedAt() != $traitement->getUpdatedAt()) {
     echo (strftime("%a %d %b %Y %H:%M", $traitement->getUpdatedAt('U')));
     echo '</TD></tr>';
 }
+
 
 echo '</TBODY>';
 

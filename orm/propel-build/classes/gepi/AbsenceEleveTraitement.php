@@ -51,7 +51,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 
 	    //modifiable uniquement si aucune notifications n'a été envoyé
 	    foreach ($this->getAbsenceEleveNotifications() as $notification) {
-		if ($notification->getStatut() != AbsenceEleveNotification::$STATUT_INITIAL) {
+		if ($notification->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_INITIAL) {
 		    return false;
 		}
 	    }

@@ -28,5 +28,5 @@ class AbsenceEleveNotification extends BaseAbsenceEleveNotification {
     public static $TYPE_SMS = 2;
     public static $TYPE_TELEPHONIQUE = 3;
 
-    public static $LISTE_LABEL_STATUT = array(0 => "initial", 1 => "en cours", 2 => "échec", 3 => "succès", 4 => "succes avec A/R");
+    public static $LISTE_LABEL_TYPE = array(0 => "courrier", 1 => "email", 2 => "sms", 3 => "communication téléphonique");
 } // AbsenceEleveNotification
