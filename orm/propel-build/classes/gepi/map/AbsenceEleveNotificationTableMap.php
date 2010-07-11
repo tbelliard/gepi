@@ -38,9 +38,9 @@ class AbsenceEleveNotificationTableMap extends TableMap {
 		$this->setUseIdGenerator(true);
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
-		$this->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, '-1');
-		$this->addForeignKey('A_TRAITEMENT_ID', 'ATraitementId', 'INTEGER', 'a_traitements', 'ID', true, 12, -1);
-		$this->addColumn('TYPE_NOTIFICATION', 'TypeNotification', 'INTEGER', false, 5, -1);
+		$this->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, null);
+		$this->addForeignKey('A_TRAITEMENT_ID', 'ATraitementId', 'INTEGER', 'a_traitements', 'ID', true, 12, null);
+		$this->addColumn('TYPE_NOTIFICATION', 'TypeNotification', 'INTEGER', false, 5, null);
 		$this->addColumn('EMAIL', 'Email', 'VARCHAR', false, 100, null);
 		$this->addColumn('TELEPHONE', 'Telephone', 'VARCHAR', false, 100, null);
 		$this->addForeignKey('ADR_ID', 'AdrId', 'VARCHAR', 'resp_adr', 'ADR_ID', false, 10, null);

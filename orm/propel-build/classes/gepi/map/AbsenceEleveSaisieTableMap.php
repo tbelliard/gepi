@@ -39,16 +39,16 @@ class AbsenceEleveSaisieTableMap extends TableMap {
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
 		$this->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, null);
-		$this->addForeignKey('ELEVE_ID', 'EleveId', 'INTEGER', 'eleves', 'ID_ELEVE', false, 11, -1);
+		$this->addForeignKey('ELEVE_ID', 'EleveId', 'INTEGER', 'eleves', 'ID_ELEVE', false, 11, null);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('DEBUT_ABS', 'DebutAbs', 'TIMESTAMP', false, null, null);
 		$this->addColumn('FIN_ABS', 'FinAbs', 'TIMESTAMP', false, null, null);
-		$this->addForeignKey('ID_EDT_CRENEAU', 'IdEdtCreneau', 'INTEGER', 'edt_creneaux', 'ID_DEFINIE_PERIODE', false, 12, -1);
-		$this->addForeignKey('ID_EDT_EMPLACEMENT_COURS', 'IdEdtEmplacementCours', 'INTEGER', 'edt_cours', 'ID_COURS', false, 12, -1);
-		$this->addForeignKey('ID_GROUPE', 'IdGroupe', 'INTEGER', 'groupes', 'ID', false, null, -1);
-		$this->addForeignKey('ID_CLASSE', 'IdClasse', 'INTEGER', 'classes', 'ID', false, null, -1);
-		$this->addForeignKey('ID_AID', 'IdAid', 'INTEGER', 'aid', 'ID', false, null, -1);
-		$this->addColumn('ID_S_INCIDENTS', 'IdSIncidents', 'INTEGER', false, null, -1);
+		$this->addForeignKey('ID_EDT_CRENEAU', 'IdEdtCreneau', 'INTEGER', 'edt_creneaux', 'ID_DEFINIE_PERIODE', false, 12, null);
+		$this->addForeignKey('ID_EDT_EMPLACEMENT_COURS', 'IdEdtEmplacementCours', 'INTEGER', 'edt_cours', 'ID_COURS', false, 12, null);
+		$this->addForeignKey('ID_GROUPE', 'IdGroupe', 'INTEGER', 'groupes', 'ID', false, null, null);
+		$this->addForeignKey('ID_CLASSE', 'IdClasse', 'INTEGER', 'classes', 'ID', false, null, null);
+		$this->addForeignKey('ID_AID', 'IdAid', 'INTEGER', 'aid', 'ID', false, null, null);
+		$this->addColumn('ID_S_INCIDENTS', 'IdSIncidents', 'INTEGER', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		// validators

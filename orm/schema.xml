@@ -407,35 +407,35 @@
 	<!-- si un utilisateur est supprime, on ne supprime pas les absences saisies par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
     <column name="utilisateur_id" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel qui a saisi l'absence"/>
     <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
-    <column name="eleve_id" type="INTEGER" size="11" default="-1" description="id_eleve de l'eleve objet de la saisie, egal à -1 si aucun eleve n'est saisi"/>
+    <column name="eleve_id" type="INTEGER" size="11" default="null" description="id_eleve de l'eleve objet de la saisie, egal à null si aucun eleve n'est saisi"/>
     <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire de l'utilisateur"/>
     <column name="debut_abs" required="false" type="TIMESTAMP" description="Debut de l'absence en timestamp UNIX"/>
     <column name="fin_abs" required="false" type="TIMESTAMP" description="Fin de l'absence en timestamp UNIX"/>
-    <column name="id_edt_creneau" required="false" type="INTEGER" size="12" default="-1" description="identifiant du creneaux de l'emploi du temps"/>
+    <column name="id_edt_creneau" required="false" type="INTEGER" size="12" default="null" description="identifiant du creneaux de l'emploi du temps"/>
     <foreign-key foreignTable="edt_creneaux" onDelete="setnull"><reference local="id_edt_creneau" foreign="id_definie_periode"/></foreign-key>
-    <column name="id_edt_emplacement_cours" required="false" type="INTEGER" size="12" default="-1" description="identifiant du cours de l'emploi du temps"/>
+    <column name="id_edt_emplacement_cours" required="false" type="INTEGER" size="12" default="null" description="identifiant du cours de l'emploi du temps"/>
     <foreign-key foreignTable="edt_cours" onDelete="setnull"><reference local="id_edt_emplacement_cours" foreign="id_cours"/></foreign-key>
-    <column name="id_groupe" required="false" type="INTEGER" default="-1" description="identifiant du groupe pour lequel la saisie a ete effectuee"/>
+    <column name="id_groupe" required="false" type="INTEGER" default="null" description="identifiant du groupe pour lequel la saisie a ete effectuee"/>
     <foreign-key foreignTable="groupes" onDelete="setnull"><reference local="id_groupe" foreign="id"/></foreign-key>
-    <column name="id_classe" required="false" type="INTEGER" default="-1" description="identifiant de la classe pour lequel la saisie a ete effectuee"/>
+    <column name="id_classe" required="false" type="INTEGER" default="null" description="identifiant de la classe pour lequel la saisie a ete effectuee"/>
     <foreign-key foreignTable="classes" onDelete="setnull"><reference local="id_classe" foreign="id"/></foreign-key>
-    <column name="id_aid" required="false" type="INTEGER" default="-1" description="identifiant de l'aid pour lequel la saisie a ete effectuee"/>
+    <column name="id_aid" required="false" type="INTEGER" default="null" description="identifiant de l'aid pour lequel la saisie a ete effectuee"/>
     <foreign-key foreignTable="aid" onDelete="setnull"><reference local="id_aid" foreign="id"/></foreign-key>
-    <column name="id_s_incidents" required="false" type="INTEGER" default="-1" description="identifiant de la saisie d'incident discipline"/>
+    <column name="id_s_incidents" required="false" type="INTEGER" default="null" description="identifiant de la saisie d'incident discipline"/>
     <behavior name="timestampable" />
   </table>
 
   <table name="a_traitements" phpName="AbsenceEleveTraitement" description="Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incremente"/>
-    <column name="utilisateur_id" type="VARCHAR" size="100" default="-1" description="Login de l'utilisateur professionnel qui a fait le traitement"/>
+    <column name="utilisateur_id" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a fait le traitement"/>
 	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
     <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
-    <column name="a_type_id" type="INTEGER" default="-1" size="4" description="cle etrangere du type d'absence"/>
+    <column name="a_type_id" type="INTEGER" default="null" size="4" description="cle etrangere du type d'absence"/>
     <foreign-key foreignTable="a_types" onDelete="setnull"><reference local="a_type_id" foreign="id"/></foreign-key>
-    <column name="a_motif_id" type="INTEGER" default="-1" size="4" description="cle etrangere du motif d'absence"/>
+    <column name="a_motif_id" type="INTEGER" default="null" size="4" description="cle etrangere du motif d'absence"/>
     <foreign-key foreignTable="a_motifs" onDelete="setnull"><reference local="a_motif_id" foreign="id"/></foreign-key>
-    <column name="a_justification_id" type="INTEGER" default="-1" size="4" description="cle etrangere de la justification de l'absence"/>
+    <column name="a_justification_id" type="INTEGER" default="null" size="4" description="cle etrangere de la justification de l'absence"/>
     <foreign-key foreignTable="a_justifications" onDelete="setnull"><reference local="a_justification_id" foreign="id"/></foreign-key>
     <!-- column name="texte_justification" required="false" type="VARCHAR" size="250" description="Texte additionnel à ce traitement"/-->
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
@@ -451,11 +451,11 @@
 
   <table name="a_notifications" phpName="AbsenceEleveNotification" description="Notification (a la famille) des absences">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
-    <column name="utilisateur_id" type="VARCHAR" default="-1" size="100" description="Login de l'utilisateur professionnel qui envoi la notification"/>
+    <column name="utilisateur_id" type="VARCHAR" default="null" size="100" description="Login de l'utilisateur professionnel qui envoi la notification"/>
     <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
-    <column name="a_traitement_id" default="-1" required="true" type="INTEGER" size="12" description="cle etrangere du traitement qu'on notifie"/>
+    <column name="a_traitement_id" default="null" required="true" type="INTEGER" size="12" description="cle etrangere du traitement qu'on notifie"/>
     <foreign-key foreignTable="a_traitements" onDelete="cascade"><reference local="a_traitement_id" foreign="id"/></foreign-key>
-    <column name="type_notification" required="false" type="INTEGER" size="5" default="-1" description="type de notification (0 : email, 1 : courrier, 2 : sms)"/>
+    <column name="type_notification" required="false" type="INTEGER" size="5" default="null" description="type de notification (0 : email, 1 : courrier, 2 : sms)"/>
     <column name="email" required="false" type="VARCHAR" size="100" description="email de destination (pour le type email)"/>
     <column name="telephone" required="false" type="VARCHAR" size="100" description="numero du telephone de destination (pour le type sms)"/>
     <column name="adr_id" required="false" type="VARCHAR" size="10" description="cle etrangere vers l'adresse de destination (pour le type courrier)"/>

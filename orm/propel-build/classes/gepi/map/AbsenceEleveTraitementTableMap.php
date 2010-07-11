@@ -38,10 +38,10 @@ class AbsenceEleveTraitementTableMap extends TableMap {
 		$this->setUseIdGenerator(true);
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
-		$this->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, '-1');
-		$this->addForeignKey('A_TYPE_ID', 'ATypeId', 'INTEGER', 'a_types', 'ID', false, 4, -1);
-		$this->addForeignKey('A_MOTIF_ID', 'AMotifId', 'INTEGER', 'a_motifs', 'ID', false, 4, -1);
-		$this->addForeignKey('A_JUSTIFICATION_ID', 'AJustificationId', 'INTEGER', 'a_justifications', 'ID', false, 4, -1);
+		$this->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, null);
+		$this->addForeignKey('A_TYPE_ID', 'ATypeId', 'INTEGER', 'a_types', 'ID', false, 4, null);
+		$this->addForeignKey('A_MOTIF_ID', 'AMotifId', 'INTEGER', 'a_motifs', 'ID', false, 4, null);
+		$this->addForeignKey('A_JUSTIFICATION_ID', 'AJustificationId', 'INTEGER', 'a_justifications', 'ID', false, 4, null);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);

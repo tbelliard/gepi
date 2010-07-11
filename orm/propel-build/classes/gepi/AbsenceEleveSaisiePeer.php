@@ -38,47 +38,32 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 	    //validation maison
 	    //on exclus mutuellement un id_classe, et id_groupe et un id_aid
 	    $id_relation = 0;
-	    if ($obj->getIdAid() != null && $obj->getIdAid() != -1) {
-		
+	    if ($obj->getAidDetails() !== null) {
 		$id_relation = $id_relation + 1;
-		if ($obj->getAidDetails() == null) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID_AID] = "L'id de l'aid est incorrect.<br/>";
-		}
-
 	    }
-	    if ($obj->getIdClasse() != null && $obj->getIdClasse() != -1) {
+	    if ($obj->getClasse() !== null) {
 		$id_relation = $id_relation + 1;
-		if ($obj->getClasse() == null) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID_CLASSE] = "L'id de la classe est incorrect.<br/>";
-		}
 	    }
-	    if ($obj->getIdGroupe() != null && $obj->getIdGroupe() != -1) {
+	    if ($obj->getGroupe() !== null) {
 		$id_relation = $id_relation + 1;
-		if ($obj->getGroupe() == null) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID_GROUPE] = "L'id du groupe est incorrect.<br/>";
-		}
 	    }
 	    if ($id_relation > 1) {
 		$failureMap[AbsenceEleveSaisiePeer::ID] = "Il ne peut y avoir un groupe, une classe et une aid simultanéments pécisé.<br/>";
 	    }
 
-	    if ($obj->getEleveId() != null && $obj->getEleveId() != -1) {
+	    if ($obj->getEleveId() !== null) {
 		if ($obj->getEleve() == null) {
 		    $failureMap[AbsenceEleveSaisiePeer::ELEVE_ID] = "L'id de l'eleve est incorrect.<br/>";
 		}
 	    }
 
-	    if ($obj->getIdEdtEmplacementCours() != null && $obj->getIdEdtEmplacementCours() != -1) {
-		if ($obj->getEdtEmplacementCours() == null) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS] = "L'id de l'emplacement cours est incorrect.<br/>";
+	    if ($obj->getEdtEmplacementCours() !== null) {
+		//si on saisie un cours, alors le creneau et la classe doive etre vide ainsi le groupe, l'aid et la classe
+		if ($obj->getIdClasse() !== null) {
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours la classe doit etre nuls.<br/>";
 		}
-
-		//si on saisie un cours, alors le creneau doit etre vide ainsi le groupe, l'aid et la classe
-		if (($obj->getIdAid() != null && $obj->getIdAid() != -1)
-			|| ($obj->getIdClasse() != null && $obj->getIdClasse() != -1)
-			|| ($obj->getIdGroupe() != null && $obj->getIdClasse() != -1)
-			|| ($obj->getIdEdtCreneau() != null && $obj->getIdEdtCreneau() != -1) ) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est precisé, l'aid, le groupe, la classe et le creneau doivent etre nuls.<br/>";
+		if ($obj->getIdEdtCreneau() !== null) {
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours le creneau doit etre nuls.<br/>";
 		}
 	    }
 
@@ -109,7 +94,7 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 		}
 	    }
 
-	    if ($obj->getUtilisateurId() == null) {
+	    if ($obj->getUtilisateurId() === null) {
 		$failureMap[AbsenceEleveSaisiePeer::UTILISATEUR_ID] .= "Il faut preciser l'utilisateur qui rentre la saisie.<br/>";
 	    }
 

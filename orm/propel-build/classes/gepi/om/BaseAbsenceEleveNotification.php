@@ -32,21 +32,18 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 
 	/**
 	 * The value for the utilisateur_id field.
-	 * Note: this column has a database default value of: '-1'
 	 * @var        string
 	 */
 	protected $utilisateur_id;
 
 	/**
 	 * The value for the a_traitement_id field.
-	 * Note: this column has a database default value of: -1
 	 * @var        int
 	 */
 	protected $a_traitement_id;
 
 	/**
 	 * The value for the type_notification field.
-	 * Note: this column has a database default value of: -1
 	 * @var        int
 	 */
 	protected $type_notification;
@@ -153,9 +150,6 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	 */
 	public function applyDefaultValues()
 	{
-		$this->utilisateur_id = '-1';
-		$this->a_traitement_id = -1;
-		$this->type_notification = -1;
 		$this->statut_envoi = 0;
 	}
 
@@ -415,7 +409,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$v = (string) $v;
 		}
 
-		if ($this->utilisateur_id !== $v || $this->isNew()) {
+		if ($this->utilisateur_id !== $v) {
 			$this->utilisateur_id = $v;
 			$this->modifiedColumns[] = AbsenceEleveNotificationPeer::UTILISATEUR_ID;
 		}
@@ -439,7 +433,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$v = (int) $v;
 		}
 
-		if ($this->a_traitement_id !== $v || $this->isNew()) {
+		if ($this->a_traitement_id !== $v) {
 			$this->a_traitement_id = $v;
 			$this->modifiedColumns[] = AbsenceEleveNotificationPeer::A_TRAITEMENT_ID;
 		}
@@ -463,7 +457,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$v = (int) $v;
 		}
 
-		if ($this->type_notification !== $v || $this->isNew()) {
+		if ($this->type_notification !== $v) {
 			$this->type_notification = $v;
 			$this->modifiedColumns[] = AbsenceEleveNotificationPeer::TYPE_NOTIFICATION;
 		}
@@ -752,18 +746,6 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	 */
 	public function hasOnlyDefaultValues()
 	{
-			if ($this->utilisateur_id !== '-1') {
-				return false;
-			}
-
-			if ($this->a_traitement_id !== -1) {
-				return false;
-			}
-
-			if ($this->type_notification !== -1) {
-				return false;
-			}
-
 			if ($this->statut_envoi !== 0) {
 				return false;
 			}
@@ -1559,7 +1541,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	public function setUtilisateurProfessionnel(UtilisateurProfessionnel $v = null)
 	{
 		if ($v === null) {
-			$this->setUtilisateurId('-1');
+			$this->setUtilisateurId(NULL);
 		} else {
 			$this->setUtilisateurId($v->getLogin());
 		}
@@ -1608,7 +1590,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	public function setAbsenceEleveTraitement(AbsenceEleveTraitement $v = null)
 	{
 		if ($v === null) {
-			$this->setATraitementId(-1);
+			$this->setATraitementId(NULL);
 		} else {
 			$this->setATraitementId($v->getId());
 		}
