@@ -39,6 +39,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    if ($this->getAidDetails() != null) {
 		$desc .= "; aid : ".$this->getAidDetails()->getNom();
 	    }
+	    if ($this->getNotifiee() != null) {
+		$desc .= "; notifiée";
+	    }
 	    if ($this->getCommentaire() != null && $this->getCommentaire() != '') {
 		$desc .= "; ".$this->getCommentaire();
 	    }
@@ -152,4 +155,34 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		return '';
 	    }
 	}
+
+	/**
+	 *
+	 * Renvoi true si un traitement est associe a la saisie
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getTraitee() {
+	    return ($this->getAbsenceEleveTraitements()->count() != 0);
+	}
+
+	/**
+	 *
+	 * Renvoi true si une notification a ete recue par la famille
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getNotifiee() {
+	    foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+		foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
+		    if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES || $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES_AR) {
+			return true;
+		    }
+		}
+	    }
+	    return false;
+	}
+
 } // AbsenceEleveSaisie

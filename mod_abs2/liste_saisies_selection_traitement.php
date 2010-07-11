@@ -59,43 +59,11 @@ if ($utilisateur->getStatut()!="cpe") {
     die("acces interdit");
 }
 
-
-if ( isset($_POST["creation_traitement"])) {
-    $traitement = new AbsenceEleveTraitement();
-    $traitement->setUtilisateurProfessionnel($utilisateur);
-    for($i=0; $i<$_POST["item_per_page"]; $i++) {
-	if (isset($_POST["select_saisie"][$i])) {
-	    $traitement->addAbsenceEleveSaisie(AbsenceEleveSaisieQuery::create()->findPk($_POST["select_saisie"][$i]));
-	}
-    }
-    if ($traitement->getAbsenceEleveSaisies()->isEmpty()) {
-	$message_erreur_traitement = ' Erreur : aucune saisie sélectionnée';
-    } else {
-	$traitement->save();
-	header("Location: ./visu_traitement.php?id_traitement=".$traitement->getId());
-    }
-} else if ( isset($_POST["ajout_saisie_traitement"])) {
-    $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
-    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-    if ($traitement == null) {
-	$message_erreur_traitement = ' Erreur : aucun traitement trouvé';
-    } else {
-	for($i=0; $i<$_POST["item_per_page"]; $i++) {
-	    if (isset($_POST["select_saisie"][$i])) {
-		$saisie = AbsenceEleveSaisieQuery::create()->findPk($_POST["select_saisie"][$i]);
-		if (!$traitement->getAbsenceEleveSaisies()->contains($saisie)) {
-		    $traitement->addAbsenceEleveSaisie($saisie);
-		}
-	    }
-	}
-	if ($traitement->getAbsenceEleveSaisies()->isEmpty()) {
-	    $message_erreur_traitement = ' Erreur : aucune saisie sélectionnée';
-	} else {
-	    $traitement->save();
-	    header("Location: ./visu_traitement.php?id_traitement=".$traitement->getId());
-	}
-    }
+if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_saisie_traitement"])) {
+    include('creation_traitement.php');
+    die;
 }
+
 //récupération des paramètres de la requète
 $order = isset($_POST["order"]) ? $_POST["order"] :(isset($_GET["order"]) ? $_GET["order"] :(isset($_SESSION["order"]) ? $_SESSION["order"] : NULL));
 
@@ -380,7 +348,7 @@ echo '<br/>';
 echo '<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>';
 
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
-if ($id_traitement != null) {
+if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
     $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
     echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
     echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
@@ -817,24 +785,14 @@ foreach ($results as $saisie) {
 
     echo "<tr style='background-color :$background_couleur'>\n";
 
-    $prop = 'saisie_vierge';
-    foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-	foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
-	    if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES || $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES_AR) {
-		$prop = 'saisie_notifie';
-		break;
-	    }
-	}
-	if ($prop == 'saisie_notifie') {
-	    break;
-	}
-    }
-
-    if ($saisie->getAbsenceEleveTraitements()->count() != 0 && $prop != 'saisie_notifie') {
+    if ($saisie->getNotifiee()) {
+	$prop = 'saisie_notifie';
+    } elseif ($saisie->getTraitee()) {
 	$prop = 'saisie_traite';
+    } else {
+	$prop = 'saisie_vierge';
     }
     echo '<td><input name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" id="'.$prop.'_'.$results->getPosition().'"/></td>';
-    echo '<input type="hidden" name="id_saisie['.$results->getPosition().']" value="'.$saisie->getPrimaryKey().'"/>';
 
     echo '<TD>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
@@ -1015,7 +973,7 @@ echo '<br/>';
 echo '<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>';
 
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
-if ($id_traitement != null) {
+if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
     $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
     echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
     echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';

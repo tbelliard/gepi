@@ -663,6 +663,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_modif_notific
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/generer_notification.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Modification d un traitement', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisie_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisie_eleve.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/creation_traitement.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_discipline/saisie_incident_abs2.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'F', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');";

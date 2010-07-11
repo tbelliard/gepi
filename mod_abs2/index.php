@@ -64,6 +64,12 @@ if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') 
     header("Location: ./".$_SESSION['abs2_onglet']);
     die();
 }
+
+if ($utilisateur->getStatut()=="cpe") {
+    header("Location: ./absences_du_jour.php");
+    die();
+}
+
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $titre_page = "Les absences";
