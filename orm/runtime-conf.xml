@@ -25,12 +25,14 @@
 	# Propel::setLogger() if you want Propel to log debug or error messages.
 	-->
 
-	<log>
-                <type>display</type>
-		<ident>propel-gepi</ident>
-		<name>propel.log</name>
-		<level>6</level>
-	</log>
+	  <!--log>
+	    <type>file</type>
+	    <name>propel.log</name>
+	    <ident>propel</ident>
+	    <level>7</level>
+	    <conf></conf>
+	  </log-->
+	  
 	<!--
 	#
 	#  P R O P E L  P R O P E R T I E S
@@ -46,7 +48,7 @@
 				<adapter>mysql</adapter>
 				<!-- Connection parameters. See PDO documentation for DSN format and available option constants. -->
 				<connection>
-					<classname>DebugPDO</classname>
+					<classname>PropelPDO</classname><!--classname>DebugPDO</classname-->
 					<dsn>mysql:dbname=$GLOBALS["dbDb"];host=$GLOBALS["dbHost"]</dsn>
 					<!--
 					For MySQL and Oracle you must specify username + password separate from DSN:-->
@@ -84,7 +86,6 @@
 					</settings>
 				</connection>
 			</datasource>
-			
 		</datasources>
 	</propel>
 </config>
