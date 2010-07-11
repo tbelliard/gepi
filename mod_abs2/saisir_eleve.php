@@ -214,15 +214,11 @@ if (isset($message_enregistrement)) {
 $eleve_col = new PropelCollection();
 if ($type_selection == 'id_eleve') {
     $query = EleveQuery::create();
-    if ($utilisateur->getStatut() == "cpe") {
-	$query->useJEleveCpeQuery()->filterByCpeLogin($utilisateur->getLogin())->endUse();
-    }
+    $query->filterByUtilisateurProfessionnel($utilisateur);
     $eleve_col->append($query->findPk($id_eleve));
 } else if ($type_selection == 'nom_eleve') {
     $query = EleveQuery::create();
-    if ($utilisateur->getStatut() == "cpe") {
-	$query->useJEleveCpeQuery()->filterByCpeLogin($utilisateur->getLogin())->endUse();
-    }
+    $query->filterByUtilisateurProfessionnel($utilisateur);
     $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
 } elseif ($type_selection == 'id_groupe') {
     $eleve_col = $current_groupe->getEleves();

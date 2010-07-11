@@ -127,6 +127,8 @@ if ($type_selection == 'id_cours') {
 	if ($current_creneau != null) {
 	    $id_creneau = $current_creneau->getIdDefiniePeriode();
 	}
+    } else {
+	$current_creneau = EdtCreneauPeer::retrieveByPK($id_creneau);
     }
 
     if ($id_cours == null) {
@@ -536,7 +538,7 @@ foreach($eleve_col as $eleve) {
 <?php
 
 			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).'&nbsp;('.$eleve->getCivilite().')</span>';
-			if ($utilisateur->getStatut() != 'professeur' || (getSettingValue("voir_fiche_eleve") == "y" && $utilisateur->getEleveProfesseurPrincipals()->contains($saisie->getEleve()))) {
+			if ($utilisateur->getEleves()->contains($eleve) && ($utilisateur->getStatut() != 'professeur' || (getSettingValue("voir_fiche_eleve") == "y"))) {
 			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences' target='_blank'>";
 			    echo ' (voir fiche)';
 			    echo "</a>";

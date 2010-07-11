@@ -143,7 +143,7 @@ if ($saisie->getEleve() != null) {
 	$valeur = redimensionne_image_petit($photos);
 	echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
     }
-    if ($utilisateur->getStatut() == 'cpe' || (getSettingValue("voir_fiche_eleve") == "y" && $utilisateur->getEleveProfesseurPrincipals()->contains($saisie->getEleve()))) {
+    if ($utilisateur->getEleves()->contains($saisie->getEleve()) && ($utilisateur->getStatut() != 'professeur' || (getSettingValue("voir_fiche_eleve") == "y"))) {
 	echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=absences' target='_blank'>";
 	echo ' (voir fiche)';
 	echo "</a>";
@@ -364,7 +364,7 @@ if ($modifiable) {
     echo '</TD></tr>';
 }
 
-if ($utilisateur->getStatut()=="cpe") {
+if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") {
     echo '<tr><TD colspan="2" style="text-align : center;">';
     echo '<button type="submit" name="creation_traitement" value="oui">Traiter la saisie</button>';
     echo '</TD></tr>';

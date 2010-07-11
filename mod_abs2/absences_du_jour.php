@@ -121,11 +121,7 @@ echo "<div class='css-panes' id='containDiv'>\n";
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 
 //on affiche une boite de selection avec les groupes et les creneaux
-if ($utilisateur->getStatut() == "cpe") {
-    $groupe_col = $utilisateur->getGroupes();
-} else {
-    $groupe_col = GroupeQuery::create()->find();
-}
+$groupe_col = $utilisateur->getGroupes();
 if (!$groupe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
@@ -146,11 +142,7 @@ if (!$groupe_col->isEmpty()) {
 }
 
 //on affiche une boite de selection avec les classe
-if ($utilisateur->getStatut() == "cpe") {
-    $classe_col = $utilisateur->getClasses();
-} else {
-    $classe_col = ClasseQuery::create()->find();
-}
+$classe_col = $utilisateur->getClasses();
 if (!$classe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
@@ -172,11 +164,7 @@ if (!$classe_col->isEmpty()) {
 
 
 //on affiche une boite de selection avec les aid et les creneaux
-if ($utilisateur->getStatut() == "cpe") {
-    $aid_col = $utilisateur->getAidDetailss();
-} else {
-    $aid_col = AidDetailsQuery::create()->find();
-}
+$aid_col = $utilisateur->getAidDetailss();
 if (!$aid_col->isEmpty()) {
     echo "<td style='border : 1px solid;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
@@ -216,15 +204,11 @@ $eleve_col = new PropelCollection();
 
 if ($type_selection == 'id_eleve') {
     $query = EleveQuery::create();
-    if ($utilisateur->getStatut() == "cpe") {
-	$query->useJEleveCpeQuery()->filterByCpeLogin($utilisateur->getLogin())->endUse();
-    }
+    $query->filterByUtilisateurProfessionnel($utilisateur);
     $eleve_col->append($query->findPk($id_eleve));
 } else if ($type_selection == 'nom_eleve') {
     $query = EleveQuery::create();
-    if ($utilisateur->getStatut() == "cpe") {
-	$query->useJEleveCpeQuery()->filterByCpeLogin($utilisateur->getLogin())->endUse();
-    }
+    $query->filterByUtilisateurProfessionnel($utilisateur);
     $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
 } elseif ($type_selection == 'id_groupe') {
     $eleve_col = $current_groupe->getEleves();
@@ -238,7 +222,9 @@ if ($type_selection == 'id_eleve') {
     $dt_debut->setTime(0,0,0);
     $dt_fin = clone $dt_date_absence_eleve;
     $dt_fin->setTime(23,59,59);
-    $eleve_col = EleveQuery::create()->useAbsenceEleveSaisieQuery()
+    $eleve_col = EleveQuery::create()
+	    ->filterByUtilisateurProfessionnel($utilisateur)
+	    ->useAbsenceEleveSaisieQuery()
 	    ->filterByFinAbs($dt_debut, Criteria::GREATER_EQUAL)
 	    ->filterByFinAbs($dt_fin, Criteria::LESS_EQUAL)
 	    ->endUse()->distinct()->find();

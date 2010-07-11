@@ -249,13 +249,13 @@ if ($order == "asc_id") {
 } else if ($order == "des_eleve") {
     $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()->orderBy('Nom', Criteria::DESC)->endUse()->endUse()->endUse();
 } else if ($order == "asc_classe") {
-    $query->useClasseQuery()->orderBy('NomComplet', Criteria::ASC)->endUse();
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useClasseQuery()->orderBy('NomComplet', Criteria::ASC)->endUse()->endUse()->endUse();
 } else if ($order == "des_classe") {
-    $query->useClasseQuery()->orderBy('NomComplet', Criteria::DESC)->endUse();
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useClasseQuery()->orderBy('NomComplet', Criteria::DESC)->endUse()->endUse()->endUse();
 } else if ($order == "asc_groupe") {
-    $query->useGroupeQuery()->orderBy('Name', Criteria::ASC)->endUse();
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useGroupeQuery()->orderBy('Name', Criteria::ASC)->endUse()->endUse()->endUse();
 } else if ($order == "des_groupe") {
-    $query->useGroupeQuery()->orderBy('Name', Criteria::DESC)->endUse();
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useGroupeQuery()->orderBy('Name', Criteria::DESC)->endUse()->endUse()->endUse();
 } else if ($order == "asc_aid") {
     $query->useAidDetailsQuery()->orderBy('Nom', Criteria::ASC)->endUse();
 } else if ($order == "des_aid") {

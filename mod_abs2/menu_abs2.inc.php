@@ -47,6 +47,11 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='visu_notification.php' || $onglet_abs=='enregistrement_modif_notification.php' || $onglet_abs=='generer_notification.php') {echo "class='current' ";}
     echo "title='Notification'>Notification</a></li>\n";
 
+    if ($_SESSION['statut']=='scolarite') {
+	echo "<li><a href='stats.php' ";
+	if($onglet_abs=='stats.php') {echo "class='current' ";}
+	echo "title='Stats'>Stats</a></li>\n";
+    }
 } else if ($_SESSION['statut']=='professeur') {
     echo "<li><a href='saisir_groupe.php' ";
     if($onglet_abs=='saisir_groupe.php') {echo "class='current' ";}
