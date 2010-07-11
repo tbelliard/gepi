@@ -60,6 +60,26 @@ if (isset($_POST['activer_resp'])) {
 		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la consultation par les responsables eleves !";
 	}
 }
+if (isset($_POST['gepiAbsenceEmail'])) {
+	if (!saveSetting("gepiAbsenceEmail", $_POST['gepiAbsenceEmail'])) {
+		$msg = "Erreur lors de l'enregistrement du paramètre gestion absence email !";
+	}
+}
+if (isset($_POST['abs2_sms_prestataire'])) {
+	if (!saveSetting("abs2_sms_prestataire", $_POST['abs2_sms_prestataire'])) {
+		$msg = "Erreur lors de l'enregistrement du paramètre prestataire sms !";
+	}
+}
+if (isset($_POST['abs2_sms_username'])) {
+	if (!saveSetting("abs2_sms_username", $_POST['abs2_sms_username'])) {
+		$msg = "Erreur lors de l'enregistrement du nom d'utilisateur prestataire sms !";
+	}
+}
+if (isset($_POST['abs2_sms_password'])) {
+	if (!saveSetting("abs2_sms_password", $_POST['abs2_sms_password'])) {
+		$msg = "Erreur lors de l'enregistrement du mot de passe prestataire sms !";
+	}
+}
 if (isset($_POST['is_posted'])) {
 	if ($_POST['is_posted']=='1') {
 
@@ -99,6 +119,16 @@ if (isset($_POST['is_posted'])) {
 			}
 		} else {
 			if (!saveSetting("abs2_modification_saisie_une_heure", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+			}
+		}
+
+		if (isset($_POST['abs2_sms'])) {
+			if (!saveSetting("abs2_sms", $_POST['abs2_sms'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+			}
+		} else {
+			if (!saveSetting("abs2_sms", 'n')) {
 				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
 			}
 		}
@@ -180,6 +210,10 @@ suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accè
 	<label for="activerN">&nbsp;Désactiver le module de la gestion des absences</label>
 	<input type="hidden" name="is_posted" value="1" />
 </p>
+<p>
+E-mail gestion absence établissement :
+<input type="text" name="gepiAbsenceEmail" size="20" value="<?php echo(getSettingValue("gepiAbsenceEmail")); ?>"/>
+</p>
 
 <h2>Saisie des absences par les professeurs</h2>
 <p style="font-style: italic;">La désactivation du module de la gestion des absences n'entraîne aucune suppression des données saisies par les professeurs. Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
@@ -221,7 +255,24 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	<label for="abs2_modification_saisie_sans_limite">&nbsp;Permettre la modification d'une saisie sans limite de temps</label>
 </p-->
 
-<h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
+<h2>Envoi des SMS</h2>
+<p>
+	<input type="checkbox" id="abs2_sms" name="abs2_sms" value="y"
+	<?php if (getSettingValue("abs2_sms")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_sms">&nbsp;Activer l'envoi des sms</label>
+</p>
+<p>
+    	<label for="abs2_sms_prestataire">&nbsp;Choisissez un prestataire</label>
+	<select id="abs2_sms_prestataire" name="abs2_sms_prestataire">
+	<option value=''></option>
+	<option value='tm4b' <?php if (getSettingValue("abs2_sms_prestataire")=='tm4b') echo " selected "; ?> >www.tm4b.com</option>
+	<option value='123-sms' <?php if (getSettingValue("abs2_sms_prestataire")=='123-sms') echo " selected "; ?> >www.123-sms.net</option>
+	</select><br/>
+	Nom d'utilisateur du service <input type="text" name="abs2_sms_username" size="20" value="<?php echo(getSettingValue("abs2_sms_username")); ?>"/><br/>
+	Mot de passe <input type="text" name="abs2_sms_password" size="20" value="<?php echo(getSettingValue("abs2_sms_password")); ?>"/><br/>
+</p>
+
+<!--h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
 <p style="font-style: italic">Vous pouvez permettre aux responsables d'acc&eacute;der aux donn&eacute;es brutes
 entr&eacute;es dans Gepi par le biais du module absences.</p>
 <p>
@@ -233,8 +284,9 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 	<input type="radio" id="activerRespKo" name="activer_resp" value="n"
 	<?php if (getSettingValue("active_absences_parents") == 'n') echo ' checked="checked"'; ?> />
 	<label for="activerRespKo">Ne pas permettre cet acc&egrave;s</label>
-</p>
-
+</p-->
+	
+<br/>
 <div class="centre"><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></div>
 
 </form>
@@ -251,6 +303,7 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 	<a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
 	<a href="admin_justifications_absences.php?action=visualiser">Définir les justifications</a>
 </blockquote>
+
 <?PHP
 require("../../lib/footer.inc.php");
 ?>
