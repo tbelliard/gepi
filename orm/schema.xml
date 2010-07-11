@@ -12,9 +12,9 @@
 		<column name="statut" required="true" type="VARCHAR" size="20" description="Statut de l'utilisateur" />
 		<column name="etat" required="true" type="VARCHAR" size="20" description="Etat de l'utilisateur (actif/inactif)" />
 		<column name="change_mdp" required="true" type="CHAR" size="1" default="n" description="L'utilisateur doit-il changer son mot de passe (y/n) (a la premiere connexion par exemple)" />
-		<column name="date_verrouillage" required="true" type="TIME" default="2006-01-01 00:00:00" description="Date de verrouillage de l'utilisateur" />
+		<column name="date_verrouillage" required="true" type="DATE" default="2006-01-01 00:00:00" description="Date de verrouillage de l'utilisateur" />
 		<column name="password_ticket" required="true" type="VARCHAR" size="255" description="password_ticket de l'utilisateur" />
-		<column name="ticket_expiration" required="true" type="TIME" description="ticket_expiration de l'utilisateur" />
+		<column name="ticket_expiration" required="true" type="DATE" description="ticket_expiration de l'utilisateur" />
 		<column name="niveau_alerte" required="true" type="SMALLINT" default="0" description="niveau_alerte de l'utilisateur" />
 		<column name="observation_securite" required="true" type="TINYINT" default="0" description="observation_securite de l'utilisateur" />
 		<column name="temp_dir" required="true" type="VARCHAR" size="255" description="Repertoire temporaire de l'utilisateur" />

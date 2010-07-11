@@ -47,9 +47,9 @@ class UtilisateurProfessionnelTableMap extends TableMap {
 		$this->addColumn('STATUT', 'Statut', 'VARCHAR', true, 20, null);
 		$this->addColumn('ETAT', 'Etat', 'VARCHAR', true, 20, null);
 		$this->addColumn('CHANGE_MDP', 'ChangeMdp', 'CHAR', true, 1, 'n');
-		$this->addColumn('DATE_VERROUILLAGE', 'DateVerrouillage', 'TIME', true, null, '2006-01-01 00:00:00');
+		$this->addColumn('DATE_VERROUILLAGE', 'DateVerrouillage', 'DATE', true, null, '2006-01-01 00:00:00');
 		$this->addColumn('PASSWORD_TICKET', 'PasswordTicket', 'VARCHAR', true, 255, null);
-		$this->addColumn('TICKET_EXPIRATION', 'TicketExpiration', 'TIME', true, null, null);
+		$this->addColumn('TICKET_EXPIRATION', 'TicketExpiration', 'DATE', true, null, null);
 		$this->addColumn('NIVEAU_ALERTE', 'NiveauAlerte', 'SMALLINT', true, null, 0);
 		$this->addColumn('OBSERVATION_SECURITE', 'ObservationSecurite', 'TINYINT', true, null, 0);
 		$this->addColumn('TEMP_DIR', 'TempDir', 'VARCHAR', true, 255, null);

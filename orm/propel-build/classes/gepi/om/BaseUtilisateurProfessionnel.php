@@ -88,7 +88,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 	/**
 	 * The value for the date_verrouillage field.
-	 * Note: this column has a database default value of: '00:00:00'
+	 * Note: this column has a database default value of: '2006-01-01'
 	 * @var        string
 	 */
 	protected $date_verrouillage;
@@ -247,7 +247,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	{
 		$this->show_email = 'no';
 		$this->change_mdp = 'n';
-		$this->date_verrouillage = '00:00:00';
+		$this->date_verrouillage = '2006-01-01';
 		$this->niveau_alerte = 0;
 		$this->observation_securite = 0;
 		$this->auth_mode = 'gepi';
@@ -369,21 +369,26 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
-	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
-	public function getDateVerrouillage($format = '%X')
+	public function getDateVerrouillage($format = '%x')
 	{
 		if ($this->date_verrouillage === null) {
 			return null;
 		}
 
 
-
-		try {
-			$dt = new DateTime($this->date_verrouillage);
-		} catch (Exception $x) {
-			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_verrouillage, true), $x);
+		if ($this->date_verrouillage === '0000-00-00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->date_verrouillage);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_verrouillage, true), $x);
+			}
 		}
 
 		if ($format === null) {
@@ -412,21 +417,26 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
-	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
-	public function getTicketExpiration($format = '%X')
+	public function getTicketExpiration($format = '%x')
 	{
 		if ($this->ticket_expiration === null) {
 			return null;
 		}
 
 
-
-		try {
-			$dt = new DateTime($this->ticket_expiration);
-		} catch (Exception $x) {
-			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->ticket_expiration, true), $x);
+		if ($this->ticket_expiration === '0000-00-00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->ticket_expiration);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->ticket_expiration, true), $x);
+			}
 		}
 
 		if ($format === null) {
@@ -724,14 +734,14 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		if ( $this->date_verrouillage !== null || $dt !== null ) {
 			// (nested ifs are a little easier to read in this case)
 
-			$currNorm = ($this->date_verrouillage !== null && $tmpDt = new DateTime($this->date_verrouillage)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
+			$currNorm = ($this->date_verrouillage !== null && $tmpDt = new DateTime($this->date_verrouillage)) ? $tmpDt->format('Y-m-d') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d') : null;
 
 			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					|| ($dt->format('H:i:s') === '00:00:00') // or the entered value matches the default
+					|| ($dt->format('Y-m-d') === '2006-01-01') // or the entered value matches the default
 					)
 			{
-				$this->date_verrouillage = ($dt ? $dt->format('H:i:s') : null);
+				$this->date_verrouillage = ($dt ? $dt->format('Y-m-d') : null);
 				$this->modifiedColumns[] = UtilisateurProfessionnelPeer::DATE_VERROUILLAGE;
 			}
 		} // if either are not null
@@ -794,13 +804,13 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		if ( $this->ticket_expiration !== null || $dt !== null ) {
 			// (nested ifs are a little easier to read in this case)
 
-			$currNorm = ($this->ticket_expiration !== null && $tmpDt = new DateTime($this->ticket_expiration)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
+			$currNorm = ($this->ticket_expiration !== null && $tmpDt = new DateTime($this->ticket_expiration)) ? $tmpDt->format('Y-m-d') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d') : null;
 
 			if ( ($currNorm !== $newNorm) // normalized values don't match 
 					)
 			{
-				$this->ticket_expiration = ($dt ? $dt->format('H:i:s') : null);
+				$this->ticket_expiration = ($dt ? $dt->format('Y-m-d') : null);
 				$this->modifiedColumns[] = UtilisateurProfessionnelPeer::TICKET_EXPIRATION;
 			}
 		} // if either are not null
@@ -926,7 +936,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				return false;
 			}
 
-			if ($this->date_verrouillage !== '00:00:00') {
+			if ($this->date_verrouillage !== '2006-01-01') {
 				return false;
 			}
 
