@@ -59,13 +59,13 @@ if ($utilisateur->getStatut()!="cpe") {
     die("acces interdit");
 }
 
+
 if ( isset($_POST["creation_traitement"])) {
     $traitement = new AbsenceEleveTraitement();
     $traitement->setUtilisateurProfessionnel($utilisateur);
     for($i=0; $i<$_POST["item_per_page"]; $i++) {
-	if (isset($_POST["select_saisie"][$i]) &&  $_POST["select_saisie"][$i] == '1') {
-	    $id_saisie = $_POST['id_saisie'][$i];
-	    $traitement->addAbsenceEleveSaisie(AbsenceEleveSaisieQuery::create()->findPk($id_saisie));
+	if (isset($_POST["select_saisie"][$i])) {
+	    $traitement->addAbsenceEleveSaisie(AbsenceEleveSaisieQuery::create()->findPk($_POST["select_saisie"][$i]));
 	}
     }
     if ($traitement->getAbsenceEleveSaisies()->isEmpty()) {
@@ -81,8 +81,8 @@ if ( isset($_POST["creation_traitement"])) {
 	$message_erreur_traitement = ' Erreur : aucun traitement trouvé';
     } else {
 	for($i=0; $i<$_POST["item_per_page"]; $i++) {
-	    if (isset($_POST["select_saisie"][$i]) &&  $_POST["select_saisie"][$i] == '1') {
-		$saisie = AbsenceEleveSaisieQuery::create()->findPk($_POST['id_saisie'][$i]);
+	    if (isset($_POST["select_saisie"][$i])) {
+		$saisie = AbsenceEleveSaisieQuery::create()->findPk($_POST["select_saisie"][$i]);
 		if (!$traitement->getAbsenceEleveSaisies()->contains($saisie)) {
 		    $traitement->addAbsenceEleveSaisie($saisie);
 		}
@@ -198,6 +198,7 @@ $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+$javascript_specifique[] = "mod_abs2/lib/include";
 $titre_page = "Les absences";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
@@ -374,18 +375,30 @@ echo $saisies_col->count();
 
 echo "&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit" name="reinit_filtre" value="y"/>Reinitialiser les filtres</button> ';
-echo '<button type="submit">Rechercher</button><br/>';
-
+echo '<button type="submit">Rechercher</button>';
+echo '<br/>';
 echo '<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>';
 
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 if ($id_traitement != null) {
-    echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.'</button>';
+    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
+    echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
     echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
 }
 if (isset($message_erreur_traitement)) {
     echo $message_erreur_traitement;
 }
+
+echo '<br/>';
+echo 'Sélectionner: ';
+echo '<a href="" onClick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true); return false;">Tous</a>, ';
+echo '<a href="" onClick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false); return false;">Aucun</a>, ';
+echo '<a href="" onClick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false);
+    SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_vierge\', true);
+    return false;">Non traités</a>, ';
+echo '<a href="" onClick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true);
+    SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_notifie\', false);
+    return false;">Non notifiés</a>';
 
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0;">';
 
@@ -795,24 +808,6 @@ echo '</THEAD>';
 echo '<TBODY>';
 $results = $saisies_col->getResults();
 foreach ($results as $saisie) {
-//    $filter_id = NULL;
-//    $filter_utilisateur = NULL;
-//    $filter_eleve = NULL;
-//    $filter_classe = NULL;
-//    $filter_groupe = NULL;
-//    $filter_aid = NULL;
-//    $filter_date_debut_absence_debut_plage = NULL;
-//    $filter_date_debut_absence_fin_plage = NULL;
-//    $filter_date_fin_absence_debut_plage = NULL;
-//    $filter_date_fin_absence_fin_plage = NULL;
-//    $filter_creneau = NULL;
-//    $filter_cours = NULL;
-//    $filter_date_creation_absence_debut_plage = NULL;
-//    $filter_date_creation_absence_fin_plage = NULL;
-//    $filter_date_modification = NULL;
-//    $filter_date_traitement_absence_debut_plage = NULL;
-//    $filter_date_traitement_absence_fin_plage = NULL;
-//    $filter_discipline = NULL;
 
     if ($results->getPosition() %2 == '1') {
 	    $background_couleur="rgb(220, 220, 220);";
@@ -822,11 +817,27 @@ foreach ($results as $saisie) {
 
     echo "<tr style='background-color :$background_couleur'>\n";
 
-    echo '<td><input name="select_saisie['.$results->getPosition().']" value="1" type="checkbox" /></td>';
+    $prop = 'saisie_vierge';
+    foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+	foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
+	    if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES || $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES_AR) {
+		$prop = 'saisie_notifie';
+		break;
+	    }
+	}
+	if ($prop == 'saisie_notifie') {
+	    break;
+	}
+    }
+
+    if ($saisie->getAbsenceEleveTraitements()->count() != 0 && $prop != 'saisie_notifie') {
+	$prop = 'saisie_traite';
+    }
+    echo '<td><input name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" id="'.$prop.'_'.$results->getPosition().'"/></td>';
     echo '<input type="hidden" name="id_saisie['.$results->getPosition().']" value="'.$saisie->getPrimaryKey().'"/>';
 
     echo '<TD>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
     echo $saisie->getId();
     echo "</a>";
     echo '</TD>';
@@ -844,7 +855,7 @@ foreach ($results as $saisie) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_saisies_selection_traitement.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%; color: #330033'> ";
+	echo "<a href='liste_saisies_selection_traitement.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";
 	echo ($saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom());
 	echo "</a>";
 	echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=absences' target='_blank'>";
@@ -852,7 +863,7 @@ foreach ($results as $saisie) {
 	echo "</a>";
 	echo "</td>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_saisies_selection_traitement.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%; color: #330033'> ";
+	echo "<a href='liste_saisies_selection_traitement.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";
  	if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
 	    $photos = "../photos/eleves/".$nom_photo;
@@ -938,16 +949,16 @@ foreach ($results as $saisie) {
     echo '</TD>';
 
     echo '<TD>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 	echo "<table><tr><td>";
-	echo $traitement->getDescriptionCourte();
+	echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%;'> ";
+	echo $traitement->getDescription();
+	echo "</a></div>";
 	echo "</td></tr></table>";
     }
     if ($saisie->getAbsenceEleveTraitements()->isEmpty()) {
 	echo "&nbsp;";
     }
-    echo "</a>";
     echo '</TD>';
 
     echo '<TD><nobr>';
@@ -989,12 +1000,24 @@ echo '</TBODY>';
 echo '</TBODY>';
 
 echo '</table>';
+echo 'Sélectionner: ';
+echo '<a href="" onClick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true); return false;">Tous</a>, ';
+echo '<a href="" onClick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false); return false;">Aucun</a>, ';
+echo '<a href="" onClick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false);
+    SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_vierge\', true);
+    return false;">Non traités</a>, ';
+echo '<a href="" onClick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true);
+    SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_notifie\', false);
+    return false;">Non notifiés</a>';
+
+echo '<br/>';
 
 echo '<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>';
 
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 if ($id_traitement != null) {
-    echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.'</button>';
+    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
+    echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
     echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
 }
 if (isset($message_erreur_traitement)) {

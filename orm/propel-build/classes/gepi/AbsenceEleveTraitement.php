@@ -22,7 +22,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 * @return     String description
 	 *
 	 */
-	public function getDescriptionCourte() {
+	public function getDescription() {
 	    $desc = '';
 	    $desc .= strftime("%a %d %b %Y", $this->getUpdatedAt('U'));
 	    if ($this->getAbsenceEleveType() != null) {
@@ -33,6 +33,17 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	    }
 	    if ($this->getAbsenceEleveJustification() != null) {
 		$desc .= "; justification : ".$this->getAbsenceEleveJustification()->getNom();
+	    }
+	    $notif = false;
+	    foreach ($this->getAbsenceEleveNotifications() as $notification) {
+		if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES
+			|| $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES_AR) {
+		    $notif = true;
+		    break;
+		}
+	    }
+	    if ($notif) {
+		$desc .= "; Notifié";
 	    }
 	    if ($this->getCommentaire() != null && $this->getCommentaire() != '') {
 		$desc .= "; Commentaire : ".$this->getCommentaire();

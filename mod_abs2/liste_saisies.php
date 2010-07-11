@@ -842,7 +842,7 @@ foreach ($results as $saisie) {
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 	echo "<table><tr><td>";
-	echo $traitement->getDescriptionCourte();
+	echo $traitement->getDescription();
 	echo "</td></tr></table>";
     }
     if ($saisie->getAbsenceEleveTraitements()->isEmpty()) {

@@ -260,7 +260,7 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
     if ($traitement->getUtilisateurId() != $utilisateur->getPrimaryKey() || !$modifiable) {
 	echo "<nobr>";
 	echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."' style='display: block; height: 100%;'> ";
-	echo $traitement->getDescriptionCourte();
+	echo $traitement->getDescription();
 	echo "</a>";
 	echo "</nobr><br/>";
     }

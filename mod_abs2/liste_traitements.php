@@ -403,55 +403,6 @@ foreach (ClasseQuery::create()->distinct()->find() as $classe) {
 echo "</select>";
 echo '</TH>';
 
-//en tete filtre groupe
-echo '<TH>';
-echo '<nobr>';
-echo 'Groupe';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_groupe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_groupe"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_groupe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_groupe"/>';
-echo '</nobr>';
-echo '<br>';
-echo ("<select name=\"filter_groupe\">");
-echo "<option value='-1'></option>\n";
-foreach ($utilisateur->getGroupes() as $group) {
-	echo "<option value='".$group->getId()."'";
-	if ($filter_groupe == $group->getId()) echo " SELECTED ";
-	echo ">";
-	echo $group->getNameAvecClasses();
-	echo "</option>\n";
-}
-echo "</select>";
-echo '</TH>';
-
-//en tete filtre aid
-echo '<TH>';
-echo '<nobr>';
-echo 'AID';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_aid") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_aid"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_aid") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_aid"/>';
-echo '</nobr>';
-echo '<br>';
-echo ("<select name=\"filter_aid\">");
-echo "<option value='-1'></option>\n";
-foreach ($utilisateur->getAidDetailss() as $aid) {
-	echo "<option value='".$aid->getId()."'";
-	if ($filter_aid == $aid->getId()) echo " SELECTED ";
-	echo ">";
-	echo $aid->getNom();
-	echo "</option>\n";
-}
-echo "</select>";
-echo '</TH>';
-
-
 //en tete type d'absence
 echo '<TH>';
 echo '<nobr>';
@@ -654,11 +605,11 @@ foreach ($results as $traitement) {
     //donnees saisies
     echo '<TD>';
     if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
-	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 250px;'>";
+	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 220px;'>";
     }
     foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
+	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:88%;'>";
 	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
 	echo $saisie->getDescription();
 	echo "</a>";
@@ -683,42 +634,6 @@ foreach ($results as $traitement) {
 	echo $classe->getNomComplet();
     }
     if ($classe_col->isEmpty() != null) {
-	echo "&nbsp;";
-    }
-    echo "</a>";
-    echo '</TD>';
-
-    //donnees groupe
-    echo '<TD>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
-    $groupe_col = new PropelObjectCollection();
-    foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
-	if ($saisie->getGroupe() != null) {
-	    $groupe_col->add($saisie->getGroupe());
-	}
-    }
-    foreach ($groupe_col as $groupe) {
-	echo $groupe->getName();
-    }
-    if ($groupe_col->isEmpty() != null) {
-	echo "&nbsp;";
-    }
-    echo "</a>";
-    echo '</TD>';
-
-    //donnees aid
-    echo '<TD>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
-    $aid_col = new PropelObjectCollection();
-    foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
-	if ($saisie->getAidDetails() != null) {
-	    $groupe_col->add($saisie->getAidDetails());
-	}
-    }
-    foreach ($aid_col as $aid) {
-	echo $aid->getNom();
-    }
-    if ($aid_col->isEmpty() != null) {
 	echo "&nbsp;";
     }
     echo "</a>";
@@ -752,7 +667,7 @@ foreach ($results as $traitement) {
     echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 200px;'>";
     foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
+	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:88%;'>";
 	echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
 	echo $notification->getDescription();
 	echo "</a>";

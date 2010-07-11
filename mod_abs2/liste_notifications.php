@@ -461,12 +461,14 @@ foreach ($results as $notification) {
 
     echo "<tr style='background-color :$background_couleur'>\n";
 
+    //donnees id
     echo '<TD>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%;'> ";
     echo $notification->getId();
     echo "</a>";
     echo '</TD>';
 
+    //donnees utilisateur
     echo '<TD>';
     echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($notification->getUtilisateurProfessionnel() != null) {
@@ -475,6 +477,7 @@ foreach ($results as $notification) {
     echo "</a>";
     echo '</TD>';
 
+    //donnees eleve
     echo '<TD>';
     $eleve_col = new PropelObjectCollection();
     foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
@@ -486,7 +489,7 @@ foreach ($results as $notification) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%; color: #330033'> ";
+	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
 	echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences' target='_blank'>";
@@ -494,7 +497,7 @@ foreach ($results as $notification) {
 	echo "</a>";
 	echo "</td>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%; color: #330033'> ";
+	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
  	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 	    $nom_photo = $eleve->getNomPhoto(1);
 	    $photos = "../photos/eleves/".$nom_photo;
@@ -508,27 +511,28 @@ foreach ($results as $notification) {
     }
     echo '</TD>';
 
+    //donnees saisies
     echo '<TD>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isEmpty()) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 250px;'>";
     }
     foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
 	echo $saisie->getDescription();
+	echo "</a>";
 	echo "</td>";
 	echo "</tr>";
     }
     if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isEmpty()) {
 	echo "</table>";
     }
-    echo "</a>";
     echo '</TD>';
 
     echo '<TD><div style="width : 300px">';
-    echo "<a href='visu_traitement.php?id_traitement=".$notification->getAbsenceEleveTraitement()->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
-    echo $notification->getAbsenceEleveTraitement()->getDescriptionCourte();
+    echo "<a href='visu_traitement.php?id_traitement=".$notification->getAbsenceEleveTraitement()->getPrimaryKey()."' style='display: block; height: 100%;'> ";
+    echo $notification->getAbsenceEleveTraitement()->getDescription();
     echo "</a></div>";
     echo '</TD>';
 
