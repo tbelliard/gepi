@@ -438,16 +438,23 @@ class PropelCollection extends ArrayObject implements Serializable
 		    } else if (!$this->contains($element)) {
 				set_error_handler("error_2_exception");
 				try {
-					$this->get($element->getPrimaryKey());
+					if ($this->get($element->getPrimaryKey()) != null) {
+					    restore_error_handler();
+					    return false;
+					} else {
+					    $this->append($element);
+					    restore_error_handler();
+					    return true;
+					}
 				} catch (Exception $x) {
 					//il semble que l'element ne soit pas dans la collection
-					$this->append($element);
 					restore_error_handler(); //restore the old handler
+					$this->append($element);
 					return true;
 				}
+				restore_error_handler(); //restore the old handler
 		    }
 		}
-		restore_error_handler(); //restore the old handler
 		return false;
 	}
 
