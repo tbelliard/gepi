@@ -355,11 +355,22 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 */
 	public function getAidDetailss() {
 	    $temp_collection = parent::getAidDetailss();
+	    $pk_col = $temp_collection->getPrimaryKeys();
 
 	    if ($this->statut == "cpe") {
-		$temp_collection->addCollection(
-			AidDetailsQuery::create()->distinct()->useJAidElevesQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($this)->endUse()->endUse()->endUse()->find()
-			);
+		$aid_col = AidDetailsQuery::create()->distinct()
+			->useJAidElevesQuery()
+			->useEleveQuery()
+			->useJEleveCpeQuery()
+			->filterByUtilisateurProfessionnel($this)
+			->endUse()->endUse()->endUse()
+			->find();
+
+		foreach ($aid_col as $aid) {
+		    if (!in_array($aid->getPrimaryKey(), $pk_col)) {
+			$temp_collection->add($aid);
+		    }
+		}
 	    }
 	    return $temp_collection;
 	}
