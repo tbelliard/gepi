@@ -25,14 +25,14 @@ ul.css-tabs a {
 	float:left;
 	font-size:13px;
 	display:block;
-	padding:5px 8px;
+	padding:5px 2px;
 	text-decoration:none;
 	border:1px solid #666;
 	border-bottom:0px;
 	height:18px;
 	background-color:#efefef;
 	color:#777;
-	margin-right:2px;
+	margin-right:1px;
 	-moz-border-radius-topleft: 4px;
 	-moz-border-radius-topright:4px;
 	position:relative;
