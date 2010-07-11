@@ -40,7 +40,10 @@ class Eleve extends BaseEleve {
 	}
 
     // La méthode ci-dessous, au singulier, corrige le problème ci-dessus.
-	public function getClasse($periode) {
+	public function getClasse($periode = null) {
+		if ($periode == null) {
+		    $periode = $this->getPeriodeNoteOuverte();
+		}
 		require_once("helpers/PeriodeNoteHelper.php");
 		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
 		$c = new Criteria();
