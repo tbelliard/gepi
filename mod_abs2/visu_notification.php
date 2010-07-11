@@ -160,9 +160,7 @@ echo '</TD></tr>';
 echo '<tr><TD>';
 echo 'Type de notification : ';
 echo '</TD><TD>';
-//on ne modifie le type que si aucun envoi n'a ete fait
-if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL ||
-	$notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
+if ($notification->getModifiable()) {
     echo '<form method="post" action="enregistrement_modif_notification.php">';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="type"/>';
@@ -188,7 +186,7 @@ echo '</TD></tr>';
 echo '<tr><TD>';
 echo 'Statut : ';
 echo '</TD><TD>';
-//on ne modifie le statut si le type est courrier ou communication téléphonique
+//on ne modifie manuellement le statut si le type est courrier ou communication téléphonique
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER ||
 	$notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_TELEPHONIQUE) {
     echo '<form method="post" action="enregistrement_modif_notification.php">';
@@ -213,14 +211,253 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 echo '</TD></tr>';
 
 echo '<tr><TD>';
+echo 'Responsables : ';
+echo '</TD><TD>';
+foreach ($notification->getResponsableEleves() as $responsable) {
+    echo '<div>';
+    //$responsable = new ResponsableEleve();
+    echo $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom();
+    if ($notification->getModifiable()) {
+	echo '<div style="float: right;">';
+	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="pers_id" value="'.$responsable->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="modif" value="enlever_responsable"/>';
+	echo '<button type="submit">Enlever</button>';
+	echo '</form>';
+	echo '</div>';
+    }
+    echo '</div>';
+    if (!$notification->getResponsableEleves()->isLast()) {
+	echo '<br/>';
+    }
+}
+if ($notification->getModifiable()) {
+    if ($notification->getResponsableEleves()->count() != $notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies()->count()) {
+	echo '<div>';
+	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="modif" value="ajout_responsable"/>';
+	echo ("<select name=\"pers_id\">");
+	foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
+	    $responsable = $responsable_information->getResponsableEleve();
+	    echo '<option value="'.$responsable->getPersId().'"';
+	    echo ">".$responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom()."</option>\n";
+	}
+	echo "</select>";
+	echo '<button type="submit">Ajouter</button>';
+	echo '</form>';
+	echo '</div>';
+    }
+}
+echo '</TD></tr>';
+
+if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL) {
+    echo '<tr><TD>';
+    echo 'Email : ';
+    echo '</TD><TD>';
+    if (!$notification->getModifiable()) {
+	echo $notification->getEmail();
+    } else {
+	echo '<div>';
+	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="modif" value="email"/>';
+	echo ("<select name=\"email\">");
+	$selected = false;
+	foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
+	    $responsable = $responsable_information->getResponsableEleve();
+	    if ($responsable->getMel() != null && $responsable->getMel() != '') {
+		//$responsable = new ResponsableEleve();
+		echo '<option value="'.$responsable->getMel().'"';
+		if ($responsable->getMel() == $notification->getEmail()) {
+		    echo " selected ";
+		    $selected = true;
+		}
+		echo ">".$responsable->getMel()."</option>\n";
+	    }
+	}
+	if (!$selected) {
+	    echo '<option value="'.$notification->getEmail().'"';
+	    echo " selected ";
+	    echo ">".$notification->getEmail()."</option>\n";
+	}
+	echo "</select>";
+	echo '<button type="submit">Valider</button>';
+	echo '</form>';
+	echo '</div>';
+	echo ' ou ';
+	echo '<div>';
+	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="modif" value="email"/>';
+	echo '<input type="text" size="20" name="email" value=""/>';
+	echo '<button type="submit">Valider</button>';
+	echo '</form>';
+	echo '</div>';
+	
+    }
+    echo '</TD></tr>';
+}
+
+if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS ||
+	$notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_TELEPHONIQUE) {
+    echo '<tr><TD>';
+    echo 'Tel : ';
+    echo '</TD><TD>';
+    if (!$notification->getModifiable()) {
+	echo $notification->getTelephone();
+    } else {
+	echo '<div>';
+	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="modif" value="tel"/>';
+	echo ("<select name=\"tel\">");
+	$selected = false;
+	foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
+	    $responsable = $responsable_information->getResponsableEleve();
+	    if ($responsable->getTelPort() != null || $responsable->getTelPort() != '') {
+		echo '<option value="'.$responsable->getTelPort().'"';
+		if ($responsable->getTelPort() == $notification->getTelephone()) {
+		    echo " selected ";
+		    $selected = true;
+		}
+		echo ">".$responsable->getTelPort()."</option>\n";
+	    }
+
+	    if ($responsable->getTelPers() != null || $responsable->getTelPers() != '') {
+		echo '<option value="'.$responsable->getTelPers().'"';
+		if ($responsable->getTelPers() == $notification->getTelephone()) {
+		    echo " selected ";
+		    $selected = true;
+		}
+		echo ">".$responsable->getTelPers()."</option>\n";
+	    }
+
+	    if ($responsable->getTelProf() != null || $responsable->getTelProf() != '') {
+		echo '<option value="'.$responsable->getTelProf().'"';
+		if ($responsable->getTelProf() == $notification->getTelephone()) {
+		    echo " selected ";
+		    $selected = true;
+		}
+		echo ">".$responsable->getTelProf()."</option>\n";
+	    }
+	}
+	if (!$selected) {
+	    echo '<option value="'.$notification->getTelephone().'"';
+	    echo " selected ";
+	    echo ">".$notification->getTelephone()."</option>\n";
+	}
+	echo "</select>";
+	echo '<button type="submit">Valider</button>';
+	echo '</form>';
+	echo '</div>';
+	echo ' ou ';
+	echo '<div>';
+	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="modif" value="tel"/>';
+	echo '<input type="text" size="20" name="tel" value=""/>';
+	echo '<button type="submit">Valider</button>';
+	echo '</form>';
+	echo '</div>';
+
+    }
+    echo '</TD></tr>';
+}
+
+if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
+    echo '<tr><TD>';
+    echo 'Addresse : ';
+    echo '</TD><TD>';
+    //on ne modifie le statut si le type est courrier ou communication téléphonique
+    if ($notification->getResponsableEleveAdresse()->getAdr1() != null && $notification->getResponsableEleveAdresse()->getAdr1() != '') {
+	echo $notification->getResponsableEleveAdresse()->getAdr1();
+	echo '<br/>';
+    }
+    if ($notification->getResponsableEleveAdresse()->getAdr2() != null && $notification->getResponsableEleveAdresse()->getAdr2() != '') {
+	echo $notification->getResponsableEleveAdresse()->getAdr2();
+	echo '<br/>';
+    }
+    if ($notification->getResponsableEleveAdresse()->getAdr3() != null && $notification->getResponsableEleveAdresse()->getAdr3() != '') {
+	echo $notification->getResponsableEleveAdresse()->getAdr3();
+	echo '<br/>';
+    }
+    if ($notification->getResponsableEleveAdresse()->getAdr4() != null && $notification->getResponsableEleveAdresse()->getAdr4() != '') {
+	echo $notification->getResponsableEleveAdresse()->getAdr4();
+	echo '<br/>';
+    }
+    echo $notification->getResponsableEleveAdresse()->getCp().' '.$notification->getResponsableEleveAdresse()->getCommune();
+    if ($notification->getResponsableEleveAdresse()->getPays() != null && $notification->getResponsableEleveAdresse()->getPays() != '') {
+	echo '<br/>';
+	echo $notification->getResponsableEleveAdresse()->getPays();
+    }
+
+    if ($notification->getModifiable()) {
+	echo '<div>';
+	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+	echo '<input type="hidden" name="modif" value="tel"/>';
+	echo ("<select name=\"email\">");
+	$addresse_col = new PropelCollection();
+	foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
+	    if ($responsable_information->getResponsableEleve() != null && $responsable_information->getResponsableEleve()->getResponsableEleveAdresse() != null) {
+		 $addresse_col->add($responsable_information->getResponsableEleve()->getResponsableEleveAdresse());
+	    }
+	}
+	foreach ($addresse_col as $responsable_addresse) {
+	    //$responsable_addresse = new ResponsableEleveAdresse();
+	    echo '<option value="'.$responsable_addresse->getPrimaryKey().'"';
+	    if ($notification->getResponsableEleveAdresse() != null &&
+		    $responsable_addresse->getPrimaryKey() == $notification->getResponsableEleveAdresse()->getPrimaryKey()) {
+		echo " selected ";
+	    }
+	    echo ">";
+	    if ($responsable_addresse->getAdr1() != null && $responsable_addresse->getAdr1() != '') {
+		echo $responsable_addresse->getAdr1();
+		echo ' ';
+	    }
+	    if ($responsable_addresse->getAdr2() != null && $responsable_addresse->getAdr2() != '') {
+		echo $responsable_addresse->getAdr2();
+		echo ' ';
+	    }
+	    if ($responsable_addresse->getAdr3() != null && $responsable_addresse->getAdr3() != '') {
+		echo $responsable_addresse->getAdr3();
+		echo ' ';
+	    }
+	    if ($responsable_addresse->getAdr4() != null && $responsable_addresse->getAdr4() != '') {
+		echo $responsable_addresse->getAdr4();
+		echo ' ';
+	    }
+	    echo $responsable_addresse->getCp().' '.$notification->getResponsableEleveAdresse()->getCommune();
+	    if ($responsable_addresse->getPays() != null && $responsable_addresse->getPays() != '') {
+		echo ' ';
+		echo $responsable_addresse->getPays();
+	    }
+	    echo "</option>\n";
+	}
+	echo "</select>";
+	echo '<button type="submit">Modifier</button>';
+	echo '</form>';
+	echo '</div>';
+    }
+
+    echo '</TD></tr>';
+}
+
+echo '<tr><TD>';
 echo 'Commentaire (ajouté à la notification) : ';
 echo '</TD><TD>';
-echo '<form method="post" action="enregistrement_modif_notification.php">';
-echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
-echo '<input type="hidden" name="modif" value="commentaire"/>';
-echo '<input type="text" name="commentaire" size="30" value="'.$notification->getCommentaire().'" />';
-echo '<button type="submit">Modifier</button>';
-echo '</form>';
+if ($notification->getModifiable()) {
+    echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+    echo '<input type="hidden" name="modif" value="commentaire"/>';
+    echo '<input type="text" name="commentaire" size="30" value="'.$notification->getCommentaire().'" />';
+    echo '<button type="submit">Modifier</button>';
+    echo '</form>';
+} else {
+    echo $notification->getCommentaire();
+}
 echo '</TD></tr>';
 
 
@@ -248,6 +485,12 @@ if ($notification->getCreatedAt() != $notification->getUpdatedAt()) {
     echo '</TD></tr>';
 }
 
+echo '<tr><TD colspan="2" style="text-align : center;">';
+echo '<form method="post" action="generer_notification.php">';
+echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+echo '<button type="submit">Génerer la notification</button>';
+echo '</form>';
+echo '</TD></tr>';
 
 echo '</TBODY>';
 

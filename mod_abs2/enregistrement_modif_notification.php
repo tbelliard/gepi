@@ -83,6 +83,19 @@ if ( isset($_POST["creation_notification"])) {
 	$notification = new AbsenceEleveNotification();
 	$notification->setUtilisateurProfessionnel($utilisateur);
 	$notification->setAbsenceEleveTraitement($traitement);
+	//on a?oute tout les responsable légaux
+	$resp_col = new PropelCollection();
+	foreach ($traitement->getResponsablesInformationsSaisies() as $responsable_information) {
+	    $resp_col->add($responsable_information->getResponsableEleve());
+	    if ($responsable_information->getRespLegal() == '1') {
+		$notification->setEmail($responsable_information->getResponsableEleve()->getMel());
+		$notification->setTelephone($responsable_information->getResponsableEleve()->getTelPort());
+		$notification->setAdrId($responsable_information->getResponsableEleve()->getAdrId());
+	    }
+	}
+	foreach ($resp_col as $responsable) {
+	    $notification->addResponsableEleve($responsable);
+	}
 	$notification->save();
 	$_POST["id_notification"] = $notification->getId();
 	include("visu_notification.php");
@@ -105,16 +118,28 @@ if ( $modif == 'type') {
     }
 } else if ( $modif == 'commentaire') {
     $notification->setCommentaire($_POST["commentaire"]);
-} elseif ($modif == 'enlever_saisie') {
-    $count_delete = JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($traitement)->filterByASaisieId($_POST["id_saisie"])->limit(1)->delete();
+} elseif ($modif == 'enlever_responsable') {
+    if (0 != JNotificationResponsableEleveQuery::create()->filterByAbsenceEleveNotification($notification)->filterByPersId($_POST["pers_id"])->limit(1)->delete()) {
+	$message_enregistrement .= 'Responsable supprimé';
+    } else {
+	$message_enregistrement .= 'Suppression impossible';
+    }
+    include("visu_notification.php");
+    die;
+} elseif ($modif == 'ajout_responsable') {
+    $responsable = ResponsableEleveQuery::create()->findOneByPersId($_POST["pers_id"]);
+    if ($responsable != null && !$notification->getResponsableEleves()->contains($responsable)) {
+	$notification->addResponsableEleve($responsable);
+	$notification->save();
+    }
+} elseif ($modif == 'email') {
+    $notification->setEmail($_POST["email"]);
+} elseif ($modif == 'tel') {
+    $notification->setTelephone($_POST["tel"]);
 }
 
 if (!$notification->isModified()) {
-    if (isset($count_delete) && $count_delete > 0) {
-	$message_enregistrement .= 'Notification supprimée';
-    } else {
-	$message_enregistrement .= 'Pas de modifications';
-    }
+    $message_enregistrement .= 'Pas de modifications';
 } else {
     if ($notification->validate()) {
 	$notification->save();
