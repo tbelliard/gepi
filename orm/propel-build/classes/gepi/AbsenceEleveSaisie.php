@@ -81,9 +81,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$message .= $this->getFinAbs('H:i');
 
 	    } else {
-		$message .= 'De ';
+		$message .= 'Du ';
 		$message .= (strftime("%a %d %b %H:%M", $this->getDebutAbs('U')));
-		$message .= ' à ';
+		$message .= ' au ';
 		$message .= (strftime("%a %d %b %H:%M", $this->getFinAbs('U')));
 	    }
 	    return $message;
@@ -136,5 +136,20 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		}
 	    }
 	    return false;
+	}
+
+	/**
+	 *
+	 * Renvoi le nom du groupe ou une chaine vide
+	 * utilise pour les template tbs
+	 * @return     string
+	 *
+	 */
+	public function getGroupeName() {
+	    if ($this->getGroupe() != null) {
+		return $this->getGroupe()->getName();
+	    } else {
+		return '';
+	    }
 	}
 } // AbsenceEleveSaisie
