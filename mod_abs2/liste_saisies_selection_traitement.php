@@ -183,6 +183,7 @@ echo "<div class='css-panes' id='containDiv' style='overflow : none; float : lef
 
 
 $query = AbsenceEleveSaisieQuery::create();
+//$query->leftJoin('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoin('JTraitementSaisieEleve.AbsenceEleveTraitement')->with('AbsenceEleveTraitement');
 if ($filter_id != null && $filter_id != '') {
     $query->filterById($filter_id);
 }
@@ -619,17 +620,6 @@ echo '<TH>';
 echo '<nobr>';
 echo 'Cours';
 echo '</nobr>';
-echo '<br>';
-echo ("<select name=\"filter_cours\">");
-echo "<option value='-1'></option>\n";
-foreach ($utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle() as $edt_cours) {
-	echo "<option value='".$edt_cours->getIdCours()."'";
-	if ($filter_cours == $edt_cours->getIdCours()) echo " SELECTED ";
-	echo ">";
-	echo $edt_cours->getDescription();
-	echo "</option>\n";
-}
-echo "</select>";
 echo '</TH>';
 
 //en tete filtre date traitement
@@ -943,7 +933,7 @@ foreach ($results as $saisie) {
     echo '</TD>';
 
     echo '<TD>';
-    if ($saisie->getIdSIncidents() != null && $saisie->getIdSIncidents() != -1) {
+    if ($saisie->getIdSIncidents() !== null) {
 	echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
 	$saisie->getIdSIncidents()."&step=2&return_url=no_return'>Visualiser l'incident </a>";
     }

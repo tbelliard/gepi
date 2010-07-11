@@ -177,7 +177,7 @@ if ($notification->getModifiable()) {
     $i = 0;
     while (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i])) {
 	echo "<option value='$i'";
-	if ($notification->getTypeNotification() == $i) {
+	if ($notification->getTypeNotification() === $i) {
 	    echo 'selected';
 	}
 	echo ">".AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i]."</option>\n";
@@ -187,7 +187,9 @@ if ($notification->getModifiable()) {
     echo '<button type="submit">Modifier</button>';
     echo '</form>';
 } else {
-    echo AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()];
+    if (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()])) {
+	echo AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()];
+    }
 }
 echo '</TD></tr>';
 

@@ -496,7 +496,7 @@ foreach($eleve_col as $eleve) {
 
 
 				$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
-				$compter_hier = $eleve->getAbsenceSaisiesDuJour($Yesterday)->count();
+				$compter_hier = $eleve->getAbsenceEleveSaisiesDuJour($Yesterday)->count();
 				$color_hier = ($compter_hier >= 2) ? ' style="background-color: blue; text-align: center; color: white; font-weight: bold;"' : '';
 				$aff_compter_hier = ($compter_hier >= 1) ? $compter_hier.' enr.' : '';
 ?>
@@ -522,7 +522,7 @@ foreach($eleve_col as $eleve) {
 			for($i = 0; $i<$col_creneaux->count(); $i++){
 					$edt_creneau = $col_creneaux[$i];
 					$nb_creneau_a_saisir = 0; //il faut calculer le nombre de creneau a saisir pour faire un colspan
-					$absences_du_creneau = $eleve->getAbsenceSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+					$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 					if ($current_creneau != null && $current_creneau->getPrimaryKey() == $edt_creneau->getPrimaryKey()) {
 					    //on va faire une boucle pour calculer le nombre de creneaux dans ce cours
 					    if ($current_cours == null) {
@@ -533,7 +533,7 @@ foreach($eleve_col as $eleve) {
 						$it_creneau = $edt_creneau;
 						$absences_du_creneau = new PropelObjectCollection();
 						while ($it_creneau != null && $dt_fin_cours > $it_creneau->getHeuredebutDefiniePeriode()) {
-						    foreach ($eleve->getAbsenceSaisiesDuCreneau($it_creneau, $dt_date_absence_eleve) as $abs) {
+						    foreach ($eleve->getAbsenceEleveSaisiesDuCreneau($it_creneau, $dt_date_absence_eleve) as $abs) {
 							if (!$absences_du_creneau->contains($abs)) {
 							    $absences_du_creneau->append($abs);
 							}

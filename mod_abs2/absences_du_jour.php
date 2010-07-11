@@ -291,7 +291,7 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 			    </tr>
 
     <?php
-    $item_per_page = 0; //nombre de checkbox
+    $nb_checkbox = 0; //nombre de checkbox
     foreach($eleve_col as $eleve) {
 		//$eleve = new Eleve();
 			$saisie_affiches = array ();
@@ -304,7 +304,7 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 
 
 			$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
-			$compter_hier = $eleve->getAbsenceSaisiesDuJour($Yesterday)->count();
+			$compter_hier = $eleve->getAbsenceEleveSaisiesDuJour($Yesterday)->count();
 			$color_hier = ($compter_hier >= 1) ? ' style="background-color: red; text-align: center; color: white; font-weight: bold;"' : '';
 			$aff_compter_hier = ($compter_hier >= 1) ? $compter_hier.' enr.' : '';
 ?>
@@ -322,7 +322,7 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 			
 			for($i = 0; $i<$col_creneaux->count(); $i++){
 					$edt_creneau = $col_creneaux[$i];
-					$absences_du_creneau = $eleve->getAbsenceSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
+					$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 
 					$red = false;
 					foreach ($absences_du_creneau as $absence) {
@@ -351,7 +351,7 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 						continue;
 					    }
 					    $saisie_affiches[] = $saisie->getPrimaryKey();
-					    $item_per_page = $item_per_page + 1;
+					    $nb_checkbox = $nb_checkbox + 1;
 					    if ($saisie->getNotifiee()) {
 						$prop = 'saisie_notifie';
 					    } elseif ($saisie->getTraitee()) {
@@ -410,7 +410,7 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 	echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
 	echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
     }
-    echo '<input type="hidden" name="item_per_page" value="'.$item_per_page.'"/>';
+    echo '<input type="hidden" name="nb_checkbox" value="'.$nb_checkbox.'"/>';
 
     echo "</div>\n";
 }

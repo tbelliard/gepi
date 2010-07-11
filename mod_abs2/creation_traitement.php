@@ -60,10 +60,16 @@ if ($utilisateur->getStatut()!="cpe") {
 }
 
 
+$nb = 100;
+if (isset($_POST["nb_checkbox"])) {
+    $nb = $_POST["nb_checkbox"];
+} else if (isset($_POST["item_per_page"])) {
+    $nb = $_POST["item_per_page"];
+}
 if ( isset($_POST["creation_traitement"])) {
     $traitement = new AbsenceEleveTraitement();
     $traitement->setUtilisateurProfessionnel($utilisateur);
-    for($i=0; $i<$_POST["item_per_page"]; $i++) {
+    for($i=0; $i<$nb; $i++) {
 	if (isset($_POST["select_saisie"][$i])) {
 	    $traitement->addAbsenceEleveSaisie(AbsenceEleveSaisieQuery::create()->findPk($_POST["select_saisie"][$i]));
 	}
@@ -80,7 +86,7 @@ if ( isset($_POST["creation_traitement"])) {
     if ($traitement == null) {
 	$message_erreur_traitement = ' Erreur : aucun traitement trouvé';
     } else {
-	for($i=0; $i<$_POST["item_per_page"]; $i++) {
+	for($i=0; $i<$nb; $i++) {
 	    if (isset($_POST["select_saisie"][$i])) {
 		$saisie = AbsenceEleveSaisieQuery::create()->findPk($_POST["select_saisie"][$i]);
 		if (!$traitement->getAbsenceEleveSaisies()->contains($saisie)) {

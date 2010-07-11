@@ -339,7 +339,7 @@ if ($saisie->getCreatedAt() != $saisie->getUpdatedAt()) {
     echo '</TD></tr>';
 }
 
-if ($saisie->getIdSIncidents() != null && $saisie->getIdSIncidents() != -1) {
+if ($saisie->getIdSIncidents() !== null) {
     echo '<tr><TD>';
     echo 'Discipline : ';
     echo '</TD><TD>';

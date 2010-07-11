@@ -79,6 +79,7 @@ $filter_date_creation_absence_fin_plage = isset($_POST["filter_date_creation_abs
 $filter_date_modification = isset($_POST["filter_date_modification"]) ? $_POST["filter_date_modification"] :(isset($_GET["filter_date_modification"]) ? $_GET["filter_date_modification"] :(isset($_SESSION["filter_date_modification"]) ? $_SESSION["filter_date_modification"] : NULL));
 $filter_date_traitement_absence_debut_plage = isset($_POST["filter_date_traitement_absence_debut_plage"]) ? $_POST["filter_date_traitement_absence_debut_plage"] :(isset($_GET["filter_date_traitement_absence_debut_plage"]) ? $_GET["filter_date_traitement_absence_debut_plage"] :(isset($_SESSION["filter_date_traitement_absence_debut_plage"]) ? $_SESSION["filter_date_traitement_absence_debut_plage"] : NULL));
 $filter_date_traitement_absence_fin_plage = isset($_POST["filter_date_traitement_absence_fin_plage"]) ? $_POST["filter_date_traitement_absence_fin_plage"] :(isset($_GET["filter_date_traitement_absence_fin_plage"]) ? $_GET["filter_date_traitement_absence_fin_plage"] :(isset($_SESSION["filter_date_traitement_absence_fin_plage"]) ? $_SESSION["filter_date_traitement_absence_fin_plage"] : NULL));
+$filter_type = isset($_POST["filter_type"]) ? $_POST["filter_type"] :(isset($_GET["filter_type"]) ? $_GET["filter_type"] :(isset($_SESSION["filter_type"]) ? $_SESSION["filter_type"] : NULL));
 $filter_discipline = isset($_POST["filter_discipline"]) ? $_POST["filter_discipline"] :(isset($_GET["filter_discipline"]) ? $_GET["filter_discipline"] :(isset($_SESSION["filter_discipline"]) ? $_SESSION["filter_discipline"] : NULL));
 
 $reinit_filtre = isset($_POST["reinit_filtre"]) ? $_POST["reinit_filtre"] :(isset($_GET["reinit_filtre"]) ? $_GET["reinit_filtre"] :NULL);
@@ -98,6 +99,7 @@ if ($reinit_filtre == 'y') {
     $filter_date_creation_absence_debut_plage = NULL;
     $filter_date_creation_absence_fin_plage = NULL;
     $filter_date_modification = NULL;
+    $filter_type = NULL;
     $filter_date_traitement_absence_debut_plage = NULL;
     $filter_date_traitement_absence_fin_plage = NULL;
     $filter_discipline = NULL;
@@ -128,6 +130,7 @@ if (isset($filter_date_creation_absence_fin_plage) && $filter_date_creation_abse
 if (isset($filter_date_modification) && $filter_date_modification != null) $_SESSION['filter_date_modification'] = $filter_date_modification;
 if (isset($filter_date_traitement_absence_debut_plage) && $filter_date_traitement_absence_debut_plage != null) $_SESSION['filter_date_traitement_absence_debut_plage'] = $filter_date_traitement_absence_debut_plage;
 if (isset($filter_date_traitement_absence_fin_plage) && $filter_date_traitement_absence_fin_plage != null) $_SESSION['filter_date_traitement_absence_fin_plage'] = $filter_date_traitement_absence_fin_plage;
+if (isset($filter_type) && $filter_type != null) $_SESSION['filter_type'] = $filter_type;
 if (isset($filter_discipline) && $filter_discipline != null) $_SESSION['filter_discipline'] = $filter_discipline;
 
 $page_number = isset($_POST["page_number"]) ? $_POST["page_number"] :(isset($_GET["page_number"]) ? $_GET["page_number"] :(isset($_SESSION["page_number"]) ? $_SESSION["page_number"] : NULL));
@@ -253,6 +256,9 @@ if ($filter_date_traitement_absence_fin_plage != null && $filter_date_traitement
     $query->condition('trait1', 'AbsenceEleveTraitement.UpdatedAt <= ?', $date_traitement_absence_fin_plage);
     $query->condition('trait2', 'AbsenceEleveTraitement.UpdatedAt IS NULL');
     $query->where(array('trait1', 'trait2'), 'or');
+}
+if ($filter_type != null && $filter_type != '-1') {
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByATypeId($filter_type)->endUse()->endUse();
 }
 if ($filter_discipline != null && $filter_discipline == 'y') {
     $query->filterByIdSIncidents(null, Criteria::NOT_EQUAL);
@@ -875,7 +881,7 @@ foreach ($results as $saisie) {
     echo '</TD>';
 
     echo '<TD>';
-    if ($saisie->getIdSIncidents() != null && $saisie->getIdSIncidents() != -1) {
+    if ($saisie->getIdSIncidents() !== null) {
 	echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
 	$saisie->getIdSIncidents()."&step=2&return_url=no_return'>Visualiser l'incident </a>";
     }
