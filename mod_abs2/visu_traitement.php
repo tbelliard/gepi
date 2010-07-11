@@ -198,7 +198,7 @@ if ($traitement->getModifiable()) {
 	echo '<form method="post" action="enregistrement_modif_traitement.php">';
 	echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="type"/>';
-	echo ("<select name=\"id_type\">");
+	echo ("<select name=\"id_type\" onchange='submit()'>");
 	echo "<option value='-1'></option>\n";
 	$type_in_list = false;
 	foreach ($type_autorises as $type) {
@@ -237,7 +237,7 @@ $motifs = AbsenceEleveMotifQuery::create()->find();
 echo '<form method="post" action="enregistrement_modif_traitement.php">';
 echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 echo '<input type="hidden" name="modif" value="motif"/>';
-echo ("<select name=\"id_motif\">");
+echo ("<select name=\"id_motif\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 foreach ($motifs as $motif) {
     //$justification = new AbsenceEleveJustification();
@@ -261,7 +261,7 @@ $justifications = AbsenceEleveJustificationQuery::create()->find();
 echo '<form method="post" action="enregistrement_modif_traitement.php">';
 echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 echo '<input type="hidden" name="modif" value="justification"/>';
-echo ("<select name=\"id_justification\">");
+echo ("<select name=\"id_justification\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 foreach ($justifications as $justification) {
     //$justification = new AbsenceEleveJustification();
@@ -297,9 +297,15 @@ $eleve_prec_id = null;
 foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
     echo '<tr><td>';
     echo "<a href='liste_notifications.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%; color: #330033'> ";
-    echo (strftime("%a %d %b %Y %H:%M", $notification->getCreatedAt('U')));
-    echo ' '.$notification->getCommentaire();
-    echo ' statut : '.AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()];
+    if ($notification->getDateEnvoi() != null) {
+	echo (strftime("%a %d %b %Y %H:%M", $notification->getDateEnvoi('U')));
+    } else {
+	echo (strftime("%a %d %b %Y %H:%M", $notification->getCreatedAt('U')));
+    }
+    if (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()])) {
+	echo ', type : '.AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()];
+    }
+    echo ', statut : '.AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()];
     echo "</a>";
     echo '</td></tr>';
 }

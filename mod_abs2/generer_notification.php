@@ -72,6 +72,12 @@ if ($notification == null && !isset($_POST["creation_notification"])) {
     die();
 }
 
+if ($notification->getTypeNotification() != AbsenceEleveNotification::$TYPE_COURRIER && $notification->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_INITIAL) {
+    $message_enregistrement .= 'Génération impossible : envoi déjà effectué. ';
+    include("visu_notification.php");
+    die();
+
+}
 // load the TinyButStrong libraries
 if (version_compare(PHP_VERSION,'5')<0) {
     include_once('../tbs/tbs_class.php'); // TinyButStrong template engine for PHP 4
@@ -91,14 +97,17 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 
     //on va mettre les champs dans des variables simple
     if ($notification->getResponsableEleveAdresse()->getResponsableEleves()->count() == 1) {
+	//echo 'dest1';
 	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
 	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
     } else {
+	//echo 'dest2';
 	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
 	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom());
 	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getNext();
 	$destinataire .= '  '.strtoupper($responsable->getCivilite()).' '.strtoupper($responsable->getNom());;
     }
+    //echo $destinataire;
     $TBS->MergeField('destinataire',$destinataire);
 
     $adr = $notification->getResponsableEleveAdresse();
@@ -122,6 +131,8 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	$email_abs_etab = getSettingValue("gepiSchoolEmail");
     }
     $TBS->MergeField('mail_etab', $email_abs_etab);
+
+    $TBS->MergeField('notif_id',$notification->getId());
 
     //on récupère la liste des noms d'eleves
     $eleve_col = new PropelCollection();
@@ -177,6 +188,8 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     }
     $TBS->MergeField('mail_etab', $email_abs_etab);
 
+    $TBS->MergeField('notif_id',$notification->getId());
+
     //on récupère la liste des noms d'eleves
     $eleve_col = new PropelCollection();
     foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
@@ -216,8 +229,6 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     }
     $notification->save();
 
-    include('visu_notification.php');
-
 } else if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS) {
     if (getSettingValue("abs2_sms")!='y') {
 	$message_enregistrement = 'Envoi de sms désactivé.';
@@ -251,6 +262,8 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	$email_abs_etab = getSettingValue("gepiSchoolEmail");
     }
     $TBS->MergeField('mail_etab', $email_abs_etab);
+
+    $TBS->MergeField('notif_id',$notification->getId());
 
     //on récupère la liste des noms d'eleves
     $eleve_col = new PropelCollection();
@@ -344,6 +357,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	if (substr($reponse, 0, 5) == 'error') {
 	    $message_enregistrement .= 'Erreur : message non envoyé. Code erreur : '.$reponse;
 	    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_ECHEC);
+	    $notification->setErreurMessageEnvoi($reponse);
 	} else {
 	    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_SUCCES);
 	    $message_enregistrement = 'Envoi réussi.';
@@ -353,6 +367,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	if ($reponse != '80') {
 	    $message_enregistrement .= 'Erreur : message non envoyé. Code erreur : '.$reponse;
 	    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_ECHEC);
+	    $notification->setErreurMessageEnvoi($reponse);
 	} else {
 	    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_SUCCES);
 	    $message_enregistrement = 'Envoi réussi.';

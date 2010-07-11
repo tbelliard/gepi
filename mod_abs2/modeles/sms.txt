@@ -9,5 +9,5 @@ Merci de justifier le plus rapidement possible cette absence
 tel : [tel_etab]
 mel : [mail_etab]
 fax : [fax_etab]
-
+Ref/notif. : [notif_id]
 

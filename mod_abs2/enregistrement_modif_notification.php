@@ -136,6 +136,8 @@ if ( $modif == 'type') {
     $notification->setEmail($_POST["email"]);
 } elseif ($modif == 'tel') {
     $notification->setTelephone($_POST["tel"]);
+} elseif ($modif == 'adresse') {
+    $notification->setAdrId($_POST["adr_id"]);
 }
 
 if (!$notification->isModified()) {
