@@ -50,6 +50,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 
 	/**
 	 * The value for the type_saisie field.
+	 * Note: this column has a database default value of: 'NON_PRECISE'
 	 * @var        string
 	 */
 	protected $type_saisie;
@@ -97,6 +98,27 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	 * @var        array
 	 */
 	protected $sortableQueries = array();
+
+	/**
+	 * Applies default values to this object.
+	 * This method should be called from the object's constructor (or
+	 * equivalent initialization method).
+	 * @see        __construct()
+	 */
+	public function applyDefaultValues()
+	{
+		$this->type_saisie = 'NON_PRECISE';
+	}
+
+	/**
+	 * Initializes internal state of BaseAbsenceEleveType object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
+	}
 
 	/**
 	 * Get the [id] column value.
@@ -260,7 +282,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->type_saisie !== $v) {
+		if ($this->type_saisie !== $v || $this->isNew()) {
 			$this->type_saisie = $v;
 			$this->modifiedColumns[] = AbsenceEleveTypePeer::TYPE_SAISIE;
 		}
@@ -318,6 +340,10 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->type_saisie !== 'NON_PRECISE') {
+				return false;
+			}
+
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -1292,6 +1318,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->applyDefaultValues();
 		$this->resetModified();
 		$this->setNew(true);
 		$this->setDeleted(false);

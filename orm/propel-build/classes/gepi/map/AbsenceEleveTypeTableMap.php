@@ -41,7 +41,7 @@ class AbsenceEleveTypeTableMap extends TableMap {
 		$this->addColumn('NOM', 'Nom', 'VARCHAR', true, 250, null);
 		$this->addColumn('JUSTIFICATION_EXIGIBLE', 'JustificationExigible', 'BOOLEAN', false, null, null);
 		$this->addColumn('RESPONSABILITE_ETABLISSEMENT', 'ResponsabiliteEtablissement', 'BOOLEAN', false, null, null);
-		$this->addColumn('TYPE_SAISIE', 'TypeSaisie', 'VARCHAR', false, 50, null);
+		$this->addColumn('TYPE_SAISIE', 'TypeSaisie', 'VARCHAR', false, 50, 'NON_PRECISE');
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('SORTABLE_RANK', 'SortableRank', 'INTEGER', false, null, null);
 		// validators
