@@ -43,4 +43,25 @@ class AbsenceEleveNotification extends BaseAbsenceEleveNotification {
 	return $this->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL;
     }
 
+    /**
+     *
+     * Renvoi une description intelligible de la notification
+     *
+     * @return     String description
+     *
+     */
+    public function getDescription() {
+	$desc = '';
+	if (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$this->getTypeNotification()])) {
+	    $desc .= "type ".AbsenceEleveNotification::$LISTE_LABEL_TYPE[$this->getTypeNotification()];
+	}
+	if (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$this->getStatutEnvoi()])) {
+	    $desc .= " statut ".AbsenceEleveNotification::$LISTE_LABEL_STATUT[$this->getStatutEnvoi()];
+	}
+	if ($this->getDateEnvoi() != null) {
+	    $desc .= " ".(strftime("%a %d %b %Y %H:%M", $this->getDateEnvoi('U')));
+	}
+	return $desc;
+    }
+
 } // AbsenceEleveNotification

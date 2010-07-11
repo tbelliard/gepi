@@ -599,54 +599,30 @@ foreach ($utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle() as $ed
 echo "</select>";
 echo '</TH>';
 
-//en tete filtre date traitement
+//en tete type d'absence
 echo '<TH>';
 echo '<nobr>';
-echo 'Date traitement';
+echo 'type';
 echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_date_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_date_traitement"/>';
+if ($order == "asc_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="asc_type"/>';
 echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_date_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_date_traitement"/>';
+if ($order == "des_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="des_type"/>';
 echo '</nobr>';
 echo '<br>';
-echo '<nobr>';
-echo 'Entre : <input size="13" id="filter_date_traitement_absence_debut_plage" name="filter_date_traitement_absence_debut_plage" value="';
-if ($filter_date_traitement_absence_debut_plage != null) {echo $filter_date_traitement_absence_debut_plage;}
-echo '" />&nbsp;';
-echo '<img id="trigger_filter_date_traitement_absence_debut_plage" src="../images/icons/calendrier.gif"/>';
-echo '</nobr>';
-echo '
-<script type="text/javascript">
-    Calendar.setup({
-	inputField     :    "filter_date_traitement_absence_debut_plage",     // id of the input field
-	ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
-	button         :    "trigger_filter_date_traitement_absence_debut_plage",  // trigger for the calendar (button ID)
-	align          :    "Tl",           // alignment (defaults to "Bl")
-	singleClick    :    true,
-	showsTime	:   true
-    });
-</script>';
-echo '<br>';
-echo '<nobr>';
-echo 'Et : <input size="13" id="filter_date_traitement_absence_fin_plage" name="filter_date_traitement_absence_fin_plage" value="';
-if ($filter_date_traitement_absence_fin_plage != null) {echo $filter_date_traitement_absence_fin_plage;}
-echo '" />&nbsp;';
-echo '<img id="trigger_filter_date_traitement_absence_fin_plage" src="../images/icons/calendrier.gif"/>';
-echo '</nobr>';
-echo '
-<script type="text/javascript">
-    Calendar.setup({
-	inputField     :    "filter_date_traitement_absence_fin_plage",     // id of the input field
-	ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
-	button         :    "trigger_filter_date_traitement_absence_fin_plage",  // trigger for the calendar (button ID)
-	align          :    "Tl",           // alignment (defaults to "Bl")
-	singleClick    :    true,
-	showsTime	:   true
-    });
-</script>';
+echo ("<select name=\"filter_type\">");
+echo "<option value='-1'></option>\n";
+foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
+	echo "<option value='".$type->getId()."'";
+	if ($filter_type == $type->getId()) echo " SELECTED ";
+	echo ">";
+	echo $type->getNom();
+	echo "</option>\n";
+}
+echo "</select>";
 echo '</TH>';
+
 
 //en tete filtre date creation
 echo '<TH>';

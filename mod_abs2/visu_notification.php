@@ -388,27 +388,29 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     echo '<tr><TD>';
     echo 'Addresse : ';
     echo '</TD><TD>';
-    //on ne modifie le statut si le type est courrier ou communication téléphonique
-    if ($notification->getResponsableEleveAdresse()->getAdr1() != null && $notification->getResponsableEleveAdresse()->getAdr1() != '') {
-	echo $notification->getResponsableEleveAdresse()->getAdr1();
-	echo '<br/>';
-    }
-    if ($notification->getResponsableEleveAdresse()->getAdr2() != null && $notification->getResponsableEleveAdresse()->getAdr2() != '') {
-	echo $notification->getResponsableEleveAdresse()->getAdr2();
-	echo '<br/>';
-    }
-    if ($notification->getResponsableEleveAdresse()->getAdr3() != null && $notification->getResponsableEleveAdresse()->getAdr3() != '') {
-	echo $notification->getResponsableEleveAdresse()->getAdr3();
-	echo '<br/>';
-    }
-    if ($notification->getResponsableEleveAdresse()->getAdr4() != null && $notification->getResponsableEleveAdresse()->getAdr4() != '') {
-	echo $notification->getResponsableEleveAdresse()->getAdr4();
-	echo '<br/>';
-    }
-    echo $notification->getResponsableEleveAdresse()->getCp().' '.$notification->getResponsableEleveAdresse()->getCommune();
-    if ($notification->getResponsableEleveAdresse()->getPays() != null && $notification->getResponsableEleveAdresse()->getPays() != '') {
-	echo '<br/>';
-	echo $notification->getResponsableEleveAdresse()->getPays();
+    if ($notification->getResponsableEleveAdresse() != null) {
+	//on ne modifie le statut si le type est courrier ou communication téléphonique
+	if ($notification->getResponsableEleveAdresse()->getAdr1() != null && $notification->getResponsableEleveAdresse()->getAdr1() != '') {
+	    echo $notification->getResponsableEleveAdresse()->getAdr1();
+	    echo '<br/>';
+	}
+	if ($notification->getResponsableEleveAdresse()->getAdr2() != null && $notification->getResponsableEleveAdresse()->getAdr2() != '') {
+	    echo $notification->getResponsableEleveAdresse()->getAdr2();
+	    echo '<br/>';
+	}
+	if ($notification->getResponsableEleveAdresse()->getAdr3() != null && $notification->getResponsableEleveAdresse()->getAdr3() != '') {
+	    echo $notification->getResponsableEleveAdresse()->getAdr3();
+	    echo '<br/>';
+	}
+	if ($notification->getResponsableEleveAdresse()->getAdr4() != null && $notification->getResponsableEleveAdresse()->getAdr4() != '') {
+	    echo $notification->getResponsableEleveAdresse()->getAdr4();
+	    echo '<br/>';
+	}
+	echo $notification->getResponsableEleveAdresse()->getCp().' '.$notification->getResponsableEleveAdresse()->getCommune();
+	if ($notification->getResponsableEleveAdresse()->getPays() != null && $notification->getResponsableEleveAdresse()->getPays() != '') {
+	    echo '<br/>';
+	    echo $notification->getResponsableEleveAdresse()->getPays();
+	}
     }
 
     if ($notification->getModifiable()) {
@@ -447,7 +449,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 		echo $responsable_addresse->getAdr4();
 		echo ' ';
 	    }
-	    echo $responsable_addresse->getCp().' '.$notification->getResponsableEleveAdresse()->getCommune();
+	    echo $responsable_addresse->getCp().' '.$responsable_addresse->getCommune();
 	    if ($responsable_addresse->getPays() != null && $responsable_addresse->getPays() != '') {
 		echo ' ';
 		echo $responsable_addresse->getPays();
@@ -507,7 +509,8 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     }
     echo '</form>';
     echo '</TD></tr>';
-} else {
+}
+if ($notification->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_INITIAL) {
     echo '<tr><TD colspan="2" style="text-align : center;">';
     echo '<form method="post" action="enregistrement_modif_notification.php">';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';

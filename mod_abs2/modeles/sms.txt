@@ -1,13 +1,1 @@
-Madame, Monsieur [destinataire]
-
-[el_col;block=begin][el_col.getPrenom] [el_col.getNom] [el_col.getClasse.getNomComplet] est absent:
-[saisies;block=begin;p1=[el_col.getIdEleve]][saisies.getDateDescription] [saisies.getGroupeName;if [val]!='';then 'cours de [val]'] 
-[saisies;block=end] 
-[el_col;block=end]
-Merci de justifier le plus rapidement possible cette absence
-[nom_etab]
-tel : [tel_etab]
-mel : [mail_etab]
-fax : [fax_etab]
-Ref/notif. : [notif_id]
-
+Madame, Monsieur [destinataire]***[el_col;block=begin][el_col.getPrenom] [el_col.getNom] [el_col.getClasse.getNomComplet] est absent:***[saisies;block=begin;p1=[el_col.getIdEleve]][saisies.getDateDescription] [saisies.getGroupeName;if [val]!='';then 'cours de [val]']***[saisies;block=end]***[el_col;block=end]Merci de justifier le plus rapidement possible cette absence***[nom_etab] ***tel: [tel_etab]***mel: [mail_etab]***fax: [fax_etab]***Ref/notif: [notif_id]

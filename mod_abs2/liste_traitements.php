@@ -69,6 +69,7 @@ $filter_classe = isset($_POST["filter_classe"]) ? $_POST["filter_classe"] :(isse
 $filter_groupe = isset($_POST["filter_groupe"]) ? $_POST["filter_groupe"] :(isset($_GET["filter_groupe"]) ? $_GET["filter_groupe"] :(isset($_SESSION["filter_groupe"]) ? $_SESSION["filter_groupe"] : NULL));
 $filter_aid = isset($_POST["filter_aid"]) ? $_POST["filter_aid"] :(isset($_GET["filter_aid"]) ? $_GET["filter_aid"] :(isset($_SESSION["filter_aid"]) ? $_SESSION["filter_aid"] : NULL));
 $filter_type = isset($_POST["filter_type"]) ? $_POST["filter_type"] :(isset($_GET["filter_type"]) ? $_GET["filter_type"] :(isset($_SESSION["filter_type"]) ? $_SESSION["filter_type"] : NULL));
+$filter_justification = isset($_POST["filter_justification"]) ? $_POST["filter_justification"] :(isset($_GET["filter_justification"]) ? $_GET["filter_justification"] :(isset($_SESSION["filter_justification"]) ? $_SESSION["filter_justification"] : NULL));
 $filter_date_debut_absence_fin_plage = isset($_POST["filter_date_debut_absence_fin_plage"]) ? $_POST["filter_date_debut_absence_fin_plage"] :(isset($_GET["filter_date_debut_absence_fin_plage"]) ? $_GET["filter_date_debut_absence_fin_plage"] :(isset($_SESSION["filter_date_debut_absence_fin_plage"]) ? $_SESSION["filter_date_debut_absence_fin_plage"] : NULL));
 $filter_date_fin_absence_debut_plage = isset($_POST["filter_date_fin_absence_debut_plage"]) ? $_POST["filter_date_fin_absence_debut_plage"] :(isset($_GET["filter_date_fin_absence_debut_plage"]) ? $_GET["filter_date_fin_absence_debut_plage"] :(isset($_SESSION["filter_date_fin_absence_debut_plage"]) ? $_SESSION["filter_date_fin_absence_debut_plage"] : NULL));
 $filter_date_fin_absence_fin_plage = isset($_POST["filter_date_fin_absence_fin_plage"]) ? $_POST["filter_date_fin_absence_fin_plage"] :(isset($_GET["filter_date_fin_absence_fin_plage"]) ? $_GET["filter_date_fin_absence_fin_plage"] :(isset($_SESSION["filter_date_fin_absence_fin_plage"]) ? $_SESSION["filter_date_fin_absence_fin_plage"] : NULL));
@@ -90,6 +91,7 @@ if ($reinit_filtre == 'y') {
     $filter_groupe = NULL;
     $filter_aid = NULL;
     $filter_type = NULL;
+    $filter_justification = NULL;
     $filter_date_debut_absence_fin_plage = NULL;
     $filter_date_fin_absence_debut_plage = NULL;
     $filter_date_fin_absence_fin_plage = NULL;
@@ -117,6 +119,7 @@ if (isset($filter_classe) && $filter_classe != null) $_SESSION['filter_classe'] 
 if (isset($filter_groupe) && $filter_groupe != null) $_SESSION['filter_groupe'] = $filter_groupe;
 if (isset($filter_aid) && $filter_aid != null) $_SESSION['filter_aid'] = $filter_aid;
 if (isset($filter_type) && $filter_type != null) $_SESSION['filter_type'] = $filter_type;
+if (isset($filter_justification) && $filter_justification != null) $_SESSION['filter_justification'] = $filter_justification;
 if (isset($filter_date_debut_absence_fin_plage) && $filter_date_debut_absence_fin_plage != null) $_SESSION['filter_date_debut_absence_fin_plage'] = $filter_date_debut_absence_fin_plage;
 if (isset($filter_date_fin_absence_debut_plage) && $filter_date_fin_absence_debut_plage != null) $_SESSION['filter_date_fin_absence_debut_plage'] = $filter_date_fin_absence_debut_plage;
 if (isset($filter_date_fin_absence_fin_plage) && $filter_date_fin_absence_fin_plage != null) $_SESSION['filter_date_fin_absence_fin_plage'] = $filter_date_fin_absence_fin_plage;
@@ -189,6 +192,7 @@ if ($filter_eleve != null && $filter_eleve != '') {
     addOr(ElevePeer::PRENOM ,'%'.$filter_eleve.'%', Criteria::LIKE)->endUse()->endUse()->endUse();
 }
 if ($filter_classe != null && $filter_classe != '-1') {
+    $query->useJTraitementSaisieEleveQuery()->endUse();
     $query->leftJoin('JTraitementSaisieEleve.AbsenceEleveSaisie');
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
     $query->leftJoin('Eleve.JEleveClasse');
@@ -197,6 +201,7 @@ if ($filter_classe != null && $filter_classe != '-1') {
     $query->where(array('cond1', 'cond2'), 'or');
 }
 if ($filter_groupe != null && $filter_groupe != '-1') {
+    $query->useJTraitementSaisieEleveQuery()->endUse();
     $query->leftJoin('JTraitementSaisieEleve.AbsenceEleveSaisie');
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
     $query->leftJoin('Eleve.JEleveGroupe');
@@ -205,12 +210,19 @@ if ($filter_groupe != null && $filter_groupe != '-1') {
     $query->where(array('cond1', 'cond2'), 'or');
 }
 if ($filter_aid != null && $filter_aid != '-1') {
+    $query->useJTraitementSaisieEleveQuery()->endUse();
     $query->leftJoin('JTraitementSaisieEleve.AbsenceEleveSaisie');
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
     $query->leftJoin('Eleve.JAidEleves');
     $query->condition('cond1', 'JAidEleves.IdAid = ?', $filter_aid);
     $query->condition('cond2', 'AbsenceEleveSaisie.IdAid = ?', $filter_aid);
     $query->where(array('cond1', 'cond2'), 'or');
+}
+if ($filter_type != null && $filter_type != '-1') {
+    $query->filterByATypeId($filter_type);
+}
+if ($filter_justification != null && $filter_justification != '-1') {
+    $query->filterByAJustificationId($filter_justification);
 }
 if ($filter_date_creation_traitement_debut_plage != null && $filter_date_creation_traitement_debut_plage != '-1') {
     $date_creation_traitement_debut_plage = new DateTime(str_replace("/",".",$filter_date_creation_traitement_debut_plage));
@@ -249,9 +261,13 @@ if ($order == "asc_id") {
 } else if ($order == "des_aid") {
     $query->useAidDetailsQuery()->orderBy('Nom', Criteria::DESC)->endUse();
 } else if ($order == "asc_type") {
-    $query->useAidDetailsQuery()->orderBy('Nom', Criteria::ASC)->endUse();
+    $query->orderBy('ATypeId', Criteria::ASC);
 } else if ($order == "des_type") {
-    $query->useAidDetailsQuery()->orderBy('Nom', Criteria::DESC)->endUse();
+    $query->orderBy('ATypeId', Criteria::DESC);
+} else if ($order == "asc_justification") {
+    $query->orderBy('AJustificationId', Criteria::ASC);
+} else if ($order == "des_justification") {
+    $query->orderBy('AJustificationId', Criteria::DESC);
 } else if ($order == "asc_date_debut") {
     $query->orderBy('DebutAbs', Criteria::ASC);
 } else if ($order == "des_date_debut") {
@@ -270,6 +286,8 @@ if ($order == "asc_id") {
     $query->orderBy('CreatedAt', Criteria::DESC);
 } else if ($order == "asc_date_modification") {
     $query->orderBy('UpdatedAt', Criteria::ASC);
+} else if ($order == "des_date_modification") {
+    $query->orderBy('UpdatedAt', Criteria::DESC);
 } else if ($order == "des_date_modification") {
     $query->orderBy('UpdatedAt', Criteria::DESC);
 }
@@ -458,6 +476,43 @@ foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 echo "</select>";
 echo '</TH>';
 
+//en tete justification d'absence
+echo '<TH>';
+echo '<nobr>';
+echo 'justification';
+echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "asc_justification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="asc_justification"/>';
+echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "des_justification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="des_justification"/>';
+echo '</nobr>';
+echo '<br>';
+echo ("<select name=\"filter_justification\">");
+echo "<option value='-1'></option>\n";
+foreach (AbsenceEleveJustificationQuery::create()->find() as $justification) {
+	echo "<option value='".$justification->getId()."'";
+	if ($filter_justification == $justification->getId()) echo " SELECTED ";
+	echo ">";
+	echo $justification->getNom();
+	echo "</option>\n";
+}
+echo "</select>";
+echo '</TH>';
+
+//en tete notification d'absence
+echo '<TH>';
+echo '<nobr>';
+echo '&nbsp;notification&nbsp;';
+echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "asc_notification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="asc_notification"/>';
+echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+if ($order == "des_notification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="des_notification"/>';
+echo '</nobr>';
+echo '<br>';
+echo '</TH>';
 
 //en tete filtre date creation
 echo '<TH>';
@@ -546,12 +601,14 @@ foreach ($results as $traitement) {
 
     echo "<tr style='background-color :$background_couleur'>\n";
 
+    //donnees id
     echo '<TD>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%;'> ";
     echo $traitement->getId();
     echo "</a>";
     echo '</TD>';
 
+    //donnees utilisateur
     echo '<TD>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($traitement->getUtilisateurProfessionnel() != null) {
@@ -560,6 +617,7 @@ foreach ($results as $traitement) {
     echo "</a>";
     echo '</TD>';
 
+    //donnees eleve
     echo '<TD>';
     $eleve_col = new PropelObjectCollection();
     foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
@@ -571,7 +629,7 @@ foreach ($results as $traitement) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_traitements.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%; color: #330033'> ";
+	echo "<a href='liste_traitements.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
 	echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences' target='_blank'>";
@@ -579,7 +637,7 @@ foreach ($results as $traitement) {
 	echo "</a>";
 	echo "</td>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_traitements.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%; color: #330033'> ";
+	echo "<a href='liste_traitements.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";
  	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 	    $nom_photo = $eleve->getNomPhoto(1);
 	    $photos = "../photos/eleves/".$nom_photo;
@@ -593,24 +651,26 @@ foreach ($results as $traitement) {
     }
     echo '</TD>';
 
+    //donnees saisies
     echo '<TD>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 250px;'>";
     }
     foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
 	echo $saisie->getDescription();
+	echo "</a>";
 	echo "</td>";
 	echo "</tr>";
     }
     if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
 	echo "</table>";
     }
-    echo "</a>";
     echo '</TD>';
 
+    //donnees classe
     echo '<TD>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     $classe_col = new PropelObjectCollection();
@@ -628,6 +688,7 @@ foreach ($results as $traitement) {
     echo "</a>";
     echo '</TD>';
 
+    //donnees groupe
     echo '<TD>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     $groupe_col = new PropelObjectCollection();
@@ -645,6 +706,7 @@ foreach ($results as $traitement) {
     echo "</a>";
     echo '</TD>';
 
+    //donnees aid
     echo '<TD>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     $aid_col = new PropelObjectCollection();
@@ -662,6 +724,7 @@ foreach ($results as $traitement) {
     echo "</a>";
     echo '</TD>';
 
+    //donnees type
     echo '<TD><nobr>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     if ($traitement->getAbsenceEleveType() != null) {
@@ -671,6 +734,34 @@ foreach ($results as $traitement) {
     }
     echo "</a>";
     echo '</nobr></TD>';
+
+    //donnees justification
+    echo '<TD><nobr>';
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    if ($traitement->getAbsenceEleveJustification() != null) {
+	echo $traitement->getAbsenceEleveJustification()->getNom();
+    } else {
+	echo "&nbsp;";
+    }
+    echo "</a>";
+    echo '</nobr></TD>';
+
+    //donnees notification
+    echo '<TD>';
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 200px;'>";
+    foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
+	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
+	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
+	echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
+	echo $notification->getDescription();
+	echo "</a>";
+	echo "</td>";
+	echo "</tr>";
+    }
+    echo "</table>";
+    echo "</a>";
+    echo '</TD>';
 
     echo '<TD><nobr>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
