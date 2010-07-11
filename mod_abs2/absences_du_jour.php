@@ -55,24 +55,22 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
-if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
-    die("Le module n'est pas activé.");
+if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
+    die("acces interdit");
 }
 
+
 //récupération des paramètres de la requète
-$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :(isset($_SESSION["id_groupe_abs"]) ? $_SESSION["id_groupe_abs"] : NULL));
-$id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] :(isset($_SESSION["id_classe_abs"]) ? $_SESSION["id_classe_abs"] : NULL));
-$id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? $_GET["id_aid"] :(isset($_SESSION["id_aid"]) ? $_SESSION["id_aid"] : NULL));
-$type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(isset($_GET["type_selection"]) ? $_GET["type_selection"] :(isset($_SESSION["type_selection"]) ? $_SESSION["type_selection"] : NULL));
+//contrairement aux autres pages, on ne recupere pas les parametres dans la session
+$nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] : NULL);
+$id_eleve = isset($_POST["id_eleve"]) ? $_POST["id_eleve"] :(isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : NULL);
+$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] : NULL);
+$id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_classe"]) ? $_GET["id_classe"] : NULL);
+$id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? $_GET["id_aid"] : NULL);
+$type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(isset($_GET["type_selection"]) ? $_GET["type_selection"] : NULL);
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :(isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] :(isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
-$cahier_texte = isset($_POST["cahier_texte"]) ? $_POST["cahier_texte"] :(isset($_GET["cahier_texte"]) ? $_GET["cahier_texte"] :NULL);
 
-if (isset($id_groupe) && $id_groupe != null) $_SESSION['id_groupe_abs'] = $id_groupe;
-if (isset($id_classe) && $id_classe != null) $_SESSION['id_classe_abs'] = $id_classe;
-if (isset($id_aid) && $id_aid != null) $_SESSION['id_aid'] = $id_aid;
-if (isset($type_selection) && $type_selection != null) $_SESSION['type_selection'] = $type_selection;
 if (isset($date_absence_eleve) && $date_absence_eleve != null) $_SESSION['date_absence_eleve'] = $date_absence_eleve;
-
 
 //initialisation des variables
 $current_classe = null;
@@ -103,18 +101,6 @@ if ($type_selection == 'id_groupe') {
     }
 }
 
-if ($cahier_texte != null && $cahier_texte != "") {
-    $location = "Location: ../cahier_texte/index.php";
-    if ($id_groupe != null) {
-	$location .= "?id_groupe=".$id_groupe;
-    } else if ($current_cours != null) {
-	$location .= "?id_groupe=".$current_cours->getIdGroupe();
-    }
-    header($location);
-    die();
-}
-
-
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
@@ -133,14 +119,20 @@ include('menu_abs2.inc.php');
 echo "<div class='css-panes' id='containDiv'>\n";
 
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
+
 //on affiche une boite de selection avec les groupes et les creneaux
-if (!$utilisateur->getGroupes()->isEmpty()) {
+if ($utilisateur->getStatut() == "cpe") {
+    $groupe_col = $utilisateur->getGroupes();
+} else {
+    $groupe_col = GroupeQuery::create()->find();
+}
+if (!$groupe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
     echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
-    echo ("Groupe : <select name=\"id_groupe\">");
+    echo ("Groupe : <select name=\"id_groupe\" onchange='submit()'>>");
     echo "<option value='-1'>choisissez un groupe</option>\n";
-    foreach ($utilisateur->getGroupes() as $group) {
+    foreach ($groupe_col as $group) {
 	    echo "<option value='".$group->getId()."'";
 	    if ($id_groupe == $group->getId()) echo " SELECTED ";
 	    echo ">";
@@ -148,18 +140,6 @@ if (!$utilisateur->getGroupes()->isEmpty()) {
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
-
-    echo '<input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
-    echo '
-    <script type="text/javascript">
-	Calendar.setup({
-	    inputField     :    "date_absence_eleve_1",     // id of the input field
-	    ifFormat       :    "%d/%m/%Y",      // format of the input field
-	    button         :    "date_absence_eleve_1",  // trigger for the calendar (button ID)
-	    align          :    "Bl",           // alignment (defaults to "Bl")
-	    singleClick    :    true
-	});
-    </script>';
     echo '<button type="submit">Afficher les eleves</button>';
     echo "</form>";
     echo "</td>";
@@ -167,12 +147,17 @@ if (!$utilisateur->getGroupes()->isEmpty()) {
 
 //on affiche une boite de selection avec les classe
 if ($utilisateur->getStatut() == "cpe") {
+    $classe_col = $utilisateur->getClasses();
+} else {
+    $classe_col = ClasseQuery::create()->find();
+}
+if (!$classe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
     echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-    echo ("Classe : <select name=\"id_classe\">");
+    echo ("Classe : <select name=\"id_classe\" onchange='submit()'>");
     echo "<option value='-1'>choisissez une classe</option>\n";
-    foreach ($utilisateur->getClasses() as $classe) {
+    foreach ($classe_col as $classe) {
 	    echo "<option value='".$classe->getId()."'";
 	    if ($id_classe == $classe->getId()) echo " SELECTED ";
 	    echo ">";
@@ -180,31 +165,25 @@ if ($utilisateur->getStatut() == "cpe") {
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
-
-    echo '<input size="8" id="date_absence_eleve_2" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
-    echo '
-    <script type="text/javascript">
-	Calendar.setup({
-	    inputField     :    "date_absence_eleve_2",     // id of the input field
-	    ifFormat       :    "%d/%m/%Y",      // format of the input field
-	    button         :    "date_absence_eleve_2",  // trigger for the calendar (button ID)
-	    align          :    "Bl",           // alignment (defaults to "Bl")
-	    singleClick    :    true
-	});
-    </script>';
     echo '<button type="submit">Afficher les eleves</button>';
     echo "</form>";
     echo "</td>";
 }
 
+
 //on affiche une boite de selection avec les aid et les creneaux
-if (getSettingValue("abs2_saisie_prof_hors_cours")=='y' && !$utilisateur->getAidDetailss()->isEmpty()) {
+if ($utilisateur->getStatut() == "cpe") {
+    $aid_col = $utilisateur->getAidDetailss();
+} else {
+    $aid_col = AidDetailsQuery::create()->find();
+}
+if (!$aid_col->isEmpty()) {
     echo "<td style='border : 1px solid;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
     echo '<input type="hidden" name="type_selection" value="id_aid"/>';
-    echo ("Aid : <select name=\"id_aid\">");
+    echo ("Aid : <select name=\"id_aid\" onchange='submit()'>");
     echo "<option value='-1'>choisissez une aid</option>\n";
-    foreach ($utilisateur->getAidDetailss() as $aid) {
+    foreach ($aid_col as $aid) {
 	    echo "<option value='".$aid->getPrimaryKey()."'";
 	    if ($id_aid == $aid->getPrimaryKey()) echo " SELECTED ";
 	    echo ">";
@@ -212,22 +191,19 @@ if (getSettingValue("abs2_saisie_prof_hors_cours")=='y' && !$utilisateur->getAid
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
-    
-
-    echo '<input size="8" id="date_absence_eleve_3" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
-    echo '<script type="text/javascript">
-	Calendar.setup({
-	    inputField     :    "date_absence_eleve_3",     // id of the input field
-	    ifFormat       :    "%d/%m/%Y",      // format of the input field
-	    button         :    "date_absence_eleve_3",  // trigger for the calendar (button ID)
-	    align          :    "Bl",           // alignment (defaults to "Bl")
-	    singleClick    :    true
-	});
-    </script>';
     echo '<button type="submit">Afficher les eleves</button>';
     echo "</form>";
     echo "</td>";
 }
+
+//on affiche une boite de selection pour l'eleve
+echo "<td style='border : 1px solid; padding : 10 px;'>";
+echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
+echo '<input type="text" name="nom_eleve" size="10" value="'.$nom_eleve.'"/> ';
+echo '<button type="submit">Rechercher</button>';
+echo '</form>';
+echo '</td>';
 
 echo "</tr></table>";
 
@@ -237,11 +213,24 @@ if (isset($message_enregistrement)) {
 
 //afichage des eleves. Il nous faut au moins un groupe ou une aid
 $eleve_col = new PropelCollection();
-if (isset($current_groupe) && $current_groupe != null) {
+
+if ($type_selection == 'id_eleve') {
+    $query = EleveQuery::create();
+    if ($utilisateur->getStatut() == "cpe") {
+	$query->useJEleveCpeQuery()->filterByCpeLogin($utilisateur->getLogin())->endUse();
+    }
+    $eleve_col->append($query->findPk($id_eleve));
+} else if ($type_selection == 'nom_eleve') {
+    $query = EleveQuery::create();
+    if ($utilisateur->getStatut() == "cpe") {
+	$query->useJEleveCpeQuery()->filterByCpeLogin($utilisateur->getLogin())->endUse();
+    }
+    $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
+} elseif ($type_selection == 'id_groupe') {
     $eleve_col = $current_groupe->getEleves();
-} else if (isset($current_aid) && $current_aid != null) {
+} elseif ($type_selection == 'id_aid') {
     $eleve_col = $current_aid->getEleves();
-} else if (isset($current_classe) && $current_classe != null) {
+} elseif ($type_selection == 'id_classe') {
     $eleve_col = $current_classe->getEleves();
 } else {
     //on fait une requete pour recuperer les eleves qui sont absents aujourd'hui
@@ -255,17 +244,29 @@ if (isset($current_groupe) && $current_groupe != null) {
 	    ->endUse()->distinct()->find();
 }
 
-//afichage de la saisie des absences des eleves
-if (!$eleve_col->isEmpty()) {
-    ?>
+?>
 	<div class="centre_tout_moyen" style="width : 900px;">
-		    <form method="post" action="creation_traitement.php" id="liste_absence_eleve">
 			    <p class="expli_page choix_fin">
-				    <strong><?php echo strftime  ('%A %d %B %G',  $dt_date_absence_eleve->format('U')); ?></strong>
-				    <br/></p>
-<?php echo '<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>';
+				    <form action="./absences_du_jour.php" method="post" style="width: 100%;">
+				    <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
+				    <script type="text/javascript">
+					Calendar.setup({
+					    inputField     :    "date_absence_eleve_1",     // id of the input field
+					    ifFormat       :    "%d/%m/%Y",      // format of the input field
+					    button         :    "date_absence_eleve_1",  // trigger for the calendar (button ID)
+					    align          :    "Bl",           // alignment (defaults to "Bl")
+					    singleClick    :    true
+					});
+				    </script>
+				    <button type="submit">Changer</button>
+				    </form>
+				    <br/>
+			</p>
+<?php if (!$eleve_col->isEmpty()) { ?>
+			<form method="post" action="creation_traitement.php" id="liste_absence_eleve">
+			<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>
 
-$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
+<?php $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
     $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
     echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
@@ -412,8 +413,10 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
     }
     echo '<input type="hidden" name="nb_checkbox" value="'.$nb_checkbox.'"/>';
 
-    echo "</div>\n";
+} else {
+    echo 'Aucune absence';
 }
+echo "</div>\n";
 
 require_once("../lib/footer.inc.php");
 
