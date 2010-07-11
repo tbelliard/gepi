@@ -1286,35 +1286,28 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	{
 		$criteria = new Criteria(AbsenceEleveNotificationPeer::DATABASE_NAME);
 		$criteria->add(AbsenceEleveNotificationPeer::ID, $this->id);
-		$criteria->add(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, $this->a_traitement_id);
 
 		return $criteria;
 	}
 
 	/**
-	 * Returns the composite primary key for this object.
-	 * The array elements will be in same order as specified in XML.
-	 * @return     array
+	 * Returns the primary key for this object (row).
+	 * @return     int
 	 */
 	public function getPrimaryKey()
 	{
-		$pks = array();
-		$pks[0] = $this->getId();
-		$pks[1] = $this->getATraitementId();
-		
-		return $pks;
+		return $this->getId();
 	}
 
 	/**
-	 * Set the [composite] primary key.
+	 * Generic method to set the primary key (id column).
 	 *
-	 * @param      array $keys The elements of the composite key (order must match the order in XML file).
+	 * @param      int $key Primary key.
 	 * @return     void
 	 */
-	public function setPrimaryKey($keys)
+	public function setPrimaryKey($key)
 	{
-		$this->setId($keys[0]);
-		$this->setATraitementId($keys[1]);
+		$this->setId($key);
 	}
 
 	/**
@@ -1323,7 +1316,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	 */
 	public function isPrimaryKeyNull()
 	{
-		return (null === $this->getId()) && (null === $this->getATraitementId());
+		return null === $this->getId();
 	}
 
 	/**

@@ -118,17 +118,18 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 
 	/**
 	 * Find object by primary key
+	 * Use instance pooling to avoid a database query if the object exists
 	 * <code>
-	 * $obj = $c->findPk(array(12, 34), $con);
+	 * $obj  = $c->findPk(12, $con);
 	 * </code>
-	 * @param     array[$id, $a_traitement_id] $key Primary key to use for the query
+	 * @param     mixed $key Primary key to use for the query
 	 * @param     PropelPDO $con an optional connection object
 	 *
 	 * @return    AbsenceEleveNotification|array|mixed the result, formatted by the current formatter
 	 */
 	public function findPk($key, $con = null)
 	{
-		if ((null !== ($obj = AbsenceEleveNotificationPeer::getInstanceFromPool(serialize(array((string) $key[0], (string) $key[1]))))) && $this->getFormatter()->isObjectFormatter()) {
+		if ((null !== ($obj = AbsenceEleveNotificationPeer::getInstanceFromPool((string) $key))) && $this->getFormatter()->isObjectFormatter()) {
 			// the object is alredy in the instance pool
 			return $obj;
 		} else {
@@ -144,7 +145,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	/**
 	 * Find objects by primary key
 	 * <code>
-	 * $objs = $c->findPks(array(array(12, 56), array(832, 123), array(123, 456)), $con);
+	 * $objs = $c->findPks(array(12, 56, 832), $con);
 	 * </code>
 	 * @param     array $keys Primary keys to use for the query
 	 * @param     PropelPDO $con an optional connection object
@@ -168,10 +169,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKey($key)
 	{
-		$this->addUsingAlias(AbsenceEleveNotificationPeer::ID, $key[0], Criteria::EQUAL);
-		$this->addUsingAlias(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, $key[1], Criteria::EQUAL);
-		
-		return $this;
+		return $this->addUsingAlias(AbsenceEleveNotificationPeer::ID, $key, Criteria::EQUAL);
 	}
 
 	/**
@@ -183,14 +181,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
-		foreach ($keys as $key) {
-			$cton0 = $this->getNewCriterion(AbsenceEleveNotificationPeer::ID, $key[0], Criteria::EQUAL);
-			$cton1 = $this->getNewCriterion(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, $key[1], Criteria::EQUAL);
-			$cton0->addAnd($cton1);
-			$this->addOr($cton0);
-		}
-		
-		return $this;
+		return $this->addUsingAlias(AbsenceEleveNotificationPeer::ID, $keys, Criteria::IN);
 	}
 
 	/**
@@ -243,8 +234,22 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	 */
 	public function filterByATraitementId($aTraitementId = null, $comparison = null)
 	{
-		if (is_array($aTraitementId) && null === $comparison) {
-			$comparison = Criteria::IN;
+		if (is_array($aTraitementId)) {
+			$useMinMax = false;
+			if (isset($aTraitementId['min'])) {
+				$this->addUsingAlias(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, $aTraitementId['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($aTraitementId['max'])) {
+				$this->addUsingAlias(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, $aTraitementId['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
 		return $this->addUsingAlias(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, $aTraitementId, $comparison);
 	}
@@ -744,9 +749,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	public function prune($absenceEleveNotification = null)
 	{
 		if ($absenceEleveNotification) {
-			$this->addCond('pruneCond0', $this->getAliasedColName(AbsenceEleveNotificationPeer::ID), $absenceEleveNotification->getId(), Criteria::NOT_EQUAL);
-			$this->addCond('pruneCond1', $this->getAliasedColName(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID), $absenceEleveNotification->getATraitementId(), Criteria::NOT_EQUAL);
-			$this->combine(array('pruneCond0', 'pruneCond1'), Criteria::LOGICAL_OR);
+			$this->addUsingAlias(AbsenceEleveNotificationPeer::ID, $absenceEleveNotification->getId(), Criteria::NOT_EQUAL);
 	  }
 	  
 		return $this;

@@ -453,7 +453,7 @@
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
     <column name="utilisateur_id" type="VARCHAR" default="-1" size="100" description="Login de l'utilisateur professionnel qui envoi la notification"/>
     <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
-    <column name="a_traitement_id" default="-1" required="true" primaryKey="true" type="INTEGER" size="12" description="cle etrangere du traitement qu'on notifie"/>
+    <column name="a_traitement_id" default="-1" required="true" type="INTEGER" size="12" description="cle etrangere du traitement qu'on notifie"/>
     <foreign-key foreignTable="a_traitements" onDelete="cascade"><reference local="a_traitement_id" foreign="id"/></foreign-key>
     <column name="type_notification" required="false" type="INTEGER" size="5" default="-1" description="type de notification (0 : email, 1 : courrier, 2 : sms)"/>
     <column name="email" required="false" type="VARCHAR" size="100" description="email de destination (pour le type email)"/>

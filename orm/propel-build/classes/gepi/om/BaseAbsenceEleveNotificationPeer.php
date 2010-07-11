@@ -319,7 +319,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
-				$key = serialize(array((string) $obj->getId(), (string) $obj->getATraitementId()));
+				$key = (string) $obj->getId();
 			} // if key === null
 			self::$instances[$key] = $obj;
 		}
@@ -339,10 +339,10 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
 			if (is_object($value) && $value instanceof AbsenceEleveNotification) {
-				$key = serialize(array((string) $value->getId(), (string) $value->getATraitementId()));
-			} elseif (is_array($value) && count($value) === 2) {
+				$key = (string) $value->getId();
+			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
-				$key = serialize(array((string) $value[0], (string) $value[1]));
+				$key = (string) $value;
 			} else {
 				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or AbsenceEleveNotification object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
@@ -406,10 +406,10 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	public static function getPrimaryKeyHashFromRow($row, $startcol = 0)
 	{
 		// If the PK cannot be derived from the row, return NULL.
-		if ($row[$startcol] === null && $row[$startcol + 2] === null) {
+		if ($row[$startcol] === null) {
 			return null;
 		}
-		return serialize(array((string) $row[$startcol], (string) $row[$startcol + 2]));
+		return (string) $row[$startcol];
 	}
 
 	/**
@@ -423,7 +423,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	 */
 	public static function getPrimaryKeyFromRow($row, $startcol = 0)
 	{
-		return array((int) $row[$startcol], (int) $row[$startcol + 2]);
+		return (int) $row[$startcol];
 	}
 	
 	/**
@@ -1556,14 +1556,6 @@ abstract class BaseAbsenceEleveNotificationPeer {
 				$selectCriteria->setPrimaryTableName(AbsenceEleveNotificationPeer::TABLE_NAME);
 			}
 
-			$comparison = $criteria->getComparison(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID);
-			$value = $criteria->remove(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID);
-			if ($value) {
-				$selectCriteria->add(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, $value, $comparison);
-			} else {
-				$selectCriteria->setPrimaryTableName(AbsenceEleveNotificationPeer::TABLE_NAME);
-			}
-
 		} else { // $values is AbsenceEleveNotification object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
@@ -1630,17 +1622,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 			$criteria = $values->buildPkeyCriteria();
 		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
-			// primary key is composite; we therefore, expect
-			// the primary key passed to be an array of pkey values
-			if (count($values) == count($values, COUNT_RECURSIVE)) {
-				// array is not multi-dimensional
-				$values = array($values);
-			}
-			foreach ($values as $value) {
-				$criterion = $criteria->getNewCriterion(AbsenceEleveNotificationPeer::ID, $value[0]);
-				$criterion->addAnd($criteria->getNewCriterion(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, $value[1]));
-				$criteria->addOr($criterion);
-			}
+			$criteria->add(AbsenceEleveNotificationPeer::ID, (array) $values, Criteria::IN);
 		}
 
 		// Set the correct dbName
@@ -1747,28 +1729,56 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	}
 
 	/**
-	 * Retrieve object using using composite pkey values.
-	 * @param      int $id
-	 * @param      int $a_traitement_id
-	 * @param      PropelPDO $con
+	 * Retrieve a single object by pkey.
+	 *
+	 * @param      int $pk the primary key.
+	 * @param      PropelPDO $con the connection to use
 	 * @return     AbsenceEleveNotification
 	 */
-	public static function retrieveByPK($id, $a_traitement_id, PropelPDO $con = null) {
-		$_instancePoolKey = serialize(array((string) $id, (string) $a_traitement_id));
- 		if (null !== ($obj = AbsenceEleveNotificationPeer::getInstanceFromPool($_instancePoolKey))) {
- 			return $obj;
+	public static function retrieveByPK($pk, PropelPDO $con = null)
+	{
+
+		if (null !== ($obj = AbsenceEleveNotificationPeer::getInstanceFromPool((string) $pk))) {
+			return $obj;
 		}
 
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveNotificationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
+
 		$criteria = new Criteria(AbsenceEleveNotificationPeer::DATABASE_NAME);
-		$criteria->add(AbsenceEleveNotificationPeer::ID, $id);
-		$criteria->add(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, $a_traitement_id);
+		$criteria->add(AbsenceEleveNotificationPeer::ID, $pk);
+
 		$v = AbsenceEleveNotificationPeer::doSelect($criteria, $con);
 
-		return !empty($v) ? $v[0] : null;
+		return !empty($v) > 0 ? $v[0] : null;
 	}
+
+	/**
+	 * Retrieve multiple objects by pkey.
+	 *
+	 * @param      array $pks List of primary keys
+	 * @param      PropelPDO $con the connection to use
+	 * @throws     PropelException Any exceptions caught during processing will be
+	 *		 rethrown wrapped into a PropelException.
+	 */
+	public static function retrieveByPKs($pks, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveNotificationPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+
+		$objs = null;
+		if (empty($pks)) {
+			$objs = array();
+		} else {
+			$criteria = new Criteria(AbsenceEleveNotificationPeer::DATABASE_NAME);
+			$criteria->add(AbsenceEleveNotificationPeer::ID, $pks, Criteria::IN);
+			$objs = AbsenceEleveNotificationPeer::doSelect($criteria, $con);
+		}
+		return $objs;
+	}
+
 } // BaseAbsenceEleveNotificationPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
