@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_groupes_matieres' table.
  *
@@ -26,6 +25,8 @@
  * @method     JGroupesMatieresQuery innerJoinMatiere($relationAlias = '') Adds a INNER JOIN clause to the query using the Matiere relation
  *
  * @method     JGroupesMatieres findOne(PropelPDO $con = null) Return the first JGroupesMatieres matching the query
+ * @method     JGroupesMatieres findOneOrCreate(PropelPDO $con = null) Return the first JGroupesMatieres matching the query, or a new JGroupesMatieres object populated from the query conditions when no match is found
+ *
  * @method     JGroupesMatieres findOneByIdGroupe(int $id_groupe) Return the first JGroupesMatieres filtered by the id_groupe column
  * @method     JGroupesMatieres findOneByIdMatiere(string $id_matiere) Return the first JGroupesMatieres filtered by the id_matiere column
  *
@@ -139,6 +140,9 @@ abstract class BaseJGroupesMatieresQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JGroupesMatieresPeer::ID_GROUPE, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JGroupesMatieresPeer::ID_MATIERE, $key[1], Criteria::EQUAL);

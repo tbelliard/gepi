@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'ct_documents' table.
  *
@@ -28,6 +27,8 @@
  * @method     CahierTexteCompteRenduFichierJointQuery innerJoinCahierTexteCompteRendu($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteCompteRendu relation
  *
  * @method     CahierTexteCompteRenduFichierJoint findOne(PropelPDO $con = null) Return the first CahierTexteCompteRenduFichierJoint matching the query
+ * @method     CahierTexteCompteRenduFichierJoint findOneOrCreate(PropelPDO $con = null) Return the first CahierTexteCompteRenduFichierJoint matching the query, or a new CahierTexteCompteRenduFichierJoint object populated from the query conditions when no match is found
+ *
  * @method     CahierTexteCompteRenduFichierJoint findOneById(int $id) Return the first CahierTexteCompteRenduFichierJoint filtered by the id column
  * @method     CahierTexteCompteRenduFichierJoint findOneByIdCt(int $id_ct) Return the first CahierTexteCompteRenduFichierJoint filtered by the id_ct column
  * @method     CahierTexteCompteRenduFichierJoint findOneByTitre(string $titre) Return the first CahierTexteCompteRenduFichierJoint filtered by the titre column

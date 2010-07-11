@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'etablissements' table.
  *
@@ -30,6 +29,8 @@
  * @method     AncienEtablissementQuery innerJoinJEleveAncienEtablissement($relationAlias = '') Adds a INNER JOIN clause to the query using the JEleveAncienEtablissement relation
  *
  * @method     AncienEtablissement findOne(PropelPDO $con = null) Return the first AncienEtablissement matching the query
+ * @method     AncienEtablissement findOneOrCreate(PropelPDO $con = null) Return the first AncienEtablissement matching the query, or a new AncienEtablissement object populated from the query conditions when no match is found
+ *
  * @method     AncienEtablissement findOneById(int $id) Return the first AncienEtablissement filtered by the id column
  * @method     AncienEtablissement findOneByNom(string $nom) Return the first AncienEtablissement filtered by the nom column
  * @method     AncienEtablissement findOneByNiveau(string $niveau) Return the first AncienEtablissement filtered by the niveau column

@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'groupes' table.
  *
@@ -62,6 +61,8 @@
  * @method     GroupeQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
  * @method     Groupe findOne(PropelPDO $con = null) Return the first Groupe matching the query
+ * @method     Groupe findOneOrCreate(PropelPDO $con = null) Return the first Groupe matching the query, or a new Groupe object populated from the query conditions when no match is found
+ *
  * @method     Groupe findOneById(int $id) Return the first Groupe filtered by the id column
  * @method     Groupe findOneByName(string $name) Return the first Groupe filtered by the name column
  * @method     Groupe findOneByDescription(string $description) Return the first Groupe filtered by the description column

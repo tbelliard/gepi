@@ -353,9 +353,9 @@ abstract class BaseCategorieMatierePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in JCategoriesMatieresClassesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in JCategoriesMatieresClassesPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JCategoriesMatieresClassesPeer::clearInstancePool();
-
 	}
 
 	/**
@@ -636,7 +636,10 @@ abstract class BaseCategorieMatierePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += CategorieMatierePeer::doOnDeleteCascade($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			$affectedRows += CategorieMatierePeer::doOnDeleteCascade($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since

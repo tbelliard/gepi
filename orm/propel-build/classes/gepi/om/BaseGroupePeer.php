@@ -353,36 +353,36 @@ abstract class BaseGroupePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in JGroupesProfesseursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in JGroupesProfesseursPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JGroupesProfesseursPeer::clearInstancePool();
-
-		// invalidate objects in JGroupesMatieresPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in JGroupesMatieresPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JGroupesMatieresPeer::clearInstancePool();
-
-		// invalidate objects in JGroupesClassesPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in JGroupesClassesPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JGroupesClassesPeer::clearInstancePool();
-
-		// invalidate objects in CahierTexteCompteRenduPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in CahierTexteCompteRenduPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CahierTexteCompteRenduPeer::clearInstancePool();
-
-		// invalidate objects in CahierTexteTravailAFairePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in CahierTexteTravailAFairePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CahierTexteTravailAFairePeer::clearInstancePool();
-
-		// invalidate objects in CahierTexteNoticePriveePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in CahierTexteNoticePriveePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CahierTexteNoticePriveePeer::clearInstancePool();
-
-		// invalidate objects in JEleveGroupePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in JEleveGroupePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveGroupePeer::clearInstancePool();
-
-		// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in AbsenceEleveSaisiePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveSaisiePeer::clearInstancePool();
-
-		// invalidate objects in CreditEctsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in CreditEctsPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CreditEctsPeer::clearInstancePool();
-
-		// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in EdtEmplacementCoursPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		EdtEmplacementCoursPeer::clearInstancePool();
-
 	}
 
 	/**
@@ -664,8 +664,14 @@ abstract class BaseGroupePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += GroupePeer::doOnDeleteCascade($criteria, $con);
-			GroupePeer::doOnDeleteSetNull($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			$affectedRows += GroupePeer::doOnDeleteCascade($c, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			GroupePeer::doOnDeleteSetNull($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -796,7 +802,7 @@ abstract class BaseGroupePeer {
 			$selectCriteria->add(AbsenceEleveSaisiePeer::ID_GROUPE, $obj->getId());
 			$updateValues->add(AbsenceEleveSaisiePeer::ID_GROUPE, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 		}
 	}

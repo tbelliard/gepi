@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_aid_utilisateurs' table.
  *
@@ -26,6 +25,8 @@
  * @method     JAidUtilisateursProfessionnelsQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
  * @method     JAidUtilisateursProfessionnels findOne(PropelPDO $con = null) Return the first JAidUtilisateursProfessionnels matching the query
+ * @method     JAidUtilisateursProfessionnels findOneOrCreate(PropelPDO $con = null) Return the first JAidUtilisateursProfessionnels matching the query, or a new JAidUtilisateursProfessionnels object populated from the query conditions when no match is found
+ *
  * @method     JAidUtilisateursProfessionnels findOneByIdAid(string $id_aid) Return the first JAidUtilisateursProfessionnels filtered by the id_aid column
  * @method     JAidUtilisateursProfessionnels findOneByIdUtilisateur(string $id_utilisateur) Return the first JAidUtilisateursProfessionnels filtered by the id_utilisateur column
  *
@@ -139,6 +140,9 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JAidUtilisateursProfessionnelsPeer::ID_AID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $key[1], Criteria::EQUAL);

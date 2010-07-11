@@ -373,12 +373,12 @@ abstract class BaseResponsableEleveAdressePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in ResponsableElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in ResponsableElevePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ResponsableElevePeer::clearInstancePool();
-
-		// invalidate objects in AbsenceEleveNotificationPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in AbsenceEleveNotificationPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveNotificationPeer::clearInstancePool();
-
 	}
 
 	/**
@@ -655,7 +655,10 @@ abstract class BaseResponsableEleveAdressePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			ResponsableEleveAdressePeer::doOnDeleteSetNull($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			ResponsableEleveAdressePeer::doOnDeleteSetNull($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -706,7 +709,7 @@ abstract class BaseResponsableEleveAdressePeer {
 			$selectCriteria->add(ResponsableElevePeer::ADR_ID, $obj->getAdrId());
 			$updateValues->add(ResponsableElevePeer::ADR_ID, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related AbsenceEleveNotification rows to NULL
 			$selectCriteria = new Criteria(ResponsableEleveAdressePeer::DATABASE_NAME);
@@ -714,7 +717,7 @@ abstract class BaseResponsableEleveAdressePeer {
 			$selectCriteria->add(AbsenceEleveNotificationPeer::ADR_ID, $obj->getAdrId());
 			$updateValues->add(AbsenceEleveNotificationPeer::ADR_ID, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 		}
 	}

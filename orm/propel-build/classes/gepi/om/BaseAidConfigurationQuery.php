@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'aid_config' table.
  *
@@ -48,6 +47,8 @@
  * @method     AidConfigurationQuery innerJoinAidDetails($relationAlias = '') Adds a INNER JOIN clause to the query using the AidDetails relation
  *
  * @method     AidConfiguration findOne(PropelPDO $con = null) Return the first AidConfiguration matching the query
+ * @method     AidConfiguration findOneOrCreate(PropelPDO $con = null) Return the first AidConfiguration matching the query, or a new AidConfiguration object populated from the query conditions when no match is found
+ *
  * @method     AidConfiguration findOneByNom(string $nom) Return the first AidConfiguration filtered by the nom column
  * @method     AidConfiguration findOneByNomComplet(string $nom_complet) Return the first AidConfiguration filtered by the nom_complet column
  * @method     AidConfiguration findOneByNoteMax(int $note_max) Return the first AidConfiguration filtered by the note_max column

@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'salle_cours' table.
  *
@@ -24,6 +23,8 @@
  * @method     EdtSalleQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
  * @method     EdtSalle findOne(PropelPDO $con = null) Return the first EdtSalle matching the query
+ * @method     EdtSalle findOneOrCreate(PropelPDO $con = null) Return the first EdtSalle matching the query, or a new EdtSalle object populated from the query conditions when no match is found
+ *
  * @method     EdtSalle findOneByIdSalle(int $id_salle) Return the first EdtSalle filtered by the id_salle column
  * @method     EdtSalle findOneByNumeroSalle(string $numero_salle) Return the first EdtSalle filtered by the numero_salle column
  * @method     EdtSalle findOneByNomSalle(string $nom_salle) Return the first EdtSalle filtered by the nom_salle column

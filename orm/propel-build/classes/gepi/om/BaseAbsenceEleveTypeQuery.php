@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'a_types' table.
  *
@@ -36,6 +35,8 @@
  * @method     AbsenceEleveTypeQuery innerJoinAbsenceEleveTraitement($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveTraitement relation
  *
  * @method     AbsenceEleveType findOne(PropelPDO $con = null) Return the first AbsenceEleveType matching the query
+ * @method     AbsenceEleveType findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveType matching the query, or a new AbsenceEleveType object populated from the query conditions when no match is found
+ *
  * @method     AbsenceEleveType findOneById(int $id) Return the first AbsenceEleveType filtered by the id column
  * @method     AbsenceEleveType findOneByNom(string $nom) Return the first AbsenceEleveType filtered by the nom column
  * @method     AbsenceEleveType findOneByJustificationExigible(boolean $justification_exigible) Return the first AbsenceEleveType filtered by the justification_exigible column

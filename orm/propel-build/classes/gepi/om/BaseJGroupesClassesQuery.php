@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_groupes_classes' table.
  *
@@ -40,6 +39,8 @@
  * @method     JGroupesClassesQuery innerJoinCategorieMatiere($relationAlias = '') Adds a INNER JOIN clause to the query using the CategorieMatiere relation
  *
  * @method     JGroupesClasses findOne(PropelPDO $con = null) Return the first JGroupesClasses matching the query
+ * @method     JGroupesClasses findOneOrCreate(PropelPDO $con = null) Return the first JGroupesClasses matching the query, or a new JGroupesClasses object populated from the query conditions when no match is found
+ *
  * @method     JGroupesClasses findOneByIdGroupe(int $id_groupe) Return the first JGroupesClasses filtered by the id_groupe column
  * @method     JGroupesClasses findOneByIdClasse(int $id_classe) Return the first JGroupesClasses filtered by the id_classe column
  * @method     JGroupesClasses findOneByPriorite(int $priorite) Return the first JGroupesClasses filtered by the priorite column
@@ -163,6 +164,9 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JGroupesClassesPeer::ID_GROUPE, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JGroupesClassesPeer::ID_CLASSE, $key[1], Criteria::EQUAL);

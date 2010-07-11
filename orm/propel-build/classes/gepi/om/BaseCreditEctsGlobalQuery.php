@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'ects_global_credits' table.
  *
@@ -24,6 +23,8 @@
  * @method     CreditEctsGlobalQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
  *
  * @method     CreditEctsGlobal findOne(PropelPDO $con = null) Return the first CreditEctsGlobal matching the query
+ * @method     CreditEctsGlobal findOneOrCreate(PropelPDO $con = null) Return the first CreditEctsGlobal matching the query, or a new CreditEctsGlobal object populated from the query conditions when no match is found
+ *
  * @method     CreditEctsGlobal findOneById(int $id) Return the first CreditEctsGlobal filtered by the id column
  * @method     CreditEctsGlobal findOneByIdEleve(int $id_eleve) Return the first CreditEctsGlobal filtered by the id_eleve column
  * @method     CreditEctsGlobal findOneByMention(string $mention) Return the first CreditEctsGlobal filtered by the mention column
@@ -139,6 +140,9 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(CreditEctsGlobalPeer::ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(CreditEctsGlobalPeer::ID_ELEVE, $key[1], Criteria::EQUAL);

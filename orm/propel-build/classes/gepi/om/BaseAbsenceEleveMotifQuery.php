@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'a_motifs' table.
  *
@@ -26,6 +25,8 @@
  * @method     AbsenceEleveMotifQuery innerJoinAbsenceEleveTraitement($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveTraitement relation
  *
  * @method     AbsenceEleveMotif findOne(PropelPDO $con = null) Return the first AbsenceEleveMotif matching the query
+ * @method     AbsenceEleveMotif findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveMotif matching the query, or a new AbsenceEleveMotif object populated from the query conditions when no match is found
+ *
  * @method     AbsenceEleveMotif findOneById(int $id) Return the first AbsenceEleveMotif filtered by the id column
  * @method     AbsenceEleveMotif findOneByNom(string $nom) Return the first AbsenceEleveMotif filtered by the nom column
  * @method     AbsenceEleveMotif findOneByCommentaire(string $commentaire) Return the first AbsenceEleveMotif filtered by the commentaire column

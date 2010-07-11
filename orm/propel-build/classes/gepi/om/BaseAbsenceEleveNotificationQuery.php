@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'a_notifications' table.
  *
@@ -56,6 +55,8 @@
  * @method     AbsenceEleveNotificationQuery innerJoinJNotificationResponsableEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the JNotificationResponsableEleve relation
  *
  * @method     AbsenceEleveNotification findOne(PropelPDO $con = null) Return the first AbsenceEleveNotification matching the query
+ * @method     AbsenceEleveNotification findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveNotification matching the query, or a new AbsenceEleveNotification object populated from the query conditions when no match is found
+ *
  * @method     AbsenceEleveNotification findOneById(int $id) Return the first AbsenceEleveNotification filtered by the id column
  * @method     AbsenceEleveNotification findOneByUtilisateurId(string $utilisateur_id) Return the first AbsenceEleveNotification filtered by the utilisateur_id column
  * @method     AbsenceEleveNotification findOneByATraitementId(int $a_traitement_id) Return the first AbsenceEleveNotification filtered by the a_traitement_id column

@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_professeurs_matieres' table.
  *
@@ -28,6 +27,8 @@
  * @method     JProfesseursMatieresQuery innerJoinProfesseur($relationAlias = '') Adds a INNER JOIN clause to the query using the Professeur relation
  *
  * @method     JProfesseursMatieres findOne(PropelPDO $con = null) Return the first JProfesseursMatieres matching the query
+ * @method     JProfesseursMatieres findOneOrCreate(PropelPDO $con = null) Return the first JProfesseursMatieres matching the query, or a new JProfesseursMatieres object populated from the query conditions when no match is found
+ *
  * @method     JProfesseursMatieres findOneByIdMatiere(string $id_matiere) Return the first JProfesseursMatieres filtered by the id_matiere column
  * @method     JProfesseursMatieres findOneByIdProfesseur(string $id_professeur) Return the first JProfesseursMatieres filtered by the id_professeur column
  * @method     JProfesseursMatieres findOneByOrdreMatieres(int $ordre_matieres) Return the first JProfesseursMatieres filtered by the ordre_matieres column
@@ -143,6 +144,9 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JProfesseursMatieresPeer::ID_MATIERE, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JProfesseursMatieresPeer::ID_PROFESSEUR, $key[1], Criteria::EQUAL);

@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_traitements_saisies' table.
  *
@@ -26,6 +25,8 @@
  * @method     JTraitementSaisieEleveQuery innerJoinAbsenceEleveTraitement($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveTraitement relation
  *
  * @method     JTraitementSaisieEleve findOne(PropelPDO $con = null) Return the first JTraitementSaisieEleve matching the query
+ * @method     JTraitementSaisieEleve findOneOrCreate(PropelPDO $con = null) Return the first JTraitementSaisieEleve matching the query, or a new JTraitementSaisieEleve object populated from the query conditions when no match is found
+ *
  * @method     JTraitementSaisieEleve findOneByASaisieId(int $a_saisie_id) Return the first JTraitementSaisieEleve filtered by the a_saisie_id column
  * @method     JTraitementSaisieEleve findOneByATraitementId(int $a_traitement_id) Return the first JTraitementSaisieEleve filtered by the a_traitement_id column
  *
@@ -139,6 +140,9 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JTraitementSaisieElevePeer::A_SAISIE_ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JTraitementSaisieElevePeer::A_TRAITEMENT_ID, $key[1], Criteria::EQUAL);

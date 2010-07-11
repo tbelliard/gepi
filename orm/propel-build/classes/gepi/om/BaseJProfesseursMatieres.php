@@ -844,7 +844,7 @@ abstract class BaseJProfesseursMatieres extends BaseObject  implements Persisten
 	public function getMatiere(PropelPDO $con = null)
 	{
 		if ($this->aMatiere === null && (($this->id_matiere !== "" && $this->id_matiere !== null))) {
-			$this->aMatiere = MatiereQuery::create()->findPk($this->id_matiere);
+			$this->aMatiere = MatiereQuery::create()->findPk($this->id_matiere, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -893,7 +893,7 @@ abstract class BaseJProfesseursMatieres extends BaseObject  implements Persisten
 	public function getProfesseur(PropelPDO $con = null)
 	{
 		if ($this->aProfesseur === null && (($this->id_professeur !== "" && $this->id_professeur !== null))) {
-			$this->aProfesseur = UtilisateurProfessionnelQuery::create()->findPk($this->id_professeur);
+			$this->aProfesseur = UtilisateurProfessionnelQuery::create()->findPk($this->id_professeur, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -919,6 +919,7 @@ abstract class BaseJProfesseursMatieres extends BaseObject  implements Persisten
 		$this->applyDefaultValues();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -944,10 +945,18 @@ abstract class BaseJProfesseursMatieres extends BaseObject  implements Persisten
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseJProfesseursMatieres

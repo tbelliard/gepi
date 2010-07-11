@@ -1127,7 +1127,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	public function getGroupe(PropelPDO $con = null)
 	{
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
-			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe);
+			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1176,7 +1176,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	public function getUtilisateurProfessionnel(PropelPDO $con = null)
 	{
 		if ($this->aUtilisateurProfessionnel === null && (($this->id_login !== "" && $this->id_login !== null))) {
-			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->id_login);
+			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->id_login, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1225,7 +1225,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	public function getCahierTexteSequence(PropelPDO $con = null)
 	{
 		if ($this->aCahierTexteSequence === null && ($this->id_sequence !== null)) {
-			$this->aCahierTexteSequence = CahierTexteSequenceQuery::create()->findPk($this->id_sequence);
+			$this->aCahierTexteSequence = CahierTexteSequenceQuery::create()->findPk($this->id_sequence, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1255,6 +1255,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		$this->applyDefaultValues();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -1281,10 +1282,18 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseCahierTexteNoticePrivee

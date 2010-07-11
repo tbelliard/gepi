@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_eleves_groupes' table.
  *
@@ -28,6 +27,8 @@
  * @method     JEleveGroupeQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
  *
  * @method     JEleveGroupe findOne(PropelPDO $con = null) Return the first JEleveGroupe matching the query
+ * @method     JEleveGroupe findOneOrCreate(PropelPDO $con = null) Return the first JEleveGroupe matching the query, or a new JEleveGroupe object populated from the query conditions when no match is found
+ *
  * @method     JEleveGroupe findOneByLogin(string $login) Return the first JEleveGroupe filtered by the login column
  * @method     JEleveGroupe findOneByIdGroupe(int $id_groupe) Return the first JEleveGroupe filtered by the id_groupe column
  * @method     JEleveGroupe findOneByPeriode(int $periode) Return the first JEleveGroupe filtered by the periode column
@@ -144,6 +145,9 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JEleveGroupePeer::LOGIN, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JEleveGroupePeer::ID_GROUPE, $key[1], Criteria::EQUAL);

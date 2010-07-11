@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'matieres' table.
  *
@@ -38,6 +37,8 @@
  * @method     MatiereQuery innerJoinJProfesseursMatieres($relationAlias = '') Adds a INNER JOIN clause to the query using the JProfesseursMatieres relation
  *
  * @method     Matiere findOne(PropelPDO $con = null) Return the first Matiere matching the query
+ * @method     Matiere findOneOrCreate(PropelPDO $con = null) Return the first Matiere matching the query, or a new Matiere object populated from the query conditions when no match is found
+ *
  * @method     Matiere findOneByMatiere(string $matiere) Return the first Matiere filtered by the matiere column
  * @method     Matiere findOneByNomComplet(string $nom_complet) Return the first Matiere filtered by the nom_complet column
  * @method     Matiere findOneByPriority(int $priority) Return the first Matiere filtered by the priority column

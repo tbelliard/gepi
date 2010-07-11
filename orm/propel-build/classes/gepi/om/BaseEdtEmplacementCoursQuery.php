@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'edt_cours' table.
  *
@@ -66,6 +65,8 @@
  * @method     EdtEmplacementCoursQuery innerJoinAbsenceEleveSaisie($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
  *
  * @method     EdtEmplacementCours findOne(PropelPDO $con = null) Return the first EdtEmplacementCours matching the query
+ * @method     EdtEmplacementCours findOneOrCreate(PropelPDO $con = null) Return the first EdtEmplacementCours matching the query, or a new EdtEmplacementCours object populated from the query conditions when no match is found
+ *
  * @method     EdtEmplacementCours findOneByIdCours(int $id_cours) Return the first EdtEmplacementCours filtered by the id_cours column
  * @method     EdtEmplacementCours findOneByIdGroupe(string $id_groupe) Return the first EdtEmplacementCours filtered by the id_groupe column
  * @method     EdtEmplacementCours findOneByIdAid(string $id_aid) Return the first EdtEmplacementCours filtered by the id_aid column

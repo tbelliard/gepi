@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'utilisateurs' table.
  *
@@ -102,6 +101,8 @@
  * @method     UtilisateurProfessionnelQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
  * @method     UtilisateurProfessionnel findOne(PropelPDO $con = null) Return the first UtilisateurProfessionnel matching the query
+ * @method     UtilisateurProfessionnel findOneOrCreate(PropelPDO $con = null) Return the first UtilisateurProfessionnel matching the query, or a new UtilisateurProfessionnel object populated from the query conditions when no match is found
+ *
  * @method     UtilisateurProfessionnel findOneByLogin(string $login) Return the first UtilisateurProfessionnel filtered by the login column
  * @method     UtilisateurProfessionnel findOneByNom(string $nom) Return the first UtilisateurProfessionnel filtered by the nom column
  * @method     UtilisateurProfessionnel findOneByPrenom(string $prenom) Return the first UtilisateurProfessionnel filtered by the prenom column

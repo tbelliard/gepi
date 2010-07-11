@@ -383,12 +383,12 @@ abstract class BaseResponsableElevePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in ResponsableInformationPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in ResponsableInformationPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		ResponsableInformationPeer::clearInstancePool();
-
-		// invalidate objects in JNotificationResponsableElevePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in JNotificationResponsableElevePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JNotificationResponsableElevePeer::clearInstancePool();
-
 	}
 
 	/**
@@ -899,7 +899,10 @@ abstract class BaseResponsableElevePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += ResponsableElevePeer::doOnDeleteCascade($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			$affectedRows += ResponsableElevePeer::doOnDeleteCascade($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since

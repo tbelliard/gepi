@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'a_saisies' table.
  *
@@ -74,6 +73,8 @@
  * @method     AbsenceEleveSaisieQuery innerJoinJTraitementSaisieEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the JTraitementSaisieEleve relation
  *
  * @method     AbsenceEleveSaisie findOne(PropelPDO $con = null) Return the first AbsenceEleveSaisie matching the query
+ * @method     AbsenceEleveSaisie findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveSaisie matching the query, or a new AbsenceEleveSaisie object populated from the query conditions when no match is found
+ *
  * @method     AbsenceEleveSaisie findOneById(int $id) Return the first AbsenceEleveSaisie filtered by the id column
  * @method     AbsenceEleveSaisie findOneByUtilisateurId(string $utilisateur_id) Return the first AbsenceEleveSaisie filtered by the utilisateur_id column
  * @method     AbsenceEleveSaisie findOneByEleveId(int $eleve_id) Return the first AbsenceEleveSaisie filtered by the eleve_id column

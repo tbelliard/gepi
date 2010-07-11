@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_eleves_cpe' table.
  *
@@ -26,6 +25,8 @@
  * @method     JEleveCpeQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
  * @method     JEleveCpe findOne(PropelPDO $con = null) Return the first JEleveCpe matching the query
+ * @method     JEleveCpe findOneOrCreate(PropelPDO $con = null) Return the first JEleveCpe matching the query, or a new JEleveCpe object populated from the query conditions when no match is found
+ *
  * @method     JEleveCpe findOneByELogin(string $e_login) Return the first JEleveCpe filtered by the e_login column
  * @method     JEleveCpe findOneByCpeLogin(string $cpe_login) Return the first JEleveCpe filtered by the cpe_login column
  *
@@ -139,6 +140,9 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JEleveCpePeer::E_LOGIN, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JEleveCpePeer::CPE_LOGIN, $key[1], Criteria::EQUAL);

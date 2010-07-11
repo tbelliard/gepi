@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'plugins' table.
  *
@@ -32,6 +31,8 @@
  * @method     PlugInQuery innerJoinPlugInMiseEnOeuvreMenu($relationAlias = '') Adds a INNER JOIN clause to the query using the PlugInMiseEnOeuvreMenu relation
  *
  * @method     PlugIn findOne(PropelPDO $con = null) Return the first PlugIn matching the query
+ * @method     PlugIn findOneOrCreate(PropelPDO $con = null) Return the first PlugIn matching the query, or a new PlugIn object populated from the query conditions when no match is found
+ *
  * @method     PlugIn findOneById(int $id) Return the first PlugIn filtered by the id column
  * @method     PlugIn findOneByNom(string $nom) Return the first PlugIn filtered by the nom column
  * @method     PlugIn findOneByRepertoire(string $repertoire) Return the first PlugIn filtered by the repertoire column

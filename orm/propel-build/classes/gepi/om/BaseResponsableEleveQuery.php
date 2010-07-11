@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'resp_pers' table.
  *
@@ -46,6 +45,8 @@
  * @method     ResponsableEleveQuery innerJoinJNotificationResponsableEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the JNotificationResponsableEleve relation
  *
  * @method     ResponsableEleve findOne(PropelPDO $con = null) Return the first ResponsableEleve matching the query
+ * @method     ResponsableEleve findOneOrCreate(PropelPDO $con = null) Return the first ResponsableEleve matching the query, or a new ResponsableEleve object populated from the query conditions when no match is found
+ *
  * @method     ResponsableEleve findOneByPersId(string $pers_id) Return the first ResponsableEleve filtered by the pers_id column
  * @method     ResponsableEleve findOneByLogin(string $login) Return the first ResponsableEleve filtered by the login column
  * @method     ResponsableEleve findOneByNom(string $nom) Return the first ResponsableEleve filtered by the nom column

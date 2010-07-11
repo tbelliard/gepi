@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'edt_creneaux' table.
  *
@@ -36,6 +35,8 @@
  * @method     EdtCreneauQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
  * @method     EdtCreneau findOne(PropelPDO $con = null) Return the first EdtCreneau matching the query
+ * @method     EdtCreneau findOneOrCreate(PropelPDO $con = null) Return the first EdtCreneau matching the query, or a new EdtCreneau object populated from the query conditions when no match is found
+ *
  * @method     EdtCreneau findOneByIdDefiniePeriode(int $id_definie_periode) Return the first EdtCreneau filtered by the id_definie_periode column
  * @method     EdtCreneau findOneByNomDefiniePeriode(string $nom_definie_periode) Return the first EdtCreneau filtered by the nom_definie_periode column
  * @method     EdtCreneau findOneByHeuredebutDefiniePeriode(string $heuredebut_definie_periode) Return the first EdtCreneau filtered by the heuredebut_definie_periode column

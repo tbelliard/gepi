@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'ct_private_entry' table.
  *
@@ -40,6 +39,8 @@
  * @method     CahierTexteNoticePriveeQuery innerJoinCahierTexteSequence($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteSequence relation
  *
  * @method     CahierTexteNoticePrivee findOne(PropelPDO $con = null) Return the first CahierTexteNoticePrivee matching the query
+ * @method     CahierTexteNoticePrivee findOneOrCreate(PropelPDO $con = null) Return the first CahierTexteNoticePrivee matching the query, or a new CahierTexteNoticePrivee object populated from the query conditions when no match is found
+ *
  * @method     CahierTexteNoticePrivee findOneByIdCt(int $id_ct) Return the first CahierTexteNoticePrivee filtered by the id_ct column
  * @method     CahierTexteNoticePrivee findOneByHeureEntry(string $heure_entry) Return the first CahierTexteNoticePrivee filtered by the heure_entry column
  * @method     CahierTexteNoticePrivee findOneByDateCt(int $date_ct) Return the first CahierTexteNoticePrivee filtered by the date_ct column

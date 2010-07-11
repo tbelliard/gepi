@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'periodes' table.
  *
@@ -30,6 +29,8 @@
  * @method     PeriodeNoteQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
  *
  * @method     PeriodeNote findOne(PropelPDO $con = null) Return the first PeriodeNote matching the query
+ * @method     PeriodeNote findOneOrCreate(PropelPDO $con = null) Return the first PeriodeNote matching the query, or a new PeriodeNote object populated from the query conditions when no match is found
+ *
  * @method     PeriodeNote findOneByNomPeriode(string $nom_periode) Return the first PeriodeNote filtered by the nom_periode column
  * @method     PeriodeNote findOneByNumPeriode(int $num_periode) Return the first PeriodeNote filtered by the num_periode column
  * @method     PeriodeNote findOneByVerouiller(string $verouiller) Return the first PeriodeNote filtered by the verouiller column
@@ -151,6 +152,9 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(PeriodeNotePeer::NUM_PERIODE, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(PeriodeNotePeer::ID_CLASSE, $key[1], Criteria::EQUAL);

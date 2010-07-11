@@ -771,7 +771,7 @@ abstract class BaseJTraitementSaisieEleve extends BaseObject  implements Persist
 	public function getAbsenceEleveSaisie(PropelPDO $con = null)
 	{
 		if ($this->aAbsenceEleveSaisie === null && ($this->a_saisie_id !== null)) {
-			$this->aAbsenceEleveSaisie = AbsenceEleveSaisieQuery::create()->findPk($this->a_saisie_id);
+			$this->aAbsenceEleveSaisie = AbsenceEleveSaisieQuery::create()->findPk($this->a_saisie_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -820,7 +820,7 @@ abstract class BaseJTraitementSaisieEleve extends BaseObject  implements Persist
 	public function getAbsenceEleveTraitement(PropelPDO $con = null)
 	{
 		if ($this->aAbsenceEleveTraitement === null && ($this->a_traitement_id !== null)) {
-			$this->aAbsenceEleveTraitement = AbsenceEleveTraitementQuery::create()->findPk($this->a_traitement_id);
+			$this->aAbsenceEleveTraitement = AbsenceEleveTraitementQuery::create()->findPk($this->a_traitement_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -844,6 +844,7 @@ abstract class BaseJTraitementSaisieEleve extends BaseObject  implements Persist
 		$this->clearAllReferences();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -869,10 +870,18 @@ abstract class BaseJTraitementSaisieEleve extends BaseObject  implements Persist
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseJTraitementSaisieEleve

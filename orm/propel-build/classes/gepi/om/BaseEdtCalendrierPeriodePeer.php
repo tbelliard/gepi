@@ -393,9 +393,9 @@ abstract class BaseEdtCalendrierPeriodePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in EdtEmplacementCoursPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		EdtEmplacementCoursPeer::clearInstancePool();
-
 	}
 
 	/**
@@ -672,7 +672,10 @@ abstract class BaseEdtCalendrierPeriodePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			EdtCalendrierPeriodePeer::doOnDeleteSetNull($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			EdtCalendrierPeriodePeer::doOnDeleteSetNull($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -723,7 +726,7 @@ abstract class BaseEdtCalendrierPeriodePeer {
 			$selectCriteria->add(EdtEmplacementCoursPeer::ID_CALENDRIER, $obj->getIdCalendrier());
 			$updateValues->add(EdtEmplacementCoursPeer::ID_CALENDRIER, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 		}
 	}

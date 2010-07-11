@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'ct_devoirs_entry' table.
  *
@@ -44,6 +43,8 @@
  * @method     CahierTexteTravailAFaireQuery innerJoinCahierTexteTravailAFaireFichierJoint($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteTravailAFaireFichierJoint relation
  *
  * @method     CahierTexteTravailAFaire findOne(PropelPDO $con = null) Return the first CahierTexteTravailAFaire matching the query
+ * @method     CahierTexteTravailAFaire findOneOrCreate(PropelPDO $con = null) Return the first CahierTexteTravailAFaire matching the query, or a new CahierTexteTravailAFaire object populated from the query conditions when no match is found
+ *
  * @method     CahierTexteTravailAFaire findOneByIdCt(int $id_ct) Return the first CahierTexteTravailAFaire filtered by the id_ct column
  * @method     CahierTexteTravailAFaire findOneByDateCt(int $date_ct) Return the first CahierTexteTravailAFaire filtered by the date_ct column
  * @method     CahierTexteTravailAFaire findOneByContenu(string $contenu) Return the first CahierTexteTravailAFaire filtered by the contenu column

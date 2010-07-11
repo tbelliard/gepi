@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_groupes_professeurs' table.
  *
@@ -26,6 +25,8 @@
  * @method     JGroupesProfesseursQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
  * @method     JGroupesProfesseurs findOne(PropelPDO $con = null) Return the first JGroupesProfesseurs matching the query
+ * @method     JGroupesProfesseurs findOneOrCreate(PropelPDO $con = null) Return the first JGroupesProfesseurs matching the query, or a new JGroupesProfesseurs object populated from the query conditions when no match is found
+ *
  * @method     JGroupesProfesseurs findOneByIdGroupe(int $id_groupe) Return the first JGroupesProfesseurs filtered by the id_groupe column
  * @method     JGroupesProfesseurs findOneByLogin(string $login) Return the first JGroupesProfesseurs filtered by the login column
  *
@@ -139,6 +140,9 @@ abstract class BaseJGroupesProfesseursQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JGroupesProfesseursPeer::ID_GROUPE, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JGroupesProfesseursPeer::LOGIN, $key[1], Criteria::EQUAL);

@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'plugins_menus' table.
  *
@@ -30,6 +29,8 @@
  * @method     PlugInMiseEnOeuvreMenuQuery innerJoinPlugIn($relationAlias = '') Adds a INNER JOIN clause to the query using the PlugIn relation
  *
  * @method     PlugInMiseEnOeuvreMenu findOne(PropelPDO $con = null) Return the first PlugInMiseEnOeuvreMenu matching the query
+ * @method     PlugInMiseEnOeuvreMenu findOneOrCreate(PropelPDO $con = null) Return the first PlugInMiseEnOeuvreMenu matching the query, or a new PlugInMiseEnOeuvreMenu object populated from the query conditions when no match is found
+ *
  * @method     PlugInMiseEnOeuvreMenu findOneById(int $id) Return the first PlugInMiseEnOeuvreMenu filtered by the id column
  * @method     PlugInMiseEnOeuvreMenu findOneByPluginId(int $plugin_id) Return the first PlugInMiseEnOeuvreMenu filtered by the plugin_id column
  * @method     PlugInMiseEnOeuvreMenu findOneByUserStatut(string $user_statut) Return the first PlugInMiseEnOeuvreMenu filtered by the user_statut column

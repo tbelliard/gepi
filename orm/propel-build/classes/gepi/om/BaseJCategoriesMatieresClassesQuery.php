@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_matieres_categories_classes' table.
  *
@@ -30,6 +29,8 @@
  * @method     JCategoriesMatieresClassesQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
  *
  * @method     JCategoriesMatieresClasses findOne(PropelPDO $con = null) Return the first JCategoriesMatieresClasses matching the query
+ * @method     JCategoriesMatieresClasses findOneOrCreate(PropelPDO $con = null) Return the first JCategoriesMatieresClasses matching the query, or a new JCategoriesMatieresClasses object populated from the query conditions when no match is found
+ *
  * @method     JCategoriesMatieresClasses findOneByCategorieId(int $categorie_id) Return the first JCategoriesMatieresClasses filtered by the categorie_id column
  * @method     JCategoriesMatieresClasses findOneByClasseId(int $classe_id) Return the first JCategoriesMatieresClasses filtered by the classe_id column
  * @method     JCategoriesMatieresClasses findOneByAfficheMoyenne(boolean $affiche_moyenne) Return the first JCategoriesMatieresClasses filtered by the affiche_moyenne column
@@ -147,6 +148,9 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JCategoriesMatieresClassesPeer::CLASSE_ID, $key[1], Criteria::EQUAL);

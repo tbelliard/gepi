@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'eleves' table.
  *
@@ -86,6 +85,8 @@
  * @method     EleveQuery innerJoinArchiveEcts($relationAlias = '') Adds a INNER JOIN clause to the query using the ArchiveEcts relation
  *
  * @method     Eleve findOne(PropelPDO $con = null) Return the first Eleve matching the query
+ * @method     Eleve findOneOrCreate(PropelPDO $con = null) Return the first Eleve matching the query, or a new Eleve object populated from the query conditions when no match is found
+ *
  * @method     Eleve findOneByNoGep(string $no_gep) Return the first Eleve filtered by the no_gep column
  * @method     Eleve findOneByLogin(string $login) Return the first Eleve filtered by the login column
  * @method     Eleve findOneByNom(string $nom) Return the first Eleve filtered by the nom column

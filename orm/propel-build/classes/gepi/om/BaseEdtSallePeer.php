@@ -348,9 +348,9 @@ abstract class BaseEdtSallePeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in EdtEmplacementCoursPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		EdtEmplacementCoursPeer::clearInstancePool();
-
 	}
 
 	/**
@@ -627,7 +627,10 @@ abstract class BaseEdtSallePeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			EdtSallePeer::doOnDeleteSetNull($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			EdtSallePeer::doOnDeleteSetNull($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -678,7 +681,7 @@ abstract class BaseEdtSallePeer {
 			$selectCriteria->add(EdtEmplacementCoursPeer::ID_SALLE, $obj->getIdSalle());
 			$updateValues->add(EdtEmplacementCoursPeer::ID_SALLE, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 		}
 	}

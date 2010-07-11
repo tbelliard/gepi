@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'a_types_statut' table.
  *
@@ -24,6 +23,8 @@
  * @method     AbsenceEleveTypeStatutAutoriseQuery innerJoinAbsenceEleveType($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveType relation
  *
  * @method     AbsenceEleveTypeStatutAutorise findOne(PropelPDO $con = null) Return the first AbsenceEleveTypeStatutAutorise matching the query
+ * @method     AbsenceEleveTypeStatutAutorise findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveTypeStatutAutorise matching the query, or a new AbsenceEleveTypeStatutAutorise object populated from the query conditions when no match is found
+ *
  * @method     AbsenceEleveTypeStatutAutorise findOneById(int $id) Return the first AbsenceEleveTypeStatutAutorise filtered by the id column
  * @method     AbsenceEleveTypeStatutAutorise findOneByIdAType(int $id_a_type) Return the first AbsenceEleveTypeStatutAutorise filtered by the id_a_type column
  * @method     AbsenceEleveTypeStatutAutorise findOneByStatut(string $statut) Return the first AbsenceEleveTypeStatutAutorise filtered by the statut column

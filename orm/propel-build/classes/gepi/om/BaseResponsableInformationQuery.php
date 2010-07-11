@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'responsables2' table.
  *
@@ -30,6 +29,8 @@
  * @method     ResponsableInformationQuery innerJoinResponsableEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the ResponsableEleve relation
  *
  * @method     ResponsableInformation findOne(PropelPDO $con = null) Return the first ResponsableInformation matching the query
+ * @method     ResponsableInformation findOneOrCreate(PropelPDO $con = null) Return the first ResponsableInformation matching the query, or a new ResponsableInformation object populated from the query conditions when no match is found
+ *
  * @method     ResponsableInformation findOneByEleId(string $ele_id) Return the first ResponsableInformation filtered by the ele_id column
  * @method     ResponsableInformation findOneByPersId(string $pers_id) Return the first ResponsableInformation filtered by the pers_id column
  * @method     ResponsableInformation findOneByRespLegal(string $resp_legal) Return the first ResponsableInformation filtered by the resp_legal column
@@ -147,6 +148,9 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(ResponsableInformationPeer::ELE_ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(ResponsableInformationPeer::RESP_LEGAL, $key[1], Criteria::EQUAL);

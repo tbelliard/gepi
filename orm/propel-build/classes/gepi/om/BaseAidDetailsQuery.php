@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'aid' table.
  *
@@ -82,6 +81,8 @@
  * @method     AidDetailsQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
  * @method     AidDetails findOne(PropelPDO $con = null) Return the first AidDetails matching the query
+ * @method     AidDetails findOneOrCreate(PropelPDO $con = null) Return the first AidDetails matching the query, or a new AidDetails object populated from the query conditions when no match is found
+ *
  * @method     AidDetails findOneById(string $id) Return the first AidDetails filtered by the id column
  * @method     AidDetails findOneByNom(string $nom) Return the first AidDetails filtered by the nom column
  * @method     AidDetails findOneByNumero(string $numero) Return the first AidDetails filtered by the numero column

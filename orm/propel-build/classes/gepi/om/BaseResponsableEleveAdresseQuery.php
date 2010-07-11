@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'resp_adr' table.
  *
@@ -38,6 +37,8 @@
  * @method     ResponsableEleveAdresseQuery innerJoinAbsenceEleveNotification($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
  *
  * @method     ResponsableEleveAdresse findOne(PropelPDO $con = null) Return the first ResponsableEleveAdresse matching the query
+ * @method     ResponsableEleveAdresse findOneOrCreate(PropelPDO $con = null) Return the first ResponsableEleveAdresse matching the query, or a new ResponsableEleveAdresse object populated from the query conditions when no match is found
+ *
  * @method     ResponsableEleveAdresse findOneByAdrId(string $adr_id) Return the first ResponsableEleveAdresse filtered by the adr_id column
  * @method     ResponsableEleveAdresse findOneByAdr1(string $adr1) Return the first ResponsableEleveAdresse filtered by the adr1 column
  * @method     ResponsableEleveAdresse findOneByAdr2(string $adr2) Return the first ResponsableEleveAdresse filtered by the adr2 column

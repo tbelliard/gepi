@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'plugins_autorisations' table.
  *
@@ -28,6 +27,8 @@
  * @method     PlugInAutorisationQuery innerJoinPlugIn($relationAlias = '') Adds a INNER JOIN clause to the query using the PlugIn relation
  *
  * @method     PlugInAutorisation findOne(PropelPDO $con = null) Return the first PlugInAutorisation matching the query
+ * @method     PlugInAutorisation findOneOrCreate(PropelPDO $con = null) Return the first PlugInAutorisation matching the query, or a new PlugInAutorisation object populated from the query conditions when no match is found
+ *
  * @method     PlugInAutorisation findOneById(int $id) Return the first PlugInAutorisation filtered by the id column
  * @method     PlugInAutorisation findOneByPluginId(int $plugin_id) Return the first PlugInAutorisation filtered by the plugin_id column
  * @method     PlugInAutorisation findOneByFichier(string $fichier) Return the first PlugInAutorisation filtered by the fichier column

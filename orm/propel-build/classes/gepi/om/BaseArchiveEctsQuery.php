@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'archivage_ects' table.
  *
@@ -40,6 +39,8 @@
  * @method     ArchiveEctsQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
  *
  * @method     ArchiveEcts findOne(PropelPDO $con = null) Return the first ArchiveEcts matching the query
+ * @method     ArchiveEcts findOneOrCreate(PropelPDO $con = null) Return the first ArchiveEcts matching the query, or a new ArchiveEcts object populated from the query conditions when no match is found
+ *
  * @method     ArchiveEcts findOneById(int $id) Return the first ArchiveEcts filtered by the id column
  * @method     ArchiveEcts findOneByAnnee(string $annee) Return the first ArchiveEcts filtered by the annee column
  * @method     ArchiveEcts findOneByIne(string $ine) Return the first ArchiveEcts filtered by the ine column
@@ -173,6 +174,9 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(ArchiveEctsPeer::ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(ArchiveEctsPeer::INE, $key[1], Criteria::EQUAL);

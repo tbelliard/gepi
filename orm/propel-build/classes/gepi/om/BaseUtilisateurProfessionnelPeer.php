@@ -423,42 +423,42 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// invalidate objects in JGroupesProfesseursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in JGroupesProfesseursPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JGroupesProfesseursPeer::clearInstancePool();
-
-		// invalidate objects in CahierTexteCompteRenduPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in CahierTexteCompteRenduPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CahierTexteCompteRenduPeer::clearInstancePool();
-
-		// invalidate objects in CahierTexteTravailAFairePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in CahierTexteTravailAFairePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CahierTexteTravailAFairePeer::clearInstancePool();
-
-		// invalidate objects in CahierTexteNoticePriveePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in CahierTexteNoticePriveePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		CahierTexteNoticePriveePeer::clearInstancePool();
-
-		// invalidate objects in JEleveCpePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in JEleveCpePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveCpePeer::clearInstancePool();
-
-		// invalidate objects in JEleveProfesseurPrincipalPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in JEleveProfesseurPrincipalPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JEleveProfesseurPrincipalPeer::clearInstancePool();
-
-		// invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JAidUtilisateursProfessionnelsPeer::clearInstancePool();
-
-		// invalidate objects in AbsenceEleveSaisiePeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in AbsenceEleveSaisiePeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveSaisiePeer::clearInstancePool();
-
-		// invalidate objects in AbsenceEleveTraitementPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in AbsenceEleveTraitementPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveTraitementPeer::clearInstancePool();
-
-		// invalidate objects in AbsenceEleveNotificationPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in AbsenceEleveNotificationPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveNotificationPeer::clearInstancePool();
-
-		// invalidate objects in PreferenceUtilisateurProfessionnelPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in PreferenceUtilisateurProfessionnelPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		PreferenceUtilisateurProfessionnelPeer::clearInstancePool();
-
-		// invalidate objects in EdtEmplacementCoursPeer instance pool, since one or more of them may be deleted by ON DELETE CASCADE rule.
+		// Invalidate objects in EdtEmplacementCoursPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		EdtEmplacementCoursPeer::clearInstancePool();
-
 	}
 
 	/**
@@ -736,8 +736,14 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += UtilisateurProfessionnelPeer::doOnDeleteCascade($criteria, $con);
-			UtilisateurProfessionnelPeer::doOnDeleteSetNull($criteria, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			$affectedRows += UtilisateurProfessionnelPeer::doOnDeleteCascade($c, $con);
+			
+			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
+			$c = clone $criteria;
+			UtilisateurProfessionnelPeer::doOnDeleteSetNull($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
@@ -844,7 +850,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$selectCriteria->add(CahierTexteCompteRenduPeer::ID_LOGIN, $obj->getLogin());
 			$updateValues->add(CahierTexteCompteRenduPeer::ID_LOGIN, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related CahierTexteTravailAFaire rows to NULL
 			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -852,7 +858,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$selectCriteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $obj->getLogin());
 			$updateValues->add(CahierTexteTravailAFairePeer::ID_LOGIN, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related CahierTexteNoticePrivee rows to NULL
 			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -860,7 +866,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$selectCriteria->add(CahierTexteNoticePriveePeer::ID_LOGIN, $obj->getLogin());
 			$updateValues->add(CahierTexteNoticePriveePeer::ID_LOGIN, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related AbsenceEleveSaisie rows to NULL
 			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -868,7 +874,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$selectCriteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $obj->getLogin());
 			$updateValues->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related AbsenceEleveTraitement rows to NULL
 			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -876,7 +882,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$selectCriteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $obj->getLogin());
 			$updateValues->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related AbsenceEleveNotification rows to NULL
 			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -884,7 +890,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$selectCriteria->add(AbsenceEleveNotificationPeer::UTILISATEUR_ID, $obj->getLogin());
 			$updateValues->add(AbsenceEleveNotificationPeer::UTILISATEUR_ID, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 			// set fkey col in related EdtEmplacementCours rows to NULL
 			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
@@ -892,7 +898,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$selectCriteria->add(EdtEmplacementCoursPeer::LOGIN_PROF, $obj->getLogin());
 			$updateValues->add(EdtEmplacementCoursPeer::LOGIN_PROF, null);
 
-					BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
 		}
 	}

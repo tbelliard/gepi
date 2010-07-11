@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_notifications_resp_pers' table.
  *
@@ -26,6 +25,8 @@
  * @method     JNotificationResponsableEleveQuery innerJoinResponsableEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the ResponsableEleve relation
  *
  * @method     JNotificationResponsableEleve findOne(PropelPDO $con = null) Return the first JNotificationResponsableEleve matching the query
+ * @method     JNotificationResponsableEleve findOneOrCreate(PropelPDO $con = null) Return the first JNotificationResponsableEleve matching the query, or a new JNotificationResponsableEleve object populated from the query conditions when no match is found
+ *
  * @method     JNotificationResponsableEleve findOneByANotificationId(int $a_notification_id) Return the first JNotificationResponsableEleve filtered by the a_notification_id column
  * @method     JNotificationResponsableEleve findOneByPersId(string $pers_id) Return the first JNotificationResponsableEleve filtered by the pers_id column
  *
@@ -139,6 +140,9 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JNotificationResponsableElevePeer::PERS_ID, $key[1], Criteria::EQUAL);

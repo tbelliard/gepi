@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'ct_sequences' table.
  *
@@ -32,6 +31,8 @@
  * @method     CahierTexteSequenceQuery innerJoinCahierTexteNoticePrivee($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteNoticePrivee relation
  *
  * @method     CahierTexteSequence findOne(PropelPDO $con = null) Return the first CahierTexteSequence matching the query
+ * @method     CahierTexteSequence findOneOrCreate(PropelPDO $con = null) Return the first CahierTexteSequence matching the query, or a new CahierTexteSequence object populated from the query conditions when no match is found
+ *
  * @method     CahierTexteSequence findOneById(int $id) Return the first CahierTexteSequence filtered by the id column
  * @method     CahierTexteSequence findOneByTitre(string $titre) Return the first CahierTexteSequence filtered by the titre column
  * @method     CahierTexteSequence findOneByDescription(string $description) Return the first CahierTexteSequence filtered by the description column

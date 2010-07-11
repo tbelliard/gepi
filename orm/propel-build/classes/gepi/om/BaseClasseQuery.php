@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'classes' table.
  *
@@ -92,6 +91,8 @@
  * @method     ClasseQuery innerJoinJCategoriesMatieresClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JCategoriesMatieresClasses relation
  *
  * @method     Classe findOne(PropelPDO $con = null) Return the first Classe matching the query
+ * @method     Classe findOneOrCreate(PropelPDO $con = null) Return the first Classe matching the query, or a new Classe object populated from the query conditions when no match is found
+ *
  * @method     Classe findOneById(int $id) Return the first Classe filtered by the id column
  * @method     Classe findOneByClasse(string $classe) Return the first Classe filtered by the classe column
  * @method     Classe findOneByNomComplet(string $nom_complet) Return the first Classe filtered by the nom_complet column

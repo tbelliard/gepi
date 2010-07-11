@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'matieres_categories' table.
  *
@@ -34,6 +33,8 @@
  * @method     CategorieMatiereQuery innerJoinJCategoriesMatieresClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JCategoriesMatieresClasses relation
  *
  * @method     CategorieMatiere findOne(PropelPDO $con = null) Return the first CategorieMatiere matching the query
+ * @method     CategorieMatiere findOneOrCreate(PropelPDO $con = null) Return the first CategorieMatiere matching the query, or a new CategorieMatiere object populated from the query conditions when no match is found
+ *
  * @method     CategorieMatiere findOneById(int $id) Return the first CategorieMatiere filtered by the id column
  * @method     CategorieMatiere findOneByNomCourt(string $nom_court) Return the first CategorieMatiere filtered by the nom_court column
  * @method     CategorieMatiere findOneByNomComplet(string $nom_complet) Return the first CategorieMatiere filtered by the nom_complet column

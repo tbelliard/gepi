@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'horaires_etablissement' table.
  *
@@ -28,6 +27,8 @@
  * @method     EdtHorairesEtablissementQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
  * @method     EdtHorairesEtablissement findOne(PropelPDO $con = null) Return the first EdtHorairesEtablissement matching the query
+ * @method     EdtHorairesEtablissement findOneOrCreate(PropelPDO $con = null) Return the first EdtHorairesEtablissement matching the query, or a new EdtHorairesEtablissement object populated from the query conditions when no match is found
+ *
  * @method     EdtHorairesEtablissement findOneByIdHoraireEtablissement(int $id_horaire_etablissement) Return the first EdtHorairesEtablissement filtered by the id_horaire_etablissement column
  * @method     EdtHorairesEtablissement findOneByDateHoraireEtablissement(string $date_horaire_etablissement) Return the first EdtHorairesEtablissement filtered by the date_horaire_etablissement column
  * @method     EdtHorairesEtablissement findOneByJourHoraireEtablissement(string $jour_horaire_etablissement) Return the first EdtHorairesEtablissement filtered by the jour_horaire_etablissement column

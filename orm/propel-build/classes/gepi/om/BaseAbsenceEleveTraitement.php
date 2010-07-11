@@ -1308,7 +1308,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function getUtilisateurProfessionnel(PropelPDO $con = null)
 	{
 		if ($this->aUtilisateurProfessionnel === null && (($this->utilisateur_id !== "" && $this->utilisateur_id !== null))) {
-			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->utilisateur_id);
+			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->utilisateur_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1357,7 +1357,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function getAbsenceEleveType(PropelPDO $con = null)
 	{
 		if ($this->aAbsenceEleveType === null && ($this->a_type_id !== null)) {
-			$this->aAbsenceEleveType = AbsenceEleveTypeQuery::create()->findPk($this->a_type_id);
+			$this->aAbsenceEleveType = AbsenceEleveTypeQuery::create()->findPk($this->a_type_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1406,7 +1406,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function getAbsenceEleveMotif(PropelPDO $con = null)
 	{
 		if ($this->aAbsenceEleveMotif === null && ($this->a_motif_id !== null)) {
-			$this->aAbsenceEleveMotif = AbsenceEleveMotifQuery::create()->findPk($this->a_motif_id);
+			$this->aAbsenceEleveMotif = AbsenceEleveMotifQuery::create()->findPk($this->a_motif_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1455,7 +1455,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function getAbsenceEleveJustification(PropelPDO $con = null)
 	{
 		if ($this->aAbsenceEleveJustification === null && ($this->a_justification_id !== null)) {
-			$this->aAbsenceEleveJustification = AbsenceEleveJustificationQuery::create()->findPk($this->a_justification_id);
+			$this->aAbsenceEleveJustification = AbsenceEleveJustificationQuery::create()->findPk($this->a_justification_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1891,6 +1891,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$this->clearAllReferences();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -1943,10 +1944,18 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseAbsenceEleveTraitement

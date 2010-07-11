@@ -797,7 +797,7 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 	public function getEleve(PropelPDO $con = null)
 	{
 		if ($this->aEleve === null && ($this->id_eleve !== null)) {
-			$this->aEleve = EleveQuery::create()->findPk($this->id_eleve);
+			$this->aEleve = EleveQuery::create()->findPk($this->id_eleve, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -822,6 +822,7 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 		$this->clearAllReferences();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -846,10 +847,18 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseCreditEctsGlobal

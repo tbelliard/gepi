@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'ct_entry' table.
  *
@@ -48,6 +47,8 @@
  * @method     CahierTexteCompteRenduQuery innerJoinCahierTexteCompteRenduFichierJoint($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteCompteRenduFichierJoint relation
  *
  * @method     CahierTexteCompteRendu findOne(PropelPDO $con = null) Return the first CahierTexteCompteRendu matching the query
+ * @method     CahierTexteCompteRendu findOneOrCreate(PropelPDO $con = null) Return the first CahierTexteCompteRendu matching the query, or a new CahierTexteCompteRendu object populated from the query conditions when no match is found
+ *
  * @method     CahierTexteCompteRendu findOneByIdCt(int $id_ct) Return the first CahierTexteCompteRendu filtered by the id_ct column
  * @method     CahierTexteCompteRendu findOneByHeureEntry(string $heure_entry) Return the first CahierTexteCompteRendu filtered by the heure_entry column
  * @method     CahierTexteCompteRendu findOneByDateCt(int $date_ct) Return the first CahierTexteCompteRendu filtered by the date_ct column

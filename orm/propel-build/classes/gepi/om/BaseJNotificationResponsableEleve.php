@@ -771,7 +771,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	public function getAbsenceEleveNotification(PropelPDO $con = null)
 	{
 		if ($this->aAbsenceEleveNotification === null && ($this->a_notification_id !== null)) {
-			$this->aAbsenceEleveNotification = AbsenceEleveNotificationQuery::create()->findPk($this->a_notification_id);
+			$this->aAbsenceEleveNotification = AbsenceEleveNotificationQuery::create()->findPk($this->a_notification_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -820,7 +820,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	public function getResponsableEleve(PropelPDO $con = null)
 	{
 		if ($this->aResponsableEleve === null && (($this->pers_id !== "" && $this->pers_id !== null))) {
-			$this->aResponsableEleve = ResponsableEleveQuery::create()->findPk($this->pers_id);
+			$this->aResponsableEleve = ResponsableEleveQuery::create()->findPk($this->pers_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -844,6 +844,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		$this->clearAllReferences();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -869,10 +870,18 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseJNotificationResponsableEleve

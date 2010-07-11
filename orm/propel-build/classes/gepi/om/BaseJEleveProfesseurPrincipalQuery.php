@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_eleves_professeurs' table.
  *
@@ -32,6 +31,8 @@
  * @method     JEleveProfesseurPrincipalQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
  *
  * @method     JEleveProfesseurPrincipal findOne(PropelPDO $con = null) Return the first JEleveProfesseurPrincipal matching the query
+ * @method     JEleveProfesseurPrincipal findOneOrCreate(PropelPDO $con = null) Return the first JEleveProfesseurPrincipal matching the query, or a new JEleveProfesseurPrincipal object populated from the query conditions when no match is found
+ *
  * @method     JEleveProfesseurPrincipal findOneByLogin(string $login) Return the first JEleveProfesseurPrincipal filtered by the login column
  * @method     JEleveProfesseurPrincipal findOneByProfesseur(string $professeur) Return the first JEleveProfesseurPrincipal filtered by the professeur column
  * @method     JEleveProfesseurPrincipal findOneByIdClasse(int $id_classe) Return the first JEleveProfesseurPrincipal filtered by the id_classe column
@@ -148,6 +149,9 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JEleveProfesseurPrincipalPeer::LOGIN, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JEleveProfesseurPrincipalPeer::PROFESSEUR, $key[1], Criteria::EQUAL);

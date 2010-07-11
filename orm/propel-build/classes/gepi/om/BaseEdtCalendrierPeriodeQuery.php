@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'edt_calendrier' table.
  *
@@ -42,6 +41,8 @@
  * @method     EdtCalendrierPeriodeQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
  * @method     EdtCalendrierPeriode findOne(PropelPDO $con = null) Return the first EdtCalendrierPeriode matching the query
+ * @method     EdtCalendrierPeriode findOneOrCreate(PropelPDO $con = null) Return the first EdtCalendrierPeriode matching the query, or a new EdtCalendrierPeriode object populated from the query conditions when no match is found
+ *
  * @method     EdtCalendrierPeriode findOneByIdCalendrier(int $id_calendrier) Return the first EdtCalendrierPeriode filtered by the id_calendrier column
  * @method     EdtCalendrierPeriode findOneByClasseConcerneCalendrier(string $classe_concerne_calendrier) Return the first EdtCalendrierPeriode filtered by the classe_concerne_calendrier column
  * @method     EdtCalendrierPeriode findOneByNomCalendrier(string $nom_calendrier) Return the first EdtCalendrierPeriode filtered by the nom_calendrier column

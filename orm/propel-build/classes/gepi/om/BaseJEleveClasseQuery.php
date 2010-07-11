@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_eleves_classes' table.
  *
@@ -30,6 +29,8 @@
  * @method     JEleveClasseQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
  *
  * @method     JEleveClasse findOne(PropelPDO $con = null) Return the first JEleveClasse matching the query
+ * @method     JEleveClasse findOneOrCreate(PropelPDO $con = null) Return the first JEleveClasse matching the query, or a new JEleveClasse object populated from the query conditions when no match is found
+ *
  * @method     JEleveClasse findOneByLogin(string $login) Return the first JEleveClasse filtered by the login column
  * @method     JEleveClasse findOneByIdClasse(int $id_classe) Return the first JEleveClasse filtered by the id_classe column
  * @method     JEleveClasse findOneByPeriode(int $periode) Return the first JEleveClasse filtered by the periode column
@@ -148,6 +149,9 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JEleveClassePeer::LOGIN, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JEleveClassePeer::ID_CLASSE, $key[1], Criteria::EQUAL);

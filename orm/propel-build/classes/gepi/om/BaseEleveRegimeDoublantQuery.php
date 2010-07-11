@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_eleves_regime' table.
  *
@@ -24,6 +23,8 @@
  * @method     EleveRegimeDoublantQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
  *
  * @method     EleveRegimeDoublant findOne(PropelPDO $con = null) Return the first EleveRegimeDoublant matching the query
+ * @method     EleveRegimeDoublant findOneOrCreate(PropelPDO $con = null) Return the first EleveRegimeDoublant matching the query, or a new EleveRegimeDoublant object populated from the query conditions when no match is found
+ *
  * @method     EleveRegimeDoublant findOneByLogin(string $login) Return the first EleveRegimeDoublant filtered by the login column
  * @method     EleveRegimeDoublant findOneByDoublant(string $doublant) Return the first EleveRegimeDoublant filtered by the doublant column
  * @method     EleveRegimeDoublant findOneByRegime(string $regime) Return the first EleveRegimeDoublant filtered by the regime column

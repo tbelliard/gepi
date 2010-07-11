@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'ects_credits' table.
  *
@@ -36,6 +35,8 @@
  * @method     CreditEctsQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
  *
  * @method     CreditEcts findOne(PropelPDO $con = null) Return the first CreditEcts matching the query
+ * @method     CreditEcts findOneOrCreate(PropelPDO $con = null) Return the first CreditEcts matching the query, or a new CreditEcts object populated from the query conditions when no match is found
+ *
  * @method     CreditEcts findOneById(int $id) Return the first CreditEcts filtered by the id column
  * @method     CreditEcts findOneByIdEleve(int $id_eleve) Return the first CreditEcts filtered by the id_eleve column
  * @method     CreditEcts findOneByNumPeriode(int $num_periode) Return the first CreditEcts filtered by the num_periode column
@@ -161,6 +162,9 @@ abstract class BaseCreditEctsQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(CreditEctsPeer::ID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(CreditEctsPeer::ID_ELEVE, $key[1], Criteria::EQUAL);

@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_eleves_etablissements' table.
  *
@@ -26,6 +25,8 @@
  * @method     JEleveAncienEtablissementQuery innerJoinAncienEtablissement($relationAlias = '') Adds a INNER JOIN clause to the query using the AncienEtablissement relation
  *
  * @method     JEleveAncienEtablissement findOne(PropelPDO $con = null) Return the first JEleveAncienEtablissement matching the query
+ * @method     JEleveAncienEtablissement findOneOrCreate(PropelPDO $con = null) Return the first JEleveAncienEtablissement matching the query, or a new JEleveAncienEtablissement object populated from the query conditions when no match is found
+ *
  * @method     JEleveAncienEtablissement findOneByIdEleve(string $id_eleve) Return the first JEleveAncienEtablissement filtered by the id_eleve column
  * @method     JEleveAncienEtablissement findOneByIdEtablissement(string $id_etablissement) Return the first JEleveAncienEtablissement filtered by the id_etablissement column
  *
@@ -139,6 +140,9 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JEleveAncienEtablissementPeer::ID_ELEVE, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $key[1], Criteria::EQUAL);

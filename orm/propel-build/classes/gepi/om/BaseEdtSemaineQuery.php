@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'edt_semaines' table.
  *
@@ -22,6 +21,8 @@
  * @method     EdtSemaineQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
  * @method     EdtSemaine findOne(PropelPDO $con = null) Return the first EdtSemaine matching the query
+ * @method     EdtSemaine findOneOrCreate(PropelPDO $con = null) Return the first EdtSemaine matching the query, or a new EdtSemaine object populated from the query conditions when no match is found
+ *
  * @method     EdtSemaine findOneByIdEdtSemaine(int $id_edt_semaine) Return the first EdtSemaine filtered by the id_edt_semaine column
  * @method     EdtSemaine findOneByNumEdtSemaine(int $num_edt_semaine) Return the first EdtSemaine filtered by the num_edt_semaine column
  * @method     EdtSemaine findOneByTypeEdtSemaine(string $type_edt_semaine) Return the first EdtSemaine filtered by the type_edt_semaine column

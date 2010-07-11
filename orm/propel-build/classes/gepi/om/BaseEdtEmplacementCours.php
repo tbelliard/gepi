@@ -1425,7 +1425,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getGroupe(PropelPDO $con = null)
 	{
 		if ($this->aGroupe === null && (($this->id_groupe !== "" && $this->id_groupe !== null))) {
-			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe);
+			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1474,7 +1474,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getAidDetails(PropelPDO $con = null)
 	{
 		if ($this->aAidDetails === null && (($this->id_aid !== "" && $this->id_aid !== null))) {
-			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid);
+			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1523,7 +1523,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getEdtSalle(PropelPDO $con = null)
 	{
 		if ($this->aEdtSalle === null && (($this->id_salle !== "" && $this->id_salle !== null))) {
-			$this->aEdtSalle = EdtSalleQuery::create()->findPk($this->id_salle);
+			$this->aEdtSalle = EdtSalleQuery::create()->findPk($this->id_salle, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1572,7 +1572,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getEdtCreneau(PropelPDO $con = null)
 	{
 		if ($this->aEdtCreneau === null && (($this->id_definie_periode !== "" && $this->id_definie_periode !== null))) {
-			$this->aEdtCreneau = EdtCreneauQuery::create()->findPk($this->id_definie_periode);
+			$this->aEdtCreneau = EdtCreneauQuery::create()->findPk($this->id_definie_periode, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1621,7 +1621,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getEdtCalendrierPeriode(PropelPDO $con = null)
 	{
 		if ($this->aEdtCalendrierPeriode === null && (($this->id_calendrier !== "" && $this->id_calendrier !== null))) {
-			$this->aEdtCalendrierPeriode = EdtCalendrierPeriodeQuery::create()->findPk($this->id_calendrier);
+			$this->aEdtCalendrierPeriode = EdtCalendrierPeriodeQuery::create()->findPk($this->id_calendrier, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1670,7 +1670,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	public function getUtilisateurProfessionnel(PropelPDO $con = null)
 	{
 		if ($this->aUtilisateurProfessionnel === null && (($this->login_prof !== "" && $this->login_prof !== null))) {
-			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->login_prof);
+			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->login_prof, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1964,6 +1964,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		$this->applyDefaultValues();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -1999,10 +2000,18 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseEdtEmplacementCours

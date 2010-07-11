@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'a_traitements' table.
  *
@@ -54,6 +53,8 @@
  * @method     AbsenceEleveTraitementQuery innerJoinAbsenceEleveNotification($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
  *
  * @method     AbsenceEleveTraitement findOne(PropelPDO $con = null) Return the first AbsenceEleveTraitement matching the query
+ * @method     AbsenceEleveTraitement findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveTraitement matching the query, or a new AbsenceEleveTraitement object populated from the query conditions when no match is found
+ *
  * @method     AbsenceEleveTraitement findOneById(int $id) Return the first AbsenceEleveTraitement filtered by the id column
  * @method     AbsenceEleveTraitement findOneByUtilisateurId(string $utilisateur_id) Return the first AbsenceEleveTraitement filtered by the utilisateur_id column
  * @method     AbsenceEleveTraitement findOneByATypeId(int $a_type_id) Return the first AbsenceEleveTraitement filtered by the a_type_id column

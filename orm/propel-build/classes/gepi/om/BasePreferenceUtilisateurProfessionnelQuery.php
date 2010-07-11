@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'preferences' table.
  *
@@ -24,6 +23,8 @@
  * @method     PreferenceUtilisateurProfessionnelQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
  * @method     PreferenceUtilisateurProfessionnel findOne(PropelPDO $con = null) Return the first PreferenceUtilisateurProfessionnel matching the query
+ * @method     PreferenceUtilisateurProfessionnel findOneOrCreate(PropelPDO $con = null) Return the first PreferenceUtilisateurProfessionnel matching the query, or a new PreferenceUtilisateurProfessionnel object populated from the query conditions when no match is found
+ *
  * @method     PreferenceUtilisateurProfessionnel findOneByName(string $name) Return the first PreferenceUtilisateurProfessionnel filtered by the name column
  * @method     PreferenceUtilisateurProfessionnel findOneByValue(string $value) Return the first PreferenceUtilisateurProfessionnel filtered by the value column
  * @method     PreferenceUtilisateurProfessionnel findOneByLogin(string $login) Return the first PreferenceUtilisateurProfessionnel filtered by the login column
@@ -139,6 +140,9 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(PreferenceUtilisateurProfessionnelPeer::NAME, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(PreferenceUtilisateurProfessionnelPeer::LOGIN, $key[1], Criteria::EQUAL);

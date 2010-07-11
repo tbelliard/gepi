@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'a_justifications' table.
  *
@@ -26,6 +25,8 @@
  * @method     AbsenceEleveJustificationQuery innerJoinAbsenceEleveTraitement($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveTraitement relation
  *
  * @method     AbsenceEleveJustification findOne(PropelPDO $con = null) Return the first AbsenceEleveJustification matching the query
+ * @method     AbsenceEleveJustification findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveJustification matching the query, or a new AbsenceEleveJustification object populated from the query conditions when no match is found
+ *
  * @method     AbsenceEleveJustification findOneById(int $id) Return the first AbsenceEleveJustification filtered by the id column
  * @method     AbsenceEleveJustification findOneByNom(string $nom) Return the first AbsenceEleveJustification filtered by the nom column
  * @method     AbsenceEleveJustification findOneByCommentaire(string $commentaire) Return the first AbsenceEleveJustification filtered by the commentaire column

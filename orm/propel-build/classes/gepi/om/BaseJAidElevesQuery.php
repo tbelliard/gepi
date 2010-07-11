@@ -1,7 +1,6 @@
 <?php
 
 
-
 /**
  * Base class that represents a query for the 'j_aid_eleves' table.
  *
@@ -26,6 +25,8 @@
  * @method     JAidElevesQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
  *
  * @method     JAidEleves findOne(PropelPDO $con = null) Return the first JAidEleves matching the query
+ * @method     JAidEleves findOneOrCreate(PropelPDO $con = null) Return the first JAidEleves matching the query, or a new JAidEleves object populated from the query conditions when no match is found
+ *
  * @method     JAidEleves findOneByIdAid(string $id_aid) Return the first JAidEleves filtered by the id_aid column
  * @method     JAidEleves findOneByLogin(string $login) Return the first JAidEleves filtered by the login column
  *
@@ -139,6 +140,9 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 */
 	public function filterByPrimaryKeys($keys)
 	{
+		if (empty($keys)) {
+			return $this->add(null, '1<>1', Criteria::CUSTOM);
+		}
 		foreach ($keys as $key) {
 			$cton0 = $this->getNewCriterion(JAidElevesPeer::ID_AID, $key[0], Criteria::EQUAL);
 			$cton1 = $this->getNewCriterion(JAidElevesPeer::LOGIN, $key[1], Criteria::EQUAL);

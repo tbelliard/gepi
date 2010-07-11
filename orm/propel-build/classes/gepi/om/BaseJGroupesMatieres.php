@@ -771,7 +771,7 @@ abstract class BaseJGroupesMatieres extends BaseObject  implements Persistent
 	public function getGroupe(PropelPDO $con = null)
 	{
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
-			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe);
+			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -820,7 +820,7 @@ abstract class BaseJGroupesMatieres extends BaseObject  implements Persistent
 	public function getMatiere(PropelPDO $con = null)
 	{
 		if ($this->aMatiere === null && (($this->id_matiere !== "" && $this->id_matiere !== null))) {
-			$this->aMatiere = MatiereQuery::create()->findPk($this->id_matiere);
+			$this->aMatiere = MatiereQuery::create()->findPk($this->id_matiere, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -844,6 +844,7 @@ abstract class BaseJGroupesMatieres extends BaseObject  implements Persistent
 		$this->clearAllReferences();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -869,10 +870,18 @@ abstract class BaseJGroupesMatieres extends BaseObject  implements Persistent
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseJGroupesMatieres

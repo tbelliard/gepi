@@ -1762,7 +1762,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getUtilisateurProfessionnel(PropelPDO $con = null)
 	{
 		if ($this->aUtilisateurProfessionnel === null && (($this->utilisateur_id !== "" && $this->utilisateur_id !== null))) {
-			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->utilisateur_id);
+			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->utilisateur_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1811,7 +1811,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getEleve(PropelPDO $con = null)
 	{
 		if ($this->aEleve === null && ($this->eleve_id !== null)) {
-			$this->aEleve = EleveQuery::create()->findPk($this->eleve_id);
+			$this->aEleve = EleveQuery::create()->findPk($this->eleve_id, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1860,7 +1860,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getEdtCreneau(PropelPDO $con = null)
 	{
 		if ($this->aEdtCreneau === null && ($this->id_edt_creneau !== null)) {
-			$this->aEdtCreneau = EdtCreneauQuery::create()->findPk($this->id_edt_creneau);
+			$this->aEdtCreneau = EdtCreneauQuery::create()->findPk($this->id_edt_creneau, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1909,7 +1909,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getEdtEmplacementCours(PropelPDO $con = null)
 	{
 		if ($this->aEdtEmplacementCours === null && ($this->id_edt_emplacement_cours !== null)) {
-			$this->aEdtEmplacementCours = EdtEmplacementCoursQuery::create()->findPk($this->id_edt_emplacement_cours);
+			$this->aEdtEmplacementCours = EdtEmplacementCoursQuery::create()->findPk($this->id_edt_emplacement_cours, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -1958,7 +1958,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getGroupe(PropelPDO $con = null)
 	{
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
-			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe);
+			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -2007,7 +2007,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getClasse(PropelPDO $con = null)
 	{
 		if ($this->aClasse === null && ($this->id_classe !== null)) {
-			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe);
+			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -2056,7 +2056,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getAidDetails(PropelPDO $con = null)
 	{
 		if ($this->aAidDetails === null && ($this->id_aid !== null)) {
-			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid);
+			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid, $con);
 			/* The following can be used additionally to
 			   guarantee the related object contains a reference
 			   to this object.  This level of coupling may, however, be
@@ -2339,6 +2339,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->clearAllReferences();
 		$this->resetModified();
 		$this->setNew(true);
+		$this->setDeleted(false);
 	}
 
 	/**
@@ -2388,10 +2389,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 */
 	public function __call($name, $params)
 	{
-		if (preg_match('/get(\w+)/', $name, $matches) && $this->hasVirtualColumn($matches[1])) {
-			return $this->getVirtualColumn($matches[1]);
+		if (preg_match('/get(\w+)/', $name, $matches)) {
+			$virtualColumn = $matches[1];
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
+			// no lcfirst in php<5.3...
+			$virtualColumn[0] = strtolower($virtualColumn[0]);
+			if ($this->hasVirtualColumn($virtualColumn)) {
+				return $this->getVirtualColumn($virtualColumn);
+			}
 		}
-		throw new PropelException('Call to undefined method: ' . $name);
+		return parent::__call($name, $params);
 	}
 
 } // BaseAbsenceEleveSaisie
