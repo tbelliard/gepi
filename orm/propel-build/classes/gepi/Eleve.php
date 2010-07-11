@@ -397,7 +397,11 @@ class Eleve extends BaseEleve {
 	 *
 	 * Retourne une liste d'absence pour le creneau et le jour donné.
 	 *
-	 * @return PropelColection AbsenceEleveSaisie[]
+	 * @param      EdtCreneau $edtcreneau
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 *
+ 	 * @return PropelColection AbsenceEleveSaisie[]
 	 */
 	public function getAbsenceSaisiesDuCreneau($edtcreneau = null, $v = 'now') {
 	    if ($edtcreneau == null) {
@@ -555,7 +559,8 @@ class Eleve extends BaseEleve {
 	 *
 	 * Retourne le nombre de demi journees d'absence
 	 *
-	 * @param      mixed $periode numeric or PeriodeNote value.
+	 * @param      DateTime $date_debut
+	 * @param      DateTime $date_fin
 	 *
 	 * @return int $nombre_absence
 	 */
@@ -662,7 +667,8 @@ class Eleve extends BaseEleve {
 	 *
 	 * Retourne le nombre de demi journees d'absence non justifiees
 	 *
-	 * @param      mixed $periode numeric or PeriodeNote value.
+	 * @param      DateTime $date_debut
+	 * @param      DateTime $date_fin
 	 *
 	 * @return int $nombre_absence
 	 */
@@ -874,6 +880,97 @@ class Eleve extends BaseEleve {
 	    $periodeNotes = PeriodeNoteQuery::create()->useClasseQuery()->useJEleveClasseQuery()->filterByEleve($this)->endUse()->endUse()->distinct()->find();
 	    $periodeNotes->uasort(array("PeriodeNote", "comparePeriodeNote"));
 	    return $periodeNotes;
+	}
+
+
+	/**
+	 *
+	 * Renvoi true / false selon que l'eleve est present a l'heure donnee.
+	 * On ne peut certifier la presence a 100% vu que seule les absences sont saisies.
+	 * La fonction va rechercher les saisies de la classe de l'eleve et verifier que l'eleve n'est pas dedans.
+	 * Les absences prisent en compte sont celles pour lesquelles l'eleve n'est pas sous la responsabilité de l'établissement.
+	 * Il est possible que l'eleve n'ai pas cours a l'heure precisee, auquel cas la fonction renvoi faux (eleve non present)
+	 *
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+
+	 * @return     Boolean
+	 *
+	 */
+	public function getPresent($v = 'now') {
+	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+	    // -- which is unexpected, to say the least.
+	    //$dt = new DateTime();
+	    if ($v === null || $v === '') {
+		    $dt = null;
+	    } elseif ($v instanceof DateTime) {
+		    $dt = $v;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($v)) { // if it's a unix timestamp
+				    $dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt = new DateTime($v);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+		    }
+	    }
+
+	    //premierement on verifie que l'eleve n'a pas ete saisie absent a cette date
+	    $query = AbsenceEleveSaisieQuery::create();
+	    $query->filterByEleveId($this->getIdEleve());
+	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
+	    $query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
+	    $saisie_col = $query->find();
+	    foreach ($saisie_col as $saisie) {
+		$saisie = new AbsenceEleveSaisie();
+		if (!$saisie->getResponsabiliteEtablissement()) {
+		    return false;
+		}
+	    }
+	    if (!$saisie_col->isEmpty()) {
+		//l'eleve est saisie mais sous la responsabilite de l'etablissement, on renvoi true
+		return true;
+	    }
+
+	    //on va recuperer les saisie sur l'heure precisee pour les groupes, aid, classe de l'eleve
+	    $query = AbsenceEleveSaisieQuery::create();
+	    $query->filterByIdAid($this->getAidDetailss()->toKeyValue('Id','Id'));
+	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
+	    $query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
+	    $saisie_col = $query->find();
+	    if (!$saisie_col->isEmpty()) {
+		return true;
+	    }
+
+	    $periode = $this->getPeriodeNoteOuverte($dt);
+
+	    $query = AbsenceEleveSaisieQuery::create();
+	    $query->filterByIdGroupe($this->getGroupes($periode)->getPrimaryKeys());
+	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
+	    $query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
+	    $saisie_col = $query->find();
+	    if (!$saisie_col->isEmpty()) {
+		return true;
+	    }
+
+	    $query = AbsenceEleveSaisieQuery::create();
+	    $query->filterByIdClasse($this->getClasses($periode)->getPrimaryKeys());
+	    $query->filterByFinAbs($dt, Criteria::GREATER_THAN);
+	    $query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
+	    $saisie_col = $query->find();
+	    if (!$saisie_col->isEmpty()) {
+		return true;
+	    }
+
+	    //rien n'a ete saisie (aucun cours a cette heure), en renvoi non present par defaut
+	    return false;
 	}
 
 } // Eleve
