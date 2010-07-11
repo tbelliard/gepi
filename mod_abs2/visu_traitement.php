@@ -165,7 +165,7 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo '<br/>';
     }
     echo '<div>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='height: 100%;'> ";
     echo $saisie->getDateDescription();
     echo "</a>";
     echo '<div style="float: right;  margin-top:-0.22em; margin-left:0.2em;">';
@@ -344,6 +344,15 @@ if ($traitement->getCreatedAt() != $traitement->getUpdatedAt()) {
     echo '</TD></tr>';
 }
 
+if ($traitement->getModifiable()) {
+    echo '<tr><TD colspan="2" align="center">';
+    echo '<form method="post" action="enregistrement_modif_traitement.php">';
+    echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+    echo '<input type="hidden" name="modif" value="supprimer"/>';
+    echo '<button type="submit">Supprimer le traitement</button>';
+    echo '</form>';
+    echo '</TD></tr>';
+}
 
 echo '</TBODY>';
 
