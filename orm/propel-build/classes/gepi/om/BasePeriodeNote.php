@@ -56,6 +56,12 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 	protected $date_verrouillage;
 
 	/**
+	 * The value for the date_fin field.
+	 * @var        string
+	 */
+	protected $date_fin;
+
+	/**
 	 * @var        Classe
 	 */
 	protected $aClasse;
@@ -141,21 +147,64 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
-	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
-	public function getDateVerrouillage($format = '%X')
+	public function getDateVerrouillage($format = 'Y-m-d H:i:s')
 	{
 		if ($this->date_verrouillage === null) {
 			return null;
 		}
 
 
+		if ($this->date_verrouillage === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->date_verrouillage);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_verrouillage, true), $x);
+			}
+		}
 
-		try {
-			$dt = new DateTime($this->date_verrouillage);
-		} catch (Exception $x) {
-			throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_verrouillage, true), $x);
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [date_fin] column value.
+	 * date de verrouillage de la periode
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getDateFin($format = 'Y-m-d H:i:s')
+	{
+		if ($this->date_fin === null) {
+			return null;
+		}
+
+
+		if ($this->date_fin === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->date_fin);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_fin, true), $x);
+			}
 		}
 
 		if ($format === null) {
@@ -287,19 +336,68 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 		if ( $this->date_verrouillage !== null || $dt !== null ) {
 			// (nested ifs are a little easier to read in this case)
 
-			$currNorm = ($this->date_verrouillage !== null && $tmpDt = new DateTime($this->date_verrouillage)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
+			$currNorm = ($this->date_verrouillage !== null && $tmpDt = new DateTime($this->date_verrouillage)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
 
 			if ( ($currNorm !== $newNorm) // normalized values don't match 
 					)
 			{
-				$this->date_verrouillage = ($dt ? $dt->format('H:i:s') : null);
+				$this->date_verrouillage = ($dt ? $dt->format('Y-m-d H:i:s') : null);
 				$this->modifiedColumns[] = PeriodeNotePeer::DATE_VERROUILLAGE;
 			}
 		} // if either are not null
 
 		return $this;
 	} // setDateVerrouillage()
+
+	/**
+	 * Sets the value of [date_fin] column to a normalized version of the date/time value specified.
+	 * date de verrouillage de la periode
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     PeriodeNote The current object (for fluent API support)
+	 */
+	public function setDateFin($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->date_fin !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->date_fin !== null && $tmpDt = new DateTime($this->date_fin)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->date_fin = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+				$this->modifiedColumns[] = PeriodeNotePeer::DATE_FIN;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setDateFin()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -342,6 +440,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 			$this->verouiller = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
 			$this->id_classe = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
 			$this->date_verrouillage = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->date_fin = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -350,7 +449,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 5; // 5 = PeriodeNotePeer::NUM_COLUMNS - PeriodeNotePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 6; // 6 = PeriodeNotePeer::NUM_COLUMNS - PeriodeNotePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating PeriodeNote object", $e);
@@ -684,6 +783,9 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 			case 4:
 				return $this->getDateVerrouillage();
 				break;
+			case 5:
+				return $this->getDateFin();
+				break;
 			default:
 				return null;
 				break;
@@ -713,6 +815,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 			$keys[2] => $this->getVerouiller(),
 			$keys[3] => $this->getIdClasse(),
 			$keys[4] => $this->getDateVerrouillage(),
+			$keys[5] => $this->getDateFin(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aClasse) {
@@ -764,6 +867,9 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 			case 4:
 				$this->setDateVerrouillage($value);
 				break;
+			case 5:
+				$this->setDateFin($value);
+				break;
 		} // switch()
 	}
 
@@ -793,6 +899,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 		if (array_key_exists($keys[2], $arr)) $this->setVerouiller($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setIdClasse($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setDateVerrouillage($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setDateFin($arr[$keys[5]]);
 	}
 
 	/**
@@ -809,6 +916,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 		if ($this->isColumnModified(PeriodeNotePeer::VEROUILLER)) $criteria->add(PeriodeNotePeer::VEROUILLER, $this->verouiller);
 		if ($this->isColumnModified(PeriodeNotePeer::ID_CLASSE)) $criteria->add(PeriodeNotePeer::ID_CLASSE, $this->id_classe);
 		if ($this->isColumnModified(PeriodeNotePeer::DATE_VERROUILLAGE)) $criteria->add(PeriodeNotePeer::DATE_VERROUILLAGE, $this->date_verrouillage);
+		if ($this->isColumnModified(PeriodeNotePeer::DATE_FIN)) $criteria->add(PeriodeNotePeer::DATE_FIN, $this->date_fin);
 
 		return $criteria;
 	}
@@ -882,6 +990,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 		$copyObj->setVerouiller($this->verouiller);
 		$copyObj->setIdClasse($this->id_classe);
 		$copyObj->setDateVerrouillage($this->date_verrouillage);
+		$copyObj->setDateFin($this->date_fin);
 
 		$copyObj->setNew(true);
 	}
@@ -983,6 +1092,7 @@ abstract class BasePeriodeNote extends BaseObject  implements Persistent
 		$this->verouiller = null;
 		$this->id_classe = null;
 		$this->date_verrouillage = null;
+		$this->date_fin = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();

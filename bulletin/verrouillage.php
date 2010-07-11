@@ -62,7 +62,7 @@ if (isset($_POST['ok'])) {
 	if ($calldata) {
 		for ($k = 0; ($row = sql_row($calldata, $k)); $k++) {
 			$id_classe = $row[0];
-			$periode_query = sql_query("SELECT verouiller FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+			$periode_query = sql_query("SELECT verouiller, date_fin FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 			$nb_periode = sql_count($periode_query) + 1 ;
 			if ($periode_query) {
 				for ($i = 0; ($row_per = sql_row($periode_query, $i)); $i++) {
@@ -73,8 +73,26 @@ if (isset($_POST['ok'])) {
 					//if (isset($_POST[$nom_classe]))  {
 					if ((isset($_POST[$nom_classe]))&&($_POST[$nom_classe]!=$row_per[0]))  {
 						//$register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
-						$register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."', date_verrouillage=NOW() WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
-						if (!$register) {$pb_reg_ver = 'yes';}
+						if ($row_per[1] == 0) {//la date de fin n'est pas renseignee, on la renseigne
+						    $register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."', date_verrouillage=NOW(), date_fin=NOW() WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
+						    if (!$register) {$pb_reg_ver = 'yes';}
+						} else {
+						    $register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."', date_verrouillage=NOW() WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
+						    if (!$register) {$pb_reg_ver = 'yes';}
+						}
+					}
+					if ((isset($_POST["date_fin_".$nom_classe]))&&($_POST["date_fin_".$nom_classe]!=""))  {
+						try {
+						    $date_fin = new DateTime(str_replace("/",".",$_POST["date_fin_".$nom_classe]));
+						    if ($date_fin->format('U') != $row_per[1]) {
+							$register = sql_query("UPDATE periodes SET date_fin='".$date_fin->format('Y-m-d')."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
+							if (!$register) {$pb_reg_ver = 'yes';}
+						    }
+						    //$register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."' WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
+						    //$register = sql_query("UPDATE periodes SET verouiller='".$_POST[$nom_classe]."', date_verrouillage=NOW() WHERE (num_periode='".$t."' and id_classe='".$id_classe."')");
+						    //if (!$register) {$pb_reg_ver = 'yes';}
+						} catch (Exception $x) {
+						}
 					}
 				}
 			}
@@ -294,6 +312,7 @@ if (($classe != 0) AND ($periode !=0)) {
 			echo "<th><img src=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" width=\"22\" border=0 alt=\"Déverrouiller\" /></th>\n";
 			echo "<th><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller partiellement\" /></th>\n";
 			echo "<th><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller totalement\" /></th>\n";
+			echo "<th>Date Fin</th>\n";
 		}
 		echo "</tr>\n";
 		//$flag = 0;
@@ -310,7 +329,7 @@ if (($classe != 0) AND ($periode !=0)) {
 				echo "<b>$classe</b> ";
 				echo "</td>\n";
 		
-				$periode_query = sql_query("SELECT nom_periode, verouiller FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
+				$periode_query = sql_query("SELECT nom_periode, verouiller, date_fin FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 				$nb_periode = sql_count($periode_query) + 1 ;
 				$j = 0;
 				if ($periode_query) {
@@ -344,6 +363,13 @@ if (($classe != 0) AND ($periode !=0)) {
 						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"O\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
 						if ($row_per[1] == "O") {echo "checked";}
 						echo " /></td>\n";
+						echo "<td>";
+						echo "<input type=\"text\" size=\"8\" name=\"date_fin_".$nom_classe."\" value=\"";
+						if ($row_per[2] != 0) {
+						    echo date("d/m/Y", strtotime($row_per[2]));
+						}
+						echo "\"/>";
+						echo "</td>\n";
 						$j++;
 					}
 				}

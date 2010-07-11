@@ -26,7 +26,7 @@ abstract class BasePeriodeNotePeer {
 	const TM_CLASS = 'PeriodeNoteTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 5;
+	const NUM_COLUMNS = 6;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -46,6 +46,9 @@ abstract class BasePeriodeNotePeer {
 	/** the column name for the DATE_VERROUILLAGE field */
 	const DATE_VERROUILLAGE = 'periodes.DATE_VERROUILLAGE';
 
+	/** the column name for the DATE_FIN field */
+	const DATE_FIN = 'periodes.DATE_FIN';
+
 	/**
 	 * An identiy map to hold any loaded instances of PeriodeNote objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -62,12 +65,12 @@ abstract class BasePeriodeNotePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('NomPeriode', 'NumPeriode', 'Verouiller', 'IdClasse', 'DateVerrouillage', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('nomPeriode', 'numPeriode', 'verouiller', 'idClasse', 'dateVerrouillage', ),
-		BasePeer::TYPE_COLNAME => array (self::NOM_PERIODE, self::NUM_PERIODE, self::VEROUILLER, self::ID_CLASSE, self::DATE_VERROUILLAGE, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('NOM_PERIODE', 'NUM_PERIODE', 'VEROUILLER', 'ID_CLASSE', 'DATE_VERROUILLAGE', ),
-		BasePeer::TYPE_FIELDNAME => array ('nom_periode', 'num_periode', 'verouiller', 'id_classe', 'date_verrouillage', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
+		BasePeer::TYPE_PHPNAME => array ('NomPeriode', 'NumPeriode', 'Verouiller', 'IdClasse', 'DateVerrouillage', 'DateFin', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('nomPeriode', 'numPeriode', 'verouiller', 'idClasse', 'dateVerrouillage', 'dateFin', ),
+		BasePeer::TYPE_COLNAME => array (self::NOM_PERIODE, self::NUM_PERIODE, self::VEROUILLER, self::ID_CLASSE, self::DATE_VERROUILLAGE, self::DATE_FIN, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('NOM_PERIODE', 'NUM_PERIODE', 'VEROUILLER', 'ID_CLASSE', 'DATE_VERROUILLAGE', 'DATE_FIN', ),
+		BasePeer::TYPE_FIELDNAME => array ('nom_periode', 'num_periode', 'verouiller', 'id_classe', 'date_verrouillage', 'date_fin', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -77,12 +80,12 @@ abstract class BasePeriodeNotePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('NomPeriode' => 0, 'NumPeriode' => 1, 'Verouiller' => 2, 'IdClasse' => 3, 'DateVerrouillage' => 4, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('nomPeriode' => 0, 'numPeriode' => 1, 'verouiller' => 2, 'idClasse' => 3, 'dateVerrouillage' => 4, ),
-		BasePeer::TYPE_COLNAME => array (self::NOM_PERIODE => 0, self::NUM_PERIODE => 1, self::VEROUILLER => 2, self::ID_CLASSE => 3, self::DATE_VERROUILLAGE => 4, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('NOM_PERIODE' => 0, 'NUM_PERIODE' => 1, 'VEROUILLER' => 2, 'ID_CLASSE' => 3, 'DATE_VERROUILLAGE' => 4, ),
-		BasePeer::TYPE_FIELDNAME => array ('nom_periode' => 0, 'num_periode' => 1, 'verouiller' => 2, 'id_classe' => 3, 'date_verrouillage' => 4, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
+		BasePeer::TYPE_PHPNAME => array ('NomPeriode' => 0, 'NumPeriode' => 1, 'Verouiller' => 2, 'IdClasse' => 3, 'DateVerrouillage' => 4, 'DateFin' => 5, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('nomPeriode' => 0, 'numPeriode' => 1, 'verouiller' => 2, 'idClasse' => 3, 'dateVerrouillage' => 4, 'dateFin' => 5, ),
+		BasePeer::TYPE_COLNAME => array (self::NOM_PERIODE => 0, self::NUM_PERIODE => 1, self::VEROUILLER => 2, self::ID_CLASSE => 3, self::DATE_VERROUILLAGE => 4, self::DATE_FIN => 5, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('NOM_PERIODE' => 0, 'NUM_PERIODE' => 1, 'VEROUILLER' => 2, 'ID_CLASSE' => 3, 'DATE_VERROUILLAGE' => 4, 'DATE_FIN' => 5, ),
+		BasePeer::TYPE_FIELDNAME => array ('nom_periode' => 0, 'num_periode' => 1, 'verouiller' => 2, 'id_classe' => 3, 'date_verrouillage' => 4, 'date_fin' => 5, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -159,12 +162,14 @@ abstract class BasePeriodeNotePeer {
 			$criteria->addSelectColumn(PeriodeNotePeer::VEROUILLER);
 			$criteria->addSelectColumn(PeriodeNotePeer::ID_CLASSE);
 			$criteria->addSelectColumn(PeriodeNotePeer::DATE_VERROUILLAGE);
+			$criteria->addSelectColumn(PeriodeNotePeer::DATE_FIN);
 		} else {
 			$criteria->addSelectColumn($alias . '.NOM_PERIODE');
 			$criteria->addSelectColumn($alias . '.NUM_PERIODE');
 			$criteria->addSelectColumn($alias . '.VEROUILLER');
 			$criteria->addSelectColumn($alias . '.ID_CLASSE');
 			$criteria->addSelectColumn($alias . '.DATE_VERROUILLAGE');
+			$criteria->addSelectColumn($alias . '.DATE_FIN');
 		}
 	}
 

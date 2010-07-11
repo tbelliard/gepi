@@ -41,7 +41,8 @@ class PeriodeNoteTableMap extends TableMap {
 		$this->addPrimaryKey('NUM_PERIODE', 'NumPeriode', 'INTEGER', true, 10, null);
 		$this->addColumn('VEROUILLER', 'Verouiller', 'VARCHAR', true, 1, 'O');
 		$this->addForeignPrimaryKey('ID_CLASSE', 'IdClasse', 'INTEGER' , 'classes', 'ID', true, 11, null);
-		$this->addColumn('DATE_VERROUILLAGE', 'DateVerrouillage', 'TIME', false, null, null);
+		$this->addColumn('DATE_VERROUILLAGE', 'DateVerrouillage', 'TIMESTAMP', false, null, null);
+		$this->addColumn('DATE_FIN', 'DateFin', 'TIMESTAMP', false, null, null);
 		// validators
 	} // initialize()
 

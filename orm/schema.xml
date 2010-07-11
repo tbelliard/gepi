@@ -88,7 +88,8 @@
 		<column name="verouiller" type="VARCHAR" size="1" required="true" default="O" description="Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)" />
 		<column name="id_classe" type="INTEGER" size="11" required="true" primaryKey="true" description="identifiant numerique de la classe." />
 		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
-		<column name="date_verrouillage" type="TIME" required="false" description="date de verrouillage de la periode" />
+		<column name="date_verrouillage" type="TIMESTAMP" required="false" description="date de verrouillage de la periode" />
+		<column name="date_fin" type="TIMESTAMP" required="false" description="date de verrouillage de la periode" />
 	</table>
 
 	<table name="j_groupes_classes" description="Table permettant la jointure entre groupe d'enseignement et une classe. Cette jointure permet de definir un enseignement, c'est à dire un groupe d'eleves dans une meme classe. Est rarement utilise directement dans le code. Cette jointure permet de definir un coefficient et une valeur ects pour un groupe sur une classe">
@@ -246,7 +247,7 @@
 		<foreign-key foreignTable="eleves" onDelete="cascade"><reference local="login" foreign="login"/></foreign-key>
 		<column name="professeur" required="true" primaryKey="true" type="VARCHAR" size="50" description="cle etrangere, login du professeur (utilisateur professionnel)"/>
 		<foreign-key foreignTable="utilisateurs" onDelete="cascade"><reference local="professeur" foreign="login"/></foreign-key>
-        <column name="id_classe" required="true" primaryKey="true" type="INTEGER" size="11" description="cle etrangere, id de la classe"/>
+		<column name="id_classe" required="true" primaryKey="true" type="INTEGER" size="11" description="cle etrangere, id de la classe"/>
 		<foreign-key foreignTable="classes" onDelete="cascade"><reference local="id_classe" foreign="id"/></foreign-key>
 	</table>
 

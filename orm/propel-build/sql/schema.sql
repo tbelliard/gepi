@@ -147,7 +147,8 @@ CREATE TABLE periodes
 	num_periode INTEGER(10)  NOT NULL COMMENT 'identifiant numerique de la periode (1, 2 ou3)',
 	verouiller VARCHAR(1) default 'O' NOT NULL COMMENT 'Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)',
 	id_classe INTEGER(11)  NOT NULL COMMENT 'identifiant numerique de la classe.',
-	date_verrouillage TIME COMMENT 'date de verrouillage de la periode',
+	date_verrouillage DATETIME COMMENT 'date de verrouillage de la periode',
+	date_fin DATETIME COMMENT 'date de verrouillage de la periode',
 	PRIMARY KEY (num_periode,id_classe),
 	INDEX periodes_FI_1 (id_classe),
 	CONSTRAINT periodes_FK_1

@@ -14,31 +14,6 @@
  * @package    propel.generator.gepi
  */
 class PeriodeNote extends BasePeriodeNote {
-  	/**
-	 *
-	 * Retourne la date de fin de periode
-	 *
-	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
-	 *							If format is NULL, then the raw DateTime object will be returned.
-	 *
-	 * @return DateTime $date ou null si non précisé
-	 */
-	public function getDateFin($format = '%X') {
-	    if ($this->getVerouiller() == 'N') {
-		return null;
-	    } else {
-		$dt = $this->getDateVerrouillage(null);
-		$dt->setTime(23,59,59);
-		if ($format === null) {
-			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
-			return $dt;
-		} elseif (strpos($format, '%') !== false) {
-			return strftime($format, $dt->format('U'));
-		} else {
-			return $dt->format($format);
-		}
-	    }
-	}
 
   	/**
 	 *
@@ -78,21 +53,7 @@ class PeriodeNote extends BasePeriodeNote {
 	    } else {
 		//on renvoi la date de fin de la periode precedente
 		$periode_prec = PeriodeNoteQuery::create()->filterByIdClasse($this->getIdClasse())->filterByNumPeriode($this->getNumPeriode() - 1)->findOne();
-		if ($periode_prec == null || $periode_prec->getDateVerrouillage(null) == null) {
-		    return null;
-		} else {
-		    $date_debut = clone $periode_prec->getDateVerrouillage(null);
-		    $date_debut->setDate($date_debut->format('Y'), $date_debut->format('m'), $date_debut->format('d') + 1);
-		    $date_debut->setTime(0,0,0);
-		    if ($format === null) {
-			    // Because propel.useDateTimeClass is TRUE, we return a DateTime object.
-			    return $date_debut;
-		    } elseif (strpos($format, '%') !== false) {
-			    return strftime($format, $date_debut->format('U'));
-		    } else {
-			    return $date_debut->format($format);
-		    }
-		}
+		return $periode_prec->getDateFin($format);
 	    }
 	}
 

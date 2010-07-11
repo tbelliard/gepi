@@ -1081,4 +1081,22 @@ else {
 	}
 }
 
+// ============= Insertion d'un champ pour abs2
+$sql = "SELECT date_fin FROM periodes LIMIT 1";
+$req_rank = mysql_query($sql);
+if (!$req_rank){
+    $sql_request = "ALTER TABLE periodes ADD date_fin TIMESTAMP";
+    $req_add_rank = mysql_query($sql_request);
+    if ($req_add_rank) {
+        $result .= "<p style=\"color:green;\">Ajout du champ date_fin dans la table <strong>periodes</strong> : ok.</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Ajout du champ date_fin à la table <strong>periodes</strong> : Erreur.</p>";
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Ajout du champ date_fin à la table <strong>periodes</strong> : déjà réalisé.</p>";
+
+}
+
 ?>

@@ -12,12 +12,14 @@
  * @method     PeriodeNoteQuery orderByVerouiller($order = Criteria::ASC) Order by the verouiller column
  * @method     PeriodeNoteQuery orderByIdClasse($order = Criteria::ASC) Order by the id_classe column
  * @method     PeriodeNoteQuery orderByDateVerrouillage($order = Criteria::ASC) Order by the date_verrouillage column
+ * @method     PeriodeNoteQuery orderByDateFin($order = Criteria::ASC) Order by the date_fin column
  *
  * @method     PeriodeNoteQuery groupByNomPeriode() Group by the nom_periode column
  * @method     PeriodeNoteQuery groupByNumPeriode() Group by the num_periode column
  * @method     PeriodeNoteQuery groupByVerouiller() Group by the verouiller column
  * @method     PeriodeNoteQuery groupByIdClasse() Group by the id_classe column
  * @method     PeriodeNoteQuery groupByDateVerrouillage() Group by the date_verrouillage column
+ * @method     PeriodeNoteQuery groupByDateFin() Group by the date_fin column
  *
  * @method     PeriodeNoteQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     PeriodeNoteQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -33,12 +35,14 @@
  * @method     PeriodeNote findOneByVerouiller(string $verouiller) Return the first PeriodeNote filtered by the verouiller column
  * @method     PeriodeNote findOneByIdClasse(int $id_classe) Return the first PeriodeNote filtered by the id_classe column
  * @method     PeriodeNote findOneByDateVerrouillage(string $date_verrouillage) Return the first PeriodeNote filtered by the date_verrouillage column
+ * @method     PeriodeNote findOneByDateFin(string $date_fin) Return the first PeriodeNote filtered by the date_fin column
  *
  * @method     array findByNomPeriode(string $nom_periode) Return PeriodeNote objects filtered by the nom_periode column
  * @method     array findByNumPeriode(int $num_periode) Return PeriodeNote objects filtered by the num_periode column
  * @method     array findByVerouiller(string $verouiller) Return PeriodeNote objects filtered by the verouiller column
  * @method     array findByIdClasse(int $id_classe) Return PeriodeNote objects filtered by the id_classe column
  * @method     array findByDateVerrouillage(string $date_verrouillage) Return PeriodeNote objects filtered by the date_verrouillage column
+ * @method     array findByDateFin(string $date_fin) Return PeriodeNote objects filtered by the date_fin column
  *
  * @package    propel.generator.gepi.om
  */
@@ -264,6 +268,37 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(PeriodeNotePeer::DATE_VERROUILLAGE, $dateVerrouillage, $comparison);
+	}
+
+	/**
+	 * Filter the query on the date_fin column
+	 * 
+	 * @param     string|array $dateFin The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    PeriodeNoteQuery The current query, for fluid interface
+	 */
+	public function filterByDateFin($dateFin = null, $comparison = null)
+	{
+		if (is_array($dateFin)) {
+			$useMinMax = false;
+			if (isset($dateFin['min'])) {
+				$this->addUsingAlias(PeriodeNotePeer::DATE_FIN, $dateFin['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($dateFin['max'])) {
+				$this->addUsingAlias(PeriodeNotePeer::DATE_FIN, $dateFin['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(PeriodeNotePeer::DATE_FIN, $dateFin, $comparison);
 	}
 
 	/**
