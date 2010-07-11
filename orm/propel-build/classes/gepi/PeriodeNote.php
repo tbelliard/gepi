@@ -15,6 +15,11 @@
  */
 class PeriodeNote extends BasePeriodeNote {
 
+	/**
+	 * @var        array PeriodesNote[] Collection to store aggregation of PeriodesNote objects.
+	 */
+	protected $dateDebut;
+
   	/**
 	 *
 	 * Retourne la date de debut de periode
@@ -24,40 +29,47 @@ class PeriodeNote extends BasePeriodeNote {
 	 *
 	 * @return DateTime $date ou null si non précisé
 	 */
-	public function getDateDebut($format = '%X') {
-	    if ($this->getNumPeriode() == 1) {
-		//on essaye de récupérer la date de début dans le calendrier des périodes
-		$edt_periode = EdtCalendrierPeriodeQuery::create()->filterByNumeroPeriode($this->getNumPeriode())->orderByDebutCalendrierTs()->findOne();
-		if ($edt_periode != null) {
-		    return $edt_periode->getJourdebutCalendrier($format);
-		} else {
-		    //on va renvoyer par default le 31 aout
-		    $dt = new DateTime('now');
-		    $dt->setDate($dt->format('Y'), 8, 31);
-		    $dt->setTime(0,0,0);
-		    $now = new DateTime('now');
-		    if ($dt->format('U') - $now->format('U') > 3600*24*30) {
-			//si la date est trop postérieure à maintenant c'est qu'on s'est trompé d'année
-			$dt->setDate($dt->format('Y') - 1, 8, 31);
-		    }
-		    
-		    if ($format === null) {
-			    // Because propel.useDateTimeClass is TRUE, we return a DateTime object.
-			    return $dt;
-		    } elseif (strpos($format, '%') !== false) {
-			    return strftime($format, $dt->format('U'));
+	public function getDateDebut($format = null) {
+	    if(null === $this->dateDebut) {
+		    if ($this->isNew() && null === $this->dateDebut) {
+			    return null;
 		    } else {
-			    return $dt->format($format);
+			    $dateDebut = null;
+			    if ($this->getNumPeriode() == 1) {
+				//on essaye de récupérer la date de début dans le calendrier des périodes
+				$edt_periode = EdtCalendrierPeriodeQuery::create()->filterByNumeroPeriode($this->getNumPeriode())->orderByDebutCalendrierTs()->findOne();
+				if ($edt_periode != null) {
+				    return $edt_periode->getJourdebutCalendrier($format);
+				} else {
+				    //on va renvoyer par default le 31 aout
+				    $dateDebut = new DateTime('now');
+				    $dateDebut->setDate($dt->format('Y'), 8, 31);
+				    $dateDebut->setTime(0,0,0);
+				    $now = new DateTime('now');
+				    if ($dateDebut->format('U') - $now->format('U') > 3600*24*30) {
+					//si la date est trop postérieure à maintenant c'est qu'on s'est trompé d'année
+					$dateDebut->setDate($dateDebut->format('Y') - 1, 8, 31);
+				    }
+				}
+			    } else {
+				//on renvoi la date de fin de la periode precedente
+				$periode_prec = PeriodeNoteQuery::create()->filterByIdClasse($this->getIdClasse())->filterByNumPeriode($this->getNumPeriode() - 1)->findOne();
+				if ($periode_prec != null) {
+				    $dateDebut = $periode_prec->getDateFin(null);
+				}
+			    }
+			    $this->dateDebut = $dateDebut;
 		    }
-		}
-	    } else {
-		//on renvoi la date de fin de la periode precedente
-		$periode_prec = PeriodeNoteQuery::create()->filterByIdClasse($this->getIdClasse())->filterByNumPeriode($this->getNumPeriode() - 1)->findOne();
-		if ($periode_prec === null) {
+	    }
+	    if ($this->dateDebut === null) {
 		    return null;
-		}else {
-		    return $periode_prec->getDateFin($format);
-		}
+	    } elseif ($format === null) {
+		    //we return a DateTime object.
+		    return $this->dateDebut;
+	    } elseif (strpos($format, '%') !== false) {
+		    return strftime($format, $this->dateDebut->format('U'));
+	    } else {
+		    return $this->dateDebut->format($format);
 	    }
 	}
 
