@@ -68,6 +68,9 @@ if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') 
 if ($utilisateur->getStatut()=="cpe") {
     header("Location: ./absences_du_jour.php");
     die();
+} else if ($utilisateur->getStatut()=="professeur") {
+    header("Location: ./saisie_absences.php");
+    die();
 }
 
 //==============================================
