@@ -165,7 +165,7 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo '<br/>';
     }
     echo '<div>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
     echo $saisie->getDateDescription();
     echo "</a>";
     echo '<div style="float: right;  margin-top:-0.22em; margin-left:0.2em;">';
@@ -296,7 +296,7 @@ echo '<table>';
 $eleve_prec_id = null;
 foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
     echo '<tr><td>';
-    echo "<a href='liste_notifications.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getId()."' style='display: block; height: 100%;'> ";
     if ($notification->getDateEnvoi() != null) {
 	echo (strftime("%a %d %b %Y %H:%M", $notification->getDateEnvoi('U')));
     } else {

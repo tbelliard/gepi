@@ -153,7 +153,7 @@ foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as
 	echo '<br/>';
     }
     echo '<div>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
     echo $saisie->getDateDescription();
     echo "</a>";
     echo '</div>';
@@ -505,6 +505,14 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     } else {
 	echo '<button type="submit">Génerer la notification</button>';
     }
+    echo '</form>';
+    echo '</TD></tr>';
+} else {
+    echo '<tr><TD colspan="2" style="text-align : center;">';
+    echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+    echo '<input type="hidden" name="modif" value="duplication"/>';
+    echo '<button type="submit">Creer une autre notification</button>';
     echo '</form>';
     echo '</TD></tr>';
 }

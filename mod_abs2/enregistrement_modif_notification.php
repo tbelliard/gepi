@@ -138,6 +138,16 @@ if ( $modif == 'type') {
     $notification->setTelephone($_POST["tel"]);
 } elseif ($modif == 'adresse') {
     $notification->setAdrId($_POST["adr_id"]);
+} elseif ($modif == 'duplication') {
+    $clone = $notification->copy();
+    $clone->setStatutEnvoi(AbsenceEleveNotification::$STATUT_INITIAL);
+    $clone->setDateEnvoi(null);
+    $clone->setErreurMessageEnvoi(null);
+    $clone->save();
+    $_POST["id_notification"] = $clone->getId();
+    $message_enregistrement .= 'Nouvelle notification';
+    include("visu_notification.php");
+    die();
 }
 
 if (!$notification->isModified()) {
@@ -156,7 +166,7 @@ if (!$notification->isModified()) {
 		$message_enregistrement .= '<br/>';
 	    }
 	}
-	$traitement->reload();
+	$notification->reload();
     }
 }
 

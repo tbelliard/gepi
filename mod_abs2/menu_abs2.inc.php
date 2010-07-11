@@ -43,7 +43,7 @@ if(($_SESSION['statut']=='cpe')||
     echo "title='Traitement'>Liste des traitements</a></li>\n";
 
     echo "<li><a href='visu_notification.php' ";
-    if($onglet_abs=='visu_notification.php' || $onglet_abs=='enregistrement_modif_notification.php') {echo "class='current' ";}
+    if($onglet_abs=='visu_notification.php' || $onglet_abs=='enregistrement_modif_notification.php' || $onglet_abs=='generer_notification.php') {echo "class='current' ";}
     echo "title='Notification'>Notification</a></li>\n";
 
     echo "<li><a href='liste_notifications.php' ";

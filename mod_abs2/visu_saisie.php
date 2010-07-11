@@ -259,8 +259,10 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
     //on affiche les traitements uniquement si ils ne sont pas modifiables, car si ils sont modifiables on va afficher un input pour pouvoir les modifier
     if ($traitement->getUtilisateurId() != $utilisateur->getPrimaryKey() || !$modifiable) {
 	echo "<nobr>";
+	echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."' style='display: block; height: 100%;'> ";
 	echo $traitement->getDescriptionCourte();
-	echo "</nobr><br>";
+	echo "</a>";
+	echo "</nobr><br/>";
     }
 }
 
