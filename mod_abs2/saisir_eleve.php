@@ -55,9 +55,11 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
-if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_absence_professeur")!='y') {
-    die("Le module n'est pas activé.");
+if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite" && $utilisateur->getStatut()!="autre") {
+    echo $utilisateur->getStatut();
+    die("acces interdit");
 }
+
 
 //récupération des paramètres de la requète
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] :(isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
@@ -135,7 +137,7 @@ echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 
 //on affiche une boite de selection pour l'eleve
 echo "<td style='border : 1px solid; padding : 10 px;'>";
-echo "<form action=\"./saisie_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
 echo '<input type="text" name="nom_eleve" size="10" value="'.$nom_eleve.'"/> ';
 echo '<button type="submit">Rechercher</button>';
@@ -145,7 +147,7 @@ echo '</td>';
 
 //on affiche une boite de selection avec les groupes et les creneaux
 echo "<td style='border : 1px solid; padding : 10 px;'>";
-echo "<form action=\"./saisie_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
 echo ("Groupe : <select name=\"id_groupe\">");
 echo "<option value='-1'>choisissez un groupe</option>\n";
@@ -165,7 +167,7 @@ echo "</td>";
 
 //on affiche une boite de selection avec les classe
 echo "<td style='border : 1px solid; padding : 10 px;'>";
-echo "<form action=\"./saisie_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 echo '<input type="hidden" name="type_selection" value="id_classe"/>';
 echo ("Classe : <select name=\"id_classe\">");
 echo "<option value='-1'>choisissez une classe</option>\n";
@@ -185,7 +187,7 @@ echo "</td>";
 
 //on affiche une boite de selection avec les aid et les creneaux
 echo "<td style='border : 1px solid;'>";
-echo "<form action=\"./saisie_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 echo '<input type="hidden" name="type_selection" value="id_aid"/>';
 echo ("Aid : <select name=\"id_aid\">");
 echo "<option value='-1'>choisissez une aid</option>\n";
@@ -210,19 +212,23 @@ if (isset($message_enregistrement)) {
 
 //afichage des eleves
 $eleve_col = new PropelCollection();
-if ($id_eleve != null) {
-    $eleve_col->add(EleveQuery::create()->useJEleveCpeQuery()->filterByCpeLogin($utilisateur->getLogin())->endUse()->findPk($id_eleve));
+if ($type_selection == 'id_eleve') {
+    $query = EleveQuery::create();
+    if ($utilisateur->getStatut() == "cpe") {
+	$query->useJEleveCpeQuery()->filterByCpeLogin($utilisateur->getLogin())->endUse();
+    }
+    $eleve_col->append($query->findPk($id_eleve));
 } else if ($type_selection == 'nom_eleve') {
-    $eleve_col = EleveQuery::create()->useJEleveCpeQuery()->filterByCpeLogin($utilisateur->getLogin())->endUse()->
-    add(ElevePeer::NOM ,'%'.$nom_eleve.'%', Criteria::LIKE)->
-    addOr(ElevePeer::PRENOM ,'%'.$nom_eleve.'%', Criteria::LIKE)->limit(60)->find();
-} else if ($type_selection == 'id_eleve') {
-    $eleve_col = EleveQuery::create()->filterByIdEleve($id_eleve)->find();
-} elseif (isset($current_groupe) && $current_groupe != null) {
+    $query = EleveQuery::create();
+    if ($utilisateur->getStatut() == "cpe") {
+	$query->useJEleveCpeQuery()->filterByCpeLogin($utilisateur->getLogin())->endUse();
+    }
+    $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
+} elseif ($type_selection == 'id_groupe') {
     $eleve_col = $current_groupe->getEleves();
-} else if (isset($current_aid) && $current_aid != null) {
+} elseif ($type_selection == 'id_aid') {
     $eleve_col = $current_aid->getEleves();
-} else if (isset($current_classe) && $current_classe != null) {
+} elseif ($type_selection == 'id_classe') {
     $eleve_col = $current_classe->getEleves();
 }
 
@@ -238,7 +244,6 @@ if (!$eleve_col->isEmpty()) {
 
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
-	<?php echo ('<p>'.$eleve_col->count().' élèves.</p>') ?>
 	<?php echo ('<p>');
 	    $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
 	    if ($type_autorises->count() != 0) {
@@ -287,10 +292,9 @@ foreach($eleve_col as $eleve) {
 				<input type="hidden" name="id_eleve_absent[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getIdEleve(); ?>" />
 <?php
 
-			echo '<a href="./saisie_eleve.php?type_selection=id_eleve&id_eleve='.$eleve->getPrimaryKey().'">';
+			echo '<a href="./saisir_eleve.php?type_selection=id_eleve&id_eleve='.$eleve->getPrimaryKey().'">';
 			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).'&nbsp;('.$eleve->getCivilite().')</span>';
 			echo '</a>';
-			//echo "on est la aussi";//le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies.php
 			if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
 			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
 			}
@@ -418,7 +422,7 @@ if (!$cours_col->isEmpty()) {
 		    if (date('W') == $semaine->getPrimaryKey()) echo " (courante) ";
 		    echo "<br/>\n";
 	    }
-	    echo '<a href="./saisie_eleve.php">Ne pas afficher toutes les semaines</a>';
+	    echo '<a href="./saisir_eleve.php">Ne pas afficher toutes les semaines</a>';
 	} else {
 	    //on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
 	    for ($i = 0; $i < 10; $i++) {
@@ -430,7 +434,7 @@ if (!$cours_col->isEmpty()) {
 		    if (date('W') == $semaine->getPrimaryKey()) echo " (courante) ";
 		    echo "<br/>\n";
 	    }
-	    echo '<a href="./saisie_eleve.php?affiche_toute_semaine=oui">Afficher toutes les semaines</a>';
+	    echo '<a href="./saisir_eleve.php?affiche_toute_semaine=oui">Afficher toutes les semaines</a>';
 	}
 	echo '</div>';
     

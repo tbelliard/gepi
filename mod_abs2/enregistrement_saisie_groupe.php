@@ -99,7 +99,8 @@ if ($id_aid != null) {
     $id_cours = null;
 }
 if ($id_creneau != null) {
-    if (EdtCreneauQuery::create()->findPk($id_creneau) == null) {
+    $current_creneau = EdtEmplacementCoursQuery::create()->findPk($id_cours);
+    if ($current_creneau == null) {
 	$message_enregistrement .= "Probleme avec le parametre id_creneau<br/>";
 	$id_creneau = null;
     }
@@ -108,16 +109,14 @@ if ($id_creneau != null) {
 if ($id_cours != null) {
     $current_cours = EdtEmplacementCoursQuery::create()->findPk($id_cours);
     if ($current_cours != null) {
-	$id_creneau = $current_cours->getIdDefiniePeriode();
+	//$id_creneau = $current_cours->getIdDefiniePeriode();
 	$id_groupe = $current_cours->getIdGroupe();
 	$id_aid = $current_cours->getIdAid();
     } else {
 	$message_enregistrement .= "Probleme avec le parametre id_cours<br/>";
 	$id_cours = null;
     }
-    $id_groupe = null;
     $id_classe = null;
-    $id_aid = null;
     $id_creneau = null;
 }
 
@@ -276,7 +275,7 @@ for($i=0; $i<$total_eleves; $i++) {
 if (!isset($saisie) || $saisie == null) {
     //il n'y aucune saisie d'effectuer, on va enregistrer une saisie pour marquer le fait que l'appel a été effectué
     //on test si l'eleve est enregistré absent
-    if (($id_groupe != null || $id_classe != null || $id_aid != null) && ($id_creneau != null) && ($date_absence_eleve != null)) {
+    if (($id_groupe != null || $id_classe != null || $id_aid != null) && ($id_creneau != null || $id_cours != null) && ($date_absence_eleve != null)) {
 	$saisie = new AbsenceEleveSaisie();
 
 	$saisie->setIdEdtCreneau($id_creneau);
@@ -287,11 +286,18 @@ if (!isset($saisie) || $saisie == null) {
 	$saisie->setUtilisateurId($utilisateur->getPrimaryKey());
 
 	$dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
-	$creneau = EdtCreneauQuery::create()->findPk($id_creneau);
-	$dt_date_absence_eleve->setTime($creneau->getHeuredebutDefiniePeriode('H'), $creneau->getHeuredebutDefiniePeriode('i'));
+	if ($id_creneau != null) {
+	    $dt_date_absence_eleve->setTime($current_creneau->getHeuredebutDefiniePeriode('H'), $current_creneau->getHeuredebutDefiniePeriode('i'));
+	} elseif ($id_cours != null) {
+	    $dt_date_absence_eleve->setTime($current_cours->getHeureDebut('H'), $current_cours->getHeureDebut('i'));
+	}
 	$saisie->setDebutAbs($dt_date_absence_eleve);
 	$date_fin = clone $dt_date_absence_eleve;
-	$date_fin->setTime($creneau->getHeurefinDefiniePeriode('H'), $creneau->getHeurefinDefiniePeriode('i'));
+	if ($id_creneau != null) {
+	    $date_fin->setTime($current_creneau->getHeurefinDefiniePeriode('H'), $current_creneau->getHeurefinDefiniePeriode('i'));
+	} elseif ($id_cours != null) {
+	    $date_fin->setTime($current_cours->getHeureFin('H'), $current_cours->getHeureFin('i'));
+	}
 	$saisie->setFinAbs($date_fin);
 	
 
@@ -312,5 +318,5 @@ if (!isset($saisie) || $saisie == null) {
     }
 }
 
-include("saisie_absences.php");
+include("saisir_groupe.php");
 ?>

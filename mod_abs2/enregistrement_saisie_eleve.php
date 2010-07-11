@@ -55,8 +55,8 @@ if (getSettingValue("active_module_absence")!='2') {
     die("Le module n'est pas activé.");
 }
 
-if ($utilisateur->getStatut()!="cpe") {
-    die("Accès non autorisé.");
+if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite" && $utilisateur->getStatut()!="autre") {
+    die("acces interdit");
 }
 
 //récupération des paramètres de la requète
@@ -268,5 +268,5 @@ for($i=0; $i<$total_eleves; $i++) {
     }
 }
 
-include("saisie_eleve.php");
+include("saisir_eleve.php");
 ?>

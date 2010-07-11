@@ -65,11 +65,14 @@ if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') 
     die();
 }
 
-if ($utilisateur->getStatut()=="cpe") {
+if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") {
     header("Location: ./absences_du_jour.php");
     die();
 } else if ($utilisateur->getStatut()=="professeur") {
-    header("Location: ./saisie_absences.php");
+    header("Location: ./saisir_groupe.php");
+    die();
+} else if ($utilisateur->getStatut()=="autre") {
+    header("Location: ./saisir_eleve.php");
     die();
 }
 
