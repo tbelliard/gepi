@@ -648,6 +648,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_justifications_a
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/admin/admin_actions_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/index.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Administration du module absences', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisie_absences.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Affichage du formulaire de saisie de absences', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/absences_du_jour.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Affichage des absences du jour', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisies.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Enregistrement des saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_saisies.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Enregistrement des saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/liste_traitements.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Enregistrement des saisies', '');";

@@ -34,6 +34,10 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='saisie_eleve.php') {echo "class='current' ";}
     echo "title='Saisir pour un eleve'>Saisir un eleve</a></li>\n";
 
+    echo "<li><a href='absences_du_jour.php' ";
+    if($onglet_abs=='absences_du_jour.php') {echo "class='current' ";}
+    echo "title='Absences du jour'>Absences du jour</a></li>\n";
+
     echo "<li><a href='visu_traitement.php' ";
     if($onglet_abs=='visu_traitement.php' || $onglet_abs=='enregistrement_modif_traitement.php') {echo "class='current' ";}
     echo "title='Traitement'>Traitement</a></li>\n";
