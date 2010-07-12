@@ -3,13 +3,15 @@
 $Id$
  */
 
-echo "<ul class='css-tabs' id='menutabs'>\n";
+//echo "<ul class='css-tabs' id='menutabs'>\n";
 
 $onglet_abs = reset(explode("?", basename($_SERVER["REQUEST_URI"])));
 $_SESSION['abs2_onglet'] = $onglet_abs;
 // Tests à remplacer par des tests sur les droits attribués aux statuts
 if(($_SESSION['statut']=='cpe')||
     ($_SESSION['statut']=='scolarite')) {
+  
+	echo "<ul class='css-tabs' id='menutabs'>\n";
 
     echo "<li><a href='absences_du_jour.php' ";
     if($onglet_abs=='absences_du_jour.php') {echo "class='current' ";}
@@ -52,7 +54,13 @@ if(($_SESSION['statut']=='cpe')||
 	if($onglet_abs=='stats.php') {echo "class='current' ";}
 	echo "title='Stats'>Stats</a></li>\n";
     }
+
+	echo "</ul>\n";
+
 } else if ($_SESSION['statut']=='professeur') {
+
+	echo "<ul class='css-tabs' id='menutabs'>\n";
+
     echo "<li><a href='saisir_groupe.php' ";
     if($onglet_abs=='saisir_groupe.php') {echo "class='current' ";}
     echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
@@ -64,7 +72,13 @@ if(($_SESSION['statut']=='cpe')||
     echo "<li><a href='liste_saisies.php' ";
     if($onglet_abs=='liste_saisies.php') {echo "class='current' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
+
+	echo "</ul>\n";
+
 }else if ($_SESSION['statut']=='autre') {
+
+	echo "<ul class='css-tabs' id='menutabs'>\n";
+
     echo "<li><a href='saisir_eleve.php' ";
     if($onglet_abs=='saisir_eleve.php') {echo "class='current' ";}
     echo "title='Saisir pour un eleve'>Saisir un eleve</a></li>\n";
@@ -76,7 +90,8 @@ if(($_SESSION['statut']=='cpe')||
     echo "<li><a href='liste_saisies.php' ";
     if($onglet_abs=='liste_saisies.php') {echo "class='current' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
+
+	echo "</ul>\n";
 }
-echo "</ul>\n";
 
 ?>

@@ -94,7 +94,7 @@ include('menu_abs2.inc.php');
 //===========================
 
 echo "<div class='css-panes' id='containDiv'>\n";
-    echo "<div style=display:block'>\n";
+    echo "<div style='display:block'>\n";
         echo "<p>Petit texte de présentation du module...</p>\n";
     echo "</div>\n";
 echo "</div>\n";
