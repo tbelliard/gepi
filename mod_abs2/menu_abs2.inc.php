@@ -5,7 +5,10 @@ $Id$
 
 //echo "<ul class='css-tabs' id='menutabs'>\n";
 
-$onglet_abs = reset(explode("?", basename($_SERVER["REQUEST_URI"])));
+// $onglet_abs = reset(explode("?", basename($_SERVER["REQUEST_URI"])));
+$basename_serveur=explode("?", basename($_SERVER["REQUEST_URI"]));
+$onglet_abs = reset($basename_serveur);
+
 $_SESSION['abs2_onglet'] = $onglet_abs;
 // Tests à remplacer par des tests sur les droits attribués aux statuts
 if(($_SESSION['statut']=='cpe')||
