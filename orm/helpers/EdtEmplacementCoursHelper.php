@@ -30,6 +30,13 @@ class EdtEmplacementCoursHelper {
 
 		if ($semaine_declaration[$a->getJourSemaine()] != $semaine_declaration[$b->getJourSemaine()]) {
 		    $result = ($semaine_declaration[$a->getJourSemaine()] - $semaine_declaration[$b->getJourSemaine()]);
+		} elseif ($a->getEdtCreneau() == null && $b->getEdtCreneau() != null)  {
+			//si aucun creneau n'est precise on considere que le creneau null est plus petit
+		    $result = -1;
+		} elseif ($a->getEdtCreneau() == null && $b->getEdtCreneau() == null)  {
+		    $result = 0;
+		} elseif ($a->getEdtCreneau() != null && $b->getEdtCreneau() == null)  {
+		    $result = 1;
 		} elseif ($a->getEdtCreneau()->getIdDefiniePeriode() != $b->getEdtCreneau()->getIdDefiniePeriode())  {
 		    $start = strtotime($a->getEdtCreneau()->getHeuredebutDefiniePeriode());
 		    $end = strtotime($b->getEdtCreneau()->getHeuredebutDefiniePeriode());
