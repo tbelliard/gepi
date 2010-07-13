@@ -43,7 +43,7 @@ class PeriodeNote extends BasePeriodeNote {
 				} else {
 				    //on va renvoyer par default le 31 aout
 				    $dateDebut = new DateTime('now');
-				    $dateDebut->setDate($dt->format('Y'), 8, 31);
+				    $dateDebut->setDate($dateDebut->format('Y'), 8, 31);
 				    $dateDebut->setTime(0,0,0);
 				    $now = new DateTime('now');
 				    if ($dateDebut->format('U') - $now->format('U') > 3600*24*30) {
