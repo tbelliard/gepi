@@ -52,6 +52,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function getClasses($periode) {
+		$periode = $this->getPeriodeNote($periode);
 		require_once("helpers/PeriodeNoteHelper.php");
 		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
 		if(!isset($this->collClasses[$periode_num]) || null === $this->collClasses[$periode_num]) {
@@ -60,9 +61,12 @@ class Eleve extends BaseEleve {
 				$this->initClasses($periode_num);
 			} else {
 				$query = ClasseQuery::create();
-				$query->useJEleveClasseQuery()->filterByEleve($this)
-					->filterByPeriode($periode_num)
-					->endUse();
+				if ($periode != null) {
+					$query->useJEleveClasseQuery()->filterByEleve($this)->filterByPeriode($periode_num)->endUse();
+				} else {
+					$query->useJEleveClasseQuery()->filterByEleve($this)->endUse();
+				}
+				//$query->endUse();
 				$this->collClasses[$periode_num] = $query->find();
 			}
 		}
@@ -760,6 +764,10 @@ class Eleve extends BaseEleve {
 	public function getPeriodeNote($periode = null) {
 	    if ($periode === null) {
 		$periode = $this->getPeriodeNoteOuverte();
+		if ($periode == null) {
+			$now = new DateTime('now');
+			$periode = $this->getPeriodeNote($now);
+		}
 	    } elseif (is_numeric($periode)) {
 		    foreach ($this->getPeriodeNotes() as $periode_temp) {
 			if ($periode_temp->getNumPeriode() == $periode) {
