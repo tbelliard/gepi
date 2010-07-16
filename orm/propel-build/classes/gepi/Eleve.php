@@ -709,7 +709,7 @@ class Eleve extends BaseEleve {
 
 		$photo= null;
 		if($_elenoet_ou_login!='') {
-			if(file_exists($chemin."../photos/eleves/".$this->getLogin().".jpg")) {
+			if(file_exists($chemin."../photos/eleves/".$_elenoet_ou_login.".jpg")) {
 				$photo="$_elenoet_ou_login.jpg";
 			}
 			else {
