@@ -83,7 +83,7 @@ class Classe extends BaseClasse {
 		    $query->useJEleveClasseQuery()->filterByPeriode($periode)->endUse();
 		}
 		$query->useJEleveClasseQuery()->filterByClasse($this)->endUse();
-		$query->orderByNom();
+		$query->orderByNom()->distinct();
 		return $query->find();
 	}
 
@@ -166,9 +166,9 @@ class Classe extends BaseClasse {
 		}
 
 		//on va prendre la periode de numero la plus petite non verrouillee
-		if ($periode_verrouiller_n != null) {
+		if (isset($periode_verrouiller_n) && $periode_verrouiller_n != null) {
 		    return $periode_verrouiller_n;
-		} elseif ($periode_verrouiller_p != null) {
+		} elseif (isset($periode_verrouiller_p) && $periode_verrouiller_p != null) {
 		    return $periode_verrouiller_p;
 		}
 		return null;

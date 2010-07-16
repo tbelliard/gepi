@@ -216,9 +216,10 @@ if (isset($message_enregistrement)) {
 //afichage des eleves
 $eleve_col = new PropelCollection();
 if ($type_selection == 'id_eleve') {
-    $query = EleveQuery::create();
-    $query->filterByUtilisateurProfessionnel($utilisateur);
-    $eleve_col->append($query->findPk($id_eleve));
+    $eleve = EleveQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->filterByIdEleve($id_eleve)->findOne();
+    if ($eleve != null) {
+	$eleve_col->append($eleve);
+    }
 } else if ($type_selection == 'nom_eleve') {
     $query = EleveQuery::create();
     $query->filterByUtilisateurProfessionnel($utilisateur);
