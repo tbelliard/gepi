@@ -146,64 +146,67 @@ echo '</td>';
 
 
 //on affiche une boite de selection avec les groupes et les creneaux
-echo "<td style='border : 1px solid; padding : 10 px;'>";
-echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
-echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
-echo ("Groupe : <select name=\"id_groupe\">");
-echo "<option value='-1'>choisissez un groupe</option>\n";
-foreach ($utilisateur->getGroupes() as $group) {
-	echo "<option value='".$group->getId()."'";
-	if ($id_groupe == $group->getId()) echo " SELECTED ";
-	echo ">";
-	echo $group->getNameAvecClasses();
-	echo "</option>\n";
+if (!$utilisateur->getGroupes()->isEmpty()) {
+	echo "<td style='border : 1px solid; padding : 10 px;'>";
+	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
+	echo ("Groupe : <select name=\"id_groupe\">");
+	echo "<option value='-1'>choisissez un groupe</option>\n";
+	foreach ($utilisateur->getGroupes() as $group) {
+		echo "<option value='".$group->getId()."'";
+		if ($id_groupe == $group->getId()) echo " SELECTED ";
+		echo ">";
+		echo $group->getNameAvecClasses();
+		echo "</option>\n";
+	}
+	echo "</select>&nbsp;";
+
+	echo '<button type="submit">Afficher les eleves</button>';
+	echo "</form>";
+	echo "</td>";
 }
-echo "</select>&nbsp;";
-
-echo '<button type="submit">Afficher les eleves</button>';
-echo "</form>";
-echo "</td>";
-
 
 //on affiche une boite de selection avec les classe
-echo "<td style='border : 1px solid; padding : 10 px;'>";
-echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
-echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-echo ("Classe : <select name=\"id_classe\">");
-echo "<option value='-1'>choisissez une classe</option>\n";
-foreach ($utilisateur->getClasses() as $classe) {
-	echo "<option value='".$classe->getId()."'";
-	if ($id_classe == $classe->getId()) echo " SELECTED ";
-	echo ">";
-	echo $classe->getNomComplet();
-	echo "</option>\n";
+if (!$utilisateur->getClasses()->isEmpty()) {
+	echo "<td style='border : 1px solid; padding : 10 px;'>";
+	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo '<input type="hidden" name="type_selection" value="id_classe"/>';
+	echo ("Classe : <select name=\"id_classe\">");
+	echo "<option value='-1'>choisissez une classe</option>\n";
+	foreach ($utilisateur->getClasses() as $classe) {
+		echo "<option value='".$classe->getId()."'";
+		if ($id_classe == $classe->getId()) echo " SELECTED ";
+		echo ">";
+		echo $classe->getNomComplet();
+		echo "</option>\n";
+	}
+	echo "</select>&nbsp;";
+
+	echo '<button type="submit">Afficher les eleves</button>';
+	echo "</form>";
+	echo "</td>";
 }
-echo "</select>&nbsp;";
-
-echo '<button type="submit">Afficher les eleves</button>';
-echo "</form>";
-echo "</td>";
-
 
 //on affiche une boite de selection avec les aid et les creneaux
-echo "<td style='border : 1px solid;'>";
-echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
-echo '<input type="hidden" name="type_selection" value="id_aid"/>';
-echo ("Aid : <select name=\"id_aid\">");
-echo "<option value='-1'>choisissez une aid</option>\n";
-foreach ($utilisateur->getAidDetailss() as $aid) {
-	echo "<option value='".$aid->getPrimaryKey()."'";
-	if ($id_aid == $aid->getPrimaryKey()) echo " SELECTED ";
-	echo ">";
-	echo $aid->getNom();
-	echo "</option>\n";
+if (!$utilisateur->getAidDetailss()->isEmpty()) {
+	echo "<td style='border : 1px solid;'>";
+	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo '<input type="hidden" name="type_selection" value="id_aid"/>';
+	echo ("Aid : <select name=\"id_aid\">");
+	echo "<option value='-1'>choisissez une aid</option>\n";
+	foreach ($utilisateur->getAidDetailss() as $aid) {
+		echo "<option value='".$aid->getPrimaryKey()."'";
+		if ($id_aid == $aid->getPrimaryKey()) echo " SELECTED ";
+		echo ">";
+		echo $aid->getNom();
+		echo "</option>\n";
+	}
+	echo "</select>&nbsp;";
+
+	echo '<button type="submit">Afficher les eleves</button>';
+	echo "</form>";
+	echo "</td>";
 }
-echo "</select>&nbsp;";
-
-echo '<button type="submit">Afficher les eleves</button>';
-echo "</form>";
-echo "</td>";
-
 echo "</tr></table>";
 
 if (isset($message_enregistrement)) {
@@ -317,8 +320,10 @@ foreach($eleve_col as $eleve) {
 				<img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
 <?php			
 			}
-			echo '<a href="javascript:centrerpopup(\'../eleves/visu_eleve.php?ele_login='.$eleve->getLogin().'\',600,550,\'scrollbars=yes,statusbar=no,resizable=yes\');">
-			    Voir fiche</a>';
+			if ($utilisateur->getStatut() != 'autre'){
+				echo '<a href="javascript:centrerpopup(\'../eleves/visu_eleve.php?ele_login='.$eleve->getLogin().'\',600,550,\'scrollbars=yes,statusbar=no,resizable=yes\');">
+				    Voir fiche</a>';
+			}
 			echo '</td>';
 
 echo "</tr>";

@@ -60,6 +60,12 @@ $autorise[18]= array('/mod_discipline/index.php',
 					 '/mod_discipline/traiter_incident.php',
 					 '/mod_ooo/retenue.php',
 					 '/mod_ooo/rapport_incident.php');
+$autorise[19]= array('/mod_abs2/saisir_eleve.php',
+					 '/mod_abs2/index.php',
+					 '/mod_abs2/visu_saisie.php',
+					 '/mod_abs2/enregistrement_modif_saisie.php',
+					 '/mod_abs2/liste_saisies.php',
+					 '/mod_abs2/enregistrement_saisie_eleve.php');
 
 
 $iter = count($autorise);
@@ -84,6 +90,7 @@ $menu_accueil[15] = array('Fiches : ', 'Fiches : voir les absences', 'vae');
 $menu_accueil[16] = array('Fiches : ', 'Fiches : voir année antérieure', 'anna');
 $menu_accueil[17] = array('Trombinoscope', 'Trombinoscope des élèves', 'tr');
 $menu_accueil[18] = array('Discipline', 'Accéder au module Discipline : Déclarer et gérer ses incidents', 'dsi');
+$menu_accueil[19] = array('Absence', 'Accéder au module absence.', 'abs');
 
 
 ?>

@@ -48,11 +48,15 @@ class EleveQuery extends BaseEleveQuery {
 	    if ($utilisateurProfessionnel == null ||
 		    ($utilisateurProfessionnel->getStatut() != "cpe"
 		    && $utilisateurProfessionnel->getStatut() != "professeur"
-		    && $utilisateurProfessionnel->getStatut() != "scolarite")) {
+		    && $utilisateurProfessionnel->getStatut() != "scolarite"
+		    && $utilisateurProfessionnel->getStatut() != "autre")) {
 		//on filtre tout
 		return $this->where('1 <> 1');
 	    } elseif ($utilisateurProfessionnel->getStatut() == "cpe") {
 		$this->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($utilisateurProfessionnel)->endUse();
+		return $this;
+	    } elseif ($utilisateurProfessionnel->getStatut() == "autre") {
+		//pas de filtrage, tout les eleves sont acceptes
 		return $this;
 	    } else if ($utilisateurProfessionnel->getStatut() == "professeur") {
 		$this->useJEleveProfesseurPrincipalQuery()->filterByUtilisateurProfessionnel($utilisateurProfessionnel)->endUse();
