@@ -176,8 +176,22 @@ if(isset($javascript_specifique)) {
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
 	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$javascript_specifique))==0) {
 		// Javascript spécifique à une page:
-		$tbs_librairies[]=$gepiPath/$javascript_specifique.'js';
+		$tbs_librairies[]=$gepiPath."/".$javascript_specifique.'.js';
 	}
+}
+// js spécifique
+if(isset($table_javascript_specifique))
+{
+	  // echo count($table_javascript_specifique)."<br />";
+	for ($i=0;$i<count($table_javascript_specifique);$i++) {
+	  // echo $table_javascript_specifique[$i]."<br />";
+		if(strlen(my_ereg_replace("[A-Za-z0-9_/-]","",$table_javascript_specifique[$i]))==0) {
+			// Javascript spécifique à une page:
+	  // echo $table_javascript_specifique[$i]."<br />";
+			$tbs_librairies[]=$gepiPath."/".$table_javascript_specifique[$i].'.js';
+		}
+	}
+	//unset($js_specifique);
 }
 // On affiche tout le temps brainjar sauf quand on dit à Gepi de ne pas le faire
 $utilisation_jsdivdrag = isset($utilisation_jsdivdrag) ? $utilisation_jsdivdrag : NULL;
@@ -227,6 +241,16 @@ if(isset($style_specifique)) {
 		// Styles spécifiques à une page:
 		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 	}
+}
+
+if(isset($table_style_specifique)) {
+	foreach ($table_style_specifique as $style_spe) {
+		if(strlen(my_ereg_replace("[A-Za-z0-9_/-]","",$style_spe))==0) {
+			// Styles spécifiques à une page:
+			$tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_spe.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+		}
+	}
+	unset($style_spe);
 }
 
 // vérifie si on est dans le modules absences

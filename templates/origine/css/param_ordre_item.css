@@ -19,12 +19,16 @@
 {
   background:#bbbbbb;
   border-bottom:1px solid black;
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright:4px;
 }
 .onglet_1
 {
   background:#dddddd;
   border-bottom:0px solid black;
   padding-bottom:4px;
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright:4px;
 }
 .contenu_onglet
 {
