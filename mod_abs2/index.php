@@ -24,7 +24,6 @@
 
 // Initialisation des feuilles de style après modification pour améliorer l'accessibilité
 $accessibilite="y";
-$gabarit="y";
 
 // Initialisations files
 include("../lib/initialisationsPropel.inc.php");
@@ -60,7 +59,7 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
     die("Le module n'est pas activé.");
 }
 
-//on va redirigé vers le bon onglet
+//on va redirigé vers le bonee onglet
 if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') {
     header("Location: ./".$_SESSION['abs2_onglet']);
     die();
@@ -76,10 +75,6 @@ if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") 
     header("Location: ./saisir_eleve.php");
     die();
 }
-
-//==============================================
-
-include "classes/affichage/class_menu_abs2_inc.php";
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
