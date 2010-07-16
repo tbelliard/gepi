@@ -416,7 +416,7 @@ class clsTbsZip {
 		$this->Error = false;
 	}
 
-	function clsTbsZip() {$this->__construct();} // for PHP 4 compatibility
+	//function clsTbsZip() {$this->__construct();} // for PHP 4 compatibility
 
 	function Open($ArchFile) {
 	// Open the zip archive
