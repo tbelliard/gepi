@@ -70,7 +70,17 @@ $filter_type = isset($_POST["filter_type"]) ? $_POST["filter_type"] :(isset($_GE
 $filter_statut = isset($_POST["filter_statut"]) ? $_POST["filter_statut"] :(isset($_GET["filter_statut"]) ? $_GET["filter_statut"] :(isset($_SESSION["filter_statut"]) ? $_SESSION["filter_statut"] : NULL));
 $filter_date_creation_notification_debut_plage = isset($_POST["filter_date_creation_notification_debut_plage"]) ? $_POST["filter_date_creation_notification_debut_plage"] :(isset($_GET["filter_date_creation_notification_debut_plage"]) ? $_GET["filter_date_creation_notification_debut_plage"] :(isset($_SESSION["filter_date_creation_notification_debut_plage"]) ? $_SESSION["filter_date_creation_notification_debut_plage"] : NULL));
 $filter_date_creation_notification_fin_plage = isset($_POST["filter_date_creation_notification_fin_plage"]) ? $_POST["filter_date_creation_notification_fin_plage"] :(isset($_GET["filter_date_creation_notification_fin_plage"]) ? $_GET["filter_date_creation_notification_fin_plage"] :(isset($_SESSION["filter_date_creation_notification_fin_plage"]) ? $_SESSION["filter_date_creation_notification_fin_plage"] : NULL));
-$filter_date_modification = isset($_POST["filter_date_modification"]) ? $_POST["filter_date_modification"] :(isset($_GET["filter_date_modification"]) ? $_GET["filter_date_modification"] :(isset($_SESSION["filter_date_modification"]) ? $_SESSION["filter_date_modification"] : NULL));
+if (isset($_POST["filter_date_modification"])) {
+    $filter_date_modification = $_POST["filter_date_modification"];
+} elseif (isset($_GET["filter_date_modification"])) {
+    $filter_date_modification = $_GET["filter_date_modification"];
+} elseif (isset($_POST["filter_id"]) || isset($_GET["filter_id"])) {
+    $filter_date_modification = '';
+} elseif (isset($_SESSION["filter_date_modification"])) {
+    $filter_date_modification = $_SESSION["filter_date_modification"];
+} else {
+    $filter_date_modification = null;
+}
 $filter_date_notification_absence_debut_plage = isset($_POST["filter_date_notification_absence_debut_plage"]) ? $_POST["filter_date_notification_absence_debut_plage"] :(isset($_GET["filter_date_notification_absence_debut_plage"]) ? $_GET["filter_date_notification_absence_debut_plage"] :(isset($_SESSION["filter_date_notification_absence_debut_plage"]) ? $_SESSION["filter_date_notification_absence_debut_plage"] : NULL));
 $filter_date_notification_absence_fin_plage = isset($_POST["filter_date_notification_absence_fin_plage"]) ? $_POST["filter_date_notification_absence_fin_plage"] :(isset($_GET["filter_date_notification_absence_fin_plage"]) ? $_GET["filter_date_notification_absence_fin_plage"] :(isset($_SESSION["filter_date_notification_absence_fin_plage"]) ? $_SESSION["filter_date_notification_absence_fin_plage"] : NULL));
 
@@ -182,7 +192,7 @@ if ($filter_date_creation_notification_fin_plage != null && $filter_date_creatio
     $query->filterByCreatedAt($date_creation_notification_fin_plage, Criteria::LESS_EQUAL);
 }
 if ($filter_date_modification != null && $filter_date_modification == 'y') {
-    $query->where('AbsenceEleveSaisie.CreatedAt != AbsenceEleveSaisie.UpdatedAt');
+    $query->where('AbsenceEleveNotification.CreatedAt != AbsenceEleveNotification.UpdatedAt');
 }
 
 if ($order == "asc_id") {
@@ -331,7 +341,7 @@ if ($order == "des_type") {echo "border-style: solid; border-color: red;";} else
 echo 'border-width:1px;" alt="" name="order" value="des_type"/>';
 echo '</nobr>';
 echo '<br>';
-echo ("<select name=\"filter_type\">");
+echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 $i = 0;
 while (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i])) {
@@ -358,7 +368,7 @@ if ($order == "des_statut") {echo "border-style: solid; border-color: red;";} el
 echo 'border-width:1px;" alt="" name="order" value="des_statut"/>';
 echo '</nobr>';
 echo '<br>';
-echo ("<select name=\"filter_statut\">");
+echo ("<select name=\"filter_statut\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 $i = 0;
 while (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i])) {
@@ -434,7 +444,7 @@ if ($order == "des_date_modification") {echo "border-style: solid; border-color:
 echo 'border-width:1px;" alt="" name="order" value="des_date_modification"/>';
 echo '</nobr> ';
 echo '<nobr>';
-echo '<INPUT TYPE="CHECKBOX" value="y" NAME="filter_date_modification"';
+echo '<INPUT TYPE="CHECKBOX" value="y" NAME="filter_date_modification" onchange="submit()"';
 if ($filter_date_modification != null && $filter_date_modification == 'y') {echo "checked";}
 echo '> modifié';
 echo '</nobr>';

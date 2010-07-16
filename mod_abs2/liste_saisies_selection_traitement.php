@@ -81,10 +81,30 @@ $filter_creneau = isset($_POST["filter_creneau"]) ? $_POST["filter_creneau"] :(i
 $filter_cours = isset($_POST["filter_cours"]) ? $_POST["filter_cours"] :(isset($_GET["filter_cours"]) ? $_GET["filter_cours"] :(isset($_SESSION["filter_cours"]) ? $_SESSION["filter_cours"] : NULL));
 $filter_date_creation_absence_debut_plage = isset($_POST["filter_date_creation_absence_debut_plage"]) ? $_POST["filter_date_creation_absence_debut_plage"] :(isset($_GET["filter_date_creation_absence_debut_plage"]) ? $_GET["filter_date_creation_absence_debut_plage"] :(isset($_SESSION["filter_date_creation_absence_debut_plage"]) ? $_SESSION["filter_date_creation_absence_debut_plage"] : NULL));
 $filter_date_creation_absence_fin_plage = isset($_POST["filter_date_creation_absence_fin_plage"]) ? $_POST["filter_date_creation_absence_fin_plage"] :(isset($_GET["filter_date_creation_absence_fin_plage"]) ? $_GET["filter_date_creation_absence_fin_plage"] :(isset($_SESSION["filter_date_creation_absence_fin_plage"]) ? $_SESSION["filter_date_creation_absence_fin_plage"] : NULL));
-$filter_date_modification = isset($_POST["filter_date_modification"]) ? $_POST["filter_date_modification"] :(isset($_GET["filter_date_modification"]) ? $_GET["filter_date_modification"] :(isset($_SESSION["filter_date_modification"]) ? $_SESSION["filter_date_modification"] : NULL));
+if (isset($_POST["filter_date_modification"])) {
+    $filter_date_modification = $_POST["filter_date_modification"];
+} elseif (isset($_GET["filter_date_modification"])) {
+    $filter_date_modification = $_GET["filter_date_modification"];
+} elseif (isset($_POST["filter_id"]) || isset($_GET["filter_id"])) {
+    $filter_date_modification = '';
+} elseif (isset($_SESSION["filter_date_modification"])) {
+    $filter_date_modification = $_SESSION["filter_date_modification"];
+} else {
+    $filter_date_modification = null;
+}
 $filter_date_traitement_absence_debut_plage = isset($_POST["filter_date_traitement_absence_debut_plage"]) ? $_POST["filter_date_traitement_absence_debut_plage"] :(isset($_GET["filter_date_traitement_absence_debut_plage"]) ? $_GET["filter_date_traitement_absence_debut_plage"] :(isset($_SESSION["filter_date_traitement_absence_debut_plage"]) ? $_SESSION["filter_date_traitement_absence_debut_plage"] : NULL));
 $filter_date_traitement_absence_fin_plage = isset($_POST["filter_date_traitement_absence_fin_plage"]) ? $_POST["filter_date_traitement_absence_fin_plage"] :(isset($_GET["filter_date_traitement_absence_fin_plage"]) ? $_GET["filter_date_traitement_absence_fin_plage"] :(isset($_SESSION["filter_date_traitement_absence_fin_plage"]) ? $_SESSION["filter_date_traitement_absence_fin_plage"] : NULL));
-$filter_discipline = isset($_POST["filter_discipline"]) ? $_POST["filter_discipline"] :(isset($_GET["filter_discipline"]) ? $_GET["filter_discipline"] :(isset($_SESSION["filter_discipline"]) ? $_SESSION["filter_discipline"] : NULL));
+if (isset($_POST["filter_discipline"])) {
+    $filter_discipline = $_POST["filter_discipline"];
+} elseif (isset($_GET["filter_discipline"])) {
+    $filter_discipline = $_GET["filter_discipline"];
+} elseif (isset($_POST["filter_id"]) || isset($_GET["filter_id"])) {
+    $filter_discipline = '';
+} elseif (isset($_SESSION["filter_discipline"])) {
+    $filter_discipline = $_SESSION["filter_discipline"];
+} else {
+    $filter_discipline = null;
+}
 $filter_type = isset($_POST["filter_type"]) ? $_POST["filter_type"] :(isset($_GET["filter_type"]) ? $_GET["filter_type"] :(isset($_SESSION["filter_type"]) ? $_SESSION["filter_type"] : NULL));
 
 $reinit_filtre = isset($_POST["reinit_filtre"]) ? $_POST["reinit_filtre"] :(isset($_GET["reinit_filtre"]) ? $_GET["reinit_filtre"] :NULL);
@@ -435,7 +455,7 @@ if ($order == "des_classe") {echo "border-style: solid; border-color: red;";} el
 echo 'border-width:1px;" alt="" name="order" value="des_classe"/>';
 echo '</nobr>';
 echo '<br>';
-echo ("<select name=\"filter_classe\">");
+echo ("<select name=\"filter_classe\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 foreach ($utilisateur->getClasses() as $classe) {
 	echo "<option value='".$classe->getId()."'";
@@ -459,7 +479,7 @@ if ($order == "des_groupe") {echo "border-style: solid; border-color: red;";} el
 echo 'border-width:1px;" alt="" name="order" value="des_groupe"/>';
 echo '</nobr>';
 echo '<br>';
-echo ("<select name=\"filter_groupe\">");
+echo ("<select name=\"filter_groupe\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 foreach ($utilisateur->getGroupes()  as $group) {
 	echo "<option value='".$group->getId()."'";
@@ -483,7 +503,7 @@ if ($order == "des_aid") {echo "border-style: solid; border-color: red;";} else 
 echo 'border-width:1px;" alt="" name="order" value="des_aid"/>';
 echo '</nobr>';
 echo '<br>';
-echo ("<select name=\"filter_aid\">");
+echo ("<select name=\"filter_aid\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 $temp_collection = $utilisateur->getAidDetailss();
 //$temp_collection->add(AidDetailsQuery::create()->useJAidElevesQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($utilisateur)->endUse()->endUse()->endUse()->find());
@@ -509,7 +529,7 @@ if ($order == "des_creneau") {echo "border-style: solid; border-color: red;";} e
 echo 'border-width:1px;" alt="" name="order" value="des_creneau"/>';
 echo '</nobr>';
 echo '<br>';
-echo ("<select name=\"filter_creneau\">");
+echo ("<select name=\"filter_creneau\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edt_creneau) {
 	echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
@@ -632,7 +652,7 @@ echo '<nobr>';
 echo 'type';
 echo '</nobr>';
 echo '<br>';
-echo ("<select name=\"filter_type\">");
+echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
@@ -754,7 +774,7 @@ if ($order == "des_date_modification") {echo "border-style: solid; border-color:
 echo 'border-width:1px;" alt="" name="order" value="des_date_modification"/>';
 echo '</nobr> ';
 echo '<nobr>';
-echo '<INPUT TYPE="CHECKBOX" value="y" NAME="filter_date_modification"';
+echo '<INPUT TYPE="CHECKBOX" value="y" NAME="filter_date_modification" onchange="submit()"';
 if ($filter_date_modification != null && $filter_date_modification == 'y') {echo "checked";}
 echo '> modifié';
 echo '</nobr>';
@@ -776,7 +796,7 @@ if ($order == "des_dis") {echo "border-style: solid; border-color: red;";} else 
 echo 'border-width:1px;" alt="" name="order" value="des_dis"/>';
 echo '</nobr> ';
 echo '<nobr>';
-echo '<INPUT TYPE="CHECKBOX" value="y" NAME="filter_discipline"';
+echo '<INPUT TYPE="CHECKBOX" value="y" NAME="filter_discipline" onchange="submit()"';
 if ($filter_discipline != null && $filter_discipline == 'y') {echo "checked";}
 echo '> Rapport<br/>d\'incident';
 echo '</nobr>';
