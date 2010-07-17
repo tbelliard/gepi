@@ -430,7 +430,7 @@ if (!$edt_cours_col->isEmpty()) {
 	$current_groupe = null;
 	$current_aid = null;
     }
-	echo "<p>";
+	echo "</p>";
     echo "</form>";
     echo "</td>";
 }

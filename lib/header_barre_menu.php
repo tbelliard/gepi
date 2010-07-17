@@ -61,7 +61,7 @@ if (!$_SESSION["login"]) {
 
 	// Module discipline
 	if (getSettingValue("active_mod_discipline")=='y') {
-	    $barre_discipline = "<li><a href=".$gepiPath."/mod_discipline/index.php>Discipline</a></li>";
+	    $barre_discipline = "<li><a href='".$gepiPath."/mod_discipline/index.php'>Discipline</a></li>";
 	} else {$barre_discipline = '';}
 
 	// Module notanet
