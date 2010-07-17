@@ -140,19 +140,19 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		    return true;
 		} else {
 		    if ($eleve === null) return false;
-		    return $utilisateur->getEleves()->contains($eleve);
+		    return $this->getEleves()->contains($eleve);
 		}
 	    } else if ($this->getStatut() == "cpe") {
 		if (getSettingValue("GepiAccesTouteFicheEleveCpe")=='yes') {
 		    return true;
 		} else {
 		    if ($eleve === null) return false;
-		    return $utilisateur->getEleves()->contains($eleve);
+		    return $this->getEleves()->contains($eleve);
 		}
 	    } else if ($this->getStatut() == "professeur") {
 		if (getSettingValue("GepiAccesGestElevesProfP")=='yes') {
 		    if ($eleve === null) return false;
-		    if ($utilisateur->getEleves()->contains($eleve)) {
+		    if ($this->getEleves()->contains($eleve)) {
 			return true;
 		    }
 		}
