@@ -125,8 +125,9 @@ $groupe_col = $utilisateur->getGroupes();
 if (!$groupe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<p>\n";
     echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
-    echo ("Groupe : <select name=\"id_groupe\" onchange='submit()'>>");
+    echo ("Groupe : <select name=\"id_groupe\" onchange='submit()'>");
     echo "<option value='-1'>choisissez un groupe</option>\n";
     foreach ($groupe_col as $group) {
 	    echo "<option value='".$group->getId()."'";
@@ -137,6 +138,7 @@ if (!$groupe_col->isEmpty()) {
     }
     echo "</select>&nbsp;";
     echo '<button type="submit">Afficher les eleves</button>';
+	echo "</p>\n";
     echo "</form>";
     echo "</td>";
 }
@@ -146,6 +148,7 @@ $classe_col = $utilisateur->getClasses();
 if (!$classe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<p>\n";
     echo '<input type="hidden" name="type_selection" value="id_classe"/>';
     echo ("Classe : <select name=\"id_classe\" onchange='submit()'>");
     echo "<option value='-1'>choisissez une classe</option>\n";
@@ -158,6 +161,7 @@ if (!$classe_col->isEmpty()) {
     }
     echo "</select>&nbsp;";
     echo '<button type="submit">Afficher les eleves</button>';
+	echo "</p>\n";
     echo "</form>";
     echo "</td>";
 }
@@ -168,6 +172,7 @@ $aid_col = $utilisateur->getAidDetailss();
 if (!$aid_col->isEmpty()) {
     echo "<td style='border : 1px solid;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<p>\n";
     echo '<input type="hidden" name="type_selection" value="id_aid"/>';
     echo ("Aid : <select name=\"id_aid\" onchange='submit()'>");
     echo "<option value='-1'>choisissez une aid</option>\n";
@@ -180,6 +185,7 @@ if (!$aid_col->isEmpty()) {
     }
     echo "</select>&nbsp;";
     echo '<button type="submit">Afficher les eleves</button>';
+	echo "</p>\n";
     echo "</form>";
     echo "</td>";
 }
@@ -187,9 +193,11 @@ if (!$aid_col->isEmpty()) {
 //on affiche une boite de selection pour l'eleve
 echo "<td style='border : 1px solid; padding : 10 px;'>";
 echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<p>\n";
 echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
 echo '<input type="text" name="nom_eleve" size="10" value="'.$nom_eleve.'"/> ';
 echo '<button type="submit">Rechercher</button>';
+	echo "</p>\n";
 echo '</form>';
 echo '</td>';
 
@@ -232,8 +240,9 @@ if ($type_selection == 'id_eleve') {
 
 ?>
 	<div class="centre_tout_moyen" style="width : 900px;">
-			    <p class="expli_page choix_fin">
+			    <!-- <p class="expli_page choix_fin"> -->
 				    <form action="./absences_du_jour.php" method="post" style="width: 100%;">
+			    <p class="expli_page choix_fin">
 				    <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
 				    <script type="text/javascript">
 					Calendar.setup({
@@ -245,20 +254,22 @@ if ($type_selection == 'id_eleve') {
 					});
 				    </script>
 				    <button type="submit">Changer</button>
-				    </form>
-				    <br/>
 			</p>
+				    </form>
+				<!--     <br/> -->
+			<!-- </p> -->
 <?php if (!$eleve_col->isEmpty()) { ?>
 			<form method="post" action="creation_traitement.php" id="liste_absence_eleve">
+			  <p>
 			<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>
-
+			 
 <?php $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
     $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
     echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
     echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
 }?>
-
+ </p>
     <!-- Afichage du tableau de la liste des élèves -->
     <!-- <table style="text-align: left; width: 600px;" border="0" cellpadding="0" cellspacing="1"> -->
 	    <table class="tb_absences" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
@@ -300,6 +311,7 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 <?php
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
 			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
+			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."'>";
 			    echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom())
 				    .'</a> ('.$eleve->getCivilite().')';
 			}
@@ -347,14 +359,14 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 					    } else {
 						$prop = 'saisie_vierge';
 					    }
-					    echo '<nobr>';
+					    //echo '<nobr>';
 					    echo '<input name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" id="'.$prop.'_eleve_id_'.$eleve->getPrimaryKey().'_saisie_id_'.$saisie->getPrimaryKey().'"/>';
 					    echo ("<a style='font-size:88%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>".$saisie->getPrimaryKey());
 					    if ($prop == 'saisie_notifie') {
 						echo " (notifiée)";
 					    }
 					    echo '</a>';
-					    echo '</nobr>';
+					    //echo '</nobr>';
 					    echo '<br/>';
 					}
 
@@ -371,26 +383,27 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 			    $valeur = redimensionne_image_petit($photos);
 
 			    echo '<td>
-				    <img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
+				    <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px" alt="" title="" />
 			    </td>';
 			}
 
 			echo '<td>';
 			echo 'Sélectionner: ';
-			echo '<a href="" onClick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true); return false;">Tous</a>, ';
-			echo '<a href="" onClick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false); return false;">Aucun</a>, ';
-			echo '<a href="" onClick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false);
+			echo '<a href="" onclick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true); return false;">Tous</a>, ';
+			echo '<a href="" onclick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false); return false;">Aucun</a>, ';
+			echo '<a href="" onclick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false);
 			    SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'saisie_vierge_eleve_id_'.$eleve->getPrimaryKey().'\', true);
 			    return false;">Non traités</a>, ';
-			echo '<a href="" onClick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true);
+			echo '<a href="" onclick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true);
 			    SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'saisie_notifie_eleve_id_'.$eleve->getPrimaryKey().'\', false);
 			    return false;">Non notifiés</a>';
 			echo '</td>';
 			echo "</tr>";
     }
 
+		   echo " </tbody>";
     echo "</table>";
-    
+    echo "<p>";
     echo '<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>';
     $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
     if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
@@ -403,6 +416,9 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 } else {
     echo 'Aucune absence';
 }
+    echo "</p>";
+	echo "</form>";
+echo "</div>\n";
 echo "</div>\n";
 
 require_once("../lib/footer.inc.php");

@@ -721,9 +721,11 @@ class Eleve extends BaseEleve {
 		// Cas des élèves
 		// En multisite, le login est préférable à l'ELENOET
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-		    $_elenoet_ou_login = $this->getElenoet();
-		} else {
+		    //$_elenoet_ou_login = $this->getElenoet();
 		    $_elenoet_ou_login = $this->getLogin();
+		} else {
+		    //$_elenoet_ou_login = $this->getLogin();
+			$_elenoet_ou_login = $this->getElenoet();
 		}
 
 		$photo= null;
