@@ -124,6 +124,95 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	}
 
 	/**
+	 * Retourne true ou false selon que l'utilisateur a acces a la fiche de cette eleve
+	 *
+	 * @param      Eleve $eleve
+	 *
+	 * @return     Boolean
+	 */
+	public function getAccesFicheEleve(Eleve $eleve) {
+	    if ($this->getStatut() == "admin") {
+		return true;
+	    } else if ($this->getStatut() == "secours") {
+		return true;
+	    } else if ($this->getStatut() == "scolarite") {
+		if (getSettingValue("GepiAccesTouteFicheEleveScolarite")=='yes') {
+		    return true;
+		} else {
+		    if ($eleve === null) return false;
+		    return $utilisateur->getEleves()->contains($eleve);
+		}
+	    } else if ($this->getStatut() == "cpe") {
+		if (getSettingValue("GepiAccesTouteFicheEleveCpe")=='yes') {
+		    return true;
+		} else {
+		    if ($eleve === null) return false;
+		    return $utilisateur->getEleves()->contains($eleve);
+		}
+	    } else if ($this->getStatut() == "professeur") {
+		if (getSettingValue("GepiAccesGestElevesProfP")=='yes') {
+		    if ($eleve === null) return false;
+		    if ($utilisateur->getEleves()->contains($eleve)) {
+			return true;
+		    }
+		}
+		if (getSettingValue("GepiAccesGestElevesProf")=='yes') {
+		    if ($eleve === null) return false;
+
+		    //on cherche dans les groupes du professeur
+		    $query = EleveQuery::create()->filterByIdEleve($eleve->getIdEleve())
+			    ->useJEleveGroupeQuery()->useGroupeQuery()->useJGroupesProfesseursQuery()
+			    ->filterByUtilisateurProfessionnel($this)
+			    ->endUse()->endUse()->endUse();
+		    if ($query->findOne() != null) {
+			return true;
+		    }
+		    //on cherche dans les aid du professeur
+		    $query = EleveQuery::create()->filterByIdEleve($eleve->getIdEleve())
+			    ->useJAidElevesQuery()->useAidDetailsQuery()->useJAidUtilisateursProfessionnelsQuery()
+			    ->filterByUtilisateurProfessionnel($this)
+			    ->endUse()->endUse()->endUse();
+		    if ($query->findOne() != null) {
+			return true;
+		    }
+		    return false;
+		 }
+		return false;
+	    } else if ($this->getStatut() == "autre") {
+			// On récupère les droits de ce statuts pour savoir ce qu'on peut afficher
+			$sql_d = "SELECT * FROM droits_speciaux WHERE id_statut = '" . $_SESSION['statut_special_id'] . "'";
+			$query_d = mysql_query($sql_d);
+
+			while($rep_d = mysql_fetch_array($query_d)){
+				//print_r($rep_d);
+				if ($rep_d['nom_fichier'] == '/voir_resp' AND $rep_d['autorisation'] == 'V') {
+					return true;
+				}
+				if ($rep_d['nom_fichier'] == '/voir_ens' AND $rep_d['autorisation'] == 'V') {
+					return true;
+				}
+				if ($rep_d['nom_fichier'] == '/voir_notes' AND $rep_d['autorisation'] == 'V') {
+					return true;
+				}
+				if ($rep_d['nom_fichier'] == '/voir_bulle' AND $rep_d['autorisation'] == 'V') {
+					return true;
+				}
+				if ($rep_d['nom_fichier'] == '/voir_abs' AND $rep_d['autorisation'] == 'V') {
+					return true;
+				}
+				if ($rep_d['nom_fichier'] == '/voir_anna' AND $rep_d['autorisation'] == 'V') {
+					return true;
+				}
+				if ($rep_d['nom_fichier'] == '/mod_discipline/saisie_incident.php' AND $rep_d['autorisation'] == 'V') {
+					return true;
+				}
+			}
+			return false;
+	    }
+	    return false;
+	}
+	
+	/**
 	 * Gets a collection of Groupe objects related by a many-to-many relationship
 	 * to the current object by way of the j_groupes_professeurs cross-reference table.
 	 *

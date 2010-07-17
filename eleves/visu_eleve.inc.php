@@ -369,13 +369,16 @@ Patientez pendant l'extraction des données... merci.
             $acces_fp="y";
 		}
 		elseif($_SESSION['statut']=='scolarite') {
-			$sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
-			$test=mysql_query($sql);
+			if (getSettingValue("GepiAccesTouteFicheEleveScolarite")!='yes') {
+			    $sql="SELECT 1=1 FROM j_scol_classes jsc, j_eleves_classes jec WHERE jec.id_classe=jsc.id_classe AND jsc.login='".$_SESSION['login']."' AND jec.login='".$ele_login."';";
 
-			if(mysql_num_rows($test)==0) {
-				echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
-				require_once("../lib/footer.inc.php");
-				die();
+			    $test=mysql_query($sql);
+
+			    if(mysql_num_rows($test)==0) {
+				    echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
+				    require_once("../lib/footer.inc.php");
+				    die();
+			    }
 			}
 
 			$acces_eleve="y";
@@ -409,13 +412,15 @@ Patientez pendant l'extraction des données... merci.
 			$acces_bulletins="y";
 		}
 		elseif($_SESSION['statut']=='cpe') {
-			$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
-			$test=mysql_query($sql);
+			if (getSettingValue("GepiAccesTouteFicheEleveCpe")!='yes') {
+			    $sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND e_login='".$ele_login."';";
+			    $test=mysql_query($sql);
 
-			if(mysql_num_rows($test)==0) {
-				echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
-				require_once("../lib/footer.inc.php");
-				die();
+			    if(mysql_num_rows($test)==0) {
+				    echo "<p>Vous n'êtes pas responsable d'un ".$gepiSettings['denomination_eleve']." dont le login serait $ele_login.</p>\n";
+				    require_once("../lib/footer.inc.php");
+				    die();
+			    }
 			}
 
 			$acces_eleve="y";

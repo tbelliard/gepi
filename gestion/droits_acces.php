@@ -1413,6 +1413,12 @@ $titreItem='GepiAccesModifMaPhotoScolarite';
 $texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesTouteFicheEleveScolarite';
+$texteItem="a le droit d'accéder a toutes les fiches élève";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 /*
 
            	<tr valign='top'>
@@ -1546,6 +1552,12 @@ $titreItem='GepiAccesModifMaPhotoCpe';
 $texteItem="a le droit d'envoyer/modifier lui-même sa photo dans 'Gérer mon compte'";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+$titreItem='GepiAccesTouteFicheEleveCpe';
+$texteItem="a le droit d'accéder a toutes les fiches élève";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 /*
 
 			</table>

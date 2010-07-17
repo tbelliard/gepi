@@ -848,7 +848,7 @@ foreach ($results as $saisie) {
 	echo "<a href='liste_saisies_selection_traitement.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";
 	echo ($saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom());
 	echo "</a>";
-	if ($utilisateur->getEleves()->contains($saisie->getEleve()) && ($utilisateur->getStatut() != 'professeur' || (getSettingValue("voir_fiche_eleve") == "y"))) {
+	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
 	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=absences' target='_blank'>";
 	    echo ' (voir fiche)';
 	    echo "</a>";

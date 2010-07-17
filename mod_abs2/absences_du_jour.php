@@ -298,10 +298,11 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 			<td<?php echo $color_hier; ?>><?php echo $aff_compter_hier; ?></td>
 			<td class='td_abs_eleves'>
 <?php
-
-			echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences' target='_blank'>";
-			echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom())
-				.'</a> ('.$eleve->getCivilite().')';
+			if ($utilisateur->getAccesFicheEleve($eleve)) {
+			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences' target='_blank'>";
+			    echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom())
+				    .'</a> ('.$eleve->getCivilite().')';
+			}
 			
 			echo("</td>");
 

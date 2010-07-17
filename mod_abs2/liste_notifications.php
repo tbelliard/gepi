@@ -501,9 +501,11 @@ foreach ($results as $notification) {
 	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
-	echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences' target='_blank'>";
-	echo ' (voir fiche)';
-	echo "</a>";
+	if ($utilisateur->getAccesFicheEleve($eleve)) {
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences' target='_blank'>";
+	    echo ' (voir fiche)';
+	    echo "</a>";
+	}
 	echo "</td>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";

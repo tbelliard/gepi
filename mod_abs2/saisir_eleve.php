@@ -321,7 +321,8 @@ foreach($eleve_col as $eleve) {
 				<img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
 <?php			
 			}
-			if ($utilisateur->getStatut() != 'autre'){
+			if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
+			    //on est pas sur que le statut autre a acces a l'onglet abs de la fiche donc on affiche pas cet onglet au chargement
 				echo '<a href="javascript:centrerpopup(\'../eleves/visu_eleve.php?ele_login='.$eleve->getLogin().'\',600,550,\'scrollbars=yes,statusbar=no,resizable=yes\');">
 				    Voir fiche</a>';
 			}

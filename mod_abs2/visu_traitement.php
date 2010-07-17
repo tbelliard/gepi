@@ -149,9 +149,11 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	    $valeur = redimensionne_image_petit($photos);
 	    echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
 	}
-	echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=absences' target='_blank'>";
-	echo ' (voir fiche)';
-	echo "</a>";
+	if ($utilisateur->getAccesFicheEleve($eleve)) {
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."&amp;onglet=absences' target='_blank'>";
+	    echo ' (voir fiche)';
+	    echo "</a>";
+	}
 	echo '<div style="float: right; margin-top:0.35em; margin-left:0.2em;">';
 	if ($traitement->getModifiable()) {
 	    echo '<form method="post" action="liste_saisies_selection_traitement.php">';

@@ -538,7 +538,7 @@ foreach($eleve_col as $eleve) {
 <?php
 
 			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).'&nbsp;('.$eleve->getCivilite().')</span>';
-			if ($utilisateur->getEleves()->contains($eleve) && ($utilisateur->getStatut() != 'professeur' || (getSettingValue("voir_fiche_eleve") == "y"))) {
+			if ($utilisateur->getAccesFicheEleve($eleve)) {
 			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences' target='_blank'>";
 			    echo ' (voir fiche)';
 			    echo "</a>";
