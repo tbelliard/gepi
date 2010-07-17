@@ -1838,7 +1838,9 @@ function make_classes_select_html($link, $current, $year, $month, $day)
   $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=-1\">(Choisissez une classe)";
   // Ligne suivante corrigée sur suggestion tout à fait pertinente de Stéphane, mail du 1er septembre 06
 
-  if (getSettingValue('GepiAccesCdtScolRestreint')=="yes"){
+	
+  if ($_SESSION['statut']=='scolarite'
+		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes"){
   $sql = "SELECT DISTINCT c.id, c.classe
 	FROM classes c, j_groupes_classes jgc, ct_entry ct, j_scol_classes jsc
 	WHERE (c.id = jgc.id_classe
@@ -1847,9 +1849,9 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 	  AND jsc.login='".$_SESSION ['login']."'
 		)
 	ORDER BY classe ;";
-  }
-
-  if (getSettingValue('GepiAccesCdtCpeRestreint')=="yes"){
+  
+  } else if ($_SESSION['statut']=='cpe'
+		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes"){
 
 
 	$sql = "SELECT DISTINCT c.id, c.classe
@@ -1860,20 +1862,22 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 	  AND jec.e_login = jecl.login
 	  AND jecl.id_classe = jgc.id_classe)
 	  ORDER BY classe ;";
-  }
+  }else{
 
-  if(getSettingValue('GepiAccesCdtCpeRestreint')!="yes"
-		  || getSettingValue('GepiAccesCdtScolRestreint')!="yes"){
+ /* if(getSettingValue('GepiAccesCdtCpeRestreint')!="yes"
+		  || getSettingValue('GepiAccesCdtScolRestreint')!="yes"){*/
 	$sql = "SELECT DISTINCT c.id, c.classe
 	  FROM classes c, j_groupes_classes jgc, ct_entry ct
 	  WHERE (c.id = jgc.id_classe
 	  AND jgc.id_groupe = ct.id_groupe)
 	  ORDER BY classe";
   }
-  
+
   //GepiAccesCdtCpeRestreint
 
   $res = sql_query($sql);
+
+  
   if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
   {
     $selected = ($row[0] == $current) ? "selected" : "";
