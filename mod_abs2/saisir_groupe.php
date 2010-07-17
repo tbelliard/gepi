@@ -698,9 +698,9 @@ foreach($eleve_col as $eleve) {
 } ?>
 <?php
 
-echo "</tbody>\n</table>\n</form>\n</div>\n</div>\n";
+echo "</tbody>\n</table>\n</form>\n</div>\n";
 }
-
+echo "</div>\n";
 require_once("../lib/footer.inc.php");
 
 //fonction redimensionne les photos petit format
