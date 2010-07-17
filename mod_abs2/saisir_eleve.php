@@ -472,8 +472,8 @@ echo "</td></tr>";
 echo "</table>";
 echo "</form>";
 echo "</div>\n";
-echo "</div>\n";
 }
+echo "</div>\n";
 
 require_once("../lib/footer.inc.php");
 
