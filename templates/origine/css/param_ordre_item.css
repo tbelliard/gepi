@@ -5,51 +5,56 @@
     Description:
         Purpose of the stylesheet follows.
 */
-
-.onglet
-{
+#container{
+  width:98%;
+  margin:0em auto;
+}
+.onglet{
   display:inline-block;
-  margin-left:auto;
-  margin-right:auto;
-  padding:3px;
-  border:1px solid black;
+  margin-left:0em;
+  margin-right:0em;
+  padding:3px .5em;
+  min-width: 6em;
+  text-align: center;
   cursor:pointer;
 }
-.onglet_0
-{
-  background:#bbbbbb;
-  border-bottom:1px solid black;
+.onglet_0{
+  background-image:url('../../../images/background/left-top-corner.png');
 }
-.onglet_1
-{
-  background:#dddddd;
-  border-bottom:0px solid black;
+a.onglet_0{
+  color:#606060;
+}
+a.onglet_0:hover{
+  color:#202020;
+}
+.onglet_1{
   padding-bottom:4px;
+  background-color:#f3f3f3;
+  background-image:url('../../../images/background/left-top-corner.png');
 }
-.contenu_onglet
-{
-  background-color:#dddddd;
-  border:1px solid black;
+a.onglet_1{
+  color:#000000;
+}
+.contenu_onglet{
+  background-color:#f3f3f3;
+  border:1px solid #d3d3d3;
   margin-top:-1px;
   padding:5px;
   display:none;
 }
-.contenu_onglet2
-{
-  background-color:#dddddd;
+.contenu_onglet2{
+  background-color:#f3f3f3;
   border:1px solid black;
   margin-top:-1px;
   padding:5px;
 }
-ul
-{
+ul{
   margin-top:0px;
   margin-bottom:0px;
   margin-left:0px;
   list-style-type:none;
   text-indent: -2em;
 }
-.ecarte
-{
+.ecarte{
   margin: 60%;
 }
