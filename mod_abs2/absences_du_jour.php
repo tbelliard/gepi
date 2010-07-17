@@ -299,7 +299,7 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 			<td class='td_abs_eleves'>
 <?php
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
-			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences' target='_blank'>";
+			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
 			    echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom())
 				    .'</a> ('.$eleve->getCivilite().')';
 			}

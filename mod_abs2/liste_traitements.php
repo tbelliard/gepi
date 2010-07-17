@@ -604,7 +604,7 @@ foreach ($results as $traitement) {
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."&amp;onglet=absences' target='_blank'>";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
