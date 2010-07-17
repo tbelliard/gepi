@@ -138,9 +138,11 @@ echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 //on affiche une boite de selection pour l'eleve
 echo "<td style='border : 1px solid; padding : 10 px;'>";
 echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo '<p>';
 echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
 echo '<input type="text" name="nom_eleve" size="10" value="'.$nom_eleve.'"/> ';
 echo '<button type="submit">Rechercher</button>';
+echo '</p>';
 echo '</form>';
 echo '</td>';
 
@@ -149,12 +151,13 @@ echo '</td>';
 if (!$utilisateur->getGroupes()->isEmpty()) {
 	echo "<td style='border : 1px solid; padding : 10 px;'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
 	echo ("Groupe : <select name=\"id_groupe\">");
 	echo "<option value='-1'>choisissez un groupe</option>\n";
 	foreach ($utilisateur->getGroupes() as $group) {
 		echo "<option value='".$group->getId()."'";
-		if ($id_groupe == $group->getId()) echo " SELECTED ";
+		if ($id_groupe == $group->getId()) echo " selected='selected' ";
 		echo ">";
 		echo $group->getNameAvecClasses();
 		echo "</option>\n";
@@ -162,6 +165,7 @@ if (!$utilisateur->getGroupes()->isEmpty()) {
 	echo "</select>&nbsp;";
 
 	echo '<button type="submit">Afficher les eleves</button>';
+echo '</p>';
 	echo "</form>";
 	echo "</td>";
 }
@@ -170,12 +174,13 @@ if (!$utilisateur->getGroupes()->isEmpty()) {
 if (!$utilisateur->getClasses()->isEmpty()) {
 	echo "<td style='border : 1px solid; padding : 10 px;'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_classe"/>';
 	echo ("Classe : <select name=\"id_classe\">");
 	echo "<option value='-1'>choisissez une classe</option>\n";
 	foreach ($utilisateur->getClasses() as $classe) {
 		echo "<option value='".$classe->getId()."'";
-		if ($id_classe == $classe->getId()) echo " SELECTED ";
+		if ($id_classe == $classe->getId()) echo " selected='selected' ";
 		echo ">";
 		echo $classe->getNomComplet();
 		echo "</option>\n";
@@ -183,6 +188,7 @@ if (!$utilisateur->getClasses()->isEmpty()) {
 	echo "</select>&nbsp;";
 
 	echo '<button type="submit">Afficher les eleves</button>';
+echo '</p>';
 	echo "</form>";
 	echo "</td>";
 }
@@ -191,12 +197,13 @@ if (!$utilisateur->getClasses()->isEmpty()) {
 if (!$utilisateur->getAidDetailss()->isEmpty()) {
 	echo "<td style='border : 1px solid;'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
+echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_aid"/>';
 	echo ("Aid : <select name=\"id_aid\">");
 	echo "<option value='-1'>choisissez une aid</option>\n";
 	foreach ($utilisateur->getAidDetailss() as $aid) {
 		echo "<option value='".$aid->getPrimaryKey()."'";
-		if ($id_aid == $aid->getPrimaryKey()) echo " SELECTED ";
+		if ($id_aid == $aid->getPrimaryKey()) echo " selected='selected' ";
 		echo ">";
 		echo $aid->getNom();
 		echo "</option>\n";
@@ -204,6 +211,7 @@ if (!$utilisateur->getAidDetailss()->isEmpty()) {
 	echo "</select>&nbsp;";
 
 	echo '<button type="submit">Afficher les eleves</button>';
+echo '</p>';
 	echo "</form>";
 	echo "</td>";
 }
@@ -237,7 +245,9 @@ if (!$eleve_col->isEmpty()) {
 ?>
     <div class="centre_tout_moyen" style="width : 900px;">
 		<form method="post" action="enregistrement_saisie_eleve.php" id="liste_absence_eleve">
+<p>
 		    <input type="hidden" name="total_eleves" value="<?php echo($eleve_col->count()); ?>"/>
+</p>
 			<p class="choix_fin">
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
@@ -258,7 +268,7 @@ if (!$eleve_col->isEmpty()) {
 		    echo "</select>";
 	    }
 	    echo '&nbsp;&nbsp;&nbsp;Commentaire : <input name="commentaire" type="text" maxlength="150" size="20"/>';
-	    echo '</nobr> ';
+	    echo '</p> ';
 	?>
 <!-- Fin de la legende -->
 
@@ -291,9 +301,11 @@ foreach($eleve_col as $eleve) {
 			<td class='td_abs_eleves'>
 				<input type="hidden" name="id_eleve_absent[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getIdEleve(); ?>" />
 <?php
-
-			echo '<a href="./saisir_eleve.php?type_selection=id_eleve&id_eleve='.$eleve->getPrimaryKey().'">';
-			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).'&nbsp;('.$eleve->getCivilite().')</span>';
+		  //echo '<a href="./saisir_eleve.php?type_selection=id_eleve&id_eleve='.$eleve->getPrimaryKey().'">';
+?>
+		  <a href="./saisir_eleve.php?type_selection=id_eleve&amp;id_eleve=<?php echo $eleve->getPrimaryKey() ;?>">
+<?php
+		  echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).'&nbsp;('.$eleve->getCivilite().')</span>';
 			echo '</a>';
 			if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
 			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
@@ -331,14 +343,16 @@ foreach($eleve_col as $eleve) {
 echo "</tr>";
 }
 
-echo "</table>";
+echo "</tbody></table>";
 echo "</td>";
-echo "<td width=50>&nbsp;";
+echo "<td style='width:50px;'>&nbsp;";
 echo "</td>";
-echo "<td width=100>";
+echo "<td style='width:100px;'>";
     echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;">';
-    echo '<nobr>Début : <input size="8" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="'.$dt_date_absence_eleve_debut->format('d/m/Y').'" />&nbsp;';
-    echo '
+	echo '<p>';
+    echo 'Début : <input size="8" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="'.$dt_date_absence_eleve_debut->format('d/m/Y').'" />&nbsp;';
+   echo '</p>';
+     echo '
     <script type="text/javascript">
 	Calendar.setup({
 	    inputField     :    "date_absence_eleve_debut",     // id of the input field
@@ -349,9 +363,12 @@ echo "<td width=100>";
 	});
     </script>&nbsp;';
 $edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
-echo '</nobr><br/>';
-echo '<nobr>Fin : <input size="8" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="'.$dt_date_absence_eleve_fin->format('d/m/Y').'" />&nbsp;';
-echo '
+echo '<br/>';
+	echo '<p>';
+echo 'Fin : <input size="8" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="'.$dt_date_absence_eleve_fin->format('d/m/Y').'" />&nbsp;';
+
+	echo '</p>';
+	echo '
 <script type="text/javascript">
     Calendar.setup({
 	inputField     :    "date_absence_eleve_fin",     // id of the input field
@@ -360,22 +377,23 @@ echo '
 	align          :    "Bl",           // alignment (defaults to "Bl")
 	singleClick    :    true
     });
-</script></nobr><br/>';
+</script><br/>';
 echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
+	echo '<p>';
 echo 'De <input name="heure_debut_absence_eleve" value="';
 echo $edt_creneau_col->getFirst()->getHeuredebutDefiniePeriode("H:i");
 echo '" type="text" maxlength="5" size="4"/> à ';
 echo '<input name="heure_fin_absence_eleve" value="';
 echo $edt_creneau_col->getLast()->getHeurefinDefiniePeriode("H:i");
-echo '" type="text" maxlength="5" size="4"/></nobr><br/>';
-echo ' <nobr><input type="radio" name="multisaisie" value="n" checked="checked" />';
-echo '	Créer une seule saisie </nobr><br/>';
-echo '	<nobr><input type="radio" name="multisaisie" value="y"/>';
+echo '" type="text" maxlength="5" size="4"/><br/>';
+echo '<input type="radio" name="multisaisie" value="n" checked="checked" />';
+echo '	Créer une seule saisie <br/>';
+echo '	<input type="radio" name="multisaisie" value="y"/>';
 echo '	Créer une saisie par jours';
-echo '</nobr></div>';
+echo '</p></div>';
 echo 'ou ';
 echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
-
+    echo '<p>';
     echo ("<select name=\"id_creneau\">");
     
 
@@ -383,17 +401,19 @@ echo '<div style="border-width: 1px; border-style: solid; text-align: left; padd
     foreach ($edt_creneau_col as $edt_creneau) {
 	//$edt_creneau = new EdtCreneau();
 	    echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-	    if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
+	    if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
 	    echo ">";
 	    echo $edt_creneau->getDescription();
 	    echo "</option>\n";
     }
-    echo "</select></nobr></div>";
+    echo "</select></p></div>";
 echo '</div>';
 //on affiche une boite de selection avec les cours
 if (!$cours_col->isEmpty()) {
-	echo '<br/>ou<br/><br/>';
+	//echo '<br/>ou<br/><br/>';
+    echo '<p>ou</p>';
 	echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;">';
+    echo '<p>';
 	echo ("<select name=\"id_cours\">");
 	echo "<option value='-1'>choisissez un cours</option>\n";
 	foreach ($cours_col as $edt_cours) {
@@ -405,16 +425,18 @@ if (!$cours_col->isEmpty()) {
 		    }
 		}
 		echo "<option value='".$edt_cours->getIdCours()."'";
-		if ($id_cours == $edt_cours->getIdCours()) echo " SELECTED ";
+		if ($id_cours == $edt_cours->getIdCours()) echo " selected='selected' ";
 		echo ">";
 		echo $edt_cours->getDescription();
 		echo "</option>\n";
 	}
 	echo "</select>";
+    echo '</p>';
 
 
 	$col = EdtSemaineQuery::create()->find();
 	if (isset($_GET["affiche_toute_semaine"])) {
+    echo '<p>';
 	    //on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
 	    for ($i = 0; $i < $col->count(); $i++) {
 		$pos = ($i + 30) % $col->count();
@@ -426,7 +448,9 @@ if (!$cours_col->isEmpty()) {
 		    echo "<br/>\n";
 	    }
 	    echo '<a href="./saisir_eleve.php">Ne pas afficher toutes les semaines</a>';
+    echo '</p>';
 	} else {
+    echo '<p>';
 	    //on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
 	    for ($i = 0; $i < 10; $i++) {
 		$pos = ($i + date('W') - 5) % $col->count();
@@ -438,6 +462,7 @@ if (!$cours_col->isEmpty()) {
 		    echo "<br/>\n";
 	    }
 	    echo '<a href="./saisir_eleve.php?affiche_toute_semaine=oui">Afficher toutes les semaines</a>';
+    echo '</p>';
 	}
 	echo '</div>';
     
@@ -445,6 +470,8 @@ if (!$cours_col->isEmpty()) {
 
 echo "</td></tr>";
 echo "</table>";
+echo "</form>";
+echo "</div>\n";
 echo "</div>\n";
 }
 

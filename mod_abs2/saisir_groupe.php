@@ -239,7 +239,7 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
 	$dt_date_absence_eleve = new DateTime('now');
 	echo $dt_date_absence_eleve->format('d/m/Y');
     }
-    echo '<button type="submit">Afficher les eleves</button>';
+    echo '<button type="submit">Afficher les élèves</button>';
 	echo "</p>";
     echo "</form>";
     echo "</td>";
@@ -299,7 +299,7 @@ if ($utilisateur->getStatut() != "professeur") {
 	    singleClick    :    true
 	});
     </script>';
-    echo '<button type="submit">Afficher les eleves</button>';
+    echo '<button type="submit">Afficher les élèves</button>';
 	echo "</p>";
     echo "</form>";
     echo "</td>";
@@ -368,7 +368,7 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
 	$dt_date_absence_eleve = new DateTime('now');
 	echo $dt_date_absence_eleve->format('d/m/Y');
     }
-    echo '<button type="submit">Afficher les eleves</button>';
+    echo '<button type="submit">Afficher les élèves</button>';
 	echo "</p>";
     echo "</form>";
     echo "</td>";
@@ -422,7 +422,7 @@ if (!$edt_cours_col->isEmpty()) {
 	echo '<input type="hidden" name="id_semaine" value="'.$id_semaine.'"/>&nbsp;';
     }
 
-    echo '<button type="submit">Afficher les eleves</button>';
+    echo '<button type="submit">Afficher les élèves</button>';
     $current_semaine = EdtSemaineQuery::create()->findPk($id_semaine);
     if ($current_cours != null && $current_cours->getTypeSemaine() != '' && $current_cours->getTypeSemaine() != '0' && $current_semaine != null && $current_cours->getTypeSemaine() != $current_semaine->getTypeEdtSemaine()) {
 	echo '<br>Erreur : le cours ne correspond pas au type de semaine.';
@@ -497,7 +497,7 @@ if (!$eleve_col->isEmpty()) {
 				} else if (isset($current_classe) && $current_classe != null) {
 				    echo $current_classe->getNomComplet();
 				}?>
-				</strong> (les eleves non cochés seront considerés presents)
+				</strong> (les élèves non cochés seront considérés présents)
 			</p>
 			<p class="choix_fin">
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
