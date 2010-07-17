@@ -66,25 +66,40 @@ class Eleve extends BaseEleve {
 				} else {
 					$query->useJEleveClasseQuery()->filterByEleve($this)->endUse();
 				}
-				//$query->endUse();
+				$query->orderByNomComplet()->distinct();
 				$this->collClasses[$periode_num] = $query->find();
 			}
 		}
 		return $this->collClasses[$periode_num];
 	}
 
-    // La méthode ci-dessous, au singulier, corrige le problème ci-dessus.
-	/**
+ 	/**
 	 *
-	 * Renvoi sous forme d'un tableau la classe d'un eleves.
-	 * Manually added for N:M relationship
+	 * Renvoi la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seule une classe est renvoyée
 	 *
 	 * @param      integer $periode numero de la periode ou objet periodeNote
-	 * @return     Classes
+	 * @return     Classe
 	 *
 	 */
 	public function getClasse($periode = null) {
 		return $this->getClasses($periode)->getFirst();
+	}
+
+	/**
+	 *
+	 * Renvoi le nom de la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seul un nom est renvoyée
+	 * Si pas de classe trouvée, renvoi null
+	 *
+	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @return     string
+	 *
+	 */
+	public function getClasseNomComplet($periode = null) {
+	    if ($this->getClasses($periode)->getFirst() == null) {
+		return null;
+	    }else {
+		return $this->getClasses($periode)->getFirst()->getNomComplet();
+	    }
 	}
 
 	/**
@@ -185,6 +200,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function getGroupes($periode = null) {
+		$periode = $this->getPeriodeNote($periode);
 		require_once("helpers/PeriodeNoteHelper.php");
 		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
 		if(!isset($this->collGroupes[$periode_num]) || null === $this->collGroupes[$periode_num]) {
@@ -193,9 +209,12 @@ class Eleve extends BaseEleve {
 				$this->initGroupes($periode_num);
 			} else {
 				$query = GroupeQuery::create();
-				$query->useJEleveGroupeQuery()->filterByEleve($this)
-					->filterByPeriode($periode_num)
-					->endUse();
+				if ($periode_num != null) {
+					$query->useJEleveGroupeQuery()->filterByEleve($this)->filterByPeriode($periode_num)->endUse();
+				} else {
+					$query->useJEleveGroupeQuery()->filterByEleve($this)->endUse();
+				}
+				$query->orderByName()->distinct();
 				$this->collGroupes[$periode_num] = $query->find();
 			}
 		}
