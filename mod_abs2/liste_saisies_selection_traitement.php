@@ -408,6 +408,7 @@ echo '</th>';
 //en tete filtre id
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'N°';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -416,12 +417,14 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_id"/>';
 //echo '</nobr> ';
+echo '</span>';
 echo '<input type="text" name="filter_id" value="'.$filter_id.'" size="3"/>';
 echo '</th>';
 
 //en tete filtre utilisateur
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Utilisateur';
 echo '<input type="image" src="../images/up.png"  title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -430,12 +433,14 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_utilisateur"/>';
 //echo '</nobr>';
+echo '</span>';
 echo '<br /><input type="text" name="filter_utilisateur" value="'.$filter_utilisateur.'" size="12"/>';
 echo '</th>';
 
 //en tete filtre eleve
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Eleve';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -444,12 +449,14 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
 //echo '</nobr>';
+echo '</span>';
 echo '<br /><input type="text" name="filter_eleve" value="'.$filter_eleve.'" size="8"/>';
 echo '</th>';
 
 //en tete filtre classe
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Classe';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_classe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -458,6 +465,7 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_classe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_classe"/>';
 //echo '</nobr>';
+echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_classe\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
@@ -474,6 +482,7 @@ echo '</th>';
 //en tete filtre groupe
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Groupe';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_groupe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -482,6 +491,7 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_groupe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_groupe"/>';
 //echo '</nobr>';
+echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_groupe\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
@@ -498,6 +508,7 @@ echo '</th>';
 //en tete filtre aid
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'AID';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_aid") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -506,6 +517,7 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_aid") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_aid"/>';
 //echo '</nobr>';
+echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_aid\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
@@ -524,6 +536,7 @@ echo '</th>';
 //en tete filtre creneaux
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Creneau';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_creneau") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -532,6 +545,7 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_creneau") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_creneau"/>';
 //echo '</nobr>';
+echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_creneau\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
@@ -548,6 +562,7 @@ echo '</th>';
 //en tete filtre date debut
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Date debut';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_date_debut") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -556,13 +571,16 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_date_debut") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_debut"/>';
 //echo '</nobr>';
+echo '</span>';
 echo '<br />';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_debut_absence_debut_plage" name="filter_date_debut_absence_debut_plage" value="';
 if ($filter_date_debut_absence_debut_plage != null) {echo $filter_date_debut_absence_debut_plage;}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_debut_absence_debut_plage" src="../images/icons/calendrier.gif" alt=""/>';
 //echo '</nobr>';
+echo '</span>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
@@ -576,11 +594,13 @@ echo '
 </script>';
 echo '<br />';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_debut_absence_fin_plage" name="filter_date_debut_absence_fin_plage" value="';
 if ($filter_date_debut_absence_fin_plage != null) {echo $filter_date_debut_absence_fin_plage;}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_debut_absence_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
+echo '</span>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
@@ -597,6 +617,7 @@ echo '</th>';
 //en tete filtre date fin
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Date fin';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_date_fin") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -605,13 +626,16 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_date_fin") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_fin"/>';
 //echo '</nobr>';
+echo '</span>';
 echo '<br />';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_fin_absence_debut_plage" name="filter_date_fin_absence_debut_plage" value="';
 if ($filter_date_fin_absence_debut_plage != null) {echo $filter_date_fin_absence_debut_plage;}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_fin_absence_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
+echo '</span>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
@@ -625,11 +649,13 @@ echo '
 </script>';
 echo '<br />';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_fin_absence_fin_plage" name="filter_date_debut_absence_fin_plage" value="';
 if ($filter_date_fin_absence_fin_plage != null) {echo $filter_date_fin_absence_fin_plage;}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_fin_absence_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
+echo '</span>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
@@ -671,6 +697,7 @@ echo '</th>';
 //en tete filtre date traitement
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Date traitement';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_date_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -679,13 +706,16 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_date_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_traitement"/>';
 //echo '</nobr>';
+echo '</span>';
 echo '<br />';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_traitement_absence_debut_plage" name="filter_date_traitement_absence_debut_plage" value="';
 if ($filter_date_traitement_absence_debut_plage != null) {echo $filter_date_traitement_absence_debut_plage;}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_traitement_absence_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
+echo '</span>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
@@ -699,11 +729,13 @@ echo '
 </script>';
 echo '<br />';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_traitement_absence_fin_plage" name="filter_date_traitement_absence_fin_plage" value="';
 if ($filter_date_traitement_absence_fin_plage != null) {echo $filter_date_traitement_absence_fin_plage;}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_traitement_absence_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
+echo '</span>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
@@ -720,6 +752,7 @@ echo '</th>';
 //en tete filtre date creation
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Date creation';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -728,13 +761,16 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_creation"/>';
 //echo '</nobr>';
+echo '</span>';
 echo '<br />';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_creation_absence_debut_plage" name="filter_date_creation_absence_debut_plage" value="';
 if ($filter_date_creation_absence_debut_plage != null) {echo $filter_date_creation_absence_debut_plage;}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_absence_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
+echo '</span>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
@@ -748,11 +784,13 @@ echo '
 </script>';
 echo '<br />';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_creation_absence_fin_plage" name="filter_date_creation_absence_fin_plage" value="';
 if ($filter_date_creation_absence_fin_plage != null) {echo $filter_date_creation_absence_fin_plage;}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_absence_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
+echo '</span>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
@@ -769,6 +807,7 @@ echo '</th>';
 //en tete filtre date modification
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo '';
 echo '<input type="image" src="../images/up.png"  title="monter" style="width:15px; height:15px; vertical-align: middle;';
 if ($order == "asc_date_modification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -777,11 +816,14 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_date_modification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_modification"/>';
 //echo '</nobr> ';
+echo '</span>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_date_modification" onchange="submit()"';
 if ($filter_date_modification != null && $filter_date_modification == 'y') {echo "checked='checked'";}
 echo '/> modifié';
 //echo '</nobr>';
+echo '</span>';
 echo '</th>';
 
 //en tete commentaire
@@ -792,6 +834,7 @@ echo '</th>';
 //en tete disciplinne
 echo '<th>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
 if ($order == "asc_dis") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_dis"/>';
@@ -799,11 +842,14 @@ echo '<input type="image" src="../images/down.png" title="monter" style="width:1
 if ($order == "des_dis") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_dis"/>';
 //echo '</nobr> ';
+echo '</span>';
 //echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_discipline" onchange="submit()"';
 if ($filter_discipline != null && $filter_discipline == 'y') {echo "checked='checked'";}
 echo '/> Rapport<br/>d\'incident';
 //echo '</nobr>';
+echo '</span>';
 echo '</th>';
 
 echo '</tr>';
