@@ -177,7 +177,9 @@ echo "<div class='css-panes' id='containDiv'>\n";
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 //on affiche une boite de selection avec les groupes et les creneaux
 if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_prof_hors_cours")=='y' && !$utilisateur->getGroupes()->isEmpty())) {
-    echo "<td style='border : 1px solid; padding : 10 px;'>";    echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+    echo "<td style='border : 1px solid; padding : 10 px;'>";    
+	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
     echo ("Groupe : <select name=\"id_groupe\">");
     echo "<option value='-1'>choisissez un groupe</option>\n";
@@ -188,7 +190,7 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
     }
     foreach ($groupe_col as $group) {
 	    echo "<option value='".$group->getId()."'";
-	    if ($id_groupe == $group->getId()) echo " SELECTED ";
+	    if ($id_groupe == $group->getId()) echo " selected='selected' ";
 	    echo ">";
 	    echo $group->getNameAvecClasses();
 	    echo "</option>\n";
@@ -203,7 +205,7 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
 	foreach ($edt_creneau_col as $edt_creneau) {
 	    //$edt_creneau = new EdtCreneau();
 		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
+		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
 		echo ">";
 		echo $edt_creneau->getDescription();
 		echo "</option>\n";
@@ -238,19 +240,22 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
 	echo $dt_date_absence_eleve->format('d/m/Y');
     }
     echo '<button type="submit">Afficher les eleves</button>';
+	echo "</p>";
     echo "</form>";
     echo "</td>";
 }
 
 //on affiche une boite de selection avec les classe
 if ($utilisateur->getStatut() != "professeur") {
-    echo "<td style='border : 1px solid; padding : 10 px;'>";    echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+    echo "<td style='border : 1px solid; padding : 10 px;'>";    
+	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_classe"/>';
     echo ("Classe : <select name=\"id_classe\">");
     echo "<option value='-1'>choisissez une classe</option>\n";
     foreach ($utilisateur->getClasses() as $classe) {
 	    echo "<option value='".$classe->getId()."'";
-	    if ($id_classe == $classe->getId()) echo " SELECTED ";
+	    if ($id_classe == $classe->getId()) echo " selected='selected' ";
 	    echo ">";
 	    echo $classe->getNomComplet();
 	    echo "</option>\n";
@@ -265,7 +270,7 @@ if ($utilisateur->getStatut() != "professeur") {
 	foreach ($edt_creneau_col as $edt_creneau) {
 	    //$edt_creneau = new EdtCreneau();
 		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
+		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
 		echo ">";
 		echo $edt_creneau->getDescription();
 		echo "</option>\n";
@@ -295,13 +300,16 @@ if ($utilisateur->getStatut() != "professeur") {
 	});
     </script>';
     echo '<button type="submit">Afficher les eleves</button>';
+	echo "</p>";
     echo "</form>";
     echo "</td>";
 }
 
 //on affiche une boite de selection avec les aid et les creneaux
 if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_prof_hors_cours")=='y' && !$utilisateur->getAidDetailss()->isEmpty())) {
-    echo "<td style='border : 1px solid;'>";    echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+    echo "<td style='border : 1px solid;'>";    
+	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_aid"/>';
     echo ("Aid : <select name=\"id_aid\">");
     echo "<option value='-1'>choisissez une aid</option>\n";
@@ -312,7 +320,7 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
     }
     foreach ($aid_col as $aid) {
 	    echo "<option value='".$aid->getPrimaryKey()."'";
-	    if ($id_aid == $aid->getPrimaryKey()) echo " SELECTED ";
+	    if ($id_aid == $aid->getPrimaryKey()) echo " selected='selected' ";
 	    echo ">";
 	    echo $aid->getNom();
 	    echo "</option>\n";
@@ -327,7 +335,7 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
 	foreach ($edt_creneau_col as $edt_creneau) {
 	    //$edt_creneau = new EdtCreneau();
 		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
+		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
 		echo ">";
 		echo $edt_creneau->getDescription();
 		echo "</option>\n";
@@ -361,6 +369,7 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
 	echo $dt_date_absence_eleve->format('d/m/Y');
     }
     echo '<button type="submit">Afficher les eleves</button>';
+	echo "</p>";
     echo "</form>";
     echo "</td>";
 }
@@ -370,6 +379,7 @@ $edt_cours_col = $utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle(
 if (!$edt_cours_col->isEmpty()) {
     echo "<td style='border : 1px solid;'>";
     echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_cours"/>';
     echo ("<select name=\"id_cours\">");
     echo "<option value='-1'>choisissez un cours</option>\n";
@@ -382,7 +392,7 @@ if (!$edt_cours_col->isEmpty()) {
 		}
 	    }
 	    echo "<option value='".$edt_cours->getIdCours()."'";
-	    if ($id_cours == $edt_cours->getIdCours()) echo " SELECTED ";
+	    if ($id_cours == $edt_cours->getIdCours()) echo " selected='selected' ";
 	    echo ">";
 	    echo $edt_cours->getDescription();
 	    echo "</option>\n";
@@ -400,7 +410,7 @@ if (!$edt_cours_col->isEmpty()) {
 	    $semaine = $col[$pos];
 	    //$semaine = new EdtSemaine();
 		echo "<option value='".$semaine->getPrimaryKey()."'";
-		if ($id_semaine == $semaine->getPrimaryKey()) echo " SELECTED ";
+		if ($id_semaine == $semaine->getPrimaryKey()) echo " selected='selected' ";
 		echo ">";
 		echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
 		echo "</option>\n";
@@ -420,6 +430,7 @@ if (!$edt_cours_col->isEmpty()) {
 	$current_groupe = null;
 	$current_aid = null;
     }
+	echo "<p>";
     echo "</form>";
     echo "</td>";
 }
@@ -465,6 +476,7 @@ if (!$eleve_col->isEmpty()) {
 ?>
     <div class="centre_tout_moyen" style="width : 900px;">
 		<form method="post" action="enregistrement_saisie_groupe.php" id="liste_absence_eleve">
+	<p>
 		    <input type="hidden" name="total_eleves" value="<?php echo($eleve_col->count()); ?>"/>
 		    <?php if ($type_selection == 'id_aid') {?><input type="hidden" name="id_aid" value="<?php echo($id_aid); ?>"/><?php }?>
 		    <?php if ($type_selection == 'id_groupe') {?><input type="hidden" name="id_groupe" value="<?php echo($id_groupe); ?>"/><?php }?>
@@ -473,6 +485,7 @@ if (!$eleve_col->isEmpty()) {
 		    <input type="hidden" name="type_selection" value="<?php echo($type_selection); ?>"/>
 		    <?php if ($id_semaine != null) {?><input type="hidden" name="id_semaine" value="<?php echo($id_semaine); ?>"/><?php }?>
 		    <input type="hidden" name="date_absence_eleve" value="<?php echo($dt_date_absence_eleve->format('d/m/Y')); ?>"/>
+	</p>
 			<p class="expli_page choix_fin">
 				Saisie des absences<br/>du <strong><?php echo strftime  ('%A %d %B %G',  $dt_date_absence_eleve->format('U')); ?></strong>
 				Pour le groupe
@@ -505,7 +518,7 @@ if (!$eleve_col->isEmpty()) {
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
 				<th style="text-align : center;" >Veille</th>
 				<th style="text-align : center;" abbr="élèves">Liste des &eacute;l&egrave;ves</th>
-				<th colspan="<?php echo (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime()->count());?>" class="th_abs_suivi" abbr="Créneaux">Suivi sur la journ&eacute;e</th>
+				<th colspan='"<?php echo (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime()->count());?>"' class="th_abs_suivi" abbr="Créneaux">Suivi sur la journ&eacute;e</th>
 			</tr>
 			<tr>
 				<td></td>
@@ -539,7 +552,8 @@ foreach($eleve_col as $eleve) {
 
 			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).'&nbsp;('.$eleve->getCivilite().')</span>';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
-			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
+			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
+			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
 			    echo ' (voir fiche)';
 			    echo "</a>";
 			}
@@ -579,7 +593,7 @@ foreach($eleve_col as $eleve) {
 					} else {
 					    $style = '';
 					}
-					echo '<td '.$style.' colspan='.$nb_creneau_a_saisir.'>';
+					echo '<td '.$style.' colspan="'.$nb_creneau_a_saisir.'">';
 
 					//si il y a des absences de l'utilisateurs on va proposer de les modifier
 					if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
@@ -590,7 +604,7 @@ foreach($eleve_col as $eleve) {
 						}
 						$saisie_affiches[] = $saisie->getPrimaryKey();
 						if ($saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && $saisie->getCreatedAt('U') > (time() - 3600)) {
-						    echo ("<a style='font-size:88%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'><nobr>Modif. saisie</nobr> <nobr>de ".$saisie->getCreatedAt("H:i")."</nobr></a><br>");
+						    echo ("<a style='font-size:88%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Modif. saisie de ".$saisie->getCreatedAt("H:i")."</a><br>");
 						}
 					    }
 					}
@@ -603,7 +617,7 @@ foreach($eleve_col as $eleve) {
 					    }
 
 					    //la saisie sur ce creneau
-					    echo '<nobr><input style="font-size:88%;" name="active_absence_eleve['.$eleve_col->getPosition().']" value="1" type="checkbox" />';
+					    echo '<input style="font-size:88%;" name="active_absence_eleve['.$eleve_col->getPosition().']" value="1" type="checkbox" />';
 					    $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
 					    if ($type_autorises->count() != 0) {
 						    echo ("<select style='font-size:88%;' name=\"type_absence_eleve[".$eleve_col->getPosition()."]\">");
@@ -616,13 +630,12 @@ foreach($eleve_col as $eleve) {
 						    }
 						    echo "</select>";
 					    }
-					    echo '</nobr> ';
-					    echo '<nobr><input style="font-size:88%;" name="heure_debut_absence_eleve['.$eleve_col->getPosition().']" value="';
+					    echo '<input style="font-size:88%;" name="heure_debut_absence_eleve['.$eleve_col->getPosition().']" value="';
 					    if ($current_cours != null) {echo $current_cours->getHeureDebut("H:i");} else { echo $edt_creneau->getHeuredebutDefiniePeriode("H:i");};
 					    echo '" type="text" maxlength="5" size="4"/>&nbsp;';
 					    //if (getSettingValue("abs2_saisie_prof_decale")=='y') {
 					    if (false) {
-						    echo '<input style="font-size:88%;" id="date_debut_absence_eleve_'.$eleve_col->getPosition().'" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+						    echo '<input style="font-size:88%;" id="date_debut_absence_eleve_'.$eleve_col->getPosition().'" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/> ';
 						    echo '<script type="text/javascript">
 							Calendar.setup({
 							    inputField     :    "date_debut_absence_eleve_'.$eleve_col->getPosition().'",     // id of the input field
@@ -634,14 +647,14 @@ foreach($eleve_col as $eleve) {
 						    </script>';
 					    } else {
 						    echo '<input style="font-size:88%;" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
-						    echo "</nobr> ";
+						    
 					    }
-					    echo '<nobr><input style="font-size:88%;" name="heure_fin_absence_eleve['.$eleve_col->getPosition().']" value="';
+					    echo '<input style="font-size:88%;" name="heure_fin_absence_eleve['.$eleve_col->getPosition().']" value="';
 					    if ($current_cours != null) {echo $current_cours->getHeureFin("H:i");} else { echo $edt_creneau->getHeurefinDefiniePeriode("H:i");};
 					    echo '" type="text" maxlength="5" size="4"/>&nbsp;';
 					    //if (getSettingValue("abs2_saisie_prof_decale")=='y') {
 					    if (false) {
-						    echo '<input style="font-size:88%;" id="date_fin_absence_eleve_'.$eleve_col->getPosition().'" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+						    echo '<input style="font-size:88%;" id="date_fin_absence_eleve_'.$eleve_col->getPosition().'" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/> ';
 						    echo '<script type="text/javascript">
 							Calendar.setup({
 							    inputField     :    "date_fin_absence_eleve_'.$eleve_col->getPosition().'",     // id of the input field
@@ -653,7 +666,7 @@ foreach($eleve_col as $eleve) {
 						    </script>';
 					    } else {
 						    echo '<input style="font-size:88%;" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
-						    echo "</nobr> ";
+						    
 					    }
 					}
 					echo '</td>';
@@ -685,7 +698,7 @@ foreach($eleve_col as $eleve) {
 } ?>
 <?php
 
-echo "</table></div>\n";
+echo "</tbody>\n</table>\n</form>\n</div>\n</div>\n";
 }
 
 require_once("../lib/footer.inc.php");
