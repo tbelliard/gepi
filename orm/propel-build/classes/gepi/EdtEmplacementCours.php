@@ -108,9 +108,15 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	    if ($this->getAidDetails() != null) {
 		$desc .= $this->getAidDetails()->getNom() . " ";
 	    }
-	    $desc .= $this->getJourSemaine() . " ";
-	    $desc .= $this->getHeureDebut("H:i") . " - ";
-	    $desc .= $this->getHeureFin("H:i") . " ";
+	    if ($this->getJourSemaine() != null) {
+		$desc .= $this->getJourSemaine() . " ";
+	    }
+	    if ($this->getHeureDebut(null) != null) {
+		$desc .= $this->getHeureDebut("H:i") . " - ";
+	    }
+	    if ($this->getHeureFin(null) != null) {
+		$desc .= $this->getHeureFin("H:i") . " ";
+	    }
 	    if ($this->getTypeSemaine() != NULL && $this->getTypeSemaine() != '' && $this->getTypeSemaine() != '0') {
 		$desc .= " sem. ".$this->getTypeSemaine(). " ";
 	    }
