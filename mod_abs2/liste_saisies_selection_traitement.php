@@ -61,7 +61,6 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
 
 if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_saisie_traitement"])) {
     include('creation_traitement.php');
-    die;
 }
 
 //récupération des paramètres de la requète
@@ -349,6 +348,10 @@ $saisies_col = $query->paginate($page_number, $item_per_page);
 $nb_pages = (floor($saisies_col->getNbResults() / $item_per_page) + 1);
 if ($page_number > $nb_pages) {
     $page_number = $nb_pages;
+}
+
+if (isset($message_erreur_traitement)) {
+    echo $message_erreur_traitement;
 }
 
 echo '<form method="post" action="liste_saisies_selection_traitement.php" id="liste_saisies">';

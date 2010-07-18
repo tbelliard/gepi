@@ -59,6 +59,9 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
     die("acces interdit");
 }
 
+if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_saisie_traitement"])) {
+    include('creation_traitement.php');
+}
 
 //récupération des paramètres de la requète
 //contrairement aux autres pages, on ne recupere pas les parametres dans la session
@@ -203,6 +206,10 @@ echo '</td>';
 
 echo "</tr></table>";
 
+if (isset($message_erreur_traitement)) {
+    echo $message_erreur_traitement;
+}
+
 if (isset($message_enregistrement)) {
     echo($message_enregistrement);
 }
@@ -259,7 +266,7 @@ if ($type_selection == 'id_eleve') {
 				<!--     <br/> -->
 			<!-- </p> -->
 <?php if (!$eleve_col->isEmpty()) { ?>
-			<form method="post" action="creation_traitement.php" id="liste_absence_eleve">
+			<form method="post" action="./absences_du_jour.php" id="liste_absence_eleve">
 			  <p>
 			<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>
 			 
