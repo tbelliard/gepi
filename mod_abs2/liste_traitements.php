@@ -322,6 +322,8 @@ if ($page_number > $nb_pages) {
 
 echo '<form method="post" action="liste_traitements.php" id="liste_traitements">';
 
+  echo "<p>";
+  
 if ($traitements_col->haveToPaginate()) {
     echo "Page ";
     echo '<input type="submit" name="page_deplacement" value="-"/>';
@@ -336,173 +338,195 @@ echo "par page|  Nombre d'enregistrements : ";
 echo $traitements_col->count();
 
 echo "&nbsp;&nbsp;&nbsp;";
-echo '<button type="submit" name="reinit_filtre" value="y"/>Reinitialiser les filtres</button> ';
+echo '<button type="submit" name="reinit_filtre" value="y" >Reinitialiser les filtres</button> ';
 echo '<button type="submit">Rechercher</button>';
+
+  echo "</p>";
 
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0;">';
 
-echo '<THEAD>';
-echo '<TR>';
+echo '<thead>';
+echo '<tr>';
 
 //en tete filtre id
-echo '<TH>';
-echo '<nobr>';
+echo '<th>';
+//echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'N°';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_id"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_id"/>';
-echo '</nobr> ';
+//echo '</nobr> ';
+echo '</span>';
 echo '<input type="text" name="filter_id" value="'.$filter_id.'" size="3"/>';
-echo '</TH>';
+echo '</th>';
 
 //en tete filtre utilisateur
-echo '<TH>';
-echo '<nobr>';
+echo '<th>';
+//echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Utilisateur';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_utilisateur"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_utilisateur"/>';
-echo '</nobr>';
-echo '<br><input type="text" name="filter_utilisateur" value="'.$filter_utilisateur.'" size="12"/>';
-echo '</TH>';
+//echo '</nobr>';
+echo '</span>';
+echo '<br /><input type="text" name="filter_utilisateur" value="'.$filter_utilisateur.'" size="12"/>';
+echo '</th>';
 
 //en tete filtre eleve
-echo '<TH>';
-echo '<nobr>';
+echo '<th>';
+//echo '<nobr>';
+echo '<span style="white-space: nowrap;"> ';
 echo 'Eleve';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_eleve"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
-echo '</nobr>';
-echo '<br><input type="text" name="filter_eleve" value="'.$filter_eleve.'" size="8"/>';
-echo '</TH>';
+//echo '</nobr>';
+echo '</span>';
+echo '<br /><input type="text" name="filter_eleve" value="'.$filter_eleve.'" size="8"/>';
+echo '</th>';
 
 //en tete filtre saisies
-echo '<TH>';
-echo '<nobr>';
+echo '<th>';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
 echo 'Saisies';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_eleve"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
-echo '</nobr>';
-echo '</TH>';
+echo '</span>';
+//echo '</nobr>';
+echo '</th>';
 
 //en tete filtre classe
-echo '<TH>';
-echo '<nobr>';
+echo '<th>';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
 echo 'Classe';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_classe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_classe"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_classe") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_classe"/>';
-echo '</nobr>';
-echo '<br>';
+echo '</span>';
+//echo '</nobr>';
+echo '<br />';
 echo ("<select name=\"filter_classe\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 foreach (ClasseQuery::create()->distinct()->find() as $classe) {
 	echo "<option value='".$classe->getId()."'";
-	if ($filter_classe == $classe->getId()) echo " SELECTED ";
+	if ($filter_classe == $classe->getId()) echo " selected='selected' ";
 	echo ">";
 	echo $classe->getNomComplet();
 	echo "</option>\n";
 }
 echo "</select>";
-echo '</TH>';
+echo '</th>';
 
 //en tete type d'absence
-echo '<TH>';
-echo '<nobr>';
+echo '<th>';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
 echo 'type';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_type"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_type"/>';
-echo '</nobr>';
-echo '<br>';
+echo '</span>';
+//echo '</nobr>';
+echo '<br />';
 echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
-	if ($filter_type == $type->getId()) echo " SELECTED ";
+	if ($filter_type == $type->getId()) echo " selected='selected' ";
 	echo ">";
 	echo $type->getNom();
 	echo "</option>\n";
 }
 echo "</select>";
-echo '</TH>';
+echo '</th>';
 
 //en tete justification d'absence
-echo '<TH>';
-echo '<nobr>';
+echo '<th>';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
 echo 'justification';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_justification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_justification"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_justification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_justification"/>';
-echo '</nobr>';
-echo '<br>';
+echo '</span>';
+//echo '</nobr>';
+echo '<br />';
 echo ("<select name=\"filter_justification\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
 foreach (AbsenceEleveJustificationQuery::create()->find() as $justification) {
 	echo "<option value='".$justification->getId()."'";
-	if ($filter_justification == $justification->getId()) echo " SELECTED ";
+	if ($filter_justification == $justification->getId()) echo " selected='selected' ";
 	echo ">";
 	echo $justification->getNom();
 	echo "</option>\n";
 }
 echo "</select>";
-echo '</TH>';
+echo '</th>';
 
 //en tete notification d'absence
-echo '<TH>';
-echo '<nobr>';
+echo '<th>';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
 echo '&nbsp;notification&nbsp;';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_notification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_notification"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_notification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_notification"/>';
-echo '</nobr>';
-echo '<br>';
-echo '</TH>';
+echo '</span>';
+//echo '</nobr>';
+echo '<br />';
+echo '</th>';
 
 //en tete filtre date creation
-echo '<TH>';
-echo '<nobr>';
+echo '<th>';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
 echo 'Date creation';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_creation"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_creation"/>';
-echo '</nobr>';
-echo '<br>';
-echo '<nobr>';
+echo '</span>';
+//echo '</nobr>';
+echo '<br />';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
 echo 'Entre : <input size="13" id="filter_date_creation_traitement_debut_plage" name="filter_date_creation_traitement_debut_plage" value="';
 if ($filter_date_creation_traitement_debut_plage != null) {echo $filter_date_creation_traitement_debut_plage;}
 echo '" />&nbsp;';
-echo '<img id="trigger_filter_date_creation_traitement_debut_plage" src="../images/icons/calendrier.gif"/>';
-echo '</nobr>';
+echo '<img id="trigger_filter_date_creation_traitement_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
+echo '</span>';
+//echo '</nobr>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
@@ -514,13 +538,15 @@ echo '
 	showsTime	:   true
     });
 </script>';
-echo '<br>';
-echo '<nobr>';
+echo '<br />';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
 echo 'Et : <input size="13" id="filter_date_creation_traitement_fin_plage" name="filter_date_creation_traitement_fin_plage" value="';
 if ($filter_date_creation_traitement_fin_plage != null) {echo $filter_date_creation_traitement_fin_plage;}
 echo '" />&nbsp;';
-echo '<img id="trigger_filter_date_creation_traitement_fin_plage" src="../images/icons/calendrier.gif"/>';
-echo '</nobr>';
+echo '<img id="trigger_filter_date_creation_traitement_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
+echo '</span>';
+//echo '</nobr>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
@@ -532,35 +558,39 @@ echo '
 	showsTime	:   true
     });
 </script>';
-echo '</TH>';
+echo '</th>';
 
 //en tete filtre date modification
-echo '<TH>';
-echo '<nobr>';
+echo '<th>';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
 echo '';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_date_modification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_modification"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
+echo '<input type="image" src="../images/down.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_date_modification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_modification"/>';
-echo '</nobr> ';
-echo '<nobr>';
-echo '<INPUT TYPE="CHECKBOX" value="y" NAME="filter_date_modification" onchange="submit()"';
+echo '</span>';
+//echo '</nobr> ';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
+echo '<input type="checkbox" value="y" name="filter_date_modification" onchange="submit()"';
 if ($filter_date_modification != null && $filter_date_modification == 'y') {echo "checked";}
-echo '> modifié';
-echo '</nobr>';
-echo '</TH>';
+echo '/> modifié';
+echo '</span>';
+//echo '</nobr>';
+echo '</th>';
 
 //en tete commentaire
-echo '<TH>';
+echo '<th>';
 echo 'commentaire';
-echo '</TH>';
+echo '</th>';
 
-echo '</TR>';
-echo '</THEAD>';
+echo '</tr>';
+echo '</thead>';
 
-echo '<TBODY>';
+echo '<tbody>';
 $results = $traitements_col->getResults();
 foreach ($results as $traitement) {
     //$traitement = new AbsenceEleveTraitement();
@@ -573,23 +603,23 @@ foreach ($results as $traitement) {
     echo "<tr style='background-color :$background_couleur'>\n";
 
     //donnees id
-    echo '<TD>';
+    echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%;'> ";
     echo $traitement->getId();
     echo "</a>";
-    echo '</TD>';
+    echo '</td>';
 
     //donnees utilisateur
-    echo '<TD>';
+    echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     if ($traitement->getUtilisateurProfessionnel() != null) {
 	echo $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom();
     }
     echo "</a>";
-    echo '</TD>';
+    echo '</td>';
 
     //donnees eleve
-    echo '<TD>';
+    echo '<td>';
     $eleve_col = new PropelObjectCollection();
     foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	if ($saisie->getEleve() != null) {
@@ -604,7 +634,8 @@ foreach ($results as $traitement) {
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
+	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
@@ -616,16 +647,16 @@ foreach ($results as $traitement) {
 	    $photos = "../photos/eleves/".$nom_photo;
 	    if (($nom_photo != "") && (file_exists($photos))) {
 		$valeur = redimensionne_image_petit($photos);
-		echo ' <img src="'.$photos.'" align="right" width="'.$valeur[0].'px" height="'.$valeur[1].'px" alt="" title="" /> ';
+		echo ' <img src="'.$photos.'" style="align:right; width:'.$valeur[0].'px; height:'.$valeur[1].'px;" alt="" title="" /> ';
 	    }
 	}
 	echo "</a>";
 	echo "</td></tr></table>";
     }
-    echo '</TD>';
+    echo '</td>';
 
     //donnees saisies
-    echo '<TD>';
+    echo '<td>';
     if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 220px;'>";
     }
@@ -641,10 +672,10 @@ foreach ($results as $traitement) {
     if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
 	echo "</table>";
     }
-    echo '</TD>';
+    echo '</td>';
 
     //donnees classe
-    echo '<TD>';
+    echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     $classe_col = new PropelObjectCollection();
     foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
@@ -659,10 +690,11 @@ foreach ($results as $traitement) {
 	echo "&nbsp;";
     }
     echo "</a>";
-    echo '</TD>';
+    echo '</td>';
 
     //donnees type
-    echo '<TD><nobr>';
+    //echo '<td><nobr>';
+    echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     if ($traitement->getAbsenceEleveType() != null) {
 	echo $traitement->getAbsenceEleveType()->getNom();
@@ -670,10 +702,12 @@ foreach ($results as $traitement) {
 	echo "&nbsp;";
     }
     echo "</a>";
-    echo '</nobr></TD>';
+    //echo '</nobr></td>';
+    echo '</td>';
 
     //donnees justification
-    echo '<TD><nobr>';
+    //echo '<td><nobr>';
+    echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     if ($traitement->getAbsenceEleveJustification() != null) {
 	echo $traitement->getAbsenceEleveJustification()->getNom();
@@ -681,11 +715,14 @@ foreach ($results as $traitement) {
 	echo "&nbsp;";
     }
     echo "</a>";
-    echo '</nobr></TD>';
+    //echo '</nobr></td>';
+    echo '</td>';
 
     //donnees notification
-    echo '<TD>';
+    echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "</a>";
+	if (count($traitement->getAbsenceEleveNotifications())){
     echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 200px;'>";
     foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
@@ -697,35 +734,45 @@ foreach ($results as $traitement) {
 	echo "</tr>";
     }
     echo "</table>";
-    echo "</a>";
-    echo '</TD>';
+	}
+ //   echo "</a>";
+    echo '</td>';
 
-    echo '<TD><nobr>';
+    //echo '<td><nobr>';
+    echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     echo (strftime("%a %d %b %Y %H:%M", $traitement->getCreatedAt('U')));
     echo "</a>";
-    echo '</nobr></TD>';
+    //echo '</nobr></td>';
+    echo '</td>';
 
-    echo '<TD>';
+    echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     echo (strftime("%a %d %b %Y %H:%M", $traitement->getUpdatedAt('U')));
     echo "</a>";
-    echo '</TD>';
+    echo '</td>';
 
-    echo '<TD>';
+    echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     echo ($traitement->getCommentaire());
     echo "&nbsp;";
     echo "</a>";
-    echo '</TD>';
+    echo '</td>';
 
-    echo '</TR>';
+    echo '</tr>';
 }
 
-echo '</TBODY>';
-echo '</TBODY>';
+echo '</tbody>';
+//echo '</tbody>';
 
 echo '</table>';
+
+echo '</form>';
+
+echo "</div>\n";
+
+require_once("../lib/footer.inc.php");
+
 
 //fonction redimensionne les photos petit format
 function redimensionne_image_petit($photo)
