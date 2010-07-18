@@ -385,6 +385,10 @@ if (!$edt_cours_col->isEmpty()) {
     echo "<option value='-1'>choisissez un cours</option>\n";
     foreach ($edt_cours_col as $edt_cours) {
 	//$edt_cours = new EdtEmplacementCours();
+	    if ($edt_cours->getEdtCreneau() == NULL) {
+		//on affiche pas le cours si il n'est associé avec aucun creneau
+		continue;
+	    }
 	    if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
 		if ($edt_cours->getJourSemaineNumeric() != date('W')) {
 		    //on affiche pas ce cours
