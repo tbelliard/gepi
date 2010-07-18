@@ -593,7 +593,11 @@ foreach($eleve_col as $eleve) {
 					} else {
 					    $style = '';
 					}
-					echo '<td '.$style.' colspan="'.$nb_creneau_a_saisir.'">';
+					if ($nb_creneau_a_saisir>1){
+					  echo '<td '.$style.' colspan="'.$nb_creneau_a_saisir.'">';
+					}else {
+					  echo '<td '.$style.' colspan="1">';
+					}
 
 					//si il y a des absences de l'utilisateurs on va proposer de les modifier
 					if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
