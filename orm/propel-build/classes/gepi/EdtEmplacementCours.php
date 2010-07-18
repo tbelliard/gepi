@@ -111,7 +111,7 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	    if ($this->getJourSemaine() != null) {
 		$desc .= $this->getJourSemaine() . " ";
 	    }
-	    if ($edt_cours->getEdtCreneau() != NULL) {
+	    if ($this->getEdtCreneau() != NULL) {
 		//si il n'y a aucun creneau associe il ne faut pas essayer d'afficher les horaires
 		$desc .= $this->getHeureDebut("H:i") . " - ";
 		$desc .= $this->getHeureFin("H:i") . " ";
