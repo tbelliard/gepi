@@ -233,11 +233,11 @@ if ($type_selection == 'id_eleve') {
     $query = EleveQuery::create();
     $query->filterByUtilisateurProfessionnel($utilisateur);
     $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
-} elseif ($type_selection == 'id_groupe') {
+} elseif (isset($current_groupe) && $current_groupe != null) {
     $eleve_col = $current_groupe->getEleves();
-} elseif ($type_selection == 'id_aid') {
+} elseif (isset($current_aid) && $current_aid != null) {
     $eleve_col = $current_aid->getEleves();
-} elseif ($type_selection == 'id_classe') {
+} elseif (isset($current_classe) && !$current_classe == null) {
     $eleve_col = $current_classe->getEleves();
 }
 
