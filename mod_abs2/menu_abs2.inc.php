@@ -25,7 +25,7 @@ if(($_SESSION['statut']=='cpe')||
     echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
 
     echo "<li><a href='saisir_eleve.php' ";
-    if($onglet_abs=='saisir_eleve.php') {echo "class='current' ";}
+    if($onglet_abs=='saisir_eleve.php' || $onglet_abs=='enregistrement_saisie_eleve.php') {echo "class='current' ";}
     echo "title='Saisir pour un eleve'>Saisir un eleve</a></li>\n";
 
     echo "<li><a href='liste_saisies_selection_traitement.php' ";

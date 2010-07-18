@@ -123,6 +123,7 @@ $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+$javascript_specifique[] = "mod_abs2/lib/include";
 $titre_page = "Les absences";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
@@ -277,7 +278,11 @@ if (!$eleve_col->isEmpty()) {
 		<caption class="invisible no_print">Absences</caption>
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
-				<th style="text-align : center;" abbr="élèves">Liste des &eacute;l&egrave;ves</th>
+				<th style="text-align : center;" abbr="élèves">Liste des &eacute;l&egrave;ves.
+				Sélectionner :
+				<a href="#" onclick="SetAllCheckBoxes('liste_absence_eleve', 'active_absence_eleve[]', '', true); return false;">Tous</a>
+				<a href="#" onclick="SetAllCheckBoxes('liste_absence_eleve', 'active_absence_eleve[]', '', false); return false;">Aucun</a>
+				</th>
 				<!--th></th>
 				<th></th-->
 			</tr>
@@ -313,7 +318,7 @@ foreach($eleve_col as $eleve) {
 			echo("</td>");
 
 			
-			echo '<td><input style="font-size:88%;" name="active_absence_eleve['.$eleve_col->getPosition().']" value="1" type="checkbox"';
+			echo '<td><input style="font-size:88%;" name="active_absence_eleve[]" value="1" type="checkbox"';
 			if ($eleve_col->count() == 1) {
 			    echo "checked=\"true\" ";
 			}
