@@ -410,6 +410,12 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 
 		   echo " </tbody>";
     echo "</table>";
+    echo '<table><tr>';
+    echo '<td>Legende : </td>';
+    echo '<td style="border : 1px solid; background-color : red;">absent</td>';
+    echo '<td style="border : 1px solid; background-color : green;">present</td>';
+    echo '<td style="border : 1px solid;">Sans couleur : pas de saisie</td>';
+    echo '</tr></table>';
     echo "<p>";
     echo '<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>';
     $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
@@ -423,8 +429,8 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 } else {
     echo 'Aucune absence';
 }
-    echo "</p>";
-	echo "</form>";
+echo "</p>";
+echo "</form>";
 echo "</div>\n";
 echo "</div>\n";
 
