@@ -184,7 +184,9 @@ if(!isset($id_classe)) {
 	echo "</p>\n";
 	echo "</div>\n";
 
-	$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c WHERE 1");
+	$sql="SELECT DISTINCT c.* FROM classes c WHERE 1 ORDER BY classe;";
+	//echo "$sql<br />";
+	$calldata = mysql_query($sql);
 	$nombreligne = mysql_num_rows($calldata);
 	echo "<p>Total : $nombreligne classe";
 	if ($nombreligne>1) {
