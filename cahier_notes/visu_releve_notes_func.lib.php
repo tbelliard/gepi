@@ -239,6 +239,7 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 // Pour ne récupérer que les devoirs situés dans les conteneurs listés dans $tab_id_conteneur
 function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 	global $retour_a_la_ligne, $chaine_coef;
+	global $use_cell_ajustee;
 
 	$retour="";
 
@@ -264,6 +265,7 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 		
 				//==========================================
 				// On teste s'il y aura une "Note" à afficher
+				/*
 				if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 					$affiche_note = $eleve_statut;
 				}
@@ -276,6 +278,24 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 				else {
 					$affiche_note = "";
 				}
+				*/
+				$affiche_note = "";
+				if (($eleve_statut != '') and ($eleve_statut != 'v')) {
+					if($use_cell_ajustee!="n") {$affiche_note.="<b>";}
+					$affiche_note.=$eleve_statut;
+					if($use_cell_ajustee!="n") {$affiche_note.="</b>";}
+				}
+				//elseif ($eleve_statut == 'v') {
+				//	$affiche_note = "";
+				//}
+				elseif ($eleve_note != '') {
+					if($use_cell_ajustee!="n") {$affiche_note.="<b>";}
+					$affiche_note.=$eleve_note;
+					if($use_cell_ajustee!="n") {$affiche_note.="</b>";}
+				}
+				//else {
+				//	$affiche_note = "";
+				//}
 				//==========================================
 		
 				// Nom du devoir ou pas
@@ -2520,9 +2540,18 @@ function releve_pdf($tab_rel,$i) {
 										if($temoin_conteneur>0) {$chaine_notes.="\n";}
 										//$chaine_notes.="<u><b>".$tab_id_cn['conteneurs'][$k]['nom_complet']."&nbsp;:</b></u> \n";
 										//$chaine_notes.="_*".$tab_id_cn['conteneurs'][$k]['nom_complet']."*_ ";
+										if($use_cell_ajustee!="n") {$chaine_notes.="<u><b>";}
 										$chaine_notes.=casse_mot($tab_id_cn['conteneurs'][$k]['nom_complet'],'maj');
-										if($tab_id_cn['conteneurs'][$k]['display_parents']=='1') {$chaine_notes.="(".$tab_id_cn['conteneurs'][$k]['moy'].")";}
+										if($use_cell_ajustee!="n") {$chaine_notes.="</b>";}
+										if($tab_id_cn['conteneurs'][$k]['display_parents']=='1') {
+											$chaine_notes.="(";
+											if($use_cell_ajustee!="n") {$chaine_notes.="<b>";}
+											$chaine_notes.=$tab_id_cn['conteneurs'][$k]['moy'];
+											if($use_cell_ajustee!="n") {$chaine_notes.="</b>";}
+											$chaine_notes.=")";
+										}
 										$chaine_notes.=": ";
+										if($use_cell_ajustee!="n") {$chaine_notes.="</u>";}
 										$chaine_notes.=$retour_liste_notes_pdf;
 										$temoin_conteneur++;
 									}
@@ -2553,12 +2582,14 @@ function releve_pdf($tab_rel,$i) {
 								}
 
 								if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='v') {
+									if($use_cell_ajustee!="n") {$chaine_notes.="<b>";}
 									if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='') {
 										$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut'];
 									}
 									else {
 										$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['note'];
 									}
+									if($use_cell_ajustee!="n") {$chaine_notes.="</b>";}
 		
 									if($tab_rel['rn_nomdev']=='y') {
 										$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
