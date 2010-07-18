@@ -77,6 +77,7 @@ $filter_creneau = isset($_POST["filter_creneau"]) ? $_POST["filter_creneau"] :(i
 $filter_cours = isset($_POST["filter_cours"]) ? $_POST["filter_cours"] :(isset($_GET["filter_cours"]) ? $_GET["filter_cours"] :(isset($_SESSION["filter_cours"]) ? $_SESSION["filter_cours"] : NULL));
 $filter_date_creation_traitement_debut_plage = isset($_POST["filter_date_creation_traitement_debut_plage"]) ? $_POST["filter_date_creation_traitement_debut_plage"] :(isset($_GET["filter_date_creation_traitement_debut_plage"]) ? $_GET["filter_date_creation_traitement_debut_plage"] :(isset($_SESSION["filter_date_creation_traitement_debut_plage"]) ? $_SESSION["filter_date_creation_traitement_debut_plage"] : NULL));
 $filter_date_creation_traitement_fin_plage = isset($_POST["filter_date_creation_traitement_fin_plage"]) ? $_POST["filter_date_creation_traitement_fin_plage"] :(isset($_GET["filter_date_creation_traitement_fin_plage"]) ? $_GET["filter_date_creation_traitement_fin_plage"] :(isset($_SESSION["filter_date_creation_traitement_fin_plage"]) ? $_SESSION["filter_date_creation_traitement_fin_plage"] : NULL));
+//cas particulier pour les checkbox
 if (isset($_POST["filter_date_modification"])) {
     $filter_date_modification = $_POST["filter_date_modification"];
 } elseif (isset($_GET["filter_date_modification"])) {
@@ -90,6 +91,7 @@ if (isset($_POST["filter_date_modification"])) {
 }
 $filter_date_traitement_absence_debut_plage = isset($_POST["filter_date_traitement_absence_debut_plage"]) ? $_POST["filter_date_traitement_absence_debut_plage"] :(isset($_GET["filter_date_traitement_absence_debut_plage"]) ? $_GET["filter_date_traitement_absence_debut_plage"] :(isset($_SESSION["filter_date_traitement_absence_debut_plage"]) ? $_SESSION["filter_date_traitement_absence_debut_plage"] : NULL));
 $filter_date_traitement_absence_fin_plage = isset($_POST["filter_date_traitement_absence_fin_plage"]) ? $_POST["filter_date_traitement_absence_fin_plage"] :(isset($_GET["filter_date_traitement_absence_fin_plage"]) ? $_GET["filter_date_traitement_absence_fin_plage"] :(isset($_SESSION["filter_date_traitement_absence_fin_plage"]) ? $_SESSION["filter_date_traitement_absence_fin_plage"] : NULL));
+//cas particulier pour les checkbox
 if (isset($_POST["filter_discipline"])) {
     $filter_discipline = $_POST["filter_discipline"];
 } elseif (isset($_GET["filter_discipline"])) {
@@ -105,26 +107,46 @@ if (isset($_POST["filter_discipline"])) {
 $reinit_filtre = isset($_POST["reinit_filtre"]) ? $_POST["reinit_filtre"] :(isset($_GET["reinit_filtre"]) ? $_GET["reinit_filtre"] :NULL);
 if ($reinit_filtre == 'y') {
     $filter_id = NULL;
+    $_SESSION['filter_id'] = NULL;
     $filter_utilisateur = NULL;
+    $_SESSION['filter_utilisateur'] = NULL;
     $filter_eleve = NULL;
+    $_SESSION['filter_eleve'] = NULL;
     $filter_classe = NULL;
+    $_SESSION['filter_classe'] = NULL;
     $filter_groupe = NULL;
+    $_SESSION['filter_groupe'] = NULL;
     $filter_aid = NULL;
+    $_SESSION['filter_aid'] = NULL;
     $filter_type = NULL;
+    $_SESSION['filter_type'] = NULL;
     $filter_justification = NULL;
+    $_SESSION['filter_justification'] = NULL;
     $filter_date_debut_absence_fin_plage = NULL;
+    $_SESSION['filter_date_debut_absence_fin_plage'] = NULL;
     $filter_date_fin_absence_debut_plage = NULL;
+    $_SESSION['filter_date_fin_absence_debut_plage'] = NULL;
     $filter_date_fin_absence_fin_plage = NULL;
+    $_SESSION['filter_date_fin_absence_fin_plage'] = NULL;
     $filter_creneau = NULL;
+    $_SESSION['filter_creneau'] = NULL;
     $filter_cours = NULL;
+    $_SESSION['filter_cours'] = NULL;
     $filter_date_creation_traitement_debut_plage = NULL;
+    $_SESSION['filter_date_creation_traitement_debut_plage'] = NULL;
     $filter_date_creation_traitement_fin_plage = NULL;
+    $_SESSION['filter_date_creation_traitement_fin_plage'] = NULL;
     $filter_date_modification = NULL;
+    $_SESSION['filter_date_modification'] = NULL;
     $filter_date_traitement_absence_debut_plage = NULL;
+    $_SESSION['filter_date_traitement_absence_debut_plage'] = NULL;
     $filter_date_traitement_absence_fin_plage = NULL;
+    $_SESSION['filter_date_traitement_absence_fin_plage'] = NULL;
     $filter_discipline = NULL;
+    $_SESSION['filter_discipline'] = NULL;
 
     $order = NULL;
+    $_SESSION['order'] = NULL;
 }
 
 if ($order == null) {
