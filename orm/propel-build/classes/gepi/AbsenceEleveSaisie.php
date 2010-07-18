@@ -50,6 +50,27 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
+	 * Renvoi une liste intelligible des types associes
+	 *
+	 * @return     String description
+	 *
+	 */
+	public function getTypesDescription() {
+	    $traitement_col = $this->getAbsenceEleveTraitements();
+	    if (!$traitement_col->isEmpty()) {
+		echo 'type : ';
+	    }
+	    foreach ($traitement_col as $bou_traitement) {
+		if ($bou_traitement->getAbsenceEleveType() != null) {
+		    echo $bou_traitement->getAbsenceEleveType()->getNom();
+		    if (!$traitement_col->isLast()) {
+			echo ", ";
+		    }
+		}
+	    }
+	}
+	/**
+	 *
 	 * Renvoi true ou false en fonction des types associé
 	 *
 	 * @return     boolean

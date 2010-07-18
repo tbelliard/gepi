@@ -134,6 +134,8 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	    echo ' pour l\'aid ';
 	    echo $saisie->getClasse()->getNomComplet();
 	}
+	echo ' ';
+	echo $saisie->getTypesDescription();
 	echo '<tr><td>';
     } elseif ($eleve_prec_id != $saisie->getEleve()->getPrimaryKey()) {
 	if (!$traitement->getAbsenceEleveSaisies()->isFirst()) {
@@ -175,6 +177,8 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
     echo '<div>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='height: 100%;'> ";
     echo $saisie->getDateDescription();
+    echo ' ';
+    echo $saisie->getTypesDescription();
     echo "</a>";
     echo '<div style="float: right;  margin-top:-0.22em; margin-left:0.2em;">';
     if ($traitement->getModifiable()) {
