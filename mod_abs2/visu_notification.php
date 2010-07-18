@@ -97,19 +97,19 @@ if ($notification == null) {
 }
 
 echo '<table class="normal">';
-echo '<TBODY>';
-echo '<tr><TD>';
+echo '<tbody>';
+echo '<tr><td>';
 echo 'N° de notification';
-echo '</TD><TD>';
+echo '</td><td>';
 echo $notification->getPrimaryKey();
 echo "<a href='visu_traitement.php?id_traitement=".$notification->getATraitementId()."'>";
 echo ' (voir traitement)';
 echo "</a>";
-echo '</TD></tr>';
+echo '</td></tr>';
 
-echo '<tr><TD>';
+echo '<tr><td>';
 echo 'Saisies : ';
-echo '</TD><TD>';
+echo '</td><td>';
 echo '<table>';
 $eleve_prec_id = null;
 foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
@@ -119,7 +119,7 @@ foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as
 	echo 'Aucune absence';
 	if ($saisie->getGroupe() != null) {
 	    echo ' pour le groupe ';
-	    echo $saisie->getGroupe()->getDescription();
+	    echo $saisie->getGroupe()->getdescription();
 	}
 	if ($saisie->getClasse() != null) {
 	    echo ' pour la classe ';
@@ -147,7 +147,8 @@ foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as
 	    echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
 	}
 	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' target='_blank'>";
+	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' target='_blank'>";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' >";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
@@ -156,7 +157,7 @@ foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as
     }
     echo '<div>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
-    echo $saisie->getDateDescription();
+    echo $saisie->getdateDescription();
     echo "</a>";
     echo '</div>';
     if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isLast()) {
@@ -164,14 +165,16 @@ foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as
     }
     $eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
 }
+echo '</td></tr>';
 echo '</table>';
-echo '</TD></tr>';
+echo '</td></tr>';
 
-echo '<tr><TD>';
+echo '<tr><td>';
 echo 'Type de notification : ';
-echo '</TD><TD>';
+echo '</td><td>';
 if ($notification->getModifiable()) {
     echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="type"/>';
     echo ("<select name=\"type\" onchange='submit()'>");
@@ -180,28 +183,30 @@ if ($notification->getModifiable()) {
     while (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i])) {
 	echo "<option value='$i'";
 	if ($notification->getTypeNotification() === $i) {
-	    echo 'selected';
+	    echo ' selected="selected" ';
 	}
 	echo ">".AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i]."</option>\n";
 	$i = $i + 1;
     }
     echo "</select>";
     echo '<button type="submit">Modifier</button>';
+	echo '</p>';
     echo '</form>';
 } else {
     if (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()])) {
 	echo AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()];
     }
 }
-echo '</TD></tr>';
+echo '</td></tr>';
 
-echo '<tr><TD>';
+echo '<tr><td>';
 echo 'Statut : ';
-echo '</TD><TD>';
+echo '</td><td>';
 //on ne modifie manuellement le statut si le type est courrier ou communication téléphonique
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER ||
 	$notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_TELEPHONIQUE) {
     echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="statut"/>';
     echo ("<select name=\"statut\" onchange='submit()'>");
@@ -209,32 +214,33 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     while (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i])) {
 	echo "<option value='$i'";
 	if ($notification->getStatutEnvoi() == $i) {
-	    echo 'selected';
+	    echo ' selected="selected" ';
 	}
 	echo ">".AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i]."</option>\n";
 	$i = $i + 1;
     }
     echo "</select>";
     echo '<button type="submit">Modifier</button>';
+	echo '</p>';
     echo '</form>';
 } else {
     echo AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()];
 }
-echo '</TD></tr>';
+echo '</td></tr>';
 
 
 if ($notification->getErreurMessageEnvoi() != null && $notification->getErreurMessageEnvoi() != '') {
-    echo '<tr><TD>';
+    echo '<tr><td>';
     echo 'Message d\'erreur : ';
-    echo '</TD><TD>';
+    echo '</td><td>';
     echo $notification->getErreurMessageEnvoi();
-    echo '</TD></tr>';
+    echo '</td></tr>';
 }
 
 
-echo '<tr><TD>';
+echo '<tr><td>';
 echo 'Responsables : ';
-echo '</TD><TD>';
+echo '</td><td>';
 foreach ($notification->getResponsableEleves() as $responsable) {
     echo '<div>';
     //$responsable = new ResponsableEleve();
@@ -242,10 +248,12 @@ foreach ($notification->getResponsableEleves() as $responsable) {
     if ($notification->getModifiable()) {
 	echo '<div style="float: right;">';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="pers_id" value="'.$responsable->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="enlever_responsable"/>';
 	echo '<button type="submit">Enlever</button>';
+	echo '</p>';
 	echo '</form>';
 	echo '</div>';
     }
@@ -258,6 +266,7 @@ if ($notification->getModifiable()) {
     if ($notification->getResponsableEleves()->count() != $notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies()->count()) {
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="ajout_responsable"/>';
 	echo ("<select name=\"pers_id\">");
@@ -268,21 +277,23 @@ if ($notification->getModifiable()) {
 	}
 	echo "</select>";
 	echo '<button type="submit">Ajouter</button>';
+	echo '</p>';
 	echo '</form>';
 	echo '</div>';
     }
 }
-echo '</TD></tr>';
+echo '</td></tr>';
 
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL) {
-    echo '<tr><TD>';
+    echo '<tr><td>';
     echo 'Email : ';
-    echo '</TD><TD>';
+    echo '</td><td>';
     if (!$notification->getModifiable()) {
 	echo $notification->getEmail();
     } else {
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="email"/>';
 	echo ("<select name=\"email\" onchange='submit()'>");
@@ -293,7 +304,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAI
 		//$responsable = new ResponsableEleve();
 		echo '<option value="'.$responsable->getMel().'"';
 		if ($responsable->getMel() == $notification->getEmail()) {
-		    echo " selected ";
+		    echo " selected='selected' ";
 		    $selected = true;
 		}
 		echo ">".$responsable->getMel()."</option>\n";
@@ -301,37 +312,41 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAI
 	}
 	if (!$selected) {
 	    echo '<option value="'.$notification->getEmail().'"';
-	    echo " selected ";
+	    echo " selected='selected' ";
 	    echo ">".$notification->getEmail()."</option>\n";
 	}
 	echo "</select>";
 	echo '<button type="submit">Valider</button>';
+	echo '</p>';
 	echo '</form>';
 	echo '</div>';
 	echo ' ou ';
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="email"/>';
 	echo '<input type="text" size="20" name="email" value=""/>';
 	echo '<button type="submit">Valider</button>';
+	echo '</p>';
 	echo '</form>';
 	echo '</div>';
 	
     }
-    echo '</TD></tr>';
+    echo '</td></tr>';
 }
 
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS ||
 	$notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_TELEPHONIQUE) {
-    echo '<tr><TD>';
+    echo '<tr><td>';
     echo 'Tel : ';
-    echo '</TD><TD>';
+    echo '</td><td>';
     if (!$notification->getModifiable()) {
 	echo $notification->getTelephone();
     } else {
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="tel"/>';
 	echo ("<select name=\"tel\" onchange='submit()'>");
@@ -341,7 +356,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 	    if ($responsable->getTelPort() != null || $responsable->getTelPort() != '') {
 		echo '<option value="'.$responsable->getTelPort().'"';
 		if ($responsable->getTelPort() == $notification->getTelephone()) {
-		    echo " selected ";
+		    echo " selected='selected' ";
 		    $selected = true;
 		}
 		echo ">".$responsable->getTelPort()."</option>\n";
@@ -350,7 +365,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 	    if ($responsable->getTelPers() != null || $responsable->getTelPers() != '') {
 		echo '<option value="'.$responsable->getTelPers().'"';
 		if ($responsable->getTelPers() == $notification->getTelephone()) {
-		    echo " selected ";
+		    echo " selected='selected' ";
 		    $selected = true;
 		}
 		echo ">".$responsable->getTelPers()."</option>\n";
@@ -359,7 +374,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 	    if ($responsable->getTelProf() != null || $responsable->getTelProf() != '') {
 		echo '<option value="'.$responsable->getTelProf().'"';
 		if ($responsable->getTelProf() == $notification->getTelephone()) {
-		    echo " selected ";
+		    echo " selected='selected' ";
 		    $selected = true;
 		}
 		echo ">".$responsable->getTelProf()."</option>\n";
@@ -367,31 +382,34 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 	}
 	if (!$selected) {
 	    echo '<option value="'.$notification->getTelephone().'"';
-	    echo " selected ";
+	    echo " selected='selected' ";
 	    echo ">".$notification->getTelephone()."</option>\n";
 	}
 	echo "</select>";
 	echo '<button type="submit">Valider</button>';
+	echo '</p>';
 	echo '</form>';
 	echo '</div>';
 	echo ' ou ';
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="tel"/>';
 	echo '<input type="text" size="20" name="tel" value=""/>';
 	echo '<button type="submit">Valider</button>';
+	echo '</p>';
 	echo '</form>';
 	echo '</div>';
 
     }
-    echo '</TD></tr>';
+    echo '</td></tr>';
 }
 
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
-    echo '<tr><TD>';
+    echo '<tr><td>';
     echo 'Addresse : ';
-    echo '</TD><TD>';
+    echo '</td><td>';
     if ($notification->getResponsableEleveAdresse() != null) {
 	//on ne modifie le statut si le type est courrier ou communication téléphonique
 	if ($notification->getResponsableEleveAdresse()->getAdr1() != null && $notification->getResponsableEleveAdresse()->getAdr1() != '') {
@@ -420,6 +438,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     if ($notification->getModifiable()) {
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="adresse"/>';
 	echo ("<select name=\"adr_id\" onchange='submit()'>");
@@ -434,7 +453,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	    echo '<option value="'.$responsable_addresse->getPrimaryKey().'"';
 	    if ($notification->getResponsableEleveAdresse() != null &&
 		    $responsable_addresse->getPrimaryKey() == $notification->getResponsableEleveAdresse()->getPrimaryKey()) {
-		echo " selected ";
+		echo " selected='selected' ";
 	    }
 	    echo ">";
 	    if ($responsable_addresse->getAdr1() != null && $responsable_addresse->getAdr1() != '') {
@@ -462,71 +481,81 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	}
 	echo "</select>";
 	echo '<button type="submit">Modifier</button>';
+	echo '</p>';
 	echo '</form>';
 	echo '</div>';
     }
 
-    echo '</TD></tr>';
+    echo '</td></tr>';
 }
 
 
-echo '<tr><TD>';
+echo '<tr><td>';
 echo 'Créé par : ';
-echo '</TD><TD>';
+echo '</td><td>';
 if ($notification->getUtilisateurProfessionnel() != null) {
     echo $notification->getUtilisateurProfessionnel()->getCivilite();
     echo ' ';
     echo $notification->getUtilisateurProfessionnel()->getNom();
 }
-echo '</TD></tr>';
+echo '</td></tr>';
 
-if ($notification->getDateEnvoi() != null) {
-    echo '<tr><TD>';
+if ($notification->getdateEnvoi() != null) {
+    echo '<tr><td>';
     echo 'Date d\'envoi : ';
-    echo '</TD><TD>';
-    echo (strftime("%a %d %b %Y %H:%M", $notification->getDateEnvoi('U')));
-    echo '</TD></tr>';
+    echo '</td><td>';
+    echo (strftime("%a %d %b %Y %H:%M", $notification->getdateEnvoi('U')));
+    echo '</td></tr>';
 } else {
-    echo '<tr><TD>';
+    echo '<tr><td>';
     echo 'Créé le : ';
-    echo '</TD><TD>';
+    echo '</td><td>';
     echo (strftime("%a %d %b %Y %H:%M", $notification->getCreatedAt('U')));
-    echo '</TD></tr>';
+    echo '</td></tr>';
 
     if ($notification->getCreatedAt() != $notification->getUpdatedAt()) {
-	echo '<tr><TD>';
+	echo '<tr><td>';
 	echo 'Modifiée le : ';
-	echo '</TD><TD>';
+	echo '</td><td>';
 	echo (strftime("%a %d %b %Y %H:%M", $notification->getUpdatedAt('U')));
-	echo '</TD></tr>';
+	echo '</td></tr>';
     }
 }
 
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER || $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL) {
-    echo '<tr><TD colspan="2" style="text-align : center;">';
+    echo '<tr><td colspan="2" style="text-align : center;">';
     echo '<form method="post" action="generer_notification.php">';
+	echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
-	echo '<button type="submit" onClick=\'window.open("generer_notification.php?id_notification='.$notification->getPrimaryKey().'"); setTimeout("window.location = \"visu_notification.php\"", 1000); return false;\'>Génerer la notification</button>';
+	echo '<button type="submit" onclick=\'window.open("generer_notification.php?id_notification='.$notification->getPrimaryKey().'"); setTimeout("window.location = \"visu_notification.php\"", 1000); return false;\'>Génerer la notification</button>';
     } else {
 	echo '<button type="submit">Génerer la notification</button>';
     }
+	echo '</p>';
     echo '</form>';
-    echo '</TD></tr>';
+    echo '</td></tr>';
 }
 if ($notification->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_INITIAL) {
-    echo '<tr><TD colspan="2" style="text-align : center;">';
+    echo '<tr><td colspan="2" style="text-align : center;">';
     echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="duplication"/>';
     echo '<button type="submit">Creer une autre notification</button>';
+	echo '</p>';
     echo '</form>';
-    echo '</TD></tr>';
+    echo '</td></tr>';
 }
 
-echo '</TBODY>';
+echo '</tbody>';
 
 echo '</table>';
+
+
+echo "</div>\n";
+
+require_once("../lib/footer.inc.php");
 
 //fonction redimensionne les photos petit format
 function redimensionne_image_petit($photo)
