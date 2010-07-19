@@ -178,14 +178,18 @@ if ($notification->getModifiable()) {
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="type"/>';
     echo ("<select name=\"type\" onchange='submit()'>");
-    echo "<option value='-1'></option>\n";
+    echo "<option value=''></option>\n";
     $i = 0;
     while (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i])) {
-	echo "<option value='$i'";
-	if ($notification->getTypeNotification() === $i) {
-	    echo ' selected="selected" ';
+	if ($i === AbsenceEleveNotification::$TYPE_SMS && (getSettingValue("abs2_sms") != 'y')) {
+	    //pas d'option sms
+	} else {
+	    echo "<option value='$i'";
+	    if ($notification->getTypeNotification() === $i) {
+		echo ' selected="selected" ';
+	    }
+	    echo ">".AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i]."</option>\n";
 	}
-	echo ">".AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i]."</option>\n";
 	$i = $i + 1;
     }
     echo "</select>";
