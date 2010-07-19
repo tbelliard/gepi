@@ -412,7 +412,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
     echo '<tr><td>';
-    echo 'Addresse : ';
+    echo 'Adresse : ';
     echo '</td><td>';
     if ($notification->getResponsableEleveAdresse() != null) {
 	//on ne modifie le statut si le type est courrier ou communication téléphonique
@@ -446,13 +446,13 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="adresse"/>';
 	echo ("<select name=\"adr_id\" onchange='submit()'>");
-	$addresse_col = new PropelCollection();
+	$adresse_col = new PropelCollection();
 	foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
 	    if ($responsable_information->getResponsableEleve() != null && $responsable_information->getResponsableEleve()->getResponsableEleveAdresse() != null) {
-		 $addresse_col->add($responsable_information->getResponsableEleve()->getResponsableEleveAdresse());
+		 $adresse_col->add($responsable_information->getResponsableEleve()->getResponsableEleveAdresse());
 	    }
 	}
-	foreach ($addresse_col as $responsable_addresse) {
+	foreach ($adresse_col as $responsable_addresse) {
 	    //$responsable_addresse = new ResponsableEleveAdresse();
 	    echo '<option value="'.$responsable_addresse->getPrimaryKey().'"';
 	    if ($notification->getResponsableEleveAdresse() != null &&
