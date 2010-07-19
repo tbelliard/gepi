@@ -59,99 +59,7 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
     die("Le module n'est pas activé.");
 }
 
-//récupération des paramètres de la requète
-$order = isset($_POST["order"]) ? $_POST["order"] :(isset($_GET["order"]) ? $_GET["order"] :(isset($_SESSION["order"]) ? $_SESSION["order"] : NULL));
-
-$filter_id = isset($_POST["filter_id"]) ? $_POST["filter_id"] :(isset($_GET["filter_id"]) ? $_GET["filter_id"] :(isset($_SESSION["filter_id"]) ? $_SESSION["filter_id"] : NULL));
-$filter_utilisateur = isset($_POST["filter_utilisateur"]) ? $_POST["filter_utilisateur"] :(isset($_GET["filter_utilisateur"]) ? $_GET["filter_utilisateur"] :(isset($_SESSION["filter_utilisateur"]) ? $_SESSION["filter_utilisateur"] : NULL));
-$filter_eleve = isset($_POST["filter_eleve"]) ? $_POST["filter_eleve"] :(isset($_GET["filter_eleve"]) ? $_GET["filter_eleve"] :(isset($_SESSION["filter_eleve"]) ? $_SESSION["filter_eleve"] : NULL));
-$filter_classe = isset($_POST["filter_classe"]) ? $_POST["filter_classe"] :(isset($_GET["filter_classe"]) ? $_GET["filter_classe"] :(isset($_SESSION["filter_classe"]) ? $_SESSION["filter_classe"] : NULL));
-$filter_groupe = isset($_POST["filter_groupe"]) ? $_POST["filter_groupe"] :(isset($_GET["filter_groupe"]) ? $_GET["filter_groupe"] :(isset($_SESSION["filter_groupe"]) ? $_SESSION["filter_groupe"] : NULL));
-$filter_aid = isset($_POST["filter_aid"]) ? $_POST["filter_aid"] :(isset($_GET["filter_aid"]) ? $_GET["filter_aid"] :(isset($_SESSION["filter_aid"]) ? $_SESSION["filter_aid"] : NULL));
-$filter_date_debut_absence_debut_plage = isset($_POST["filter_date_debut_absence_debut_plage"]) ? $_POST["filter_date_debut_absence_debut_plage"] :(isset($_GET["filter_date_debut_absence_debut_plage"]) ? $_GET["filter_date_debut_absence_debut_plage"] :(isset($_SESSION["filter_date_debut_absence_debut_plage"]) ? $_SESSION["filter_date_debut_absence_debut_plage"] : NULL));
-$filter_date_debut_absence_fin_plage = isset($_POST["filter_date_debut_absence_fin_plage"]) ? $_POST["filter_date_debut_absence_fin_plage"] :(isset($_GET["filter_date_debut_absence_fin_plage"]) ? $_GET["filter_date_debut_absence_fin_plage"] :(isset($_SESSION["filter_date_debut_absence_fin_plage"]) ? $_SESSION["filter_date_debut_absence_fin_plage"] : NULL));
-$filter_date_fin_absence_debut_plage = isset($_POST["filter_date_fin_absence_debut_plage"]) ? $_POST["filter_date_fin_absence_debut_plage"] :(isset($_GET["filter_date_fin_absence_debut_plage"]) ? $_GET["filter_date_fin_absence_debut_plage"] :(isset($_SESSION["filter_date_fin_absence_debut_plage"]) ? $_SESSION["filter_date_fin_absence_debut_plage"] : NULL));
-$filter_date_fin_absence_fin_plage = isset($_POST["filter_date_fin_absence_fin_plage"]) ? $_POST["filter_date_fin_absence_fin_plage"] :(isset($_GET["filter_date_fin_absence_fin_plage"]) ? $_GET["filter_date_fin_absence_fin_plage"] :(isset($_SESSION["filter_date_fin_absence_fin_plage"]) ? $_SESSION["filter_date_fin_absence_fin_plage"] : NULL));
-$filter_creneau = isset($_POST["filter_creneau"]) ? $_POST["filter_creneau"] :(isset($_GET["filter_creneau"]) ? $_GET["filter_creneau"] :(isset($_SESSION["filter_creneau"]) ? $_SESSION["filter_creneau"] : NULL));
-$filter_cours = isset($_POST["filter_cours"]) ? $_POST["filter_cours"] :(isset($_GET["filter_cours"]) ? $_GET["filter_cours"] :(isset($_SESSION["filter_cours"]) ? $_SESSION["filter_cours"] : NULL));
-$filter_date_creation_absence_debut_plage = isset($_POST["filter_date_creation_absence_debut_plage"]) ? $_POST["filter_date_creation_absence_debut_plage"] :(isset($_GET["filter_date_creation_absence_debut_plage"]) ? $_GET["filter_date_creation_absence_debut_plage"] :(isset($_SESSION["filter_date_creation_absence_debut_plage"]) ? $_SESSION["filter_date_creation_absence_debut_plage"] : NULL));
-$filter_date_creation_absence_fin_plage = isset($_POST["filter_date_creation_absence_fin_plage"]) ? $_POST["filter_date_creation_absence_fin_plage"] :(isset($_GET["filter_date_creation_absence_fin_plage"]) ? $_GET["filter_date_creation_absence_fin_plage"] :(isset($_SESSION["filter_date_creation_absence_fin_plage"]) ? $_SESSION["filter_date_creation_absence_fin_plage"] : NULL));
-if (isset($_POST["filter_date_modification"])) {
-    $filter_date_modification = $_POST["filter_date_modification"];
-} elseif (isset($_GET["filter_date_modification"])) {
-    $filter_date_modification = $_GET["filter_date_modification"];
-} elseif (isset($_POST["filter_id"]) || isset($_GET["filter_id"])) {
-    $filter_date_modification = '';
-} elseif (isset($_SESSION["filter_date_modification"])) {
-    $filter_date_modification = $_SESSION["filter_date_modification"];
-} else {
-    $filter_date_modification = null;
-}
-$filter_date_traitement_absence_debut_plage = isset($_POST["filter_date_traitement_absence_debut_plage"]) ? $_POST["filter_date_traitement_absence_debut_plage"] :(isset($_GET["filter_date_traitement_absence_debut_plage"]) ? $_GET["filter_date_traitement_absence_debut_plage"] :(isset($_SESSION["filter_date_traitement_absence_debut_plage"]) ? $_SESSION["filter_date_traitement_absence_debut_plage"] : NULL));
-$filter_date_traitement_absence_fin_plage = isset($_POST["filter_date_traitement_absence_fin_plage"]) ? $_POST["filter_date_traitement_absence_fin_plage"] :(isset($_GET["filter_date_traitement_absence_fin_plage"]) ? $_GET["filter_date_traitement_absence_fin_plage"] :(isset($_SESSION["filter_date_traitement_absence_fin_plage"]) ? $_SESSION["filter_date_traitement_absence_fin_plage"] : NULL));
-$filter_type = isset($_POST["filter_type"]) ? $_POST["filter_type"] :(isset($_GET["filter_type"]) ? $_GET["filter_type"] :(isset($_SESSION["filter_type"]) ? $_SESSION["filter_type"] : NULL));
-if (isset($_POST["filter_discipline"])) {
-    $filter_discipline = $_POST["filter_discipline"];
-} elseif (isset($_GET["filter_discipline"])) {
-    $filter_discipline = $_GET["filter_discipline"];
-} elseif (isset($_POST["filter_id"]) || isset($_GET["filter_id"])) {
-    $filter_discipline = '';
-} elseif (isset($_SESSION["filter_discipline"])) {
-    $filter_discipline = $_SESSION["filter_discipline"];
-} else {
-    $filter_discipline = null;
-}
-
-$reinit_filtre = isset($_POST["reinit_filtre"]) ? $_POST["reinit_filtre"] :(isset($_GET["reinit_filtre"]) ? $_GET["reinit_filtre"] :NULL);
-if ($reinit_filtre == 'y') {
-    $filter_id = NULL;
-    $filter_utilisateur = NULL;
-    $filter_eleve = NULL;
-    $filter_classe = NULL;
-    $filter_groupe = NULL;
-    $filter_aid = NULL;
-    $filter_date_debut_absence_debut_plage = NULL;
-    $filter_date_debut_absence_fin_plage = NULL;
-    $filter_date_fin_absence_debut_plage = NULL;
-    $filter_date_fin_absence_fin_plage = NULL;
-    $filter_creneau = NULL;
-    $filter_cours = NULL;
-    $filter_date_creation_absence_debut_plage = NULL;
-    $filter_date_creation_absence_fin_plage = NULL;
-    $filter_date_modification = NULL;
-    $filter_type = NULL;
-    $filter_date_traitement_absence_debut_plage = NULL;
-    $filter_date_traitement_absence_fin_plage = NULL;
-    $filter_discipline = NULL;
-    $filter_discipline = NULL;
-
-    $order = NULL;
-}
-
-if ($order == null) {
-    $order = 'des_id';
-}
-//on va mettre en session tout les parametres de la requete, pour la navigation par onglet
-if (isset($order) && $order != null) $_SESSION['order'] = $order;
-
-if (isset($filter_id) && $filter_id != null) $_SESSION['filter_id'] = $filter_id;
-if (isset($filter_eleve) && $filter_eleve != null) $_SESSION['filter_eleve'] = $filter_eleve;
-if (isset($filter_classe) && $filter_classe != null) $_SESSION['filter_classe'] = $filter_classe;
-if (isset($filter_groupe) && $filter_groupe != null) $_SESSION['filter_groupe'] = $filter_groupe;
-if (isset($filter_aid) && $filter_aid != null) $_SESSION['filter_aid'] = $filter_aid;
-if (isset($filter_date_debut_absence_debut_plage) && $filter_date_debut_absence_debut_plage != null) $_SESSION['filter_date_debut_absence_debut_plage'] = $filter_date_debut_absence_debut_plage;
-if (isset($filter_date_debut_absence_fin_plage) && $filter_date_debut_absence_fin_plage != null) $_SESSION['filter_date_debut_absence_fin_plage'] = $filter_date_debut_absence_fin_plage;
-if (isset($filter_date_fin_absence_debut_plage) && $filter_date_fin_absence_debut_plage != null) $_SESSION['filter_date_fin_absence_debut_plage'] = $filter_date_fin_absence_debut_plage;
-if (isset($filter_date_fin_absence_fin_plage) && $filter_date_fin_absence_fin_plage != null) $_SESSION['filter_date_fin_absence_fin_plage'] = $filter_date_fin_absence_fin_plage;
-if (isset($filter_creneau) && $filter_creneau != null) $_SESSION['filter_creneau'] = $filter_creneau;
-if (isset($filter_cours) && $filter_cours != null) $_SESSION['filter_cours'] = $filter_cours;
-if (isset($filter_date_creation_absence_debut_plage) && $filter_date_creation_absence_debut_plage != null) $_SESSION['filter_date_creation_absence_debut_plage'] = $filter_date_creation_absence_debut_plage;
-if (isset($filter_date_creation_absence_fin_plage) && $filter_date_creation_absence_fin_plage != null) $_SESSION['filter_date_creation_absence_fin_plage'] = $filter_date_creation_absence_fin_plage;
-if (isset($filter_date_modification) && $filter_date_modification != null) $_SESSION['filter_date_modification'] = $filter_date_modification;
-if (isset($filter_date_traitement_absence_debut_plage) && $filter_date_traitement_absence_debut_plage != null) $_SESSION['filter_date_traitement_absence_debut_plage'] = $filter_date_traitement_absence_debut_plage;
-if (isset($filter_date_traitement_absence_fin_plage) && $filter_date_traitement_absence_fin_plage != null) $_SESSION['filter_date_traitement_absence_fin_plage'] = $filter_date_traitement_absence_fin_plage;
-if (isset($filter_type) && $filter_type != null) $_SESSION['filter_type'] = $filter_type;
-if (isset($filter_discipline) && $filter_discipline != null) $_SESSION['filter_discipline'] = $filter_discipline;
+include('include_requetes_filtre_de_recherche.php');
 
 $page_number = isset($_POST["page_number"]) ? $_POST["page_number"] :(isset($_GET["page_number"]) ? $_GET["page_number"] :(isset($_SESSION["page_number"]) ? $_SESSION["page_number"] : NULL));
 if (!is_numeric($page_number) || $reinit_filtre == 'y') {
@@ -202,88 +110,88 @@ echo "<div class='css-panes' id='containDiv' style='overflow : none; float : lef
 
 $query = AbsenceEleveSaisieQuery::create();
 $query->filterByUtilisateurProfessionnel($utilisateur);
-if ($filter_id != null && $filter_id != '') {
-    $query->filterById($filter_id);
+if (isFiltreRechercheParam('filter_saisie_id')) {
+    $query->filterById(getFiltreRechercheParam('filter_saisie_id'));
+    echo 'filter_id_oui : '.getFiltreRechercheParam('filter_saisie_id');
 }
-if ($filter_utilisateur != null && $filter_utilisateur != '') {
-    $query->useUtilisateurProfessionnelQuery()->filterByNom('%'.$filter_utilisateur.'%', Criteria::LIKE)->endUse();
+if (isFiltreRechercheParam('filter_eleve')) {
+    $query->useEleveQuery()->filterByNomOrPrenomLike(getFiltreRechercheParam('filter_eleve'))->endUse();
 }
-if ($filter_eleve != null && $filter_eleve != '') {
-    $query->useEleveQuery()->filterByNomOrPrenomLike($filter_eleve)->endUse();
-}
-if ($filter_classe != null && $filter_classe != '-1') {
+if (isFiltreRechercheParam('filter_classe')) {
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
     $query->leftJoin('Eleve.JEleveClasse');
-    $query->condition('cond1', 'JEleveClasse.IdClasse = ?', $filter_classe);
-    $query->condition('cond2', 'AbsenceEleveSaisie.IdClasse = ?', $filter_classe);
+    $query->condition('cond1', 'JEleveClasse.IdClasse = ?', getFiltreRechercheParam('filter_classe'));
+    $query->condition('cond2', 'AbsenceEleveSaisie.IdClasse = ?', getFiltreRechercheParam('filter_classe'));
     $query->where(array('cond1', 'cond2'), 'or');
 }
-if ($filter_groupe != null && $filter_groupe != '-1') {
+if (isFiltreRechercheParam('filter_groupe')) {
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
     $query->leftJoin('Eleve.JEleveGroupe');
-    $query->condition('cond1', 'JEleveGroupe.IdGroupe = ?', $filter_groupe);
-    $query->condition('cond2', 'AbsenceEleveSaisie.IdGroupe = ?', $filter_groupe);
+    $query->condition('cond1', 'JEleveGroupe.IdGroupe = ?', getFiltreRechercheParam('filter_groupe'));
+    $query->condition('cond2', 'AbsenceEleveSaisie.IdGroupe = ?', getFiltreRechercheParam('filter_groupe'));
     $query->where(array('cond1', 'cond2'), 'or');
 }
-if ($filter_aid != null && $filter_aid != '-1') {
+if (isFiltreRechercheParam('filter_aid')) {
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
     $query->leftJoin('Eleve.JAidEleves');
-    $query->condition('cond1', 'JAidEleves.IdAid = ?', $filter_aid);
-    $query->condition('cond2', 'AbsenceEleveSaisie.IdAid = ?', $filter_aid);
+    $query->condition('cond1', 'JAidEleves.IdAid = ?', getFiltreRechercheParam('filter_aid'));
+    $query->condition('cond2', 'AbsenceEleveSaisie.IdAid = ?', getFiltreRechercheParam('filter_aid'));
     $query->where(array('cond1', 'cond2'), 'or');
 }
-if ($filter_date_debut_absence_debut_plage != null && $filter_date_debut_absence_debut_plage != '-1') {
-    $date_debut_absence_debut_plage = new DateTime(str_replace("/",".",$filter_date_debut_absence_debut_plage));
+if (isFiltreRechercheParam('filter_date_debut_absence_debut_plage')) {
+    $date_debut_absence_debut_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_debut_absence_debut_plage')));
     $query->filterByDebutAbs($date_debut_absence_debut_plage, Criteria::GREATER_EQUAL);
 }
-if ($filter_date_debut_absence_fin_plage != null && $filter_date_debut_absence_fin_plage != '-1') {
-    $date_debut_absence_fin_plage = new DateTime(str_replace("/",".",$filter_date_debut_absence_fin_plage));
+if (isFiltreRechercheParam('filter_date_debut_absence_fin_plage')) {
+    $date_debut_absence_fin_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_debut_absence_fin_plage')));
     $query->filterByDebutAbs($date_debut_absence_fin_plage, Criteria::LESS_EQUAL);
 }
-if ($filter_date_fin_absence_debut_plage != null && $filter_date_fin_absence_debut_plage != '-1') {
-    $date_fin_absence_debut_plage = new DateTime(str_replace("/",".",$filter_date_fin_absence_debut_plage));
+if (isFiltreRechercheParam('filter_date_fin_absence_debut_plage')) {
+    $date_fin_absence_debut_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_fin_absence_debut_plage')));
     $query->filterByFinAbs($date_fin_absence_debut_plage, Criteria::GREATER_EQUAL);
 }
-if ($filter_date_fin_absence_fin_plage != null && $filter_date_fin_absence_fin_plage != '-1') {
-    $date_fin_absence_fin_plage = new DateTime(str_replace("/",".",$filter_date_fin_absence_fin_plage));
+if (isFiltreRechercheParam('filter_date_fin_absence_fin_plage')) {
+    $date_fin_absence_fin_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_fin_absence_fin_plage')));
     $query->filterByFinAbs($date_fin_absence_fin_plage, Criteria::LESS_EQUAL);
 }
-if ($filter_creneau != null && $filter_creneau != '-1') {
-    $query->filterByIdEdtCreneau($filter_creneau);
+if (isFiltreRechercheParam('filter_creneau')) {
+    $query->filterByIdEdtCreneau(getFiltreRechercheParam('filter_creneau'));
 }
-if ($filter_cours != null && $filter_cours != '-1') {
-    $query->filterByIdEdtEmplacementCours($filter_cours);
+if (isFiltreRechercheParam('filter_cours')) {
+    $query->filterByIdEdtEmplacementCours(getFiltreRechercheParam('filter_cours'));
 }
-if ($filter_date_creation_absence_debut_plage != null && $filter_date_creation_absence_debut_plage != '-1') {
-    $date_creation_absence_debut_plage = new DateTime(str_replace("/",".",$filter_date_creation_absence_debut_plage));
+if (isFiltreRechercheParam('filter_date_creation_absence_debut_plage')) {
+    $date_creation_absence_debut_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_creation_absence_debut_plage')));
     $query->filterByCreatedAt($date_creation_absence_debut_plage, Criteria::GREATER_EQUAL);
 }
-if ($filter_date_creation_absence_fin_plage != null && $filter_date_creation_absence_fin_plage != '-1') {
-    $date_creation_absence_fin_plage = new DateTime(str_replace("/",".",$filter_date_creation_absence_fin_plage));
+if (isFiltreRechercheParam('filter_date_creation_absence_fin_plage')) {
+    $date_creation_absence_fin_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_creation_absence_fin_plage')));
     $query->filterByCreatedAt($date_creation_absence_fin_plage, Criteria::LESS_EQUAL);
 }
-if ($filter_date_modification != null && $filter_date_modification == 'y') {
+if (isFiltreRechercheParam('filter_date_modification')) {
     $query->where('AbsenceEleveSaisie.CreatedAt != AbsenceEleveSaisie.UpdatedAt');
 }
-if ($filter_date_traitement_absence_debut_plage != null && $filter_date_traitement_absence_debut_plage != '-1') {
-    $date_traitement_absence_debut_plage = new DateTime(str_replace("/",".",$filter_date_traitement_absence_debut_plage));
+if (isFiltreRechercheParam('filter_date_traitement_absence_debut_plage')) {
+    $date_traitement_absence_debut_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_traitement_absence_debut_plage')));
     $query->leftJoin('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoin('JTraitementSaisieEleve.AbsenceEleveTraitement')->where('AbsenceEleveTraitement.UpdatedAt >= ?', $date_traitement_absence_debut_plage);
 }
-if ($filter_date_traitement_absence_fin_plage != null && $filter_date_traitement_absence_fin_plage != '-1') {
-    $date_traitement_absence_fin_plage = new DateTime(str_replace("/",".",$filter_date_traitement_absence_fin_plage));
+if (isFiltreRechercheParam('filter_date_traitement_absence_fin_plage')) {
+    $date_traitement_absence_fin_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_traitement_absence_fin_plage')));
     $query->leftJoin('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoin('JTraitementSaisieEleve.AbsenceEleveTraitement');
     $query->condition('trait1', 'AbsenceEleveTraitement.UpdatedAt <= ?', $date_traitement_absence_fin_plage);
     $query->condition('trait2', 'AbsenceEleveTraitement.UpdatedAt IS NULL');
     $query->where(array('trait1', 'trait2'), 'or');
 }
-if ($filter_type != null && $filter_type != '-1') {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByATypeId($filter_type)->endUse()->endUse();
-}
-if ($filter_discipline != null && $filter_discipline == 'y') {
+if (isFiltreRechercheParam('filter_discipline')) {
     $query->filterByIdSIncidents(null, Criteria::NOT_EQUAL);
     $query->filterByIdSIncidents(-1, Criteria::NOT_EQUAL);
 }
+if (isFiltreRechercheParam('filter_type')) {
+    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByATypeId(getFiltreRechercheParam('filter_type'))->endUse()->endUse();
+}
 
+
+$order = getFiltreRechercheParam('order');
 if ($order == "asc_id") {
     $query->orderBy('Id', Criteria::ASC);
 } else if ($order == "des_id") {
@@ -362,8 +270,8 @@ echo "par page|  Nombre d'enregistrements : ";
 echo $saisies_col->count();
 
 echo "&nbsp;&nbsp;&nbsp;";
-echo '<button type="submit" name="reinit_filtre" value="y">Réinitialiser les filtres</button> ';
 echo '<button type="submit">Rechercher</button>';
+echo '<button type="submit" name="reinit_filtre" value="y">Réinitialiser les filtres</button> ';
 echo '</p>';
 
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0;">';
@@ -384,7 +292,7 @@ if ($order == "des_id") {echo "border-style: solid; border-color: red;";} else {
 echo 'border-width:1px;" alt="" name="order" value="des_id"/>';
 //echo '</nobr> ';
 echo '</span>';
-echo '<input type="text" name="filter_id" value="'.$filter_id.'" size="3"/>';
+echo '<input type="text" name="filter_saisie_id" value="'.getFiltreRechercheParam('filter_saisie_id').'" size="3"/>';
 echo '</th>';
 
 //en tete filtre utilisateur
@@ -414,7 +322,7 @@ if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} els
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
 //echo '</nobr>';
 echo '</span>';
-echo '<br /><input type="text" name="filter_eleve" value="'.$filter_eleve.'" size="8"/>';
+echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRechercheParam('filter_eleve').'" size="8"/>';
 echo '</th>';
 
 //en tete filtre classe
@@ -432,10 +340,10 @@ echo 'border-width:1px;" alt="" name="order" value="des_classe"/>';
 echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_classe\" onchange='submit()'>");
-echo "<option value='-1'></option>\n";
+echo "<option value=''></option>\n";
 foreach (ClasseQuery::create()->distinct()->find() as $classe) {
 	echo "<option value='".$classe->getId()."'";
-	if ($filter_classe == $classe->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_classe') === $classe->getId()) echo " SELECTED ";
 	echo ">";
 	echo $classe->getNomComplet();
 	echo "</option>\n";
@@ -458,10 +366,10 @@ echo 'border-width:1px;" alt="" name="order" value="des_groupe"/>';
 echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_groupe\" onchange='submit()'>");
-echo "<option value='-1'></option>\n";
+echo "<option value=''></option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
 	echo "<option value='".$group->getId()."'";
-	if ($filter_groupe == $group->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_groupe') === $group->getId()) echo " SELECTED ";
 	echo ">";
 	echo $group->getNameAvecClasses();
 	echo "</option>\n";
@@ -484,10 +392,10 @@ echo 'border-width:1px;" alt="" name="order" value="des_aid"/>';
 echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_aid\" onchange='submit()'>");
-echo "<option value='-1'></option>\n";
+echo "<option value=''></option>\n";
 foreach ($utilisateur->getAidDetailss() as $aid) {
 	echo "<option value='".$aid->getId()."'";
-	if ($filter_aid == $aid->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_aid') === $aid->getId()) echo " SELECTED ";
 	echo ">";
 	echo $aid->getNom();
 	echo "</option>\n";
@@ -510,10 +418,10 @@ echo 'border-width:1px;" alt="" name="order" value="des_creneau"/>';
 echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_creneau\" onchange='submit()'>");
-echo "<option value='-1'></option>\n";
+echo "<option value=''></option>\n";
 foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edt_creneau) {
 	echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-	if ($filter_creneau == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_creneau') === $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
 	echo ">";
 	echo $edt_creneau->getDescription();
 	echo "</option>\n";
@@ -538,7 +446,7 @@ echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_debut_absence_debut_plage" name="filter_date_debut_absence_debut_plage" value="';
-if ($filter_date_debut_absence_debut_plage != null) {echo $filter_date_debut_absence_debut_plage;}
+if (isFiltreRechercheParam('filter_date_debut_absence_debut_plage')) {echo getFiltreRechercheParam('filter_date_debut_absence_debut_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_debut_absence_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
@@ -558,7 +466,7 @@ echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_debut_absence_fin_plage" name="filter_date_debut_absence_fin_plage" value="';
-if ($filter_date_debut_absence_fin_plage != null) {echo $filter_date_debut_absence_fin_plage;}
+if (isFiltreRechercheParam('filter_date_debut_absence_fin_plage')) {echo getFiltreRechercheParam('filter_date_debut_absence_fin_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_debut_absence_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
@@ -593,7 +501,7 @@ echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_fin_absence_debut_plage" name="filter_date_fin_absence_debut_plage" value="';
-if ($filter_date_fin_absence_debut_plage != null) {echo $filter_date_fin_absence_debut_plage;}
+if (isFiltreRechercheParam('filter_date_fin_absence_debut_plage')) {echo getFiltreRechercheParam('filter_date_fin_absence_debut_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_fin_absence_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
@@ -613,7 +521,7 @@ echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_fin_absence_fin_plage" name="filter_date_debut_absence_fin_plage" value="';
-if ($filter_date_fin_absence_fin_plage != null) {echo $filter_date_fin_absence_fin_plage;}
+if (isFiltreRechercheParam('filter_date_fin_absence_fin_plage')) {echo getFiltreRechercheParam('$filter_date_fin_absence_fin_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_fin_absence_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
@@ -640,10 +548,10 @@ echo 'Cours';
 echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_cours\" onchange='submit()'>");
-echo "<option value='-1'></option>\n";
+echo "<option value=''></option>\n";
 foreach ($utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle() as $edt_cours) {
 	echo "<option value='".$edt_cours->getIdCours()."'";
-	if ($filter_cours == $edt_cours->getIdCours()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_cours') === $edt_cours->getIdCours()) echo " SELECTED ";
 	echo ">";
 	echo $edt_cours->getDescription();
 	echo "</option>\n";
@@ -660,10 +568,10 @@ echo 'type';
 echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_type\" onchange='submit()'>");
-echo "<option value='-1'></option>\n";
+echo "<option value=''></option>\n";
 foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
-	if ($filter_type == $type->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_type') === $type->getId()) echo " SELECTED ";
 	echo ">";
 	echo $type->getNom();
 	echo "</option>\n";
@@ -689,7 +597,7 @@ echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Entre : <input size="13" id="filter_date_creation_absence_debut_plage" name="filter_date_creation_absence_debut_plage" value="';
-if ($filter_date_creation_absence_debut_plage != null) {echo $filter_date_creation_absence_debut_plage;}
+if (isFiltreRechercheParam('filter_date_creation_absence_debut_plage')) {echo getFiltreRechercheParam('filter_date_creation_absence_debut_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_absence_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
@@ -709,7 +617,7 @@ echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo 'Et : <input size="13" id="filter_date_creation_absence_fin_plage" name="filter_date_creation_absence_fin_plage" value="';
-if ($filter_date_creation_absence_fin_plage != null) {echo $filter_date_creation_absence_fin_plage;}
+if (isFiltreRechercheParam('filter_date_creation_absence_fin_plage')) {echo getFiltreRechercheParam('filter_date_creation_absence_fin_plage');}
 echo '" />&nbsp;';
 echo '<img id="trigger_filter_date_creation_absence_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
@@ -743,7 +651,7 @@ echo '</span>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_date_modification" onchange="submit()" ';
-if ($filter_date_modification != null && $filter_date_modification == 'y') {echo "checked='checked'";}
+if (getFiltreRechercheParam('filter_date_modification') == 'y') {echo "checked='checked'";}
 echo '/> modifié';
 //echo '</nobr>';
 echo '</span>';
@@ -769,7 +677,7 @@ echo '</span>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_discipline" onchange="submit()" ';
-if ($filter_discipline != null && $filter_discipline == 'y') {echo "checked";}
+if (getFiltreRechercheParam('filter_discipline') == 'y') {echo "checked";}
 echo "/> Rapport<br/>d'incident";
 //echo '</nobr>';
 echo '</span>';
