@@ -142,7 +142,7 @@ require_once("../lib/header.inc");
 if (!(isset($_GET['action']))) {
   // Affichage du tableau complet
 
-  if ($_SESSION['statut'] == "autre") {
+  if ($_SESSION['statut'] == "autre"||$_SESSION['statut']== "scolarite") {
 	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
   } else {
     echo "<p class=\"bold\"><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";

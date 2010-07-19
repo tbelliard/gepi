@@ -137,6 +137,11 @@ class class_page_accueil {
 	$this->cahierTexteCPE_Restreint();
 	$this->chargeAutreNom('bloc_Cdt_CPE_Restreint');
 
+/***** Visa Cahier de texte Scolarite ***********/
+	$this->verif_exist_ordre_menu('bloc_Cdt_Visa');
+	$this->cahierTexte_Visa();
+	$this->chargeAutreNom('bloc_Cdt_Visa');
+
 /***** gestion des trombinoscopes : module de Christian Chapel ***********/
 	$this->verif_exist_ordre_menu('bloc_trombinoscope');
 	$this->trombinoscope();
@@ -1568,6 +1573,20 @@ class class_page_accueil {
 	
 	if ($this->b>0)
 	  $this->creeNouveauTitre('accueil',"Gestion des AID",'images/icons/document.png');	
+  }
+
+  private function cahierTexte_Visa(){
+	$this->b=0;
+
+	if (getSettingValue("GepiAccesCdtVisa")=='yes') {
+	  $this->creeNouveauItem("/cahier_texte_admin/visa_ct.php",
+			  "Visa des cahiers de textes",
+			  "Voir et viser les cahiers de textes");
+	}
+
+	if ($this->b>0)
+	  $this->creeNouveauTitre('accueil',"Visa CDT",'images/icons/document.png');
+
   }
 
   private function verif_exist_ordre_menu($_item){

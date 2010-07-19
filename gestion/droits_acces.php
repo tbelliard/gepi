@@ -1357,6 +1357,36 @@ $texteItem="a accès aux cahiers de textes des ".$gepiSettings['denomination_elev
 			<em>bloque l'affichage des cahiers de textes de toutes les classes</em>";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+// ====== Visa des cahiers de texte =====
+$titreItem='GepiAccesCdtVisa';
+$texteItem="Peux viser les cahiers de textes ";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+// ====== Droits sur la page cahiers de texte =====
+if (getSettingValue('GepiAccesCdtScolRestreint') =='yes'
+		||getSettingValue('GepiAccesCdtScol')=='yes'
+		||getSettingValue('GepiAccesCdtVisa')=='yes'){
+  // il faut pouvoir voir les cahiers de textes
+  if (!$droitAffiche->ouvreDroits($statutItem, '', "/cahier_texte_2/see_all.php",'yes'))
+	$tbs_message = "Erreur lors de l'enregistrement des droits de /cahier_texte_2/see_all.php";
+  if (!$droitAffiche->ouvreDroits($statutItem, '', "/cahier_texte/see_all.php",'yes'))
+	$tbs_message = "Erreur lors de l'enregistrement des droits de /cahier_texte/see_all.php";
+} else {
+  // il ne faut pas pouvoir voir les cahiers de textes même en accès direct à la page
+  if (!$droitAffiche->ouvreDroits($statutItem, '', "/cahier_texte_2/see_all.php",'no'))
+	$tbs_message = "Erreur lors de l'enregistrement des droits de /cahier_texte_2/see_all.php";
+  if (!$droitAffiche->ouvreDroits($statutItem, '', "/cahier_texte/see_all.php",'no'))
+	$tbs_message = "Erreur lors de l'enregistrement des droits de /cahier_texte/see_all.php";
+}
+
+// ====== Droits sur la page Visa des cahiers de texte =====
+if (!$droitAffiche->ouvreDroits($statutItem, $titreItem, "/cahier_texte_admin/visa_ct.php"))
+  $tbs_message = "Erreur lors de l'enregistrement des droits de ".$titreItem;
+
+
+
 /*
 
 			<tr valign='top'>
