@@ -345,6 +345,12 @@ else{
 }
 
 //=========================
+// Sauvegarde le temps de la session des paramètres pour le passage d'une classe à une autre
+$_SESSION['choix_edit']=$choix_edit;
+$_SESSION['periode1']=$periode1;
+$_SESSION['periode2']=$periode2;
+if(isset($login_prof)) {$_SESSION['login_prof']=$login_prof;}
+//=========================
 
 if ($choix_edit == '2') {
     //bulletin($login_eleve,1,1,$periode1,$periode2,$nom_periode,$gepiYear,$id_classe,$affiche_rang,$test_coef,$affiche_categories);

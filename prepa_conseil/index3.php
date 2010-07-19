@@ -1,25 +1,25 @@
 <?php
 /*
- * $Id$
- *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
- *
- * This file is part of GEPI.
- *
- * GEPI is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * GEPI is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GEPI; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+* $Id$
+*
+* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -27,16 +27,16 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-    header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-    die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 //Initialisation
@@ -128,7 +128,7 @@ require_once("../lib/header.inc");
 ?>
 <script type='text/javascript' language='javascript'>
 function active(num) {
- document.form_choix_edit.choix_edit[num].checked=true;
+document.form_choix_edit.choix_edit[num].checked=true;
 }
 
 function change_periode(){
@@ -167,8 +167,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
-    //$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-    //$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
+	//$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+	//$calldata = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 
 	if($_SESSION['statut'] == 'scolarite'){
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
@@ -208,8 +208,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	//echo "$sql<br />\n";
 	$calldata = mysql_query($sql);
-    $nombreligne = mysql_num_rows($calldata);
-    echo " | Total : $nombreligne classes </p>\n";
+	$nombreligne = mysql_num_rows($calldata);
+	echo " | Total : $nombreligne classes </p>\n";
 
 	if($nombreligne==0){
 		echo "<p>Aucune classe ne vous est attribuée.<br />Contactez l'administrateur pour qu'il effectue le paramétrage approprié dans la Gestion des classes.</p>\n";
@@ -260,8 +260,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	// Nulle part la variable n'a l'air récupérée en POST ou autre...
 	// ====================
 
-    if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
-	    //echo " | <a href = \"index3.php\">Choisir une autre classe</a> ";
+	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
+		//echo " | <a href = \"index3.php\">Choisir une autre classe</a> ";
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
 
@@ -384,49 +384,65 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "</form>\n";
 
 
-	    $classe_eleve = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
-	    $nom_classe = mysql_result($classe_eleve, 0, "classe");
-	    echo "<p class='grand'>Classe de $nom_classe</p>\n";
-	    echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
-	    echo "<table summary='Choix des élèves'>\n";
+		$classe_eleve = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
+		$nom_classe = mysql_result($classe_eleve, 0, "classe");
+		echo "<p class='grand'>Classe de $nom_classe</p>\n";
+		echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
+		echo "<table summary='Choix des élèves'>\n";
 		echo "<tr>\n";
-	    echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_1' value=\"1\" checked /></td>\n";
-	    echo "<td><label for='choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiés de tous les ".$gepiSettings['denomination_eleves']." de la classe";
+		echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_1' value=\"1\" ";
+		if((!isset($_SESSION['choix_edit']))||($_SESSION['choix_edit']==1)) {
+			echo "checked ";
+		}
+		echo "/></td>\n";
+		echo "<td><label for='choix_edit_1' style='cursor: pointer;'>Les bulletins simplifiés de tous les ".$gepiSettings['denomination_eleves']." de la classe";
 		if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
 			echo " (uniquement les ".$gepiSettings['denomination_eleves']." que j'ai en cours)";
 		}
 		echo "</label></td></tr>\n";
 
-	    $call_suivi = mysql_query("SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe' ORDER BY professeur");
-	    $nb_lignes = mysql_num_rows($call_suivi);
-	    $indice = 1;
-	    if ($nb_lignes > 1) {
-	        echo "<tr>\n";
-	        echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_3' value=\"3\" /></td>\n";
-	        echo "<td><label for='choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiés des ".$gepiSettings['denomination_eleves']." dont le ".getSettingValue("gepi_prof_suivi")." est :</label>\n";
-	        echo "<select size=\"1\" name=\"login_prof\" onclick=\"active(1)\">\n";
-	        $i=0;
-	        while ($i < $nb_lignes) {
-	            $login_pr = mysql_result($call_suivi,$i,"professeur");
-	            $call_prof = mysql_query("SELECT * FROM utilisateurs WHERE login='$login_pr'");
-	            $nom_prof = mysql_result($call_prof,0,"nom");
-	            $prenom_prof = mysql_result($call_prof,0,"prenom");
-	            echo "<option value=".$login_pr.">".$nom_prof." ".$prenom_prof."</option>\n";
-	            $i++;
-	        }
-	        echo "</select></td></tr>\n";
-	        $indice = 2;
-	    }
+		$call_suivi = mysql_query("SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE id_classe='$id_classe' ORDER BY professeur");
+		$nb_lignes = mysql_num_rows($call_suivi);
+		$indice = 1;
+		if ($nb_lignes > 1) {
+			echo "<tr>\n";
+			echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_3' value=\"3\" ";
+			if((isset($_SESSION['choix_edit']))&&($_SESSION['choix_edit']==3)) {
+				echo "checked ";
+			}
+			echo "/></td>\n";
+			echo "<td><label for='choix_edit_3' style='cursor: pointer;'>Uniquement les bulletins simplifiés des ".$gepiSettings['denomination_eleves']." dont le ".getSettingValue("gepi_prof_suivi")." est :</label>\n";
+			echo "<select size=\"1\" name=\"login_prof\" onclick=\"active(1)\">\n";
+			$i=0;
+			while ($i < $nb_lignes) {
+				$login_pr = mysql_result($call_suivi,$i,"professeur");
+				$call_prof = mysql_query("SELECT * FROM utilisateurs WHERE login='$login_pr'");
+				$nom_prof = mysql_result($call_prof,0,"nom");
+				$prenom_prof = mysql_result($call_prof,0,"prenom");
+				echo "<option value=".$login_pr."";
+				if((isset($_SESSION['login_prof']))&&($_SESSION['login_prof']==$login_pr)) {
+					echo " selected='true'";
+				}
+				echo ">".$nom_prof." ".$prenom_prof."</option>\n";
+				$i++;
+			}
+			echo "</select></td></tr>\n";
+			$indice = 2;
+		}
 
 
-	    echo "<tr>\n";
-	    echo "<td><input type=\"radio\" id='choix_edit_2' name=\"choix_edit\" value=\"2\" /></td>\n";
-	    echo "<td><label for='choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifié de l'".$gepiSettings['denomination_eleve']." sélectionné ci-contre : </label>\n";
-	    echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
+		echo "<tr>\n";
+		echo "<td><input type=\"radio\" id='choix_edit_2' name=\"choix_edit\" value=\"2\" ";
+		if((isset($_SESSION['choix_edit']))&&($_SESSION['choix_edit']==2)) {
+			echo "checked ";
+		}
+		echo "/></td>\n";
+		echo "<td><label for='choix_edit_2' style='cursor: pointer;'>Uniquement le bulletin simplifié de l'".$gepiSettings['denomination_eleve']." sélectionné ci-contre : </label>\n";
+		echo "<select size=\"1\" name=\"login_eleve\" onclick=\"active(".$indice.")\">\n";
 
-	    //if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
-	    if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
-		    $sql="SELECT DISTINCT e.* " .
+		//if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesMoyennesProfTousEleves") != "yes" AND getSettingValue("GepiAccesMoyennesProfToutesClasses") != "yes") {
+		if ($_SESSION['statut'] == "professeur" AND getSettingValue("GepiAccesBulletinSimpleProfTousEleves") != "yes" AND getSettingValue("GepiAccesBulletinSimpleProfToutesClasses") != "yes") {
+			$sql="SELECT DISTINCT e.* " .
 				"FROM eleves e, j_eleves_classes jec, j_eleves_groupes jeg, j_groupes_professeurs jgp " .
 				"WHERE (" .
 				"jec.id_classe='$id_classe' AND " .
@@ -435,59 +451,112 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				"jeg.id_groupe = jgp.id_groupe AND " .
 				"jgp.login = '".$_SESSION['login']."') " .
 				"ORDER BY e.nom,e.prenom";
-	    } else {
-		    $sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom";
-	    }
+		} else {
+			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j WHERE (j.id_classe = '$id_classe' and j.login=e.login) order by nom";
+		}
 		//echo "$sql<br />\n";
 		$call_eleve = mysql_query($sql);
-	    $nombreligne = mysql_num_rows($call_eleve);
-	    $i = "0" ;
-	    while ($i < $nombreligne) {
-	        $eleve = mysql_result($call_eleve, $i, 'login');
-	        $nom_el = mysql_result($call_eleve, $i, 'nom');
-	        $prenom_el = mysql_result($call_eleve, $i, 'prenom');
-	        echo "<option value=$eleve>$nom_el  $prenom_el </option>\n";
-	        $i++;
-	    }
-	    echo "</select></td></tr>\n";
+		$nombreligne = mysql_num_rows($call_eleve);
+		$i = "0" ;
+		while ($i < $nombreligne) {
+			$eleve = mysql_result($call_eleve, $i, 'login');
+			$nom_el = mysql_result($call_eleve, $i, 'nom');
+			$prenom_el = mysql_result($call_eleve, $i, 'prenom');
+			echo "<option value=$eleve>$nom_el  $prenom_el </option>\n";
+			$i++;
+		}
+		echo "</select></td></tr>\n";
 
 		echo "<tr>\n";
-	    echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_4' value=\"4\" /></td>\n";
-	    echo "<td><label for='choix_edit_4' style='cursor: pointer;'>Le bulletin simplifié des appréciations sur le groupe-classe";
+		echo "<td><input type=\"radio\" name=\"choix_edit\" id='choix_edit_4' value=\"4\" ";
+		if((isset($_SESSION['choix_edit']))&&($_SESSION['choix_edit']==4)) {
+			echo "checked ";
+		}
+		echo "/></td>\n";
+		echo "<td><label for='choix_edit_4' style='cursor: pointer;'>Le bulletin simplifié des appréciations sur le groupe-classe";
 		echo "</label></td></tr>\n";
 
 		echo "</table>\n";
-    } else {
+	} else {
 		echo "<p class=\"bold\"><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a>";
 
-    	$eleve = mysql_query("SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
-    	$prenom_eleve = mysql_result($eleve, 0, "prenom");
-    	$nom_eleve = mysql_result($eleve, 0, "nom");
+		$eleve = mysql_query("SELECT e.nom, e.prenom FROM eleves e WHERE e.login = '".$login_eleve."'");
+		$prenom_eleve = mysql_result($eleve, 0, "prenom");
+		$nom_eleve = mysql_result($eleve, 0, "nom");
 
-	    echo "<p class='grand'>".ucfirst($gepiSettings['denomination_eleve'])." : ".$prenom_eleve." ".$nom_eleve."</p>\n";
-	    echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
-	    echo "<input type=\"hidden\" name=\"choix_edit\" value=\"2\" />\n";
-	    echo "<input type=\"hidden\" name=\"login_eleve\" value=\"".$login_eleve."\" />\n";
-    }
-    echo "<p>Choisissez la(les) période(s) : </p><br />\n";
-    include "../lib/periodes.inc.php";
-    echo "De la période : <select onchange=\"change_periode()\" size=1 name=\"periode1\">\n";
-    $i = "1" ;
-    while ($i < $nb_periode) {
-       echo "<option value=$i>$nom_periode[$i] </option>\n";
-       $i++;
-    }
-    echo "</select>\n";
-    echo "&nbsp;à la période : <select size=1 name=\"periode2\">\n";
-    $i = "1" ;
-    while ($i < $nb_periode) {
-       echo "<option value=$i>$nom_periode[$i] </option>\n";
-       $i++;
-    }
-    echo "</select>\n";
-    echo "<input type=hidden name=id_classe value=$id_classe />\n";
-    echo "<br /><br /><center><input type=submit value=Valider /></center>\n";
-    echo "</form>\n";
+		echo "<p class='grand'>".ucfirst($gepiSettings['denomination_eleve'])." : ".$prenom_eleve." ".$nom_eleve."</p>\n";
+		echo "<form enctype=\"multipart/form-data\" action=\"edit_limite.php\" method=\"post\" name=\"form_choix_edit\" target=\"_blank\">\n";
+		echo "<input type=\"hidden\" name=\"choix_edit\" value=\"2\" />\n";
+		echo "<input type=\"hidden\" name=\"login_eleve\" value=\"".$login_eleve."\" />\n";
+	}
+	echo "<p>Choisissez la(les) période(s) : </p><br />\n";
+	include "../lib/periodes.inc.php";
+
+	$periode1_par_defaut=1;
+	if(isset($_SESSION['periode1'])) {
+		$periode1_par_defaut=$_SESSION['periode1'];
+	}
+
+	echo "De la période : <select onchange=\"change_periode()\" size=1 name=\"periode1\">\n";
+	$i = "1" ;
+	while ($i < $nb_periode) {
+	echo "<option value='$i'";
+	if($i==$periode1_par_defaut) {echo " selected='true'";}
+	echo ">$nom_periode[$i] </option>\n";
+	$i++;
+	}
+	echo "</select>\n";
+
+
+	if(isset($_SESSION['periode2'])) {
+		$max_per=$_SESSION['periode2'];
+	}
+	else {
+		$max_per=1;
+		//$sql="SELECT max(num_periode) AS max_per FROM periodes WHERE id_classe='$id_classe' AND verouiller='N';";
+		// Bizarre: Si tout est clos, on obtient
+		/*
+			mysql> SELECT max(num_periode) AS max_per FROM periodes WHERE id_classe='3' AND verouiller='N';
+			+---------+
+			| max_per |
+			+---------+
+			|    NULL |
+			+---------+
+			1 row in set (0.00 sec)
+			
+			mysql> 
+		*/
+		$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' AND verouiller='N' ORDER BY num_periode DESC LIMIT 1;";
+		//echo "$sql<br />";
+		$res_per=mysql_query($sql);
+		if(mysql_num_rows($res_per)) {
+			$lig_per=mysql_fetch_object($res_per);
+			//$max_per=$lig_per->max_per;
+			$max_per=$lig_per->num_periode;
+		}
+		else {
+			// La solution ci-dessous n'est pas fiable: si un groupe est à cheval sur plusieurs classes et que les périodes ouvertes sur les déifférentes classes ne sont pas les mêmes
+			$sql="SELECT max(periode) AS max_per FROM matieres_notes mn, j_groupes_classes jgc WHERE mn.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe';";
+			//echo "$sql<br />";
+			$res_per=mysql_query($sql);
+			if(mysql_num_rows($res_per)) {
+				$lig_per=mysql_fetch_object($res_per);
+				$max_per=$lig_per->max_per;
+			}
+		}
+	}
+	echo "&nbsp;à la période : <select size=1 name=\"periode2\">\n";
+	$i = "1" ;
+	while ($i < $nb_periode) {
+	echo "<option value='$i'";
+	if($i==$max_per) {echo " selected='true'";}
+	echo ">$nom_periode[$i] </option>\n";
+	$i++;
+	}
+	echo "</select>\n";
+	echo "<input type=hidden name=id_classe value=$id_classe />\n";
+	echo "<br /><br /><center><input type=submit value=Valider /></center>\n";
+	echo "</form>\n";
 }
 require("../lib/footer.inc.php");
 ?>
