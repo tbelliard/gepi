@@ -219,11 +219,15 @@ $eleve_col = new PropelCollection();
 
 if ($type_selection == 'id_eleve') {
     $query = EleveQuery::create();
-    $query->filterByUtilisateurProfessionnel($utilisateur);
+    if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
+	$query->filterByUtilisateurProfessionnel($utilisateur);
+    }
     $eleve_col->append($query->findPk($id_eleve));
 } else if ($type_selection == 'nom_eleve') {
     $query = EleveQuery::create();
-    $query->filterByUtilisateurProfessionnel($utilisateur);
+    if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
+	$query->filterByUtilisateurProfessionnel($utilisateur);
+    }
     $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
 } elseif ($current_groupe != null) {
     $eleve_col = $current_groupe->getEleves();
@@ -237,8 +241,11 @@ if ($type_selection == 'id_eleve') {
     $dt_debut->setTime(0,0,0);
     $dt_fin = clone $dt_date_absence_eleve;
     $dt_fin->setTime(23,59,59);
-    $eleve_col = EleveQuery::create()
-	    ->filterByUtilisateurProfessionnel($utilisateur)
+    $query = EleveQuery::create();
+    if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
+	$query->filterByUtilisateurProfessionnel($utilisateur);
+    }
+    $eleve_col = $query
 	    ->useAbsenceEleveSaisieQuery()
 	    ->filterByFinAbs($dt_debut, Criteria::GREATER_EQUAL)
 	    ->filterByFinAbs($dt_fin, Criteria::LESS_EQUAL)
