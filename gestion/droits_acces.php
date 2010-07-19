@@ -1558,6 +1558,11 @@ $texteItem="a le droit d'accéder a toutes les fiches élève";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
+$titreItem='GepiAccesAbsTouteClasseCpe';
+$texteItem="a le droit d'accéder a toutes les classe pour saisir les absences";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 /*
 
 			</table>

@@ -472,7 +472,7 @@ echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_classe\" onchange='submit()'>");
 echo "<option value='-1'></option>\n";
-foreach ($utilisateur->getClasses() as $classe) {
+foreach (ClasseQuery::create()->find() as $classe) {
 	echo "<option value='".$classe->getId()."'";
 	if ($filter_classe == $classe->getId()) echo " SELECTED ";
 	echo ">";

@@ -147,7 +147,7 @@ if (!$groupe_col->isEmpty()) {
 }
 
 //on affiche une boite de selection avec les classe
-$classe_col = $utilisateur->getClasses();
+$classe_col = ClasseQuery::create()->distinct()->find();
 if (!$classe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
@@ -225,11 +225,11 @@ if ($type_selection == 'id_eleve') {
     $query = EleveQuery::create();
     $query->filterByUtilisateurProfessionnel($utilisateur);
     $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
-} elseif ($type_selection == 'id_groupe') {
+} elseif ($current_groupe != null) {
     $eleve_col = $current_groupe->getEleves();
-} elseif ($type_selection == 'id_aid') {
+} elseif ($current_aid != null) {
     $eleve_col = $current_aid->getEleves();
-} elseif ($type_selection == 'id_classe') {
+} elseif ($current_classe != null) {
     $eleve_col = $current_classe->getEleves();
 } else {
     //on fait une requete pour recuperer les eleves qui sont absents aujourd'hui

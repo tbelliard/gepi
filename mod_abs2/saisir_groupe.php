@@ -253,7 +253,12 @@ if ($utilisateur->getStatut() != "professeur") {
     echo '<input type="hidden" name="type_selection" value="id_classe"/>';
     echo ("Classe : <select name=\"id_classe\">");
     echo "<option value='-1'>choisissez une classe</option>\n";
-    foreach ($utilisateur->getClasses() as $classe) {
+    if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+	$classe_col = ClasseQuery::create()->find();
+    } else {
+	$classe_col = $utilisateur->getClasses();
+    }
+    foreach ($classe_col as $classe) {
 	    echo "<option value='".$classe->getId()."'";
 	    if ($id_classe == $classe->getId()) echo " selected='selected' ";
 	    echo ">";

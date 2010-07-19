@@ -172,14 +172,19 @@ echo '</p>';
 }
 
 //on affiche une boite de selection avec les classe
-if (!$utilisateur->getClasses()->isEmpty()) {
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $classe_col = ClasseQuery::create()->find();
+} else {
+    $classe_col = $utilisateur->getClasses();
+}
+if (!$classe_col->isEmpty()) {
 	echo "<td style='border : 1px solid; padding : 10 px;'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
-echo '<p>';
+	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_classe"/>';
 	echo ("Classe : <select name=\"id_classe\">");
 	echo "<option value='-1'>choisissez une classe</option>\n";
-	foreach ($utilisateur->getClasses() as $classe) {
+	foreach ($classe_col as $classe) {
 		echo "<option value='".$classe->getId()."'";
 		if ($id_classe == $classe->getId()) echo " selected='selected' ";
 		echo ">";
@@ -189,7 +194,7 @@ echo '<p>';
 	echo "</select>&nbsp;";
 
 	echo '<button type="submit">Afficher les eleves</button>';
-echo '</p>';
+	echo '</p>';
 	echo "</form>";
 	echo "</td>";
 }
