@@ -529,14 +529,18 @@ if ($notification->getdateEnvoi() != null) {
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER || $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL) {
     echo '<tr><td colspan="2" style="text-align : center;">';
     echo '<form method="post" action="generer_notification.php">';
-	echo '<p>';
+    echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
 	echo '<button type="submit" onclick=\'window.open("generer_notification.php?id_notification='.$notification->getPrimaryKey().'"); setTimeout("window.location = \"visu_notification.php\"", 1000); return false;\'>Génerer la notification</button>';
     } else {
-	echo '<button type="submit">Génerer la notification</button>';
+	if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL && ($notification->getEmail() == null || $notification->getEmail() == '')) {
+	    //on affiche pas le bouton de generation car l'adresse n'est pas renseignee
+	} else {
+	    echo '<button type="submit">Génerer la notification</button>';
+	}
     }
-	echo '</p>';
+    echo '</p>';
     echo '</form>';
     echo '</td></tr>';
 }

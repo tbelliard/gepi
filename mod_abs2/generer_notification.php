@@ -166,6 +166,18 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     //$TBS->Show(OPENTBS_FILE+TBS_EXIT, $file_name);
 
 } else if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL) {
+    if ($notification->getEmail() == null || $notification->getEmail() == '') {
+	$message_enregistrement = 'Echec de l\'envoi : email non renseigné.';
+	include('visu_notification.php');
+	die();
+    }
+
+    include('../lib/email_validator.php');
+    if (!validEmail($notification->getEmail())) {
+	$message_enregistrement = 'Echec de l\'envoi : adresse email non valide.';
+	include('visu_notification.php');
+	die();
+    }
      // Load the template
     $TBS->LoadTemplate('modeles/email.txt');
 
