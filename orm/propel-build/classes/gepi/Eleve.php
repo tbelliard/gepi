@@ -1194,8 +1194,8 @@ class Eleve extends BaseEleve {
 	    //premierement on verifie que l'eleve n'a pas ete saisie absent a cette date
 	    $resp_etab = false;
 	    foreach ($this->getAbsenceEleveSaisiesDuJour($dt) as $saisie) {
-		if ($dt->format('U') <=  $saisie->getDebutAbs('U')
-		    || $dt->format('U') >  $saisie->getFinAbs('U')) {
+		if ($dt->format('U') <  $saisie->getDebutAbs('U')
+		    || $dt->format('U') >=  $saisie->getFinAbs('U')) {
 		    //la saisie ne porte pas sur l'heure demandee
 		    continue;
 		}
