@@ -30,15 +30,15 @@ $conf = array (
 	  //utiliser le code ci-dessous si vous avez l'erreur :
 	  //SQLSTATE[HY000]: General error: 2014 Cannot execute queries while other unbuffered queries are active
 	  
-//          'PROPEL_ATTR_CACHE_PREPARES' =>
-//          array (
-//	    'value' => true,
-//          ),
+          'PROPEL_ATTR_CACHE_PREPARES' =>
+          array (
+	    'value' => true,
+          ),
 
-//          'MYSQL_ATTR_USE_BUFFERED_QUERY' =>
-//          array (
-//	    'value' => true,
-//          ),
+          'MYSQL_ATTR_USE_BUFFERED_QUERY' =>
+          array (
+	    'value' => true,
+          ),
         ),
         'settings' => 
         array (
