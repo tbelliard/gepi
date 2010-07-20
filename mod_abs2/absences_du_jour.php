@@ -335,11 +335,14 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 			<td<?php echo $color_hier; ?>><?php echo $aff_compter_hier; ?></td>
 			<td class='td_abs_eleves'>
 <?php
+			echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
+			echo ' ';
+			echo $eleve->getClasseNomComplet($dt_date_absence_eleve);
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
-			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
-			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."'>";
-			    echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom())
-				    .'</a> ('.$eleve->getCivilite().')';
+			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
+			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
+			    echo ' (voir&nbsp;fiche)';
+			    echo "</a>";
 			}
 			
 			echo("</td>");
@@ -389,8 +392,9 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 					    echo '<input name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" id="'.$prop.'_eleve_id_'.$eleve->getPrimaryKey().'_saisie_id_'.$saisie->getPrimaryKey().'"/>';
 					    echo ("<a style='font-size:88%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>".$saisie->getPrimaryKey());
 					    if ($prop == 'saisie_notifie') {
-						echo " (notifiée)";
+						echo " (notifiée) ";
 					    }
+					    echo $saisie->getTypesDescription();
 					    echo '</a>';
 					    //echo '</nobr>';
 					    echo '<br/>';
