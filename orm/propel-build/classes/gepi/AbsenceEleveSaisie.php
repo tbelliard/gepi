@@ -57,17 +57,20 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 */
 	public function getTypesDescription() {
 	    $traitement_col = $this->getAbsenceEleveTraitements();
-	    $echo_type = false;
+	    $besoin_echo_type = true;
+	    $besoin_echo_virgule = false;
 	    foreach ($traitement_col as $bou_traitement) {
 		if ($bou_traitement->getAbsenceEleveType() != null) {
-		    if (!$echo_type) {
+		    if ($besoin_echo_type) {
 			echo 'type : ';
-			$echo_type = true;
+			$besoin_echo_type = false;
+		    }
+		    if ($besoin_echo_virgule) {
+			echo ', ';
+			$besoin_echo_virgule = false;
 		    }
 		    echo $bou_traitement->getAbsenceEleveType()->getNom();
-		    if (!$traitement_col->isLast()) {
-			echo ", ";
-		    }
+		    $besoin_echo_virgule = true;
 		}
 	    }
 	}

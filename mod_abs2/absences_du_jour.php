@@ -389,11 +389,12 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 						$prop = 'saisie_vierge';
 					    }
 					    //echo '<nobr>';
-					    echo '<input name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" id="'.$prop.'_eleve_id_'.$eleve->getPrimaryKey().'_saisie_id_'.$saisie->getPrimaryKey().'"/>';
+					    echo '<nobr><input name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" id="'.$prop.'_eleve_id_'.$eleve->getPrimaryKey().'_saisie_id_'.$saisie->getPrimaryKey().'"/>';
 					    echo ("<a style='font-size:88%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>".$saisie->getPrimaryKey());
 					    if ($prop == 'saisie_notifie') {
-						echo " (notifiée) ";
+						echo " (notifiée)";
 					    }
+					    echo '</nobr> ';
 					    echo $saisie->getTypesDescription();
 					    echo '</a>';
 					    //echo '</nobr>';
