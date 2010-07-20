@@ -435,9 +435,8 @@ echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_aid\" onchange='submit()'>");
 echo "<option value=''></option>\n";
-$temp_collection = $utilisateur->getAidDetailss();
 //$temp_collection->add(AidDetailsQuery::create()->useJAidElevesQuery()->useEleveQuery()->useJEleveCpeQuery()->filterByUtilisateurProfessionnel($utilisateur)->endUse()->endUse()->endUse()->find());
-foreach ($temp_collection as $aid) {
+foreach (AidDetailsQuery::create()->find() as $aid) {
 	echo "<option value='".$aid->getId()."'";
 	if (getFiltreRechercheParam('filter_aid') === $aid->getId()) echo " SELECTED ";
 	echo ">";
