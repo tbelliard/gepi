@@ -409,7 +409,7 @@ echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_groupe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
-foreach ($utilisateur->getGroupes()  as $group) {
+foreach (GroupeQuery::create()->find()  as $group) {
 	echo "<option value='".$group->getId()."'";
 	if (getFiltreRechercheParam('filter_groupe') === $group->getId()) echo " SELECTED ";
 	echo ">";
