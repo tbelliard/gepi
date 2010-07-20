@@ -234,6 +234,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 					->filterByAbsenceEleveSaisie($this)
 					->leftJoinWith('AbsenceEleveType')
 					->leftJoinWith('AbsenceEleveNotification')
+					->leftJoinWith('AbsenceEleveJustification')
 					->find($con);
 				if (null !== $criteria) {
 					return $collAbsenceEleveTraitements;
