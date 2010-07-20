@@ -37,6 +37,10 @@ if ($reinit_filtre == 'y') {
 	    $_SESSION['filtre_recherche'][$param_name] = null;
 	}
     }
+
+    if (!isFiltreRechercheParam('order')) {
+	$_SESSION['filtre_recherche']['order'] = 'des_id';
+    }
 }
 
 function isFiltreRechercheParam($param_name) {
