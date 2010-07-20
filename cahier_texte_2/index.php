@@ -55,11 +55,6 @@ if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
-$edtEmplacementCourss = $utilisateur->getEdtEmplacementCourss();
-$cours = new EdtEmplacementCours();
-//$cours->get
-$cours = $edtEmplacementCourss->getFirst();
-
 
 // On met le header en petit par défaut
 $_SESSION['cacher_header'] = "y";
