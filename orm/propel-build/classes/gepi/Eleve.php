@@ -117,13 +117,13 @@ class Eleve extends BaseEleve {
 	/**
 	 * Initializes the collAbsenceEleveSaisiesParJour collection.
 	 *
-	 * @param      DateTime $date date du jour
+	 * @param      strind $date_string clé date du jour format('d/m/Y')
 	 * @return     void
 	 */
-	public function initAbsenceEleveSaisiesParJour($date)
+	public function initAbsenceEleveSaisiesParJour($date_string)
 	{
-		$this->collAbsenceEleveSaisiesParJour[$date->format('d/m/Y')] = new PropelObjectCollection();
-		$this->collAbsenceEleveSaisiesParJour[$date->format('d/m/Y')]->setModel('AbsenceEleveSaisie');
+		$this->collAbsenceEleveSaisiesParJour[$date_string] = new PropelObjectCollection();
+		$this->collAbsenceEleveSaisiesParJour[$date_string]->setModel('AbsenceEleveSaisie');
 	}
 
 	/**

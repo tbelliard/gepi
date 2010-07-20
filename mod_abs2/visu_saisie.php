@@ -225,7 +225,7 @@ if (!$modifiable) {
     echo '<nobr><input name="heure_fin" value="'.$saisie->getFinAbs("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
     //if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
     if (true) {
-	echo (strftime(" %a %d %b %Y", $saisie->getDebutAbs('U')));
+	echo (strftime(" %a %d %b %Y", $saisie->getFinAbs('U')));
 	echo '<input name="date_fin" value="'.$saisie->getFinAbs('d/m/Y').'" type="hidden"/></nobr> ';
     } else {
 	echo '<input id="trigger_calendrier_fin" name="date_fin" value="'.$saisie->getFinAbs('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';

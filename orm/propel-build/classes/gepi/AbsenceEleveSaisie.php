@@ -57,11 +57,13 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 */
 	public function getTypesDescription() {
 	    $traitement_col = $this->getAbsenceEleveTraitements();
-	    if (!$traitement_col->isEmpty()) {
-		echo 'type : ';
-	    }
+	    $echo_type = false;
 	    foreach ($traitement_col as $bou_traitement) {
 		if ($bou_traitement->getAbsenceEleveType() != null) {
+		    if (!$echo_type) {
+			echo 'type : ';
+			$echo_type = true;
+		    }
 		    echo $bou_traitement->getAbsenceEleveType()->getNom();
 		    if (!$traitement_col->isLast()) {
 			echo ", ";
