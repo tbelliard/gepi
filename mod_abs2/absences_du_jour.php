@@ -306,6 +306,18 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
     $nb_checkbox = 0; //nombre de checkbox
     foreach($eleve_col as $eleve) {
 		//$eleve = new Eleve();
+			$resp_etab = true;
+			foreach ($eleve->getAbsenceEleveSaisiesDuJour($dt_date_absence_eleve) as $absence) {
+			    if (!$absence->getResponsabiliteEtablissement()) {
+				$resp_etab = false;
+				break;
+			    }
+			}
+			if ($resp_etab) {
+			    //l'eleve n'a aucune absence deresponsabilisant l'etablissement
+			    //donc on ne l'affiche pas
+			    continue;
+			}
 			$saisie_affiches = array ();
 			if ($eleve_col->getPosition() %2 == '1') {
 				$background_couleur="#E8F1F4";
