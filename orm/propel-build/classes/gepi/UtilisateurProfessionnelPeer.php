@@ -23,12 +23,15 @@ class UtilisateurProfessionnelPeer extends BaseUtilisateurProfessionnelPeer {
 	 * @return     UtilisateurProfessionnel utilisateur
 	 */
 	public static function getUtilisateursSessionEnCours() {
-	    if (isset($_SESSION['utilisateurProfessionnel'])) {
-		return $_SESSION['utilisateurProfessionnel'];
+	    if (isset($_SESSION['objets_propel']['utilisateurProfessionnel'])
+		    && $_SESSION['objets_propel']['utilisateurProfessionnel'] != null
+		    && $_SESSION['objets_propel']['utilisateurProfessionnel'] instanceof UtilisateurProfessionnel) {
+		//echo 'utilisateur recupere dans la session';
+		return $_SESSION['objets_propel']['utilisateurProfessionnel'];
 	    } else {
 		$utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($_SESSION['login'])->findOne();
 		if ($utilisateur != null) {
-		    $_SESSION['utilisateurProfessionnel'] = $utilisateur;
+		    $_SESSION['objets_propel']['utilisateurProfessionnel'] = $utilisateur;
 		}
 		return $utilisateur;
 	    }

@@ -256,4 +256,12 @@ if (!isset($mode_debug)) {
 // Initialisaton de la session Gepi :
 $session_gepi = new Session();
 
+if (!class_exists('Propel')
+	|| !strstr(get_include_path(), '/orm/propel-build/classes')) {
+    //on retire les objets propel de la session car propel n'a pas ete initialise,
+    //donc les objets ne seront pas correctement deserialiser
+    unset($_SESSION['objets_propel']);
+}
+
+
 ?>

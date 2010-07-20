@@ -67,7 +67,7 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    require_once("../secure/connect.inc.php");
 	//propel objects
    set_include_path("../orm/propel-build/classes" . PATH_SEPARATOR . "../orm/propel" . PATH_SEPARATOR . "../orm" . PATH_SEPARATOR . get_include_path());
-   include("../orm/propel/Propel.php");
+   require_once("../orm/propel/Propel.php");
    Propel::init('../orm/propel-build/conf/'.$propel_conf_file_name);
 }
 ?>
