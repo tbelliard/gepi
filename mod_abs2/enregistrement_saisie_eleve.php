@@ -213,14 +213,14 @@ if ($current_cours != null) {
 
 for($i=0; $i<$total_eleves; $i++) {
 
-    $id_eleve = $_POST['id_eleve_absent'][$i];
+    //$id_eleve = $_POST['id_eleve_absent'][$i];
 
     //on test si l'eleve est enregistré absent
     if (!isset($_POST['active_absence_eleve'][$i])) {
 	continue;
     }
     
-    $eleve = EleveQuery::create()->findPk($_POST['id_eleve_absent'][$i]);
+    $eleve = EleveQuery::create()->findPk($_POST['active_absence_eleve'][$i]);
     if ($eleve == null) {
 	$message_enregistrement .= "Probleme avec l'id eleve : ".$_POST['id_eleve_absent'][$i]."<br/>";
 	continue;
@@ -229,7 +229,7 @@ for($i=0; $i<$total_eleves; $i++) {
     foreach ($saisie_col_modele as $saisie_modele) {
 
 	$saisie = clone $saisie_modele;
-	$saisie->setEleveId($_POST['id_eleve_absent'][$i]);
+	$saisie->setEleveId($eleve->getIdEleve());
 
 	if ($type != null) {
 	    $traitement = new AbsenceEleveTraitement();
@@ -254,14 +254,14 @@ for($i=0; $i<$total_eleves; $i++) {
 	    }
 	    $message_enregistrement .= "<br/>";
 	} else {
-	    $message_erreur_eleve[$id_eleve] = '';
+	    $message_erreur_eleve[$eleve->getIdEleve()] = '';
 	    foreach ($saisie->getValidationFailures() as $erreurs) {
-		$message_erreur_eleve[$id_eleve] .= $erreurs;
+		$message_erreur_eleve[$eleve->getIdEleve()] .= $erreurs;
 		$no_br = true;
 		if ($no_br) {
 		    $no_br = false;
 		} else {
-		    $message_erreur_eleve[$id_eleve] .= '<br/>';
+		    $message_erreur_eleve[$eleve->getIdEleve()] .= '<br/>';
 		}
 	    }
 	}

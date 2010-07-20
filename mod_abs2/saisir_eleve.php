@@ -303,6 +303,7 @@ $cours_col = new PropelObjectCollection();
 if (!$eleve_col->isEmpty()) {
     $cours_col = $eleve_col->getFirst()->getEdtEmplacementCourssPeriodeCalendrierActuelle();
 }
+echo '<input type="hidden" name="total_eleves" value="'.$eleve_col->count().'" />';
 foreach($eleve_col as $eleve) {
 			if ($cours_col->isEmpty() || $cours_col->getData() != $eleve->getEdtEmplacementCourssPeriodeCalendrierActuelle()->getData()) {
 			    $cours_col = new PropelObjectCollection();
@@ -321,7 +322,7 @@ foreach($eleve_col as $eleve) {
 ?>
 		  <a href="./saisir_eleve.php?type_selection=id_eleve&amp;id_eleve=<?php echo $eleve->getPrimaryKey() ;?>">
 <?php
-		  echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).'&nbsp;('.$eleve->getCivilite().')</span>';
+		  echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')</span>';
 			echo '</a>';
 			if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
 			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
@@ -329,7 +330,7 @@ foreach($eleve_col as $eleve) {
 			echo("</td>");
 
 			
-			echo '<td><input style="font-size:88%;" name="active_absence_eleve[]" value="1" type="checkbox"';
+			echo '<td><input style="font-size:88%;" name="active_absence_eleve[]" value="'.$eleve->getPrimaryKey().'" type="checkbox"';
 			if ($eleve_col->count() == 1) {
 			    echo "checked=\"true\" ";
 			}

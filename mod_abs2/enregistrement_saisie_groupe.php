@@ -99,7 +99,7 @@ if ($id_aid != null) {
     $id_cours = null;
 }
 if ($id_creneau != null) {
-    $current_creneau = EdtEmplacementCoursQuery::create()->findPk($id_cours);
+    $current_creneau = EdtCreneauQuery::create()->findPk($id_creneau);
     if ($current_creneau == null) {
 	$message_enregistrement .= "Probleme avec le parametre id_creneau<br/>";
 	$id_creneau = null;
@@ -159,7 +159,7 @@ for($i=0; $i<$total_eleves; $i++) {
     $message_erreur_eleve[$id_eleve] = "";
 
     $saisie = new AbsenceEleveSaisie();
-    $saisie->setEleveId($_POST['id_eleve_absent'][$i]);
+    $saisie->setEleveId($eleve->getIdEleve());
     $saisie->setIdEdtCreneau($id_creneau);
     $saisie->setIdEdtEmplacementCours($id_cours);
     $saisie->setIdGroupe($id_groupe);
@@ -249,6 +249,8 @@ for($i=0; $i<$total_eleves; $i++) {
     }
 
     if ($saisie->validate()) {
+	$eleve->getAbsenceEleveSaisies();
+	$eleve->addAbsenceEleveSaisie($saisie);
 	$saisie->save();
 	if (isset($traitement)) {
 	    $traitement->save();
