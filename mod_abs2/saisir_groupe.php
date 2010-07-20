@@ -489,6 +489,7 @@ if (!$eleve_col->isEmpty()) {
 		    <input type="hidden" name="total_eleves" value="<?php echo($eleve_col->count()); ?>"/>
 		    <?php if ($type_selection == 'id_aid') {?><input type="hidden" name="id_aid" value="<?php echo($id_aid); ?>"/><?php }?>
 		    <?php if ($type_selection == 'id_groupe') {?><input type="hidden" name="id_groupe" value="<?php echo($id_groupe); ?>"/><?php }?>
+		    <?php if ($type_selection == 'id_classe') {?><input type="hidden" name="id_classe" value="<?php echo($id_classe); ?>"/><?php }?>
 		    <?php if ($id_creneau != null) {?><input type="hidden" name="id_creneau" value="<?php echo($id_creneau); ?>"/><?php }?>
 		    <?php if ($type_selection == 'id_cours') {?><input type="hidden" name="id_cours" value="<?php echo($id_cours); ?>"/><?php }?>
 		    <input type="hidden" name="type_selection" value="<?php echo($type_selection); ?>"/>
