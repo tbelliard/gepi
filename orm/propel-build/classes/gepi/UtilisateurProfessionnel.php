@@ -27,6 +27,11 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	protected $collEleves;
 
 	/**
+	 * @var        array Eleve[] Collection to store the list of autorized access to fiche eleve.
+	 */
+	protected $collAccesFicheEleves;
+
+	/**
 	 * Clears out the collEleves collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -38,6 +43,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	public function clearEleves()
 	{
 		$this->collEleves = null; // important to set this to NULL since that means it is uninitialized
+		$this->collAccesFicheEleves = null;
 	}
 
 	/**
@@ -53,6 +59,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	{
 		$this->collEleves = new PropelObjectCollection();
 		$this->collEleves->setModel('Eleve');
+		$this->collAccesFicheEleves = Array();
 	}
 
 	/**
@@ -131,6 +138,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * @return     Boolean
 	 */
 	public function getAccesFicheEleve(Eleve $eleve) {
+	    if ($eleve === null) return false;
 	    if ($this->getStatut() == "admin") {
 		return true;
 	    } else if ($this->getStatut() == "secours") {
@@ -139,32 +147,38 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		if (getSettingValue("GepiAccesTouteFicheEleveScolarite")=='yes') {
 		    return true;
 		} else {
-		    if ($eleve === null) return false;
-		    return $this->getEleves()->contains($eleve);
+		    if (!isset($this->collAccesFicheEleves[$eleve->getPrimaryKey()])) {
+			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = $this->getEleves()->contains($eleve);
+		    }
+		    return $this->collAccesFicheEleves[$eleve->getPrimaryKey()];
 		}
 	    } else if ($this->getStatut() == "cpe") {
 		if (getSettingValue("GepiAccesTouteFicheEleveCpe")=='yes') {
 		    return true;
 		} else {
-		    if ($eleve === null) return false;
-		    return $this->getEleves()->contains($eleve);
+		    if (!isset($this->collAccesFicheEleves[$eleve->getPrimaryKey()])) {
+			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = $this->getEleves()->contains($eleve);
+		    }
+		    return $this->collAccesFicheEleves[$eleve->getPrimaryKey()];
 		}
 	    } else if ($this->getStatut() == "professeur") {
+		if (isset($this->collAccesFicheEleves[$eleve->getPrimaryKey()])) {
+		    return $this->collAccesFicheEleves[$eleve->getPrimaryKey()];
+		}
 		if (getSettingValue("GepiAccesGestElevesProfP")=='yes') {
-		    if ($eleve === null) return false;
 		    if ($this->getEleves()->contains($eleve)) {
+			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = true;
 			return true;
 		    }
 		}
 		if (getSettingValue("GepiAccesGestElevesProf")=='yes') {
-		    if ($eleve === null) return false;
-
 		    //on cherche dans les groupes du professeur
 		    $query = EleveQuery::create()->filterByIdEleve($eleve->getIdEleve())
 			    ->useJEleveGroupeQuery()->useGroupeQuery()->useJGroupesProfesseursQuery()
 			    ->filterByUtilisateurProfessionnel($this)
 			    ->endUse()->endUse()->endUse();
 		    if ($query->findOne() != null) {
+			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = true;
 			return true;
 		    }
 		    //on cherche dans les aid du professeur
@@ -173,41 +187,37 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 			    ->filterByUtilisateurProfessionnel($this)
 			    ->endUse()->endUse()->endUse();
 		    if ($query->findOne() != null) {
+			$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = true;
 			return true;
 		    }
-		    return false;
-		 }
+		}
+		$this->collAccesFicheEleves[$eleve->getPrimaryKey()] = false;
 		return false;
 	    } else if ($this->getStatut() == "autre") {
-			// On récupère les droits de ce statuts pour savoir ce qu'on peut afficher
-			$sql_d = "SELECT * FROM droits_speciaux WHERE id_statut = '" . $_SESSION['statut_special_id'] . "'";
-			$query_d = mysql_query($sql_d);
+		    if (isset($this->collAccesFicheEleves['statut_autre'])) {
+			return $this->collAccesFicheEleves['statut_autre'];
+		    }
 
-			while($rep_d = mysql_fetch_array($query_d)){
-				//print_r($rep_d);
-				if ($rep_d['nom_fichier'] == '/voir_resp' AND $rep_d['autorisation'] == 'V') {
-					return true;
-				}
-				if ($rep_d['nom_fichier'] == '/voir_ens' AND $rep_d['autorisation'] == 'V') {
-					return true;
-				}
-				if ($rep_d['nom_fichier'] == '/voir_notes' AND $rep_d['autorisation'] == 'V') {
-					return true;
-				}
-				if ($rep_d['nom_fichier'] == '/voir_bulle' AND $rep_d['autorisation'] == 'V') {
-					return true;
-				}
-				if ($rep_d['nom_fichier'] == '/voir_abs' AND $rep_d['autorisation'] == 'V') {
-					return true;
-				}
-				if ($rep_d['nom_fichier'] == '/voir_anna' AND $rep_d['autorisation'] == 'V') {
-					return true;
-				}
-				if ($rep_d['nom_fichier'] == '/mod_discipline/saisie_incident.php' AND $rep_d['autorisation'] == 'V') {
-					return true;
-				}
-			}
-			return false;
+		    // On récupère les droits de ce statuts pour savoir ce qu'on peut afficher
+		    $sql_d = "SELECT * FROM droits_speciaux WHERE id_statut = '" . $_SESSION['statut_special_id'] . "'";
+		    $query_d = mysql_query($sql_d);
+
+		    while($rep_d = mysql_fetch_array($query_d)){
+			    //print_r($rep_d);
+			    if (($rep_d['nom_fichier'] == '/voir_resp' AND $rep_d['autorisation'] == 'V')
+				|| ($rep_d['nom_fichier'] == '/voir_ens' AND $rep_d['autorisation'] == 'V')
+				|| ($rep_d['nom_fichier'] == '/voir_notes' AND $rep_d['autorisation'] == 'V')
+				|| ($rep_d['nom_fichier'] == '/voir_bulle' AND $rep_d['autorisation'] == 'V')
+				|| ($rep_d['nom_fichier'] == '/voir_abs' AND $rep_d['autorisation'] == 'V')
+				|| ($rep_d['nom_fichier'] == '/voir_anna' AND $rep_d['autorisation'] == 'V')
+				|| ($rep_d['nom_fichier'] == '/mod_discipline/saisie_incident.php' AND $rep_d['autorisation'] == 'V')
+				) {
+				$this->collAccesFicheEleves['statut_autre'] = true;
+				return true;
+			    }
+		    }
+		    $this->collAccesFicheEleves['statut_autre'] = false;
+		    return false;
 	    }
 	    return false;
 	}
@@ -234,26 +244,31 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 				// return empty collection
 				$this->initGroupes();
 			} else {
-				$collGroupes = GroupeQuery::create(null, $criteria)
+				if ($this->statut == "professeur") {
+				    $collGroupes = GroupeQuery::create(null, $criteria)
 					->filterByUtilisateurProfessionnel($this)
+					->leftJoin('Groupe.JGroupesClasses')->with('JGroupesClasses')
+					->leftJoin('JGroupesClasses.Classe')->with('Classe')
 					->find($con);
-				if ($this->statut == "cpe") {
+				} elseif ($this->statut == "cpe") {
 				    //on ajoute les groupes contenant des eleves sous la responsabilite du cpe
-				    $temp_collection = GroupeQuery::create(null, $criteria)
+				    $collGroupes = GroupeQuery::create(null, $criteria)
 					    ->distinct()->useJEleveGroupeQuery()
 					    ->useEleveQuery()->useJEleveCpeQuery()
 					    ->filterByUtilisateurProfessionnel($this)->endUse()
 					    ->endUse()->endUse()
+					    ->leftJoin('Groupe.JGroupesClasses')->with('JGroupesClasses')
+					    ->leftJoin('JGroupesClasses.Classe')->with('Classe')
 					    ->find();
-				    $collGroupes->addCollection($temp_collection);
 				} else if ($this->statut == "scolarite") {
 				    //on ajoute les groupes des classes sous la responsabilite du compte scolalite
-				    $temp_collection = GroupeQuery::create(null, $criteria)
+				    $collGroupes = GroupeQuery::create(null, $criteria)
 					    ->useJGroupesClassesQuery()->useClasseQuery()->useJScolClassesQuery()
 					    ->filterByUtilisateurProfessionnel($this)
 					    ->endUse()->endUse()->endUse()
+					    ->leftJoin('Groupe.JGroupesClasses')->with('JGroupesClasses')
+					    ->leftJoin('JGroupesClasses.Classe')->with('Classe')
 					    ->find();
-				    $collGroupes->addCollection($temp_collection);
 				}
 				if (null !== $criteria) {
 					return $collGroupes;
@@ -278,6 +293,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		parent::clearAllReferences($deep);
 		$this->collClasses = null;
 		$this->collEleves = null;
+		$this->collAccesFicheEleves = null;
 	}
 
 	/**
@@ -296,6 +312,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		if ($deep) {  // also de-associate any related objects?
 		    $this->collClasses = null;
 		    $this->collEleves = null;
+		    $this->collAccesFicheEleves = null;
 		}
 	}
 
