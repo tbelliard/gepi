@@ -237,9 +237,12 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			} else {
 				$collAbsenceEleveTraitements = AbsenceEleveTraitementQuery::create(null, $criteria)
 					->filterByAbsenceEleveSaisie($this)
-					->leftJoinWith('AbsenceEleveType')
-					->leftJoinWith('AbsenceEleveNotification')
-					->leftJoinWith('AbsenceEleveJustification')
+					->leftJoin('AbsenceEleveTraitement.AbsenceEleveType')->with('AbsenceEleveType')
+					->leftJoin('AbsenceEleveTraitement.AbsenceEleveNotification')->with('AbsenceEleveNotification')
+					->leftJoin('AbsenceEleveTraitement.AbsenceEleveJustification')->with('AbsenceEleveJustification')
+//					->leftJoinWith('AbsenceEleveType')
+//					->leftJoinWith('AbsenceEleveNotification')
+//					->leftJoinWith('AbsenceEleveJustification')
 					->find($con);
 				if (null !== $criteria) {
 					return $collAbsenceEleveTraitements;
