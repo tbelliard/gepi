@@ -618,7 +618,7 @@ foreach($eleve_col as $eleve) {
 						}
 						$saisie_affiches[] = $saisie->getPrimaryKey();
 						if ($saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && $saisie->getCreatedAt('U') > (time() - 3600)) {
-						    echo ("<a style='font-size:88%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Modif. saisie de ".$saisie->getCreatedAt("H:i")."</a><br>");
+						    echo ("<a style='font-size:78%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Modif. saisie de ".$saisie->getCreatedAt("H:i")."</a><br>");
 						}
 					    }
 					}
@@ -631,10 +631,9 @@ foreach($eleve_col as $eleve) {
 					    }
 
 					    //la saisie sur ce creneau
-					    echo '<input style="font-size:88%;" name="active_absence_eleve['.$eleve_col->getPosition().']" value="1" type="checkbox" />';
 					    $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
 					    if ($type_autorises->count() != 0) {
-						    echo ("<select style='font-size:88%;' name=\"type_absence_eleve[".$eleve_col->getPosition()."]\">");
+						    echo ("<select style='font-size:88%;' onChange='this.form.elements[\"active_absence_eleve[".$eleve_col->getPosition()."]\"].checked = (this.options[this.selectedIndex].value != -1);' name=\"type_absence_eleve[".$eleve_col->getPosition()."]\">");
 						    echo "<option style='font-size:88%;' value='-1'></option>\n";
 						    foreach ($type_autorises as $type) {
 							//$type = new AbsenceEleveTypeStatutAutorise();
@@ -644,7 +643,8 @@ foreach($eleve_col as $eleve) {
 						    }
 						    echo "</select>";
 					    }
-					    echo '<input style="font-size:88%;" name="heure_debut_absence_eleve['.$eleve_col->getPosition().']" value="';
+					    echo ' <input style="font-size:88%;" id="active_absence_eleve['.$eleve_col->getPosition().']" name="active_absence_eleve['.$eleve_col->getPosition().']" value="1" type="checkbox" />';
+					    echo ' <input style="font-size:88%;" onChange="this.form.elements[\'active_absence_eleve['.$eleve_col->getPosition().']\'].checked = true;" name="heure_debut_absence_eleve['.$eleve_col->getPosition().']" value="';
 					    if ($current_cours != null) {echo $current_cours->getHeureDebut("H:i");} else { echo $edt_creneau->getHeuredebutDefiniePeriode("H:i");};
 					    echo '" type="text" maxlength="5" size="4"/>&nbsp;';
 					    //if (getSettingValue("abs2_saisie_prof_decale")=='y') {
@@ -663,9 +663,9 @@ foreach($eleve_col as $eleve) {
 						    echo '<input style="font-size:88%;" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
 						    
 					    }
-					    echo '<input style="font-size:88%;" name="heure_fin_absence_eleve['.$eleve_col->getPosition().']" value="';
+					    echo '<input style="font-size:88%;" onChange="this.form.elements[\'active_absence_eleve['.$eleve_col->getPosition().']\'].checked = true;" name="heure_fin_absence_eleve['.$eleve_col->getPosition().']" value="';
 					    if ($current_cours != null) {echo $current_cours->getHeureFin("H:i");} else { echo $edt_creneau->getHeurefinDefiniePeriode("H:i");};
-					    echo '" type="text" maxlength="5" size="4"/>&nbsp;';
+					    echo '" type="text" maxlength="5" size="4"/>';
 					    //if (getSettingValue("abs2_saisie_prof_decale")=='y') {
 					    if (false) {
 						    echo '<input style="font-size:88%;" id="date_fin_absence_eleve_'.$eleve_col->getPosition().'" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/> ';
