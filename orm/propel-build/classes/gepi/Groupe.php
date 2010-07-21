@@ -224,10 +224,11 @@ class Groupe extends BaseGroupe {
 		}
 		$query = EleveQuery::create();
 		if ($periode != NULL) {
-		    $query->useJEleveGroupeQuery()->filterByPeriode($periode)->endUse();
+		    $query->useJEleveGroupeQuery()->filterByGroupe($this)->filterByPeriode($periode)->endUse();
+		} else {
+		    $query->useJEleveGroupeQuery()->filterByGroupe($this)->endUse();
 		}
-		$query->useJEleveGroupeQuery()->filterByGroupe($this)->endUse();
-		$query->orderByNom();
+		$query->orderByNom()->distinct();
 		return $query->find();
 	}
 
