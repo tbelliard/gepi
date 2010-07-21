@@ -85,9 +85,10 @@ class Classe extends BaseClasse {
 		}
 		$query = EleveQuery::create();
 		if ($periode != NULL) {
-		    $query->useJEleveClasseQuery()->filterByPeriode($periode)->endUse();
-		}
-		$query->useJEleveClasseQuery()->filterByClasse($this)->endUse();
+		    $query->useJEleveClasseQuery()->filterByClasse($this)->filterByPeriode($periode)->endUse();
+		} else {
+		    $query->useJEleveClasseQuery()->filterByClasse($this)->endUse();
+ 		}
 		$query->orderByNom()->distinct();
 		return $query->find();
 	}
