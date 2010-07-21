@@ -29,6 +29,19 @@
 	<!--[if IE 7]>
 		<link title='bandeau' rel='stylesheet' type='text/css' href='./templates/origine/css/accueil_ie7.css' media='screen' />
 	<![endif]-->
+	
+
+<!-- Style_screen_ajout.css -->
+	<?php
+		if (count($Style_CSS)) {
+			foreach ($Style_CSS as $value) {
+				if ($value!="") {
+					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
+				}
+			}
+		}
+	?>
+
 
 <!-- Fin des styles -->
 </head>
@@ -47,11 +60,13 @@
 			<?php echo $tbs_ariane[0]['titre'];?>
 		</a>
 	</p>
+	<!--
 	<p class='bold'>
 		<a href="<?php echo $tbs_retour;?>">
 			<img src='images/icons/back.png' alt='Retour' class='back_link' /> Retour
 		</a>
 	</p>
+	-->
 
 <a name="contenu" class="invisible">Début de la page</a>	
 	
