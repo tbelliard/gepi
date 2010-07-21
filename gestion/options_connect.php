@@ -205,26 +205,26 @@ if ($mode_navig == 'accueil') {
     $retour = "index.php";
 }
 
-echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
 
 //
 // Activation/désactivation de la procédure de récupération du mot de passe
 //
-echo "<h3 class='gepi'>Mots de passe perdus</h3>";
-echo "<form action=\"options_connect.php\" method=\"post\">";
+echo "<h3 class='gepi'>Mots de passe perdus</h3>\n";
+echo "<form action=\"options_connect.php\" method=\"post\">\n";
 echo "<input type='radio' name='enable_password_recovery' value='no' id='label_1b'";
 if (getSettingValue("enable_password_recovery")=='no') echo " checked ";
-echo " /> <label for='label_1b' style='cursor: pointer;'>Désactiver la procédure automatisée de récupération de mot de passe</label>";
+echo " /> <label for='label_1b' style='cursor: pointer;'>Désactiver la procédure automatisée de récupération de mot de passe</label>\n";
 
 echo "<br /><input type='radio' name='enable_password_recovery' value='yes' id='label_2b'";
 if (getSettingValue("enable_password_recovery")=='yes') echo " checked ";
-echo " /> <label for='label_2b' style='cursor: pointer;'>Activer la procédure automatisée de récupération de mot de passe</label>";
+echo " /> <label for='label_2b' style='cursor: pointer;'>Activer la procédure automatisée de récupération de mot de passe</label>\n";
 
-echo "<center><input type=\"submit\" value=\"Valider\" /></center>";
-echo "</form>";
+echo "<center><input type=\"submit\" value=\"Valider\" /></center>\n";
+echo "</form>\n";
 
-echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
+echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
 
 //
 // Changement du mot de passe obligatoire
@@ -234,169 +234,169 @@ echo"<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
 if ($session_gepi->auth_locale ||
 		(($session_gepi->auth_ldap || $session_gepi->auth_sso)
 				&& getSettingValue("ldap_write_access") == "yes")) {
-echo "<h3 class='gepi'>Changement du mot de passe obligatoire lors de la prochaine connexion</h3>";
-echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>tous les utilisateurs</b> dont le mot de passe est éditable par Gepi (les utilisateurs locaux, ou bien tous les utilisateurs si un accès LDAP en écriture a été configuré) seront amenés à changer leur mot de passe lors de leur prochaine connexion.</p>";
-echo "<form action=\"options_connect.php\" name=\"form_chgt_mdp\" method=\"post\">";
-echo "<center><input type=\"submit\" name=\"valid_chgt_mdp\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir forcer le changement de mot de passe de tous les utilisateurs ?', 'Confirmation')\" /></center>";
-echo "<input type=hidden name=mode_navig value='$mode_navig' />";
-echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>";
+echo "<h3 class='gepi'>Changement du mot de passe obligatoire lors de la prochaine connexion</h3>\n";
+echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>tous les utilisateurs</b> dont le mot de passe est éditable par Gepi (les utilisateurs locaux, ou bien tous les utilisateurs si un accès LDAP en écriture a été configuré) seront amenés à changer leur mot de passe lors de leur prochaine connexion.</p>\n";
+echo "<form action=\"options_connect.php\" name=\"form_chgt_mdp\" method=\"post\">\n";
+echo "<center><input type=\"submit\" name=\"valid_chgt_mdp\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir forcer le changement de mot de passe de tous les utilisateurs ?', 'Confirmation')\" /></center>\n";
+echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
+echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
 }
 
 //
 // Paramétrage du Single Sign-On
 //
 
-echo "<h3 class='gepi'>Mode d'authentification</h3>";
-echo "<p><span style='color: red'><strong>Attention !</strong></span> Ne modifiez ces paramètres que si vous savez vraiment ce que vous faites ! Si vous activez l'authentification SSO et que vous ne pouvez plus vous connecter à Gepi en administrateur, vous pouvez utiliser la variable \$block_sso dans le fichier /lib/global.inc pour désactiver le SSO et rebasculer en authentification locale. Il est donc vivement recommandé de créer un compte administrateur local (dont le login n'interfèrera pas avec un login SSO) avant d'activer le SSO.</p>";
-echo "<p>Gepi permet d'utiliser plusieurs modes d'authentification en parallèle. Les combinaisons les plus courantes seront une authentification locale avec une authentifcation LDAP, ou bien une authentification locale et une authentification unique (utilisant un serveur d'authentification distinct).</p>";
-echo "<p>Le mode d'authentification est explicitement spécifié pour chaque utilisateur dans la base de données de Gepi. Assurez-vous que le mode défini correspond effectivement au mode utilisé par l'utilisateur.</p>";
-echo "<p>Dans le cas d'une authentification externe (LDAP ou SSO), aucun mot de passe n'est stocké dans la base de données de Gepi.</p>";
-echo "<p>Si vous paramétrez un accès LDAP en écriture, les mots de passe des utilisateurs pourront être modifiés directement à travers Gepi, même pour les modes LDAP et SSO. L'administrateur pourra également éditer les données de base de l'utilisateur (nom, prénom, email). Lorsque vous activez l'accès LDAP en écriture, assurez-vous que le paramétrage sur le serveur LDAP permet à l'utilisateur de connexion LDAP de modifier les champs login, mot de passe, nom, prénom et email.</p>";
-echo "<p>Si vous utilisez CAS, vous devez entrer les informations de configuration du serveur CAS dans le fichier /secure/config_cas.inc.php (un modèle de configuration se trouve dans le fichier /secure/config_cas.cfg).</p>";
-echo "<p>Si vous utilisez l'authentification sur serveur LDAP, ou bien que vous activez l'accès LDAP en écriture, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur (un modèle se trouve dans /secure/config_ldap.cfg).</p>";
-echo "<form action=\"options_connect.php\" name=\"form_auth\" method=\"post\">";
+echo "<h3 class='gepi'>Mode d'authentification</h3>\n";
+echo "<p><span style='color: red'><strong>Attention !</strong></span> Ne modifiez ces paramètres que si vous savez vraiment ce que vous faites ! Si vous activez l'authentification SSO et que vous ne pouvez plus vous connecter à Gepi en administrateur, vous pouvez utiliser la variable \$block_sso dans le fichier /lib/global.inc pour désactiver le SSO et rebasculer en authentification locale. Il est donc vivement recommandé de créer un compte administrateur local (dont le login n'interfèrera pas avec un login SSO) avant d'activer le SSO.</p>\n";
+echo "<p>Gepi permet d'utiliser plusieurs modes d'authentification en parallèle. Les combinaisons les plus courantes seront une authentification locale avec une authentifcation LDAP, ou bien une authentification locale et une authentification unique (utilisant un serveur d'authentification distinct).</p>\n";
+echo "<p>Le mode d'authentification est explicitement spécifié pour chaque utilisateur dans la base de données de Gepi. Assurez-vous que le mode défini correspond effectivement au mode utilisé par l'utilisateur.</p>\n";
+echo "<p>Dans le cas d'une authentification externe (LDAP ou SSO), aucun mot de passe n'est stocké dans la base de données de Gepi.</p>\n";
+echo "<p>Si vous paramétrez un accès LDAP en écriture, les mots de passe des utilisateurs pourront être modifiés directement à travers Gepi, même pour les modes LDAP et SSO. L'administrateur pourra également éditer les données de base de l'utilisateur (nom, prénom, email). Lorsque vous activez l'accès LDAP en écriture, assurez-vous que le paramétrage sur le serveur LDAP permet à l'utilisateur de connexion LDAP de modifier les champs login, mot de passe, nom, prénom et email.</p>\n";
+echo "<p>Si vous utilisez CAS, vous devez entrer les informations de configuration du serveur CAS dans le fichier /secure/config_cas.inc.php (un modèle de configuration se trouve dans le fichier /secure/config_cas.cfg).</p>\n";
+echo "<p>Si vous utilisez l'authentification sur serveur LDAP, ou bien que vous activez l'accès LDAP en écriture, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur (un modèle se trouve dans /secure/config_ldap.cfg).</p>\n";
+echo "<form action=\"options_connect.php\" name=\"form_auth\" method=\"post\">\n";
 
-echo "<p><strong>Modes d'authentification :</strong></p>";
+echo "<p><strong>Modes d'authentification :</strong></p>\n";
 echo "<p><input type='checkbox' name='auth_locale' value='yes' id='label_auth_locale'";
 if (getSettingValue("auth_locale")=='yes') echo " checked ";
-echo " /> <label for='label_auth_locale' style='cursor: pointer;'>Authentification autonome (sur la base de données de Gepi)</label>";
+echo " /> <label for='label_auth_locale' style='cursor: pointer;'>Authentification autonome (sur la base de données de Gepi)</label>\n";
 
 $ldap_setup_valid = LDAPServer::is_setup();
 echo "<br/><input type='checkbox' name='auth_ldap' value='yes' id='label_auth_ldap'";
 if (getSettingValue("auth_ldap")=='yes' && $ldap_setup_valid) echo " checked ";
 if (!$ldap_setup_valid) echo " disabled";
 echo " /> <label for='label_auth_ldap' style='cursor: pointer;'>Authentification LDAP";
-if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>";
-echo "</label>";
-echo "</p>";
+if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>\n";
+echo "</label>\n";
+echo "</p>\n";
 
 echo "<p>Service d'authentification unique : ";
 
 echo "<br/><input type='radio' name='auth_sso' value='none' id='no_sso'";
 if (getSettingValue("auth_sso")=='none') echo " checked ";
-echo " /> <label for='no_sso' style='cursor: pointer;'>Non utilisé</label>";
+echo " /> <label for='no_sso' style='cursor: pointer;'>Non utilisé</label>\n";
 
 $lcs_setup_valid = file_exists("../secure/config_lcs.inc.php") ? true : false;
 echo "<br/><input type='radio' name='auth_sso' value='lcs' id='lcs'";
 if (getSettingValue("auth_sso")=='lcs' && $lcs_setup_valid) echo " checked ";
 if (!$lcs_setup_valid) echo " disabled";
 echo " /> <label for='lcs' style='cursor: pointer;'>LCS";
-if (!$lcs_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_lcs.inc.php n'est pas présent)</em>";
-echo "</label>";
+if (!$lcs_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_lcs.inc.php n'est pas présent)</em>\n";
+echo "</label>\n";
 
 $cas_setup_valid = file_exists("../secure/config_cas.inc.php") ? true : false;
 echo "<br /><input type='radio' name='auth_sso' value='cas' id='label_2'";
 if (getSettingValue("auth_sso")=='cas' && $cas_setup_valid) echo " checked ";
 if (!$cas_setup_valid) echo " disabled";
 echo " /> <label for='label_2' style='cursor: pointer;'>CAS";
-if (!$cas_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_cas.inc.php n'est pas présent)</em>";
-echo "</label>";
+if (!$cas_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_cas.inc.php n'est pas présent)</em>\n";
+echo "</label>\n";
 
 
 echo "<br /><input type='radio' name='auth_sso' value='lemon' id='label_3'";
 if (getSettingValue("auth_sso")=='lemon') echo " checked ";
-echo " /> <label for='label_3' style='cursor: pointer;'>LemonLDAP</label>";
-echo "</p>";
+echo " /> <label for='label_3' style='cursor: pointer;'>LemonLDAP</label>\n";
+echo "</p>\n";
 echo "<p>Remarque : les changements n'affectent pas les sessions en cours.";
 
-echo "<p><strong>Options supplémentaires :</strong></p>";
+echo "<p><strong>Options supplémentaires :</strong></p>\n";
 
 echo "<p><input type='checkbox' name='may_import_user_profile' value='yes' id='label_import_user_profile'";
 if (getSettingValue("may_import_user_profile")=='yes' && $ldap_setup_valid) echo " checked ";
 if (!$ldap_setup_valid) echo " disabled";
 echo " /> <label for='label_import_user_profile' style='cursor: pointer;'>Import à la volée des comptes utilisateurs authentifiés correctement (en LDAP ou SSO).";
-if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>";
-echo "</label>";
-echo "</p>";
+if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>\n";
+echo "</label>\n";
+echo "</p>\n";
 
 echo "<p><input type='checkbox' name='sso_scribe' value='yes' id='label_sso_scribe'";
 if (getSettingValue("sso_scribe")=='yes' && $ldap_setup_valid) echo " checked ";
 if (!$ldap_setup_valid) echo " disabled";
 echo " /> <label for='label_sso_scribe' style='cursor: pointer;'>Utilisation avec l'annuaire LDAP de Scribe NG, versions 2.2 et supérieures (permet l'import à la volée de données plus complètes lorsque cet ENT est utilisé et que l'option 'Import à la volée', ci-dessus, est cochée).";
-if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>";
-echo "</label>";
-echo "</p>";
+if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>\n";
+echo "</label>\n";
+echo "</p>\n";
 
 echo "<p>Statut par défaut appliqué en cas d'impossibilité de déterminer le statut lors de l'import :";
-echo "<br/><select name=\"statut_utilisateur_defaut\" size=\"1\">";
+echo "<br/>\n<select name=\"statut_utilisateur_defaut\" size=\"1\">\n";
 echo "<option ";
-$statut_defaut = $gepiSettings['statut_utilisateur_defaut'];
+if(isset($gepiSettings['statut_utilisateur_defaut'])) {$statut_defaut = $gepiSettings['statut_utilisateur_defaut'];}else {$statut_defaut="professeur";}
 if ($statut_defaut == "professeur") echo "selected";
-echo " value='professeur'>Professeur</option>";
+echo " value='professeur'>Professeur</option>\n";
 echo "<option ";
 if ($statut_defaut == "eleve") echo "selected";
-echo " value='eleve'>Élève</option>";
+echo " value='eleve'>Élève</option>\n";
 echo "<option ";
 if ($statut_defaut == "responsable") echo "selected";
-echo " value='responsable'>Responsable légal</option>";
-echo "</select>";
-echo "</p>";
+echo " value='responsable'>Responsable légal</option>\n";
+echo "</select>\n";
+echo "</p>\n";
 
 echo "<p><input type='checkbox' name='ldap_write_access' value='yes' id='label_ldap_write_access'";
 if (getSettingValue("ldap_write_access")=='yes' && $ldap_setup_valid) echo " checked ";
 if (!$ldap_setup_valid) echo " disabled";
 echo " /> <label for='label_ldap_write_access' style='cursor: pointer;'>Accès LDAP en écriture.";
-if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>";
-echo "</label>";
-echo "</p>";
+if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>\n";
+echo "</label>\n";
+echo "</p>\n";
 
 echo "<p><input type='checkbox' name='sso_display_portail' value='yes' id='label_sso_display_portail'";
 if ($gepiSettings['sso_display_portail'] == 'yes') echo " checked ";
 echo " /> <label for='label_sso_display_portail' style='cursor: pointer;'>Sessions SSO uniquement : afficher un lien vers un portail (vous devez renseigner le champ ci-dessous).";
-echo "</label>";
-echo "</p>";
+echo "</label>\n";
+echo "</p>\n";
 
-echo "<p>";
-echo "<label for='label_sso_url_portail' style='cursor: pointer;'>Adresse complète du portail : </label>";
-echo "<input type='text' size='60' name='sso_url_portail' value='".$gepiSettings['sso_url_portail']."' id='label_sso_url_portail' />";
-echo "</p>";
+echo "<p>\n";
+echo "<label for='label_sso_url_portail' style='cursor: pointer;'>Adresse complète du portail : </label>\n";
+echo "<input type='text' size='60' name='sso_url_portail' value='".$gepiSettings['sso_url_portail']."' id='label_sso_url_portail' />\n";
+echo "</p>\n";
 
 echo "<p><input type='checkbox' name='sso_hide_logout' value='yes' id='label_sso_hide_logout'";
 if ($gepiSettings['sso_hide_logout'] == 'yes') echo " checked ";
 echo " /> <label for='label_sso_hide_logout' style='cursor: pointer;'>Sessions SSO uniquement : masquer le lien de déconnexion (soyez sûr que l'utilisateur dispose alors d'un moyen alternatif de se déconnecter).";
-echo "</label>";
-echo "</p>";
+echo "</label>\n";
+echo "</p>\n";
 
-echo "<br/>";
-echo "<center><input type=\"submit\" name=\"auth_mode_submit\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir changer le mode d\' authentification ?', 'Confirmation')\" /></center>";
+echo "<br/>\n";
+echo "<center><input type=\"submit\" name=\"auth_mode_submit\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir changer le mode d\' authentification ?', 'Confirmation')\" /></center>\n";
 
-echo "<input type='hidden' name='auth_options_posted' value='1' />";
-echo "<input type=hidden name=mode_navig value='$mode_navig' />";
+echo "<input type='hidden' name='auth_options_posted' value='1' />\n";
+echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
 
 echo "</form>
 
 
 
-<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />";
+<hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\" />\n";
 
 
 
 //
 // Durée de conservation des logs
 //
-echo "<h3 class='gepi'>Durée de conservation des connexions</h3>";
+echo "<h3 class='gepi'>Durée de conservation des connexions</h3>\n";
 echo "<p>Conformément à la loi loi informatique et liberté 78-17 du 6 janvier 1978, la durée de conservation de ces données doit être déterminée et proportionnée aux finalités de leur traitement.
 Cependant par sécurité, il est conseillé de conserver une trace des connexions sur un laps de temps suffisamment long.
-</p>";
-echo "<form action=\"options_connect.php\" name=\"form_chgt_duree\" method=\"post\">";
-echo "Durée de conservation des informations sur les connexions : <select name=\"duree\" size=\"1\">";
+</p>\n";
+echo "<form action=\"options_connect.php\" name=\"form_chgt_duree\" method=\"post\">\n";
+echo "Durée de conservation des informations sur les connexions : <select name=\"duree\" size=\"1\">\n";
 echo "<option ";
 $duree = getSettingValue("duree_conservation_logs");
 if ($duree == 30) echo "selected";
-echo " value=30>Un mois</option>";
+echo " value=30>Un mois</option>\n";
 echo "<option ";
 if ($duree == 60) echo "selected";
-echo " value=60>Deux mois</option>";
+echo " value=60>Deux mois</option>\n";
 echo "<option ";
 if ($duree == 183) echo "selected";
-echo " value=183>Six mois</option>";
+echo " value=183>Six mois</option>\n";
 echo "<option ";
 if ($duree == 365) echo "selected";
-echo " value=365>Un an</option>";
-echo "</select>";
-echo "<input type=\"submit\" name=\"Valider\" value=\"Enregistrer\" />";
-echo "<input type=hidden name=mode_navig value='$mode_navig' />";
-echo "</form>";
+echo " value=365>Un an</option>\n";
+echo "</select>\n";
+echo "<input type=\"submit\" name=\"Valider\" value=\"Enregistrer\" />\n";
+echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
+echo "</form>\n";
 //
 // Nettoyage du journal
 //
@@ -411,13 +411,13 @@ $row = sql_row($res, 0);
 $annee = substr($row[0],0,4);
 $mois =  substr($row[0],5,2);
 $jour =  substr($row[0],8,2);
-echo "<p>Nombre d'entrées actuellement présentes dans le journal de connexion : <b>".$logs_number."</b><br />";
-echo "Actuellement, le journal contient l'historique des connexions depuis le <b>".$jour."/".$mois."/".$annee."</b></p>";
-echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>toutes les entrées du journal de connexion (hormis les connexions en cours) seront supprimées</b>.</p>";
-echo "<form action=\"options_connect.php\" name=\"form_sup_logs\" method=\"post\">";
-echo "<center><input type=\"submit\" name=\"valid_sup_logs\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir supprimer tout l\'historique du journal de connexion ?', 'Confirmation')\" /></center>";
-echo "<input type=hidden name=mode_navig value='$mode_navig' />";
-echo "</form><br/>";
+echo "<p>Nombre d'entrées actuellement présentes dans le journal de connexion : <b>".$logs_number."</b><br />\n";
+echo "Actuellement, le journal contient l'historique des connexions depuis le <b>".$jour."/".$mois."/".$annee."</b></p>\n";
+echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>toutes les entrées du journal de connexion (hormis les connexions en cours) seront supprimées</b>.</p>\n";
+echo "<form action=\"options_connect.php\" name=\"form_sup_logs\" method=\"post\">\n";
+echo "<center><input type=\"submit\" name=\"valid_sup_logs\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir supprimer tout l\'historique du journal de connexion ?', 'Confirmation')\" /></center>\n";
+echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
+echo "</form><br/>\n";
 
 require("../lib/footer.inc.php");
 ?>
