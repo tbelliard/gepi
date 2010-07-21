@@ -22,7 +22,12 @@ class Classe extends BaseClasse {
 	 */
 	public function getGroupes() {
 		$groupes = new PropelObjectCollection();
-		foreach($this->getJGroupesClassessJoinGroupe() as $ref) {
+		if ($this->collJGroupesClassess !== null) {
+		    $collJGroupesClasses = $this->collJGroupesClassess;
+		} else {
+		    $collJGroupesClasses = $this->getJGroupesClassessJoinClasse($con);
+		}
+		foreach($collJGroupesClasses as $ref) {
 		    if ($ref->getGroupe() != null) {
 			$groupes->append($ref->getGroupe());
 		    }
