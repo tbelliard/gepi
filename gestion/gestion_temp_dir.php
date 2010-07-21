@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // INSERT INTO droits VALUES ('/gestion/gestion_temp_dir.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Gestion des dossiers temporaires d utilisateurs', '');
 if (!checkAccess()) {
@@ -169,7 +169,7 @@ require_once("../lib/header.inc");
 
 echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a> | \n";
 if(isset($reinitialiser)){
-	echo "<a href='".$_SERVER['PHP_SELF']."'>Suppression</a> | ";
+	echo "<a href='".$_SERVER['PHP_SELF']."'>Suppression</a>";
 	echo "</p>\n";
 	echo "<h2>Réinitialisation des dossiers temporaires</h2>\n";
 
@@ -199,19 +199,21 @@ if(isset($reinitialiser)){
 		$nb_class_par_colonne=round($nombreligne/$nbcol);
 
 		echo "<table width='100%' class='boireaus' summary='Tableau des utilisateurs et volumes'>\n";
-		echo "<tr valign='top' align='center'>\n";
-		echo "<td align='left'>\n";
-
+		echo "<tr>\n";
+		$alt=1;
+		echo "<td class='lig$alt' style='text-align:left;vertical-align:top;'>\n";
 		$i = 0;
 		while ($i < $nombreligne){
 
 			if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
 				echo "</td>\n";
-				echo "<td align='left'>\n";
+				$alt=$alt*(-1);
+				echo "<td class='lig$alt' style='text-align:left;vertical-align:top;'>\n";
 			}
 
 			echo "<br />\n";
-			echo "<input type='checkbox' id='case$i' name='reinit[]' value='".$tab_user_login[$i]."' /> ".$tab_user_info[$i];
+			//echo "<input type='checkbox' id='case$i' name='reinit[]' value='".$tab_user_login[$i]."' /> ".$tab_user_info[$i];
+			echo "<label id='label_case_$i' for='case$i' style='cursor: pointer;'><input type='checkbox' id='case$i' name='reinit[]' value='".$tab_user_login[$i]."' onchange='change_style_case($i)' /> $tab_user_info[$i]</label>";
 			$i++;
 		}
 		echo "</td>\n";
@@ -219,8 +221,8 @@ if(isset($reinitialiser)){
 		echo "</table>\n";
 
 		echo "<input type='hidden' name='is_posted' value='1' />\n";
-		echo "<center><a href='javascript:modif_case(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
-		echo "<a href='javascript:modif_case(false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></center>\n";
+		echo "<center><a href='javascript:modif_case(true)'>Tout cocher</a> / \n";
+		echo "<a href='javascript:modif_case(false)'>Tout décocher</a></center>\n";
 		echo "<center><input type='submit' name='reinitialiser' value='Réinitialiser' /></center>\n";
 		echo "</form>\n";
 
@@ -231,16 +233,29 @@ if(isset($reinitialiser)){
 		for(k=0;k<$nombreligne;k++){
 			if(document.getElementById('case'+k)){
 				document.getElementById('case'+k).checked=statut;
+				change_style_case(k);
 			}
 		}
 		changement();
 	}
+
+	function change_style_case(num) {
+		if(document.getElementById('case'+num)) {
+			if(document.getElementById('case'+num).checked) {
+				document.getElementById('label_case_'+num).style.fontWeight='bold';
+			}
+			else {
+				document.getElementById('label_case_'+num).style.fontWeight='normal';
+			}
+		}
+	}
+
 </script>\n";
 
 	}
 }
 else{
-	echo "<a href='".$_SERVER['PHP_SELF']."?reinitialiser=y'>Réinitialisation</a> | ";
+	echo "<a href='".$_SERVER['PHP_SELF']."?reinitialiser=y'>Réinitialisation</a>";
 	echo "</p>\n";
 	echo "<h2>Suppression de dossiers temporaires</h2>\n";
 
