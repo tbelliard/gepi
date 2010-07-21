@@ -50,7 +50,12 @@ class Groupe extends BaseGroupe {
 			} else {
 				$collClasses = new PropelObjectCollection();
 				$collClasses->setModel('Classe');
-				foreach($this->getJGroupesClassessJoinClasse($con) as $ref) {
+				if ($this->collJGroupesClassess !== null) {
+				    $collJGroupesClasses = $this->collJGroupesClassess;
+				} else {
+				    $collJGroupesClasses = $this->getJGroupesClassessJoinClasse($con);
+				}
+				foreach($collJGroupesClasses as $ref) {
 				    if ($ref != null) {
 					$collClasses->append($ref->getClasse());
 				    }
