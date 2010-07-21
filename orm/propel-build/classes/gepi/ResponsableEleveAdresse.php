@@ -15,4 +15,24 @@
  */
 class ResponsableEleveAdresse extends BaseResponsableEleveAdresse {
 
+ 	/**
+	 *
+	 * Renvoi la description de la liste des responsables habitant a cette adresse
+	 *
+	 *
+	 * @return     String
+	 *
+	 */
+	public function getDescriptionHabitant() {
+	    $result = '';
+	    foreach ($this->getResponsableEleves() as $responsableEleve) {
+		//$responsableEleve = new ResponsableEleve();
+		$result .= $responsableEleve->getCivilite().' '.strtoupper($responsableEleve->getNom()).' '.$responsableEleve->getPrenom();
+		if (!$this->getResponsableEleves()->isLast()) {
+		    $result .= ', ';
+		}
+	    }
+	    return $result;
+	}
+
 } // ResponsableEleveAdresse

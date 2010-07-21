@@ -437,6 +437,9 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	    echo '<br/>';
 	    echo $notification->getResponsableEleveAdresse()->getPays();
 	}
+	echo '<br/>(';
+	echo $notification->getResponsableEleveAdresse()->getDescriptionHabitant();
+	echo ')';
     }
 
     if ($notification->getModifiable()) {
@@ -481,6 +484,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 		echo ' ';
 		echo $responsable_addresse->getPays();
 	    }
+	    echo ' ('.$responsable_addresse->getDescriptionHabitant().')';
 	    echo "</option>\n";
 	}
 	echo "</select>";
