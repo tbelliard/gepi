@@ -194,4 +194,30 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	    return new DateTime($year.'-W'.$week_of_the_year.'-'.$day_of_the_week);
 
 	}
+
+	/**
+	 * Get the associated Groupe object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     Groupe The associated Groupe object.
+	 * @throws     PropelException
+	 */
+	public function getGroupe(PropelPDO $con = null)
+	{
+		if ($this->aGroupe === null && (($this->id_groupe !== "" && $this->id_groupe !== null))) {
+			$this->aGroupe = GroupeQuery::create()
+				->leftJoinWith('Groupe.JGroupesClasses')
+				->leftJoinWith('JGroupesClasses.Classe')
+				->findPk($this->id_groupe, $con);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aGroupe->addEdtEmplacementCourss($this);
+			 */
+		}
+		return $this->aGroupe;
+	}
+
 } // EdtEmplacementCours
