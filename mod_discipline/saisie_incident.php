@@ -841,7 +841,7 @@ if($etat_incident!='clos') {
 	echo "<ul style='margin:0px;'>\n";
 	if($step!=0) {
 		echo "<li>\n";
-		echo "<a href='".$_SERVER['PHP_SELF']."?step=0";
+		echo "<a href='saisie_incident.php?step=0";
 		if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}
 		echo "'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -850,7 +850,7 @@ if($etat_incident!='clos') {
 	}
 	if($step!=1) {
 		echo "<li>\n";
-		echo "<a href='".$_SERVER['PHP_SELF']."?step=1";
+		echo "<a href='saisie_incident.php?step=1";
 		if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}
 		echo "'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -859,7 +859,7 @@ if($etat_incident!='clos') {
 	}
 	if($step!=2) {
 		echo "<li>\n";
-		echo "<a href='".$_SERVER['PHP_SELF']."?step=2";
+		echo "<a href='saisie_incident.php?step=2";
 		if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}
 		echo "'";
 		echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -898,7 +898,7 @@ if(isset($id_incident)) {
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
 		if($etat_incident!='clos') {
-			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='form_suppr'>\n";
+			echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='form_suppr'>\n";
 			echo "<input type='hidden' name='step' value='$step' />\n";
 		}
 
@@ -1115,7 +1115,7 @@ if(isset($id_incident)) {
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)==0) {
 				echo "<p style='color:red;'>N'oubliez pas de ";
-				echo "<a href='".$_SERVER['PHP_SELF']."?step=2";
+				echo "<a href='saisie_incident.php?step=2";
 				if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}
 				echo "'";
 				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -1170,7 +1170,7 @@ if($step==0) {
 
 	echo "<blockquote>\n";
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
+	echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire1'>
 	<p>
 	Afficher les élèves dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
 	<input type='hidden' name='page' value='$page' />
@@ -1183,10 +1183,10 @@ if($step==0) {
 	if(isset($id_incident)) {echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";}
 	echo "</form>\n";
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire2'>\n";
+	echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire2'>\n";
 
 	if(isset($_POST['recherche_eleve'])) {
-		//echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre élève</a>\n";
+		//echo " | <a href='saisie_incident.php'>Choisir un autre élève</a>\n";
 		//echo "</p>\n";
 		//echo "</div>\n";
 
@@ -1321,7 +1321,7 @@ elseif($step==1) {
 
 	echo "<blockquote>\n";
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
+	echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire1'>
 	<p>
 	Afficher les utilisateurs dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
 	<input type='hidden' name='page' value='$page' />
@@ -1335,7 +1335,7 @@ elseif($step==1) {
 	echo "</form>\n";
 
 	if(isset($_POST['recherche_utilisateur'])) {
-        echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire2'>\n";
+        echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire2'>\n";
         echo "<input type='hidden' name='page' value='$page' />\n";
         echo "<input type='hidden' name='step' value='$step' />\n";
 
@@ -1357,7 +1357,7 @@ elseif($step==1) {
 			die();
 		}
 
-		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+		echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire'>\n";
 		echo "<input type='hidden' name='step' value='$step' />\n";
 		echo "<input type='hidden' name='is_posted' value='y' />\n";
 		if(isset($id_incident)) {echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";}
@@ -1425,7 +1425,7 @@ elseif($step==1) {
 	echo "<p class='bold'>Choisir une catégorie de personnels&nbsp;:</p>\n";
 	echo "<blockquote>\n";
 	while($lig=mysql_fetch_object($res)) {
-		echo "<p><a href='".$_SERVER['PHP_SELF']."?step=1&amp;categ_u=".$lig->statut;
+		echo "<p><a href='saisie_incident.php?step=1&amp;categ_u=".$lig->statut;
 		if(isset($id_incident)) {echo "&amp;id_incident=$id_incident";}
 		echo "'";
 		echo " onclick='return confirm_abandon (this, change, \"$themessage\")'";
@@ -1452,8 +1452,8 @@ elseif($step==2) {
 	echo "&nbsp;:</p>\n";
 
 	if($etat_incident!='clos') {
-		//echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire' onsubmit='verif_details_incident();'>\n";
-		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+		//echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire' onsubmit='verif_details_incident();'>\n";
+		echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire'>\n";
 	}
 
 	// Si aucune date n'est encore saisie, proposer la date du jour
