@@ -394,7 +394,7 @@ class class_page_accueil {
 	$afficher_correction_validation="n";
 	$sql="SELECT 1=1 FROM matieres_app_corrections;";
 	$test_mac=mysql_query($sql);
-	if(mysql_num_rows($test_mac)>0) {$afficher_correction_validation="y";}
+	if($test_mac AND mysql_num_rows($test_mac)>0) {$afficher_correction_validation="y";}
 
 	if ((($this->test_prof_matiere != "0") or ($this->statutUtilisateur!='professeur'))
 			and (getSettingValue("active_cahiers_texte")=='y'))
