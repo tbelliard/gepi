@@ -1671,7 +1671,11 @@ echo "<h3 id=\"zip\">Créer une archive (Zip) de dossiers de Gepi</h3>\n";
 echo "Une fois créée, pour télécharger l'archive, rendez-vous à la section \"Fichiers de restauration\" de cette page. <br />";
 echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier créé une fois l'archive téléchargée.</p>";
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
-echo "<br />Dossier à sauvegarder :<br /><input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (_photos_le_DATE_a_HEURE.zip)</label><br />\n";
+echo "<br />Dossier à sauvegarder :<br />";
+if ($multisite != 'y'){
+    // En attendant d'avoir trouvé une solution élégante, on interdit la sauvegarde des photos en multisite (trop lourde pour les serveurs)
+    echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_photos\" value=\"photos\" checked/><label for='dossier_photos'> Dossier Photos (_photos_le_DATE_a_HEURE.zip)</label><br />\n";
+}
 echo "<input type=\"radio\" name=\"dossier\" id=\"dossier_cdt\" value=\"cdt\" /><label for='dossier_cdt'> Dossier documents du cahier de textes (_cdt_le_DATE_a_HEURE.zip)</label><br />\n";
 echo "<br />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"zip\" />\n
