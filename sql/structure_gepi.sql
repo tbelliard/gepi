@@ -313,3 +313,4 @@ DROP TABLE IF EXISTS s_alerte_mail;
 CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire));
 DROP TABLE IF EXISTS s_categories;
 CREATE TABLE IF NOT EXISTS s_categories ( id INT(11) NOT NULL auto_increment, categorie varchar(50) NOT NULL default '',sigle varchar(20) NOT NULL default '', PRIMARY KEY (id));
+CREATE TABLE matieres_app_corrections (login varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY (login,id_groupe,periode));
