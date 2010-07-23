@@ -512,9 +512,12 @@ if (!$eleve_col->isEmpty()) {
 			<p class="choix_fin">
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
 			</p>
-			<p class="choix_fin">
-				<input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
-			</p>
+			<?php if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers_texte")=='y') {
+			    echo '
+			    <p class="choix_fin">
+				    <input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
+			    </p>';
+			} ?>
 
 <!-- Afichage du tableau de la liste des élèves -->
 <!-- Legende du tableau-->
@@ -709,10 +712,20 @@ foreach($eleve_col as $eleve) {
 
 
 <?php echo "</tr>";
-} ?>
-<?php
-
-echo "</tbody>\n</table>\n</form>\n</div>\n";
+}
+echo "</tbody>\n</table>";
+echo '
+<p class="choix_fin">
+    <input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value=\'En cours\'" />
+</p>
+';
+if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers_texte")=='y') {
+    echo '
+    <p class="choix_fin">
+	    <input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
+    </p>';
+}
+echo "</form>\n</div>\n";
 }
 echo "</div>\n";
 require_once("../lib/footer.inc.php");
