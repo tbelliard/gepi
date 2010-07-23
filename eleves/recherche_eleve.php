@@ -3,15 +3,20 @@
 /*
 	$Id$
 */
+$string = "ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕŠÛÜÙÚÝŸŽáàâäãåçéèêëîïìíñôöðòóõšûüùúýÿž";
+$encoding = mb_detect_encoding($string, "UTF-8, ISO-8859-1");
+$string = mb_convert_encoding($string, "UTF-8", $encoding);
+//echo $string;
 
 	$rech_nom=$_POST['rech_nom'];
-	$rech_nom=my_ereg_replace("[^A-Za-z���������������������զ����ݾ�������������������������������]","",$rech_nom);
+	//$rech_nom=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕŠÛÜÙÚÝŸŽáàâäãåçéèêëîïìíñôöðòóõšûüùúýÿž]","",$rech_nom);
+	$rech_nom=my_ereg_replace("[^A-Za-z$string]","",$rech_nom);
 	$page=$_POST['page'];
 	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php.php")) {
 	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
 	if(($page!="fiche_eleve.php")&&($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
 		$page="../logout.php?auto=2";
-		// Remarque: Cela n'emp�che pas de bricoler l'adresse destination des liens affich�s...
+		// Remarque: Cela n'empêche pas de bricoler l'adresse destination des liens affichés...
 	}
 
 	$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%';";
@@ -20,18 +25,18 @@
 	$nb_ele=mysql_num_rows($res_ele);
 
 	if($nb_ele==0){
-		// On ne devrait pas arriver l�.
-		//echo "<p>Aucun nom d'�l�ve ne contient la chaine $rech_nom.</p>\n";
+		// On ne devrait pas arriver là.
+		//echo "<p>Aucun nom d'élève ne contient la chaine $rech_nom.</p>\n";
 		echo "<p>Aucun nom d'&eacute;l&egrave;ve ne contient la chaine $rech_nom.</p>\n";
 	}
 	else{
-		//echo "<p>La recherche a retourn� <b>$nb_ele</b> r�ponse(s):</p>\n";
+		//echo "<p>La recherche a retourné <b>$nb_ele</b> réponse(s):</p>\n";
 		echo "<p>La recherche a retourn&eacute; <b>$nb_ele</b> r&eacute;ponse";
 		if($nb_ele>1) {echo "s";}
 		echo ":</p>\n";
-		echo "<table border='1' class='boireaus' summary='Liste des �l�ves'>\n";
+		echo "<table border='1' class='boireaus' summary='Liste des élèves'>\n";
 		echo "<tr>\n";
-		//echo "<th>El�ve</th>\n";
+		//echo "<th>Elève</th>\n";
 		echo "<th>El&egrave;ve</th>\n";
 		echo "<th>Classe(s)</th>\n";
 		echo "</tr>\n";
