@@ -3,10 +3,13 @@
 /*
 	$Id$
 */
-
-$string = "ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸";
-$encoding = mb_detect_encoding($string, "UTF-8, ISO-8859-1");
-$string = mb_convert_encoding($string, "UTF-8", $encoding);
+if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")){
+	$string = "ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸";
+	$encoding = mb_detect_encoding($string, "UTF-8, ISO-8859-1");
+	$string = mb_convert_encoding($string, "UTF-8", $encoding);
+}else{
+	$string = "";
+}
 //echo $string;
 
 	$rech_nom=$_POST['rech_nom'];
