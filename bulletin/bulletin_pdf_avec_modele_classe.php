@@ -990,8 +990,10 @@ if(!empty($model_bulletin)) {
 
 		//$photo[$cpt_i] = "../photos/eleves/".strtolower($donner['elenoet']).".jpg";
 		$tmp_photo=nom_photo(strtolower($donner['elenoet']));
-		if("$tmp_photo"!=""){
-			$photo[$cpt_i] = "../photos/eleves/".$tmp_photo;
+		//if("$tmp_photo"!=""){
+		if($tmp_photo){
+			//$photo[$cpt_i] = "../photos/eleves/".$tmp_photo;
+			$photo[$cpt_i] = $tmp_photo;
 		}
 		else{
 			$photo[$cpt_i] = "";

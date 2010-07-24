@@ -520,8 +520,10 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
           $info="<div align='center'>\n";
       	  if($v_elenoet!=""){
 		        $photo=nom_photo($v_elenoet);
-		        if($photo!=""){
-			          $info.="<img src='../photos/eleves/".$photo."' width='150' alt=\"photo\" />";
+//		        if($photo!=""){
+		        if($photo){
+			          //$info.="<img src='../photos/eleves/".$photo."' width='150' alt=\"photo\" />";
+			          $info.="<img src='".$photo."' width='150' alt=\"photo\" />";
 		        }
 	        }
       	  $info.="</div>\n";

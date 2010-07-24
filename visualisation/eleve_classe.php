@@ -392,8 +392,8 @@ if (!isset($id_classe)) {
 				$alt=$alt*(-1);
                 echo "<tr class='lig$alt'><td><p>" . htmlentities($current_group["description"]) . "</p></td><td><p>$note_eleve";
                 echo "</p></td><td><p>$moyenne_classe</p></td><td><p>$difference</p></td></tr>";
-                (ereg ("^[0-9\.\,]{1,}$", $note_eleve)) ? array_push($datay1,"$note_eleve") : array_push($datay1,"0");
-                (ereg ("^[0-9\.\,]{1,}$", $moyenne_classe)) ? array_push($datay2,"$moyenne_classe") : array_push($datay2,"0");
+                (my_ereg ("^[0-9\.\,]{1,}$", $note_eleve)) ? array_push($datay1,"$note_eleve") : array_push($datay1,"0");
+                (my_ereg ("^[0-9\.\,]{1,}$", $moyenne_classe)) ? array_push($datay2,"$moyenne_classe") : array_push($datay2,"0");
                 //array_push($etiquette,$current_group["matiere"]["nom_complet"]);
                 array_push($etiquette,rawurlencode($current_group["matiere"]["nom_complet"]));
                 $compteur++;
@@ -449,8 +449,10 @@ if (!isset($id_classe)) {
 		//$texte.="<tr>\n";
 		if($v_elenoet!=""){
 			$photo=nom_photo($v_elenoet);
-			if("$photo"!=""){
-				$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
+			//if("$photo"!=""){
+			if($photo){
+				//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
+				$texte.="<img src='".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
 				$texte.="<br />\n";
 			}
 		}

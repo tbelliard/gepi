@@ -703,7 +703,7 @@ class Eleve extends BaseEleve {
 
 	/*
 	Renvoie le nom de la photo de l'élève
-	Renvoie une chaine vide si :
+	Renvoie NULL si :
 	- le module trombinoscope n'est pas activé
 	- ou bien la photo n'existe pas.
 
@@ -715,9 +715,10 @@ class Eleve extends BaseEleve {
 		if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
 		$repertoire = "eleves";
 		if (getSettingValue("active_module_trombinoscopes")!='y') {
-			return "";
+			return NULL;
 			die();
 		}
+	  /*
 		// Cas des élèves
 		// En multisite, le login est préférable à l'ELENOET
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
@@ -752,6 +753,67 @@ class Eleve extends BaseEleve {
 		}
 		
 		return $photo;
+		*/
+
+
+		$_elenoet_ou_login = $this->getElenoet();
+	  	if($_elenoet_ou_login!='') {
+
+		// En multisite, on ajoute le répertoire RNE
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			  // On récupère le RNE de l'établissement
+		  $repertoire2=getSettingValue("gepiSchoolRne")+"/";
+		}else{
+		  $repertoire2="";
+		}
+
+		// on vérifie si la photo existe
+		if(file_exists($chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg")) {
+			$photo=$chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg";
+		}
+		else if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')
+		{
+		  // En multisite, on recherche aussi avec les logins
+		  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			// On récupère le login de l'élève
+			$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
+			$query = mysql_query($sql);
+			$_elenoet_ou_login = mysql_result($query, 0,'login');
+		  }
+
+		  if(file_exists($chemin."../photos/eleves/$_elenoet_ou_login.jpg")) {
+				$photo=$chemin."../photos/eleves/$_elenoet_ou_login.jpg";
+			}
+			else {
+				if(file_exists($chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
+					$photo=$chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
+				} else {
+					for($i=0;$i<5;$i++){
+						if(substr($_elenoet_ou_login,$i,1)=="0"){
+							$test_photo=substr($_elenoet_ou_login,$i+1);
+							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
+							if(($test_photo!='')&&(file_exists($chemin."../photos/eleves/".$test_photo.".jpg"))) {
+								$photo=$chemin."../photos/eleves/".$test_photo.".jpg";
+								break;
+							}
+						}
+					}
+				}
+			}
+
+		}else{
+		  $photo=NULL;
+		}
+		return $photo;
+	  }else{
+		return NULL;
+
+	  }
+
+
+
+
+
 	}
 
 	/**

@@ -401,9 +401,10 @@ function pagin(numpage){
                  echo "<td style=\"width: 60px; vertical-align: top\">";
                  $nom_photo = '';
                  $nom_photo = nom_photo($data_top10['elenoet'],"eleves",2);
-                 $photos = "../../photos/eleves/".$nom_photo;
+                 //$photos = "../../photos/eleves/".$nom_photo;
+                 $photos = $nom_photo;
                  //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-                 if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 if ( $nom_photo === NULL or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
                  } ?>
@@ -447,9 +448,10 @@ function pagin(numpage){
             <?php if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
               $nom_photo = '';
               $nom_photo = nom_photo($data_top10['elenoet'],"eleves",2);
-              $photos = "../../photos/eleves/".$nom_photo;
+              //$photos = "../../photos/eleves/".$nom_photo;
+              $photos = $nom_photo;
               //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-              if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+              if ( $nom_photo === NULL or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
              } ?>
@@ -610,9 +612,10 @@ if ($test_nbre_eleves_cpe === 0){
                  echo "<td style=\"width: 60px; vertical-align: top\" rowspan=\"4\">";
                  $nom_photo = '';
                  $nom_photo = nom_photo($data_sans_motif['elenoet'],"eleves",2);
-                 $photos = "../../photos/eleves/".$nom_photo;
+                 //$photos = "../../photos/eleves/".$nom_photo;
+                 $photos = $nom_photo;
                  //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-                 if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 if ( $nom_photo === NULL or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 				$valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
                  } ?>
@@ -739,9 +742,10 @@ if ($test_nbre_eleves_cpe === 0){
               <?php if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
               	  $nom_photo = '';
                   $nom_photo = nom_photo($data_sans_motif['elenoet'],"eleves",2);
-                  $photos = "../../photos/eleves/".$nom_photo;
+                  //$photos = "../../photos/eleves/".$nom_photo;
+                  $photos = $nom_photo;
                   //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-                  if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                  if ( $nom_photo === NULL or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		 		$valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>
               <?php } ?>
@@ -928,9 +932,10 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
                  echo "<td style=\"width: 60px; vertical-align: top\" rowspan=\"4\">";
                  $nom_photo = '';
                  $nom_photo = nom_photo($data_sans_motif['elenoet'],"eleves",2);
-                 $photos = "../../photos/eleves/".$nom_photo;
+                 //$photos = "../../photos/eleves/".$nom_photo;
+                 $photos = $nom_photo;
                  //if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-                 if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+                 if ( $nom_photo === NULL or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 		      $valeur=redimensionne_image($photos);
                  ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td><?php
 				 } ?>
@@ -1058,9 +1063,11 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
                     $id_eleve_photo = $data_sans_motif['elenoet'];
 					$nom_photo = '';
                     $nom_photo = nom_photo($id_eleve_photo,"eleves",2);
-                    $photos = "../../photos/eleves/".$nom_photo;
+                    //$photos = "../../photos/eleves/".$nom_photo;
+                    $photos = $nom_photo;
 
-					if ( $nom_photo === '' or !file_exists($photos) ) {
+					//if ( $nom_photo === '' or !file_exists($photos) ) {
+					if ( $nom_photo === NULL or !file_exists($photos) ) {
 						$photos = "../../mod_trombinoscopes/images/trombivide.jpg";
 					}
 		 			$valeur = redimensionne_image($photos);
@@ -1264,9 +1271,10 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 					echo "<td style=\"width: 60px; vertical-align: top\" rowspan=\"4\">";
 					$nom_photo = '';
 					$nom_photo = nom_photo($data_avec_motif['elenoet'],"eleves",2);
-          			$photos = "../../photos/eleves/".$nom_photo;
+          			//$photos = "../../photos/eleves/".$nom_photo;
+          			$photos = $nom_photo;
 					//if ( $nom_photo === '' or !file_exists($photo) ) {
-					if ( $nom_photo === '' or !file_exists($photos) ) {
+					if ( $nom_photo === NULL or !file_exists($photos) ) {
 						$photos = "../../mod_trombinoscopes/images/trombivide.jpg";
 					}
 					$valeur=redimensionne_image($photos);
@@ -1403,9 +1411,10 @@ $premiereEntree = ($pageActuelle-1)*$messageParPage;
 			if ((getSettingValue("active_module_trombinoscopes")=='y') and ($photo=="avec_photo")) {
 				$nom_photo = '';
 				$nom_photo = nom_photo($data_avec_motif['elenoet'],"eleves",2);
-        		$photos = "../../photos/eleves/".$nom_photo;
+        		//$photos = "../../photos/eleves/".$nom_photo;
+        		$photos = $nom_photo;
 				//if ( $nom_photo === '' or !file_exists($photo) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
-				if ( $nom_photo === '' or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+				if ( $nom_photo === NULL or !file_exists($photos) ) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 				$valeur = redimensionne_image($photos);
 ?>
 			<img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /></td>

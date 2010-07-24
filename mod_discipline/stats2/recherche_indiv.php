@@ -23,6 +23,16 @@
 $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
+
+// En multisite, on ajoute le répertoire RNE
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			  // On récupère le RNE de l'établissement
+		  $repertoire="../../photos/".getSettingValue("gepiSchoolRne")."/eleves/";
+		}else{
+		  $repertoire="../../photos/eleves/";
+		}
+          
+
 $choix=isset($_SESSION['stats_choix']) ? $_SESSION['stats_choix'] :'eleves';
 if(isset($_POST['nom'])) {
 
@@ -50,7 +60,7 @@ if(isset($_POST['nom'])) {
       case('eleves'):
         echo '<span class="informal" style="display:none;" >'.$resultat['login'].'</span>';
         if (getSettingValue("active_module_trombinoscopes")=='y') {
-          $photo='../../photos/eleves/'.$resultat['elenoet'].'.jpg';
+          $photo=$repertoire.$resultat['elenoet'].'.jpg';
           if (!file_exists($photo) ) $photo ='../../mod_trombinoscopes/images/trombivide.jpg';
           echo '<img height="71px" src="'.$photo.'"/>';
         }
@@ -61,7 +71,7 @@ if(isset($_POST['nom'])) {
       case('personnels'):
         echo '<span class="informal" style="display:none;" id="login_cache">'.$resultat['login'].'</span>';
         if (getSettingValue("active_module_trombinoscopes")=='y') {
-          $photo='../../photos/personnels/'.md5(strtolower($resultat['login'])).'.jpg';
+          $photo=$repertoire.md5(strtolower($resultat['login'])).'.jpg';
           if (!file_exists($photo)) $photo = '../../mod_trombinoscopes/images/trombivide.jpg';
           echo '<img height="71px" src="'.$photo.'"/>';
         }

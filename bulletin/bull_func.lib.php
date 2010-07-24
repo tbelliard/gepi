@@ -537,13 +537,14 @@ width:".$largeur1."%;\n";
 			if ($activer_photo_bulletin=='y' and $active_module_trombinoscopes=='y') {
 				$photo=nom_photo($tab_bull['eleve'][$i]['elenoet']);
 				//echo "$photo";
-				if("$photo"!=""){
-					$photo="../photos/eleves/".$photo;
-					if(file_exists($photo)){
+				//if("$photo"!=""){
+				if($photo){
+					//$photo="../photos/eleves/".$photo;
+					//if(file_exists($photo)){
 						//$dimphoto=redimensionne_image($photo);
 						$dimphoto=redimensionne_image_b($photo);
 						echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
-					}
+					//}
 				}
 			}
 

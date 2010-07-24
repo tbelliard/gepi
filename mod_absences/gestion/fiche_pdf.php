@@ -259,8 +259,10 @@ if ( $etiquette_action === 'originaux' ) {
 			$classe_nomcour_eleve[$i] = $donne_persone['classe'];
 
         $nom_photo = nom_photo(strtolower($donne_persone['elenoet']),"eleves",2);
-        if ($nom_photo != ""){
-			$photo_eleve[$i] = "../../photos/eleves/".$nom_photo;
+        //if ($nom_photo != ""){
+        if ($nom_photo){
+			//$photo_eleve[$i] = "../../photos/eleves/".$nom_photo;
+			$photo_eleve[$i] = $nom_photo;
 		}else{
 			$photo_eleve[$i] = '';
 		}

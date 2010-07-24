@@ -573,8 +573,9 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
 			echo "<td>\n";
 			echo "<a name='eleve$cpt'></a>\n";
-			if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
-				echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".$lig->elenoet.".jpg','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
+			//if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
+			if(nom_photo($lig->elenoet)) {
+				echo "<a href='#eleve$cpt' onclick=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);return false;\">";
 				echo strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
 				echo "</a>\n";
 			}
@@ -933,7 +934,7 @@ $tabdiv_infobulle[]=creer_div_infobulle('div_photo',$titre,"",$texte,"",14,0,'y'
 echo "<script type='text/javascript'>
 function affiche_photo(photo,nom_prenom) {
 	document.getElementById('entete_div_photo_eleve').innerHTML=nom_prenom;
-	document.getElementById('corps_div_photo_eleve').innerHTML='<img src=\"../photos/eleves/'+photo+'\" width=\"150\" alt=\"Photo\" /><br />';
+	document.getElementById('corps_div_photo_eleve').innerHTML='<img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />';
 }
 
 var tab_id_classe=new Array($chaine_id_classe);

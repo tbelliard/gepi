@@ -1427,8 +1427,10 @@ else {
 						echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
 						echo "<td>\n";
 						echo "<a name='eleve$cpt'></a>\n";
-						if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
-							echo "<a href='#eleve$cpt' onmouseover=\"affiche_photo('".$lig->elenoet.".jpg','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
+						//if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
+						if(nom_photo($lig->elenoet)) {
+							//echo "<a href='#eleve$cpt' onmouseover=\"affiche_photo('".$lig->elenoet.".jpg','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
+							echo "<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
 
 							echo strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
 							echo "</a>\n";
@@ -1790,7 +1792,7 @@ else {
 	echo "<script type='text/javascript'>
 	function affiche_photo(photo,nom_prenom) {
 		document.getElementById('entete_div_photo_eleve').innerHTML=nom_prenom;
-		document.getElementById('corps_div_photo_eleve').innerHTML='<img src=\"../photos/eleves/'+photo+'\" width=\"150\" alt=\"Photo\" /><br />';
+		document.getElementById('corps_div_photo_eleve').innerHTML='<img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />';
 	}
 ";
 	//=================================

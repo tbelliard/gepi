@@ -731,8 +731,10 @@ foreach ($results as $saisie) {
 		echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
  	
 	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
-	    $photos = "../photos/eleves/".$nom_photo;
-	    if (($nom_photo != "") && (file_exists($photos))) {
+	    $photos = $nom_photo;
+	    //$photos = "../photos/eleves/".$nom_photo;
+	    //if (($nom_photo != "") && (file_exists($photos))) {
+	    if (($nom_photo != NULL) && (file_exists($photos))) {
 		$valeur = redimensionne_image_petit($photos);
 		echo ' <img src="'.$photos.'" style="align:right; width:'.$valeur[0].'px; height:'.$valeur[1].'px;" alt="" title="" /> ';
 	    }

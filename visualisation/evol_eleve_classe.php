@@ -427,12 +427,14 @@ if (!isset($id_classe)) {
 	//$texte="<table border='0'>\n";
 	$texte="<div align='center'>\n";
 	//$texte.="<tr>\n";
-	if($v_elenoet!=""){
-		$photo=nom_photo($v_elenoet);
-		if("$photo"!=""){
-			$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
-			$texte.="<br />\n";
-		}
+	//if($v_elenoet!=""){
+	if($v_elenoet){
+	  $photo=nom_photo($v_elenoet);
+	  if("$photo"!=""){
+		//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
+		$texte.="<img src='".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
+		$texte.="<br />\n";
+	  }
 	}
 	//$texte.="<td>\n";
 	$texte.="Né";

@@ -226,9 +226,11 @@ if ($action === 'modifier')
 	<div style="width: 90px; float: right; padding: 2px; text-align: center;">
 		<?php
 		if ( getSettingValue("active_module_trombinoscopes")=='y' ) {
-		$nom_photo = nom_photo($select_fiche_eleve_photo);
-	             $photos = "../../photos/eleves/".$nom_photo;
-	                 if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+		$nom_photo = nom_photo($select_fiche_eleve_photo,2);
+	             //$photos = "../../photos/eleves/".$nom_photo;
+	             $photos = $nom_photo;
+	                // if (($nom_photo == "") or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+	                 if (($nom_photo==NULL) or (!(file_exists($photos)))) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 			       $valeur=redimensionne_image($photos);
 	                 ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><?php
 	             }

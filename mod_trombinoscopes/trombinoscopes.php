@@ -1091,9 +1091,11 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				}
 
 				$nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire);
-				$photo = "../photos/".$repertoire."/".$nom_photo;
+				//$photo = "../photos/".$repertoire."/".$nom_photo;
+				$photo = $nom_photo;
 
-				if (($nom_photo != "") and (file_exists($photo))) {
+				//if (($nom_photo != "") and (file_exists($photo))) {
+				if (($nom_photo) and (file_exists($photo))) {
 					$valeur=redimensionne_image($photo);
 				} else {
 					$valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
@@ -1101,7 +1103,8 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 				}
 
 				echo "<img src='";
-				if (($nom_photo != "") and (file_exists($photo))) {
+				//if (($nom_photo != "") and (file_exists($photo))) {
+				if (($nom_photo) and (file_exists($photo))) {
 					echo $photo;
 				}
 				else {

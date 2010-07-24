@@ -436,9 +436,11 @@ if (!$id_classe) {
 		}
 		*/
 		$photo=nom_photo($v_elenoet);
-		if("$photo"!=""){
-			$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
-			$texte.="<br />\n";
+		//if("$photo"!=""){
+		if($photo){
+		  //$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
+		  $texte.="<img src='".$photo."' width='150' alt=\"$v_eleve_nom_prenom\" />";
+		  $texte.="<br />\n";
 		}
 	}
 	//$texte.="<td>\n";

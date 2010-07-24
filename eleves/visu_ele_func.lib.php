@@ -952,8 +952,9 @@ function releve_html($tab_rel,$id_classe,$num_periode,$index_per) {
 	if ($activer_photo_releve=='y' and $active_module_trombinoscopes=='y') {
 		$photo=nom_photo($tab_rel['elenoet']);
 		//echo "$photo";
-		if("$photo"!=""){
-			$photo="../photos/eleves/".$photo;
+		//if("$photo"!=""){
+		if($photo){
+			//$photo="../photos/eleves/".$photo;
 			if(file_exists($photo)){
 				$dimphoto=redimensionne_image_releve($photo);
 

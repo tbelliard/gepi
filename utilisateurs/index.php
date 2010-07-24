@@ -51,6 +51,17 @@ $msg="";
  if (empty($_FILES['photo'])) { $photo = ''; } else { $photo = $_FILES['photo']; }
  if (empty($_POST['quiestce'])) { $quiestce = ''; } else { $quiestce = $_POST['quiestce']; }
 
+ //répertoire des photos
+
+// En multisite, on ajoute le répertoire RNE
+if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+	  // On récupère le RNE de l'établissement
+  $rep_photos='../photos/'.getSettingValue("gepiSchoolRne").'/personnels/';
+}else{
+  $rep_photos='../photos/personnels/';
+}
+
+
 function ImageFlip($imgsrc, $type)
 	{
 	  //source de cette fonction : http://www.developpez.net/forums/showthread.php?t=54169
@@ -134,11 +145,11 @@ function deplacer_fichier_upload($source, $dest) {
 
 function test_ecriture_backup() {
     $ok = 'no';
-    if ($f = @fopen("../photos/personnels/test", "w")) {
+    if ($f = @fopen($rep_photos."test", "w")) {
         @fputs($f, '<'.'?php $ok = "yes"; ?'.'>');
         @fclose($f);
-        include("../photos/personnels/test");
-        $del = @unlink("../photos/personnels/test");
+        include($rep_photos."test");
+        $del = @unlink($rep_photos."test");
     }
     return $ok;
 }
@@ -155,7 +166,10 @@ function test_ecriture_backup() {
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'oui'; } else { $valide_form = 'non'; }
 	$_SESSION['uid_prime'] = $uid;
 // fin de la fonction de sécuritée
+	
 
+
+	
 if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $valide_form === 'oui' )  {
 	$nb_succes_photos=0;
 	$nb_photos_proposees=0;
@@ -184,10 +198,10 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $val
 					//$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
 					$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés: '".$sav_photo['name'][$cpt_photo]."'<br />\n";
 				} else {
-					$dest = "../photos/personnels/";
+					$dest = $rep_photos;
 					$n = 0;
 					//$nom_corrige = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_photo['name'][$cpt_photo]);
-					if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], "../photos/personnels/".$quiestce[$cpt_photo].".jpg")) {
+					if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.$quiestce[$cpt_photo].".jpg")) {
 						//$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/personnels/";
 						$msg = "Problème de transfert : le fichier '".$sav_photo['name'][$cpt_photo]."' n'a pas pu être transféré sur le répertoire photos/personnels/<br />\n";
 					} else {
@@ -195,7 +209,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $val
 						$nb_succes_photos++;
 						if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 							// si le redimensionnement des photos est activé on redimenssionne
-							$source = imagecreatefromjpeg("../photos/personnels/".$quiestce[$cpt_photo].".jpg"); // La photo est la source
+							$source = imagecreatefromjpeg($rep_photos.$quiestce[$cpt_photo].".jpg"); // La photo est la source
 							if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
 							if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
 							//rotation de l'image si choix différent de rien
@@ -211,7 +225,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $val
 							imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
 							if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
 							// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-							imagejpeg($destination, "../photos/personnels/".$quiestce[$cpt_photo].".jpg",100);
+							imagejpeg($destination, $rep_photos.$quiestce[$cpt_photo].".jpg",100);
 						}
 					}
 				}
@@ -554,7 +568,7 @@ while ($i < $nombreligne){
 			$codephoto = md5(strtolower($col[$i][1]));
 			echo $codephoto;
 			echo "' />\n";
-			$photo = '../photos/personnels/'.$codephoto.'.jpg';
+			$photo = $rep_photos.$codephoto.'.jpg';
 			if(file_exists($photo)) {
 				echo "<a href='$photo' target='_blank'><img src='../mod_trombinoscopes/images/";
 				if($col[$i]['civ'] == 'Mme' or $col[$i]['civ'] == 'Mlle') {

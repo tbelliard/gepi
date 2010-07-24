@@ -364,9 +364,12 @@ function matiereprof($prof, $equipepeda) {
 			//if ((file_exists("../photos/$repertoire/$nom_photo"))&&($nom_photo!="")) {
 			//if (file_exists("../photos/$repertoire/$nom_photo")) {
 
-			if ($nom_photo!="") {
-				if(file_exists("../photos/$repertoire/$nom_photo")) {
-					$valeur=redimensionne_image("../photos/$repertoire/$nom_photo");
+			//if ($nom_photo!="") {
+			if ($nom_photo) {
+				//if(file_exists("../photos/$repertoire/$nom_photo")) {
+				if(file_exists($nom_photo)) {
+					//$valeur=redimensionne_image("../photos/$repertoire/$nom_photo");
+					$valeur=redimensionne_image($nom_photo);
 				}
 				else {
 					$valeur[0]=76;
@@ -380,10 +383,10 @@ function matiereprof($prof, $equipepeda) {
 			}
 
 			echo "<img src='";
-			//if (file_exists($photo)) {
-			//	echo $photo;
-			if (file_exists("../photos/$repertoire/$nom_photo")) {
-				echo "../photos/$repertoire/$nom_photo";
+			//if (file_exists("../photos/$repertoire/$nom_photo")) {
+			//	echo "../photos/$repertoire/$nom_photo";
+			if (file_exists($nom_photo)) {
+				echo $nom_photo;
 			}
 			else {
 				echo "images/trombivide.jpg";

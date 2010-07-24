@@ -1343,7 +1343,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				//echo "$dimimg[0] et $dimimg[1]";
 
 				$largimg=$largeur_imposee_photo;
-				$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
+				$hautimg=round($dimimg[1]*$largeur_imposee_s$dimimg[0]);
 
 				//echo "<img src='../photos/$eleve1.jpg' width='$largimg' height='$hautimg'>\n";
 				echo "<img src='../photos/eleves/$elenoet1.jpg' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
@@ -1362,15 +1362,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 			*/
 			$photo=nom_photo($elenoet1);
-			if("$photo"!=""){
-				if(file_exists("../photos/eleves/$photo")){
-					$dimimg=getimagesize("../photos/eleves/$photo");
+			//if("$photo"!=""){
+			  if ($photo){
+				//if(file_exists("../photos/eleves/$photo")){
+					//$dimimg=getimagesize("../photos/eleves/$photo");
+					$dimimg=getimagesize($photo);
 
 					$largimg=$largeur_imposee_photo;
 					$hautimg=round($dimimg[1]*$largeur_imposee_photo/$dimimg[0]);
 
-					echo "<img src='../photos/eleves/$photo' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
-				}
+					//echo "<img src='../photos/eleves/$photo' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
+					echo "<img src='".$photo."' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
+				//}
 			}
 
 		}

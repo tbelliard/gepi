@@ -49,8 +49,16 @@ require_once("../lib/header.inc");
 ?><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <h2>Effacement des photos d'élèves</h2>
 <?php
+		// En multisite, on ajoute le répertoire RNE
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			  // On récupère le RNE de l'établissement
+		  $rep_photos='../photos/'.getSettingValue("gepiSchoolRne")."/eleves";
+		}else{
+		  $rep_photos='../photos/eleves';		
+		}
+
 if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))){
-	$handle=opendir('../photos/eleves');
+	$handle=opendir($rep_photos);
 	//$tab_file = array();
 	$n=0;
 	$nbsuppr=0;
@@ -70,7 +78,7 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))){
 					//echo ", \n";
 					$chaine.=", \n";
 				}
-				if(unlink("../photos/eleves/$file")){
+				if(unlink($rep_photos."/".$file)){
 					$chaine.="$file";
 					$nbsuppr++;
 				}
@@ -94,7 +102,7 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))){
 else{
     echo "<p><b>ATTENTION:</b> Cette procédure efface toutes les photos non associées à des élèves.</p>\n";
 
-	$handle=opendir('../photos/eleves');
+	$handle=opendir($rep_photos);
 	//$tab_file = array();
 	$n=0;
 	$nbjpg=0;
@@ -115,7 +123,7 @@ else{
 					$chaine.=", \n";
 				}
 				//echo "<a href='../photos/eleves/$file'>$file</a>";
-				$chaine.="<a href='../photos/eleves/$file' target='blank'>$file</a>";
+				$chaine.="<a href='".$rep_photos."/$file' target='blank'>$file</a>";
 				$n++;
 			}
 		}

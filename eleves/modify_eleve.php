@@ -111,6 +111,13 @@ if (!checkAccess()) {
 }
 
 
+if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+	  // On récupère le RNE de l'établissement
+  $rep_photos="../photos/".getSettingValue("gepiSchoolRne")."/eleves/";
+}else{
+  $rep_photos="../photos/eleves/";
+}
+
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	// Le deuxième responsable prend l'adresse du premier
 	if((isset($modif_adr_pers_id))&&(isset($adr_id))){
@@ -621,13 +628,16 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 								// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
 								$photo=nom_photo($reg_no_gep);
-
+/*
 								if("$photo"!=""){
 									if(unlink("../photos/eleves/$photo")){
-										$msg.="La photo ../photos/eleves/$photo a été supprimée. ";
+ */
+								if($photo){
+									if(unlink($photo)){
+										$msg.="La photo ".$photo." a été supprimée. ";
 									}
 									else{
-										$msg.="Echec de la suppression de la photo ../photos/eleves/$photo ";
+										$msg.="Echec de la suppression de la photo ".$photo." ";
 									}
 								}
 								else{
@@ -650,7 +660,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 									// Tester la taille max de la photo?
 
 									if(is_uploaded_file($filephoto_tmp)){
-										$dest_file="../photos/eleves/$reg_no_gep.jpg";
+										$dest_file=$rep_photos.$reg_no_gep.jpg;
 										$source_file=stripslashes("$filephoto_tmp");
 										$res_copy=copy("$source_file" , "$dest_file");
 										if($res_copy){
@@ -852,13 +862,16 @@ elseif($_SESSION['statut']=="professeur"){
 
 							// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
 							$photo=nom_photo($reg_no_gep);
-
+/*
 							if("$photo"!=""){
 								if(unlink("../photos/eleves/$photo")){
-									$msg.="La photo ../photos/eleves/$photo a été supprimée. ";
+ */
+							if($photo){
+								if(unlink($photo)){
+									$msg.="La photo ".$photo." a été supprimée. ";
 								}
 								else{
-									$msg.="Echec de la suppression de la photo ../photos/eleves/$photo ";
+									$msg.="Echec de la suppression de la photo ".$photo." ";
 								}
 							}
 							else{
@@ -881,7 +894,7 @@ elseif($_SESSION['statut']=="professeur"){
 								// Tester la taille max de la photo?
 
 								if(is_uploaded_file($filephoto_tmp)){
-									$dest_file="../photos/eleves/$reg_no_gep.jpg";
+									$dest_file=$rep_photos.$reg_no_gep.jpg;
 									$source_file=stripslashes("$filephoto_tmp");
 									$res_copy=copy("$source_file" , "$dest_file");
 									if($res_copy){
@@ -1677,8 +1690,8 @@ if(isset($reg_no_gep)){
 	echo "<td align='center'>\n";
 	$temoin_photo="non";
 	//echo "<td>\$photo=$photo</td>";
-	if("$photo"!=""){
-		$photo="../photos/eleves/".$photo;
+	if($photo){
+		//$photo="../photos/eleves/".$photo;
 		if(file_exists($photo)){
 			$temoin_photo="oui";
 			//echo "<td>\n";

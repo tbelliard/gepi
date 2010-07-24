@@ -525,8 +525,10 @@ function twAfficheCache(nObjet,nEtat) {
 			<?php
 			if ( getSettingValue("active_module_trombinoscopes")=='y' ) {
 			    $nom_photo = nom_photo($elenoet_eleve,"eleves",2);
-			    if ($nom_photo != "") $photos = "../../photos/eleves/".$nom_photo;
-			    if ((!(file_exists($photos))) or ($nom_photo == "")) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+			    //if ($nom_photo != "") $photos = "../../photos/eleves/".$nom_photo;
+			    if ($nom_photo != NULL) $photos = $nom_photo;
+			    //if ((!(file_exists($photos))) or ($nom_photo == "")) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
+			    if ((!(file_exists($photos))) or ($nom_photo == NULL)) { $photos = "../../mod_trombinoscopes/images/trombivide.jpg"; }
 			    $valeur=redimensionne_image($photos);
           ?><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" /><?php
 		  }

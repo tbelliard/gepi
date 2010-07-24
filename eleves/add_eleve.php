@@ -712,14 +712,15 @@ echo "<tr>\n";
 
 if(isset($reg_no_gep)){
 	$nom_photo = nom_photo($reg_no_gep);
-	if ($nom_photo!="") {
-	    $photo="../photos/eleves/".$nom_photo;
-	    if(file_exists($photo)){
+	//if ($nom_photo!="") {
+	if ($nom_photo) {
+	   // $photo="../photos/eleves/".$nom_photo;
+	   // if(file_exists($photo)){
 		      echo "<td>\n";
 		      $dimphoto=redimensionne_image($photo);
 		      echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />';
 		      echo "\n</td>\n";
-	    }
+	    //}
 	}
 }
 echo "</tr>\n";

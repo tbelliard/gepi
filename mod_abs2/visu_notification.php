@@ -139,8 +139,10 @@ foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as
 	echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
 	if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
-	    $photos = "../photos/eleves/".$nom_photo;
-	    if (($nom_photo == "") or (!(file_exists($photos)))) {
+	    //$photos = "../photos/eleves/".$nom_photo;
+	    $photos = $nom_photo;
+	    //if (($nom_photo == "") or (!(file_exists($photos)))) {
+	    if (($nom_photo == NULL) or (!(file_exists($photos)))) {
 		    $photos = "../mod_trombinoscopes/images/trombivide.jpg";
 	    }
 	    $valeur = redimensionne_image_petit($photos);

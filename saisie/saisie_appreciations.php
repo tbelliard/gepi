@@ -903,7 +903,8 @@ foreach ($liste_eleves as $eleve_login) {
 					$titre="$eleve_nom $eleve_prenom";
 
 					$texte="<div align='center'>\n";
-					$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
+					//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
+					$texte.="<img src='".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
 					$texte.="<br />\n";
 					$texte.="</div>\n";
 
@@ -1168,8 +1169,10 @@ foreach ($liste_eleves as $eleve_login) {
 					$res_ele=mysql_query($sql);
 					if(mysql_num_rows($res_ele)>0) {
 						$lig_ele=mysql_fetch_object($res_ele);
-						$_photo_eleve = (isset ($multisite) AND $multisite == 'y') ? $eleve_login : $lig_ele->elenoet;
-						if(file_exists("../photos/eleves/".$_photo_eleve.".jpg")) {
+						//$_photo_eleve = (isset ($multisite) AND $multisite == 'y') ? $eleve_login : $lig_ele->elenoet;
+						$_photo_eleve = nom_photo($lig_ele->elenoet);
+						//if(file_exists("../photos/eleves/".$_photo_eleve.".jpg")) {
+						if(file_exists($_photo_eleve.".jpg")) {
 							$mess[$k].=";affiche_photo('".$_photo_eleve.".jpg','".addslashes(strtoupper($eleve_nom)." ".ucfirst(strtolower($eleve_prenom)))."')";
 						}
 						else {
@@ -1429,7 +1432,7 @@ function affichage_div_photo() {
 }
 
 function affiche_photo(photo,nom_prenom) {
-	document.getElementById('div_photo_eleve').innerHTML='<img src=\"../photos/eleves/'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom;
+	document.getElementById('div_photo_eleve').innerHTML='<img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom;
 }
 ";
 if($aff_photo_par_defaut=='y') {

@@ -824,9 +824,12 @@ foreach ($results as $saisie) {
 //	echo "<a href='liste_saisies_selection_traitement.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";
  	if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 
-	echo "<a href='liste_saisies_selection_traitement.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
-	    $photos = "../photos/eleves/".$nom_photo;
-	    if (($nom_photo != "") && (file_exists($photos))) {
+	echo "<a href='liste_saisies_selection_traitement.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";
+	$nom_photo = $saisie->getEleve()->getNomPhoto(1);
+	    //$photos = "../photos/eleves/".$nom_photo;
+	    $photos = $nom_photo;
+	    //if (($nom_photo != "") && (file_exists($photos))) {
+	    if (($nom_photo != NULL) && (file_exists($photos))) {
 		$valeur = redimensionne_image_petit($photos);
 		echo ' <img src="'.$photos.'" style ="width:'.$valeur[0].'px; height:'.$valeur[1].'px;align:right" alt="" title="" /> ';
 	    }

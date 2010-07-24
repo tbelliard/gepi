@@ -252,11 +252,13 @@ else {
 			// Photo...
 			$photo=nom_photo($eleve_elenoet);
 			//$temoin_photo="";
-			if("$photo"!=""){
+			//if("$photo"!=""){
+			if($photo){
 				$titre="$eleve_nom $eleve_prenom";
 
 				$texte="<div align='center'>\n";
-				$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
+				//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
+				$texte.="<img src='".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
 				$texte.="<br />\n";
 				$texte.="</div>\n";
 

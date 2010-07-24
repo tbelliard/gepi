@@ -428,18 +428,25 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			$i_photo = 0;
 			$calldata_photo = mysql_query("SELECT * FROM utilisateurs WHERE (login = '".$user_login."')");
 
-			$repertoire = '../photos/personnels/';
+		// En multisite, on ajoute le répertoire RNE
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			  // On récupère le RNE de l'établissement
+		  $repertoire="../photos/".getSettingValue("gepiSchoolRne")."/personnels/";
+		}else{
+		  $repertoire="../photos/personnels/";
+		}
+			//$repertoire = '../photos/personnels/';
 			$code_photo = md5(strtolower($user_login));
 
 
 
 					if(isset($_POST['suppr_filephoto']) and $valide_form === 'oui' ){
 						if($_POST['suppr_filephoto']=='y'){
-							if(unlink("../photos/personnels/$code_photo.jpg")){
-								$msg = "La photo ../photos/personnels/$code_photo.jpg a été supprimée. ";
+							if(unlink($repertoire.$code_photo.".jpg")){
+								$msg = "La photo ".$repertoire.$code_photo.".jpg a été supprimée. ";
 							}
 							else{
-								$msg = "Echec de la suppression de la photo ../photos/personnels/$code_photo.jpg ";
+								$msg = "Echec de la suppression de la photo ".$repertoire.$code_photo.".jpg ";
 							}
 						}
 					}
@@ -453,7 +460,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 							// Tester la taille max de la photo?
 
 							if(is_uploaded_file($filephoto_tmp)){
-								$dest_file = "../photos/personnels/$code_photo.jpg";
+								$dest_file = $repertoire.$code_photo.".jpg";
 								$source_file = stripslashes("$filephoto_tmp");
 								$res_copy=copy("$source_file" , "$dest_file");
 								if($res_copy){
@@ -687,7 +694,7 @@ if ($ldap_write_access) {
 if(getSettingValue("active_module_trombinoscopes")=='y'){
 	if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!='')) {
 		$code_photo = md5(strtolower($user_login));
-		$photo="../photos/personnels/".$code_photo.".jpg";
+		$photo=$repertoire.$code_photo.".jpg";
 		echo "<table style='text-align: center;' summary='Photo'>\n";
 		echo "<tr>\n";
 		echo "<td style='text-align: center;'>\n";

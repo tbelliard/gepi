@@ -677,10 +677,15 @@ function bull_exb($tab_ele,$i) {
 				$ajouter = '0';
 			}
 
-
+/*
 			$photo[$i]="../photos/eleves/".$tab_ele['elenoet'].".jpg";
 			if(!file_exists($photo[$i])) {
 				$photo[$i]="../photos/eleves/0".$tab_ele['elenoet'].".jpg";
+			}
+*/
+			$photo[$i]=nom_photo($tab_ele['elenoet']);
+			if(!$photo[$i]) {
+				$photo[$i]="";
 			}
 
 			if($tab_modele_pdf["active_photo"][$classe_id]=='1' and $photo[$i]!='' and file_exists($photo[$i])) {

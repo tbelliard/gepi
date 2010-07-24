@@ -724,8 +724,10 @@ if ($type == "A" or $type == "tous")
 
 				if (getSettingValue("active_module_trombinoscopes")=='y') {
 					$nom_photo = nom_photo($data_div['elenoet']);
-					$photo = "../../photos/eleves/".$nom_photo;
-					if (($nom_photo == "") or (!(file_exists($photo)))) {
+					//$photo = "../../photos/eleves/".$nom_photo;
+					$photo = $nom_photo;
+					//if (($nom_photo == "") or (!(file_exists($photo)))) {
+					if (($nom_photo == NULL) or (!(file_exists($photo)))) {
 						$photo = "../../mod_trombinoscopes/images/trombivide.jpg";
 					}
 					$valeur=redimensionne_image($photo);

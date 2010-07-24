@@ -1141,8 +1141,9 @@ Patientez pendant l'extraction des données... merci.
 		if($active_module_trombinoscopes=="y") {
 			echo "<td valign='top'>\n";
 				$photo=nom_photo($tab_ele['elenoet']);
-				if("$photo"!=""){
-					$photo="../photos/eleves/".$photo;
+				//if("$photo"!=""){
+				if($photo){
+					//$photo="../photos/eleves/".$photo;
 					if(file_exists($photo)){
 						$dimphoto=redimensionne_image_releve($photo);
 						echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";

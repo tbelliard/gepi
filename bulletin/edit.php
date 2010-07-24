@@ -1448,8 +1448,9 @@ echo "'>\n";
 			//$photo="../photos/eleves/".$current_eleve_idphoto.".jpg";
 			$photo=nom_photo($current_eleve_idphoto);
 			//echo "$photo";
-			if("$photo"!=""){
-				$photo="../photos/eleves/".$photo;
+			//if("$photo"!=""){
+			if($photo){
+				//$photo="../photos/eleves/".$photo;
 				if(file_exists($photo)){
 					$dimphoto=redimensionne_image($photo);
 					echo '<img src="'.$photo.'" style="width: '.$dimphoto[0].'px; height: '.$dimphoto[1].'px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
@@ -1611,8 +1612,9 @@ echo "'>\n";
 			//$photo="../photos/eleves/".$current_eleve_idphoto.".jpg";
 			$photo=nom_photo($current_eleve_idphoto);
 			//echo "$photo";
-			if("$photo"!=""){
-				$photo="../photos/eleves/".$photo;
+			//if("$photo"!=""){
+			if($photo){
+				//$photo="../photos/eleves/".$photo;
 				if(file_exists($photo)){
 					echo '<img src="'.$photo.'" style="width: 60px; height: 80px; border: 0px; border-right: 3px solid #FFFFFF; float: left;" alt="" />'."\n";
 				}

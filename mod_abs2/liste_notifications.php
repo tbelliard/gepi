@@ -484,8 +484,10 @@ foreach ($results as $notification) {
 	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
  	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 	    $nom_photo = $eleve->getNomPhoto(1);
-	    $photos = "../photos/eleves/".$nom_photo;
-	    if (($nom_photo != "") && (file_exists($photos))) {
+	    //$photos = "../photos/eleves/".$nom_photo;
+	    $photos = $nom_photo;
+	    //if (($nom_photo != "") && (file_exists($photos))) {
+	    if (($nom_photo != NULL) && (file_exists($photos))) {
 		$valeur = redimensionne_image_petit($photos);
 echo ' <img src="'.$photos.'" style ="align:right; width:'.$valeur[0].'px; height:'.$valeur[1].'px;" alt="" title="" /> ';
 	    }

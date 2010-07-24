@@ -91,6 +91,17 @@ if (empty($_GET['sousrub']) and empty($_POST['sousrub'])) { $sousrub = ''; }
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
 // header
 $titre_page = "Gestion du module trombinoscope";
+
+
+// En multisite, on ajoute le répertoire RNE
+if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+	  // On récupère le RNE de l'établissement
+  $repertoire=getSettingValue("gepiSchoolRne")."/";
+}else{
+  $repertoire="";
+}
+
+
 require_once("../lib/header.inc");
 ?>
 
@@ -197,18 +208,22 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 <ul>
 <li>Suppression
  <ul>
-  <?php if( file_exists('../photos/personnels/') ) { ?>
+  <?php //if( file_exists('../photos/personnels/') ) { ?>
+  <?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
   <li><a href="trombinoscopes_admin.php?sousrub=dp#validation">Vider le dossier photos des personnels</a></li>
-  <?php } if( file_exists('../photos/eleves/') ) {?>
+  <?php //} if( file_exists('../photos/eleves/') ) {?>
+  <?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
   <li><a href="trombinoscopes_admin.php?sousrub=de#validation">Vider le dossier photos des élèves</a></li>
   <?php } ?>
  </ul>
 </li>
 <li>Gestion
  <ul>
-  <?php if( file_exists('../photos/personnels/') ) { ?>
+  <?php //if( file_exists('../photos/personnels/') ) { ?>
+  <?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
   <li><a href="trombinoscopes_admin.php?sousrub=vp#liste">Voir les personnels n'ayant pas de photos</a></li>
-  <?php } if( file_exists('../photos/eleves/') ) {?>
+  <?php //} if( file_exists('../photos/eleves/') ) {?>
+  <?php } if( file_exists('../photos/'.$repertoire.'eleves/') ) {?>
   <li><a href="trombinoscopes_admin.php?sousrub=ve#liste">Voir les élèves n'ayant pas de photos</a></li>
   <?php } ?>
  </ul>
@@ -231,8 +246,10 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
 		$eleve_classe_court[$cpt_eleve] = $donnee_liste_eleve['classe'];
 		$eleve_elenoet[$cpt_eleve] = $donnee_liste_eleve['elenoet'];
 		$nom_photo = nom_photo($eleve_elenoet[$cpt_eleve]);
-		$photo = "../photos/eleves/".$nom_photo;
-		if (($nom_photo != "") and (file_exists($photo))) { $eleve_photo[$cpt_eleve] = 'oui'; } else { $eleve_photo[$cpt_eleve] = 'non'; }
+		//$photo = "../photos/eleves/".$nom_photo;
+		$photo = $nom_photo;
+		//if (($nom_photo != "") and (file_exists($photo))) { $eleve_photo[$cpt_eleve] = 'oui'; } else { $eleve_photo[$cpt_eleve] = 'non'; }
+		if (($nom_photo) and (file_exists($photo))) { $eleve_photo[$cpt_eleve] = 'oui'; } else { $eleve_photo[$cpt_eleve] = 'non'; }
 		$cpt_eleve = $cpt_eleve + 1;
 	}
 
@@ -280,8 +297,10 @@ if ( $sousrub === 'vp' ) {
 
 		$codephoto = $personnel_login[$cpt_personnel];
 		$nom_photo = nom_photo($codephoto,"personnels");
-		$photo = '../photos/personnels/'.$nom_photo;
-		if (($nom_photo != "") and (file_exists($photo))) { $personnel_photo[$cpt_personnel] = 'oui'; } else { $personnel_photo[$cpt_personnel] = 'non'; }
+		//$photo = '../photos/personnels/'.$nom_photo;
+		$photo = $nom_photo;
+		//if (($nom_photo != "") and (file_exists($photo))) { $personnel_photo[$cpt_personnel] = 'oui'; } else { $personnel_photo[$cpt_personnel] = 'non'; }
+		if (($nom_photo) and (file_exists($photo))) { $personnel_photo[$cpt_personnel] = 'oui'; } else { $personnel_photo[$cpt_personnel] = 'non'; }
 		$cpt_personnel = $cpt_personnel + 1;
 	}
 
@@ -326,7 +345,8 @@ if ( $sousrub === 'deok' ) {
 
 	// on liste les fichier du dossier photos/eleves
 	$fichier_sup=array();
-	$folder = "../photos/eleves/";
+	//$folder = "../photos/eleves/";
+	$folder = "../photos/".$repertoire."eleves/";
 	$cpt_fichier = '0';
 	$dossier = opendir($folder);
 	while ($Fichier = readdir($dossier)) {
@@ -383,7 +403,8 @@ if ( $sousrub === 'dpok' ) {
 
 	// on liste les fichier du dossier photos/personnels
 	$fichier_sup=array();
-	$folder = "../photos/personnels/";
+	//$folder = "../photos/personnels/";
+	$folder = "../photos/".$repertoire."personnels/";
 	$cpt_fichier = '0';
 	$dossier = opendir($folder);
 	while ($Fichier = readdir($dossier)) {

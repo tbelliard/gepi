@@ -64,6 +64,19 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 //log_debug(debug_var());
 //debug_var();
 
+
+ //répertoire des photos
+
+// En multisite, on ajoute le répertoire RNE
+if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+	  // On récupère le RNE de l'établissement
+  $rep_photos='../photos/'.getSettingValue("gepiSchoolRne").'/eleves/';
+}else{
+  $rep_photos='../photos/eleves/';
+}
+
+
+
 $gepi_prof_suivi=getSettingValue('gepi_prof_suivi');
 if($_SESSION['statut']=="professeur") {
 	if(getSettingValue('GepiAccesGestElevesProfP')!='yes') {
@@ -241,11 +254,11 @@ function deplacer_fichier_upload($source, $dest) {
 
 function test_ecriture_backup() {
 	$ok = 'no';
-	if ($f = @fopen("../photos/eleves/test", "w")) {
+	if ($f = @fopen($rep_photos."test", "w")) {
 		@fputs($f, '<'.'?php $ok = "yes"; ?'.'>');
 		@fclose($f);
-		include("../photos/eleves/test");
-		$del = @unlink("../photos/eleves/test");
+		include($rep_photos."test");
+		$del = @unlink($rep_photos."test");
 	}
 	return $ok;
 }
@@ -264,15 +277,15 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 			} else if ((!preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo])) and $sav_photo['type'][$cpt_photo] == "image/jpeg"){
 					$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
 			} else {
-					$dest = "../photos/eleves/";
+					$dest = $rep_photos;
 				$n = 0;
-				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], "../photos/eleves/".$quiestce[$cpt_photo].".jpg")) {
+				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.$quiestce[$cpt_photo].".jpg")) {
 					$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/eleves/";
 				} else {
 						$msg = "Téléchargement réussi.";
 				if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
 					// si le redimensionnement des photos est activé on redimenssionne
-					$source = imagecreatefromjpeg("../photos/eleves/".$quiestce[$cpt_photo].".jpg"); // La photo est la source
+					$source = imagecreatefromjpeg($rep_photos.$quiestce[$cpt_photo].".jpg"); // La photo est la source
 					if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
 					if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
 
@@ -289,7 +302,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 					imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
 					if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
 					// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-					imagejpeg($destination, "../photos/eleves/".$quiestce[$cpt_photo].".jpg",100);
+					imagejpeg($destination, $rep_photos.$quiestce[$cpt_photo].".jpg",100);
 					}
 				}
 			}
@@ -1412,11 +1425,11 @@ if(isset($quelles_classes)) {
 
 			$photo=nom_photo($elenoet);
 			$temoin_photo="";
-			if("$photo"!=""){
+			if($photo){
 				$titre="$eleve_nom $eleve_prenom";
 
 				$texte="<div align='center'>\n";
-				$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
+				$texte.="<img src='".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
 				$texte.="<br />\n";
 				$texte.="</div>\n";
 
@@ -1426,7 +1439,7 @@ if(isset($quelles_classes)) {
 
 				//echo "<a href='../photos/eleves/$photo' target='_blank' onmouseover=\"afficher_div('photo_$eleve_login','y',-20,20);\">";
 
-				echo "<a href='../photos/eleves/$photo' target='_blank' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-20,20,500,40,30);\">";
+				echo "<a href='".$photo."' target='_blank' onmouseover=\"delais_afficher_div('photo_$eleve_login','y',-20,20,500,40,30);\">";
 
 				echo "<img src='../mod_trombinoscopes/images/";
 				if($eleve_sexe=="F") {
