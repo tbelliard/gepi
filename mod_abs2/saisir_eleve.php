@@ -255,7 +255,7 @@ if ($type_selection == 'id_eleve') {
 //afichage de la saisie des absences des eleves
 if (!$eleve_col->isEmpty()) {
 ?>
-    <div class="centre_tout_moyen" style="width : 900px;">
+    <div class="centre_tout_moyen" style="width : 940px;">
 		<form method="post" action="enregistrement_saisie_eleve.php" id="liste_absence_eleve">
 <p>
 		    <input type="hidden" name="total_eleves" value="<?php echo($eleve_col->count()); ?>"/>
@@ -285,7 +285,7 @@ if (!$eleve_col->isEmpty()) {
 <!-- Fin de la legende -->
 
 <table><tr><td>
-	<table class="tb_absences" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
+	<table class="tb_absences" style="width:600px;" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
 		<caption class="invisible no_print">Absences</caption>
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
@@ -364,9 +364,9 @@ echo "</tr>";
 
 echo "</tbody></table>";
 echo "</td>";
-echo "<td style='width:50px;'>&nbsp;";
+echo "<td style='width:10px;'>&nbsp;";
 echo "</td>";
-echo "<td style='width:100px;'>";
+echo "<td style='width:270px; vertical-align: top;'>";
     echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;">';
 	echo '<p>';
     echo 'Début : <input size="8" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="'.$dt_date_absence_eleve_debut->format('d/m/Y').'" />&nbsp;';
