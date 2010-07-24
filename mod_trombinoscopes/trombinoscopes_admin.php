@@ -49,6 +49,7 @@ if (isset($_POST['num_aid_trombinoscopes'])) {
 }
 if (isset($_POST['activer'])) {
     if (!saveSetting("active_module_trombinoscopes", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	if (!cree_repertoire_multisite()) $msg = "Erreur lors de la création du répertoire photos de l'établissement !";
 }
 
 if (isset($_POST['activer_personnels'])) {
@@ -113,18 +114,19 @@ require_once("../lib/header.inc");
 <form action="trombinoscopes_admin.php" name="form1" method="post">
 <p><strong>Elèves&nbsp;:</strong></p>
 <blockquote>
-<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_module_trombinoscopes")=='y') echo " checked"; ?>  /><label for='activer_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope</label><br />
+<input type="radio" name="activer" id='activer_y' value="y" <?php if (getSettingValue("active_module_trombinoscopes")=='y') echo " checked='checked'"; ?>  />
+<label for='activer_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope</label><br />
 <input type="radio" name="activer" id='activer_n' value="n" <?php
-	if (getSettingValue("active_module_trombinoscopes")!='y'){echo " checked";}
+	if (getSettingValue("active_module_trombinoscopes")!='y'){echo " checked='checked'";}
 ?>  /><label for='activer_n' style='cursor:pointer'>&nbsp;Désactiver le module trombinoscope</label>
 <input type="hidden" name="is_posted" value="1" />
 </blockquote>
 
 <p><strong>Personnels&nbsp;:</strong></p>
 <blockquote>
-<input type="radio" name="activer_personnels" id='activer_personnels_y' value="y" <?php if (getSettingValue("active_module_trombino_pers")=='y') echo " checked"; ?>  /><label for='activer_personnels_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope des personnels</label><br />
+<input type="radio" name="activer_personnels" id='activer_personnels_y' value="y" <?php if (getSettingValue("active_module_trombino_pers")=='y') echo " checked='checked'"; ?>  /><label for='activer_personnels_y' style='cursor:pointer'>&nbsp;Activer le module trombinoscope des personnels</label><br />
 <input type="radio" name="activer_personnels" id='activer_personnels_n' value="n" <?php
-	if (getSettingValue("active_module_trombino_pers")!='y'){echo " checked";}
+	if (getSettingValue("active_module_trombino_pers")!='y'){echo " checked='checked'";}
 ?>  /><label for='activer_personnels_n' style='cursor:pointer'>&nbsp;Désactiver le module trombinoscope des personnels</label>
 </blockquote>
 
@@ -147,13 +149,13 @@ hauteur &nbsp;<input name="h_resize_trombinoscopes" size="3" maxlength="3" value
 <h2>Configuration du redimensionnement des photos</h2>
 <i>La désactivation du redimensionnement des photos n'entraîne aucune suppression des données. Lorsque le système de redimensionnement est désactivé, les photos transferées sur le site ne seront pas réduites en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?>.</i>
 <br /><br />
-<input type="radio" name="activer_redimensionne" id="activer_redimensionne_y" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked"; ?> /><label for='activer_redimensionne_y' style='cursor:pointer'>&nbsp;Activer le redimensionnement des photos en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?></label><br />
+<input type="radio" name="activer_redimensionne" id="activer_redimensionne_y" value="y" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='y') echo " checked='checked'"; ?> /><label for='activer_redimensionne_y' style='cursor:pointer'>&nbsp;Activer le redimensionnement des photos en <?php echo getSettingValue("l_resize_trombinoscopes");?>x<?php echo getSettingValue("h_resize_trombinoscopes");?></label><br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Remarque</b> attention GD doit être actif sur le serveur de GEPI pour utiliser le redimensionnement.<br />
-<input type="radio" name="activer_redimensionne" id="activer_redimensionne_n" value="n" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='n') echo " checked"; ?> /><label for='activer_redimensionne_n' style='cursor:pointer'>&nbsp;Désactiver le redimensionnement des photos</label>
-<ul><li>Rotation de l'image : <input name="activer_rotation" value="" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='') { ?>checked="checked"<?php } ?> /> 0°
-<input name="activer_rotation" value="90" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='90') { ?>checked="checked"<?php } ?> /> 90°
-<input name="activer_rotation" value="180" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='180') { ?>checked="checked"<?php } ?> /> 180°
-<input name="activer_rotation" value="270" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') { ?>checked="checked"<?php } ?> /> 270° &nbsp;Sélectionner une valeur si vous désirez une rotation de la photo originale</li>
+<input type="radio" name="activer_redimensionne" id="activer_redimensionne_n" value="n" <?php if (getSettingValue("active_module_trombinoscopes_rd")=='n') echo " checked='checked'"; ?> /><label for='activer_redimensionne_n' style='cursor:pointer'>&nbsp;Désactiver le redimensionnement des photos</label>
+<ul><li>Rotation de l'image : <input name="activer_rotation" value="" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='') { ?>checked='checked'<?php } ?> /> 0°
+<input name="activer_rotation" value="90" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='90') { ?>checked='checked'<?php } ?> /> 90°
+<input name="activer_rotation" value="180" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='180') { ?>checked='checked'<?php } ?> /> 180°
+<input name="activer_rotation" value="270" type="radio" <?php if (getSettingValue("active_module_trombinoscopes_rt")=='270') { ?>checked='checked'<?php } ?> /> 270° &nbsp;Sélectionner une valeur si vous désirez une rotation de la photo originale</li>
 </ul>
 
 <h2>Gestion de l'accès des élèves</h2>
@@ -188,7 +190,7 @@ if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
         $aid_nom = mysql_result($req_trombino,$i,'nom');
         $i++;
         echo "<option value='".$indice_aid."' ";
-        if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) echo " selected";
+        if (getSettingValue("num_aid_trombinoscopes")==$indice_aid) echo " selected='selected'";
         echo ">".$aid_nom."</option>";
     }
     ?>
