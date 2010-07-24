@@ -29,37 +29,9 @@
  *
  * @author regis
  */
-class class_accueil_ordre_menu {
+class class_accueil_ordre_menu extends class_page_accueil {
 
-  public $titre_Menu=array();
-  public $bloc_menu=array();
-  public $menu_item=array();
-  public $canal_rss=array();
-  public $message_admin=array();
-  public $nom_connecte=array();
-  public $referencement=array();
-  public $message=array();
-  public $probleme_dir=array();
-  public $canal_rss_flux="";
-  public $gere_connect="";
-  public $alert_sums="";
-  public $signalement="";
-  public $nb_connect="";
-  public $nb_connect_lien="";
-
-  private $ordre_menus=array();
-  private $cheminRelatif="";
-  private $loginUtilisateur="";
-  public $statutUtilisateur="";
-  private $gepiSettings="";
-  private $test_prof_matiere="";
-  private $test_prof_suivi="";
-  private $test_prof_ects="";
-  private $test_scol_ects="";
-  private $test_prof_suivi_ects="";
-  private $test_https="";
-  private $a=0;
-  private $b=0;
+ 
   
 /**
  * 
@@ -283,119 +255,15 @@ class class_accueil_ordre_menu {
 
   }
 
-  private function creeNouveauTitre($classe,$texte,$icone,$titre="",$alt=""){
-	$this->titre_Menu[$this->a]=new menuGeneral();
-	$this->titre_Menu[$this->a]->indexMenu=$this->a;
-	$this->titre_Menu[$this->a]->classe=$classe;
-	$this->titre_Menu[$this->a]->texte=$texte;
-	$this->titre_Menu[$this->a]->icone['chemin']=$this->cheminRelatif.$icone;
-	$this->titre_Menu[$this->a]->icone['titre']=$titre;
-	$this->titre_Menu[$this->a]->icone['alt']=$alt;
-  }
+ 
 
-  private function creeNouveauItem($chemin,$titre,$expli){
-	$nouveauItem = new itemGeneral();
-	$nouveauItem->chemin=$chemin;
-	if ($nouveauItem->acces($nouveauItem->chemin,$this->statutUtilisateur))
-	{
-	  $nouveauItem->indexMenu=$this->a;
-	  $nouveauItem->titre=$titre;
-	  $nouveauItem->expli=$expli;
-	  $nouveauItem->indexItem=$this->b;
-	  $this->menu_item[]=$nouveauItem;
-	  $this->b++;
-	}
-	unset($nouveauItem);
-  }
+  
 
-  private function creeNouveauItemPlugin($chemin,$titre,$expli){
-	$nouveauItem = new itemGeneral();
-	$nouveauItem->chemin=$chemin;
-	$nouveauItem->indexMenu=$this->a;
-	$nouveauItem->titre=$titre;
-	$nouveauItem->expli=$expli;
-	$nouveauItem->indexItem=$this->b;
-	$this->menu_item[]=$nouveauItem;
-	$this->b++;
-	unset($nouveauItem);
-  }
+  
 
-  private function administration() {
-	if ($this->statutUtilisateur == 'administrateur'){
+  
 
-	  $this->b=0;
-
-	  $this->creeNouveauItem('/gestion/accueil_sauve.php',
-			  "Sauvegarde de la base",
-			  "Sauvegarde de la base, les répertoires \"documents\" (contenant les documents joints aux cahiers de texte) et \"photos\" (contenant les photos du trombinoscope) ne seront pas sauvegardés.");
-
-	  $this->creeNouveauItem('/gestion/index.php',
-			  "Gestion générale",
-			  "Pour accéder aux outils de gestion (sécurité, configuration générale, bases de données, initialisation de GEPI).");
-	  $this->creeNouveauItem('/accueil_modules.php',
-			  "Gestion des modules",
-			  "Pour gérer les modules (cahier de textes, carnet de notes, absences, trombinoscope).");
-	  $this->creeNouveauItem('/accueil_admin.php',
-			  "Gestion des bases",
-			  "Pour gérer les bases (établissements, utilisateurs, matières, classes, ".$this->gepiSettings['denomination_eleves'].", ".$this->gepiSettings['denomination_responsables'].", AIDs).");
-	  if (getSettingValue('use_ent') == 'y') {
-		  // On ajoute la page du module ENT
-		$this->creeNouveauItem('/mod_ent/index.php',
-				"Liaison ENT",
-				"Entrer en liaison avec l\'ENT pour gérer les utilisateurs et récupérer les logins pour le sso");
-	  }
-
-	  if ($this->b>0){
-		$this->creeNouveauTitre('accueil',"Administration",'images/icons/configure.png');
-		return true;
-	  }
-	}
-  }
-
-  private function absences_vie_scol() {
-	if (getSettingValue("active_module_absence")=='y') {
-
-	  $this->b=0;
-
-	  $this->creeNouveauItem('/mod_absences/gestion/gestion_absences.php',
-			  "Gestion Absences, dispenses, retards et infirmeries",
-			  "Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
-	  $this->creeNouveauItem('/mod_absences/gestion/voir_absences_viescolaire.php',
-			  "Visualiser les absences",
-			  "Vous pouvez visualiser créneau par créneau la saisie des absences.");
-
-	  if ($this->b>0){
-		$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
-		return true;
-	  }
-
-	}
-  }
-
-  private function absences_profs(){
-
-	if (getSettingValue("active_module_absence_professeur")=='y') {
-
-	  $this->b=0;
-
-	  $nouveauItem = new itemGeneral();
-	  if (getSettingValue("active_module_absence")=='y' ) {
-		$this->creeNouveauItem("/mod_absences/professeurs/prof_ajout_abs.php",
-				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
-	  } else if (getSettingValue("active_module_absence")=='2' ) {
-		$this->creeNouveauItem("/mod_abs2/index.php",
-				"Gestion des Absences",
-				"Cet outil vous permet de gérer les absences des élèves");
-	  }
-
-	  if ($this->b>0){
-		$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
-		return true;
-	  }
-		
-    }
-  }
+ 
 
   private function saisie(){
 
@@ -530,23 +398,7 @@ class class_accueil_ordre_menu {
 	}
   }
 
-  private function cahierTexteCPE_Restreint(){
-	$this->b=0;
-
-	$condition = (
-	getSettingValue("active_cahiers_texte")=='y' AND (
-		($this->statutUtilisateur == "cpe" AND getSettingValue("GepiAccesCdtCpeRestreint") == 'yes')
-		OR ($this->statutUtilisateur == "scolarite" AND getSettingValue("GepiAccesCdtScolRestreint") == 'yes')
-	));
-
-	if ($condition) {
-	  $this->creeNouveauItem("/cahier_texte_2/see_all.php",
-			  "Cahier de textes des classes suivies",
-			  "Permet de consulter les compte-rendus de séance et les devoirs à faire pour les enseignements des ".$this->gepiSettings['denomination_eleves']." dont vous avez la responsabilité");
-	}
-	if ($this->b>0)
-	  $this->creeNouveauTitre('accueil',"Cahier de texte",'images/icons/document.png');
-  }
+  
 
   private function trombinoscope(){
 	//On vérifie si le module est activé
@@ -621,92 +473,9 @@ class class_accueil_ordre_menu {
 	  }
   }
 
-  private function releve_notes(){
-	$this->b=0;
+ 
 
-	$condition = ((getSettingValue("active_carnets_notes")=='y')
-	  AND
-        ((($this->statutUtilisateur == "scolarite") AND (getSettingValue("GepiAccesReleveScol") == "yes"))
-        OR
-        (
-        ($this->statutUtilisateur == "professeur") AND
-            (
-            (getSettingValue("GepiAccesReleveProf") == "yes") OR
-            (getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR
-            (getSettingValue("GepiAccesReleveProfToutesClasses") == "yes") OR
-            ((getSettingValue("GepiAccesReleveProfP") == "yes") AND ($this->test_prof_suivi != "0"))
-            )
-        )
-        OR
-        (($this->statutUtilisateur == "cpe") AND getSettingValue("GepiAccesReleveCpe") == "yes")));
-
-	$condition2 = ($this->statutUtilisateur != "professeur" OR
-				(
-				$this->statutUtilisateur == "professeur" AND
-				(
-	            	(getSettingValue("GepiAccesMoyennesProf") == "yes") OR
-	            	(getSettingValue("GepiAccesMoyennesProfTousEleves") == "yes") OR
-	            	(getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes")
-				)
-				)
-			);
-
-	if ($condition)
-	  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_bis.php",
-			  "Visualisation et impression des relevés de notes",
-			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les relevés de notes, ".$this->gepiSettings['denomination_eleve']." par ".$this->gepiSettings['denomination_eleve'].", classe par classe.");
-
-	if ($condition && $condition2)
-	  $this->creeNouveauItem("/cahier_notes/index2.php",
-			  "Visualisation des moyennes des carnets de notes",
-			  "Cet outil vous permet de visualiser à l'écran les moyennes calculées d'après le contenu des carnets de notes, indépendamment de la saisie des moyennes sur les bulletins.");
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Relevés de notes",'images/icons/releve.png');
-	  return true;
-	}
-
-  }
-
-  private function releve_ECTS(){
-	$this->b=0;
-
-	$condition = ($this->gepiSettings['active_mod_ects'] == 'y'
-			and ((($this->test_prof_suivi != "0")
-				and ($this->gepiSettings['GepiAccesEditionDocsEctsPP'] =='yes')
-				and $this->test_prof_ects != "0")
-			  or (($this->statutUtilisateur=='scolarite')
-				and ($this->gepiSettings['GepiAccesEditionDocsEctsScolarite'] =='yes')
-				and $this->test_scol_ects != "0")
-			  or ($this->statutUtilisateur=='secours')  )
-			);
-
-	$chemin = array();
-	if ($condition)
-	  $this->creeNouveauItem("/mod_ects/edition.php",
-			  "Génération des documents ECTS",
-			  "Cet outil vous permet de générer les documents ECTS (relevé, attestation, annexe) pour les classes concernées.");
-
-	$recap_ects = ($this->gepiSettings['active_mod_ects'] == 'y'
-					and (
-					  ($this->statutUtilisateur == 'professeur'
-						and $this->gepiSettings['GepiAccesRecapitulatifEctsProf'] == 'yes'
-						and $this->test_prof_ects != '0')
-					  or ($this->statutUtilisateur == 'scolarite'
-						and $this->gepiSettings['GepiAccesRecapitulatifEctsScolarite'] == 'yes'
-						and $this->test_scol_ects != '0')
-					)
-				  );
-	if ($recap_ects)
-	  $this->creeNouveauItem("/mod_ects/recapitulatif.php",
-			  "Visualiser tous les ECTS",
-			  "Visualiser les tableaux récapitulatif par classe de tous les crédits ECTS.");
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Documents ECTS",'images/icons/releve.png');
-	  return true;
-	}
-  }
+ 
 
   private function emploiDuTemps(){
 	$this->b=0;
@@ -733,7 +502,6 @@ class class_accueil_ordre_menu {
 		($this->statutUtilisateur == "responsable" AND getSettingValue("GepiAccesCahierTexteParent") == 'yes')
 		OR ($this->statutUtilisateur == "eleve" AND getSettingValue("GepiAccesCahierTexteEleve") == 'yes')
 	));
-
 	
 		  $this->creeNouveauItem("/cahier_texte/consultation.php",
 				  "Cahier de textes",
@@ -755,14 +523,11 @@ class class_accueil_ordre_menu {
 			OR ($this->statutUtilisateur == "eleve" AND getSettingValue("GepiAccesReleveEleve") == 'yes')
 			));
 
-
 	if ($condition) {
 	  $this->creeNouveauItem("/cahier_notes/visu_releve_notes_bis.php",
 				  "Relevés de notes",
 				  "Permet de consulter vos relevés de notes détaillés.");
 	}
-		
-	
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Carnet de notes",'images/icons/releve.png');
 	  return true;
@@ -838,67 +603,9 @@ class class_accueil_ordre_menu {
 	}
   }
 
-  private function absencesFamille(){
-	$this->b=0;
 
-	$conditions3 = ($this->statutUtilisateur == "responsable" AND
-					getSettingValue("active_module_absence") == 'y' AND
-					getSettingValue("active_absences_parents") == 'y');
 
-	if ($conditions3) {
-	  $this->creeNouveauItem("/mod_absences/absences.php",
-			  "Absences",
-			  "Permet de suivre les absences et les retards des élèves dont je suis ".$this->gepiSettings['denomination_responsable']);
-	}
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Absences",'images/icons/absences.png');
-	  return true;
-	}
-  }
-
-  private function gestionAID(){
-	$this->b=0;
-
-	$call_data = sql_query("SELECT distinct ac.indice_aid, ac.nom
-		  FROM aid_config ac, aid a
-		  WHERE ac.outils_complementaires = 'y'
-		  AND a.indice_aid=ac.indice_aid
-		  ORDER BY ac.nom_complet");
-	$nb_aid = mysql_num_rows($call_data);
-
-	$call_data2 = sql_query("SELECT id
-		  FROM archivage_types_aid
-		  WHERE outils_complementaires = 'y'");
-	$nb_aid_annees_anterieures = mysql_num_rows($call_data2);
-	$nb_total=$nb_aid+$nb_aid_annees_anterieures;
-
-	if ($nb_total != 0) {
-	  $i = 0;
-	  while ($i<$nb_aid) {
-		$indice_aid = mysql_result($call_data,$i,"indice_aid");
-		$nom_aid = mysql_result($call_data,$i,"nom");
-		if ($this->AfficheAid($indice_aid)) {
-		  $this->creeNouveauItem("/aid/index_fiches.php?indice_aid=".$indice_aid,
-				  $nom_aid,
-				  "Tableau récapitulatif, liste des ".$this->gepiSettings['denomination_eleves'].", ...");
-		}
-		$i++;
-	  }
-	  if (($nb_aid_annees_anterieures > 0)) {
-		$this->creeNouveauItem("/aid/annees_anterieures_accueil.php",
-				"Fiches projets des années antérieures",
-				"Accès aux fiches projets des années antérieures");
-	  }
-	}
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',
-			  "Outils de visualisation et d'édition des fiches projets",
-			  'images/icons/document.png');
-	  return true;
-	}
-  }
+ 
 
   private function AfficheAid($indice_aid){
     if ($this->statutUtilisateur == "eleve") {
@@ -912,79 +619,7 @@ class class_accueil_ordre_menu {
         return true;
   }
 
-  private function bulletins(){
-	$this->b=0;
-
-	if ((($this->test_prof_suivi != "0")
-			and (getSettingValue("GepiProfImprBul")=='yes'))
-			or ($this->statutUtilisateur!='professeur')){
-	  $this->creeNouveauItem("/bulletin/verif_bulletins.php",
-			  "Outil de vérification",
-			  "Permet de vérifier si toutes les rubriques des bulletins sont remplies.");
-	 }
-
-	if ($this->statutUtilisateur!='professeur'){
-	  $this->creeNouveauItem("/bulletin/verrouillage.php",
-			  "Verrouillage/Déverrouillage des périodes",
-			  "Permet de verrouiller ou déverrouiller une période pour une ou plusieurs classes.");
-	}
-
-//==========================================================
-// AJOUT: boireaus 20080219
-//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
-
-//        Sur quel droit s'appuyer pour donner l'accès?
-//            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
-	if ((($this->test_prof_suivi != "0")
-					AND ($this->statutUtilisateur=='professeur')
-					AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes'))
-			 OR ($this->statutUtilisateur=='scolarite')
-			 OR ($this->statutUtilisateur=='administrateur')){
-	  $this->creeNouveauItem("/classes/acces_appreciations.php",
-			  "Accès des ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']." aux appréciations",
-			  "Permet de définir quand les comptes ".$this->gepiSettings['denomination_eleves']." et ".$this->gepiSettings['denomination_responsables']." (s'ils existent) peuvent accéder aux appréciations des ".$this->gepiSettings['denomination_professeurs']." sur le bulletin et avis du conseil de classe.");
-	 }
-
-//==========================================================
-
-	if ((($this->test_prof_suivi != "0")
-					AND ($this->statutUtilisateur=='professeur')
-					AND (getSettingValue("GepiProfImprBul")=='yes')
-					AND (getSettingValue("GepiProfImprBulSettings")=='yes'))
-			OR (($this->statutUtilisateur=='scolarite')
-					AND (getSettingValue("GepiScolImprBulSettings")=='yes'))
-			OR (($this->statutUtilisateur=='administrateur')
-					AND (getSettingValue("GepiAdminImprBulSettings")=='yes'))){
-	  $this->creeNouveauItem("/bulletin/param_bull.php",
-			  "Paramètres d'impression des bulletins",
-			  "Permet de modifier les paramètres de mise en page et d'impression des bulletins.");
-	}
-
-	if ($this->statutUtilisateur=='scolarite'){
-	  $this->creeNouveauItem("/responsables/index.php",
-			  "Gestion des fiches ".$this->gepiSettings['denomination_responsables'],
-			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches de ".$this->gepiSettings['denomination_responsables']." des ".$this->gepiSettings['denomination_eleves'].".");
-	}
-
-	if ($this->statutUtilisateur=='scolarite'){
-	  $this->creeNouveauItem("/eleves/index.php",
-			  "Gestion des fiches ".$this->gepiSettings['denomination_eleves'],
-			  "Cet outil vous permet de modifier/supprimer/ajouter des fiches ".$this->gepiSettings['denomination_eleves'].".");
-	}
-
-	if ((($this->test_prof_suivi != "0")
-					AND (getSettingValue("GepiProfImprBul")=='yes'))
-			OR ($this->statutUtilisateur!='professeur')){
-	  $this->creeNouveauItem("/bulletin/bull_index.php",
-			  "Visualisation et impression des bulletins",
-			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.");
-	}
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Bulletins scolaires",'images/icons/bulletin_16.png');
-	  return true;
-	}
-  }
+  
 
   private function impression(){
 	$this->b=0;
@@ -1032,7 +667,7 @@ class class_accueil_ordre_menu {
 			"Impression PDF de listes",
 			"Ceci vous permet d'imprimer en PDF des listes avec les ".$this->gepiSettings['denomination_eleves'].", à l'unité ou en série. L'apparence des listes est paramétrable.");
 
-	if(($this->statutUtilisateur=='scolarite')||(($this->statutUtilisateur=='professeur')
+	if(($this->statutUtilisateur=='scolarite')||(($this->statutUtilisateur=='professeur') 
 			AND ($this->test_prof_suivi != "0"))){
 	  $this->creeNouveauItem("/saisie/impression_avis.php",
 			  "Impression PDF des avis du conseil de classe",
@@ -1289,70 +924,13 @@ class class_accueil_ordre_menu {
 	}
   }
 
-  private function messages(){
-	$this->b=0;
+  
 
-	$this->creeNouveauItem("/messagerie/index.php",
-			"Panneau d'affichage",
-			"Cet outil permet la gestion des messages à afficher sur la page d'accueil des utilisateurs.");
+ 
 
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Panneau d'affichage",'images/icons/mail.png');
-	  return true;
-	}
-  }
+  
 
-  private function inscription(){
-	$this->b=0;
-
-	if (getSettingValue("active_inscription")=='y') {
-	  $this->creeNouveauItem("/mod_inscription/inscription_config.php",
-			  "Configuration du module d'inscription/visualisation",
-			  "Configuration des différents paramètres du module");
-
-	  if (getSettingValue("active_inscription_utilisateurs")=='y'){
-		$this->creeNouveauItem("/mod_inscription/inscription_index.php",
-				"Accès au module d'inscription/visualisation",
-				"S'inscrire ou se désinscrire - Consulter les inscriptions");
-	  }
-
-	}
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Inscription",'images/icons/document.png');
-	  return true;
-	}
-  }
-
-  private function discipline(){
-	$this->b=0;
-
-	$this->creeNouveauItem("/mod_discipline/index.php",
-			"Discipline",
-			"Signaler des incidents, prendre des mesures, des sanctions.");
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Discipline",'images/icons/document.png');
-	  return true;
-	}
-
-  }
-
-  private function modeleOpenOffice(){
-	$this->b=0;
-
-	if (getSettingValue("active_mod_ooo")=='y') {
-
-	  $this->creeNouveauItem("/mod_ooo/index.php",
-			"Modèle Open Office",
-			"Gérer les modèles Open Office dans Gepi et Utiliser les formulaires de saisie");
-	}
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Modèles Open Office",'mod_ooo/images/ico_gene_ooo.png');
-	  return true;
-	}
-  }
+ 
 
   private function plugins(){
 	$this->b=0;
@@ -1398,18 +976,7 @@ class class_accueil_ordre_menu {
 
   }
 
-  private function geneseClasses(){
-	$this->b=0;
-
-	$this->creeNouveauItem("/mod_genese_classes/index.php",
-			"Génèse des classes",
-			"Effectuer la répartition des élèves par classes en tenant comptes des options,...");
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Génèse des classes",'images/icons/document.png');
-	  return true;
-	}
-  }
+  
 
   private function fluxRSS(){
 	$this->b=0;
@@ -1436,109 +1003,12 @@ class class_accueil_ordre_menu {
 
   }
 
-  private function statutAutre(){
 
-	$this->b=0;
 
-	if ($_SESSION["statut"] == 'autre') {
-	  // On récupère la liste des fichiers à autoriser
-	  require_once("utilisateurs/creer_statut_autorisation.php");
-	  $nbre_a = count($autorise);
+  
 
-	  $a = 1;
-	  while($a < $nbre_a){
-		$numitem=$a;
-		// On récupère le droit sur le fichier
-		$sql_f = "SELECT autorisation FROM droits_speciaux
-				  WHERE id_statut = '".$_SESSION["statut_special_id"]."'
-				  AND nom_fichier = '".$autorise[$a][0]."'
-				  ORDER BY id";
-		$query_f = mysql_query($sql_f) OR trigger_error('Impossible de trouver le droit : '.mysql_error(), E_USER_WARNING);
-		$nbre = mysql_num_rows($query_f);
-		if ($nbre >= 1) {
-		  $rep_f = mysql_result($query_f, 0, "autorisation");
-		}else{
-		  $rep_f = '';
-		}
-
-		if ($rep_f == 'V') {
-		  $test = explode(".", $autorise[$a][0]); // On teste pour voir s'il y a un .php à la fin de la chaîne
-
-		  if (!isset($test[1])) {
-				// rien, la vérification se fait dans le module EdT
-				// ou alors dans les autres modules spécifiés
-		  }else{
-			if($a == 4){
-				// Dans le cas de la saisie des absences, il faut ajouter une variable pour le GET
-				$var = '?type=A';
-			}else{
-				$var = '';
-			}
-
-			$this->creeNouveauItem($gepiPath.$autorise[$a][0].$var,
-					$menu_accueil[$a][0],
-					$menu_accueil[$a][1]);
-		  }
-
-		}
-
-		$a++;
-	  }
-
-	}
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Navigation",'images/icons/document.png');
-	  return true;
-	}
-  }
-
-  private function epreuvesBlanches(){
-	$this->b=0;
-
-	//insert into setting set name='active_mod_epreuve_blanche', value='y';
-	if (getSettingValue("active_mod_epreuve_blanche")=='y') {
-	  $this->creeNouveauItem("/mod_epreuve_blanche/index.php",
-			  "Épreuves blanches",
-			  "Organisation d'épreuves blanches,...");
-	}
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Épreuves blanches",'images/icons/document.png');
-	  return true;
-	}
-  }
-
-  private function examenBlanc(){
-	$this->b=0;
-
-//insert into setting set name='active_mod_epreuve_blanche', value='y';
-	if (getSettingValue("active_mod_examen_blanc")=='y') {
-	  $this->creeNouveauItem("/mod_examen_blanc/index.php",
-			  "Examens blancs",
-			  "Organisation d'examens blancs,...");
-	}
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Examens blancs",'images/icons/document.png');
-	  return true;
-	}
-  }
-
-  private function adminPostBac(){
-	$this->b=0;
-
-	if (getSettingValue("active_mod_apb")=='y') {
-	  $this->creeNouveauItem("/mod_apb/index.php",
-			  "Export APB",
-			  "Export du fichier XML pour le système Admissions Post-Bac");
-	}
-
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Export Post-Bac",'images/icons/document.png');
-	  return true;
-	}
-  }
+  
+ 
 
   private function gestionEleveAID(){
 	$this->b=0;
@@ -1595,49 +1065,12 @@ class class_accueil_ordre_menu {
 
 
 
-  private function cahierTexte_Visa(){
-	$this->b=0;
-
-	if (getSettingValue("GepiAccesCdtVisa")=='yes') {
-	  $this->creeNouveauItem("/cahier_texte_admin/visa_ct.php",
-			  "Visa des cahiers de textes",
-			  "Voir et viser les cahiers de textes");
-	}
-
-	if ($this->b>0)
-	  $this->creeNouveauTitre('accueil',"Visa CDT",'images/icons/document.png');
-
-  }
+  
 
 
-  private function verif_exist_ordre_menu($_item){
-	if (!isset($this->ordre_menus[$_item]))
-	  $this->ordre_menus[$_item] = max($this->ordre_menus)+1;
-	  $this->a=$this->ordre_menus[$_item];
-  }
+  
 
-  private function chargeOrdreMenu($ordre_menus){
-	//$this->ordre_menus=$ordre_menus;
-	$sql="SHOW TABLES LIKE 'mn_ordre_accueil'";
-	$resp = mysql_query($sql);
-
-	if(mysql_num_rows($resp)>0) {
-	  $sql2="SELECT bloc, num_menu
-			FROM mn_ordre_accueil
-			WHERE statut LIKE '$this->statutUtilisateur' " ;
-	  $resp2 = mysql_query($sql2);
-	  if (mysql_num_rows($resp2)>0){
-		while($lig_log=mysql_fetch_object($resp2)) {
-		  $this->ordre_menus[$lig_log->bloc]=$lig_log->num_menu;
-		}
-	  }else{
-		$this->ordre_menus=$ordre_menus;
-	  }
-	}else{
-	  $this->ordre_menus=$ordre_menus;
-	}
-
-  }
+  
 
   private function chargeAutreNom($bloc){
 
@@ -1666,4 +1099,5 @@ class class_accueil_ordre_menu {
 
 
 }
+
 ?>
