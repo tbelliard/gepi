@@ -1434,10 +1434,13 @@ if (isset($action) and ($action == 'zip'))  {
 			$dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
 			break;
 		case "photos":
-			$chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
-			$dossier_a_traiter = '../photos/'; //le dossier à traiter
-			$dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
-			break;
+		  $chemin_stockage = $path."/_photos".$suffixe_zip.".zip";
+		  $dossier_a_traiter = '../photos/'; //le dossier à traiter
+		  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			$dossier_a_traiter .=getSettingValue("gepiSchoolRne")."/";
+		  }
+		  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
+		  break;
 		default:
 			$chemin_stockage = '';
 		}
