@@ -86,12 +86,14 @@
 						$value2[nom] (<em>$value2[classe]</em>)
 							";
 						}
+						unset($value2);
 					}
 					echo "
 		</span>
 	</p> 
 					";
 				}
+				unset($value);
 			}
 		?>
 	
@@ -129,6 +131,7 @@
 						";
 					}
 				}
+				unset($value);
 			}
 		?>
 	</ol>
@@ -152,6 +155,7 @@
 						";
 					}
 				}
+				unset($value);
 			}
 		?>
 		</ol>
@@ -182,6 +186,7 @@
 									";
 								}
 							}
+				unset($value);
 					echo "
 		<li>
 			<a href='$tbs_gepiPath/utilisateurs/mon_compte.php'>&nbsp;Mon compte</a>

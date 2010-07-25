@@ -33,6 +33,7 @@
 					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
 				}
 			}
+			unset($value);
 		}
 	?>
 

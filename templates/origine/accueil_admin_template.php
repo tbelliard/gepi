@@ -39,6 +39,7 @@
 					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
 				}
 			}
+			unset($value);
 		}
 	?>
 
@@ -54,12 +55,6 @@
 <!-- fin bandeau_template.html      -->
 
 <div id='container'>
-
-<!-- fil d'ariane -->
-<?php
-  affiche_ariane()
-?>
-<!-- fin fil d'ariane -->
 
 <a name="contenu" class="invisible">Début de la page</a>	
 	
@@ -82,11 +77,13 @@
 							foreach ($value['entree'] as $newentree) {
 								include('./templates/origine/accueil_menu_template.php');
 							}
+							unset($newentree);
 						}
 							echo "
 <!-- Fin menu	général -->
 				";
 					}
+				unset($value);
 				}
 			}
 	?>

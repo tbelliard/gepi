@@ -54,6 +54,9 @@ include "../class_php/class_accueil_ordre_menu.php";
 include "../class_php/class_accueil_change_menu.php";
 
 
+// on demande une validation quitte sans enregistrer les changements
+$messageEnregistrer="Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?";
+
 // ====== Inclusion des balises head et du bandeau =====
 //$msg = "Essai message";
 

@@ -55,6 +55,8 @@ include "../class_php/gestion/class_droit_acces_template.php";
 // ====== Initialisation des messages =====
 $tbs_message = '';
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+// on demande une validation quitte sans enregistrer les changements
+$messageEnregistrer = $themessage;
 
 // ====== Inclusion des balises head et du bandeau =====
 
@@ -2123,7 +2125,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 $tbs_message = $droitAffiche->get_erreurs();
 
-if (isset($_POST['OK']) AND ($tbs_message=='')) $tbs_message = "Les modifications ont été enregistrées !";
+if (isset($_POST['OK']) AND ($tbs_message=='')) {
+  $tbs_message = "Les modifications ont été enregistrées !";
+  $post_reussi=TRUE;
+}
+$tbs_msg=$tbs_message;
 
 /****************************************************************
 			BAS DE PAGE

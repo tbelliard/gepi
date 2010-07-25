@@ -36,6 +36,7 @@
 					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
 				}
 			}
+			unset($value);
 		}
 	?>
 
@@ -62,39 +63,11 @@
 
 <div  id='container'>
 
-<!-- fil d'ariane -->
-<?php
-  affiche_ariane(TRUE, $themessage)
-?>
-<!-- fin fil d'ariane -->
-
   <a name="contenu" class="invisible">
 	Début de la page
   </a>
   
 <!-- début corps -->
-
-  <p class='bold'>
-	<a href="index.php" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
-	  <img src='../images/icons/back.png' alt='Retour' class='back_link'/>
-	  Retour
-	</a>
-  </p>
-<?php 
-	if ($tbs_message!=''){
-?>
-  <p class="center rouge">
-<?php 
-	  if ($tbs_message=='Les modifications ont été enregistrées !'){
-		echo "<span class='vert'>".$tbs_message."</span>";
-	  }else	{
-		echo $tbs_message;
-	  }
-?>
-  </p>
-<?php 
-	}
-?>
 
   <form action="droits_acces.php" method="post" id="form1">
 	
@@ -120,6 +93,7 @@
 	
 	<?php
 	  }
+	  unset($StatutItem);
 	?>
 
 	</div>

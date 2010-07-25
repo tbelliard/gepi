@@ -37,6 +37,7 @@
 					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
 				}
 			}
+			unset($value);
 		}
 	?>
 
@@ -51,10 +52,6 @@
 <!-- fin bandeau_template.html      -->
 
 <div id='container'>
-
-<?php
-  affiche_ariane()
-?>
 
 <a name="contenu" class="invisible">Début de la page</a>	
 	
@@ -77,6 +74,7 @@
 							foreach ($value['entree'] as $newentree) {
 								include($gepiPath2.'/templates/origine/accueil_menu_template.php');
 							}
+				unset($newentree);
 						}
 							echo "
 <!-- Fin menu	général -->

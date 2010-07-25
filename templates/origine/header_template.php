@@ -87,6 +87,7 @@
 					echo "<script type=\"text/javascript\" src=\"$value\"></script>\n";
 				}
 			}
+			unset($value);
 		}
 	?>
 
@@ -107,6 +108,7 @@
 		// [tbs_CSS.title;att=title]
 				}
 			}
+			unset($value);
 		}
 	?>
 	
