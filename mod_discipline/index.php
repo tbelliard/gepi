@@ -811,7 +811,7 @@ if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 // $affiche_debug=debug_var2();
 
 
-$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_discipline_template.php';
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_discipline/mod_discipline_template.php';
 
 $tbs_last_connection=""; // On n'affiche pas les dernières connexions
 include($nom_gabarit);
