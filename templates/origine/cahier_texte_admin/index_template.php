@@ -91,11 +91,7 @@
 
   <div id='container'>
 
-<!-- fil d'ariane -->
-<?php
-  affiche_ariane(TRUE,"Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?")
-?>
-<!-- fin fil d'ariane -->
+
 
 	<form action="index.php" id="form1" method="post">
 	  <p class="center">
@@ -113,6 +109,7 @@
 				 name="activer"
 				 id="activer_y"
 				 value="y"
+			 onchange='changement();'
 				<?php if (getSettingValue("active_cahiers_texte")=='y') echo " checked='checked'"; ?> />
 		  Activer les cahiers de textes (consultation et édition)
 		</label>
@@ -122,7 +119,8 @@
 		  <input type="radio" 
 				 name="activer" 
 				 id="activer_n" 
-				 value="n" 
+				 value="n"
+			 onchange='changement();'
 				<?php if (getSettingValue("active_cahiers_texte")=='n') echo " checked='checked'"; ?> />
 		  Désactiver les cahiers de textes (consultation et édition)
 		</label>
@@ -153,6 +151,7 @@
 				 name="version"
 				 id="version_1"
 				 value="1"
+			 onchange='changement();'
 				<?php if (getSettingValue("GepiCahierTexteVersion")=='1') echo " checked='checked'"; ?> />
 		  Cahier de texte version 1
 		</label>
@@ -165,6 +164,7 @@
 				 name="version"
 				 id="version_2"
 				 value="2"
+			 onchange='changement();'
 				<?php if (getSettingValue("GepiCahierTexteVersion")=='2') echo " checked='checked'"; ?> />
 		  Cahier de texte version 2
 		</label>
@@ -205,6 +205,7 @@
 				 name='cahier_texte_acces_public' 
 				 id='cahier_texte_acces_public_n' 
 				 value='no'
+			 onchange='changement();'
 				<?php if (getSettingValue("cahier_texte_acces_public") == "no") echo " checked='checked'";?> /> 
 		  Désactiver la consultation publique des cahiers de textes 
 		  (seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés)
@@ -216,6 +217,7 @@
 				 name='cahier_texte_acces_public' 
 				 id='cahier_texte_acces_public_y' 
 				 value='yes'
+			 onchange='changement();'
 				<?php if (getSettingValue("cahier_texte_acces_public") == "yes") echo " checked='checked'";?> /> 
 		  Activer la consultation publique des cahiers de textes 
 		  (tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global)
@@ -231,14 +233,16 @@
 	  <p>
 		Identifiant :
 		<input type="text" 
-			   name="cahiers_texte_login_pub" 
+			   name="cahiers_texte_login_pub"
+			 onchange='changement();'
 			   value="<?php echo getSettingValue("cahiers_texte_login_pub"); ?>" 
 			   size="20" />
 	  </p>
 	  <p>
 		Mot de passe :
 		<input type="text" 
-			   name="cahiers_texte_passwd_pub" 
+			   name="cahiers_texte_passwd_pub"
+			 onchange='changement();'
 			   value="<?php echo getSettingValue("cahiers_texte_passwd_pub"); ?>" 
 			   size="20" />
 	  </p>
@@ -256,6 +260,7 @@
 		Délai :
 		<input type="text"
 			   name="delai_devoirs"
+			 onchange='changement();'
 			   value="<?php echo getSettingValue("delai_devoirs"); ?>"
 			   size="2" />
 		jours
@@ -268,6 +273,7 @@
 				 name='visa_cdt_inter_modif_notices_visees'
 				 id='visa_cdt_inter_modif_notices_visees_y'
 				 value='yes'
+			 onchange='changement();'
 			   <?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "yes") echo " checked='checked'";?> />
 		  Activer l'interdiction pour les enseignants de modifier une notice après la signature des
 		  cahiers de textes
@@ -279,6 +285,7 @@
 				 name='visa_cdt_inter_modif_notices_visees'
 				 id='visa_cdt_inter_modif_notices_visees_n'
 				 value='no'
+			 onchange='changement();'
 			   <?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "no") echo " checked='checked'";?> />
 		  Désactiver l'interdiction pour les enseignants de modifier une notice après la signature
 		  des cahiers de textes

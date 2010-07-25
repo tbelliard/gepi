@@ -196,7 +196,9 @@
   if (isset($messageEnregistrer) && $messageEnregistrer !="" ){
 	affiche_ariane(TRUE,$messageEnregistrer);
   }else{
-	affiche_ariane();
+	if(isset($_SESSION['ariane']) && (count($_SESSION['ariane']['lien'])>1)){
+	  affiche_ariane();
+	}
   }
 ?>
 <!-- fin fil d'ariane -->

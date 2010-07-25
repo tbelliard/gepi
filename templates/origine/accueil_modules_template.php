@@ -80,16 +80,6 @@
 
 	<div id='container'>
 
-<!-- fil d'ariane -->
-<?php
-  affiche_ariane()
-?>
-<!-- fin fil d'ariane -->
-
-
-
-
-
 <!-- début corps menu	-->
 	
 <?php 

@@ -138,6 +138,8 @@ if (isset($_POST['is_posted']) && ($msg=="") ){
   $post_reussi=TRUE;
 }
 
+// on demande une validation si on quitte sans enregistrer les changements
+$messageEnregistrer="Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?";
 
 /****************************************************************
                      HAUT DE PAGE

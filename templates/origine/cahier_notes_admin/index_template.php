@@ -108,7 +108,8 @@
 			 name="activer" 
 			 id='activer_y' 
 			 value="y" 
-			<?php if (getSettingValue("active_carnets_notes")=='y') echo " checked='checked'"; ?> />
+			<?php if (getSettingValue("active_carnets_notes")=='y') echo " checked='checked'"; ?>
+			 onchange='changement();' />
 	  <label for='activer_y' style='cursor: pointer;'>
 		Activer les carnets de notes
 	  </label>
@@ -118,7 +119,8 @@
 			 name="activer" 
 			 id='activer_n' 
 			 value="n" 
-			<?php if (getSettingValue("active_carnets_notes")=='n') echo " checked='checked'"; ?> />
+			<?php if (getSettingValue("active_carnets_notes")=='n') echo " checked='checked'"; ?>
+			 onchange='changement();' />
 	  <label for='activer_n' style='cursor: pointer;'>
 		Désactiver les carnets de notes
 	  </label>
@@ -128,7 +130,11 @@
 <?php
 	if(file_exists("../lib/ss_zip.class.php")){ 
 ?>
-	  <input type='checkbox' name='export_cn_ods' id='export_cn_ods' value='y'
+	  <input type='checkbox' 
+			 name='export_cn_ods'
+			 id='export_cn_ods'
+			 value='y'
+			 onchange='changement();'
 <?php
 	  if(getSettingValue('export_cn_ods')=='y'){
 ?>
