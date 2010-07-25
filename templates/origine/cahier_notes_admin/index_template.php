@@ -91,12 +91,6 @@
 
   <div id='container'>
 
-<!-- fil d'ariane -->
-<?php
-  affiche_ariane(TRUE,"Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?")
-?>
-<!-- fin fil d'ariane -->
-
   <form action="index.php" id="form1" method="post">
 
 	<p class="center">

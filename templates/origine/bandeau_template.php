@@ -190,7 +190,16 @@
 					";
 				}
 			}
-		?>	
+		?>
+<!-- fil d'ariane -->
+<?php
+  if (isset($messageEnregistrer) && $messageEnregistrer !="" ){
+	affiche_ariane(TRUE,$messageEnregistrer);
+  }else{
+	affiche_ariane();
+  }
+?>
+<!-- fin fil d'ariane -->
 	
 	
 <!-- message -->
