@@ -529,7 +529,7 @@ function genDateSelector($prefix, $day, $month, $year, $option)
 
 	// correction w3c : SELECT NAME -> select name + label + <span>
 	 echo "\n<label for=\"jour\"><span style='display:none;'>Jour</span></label>\n";
-    echo "<select id=\"jour\" name=\"${prefix}day\">\n";
+    echo "<select id=\"jour_${prefix}\" name=\"${prefix}day\">\n";
 
 	// correction w3c : OPTION -> option + =\"selected\
     for($i = 1; $i <= 31; $i++)
@@ -543,7 +543,7 @@ function genDateSelector($prefix, $day, $month, $year, $option)
 
 	// correction w3c : SELECT NAME -> select name + label + <span>
 	 echo "\n<label for=\"mois\"><span style='display:none;'>Mois</span></label>\n";
-    echo "<select id=\"mois\" name=\"${prefix}month\">\n";
+    echo "<select id=\"mois_${prefix}\" name=\"${prefix}month\">\n";
 
     for($i = 1; $i <= 12; $i++)
     {
@@ -563,7 +563,7 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     //echo "<select name=\"${prefix}year\">\n";
 	// correction w3c : SELECT NAME -> select name + label + <span>
 	 echo "\n<label for=\"annee\"><span style='display:none;'>Année</span></label>\n";
-    echo "<select id=\"annee\" name=\"${prefix}year\">\n";
+    echo "<select id=\"annee_${prefix}\" name=\"${prefix}year\">\n";
 
     $min = strftime("%Y", getSettingValue("begin_bookings"));
     if ($option == "more_years") $min = date("Y") - 5;

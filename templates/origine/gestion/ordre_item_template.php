@@ -42,7 +42,7 @@
 
 	<link rel="stylesheet" type="text/css" href="../templates/origine/css/accueil.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="../templates/origine/css/bandeau.css" media="screen" />
-	<link rel="stylesheet" type="text/css" href="../templates/origine/css/param_ordre_item" media="screen" />
+	<link rel="stylesheet" type="text/css" href="../templates/origine/css/param_ordre_item.css" media="screen" />
 
 <!-- corrections internet Exploreur -->
 	<!--[if lte IE 7]>
