@@ -193,14 +193,16 @@
 		?>	
 	
 	
-<!-- message -->				
-		<?php
+<!-- message -->
+<?php
 			if ($tbs_msg !="") {
-				echo "
-	<div class='headerMessage'>
-		$tbs_msg
-	</div>
-				";
-			}
-		?>	
+?>
+	<p class='headerMessage bold<?php if($post_reussi) echo " vert" ;?>'>
+<?php
+		echo $tbs_msg;
+?>
 
+	</p>
+<?php
+			}
+?>

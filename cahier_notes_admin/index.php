@@ -20,6 +20,23 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+/**
+ * Gestion des cahiers de textes
+ * 
+ * @param $_POST['activer'] activation/désactivation
+ * @param $_POST['export_cn_ods'] autorisation de l'export au format OD
+ * @param $_POST['referentiel_note'] referentiel de note
+ * @param $_POST['note_autre_que_sur_referentiel'] note autre que sur referentiel
+ * @param $_POST['is_posted']
+ *
+ */
+
+$accessibilite="y";
+$titre_page = "Gestion des carnets de notes";
+$niveau_arbo = 1;
+$gepiPathJava="./..";
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 // Resume session
@@ -37,7 +54,13 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 die();
 }
+
+/******************************************************************
+ *    Enregistrement des variables passées en $_POST si besoin
+ ******************************************************************/
 $msg = '';
+$post_reussi=FALSE;
+
 if (isset($_POST['activer'])) {
     if (!saveSetting("active_carnets_notes", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 }
@@ -82,10 +105,33 @@ if (isset($_POST['note_autre_que_sur_referentiel'])) {
 }
 
 
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+if (isset($_POST['is_posted']) and ($msg=='')){
+  $msg = "Les modifications ont été enregistrées !";
+  $post_reussi=TRUE;
+}
+
+/****************************************************************
+                     HAUT DE PAGE
+****************************************************************/
+
+// ====== Inclusion des balises head et du bandeau =====
+include_once("../lib/header_template.inc");
+
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
+//$titre_page = "Gestion des cahiers de textes";
+//require_once("../lib/header.inc");
+/****************************************************************
+			CONSTRUCTION DE LA PAGE
+****************************************************************/
 // header
-$titre_page = "Gestion des carnets de notes";
-require_once("../lib/header.inc");
+// $titre_page = "Gestion des carnets de notes";
+// require_once("../lib/header.inc");
+/*
 ?>
 <p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <h2>Configuration générale</h2>
@@ -99,6 +145,7 @@ require_once("../lib/header.inc");
 </p>
 
 <?php
+
 	echo "<br />\n";
 
 	echo "<p>\n";
@@ -118,6 +165,7 @@ require_once("../lib/header.inc");
 	}
 	echo "</p>\n";
 
+ */
 	/*
 	echo "<br />\n";
 
@@ -129,7 +177,6 @@ require_once("../lib/header.inc");
 	echo " /> \n";
 	echo "<label for='appreciations_types_profs' style='cursor: pointer;'>Permettre aux professeurs d'utiliser des appréciations-types sur les bulletins.\n";
 	echo "</p>\n";
-	*/
 
 ?>
 <br/>
@@ -156,4 +203,37 @@ require_once("../lib/header.inc");
 <?php
 	echo "<p><br /></p>\n";
 	require("../lib/footer.inc.php");
+	*/
+
+
+/****************************************************************
+			BAS DE PAGE
+****************************************************************/
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("../lib/footer_template.inc.php");
+
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// $affiche_debug=debug_var();
+
+
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/cahier_notes_admin/index_template.php';
+
+$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+include($nom_gabarit);
+
+// ------ on vide les tableaux -----
+unset($menuAffiche);
+
+
+
+
 ?>

@@ -60,6 +60,9 @@ if (!checkAccess()) {
    die();
 }
 
+/******************************************************************
+ *    Enregistrement des variables passées en $_POST si besoin
+ ******************************************************************/
 $msg = "";
 if (isset($_POST['activer'])) {
     if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
@@ -130,11 +133,15 @@ if (isset($_POST['delai_devoirs'])) {
 			$msg .= "Erreur lors de l'enregistrement du délai de visualisation des devoirs";
 }
 
-if (isset($_POST['is_posted']) && ($msg=="") )
-  $msg = "<span class='vert'>Les modifications ont été enregistrées !</span>";
+if (isset($_POST['is_posted']) && ($msg=="") ){
+  $msg = "Les modifications ont été enregistrées !";
+  $post_reussi=TRUE;
+}
 
-// header
-include "../class_php/class_menu_general.php";
+
+/****************************************************************
+                     HAUT DE PAGE
+****************************************************************/
 
 // ====== Inclusion des balises head et du bandeau =====
 include_once("../lib/header_template.inc");

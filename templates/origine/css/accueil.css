@@ -1,5 +1,5 @@
 /* 
- * $Id: accueil.css $
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -61,16 +61,6 @@ table.boireaus {
 }
 .boireaus .lig1 {
 	background-color: #FFE6AA;
-}
-.rouge {
-	color:red;
-}
-.vert {
-	color:green;
-}
-
-.small {
-	font-size:smaller;
 }
 
 #messagerie {
@@ -162,7 +152,7 @@ background-color: #F00;
 
 
 /* message */
-div.headerMessage {
+.headerMessage {
 	width: 100%;
 	padding: 0.5%;
 	margin: 0;
@@ -171,7 +161,7 @@ div.headerMessage {
 	text-align: center;
 }
 
-/* se rÃ©fÃ©rencer */
+/* se référencer */
 .referencement {
 	border-style:solid; 
 	border-width:1px; 
@@ -187,4 +177,15 @@ div.headerMessage {
 .flux_rss {
 	cursor: pointer;
 	color:blue;
+}
+
+.rouge {
+	color:red;
+}
+.vert {
+	color:green;
+}
+
+.small {
+	font-size:smaller;
 }

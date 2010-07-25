@@ -26,6 +26,13 @@ hr {
 .italic{
   font-style: italic;
 }
+.grandEspaceHaut{
+  padding-top: 1em;
+}
+.colleHaut{
+  margin-top: 0em;
+  padding-top: 0em;
 
+}
 
 
