@@ -53,6 +53,14 @@ $titre_page = "Discipline : Index";
 //require_once("../lib/header.inc");
 include_once("../lib/header_template.inc");
 //**************** FIN EN-TETE *****************
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************
+
+****************************************************************/
 
 //debug_var();
 /*

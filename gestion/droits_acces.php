@@ -64,7 +64,8 @@ include_once("../lib/header_template.inc");
 /****************************************************************
 			FIN HAUT DE PAGE
 ****************************************************************/
-
+if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
 /****************************************************************
 			ENREGISTREMENT DES DONNÉES SI BESOIN
 ****************************************************************/

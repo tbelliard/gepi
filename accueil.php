@@ -154,8 +154,21 @@ $afficheAccueil=new class_page_accueil($_SESSION['statut'], $gepiSettings, $nive
 // ====== Inclusion des balises head et du bandeau =====
 include_once("./lib/header_template.inc");
 $tbs_statut_utilisateur = $_SESSION['statut'];
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Accueil"))
+		echo "erreur lors de la création du fil d'ariane";
+
 /*
-*/
+// voir le fil d'Ariane pour debug
+	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
+	  echo $lienActuel;
+	  echo " => ";
+	  echo $_SESSION['ariane']['texte'][$index];
+	  echo "<br />";
+	}
+ * 
+ */
+
 /*
 $tmp_timeout=(getSettingValue("sessionMaxLength"))*60;
 

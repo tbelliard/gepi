@@ -63,6 +63,9 @@ include_once("../lib/header_template.inc");
 			FIN HAUT DE PAGE
 ****************************************************************/
 
+if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
+
 /****************************************************************
 			ENREGISTREMENT DES DONNÉES SI BESOIN
 ****************************************************************/
@@ -170,7 +173,7 @@ if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
 
 //==================================
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
-//$affiche_debug=debug_var();
+// $affiche_debug=debug_var();
 
 
 $nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/ordre_item_template.php';

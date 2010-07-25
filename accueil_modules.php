@@ -270,7 +270,14 @@ if ($affiche=='yes') {
  //$msg = "Essai message";
 
 	include_once("./lib/header_template.inc");
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************
 
+****************************************************************/
 
 /* ===== Titre du menu ===== */
 	$menuTitre=array();

@@ -80,13 +80,28 @@
 
 	<div id='container'>
 
-	<a name="contenu" class="invisible">Début de la page</a>
-
-	<p class='bold'>
-		<a href="./accueil.php">
-			<img src='./images/icons/back.png' alt='Retour' class='back_link'/> Accueil
-		</a>
+<!-- fil d'ariane -->
+<?php
+  if (isset($_SESSION['ariane'])){
+?>
+	<p class='ariane'>
+<?php
+	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
+?>
+	  <a href="<?php echo $lienActuel ;?>" >
+		<?php echo $_SESSION['ariane']['texte'][$index] ;?>
+	  </a>
+	  -
+<?php
+	}
+?>
 	</p>
+<?php
+  }
+?>
+<!-- fin fil d'ariane -->
+
+
 
 
 

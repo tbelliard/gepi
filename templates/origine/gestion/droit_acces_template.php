@@ -61,15 +61,32 @@
 <!-- fin bandeau_template.html      -->
 
 <div  id='container'>
+
+<!-- fil d'ariane -->
+<?php
+  if (isset($_SESSION['ariane'])){
+?>
+	<p class='ariane'>
+<?php
+	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
+?>
+	  <a href="<?php echo $lienActuel ;?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage;?>')">
+		<?php echo $_SESSION['ariane']['texte'][$index] ;?>
+	  </a>
+	  -
+<?php
+	}
+?>
+	</p>
+<?php
+  }
+?>
+<!-- fin fil d'ariane -->
+
   <a name="contenu" class="invisible">
 	Début de la page
   </a>
-  <p class="ariane">
-	<a href="../accueil.php" title="retour à l'accueil">accueil</a>
-	-
-	<a href="./index.php" title="retour à la page Gestion générale">Gestion générale</a>
-  </p>
-
+  
 <!-- début corps -->
 
   <p class='bold'>

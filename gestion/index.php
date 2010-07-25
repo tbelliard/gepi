@@ -83,6 +83,9 @@ include_once("./../lib/header_template.inc");
 */
 	$tbs_retour="../accueil.php"; 
 	$tbs_ariane[0]=array("titre" => "accueil" , "lien"=>"../accueil.php");
+	
+if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
 
 /*
 <!-- 

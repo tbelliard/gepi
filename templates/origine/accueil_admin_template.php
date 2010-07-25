@@ -55,18 +55,26 @@
 
 <div id='container'>
 
+<!-- fil d'ariane -->
+<?php
+  if (isset($_SESSION['ariane'])){
+?>
 	<p class='ariane'>
-		<a href="<?php echo $tbs_ariane[0]['lien'];?>">
-			<?php echo $tbs_ariane[0]['titre'];?>
-		</a>
+<?php
+	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
+?>
+	  <a href="<?php echo $lienActuel ;?>" >
+		<?php echo $_SESSION['ariane']['texte'][$index] ;?>
+	  </a>
+	  -
+<?php
+	}
+?>
 	</p>
-	<!--
-	<p class='bold'>
-		<a href="<?php echo $tbs_retour;?>">
-			<img src='images/icons/back.png' alt='Retour' class='back_link' /> Retour
-		</a>
-	</p>
-	-->
+<?php
+  }
+?>
+<!-- fin fil d'ariane -->
 
 <a name="contenu" class="invisible">Début de la page</a>	
 	

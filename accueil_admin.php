@@ -113,11 +113,19 @@ $tbs_last_connection="";
 
 // ====== Inclusion des balises head et du bandeau =====
 include_once("./lib/header_template.inc");
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des bases"))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************
+
+****************************************************************/
 
 //require_once("./lib/header.inc");
 
-$tbs_retour="accueil.php";
-$tbs_ariane[0]=array("titre" => "accueil" , "lien"=>"accueil.php");
+//$tbs_retour="accueil.php";
+//$tbs_ariane[0]=array("titre" => "accueil" , "lien"=>"accueil.php");
 
 //if (isset($msg)) { echo "<font color='red' size='2'>$msg</font>"; }
 

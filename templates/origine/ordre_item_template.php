@@ -86,17 +86,29 @@
 
 	<div id='container'>
 
-	<a name="contenu" class="invisible">Début de la page</a>
-	<p class="ariane">
-	  <a href="../accueil.php" title="retour à l'accueil">accueil</a>
+<!-- fil d'ariane -->
+<?php
+  if (isset($_SESSION['ariane'])){
+?>
+	<p class='ariane'>
+<?php
+	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
+?>
+	  <a href="<?php echo $lienActuel ;?>">
+		<?php echo $_SESSION['ariane']['texte'][$index] ;?>
+	  </a>
 	  -
-	  <a href="./index.php" title="retour à la page Gestion générale">Gestion générale</a>
+<?php
+	}
+?>
 	</p>
-	<p class='bold'>
-		<a href="./index.php">
-			<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour
-		</a>
-	</p>
+<?php
+  }
+?>
+<!-- fin fil d'ariane -->
+
+	<a name="contenu" class="invisible">Début de la page</a>
+	
 	<form method="post" action="#">
 	<p class="center">
 	  Ce module permet de modifier l'ordre des menus de la page accueil ainsi que les intitulés.

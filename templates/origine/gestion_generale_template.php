@@ -51,16 +51,25 @@
 <!-- fin bandeau_template.html      -->
 
 <div id='container'>
+
+<?php
+  if (isset($_SESSION['ariane'])){
+?>
 	<p class='ariane'>
-		<a href="<?php echo $tbs_ariane[0]['lien'];?>">
-			<?php echo $tbs_ariane[0]['titre'];?>
-		</a>
+<?php
+	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
+?>
+	  <a href="<?php echo $lienActuel ;?>">
+		<?php echo $_SESSION['ariane']['texte'][$index] ;?>
+	  </a>
+	  -
+<?php
+	}
+?>
 	</p>
-	<p class='bold'>
-		<a href="<?php echo $tbs_retour;?>">
-			<img src="<?php echo $gepiPath2;?>/images/icons/back.png" alt='Retour' class='back_link' /> Retour
-		</a>
-	</p>
+<?php
+  }
+?>
 
 <a name="contenu" class="invisible">Début de la page</a>	
 	
@@ -88,6 +97,7 @@
 <!-- Fin menu	général -->
 				";
 					}
+					unset ($value);
 				}
 			}
 	?>
