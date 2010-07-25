@@ -82,22 +82,7 @@
 
 <!-- fil d'ariane -->
 <?php
-  if (isset($_SESSION['ariane'])){
-?>
-	<p class='ariane'>
-<?php
-	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
-?>
-	  <a href="<?php echo $lienActuel ;?>" >
-		<?php echo $_SESSION['ariane']['texte'][$index] ;?>
-	  </a>
-	  -
-<?php
-	}
-?>
-	</p>
-<?php
-  }
+  affiche_ariane()
 ?>
 <!-- fin fil d'ariane -->
 

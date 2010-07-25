@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /*
- * $Id: gestion_generale_template.php $
+ * $Id$
 */
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
@@ -53,22 +53,7 @@
 <div id='container'>
 
 <?php
-  if (isset($_SESSION['ariane'])){
-?>
-	<p class='ariane'>
-<?php
-	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
-?>
-	  <a href="<?php echo $lienActuel ;?>">
-		<?php echo $_SESSION['ariane']['texte'][$index] ;?>
-	  </a>
-	  -
-<?php
-	}
-?>
-	</p>
-<?php
-  }
+  affiche_ariane()
 ?>
 
 <a name="contenu" class="invisible">Début de la page</a>	

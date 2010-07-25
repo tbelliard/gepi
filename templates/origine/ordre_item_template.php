@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /*
-* $Id: $
+* $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -88,22 +88,7 @@
 
 <!-- fil d'ariane -->
 <?php
-  if (isset($_SESSION['ariane'])){
-?>
-	<p class='ariane'>
-<?php
-	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
-?>
-	  <a href="<?php echo $lienActuel ;?>">
-		<?php echo $_SESSION['ariane']['texte'][$index] ;?>
-	  </a>
-	  -
-<?php
-	}
-?>
-	</p>
-<?php
-  }
+  affiche_ariane(TRUE,"Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?")
 ?>
 <!-- fin fil d'ariane -->
 
@@ -178,6 +163,7 @@
 		<input type="text" value="<?php echo $newEntreeMenu->indexMenu ?>"
 			   id="nouveau_<?php echo $menuAfficheAdministrateur->statutUtilisateur ?>_<?php echo $newEntreeMenu->indexMenu ?>"
 			   name="nouveau_<?php echo $menuAfficheAdministrateur->statutUtilisateur ?>_<?php echo $newEntreeMenu->indexMenu ?>"
+			   onchange='changement();'
 			   size="3" />
 		<img src="<?php echo $newEntreeMenu->icone['chemin'] ?>" alt="<?php echo $newEntreeMenu->icone['alt'] ?>" />
 		-
@@ -186,7 +172,8 @@
 		<label for="nouveauNom_<?php echo $menuAfficheAdministrateur->statutUtilisateur ?>_<?php echo $newEntreeMenu->indexMenu ?>">nouveau nom : </label>
 		<input type="text" value="<?php echo $newEntreeMenu->nouveauNom ?>" 
 			   id="nouveauNom_<?php echo $menuAfficheAdministrateur->statutUtilisateur ?>_<?php echo $newEntreeMenu->indexMenu ?>"
-			   name="nouveauNom_<?php echo $menuAfficheAdministrateur->statutUtilisateur ?>_<?php echo $newEntreeMenu->indexMenu ?>" />
+			   name="nouveauNom_<?php echo $menuAfficheAdministrateur->statutUtilisateur ?>_<?php echo $newEntreeMenu->indexMenu ?>"
+			   onchange='changement();' />
 
 	  </h3>
 <?php
