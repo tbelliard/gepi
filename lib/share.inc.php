@@ -3170,28 +3170,44 @@ function param_edt($statut){
 	}
 }
 
-/*
-Renvoie le nom de la photo de l'élève ou du prof
-Renvoie une chaine vide si :
-- le module trombinoscope n'est pas activé
-- ou bien la photo n'existe pas.
-
-$_elenoet_ou_loginc : selon les cas, soir l'elenoet de l'élève ou bien lelogin du professeur
-$repertoire : "eleves" ou "personnels"
-$arbo : niveau d'aborescence (1 ou 2).
+/**
+* Renvoie le nom de la photo de l'élève ou du prof
+ *
+* Renvoie NULL si :
+ *
+* - le module trombinoscope n'est pas activé
+ * 
+* - ou bien la photo n'existe pas.
+*
+*@var $_elenoet_ou_login : selon les cas, soir l'elenoet de l'élève ou bien lelogin du professeur
+*@var $repertoire : "eleves" ou "personnels"
+*@var $arbo : niveau d'aborescence (1 ou 2).
 */
 function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 	if ($arbo==2) {$chemin = "../";} else {$chemin = "";}
 	if (($repertoire != "eleves") and ($repertoire != "personnels")) {
-		return "";
+		return NULL;
 		die();
 	}
 	if (getSettingValue("active_module_trombinoscopes")!='y') {
-		return "";
+		return NULL;
 		die();
 	}
+		$photo=NULL;
+
+
+	// En multisite, on ajoute le répertoire RNE
+	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+		  // On récupère le RNE de l'établissement
+	  $repertoire2=getSettingValue("gepiSchoolRne")."/";
+	}else{
+	  $repertoire2="";
+	}
+
+
 	// Cas des élèves
 	if ($repertoire == "eleves") {
+	  /*
 		// En multisite, le login est préférable à l'ELENOET
 		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 			// On récupère l'INE de cet élève
@@ -3222,18 +3238,65 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 				}
 			}
 		}
+	*/
+	  if($_elenoet_ou_login!='') {
+
+		// on vérifie si la photo existe
+
+		if(file_exists($chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg")) {
+			$photo=$chemin."../photos/".$repertoire2."eleves/".$_elenoet_ou_login.".jpg";
+		}
+		else if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y')
+		{
+		  // En multisite, on recherche aussi avec les logins
+		  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			// On récupère le login de l'élève
+			$sql = 'SELECT login FROM eleves WHERE elenoet = "'.$_elenoet_ou_login.'"';
+			$query = mysql_query($sql);
+			$_elenoet_ou_login = mysql_result($query, 0,'login');
+		  }
+
+		  if(file_exists($chemin."../photos/eleves/$_elenoet_ou_login.jpg")) {
+				$photo=$chemin."../photos/eleves/$_elenoet_ou_login.jpg";
+			}
+			else {
+				if(file_exists($chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
+					$photo=$chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
+				} else {
+					for($i=0;$i<5;$i++){
+						if(substr($_elenoet_ou_login,$i,1)=="0"){
+							$test_photo=substr($_elenoet_ou_login,$i+1);
+							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
+							if(($test_photo!='')&&(file_exists($chemin."../photos/eleves/".$test_photo.".jpg"))) {
+								$photo=$chemin."../photos/eleves/".$test_photo.".jpg";
+								break;
+							}
+						}
+					}
+				}
+			}
+
+		}
+		
+	  }
 	}
 	// Cas des non-élèves
 	else {
+
 		$_elenoet_ou_login = md5(strtolower($_elenoet_ou_login));
-			if(file_exists($chemin."../photos/personnels/$_elenoet_ou_login.jpg")){
-				$photo="$_elenoet_ou_login.jpg";
+			//if(file_exists($chemin."../photos/personnels/$_elenoet_ou_login.jpg")){
+			if(file_exists($chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg")){
+				//$photo="$_elenoet_ou_login.jpg";
+				$photo=$chemin."../photos/".$repertoire2."personnels/$_elenoet_ou_login.jpg";
 			} else {
-				$photo = "-";
+				$photo = NULL;
 		}
 	}
 	return $photo;
 }
+
+
+
 
 function insert_confirm_abandon(){
 	global $themessage;
@@ -5120,5 +5183,112 @@ function test_ecriture_style_screen_ajout() {
 		return false;
 	}
 }
+
+/**
+ * Crée les répertoires photos/RNE_Etablissement, photos/RNE_Etablissement/eleves et
+ * photos/RNE_Etablissement/personnels s'ils n'exixtent pas
+ *
+ * @return boolean : true si tout se passe bien ou false si la création d'un répertoire échoue
+ */
+function cree_repertoire_multisite() {
+  
+  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+		// On récupère le RNE de l'établissement
+	if (!$repertoire=getSettingValue("gepiSchoolRne"))
+	  return FALSE;
+
+	//on vérifie que le dossier photos/RNE_Etablissement n'existe pas
+	if (!is_dir("../photos/".$repertoire)){
+	  // On crée le répertoire photos/RNE_Etablissement
+	  if (!mkdir("../photos/".$repertoire, 0700))
+		return FALSE;
+	  // On enregistre un fichier index.html dans photos/RNE_Etablissement
+	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/index.html" ))
+		return FALSE;
+	}
+
+	//on vérifie que le dossier photos/RNE_Etablissement/eleves n'existe pas
+	if (!is_dir("../photos/".$repertoire."/eleves")){
+	  // On crée le répertoire photos/RNE_Etablissement/eleves
+	  if (!mkdir("../photos/".$repertoire."/eleves", 0700))
+		return FALSE;
+	  // On enregistre un fichier index.html dans photos/RNE_Etablissement/eleves
+	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/eleves/index.html" ))
+		return FALSE;
+	 }
+
+	//on vérifie que le dossier photos/RNE_Etablissement/personnels n'existe pas
+	if (!is_dir("../photos/".$repertoire."/personnels")){
+	  // On crée le répertoire photos/RNE_Etablissement/personnels
+	  if (!mkdir("../photos/".$repertoire."/personnels", 0700))
+		return FALSE;
+	  // On enregistre un fichier index.html dans photos/RNE_Etablissement/personnels
+	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/personnels/index.html" ))
+		return FALSE;
+
+	  }
+		return TRUE;
+	}
+}
+
+/**
+ * gestion du fil d'ariane en remplissant le tableau $_SESSION['ariane']
+ *
+ * @param <lien http> $lien : page atteinte par le lien
+ * @param <texte> $texte : texte à afficher dans le fil d'ariane
+ *
+ * @return <bolean> True si tout s'est bien passé, False sinon
+ */
+function suivi_ariane($lien,$texte){
+  if (!isset($_SESSION['ariane'])){
+	$_SESSION['ariane']['lien'][] =$lien;
+	$_SESSION['ariane']['texte'][] =$texte;
+	return TRUE;
+  }else{
+	$trouve=FALSE;
+	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
+	  if ($trouve){
+		unset ($_SESSION['ariane']['lien'][$index]);
+		unset ($_SESSION['ariane']['texte'][$index]);
+	  }else{
+		if ($lienActuel==$lien)
+		  $trouve=TRUE;
+	  }
+	}
+	unset ($index, $lienActuel);
+	if (!$trouve){
+	  $_SESSION['ariane']['lien'][] =$lien;
+	  $_SESSION['ariane']['texte'][] =$texte;
+	}
+	  return TRUE;
+  }
+}
+
+/**
+ * Affiche le fil d'Ariane
+ * 
+ * @param <boolean> $validation si True,
+ * une validation sera demandée en cas de modification de la page
+ * @param <texte> $themessage message à afficher lors de la confirmation
+ */
+function affiche_ariane($validation= FALSE,$themessage="" ){
+  if (isset($_SESSION['ariane'])){
+	echo "<p class='ariane'>";
+	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
+	  if ($validation){
+	  echo "<a href='".$lienActuel."' onclick='return confirm_abandon (this, change, \"".$themessage."\")' >";
+	  } else {
+	  echo "<a href='".$lienActuel."' >";
+	  }
+		echo $_SESSION['ariane']['texte'][$index] ;
+	  echo " </a> - ";
+	}
+	unset ($index,$lienActuel);
+	echo "</p>";
+  }
+}
+
+
+
 
 ?>
