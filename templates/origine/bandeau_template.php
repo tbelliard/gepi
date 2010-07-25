@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: bandeau_template.php $
+ * $Id$
 */
 ?>
 

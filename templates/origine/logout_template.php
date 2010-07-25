@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: logout_template.php $
+ * $Id$
  */
 ?>
  

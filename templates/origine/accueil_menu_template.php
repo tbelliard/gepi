@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: accueil_menu_template.php $
+ * $Id$
 */
 ?>
 <!-- menus général -->

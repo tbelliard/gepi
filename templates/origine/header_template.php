@@ -1,6 +1,6 @@
 <?php
 /*
- * $Id: header_template.php $
+ * $Id$
 */
 ?>
  
