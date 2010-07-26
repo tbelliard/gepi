@@ -103,28 +103,29 @@
 		  Lorsque le module est désactivé, les professeurs n'ont pas accès au module et la consultation
 		  publique des cahiers de textes est impossible.
 	  </p>
-	  <p>
-		<label for='activer_y' style='cursor: pointer;'>
-		  <input type="radio"
+	<fieldset class="no_bordure">
+	  <legend class="invisible">Activation</legend>
+
+		<input type="radio"
 				 name="activer"
 				 id="activer_y"
 				 value="y"
 			 onchange='changement();'
 				<?php if (getSettingValue("active_cahiers_texte")=='y') echo " checked='checked'"; ?> />
+		<label for='activer_y' style='cursor: pointer;'>
 		  Activer les cahiers de textes (consultation et édition)
 		</label>
-	  </p>
-	  <p>
-		<label for='activer_n' style='cursor: pointer;'>
-		  <input type="radio" 
+	  <br />
+		<input type="radio" 
 				 name="activer" 
 				 id="activer_n" 
 				 value="n"
 			 onchange='changement();'
 				<?php if (getSettingValue("active_cahiers_texte")=='n') echo " checked='checked'"; ?> />
+		<label for='activer_n' style='cursor: pointer;'>
 		  Désactiver les cahiers de textes (consultation et édition)
 		</label>
-	  </p>
+	  </fieldset>
 	  
 	  
 	  <h2>Version des cahiers de textes</h2>
@@ -145,30 +146,31 @@
 	  <p class="italic">
 		La version 2 du cahier de texte necessite php 5.2.x minimum
 	  </p>
-	  <p>
-		<label for='version_1' style='cursor: pointer;'>
-		  <input type="radio"
+	  <fieldset class="no_bordure">
+		<legend class="invisible">Version</legend>
+		<input type="radio"
 				 name="version"
 				 id="version_1"
 				 value="1"
 			 onchange='changement();'
 				<?php if (getSettingValue("GepiCahierTexteVersion")=='1') echo " checked='checked'"; ?> />
+		<label for='version_1' style='cursor: pointer;'>
 		  Cahier de texte version 1
 		</label>
 		(<span class="italic">
 		  le cahier de texte version 1 ne sera plus supporté dans la future version 1.5.3
 		</span>)
 		<br />
-		<label for='version_2' style='cursor: pointer;'>
 		  <input type="radio"
 				 name="version"
 				 id="version_2"
 				 value="2"
 			 onchange='changement();'
 				<?php if (getSettingValue("GepiCahierTexteVersion")=='2') echo " checked='checked'"; ?> />
+		<label for='version_2' style='cursor: pointer;'>
 		  Cahier de texte version 2
 		</label>
-	  </p>
+	  </fieldset>
 	  
 	  <h2>Début et fin des cahiers de textes</h2>
 	  <p class="italic">
@@ -178,7 +180,8 @@
 		L'édition (modification/suppression/ajout) des cahiers de textes par les utilisateurs de GEPI
 		n'est pas affectée par ces dates.
 	  </p>
-	  <p>
+	  <fieldset class="no_bordure">
+		<legend class="invisible">Version</legend>
         Date de début des cahiers de textes :
 <?php
         $bday = strftime("%d", getSettingValue("begin_bookings"));
@@ -186,8 +189,7 @@
         $byear = strftime("%Y", getSettingValue("begin_bookings"));
         genDateSelector("begin_", $bday, $bmonth, $byear,"more_years")
 ?>
-	  </p>
-	  <p>
+	  <br />
         Date de fin des cahiers de textes :
 <?php
         $eday = strftime("%d", getSettingValue("end_bookings"));
@@ -196,35 +198,35 @@
         genDateSelector("end_",$eday,$emonth,$eyear,"more_years")
 ?>
 		<input type="hidden" name="is_posted" value="1" />
-	  </p>
+	  </fieldset>
 
 	  <h2>Accès public</h2>
-	  <p>
-		<label for='cahier_texte_acces_public_n' style='cursor: pointer;'>
+	  <fieldset class="no_bordure">
+		<legend class="invisible">accès public</legend>
 		  <input type='radio' 
 				 name='cahier_texte_acces_public' 
 				 id='cahier_texte_acces_public_n' 
 				 value='no'
 			 onchange='changement();'
 				<?php if (getSettingValue("cahier_texte_acces_public") == "no") echo " checked='checked'";?> /> 
+		<label for='cahier_texte_acces_public_n' style='cursor: pointer;'>
 		  Désactiver la consultation publique des cahiers de textes 
 		  (seuls des utilisateurs logués pourront y avoir accès en consultation, s'ils y sont autorisés)
 		</label>
-	  </p>
-	  <p>
-		<label for='cahier_texte_acces_public_y' style='cursor: pointer;'>
+	  <br />
 		  <input type='radio' 
 				 name='cahier_texte_acces_public' 
 				 id='cahier_texte_acces_public_y' 
 				 value='yes'
 			 onchange='changement();'
 				<?php if (getSettingValue("cahier_texte_acces_public") == "yes") echo " checked='checked'";?> /> 
+		<label for='cahier_texte_acces_public_y' style='cursor: pointer;'>
 		  Activer la consultation publique des cahiers de textes 
 		  (tous les cahiers de textes visibles directement, ou par la saisie d'un login/mdp global)
 		</label>
-	  </p>
+	  </fieldset>
 	  <p>
-		-> Accès à l'<a href='../public/index.php?id_classe=-1'>interface publique de consultation des cahiers de textes</a>
+		-&gt; Accès à l'<a href='../public/index.php?id_classe=-1'>interface publique de consultation des cahiers de textes</a>
 	  </p>
 	  <p class="italic">
 		En l'absence de mot de passe et d'identifiant, l'accès à l'interface publique de consultation 
@@ -235,6 +237,7 @@
 		<input type="text" 
 			   name="cahiers_texte_login_pub"
 			 onchange='changement();'
+			 title="Identifiant"
 			   value="<?php echo getSettingValue("cahiers_texte_login_pub"); ?>" 
 			   size="20" />
 	  </p>
@@ -243,6 +246,7 @@
 		<input type="text" 
 			   name="cahiers_texte_passwd_pub"
 			 onchange='changement();'
+			 title="Mot de passe"
 			   value="<?php echo getSettingValue("cahiers_texte_passwd_pub"); ?>" 
 			   size="20" />
 	  </p>
@@ -261,36 +265,37 @@
 		<input type="text"
 			   name="delai_devoirs"
 			 onchange='changement();'
+			 title="Délai des devoirs"
 			   value="<?php echo getSettingValue("delai_devoirs"); ?>"
 			   size="2" />
 		jours
 	  </p>
 
 	  <h2>Visa des cahiers de texte</h2>
-	  <p>
-		<label for='visa_cdt_inter_modif_notices_visees_y' style='cursor: pointer;'>
+	  <fieldset class="no_bordure">
+		<legend class="invisible">Visa</legend>
 		  <input type='radio'
 				 name='visa_cdt_inter_modif_notices_visees'
 				 id='visa_cdt_inter_modif_notices_visees_y'
 				 value='yes'
 			 onchange='changement();'
 			   <?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "yes") echo " checked='checked'";?> />
+		<label for='visa_cdt_inter_modif_notices_visees_y' style='cursor: pointer;'>
 		  Activer l'interdiction pour les enseignants de modifier une notice après la signature des
 		  cahiers de textes
 		</label>
-	  </p>
-	  <p>
-		<label for='visa_cdt_inter_modif_notices_visees_n' style='cursor: pointer;'>
+	  <br />
 		  <input type='radio'
 				 name='visa_cdt_inter_modif_notices_visees'
 				 id='visa_cdt_inter_modif_notices_visees_n'
 				 value='no'
 			 onchange='changement();'
 			   <?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "no") echo " checked='checked'";?> />
+		<label for='visa_cdt_inter_modif_notices_visees_n' style='cursor: pointer;'>
 		  Désactiver l'interdiction pour les enseignants de modifier une notice après la signature
 		  des cahiers de textes
 		</label>
-	  </p>
+	  </fieldset>
 	  <p class="center">
 		<input type="submit" value="Enregistrer" />
 	  </p>
