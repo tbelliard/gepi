@@ -103,7 +103,8 @@
 	  La désactivation des carnets de notes n'entraîne aucune suppression des données. 
 	  Lorsque le module est désactivé, les professeurs n'ont pas accès au module.
 	</p>
-	<p>
+	<fieldset class="no_bordure">
+	  <legend class="invisible">Activé ou non</legend>
 	  <input type="radio" 
 			 name="activer" 
 			 id='activer_y' 
@@ -113,8 +114,7 @@
 	  <label for='activer_y' style='cursor: pointer;'>
 		Activer les carnets de notes
 	  </label>
-	</p>
-	<p>
+	<br />
 	  <input type="radio" 
 			 name="activer" 
 			 id='activer_n' 
@@ -124,7 +124,7 @@
 	  <label for='activer_n' style='cursor: pointer;'>
 		Désactiver les carnets de notes
 	  </label>
-	</p>
+	</fieldset>
 	
 	<p class="grandEspaceHaut">
 <?php
@@ -178,10 +178,12 @@
 	  Référentiel des notes par défaut : 
 	  <input type="text" 
 			 name="referentiel_note" 
-			 size="8" 
+			 size="8"
+			 title="notes sur"
 			 value="<?php echo(getSettingValue("referentiel_note")); ?>" />
-	</p>	
-	<p>
+	</p>
+	<fieldset class="no_bordure">
+	  <legend class="invisible">Référentiel ou non</legend>
 	  <input type="radio" 
 			 name="note_autre_que_sur_referentiel" 
 			 id="note_sur_referentiel" 
@@ -190,8 +192,7 @@
 	  <label for='note_sur_referentiel'> 
 		Autoriser les notes autre que sur le référentiel par défaut
 	  </label>
-	</p>	
-	<p>
+	  <br />
 	  <input type="radio" 
 			 name="note_autre_que_sur_referentiel" 
 			 id="note_autre_que_referentiel" 
@@ -200,7 +201,7 @@
 	  <label for='note_autre_que_referentiel'> 
 		Notes uniquement sur le référentiel par défaut
 	  </label>
-	</p>
+	</fieldset>
 
 	<p class="center">
 	  <input type="hidden" name="is_posted" value="1" />
