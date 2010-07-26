@@ -21,9 +21,25 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+
+/**
+ * Gestion des cahiers de textes
+ * 
+ * @param $_POST['activer'] activation/désactivation
+ * @param $_POST['export_cn_ods'] autorisation de l'export au format OD
+ * @param $_POST['referentiel_note'] referentiel de note
+ * @param $_POST['note_autre_que_sur_referentiel'] note autre que sur referentiel
+ * @param $_POST['is_posted']
+ *
+ */
+
+$accessibilite="y";
 $titre_page = "Emploi du temps";
-$affiche_connexion = 'yes';
 $niveau_arbo = 1;
+$gepiPathJava="./..";
+$msg = '';
+$post_reussi=FALSE;
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -46,10 +62,11 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
+
 // ====== CSS particulier à l'EdT ================
 $style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
 // ====== Entête de Gepi =========================
-require_once("../lib/header.inc");
+//require_once("../lib/header.inc");
 // ===============================================
 
 // ++++++++++ Initialisation des variables +++++++
@@ -81,13 +98,16 @@ $message = "";
 	// On effectue la requête
 	if ($modif_setting == "ok") {
 		$modif = mysql_query($requete) OR DIE('La modification n\'a pas été enregistrée : '.mysql_error());
-		$message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";
+		//$message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";
+		$msg .= "La modification a bien été enregistrée !";
+		$post_reussi=TRUE;
 	}
 
   // L'autorisation pour les professeurs de saisir leur edt
   if (isset ($autorise_saisir_prof)){
     if (saveSetting("edt_remplir_prof", $autorise_saisir_prof)){
       $message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";;
+	  $msg .= " La modification a bien été enregistrée !";
     }
   }
 
@@ -102,6 +122,24 @@ $message = "";
 		return $aff_check;
 	}
 
+
+
+/****************************************************************
+                     HAUT DE PAGE
+****************************************************************/
+
+// ====== Inclusion des balises head et du bandeau =====
+include_once("../lib/header_template.inc");
+
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************/
+
+/*
 ?>
 	<div>
 
@@ -181,4 +219,35 @@ avez d&eacute;sactiv&eacute; l'acc&egrave;s pour tous,
 <?php
 // inclusion du footer
 require("../lib/footer.inc.php");
+*/
+/****************************************************************
+			BAS DE PAGE
+****************************************************************/
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("../lib/footer_template.inc.php");
+
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// $affiche_debug=debug_var();
+
+
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/edt_organisation/edt_template.php';
+
+$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+include($nom_gabarit);
+
+// ------ on vide les tableaux -----
+unset($menuAffiche);
+
+
+
+
 ?>

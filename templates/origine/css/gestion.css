@@ -34,5 +34,9 @@ hr {
   padding-top: 0em;
 
 }
-
-
+.block{
+  display: block;
+}
+.no_bordure{
+  border-width: 0;
+}
