@@ -52,7 +52,7 @@
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
-<body onload="show_message_deconnexion(); <?php echo $tbs_charger_observeur;?>">
+<body onload="show_message_deconnexion();<?php if($tbs_charger_observeur) echo $tbs_charger_observeur;?>">
 
 <!-- on inclut le bandeau -->
 	<?php include('templates/origine/bandeau_template.php');?>
@@ -74,6 +74,7 @@
 <?php
 			}
 		}
+		unset ($value);
 	}
 ?>
 
@@ -128,6 +129,7 @@
 		</p>
 <?php
 	  }
+	  unset($value);
 	}
 ?>
 
@@ -142,6 +144,7 @@
 
 <?php
 	  }
+	  unset($value);
 	}
 ?>
 
@@ -166,10 +169,8 @@
 ?>
 	  <div id='messagerie'>
 <?php
-		  foreach ($message as $afficheAccueil->message) {
-?>
-		<div>
-<?php
+		  foreach ($afficheAccueil->message as $value) {
+
 		  if ($value['suite']=='') {
 			  echo "";
 		  }else{
@@ -183,10 +184,9 @@
 		  }else{
 			  echo "</hr>";
 		  }
-?>
-		  </div>
-<?php
+
 		}
+		unset ($value);
 ?>
 		</div>
 <?php
@@ -293,9 +293,11 @@
 <?php
 			  }
 			}
+			unset($newentree);
 		  }
 		}
 	  }
+	  unset($newEntreeMenu);
 	}
 ?>
 
@@ -402,6 +404,7 @@
 
 <?php
 		}
+		unset($newentree);
 ?>
 
 					</table>

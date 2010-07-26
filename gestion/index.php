@@ -297,7 +297,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
   
   $chemin = "gestion_temp_dir.php";
   $titre = "Gestion des dossiers temporaires";
-  $expli = "Permet de contrôler le volume occupé par les dossiers temporaires (<i>utilisés notamment pour générer les fichiers tableur OpenOffice (ODS), lorsque la fonction est activée dans le module carnet de notes</i>), de supprimer ces dossiers,...";
+  $expli = "Permet de contrôler le volume occupé par les dossiers temporaires (<em>utilisés notamment pour générer les fichiers tableur OpenOffice (ODS), lorsque la fonction est activée dans le module carnet de notes</em>), de supprimer ces dossiers,...";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli); 
   
   $chemin = "gestion_base_test.php";
@@ -391,13 +391,13 @@ if (LDAPServer::is_setup()) {
   $chemin = "../init_xml2/index.php";
   $titre = "Initialisation des données à partir de fichiers XML";
   $expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières depuis les exports XML de Sconet/STS.<br />
-	<b>Nouvelle procédure:</b> Plus simple et moins gourmande en ressources que l'ancienne méthode ci-dessous.";
+	<strong>Nouvelle procédure:</strong> Plus simple et moins gourmande en ressources que l'ancienne méthode ci-dessous.";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
   
   $chemin = "../init_xml/index.php";
-  $titre = "Initialisation des données à partir de fichiers XML";
+  $titre = "Initialisation des données à partir de fichiers XML convertis en CSV";
   $expli = "Permet d'importer les données ".$gepiSettings['denomination_eleves'].", classes, ".$gepiSettings['denomination_professeurs'].", matières depuis les exports XML de Sconet/STS.<br />
-	<i>Les XML sont traités pour générer des fichiers CSV qui sont ensuite réclamés dans les différentes étapes de l'initialisation.</i>";
+	<em>Les XML sont traités pour générer des fichiers CSV qui sont ensuite réclamés dans les différentes étapes de l'initialisation.</em>";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
 	
 	
