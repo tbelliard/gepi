@@ -356,6 +356,21 @@ if ($saisie->getIdSIncidents() !== null) {
 	$saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire</a>";
     echo '</TD></tr>';
 }
+$saisies_conflit = $saisie->getSaisiesContradictoires();
+if (!$saisies_conflit->isEmpty()) {
+    echo '<tr><TD>';
+    echo 'La saisie est en contradiction avec : ';
+    echo '</TD><TD>';
+    foreach ($saisies_conflit as $saisie) {
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style=''> ";
+	echo $saisie->getId();
+	echo "</a>";
+	if (!$saisies_conflit->isLast()) {
+	    echo ' - ';
+	}
+    }
+    echo '</TD></tr>';
+}
 
 echo '</TD></tr>';
 if ($modifiable) {

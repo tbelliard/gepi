@@ -661,6 +661,11 @@ echo '
 </script>';
 echo '</th>';
 
+//en tete conflit
+echo '<th>';
+echo 'conflit';
+echo '</th>';
+
 //en tete filtre date creation
 echo '<th>';
 //echo '<nobr>';
@@ -935,6 +940,18 @@ foreach ($results as $saisie) {
 	echo "&nbsp;";
     }
     echo '</td>';
+
+    echo '<td>';
+    $saisies_conflit = $saisie->getSaisiesContradictoires();
+    foreach ($saisies_conflit as $saisie) {
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style=''> ";
+	echo $saisie->getId();
+	echo "</a>";
+	if (!$saisies_conflit->isLast()) {
+	    echo ' - ';
+	}
+    }
+   echo '</td>';
 
     echo '<td>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
