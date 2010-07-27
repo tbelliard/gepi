@@ -14,7 +14,7 @@ if ($reinit_filtre == 'y') {
     $_SESSION['filtre_recherche']['order'] = 'des_id';
 } else {
     $liste_parametres_sauf_chechbox = array('order', 'filter_notification_id', 'filter_traitement_id', 'filter_saisie_id', 'filter_utilisateur', 'filter_eleve', 'filter_classe', 'filter_groupe', 'filter_aid',
-	'filter_type', 'filter_justification', 'filter_date_debut_absence_debut_plage', 'filter_date_debut_absence_fin_plage', 'filter_date_fin_absence_debut_plage',
+	'filter_type', 'filter_type_notification','filter_statut_notification', 'filter_justification', 'filter_date_debut_absence_debut_plage', 'filter_date_debut_absence_fin_plage', 'filter_date_fin_absence_debut_plage',
 	'filter_date_fin_absence_fin_plage', 'filter_creneau', 'filter_cours', 'filter_date_creation_traitement_debut_plage', 'filter_date_creation_traitement_fin_plage',
 	'filter_date_traitement_absence_debut_plage', 'filter_date_traitement_absence_fin_plage', 'filter_statut');
     //récupération des paramètres de la requète

@@ -147,7 +147,11 @@ if (isFiltreRechercheParam('filter_type')) {
     $query->filterByATypeId(getFiltreRechercheParam('filter_type'));
 }
 if (isFiltreRechercheParam('filter_justification')) {
-    $query->filterByAJustificationId(getFiltreRechercheParam('filter_justification'));
+    if (getFiltreRechercheParam('filter_justification') == 'SANS') {
+	$query->filterByAJustificationId(null);
+    } else {
+	$query->filterByAJustificationId(getFiltreRechercheParam('filter_justification'));
+    }
 }
 if (isFiltreRechercheParam('filter_date_creation_traitement_debut_plage')) {
     $date_creation_traitement_debut_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_creation_traitement_debut_plage')));
@@ -159,6 +163,14 @@ if (isFiltreRechercheParam('filter_date_creation_traitement_fin_plage')) {
 }
 if (isFiltreRechercheParam('filter_date_modification')) {
     $query->where('AbsenceEleveTraitement.CreatedAt != AbsenceEleveTraitement.UpdatedAt');
+}
+if (isFiltreRechercheParam('filter_statut_notification')) {
+    if (getFiltreRechercheParam('filter_statut_notification') == 'SANS') {
+	$query->leftJoin('AbsenceEleveTraitement.AbsenceEleveNotification');
+	$query->where('AbsenceEleveNotification.Id is null');
+    } else {
+	$query->useAbsenceEleveNotificationQuery()->filterByStatutEnvoi(getFiltreRechercheParam('filter_statut_notification'))->endUse();
+    }
 }
 
 if (getFiltreRechercheParam('order') == "asc_id") {
@@ -213,8 +225,10 @@ if (getFiltreRechercheParam('order') == "asc_id") {
     $query->orderBy('UpdatedAt', Criteria::ASC);
 } else if (getFiltreRechercheParam('order') == "des_date_modification") {
     $query->orderBy('UpdatedAt', Criteria::DESC);
-} else if (getFiltreRechercheParam('order') == "des_date_modification") {
-    $query->orderBy('UpdatedAt', Criteria::DESC);
+} else if (getFiltreRechercheParam('order') == "asc_notification") {
+    $query->leftJoinAbsenceEleveNotification()->orderBy('AbsenceEleveNotification.StatutEnvoi', Criteria::ASC);
+} else if (getFiltreRechercheParam('order') == "des_notification") {
+    $query->leftJoinAbsenceEleveNotification()->orderBy('AbsenceEleveNotification.StatutEnvoi', Criteria::DESC);
 }
 
 $query->distinct();
@@ -386,9 +400,14 @@ echo 'justification';
 echo '<br />';
 echo ("<select name=\"filter_justification\" onchange='submit()'>");
 echo "<option value=''></option>\n";
+echo "<option value='SANS'";
+if (getFiltreRechercheParam('filter_justification') == 'SANS') echo " selected='selected' ";
+echo ">";
+echo 'SANS JUSTIFICATION';
+echo "</option>\n";
 foreach (AbsenceEleveJustificationQuery::create()->find() as $justification) {
 	echo "<option value='".$justification->getId()."'";
-	if (getFiltreRechercheParam('filter_justification') == $justification->getId()) echo " selected='selected' ";
+	if (getFiltreRechercheParam('filter_justification') === (string) $justification->getId()) echo " selected='selected' ";
 	echo ">";
 	echo $justification->getNom();
 	echo "</option>\n";
@@ -400,7 +419,6 @@ echo '</th>';
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
-echo '&nbsp;notification&nbsp;';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_notification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_notification"/>';
@@ -408,8 +426,26 @@ echo '<input type="image" src="../images/down.png" title="descendre" style="vert
 if ($order == "des_notification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_notification"/>';
 echo '</span>';
-//echo '</nobr>';
+echo '<br/>';
+echo 'notification';
 echo '<br />';
+echo ("<select name=\"filter_statut_notification\" onchange='submit()'>");
+echo "<option value=''></option>\n";
+echo "<option value='SANS'";
+if (getFiltreRechercheParam('filter_statut_notification') == 'SANS') echo " selected='selected' ";
+echo ">";
+echo 'SANS NOTIFICATION';
+echo "</option>\n";
+$i = 0;
+while (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i])) {
+    echo "<option value='$i'";
+    if (getFiltreRechercheParam('filter_statut_notification') === (string)$i) {
+	echo 'selected';
+    }
+    echo ">".AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i]."</option>\n";
+    $i = $i + 1;
+}
+echo "</select>";
 echo '</th>';
 
 //en tete filtre date creation

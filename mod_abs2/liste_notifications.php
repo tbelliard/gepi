@@ -115,11 +115,11 @@ if (isFiltreRechercheParam('filter_eleve')) {
     $query->useAbsenceEleveTraitementQuery()->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useEleveQuery()
     ->filterByNomOrPrenomLike(getFiltreRechercheParam('filter_eleve'))->endUse()->endUse()->endUse()->endUse();
 }
-if (isFiltreRechercheParam('filter_type')) {
-    $query->filterByTypeNotification(getFiltreRechercheParam('filter_type'));
+if (isFiltreRechercheParam('filter_type_notification')) {
+    $query->filterByTypeNotification(getFiltreRechercheParam('filter_type_notification'));
 }
-if (isFiltreRechercheParam('filter_statut')) {
-    $query->filterByStatutEnvoi(getFiltreRechercheParam('filter_statut'));
+if (isFiltreRechercheParam('filter_statut_notification')) {
+    $query->filterByStatutEnvoi(getFiltreRechercheParam('filter_statut_notification'));
 }
 if (isFiltreRechercheParam('filter_date_creation_notification_debut_plage')) {
     $date_creation_notification_debut_plage = new DateTime(str_replace("/",".",$filter_date_creation_notification_debut_plage));
@@ -284,12 +284,12 @@ echo '</span>';
 echo '<br />';
 echo 'type de notification';
 echo '<br />';
-echo ("<select name=\"filter_type\" onchange='submit()'>");
+echo ("<select name=\"filter_type_notification\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 $i = 0;
 while (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i])) {
     echo "<option value='$i'";
-    if (getFiltreRechercheParam('filter_type') == $i) {
+    if (getFiltreRechercheParam('filter_type_notification') === (string)$i) {
 	echo 'selected';
     }
     echo ">".AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i]."</option>\n";
@@ -313,12 +313,12 @@ echo 'border-width:1px;" alt="" name="order" value="des_statut"/>';
 echo '</span>';
 //echo '</nobr>';
 echo '<br />';
-echo ("<select name=\"filter_statut\" onchange='submit()'>");
+echo ("<select name=\"filter_statut_notification\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 $i = 0;
 while (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i])) {
     echo "<option value='$i'";
-    if (getFiltreRechercheParam('$filter_statut') == $i) {
+    if (getFiltreRechercheParam('filter_statut_notification') === (string)$i) {
 	echo 'selected';
     }
     echo ">".AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i]."</option>\n";
