@@ -758,13 +758,25 @@ class Eleve extends BaseEleve {
 		$saisie_col = $this->getAbsenceEleveSaisies();
 	    }
 	    foreach ($saisie_col as $saisie) {
-		if ($dt_debut != null && ($dt_debut->format('U') >  $saisie->getFinAbs('U'))) {
-		    continue;
+		if ($dt_debut != null && $dt_fin!= null && $dt_debut->format('U') == $dt_fin->format('U')) {
+		    //si on a un seul dateTime pour la plage de recherche, on renvoi les saisie qui chevauchent cette date
+		    //ainsi que les saisies qui commence juste à cette date
+		    if ($dt_debut->format('U') >=  $saisie->getFinAbs('U')) {
+			continue;
+		    }
+		    if ($dt_fin != null && ($dt_fin->format('U') <  $saisie->getDebutAbs('U'))) {
+			continue;
+		    }
+		    $result->append($saisie);
+		} else {
+		    if ($dt_debut != null && ($dt_debut->format('U') >=  $saisie->getFinAbs('U'))) {
+			continue;
+		    }
+		    if ($dt_fin != null && ($dt_fin->format('U') <=  $saisie->getDebutAbs('U'))) {
+			continue;
+		    }
+		    $result->append($saisie);
 		}
-		if ($dt_fin != null && ($dt_fin->format('U') <=  $saisie->getDebutAbs('U'))) {
-		    continue;
-		}
-		$result->append($saisie);
 	    }
 
 	    return $result;
@@ -1291,7 +1303,6 @@ class Eleve extends BaseEleve {
 	 *
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
-
 	 * @return     Boolean
 	 *
 	 */
