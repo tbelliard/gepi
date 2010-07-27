@@ -689,18 +689,86 @@ class Eleve extends BaseEleve {
 	    $dt_fin_creneau = clone $dt;
 	    $dt_fin_creneau->setTime($edtcreneau->getHeurefinDefiniePeriode('H'), $edtcreneau->getHeurefinDefiniePeriode('i'), 0);
 
-	    $result = new PropelObjectCollection();
-	    $result->setModel('AbsenceEleveSaisie');
-	    $saisie_col = $this->getAbsenceEleveSaisiesDuJour($dt);
-	    foreach ($saisie_col as $saisie) {
-		if ($dt->format('U') <  $saisie->getFinAbs('U')
-			&& $dt_fin_creneau->format('U') >  $saisie->getDebutAbs('U')) {
-		    $result->append($saisie);
-		}
-	    }
-	    return $result;
+	    return $this->getAbsenceEleveSaisiesFilterByDate($dt, $dt_fin_creneau);
 	}
 
+  	/**
+	 *
+	 * Retourne une liste de saisie dont la periode de temps coincide avec les dates passees en paremetre (methode optimisee)
+	 *
+	 * @param      mixed $dateTime_debut string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $dateTime_fin string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 *
+ 	 * @return PropelColection AbsenceEleveSaisie[]
+	 */
+	public function getAbsenceEleveSaisiesFilterByDate($dateTime_debut = 'now', $dateTime_fin = 'now') {
+	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+	    // -- which is unexpected, to say the least.
+	    //$dt = new DateTime();
+	    if ($dateTime_debut === null || $dateTime_debut === '') {
+		    $dt_debut = null;
+	    } elseif ($dateTime_debut instanceof DateTime) {
+		    $dt_debut = clone $dateTime_debut;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($dateTime_debut)) { // if it's a unix timestamp
+				    $dt_debut = new DateTime('@'.$dateTime_debut, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt_debut->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt_debut = new DateTime($dateTime_debut);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($dateTime_debut, true), $x);
+		    }
+	    }
+
+	    if ($dateTime_fin === null || $dateTime_fin === '') {
+		    $dt_fin = null;
+	    } elseif ($dateTime_fin instanceof DateTime) {
+		    $dt_fin = clone $dateTime_fin;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($dateTime_fin)) { // if it's a unix timestamp
+				    $dt_fin = new DateTime('@'.$dateTime_fin, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt_fin->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt_fin = new DateTime($dateTime_fin);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($dateTime_fin, true), $x);
+		    }
+	    }
+
+	    $result = new PropelObjectCollection();
+	    $result->setModel('AbsenceEleveSaisie');
+	    if ($dt_debut->format('d/m/Y') == $dt_fin->format('d/m/Y')) {
+		//on a une date de debut et de fin le meme jour, on va optimiser un peu
+		$saisie_col = $this->getAbsenceEleveSaisiesDuJour($dt_debut);
+	    } else {
+		$saisie_col = $this->getAbsenceEleveSaisies();
+	    }
+	    foreach ($saisie_col as $saisie) {
+		if ($dt_debut != null && ($dt_debut->format('U') >  $saisie->getFinAbs('U'))) {
+		    continue;
+		}
+		if ($dt_fin != null && ($dt_fin->format('U') <=  $saisie->getDebutAbs('U'))) {
+		    continue;
+		}
+		$result->append($saisie);
+	    }
+
+	    return $result;
+	}
 	/*
 	Renvoie le nom de la photo de l'élève
 	Renvoie NULL si :
@@ -1255,21 +1323,12 @@ class Eleve extends BaseEleve {
 
 	    //premierement on verifie que l'eleve n'a pas ete saisie absent a cette date
 	    $resp_etab = false;
-	    foreach ($this->getAbsenceEleveSaisiesDuJour($dt) as $saisie) {
-		if ($dt->format('U') <  $saisie->getDebutAbs('U')
-		    || $dt->format('U') >=  $saisie->getFinAbs('U')) {
-		    //la saisie ne porte pas sur l'heure demandee
-		    continue;
+	    foreach ($this->getAbsenceEleveSaisiesFilterByDate($dt,$dt) as $saisie) {
+		if (!$saisie->getResponsabiliteEtablissement()) {
+		    return false;
+		} else {
+		    $resp_etab = true;
 		}
-
-		if ($saisie->getEleveId() == $this->getIdEleve()) {
-		    if (!$saisie->getResponsabiliteEtablissement()) {
-			return false;
-		    } else {
-			$resp_etab = true;
-		    }
-		}
-
 	    }
 	    if ($resp_etab) {
 		//l'eleve est saisie mais sous la responsabilite de l'etablissement, c'est donc qu'il est present
