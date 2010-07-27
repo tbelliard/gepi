@@ -354,13 +354,19 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 					$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 
 					$red = false;
+					$violet = false;
 					foreach ($absences_du_creneau as $absence) {
-					    if (!$absence->getResponsabiliteEtablissement()) {
-						$red = true;
+					    if (!$absence->getSaisiesContradictoires()->isEmpty()) {
+						$violet = true;
 						break;
 					    }
+					    if ($red || !$absence->getResponsabiliteEtablissement()) {
+						$red = true;
+					    }
 					}
-					if ($red) {
+					if ($violet) {
+					    $style = 'style="background-color : purple"';
+					} elseif ($red) {
 					    $style = 'style="background-color : red"';
 					} else {
 					    $dt_green = clone $dt_date_absence_eleve;

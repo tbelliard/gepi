@@ -293,4 +293,156 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		return (!empty($failureMap) ? $failureMap : true);
 	}
 
+	/**
+	 *
+	 * Renvoi un liste de saisies qui sont en contradiction avec celle la
+	 *
+	 * @return PropelObjectCollection AbsenceEleveSaisie[]
+	 *
+	 */
+	public function getSaisiesContradictoires() {
+	    $result = new PropelObjectCollection();
+	    $result->setModel('AbsenceEleveSaisie');
+	    if ($this->getEleve() === null) {
+		return $result;
+	    }
+
+	    //on regarde les saisies sur cet eleve
+	    $eleve = $this->getEleve();
+	    $resp = $this->getResponsabiliteEtablissement();
+	    foreach ($eleve->getAbsenceEleveSaisiesFilterByDate($this->getDebutAbs(), $this->getFinAbs()) as $saisie) {
+		if ($resp !== $saisie->getResponsabiliteEtablissement()) {
+		    $result->append($saisie);
+		}
+	    }
+
+	    if ($resp == false) {
+		//on recupere les saisies qui se chevauchent avec celle-la
+		//optimisation : utiliser la requete pour stocker ca
+		if (isset($_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')])
+			&& $_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')] != null) {
+		    $saisie_col = $_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')];
+		} else {
+		    $query = AbsenceEleveSaisieQuery::create();
+		    $query->filterByFinAbs($this->getDebutAbs(), Criteria::GREATER_THAN);
+		    $query->filterByDebutAbs($this->getFinAbs(), Criteria::LESS_EQUAL);
+		    $query->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
+			->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
+			->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType');
+		    $saisie_col = $query->find();
+		    $_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')] = $saisie_col;
+		}
+
+		//on va filtrer pour supprimer de la liste les aid classe ou groupe qui serait le meme que cette saisie la
+		$temp_saisie_col = new PropelObjectCollection();
+		$temp_saisie_col->setModel('AbsenceEleveSaisie');
+		if ($this->getClasse() != null) {
+		    echo ('Purge classe.');
+		    foreach ($saisie_col as $saisie) {
+			if ($saisie->getIdClasse() != $this->getIdClasse()) {
+			    $temp_saisie_col->append($saisie);
+			}
+		    }
+		} elseif ($this->getGroupe() != null) {
+		    echo ('Purge getGroupe.');
+		    foreach ($saisie_col as $saisie) {
+			if ($saisie->getIdGroupe() != $this->getIdGroupe()) {
+			    $temp_saisie_col->append($saisie);
+			}
+		    }
+		} elseif ($this->getAidDetails() != null) {
+		    echo ('Purge getAidDetails.');
+		    foreach ($saisie_col as $saisie) {
+			if ($saisie->getIdAid() != $this->getIdAid()) {
+			    $temp_saisie_col->append($saisie);
+			}
+		    }
+		} else {
+		    foreach ($saisie_col as $saisie) {
+			if ($saisie->getId() != $this->getId()) {
+			    $temp_saisie_col->append($saisie);
+			}
+		    }
+		}
+		$saisie_col = $temp_saisie_col;
+
+		//on regarde si un groupe, classe ou aid auquel appartient cet eleve a été saisi et pour lequel l'eleve en question n'a pas ete saisi (c'est donc que l'eleve est present)
+		//on va utiliser comme periode pour determiner les classes et groupes la periode correspondant au debut de l'absence
+		$periode = $eleve->getPeriodeNote($this->getDebutAbs(null));
+
+		//on recupere la liste des classes de l'eleve et on regarde si il y a eu des saisies pour ces classes
+		$classes = $eleve->getClasses($periode);
+		$saisie_col_classe_id_array = $saisie_col->toKeyValue('PrimaryKey','IdClasse');
+		$saisie_col_array_copy = $saisie_col->getArrayCopy('Id');
+		foreach ($classes as $classe) {
+		    $keys = array_keys($saisie_col_classe_id_array, $classe->getId());
+		    if (!empty($keys)) {
+			//on a des saisies pour cette classe
+			//est-ce que l'eleve a bien été saisi absent ?
+			$temp_col = new PropelObjectCollection();
+			$bool_eleve_saisi = false;
+			foreach ($keys as $key) {
+			    $saisie_temp = $saisie_col_array_copy[$key];
+			    $temp_col->append($saisie_temp);
+			    if ($this->getEleveId() == $saisie_temp->getEleveId()) {
+				$bool_eleve_saisi = true;
+			    }
+			}
+			if (!$bool_eleve_saisi) {
+			    //l'eleve n'a pas ete saisi, c'est contradictoire
+			    $result->addCollection($temp_col);
+			}
+		    }
+		}
+		
+		//on recupere la liste des groupes de l'eleve et on regarde si il y a eu des saisies pour ces groupes
+		$groupes = $eleve->getGroupes($periode);
+		$saisie_col_groupe_id_array = $saisie_col->toKeyValue('PrimaryKey','IdGroupe');
+		foreach ($groupes as $groupe) {
+		    $keys = array_keys($saisie_col_groupe_id_array, $groupe->getId());
+		    if (!empty($keys)) {
+			//on a des saisies pour cette groupe
+			//est-ce que l'eleve a bien été saisi absent ?
+			$temp_col = new PropelObjectCollection();
+			$bool_eleve_saisi = false;
+			foreach ($keys as $key) {
+			    $saisie_temp = $saisie_col_array_copy[$key];
+			    $temp_col->append($saisie_temp);
+			    if ($this->getEleveId() == $saisie_temp->getEleveId()) {
+				$bool_eleve_saisi = true;
+			    }
+			}
+			if (!$bool_eleve_saisi) {
+			    //l'eleve n'a pas ete saisi, c'est contradictoire
+			    $result->addCollection($temp_col);
+			}
+		    }
+		}
+
+		//on recupere la liste des aids de l'eleve et on regarde si il y a eu des saisies pour ces aids
+		$aids = $eleve->getAidDetailss($periode);
+		$saisie_col_aid_id_array = $saisie_col->toKeyValue('PrimaryKey','IdAid');
+		foreach ($aids as $aid) {
+		    $keys = array_keys($saisie_col_aid_id_array, $aid->getId());
+		    if (!empty($keys)) {
+			//on a des saisies pour cette aid
+			//est-ce que l'eleve a bien été saisi absent ?
+			$temp_col = new PropelObjectCollection();
+			$bool_eleve_saisi = false;
+			foreach ($keys as $key) {
+			    $saisie_temp = $saisie_col_array_copy[$key];
+			    $temp_col->append($saisie_temp);
+			    if ($this->getEleveId() == $saisie_temp->getEleveId()) {
+				$bool_eleve_saisi = true;
+			    }
+			}
+			if (!$bool_eleve_saisi) {
+			    //l'eleve n'a pas ete saisi, c'est contradictoire
+			    $result->addCollection($temp_col);
+			}
+		    }
+		}
+	    }
+	    return $result;
+	}
 } // AbsenceEleveSaisie
