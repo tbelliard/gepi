@@ -333,5 +333,36 @@ function ajoutTypesParDefaut() {
 
 	$type->save();
     }
+
+    $type = new AbsenceEleveType();
+    $type->setNom("Eleve présent");
+    if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
+	$type->setCommentaire("L'eleve est présent.");
+	$type->setJustificationExigible(false);
+	$type->setResponsabiliteEtablissement(true);
+	$type->setTypeSaisie('NON_PRECISE');
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("professeur");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("cpe");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("scolarite");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$statut = new AbsenceEleveTypeStatutAutorise();
+	$statut->setStatut("autre");
+	$type->addAbsenceEleveTypeStatutAutorise($statut);
+	$statut->save();
+
+	$type->save();
+    }
 }
 ?>
