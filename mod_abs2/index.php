@@ -84,18 +84,11 @@ $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-//===========================
-
-
-
-echo "<div id='aidmenu' style='display: none;'>test</div>\n";
-
 include('menu_abs2.inc.php');
-//===========================
 
 echo "<div class='css-panes' id='containDiv'>\n";
     echo "<div style='display:block'>\n";
-        echo "<p>Petit texte de présentation du module...</p>\n";
+    //echo "<p>Petit texte de présentation du module...</p>\n";
     echo "</div>\n";
 echo "</div>\n";
 

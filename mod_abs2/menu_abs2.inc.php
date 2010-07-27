@@ -14,7 +14,7 @@ $_SESSION['abs2_onglet'] = $onglet_abs;
 if(($_SESSION['statut']=='cpe')||
     ($_SESSION['statut']=='scolarite')) {
   
-	echo "<ul class='css-tabs' id='menutabs'>\n";
+    echo "<ul class='css-tabs' id='menutabs' style='font-size:85%'>\n";
 
     echo "<li><a href='absences_du_jour.php' ";
     if($onglet_abs=='absences_du_jour.php') {echo "class='current' ";}

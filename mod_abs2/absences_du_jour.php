@@ -446,6 +446,7 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
     echo '<td>Legende : </td>';
     echo '<td style="border : 1px solid; background-color : red;">absent</td>';
     echo '<td style="border : 1px solid; background-color : green;">present</td>';
+    echo '<td style="border : 1px solid; background-color : purple;">Saisies conflictuelles</td>';
     echo '<td style="border : 1px solid;">Sans couleur : pas de saisie</td>';
     echo '</tr></table>';
     echo "<p>";

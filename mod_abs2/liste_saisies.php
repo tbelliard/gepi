@@ -99,12 +99,8 @@ $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-//===========================
-
-echo "<div id='aidmenu' style='display: none;'>test</div>\n";
-
 include('menu_abs2.inc.php');
-//===========================
+
 echo "<div class='css-panes' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
 
@@ -274,7 +270,7 @@ echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y">Réinitialiser les filtres</button> ';
 echo '</p>';
 
-echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0;">';
+echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0; width:100%; font-size:88%">';
 
 echo '<thead>';
 echo '<tr>';
@@ -283,14 +279,14 @@ echo '<tr>';
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'N°';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
 if ($order == "asc_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_id"/>';
 echo '<input type="image" src="../images/down.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "des_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_id"/>';
-//echo '</nobr> ';
+echo '<br/> ';
+echo 'N°';
 echo '</span>';
 echo '<input type="text" name="filter_saisie_id" value="'.getFiltreRechercheParam('filter_saisie_id').'" size="3"/>';
 echo '</th>';
@@ -343,7 +339,7 @@ echo ("<select name=\"filter_classe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (ClasseQuery::create()->distinct()->find() as $classe) {
 	echo "<option value='".$classe->getId()."'";
-	if (getFiltreRechercheParam('filter_classe') === $classe->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_classe') == $classe->getId()) echo " SELECTED ";
 	echo ">";
 	echo $classe->getNomComplet();
 	echo "</option>\n";
@@ -369,7 +365,7 @@ echo ("<select name=\"filter_groupe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
 	echo "<option value='".$group->getId()."'";
-	if (getFiltreRechercheParam('filter_groupe') === $group->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_groupe') == $group->getId()) echo " SELECTED ";
 	echo ">";
 	echo $group->getNameAvecClasses();
 	echo "</option>\n";
@@ -395,7 +391,7 @@ echo ("<select name=\"filter_aid\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach ($utilisateur->getAidDetailss() as $aid) {
 	echo "<option value='".$aid->getId()."'";
-	if (getFiltreRechercheParam('filter_aid') === $aid->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_aid') == $aid->getId()) echo " SELECTED ";
 	echo ">";
 	echo $aid->getNom();
 	echo "</option>\n";
@@ -421,7 +417,7 @@ echo ("<select name=\"filter_creneau\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edt_creneau) {
 	echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-	if (getFiltreRechercheParam('filter_creneau') === $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_creneau') == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
 	echo ">";
 	echo $edt_creneau->getDescription();
 	echo "</option>\n";
@@ -551,7 +547,7 @@ echo ("<select name=\"filter_cours\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach ($utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle() as $edt_cours) {
 	echo "<option value='".$edt_cours->getIdCours()."'";
-	if (getFiltreRechercheParam('filter_cours') === $edt_cours->getIdCours()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_cours') == $edt_cours->getIdCours()) echo " SELECTED ";
 	echo ">";
 	echo $edt_cours->getDescription();
 	echo "</option>\n";
@@ -571,7 +567,7 @@ echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
-	if (getFiltreRechercheParam('filter_type') === $type->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_type') == $type->getId()) echo " SELECTED ";
 	echo ">";
 	echo $type->getNom();
 	echo "</option>\n";
@@ -648,23 +644,23 @@ if ($order == "des_date_modification") {echo "border-style: solid; border-color:
 echo 'border-width:1px;" alt="" name="order" value="des_date_modification"/>';
 //echo '</nobr> ';
 echo '</span>';
-//echo '<nobr>';
+echo '<br/>';
+echo 'modifié';
+echo '<br/>';
 echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_date_modification" onchange="submit()" ';
 if (getFiltreRechercheParam('filter_date_modification') == 'y') {echo "checked='checked'";}
-echo '/> modifié';
-//echo '</nobr>';
+echo '/>';
 echo '</span>';
 echo '</th>';
 
 //en tete commentaire
 echo '<th>';
-echo 'commentaire';
+echo 'com.';
 echo '</th>';
 
 //en tete disciplinne
 echo '<th>';
-//echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
 if ($order == "asc_dis") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -672,14 +668,14 @@ echo 'border-width:1px;" alt="" name="order" value="asc_dis"/>';
 echo '<input type="image" src="../images/down.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
 if ($order == "des_dis") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_dis"/>';
-//echo '</nobr> ';
 echo '</span>';
-//echo '<nobr>';
+echo '<br/>';
+echo 'Rapport d\'incident';
+echo '<br/>';
 echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_discipline" onchange="submit()" ';
 if (getFiltreRechercheParam('filter_discipline') == 'y') {echo "checked";}
-echo "/> Rapport<br/>d'incident";
-//echo '</nobr>';
+echo "/>";
 echo '</span>';
 echo '</th>';
 
@@ -713,7 +709,7 @@ foreach ($results as $saisie) {
 
     echo '<td>';
     if ($saisie->getEleve() != null) {
-	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
+	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
@@ -753,7 +749,7 @@ foreach ($results as $saisie) {
 	//$classe = new Classe();
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     
-	echo $classe->getNomComplet();
+	echo $saisie->getClasse()->getNomComplet();
     echo "</a>";
     } else {
 	echo "&nbsp;";

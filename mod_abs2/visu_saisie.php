@@ -75,10 +75,8 @@ $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<div id='aidmenu' style='display: none;'>test</div>\n";
-
 include('menu_abs2.inc.php');
-//===========================
+
 echo "<div class='css-panes' id='containDiv' style='overflow : auto;'>\n";
 
 

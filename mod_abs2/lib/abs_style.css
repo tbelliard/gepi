@@ -23,7 +23,6 @@ ul.css-tabs li {
 /* link inside the tab. uses a background image */
 ul.css-tabs a {
 	float:left;
-	font-size:13px;
 	display:block;
 	padding:5px 2px;
 	text-decoration:none;
@@ -91,13 +90,14 @@ text-align: center; border: 1px solid pink;
 text-align: center; color: white; background-color: silver; font-size:68%; padding:0.1em;
 }
 #table_liste_absents tr td {
-border: 1px solid rgb(200, 200, 200); text-align: center; margin: 2px 2px 2px 2px; border-spacing : 0px; font-size:88%;
+border: 1px solid rgb(200, 200, 200); text-align: center; margin: 1px 1px 1px 1px; border-spacing : 0px; font-size:88%;
 }
 #table_liste_absents input {
-font-size:88%;
+font-size:96%;
 }
 #table_liste_absents select {
-font-size:88%;
+font-size:100%;
+width:75px;
 }
 .gras {
 font-weight: bold;

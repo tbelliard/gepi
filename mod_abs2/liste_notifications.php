@@ -99,12 +99,8 @@ $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-//===========================
-
-echo "<div id='aidmenu' style='display: none;'>test</div>\n";
-
 include('menu_abs2.inc.php');
-//===========================
+
 echo "<div class='css-panes' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
 
@@ -200,7 +196,7 @@ echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y" >Réinitialiser les filtres</button> ';
 echo '</p>';
 
-echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0;">';
+echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0; width:100%;">';
 
 echo '<thead>';
 echo '<tr>';
@@ -208,7 +204,6 @@ echo '<tr>';
 //en tete filtre id
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
-//echo '<nobr>';
 echo 'N°';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -217,30 +212,26 @@ echo '<input type="image" src="../images/down.png" title="descendre" style="vert
 if ($order == "des_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_id"/>';
 echo '</span>';
-//echo '</nobr> ';
 echo '<input type="text" name="filter_notification_id" value="'.getFiltreRechercheParam('filter_notification_id').'" size="3"/>';
 echo '</th>';
 
 //en tete filtre utilisateur
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
-//echo '<nobr>';
-echo 'Utilisateur';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle; width:15px; height:15px; ';
 if ($order == "asc_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_utilisateur"/>';
 echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_utilisateur"/>';
-echo '</span>';
-//echo '</nobr>';
+echo '</span><br />';
+echo 'Utilisateur';
 echo '<br /><input type="text" name="filter_utilisateur" value="'.getFiltreRechercheParam('filter_utilisateur').'" size="12"/>';
 echo '</th>';
 
 //en tete filtre eleve
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
-//echo '<nobr>';
 echo 'Eleve';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle; width:15px; height:15px; ';
 if ($order == "asc_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
@@ -249,45 +240,40 @@ echo '<input type="image" src="../images/down.png" title="descendre" style="vert
 if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
 echo '</span>';
-//echo '</nobr>';
 echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRechercheParam('filter_eleve').'" size="8"/>';
 echo '</th>';
 
 //en tete filtre saisies
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
-//echo '<nobr>';
-echo 'Saisies';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle; width:15px; height:15px; ';
 if ($order == "asc_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_eleve"/>';
 echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
-echo '</span>';
-//echo '</nobr>';
+echo '</span><br/>';
+echo 'Saisies';
 echo '</th>';
 
 //en tete filtre traitement
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
-echo 'Traitement';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle; width:15px; height:15px; ';
 if ($order == "asc_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_traitement"/>';
 echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_traitement") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_traitement"/>';
-echo '</span>';
+echo '</span><br/>';
+echo 'Traitement';
 //echo '</nobr>';
 echo '</th>';
 
 //en tete filtre type de notification
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
-//echo '<nobr>';
-echo 'type de notification';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle; width:15px; height:15px; ';
 if ($order == "asc_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_type"/>';
@@ -295,14 +281,15 @@ echo '<input type="image" src="../images/down.png" title="descendre" style="vert
 if ($order == "des_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_type"/>';
 echo '</span>';
-//echo '</nobr>';
+echo '<br />';
+echo 'type de notification';
 echo '<br />';
 echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 $i = 0;
 while (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i])) {
     echo "<option value='$i'";
-    if (getFiltreRechercheParam('filter_type') === $i) {
+    if (getFiltreRechercheParam('filter_type') == $i) {
 	echo 'selected';
     }
     echo ">".AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i]."</option>\n";
@@ -331,7 +318,7 @@ echo "<option value=''></option>\n";
 $i = 0;
 while (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i])) {
     echo "<option value='$i'";
-    if (getFiltreRechercheParam('$filter_statut') === $i) {
+    if (getFiltreRechercheParam('$filter_statut') == $i) {
 	echo 'selected';
     }
     echo ">".AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i]."</option>\n";
@@ -407,7 +394,7 @@ echo 'border-width:1px;" alt="" name="order" value="asc_date_modification"/>';
 echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "des_date_modification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_date_modification"/>';
-echo '</span>';
+echo '</span><br/>';
 //echo '</nobr> ';
 echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
@@ -420,7 +407,7 @@ echo '</th>';
 
 //en tete commentaire
 echo '<th>';
-echo 'commentaire';
+echo 'com.';
 echo '</th>';
 
 echo '</tr>';
@@ -467,9 +454,9 @@ foreach ($results as $notification) {
 	}
     }
     foreach ($eleve_col as $eleve) {
-	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
+	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; width : 100%'>";
+	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px;'>";
+	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px;'>";
 	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
@@ -480,27 +467,28 @@ foreach ($results as $notification) {
 	    echo "</a>";
 	}
 	echo "</td>";
-	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
  	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
+	    echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
+	    echo "<a href='liste_notifications.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
 	    $nom_photo = $eleve->getNomPhoto(1);
 	    //$photos = "../photos/eleves/".$nom_photo;
 	    $photos = $nom_photo;
 	    //if (($nom_photo != "") && (file_exists($photos))) {
 	    if (($nom_photo != NULL) && (file_exists($photos))) {
 		$valeur = redimensionne_image_petit($photos);
-echo ' <img src="'.$photos.'" style ="align:right; width:'.$valeur[0].'px; height:'.$valeur[1].'px;" alt="" title="" /> ';
+		echo ' <img src="'.$photos.'" style ="align:right; width:'.$valeur[0].'px; height:'.$valeur[1].'px;" alt="" title="" /> ';
 	    }
+	    echo "</a>";
+	    echo "</td";
 	}
-	echo "</a>";
-	echo "</td></tr></table>";
+	echo "</tr></table>";
     }
     echo '</td>';
 
     //donnees saisies
     echo '<td>';
     if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isEmpty()) {
-	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 250px;'>";
+	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>";
     }
     foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
@@ -516,7 +504,7 @@ echo ' <img src="'.$photos.'" style ="align:right; width:'.$valeur[0].'px; heigh
     }
     echo '</td>';
 
-    echo '<td><div style="width : 300px">';
+    echo '<td><div>';
     echo "<a href='visu_traitement.php?id_traitement=".$notification->getAbsenceEleveTraitement()->getPrimaryKey()."' style='display: block; height: 100%;'> ";
     echo $notification->getAbsenceEleveTraitement()->getDescription();
     echo "</a></div>";
@@ -560,7 +548,7 @@ echo ' <img src="'.$photos.'" style ="align:right; width:'.$valeur[0].'px; heigh
 //  echo '</nobr></td>';
 
     echo '<td>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='color: #330033'>\n";
     echo (strftime("%a %d %b %Y %H:%M", $notification->getUpdatedAt('U')));
     echo "</a>";
     echo '</td>';

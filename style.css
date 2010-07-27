@@ -106,7 +106,7 @@ a:active {
 	text-decoration: none;
 }
 
-input,submit,p,td,li,ul {
+input,submit,p,td,ul {
 	color: #330033;
 	font: normal 11pt Verdana;
 }

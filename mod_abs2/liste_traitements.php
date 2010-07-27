@@ -99,12 +99,8 @@ $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-//===========================
-
-echo "<div id='aidmenu' style='display: none;'>test</div>\n";
-
 include('menu_abs2.inc.php');
-//===========================
+
 echo "<div class='css-panes' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
 
@@ -252,7 +248,7 @@ echo '<button type="submit" name="reinit_filtre" value="y" >Reinitialiser les fi
 
 echo "</p>";
 
-echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0;">';
+echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0; width:100%">';
 
 echo '<thead>';
 echo '<tr>';
@@ -262,7 +258,6 @@ $order = getFiltreRechercheParam('order');
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'N°';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_id") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_id"/>';
@@ -271,6 +266,8 @@ if ($order == "des_id") {echo "border-style: solid; border-color: red;";} else {
 echo 'border-width:1px;" alt="" name="order" value="des_id"/>';
 //echo '</nobr> ';
 echo '</span>';
+echo '<br/> ';
+echo 'N°';
 echo '<input type="text" name="filter_traitement_id" value="'.getFiltreRechercheParam('filter_traitement_id').'" size="3"/>';
 echo '</th>';
 
@@ -339,7 +336,7 @@ echo ("<select name=\"filter_classe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (ClasseQuery::create()->distinct()->find() as $classe) {
 	echo "<option value='".$classe->getId()."'";
-	if (getFiltreRechercheParam('filter_classe') === $classe->getId()) echo " selected='selected' ";
+	if (getFiltreRechercheParam('filter_classe') == $classe->getId()) echo " selected='selected' ";
 	echo ">";
 	echo $classe->getNomComplet();
 	echo "</option>\n";
@@ -365,7 +362,7 @@ echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
-	if (getFiltreRechercheParam('filter_type') === $type->getId()) echo " selected='selected' ";
+	if (getFiltreRechercheParam('filter_type') == $type->getId()) echo " selected='selected' ";
 	echo ">";
 	echo $type->getNom();
 	echo "</option>\n";
@@ -377,7 +374,6 @@ echo '</th>';
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
-echo 'justification';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_justification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_justification"/>';
@@ -385,13 +381,14 @@ echo '<input type="image" src="../images/down.png" title="descendre" style="vert
 if ($order == "des_justification") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="des_justification"/>';
 echo '</span>';
-//echo '</nobr>';
+echo '<br />';
+echo 'justification';
 echo '<br />';
 echo ("<select name=\"filter_justification\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (AbsenceEleveJustificationQuery::create()->find() as $justification) {
 	echo "<option value='".$justification->getId()."'";
-	if (getFiltreRechercheParam('filter_justification') === $justification->getId()) echo " selected='selected' ";
+	if (getFiltreRechercheParam('filter_justification') == $justification->getId()) echo " selected='selected' ";
 	echo ">";
 	echo $justification->getNom();
 	echo "</option>\n";
@@ -495,7 +492,7 @@ echo '</th>';
 
 //en tete commentaire
 echo '<th>';
-echo 'commentaire';
+echo 'com.';
 echo '</th>';
 
 echo '</tr>';
@@ -538,7 +535,7 @@ foreach ($results as $traitement) {
 	}
     }
     foreach ($eleve_col as $eleve) {
-	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
+	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<a href='liste_traitements.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";
@@ -571,11 +568,11 @@ foreach ($results as $traitement) {
     //donnees saisies
     echo '<td>';
     if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
-	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 220px;'>";
+	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; min-width: 150px; width:100%'>";
     }
     foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:88%;'>";
+	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
 	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
 	echo $saisie->getDescription();
 	echo "</a>";
@@ -636,10 +633,10 @@ foreach ($results as $traitement) {
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
     echo "</a>";
 	if (count($traitement->getAbsenceEleveNotifications())){
-    echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width: 200px;'>";
+    echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; min-width:150px; width: 100%;'>";
     foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:88%;'>";
+	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
 	echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
 	echo $notification->getDescription();
 	echo "</a>";
