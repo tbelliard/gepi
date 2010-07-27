@@ -577,11 +577,11 @@ foreach($eleve_col as $eleve) {
 			for($i = 0; $i<$col_creneaux->count(); $i++){
 					$edt_creneau = $col_creneaux[$i];
 					$nb_creneau_a_saisir = 0; //il faut calculer le nombre de creneau a saisir pour faire un colspan
-					$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 					if ($current_creneau != null && $current_creneau->getPrimaryKey() == $edt_creneau->getPrimaryKey()) {
 					    //on va faire une boucle pour calculer le nombre de creneaux dans ce cours
 					    if ($current_cours == null) {
 						$nb_creneau_a_saisir = 1;
+						$absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 					    } else {
 						$nb_creneau_a_saisir = 0;
 						$dt_fin_cours = $current_cours->getHeureFin();
@@ -597,6 +597,16 @@ foreach($eleve_col as $eleve) {
 						    $nb_creneau_a_saisir++;
 						}
 					    }
+					    //pour le creneau en cours on garde uniquement les absences de l'utilisateur pour ne pas l'influencer par d'autres saisies
+					    $absences_du_creneau_du_prof = new PropelObjectCollection();
+					    foreach ($absences_du_creneau as $abs) {
+						if ($abs->getUtilisateurId() == $utilisateur->getPrimaryKey()) {
+						    $absences_du_creneau_du_prof->append($abs);
+						}
+					    }
+					    $absences_du_creneau = $absences_du_creneau_du_prof;
+					} else {
+					    $absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 					}
 					
 					if (!$absences_du_creneau->isEmpty()) {
@@ -621,7 +631,7 @@ foreach($eleve_col as $eleve) {
 						}
 						$saisie_affiches[] = $saisie->getPrimaryKey();
 						if ($saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && $saisie->getCreatedAt('U') > (time() - 3600)) {
-						    echo ("<a style='font-size:78%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Modif. saisie de ".$saisie->getCreatedAt("H:i")."</a><br>");
+						    echo ("<a style='font-size:78%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Modif.&nbsp;saisie de ".$saisie->getCreatedAt("H:i")."</a><br>");
 						}
 					    }
 					}
