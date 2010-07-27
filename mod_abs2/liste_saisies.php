@@ -339,7 +339,7 @@ echo ("<select name=\"filter_classe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (ClasseQuery::create()->distinct()->find() as $classe) {
 	echo "<option value='".$classe->getId()."'";
-	if (getFiltreRechercheParam('filter_classe') == $classe->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_classe') === (string) $classe->getId()) echo " SELECTED ";
 	echo ">";
 	echo $classe->getNomComplet();
 	echo "</option>\n";
@@ -365,7 +365,7 @@ echo ("<select name=\"filter_groupe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach ($utilisateur->getGroupes() as $group) {
 	echo "<option value='".$group->getId()."'";
-	if (getFiltreRechercheParam('filter_groupe') == $group->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_groupe') === (string) $group->getId()) echo " SELECTED ";
 	echo ">";
 	echo $group->getNameAvecClasses();
 	echo "</option>\n";
@@ -391,7 +391,7 @@ echo ("<select name=\"filter_aid\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach ($utilisateur->getAidDetailss() as $aid) {
 	echo "<option value='".$aid->getId()."'";
-	if (getFiltreRechercheParam('filter_aid') == $aid->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_aid') === (string) $aid->getId()) echo " SELECTED ";
 	echo ">";
 	echo $aid->getNom();
 	echo "</option>\n";
@@ -417,7 +417,7 @@ echo ("<select name=\"filter_creneau\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edt_creneau) {
 	echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-	if (getFiltreRechercheParam('filter_creneau') == $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_creneau') === (string) $edt_creneau->getIdDefiniePeriode()) echo " SELECTED ";
 	echo ">";
 	echo $edt_creneau->getDescription();
 	echo "</option>\n";
@@ -547,7 +547,7 @@ echo ("<select name=\"filter_cours\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach ($utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle() as $edt_cours) {
 	echo "<option value='".$edt_cours->getIdCours()."'";
-	if (getFiltreRechercheParam('filter_cours') == $edt_cours->getIdCours()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_cours') === (string) $edt_cours->getIdCours()) echo " SELECTED ";
 	echo ">";
 	echo $edt_cours->getDescription();
 	echo "</option>\n";
@@ -567,7 +567,7 @@ echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
-	if (getFiltreRechercheParam('filter_type') == $type->getId()) echo " SELECTED ";
+	if (getFiltreRechercheParam('filter_type') === (string) $type->getId()) echo " SELECTED ";
 	echo ">";
 	echo $type->getNom();
 	echo "</option>\n";

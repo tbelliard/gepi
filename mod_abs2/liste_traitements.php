@@ -350,7 +350,7 @@ echo ("<select name=\"filter_classe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (ClasseQuery::create()->distinct()->find() as $classe) {
 	echo "<option value='".$classe->getId()."'";
-	if (getFiltreRechercheParam('filter_classe') == $classe->getId()) echo " selected='selected' ";
+	if (getFiltreRechercheParam('filter_classe') === (string) $classe->getId()) echo " selected='selected' ";
 	echo ">";
 	echo $classe->getNomComplet();
 	echo "</option>\n";
@@ -376,7 +376,7 @@ echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value=''></option>\n";
 foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
-	if (getFiltreRechercheParam('filter_type') == $type->getId()) echo " selected='selected' ";
+	if (getFiltreRechercheParam('filter_type') === (string) $type->getId()) echo " selected='selected' ";
 	echo ">";
 	echo $type->getNom();
 	echo "</option>\n";
