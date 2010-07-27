@@ -356,7 +356,8 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 					$red = false;
 					$violet = false;
 					foreach ($absences_du_creneau as $absence) {
-					    if (!$absence->getSaisiesContradictoires()->isEmpty()) {
+					    if ($absence->isSaisiesContradictoires()) {
+					    //if (!($absence->getSaisiesContradictoires()->isEmpty())) {
 						$violet = true;
 						break;
 					    }
