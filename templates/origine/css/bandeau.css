@@ -1,4 +1,4 @@
-/* $Id: bandeau.css */
+/* $Id: */
 
 body{
 	font-family:	verdana,sans-serif;
@@ -20,7 +20,9 @@ p{
 	padding:0em;
 }
 
-
+#headerMessage {
+	width:99%;
+}
 
 /* Bandeau */
 #bandeau {
