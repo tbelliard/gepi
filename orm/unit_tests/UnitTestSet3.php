@@ -276,7 +276,7 @@ if ($periode === null) {
 echo("<br/>");
 $edtEmplacementCol = $eleve->getEdtEmplacementCourssPeriodeCalendrierActuelle();
 echo ($logger->getDisplay());
-if ($edtEmplacementCol->isEmpty()) {
+if ($edtEmplacementCol->count() == 2) {
     echo('test 1 recuperation emplacement de cours d\'un eleve a reussi<br/><br/>');
 } else {
     echo('test 1 recuperation emplacement de cours d\'un eleve  a <font color="red">echoue</font> <br><br/>');
