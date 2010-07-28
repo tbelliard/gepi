@@ -90,8 +90,8 @@ if ($action == 'supprimer') {
 	if ($type == null) {
 	    $type = new AbsenceEleveType();
 	}
-	$type->setNom(unslashes($nom));
-	$type->setCommentaire(unslashes($commentaire));
+	$type->setNom(stripslashes($nom));
+	$type->setCommentaire(stripslashes($commentaire));
 	$type->setJustificationExigible($justification_exigible);
 	$type->setResponsabiliteEtablissement($responsabilite_etablissement);
 	$type->setTypeSaisie($type_saisie);
