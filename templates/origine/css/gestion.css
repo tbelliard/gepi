@@ -40,3 +40,14 @@ hr {
 .no_bordure{
   border-width: 0;
 }
+table.boireaus{
+  margin: 0.5em auto;
+  background-color: #eee0e5;
+}
+.boireaus th{
+  color: #fff;
+  background-color: #000;
+}
+.boireaus td{
+  padding: 0em 0.5em;
+}

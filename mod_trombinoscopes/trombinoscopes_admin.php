@@ -21,6 +21,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+
+/**
+ * Paramétrage du trombinoscope
+ *
+ * @param $_POST['activer'] activation/désactivation
+ * @param $_POST['num_aid_trombinoscopes']
+ * @param $_POST['activer_personnels']
+ * @param $_POST['activer_redimensionne']
+ * @param $_POST['activer_rotation']
+ * @param $_POST['l_max_aff_trombinoscopes']
+ * @param $_POST['h_max_imp_trombinoscopes']
+ * @param $_POST['l_max_imp_trombinoscopes']
+ * @param $_POST['h_max_imp_trombinoscopes']
+ * @param $_POST['nb_col_imp_trombinoscopes']
+ * @param $_POST['l_resize_trombinoscopes']
+ * @param $_POST['h_resize_trombinoscopes']
+ * @param $_POST['sousrub']
+ * @param $_POST['supprime']
+ * @param $_POST['is_posted']
+ *
+ * @return $accessibilite
+ * @return $titre_page
+ * @return $niveau_arbo
+ * @return $gepiPathJava
+ * @return $msg
+ * @return $repertoire
+ * @return $post_reussi
+ *
+ */
+
+$accessibilite="y";
+$titre_page = "Gestion du module trombinoscope";
+$niveau_arbo = 1;
+$gepiPathJava="./..";
+$post_reussi=FALSE;
+
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -38,60 +75,193 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 die();
 }
+
+/******************************************************************
+ *    Enregistrement des variables passées en $_POST si besoin
+ ******************************************************************/
 $msg = '';
 if (isset($_POST['num_aid_trombinoscopes'])) {
     if ($_POST['num_aid_trombinoscopes']!='') {
-        if (!saveSetting("num_aid_trombinoscopes", $_POST['num_aid_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre num_aid_trombinoscopes !";
+        if (!saveSetting("num_aid_trombinoscopes", $_POST['num_aid_trombinoscopes']))
+				$msg = "Erreur lors de l'enregistrement du paramètre num_aid_trombinoscopes !";
     } else {
         $del_num_aid_trombinoscopes = mysql_query("delete from setting where NAME='num_aid_trombinoscopes'");
         $gepiSettings['num_aid_trombinoscopes']="";
     }
 }
 if (isset($_POST['activer'])) {
-    if (!saveSetting("active_module_trombinoscopes", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-	if (!cree_repertoire_multisite()) $msg = "Erreur lors de la création du répertoire photos de l'établissement !";
+    if (!saveSetting("active_module_trombinoscopes", $_POST['activer']))
+			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	if (!cree_repertoire_multisite())
+	  $msg = "Erreur lors de la création du répertoire photos de l'établissement !";
 }
 
 if (isset($_POST['activer_personnels'])) {
-    if (!saveSetting("active_module_trombino_pers", $_POST['activer_personnels'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation du trombinoscope des personnels !";
+    if (!saveSetting("active_module_trombino_pers", $_POST['activer_personnels']))
+			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation du trombinoscope des personnels !";
 }
 
 if (isset($_POST['activer_redimensionne'])) {
-    if (!saveSetting("active_module_trombinoscopes_rd", $_POST['activer_redimensionne'])) $msg = "Erreur lors de l'enregistrement du paramètre de redimenssionement des photos !";
+    if (!saveSetting("active_module_trombinoscopes_rd", $_POST['activer_redimensionne']))
+			$msg = "Erreur lors de l'enregistrement du paramètre de redimenssionement des photos !";
 }
 if (isset($_POST['activer_rotation'])) {
-    if (!saveSetting("active_module_trombinoscopes_rt", $_POST['activer_rotation'])) $msg = "Erreur lors de l'enregistrement du paramètre rotation des photos !";
+    if (!saveSetting("active_module_trombinoscopes_rt", $_POST['activer_rotation']))
+			$msg = "Erreur lors de l'enregistrement du paramètre rotation des photos !";
 }
 if (isset($_POST['l_max_aff_trombinoscopes'])) {
-    if (!saveSetting("l_max_aff_trombinoscopes", $_POST['l_max_aff_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre largeur maximum !";
+    if (!saveSetting("l_max_aff_trombinoscopes", $_POST['l_max_aff_trombinoscopes']))
+			$msg = "Erreur lors de l'enregistrement du paramètre largeur maximum !";
 }
 if (isset($_POST['h_max_aff_trombinoscopes'])) {
-    if (!saveSetting("h_max_aff_trombinoscopes", $_POST['h_max_aff_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
+    if (!saveSetting("h_max_aff_trombinoscopes", $_POST['h_max_aff_trombinoscopes']))
+			$msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
 }
 if (isset($_POST['l_max_imp_trombinoscopes'])) {
-    if (!saveSetting("l_max_imp_trombinoscopes", $_POST['l_max_imp_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre largeur maximum !";
+    if (!saveSetting("l_max_imp_trombinoscopes", $_POST['l_max_imp_trombinoscopes']))
+			$msg = "Erreur lors de l'enregistrement du paramètre largeur maximum !";
 }
 if (isset($_POST['h_max_imp_trombinoscopes'])) {
-    if (!saveSetting("h_max_imp_trombinoscopes", $_POST['h_max_imp_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
+    if (!saveSetting("h_max_imp_trombinoscopes", $_POST['h_max_imp_trombinoscopes']))
+			$msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
 }
 
 if (isset($_POST['nb_col_imp_trombinoscopes'])) {
-    if (!saveSetting("nb_col_imp_trombinoscopes", $_POST['nb_col_imp_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du nombre de colonnes sur les trombinos imprimés !";
+    if (!saveSetting("nb_col_imp_trombinoscopes", $_POST['nb_col_imp_trombinoscopes']))
+			$msg = "Erreur lors de l'enregistrement du nombre de colonnes sur les trombinos imprimés !";
 }
 
 if (isset($_POST['l_resize_trombinoscopes'])) {
-    if (!saveSetting("l_resize_trombinoscopes", $_POST['l_resize_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre l_resize_trombinoscopes !";
+    if (!saveSetting("l_resize_trombinoscopes", $_POST['l_resize_trombinoscopes']))
+			$msg = "Erreur lors de l'enregistrement du paramètre l_resize_trombinoscopes !";
 }
 if (isset($_POST['h_resize_trombinoscopes'])) {
-    if (!saveSetting("h_resize_trombinoscopes", $_POST['h_resize_trombinoscopes'])) $msg = "Erreur lors de l'enregistrement du paramètre h_resize_trombinoscopes !";
+    if (!saveSetting("h_resize_trombinoscopes", $_POST['h_resize_trombinoscopes']))
+			$msg = "Erreur lors de l'enregistrement du paramètre h_resize_trombinoscopes !";
 }
 
-if (empty($_GET['sousrub']) and empty($_POST['sousrub'])) { $sousrub = ''; }
-   else { if (isset($_GET['sousrub'])) { $sousrub = $_GET['sousrub']; } if (isset($_POST['sousrub'])) { $sousrub = $_POST['sousrub']; } }
+if (isset($_POST['sousrub'])) {
+  // suppression
+  if (isset ($_POST['supprime']) && $_POST['supprime']="yes"){
+	if($_POST['sousrub']=="dp"){
+	  // suppression des photos du personnel
+	  $msg = efface_photos("personnels");
+	  if ($msg == FALSE)
+		$msg = "Erreur lors de la suppression des photos du personnel";
+	} else if ($_POST['sousrub']=="de"){
+	  // suppression des photos des élèves
+	  $msg = efface_photos("eleves");
+	  if ($msg == FALSE)
+	  $msg = "Erreur lors de la suppression des photos des élèves";
+	}
+  }
+}
 
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+if(isset ($_POST['voirPerso']) && $_POST['voirPerso']=="yes"){
+	// Affichage du personnel sans photo
+	if (!recherche_personnel_sans_photo()){
+	  $msg = "Erreur lors de la sélection du personnel sans photo";
+	}else{
+	$personnel_sans_photo=recherche_personnel_sans_photo();
+	$msg.="liste des personnels sans photo en bas de page <br/>";
+	}
+  }
+  
+if (isset ($_POST['voirEleve']) && $_POST['voirEleve']=="yes"){
+  // Affichage des élèves sans photo
+  if (!recherche_eleves_sans_photo()){
+	$msg = "Erreur lors de la sélection des élèves sans photo";
+  }else{
+  $eleves_sans_photo=recherche_eleves_sans_photo();
+  $msg.="liste des élèves sans photo en bas de page";
+  }
+}
+
+
+if (isset($_POST['is_posted']) and ($msg=='')) {
+  $msg = "Les modifications ont été enregistrées !";
+  $post_reussi=TRUE;
+}
+
+
+
+
+
+
+if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
+  // Le téléchargement s'est-il bien passé ?
+  $sav_file = isset($_FILES["nom_du_fichier"]) ? $_FILES["nom_du_fichier"] : NULL;
+  if ($sav_file){
+	// copie du fichier vers /temp
+	$dirname ="../temp";
+	$reponse=telecharge_fichier($sav_file,$dirname,'application/zip',"zip" );
+	if ($reponse!="ok"){
+	  $msg = $reponse;
+	}else{
+	  // dézipage du fichier
+	  $reponse = dezip_PclZip_fichier($dirname."/".$sav_file['name'],$dirname,1);
+	  if ($reponse!="ok"){
+		$msg = $reponse;
+	  }else{
+	  // copy des fichiers vers /photos
+	  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			// On récupère le RNE de l'établissement
+		if (!$repertoire=getSettingValue("gepiSchoolRne"))
+		  return ("Erreur lors de la récupération du dossier établissement.");
+	  } else {
+		$repertoire="";
+	  }
+	  if ($repertoire!="")
+		$repertoire.="/";
+	  $repertoire="../photos/".$repertoire;
+		//Elèves
+		$folder = $dirname."/photos/eleves/";
+		$dossier = opendir($folder);
+		while ($Fichier = readdir($dossier)) {
+		  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
+			$source=$folder.$Fichier;
+			$dest=$repertoire."eleves/".$Fichier;
+			if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")){
+			  @copy($source, $dest);
+			}else{
+			  if (!is_file($dest))
+				@copy($source, $dest);
+			}
+		  }
+		}
+		closedir($dossier);
+		//Personnels
+		$folder = $dirname."/photos/personnels/";
+		$dossier = opendir($folder);
+		while ($Fichier = readdir($dossier)) {
+		  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
+			$source=$folder.$Fichier;
+			$dest=$repertoire."personnels/".$Fichier;
+			if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")){
+			  @copy($source, $dest);
+			}else{
+			  if (!is_file($dest))
+				@copy($source, $dest);
+			}
+		  }
+		}
+		closedir($dossier);
+	  }
+	}
+  }
+}
+
+
+
+
+
+
+
+
+
+
 // header
-$titre_page = "Gestion du module trombinoscope";
+//$titre_page = "Gestion du module trombinoscope";
 
 
 // En multisite, on ajoute le répertoire RNE
@@ -102,8 +272,60 @@ if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
   $repertoire="";
 }
 
+/****************************************************************
+                     HAUT DE PAGE
+****************************************************************/
 
-require_once("../lib/header.inc");
+// ====== Inclusion des balises head et du bandeau =====
+include_once("../lib/header_template.inc");
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+
+if (getSettingValue("GepiAccesModifMaPhotoEleve")=='yes') {
+
+  $req_trombino = mysql_query("select indice_aid, nom from aid_config order by nom");
+  $nb_aid = mysql_num_rows($req_trombino);
+  $i = 0;
+  for($i = 0;$i < $nb_aid;$i++){
+	  $aid_trouve[$i]["indice"]= mysql_result($req_trombino,$i,'indice_aid');
+	  $aid_trouve[$i]["nom"]= mysql_result($req_trombino,$i,'nom');
+	  if (getSettingValue("num_aid_trombinoscopes")==$aid_trouve[$i]["indice"]){
+		$aid_trouve[$i]["selected"]= TRUE;
+		echo getSettingValue("num_aid_trombinoscopes")." : ".$aid_trouve[$i]["indice"];
+	  }else {
+		$aid_trouve[$i]["selected"]= FALSE;
+
+	  }
+  }
+}
+
+
+/*
+ * TODO : 
+ * <?php if ( $sousrub === 've' ) {
+ * }
+ *
+ * if ( $sousrub === 'vp' ) {
+ * }
+ *
+ * if ( $sousrub === 'de' ) {
+ * }
+ *
+ * if ( $sousrub === 'dp' ) {
+ * }
+ *
+ * if ( $sousrub === 'deok' ) {
+ * }
+ *
+ * if ( $sousrub === 'dpok' ) {
+ * }
+ */
+
+/*require_once("../lib/header.inc");
 ?>
 
 <p class='bold'><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
@@ -462,3 +684,37 @@ if ( $sousrub === 'dpok' ) {
 
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php"); ?>
+ *
+ */
+
+
+/****************************************************************
+			BAS DE PAGE
+****************************************************************/
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("../lib/footer_template.inc.php");
+
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// $affiche_debug=debug_var();
+
+
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_trombinoscopes/trombinoscopes_admin_template.php';
+
+$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+include($nom_gabarit);
+
+// ------ on vide les tableaux -----
+unset($menuAffiche);
+
+
+
+?>

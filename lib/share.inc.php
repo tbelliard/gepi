@@ -5184,19 +5184,21 @@ function test_ecriture_style_screen_ajout() {
 	}
 }
 
+
+/**********************************************************************************************
+ *                                  Fonctions Trombinoscope
+ **********************************************************************************************/
+
 /**
  * Crée les répertoires photos/RNE_Etablissement, photos/RNE_Etablissement/eleves et
- * photos/RNE_Etablissement/personnels s'ils n'exixtent pas
- *
- * @return boolean : true si tout se passe bien ou false si la création d'un répertoire échoue
+ * photos/RNE_Etablissement/personnels s'ils n'existent pas
+ * @return bool true si tout se passe bien ou false si la création d'un répertoire échoue
  */
 function cree_repertoire_multisite() {
-  
   if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 		// On récupère le RNE de l'établissement
 	if (!$repertoire=getSettingValue("gepiSchoolRne"))
 	  return FALSE;
-
 	//on vérifie que le dossier photos/RNE_Etablissement n'existe pas
 	if (!is_dir("../photos/".$repertoire)){
 	  // On crée le répertoire photos/RNE_Etablissement
@@ -5206,7 +5208,6 @@ function cree_repertoire_multisite() {
 	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/index.html" ))
 		return FALSE;
 	}
-
 	//on vérifie que le dossier photos/RNE_Etablissement/eleves n'existe pas
 	if (!is_dir("../photos/".$repertoire."/eleves")){
 	  // On crée le répertoire photos/RNE_Etablissement/eleves
@@ -5216,7 +5217,6 @@ function cree_repertoire_multisite() {
 	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/eleves/index.html" ))
 		return FALSE;
 	 }
-
 	//on vérifie que le dossier photos/RNE_Etablissement/personnels n'existe pas
 	if (!is_dir("../photos/".$repertoire."/personnels")){
 	  // On crée le répertoire photos/RNE_Etablissement/personnels
@@ -5225,19 +5225,113 @@ function cree_repertoire_multisite() {
 	  // On enregistre un fichier index.html dans photos/RNE_Etablissement/personnels
 	  if (!copy  (  "../photos/index.html"  ,  "../photos/".$repertoire."/personnels/index.html" ))
 		return FALSE;
-
 	  }
-		return TRUE;
 	}
+	return TRUE;
 }
 
 /**
+ * Recherche les élèves sans photos
+ * 
+ * @return array tableau de login - nom - prénom - classe - classe court - eleonet
+ */
+function recherche_eleves_sans_photo() {
+  $eleve=NULL;
+  $requete_liste_eleve = "SELECT e.elenoet, e.login, e.nom, e.prenom, c.nom_complet, c.classe
+	FROM eleves e, j_eleves_classes jec, classes c
+	WHERE e.login = jec.login 
+	AND jec.id_classe = c.id 
+	GROUP BY e.login 
+	ORDER BY id_classe, nom, prenom ASC";
+  $res_eleve = mysql_query($requete_liste_eleve);
+  while ($row = mysql_fetch_object($res_eleve)) {
+	$nom_photo = nom_photo($row->elenoet);
+	if (!($nom_photo and file_exists($nom_photo))) {
+	  $eleve[]=$row;
+	}
+  }
+  return $eleve;
+}
+
+/**
+ *
+ * @param text $statut statut recherché
+ * @return array tableau des personnels sans photo ou NULL
+ */
+function recherche_personnel_sans_photo($statut='professeur') {
+  $personnel=NULL;
+  $requete_liste_personnel = "SELECT login,nom,prenom FROM utilisateurs u
+	WHERE u.statut='".$statut."'
+	ORDER BY nom, prenom ASC";
+  $res_personnel = mysql_query($requete_liste_personnel);
+  while ($row = mysql_fetch_object($res_personnel)) {
+	$nom_photo = nom_photo($row->login,"personnels");
+	if (!($nom_photo and file_exists($nom_photo))) {
+	  $personnel[]=$row;
+	}
+  }
+  return $personnel;
+}
+
+/**
+ * Efface le dossier photo passé en argument
+ * @param text $photos le dossier à effacer personnels ou eleves
+ * @return text L'état de la suppression
+ */
+function efface_photos($photos) {
+// on liste les fichier du dossier photos/personnels ou photos/eleves
+  if (!($photos=="eleves" || $photos=="personnels"))
+	return ("Le dossier <strong>".$photos."</strong> n'ai pas valide.");  
+  if (cree_zip_archive("photos")==TRUE){
+	$fichier_sup=array();
+	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+		  // On récupère le RNE de l'établissement
+	  if (!$repertoire=getSettingValue("gepiSchoolRne"))
+		return ("Erreur lors de la récupération du dossier établissement.");
+	} else {
+	  $repertoire="";
+	}
+	$folder = "../photos/".$repertoire.$photos."/";
+	$dossier = opendir($folder);
+	while ($Fichier = readdir($dossier)) {
+	  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
+		$nomFichier = $folder."".$Fichier;
+		$fichier_sup[] = $nomFichier;
+	  }
+	}
+	closedir($dossier);
+	if(count($fichier_sup)==0) {
+	  return ("Le dossier <strong>".$folder."</strong> ne contient pas de photo.") ;
+	} else {
+	  foreach ($fichier_sup as $fic_efface) {
+		if(file_exists($fic_efface)) {
+		  @unlink($fic_efface);
+		  if(file_exists($fic_efface)) {
+			return ("Le fichier  <strong>".$fic_efface."</strong> n'a pas pu être effacé.");
+		  }
+		}
+	  }
+	  unset ($fic_efface);
+	  return ("Le dossier <strong>".$folder."</strong> a été vidé.") ;
+	}
+  }else{
+	return ("Erreur lors de la création de l'archive.") ;
+  }
+
+}
+
+/**********************************************************************************************
+ *                               Fin Fonctions Trombinoscope
+ **********************************************************************************************/
+
+/**********************************************************************************************
+ *                                   Fil d'Ariane
+ **********************************************************************************************/
+/**
  * gestion du fil d'ariane en remplissant le tableau $_SESSION['ariane']
- *
- * @param <lien http> $lien : page atteinte par le lien
- * @param <texte> $texte : texte à afficher dans le fil d'ariane
- *
- * @return <bolean> True si tout s'est bien passé, False sinon
+ * @param text $lien page atteinte par le lien
+ * @param text $texte texte à afficher dans le fil d'ariane
+ * @return bool True si tout s'est bien passé, False sinon
  */
 function suivi_ariane($lien,$texte){
   if (!isset($_SESSION['ariane'])){
@@ -5287,8 +5381,141 @@ function affiche_ariane($validation= FALSE,$themessage="" ){
 	echo "</p>";
   }
 }
+/**********************************************************************************************
+ *                               Fin Fil d'Ariane
+ **********************************************************************************************/
+/**********************************************************************************************
+ *                               Manipulation de fichiers
+ **********************************************************************************************/
 
+/**
+ * Renvoie le chemin relatif pour remonter à la racine du site
+ * @param int $niveau niveau dans l'arborescence
+ * @return text chemin relatif vers la racine
+ */
+function path_niveau($niveau=1){
+  switch ($niveau) {
+	case 0:
+	  $path = "./";
+		  break;
+	case 1:
+	  $path = "../";
+		  break;
+	case 2:
+	  $path = "../../";
+	default:
+	  $path = "../";
+  }
+  return $path;
+}
 
+/**
+ *
+ * @param text $dossier_a_archiver limité à documents ou photos
+ * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
+ * @return bool 
+ */
+function cree_zip_archive($dossier_a_archiver,$niveau=1) {
+  $path = path_niveau();
+  $dirname = "backup/".getSettingValue("backup_directory")."/";
+  define( 'PCLZIP_TEMPORARY_DIR', $path.$dirname );
+  require_once($path.'lib/pclzip.lib.php');
 
+  if (isset($dossier_a_archiver)) {
+	$suffixe_zip="_le_".date("Y_m_d_\a_H\hi");
+	switch ($dossier_a_archiver) {
+	case "documents":
+	  $chemin_stockage = $path.$dirname."_cdt".$suffixe_zip.".zip"; //l'endroit où sera stockée l'archive
+	  $dossier_a_traiter = $path.'documents/'; //le dossier à traiter
+	  $dossier_dans_archive = 'documents'; //le nom du dossier dans l'archive créée
+	  break;
+	case "photos":
+	  $chemin_stockage = $path.$dirname."_photos".$suffixe_zip.".zip";
+	  $dossier_a_traiter = $path.'photos/'; //le dossier à traiter
+	  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+		$dossier_a_traiter .=getSettingValue("gepiSchoolRne")."/";
+	  }
+	  $dossier_dans_archive = 'photos'; //le nom du dossier dans l'archive créer
+	  break;
+	default:
+	  $chemin_stockage = '';
+	}
+
+	if ($chemin_stockage !='') {
+	  $archive = new PclZip($chemin_stockage);
+	  $v_list = $archive->create($dossier_a_traiter,
+			  PCLZIP_OPT_REMOVE_PATH,$dossier_a_traiter,
+			  PCLZIP_OPT_ADD_PATH, $dossier_dans_archive);
+	  if ($v_list == 0) {
+		 die("Error : ".$archive->errorInfo(true));
+		return FALSE;
+	  }else {
+		return TRUE;
+	  }
+	}
+  }  
+}
+
+/**
+ * Déplace un fichier de $source vers $dest
+ * @param text $source : emplacement du fichier à déplacer
+ * @param text $dest : Nouvel emplacement du fichier
+ * @return bool
+ */
+function deplacer_upload($source, $dest) {
+    $ok = @copy($source, $dest);
+    if (!$ok) $ok = (@move_uploaded_file($source, $dest));
+    return $ok;
+}
+
+/**
+ * Télécharge un fichier dans $dirname après avoir nettoyer son nom si tout se passe bien :
+ * $sav_file['name']=my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name'])
+ * @param array $sav_file tableau de type $_FILE["nom_du_fichier"]
+ * @param text $dirname
+ * @return text ok ou message d'erreur
+ */
+function telecharge_fichier($sav_file,$dirname,$type,$ext){
+  if (!isset($sav_file['tmp_name']) or ($sav_file['tmp_name'] =='')) {
+	return ("Erreur de téléchargement.");
+  } else if (!file_exists($sav_file['tmp_name'])) {
+	return ("Erreur de téléchargement 2.");
+  } else if (!preg_match('/'.$ext.'$/',$sav_file['name'])){
+	return ("Erreur : seuls les fichiers ayant l'extension .".$ext." sont autorisés.");
+  } else if ($sav_file['type']!=$type ){
+	return ("Erreur : seuls les fichiers de type '".$type."' sont autorisés.");
+  } else {
+	$nom_corrige = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name']);
+	if (!deplacer_upload($sav_file['tmp_name'], $dirname."/".$nom_corrige)) {
+	  return ("Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire ".$dirname);
+	} else {
+	  $sav_file['name']=$nom_corrige;
+	  return ("ok");
+	}
+  }
+}
+
+/**
+ * Extrait une archive Zip
+ * @param text $fichier le nom du fichier à dézipper
+ * @param text $repertoire le répertoire de destination
+ * @param int $niveau niveau dans l'arborescence de la page appelante
+ * @return text ok ou message d'erreur
+ */
+function dezip_PclZip_fichier($fichier,$repertoire,$niveau=1){
+  $path = path_niveau();
+  require_once($path.'lib/pclzip.lib.php');
+  $archive = new PclZip($fichier);
+  //if ($archive->extract() == 0) {
+if ($archive->extract(PCLZIP_OPT_PATH, $repertoire) == 0) {
+	return "Une erreur a été rencontrée lors de l'extraction du fichier zip";
+  }else {
+	return "ok";
+  }
+}
+
+/**********************************************************************************************
+ *                              Fin Manipulation de fichiers
+ **********************************************************************************************/
 
 ?>
