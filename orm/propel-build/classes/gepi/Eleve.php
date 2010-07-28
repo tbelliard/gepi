@@ -981,15 +981,11 @@ class Eleve extends BaseEleve {
 	 * @return int $nombre_absence
 	 */
 	public function getNbreDemiJourneesAbsence($date_debut, $date_fin = null) {
-	    $query =  AbsenceEleveSaisieQuery::create();
-	    $query->filterByEleve($this);
-	    $query->filterByFinAbs($date_debut, Criteria::GREATER_EQUAL);
-	    if ($date_fin != null) {
-		$query->filterByDebutAbs($date_fin, Criteria::LESS_EQUAL);
-	    }
-	    $query->orderByDebutAbs(Criteria::ASC);
-
-	    $abs_saisie_col = $query->find();
+	    $abs_saisie_col =  AbsenceEleveSaisieQuery::create()
+		->filterByEleve($this)
+		->filterByPlageTemps($date_debut, $date_fin)
+		->orderByDebutAbs(Criteria::ASC)
+		->find();
 
 	    if ($abs_saisie_col->isEmpty()) {
 		return 0;
@@ -1088,15 +1084,11 @@ class Eleve extends BaseEleve {
 	 * @return int $nombre_absence
 	 */
 	public function getNbreDemiJourneesNonJustifieesAbsence($date_debut, $date_fin = null) {
-	    $query =  AbsenceEleveSaisieQuery::create();
-	    $query->filterByEleve($this);
-	    $query->filterByFinAbs($date_debut, Criteria::GREATER_EQUAL);
-	    if ($date_fin != null) {
-		$query->filterByDebutAbs($date_fin, Criteria::LESS_EQUAL);
-	    }
-	    $query->orderByDebutAbs(Criteria::ASC);
-
-	    $abs_saisie_col = $query->find();
+	    $abs_saisie_col =  AbsenceEleveSaisieQuery::create()
+		->filterByEleve($this)
+		->filterByPlageTemps($date_debut, $date_fin)
+		->orderByDebutAbs(Criteria::ASC)
+		->find();
 
 	    if ($abs_saisie_col->isEmpty()) {
 		return 0;
@@ -1194,15 +1186,11 @@ class Eleve extends BaseEleve {
 	 * @return int $nombre_absence
 	 */
 	public function getNbreRetards($date_debut, $date_fin = null) {
-	    $query =  AbsenceEleveSaisieQuery::create();
-	    $query->filterByEleve($this);
-	    $query->filterByFinAbs($date_debut, Criteria::GREATER_EQUAL);
-	    if ($date_fin != null) {
-		$query->filterByDebutAbs($date_fin, Criteria::LESS_EQUAL);
-	    }
-	    $query->orderByDebutAbs(Criteria::ASC);
-
-	    $abs_saisie_col = $query->find();
+	    $abs_saisie_col =  AbsenceEleveSaisieQuery::create()
+		->filterByEleve($this)
+		->filterByPlageTemps($date_debut, $date_fin)
+		->orderByDebutAbs(Criteria::ASC)
+		->find();
 
 	    if ($abs_saisie_col->isEmpty()) {
 		return 0;
@@ -1368,10 +1356,9 @@ class Eleve extends BaseEleve {
 		    && $_REQUEST['query_AbsenceEleveSaisieQuery_getPresent_'.$dt->format('U')] != null) {
 		$saisie_col = $_REQUEST['query_AbsenceEleveSaisieQuery_getPresent_'.$dt->format('U')];
 	    } else {
-		$query = AbsenceEleveSaisieQuery::create();
-		$query->filterByFinAbs($dt, Criteria::GREATER_THAN);
-		$query->filterByDebutAbs($dt, Criteria::LESS_EQUAL);
-		$saisie_col = $query->find();
+		$saisie_col = AbsenceEleveSaisieQuery::create()
+		    ->filterByPlageTemps($dt, $dt)
+		    ->find();
 		$_REQUEST['query_AbsenceEleveSaisieQuery_getPresent_'.$dt->format('U')] = $saisie_col;
 	    }
 

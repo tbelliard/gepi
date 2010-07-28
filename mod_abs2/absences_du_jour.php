@@ -247,8 +247,7 @@ if ($type_selection == 'id_eleve') {
     }
     $eleve_col = $query
 	    ->useAbsenceEleveSaisieQuery()
-	    ->filterByFinAbs($dt_debut, Criteria::GREATER_EQUAL)
-	    ->filterByFinAbs($dt_fin, Criteria::LESS_EQUAL)
+	    ->filterByPlageTemps($dt_debut, $dt_fin)
 	    ->endUse()->distinct()->find();
 }
 

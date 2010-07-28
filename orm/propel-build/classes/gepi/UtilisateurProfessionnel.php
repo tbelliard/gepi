@@ -456,17 +456,12 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		    }
 	    }
 
-//	    $criteria = new Criteria();
-//	    $criteria->add(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $edtcreneau->getPrimaryKey());
 	    $query = AbsenceEleveSaisieQuery::create();
 	    $query->filterByUtilisateurProfessionnel($this);
 	    $dt->setTime($edtcreneau->getHeuredebutDefiniePeriode('H'), $edtcreneau->getHeuredebutDefiniePeriode('i'));
-	    $query->filterByFinAbs($dt, Criteria::GREATER_EQUAL);
-//	    $criteria->add(AbsenceEleveSaisiePeer::DEBUT_ABS, $dt, Criteria::GREATER_EQUAL);
 	    $dt_end = clone $dt;
 	    $dt_end->setTime($edtcreneau->getHeurefinDefiniePeriode('H'), $edtcreneau->getHeurefinDefiniePeriode('i'));
-	    $query->filterByDebutAbs($dt_end, Criteria::LESS_THAN);
-//	    $criteria->add(AbsenceEleveSaisiePeer::FIN_ABS, $dt_end, Criteria::LESS_EQUAL);
+	    $query->filterByPlageTemps($dt, $dt_end);
 	    $col = $query->find();
 	    return $col;
 	}

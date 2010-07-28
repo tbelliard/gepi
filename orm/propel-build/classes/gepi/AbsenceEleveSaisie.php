@@ -354,9 +354,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    $saisie_col = $_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')];
 		} else {
 		    $query = AbsenceEleveSaisieQuery::create();
-		    $query->filterByFinAbs($this->getDebutAbs(), Criteria::GREATER_THAN);
-		    $query->filterByDebutAbs($this->getFinAbs(), Criteria::LESS_EQUAL);
-		    $query->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
+		    $query->filterByPlageTemps($this->getDebutAbs(null), $this->getFinAbs(null))
+			->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
 			->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
 			->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType');
 		    $saisie_col = $query->find();
@@ -503,10 +502,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			&& $_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')] != null) {
 		    $saisie_col = $_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')];
 		} else {
-		    $query = AbsenceEleveSaisieQuery::create();
-		    $query->filterByFinAbs($this->getDebutAbs(), Criteria::GREATER_THAN);
-		    $query->filterByDebutAbs($this->getFinAbs(), Criteria::LESS_EQUAL);
-		    $query->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
+		    $query = AbsenceEleveSaisieQuery::create()
+			->filterByPlageTemps($this->getDebutAbs(null), $this->getFinAbs(null))
+			->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
 			->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
 			->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType');
 		    $saisie_col = $query->find();

@@ -478,10 +478,9 @@ if ($current_cours != null) {
     $query->filterByUtilisateurProfessionnel($utilisateur);
     $dt = clone $dt_date_absence_eleve;
     $dt->setTime($current_cours->getHeureDebut('H'), $current_cours->getHeureDebut('i'));
-    $query->filterByFinAbs($dt, Criteria::GREATER_EQUAL);
     $dt_end = clone $dt;
     $dt_end->setTime($current_cours->getHeureFin('H'), $current_cours->getHeureFin('i'));
-    $query->filterByDebutAbs($dt_end, Criteria::LESS_THAN);
+    $query->filterByPlageTemps($dt, $dt_end);
     if ($query->count() > 0) {
 	$deja_saisie = true;
     }
