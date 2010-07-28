@@ -203,7 +203,10 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
 
 	echo "<option value='-1'>choisissez un creneau</option>\n";
 	foreach ($edt_creneau_col as $edt_creneau) {
-	    //$edt_creneau = new EdtCreneau();
+		if ($edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_PAUSE
+			|| $edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_REPAS) {
+		    continue;
+		}
 		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
 		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
 		echo ">";
@@ -274,6 +277,10 @@ if ($utilisateur->getStatut() != "professeur") {
 	echo "<option value='-1'>choisissez un creneau</option>\n";
 	foreach ($edt_creneau_col as $edt_creneau) {
 	    //$edt_creneau = new EdtCreneau();
+		if ($edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_PAUSE
+			|| $edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_REPAS) {
+		    continue;
+		}
 		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
 		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
 		echo ">";
@@ -339,6 +346,10 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
 	echo "<option value='-1'>choisissez un creneau</option>\n";
 	foreach ($edt_creneau_col as $edt_creneau) {
 	    //$edt_creneau = new EdtCreneau();
+		if ($edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_PAUSE
+			|| $edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_REPAS) {
+		    continue;
+		}
 		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
 		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
 		echo ">";
@@ -480,7 +491,7 @@ if ($current_cours != null) {
 }
 
 if ($current_creneau == null) {
-    echo 'Aucun creneau selectionnÃ©';
+    echo 'Aucun creneau selectionné';
     //on vide la liste des eleves pour eviter de proposer une saisie
     $eleve_col = new PropelObjectCollection();
 }
