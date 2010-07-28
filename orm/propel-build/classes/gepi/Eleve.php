@@ -508,6 +508,7 @@ class Eleve extends BaseEleve {
 		    }
 	    }
 
+	    //si il n'y a aucune periode ouverte actuellement, on renvoi tous les groupe et donc tous les emplacements de cours
 	    $colGroupeId = $this->getGroupes($this->getPeriodeNote($dt))->getPrimaryKeys();
 
 	    $query = EdtEmplacementCoursQuery::create()->filterByIdGroupe($colGroupeId)
