@@ -479,6 +479,11 @@ if ($current_cours != null) {
     }
 }
 
+if ($current_creneau == null) {
+    echo 'Aucun creneau selectionné';
+    //on vide la liste des eleves pour eviter de proposer une saisie
+    $eleve_col = new PropelObjectCollection();
+}
 
 //afichage de la saisie des absences des eleves
 if (!$eleve_col->isEmpty()) {
