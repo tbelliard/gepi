@@ -1839,8 +1839,8 @@ function make_classes_select_html($link, $current, $year, $month, $day)
   // Ligne suivante corrigée sur suggestion tout à fait pertinente de Stéphane, mail du 1er septembre 06
 
 	
-  if ($_SESSION['statut']=='scolarite'
-		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes"){
+  if (isset($_SESSION['statut']) && ($_SESSION['statut']=='scolarite'
+		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")){
   $sql = "SELECT DISTINCT c.id, c.classe
 	FROM classes c, j_groupes_classes jgc, ct_entry ct, j_scol_classes jsc
 	WHERE (c.id = jgc.id_classe
@@ -1850,8 +1850,8 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 		)
 	ORDER BY classe ;";
   
-  } else if ($_SESSION['statut']=='cpe'
-		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes"){
+  } else if (isset($_SESSION['statut']) && ($_SESSION['statut']=='cpe'
+		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")){
 
 
 	$sql = "SELECT DISTINCT c.id, c.classe
