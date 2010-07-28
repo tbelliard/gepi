@@ -180,6 +180,20 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
+	 * Renvoi le nom du groupe (avec les classe) ou une chaine vide
+	 * utilise pour les template tbs
+	 * @return     string
+	 *
+	 */
+	public function getGroupeNameAvecClasses() {
+	    if ($this->getGroupe() != null) {
+		return $this->getGroupe()->getNameAvecClasses();
+	    } else {
+		return '';
+	    }
+	}
+	/**
+	 *
 	 * Renvoi le nom du groupe ou une chaine vide
 	 * utilise pour les template tbs
 	 * @return     string
