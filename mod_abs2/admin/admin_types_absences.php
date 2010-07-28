@@ -59,8 +59,8 @@ if (empty($_GET['responsabilite_etablissement']) and empty($_POST['responsabilit
     else { if (isset($_GET['responsabilite_etablissement'])) {$responsabilite_etablissement=$_GET['responsabilite_etablissement'];} if (isset($_POST['responsabilite_etablissement'])) {$responsabilite_etablissement=$_POST['responsabilite_etablissement'];} }
 if (empty($_GET['type_saisie']) and empty($_POST['type_saisie'])) { $type_saisie="";}
     else { if (isset($_GET['type_saisie'])) {$type_saisie=$_GET['type_saisie'];} if (isset($_POST['type_saisie'])) {$type_saisie=$_POST['type_saisie'];} }
-if (empty($_GET['ajout_statut_type_saisie']) and empty($_POST['ajout_statut_type_saisie'])) { $type_saisie="";}
-    else { if (isset($_GET['ajout_statut_type_saisie'])) {$type_saisie=$_GET['ajout_statut_type_saisie'];} if (isset($_POST['ajout_statut_type_saisie'])) {$type_saisie=$_POST['ajout_statut_type_saisie'];} }
+if (empty($_GET['ajout_statut_type_saisie']) and empty($_POST['ajout_statut_type_saisie'])) { $ajout_statut_type_saisie="";}
+    else { if (isset($_GET['ajout_statut_type_saisie'])) {$type_saisie=$_GET['ajout_statut_type_saisie'];} if (isset($_POST['ajout_statut_type_saisie'])) {$ajout_statut_type_saisie=$_POST['ajout_statut_type_saisie'];} }
 
 //$type = new AbsenceEleveType();
 $type = AbsenceEleveTypeQuery::create()->findPk($id);
