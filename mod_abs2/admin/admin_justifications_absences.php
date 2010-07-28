@@ -77,8 +77,8 @@ if ($action == 'supprimer') {
 	if ($justification == null) {
 	    $justification = new AbsenceEleveJustification();
 	}
-	$justification->setNom(unslashes($nom));
-	$justification->setCommentaire(unslashes($commentaire));
+	$justification->setNom(stripslashes($nom));
+	$justification->setCommentaire(stripslashes($commentaire));
 	$justification->save();
     }
 }

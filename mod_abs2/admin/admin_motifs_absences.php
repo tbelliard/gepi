@@ -74,8 +74,8 @@ if ($action == 'supprimer') {
 	if ($motif == null) {
 	    $motif = new AbsenceEleveMotif();
 	}
-	$motif->setNom(unslashes($nom_motif));
-	$motif->setCommentaire(unslashes($com_motif));
+	$motif->setNom(stripslashes($nom_motif));
+	$motif->setCommentaire(stripslashes($com_motif));
 	$motif->save();
     }
 }
