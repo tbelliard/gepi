@@ -68,11 +68,9 @@ class EleveQuery extends BaseEleveQuery {
 //			->where('JEleveClasse.IdClasse = JScolClasses.IdClasse')
 //			->where('JScolClasses.login = ?', $utilisateurProfessionnel->getLogin());
 
-		$this->useJEleveClasseQuery()
-			->useClasseQuery()
-			->useJScolClassesQuery()
-			->filterByUtilisateurProfessionnel($utilisateurProfessionnel)
-			->endUse()->endUse()->endUse();
+		$this->useJEleveClasseQuery()->addJoin(JEleveClassePeer::ID_CLASSE, JScolClassesPeer::ID_CLASSE,Criteria::INNER_JOIN)
+			->add(JScolClassesPeer::LOGIN, $utilisateurProfessionnel->getLogin())
+			->endUse();
 		return $this;
 	    }
         }
