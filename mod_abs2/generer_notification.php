@@ -178,20 +178,13 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	include('visu_notification.php');
 	die();
     }
-     // Load the template
+    
+    // Load the template
     $TBS->LoadTemplate('modeles/email.txt');
-
-    //on va mettre les champs dans des variables pour remplir le modele
-    if ($notification->getResponsableEleveAdresse() != null && $notification->getResponsableEleveAdresse()->getResponsableEleves()->count() == 1) {
-	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
-	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
-    } elseif ($notification->getResponsableEleveAdresse() != null) {
-	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
-	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom());
-	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getNext();
-	$destinataire .= '  '.$responsable->getCivilite().' '.strtoupper($responsable->getNom());;
-    } else {
-	$destinataire = '';
+    
+    $destinataire = '';
+    foreach ($notification->getResponsableEleves() as $responsable) {
+	$destinataire .= $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom()).' ';
     }
     $TBS->MergeField('destinataire',$destinataire);
 
@@ -258,17 +251,9 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     // Load the template
     $TBS->LoadTemplate('modeles/sms.txt');
 
-    //on va mettre les champs dans des variables pour remplir le modele
-    if ($notification->getResponsableEleveAdresse() != null && $notification->getResponsableEleveAdresse()->getResponsableEleves()->count() == 1) {
-	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
-	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
-    } elseif ($notification->getResponsableEleveAdresse() != null) {
-	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
-	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom());
-	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getNext();
-	$destinataire .= '  '.strtoupper($responsable->getCivilite()).' '.strtoupper($responsable->getNom());;
-    } else {
-	$destinataire = '';
+    $destinataire = '';
+    foreach ($notification->getResponsableEleves() as $responsable) {
+	$destinataire .= $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom()).' ';
     }
     $TBS->MergeField('destinataire',$destinataire);
 
