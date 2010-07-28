@@ -189,7 +189,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
 	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom());
 	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getNext();
-	$destinataire .= '  '.strtoupper($responsable->getCivilite()).' '.strtoupper($responsable->getNom());;
+	$destinataire .= '  '.$responsable->getCivilite().' '.strtoupper($responsable->getNom());;
     } else {
 	$destinataire = '';
     }
@@ -233,7 +233,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     //$envoi = mail(getSettingValue("gepiAdminAdress"),
 
     $envoi = mail($notification->getEmail(),
-	    "absence ".getSettingValue("gepiSchoolName"),
+	    "notification d'absence n°".$notification->getId().'  '.getSettingValue("gepiSchoolName"),
 	    $message,
            "From: ".$email_abs_etab."\r\n"
            ."X-Mailer: PHP/" . phpversion());
@@ -398,4 +398,13 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 }
 
 include('visu_notification.php');
+
+// utiliser pour formater certain champs dans les modele tbs
+function tbs_str($FieldName,&$CurrRec) {
+    $CurrRec = html_entity_decode($CurrRec,ENT_QUOTES);
+    $CurrRec = str_replace('\"','"',str_replace("\'","'",$CurrRec));
+    $CurrRec = str_replace('\\'.htmlspecialchars('"',ENT_QUOTES),htmlspecialchars('"',ENT_QUOTES),str_replace("\\".htmlspecialchars("'",ENT_QUOTES),htmlspecialchars("'",ENT_QUOTES),$CurrRec));
+
+    $CurrRec = stripslashes($CurrRec);
+}
 ?>
