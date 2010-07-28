@@ -628,11 +628,18 @@ class Eleve extends BaseEleve {
 
 			    $collAbsenceEleveSaisiesParJour = new PropelObjectCollection();
 			    $collAbsenceEleveSaisiesParJour->setModel('AbsenceEleveSaisie');
-			    $saisie_col = $this->getAbsenceEleveSaisies();
-			    foreach ($saisie_col as $saisie) {
-				if ($dt->format('U') <  $saisie->getFinAbs('U')
-					&& $dt_fin->format('U') >  $saisie->getDebutAbs('U')) {
-				    $collAbsenceEleveSaisiesParJour->append($saisie);
+			    if ($this->countAbsenceEleveSaisies() > 100) {
+				//il y a trop de saisie, on passe l'optimisation et on fait une requete db
+				$query = AbsenceEleveSaisieQuery::create()->filterByEleve($this);
+				$query->filterByPlageTemps($dt, $dt_fin);
+				$collAbsenceEleveSaisiesParJour = $query->distinct()->find();
+			    } else {
+				$saisie_col = $this->getAbsenceEleveSaisies();
+				foreach ($saisie_col as $saisie) {
+				    if ($dt->format('U') <  $saisie->getFinAbs('U')
+					    && $dt_fin->format('U') >  $saisie->getDebutAbs('U')) {
+					$collAbsenceEleveSaisiesParJour->append($saisie);
+				    }
 				}
 			    }
 			    $this->collAbsenceEleveSaisiesParJour[$dt->format('d/m/Y')] = $collAbsenceEleveSaisiesParJour;
@@ -755,7 +762,14 @@ class Eleve extends BaseEleve {
 		//on a une date de debut et de fin le meme jour, on va optimiser un peu
 		$saisie_col = $this->getAbsenceEleveSaisiesDuJour($dt_debut);
 	    } else {
-		$saisie_col = $this->getAbsenceEleveSaisies();
+		if ($this->countAbsenceEleveSaisies() > 100) {
+		    //il y a trop de saisie, on passe l'optimisation et on fait une requete db
+		    $query = AbsenceEleveSaisieQuery::create()->filterByEleve($this);
+		    $query->filterByPlageTemps($dt_debut, $dt_fin);
+		    return $query->distinct()->find();
+		} else {
+		    $saisie_col = $this->getAbsenceEleveSaisies();
+		}
 	    }
 	    foreach ($saisie_col as $saisie) {
 		if ($dt_debut != null && $dt_fin!= null && $dt_debut->format('U') == $dt_fin->format('U')) {
@@ -781,6 +795,7 @@ class Eleve extends BaseEleve {
 
 	    return $result;
 	}
+	
 	/*
 	Renvoie le nom de la photo de l'élève
 	Renvoie NULL si :
