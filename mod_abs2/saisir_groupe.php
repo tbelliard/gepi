@@ -96,6 +96,7 @@ if ($date_absence_eleve != null) {
 
 if ($type_selection == 'id_cours') {
     $current_cours = EdtEmplacementCoursQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->findPk($id_cours);
+    $current_creneau = null;
     if ($current_cours != null) {
 	$current_creneau = $current_cours->getEdtCreneau();
 	$current_groupe = $current_cours->getGroupe();
