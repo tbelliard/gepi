@@ -128,8 +128,6 @@ if ($current_cours != null) {
 		    $date_fin->setTime($current_cours->getHeureFin('H'), $current_cours->getHeureFin('i'));
 		    $saisie->setFinAbs($date_fin);
 
-		    $saisie->setEdtEmplacementCours($current_cours);
-		    
 		    $saisie_col_modele->append($saisie);
 		}
 	}
