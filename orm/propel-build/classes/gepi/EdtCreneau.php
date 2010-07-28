@@ -16,7 +16,16 @@
 class EdtCreneau extends BaseEdtCreneau {
 
 	/**
-	 *
+	 * Les types de creneaux possibles
+	 */
+	public static $TYPE_COURS = 'cours';
+	public static $TYPE_PAUSE = 'pause';
+	public static $TYPE_REPAS = 'repas';
+	public static $TYPE_VIE_SCOLAIRE = 'vie scolaire';
+
+	public static $LISTE_LABEL_TYPE = array('cours' => 'cours', 'pause' => 'pause', 'repas' => 'repas', 'vie scolaire' => 'vie scolaire');
+
+	/**
 	 * Renvoi le creneau suivant du type donné
 	 *
 	 * @return     EdtCreneau EdtCreneau

@@ -15,11 +15,6 @@
  */
 class EdtCreneauPeer extends BaseEdtCreneauPeer {
 
-  /**
-   * Les types de creneaux possibles
-   */
-  public static $_type_creneaux = array("cours", "pause", "repas", "vie scolaire");
-
   private static $_all_creneaux;
 
   /**

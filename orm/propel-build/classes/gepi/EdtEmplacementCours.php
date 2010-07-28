@@ -66,7 +66,7 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 		for ($i = 1; $i <= ($duree_modif / 2); $i ++) {
 		    if ($creneau != null) {
 			$lastCreneau = $creneau;
-			$creneau = $creneau->getNextEdtCreneau("cours");
+			$creneau = $creneau->getNextEdtCreneau(EdtCreneau::$TYPE_COURS);
 		    }
 		}
 		if ($creneau == null) {
