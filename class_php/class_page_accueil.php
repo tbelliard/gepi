@@ -1520,7 +1520,7 @@ class class_page_accueil {
 				$var = '';
 			}
 
-			$this->creeNouveauItem($gepiPath.$autorise[$a][0].$var,
+			$this->creeNouveauItem($_SESSION["gepiPath"].$autorise[$a][0].$var,
 					$menu_accueil[$a][0],
 					$menu_accueil[$a][1]);
 		  }

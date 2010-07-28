@@ -143,7 +143,7 @@ else{
 }
 
 // ====== Inclusion des fichiers de classes =====
-
+$_SESSION['gepiPath']=$gepiPath;
 
 include "class_php/class_menu_general.php";
 include "class_php/class_page_accueil.php";
@@ -157,7 +157,6 @@ $tbs_statut_utilisateur = $_SESSION['statut'];
 
 if (!suivi_ariane($_SERVER['PHP_SELF'],"Accueil"))
 		echo "erreur lors de la création du fil d'ariane";
-
 /*
 // voir le fil d'Ariane pour debug
 	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){

@@ -692,6 +692,14 @@ if ($ldap_write_access) {
 // trombinoscope
 
 if(getSettingValue("active_module_trombinoscopes")=='y'){
+
+	// En multisite, on ajoute le répertoire RNE
+	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+		  // On récupère le RNE de l'établissement
+	  $repertoire="../photos/".getSettingValue("gepiSchoolRne")."/personnels/";
+	}else{
+	  $repertoire="../photos/personnels/";
+	}
 	if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!='')) {
 		$code_photo = md5(strtolower($user_login));
 		$photo=$repertoire.$code_photo.".jpg";
