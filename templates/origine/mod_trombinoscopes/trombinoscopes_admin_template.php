@@ -410,6 +410,8 @@ if (!isset($aid_trouve)) {
 		</legend>
 		<em>Pour pouvoir supprimer des fichiers photos, vous devez cocher la case ci-dessus</em>
 		<br/>
+		Un fichier de sauvegarde sera créé, pensez à le récupérer puis le supprimer dans le module de gestion des sauvegardes
+		<br/>
 <?php if( file_exists('../photos/'.$repertoire.'personnels/') ) { ?>
 		<input type="radio"
 			   name="sousrub"
@@ -470,7 +472,7 @@ if (!isset($aid_trouve)) {
 		  Restaurer les photos à partir d'un fichier Zip
 		</legend>
 		<input type="hidden" name="action" value="upload" />
-		<input type="file" name="nom_du_fichier"/>
+		<input type="file" name="nom_du_fichier" title="Nom du fichier à télécharger"/>
 		<input type="submit" value="Envoyer"/>
 		<br />
 		<input type="checkbox"

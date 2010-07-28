@@ -203,51 +203,83 @@ if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
 	  if ($reponse!="ok"){
 		$msg = $reponse;
 	  }else{
-	  // copy des fichiers vers /photos
-	  if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			// On récupère le RNE de l'établissement
-		if (!$repertoire=getSettingValue("gepiSchoolRne"))
-		  return ("Erreur lors de la récupération du dossier établissement.");
-	  } else {
-		$repertoire="";
-	  }
-	  if ($repertoire!="")
-		$repertoire.="/";
-	  $repertoire="../photos/".$repertoire;
+		//suppression du fichier .zip
+		if (!@unlink ($dirname."/".$_FILES["nom_du_fichier"]['name']))
+		  $msg .= "Erreur lors de la suppression de ".$dirname."/".$_FILES["nom_du_fichier"];
+
+		// copy des fichiers vers /photos
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			  // On récupère le RNE de l'établissement
+		  if (!$repertoire=getSettingValue("gepiSchoolRne"))
+			return ("Erreur lors de la récupération du dossier établissement.");
+		} else {
+		  $repertoire="";
+		}
+		if ($repertoire!="")
+		  $repertoire.="/";
+		$repertoire="../photos/".$repertoire;
 		//Elèves
 		$folder = $dirname."/photos/eleves/";
 		$dossier = opendir($folder);
 		while ($Fichier = readdir($dossier)) {
-		  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
+		  if ($Fichier != "." && $Fichier != "..") {
 			$source=$folder.$Fichier;
-			$dest=$repertoire."eleves/".$Fichier;
-			if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")){
-			  @copy($source, $dest);
-			}else{
-			  if (!is_file($dest))
+			if ($Fichier != "index.html") {
+			  $dest=$repertoire."eleves/".$Fichier;
+			  if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")){
 				@copy($source, $dest);
+			  }else{
+				if (!is_file($dest))
+				  @copy($source, $dest);
+			  }
 			}
+			if (!@unlink ($source))
+			  $msg .= "Erreur lors de la suppression de ".$source;
 		  }
 		}
 		closedir($dossier);
+		if (!rmdir ($folder))
+			  $msg .= "Erreur lors de la suppression de ".$folder;
 		//Personnels
 		$folder = $dirname."/photos/personnels/";
 		$dossier = opendir($folder);
 		while ($Fichier = readdir($dossier)) {
-		  if ($Fichier != "." && $Fichier != ".." && $Fichier != "index.html") {
-			$source=$folder.$Fichier;
-			$dest=$repertoire."personnels/".$Fichier;
-			if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")){
-			  @copy($source, $dest);
-			}else{
-			  if (!is_file($dest))
+		  $source=$folder.$Fichier;
+		  if ($Fichier != "." && $Fichier != "..") {
+			if ($Fichier != "index.html") {
+			  $dest=$repertoire."personnels/".$Fichier;
+			  if (isset ($_POST["ecraser"]) && ($_POST["ecraser"]="yes")){
 				@copy($source, $dest);
+			  }else{
+				if (!is_file($dest))
+				  @copy($source, $dest);
+			  }
 			}
+			if (!@unlink ($source))
+			  $msg .= "Erreur lors de la suppression de ".$source;
 		  }
 		}
 		closedir($dossier);
+		if (!rmdir ($folder))
+			  $msg .= "Erreur lors de la suppression de ".$folder;
 	  }
+	  $folder = $dirname."/photos/";
+	  $dossier = opendir($folder);
+	  while ($Fichier = readdir($dossier)) {
+		if ($Fichier != "." && $Fichier != "..") {
+		  $source=$folder."/".$Fichier;
+		  if (!@unlink ($source))
+			$msg .= "Erreur lors de la suppression de ".$source;
+		}
+	  }
+	  closedir($dossier);
+	  if (!rmdir ($folder))
+			$msg .= "Erreur lors de la suppression de ".$folder;
 	}
+  }
+  if ($msg==""){
+	$msg= "La restauration s'est bien déroulée";
+	$post_reussi=TRUE;
   }
 }
 
