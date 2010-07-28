@@ -233,7 +233,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     //$envoi = mail(getSettingValue("gepiAdminAdress"),
 
     $envoi = mail($notification->getEmail(),
-	    "notification d'absence n°".$notification->getId().'  '.getSettingValue("gepiSchoolName"),
+	    "Notification d'absence n°".$notification->getId().'  '.getSettingValue("gepiSchoolName"),
 	    $message,
            "From: ".$email_abs_etab."\r\n"
            ."X-Mailer: PHP/" . phpversion());
