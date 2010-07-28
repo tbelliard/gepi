@@ -269,7 +269,11 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 					    ->leftJoin('Groupe.JGroupesClasses')->with('JGroupesClasses')
 					    ->leftJoin('JGroupesClasses.Classe')->with('Classe')
 					    ->find();
+				} else {
+				    //par de groupes pour les autres statuts
+				    $collGroupes = new PropelObjectCollection();
 				}
+
 				if (null !== $criteria) {
 					return $collGroupes;
 				}
