@@ -15,4 +15,32 @@
  */
 class AbsenceEleveSaisieQuery extends BaseAbsenceEleveSaisieQuery {
 
+	/**
+	 * Filtre la requete sur les saisies qui chevauchent une plage de temps
+	 *
+	 * @param     dateTime $dt_debut
+	 * @param     dateTime $dt_fin
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+        public function filterByPlageTemps($dt_debut = null, $dt_fin = null)
+        {
+	    if ($dt_debut != null && $dt_fin != null && $dt_debut == $dt_fin) {
+		//on a pas une plage de temps mais deux fois le meme moment
+		//on va renvoyer aussi les saisies qui debutent a ce momement
+		$this->filterByFinAbs($dt_debut, Criteria::GREATER_THAN);
+		$this->filterByDebutAbs($dt_fin, Criteria::LESS_EQUAL);
+		return $this;
+	    } else {
+		if ($dt_debut != null) {
+		    $this->filterByFinAbs($dt_debut, Criteria::GREATER_THAN);
+		}
+		if ($dt_fin != null) {
+		    $this->filterByDebutAbs($dt_fin, Criteria::LESS_THAN);
+		}
+		return $this;
+	    }
+	    return $this;
+        }
+	
 } // AbsenceEleveSaisieQuery
