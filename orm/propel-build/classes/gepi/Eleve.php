@@ -627,18 +627,19 @@ class Eleve extends BaseEleve {
 			    $dt_fin = clone $dt;
 			    $dt_fin->setTime(23,59,59);
 
-			    $collAbsenceEleveSaisiesParJour = new PropelObjectCollection();
-			    $collAbsenceEleveSaisiesParJour->setModel('AbsenceEleveSaisie');
 			    if ($this->countAbsenceEleveSaisies() > 100) {
 				//il y a trop de saisie, on passe l'optimisation et on fait une requete db
 				$query = AbsenceEleveSaisieQuery::create()->filterByEleve($this);
 				$query->filterByPlageTemps($dt, $dt_fin);
 				$collAbsenceEleveSaisiesParJour = $query->distinct()->find();
 			    } else {
+				//on passe optimise en travaillant sur les saisies sans faire de requete db
 				$saisie_col = $this->getAbsenceEleveSaisies();
+				$collAbsenceEleveSaisiesParJour = new PropelObjectCollection();
+				$collAbsenceEleveSaisiesParJour->setModel('AbsenceEleveSaisie');
 				foreach ($saisie_col as $saisie) {
-				    if ($dt->format('U') <  $saisie->getFinAbs('U')
-					    && $dt_fin->format('U') >  $saisie->getDebutAbs('U')) {
+				    if ($dt <  $saisie->getFinAbs(null)
+					    && $dt_fin >  $saisie->getDebutAbs(null)) {
 					$collAbsenceEleveSaisiesParJour->append($saisie);
 				    }
 				}
@@ -704,59 +705,12 @@ class Eleve extends BaseEleve {
 	 *
 	 * Retourne une liste de saisie dont la periode de temps coincide avec les dates passees en paremetre (methode optimisee)
 	 *
-	 * @param      mixed $dateTime_debut string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
-	 * @param      mixed $dateTime_fin string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      $dt_debut DateTime
+	 * @param      $dt_fin DateTime
 	 *
  	 * @return PropelColection AbsenceEleveSaisie[]
 	 */
-	public function getAbsenceEleveSaisiesFilterByDate($dateTime_debut = 'now', $dateTime_fin = 'now') {
-	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-	    // -- which is unexpected, to say the least.
-	    //$dt = new DateTime();
-	    if ($dateTime_debut === null || $dateTime_debut === '') {
-		    $dt_debut = null;
-	    } elseif ($dateTime_debut instanceof DateTime) {
-		    $dt_debut = clone $dateTime_debut;
-	    } else {
-		    // some string/numeric value passed; we normalize that so that we can
-		    // validate it.
-		    try {
-			    if (is_numeric($dateTime_debut)) { // if it's a unix timestamp
-				    $dt_debut = new DateTime('@'.$dateTime_debut, new DateTimeZone('UTC'));
-				    // We have to explicitly specify and then change the time zone because of a
-				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
-				    $dt_debut->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-			    } else {
-				    $dt_debut = new DateTime($dateTime_debut);
-			    }
-		    } catch (Exception $x) {
-			    throw new PropelException('Error parsing date/time value: ' . var_export($dateTime_debut, true), $x);
-		    }
-	    }
-
-	    if ($dateTime_fin === null || $dateTime_fin === '') {
-		    $dt_fin = null;
-	    } elseif ($dateTime_fin instanceof DateTime) {
-		    $dt_fin = clone $dateTime_fin;
-	    } else {
-		    // some string/numeric value passed; we normalize that so that we can
-		    // validate it.
-		    try {
-			    if (is_numeric($dateTime_fin)) { // if it's a unix timestamp
-				    $dt_fin = new DateTime('@'.$dateTime_fin, new DateTimeZone('UTC'));
-				    // We have to explicitly specify and then change the time zone because of a
-				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
-				    $dt_fin->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-			    } else {
-				    $dt_fin = new DateTime($dateTime_fin);
-			    }
-		    } catch (Exception $x) {
-			    throw new PropelException('Error parsing date/time value: ' . var_export($dateTime_fin, true), $x);
-		    }
-	    }
-
+	public function getAbsenceEleveSaisiesFilterByDate($dt_debut, $dt_fin) {
 	    $result = new PropelObjectCollection();
 	    $result->setModel('AbsenceEleveSaisie');
 	    if ($dt_debut->format('d/m/Y') == $dt_fin->format('d/m/Y')) {
@@ -773,21 +727,21 @@ class Eleve extends BaseEleve {
 		}
 	    }
 	    foreach ($saisie_col as $saisie) {
-		if ($dt_debut != null && $dt_fin!= null && $dt_debut->format('U') == $dt_fin->format('U')) {
+		if ($dt_debut != null && $dt_fin!= null && $dt_debut == $dt_fin) {
 		    //si on a un seul dateTime pour la plage de recherche, on renvoi les saisie qui chevauchent cette date
 		    //ainsi que les saisies qui commence juste à cette date
-		    if ($dt_debut->format('U') >=  $saisie->getFinAbs('U')) {
+		    if ($dt_debut >=  $saisie->getFinAbs(null)) {
 			continue;
 		    }
-		    if ($dt_fin != null && ($dt_fin->format('U') <  $saisie->getDebutAbs('U'))) {
+		    if ($dt_fin != null && ($dt_fin <  $saisie->getDebutAbs(null))) {
 			continue;
 		    }
 		    $result->append($saisie);
 		} else {
-		    if ($dt_debut != null && ($dt_debut->format('U') >=  $saisie->getFinAbs('U'))) {
+		    if ($dt_debut != null && ($dt_debut >=  $saisie->getFinAbs(null))) {
 			continue;
 		    }
-		    if ($dt_fin != null && ($dt_fin->format('U') <=  $saisie->getDebutAbs('U'))) {
+		    if ($dt_fin != null && ($dt_fin <=  $saisie->getDebutAbs(null))) {
 			continue;
 		    }
 		    $result->append($saisie);
@@ -941,28 +895,36 @@ class Eleve extends BaseEleve {
 	 * @return	PeriodeNote
 	 */
 	public function getPeriodeNote($periode = null) {
-	    if ($periode === null) {
+	    if ($periode instanceof DateTime) {
+		foreach ($this->getPeriodeNotes() as $periode_temp) {
+		    if ($periode_temp->getDateDebut(null) <= $periode
+			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin(null) > $periode))
+		    {
+			return $periode_temp;
+		    }
+		}
+	    } else if ($periode === null) {
 		$periode = $this->getPeriodeNoteOuverte();
 		if ($periode == null) {
 			$now = new DateTime('now');
 			$periode = $this->getPeriodeNote($now);
 		}
-	    } elseif (is_numeric($periode)) {
-		    foreach ($this->getPeriodeNotes() as $periode_temp) {
-			if ($periode_temp->getNumPeriode() == $periode) {
-			    return $periode_temp;
-			}
+	    } else if (is_numeric($periode)) {
+		foreach ($this->getPeriodeNotes() as $periode_temp) {
+		    if ($periode_temp->getNumPeriode() == $periode) {
+			return $periode_temp;
 		    }
+		}
 	    } else if ($periode instanceof PeriodeNote) {
-		    return $periode;
+		return $periode;
 	    } else if ($periode instanceof DateTime) {
-		    foreach ($this->getPeriodeNotes() as $periode_temp) {
-			if ($periode_temp->getDateDebut('U') <= $periode->format('U')
-				&& ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode->format('U')))
-			{
-			    return $periode_temp;
-			}
+		foreach ($this->getPeriodeNotes() as $periode_temp) {
+		    if ($periode_temp->getDateDebut(null) <= $periode
+			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin(null) > $periode))
+		    {
+			return $periode_temp;
 		    }
+		}
 	    } else {
 		    throw new PropelException('Argument $periode doit etre de type numerique ou une instance de PeriodeNote ou un DateTime.');
 	    }
@@ -981,11 +943,26 @@ class Eleve extends BaseEleve {
 	 * @return int $nombre_absence
 	 */
 	public function getNbreDemiJourneesAbsence($date_debut, $date_fin = null) {
-	    $abs_saisie_col =  AbsenceEleveSaisieQuery::create()
-		->filterByEleve($this)
-		->filterByPlageTemps($date_debut, $date_fin)
-		->orderByDebutAbs(Criteria::ASC)
-		->find();
+	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
+	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
+	    else {$request_query_hash .= 'null';}
+	    $request_query_hash .= '_fin_';
+	    if ($date_fin != null) {$request_query_hash .= $date_fin->format('U');}
+	    else {$request_query_hash .= 'null';}
+
+	    if (isset($_REQUEST[$request_query_hash]) && $_REQUEST[$request_query_hash] != null) {
+		$abs_saisie_col = $_REQUEST[$request_query_hash];
+	    } else {
+		$abs_saisie_col =  AbsenceEleveSaisieQuery::create()
+		    ->filterByEleve($this)
+		    ->filterByPlageTemps($date_debut, $date_fin)
+		    ->orderByDebutAbs(Criteria::ASC)
+		    ->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
+		    ->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
+		    ->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType')
+		    ->find();
+		$_REQUEST[$request_query_hash] = $abs_saisie_col;
+	    }
 
 	    if ($abs_saisie_col->isEmpty()) {
 		return 0;
@@ -1084,11 +1061,23 @@ class Eleve extends BaseEleve {
 	 * @return int $nombre_absence
 	 */
 	public function getNbreDemiJourneesNonJustifieesAbsence($date_debut, $date_fin = null) {
-	    $abs_saisie_col =  AbsenceEleveSaisieQuery::create()
-		->filterByEleve($this)
-		->filterByPlageTemps($date_debut, $date_fin)
-		->orderByDebutAbs(Criteria::ASC)
-		->find();
+	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
+	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
+	    else {$request_query_hash .= 'null';}
+	    $request_query_hash .= '_fin_';
+	    if ($date_fin != null) {$request_query_hash .= $date_fin->format('U');}
+	    else {$request_query_hash .= 'null';}
+
+	    if (isset($_REQUEST[$request_query_hash]) && $_REQUEST[$request_query_hash] != null) {
+		$abs_saisie_col = $_REQUEST[$request_query_hash];
+	    } else {
+		$abs_saisie_col =  AbsenceEleveSaisieQuery::create()
+		    ->filterByEleve($this)
+		    ->filterByPlageTemps($date_debut, $date_fin)
+		    ->orderByDebutAbs(Criteria::ASC)
+		    ->find();
+		$_REQUEST[$request_query_hash] = $abs_saisie_col;
+	    }
 
 	    if ($abs_saisie_col->isEmpty()) {
 		return 0;
@@ -1186,11 +1175,23 @@ class Eleve extends BaseEleve {
 	 * @return int $nombre_absence
 	 */
 	public function getNbreRetards($date_debut, $date_fin = null) {
-	    $abs_saisie_col =  AbsenceEleveSaisieQuery::create()
-		->filterByEleve($this)
-		->filterByPlageTemps($date_debut, $date_fin)
-		->orderByDebutAbs(Criteria::ASC)
-		->find();
+	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
+	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
+	    else {$request_query_hash .= 'null';}
+	    $request_query_hash .= '_fin_';
+	    if ($date_fin != null) {$request_query_hash .= $date_fin->format('U');}
+	    else {$request_query_hash .= 'null';}
+
+	    if (isset($_REQUEST[$request_query_hash]) && $_REQUEST[$request_query_hash] != null) {
+		$abs_saisie_col = $_REQUEST[$request_query_hash];
+	    } else {
+		$abs_saisie_col =  AbsenceEleveSaisieQuery::create()
+		    ->filterByEleve($this)
+		    ->filterByPlageTemps($date_debut, $date_fin)
+		    ->orderByDebutAbs(Criteria::ASC)
+		    ->find();
+		$_REQUEST[$request_query_hash] = $abs_saisie_col;
+	    }
 
 	    if ($abs_saisie_col->isEmpty()) {
 		return 0;

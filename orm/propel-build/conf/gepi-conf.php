@@ -10,7 +10,7 @@ $conf = array (
       'connection' => 
       array (
         'classname' => 'PropelPDO',
-        //'classname' => 'DebugPDO',
+//        'classname' => 'DebugPDO',
         'dsn' => 'mysql:dbname='.$GLOBALS["dbDb"].';host='.$GLOBALS["dbHost"],
         'user' => $GLOBALS["dbUser"],
         'password' => $GLOBALS["dbPass"],

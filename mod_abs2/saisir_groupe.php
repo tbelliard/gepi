@@ -665,7 +665,7 @@ foreach($eleve_col as $eleve) {
 					    //la saisie sur ce creneau
 					    $type_autorises = AbsenceEleveTypeQuery::create()->orderByRank()->useAbsenceEleveTypeStatutAutoriseQuery()->filterByStatut($utilisateur->getStatut())->endUse()->find();
 					    if ($type_autorises->count() != 0) {
-						    echo ("<select style='font-size:88%;' onChange='this.form.elements[\"active_absence_eleve[".$eleve_col->getPosition()."]\"].checked = (this.options[this.selectedIndex].value != -1);' name=\"type_absence_eleve[".$eleve_col->getPosition()."]\">");
+						    echo ("<select style='font-size:88%; width:140px' onChange='this.form.elements[\"active_absence_eleve[".$eleve_col->getPosition()."]\"].checked = (this.options[this.selectedIndex].value != -1);' name=\"type_absence_eleve[".$eleve_col->getPosition()."]\">");
 						    echo "<option style='font-size:88%;' value='-1'></option>\n";
 						    foreach ($type_autorises as $type) {
 							//$type = new AbsenceEleveTypeStatutAutorise();

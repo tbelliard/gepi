@@ -245,11 +245,32 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 				$this->initGroupes();
 			} else {
 				if ($this->statut == "professeur") {
-				    $collGroupes = GroupeQuery::create(null, $criteria)
-					->filterByUtilisateurProfessionnel($this)
-					->leftJoin('Groupe.JGroupesClasses')->with('JGroupesClasses')
-					->leftJoin('JGroupesClasses.Classe')->with('Classe')
-					->find($con);
+ 				    if (null !== $criteria) {
+					$collGroupes = GroupeQuery::create(null, $criteria)
+					    ->filterByUtilisateurProfessionnel($this)
+					    ->leftJoin('Groupe.JGroupesClasses')->with('JGroupesClasses')
+					    ->leftJoin('JGroupesClasses.Classe')->with('Classe')
+					    ->find($con);
+				    } else {
+					//on utilise du sql directement pour optimiser la requete
+					$sql = "SELECT *
+					FROM `groupes`
+					INNER JOIN j_groupes_professeurs ON (groupes.ID=j_groupes_professeurs.ID_GROUPE)
+					LEFT JOIN j_groupes_classes ON (groupes.ID=j_groupes_classes.ID_GROUPE)
+					LEFT JOIN classes ON (j_groupes_classes.ID_CLASSE=classes.ID)
+					WHERE j_groupes_professeurs.LOGIN='".$this->getLogin()."'";
+
+					$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+					$stmt = $con->prepare($sql);
+					$stmt->execute();
+
+					$col = GroupePeer::populateObjects($stmt);
+					$collGroupes = new PropelObjectCollection();
+					$collGroupes->setModel('Groupe');
+					foreach ($col as $groupe) {
+					    $collGroupes->append($groupe);
+					}
+ 				    }
 				} elseif ($this->statut == "cpe") {
 				    //on ajoute les groupes contenant des eleves sous la responsabilite du cpe
 				    $collGroupes = GroupeQuery::create(null, $criteria)
