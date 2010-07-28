@@ -147,10 +147,15 @@ $_SESSION['gepiPath']=$gepiPath;
 
 include "class_php/class_menu_general.php";
 include "class_php/class_page_accueil.php";
+include "class_php/class_page_accueil_autre.php";
 
-$afficheAccueil=new class_page_accueil($_SESSION['statut'], $gepiSettings, $niveau_arbo,$ordre_menus);
+if ($_SESSION['statut']=="autre") {
+  $afficheAccueil=new class_page_accueil_autre($gepiSettings, $niveau_arbo,$ordre_menus);
+} else {
+  $afficheAccueil=new class_page_accueil($_SESSION['statut'], $gepiSettings, $niveau_arbo,$ordre_menus);
+}
 
-
+$post_reussi=FALSE;
 // ====== Inclusion des balises head et du bandeau =====
 include_once("./lib/header_template.inc");
 $tbs_statut_utilisateur = $_SESSION['statut'];
