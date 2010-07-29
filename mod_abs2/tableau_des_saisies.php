@@ -90,6 +90,7 @@ require_once("../lib/header.inc");
 include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
 ?>
+<div id="contain_div" class="css-panes">
 <form name="choix_du_creneau" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 <h2>Les saisies du
     <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
@@ -118,26 +119,16 @@ include('menu_bilans.inc.php');
 			$selected = '';
 			$color_selected = '';
 		}
-		echo '
-		<option value="'.$edtCreneau->getIdDefiniePeriode().'"'.$selected.'>'.$edtCreneau->getNomDefiniePeriode().'</option>
-		';
-		// Ajout des liens directs sans le select
-		$aff_creneaux_sans_select .= '<a href="' . $_SERVER["PHP_SELF"] . '?choix_creneau='.$edtCreneau->getIdDefiniePeriode().'"'.$color_selected.'>'.$edtCreneau->getNomDefiniePeriode().'</a>&nbsp;-&nbsp;';
+		echo '<option value="'.$edtCreneau->getIdDefiniePeriode().'"'.$selected.'>'.$edtCreneau->getNomDefiniePeriode().'</option>';
 	}
 ?>
 	</select>
-	&nbsp;-&nbsp;<span style="cursor: pointer; color: blue;" onclick="changementDisplay('id4_aide', '');">Aide sommaire</span>
-	</p>
-		<div id="id4_aide" class="abs_appear" style="display: none; margin-left: 400px;">
-	Pour voir le nom du prof qui a fait l'appel quand il n'y a pas d'absent, il suffit de passer la souris sur le texte de droite.<br />
-	Pour voir l'emploi du temps de la classe, il suffit de cliquer sur le nom de la classe.</div>
 </form>
 
 <?php
-if (isset($choix_creneau)) {
-	echo ' Voir les absences de <span style="color: blue;">'.$choix_creneau_obj->getHeuredebutDefiniePeriode('H;i').'</span> à <span style="color: blue;">'.$choix_creneau_obj->getHeurefinDefiniePeriode('H;i').'</span>.';
+if ($choix_creneau_obj != null) {
+	echo '<br/>Voir les absences de <span style="color: blue;">'.$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i').'</span> à <span style="color: blue;">'.$choix_creneau_obj->getHeurefinDefiniePeriode('H:i').'</span>.';
 ?>
-&nbsp;&nbsp;<span style="border: 1px solid grey;"><?php echo $aff_creneaux_sans_select; ?></span></p>
 <br />
 <!-- Affichage des réponses-->
 <table class="tab_edt" summary="Liste des absents r&eacute;partie par classe">
@@ -264,5 +255,6 @@ foreach($classe_col as $classe){
 
 <?php
 }
+echo '</div>';
 require("../lib/footer.inc.php");
 ?>
