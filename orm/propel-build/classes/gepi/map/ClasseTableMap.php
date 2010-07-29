@@ -38,7 +38,7 @@ class ClasseTableMap extends TableMap {
 		$this->setUseIdGenerator(true);
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, null, null);
-		$this->addColumn('CLASSE', 'Classe', 'VARCHAR', true, 100, null);
+		$this->addColumn('CLASSE', 'Nom', 'VARCHAR', true, 100, null);
 		$this->addColumn('NOM_COMPLET', 'NomComplet', 'VARCHAR', true, 100, null);
 		$this->addColumn('SUIVI_PAR', 'SuiviPar', 'VARCHAR', true, 50, null);
 		$this->addColumn('FORMULE', 'Formule', 'VARCHAR', true, 100, null);

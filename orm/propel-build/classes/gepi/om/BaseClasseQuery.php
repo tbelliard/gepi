@@ -7,7 +7,7 @@
  * Classe regroupant des eleves
  *
  * @method     ClasseQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ClasseQuery orderByClasse($order = Criteria::ASC) Order by the classe column
+ * @method     ClasseQuery orderByNom($order = Criteria::ASC) Order by the classe column
  * @method     ClasseQuery orderByNomComplet($order = Criteria::ASC) Order by the nom_complet column
  * @method     ClasseQuery orderBySuiviPar($order = Criteria::ASC) Order by the suivi_par column
  * @method     ClasseQuery orderByFormule($order = Criteria::ASC) Order by the formule column
@@ -35,7 +35,7 @@
  * @method     ClasseQuery orderByEctsFonctionSignataireAttestation($order = Criteria::ASC) Order by the ects_fonction_signataire_attestation column
  *
  * @method     ClasseQuery groupById() Group by the id column
- * @method     ClasseQuery groupByClasse() Group by the classe column
+ * @method     ClasseQuery groupByNom() Group by the classe column
  * @method     ClasseQuery groupByNomComplet() Group by the nom_complet column
  * @method     ClasseQuery groupBySuiviPar() Group by the suivi_par column
  * @method     ClasseQuery groupByFormule() Group by the formule column
@@ -98,7 +98,7 @@
  * @method     Classe findOneOrCreate(PropelPDO $con = null) Return the first Classe matching the query, or a new Classe object populated from the query conditions when no match is found
  *
  * @method     Classe findOneById(int $id) Return the first Classe filtered by the id column
- * @method     Classe findOneByClasse(string $classe) Return the first Classe filtered by the classe column
+ * @method     Classe findOneByNom(string $classe) Return the first Classe filtered by the classe column
  * @method     Classe findOneByNomComplet(string $nom_complet) Return the first Classe filtered by the nom_complet column
  * @method     Classe findOneBySuiviPar(string $suivi_par) Return the first Classe filtered by the suivi_par column
  * @method     Classe findOneByFormule(string $formule) Return the first Classe filtered by the formule column
@@ -126,7 +126,7 @@
  * @method     Classe findOneByEctsFonctionSignataireAttestation(string $ects_fonction_signataire_attestation) Return the first Classe filtered by the ects_fonction_signataire_attestation column
  *
  * @method     array findById(int $id) Return Classe objects filtered by the id column
- * @method     array findByClasse(string $classe) Return Classe objects filtered by the classe column
+ * @method     array findByNom(string $classe) Return Classe objects filtered by the classe column
  * @method     array findByNomComplet(string $nom_complet) Return Classe objects filtered by the nom_complet column
  * @method     array findBySuiviPar(string $suivi_par) Return Classe objects filtered by the suivi_par column
  * @method     array findByFormule(string $formule) Return Classe objects filtered by the formule column
@@ -281,23 +281,23 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the classe column
 	 * 
-	 * @param     string $classe The value to use as filter.
+	 * @param     string $nom The value to use as filter.
 	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function filterByClasse($classe = null, $comparison = null)
+	public function filterByNom($nom = null, $comparison = null)
 	{
 		if (null === $comparison) {
-			if (is_array($classe)) {
+			if (is_array($nom)) {
 				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $classe)) {
-				$classe = str_replace('*', '%', $classe);
+			} elseif (preg_match('/[\%\*]/', $nom)) {
+				$nom = str_replace('*', '%', $nom);
 				$comparison = Criteria::LIKE;
 			}
 		}
-		return $this->addUsingAlias(ClassePeer::CLASSE, $classe, $comparison);
+		return $this->addUsingAlias(ClassePeer::CLASSE, $nom, $comparison);
 	}
 
 	/**

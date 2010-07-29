@@ -303,7 +303,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * nom de la classe
 	 * @return     string
 	 */
-	public function getClasse()
+	public function getNom()
 	{
 		return $this->classe;
 	}
@@ -584,7 +584,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * @param      string $v new value
 	 * @return     Classe The current object (for fluent API support)
 	 */
-	public function setClasse($v)
+	public function setNom($v)
 	{
 		if ($v !== null) {
 			$v = (string) $v;
@@ -596,7 +596,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		}
 
 		return $this;
-	} // setClasse()
+	} // setNom()
 
 	/**
 	 * Set the value of [nom_complet] column.
@@ -1650,7 +1650,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				return $this->getId();
 				break;
 			case 1:
-				return $this->getClasse();
+				return $this->getNom();
 				break;
 			case 2:
 				return $this->getNomComplet();
@@ -1751,7 +1751,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		$keys = ClassePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
-			$keys[1] => $this->getClasse(),
+			$keys[1] => $this->getNom(),
 			$keys[2] => $this->getNomComplet(),
 			$keys[3] => $this->getSuiviPar(),
 			$keys[4] => $this->getFormule(),
@@ -1812,7 +1812,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				$this->setId($value);
 				break;
 			case 1:
-				$this->setClasse($value);
+				$this->setNom($value);
 				break;
 			case 2:
 				$this->setNomComplet($value);
@@ -1914,7 +1914,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		$keys = ClassePeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setClasse($arr[$keys[1]]);
+		if (array_key_exists($keys[1], $arr)) $this->setNom($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setNomComplet($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setSuiviPar($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setFormule($arr[$keys[4]]);
@@ -2039,7 +2039,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false)
 	{
-		$copyObj->setClasse($this->classe);
+		$copyObj->setNom($this->classe);
 		$copyObj->setNomComplet($this->nom_complet);
 		$copyObj->setSuiviPar($this->suivi_par);
 		$copyObj->setFormule($this->formule);
