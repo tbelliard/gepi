@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 22/07/2007
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -20,6 +20,15 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+$accessibilite="y";
+$titre_page = "Gestion du module Années antérieures";
+$gepiPathJava="./..";
+$post_reussi=FALSE;
+$msg = '';
+$affiche_connexion = 'no';
+$niveau_arbo = 1;
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -39,20 +48,64 @@ if (!checkAccess()) {
 	die();
 }
 
-$msg = '';
+//$msg = '';
 if (isset($_POST['activer'])) {
-    if (!saveSetting("active_annees_anterieures", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+    if (!saveSetting("active_annees_anterieures", $_POST['activer']))
+			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 }
 
 
 
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+if (isset($_POST['is_posted']) and ($msg=='')){
+  $msg = "Les modifications ont été enregistrées !";
+  $post_reussi=TRUE;
+}
 //**************** EN-TETE *******************************
 // header
-$titre_page = "Gestion du module Années antérieures";
-require_once("../lib/header.inc");
+//$titre_page = "Gestion du module Années antérieures";
+//require_once("../lib/header.inc");
 //**************** EN-TETE *******************************
 
+// ====== Inclusion des balises head et du bandeau =====
+include_once("../lib/header_template.inc");
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Années antérieures"))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+
+
+
+/****************************************************************
+			BAS DE PAGE
+****************************************************************/
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("../lib/footer_template.inc.php");
+
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// $affiche_debug=debug_var();
+
+
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_annees_anterieures/admin_template.php';
+
+$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+include($nom_gabarit);
+
+
+
+
+
+/*
 $quitter_la_page=isset($_GET['quitter_la_page']) ? $_GET['quitter_la_page'] : NULL;
 if(!isset($quitter_la_page)){
 	echo "<p class='bold'><a href='../accueil_modules.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
@@ -79,4 +132,4 @@ else {
 <input type="hidden" name="is_posted" value="1" />
 <center><input type="submit" value="Enregistrer" style="font-variant: small-caps;"/></center>
 </form>
-<?php require("../lib/footer.inc.php");?>
+<?php require("../lib/footer.inc.php"); */ ?>
