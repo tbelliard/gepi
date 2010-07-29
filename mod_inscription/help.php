@@ -38,10 +38,50 @@ if (!checkAccess()) {
     die();
 }
 //**************** EN-TETE *****************
-$titre_page = "Aide en ligne";
-require_once("../lib/header.inc");
+$titre_page = "Aide en ligne Module Inscription";
+//require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+
+// ====== Inclusion des balises head et du bandeau =====
+include_once("../lib/header_template.inc");
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+
+
+
+/****************************************************************
+			BAS DE PAGE
+****************************************************************/
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("../lib/footer_template.inc.php");
+
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// $affiche_debug=debug_var();
+
+
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_inscription/help_template.php';
+
+$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+include($nom_gabarit);
+
+
+
+
+/*
 ?>
 <H1>Le module Inscription</H1>
 Le module Inscription permet de définir un ou plusieurs items (journée, stage, intervention, ...), au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.
@@ -72,4 +112,4 @@ Ce texte sera visible par les personnes accédant au module d'inscription/désincr
 </li>
 </ul>
 
-<?php require("../lib/footer.inc.php");?>
+<?php require("../lib/footer.inc.php"); */ ?>

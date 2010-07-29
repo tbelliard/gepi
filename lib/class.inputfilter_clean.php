@@ -163,7 +163,7 @@ class InputFilter {
 			//$attrSubSet = explode('=', trim($attrSet[$i]));
 			$attrSubSet = explode('=', trim($attrSet[$i]), 2);
 			list($attrSubSet[0]) = explode(' ', $attrSubSet[0]);
-			if ((!eregi("^[a-z]*$",$attrSubSet[0])) || (($this->xssAuto) && ((in_array(strtolower($attrSubSet[0]), $this->attrBlacklist)) || (substr($attrSubSet[0], 0, 2) == 'on')))) 
+			if ((!my_eregi("^[a-z]*$",$attrSubSet[0])) || (($this->xssAuto) && ((in_array(strtolower($attrSubSet[0]), $this->attrBlacklist)) || (substr($attrSubSet[0], 0, 2) == 'on'))))
 				continue;
 			if ($attrSubSet[1]) {
 				$attrSubSet[1] = str_replace('&#', '', $attrSubSet[1]);
