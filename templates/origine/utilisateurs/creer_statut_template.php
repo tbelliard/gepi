@@ -1,8 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <?php
 /*
- * $Id$
- *
+ * $Id: $
 * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
@@ -27,11 +26,12 @@
 * Appelle les sous-modèles
 * templates/origine/header_template.php
 * templates/origine/bandeau_template.php
-*
+ *
  * @author regis
  */
 
 ?>
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 
 <head>
@@ -88,50 +88,39 @@
 <!-- fin bandeau_template.html      -->
 
   <div id='container'>
-<!-- Fin haut de page -->
+  <!-- Fin haut de page -->
 
+	<h2>
+	  Statuts "Autre"
+	</h2>
+	<p>
+	  Si Gepi définit plusieurs statuts par défaut, il est possible d'en créer de nouveaux en passant 
+	  par cet outil.
+	</p>
 
-	<h2>Activation du module Inscription</h2>
-	<form action="inscription_admin.php" id="form1" method="post">
-	  
+	<form id="auth_statuts_perso" action="creer_statut_admin.php" method="post">
 	  <p>
-		Le module Inscription vous permet de définir un ou plusieurs items (stage, intervention, ...),
-		au(x)quel(s) les utilisateurs pourront s'inscrire ou se désinscrire en cochant ou décochant une croix.
-		<br />
-		<a href='help.php' onclick="javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes');return false;">
-		  Consultez l'aide
-		</a> 
-		pour en savoir plus.
-	  </p>
-	  <fieldset class="no_bordure">
-		<legend class="invisible">Activation</legend>
-		<input type="radio" 
-			   name="activer" 
-			   id="activer_y" 
+		<input type="hidden" name="action" value="valide" />
+		<input type="checkbox" 
+			   id="idAutorise" 
+			   name="autorise" 
 			   value="y" 
-			  <?php if (getSettingValue("active_inscription")=='y') echo " checked='checked'"; ?> />
-		<label for='activer_y' style='cursor: pointer;'>
-		  Activer l'accès au module Inscription
+			  <?php if (getSettingValue('statuts_prives') == 'y') {echo " checked='checked'";} ?>
+			   onchange='document.getElementById("auth_statuts_perso").submit();' />
+		<label for="idAutorise">
+		  Autoriser la création de nouveaux statuts personnalisés par l'admnistrateur.
 		</label>
-		<br />
-		<input type="radio" 
-			   name="activer" 
-			   id="activer_n" 
-			   value="n" 
-			  <?php if (getSettingValue("active_inscription")=='n') echo " checked='checked'"; ?> />
-		<label for='activer_n' style='cursor: pointer;'>
-		  Désactiver l'accès au module Inscription
-		</label>
-	  </fieldset>
-	  <p class="center">
-		<input type="hidden" name="is_posted" value="1" />
-		<input type="submit" value="Enregistrer" />
+		<br/>
 	  </p>
-</form>
-
-
-
-
+	  <p class="center">
+		<input type="submit" value="Enregistrer" id="btn_submit" />
+	<script type="text/javascript">
+		//<![CDATA[
+		document.getElementById("btn_submit").addClassName("invisible");
+		//]]>
+	</script>
+	  </p>
+	</form>
 
 
 
@@ -181,6 +170,5 @@
 
 </body>
 </html>
-
 
 
