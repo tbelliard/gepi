@@ -118,6 +118,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 include('menu_abs2.inc.php');
+include('menu_bilans.inc.php');
 //===========================
 echo "<div class='css-panes' id='containDiv'>\n";
 
