@@ -1,4 +1,4 @@
-/* $Id: */
+/* $Id: bandeau.css */
 
 body{
 	font-family:	verdana,sans-serif;
@@ -20,8 +20,10 @@ p{
 	padding:0em;
 }
 
-#headerMessage {
-	width:99%;
+hr {
+height: 1px;
+color: #F00;
+background-color: #F00;
 }
 
 /* Bandeau */
@@ -74,7 +76,7 @@ p{
 	font-weight: bold;
 }
 
-/* CrÃ©ation des colonnes */
+/* Création des colonnes */
 
 .bandeau_colonne {
 	display:table-cell;
@@ -177,4 +179,33 @@ p{
 }
 .pt_bandeau .menu_bandeau {
 	display:none;
+}
+
+/* message */
+.headerMessage {
+	width: 100%;
+	padding: 0.5%;
+	margin: 0 auto;
+	color: #FF0000;
+	font-variant: small-caps;
+	text-align: center;
+}
+
+.rouge {
+	color:red;
+}
+.vert {
+	color:green;
+}
+
+.small {
+	font-size:smaller;
+}
+
+.texteGris {
+  color: graytext;
+}
+
+.invisible {
+  display: none;
 }
