@@ -21,8 +21,14 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
+$accessibilite="y";
+$titre_page = "Gestion du module absence";
 $niveau_arbo = 2;
+$gepiPathJava="./../..";
+$post_reussi=FALSE;
+$msg = '';
+
+// $niveau_arbo = 2;
 // Initialisations files
 require_once("../../lib/initialisations.inc.php");
 //mes fonctions
@@ -44,11 +50,14 @@ if (!checkAccess()) {
     die();
 }
 
-$msg = '';
+// $msg = '';
 if (isset($_POST['activer'])) {
+  // on n'enregistre pas la désactivation du module si mod_abs2 est actif
+  if (!((getSettingValue("active_module_absence")!='y')&& $_POST['activer']=="n")) {
     if (!saveSetting("active_module_absence", $_POST['activer'])) {
 		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 	}
+  }
 }
 if (isset($_POST['activer_prof'])) {
     if (!saveSetting("active_module_absence_professeur", $_POST['activer_prof'])) {
@@ -67,7 +76,10 @@ if (isset($_POST['classement'])) {
 	}
 }
 
-if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
+if (isset($_POST['is_posted']) and ($msg=='')) {
+  $msg = "Les modifications ont été enregistrées !";
+	$post_reussi=TRUE;
+}
 
 // A propos du TOP 10 : récupération du setting pour le select en bas de page
 $selected10 = $selected20 = $selected30 = $selected40 = $selected50 = NULL;
@@ -85,9 +97,62 @@ if (getSettingValue("absence_classement_top") == '10'){
 }
 
 // header
-$titre_page = "Gestion du module absence";
-require_once("../../lib/header.inc");
+// $titre_page = "Gestion du module absence";
+//require_once("../../lib/header.inc");
 
+
+// ====== Inclusion des balises head et du bandeau =====
+include_once("../../lib/header_template.inc");
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Absences"))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+
+$lien_sup=array();
+$a=0;
+$req_setting = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_admin'")) OR DIE ('Erreur requête req_setting () : '.mysql_error());
+$req_setting2 = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_tous'")) OR DIE ('Erreur requête req_setting2 () : '.mysql_error());
+if ($req_setting["value"] == 'y' OR $req_setting2["value"] == 'y') {
+ // On initialise le $_SESSION["retour"] pour pouvoir revenir proprement
+  $_SESSION["retour"] = "../mod_absences/admin/index";
+  $lien_sup[$a]['adresse'] = "../../edt_organisation/edt_calendrier.php";
+  $lien_sup[$a]['texte'] = "Définir périodes de vacances et jours fériés";
+  $a++;
+} else {
+  $lien_sup[$a]['adresse'] = "admin_config_calendrier.php?action=visualiser";
+  $lien_sup[$a]['texte'] = "Définir périodes de vacances et jours fériés";
+}
+
+
+/****************************************************************
+			BAS DE PAGE
+****************************************************************/
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("../../lib/footer_template.inc.php");
+
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// $affiche_debug=debug_var();
+
+
+$nom_gabarit = '../../templates/'.$_SESSION['rep_gabarits'].'/mod_absences/admin/index_template.php';
+
+$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+include($nom_gabarit);
+
+
+
+/*
 
 echo "<p class=bold><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
@@ -175,4 +240,6 @@ $req_setting2 = mysql_fetch_array(mysql_query("SELECT value FROM setting WHERE n
 </blockquote>
 <?PHP
 require("../../lib/footer.inc.php");
+ *
+ */
 ?>
