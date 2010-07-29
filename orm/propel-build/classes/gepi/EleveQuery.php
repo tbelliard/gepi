@@ -64,7 +64,7 @@ class EleveQuery extends BaseEleveQuery {
 	    } else if ($utilisateurProfessionnel->getStatut() == "scolarite") {
 		$this->useJEleveClasseQuery()->addJoin(JEleveClassePeer::ID_CLASSE, JScolClassesPeer::ID_CLASSE,Criteria::INNER_JOIN)
 			->add(JScolClassesPeer::LOGIN, $utilisateurProfessionnel->getLogin())
-			->endUse();
+			->endUse()->distinct();
 		return $this;
 	    }
         }
