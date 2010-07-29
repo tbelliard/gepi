@@ -736,7 +736,7 @@ foreach($eleve_col as $eleve) {
 <?php				}
 
 				if ($current_creneau != null) {
-				    echo '<td style="font-size:88%;">Commentaire de la saisie : ';
+				    echo '<td style="font-size:88%;">Commentaire : ';
 				    echo '<input  style="font-size:88%;" name="commentaire_absence_eleve['.$eleve_col->getPosition().']" value="'.'" type="text" maxlength="150" size="13"/>';
 				    echo '</td>';
 				}

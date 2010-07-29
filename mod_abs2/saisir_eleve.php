@@ -284,7 +284,7 @@ if (!$eleve_col->isEmpty()) {
 	?>
 <!-- Fin de la legende -->
 
-<table><tr><td>
+<table><tr><td style="vertical-align : top;">
 	<table class="tb_absences" style="width:600px;" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
 		<caption class="invisible no_print">Absences</caption>
 		<tbody>
