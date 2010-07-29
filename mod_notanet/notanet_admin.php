@@ -21,6 +21,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+$accessibilite="y";
+$titre_page = "Gestion du module Notanet/Fiches Brevet";
+$niveau_arbo = 1;
+$gepiPathJava="./..";
+$post_reussi=FALSE;
+$msg = '';
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
@@ -51,14 +58,54 @@ if (isset($_POST['activer'])) {
 	}
 	else{
 		$msg = "Les modifications ont été enregistrées !";
+		$post_reussi=TRUE;
 	}
 }
 
 
 // header
-$titre_page = "Gestion du module Notanet/Fiches Brevet";
-require_once("../lib/header.inc");
+// $titre_page = "Gestion du module Notanet/Fiches Brevet";
+// require_once("../lib/header.inc");
 
+$tbs_msg=$msg;
+// ====== Inclusion des balises head et du bandeau =====
+include_once("../lib/header_template.inc");
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+
+
+
+/****************************************************************
+			BAS DE PAGE
+****************************************************************/
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("../lib/footer_template.inc.php");
+
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// $affiche_debug=debug_var();
+
+
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_notanet/notanet_admin_template.php';
+
+$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+include($nom_gabarit);
+
+
+
+/*
 ?>
 <p class='bold'><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
@@ -79,4 +126,4 @@ require_once("../lib/header.inc");
 <center><input type="submit" value="Enregistrer" style="font-variant: small-caps;" /></center>
 </form>
 
-<?php require("../lib/footer.inc.php");?>
+<?php require("../lib/footer.inc.php"); */?>
