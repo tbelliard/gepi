@@ -86,12 +86,14 @@
 						$value2[nom] (<em>$value2[classe]</em>)
 							";
 						}
+						unset($value2);
 					}
 					echo "
 		</span>
 	</p> 
 					";
 				}
+				unset($value);
 			}
 		?>
 	
@@ -129,6 +131,7 @@
 						";
 					}
 				}
+				unset($value);
 			}
 		?>
 	</ol>
@@ -152,6 +155,7 @@
 						";
 					}
 				}
+				unset($value);
 			}
 		?>
 		</ol>
@@ -182,6 +186,7 @@
 									";
 								}
 							}
+				unset($value);
 					echo "
 		<li>
 			<a href='$tbs_gepiPath/utilisateurs/mon_compte.php'>&nbsp;Mon compte</a>
@@ -190,17 +195,30 @@
 					";
 				}
 			}
-		?>	
+		?>
+<!-- fil d'ariane -->
+<?php
+  if (isset($messageEnregistrer) && $messageEnregistrer !="" ){
+	affiche_ariane(TRUE,$messageEnregistrer);
+  }else{
+	if(isset($_SESSION['ariane']) && (count($_SESSION['ariane']['lien'])>1)){
+	  affiche_ariane();
+	}
+  }
+?>
+<!-- fin fil d'ariane -->
 	
 	
-<!-- message -->				
-		<?php
+<!-- message -->
+<?php
 			if ($tbs_msg !="") {
-				echo "
-	<div class='headerMessage'>
-		$tbs_msg
-	</div>
-				";
-			}
-		?>	
+?>
+	<p class='headerMessage bold<?php if($post_reussi) echo " vert" ;?>'>
+<?php
+		echo $tbs_msg;
+?>
 
+	</p>
+<?php
+			}
+?>
