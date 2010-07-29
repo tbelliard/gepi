@@ -621,14 +621,15 @@ foreach($eleve_col as $eleve) {
 						}
 					    }
 					    $absences_du_creneau = $absences_du_creneau_du_prof;
-					} else {
+					} else if ($current_creneau != null && $edt_creneau->getHeuredebutDefiniePeriode('U') > $current_creneau->getHeuredebutDefiniePeriode('U')) {
+					    //on affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie
+					    $absences_du_creneau = new PropelCollection();
+					}   else {
+					    //on affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie
 					    $absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 					}
 					
-					if ($current_creneau != null && $edt_creneau->getHeuredebutDefiniePeriode('U') > $current_creneau->getHeuredebutDefiniePeriode('U')) {
-					    //on affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie
-					    $style = '';
-					} elseif (!$absences_du_creneau->isEmpty()) {
+					if (!$absences_du_creneau->isEmpty()) {
 					    $style = 'style="background-color : red"';
 					} else if ($deja_saisie && $nb_creneau_a_saisir > 0) {
 					    $style = 'style="background-color : green"';

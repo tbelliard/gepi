@@ -210,9 +210,14 @@ class Eleve extends BaseEleve {
 			} else {
 				$query = GroupeQuery::create();
 				if ($periode_num != null) {
-					$query->useJEleveGroupeQuery()->filterByEleve($this)->filterByPeriode($periode_num)->endUse();
+					$query->useJEleveGroupeQuery()
+					    ->filterByEleve($this)
+					    ->filterByPeriode($periode_num)
+					    ->endUse();
 				} else {
-					$query->useJEleveGroupeQuery()->filterByEleve($this)->endUse();
+					$query->useJEleveGroupeQuery()
+					    ->filterByEleve($this)
+					    ->endUse();
 				}
 				$query->orderByName()->distinct();
 				$this->collGroupes[$periode_num] = $query->find();
@@ -627,7 +632,7 @@ class Eleve extends BaseEleve {
 			    $dt_fin = clone $dt;
 			    $dt_fin->setTime(23,59,59);
 
-			    if ($this->countAbsenceEleveSaisies() > 100) {
+			    if ($this->collAbsenceEleveSaisies !== null && $this->collAbsenceEleveSaisies->count() > 100) {
 				//il y a trop de saisie, on passe l'optimisation et on fait une requete db
 				$query = AbsenceEleveSaisieQuery::create()->filterByEleve($this);
 				$query->filterByPlageTemps($dt, $dt_fin);
@@ -720,7 +725,10 @@ class Eleve extends BaseEleve {
 		if ($this->countAbsenceEleveSaisies() > 100) {
 		    //il y a trop de saisie, on passe l'optimisation et on fait une requete db
 		    $query = AbsenceEleveSaisieQuery::create()->filterByEleve($this);
-		    $query->filterByPlageTemps($dt_debut, $dt_fin);
+		    $query->filterByPlageTemps($dt_debut, $dt_fin)
+			->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
+			->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
+			->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType');
 		    return $query->distinct()->find();
 		} else {
 		    $saisie_col = $this->getAbsenceEleveSaisies();

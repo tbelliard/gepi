@@ -253,7 +253,10 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 					    ->find($con);
 				    } else {
 					//on utilise du sql directement pour optimiser la requete
-					$sql = "SELECT *
+					$sql = "SELECT
+					    groupes.ID, groupes.NAME, groupes.DESCRIPTION, groupes.RECALCUL_RANG,
+					    j_groupes_classes.ID_GROUPE, j_groupes_classes.ID_CLASSE, j_groupes_classes.PRIORITE, j_groupes_classes.COEF, j_groupes_classes.CATEGORIE_ID, j_groupes_classes.SAISIE_ECTS, j_groupes_classes.VALEUR_ECTS,
+					    classes.ID, classes.CLASSE, classes.NOM_COMPLET, classes.SUIVI_PAR, classes.FORMULE, classes.FORMAT_NOM, classes.DISPLAY_RANG, classes.DISPLAY_ADDRESS, classes.DISPLAY_COEF, classes.DISPLAY_MAT_CAT, classes.DISPLAY_NBDEV, classes.DISPLAY_MOY_GEN, classes.MODELE_BULLETIN_PDF, classes.RN_NOMDEV, classes.RN_TOUTCOEFDEV, classes.RN_COEFDEV_SI_DIFF, classes.RN_DATEDEV, classes.RN_SIGN_CHEFETAB, classes.RN_SIGN_PP, classes.RN_SIGN_RESP, classes.RN_SIGN_NBLIG, classes.RN_FORMULE, classes.ECTS_TYPE_FORMATION, classes.ECTS_PARCOURS, classes.ECTS_CODE_PARCOURS, classes.ECTS_DOMAINES_ETUDE, classes.ECTS_FONCTION_SIGNATAIRE_ATTESTATION
 					FROM `groupes`
 					INNER JOIN j_groupes_professeurs ON (groupes.ID=j_groupes_professeurs.ID_GROUPE)
 					LEFT JOIN j_groupes_classes ON (groupes.ID=j_groupes_classes.ID_GROUPE)
@@ -264,12 +267,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 					$stmt = $con->prepare($sql);
 					$stmt->execute();
 
-					$col = GroupePeer::populateObjects($stmt);
-					$collGroupes = new PropelObjectCollection();
-					$collGroupes->setModel('Groupe');
-					foreach ($col as $groupe) {
-					    $collGroupes->append($groupe);
-					}
+					$collGroupes = UtilisateurProfessionnel::getGroupeFormatter()->format($stmt);
  				    }
 				} elseif ($this->statut == "cpe") {
 				    //on ajoute les groupes contenant des eleves sous la responsabilite du cpe
@@ -302,6 +300,48 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 			}
 		}
 		return $this->collGroupes;
+	}
+
+	/**
+	 * PropelFormatter pour la requete sql directe
+	 */
+	private static $groupeFormatter;
+
+	/**
+	 * PropelFormatter pour la requete sql directe
+	 *
+	 * @return     PropelFormatter pour le requete getGroupe
+	 */
+	private static function getGroupeFormatter() {
+	    if (UtilisateurProfessionnel::$groupeFormatter === null) {
+		    $formatter = new PropelObjectFormatter();
+		    $formatter->setDbName(GroupePeer::DATABASE_NAME);
+		    $formatter->setClass('Groupe');
+		    $formatter->setPeer('GroupePeer');
+		    $formatter->setAsColumns(array());
+		    $formatter->setHasLimit(false);
+
+		    $groupeTableMap = Propel::getDatabaseMap(GroupePeer::DATABASE_NAME)->getTableByPhpName('Groupe');
+		    $width = array();
+		    // create a ModelJoin object for this join
+		    $j_groupes_classesJoin = new ModelJoin();
+		    $j_groupes_classesJoin->setJoinType(Criteria::LEFT_JOIN);
+		    $j_groupes_classesRelation = $groupeTableMap->getRelation('JGroupesClasses');
+		    $j_groupes_classesJoin->setRelationMap($j_groupes_classesRelation, null, '');
+		    $width["JGroupesClasses"] = $j_groupes_classesJoin;
+
+		    $classeJoin = new ModelJoin();
+		    $classeJoin->setJoinType(Criteria::LEFT_JOIN);
+		    $jGroupesClassesTableMap = Propel::getDatabaseMap(GroupePeer::DATABASE_NAME)->getTableByPhpName('JGroupesClasses');
+		    $relationClasse = $jGroupesClassesTableMap->getRelation('Classe');
+		    $classeJoin->setRelationMap($relationClasse, null, '');
+		    $classeJoin->setPreviousJoin($j_groupes_classesJoin);
+		    $width["Classe"] = $classeJoin;
+
+		    $formatter->setWith($width);
+		    UtilisateurProfessionnel::$groupeFormatter = $formatter;
+	    }
+	    return UtilisateurProfessionnel::$groupeFormatter;
 	}
 
 	/**
@@ -415,20 +455,55 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
 	 */
 	public function getEdtEmplacementCourssPeriodeCalendrierActuelle($v = 'now'){
-	    $query = EdtEmplacementCoursQuery::create()->filterByLoginProf($this->getLogin())
-		    ->filterByIdCalendrier(0)
-		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
-
-	    if ($v instanceof EdtCalendrierPeriode) {
-		$query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $v->getIdCalendrier());
-	    } else {
-		$periodeCalendrier = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
-		if ($periodeCalendrier != null) {
-		       $query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $periodeCalendrier->getIdCalendrier());
-		}
+	    if (!($v instanceof EdtCalendrierPeriode)) {
+		$v = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
 	    }
 
+	    $query = EdtEmplacementCoursQuery::create()->filterByLoginProf($this->getLogin())
+		    ->joinWith('Groupe')
+		    ->joinWith('AidDetails')
+		    ->filterByIdCalendrier(0)
+		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
+	    if ($v != null) {
+		$query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $v->getIdCalendrier());
+	    }
+//	    $query->setComment('joinGroupeAid');
 	    $edtCoursCol = $query->find();
+
+	    //on utilise du sql directement pour optimiser la requete TODO : utiliser un formatter
+//	    if ($v != null) {
+//		$sql = "SELECT
+//		    edt_cours.ID_COURS, edt_cours.ID_GROUPE, edt_cours.ID_AID, edt_cours.ID_SALLE, edt_cours.JOUR_SEMAINE, edt_cours.ID_DEFINIE_PERIODE,
+//		    edt_cours.DUREE, edt_cours.HEUREDEB_DEC, edt_cours.ID_SEMAINE, edt_cours.ID_CALENDRIER, edt_cours.MODIF_EDT, edt_cours.LOGIN_PROF
+//		FROM `edt_cours`
+//		LEFT JOIN groupes ON (groupes.ID=edt_cours.ID_GROUPE)
+//		LEFT JOIN aid ON (aid.ID=edt_cours.ID_AID)
+//		WHERE edt_cours.LOGIN_PROF='".$this->getLogin()."'
+//		AND (edt_cours.ID_CALENDRIER=0
+//		    OR edt_cours.ID_CALENDRIER IS NULL
+//		    OR edt_cours.ID_CALENDRIER=".$v->getIdCalendrier().")";
+//	    } else {
+//		$sql = "SELECT
+//		    edt_cours.ID_COURS, edt_cours.ID_GROUPE, edt_cours.ID_AID, edt_cours.ID_SALLE, edt_cours.JOUR_SEMAINE, edt_cours.ID_DEFINIE_PERIODE,
+//		    edt_cours.DUREE, edt_cours.HEUREDEB_DEC, edt_cours.ID_SEMAINE, edt_cours.ID_CALENDRIER, edt_cours.MODIF_EDT, edt_cours.LOGIN_PROF
+//		FROM `edt_cours`
+//		LEFT JOIN j_groupes_classes ON (groupes.ID=j_groupes_classes.ID_GROUPE)
+//		LEFT JOIN aid ON (aid.ID=edt_cours.ID_AID)
+//		WHERE edt_cours.LOGIN_PROF='".$this->getLogin()."'
+//		AND (edt_cours.ID_CALENDRIER=0
+//		    OR edt_cours.ID_CALENDRIER IS NULL)";
+//	    }
+//	    $con = Propel::getConnection(EdtEmplacementCoursPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+//	    $stmt = $con->prepare($sql);
+//	    $stmt->execute();
+//
+//	    $col = EdtEmplacementCoursPeer::populateObjects($stmt);
+//	    $edtCoursCol = new PropelObjectCollection();
+//	    $edtCoursCol->setModel('EdtEmplacementCours');
+//	    foreach ($col as $edtCours) {
+//		$edtCoursCol->append($edtCours);
+//	    }
+
 	    require_once("helpers/EdtEmplacementCoursHelper.php");
 	    EdtEmplacementCoursHelper::orderChronologically($edtCoursCol);
 

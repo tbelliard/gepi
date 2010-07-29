@@ -51,6 +51,27 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	    return $desc;
 	}
 
+	public function isTypeHydrated() {
+	    if ($this->a_type_id !== null && $this->aAbsenceEleveType === null) {
+		return 'non';
+	    }
+	    return 'oui';
+	}
+
+	public function isNotificationHydrated() {
+	    if ($this->collAbsenceEleveNotifications !== null) {
+		return 'oui';
+	    }
+	    return 'non';
+	}
+
+	public function isJustificationHydrated() {
+	    if ($this->a_justification_id !== null && $this->aAbsenceEleveJustification === null) {
+		return 'non';
+	    }
+	    return 'oui';
+	}
+
 	/**
 	 *
 	 * Renvoi true / false suivant que le traitement est modifiable ou pas

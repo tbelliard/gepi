@@ -205,19 +205,67 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 	public function getGroupe(PropelPDO $con = null)
 	{
 		if ($this->aGroupe === null && (($this->id_groupe !== "" && $this->id_groupe !== null))) {
-			$this->aGroupe = GroupeQuery::create()
-				->leftJoinWith('Groupe.JGroupesClasses')
-				->leftJoinWith('JGroupesClasses.Classe')
-				->findPk($this->id_groupe, $con);
-			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aGroupe->addEdtEmplacementCourss($this);
-			 */
+		    //on utilise du sql directement pour optimiser la requete
+		    $sql = "SELECT
+			    groupes.ID, groupes.NAME, groupes.DESCRIPTION, groupes.RECALCUL_RANG, j_groupes_classes.ID_GROUPE, j_groupes_classes.ID_CLASSE,
+			    j_groupes_classes.PRIORITE, j_groupes_classes.COEF, j_groupes_classes.CATEGORIE_ID, j_groupes_classes.SAISIE_ECTS,
+			    j_groupes_classes.VALEUR_ECTS, classes.ID, classes.CLASSE, classes.NOM_COMPLET, classes.SUIVI_PAR, classes.FORMULE, classes.FORMAT_NOM,
+			    classes.DISPLAY_RANG, classes.DISPLAY_ADDRESS, classes.DISPLAY_COEF, classes.DISPLAY_MAT_CAT, classes.DISPLAY_NBDEV, classes.DISPLAY_MOY_GEN,
+			    classes.MODELE_BULLETIN_PDF, classes.RN_NOMDEV, classes.RN_TOUTCOEFDEV, classes.RN_COEFDEV_SI_DIFF, classes.RN_DATEDEV,
+			    classes.RN_SIGN_CHEFETAB, classes.RN_SIGN_PP, classes.RN_SIGN_RESP, classes.RN_SIGN_NBLIG, classes.RN_FORMULE, classes.ECTS_TYPE_FORMATION,
+			    classes.ECTS_PARCOURS, classes.ECTS_CODE_PARCOURS, classes.ECTS_DOMAINES_ETUDE, classes.ECTS_FONCTION_SIGNATAIRE_ATTESTATION
+			FROM `groupes`
+			LEFT JOIN j_groupes_classes ON (groupes.ID=j_groupes_classes.ID_GROUPE)
+			LEFT JOIN classes ON (j_groupes_classes.ID_CLASSE=classes.ID)
+			WHERE groupes.ID='".$this->id_groupe."'";
+		    $con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		    $stmt = $con->prepare($sql);
+		    $stmt->execute();
+
+		    $this->aGroupe = EdtEmplacementCours::getGroupeFormatter()->formatOne($stmt);
 		}
 		return $this->aGroupe;
 	}
 
+	/**
+	 * PropelFormatter pour la requete sql directe
+	 */
+	private static $groupeFormatter;
+	
+	/**
+	 * PropelFormatter pour la requete sql directe
+	 *
+	 * @return     PropelFormatter pour le requete getGroupe
+	 */
+	private static function getGroupeFormatter() {
+	    if (EdtEmplacementCours::$groupeFormatter === null) {
+		    $formatter = new PropelObjectFormatter();
+		    $formatter->setDbName(GroupePeer::DATABASE_NAME);
+		    $formatter->setClass('Groupe');
+		    $formatter->setPeer('GroupePeer');
+		    $formatter->setAsColumns(array());
+		    $formatter->setHasLimit(false);
+
+		    $width = array();
+		    // create a ModelJoin object for this join
+		    $JGroupesClassesJoin = new ModelJoin();
+		    $JGroupesClassesJoin->setJoinType(Criteria::LEFT_JOIN);
+		    $qroupeTableMap = Propel::getDatabaseMap(GroupePeer::DATABASE_NAME)->getTableByPhpName('Groupe');
+		    $relationJGroupesClasses = $qroupeTableMap->getRelation('JGroupesClasses');
+		    $JGroupesClassesJoin->setRelationMap($relationJGroupesClasses, null, '');
+		    $width["JGroupesClasses"] = $JGroupesClassesJoin;
+
+		    $classeJoin = new ModelJoin();
+		    $classeJoin->setJoinType(Criteria::LEFT_JOIN);
+		    $jGroupesClassesTableMap = Propel::getDatabaseMap(GroupePeer::DATABASE_NAME)->getTableByPhpName('JGroupesClasses');
+		    $relationClasse = $jGroupesClassesTableMap->getRelation('Classe');
+		    $classeJoin->setRelationMap($relationClasse, null, '');
+		    $classeJoin->setPreviousJoin($JGroupesClassesJoin);
+		    $width["Classe"] = $classeJoin;
+
+		    $formatter->setWith($width);
+		    EdtEmplacementCours::$groupeFormatter = $formatter;
+	    }
+	    return EdtEmplacementCours::$groupeFormatter;
+	}
 } // EdtEmplacementCours

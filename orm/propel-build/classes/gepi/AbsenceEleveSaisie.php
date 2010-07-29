@@ -261,15 +261,19 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 				$this->initAbsenceEleveTraitements();
 			} else {
 				if ($this->collJTraitementSaisieEleves === null || null !== $criteria) {
-
 				    if (null !== $criteria) {
 					return AbsenceEleveTraitementQuery::create(null, $criteria)
 						->filterByAbsenceEleveSaisie($this)
 						->find($con);
 				    } else {
 					//on utilise du sql directement pour optimiser la requete
-					$sql = "SELECT *
-					FROM `a_traitements` INNER JOIN j_traitements_saisies ON (a_traitements.ID=j_traitements_saisies.A_TRAITEMENT_ID)
+					$sql = "SELECT 
+					    a_traitements.ID, a_traitements.UTILISATEUR_ID, a_traitements.A_TYPE_ID, a_traitements.A_MOTIF_ID, a_traitements.A_JUSTIFICATION_ID, a_traitements.COMMENTAIRE, a_traitements.CREATED_AT, a_traitements.UPDATED_AT, a_types.ID, a_types.NOM, a_types.JUSTIFICATION_EXIGIBLE,
+					    a_types.RESPONSABILITE_ETABLISSEMENT, a_types.TYPE_SAISIE, a_types.COMMENTAIRE, a_types.SORTABLE_RANK,
+					    a_notifications.ID, a_notifications.UTILISATEUR_ID, a_notifications.A_TRAITEMENT_ID, a_notifications.TYPE_NOTIFICATION, a_notifications.EMAIL, a_notifications.TELEPHONE, a_notifications.ADR_ID, a_notifications.COMMENTAIRE, a_notifications.STATUT_ENVOI, a_notifications.DATE_ENVOI, a_notifications.ERREUR_MESSAGE_ENVOI, a_notifications.CREATED_AT, a_notifications.UPDATED_AT,
+					    a_justifications.ID, a_justifications.NOM, a_justifications.COMMENTAIRE, a_justifications.SORTABLE_RANK
+					FROM `a_traitements`
+					INNER JOIN j_traitements_saisies ON (a_traitements.ID=j_traitements_saisies.A_TRAITEMENT_ID)
 					LEFT JOIN a_types ON (a_traitements.A_TYPE_ID=a_types.ID)
 					LEFT JOIN a_notifications ON (a_traitements.ID=a_notifications.A_TRAITEMENT_ID)
 					LEFT JOIN a_justifications ON (a_traitements.A_JUSTIFICATION_ID=a_justifications.ID)
@@ -278,13 +282,12 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 					$stmt = $con->prepare($sql);
 					$stmt->execute();
 
-					$col = AbsenceEleveTraitementPeer::populateObjects($stmt);
-					$collAbsenceEleveTraitements = new PropelObjectCollection();
-					$collAbsenceEleveTraitements->setModel('AbsenceEleveTraitement');
-					foreach ($col as $traitement) {
-					    $collAbsenceEleveTraitements->append($traitement);
-					}
-					$this->collAbsenceEleveTraitements = $collAbsenceEleveTraitements;
+					$this->collAbsenceEleveTraitements = AbsenceEleveSaisie::getTraitementFormatter()->format($stmt);
+//					foreach ($this->collAbsenceEleveTraitements as $traitement) {
+//					    echo $this->getId().'sql $traitement->isTypeHydrated() : '.$traitement->isTypeHydrated().'<br/>';
+//					    echo $this->getId().'sql $traitement->isNotificationHydrated() : '.$traitement->isNotificationHydrated().'<br/>';
+//					    echo $this->getId().'sql $traitement->isJustificationHydrated() : '.$traitement->isJustificationHydrated().'<br/>';
+//					}
 				    }
 				} else {
 				    $this->collAbsenceEleveTraitements = new PropelObjectCollection();
@@ -292,10 +295,61 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 				    foreach ($this->collJTraitementSaisieEleves as $jTraitementSaisieEleve) {
 					$this->collAbsenceEleveTraitements->append($jTraitementSaisieEleve->getAbsenceEleveTraitement());
 				    }
+//				    foreach ($this->collAbsenceEleveTraitements as $traitement) {
+//					echo $this->getId().'collJ $traitement->isTypeHydrated() : '.$traitement->isTypeHydrated().'<br/>';
+//					echo $this->getId().'collJ $traitement->isNotificationHydrated() : '.$traitement->isNotificationHydrated().'<br/>';
+//					echo $this->getId().'collJ $traitement->isJustificationHydrated() : '.$traitement->isJustificationHydrated().'<br/>';
+//				    }
 				}
 			}
 		}
 		return $this->collAbsenceEleveTraitements;
+	}
+
+	/**
+	 * PropelFormatter pour la requete sql directe
+	 */
+	private static $traitementFormatter;
+
+	/**
+	 * PropelFormatter pour la requete sql directe
+	 *
+	 * @return     PropelFormatter pour le requete getGroupe
+	 */
+	private static function getTraitementFormatter() {
+	    if (AbsenceEleveSaisie::$traitementFormatter === null) {
+		    $formatter = new PropelObjectFormatter();
+		    $formatter->setDbName(AbsenceEleveTraitementPeer::DATABASE_NAME);
+		    $formatter->setClass('AbsenceEleveTraitement');
+		    $formatter->setPeer('AbsenceEleveTraitementPeer');
+		    $formatter->setAsColumns(array());
+		    $formatter->setHasLimit(false);
+
+		    $typeTableMap = Propel::getDatabaseMap(AbsenceEleveTraitementPeer::DATABASE_NAME)->getTableByPhpName('AbsenceEleveTraitement');
+		    $width = array();
+		    // create a ModelJoin object for this join
+		    $typeJoin = new ModelJoin();
+		    $typeJoin->setJoinType(Criteria::LEFT_JOIN);
+		    $typeRelation = $typeTableMap->getRelation('AbsenceEleveType');
+		    $typeJoin->setRelationMap($typeRelation, null, '');
+		    $width["AbsenceEleveType"] = $typeJoin;
+
+		    $notificationJoin = new ModelJoin();
+		    $notificationJoin->setJoinType(Criteria::LEFT_JOIN);
+		    $notificationRelation = $typeTableMap->getRelation('AbsenceEleveNotification');
+		    $notificationJoin->setRelationMap($notificationRelation, null, '');
+		    $width["AbsenceEleveNotification"] = $notificationJoin;
+
+		    $justificationJoin = new ModelJoin();
+		    $justificationJoin->setJoinType(Criteria::LEFT_JOIN);
+		    $justificationRelation = $typeTableMap->getRelation('AbsenceEleveJustification');
+		    $justificationJoin->setRelationMap($justificationRelation, null, '');
+		    $width["AbsenceEleveJustification"] = $justificationJoin;
+
+		    $formatter->setWith($width);
+		    AbsenceEleveSaisie::$traitementFormatter = $formatter;
+	    }
+	    return AbsenceEleveSaisie::$traitementFormatter;
 	}
 
 	/**
