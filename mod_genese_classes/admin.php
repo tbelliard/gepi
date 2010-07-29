@@ -19,6 +19,13 @@
 * along with GEPI; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+$accessibilite="y";
+$titre_page = "Génèse classe: Activation/désactivation";
+$niveau_arbo = 1;
+$gepiPathJava="./..";
+$post_reussi=FALSE;
+$msg = '';
+
 
 
 // Initialisations files
@@ -66,18 +73,64 @@ if (!checkAccess()) {
 
 $msg = '';
 if (isset($_POST['activer'])) {
-    if (!saveSetting("active_mod_genese_classes", $_POST['activer'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-	}
-	else {$msg = "Enregistrement effectué.";}
+  if (!saveSetting("active_mod_genese_classes", $_POST['activer'])) {
+	  $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+  }
+  else {
+	$msg = "Enregistrement effectué.";
+	$post_reussi=TRUE;
+  }
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Génèse classe: Activation/désactivation";
+//$titre_page = "Génèse classe: Activation/désactivation";
 //echo "<div class='noprint'>\n";
-require_once("../lib/header.inc");
+//require_once("../lib/header.inc");
 //echo "</div>\n";
 //**************** FIN EN-TETE *****************
+
+
+// ====== Inclusion des balises head et du bandeau =====
+include_once("../lib/header_template.inc");
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Génèse classe"))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+
+
+
+/****************************************************************
+			BAS DE PAGE
+****************************************************************/
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("../lib/footer_template.inc.php");
+
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// $affiche_debug=debug_var();
+
+
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_genese_classes/admin_template.php';
+
+$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+include($nom_gabarit);
+
+/*
+
+
+
+
+
 
 //debug_var();
 
@@ -102,4 +155,6 @@ echo " <input type='submit' name='valider' value='Valider' /></p>\n";
 echo "</form>\n";
 
 require("../lib/footer.inc.php");
+ * 
+ */
 ?>

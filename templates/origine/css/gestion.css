@@ -20,6 +20,12 @@ hr {
   color: inherit;
   background-color: inherit;
 }
+input[type=submit] {
+  font-variant: small-caps;
+}
+label {
+  cursor: pointer;
+}
 .center{
   text-align: center;
 }
