@@ -139,26 +139,38 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	/**
 	 *
 	 * Renvoi true ou false si l'eleve etait sous la responsabilite de l'etablissement (infirmerie ou autre)
-	 * si aucun traitement ou type n'est associé on renvoi faux par defaut
+	 * une saisie qui n'est pas sous la responsabilite de l'etablissement sere comptee dans le bulletin
+	 * une saisie qui est sous la responsabilite de l'etablissement ne sera pas comptee dans le bulletin
 	 *
 	 * @return     boolean
 	 *
 	 */
 	public function getResponsabiliteEtablissement() {
 	    if (!isset($responsabiliteEtablissement) || $responsabiliteEtablissement === null) {
-		$traitements = $this->getAbsenceEleveTraitements();
-		foreach ($traitements as $traitement) {
-		    if ($traitement->getAbsenceEleveType() != null &&
-			$traitement->getAbsenceEleveType()->getResponsabiliteEtablissement()) {
-			$responsabiliteEtablissement = true;
-			return true;
+		$type_sans_resp_exist = false;
+		$type_avec_resp_exist = false;
+		foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+		    if ($traitement->getAbsenceEleveType() != null) {
+			if ($traitement->getAbsenceEleveType()->getResponsabiliteEtablissement()) {
+			    $type_avec_resp_exist = true;
+			} else {
+			    $type_sans_resp_exist = true;
+			}
 		    }
 		}
-		$responsabiliteEtablissement = false;
-		return false;
-	    } else {
-		return $responsabiliteEtablissement;
+		if ($type_avec_resp_exist == false && $type_sans_resp_exist == false) {
+		    //on a aucune information on renvoit le reglage par defaut
+		    $responsabiliteEtablissement = (getSettingValue("abs2_saisie_par_defaut_pas_dans_le_bulletin")=='y');
+		} else if ($type_avec_resp_exist == false && $type_sans_resp_exist == true) {
+		    $responsabiliteEtablissement = false;
+		} else if ($type_avec_resp_exist == true && $type_sans_resp_exist == false) {
+		    $responsabiliteEtablissement = true;
+		} else {
+		    //on a les deux types, on renvoi le reglage adequat
+		    $responsabiliteEtablissement = (getSettingValue("abs2_saisie_multi_type_non_comptees_dans_le_bulletin")=='y');
+		}
 	    }
+	    return $responsabiliteEtablissement;
 	}
 
 	/**

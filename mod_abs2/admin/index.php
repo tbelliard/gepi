@@ -133,6 +133,25 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
+		if (isset($_POST['abs2_saisie_par_defaut_pas_dans_le_bulletin'])) {
+			if (!saveSetting("abs2_saisie_par_defaut_pas_dans_le_bulletin", $_POST['abs2_saisie_par_defaut_pas_dans_le_bulletin'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_pas_dans_le_bulletin";
+			}
+		} else {
+			if (!saveSetting("abs2_saisie_par_defaut_pas_dans_le_bulletin", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_pas_dans_le_bulletin";
+			}
+		}
+
+		if (isset($_POST['abs2_saisie_multi_type_non_comptees_dans_le_bulletin'])) {
+			if (!saveSetting("abs2_saisie_multi_type_non_comptees_dans_le_bulletin", $_POST['abs2_saisie_multi_type_non_comptees_dans_le_bulletin'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_non_comptees_dans_le_bulletin !";
+			}
+		} else {
+			if (!saveSetting("abs2_saisie_multi_type_non_comptees_dans_le_bulletin", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_non_comptees_dans_le_bulletin !";
+			}
+		}
 //		if (isset($_POST['abs2_modification_saisie_sans_limite'])) {
 //			if (!saveSetting("abs2_modification_saisie_sans_limite", $_POST['abs2_modification_saisie_sans_limite'])) {
 //				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
@@ -270,6 +289,20 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	</select><br/>
 	Nom d'utilisateur du service <input type="text" name="abs2_sms_username" size="20" value="<?php echo(getSettingValue("abs2_sms_username")); ?>"/><br/>
 	Mot de passe <input type="text" name="abs2_sms_password" size="20" value="<?php echo(getSettingValue("abs2_sms_password")); ?>"/><br/>
+</p>
+
+<h2>Configuration des saisie</h2>
+<p>
+	<input type="checkbox" id="abs2_saisie_par_defaut_pas_dans_le_bulletin" name="abs2_saisie_par_defaut_pas_dans_le_bulletin" value="y"
+	<?php if (getSettingValue("abs2_saisie_par_defaut_pas_dans_le_bulletin")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_saisie_par_defaut_pas_dans_le_bulletin">&nbsp;Considérer l'élève sous la responsabilitée de l'établissement pour les absences saisie par defaut (sans type).
+	    Donc ces saisies ne seront pas comptées dans les bulletins</label>
+</p>
+<p>
+	<input type="checkbox" id="abs2_saisie_multi_type_non_comptees_dans_le_bulletin" name="abs2_saisie_multi_type_non_comptees_dans_le_bulletin" value="y"
+	<?php if (getSettingValue("abs2_saisie_multi_type_non_comptees_dans_le_bulletin")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_saisie_multi_type_non_comptees_dans_le_bulletin">&nbsp;Dans le cas d'une saisie avec plusieurs types contradictoires, considérer l'élève sous la responsabilitée de l'établissement.
+	   (Donc ces saisies ne seront pas comptées dans les bulletins)</label>
 </p>
 
 <!--h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>

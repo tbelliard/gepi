@@ -25,7 +25,7 @@ class Classe extends BaseClasse {
 		if ($this->collJGroupesClassess !== null) {
 		    $collJGroupesClasses = $this->collJGroupesClassess;
 		} else {
-		    $collJGroupesClasses = $this->getJGroupesClassessJoinClasse($con);
+		    $collJGroupesClasses = $this->getJGroupesClassessJoinGroupe();
 		}
 		foreach($collJGroupesClasses as $ref) {
 		    if ($ref->getGroupe() != null) {

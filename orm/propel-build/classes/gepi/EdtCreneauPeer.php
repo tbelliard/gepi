@@ -17,6 +17,22 @@ class EdtCreneauPeer extends BaseEdtCreneauPeer {
 
   private static $_all_creneaux;
 
+    /**
+     * Retrieve a single object by pkey.
+     *
+     * @param      int $pk the primary key.
+     * @param      PropelPDO $con the connection to use
+     * @return     EdtCreneau
+     */
+    public static function retrieveByPK($pk, PropelPDO $con = null) {
+	foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edtCreneau) {
+	    if ((string)$edtCreneau->getPrimaryKey() === (string)$pk) {
+		return $edtCreneau;
+	    }
+	}
+	return null;
+    }
+    
   /**
    * Renvoie la liste des creneaux de la journee
    *
