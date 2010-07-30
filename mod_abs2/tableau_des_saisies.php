@@ -30,15 +30,15 @@ include("../edt_organisation/fonctions_calendrier.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-	header("Location: ../../utilisateurs/mon_compte.php?change_mdp=yes");
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
 	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../../logout.php?auto=1");
+    header("Location: ../logout.php?auto=1");
 	die();
 };
 
 if (!checkAccess()) {
-    header("Location: ../../logout.php?auto=1");
+    header("Location: ../logout.php?auto=1");
 	die();
 }
 
@@ -60,6 +60,7 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
 
 // Initialisation des variables
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :(isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] :(isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
+if ($date_absence_eleve != null) {$_SESSION["date_absence_eleve"] = $date_absence_eleve;}
 if ($date_absence_eleve != null) {
     $dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
 } else {
