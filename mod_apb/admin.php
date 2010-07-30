@@ -21,6 +21,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 // Initialisations files
+
+$accessibilite="y";
+$titre_page = "Gestion de l'export APB";
+$niveau_arbo = 1;
+$gepiPathJava="./..";
+$post_reussi=FALSE;
+$msg = '';
+
 require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -53,13 +61,61 @@ if (isset($_POST['posted_selection'])) {
     }
   }
   if (!$errors) {
-    $msg .= "Les données ont été enregistrées avec succès.";
+	$msg .= "Les données ont été enregistrées avec succès.";
+	$post_reussi=TRUE;
   }
 }
 
+$req_classes = mysql_query('SELECT id,classe,nom_complet,apb_niveau
+								  FROM classes
+								  ORDER BY classe');
+
 // header
-$titre_page = "Gestion de l'export APB";
-require_once("../lib/header.inc");
+//$titre_page = "Gestion de l'export APB";
+//require_once("../lib/header.inc");
+
+
+// ====== Inclusion des balises head et du bandeau =====
+include_once("../lib/header_template.inc");
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],"Gestion Export APB"))
+		echo "erreur lors de la création du fil d'ariane";
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+
+
+
+/****************************************************************
+			BAS DE PAGE
+****************************************************************/
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("../lib/footer_template.inc.php");
+
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// $affiche_debug=debug_var();
+
+
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/mod_apb/admin_template.php';
+
+$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+include($nom_gabarit);
+
+
+
+
+
+
+/*
 ?>
 
 <p class=bold><a href="../accueil_modules.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
@@ -107,4 +163,5 @@ while($classe = mysql_fetch_object($req_classes)) {
 <?php
 	echo "<p><br /></p>\n";
 	require("../lib/footer.inc.php");
+*/
 ?>

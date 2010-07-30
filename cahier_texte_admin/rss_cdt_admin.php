@@ -23,9 +23,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+$accessibilite="y";
 $titre_page = "Paramétrer les flux rss du cahier de textes";
 $affiche_connexion = "oui";
 $niveau_arbo = 1;
+$gepiPathJava="./..";
+  $post_reussi=FALSE;
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -57,6 +60,8 @@ $rss_acces_ele = isset($_POST["rss_acces_ele"]) ? $_POST["rss_acces_ele"] : NULL
 $genereflux = isset($_GET["genereflux"]) ? $_GET["genereflux"] : NULL;
 $generefluxcsv = isset($_GET["generefluxcsv"]) ? $_GET["generefluxcsv"] : NULL;
 $msg = $result = NULL;
+$lienFlux=array();
+$a=0;
 
 
 
@@ -65,52 +70,20 @@ $msg = $result = NULL;
 if ($action == "modifier") {
 
 	$save = saveSetting("rss_cdt_eleve", $rss_cdt_ele);
-	if ($save) {
-		$msg .= '<p style="color: green;">La modification a été enregistrée.</p>'."\n";
-	}else{
+	if (!$save) {
 		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>'."\n";
 	}
 
 }
 if (isset($rss_acces_ele)) {
 	$save_d = saveSetting("rss_acces_ele", $rss_acces_ele);
-	if ($save_d) {
-		$msg .= '<p style="color: green;">La modification a été enregistrée.</p>';
-	}else{
+	if (!$save_d) {
 		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>';
 	}
 }
 
 // On teste si l'admin veut autoriser les flux pour créer la table adéquate
-	$test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
-	if ($test_table == 0) {
-
-		if (getSettingValue("rss_cdt_eleve") == "y") {
-
-			$lien_generateflux = '
-			<a href="rss_cdt_admin.php?genereflux=y">
-			Générer les adresses personnelles (<acronym title="identifiant de ressource sur un réseau">URI</acronym>) pour chaque élève
-			</a>'."\n";
-
-		}else{
-
-			$lien_generateflux = '';
-
-		}
-
-	}elseif ($test_table == 1){
-
-		$themessage = "Êtes-vous certain de vouloir générer de nouveau ces URI ? Tous les élèves qui utilisaient déjà une URI devront adopter la nouvelle.";
-		$lien_generateflux = '
-		La table existe et les URI sont en place.&nbsp;&nbsp;
-		<a href="'.$gepiPath.'/cahier_texte_admin/rss_cdt_admin.php?genereflux=y"'.insert_confirm_abandon().'>
-		Re-Générer les <acronym title="identifiant de ressource sur un réseau">URI</acronym></a>'."\n";
-
-	}else{
-
-		$lien_generateflux = '';
-
-	}
+  $test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
 
 if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 	$suivant = "non";
@@ -120,13 +93,16 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
     if ($test_table == 0) {
 		$query1 = mysql_query("CREATE TABLE `rss_users` (`id` int(11) NOT NULL auto_increment, `user_login` varchar(30) NOT NULL, `user_uri` varchar(30) NOT NULL, PRIMARY KEY  (`id`));");
         if ($query1) {
-            $result .= "<font color=\"green\">La table nécessaire est bien créée !</font><br />";
+            $result .= "<span class='green'>La table nécessaire est bien créée !</span><br />";
+			$creeTable=1;
             $suivant = "oui";
         } else {
-			$result .= "<font color=\"red\">Erreur lors de la création de la table.</font><br />";
+			$result .= "<span class='red'>Erreur lors de la création de la table.</span><br />";
+			$creeTable=0;
 		}
 	} else {
-		$result .= "<font color=\"blue\">La table existe déjà.</font><br />";
+		$result .= "<font class='blue'>La table existe déjà.</span><br />";
+		$creeTable=2;
 		$suivant = "oui";
 	}
 
@@ -161,6 +137,40 @@ if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
 
 }
 
+// On teste si l'admin veut autoriser les flux pour créer la table adéquate
+  $test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
+
+  if ($test_table == 0) {
+	if (getSettingValue("rss_cdt_eleve") == "y") {
+/*
+			$lien_generateflux = '
+			<a href="rss_cdt_admin.php?genereflux=y">
+			Générer les adresses personnelles (<acronym title="identifiant de ressource sur un réseau">URI</acronym>) pour chaque élève
+			</a>'."\n";
+ *
+ */
+	  $lienFlux[$a]['lien']="rss_cdt_admin.php?genereflux=y";
+	  $lienFlux[$a]['texte']="Générer les adresses personnelles (<acronym title='Uniform Resource Identifier : identifiant de ressource sur un réseau'>URI</acronym>) pour chaque élève";
+	  $lienFlux[$a]['confirme']=FALSE;
+	  $a++;
+	}else{
+	  $lien_generateflux = '';
+	}
+  }elseif ($test_table == 1){
+	$themessage = "Êtes-vous certain de vouloir générer de nouveau ces URI ? Tous les élèves qui utilisaient déjà une URI devront adopter la nouvelle.";
+
+/*
+ * 		$lien_generateflux = '
+		La table existe et les URI sont en place.&nbsp;&nbsp;
+		<a href="'.$gepiPath.'/cahier_texte_admin/rss_cdt_admin.php?genereflux=y"'.insert_confirm_abandon().'>
+		Re-Générer les <acronym title="identifiant de ressource sur un réseau">URI</acronym></a>'."\n";
+ *
+ */
+	$lienFlux[$a]['lien']=$gepiPath."/cahier_texte_admin/rss_cdt_admin.php?genereflux=y";
+	$lienFlux[$a]['texte']="Re-Générer les <acronym title='Uniform Resource Identifier : identifiant de ressource sur un réseau'>URI</acronym>";
+	$lienFlux[$a]['confirme']=TRUE;
+	$a++;
+  }
 
 // On vérifie les checked
 // et on définit si on doit afficher le div qui suit ou pas
@@ -181,16 +191,69 @@ if (getSettingValue("rss_acces_ele") == "direct") {
 }
 
 
+if ($msg=="" && ($action=="modifier"||$rss_acces_ele)) {
+  $msg = "Les modifications ont été enregistrées !";
+  $post_reussi=TRUE;
+}
 // ======================== CSS et js particuliers ========================
 $utilisation_win = "oui";
 $utilisation_jsdivdrag = "non";
-$javascript_specifique = "";
-$style_specifique = "";
+//$javascript_specifique = "";
+//$style_specifique = "";
 
 // ===================== entete Gepi ======================================//
-require_once("../lib/header.inc");
+// require_once("../lib/header.inc");
 // ===================== fin entete =======================================//
 
+
+/****************************************************************
+                     HAUT DE PAGE
+****************************************************************/
+
+// ====== Inclusion des balises head et du bandeau =====
+include_once("../lib/header_template.inc");
+
+/****************************************************************
+			FIN HAUT DE PAGE
+****************************************************************/
+
+if (!suivi_ariane($_SERVER['PHP_SELF'],"paramétrage Flux RSS"))
+		echo "erreur lors de la création du fil d'ariane";
+
+
+/****************************************************************
+			BAS DE PAGE
+****************************************************************/
+$tbs_microtime	="";
+$tbs_pmv="";
+require_once ("../lib/footer_template.inc.php");
+
+/****************************************************************
+			On s'assure que le nom du gabarit est bien renseigné
+****************************************************************/
+if ((!isset($_SESSION['rep_gabarits'])) || (empty($_SESSION['rep_gabarits']))) {
+	$_SESSION['rep_gabarits']="origine";
+}
+
+//==================================
+// Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
+// $affiche_debug=debug_var();
+
+
+$nom_gabarit = '../templates/'.$_SESSION['rep_gabarits'].'/cahier_texte_admin/rss_cdt_template.php';
+
+$tbs_last_connection=""; // On n'affiche pas les dernières connexions
+include($nom_gabarit);
+
+// ------ on vide les tableaux -----
+unset($menuAffiche,$lienFlux);
+
+
+
+
+
+
+/*
 echo "<!-- page Parametrer_les_flux_rss_du_cahier_de_textes.-->";
 
 ?>
@@ -204,7 +267,7 @@ echo "<!-- page Parametrer_les_flux_rss_du_cahier_de_textes.-->";
 		<input type="hidden" name="action" value="modifier" />
 
 	<p>
-		<input type="checkbox" id="autoRssCdt" name="rss_cdt_ele" value="y" onclick="changementDisplay('accesEle', '');" onchange='document.form_rss.submit();'<?php echo $checked_ele; ?> />
+		<input type="checkbox" id="autoRssCdt" name="rss_cdt_ele" value="y" onclick="changementDisplay('accesEle', '');" onchange='document.getElementById("").submit();'<?php echo $checked_ele; ?> />
 		<label for="autoRssCdt">&nbsp;Les &eacute;l&egrave;ves peuvent utiliser le flux rss de leur cahier de textes</label>
 	</p>
 </form>
@@ -230,4 +293,6 @@ echo "<!-- page Parametrer_les_flux_rss_du_cahier_de_textes.-->";
 <?php
 // Inclusion du bas de page
 require_once("../lib/footer.inc.php");
+ *
+ */
 ?>
