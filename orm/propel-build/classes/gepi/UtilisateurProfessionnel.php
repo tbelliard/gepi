@@ -460,8 +460,8 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 	    }
 
 	    $query = EdtEmplacementCoursQuery::create()->filterByLoginProf($this->getLogin())
-		    ->joinWith('Groupe')
-		    ->joinWith('AidDetails')
+		    ->leftJoinWith('Groupe')
+		    ->leftJoinWith('AidDetails')
 		    ->filterByIdCalendrier(0)
 		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
 	    if ($v != null) {
