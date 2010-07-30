@@ -22,7 +22,7 @@ if(($_SESSION['statut']=='cpe')||
 
     echo "<li><a href='absences_du_jour.php' ";
     if($onglet_abs=='absences_du_jour.php') {echo "class='current' ";}
-    echo "title='Absences du jours'>Absences du jours</a></li>\n";
+    echo "title='Absences du jour'>Absences du jour</a></li>\n";
 
     echo "</ul>\n";
 
