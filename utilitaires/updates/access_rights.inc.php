@@ -665,7 +665,8 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/saisir_eleve.php', 'V', 'F',
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisie_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'V', 'Enregistrer absence d un eleve', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/creation_traitement.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Crer un traitement', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_discipline/saisie_incident_abs2.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Saisir un incident relatif a une absence', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/tableau_des_saisies.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Visualisation d une notification', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/tableau_des_saisies.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Visualisation du tableaux des saisies', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/bilan_du_jour.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Visualisation du bilan du jour', '');";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'F', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');";
 

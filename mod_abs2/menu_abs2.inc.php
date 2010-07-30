@@ -17,7 +17,7 @@ if(($_SESSION['statut']=='cpe')||
     echo "<ul class='css-tabs' id='menutabs' style='font-size:85%'>\n";
 
     echo "<li><a href='tableau_des_saisies.php' ";
-    if($onglet_abs=='absences_du_jour.php' || $onglet_abs=='tableau_des_saisies.php') {echo "class='current' ";}
+    if($onglet_abs=='absences_du_jour.php' || $onglet_abs=='tableau_des_saisies.php' || $onglet_abs=='bilan_du_jour.php') {echo "class='current' ";}
     echo "title='Bilans'>Bilans</a></li>\n";
 
     echo "<li><a href='saisir_groupe.php' ";
