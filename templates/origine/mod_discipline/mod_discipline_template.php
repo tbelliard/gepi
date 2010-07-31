@@ -84,11 +84,6 @@
 
 	<div id='container'>
 
-<!-- fil d'ariane -->
-<?php
-  affiche_ariane()
-?>
-<!-- fin fil d'ariane -->
 
 	<a name="contenu" class="invisible">Début de la page</a>
 	
