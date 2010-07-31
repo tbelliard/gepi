@@ -285,8 +285,6 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 					    ->useJGroupesClassesQuery()->useClasseQuery()->useJScolClassesQuery()
 					    ->filterByUtilisateurProfessionnel($this)
 					    ->endUse()->endUse()->endUse()
-					    ->leftJoinWith('Groupe.JGroupesClasses')
-					    ->leftJoinWith('JGroupesClasses.Classe')
 					    ->find();
 				} else {
 				    //par de groupes pour les autres statuts
