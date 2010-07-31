@@ -25,8 +25,6 @@
 // Initialisations files
 require_once("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
-//mes fonctions
-include("../edt_organisation/fonctions_calendrier.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
