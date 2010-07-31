@@ -177,18 +177,18 @@ echo "<div class='css-panes' id='containDiv'>\n";
 
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 //on affiche une boite de selection avec les groupes et les creneaux
-if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_prof_hors_cours")=='y' && !$utilisateur->getGroupes()->isEmpty())) {
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $groupe_col = GroupeQuery::create()->find();
+} else {
+    $groupe_col = $utilisateur->getGroupes();
+}
+if (($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_prof_hors_cours")=='y') && !$groupe_col->isEmpty())) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";    
 	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
     echo ("Groupe : <select name=\"id_groupe\">");
     echo "<option value='-1'>choisissez un groupe</option>\n";
-    if ($utilisateur->getStatut() == "professeur") {
-	$groupe_col = $utilisateur->getGroupes();
-    } else {
-	$groupe_col = GroupeQuery::create()->find();
-    }
     foreach ($groupe_col as $group) {
 	    echo "<option value='".$group->getId()."'";
 	    if ($id_groupe == $group->getId()) echo " selected='selected' ";
@@ -249,19 +249,19 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
     echo "</td>";
 }
 
-//on affiche une boite de selection avec les classe
-if ($utilisateur->getStatut() != "professeur") {
+//on affiche une boite de selection avec les classes
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $classe_col = ClasseQuery::create()->find();
+} else {
+    $classe_col = $utilisateur->getClasses();
+}
+if (!$classe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";    
 	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_classe"/>';
     echo ("Classe : <select name=\"id_classe\">");
     echo "<option value='-1'>choisissez une classe</option>\n";
-    if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-	$classe_col = ClasseQuery::create()->find();
-    } else {
-	$classe_col = $utilisateur->getClasses();
-    }
     foreach ($classe_col as $classe) {
 	    echo "<option value='".$classe->getId()."'";
 	    if ($id_classe == $classe->getId()) echo " selected='selected' ";
@@ -318,19 +318,19 @@ if ($utilisateur->getStatut() != "professeur") {
     echo "</td>";
 }
 
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $aid_col = AidDetailsQuery::create()->find();
+} else {
+    $aid_col = $utilisateur->getAidDetailss();
+}
 //on affiche une boite de selection avec les aid et les creneaux
-if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_prof_hors_cours")=='y' && !$utilisateur->getAidDetailss()->isEmpty())) {
+if (($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_prof_hors_cours")=='y') && !$aid_col->isEmpty())) {
     echo "<td style='border : 1px solid;'>";    
 	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_aid"/>';
     echo ("Aid : <select name=\"id_aid\">");
     echo "<option value='-1'>choisissez une aid</option>\n";
-    if ($utilisateur->getStatut() == "professeur") {
-	$aid_col = $utilisateur->getAidDetailss();
-    } else {
-	$aid_col = AidDetailsQuery::create()->find();
-    }
     foreach ($aid_col as $aid) {
 	    echo "<option value='".$aid->getPrimaryKey()."'";
 	    if ($id_aid == $aid->getPrimaryKey()) echo " selected='selected' ";
@@ -392,7 +392,11 @@ if ($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_p
 }
 
 //on affiche une boite de selection avec les cours
-$edt_cours_col = $utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle();
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $edt_cours_col = EdtEmplacementCoursQuery::create()->find();
+} else {
+    $edt_cours_col = $utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle();
+}
 if (!$edt_cours_col->isEmpty()) {
     echo "<td style='border : 1px solid;'>";
     echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";

@@ -149,10 +149,16 @@ echo '</td>';
 
 
 //on affiche une boite de selection avec les groupes et les creneaux
-if (!$utilisateur->getGroupes()->isEmpty()) {
+//on affiche une boite de selection avec les aid
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $groupe_col = GroupeQuery::create()->find();
+} else {
+    $groupe_col = $utilisateur->getGroupes();
+}
+if (!$groupe_col->isEmpty()) {
 	echo "<td style='border : 1px solid; padding : 10 px;'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
-echo '<p>';
+	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
 	echo ("Groupe : <select name=\"id_groupe\">");
 	echo "<option value='-1'>choisissez un groupe</option>\n";
@@ -166,12 +172,12 @@ echo '<p>';
 	echo "</select>&nbsp;";
 
 	echo '<button type="submit">Afficher les eleves</button>';
-echo '</p>';
+	echo '</p>';
 	echo "</form>";
 	echo "</td>";
 }
 
-//on affiche une boite de selection avec les classe
+//on affiche une boite de selection avec les classes
 if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
     $classe_col = ClasseQuery::create()->find();
 } else {
@@ -199,11 +205,16 @@ if (!$classe_col->isEmpty()) {
 	echo "</td>";
 }
 
-//on affiche une boite de selection avec les aid et les creneaux
-if (!$utilisateur->getAidDetailss()->isEmpty()) {
+//on affiche une boite de selection avec les aid
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $aid_col = AidDetailsQuery::create()->find();
+} else {
+    $aid_col = $utilisateur->getAidDetailss();
+}
+if (!$aid_col->isEmpty()) {
 	echo "<td style='border : 1px solid;'>";
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
-echo '<p>';
+	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_aid"/>';
 	echo ("Aid : <select name=\"id_aid\">");
 	echo "<option value='-1'>choisissez une aid</option>\n";
