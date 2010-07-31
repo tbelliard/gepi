@@ -61,22 +61,24 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 */
 	public function getTypesDescription() {
 	    $traitement_col = $this->getAbsenceEleveTraitements();
+	    $result = '';
 	    $besoin_echo_type = true;
 	    $besoin_echo_virgule = false;
 	    foreach ($traitement_col as $bou_traitement) {
 		if ($bou_traitement->getAbsenceEleveType() != null) {
 		    if ($besoin_echo_type) {
-			echo 'type : ';
+			$result .= 'type : ';
 			$besoin_echo_type = false;
 		    }
 		    if ($besoin_echo_virgule) {
-			echo ', ';
+			$result .=  ', ';
 			$besoin_echo_virgule = false;
 		    }
-		    echo $bou_traitement->getAbsenceEleveType()->getNom();
+		    $result .= $bou_traitement->getAbsenceEleveType()->getNom();
 		    $besoin_echo_virgule = true;
 		}
 	    }
+	    return $result;
 	}
 	
 	/**
@@ -171,6 +173,24 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		}
 	    }
 	    return $responsabiliteEtablissement;
+	}
+
+	/**
+	 *
+	 * Renvoi 'oui' ou 'non' si l'eleve etait sous la responsabilite de l'etablissement (infirmerie ou autre)
+	 * une saisie qui n'est pas sous la responsabilite de l'etablissement sere comptee dans le bulletin
+	 * une saisie qui est sous la responsabilite de l'etablissement ne sera pas comptee dans le bulletin
+	 * Ajoute pour les modele tbs
+	 *
+	 * @return     string
+	 *
+	 */
+	public function getResponsabiliteEtablissementDescription() {
+	    if ($this->getResponsabiliteEtablissement()) {
+		return 'oui';
+	    } else {
+		return 'non';
+	    }
 	}
 
 	/**
