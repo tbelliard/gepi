@@ -272,12 +272,12 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 				} elseif ($this->statut == "cpe") {
 				    //on ajoute les groupes contenant des eleves sous la responsabilite du cpe
 				    $collGroupes = GroupeQuery::create(null, $criteria)
-					    ->distinct()->useJEleveGroupeQuery()
-					    ->useEleveQuery()->useJEleveCpeQuery()
-					    ->filterByUtilisateurProfessionnel($this)->endUse()
-					    ->endUse()->endUse()
-					    ->leftJoin('Groupe.JGroupesClasses')->with('JGroupesClasses')
-					    ->leftJoin('JGroupesClasses.Classe')->with('Classe')
+					    ->distinct()
+					    ->useJEleveGroupeQuery()->useEleveQuery()->useJEleveCpeQuery()
+					    ->filterByUtilisateurProfessionnel($this)
+					    ->endUse()->endUse()->endUse()
+					    ->leftJoinWith('Groupe.JGroupesClasses')
+					    ->leftJoinWith('JGroupesClasses.Classe')
 					    ->find();
 				} else if ($this->statut == "scolarite") {
 				    //on ajoute les groupes des classes sous la responsabilite du compte scolalite
@@ -285,8 +285,8 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 					    ->useJGroupesClassesQuery()->useClasseQuery()->useJScolClassesQuery()
 					    ->filterByUtilisateurProfessionnel($this)
 					    ->endUse()->endUse()->endUse()
-					    ->leftJoin('Groupe.JGroupesClasses')->with('JGroupesClasses')
-					    ->leftJoin('JGroupesClasses.Classe')->with('Classe')
+					    ->leftJoinWith('Groupe.JGroupesClasses')
+					    ->leftJoinWith('JGroupesClasses.Classe')
 					    ->find();
 				} else {
 				    //par de groupes pour les autres statuts
