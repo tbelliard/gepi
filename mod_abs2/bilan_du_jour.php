@@ -132,10 +132,15 @@ foreach($classe_col as $classe) {
 	foreach($eleve_col as $eleve){
 			echo '<tr>
 			<td></td>
-			<td>'.$eleve->getNom().' '.$eleve->getPrenom();
-			echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
-			echo ' (voir&nbsp;fiche)';
-			echo "</a>";
+			<td>';
+			if ($utilisateur->getAccesFicheEleve($eleve)) {
+			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
+			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
+			    echo $eleve->getNom().' '.$eleve->getPrenom();
+			    echo "</a>";
+			} else {
+			    echo $eleve->getNom().' '.$eleve->getPrenom();
+			}
 			echo '</td>';
 			// On traite alors pour chaque créneau
 			foreach($creneau_col as $creneau) {
