@@ -1303,7 +1303,7 @@ CREATE TABLE edt_semaines
 	type_edt_semaine VARCHAR(10) COMMENT 'typiquement, champ egal a \'A\' ou \'B\' pour l\'alternance des semaines',
 	num_semaines_etab INTEGER(10) COMMENT 'numero de la semaine propre a l\'etablissement',
 	PRIMARY KEY (id_edt_semaine)
-) ENGINE=MyISAM COMMENT='Liste des semaines de l\'annee scolaire courante - 53 enregistrements obligatoires (pas 52!), pour lesquel on assign eun type (A ou B par xexemple)';
+) ENGINE=MyISAM COMMENT='Liste des semaines de l\'annee scolaire courante - 53 enregistrements obligatoires (pas 52!), pour lesquel on assigne un type (A ou B par exemple)';
 
 #-----------------------------------------------------------------------------
 #-- edt_calendrier

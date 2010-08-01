@@ -4,7 +4,7 @@
 /**
  * Base class that represents a query for the 'edt_semaines' table.
  *
- * Liste des semaines de l'annee scolaire courante - 53 enregistrements obligatoires (pas 52!), pour lesquel on assign eun type (A ou B par xexemple)
+ * Liste des semaines de l'annee scolaire courante - 53 enregistrements obligatoires (pas 52!), pour lesquel on assigne un type (A ou B par exemple)
  *
  * @method     EdtSemaineQuery orderByIdEdtSemaine($order = Criteria::ASC) Order by the id_edt_semaine column
  * @method     EdtSemaineQuery orderByNumEdtSemaine($order = Criteria::ASC) Order by the num_edt_semaine column
