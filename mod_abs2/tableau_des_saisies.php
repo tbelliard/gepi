@@ -115,30 +115,45 @@ include('menu_bilans.inc.php');
 	    //$edtCreneau = new EdtCreneau();
 		if ($edtCreneau->getIdDefiniePeriode() == $choix_creneau) {
 			$selected = ' selected="selected"';
-			$color_selected = 'style="color: red; font-weight: bold;"';
 		}else{
 			$selected = '';
-			$color_selected = '';
 		}
 		echo '<option value="'.$edtCreneau->getIdDefiniePeriode().'"'.$selected.'>'.$edtCreneau->getNomDefiniePeriode().'</option>';
 	}
 ?>
 	</select>
+<br />
+<?php
+$creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
+foreach ($creneau_col as $creneau) {
+    if ($creneau->getPrimaryKey() == $choix_creneau) {
+	    $color_selected = 'style="color: red; font-weight: bold;"';
+    }else{
+	    $color_selected = '';
+    }
+    echo '<a href="" '.$color_selected.' onclick="document.choix_du_creneau.choix_creneau.selectedIndex = '.($creneau_col->getPosition() + 1).'; document.choix_du_creneau.submit(); return false;">'.$creneau->getNomDefiniePeriode();
+    echo '</a>';
+    if (!$creneau_col->isLast()) {
+	echo '&nbsp;-&nbsp;';
+    }
+}
+?>
 </form>
-
+<br />
 <?php
 if ($choix_creneau_obj != null) {
 	echo '<br/>Voir les absences de <span style="color: blue;">'.$choix_creneau_obj->getHeuredebutDefiniePeriode('H:i').'</span> à <span style="color: blue;">'.$choix_creneau_obj->getHeurefinDefiniePeriode('H:i').'</span>.';
 ?>
 <br />
+
 <!-- Affichage des réponses-->
 <table class="tab_edt" summary="Liste des absents r&eacute;partie par classe">
 <?php
 // On affiche la liste des classes
 $classe_col = ClasseQuery::create()->orderByNom()->distinct()->find();
-$dt_debut_creneau = $dt_date_absence_eleve;
+$dt_debut_creneau = clone $dt_date_absence_eleve;
 $dt_debut_creneau->setTime($choix_creneau_obj->getHeuredebutDefiniePeriode('H'), $choix_creneau_obj->getHeuredebutDefiniePeriode('i'));
-$dt_fin_creneau = $dt_date_absence_eleve;
+$dt_fin_creneau = clone $dt_date_absence_eleve;
 $dt_fin_creneau->setTime($choix_creneau_obj->getHeurefinDefiniePeriode('H'), $choix_creneau_obj->getHeurefinDefiniePeriode('i'));
 foreach($classe_col as $classe){
     //$classe = new Classe();
@@ -156,31 +171,90 @@ foreach($classe_col as $classe){
 			</div>
 		</td>';
 
+	//la classe a-t-elle des cours actuellement ?
+	//on regarde au debut du creneau et a la fin car il peut y avoir des demi creneau
+	$cours_col = $classe->getEdtEmplacementCours($dt_debut_creneau);
+	$dt_presque_fin_creneau = clone $dt_fin_creneau;
+	$dt_presque_fin_creneau->setTime($choix_creneau_obj->getHeurefinDefiniePeriode('H'), $choix_creneau_obj->getHeurefinDefiniePeriode('i') - 1);
+	$cours_col_2 = $classe->getEdtEmplacementCours($dt_presque_fin_creneau);
+	$cours_col->addCollection($cours_col_2);
+
 	//on teste si l'appel a été fait
+	$appel_manquant = false;
+	$echo_str = '';
+	$classe_deja_sorties = Array();//liste des appels deja affiché sous la form [id_classe, id_utilisateur]
+	$groupe_deja_sortis = Array();//liste des appels deja affiché sous la form [id_groupe, id_utilisateur]
+	foreach ($cours_col as $edtCours) {//on regarde tous les cours enregistrés dans l'edt
+	    //$edtCours = new EdtEmplacementCours();
+	    $abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
+		      ->filterByEdtEmplacementCours($edtCours)->find();
+	    if ($abs_col->isEmpty()) {
+		$appel_manquant = true;
+		$echo_str .= 'Non fait ';
+	    } else {
+		$echo_str .= $abs_col->getFirst()->getCreatedAt('H:i').' ';
+	    }
+	    if ($edtCours->getGroupe() != null) {
+		$echo_str .= $edtCours->getGroupe()->getName().' ';
+		$groupe_deja_sortis[] = Array($edtCours->getIdGroupe(), $edtCours->getLoginProf());
+	    }
+	    if ($edtCours->getUtilisateurProfessionnel() != null) {
+		$echo_str .= $edtCours->getUtilisateurProfessionnel()->getCivilite().' '
+			.$edtCours->getUtilisateurProfessionnel()->getNom().' '
+			.strtoupper(substr($edtCours->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+	    }
+	    if ($edtCours->getEdtSalle() != null) {
+		$echo_str .= $edtCours->getEdtSalle()->getNumeroSalle();
+	    }
+	    $echo_str .= '<br/>';
+	}
+
 	//$classe = new Classe();
+	//on regarde si il y a d'autres appels
 	$abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
 		  ->condition('cond1', 'AbsenceEleveSaisie.IdClasse = ?', $classe->getId()) // create a condition named 'cond1'
 		  ->condition('cond2', 'AbsenceEleveSaisie.IdGroupe IN ?', $classe->getGroupes()->toKeyValue('Id', 'Id'))       // create a condition named 'cond2'
 		  ->where(array('cond1', 'cond2'), 'or')              // combine 'cond1' and 'cond2' with a logical OR
 		  ->find();
 	if ($abs_col->isEmpty()) {
-	    echo '<td style="min-width: 350px;">Appel non fait<br/>';
+	    if ($cours_col->isEmpty()) {
+		$appel_manquant = true;
+		$echo_str .= 'Appel non fait<br/>';
+	    }
 	} else {
-	    echo '<td style="min-width: 350px; background-color:green">Appel fait : ';
-	    $classe_deja_sorties = Array();
-	    $groupe_deja_sorties = Array();
-	    foreach ($abs_col as $abs) {
-		if ($abs->getIdClasse()!=null && !in_array($abs->getIdClasse(), $classe_deja_sorties)) {
-		    echo 'pour la classe '.$abs->getClasse()->getNom().' ';
-		    $classe_deja_sorties[] = $abs->getClasse()->getId();
+	    if ($cours_col->isEmpty()) {
+		$appel_manquant = false;
+	    }
+	    foreach ($abs_col as $abs) {//$abs = new AbsenceEleveSaisie();
+		$affiche = false;
+		if ($abs->getIdClasse()!=null && !in_array(Array($abs->getIdClasse(), $abs->getUtilisateurId()), $classe_deja_sorties)) {
+		    $echo_str .= $abs->getCreatedAt('H:i').' ';
+		    $echo_str .= ' '.$abs->getClasse()->getNom().' ';
+		    $classe_deja_sorties[] = Array($abs->getClasse()->getId(), $abs->getUtilisateurId());
+		    $affiche = true;
 		}
-		if ($abs->getIdGroupe()!=null && !in_array($abs->getIdGroupe(), $groupe_deja_sorties)) {
-		    echo 'pour le groupe '.$abs->getGroupe()->getName();
-		    $groupe_deja_sorties[] = $abs->getGroupe()->getId().' ';
+		if ($abs->getIdGroupe()!=null && !in_array(Array($abs->getIdGroupe(), $abs->getUtilisateurId()), $groupe_deja_sortis)) {
+		    $echo_str .= $abs->getCreatedAt('H:i').' ';
+		    $echo_str .= ' '.$abs->getGroupe()->getName().' ';
+		    $groupe_deja_sortis[] = Array($abs->getIdGroupe(), $abs->getUtilisateurId());
+		    $affiche = true;
+		}
+		if ($affiche) {//on affiche un appel donc on va afficher les infos du prof
+		    $echo_str .= ' '.$abs->getUtilisateurProfessionnel()->getCivilite().' '
+			    .$abs->getUtilisateurProfessionnel()->getNom().' '
+			    .strtoupper(substr($abs->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+		    $prof_deja_sortis[] = $abs->getUtilisateurProfessionnel()->getPrimaryKey();
+		    $echo_str .= '<br/>';
 		}
 	    }
-	    echo '<br/>';
 	}
+	if ($appel_manquant) {
+	    echo '<td style="min-width: 350px;">';
+	} else {
+	    echo '<td style="min-width: 350px; background-color:green">';
+	}
+	echo $echo_str;
+
 
 	//on affiche les saisies du creneau
 	$abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
@@ -190,6 +264,9 @@ foreach($classe_col as $classe){
 			->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType')
 			->find();
 	//echo $td_classe1[$a].$td_classe[$a];
+	if (!$abs_col->isEmpty()) {
+	    echo '<br/>';
+	}
 	foreach ($abs_col as $absenceSaisie) {
 	    if (!$absenceSaisie->getResponsabiliteEtablissement()) {
 		echo "<a style='color: red;' href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";
