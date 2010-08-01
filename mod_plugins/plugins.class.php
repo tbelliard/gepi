@@ -21,7 +21,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-if (!isset ($_SESSION["login"]) || !$_SESSION["login"]){header("Location: ../logout.php?auto=1");}
+if (!isset ($_SESSION["login"]) || !$_SESSION["login"]){header("Location: ../../logout.php?auto=1");}
 
 if (!$_SESSION["login"]){Die();}
 /**
