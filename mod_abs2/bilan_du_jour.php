@@ -127,7 +127,18 @@ foreach($classe_col as $classe) {
 		->useAbsenceEleveSaisieQuery()->filterByPlageTemps($dt_debut, $dt_fin)->endUse()
 		->useJEleveClasseQuery()->filterByIdClasse($classe->getId())->endUse()
 		->distinct()->find();
-	foreach($eleve_col as $eleve){
+	foreach($eleve_col as $eleve){$eleve = new Eleve();
+			$affiche = false;
+			foreach($eleve->getAbsenceEleveSaisiesDuJour($dt_debut) as $abs) {
+			    $affiche = false;
+			    if (!$abs->getResponsabiliteEtablissement()) {
+				$affiche = true;
+				break;
+			    }
+			}
+			if (!$affiche) {
+			    continue;
+			}
 			echo '<tr>
 			<td></td>
 			<td>';
