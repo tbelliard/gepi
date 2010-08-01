@@ -18,7 +18,7 @@ class Classe extends BaseClasse {
 	/**
 	 * Renvoi sous forme d'une collection la liste des groupes d'une classe.
 	 *
-	 * @return     PropelObjectCollection Classes[]
+	 * @return     PropelObjectCollection Groupe[]
 	 */
 	public function getGroupes() {
 		$groupes = new PropelObjectCollection();
@@ -35,6 +35,75 @@ class Classe extends BaseClasse {
 		return $groupes;
 	}
 
+	/**
+	 *
+	 * Retourne les emplacements de cours de l'heure temps reel. retourne une collection vide si pas pas de cours actuel
+	 *
+	 * @return     PropelObjectCollection EdtEmplacementCours[]
+	 */
+	public function getEdtEmplacementCours($v) {
+	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+	    // -- which is unexpected, to say the least.
+	    //$dt = new DateTime();
+	    if ($v === null || $v === '') {
+		    $dt = null;
+	    } elseif ($v instanceof DateTime) {
+		    $dt = clone $v;
+	    } else {
+		    // some string/numeric value passed; we normalize that so that we can
+		    // validate it.
+		    try {
+			    if (is_numeric($v)) { // if it's a unix timestamp
+				    $dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+				    // We have to explicitly specify and then change the time zone because of a
+				    // DateTime bug: http://bugs.php.net/bug.php?id=43003
+				    $dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+			    } else {
+				    $dt = new DateTime($v);
+			    }
+		    } catch (Exception $x) {
+			    throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+		    }
+	    }
+	    $result = new PropelObjectCollection();
+	    foreach ($this->getGroupes() as $groupe) {
+		$cours = $groupe->getEdtEmplacementCours($dt);
+		if ($cours != null) {
+		    $result->add($cours);
+		}
+	    }
+	    return $result;
+	}
+
+	/**
+	 *
+	 * Retourne tous les emplacements de cours pour la periode précisée du calendrier.
+	 * On recupere aussi les emplacements dont la periode n'est pas definie ou vaut 0.
+	 *
+	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
+	 */
+	public function getEdtEmplacementCourssPeriodeCalendrierActuelle($v = 'now'){
+	    $query = EdtEmplacementCoursQuery::create()->filterByIdGroupe($this->getGroupes()->toKeyValue('Id', 'Id'))
+		    ->filterByIdCalendrier(0)
+		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
+
+	    if ($v instanceof EdtCalendrierPeriode) {
+		$query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $v->getIdCalendrier());
+	    } else {
+		$periodeCalendrier = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
+		if ($periodeCalendrier != null) {
+		       $query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $periodeCalendrier->getIdCalendrier());
+		}
+	    }
+
+	    $edtCoursCol = $query->find();
+	    require_once("helpers/EdtEmplacementCoursHelper.php");
+	    EdtEmplacementCoursHelper::orderChronologically($edtCoursCol);
+
+	    return $edtCoursCol;
+	}
+
+	
   public function getEctsGroupesByCategories() {
       // On commence par rÃ©cupÃ©rer tous les groupes
       $groupes = $this->getGroupes();
