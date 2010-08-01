@@ -99,6 +99,10 @@ font-size:96%;
 font-size:100%;
 width:75px;
 }
+select.small {
+width:168px;
+font-size:96%;
+}
 .gras {
 font-weight: bold;
 }

@@ -130,7 +130,7 @@ if (!$groupe_col->isEmpty()) {
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>\n";
     echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
-    echo ("Groupe : <select name=\"id_groupe\" onchange='submit()'>");
+    echo ("Groupe : <select name=\"id_groupe\" onchange='submit()' class=\"small\">");
     echo "<option value='-1'>choisissez un groupe</option>\n";
     foreach ($groupe_col as $group) {
 	    echo "<option value='".$group->getId()."'";
@@ -153,7 +153,7 @@ if (!$classe_col->isEmpty()) {
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>\n";
     echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-    echo ("Classe : <select name=\"id_classe\" onchange='submit()'>");
+    echo ("Classe : <select name=\"id_classe\" onchange='submit()' class=\"small\">");
     echo "<option value='-1'>choisissez une classe</option>\n";
     foreach ($classe_col as $classe) {
 	    echo "<option value='".$classe->getId()."'";
@@ -177,7 +177,7 @@ if (!$aid_col->isEmpty()) {
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>\n";
     echo '<input type="hidden" name="type_selection" value="id_aid"/>';
-    echo ("Aid : <select name=\"id_aid\" onchange='submit()'>");
+    echo ("Aid : <select name=\"id_aid\" onchange='submit()' class=\"small\">");
     echo "<option value='-1'>choisissez une aid</option>\n";
     foreach ($aid_col as $aid) {
 	    echo "<option value='".$aid->getPrimaryKey()."'";

@@ -187,7 +187,7 @@ if (($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_
 	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
-    echo ("Groupe : <select name=\"id_groupe\">");
+    echo ("Groupe : <select name=\"id_groupe\" class=\"small\">");
     echo "<option value='-1'>choisissez un groupe</option>\n";
     foreach ($groupe_col as $group) {
 	    echo "<option value='".$group->getId()."'";
@@ -199,7 +199,7 @@ if (($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_
     echo "</select>&nbsp;";
 
     if (getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
-	echo ("<select name=\"id_creneau\">");
+	echo ("<select name=\"id_creneau\" class=\"small\">");
 	$edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 
 	echo "<option value='-1'>choisissez un creneau</option>\n";
@@ -260,7 +260,7 @@ if (!$classe_col->isEmpty()) {
 	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-    echo ("Classe : <select name=\"id_classe\">");
+    echo ("Classe : <select name=\"id_classe\" class=\"small\">");
     echo "<option value='-1'>choisissez une classe</option>\n";
     foreach ($classe_col as $classe) {
 	    echo "<option value='".$classe->getId()."'";
@@ -272,7 +272,7 @@ if (!$classe_col->isEmpty()) {
     echo "</select>&nbsp;";
 
     if ($utilisateur->getStatut() != "professeur" || getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
-	echo ("<select name=\"id_creneau\">");
+	echo ("<select name=\"id_creneau\" class=\"small\">");
 	$edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 
 	echo "<option value='-1'>choisissez un creneau</option>\n";
@@ -329,7 +329,7 @@ if (($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_
 	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_aid"/>';
-    echo ("Aid : <select name=\"id_aid\">");
+    echo ("Aid : <select name=\"id_aid\" class=\"small\">");
     echo "<option value='-1'>choisissez une aid</option>\n";
     foreach ($aid_col as $aid) {
 	    echo "<option value='".$aid->getPrimaryKey()."'";
@@ -341,7 +341,7 @@ if (($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_
     echo "</select>&nbsp;";
     
     if ($utilisateur->getStatut() != "professeur" || getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
-	echo ("<select name=\"id_creneau\">");
+	echo ("<select name=\"id_creneau\" class=\"small\">");
 	$edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 
 	echo "<option value='-1'>choisissez un creneau</option>\n";
@@ -402,7 +402,7 @@ if (!$edt_cours_col->isEmpty()) {
     echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_cours"/>';
-    echo ("<select name=\"id_cours\">");
+    echo ("<select name=\"id_cours\" class=\"small\">");
     echo "<option value='-1'>choisissez un cours</option>\n";
     foreach ($edt_cours_col as $edt_cours) {
 	//$edt_cours = new EdtEmplacementCours();
@@ -427,7 +427,7 @@ if (!$edt_cours_col->isEmpty()) {
 
     if (getSettingValue("abs2_saisie_prof_decale")=='y') {
 	$col = EdtSemaineQuery::create()->find();
-	echo ("<select name=\"id_semaine\">");
+	echo ("<select name=\"id_semaine\" class=\"small\">");
 	echo "<option value='-1'>choisissez une semaine</option>\n";
 	//on va commencer la liste à la semaine 31 (miliu des vacances d'ete)
 	for ($i = 0; $i < $col->count(); $i++) {

@@ -160,7 +160,7 @@ if (!$groupe_col->isEmpty()) {
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
-	echo ("Groupe : <select name=\"id_groupe\">");
+	echo ("Groupe : <select name=\"id_groupe\" class=\"small\">");
 	echo "<option value='-1'>choisissez un groupe</option>\n";
 	foreach ($utilisateur->getGroupes() as $group) {
 		echo "<option value='".$group->getId()."'";
@@ -188,7 +188,7 @@ if (!$classe_col->isEmpty()) {
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-	echo ("Classe : <select name=\"id_classe\">");
+	echo ("Classe : <select name=\"id_classe\" style=\"width:160px\">");
 	echo "<option value='-1'>choisissez une classe</option>\n";
 	foreach ($classe_col as $classe) {
 		echo "<option value='".$classe->getId()."'";
@@ -216,7 +216,7 @@ if (!$aid_col->isEmpty()) {
 	echo "<form action=\"./saisir_eleve.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo '<p>';
 	echo '<input type="hidden" name="type_selection" value="id_aid"/>';
-	echo ("Aid : <select name=\"id_aid\">");
+	echo ("Aid : <select name=\"id_aid\" class=\"small\">");
 	echo "<option value='-1'>choisissez une aid</option>\n";
 	foreach ($utilisateur->getAidDetailss() as $aid) {
 		echo "<option value='".$aid->getPrimaryKey()."'";
@@ -280,7 +280,7 @@ if (!$eleve_col->isEmpty()) {
 	<?php echo ('<p>');
 	    $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
 	    if ($type_autorises->count() != 0) {
-		    echo ("Type : <select name=\"type_absence\">");
+		    echo ("Type : <select name=\"type_absence\" class=\"small\">");
 		    echo "<option value='-1'></option>\n";
 		    foreach ($type_autorises as $type) {
 			//$type = new AbsenceEleveTypeStatutAutorise();
@@ -424,7 +424,7 @@ echo '</p></div>';
 echo 'ou ';
 echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
     echo '<p>';
-    echo ("<select name=\"id_creneau\">");
+    echo ("<select name=\"id_creneau\" class=\"small\">");
     
 
     echo "<option value='-1'>choisissez un creneau</option>\n";
@@ -444,7 +444,7 @@ if (!$cours_col->isEmpty()) {
     echo '<p>ou</p>';
 	echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;">';
     echo '<p>';
-	echo ("<select name=\"id_cours\">");
+	echo ("<select name=\"id_cours\" class=\"small\">");
 	echo "<option value='-1'>choisissez un cours</option>\n";
 	foreach ($cours_col as $edt_cours) {
 	    //$edt_cours = new EdtEmplacementCours();
