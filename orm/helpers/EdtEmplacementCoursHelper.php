@@ -111,7 +111,7 @@ class EdtEmplacementCoursHelper {
 	    $timeStampNow = strtotime($dt->format('H:i:s'));
 	    foreach ($edtEmplacementCoursCol as $edtCours) {
 		if ($jour_semaine == $edtCours->getJourSemaine() &&
-		    ($type_semaine == $edtCours->getTypeSemaine() || $edtCours->getTypeSemaine() == '')) {
+		    ($type_semaine == $edtCours->getTypeSemaine() || $edtCours->getTypeSemaine() == '' || $edtCours->getTypeSemaine() == 0)) {
 		    if (strtotime($edtCours->getHeureDebut()) <= $timeStampNow &&
 			$timeStampNow < strtotime($edtCours->getHeureFin())) {
 			return $edtCours;
