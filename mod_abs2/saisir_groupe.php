@@ -95,9 +95,14 @@ if ($date_absence_eleve != null) {
 }
 
 if ($type_selection == 'id_cours') {
-    $current_cours = EdtEmplacementCoursQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->findPk($id_cours);
+    if ($utilisateur->getStatut() == "professeur") {
+	$current_cours = EdtEmplacementCoursQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->findPk($id_cours);
+    } else {
+	$current_cours = EdtEmplacementCoursQuery::create()->findPk($id_cours);
+    }
     $current_creneau = null;
     if ($current_cours != null) {
+	echo 'creneau trouve';
 	$current_creneau = $current_cours->getEdtCreneau();
 	$current_groupe = $current_cours->getGroupe();
 	$dt_date_absence_eleve = $current_cours->getDate($id_semaine);
@@ -429,7 +434,7 @@ if (!$edt_cours_col->isEmpty()) {
 	$col = EdtSemaineQuery::create()->find();
 	echo ("<select name=\"id_semaine\" class=\"small\">");
 	echo "<option value='-1'>choisissez une semaine</option>\n";
-	//on va commencer la liste à la semaine 31 (miliu des vacances d'ete)
+	//on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
 	for ($i = 0; $i < $col->count(); $i++) {
 	    $pos = ($i + 30) % $col->count();
 	    $semaine = $col[$pos];
@@ -438,6 +443,7 @@ if (!$edt_cours_col->isEmpty()) {
 		if ($id_semaine == $semaine->getPrimaryKey()) echo " selected='selected' ";
 		echo ">";
 		echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
+		echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
 		echo "</option>\n";
 	}
 	echo "</select>&nbsp;";

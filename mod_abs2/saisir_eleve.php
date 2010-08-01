@@ -478,7 +478,11 @@ if (!$cours_col->isEmpty()) {
 		//$semaine = new EdtSemaine();
 		    echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."'/>";
 		    echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
-		    if (date('W') == $semaine->getPrimaryKey()) echo " (courante) ";
+		    if (date('W') == $semaine->getPrimaryKey())  {
+			echo " (courante) ";
+		    } else {
+			echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
+		    }
 		    echo "<br/>\n";
 	    }
 	    echo '<a href="./saisir_eleve.php">Ne pas afficher toutes les semaines</a>';
@@ -492,7 +496,11 @@ if (!$cours_col->isEmpty()) {
 		//$semaine = new EdtSemaine();
 		    echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."'/>";
 		    echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
-		    if (date('W') == $semaine->getPrimaryKey()) echo " (courante) ";
+		    if (date('W') == $semaine->getPrimaryKey())  {
+			echo " (courante) ";
+		    } else {
+			echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
+		    }
 		    echo "<br/>\n";
 	    }
 	    echo '<a href="./saisir_eleve.php?affiche_toute_semaine=oui">Afficher toutes les semaines</a>';
