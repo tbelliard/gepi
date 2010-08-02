@@ -98,7 +98,13 @@ function get_groups_for_class($_id_classe) {
     return $temp;
 }
 
-//function get_group($_id_groupe) {
+/**
+ * Renvoie les informations sur le groupe demandé
+ *
+ * @param integer $_id_groupe identifiant du groupe
+ * @param array $tab_champs réglages permis par la fonction : all, matieres, classes, eleves, periodes, profs
+ * @return array Tableaux imbriques des informations du groupe
+ */
 function get_group($_id_groupe,$tab_champs=array('all')) {
 
 	$get_matieres='n';
