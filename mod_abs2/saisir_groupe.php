@@ -170,6 +170,7 @@ $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+$javascript_specifique[] = "mod_abs2/lib/include";
 $titre_page = "Les absences";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
@@ -523,8 +524,8 @@ if (!$eleve_col->isEmpty()) {
 		    <input type="hidden" name="date_absence_eleve" value="<?php echo($dt_date_absence_eleve->format('d/m/Y')); ?>"/>
 	</p>
 			<p class="expli_page choix_fin">
-				Saisie des absences<br/>du <strong><?php echo strftime  ('%A %d %B %G',  $dt_date_absence_eleve->format('U')); ?></strong>
-				Pour le groupe
+				Saisie des absences du <strong><?php echo strftime  ('%A %d %B %G',  $dt_date_absence_eleve->format('U')); ?></strong>
+				pour le groupe
 				<strong>
 				<?php if (isset($current_groupe) && $current_groupe != null) {
 				    echo $current_groupe->getName();
@@ -533,7 +534,27 @@ if (!$eleve_col->isEmpty()) {
 				} else if (isset($current_classe) && $current_classe != null) {
 				    echo $current_classe->getNomComplet();
 				}?>
-				</strong> (les élèves non cochés seront considérés présents)
+				</strong>
+				<?php if ($current_creneau != null) { ?>
+				de
+				<?php
+				    echo ' <input style="font-size:88%;" id="heure_debut_all" value="';
+				    if ($current_cours != null) {echo $current_cours->getHeureDebut("H:i");} 
+				    elseif ($current_creneau != null) { echo $current_creneau->getHeuredebutDefiniePeriode("H:i");};
+				    echo '" type="text" maxlength="5" size="4"/>';
+				?>
+				à
+				<?php
+				    echo ' <input style="font-size:88%;" id="heure_fin_all" value="';
+				    if ($current_cours != null) {echo $current_cours->getHeureFin("H:i");}
+				    elseif ($current_creneau != null) { echo $current_creneau->getHeurefinDefiniePeriode("H:i");};
+				    echo '" type="text" maxlength="5" size="4"/> ';
+				    echo '<button onclick="SetAllTextFields(\'liste_absence_eleve\', \'heure_debut_absence_eleve\',\'\',document.getElementById(\'heure_debut_all\').value);
+							    SetAllTextFields(\'liste_absence_eleve\', \'heure_fin_absence_eleve\',\'\',document.getElementById(\'heure_fin_all\').value);
+							    return false;">Changer</button>';
+				?>
+				<?php } ?>
+				(les élèves non cochés seront considérés présents)
 			</p>
 			<p class="choix_fin">
 				<input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value='En cours'" />
@@ -687,7 +708,7 @@ foreach($eleve_col as $eleve) {
 						    echo "</select>";
 					    }
 					    echo ' <input style="font-size:88%;" id="active_absence_eleve['.$eleve_col->getPosition().']" name="active_absence_eleve['.$eleve_col->getPosition().']" value="1" type="checkbox" />';
-					    echo ' <input style="font-size:88%;" onChange="this.form.elements[\'active_absence_eleve['.$eleve_col->getPosition().']\'].checked = true;" name="heure_debut_absence_eleve['.$eleve_col->getPosition().']" value="';
+					    echo ' <input style="font-size:88%;" onChange="this.form.elements[\'active_absence_eleve['.$eleve_col->getPosition().']\'].checked = true;" name="heure_debut_absence_eleve['.$eleve_col->getPosition().']" id="heure_debut_absence_eleve_'.$eleve_col->getPosition().'" value="';
 					    if ($current_cours != null) {echo $current_cours->getHeureDebut("H:i");} else { echo $edt_creneau->getHeuredebutDefiniePeriode("H:i");};
 					    echo '" type="text" maxlength="5" size="4"/>&nbsp;';
 					    //if (getSettingValue("abs2_saisie_prof_decale")=='y') {
@@ -704,7 +725,6 @@ foreach($eleve_col as $eleve) {
 						    </script>';
 					    } else {
 						    echo '<input style="font-size:88%;" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
-						    
 					    }
 					    echo '<input style="font-size:88%;" onChange="this.form.elements[\'active_absence_eleve['.$eleve_col->getPosition().']\'].checked = true;" name="heure_fin_absence_eleve['.$eleve_col->getPosition().']" value="';
 					    if ($current_cours != null) {echo $current_cours->getHeureFin("H:i");} else { echo $edt_creneau->getHeurefinDefiniePeriode("H:i");};
