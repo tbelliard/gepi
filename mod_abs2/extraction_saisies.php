@@ -197,7 +197,7 @@ if ($affichage == 'html') {
 	    //on affiche une nouvelle ligne
 	    echo '<tr style="border:1px solid">';
 	    echo '<td style="border:1px solid; vertical-align:top">';
-	    echo $saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
+	    echo $saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom().' '.$saisie->getEleve()->getClasse()->getNom();
 	    echo '</td>';
 	    echo '<td style="border:1px solid">';
 	    echo '<table>';
