@@ -797,7 +797,7 @@ class class_page_accueil {
 	$condition = (
 			($this->statutUtilisateur == "responsable"
 			  AND getSettingValue("GepiAccesEquipePedaParent") == 'yes')
-			OR ($this->statutUtilisateur['statut'] == "eleve"
+			OR ($this->statutUtilisateur == "eleve"
 			  AND getSettingValue("GepiAccesEquipePedaEleve") == 'yes')
 			);
 
