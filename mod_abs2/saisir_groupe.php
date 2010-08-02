@@ -538,14 +538,14 @@ if (!$eleve_col->isEmpty()) {
 				<?php if ($current_creneau != null) { ?>
 				de
 				<?php
-				    echo ' <input style="font-size:88%;" id="heure_debut_all" value="';
+				    echo ' <input style="font-size:88%;" name="heure_debut_all" id="heure_debut_all" value="';
 				    if ($current_cours != null) {echo $current_cours->getHeureDebut("H:i");} 
 				    elseif ($current_creneau != null) { echo $current_creneau->getHeuredebutDefiniePeriode("H:i");};
 				    echo '" type="text" maxlength="5" size="4"/>';
 				?>
 				à
 				<?php
-				    echo ' <input style="font-size:88%;" id="heure_fin_all" value="';
+				    echo ' <input style="font-size:88%;" name="heure_fin_all" id="heure_fin_all" value="';
 				    if ($current_cours != null) {echo $current_cours->getHeureFin("H:i");}
 				    elseif ($current_creneau != null) { echo $current_creneau->getHeurefinDefiniePeriode("H:i");};
 				    echo '" type="text" maxlength="5" size="4"/> ';
@@ -554,6 +554,7 @@ if (!$eleve_col->isEmpty()) {
 							    return false;">Changer</button>';
 				?>
 				<?php } ?>
+				<br/>
 				(les élèves non cochés seront considérés présents)
 			</p>
 			<p class="choix_fin">

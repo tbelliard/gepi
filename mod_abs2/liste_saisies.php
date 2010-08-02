@@ -113,6 +113,9 @@ if (isFiltreRechercheParam('filter_saisie_id')) {
 if (isFiltreRechercheParam('filter_eleve')) {
     $query->useEleveQuery()->filterByNomOrPrenomLike(getFiltreRechercheParam('filter_eleve'))->endUse();
 }
+if (isFiltreRechercheParam('filter_marqueur_appel')) {
+    $query->filterByEleveId(null);
+}
 if (isFiltreRechercheParam('filter_classe')) {
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
     $query->leftJoin('Eleve.JEleveClasse');
@@ -318,7 +321,11 @@ if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} els
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
 //echo '</nobr>';
 echo '</span>';
+echo '<input type="hidden" value="y" name="filter_checkbox_posted"/>';
 echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRechercheParam('filter_eleve').'" size="8"/>';
+echo '<br /><nobr><input type="checkbox" name="filter_marqueur_appel"  onchange="submit()" value="y"';
+if (getFiltreRechercheParam('filter_marqueur_appel') == 'y') {echo "checked='checked'";}
+echo '/>Marque d\'appel</nobr>';
 echo '</th>';
 
 //en tete filtre classe
@@ -674,7 +681,7 @@ echo 'Rapport d\'incident';
 echo '<br/>';
 echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_discipline" onchange="submit()" ';
-if (getFiltreRechercheParam('filter_discipline') == 'y') {echo "checked";}
+if (getFiltreRechercheParam('filter_discipline') == 'y') {echo "checked='checked'";}
 echo "/>";
 echo '</span>';
 echo '</th>';
@@ -739,7 +746,7 @@ foreach ($results as $saisie) {
 	//echo "</a>";
 	echo "</td></tr></table>";
     } else {
-	echo "Aucun élève absent";
+	echo "Marqueur d'appel effectué";
     }
     echo '</td>';
 

@@ -121,6 +121,9 @@ if (isFiltreRechercheParam('filter_utilisateur')) {
 if (isFiltreRechercheParam('filter_eleve')) {
     $query->useEleveQuery()->filterByNomOrPrenomLike(getFiltreRechercheParam('filter_eleve'))->endUse();
 }
+if (isFiltreRechercheParam('filter_marqueur_appel')) {
+    $query->filterByEleveId(null);
+}
 if (isFiltreRechercheParam('filter_classe')) {
     echo 'ok_filter_classe : '.getFiltreRechercheParam('filter_classe');
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
@@ -361,9 +364,11 @@ if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} els
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
 //echo '</nobr>';
 echo '</span>';
-echo '<br />';
 echo 'Eleve';
-echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRechercheParam('filter_eleve').'" size="11"/>';
+echo '<input type="hidden" value="y" name="filter_checkbox_posted"/>';echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRechercheParam('filter_eleve').'" size="11"/>';
+echo '<br /><nobr><input type="checkbox" name="filter_marqueur_appel"  onchange="submit()" value="y"';
+if (getFiltreRechercheParam('filter_marqueur_appel') == 'y') {echo "checked='checked'";}
+echo '/>Marque d\'appel</nobr>';
 echo '</th>';
 
 //en tete filtre classe
@@ -837,7 +842,7 @@ foreach ($results as $saisie) {
 //	echo "</a>";
 	echo "</td></tr></table>";
     } else {
-	echo "Aucun élève absent";
+	echo "Marqueur d'appel effectué";
     }
     echo '</td>';
 

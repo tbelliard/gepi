@@ -24,7 +24,7 @@ if(($_SESSION['statut']=='cpe')||
     echo "title='Bilans'>Bilans</a></li>\n";
 
     echo "<li><a href='saisir_groupe.php' ";
-    if($onglet_abs=='saisir_groupe.php') {echo "class='current' ";}
+    if($onglet_abs=='saisir_groupe.php' || $onglet_abs=='enregistrement_saisie_groupe.php') {echo "class='current' ";}
     echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
 
     echo "<li><a href='saisir_eleve.php' ";
@@ -68,7 +68,7 @@ if(($_SESSION['statut']=='cpe')||
 	echo "<ul class='css-tabs' id='menutabs'>\n";
 
     echo "<li><a href='saisir_groupe.php' ";
-    if($onglet_abs=='saisir_groupe.php') {echo "class='current' ";}
+    if($onglet_abs=='saisir_groupe.php' || $onglet_abs=='enregistrement_saisie_groupe.php') {echo "class='current' ";}
     echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
 
     echo "<li><a href='visu_saisie.php' ";

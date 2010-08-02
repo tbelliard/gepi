@@ -24,3 +24,29 @@ function SetAllCheckBoxes(FormName, FieldName, IdMatchString, CheckValue)
 		}
 	}
 }
+
+function SetAllTextFields(FormName, FieldName, IdMatchString, StringValue)
+{
+	if(!document.forms[FormName])
+		return;
+	var objCheckBoxes = document.forms[FormName].elements[FieldName];
+	if(!objCheckBoxes) {
+		objCheckBoxes = document.forms[FormName].elements;
+	}
+	if(!objCheckBoxes) {
+		return;
+	}
+	var countCheckBoxes = objCheckBoxes.length;
+	if(!countCheckBoxes) {
+		if (objCheckBoxes.id.match(IdMatchString) && objCheckBoxes.name.match(FieldName)) {
+			objCheckBoxes.value = StringValue;
+		}
+	} else {
+		// set the check value for all check boxes
+		for(var i = 0; i < countCheckBoxes; i++) {
+			if (objCheckBoxes[i].id.match(IdMatchString) && objCheckBoxes[i].name.match(FieldName)) {
+			    objCheckBoxes[i].value = StringValue;
+			}
+		}
+	}
+}

@@ -67,6 +67,8 @@ $id_creneau = isset($_POST["id_creneau"]) ? $_POST["id_creneau"] :(isset($_GET["
 $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cours"]) ? $_GET["id_cours"] :NULL);
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :NULL;
 $total_eleves = isset($_POST["total_eleves"]) ? $_POST["total_eleves"] :(isset($_GET["total_eleves"]) ? $_GET["total_eleves"] :0);
+$heure_debut_all = isset($_POST["heure_debut_all"]) ? $_POST["heure_debut_all"] :(isset($_GET["heure_debut_all"]) ? $_GET["heure_debut_all"] :NULL);
+$heure_fin_all = isset($_POST["heure_fin_all"]) ? $_POST["heure_fin_all"] :(isset($_GET["heure_fin_all"]) ? $_GET["heure_fin_all"] :NULL);
 
 $message_enregistrement = "";
 
@@ -139,6 +141,107 @@ if ($utilisateur->getStatut() == 'professeur') {
 $jours_actuel = date('d/m/Y');
 $creneau_actuel = EdtCreneauQuery::create()->findPk($id_creneau);
 
+//On va enregistrer une saisie sans eleve pour marquer le fait que l'appel a été effectué
+if (($id_groupe == null && $id_classe == null && $id_aid == null) || ($id_creneau == null && $id_cours == null) || ($date_absence_eleve == null)) {
+  	$message_enregistrement .= 'Il faut au moins une classe, une aid, un groupe ou un cours pour faire un appel de groupe, ainsi qu\'un creneau horaire et une date.';
+	//on arrete la saisie
+	include("saisir_groupe.php");
+	die();
+} else {
+    $message_erreur = '';
+    $saisie = new AbsenceEleveSaisie();
+
+    $saisie->setIdEdtCreneau($id_creneau);
+    $saisie->setIdEdtEmplacementCours($id_cours);
+    $saisie->setIdGroupe($id_groupe);
+    $saisie->setIdClasse($id_classe);
+    $saisie->setIdAid($id_aid);
+    $saisie->setUtilisateurId($utilisateur->getPrimaryKey());
+
+    $dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
+    if ($heure_debut_all != null) {
+	try {
+	    $heure_debut_all = new DateTime($heure_debut_all);
+	} catch (Exception $x) {
+	    $message_erreur .= "Mauvais format d'heure de debut de saisie.<br/>";
+	}
+	$dt_date_absence_eleve->setTime($heure_debut_all->format('H'), $heure_debut_all->format('i'));
+    } else if ($id_creneau != null) {
+	$dt_date_absence_eleve->setTime($current_creneau->getHeuredebutDefiniePeriode('H'), $current_creneau->getHeuredebutDefiniePeriode('i'));
+    } elseif ($id_cours != null) {
+	$dt_date_absence_eleve->setTime($current_cours->getHeureDebut('H'), $current_cours->getHeureDebut('i'));
+    }
+    if ($utilisateur->getStatut() == 'professeur') {
+	if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
+	    if ($dt_date_absence_eleve->format('d/m/Y') != $jours_actuel) {
+		$message_erreur .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
+		continue;
+	    }
+	}
+	if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
+	   if ($creneau_actuel == null || $creneau_actuel->getHeuredebutDefiniePeriode('Hi') > $dt_date_absence_eleve->format('Hi')) {
+		$message_erreur .= "Debut de saisie hors creneau actuel non autorisée.<br/>";
+		continue;
+	   }
+	}
+    }
+    $saisie->setDebutAbs($dt_date_absence_eleve);
+
+
+    $date_fin = clone $dt_date_absence_eleve;
+    if ($heure_fin_all != null) {
+	try {
+	    $heure_fin_all = new DateTime($heure_fin_all);
+	} catch (Exception $x) {
+	    $message_erreur .= "Mauvais format d'heure de fin de saisie.<br/>";
+	}
+	$date_fin->setTime($heure_fin_all->format('H'), $heure_fin_all->format('i'));
+    } else if ($id_creneau != null) {
+	$date_fin->setTime($current_creneau->getHeurefinDefiniePeriode('H'), $current_creneau->getHeurefinDefiniePeriode('i'));
+    } elseif ($id_cours != null) {
+	$date_fin->setTime($current_cours->getHeureFin('H'), $current_cours->getHeureFin('i'));
+    }
+    if ($utilisateur->getStatut() == 'professeur') {
+	if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
+	    if ($date_fin->format('d/m/Y') != $jours_actuel) {
+		$message_erreur .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
+		continue;
+	    }
+	}
+	if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
+	   if ($creneau_actuel == null || $creneau_actuel->getHeuredebutDefiniePeriode('Hi') < $date_fin->format('Hi')) {
+		$message_erreur .= "Fin de saisie hors creneau actuel non autorisée.<br/>";
+		continue;
+	   }
+	}
+    }
+    $saisie->setFinAbs($date_fin);
+
+    if ($message_erreur != '') {
+	$message_enregistrement .= $message_erreur;
+	//on arrete la saisie
+	include("saisir_groupe.php");
+	die();
+    } else if ($saisie->validate()) {
+	$saisie->save();
+	$message_enregistrement .= "Saisie enregistrée.<br/>";
+    } else {
+	$no_br = true;
+	foreach ($saisie->getValidationFailures() as $erreurs) {
+	    $message_enregistrement .= $erreurs;
+	    if ($no_br) {
+		$no_br = false;
+	    } else {
+		$message_enregistrement .= '<br/>';
+	    }
+	}
+	//on arrete la saisie
+	include("saisir_groupe.php");
+	die();
+    }
+}
+
+
 for($i=0; $i<$total_eleves; $i++) {
 
     $id_eleve = $_POST['id_eleve_absent'][$i];
@@ -189,7 +292,7 @@ for($i=0; $i<$total_eleves; $i++) {
 	}
 	if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
 	   if ($creneau_actuel == null || $creneau_actuel->getHeuredebutDefiniePeriode('Hi') > $date_debut->format('Hi')) {
-		$message_erreur_eleve[$id_eleve] .= "Saisie hors creneau actuel non autorisée.<br/>";
+		$message_erreur_eleve[$id_eleve] .= "Debut de saisie hors creneau actuel non autorisée.<br/>";
 		continue;
 	   }
 	}
@@ -218,7 +321,7 @@ for($i=0; $i<$total_eleves; $i++) {
 	}
 	if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
 	   if ($creneau_actuel == null || $creneau_actuel->getHeurefinDefiniePeriode('Hi') < $date_fin->format('Hi')) {
-		$message_erreur_eleve[$id_eleve] .= "Saisie hors creneau actuel non autorisée.<br/>";
+		$message_erreur_eleve[$id_eleve] .= "Fin de saisie hors creneau actuel non autorisée.<br/>";
 		continue;
 	   }
 	}
@@ -269,52 +372,6 @@ for($i=0; $i<$total_eleves; $i++) {
 		$no_br = false;
 	    } else {
 		$message_enregistrement .= '<br/>';
-	    }
-	}
-    }
-}
-
-if (!isset($saisie) || $saisie == null) {
-    //il n'y aucune saisie d'effectuer, on va enregistrer une saisie pour marquer le fait que l'appel a été effectué
-    //on test si l'eleve est enregistré absent
-    if (($id_groupe != null || $id_classe != null || $id_aid != null) && ($id_creneau != null || $id_cours != null) && ($date_absence_eleve != null)) {
-	$saisie = new AbsenceEleveSaisie();
-
-	$saisie->setIdEdtCreneau($id_creneau);
-	$saisie->setIdEdtEmplacementCours($id_cours);
-	$saisie->setIdGroupe($id_groupe);
-	$saisie->setIdClasse($id_classe);
-	$saisie->setIdAid($id_aid);
-	$saisie->setUtilisateurId($utilisateur->getPrimaryKey());
-
-	$dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
-	if ($id_creneau != null) {
-	    $dt_date_absence_eleve->setTime($current_creneau->getHeuredebutDefiniePeriode('H'), $current_creneau->getHeuredebutDefiniePeriode('i'));
-	} elseif ($id_cours != null) {
-	    $dt_date_absence_eleve->setTime($current_cours->getHeureDebut('H'), $current_cours->getHeureDebut('i'));
-	}
-	$saisie->setDebutAbs($dt_date_absence_eleve);
-	$date_fin = clone $dt_date_absence_eleve;
-	if ($id_creneau != null) {
-	    $date_fin->setTime($current_creneau->getHeurefinDefiniePeriode('H'), $current_creneau->getHeurefinDefiniePeriode('i'));
-	} elseif ($id_cours != null) {
-	    $date_fin->setTime($current_cours->getHeureFin('H'), $current_cours->getHeureFin('i'));
-	}
-	$saisie->setFinAbs($date_fin);
-	
-
-	if ($saisie->validate()) {
-	    $saisie->save();
-	    $message_enregistrement .= "Saisie enregistrée.<br/>";
-	} else {
-	    $no_br = true;
-	    foreach ($saisie->getValidationFailures() as $erreurs) {
-		$message_enregistrement .= $erreurs;
-		if ($no_br) {
-		    $no_br = false;
-		} else {
-		    $message_enregistrement .= '<br/>';
-		}
 	    }
 	}
     }

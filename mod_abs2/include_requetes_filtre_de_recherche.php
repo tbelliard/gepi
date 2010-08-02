@@ -13,12 +13,14 @@ if ($reinit_filtre == 'y') {
     $_SESSION['filtre_recherche'] = Array();
     $_SESSION['filtre_recherche']['order'] = 'des_id';
 } else {
-    $liste_parametres_sauf_chechbox = array('order', 'filter_notification_id', 'filter_traitement_id', 'filter_saisie_id', 'filter_utilisateur', 'filter_eleve', 'filter_classe', 'filter_groupe', 'filter_aid',
+    $liste_parametres_sauf_checkbox = array('order', 'filter_notification_id', 'filter_traitement_id', 'filter_saisie_id', 'filter_utilisateur', 'filter_eleve', 'filter_classe', 'filter_groupe', 'filter_aid',
 	'filter_type', 'filter_type_notification','filter_statut_notification', 'filter_justification', 'filter_date_debut_absence_debut_plage', 'filter_date_debut_absence_fin_plage', 'filter_date_fin_absence_debut_plage',
 	'filter_date_fin_absence_fin_plage', 'filter_creneau', 'filter_cours', 'filter_date_creation_traitement_debut_plage', 'filter_date_creation_traitement_fin_plage',
 	'filter_date_traitement_absence_debut_plage', 'filter_date_traitement_absence_fin_plage', 'filter_statut');
+    $liste_parametres_checkbox = array('filter_date_modification', 'filter_discipline', 'filter_marqueur_appel');
+
     //récupération des paramètres de la requète
-    foreach ($liste_parametres_sauf_chechbox as $param_name) {
+    foreach ($liste_parametres_sauf_checkbox as $param_name) {
 	if (isset($_POST[$param_name])) {
 	    $_SESSION['filtre_recherche'][$param_name] = $_POST[$param_name];
 	} else if (isset($_GET[$param_name])) {
@@ -27,8 +29,7 @@ if ($reinit_filtre == 'y') {
     }
 
     //cas particulier pour les checkbox
-    $liste_parametres_sauf_chechbox = array('date_modification', 'discipline');
-    foreach ($liste_parametres_sauf_chechbox as $param_name) {
+    foreach ($liste_parametres_checkbox as $param_name) {
 	if (isset($_POST[$param_name])) {
 	    $_SESSION['filtre_recherche'][$param_name] = $_POST[$param_name];
 	} elseif (isset($_GET[$param_name])) {
