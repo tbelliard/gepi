@@ -127,11 +127,11 @@ foreach($classe_col as $classe) {
 		->useAbsenceEleveSaisieQuery()->filterByPlageTemps($dt_debut, $dt_fin)->endUse()
 		->useJEleveClasseQuery()->filterByIdClasse($classe->getId())->endUse()
 		->distinct()->find();
-	foreach($eleve_col as $eleve){$eleve = new Eleve();
+	foreach($eleve_col as $eleve){
 			$affiche = false;
 			foreach($eleve->getAbsenceEleveSaisiesDuJour($dt_debut) as $abs) {
 			    $affiche = false;
-			    if (!$abs->getResponsabiliteEtablissement()) {
+			    if ($abs->getManquementObligationPresence()) {
 				$affiche = true;
 				break;
 			    }
@@ -159,7 +159,7 @@ foreach($classe_col as $classe) {
 			    } else {
 				foreach($abs_col as $abs) {
 				    $red = false;
-				    if (!$abs->getResponsabiliteEtablissement()) {
+				    if ($abs->getManquementObligationPresence()) {
 					echo '<td style="background-color:red"></td>';
 					$red = true;
 					break;

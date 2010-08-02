@@ -144,7 +144,11 @@ if (isFiltreRechercheParam('filter_aid')) {
     $query->where(array('cond1', 'cond2'), 'or');
 }
 if (isFiltreRechercheParam('filter_type')) {
-    $query->filterByATypeId(getFiltreRechercheParam('filter_type'));
+    if (getFiltreRechercheParam('filter_type') == 'SANS') {
+	$query->filterByATypeId(null);
+    } else {
+	$query->filterByATypeId(getFiltreRechercheParam('filter_type'));
+    }
 }
 if (isFiltreRechercheParam('filter_justification')) {
     if (getFiltreRechercheParam('filter_justification') == 'SANS') {
@@ -171,6 +175,9 @@ if (isFiltreRechercheParam('filter_statut_notification')) {
     } else {
 	$query->useAbsenceEleveNotificationQuery()->filterByStatutEnvoi(getFiltreRechercheParam('filter_statut_notification'))->endUse();
     }
+}
+if (isFiltreRechercheParam('filter_manqement_obligation')) {
+    $query->filterManquementObligationPresence(getFiltreRechercheParam('filter_manqement_obligation')=='y');
 }
 
 if (getFiltreRechercheParam('order') == "asc_id") {
@@ -374,6 +381,9 @@ echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value=''></option>\n";
+echo "<option value='SANS'";
+if (getFiltreRechercheParam('filter_type') == 'SANS') echo " selected='selected' ";
+echo ">SANS TYPE</option>\n";
 foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
 	if (getFiltreRechercheParam('filter_type') === (string) $type->getId()) echo " selected='selected' ";
@@ -382,6 +392,30 @@ foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "</option>\n";
 }
 echo "</select>";
+echo '</th>';
+
+//en tete filtre manqement_obligation
+echo '<th>';
+echo ("<select name=\"filter_manqement_obligation\" onchange='submit()'>");
+echo "<option value=''";
+if (isFiltreRechercheParam('filter_manqement_obligation') && getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "checked='checked'";}
+echo "></option>\n";
+echo "<option value='y' ";
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "selected'";}
+echo ">oui</option>\n";
+echo "<option value='n' ";
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected'";}
+echo ">non</option>\n";
+echo "</select>";
+echo '<br/>manquement obligation scolaire (bulletin)';
+echo '</th>';
+
+//en tete filtre sous_responsabilite_etablissement
+echo '<th>';
+//echo '<input type="checkbox" value="y" name="filter_sous_responsabilite_etablissement" onchange="submit()"';
+//if (isFiltreRechercheParam('filter_sous_responsabilite_etablissement') && getFiltreRechercheParam('filter_sous_responsabilite_etablissement') == 'y') {echo "checked='checked'";}
+//echo '/><br/>sous resp. etab.';
+echo 'sous resp. etab.';
 echo '</th>';
 
 //en tete justification d'absence
@@ -649,6 +683,22 @@ foreach ($results as $traitement) {
     }
     echo "</a>";
     //echo '</nobr></td>';
+    echo '</td>';
+
+    echo '<td>';
+    if ($traitement->getManquementObligationPresence()) {
+	echo 'oui';
+    } else {
+	echo 'non';
+    }
+    echo '</td>';
+
+    echo '<td>';
+    if ($traitement->getSousResponsabiliteEtablissement()) {
+	echo 'oui';
+    } else {
+	echo 'non';
+    }
     echo '</td>';
 
     //donnees justification

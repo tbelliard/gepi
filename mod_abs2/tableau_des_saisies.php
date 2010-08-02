@@ -196,7 +196,9 @@ foreach($classe_col as $classe){
 	    }
 	    if ($edtCours->getGroupe() != null) {
 		$echo_str .= $edtCours->getGroupe()->getName().' ';
-		$groupe_deja_sortis[] = Array($edtCours->getIdGroupe(), $edtCours->getLoginProf());
+		if ($abs_col->getFirst() !== null) {
+		    $groupe_deja_sortis[] = Array($edtCours->getIdGroupe(),  $abs_col->getFirst()->getUtilisateurId());
+		}
 	    }
 	    if ($edtCours->getUtilisateurProfessionnel() != null) {
 		$echo_str .= $edtCours->getUtilisateurProfessionnel()->getCivilite().' '
@@ -268,7 +270,7 @@ foreach($classe_col as $classe){
 	    echo '<br/>';
 	}
 	foreach ($abs_col as $absenceSaisie) {
-	    if (!$absenceSaisie->getResponsabiliteEtablissement()) {
+	    if ($absenceSaisie->getManquementObligationPresence()) {
 		echo "<a style='color: red;' href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";
 	    } else {
 		echo "<a href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";
@@ -309,7 +311,7 @@ foreach($classe_col as $classe){
 			echo '<br/>';
 		    }
 		    if ($absenceSaisie->getEleve() != null) {
-			if (!$absenceSaisie->getResponsabiliteEtablissement()) {
+			if ($absenceSaisie->getManquementObligationPresence()) {
 			    echo "<a style='color: red;' href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";
 			} else {
 			    echo "<a href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";

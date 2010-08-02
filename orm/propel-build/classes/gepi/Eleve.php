@@ -943,14 +943,18 @@ class Eleve extends BaseEleve {
 
 	/**
 	 *
-	 * Retourne le nombre de demi journees d'absence
+	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
 	 *
 	 * @param      DateTime $date_debut
 	 * @param      DateTime $date_fin
 	 *
-	 * @return int $nombre_absence
+	 * @return PropelCollection DateTime[]
 	 */
-	public function getNbreDemiJourneesAbsence($date_debut, $date_fin = null) {
+	public function getDemiJourneesAbsence($date_debut, $date_fin = null) {
+	    $result = new PropelCollection();
+
 	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
 	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
 	    else {$request_query_hash .= 'null';}
@@ -973,7 +977,7 @@ class Eleve extends BaseEleve {
 	    }
 
 	    if ($abs_saisie_col->isEmpty()) {
-		return 0;
+		return $result;
 	    }
 	    
 	    $date_compteur = clone $date_debut;
@@ -988,13 +992,12 @@ class Eleve extends BaseEleve {
 	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 	    $horaire_col = EdtHorairesEtablissementQuery::create()->find();
 	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
-	    $demi_journees = 0;
 	    
 	    foreach($abs_saisie_col as $saisie) {
 		if ($date_compteur > $date_fin_iteration) {
 		    break;
 		}
-		if ($saisie->getRetard() || $saisie->getResponsabiliteEtablissement()) {
+		if ($saisie->getRetard() || $saisie->getSousResponsabiliteEtablissement()) {
 		    continue;
 		}
 		if ($date_compteur < $saisie->getDebutAbs(null)) {
@@ -1029,24 +1032,26 @@ class Eleve extends BaseEleve {
 			$date_compteur_suivante->setTime(12, 30);
 		    }
 		    if ($saisie->getDebutAbs('U') < $date_compteur_suivante->format('U') && $saisie->getFinAbs('U') > $date_compteur->format('U')) {
-			$demi_journees = $demi_journees + 1;
+			$result->append(clone $date_compteur);
 		    }
 		    $date_compteur = $date_compteur_suivante;
 		}
 	    }
-	    return $demi_journees;
+	    return $result;
 
 	}
 
  	/**
 	 *
-	 * Retourne une liste d'absence pour la période donnée
+	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
-	 * @return PropelObjectCollection AbsenceEleveSaisie[]
+	 * @return PropelCollection DateTime[]
 	 */
-	public function getNbreDemiJourneesAbsenceParPeriode($periode = null) {
+	public function getDemiJourneesAbsenceParPeriode($periode = null) {
 	    $periode_obj = $this->getPeriodeNote($periode);
 	    if ($periode_obj == null) {
 		return 0;
@@ -1055,20 +1060,24 @@ class Eleve extends BaseEleve {
 	    if ($date_debut  == null)  {
 		return 0;
 	    }
-	    return $this->getNbreDemiJourneesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
+	    return $this->getDemiJourneesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
 
 
   	/**
 	 *
-	 * Retourne le nombre de demi journees d'absence non justifiees
+	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence non justifiees
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
 	 *
 	 * @param      DateTime $date_debut
 	 * @param      DateTime $date_fin
 	 *
-	 * @return int $nombre_absence
+	 * @return PropelCollection DateTime[]
 	 */
-	public function getNbreDemiJourneesNonJustifieesAbsence($date_debut, $date_fin = null) {
+	public function getDemiJourneesNonJustifieesAbsence($date_debut, $date_fin = null) {
+	    $result = new PropelCollection();
+
 	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
 	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
 	    else {$request_query_hash .= 'null';}
@@ -1088,7 +1097,7 @@ class Eleve extends BaseEleve {
 	    }
 
 	    if ($abs_saisie_col->isEmpty()) {
-		return 0;
+		return $result;
 	    }
 
 	    $date_compteur = clone $date_debut;
@@ -1103,13 +1112,12 @@ class Eleve extends BaseEleve {
 	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 	    $horaire_col = EdtHorairesEtablissementQuery::create()->find();
 	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
-	    $demi_journees = 0;
 
 	    foreach($abs_saisie_col as $saisie) {
 		if ($date_compteur > $date_fin_iteration) {
 		    break;
 		}
-		if ($saisie->getRetard() || $saisie->getResponsabiliteEtablissement() || $saisie->getJustifiee()) {
+		if ($saisie->getRetard() || $saisie->getSousResponsabiliteEtablissement() || $saisie->getJustifiee()) {
 		    continue;
 		}
 		if ($date_compteur < $saisie->getDebutAbs(null)) {
@@ -1144,24 +1152,26 @@ class Eleve extends BaseEleve {
 			$date_compteur_suivante->setTime(12, 30);
 		    }
 		    if ($saisie->getDebutAbs('U') < $date_compteur_suivante->format('U') && $saisie->getFinAbs('U') > $date_compteur->format('U')) {
-			$demi_journees = $demi_journees + 1;
+			$result->append(clone $date_compteur);
 		    }
 		    $date_compteur = $date_compteur_suivante;
 		}
 	    }
-	    return $demi_journees;
+	    return $result;
 
 	}
 
  	/**
 	 *
-	 * Retourne une liste d'absence pour la période donnée
+	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence non justifiees
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
-	 * @return PropelObjectCollection AbsenceEleveSaisie[]
+	 * @return PropelCollection DateTime[]
 	 */
-	public function getNbreDemiJourneesNonJustifieesAbsenceParPeriode($periode = null) {
+	public function getDemiJourneesNonJustifieesAbsenceParPeriode($periode = null) {
 	    $periode_obj = $this->getPeriodeNote($periode);
 	    if ($periode_obj == null) {
 		return 0;
@@ -1170,19 +1180,23 @@ class Eleve extends BaseEleve {
 	    if ($date_debut  == null)  {
 		return 0;
 	    }
-	    return $this->getNbreDemiJourneesNonJustifieesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
+	    return $this->getDemiJourneesNonJustifieesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
 
 
   	/**
 	 *
-	 * Retourne le nombre de retards
+	 * Retourne une collection contenant sous forme de DateTime les retards (saisies d'absences inferieures a 30min)
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
-	 * @return int $nombre_absence
+	 * @return PropelCollection DateTime[]
 	 */
-	public function getNbreRetards($date_debut, $date_fin = null) {
+	public function getRetards($date_debut, $date_fin = null) {
+	    $result = new PropelCollection();
+
 	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
 	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
 	    else {$request_query_hash .= 'null';}
@@ -1202,7 +1216,7 @@ class Eleve extends BaseEleve {
 	    }
 
 	    if ($abs_saisie_col->isEmpty()) {
-		return 0;
+		return $result;
 	    }
 
 	    $date_compteur = clone $date_debut;
@@ -1217,13 +1231,12 @@ class Eleve extends BaseEleve {
 	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 	    $horaire_col = EdtHorairesEtablissementQuery::create()->find();
 	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
-	    $retard = 0;
 
 	    foreach($abs_saisie_col as $saisie) {
 		if ($date_compteur > $date_fin_iteration) {
 		    break;
 		}
-		if (!$saisie->getRetard() || $saisie->getResponsabiliteEtablissement()) {
+		if (!$saisie->getRetard() || $saisie->getSousResponsabiliteEtablissement()) {
 		    continue;
 		}
 		if ($date_compteur < $saisie->getDebutAbs(null)) {
@@ -1249,24 +1262,26 @@ class Eleve extends BaseEleve {
 		    $date_compteur_suivante->setTimeZone($date_compteur->getTimeZone());
 
 		    if ($saisie->getDebutAbs('U') < $date_compteur_suivante->format('U') && $saisie->getFinAbs('U') > $date_compteur->format('U')) {
-			$retard = $retard + 1;
+			$result->append(clone $date_compteur);
 		    }
 		    $date_compteur = $date_compteur_suivante;
 		}
 	    }
-	    return $retard;
+	    return $result;
 
 	}
 
  	/**
 	 *
-	 * Retourne une liste d'absence pour la période donnée
+	 * Retourne une collection contenant sous forme de DateTime les retards (saisies d'absences inferieures a 30min)
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
-	 * @return PropelObjectCollection AbsenceEleveSaisie[]
+	 * @return PropelCollection DateTime[]
 	 */
-	public function getNbreRetardsParPeriode($periode = null) {
+	public function getRetardsParPeriode($periode = null) {
 	    $periode_obj = $this->getPeriodeNote($periode);
 	    if ($periode_obj == null) {
 		return 0;
@@ -1275,7 +1290,7 @@ class Eleve extends BaseEleve {
 	    if ($date_debut  == null)  {
 		return 0;
 	    }
-	    return $this->getNbreRetards($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
+	    return $this->getRetards($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
 
 	/**
@@ -1309,10 +1324,11 @@ class Eleve extends BaseEleve {
 	/**
 	 *
 	 * Renvoi true / false selon que l'eleve est present a l'heure donnee.
-	 * On ne peut certifier la presence a 100% vu que seule les absences sont saisies.
+	 * On ne peut certifier la presence a 100% vu que seule les absences sont saisies (et non les presences)
 	 * La fonction va rechercher les saisies de la classe de l'eleve et verifier que l'eleve n'est pas dedans.
-	 * Les absences prisent en compte sont celles pour lesquelles l'eleve n'est pas sous la responsabilité de l'établissement.
+	 * Les absences prisent en compte sont celles pour lesquelles l'eleve n'est pas sous la responsabilité de l'établissement et ne respecte pas son obligetion de presence
 	 * Il est possible que l'eleve n'ai pas cours a l'heure precisee, auquel cas la fonction renvoi faux (eleve non present)
+	 * Des plusieurs saisies sont contradictoire, on considere l'eleve present
 	 *
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
 	 *						be treated as NULL for temporal objects.
@@ -1346,17 +1362,17 @@ class Eleve extends BaseEleve {
 	    
 
 	    //premierement on verifie que l'eleve n'a pas ete saisie absent a cette date
-	    $resp_etab = false;
+	    $resp_etab = true;
 	    foreach ($this->getAbsenceEleveSaisiesFilterByDate($dt,$dt) as $saisie) {
-		if (!$saisie->getResponsabiliteEtablissement()) {
-		    return false;
+		if ($saisie->getSousResponsabiliteEtablissement() || !$saisie->getManquementObligationPresence()) {
+		    return true;
 		} else {
-		    $resp_etab = true;
+		    $resp_etab = false;
 		}
 	    }
-	    if ($resp_etab) {
-		//l'eleve est saisie mais sous la responsabilite de l'etablissement, c'est donc qu'il est present
-		return true;
+	    if (!$resp_etab) {
+		//l'eleve est saisie mais absent
+		return false;
 	    }
 
 	    //on recupere toute les saisies a cette heure

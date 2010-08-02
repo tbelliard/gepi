@@ -55,8 +55,10 @@ if (empty($_GET['commentaire']) and empty($_POST['commentaire'])) { $commentaire
     else { if (isset($_GET['commentaire'])) {$commentaire=$_GET['commentaire'];} if (isset($_POST['commentaire'])) {$commentaire=$_POST['commentaire'];} }
 if (empty($_GET['justification_exigible']) and empty($_POST['justification_exigible'])) { $justification_exigible="";}
     else { if (isset($_GET['justification_exigible'])) {$justification_exigible=$_GET['justification_exigible'];} if (isset($_POST['justification_exigible'])) {$justification_exigible=$_POST['justification_exigible'];} }
-if (empty($_GET['responsabilite_etablissement']) and empty($_POST['responsabilite_etablissement'])) { $responsabilite_etablissement="";}
-    else { if (isset($_GET['responsabilite_etablissement'])) {$responsabilite_etablissement=$_GET['responsabilite_etablissement'];} if (isset($_POST['responsabilite_etablissement'])) {$responsabilite_etablissement=$_POST['responsabilite_etablissement'];} }
+if (empty($_GET['sous_responsabilite_etablissement']) and empty($_POST['sous_responsabilite_etablissement'])) { $sous_responsabilite_etablissement=AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE;}
+    else { if (isset($_GET['sous_responsabilite_etablissement'])) {$sous_responsabilite_etablissement=$_GET['sous_responsabilite_etablissement'];} if (isset($_POST['sous_responsabilite_etablissement'])) {$sous_responsabilite_etablissement=$_POST['sous_responsabilite_etablissement'];} }
+if (empty($_GET['manquement_obligation_presence']) and empty($_POST['manquement_obligation_presence'])) { $manquement_obligation_presence=AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE;}
+    else { if (isset($_GET['manquement_obligation_presence'])) {$manquement_obligation_presence=$_GET['manquement_obligation_presence'];} if (isset($_POST['manquement_obligation_presence'])) {$manquement_obligation_presence=$_POST['manquement_obligation_presence'];} }
 if (empty($_GET['type_saisie']) and empty($_POST['type_saisie'])) { $type_saisie="";}
     else { if (isset($_GET['type_saisie'])) {$type_saisie=$_GET['type_saisie'];} if (isset($_POST['type_saisie'])) {$type_saisie=$_POST['type_saisie'];} }
 if (empty($_GET['ajout_statut_type_saisie']) and empty($_POST['ajout_statut_type_saisie'])) { $ajout_statut_type_saisie="";}
@@ -93,7 +95,8 @@ if ($action == 'supprimer') {
 	$type->setNom(stripslashes($nom));
 	$type->setCommentaire(stripslashes($commentaire));
 	$type->setJustificationExigible($justification_exigible);
-	$type->setResponsabiliteEtablissement($responsabilite_etablissement);
+	$type->setSousResponsabiliteEtablissement($sous_responsabilite_etablissement);
+	$type->setManquementObligationPresence($manquement_obligation_presence);
 	$type->setTypeSaisie($type_saisie);
 	$type->getAbsenceEleveTypeStatutAutorises(); //corrige un bug de propel sur la lecture de la base
 	if ($ajout_statut_type_saisie != '') {
@@ -143,7 +146,8 @@ echo "</p>";
           <td>Nom (obligatoire)</td>
           <td>Commentaire (facultatif)</td>
 	    <td>Justification exigible</td>
-	    <td>Eleve sous la responsabilite de l'etablissement</td>
+	    <td>L'eleve est sous la responsabilite de l'etablissement</td>
+	    <td>Manquement obligations (apparait sur le bulletin)</td>
 	    <td>Type de saisie</td>
 	    <td>Statut autorisé à la saisie</td>
        </tr>
@@ -158,7 +162,20 @@ echo "</p>";
            </td>
            <td><textarea name="commentaire" rows="3" cols="22"><?php  if ($type != null) {echo $type->getCommentaire();} ?></textarea></td>
            <td><input name="justification_exigible" type="checkbox" id="justification_exigible" <?php  if ($type != null && $type->getJustificationExigible()) {echo "checked";} ?> /></td>
-           <td><input name="responsabilite_etablissement" type="checkbox" id="responsabilite_etablissement" <?php  if ($type != null && $type->getResponsabiliteEtablissement()) {echo "checked";} ?> class="input_sans_bord" /></td>
+           <td>
+	     <select name="sous_responsabilite_etablissement" id="sous_responsabilite_etablissement">
+		<option value='<?php echo AbsenceEleveType::$SOUS_RESP_ETAB_VRAI?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_VRAI) {echo "selected";} ?>>oui</option>
+		<option value='<?php echo AbsenceEleveType::$SOUS_RESP_ETAB_FAUX?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_FAUX) {echo "selected";} ?>>non</option>
+		<option value='<?php echo AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE) {echo "selected";} ?>>non precisé</option>
+	     </select>
+	   </td>
+           <td>
+	     <select name="manquement_obligation_presence" id="manquement_obligation_presence">
+		<option value='<?php echo AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) {echo "selected";} ?>>oui</option>
+		<option value='<?php echo AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) {echo "selected";} ?>>non</option>
+		<option value='<?php echo AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE) {echo "selected";} ?>>non precisé</option>
+	     </select>
+	   </td>
            <td>
 	     <select name="type_saisie" id="type_saisie">
 		<option value='NON_PRECISE' <?php  if ($type != null && $type->getTypeSaisie() == 'NON_PRECISE') {echo "selected";} ?>>Type de saisie non precise</option>
@@ -207,12 +224,13 @@ echo "</p>";
 	<br/><br/>
 	<a href="admin_types_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les types par defaut</a>
 	<br/><br/>
-    <table cellpadding="0" cellspacing="1" class="menu">
+    <table cellpadding="0" cellspacing="1" class="menu" style="width:80%">
       <tr>
         <td>Nom</td>
         <td>Commentaire</td>
         <td>Justification exigible</td>
-        <td>Eleve sous la responsabilite de l'etablissement</td>
+	<td>L'eleve est sous la responsabilite de l'etablissement</td>
+	<td>Manquement obligations (apparait sur le bulletin)</td>
         <td>Type de saisie</td>
 	<td>Statuts autorisés à la saisie</td>
         <td style="width: 25px;"></td>
@@ -230,8 +248,19 @@ echo "</p>";
 	  <td><?php echo $type->getNom(); ?></td>
 	  <td><?php echo $type->getCommentaire(); ?></td>
 	  <td><?php if ($type->getJustificationExigible()) { ?><img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' /><?php } ?></td>
-	  <td><?php if ($type->getResponsabiliteEtablissement()) { ?><img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' /><?php } ?></td>
-	  <td><?php echo $type->getTypeSaisieDescription(); ?></td>
+	  <td>
+	    <?php if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
+		else if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
+		//si le ManquementObligationPresence est non precisé on affiche rien
+	    ?>
+	  </td>
+	  <td>
+	    <?php if ($type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
+		else if ($type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
+		//si le ManquementObligationPresence est non precisé on affiche rien
+	    ?>
+	  </td>
+	  <td><?php if ($type->getTypeSaisie() != AbsenceEleveType::$TYPE_SAISIE_NON_PRECISE) {echo $type->getTypeSaisieDescription();} ?></td>
 	  <td><?php
 		foreach ($type->getAbsenceEleveTypeStatutAutorises() as $statut_saisie) {
 			echo $statut_saisie->getStatut();

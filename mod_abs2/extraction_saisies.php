@@ -146,7 +146,7 @@ if ($affichage != 'ods') {// on affiche pas de html
     <br/>
     Type :
     <select style="width:200px" name="type_extrait">
-    <option value='1'>Liste des saisies degageant la responsabilité de l'etablissement</option>
+    <option value='1'>Liste des saisies occasionnant un manquement aux obligations de présence</option>
     <option value='2'>Liste de toute les saisies</option>
     </select>
 
@@ -173,17 +173,20 @@ if ($affichage != null && $affichage != '') {
 	->filterByPlageTemps($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
 	->filterByEleveId($eleve_col->toKeyValue('IdEleve', 'IdEleve'));
 
+    if ($type_extrait == '1') {
+	$saisie_query->filterManquementObligationPresence(true);
+    }
+
     $saisie_query->useEleveQuery()->orderByNom()->orderByPrenom()->endUse();
     $saisie_query->orderByDebutAbs();
     $saisie_col = $saisie_query->find();
-
-    $precedent_eleve_id = null;
 }
 
 if ($affichage == 'html') {
     echo '<table style="border:1px solid">';
+    $precedent_eleve_id = null;
     foreach ($saisie_col as $saisie) {
-	if ($type_extrait == '1' && $saisie->getResponsabiliteEtablissement()) {
+	if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
 	    continue;
 	}
 	if ($precedent_eleve_id != $saisie->getEleveId()) {
@@ -216,6 +219,7 @@ if ($affichage == 'html') {
     echo '</tr>';
     echo '</table>';
     echo '<h5>Extraction faite le '.date("d/m/Y - h:i").'</h5>';
+    
 } else if ($affichage == 'ods') {
     // load the TinyButStrong libraries
     if (version_compare(PHP_VERSION,'5')<0) {

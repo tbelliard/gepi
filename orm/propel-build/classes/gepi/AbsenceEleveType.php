@@ -16,6 +16,38 @@
 class AbsenceEleveType extends BaseAbsenceEleveType {
 
 	/**
+	 * Les types de creneaux possibles
+	 */
+	public static $TYPE_SAISIE_DEBUT_ABS = 'DEBUT_ABS';
+	public static $TYPE_SAISIE_FIN_ABS = 'FIN_ABS';
+	public static $TYPE_SAISIE_DEBUT_ET_FIN_ABS = 'DEBUT_ET_FIN_ABS';
+	public static $TYPE_SAISIE_NON_PRECISE = 'NON_PRECISE';
+	public static $TYPE_SAISIE_COMMENTAIRE_EXIGE = 'COMMENTAIRE_EXIGE';
+	public static $TYPE_SAISIE_DISCIPLINE = 'DISCIPLINE';
+
+	public static $LISTE_LABEL_TYPE_SAISIE = array(
+	    'DEBUT_ABS' => 'Saisie de l\'heure du debut de l\'absence'
+	    , 'FIN_ABS' => 'Saisie de l\'heure de fin debut de l\'absence'
+	    , 'DEBUT_ET_FIN_ABS' => 'Saisie de l\'heure du debut et de fin de l\'absence'
+	    , 'NON_PRECISE' => 'Type de saisie non précisé'
+	    , 'COMMENTAIRE_EXIGE' => 'Saisie d\'un commentaire explicatif'
+	    , 'DISCIPLINE' => 'Saisie d\'un incident dciplinaire');
+
+	/**
+	 * Les types de RESPONSABILITE_ETABLISSEMENT possibles
+	 */
+	public static $SOUS_RESP_ETAB_VRAI = 'VRAI';
+	public static $SOUS_RESP_ETAB_FAUX = 'FAUX';
+	public static $SOUS_RESP_ETAB_NON_PRECISE = 'NON_PRECISE';
+
+	/**
+	 * Les types de RESPONSABILITE_ETABLISSEMENT possibles
+	 */
+	public static $MANQU_OBLIG_PRESE_VRAI = 'VRAI';
+	public static $MANQU_OBLIG_PRESE_FAUX = 'FAUX';
+	public static $MANQU_OBLIG_PRESE_NON_PRECISE = 'NON_PRECISE';
+
+	/**
 	 *
 	 * Renvoi la description du type de saisie, permet de decrire les code suivant :
 	 * DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE
@@ -27,18 +59,8 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	    $type_code = $this->getTypeSaisie();
 	    if ($type_code == "") {
 		return "";
-	    } elseif ($type_code == "DEBUT_ABS") {
-		return "Sasie de l'heure du debut de l'absence";
-	    } elseif ($type_code == "FIN_ABS") {
-		return "Sasie de l'heure de fin debut de l'absence";
-	    } elseif ($type_code == "DEBUT_ET_FIN_ABS") {
-		return "Sasie de l'heure du debut et de fin de l'absence";
-	    } elseif ($type_code == "NON_PRECISE") {
-		return "Type de saisie non précisé";
-	    } elseif ($type_code == "COMMENTAIRE_EXIGE") {
-		return "Sasie d'un commentaire explicatif";
-	    } elseif ($type_code == "DISCIPLINE") {
-		return "Sasie d'un incident dciplinaire";
+	    } else {
+		return AbsenceEleveType::$LISTE_LABEL_TYPE_SAISIE[$this->getTypeSaisie()];
 	    }
 	}
 

@@ -360,7 +360,7 @@ if ($saisie->getIdSIncidents() !== null) {
 	$saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire</a>";
     echo '</TD></tr>';
 }
-$saisies_conflit = $saisie->getSaisiesContradictoires();
+$saisies_conflit = $saisie->getSaisiesContradictoiresManquementObligation();
 if (!$saisies_conflit->isEmpty()) {
     echo '<tr><TD>';
     echo 'La saisie est en contradiction avec : ';

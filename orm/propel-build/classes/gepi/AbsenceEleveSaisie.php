@@ -16,10 +16,15 @@
 class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
-	 * @var        bool to store aggregation of ResponsabiliteEtablissement value
+	 * @var        bool to store aggregation of sousResponsabiliteEtablissement value
 	 */
-	protected $responsabiliteEtablissement;
+	protected $sousResponsabiliteEtablissement;
     
+	/**
+	 * @var        bool to store aggregation of manquementObligationPresence value
+	 */
+	protected $manquementObligationPresence;
+
 	/**
 	 *
 	 * Renvoi une description intelligible du traitement
@@ -147,32 +152,102 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 * @return     boolean
 	 *
 	 */
-	public function getResponsabiliteEtablissement() {
-	    if (!isset($responsabiliteEtablissement) || $responsabiliteEtablissement === null) {
-		$type_sans_resp_exist = false;
-		$type_avec_resp_exist = false;
+	public function getSousResponsabiliteEtablissement() {
+	    if (!isset($sousResponsabiliteEtablissement) || $sousResponsabiliteEtablissement === null) {
+		$type_sans = false;
+		$type_avec = false;
+		$type_non_precise = false;
 		foreach ($this->getAbsenceEleveTraitements() as $traitement) {
 		    if ($traitement->getAbsenceEleveType() != null) {
-			if ($traitement->getAbsenceEleveType()->getResponsabiliteEtablissement()) {
-			    $type_avec_resp_exist = true;
-			} else {
-			    $type_sans_resp_exist = true;
+			if ($traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_VRAI) {
+			    $type_avec = true;
+			} elseif ($traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_FAUX) {
+			    $type_sans = true;
+			} else if ($traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE) {
+			    $type_non_precise = true;
 			}
 		    }
 		}
-		if ($type_avec_resp_exist == false && $type_sans_resp_exist == false) {
-		    //on a aucune information on renvoit le reglage par defaut
-		    $responsabiliteEtablissement = (getSettingValue("abs2_saisie_par_defaut_pas_dans_le_bulletin")=='y');
-		} else if ($type_avec_resp_exist == false && $type_sans_resp_exist == true) {
-		    $responsabiliteEtablissement = false;
-		} else if ($type_avec_resp_exist == true && $type_sans_resp_exist == false) {
-		    $responsabiliteEtablissement = true;
-		} else {
+		if ($type_avec == false && $type_sans == false && $type_non_precise == false) {
+		    //on a aucune information on renvoit le reglage adequat
+		    $sousResponsabiliteEtablissement = (getSettingValue("abs2_saisie_par_defaut_sous_responsabilite_etab")=='y');
+		} else if ($type_avec == true && $type_sans == true) {
 		    //on a les deux types, on renvoi le reglage adequat
-		    $responsabiliteEtablissement = (getSettingValue("abs2_saisie_multi_type_non_comptees_dans_le_bulletin")=='y');
+		    $sousResponsabiliteEtablissement = (getSettingValue("abs2_saisie_multi_type_sous_responsabilite_etab")=='y');
+		} else if ($type_avec == false && $type_sans == true) {
+		    $sousResponsabiliteEtablissement = false;
+		} else if ($type_avec == true && $type_sans == false) {
+		    $sousResponsabiliteEtablissement = true;
+		} else {//c'est le dernier cas : ($type_avec == false && $type_sans == false && $type_non_precise == true)
+		    //si on a un type de responsabilite specifie a non_precise (comme le type 'erreur de saisie'),
+		    //on renvoi une resp etab (sinon l'utilisateur aurait specifier un type $MANQU_OBLIG_PRESE_VRAI)
+		    $sousResponsabiliteEtablissement = true;
 		}
 	    }
-	    return $responsabiliteEtablissement;
+	    return $sousResponsabiliteEtablissement;
+	}
+
+	/**
+	 *
+	 *
+	 * Renvoi true ou false si l'eleve est en manque de ses obligation de presence
+	 * une saisie qui n'est pas un manquement ne sera pas comptee dans le bulletin
+	 * une saisie qui est un manquement sera comptee dans le bulletin
+	 * Cette propriété est calculé par l'intermediaire des types de traitement
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getManquementObligationPresence() {
+	    if (!isset($manquementObligationPresence) || $manquementObligationPresence === null) {
+		$type_sans = false;
+		$type_avec = false;
+		$type_non_precise = false;
+		foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+		    if ($traitement->getAbsenceEleveType() != null) {
+			if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) {
+			    $type_avec = true;
+			} else if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) {
+			    $type_sans = true;
+			} else if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE) {
+			    $type_non_precise = true;
+			}
+		    }
+		}
+
+		if ($type_avec == false && $type_sans == false && $type_non_precise == false) {
+		    //on a aucune information on renvoit le reglage adequat
+		    $manquementObligationPresence = (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y');
+		} else if ($type_avec == true && $type_sans == true) {
+		    //on a les deux types, on renvoi le reglage adequat
+		    $manquementObligationPresence = (getSettingValue("abs2_saisie_multi_type_sans_manquement")!='y');
+		} else if ($type_avec == false && $type_sans == true) {
+		    $manquementObligationPresence = false;
+		} else if ($type_avec == true && $type_sans == false) {
+		    $manquementObligationPresence = true;
+		} else {//c'est le dernier cas : ($type_avec == false && $type_sans == false && $type_non_precise == true)
+		    //si on a un type de manquement specifie a non_precise (comme le type 'erreur de saisie'),
+		    //on renvoi un non manquement (sinon l'utilisateur aurait specifier un type $MANQU_OBLIG_PRESE_VRAI)
+		    $manquementObligationPresence = false;
+		}
+	    }
+	    return $manquementObligationPresence;
+	}
+
+	/**
+	 *
+	 * Renvoi 'oui' ou 'non' si l'eleve manque une obligation de presence
+	 * Ajoute pour les modele tbs
+	 *
+	 * @return     string
+	 *
+	 */
+	public function getManquementObligationPresenceDescription() {
+	    if ($this->getManquementObligationPresence()) {
+		return 'oui';
+	    } else {
+		return 'non';
+	    }
 	}
 
 	/**
@@ -185,8 +260,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 * @return     string
 	 *
 	 */
-	public function getResponsabiliteEtablissementDescription() {
-	    if ($this->getResponsabiliteEtablissement()) {
+	public function getSousResponsabiliteEtablissementDescription() {
+	    if ($this->getSousResponsabiliteEtablissement()) {
 		return 'oui';
 	    } else {
 		return 'non';
@@ -301,7 +376,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 					//on utilise du sql directement pour optimiser la requete
 					$sql = "SELECT 
 					    a_traitements.ID, a_traitements.UTILISATEUR_ID, a_traitements.A_TYPE_ID, a_traitements.A_MOTIF_ID, a_traitements.A_JUSTIFICATION_ID, a_traitements.COMMENTAIRE, a_traitements.CREATED_AT, a_traitements.UPDATED_AT, a_types.ID, a_types.NOM, a_types.JUSTIFICATION_EXIGIBLE,
-					    a_types.RESPONSABILITE_ETABLISSEMENT, a_types.TYPE_SAISIE, a_types.COMMENTAIRE, a_types.SORTABLE_RANK,
+					    a_types.SOUS_RESPONSABILITE_ETABLISSEMENT, a_types.MANQUEMENT_OBLIGATION_PRESENCE, a_types.TYPE_SAISIE, a_types.COMMENTAIRE, a_types.SORTABLE_RANK,
 					    a_notifications.ID, a_notifications.UTILISATEUR_ID, a_notifications.A_TRAITEMENT_ID, a_notifications.TYPE_NOTIFICATION, a_notifications.EMAIL, a_notifications.TELEPHONE, a_notifications.ADR_ID, a_notifications.COMMENTAIRE, a_notifications.STATUT_ENVOI, a_notifications.DATE_ENVOI, a_notifications.ERREUR_MESSAGE_ENVOI, a_notifications.CREATED_AT, a_notifications.UPDATED_AT,
 					    a_justifications.ID, a_justifications.NOM, a_justifications.COMMENTAIRE, a_justifications.SORTABLE_RANK
 					FROM `a_traitements`
@@ -426,14 +501,14 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
-	 * Renvoi un liste de saisies qui sont en contradiction avec celle la
+	 * Renvoi un liste de saisies qui sont en contradiction avec celle la concernant le manquement des obligations de presence (apparition dans le bulletin)
 	 *
-	 * @param boolean $retourne_booleen la fonction retourne vrai ou faux selon qu'il y ai des saisies contradictoires au lieu d'une collection
+	 * @param boolean $retourne_booleen la fonction retourne vrai ou faux selon qu'il y ai des saisies contradictoires au lieu de retourner une collection
 	 *
 	 * @return mixed boolean or PropelObjectCollection AbsenceEleveSaisie[]
 	 *
 	 */
-	public function getSaisiesContradictoires($retourne_booleen = false) {
+	public function getSaisiesContradictoiresManquementObligation($retourne_booleen = false) {
 	    $result = new PropelObjectCollection();
 	    $result->setModel('AbsenceEleveSaisie');
 	    if ($this->getEleve() === null) {
@@ -443,16 +518,16 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	    //on regarde les saisies sur cet eleve
 	    $eleve = $this->getEleve();
-	    $resp = $this->getResponsabiliteEtablissement();
+	    $manque = $this->getManquementObligationPresence();
 	    foreach ($eleve->getAbsenceEleveSaisiesFilterByDate($this->getDebutAbs(null), $this->getFinAbs(null)) as $saisie) {
-		if ($resp !== $saisie->getResponsabiliteEtablissement()) {
+		if ($manque !== $saisie->getManquementObligationPresence()) {
 		    if ($retourne_booleen) {return true;}
 		    $result->append($saisie);
 		}
 	    }
 
-	    if ($resp == false) {
-		//on recupere les saisies qui se chevauchent avec celle-la
+	    if ($manque == true) {
+		//on recupere les saisies de marquage d'absence (donc sans eleves) qui se chevauchent avec celle-la
 		//optimisation : utiliser la requete pour stocker ca
 		if (isset($_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')])
 			&& $_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')] != null) {
@@ -460,6 +535,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		} else {
 		    $query = AbsenceEleveSaisieQuery::create();
 		    $query->filterByPlageTemps($this->getDebutAbs(null), $this->getFinAbs(null))
+			//->filterByEleveId(Array(null, $this->getEleveId()))
 			->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
 			->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
 			->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType');
@@ -467,7 +543,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    $_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')] = $saisie_col;
 		}
 
-		//on va filtrer pour supprimer de la liste les aid classe ou groupe qui serait le meme que cette saisie la
+		//on va filtrer pour supprimer de la liste les aid, classe ou groupe qui serait le meme que cette saisie la
 		$temp_saisie_col = new PropelObjectCollection();
 		$temp_saisie_col->setModel('AbsenceEleveSaisie');
 		if ($this->getClasse() != null) {
@@ -514,7 +590,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			$bool_eleve_saisi = false;
 			foreach ($keys as $key) {
 			    $saisie_temp = $saisie_col_array_copy[$key];
-			    $temp_col->append($saisie_temp);
+			    if ($saisie_temp->getEleveId() === null) {
+				$temp_col->append($saisie_temp);
+			    }
 			    if ($this->getEleveId() == $saisie_temp->getEleveId()) {
 				$bool_eleve_saisi = true;
 			    }
@@ -539,7 +617,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			$bool_eleve_saisi = false;
 			foreach ($keys as $key) {
 			    $saisie_temp = $saisie_col_array_copy[$key];
-			    $temp_col->append($saisie_temp);
+			    if ($saisie_temp->getEleveId() === null) {
+				$temp_col->append($saisie_temp);
+			    }
 			    if ($this->getEleveId() == $saisie_temp->getEleveId()) {
 				$bool_eleve_saisi = true;
 			    }
@@ -564,7 +644,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			$bool_eleve_saisi = false;
 			foreach ($keys as $key) {
 			    $saisie_temp = $saisie_col_array_copy[$key];
-			    $temp_col->append($saisie_temp);
+			    if ($saisie_temp->getEleveId() === null) {
+				$temp_col->append($saisie_temp);
+			    }
 			    if ($this->getEleveId() == $saisie_temp->getEleveId()) {
 				$bool_eleve_saisi = true;
 			    }
@@ -588,7 +670,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 * @return PropelObjectCollection AbsenceEleveSaisie[]
 	 *
 	 */
-	public function isSaisiesContradictoires() {
-	    return $this->getSaisiesContradictoires(true);
+	public function isSaisiesContradictoiresManquementObligation() {
+	    return $this->getSaisiesContradictoiresManquementObligation(true);
 	}
 } // AbsenceEleveSaisie

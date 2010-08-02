@@ -9,7 +9,8 @@
  * @method     AbsenceEleveTypeQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     AbsenceEleveTypeQuery orderByNom($order = Criteria::ASC) Order by the nom column
  * @method     AbsenceEleveTypeQuery orderByJustificationExigible($order = Criteria::ASC) Order by the justification_exigible column
- * @method     AbsenceEleveTypeQuery orderByResponsabiliteEtablissement($order = Criteria::ASC) Order by the responsabilite_etablissement column
+ * @method     AbsenceEleveTypeQuery orderBySousResponsabiliteEtablissement($order = Criteria::ASC) Order by the sous_responsabilite_etablissement column
+ * @method     AbsenceEleveTypeQuery orderByManquementObligationPresence($order = Criteria::ASC) Order by the manquement_obligation_presence column
  * @method     AbsenceEleveTypeQuery orderByTypeSaisie($order = Criteria::ASC) Order by the type_saisie column
  * @method     AbsenceEleveTypeQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
  * @method     AbsenceEleveTypeQuery orderBySortableRank($order = Criteria::ASC) Order by the sortable_rank column
@@ -17,7 +18,8 @@
  * @method     AbsenceEleveTypeQuery groupById() Group by the id column
  * @method     AbsenceEleveTypeQuery groupByNom() Group by the nom column
  * @method     AbsenceEleveTypeQuery groupByJustificationExigible() Group by the justification_exigible column
- * @method     AbsenceEleveTypeQuery groupByResponsabiliteEtablissement() Group by the responsabilite_etablissement column
+ * @method     AbsenceEleveTypeQuery groupBySousResponsabiliteEtablissement() Group by the sous_responsabilite_etablissement column
+ * @method     AbsenceEleveTypeQuery groupByManquementObligationPresence() Group by the manquement_obligation_presence column
  * @method     AbsenceEleveTypeQuery groupByTypeSaisie() Group by the type_saisie column
  * @method     AbsenceEleveTypeQuery groupByCommentaire() Group by the commentaire column
  * @method     AbsenceEleveTypeQuery groupBySortableRank() Group by the sortable_rank column
@@ -40,7 +42,8 @@
  * @method     AbsenceEleveType findOneById(int $id) Return the first AbsenceEleveType filtered by the id column
  * @method     AbsenceEleveType findOneByNom(string $nom) Return the first AbsenceEleveType filtered by the nom column
  * @method     AbsenceEleveType findOneByJustificationExigible(boolean $justification_exigible) Return the first AbsenceEleveType filtered by the justification_exigible column
- * @method     AbsenceEleveType findOneByResponsabiliteEtablissement(boolean $responsabilite_etablissement) Return the first AbsenceEleveType filtered by the responsabilite_etablissement column
+ * @method     AbsenceEleveType findOneBySousResponsabiliteEtablissement(string $sous_responsabilite_etablissement) Return the first AbsenceEleveType filtered by the sous_responsabilite_etablissement column
+ * @method     AbsenceEleveType findOneByManquementObligationPresence(string $manquement_obligation_presence) Return the first AbsenceEleveType filtered by the manquement_obligation_presence column
  * @method     AbsenceEleveType findOneByTypeSaisie(string $type_saisie) Return the first AbsenceEleveType filtered by the type_saisie column
  * @method     AbsenceEleveType findOneByCommentaire(string $commentaire) Return the first AbsenceEleveType filtered by the commentaire column
  * @method     AbsenceEleveType findOneBySortableRank(int $sortable_rank) Return the first AbsenceEleveType filtered by the sortable_rank column
@@ -48,7 +51,8 @@
  * @method     array findById(int $id) Return AbsenceEleveType objects filtered by the id column
  * @method     array findByNom(string $nom) Return AbsenceEleveType objects filtered by the nom column
  * @method     array findByJustificationExigible(boolean $justification_exigible) Return AbsenceEleveType objects filtered by the justification_exigible column
- * @method     array findByResponsabiliteEtablissement(boolean $responsabilite_etablissement) Return AbsenceEleveType objects filtered by the responsabilite_etablissement column
+ * @method     array findBySousResponsabiliteEtablissement(string $sous_responsabilite_etablissement) Return AbsenceEleveType objects filtered by the sous_responsabilite_etablissement column
+ * @method     array findByManquementObligationPresence(string $manquement_obligation_presence) Return AbsenceEleveType objects filtered by the manquement_obligation_presence column
  * @method     array findByTypeSaisie(string $type_saisie) Return AbsenceEleveType objects filtered by the type_saisie column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveType objects filtered by the commentaire column
  * @method     array findBySortableRank(int $sortable_rank) Return AbsenceEleveType objects filtered by the sortable_rank column
@@ -218,20 +222,47 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the responsabilite_etablissement column
+	 * Filter the query on the sous_responsabilite_etablissement column
 	 * 
-	 * @param     boolean|string $responsabiliteEtablissement The value to use as filter.
-	 *            Accepts strings ('false', 'off', '-', 'no', 'n', and '0' are false, the rest is true)
+	 * @param     string $sousResponsabiliteEtablissement The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
-	public function filterByResponsabiliteEtablissement($responsabiliteEtablissement = null, $comparison = null)
+	public function filterBySousResponsabiliteEtablissement($sousResponsabiliteEtablissement = null, $comparison = null)
 	{
-		if (is_string($responsabiliteEtablissement)) {
-			$responsabilite_etablissement = in_array(strtolower($responsabiliteEtablissement), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+		if (null === $comparison) {
+			if (is_array($sousResponsabiliteEtablissement)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $sousResponsabiliteEtablissement)) {
+				$sousResponsabiliteEtablissement = str_replace('*', '%', $sousResponsabiliteEtablissement);
+				$comparison = Criteria::LIKE;
+			}
 		}
-		return $this->addUsingAlias(AbsenceEleveTypePeer::RESPONSABILITE_ETABLISSEMENT, $responsabiliteEtablissement, $comparison);
+		return $this->addUsingAlias(AbsenceEleveTypePeer::SOUS_RESPONSABILITE_ETABLISSEMENT, $sousResponsabiliteEtablissement, $comparison);
+	}
+
+	/**
+	 * Filter the query on the manquement_obligation_presence column
+	 * 
+	 * @param     string $manquementObligationPresence The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
+	 */
+	public function filterByManquementObligationPresence($manquementObligationPresence = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($manquementObligationPresence)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $manquementObligationPresence)) {
+				$manquementObligationPresence = str_replace('*', '%', $manquementObligationPresence);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveTypePeer::MANQUEMENT_OBLIGATION_PRESENCE, $manquementObligationPresence, $comparison);
 	}
 
 	/**

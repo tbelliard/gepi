@@ -305,15 +305,15 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
     $nb_checkbox = 0; //nombre de checkbox
     foreach($eleve_col as $eleve) {
 		//$eleve = new Eleve();
-			$resp_etab = true;
+			$manque = true;
 			foreach ($eleve->getAbsenceEleveSaisiesDuJour($dt_date_absence_eleve) as $absence) {
-			    if (!$absence->getResponsabiliteEtablissement()) {
-				$resp_etab = false;
+			    if ($absence->getManquementObligationPresence()) {
+				$manque = false;
 				break;
 			    }
 			}
-			if ($resp_etab) {
-			    //l'eleve n'a aucune absence deresponsabilisant l'etablissement
+			if ($manque) {
+			    //l'eleve n'a manque aucune obligation
 			    //donc on ne l'affiche pas
 			    continue;
 			}
@@ -355,12 +355,12 @@ if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_
 					$red = false;
 					$violet = false;
 					foreach ($absences_du_creneau as $absence) {
-					    if ($absence->isSaisiesContradictoires()) {
-					    //if (!($absence->getSaisiesContradictoires()->isEmpty())) {
+					    if ($absence->isSaisiesContradictoiresManquementObligation()) {
+					    //if (!($absence->getSaisiesContradictoiresManquementObligation()->isEmpty())) {
 						$violet = true;
 						break;
 					    }
-					    if ($red || !$absence->getResponsabiliteEtablissement()) {
+					    if ($red || $absence->getManquementObligationPresence()) {
 						$red = true;
 					    }
 					}

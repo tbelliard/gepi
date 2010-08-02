@@ -117,7 +117,7 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 		$desc .= $this->getHeureFin("H:i") . " ";
 	    }
 	    if ($this->getTypeSemaine() != NULL && $this->getTypeSemaine() != '' && $this->getTypeSemaine() != '0') {
-		$desc .= " sem. ".$this->getTypeSemaine(). " ";
+		$desc .= " sem.".$this->getTypeSemaine(). " ";
 	    }
 //	    if ($this->getEdtSalle() != null) {
 //		$desc .= "salle ". $this->getEdtSalle()->getNomSalle();

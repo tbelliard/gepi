@@ -982,9 +982,9 @@ if ($on_continue == 'yes') {
 		    $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
 		    if ($eleve != null) {
 			$current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
-			$eleve_abs[$nb] = $eleve->getNbreDemiJourneesAbsenceParPeriode($nb);
-			$eleve_abs_nj[$nb] = $eleve->getNbreDemiJourneesNonJustifieesAbsenceParPeriode($nb);
-			$eleve_retards[$nb] = $eleve->getNbreRetardsParPeriode($nb);
+			$eleve_abs[$nb] = $eleve->getDemiJourneesAbsenceParPeriode($nb)->count();
+			$eleve_abs_nj[$nb] = $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($nb)->count();
+			$eleve_retards[$nb] = $eleve->getRetardsParPeriode($nb)->count();
 			$current_eleve_appreciation_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
 			$eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
 		    }

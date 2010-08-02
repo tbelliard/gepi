@@ -107,4 +107,47 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	    }
 	    return $resp_col;
 	}
+
+	/**
+	 *
+	 *
+	 * Renvoi true ou false si l'eleve est en manque de ses obligation de presence
+	 * une saisie qui n'est pas un manquement ne sera pas comptee dans le bulletin
+	 * une saisie qui est un manquement sera comptee dans le bulletin
+	 * Cette propriété est calculé avec par l'intermediaire des types de traitement
+	 * si on a un type de manquement specifie a non_precise (comme le type 'erreur de saisie'),
+	 * on renvoi un non manquement (sinon l'utilisateur aurait specifier un type $MANQU_OBLIG_PRESE_VRAI)
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getManquementObligationPresence() {
+	    if ($this->getAbsenceEleveType() == null) {
+		return (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y');
+	    } else {
+		return (
+			$this->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE
+			|| $this->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI);
+	    }
+	}
+
+	/**
+	 *
+	 * Renvoi true ou false si l'eleve etait sous la responsabilite de l'etablissement (infirmerie ou autre)
+	 * une saisie qui n'est pas sous la responsabilite de l'etablissement sere comptee dans le bulletin
+	 * une saisie qui est sous la responsabilite de l'etablissement ne sera pas comptee dans le bulletin
+	 * si on a un type de responsabilite specifié a non_precisé (comme le type 'erreur de saisie'),
+	 * on renvoi une resp etab (sinon l'utilisateur aurait specifier un type $MANQU_OBLIG_PRESE_VRAI)
+	 * @return     boolean
+	 *
+	 */
+	public function getSousResponsabiliteEtablissement() {
+	    if ($this->getAbsenceEleveType() == null) {
+		return (getSettingValue("abs2_saisie_par_defaut_sous_responsabilite_etab")!='y');
+	    } else {
+		return (
+			$this->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE
+			|| $this->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_VRAI);
+	    }
+	}
 } // AbsenceEleveTraitement

@@ -486,6 +486,15 @@ if (isset($current_groupe) && $current_groupe != null) {
 $deja_saisie = false;
 if ($current_cours != null) {
     $query = AbsenceEleveSaisieQuery::create();
+    if ($current_aid != null) {
+	$query->filterByIdAid($current_aid->getId());
+    }
+    if ($current_groupe != null) {
+	$query->filterByIdGroupe($current_groupe->getId());
+    }
+    if ($current_classe != null) {
+	$query->filterByIdClasse($current_classe->getId());
+    }
     $query->filterByUtilisateurProfessionnel($utilisateur);
     $dt = clone $dt_date_absence_eleve;
     $dt->setTime($current_cours->getHeureDebut('H'), $current_cours->getHeureDebut('i'));
@@ -496,7 +505,23 @@ if ($current_cours != null) {
 	$deja_saisie = true;
     }
 } elseif ($current_creneau != null) {
-    if (!$utilisateur->getEdtCreneauAbsenceSaisie($id_creneau, $dt_date_absence_eleve)->isEmpty()) {
+    $query = AbsenceEleveSaisieQuery::create();
+    if ($current_aid != null) {
+	$query->filterByIdAid($current_aid->getId());
+    }
+    if ($current_groupe != null) {
+	$query->filterByIdGroupe($current_groupe->getId());
+    }
+    if ($current_classe != null) {
+	$query->filterByIdClasse($current_classe->getId());
+    }
+    $query->filterByUtilisateurProfessionnel($utilisateur);
+    $dt = clone $dt_date_absence_eleve;
+    $dt->setTime($current_creneau->getHeuredebutDefiniePeriode('H'), $current_creneau->getHeuredebutDefiniePeriode('i'));
+    $dt_end = clone $dt;
+    $dt_end->setTime($current_creneau->getHeurefinDefiniePeriode('H'), $current_creneau->getHeurefinDefiniePeriode('i'));
+    $query->filterByPlageTemps($dt, $dt_end);
+    if ($query->count() > 0) {
 	$deja_saisie = true;
     }
 }
@@ -528,7 +553,7 @@ if (!$eleve_col->isEmpty()) {
 				pour le groupe
 				<strong>
 				<?php if (isset($current_groupe) && $current_groupe != null) {
-				    echo $current_groupe->getName();
+				    echo $current_groupe->getNameAvecClasses();
 				} else if (isset($current_aid) && $current_aid != null) {
 				    echo $current_aid->getNom();
 				} else if (isset($current_classe) && $current_classe != null) {

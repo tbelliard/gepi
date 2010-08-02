@@ -133,23 +133,43 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
-		if (isset($_POST['abs2_saisie_par_defaut_pas_dans_le_bulletin'])) {
-			if (!saveSetting("abs2_saisie_par_defaut_pas_dans_le_bulletin", $_POST['abs2_saisie_par_defaut_pas_dans_le_bulletin'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_pas_dans_le_bulletin";
+		if (isset($_POST['abs2_saisie_par_defaut_sans_manquement'])) {
+			if (!saveSetting("abs2_saisie_par_defaut_sans_manquement", $_POST['abs2_saisie_par_defaut_sans_manquement'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_sans_manquement";
 			}
 		} else {
-			if (!saveSetting("abs2_saisie_par_defaut_pas_dans_le_bulletin", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_pas_dans_le_bulletin";
+			if (!saveSetting("abs2_saisie_par_defaut_sans_manquement", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_sans_manquement";
 			}
 		}
 
-		if (isset($_POST['abs2_saisie_multi_type_non_comptees_dans_le_bulletin'])) {
-			if (!saveSetting("abs2_saisie_multi_type_non_comptees_dans_le_bulletin", $_POST['abs2_saisie_multi_type_non_comptees_dans_le_bulletin'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_non_comptees_dans_le_bulletin !";
+		if (isset($_POST['abs2_saisie_multi_type_sans_manquement'])) {
+			if (!saveSetting("abs2_saisie_multi_type_sans_manquement", $_POST['abs2_saisie_multi_type_sans_manquement'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_sans_manquement !";
 			}
 		} else {
-			if (!saveSetting("abs2_saisie_multi_type_non_comptees_dans_le_bulletin", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_non_comptees_dans_le_bulletin !";
+			if (!saveSetting("abs2_saisie_multi_type_sans_manquement", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_sans_manquement !";
+			}
+		}
+
+		if (isset($_POST['abs2_saisie_par_defaut_sous_responsabilite_etab'])) {
+			if (!saveSetting("abs2_saisie_par_defaut_sous_responsabilite_etab", $_POST['abs2_saisie_par_defaut_sous_responsabilite_etab'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_sous_responsabilite_etab !";
+			}
+		} else {
+			if (!saveSetting("abs2_saisie_par_defaut_sous_responsabilite_etab", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_par_defaut_sous_responsabilite_etab !";
+			}
+		}
+
+		if (isset($_POST['abs2_saisie_multi_type_sous_responsabilite_etab'])) {
+			if (!saveSetting("abs2_saisie_multi_type_sous_responsabilite_etab", $_POST['abs2_saisie_multi_type_sous_responsabilite_etab'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_sous_responsabilite_etab !";
+			}
+		} else {
+			if (!saveSetting("abs2_saisie_multi_type_sous_responsabilite_etab", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_sous_responsabilite_etab !";
 			}
 		}
 //		if (isset($_POST['abs2_modification_saisie_sans_limite'])) {
@@ -293,16 +313,26 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 
 <h2>Configuration des saisie</h2>
 <p>
-	<input type="checkbox" id="abs2_saisie_par_defaut_pas_dans_le_bulletin" name="abs2_saisie_par_defaut_pas_dans_le_bulletin" value="y"
-	<?php if (getSettingValue("abs2_saisie_par_defaut_pas_dans_le_bulletin")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_par_defaut_pas_dans_le_bulletin">&nbsp;Considérer l'élève sous la responsabilitée de l'établissement pour les absences saisie par defaut (sans type).
-	    Donc ces saisies ne seront pas comptées dans les bulletins</label>
+	<input type="checkbox" id="abs2_saisie_par_defaut_sans_manquement" name="abs2_saisie_par_defaut_sans_manquement" value="y"
+	<?php if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_saisie_par_defaut_sans_manquement">&nbsp;Dans le cas d'une saisie sans type, considérer que l'élève ne manque pas a ses obligations.
+	   (Donc ces saisies ne seront pas comptées dans les bulletins)</label>
 </p>
 <p>
-	<input type="checkbox" id="abs2_saisie_multi_type_non_comptees_dans_le_bulletin" name="abs2_saisie_multi_type_non_comptees_dans_le_bulletin" value="y"
-	<?php if (getSettingValue("abs2_saisie_multi_type_non_comptees_dans_le_bulletin")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_multi_type_non_comptees_dans_le_bulletin">&nbsp;Dans le cas d'une saisie avec plusieurs types contradictoires, considérer l'élève sous la responsabilitée de l'établissement.
+	<input type="checkbox" id="abs2_saisie_multi_type_sans_manquement" name="abs2_saisie_multi_type_sans_manquement" value="y"
+	<?php if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_saisie_multi_type_sans_manquement">&nbsp;Dans le cas d'une saisie avec plusieurs types contradictoires, considérer que l'élève ne manqe pas a ses obligations.
 	   (Donc ces saisies ne seront pas comptées dans les bulletins)</label>
+</p>
+<p>
+	<input type="checkbox" id="abs2_saisie_par_defaut_sous_responsabilite_etab" name="abs2_saisie_par_defaut_sous_responsabilite_etab" value="y"
+	<?php if (getSettingValue("abs2_saisie_par_defaut_sous_responsabilite_etab")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_saisie_par_defaut_sous_responsabilite_etab">&nbsp;Dans le cas d'une saisie sans type, considérer que l'élève est par défaut sous la responsabilité de l'établissement.</label>
+</p>
+<p>
+	<input type="checkbox" id="abs2_saisie_multi_type_sous_responsabilite_etab" name="abs2_saisie_multi_type_sous_responsabilite_etab" value="y"
+	<?php if (getSettingValue("abs2_saisie_multi_type_sous_responsabilite_etab")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_saisie_multi_type_sous_responsabilite_etab">&nbsp;Dans le cas d'une saisie avec plusieurs types contradictoires, considérer que l'élève est par défaut sous la responsabilité de l'établissement.</label>
 </p>
 
 <!--h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>

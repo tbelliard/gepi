@@ -195,7 +195,21 @@ if (isFiltreRechercheParam('filter_discipline')) {
     $query->filterByIdSIncidents(-1, Criteria::NOT_EQUAL);
 }
 if (isFiltreRechercheParam('filter_type')) {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByATypeId(getFiltreRechercheParam('filter_type'))->endUse()->endUse();
+    if (getFiltreRechercheParam('filter_type') == 'SANS') {
+	$query->groupById()
+	    ->useJTraitementSaisieEleveQuery('', Criteria::LEFT_JOIN)
+	    ->useAbsenceEleveTraitementQuery('', Criteria::LEFT_JOIN)
+	    ->endUse()->endUse()
+	    ->withColumn('group_concat(a_traitements.A_TYPE_ID)', 'a_types_id_concat');
+	$criteria = new Criteria();
+	$c = $criteria->getNewCriterion('a_types_id_concat', null, Criteria::ISNULL);
+	$query->addHaving($c);
+    } else {
+	$query->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByATypeId(getFiltreRechercheParam('filter_type'))->endUse()->endUse();
+    }
+}
+if (isFiltreRechercheParam('filter_manqement_obligation')) {
+    $query->filterManquementObligationPresence(getFiltreRechercheParam('filter_manqement_obligation')=='y');
 }
 
 $order = getFiltreRechercheParam('order');
@@ -599,8 +613,11 @@ echo '<th>';
 echo 'type';
 //echo '</nobr>';
 echo '<br />';
-echo ("<select name=\"filter_type\" onchange='submit()' style='width:120px;'>");
+echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value=''></option>\n";
+echo "<option value='SANS'";
+if (getFiltreRechercheParam('filter_type') == 'SANS') echo " selected='selected' ";
+echo ">SANS TYPE</option>\n";
 foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
 	if (getFiltreRechercheParam('filter_type') === (string) $type->getId()) echo " SELECTED ";
@@ -609,6 +626,30 @@ foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
 	echo "</option>\n";
 }
 echo "</select>";
+echo '</th>';
+
+//en tete filtre manqement_obligation
+echo '<th>';
+echo ("<select name=\"filter_manqement_obligation\" onchange='submit()'>");
+echo "<option value=''";
+if (isFiltreRechercheParam('filter_manqement_obligation') && getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "checked='checked'";}
+echo "></option>\n";
+echo "<option value='y' ";
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'y') {echo "selected'";}
+echo ">oui</option>\n";
+echo "<option value='n' ";
+if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected'";}
+echo ">non</option>\n";
+echo "</select>";
+echo '<br/>manquement obligation scolaire';
+echo '</th>';
+
+//en tete filtre sous_responsabilite_etablissement
+echo '<th>';
+//echo '<input type="checkbox" value="y" name="filter_sous_responsabilite_etablissement" onchange="submit()"';
+//if (isFiltreRechercheParam('filter_sous_responsabilite_etablissement') && getFiltreRechercheParam('filter_sous_responsabilite_etablissement') == 'y') {echo "checked='checked'";}
+//echo '/><br/>sous resp. etab.';
+echo 'sous resp. etab.';
 echo '</th>';
 
 //en tete filtre date traitement
@@ -766,7 +807,7 @@ echo '<br/>';
 echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_discipline" onchange="submit()"';
 if (isFiltreRechercheParam('filter_discipline') && getFiltreRechercheParam('filter_discipline') == 'y') {echo "checked='checked'";}
-echo '/></span><br/> Rapport d\'incident';
+echo '/></span><br/>incident';
 echo '</th>';
 
 echo '</tr>';
@@ -933,6 +974,22 @@ foreach ($results as $saisie) {
     echo '</td>';
 
     echo '<td>';
+    if ($saisie->getManquementObligationPresence()) {
+	echo 'oui';
+    } else {
+	echo 'non';
+    }
+    echo '</td>';
+
+    echo '<td>';
+    if ($saisie->getSousResponsabiliteEtablissement()) {
+	echo 'oui';
+    } else {
+	echo 'non';
+    }
+    echo '</td>';
+
+    echo '<td>';
     foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 	echo "<table width='100%'><tr><td>";
 	echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%;'> ";
@@ -947,7 +1004,7 @@ foreach ($results as $saisie) {
     echo '</td>';
 
     echo '<td>';
-    $saisies_conflit = $saisie->getSaisiesContradictoires();
+    $saisies_conflit = $saisie->getSaisiesContradictoiresManquementObligation();
     foreach ($saisies_conflit as $saisie) {
 	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style=''> ";
 	echo $saisie->getId();
