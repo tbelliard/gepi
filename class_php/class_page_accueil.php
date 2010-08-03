@@ -722,11 +722,19 @@ class class_page_accueil {
 			"Cet outil permet la consultation/gestion de l'emploi du temps.");
 
 	if ($_SESSION["statut"] == 'responsable') {
+	  if (getSettingValue("autorise_edt_eleve")=="y"){
 		// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
 	  $tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur);
 	  $this->creeNouveauItem("/edt_organisation/edt_eleve.php?login_edt=".$tab_tmp_ele[0],
 			  "Emploi du temps",
 			  "Cet outil permet la consultation de l'emploi du temps de votre enfant.");
+	  }
+	}else if($_SESSION["statut"] == 'eleve'){
+	  if (getSettingValue("autorise_edt_eleve")=="y"){
+		$this->creeNouveauItem("/edt_organisation/edt_eleve.php",
+			  "Emploi du temps",
+			  "Cet outil permet la consultation de votre emploi du temps.");
+	  }
 	}else{
 	  $this->creeNouveauItem("/edt_organisation/edt_eleve.php",
 			  "Emploi du temps",
