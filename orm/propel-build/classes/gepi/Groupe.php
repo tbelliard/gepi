@@ -121,7 +121,7 @@ class Groupe extends BaseGroupe {
 			$str = $this->getDescription();
 			$str .= "&nbsp;(";
 			foreach ($this->getClasses() as $classe) {
-				$str .= $classe->getClasse() . ",&nbsp;";
+				$str .= $classe->getNom() . ",&nbsp;";
 			}
 			$str = substr($str, 0, -7);
 			$str.= ")";

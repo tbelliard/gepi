@@ -95,13 +95,7 @@ foreach ($utilisateur->getGroupes() as $group) {
 	echo "<option id='colonne_gauche_select_group_option_".$group->getId()."' value='".$group->getId()."'";
 	if ($current_group->getId() == $group->getId()) echo " SELECTED ";
 	echo ">";
-	echo $group->getDescription() . "&nbsp;-&nbsp;(";
-	$str = null;
-	foreach ($group->getClasses() as $classe) {
-		$str .= $classe->getClasse() . ", ";
-	}
-	$str = substr($str, 0, -2);
-	echo $str . ")&nbsp;\n";
+	echo $group->getDescriptionAvecClasses();
 	echo "</option>\n";
 }
 echo "</select>&nbsp;";
