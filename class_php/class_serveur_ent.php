@@ -31,8 +31,12 @@
  * @author Julien Jocal
  * @license GPL
  */
+$traite_anti_inject = 'no'; // pour éviter les échappements dans les tableaux sérialisés
+require_once("../lib/initialisationsPropel.inc.php");
+//require_once("../lib/initialisations.inc.php");
 
-class serveur_parents_ent {
+
+class serveur_ent {
 
   /**
    * Définit le type de demande (utilise le nom des méthodes autorisées)
@@ -79,28 +83,42 @@ class serveur_parents_ent {
   public function __construct(){
     // On initialise toutes nos propriétés
     $this->setData();
+    // Vérification de la clé
+    $this->verifKey('4567123');
     // On intègre les fichiers d'initialisation de GEPI
-    require_once("../lib/initialisationsPropel.inc.php");
-    require_once("../lib/initialisations.inc.php");
+    //require_once("../lib/initialisationsPropel.inc.php");
+    //require_once("../lib/initialisations.inc.php");
 
     // On vérifie que la demande est disponible
     if (!in_array($this->_demande, $this->getMethodesAutorisees())){
+      $this->writeLog(__METHOD__, 'Méthode inexistante:'.$this->_demande, ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
       Die('Méthode inexistante !');
     }
     // On vérifie si les logins des enfants envoyés existent bien dans GEPI
     $reponse = array(); // permet de stocker les informations sur les enfants (tableau d'objets propel)
-    foreach ($this->_enfants as $enfants){
+
+    foreach (unserialize($this->_enfants) as $enfants){
       // On cherche si cet enfant existe
       $enf = EleveQuery::create()->filterByLogin($enfants)->find();
+
       if ($enf->isEmpty()){
         // Ce login n'existe pas dans cette base
+        $this->writeLog(__METHOD__, 'login enfant inexistant : ' . $enfants, ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
         $reponse[] = 'inexistant';
       }else{
-        $reponse[] = $enf;
+        // on recherche la réponse pour ce login
+        $arenvoyer = $this->{$this->_demande}($enf[0]);
+        $reponse[$enf[0]->getLogin()] = $arenvoyer;
       }
 
     } // foreach
-    $this->_enfants = $reponse; // Désormais on a les objets propel de ces enfants, reste à les manipuler
+    //$this->_enfants = $reponse; // Désormais on a les objets propel de ces enfants, reste à les manipuler
+
+    if (is_array($reponse)){
+      echo serialize($reponse);
+    }else{
+      echo serialize(array('erreur'=>'service absent'));
+    }
 
   }
 
@@ -125,7 +143,7 @@ class serveur_parents_ent {
       // On vérifie que les données demandées existent
       $this->_etab      = (array_key_exists('etab', $_POST)) ? $_POST['etab'] : null;
       $this->_enfants   = (array_key_exists('enfants', $_POST)) ? $_POST['enfants'] : null;
-      $this->_api_key   = (array_key_exists('api_key', $_POST)) ? $_POST['api_key'] : null;
+      $this->_api_key   = (array_key_exists('api_key', $_POST)) ? $_POST['api_key'] : 'false';
       $this->_demande   = (array_key_exists('demande', $_POST)) ? $_POST['demande'] : null;
       $this->_hash      = (array_key_exists('hash', $_POST)) ? $_POST['hash'] : null;
       $this->_login     = (array_key_exists('login', $_POST)) ? $_POST['login'] : null;
@@ -136,7 +154,7 @@ class serveur_parents_ent {
   private function verifKey($key){
     if ($this->_api_key != $key){
       $this->writeLog(__METHOD__, 'La clé n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
-      Die('la clé est obsolète !');
+      Die('la clé est obsolète : ' . $this->_api_key . '|+|' . $key);
     }
   }
   /**
@@ -161,11 +179,25 @@ class serveur_parents_ent {
   /**
    * Renvoie la liste des devoirs à faire pour un élève (en fonction du login de l'élève)
    *
+   * @todo Pour le moment, on renvoie pour chaque matière le devoir le plus éloigné dans le temps, il faudrait renvoyer tous les devoirs dont la date est postérieure
    * @param string $_login
    * @return array Liste des devoirs à faire du cdt de l'élève
    */
-  public function cdtDevoirsEleve($_login){
-    return array();
+  public function cdtDevoirsEleve(eleve $_eleve){
+    $var = array();
+
+    foreach ($_eleve->getGroupes() as $groupes) {
+      $devoirs = $groupes->getCahierTexteTravailAFairesJoinUtilisateurProfessionnel();
+      if (!$devoirs->isEmpty()){
+        foreach ($devoirs as $devoir){
+          $dev = array($devoir->getDateCt() => strip_tags($devoir->getContenu(), 'div'));
+        }
+        $var[$groupes->getDescription()] = $dev;
+      }else{
+        $var[$groupes->getDescription()] = array(''=>'Regardez le cahier de textes de l\'enfant.');
+      }
+    }
+    return $var;
   }
 
   /**
@@ -184,9 +216,17 @@ class serveur_parents_ent {
    * @param string $_login login de l'élève
    * @return array Liste des professeurs de l'élève
    */
-  public function professeursEleve($_login){
-    
-    return array();
+  public function professeursEleve(eleve $eleve){
+    $reponse = array();
+    if (!is_object($eleve)){
+      $this->writeLog(__METHOD__, 'objet inexistant', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
+      Die('Erreur prof-eleve');
+    }else{
+      foreach ($eleve->getGroupes() as $groupes) {
+        $reponse[] = $groupes->getUtilisateurProfessionnels();
+      }
+    }
+    return $reponse;
   }
 
   /**
@@ -214,5 +254,5 @@ class serveur_parents_ent {
 
   }
 }
-$test = new serveur_parents_ent();
+$test = new serveur_ent();
 ?>
