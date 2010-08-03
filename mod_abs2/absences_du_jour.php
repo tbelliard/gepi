@@ -124,7 +124,11 @@ echo "<div class='css-panes' id='containDiv'>\n";
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 
 //on affiche une boite de selection avec les groupes et les creneaux
-$groupe_col = $utilisateur->getGroupes();
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $groupe_col = GroupeQuery::create()->find();
+} else {
+    $groupe_col = $utilisateur->getGroupes();
+}
 if (!$groupe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
@@ -147,7 +151,11 @@ if (!$groupe_col->isEmpty()) {
 }
 
 //on affiche une boite de selection avec les classe
-$classe_col = ClasseQuery::create()->distinct()->find();
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $classe_col = ClasseQuery::create()->find();
+} else {
+    $classe_col = $utilisateur->getClasses();
+}
 if (!$classe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
@@ -167,11 +175,17 @@ if (!$classe_col->isEmpty()) {
 	echo "</p>\n";
     echo "</form>";
     echo "</td>";
+} else {
+    echo '<td>Aucune classe avec élève affecté n\'a été trouvée</td>';
 }
 
 
 //on affiche une boite de selection avec les aid et les creneaux
-$aid_col = $utilisateur->getAidDetailss();
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $aid_col = AidDetailsQuery::create()->find();
+} else {
+    $aid_col = $utilisateur->getAidDetailss();
+}
 if (!$aid_col->isEmpty()) {
     echo "<td style='border : 1px solid;'>";
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";

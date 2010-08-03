@@ -113,7 +113,17 @@ $dt_debut = $dt_date_absence_eleve;
 $dt_debut->setTime(0,0,0);
 $dt_fin = clone $dt_date_absence_eleve;
 $dt_fin->setTime(23,59,59);
-$classe_col = ClasseQuery::create()->orderByNom()->find();
+
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $classe_col = ClasseQuery::create()->find();
+} else {
+    $classe_col = $utilisateur->getClasses();
+}
+if ($classe_col->isEmpty()) {
+    echo '	<tr>
+			<td colspan="'.($creneau_col->count() + 2).'">Aucune classe avec élève affecté n\'a été trouvée</td>
+		</tr>';
+}
 foreach($classe_col as $classe) {
 	echo '
 		<tr>

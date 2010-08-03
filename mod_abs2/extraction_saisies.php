@@ -145,7 +145,10 @@ if ($affichage != 'ods') {// on affiche pas de html
 		    echo "</option>\n";
 	    }
 	    echo "</select> ";
-    }?>
+    } else {
+	echo 'Aucune classe avec élève affecté n\'a été trouvée';
+    }
+    ?>
     <br/>
     Type :
     <select style="width:200px" name="type_extrait">
