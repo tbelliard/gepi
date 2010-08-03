@@ -254,8 +254,14 @@ if ($type_selection == 'id_eleve') {
 ?>
 	<div class="centre_tout_moyen" style="width : 900px;">
 			    <!-- <p class="expli_page choix_fin"> -->
-				    <form action="./absences_du_jour.php" method="post" style="width: 100%;">
+				    <form action="./absences_du_jour.php" name="absences_du_jour" method="post" style="width: 100%;">
 			    <p class="expli_page choix_fin">
+				<input type="hidden" name="type_selection" value="<?php echo $type_selection?>"/>
+				<input type="hidden" name="nom_eleve" value="<?php echo $nom_eleve?>"/>
+				<input type="hidden" name="id_eleve" value="<?php echo $id_eleve?>"/>
+				<input type="hidden" name="id_groupe" value="<?php echo $id_groupe?>"/>
+				<input type="hidden" name="id_classe" value="<?php echo $id_classe?>"/>
+				<input type="hidden" name="id_aid" value="<?php echo $id_aid?>"/>
 				    <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
 				    <script type="text/javascript">
 					Calendar.setup({
@@ -267,8 +273,17 @@ if ($type_selection == 'id_eleve') {
 					});
 				    </script>
 				    <button type="submit">Changer</button>
-			</p>
-				    </form>
+				    <button onclick="
+					document.absences_du_jour.type_selection.value='';
+					document.absences_du_jour.nom_eleve.value='';
+					document.absences_du_jour.id_eleve.value='';
+					document.absences_du_jour.id_groupe.value='';
+					document.absences_du_jour.id_classe.value='';
+					document.absences_du_jour.id_aid.value='';
+					document.absences_du_jour.date_absence_eleve.value='';
+					return true;">Réinitialiser les filtres</button>
+			    </p>
+			    </form>
 				<!--     <br/> -->
 			<!-- </p> -->
 <?php if (!$eleve_col->isEmpty()) { ?>
@@ -276,12 +291,6 @@ if ($type_selection == 'id_eleve') {
 			  <p>
 			<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>
 			 
-<?php $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
-if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
-    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-    echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
-    echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
-}?>
  </p>
     <!-- Afichage du tableau de la liste des élèves -->
     <!-- <table style="text-align: left; width: 600px;" border="0" cellpadding="0" cellspacing="1"> -->
