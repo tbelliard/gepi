@@ -65,194 +65,182 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_
 $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? $_GET["id_aid"] :NULL);
 $id_creneau = isset($_POST["id_creneau"]) ? $_POST["id_creneau"] :(isset($_GET["id_creneau"]) ? $_GET["id_creneau"] :NULL);
 $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cours"]) ? $_GET["id_cours"] :NULL);
+$type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(isset($_GET["type_selection"]) ? $_GET["type_selection"] : NULL);
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :NULL;
 $total_eleves = isset($_POST["total_eleves"]) ? $_POST["total_eleves"] :(isset($_GET["total_eleves"]) ? $_GET["total_eleves"] :0);
-$heure_debut_all = isset($_POST["heure_debut_all"]) ? $_POST["heure_debut_all"] :(isset($_GET["heure_debut_all"]) ? $_GET["heure_debut_all"] :NULL);
-$heure_fin_all = isset($_POST["heure_fin_all"]) ? $_POST["heure_fin_all"] :(isset($_GET["heure_fin_all"]) ? $_GET["heure_fin_all"] :NULL);
+$heure_debut_appel = isset($_POST["heure_debut_appel"]) ? $_POST["heure_debut_appel"] :(isset($_GET["heure_debut_appel"]) ? $_GET["heure_debut_appel"] :NULL);
+$heure_fin_appel = isset($_POST["heure_fin_appel"]) ? $_POST["heure_fin_appel"] :(isset($_GET["heure_fin_appel"]) ? $_GET["heure_fin_appel"] :NULL);
 
 $message_enregistrement = "";
 
-//initialisation des variable
-if ($id_groupe != null) {
-    if (GroupeQuery::create()->findPk($id_groupe) == null) {
-	$message_enregistrement .= "Probleme avec le parametre id_groupe<br/>";
-	$id_groupe = null;
+//initialisation des variables
+$current_cours = null;
+$current_classe = null;
+$current_groupe = null;
+$current_aid = null;
+$current_creneau = null;
+
+if ($type_selection == 'id_cours') {
+    if (getSettingValue("autorise_edt_tous") != 'y') {
+	$message_enregistrement .= "<span style='color :red'>Erreur : un cours a été spécifié mais le module edt est désactivé</span><br/>";
+    }else {
+	$current_cours = EdtEmplacementCoursQuery::create()->findPk($id_cours);
+	if ($current_cours != null) {
+	    //$id_creneau = $current_cours->getIdDefiniePeriode();
+	    $current_creneau = $current_cours->getEdtCreneau();
+	    $current_groupe = $current_cours->getGroupe();
+	    $current_aid = $current_cours->getAidDetails();
+	} else {
+	    $message_enregistrement .= "<span style='color :red'>Erreur : Probleme avec le parametre id_cours</span><br/>";
+	}
     }
-    $id_classe = null;
-    $id_aid = null;
-    $id_cours = null;
-}
-if ($id_classe != null) {
-    if (ClasseQuery::create()->findPk($id_classe) == null) {
-	$message_enregistrement .= "Probleme avec le parametre id_classe<br/>";
-	$id_classe = null;
-    }
-    $id_groupe = null;
-    $id_aid = null;
-    $id_cours = null;
-}
-if ($id_aid != null) {
-    if (AidDetailsQuery::create()->findPk($id_aid) == null) {
-	$message_enregistrement .= "Probleme avec le parametre id_aid<br/>";
-	$id_aid = null;
-    }
-    $id_groupe = null;
-    $id_classe = null;
-    $id_cours = null;
-}
-if ($id_creneau != null) {
+} else {
     $current_creneau = EdtCreneauQuery::create()->findPk($id_creneau);
     if ($current_creneau == null) {
-	$message_enregistrement .= "Probleme avec le parametre id_creneau<br/>";
-	$id_creneau = null;
+	$message_enregistrement .= "<span style='color :red'>Erreur : Probleme avec le parametre id_creneau</span><br/>";
     }
 }
 
-if ($id_cours != null) {
-    $current_cours = EdtEmplacementCoursQuery::create()->findPk($id_cours);
-    if ($current_cours != null) {
-	//$id_creneau = $current_cours->getIdDefiniePeriode();
-	$id_groupe = $current_cours->getIdGroupe();
-	$id_aid = $current_cours->getIdAid();
+if ($type_selection == 'id_groupe') {
+    $current_groupe = GroupeQuery::create()->findPk($id_groupe);
+    if ($current_groupe == null) {
+	$message_enregistrement .= "<span style='color :red'>Erreur : Probleme avec le parametre id_groupe</span><br/>";
+    }
+} elseif ($type_selection == 'id_classe') {
+    $current_classe = ClasseQuery::create()->findPk($id_classe);
+    if ($current_classe == null) {
+	$message_enregistrement .= "<span style='color :red'>Erreur : Probleme avec le parametre id_classe</span><br/>";
+    }
+} elseif ($type_selection == 'id_aid') {
+    $current_aid = AidDetailsQuery::create()->findPk($id_aid);
+    if ($current_aid == null) {
+	$message_enregistrement .= "<span style='color :red'>Erreur : Probleme avec le parametre id_aid</span><br/>";
+    }
+}
+
+$id_groupe = null;
+$id_classe = null;
+$id_aid = null;
+$id_creneau = null;
+$id_cours = null;
+if ($current_groupe != null) {$id_groupe = $current_groupe->getId();}
+if ($current_classe != null) {$id_classe = $current_classe->getId();}
+if ($current_aid != null) {$id_aid = $current_aid->getId();}
+if ($current_creneau != null) {$id_creneau = $current_creneau->getIdDefiniePeriode();}
+if ($current_cours != null) {$id_cours = $current_cours->getIdCours();}
+
+//test autorisation de saisie du professeur
+if ($current_cours == null && $utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_hors_cours")!='y') {
+    //on autorise uniquement les saisies de classe dont le prof est pp
+    if ($current_classe != null && $utilisateur->getClasses()->contains($current_classe)) {
+	//ok
     } else {
-	$message_enregistrement .= "Probleme avec le parametre id_cours<br/>";
-	$id_cours = null;
+	$message_enregistrement .= "<span style='color :red'>Erreur : Il faut obligatoirement saisir un cours de l'emploi du temps</span><br/>";
     }
-    $id_classe = null;
-    $id_creneau = null;
 }
 
-if ($id_groupe == '') $id_groupe = null;
-if ($id_classe == '') $id_classe = null;
-if ($id_aid == '') $id_aid = null;
+
+if ($date_absence_eleve != null) {
+    try {
+	$dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
+    } catch (Exception $x) {
+	$message_enregistrement .= "<span style='color :red'>Erreur : Mauvais format de date d'absence.</span><br/>";
+    }
+} else {
+    $message_enregistrement .= "<span style='color :red'>Erreur : La date d'absence doit etre précisée.</span><br/>";
+}
+if ($message_enregistrement != '') {
+	//il y a une erreur, on arrete la saisie
+	include("saisir_groupe.php");
+	die();
+}
+if ($heure_debut_appel != null) {
+    try {
+	$heure_debut_appel = new DateTime($heure_debut_appel);
+	$dt_date_debut_appel = clone $dt_date_absence_eleve;
+	$dt_date_debut_appel->setTime($heure_debut_appel->format('H'), $heure_debut_appel->format('i'));
+    } catch (Exception $x) {
+	$message_enregistrement .= "<span style='color :red'>Erreur : Mauvais format d'heure de debut de saisie.</span><br/>";
+    }
+} else {
+    $message_enregistrement .= "<span style='color :red'>Erreur : heure de debut de saisie non precisée.</span><br/>";
+}
+if ($heure_fin_appel != null) {
+    try {
+	$heure_fin_appel = new DateTime($heure_fin_appel);
+	$dt_date_fin_appel = clone $dt_date_absence_eleve;
+	$dt_date_fin_appel->setTime($heure_fin_appel->format('H'), $heure_fin_appel->format('i'));
+    } catch (Exception $x) {
+	$message_enregistrement .= "<span style='color :red'>Erreur : Mauvais format d'heure de fin de saisie.</span><br/>";
+    }
+} else {
+    $message_enregistrement .= "<span style='color :red'>Erreur : heure de fin de saisie non precisée.</span><br/>";
+}
+
+if ($id_groupe == null && $id_classe == null && $id_aid == null) {
+  	$message_enregistrement .= '<span style="color :red">Erreur : Il faut au moins une classe, une aid, un groupe pour faire un appel.</span><br/>';
+}
+if ($id_creneau == null && $id_cours == null) {
+  	$message_enregistrement .= '<span style="color :red">Erreur : Il faut au moins un creneau ou un cours  pour faire un appel.</span><br/>';
+}
+
+if ($message_enregistrement != '') {
+	//il y a une erreur, on arrete la saisie
+	include("saisir_groupe.php");
+	die();
+}
+
+//on enregistre le marqueur d'appel (saisie sans eleve)
+$message_erreur = '';
+$saisie = new AbsenceEleveSaisie();
+
+$saisie->setIdEdtCreneau($id_creneau);
+$saisie->setIdEdtEmplacementCours($id_cours);
+$saisie->setIdGroupe($id_groupe);
+$saisie->setIdClasse($id_classe);
+$saisie->setIdAid($id_aid);
+$saisie->setUtilisateurId($utilisateur->getPrimaryKey());
 
 //on verifie si l'utilisateur a le droit de saisir cela
-if ($utilisateur->getStatut() == 'professeur') {
-    if (getSettingValue("abs2_saisie_prof_decale_journee")!='y' && getSettingValue("abs2_saisie_prof_decale")!='y') {
-	$creneau_actuel = EdtCreneauPeer::retrieveEdtCreneauActuel();
-	if ($creneau_actuel == null || $creneau_actuel->getIdDefiniePeriode() != $id_creneau) {
-	    $message_enregistrement .=  $creneau_actuel->getIdDefiniePeriode();
-	    $message_enregistrement .=  " creneau : ".$id_creneau;
-	    $message_enregistrement .= "Saisie non autorisée hors du creneau en cours.<br/>";
-	}
+$message_erreur .= verif_debut_fin_saisie($dt_date_debut_appel, $dt_date_fin_appel, $utilisateur, $current_cours);
+//on vérifie en prime que l'appel est bien fait pendant l'heure en cours.
+if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale_journee")!='y' && getSettingValue("abs2_saisie_prof_decale")!='y') {
+    $now = new DateTime('now');
+    if ($dt_date_debut_appel > $now || $dt_date_fin_appel < $now) {
+	$message_erreur .= "Appel non autorisée et dehors des heures de cours dont on fait l'appel.<br/>";
     }
 }
+$saisie->setDebutAbs($dt_date_debut_appel);
+$saisie->setFinAbs($dt_date_fin_appel);
 
-$jours_actuel = date('d/m/Y');
-$creneau_actuel = EdtCreneauQuery::create()->findPk($id_creneau);
-
-//On va enregistrer une saisie sans eleve pour marquer le fait que l'appel a été effectué
-if (($id_groupe == null && $id_classe == null && $id_aid == null) || ($id_creneau == null && $id_cours == null) || ($date_absence_eleve == null)) {
-  	$message_enregistrement .= 'Il faut au moins une classe, une aid, un groupe ou un cours pour faire un appel de groupe, ainsi qu\'un creneau horaire et une date.';
-	//on arrete la saisie
-	include("saisir_groupe.php");
-	die();
+if ($message_erreur != '') {
+    $message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.$message_erreur.'</span>';
+    //on arrete la saisie
+    include("saisir_groupe.php");
+    die();
+} else if ($saisie->validate()) {
+    $saisie->save();
+    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Marqueur d'appel enregistré</a><br/>";
 } else {
-    $message_erreur = '';
-    $saisie = new AbsenceEleveSaisie();
-
-    $saisie->setIdEdtCreneau($id_creneau);
-    $saisie->setIdEdtEmplacementCours($id_cours);
-    $saisie->setIdGroupe($id_groupe);
-    $saisie->setIdClasse($id_classe);
-    $saisie->setIdAid($id_aid);
-    $saisie->setUtilisateurId($utilisateur->getPrimaryKey());
-
-    $dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
-    if ($heure_debut_all != null) {
-	try {
-	    $heure_debut_all = new DateTime($heure_debut_all);
-	} catch (Exception $x) {
-	    $message_erreur .= "Mauvais format d'heure de debut de saisie.<br/>";
-	}
-	$dt_date_absence_eleve->setTime($heure_debut_all->format('H'), $heure_debut_all->format('i'));
-    } else if ($id_creneau != null) {
-	$dt_date_absence_eleve->setTime($current_creneau->getHeuredebutDefiniePeriode('H'), $current_creneau->getHeuredebutDefiniePeriode('i'));
-    } elseif ($id_cours != null) {
-	$dt_date_absence_eleve->setTime($current_cours->getHeureDebut('H'), $current_cours->getHeureDebut('i'));
-    }
-    if ($utilisateur->getStatut() == 'professeur') {
-	if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
-	    if ($dt_date_absence_eleve->format('d/m/Y') != $jours_actuel) {
-		$message_erreur .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
-		continue;
-	    }
-	}
-	if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
-	   if ($creneau_actuel == null || $creneau_actuel->getHeuredebutDefiniePeriode('Hi') > $dt_date_absence_eleve->format('Hi')) {
-		$message_erreur .= "Debut de saisie hors creneau actuel non autorisée.<br/>";
-		continue;
-	   }
-	}
-    }
-    $saisie->setDebutAbs($dt_date_absence_eleve);
-
-
-    $date_fin = clone $dt_date_absence_eleve;
-    if ($heure_fin_all != null) {
-	try {
-	    $heure_fin_all = new DateTime($heure_fin_all);
-	} catch (Exception $x) {
-	    $message_erreur .= "Mauvais format d'heure de fin de saisie.<br/>";
-	}
-	$date_fin->setTime($heure_fin_all->format('H'), $heure_fin_all->format('i'));
-    } else if ($id_creneau != null) {
-	$date_fin->setTime($current_creneau->getHeurefinDefiniePeriode('H'), $current_creneau->getHeurefinDefiniePeriode('i'));
-    } elseif ($id_cours != null) {
-	$date_fin->setTime($current_cours->getHeureFin('H'), $current_cours->getHeureFin('i'));
-    }
-    if ($utilisateur->getStatut() == 'professeur') {
-	if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
-	    if ($date_fin->format('d/m/Y') != $jours_actuel) {
-		$message_erreur .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
-		continue;
-	    }
-	}
-	if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
-	   if ($creneau_actuel == null || $creneau_actuel->getHeuredebutDefiniePeriode('Hi') < $date_fin->format('Hi')) {
-		$message_erreur .= "Fin de saisie hors creneau actuel non autorisée.<br/>";
-		continue;
-	   }
-	}
-    }
-    $saisie->setFinAbs($date_fin);
-
-    if ($message_erreur != '') {
-	$message_enregistrement .= $message_erreur;
-	//on arrete la saisie
-	include("saisir_groupe.php");
-	die();
-    } else if ($saisie->validate()) {
-	$saisie->save();
-	$message_enregistrement .= "Saisie enregistrée.<br/>";
-    } else {
-	$no_br = true;
-	foreach ($saisie->getValidationFailures() as $erreurs) {
-	    $message_enregistrement .= $erreurs;
-	    if ($no_br) {
-		$no_br = false;
-	    } else {
-		$message_enregistrement .= '<br/>';
-	    }
-	}
-	//on arrete la saisie
-	include("saisir_groupe.php");
-	die();
-    }
+    //on arrete la saisie
+    $message_enregistrement .= '<span style="color :red">Erreur sur l\'enregistrement du marqueur d\'appel : '.format_verif_failures($saisie).'</span>';
+    include("saisir_groupe.php");
+    die();
 }
+
 
 
 for($i=0; $i<$total_eleves; $i++) {
 
     $id_eleve = $_POST['id_eleve_absent'][$i];
 
-    //on test si l'eleve est enregistré absent
+    //on test si l'eleve est coché absent
     if (!isset($_POST['active_absence_eleve'][$i]) &&
 	!(isset($_POST['commentaire_absence_eleve'][$i]) && $_POST['commentaire_absence_eleve'][$i] != null) &&
 	!(isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1) ) {
 	continue;
     }
-    //il faut au moins un eleve
+    //on cherche l'eleve
     $eleve = EleveQuery::create()->findPk($_POST['id_eleve_absent'][$i]);
     if ($eleve == null) {
 	$message_enregistrement .= "Probleme avec l'id eleve : ".$_POST['id_eleve_absent'][$i]."<br/>";
@@ -283,20 +271,6 @@ for($i=0; $i<$total_eleves; $i++) {
 	continue;
     }
     $date_debut->setTime($heure_debut->format('H'), $heure_debut->format('i'));
-    if ($utilisateur->getStatut() == 'professeur') {
-	if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
-	    if ($date_debut->format('d/m/Y') != $jours_actuel) {
-		$message_erreur_eleve[$id_eleve] .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
-		continue;
-	    }
-	}
-	if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
-	   if ($creneau_actuel == null || $creneau_actuel->getHeuredebutDefiniePeriode('Hi') > $date_debut->format('Hi')) {
-		$message_erreur_eleve[$id_eleve] .= "Debut de saisie hors creneau actuel non autorisée.<br/>";
-		continue;
-	   }
-	}
-    }
     $saisie->setDebutAbs($date_debut);
 
     try {
@@ -312,21 +286,8 @@ for($i=0; $i<$total_eleves; $i++) {
 	continue;
     }
     $date_fin->setTime($heure_fin->format('H'), $heure_fin->format('i'));
-    if ($utilisateur->getStatut() == 'professeur') {
-	if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
-	    if ($date_fin->format('d/m/Y') != $jours_actuel) {
-		$message_erreur_eleve[$id_eleve] .= "Saisie d'une date differente de la date courante non autorisée.<br/>";
-		continue;
-	    }
-	}
-	if (getSettingValue("abs2_saisie_prof_decale_journee") !='y' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
-	   if ($creneau_actuel == null || $creneau_actuel->getHeurefinDefiniePeriode('Hi') < $date_fin->format('Hi')) {
-		$message_erreur_eleve[$id_eleve] .= "Fin de saisie hors creneau actuel non autorisée.<br/>";
-		continue;
-	   }
-	}
-    }
     $saisie->setFinAbs($date_fin);
+    $message_erreur_eleve[$id_eleve] .= verif_debut_fin_saisie($date_debut, $date_fin, $utilisateur, $current_cours);
 
     $saisie->setUtilisateurId($utilisateur->getPrimaryKey());
 
@@ -344,38 +305,90 @@ for($i=0; $i<$total_eleves; $i++) {
 		    $saisie_discipline = true;
 		}
 	    } else {
-		$message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
+		$message_erreur_eleve[$id_eleve] .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	    }
 	} else {
-	    $message_enregistrement .= "Probleme avec l'id du type d'absence : ".$_POST['type_absence_eleve'][$i]."<br/>";
+	    $message_erreur_eleve[$id_eleve] .= "Probleme avec l'id du type d'absence : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	}
     }
 
-    if ($saisie->validate()) {
-	$eleve->getAbsenceEleveSaisies();
-	$eleve->addAbsenceEleveSaisie($saisie);
-	$saisie->save();
-	if (isset($traitement)) {
-	    $traitement->save();
-	}
-	$message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrée pour l'eleve : ".$eleve->getNom()."</a>";
-	if (isset($saisie_discipline) && $saisie_discipline == true) {
-	    $message_enregistrement .= " &nbsp;<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
-		$saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire pour l'eleve : ".$eleve->getNom()."</a>";
-	}
-	$message_enregistrement .= "<br/>";
+    if ($message_erreur_eleve[$id_eleve] != '') {
+	//il y a des erreurs, en evite l'enregistrement
     } else {
-	$no_br = true;
-	foreach ($saisie->getValidationFailures() as $erreurs) {
-	    $message_erreur_eleve[$id_eleve] .= $erreurs;
-	    if ($no_br) {
-		$no_br = false;
-	    } else {
-		$message_enregistrement .= '<br/>';
+	if ($saisie->validate()) {
+	    $eleve->getAbsenceEleveSaisies();
+	    $eleve->addAbsenceEleveSaisie($saisie);
+	    $saisie->save();
+	    if (isset($traitement)) {
+		$traitement->save();
 	    }
+	    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrée pour l'eleve : ".$eleve->getNom().' '.$eleve->getPrenom()."</a>";
+	    if (isset($saisie_discipline) && $saisie_discipline == true) {
+		$message_enregistrement .= " &nbsp;<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
+		    $saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire pour l'eleve : ".$eleve->getNom().' '.$eleve->getPrenom()."</a>";
+	    }
+	    $message_enregistrement .= "<br/>";
+	} else {
+	    $message_erreur_eleve[$id_eleve] .= format_verif_failures($saisie);
 	}
+    }
+
+    if ($message_erreur_eleve[$id_eleve] != '') {
+	$message_enregistrement .= '<span style="color :red">Erreur pour l\'enregistrement de l\'élève '.$eleve->getNom().' '.$eleve->getPrenom().' : </span>'.$message_erreur_eleve[$id_eleve];
     }
 }
 
 include("saisir_groupe.php");
+
+function verif_debut_fin_saisie(DateTime $dt_date_debut_appel, DateTime $dt_date_fin_appel, UtilisateurProfessionnel $utilisateur, $edt_cours) {
+    $message_enregistrement = '';
+    if ($dt_date_debut_appel === null) {
+	$message_enregistrement .= "Le début de saisie doit etre précisée.<br/>";
+	return $message_enregistrement;
+    }
+    if ($dt_date_fin_appel === null) {
+	$message_enregistrement .= "La fin de saisie doit etre précisée.<br/>";
+	return $message_enregistrement;
+    }
+    ////on verifie si l'utilisateur a le droit de saisir cela
+    if ($utilisateur->getStatut() == 'professeur') {
+	if ($dt_date_debut_appel->format('d/m/Y') != $dt_date_fin_appel->format('d/m/Y')) {
+	    $message_enregistrement .= "Saisie sur plusieurs jours non autorisée.<br/>";
+	}
+	//verification des autorisation de saisies decaleer
+	if (getSettingValue("abs2_saisie_prof_decale")!='y') {
+	    $now = new DateTime('now');
+	    if ($dt_date_debut_appel->format('d/m/Y') != $now->format('d/m/Y') || $dt_date_fin_appel->format('d/m/Y') != $now->format('d/m/Y')) {
+		$message_enregistrement .= "Saisie non autorisée autre que pour la journée courante.<br/>";
+	    }
+	}
+	if ($edt_cours != null && $utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_hors_cours")!='y') {
+	    //on verifie que le saisie ne deborde pas du cours
+	    if ($edt_cours->getHeureDebut('Hi') > $dt_date_debut_appel->format('Hi')) {
+		$message_enregistrement .= "L'heure de début de saisie ne peut pas être antérieure au cours.<br/>";
+	    }
+	    if ($edt_cours->getHeureFin('Hi') < $dt_date_fin_appel->format('Hi')) {
+		$message_enregistrement .= "L'heure de fin de saisie ne peut pas être postérieure au cours.<br/>";
+	    }
+	}
+    }
+    if ($dt_date_debut_appel > $dt_date_fin_appel) {
+	$message_enregistrement .= "L'heure de fin de saisie ne peut etre anterieure à l'heure de début.<br/>";
+    }
+    return $message_enregistrement;
+}
+
+function format_verif_failures($saisie) {
+	$message = '';
+	$no_br = true;
+	foreach ($saisie->getValidationFailures() as $erreurs) {
+	    $message .= $erreurs;
+	    if ($no_br) {
+		$no_br = false;
+	    } else {
+		$message .= '<br/>';
+	    }
+	}
+	return $message;
+}
 ?>

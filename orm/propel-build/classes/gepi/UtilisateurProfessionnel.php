@@ -575,7 +575,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 				// return empty collection
 				$this->initClasses();
 			} else {
-				$collClasses = ClasseQuery::create(null, $criteria)->distinct()->orderByNomComplet()->filterByUtilisateurProfessionnel($this)->find($con);
+				$collClasses = ClasseQuery::create(null, $criteria)->orderByNom()->orderByNomComplet()->filterByUtilisateurProfessionnel($this)->distinct()->find($con);
 				if (null !== $criteria) {
 					return $collClasses;
 				}

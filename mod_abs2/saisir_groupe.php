@@ -85,11 +85,23 @@ $current_cours = null;
 $current_classe = null;
 $current_groupe = null;
 $current_aid = null;
-if ($id_semaine == null || $id_semaine == -1) {
+$current_creneau = null;
+$current_semaine = null;
+if ($id_semaine == null || $id_semaine == -1 || !is_numeric($id_semaine) || $id_semaine > 53
+	|| ($utilisateur->getStatut() == 'professeur' && (getSettingValue("abs2_saisie_prof_decale")!='y'))) {
     $id_semaine = date('W');
 }
-if ($date_absence_eleve != null) {
-    $dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
+$current_semaine = EdtSemaineQuery::create()->findPk($id_semaine);
+
+if ($utilisateur->getStatut() == 'professeur' && (getSettingValue("abs2_saisie_prof_decale")!='y')) {
+    $dt_date_absence_eleve = new DateTime('now');
+} elseif ($date_absence_eleve != null) {
+    try {
+	$dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
+    } catch (Exception $x) {
+	echo "<span style='color :red'>Erreur : Mauvais format de date d'absence.</span><br/>";
+	$dt_date_absence_eleve = new DateTime('now');
+    }
 } else {
     $dt_date_absence_eleve = new DateTime('now');
 }
@@ -102,56 +114,51 @@ if ($type_selection == 'id_cours') {
     }
     $current_creneau = null;
     if ($current_cours != null) {
-	echo 'creneau trouve';
 	$current_creneau = $current_cours->getEdtCreneau();
 	$current_groupe = $current_cours->getGroupe();
 	$dt_date_absence_eleve = $current_cours->getDate($id_semaine);
     }
-} else if ($type_selection == 'id_groupe') {
+} else {
+    if ($id_creneau == null) {
+	$current_creneau = EdtCreneauPeer::retrieveEdtCreneauActuel();
+    } else {
+	$current_creneau = EdtCreneauPeer::retrieveByPK($id_creneau);
+    }
+}
+if ($type_selection == 'id_groupe') {
     if ($utilisateur->getStatut() == "professeur") {
 	$current_groupe = GroupeQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->findPk($id_groupe);
     } else {
 	$current_groupe = GroupeQuery::create()->findPk($id_groupe);
     }
-    $current_creneau = EdtCreneauQuery::create()->findPk($id_creneau);
 } else if ($type_selection == 'id_aid') {
     $current_aid = AidDetailsQuery::create()->findPk($id_aid);
-    $current_creneau = EdtCreneauQuery::create()->findPk($id_creneau);
 } else if ($type_selection == 'id_classe') {
     $current_classe = ClasseQuery::create()->findPk($id_classe);
-    $current_creneau = EdtCreneauQuery::create()->findPk($id_creneau);
-} else {
-    if ($id_groupe == null) {
+} else if ($type_selection != 'id_cours' && getSettingValue("autorise_edt_tous") == 'y'){//rien n'as ete selectionner, on va regarder le cours actuel
+    $current_cours = $utilisateur->getEdtEmplacementCours();
+    if ($current_cours != null) {
+	$current_creneau = $current_cours->getEdtCreneau();
+	$current_groupe = $current_cours->getGroupe();
+	$type_selection = 'id_cours';
+    } else {
 	if (isset($_SESSION['id_groupe_session'])) {
 	    $id_groupe =  $_SESSION['id_groupe_session'];
 	    $current_groupe = GroupeQuery::create()->filterByUtilisateurProfessionnel($utilisateur)->findPk($id_groupe);
+	    $type_selection = 'id_groupe';
 	}
     }
-
-    if ($id_creneau == null) {
-	$current_creneau = EdtCreneauPeer::retrieveEdtCreneauActuel();
-	if ($current_creneau != null) {
-	    $id_creneau = $current_creneau->getIdDefiniePeriode();
-	}
-    } else {
-	$current_creneau = EdtCreneauPeer::retrieveByPK($id_creneau);
-    }
-
-    if ($id_cours == null) {
-	$current_cours = $utilisateur->getEdtEmplacementCours();
-	if ($current_cours != null) {
-	    $current_creneau = $current_cours->getEdtCreneau();
-	    $current_groupe = $current_cours->getGroupe();
-	}
-    }
-
-    //on va utiliser le numero de semaine precisée pour regler la date
-    if ($id_semaine == null || $id_semaine == -1) {
-	$id_semaine = date('W');
-    }
-
 }
-
+$id_groupe = null;
+$id_classe = null;
+$id_aid = null;
+$id_creneau = null;
+$id_cours = null;
+if ($current_groupe != null) {$id_groupe = $current_groupe->getId();}
+if ($current_classe != null) {$id_classe = $current_classe->getId();}
+if ($current_aid != null) {$id_aid = $current_aid->getId();}
+if ($current_creneau != null) {$id_creneau = $current_creneau->getIdDefiniePeriode();}
+if ($current_cours != null) {$id_cours = $current_cours->getIdCours();}
 if ($cahier_texte != null && $cahier_texte != "") {
     $location = "Location: ../cahier_texte/index.php";
     if ($id_groupe != null) {
@@ -183,86 +190,47 @@ echo "<div class='css-panes' id='containDiv'>\n";
 
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 //on affiche une boite de selection avec les groupes et les creneaux
-if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $groupe_col = GroupeQuery::create()->find();
+if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
+	&& $utilisateur->getStatut() == "professeur") {
+	//le reglage specifie que le prof n'a pas le droit de saisir autre chose que son cours
+	//donc on affiche pas de selection, le cours est automatiquement selectionné
 } else {
-    $groupe_col = $utilisateur->getGroupes();
-}
-if (($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_prof_hors_cours")=='y') && !$groupe_col->isEmpty())) {
-    echo "<td style='border : 1px solid; padding : 10 px;'>";    
-	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
-	echo "<p>";
-    echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
-    echo ("Groupe : <select name=\"id_groupe\" class=\"small\">");
-    echo "<option value='-1'>choisissez un groupe</option>\n";
-    foreach ($groupe_col as $group) {
-	    echo "<option value='".$group->getId()."'";
-	    if ($id_groupe == $group->getId()) echo " selected='selected' ";
-	    echo ">";
-	    echo $group->getNameAvecClasses();
-	    echo "</option>\n";
+    if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+	$groupe_col = GroupeQuery::create()->find();
+    } else {
+	$groupe_col = $utilisateur->getGroupes();
     }
-    echo "</select>&nbsp;";
-
-    if (getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
-	echo ("<select name=\"id_creneau\" class=\"small\">");
-	$edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
-
-	echo "<option value='-1'>choisissez un creneau</option>\n";
-	foreach ($edt_creneau_col as $edt_creneau) {
-		if ($edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_PAUSE
-			|| $edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_REPAS) {
-		    continue;
-		}
-		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
+    if (!$groupe_col->isEmpty()) {
+	echo "<td style='border : 1px solid; padding : 10 px;'>";
+	    echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+	    echo "<p>";
+	echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
+	echo ("Groupe : <select name=\"id_groupe\" class=\"small\">");
+	echo "<option value='-1'>choisissez un groupe</option>\n";
+	foreach ($groupe_col as $group) {
+		echo "<option value='".$group->getId()."'";
+		if ($id_groupe == $group->getId()) echo " selected='selected' ";
 		echo ">";
-		echo $edt_creneau->getDescription();
+		echo $group->getNameAvecClasses();
 		echo "</option>\n";
 	}
 	echo "</select>&nbsp;";
-    } else {
-	$current_creneau = EdtCreneauPeer::retrieveEdtCreneauActuel();
-	if ($current_creneau != null) {
-	    echo " Creneau : ";
-	    echo $current_creneau->getDescription();
-	    echo "&nbsp;";
-	    echo '<input type="hidden" name="id_creneau" value="'.$id_creneau.'"/>';
-	} else {
-	    echo "Aucun creneau actuellement.&nbsp;";
-	}
-    }
-
-    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
-	echo '<input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
-	echo '
-	<script type="text/javascript">
-	    Calendar.setup({
-		inputField     :    "date_absence_eleve_1",     // id of the input field
-		ifFormat       :    "%d/%m/%Y",      // format of the input field
-		button         :    "date_absence_eleve_1",  // trigger for the calendar (button ID)
-		align          :    "Bl",           // alignment (defaults to "Bl")
-		singleClick    :    true
-	    });
-	</script>';
-    } else {
-	$dt_date_absence_eleve = new DateTime('now');
-	echo $dt_date_absence_eleve->format('d/m/Y');
-    }
-    echo '<button type="submit">Afficher les élèves</button>';
+	format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve);
+	echo '<button type="submit">Afficher les élèves</button>';
 	echo "</p>";
-    echo "</form>";
-    echo "</td>";
+	echo "</form>";
+	echo "</td>";
+    }
 }
 
-//on affiche une boite de selection avec les classes
 if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
     $classe_col = ClasseQuery::create()->find();
 } else {
     $classe_col = $utilisateur->getClasses();
 }
+
 if (!$classe_col->isEmpty()) {
-    echo "<td style='border : 1px solid; padding : 10 px;'>";    
+    echo "<td style='border : 1px solid; padding : 10 px;'>";
 	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>";
     echo '<input type="hidden" name="type_selection" value="id_classe"/>';
@@ -276,195 +244,129 @@ if (!$classe_col->isEmpty()) {
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
-
-    if ($utilisateur->getStatut() != "professeur" || getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
-	echo ("<select name=\"id_creneau\" class=\"small\">");
-	$edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
-
-	echo "<option value='-1'>choisissez un creneau</option>\n";
-	foreach ($edt_creneau_col as $edt_creneau) {
-	    //$edt_creneau = new EdtCreneau();
-		if ($edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_PAUSE
-			|| $edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_REPAS) {
-		    continue;
-		}
-		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
-		echo ">";
-		echo $edt_creneau->getDescription();
-		echo "</option>\n";
-	}
-	echo "</select>&nbsp;";
-    } else {
-	$current_creneau = EdtCreneauPeer::retrieveEdtCreneauActuel();
-	if ($current_creneau != null) {
-	    echo " Creneau : ";
-	    echo $current_creneau->getDescription();
-	    echo "&nbsp;";
-	    echo '<input type="hidden" name="id_creneau" value="'.$id_creneau.'"/>';
-	} else {
-	    echo "Aucun creneau actuellement.&nbsp;";
-	}
-    }
-
-    echo '<input size="8" id="date_absence_eleve_2" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
-    echo '
-    <script type="text/javascript">
-	Calendar.setup({
-	    inputField     :    "date_absence_eleve_2",     // id of the input field
-	    ifFormat       :    "%d/%m/%Y",      // format of the input field
-	    button         :    "date_absence_eleve_2",  // trigger for the calendar (button ID)
-	    align          :    "Bl",           // alignment (defaults to "Bl")
-	    singleClick    :    true
-	});
-    </script>';
+    format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve);
     echo '<button type="submit">Afficher les élèves</button>';
-	echo "</p>";
+    echo "</p>";
     echo "</form>";
     echo "</td>";
 }
 
-if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $aid_col = AidDetailsQuery::create()->find();
+
+if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
+	&& $utilisateur->getStatut() == "professeur") {
+	//le reglage specifie que le prof n'a pas le droit de saisir autre chose que son cours
+	//donc on affiche pas de selection, le cours est automatiquement selectionné
 } else {
-    $aid_col = $utilisateur->getAidDetailss();
+    if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+	$aid_col = AidDetailsQuery::create()->find();
+    } else {
+	$aid_col = $utilisateur->getAidDetailss();
+    }
+    //on affiche une boite de selection avec les aid et les creneaux
+    if (!$aid_col->isEmpty()) {
+	echo "<td style='border : 1px solid;'>";
+	    echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+	    echo "<p>";
+	echo '<input type="hidden" name="type_selection" value="id_aid"/>';
+	echo ("Aid : <select name=\"id_aid\" class=\"small\">");
+	echo "<option value='-1'>choisissez une aid</option>\n";
+	foreach ($aid_col as $aid) {
+		echo "<option value='".$aid->getPrimaryKey()."'";
+		if ($id_aid == $aid->getPrimaryKey()) echo " selected='selected' ";
+		echo ">";
+		echo $aid->getNom();
+		echo "</option>\n";
+	}
+	echo "</select>&nbsp;";
+	format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve);
+	echo '<button type="submit">Afficher les élèves</button>';
+	echo "</p>";
+	echo "</form>";
+	echo "</td>";
+    }
 }
-//on affiche une boite de selection avec les aid et les creneaux
-if (($utilisateur->getStatut() != "professeur" || (getSettingValue("abs2_saisie_prof_hors_cours")=='y') && !$aid_col->isEmpty())) {
-    echo "<td style='border : 1px solid;'>";    
+
+
+if (getSettingValue("abs2_saisie_prof_decale_journee")!='y'
+	&& getSettingValue("abs2_saisie_prof_decale")!='y'
+	&& $utilisateur->getStatut() == "professeur") {
+	//le reglage specifie que le prof n'a pas le droit de saisir autre chose que son cours
+	//donc on affiche pas de selection, le cours est automatiquement selectionné
+} else if (getSettingValue("autorise_edt_tous") != 'y') {
+    //edt desactivé
+} else {
+    //on affiche une boite de selection avec les cours
+    if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+	$edt_cours_col = EdtEmplacementCoursQuery::create()->find();
+    } else {
+	$edt_cours_col = $utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle();
+    }
+    if (!$edt_cours_col->isEmpty()) {
+	echo "<td style='border : 1px solid;'>";
 	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
-	echo "<p>";
-    echo '<input type="hidden" name="type_selection" value="id_aid"/>';
-    echo ("Aid : <select name=\"id_aid\" class=\"small\">");
-    echo "<option value='-1'>choisissez une aid</option>\n";
-    foreach ($aid_col as $aid) {
-	    echo "<option value='".$aid->getPrimaryKey()."'";
-	    if ($id_aid == $aid->getPrimaryKey()) echo " selected='selected' ";
-	    echo ">";
-	    echo $aid->getNom();
-	    echo "</option>\n";
-    }
-    echo "</select>&nbsp;";
-    
-    if ($utilisateur->getStatut() != "professeur" || getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
-	echo ("<select name=\"id_creneau\" class=\"small\">");
-	$edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
-
-	echo "<option value='-1'>choisissez un creneau</option>\n";
-	foreach ($edt_creneau_col as $edt_creneau) {
-	    //$edt_creneau = new EdtCreneau();
-		if ($edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_PAUSE
-			|| $edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_REPAS) {
+	    echo "<p>";
+	echo '<input type="hidden" name="type_selection" value="id_cours"/>';
+	echo ("<select name=\"id_cours\" class=\"small\">");
+	echo "<option value='-1'>choisissez un cours</option>\n";
+	foreach ($edt_cours_col as $edt_cours) {
+//	    $edt_cours = new EdtEmplacementCours();
+		if ($edt_cours->getEdtCreneau() == NULL) {
+		    //on affiche pas le cours si il n'est associé avec aucun creneau
 		    continue;
 		}
-		echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
-		if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
+		if (getSettingValue("abs2_saisie_prof_decale") != 'y' && $utilisateur->getStatut() == "professeur") {
+		    if ($edt_cours->getJourSemaineNumeric() != date('w')) {
+			//on affiche pas ce cours car il n'est pas aujourd'hui
+			continue;
+		    }
+		    if ($edt_cours->getTypeSemaine() != '' && $edt_cours->getTypeSemaine() != '0' && $edt_cours->getTypeSemaine() != $current_semaine->getTypeEdtSemaine()) {
+			//on affiche pas ce cours car il n'est pas aujourd'hui
+			continue;
+		    }
+		}
+		echo "<option value='".$edt_cours->getIdCours()."'";
+		if ($id_cours == $edt_cours->getIdCours()) echo " selected='selected' ";
 		echo ">";
-		echo $edt_creneau->getDescription();
+		echo $edt_cours->getDescription();
 		echo "</option>\n";
 	}
 	echo "</select>&nbsp;";
-    } else {
-	$current_creneau = EdtCreneauPeer::retrieveEdtCreneauActuel();
-	if ($current_creneau != null) {
-	    echo " Creneau : ";
-	    echo $current_creneau->getDescription();
-	    echo "&nbsp;";
-	    echo '<input type="hidden" name="id_creneau" value="'.$id_creneau.'"/>';
+
+
+	if (getSettingValue("abs2_saisie_prof_decale")=='y' || $utilisateur->getStatut() != "professeur") {
+	    $col = EdtSemaineQuery::create()->find();
+	    echo ("<select name=\"id_semaine\" class=\"small\">");
+	    echo "<option value='-1'>choisissez une semaine</option>\n";
+	    //on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
+	    for ($i = 0; $i < $col->count(); $i++) {
+		$pos = ($i + 30) % $col->count();
+		$semaine = $col[$pos];
+		//$semaine = new EdtSemaine();
+		    echo "<option value='".$semaine->getPrimaryKey()."'";
+		    if ($id_semaine == $semaine->getPrimaryKey()) echo " selected='selected' ";
+		    echo ">";
+		    echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
+		    echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
+		    echo "</option>\n";
+	    }
+	    echo "</select>&nbsp;";
 	} else {
-	    echo "Aucun creneau actuellement.&nbsp;";
+	    echo "Semaine&nbsp;".$current_semaine->getNumEdtSemaine()."&nbsp;".$current_semaine->getTypeEdtSemaine();
+	    echo '<input type="hidden" name="id_semaine" value="'.$id_semaine.'"/>&nbsp;';
 	}
-    }
 
-    if ($utilisateur->getStatut() != "professeur" || getSettingValue("abs2_saisie_prof_decale")=='y') {
-	echo '<input size="8" id="date_absence_eleve_3" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
-	echo '<script type="text/javascript">
-	    Calendar.setup({
-		inputField     :    "date_absence_eleve_3",     // id of the input field
-		ifFormat       :    "%d/%m/%Y",      // format of the input field
-		button         :    "date_absence_eleve_3",  // trigger for the calendar (button ID)
-		align          :    "Bl",           // alignment (defaults to "Bl")
-		singleClick    :    true
-	    });
-	</script>';
-    } else {
-	$dt_date_absence_eleve = new DateTime('now');
-	echo $dt_date_absence_eleve->format('d/m/Y');
-    }
-    echo '<button type="submit">Afficher les élèves</button>';
-	echo "</p>";
-    echo "</form>";
-    echo "</td>";
-}
-
-//on affiche une boite de selection avec les cours
-if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $edt_cours_col = EdtEmplacementCoursQuery::create()->find();
-} else {
-    $edt_cours_col = $utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle();
-}
-if (!$edt_cours_col->isEmpty()) {
-    echo "<td style='border : 1px solid;'>";
-    echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
-	echo "<p>";
-    echo '<input type="hidden" name="type_selection" value="id_cours"/>';
-    echo ("<select name=\"id_cours\" class=\"small\">");
-    echo "<option value='-1'>choisissez un cours</option>\n";
-    foreach ($edt_cours_col as $edt_cours) {
-	//$edt_cours = new EdtEmplacementCours();
-	    if ($edt_cours->getEdtCreneau() == NULL) {
-		//on affiche pas le cours si il n'est associé avec aucun creneau
-		continue;
-	    }
-	    if (getSettingValue("abs2_saisie_prof_decale") != 'y') {
-		if ($edt_cours->getJourSemaineNumeric() != date('W')) {
-		    //on affiche pas ce cours
-		    continue;
-		}
-	    }
-	    echo "<option value='".$edt_cours->getIdCours()."'";
-	    if ($id_cours == $edt_cours->getIdCours()) echo " selected='selected' ";
-	    echo ">";
-	    echo $edt_cours->getDescription();
-	    echo "</option>\n";
-    }
-    echo "</select>&nbsp;";
-
-
-    if (getSettingValue("abs2_saisie_prof_decale")=='y') {
-	$col = EdtSemaineQuery::create()->find();
-	echo ("<select name=\"id_semaine\" class=\"small\">");
-	echo "<option value='-1'>choisissez une semaine</option>\n";
-	//on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
-	for ($i = 0; $i < $col->count(); $i++) {
-	    $pos = ($i + 30) % $col->count();
-	    $semaine = $col[$pos];
-	    //$semaine = new EdtSemaine();
-		echo "<option value='".$semaine->getPrimaryKey()."'";
-		if ($id_semaine == $semaine->getPrimaryKey()) echo " selected='selected' ";
-		echo ">";
-		echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
-		echo " du ".$semaine->getLundi('d/m').' au '.$semaine->getSamedi('d/m');
-		echo "</option>\n";
+	echo '<button type="submit">Afficher les élèves</button>';
+	if ($current_cours != null && $current_cours->getTypeSemaine() != '' && $current_cours->getTypeSemaine() != '0' && $current_semaine != null && $current_cours->getTypeSemaine() != $current_semaine->getTypeEdtSemaine()) {
+	    echo '<br>Erreur : le cours ne correspond pas au type de semaine.';
+	    $current_cours = null;
+	    $current_groupe = null;
+	    $current_classe = null;
+	    $current_aid = null;
 	}
-	echo "</select>&nbsp;";
-    } else {
-	$semaine = EdtSemaineQuery::create()->findPk($id_semaine);
-	echo "Semaine ".$semaine->getNumEdtSemaine()." ".$semaine->getTypeEdtSemaine();
-	echo '<input type="hidden" name="id_semaine" value="'.$id_semaine.'"/>&nbsp;';
-    }
-
-    echo '<button type="submit">Afficher les élèves</button>';
-    $current_semaine = EdtSemaineQuery::create()->findPk($id_semaine);
-    if ($current_cours != null && $current_cours->getTypeSemaine() != '' && $current_cours->getTypeSemaine() != '0' && $current_semaine != null && $current_cours->getTypeSemaine() != $current_semaine->getTypeEdtSemaine()) {
-	echo '<br>Erreur : le cours ne correspond pas au type de semaine.';
-	$current_cours = null;
-	$current_groupe = null;
-	$current_aid = null;
-    }
 	echo "</p>";
-    echo "</form>";
-    echo "</td>";
+	echo "</form>";
+	echo "</td>";
+    }
 }
 echo "</tr></table>";
 
@@ -539,43 +441,61 @@ if (!$eleve_col->isEmpty()) {
 		<form method="post" action="enregistrement_saisie_groupe.php" id="liste_absence_eleve">
 	<p>
 		    <input type="hidden" name="total_eleves" value="<?php echo($eleve_col->count()); ?>"/>
-		    <?php if ($type_selection == 'id_aid') {?><input type="hidden" name="id_aid" value="<?php echo($id_aid); ?>"/><?php }?>
-		    <?php if ($type_selection == 'id_groupe') {?><input type="hidden" name="id_groupe" value="<?php echo($id_groupe); ?>"/><?php }?>
-		    <?php if ($type_selection == 'id_classe') {?><input type="hidden" name="id_classe" value="<?php echo($id_classe); ?>"/><?php }?>
-		    <?php if ($id_creneau != null) {?><input type="hidden" name="id_creneau" value="<?php echo($id_creneau); ?>"/><?php }?>
-		    <?php if ($type_selection == 'id_cours') {?><input type="hidden" name="id_cours" value="<?php echo($id_cours); ?>"/><?php }?>
+		    <input type="hidden" name="id_aid" value="<?php echo($id_aid); ?>"/>
+		    <input type="hidden" name="id_groupe" value="<?php echo($id_groupe); ?>"/>
+		    <input type="hidden" name="id_classe" value="<?php echo($id_classe); ?>"/>
+		    <input type="hidden" name="id_creneau" value="<?php echo($id_creneau); ?>"/>
+		    <input type="hidden" name="id_cours" value="<?php echo($id_cours); ?>"/>
 		    <input type="hidden" name="type_selection" value="<?php echo($type_selection); ?>"/>
-		    <?php if ($id_semaine != null) {?><input type="hidden" name="id_semaine" value="<?php echo($id_semaine); ?>"/><?php }?>
+		    <input type="hidden" name="id_semaine" value="<?php echo($id_semaine); ?>"/>
 		    <input type="hidden" name="date_absence_eleve" value="<?php echo($dt_date_absence_eleve->format('d/m/Y')); ?>"/>
 	</p>
 			<p class="expli_page choix_fin">
 				Saisie des absences du <strong><?php echo strftime  ('%A %d/%m/%Y',  $dt_date_absence_eleve->format('U')); ?></strong>
-				pour le groupe
+				pour 
 				<strong>
 				<?php if (isset($current_groupe) && $current_groupe != null) {
-				    echo $current_groupe->getNameAvecClasses();
+				    echo 'le groupe '.$current_groupe->getNameAvecClasses();
 				} else if (isset($current_aid) && $current_aid != null) {
-				    echo $current_aid->getNom();
+				    echo 'l\'aid '.$current_aid->getNom();
 				} else if (isset($current_classe) && $current_classe != null) {
-				    echo $current_classe->getNomComplet();
+				    echo 'la classe '.$current_classe->getNomComplet();
 				}?>
 				</strong>
 				<?php if ($current_creneau != null) { ?>
 				de
 				<?php
-				    echo ' <input style="font-size:88%;" name="heure_debut_all" id="heure_debut_all" value="';
-				    if ($current_cours != null) {echo $current_cours->getHeureDebut("H:i");} 
-				    elseif ($current_creneau != null) { echo $current_creneau->getHeuredebutDefiniePeriode("H:i");};
+				    echo ' <input style="font-size:88%;" name="heure_debut_appel" id="heure_debut_appel" value="';
+				    if (isset($_POST["heure_debut_appel"])) {$heure_debut_appel = ($_POST["heure_debut_appel"]);}
+				    elseif (isset($_GET["heure_debut_appel"])) {$heure_debut_appel = ($_GET["heure_debut_appel"]);}
+				    elseif ($current_cours != null) {
+					if ($current_cours->getHeureDebut('s') > 0) {
+					    //on arrondi le debut de saisie au-dessus pour ne pas depasser l'heure du cours
+					    if ($current_cours->getHeureDebut("i") == 59) {
+						$heure_debut_appel = ($current_cours->getHeureDebut("H") + 1).':00';
+					    } else {
+						$heure_debut_appel = $current_cours->getHeureDebut("H").':'.($current_cours->getHeureDebut("i") + 1);
+					    }
+					} else {
+					    $heure_debut_appel = $current_cours->getHeureDebut("H:i");
+					}
+				    } elseif ($current_creneau != null) {
+					$heure_debut_appel = $current_creneau->getHeuredebutDefiniePeriode("H:i");
+				    };
+				    echo $heure_debut_appel;
 				    echo '" type="text" maxlength="5" size="4"/>';
 				?>
 				à
 				<?php
-				    echo ' <input style="font-size:88%;" name="heure_fin_all" id="heure_fin_all" value="';
-				    if ($current_cours != null) {echo $current_cours->getHeureFin("H:i");}
-				    elseif ($current_creneau != null) { echo $current_creneau->getHeurefinDefiniePeriode("H:i");};
+				    echo ' <input style="font-size:88%;" name="heure_fin_appel" id="heure_fin_appel" value="';
+				    if (isset($_POST["heure_fin_appel"])) {$heure_fin_appel = ($_POST["heure_fin_appel"]);}
+				    elseif (isset($_GET["heure_fin_appel"])) {$heure_fin_appel = ($_GET["heure_fin_appel"]);}
+				    elseif ($current_cours != null) {$heure_fin_appel = $current_cours->getHeureFin("H:i");}
+				    elseif ($current_creneau != null) { $heure_fin_appel = $current_creneau->getHeurefinDefiniePeriode("H:i");};
+				    echo $heure_fin_appel;
 				    echo '" type="text" maxlength="5" size="4"/> ';
-				    echo '<button onclick="SetAllTextFields(\'liste_absence_eleve\', \'heure_debut_absence_eleve\',\'\',document.getElementById(\'heure_debut_all\').value);
-							    SetAllTextFields(\'liste_absence_eleve\', \'heure_fin_absence_eleve\',\'\',document.getElementById(\'heure_fin_all\').value);
+				    echo '<button onclick="SetAllTextFields(\'liste_absence_eleve\', \'heure_debut_absence_eleve\',\'\',document.getElementById(\'heure_debut_appel\').value);
+							    SetAllTextFields(\'liste_absence_eleve\', \'heure_fin_absence_eleve\',\'\',document.getElementById(\'heure_fin_appel\').value);
 							    return false;">Changer</button>';
 				?>
 				<?php } ?>
@@ -715,7 +635,7 @@ foreach($eleve_col as $eleve) {
 
 					if ($nb_creneau_a_saisir > 0) {
 					    $i = $i + $nb_creneau_a_saisir - 1;
-					    //le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies.php
+					    //le message d'erreur de l'enregistrement precedent provient du fichier enregistrement_saisies_groupe.php
 					    if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
 						echo "Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
 					    }
@@ -735,47 +655,18 @@ foreach($eleve_col as $eleve) {
 					    }
 					    echo ' <input style="font-size:88%;" id="active_absence_eleve['.$eleve_col->getPosition().']" name="active_absence_eleve['.$eleve_col->getPosition().']" value="1" type="checkbox" />';
 					    echo ' <input style="font-size:88%;" onChange="this.form.elements[\'active_absence_eleve['.$eleve_col->getPosition().']\'].checked = true;" name="heure_debut_absence_eleve['.$eleve_col->getPosition().']" id="heure_debut_absence_eleve_'.$eleve_col->getPosition().'" value="';
-					    if ($current_cours != null) {echo $current_cours->getHeureDebut("H:i");} else { echo $edt_creneau->getHeuredebutDefiniePeriode("H:i");};
+					    echo $heure_debut_appel;
 					    echo '" type="text" maxlength="5" size="4"/>&nbsp;';
-					    //if (getSettingValue("abs2_saisie_prof_decale")=='y') {
-					    if (false) {
-						    echo '<input style="font-size:88%;" id="date_debut_absence_eleve_'.$eleve_col->getPosition().'" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/> ';
-						    echo '<script type="text/javascript">
-							Calendar.setup({
-							    inputField     :    "date_debut_absence_eleve_'.$eleve_col->getPosition().'",     // id of the input field
-							    ifFormat       :    "%d/%m/%Y",      // format of the input field
-							    button         :    "date_debut_absence_eleve_'.$eleve_col->getPosition().'",  // trigger for the calendar (button ID)
-							    align          :    "Tl",           // alignment (defaults to "Bl")
-							    singleClick    :    true
-							});
-						    </script>';
-					    } else {
-						    echo '<input style="font-size:88%;" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
-					    }
+					    echo '<input style="font-size:88%;" name="date_debut_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
 					    echo '<input style="font-size:88%;" onChange="this.form.elements[\'active_absence_eleve['.$eleve_col->getPosition().']\'].checked = true;" name="heure_fin_absence_eleve['.$eleve_col->getPosition().']" value="';
-					    if ($current_cours != null) {echo $current_cours->getHeureFin("H:i");} else { echo $edt_creneau->getHeurefinDefiniePeriode("H:i");};
+					    echo $heure_fin_appel;
 					    echo '" type="text" maxlength="5" size="4"/>';
-					    //if (getSettingValue("abs2_saisie_prof_decale")=='y') {
-					    if (false) {
-						    echo '<input style="font-size:88%;" id="date_fin_absence_eleve_'.$eleve_col->getPosition().'" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="text" maxlength="10" size="8"/> ';
-						    echo '<script type="text/javascript">
-							Calendar.setup({
-							    inputField     :    "date_fin_absence_eleve_'.$eleve_col->getPosition().'",     // id of the input field
-							    ifFormat       :    "%d/%m/%Y",      // format of the input field
-							    button         :    "date_fin_absence_eleve_'.$eleve_col->getPosition().'",  // trigger for the calendar (button ID)
-							    align          :    "Tl",           // alignment (defaults to "Bl")
-							    singleClick    :    true
-							});
-						    </script>';
-					    } else {
-						    echo '<input style="font-size:88%;" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
-						    
-					    }
+					    echo '<input style="font-size:88%;" name="date_fin_absence_eleve['.$eleve_col->getPosition().']" value="'.$dt_date_absence_eleve->format('d/m/Y').'" type="hidden"/>';
 					}
 					echo '</td>';
 				}
 
-						   // Avec ou sans photo
+			       // Avec ou sans photo
 				if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 				    $nom_photo = $eleve->getNomPhoto(1);
 				    //$photos = "../photos/eleves/".$nom_photo;
@@ -796,10 +687,7 @@ foreach($eleve_col as $eleve) {
 				    echo '<input  style="font-size:88%;" name="commentaire_absence_eleve['.$eleve_col->getPosition().']" value="'.'" type="text" maxlength="150" size="13"/>';
 				    echo '</td>';
 				}
-?>
-
-
-<?php echo "</tr>";
+    echo "</tr>";
 }
 echo "</tbody>\n</table>";
 echo '
@@ -842,4 +730,50 @@ function redimensionne_image_petit($photo)
    // on renvoit la largeur et la hauteur
     return array($nouvelle_largeur, $nouvelle_hauteur);
  }
+
+ function format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve) {
+     	if ($utilisateur->getStatut() != 'professeur' || getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
+	    echo ("<select name=\"id_creneau\" class=\"small\">");
+	    $edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
+	    echo "<option value='-1'>choisissez un creneau</option>\n";
+	    foreach ($edt_creneau_col as $edt_creneau) {
+		    if ($edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_PAUSE
+			    || $edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_REPAS) {
+			continue;
+		    }
+		    echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
+		    if ($id_creneau == $edt_creneau->getIdDefiniePeriode()) echo " selected='selected' ";
+		    echo ">";
+		    echo $edt_creneau->getDescription();
+		    echo "</option>\n";
+	    }
+	    echo "</select>&nbsp;";
+	} else {
+	    $current_creneau = EdtCreneauPeer::retrieveEdtCreneauActuel();
+	    if ($current_creneau != null) {
+		echo $current_creneau->getDescription().' ';
+		echo '<input type="hidden" name="id_creneau" value="'.$id_creneau.'"/>';
+	    } else {
+		echo "Aucun creneau actuellement.&nbsp;";
+	    }
+	}
+
+	if ($utilisateur->getStatut() != 'professeur' || (getSettingValue("abs2_saisie_prof_decale")=='y' && getSettingValue("abs2_saisie_prof_decale_journee")=='y')) {
+	    $rand_id = rand(0,10000000);
+	    echo '<input size="8" id="date_absence_eleve_'.$rand_id.'" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
+	    echo '
+	    <script type="text/javascript">
+		Calendar.setup({
+		    inputField     :    "date_absence_eleve_'.$rand_id.'",     // id of the input field
+		    ifFormat       :    "%d/%m/%Y",      // format of the input field
+		    button         :    "date_absence_eleve_1",  // trigger for the calendar (button ID)
+		    align          :    "Bl",           // alignment (defaults to "Bl")
+		    singleClick    :    true
+		});
+	    </script>';
+	} else {
+	    echo ' Le '.$dt_date_absence_eleve->format('d/m/Y').' ';
+	}
+ }
+ 
 ?>

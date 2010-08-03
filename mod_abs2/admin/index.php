@@ -271,12 +271,12 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 <p>
 	<input type="checkbox" name="abs2_saisie_prof_decale_journee" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_decale_journee")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_prof_decale_journee">&nbsp;Permettre la saisie decalée sur la journée</label>
+	<label for="abs2_saisie_prof_decale_journee">&nbsp;Permettre la saisie decalée sur une même journée par les professeurs</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_saisie_prof_decale" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_decale")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_prof_decale">&nbsp;Permettre la saisie decalée sans limite de temps</label>
+	<label for="abs2_saisie_prof_decale">&nbsp;Permettre la saisie decalée sans limite de temps par les professeurs</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_saisie_prof_hors_cours" value="y"

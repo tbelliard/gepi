@@ -62,8 +62,8 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 		if ($obj->getIdClasse() !== null) {
 		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne la classe doit etre nul.<br/>";
 		}
-		if ($obj->getIdEdtCreneau() !== null) {
-		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne le creneau doit etre nul.<br/>";
+		if ($obj->getIdEdtCreneau() !== null && $obj->getEdtEmplacementCours()->getIdDefiniePeriode() != $obj->getIdEdtCreneau()) {
+		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne le creneau doit lui correspondre.<br/>";
 		}
 		if ($obj->getIdGroupe() === null && $obj->getIdAid() === null) {
 		    $failureMap[AbsenceEleveSaisiePeer::ID] = "Si un cours est renseigne alors le groupe ou l'aid doivent etre saisies.<br/>";

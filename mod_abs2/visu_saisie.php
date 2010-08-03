@@ -127,10 +127,14 @@ echo '</TD><TD>';
 echo $saisie->getPrimaryKey();
 echo '</TD></tr>';
 
-echo '<tr><TD>';
-echo 'Eleve : ';
-echo '</TD><TD>';
-if ($saisie->getEleve() != null) {
+echo '<tr>';
+if ($saisie->getEleve() == null) {
+    echo '<TD colspan="2">';
+    echo "Marqueur d'appel effectué";
+    echo '</TD>';
+} else {
+    echo '<TD>Eleve : </td>';
+    echo '<TD>';
     echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
     if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 	$nom_photo = $saisie->getEleve()->getNomPhoto(1);
@@ -148,10 +152,9 @@ if ($saisie->getEleve() != null) {
 	echo ' (voir fiche)';
 	echo "</a>";
     }
-} else {
-    echo "Aucun élève absent";
+echo '</TD>';
 }
-echo '</TD></tr>';
+echo '</tr>';
 
 if ($saisie->getClasse() != null) {
     echo '<tr><TD>';
@@ -177,6 +180,13 @@ if ($saisie->getAidDetails() != null) {
     echo '</TD></tr>';
 }
 
+if ($saisie->getEdtEmplacementCours() != null) {
+    echo '<tr><TD>';
+    echo 'Cours : ';
+    echo '</TD><TD>';
+    echo $saisie->getEdtEmplacementCours()->getDescription();
+    echo '</TD></tr>';
+}
 
 if ($saisie->getEdtCreneau() != null) {
     echo '<tr><TD>';
@@ -245,14 +255,6 @@ if (!$modifiable) {
     }
 }
 echo '</TD></tr>';
-
-if ($saisie->getEdtEmplacementCours() != null) {
-    echo '<tr><TD>';
-    echo 'Cours : ';
-    echo '</TD><TD>';
-    echo $saisie->getEdtEmplacementCours()->getDescription();
-    echo '</TD></tr>';
-}
 
 echo '<tr><TD>';
 echo 'Traitement : ';
