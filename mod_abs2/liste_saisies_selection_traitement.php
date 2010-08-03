@@ -933,13 +933,13 @@ foreach ($results as $saisie) {
 
     echo '<td>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-    echo (strftime("%a %d %b %Y %H:%M", $saisie->getDebutAbs('U')));
+    echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDebutAbs('U')));
     echo "</a>";
     echo '</td>';
 
     echo '<td>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-    echo (strftime("%a %d %b %Y %H:%M", $saisie->getFinAbs('U')));
+    echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getFinAbs('U')));
     echo "</a>";
     echo '</td>';
 
@@ -1017,7 +1017,7 @@ foreach ($results as $saisie) {
 
     echo '<td>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-    echo (strftime("%a %d %b %Y %H:%M", $saisie->getCreatedAt('U')));
+    echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getCreatedAt('U')));
     echo "</a>";
     echo '</td>';
 
@@ -1026,7 +1026,7 @@ foreach ($results as $saisie) {
     if ($saisie->getCreatedAt() != $saisie->getUpdatedAt()) {
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
    
-	echo (strftime("%a %d %b %Y %H:%M", $saisie->getUpdatedAt('U')));
+	echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getUpdatedAt('U')));
     echo "</a>";
     } else {
 	echo "&nbsp;";

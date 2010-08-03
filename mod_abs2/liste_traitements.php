@@ -737,14 +737,14 @@ foreach ($results as $traitement) {
     //echo '<td><nobr>';
     echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-    echo (strftime("%a %d %b %Y %H:%M", $traitement->getCreatedAt('U')));
+    echo (strftime("%a %d/%m/%Y %H:%M", $traitement->getCreatedAt('U')));
     echo "</a>";
     //echo '</nobr></td>';
     echo '</td>';
 
     echo '<td>';
     echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-    echo (strftime("%a %d %b %Y %H:%M", $traitement->getUpdatedAt('U')));
+    echo (strftime("%a %d/%m/%Y %H:%M", $traitement->getUpdatedAt('U')));
     echo "</a>";
     echo '</td>';
 

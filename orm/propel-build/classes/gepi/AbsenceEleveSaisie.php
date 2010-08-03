@@ -115,7 +115,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    $message = '';
 	    if ($this->getDebutAbs('d/m/Y') == $this->getFinAbs('d/m/Y')) {
 		$message .= 'Le ';
-		$message .= (strftime("%a %d %b", $this->getDebutAbs('U')));
+		$message .= (strftime("%a %d/%m/%Y", $this->getDebutAbs('U')));
 		$message .= ' de ';
 		$message .= $this->getDebutAbs('H:i');
 		$message .= ' a ';
@@ -123,9 +123,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	    } else {
 		$message .= 'Du ';
-		$message .= (strftime("%a %d %b %H:%M", $this->getDebutAbs('U')));
+		$message .= (strftime("%a %d/%m/%Y %H:%M", $this->getDebutAbs('U')));
 		$message .= ' au ';
-		$message .= (strftime("%a %d %b %H:%M", $this->getFinAbs('U')));
+		$message .= (strftime("%a %d/%m/%Y %H:%M", $this->getFinAbs('U')));
 	    }
 	    return $message;
 	}

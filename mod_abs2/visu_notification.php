@@ -514,20 +514,20 @@ if ($notification->getdateEnvoi() != null) {
     echo '<tr><td>';
     echo 'Date d\'envoi : ';
     echo '</td><td>';
-    echo (strftime("%a %d %b %Y %H:%M", $notification->getdateEnvoi('U')));
+    echo (strftime("%a %d/%m/%Y %H:%M", $notification->getdateEnvoi('U')));
     echo '</td></tr>';
 } else {
     echo '<tr><td>';
     echo 'Créé le : ';
     echo '</td><td>';
-    echo (strftime("%a %d %b %Y %H:%M", $notification->getCreatedAt('U')));
+    echo (strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
     echo '</td></tr>';
 
     if ($notification->getCreatedAt() != $notification->getUpdatedAt()) {
 	echo '<tr><td>';
 	echo 'Modifiée le : ';
 	echo '</td><td>';
-	echo (strftime("%a %d %b %Y %H:%M", $notification->getUpdatedAt('U')));
+	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getUpdatedAt('U')));
 	echo '</td></tr>';
     }
 }

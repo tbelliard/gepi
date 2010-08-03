@@ -549,7 +549,7 @@ if (!$eleve_col->isEmpty()) {
 		    <input type="hidden" name="date_absence_eleve" value="<?php echo($dt_date_absence_eleve->format('d/m/Y')); ?>"/>
 	</p>
 			<p class="expli_page choix_fin">
-				Saisie des absences du <strong><?php echo strftime  ('%A %d %B %G',  $dt_date_absence_eleve->format('U')); ?></strong>
+				Saisie des absences du <strong><?php echo strftime  ('%A %d/%m/%Y',  $dt_date_absence_eleve->format('U')); ?></strong>
 				pour le groupe
 				<strong>
 				<?php if (isset($current_groupe) && $current_groupe != null) {

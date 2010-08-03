@@ -24,7 +24,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 */
 	public function getDescription() {
 	    $desc = '';
-	    $desc .= strftime("%a %d %b %Y", $this->getUpdatedAt('U'));
+	    $desc .= strftime("%a %d/%m/%Y", $this->getUpdatedAt('U'));
 	    if ($this->getAbsenceEleveType() != null) {
 		$desc .= "; type : ".$this->getAbsenceEleveType()->getNom();
 	    }

@@ -322,9 +322,9 @@ foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
     echo '<tr><td>';
     echo "<a href='visu_notification.php?id_notification=".$notification->getId()."' style='display: block; height: 100%;'> ";
     if ($notification->getDateEnvoi() != null) {
-	echo (strftime("%a %d %b %Y %H:%M", $notification->getDateEnvoi('U')));
+	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getDateEnvoi('U')));
     } else {
-	echo (strftime("%a %d %b %Y %H:%M", $notification->getCreatedAt('U')));
+	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
     }
     if (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()])) {
 	echo ', type : '.AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()];
@@ -359,14 +359,14 @@ echo '</td></tr>';
 echo '<tr><td>';
 echo 'Créé le : ';
 echo '</td><td>';
-echo (strftime("%a %d %b %Y %H:%M", $traitement->getCreatedAt('U')));
+echo (strftime("%a %d/%m/%Y %H:%M", $traitement->getCreatedAt('U')));
 echo '</td></tr>';
 
 if ($traitement->getCreatedAt() != $traitement->getUpdatedAt()) {
     echo '<tr><td>';
     echo 'Modifiée le : ';
     echo '</td><td>';
-    echo (strftime("%a %d %b %Y %H:%M", $traitement->getUpdatedAt('U')));
+    echo (strftime("%a %d/%m/%Y %H:%M", $traitement->getUpdatedAt('U')));
     echo '</td></tr>';
 }
 

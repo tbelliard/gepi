@@ -59,7 +59,7 @@ class AbsenceEleveNotification extends BaseAbsenceEleveNotification {
 	    $desc .= "statut : ".AbsenceEleveNotification::$LISTE_LABEL_STATUT[$this->getStatutEnvoi()]."; ";
 	}
 	if ($this->getDateEnvoi() != null) {
-	    $desc .= strftime("%a %d %b %Y %H:%M", $this->getDateEnvoi('U'));
+	    $desc .= strftime("%a %d/%m/%Y %H:%M", $this->getDateEnvoi('U'));
 	}
 	return $desc;
     }

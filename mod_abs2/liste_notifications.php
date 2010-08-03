@@ -541,7 +541,7 @@ foreach ($results as $notification) {
 	echo '<span style="white-space: nowrap;"> ';
 //  echo '<td><nobr>';
     echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-    echo (strftime("%a %d %b %Y %H:%M", $notification->getCreatedAt('U')));
+    echo (strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
     echo "</a>";
         echo "</span>";
     echo '</td>';
@@ -549,7 +549,7 @@ foreach ($results as $notification) {
 
     echo '<td>';
     echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='color: #330033'>\n";
-    echo (strftime("%a %d %b %Y %H:%M", $notification->getUpdatedAt('U')));
+    echo (strftime("%a %d/%m/%Y %H:%M", $notification->getUpdatedAt('U')));
     echo "</a>";
     echo '</td>';
 
