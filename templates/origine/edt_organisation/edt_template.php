@@ -236,8 +236,8 @@
 		  <legend class="invisible">Activation pour les élèves et leurs responsables</legend>
 		  <input name="activ_ele"
 				 id="activEleY"
-				 value="y"
-				 type="radio"<?php echo eval_checked("autorise_edt_eleve", "y"); ?>
+				 value="yes"
+				 type="radio"<?php echo eval_checked("autorise_edt_eleve", "yes"); ?>
 				 onclick="document.getElementById('autorise_ele').submit();"
 				 />
 		  <label for="activEleY">
@@ -247,8 +247,8 @@
 		  <br />
 		  <input name="activ_ele"
 				 id="activEleN"
-				 value="n"
-				 type="radio"<?php echo eval_checked("autorise_edt_eleve", "n"); ?>
+				 value="no"
+				 type="radio"<?php echo eval_checked("autorise_edt_eleve", "no"); ?>
 				 onclick="document.getElementById('autorise_ele').submit();"
 				 />
 		  <label for="activEleN">

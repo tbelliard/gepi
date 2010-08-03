@@ -1653,6 +1653,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 			</tr>
 		 */
 $statutItem='eleve';
+$titreItem='autorise_edt_eleve';
+$texteItem="a accès à son emploi du temps (ouvre également le droit aux parents)";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesReleveEleve';
 $texteItem="a accès à ses relevés de notes";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))

@@ -3163,7 +3163,7 @@ function param_edt($statut){
 		$verif = "";
 	}
 	// On vérifie $verif et on renvoie le return
-	if ($verif == "y") {
+	if ($verif == "y" or $verif == "yes") {
 		return "yes";
 	} else {
 		return "no";

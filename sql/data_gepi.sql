@@ -576,7 +576,7 @@ INSERT INTO setting VALUES ('active_notanet', 'n');
 INSERT INTO setting VALUES ('longmax_login', '10');
 INSERT INTO setting VALUES ('autorise_edt_tous', 'y');
 INSERT INTO setting VALUES ('autorise_edt_admin', 'y');
-INSERT INTO setting VALUES ('autorise_edt_eleve', 'n');
+INSERT INTO setting VALUES ('autorise_edt_eleve', 'no');
 INSERT INTO setting VALUES ('utiliserMenuBarre', 'no');
 INSERT INTO setting VALUES ('active_absences_parents', 'no');
 INSERT INTO setting VALUES ('creneau_different', 'n');

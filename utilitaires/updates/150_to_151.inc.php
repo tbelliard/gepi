@@ -488,7 +488,7 @@ PRIMARY KEY (`id_calendrier`));");
 		$req_test = mysql_query("SELECT value FROM setting WHERE name = 'autorise_edt_eleve'");
 		$res_test = mysql_num_rows($req_test);
 		if ($res_test == 0){
-			$query3 = mysql_query("INSERT INTO setting VALUES ('autorise_edt_eleve', 'n');");
+			$query3 = mysql_query("INSERT INTO setting VALUES ('autorise_edt_eleve', 'no');");
 			if ($query3) {
 				$result .= "<font color=\"green\">Ok !</font><br />";
 			} else {
