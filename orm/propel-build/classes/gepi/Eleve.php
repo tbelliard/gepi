@@ -643,8 +643,8 @@ class Eleve extends BaseEleve {
 				$collAbsenceEleveSaisiesParJour = new PropelObjectCollection();
 				$collAbsenceEleveSaisiesParJour->setModel('AbsenceEleveSaisie');
 				foreach ($saisie_col as $saisie) {
-				    if ($dt <  $saisie->getFinAbs(null)
-					    && $dt_fin >  $saisie->getDebutAbs(null)) {
+				    if ($dt->format('U') <  $saisie->getFinAbs('U')
+					    && $dt_fin->format('U') >  $saisie->getDebutAbs('U')) {
 					$collAbsenceEleveSaisiesParJour->append($saisie);
 				    }
 				}
@@ -738,18 +738,18 @@ class Eleve extends BaseEleve {
 		if ($dt_debut != null && $dt_fin!= null && $dt_debut == $dt_fin) {
 		    //si on a un seul dateTime pour la plage de recherche, on renvoi les saisie qui chevauchent cette date
 		    //ainsi que les saisies qui commence juste à cette date
-		    if ($dt_debut >=  $saisie->getFinAbs(null)) {
+		    if ($dt_debut->format('U') >=  $saisie->getFinAbs('U')) {
 			continue;
 		    }
-		    if ($dt_fin != null && ($dt_fin <  $saisie->getDebutAbs(null))) {
+		    if ($dt_fin != null && ($dt_fin->format('U') <  $saisie->getDebutAbs('U'))) {
 			continue;
 		    }
 		    $result->append($saisie);
 		} else {
-		    if ($dt_debut != null && ($dt_debut >=  $saisie->getFinAbs(null))) {
+		    if ($dt_debut != null && ($dt_debut->format('U') >=  $saisie->getFinAbs('U'))) {
 			continue;
 		    }
-		    if ($dt_fin != null && ($dt_fin <=  $saisie->getDebutAbs(null))) {
+		    if ($dt_fin != null && ($dt_fin->format('U') <=  $saisie->getDebutAbs('U'))) {
 			continue;
 		    }
 		    $result->append($saisie);
@@ -905,8 +905,8 @@ class Eleve extends BaseEleve {
 	public function getPeriodeNote($periode = null) {
 	    if ($periode instanceof DateTime) {
 		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getDateDebut(null) <= $periode
-			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin(null) > $periode))
+		    if ($periode_temp->getDateDebut('U') <= $periode->format('U')
+			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode->format('U')))
 		    {
 			return $periode_temp;
 		    }
@@ -927,8 +927,8 @@ class Eleve extends BaseEleve {
 		return $periode;
 	    } else if ($periode instanceof DateTime) {
 		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getDateDebut(null) <= $periode
-			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin(null) > $periode))
+		    if ($periode_temp->getDateDebut('U') <= $periode->format('U')
+			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode->format('U')))
 		    {
 			return $periode_temp;
 		    }
@@ -994,13 +994,13 @@ class Eleve extends BaseEleve {
 	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
 	    
 	    foreach($abs_saisie_col as $saisie) {
-		if ($date_compteur > $date_fin_iteration) {
+		if ($date_compteur->format('U') > $date_fin_iteration->format('U')) {
 		    break;
 		}
 		if ($saisie->getRetard() || $saisie->getSousResponsabiliteEtablissement()) {
 		    continue;
 		}
-		if ($date_compteur < $saisie->getDebutAbs(null)) {
+		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
 		    $date_compteur = clone $saisie->getDebutAbs(null);
 		}
 		if ($date_compteur->format('H') < 12) {
@@ -1009,7 +1009,7 @@ class Eleve extends BaseEleve {
 		    $date_compteur->setTime(12, 30);//on calle la demi journée a 12h30
 		}
 		$max = 0;
-		while ($date_compteur < $saisie->getFinAbs(null) && $date_compteur < $date_fin_iteration && $max < 200) {
+		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration->format('U') && $max < 200) {
 		    //est-ce un jour de la semaine ouvert ?
 		    $jour_semaine = $semaine_declaration[$date_compteur->format("w")];
 		    $horaire = null;
@@ -1114,13 +1114,13 @@ class Eleve extends BaseEleve {
 	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
 
 	    foreach($abs_saisie_col as $saisie) {
-		if ($date_compteur > $date_fin_iteration) {
+		if ($date_compteur->format('U') > $date_fin_iteration->format('U')) {
 		    break;
 		}
 		if ($saisie->getRetard() || $saisie->getSousResponsabiliteEtablissement() || $saisie->getJustifiee()) {
 		    continue;
 		}
-		if ($date_compteur < $saisie->getDebutAbs(null)) {
+		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
 		    $date_compteur = clone $saisie->getDebutAbs(null);
 		}
 		if ($date_compteur->format('H') < 12) {
@@ -1129,7 +1129,7 @@ class Eleve extends BaseEleve {
 		    $date_compteur->setTime(12, 30);//on calle la demi journée a 12h30
 		}
 		$max = 0;
-		while ($date_compteur < $saisie->getFinAbs(null) && $date_compteur < $date_fin_iteration && $max < 200) {
+		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration->format('U') && $max < 200) {
 		    //est-ce un jour de la semaine ouvert ?
 		    $jour_semaine = $semaine_declaration[$date_compteur->format("w")];
 		    $horaire = null;
@@ -1233,17 +1233,17 @@ class Eleve extends BaseEleve {
 	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
 
 	    foreach($abs_saisie_col as $saisie) {
-		if ($date_compteur > $date_fin_iteration) {
+		if ($date_compteur->format('U') > $date_fin_iteration->format('U')) {
 		    break;
 		}
 		if (!$saisie->getRetard() || $saisie->getSousResponsabiliteEtablissement()) {
 		    continue;
 		}
-		if ($date_compteur < $saisie->getDebutAbs(null)) {
+		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
 		    $date_compteur = clone $saisie->getDebutAbs(null);
 		}
 		$max = 0;
-		while ($date_compteur < $saisie->getFinAbs(null) && $date_compteur < $date_fin_iteration && $max < 200) {
+		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration->format('U') && $max < 200) {
 		    //est-ce un jour de la semaine ouvert ?
 		    $jour_semaine = $semaine_declaration[$date_compteur->format("w")];
 		    $horaire = null;

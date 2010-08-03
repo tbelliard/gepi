@@ -161,7 +161,7 @@ if ($current_cours != null) {
 	}
     }
 
-    if ($date_debut > $date_fin) {
+    if ($date_debut->format('U') > $date_fin->format('U')) {
 	$message_enregistrement .= "La date de debut d'absence ne peut pas être postérieure à la date de fin.<br/>";
     }
 
@@ -170,7 +170,7 @@ if ($current_cours != null) {
 	//on va creer une saisie par jour
 	    $date_compteur = $date_debut;
 	    $compteur = 0;
-	    while (!($date_compteur > $date_fin) && $compteur < 50) { //maximum 50 saisies simultanées
+	    while (!($date_compteur->format('U') > $date_fin->format('U')) && $compteur < 50) { //maximum 50 saisies simultanées
 		$compteur = $compteur + 1;
 		$date_debut_saisie = clone $date_compteur;
 		$date_debut_saisie->setTime($heure_debut->format('H'), $heure_debut->format('i'));

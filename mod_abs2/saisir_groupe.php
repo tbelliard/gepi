@@ -580,7 +580,7 @@ foreach($eleve_col as $eleve) {
 						$dt_fin_cours = $current_cours->getHeureFin();
 						$it_creneau = $edt_creneau;
 						$absences_du_creneau = new PropelObjectCollection();
-						while ($it_creneau != null && $dt_fin_cours > $it_creneau->getHeuredebutDefiniePeriode()) {
+						while ($it_creneau != null && $dt_fin_cours->format('U') > $it_creneau->getHeuredebutDefiniePeriode('U')) {
 						    foreach ($eleve->getAbsenceEleveSaisiesDuCreneau($it_creneau, $dt_date_absence_eleve) as $abs) {
 							if (!$absences_du_creneau->contains($abs)) {
 							    $absences_du_creneau->append($abs);

@@ -115,7 +115,7 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 		 $failureMap[AbsenceEleveSaisiePeer::FIN_ABS] .= "La date de fin d'absence ne doit pas etre nulle.<br/>";
 	    }
 
-	    if ($obj->getDebutAbs() >= $obj->getFinAbs()) {
+	    if ($obj->getDebutAbs('U') >= $obj->getFinAbs('U')) {
 		$failureMap[AbsenceEleveSaisiePeer::FIN_ABS] = "La date de debut d'absence doit etre strictement anterieure à la date de fin.<br/>";
 	    }
 

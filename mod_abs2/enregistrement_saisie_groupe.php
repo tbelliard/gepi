@@ -206,7 +206,7 @@ $message_erreur .= verif_debut_fin_saisie($dt_date_debut_appel, $dt_date_fin_app
 //on vérifie en prime que l'appel est bien fait pendant l'heure en cours.
 if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale_journee")!='y' && getSettingValue("abs2_saisie_prof_decale")!='y') {
     $now = new DateTime('now');
-    if ($dt_date_debut_appel > $now || $dt_date_fin_appel < $now) {
+    if ($dt_date_debut_appel->format('U') > $now->format('U') || $dt_date_fin_appel->format('U') < $now->format('U')) {
 	$message_erreur .= "Appel non autorisée et dehors des heures de cours dont on fait l'appel.<br/>";
     }
 }
@@ -372,7 +372,7 @@ function verif_debut_fin_saisie(DateTime $dt_date_debut_appel, DateTime $dt_date
 	    }
 	}
     }
-    if ($dt_date_debut_appel > $dt_date_fin_appel) {
+    if ($dt_date_debut_appel->format('U') > $dt_date_fin_appel->format('U')) {
 	$message_enregistrement .= "L'heure de fin de saisie ne peut etre anterieure à l'heure de début.<br/>";
     }
     return $message_enregistrement;
