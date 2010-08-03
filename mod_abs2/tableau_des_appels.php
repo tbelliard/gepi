@@ -93,7 +93,7 @@ include('menu_bilans.inc.php');
 ?>
 <div id="contain_div" class="css-panes">
 <form name="choix_du_creneau" action="<?php $_SERVER['PHP_SELF']?>" method="post">
-<h2>Les saisies du
+<h2>Les appels du
     <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
     <script type="text/javascript">
 	Calendar.setup({
@@ -104,8 +104,7 @@ include('menu_bilans.inc.php');
 	    singleClick    :    true
 	});
     </script>
-    <button type="submit">Changer</button>
-    rangés par classe et par ordre alphabétique</h2>
+    <button type="submit">Changer</button></h2>
 
 	<p>Vous devez choisir un cr&eacute;neau pour visionner les absents
 	<select name="choix_creneau" onchange='document.choix_du_creneau.submit();'>

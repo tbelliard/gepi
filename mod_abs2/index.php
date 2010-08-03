@@ -66,7 +66,7 @@ if (isset($_SESSION['abs2_onglet']) && $_SESSION['abs2_onglet'] != 'index.php') 
 }
 
 if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") {
-    header("Location: ./tableau_des_saisies.php");
+    header("Location: ./tableau_des_appels.php");
     die();
 } else if ($utilisateur->getStatut()=="professeur") {
     header("Location: ./saisir_groupe.php");
