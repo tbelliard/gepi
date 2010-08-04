@@ -3,7 +3,10 @@
  *
  *$Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2010 Josselin Jacquard
+ *
+ * This file and the mod_abs2 module is distributed under GPL version 3, or
+ * (at your option) any later version.
  *
  * This file is part of GEPI.
  *
