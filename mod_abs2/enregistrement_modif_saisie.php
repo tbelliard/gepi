@@ -64,8 +64,6 @@ $id_saisie = isset($_POST["id_saisie"]) ? $_POST["id_saisie"] :(isset($_GET["id_
 $date_debut = isset($_POST["date_debut"]) ? $_POST["date_debut"] :(isset($_GET["date_debut"]) ? $_GET["date_debut"] :NULL);
 $date_fin = isset($_POST["date_fin"]) ? $_POST["date_fin"] :(isset($_GET["date_fin"]) ? $_GET["date_fin"] :NULL);
 $commentaire = isset($_POST["commentaire"]) ? $_POST["commentaire"] :(isset($_GET["commentaire"]) ? $_GET["commentaire"] :NULL);
-$total_traitements = isset($_POST["total_traitements"]) ? $_POST["total_traitements"] :(isset($_GET["total_traitements"]) ? $_GET["total_traitements"] :0);
-$ajout_type_absence = isset($_POST["ajout_type_absence"]) ? $_POST["ajout_type_absence"] :(isset($_GET["ajout_type_absence"]) ? $_GET["ajout_type_absence"] :null);
 
 $message_enregistrement = '';
 $saisie = AbsenceEleveSaisieQuery::create()->findPk($id_saisie);
@@ -81,6 +79,13 @@ if ( isset($_POST["creation_traitement"])) {
     $traitement->addAbsenceEleveSaisie($saisie);
     $traitement->save();
     header("Location: ./visu_traitement.php?id_traitement=".$traitement->getId());
+    die();
+} elseif ( isset($_POST["modifier_type"])) {
+    $message_enregistrement .= modif_type($saisie, $utilisateur);
+    if ($message_enregistrement == '') {
+	$message_enregistrement = 'Modification du type enregistrée';
+    }
+    include("visu_saisie.php");
     die();
 }
 
@@ -138,48 +143,7 @@ if ($utilisateur->getStatut() == 'professeur') {
 }
 $saisie->setFinAbs($date_fin);
 
-
-for($i=0; $i<$total_traitements; $i++) {
-
-    //on test si on a un traitement a modifer
-    if (!(isset($_POST['id_traitement'][$i]) && $_POST['id_traitement'][$i] != -1) ) {
-	$message_enregistrement .= "Probleme avec l'id traitement : ".$_POST['id_traitement'][$i]."<br/>";
-	continue;
-    }
-
-    //il faut trouver le traitement corespondant à l'id
-    $criteria = new Criteria();
-    $criteria->add(AbsenceEleveTraitementPeer::ID, $_POST['id_traitement'][$i]);
-    $traitement = $saisie->getAbsenceEleveTraitements($criteria);
-    if ($traitement->count() != 1) {
-	$message_enregistrement .= "Probleme avec l'id traitement : ".$_POST['id_traitement'][$i]."<br/>";
-	continue;
-    }
-
-    //on test si on a un traitement a modifer
-    $type = AbsenceEleveTypeQuery::create()->findPk($_POST['type_traitement'][$i]);
-    $traitement->getFirst()->setAbsenceEleveType($type);
-    $traitement->getFirst()->save();
-}
-
-
-if ($ajout_type_absence != null && $ajout_type_absence != -1) {
-    $type = AbsenceEleveTypeQuery::create()->findPk($ajout_type_absence);
-    if ($type != null) {
-	if ($type->isStatutAutorise($utilisateur->getStatut())) {
-	    //on va creer un traitement avec le type d'absence associé
-	    $traitement = new AbsenceEleveTraitement();
-	    $traitement->addAbsenceEleveSaisie($saisie);
-	    $traitement->setAbsenceEleveType($type);
-	    $traitement->setUtilisateurProfessionnel($utilisateur);
-	    $traitement->save();
-	} else {
-	    $message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
-	}
-    } else {
-	$message_enregistrement .= "Probleme avec l'id du type d'absence : ".$_POST['type_absence_eleve'][$i]."<br/>";
-    }
-}
+modif_type($saisie, $utilisateur);
 
 if ($saisie->validate()) {
     $saisie->save();
@@ -198,4 +162,65 @@ if ($saisie->validate()) {
 }
 
 include("visu_saisie.php");
+
+function modif_type ($saisie, $utilisateur) {
+    $total_traitements = isset($_POST["total_traitements"]) ? $_POST["total_traitements"] :(isset($_GET["total_traitements"]) ? $_GET["total_traitements"] :0);
+    $ajout_type_absence = isset($_POST["ajout_type_absence"]) ? $_POST["ajout_type_absence"] :(isset($_GET["ajout_type_absence"]) ? $_GET["ajout_type_absence"] :null);
+    $message_enregistrement = '';
+    for($i=0; $i<$total_traitements; $i++) {
+
+	//on test si on a un traitement a modifer
+	if (!(isset($_POST['id_traitement'][$i]) && $_POST['id_traitement'][$i] != -1) ) {
+	    $message_enregistrement .= "Probleme avec l'id traitement : ".$_POST['id_traitement'][$i]."<br/>";
+	    continue;
+	}
+
+	//il faut trouver le traitement corespondant à l'id
+	$criteria = new Criteria();
+	$criteria->add(AbsenceEleveTraitementPeer::ID, $_POST['id_traitement'][$i]);
+	$traitement = $saisie->getAbsenceEleveTraitements($criteria);
+	if ($traitement->count() != 1) {
+	    $message_enregistrement .= "Probleme avec l'id traitement : ".$_POST['id_traitement'][$i]."<br/>";
+	    continue;
+	}
+	if (!$traitement->getFirst()->getModifiable()) {
+	    $message_enregistrement .= "Traitement ".$_POST['id_traitement'][$i]." non modifiable<br/>";
+	    continue;
+	}
+
+	//on test si on a un traitement a modifer
+	$type = AbsenceEleveTypeQuery::create()->findPk($_POST['type_traitement'][$i]);
+	if ($type == null) {
+	    $message_enregistrement .= "Impossible de supprimer un type.<br/>";
+	    continue;
+	}
+	if (!$type->isStatutAutorise($utilisateur->getStatut())) {
+	    $message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
+	    continue;
+	}
+	$traitement->getFirst()->setAbsenceEleveType($type);
+	$traitement->getFirst()->save();
+    }
+
+
+    if ($ajout_type_absence != null && $ajout_type_absence != -1) {
+	$type = AbsenceEleveTypeQuery::create()->findPk($ajout_type_absence);
+	if ($type != null) {
+	    if ($type->isStatutAutorise($utilisateur->getStatut())) {
+		//on va creer un traitement avec le type d'absence associé
+		$traitement = new AbsenceEleveTraitement();
+		$traitement->addAbsenceEleveSaisie($saisie);
+		$traitement->setAbsenceEleveType($type);
+		$traitement->setUtilisateurProfessionnel($utilisateur);
+		$traitement->save();
+	    } else {
+		$message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
+	    }
+	} else {
+	    $message_enregistrement .= "Probleme avec l'id du type d'absence : ".$_POST['type_absence_eleve'][$i]."<br/>";
+	}
+    }
+
+    return $message_enregistrement;
+}
 ?>

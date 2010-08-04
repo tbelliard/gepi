@@ -102,15 +102,18 @@ if ($saisie != null) {
 
 //la saisie est-elle modifiable ?
 //Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session,
-//elle date de moins d'une heure et l'option a ete coché partie admin
-$modifiable = false;
-if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
-    if ($saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && $saisie->getCreatedAt('U') > (time() - 3600)) {
-	$modifiable = true;
+//si elle date de moins de 24 heure (sauf pour le statut prof)
+//elle date de moins d'une heure et l'option a ete coché partie admin pour le statut prof
+$modifiable = $saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && ($saisie->getCreatedAt('U') > (time() - 24*3600));
+if ($modifiable && $utilisateur->getStatut() == 'professeur') {
+    if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
+	$modifiable =  ($saisie->getCreatedAt('U') > (time() - 3600));
+    } else {
+	$modifiable = false;
     }
 }
 if (!$modifiable) {
-    echo "La saisie n'est pas modifiable";
+    echo "La saisie n'est pas modifiable<br/>";
 }
 
 if (isset($message_enregistrement)) {
@@ -127,7 +130,13 @@ echo '</TD><TD>';
 echo $saisie->getPrimaryKey();
 echo '</TD></tr>';
 
-echo '<tr>';
+echo '<tr><TD>';
+echo 'Saisi par : ';
+echo '</TD><TD>';
+echo $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
+echo '</TD></tr>';
+
+    echo '<tr>';
 if ($saisie->getEleve() == null) {
     echo '<TD colspan="2">';
     echo "Marqueur d'appel effectué";
@@ -203,8 +212,7 @@ if (!$modifiable) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDebutAbs('U')));
 } else {
     echo '<nobr><input name="heure_debut" value="'.$saisie->getDebutAbs("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
-    //if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
-    if (true) {
+    if ($utilisateur->getStatut() == 'professeur') {//on autorise pas au professeur a changer la date
 	echo (strftime(" %a %d/%m/%Y", $saisie->getDebutAbs('U')));
 	echo '<input name="date_debut" value="'.$saisie->getDebutAbs('d/m/Y').'" type="hidden"/></nobr> ';
     } else {
@@ -234,7 +242,7 @@ if (!$modifiable) {
 } else {
     echo '<nobr><input name="heure_fin" value="'.$saisie->getFinAbs("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
     //if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale") != 'y') {
-    if (true) {
+    if ($utilisateur->getStatut() == 'professeur') {
 	echo (strftime(" %a %d/%m/%Y", $saisie->getFinAbs('U')));
 	echo '<input name="date_fin" value="'.$saisie->getFinAbs('d/m/Y').'" type="hidden"/></nobr> ';
     } else {
@@ -261,7 +269,7 @@ echo 'Traitement : ';
 echo '</TD><TD>';
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
     //on affiche les traitements uniquement si ils ne sont pas modifiables, car si ils sont modifiables on va afficher un input pour pouvoir les modifier
-    if ($traitement->getUtilisateurId() != $utilisateur->getPrimaryKey() || !$modifiable) {
+    if ($traitement->getUtilisateurId() != $utilisateur->getPrimaryKey() || ! $traitement->getModifiable()) {
 	echo "<nobr>";
 	if ($utilisateur->getStatut() != 'professeur') {
 	    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."' style='display: block; height: 100%;'> ";
@@ -274,49 +282,55 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
     }
 }
 
-$total_traitements = 0;
+$total_traitements_modifiable = 0;
 $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
     //on affiche les traitements uniquement si ils ne sont pas modifiables, car si ils sont modifiables on va afficher un input pour pouvoir les modifier
-    if ($traitement->getUtilisateurId() == $utilisateur->getPrimaryKey() && $modifiable) {
-	$total_traitements = $total_traitements + 1;
-	$type_autorises->getFirst();
-	if ($type_autorises->count() != 0) {
-		echo '<input type="hidden" name="id_traitement[';
-		echo ($total_traitements - 1);
-		echo ']" value="'.$traitement->getId().'"/>';
-		echo ("<select name=\"type_traitement[");
-		echo ($total_traitements - 1);
-		echo ("]\">");
-		echo "<option value='-1'></option>\n";
-		foreach ($type_autorises as $type) {
-		    //$type = new AbsenceEleveTypeStatutAutorise();
-			echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
-			if ($type->getAbsenceEleveType()->getId() == $traitement->getATypeId()) {
-			    echo "selected";
-			}
-			echo ">";
-			echo $type->getAbsenceEleveType()->getNom();
-			echo "</option>\n";
-		}
-		echo "</select><br>";
-	}
+    if ($traitement->getUtilisateurId() != $utilisateur->getPrimaryKey() || !$traitement->getModifiable()) {
+	continue;
+    }
+    $total_traitements_modifiable = $total_traitements_modifiable + 1;
+    $type_autorises->getFirst();
+    if ($type_autorises->count() != 0) {
+	    echo '<input type="hidden" name="id_traitement[';
+	    echo ($total_traitements_modifiable - 1);
+	    echo ']" value="'.$traitement->getId().'"/>';
+	    echo ("<select name=\"type_traitement[");
+	    echo ($total_traitements_modifiable - 1);
+	    echo ("]\">");
+	    echo "<option value='-1'></option>\n";
+	    foreach ($type_autorises as $type) {
+		//$type = new AbsenceEleveTypeStatutAutorise();
+		    echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
+		    if ($type->getAbsenceEleveType()->getId() == $traitement->getATypeId()) {
+			echo "selected";
+		    }
+		    echo ">";
+		    echo $type->getAbsenceEleveType()->getNom();
+		    echo "</option>\n";
+	    }
+	    echo "</select><br>";
     }
 }
-echo '<input type="hidden" name="total_traitements" value="'.$total_traitements.'"/>';
+echo '<input type="hidden" name="total_traitements" value="'.$total_traitements_modifiable.'"/>';
 
-
-if ($modifiable && $total_traitements == 0) {
-    echo ("<select name=\"ajout_type_absence\">");
-    echo "<option value='-1'></option>\n";
-    foreach ($type_autorises as $type) {
-	//$type = new AbsenceEleveTypeStatutAutorise();
-	    echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
-	    echo ">";
-	    echo $type->getAbsenceEleveType()->getNom();
-	    echo "</option>\n";
+if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
+//pour les cpe et scola, ajouter un type est fait avec ajout d'un traitement, donc on affiche pas ce bloc
+    if ($total_traitements_modifiable == 0) {
+	echo ("<select name=\"ajout_type_absence\">");
+	echo "<option value='-1'></option>\n";
+	foreach ($type_autorises as $type) {
+	    //$type = new AbsenceEleveTypeStatutAutorise();
+		echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
+		echo ">";
+		echo $type->getAbsenceEleveType()->getNom();
+		echo "</option>\n";
+	}
+	echo "</select>";
     }
-    echo "</select>";
+    if (!$modifiable) {
+	echo '<button type="submit" name="modifier_type" value="vrai">Modifier le type</button>';
+    }
 }
 
 echo '</TD></tr>';
