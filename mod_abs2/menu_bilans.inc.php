@@ -32,6 +32,10 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='extraction_saisies.php') {echo "class='current' ";}
     echo "title='Extraction des saisies'>Extraction des saisies</a></li>\n";
 
+    echo "<li><a href='extraction_demi-journees.php' ";
+    if($onglet_abs=='extraction_demi-journees.php') {echo "class='current' ";}
+    echo "title='Extraction des saisies'>Extraction des demi-journées</a></li>\n";
+
     echo "</ul>\n";
 
 }

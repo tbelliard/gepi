@@ -59,7 +59,7 @@ if(($_SESSION['statut']=='cpe')||
 
 } else if ($_SESSION['statut']=='professeur') {
 
-	echo "<ul class='css-tabs' id='menutabs'>\n";
+    echo "<ul class='css-tabs' id='menutabs'>\n";
 
     echo "<li><a href='saisir_groupe.php' ";
     if($onglet_abs=='saisir_groupe.php' || $onglet_abs=='enregistrement_saisie_groupe.php') {echo "class='current' ";}
