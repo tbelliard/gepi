@@ -93,7 +93,7 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 //**************** EN-TETE *****************
-$titre_page = "Bilan du jour.";
+$titre_page = "Les absences";
 if ($affichage != 'ods') {// on affiche pas de html
     require_once("../lib/header.inc");
 
@@ -257,7 +257,7 @@ if ($affichage == 'html') {
     $TBS->MergeBlock('saisie_col',$saisie_col);
 
     // Output as a download file (some automatic fields are merged here)
-    $nom_fichier = 'saisies_absences_';
+    $nom_fichier = 'extrait_saisies_';
     if ($classe != null) {
 	$nom_fichier .= $classe->getNom().'_';
     }

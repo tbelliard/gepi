@@ -76,7 +76,7 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 //**************** EN-TETE *****************
-$titre_page = "Bilan du jour.";
+$titre_page = "Les absences";
 require_once("../lib/header.inc");
 include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
