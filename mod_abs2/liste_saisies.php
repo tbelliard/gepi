@@ -108,7 +108,11 @@ echo "<div class='css-panes' style='background-color:#d7e8d8;' id='containDiv' s
 
 
 $query = AbsenceEleveSaisieQuery::create();
-$query->filterByUtilisateurProfessionnel($utilisateur);
+if ($utilisateur->getStatut() == 'autre')  {
+    $query->filterByUtilisateurProfessionnel($utilisateur);
+} else {
+    $query->useEleveQuery()->filterByUtilisateurProfessionnel($utilisateur)->endUse();
+}
 if (isFiltreRechercheParam('filter_saisie_id')) {
     $query->filterById(getFiltreRechercheParam('filter_saisie_id'));
     echo 'filter_id_oui : '.getFiltreRechercheParam('filter_saisie_id');
