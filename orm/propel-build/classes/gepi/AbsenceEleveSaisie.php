@@ -138,9 +138,14 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 *
 	 */
 	public function getRetard() {
-	    //est considéré retard toute absence inferieure a 30 min
-	    //todo rendre ceci configurable
-	    return (($this->getFinAbs('U') - $this->getDebutAbs('U')) < 60*30);
+
+	    $nb_min = getSettingValue("abs2_retard_critere_duree");
+	    if ($nb_min == null
+		    || $nb_min == '') {
+		$nb_min = 30;
+	    }
+
+	    return (($this->getFinAbs('U') - $this->getDebutAbs('U')) < 60*$nb_min);
 	}
 
 	/**

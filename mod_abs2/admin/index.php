@@ -80,6 +80,11 @@ if (isset($_POST['abs2_sms_password'])) {
 		$msg = "Erreur lors de l'enregistrement du mot de passe prestataire sms !";
 	}
 }
+if (isset($_POST['abs2_retard_critere_duree'])) {
+	if (!saveSetting("abs2_retard_critere_duree", $_POST['abs2_retard_critere_duree'])) {
+		$msg = "Erreur lors de l'enregistrement de abs2_retard_critere_duree !";
+	}
+}
 if (isset($_POST['is_posted'])) {
 	if ($_POST['is_posted']=='1') {
 
@@ -333,6 +338,21 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	<input type="checkbox" id="abs2_saisie_multi_type_sous_responsabilite_etab" name="abs2_saisie_multi_type_sous_responsabilite_etab" value="y"
 	<?php if (getSettingValue("abs2_saisie_multi_type_sous_responsabilite_etab")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_saisie_multi_type_sous_responsabilite_etab">&nbsp;Dans le cas d'une saisie avec plusieurs types contradictoires, considérer que l'élève est par défaut sous la responsabilité de l'établissement.</label>
+</p>
+<p>
+	<?php if (getSettingValue("abs2_retard_critere_duree") == null || getSettingValue("abs2_retard_critere_duree") == '') saveSetting("abs2_retard_critere_duree", 30); ?>
+	Configuration du bulletin : Dans le décompte demi-journées d'absence, demi-journées d'absence non justifiées, retards, considérer les saisie inférieures à
+	<select name="abs2_retard_critere_duree">
+		<option value="10" <?php if (getSettingValue("abs2_retard_critere_duree") == '10') echo " selected"; ?>>10</option>
+		<option value="20" <?php if (getSettingValue("abs2_retard_critere_duree") == '20') echo " selected"; ?>>20</option>
+		<option value="30" <?php if (getSettingValue("abs2_retard_critere_duree") == '30') echo " selected"; ?>>30</option>
+		<option value="40" <?php if (getSettingValue("abs2_retard_critere_duree") == '40') echo " selected"; ?>>40</option>
+		<option value="50" <?php if (getSettingValue("abs2_retard_critere_duree") == '50') echo " selected"; ?>>50</option>
+	</select>
+	min comme des retards.<br/>
+	Note : si les creneaux durent 45 minutes et que ce parametre est réglé sur 50 min, la plupart de vos saisies seront décomptées comme retard.<br/>
+	Note : le type de saisie n'intervient pas pour la distinction dans ce décompte, seul la durée est déterminante.<br/>
+
 </p>
 
 <!--h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
