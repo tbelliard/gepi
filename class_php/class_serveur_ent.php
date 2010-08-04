@@ -26,7 +26,7 @@
  * Accès limité à la lecture seule. Pour limiter les accès, on liste les méthodes disponibles
  * Les logins des élèves existent sous la forme d'un tableau envoyé en POST par curl
  *
- * @method notesEleve(), cdtDevoirsEleve(), cdtCREleve(), professeursEleve(), edtEleve()
+ * @method notesEleve(), cdtDevoirsEleve(), cdtCREleve(), professeursEleve(), edtEleve(), listeEleveAvecClasse(), listeProfesseursAvecMatieres(), ListeClasseAvecProfesseurs()
  *
  * @author Julien Jocal
  * @license GPL
@@ -74,7 +74,11 @@ class serveur_ent {
    * @var string hash
    */
   private $_hash        = NULL;
-
+  /**
+   * Le nom du client sert de couple Mon/cl pour vérifier
+   * @var string Nom du client
+   */
+  private $_domain_name   = NULL;
   /**
    * Constructeur de la classe
    *
@@ -84,10 +88,8 @@ class serveur_ent {
     // On initialise toutes nos propriétés
     $this->setData();
     // Vérification de la clé
-    $this->verifKey('4567123');
-    // On intègre les fichiers d'initialisation de GEPI
-    //require_once("../lib/initialisationsPropel.inc.php");
-    //require_once("../lib/initialisations.inc.php");
+    $this->_domain_name = isset($_POST['domain_name']) ? $_POST['domain_name'] : NULL;
+    $this->verifKey($this->_domain_name);
 
     // On vérifie que la demande est disponible
     if (!in_array($this->_demande, $this->getMethodesAutorisees())){
@@ -112,7 +114,6 @@ class serveur_ent {
       }
 
     } // foreach
-    //$this->_enfants = $reponse; // Désormais on a les objets propel de ces enfants, reste à les manipuler
 
     if (is_array($reponse)){
       echo serialize($reponse);
@@ -151,8 +152,33 @@ class serveur_ent {
     }
   }
 
-  private function verifKey($key){
-    if ($this->_api_key != $key){
+  /**
+   * Permet de vérifier la clé du demandeur
+   *
+   * @param string $demandeur
+   */
+  private function verifKey($demandeur){
+    include '../secure/serveur.inc.php';
+    if (!array_key_exists($demandeur, $serveur)){
+      $this->writeLog(__METHOD__, 'Compte inexistant ('.$demandeur.')', $_SERVER['HTTP_REFERER']);
+      Die('Compte inexistant.');
+    }else if ($this->_api_key != $serveur[$demandeur]['api_key']){
+      $this->writeLog(__METHOD__, 'La clé n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
+      Die('la clé est obsolète : ' . $this->_api_key . '|+|' . $key);
+    }
+  }
+
+  /**
+   * Vérifie si le client fait la demande depuis une adresse IP autorisée
+   *
+   * @param string $demandeur
+   */
+  private function verifIPClient($demandeur){
+    include '../secure/serveur.inc.php';
+    if (!array_key_exists($demandeur, $serveur)){
+      $this->writeLog(__METHOD__, 'Compte inexistant IP ('.$demandeur.')', $_SERVER['HTTP_REFERER']);
+      Die('Compte inexistant IP.');
+    }else if ($this->_api_key != $serveur[$demandeur]['ip']){
       $this->writeLog(__METHOD__, 'La clé n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
       Die('la clé est obsolète : ' . $this->_api_key . '|+|' . $key);
     }
@@ -163,7 +189,7 @@ class serveur_ent {
    * @return array liste des méthodes autorisées
    */
   public function getMethodesAutorisees(){
-    return array('notesEleve', 'cdtDevoirsEleve', 'cdtCREleve', 'professeursEleve', 'edtEleve');
+    return array('notesEleve', 'cdtDevoirsEleve', 'cdtCREleve', 'professeursEleve', 'edtEleve', 'listeEleveAvecClasse', 'listeProfesseursAvecMatieres', 'ListeClasseAvecProfesseurs');
   }
 
   /**
