@@ -104,6 +104,20 @@ echo '</td><td>';
 echo $traitement->getPrimaryKey();
 echo '</td></tr>';
 
+echo '<tr><TD>';
+echo 'Creer par : ';
+echo '</TD><TD>';
+echo $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom().' '.substr($traitement->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
+echo '</TD></tr>';
+
+if ($traitement->getModifieParUtilisateurId() != null && $traitement->getUtilisateurId() != $traitement->getModifieParUtilisateurId()) {
+    echo '<tr><TD>';
+    echo 'Modifié par : ';
+    echo '</TD><TD>';
+    echo $traitement->getModifieParUtilisateur()->getCivilite().' '.$traitement->getModifieParUtilisateur()->getNom().' '.substr($traitement->getModifieParUtilisateur()->getPrenom(), 0, 1).'.';
+    echo '</TD></tr>';
+}
+
 echo '<tr><td>';
 echo 'Saisies : ';
 echo '</td><td>';
