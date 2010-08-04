@@ -232,14 +232,19 @@ if ($message_erreur != '') {
 
 for($i=0; $i<$total_eleves; $i++) {
 
+    if (!(isset($_POST['id_eleve_absent'][$i]))) {
+	continue;
+    }
     $id_eleve = $_POST['id_eleve_absent'][$i];
 
     //on test si l'eleve est coché absent
-    if (!isset($_POST['active_absence_eleve'][$i]) &&
-	!(isset($_POST['commentaire_absence_eleve'][$i]) && $_POST['commentaire_absence_eleve'][$i] != null) &&
-	!(isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1) ) {
+    if (!isset($_POST['active_absence_eleve'][$i])
+	&& !(isset($_POST['commentaire_absence_eleve'][$i]) && $_POST['commentaire_absence_eleve'][$i] != null)
+	&& !(isset($_POST['type_absence_eleve'][$i]) && $_POST['type_absence_eleve'][$i] != -1)
+	    ) {
 	continue;
     }
+    
     //on cherche l'eleve
     $eleve = EleveQuery::create()->findPk($_POST['id_eleve_absent'][$i]);
     if ($eleve == null) {
