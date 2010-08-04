@@ -131,12 +131,18 @@ foreach($classe_col as $classe) {
 			<td colspan="'.($creneau_col->count() + 1).'"></td>
 		</tr>
 		';
-	$eleve_col = EleveQuery::create()
+	$eleve_query = EleveQuery::create()
 		->orderByNom()
-		->filterByUtilisateurProfessionnel($utilisateur)
 		->useAbsenceEleveSaisieQuery()->filterByPlageTemps($dt_debut, $dt_fin)->endUse()
 		->useJEleveClasseQuery()->filterByIdClasse($classe->getId())->endUse()
-		->distinct()->find();
+		->distinct();
+
+	if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+	    //on ne filtre pas
+	} else {
+	    $eleve_query->filterByUtilisateurProfessionnel($utilisateur);
+	}
+	$eleve_col = $eleve_query->find();
 	foreach($eleve_col as $eleve){
 			$affiche = false;
 			foreach($eleve->getAbsenceEleveSaisiesDuJour($dt_debut) as $abs) {
