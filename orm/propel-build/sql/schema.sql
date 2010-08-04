@@ -793,8 +793,8 @@ CREATE TABLE a_types
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire auto-incrementee',
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du type d\'absence',
 	justification_exigible TINYINT COMMENT 'Ce type d\'absence doit entrainer une justification de la part de la famille',
-	sous_responsabilite_etablissement VARCHAR(255) COMMENT 'L\'eleve est sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
-	manquement_obligation_presence VARCHAR(255) COMMENT 'L\'eleve manque à ses obligations de presence (L\'absence apparait sur le bulletin). Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
+	sous_responsabilite_etablissement VARCHAR(255) default 'NON_PRECISE' COMMENT 'L\'eleve est sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
+	manquement_obligation_presence VARCHAR(255) default 'NON_PRECISE' COMMENT 'L\'eleve manque à ses obligations de presence (L\'absence apparait sur le bulletin). Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
 	type_saisie VARCHAR(50) default 'NON_PRECISE' COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
@@ -842,14 +842,14 @@ CREATE TABLE a_saisies
 	id_classe INTEGER COMMENT 'identifiant de la classe pour lequel la saisie a ete effectuee',
 	id_aid INTEGER COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
 	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
+	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id),
 	INDEX a_saisies_FI_1 (utilisateur_id),
 	CONSTRAINT a_saisies_FK_1
 		FOREIGN KEY (utilisateur_id)
-		REFERENCES utilisateurs (login)
-		ON DELETE SET NULL,
+		REFERENCES utilisateurs (login),
 	INDEX a_saisies_FI_2 (eleve_id),
 	CONSTRAINT a_saisies_FK_2
 		FOREIGN KEY (eleve_id)
@@ -879,7 +879,11 @@ CREATE TABLE a_saisies
 	CONSTRAINT a_saisies_FK_7
 		FOREIGN KEY (id_aid)
 		REFERENCES aid (id)
-		ON DELETE SET NULL
+		ON DELETE SET NULL,
+	INDEX a_saisies_FI_8 (modifie_par_utilisateur_id),
+	CONSTRAINT a_saisies_FK_8
+		FOREIGN KEY (modifie_par_utilisateur_id)
+		REFERENCES utilisateurs (login)
 ) ENGINE=MyISAM COMMENT='Chaque saisie d\'absence doit faire l\'objet d\'une ligne dans la table a_saisies. Une saisie peut etre : une plage horaire longue durée (plusieurs jours), défini avec les champs debut_abs et fin_abs. Un creneau horaire, le jour etant precisé dans debut_abs. Un cours de l\'emploi du temps, le jours du cours etant precisé dans debut_abs.';
 
 #-----------------------------------------------------------------------------
@@ -897,14 +901,14 @@ CREATE TABLE a_traitements
 	a_motif_id INTEGER(4) COMMENT 'cle etrangere du motif d\'absence',
 	a_justification_id INTEGER(4) COMMENT 'cle etrangere de la justification de l\'absence',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
+	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id),
 	INDEX a_traitements_FI_1 (utilisateur_id),
 	CONSTRAINT a_traitements_FK_1
 		FOREIGN KEY (utilisateur_id)
-		REFERENCES utilisateurs (login)
-		ON DELETE SET NULL,
+		REFERENCES utilisateurs (login),
 	INDEX a_traitements_FI_2 (a_type_id),
 	CONSTRAINT a_traitements_FK_2
 		FOREIGN KEY (a_type_id)
@@ -919,7 +923,11 @@ CREATE TABLE a_traitements
 	CONSTRAINT a_traitements_FK_4
 		FOREIGN KEY (a_justification_id)
 		REFERENCES a_justifications (id)
-		ON DELETE SET NULL
+		ON DELETE SET NULL,
+	INDEX a_traitements_FI_5 (modifie_par_utilisateur_id),
+	CONSTRAINT a_traitements_FK_5
+		FOREIGN KEY (modifie_par_utilisateur_id)
+		REFERENCES utilisateurs (login)
 ) ENGINE=MyISAM COMMENT='Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies';
 
 #-----------------------------------------------------------------------------

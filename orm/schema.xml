@@ -418,7 +418,7 @@
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description=""/>
 	<!-- si un utilisateur est supprime, on ne supprime pas les absences saisies par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
     <column name="utilisateur_id" type="VARCHAR" size="100" description="Login de l'utilisateur professionnel qui a saisi l'absence"/>
-    <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
+    <foreign-key foreignTable="utilisateurs" onDelete="none" phpName = "UtilisateurProfessionnel" refPhpName = "AbsenceEleveSaisie"><reference local="utilisateur_id" foreign="login"/></foreign-key>
     <column name="eleve_id" type="INTEGER" size="11" default="null" description="id_eleve de l'eleve objet de la saisie, egal à null si aucun eleve n'est saisi"/>
     <foreign-key foreignTable="eleves" onDelete="cascade"><reference local="eleve_id" foreign="id_eleve"/></foreign-key>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire de l'utilisateur"/>
@@ -436,13 +436,16 @@
     <foreign-key foreignTable="aid" onDelete="setnull"><reference local="id_aid" foreign="id"/></foreign-key>
     <column name="id_s_incidents" required="false" type="INTEGER" default="null" description="identifiant de la saisie d'incident discipline"/>
     <behavior name="timestampable" />
+    <column name="modifie_par_utilisateur_id" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a modifie en dernier le traitement"/>
+	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
+    <foreign-key foreignTable="utilisateurs" onDelete="none" phpName = "ModifieParUtilisateur" refPhpName = "ModifiedAbsenceEleveSaisie"><reference local="modifie_par_utilisateur_id" foreign="login"/></foreign-key>
   </table>
 
   <table name="a_traitements" phpName="AbsenceEleveTraitement" description="Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies">
     <column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire auto-incremente"/>
     <column name="utilisateur_id" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a fait le traitement"/>
 	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
-    <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
+    <foreign-key foreignTable="utilisateurs" onDelete="none" phpName = "UtilisateurProfessionnel" refPhpName = "AbsenceEleveTraitement"><reference local="utilisateur_id" foreign="login"/></foreign-key>
     <column name="a_type_id" type="INTEGER" default="null" size="4" description="cle etrangere du type d'absence"/>
     <foreign-key foreignTable="a_types" onDelete="setnull"><reference local="a_type_id" foreign="id"/></foreign-key>
     <column name="a_motif_id" type="INTEGER" default="null" size="4" description="cle etrangere du motif d'absence"/>
@@ -452,6 +455,9 @@
     <!-- column name="texte_justification" required="false" type="VARCHAR" size="250" description="Texte additionnel à ce traitement"/-->
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
     <behavior name="timestampable" />
+    <column name="modifie_par_utilisateur_id" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a modifie en dernier le traitement"/>
+	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
+    <foreign-key foreignTable="utilisateurs" onDelete="none" phpName = "ModifieParUtilisateur" refPhpName = "ModifiedAbsenceEleveTraitement"><reference local="modifie_par_utilisateur_id" foreign="login"/></foreign-key>
   </table>
 
   <table name="j_traitements_saisies" phpName="JTraitementSaisieEleve" description="Table de jointure entre la saisie et le traitement des absences" isCrossRef="true">

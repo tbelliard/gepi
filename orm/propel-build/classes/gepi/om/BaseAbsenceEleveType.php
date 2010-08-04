@@ -44,12 +44,14 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 
 	/**
 	 * The value for the sous_responsabilite_etablissement field.
+	 * Note: this column has a database default value of: 'NON_PRECISE'
 	 * @var        string
 	 */
 	protected $sous_responsabilite_etablissement;
 
 	/**
 	 * The value for the manquement_obligation_presence field.
+	 * Note: this column has a database default value of: 'NON_PRECISE'
 	 * @var        string
 	 */
 	protected $manquement_obligation_presence;
@@ -113,6 +115,8 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	 */
 	public function applyDefaultValues()
 	{
+		$this->sous_responsabilite_etablissement = 'NON_PRECISE';
+		$this->manquement_obligation_presence = 'NON_PRECISE';
 		$this->type_saisie = 'NON_PRECISE';
 	}
 
@@ -278,7 +282,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->sous_responsabilite_etablissement !== $v) {
+		if ($this->sous_responsabilite_etablissement !== $v || $this->isNew()) {
 			$this->sous_responsabilite_etablissement = $v;
 			$this->modifiedColumns[] = AbsenceEleveTypePeer::SOUS_RESPONSABILITE_ETABLISSEMENT;
 		}
@@ -298,7 +302,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			$v = (string) $v;
 		}
 
-		if ($this->manquement_obligation_presence !== $v) {
+		if ($this->manquement_obligation_presence !== $v || $this->isNew()) {
 			$this->manquement_obligation_presence = $v;
 			$this->modifiedColumns[] = AbsenceEleveTypePeer::MANQUEMENT_OBLIGATION_PRESENCE;
 		}
@@ -376,6 +380,14 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->sous_responsabilite_etablissement !== 'NON_PRECISE') {
+				return false;
+			}
+
+			if ($this->manquement_obligation_presence !== 'NON_PRECISE') {
+				return false;
+			}
+
 			if ($this->type_saisie !== 'NON_PRECISE') {
 				return false;
 			}
@@ -1346,6 +1358,31 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	{
 		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
 		$query->joinWith('AbsenceEleveJustification', $join_behavior);
+
+		return $this->getAbsenceEleveTraitements($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this AbsenceEleveType is new, it will return
+	 * an empty collection; or if this AbsenceEleveType has previously
+	 * been saved, it will retrieve related AbsenceEleveTraitements from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in AbsenceEleveType.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
+	 */
+	public function getAbsenceEleveTraitementsJoinModifieParUtilisateur($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
+		$query->joinWith('ModifieParUtilisateur', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
 	}

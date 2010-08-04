@@ -380,7 +380,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 				    } else {
 					//on utilise du sql directement pour optimiser la requete
 					$sql = "SELECT 
-					    a_traitements.ID, a_traitements.UTILISATEUR_ID, a_traitements.A_TYPE_ID, a_traitements.A_MOTIF_ID, a_traitements.A_JUSTIFICATION_ID, a_traitements.COMMENTAIRE, a_traitements.CREATED_AT, a_traitements.UPDATED_AT, a_types.ID, a_types.NOM, a_types.JUSTIFICATION_EXIGIBLE,
+					    a_traitements.ID, a_traitements.UTILISATEUR_ID, a_traitements.modifie_par_utilisateur_id, a_traitements.A_TYPE_ID, a_traitements.A_MOTIF_ID, a_traitements.A_JUSTIFICATION_ID, a_traitements.COMMENTAIRE, a_traitements.CREATED_AT, a_traitements.UPDATED_AT, a_types.ID, a_types.NOM, a_types.JUSTIFICATION_EXIGIBLE,
 					    a_types.SOUS_RESPONSABILITE_ETABLISSEMENT, a_types.MANQUEMENT_OBLIGATION_PRESENCE, a_types.TYPE_SAISIE, a_types.COMMENTAIRE, a_types.SORTABLE_RANK,
 					    a_notifications.ID, a_notifications.UTILISATEUR_ID, a_notifications.A_TRAITEMENT_ID, a_notifications.TYPE_NOTIFICATION, a_notifications.EMAIL, a_notifications.TELEPHONE, a_notifications.ADR_ID, a_notifications.COMMENTAIRE, a_notifications.STATUT_ENVOI, a_notifications.DATE_ENVOI, a_notifications.ERREUR_MESSAGE_ENVOI, a_notifications.CREATED_AT, a_notifications.UPDATED_AT,
 					    a_justifications.ID, a_justifications.NOM, a_justifications.COMMENTAIRE, a_justifications.SORTABLE_RANK
@@ -678,4 +678,37 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	public function isSaisiesContradictoiresManquementObligation() {
 	    return $this->getSaisiesContradictoiresManquementObligation(true);
 	}
+
+	/**
+	 * Ajout manuel : renseignement automatique de l'utilisateur qui a créé ou modifié la saisie
+	 * Persists this object to the database.
+	 *
+	 * If the object is new, it inserts it; otherwise an update is performed.
+	 * All modified related objects will also be persisted in the doSave()
+	 * method.  This method wraps all precipitate database operations in a
+	 * single transaction.
+	 *
+	 * @param      PropelPDO $con
+	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	public function save(PropelPDO $con = null)
+	{
+	    if ($this->isNew()) {
+		if ($this->getUtilisateurId() == null) {
+		    $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+		    if ($utilisateur != null) {
+			$this->setUtilisateurProfessionnel($utilisateur);
+		    }
+		}
+	    } else {
+		$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+		if ($utilisateur != null) {
+		    $this->setModifieParUtilisateur($utilisateur);
+		}
+	    }
+	    return parent::save($con);
+	}
+
 } // AbsenceEleveSaisie

@@ -84,9 +84,17 @@
  * @method     UtilisateurProfessionnelQuery rightJoinAbsenceEleveSaisie($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
  * @method     UtilisateurProfessionnelQuery innerJoinAbsenceEleveSaisie($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
  *
+ * @method     UtilisateurProfessionnelQuery leftJoinModifiedAbsenceEleveSaisie($relationAlias = '') Adds a LEFT JOIN clause to the query using the ModifiedAbsenceEleveSaisie relation
+ * @method     UtilisateurProfessionnelQuery rightJoinModifiedAbsenceEleveSaisie($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ModifiedAbsenceEleveSaisie relation
+ * @method     UtilisateurProfessionnelQuery innerJoinModifiedAbsenceEleveSaisie($relationAlias = '') Adds a INNER JOIN clause to the query using the ModifiedAbsenceEleveSaisie relation
+ *
  * @method     UtilisateurProfessionnelQuery leftJoinAbsenceEleveTraitement($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveTraitement relation
  * @method     UtilisateurProfessionnelQuery rightJoinAbsenceEleveTraitement($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveTraitement relation
  * @method     UtilisateurProfessionnelQuery innerJoinAbsenceEleveTraitement($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveTraitement relation
+ *
+ * @method     UtilisateurProfessionnelQuery leftJoinModifiedAbsenceEleveTraitement($relationAlias = '') Adds a LEFT JOIN clause to the query using the ModifiedAbsenceEleveTraitement relation
+ * @method     UtilisateurProfessionnelQuery rightJoinModifiedAbsenceEleveTraitement($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ModifiedAbsenceEleveTraitement relation
+ * @method     UtilisateurProfessionnelQuery innerJoinModifiedAbsenceEleveTraitement($relationAlias = '') Adds a INNER JOIN clause to the query using the ModifiedAbsenceEleveTraitement relation
  *
  * @method     UtilisateurProfessionnelQuery leftJoinAbsenceEleveNotification($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveNotification relation
  * @method     UtilisateurProfessionnelQuery rightJoinAbsenceEleveNotification($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveNotification relation
@@ -1262,6 +1270,70 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query by a related AbsenceEleveSaisie object
+	 *
+	 * @param     AbsenceEleveSaisie $absenceEleveSaisie  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function filterByModifiedAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
+	{
+		return $this
+			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveSaisie->getModifieParUtilisateurId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the ModifiedAbsenceEleveSaisie relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function joinModifiedAbsenceEleveSaisie($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('ModifiedAbsenceEleveSaisie');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'ModifiedAbsenceEleveSaisie');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the ModifiedAbsenceEleveSaisie relation AbsenceEleveSaisie object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveSaisieQuery A secondary query class using the current class as primary query
+	 */
+	public function useModifiedAbsenceEleveSaisieQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinModifiedAbsenceEleveSaisie($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'ModifiedAbsenceEleveSaisie', 'AbsenceEleveSaisieQuery');
+	}
+
+	/**
 	 * Filter the query by a related AbsenceEleveTraitement object
 	 *
 	 * @param     AbsenceEleveTraitement $absenceEleveTraitement  the related object to use as filter
@@ -1323,6 +1395,70 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 		return $this
 			->joinAbsenceEleveTraitement($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'AbsenceEleveTraitement', 'AbsenceEleveTraitementQuery');
+	}
+
+	/**
+	 * Filter the query by a related AbsenceEleveTraitement object
+	 *
+	 * @param     AbsenceEleveTraitement $absenceEleveTraitement  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function filterByModifiedAbsenceEleveTraitement($absenceEleveTraitement, $comparison = null)
+	{
+		return $this
+			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveTraitement->getModifieParUtilisateurId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the ModifiedAbsenceEleveTraitement relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function joinModifiedAbsenceEleveTraitement($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('ModifiedAbsenceEleveTraitement');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'ModifiedAbsenceEleveTraitement');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the ModifiedAbsenceEleveTraitement relation AbsenceEleveTraitement object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveTraitementQuery A secondary query class using the current class as primary query
+	 */
+	public function useModifiedAbsenceEleveTraitementQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinModifiedAbsenceEleveTraitement($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'ModifiedAbsenceEleveTraitement', 'AbsenceEleveTraitementQuery');
 	}
 
 	/**

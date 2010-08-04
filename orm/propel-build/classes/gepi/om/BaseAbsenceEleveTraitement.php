@@ -61,6 +61,12 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	protected $commentaire;
 
 	/**
+	 * The value for the modifie_par_utilisateur_id field.
+	 * @var        string
+	 */
+	protected $modifie_par_utilisateur_id;
+
+	/**
 	 * The value for the created_at field.
 	 * @var        string
 	 */
@@ -91,6 +97,11 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 * @var        AbsenceEleveJustification
 	 */
 	protected $aAbsenceEleveJustification;
+
+	/**
+	 * @var        UtilisateurProfessionnel
+	 */
+	protected $aModifieParUtilisateur;
 
 	/**
 	 * @var        array JTraitementSaisieEleve[] Collection to store aggregation of JTraitementSaisieEleve objects.
@@ -179,6 +190,16 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	public function getCommentaire()
 	{
 		return $this->commentaire;
+	}
+
+	/**
+	 * Get the [modifie_par_utilisateur_id] column value.
+	 * Login de l'utilisateur professionnel qui a modifie en dernier le traitement
+	 * @return     string
+	 */
+	public function getModifieParUtilisateurId()
+	{
+		return $this->modifie_par_utilisateur_id;
 	}
 
 	/**
@@ -394,6 +415,30 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	} // setCommentaire()
 
 	/**
+	 * Set the value of [modifie_par_utilisateur_id] column.
+	 * Login de l'utilisateur professionnel qui a modifie en dernier le traitement
+	 * @param      string $v new value
+	 * @return     AbsenceEleveTraitement The current object (for fluent API support)
+	 */
+	public function setModifieParUtilisateurId($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->modifie_par_utilisateur_id !== $v) {
+			$this->modifie_par_utilisateur_id = $v;
+			$this->modifiedColumns[] = AbsenceEleveTraitementPeer::MODIFIE_PAR_UTILISATEUR_ID;
+		}
+
+		if ($this->aModifieParUtilisateur !== null && $this->aModifieParUtilisateur->getLogin() !== $v) {
+			$this->aModifieParUtilisateur = null;
+		}
+
+		return $this;
+	} // setModifieParUtilisateurId()
+
+	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
@@ -529,8 +574,9 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$this->a_motif_id = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
 			$this->a_justification_id = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
 			$this->commentaire = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-			$this->created_at = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-			$this->updated_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+			$this->modifie_par_utilisateur_id = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->created_at = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+			$this->updated_at = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -539,7 +585,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 8; // 8 = AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 9; // 9 = AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveTraitement object", $e);
@@ -573,6 +619,9 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		}
 		if ($this->aAbsenceEleveJustification !== null && $this->a_justification_id !== $this->aAbsenceEleveJustification->getId()) {
 			$this->aAbsenceEleveJustification = null;
+		}
+		if ($this->aModifieParUtilisateur !== null && $this->modifie_par_utilisateur_id !== $this->aModifieParUtilisateur->getLogin()) {
+			$this->aModifieParUtilisateur = null;
 		}
 	} // ensureConsistency
 
@@ -617,6 +666,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$this->aAbsenceEleveType = null;
 			$this->aAbsenceEleveMotif = null;
 			$this->aAbsenceEleveJustification = null;
+			$this->aModifieParUtilisateur = null;
 			$this->collJTraitementSaisieEleves = null;
 
 			$this->collAbsenceEleveNotifications = null;
@@ -775,6 +825,13 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				$this->setAbsenceEleveJustification($this->aAbsenceEleveJustification);
 			}
 
+			if ($this->aModifieParUtilisateur !== null) {
+				if ($this->aModifieParUtilisateur->isModified() || $this->aModifieParUtilisateur->isNew()) {
+					$affectedRows += $this->aModifieParUtilisateur->save($con);
+				}
+				$this->setModifieParUtilisateur($this->aModifieParUtilisateur);
+			}
+
 			if ($this->isNew() ) {
 				$this->modifiedColumns[] = AbsenceEleveTraitementPeer::ID;
 			}
@@ -909,6 +966,12 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				}
 			}
 
+			if ($this->aModifieParUtilisateur !== null) {
+				if (!$this->aModifieParUtilisateur->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aModifieParUtilisateur->getValidationFailures());
+				}
+			}
+
 
 			if (($retval = AbsenceEleveTraitementPeer::doValidate($this, $columns)) !== true) {
 				$failureMap = array_merge($failureMap, $retval);
@@ -983,9 +1046,12 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				return $this->getCommentaire();
 				break;
 			case 6:
-				return $this->getCreatedAt();
+				return $this->getModifieParUtilisateurId();
 				break;
 			case 7:
+				return $this->getCreatedAt();
+				break;
+			case 8:
 				return $this->getUpdatedAt();
 				break;
 			default:
@@ -1018,8 +1084,9 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$keys[3] => $this->getAMotifId(),
 			$keys[4] => $this->getAJustificationId(),
 			$keys[5] => $this->getCommentaire(),
-			$keys[6] => $this->getCreatedAt(),
-			$keys[7] => $this->getUpdatedAt(),
+			$keys[6] => $this->getModifieParUtilisateurId(),
+			$keys[7] => $this->getCreatedAt(),
+			$keys[8] => $this->getUpdatedAt(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
@@ -1033,6 +1100,9 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			}
 			if (null !== $this->aAbsenceEleveJustification) {
 				$result['AbsenceEleveJustification'] = $this->aAbsenceEleveJustification->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+			if (null !== $this->aModifieParUtilisateur) {
+				$result['ModifieParUtilisateur'] = $this->aModifieParUtilisateur->toArray($keyType, $includeLazyLoadColumns, true);
 			}
 		}
 		return $result;
@@ -1084,9 +1154,12 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 				$this->setCommentaire($value);
 				break;
 			case 6:
-				$this->setCreatedAt($value);
+				$this->setModifieParUtilisateurId($value);
 				break;
 			case 7:
+				$this->setCreatedAt($value);
+				break;
+			case 8:
 				$this->setUpdatedAt($value);
 				break;
 		} // switch()
@@ -1119,8 +1192,9 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if (array_key_exists($keys[3], $arr)) $this->setAMotifId($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setAJustificationId($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setCommentaire($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setCreatedAt($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setUpdatedAt($arr[$keys[7]]);
+		if (array_key_exists($keys[6], $arr)) $this->setModifieParUtilisateurId($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setCreatedAt($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setUpdatedAt($arr[$keys[8]]);
 	}
 
 	/**
@@ -1138,6 +1212,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::A_MOTIF_ID)) $criteria->add(AbsenceEleveTraitementPeer::A_MOTIF_ID, $this->a_motif_id);
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID)) $criteria->add(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, $this->a_justification_id);
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::COMMENTAIRE)) $criteria->add(AbsenceEleveTraitementPeer::COMMENTAIRE, $this->commentaire);
+		if ($this->isColumnModified(AbsenceEleveTraitementPeer::MODIFIE_PAR_UTILISATEUR_ID)) $criteria->add(AbsenceEleveTraitementPeer::MODIFIE_PAR_UTILISATEUR_ID, $this->modifie_par_utilisateur_id);
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::CREATED_AT)) $criteria->add(AbsenceEleveTraitementPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(AbsenceEleveTraitementPeer::UPDATED_AT)) $criteria->add(AbsenceEleveTraitementPeer::UPDATED_AT, $this->updated_at);
 
@@ -1206,6 +1281,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$copyObj->setAMotifId($this->a_motif_id);
 		$copyObj->setAJustificationId($this->a_justification_id);
 		$copyObj->setCommentaire($this->commentaire);
+		$copyObj->setModifieParUtilisateurId($this->modifie_par_utilisateur_id);
 		$copyObj->setCreatedAt($this->created_at);
 		$copyObj->setUpdatedAt($this->updated_at);
 
@@ -1465,6 +1541,55 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			 */
 		}
 		return $this->aAbsenceEleveJustification;
+	}
+
+	/**
+	 * Declares an association between this object and a UtilisateurProfessionnel object.
+	 *
+	 * @param      UtilisateurProfessionnel $v
+	 * @return     AbsenceEleveTraitement The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setModifieParUtilisateur(UtilisateurProfessionnel $v = null)
+	{
+		if ($v === null) {
+			$this->setModifieParUtilisateurId(NULL);
+		} else {
+			$this->setModifieParUtilisateurId($v->getLogin());
+		}
+
+		$this->aModifieParUtilisateur = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the UtilisateurProfessionnel object, it will not be re-added.
+		if ($v !== null) {
+			$v->addModifiedAbsenceEleveTraitement($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated UtilisateurProfessionnel object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     UtilisateurProfessionnel The associated UtilisateurProfessionnel object.
+	 * @throws     PropelException
+	 */
+	public function getModifieParUtilisateur(PropelPDO $con = null)
+	{
+		if ($this->aModifieParUtilisateur === null && (($this->modifie_par_utilisateur_id !== "" && $this->modifie_par_utilisateur_id !== null))) {
+			$this->aModifieParUtilisateur = UtilisateurProfessionnelQuery::create()->findPk($this->modifie_par_utilisateur_id, $con);
+			/* The following can be used additionally to
+			   guarantee the related object contains a reference
+			   to this object.  This level of coupling may, however, be
+			   undesirable since it could result in an only partially populated collection
+			   in the referenced object.
+			   $this->aModifieParUtilisateur->addModifiedAbsenceEleveTraitements($this);
+			 */
+		}
+		return $this->aModifieParUtilisateur;
 	}
 
 	/**
@@ -1884,6 +2009,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$this->a_motif_id = null;
 		$this->a_justification_id = null;
 		$this->commentaire = null;
+		$this->modifie_par_utilisateur_id = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->alreadyInSave = false;
@@ -1924,6 +2050,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$this->aAbsenceEleveType = null;
 		$this->aAbsenceEleveMotif = null;
 		$this->aAbsenceEleveJustification = null;
+		$this->aModifieParUtilisateur = null;
 	}
 
 	// timestampable behavior

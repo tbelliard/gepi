@@ -150,4 +150,37 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 			|| $this->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_VRAI);
 	    }
 	}
+
+	
+	/**
+	 * Ajout manuel : renseignement automatique de l'utilisateur qui a créé ou modifié la saisie
+	 * Persists this object to the database.
+	 *
+	 * If the object is new, it inserts it; otherwise an update is performed.
+	 * All modified related objects will also be persisted in the doSave()
+	 * method.  This method wraps all precipitate database operations in a
+	 * single transaction.
+	 *
+	 * @param      PropelPDO $con
+	 * @return     int The number of rows affected by this insert/update and any referring fk objects' save() operations.
+	 * @throws     PropelException
+	 * @see        doSave()
+	 */
+	public function save(PropelPDO $con = null)
+	{
+	    if ($this->isNew()) {
+		if ($this->getUtilisateurId() == null) {
+		    $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+		    if ($utilisateur != null) {
+			$this->setUtilisateurProfessionnel($utilisateur);
+		    }
+		}
+	    } else {
+		$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+		if ($utilisateur != null) {
+		    $this->setModifieParUtilisateur($utilisateur);
+		}
+	    }
+	    return parent::save($con);
+	}
 } // AbsenceEleveTraitement

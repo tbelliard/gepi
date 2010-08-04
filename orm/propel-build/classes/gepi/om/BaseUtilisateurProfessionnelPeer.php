@@ -447,12 +447,6 @@ abstract class BaseUtilisateurProfessionnelPeer {
 		// Invalidate objects in JAidUtilisateursProfessionnelsPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JAidUtilisateursProfessionnelsPeer::clearInstancePool();
-		// Invalidate objects in AbsenceEleveSaisiePeer instance pool, 
-		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-		AbsenceEleveSaisiePeer::clearInstancePool();
-		// Invalidate objects in AbsenceEleveTraitementPeer instance pool, 
-		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-		AbsenceEleveTraitementPeer::clearInstancePool();
 		// Invalidate objects in AbsenceEleveNotificationPeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		AbsenceEleveNotificationPeer::clearInstancePool();
@@ -874,22 +868,6 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
 			$selectCriteria->add(CahierTexteNoticePriveePeer::ID_LOGIN, $obj->getLogin());
 			$updateValues->add(CahierTexteNoticePriveePeer::ID_LOGIN, null);
-
-			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
-			// set fkey col in related AbsenceEleveSaisie rows to NULL
-			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $obj->getLogin());
-			$updateValues->add(AbsenceEleveSaisiePeer::UTILISATEUR_ID, null);
-
-			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
-
-			// set fkey col in related AbsenceEleveTraitement rows to NULL
-			$selectCriteria = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$updateValues = new Criteria(UtilisateurProfessionnelPeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $obj->getLogin());
-			$updateValues->add(AbsenceEleveTraitementPeer::UTILISATEUR_ID, null);
 
 			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 

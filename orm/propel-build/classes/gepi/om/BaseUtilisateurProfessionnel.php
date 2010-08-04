@@ -184,9 +184,19 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	protected $collAbsenceEleveSaisies;
 
 	/**
+	 * @var        array AbsenceEleveSaisie[] Collection to store aggregation of AbsenceEleveSaisie objects.
+	 */
+	protected $collModifiedAbsenceEleveSaisies;
+
+	/**
 	 * @var        array AbsenceEleveTraitement[] Collection to store aggregation of AbsenceEleveTraitement objects.
 	 */
 	protected $collAbsenceEleveTraitements;
+
+	/**
+	 * @var        array AbsenceEleveTraitement[] Collection to store aggregation of AbsenceEleveTraitement objects.
+	 */
+	protected $collModifiedAbsenceEleveTraitements;
 
 	/**
 	 * @var        array AbsenceEleveNotification[] Collection to store aggregation of AbsenceEleveNotification objects.
@@ -1080,7 +1090,11 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 			$this->collAbsenceEleveSaisies = null;
 
+			$this->collModifiedAbsenceEleveSaisies = null;
+
 			$this->collAbsenceEleveTraitements = null;
+
+			$this->collModifiedAbsenceEleveTraitements = null;
 
 			$this->collAbsenceEleveNotifications = null;
 
@@ -1287,8 +1301,24 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			if ($this->collModifiedAbsenceEleveSaisies !== null) {
+				foreach ($this->collModifiedAbsenceEleveSaisies as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			if ($this->collAbsenceEleveTraitements !== null) {
 				foreach ($this->collAbsenceEleveTraitements as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collModifiedAbsenceEleveTraitements !== null) {
+				foreach ($this->collModifiedAbsenceEleveTraitements as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1470,8 +1500,24 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					}
 				}
 
+				if ($this->collModifiedAbsenceEleveSaisies !== null) {
+					foreach ($this->collModifiedAbsenceEleveSaisies as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
 				if ($this->collAbsenceEleveTraitements !== null) {
 					foreach ($this->collAbsenceEleveTraitements as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collModifiedAbsenceEleveTraitements !== null) {
+					foreach ($this->collModifiedAbsenceEleveTraitements as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1933,9 +1979,21 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				}
 			}
 
+			foreach ($this->getModifiedAbsenceEleveSaisies() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addModifiedAbsenceEleveSaisie($relObj->copy($deepCopy));
+				}
+			}
+
 			foreach ($this->getAbsenceEleveTraitements() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addAbsenceEleveTraitement($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getModifiedAbsenceEleveTraitements() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addModifiedAbsenceEleveTraitement($relObj->copy($deepCopy));
 				}
 			}
 
@@ -3439,6 +3497,265 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	}
 
 	/**
+	 * Clears out the collModifiedAbsenceEleveSaisies collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addModifiedAbsenceEleveSaisies()
+	 */
+	public function clearModifiedAbsenceEleveSaisies()
+	{
+		$this->collModifiedAbsenceEleveSaisies = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collModifiedAbsenceEleveSaisies collection.
+	 *
+	 * By default this just sets the collModifiedAbsenceEleveSaisies collection to an empty array (like clearcollModifiedAbsenceEleveSaisies());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initModifiedAbsenceEleveSaisies()
+	{
+		$this->collModifiedAbsenceEleveSaisies = new PropelObjectCollection();
+		$this->collModifiedAbsenceEleveSaisies->setModel('AbsenceEleveSaisie');
+	}
+
+	/**
+	 * Gets an array of AbsenceEleveSaisie objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 * @throws     PropelException
+	 */
+	public function getModifiedAbsenceEleveSaisies($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collModifiedAbsenceEleveSaisies || null !== $criteria) {
+			if ($this->isNew() && null === $this->collModifiedAbsenceEleveSaisies) {
+				// return empty collection
+				$this->initModifiedAbsenceEleveSaisies();
+			} else {
+				$collModifiedAbsenceEleveSaisies = AbsenceEleveSaisieQuery::create(null, $criteria)
+					->filterByModifieParUtilisateur($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collModifiedAbsenceEleveSaisies;
+				}
+				$this->collModifiedAbsenceEleveSaisies = $collModifiedAbsenceEleveSaisies;
+			}
+		}
+		return $this->collModifiedAbsenceEleveSaisies;
+	}
+
+	/**
+	 * Returns the number of related AbsenceEleveSaisie objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related AbsenceEleveSaisie objects.
+	 * @throws     PropelException
+	 */
+	public function countModifiedAbsenceEleveSaisies(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collModifiedAbsenceEleveSaisies || null !== $criteria) {
+			if ($this->isNew() && null === $this->collModifiedAbsenceEleveSaisies) {
+				return 0;
+			} else {
+				$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByModifieParUtilisateur($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collModifiedAbsenceEleveSaisies);
+		}
+	}
+
+	/**
+	 * Method called to associate a AbsenceEleveSaisie object to this object
+	 * through the AbsenceEleveSaisie foreign key attribute.
+	 *
+	 * @param      AbsenceEleveSaisie $l AbsenceEleveSaisie
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addModifiedAbsenceEleveSaisie(AbsenceEleveSaisie $l)
+	{
+		if ($this->collModifiedAbsenceEleveSaisies === null) {
+			$this->initModifiedAbsenceEleveSaisies();
+		}
+		if (!$this->collModifiedAbsenceEleveSaisies->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collModifiedAbsenceEleveSaisies[]= $l;
+			$l->setModifieParUtilisateur($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related ModifiedAbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getModifiedAbsenceEleveSaisiesJoinEleve($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('Eleve', $join_behavior);
+
+		return $this->getModifiedAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related ModifiedAbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getModifiedAbsenceEleveSaisiesJoinEdtCreneau($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('EdtCreneau', $join_behavior);
+
+		return $this->getModifiedAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related ModifiedAbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getModifiedAbsenceEleveSaisiesJoinEdtEmplacementCours($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('EdtEmplacementCours', $join_behavior);
+
+		return $this->getModifiedAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related ModifiedAbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getModifiedAbsenceEleveSaisiesJoinGroupe($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('Groupe', $join_behavior);
+
+		return $this->getModifiedAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related ModifiedAbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getModifiedAbsenceEleveSaisiesJoinClasse($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('Classe', $join_behavior);
+
+		return $this->getModifiedAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related ModifiedAbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getModifiedAbsenceEleveSaisiesJoinAidDetails($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AidDetails', $join_behavior);
+
+		return $this->getModifiedAbsenceEleveSaisies($query, $con);
+	}
+
+	/**
 	 * Clears out the collAbsenceEleveTraitements collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -3620,6 +3937,190 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$query->joinWith('AbsenceEleveJustification', $join_behavior);
 
 		return $this->getAbsenceEleveTraitements($query, $con);
+	}
+
+	/**
+	 * Clears out the collModifiedAbsenceEleveTraitements collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addModifiedAbsenceEleveTraitements()
+	 */
+	public function clearModifiedAbsenceEleveTraitements()
+	{
+		$this->collModifiedAbsenceEleveTraitements = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collModifiedAbsenceEleveTraitements collection.
+	 *
+	 * By default this just sets the collModifiedAbsenceEleveTraitements collection to an empty array (like clearcollModifiedAbsenceEleveTraitements());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @return     void
+	 */
+	public function initModifiedAbsenceEleveTraitements()
+	{
+		$this->collModifiedAbsenceEleveTraitements = new PropelObjectCollection();
+		$this->collModifiedAbsenceEleveTraitements->setModel('AbsenceEleveTraitement');
+	}
+
+	/**
+	 * Gets an array of AbsenceEleveTraitement objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this UtilisateurProfessionnel is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
+	 * @throws     PropelException
+	 */
+	public function getModifiedAbsenceEleveTraitements($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collModifiedAbsenceEleveTraitements || null !== $criteria) {
+			if ($this->isNew() && null === $this->collModifiedAbsenceEleveTraitements) {
+				// return empty collection
+				$this->initModifiedAbsenceEleveTraitements();
+			} else {
+				$collModifiedAbsenceEleveTraitements = AbsenceEleveTraitementQuery::create(null, $criteria)
+					->filterByModifieParUtilisateur($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collModifiedAbsenceEleveTraitements;
+				}
+				$this->collModifiedAbsenceEleveTraitements = $collModifiedAbsenceEleveTraitements;
+			}
+		}
+		return $this->collModifiedAbsenceEleveTraitements;
+	}
+
+	/**
+	 * Returns the number of related AbsenceEleveTraitement objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related AbsenceEleveTraitement objects.
+	 * @throws     PropelException
+	 */
+	public function countModifiedAbsenceEleveTraitements(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collModifiedAbsenceEleveTraitements || null !== $criteria) {
+			if ($this->isNew() && null === $this->collModifiedAbsenceEleveTraitements) {
+				return 0;
+			} else {
+				$query = AbsenceEleveTraitementQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByModifieParUtilisateur($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collModifiedAbsenceEleveTraitements);
+		}
+	}
+
+	/**
+	 * Method called to associate a AbsenceEleveTraitement object to this object
+	 * through the AbsenceEleveTraitement foreign key attribute.
+	 *
+	 * @param      AbsenceEleveTraitement $l AbsenceEleveTraitement
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addModifiedAbsenceEleveTraitement(AbsenceEleveTraitement $l)
+	{
+		if ($this->collModifiedAbsenceEleveTraitements === null) {
+			$this->initModifiedAbsenceEleveTraitements();
+		}
+		if (!$this->collModifiedAbsenceEleveTraitements->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collModifiedAbsenceEleveTraitements[]= $l;
+			$l->setModifieParUtilisateur($this);
+		}
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related ModifiedAbsenceEleveTraitements from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
+	 */
+	public function getModifiedAbsenceEleveTraitementsJoinAbsenceEleveType($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveType', $join_behavior);
+
+		return $this->getModifiedAbsenceEleveTraitements($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related ModifiedAbsenceEleveTraitements from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
+	 */
+	public function getModifiedAbsenceEleveTraitementsJoinAbsenceEleveMotif($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveMotif', $join_behavior);
+
+		return $this->getModifiedAbsenceEleveTraitements($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related ModifiedAbsenceEleveTraitements from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveTraitement[] List of AbsenceEleveTraitement objects
+	 */
+	public function getModifiedAbsenceEleveTraitementsJoinAbsenceEleveJustification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveTraitementQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveJustification', $join_behavior);
+
+		return $this->getModifiedAbsenceEleveTraitements($query, $con);
 	}
 
 	/**
@@ -4686,8 +5187,18 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collModifiedAbsenceEleveSaisies) {
+				foreach ((array) $this->collModifiedAbsenceEleveSaisies as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collAbsenceEleveTraitements) {
 				foreach ((array) $this->collAbsenceEleveTraitements as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collModifiedAbsenceEleveTraitements) {
+				foreach ((array) $this->collModifiedAbsenceEleveTraitements as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
@@ -4722,7 +5233,9 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$this->collJEleveProfesseurPrincipals = null;
 		$this->collJAidUtilisateursProfessionnelss = null;
 		$this->collAbsenceEleveSaisies = null;
+		$this->collModifiedAbsenceEleveSaisies = null;
 		$this->collAbsenceEleveTraitements = null;
+		$this->collModifiedAbsenceEleveTraitements = null;
 		$this->collAbsenceEleveNotifications = null;
 		$this->collJProfesseursMatieress = null;
 		$this->collPreferenceUtilisateurProfessionnels = null;

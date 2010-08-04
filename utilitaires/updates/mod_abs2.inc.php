@@ -97,8 +97,8 @@ CREATE TABLE a_types
 	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire auto-incrementee',
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du type d\'absence',
 	justification_exigible TINYINT COMMENT 'Ce type d\'absence doit entrainer une justification de la part de la famille',
-	sous_responsabilite_etablissement VARCHAR(255) COMMENT 'L\'eleve est sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
-	manquement_obligation_presence VARCHAR(255) COMMENT 'L\'eleve manque à ses obligations de presence (L\'absence apparait sur le bulletin). Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
+	sous_responsabilite_etablissement VARCHAR(255) default 'NON_PRECISE' COMMENT 'L\'eleve est sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
+	manquement_obligation_presence VARCHAR(255) default 'NON_PRECISE' COMMENT 'L\'eleve manque à ses obligations de presence (L\'absence apparait sur le bulletin). Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
 	type_saisie VARCHAR(50) default 'NON_PRECISE' COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
@@ -170,14 +170,14 @@ CREATE TABLE a_saisies
 	id_classe INTEGER COMMENT 'identifiant de la classe pour lequel la saisie a ete effectuee',
 	id_aid INTEGER COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
 	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
+	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id),
 	INDEX a_saisies_FI_1 (utilisateur_id),
 	CONSTRAINT a_saisies_FK_1
 		FOREIGN KEY (utilisateur_id)
-		REFERENCES utilisateurs (login)
-		ON DELETE SET NULL,
+		REFERENCES utilisateurs (login),
 	INDEX a_saisies_FI_2 (eleve_id),
 	CONSTRAINT a_saisies_FK_2
 		FOREIGN KEY (eleve_id)
@@ -229,14 +229,14 @@ CREATE TABLE a_traitements
 	a_motif_id INTEGER(4) COMMENT 'cle etrangere du motif d\'absence',
 	a_justification_id INTEGER(4) COMMENT 'cle etrangere de la justification de l\'absence',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
+	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
 	created_at DATETIME,
 	updated_at DATETIME,
 	PRIMARY KEY (id),
 	INDEX a_traitements_FI_1 (utilisateur_id),
 	CONSTRAINT a_traitements_FK_1
 		FOREIGN KEY (utilisateur_id)
-		REFERENCES utilisateurs (login)
-		ON DELETE SET NULL,
+		REFERENCES utilisateurs (login),
 	INDEX a_traitements_FI_2 (a_type_id),
 	CONSTRAINT a_traitements_FK_2
 		FOREIGN KEY (a_type_id)
