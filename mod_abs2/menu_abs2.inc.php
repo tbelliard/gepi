@@ -54,27 +54,33 @@ if(($_SESSION['statut']=='cpe')||
     echo "title='Saisir pour un eleve'>Saisir un eleve</a></li>\n";
 
     echo "<li><a href='liste_saisies_selection_traitement.php' ";
-    if($onglet_abs=='liste_saisies_selection_traitement.php') {echo "class='current' ";}
+    if($onglet_abs=='liste_saisies_selection_traitement.php') {echo "class='current' style='background-color:#d7e8d8; border-bottom:2px solid #d7e8d8;' ";}
+    else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
 
     echo "<li><a href='visu_saisie.php' ";
-    if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' ";}
+    if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#d7e8d8; border-bottom:2px solid #d7e8d8;' ";}
+    else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Visualiser une saisie'>Saisie</a></li>\n";
 
     echo "<li><a href='liste_traitements.php' ";
-    if($onglet_abs=='liste_traitements.php') {echo "class='current' ";}
+    if($onglet_abs=='liste_traitements.php') {echo "class='current' style='background-color:#e8e8dd; border-bottom:2px solid #e8e8dd;' ";}
+    else {echo "style='background-color:#f8f8ec;' ";}
     echo "title='Traitement'>Liste des traitements</a></li>\n";
 
     echo "<li><a href='visu_traitement.php' ";
-    if($onglet_abs=='visu_traitement.php' || $onglet_abs=='enregistrement_modif_traitement.php') {echo "class='current' ";}
+    if($onglet_abs=='visu_traitement.php' || $onglet_abs=='enregistrement_modif_traitement.php') {echo "class='current' style='background-color:#e8e8dd; border-bottom:2px solid #e8e8dd;' ";}
+    else {echo "style='background-color:#f8f8ec;' ";}
     echo "title='Traitement'>Traitement</a></li>\n";
 
     echo "<li><a href='liste_notifications.php' ";
-    if($onglet_abs=='liste_notifications.php') {echo "class='current' ";}
+    if($onglet_abs=='liste_notifications.php') {echo "class='current' style='background-color:#dde6e8; border-bottom:2px solid #dde6e8;' ";}
+    else {echo "style='background-color:#ecf6f8;' ";}
     echo "title='Notifications'>Liste des notifications</a></li>\n";
 
     echo "<li><a href='visu_notification.php' ";
-    if($onglet_abs=='visu_notification.php' || $onglet_abs=='enregistrement_modif_notification.php' || $onglet_abs=='generer_notification.php') {echo "class='current' ";}
+    if($onglet_abs=='visu_notification.php' || $onglet_abs=='enregistrement_modif_notification.php' || $onglet_abs=='generer_notification.php') {echo "class='current' style='background-color:#dde6e8; border-bottom:2px solid #dde6e8;' ";}
+    else {echo "style='background-color:#ecf6f8;' ";}
     echo "title='Notification'>Notification</a></li>\n";
 
     echo "</ul>\n";
@@ -88,11 +94,13 @@ if(($_SESSION['statut']=='cpe')||
     echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
 
     echo "<li><a href='visu_saisie.php' ";
-    if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' ";}
+    if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#d7e8d8; border-bottom:2px solid #d7e8d8;' ";}
+    else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Visualiser une saisie'>Saisie</a></li>\n";
 
     echo "<li><a href='liste_saisies.php' ";
-    if($onglet_abs=='liste_saisies.php') {echo "class='current' ";}
+    if($onglet_abs=='liste_saisies.php') {echo "class='current' style='background-color:#d7e8d8; border-bottom:2px solid #d7e8d8;' ";}
+    else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
 
 	echo "</ul>\n";
@@ -106,11 +114,13 @@ if(($_SESSION['statut']=='cpe')||
     echo "title='Saisir pour un eleve'>Saisir un eleve</a></li>\n";
 
     echo "<li><a href='visu_saisie.php' ";
-    if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' ";}
+    if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#d7e8d8; border-bottom:2px solid #d7e8d8;' ";}
+    else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Visualiser une saisie'>Saisie</a></li>\n";
 
     echo "<li><a href='liste_saisies.php' ";
-    if($onglet_abs=='liste_saisies.php') {echo "class='current' ";}
+    if($onglet_abs=='liste_saisies.php') {echo "class='current' style='background-color:#d7e8d8; border-bottom:2px solid #d7e8d8;' ";}
+    else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
 
 	echo "</ul>\n";

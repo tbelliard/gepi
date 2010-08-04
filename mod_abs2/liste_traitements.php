@@ -104,7 +104,7 @@ require_once("../lib/header.inc");
 
 include('menu_abs2.inc.php');
 
-echo "<div class='css-panes' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
+echo "<div class='css-panes' style='background-color:#e8e8dd;' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
 
 $query = AbsenceEleveTraitementQuery::create();
