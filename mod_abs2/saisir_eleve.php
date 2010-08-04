@@ -70,8 +70,8 @@ $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? 
 $id_creneau = isset($_POST["id_creneau"]) ? $_POST["id_creneau"] :(isset($_GET["id_creneau"]) ? $_GET["id_creneau"] : NULL);
 $id_cours = isset($_POST["id_cours"]) ? $_POST["id_cours"] :(isset($_GET["id_cours"]) ? $_GET["id_cours"] :(isset($_SESSION["id_cours"]) ? $_SESSION["id_cours"] : NULL));
 $type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(isset($_GET["type_selection"]) ? $_GET["type_selection"] :(isset($_SESSION["type_selection"]) ? $_SESSION["type_selection"] : NULL));
-$date_absence_eleve_debut = isset($_POST["date_absence_eleve_debut"]) ? $_POST["date_absence_eleve_debut"] :(isset($_GET["date_absence_eleve_debut"]) ? $_GET["date_absence_eleve_debut"] :(isset($_SESSION["date_absence_eleve_debut"]) ? $_SESSION["date_absence_eleve_debut"] : NULL));
-$date_absence_eleve_fin = isset($_POST["date_absence_eleve_fin"]) ? $_POST["date_absence_eleve_fin"] :(isset($_GET["date_absence_eleve_fin"]) ? $_GET["date_absence_eleve_fin"] :(isset($_SESSION["date_absence_eleve_fin"]) ? $_SESSION["date_absence_eleve_fin"] : (isset($_SESSION["date_absence_eleve_debut"]) ? $_SESSION["date_absence_eleve_debut"] : NULL)));
+$date_absence_eleve_debut_saisir_eleve = isset($_POST["date_absence_eleve_debut_saisir_eleve"]) ? $_POST["date_absence_eleve_debut_saisir_eleve"] :(isset($_GET["date_absence_eleve_debut_saisir_eleve"]) ? $_GET["date_absence_eleve_debut_saisir_eleve"] :(isset($_SESSION["date_absence_eleve_debut_saisir_eleve"]) ? $_SESSION["date_absence_eleve_debut_saisir_eleve"] : NULL));
+$date_absence_eleve_fin_saisir_eleve = isset($_POST["date_absence_eleve_fin_saisir_eleve"]) ? $_POST["date_absence_eleve_fin_saisir_eleve"] :(isset($_GET["date_absence_eleve_fin_saisir_eleve"]) ? $_GET["date_absence_eleve_fin_saisir_eleve"] :(isset($_SESSION["date_absence_eleve_fin_saisir_eleve"]) ? $_SESSION["date_absence_eleve_fin_saisir_eleve"] : (isset($_SESSION["date_absence_eleve_debut_saisir_eleve"]) ? $_SESSION["date_absence_eleve_debut_saisir_eleve"] : NULL)));
 $id_semaine = isset($_POST["id_semaine"]) ? $_POST["id_semaine"] :(isset($_GET["id_semaine"]) ? $_GET["id_semaine"] :(isset($_SESSION["id_semaine"]) ? $_SESSION["id_semaine"] : NULL));
 
 if (isset($id_groupe) && $id_groupe != null) $_SESSION['id_groupe_abs'] = $id_groupe;
@@ -81,8 +81,8 @@ if (isset($nom_eleve) && $nom_eleve != null) $_SESSION['nom_eleve'] = $nom_eleve
 if (isset($id_eleve) && $id_eleve != null) $_SESSION['id_eleve'] = $id_eleve;
 if (isset($id_cours) && $id_cours != null) $_SESSION['id_cours'] = $id_cours;
 if (isset($type_selection) && $type_selection != null) $_SESSION['type_selection'] = $type_selection;
-if (isset($date_absence_eleve_debut) && $date_absence_eleve_debut != null) $_SESSION['date_absence_eleve_debut'] = $date_absence_eleve_debut;
-if (isset($date_absence_eleve_fin) && $date_absence_eleve_fin != null) $_SESSION['date_absence_eleve_fin'] = $date_absence_eleve_fin;
+if (isset($date_absence_eleve_debut_saisir_eleve) && $date_absence_eleve_debut_saisir_eleve != null) $_SESSION['date_absence_eleve_debut_saisir_eleve'] = $date_absence_eleve_debut_saisir_eleve;
+if (isset($date_absence_eleve_fin_saisir_eleve) && $date_absence_eleve_fin_saisir_eleve != null) $_SESSION['date_absence_eleve_fin_saisir_eleve'] = $date_absence_eleve_fin_saisir_eleve;
 
 
 //initialisation des variables
@@ -90,15 +90,15 @@ $current_eleve = null;
 if ($id_semaine == null || $id_semaine == -1) {
     $id_semaine = date('W');
 }
-if ($date_absence_eleve_debut != null) {
-    $dt_date_absence_eleve_debut = new DateTime(str_replace("/",".",$date_absence_eleve_debut));
+if ($date_absence_eleve_debut_saisir_eleve != null) {
+    $dt_date_absence_eleve_debut_saisir_eleve = new DateTime(str_replace("/",".",$date_absence_eleve_debut_saisir_eleve));
 } else {
-    $dt_date_absence_eleve_debut = new DateTime('now');
+    $dt_date_absence_eleve_debut_saisir_eleve = new DateTime('now');
 }
-if ($date_absence_eleve_fin != null) {
-    $dt_date_absence_eleve_fin = new DateTime(str_replace("/",".",$date_absence_eleve_fin));
+if ($date_absence_eleve_fin_saisir_eleve != null) {
+    $dt_date_absence_eleve_fin_saisir_eleve = new DateTime(str_replace("/",".",$date_absence_eleve_fin_saisir_eleve));
 } else {
-    $dt_date_absence_eleve_fin = new DateTime('now');
+    $dt_date_absence_eleve_fin_saisir_eleve = new DateTime('now');
 }
 
 if ($type_selection == 'id_groupe') {
@@ -382,14 +382,14 @@ echo "</td>";
 echo "<td style='width:270px; vertical-align: top;'>";
     echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;">';
 	echo '<p>';
-    echo 'Début : <input size="8" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="'.$dt_date_absence_eleve_debut->format('d/m/Y').'" />&nbsp;';
+    echo 'Début : <input size="8" id="date_absence_eleve_debut_saisir_eleve" name="date_absence_eleve_debut_saisir_eleve" value="'.$dt_date_absence_eleve_debut_saisir_eleve->format('d/m/Y').'" />&nbsp;';
    echo '</p>';
      echo '
     <script type="text/javascript">
 	Calendar.setup({
-	    inputField     :    "date_absence_eleve_debut",     // id of the input field
+	    inputField     :    "date_absence_eleve_debut_saisir_eleve",     // id of the input field
 	    ifFormat       :    "%d/%m/%Y",      // format of the input field
-	    button         :    "date_absence_eleve_debut",  // trigger for the calendar (button ID)
+	    button         :    "date_absence_eleve_debut_saisir_eleve",  // trigger for the calendar (button ID)
 	    align          :    "Bl",           // alignment (defaults to "Bl")
 	    singleClick    :    true
 	});
@@ -397,15 +397,15 @@ echo "<td style='width:270px; vertical-align: top;'>";
 $edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 echo '<br/>';
 	echo '<p>';
-echo 'Fin : <input size="8" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="'.$dt_date_absence_eleve_fin->format('d/m/Y').'" />&nbsp;';
+echo 'Fin : <input size="8" id="date_absence_eleve_fin_saisir_eleve" name="date_absence_eleve_fin_saisir_eleve" value="'.$dt_date_absence_eleve_fin_saisir_eleve->format('d/m/Y').'" />&nbsp;';
 
 	echo '</p>';
 	echo '
 <script type="text/javascript">
     Calendar.setup({
-	inputField     :    "date_absence_eleve_fin",     // id of the input field
+	inputField     :    "date_absence_eleve_fin_saisir_eleve",     // id of the input field
 	ifFormat       :    "%d/%m/%Y",      // format of the input field
-	button         :    "date_absence_eleve_fin",  // trigger for the calendar (button ID)
+	button         :    "date_absence_eleve_fin_saisir_eleve",  // trigger for the calendar (button ID)
 	align          :    "Bl",           // alignment (defaults to "Bl")
 	singleClick    :    true
     });

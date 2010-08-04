@@ -134,12 +134,12 @@ if ($current_cours != null) {
     }
 } else {
     try {
-	$date_debut = new DateTime(str_replace("/",".",$_POST['date_absence_eleve_debut']));
+	$date_debut = new DateTime(str_replace("/",".",$_POST['date_absence_eleve_debut_saisir_eleve']));
     } catch (Exception $x) {
 	$message_enregistrement .= "Mauvais format de date.<br/>";
     }
     try {
-	$date_fin = new DateTime(str_replace("/",".",$_POST['date_absence_eleve_fin']));
+	$date_fin = new DateTime(str_replace("/",".",$_POST['date_absence_eleve_fin_saisir_eleve']));
     } catch (Exception $x) {
 	$message_enregistrement .= "Mauvais format de date.<br/>";
     }
