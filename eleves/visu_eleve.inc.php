@@ -1962,7 +1962,67 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="absences") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['absences']."; ";
 			echo "'>";
-			if(true) {
+			if(getSettingValue("active_module_absence")=='y') {
+			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
+
+			    if(count($tab_ele['absences'])==0) {
+				    echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
+			    }
+			    else {
+				    echo "<table class='boireaus' summary='Bilan des absences'>\n";
+				    echo "<tr>\n";
+				    echo "<th>Période</th>\n";
+				    echo "<th>Nombre d'absences</th>\n";
+				    echo "<th>Absences non justifiées</th>\n";
+				    echo "<th>Nombre de retards</th>\n";
+				    echo "<th>Appréciation</th>\n";
+				    echo "</tr>\n";
+				    $alt=1;
+				    for($loop=0;$loop<count($tab_ele['absences']);$loop++) {
+					    $alt=$alt*(-1);
+					    echo "<tr class='lig$alt'>\n";
+					    echo "<td>".$tab_ele['absences'][$loop]['periode']."</td>\n";
+					    echo "<td>".$tab_ele['absences'][$loop]['nb_absences']."</td>\n";
+					    echo "<td>".$tab_ele['absences'][$loop]['non_justifie']."</td>\n";
+					    echo "<td>".$tab_ele['absences'][$loop]['nb_retards']."</td>\n";
+					    echo "<td>".$tab_ele['absences'][$loop]['appreciation']."</td>\n";
+					    echo "</tr>\n";
+				    }
+				    echo "</table>\n";
+			    }
+						    // On ajoute le suivi par créneaux si il y en a
+			    if ($tab_ele['abs_quotidien']['autorisation'] == 'oui') {
+				    // On affiche
+				    echo '<br /><p class="bold">Le détail des absences enregistrées : </p>';
+
+				    echo '
+				    <table class="boireaus" style="margin-left: 4em;" summary="D&eacute;tail des absences">
+					    <tr>
+						    <th>R/A</th>
+						    <th>Jour</th>
+						    <th>Heure</th>
+						    <th>Créneau</th>
+					    </tr>';
+				    foreach($tab_ele["abs_quotidien"] as $abs){
+					    if (isset($abs["retard_absence"]) AND ($abs["retard_absence"] == 'A' OR $abs["retard_absence"] == 'R')) {
+						    $aff_couleur = ' style="background-color: green;"';
+						    $aff_abs_lettre = 'R';
+						    if ($abs["retard_absence"] == 'A') {
+							    $aff_couleur = ' style="background-color: red;"';
+							    $aff_abs_lettre = 'A';
+						    }
+						    echo '
+					    <tr>
+						    <td' . $aff_couleur . '>' . $aff_abs_lettre . '</td>
+						    <td>' . $abs["jour_semaine"] . '</td>
+						    <td>' . $abs["debut_heure"] . '</td>
+						    <td>' . $abs["creneau"] . '</td>
+					    </tr>';
+					    }
+				    }
+				    echo '</table>'."\n";
+			    }
+			} elseif (getSettingValue("active_module_absence")=='2') {
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 			    // Initialisations files
 			    require_once("../lib/initialisationsPropel.inc.php");
@@ -2008,41 +2068,7 @@ Patientez pendant l'extraction des données... merci.
 				    echo "</tr>\n";
 			    }
 			    echo "</table>\n";
-
-						    // On ajoute le suivi par créneaux si il y en a
-			    if ($tab_ele['abs_quotidien']['autorisation'] == 'oui') {
-				    // On affiche
-				    echo '<br /><p class="bold">Le détail des absences enregistrées : </p>';
-
-				    echo '
-				    <table class="boireaus" style="margin-left: 4em;" summary="D&eacute;tail des absences">
-					    <tr>
-						    <th>R/A</th>
-						    <th>Jour</th>
-						    <th>Heure</th>
-						    <th>Créneau</th>
-					    </tr>';
-				    foreach($tab_ele["abs_quotidien"] as $abs){
-					    if (isset($abs["retard_absence"]) AND ($abs["retard_absence"] == 'A' OR $abs["retard_absence"] == 'R')) {
-						    $aff_couleur = ' style="background-color: green;"';
-						    $aff_abs_lettre = 'R';
-						    if ($abs["retard_absence"] == 'A') {
-							    $aff_couleur = ' style="background-color: red;"';
-							    $aff_abs_lettre = 'A';
-						    }
-						    echo '
-					    <tr>
-						    <td' . $aff_couleur . '>' . $aff_abs_lettre . '</td>
-						    <td>' . $abs["jour_semaine"] . '</td>
-						    <td>' . $abs["debut_heure"] . '</td>
-						    <td>' . $abs["creneau"] . '</td>
-					    </tr>';
-					    }
-				    }
-				    echo '</table>'."\n";
-			    }
 			}
-
 			echo "</div>\n";
 		}
 
