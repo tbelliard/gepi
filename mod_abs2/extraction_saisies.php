@@ -153,7 +153,7 @@ if ($affichage != 'ods') {// on affiche pas de html
     Type :
     <select style="width:200px" name="type_extrait">
     <option value='1' <?php if ($type_extrait == '1') {echo 'selected';}?>>Liste des saisies occasionnant un manquement aux obligations de présence</option>
-    <option value='2' <?php if ($type_extrait == '2') {echo 'selected';}?>>Liste de toute les saisies</option>
+    <option value='2' <?php if ($type_extrait == '2') {echo 'selected';}?>>Liste de toutes les saisies</option>
     </select>
 
     <button type="submit" name="affichage" value="html">Afficher</button>

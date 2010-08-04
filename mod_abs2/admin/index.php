@@ -311,17 +311,17 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	Mot de passe <input type="text" name="abs2_sms_password" size="20" value="<?php echo(getSettingValue("abs2_sms_password")); ?>"/><br/>
 </p>
 
-<h2>Configuration des saisie</h2>
+<h2>Configuration des saisies</h2>
 <p>
 	<input type="checkbox" id="abs2_saisie_par_defaut_sans_manquement" name="abs2_saisie_par_defaut_sans_manquement" value="y"
 	<?php if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_par_defaut_sans_manquement">&nbsp;Dans le cas d'une saisie sans type, considérer que l'élève ne manque pas a ses obligations.
+	<label for="abs2_saisie_par_defaut_sans_manquement">&nbsp;Dans le cas d'une saisie sans type, considérer que l'élève ne manque pas à ses obligations.
 	   (Donc ces saisies ne seront pas comptées dans les bulletins)</label>
 </p>
 <p>
 	<input type="checkbox" id="abs2_saisie_multi_type_sans_manquement" name="abs2_saisie_multi_type_sans_manquement" value="y"
 	<?php if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_multi_type_sans_manquement">&nbsp;Dans le cas d'une saisie avec plusieurs types contradictoires, considérer que l'élève ne manqe pas a ses obligations.
+	<label for="abs2_saisie_multi_type_sans_manquement">&nbsp;Dans le cas d'une saisie avec plusieurs types contradictoires, considérer que l'élève ne manque pas à ses obligations.
 	   (Donc ces saisies ne seront pas comptées dans les bulletins)</label>
 </p>
 <p>
