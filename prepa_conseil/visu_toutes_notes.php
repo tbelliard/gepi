@@ -764,7 +764,8 @@ while($i < $lignes_groupes) {
 				// L'élève suit cet enseignement
 
 				// On récupère l'indice de l'élève dans $tab_moy pour la période $num_periode
-				$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
+				//$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
+				$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][strtoupper($current_eleve_login[$j])];
 				$coef_eleve=$tab_moy['periodes'][$num_periode]['current_coef_eleve'][$indice_j_ele][$i];
 
 				//echo "\$current_eleve_login[$j]=$current_eleve_login[$j]<br />";
@@ -872,7 +873,8 @@ while($i < $lignes_groupes) {
 				}
 				else {
 					// On récupère l'indice de l'élève dans $tab_moy pour la période $num_periode
-					$indice_j_ele=$tab_moy['periodes'][$p]['tab_login_indice'][$current_eleve_login[$j]];
+					//$indice_j_ele=$tab_moy['periodes'][$p]['tab_login_indice'][$current_eleve_login[$j]];
+					$indice_j_ele=$tab_moy['periodes'][$p]['tab_login_indice'][strtoupper($current_eleve_login[$j])];
 
 					//$current_eleve_note_query = mysql_query("SELECT * FROM matieres_notes WHERE (login='$current_eleve_login[$j]' AND id_groupe='" . $current_group["id"] . "' AND periode='$p')");
 					//$current_eleve_statut = @mysql_result($current_eleve_note_query, 0, "statut");
@@ -1171,7 +1173,8 @@ if ($ligne_supl >= 1) {
 				$j = '0';
 				while($j < $nb_lignes_tableau) {
 
-					$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
+					//$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
+					$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][strtoupper($current_eleve_login[$j])];
 					$tmp_moy_cat_ele=$tab_moy['periodes'][$num_periode]['moy_cat_eleve'][$indice_j_ele][$cat_id];
 
 					//echo "$current_eleve_login[$j]: \$tab_moy['periodes'][$num_periode]['moy_cat_eleve'][$indice_j_ele][$cat_id]=".$tmp_moy_cat_ele."<br />";
@@ -1278,7 +1281,8 @@ if ($ligne_supl >= 1) {
 	while($j < $nb_lignes_tableau) {
 
 		if($referent=='une_periode') {
-			$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
+			//$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][$current_eleve_login[$j]];
+			$indice_j_ele=$tab_moy['periodes'][$num_periode]['tab_login_indice'][strtoupper($current_eleve_login[$j])];
 			$tmp_moy_gen_ele=$tab_moy['periodes'][$num_periode]['moy_gen_eleve'][$indice_j_ele];
 			if(($tmp_moy_gen_ele!='')&&($tmp_moy_gen_ele!='-')) {
 				$col[$nb_col][$j+$ligne_supl] = number_format($tmp_moy_gen_ele,1, ',', ' ');

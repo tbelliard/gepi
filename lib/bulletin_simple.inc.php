@@ -385,7 +385,17 @@ if ($on_continue == 'yes') {
 	while ($nb < $periode2+1) {
 		//$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login];
 		// Un élève qui arrive ou part en cours d'année ne sera pas dans la classe ni dans les groupes sur certaines périodes
-		if(isset($tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login])) {$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login];}
+		//if(isset($tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login])) {
+		if(isset($tab_moy['periodes'][$nb]['tab_login_indice'][strtoupper($current_eleve_login)])) {
+			//$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login];
+			$tab_login_indice[$nb]=$tab_moy['periodes'][$nb]['tab_login_indice'][strtoupper($current_eleve_login)];
+			//echo "\$tab_login_indice[$nb]=$tab_login_indice[$nb]<br />";
+		}
+		/*
+		else {
+			echo "\$tab_moy['periodes'][$nb]['tab_login_indice'][$current_eleve_login] n'est pas affecté.<br />";
+		}
+		*/
 		$nb++;
 	}
 

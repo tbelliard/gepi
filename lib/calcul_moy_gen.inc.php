@@ -241,7 +241,7 @@ while ($i < $nombre_eleves) {
 
 // Pour débugger:
 $lignes_debug="";
-$ele_login_debug="DUPRE_C";
+$ele_login_debug="rom.abela";
 
 // Témoin destiné à tester si tous les coefficients sont à 1
 // S'ils le sont, on n'imprime pas deux lignes de moyenne générale (moy.gen.coefficientée d'après Gestion des classes/<Classe> Enseignements et moy.gen avec coef à 1) même si la case est cochée dans le modèle PDF.
@@ -393,10 +393,14 @@ while ($j < $nombre_groupes) {
 		$current_eleve_login[$i] = mysql_result($appel_liste_eleves, $i, "login");
 		//===============
 		// Ajout J.Etheve
-		$tab_login_indice[$current_eleve_login[$i]]=$i;
+		//$tab_login_indice[$current_eleve_login[$i]]=$i;
+		$tab_login_indice[strtoupper($current_eleve_login[$i])]=$i;
 		//===============
 
-		if($current_eleve_login[$i]==$ele_login_debug) {$lignes_debug.="<p>\$current_group[$j]['name']=".$current_group[$j]['name']."<br />";}
+		if($current_eleve_login[$i]==$ele_login_debug) {
+			$lignes_debug.="<p>\$tab_login_indice[\$current_eleve_login[$i]]=\$tab_login_indice[".$current_eleve_login[$i]."]=$i<br />";
+			$lignes_debug.="<p>\$current_group[$j]['name']=".$current_group[$j]['name']."<br />";
+		}
 
 		//echo "\$current_eleve_login[$i]=".$current_eleve_login[$i]."<br />";
 
