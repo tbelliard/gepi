@@ -558,6 +558,14 @@ class ModelCriteria extends Criteria
 	 */
 	public function addJoinObject(Join $join, $name = null)
 	{
+		if (version_compare(PHP_VERSION, '5.2.4', '<')) {
+			//this is a little ugly too avoid Fatal error: Nesting level too deep - recursive dependency?
+			//it means alias in joins will be unstable
+			if ($this->joins[$name] === null) {
+				$this->joins[$name] = $join;
+			}
+			return $this;
+		}
 	  if (!in_array($join, $this->joins)) { // compare equality, NOT identity
 			$this->joins[$name] = $join;
 		}
