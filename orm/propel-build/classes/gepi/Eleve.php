@@ -85,6 +85,23 @@ class Eleve extends BaseEleve {
 		return $this->getClasses($periode)->getFirst();
 	}
 
+ 	/**
+	 *
+	 * Renvoi le nom de la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seule une% nom est renvoyée
+	 *
+	 * @param      integer $periode numero de la periode ou objet periodeNote
+	 * @return     Classe
+	 *
+	 */
+	public function getClasseNom($periode = null) {
+		$classe = $this->getClasses($periode)->getFirst();
+		if ($classe == null) {
+		    return '';
+		} else {
+		    return $classe->getNom();
+		}
+	}
+
 	/**
 	 *
 	 * Renvoi le nom de la classe d'un eleve. Si un eleve est affecté dans plusieurs classes, seul un nom est renvoyée

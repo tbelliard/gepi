@@ -213,7 +213,7 @@ if ($affichage == 'html') {
 	    echo '</td>';
 
 	    echo '<td style="border:1px solid;">';
-	    echo $eleve->getClasse()->getNom();
+	    echo $eleve->getClasseNom();
 	    echo '</td>';
 
 	    echo '<td style="border:1px solid;">';
