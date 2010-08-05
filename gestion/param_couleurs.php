@@ -404,6 +404,20 @@ fieldset#login_box div#header {
 	background-color: #$couleur_infobulle_fond_corps;
 }
 
+/*=====================================================*/
+/* Utilisation des couleurs d'info bulles pour les onglets de gestion/droits_acces.php*/
+
+.onglet {
+	background-color: #$couleur_infobulle_fond_corps;
+}
+
+.contenu_onglet {
+	background-color: #$couleur_infobulle_fond_corps;
+}
+
+.contenu_onglet2 {
+	background-color: #$couleur_infobulle_fond_corps;
+}
 
 /*=====================================================*/
 /* Utilisation des couleurs d'info bulles pour les onglets d'absences*/
