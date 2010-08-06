@@ -26,7 +26,24 @@
  * Accès limité à la lecture seule. Pour limiter les accès, on liste les méthodes disponibles
  * Les logins des élèves existent sous la forme d'un tableau envoyé en POST par curl
  *
- * @method notesEleve(), cdtDevoirsEleve(), cdtCREleve(), professeursEleve(), edtEleve(), listeEleveAvecClasse(), listeProfesseursAvecMatieres(), ListeClasseAvecProfesseurs()
+ * @todo : générer systématiquement un xml :
+ * <?xml version="1.0" encoding="iso-8859-1"?>
+ *  <book>
+ *    <title>This is the title</title>
+ *  </book>
+ * $doc = new DOMDocument('1.0', 'iso-8859-1');
+ * $root = $doc->createElement('book');
+ * $root = $doc->appendChild($root);
+ *
+ * $title = $doc->createElement('title');
+ * $title = $root->appendChild($title);
+ *
+ * $text = $doc->createTextNode('This is the title');
+ * $text = $title->appendChild($text);
+ * $doc->save("/tmp/test.xml");// Pour l'écrire sur le disque
+ * echo $doc->saveXML(); /: pour l'envoyer au client
+ * 
+ * @method notesEleve(), cdtDevoirsEleve(), cdtCREleve(), professeursEleve(), edtEleve(), listeElevesAvecClasse(), listeProfesseursAvecMatieres(), ListeClassesAvecProfesseurs()
  *
  * @author Julien Jocal
  * @license GPL
@@ -80,6 +97,12 @@ class serveur_ent {
    */
   private $_domain_name   = NULL;
   /**
+   * Encodage des données à renvoyer
+   * @var string $_encodage vaut ISO par défaut, peut être placé à utf8
+   */
+  private $_encodage      = 'ISO';
+
+  /**
    * Constructeur de la classe
    *
    * @example Si on est en multisite, il faut un cookie["RNE"] qui donne le bon RNE pour que GEPI se connecte sur la bonne base
@@ -98,22 +121,35 @@ class serveur_ent {
     }
     // On vérifie si les logins des enfants envoyés existent bien dans GEPI
     $reponse = array(); // permet de stocker les informations sur les enfants (tableau d'objets propel)
+    $test = unserialize($this->_enfants);
 
-    foreach (unserialize($this->_enfants) as $enfants){
-      // On cherche si cet enfant existe
-      $enf = EleveQuery::create()->filterByLogin($enfants)->find();
+    if (!empty ($test)){
+        foreach ($test as $enfants){
+        // On cherche si cet enfant existe
+        $enf = EleveQuery::create()->filterByLogin($enfants)->find();
 
-      if ($enf->isEmpty()){
-        // Ce login n'existe pas dans cette base
-        $this->writeLog(__METHOD__, 'login enfant inexistant : ' . $enfants, ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
-        $reponse[] = 'inexistant';
-      }else{
-        // on recherche la réponse pour ce login
-        $arenvoyer = $this->{$this->_demande}($enf[0]);
-        $reponse[$enf[0]->getLogin()] = $arenvoyer;
+        if ($enf->isEmpty()){
+          // Ce login n'existe pas dans cette base
+          $this->writeLog(__METHOD__, 'login enfant inexistant : ' . $enfants, ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
+          $reponse[] = 'inexistant';
+        }else{
+          // on recherche la réponse pour ce login
+          $arenvoyer = $this->{$this->_demande}($enf[0]);
+          $reponse[$enf[0]->getLogin()] = $arenvoyer;
+        }
+
+      } // foreach
+    // le cas où les enfants ne sont pas présents
+    }else{
+      // On vérifie si cette demande concerne un professeur
+      $arg = '';
+      if (in_array($this->_demande, array('cdtCRProfesseur', 'cdtDevoirsProfesseur'))){
+        $arg = UtilisateurProfessionnelQuery::create()
+                                      ->filterByLogin($this->_login)
+                                      ->findOne();
       }
-
-    } // foreach
+      $reponse = $this->{$this->_demande}($arg);
+    }
 
     if (is_array($reponse)){
       echo serialize($reponse);
@@ -160,7 +196,7 @@ class serveur_ent {
   private function verifKey($demandeur){
     include '../secure/serveur.inc.php';
     if (!array_key_exists($demandeur, $serveur)){
-      $this->writeLog(__METHOD__, 'Compte inexistant ('.$demandeur.')', $_SERVER['HTTP_REFERER']);
+      @$this->writeLog(__METHOD__, 'Compte inexistant ('.$demandeur.')', $_SERVER['HTTP_REFERER']);
       Die('Compte inexistant.');
     }else if ($this->_api_key != $serveur[$demandeur]['api_key']){
       $this->writeLog(__METHOD__, 'La clé n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
@@ -189,7 +225,9 @@ class serveur_ent {
    * @return array liste des méthodes autorisées
    */
   public function getMethodesAutorisees(){
-    return array('notesEleve', 'cdtDevoirsEleve', 'cdtCREleve', 'professeursEleve', 'edtEleve', 'listeEleveAvecClasse', 'listeProfesseursAvecMatieres', 'ListeClasseAvecProfesseurs');
+    return array('notesEleve', 'cdtDevoirsEleve', 'cdtCREleve', 'professeursEleve', 'edtEleve', 
+                 'listeElevesAvecClasse', 'listeProfesseursAvecMatieres', 'ListeClassesAvecProfesseurs',
+                 'cdtDevoirsProfesseur', 'cdtCRProfesseur');
   }
 
   /**
@@ -206,33 +244,78 @@ class serveur_ent {
    * Renvoie la liste des devoirs à faire pour un élève (en fonction du login de l'élève)
    *
    * @todo Pour le moment, on renvoie pour chaque matière le devoir le plus éloigné dans le temps, il faudrait renvoyer tous les devoirs dont la date est postérieure
-   * @param string $_login
+   * @param object Eleve $_eleve
    * @return array Liste des devoirs à faire du cdt de l'élève
    */
   public function cdtDevoirsEleve(eleve $_eleve){
     $var = array();
+    $now = new DateTime('now');
+    $rep = CahierTexteTravailAFaireQuery::create()
+                  ->orderByDateCt()
+                  ->distinct()
+                  ->useGroupeQuery()
+                  ->useJEleveGroupeQuery()
+                    ->filterByEleve($_eleve)
+                  ->endUse()
+                  ->endUse()
+                  ->filterByDateCt($now->format('U'), Criteria::GREATER_THAN)
+                ->find();
 
-    foreach ($_eleve->getGroupes() as $groupes) {
-      $devoirs = $groupes->getCahierTexteTravailAFairesJoinUtilisateurProfessionnel();
-      if (!$devoirs->isEmpty()){
-        foreach ($devoirs as $devoir){
-          $dev = array($devoir->getDateCt() => strip_tags($devoir->getContenu(), 'div'));
-        }
-        $var[$groupes->getDescription()] = $dev;
-      }else{
-        $var[$groupes->getDescription()] = array(''=>'Regardez le cahier de textes de l\'enfant.');
-      }
+    foreach ($rep as $r){
+        $var[$r->getDateCt()] = $r->getContenu();
     }
+
     return $var;
   }
 
   /**
    * Renvoie la liste des derniers compte-rendus pour chaque enseignement auxquels est inscrit un élève
    *
-   * @param string $_login login de l'élève
+   * @param object Eleve $_eleve
    * @return array Liste des Compte-Rendus d'un élève
    */
-  public function cdtCREleve($_login){
+  public function cdtCREleve($_eleve){
+    $var = array();
+    $now = new DateTime('now');
+    $rep = CahierTexteCompteRenduQuery::create()
+                  ->orderByDateCt()
+                  ->distinct()
+                  ->useGroupeQuery()
+                  ->useJEleveGroupeQuery()
+                    ->filterByEleve($_eleve)
+                  ->endUse()
+                  ->endUse()
+                  ->filterByDateCt(($now->format('U') - (6058000)), Criteria::GREATER_THAN)
+                ->find();
+
+    foreach ($rep as $r){
+        $var[$r->getDateCt()] = utf8_encode($r->getContenu());
+    }
+
+    return $var;
+  }
+
+  /**
+   * Renvoie la liste des devoirs à faire donnés pour chaque enseignement d'un professeur
+   *
+   * @param object UtilisateurProfessionnel $_professeur
+   * @return array Liste des devoirs donnés par le professeur avec les enseignements correspondants
+   */
+  public function cdtDevoirsProfesseur(UtilisateurProfessionnel $_professeur){
+    $devoirs = $_professeur->getCahierTexteTravailAFairesJoinGroupe();
+    $reponse = array();
+    foreach ($devoirs as $devoir) {
+      $reponse[$devoir->getDateCt()] = $devoir->getContenu();
+    }
+    return $reponse;
+  }
+  /**
+   * Renvoie la liste des derniers compte-rendus pour chaque enseignement d'un professeur
+   *
+   * @param object UtilisateurProfessionnel $_professeur
+   * @return array Liste des Compte-Rendus du professeur avec les enseignements correspondants
+   */
+  public function cdtCRProfesseur(UtilisateurProfessionnel $_professeur){
     return array();
   }
 
@@ -265,6 +348,67 @@ class serveur_ent {
     return array();
   }
 
+  /**
+   * Renvoie la liste des élèves avec leur classe (nom, prénom, login, no_gep, eleonet, ele_id, sexe, naissance, classe)
+   */
+  public function listeElevesAvecClasse(){
+    $eleves = EleveQuery::create()->find();
+    $retour = array();
+    foreach ($eleves as $eleve){
+      $eleCla = $eleve->getJEleveClassesJoinClasse();
+      $classes = array();
+      foreach ($eleCla as $cla){
+        $classes[] = $cla->getClasse()->getNomComplet();
+      }
+      $retour[] = array($eleve->getNom(), $eleve->getPrenom(), $eleve->getSexe(), $eleve->getLogin(), $eleve->getEleId(), $eleve->getElenoet(), $classes);
+    }
+    return $retour;
+  }
+
+  /**
+   * Renvoie la liste des professeurs avec leurs matières rattachées (nom, prénom, login, liste matières)
+   */
+  public function listeProfesseursAvecMatieres(){
+    $profs = UtilisateurProfessionnelQuery::create()
+                        ->filterByStatut('professeur')
+                        ->filterByEtat('actif')
+                        ->find();
+    $retour = array();
+    foreach ($profs as $prof) {
+      $matieres = array();
+      $profMat = $prof->getJProfesseursMatieressJoinMatiere();
+      foreach ($profMat as $mat){
+        $matieres[] = $mat->getMatiere()->getMatiere();
+      }
+      $retour[] = array($prof->getNom(), $prof->getPrenom(), $prof->getCivilite(), $prof->getLogin(), $prof->getNumind(), $prof->getEmail(), $matieres);
+    }
+    return $retour;
+  }
+
+  /**
+   * Renvoie la liste des classes de GEPI avec la liste des professeurs pour chaque classe
+   * classe, liste prof dans cette classe
+   *
+   * @return array Tableau des classes de Gepi : nom, nom_complet, '', '', '', '', liste des logins des professeurs de la classe
+   */
+  public function ListeClassesAvecProfesseurs(){
+    $classes = ClasseQuery::create()->find();
+    $retour = array();
+    foreach ($classes as $classe){
+      $professeurs = array();
+      // Pour chaque classe, on liste les groupes
+      $groupes = $classe->getJGroupesClassessJoinGroupe();
+      foreach ($groupes as $groupe){
+        $profs = $groupe->getGroupe()->getJGroupesProfesseurssJoinUtilisateurProfessionnel();
+        // Puis on récupère le login des professeurs qui ont au moins un enseignement dans cette classe.
+        foreach ($profs as $prof){
+          $professeurs[] = $prof->getUtilisateurProfessionnel()->getlogin();
+        }
+      }
+      $retour[] = array($classe->getNom(), $classe->getNomComplet(), '', '', '', '', $professeurs);
+    }
+    return $retour;
+  }
   /**
    * Loggue les erreurs du serveur dans un fichier
    *
