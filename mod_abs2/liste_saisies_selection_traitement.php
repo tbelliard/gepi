@@ -644,7 +644,7 @@ echo "<option value='n' ";
 if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected'";}
 echo ">non</option>\n";
 echo "</select>";
-echo '<br/>manquement obligation scolaire';
+echo '<br/>manquement obligation présence';
 echo '</th>';
 
 //en tete filtre sous_responsabilite_etablissement
