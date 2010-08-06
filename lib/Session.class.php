@@ -613,7 +613,7 @@ class Session {
 		include($path);
 
 		// Le premier argument est la version du protocole CAS
-		phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, true);
+		phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, false);
 		phpCAS::setLang('french');
 
 		// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
