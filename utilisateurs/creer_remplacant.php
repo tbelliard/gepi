@@ -62,10 +62,12 @@ $id_groupe=isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : "";
 
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
     // Cas LCS : on teste s'il s'agit d'un utilisateur local ou non
-    if (getSettingValue("use_sso") == "lcs")
-        if ($_POST['is_lcs'] == "y") $is_pwd = 'n'; else $is_pwd = 'y';
-    else
+    if (getSettingValue("use_sso") == "lcs") {
+        if ($_POST['is_lcs'] == "y") {$is_pwd = 'n';} else {$is_pwd = 'y';}
+	}
+    else {
         $is_pwd = "y";
+	}
 
 	if(($compte_existant!="")&&($utiliser_compte_existant=='y')) {
 		$temoin_erreur_affect_compte_existant="n";
@@ -85,6 +87,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			$result_matieres = mysql_query($sql_matieres);
 			$nombre_matieres = mysql_num_rows($result_matieres);
 
+			$id_matiere_prof_remplace=array();
 			for ($i=0;$i<$nombre_matieres;$i++) {
 				$id_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'id_matiere');
 				$ordre_matiere_prof_remplace[$i] = mysql_result($result_matieres,$i,'ordre_matieres');
@@ -427,6 +430,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 $titre_page = "Gestion des utilisateurs | Créer un remplaçant";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+//debug_var();
 ?>
 <p class='bold'>
 <a href="index.php?mode=personnels"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
@@ -567,10 +571,10 @@ if ($valid!='yes') {
 }
 elseif(isset($temoin_erreur_affect_compte_existant)) {
 	if($temoin_erreur_affect_compte_existant=="y") {
-		echo "<p style='color:red'>Une erreur s'est produite lors de la déclaration de '$compte_existant' comme remplaçant de '$login_prof_remplace'.</p>\n";
+		echo "<p style='color:red'>Une erreur s'est produite lors de la déclaration de '<b>$compte_existant</b>' comme remplaçant de '<b>$login_prof_remplace</b>'.</p>\n";
 	}
 	else {
-		echo "<p>Le compte '$compte_existant' a été déclaré remplaçant de '$login_prof_remplace'.</p>\n";
+		echo "<p>Le compte '<b>$compte_existant</b>' a été déclaré remplaçant de '<b>$login_prof_remplace</b>'.</p>\n";
 	}
 }
 else {// fin affichage formulaire
