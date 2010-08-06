@@ -1023,17 +1023,22 @@ class Eleve extends BaseEleve {
 	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
 	    $date_compteur = clone $date_debut_iteration;
+	    if ($date_compteur->format('H') < 12) {
+		$date_compteur->setTime(0, 0);
+	    } else {
+		$date_compteur->setTime(12, 30);//on calle la demi journée a 12h30
+	    }
 	    foreach($abs_saisie_col as $saisie) {
 		if ($date_compteur->format('U') > $date_fin_iteration->format('U')) {
 		    break;
 		}
 		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
 		    $date_compteur = clone $saisie->getDebutAbs(null);
-		}
-		if ($date_compteur->format('H') < 12) {
-		    $date_compteur->setTime(0, 0);
-		} else {
-		    $date_compteur->setTime(12, 30);//on calle la demi journée a 12h30
+		    if ($date_compteur->format('H') < 12) {
+			$date_compteur->setTime(0, 0);
+		    } else {
+			$date_compteur->setTime(11, 50);//on calle la demi journée a 11h50
+		    }
 		}
 		$max = 0;
 		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration->format('U') && $max < 200) {
@@ -1051,16 +1056,22 @@ class Eleve extends BaseEleve {
 
 		    //ouvert
 		    $date_compteur_suivante = clone $date_compteur;
-		    $date_compteur_suivante->modify("+12 hours");
-		    if ($date_compteur_suivante->format('H') < 12) {
+		    $date_compteur_suivante->modify("+13 hours");//en ajoutant 13 heure on est sur de passer a la journee suivante
+		    if ($date_compteur_suivante->format('Hi') < 12) {
 			$date_compteur_suivante->setTime(0, 0);
 		    } else {
-			$date_compteur_suivante->setTime(12, 30);
+			$date_compteur_suivante->setTime(11, 50);
 		    }
 		    if ($saisie->getDebutAbs('U') < $date_compteur_suivante->format('U') && $saisie->getFinAbs('U') > $date_compteur->format('U')) {
 			$result->append(clone $date_compteur);
+			//on a un resultat.
+			//on commence l'apres midi a 13h35
+			//pour eviter le cas ou on a une saisie par exemple sur 11h45 -> 13h et de la compter comme deux demi-journees
+			if ($date_compteur_suivante->format('Hi') == '1150') {
+			    $date_compteur_suivante->setTime(13, 35);
+			}
 		    }
-		    $date_compteur = $date_compteur_suivante;
+		    $date_compteur = clone $date_compteur_suivante;
 		}
 	    }
 	    return $result;
@@ -1085,6 +1096,7 @@ class Eleve extends BaseEleve {
 	    if ($date_debut  == null)  {
 		return 0;
 	    }
+
 	    return $this->getDemiJourneesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
 
