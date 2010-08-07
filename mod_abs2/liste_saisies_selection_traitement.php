@@ -408,7 +408,7 @@ foreach (ClasseQuery::create()->find() as $classe) {
 	echo "<option value='".$classe->getId()."'";
 	if (getFiltreRechercheParam('filter_classe') === (string) $classe->getId()) echo " SELECTED ";
 	echo ">";
-	echo $classe->getNomComplet();
+	echo $classe->getNom();
 	echo "</option>\n";
 }
 echo "</select>";
@@ -893,7 +893,7 @@ foreach ($results as $saisie) {
     echo '<td>';
     if ($saisie->getClasse() != null) {
 	echo "<a href='liste_saisies_selection_traitement.php?filter_classe=".$saisie->getClasse()->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
-	echo $saisie->getClasse()->getNomComplet();
+	echo $saisie->getClasse()->getNom();
     echo "</a>";
     } else {
 	echo "&nbsp;";

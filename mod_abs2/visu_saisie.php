@@ -172,7 +172,7 @@ if ($saisie->getClasse() != null) {
     echo '<tr><TD>';
     echo 'Classe : ';
     echo '</TD><TD>';
-    echo $saisie->getClasse()->getNomComplet();
+    echo $saisie->getClasse()->getNom();
     echo '</TD></tr>';
 }
 

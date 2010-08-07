@@ -145,11 +145,11 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	}
 	if ($saisie->getClasse() != null) {
 	    echo ' pour la classe ';
-	    echo $saisie->getClasse()->getNomComplet();
+	    echo $saisie->getClasse()->getNom();
 	}
 	if ($saisie->getAidDetails() != null) {
 	    echo ' pour l\'aid ';
-	    echo $saisie->getClasse()->getNomComplet();
+	    echo $saisie->getAidDetails()->getNom();
 	}
 	echo ' ';
 	echo $saisie->getTypesDescription();

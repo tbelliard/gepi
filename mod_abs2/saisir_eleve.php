@@ -198,7 +198,7 @@ if (!$classe_col->isEmpty()) {
 		echo "<option value='".$classe->getId()."'";
 		if ($id_classe == $classe->getId()) echo " selected='selected' ";
 		echo ">";
-		echo $classe->getNomComplet();
+		echo $classe->getNom();
 		echo "</option>\n";
 	}
 	echo "</select>&nbsp;";

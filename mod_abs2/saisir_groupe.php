@@ -243,7 +243,7 @@ if (!$classe_col->isEmpty()) {
 	    echo "<option value='".$classe->getId()."'";
 	    if ($id_classe == $classe->getId()) echo " selected='selected' ";
 	    echo ">";
-	    echo $classe->getNomComplet();
+	    echo $classe->getNom();
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
@@ -464,7 +464,7 @@ if (!$eleve_col->isEmpty()) {
 				} else if (isset($current_aid) && $current_aid != null) {
 				    echo 'l\'aid '.$current_aid->getNom();
 				} else if (isset($current_classe) && $current_classe != null) {
-				    echo 'la classe '.$current_classe->getNomComplet();
+				    echo 'la classe '.$current_classe->getNom();
 				}?>
 				</strong>
 				<?php if ($current_creneau != null) { ?>

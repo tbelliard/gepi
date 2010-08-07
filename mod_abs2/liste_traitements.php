@@ -362,7 +362,7 @@ foreach (ClasseQuery::create()->distinct()->find() as $classe) {
 	echo "<option value='".$classe->getId()."'";
 	if (getFiltreRechercheParam('filter_classe') === (string) $classe->getId()) echo " selected='selected' ";
 	echo ">";
-	echo $classe->getNomComplet();
+	echo $classe->getNom();
 	echo "</option>\n";
 }
 echo "</select>";
@@ -667,7 +667,7 @@ foreach ($results as $traitement) {
 	}
     }
     foreach ($classe_col as $classe) {
-	echo $classe->getNomComplet();
+	echo $classe->getNom();
     }
     if ($classe_col->isEmpty() != null) {
 	echo "&nbsp;";
