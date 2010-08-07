@@ -121,6 +121,7 @@ if ($type_selection == 'id_groupe') {
 }
 
 //==============================================
+$style_specifique[] = "templates/DefaultEDT/css/style_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
@@ -301,7 +302,7 @@ if (!$eleve_col->isEmpty()) {
 <!-- Fin de la legende -->
 
 <table><tr><td style="vertical-align : top;">
-	<table class="tb_absences" style="width:600px;" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
+	<table class="tb_absences" style="width:750px;" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
 		<caption class="invisible no_print">Absences</caption>
 		<tbody>
 			<tr class="titre_tableau_gestion" style="white-space: nowrap;">
@@ -331,7 +332,7 @@ foreach($eleve_col as $eleve) {
 			}
 			echo "<tr style='background-color :$background_couleur'>\n";
 ?>
-			<td class='td_abs_eleves'>
+			<td class='td_abs_eleves' style="width:580px;" >
 				<input type="hidden" name="id_eleve_absent[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getIdEleve(); ?>" />
 <?php
 		  //echo '<a href="./saisir_eleve.php?type_selection=id_eleve&id_eleve='.$eleve->getPrimaryKey().'">';
@@ -343,17 +344,18 @@ foreach($eleve_col as $eleve) {
 			if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
 			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
 			}
+echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: static;"/>';
 			echo("</td>");
 
 			
-			echo '<td><input style="font-size:88%;" name="active_absence_eleve[]" value="'.$eleve->getPrimaryKey().'" type="checkbox"';
+			echo '<td style="vertical-align: top;"><input style="font-size:88%;" name="active_absence_eleve[]" value="'.$eleve->getPrimaryKey().'" type="checkbox"';
 			if ($eleve_col->count() == 1) {
 			    echo "checked=\"true\" ";
 			}
 			echo '/>';
 			echo '</td> ';
 
-			echo("<td>");
+			echo("<td style='vertical-align: top;'>");
 			// Avec ou sans photo
 			if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 			    $nom_photo = $eleve->getNomPhoto(1);
@@ -365,16 +367,31 @@ foreach($eleve_col as $eleve) {
 			    }
 			    $valeur = redimensionne_image_petit($photos);
 			    ?>
-				<img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
+		      <div style="float: left;"><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
+		      </div>
 <?php			
 			}
+			echo '<div style="float: left;">';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
 			    //on est pas sur que le statut autre a acces a l'onglet abs de la fiche donc on affiche pas cet onglet au chargement
 				echo '<a href="javascript:centrerpopup(\'../eleves/visu_eleve.php?ele_login='.$eleve->getLogin().'\',600,550,\'scrollbars=yes,statusbar=no,resizable=yes\');">
 				    Voir fiche</a>';
 			}
-			echo '</td>';
+			echo '<br>';
+			echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
+					if (!$('edt_".$eleve->getLogin()."').visible()) {
+					    new Ajax.Updater('edt_".$eleve->getLogin()."', './ajax_edt_eleve.php?eleve_login=".$eleve->getLogin()."&periode_note=".$eleve->getPeriodeNote()."', {encoding: 'ISO-8859-1'});
+					    $('edt_".$eleve->getLogin()."').show();
+					} else {
+					    $('edt_".$eleve->getLogin()."').hide();
+					}
 
+					return false;
+			\">";
+			echo 'voir edt';
+			echo '</a>';
+			echo '</div>';
+			echo '</td>';
 echo "</tr>";
 }
 
