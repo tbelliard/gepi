@@ -166,7 +166,7 @@ if (!$groupe_col->isEmpty()) {
 	echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
 	echo ("Groupe : <select name=\"id_groupe\" class=\"small\">");
 	echo "<option value='-1'>choisissez un groupe</option>\n";
-	foreach ($utilisateur->getGroupes() as $group) {
+	foreach ($groupe_col as $group) {
 		echo "<option value='".$group->getId()."'";
 		if ($id_groupe == $group->getId()) echo " selected='selected' ";
 		echo ">";
@@ -224,7 +224,7 @@ if (!$aid_col->isEmpty()) {
 	echo '<input type="hidden" name="type_selection" value="id_aid"/>';
 	echo ("Aid : <select name=\"id_aid\" class=\"small\">");
 	echo "<option value='-1'>choisissez une aid</option>\n";
-	foreach ($utilisateur->getAidDetailss() as $aid) {
+	foreach ($aid_col as $aid) {
 		echo "<option value='".$aid->getPrimaryKey()."'";
 		if ($id_aid == $aid->getPrimaryKey()) echo " selected='selected' ";
 		echo ">";
