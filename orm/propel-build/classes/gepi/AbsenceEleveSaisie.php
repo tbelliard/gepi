@@ -282,7 +282,6 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 */
 	public function getJustifiee() {
 	    foreach($this->getAbsenceEleveTraitements() as $traitement) {
-		$traitement = new AbsenceEleveTraitement();
 		if ($traitement->getAbsenceEleveJustification() != null) {
 		    return true;
 		}
