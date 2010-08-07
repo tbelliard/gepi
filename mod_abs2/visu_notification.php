@@ -80,7 +80,7 @@ require_once("../lib/header.inc");
 
 include('menu_abs2.inc.php');
 //===========================
-echo "<div class='css-panes' style='background-color:#dde6e8;' id='containDiv' style='overflow : auto;'>\n";
+echo "<div class='css-panes' style='background-color:#c7e3ec;' id='containDiv' style='overflow : auto;'>\n";
 
 if (isset($message_enregistrement)) {
     echo $message_enregistrement;
@@ -105,7 +105,7 @@ echo '<tr><td>';
 echo 'N° de notification';
 echo '</td><td>';
 echo $notification->getPrimaryKey();
-echo " <a style='background-color:#e8e8dd;' href='visu_traitement.php?id_traitement=".$notification->getATraitementId()."'>";
+echo " <a style='background-color:#ebedb5;' href='visu_traitement.php?id_traitement=".$notification->getATraitementId()."'>";
 echo '(voir traitement)';
 echo "</a>";
 echo '</td></tr>';
@@ -113,7 +113,7 @@ echo '</td></tr>';
 echo '<tr><td>';
 echo 'Saisies : ';
 echo '</td><td>';
-echo '<table style="background-color:#d7e8d8;">';
+echo '<table style="background-color:#cae7cb;">';
 $eleve_prec_id = null;
 foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
     //$saisie = new AbsenceEleveSaisie();

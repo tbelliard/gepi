@@ -109,7 +109,7 @@ require_once("../lib/header.inc");
 
 include('menu_abs2.inc.php');
 
-echo "<div class='css-panes' style='background-color:#d7e8d8;' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
+echo "<div class='css-panes' style='background-color:#cae7cb;' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
 
 $query = AbsenceEleveSaisieQuery::create();

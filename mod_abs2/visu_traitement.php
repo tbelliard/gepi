@@ -80,7 +80,7 @@ require_once("../lib/header.inc");
 
 include('menu_abs2.inc.php');
 //===========================
-echo "<div class='css-panes' style='background-color:#e8e8dd;' id='containDiv' style='overflow : auto;'>\n";
+echo "<div class='css-panes' style='background-color:#ebedb5;' id='containDiv' style='overflow : auto;'>\n";
 
 
 $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
@@ -124,7 +124,7 @@ if ($traitement->getModifieParUtilisateurId() != null && $traitement->getUtilisa
 echo '<tr><td>';
 echo 'Saisies : ';
 echo '</td><td>';
-echo '<table style="background-color:#d7e8d8;">';
+echo '<table style="background-color:#cae7cb;">';
 $eleve_prec_id = null;
 if ($traitement->getAbsenceEleveSaisies()->isEmpty() && $traitement->getModifiable()) {
     echo '<form method="post" action="liste_saisies_selection_traitement.php">';
@@ -333,7 +333,7 @@ echo '</td></tr>';
 echo '<tr><td>';
 echo 'Notification : ';
 echo '</td><td>';
-echo '<table style="background-color:#dde6e8;">';
+echo '<table style="background-color:#c7e3ec;">';
 $eleve_prec_id = null;
 foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
     echo '<tr><td>';

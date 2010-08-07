@@ -80,7 +80,7 @@ require_once("../lib/header.inc");
 
 include('menu_abs2.inc.php');
 
-echo "<div class='css-panes' style='background-color:#d7e8d8;' id='containDiv' style='overflow : auto;'>\n";
+echo "<div class='css-panes' style='background-color:#cae7cb;' id='containDiv' style='overflow : auto;'>\n";
 
 
 $saisie = AbsenceEleveSaisieQuery::create()->findPk($id_saisie);
@@ -269,7 +269,7 @@ echo '</TD></tr>';
 
 echo '<tr><TD>';
 echo 'Traitement : ';
-echo '</TD><TD style="background-color:#e8e8dd;">';
+echo '</TD><TD style="background-color:#ebedb5;">';
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
     //on affiche les traitements uniquement si ils ne sont pas modifiables, car si ils sont modifiables on va afficher un input pour pouvoir les modifier
     if ($traitement->getUtilisateurId() != $utilisateur->getPrimaryKey() || ! $traitement->getModifiable()) {
