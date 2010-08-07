@@ -1023,10 +1023,10 @@ class Eleve extends BaseEleve {
 	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
 	    $date_compteur = clone $date_debut_iteration;
-	    if ($date_compteur->format('H') < 12) {
+	    if ($date_compteur->format('Hi') < 1200) {
 		$date_compteur->setTime(0, 0);
 	    } else {
-		$date_compteur->setTime(12, 30);//on calle la demi journée a 12h30
+		$date_compteur->setTime(11, 50);//on calle la demi journée a 11h50
 	    }
 	    foreach($abs_saisie_col as $saisie) {
 		if ($date_compteur->format('U') > $date_fin_iteration->format('U')) {
@@ -1034,7 +1034,7 @@ class Eleve extends BaseEleve {
 		}
 		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
 		    $date_compteur = clone $saisie->getDebutAbs(null);
-		    if ($date_compteur->format('H') < 12) {
+		    if ($date_compteur->format('Hi') < 1200) {
 			$date_compteur->setTime(0, 0);
 		    } else {
 			$date_compteur->setTime(11, 50);//on calle la demi journée a 11h50
@@ -1048,16 +1048,19 @@ class Eleve extends BaseEleve {
 		    if (isset($horaire_tab[$jour_semaine])) {
 			$horaire = $horaire_tab[$jour_semaine];
 		    }
-		    if ($horaire == null || $date_compteur->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')) {
+		    if ($horaire == null 
+			    || $date_compteur->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')
+			    ||	$date_compteur->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
 			//fermé
-			$date_compteur->modify("+12 hours");
+			$date_compteur->modify("+2 hours");
 			continue;
 		    }
 
 		    //ouvert
 		    $date_compteur_suivante = clone $date_compteur;
-		    $date_compteur_suivante->modify("+13 hours");//en ajoutant 13 heure on est sur de passer a la journee suivante
-		    if ($date_compteur_suivante->format('Hi') < 12) {
+		    $date_compteur_suivante->modify("+13 hours");
+//		    $date_compteur_suivante->modify("+11 minutes");//en ajoutant 12 heure et 11 min on est sur de passer a la journee suivante
+		    if ($date_compteur_suivante->format('Hi') < 1200) {
 			$date_compteur_suivante->setTime(0, 0);
 		    } else {
 			$date_compteur_suivante->setTime(11, 50);
