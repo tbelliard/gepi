@@ -43,11 +43,24 @@
  * $doc->save("/tmp/test.xml");// Pour l'écrire sur le disque
  * echo $doc->saveXML(); /: pour l'envoyer au client
  * 
- * @method notesEleve(), cdtDevoirsEleve(), cdtCREleve(), professeursEleve(), edtEleve(), listeElevesAvecClasse(), listeProfesseursAvecMatieres(), ListeClassesAvecProfesseurs()
+ * @method notesEleve(), cdtDevoirsEleve(), cdtCREleve(), professeursEleve(), edtEleve(), listeElevesAvecClasse(), listeProfesseursAvecMatieres(), ListeClassesAvecProfesseurs(), listeMatieresAvecNomlong()
  *
  * @author Julien Jocal
  * @license GPL
  */
+
+/**
+ * @todo il faut mettre en place une structure qui gère le multisite.
+ *      Pour les applications tierces, le RNE est renseigné dans le fichier de config du serveur
+ *      Pour les ENT qui auraient besoin de demander à plusieurs bases, ???
+ */
+include '../secure/serveur.inc.php';
+if (in_array('domain_name', $_POST) AND in_array($_POST['domain_name'], $serveur) AND $serveur[$_POST['domain_name']]['RNE'] !== 'all'){
+  $_GET['rne'] = isset($_POST['domain_name']) ? $serveur[$_POST['domain_name']]['RNE'] : NULL;
+}else{
+  // Dans le cas d'une utilisation multisite, si le demandeur à les droits 'all', on lui fait confiance pour demander la base qu'il souhaite
+  $_GET['rne'] = isset($_POST['RNE']) ? $_POST['RNE'] : NULL;
+}
 $traite_anti_inject = 'no'; // pour éviter les échappements dans les tableaux sérialisés
 require_once("../lib/initialisationsPropel.inc.php");
 //require_once("../lib/initialisations.inc.php");
@@ -98,10 +111,15 @@ class serveur_ent {
   private $_domain_name   = NULL;
   /**
    * Encodage des données à renvoyer
-   * @var string $_encodage vaut ISO par défaut, peut être placé à utf8
+   * @var string $_encodage vaut 'ISO' par défaut, peut être placé à 'utf8' par le client
    */
   private $_encodage      = 'ISO';
 
+  /**
+   * Format des informations envoyées (tableau sérialisé ou xml)
+   * @var string vaut 'serialize' par défaut, peut être placé à 'xml' par le client
+   */
+  private $_format        = 'serialize';
   /**
    * Constructeur de la classe
    *
@@ -143,7 +161,7 @@ class serveur_ent {
     }else{
       // On vérifie si cette demande concerne un professeur
       $arg = '';
-      if (in_array($this->_demande, array('cdtCRProfesseur', 'cdtDevoirsProfesseur'))){
+      if (strpos('Professeur', $this->_demande) !== false){
         $arg = UtilisateurProfessionnelQuery::create()
                                       ->filterByLogin($this->_login)
                                       ->findOne();
@@ -151,8 +169,22 @@ class serveur_ent {
       $reponse = $this->{$this->_demande}($arg);
     }
 
-    if (is_array($reponse)){
-      echo serialize($reponse);
+    if (is_array($reponse) OR ($this->_format == 'xml')){
+      if ($this->_format == 'serialize'){
+        echo serialize($reponse);
+      }elseif ($this->_format == 'xml') {
+        /**
+         * @todo : à revoir car cela ne fonctionne pas, les données sont toujours renvoyées en utf8 sur les xml par gepi
+         * et je ne sais pas pourquoi...
+
+        $encoding = ($this->_encodage == 'utf8') ? 'UTF-8' : 'ISO-8859-1';
+        if ($encoding == 'UTF-8'){
+          header ('Content-Type: text/xml; charset=utf-8');
+        }
+         */
+        header ('Content-Type: text/xml;');
+        echo $reponse;
+      }
     }else{
       echo serialize(array('erreur'=>'service absent'));
     }
@@ -168,6 +200,8 @@ class serveur_ent {
   }
 
   /**
+   * Charge les données envoyées par le client
+   * 
    * @todo Mieux gérer le cas où la requête n'est pas en POST
    * @return void initialise les propriétés de l'objet
    */
@@ -178,13 +212,16 @@ class serveur_ent {
       Die();
     }else{
       // On vérifie que les données demandées existent
-      $this->_etab      = (array_key_exists('etab', $_POST)) ? $_POST['etab'] : null;
-      $this->_enfants   = (array_key_exists('enfants', $_POST)) ? $_POST['enfants'] : null;
-      $this->_api_key   = (array_key_exists('api_key', $_POST)) ? $_POST['api_key'] : 'false';
-      $this->_demande   = (array_key_exists('demande', $_POST)) ? $_POST['demande'] : null;
-      $this->_hash      = (array_key_exists('hash', $_POST)) ? $_POST['hash'] : null;
-      $this->_login     = (array_key_exists('login', $_POST)) ? $_POST['login'] : null;
-      $this->_periode   = (array_key_exists('periode', $_POST)) ? $_POST['periode'] : $this->_periode;
+      $this->_etab        = (array_key_exists('etab', $_POST)) ? $_POST['etab'] : null;
+      $this->_enfants     = (array_key_exists('enfants', $_POST)) ? $_POST['enfants'] : null;
+      $this->_api_key     = (array_key_exists('api_key', $_POST)) ? $_POST['api_key'] : 'false';
+      $this->_demande     = (array_key_exists('demande', $_POST)) ? $_POST['demande'] : null;
+      $this->_hash        = (array_key_exists('hash', $_POST)) ? $_POST['hash'] : null;
+      $this->_login       = (array_key_exists('login', $_POST)) ? $_POST['login'] : null;
+      $this->_periode     = (array_key_exists('periode', $_POST)) ? $_POST['periode'] : $this->_periode;
+      $this->_encodage    = (array_key_exists('encodage', $_POST) AND $_POST['encodage'] == 'utf8') ? 'utf8' : $this->_encodage;
+      $this->_format      = (array_key_exists('format', $_POST) AND $_POST['format'] == 'xml') ? 'xml' : $this->_format;
+      $this->_domain_name = isset($_POST['domain_name']) ? $_POST['domain_name'] : null;
     }
   }
 
@@ -200,7 +237,9 @@ class serveur_ent {
       Die('Compte inexistant.');
     }else if ($this->_api_key != $serveur[$demandeur]['api_key']){
       $this->writeLog(__METHOD__, 'La clé n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
-      Die('la clé est obsolète : ' . $this->_api_key . '|+|' . $key);
+      Die('la clé est obsolète.');
+    }else{
+      return true;
     }
   }
 
@@ -217,8 +256,11 @@ class serveur_ent {
     }else if ($this->_api_key != $serveur[$demandeur]['ip']){
       $this->writeLog(__METHOD__, 'La clé n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
       Die('la clé est obsolète : ' . $this->_api_key . '|+|' . $key);
+    }else{
+      return true;
     }
   }
+
   /**
    * Renvoie la liste des méthodes autorisées par le serveur
    * @todo Penser à mettre à jour cette liste au fur et à mesure de la définition des méthodes
@@ -226,7 +268,7 @@ class serveur_ent {
    */
   public function getMethodesAutorisees(){
     return array('notesEleve', 'cdtDevoirsEleve', 'cdtCREleve', 'professeursEleve', 'edtEleve', 
-                 'listeElevesAvecClasse', 'listeProfesseursAvecMatieres', 'ListeClassesAvecProfesseurs',
+                 'listeElevesAvecClasse', 'listeProfesseursAvecMatieres', 'listeClassesAvecProfesseurs', 'listeMatieresAvecNomlong',
                  'cdtDevoirsProfesseur', 'cdtCRProfesseur');
   }
 
@@ -236,7 +278,7 @@ class serveur_ent {
    * @param string $_login login de l'élève
    * @return array Liste des notes d'un élève
    */
-  public function notesEleve($_login){
+  public function notesEleve(eleve $_eleve){
     return array();
   }
 
@@ -353,14 +395,35 @@ class serveur_ent {
    */
   public function listeElevesAvecClasse(){
     $eleves = EleveQuery::create()->find();
-    $retour = array();
+    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'ISO-8859-1\'?><eleves>' : array();
     foreach ($eleves as $eleve){
       $eleCla = $eleve->getJEleveClassesJoinClasse();
       $classes = array();
       foreach ($eleCla as $cla){
         $classes[] = $cla->getClasse()->getNomComplet();
       }
-      $retour[] = array($eleve->getNom(), $eleve->getPrenom(), $eleve->getSexe(), $eleve->getLogin(), $eleve->getEleId(), $eleve->getElenoet(), $classes);
+      if ($this->_format == 'xml'){
+        $retour .= '
+          <eleve>
+            <nom>'.$eleve->getNom().'</nom>
+            <prenom>'.$eleve->getPrenom().'</prenom>
+            <sexe>'.$eleve->getSexe().'</sexe>
+            <login>'.$eleve->getLogin().'</login>
+            <eleid>'.$eleve->getEleId().'</eleid>
+            <elenoet>'.$eleve->getElenoet().'</elenoet>';
+        foreach ($classes as $classe){
+          $retour .= '
+              <classe>'.$classe.'</classe>';
+        }
+        $retour .= '
+          </eleve>
+                    ';
+      }else{
+        $retour[] = array($eleve->getNom(), $eleve->getPrenom(), $eleve->getSexe(), $eleve->getLogin(), $eleve->getEleId(), $eleve->getElenoet(), $classes);
+      }
+    }
+    if ($this->_format == 'xml'){
+      $retour .= '</eleves>';
     }
     return $retour;
   }
@@ -373,14 +436,35 @@ class serveur_ent {
                         ->filterByStatut('professeur')
                         ->filterByEtat('actif')
                         ->find();
-    $retour = array();
+    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'ISO-8859-1\'?><professeurs>' : array();
     foreach ($profs as $prof) {
       $matieres = array();
       $profMat = $prof->getJProfesseursMatieressJoinMatiere();
       foreach ($profMat as $mat){
         $matieres[] = $mat->getMatiere()->getMatiere();
       }
-      $retour[] = array($prof->getNom(), $prof->getPrenom(), $prof->getCivilite(), $prof->getLogin(), $prof->getNumind(), $prof->getEmail(), $matieres);
+      if ($this->_format == 'xml'){
+        $retour .= '
+          <professeur>
+            <nom>'.$prof->getNom().'</nom>
+            <prenom>'.$prof->getPrenom().'</prenom>
+            <civilite>'.$prof->getCivilite().'</civilite>
+            <login>'.$prof->getLogin().'</login>
+            <numind>'.$prof->getNumind().'</numind>
+            <email>'.$prof->getEmail().'</email>';
+        foreach ($matieres as $matiere){
+          $retour .= '
+              <matiere>'.$matiere.'</matiere>';
+        }
+        $retour .= '
+          </professeur>
+                    ';
+      }else{
+        $retour[] = array($prof->getNom(), $prof->getPrenom(), $prof->getCivilite(), $prof->getLogin(), $prof->getNumind(), $prof->getEmail(), $matieres);
+      }
+    }
+    if ($this->_format == 'xml'){
+      $retour .= '</professeurs>';
     }
     return $retour;
   }
@@ -391,6 +475,7 @@ class serveur_ent {
    *
    * @return array Tableau des classes de Gepi : nom, nom_complet, '', '', '', '', liste des logins des professeurs de la classe
    */
+
   public function ListeClassesAvecProfesseurs(){
     $classes = ClasseQuery::create()->find();
     $retour = array();
@@ -406,6 +491,20 @@ class serveur_ent {
         }
       }
       $retour[] = array($classe->getNom(), $classe->getNomComplet(), '', '', '', '', $professeurs);
+    }
+    return $retour;
+  }
+
+  /**
+   * Renvoie la liste des matières avec le nom long
+   *
+   * @return array Tableau des matières nom court - nom long - - - - - -
+   */
+  public function listeMatieresAvecNomlong(){
+    $matieres = MatiereQuery::create()->orderByMatiere()->find();
+    $retour = array();
+    foreach ($matieres as $matiere){
+      $retour[] = array($matiere->getMatiere(), $matiere->getNomComplet(), '', '', '', '', array());
     }
     return $retour;
   }
