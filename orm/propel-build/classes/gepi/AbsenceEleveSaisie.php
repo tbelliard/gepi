@@ -26,6 +26,11 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	protected $manquementObligationPresence;
 
 	/**
+	 * @var        bool to store aggregation of retard value
+	 */
+	protected $retard;
+
+	/**
 	 *
 	 * Renvoi une description intelligible du traitement
 	 *
@@ -132,18 +137,37 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
-	 * Renvoi true ou false en fonction de la saisie
+	 * Renvoi true ou false en fonction de la saisie. Ceci concerne le décompte des bulletins
 	 *
 	 * @return     boolean
 	 *
 	 */
 	public function getRetard() {
-
-	    $nb_min = getSettingValue("abs2_retard_critere_duree");
-	    if ($nb_min == null
-		    || $nb_min == '') {
-		$nb_min = 30;
+	    if (!isset($this->retard) || $this->retard === null) {
+		$retard = false;
+		$nb_min = getSettingValue("abs2_retard_critere_duree");
+		if ($nb_min == null
+			|| $nb_min == '') {
+		    $nb_min = 30;
+		} if (($this->getFinAbs('U') - $this->getDebutAbs('U')) < 60*$nb_min) {
+		    $retard = true;
+		} else {
+		    //on va regarder si il y a un retard dans les types
+		    foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+			if ($traitement->getAbsenceEleveType() != null) {
+			    if ($traitement->getAbsenceEleveType()->getRetardBulletin() == AbsenceEleveType::$RETARD_BULLETIN_VRAI) {
+				$retard = true;
+				break;
+			    }
+			}
+		    }
+		}
+		$this->retard = $retard;
 	    }
+	    return $this->retard;
+
+
+
 
 	    return (($this->getFinAbs('U') - $this->getDebutAbs('U')) < 60*$nb_min);
 	}
