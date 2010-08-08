@@ -866,33 +866,38 @@ INSERT INTO droits VALUES ( '/mod_ooo/documents_ects.php', 'F', 'V', 'F', 'V', '
 INSERT INTO droits VALUES ( '/mod_ects/recapitulatif.php', 'F', 'V', 'F', 'V', 'F', 'F', 'F', 'F', 'Module ECTS : Recapitulatif globaux', '');
 INSERT INTO droits SET id='/mod_discipline/stats2/index.php',administrateur='V',professeur='F',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Module discipline: Statistiques',statut='';
 INSERT INTO droits VALUES ( '/mod_discipline/definir_categories.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les catégories', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_motifs_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_types_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_justifications_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/admin/admin_actions_absences.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/index.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Administration du module absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/saisir_groupe.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Affichage du formulaire de saisie de absences', '');
+INSERT INTO droits VALUES ('/mod_abs2/absences_du_jour.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Affichage des absences du jour', '');
+INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisie_groupe.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Enregistrement des saisies d un groupe', '');
+INSERT INTO droits VALUES ('/mod_abs2/liste_saisies.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Liste des saisies', '');
+INSERT INTO droits VALUES ('/mod_abs2/liste_traitements.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Liste des traitements', '');
+INSERT INTO droits VALUES ('/mod_abs2/liste_notifications.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Liste des notifications', '');
+INSERT INTO droits VALUES ('/mod_abs2/liste_saisies_selection_traitement.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Liste des saisits pour faire les traitement', '');
+INSERT INTO droits VALUES ('/mod_abs2/visu_saisie.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisies', '');
+INSERT INTO droits VALUES ('/mod_abs2/visu_traitement.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Visualisation d une saisie', '');
+INSERT INTO droits VALUES ('/mod_abs2/visu_notification.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Visualisation d une notification', '');
+INSERT INTO droits VALUES ('/mod_abs2/enregistrement_modif_saisie.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Modification d une saisies', '');
+INSERT INTO droits VALUES ('/mod_abs2/enregistrement_modif_traitement.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Modification d un traitement', '');
+INSERT INTO droits VALUES ('/mod_abs2/enregistrement_modif_notification.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Modification d une notification', '');
+INSERT INTO droits VALUES ('/mod_abs2/generer_notification.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'generer une notification', '');
+INSERT INTO droits VALUES ('/mod_abs2/saisir_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'V', 'Saisir l absence d un eleve', '');
+INSERT INTO droits VALUES ('/mod_abs2/enregistrement_saisie_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'V', 'Enregistrer absence d un eleve', '');
+INSERT INTO droits VALUES ('/mod_abs2/creation_traitement.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Crer un traitement', '');
+INSERT INTO droits VALUES ('/mod_discipline/saisie_incident_abs2.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'V', 'Saisir un incident relatif a une absence', '');
+INSERT INTO droits VALUES ('/mod_abs2/tableau_des_appels.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Visualisation du tableaux des saisies', '');
+INSERT INTO droits VALUES ('/mod_abs2/bilan_du_jour.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Visualisation du bilan du jour', '');
+INSERT INTO droits VALUES ('/mod_abs2/extraction_saisies.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Extraction des saisies', '');
+INSERT INTO droits VALUES ('/mod_abs2/extraction_demi-journees.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Extraction des saisies', '');
+INSERT INTO droits VALUES ('/mod_abs2/ajax_edt_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Affichage edt', '');
 INSERT INTO `a_justifications` (`id`, `nom`, `commentaire`, `sortable_rank`) VALUES (1, 'Certificat medical', 'Une justification etablie par une autorité medicale', 1),(2, 'Courrier familial', 'Justification par courrier de la famille', 2),(3, 'Justificatif d''une administration publique', 'Justification emise par une administration publique', 3);
 INSERT INTO `a_motifs` (`id`, `nom`, `commentaire`, `sortable_rank`) VALUES (1, 'Medical', 'L''eleve est absent pour raison médicale', 1),(2, 'Familial', 'L''eleve est absent pour raison familiale', 2),(3, 'Sportive', 'L''eleve est absent pour cause de competition sportive', 3);
-INSERT INTO `a_types` (`id`, `nom`, `justification_exigible`, `sous_responsabilite_etablissement`, `manquement_obligation_presence`, `retard_bulletin`, `type_saisie`, `commentaire`, `sortable_rank`) VALUES
-(1, 'Absence scolaire', 1, 'FAUX', 'VRAI', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve n''est pas présent pour suivre sa scolarité.', 1),
-(2, 'Retard intercours', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en retard lors de l''intercours', 2),
-(3, 'Retard exterieur', 0, 'FAUX', 'VRAI', 'VRAI', 'NON_PRECISE', 'L''eleve est en retard lors de son arrivée dans l''etablissement', 3),
-(4, 'Erreur de saisie', 0, 'NON_PRECISE', 'NON_PRECISE', 'NON_PRECISE', 'NON_PRECISE', 'Il y a probablement une erreur de saisie sur cet enregistrement.', 4),
-(5, 'Infirmerie', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est à l''infirmerie.', 5),
-(6, 'Sortie scolaire', 0, '1', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en sortie scolaire.', 6),
-(7, 'Exclusion', 0, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est exclus du college.', 7),
-(8, 'Exclusion/inclusion', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est exclus mais present au sein de l''etablissement.', 8),
-(9, 'Exclusion de cours', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'DISCIPLINE', 'L''eleve est exclus de cours.', 9),
-(10, 'Dispense (eleve present)', 1, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est dispensé mais present physiquement lors de la seance.', 10),
-(11, 'Dispense (eleve non present)', 1, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est dispensé et non present physiquement lors de la seance.', 11),
-(12, 'Stage', 0, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en stage a l''exterieur de l''etablissement.', 12),
-(13, 'Eleve présent', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est présent.', 13);
-INSERT INTO `a_types_statut` (`id`, `id_a_type`, `statut`) VALUES
-(1, 1, 'professeur'),(2, 1, 'cpe'),(3, 1, 'scolarite'),(4, 1, 'autre'),
-(5, 2, 'professeur'),(6, 2, 'cpe'),(7, 2, 'scolarite'),(8, 2, 'autre'),
-(9, 3, 'cpe'),(10, 3, 'scolarite'),(11, 3, 'autre'),
-(12, 4, 'professeur'),(13, 4, 'cpe'),(14, 4, 'scolarite'),(15, 4, 'autre'),
-(16, 5, 'professeur'),(17, 5, 'cpe'),(18, 5, 'scolarite'),(19, 5, 'autre'),
-(20, 6, 'professeur'),(21, 6, 'cpe'),(22, 6, 'scolarite'),
-(23, 7, 'cpe'),(24, 7, 'scolarite'),
-(25, 8, 'cpe'),(26, 8, 'scolarite'),
-(27, 9, 'professeur'),(28, 9, 'cpe'),(29, 9, 'scolarite'),
-(30, 10, 'cpe'),(31, 10, 'scolarite'),
-(32, 11, 'cpe'),(33, 11, 'scolarite'),
-(34, 12, 'cpe'),(35, 12, 'scolarite'),
-(36, 13, 'professeur'),(37, 13, 'cpe'),(38, 13, 'scolarite'),(39, 13, 'autre');
+INSERT INTO `a_types` (`id`, `nom`, `justification_exigible`, `sous_responsabilite_etablissement`, `manquement_obligation_presence`, `retard_bulletin`, `type_saisie`, `commentaire`, `sortable_rank`) VALUES(1, 'Absence scolaire', 1, 'FAUX', 'VRAI', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve n''est pas présent pour suivre sa scolarité.', 1),(2, 'Retard intercours', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en retard lors de l''intercours', 2),(3, 'Retard exterieur', 0, 'FAUX', 'VRAI', 'VRAI', 'NON_PRECISE', 'L''eleve est en retard lors de son arrivée dans l''etablissement', 3),(4, 'Erreur de saisie', 0, 'NON_PRECISE', 'NON_PRECISE', 'NON_PRECISE', 'NON_PRECISE', 'Il y a probablement une erreur de saisie sur cet enregistrement.', 4),(5, 'Infirmerie', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est à l''infirmerie.', 5),(6, 'Sortie scolaire', 0, '1', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en sortie scolaire.', 6);
+INSERT INTO `a_types` (`id`, `nom`, `justification_exigible`, `sous_responsabilite_etablissement`, `manquement_obligation_presence`, `retard_bulletin`, `type_saisie`, `commentaire`, `sortable_rank`) VALUES(7, 'Exclusion', 0, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est exclus du college.', 7),(8, 'Exclusion/inclusion', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est exclus mais present au sein de l''etablissement.', 8),(9, 'Exclusion de cours', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'DISCIPLINE', 'L''eleve est exclus de cours.', 9),(10, 'Dispense (eleve present)', 1, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est dispensé mais present physiquement lors de la seance.', 10),(11, 'Dispense (eleve non present)', 1, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est dispensé et non present physiquement lors de la seance.', 11),(12, 'Stage', 0, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en stage a l''exterieur de l''etablissement.', 12);
+INSERT INTO `a_types_statut` (`id`, `id_a_type`, `statut`) VALUES(1, 1, 'professeur'),(2, 1, 'cpe'),(3, 1, 'scolarite'),(4, 1, 'autre'),(5, 2, 'professeur'),(6, 2, 'cpe'),(7, 2, 'scolarite'),(8, 2, 'autre'),(9, 3, 'cpe'),(10, 3, 'scolarite'),(11, 3, 'autre'),(12, 4, 'professeur'),(13, 4, 'cpe'),(14, 4, 'scolarite'),(15, 4, 'autre'),(16, 5, 'professeur'),(17, 5, 'cpe'),(18, 5, 'scolarite'),(19, 5, 'autre'),(20, 6, 'professeur');
+INSERT INTO `a_types_statut` (`id`, `id_a_type`, `statut`) VALUES(21, 6, 'cpe'),(22, 6, 'scolarite'),(23, 7, 'cpe'),(24, 7, 'scolarite'),(25, 8, 'cpe'),(26, 8, 'scolarite'),(27, 9, 'professeur'),(28, 9, 'cpe'),(29, 9, 'scolarite'),(30, 10, 'cpe'),(31, 10, 'scolarite'),(32, 11, 'cpe'),(33, 11, 'scolarite'),(34, 12, 'cpe'),(35, 12, 'scolarite'),(36, 13, 'professeur'),(37, 13, 'cpe'),(38, 13, 'scolarite'),(39, 13, 'autre');
