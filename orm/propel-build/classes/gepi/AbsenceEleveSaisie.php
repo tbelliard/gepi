@@ -165,11 +165,6 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$this->retard = $retard;
 	    }
 	    return $this->retard;
-
-
-
-
-	    return (($this->getFinAbs('U') - $this->getDebutAbs('U')) < 60*$nb_min);
 	}
 
 	/**
