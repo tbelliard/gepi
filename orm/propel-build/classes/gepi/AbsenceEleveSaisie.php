@@ -137,7 +137,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
-	 * Renvoi true ou false en fonction de la saisie. Ceci concerne le dÃ©compte des bulletins
+	 * Renvoi true ou false en fonction de la saisie. Ceci concerne le décompte des bulletins
 	 *
 	 * @return     boolean
 	 *

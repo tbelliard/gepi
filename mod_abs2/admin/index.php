@@ -344,8 +344,9 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 </p>
 <p>
 	<?php if (getSettingValue("abs2_retard_critere_duree") == null || getSettingValue("abs2_retard_critere_duree") == '') saveSetting("abs2_retard_critere_duree", 30); ?>
-	Configuration du bulletin : Dans le décompte demi-journées d'absence, demi-journées d'absence non justifiées, retards, considérer les saisie inférieures à
+	Configuration du bulletin : Dans le décompte des demi-journées d'absence, considérer les saisie inférieures à
 	<select name="abs2_retard_critere_duree">
+		<option value="00" <?php if (getSettingValue("abs2_retard_critere_duree") == '00') echo " selected"; ?>>00</option>
 		<option value="10" <?php if (getSettingValue("abs2_retard_critere_duree") == '10') echo " selected"; ?>>10</option>
 		<option value="20" <?php if (getSettingValue("abs2_retard_critere_duree") == '20') echo " selected"; ?>>20</option>
 		<option value="30" <?php if (getSettingValue("abs2_retard_critere_duree") == '30') echo " selected"; ?>>30</option>
@@ -354,7 +355,8 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	</select>
 	min comme des retards.<br/>
 	Note : si les creneaux durent 45 minutes et que ce parametre est réglé sur 50 min, la plupart de vos saisies seront décomptées comme retard.<br/>
-	Note : le type de saisie n'intervient pas pour la distinction dans ce décompte, seul la durée est déterminante.<br/>
+	Note : est considéré comme retards les saisies de durée inférieures au parametre ci-dessus et les saisie dont le type est décompté comme retard
+	(voir la page <a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a>)<br />.<br/>
 
 </p>
 
