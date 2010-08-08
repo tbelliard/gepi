@@ -182,7 +182,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 *
 	 */
 	public function getSousResponsabiliteEtablissement() {
-	    if (!isset($sousResponsabiliteEtablissement) || $sousResponsabiliteEtablissement === null) {
+	    if (!isset($this->sousResponsabiliteEtablissement) || $this->sousResponsabiliteEtablissement === null) {
 		$type_sans = false;
 		$type_avec = false;
 		$type_non_precise = false;
@@ -212,8 +212,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    //on renvoi une resp etab (sinon l'utilisateur aurait specifier un type $MANQU_OBLIG_PRESE_VRAI)
 		    $sousResponsabiliteEtablissement = true;
 		}
+		$this->sousResponsabiliteEtablissement = $sousResponsabiliteEtablissement;
 	    }
-	    return $sousResponsabiliteEtablissement;
+	    return $this->sousResponsabiliteEtablissement;
 	}
 
 	/**
@@ -228,7 +229,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 *
 	 */
 	public function getManquementObligationPresence() {
-	    if (!isset($manquementObligationPresence) || $manquementObligationPresence === null) {
+	    if (!isset($this->manquementObligationPresence) || $this->manquementObligationPresence === null) {
 		$type_sans = false;
 		$type_avec = false;
 		$type_non_precise = false;
@@ -259,8 +260,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    //on renvoi un non manquement (sinon l'utilisateur aurait specifier un type $MANQU_OBLIG_PRESE_VRAI)
 		    $manquementObligationPresence = false;
 		}
+		$this->manquementObligationPresence = $manquementObligationPresence;
 	    }
-	    return $manquementObligationPresence;
+	    return $this->manquementObligationPresence;
 	}
 
 	/**
