@@ -300,7 +300,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [classe] column value.
-	 * nom de la classe
+	 * nom de la classe. Le nom court est différent pour chaque classe.
 	 * @return     string
 	 */
 	public function getNom()
@@ -310,7 +310,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [nom_complet] column value.
-	 * nom complet de la classe
+	 * nom complet de la classe. Le nom long n'est pas toujours différent pour chaque classe. Le nom long peu servir à catégoriser le niveau.
 	 * @return     string
 	 */
 	public function getNomComplet()
@@ -580,7 +580,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [classe] column.
-	 * nom de la classe
+	 * nom de la classe. Le nom court est différent pour chaque classe.
 	 * @param      string $v new value
 	 * @return     Classe The current object (for fluent API support)
 	 */
@@ -600,7 +600,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 	/**
 	 * Set the value of [nom_complet] column.
-	 * nom complet de la classe
+	 * nom complet de la classe. Le nom long n'est pas toujours différent pour chaque classe. Le nom long peu servir à catégoriser le niveau.
 	 * @param      string $v new value
 	 * @return     Classe The current object (for fluent API support)
 	 */

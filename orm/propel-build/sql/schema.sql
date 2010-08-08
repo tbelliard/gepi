@@ -105,8 +105,8 @@ DROP TABLE IF EXISTS classes;
 CREATE TABLE classes
 (
 	id INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire de la classe',
-	classe VARCHAR(100)  NOT NULL COMMENT 'nom de la classe',
-	nom_complet VARCHAR(100)  NOT NULL COMMENT 'nom complet de la classe',
+	classe VARCHAR(100)  NOT NULL COMMENT 'nom de la classe. Le nom court est différent pour chaque classe.',
+	nom_complet VARCHAR(100)  NOT NULL COMMENT 'nom complet de la classe. Le nom long n\'est pas toujours différent pour chaque classe. Le nom long peu servir à catégoriser le niveau.',
 	suivi_par VARCHAR(50)  NOT NULL,
 	formule VARCHAR(100)  NOT NULL,
 	format_nom VARCHAR(5)  NOT NULL,
