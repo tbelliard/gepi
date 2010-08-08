@@ -11,6 +11,7 @@
  * @method     AbsenceEleveTypeQuery orderByJustificationExigible($order = Criteria::ASC) Order by the justification_exigible column
  * @method     AbsenceEleveTypeQuery orderBySousResponsabiliteEtablissement($order = Criteria::ASC) Order by the sous_responsabilite_etablissement column
  * @method     AbsenceEleveTypeQuery orderByManquementObligationPresence($order = Criteria::ASC) Order by the manquement_obligation_presence column
+ * @method     AbsenceEleveTypeQuery orderByRetardBulletin($order = Criteria::ASC) Order by the retard_bulletin column
  * @method     AbsenceEleveTypeQuery orderByTypeSaisie($order = Criteria::ASC) Order by the type_saisie column
  * @method     AbsenceEleveTypeQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
  * @method     AbsenceEleveTypeQuery orderBySortableRank($order = Criteria::ASC) Order by the sortable_rank column
@@ -20,6 +21,7 @@
  * @method     AbsenceEleveTypeQuery groupByJustificationExigible() Group by the justification_exigible column
  * @method     AbsenceEleveTypeQuery groupBySousResponsabiliteEtablissement() Group by the sous_responsabilite_etablissement column
  * @method     AbsenceEleveTypeQuery groupByManquementObligationPresence() Group by the manquement_obligation_presence column
+ * @method     AbsenceEleveTypeQuery groupByRetardBulletin() Group by the retard_bulletin column
  * @method     AbsenceEleveTypeQuery groupByTypeSaisie() Group by the type_saisie column
  * @method     AbsenceEleveTypeQuery groupByCommentaire() Group by the commentaire column
  * @method     AbsenceEleveTypeQuery groupBySortableRank() Group by the sortable_rank column
@@ -44,6 +46,7 @@
  * @method     AbsenceEleveType findOneByJustificationExigible(boolean $justification_exigible) Return the first AbsenceEleveType filtered by the justification_exigible column
  * @method     AbsenceEleveType findOneBySousResponsabiliteEtablissement(string $sous_responsabilite_etablissement) Return the first AbsenceEleveType filtered by the sous_responsabilite_etablissement column
  * @method     AbsenceEleveType findOneByManquementObligationPresence(string $manquement_obligation_presence) Return the first AbsenceEleveType filtered by the manquement_obligation_presence column
+ * @method     AbsenceEleveType findOneByRetardBulletin(string $retard_bulletin) Return the first AbsenceEleveType filtered by the retard_bulletin column
  * @method     AbsenceEleveType findOneByTypeSaisie(string $type_saisie) Return the first AbsenceEleveType filtered by the type_saisie column
  * @method     AbsenceEleveType findOneByCommentaire(string $commentaire) Return the first AbsenceEleveType filtered by the commentaire column
  * @method     AbsenceEleveType findOneBySortableRank(int $sortable_rank) Return the first AbsenceEleveType filtered by the sortable_rank column
@@ -53,6 +56,7 @@
  * @method     array findByJustificationExigible(boolean $justification_exigible) Return AbsenceEleveType objects filtered by the justification_exigible column
  * @method     array findBySousResponsabiliteEtablissement(string $sous_responsabilite_etablissement) Return AbsenceEleveType objects filtered by the sous_responsabilite_etablissement column
  * @method     array findByManquementObligationPresence(string $manquement_obligation_presence) Return AbsenceEleveType objects filtered by the manquement_obligation_presence column
+ * @method     array findByRetardBulletin(string $retard_bulletin) Return AbsenceEleveType objects filtered by the retard_bulletin column
  * @method     array findByTypeSaisie(string $type_saisie) Return AbsenceEleveType objects filtered by the type_saisie column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveType objects filtered by the commentaire column
  * @method     array findBySortableRank(int $sortable_rank) Return AbsenceEleveType objects filtered by the sortable_rank column
@@ -263,6 +267,28 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(AbsenceEleveTypePeer::MANQUEMENT_OBLIGATION_PRESENCE, $manquementObligationPresence, $comparison);
+	}
+
+	/**
+	 * Filter the query on the retard_bulletin column
+	 * 
+	 * @param     string $retardBulletin The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
+	 */
+	public function filterByRetardBulletin($retardBulletin = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($retardBulletin)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $retardBulletin)) {
+				$retardBulletin = str_replace('*', '%', $retardBulletin);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveTypePeer::RETARD_BULLETIN, $retardBulletin, $comparison);
 	}
 
 	/**

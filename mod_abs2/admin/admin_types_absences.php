@@ -62,6 +62,8 @@ if (empty($_GET['sous_responsabilite_etablissement']) and empty($_POST['sous_res
     else { if (isset($_GET['sous_responsabilite_etablissement'])) {$sous_responsabilite_etablissement=$_GET['sous_responsabilite_etablissement'];} if (isset($_POST['sous_responsabilite_etablissement'])) {$sous_responsabilite_etablissement=$_POST['sous_responsabilite_etablissement'];} }
 if (empty($_GET['manquement_obligation_presence']) and empty($_POST['manquement_obligation_presence'])) { $manquement_obligation_presence=AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE;}
     else { if (isset($_GET['manquement_obligation_presence'])) {$manquement_obligation_presence=$_GET['manquement_obligation_presence'];} if (isset($_POST['manquement_obligation_presence'])) {$manquement_obligation_presence=$_POST['manquement_obligation_presence'];} }
+if (empty($_GET['retard_bulletin']) and empty($_POST['retard_bulletin'])) { $retard_bulletin=AbsenceEleveType::$RETARD_BULLETIN_FAUX;}
+    else { if (isset($_GET['retard_bulletin'])) {$retard_bulletin=$_GET['retard_bulletin'];} if (isset($_POST['retard_bulletin'])) {$retard_bulletin=$_POST['retard_bulletin'];} }
 if (empty($_GET['type_saisie']) and empty($_POST['type_saisie'])) { $type_saisie="";}
     else { if (isset($_GET['type_saisie'])) {$type_saisie=$_GET['type_saisie'];} if (isset($_POST['type_saisie'])) {$type_saisie=$_POST['type_saisie'];} }
 if (empty($_GET['ajout_statut_type_saisie']) and empty($_POST['ajout_statut_type_saisie'])) { $ajout_statut_type_saisie="";}
@@ -151,6 +153,7 @@ echo "</p>";
 	    <td>Justification exigible</td>
 	    <td>L'eleve est sous la responsabilite de l'etablissement</td>
 	    <td>Manquement obligations (apparait sur le bulletin)</td>
+	    <td>Comptabilisée comme retard sur le bulletin (apparait sur le bulletin)</td>
 	    <td>Type de saisie</td>
 	    <td>Statut autorisé à la saisie</td>
        </tr>
@@ -177,6 +180,12 @@ echo "</p>";
 		<option value='<?php echo AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) {echo "selected";} ?>>oui</option>
 		<option value='<?php echo AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) {echo "selected";} ?>>non</option>
 		<option value='<?php echo AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE) {echo "selected";} ?>>non precisé</option>
+	     </select>
+	   </td>
+           <td>
+	     <select name="retard_bulletin" id="retard_bulletin">
+		<option value='<?php echo AbsenceEleveType::$RETARD_BULLETIN_FAUX?>' <?php  if ($type != null && $type->getRetardBulletin() == AbsenceEleveType::$RETARD_BULLETIN_FAUX) {echo "selected";} ?>>non</option>
+		<option value='<?php echo AbsenceEleveType::$RETARD_BULLETIN_VRAI?>' <?php  if ($type != null && $type->getRetardBulletin() == AbsenceEleveType::$RETARD_BULLETIN_VRAI) {echo "selected";} ?>>oui</option>
 	     </select>
 	   </td>
            <td>
@@ -234,6 +243,7 @@ echo "</p>";
         <td>Justification exigible</td>
 	<td>L'eleve est sous la responsabilite de l'etablissement</td>
 	<td>Manquement obligations (apparait sur le bulletin)</td>
+	<td>Comptabilisée comme retard sur le bulletin (apparait sur le bulletin)</td>
         <td>Type de saisie</td>
 	<td>Statuts autorisés à la saisie</td>
         <td style="width: 25px;"></td>
@@ -261,6 +271,12 @@ echo "</p>";
 	    <?php if ($type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
 		else if ($type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
 		//si le ManquementObligationPresence est non precisé on affiche rien
+	    ?>
+	  </td>
+	  <td>
+	    <?php if ($type->getRetardBulletin() == AbsenceEleveType::$RETARD_BULLETIN_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
+		//else if ($type->getRetardBulletin() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
+		else { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
 	    ?>
 	  </td>
 	  <td><?php if ($type->getTypeSaisie() != AbsenceEleveType::$TYPE_SAISIE_NON_PRECISE) {echo $type->getTypeSaisieDescription();} ?></td>

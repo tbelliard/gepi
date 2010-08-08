@@ -401,7 +401,8 @@
     <column name="nom" required="true" type="VARCHAR" size="250" description="Nom du type d'absence"/>
     <column name="justification_exigible" required="false" type="BOOLEAN" description="Ce type d'absence doit entrainer une justification de la part de la famille"/>
     <column name="sous_responsabilite_etablissement" required="false" type="VARCHAR" default="NON_PRECISE" description="L'eleve est sous la responsabilite de l'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l'eleve est encore sous la responsabilité de l'etablissement. Possibilite : 'vrai'/'faux'/'non_precise'"/>
-    <column name="manquement_obligation_presence" required="false" type="VARCHAR" default="NON_PRECISE" description="L'eleve manque à ses obligations de presence (L'absence apparait sur le bulletin). Possibilite : 'vrai'/'faux'/'non_precise'"/>
+    <column name="manquement_obligation_presence" required="false" size="50" type="VARCHAR" default="NON_PRECISE" description="L'eleve manque à ses obligations de presence (L'absence apparait sur le bulletin). Possibilite : 'vrai'/'faux'/'non_precise'"/>
+    <column name="retard_bulletin" required="false" type="VARCHAR" size="50" default="NON_PRECISE" description="La saisie est comptabilisée dans le bulletin en tant que retard. Possibilite : 'vrai'/'faux'/'non_precise'"/>
     <column name="type_saisie" required="false" type="VARCHAR" size="50" default="NON_PRECISE" description="Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE"/>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
     <behavior name="sortable" />

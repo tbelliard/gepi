@@ -48,6 +48,13 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	public static $MANQU_OBLIG_PRESE_NON_PRECISE = 'NON_PRECISE';
 
 	/**
+	 * Les types de RETARD_BULLETIN possibles
+	 */
+	public static $RETARD_BULLETIN_VRAI = 'VRAI';
+	public static $RETARD_BULLETIN_FAUX = 'FAUX';
+	public static $RETARD_BULLETIN_PRECISE = 'NON_PRECISE';
+
+	/**
 	 *
 	 * Renvoi la description du type de saisie, permet de decrire les code suivant :
 	 * DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE

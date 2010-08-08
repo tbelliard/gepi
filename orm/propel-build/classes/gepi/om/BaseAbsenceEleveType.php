@@ -57,6 +57,13 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	protected $manquement_obligation_presence;
 
 	/**
+	 * The value for the retard_bulletin field.
+	 * Note: this column has a database default value of: 'NON_PRECISE'
+	 * @var        string
+	 */
+	protected $retard_bulletin;
+
+	/**
 	 * The value for the type_saisie field.
 	 * Note: this column has a database default value of: 'NON_PRECISE'
 	 * @var        string
@@ -117,6 +124,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	{
 		$this->sous_responsabilite_etablissement = 'NON_PRECISE';
 		$this->manquement_obligation_presence = 'NON_PRECISE';
+		$this->retard_bulletin = 'NON_PRECISE';
 		$this->type_saisie = 'NON_PRECISE';
 	}
 
@@ -178,6 +186,16 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	public function getManquementObligationPresence()
 	{
 		return $this->manquement_obligation_presence;
+	}
+
+	/**
+	 * Get the [retard_bulletin] column value.
+	 * La saisie est comptabilisée dans le bulletin en tant que retard. Possibilite : 'vrai'/'faux'/'non_precise'
+	 * @return     string
+	 */
+	public function getRetardBulletin()
+	{
+		return $this->retard_bulletin;
 	}
 
 	/**
@@ -311,6 +329,26 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	} // setManquementObligationPresence()
 
 	/**
+	 * Set the value of [retard_bulletin] column.
+	 * La saisie est comptabilisée dans le bulletin en tant que retard. Possibilite : 'vrai'/'faux'/'non_precise'
+	 * @param      string $v new value
+	 * @return     AbsenceEleveType The current object (for fluent API support)
+	 */
+	public function setRetardBulletin($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->retard_bulletin !== $v || $this->isNew()) {
+			$this->retard_bulletin = $v;
+			$this->modifiedColumns[] = AbsenceEleveTypePeer::RETARD_BULLETIN;
+		}
+
+		return $this;
+	} // setRetardBulletin()
+
+	/**
 	 * Set the value of [type_saisie] column.
 	 * Enumeration des possibilités de l'interface de saisie de l'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE
 	 * @param      string $v new value
@@ -388,6 +426,10 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 				return false;
 			}
 
+			if ($this->retard_bulletin !== 'NON_PRECISE') {
+				return false;
+			}
+
 			if ($this->type_saisie !== 'NON_PRECISE') {
 				return false;
 			}
@@ -419,9 +461,10 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			$this->justification_exigible = ($row[$startcol + 2] !== null) ? (boolean) $row[$startcol + 2] : null;
 			$this->sous_responsabilite_etablissement = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
 			$this->manquement_obligation_presence = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->type_saisie = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-			$this->commentaire = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-			$this->sortable_rank = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+			$this->retard_bulletin = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->type_saisie = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->commentaire = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+			$this->sortable_rank = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -430,7 +473,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 8; // 8 = AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 9; // 9 = AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveType object", $e);
@@ -793,12 +836,15 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 				return $this->getManquementObligationPresence();
 				break;
 			case 5:
-				return $this->getTypeSaisie();
+				return $this->getRetardBulletin();
 				break;
 			case 6:
-				return $this->getCommentaire();
+				return $this->getTypeSaisie();
 				break;
 			case 7:
+				return $this->getCommentaire();
+				break;
+			case 8:
 				return $this->getSortableRank();
 				break;
 			default:
@@ -829,9 +875,10 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			$keys[2] => $this->getJustificationExigible(),
 			$keys[3] => $this->getSousResponsabiliteEtablissement(),
 			$keys[4] => $this->getManquementObligationPresence(),
-			$keys[5] => $this->getTypeSaisie(),
-			$keys[6] => $this->getCommentaire(),
-			$keys[7] => $this->getSortableRank(),
+			$keys[5] => $this->getRetardBulletin(),
+			$keys[6] => $this->getTypeSaisie(),
+			$keys[7] => $this->getCommentaire(),
+			$keys[8] => $this->getSortableRank(),
 		);
 		return $result;
 	}
@@ -879,12 +926,15 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 				$this->setManquementObligationPresence($value);
 				break;
 			case 5:
-				$this->setTypeSaisie($value);
+				$this->setRetardBulletin($value);
 				break;
 			case 6:
-				$this->setCommentaire($value);
+				$this->setTypeSaisie($value);
 				break;
 			case 7:
+				$this->setCommentaire($value);
+				break;
+			case 8:
 				$this->setSortableRank($value);
 				break;
 		} // switch()
@@ -916,9 +966,10 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		if (array_key_exists($keys[2], $arr)) $this->setJustificationExigible($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setSousResponsabiliteEtablissement($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setManquementObligationPresence($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setTypeSaisie($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setCommentaire($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setSortableRank($arr[$keys[7]]);
+		if (array_key_exists($keys[5], $arr)) $this->setRetardBulletin($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setTypeSaisie($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setCommentaire($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setSortableRank($arr[$keys[8]]);
 	}
 
 	/**
@@ -935,6 +986,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		if ($this->isColumnModified(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE)) $criteria->add(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE, $this->justification_exigible);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::SOUS_RESPONSABILITE_ETABLISSEMENT)) $criteria->add(AbsenceEleveTypePeer::SOUS_RESPONSABILITE_ETABLISSEMENT, $this->sous_responsabilite_etablissement);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::MANQUEMENT_OBLIGATION_PRESENCE)) $criteria->add(AbsenceEleveTypePeer::MANQUEMENT_OBLIGATION_PRESENCE, $this->manquement_obligation_presence);
+		if ($this->isColumnModified(AbsenceEleveTypePeer::RETARD_BULLETIN)) $criteria->add(AbsenceEleveTypePeer::RETARD_BULLETIN, $this->retard_bulletin);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::TYPE_SAISIE)) $criteria->add(AbsenceEleveTypePeer::TYPE_SAISIE, $this->type_saisie);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::COMMENTAIRE)) $criteria->add(AbsenceEleveTypePeer::COMMENTAIRE, $this->commentaire);
 		if ($this->isColumnModified(AbsenceEleveTypePeer::SORTABLE_RANK)) $criteria->add(AbsenceEleveTypePeer::SORTABLE_RANK, $this->sortable_rank);
@@ -1003,6 +1055,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		$copyObj->setJustificationExigible($this->justification_exigible);
 		$copyObj->setSousResponsabiliteEtablissement($this->sous_responsabilite_etablissement);
 		$copyObj->setManquementObligationPresence($this->manquement_obligation_presence);
+		$copyObj->setRetardBulletin($this->retard_bulletin);
 		$copyObj->setTypeSaisie($this->type_saisie);
 		$copyObj->setCommentaire($this->commentaire);
 		$copyObj->setSortableRank($this->sortable_rank);
@@ -1397,6 +1450,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 		$this->justification_exigible = null;
 		$this->sous_responsabilite_etablissement = null;
 		$this->manquement_obligation_presence = null;
+		$this->retard_bulletin = null;
 		$this->type_saisie = null;
 		$this->commentaire = null;
 		$this->sortable_rank = null;

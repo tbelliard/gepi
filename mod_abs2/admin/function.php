@@ -142,6 +142,7 @@ function ajoutTypesParDefaut() {
 	$type->setJustificationExigible(false);
 	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_FAUX);
 	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI);
+	$type->setRetardBulletin(AbsenceEleveType::$RETARD_BULLETIN_VRAI);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
