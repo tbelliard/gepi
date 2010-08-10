@@ -171,6 +171,7 @@ if ($windows == 'oui') {
 	$tbs_CSS[]=array("fichier"=> $gepiPath."/edt_effets/themes/alphacube.css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 }
 // js spécifique
+/*
 if(isset($javascript_specifique)) {
 	// Il faudrait filtrer le contenu de la variable...
 	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
@@ -179,6 +180,31 @@ if(isset($javascript_specifique)) {
 		$tbs_librairies[]=$gepiPath/$javascript_specifique.'js';
 	}
 }
+*/
+
+if(isset($javascript_specifique)) {
+	// Il faudrait filtrer le contenu de la variable...
+	// On ajoute le ".js" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
+
+	if(is_array($javascript_specifique)) {
+		foreach($javascript_specifique as $current_javascript_specifique) {
+			if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$current_javascript_specifique))==0) {
+				// Javascript spécifique à une page:
+				//echo "<script type='text/javascript' src='$gepiPath/$current_javascript_specifique.js'></script>\n";
+		$tbs_librairies[]=$gepiPath."/".$current_javascript_specifique.'.js';
+			}
+		}
+	}
+	else {
+		if(strlen(my_ereg_replace("[A-Za-z0-9_/\-]","",$javascript_specifique))==0) {
+			// Javascript spécifique à une page:
+			//echo "<script type='text/javascript' src='$gepiPath/$javascript_specifique.js'></script>\n";
+			$tbs_librairies[]=$gepiPath."/".$javascript_specifique.'.js';
+		}
+	}
+}
+
+
 // On affiche tout le temps brainjar sauf quand on dit à Gepi de ne pas le faire
 $utilisation_jsdivdrag = isset($utilisation_jsdivdrag) ? $utilisation_jsdivdrag : NULL;
 //if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
@@ -219,6 +245,7 @@ $tbs_CSS[]=array("fichier"=>$gepiPath."/css/".$style.".css"  , "rel"=>"styleshee
 if (!isset($titre_page)) $bgcouleur = "bgcolor= \"#FFFFFF\""; else $bgcouleur = "";
 
 // Styles spécifiques
+/*
 if(isset($style_specifique)) {
 	// Il faudrait filtrer le contenu de la variable...
 	// ne doit contenir que certains types de caractères et se terminer par .css
@@ -227,6 +254,28 @@ if(isset($style_specifique)) {
 		// Styles spécifiques à une page:
 		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
 	}
+}
+*/
+if(isset($style_specifique)) {
+  // Il faudrait filtrer le contenu de la variable...
+  // ne doit contenir que certains types de caractères et se terminer par .css
+  // Non... on ajoute le ".css" automatiquement et on exclus les "." qui pourrait permettre des ".." pour remonter dans l'arborescence
+
+  if(is_array($style_specifique)) {
+	foreach($style_specifique as $current_style_specifique) {
+	  if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$current_style_specifique))==0) {
+		//// Styles spécifiques à une page:
+		$tbs_CSS[]=array("fichier"=> $gepiPath."/".$current_style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+
+	  }
+
+	}
+  } else {
+	if(strlen(my_ereg_replace("[A-Za-z0-9_/]","",$style_specifique))==0) {
+	  // Styles spécifiques à une page:
+	  $tbs_CSS[]=array("fichier"=> $gepiPath."/".$style_specifique.".css" , "rel"=>"stylesheet" , "type"=>"text/css" , "media"=>"" , "title"=>"");
+	}
+  }
 }
 
 // vérifie si on est dans le modules absences
