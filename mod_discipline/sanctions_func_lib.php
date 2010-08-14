@@ -890,7 +890,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe) {
 	//CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire));
 
 	$tab_dest=array();
-
+    $temoin=false;
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		$sql="SELECT * FROM s_alerte_mail WHERE id_classe='".$tab_id_classe[$i]."';";
 		$res=mysql_query($sql);
@@ -911,17 +911,27 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe) {
 				elseif($lig->destinataire=='scolarite') {
 					$sql="SELECT DISTINCT u.nom,u.prenom,u.email FROM utilisateurs u, j_scol_classes jsc WHERE jsc.id_classe='".$tab_id_classe[$i]."' AND jsc.login=u.login AND u.email!='';";
 				}
+				elseif($lig->destinataire=='mail') {
+				    $temoin=true;
+					$adresse_sup = $lig->adresse;
+				}
 
-				$res2=mysql_query($sql);
-				if(mysql_num_rows($res2)>0) {
-					while($lig2=mysql_fetch_object($res2)) {
-						if(!in_array($lig2->email,$tab_dest)) {
-							//$tab_dest[]=$lig2->email;
-							$tab_dest[]="$lig2->prenom $lig2->nom <$lig2->email>";
+				echo $sql;
+				
+				if ($temoin) { //Cas d'une adresse mail autre
+					$tab_dest[] = $adresse_sup;
+				} else {
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)>0) {
+						while($lig2=mysql_fetch_object($res2)) {
+							if(!in_array($lig2->email,$tab_dest)) {
+								$tab_dest[]=$lig2->email;
+								//$tab_dest[]="$lig2->prenom $lig2->nom <$lig2->email>";
+							}
 						}
 					}
 				}
-
+				$temoin=false;
 			}
 		}
 	}

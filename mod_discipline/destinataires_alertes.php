@@ -33,7 +33,8 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();
 }
-
+// Modif Eric : Table s_alerte_mail à modifier : ajout champs
+// ALTER TABLE `s_alerte_mail` ADD `adresse` VARCHAR( 250 ) NULL 
 //INSERT INTO droits VALUES ('/mod_discipline/destinataires_alertes.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Parametrage des destinataires de mail d alerte', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -46,13 +47,22 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
 
 	$tab_statut=$_POST['tab_statut'];
 	$tab_id_clas=$_POST['tab_id_clas'];
-
+	
 	for($j=0;$j<count($tab_id_clas);$j++){
 		for($i=0;$i<count($tab_statut);$i++){
 			if(isset($_POST['case_'.$i.'_'.$j])){
 				$test=mysql_query("SELECT 1=1 FROM s_alerte_mail WHERE id_classe='".$tab_id_clas[$j]."' AND destinataire='".$tab_statut[$i]."'");
 				if(mysql_num_rows($test)==0){
-					$sql="INSERT INTO s_alerte_mail SET id_classe='".$tab_id_clas[$j]."', destinataire='".$tab_statut[$i]."'";
+				    // Modif Eric Ajout Adresse autre
+					if(isset($_POST['adresse_'.$i.'_'.$j])){
+					    $contenu_adresse = $_POST['adresse_'.$i.'_'.$j];
+					    if ($contenu_adresse != '') {
+						   $sql="INSERT INTO s_alerte_mail SET id_classe='".$tab_id_clas[$j]."', destinataire='".$tab_statut[$i]."', adresse='".$contenu_adresse."'";
+						}
+				    } else {
+					    $sql="INSERT INTO s_alerte_mail SET id_classe='".$tab_id_clas[$j]."', destinataire='".$tab_statut[$i]."'";
+					}
+					// Fin modif
 					$reg_data=mysql_query($sql);
 					if(!$reg_data){
 						$msg.= "Erreur lors de l'insertion d'un nouvel enregistrement $tab_id_clas[$j] pour $tab_statut[$i].";
@@ -101,8 +111,11 @@ echo "</p>\n";
 <?php
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+	
+	//Ajout Eric
+	$contenu_adresse = "";
 
-	$tab_statut=array('cpe', 'scolarite', 'pp', 'professeurs', 'administrateur');
+	$tab_statut=array('cpe', 'scolarite', 'pp', 'professeurs', 'administrateur', 'mail');
 
 	//echo "<table border='1'>\n";
 	echo "<table class='boireaus'>\n";
@@ -116,6 +129,7 @@ echo "</p>\n";
 	$ligne_statuts.="<th>".$gepi_prof_suivi."</th>\n";
 	$ligne_statuts.="<th>Professeurs<br />de la classe</th>\n";
 	$ligne_statuts.="<th>Administrateurs</th>\n";
+	$ligne_statuts.="<th>Autre adresse <br/>(Cocher puis saisir directement l'adresse)</th>\n"; 
 	$ligne_statuts.="<th>\n";
 	$ligne_statuts.="&nbsp;\n";
 	$ligne_statuts.="</th>\n";
@@ -139,7 +153,7 @@ echo "</p>\n";
 
 	$call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
 	$nombre_lignes = mysql_num_rows($call_data);
-
+	
 	if ($nombre_lignes != 0) {
 		// Lignes classes...
 		$j=0;
@@ -165,6 +179,20 @@ echo "</p>\n";
 
 				echo "<td style='text-align:center;$bgcolor'>\n";
 				echo "<input type='checkbox' name='case_".$i."_".$j."' id='case_".$i."_".$j."' value='y' onchange='changement();' $checked/>\n";
+				//Ajout Eric traitement autre mail
+				$sql="SELECT * FROM s_alerte_mail WHERE id_classe='".$lig_clas->id."';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)!=0) {
+					$contenu_requete=mysql_fetch_object($test);
+					if ($tab_statut[$i]== 'mail') {
+					    if ($contenu_requete->adresse != NULL) {
+						    $contenu_adresse = $contenu_requete->adresse;
+						} else { 
+						    $contenu_adresse = '';
+						}
+						echo "Adresse : <input type='text' name='adresse_".$i."_".$j."' value='$contenu_adresse' onchange='changement();' />\n";    
+					} 
+				}
 				echo "</td>\n";
 			}
 			echo "<td>\n";
