@@ -916,8 +916,7 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe) {
 					$adresse_sup = $lig->adresse;
 				}
 
-				echo $sql;
-				
+				//echo $sql;
 				if ($temoin) { //Cas d'une adresse mail autre
 					$tab_dest[] = $adresse_sup;
 				} else {
