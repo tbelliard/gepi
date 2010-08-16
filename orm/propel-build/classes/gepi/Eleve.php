@@ -94,7 +94,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function getClasseNom($periode = null) {
-		$classe = $this->getClasses($periode)->getFirst();
+		$classe = $this->getClasse($periode);
 		if ($classe == null) {
 		    return '';
 		} else {
@@ -112,11 +112,12 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function getClasseNomComplet($periode = null) {
-	    if ($this->getClasses($periode)->getFirst() == null) {
-		return null;
-	    }else {
-		return $this->getClasses($periode)->getFirst()->getNomComplet();
-	    }
+		$classe = $this->getClasse($periode);
+		if ($classe == null) {
+		    return null;
+		}else {
+		    return $classe->getNomComplet();
+		}
 	}
 
 	/**
@@ -1270,15 +1271,25 @@ class Eleve extends BaseEleve {
 			    // return empty collection
 			    $this->initPeriodeNotes();
 		    } else {
-			    $collPeriodeNotes = PeriodeNoteQuery::create()->useClasseQuery()->useJEleveClasseQuery()->filterByEleve($this)->endUse()->endUse()
-				    ->where('j_eleves_classes.periode = periodes.num_periode')
-				    ->distinct()->find();
-//			    $collPeriodeNotes = new PropelCollection();
-//			    foreach ($this->getJEleveClassesJoinClasse() as $jEleveClasses) {
-//				$collPeriodeNotes->add($jEleveClasses->getPeriodeNote());
-//			    }
-//			    $collPeriodeNotes->uasort(array("PeriodeNote", "comparePeriodeNote"));
-			    $this->collPeriodeNotes = $collPeriodeNotes;
+//			
+			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode";
+			    $con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			    $stmt = $con->prepare($sql);
+			    $stmt->execute();
+
+			    $formatter = new PropelObjectFormatter();
+			    $formatter->setDbName(PeriodeNotePeer::DATABASE_NAME);
+			    $formatter->setClass('PeriodeNote');
+			    $formatter->setPeer('PeriodeNotePeer');
+			    $formatter->setAsColumns(array());
+			    $formatter->setHasLimit(false);
+			    $this->collPeriodeNotes = $formatter->format($stmt);
+			    
+//			    $collPeriodeNotes = PeriodeNoteQuery::create()->useClasseQuery()->useJEleveClasseQuery()->filterByEleve($this)->endUse()->endUse()
+//				    ->where('j_eleves_classes.periode = periodes.num_periode')
+//				    ->setComment('log pour sql manuel')
+//				    ->distinct()->find();
+//			    $this->collPeriodeNotes = $collPeriodeNotes;
 		    }
 	    }
 	    return $this->collPeriodeNotes;
