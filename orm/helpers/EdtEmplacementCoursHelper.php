@@ -28,7 +28,10 @@ class EdtEmplacementCoursHelper {
 		$semaine_declaration["vendredi"] = 6;
 		$semaine_declaration["samedi"] = 7;
 
-		if ($semaine_declaration[$a->getJourSemaine()] != $semaine_declaration[$b->getJourSemaine()]) {
+		if ($a->getJourSemaine() != $b->getJourSemaine()
+			&& isset($semaine_declaration[$a->getJourSemaine()])
+			&& isset($semaine_declaration[$a->getJourSemaine()])
+			&& $semaine_declaration[$a->getJourSemaine()] != $semaine_declaration[$b->getJourSemaine()]) {
 		    $result = ($semaine_declaration[$a->getJourSemaine()] - $semaine_declaration[$b->getJourSemaine()]);
 		} elseif ($a->getEdtCreneau() == null && $b->getEdtCreneau() != null)  {
 			//si aucun creneau n'est precise on considere que le creneau null est plus petit

@@ -229,6 +229,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$type_avec = false;
 		$type_non_precise = false;
 		foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+		    echo $traitement;
 		    if ($traitement->getAbsenceEleveType() != null) {
 			if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) {
 			    $type_avec = true;
@@ -428,7 +429,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 				    $this->collAbsenceEleveTraitements = new PropelObjectCollection();
 				    $this->collAbsenceEleveTraitements->setModel('AbsenceEleveTraitement');
 				    foreach ($this->collJTraitementSaisieEleves as $jTraitementSaisieEleve) {
-					$this->collAbsenceEleveTraitements->append($jTraitementSaisieEleve->getAbsenceEleveTraitement());
+					if ($jTraitementSaisieEleve->getAbsenceEleveTraitement() !== null) {
+					    $this->collAbsenceEleveTraitements->append($jTraitementSaisieEleve->getAbsenceEleveTraitement());
+					}
 				    }
 //				    foreach ($this->collAbsenceEleveTraitements as $traitement) {
 //					echo $this->getId().'collJ $traitement->isTypeHydrated() : '.$traitement->isTypeHydrated().'<br/>';
