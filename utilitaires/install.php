@@ -130,7 +130,8 @@ if ($etape == 4) {
 		//=============================================
 			$reg = mysql_query($query);
 			if (!$reg) {
-				echo "<p><font color=red>ERROR</font> : '$query'";
+				echo "<p><font color=red>ERROR</font> : '$query' : ";
+				echo "<p>Erreur retournée : ".mysql_error()."</p>\n";
 				$result_ok = 'no';
 			}
 		}
@@ -150,7 +151,7 @@ if ($etape == 4) {
 				$reg = mysql_query($query);
 				if (!$reg) {
 					echo "<p><font color=red>ERROR</font> : '$query'</p>\n";
-					//echo "<p>Erreur retournée : ".mysql_error()."</p>\n";
+					echo "<p>Erreur retournée : ".mysql_error()."</p>\n";
 					$result_ok = 'no';
 				}
 			}
@@ -314,6 +315,7 @@ else if ($etape == 2) {
 	else {
 		echo "<B>La connexion au serveur MySQL a échoué.</B>\n";
 		echo "<p>Revenez à la page précédente, et vérifiez les informations que vous avez fournies.</p>\n";
+		echo mysql_error();
 	}
 
 	end_html();
