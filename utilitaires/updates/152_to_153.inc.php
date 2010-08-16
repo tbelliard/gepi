@@ -1081,6 +1081,22 @@ else {
 	}
 }
 
+// Ajout Eric modif notification par mail dans le module discipline
+$result .= "&nbsp;->Ajout d'un champ 'adresse' à la table 's_alerte_mail'<br />";
+$test=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_alerte_mail LIKE 'adresse';"));
+if ($test>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE `s_alerte_mail` ADD `adresse` VARCHAR( 250 ) NULL;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+
 // ============= Insertion d'un champ pour abs2
 $sql = "SELECT date_fin FROM periodes LIMIT 1";
 $req_rank = mysql_query($sql);

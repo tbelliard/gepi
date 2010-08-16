@@ -310,7 +310,7 @@ CREATE TABLE IF NOT EXISTS pays (code_pays VARCHAR( 50 ) NOT NULL, nom_pays VARC
 DROP TABLE IF EXISTS j_signalement;
 CREATE TABLE IF NOT EXISTS j_signalement (id_groupe int(11) NOT NULL default '0',login varchar(50) NOT NULL default '',periode int(11) NOT NULL default '0',nature varchar(50) NOT NULL default '',valeur varchar(50) NOT NULL default '',declarant varchar(50) NOT NULL default '',PRIMARY KEY (id_groupe,login,periode,nature), INDEX (login));
 DROP TABLE IF EXISTS s_alerte_mail;
-CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', PRIMARY KEY (id), INDEX (id_classe,destinataire));
+CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', adresse varchar(250) DEFAULT NULL, PRIMARY KEY (id), INDEX (id_classe,destinataire));
 DROP TABLE IF EXISTS s_categories;
 CREATE TABLE IF NOT EXISTS s_categories ( id INT(11) NOT NULL auto_increment, categorie varchar(50) NOT NULL default '',sigle varchar(20) NOT NULL default '', PRIMARY KEY (id));
 DROP TABLE IF EXISTS s_categories;
