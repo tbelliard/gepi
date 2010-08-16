@@ -201,7 +201,6 @@ if (isset($message)) {
 	<p><span class="red">Attention</span>, ces p&eacute;riodes ne sont pas les m&ecirc;mes que celles d&eacute;finies pour les notes. Si vous voulez faire une
 	 lien entre les p&eacute;riodes de notes et celles du calendrier, vous devez pr&eacute;ciser lors de la cr&eacute;ation de ces derni&egrave;res
 	 &agrave; quelle p&eacute;riode de notes elles sont rattach&eacute;es en choisissant celle-ci dans le menu <i>P&eacute;riode de notes ?</i></p>
-    <p>Sachez également que si vous ne faites pas ce lien, les listes d'appel dans le module absences ne tiendront pas compte des désaffectations d'élèves en cours d'année. En effet, lorsqu'un élève quitte l'établissement, vous le désaffectez des périodes de notes restantes dans l'année. Or, ces périodes de notes ne sont pas datées (date de début et de fin). Le module absences ne peut donc pas savoir par défaut dans quelle période de notes on se trouve sauf si vous faites coïncider les périodes d'emploi du temps avec les périodes de notes</p>
 	 <hr />
 	</div>
 <?php

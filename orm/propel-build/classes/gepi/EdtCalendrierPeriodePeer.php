@@ -15,6 +15,36 @@
  */
 class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer {
 
+  private static $_all_periodes;
+
+    /**
+     * Retrieve a single object by pkey.
+     *
+     * @param      int $pk the primary key.
+     * @param      PropelPDO $con the connection to use
+     * @return     EdtCreneau
+     */
+    public static function retrieveByPK($pk, PropelPDO $con = null) {
+	foreach (EdtCalendrierPeriodePeer::retrieveAllEdtCalendrierPeriodesOrderByTime() as $edtPeriode) {
+	    if ((string)$edtPeriode->getPrimaryKey() === (string)$pk) {
+		return $edtPeriode;
+	    }
+	}
+	return null;
+    }
+
+  /**
+   * Renvoie la liste des creneaux de la journee
+   *
+   * @return PropelObjectCollection EdtCreneau
+   */
+    public static function retrieveAllEdtCalendrierPeriodesOrderByTime(){
+	    if (self::$_all_periodes == null) {
+		self::$_all_periodes = EdtCalendrierPeriodeQuery::create()->addAscendingOrderByColumn(EdtCalendrierPeriodePeer::JOURDEBUT_CALENDRIER)->find();
+	    }
+	    return clone self::$_all_periodes;
+    }
+
  	/**
 	 * Retrourne la periode actuelle, ou null si aucune periode n'est trouve pour le jours actuel
 	 *
@@ -47,8 +77,19 @@ class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer {
 			}
 		}
 
-		return EdtCalendrierPeriodeQuery::create()->filterByJourdebutCalendrier($dt, Criteria::GREATER_EQUAL)
-		    ->filterByJourfinCalendrier($dt, Criteria::LESS_EQUAL)->findOne();
+		foreach (EdtCalendrierPeriodePeer::retrieveAllEdtCalendrierPeriodesOrderByTime() as $edtPeriode) {
+		    if ($edtPeriode->getJourdebutCalendrier('Y-m-d') <= $dt->format('Y-m-d')
+			    &&	$edtPeriode->getJourfinCalendrier('Y-m-d') >= $dt->format('Y-m-d')) {
+			return $edtPeriode;
+		    }
+		}
+		return null;
+//		return EdtCalendrierPeriodeQuery::create()
+//			->filterByJourdebutCalendrier($dt, Criteria::LESS_EQUAL)
+//			//->filterByHeuredebutCalendrier($dt, Criteria::GREATER_EQUAL)
+//			->filterByJourfinCalendrier($dt, Criteria::GREATER_EQUAL)
+//			//->filterByHeurefinCalendrier($dt, Criteria::LESS_EQUAL)
+//			->findOne();
 	}
 
 

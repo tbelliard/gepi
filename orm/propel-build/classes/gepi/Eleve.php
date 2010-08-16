@@ -1060,6 +1060,15 @@ class Eleve extends BaseEleve {
 			continue;
 		    }
 
+		    //est-ce une période ouverte
+		    $edt_periode_courante = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($date_compteur);
+		    if ($edt_periode_courante != null 
+			    && ($edt_periode_courante->getEtabfermeCalendrier() == 0 || $edt_periode_courante->getEtabvacancesCalendrier() == 1)) {
+			//etab fermé
+			$date_compteur->modify("+12 hours");
+			continue;
+		    }
+
 		    //etab ouvert
 		    if ($date_compteur->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
 			$date_compteur->setTime(0, 0);
