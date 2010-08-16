@@ -405,6 +405,12 @@ class class_page_accueil {
 	$test_mac=mysql_query($sql);
 	if($test_mac AND mysql_num_rows($test_mac)>0) {$afficher_correction_validation="y";}
 
+
+	  $this->creeNouveauItem("/absences/index.php",
+			  "Bulletins : saisie des absences",
+			  "Cet outil vous permet de saisir les absences sur les bulletins." );
+
+
 	if ((($this->test_prof_matiere != "0") or ($this->statutUtilisateur!='professeur'))
 			and (getSettingValue("active_cahiers_texte")=='y'))
 	  $this->creeNouveauItem("/cahier_texte/index.php",
