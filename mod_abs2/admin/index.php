@@ -88,6 +88,16 @@ if (isset($_POST['abs2_retard_critere_duree'])) {
 		$msg = "Erreur lors de l'enregistrement de abs2_retard_critere_duree !";
 	}
 }
+if (isset($_POST['abs2_heure_demi_journee'])) {
+	try {
+	    $heure = new DateTime($_POST['abs2_heure_demi_journee']);
+	    if (!saveSetting("abs2_heure_demi_journee", $heure->format('H:i'))) {
+		    $msg = "Erreur lors de l'enregistrement de abs2_heure_demi_journee !";
+	    }
+	} catch (Exception $x) {
+	    $message_enregistrement .= "Mauvais format d'heure.<br/>";
+	}
+}
 if (isset($_POST['is_posted'])) {
 	if ($_POST['is_posted']=='1') {
 
@@ -356,8 +366,14 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	min comme des retards.<br/>
 	Note : si les creneaux durent 45 minutes et que ce parametre est réglé sur 50 min, la plupart de vos saisies seront décomptées comme retard.<br/>
 	Note : est considéré comme retards les saisies de durée inférieures au parametre ci-dessus et les saisie dont le type est décompté comme retard
-	(voir la page <a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a>)<br />.<br/>
+	(voir la page <a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a>).<br/>
 
+</p>
+<br/>
+<p>
+	<?php if (getSettingValue("abs2_heure_demi_journee") == null || getSettingValue("abs2_heure_demi_journee") == '') saveSetting("abs2_heure_demi_journee", '11:50'); ?>
+	<input style="font-size:88%;" name="abs2_heure_demi_journee" value="<?php echo getSettingValue("abs2_heure_demi_journee")?>" type="text" maxlength="5" size="4"/>
+	Heure de bascule de demi-journee pour le décompte des demi-journées
 </p>
 
 <!--h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
