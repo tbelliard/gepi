@@ -960,10 +960,10 @@ INSERT INTO edt_calendrier  values ('1', '1;9;', 'Nouvelle période', '1267401600
 #
 # table edt_cours
 #
-INSERT INTO edt_cours  values ('351', '2', 'rie', 'lundi', '2', '3', '0', '0', '0', '0', 'profAngl', '');
-INSERT INTO edt_cours  values ('350', '216', 'rie', 'lundi', '1', '2', '0', 'A', '0', '0', 'prof1', '');
-INSERT INTO edt_cours  values ('349', '1', 'rie', 'lundi', '1', '2', '0', 'B', '0', '0', 'prof1', '');
-INSERT INTO edt_cours  values ('433', '1', 'rie', 'mardi', '2', '4', '0.5', '0', '0', '0', 'prof1', '');
+INSERT INTO edt_cours  values ('351', '2', '', 'rie', 'lundi', '2', '3', '0', '0', '0', '0', 'profAngl');
+INSERT INTO edt_cours  values ('350', '216', '', 'rie', 'lundi', '1', '2', '0', 'A', '0', '0', 'prof1');
+INSERT INTO edt_cours  values ('349', '1', '', 'rie', 'lundi', '1', '2', '0', 'B', '0', '0', 'prof1');
+INSERT INTO edt_cours  values ('433', '1', '', 'rie', 'mardi', '2', '4', '0.5', '0', '0', '0', 'prof1');
 
 
 #
@@ -1388,18 +1388,6 @@ INSERT INTO j_matieres_categories_classes  values ('1', '115', '5', '0');
 #
 # table j_notifications_resp_pers
 #
-INSERT INTO j_notifications_resp_pers  values ('5', 'p000000001');
-INSERT INTO j_notifications_resp_pers  values ('5', 'p000000002');
-INSERT INTO j_notifications_resp_pers  values ('6', 'p000000001');
-INSERT INTO j_notifications_resp_pers  values ('6', 'p000000002');
-INSERT INTO j_notifications_resp_pers  values ('7', 'p000000001');
-INSERT INTO j_notifications_resp_pers  values ('7', 'p000000002');
-INSERT INTO j_notifications_resp_pers  values ('8', 'p000000001');
-INSERT INTO j_notifications_resp_pers  values ('8', 'p000000002');
-INSERT INTO j_notifications_resp_pers  values ('18', 'p000000001');
-INSERT INTO j_notifications_resp_pers  values ('18', 'p000000002');
-INSERT INTO j_notifications_resp_pers  values ('22', 'p000000004');
-INSERT INTO j_notifications_resp_pers  values ('23', 'p000000004');
 
 
 #
@@ -1430,56 +1418,6 @@ INSERT INTO j_scol_classes  values ('scola', '115');
 #
 # table j_traitements_saisies
 #
-INSERT INTO j_traitements_saisies  values ('1', '6');
-INSERT INTO j_traitements_saisies  values ('1', '31');
-INSERT INTO j_traitements_saisies  values ('2', '6');
-INSERT INTO j_traitements_saisies  values ('2', '11');
-INSERT INTO j_traitements_saisies  values ('2', '38');
-INSERT INTO j_traitements_saisies  values ('3', '6');
-INSERT INTO j_traitements_saisies  values ('3', '26');
-INSERT INTO j_traitements_saisies  values ('6', '11');
-INSERT INTO j_traitements_saisies  values ('6', '38');
-INSERT INTO j_traitements_saisies  values ('6', '40');
-INSERT INTO j_traitements_saisies  values ('7', '27');
-INSERT INTO j_traitements_saisies  values ('7', '39');
-INSERT INTO j_traitements_saisies  values ('9', '9');
-INSERT INTO j_traitements_saisies  values ('9', '10');
-INSERT INTO j_traitements_saisies  values ('14', '26');
-INSERT INTO j_traitements_saisies  values ('17', '5');
-INSERT INTO j_traitements_saisies  values ('18', '5');
-INSERT INTO j_traitements_saisies  values ('19', '4');
-INSERT INTO j_traitements_saisies  values ('20', '4');
-INSERT INTO j_traitements_saisies  values ('21', '4');
-INSERT INTO j_traitements_saisies  values ('22', '3');
-INSERT INTO j_traitements_saisies  values ('22', '34');
-INSERT INTO j_traitements_saisies  values ('23', '3');
-INSERT INTO j_traitements_saisies  values ('24', '3');
-INSERT INTO j_traitements_saisies  values ('25', '2');
-INSERT INTO j_traitements_saisies  values ('26', '2');
-INSERT INTO j_traitements_saisies  values ('27', '1');
-INSERT INTO j_traitements_saisies  values ('28', '7');
-INSERT INTO j_traitements_saisies  values ('28', '8');
-INSERT INTO j_traitements_saisies  values ('28', '9');
-INSERT INTO j_traitements_saisies  values ('28', '10');
-INSERT INTO j_traitements_saisies  values ('28', '11');
-INSERT INTO j_traitements_saisies  values ('28', '12');
-INSERT INTO j_traitements_saisies  values ('32', '13');
-INSERT INTO j_traitements_saisies  values ('33', '23');
-INSERT INTO j_traitements_saisies  values ('59', '28');
-INSERT INTO j_traitements_saisies  values ('64', '32');
-INSERT INTO j_traitements_saisies  values ('65', '35');
-INSERT INTO j_traitements_saisies  values ('72', '37');
-INSERT INTO j_traitements_saisies  values ('99', '41');
-INSERT INTO j_traitements_saisies  values ('99', '42');
-INSERT INTO j_traitements_saisies  values ('100', '43');
-INSERT INTO j_traitements_saisies  values ('103', '44');
-INSERT INTO j_traitements_saisies  values ('105', '45');
-INSERT INTO j_traitements_saisies  values ('106', '46');
-INSERT INTO j_traitements_saisies  values ('106', '47');
-INSERT INTO j_traitements_saisies  values ('148', '50');
-INSERT INTO j_traitements_saisies  values ('158', '48');
-INSERT INTO j_traitements_saisies  values ('159', '48');
-INSERT INTO j_traitements_saisies  values ('170', '49');
 
 
 #
