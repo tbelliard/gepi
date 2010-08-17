@@ -83,6 +83,14 @@ if(($_SESSION['statut']=='cpe')||
     else {echo "style='background-color:#ecf6f8;' ";}
     echo "title='Notification'>Notification</a></li>\n";
 
+    if($onglet_abs=='saisir_eleve.php' || $onglet_abs=='enregistrement_saisie_eleve.php' || $onglet_abs=='saisir_groupe.php' || $onglet_abs=='enregistrement_saisie_groupe.php') {
+	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Saisie_cpe">wiki</a></div>';
+    } else if($onglet_abs=='liste_notifications.php') {
+	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Suivi">wiki</a></div>';
+    } else {
+	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Traitement_notification">wiki</a></div>';
+    }
+
     echo "</ul>\n";
 
 } else if ($_SESSION['statut']=='professeur') {
@@ -103,7 +111,9 @@ if(($_SESSION['statut']=='cpe')||
     else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
 
-	echo "</ul>\n";
+    echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Fond_de_salle">wiki</a></div>';
+
+    echo "</ul>\n";
 
 }else if ($_SESSION['statut']=='autre') {
 
@@ -123,7 +133,7 @@ if(($_SESSION['statut']=='cpe')||
     else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
 
-	echo "</ul>\n";
+    echo "</ul>\n";
 }
 
 ?>
