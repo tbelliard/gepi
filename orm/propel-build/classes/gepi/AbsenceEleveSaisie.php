@@ -229,7 +229,6 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$type_avec = false;
 		$type_non_precise = false;
 		foreach ($this->getAbsenceEleveTraitements() as $traitement) {
-		    echo $traitement;
 		    if ($traitement->getAbsenceEleveType() != null) {
 			if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) {
 			    $type_avec = true;
