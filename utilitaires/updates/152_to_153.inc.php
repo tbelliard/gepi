@@ -1140,6 +1140,14 @@ CREATE TABLE a_motifs
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'a_motifs': ".$result_inter."<br />";
 	}
+
+	$sql="
+INSERT INTO `a_motifs` (`id`, `nom`, `commentaire`, `sortable_rank`) VALUES (1, 'Medical', 'L''eleve est absent pour raison médicale', 1),(2, 'Familial', 'L''eleve est absent pour raison familiale', 2),(3, 'Sportive', 'L''eleve est absent pour cause de competition sportive', 3);
+";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création des motifs par défaut : ".$result_inter."<br />";
+	}
 }
 
 #-----------------------------------------------------------------------------
@@ -1162,6 +1170,14 @@ CREATE TABLE a_justifications
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'a_justifications': ".$result_inter."<br />";
 	}
+
+	$sql="
+INSERT INTO `a_justifications` (`id`, `nom`, `commentaire`, `sortable_rank`) VALUES (1, 'Certificat medical', 'Une justification etablie par une autorité medicale', 1),(2, 'Courrier familial', 'Justification par courrier de la famille', 2),(3, 'Justificatif d''une administration publique', 'Justification emise par une administration publique', 3);
+";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création des justifications par défaut : ".$result_inter."<br />";
+	}
 }
 
 #-----------------------------------------------------------------------------
@@ -1177,7 +1193,8 @@ CREATE TABLE a_types
 	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du type d\'absence',
 	justification_exigible TINYINT COMMENT 'Ce type d\'absence doit entrainer une justification de la part de la famille',
 	sous_responsabilite_etablissement VARCHAR(255) default 'NON_PRECISE' COMMENT 'L\'eleve est sous la responsabilite de l\'etablissement. Typiquement : absence infirmerie, mettre la propriété à vrai car l\'eleve est encore sous la responsabilité de l\'etablissement. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
-	manquement_obligation_presence VARCHAR(255) default 'NON_PRECISE' COMMENT 'L\'eleve manque à ses obligations de presence (L\'absence apparait sur le bulletin). Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
+	manquement_obligation_presence VARCHAR(50) default 'NON_PRECISE' COMMENT 'L\'eleve manque à ses obligations de presence (L\'absence apparait sur le bulletin). Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
+	retard_bulletin VARCHAR(50) default 'NON_PRECISE' COMMENT 'La saisie est comptabilisée dans le bulletin en tant que retard. Possibilite : \'vrai\'/\'faux\'/\'non_precise\'',
 	type_saisie VARCHAR(50) default 'NON_PRECISE' COMMENT 'Enumeration des possibilités de l\'interface de saisie de l\'absence pour ce type : DEBUT_ABS, FIN_ABS, DEBUT_ET_FIN_ABS, NON_PRECISE, COMMENTAIRE_EXIGE, DISCIPLINE',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
@@ -1188,14 +1205,14 @@ CREATE TABLE a_types
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'a_types': ".$result_inter."<br />";
 	}
-}
 
-#-----------------------------------------------------------------------------
-#-- a_types_statut
-#-----------------------------------------------------------------------------
-$test = sql_query1("SHOW TABLES LIKE 'a_types_statut'");
-if ($test == -1) {
-	$result .= "<br />Création de la table 'types_statut'. ";
+	$sql="DROP TABLE a_types_statut;";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur lors de la destruction de la table 'a_types_statut': ".$result_inter."<br />";
+	}
+
+	$result .= "<br />Création de la table 'a_types_statut'. ";
 	$sql="
 CREATE TABLE a_types_statut
 (
@@ -1214,6 +1231,26 @@ CREATE TABLE a_types_statut
 	if ($result_inter != '') {
 		$result .= "<br />Erreur sur la création de la table 'a_types_statut': ".$result_inter."<br />";
 	}
+
+	$sql="
+INSERT INTO `a_types` (`id`, `nom`, `justification_exigible`, `sous_responsabilite_etablissement`, `manquement_obligation_presence`, `retard_bulletin`, `type_saisie`, `commentaire`, `sortable_rank`) VALUES(1, 'Absence scolaire', 1, 'FAUX', 'VRAI', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve n''est pas présent pour suivre sa scolarité.', 1),(2, 'Retard intercours', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en retard lors de l''intercours', 2),(3, 'Retard exterieur', 0, 'FAUX', 'VRAI', 'VRAI', 'NON_PRECISE', 'L''eleve est en retard lors de son arrivée dans l''etablissement', 3),(4, 'Erreur de saisie', 0, 'NON_PRECISE', 'NON_PRECISE', 'NON_PRECISE', 'NON_PRECISE', 'Il y a probablement une erreur de saisie sur cet enregistrement.', 4),(5, 'Infirmerie', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est à l''infirmerie.', 5),(6, 'Sortie scolaire', 0, '1', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en sortie scolaire.', 6)
+,(7, 'Exclusion de l\'établissement', 0, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est exclus de l\'établissement.', 7),(8, 'Exclusion/inclusion', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est exclus mais present au sein de l''etablissement.', 8),(9, 'Exclusion de cours', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'DISCIPLINE', 'L''eleve est exclus de cours.', 9),(10, 'Dispense (eleve present)', 1, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est dispensé mais present physiquement lors de la seance.', 10),(11, 'Dispense (eleve non present)', 1, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est dispensé et non present physiquement lors de la seance.', 11),(12, 'Stage', 0, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en stage a l''exterieur de l''etablissement.', 12),(13, 'Présent', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est présent.', 13);
+";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création des types par défaut pour la table 'a_types': ".$result_inter."<br />";
+	}
+
+	$sql="
+INSERT INTO `a_types_statut` (`id`, `id_a_type`, `statut`) VALUES(1, 1, 'professeur'),(2, 1, 'cpe'),(3, 1, 'scolarite'),(4, 1, 'autre'),(5, 2, 'professeur'),(6, 2, 'cpe'),(7, 2, 'scolarite'),(8, 2, 'autre'),(9, 3, 'cpe'),(10, 3, 'scolarite'),(11, 3, 'autre'),(12, 4, 'professeur'),(13, 4, 'cpe'),(14, 4, 'scolarite'),(15, 4, 'autre'),(16, 5, 'professeur'),(17, 5, 'cpe'),(18, 5, 'scolarite'),(19, 5, 'autre'),(20, 6, 'professeur')
+,(21, 6, 'cpe'),(22, 6, 'scolarite'),(23, 7, 'cpe'),(24, 7, 'scolarite'),(25, 8, 'cpe'),(26, 8, 'scolarite'),(27, 9, 'professeur'),(28, 9, 'cpe'),(29, 9, 'scolarite'),(30, 10, 'cpe'),(31, 10, 'scolarite'),(32, 11, 'cpe'),(33, 11, 'scolarite'),(34, 12, 'cpe'),(35, 12, 'scolarite'),(36, 13, 'professeur'),(37, 13, 'cpe'),(38, 13, 'scolarite'),(39, 13, 'autre');
+";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création des statuts autorisés pour les types de saisies par défaut (table 'a_types_statut'): ".$result_inter."<br />";
+	}
+
+
 }
 
 #-----------------------------------------------------------------------------
