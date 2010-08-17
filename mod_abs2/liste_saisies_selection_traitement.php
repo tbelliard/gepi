@@ -381,7 +381,7 @@ if ($order == "des_eleve") {echo "border-style: solid; border-color: red;";} els
 echo 'border-width:1px;" alt="" name="order" value="des_eleve"/>';
 //echo '</nobr>';
 echo '</span>';
-echo 'Eleve';
+echo 'Élève';
 echo '<input type="hidden" value="y" name="filter_checkbox_posted"/>';echo '<br /><input type="text" name="filter_eleve" value="'.getFiltreRechercheParam('filter_eleve').'" size="11"/>';
 echo '<br /><nobr><input type="checkbox" name="filter_marqueur_appel"  onchange="submit()" value="y"';
 if (getFiltreRechercheParam('filter_marqueur_appel') == 'y') {echo "checked='checked'";}
@@ -471,7 +471,7 @@ echo '</th>';
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Creneau';
+echo 'Créneau';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_creneau") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_creneau"/>';
@@ -497,7 +497,7 @@ echo '</th>';
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Date debut';
+echo 'Date début';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_date_debut") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_debut"/>';
@@ -613,7 +613,7 @@ echo '</th>';
 //en tete type d'absence
 echo '<th>';
 //echo '<nobr>';
-echo 'type';
+echo 'Type';
 //echo '</nobr>';
 echo '<br />';
 echo ("<select name=\"filter_type\" onchange='submit()'>");
@@ -644,7 +644,7 @@ echo "<option value='n' ";
 if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected'";}
 echo ">non</option>\n";
 echo "</select>";
-echo '<br/>manquement obligation présence';
+echo '<br/>Manquement obligation présence';
 echo '</th>';
 
 //en tete filtre sous_responsabilite_etablissement
@@ -652,7 +652,7 @@ echo '<th>';
 //echo '<input type="checkbox" value="y" name="filter_sous_responsabilite_etablissement" onchange="submit()"';
 //if (isFiltreRechercheParam('filter_sous_responsabilite_etablissement') && getFiltreRechercheParam('filter_sous_responsabilite_etablissement') == 'y') {echo "checked='checked'";}
 //echo '/><br/>sous resp. etab.';
-echo 'sous resp. etab.';
+echo 'Sous resp. étab.';
 echo '</th>';
 
 //en tete filtre date traitement
@@ -712,14 +712,14 @@ echo '</th>';
 
 //en tete conflit
 echo '<th>';
-echo 'conflit';
+echo 'Conflit';
 echo '</th>';
 
 //en tete filtre date creation
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Date creation';
+echo 'Date création';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
 if ($order == "asc_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_creation"/>';
@@ -786,12 +786,12 @@ echo '</span>';
 echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_date_modification" onchange="submit()"';
 if (isFiltreRechercheParam('filter_date_modification') && getFiltreRechercheParam('filter_date_modification') == 'y') {echo "checked='checked'";}
-echo '/></span><br/> modifié';
+echo '/></span><br/> Modifié';
 echo '</th>';
 
 //en tete commentaire
 echo '<th>';
-echo 'com.';
+echo 'Com.';
 echo '</th>';
 
 //en tete disciplinne
@@ -810,7 +810,7 @@ echo '<br/>';
 echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_discipline" onchange="submit()"';
 if (isFiltreRechercheParam('filter_discipline') && getFiltreRechercheParam('filter_discipline') == 'y') {echo "checked='checked'";}
-echo '/></span><br/>incident';
+echo '/></span><br/>Incident';
 echo '</th>';
 
 echo '</tr>';

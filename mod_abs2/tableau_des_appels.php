@@ -192,7 +192,7 @@ foreach($classe_col as $classe){
 		      ->filterByEdtEmplacementCours($edtCours)->find();
 	    if ($abs_col->isEmpty()) {
 		$appel_manquant = true;
-		$echo_str .= 'Non fait ';
+		$echo_str .= '<span style="color: red;">Non fait</span> - ';
 	    } else {
 		$echo_str .= $abs_col->getFirst()->getCreatedAt('H:i').' ';
 	    }
@@ -208,7 +208,7 @@ foreach($classe_col as $classe){
 			.strtoupper(substr($edtCours->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
 	    }
 	    if ($edtCours->getEdtSalle() != null) {
-		$echo_str .= $edtCours->getEdtSalle()->getNumeroSalle();
+		$echo_str .= '- <span style="font-style: italic;">('.$edtCours->getEdtSalle()->getNumeroSalle().')</span>';
 	    }
 	    $echo_str .= '<br/>';
 	}

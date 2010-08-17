@@ -151,7 +151,7 @@ echo "</p>";
           <td>Nom (obligatoire)</td>
           <td>Commentaire (facultatif)</td>
 	    <td>Justification exigible</td>
-	    <td>L'eleve est sous la responsabilite de l'etablissement</td>
+	    <td>L'élève est sous la responsabilite de l'etablissement</td>
 	    <td>Manquement obligations (apparait sur le bulletin)</td>
 	    <td>Comptabilisée comme retard sur le bulletin (apparait sur le bulletin)</td>
 	    <td>Type de saisie</td>
@@ -234,14 +234,14 @@ echo "</p>";
 } ?>
 	<a href="admin_types_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un nouveau type</a>
 	<br/><br/>
-	<a href="admin_types_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les types par defaut</a>
+	<a href="admin_types_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les types par defauts</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu" style="width:80%">
       <tr>
         <td>Nom</td>
         <td>Commentaire</td>
         <td>Justification exigible</td>
-	<td>L'eleve est sous la responsabilite de l'etablissement</td>
+	<td>L'élève est sous la responsabilite de l'etablissement</td>
 	<td>Manquement obligations (apparait sur le bulletin)</td>
 	<td>Comptabilisée comme retard sur le bulletin (apparait sur le bulletin)</td>
         <td>Type de saisie</td>

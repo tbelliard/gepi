@@ -90,7 +90,7 @@ if ($traitement == null) {
     $criteria->setLimit(1);
     $traitement = $utilisateur->getAbsenceEleveTraitements($criteria)->getFirst();
     if ($traitement == null) {
-	echo "traitement non trouvée";
+	echo "Traitement non trouvé";
 	die();
     }
 }
@@ -108,7 +108,7 @@ echo $traitement->getPrimaryKey();
 echo '</td></tr>';
 
 echo '<tr><TD>';
-echo 'Creer par : ';
+echo 'Créé par : ';
 echo '</TD><TD>';
 echo $traitement->getUtilisateurProfessionnel()->getCivilite().' '.$traitement->getUtilisateurProfessionnel()->getNom().' '.substr($traitement->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
 echo '</TD></tr>';

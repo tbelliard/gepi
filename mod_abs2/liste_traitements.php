@@ -315,7 +315,7 @@ echo '</th>';
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Eleve';
+echo 'Élève';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_eleve"/>';
@@ -372,7 +372,7 @@ echo '</th>';
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
-echo 'type';
+echo 'Type';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_type") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_type"/>';
@@ -410,7 +410,7 @@ echo "<option value='n' ";
 if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') {echo "selected'";}
 echo ">non</option>\n";
 echo "</select>";
-echo '<br/>manquement obligation scolaire (bulletin)';
+echo '<br/>Manquement obligation scolaire (bulletin)';
 echo '</th>';
 
 //en tete filtre sous_responsabilite_etablissement
@@ -418,7 +418,7 @@ echo '<th>';
 //echo '<input type="checkbox" value="y" name="filter_sous_responsabilite_etablissement" onchange="submit()"';
 //if (isFiltreRechercheParam('filter_sous_responsabilite_etablissement') && getFiltreRechercheParam('filter_sous_responsabilite_etablissement') == 'y') {echo "checked='checked'";}
 //echo '/><br/>sous resp. etab.';
-echo 'sous resp. etab.';
+echo 'Sous resp. étab.';
 echo '</th>';
 
 //en tete justification d'absence
@@ -433,7 +433,7 @@ if ($order == "des_justification") {echo "border-style: solid; border-color: red
 echo 'border-width:1px;" alt="" name="order" value="des_justification"/>';
 echo '</span>';
 echo '<br />';
-echo 'justification';
+echo 'Justification';
 echo '<br />';
 echo ("<select name=\"filter_justification\" onchange='submit()'>");
 echo "<option value=''></option>\n";
@@ -464,7 +464,7 @@ if ($order == "des_notification") {echo "border-style: solid; border-color: red;
 echo 'border-width:1px;" alt="" name="order" value="des_notification"/>';
 echo '</span>';
 echo '<br/>';
-echo 'notification';
+echo 'Notification';
 echo '<br />';
 echo ("<select name=\"filter_statut_notification\" onchange='submit()'>");
 echo "<option value=''></option>\n";
@@ -489,7 +489,7 @@ echo '</th>';
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
 //echo '<nobr>';
-echo 'Date creation';
+echo 'Date création';
 echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
 if ($order == "asc_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_creation"/>';
@@ -558,14 +558,14 @@ echo '<span style="white-space: nowrap;"> ';
 echo '<input type="hidden" value="y" name="filter_checkbox_posted"/>';
 echo '<input type="checkbox" value="y" name="filter_date_modification" onchange="submit()"';
 if (isFiltreRechercheParam('filter_date_modification') != null && getFiltreRechercheParam('filter_date_modification') == 'y') {echo "checked";}
-echo '/> modifié';
+echo '/> Modifié';
 echo '</span>';
 //echo '</nobr>';
 echo '</th>';
 
 //en tete commentaire
 echo '<th>';
-echo 'com.';
+echo 'Com.';
 echo '</th>';
 
 echo '</tr>';

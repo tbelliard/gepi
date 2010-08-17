@@ -91,7 +91,7 @@ if ($saisie == null) {
     $saisie_col = $utilisateur->getAbsenceEleveSaisiesJoinEdtCreneau($criteria);
     $saisie = $saisie_col->getFirst();
     if ($saisie == null) {
-	echo "saisie non trouvée";
+	echo "Saisie non trouvée";
 	die();
     }
 }
@@ -134,7 +134,7 @@ echo $saisie->getPrimaryKey();
 echo '</TD></tr>';
 
 echo '<tr><TD>';
-echo 'Saisi par : ';
+echo 'Saisie par : ';
 echo '</TD><TD>';
 echo $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
 echo '</TD></tr>';
@@ -145,7 +145,7 @@ if ($saisie->getEleve() == null) {
     echo "Marqueur d'appel effectué";
     echo '</TD>';
 } else {
-    echo '<TD>Eleve : </td>';
+    echo '<TD>Élève : </td>';
     echo '<TD>';
     echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
     if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
@@ -202,14 +202,14 @@ if ($saisie->getEdtEmplacementCours() != null) {
 
 if ($saisie->getEdtCreneau() != null) {
     echo '<tr><TD>';
-    echo 'Creneau : ';
+    echo 'Créneau : ';
     echo '</TD><TD>';
     echo $saisie->getEdtCreneau()->getDescription();
     echo '</TD></tr>';
 }
 
 echo '<tr><TD>';
-echo 'Debut : ';
+echo 'Début : ';
 echo '</TD><TD>';
 if (!$modifiable) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDebutAbs('U')));

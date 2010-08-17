@@ -319,7 +319,7 @@ echo '</th>';*/
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Elève';
+echo 'Élève';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
 if ($order == "asc_eleve") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_eleve"/>';
@@ -417,7 +417,7 @@ echo '</th>';
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Creneau';
+echo 'Créneau';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
 if ($order == "asc_creneau") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_creneau"/>';
@@ -443,7 +443,7 @@ echo '</th>';
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Date debut';
+echo 'Date début';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
 if ($order == "asc_date_debut") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_debut"/>';
@@ -573,7 +573,7 @@ echo '</th>';
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'type';
+echo 'Type';
 //echo '</nobr>';
 echo '</span>';
 echo '<br />';
@@ -594,7 +594,7 @@ echo '</th>';
 echo '<th>';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Date creation';
+echo 'Date création';
 echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px; vertical-align: middle;';
 if ($order == "asc_date_creation") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
 echo 'border-width:1px;" alt="" name="order" value="asc_date_creation"/>';
@@ -659,7 +659,7 @@ echo 'border-width:1px;" alt="" name="order" value="des_date_modification"/>';
 //echo '</nobr> ';
 echo '</span>';
 echo '<br/>';
-echo 'modifié';
+echo 'Modifié';
 echo '<br/>';
 echo '<span style="white-space: nowrap;"> ';
 echo '<input type="checkbox" value="y" name="filter_date_modification" onchange="submit()" ';
@@ -670,7 +670,7 @@ echo '</th>';
 
 //en tete commentaire
 echo '<th>';
-echo 'com.';
+echo 'Com.';
 echo '</th>';
 
 //en tete disciplinne

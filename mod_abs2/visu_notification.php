@@ -546,7 +546,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL && ($notification->getEmail() == null || $notification->getEmail() == '')) {
 	    //on affiche pas le bouton de generation car l'adresse n'est pas renseignee
 	} else {
-	    echo '<button type="submit">Génerer la notification</button>';
+	    echo '<button type="submit">Générer la notification</button>';
 	}
     }
     echo '</p>';
@@ -559,7 +559,7 @@ if ($notification->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_INITIAL
 	echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="duplication"/>';
-    echo '<button type="submit">Creer une autre notification</button>';
+    echo '<button type="submit">Créer une autre notification</button>';
 	echo '</p>';
     echo '</form>';
     echo '</td></tr>';

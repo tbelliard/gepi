@@ -31,7 +31,7 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	    , 'DEBUT_ET_FIN_ABS' => 'Saisie de l\'heure du debut et de fin de l\'absence'
 	    , 'NON_PRECISE' => 'Type de saisie non précisé'
 	    , 'COMMENTAIRE_EXIGE' => 'Saisie d\'un commentaire explicatif'
-	    , 'DISCIPLINE' => 'Saisie d\'un incident dciplinaire');
+	    , 'DISCIPLINE' => 'Saisie d\'un incident disciplinaire');
 
 	/**
 	 * Les types de RESPONSABILITE_ETABLISSEMENT possibles

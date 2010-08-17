@@ -60,7 +60,7 @@ if (isset($_POST['activer_prof'])) {
 }
 if (isset($_POST['activer_resp'])) {
 	if (!saveSetting("active_absences_parents", $_POST['activer_resp'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la consultation par les responsables eleves !";
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la consultation par les responsables élèves !";
 	}
 }
 if (isset($_POST['gepiAbsenceEmail'])) {

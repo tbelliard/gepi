@@ -51,7 +51,7 @@ if(($_SESSION['statut']=='cpe')||
 
     echo "<li><a href='saisir_eleve.php' ";
     if($onglet_abs=='saisir_eleve.php' || $onglet_abs=='enregistrement_saisie_eleve.php') {echo "class='current' ";}
-    echo "title='Saisir pour un eleve'>Saisir un eleve</a></li>\n";
+    echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";
 
     echo "<li><a href='liste_saisies_selection_traitement.php' ";
     if($onglet_abs=='liste_saisies_selection_traitement.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
@@ -121,7 +121,7 @@ if(($_SESSION['statut']=='cpe')||
 
     echo "<li><a href='saisir_eleve.php' ";
     if($onglet_abs=='saisir_eleve.php') {echo "class='current' ";}
-    echo "title='Saisir pour un eleve'>Saisir un eleve</a></li>\n";
+    echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";
 
     echo "<li><a href='visu_saisie.php' ";
     if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}

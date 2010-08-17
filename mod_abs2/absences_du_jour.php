@@ -306,7 +306,13 @@ if ($type_selection == 'id_eleve') {
 <?php if (!$eleve_col->isEmpty()) { ?>
 			<form method="post" action="./absences_du_jour.php" id="liste_absence_eleve">
 			  <p>
-			<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>
+			<button type="submit" name="creation_traitement" value="creation_traitement">Créer un traitement</button>
+			<?php $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
+			if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
+			    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
+			    echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
+			    echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
+			}?>
 			 
  </p>
     <!-- Afichage du tableau de la liste des élèves -->
@@ -476,7 +482,7 @@ if ($type_selection == 'id_eleve') {
     echo '<td style="border : 1px solid;">Sans couleur : pas de saisie</td>';
     echo '</tr></table>';
     echo "<p>";
-    echo '<button type="submit" name="creation_traitement" value="creation_traitement">Creer un traitement</button>';
+    echo '<button type="submit" name="creation_traitement" value="creation_traitement">Créer un traitement</button>';
     $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
     if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
 	$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);

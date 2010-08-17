@@ -139,7 +139,7 @@ if ($affichage != 'ods') {// on affiche pas de html
     }
     if (!$classe_col->isEmpty()) {
 	    echo ("Classe : <select name=\"id_classe\">");
-	    echo "<option value='-1'>Toute les classes</option>\n";
+	    echo "<option value='-1'>Toutes les classes</option>\n";
 	    foreach ($classe_col as $classe) {
 		    echo "<option value='".$classe->getId()."'";
 		    if ($id_classe == $classe->getId()) echo " selected='selected' ";
@@ -253,7 +253,7 @@ if ($affichage == 'html') {
 	}
     }
     if ($nom_eleve != null && $nom_eleve != '' ) {
-	$titre .= ' pour les élèves dont le nom ou le prenom contient '.$nom_eleve;
+	$titre .= ' pour les élèves dont le nom ou le prénom contient '.$nom_eleve;
     }
     $TBS->MergeField('titre', $titre);
 

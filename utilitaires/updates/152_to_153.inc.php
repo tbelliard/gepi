@@ -1142,7 +1142,7 @@ CREATE TABLE a_motifs
 	}
 
 	$sql="
-INSERT INTO `a_motifs` (`id`, `nom`, `commentaire`, `sortable_rank`) VALUES (1, 'Medical', 'L''eleve est absent pour raison médicale', 1),(2, 'Familial', 'L''eleve est absent pour raison familiale', 2),(3, 'Sportive', 'L''eleve est absent pour cause de competition sportive', 3);
+INSERT INTO `a_motifs` (`id`, `nom`, `commentaire`, `sortable_rank`) VALUES (1, 'Médical', 'L''élève est absent pour raison médicale', 1),(2, 'Familial', 'L''élève est absent pour raison familiale', 2),(3, 'Sportive', 'L''élève est absent pour cause de competition sportive', 3);
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1172,7 +1172,7 @@ CREATE TABLE a_justifications
 	}
 
 	$sql="
-INSERT INTO `a_justifications` (`id`, `nom`, `commentaire`, `sortable_rank`) VALUES (1, 'Certificat medical', 'Une justification etablie par une autorité medicale', 1),(2, 'Courrier familial', 'Justification par courrier de la famille', 2),(3, 'Justificatif d''une administration publique', 'Justification emise par une administration publique', 3);
+INSERT INTO `a_justifications` (`id`, `nom`, `commentaire`, `sortable_rank`) VALUES (1, 'Certificat médical', 'Une justification établie par une autorité médicale', 1),(2, 'Courrier familial', 'Justification par courrier de la famille', 2),(3, 'Justificatif d''une administration publique', 'Justification émise par une administration publique', 3);
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
@@ -1233,8 +1233,8 @@ CREATE TABLE a_types_statut
 	}
 
 	$sql="
-INSERT INTO `a_types` (`id`, `nom`, `justification_exigible`, `sous_responsabilite_etablissement`, `manquement_obligation_presence`, `retard_bulletin`, `type_saisie`, `commentaire`, `sortable_rank`) VALUES(1, 'Absence scolaire', 1, 'FAUX', 'VRAI', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve n''est pas présent pour suivre sa scolarité.', 1),(2, 'Retard intercours', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en retard lors de l''intercours', 2),(3, 'Retard exterieur', 0, 'FAUX', 'VRAI', 'VRAI', 'NON_PRECISE', 'L''eleve est en retard lors de son arrivée dans l''etablissement', 3),(4, 'Erreur de saisie', 0, 'NON_PRECISE', 'NON_PRECISE', 'NON_PRECISE', 'NON_PRECISE', 'Il y a probablement une erreur de saisie sur cet enregistrement.', 4),(5, 'Infirmerie', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est à l''infirmerie.', 5),(6, 'Sortie scolaire', 0, '1', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en sortie scolaire.', 6)
-,(7, 'Exclusion de l\'établissement', 0, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est exclus de l\'établissement.', 7),(8, 'Exclusion/inclusion', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est exclus mais present au sein de l''etablissement.', 8),(9, 'Exclusion de cours', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'DISCIPLINE', 'L''eleve est exclus de cours.', 9),(10, 'Dispense (eleve present)', 1, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est dispensé mais present physiquement lors de la seance.', 10),(11, 'Dispense (eleve non present)', 1, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est dispensé et non present physiquement lors de la seance.', 11),(12, 'Stage', 0, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est en stage a l''exterieur de l''etablissement.', 12),(13, 'Présent', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''eleve est présent.', 13);
+INSERT INTO `a_types` (`id`, `nom`, `justification_exigible`, `sous_responsabilite_etablissement`, `manquement_obligation_presence`, `retard_bulletin`, `type_saisie`, `commentaire`, `sortable_rank`) VALUES(1, 'Absence scolaire', 1, 'FAUX', 'VRAI', 'NON_PRECISE', 'NON_PRECISE', 'L''élève n''est pas présent pour suivre sa scolarité.', 1),(2, 'Retard intercours', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''élève est en retard lors de l''intercours', 2),(3, 'Retard extérieur', 0, 'FAUX', 'VRAI', 'VRAI', 'NON_PRECISE', 'L''élève est en retard lors de son arrivée dans l''etablissement', 3),(4, 'Erreur de saisie', 0, 'NON_PRECISE', 'NON_PRECISE', 'NON_PRECISE', 'NON_PRECISE', 'Il y a probablement une erreur de saisie sur cet enregistrement.', 4),(5, 'Infirmerie', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''élève est à l''infirmerie.', 5),(6, 'Sortie scolaire', 0, '1', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''élève est en sortie scolaire.', 6)
+,(7, 'Exclusion de l''établissement', 0, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''élève est exclus de l''établissement.', 7),(8, 'Exclusion/inclusion', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''élève est exclus mais présent au sein de l''établissement.', 8),(9, 'Exclusion de cours', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'DISCIPLINE', 'L''élève est exclus de cours.', 9),(10, 'Dispense (eleve présent)', 1, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''élève est dispensé mais présent physiquement lors de la seance.', 10),(11, 'Dispense (élève non présent)', 1, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''élève est dispensé et non présent physiquement lors de la seance.', 11),(12, 'Stage', 0, 'FAUX', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''élève est en stage a l''extérieur de l''établissement.', 12),(13, 'Présent', 0, 'VRAI', 'FAUX', 'NON_PRECISE', 'NON_PRECISE', 'L''élève est présent.', 13);
 ";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {

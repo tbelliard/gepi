@@ -175,7 +175,7 @@ if (!$groupe_col->isEmpty()) {
 	}
 	echo "</select>&nbsp;";
 
-	echo '<button type="submit">Afficher les eleves</button>';
+	echo '<button type="submit">Afficher les élèves</button>';
 	echo '</p>';
 	echo "</form>";
 	echo "</td>";
@@ -441,7 +441,7 @@ echo '" type="text" maxlength="5" size="4"/><br/>';
 echo '<input type="radio" name="multisaisie" value="n" checked="checked" />';
 echo '	Créer une seule saisie <br/>';
 echo '	<input type="radio" name="multisaisie" value="y"/>';
-echo '	Créer une saisie par jours';
+echo '	Créer une saisie par jour';
 echo '</p></div>';
 echo 'ou ';
 echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
@@ -449,7 +449,7 @@ echo '<div style="border-width: 1px; border-style: solid; text-align: left; padd
     echo ("<select name=\"id_creneau\" class=\"small\">");
     
 
-    echo "<option value='-1'>choisissez un creneau</option>\n";
+    echo "<option value='-1'>choisissez un créneau</option>\n";
     foreach ($edt_creneau_col as $edt_creneau) {
 	//$edt_creneau = new EdtCreneau();
 	    echo "<option value='".$edt_creneau->getIdDefiniePeriode()."'";
