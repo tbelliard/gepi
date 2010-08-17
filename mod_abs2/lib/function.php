@@ -1,8 +1,9 @@
 <?php
 /* 
  * @version $Id$
-//multisite
-//Les dossiers contenant les modèles Gepi et mes modèles. Il faut un / à la fin du chemin.
+ * multisite
+ * Les dossiers contenant les modèles Gepi et mes modèles. Il faut un / à la fin du chemin.
+*/
 
 function repertoire_modeles($nom_fichier_modele){
   if ($_SESSION['rne']!='') {
