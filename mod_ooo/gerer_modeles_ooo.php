@@ -58,6 +58,18 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $fich[]="rapport_incident.odt";
     $utilisation[]="Formulaire de rapport d'incident";
 
+    //modèle ABS2
+    $fich[]="extraction_demi-journees.ods";
+    $utilisation[]="ABS2 : Tableau des demi-journées d'absences";
+    $fich[]="extraction_saisies.ods";
+    $utilisation[]="ABS2 : Tableau des saisies d'absences";
+    $fich[]="modele_lettre_parents.odt";
+    $utilisation[]="ABS2 : Modèle de lettre aux parents";
+    $fich[]="email.txt";
+    $utilisation[]="ABS2 : Modèle du courriel envoyé aux parents";
+    $fich[]="sms.txt";
+    $utilisation[]="ABS2 : Modèle de SMS envoyé aux parents";
+
 
     //Fiches brevet
     $fich[]="fb_CLG_lv2.ods";
@@ -80,7 +92,8 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     //rapport incident
     $fich[]="documents_ects.odt";
     $utilisation[]="Documents ECTS (pour BTS, prépas...)";
-
+	
+	
     $nbfich=sizeof($fich);
 // Fin liste des fichiers
 
@@ -117,7 +130,7 @@ echo "<body>";
 
 if (!isset($btn)) { //premier passage : formulaire
     echo "<p >Un modèle personnalisé, envoyé sur le serveur sera utilisé par Gepi</p><hr>\n";
-    echo "<p >Peu importe le nom actuel (gardez le format Open Office (ODT - texte, ODS - tableur), chaque fichier sera renommé correctement.<br>\n";
+    echo "<p >Peu importe le nom actuel (gardez le format Open Office : ODT - texte, ODS - tableur ou txt - texte), chaque fichier sera renommé correctement.<br>\n";
     echo "Les fichiers personnalisés peuvent être supprimés (icône poubelle), contrairement à ceux par défaut.<br />\n";
 	echo "L'ensemble des fichiers peut être consulté en cliquant sur leur icône.</p><br />\n";
 	echo "Lorsque vous créez un nouveau modèle, bien faire attention à la syntaxe des variables utilisées dans le modèle par défaut.</p><br />\n";

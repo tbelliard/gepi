@@ -21,9 +21,10 @@ function verif_extension(fichier)// fonction vérification de l'extension après a
    {
    ext = recup_extension(fichier);// on appelle la fonction de récupération de l'extension et on récupere l'extension
             if(ext==".odt"||ext==".ods"){return true;}// si extension = a une des extensions suivantes alors tout est ok donc ... pas d'erreur
+			else if (ext==".txt"){return true;}
             else // sinon on alert l'user de la mauvaise extension
             {
-               alert("L'extension du fichier que vous voulez uploader est :'"+extension+"'\n cette extension n'est pas autorisée !\n Seules les extensions suivantes sont autorisées :\n'ODT - Texte ; ODS - Tableur' !");
+               alert("L'extension du fichier que vous voulez uploader est :'"+ext+"'\n cette extension n'est pas autorisée !\n Seules les extensions suivantes sont autorisées :\n'ODT - Texte ; ODS - Tableur' !");
 			   return false;
             }
    }
