@@ -1621,7 +1621,32 @@ col2 varchar(100) NOT NULL default ''
 
 		echo "<p>Terminé.</p>\n";
 	}
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_discipline') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
 
+	echo "<p><b>Nettoyage des tables du module Discipline&nbsp;:</b> \n";
+	$tab_table=array('s_alerte_mail',
+					's_autres_sanctions',
+					's_communication',
+					's_exclusions',
+					's_incidents',
+					's_retenues',
+					's_sanctions',
+					's_traitement_incident',
+					's_travail',
+					's_protagonistes');
+	for($i=0;$i<count($tab_table);$i++) {
+		if($i>0) {echo ", ";}
+		echo $tab_table[$i];
+		$sql="TRUNCATE TABLE $tab_table[$i];";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+	}
+	echo "</p>\n";
+
+	echo "<p>Terminé.</p>\n";
 } elseif(isset($_POST['action']) AND $_POST['action'] == 'verif_interclassements') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
@@ -1781,6 +1806,7 @@ else {
     echo "<form action=\"clean_tables.php\" method=\"post\">\n";
     echo "<center><input type=submit value=\"Vider les tables Emploi du temps\" /></center>\n";
     echo "<input type='hidden' name='action' value='clean_edt' />\n";
+	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
     echo "</form>\n";
 
     echo "<hr />\n";
@@ -1795,6 +1821,18 @@ else {
     echo "pour les absences antérieures au <input type='text' name='date_limite' size='10' value='31/07/$annee' />\n";
 	echo "</center>\n";
     echo "<input type='hidden' name='action' value='clean_absences' />\n";
+	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+    echo "</form>\n";
+
+    echo "<hr />\n";
+
+    echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables du module Discipline de Gepi.</p>\n";
+    echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+    echo "<center>\n";
+	echo "<input type=submit value=\"Vider les tables du module Discipline\" />\n";
+	echo "</center>\n";
+    echo "<input type='hidden' name='action' value='clean_discipline' />\n";
+	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
     echo "</form>\n";
 
     echo "<hr />\n";
