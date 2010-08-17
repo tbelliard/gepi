@@ -434,7 +434,7 @@ if ($current_cours != null) {
 }
 
 if ($current_creneau == null) {
-    echo 'Aucun creneau selectionné';
+    echo 'Aucun créneau selectionné';
     //on vide la liste des eleves pour eviter de proposer une saisie
     $eleve_col = new PropelObjectCollection();
 }
@@ -740,7 +740,7 @@ function redimensionne_image_petit($photo)
      	if ($utilisateur->getStatut() != 'professeur' || getSettingValue("abs2_saisie_prof_decale_journee")=='y' || getSettingValue("abs2_saisie_prof_decale")=='y') {
 	    echo ("<select name=\"id_creneau\" class=\"small\">");
 	    $edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
-	    echo "<option value='-1'>choisissez un creneau</option>\n";
+	    echo "<option value='-1'>choisissez un créneau</option>\n";
 	    foreach ($edt_creneau_col as $edt_creneau) {
 		    if ($edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_PAUSE
 			    || $edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_REPAS) {

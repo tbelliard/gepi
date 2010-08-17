@@ -135,7 +135,7 @@ echo "</p>";
 } ?>
 	<a href="admin_justifications_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter une nouvelle justification</a>
 	<br/><br/>
-	<a href="admin_justifications_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les justifications par defaut</a>
+	<a href="admin_justifications_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les justifications par défaut</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu">
       <tr>

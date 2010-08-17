@@ -27,7 +27,7 @@
 
 function ajoutMotifsParDefaut() {
     $motif = new AbsenceEleveMotif();
-    $motif->setNom("Medical");
+    $motif->setNom("Médical");
     $motif->setCommentaire("L'élève est absent pour raison médicale");
     if (AbsenceEleveMotifQuery::create()->filterByNom($motif->getNom())->find()->isEmpty()) {
 	$motif->save();

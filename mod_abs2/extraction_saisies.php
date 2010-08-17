@@ -192,7 +192,7 @@ if ($affichage != null && $affichage != '') {
 }
 
 if ($affichage == 'html') {
-    echo '<table style="border:1px solid">';
+    echo '<table style="border-collapse: collapse;>';
     $precedent_eleve_id = null;
     foreach ($saisie_col as $saisie) {
 	if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {

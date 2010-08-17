@@ -180,9 +180,9 @@ if ($affichage != null && $affichage != '') {
 }
 
 if ($affichage == 'html') {
-    echo '<table style="border:1px solid">';
+    echo '<table style="border-collapse: collapse;">';
     $precedent_eleve_id = null;
-    echo '<tr style="border:1px solid">';
+    echo '<tr style="border:1px solid;">';
 
     echo '<td style="border:1px solid;">';
     echo 'Nom Prénom';
@@ -197,7 +197,7 @@ if ($affichage == 'html') {
     echo '</td>';
 
     echo '<td style="border:1px solid;">';
-    echo 'non justifiees';
+    echo 'non justifiées';
     echo '</td>';
 
     echo '<td style="border:1px solid;">';

@@ -234,7 +234,7 @@ echo "</p>";
 } ?>
 	<a href="admin_types_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un nouveau type</a>
 	<br/><br/>
-	<a href="admin_types_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les types par defauts</a>
+	<a href="admin_types_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les types par défauts</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu" style="width:80%">
       <tr>
