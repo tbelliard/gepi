@@ -1,0 +1,15 @@
+[destinataire;onformat=tbs_str;]
+
+[el_col;block=begin][el_col.getPrenom] [el_col.getNom] élève en classe de [el_col.getClasseNomComplet;onformat=tbs_str;] n'a pas assisté au(x) cours :
+[saisies;block=begin;p1=[el_col.getIdEleve]][saisies.getDateDescription;onformat=tbs_str;] [saisies.getGroupeNameAvecClasses;onformat=tbs_str;if [val]!='';then 'cours de [val]']
+[saisies;block=end] 
+[el_col;block=end]
+Merci de justifier le plus rapidement possible cette absence
+
+[nom_etab;onformat=tbs_str;]
+tel : [tel_etab]
+mel : [mail_etab;onformat=tbs_str;]
+fax : [fax_etab]
+
+Ref/notif. : [notif_id]
+
