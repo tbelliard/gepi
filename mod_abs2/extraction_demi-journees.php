@@ -59,6 +59,8 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
     die("acces interdit");
 }
 
+include_once 'lib/function.php';
+
 // Initialisation des variables
 //récupération des paramètres de la requète
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] :(isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
@@ -127,7 +129,8 @@ if ($affichage != 'ods') {// on affiche pas de html
 		singleClick    :    true
 	    });
 	</script>
-	<br/>
+	</h2>
+	<p>
     Nom (facultatif) : <input type="text" name="nom_eleve" size="10" value="<?php echo $nom_eleve?>"/>
 
     <?php
@@ -152,9 +155,12 @@ if ($affichage != 'ods') {// on affiche pas de html
 	echo 'Aucune classe avec élève affecté n\'a été trouvée';
     }
     ?>
-    <br/>
+    </p>
+	<p>
     <button type="submit" name="affichage" value="html">Afficher</button>
     <button type="submit" name="affichage" value="ods">Enregistrer au format ods</button>
+	</p>
+	</form>
 
     <?php
 }
@@ -180,9 +186,9 @@ if ($affichage != null && $affichage != '') {
 }
 
 if ($affichage == 'html') {
-    echo '<table style="border-collapse: collapse;">';
+    echo '<table style="border:1px solid">';
     $precedent_eleve_id = null;
-    echo '<tr style="border:1px solid;">';
+    echo '<tr style="border:1px solid">';
 
     echo '<td style="border:1px solid;">';
     echo 'Nom Prénom';
@@ -197,7 +203,7 @@ if ($affichage == 'html') {
     echo '</td>';
 
     echo '<td style="border:1px solid;">';
-    echo 'non justifiées';
+    echo 'non justifiees';
     echo '</td>';
 
     echo '<td style="border:1px solid;">';
@@ -244,7 +250,8 @@ if ($affichage == 'html') {
     $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
     // Load the template
-    $TBS->LoadTemplate('modeles/extraction_demi-journees.ods');
+	$extraction_demi_journees=repertoire_modeles('extraction_demi-journees.ods');
+    $TBS->LoadTemplate($extraction_demi_journees);
 
     $titre = 'Extrait des demi-journées d\'absences du '.$dt_date_absence_eleve_debut->format('d/m/Y').' au '.$dt_date_absence_eleve_fin->format('d/m/Y');
     $classe = null;
@@ -280,6 +287,8 @@ if ($affichage == 'html') {
     $nom_fichier .=  $dt_date_absence_eleve_fin->format("d_m_Y").'.ods';
     $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fichier);
 }
-
+?>
+	</div>
+<?php
 require("../lib/footer.inc.php");
 ?>

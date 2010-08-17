@@ -62,6 +62,8 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
     die("acces interdit");
 }
 
+include_once 'lib/function.php';
+
 //récupération des paramètres de la requète
 $id_notification = isset($_POST["id_notification"]) ? $_POST["id_notification"] :(isset($_GET["id_notification"]) ? $_GET["id_notification"] :NULL);
 $commentaire = isset($_POST["commentaire"]) ? $_POST["commentaire"] :(isset($_GET["commentaire"]) ? $_GET["commentaire"] :NULL);
@@ -96,7 +98,8 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
     // Load the template
-    $TBS->LoadTemplate('modeles/modele_lettre_parents.odt');
+	$modele_lettre_parents=repertoire_modeles("modele_lettre_parents.odt");
+    $TBS->LoadTemplate($modele_lettre_parents);
 
 
     //on va mettre les champs dans des variables simple
@@ -183,7 +186,8 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     }
     
     // Load the template
-    $TBS->LoadTemplate('modeles/email.txt');
+	$email=repertoire_modeles('email.txt');
+    $TBS->LoadTemplate($email);
     
     $destinataire = '';
     foreach ($notification->getResponsableEleves() as $responsable) {
@@ -252,7 +256,8 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     }
 
     // Load the template
-    $TBS->LoadTemplate('modeles/sms.txt');
+	$sms=repertoire_modeles('sms.txt');
+    $TBS->LoadTemplate($sms);
 
     $destinataire = '';
     foreach ($notification->getResponsableEleves() as $responsable) {

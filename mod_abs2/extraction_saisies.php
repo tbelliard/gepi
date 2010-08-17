@@ -59,6 +59,8 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
     die("acces interdit");
 }
 
+include_once 'lib/function.php';
+
 // Initialisation des variables
 //récupération des paramètres de la requète
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] :(isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] :(isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
@@ -127,7 +129,8 @@ if ($affichage != 'ods') {// on affiche pas de html
 		singleClick    :    true
 	    });
 	</script>
-	<br/>
+	</h2>
+	  <p>
     Nom (facultatif) : <input type="text" name="nom_eleve" size="10" value="<?php echo $nom_eleve?>"/>
 
     <?php
@@ -152,7 +155,8 @@ if ($affichage != 'ods') {// on affiche pas de html
 	echo 'Aucune classe avec élève affecté n\'a été trouvée';
     }
     ?>
-    <br/>
+	</p>
+    <p>
     Type :
     <select style="width:200px" name="type_extrait">
     <option value='1' <?php if ($type_extrait == '1') {echo 'selected';}?>>Liste des saisies occasionnant un manquement aux obligations de présence</option>
@@ -161,6 +165,8 @@ if ($affichage != 'ods') {// on affiche pas de html
 
     <button type="submit" name="affichage" value="html">Afficher</button>
     <button type="submit" name="affichage" value="ods">Enregistrer au format ods</button>
+	</p>
+	</form>
 
     <?php
 }
@@ -192,7 +198,7 @@ if ($affichage != null && $affichage != '') {
 }
 
 if ($affichage == 'html') {
-    echo '<table style="border-collapse: collapse;>';
+    echo '<table style="border:1px solid">';
     $precedent_eleve_id = null;
     foreach ($saisie_col as $saisie) {
 	if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
@@ -242,7 +248,8 @@ if ($affichage == 'html') {
     $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
     // Load the template
-    $TBS->LoadTemplate('modeles/extraction_saisies.ods');
+	$extraction_saisies=repertoire_modeles('extraction_saisies.ods');
+    $TBS->LoadTemplate($extraction_saisies);
 
     $titre = 'Extrait des absences du '.$dt_date_absence_eleve_debut->format('d/m/Y').' au '.$dt_date_absence_eleve_fin->format('d/m/Y');
     $classe = null;
@@ -267,6 +274,8 @@ if ($affichage == 'html') {
     $nom_fichier .=  $dt_date_absence_eleve_fin->format("d_m_Y").'.ods';
     $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fichier);
 }
-
+?>
+	</div>
+<?php
 require("../lib/footer.inc.php");
 ?>
