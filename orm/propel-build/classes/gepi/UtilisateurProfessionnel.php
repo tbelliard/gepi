@@ -247,42 +247,48 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 				if ($this->statut == "professeur") {
  				    if (null !== $criteria) {
 					$collGroupes = GroupeQuery::create(null, $criteria)
+					    ->orderByName()
 					    ->filterByUtilisateurProfessionnel($this)
 					    ->leftJoin('Groupe.JGroupesClasses')->with('JGroupesClasses')
 					    ->leftJoin('JGroupesClasses.Classe')->with('Classe')
+					    ->orderBy('Classe.Nom')
 					    ->find($con);
 				    } else {
 					//on utilise du sql directement pour optimiser la requete
-					$sql = "SELECT
-					    groupes.ID, groupes.NAME, groupes.DESCRIPTION, groupes.RECALCUL_RANG,
-					    j_groupes_classes.ID_GROUPE, j_groupes_classes.ID_CLASSE, j_groupes_classes.PRIORITE, j_groupes_classes.COEF, j_groupes_classes.CATEGORIE_ID, j_groupes_classes.SAISIE_ECTS, j_groupes_classes.VALEUR_ECTS,
-					    classes.ID, classes.CLASSE, classes.NOM_COMPLET, classes.SUIVI_PAR, classes.FORMULE, classes.FORMAT_NOM, classes.DISPLAY_RANG, classes.DISPLAY_ADDRESS, classes.DISPLAY_COEF, classes.DISPLAY_MAT_CAT, classes.DISPLAY_NBDEV, classes.DISPLAY_MOY_GEN, classes.MODELE_BULLETIN_PDF, classes.RN_NOMDEV, classes.RN_TOUTCOEFDEV, classes.RN_COEFDEV_SI_DIFF, classes.RN_DATEDEV, classes.RN_SIGN_CHEFETAB, classes.RN_SIGN_PP, classes.RN_SIGN_RESP, classes.RN_SIGN_NBLIG, classes.RN_FORMULE, classes.ECTS_TYPE_FORMATION, classes.ECTS_PARCOURS, classes.ECTS_CODE_PARCOURS, classes.ECTS_DOMAINES_ETUDE, classes.ECTS_FONCTION_SIGNATAIRE_ATTESTATION
-					FROM `groupes`
-					INNER JOIN j_groupes_professeurs ON (groupes.ID=j_groupes_professeurs.ID_GROUPE)
-					LEFT JOIN j_groupes_classes ON (groupes.ID=j_groupes_classes.ID_GROUPE)
-					LEFT JOIN classes ON (j_groupes_classes.ID_CLASSE=classes.ID)
-					WHERE j_groupes_professeurs.LOGIN='".$this->getLogin()."'";
+					$sql = "SELECT /* getGroupes manual sql */ groupes.ID, groupes.NAME, groupes.DESCRIPTION, groupes.RECALCUL_RANG, j_groupes_classes.ID_GROUPE, j_groupes_classes.ID_CLASSE, j_groupes_classes.PRIORITE, j_groupes_classes.COEF, j_groupes_classes.CATEGORIE_ID, j_groupes_classes.SAISIE_ECTS, j_groupes_classes.VALEUR_ECTS, classes.ID, classes.CLASSE, classes.NOM_COMPLET, classes.SUIVI_PAR, classes.FORMULE, classes.FORMAT_NOM, classes.DISPLAY_RANG, classes.DISPLAY_ADDRESS, classes.DISPLAY_COEF, classes.DISPLAY_MAT_CAT, classes.DISPLAY_NBDEV, classes.DISPLAY_MOY_GEN, classes.MODELE_BULLETIN_PDF, classes.RN_NOMDEV, classes.RN_TOUTCOEFDEV, classes.RN_COEFDEV_SI_DIFF, classes.RN_DATEDEV, classes.RN_SIGN_CHEFETAB, classes.RN_SIGN_PP, classes.RN_SIGN_RESP, classes.RN_SIGN_NBLIG, classes.RN_FORMULE, classes.ECTS_TYPE_FORMATION, classes.ECTS_PARCOURS, classes.ECTS_CODE_PARCOURS, classes.ECTS_DOMAINES_ETUDE, classes.ECTS_FONCTION_SIGNATAIRE_ATTESTATION FROM `groupes` INNER JOIN j_groupes_professeurs ON (groupes.ID=j_groupes_professeurs.ID_GROUPE) LEFT JOIN j_groupes_classes ON (groupes.ID=j_groupes_classes.ID_GROUPE) LEFT JOIN classes ON (j_groupes_classes.ID_CLASSE=classes.ID) WHERE j_groupes_professeurs.LOGIN='".$this->getLogin()."' ORDER BY groupes.NAME ASC,classes.CLASSE ASC";
 
 					$con = Propel::getConnection(GroupePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 					$stmt = $con->prepare($sql);
 					$stmt->execute();
 
 					$collGroupes = UtilisateurProfessionnel::getGroupeFormatter()->format($stmt);
+
+//					$collGroupes = GroupeQuery::create(null, $criteria)
+//					    ->orderByName()
+//					    ->filterByUtilisateurProfessionnel($this)
+//					    ->leftJoin('Groupe.JGroupesClasses')->with('JGroupesClasses')
+//					    ->leftJoin('JGroupesClasses.Classe')->with('Classe')
+//					    ->orderBy('Classe.Nom')
+//					    ->setComment('getGroupes manual sql')
+//					    ->find($con);
  				    }
 				} elseif ($this->statut == "cpe") {
 				    //on ajoute les groupes contenant des eleves sous la responsabilite du cpe
 				    $collGroupes = GroupeQuery::create(null, $criteria)
 					    ->distinct()
+					    ->orderByName()
 					    ->useJEleveGroupeQuery()->useEleveQuery()->useJEleveCpeQuery()
 					    ->filterByUtilisateurProfessionnel($this)
 					    ->endUse()->endUse()->endUse()
 					    ->leftJoinWith('Groupe.JGroupesClasses')
 					    ->leftJoinWith('JGroupesClasses.Classe')
+					    ->orderBy('Classe.Nom')
 					    ->find();
 				} else if ($this->statut == "scolarite") {
 				    //on ajoute les groupes des classes sous la responsabilite du compte scolalite
 				    $collGroupes = GroupeQuery::create(null, $criteria)
-					    ->useJGroupesClassesQuery()->useClasseQuery()->useJScolClassesQuery()
+					    ->orderByName()
+					    ->useJGroupesClassesQuery()->useClasseQuery()->orderBy('Classe.Nom')->useJScolClassesQuery()
 					    ->filterByUtilisateurProfessionnel($this)
 					    ->endUse()->endUse()->endUse()
 					    ->find();

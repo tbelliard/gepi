@@ -199,7 +199,7 @@ if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
 	//donc on affiche pas de selection, le cours est automatiquement selectionné
 } else {
     if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-	$groupe_col = GroupeQuery::create()->find();
+	$groupe_col = GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()->find();
     } else {
 	$groupe_col = $utilisateur->getGroupes();
     }

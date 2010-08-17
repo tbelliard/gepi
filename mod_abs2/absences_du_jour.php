@@ -128,7 +128,7 @@ echo "<table cellspacing='15px' cellpadding='5px'><tr>";
 
 //on affiche une boite de selection avec les groupes et les creneaux
 if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $groupe_col = GroupeQuery::create()->find();
+    $groupe_col = GroupeQuery::create()->orderByName()->useJGroupesClassesQuery()->useClasseQuery()->orderByNom()->endUse()->endUse()->find();
 } else {
     $groupe_col = $utilisateur->getGroupes();
 }
