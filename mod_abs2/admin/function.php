@@ -251,9 +251,9 @@ function ajoutTypesParDefaut() {
     }
 
     $type = new AbsenceEleveType();
-    $type->setNom("Exclusion");
+    $type->setNom("Exclusion de l'établissement");
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
-	$type->setCommentaire("L'eleve est exclus du college.");
+	$type->setCommentaire("L'eleve est exclus de l'établissement.");
 	$type->setJustificationExigible(false);
 	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_FAUX);
 	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
