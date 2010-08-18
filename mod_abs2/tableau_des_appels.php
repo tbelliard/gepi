@@ -167,11 +167,12 @@ foreach($classe_col as $classe){
 	if ($classe_col->isEven()) {
 	    echo '<tr>';
 	}
-	echo '	<td>
-			<h4 style="color: red;"><a href="#" onclick="AfficheEdtClasseDuJour(\''.$id_classe.'\',\''.$num_id.'\', 1); return false;">'.$classe->getNom().'</a></h4>
-			<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white; -moz-border-radius: 10px; padding: 10px;">
-			</div>
-		</td>';
+//	echo '	<td>
+//			<h4 style="color: red;"><a href="#" onclick="AfficheEdtClasseDuJour(\''.$id_classe.'\',\''.$num_id.'\', 1); return false;">'.$classe->getNom().'</a></h4>
+//			<div id="'.$num_id.'" style="display: none; position: absolute; background-color: white; -moz-border-radius: 10px; padding: 10px;">
+//			</div>
+//		</td>';
+	echo '	<td><h4>'.$classe->getNom().'</h4></td>';
 
 	//la classe a-t-elle des cours actuellement ?
 	//on regarde au debut du creneau et a la fin car il peut y avoir des demi creneau
