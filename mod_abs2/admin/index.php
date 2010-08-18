@@ -103,21 +103,21 @@ if (isset($_POST['is_posted'])) {
 
 		if (isset($_POST['abs2_saisie_prof_decale_journee'])) {
 			if (!saveSetting("abs2_saisie_prof_decale_journee", $_POST['abs2_saisie_prof_decale_journee'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie decale sur la journée pour les professeurs !";
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sur la journée pour les professeurs !";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_prof_decale_journee", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie decale sur la journée pour les professeurs !";
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sur la journée pour les professeurs !";
 			}
 		}
 
 		if (isset($_POST['abs2_saisie_prof_decale'])) {
 			if (!saveSetting("abs2_saisie_prof_decale", $_POST['abs2_saisie_prof_decale'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie decale sans limite pour les professeurs !";
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sans limite pour les professeurs !";
 			}
 		} else {
 			if (!saveSetting("abs2_saisie_prof_decale", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie decale sans limite pour les professeurs !";
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sans limite pour les professeurs !";
 			}
 		}
 
@@ -133,21 +133,21 @@ if (isset($_POST['is_posted'])) {
 
 		if (isset($_POST['abs2_modification_saisie_une_heure'])) {
 			if (!saveSetting("abs2_modification_saisie_une_heure", $_POST['abs2_modification_saisie_une_heure'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
 			}
 		} else {
 			if (!saveSetting("abs2_modification_saisie_une_heure", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
 			}
 		}
 
 		if (isset($_POST['abs2_sms'])) {
 			if (!saveSetting("abs2_sms", $_POST['abs2_sms'])) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
 			}
 		} else {
 			if (!saveSetting("abs2_sms", 'n')) {
-				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification saisie par les professeurs dans l'heure suivant la saisie !";
 			}
 		}
 
@@ -206,7 +206,7 @@ if (isset($_POST['is_posted'])) {
 
 if (isset($_POST['classement'])) {
 	if (!saveSetting("absence_classement_top", $_POST['classement'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre de classementdes absences (TOP 10) !";
+		$msg = "Erreur lors de l'enregistrement du paramètre de classement des absences (TOP 10) !";
 	}
 }
 if (isset($_POST['installation_base'])) {
@@ -289,22 +289,22 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 <p>
 	<input type="checkbox" name="abs2_saisie_prof_decale_journee" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_decale_journee")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_prof_decale_journee">&nbsp;Permettre la saisie decalée sur une même journée par les professeurs</label>
+	<label for="abs2_saisie_prof_decale_journee">&nbsp;Permettre la saisie décalée sur une même journée par les professeurs</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_saisie_prof_decale" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_decale")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_prof_decale">&nbsp;Permettre la saisie decalée sans limite de temps par les professeurs</label>
+	<label for="abs2_saisie_prof_decale">&nbsp;Permettre la saisie décalée sans limite de temps par les professeurs</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_saisie_prof_hors_cours" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_hors_cours")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prevu dans l'emploi du temps du professeur</label>
+	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prévu dans l'emploi du temps du professeur</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_modification_saisie_une_heure" value="y"
 	<?php if (getSettingValue("abs2_modification_saisie_une_heure")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie dans l'heure qui a suivi sa creation</label>
+	<label for="abs2_modification_saisie_une_heure">&nbsp;Permettre la modification d'une saisie dans l'heure qui a suivi sa création</label>
 </p>
 <!--p>
 	<input type="checkbox" name="abs2_modification_saisie_sans_limite" value="y"
@@ -364,8 +364,8 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 		<option value="50" <?php if (getSettingValue("abs2_retard_critere_duree") == '50') echo " selected"; ?>>50</option>
 	</select>
 	min comme des retards.<br/>
-	Note : si les creneaux durent 45 minutes et que ce parametre est réglé sur 50 min, la plupart de vos saisies seront décomptées comme retard.<br/>
-	Note : est considéré comme retards les saisies de durée inférieures au parametre ci-dessus et les saisie dont le type est décompté comme retard
+	Note : si les créneaux durent 45 minutes et que ce paramètre est réglé sur 50 min, la plupart de vos saisies seront décomptées comme retard.<br/>
+	Note : est considéré comme retards les saisies de durées inférieures au paramètre ci-dessus et les saisies dont le type est décompté comme retard
 	(voir la page <a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a>).<br/>
 
 </p>
@@ -373,7 +373,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 <p>
 	<?php if (getSettingValue("abs2_heure_demi_journee") == null || getSettingValue("abs2_heure_demi_journee") == '') saveSetting("abs2_heure_demi_journee", '11:50'); ?>
 	<input style="font-size:88%;" name="abs2_heure_demi_journee" value="<?php echo getSettingValue("abs2_heure_demi_journee")?>" type="text" maxlength="5" size="4"/>
-	Heure de bascule de demi-journee pour le décompte des demi-journées
+	Heure de bascule de demi-journée pour le décompte des demi-journées
 </p>
 
 <!--h2>G&eacute;rer l'acc&egrave;s des responsables d'&eacute;l&egrave;ves</h2>
@@ -405,7 +405,8 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 <blockquote>
 	<a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a><br />
 	<a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
-	<a href="admin_justifications_absences.php?action=visualiser">Définir les justifications</a>
+	<a href="admin_justifications_absences.php?action=visualiser">Définir les justifications</a><br />
+	<a href="../../mod_ooo/gerer_modeles_ooo.php">Gérer ses propres modèles de documents du module</a>
 </blockquote>
 
 <?PHP
