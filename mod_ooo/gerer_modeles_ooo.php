@@ -128,6 +128,8 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
 $PHP_SELF=basename($_SERVER['PHP_SELF']);
 creertousrep($nom_dossier_modeles_ooo_mes_modeles.$rne);
 
+$retour=$_SESSION['retour'];
+$_SESSION['retour']=$_SERVER['PHP_SELF'] ;
 
 //**************** EN-TETE *****************
 $titre_page = "Modèle Open Office - gérer ses modèles";
@@ -136,7 +138,7 @@ require_once("../lib/header.inc");
 echo "<SCRIPT LANGUAGE=\"Javascript\" SRC=\"./lib/mod_ooo.js\"> </SCRIPT>";
 //debug_var();
 
-echo "<p class='bold'><a href='./index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<p class='bold'><a href='".$retour."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 echo "<BR />\n";
 echo "<p>Ce module est destiné à gérer les modèles Open Office de Gepi.</p>\n";

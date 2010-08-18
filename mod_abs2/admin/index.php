@@ -47,6 +47,9 @@ if (!checkAccess()) {
     die();
 }
 
+$retour=$_SESSION['retour'];
+$_SESSION['retour']=$_SERVER['PHP_SELF'] ;
+
 $msg = '';
 if (isset($_POST['activer'])) {
     if (!saveSetting("active_module_absence", $_POST['activer'])) {
