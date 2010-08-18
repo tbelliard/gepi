@@ -137,6 +137,9 @@ if ($traitement->getAbsenceEleveSaisies()->isEmpty() && $traitement->getModifiab
 foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
     //$saisie = new AbsenceEleveSaisie();
     if ($saisie->getEleve() == null) {
+	if (!$traitement->getAbsenceEleveSaisies()->isFirst()) {
+	    echo '</td></tr>';
+	}
 	echo '<tr><td>';
 	echo 'Aucune absence';
 	if ($saisie->getGroupe() != null) {
@@ -215,8 +218,8 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
     if (!$traitement->getAbsenceEleveSaisies()->isLast()) {
 	echo '<br/>';
     }
-	    echo '</td></tr>';
 }
+echo '</td></tr>';
 echo '</table>';
 
 echo '</td></tr>';

@@ -118,6 +118,9 @@ $eleve_prec_id = null;
 foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
     //$saisie = new AbsenceEleveSaisie();
     if ($saisie->getEleve() == null) {
+	if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isFirst()) {
+	    echo '</td></tr>';
+	}
 	echo '<tr><td>';
 	echo 'Aucune absence';
 	if ($saisie->getGroupe() != null) {
@@ -159,6 +162,7 @@ foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as
 	}
 	echo '</div>';
 	echo '<br/>';
+	$eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
     }
     echo '<div>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
@@ -168,7 +172,6 @@ foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as
     if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isLast()) {
 	echo '<br/>';
     }
-    $eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
 }
 echo '</td></tr>';
 echo '</table>';

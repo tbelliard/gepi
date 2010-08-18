@@ -101,8 +101,11 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	    $resp_col = new PropelObjectCollection();
 	    $resp_col->setModel('ResponsableInformation');
 	    foreach ($this->getAbsenceEleveSaisies() as $saisie) {
-		foreach ($saisie->getEleve()->getResponsableInformations() as $responsable_information) {
-		    $resp_col->add($responsable_information);
+		$eleve = $saisie->getEleve();
+		if ($eleve!= null) {
+		    foreach ($eleve->getResponsableInformations() as $responsable_information) {
+			$resp_col->add($responsable_information);
+		    }
 		}
 	    }
 	    return $resp_col;
