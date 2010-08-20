@@ -368,7 +368,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	</select>
 	min comme des retards.<br/>
 	Note : si les créneaux durent 45 minutes et que ce paramètre est réglé sur 50 min, la plupart de vos saisies seront décomptées comme retard.<br/>
-	Note : sont considérés comme retard les saisies de durées inférieures au paramètre ci-dessus et les saisies dont le type est décompté comme retard
+	Note : sont considérées comme retard les saisies de durées inférieures au paramètre ci-dessus et les saisies dont le type est décompté comme retard
 	(voir la page <a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a>).<br/>
 
 </p>
