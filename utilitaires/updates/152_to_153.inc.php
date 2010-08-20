@@ -1459,4 +1459,15 @@ CREATE TABLE j_notifications_resp_pers
 }
 
 
+$test = sql_query1("SHOW TABLES LIKE 'matieres_app_delais'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'matieres_app_delais'. ";
+	$sql="CREATE TABLE matieres_app_delais (periode int(11) NOT NULL default '0', id_groupe int(11) NOT NULL default '0', date_limite TIMESTAMP NOT NULL, PRIMARY KEY  (periode,id_groupe), INDEX id_groupe (id_groupe));";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'matieres_app_delais': ".$result_inter."<br />";
+	}
+}
+
+
 ?>

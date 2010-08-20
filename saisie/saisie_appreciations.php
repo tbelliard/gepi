@@ -256,141 +256,187 @@ if (isset($_POST['is_posted'])) {
 // 20100604
 //elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['correction_app_eleve']))&&(isset($_POST['correction_id_groupe']))) {
 //elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))) {
-elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))&&(getSettingValue('autoriser_correction_bulletin')=='y')) {
+//elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))&&(getSettingValue('autoriser_correction_bulletin')=='y')) {
+elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))) {
 	// Dispositif pour proposer des corrections une fois la période close.
 	$correction_login_eleve=$_POST['correction_login_eleve'];
 	$correction_periode=$_POST['correction_periode'];
 	//$correction_app_eleve=$_POST['correction_app_eleve'];
 	//$correction_id_groupe=$_POST['correction_id_groupe'];
 
-	//echo "BLABLA";
+	// On n'utilise le dispositif que pour des périodes partiellement closes
+	if($ver_periode[$correction_periode]=='P') {
 
-	// Un test check_prof_groupe($_SESSION['login'],$current_group["id"]) est fait plus haut pour contrôler que le prof est bien associé à ce groupe
-
-	if (isset($NON_PROTECT["correction_app_eleve"])) {
-		$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["correction_app_eleve"]));
-		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-		$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
-
-		$texte_mail="";
-
-		$correction_nom_prenom_eleve=get_nom_prenom_eleve($correction_login_eleve);
-
-		if((strlen(my_ereg_replace('[A-Za-z0-9._-]','',$correction_login_eleve))!=0)||
-		(strlen(my_ereg_replace('[0-9]','',$correction_periode))!=0)) {
-			$msg.="Des caractères invalides sont proposés pour le login élève $correction_nom_prenom_eleve ou pour la période $correction_periode.<br />";
+		$autorisation_exceptionnelle_de_saisie='n';
+		$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$correction_periode';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$lig=mysql_fetch_object($res);
+			$date_limite=$lig->date_limite;
+	
+			$date_courante=time();
+	
+			if($date_courante<$date_limite) {
+				$autorisation_exceptionnelle_de_saisie='y';
+			}
+		}
+	
+		$saisie_valide='n';
+	
+		$sql="SELECT 1=1 FROM matieres_appreciations WHERE login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode' AND appreciation!='';";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			// Il y avait une appréciation saisie
+			// Si l'autorisation de proposition de correction est donnée, c'est OK
+			// Sinon, on contrôle quand même s'il y a une autorisation exceptionnelle
+			if(getSettingValue('autoriser_correction_bulletin')=='y') {
+				$saisie_valide='y';
+			}
+			elseif($autorisation_exceptionnelle_de_saisie=='y') {
+				$saisie_valide='y';
+			}
+		}
+		elseif($autorisation_exceptionnelle_de_saisie=='y') {
+			// Il y a une autorisation exceptionnelle de saisie
+			$saisie_valide='y';
+		}
+	
+	
+		if($saisie_valide!='y') {
+			$msg.="ERREUR: La saisie n'est pas autorisée.<br />";
 		}
 		else {
-
-			$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='$correction_login_eleve' AND periode='$correction_periode' AND id_groupe='$id_groupe';";
-			$test=mysql_query($sql);
-			if(mysql_num_rows($test)==0) {
-				$msg.="L'élève $correction_nom_prenom_eleve n'est pas associé au groupe n°$id_groupe pour la période $correction_periode.<br />";
-			}
-			else {
-
-				$sql="SELECT * FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-				$test_correction=mysql_query($sql);
-				$test=mysql_num_rows($test_correction);
-				if ($test!="0") {
-					if ($app!="") {
-						$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-						$register=mysql_query($sql);
-						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
-						else {
-							$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
-							$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
-						}
-					} else {
-						$sql="DELETE FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
-						$register=mysql_query($sql);
-						if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
-						else {
-							$msg.="Suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectuée.<br />";
-							$texte_mail.="Suppression de la proposition de correction pour l'élève $correction_nom_prenom_eleve\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\n";
-						}
-					}
 		
+			//echo "BLABLA";
+		
+			// Un test check_prof_groupe($_SESSION['login'],$current_group["id"]) est fait plus haut pour contrôler que le prof est bien associé à ce groupe
+		
+			if (isset($NON_PROTECT["correction_app_eleve"])) {
+				$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["correction_app_eleve"]));
+				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+				$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+		
+				$texte_mail="";
+		
+				$correction_nom_prenom_eleve=get_nom_prenom_eleve($correction_login_eleve);
+		
+				if((strlen(my_ereg_replace('[A-Za-z0-9._-]','',$correction_login_eleve))!=0)||
+				(strlen(my_ereg_replace('[0-9]','',$correction_periode))!=0)) {
+					$msg.="Des caractères invalides sont proposés pour le login élève $correction_nom_prenom_eleve ou pour la période $correction_periode.<br />";
 				}
 				else {
-					if ($app != "") {
-						$sql="INSERT INTO matieres_app_corrections SET login='$correction_login_eleve', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
-						$register=mysql_query($sql);
-						if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";}
-						else {
-							$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
-							$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
-						}
+		
+					$sql="SELECT 1=1 FROM j_eleves_groupes WHERE login='$correction_login_eleve' AND periode='$correction_periode' AND id_groupe='$id_groupe';";
+					$test=mysql_query($sql);
+					if(mysql_num_rows($test)==0) {
+						$msg.="L'élève $correction_nom_prenom_eleve n'est pas associé au groupe n°$id_groupe pour la période $correction_periode.<br />";
 					}
-				}
+					else {
 		
-				if($texte_mail!="") {
-		
-					$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-					if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-						$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
-					}
-		
-					if($envoi_mail_actif=='y') {
-						$email_destinataires="";
-						$sql="select email from utilisateurs where statut='secours' AND email!='';";
-						$req=mysql_query($sql);
-						if(mysql_num_rows($req)>0) {
-							$lig_u=mysql_fetch_object($req);
-							$email_destinataires=$lig_u->email;
-							while($lig_u=mysql_fetch_object($req)) {
-								$email_destinataires=", ".$lig_u->email;
-							}
-		
-							$email_declarant="";
-							$nom_declarant="";
-							$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
-							$req=mysql_query($sql);
-							if(mysql_num_rows($req)>0) {
-								$lig_u=mysql_fetch_object($req);
-								$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
-								$email_declarant=$lig_u->email;
-							}
-		
-							$email_autres_profs_grp="";
-							// Recherche des autres profs du groupe
-							$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
-							//echo "$sql<br />";
-							$req=mysql_query($sql);
-							if(mysql_num_rows($req)>0) {
-								$lig_u=mysql_fetch_object($req);
-								$email_autres_profs_grp.=$lig_u->email;
-								while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
-							}
-		
-							$sujet_mail="[GEPI] Demande de validation de correction d'appréciation";
-			
-							$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-							if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
-				
-							$ajout_header="";
-							if($email_declarant!="") {
-								$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
-								if($email_autres_profs_grp!='') {
-									$ajout_header.=", $email_autres_profs_grp";
+						$sql="SELECT * FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+						$test_correction=mysql_query($sql);
+						$test=mysql_num_rows($test_correction);
+						if ($test!="0") {
+							if ($app!="") {
+								$sql="UPDATE matieres_app_corrections SET appreciation='$app' WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+								$register=mysql_query($sql);
+								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement des corrections pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
+								else {
+									$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
+									$texte_mail.="Une correction proposée a été mise à jour par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève ".$correction_nom_prenom_eleve." sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
 								}
-								$ajout_header.="\r\n";
-								$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
-		
+							} else {
+								$sql="DELETE FROM matieres_app_corrections WHERE (login='$correction_login_eleve' AND id_groupe='$id_groupe' AND periode='$correction_periode');";
+								$register=mysql_query($sql);
+								if (!$register) {$msg = $msg."Erreur lors de la suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";} 
+								else {
+									$msg.="Suppression de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectuée.<br />";
+									$texte_mail.="Suppression de la proposition de correction pour l'élève $correction_nom_prenom_eleve\r\nsur la période $correction_periode en ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].")\r\npar ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj').".\n";
+								}
 							}
-							elseif($email_autres_profs_grp!='') {
-								$ajout_header.="Cc: $email_autres_profs_grp\r\n";
-							}
-
-							$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
-							$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
-
-							$envoi = mail($email_destinataires,
-								$gepiPrefixeSujetMail.$sujet_mail,
-								$texte_mail,
-								"From: Mail automatique Gepi\r\n".$ajout_header."X-Mailer: PHP/".phpversion());
+				
 						}
-					}	
+						else {
+							if ($app != "") {
+								$sql="INSERT INTO matieres_app_corrections SET login='$correction_login_eleve', id_groupe='$id_groupe', periode='$correction_periode', appreciation='".$app."';";
+								$register=mysql_query($sql);
+								if (!$register) {$msg = $msg."Erreur lors de l'enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode.<br />";}
+								else {
+									$msg.="Enregistrement de la proposition de correction pour $correction_nom_prenom_eleve sur la période $correction_periode effectué.<br />";
+									$texte_mail.="Une correction a été proposée par ".casse_mot($_SESSION['prenom'],'majf2')." ".casse_mot($_SESSION['nom'],'maj')."\r\npour l'élève $correction_nom_prenom_eleve sur la période $correction_periode\r\nen ".$current_group['name']." (".$current_group["description"]." en ".$current_group["classlist_string"].").\n";
+								}
+							}
+						}
+				
+						if($texte_mail!="") {
+				
+							$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+							if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+								$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+							}
+				
+							if($envoi_mail_actif=='y') {
+								$email_destinataires="";
+								$sql="select email from utilisateurs where statut='secours' AND email!='';";
+								$req=mysql_query($sql);
+								if(mysql_num_rows($req)>0) {
+									$lig_u=mysql_fetch_object($req);
+									$email_destinataires=$lig_u->email;
+									while($lig_u=mysql_fetch_object($req)) {
+										$email_destinataires=", ".$lig_u->email;
+									}
+				
+									$email_declarant="";
+									$nom_declarant="";
+									$sql="select nom, prenom, civilite, email from utilisateurs where login = '".$_SESSION['login']."';";
+									$req=mysql_query($sql);
+									if(mysql_num_rows($req)>0) {
+										$lig_u=mysql_fetch_object($req);
+										$nom_declarant=$lig_u->civilite." ".casse_mot($lig_u->nom,'maj')." ".casse_mot($lig_u->prenom,'majf');
+										$email_declarant=$lig_u->email;
+									}
+				
+									$email_autres_profs_grp="";
+									// Recherche des autres profs du groupe
+									$sql="SELECT DISTINCT u.email FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.id_groupe='$id_groupe' AND jgp.login=u.login AND u.login!='".$_SESSION['login']."' AND u.email!='';";
+									//echo "$sql<br />";
+									$req=mysql_query($sql);
+									if(mysql_num_rows($req)>0) {
+										$lig_u=mysql_fetch_object($req);
+										$email_autres_profs_grp.=$lig_u->email;
+										while($lig_u=mysql_fetch_object($req)) {$email_autres_profs_grp.=",".$lig_u->email;}
+									}
+				
+									$sujet_mail="[GEPI] Demande de validation de correction d'appréciation";
+					
+									$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+									if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+						
+									$ajout_header="";
+									if($email_declarant!="") {
+										$ajout_header.="Cc: $nom_declarant <".$email_declarant.">";
+										if($email_autres_profs_grp!='') {
+											$ajout_header.=", $email_autres_profs_grp";
+										}
+										$ajout_header.="\r\n";
+										$ajout_header.="Reply-to: $nom_declarant <".$email_declarant.">\r\n";
+				
+									}
+									elseif($email_autres_profs_grp!='') {
+										$ajout_header.="Cc: $email_autres_profs_grp\r\n";
+									}
+		
+									$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
+									$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
+		
+									$envoi = mail($email_destinataires,
+										$gepiPrefixeSujetMail.$sujet_mail,
+										$texte_mail,
+										"From: Mail automatique Gepi\r\n".$ajout_header."X-Mailer: PHP/".phpversion());
+								}
+							}	
+						}
+					}
 				}
 			}
 		}
@@ -858,6 +904,30 @@ $chaine_champs_input_correction="";
 $cpt_correction=0;
 //=================================
 
+//=================================
+// Tableau pour les autorisations exceptionnelles de saisie
+// Il n'est pris en compte comme le getSettingValue('autoriser_correction_bulletin' que pour une période partiellement close
+$tab_autorisation_exceptionnelle_de_saisie=array();
+$date_courante=time();
+//echo "\$id_groupe=$id_groupe<br />";
+//echo "\$date_courante=$date_courante<br />";
+$k=1;
+while ($k < $nb_periode) {
+	$tab_autorisation_exceptionnelle_de_saisie[$k]='n';
+	$sql="SELECT UNIX_TIMESTAMP(date_limite) AS date_limite FROM matieres_app_delais WHERE id_groupe='$id_groupe' AND periode='$k';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		$date_limite=$lig->date_limite;
+		//echo "\$date_limite=$date_limite en période $k.<br />";
+
+		if($date_courante<$date_limite) {
+			$tab_autorisation_exceptionnelle_de_saisie[$k]='y';
+		}
+	}
+	$k++;
+}
+//=================================
 
 $prev_classe = null;
 //=================================================
@@ -1025,21 +1095,25 @@ foreach ($liste_eleves as $eleve_login) {
 				//===============================
 				// 20100604
 				//if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")) {
-				if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")&&(getSettingValue('autoriser_correction_bulletin')=='y')) {
+				if(($_SESSION['statut']=='professeur')&&($current_group["classe"]["ver_periode"][$eleve_id_classe][$k]=="P")) {
 
-					//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"document.getElementById('correction_login_eleve').value='$eleve_login';document.getElementById('span_correction_login_eleve').innerHTML='$eleve_login';document.getElementById('correction_periode').value='$k';document.getElementById('span_correction_periode').innerHTML='$k';document.getElementById('correction_app_eleve').value=addslashes('$eleve_app');afficher_div('div_correction','y',-100,20);return false;\" title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' /></a></div>\n";
+					if((($eleve_app!='')&&(getSettingValue('autoriser_correction_bulletin')=='y'))||
+					($tab_autorisation_exceptionnelle_de_saisie[$k]=='y')) {
 
-					// Il y a des pb avec la fonction javascript addslashes()... on utilise des champs de formulaire
-
-					//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"document.getElementById('correction_login_eleve').value='$eleve_login';document.getElementById('span_correction_login_eleve').innerHTML='$eleve_login';document.getElementById('correction_periode').value='$k';document.getElementById('span_correction_periode').innerHTML='$k';document.getElementById('correction_app_eleve').value=document.getElementById('reserve_correction_app_eleve_$cpt_correction').value;afficher_div('div_correction','y',-100,20);return false;\" title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' /></a>";
-
-					$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction('$eleve_login','$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
-
-					$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>$eleve_app</textarea>\n";
-					$chaine_champs_input_correction.="<input type='hidden' name='nom_prenom_eleve_$cpt_correction' id='nom_prenom_eleve_$cpt_correction' value=\"$eleve_nom $eleve_prenom\" />\n";
-
-					$mess[$k].="</div>\n";
-					$cpt_correction++;
+						//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"document.getElementById('correction_login_eleve').value='$eleve_login';document.getElementById('span_correction_login_eleve').innerHTML='$eleve_login';document.getElementById('correction_periode').value='$k';document.getElementById('span_correction_periode').innerHTML='$k';document.getElementById('correction_app_eleve').value=addslashes('$eleve_app');afficher_div('div_correction','y',-100,20);return false;\" title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' /></a></div>\n";
+	
+						// Il y a des pb avec la fonction javascript addslashes()... on utilise des champs de formulaire
+	
+						//$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"document.getElementById('correction_login_eleve').value='$eleve_login';document.getElementById('span_correction_login_eleve').innerHTML='$eleve_login';document.getElementById('correction_periode').value='$k';document.getElementById('span_correction_periode').innerHTML='$k';document.getElementById('correction_app_eleve').value=document.getElementById('reserve_correction_app_eleve_$cpt_correction').value;afficher_div('div_correction','y',-100,20);return false;\" title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' /></a>";
+	
+						$mess[$k].="<div style='float:right; width:2em; height:1em;'><a href='#' onclick=\"affiche_div_correction('$eleve_login','$k','$cpt_correction');return false;\" alt='Proposer une correction' title='Proposer une correction'><img src='../images/edit16.png' width='16' height='16' alt='Proposer une correction' title='Proposer une correction' /></a>";
+	
+						$chaine_champs_textarea_correction.="<textarea name='reserve_correction_app_eleve_$cpt_correction' id='reserve_correction_app_eleve_$cpt_correction'>$eleve_app</textarea>\n";
+						$chaine_champs_input_correction.="<input type='hidden' name='nom_prenom_eleve_$cpt_correction' id='nom_prenom_eleve_$cpt_correction' value=\"$eleve_nom $eleve_prenom\" />\n";
+	
+						$mess[$k].="</div>\n";
+						$cpt_correction++;
+					}
 				}
 				//===============================
 

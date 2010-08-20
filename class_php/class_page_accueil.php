@@ -973,6 +973,12 @@ class class_page_accueil {
 	 }
 
 	if ($this->statutUtilisateur!='professeur'){
+	  $this->creeNouveauItem("/bulletin/autorisation_exceptionnelle_saisie_app.php",
+			  "Autorisation exceptionnelle de saisie d'appréciations",
+			  "Permet d'autoriser exceptionnellement un enseignant à proposer une saisie d'appréciations pour un enseignement sur une période partiellement close.");
+	}
+
+	if ($this->statutUtilisateur!='professeur'){
 	  $this->creeNouveauItem("/bulletin/verrouillage.php",
 			  "Verrouillage/Déverrouillage des périodes",
 			  "Permet de verrouiller ou déverrouiller une période pour une ou plusieurs classes.");
