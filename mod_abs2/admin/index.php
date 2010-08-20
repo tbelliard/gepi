@@ -302,7 +302,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 <p>
 	<input type="checkbox" name="abs2_saisie_prof_hors_cours" value="y"
 	<?php if (getSettingValue("abs2_saisie_prof_hors_cours")=='y') echo " checked='checked'"; ?> />
-	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prévu dans l'emploi du temps du professeur</label>
+	<label for="abs2_saisie_prof_hors_cours">&nbsp;Permettre la saisie d'une absence hors des cours prévus dans l'emploi du temps du professeur</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_modification_saisie_une_heure" value="y"
@@ -368,7 +368,7 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	</select>
 	min comme des retards.<br/>
 	Note : si les créneaux durent 45 minutes et que ce paramètre est réglé sur 50 min, la plupart de vos saisies seront décomptées comme retard.<br/>
-	Note : est considéré comme retards les saisies de durées inférieures au paramètre ci-dessus et les saisies dont le type est décompté comme retard
+	Note : sont considérés comme retard les saisies de durées inférieures au paramètre ci-dessus et les saisies dont le type est décompté comme retard
 	(voir la page <a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a>).<br/>
 
 </p>

@@ -151,11 +151,11 @@ echo "</p>";
           <td>Nom (obligatoire)</td>
           <td>Commentaire (facultatif)</td>
 	    <td>Justification exigible</td>
-	    <td>L'élève est sous la responsabilite de l'etablissement</td>
-	    <td>Manquement obligations (apparait sur le bulletin)</td>
-	    <td>Comptabilisée comme retard sur le bulletin (apparait sur le bulletin)</td>
+	    <td>L'élève est sous la responsabilité de l'établissement</td>
+	    <td>Manquement obligations (apparaît sur le bulletin)</td>
+	    <td>Comptabilisée comme retard sur le bulletin (apparaît sur le bulletin)</td>
 	    <td>Type de saisie</td>
-	    <td>Statut autorisé à la saisie</td>
+	    <td>Statut(s) autorisé(s) à la saisie</td>
        </tr>
         <tr>
           <td>
@@ -190,7 +190,7 @@ echo "</p>";
 	   </td>
            <td>
 	     <select name="type_saisie" id="type_saisie">
-		<option value='NON_PRECISE' <?php  if ($type != null && $type->getTypeSaisie() == 'NON_PRECISE') {echo "selected";} ?>>Type de saisie non precise</option>
+		<option value='NON_PRECISE' <?php  if ($type != null && $type->getTypeSaisie() == 'NON_PRECISE') {echo "selected";} ?>>Type de saisie non précisé</option>
 		<!--<option value='DEBUT_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'DEBUT_ABS') {echo "selected";} ?>>Saisir le moment de debut de l'absence</option>
 		<option value='FIN_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'FIN_ABS') {echo "selected";} ?>>Saisir le moment de fin de l'absence</option>
 		<option value='DEBUT_ET_FIN_ABS' <?php  if ($type != null && $type->getTypeSaisie() == 'DEBUT_ET_FIN_ABS') {echo "selected";} ?>>Saisir le moment de debut et de fin</option>
@@ -234,18 +234,18 @@ echo "</p>";
 } ?>
 	<a href="admin_types_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un nouveau type</a>
 	<br/><br/>
-	<a href="admin_types_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les types par défauts</a>
+	<a href="admin_types_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les types par défaut</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu" style="width:80%">
       <tr>
         <td>Nom</td>
         <td>Commentaire</td>
         <td>Justification exigible</td>
-	<td>L'élève est sous la responsabilite de l'etablissement</td>
-	<td>Manquement obligations (apparait sur le bulletin)</td>
-	<td>Comptabilisée comme retard sur le bulletin (apparait sur le bulletin)</td>
+	<td>L'élève est sous la responsabilité de l'établissement</td>
+	<td>Manquement obligations (apparaît sur le bulletin)</td>
+	<td>Comptabilisée comme retard sur le bulletin (apparaît sur le bulletin)</td>
         <td>Type de saisie</td>
-	<td>Statuts autorisés à la saisie</td>
+	<td>Statut(s) autorisé(s) à la saisie</td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
