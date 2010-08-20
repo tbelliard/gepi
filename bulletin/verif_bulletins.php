@@ -1078,6 +1078,18 @@ if (!(isset($id_classe))) {
 			//echo "<input type='hidden' name='message_$num' id='message_$num' value=\"".rawurlencode(ereg_replace("\\\n",'_NEWLINE_',$message))."\" />\n";
 
 			echo "</td>\n";
+			if($ver_periode[$per]=="P") {
+				echo "<td rowspan='2'>\n";
+				$ajout="";
+				if(count($tab_prof['groupe'])==1) {
+					foreach($tab_prof['groupe'] as $group_id => $tab_group) {
+						$ajout="&amp;periode=$per&amp;id_groupe=$group_id";
+						break;
+					}
+				}
+				echo "<a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>Autoriser exceptionnellement la proposition de saisie bien la période soit partiellement close.</a>";
+				echo "</td>\n";
+			}
 			echo "</tr>\n";
 
 			echo "<tr class='lig$alt'>\n";
