@@ -333,7 +333,7 @@ else {
 		echo "<input type='hidden' name='periode' value='$periode' />\n";
 		echo "<input type='text' name = 'display_date_limite' size='8' value = \"".$display_date_limite."\" />\n";
 		echo "<a href=\"#\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
-		echo " à <input type='text' name = 'display_heure_limite' size='8' value = \"".$display_heure_limite."\" />\n";
+		echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" />\n";
 		echo "<input type='submit' name='Valider' value='Valider' />\n";
 		echo "</p>\n";
 	
