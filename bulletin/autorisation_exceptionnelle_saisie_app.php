@@ -215,6 +215,7 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 	echo "<table class='boireaus' summary='Tableau des enseignements et périodes'>\n";
 	echo "<tr>\n";
 	echo "<th>Enseignements</th>\n";
+	echo "<th>Classe(s)</th>\n";
 	echo "<th>Enseignants</th>\n";
 	echo "<th colspan='$nb_periode'>Périodes</th>\n";
 	echo "</tr>\n";
@@ -222,6 +223,8 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td style='text-align:left;'>".$current_group['name']." (<span style='font-size:xx-small;'>".$current_group['description']."</span>)</td>\n";
+
+		echo "<td>".$current_group["classlist_string"]."</td>\n";
 
 		echo "<td>\n";
 		$sql="SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_groupes_professeurs j WHERE (u.login = j.login and j.id_groupe = '" . $current_group['id'] . "') ORDER BY u.nom, u.prenom";
@@ -249,7 +252,7 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 					$lig=mysql_fetch_object($res);
 					if($lig->date_limite>$date_courante) {
 						echo "<br />";
-						echo "Autorisation jusqu'au ".strftime("%d/%m/%Y à %H:%M",$lig->date_limite);
+						echo "Autorisation jusqu'au<br />".strftime("%d/%m/%Y à %H:%M",$lig->date_limite);
 					}
 				}
 				echo "</td>\n";

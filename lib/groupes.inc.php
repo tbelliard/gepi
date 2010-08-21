@@ -92,6 +92,8 @@ function get_groups_for_class($_id_classe) {
             $c_nom_complet = mysql_result($get_classes, $k, "nom_complet");
 
             $temp[$i]["classes"][] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet);
+			if($k==0) {$temp[$i]["classlist_string"]="";} else {$temp[$i]["classlist_string"].=", ";}
+			$temp[$i]["classlist_string"].=$c_classe;
         }
     }
 
