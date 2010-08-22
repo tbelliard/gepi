@@ -5369,13 +5369,16 @@ function affiche_ariane($validation= FALSE,$themessage="" ){
   if (isset($_SESSION['ariane'])){
 	echo "<p class='ariane'>";
 	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
+	  if ($index!="0"){
+		echo " >> ";
+	  }
 	  if ($validation){
-	  echo "<a href='".$lienActuel."' onclick='return confirm_abandon (this, change, \"".$themessage."\")' >";
+	  echo "<a class='bold' href='".$lienActuel."' onclick='return confirm_abandon (this, change, \"".$themessage."\")' >";
 	  } else {
-	  echo "<a href='".$lienActuel."' >";
+	  echo "<a class='bold href='".$lienActuel."' >";
 	  }
 		echo $_SESSION['ariane']['texte'][$index] ;
-	  echo " </a> - ";
+	  echo " </a>";
 	}
 	unset ($index,$lienActuel);
 	echo "</p>";
