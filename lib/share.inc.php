@@ -2394,7 +2394,7 @@ function check_user_temp_directory(){
 /**
  * Renvoie le nom du répertoire temporaire de l'utilisateur
  *
- * @return string retourne false s'il n'existe pas et le nom du répertoire s'il existe
+ * @return string retourne false s'il n'existe pas et le nom du répertoire s'il existe sans le chemin
  */
 function get_user_temp_directory(){
 	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
@@ -2404,7 +2404,13 @@ function get_user_temp_directory(){
 		$dirname=$lig_temp_dir->temp_dir;
 
 		if(($dirname!="")&&(strlen(my_ereg_replace("[A-Za-z0-9_]","",$dirname))==0)) {
-			if(file_exists("../temp/$dirname")){
+			if(file_exists("../temp/".$dirname)){
+				return $dirname;
+			}
+			else if(file_exists("../../temp/".$dirname)) {
+				return $dirname;
+			}
+			else if(file_exists("temp/".$dirname)) {
 				return $dirname;
 			}
 			else{
@@ -5375,7 +5381,7 @@ function affiche_ariane($validation= FALSE,$themessage="" ){
 	  if ($validation){
 	  echo "<a class='bold' href='".$lienActuel."' onclick='return confirm_abandon (this, change, \"".$themessage."\")' >";
 	  } else {
-	  echo "<a class='bold href='".$lienActuel."' >";
+	  echo "<a class='bold' href='".$lienActuel."' >";
 	  }
 		echo $_SESSION['ariane']['texte'][$index] ;
 	  echo " </a>";
