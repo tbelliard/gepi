@@ -22,9 +22,8 @@
 */
 
 require_once("Class.Date.php");
+require_once("Class.Modele.php");
 require_once("Modele.Incidents.php");
-require_once ("Controleur.php");
-require_once ("Class.Stats.php");
 require_once("Class.Filter.php");
 require_once("Class.Individu.php");
 
@@ -37,7 +36,6 @@ class ClassIncidents {
   private $incidents_from_db=Null;
   private $modele_incidents=Null;
   private $modele_select=Null;
-  private $tri=Null;
   private $liste_incidents=Null;
   private $id=Null;
   private $crenaux=Null;
@@ -46,6 +44,7 @@ class ClassIncidents {
   private $totaux_par_classe=Null;
   private $incidents=Null;
   private $liste_eleves=Null;
+  private $liste_eleves_par_classe=Null;
   private $infos_individus=Null;
   private $top_incidents=Null;
   private $top_sanctions=Null;
@@ -54,10 +53,54 @@ class ClassIncidents {
 
   public function  __construct() {
 
+    $this->modele=new Modele();
     $this->modele_incidents=new Modele_Incidents();
     $this->modele_select=new modele_select();
-
   }
+
+  // debut des accesseurs pour la classe incident
+
+  public function get_incidents() {
+    return $this->incidents;
+  }
+  public function get_protagonistes() {
+    return $this->protagonistes;
+  }
+  public function get_mesures() {
+    return $this->mesures;
+  }
+  public function get_sanctions() {
+    return $this->sanctions;
+  }
+  public function get_totaux() {
+    return $this->totaux;
+  }
+  public function get_liste_eleves_par_classe() {
+    return $this->liste_eleves_par_classe;
+  }
+  public function get_infos_individus() {
+    return $this->infos_individus;
+  }
+  public function get_totaux_indiv() {
+    return $this->totaux_indiv;
+  }
+  public function get_totaux_par_classe() {
+    return $this->totaux_par_classe;
+  }
+  public function get_top_incidents($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
+    return $this->get_top_incidents_from_db($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
+  }
+  public function get_top_sanctions($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
+    return $this->get_top_sanctions_from_db($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
+  }
+  public function get_top_retenues($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
+    return $this->get_top_retenues_from_db($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
+  }
+  public function get_top_exclusions($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
+    return $this->get_top_exclusions_from_db($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
+  }
+
+//fin des accesseurs
 // On recupère les id des incidents en fonction des filtres activés et on traite les données pour affichage
   public function traite_incidents_criteres($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
     $this->traite_incidents($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
@@ -65,19 +108,94 @@ class ClassIncidents {
     $this->traite_mesures();
     $this->traite_sanctions();
     $this->calcule_totaux_globaux();
-    $this->liste_eleves=$this->modele_incidents->get_liste_eleves_par_classe();
     $objet_individu=new ClassIndividu();
-    $this->infos_individus=$objet_individu->get_infos_liste_individus($this->liste_eleves);
-    if($this->liste_eleves) {
-      $this->calcule_totaux_indiv($this->liste_eleves,$this->liste_incidents,$this->protagonistes,$this->mesures,$this->sanctions);
-      $this->calcule_totaux_classe($this->liste_eleves,$this->liste_incidents,$this->totaux_indiv);
+    $this->infos_individus=$objet_individu->get_infos_liste_individus($this->liste_eleves_par_classe);
+    if($this->liste_eleves_par_classe) {
+      $this->calcule_totaux_indiv($this->liste_eleves_par_classe,$this->liste_incidents,$this->protagonistes,$this->mesures,$this->sanctions);
+      $this->calcule_totaux_classe($this->liste_eleves_par_classe,$this->liste_incidents,$this->totaux_indiv);
     }
   }
 
   private function traite_incidents($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
-    $this->incidents_from_db=$this->modele_incidents->get_incidents($du,$au,$this->tri,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
-    if (isset($this->incidents_from_db))
-      $this->incidents=$this->traite_donnees_incidents($this->incidents_from_db);
+
+    $this->incidents_from_db['L\'Etablissement']=$this->modele_incidents->get_incidents('etab_all','L\'Etablissement',$du,$au,Null,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
+    if(!isset($this->incidents_from_db['L\'Etablissement']['error'])) {
+      $this->liste_id_incidents_selected=$this->make_liste_id($this->incidents_from_db['L\'Etablissement']);
+      $this->protagonistes_from_db=$this->modele_incidents->get_protagonistes($this->liste_id_incidents_selected);
+      $this->liste_eleves_par_classe['L\'Etablissement']=$this->make_liste_protagonistes($this->protagonistes_from_db,'eleve');
+      $this->mesures_from_db=$this->modele_incidents->get_mesures($this->liste_id_incidents_selected);
+      $this->sanctions_from_db=$this->modele_incidents->get_sanctions($this->liste_id_incidents_selected);
+    }
+    if (isset($_SESSION['eleve_all'])) {
+      $this->incidents_from_db['Tous les élèves']=$this->modele_incidents->get_incidents('eleves_all','Tous les élèves',$du,$au,Null,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
+      if(!isset($this->incidents_from_db['Tous les élèves']['error'])) {
+        $this->liste_id_incidents_selected=$this->make_liste_id($this->incidents_from_db['Tous les élèves']);
+        $this->protagonistes_from_db=$this->modele_incidents->get_protagonistes($this->liste_id_incidents_selected);
+        $this->liste_eleves_par_classe['Tous les élèves']=$this->make_liste_protagonistes($this->protagonistes_from_db,'eleve');
+        $this->mesures_from_db=$this->modele_incidents->get_mesures($this->liste_id_incidents_selected);
+        $this->sanctions_from_db=$this->modele_incidents->get_sanctions($this->liste_id_incidents_selected);
+      }
+    }
+    if (isset($_SESSION['pers_all'])) {
+      $this->incidents_from_db['Tous les personnels']=$this->modele_incidents->get_incidents('pers_all','Tous les personnels',$du,$au,Null,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
+      if(!isset($this->incidents_from_db['Tous les personnels']['error'])) {
+        $this->liste_id_incidents_selected=$this->make_liste_id($this->incidents_from_db['Tous les personnels']);
+        $this->protagonistes_from_db=$this->modele_incidents->get_protagonistes($this->liste_id_incidents_selected);
+        $this->liste_eleves_par_classe['Tous les personnels']=$this->make_liste_protagonistes($this->protagonistes_from_db,'eleve');
+        $this->mesures_from_db=$this->modele_incidents->get_mesures($this->liste_id_incidents_selected);
+        $this->sanctions_from_db=$this->modele_incidents->get_sanctions($this->liste_id_incidents_selected);
+      }
+    }
+    if (isset($_SESSION['stats_classes_selected'])) {
+      foreach($_SESSION['stats_classes_selected'] as $value) {
+        if (isset($this->liste_eleves)) unset($this->liste_eleves);
+        $this->liste_eleves[$value]=$this->modele_select->get_eleves_classe($value);
+        $modele_select=new modele_select();
+        $this->infos_classe=$modele_select->get_infos_classe($value);
+        foreach($this->liste_eleves as $this->classe) {
+          $this->liste_eleves_par_classe[$this->infos_classe[0]['classe']]=$this->classe;
+          $this->incidents_from_db[$this->infos_classe[0]['classe']]=$this->modele_incidents->get_incidents('classe',$this->infos_classe[0]['classe'],$du,$au,$this->modele->make_list_for_request_in($this->classe),$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
+          if(!isset($this->incidents_from_db[$this->infos_classe[0]['classe']]['error'])) {
+            $this->liste_id_incidents_selected=$this->make_liste_id($this->incidents_from_db[$this->infos_classe[0]['classe']]);
+            $this->protagonistes_from_db=$this->modele_incidents->get_protagonistes($this->liste_id_incidents_selected);
+            $this->mesures_from_db=$this->modele_incidents->get_mesures($this->liste_id_incidents_selected);
+            $this->sanctions_from_db=$this->modele_incidents->get_sanctions($this->liste_id_incidents_selected);
+          }
+        }
+      }
+    }
+    if (isset($_SESSION['individus'])) {
+      foreach ($_SESSION['individus'] as $value) {
+        if ($value[1]=='eleves') $this->liste_eleves_par_classe[$value[0]][]=$value[0];
+        $this->incidents_from_db[$value[0]]=$this->modele_incidents->get_incidents('individu',$value[0],$du,$au,$value[0],$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
+        if(!isset($this->incidents_from_db[$value[0]]['error'])) {
+          $this->liste_id_incidents_selected=$this->make_liste_id($this->incidents_from_db[$value[0]]);
+          $this->protagonistes_from_db=$this->modele_incidents->get_protagonistes($this->liste_id_incidents_selected);
+          $this->mesures_from_db=$this->modele_incidents->get_mesures($this->liste_id_incidents_selected);
+          $this->sanctions_from_db=$this->modele_incidents->get_sanctions($this->liste_id_incidents_selected);
+        }
+      }
+    }
+    if (isset($this->incidents_from_db)) $this->incidents=$this->traite_donnees_incidents($this->incidents_from_db);
+  }
+
+  private function make_liste_id($array_incidents) {
+    unset($this->liste_id);
+    foreach($array_incidents as $incident) {
+      $this->liste_id[]=$incident->id_incident;
+    }
+    return($this->liste_id=$this->modele->make_list_for_request_in($this->liste_id));
+  }
+
+  private function make_liste_protagonistes($protagonistes,$statut) {
+    foreach ($protagonistes as  $id_incident) {
+      foreach ($id_incident as $protagoniste) {
+        if ($protagoniste->statut==$statut) {
+          $liste_protagoniste[$protagoniste->login]=$protagoniste->login;
+        }
+      }
+    }
+    return($liste_protagoniste);
   }
 
   private function traite_donnees_incidents($tableau_incidents) {
@@ -114,7 +232,6 @@ class ClassIncidents {
 // On récupère les protagonistes correspondants aux incidents selectionnés et on traite les données pour affichage
 
   private function traite_protagonistes() {
-    $this->protagonistes_from_db=$this->modele_incidents->get_protagonistes();
     if (isset($this->protagonistes_from_db)) $this->protagonistes=$this->traite_donnees_protagonistes($this->protagonistes_from_db);
   }
 
@@ -140,7 +257,6 @@ class ClassIncidents {
 
 // On traite les mesures correspondants aux incidents selectionnés
   private function traite_mesures() {
-    $this->mesures_from_db=$this->modele_incidents->get_mesures();
     if (isset( $this->mesures_from_db))$this->mesures=$this->traite_donnees_mesures($this->mesures_from_db);
   }
   private function traite_donnees_mesures($tableau_mesures) {
@@ -157,7 +273,6 @@ class ClassIncidents {
 // On traite les sanctions correspondants aux incidents selectionnés
 
   private function traite_sanctions() {
-    $this->sanctions_from_db=$this->modele_incidents->get_sanctions();
     if (isset( $this->sanctions_from_db)) $this->sanctions=$this->traite_donnees_sanctions($this->sanctions_from_db);
   }
 
@@ -258,9 +373,8 @@ class ClassIncidents {
   private function calcule_totaux_indiv($liste_eleves,$liste,$protagonistes,$mesures,$sanctions) {
     $this->totaux_indiv=Null;
     $Object_individu=New ClassIndividu();
-
     foreach($liste_eleves as $classe=>$eleves) {
-      if(isset($liste[$classe])) {
+      if(isset($liste[$classe]) ) {
         foreach($eleves as $eleve) {
           $this->info_indiv[$eleve]=$Object_individu->get_infos_individu($eleve,'eleves');
           $this->totaux_indiv[$eleve]['nom']=$this->info_indiv[$eleve]['nom'];
@@ -282,7 +396,9 @@ class ClassIncidents {
   private function get_nbre_incidents_indiv($eleve,$incidents,$protagonistes) {
     $this->cpt=0;
     foreach ($incidents as $incident) {
-      if (array_key_exists($eleve, $protagonistes[$incident])) $this->cpt++;
+      if(isset($protagonistes[$incident])) { //on vire les incidents sans protagonistes
+        if (array_key_exists($eleve, $protagonistes[$incident])) $this->cpt++;
+      }
     }
     return($this->cpt);
   }
@@ -350,6 +466,7 @@ class ClassIncidents {
     return($this->totaux_par_classe);
   } // fin du calcul des totaux par classe
 
+  //on recupère les divers Top 10 et on les traite
   private function get_top_incidents_from_db($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
 
     $this->top_incidents= $this->modele_incidents->get_top_incidents($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
@@ -362,7 +479,6 @@ class ClassIncidents {
       }
     }
     return($this->top_incidents);
-
   }
 
   private function get_top_sanctions_from_db($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
@@ -377,10 +493,9 @@ class ClassIncidents {
       }
     }
     return($this->top_sanctions);
-
   }
-  private function get_top_retenues_from_db($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
 
+  private function get_top_retenues_from_db($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
     $this->top_retenues= $this->modele_incidents->get_top_retenues($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
     if($this->top_retenues) {
       foreach ($this->top_retenues as $value) {
@@ -391,10 +506,9 @@ class ClassIncidents {
       }
     }
     return($this->top_retenues);
-
   }
-   private function get_top_exclusions_from_db($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
 
+  private function get_top_exclusions_from_db($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
     $this->top_exclusions= $this->modele_incidents->get_top_exclusions($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
     if($this->top_exclusions) {
       foreach ($this->top_exclusions as $value) {
@@ -404,58 +518,8 @@ class ClassIncidents {
         $value->classe=$this->infos_eleves['classe'];
       }
     }
-   return($this->top_exclusions);
-
+    return($this->top_exclusions);
   }
-
-// debut des accesseurs pour la classe incident
-
-  public function get_incidents() {
-    return $this->incidents;
-  }
-
-  public function get_protagonistes() {
-    return $this->protagonistes;
-  }
-
-  public function get_mesures() {
-    return $this->mesures;
-  }
-
-  public function get_sanctions() {
-    return $this->sanctions;
-  }
-
-  public function get_totaux() {
-    return $this->totaux;
-  }
-
-  public function get_liste_eleves() {
-    return $this->liste_eleves;
-  }
-
-  public function get_infos_individus() {
-    return $this->infos_individus;
-  }
-
-  public function get_totaux_indiv() {
-    return $this->totaux_indiv;
-  }
-
-  public function get_totaux_par_classe() {
-    return $this->totaux_par_classe;
-  }
-  public function get_top_incidents($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
-    return $this->get_top_incidents_from_db($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
-  }
-  public function get_top_sanctions($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
-    return $this->get_top_sanctions_from_db($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
-  }
-  public function get_top_retenues($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
-    return $this->get_top_retenues_from_db($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
-  }
-public function get_top_exclusions($du,$au,$filtres_categories=Null,$filtres_mesures=Null,$filtres_sanctions=Null,$filtres_roles=Null) {
-    return $this->get_top_exclusions_from_db($du,$au,$filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
-  }
+//fin des top 10
 }
 ?>

@@ -31,13 +31,11 @@ Class Modele_Incidents extends Modele {
   private $sql=Null;
   private $incidents=Null;
   private $protagonistes=Null;
-  private $liste_eleves=Null;
   private $nbre=Null;
   private $total=Null;
   private $mesures=Null;
   private $sanctions=Null;
-  private $crenaux=Null;
-  private $liste_eleves_par_classe=Null;
+  private $crenaux=Null;  
   private $top_incidents=Null;
   private $top_sanctions=Null;
   private $top_retenues=Null;
@@ -67,19 +65,19 @@ Class Modele_Incidents extends Modele {
     return($this->get_db_infos_categories($id));
   }
 
-  public function get_protagonistes() {
-    return $this->protagonistes;
+  public function get_protagonistes($liste_incidents) {
+    return $this->get_protagonistes_incident($liste_incidents);
   }
-  public function get_mesures() {
-    return $this->mesures;
+  public function get_mesures($liste_incidents) {
+    return $this->get_mesures_incident($liste_incidents);
   }
-  public function get_sanctions() {
-    return $this->sanctions;
+  public function get_sanctions($liste_incidents) {
+    return $this->get_sanctions_incident($liste_incidents);
   }
 
-  public function get_incidents($du,$au,$tri=Null,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
-    $this->get_db_incidents($du,$au,$tri,$filtre_cat,$filtre_mes,$filtre_san,$filtre_role);
-    return $this->incidents;
+  public function get_incidents($du,$au,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
+    return $this->get_infos_incidents($du,$au,$filtre_cat,$filtre_mes,$filtre_san,$filtre_role);
+
   }
   public function get_nombre_total_incidents($liste_incidents=Null) {
     unset($this->nbre);
@@ -98,10 +96,7 @@ Class Modele_Incidents extends Modele {
   }
   public function get_crenaux() {
     return $this->get_db_infos_crenaux();
-  }
-  public function get_liste_eleves_par_classe() {
-    return $this->liste_eleves_par_classe;
-  }
+  }  
   public function get_infos_individu() {
     return $this->infos_individu;
   }
@@ -128,7 +123,6 @@ Class Modele_Incidents extends Modele {
       $this->sql="UPDATE s_incidents SET id_categorie=".$categorie_selected." WHERE id_categorie=".$categorie.";";
       $this->res=mysql_query($this->sql);
     }
-
   }
 
   private function get_db_liste($champ,$table) {
@@ -170,95 +164,10 @@ Class Modele_Incidents extends Modele {
       $this->get_protagonistes_incident($this->liste_id_incidents_selected);
       $this->get_mesures_incident($this->liste_id_incidents_selected);
       $this->get_sanctions_incident($this->liste_id_incidents_selected);
-
     }
   }
 
-  private function get_db_incidents($du,$au,$tri=Null,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
-
-    $this->incidents['L\'Etablissement']=parent::set_array('object',$this->get_infos_incidents('etab_all','L\'Etablissement',$du,$au,Null,$tri,$filtre_cat,$filtre_mes,$filtre_san,$filtre_role));
-    if(!isset($this->incidents['L\'Etablissement']['error'])) {
-      $this->liste_id_incidents_selected=$this->make_liste_id($this->incidents['L\'Etablissement']);
-      $this->get_protagonistes_incident($this->liste_id_incidents_selected);
-      $this->get_mesures_incident($this->liste_id_incidents_selected);
-      $this->get_sanctions_incident($this->liste_id_incidents_selected);
-
-    }
-
-
-    if (isset($_SESSION['eleve_all'])) {
-      $this->incidents['Tous les élèves']=parent::set_array('object',$this->get_infos_incidents('eleves_all','Tous les élèves',$du,$au,Null,$tri,$filtre_cat,$filtre_mes,$filtre_san,$filtre_role));
-      if(!isset($this->incidents['Tous les élèves']['error'])) {
-        $this->liste_id_incidents_selected=$this->make_liste_id($this->incidents['Tous les élèves']);
-        $this->get_protagonistes_incident($this->liste_id_incidents_selected);
-        $this->get_mesures_incident($this->liste_id_incidents_selected);
-        $this->get_sanctions_incident($this->liste_id_incidents_selected);
-      }
-    }
-    if (isset($_SESSION['pers_all'])) {
-      $this->incidents['Tous les personnels']=parent::set_array('object',$this->get_infos_incidents('pers_all','Tous les personnels',$du,$au,Null,$tri,$filtre_cat,$filtre_mes,$filtre_san,$filtre_role));
-      if(!isset($this->incidents['Tous les personnels']['error'])) {
-        $this->liste_id_incidents_selected=$this->make_liste_id($this->incidents['Tous les personnels']);
-        $this->get_protagonistes_incident($this->liste_id_incidents_selected);
-        $this->get_mesures_incident($this->liste_id_incidents_selected);
-        $this->get_sanctions_incident($this->liste_id_incidents_selected);
-
-      }
-    }
-    if (isset($_SESSION['stats_classes_selected'])) {
-      foreach($_SESSION['stats_classes_selected'] as $value) {
-        if (isset($this->liste_eleves)) unset($this->liste_eleves);
-        $this->liste_eleves[$value]=$this->get_eleves_classe($value);
-        $modele_select=new modele_select();
-        $this->infos_classe=$modele_select->get_infos_classe($value);
-        foreach($this->liste_eleves as $this->classe) {
-          $this->liste_eleves_par_classe[$this->infos_classe[0]['classe']]=$this->classe;
-          $this->incidents[$this->infos_classe[0]['classe']]=parent::set_array('object',$this->get_infos_incidents('classe',$this->infos_classe[0]['classe'],$du,$au,parent::make_list_for_request_in($this->classe),$tri,$filtre_cat,$filtre_mes,$filtre_san,$filtre_role));
-          if(!isset($this->incidents[$this->infos_classe[0]['classe']]['error'])) {
-            $this->liste_id_incidents_selected=$this->make_liste_id($this->incidents[$this->infos_classe[0]['classe']]);
-            $this->get_protagonistes_incident($this->liste_id_incidents_selected);
-            $this->get_mesures_incident($this->liste_id_incidents_selected);
-            $this->get_sanctions_incident($this->liste_id_incidents_selected);
-          }
-        }
-      }
-    }
-    if (isset($_SESSION['individus'])) {
-      foreach ($_SESSION['individus'] as $value) {
-        if ($value[1]=='eleves') $this->liste_eleves_par_classe[$value[0]][]=$value[0];
-        $this->incidents[$value[0]]=parent::set_array('object',$this->get_infos_incidents('individu',$value[0],$du,$au,$value[0],$tri,$filtre_cat,$filtre_mes,$filtre_san,$filtre_role));
-        if(!isset($this->incidents[$value[0]]['error'])) {
-          $this->liste_id_incidents_selected=$this->make_liste_id($this->incidents[$value[0]]);
-          $this->get_protagonistes_incident($this->liste_id_incidents_selected);
-          $this->get_mesures_incident($this->liste_id_incidents_selected);
-          $this->get_sanctions_incident($this->liste_id_incidents_selected);
-        }
-      }
-    }
-  }
-
-  private function make_liste_id($array_incidents) {
-    unset($this->liste_id);
-    foreach($array_incidents as $incident) {
-      $this->liste_id[]=$incident->id_incident;
-    }
-    return($this->liste_id=parent::make_list_for_request_in($this->liste_id));
-  }
-
-
-
-  private function get_eleves_classe($id) {
-    $this->sql='SELECT DISTINCT login from j_eleves_classes
-                   WHERE id_classe='.$id;
-    $this->res=mysql_query($this->sql);
-    if (isset($this->liste)) unset ($this->liste);
-    while($this->row=mysql_fetch_array($this->res)) {
-      $this->liste[].=$this->row[0];
-    }
-    return($this->liste);
-  }
-
-  private function get_infos_incidents($choix,$titre,$du,$au,$critere=Null,$tri=Null,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
+  private function get_infos_incidents($choix,$titre,$du,$au,$critere=Null,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
     $this->sql='SELECT DISTINCT sin.id_incident,sin.declarant,sin.date,sin.heure,
                        sin.nature,sin.id_categorie,sin.description,sin.etat
                       FROM s_incidents sin LEFT JOIN s_protagonistes spr ON sin.id_incident=spr.id_incident';
@@ -283,10 +192,8 @@ Class Modele_Incidents extends Modele {
       else $this->sql.=")";
     }
     $this->sql.=''.$this->filter_individu($choix,$critere);
-    if($tri)$this->sql.=' ORDER BY '.$tri.' ASC';
-
-    return($this->res=mysql_query($this->sql));
-
+    $this->res=mysql_query($this->sql);
+    return(parent::set_array('object',$this->res));
   }
 
   private function filter_individu($choix,$critere=Null) {
@@ -317,6 +224,7 @@ Class Modele_Incidents extends Modele {
       while($this->row=mysql_fetch_object($this->res)) {
         $this->protagonistes[$this->row->id_incident][$this->row->login]=$this->row;
       }
+      return($this->protagonistes);
     }
   }
   private function get_mesures_incident($liste_incidents) {
@@ -331,6 +239,7 @@ Class Modele_Incidents extends Modele {
       while($this->row=mysql_fetch_object($this->res)) {
         $this->mesures[$this->row->id_incident][$this->row->login_ele][$this->row->id_mesure]=$this->row;
       }
+      return($this->mesures);
     }
   }
 
@@ -351,6 +260,7 @@ Class Modele_Incidents extends Modele {
     while($this->row=mysql_fetch_object($this->res)) {
       $this->sanctions[$this->row->id_incident][$this->row->login][$this->row->id_sanction]=$this->row;
     }
+    return($this->sanctions);
   }
   private function get_db_nbre_total_incidents($liste=Null) {
     $this->sql='SELECT COUNT(id_incident) from s_incidents WHERE date BETWEEN \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['du']).
@@ -460,8 +370,7 @@ Class Modele_Incidents extends Modele {
             '\' AND \''.$au.'\' ';
     if($filtre_role)  $this->sql.=" AND (sp.qualite IN ('".parent::make_list_for_request_in($filtre_role)."') OR sp.qualite IS NULL) AND ssan.login=sp.login";
 
-    if($filtre_san) {
-      var_dump(parent::make_list_for_request_in($filtre_san));
+    if($filtre_san) {     
       $this->sql.=" AND (ssan.nature IN ('".parent::make_list_for_request_in($filtre_san)."'))";
     }
     if($filtre_mes) {

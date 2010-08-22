@@ -35,7 +35,7 @@
           $alt_b=1;
           foreach ($top_incidents as $eleve) {
             $alt_b=$alt_b*(-1); ?>
-          <tr class="lig<?php echo $alt_b;?>"><td><?php echo $eleve->nom.' '.$eleve->prenom; ?></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          <tr class="lig<?php echo $alt_b;?>"><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
           </tr>
             <?php } ?>
         </table>
@@ -52,7 +52,7 @@
           $alt_b=1;
           foreach ($top_sanctions as $eleve) {
             $alt_b=$alt_b*(-1); ?>
-          <tr class="lig<?php echo $alt_b;?>"><td><?php echo $eleve->nom.' '.$eleve->prenom; ?></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          <tr class="lig<?php echo $alt_b;?>"><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
           </tr>
             <?php } ?>
         </table>
@@ -69,7 +69,7 @@
           $alt_b=1;
           foreach ($top_retenues as $eleve) {
             $alt_b=$alt_b*(-1); ?>
-          <tr class="lig<?php echo $alt_b;?>"><td><?php echo $eleve->nom.' '.$eleve->prenom; ?></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          <tr class="lig<?php echo $alt_b;?>"><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
           </tr>
             <?php } ?>
         </table>
@@ -86,7 +86,7 @@
           $alt_b=1;
           foreach ($top_exclusions as $eleve) {
             $alt_b=$alt_b*(-1); ?>
-          <tr class="lig<?php echo $alt_b;?>"><td><?php echo $eleve->nom.' '.$eleve->prenom; ?></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
+          <tr class="lig<?php echo $alt_b;?>"><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve->login?>"><?php echo $eleve->nom.' '.$eleve->prenom; ?></a></td><td><?php echo $eleve->classe ?></td><td><?php echo $eleve->nb ?></td>
           </tr>
             <?php } ?>
         </table>

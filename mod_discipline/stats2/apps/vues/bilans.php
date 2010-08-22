@@ -33,14 +33,16 @@
         foreach ($incidents as $titre=>$incidents_titre) :?>
           <?php if($titre=='L\'Etablissement') {
             if($affichage_etab) : ?>
-        <li><a href="#tab<?php echo $i;?>" title="Bilan des incidents"><?php echo $titre;?></a></li>
-              <?php $i=$i+1;
+        <li><a href="#tab<?php echo $i;?>" title="Bilan des incidents" name="<?php echo $titre;?>-onglet-01"><?php echo $titre;?></a></li>
+        <li><a href="#tab<?php echo $i+1;?>" name="<?php echo $titre;?>-onglet-02"><img src="apps/img/user.png" alt="Synthèse individuelle" title="Synthèse individuelle"/></a>&nbsp;&nbsp;</li>
+              <?php $i=$i+2;
             endif;
           } else if ($titre=='Tous les élèves' ||$titre=='Tous les personnels' ) { ?>
-        <li><a href="#tab<?php echo $i;?>" title="Bilan des incidents"><?php echo $titre;?> </a></li>
-            <?php  $i=$i+1;
+        <li><a href="#tab<?php echo $i;?>" title="Bilan des incidents" name="<?php echo $titre;?>-onglet-01"><?php echo $titre;?></a></li>
+        <li><a href="#tab<?php echo $i+1;?>" name="<?php echo $titre;?>-onglet-02"><img src="apps/img/user.png" alt="Synthèse individuelle" title="Synthèse individuelle"/></a>&nbsp;&nbsp;</li>
+            <?php  $i=$i+2;
           } else { ?>
-        <li><a href="#tab<?php echo $i;?>" title="Bilan des incidents">
+        <li><a href="#tab<?php echo $i;?>" name="<?php echo $titre;?>-onglet-01" title="Bilan des incidents">
                 <?php if (isset($infos_individus[$titre])) {
                   echo substr($infos_individus[$titre]['prenom'],0,1).'.'.$infos_individus[$titre]['nom'];
                   if (isset($infos_individus[$titre]['classe'])) echo'('.$infos_individus[$titre]['classe'].')';
@@ -48,10 +50,13 @@
                 else echo $titre;?></a>
         </li>
             <?php if (isset($infos_individus[$titre]['classe'])|| !isset($infos_individus[$titre])) { ?>
-        <li><a href="#tab<?php echo $i+1;?>"><img src="apps/img/user.png" alt="Synthèse par élève" title="Synthèse par élève"/></a>&nbsp;&nbsp;</li>
+        <li><a href="#tab<?php echo $i+1;?>" name="<?php echo $titre;?>-onglet-02"><img src="apps/img/user.png" alt="Synthèse par élève" title="Synthèse par élève"/></a>&nbsp;&nbsp;</li>
               <?php
+              $i=$i+2;
             }
-            $i=$i+2;
+            else {
+              $i=$i+1;
+            }
         }
         endforeach ?>
       </ul>
@@ -60,7 +65,7 @@
       <?php
       $i=0;
       foreach ($incidents as $titre=>$incidents_titre) {
-        if ($titre!=='L\'Etablissement' || ($titre=='L\'Etablissement' && $affichage_etab) ) {?>
+        if ($titre!=='L\'Etablissement' || ($titre=='L\'Etablissement' && !is_null($affichage_etab) ) ) {?>
       <div class="panel" id="tab<?php echo $i;?>">
             <?php
             if (isset($incidents_titre['error'])) {?>
@@ -172,20 +177,29 @@
         </table>
         <br /><br /><a href="#wrap"><img src="apps/img/retour_haut.png" alt="simple" title="simplifié"/>Retour aux selections </a>
       </div>
-            <?php if ($titre!=='L\'Etablissement' && $titre!=='Tous les élèves' && $titre!=='Tous les personnels'  ) { ?>
+            <?php if (isset($liste_eleves[$titre])): ?>
       <div class="panel" id="tab<?php echo $i+1;?>">
-        <table class="boireaus"> <tr><td class="nouveau" colspan="11"><strong>Bilan individuel</strong></td></tr></table>
+        <table class="boireaus"> <tr><td class="nouveau" colspan="11"><strong>Bilan individuel</strong></td><td><a href="#" class="export_csv" name="<?php echo $titre;?>"><img src="../../images/notes_app_csv.png" alt="export_csv"/></a></td></tr></table>
         <table  class="sortable resizable ">
           <thead>
             <tr>
-              <th colspan="2" <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Individu</th>
+              <?php if($titre=='L\'Etablissement' || $titre=='Tous les élèves' ||$titre=='Tous les personnels' ){?>
+              <th colspan="3"
+              <?php } else { ?>
+              <th colspan="2"
+              <?php } ?>
+              <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Individu</th>
               <th >Incidents</th><th colspan="2" <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Mesures prises</th>
               <th colspan="2" <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Sanctions prises</th>
               <th colspan="2" <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Heures de retenues</th>
               <th colspan="2" <?php if (!isset($totaux_indiv[$titre])) {?> <?php }?>>Jours d'exclusion</th>
             </tr>
             <tr>
-              <th>Nom</th><th>Prénom</th><th>Nombre</th><th>Nombre</th><th>%/Etab</th><th>Nombre</th><th>%/Etab</th><th>Nombre</th><th>%/Etab</th><th>Nombre</th><th>%/Etab</th>
+              <th>Nom</th><th>Prénom</th>
+              <?php if($titre=='L\'Etablissement' || $titre=='Tous les élèves' ||$titre=='Tous les personnels' ){?>
+              <th class="text">Classe</th>
+              <?php }  ?>
+              <th>Nombre</th><th>Nombre</th><th>%/Etab</th><th>Nombre</th><th>%/Etab</th><th>Nombre</th><th>%/Etab</th><th>Nombre</th><th>%/Etab</th>
             </tr>
           </thead>
           <tbody>
@@ -193,7 +207,11 @@
                     $alt_b=1;
                     foreach ($liste_eleves[$titre] as $eleve) {
                       $alt_b=$alt_b*(-1);?>
-            <tr <?php if ($alt_b==1) echo"class='alt'";?>><td><?php echo $totaux_indiv[$eleve]['nom']; ?></td><td><?php echo $totaux_indiv[$eleve]['prenom']; ?></td><td><?php echo $totaux_indiv[$eleve]['incidents']; ?></td><td><?php if(isset($totaux_indiv[$eleve]['mesures'])) echo $totaux_indiv[$eleve]['mesures'];else echo'0'; ?></td><td><?php if($totaux['L\'Etablissement']['mesures'])echo round(100*($totaux_indiv[$eleve]['mesures']/$totaux['L\'Etablissement']['mesures']),2); else echo'0';?></td>
+            <tr <?php if ($alt_b==1) echo"class='alt'";?>><td><a href="index.php?ctrl=Bilans&action=add_selection&login=<?php echo $eleve?>"><?php echo $totaux_indiv[$eleve]['nom']; ?></a></td><td><?php echo $totaux_indiv[$eleve]['prenom']; ?></td>
+               <?php if($titre=='L\'Etablissement' || $titre=='Tous les élèves' ||$titre=='Tous les personnels' ){?>
+              <td><?php echo $totaux_indiv[$eleve]['classe']; ?></td>
+              <?php }  ?>
+              <td><?php echo $totaux_indiv[$eleve]['incidents']; ?></td><td><?php if(isset($totaux_indiv[$eleve]['mesures'])) echo $totaux_indiv[$eleve]['mesures'];else echo'0'; ?></td><td><?php if($totaux['L\'Etablissement']['mesures'])echo round(100*($totaux_indiv[$eleve]['mesures']/$totaux['L\'Etablissement']['mesures']),2); else echo'0';?></td>
               <td><?php if(isset($totaux_indiv[$eleve]['sanctions'])) echo $totaux_indiv[$eleve]['sanctions']; else echo '0';?></td><td><?php if($totaux['L\'Etablissement']['sanctions']) echo round(100* ($totaux_indiv[$eleve]['sanctions']/$totaux['L\'Etablissement']['sanctions']),2); else echo'0';?></td>
               <td><?php if(isset($totaux_indiv[$eleve]['heures_retenues'])) echo $totaux_indiv[$eleve]['heures_retenues'];else echo '0'; ?></td><td><?php if($totaux['L\'Etablissement']['heures_retenues'])echo round(100*($totaux_indiv[$eleve]['heures_retenues']/$totaux['L\'Etablissement']['heures_retenues']),2);else echo'0';?></td>
               <td><?php if(isset($totaux_indiv[$eleve]['jours_exclusions'])) echo $totaux_indiv[$eleve]['jours_exclusions'];else echo '0'; ?></td><td><?php if($totaux['L\'Etablissement']['jours_exclusions'])echo round(100*($totaux_indiv[$eleve]['jours_exclusions']/$totaux['L\'Etablissement']['jours_exclusions']),2);else echo'0';?></td></tr>
@@ -211,10 +229,9 @@
         </table>
       </div>
               <?php  $i=$i+2;
-            }
-            else {
+            else :
               $i=$i+1;
-            }
+            endif;
           }
         }
       }?>

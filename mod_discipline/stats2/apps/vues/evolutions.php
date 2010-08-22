@@ -35,14 +35,14 @@
             foreach ($incidents as $titre=>$incidents_titre) :?>
               <?php if($titre=='L\'Etablissement') {
                 if($affichage_etab) : ?>
-          <li><a href="#tab<?php echo $i;?>" title="Evolution des incidents"><?php echo $titre;?></a></li>
+          <li><a href="#tab<?php echo $i;?>" name="<?php echo $titre;?>-onglet-01" title="Evolution des incidents"><?php echo $titre;?></a></li>
                   <?php $i=$i+1;
                 endif;
               } else if ($titre=='Tous les élèves' ||$titre=='Tous les personnels' ) { ?>
-          <li><a href="#tab<?php echo $i;?>" title="Evolution des incidents"><?php echo $titre;?> </a></li>
+          <li><a href="#tab<?php echo $i;?>" name="<?php echo $titre;?>-onglet-01" title="Evolution des incidents"><?php echo $titre;?> </a></li>
                 <?php  $i=$i+1;
               } else { ?>
-          <li><a href="#tab<?php echo $i;?>" title="Evolution des incidents">
+          <li><a href="#tab<?php echo $i;?>" name="<?php echo $titre;?>-onglet-01" title="Evolution des incidents">
                     <?php if (isset($infos_individus[$titre])) {
                       echo substr($infos_individus[$titre]['prenom'],0,1).'.'.$infos_individus[$titre]['nom'];
                       if (isset($infos_individus[$titre]['classe'])) echo'('.$infos_individus[$titre]['classe'].')';
@@ -98,7 +98,7 @@
             </tfoot>
           </table>
           <br />
-          <img src="apps/vues/evolutions_courbes.php?values=<?php echo urlencode(serialize($evolution[$titre]));?>" alt="evolution">
+          <img src="evolutions_courbes.php?titre=<?php echo $titre;?>" alt="evolution">
         </div>
               <?php $i=$i+1;
             }

@@ -6,6 +6,7 @@ Event.observe(window, 'load', function() {
 
   if($('menutabs')) Event.observe('menutabs', 'click', teste);
   TableKit.load();
+  export_csv();
   if ($('select_donnees')) {
     test_periode();
     if($('recherche_indiv')) auto_complete();
@@ -51,6 +52,22 @@ function teste_evolutions(){
     });
   });
 }
+function export_csv(){
+  var export_csv=$$('a.export_csv');
+  if(export_csv){
+    export_csv.invoke('observe','click',function(){
+      var name=this.readAttribute('name');      
+      new Ajax.Request("index.php?ctrl=bilans&action=make_csv&onglet="+name, {
+        method: 'get' ,
+        onSuccess:
+        function() {          
+          window.location.href ="./csv/"+name+".csv";
+        }
+
+      });
+    });
+  }
+}
 
 function set_priority_calendar(){
   var buttons = $('select_donnees').getInputs('radio', 'id_calendrier');
@@ -81,11 +98,12 @@ function post_form(){
 //auto_completion ajax
 function auto_complete(){
   new Ajax.Autocompleter ('nom','auto_complete','recherche_indiv.php',{
-        method: 'post',
-        paramName: 'nom',
-        minChars: 2,
-        indicator:'indicateur',
-        afterUpdateElement: auto_completed });
+    method: 'post',
+    paramName: 'nom',
+    minChars: 2,
+    indicator:'indicateur',
+    afterUpdateElement: auto_completed
+  });
 }
 
 function auto_completed(input, li){
@@ -121,18 +139,29 @@ function initSortable() {
   })
 }
 //script pour les onglets de Julien
-function inittab() {
+function inittab(name) { 
   //cacher toutes les div
-  $$('div.panel').invoke('hide');
-  //afficher la première
-  var les_a = $$('#menutabs a');
-  les_a[0].addClassName('current');
-  afficherDiv('tab0');
-  
+  $$('div.panel').invoke('hide');  
+  //On cherche avec le nom en session la div a afficher
+  var onglet=$('menutabs').getElementsBySelector('[name="'+name+'"]');
+  if (onglet[0]){
+    onglet[0].addClassName('current');
+    var href_onglet=onglet[0].href.split("#");
+    var id_onglet=href_onglet[1];
+    afficherDiv(id_onglet);
+  } else
+//sinon on affiche la première
+{
+    var les_a = $$('#menutabs a');
+    les_a[0].addClassName('current');
+    afficherDiv('tab'+0);  
+  }
 }
 function teste(event){
   var cliquera = Event.findElement(event,"a") ? Event.findElement(event,"a") : null;
   var testurl = cliquera.href.split("#");
+  var namea=cliquera.readAttribute('name');
+  //var onglet= testurl[1].split("tab");
   var les_a = $$('#menutabs a');
   for (i=0; i<les_a.length; i++){
     if (les_a[i].className == 'current'){
@@ -146,7 +175,11 @@ function teste(event){
   }
   // Il te reste à afficher le bon div
   afficherDiv(testurl[1]);
-  Event.stop(event);
+
+  new Ajax.Request('index.php?ctrl=bilans&action=set_onglet&current_onglet='+namea, {
+    method: 'get' 
+  }); 
+  Event.stop(event); 
 }
 function afficherDiv(id){
   Element.show(id);

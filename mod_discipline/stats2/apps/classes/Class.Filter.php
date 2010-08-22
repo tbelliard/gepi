@@ -43,6 +43,50 @@ class ClassFilter {
 
   }
 
+  public function traite_maj_filtre($type,$choix=Null) {
+    if (!isset($choix)) unset($_SESSION['filtre'][$type]);
+    else {
+      switch ($type) {
+        case'categories':
+          foreach($this->get_liste_categories() as $categorie) {
+            if ($categorie->categorie==$choix) {
+              foreach($_SESSION['filtre']['categories'] as $key=>$value) {
+                if($categorie->id==$value) {
+                  unset($_SESSION['filtre']['categories'][$key]);
+                }
+              }
+            }
+          }
+          break;
+        case'mesures':
+          foreach($this->get_liste_mesures() as $mesure) {
+            if ($mesure->mesure==$choix) {
+              foreach($_SESSION['filtre']['mesures'] as $key=>$value) {
+                if($mesure->id==$value) {
+                  unset($_SESSION['filtre']['mesures'][$key]);
+                }
+              }
+            }
+          }
+          break;
+        case'sanctions':
+          foreach($_SESSION['filtre']['sanctions'] as $key=>$value) {
+            if($choix==$value) {
+              unset($_SESSION['filtre']['sanctions'][$key]);
+            }
+          }
+          break;
+        case'roles':
+          foreach($_SESSION['filtre']['roles'] as $key=>$value) {
+            if($choix==$value) {
+              unset($_SESSION['filtre']['roles'][$key]);
+            }
+          }
+          break;
+      }
+    }
+  }
+
   // On recupère les infos du module discipline sur sanctions,rôles......
   private function get_params_module() {
 

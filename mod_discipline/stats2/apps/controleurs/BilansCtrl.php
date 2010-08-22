@@ -29,7 +29,9 @@ require_once("Class.Filter.php");
 require_once("Class.Periodes.php");
 require_once("Class.Individu.php");
 require_once("Class.Incidents.php");
-
+require_once("Class.Evolution_Incidents.php");
+require_once("SelectCtrl.php");
+require_once("../../lib/CsvClass.php");
 
 class BilansCtrl extends Controleur {
 
@@ -46,13 +48,19 @@ class BilansCtrl extends Controleur {
   private $sanctions=Null;
   private $liste_categories=Null;
   private $months=Null;
-  private $evolution=Null;
   private $libelles_categories=Null;
+  private $libelles_mesures=Null;
   private $liste_type=Null;
+  private $evolution=Null;
+  private $incidents_mois=Null;
+  private $totaux_par_mois=Null;
+  private $totaux_par_type=Null;
+  private $total_general=Null;
   private $top_incidents=Null;
   private $top_sanctions=Null;
   private $top_retenues=Null;
   private $top_exclusions=Null;
+
 
   function  __construct() {
     parent::__construct();
@@ -60,25 +68,31 @@ class BilansCtrl extends Controleur {
     $_SESSION['choix_evolution']=isset($_SESSION['choix_evolution'])?$_SESSION['choix_evolution']:'Catégories';
     $this->choix_evolution=isset($_REQUEST['evolution'])?$_REQUEST['evolution']:Null;
     if( $this->choix_evolution) $_SESSION['choix_evolution']=$this->choix_evolution;
+    $this->current_onglet=isset($_SESSION['current_onglet']['id'])?$_SESSION['current_onglet']['id']:0;
+
   }
 
-  function affiche_bilans() {
+  public function affiche_bilans() {
     try {
       $this->teste_selection();
       $this->action_from='affiche_bilans';
+      $_SESSION['current_onglet']['from']='affiche_bilans';
       $this->vue->setVar('action_from',$this->action_from);
       $this->traite_filtres();
       $this->traite_incidents_bilans();
       $this->affichage_etab=isset($_SESSION['etab_all'])? $_SESSION['etab_all']:null ;
       $this->vue->setVar('affichage_etab',$this->affichage_etab);
       $this->vue->afficheVue('bilans.php',$this->vue->getVars());
-      echo"<script type='text/javascript'>inittab();</script>";
+      echo"<script type='text/javascript'>inittab('$this->current_onglet');</script>";
     }
     catch (Exception $e) {
       echo 'Exception reçue : ',  $e->getMessage(), "\n";
     }
   }
 
+  public function set_onglet() {
+    $_SESSION['current_onglet']['id']=isset($_GET['current_onglet'])?$_GET['current_onglet']:Null;
+  }
   private function teste_selection() {
     if (!isset($_SESSION['etab_all'])&& !isset($_SESSION['eleve_all'])
             && !isset($_SESSION['pers_all'])
@@ -134,7 +148,8 @@ class BilansCtrl extends Controleur {
   public function maj_filtre() {
     $this->type=isset($_REQUEST['type'])?$_REQUEST['type']:Null;
     $this->choix=isset($_REQUEST['choix'])?$_REQUEST['choix']:Null;
-    $this->traite_maj_filtre($this->type,$this->choix);
+    $this->objet_filtre=new ClassFilter();
+    $this->objet_filtre->traite_maj_filtre($this->type,$this->choix);
     $this->redirect();
   }
 
@@ -168,8 +183,9 @@ class BilansCtrl extends Controleur {
     $this->mesures=$this->objet_incidents->get_mesures();
     $this->sanctions=$this->objet_incidents->get_sanctions();
     $this->totaux=$this->objet_incidents->get_totaux();
-    $this->liste_eleves=$this->objet_incidents->get_liste_eleves();
-    $this->traite_infos_individus();
+    $this->liste_eleves=$this->objet_incidents->get_liste_eleves_par_classe();
+    $this->infos_individus=$this->objet_incidents->get_infos_individus();
+    $this->vue->setVar('infos_individus', $this->infos_individus);
     $this->totaux_indiv=$this->objet_incidents->get_totaux_indiv();
     $this->totaux_par_classe=$this->objet_incidents->get_totaux_par_classe();
     $this->vue->setVar('incidents', $this->incidents);
@@ -182,343 +198,47 @@ class BilansCtrl extends Controleur {
     $this->vue->setVar('totaux_par_classe', $this->totaux_par_classe);
   }
 
-  private function traite_infos_individus() {
-    $this->infos_individus=$this->objet_incidents->get_infos_individus();
-    $this->vue->setVar('infos_individus', $this->infos_individus);
-  }
-
-
-  private function traite_maj_filtre($type,$choix=Null) {
-    $this->objet_filtre=new  ClassFilter();
-    if (!isset($choix)) unset($_SESSION['filtre'][$type]);
-    else {
-      switch ($type) {
-        case'categories':
-          foreach($this->objet_filtre->get_liste_categories() as $categorie) {
-            if ($categorie->categorie==$choix) {
-              foreach($_SESSION['filtre']['categories'] as $key=>$value) {
-                if($categorie->id==$value) {
-                  unset($_SESSION['filtre']['categories'][$key]);
-                }
-              }
-            }
-          }
-          break;
-        case'mesures':
-          foreach($this->objet_filtre->get_liste_mesures() as $mesure) {
-            if ($mesure->mesure==$choix) {
-              foreach($_SESSION['filtre']['mesures'] as $key=>$value) {
-                if($mesure->id==$value) {
-                  unset($_SESSION['filtre']['mesures'][$key]);
-                }
-              }
-            }
-          }
-          break;
-        case'sanctions':
-          foreach($_SESSION['filtre']['sanctions'] as $key=>$value) {
-            if($choix==$value) {
-              unset($_SESSION['filtre']['sanctions'][$key]);
-            }
-          }
-          break;
-        case'roles':
-          foreach($_SESSION['filtre']['roles'] as $key=>$value) {
-            if($choix==$value) {
-              unset($_SESSION['filtre']['roles'][$key]);
-            }
-          }
-          break;
-      }
-    }
-  }
-
   public function evolutions() {
     try {
-      $this->teste_selection();
+      $this->teste_selection();      
+      if (isset($_SESSION['current_onglet']['id'])) {
+        if ($_SESSION['current_onglet']['from']!=='evolutions') {
+          $this->adapt_onglet=explode("-onglet-",$_SESSION['current_onglet']['id']);
+          $this->current_onglet=$this->adapt_onglet[0].'-onglet-01';
+        }
+      }
       $this->months=$this->objet_periodes->get_months();
       $this->vue->setVar('months',$this->months);
       $this->action_from='evolutions';
+      $_SESSION['current_onglet']['from']='evolutions';
       $this->vue->setVar('action_from',$this->action_from);
       $this->affichage_etab=isset($_SESSION['etab_all'])? $_SESSION['etab_all']:null ;
       $this->vue->setVar('affichage_etab',$this->affichage_etab);
       $this->vue->setVar('choix_evolution', $this->choix_evolution);
       $this->traite_filtres();
-      $this->traite_incidents_evolutions();
+      $this->evolution_incidents=new ClassEvolution_Incidents();
+      $this->evolution_incidents->traite_incidents_evolutions($this->filtres_roles,$this->filtres_categories,$this->filtres_mesures,$this->filtres_sanctions);
+      $this->incidents_mois=$this->evolution_incidents->get_incidents_mois();
+      $this->liste_type=$this->evolution_incidents->get_liste_type();
+      $this->evolution=$this->evolution_incidents->get_evolution();
+      $_SESSION['evolution']=$this->evolution;
+      $this->totaux_par_mois=$this->evolution_incidents->get_totaux_par_mois();
+      $this->totaux_par_type=$this->evolution_incidents->get_totaux_par_type();
+      $this->total_general=$this->evolution_incidents->get_total_general();
+      $this->infos_individus=$this->evolution_incidents->get_infos_individus();
+      $this->vue->setVar('infos_individus', $this->infos_individus);
+      $this->vue->setVar('incidents', $this->incidents_mois);
+      $this->vue->setVar('liste_type', $this->liste_type);
+      $this->vue->setVar('evolution', $this->evolution);
+      $this->vue->setVar('totaux_par_mois', $this->totaux_par_mois);
+      $this->vue->setVar('totaux_par_type', $this->totaux_par_type);
+      $this->vue->setVar('total_general', $this->total_general);
       $this->vue->afficheVue('evolutions.php',$this->vue->getVars());
-      echo"<script type='text/javascript'>inittab();</script>";
+      echo"<script type='text/javascript'>inittab('$this->current_onglet');</script>";
     }
     catch (Exception $e) {
       echo 'Exception reçue : ',  $e->getMessage(), "\n";
     }
-  }
-
-  private function traite_incidents_evolutions() {
-
-    switch($_SESSION['choix_evolution']) {
-      case 'Catégories':
-        $this->traite_evolution_categories();
-        break;
-      case 'Mesures prises':
-        $this->traite_evolution_mesures();
-        break;
-      case 'Sanctions':
-        $this->traite_evolution_sanctions();
-        break;
-      case 'Rôles':
-        $this->traite_evolution_roles();
-        break;
-    }
-  }
-
-  private function traite_evolution_categories() {
-    $this->liste_categories=$this->objet_filtre->get_liste_categories();
-    //on cree la liste type
-    if($this->filtres_categories) {
-      foreach($this->libelles_categories as $categorie) {
-        $this->liste_type[]=$categorie;
-      }
-    } else {
-      foreach($this->liste_categories as $categorie) {
-        $this->liste_type[]=$categorie->categorie;
-      }
-    }
-    //On traite mois par mois
-    foreach($this->months as $key=>$month) {
-      $this->objet_incidents= new ClassIncidents();
-      $this->data_months=Gepi_Date::get_begin_end_month($key);
-      $this->objet_incidents->traite_incidents_criteres(Gepi_Date::format_date_fr_iso($this->data_months['du']),Gepi_Date::format_date_fr_iso( $this->data_months['au']), $this->filtres_categories,$this->filtres_mesures,$this->filtres_sanctions,$this->filtres_roles);
-      $this->incidents_mois=$this->objet_incidents->get_incidents();
-      //puis selection par selection
-      foreach( $this->incidents_mois as $selection=>$incidents) {
-        //on met les compteurs à 0
-        foreach($this->liste_type as $categorie) {
-          $this->evolution[$selection][$categorie][$key]=0;
-          if(!isset($this->totaux_par_type[$selection][$categorie])) $this->totaux_par_type[$selection][$categorie]=0;
-          $this->totaux_par_mois[$selection][$key]=0;
-          if(!isset($this->total_incidents[$selection])) $this->total_incidents[$selection]=0;
-        }
-        //On compte les incidents du mois et le total global
-        foreach($incidents as $titre=>$incident) {
-          if(!$titre['error']) {
-            if (is_null($incident->id_categorie))$incident->sigle_categorie='NA';
-            $this->evolution[$selection][$this->objet_filtre->get_categorie_from_sigle($incident->sigle_categorie)][$key]+=1;
-            $this->totaux_par_type[$selection][$this->objet_filtre->get_categorie_from_sigle($incident->sigle_categorie)]+=1;
-            $this->totaux_par_mois[$selection][$key]+=1;
-            $this->total_incidents[$selection]+=1;
-          }
-        }
-      }
-    }
-    $this->vue->setVar('incidents', $this->incidents_mois);
-    $this->vue->setVar('liste_type', $this->liste_type);
-    $this->vue->setVar('evolution', $this->evolution);
-    $this->vue->setVar('totaux_par_mois', $this->totaux_par_mois);
-    $this->vue->setVar('totaux_par_type', $this->totaux_par_type);
-    $this->vue->setVar('total_general', $this->total_incidents);
-    $this->traite_infos_individus();
-  }
-
-  private function traite_evolution_mesures() {
-    $this->liste_mesures=$this->objet_filtre->get_liste_mesures();
-    //on cree la liste type
-    if($this->filtres_mesures) {
-      foreach($this->libelles_mesures as $mesure) {
-        $this->liste_type[]=$mesure;
-      }
-    } else {
-      foreach($this->liste_mesures as $mesure) {
-        $this->liste_type[]=$mesure->mesure;
-      }
-    }
-    //On traite mois par mois
-    foreach($this->months as $key=>$month) {
-      $this->objet_incidents= new ClassIncidents();
-      $this->data_months=Gepi_Date::get_begin_end_month($key);
-      $this->objet_incidents->traite_incidents_criteres(Gepi_Date::format_date_fr_iso($this->data_months['du']),Gepi_Date::format_date_fr_iso( $this->data_months['au']), $this->filtres_categories,$this->filtres_mesures,$this->filtres_sanctions,$this->filtres_roles);
-      $this->incidents_mois=$this->objet_incidents->get_incidents();
-      $this->mesures_mois=$this->objet_incidents->get_mesures();
-
-      foreach( $this->incidents_mois as $selection=>$incidents) {
-        //on met les compteurs à 0
-        foreach($this->liste_type as $mesure) {
-          $this->evolution[$selection][$mesure][$key]=0;
-          if(!isset($this->totaux_par_type[$selection][$mesure])) $this->totaux_par_type[$selection][$mesure]=0;
-          $this->totaux_par_mois[$selection][$key]=0;
-          if(!isset($this->total_mesures[$selection])) $this->total_mesures[$selection]=0;
-        }
-        //On compte les incidents du mois et le total global
-        foreach($incidents as $titre=>$incident) {
-          if(!$titre['error']) {
-            if (isset($this->mesures_mois[$incident->id_incident])) {
-              foreach($this->mesures_mois[$incident->id_incident] as $protagoniste) {
-                foreach($protagoniste as $id_mesure) {
-                  if($id_mesure->type=='prise') {
-                    //si le type n'est pas initialisée on le fait
-                    if(!in_array($id_mesure->mesure,$this->liste_type)) {
-                      foreach($this->months as $key2=>$month2) {
-                        $this->evolution[$selection][$id_mesure->mesure][$key2]=0;
-                      }
-                      $this->totaux_par_type[$selection][$id_mesure->mesure]=0;
-                      $this->liste_type[]=$id_mesure->mesure;
-                    }
-                    $this->evolution[$selection][$id_mesure->mesure][$key]+=1;
-                    $this->totaux_par_type[$selection][$id_mesure->mesure]+=1;
-                    $this->totaux_par_mois[$selection][$key]+=1;
-                    $this->total_mesures[$selection]+=1;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-      $this->vue->setVar('incidents', $this->incidents_mois);
-      $this->vue->setVar('liste_type', $this->liste_type);
-      $this->vue->setVar('evolution', $this->evolution);
-      $this->vue->setVar('totaux_par_mois', $this->totaux_par_mois);
-      $this->vue->setVar('totaux_par_type', $this->totaux_par_type);
-      $this->vue->setVar('total_general', $this->total_mesures);
-      $this->traite_infos_individus();
-    }
-  }
-
-  private function traite_evolution_sanctions() {
-    $this->liste_sanctions=$this->objet_filtre->get_liste_sanctions();
-    $this->liste_sanctions=array_reverse($this->liste_sanctions);
-    $objet =new stdClass();
-    $objet->nature='exclusion';
-    $this->liste_sanctions[]=$objet;
-    $objet =new stdClass();
-    $objet->nature='retenue';
-    $this->liste_sanctions[]=$objet;
-    $objet =new stdClass();
-    $objet->nature='travail';
-    $this->liste_sanctions[]=$objet;
-    $this->liste_sanctions=array_reverse($this->liste_sanctions);
-
-    //on cree la liste type
-    if($this->filtres_sanctions) {
-      foreach($this->filtres_sanctions as $sanction) {
-        $this->liste_type[]=$sanction;
-      }
-    } else {
-      foreach($this->liste_sanctions as $sanction) {
-        $this->liste_type[]=$sanction->nature;
-      }
-    }
-    //On traite mois par mois
-    foreach($this->months as $key=>$month) {
-      $this->objet_incidents= new ClassIncidents();
-      $this->data_months=Gepi_Date::get_begin_end_month($key);
-      $this->objet_incidents->traite_incidents_criteres(Gepi_Date::format_date_fr_iso($this->data_months['du']),Gepi_Date::format_date_fr_iso( $this->data_months['au']), $this->filtres_categories,$this->filtres_mesures,$this->filtres_sanctions,$this->filtres_roles);
-      $this->incidents_mois=$this->objet_incidents->get_incidents();
-      $this->sanctions_mois=$this->objet_incidents->get_sanctions();
-      // var_dump( $this->mesures_mois);
-      foreach( $this->incidents_mois as $selection=>$incidents) {
-        //on met les compteurs à 0
-        foreach($this->liste_type as $sanction) {
-          $this->evolution[$selection][$sanction][$key]=0;
-          if(!isset($this->totaux_par_type[$selection][$sanction])) $this->totaux_par_type[$selection][$sanction]=0;
-          $this->totaux_par_mois[$selection][$key]=0;
-          if(!isset($this->total_sanctions[$selection])) $this->total_sanctions[$selection]=0;
-        }
-        //On compte les incidents du mois et le total global
-        foreach($incidents as $titre=>$incident) {
-          if(!$titre['error']) {
-            if (isset($this->sanctions_mois[$incident->id_incident])) {
-              foreach($this->sanctions_mois[$incident->id_incident] as $protagoniste) {
-                foreach($protagoniste as $id_sanction) {
-                  //si le type n'est pas initialisée on le fait
-                  if(!in_array($id_sanction->nature,$this->liste_type)) {
-                    foreach($this->months as $key2=>$month2) {
-                      $this->evolution[$selection][$id_sanction->nature][$key2]=0;
-                    }
-                    $this->totaux_par_type[$selection][$id_sanction->nature]=0;
-                    $this->liste_type[]=$id_sanction->nature;
-                  }
-                  $this->evolution[$selection][$id_sanction->nature][$key]+=1;
-                  $this->totaux_par_type[$selection][$id_sanction->nature]+=1;
-                  $this->totaux_par_mois[$selection][$key]+=1;
-                  $this->total_sanctions[$selection]+=1;
-
-                }
-              }
-            }
-          }
-        }
-      }
-      $this->vue->setVar('incidents', $this->incidents_mois);
-      $this->vue->setVar('liste_type', $this->liste_type);
-      $this->vue->setVar('evolution', $this->evolution);
-      $this->vue->setVar('totaux_par_mois', $this->totaux_par_mois);
-      $this->vue->setVar('totaux_par_type', $this->totaux_par_type);
-      $this->vue->setVar('total_general', $this->total_sanctions);
-      $this->traite_infos_individus();
-    }
-  }
-  private function traite_evolution_roles() {
-    $this->liste_roles=$this->objet_filtre->get_liste_roles();
-    //on cree la liste type
-    if($this->filtres_roles) {
-      foreach($this->filtres_roles as $role) {
-        $this->liste_type[]=$role;
-      }
-    } else {
-      foreach($this->liste_roles as $role) {
-        $this->liste_type[]=$role->qualite;
-      }
-      $this->liste_type[]='Non défini';
-    }
-
-    //On traite mois par mois
-    foreach($this->months as $key=>$month) {
-      $this->objet_incidents= new ClassIncidents();
-      $this->data_months=Gepi_Date::get_begin_end_month($key);
-      $this->objet_incidents->traite_incidents_criteres(Gepi_Date::format_date_fr_iso($this->data_months['du']),Gepi_Date::format_date_fr_iso( $this->data_months['au']), $this->filtres_categories,$this->filtres_mesures,$this->filtres_sanctions,$this->filtres_roles);
-      $this->incidents_mois=$this->objet_incidents->get_incidents();
-      $this->protagonistes_mois=$this->objet_incidents->get_protagonistes();
-
-      foreach( $this->incidents_mois as $selection=>$incidents) {
-        //on met les compteurs à 0
-        foreach($this->liste_type as $role) {
-          $this->evolution[$selection][$role][$key]=0;
-          if(!isset($this->totaux_par_type[$selection][$role])) $this->totaux_par_type[$selection][$role]=0;
-          $this->totaux_par_mois[$selection][$key]=0;
-          if(!isset($this->total_roles[$selection])) $this->total_roles[$selection]=0;
-        }
-        //On compte les incidents du mois et le total global
-        foreach($incidents as $titre=>$incident) {
-          if(!$titre['error']) {
-            if(isset($this->protagonistes_mois[$incident->id_incident])) {
-              foreach($this->protagonistes_mois[$incident->id_incident] as $protagoniste) {
-                if ($protagoniste->qualite =='')$protagoniste->qualite='Non défini';
-                //si le type n'est pas initialisée on le fait
-                if(!in_array($protagoniste->qualite,$this->liste_type)) {
-                  foreach($this->months as $key2=>$month2) {
-                    $this->evolution[$selection][$protagoniste->qualite][$key2]=0;
-                  }
-                  $this->totaux_par_type[$selection][$protagoniste->qualite]=0;
-                  $this->liste_type[]=$protagoniste->qualite;
-                }
-                $this->evolution[$selection][$protagoniste->qualite][$key]+=1;
-                $this->totaux_par_type[$selection][$protagoniste->qualite]+=1;
-                $this->totaux_par_mois[$selection][$key]+=1;
-                $this->total_roles[$selection]+=1;
-              }
-            }
-          }
-        }
-      }
-      $this->vue->setVar('incidents', $this->incidents_mois);
-      $this->vue->setVar('liste_type', $this->liste_type);
-      $this->vue->setVar('evolution', $this->evolution);
-      $this->vue->setVar('totaux_par_mois', $this->totaux_par_mois);
-      $this->vue->setVar('totaux_par_type', $this->totaux_par_type);
-      $this->vue->setVar('total_general', $this->total_roles);
-      $this->traite_infos_individus();
-    }
-
   }
 
   public function top() {
@@ -538,11 +258,69 @@ class BilansCtrl extends Controleur {
       $this->top_exclusions=$this->objet_incidents->get_top_exclusions(Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['du']),Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['au']),$this->filtres_categories,$this->filtres_mesures,$this->filtres_sanctions,$this->filtres_roles);
       $this->vue->setVar('top_exclusions', $this->top_exclusions);
       $this->vue->afficheVue('top.php',$this->vue->getVars());
-      echo"<script type='text/javascript'>inittab();</script>";
+      //echo"<script type='text/javascript'>inittab();</script>";
     }
     catch (Exception $e) {
       echo 'Exception reçue : ',  $e->getMessage(), "\n";
     }
   }
 
+  public function add_selection() {
+    $this->login_to_add=(isset($_REQUEST['login'])?$_REQUEST['login']:Null);
+    $this->objet_select=new SelectCtrl();
+    $this->objet_select->set_individus_selected($this->login_to_add,'eleves');
+    $this->current_onglet=$this->login_to_add.'-onglet-01';
+    $_SESSION['current_onglet']['id']=$this->current_onglet;
+    $_SESSION['current_onglet']['from']="top";
+    $this->affiche_bilans();
+  }
+
+  public function make_csv() {
+    $this->name=isset($_GET['onglet'])?$_GET['onglet']:Null;
+    $this->name=stripslashes($this->name);
+    $this->csv=new CsvClass(($this->name),'../../mod_discipline/stats2/csv/');
+    $this->csv->set_data($this->make_array_for_csv($this->name));
+  }
+
+  private function make_array_for_csv($name) {
+    $this->traite_filtres();
+    $this->traite_incidents_bilans();
+    $csv=Array('Nom,Prenom,Incidents,Mesures prises,% Mesures prises,Sanctions prises,% sanctions prises,Heures de retenues,% heures retenues,Jours d\'exclusion,% jours d\'exclusion');
+    foreach ($this->liste_eleves[$name] as $eleve) {
+      if(!isset($this->totaux_indiv[$eleve]['mesures']))$this->totaux_indiv[$eleve]['mesures']=0;
+      if(!isset($this->totaux_indiv[$eleve]['sanctions']))$this->totaux_indiv[$eleve]['sanctions']=0;
+      if(!isset($this->totaux_indiv[$eleve]['heures_retenues']))$this->totaux_indiv[$eleve]['heures_retenues']=0;
+      if(!isset($this->totaux_indiv[$eleve]['jours_exclusions']))$this->totaux_indiv[$eleve]['jours_exclusions']=0;
+      if(!$this->totaux['L\'Etablissement']['mesures'])$this->totaux['L\'Etablissement']['mesures']=0;
+      if(!$this->totaux['L\'Etablissement']['sanctions'])$this->totaux['L\'Etablissement']['sanctions']=0;
+      if(!$this->totaux['L\'Etablissement']['heures_retenues'])$this->totaux['L\'Etablissement']['heures_retenues']=0;
+      if(!$this->totaux['L\'Etablissement']['jours_exclusions'])$this->totaux['L\'Etablissement']['jours_exclusions']=0;
+      $this->totaux_indiv[$eleve]['%mesures']=round(100*($this->totaux_indiv[$eleve]['mesures']/$this->totaux['L\'Etablissement']['mesures']),2);
+      $this->totaux_indiv[$eleve]['%sanctions']=round(100*($this->totaux_indiv[$eleve]['sanctions']/$this->totaux['L\'Etablissement']['sanctions']),2);
+      $this->totaux_indiv[$eleve]['%heures_retenues']=round(100*($this->totaux_indiv[$eleve]['heures_retenues']/$this->totaux['L\'Etablissement']['heures_retenues']),2);
+      $this->totaux_indiv[$eleve]['%jours_exclusions']=round(100*($this->totaux_indiv[$eleve]['jours_exclusions']/$this->totaux['L\'Etablissement']['jours_exclusions']),2);
+
+
+      $csv[]=($this->totaux_indiv[$eleve]['nom'].','.$this->totaux_indiv[$eleve]['prenom'].','.$this->totaux_indiv[$eleve]['incidents'].','.$this->totaux_indiv[$eleve]['mesures'].','.$this->totaux_indiv[$eleve]['%mesures']
+                      .','.$this->totaux_indiv[$eleve]['sanctions'].','.$this->totaux_indiv[$eleve]['%sanctions']
+                      .','.$this->totaux_indiv[$eleve]['heures_retenues'].','.$this->totaux_indiv[$eleve]['%heures_retenues']
+                      .','.$this->totaux_indiv[$eleve]['jours_exclusions'].','.$this->totaux_indiv[$eleve]['%jours_exclusions']);
+    }
+    return $csv;
+  }
+
+  private function count_onglets() {
+    $this->nbre_onglets=0;
+    if (isset($_SESSION['etab_all'])) $this->nbre_onglets=$this->nbre_onglets+2;
+    if (isset($_SESSION['eleve_all'])) $this->nbre_onglets=$this->nbre_onglets+2;
+    if (isset($_SESSION['pers_all'])) $this->nbre_onglets=$this->nbre_onglets+2;
+    if (isset($_SESSION['stats_classes_selected'])) $this->nbre_onglets=$this->nbre_onglets+2*count($_SESSION['stats_classes_selected']);
+    if (isset($_SESSION['individus'])) {
+      foreach ($_SESSION['individus']as $individu) {
+        if ($individu[1]=='eleves')$this->nbre_onglets=$this->nbre_onglets+2;
+        else $this->nbre_onglets=$this->nbre_onglets+1;
+      }
+    }
+    return($this->nbre_onglets);
+  }
 }

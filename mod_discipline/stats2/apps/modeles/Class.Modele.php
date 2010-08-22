@@ -48,7 +48,7 @@ class Modele {
         return $this->variable;
     }
 
-    protected function make_list_for_request_in($array) {
+    public function make_list_for_request_in($array) {
         $this->liste=implode(',',$array);
         return($this->liste=str_replace(",","','",$this->liste));
     }

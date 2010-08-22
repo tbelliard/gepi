@@ -31,7 +31,7 @@ include("../../lib/calendrier/calendrier.class.php");
 
 class SelectCtrl extends Controleur {
   public $messages=Null;
-  private $objet_periodes=Null;  
+  private $objet_periodes=Null;
   private $periodes_calendrier;
   private $id_calendrier;
   private $month_selected;
@@ -47,7 +47,7 @@ class SelectCtrl extends Controleur {
   private $del_type;
   private $del;
   private $posted=Null;
- 
+
 
   function  __construct() {
     parent::__construct();
@@ -66,7 +66,7 @@ class SelectCtrl extends Controleur {
     $this->pers_all=isset($_REQUEST['pers_all'])? $_REQUEST['pers_all']:null ;
     $this->classes_selected=isset($_REQUEST['classes'])? $_REQUEST['classes']:null ;
     $this->del_type=isset($_REQUEST['del_type'])? $_REQUEST['del_type']:null ;
-    $this->del=isset($_REQUEST['del'])? $_REQUEST['del']:null ;
+    $this->del=isset($_REQUEST['del'])? $_REQUEST['del']:null ;    
   }
 
   function index () {
@@ -88,11 +88,11 @@ class SelectCtrl extends Controleur {
     catch (Exception $e) {
       echo 'Exception reçue : ',  $e->getMessage(), "\n";
     }
-    if (($this->messages)){
-     $this->vue->setVar('messages',$this->messages);
-     $this->vue->afficheVue('message.php',$this->vue->getVars());
+    if (($this->messages)) {
+      $this->vue->setVar('messages',$this->messages);
+      $this->vue->afficheVue('message.php',$this->vue->getVars());
     }
-     $this->vue->afficheVue('selection.php',$this->vue->getVars());    
+    $this->vue->afficheVue('selection.php',$this->vue->getVars());
   }
 
   private function traite_periodes() {
@@ -151,7 +151,7 @@ class SelectCtrl extends Controleur {
   private function set_data_selected() {
     $this->set_data_all_selected();
     $this->set_classes_selected();
-    $this->set_individus_selected();
+    if(!is_null($this->login)) $this->set_individus_selected($this->login,$this->statut);
     //   $this->test_type_abs();
   }
 
@@ -179,19 +179,19 @@ class SelectCtrl extends Controleur {
     }
   }
 
-  private function set_individus_selected() {
-    if ($this->login !='') {
+  public function set_individus_selected($login,$statut) {
+    if ($login !='') {
       $del=false;
       $set=true;
       if (isset($_SESSION['individus'])) {
         foreach($_SESSION['individus'] as $key=>$value) {
           if ($set==true) {
-            if (in_array($this->login,$value)) $set=false;
+            if (in_array($login,$value)) $set=false;
           }
         }
       }
       if ($set==true)
-        $_SESSION['individus'][$this->login]=Array($this->login,$this->statut);
+        $_SESSION['individus'][$login]=Array($login,$statut);
     }
   }
 

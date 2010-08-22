@@ -23,7 +23,6 @@
 
 $niveau_arbo = 2;
 // Initialisations files
-
 require_once("../../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
