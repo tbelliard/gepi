@@ -179,7 +179,7 @@
       </div>
             <?php if (isset($liste_eleves[$titre])): ?>
       <div class="panel" id="tab<?php echo $i+1;?>">
-        <table class="boireaus"> <tr><td class="nouveau" colspan="11"><strong>Bilan individuel</strong></td><td><a href="#" class="export_csv" name="<?php echo $titre;?>"><img src="../../images/notes_app_csv.png" alt="export_csv"/></a></td></tr></table>
+        <table class="boireaus"> <tr><td class="nouveau" colspan="11"><strong>Bilan individuel</strong></td><td><a href="#" class="export_csv" name="<?php echo $temp_dir.'/separateur/'.$titre;?>"><img src="../../images/notes_app_csv.png" alt="export_csv"/></a></td></tr></table>
         <table  class="sortable resizable ">
           <thead>
             <tr>

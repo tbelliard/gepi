@@ -60,7 +60,7 @@ class BilansCtrl extends Controleur {
   private $top_sanctions=Null;
   private $top_retenues=Null;
   private $top_exclusions=Null;
-
+ 
 
   function  __construct() {
     parent::__construct();
@@ -69,7 +69,7 @@ class BilansCtrl extends Controleur {
     $this->choix_evolution=isset($_REQUEST['evolution'])?$_REQUEST['evolution']:Null;
     if( $this->choix_evolution) $_SESSION['choix_evolution']=$this->choix_evolution;
     $this->current_onglet=isset($_SESSION['current_onglet']['id'])?$_SESSION['current_onglet']['id']:0;
-
+    $this->temp=get_user_temp_directory();    
   }
 
   public function affiche_bilans() {
@@ -82,6 +82,7 @@ class BilansCtrl extends Controleur {
       $this->traite_incidents_bilans();
       $this->affichage_etab=isset($_SESSION['etab_all'])? $_SESSION['etab_all']:null ;
       $this->vue->setVar('affichage_etab',$this->affichage_etab);
+      $this->vue->setVar('temp_dir',$this->temp);
       $this->vue->afficheVue('bilans.php',$this->vue->getVars());
       echo"<script type='text/javascript'>inittab('$this->current_onglet');</script>";
     }
@@ -277,8 +278,8 @@ class BilansCtrl extends Controleur {
 
   public function make_csv() {
     $this->name=isset($_GET['onglet'])?$_GET['onglet']:Null;
-    $this->name=stripslashes($this->name);
-    $this->csv=new CsvClass(($this->name),'../../mod_discipline/stats2/csv/');
+    $this->name=stripslashes($this->name);        
+    $this->csv=new CsvClass(($this->name),'../../temp/'.$this->temp.'/');
     $this->csv->set_data($this->make_array_for_csv($this->name));
   }
 

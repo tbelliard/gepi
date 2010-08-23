@@ -56,12 +56,12 @@ function export_csv(){
   var export_csv=$$('a.export_csv');
   if(export_csv){
     export_csv.invoke('observe','click',function(){
-      var name=this.readAttribute('name');      
-      new Ajax.Request("index.php?ctrl=bilans&action=make_csv&onglet="+name, {
+      var name=this.readAttribute('name').split('/separateur/');
+      new Ajax.Request("index.php?ctrl=bilans&action=make_csv&onglet="+name[1], {
         method: 'get' ,
         onSuccess:
         function() {          
-          window.location.href ="./csv/"+name+".csv";
+          window.location.href ="../../temp/"+name[0]+"/"+name[1]+".csv";
         }
 
       });

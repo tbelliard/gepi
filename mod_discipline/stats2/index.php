@@ -106,7 +106,6 @@ require_once("../../lib/header.inc");
 
 //**************** FIN EN-TETE *****************
 //debug_var();
-
 $root = dirname(__FILE__) . DIRECTORY_SEPARATOR ;
 set_include_path('.' .
         PATH_SEPARATOR . $root . 'lib' . DIRECTORY_SEPARATOR .
