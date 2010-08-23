@@ -2403,7 +2403,7 @@ function get_user_temp_directory(){
 		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
 		$dirname=$lig_temp_dir->temp_dir;
 
-		if(($dirname!="")&&(strlen(my_ereg_replace("[A-Za-z0-9_]","",$dirname))==0)) {
+		if(($dirname!="")&&(strlen(my_ereg_replace("[A-Za-z0-9_.]","",$dirname))==0)) {
 			if(file_exists("../temp/".$dirname)){
 				return $dirname;
 			}
