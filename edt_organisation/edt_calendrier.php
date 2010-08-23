@@ -193,14 +193,14 @@ if (isset($message)) {
 
 //+++++++++++ AIDE pour le calendrier ++++++++
 ?>
-<a href="#" onMouseOver="javascript:changerDisplayDiv('aide_calendar');" onMouseOut="javascript:changerDisplayDiv('aide_calendar');">
-	<img src="../images/info.png" alt="Plus d'infos..." Title="Plus d'infos..." />
+<a href="#" onmouseover="javascript:changerDisplayDiv('aide_calendar');" onmouseout="javascript:changerDisplayDiv('aide_calendar');">
+	<img src="../images/info.png" alt="Plus d'infos..." title="Plus d'infos..." />
 </a>
 	<div style="display: none;" id="aide_calendar">
 	<hr />
-	<p><span class="red">Attention</span>, ces p&eacute;riodes ne sont pas les m&ecirc;mes que celles d&eacute;finies pour les notes. Si vous voulez faire une
-	 lien entre les p&eacute;riodes de notes et celles du calendrier, vous devez pr&eacute;ciser lors de la cr&eacute;ation de ces derni&egrave;res
-	 &agrave; quelle p&eacute;riode de notes elles sont rattach&eacute;es en choisissant celle-ci dans le menu <i>P&eacute;riode de notes ?</i></p>
+	<p><span class="red">Attention</span>, ces périodes ne sont pas les mêmes que celles définies pour les notes. Si vous voulez faire un
+	 lien entre les périodes de notes et celles du calendrier, vous devez préciser lors de la création de ces dernières
+	 à quelle période de notes elles sont rattachées en choisissant celle-ci dans le menu <em>Période de notes ?</em></p>
 	 <hr />
 	</div>
 <?php
@@ -596,7 +596,7 @@ $nbre_affcalendar = mysql_num_rows($req_affcalendar);
 				$aff_classe_concerne = "<span class=\"legende\">Toutes</span>";
 			}
 			else {
-				$contenu_infobulle = "<font style=\"color: brown;\">".(count($expl_aff) - 1)." classe(s).</font><br />";
+				$contenu_infobulle = "<span style=\"color: brown;\">".(count($expl_aff) - 1)." classe(s).</span><br />";
 				for ($t=0; $t<(count($expl_aff) - 1); $t++) {
 					$req_nomclasse = mysql_fetch_array(mysql_query("SELECT nom_complet FROM classes WHERE id = '".$expl_aff[$t]."'"));
 					$contenu_infobulle .= $req_nomclasse["nom_complet"].'<br />';
