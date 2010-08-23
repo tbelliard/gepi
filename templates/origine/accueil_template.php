@@ -263,7 +263,7 @@
 				  if ($newentree->titre=="Sauvegarde de la base") {
 ?>
 	<div class="div_tableau cellule_1">
-		<form enctype="multipart/form-data" action="gestion\accueil_sauve.php" method="post" id="formulaire" >
+		<form enctype="multipart/form-data" action="gestion/accueil_sauve.php" method="post" id="formulaire" >
 			<p>
 				<input type='hidden' name='action' value='system_dump' />
 				<input type="submit" value="Lancer une sauvegarde de la base de données" />
