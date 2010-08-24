@@ -756,7 +756,7 @@ function meth_Locator_FindTbs(&$Txt,$Name,$Pos,$ChrSub) {
 		if ($Pos===false) {
 			return false;
 		} else {
-			$Loc =& new clsTbsLocator;
+			$Loc = new clsTbsLocator;
 			$ReadPrm = false;
 			$PosX = $Pos + strlen($Start);
 			$x = $Txt[$PosX];
@@ -1211,7 +1211,7 @@ function meth_Locator_FindBlockNext(&$Txt,$BlockName,$PosBeg,$ChrSub,$Special,&$
 function meth_Locator_FindBlockLst(&$Txt,$BlockName,$Pos) {
 // Return a locator object covering all block definitions, even if there is no block definition found.
 
-	$LocR =& new clsTbsLocator;
+	$LocR = new clsTbsLocator;
 	$LocR->P1 = false;
 	$LocR->FieldOutside = false;
 	$LocR->BlockNbr = 0;
@@ -1405,7 +1405,7 @@ function meth_Locator_FindBlockLst(&$Txt,$BlockName,$Pos) {
 function meth_Merge_Block(&$Txt,&$BlockName,&$SrcId,&$Query,$PageSize,$PageNum,$RecKnown) {
 
 	// Get source type and info
-	$Src =& new clsTbsDataSource;
+	$Src = new clsTbsDataSource;
 	$Src->BlockName = $BlockName;
 	if (!$Src->DataPrepare($SrcId,$this)) return 0;
 
@@ -3188,7 +3188,7 @@ To ignore encapsulation and opengin/closing just set $Encaps=0.
 
 	// Search for the end of the tag
 	if ($TagOk) {
-		$Loc =& new clsTbsLocator;
+		$Loc = new clsTbsLocator;
 		if ($WithPrm) {
 			$PosEnd = 0;
 			tbs_Locator_PrmRead($Txt,$PosX,true,'\'"','<','>',$Loc,$PosEnd);
