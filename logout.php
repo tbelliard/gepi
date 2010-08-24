@@ -28,20 +28,25 @@ require_once("./lib/initialisations.inc.php");
 global $gepiPath;
 
 // On récupère le dossier temporaire pour l'effacer
-$temp_perso="temp/".get_user_temp_directory();
+if (isset($_SESSION['login'])){
+  $temp_perso="temp/".get_user_temp_directory();
+}else{
+  $temp_perso=NULL;
+}
 
 if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "cas") {
-	$session_gepi->close(0);
-    $session_gepi->logout_cas();
-// On efface le dossier temporaire
-foreach (glob($temp_perso."/*.*") as $filename) {
-	if (is_file($filename) && (!strstr($filename, 'index.html'))){
-    @unlink ($filename);
+  $session_gepi->close(0);
+  $session_gepi->logout_cas();
+  // On efface le dossier temporaire
+  if ($temp_perso){
+	foreach (glob($temp_perso."/*") as $filename) {
+	  if (is_file($filename) && (!strstr($filename, 'index.html'))){
+		@unlink ($filename);
+	  }
+	}
+	unset ($filename);
   }
-}
-unset ($filename);
-
-    die();
+  die();
 }
 
 // Ajout pour le multisite
@@ -94,11 +99,13 @@ include('./templates/origine/logout_template.php');
 
 
 // On efface le dossier temporaire
-foreach (glob($temp_perso."/*.*") as $filename) {
+if ($temp_perso){
+  foreach (glob($temp_perso."/*") as $filename) {
 	if (is_file($filename) && (!strstr($filename, 'index.html'))){
-    @unlink ($filename);
+	  @unlink ($filename);
+	}
   }
+  unset ($filename);
 }
-unset ($filename);
 
 ?>
