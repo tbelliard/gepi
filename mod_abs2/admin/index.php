@@ -399,11 +399,6 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 </form>
 
 <br/><br/>
-<form action="index.php" name="form2" method="post">
-<input type="hidden" name="installation_base" value="1" />
-<div class="centre"><input type="submit" value="Purger et installer les tables abs2 (pour le developpement uniquement)" style="font-variant: small-caps;"/></div>
-</form>
-
 <h2>Configuration avancée</h2>
 <blockquote>
 	<a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a><br />
