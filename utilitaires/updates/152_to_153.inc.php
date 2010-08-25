@@ -1206,7 +1206,7 @@ CREATE TABLE a_types
 		$result .= "<br />Erreur sur la création de la table 'a_types': ".$result_inter."<br />";
 	}
 
-	$sql="DROP TABLE a_types_statut;";
+	$sql="DROP TABLE IF EXISTS a_types_statut;";
 	$result_inter = traite_requete($sql);
 	if ($result_inter != '') {
 		$result .= "<br />Erreur lors de la destruction de la table 'a_types_statut': ".$result_inter."<br />";
