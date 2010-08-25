@@ -119,6 +119,7 @@ if ($type_selection == 'id_cours') {
     if ($current_cours != null) {
 	$current_creneau = $current_cours->getEdtCreneau();
 	$current_groupe = $current_cours->getGroupe();
+	$current_aid = $current_cours->getAidDetails();
 	$dt_date_absence_eleve = $current_cours->getDate($id_semaine);
     }
 } else {
@@ -143,6 +144,7 @@ if ($type_selection == 'id_groupe') {
     if ($current_cours != null) {
 	$current_creneau = $current_cours->getEdtCreneau();
 	$current_groupe = $current_cours->getGroupe();
+	$current_aid = $current_cours->getAidDetails();
 	$type_selection = 'id_cours';
     } else {
 	if (isset($_SESSION['id_groupe_session'])) {
