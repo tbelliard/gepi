@@ -111,7 +111,12 @@ $query = AbsenceEleveSaisieQuery::create();
 if ($utilisateur->getStatut() == 'autre')  {
     $query->filterByUtilisateurProfessionnel($utilisateur);
 } else {
-    $query->useEleveQuery()->filterByUtilisateurProfessionnel($utilisateur)->endUse();
+    //on a un professeur
+    $query->leftJoinWith('AbsenceEleveSaisie.Eleve');
+    $query->leftJoin('Eleve.JEleveProfesseurPrincipal');
+    $query->condition('condProf1', 'AbsenceEleveSaisie.UtilisateurId = ? ', $utilisateur->getLogin());
+    $query->condition('condProf2', 'JEleveProfesseurPrincipal.Professeur = ? ', $utilisateur->getLogin());
+    $query->combine(Array('condProf1','condProf2'), Criteria::LOGICAL_OR);
 }
 if (isFiltreRechercheParam('filter_saisie_id')) {
     $query->filterById(getFiltreRechercheParam('filter_saisie_id'));
