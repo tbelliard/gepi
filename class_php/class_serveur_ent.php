@@ -173,15 +173,6 @@ class serveur_ent {
       if ($this->_format == 'serialize'){
         echo serialize($reponse);
       }elseif ($this->_format == 'xml') {
-        /**
-         * @todo : à revoir car cela ne fonctionne pas, les données sont toujours renvoyées en utf8 sur les xml par gepi
-         * et je ne sais pas pourquoi...
-
-        $encoding = ($this->_encodage == 'utf8') ? 'UTF-8' : 'ISO-8859-1';
-        if ($encoding == 'UTF-8'){
-          header ('Content-Type: text/xml; charset=utf-8');
-        }
-         */
         header ('Content-Type: text/xml;');
         echo $reponse;
       }
@@ -405,15 +396,15 @@ class serveur_ent {
       if ($this->_format == 'xml'){
         $retour .= '
           <eleve>
-            <nom>'.$eleve->getNom().'</nom>
-            <prenom>'.$eleve->getPrenom().'</prenom>
+            <nom>'.htmlspecialchars($eleve->getNom(), ENT_NOQUOTES).'</nom>
+            <prenom>'.htmlspecialchars($eleve->getPrenom(), ENT_NOQUOTES).'</prenom>
             <sexe>'.$eleve->getSexe().'</sexe>
             <login>'.$eleve->getLogin().'</login>
             <eleid>'.$eleve->getEleId().'</eleid>
             <elenoet>'.$eleve->getElenoet().'</elenoet>';
-        foreach ($classes as $classe){
+        foreach ($classes as $per => $classe){
           $retour .= '
-              <classe>'.$classe.'</classe>';
+              <classe periode="'.$per.'">'.$classe.'</classe>';
         }
         $retour .= '
           </eleve>
@@ -478,19 +469,37 @@ class serveur_ent {
 
   public function ListeClassesAvecProfesseurs(){
     $classes = ClasseQuery::create()->find();
-    $retour = array();
+    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'ISO-8859-1\'?><classes>' : array();
     foreach ($classes as $classe){
-      $professeurs = array();
+      $professeurs = ($this->_format == 'xml') ? '' : array();
       // Pour chaque classe, on liste les groupes
       $groupes = $classe->getJGroupesClassessJoinGroupe();
       foreach ($groupes as $groupe){
         $profs = $groupe->getGroupe()->getJGroupesProfesseurssJoinUtilisateurProfessionnel();
         // Puis on récupère le login des professeurs qui ont au moins un enseignement dans cette classe.
         foreach ($profs as $prof){
-          $professeurs[] = $prof->getUtilisateurProfessionnel()->getlogin();
+          if ($this->_format == 'xml'){
+            $professeurs .= '
+            <professeur>' . $prof->getUtilisateurProfessionnel()->getlogin() . '</professeur>';
+          }else{
+            $professeurs[] = $prof->getUtilisateurProfessionnel()->getlogin();
+          }
         }
       }
-      $retour[] = array($classe->getNom(), $classe->getNomComplet(), '', '', '', '', $professeurs);
+      if ($this->_format == 'xml'){
+        $retour .= '
+          <classe>
+            <nom>'.$classe->getNom().'</nom>
+            <nomcomplet>'.$classe->getNomComplet().'</nomcomplet>
+            '.$professeurs.'
+          </classe>
+                    ';
+      }else{
+        $retour[] = array($classe->getNom(), $classe->getNomComplet(), '', '', '', '', $professeurs);
+      }
+    } // foreach ($classes as $classe){
+    if ($this->_format == 'xml'){
+      $retour .= '</classes>';
     }
     return $retour;
   }
@@ -502,9 +511,21 @@ class serveur_ent {
    */
   public function listeMatieresAvecNomlong(){
     $matieres = MatiereQuery::create()->orderByMatiere()->find();
-    $retour = array();
+    $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'ISO-8859-1\'?><matieres>' : array();
     foreach ($matieres as $matiere){
-      $retour[] = array($matiere->getMatiere(), $matiere->getNomComplet(), '', '', '', '', array());
+      if ($this->_format == 'xml'){
+        $retour .= '
+          <matiere>
+            <nom>'.htmlspecialchars($matiere->getMatiere()).'</nom>
+            <nomcomplet>'.htmlspecialchars($matiere->getNomComplet()).'</nomcomplet>
+          </matiere>
+                    ';
+      }else{
+        $retour[] = array($matiere->getMatiere(), $matiere->getNomComplet(), '', '', '', '', array());
+      }
+    }
+    if ($this->_format == 'xml'){
+      $retour .= '</matieres>';
     }
     return $retour;
   }
