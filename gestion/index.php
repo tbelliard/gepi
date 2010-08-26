@@ -289,11 +289,13 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],$titre_page))
   $titre = "Effacer la base";
   $expli = "Permet de réinitialiser les bases en effaçant toutes les données ".$gepiSettings['denomination_eleves']." de la base.";
   $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
-  
-  $chemin = "efface_photos.php";
-  $titre = "Effacer les photos";
-  $expli = "Permet d'effacer les photos des ".$gepiSettings['denomination_eleves']." qui ne sont plus dans la base.";
-  $tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
+
+  if ($multisite != 'y') {
+	$chemin = "efface_photos.php";
+	$titre = "Effacer les photos";
+	$expli = "Permet d'effacer les photos des ".$gepiSettings['denomination_eleves']." qui ne sont plus dans la base.";
+	$tbs_menu[$nummenu]['entree'][]=array('lien'=>$chemin , 'titre'=>$titre, 'expli'=>$expli);
+  }
   
   $chemin = "gestion_temp_dir.php";
   $titre = "Gestion des dossiers temporaires";
