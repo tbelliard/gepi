@@ -1109,11 +1109,11 @@ class Eleve extends BaseEleve {
 	public function getDemiJourneesAbsenceParPeriode($periode = null) {
 	    $periode_obj = $this->getPeriodeNote($periode);
 	    if ($periode_obj == null) {
-		return 0;
+		return new PropelObjectCollection();
 	    }
 	    $date_debut = $periode_obj->getDateDebut(null);
 	    if ($date_debut  == null)  {
-		return 0;
+		return new PropelObjectCollection();
 	    }
 
 	    return $this->getDemiJourneesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
@@ -1168,11 +1168,11 @@ class Eleve extends BaseEleve {
 	public function getDemiJourneesNonJustifieesAbsenceParPeriode($periode = null) {
 	    $periode_obj = $this->getPeriodeNote($periode);
 	    if ($periode_obj == null) {
-		return 0;
+		return new PropelObjectCollection();
 	    }
 	    $date_debut = $periode_obj->getDateDebut(null);
 	    if ($date_debut  == null)  {
-		return 0;
+		return new PropelObjectCollection();
 	    }
 	    return $this->getDemiJourneesNonJustifieesAbsence($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
@@ -1249,11 +1249,11 @@ class Eleve extends BaseEleve {
 	public function getRetardsParPeriode($periode = null) {
 	    $periode_obj = $this->getPeriodeNote($periode);
 	    if ($periode_obj == null) {
-		return 0;
+		return new PropelObjectCollection();
 	    }
 	    $date_debut = $periode_obj->getDateDebut(null);
 	    if ($date_debut  == null)  {
-		return 0;
+		return new PropelObjectCollection();
 	    }
 	    return $this->getRetards($periode_obj->getDateDebut(null), $periode_obj->getDateFin(null));
 	}
