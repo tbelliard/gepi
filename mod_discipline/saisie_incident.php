@@ -452,19 +452,20 @@ if($etat_incident!='clos') {
 			if(isset($nature)) {
 				$sql.="nature='".traitement_magic_quotes(corriger_caracteres($nature))."' ,";
 				//on vérifie si une catégorie est définie pour cette nature
-                                $sql2="SELECT id_categorie FROM s_incidents WHERE nature='".traitement_magic_quotes(corriger_caracteres($nature))."' GROUP BY id_categorie";
-                                $res2=mysql_query($sql2);
-                                if($res2){
-                                    while ($lign_cat=  mysql_fetch_object($res2)){
-                                        $tab_res[]=$lign_cat->id_categorie;
-                                    }
-                                    //il ne devrait pas y avoir plus d'un enregistrement; dans le cas contraire on envoi un message
-                                    if (count($tab_res)>1) $msg.="Il y'a plusieurs catégories affectées à cette nature. La première est retnue pour cet incident. Vous devriez mettre à jours vos catégories d'incidents.<br />";
-                                    //on affecte la categorie a l'incident ou on met à null dans le cas contraire;
-                                    if ($tab_res['0']==null) $sql.="id_categorie=NULL ,";
-                                    else $sql.="id_categorie='".$tab_res['0']."' ,";
-                                } 
-                                $temoin_modif="y";
+				$sql2="SELECT id_categorie FROM s_incidents WHERE nature='".traitement_magic_quotes(corriger_caracteres($nature))."' GROUP BY id_categorie";
+				$res2=mysql_query($sql2);
+				//if($res2) {
+				if(mysql_num_rows($res2)>0) {
+					while ($lign_cat=mysql_fetch_object($res2)){
+						$tab_res[]=$lign_cat->id_categorie;
+					}
+					//il ne devrait pas y avoir plus d'un enregistrement; dans le cas contraire on envoi un message
+					if (count($tab_res)>1) {$msg.="Il y a plusieurs catégories affectées à cette nature. La première est retenue pour cet incident. Vous devriez mettre à jour vos catégories d'incidents.<br />";}
+					//on affecte la categorie a l'incident ou on met à null dans le cas contraire;
+					if ($tab_res['0']==null) {$sql.="id_categorie=NULL ,";}
+					else {$sql.="id_categorie='".$tab_res['0']."' ,";}
+				} 
+				$temoin_modif="y";
 			}
 
 			if (isset($NON_PROTECT["description"])){
