@@ -76,7 +76,7 @@ ou si on est avant auquel cas on est en année scolaire AA-1 - AA
      $derniere_semaine=date("W",mktime(0, 0, 0, 12, 28, (date("Y")-1)));
  }
  return $derniere_semaine;
-} 
+}
 
 // ajout et mise à jour de la base
 if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
@@ -149,12 +149,41 @@ if ($action === "visualiser") {
 
 function trouverDates($numero_semaine){
 	// fonction qui permet de déterminer la date de début de la semaine (lundi)
+	/*
 	$ts_depart = 1186358400;
 	$ts_depart = 1217887200; // 5 aout 2008 à 00:00:00
-    $ts_depart = 1249336800;
+  $ts_depart = 1249336800;
+  */
 
     $fin_temp = NumLastWeek();
-
+  
+	// On recherche l'année
+	$maintenant = date("n");
+	if ($maintenant >= 8) {
+		$annee = date("Y");
+	} else {
+		$annee = date("Y") - 1;
+	}
+	
+	// On recherche le premier lundi du mois d'Août
+	$lundi1=1;
+	while (date("N",mktime(0, 0, 0, 8, $lundi1, $annee))!=1) {
+		$lundi1++;
+	}
+	
+	// On recherche le lundi de la semaine 32
+	while (date("W",mktime(0, 0, 0, 8, $lundi1, $annee))<32) {
+		$lundi1 = $lundi1 + 7;
+	}
+	while (date("W",mktime(0, 0, 0, 8, $lundi1, $annee))>32) {
+		$lundi1 = $lundi1 - 7;
+	}
+	
+	$ts_depart = mktime(1, 0, 0, 8, $lundi1, $annee);
+  
+  
+  
+  
 	if ($numero_semaine == 32) {
 		$ts = $ts_depart;
 	}elseif ($numero_semaine > 32 AND $numero_semaine <= $fin_temp) {
@@ -199,7 +228,7 @@ function trouverDates($numero_semaine){
 			<td><input type="hidden" name="num_semaine[<?php echo $i; ?>]" value="<?php echo $num_semaine[$i]; ?>" /><strong><?php echo $num_semaine[$i]; ?></strong></td>
 			<td><input type="text" name="num_interne[<?php echo $i; ?>]" size="3" value="<?php echo $num_interne[$i]; ?>" class="input_sans_bord" /></td>
 			<td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
-			<td> lundi <?php echo gmdate("d-m-Y", (int) trouverDates($i+1)); ?> </td>
+			<td> lundi <?php echo gmdate("d-m-Y", trouverDates($i+1)); ?> </td>
 			<td> samedi <?php echo gmdate("d-m-Y", (trouverDates($i+1) + 5*86400)); ?> </td>
 
 
