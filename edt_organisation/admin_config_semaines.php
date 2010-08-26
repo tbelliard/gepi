@@ -64,12 +64,39 @@ $num_interne = isset($_GET["num_interne"]) ? $_GET["num_interne"] : (isset($_POS
 //		fonctions utilisées par config_semaines
 //
 // ======================================================
-
+	
 function trouverDates($numero_semaine){
 	// fonction qui permet de déterminer la date de début de la semaine (lundi)
+	/*
 	$ts_depart = 1186358400;
 	$ts_depart = 1217887200; // 5 aout 2008 à 00:00:00
-    $ts_depart = 1249336800;
+	$ts_depart = 1249336800;
+	$ts_depart = 1280771449; // 2 août 2010 à 00:00:00
+*/
+	
+	// On recherche l'année
+	$maintenant = date("n");
+	if ($maintenant >= 8) {
+		$annee = date("Y");
+	} else {
+		$annee = date("Y") - 1;
+	}
+	
+	// On recherche le premier lundi du mois d'Août
+	$lundi1=1;
+	while (date("N",mktime(0, 0, 0, 8, $lundi1, $annee))!=1) {
+		$lundi1++;
+	}
+	
+	// On recherche le lundi de la semaine 32
+	while (date("W",mktime(0, 0, 0, 8, $lundi1, $annee))<32) {
+		$lundi1 = $lundi1 + 7;
+	}
+	while (date("W",mktime(0, 0, 0, 8, $lundi1, $annee))>32) {
+		$lundi1 = $lundi1 - 7;
+	}
+	
+	$ts_depart = mktime(1, 0, 0, 8, $lundi1, $annee);
 
     $fin_temp = NumLastWeek();
 
