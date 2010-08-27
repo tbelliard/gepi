@@ -60,6 +60,8 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 }
 
+//debug_var();
+
 // On appelle la lib utilisée pour la génération des mots de passe
 include("randpass.php");
 
@@ -270,7 +272,8 @@ else {
 					"login != '" . $_SESSION['login'] . "' AND " .
 					"etat = 'actif' AND " .
 					"statut = '" . $user_status . "')");*/
-				$sql_user_info =   "SELECT DISTINCT (e.ele_id), u.civilite, u.statut, u.password, u.email, u.auth_mode, rp.login, rp.nom, rp.prenom, rp.civilite, rp.pers_id, ra.* , r2.ele_id, r2.resp_legal, e.login, jec.id_classe
+				//$sql_user_info =   "SELECT DISTINCT (e.ele_id), u.civilite, u.statut, u.password, u.email, u.auth_mode, rp.login, rp.nom, rp.prenom, rp.civilite, rp.pers_id, ra.* , r2.ele_id, r2.resp_legal, e.login, jec.id_classe
+				$sql_user_info =   "SELECT DISTINCT (e.ele_id), u.civilite, u.statut, u.password, u.email, u.auth_mode, rp.login, rp.nom, rp.prenom, rp.civilite, rp.pers_id, ra.* , r2.ele_id, r2.resp_legal, jec.id_classe
 									FROM utilisateurs u, resp_pers rp, resp_adr ra, responsables2 r2, eleves e, j_eleves_classes jec
 									WHERE (
 									u.login != 'ADMIN'
@@ -794,6 +797,7 @@ width:".$largeur1."%;\n";
 			$donnees_personne_csv['new_password'][$pcsv] = $new_password ;
 			$donnees_personne_csv['user_email'][$pcsv] = $user_email;
 
+			//echo "\$donnees_personne_csv['login'][$pcsv]=".$donnees_personne_csv['login'][$pcsv]."<br />";
 
 			if ($user_status) {
 
@@ -810,6 +814,7 @@ width:".$largeur1."%;\n";
 
 					$donnees_personne_csv['classe'][$pcsv] = $classe_resp;
 
+					/*
 					$resp_num_legal= mysql_result($call_user_info, $pcsv, "resp_legal");
 					$resp_civilite= mysql_result($call_user_info, $pcsv, "civilite");
 					$resp_adr1=mysql_result($call_user_info, $pcsv, "adr1");
@@ -820,6 +825,17 @@ width:".$largeur1."%;\n";
 					$resp_cp=mysql_result($call_user_info, $pcsv, "cp");
 					$resp_commune=mysql_result($call_user_info, $pcsv, "commune");
 					$resp_pays=mysql_result($call_user_info, $pcsv, "pays");
+					*/
+					$resp_num_legal= mysql_result($call_user_info, $p, "resp_legal");
+					$resp_civilite= mysql_result($call_user_info, $p, "civilite");
+					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
+					$resp_adr1=mysql_result($call_user_info, $p, "adr1");
+					$resp_adr2=mysql_result($call_user_info, $p, "adr2");
+					$resp_adr3=mysql_result($call_user_info, $p, "adr3");
+					$resp_adr4=mysql_result($call_user_info, $p, "adr4");
+					$resp_cp=mysql_result($call_user_info, $p, "cp");
+					$resp_commune=mysql_result($call_user_info, $p, "commune");
+					$resp_pays=mysql_result($call_user_info, $p, "pays");
 
 					//on met les données dans le tableau
 					$donnees_personne_csv['resp_legal'][$pcsv] = $resp_num_legal;
@@ -831,6 +847,9 @@ width:".$largeur1."%;\n";
 					$donnees_personne_csv['cp'][$pcsv] = $resp_cp;
 					$donnees_personne_csv['commune'][$pcsv] = $resp_commune;
 					$donnees_personne_csv['pays'][$pcsv] = $resp_pays;
+
+					//echo "\$donnees_personne_csv['adr1'][$pcsv]=".$donnees_personne_csv['adr1'][$pcsv]."<br />";
+					//echo "\$donnees_personne_csv['commune'][$pcsv]=".$donnees_personne_csv['commune'][$pcsv]."<br />";
 
 					// On crée une chaine de caractères par élèves (Prénom, Nom, classe nom long et classe nom court)
 					$nb_elv=sizeof($elv_resp['nom']);
