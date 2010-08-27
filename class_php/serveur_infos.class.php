@@ -31,9 +31,11 @@ class infos{
 		// inutile ici
 	}
 
+	/*
 	function infos(){
 		// utile pour le compatibilité php4
 	}
+	 */
 
 	function versionPhp(){
 		$test = phpversion();
