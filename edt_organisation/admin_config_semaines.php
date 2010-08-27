@@ -227,8 +227,8 @@ require_once("../lib/header.inc");
 						<td><input type="hidden" name="num_semaine[<?php echo $i; ?>]" value="<?php echo $num_semaine[$i]; ?>" /><strong><?php echo $num_semaine[$i]; ?></strong></td>
 						<td><input type="text" name="num_interne[<?php echo $i; ?>]" size="3" value="<?php echo $num_interne[$i]; ?>" class="input_sans_bord" /></td>
 						<td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
-						<td> lundi <?php echo gmdate("d-m-Y", (int) trouverDates($i+1)); ?> </td>
-						<td> samedi <?php echo gmdate("d-m-Y", (trouverDates($i+1) + 5*86400)); ?> </td>
+						<td> lundi <?php echo date("d-m-Y", (int) trouverDates($i+1)); ?> </td>
+						<td> samedi <?php echo date("d-m-Y", (trouverDates($i+1) + 5*86400)); ?> </td>
 
 
 					</tr>
