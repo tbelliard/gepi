@@ -98,12 +98,14 @@ include('menu_bilans.inc.php');
 	});
     </script>
     <button type="submit">Changer</button>
+</h2>
+</form>
 
 <table style="border: 1px solid black;" cellpadding="5" cellspacing="5">
 <?php $creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();?>
 	<tr>
-		<th style="border: 1px solid black; background-color: grey;">Classe</th>
-		<th style="border: 1px solid black; background-color: grey; min-width: 300px; max-width: 500px;">Nom Pr&eacute;nom</th>
+		<th style="border: 1px solid black; background-color: gray;">Classe</th>
+		<th style="border: 1px solid black; background-color: gray; min-width: 300px; max-width: 500px;">Nom Pr&eacute;nom</th>
 <?php
 		//afficher les créneaux
 		foreach(EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $creneau){
@@ -194,8 +196,9 @@ foreach($classe_col as $classe) {
 }
 ?>
 </table>
-
-<h5>Impression faite le <?php echo date("d/m/Y - h:i"); ?>.</h5>
+<br />
+  <span class="bold small">Impression faite le <?php echo date("d/m/Y - H:i"); ?>.</span>
+</div>
 <?php
 require("../lib/footer.inc.php");
 ?>
