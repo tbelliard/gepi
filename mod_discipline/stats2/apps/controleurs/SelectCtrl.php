@@ -105,7 +105,7 @@ class SelectCtrl extends Controleur {
 
   private function test_edt_active() {
     if(! $this->objet_periodes->is_EDT_active())
-      echo"<script type='text/javascript'>alert('Activez le module EDT pou les administrateurs puis renseignez les périodes du calendrier en admin');
+      echo"<script type='text/javascript'>alert('Activez le module EDT pour les administrateurs puis renseignez les périodes du calendrier en admin');
                document.location.href='../../accueil_modules.php'</script>";
   }
   private function test_db_periodes_calendrier() {
