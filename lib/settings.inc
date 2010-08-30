@@ -51,7 +51,7 @@ function loadSettings()
 /**
  * Get the value of a setting by its name
  *
- * Use this function within other functions so you don'y have to declare
+ * Use this function within other functions so you don't have to declare
  * $gepiSettings global
  *
  * Returns the value if the name exists
@@ -65,6 +65,23 @@ function getSettingValue($_name)
 {
     global $gepiSettings;
     if (isset($gepiSettings[$_name])) return ($gepiSettings[$_name]);
+}
+
+/**
+ * Return True if getSettingValue() is 'yes' or 'y'
+ *
+ *
+ * @_name               string                  The name of the setting you want to test
+ *
+ * @return              bool                   True if the setting you test is 'yes' or 'y', False on other case
+ */
+function getSettingAOui($_name)
+{
+	if (getSettingValue($_name)=="yes" || getSettingValue($_name)=="y"){
+		return TRUE;
+	} else {
+		return FALSE;
+	}
 }
 
 /**

@@ -1935,6 +1935,11 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 			</tr>
 		 */
 $statutItem='responsable';
+$titreItem='active_absences_parents';
+$texteItem="a accès aux absences des ".$gepiSettings['denomination_eleves']." dont il est responsable";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 $titreItem='GepiAccesReleveParent';
 $texteItem="a accès aux relevés de notes des ".$gepiSettings['denomination_eleves']." dont il est responsable";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))

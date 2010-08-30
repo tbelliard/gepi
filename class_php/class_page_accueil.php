@@ -888,12 +888,20 @@ class class_page_accueil {
 
   protected function absencesFamille(){
 	$this->b=0;
+	$conditions2 = ($this->statutUtilisateur == "responsable" AND
+					getSettingValue("active_module_absence") == '2' AND
+					getSettingAOui("active_absences_parents"));
 
 	$conditions3 = ($this->statutUtilisateur == "responsable" AND
 					getSettingValue("active_module_absence") == 'y' AND
-					getSettingValue("active_absences_parents") == 'y');
+					getSettingAOui("active_absences_parents"));
 
-	if ($conditions3) {
+	if ($conditions2) {
+	  $this->creeNouveauItem("/mod_abs2/bilan_parent.php",
+			  "Absences",
+			  "Permet de suivre les absences et les retards des élèves dont je suis ".$this->gepiSettings['denomination_responsable']);
+
+	} else if ($conditions3) {
 	  $this->creeNouveauItem("/mod_absences/absences.php",
 			  "Absences",
 			  "Permet de suivre les absences et les retards des élèves dont je suis ".$this->gepiSettings['denomination_responsable']);
