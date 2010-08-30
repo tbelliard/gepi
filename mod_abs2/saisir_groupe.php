@@ -635,7 +635,19 @@ foreach($eleve_col as $eleve) {
 						}
 						$saisie_affiches[] = $saisie->getPrimaryKey();
 						if ($saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && $saisie->getCreatedAt('U') > (time() - 3600)) {
-						    echo ("<a style='font-size:78%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Modif.&nbsp;saisie de ".$saisie->getCreatedAt("H:i")."</a><br>");
+						    echo "<a style='font-size:78%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Modif.&nbsp;saisie de ".$saisie->getCreatedAt("H:i").' ';
+						    $besoin_echo_virgule = false;
+						    foreach ($saisie->getAbsenceEleveTraitements() as $bou_traitement) {
+							if ($bou_traitement->getAbsenceEleveType() != null) {
+							    if ($besoin_echo_virgule) {
+								echo ', ';
+								$besoin_echo_virgule = false;
+							    }
+							    echo $bou_traitement->getAbsenceEleveType()->getNom();
+							    $besoin_echo_virgule = true;
+							}
+						    }
+						    echo "</a><br>";
 						}
 					    }
 					}
