@@ -85,9 +85,9 @@ include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
 ?>
 <div id="contain_div" class="css-panes">
-<form name="choix_date" action="<?php $_SERVER['PHP_SELF']?>" method="post">
+<form id="choix_date" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 <h2>Les saisies du
-    <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
+    <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" onchange="document.getElementById('choix_date').submit()" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
     <script type="text/javascript">
 	Calendar.setup({
 	    inputField     :    "date_absence_eleve_1",     // id of the input field
@@ -157,9 +157,12 @@ foreach($classe_col as $classe) {
 				break;
 			    }
 			}
+			/*
 			if (!$affiche) {
 			    continue;
 			}
+			 * 
+			 */
 			echo '<tr>
 			<td></td>
 			<td>';
@@ -181,14 +184,19 @@ foreach($classe_col as $classe) {
 				foreach($abs_col as $abs) {
 				    $red = false;
 				    if ($abs->getManquementObligationPresence()) {
-					echo '<td style="background-color:red"></td>';
+					echo '<td style="background-color:red;"></td>';
 					$red = true;
 					break;
-				    }
+				    } else {
+					  echo '<td style="background-color:green;"></td>';
+					}
 				}
+				/*
 				if (!$red) {
-				    echo '<td style="backgroud-color:green"></td>';
+				    
 				}
+				 * 
+				 */
 			    }
 			}
 			echo '</tr>';
@@ -197,7 +205,7 @@ foreach($classe_col as $classe) {
 ?>
 </table>
 <br />
-  <span class="bold small">Impression faite le <?php echo date("d/m/Y - H:i"); ?>.</span>
+  <span class="bold">Impression faite le <?php echo date("d/m/Y - H:i"); ?>.</span>
 </div>
 <?php
 require("../lib/footer.inc.php");
