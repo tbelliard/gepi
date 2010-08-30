@@ -121,7 +121,6 @@
 			 value="n"
 			<?php if (getSettingValue("active_module_absence")!='y') echo ' checked="checked"'; ?> />
 	  <label for="activerN">
-			<?php echo getSettingValue("active_module_absence"); ?>
 		Désactiver le module de la gestion des absences
 	  </label>
 	  <input type="hidden" name="is_posted" value="1" />
