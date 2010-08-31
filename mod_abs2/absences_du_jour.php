@@ -75,6 +75,7 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_
 $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? $_GET["id_aid"] : NULL);
 $type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(isset($_GET["type_selection"]) ? $_GET["type_selection"] : NULL);
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :(isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] :(isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
+$choix_regime = isset($_POST["choix_regime"]) ? $_POST["choix_regime"] :(isset($_GET["choix_regime"]) ? $_GET["choix_regime"] : NULL);
 if ($date_absence_eleve != null) {$_SESSION["date_absence_eleve"] = $date_absence_eleve;}
 
 //initialisation des variables
@@ -220,6 +221,30 @@ echo '<button type="submit">Rechercher</button>';
 	echo "</p>\n";
 echo '</form>';
 echo '</td>';
+//on affiche une boite de selection pour le regime
+echo "<td style='border : 1px solid; padding : 10 px;'>";
+echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<p>\n";
+        echo '<input type="hidden" name="type_selection" value="choix_regime"/>';
+echo ("Régime : <select name=\"choix_regime\" onchange='submit()' class=\"small\">");
+    echo "<option value='-1'>choisissez un régime</option>\n";
+    	    echo "<option value='d/p'";
+	    if ($choix_regime == 'd/p') echo " SELECTED ";
+	    echo ">";
+	    echo 'd/p';
+            echo "<option value='ext.'";
+	    if ($choix_regime == 'ext.') echo " SELECTED ";
+	    echo ">";
+	    echo 'ext.';
+            echo "<option value='int.'";
+	    if ($choix_regime == 'int.') echo " SELECTED ";
+	    echo ">";
+	    echo 'int.';
+	    echo "</option>\n";
+    echo "</select>&nbsp;";
+    echo '<button type="submit">Filtrer sur le régime</button>';
+echo '</form>';
+echo '</td>';
 
 echo "</tr></table>";
 
@@ -246,6 +271,12 @@ if ($type_selection == 'id_eleve') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
     $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
+}else if ($type_selection == 'choix_regime') {
+    $query = EleveQuery::create();
+    if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
+	$query->filterByUtilisateurProfessionnel($utilisateur);
+    }
+    $eleve_col = $query->filterByRegime($choix_regime)->find();
 } elseif ($current_groupe != null) {
     $eleve_col = $current_groupe->getEleves();
 } elseif ($current_aid != null) {
@@ -253,16 +284,16 @@ if ($type_selection == 'id_eleve') {
 } elseif ($current_classe != null) {
     $eleve_col = $current_classe->getEleves();
 } else {
-    //on fait une requete pour recuperer les eleves qui sont absents aujourd'hui
+    //on fait une requete pour recuperer les eleves qui sont absents aujourd'hui    
     $dt_debut = clone $dt_date_absence_eleve;
     $dt_debut->setTime(0,0,0);
     $dt_fin = clone $dt_date_absence_eleve;
     $dt_fin->setTime(23,59,59);
     $query = EleveQuery::create();
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
-	$query->filterByUtilisateurProfessionnel($utilisateur);
+	$query->filterByUtilisateurProfessionnel($utilisateur);        
     }
-    $eleve_col = $query
+    $eleve_col = $query            
 	    ->useAbsenceEleveSaisieQuery()
 	    ->filterByPlageTemps($dt_debut, $dt_fin)
 	    ->endUse()->distinct()->find();
@@ -336,6 +367,7 @@ if ($type_selection == 'id_eleve') {
     <?php
     $nb_checkbox = 0; //nombre de checkbox
     foreach($eleve_col as $eleve) {
+        $regime_eleve=EleveRegimeDoublantQuery::create()->findPk($eleve->getlogin())->getRegime();
 		//$eleve = new Eleve();
 			$manque = true;
 			foreach ($eleve->getAbsenceEleveSaisiesDuJour($dt_date_absence_eleve) as $absence) {
@@ -366,7 +398,7 @@ if ($type_selection == 'id_eleve') {
 			<td<?php echo $color_hier; ?>><?php echo $aff_compter_hier; ?></td>
 			<td class='td_abs_eleves'>
 <?php
-			echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
+			echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().') ('.$regime_eleve.')';
 			echo ' ';
 			echo $eleve->getClasseNomComplet($dt_date_absence_eleve);
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
