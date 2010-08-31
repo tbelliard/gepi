@@ -66,10 +66,10 @@ class EleveQuery extends BaseEleveQuery {
     }
 
     /**
-     * Filtre la requete pour les eleves en fonction de leur statut
+     * Filtre la requete pour les eleves en fonction de leur regime
      *
      *
-     * @param     string $statut statut de l'eleve
+     * @param     string $regime regime de l'eleve
      *
      * @return    EleveQuery The current query, for fluid interface
      */
