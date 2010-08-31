@@ -190,6 +190,7 @@ foreach($classe_col as $classe) {
 				    } else {
 					  echo '<td style="background-color:green;"></td>';
 					}
+			break;
 				}
 				/*
 				if (!$red) {

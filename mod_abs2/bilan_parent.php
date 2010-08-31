@@ -392,6 +392,7 @@ $dt_fin->setTime(23,59,59);
 <?php
 			  }
 			}
+			break;
 		  }
 ?>
 	  </td>
