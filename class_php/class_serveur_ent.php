@@ -26,24 +26,8 @@
  * Accès limité à la lecture seule. Pour limiter les accès, on liste les méthodes disponibles
  * Les logins des élèves existent sous la forme d'un tableau envoyé en POST par curl
  *
- * @todo : générer systématiquement un xml :
- * <?xml version="1.0" encoding="iso-8859-1"?>
- *  <book>
- *    <title>This is the title</title>
- *  </book>
- * $doc = new DOMDocument('1.0', 'iso-8859-1');
- * $root = $doc->createElement('book');
- * $root = $doc->appendChild($root);
  *
- * $title = $doc->createElement('title');
- * $title = $root->appendChild($title);
- *
- * $text = $doc->createTextNode('This is the title');
- * $text = $title->appendChild($text);
- * $doc->save("/tmp/test.xml");// Pour l'écrire sur le disque
- * echo $doc->saveXML(); /: pour l'envoyer au client
- * 
- * @method notesEleve(), cdtDevoirsEleve(), cdtCREleve(), professeursEleve(), edtEleve(), listeElevesAvecClasse(), listeProfesseursAvecMatieres(), ListeClassesAvecProfesseurs(), listeMatieresAvecNomlong()
+ * @method notesEleve(), cdtDevoirsEleve(), cdtCREleve(), professeursEleve(), edtEleve(), listeElevesAvecClasse(), listeProfesseursAvecMatieres(), listeClassesAvecProfesseurs(), listeMatieresAvecNomlong()
  *
  * @author Julien Jocal
  * @license GPL
@@ -120,6 +104,8 @@ class serveur_ent {
    * @var string vaut 'serialize' par défaut, peut être placé à 'xml' par le client
    */
   private $_format        = 'serialize';
+
+  private $_config        = array();
   /**
    * Constructeur de la classe
    *
@@ -192,7 +178,7 @@ class serveur_ent {
 
   /**
    * Charge les données envoyées par le client
-   * 
+   *
    * @todo Mieux gérer le cas où la requête n'est pas en POST
    * @return void initialise les propriétés de l'objet
    */
@@ -230,6 +216,7 @@ class serveur_ent {
       $this->writeLog(__METHOD__, 'La clé n\'est pas bonne ('.$this->_api_key.'|'.$key.')', ((array_key_exists('login', $_POST)) ? $_POST['login'] : 'inexistant'));
       Die('la clé est obsolète.');
     }else{
+      $this->_config = $serveur[$demandeur];
       return true;
     }
   }
@@ -258,9 +245,13 @@ class serveur_ent {
    * @return array liste des méthodes autorisées
    */
   public function getMethodesAutorisees(){
-    return array('notesEleve', 'cdtDevoirsEleve', 'cdtCREleve', 'professeursEleve', 'edtEleve', 
+    if (in_array('all', $this->_config['auth'])){
+      return array('notesEleve', 'cdtDevoirsEleve', 'cdtCREleve', 'professeursEleve', 'edtEleve',
                  'listeElevesAvecClasse', 'listeProfesseursAvecMatieres', 'listeClassesAvecProfesseurs', 'listeMatieresAvecNomlong',
                  'cdtDevoirsProfesseur', 'cdtCRProfesseur');
+    }else{
+      return $this->_config['auth'];
+    }
   }
 
   /**
@@ -467,7 +458,7 @@ class serveur_ent {
    * @return array Tableau des classes de Gepi : nom, nom_complet, '', '', '', '', liste des logins des professeurs de la classe
    */
 
-  public function ListeClassesAvecProfesseurs(){
+  public function listeClassesAvecProfesseurs(){
     $classes = ClasseQuery::create()->find();
     $retour = ($this->_format == 'xml') ? '<?xml version=\'1.0\' encoding=\'ISO-8859-1\'?><classes>' : array();
     foreach ($classes as $classe){
