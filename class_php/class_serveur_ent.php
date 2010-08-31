@@ -105,6 +105,11 @@ class serveur_ent {
    */
   private $_format        = 'serialize';
 
+  /**
+   * Tableau de la liste des méthodes autorisées pour le client
+   *
+   * @var array Définie dans le fichier de config
+   */
   private $_config        = array();
   /**
    * Constructeur de la classe
@@ -286,7 +291,7 @@ class serveur_ent {
                 ->find();
 
     foreach ($rep as $r){
-        $var[$r->getDateCt()] = $r->getContenu();
+        $var[$r->getDateCt()] = ($this->_encodage == 'utf8') ? utf8_encode($r->getContenu()) : $r->getContenu();
     }
 
     return $var;
@@ -313,7 +318,7 @@ class serveur_ent {
                 ->find();
 
     foreach ($rep as $r){
-        $var[$r->getDateCt()] = utf8_encode($r->getContenu());
+        $var[$r->getDateCt()] = ($this->_encodage == 'utf8') ? utf8_encode($r->getContenu()) : $r->getContenu();
     }
 
     return $var;
@@ -329,7 +334,7 @@ class serveur_ent {
     $devoirs = $_professeur->getCahierTexteTravailAFairesJoinGroupe();
     $reponse = array();
     foreach ($devoirs as $devoir) {
-      $reponse[$devoir->getDateCt()] = $devoir->getContenu();
+      $reponse[$devoir->getDateCt()] = ($this->_encodage == 'utf8') ? utf8_encode($devoir->getContenu()) : $devoir->getContenu();
     }
     return $reponse;
   }
@@ -340,7 +345,12 @@ class serveur_ent {
    * @return array Liste des Compte-Rendus du professeur avec les enseignements correspondants
    */
   public function cdtCRProfesseur(UtilisateurProfessionnel $_professeur){
-    return array();
+    $crs = $_professeur->getCahierTexteCompteRendusJoinGroupe();
+    $reponse = array();
+    foreach ($crs as $cr){
+      $reponse[$cr->getDateCt()] = ($this->_encodage == 'utf8') ? utf8_encode($cr->getContenu()) : $cr->getContenu();
+    }
+    return $reponse;
   }
 
   /**
