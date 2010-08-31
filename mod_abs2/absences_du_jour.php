@@ -271,7 +271,7 @@ if ($type_selection == 'id_eleve') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
     $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
-}else if ($type_selection == 'choix_regime') {
+}else if ($type_selection == 'choix_regime' && $choix_regime!=-1) {
     $query = EleveQuery::create();
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
