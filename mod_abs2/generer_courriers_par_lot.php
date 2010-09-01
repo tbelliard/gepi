@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @version $Id:  $
+ * @version $Id$
  *
  * Copyright 2010 Josselin Jacquard, Régis Bouguin
  *

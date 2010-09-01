@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @version $Id: bilan_du_jour.php 5114 2010-08-26 15:29:50Z crob $
+ * @version $Id$
  *
  * Copyright 2010 Josselin Jacquard
  *
