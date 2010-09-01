@@ -629,6 +629,8 @@ $tab_req[] = "INSERT INTO droits SET id='/bulletin/envoi_mail.php', administrate
 
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_discipline/destinataires_alertes.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Parametrage des destinataires de mail d alerte', '');";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/generer_notification_par_lot.php','F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Génération groupée des courriers', '');";
+
 
 // Initialisation Scribe NG
 $tab_req[] = "INSERT INTO droits SET id='/init_scribe_ng/index.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation Scribe NG - index',statut='';";

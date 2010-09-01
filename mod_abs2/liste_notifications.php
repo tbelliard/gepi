@@ -197,7 +197,7 @@ echo $notifications_col->count();
 echo "&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y" >Réinitialiser les filtres</button> ';
-echo '<a href="generer_notification_groupe.php" style="white-space:nowrap;">Imprimer les courriers non-édités</a>';
+echo '<a href="generer_notification_par_lot.php" style="white-space:nowrap;">Imprimer les courriers non-édités</a>';
 echo '</p>';
 
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0; width:100%;">';

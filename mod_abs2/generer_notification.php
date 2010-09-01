@@ -77,7 +77,7 @@ if ($notification == null && !isset($_POST["creation_notification"])) {
     die();
 }
 
-if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_PAR_LOT) {
+if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER_PAR_LOT) {
    include("visu_notification.php");
     die();
 }

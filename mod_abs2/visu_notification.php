@@ -215,7 +215,7 @@ echo '<tr><td>';
 echo 'Statut : ';
 echo '</td><td>';
 //on ne modifie manuellement le statut si le type est courrier ou communication téléphonique
-if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_PAR_LOT || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_TELEPHONIQUE) {
+if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER_PAR_LOT || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_TELEPHONIQUE) {
     echo '<form method="post" action="enregistrement_modif_notification.php">';
 	echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
@@ -417,7 +417,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
     echo '</td></tr>';
 }
 
-if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_PAR_LOT) {
+if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER_PAR_LOT) {
     echo '<tr><td>';
     echo 'Adresse : ';
     echo '</td><td>';
@@ -537,12 +537,12 @@ if ($notification->getdateEnvoi() != null) {
     }
 }
 
-if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER  || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_PAR_LOT || $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL) {
+if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER  || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER_PAR_LOT || $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL) {
     echo '<tr><td colspan="2" style="text-align : center;">';
     echo '<form method="post" action="generer_notification.php">';
     echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
-    if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER  || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_PAR_LOT) {
+    if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER  || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER_PAR_LOT) {
 	echo '<button type="submit" onclick=\'window.open("generer_notification.php?id_notification='.$notification->getPrimaryKey().'"); setTimeout("window.location = \"visu_notification.php\"", 1000); return false;\'>Génerer la notification</button>';
     } else {
 	if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL && ($notification->getEmail() == null || $notification->getEmail() == '')) {
