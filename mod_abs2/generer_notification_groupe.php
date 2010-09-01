@@ -44,6 +44,12 @@ if ($resultat_session == 'c') {
 $sql="INSERT INTO `gepi_trunk2`.`droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolarite`, `eleve`, `responsable`, `secours`, `autre`, `description`, `statut`) 
       VALUES ('/mod_abs2/generer_notification_groupe.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Génération groupée des courriers', '')";
 
+$result = mysql_query($sql);
+
+if (!$result){
+  echo "Echec ouverture des droits sur la page<br/>";
+    die();
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
