@@ -525,15 +525,16 @@ if ($autorise == "oui") {
 				$tab_select_salle[$c]["nom_salle"] = $tab_select_salle[$c]["numero_salle"];
 			}
 			if ($jour_creer != NULL) {
-				if (SalleDisponible($tab_select_salle[$c]["id_salle"], $jour_creer, $id_creneau_creer, $rep_cours["duree"], $deb_creer, $rep_cours["id_semaine"], -1, $message, $rep_cours["id_calendrier"])) {
+				//if (SalleDisponible($tab_select_salle[$c]["id_salle"], $jour_creer, $id_creneau_creer, $rep_cours["duree"], $deb_creer, $rep_cours["id_semaine"], -1, $message, $rep_cours["id_calendrier"])) {
 					echo "<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";
-				}
-				else if ($tab_select_salle[$c]["id_salle"] == $rep_cours["id_salle"]) {
-					echo "<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";			
-				}			
+				//}
+				//else if ($tab_select_salle[$c]["id_salle"] == $rep_cours["id_salle"]) {
+					//echo "<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";			
+				//}			
 			}
 			else {
 				if (SalleDisponible($tab_select_salle[$c]["id_salle"], $rep_cours["jour_semaine"], $rep_cours["id_definie_periode"], $rep_cours["duree"], $rep_cours["heuredeb_dec"], $rep_cours["id_semaine"], -1, $message, $rep_cours["id_calendrier"])) {
+					//echo  $rep_cours["id_semaine"];
 					echo "<option value='".$tab_select_salle[$c]["id_salle"]."'".$selected.">".$tab_select_salle[$c]["nom_salle"]."</option>\n";
 				}
 				else if ($tab_select_salle[$c]["id_salle"] == $rep_cours["id_salle"]) {
