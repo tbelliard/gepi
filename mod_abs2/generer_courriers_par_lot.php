@@ -49,7 +49,7 @@ $sql="INSERT INTO `droits` (`id`, `administrateur`, `professeur`, `cpe`, `scolar
 $result = mysql_query($sql);
 
 if (!$result){
-  echo "Echec ouverture des droits sur la page generer_notification_par_lot.php";
+  echo "Echec ouverture des droits sur la page generer_courriers_par_lot.php";
     die();
 }
 */

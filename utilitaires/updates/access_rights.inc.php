@@ -629,8 +629,6 @@ $tab_req[] = "INSERT INTO droits SET id='/bulletin/envoi_mail.php', administrate
 
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_discipline/destinataires_alertes.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Parametrage des destinataires de mail d alerte', '');";
 
-$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/generer_notification_par_lot.php','F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Génération groupée des courriers', '');";
-
 
 // Initialisation Scribe NG
 $tab_req[] = "INSERT INTO droits SET id='/init_scribe_ng/index.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation Scribe NG - index',statut='';";
@@ -673,6 +671,8 @@ $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/extraction_saisies.php', 'V'
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/extraction_demi-journees.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Extraction des saisies', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/ajax_edt_eleve.php', 'V', 'F', 'V', 'V', 'F', 'F', 'V', 'F', 'Affichage edt', '');";
 
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/generer_courriers_par_lot.php','F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Génération groupée des courriers', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/mod_abs2/bilan_parent.php', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'F', 'Affichage parents des absences de leurs enfants', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/saisie/validation_corrections.php', 'F', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'Validation des corrections proposées par des professeurs après la cloture d une période', '');";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/gestion/param_ordre_item.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Modifier l ordre des items dans les menus', '');";

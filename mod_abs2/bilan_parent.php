@@ -38,13 +38,14 @@ if ($resultat_session == 'c') {
 	die();
 };
 
+/*
 // mise à jour des droits dans la table droits
 $sql="INSERT INTO `droits` ( `id` , `administrateur` , `professeur` , `cpe` , `scolarite` , `eleve` , `responsable` , `secours` , `autre` , `description` , `statut` )
 VALUES ('/mod_abs2/bilan_parent.php', 'F', 'F', 'F', 'F', 'F', 'V', 'F', 'F', 'Affichage parents des absences de leurs enfants', '')
 ON DUPLICATE KEY UPDATE `responsable` = 'V'";
 
 $result = mysql_query($sql);
-
+*/
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
