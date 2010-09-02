@@ -52,7 +52,7 @@ class itemGeneral {
 
 /**
  *
- * Vérifie qu'un utilisateur à le droit de voir la page ne lien
+ * Vérifie qu'un utilisateur à le droit de voir la page en lien
  *
  * @var string $id l'adresse de la page
  * telle qu'enregistrée dans la base droits

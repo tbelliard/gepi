@@ -162,9 +162,11 @@ class class_page_accueil {
 	$this->chargeAutreNom('bloc_releve_ects');
 
 /***** Emploi du temps *****/
-	$this->verif_exist_ordre_menu('bloc_emploi_du_temps');
-	if ($this->emploiDuTemps())
-	$this->chargeAutreNom('bloc_emploi_du_temps');
+	if (getSettingAOui('autorise_edt_tous')){
+	  $this->verif_exist_ordre_menu('bloc_emploi_du_temps');
+	  if ($this->emploiDuTemps())
+	  $this->chargeAutreNom('bloc_emploi_du_temps');
+	}
 
 /***** Outils destinés essentiellement aux parents et aux élèves *****/
 
@@ -229,9 +231,11 @@ class class_page_accueil {
 	$this->chargeAutreNom('bloc_module_inscriptions');
 
 /***** Module discipline *****/
-	$this->verif_exist_ordre_menu('bloc_module_discipline');
-	if ($this->discipline())
-	$this->chargeAutreNom('bloc_module_discipline');
+	if (getSettingAOui("active_mod_discipline")) {
+	  $this->verif_exist_ordre_menu('bloc_module_discipline');
+	  if ($this->discipline())
+	  $this->chargeAutreNom('bloc_module_discipline');
+	}
 
 /***** Module Modèle Open Office *****/
 	$this->verif_exist_ordre_menu('bloc_modeles_Open_Office');
@@ -1395,16 +1399,16 @@ class class_page_accueil {
   }
 
   protected function discipline(){
-	$this->b=0;
+	  $this->b=0;
 
-	$this->creeNouveauItem("/mod_discipline/index.php",
-			"Discipline",
-			"Signaler des incidents, prendre des mesures, des sanctions.");
+	  $this->creeNouveauItem("/mod_discipline/index.php",
+			  "Discipline",
+			  "Signaler des incidents, prendre des mesures, des sanctions.");
 
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Discipline",'images/icons/document.png');
-	  return true;
-	}
+	  if ($this->b>0){
+		$this->creeNouveauTitre('accueil',"Discipline",'images/icons/document.png');
+		return true;
+	  }
 
   }
 
