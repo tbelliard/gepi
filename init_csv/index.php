@@ -66,7 +66,7 @@ require_once("../lib/header.inc");
 	$sql="SELECT 1=1 FROM ct_devoirs_entry LIMIT 1;";
 	$test2=mysql_query($sql);
 	if((mysql_num_rows($test1)>0)||(mysql_num_rows($test2)>0)) {
-		echo "<p>Les cahiers de textes ne sont pas vides.<br />Vous devriez <a href='cahier_texte_admin/admin_ct.php'>vider les cahiers de textes de l'an dernier</a> avant de procéder à l'initialisation.</p>\n";
+		echo "<p>Les cahiers de textes ne sont pas vides.<br />Vous devriez <a href='../cahier_texte_admin/admin_ct.php'>vider les cahiers de textes de l'an dernier</a> avant de procéder à l'initialisation.</p>\n";
 	}
 ?>
 <!--/p-->
