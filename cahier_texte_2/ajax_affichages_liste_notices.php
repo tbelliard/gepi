@@ -138,7 +138,7 @@ foreach ($current_group->getClasses() as $classe) {
 // Affichage des travaux à  faire futurs, toutes matières confondues
 foreach ($current_group->getClasses() as $classe) {
 	if ($total[$classe->getId()] > 0) {
-		echo"La classe " . $classe->getClasse() . " a  <a href=\"javascript:centrerpopup('liste_tous_devoirs.php?classe=". $classe->getId()."&amp;debut=$aujourdhui',260,320,'scrollbars=yes,statusbar=no,resizable=yes');\">" . $total[$classe->getId()];
+		echo"La classe " . $classe->getNom() . " a  <a href=\"javascript:centrerpopup('liste_tous_devoirs.php?classe=". $classe->getId()."&amp;debut=$aujourdhui',260,320,'scrollbars=yes,statusbar=no,resizable=yes');\">" . $total[$classe->getId()];
 		echo (($total[$classe->getId()] == 1) ? " travail personnel" : "travaux personnels");
 		echo "</a> jusqu'au " . strftime("%A %d %B %Y", $date[$classe->getId()]) . ".\n<br style='font-size:2px;'/>";
 	}
