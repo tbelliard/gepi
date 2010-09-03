@@ -2629,6 +2629,9 @@ class CASClient
 				$server_name = $_SERVER['HTTP_X_FORWARDED_SERVER'];
 			}
 			$final_uri .= $server_name;
+      
+/* # Commenté par Thomas : cette partie n'est pas compatible avec les configurations
+ * en reverse proxy !
 			if (!strpos($server_name, ':')) {
 				if ( ($this->isHttps() && $_SERVER['SERVER_PORT']!=443)
 						|| (!$this->isHttps() && $_SERVER['SERVER_PORT']!=80) ) {
@@ -2636,6 +2639,7 @@ class CASClient
 					$final_uri .= $_SERVER['SERVER_PORT'];
 				}
 			}
+*/
 			
 			$request_uri	= explode('?', $_SERVER['REQUEST_URI'], 2);
 			$final_uri		.= $request_uri[0];
