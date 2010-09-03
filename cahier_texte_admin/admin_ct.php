@@ -295,7 +295,10 @@ if (!(isset($_GET['action']))) {
   <th><b><a href='admin_ct.php?order_by=ct.id_login,jc.id_classe,jm.id_matiere'>Propriétaire</a></b></th>
   <th><b>Nombre<br />de notices</b></th>
   <th><b>Nombre<br />de notices<br />"devoirs"</b></th>
-  <th><b>Action</b></th><th><b><input type="submit" name="sup_ct" value="Suppression" onclick="return confirmlink(this, 'La suppression d\'un cahier de texte est définitive. Les notices ainsi que les documents joints seront supprimés. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')" /></b></th></tr>
+  <th>
+  <b>Action</b></th><th><b><input type="submit" name="sup_ct" value="Suppression" onclick="return confirmlink(this, 'La suppression d\'un cahier de texte est définitive. Les notices ainsi que les documents joints seront supprimés. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')" /></b><br />
+  <a href="javascript:CocheCase(true)"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' title='Tout cocher' /></a> / <a href="javascript:CocheCase(false)"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' title='Tout décocher' /></a>
+  </th></tr>
 
   <?php
   /*
@@ -307,6 +310,7 @@ if (!(isset($_GET['action']))) {
   */
   $order_by=isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST['order_by'] : "jc.id_classe,jm.id_matiere");
 
+  $cpt=0;
   $alt=1;
   $query = sql_query("SELECT DISTINCT ct.id_groupe, ct.id_login FROM ct_entry ct, j_groupes_classes jc, j_groupes_matieres jm WHERE (jc.id_groupe = ct.id_groupe AND jm.id_groupe = ct.id_groupe) ORDER BY ".$order_by);
   for ($i=0; ($row=sql_row($query,$i)); $i++) {
@@ -349,13 +353,26 @@ if (!(isset($_GET['action']))) {
       //echo "<td><a href='../public/index.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>\n";
       echo "<td><a href='../cahier_texte/see_all.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>\n";
       //echo "<td><center><input type=\"checkbox\" name=\"sup".$id_groupe."_".$id_prop."\" /></center></td>\n";
-      echo "<td><center><input type=\"checkbox\" name=\"sup".$id_groupe."\" value=\"$id_prop\" /></center></td>\n";
+      echo "<td><center><input type=\"checkbox\" id='sup$cpt' name=\"sup".$id_groupe."\" value=\"$id_prop\" /></center></td>\n";
       echo "</tr>\n";
-
+      $cpt++;
   }
   echo "</table>\n";
   echo "<input type='hidden' name='order_by' value='$order_by' />\n";
   echo "</form>\n";
+
+  echo "<script type='text/javascript' language='javascript'>
+function CocheCase(boul) {
+ for(i=0;i<$cpt;i++) {
+   if (document.getElementById('sup'+i)) {
+      document.getElementById('sup'+i).checked = boul ;
+   }
+ }
+}
+</script>
+";
+  echo "<p><br /></p>\n";
+
 }
 require ("../lib/footer.inc.php");
 ?>
