@@ -83,16 +83,16 @@ if (isset($_POST['sup_ct'])) {
              if (!($del_ct)) $error = 'yes';
            }
            if ($error == 'no') {
-              $msg = "Suppression des notices dans ct_entry réussie";
+              $msg .= "Suppression des notices dans ct_entry réussie pour $id_prop sur le groupe n°$id_groupe.<br />";
            } else {
-              $msg = "Il y a eu un problème lors de la suppression des notices dans ct_entry.";
+              $msg .= "Il y a eu un problème lors de la suppression des notices dans ct_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
            }
          } else {
-           $msg = "Pas de notice à supprimer dans ct_entry.";
+           $msg .= "Pas de notice à supprimer dans ct_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
          }
       }
-
    }
+
   //$sql="SELECT DISTINCT id_groupe, id_login FROM ct_devoirs_entry ORDER BY id_groupe;";
   $sql="SELECT DISTINCT id_groupe FROM ct_devoirs_entry ORDER BY id_groupe;";
   //echo "$sql<br />\n";
@@ -106,18 +106,24 @@ if (isset($_POST['sup_ct'])) {
          $id_prop=$_POST[$temp];
 
          $error = 'no';
-         $del_ct_devoirs = sql_query("delete  FROM ct_devoirs_entry WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')");
-         if (!($del_ct_devoirs)) $error = 'yes';
-         if ($error == 'no') {
-             $msg .= "<br>Suppression des notices dans ct_devoirs_entry réussie";
-         } else {
-             $msg .= "<br>Il y a eu un problème lors de la suppression des notices dans ct_devoirs_entry.";
-         }
-      } else {
-           $msg .= "<br>Pas de notice à supprimer dans ct_devoirs_entry.";
-      }
+         $sql="SELECT id_ct  FROM ct_devoirs_entry WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."');";
+         //echo "$sql<br />\n";
+         $appel_ct_devoirs_entry=sql_query($sql);
+         if (($appel_ct_devoirs_entry) and (sql_count($appel_ct_devoirs_entry)!=0)) {
+           $del_ct_devoirs = sql_query("delete  FROM ct_devoirs_entry WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')");
+           if (!($del_ct_devoirs)) {$error = 'yes';}
 
-   }
+           if ($error == 'no') {
+             $msg .= "Suppression des notices dans ct_devoirs_entry réussie pour $id_prop sur le groupe n°$id_groupe.<br />";
+           } else {
+             $msg .= "Il y a eu un problème lors de la suppression des notices dans ct_devoirs_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
+           }
+         } else {
+              $msg .= "Pas de notice à supprimer dans ct_devoirs_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
+         }
+      }
+  }
+
   //$sql="SELECT DISTINCT id_groupe, id_login FROM ct_private_entry ORDER BY id_groupe;";
   $sql="SELECT DISTINCT id_groupe FROM ct_private_entry ORDER BY id_groupe;";
   $query=sql_query($sql);
@@ -130,19 +136,22 @@ if (isset($_POST['sup_ct'])) {
          $id_prop=$_POST[$temp];
 
          $error = 'no';
-         $del_ct_devoirs = sql_query("delete  FROM ct_private_entry WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')");
-         if (!($del_ct_devoirs)) $error = 'yes';
-         if ($error == 'no') {
-             $msg .= "<br>Suppression des notices dans ct_private_entry réussie";
+         $sql="SELECT id_ct  FROM ct_private_entry WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."');";
+         //echo "$sql<br />\n";
+         $appel_ct_private_entry=sql_query($sql);
+         if (($appel_ct_private_entry) and (sql_count($appel_ct_private_entry)!=0)) {
+           $del_ct_devoirs = sql_query("delete  FROM ct_private_entry WHERE (id_groupe='".$id_groupe."' and id_login = '".$id_prop."')");
+           if (!($del_ct_devoirs)) $error = 'yes';
+           if ($error == 'no') {
+               $msg .= "Suppression des notices dans ct_private_entry réussie pour $id_prop sur le groupe n°$id_groupe.<br />";
+           } else {
+               $msg .= "Il y a eu un problème lors de la suppression des notices dans ct_devoirs_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
+           }
          } else {
-             $msg .= "<br>Il y a eu un problème lors de la suppression des notices dans ct_devoirs_entry.";
+           $msg .= "Pas de notice à supprimer dans ct_private_entry pour $id_prop sur le groupe n°$id_groupe.<br />";
          }
-      } else {
-           $msg .= "<br>Pas de notice à supprimer dans ct_private_entry.";
       }
-
    }
-
 }
 
 // Modification d'un cahier de texte - Etape 2
