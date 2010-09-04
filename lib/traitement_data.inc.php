@@ -359,7 +359,7 @@ $_SERVER['REQUEST_URI'] = str_replace("&amp;","&",$_SERVER['REQUEST_URI']);
 // Et on traite les fichiers uploadés
 if (!isset($AllowedFilesExtensions)) {
 	//$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif","ico","jpg","odg","odp","ods","odt","pdf","png","ppt","swf","txt","xcf","xls","zip","pps");
-	$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif", "gz","ico","jpg","odg","odp","ods","odt","pdf","png","ppt","sql","swf","txt","xcf","xls","xml","zip","pps");
+	$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif", "gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","sql","swf","txt","xcf","xls","xml","zip","pps");
 }
 
 if (isset($_FILES) and !empty($_FILES)) {		
