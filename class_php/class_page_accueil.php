@@ -162,11 +162,11 @@ class class_page_accueil {
 	$this->chargeAutreNom('bloc_releve_ects');
 
 /***** Emploi du temps *****/
-	if (getSettingAOui('autorise_edt_tous')){
+	//if (getSettingAOui('autorise_edt_tous')){
 	  $this->verif_exist_ordre_menu('bloc_emploi_du_temps');
 	  if ($this->emploiDuTemps())
 	  $this->chargeAutreNom('bloc_emploi_du_temps');
-	}
+	//}
 
 /***** Outils destinés essentiellement aux parents et aux élèves *****/
 
@@ -726,36 +726,37 @@ class class_page_accueil {
 
   private function emploiDuTemps(){
 	$this->b=0;
-
-    $this->creeNouveauItem("/edt_organisation/index_edt.php",
-			"Emploi du temps",
-			"Cet outil permet la consultation/gestion de l'emploi du temps.");
-
-	if ($_SESSION["statut"] == 'responsable') {
-	  if (getSettingValue("autorise_edt_eleve")=="yes"){
-		// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
-		$tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur);
-		$this->creeNouveauItem("/edt_organisation/edt_eleve.php?login_edt=".$tab_tmp_ele[0],
+  if (getSettingAOui('autorise_edt_tous') || (getSettingAOui('autorise_edt_admin') && $this->statutUtilisateur == 'administrateur')){
+	  $this->creeNouveauItem("/edt_organisation/index_edt.php",
 			  "Emploi du temps",
-			  "Cet outil permet la consultation de l'emploi du temps de votre enfant.");
-	  }
-	}else if($_SESSION["statut"] == 'eleve'){
-	  if (getSettingValue("autorise_edt_eleve")=="yes"){
+			  "Cet outil permet la consultation/gestion de l'emploi du temps.");
+
+	  if ($_SESSION["statut"] == 'responsable') {
+		if (getSettingValue("autorise_edt_eleve")=="yes"){
+		  // on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
+		  $tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur);
+		  $this->creeNouveauItem("/edt_organisation/edt_eleve.php?login_edt=".$tab_tmp_ele[0],
+				"Emploi du temps",
+				"Cet outil permet la consultation de l'emploi du temps de votre enfant.");
+		}
+	  }else if($_SESSION["statut"] == 'eleve'){
+		if (getSettingValue("autorise_edt_eleve")=="yes"){
+		  $this->creeNouveauItem("/edt_organisation/edt_eleve.php",
+				"Emploi du temps",
+				"Cet outil permet la consultation de votre emploi du temps.");
+		}
+	  }else{
 		$this->creeNouveauItem("/edt_organisation/edt_eleve.php",
-			  "Emploi du temps",
-			  "Cet outil permet la consultation de votre emploi du temps.");
+				"Emploi du temps",
+				"Cet outil permet la consultation de votre emploi du temps.");
 	  }
-	}else{
-	  $this->creeNouveauItem("/edt_organisation/edt_eleve.php",
-			  "Emploi du temps",
-			  "Cet outil permet la consultation de votre emploi du temps.");
-	}
 
-	if ($this->b>0){
-	  $this->creeNouveauTitre('accueil',"Emploi du temps",'images/icons/document.png');
-	  return true;
+	  if ($this->b>0){
+		$this->creeNouveauTitre('accueil',"Emploi du temps",'images/icons/document.png');
+		return true;
+	  }
 	}
- }
+  }
 
   private function cahierTexteFamille(){
 	$this->b=0;
