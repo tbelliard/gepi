@@ -171,6 +171,7 @@ $id_periode=isset($_GET['periode_num']) ? $_GET["periode_num"] : NULL;
 // les tableaux contienent la liste des id.
 $id_liste_classes=isset($_POST['id_liste_classes']) ? $_POST["id_liste_classes"] : NULL;
 $id_liste_groupes=isset($_POST['id_liste_groupes']) ? $_POST["id_liste_groupes"] : NULL;
+//echo "count(\$id_liste_groupes)=".count($id_liste_groupes)."<br />";
 if ($id_periode==NULL){$id_periode=isset($_POST['id_periode']) ? $_POST["id_periode"] : NULL;}
 if (!(is_numeric($id_periode))) {
 	$id_periode=1;
@@ -206,12 +207,16 @@ if ($id_liste_groupes!=NULL) {
 //echo $nb_pages;
 }
 
+//echo $nb_pages;
+
 	// Cette boucle crée les différentes pages du PDF
 	for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
 		// Impressions RAPIDES
 		if ($id_groupe!=NULL) { // C'est un groupe
 			$donnees_eleves = traite_donnees_groupe($id_groupe,$id_periode,$nb_eleves,$tri);
-			$id_classe=$donnees_eleves[0]['id_classe'];
+			if(count($donnees_eleves)>0) {
+				$id_classe=$donnees_eleves[0]['id_classe'];
+			}
 		} elseif ($id_classe!=NULL) { // C'est une classe
 			$donnees_eleves = traite_donnees_classe($id_classe,$id_periode,$nb_eleves);
 		} //fin c'est une classe
@@ -220,13 +225,36 @@ if ($id_liste_groupes!=NULL) {
 		if ($id_liste_groupes!=NULL) {
 			$donnees_eleves = traite_donnees_groupe($id_liste_groupes[$i_pdf],$id_periode,$nb_eleves,$tri);
 			$id_groupe=$id_liste_groupes[$i_pdf];
-			$id_classe=$donnees_eleves[0]['id_classe'];
+			if(count($donnees_eleves)>0) {
+				$id_classe=$donnees_eleves[0]['id_classe'];
+			}
 		}
 
 		if ($id_liste_classes!=NULL) {
 			$donnees_eleves = traite_donnees_classe($id_liste_classes[$i_pdf],$id_periode,$nb_eleves);
 			$id_classe=$id_liste_classes[$i_pdf];
 		}
+
+		//echo "count(\$donnees_eleves)=".count($donnees_eleves)."<br />";
+		if(count($donnees_eleves)==0) {
+			$pdf->AddPage("P"); //ajout d'une page au document
+			$pdf->SetDrawColor(0,0,0);
+			$pdf->SetFont('Arial');
+			$pdf->SetXY(20,20);
+			$pdf->SetFontSize(14);
+			$pdf->Cell(90,7, "ERREUR",0,2,'');
+
+			$pdf->SetXY(20,40);
+			$pdf->SetFontSize(10);
+			$pdf->Cell(150,7, "Aucun élève n'est affecté dans cette classe ou enseignement.",0,2,'');
+
+			$nom_releve=date("Ymd_Hi");
+			$nom_releve = 'Liste_'.$nom_releve.'.pdf';
+			header('Content-Type: application/pdf');
+			$pdf->Output($nom_releve,'I');
+			die();
+		}
+
 
 		// CALCUL de VARIABLES
 		//Calcul de la hauteur de la ligne dans le cas de l'option tout sur une ligne

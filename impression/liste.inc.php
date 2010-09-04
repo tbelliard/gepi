@@ -177,6 +177,11 @@ global $prefix_base ;
 	echo "</pre>";
 	*/
 
-    return $donnees_eleves;
+	if(isset($donnees_eleves)) {
+	    return $donnees_eleves;
+	}
+	else {
+	    return array();
+	}
 }
 ?>
