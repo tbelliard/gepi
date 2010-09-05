@@ -201,37 +201,44 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire 
     if (isset($_SESSION['retenue_date'])) {
         $date = datemysql_to_jj_mois_aaaa($_SESSION['retenue_date'],'/','n');
-	    session_unregister("retenue_date");
+	    //session_unregister("retenue_date");
+	    unset($_SESSION['retenue_date']);
 	}
 	if (isset($_SESSION['retenue_nom_prenom_elv'])) {
 		$nom_prenom_eleve =$_SESSION['retenue_nom_prenom_elv'];
-		session_unregister("retenue_nom_prenom_elv");
+		//session_unregister("retenue_nom_prenom_elv");
+	    unset($_SESSION['retenue_nom_prenom_elv']);
 	}
 	if (isset($_SESSION['retenue_classe_elv'])) {
 		$classe = $_SESSION['retenue_classe_elv'];
-		session_unregister("retenue_classe_elv");	
+		//session_unregister("retenue_classe_elv");
+	    unset($_SESSION['retenue_classe_elv']);
 	}
 	if (isset($_SESSION['retenue_motif'])) {
 		$motif = $_SESSION['retenue_motif'];
 		$motif=traitement_magic_quotes(corriger_caracteres($motif));
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 		$motif=my_ereg_replace('(\\\r\\\n)+',"\r\n",$motif);
-		session_unregister("retenue_motif");
+		//session_unregister("retenue_motif");
+	    unset($_SESSION['retenue_motif']);
 	}
 	if (isset($_SESSION['retenue_travail'])) {
 		$travail = $_SESSION['retenue_travail'];
 		$travail=traitement_magic_quotes(corriger_caracteres($travail));
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 		$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
-		session_unregister("retenue_travail");
+		//session_unregister("retenue_travail");
+	    unset($_SESSION['retenue_travail']);
 	}
 	if (isset($_SESSION['retenue_nom_resp'])) {
 	$nom_resp = $_SESSION['retenue_nom_resp'];
-	session_unregister("retenue_nom_resp");
+	//session_unregister("retenue_nom_resp");
+	    unset($_SESSION['retenue_nom_resp']);
 	}
 	if (isset($_SESSION['retenue_fct_resp'])) {
 		$fct_resp = $_SESSION['retenue_fct_resp'];
-		session_unregister("retenue_fct_resp");
+		//session_unregister("retenue_fct_resp");
+	    unset($_SESSION['retenue_fct_resp']);
 	}
 
 	if (isset($_SESSION['retenue_nature_incident'])) {
@@ -239,7 +246,8 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 		$nature_incident=traitement_magic_quotes(corriger_caracteres($nature_incident));
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 		$nature_incident=my_ereg_replace('(\\\r\\\n)+',"\r\n",$nature_incident);
-		session_unregister("retenue_nature_incident");
+		// session_unregister("retenue_nature_incident");
+	    unset($_SESSION['retenue_nature_incident']);
 	}
 
 	$date_retenue ='';

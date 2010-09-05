@@ -51,7 +51,7 @@ if (!checkAccess()) {
 $is_posted=isset($_POST['is_posted']) ? $_POST['is_posted'] : (isset($_GET['is_posted']) ? $_GET['is_posted'] : NULL);
 
 if (isset($is_posted)) {
-  if ($is_posted='y') {
+  if ($is_posted=='y') {
 		$_SESSION['retenue_date']=isset($_POST['date']) ? $_POST['date'] : (isset($_GET['date']) ? $_GET['date'] : NULL);
 		$_SESSION['retenue_nom_prenom_elv']=isset($_POST['nom_prenom_elv']) ? $_POST['nom_prenom_elv'] : (isset($_GET['nom_prenom_elv']) ? $_GET['nom_prenom_elv'] : NULL);
 		$_SESSION['retenue_classe_elv']=isset($_POST['classe_elv']) ? $_POST['classe_elv'] : (isset($_GET['classe_elv']) ? $_GET['classe_elv'] : NULL);
