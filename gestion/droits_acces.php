@@ -1363,7 +1363,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 
 // ====== Visa des cahiers de texte =====
 $titreItem='GepiAccesCdtVisa';
-$texteItem="Peux viser les cahiers de textes ";
+$texteItem="Peut viser les cahiers de textes ";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1448,7 +1448,7 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='GepiAccesTouteFicheEleveScolarite';
-$texteItem="a le droit d'accéder a toutes les fiches élève";
+$texteItem="a le droit d'accéder à toutes les fiches élève";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
@@ -1587,12 +1587,12 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='GepiAccesTouteFicheEleveCpe';
-$texteItem="a le droit d'accéder a toutes les fiches élève";
+$texteItem="a le droit d'accéder à toutes les fiches élève";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
 $titreItem='GepiAccesAbsTouteClasseCpe';
-$texteItem="a le droit d'accéder a toutes les classe pour saisir les absences";
+$texteItem="a le droit d'accéder à toutes les classes pour saisir les absences";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
 
