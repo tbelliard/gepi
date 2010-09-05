@@ -484,7 +484,7 @@ if (!isset($aid_trouve)) {
 		</label>
 		<p>
 		  <em>
-			Si coché, les photos déjà présentent seront remplacées par les nouvelles.
+			Si coché, les photos déjà présentes seront remplacées par les nouvelles.
 			Sinon, les anciennes photos seront conservées
 		  </em>
 		</p>
