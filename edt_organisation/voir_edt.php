@@ -103,7 +103,7 @@ else {
 }
 // =================== Forcer l'affichage d'un edt si l'utilisateur est un prof 
 if (!isset($login_edt)) {
-    if ($_SESSION['statut'] == "professeur") {
+    if (($_SESSION['statut'] == "professeur") AND ($visioedt == "prof1")) {
         $login_edt = $_SESSION['login'];
         $_GET["login_edt"] = $login_edt;
         $_GET["type_edt_2"] = "prof";
