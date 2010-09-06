@@ -73,7 +73,7 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 		    // on est arrivé au bout, on va renvoye l'heure de fin du dernier creneau
 		    return $lastCreneau->getHeurefinDefiniePeriode($format);
 		}
-		if (($this->getDuree() % 2) == 0) {
+		if (($duree_modif % 2) == 0) {
 		    //il faut prendre la fin du creneau precedent
 		    return $lastCreneau->getHeurefinDefiniePeriode($format);
 		} else {
