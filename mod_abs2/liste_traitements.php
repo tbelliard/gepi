@@ -611,10 +611,10 @@ foreach ($results as $traitement) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>";
 	echo "<tr style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_traitements.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";
+	echo "<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
-	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
+	if ($utilisateur->getAccesFicheEleve($eleve)) {
 	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
 	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
 	    echo ' (voir fiche)';
@@ -622,7 +622,7 @@ foreach ($results as $traitement) {
 	}
 	echo "</td>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_traitements.php?filter_eleve=".$saisie->getEleve()->getNom()."' style='display: block; height: 100%;'> ";
+	echo "<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."' style='display: block; height: 100%;'> ";
  	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 	    $nom_photo = $eleve->getNomPhoto(1);
 	    //$photos = "../photos/eleves/".$nom_photo;
