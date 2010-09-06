@@ -99,6 +99,7 @@ if($_SESSION['statut']=="professeur") {
 }
 
 if (isset($is_posted) and ($is_posted == '2')) {
+	//$tab_id_classe_quelles_classes=array();
 	if ($quelles_classes == 'certaines') {
 		//
 		// On efface les enregistrements liés à la session en cours
@@ -117,7 +118,7 @@ if (isset($is_posted) and ($is_posted == '2')) {
 			if ($nb_en == 0) {
 				mysql_query("DELETE FROM tempo WHERE num = '$num'");
 			}
-		$nb++;
+			$nb++;
 		}
 
 		$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
@@ -131,8 +132,9 @@ if (isset($is_posted) and ($is_posted == '2')) {
 				$periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe' ORDER BY num_periode");
 				$nb_periode = mysql_num_rows($periode_query);
 				$call_reg = mysql_query("insert into tempo Values('$id_classe','$nb_periode', '".SESSION_ID()."')");
+				//$tab_id_classe_quelles_classes[]=$id_classe;
 			}
-		$i++;
+			$i++;
 		}
 	}
 }
@@ -153,7 +155,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 				$liste_cible = $liste_cible.$eleve_login.";";
 				$liste_cible2 = $liste_cible2.$eleve_elenoet.";";
 			}
-		$i++;
+			$i++;
 		}
 		//header("Location: ../lib/confirm_query.php?liste_cible=$liste_cible&amp;action=del_eleve");
 		if($liste_cible!=''){
@@ -179,8 +181,7 @@ function ImageFlip($imgsrc, $type)
 
 	$imgdest = imagecreatetruecolor($width, $height);
 
-	switch( $type )
-		{
+	switch( $type ) {
 		// mirror wzgl. osi
 		case IMAGE_FLIP_HORIZONTAL:
 			for( $y=0 ; $y<$height ; $y++ )
@@ -206,10 +207,10 @@ function ImageFlip($imgsrc, $type)
 
 			imagedestroy( $rowBuffer );
 			break;
-		}
+	}
 
 	return( $imgdest );
-	}
+}
 
 function ImageRotateRightAngle( $imgSrc, $angle )
 {
@@ -264,51 +265,59 @@ function test_ecriture_backup() {
 }
 
 if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
+	$msg="";
+	$cpt_photos_mises_en_place=0;
 	$cpt_photo = 0;
 	while($cpt_photo < $total_photo)
 	{
-		if($_FILES['photo']['type'][$cpt_photo] != "")
+		if((isset($_FILES['photo']['type'][$cpt_photo]))&&($_FILES['photo']['type'][$cpt_photo] != ""))
 		{
-				$sav_photo = isset($_FILES["photo"]) ? $_FILES["photo"] : NULL;
+			$sav_photo = isset($_FILES["photo"]) ? $_FILES["photo"] : NULL;
 			if (!isset($sav_photo['tmp_name'][$cpt_photo]) or ($sav_photo['tmp_name'][$cpt_photo] =='')) {
-				$msg = "Erreur de téléchargement niveau 1.";
+				$msg.="Erreur de téléchargement niveau 1 (<i>photo n°$cpt_photo</i>).<br />";
 			} else if (!file_exists($sav_photo['tmp_name'][$cpt_photo])) {
-					$msg = "Erreur de téléchargement niveau 2.";
-			} else if ((!preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo])) and $sav_photo['type'][$cpt_photo] == "image/jpeg"){
-					$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
+				$msg.="Erreur de téléchargement niveau 2 (<i>photo n°$cpt_photo</i>).<br />";
+			} else if (strtolower($sav_photo['type'][$cpt_photo])!="image/jpeg") {
+				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."&nbsp;: ".$sav_photo['type'][$cpt_photo]."</i>)<br />";
+			} else if (!preg_match('/jpg$/i',$sav_photo['name'][$cpt_photo])) {
+				$msg.="Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés (<i>".$sav_photo['name'][$cpt_photo]."</i>)<br />";
 			} else {
-					$dest = $rep_photos;
+				$dest = $rep_photos;
 				$n = 0;
 				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.$quiestce[$cpt_photo].".jpg")) {
-					$msg = "Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire photos/eleves/";
+					$msg.="Problème de transfert : le fichier n°$cpt_photo n'a pas pu être transféré sur le répertoire photos/eleves/<br />";
 				} else {
-						$msg = "Téléchargement réussi.";
-				if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
-					// si le redimensionnement des photos est activé on redimenssionne
-					$source = imagecreatefromjpeg($rep_photos.$quiestce[$cpt_photo].".jpg"); // La photo est la source
-					if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
-					if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
-
-					//rotation de l'image si choix différent de rien
-					//if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
-
-					// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
-					$largeur_source = imagesx($source);
-					$hauteur_source = imagesy($source);
-					$largeur_destination = imagesx($destination);
-					$hauteur_destination = imagesy($destination);
-
-					// On crée la miniature
-					imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
-					if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
-					// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
-					imagejpeg($destination, $rep_photos.$quiestce[$cpt_photo].".jpg",100);
+					//$msg = "Téléchargement réussi.";
+					$cpt_photos_mises_en_place++;
+					if (getSettingValue("active_module_trombinoscopes_rd")=='y') {
+						// si le redimensionnement des photos est activé on redimenssionne
+	
+						$source = imagecreatefromjpeg($rep_photos.$quiestce[$cpt_photo].".jpg"); // La photo est la source
+	
+						if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
+						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
+	
+						//rotation de l'image si choix différent de rien
+						//if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
+	
+						// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
+						$largeur_source = imagesx($source);
+						$hauteur_source = imagesy($source);
+						$largeur_destination = imagesx($destination);
+						$hauteur_destination = imagesy($destination);
+	
+						// On crée la miniature
+						imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
+						if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
+						// On enregistre la miniature sous le nom "mini_couchersoleil.jpg"
+						imagejpeg($destination, $rep_photos.$quiestce[$cpt_photo].".jpg",100);
 					}
 				}
 			}
 		}
 		$cpt_photo = $cpt_photo + 1;
 	}
+	if(($msg=="")&&($cpt_photos_mises_en_place>0)) {$msg = "Téléchargement réussi.";}
 }
 // fin de l'envoi des photos du trombinoscope
 
@@ -316,6 +325,8 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 $titre_page = "Gestion des élèves";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE *****************
+
+//debug_var();
 
 ?>
 
@@ -425,7 +436,7 @@ if(!getSettingValue('conv_new_resp_table')){
 	}
 }
 
-if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 	echo " | <a href='add_eleve.php?mode=unique'>Ajouter un élève à la base (simple)</a>\n";
 	echo " | <a href='add_eleve.php?mode=multiple'>Ajouter des élèves à la base (à la chaîne)</a>\n";
 
@@ -1462,6 +1473,14 @@ if(isset($quelles_classes)) {
 	echo "<p>Total : $nombreligne élève";
 	if($nombreligne>1) {echo "s";}
 	echo "</p>\n";
+
+	echo "<input type='text' name='quelles_classes' value='$quelles_classes' />\n";
+	// Dans le cas scolarite, la liste des classes est dans la table tempo
+	if(isset($motif_rech)){
+		echo "<input type='hidden' name='motif_rech' value='$motif_rech' />\n";
+	}
+	echo "<input type='hidden' name='order_type' value='$order_type' />\n";
+
 	?>
 	<!--/table-->
 	<input type="hidden" name="is_posted" value="1" />
