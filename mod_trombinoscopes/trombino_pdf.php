@@ -84,12 +84,17 @@ $sql="CREATE TABLE IF NOT EXISTS trombino_decoupe (
 	y TINYINT(1) NOT NULL,
 	page TINYINT(1) NOT NULL,
 	page_global SMALLINT(6) NOT NULL,
-	PRIMARY KEY (elenoet));";
+	PRIMARY KEY (id_grille, elenoet));";
 $create_table=mysql_query($sql);
 
 $test=mysql_query("SHOW COLUMNS FROM trombino_decoupe LIKE 'id_grille';");
 if(mysql_num_rows($test)==0) {
 	$query=mysql_query("ALTER TABLE trombino_decoupe ADD id_grille INT(11) NOT NULL;");
+}
+
+$test=mysql_query("SHOW index FROM trombino_decoupe WHERE Key_name='PRIMARY';");
+if(mysql_num_rows($test)<2) {
+	$query=mysql_query("ALTER TABLE trombino_decoupe DROP PRIMARY KEY, ADD PRIMARY KEY ( id_grille,elenoet );");
 }
 
 $sql="CREATE TABLE IF NOT EXISTS trombino_decoupe_param (
