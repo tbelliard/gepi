@@ -8,18 +8,19 @@
  */
 $affiche_connexion = 'yes';
 $niveau_arbo = 1;
-	// Initialisations files
-	require_once("../lib/initialisations.inc.php");
 
-	// Resume session
-	$resultat_session = $session_gepi->security_check();
-	if ($resultat_session == 'c') {
-		header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-		die();
-	} else if ($resultat_session == '0') {
-		header("Location: ../logout.php?auto=1");
-		die();
-	};
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+
+// Resume session
+$resultat_session = $session_gepi->security_check();
+if ($resultat_session == 'c') {
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
+} else if ($resultat_session == '0') {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 // Sécurité
 if (!checkAccess()) {
@@ -150,9 +151,11 @@ if ($action == 'ajouter') {
 if ($action == 'modifier') {
 	// On initialise toutes les variables envoyées
 	$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
+	//echo "$sql<br />";
 	$query = mysql_query($sql) OR trigger_error('Erreur '.$sql, E_USER_ERROR);
 	$nbre = mysql_num_rows($query);
 
+	$test=array();
 	for($a = 0; $a < $nbre; $a++){
 
 		$b = mysql_result($query, $a, "id");
@@ -365,9 +368,13 @@ if ($query) {
 	}
 
 //	include("utilisateurs.class.php");
+//======================================================
 $titre_page = 'Gestion des statuts personnalis&eacute;s';
 $style_specifique = "utilisateurs/style_statut";
 include("../lib/header.inc");
+//======================================================
+
+//debug_var();
 
 ?>
 <!-- Début de la page sur les statut privés -->
