@@ -129,7 +129,7 @@ while ($i < $nombreligne){
 	   <img src=\"../images/plier.png\" alt=\"Plus de détails\" title=\"Plus de détails\"  style=\"vertical-align: middle;\" /></span>\n";
     echo "<span id=\"info2_".$aid_id."\" style=\"display: none;cursor:pointer;\" onclick=\"javascript:Element.hide('id_".$aid_id."');Element.show('info1_".$aid_id."');Element.hide('info2_".$aid_id."');\" >
 	   <img src=\"../images/deplier.png\" alt=\"Moins de détails\" title=\"Moins de détails\"  style=\"vertical-align: middle;\" /></span>\n";
-    if (isset($flag_port_folio))
+    if (isset($flag_port_folio) and (isset($_SESSION['login'])))
       echo lien_valide_competences_par_aid($aid_id,$indice_aid,$_SESSION['login'],1);
 
     if ($annee=='')

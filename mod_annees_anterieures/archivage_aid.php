@@ -50,6 +50,11 @@ if(getSettingValue('active_annees_anterieures')!="y"){
 	die();
 }
 
+// si le plugin "port_folio" existe et est activé
+$test_plugin = sql_query1("select ouvert from plugins where nom='port_folio'");
+if ($test_plugin=='y') $flag_port_folio='y';
+
+
 $msg="";
 
 $style_specifique="mod_annees_anterieures/annees_anterieures";
@@ -73,6 +78,11 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
 
     $sql="DELETE FROM archivage_types_aid WHERE annee='".$_GET["annee_supp"]."';";
 		$res_suppr3=mysql_query($sql);
+
+    if (isset($flag_port_folio)) {
+      $sql="DELETE FROM port_folio_validations_archives  WHERE annee='".$_GET["annee_supp"]."';";
+  		mysql_query($sql);
+    }
 
 		// Maintenant, on regarde si l'année est encore utilisée dans archivage_disciplines
 		// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
@@ -531,8 +541,6 @@ if(!isset($annee_scolaire)){
               $login_eleve = mysql_result($call_liste_data_app, $t, "login");
               $periode = mysql_result($call_liste_data_app, $t, "periode");
               $appreciation = mysql_result($call_liste_data_app, $t, "appreciation");
-              $no_gep = sql_query1("select no_gep from eleves where login='".$login_eleve."'");
-              if (($no_gep =='') or ($no_gep=='-1')) $no_gep = "LOGIN_".$login_eleve;
               $call_classe = sql_query("SELECT c.id, c.classe FROM classes c, j_eleves_classes j WHERE (j.login = '".$login_eleve."' and j.id_classe = c.id and j.periode='".$periode."')");
               $id_classe = @mysql_result($call_classe, '0', "id");
               $periode_max = sql_query("select count(num_periode) from periodes where id_classe='".$id_classe."'");
@@ -584,7 +592,11 @@ if(!isset($annee_scolaire)){
               $t++;
             }
 
-
+            // si le plugin "port_folio" existe et est activé
+            $test_plugin = sql_query1("select ouvert from plugins where nom='port_folio'");
+            if (isset($flag_port_folio)) {
+              include("../mod_plugins/port_folio/archivage_port_folio.php");
+            }
 
             $k++;
           }
@@ -684,7 +696,11 @@ if(!isset($annee_scolaire)){
         else
             echo " : </h3>Aucun nouvel enregistrement n'a été effectué.";
 
-
+    if (isset($flag_port_folio)) {
+      $tab_item .= "</table>\n";
+      echo "<H3>Enregistrement des items validés";
+      echo $tab_item;
+    }
 
 
 		echo "<input type='hidden' name='annee_scolaire' value='$annee_scolaire' />\n";

@@ -49,6 +49,10 @@ if(getSettingValue('active_annees_anterieures')!="y"){
 	die();
 }
 
+// si le plugin "port_folio" existe et est activé
+$test_plugin = sql_query1("select ouvert from plugins where nom='port_folio'");
+if ($test_plugin=='y') $flag_port_folio='y';
+
 $confirmer=isset($_POST['confirmer']) ? $_POST['confirmer'] : NULL;
 $suppr=isset($_POST['suppr']) ? $_POST['suppr'] : NULL;
 
@@ -70,6 +74,11 @@ if(isset($confirmer)){
 		$res_suppr5=mysql_query($sql);
 		$sql="DELETE FROM archivage_ects WHERE INE='$suppr[$i]';";
 		$res_suppr6=mysql_query($sql);
+    if (isset($flag_port_folio)) {
+      $sql="DELETE FROM port_folio_validations_archives  WHERE login='$suppr[$i]';";
+  		mysql_query($sql);
+    }
+
 		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)  and ($res_suppr5) and ($res_suppr6)) {
 			$nb_suppr++;
 		}
