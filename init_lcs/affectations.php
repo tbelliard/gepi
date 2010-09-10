@@ -110,7 +110,7 @@ if (isset($_POST['is_posted'])) {
     //================================================
     // Modif: boireaus 20091119
     //$res = sql_query("select id, classe from classes");
-    $res = sql_query("select id, nom_complet from classes");
+    $res = sql_query("select id, classe from classes");
     //================================================
     if (!$res) die("problème : impossible de sélectionner les classes.");
     for ($i = 0; ($row = sql_row($res, $i)); $i++) {
