@@ -91,7 +91,7 @@ class itemGeneral {
 	{
 		if($key_setting!='')
 		{
-			$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND (value='y' OR value='yes');";
+			$sql="SELECT 1=1 FROM setting WHERE name LIKE '$key_setting' AND (value='y' OR value='yes' OR value='2');";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0)
 			{

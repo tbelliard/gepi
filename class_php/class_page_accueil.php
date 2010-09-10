@@ -114,9 +114,11 @@ class class_page_accueil {
 	$this->chargeAutreNom('bloc_administration');
 
 /***** Outils de gestion des absences vie scolaire *****/
-	$this->verif_exist_ordre_menu('bloc_absences_vie_scol');
+	//$this->verif_exist_ordre_menu('bloc_absences_vie_scol');
+	$this->verif_exist_ordre_menu('bloc_absences_professeur');
 	if ($this->absences_vie_scol())
-	$this->chargeAutreNom('bloc_absences_vie_scol');
+	$this->chargeAutreNom('bloc_absences_professeur');
+	//$this->chargeAutreNom('bloc_absences_vie_scol');
 
 /***** Outils de gestion des absences par les professeurs *****/
 	$this->verif_exist_ordre_menu('bloc_absences_professeur');
@@ -356,23 +358,30 @@ class class_page_accueil {
   }
 
   protected function absences_vie_scol() {
-	if (getSettingValue("active_module_absence")=='y') {
+  
+			$this->b=0;
+		if (getSettingValue("active_module_absence")=='y') {
 
-	  $this->b=0;
+			$this->creeNouveauItem('/mod_absences/gestion/gestion_absences.php',
+					"Gestion Absences, dispenses, retards et infirmeries",
+					"Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
+					
+			$this->creeNouveauItem('/mod_absences/gestion/voir_absences_viescolaire.php',
+					"Visualiser les absences",
+					"Vous pouvez visualiser créneau par créneau la saisie des absences.");
 
-	  $this->creeNouveauItem('/mod_absences/gestion/gestion_absences.php',
-			  "Gestion Absences, dispenses, retards et infirmeries",
-			  "Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
-	  $this->creeNouveauItem('/mod_absences/gestion/voir_absences_viescolaire.php',
-			  "Visualiser les absences",
-			  "Vous pouvez visualiser créneau par créneau la saisie des absences.");
 
-	  if ($this->b>0){
-		$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
-		return true;
+	  } else if (getSettingValue("active_module_absence")=='2' && ($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe")) {
+		$this->creeNouveauItem("/mod_abs2/index.php",
+				"Gestion des Absences",
+				"Cet outil vous permet de gérer les absences des élèves");
 	  }
-
-	}
+	  
+			if ($this->b>0){
+			$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
+			return true;
+			}
+		
   }
 
   protected function absences_profs(){
@@ -727,36 +736,36 @@ class class_page_accueil {
   private function emploiDuTemps(){
 	$this->b=0;
   if (getSettingAOui('autorise_edt_tous') || (getSettingAOui('autorise_edt_admin') && $this->statutUtilisateur == 'administrateur')){
-	  $this->creeNouveauItem("/edt_organisation/index_edt.php",
+    $this->creeNouveauItem("/edt_organisation/index_edt.php",
+			"Emploi du temps",
+			"Cet outil permet la consultation/gestion de l'emploi du temps.");
+
+	if ($_SESSION["statut"] == 'responsable') {
+	  if (getSettingValue("autorise_edt_eleve")=="yes"){
+		// on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
+		$tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur);
+		$this->creeNouveauItem("/edt_organisation/edt_eleve.php?login_edt=".$tab_tmp_ele[0],
 			  "Emploi du temps",
-			  "Cet outil permet la consultation/gestion de l'emploi du temps.");
-
-	  if ($_SESSION["statut"] == 'responsable') {
-		if (getSettingValue("autorise_edt_eleve")=="yes"){
-		  // on propose l'edt d'un élève, les autres enfants seront disponibles dans la page de l'edt.
-		  $tab_tmp_ele = get_enfants_from_resp_login($this->loginUtilisateur);
-		  $this->creeNouveauItem("/edt_organisation/edt_eleve.php?login_edt=".$tab_tmp_ele[0],
-				"Emploi du temps",
-				"Cet outil permet la consultation de l'emploi du temps de votre enfant.");
-		}
-	  }else if($_SESSION["statut"] == 'eleve'){
-		if (getSettingValue("autorise_edt_eleve")=="yes"){
-		  $this->creeNouveauItem("/edt_organisation/edt_eleve.php",
-				"Emploi du temps",
-				"Cet outil permet la consultation de votre emploi du temps.");
-		}
-	  }else{
+			  "Cet outil permet la consultation de l'emploi du temps de votre enfant.");
+	  }
+	}else if($_SESSION["statut"] == 'eleve'){
+	  if (getSettingValue("autorise_edt_eleve")=="yes"){
 		$this->creeNouveauItem("/edt_organisation/edt_eleve.php",
-				"Emploi du temps",
-				"Cet outil permet la consultation de votre emploi du temps.");
+			  "Emploi du temps",
+			  "Cet outil permet la consultation de votre emploi du temps.");
 	  }
-
-	  if ($this->b>0){
-		$this->creeNouveauTitre('accueil',"Emploi du temps",'images/icons/document.png');
-		return true;
-	  }
+	}else{
+	  $this->creeNouveauItem("/edt_organisation/edt_eleve.php",
+			  "Emploi du temps",
+			  "Cet outil permet la consultation de votre emploi du temps.");
 	}
-  }
+
+	if ($this->b>0){
+	  $this->creeNouveauTitre('accueil',"Emploi du temps",'images/icons/document.png');
+	  return true;
+	}
+	}
+ }
 
   private function cahierTexteFamille(){
 	$this->b=0;
