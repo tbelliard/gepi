@@ -172,6 +172,9 @@ $hauteur_info_eleve=5;
 // Pour pouvoir ne pas imprimer le Footer
 $no_footer="n";
 
+// Il arrive qu'il y ait un décalage vertical s'amplifiant ligne après ligne sur les découpes
+// Par défaut, pas de décalage:
+$correctif_vertical=1;
 //===================
 // Valeurs calculées:
 
@@ -187,6 +190,18 @@ $larg_cadre=Floor($largeur_page-$MargeDroite-$MargeGauche-($trombino_pdf_nb_col-
 
 //=================================================
 if(isset($_POST['upload_scan'])) {
+	if((isset($_POST['correctif_vertical']))&&($_POST['correctif_vertical']!='')) {
+		// A FAIRE: FILTRER...
+		$test=my_ereg_replace("[^0-9.]","",$_POST['correctif_vertical']);
+		if($test!="") {$correctif_vertical=$test;}
+	}
+
+	//echo "1";
+	if(!isset($_POST['fin_form_upload_scan'])) {
+		$msg="Le formulaire n'a pas été POSTé entièrement.<br />Vous avez peut-être été trop gourmand avec le nombre et le volume des photos proposées.<br />";
+		// Ca ne fonctionne pas... si on est trop gourmand, on se retrouve avec $_POST vide.
+	}
+
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir){
 		$msg="Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?<br />\n";
@@ -196,15 +211,17 @@ if(isset($_POST['upload_scan'])) {
 		$msg="Aucun id_grille n'a été choisi.<br />\n";
 	}
 	else {
+		//echo "2";
 		$sql="SELECT page_global FROM trombino_decoupe WHERE id_grille='$id_grille' ORDER BY page_global DESC LIMIT 1;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)==0) {
 			$msg="L'id_grille n°$id_grille ne correspond à aucun enregistrement dans la table 'trombino_decoupe'.<br />\n";
 		}
 		else {
+			//echo "3";
 			// Récuperer les paramètres et calculer les dimensions des cadres d'après les nombres de colonnes et de lignes
 			$sql="SELECT * FROM trombino_decoupe_param WHERE id_grille='$id_grille';";
-			$msg.="$sql<br />";
+			//$msg.="$sql<br />";
 			$res_param=mysql_query($sql);
 			if(mysql_num_rows($res_param)==0) {
 				$msg="Aucun paramètre n'a été trouvé pour l'id_grille n°$id_grille dans la table 'trombino_decoupe_param'.<br />\n";
@@ -235,7 +252,16 @@ if(isset($_POST['upload_scan'])) {
 				$msg.="\$haut_cadre=$haut_cadre<br />";
 				$msg.="\$larg_cadre=$larg_cadre<br />";
 				*/
-				$msg.="Traitement des découpes avec une grille de $trombino_pdf_nb_col colonnes sur $trombino_pdf_nb_lig lignes.<br />";
+
+				$msg.="Traitement des découpes avec une grille de $trombino_pdf_nb_col colonnes sur $trombino_pdf_nb_lig lignes (id_grille n°$id_grille).<br />";
+
+				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+					// On récupère le RNE de l'établissement
+					$repertoire2=getSettingValue("gepiSchoolRne")."/";
+				}
+				else {
+					$repertoire2="";
+				}
 
 				$lig=mysql_fetch_object($res);
 				for($i=0;$i<=$lig->page_global;$i++) {
@@ -243,7 +269,10 @@ if(isset($_POST['upload_scan'])) {
 		
 						//$image=isset($_FILES["image_".$i]) ? $_FILES["image_".$i] : NULL;
 						$image=$_FILES["image_".$i];
-	
+
+						$post_max_size=ini_get('post_max_size');
+						$upload_max_filesize=ini_get('upload_max_filesize');
+
 						if(!is_uploaded_file($image['tmp_name'])) {
 							$msg.="L'upload du fichier n°$i a échoué.<br />\n";
 							$msg.="Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
@@ -260,8 +289,9 @@ if(isset($_POST['upload_scan'])) {
 								$msg.="\$image['size']=".volume_human($image['size'])."<br />\n";
 							}
 		
-							//echo "<p>Le fichier a été uploadé.</p>\n";
-	
+							//echo "<p>Le fichier ".$image['name']." sous ".$image['tmp_name']." a été uploadé.</p>\n";
+							if($image['name']=="") {$msg.="Il s'est passé un problème lors de l'upload/traitement.<br />Le fichier uploadé était-il bien de type JPEG? (type trouvé&nbsp;: ".$image['type'].")<br />";}
+
 							$source_file=$image['tmp_name'];
 							$dest_file="../temp/".$tempdir."/image_$i.jpg";
 							$res_copy=copy("$source_file" , "$dest_file");
@@ -273,7 +303,12 @@ if(isset($_POST['upload_scan'])) {
 								//$msg.="Traitement de la page n°$i<br />\n";
 								$msg.="Traitement de la page n°$num_page<br />\n";
 	
-								$sql="SELECT * FROM trombino_decoupe WHERE page_global='$i' AND id_grille='$id_grille';";
+								if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+									$sql="SELECT t.*, e.login FROM trombino_decoupe t, eleves e WHERE t.page_global='$i' AND t.id_grille='$id_grille' AND t.elenoet=e.elenoet;";
+								}
+								else {
+									$sql="SELECT * FROM trombino_decoupe WHERE page_global='$i' AND id_grille='$id_grille';";
+								}
 								$res2=mysql_query($sql);
 								if(mysql_num_rows($res2)>0) {
 									$img_source=imagecreatefromjpeg($dest_file);
@@ -290,12 +325,17 @@ if(isset($_POST['upload_scan'])) {
 									while($lig2=mysql_fetch_object($res2)) {
 										// Coordonnées dans le PDF multipliées par le ratio
 										$x=round(($x0+$lig2->x*($larg_cadre+$dx))*$ratio);
-										$y=round(($y0+$lig2->y*($haut_cadre+$dy)+$hauteur_classe)*$ratio);
+										$y=round(($y0+$lig2->y*($haut_cadre+$dy)+$hauteur_classe)*$ratio)*$correctif_vertical;
 	
 										$img=imagecreatetruecolor($larg_cadre_img,$haut_cadre_img);
 										imagecopy($img,$img_source,0,0,$x,$y,$larg_cadre_img,$haut_cadre_img);
-	
-										imagejpeg($img, "../photos/eleves/".$lig2->elenoet.'.jpg');
+
+										if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+											imagejpeg($img, "../photos/eleves/$repertoire2".$lig2->login.'.jpg');
+										}
+										else {
+											imagejpeg($img, "../photos/eleves/".$lig2->elenoet.'.jpg');
+										}
 										imagedestroy($img);
 									}
 								}
@@ -702,6 +742,15 @@ elseif($mode=='uploader') {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Accueil découpe</a>\n";
 	echo "</p>\n";
 
+	echo "<p>Les images uploadées doivent être de type JPEG.</p>\n";
+
+	echo "<p>Les paramètres suivants peuvent influer sur le nombre de photos que vous pourrez uploader d'un coup&nbsp;:<br />\n";
+	$post_max_size=ini_get('post_max_size');
+	$upload_max_filesize=ini_get('upload_max_filesize');
+	echo "&nbsp;&nbsp;&nbsp;\$post_max_size=$post_max_size<br />\n";
+	echo "&nbsp;&nbsp;&nbsp;\$upload_max_filesize=$upload_max_filesize<br />\n";
+	echo "</p>\n";
+
 	if(!isset($id_grille)) {
 		$sql="SELECT DISTINCT id_grille FROM trombino_decoupe ORDER BY id_grille;";
 		$test=mysql_query($sql);
@@ -758,6 +807,8 @@ elseif($mode=='uploader') {
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 		echo "<fieldset>\n";
+		echo "<input type='hidden' name='id_grille' value='$id_grille' />\n";
+		echo "<input type='hidden' name='upload_scan' value='yes' />\n";
 		//echo "<p>Une grille a été éditée.<br />Vous avez la possibilité de d'uploader les pages scannées.</p>\n";
 		echo "<table style='margin-left:2em;' class='boireaus' summary='Upload des pages du trombinoscope'>\n";
 		echo "<tr>\n";
@@ -785,9 +836,12 @@ elseif($mode=='uploader') {
 		echo "</table>\n";
 	
 		//echo "<input type='' name='' value='' />\n";
-		echo "<input type='hidden' name='id_grille' value='$id_grille' />\n";
-		echo "<input type='hidden' name='upload_scan' value='yes' />\n";
+		//echo "<input type='hidden' name='id_grille' value='$id_grille' />\n";
+		//echo "<input type='hidden' name='upload_scan' value='yes' />\n";
+		echo "<p> Il arrive qu'il y ait un décalage vertical s'amplifiant ligne après ligne sur les découpes.<br />Par défaut, on ne décale pas&nbsp;: 
+<input type='text' id='correctif_vertical' name='correctif_vertical' value='1' size='3' onkeydown=\"clavier_3(this.id,event,0.1,1.5,0.01);\" /><br />Si vos découpes sont un peu décalées vers le bas (<i>il manque le haut des cranes</i>), essayez de corriger avec 0.97<br />Aucun correctif n'est proposé pour la largeur.<br />Veillez à ce que vos images scannées aient les bords taillés à la largeur de la page.</p>\n";
 		echo "<p><input type='submit' value='Uploader' /></p>\n";
+		echo "<input type='hidden' name='fin_form_upload_scan' value='yes' />\n";
 		echo "</fieldset>\n";
 		echo "</form>\n";
 
