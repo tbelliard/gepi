@@ -732,6 +732,7 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 							AND jgp.login='".$_SESSION['login']."';";
 		  $test2=mysql_query($sql2); // prof du groupe autorisé à voir
 		}
+		  $nouveauItem = new itemGeneral();
 		if ((mysql_num_rows($test)>0) ||
 				(getSettingValue("visuDiscProfClasses")=='yes' && mysql_num_rows($test1)>0) ||
 				(getSettingValue("visuDiscProfGroupes")=='yes' && mysql_num_rows($test2)>0)) { //Oui
@@ -742,7 +743,7 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 			echo "<td>Visualiser la liste des incidents déclarés et leurs traitements.</td>\n";
 			echo "</tr>\n";
 		*/
-		  $nouveauItem = new itemGeneral();
+		  //$nouveauItem = new itemGeneral();
 		  $nouveauItem->chemin='/mod_discipline/traiter_incident.php';
 		  if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 		  {
@@ -751,7 +752,7 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 			  $nouveauItem->indexMenu=$a;
 			  $menuPage[]=$nouveauItem;
 		  }
-		unset($nouveauItem);
+		//unset($nouveauItem);
 		} else { //non
 		  /*
 			echo "<tr>\n";
@@ -767,6 +768,7 @@ elseif (($_SESSION['statut']=='professeur') || ($_SESSION['statut']=='autre')) {
 			$menuPage[]=$nouveauItem;
 
 		}
+		unset($nouveauItem);
 	}
 }
 /*

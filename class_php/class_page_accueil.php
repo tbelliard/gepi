@@ -395,7 +395,7 @@ class class_page_accueil {
 		$this->creeNouveauItem("/mod_absences/professeurs/prof_ajout_abs.php",
 				"Gestion des Absences",
 				"Cet outil vous permet de gérer les absences des élèves");
-	  } else if (getSettingValue("active_module_absence")=='2' ) {
+	  } else if (getSettingValue("active_module_absence")=='2' && !($this->statutUtilisateur=="scolarite" || $this->statutUtilisateur=="cpe") ) {
 		$this->creeNouveauItem("/mod_abs2/index.php",
 				"Gestion des Absences",
 				"Cet outil vous permet de gérer les absences des élèves");

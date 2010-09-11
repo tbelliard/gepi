@@ -64,14 +64,34 @@ class itemGeneral {
  *
  */
 	function acces($id,$statut) 
-	{
-	  $tab_id = explode("?",$id);
-	  $query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
-	  $droit = @mysql_result($query_droits, 0, $statut);
-	  if ($droit == "V") {
-		  return "1";
+	{ 
+		if ($_SESSION['statut']!='autre') {
+			$tab_id = explode("?",$id);
+			$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
+			$droit = @mysql_result($query_droits, 0, $statut);
+			if ($droit == "V") {
+				return "1";
+			} else {
+				return "0";
+			}
 	  } else {
-		  return "0";
+	  
+			$sql="SELECT ds.autorisation FROM `droits_speciaux` ds,  `droits_utilisateurs` du
+						WHERE (ds.nom_fichier='".$id."'
+							AND ds.id_statut=du.id_statut
+							AND du.login_user='".$_SESSION['login']."');" ;
+			$result=mysql_query($sql);
+			if (!$result) {
+				return FALSE;
+			} else {
+				$row = mysql_fetch_row($result) ;
+				if ($row[0]=='V' || $row[0]=='v'){
+				return TRUE;
+				} else {
+				return FALSE;
+				}
+			}
+	
 	  }
 	}
 
