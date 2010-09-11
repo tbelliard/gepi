@@ -171,13 +171,13 @@ if (isFiltreRechercheParam('filter_creneau')) {
 if (isFiltreRechercheParam('filter_cours')) {
     $query->filterByIdEdtEmplacementCours(getFiltreRechercheParam('filter_cours'));
 }
-if (isFiltreRechercheParam('filter_date_creation_absence_debut_plage')) {
-    $date_creation_absence_debut_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_creation_absence_debut_plage')));
-    $query->filterByCreatedAt($date_creation_absence_debut_plage, Criteria::GREATER_EQUAL);
+if (isFiltreRechercheParam('filter_date_creation_saisie_debut_plage')) {
+    $date_creation_saisie_debut_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_creation_saisie_debut_plage')));
+    $query->filterByCreatedAt($date_creation_saisie_debut_plage, Criteria::GREATER_EQUAL);
 }
-if (isFiltreRechercheParam('filter_date_creation_absence_fin_plage')) {
-    $date_creation_absence_fin_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_creation_absence_fin_plage')));
-    $query->filterByCreatedAt($date_creation_absence_fin_plage, Criteria::LESS_EQUAL);
+if (isFiltreRechercheParam('filter_date_creation_saisie_fin_plage')) {
+    $date_creation_saisie_fin_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_creation_saisie_fin_plage')));
+    $query->filterByCreatedAt($date_creation_saisie_fin_plage, Criteria::LESS_EQUAL);
 }
 if (isFiltreRechercheParam('filter_date_modification')) {
     $query->where('AbsenceEleveSaisie.CreatedAt != AbsenceEleveSaisie.UpdatedAt');
@@ -731,18 +731,18 @@ echo '</span>';
 echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Entre : <input size="13" id="filter_date_creation_absence_debut_plage" name="filter_date_creation_absence_debut_plage" value="';
-if (isFiltreRechercheParam('filter_date_creation_absence_debut_plage')) {echo getFiltreRechercheParam('filter_date_creation_absence_debut_plage');}
+echo 'Entre : <input size="13" id="filter_date_creation_saisie_debut_plage" name="filter_date_creation_saisie_debut_plage" value="';
+if (isFiltreRechercheParam('filter_date_creation_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_creation_saisie_debut_plage');}
 echo '" />&nbsp;';
-echo '<img id="trigger_filter_date_creation_absence_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
+echo '<img id="trigger_filter_date_creation_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
-	inputField     :    "filter_date_creation_absence_debut_plage",     // id of the input field
+	inputField     :    "filter_date_creation_saisie_debut_plage",     // id of the input field
 	ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
-	button         :    "trigger_filter_date_creation_absence_debut_plage",  // trigger for the calendar (button ID)
+	button         :    "trigger_filter_date_creation_saisie_debut_plage",  // trigger for the calendar (button ID)
 	align          :    "Tl",           // alignment (defaults to "Bl")
 	singleClick    :    true,
 	showsTime	:   true
@@ -751,18 +751,18 @@ echo '
 echo '<br />';
 //echo '<nobr>';
 echo '<span style="white-space: nowrap;"> ';
-echo 'Et : <input size="13" id="filter_date_creation_absence_fin_plage" name="filter_date_creation_absence_fin_plage" value="';
-if (isFiltreRechercheParam('filter_date_creation_absence_fin_plage')) {echo getFiltreRechercheParam('filter_date_creation_absence_fin_plage');}
+echo 'Et : <input size="13" id="filter_date_creation_saisie_fin_plage" name="filter_date_creation_saisie_fin_plage" value="';
+if (isFiltreRechercheParam('filter_date_creation_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_creation_saisie_fin_plage');}
 echo '" />&nbsp;';
-echo '<img id="trigger_filter_date_creation_absence_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
+echo '<img id="trigger_filter_date_creation_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
 //echo '</nobr>';
 echo '</span>';
 echo '
 <script type="text/javascript">
     Calendar.setup({
-	inputField     :    "filter_date_creation_absence_fin_plage",     // id of the input field
+	inputField     :    "filter_date_creation_saisie_fin_plage",     // id of the input field
 	ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
-	button         :    "trigger_filter_date_creation_absence_fin_plage",  // trigger for the calendar (button ID)
+	button         :    "trigger_filter_date_creation_saisie_fin_plage",  // trigger for the calendar (button ID)
 	align          :    "Tl",           // alignment (defaults to "Bl")
 	singleClick    :    true,
 	showsTime	:   true
