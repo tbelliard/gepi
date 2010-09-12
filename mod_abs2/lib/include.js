@@ -71,3 +71,10 @@ function SetAllTextFields(FormName, FieldName, IdMatchString, StringValue)
 		}
 	}
 }
+
+function pop_it(the_form) {
+   my_form = eval(the_form)
+   window.open("./index.php", "popup");
+   my_form.target = "popup";
+   my_form.submit();
+}

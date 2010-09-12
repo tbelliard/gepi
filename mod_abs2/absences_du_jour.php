@@ -114,7 +114,7 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 $javascript_specifique[] = "mod_abs2/lib/include";
-$titre_page = "Les absences";
+$titre_page = "Absences du jour";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
@@ -335,17 +335,18 @@ if ($type_selection == 'id_eleve') {
 				<!--     <br/> -->
 			<!-- </p> -->
 <?php if (!$eleve_col->isEmpty()) { ?>
-			<form method="post" action="./absences_du_jour.php" id="liste_absence_eleve">
+			<form name="creer_traitement" method="post" action="./absences_du_jour.php" id="liste_absence_eleve">
 			  <p>
 			<button type="submit" name="creation_traitement" value="creation_traitement">Créer un traitement</button>
+			<button type="submit" onclick="pop_it(creer_traitement);" name="creation_traitement" value="creation_traitement">Créer un traitement (nouvelle fenêtre)</button>
 			<?php $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 			if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
 			    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-			    echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
+			    echo '<br/><button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
+			    echo ' <button type="submit" onclick="pop_it(creer_traitement);" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().') (nouvelle fenêtre)</button>';
 			    echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
 			}?>
-			 
- </p>
+			</p>
     <!-- Afichage du tableau de la liste des élèves -->
     <!-- <table style="text-align: left; width: 600px;" border="0" cellpadding="0" cellspacing="1"> -->
 	    <table class="tb_absences" summary="Liste des élèves pour l'appel. Colonne 1 : élèves, colonne 2 : absence, colonne3 : retard, colonnes suivantes : suivi de la journée par créneaux, dernière colonne : photos si actif">
@@ -515,10 +516,12 @@ if ($type_selection == 'id_eleve') {
     echo '</tr></table>';
     echo "<p>";
     echo '<button type="submit" name="creation_traitement" value="creation_traitement">Créer un traitement</button>';
+    echo ' <button type="submit" onclick="pop_it(creer_traitement);" name="creation_traitement" value="creation_traitement">Créer un traitement (nouvelle fenêtre)</button>';
     $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
     if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
 	$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-	echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
+	echo '<br/><button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
+	echo ' <button type="submit" onclick="pop_it(creer_traitement);" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().') (nouvelle fenêtre)</button>';
 	echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
     }
     echo '<input type="hidden" name="nb_checkbox" value="'.$nb_checkbox.'"/>';
