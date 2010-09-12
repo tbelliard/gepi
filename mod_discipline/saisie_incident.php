@@ -697,15 +697,35 @@ if($etat_incident!='clos') {
 					}
 
 					$tab_alerte_classe=array();
-	
+
+$info_classe_prot="";
+$liste_protagonistes_responsables="";
 					$sql="SELECT * FROM s_protagonistes WHERE id_incident='$id_incident' ORDER BY login;";
+					//echo "$sql<br />";
 					$res_prot=mysql_query($sql);
 					if(mysql_num_rows($res_prot)>0) {
 						$texte_mail.="\n";
 						$texte_mail.="Protagonistes de l'incident: \n";
 						while($lig_prot=mysql_fetch_object($res_prot)) {
 							$texte_mail.=get_nom_prenom_eleve($lig_prot->login)." ($lig_prot->qualite)\n";
-		
+
+
+if(strtolower($lig_prot->qualite)=='responsable') {
+	$sql="SELECT DISTINCT c.classe FROM classes c,j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig_prot->login' ORDER BY jec.periode DESC limit 1;";
+	//echo "$sql<br />";
+	$res_prot_classe=mysql_query($sql);
+	if(mysql_num_rows($res_prot)>0) {
+		$lig_prot_classe=mysql_fetch_object($res_prot_classe);
+		$info_classe_prot="[$lig_prot_classe->classe]";
+
+		if(getSettingValue('mod_disc_sujet_mail_sans_nom_eleve')!="n") {
+			if($liste_protagonistes_responsables!="") {$liste_protagonistes_responsables.=", ";}
+			$liste_protagonistes_responsables.=$lig_prot->login;
+			//echo "\$liste_protagonistes_responsables=$liste_protagonistes_responsables<br />";
+		}
+	}
+}
+
 							$sql="SELECT * FROM s_mesures sm, s_traitement_incident sti WHERE sti.id_incident='$id_incident' AND sti.login_ele='".$lig_prot->login."' AND sti.id_mesure=sm.id ORDER BY type, mesure;";
 							//echo "$sql<br />";
 							$res_mes=mysql_query($sql);
@@ -728,24 +748,40 @@ if($etat_incident!='clos') {
 							}
 						}
 					}
-	
+
+//echo "\$texte_mail=$texte_mail<br />";
+
+
 					if(count($tab_alerte_classe)>0) {
 						$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe);
-	
-						$texte_mail=$texte_mail."\n\n"."Message: $msg";
-						$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-						if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
-	
-						$header_mail="";
-						if(isset($message_id)) {$header_mail.="Message-id: $message_id\r\n";}
-						if(isset($references_mail)) {$header_mail.="References: $references_mail\r\n";}
-	
-						// On envoie le mail
-						//$envoi = mail(getSettingValue("gepiAdminAdress"),
-						$envoi = mail($destinataires,
-							$gepiPrefixeSujetMail."GEPI : Incident num $id_incident",
+						if($destinataires=="") {
+							$destinataires=getSettingValue("gepiAdminAdress");
+						}
+
+						if($destinataires!="") {
+							$texte_mail=$texte_mail."\n\n"."Message: $msg";
+							$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+							if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+		
+							$header_mail="";
+							if(isset($message_id)) {$header_mail.="Message-id: $message_id\r\n";}
+							if(isset($references_mail)) {$header_mail.="References: $references_mail\r\n";}
+		
+							// On envoie le mail
+							//$envoi = mail(getSettingValue("gepiAdminAdress"),
+							$envoi = mail($destinataires,
+								//$gepiPrefixeSujetMail."GEPI : Incident num $id_incident",
+								$gepiPrefixeSujetMail."[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables,
+								$texte_mail,
+								"From: Mail automatique Gepi\r\n".$header_mail."X-Mailer: PHP/" . phpversion());
+						/*
+$msg.="Envoi d'un mail:<br /><pre>mail($destinataires,
+							//$gepiPrefixeSujetMail.\"GEPI : Incident num $id_incident\",
+							$gepiPrefixeSujetMail.\"[GEPI][Incident n°$id_incident]\".$info_classe_prot.$liste_protagonistes_responsables,
 							$texte_mail,
-							"From: Mail automatique Gepi\r\n".$header_mail."X-Mailer: PHP/" . phpversion());
+							\"From: Mail automatique Gepi\r\n\".$header_mail.\"X-Mailer: PHP/\" . phpversion()</pre>";
+						*/
+						}
 					}
 				}
 			}
