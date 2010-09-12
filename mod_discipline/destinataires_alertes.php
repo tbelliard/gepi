@@ -192,7 +192,7 @@ echo "</p>\n";
 						}
 						echo "Adresse : <input type='text' name='adresse_".$i."_".$j."' value='$contenu_adresse' onchange='changement();' />\n";    
 					} 
-				}
+				} else if ($tab_statut[$i]== 'mail') echo "Adresse : <input type='text' name='adresse_".$i."_".$j."' value='' onchange='changement();' />\n";
 				echo "</td>\n";
 			}
 			echo "<td>\n";
