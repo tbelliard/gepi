@@ -210,7 +210,27 @@ class Session {
 			if (isset($GLOBALS['multisite']) && $GLOBALS['multisite'] == "y") {
 
 				if (!isset($_GET['rne']) AND (!isset($_COOKIE["RNE"]) OR $_COOKIE["RNE"] == 'RNE')) {
-					if (LDAPServer::is_setup()) {
+					if (isset($GLOBALS['mode_choix_base']) && $GLOBALS['mode_choix_base'] == "url"){
+            // dans ce cas, on se connecte à l'url $url_cas_sso donnée par le secure/connect.inc.php
+            $t_rne = file_get_contents($GLOBALS[url_cas_sso] . '?login=' . $this->login . '&cle=' . $GLOBALS['cle_url_cas']);
+            if ($t_rne != 'erreur'){
+              $rep_rne = explode("|", $t_rne);
+              $nbre_rne = count($rep_rne);
+              if ($nbre_rne > 1){
+                header("Location: choix_rne.php?nbre=".$nbre_rne."&lesrne=".$t_rne);
+								exit();
+              }else{
+                if ($this->current_auth_mode == "sso") {
+									setcookie('RNE', $t_rne);
+									header("Location: login_sso.php?rne=".$t_rne);
+									exit();
+								} else {
+									header("Location: login.php?rne=".$t_rne);
+									exit();
+								}
+              }
+            }
+          }elseif (LDAPServer::is_setup()) {
 						// Le RNE n'a pas été transmis. Il faut le récupérer et recharger la page
 						// pour obtenir la bonne base de données
 						$ldap = new LDAPServer;
