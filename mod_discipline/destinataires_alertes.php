@@ -51,10 +51,12 @@ if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
 	for($j=0;$j<count($tab_id_clas);$j++){
 		for($i=0;$i<count($tab_statut);$i++){
 			if(isset($_POST['case_'.$i.'_'.$j])){
-				$test=mysql_query("SELECT 1=1 FROM s_alerte_mail WHERE id_classe='".$tab_id_clas[$j]."' AND destinataire='".$tab_statut[$i]."'");
+			    $requete= "SELECT 1=1 FROM s_alerte_mail WHERE id_classe='".$tab_id_clas[$j]."' AND destinataire='".$tab_statut[$i]."'";
+				//echo $requete; echo "</br>";
+				$test=mysql_query($requete);
 				if(mysql_num_rows($test)==0){
 				    // Modif Eric Ajout Adresse autre
-					if(isset($_POST['adresse_'.$i.'_'.$j])){
+					if(isset($_POST['adresse_'.$i.'_'.$j]) and isset($_POST['case_'.$i.'_'.$j])){ 
 					    $contenu_adresse = $_POST['adresse_'.$i.'_'.$j];
 					    if ($contenu_adresse != '') {
 						   $sql="INSERT INTO s_alerte_mail SET id_classe='".$tab_id_clas[$j]."', destinataire='".$tab_statut[$i]."', adresse='".$contenu_adresse."'";
@@ -99,7 +101,7 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter
 $titre_page = "Destinataires des alertes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
-
+//debug_var();
 // Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
 // Après modification éventuelle, il faut quitter cette page.
 echo "<p class='bold'>";
@@ -180,7 +182,8 @@ echo "</p>\n";
 				echo "<td style='text-align:center;$bgcolor'>\n";
 				echo "<input type='checkbox' name='case_".$i."_".$j."' id='case_".$i."_".$j."' value='y' onchange='changement();' $checked/>\n";
 				//Ajout Eric traitement autre mail
-				$sql="SELECT * FROM s_alerte_mail WHERE id_classe='".$lig_clas->id."';";
+				$sql="SELECT * FROM s_alerte_mail WHERE id_classe='".$lig_clas->id."' AND destinataire='mail';";
+				//echo $sql;
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)!=0) {
 					$contenu_requete=mysql_fetch_object($test);
