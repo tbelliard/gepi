@@ -360,7 +360,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="tel"/>';
-	echo ("<select name=\"tel\" onchange='submit()'>");
+	echo ("<select style='width:200px;' name=\"tel\" onchange='submit()'>");
 	$selected = false;
 	foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
 	    $responsable = $responsable_information->getResponsableEleve();
@@ -370,7 +370,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 		    echo " selected='selected' ";
 		    $selected = true;
 		}
-		echo ">".$responsable->getTelPort().' ('.$responsable->getCivilite().' '.$responsable->getNom().'; resp '.$responsable_information->getRespLegal().")</option>\n";
+		echo ">".$responsable->getTelPort().' ('.$responsable->getCivilite().' '.$responsable->getNom().'; resp '.$responsable_information->getRespLegal()."; tel port)</option>\n";
 	    }
 
 	    if ($responsable->getTelPers() != null || $responsable->getTelPers() != '') {
@@ -379,7 +379,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 		    echo " selected='selected' ";
 		    $selected = true;
 		}
-		echo ">".$responsable->getTelPers().' ('.$responsable->getCivilite().' '.$responsable->getNom().'; resp '.$responsable_information->getRespLegal().")</option>\n";
+		echo ">".$responsable->getTelPers().' ('.$responsable->getCivilite().' '.$responsable->getNom().'; resp '.$responsable_information->getRespLegal()."; tel pers)</option>\n";
 	    }
 
 	    if ($responsable->getTelProf() != null || $responsable->getTelProf() != '') {
@@ -388,7 +388,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 		    echo " selected='selected' ";
 		    $selected = true;
 		}
-		echo ">".$responsable->getTelProf().' ('.$responsable->getCivilite().' '.$responsable->getNom().'; resp '.$responsable_information->getRespLegal().")</option>\n";
+		echo ">".$responsable->getTelProf().' ('.$responsable->getCivilite().' '.$responsable->getNom().'; resp '.$responsable_information->getRespLegal()."; tel prof)</option>\n";
 	    }
 	}
 	if (!$selected) {
