@@ -247,6 +247,7 @@ if(isset($id_incident)) {
 $msg="";
 
 if($etat_incident!='clos') {
+	//echo "BLIP";
 	if((isset($_POST['suppr_ele_incident']))&&(isset($id_incident))) {
 		$suppr_ele_incident=$_POST['suppr_ele_incident'];
 		for($i=0;$i<count($suppr_ele_incident);$i++) {
@@ -333,454 +334,454 @@ if($etat_incident!='clos') {
 		}
 	}
 	elseif(isset($is_posted)) {
-		if(!isset($id_incident)) {
-			if(!isset($display_date)) {
-				$annee = strftime("%Y");
-				$mois = strftime("%m");
-				$jour = strftime("%d");
-				//$display_date = $jour."/".$mois."/".$annee;
-			}
-			else {
-				/*
-				$annee = substr($display_date,0,4);
-				$mois =  substr($display_date,5,2);
-				$jour =  substr($display_date,8,2);
-				*/
-				$jour =  substr($display_date,0,2);
-				$mois =  substr($display_date,3,2);
-				$annee = substr($display_date,6,4);
-			}
-
-			if(!checkdate($mois,$jour,$annee)) {
-				$annee = strftime("%Y");
-				$mois = strftime("%m");
-				$jour = strftime("%d");
-
-				$msg.="La date proposée n'était pas valide. Elle a été remplacée par la date du jour courant.";
-			}
-
-			if(!isset($display_heure)) {
-				//$display_heure=strftime("%H").":".strftime("%M");
-				$display_heure="";
-			}
-
-			if(!isset($nature)) {
-				$nature="";
-			}
-
-			if (isset($NON_PROTECT["description"])){
-				$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
-
-				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
-			}
-			else {
-				$description="";
-			}
-
-			if(!isset($id_lieu)) {
-				$id_lieu="";
-			}
-
-			// ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL;
-			//$message_id=strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
-			// Pour ne pas spammer tant que la nature n'est pas saisie
-			if($nature!='') {
-				$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
-			}
-			else {
-				$message_id="";
-			}
-
-			$sql="INSERT INTO s_incidents SET declarant='".$_SESSION['login']."',
-												date='$annee-$mois-$jour',
-												heure='$display_heure',
-												nature='".traitement_magic_quotes(corriger_caracteres($nature))."',
-												description='".$description."',
-												id_lieu='$id_lieu',
-												message_id='$message_id';";
-			//echo "$sql<br />\n";
-			$res=mysql_query($sql);
-			if(!$res) {
-				$msg.="ERREUR lors de l'enregistrement de l'incident&nbsp;:".$sql."<br />\n";
-			}
-			else {
-				$id_incident=mysql_insert_id();
-				$msg.="Enregistrement de l'incident n°".$id_incident." effectué.<br />\n";
-			}
-
-			$texte_mail="Saisie par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident) survenu le $jour/$mois/$annee à $display_heure:\n";
-			$texte_mail.="Nature: $nature\nDescription: $description\n";
-		}
-		else {
-
-			$temoin_modif="n";
-			$sql="UPDATE s_incidents SET ";
-			if(isset($display_date)) {
-				/*
-				$annee = substr($display_date,0,4);
-				$mois =  substr($display_date,5,2);
-				$jour =  substr($display_date,8,2);
-				*/
-				$jour =  substr($display_date,0,2);
-				$mois =  substr($display_date,3,2);
-				$annee = substr($display_date,6,4);
-				/*
-				echo "\$jour=$jour<br />";
-				echo "\$mois=$mois<br />";
-				echo "\$annee=$annee<br />";
-				*/
-
+		if(!isset($_POST['recherche_eleve'])) {
+			if(!isset($id_incident)) {
+				if(!isset($display_date)) {
+					$annee = strftime("%Y");
+					$mois = strftime("%m");
+					$jour = strftime("%d");
+					//$display_date = $jour."/".$mois."/".$annee;
+				}
+				else {
+					/*
+					$annee = substr($display_date,0,4);
+					$mois =  substr($display_date,5,2);
+					$jour =  substr($display_date,8,2);
+					*/
+					$jour =  substr($display_date,0,2);
+					$mois =  substr($display_date,3,2);
+					$annee = substr($display_date,6,4);
+				}
+	
 				if(!checkdate($mois,$jour,$annee)) {
 					$annee = strftime("%Y");
 					$mois = strftime("%m");
 					$jour = strftime("%d");
-
+	
 					$msg.="La date proposée n'était pas valide. Elle a été remplacée par la date du jour courant.";
 				}
-
-				$sql.="date='$annee-$mois-$jour' ,";
-
-				$temoin_modif="y";
-			}
-
-			if(isset($display_heure)) {
-				$sql.="heure='$display_heure' ,";
-				$temoin_modif="y";
-			}
-
-			if(isset($nature)) {
-				$sql.="nature='".traitement_magic_quotes(corriger_caracteres($nature))."' ,";
-				//on vérifie si une catégorie est définie pour cette nature
-				$sql2="SELECT id_categorie FROM s_incidents WHERE nature='".traitement_magic_quotes(corriger_caracteres($nature))."' GROUP BY id_categorie";
-				$res2=mysql_query($sql2);
-				//if($res2) {
-				if(mysql_num_rows($res2)>0) {
-					while ($lign_cat=mysql_fetch_object($res2)){
-						$tab_res[]=$lign_cat->id_categorie;
-					}
-					//il ne devrait pas y avoir plus d'un enregistrement; dans le cas contraire on envoi un message
-					if (count($tab_res)>1) {$msg.="Il y a plusieurs catégories affectées à cette nature. La première est retenue pour cet incident. Vous devriez mettre à jour vos catégories d'incidents.<br />";}
-					//on affecte la categorie a l'incident ou on met à null dans le cas contraire;
-					if ($tab_res['0']==null) {$sql.="id_categorie=NULL ,";}
-					else {$sql.="id_categorie='".$tab_res['0']."' ,";}
-				} 
-				$temoin_modif="y";
-			}
-
-			if (isset($NON_PROTECT["description"])){
-				$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
-
-				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
-
-				$sql.="description='".$description."' ,";
-				$temoin_modif="y";
-			}
-
-			if(isset($id_lieu)) {
-				$sql.="id_lieu='$id_lieu' ,";
-				$temoin_modif="y";
-			}
-
-
-			/*
-			// Recuperation du message_id pour les fils de discussion dans les mails
-			$sql_mi="SELECT message_id FROM s_incidents WHERE id_incident='$id_incident';";
-			$res_mi=mysql_query($sql_mi);
-			$lig_mi=mysql_fetch_object($res_mi);
-			if($lig_mi->message_id=="") {
-				$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
-				$temoin_modif="y";
-				$sql.=" message_id='$message_id', ";
-			}
-			else {
-				$references_mail=$lig_mi->message_id;
-			}
-			*/
-
-
-			// Pour faire sauter le ", " en fin de $sql:
-			$sql=substr($sql,0,strlen($sql)-2);
-
-			$sql.=" WHERE id_incident='$id_incident';";
-
-			if($temoin_modif=="y") {
+	
+				if(!isset($display_heure)) {
+					//$display_heure=strftime("%H").":".strftime("%M");
+					$display_heure="";
+				}
+	
+				if(!isset($nature)) {
+					$nature="";
+				}
+	
+				if (isset($NON_PROTECT["description"])){
+					$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
+	
+					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+				}
+				else {
+					$description="";
+				}
+	
+				if(!isset($id_lieu)) {
+					$id_lieu="";
+				}
+	
+				// ALTER TABLE s_incidents ADD message_id VARCHAR(50) NOT NULL;
+				//$message_id=strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+				// Pour ne pas spammer tant que la nature n'est pas saisie
+				if($nature!='') {
+					$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+				}
+				else {
+					$message_id="";
+				}
+	
+				$sql="INSERT INTO s_incidents SET declarant='".$_SESSION['login']."',
+													date='$annee-$mois-$jour',
+													heure='$display_heure',
+													nature='".traitement_magic_quotes(corriger_caracteres($nature))."',
+													description='".$description."',
+													id_lieu='$id_lieu',
+													message_id='$message_id';";
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
-					$msg.="ERREUR lors de la mise à jour de l'incident ".$id_incident."<br />\n";
+					$msg.="ERREUR lors de l'enregistrement de l'incident&nbsp;:".$sql."<br />\n";
 				}
 				else {
-					$msg.="Mise à jour de l'incident n°".$id_incident." effectuée.<br />\n";
+					$id_incident=mysql_insert_id();
+					$msg.="Enregistrement de l'incident n°".$id_incident." effectué.<br />\n";
 				}
+	
+				$texte_mail="Saisie par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident) survenu le $jour/$mois/$annee à $display_heure:\n";
+				$texte_mail.="Nature: $nature\nDescription: $description\n";
 			}
-
-			$texte_mail="Mise à jour par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident)";
-			if(isset($display_heure)) {
-				$texte_mail.=" survenu le $jour/$mois/$annee à/en $display_heure:\n";
-			}
-			if(isset($nature)) {
-				$texte_mail.="\nNature: $nature\nDescription: $description\n";
-			}
-		}
-
-		//echo "\$id_incident=$id_incident<br />";
-		//echo "count(\$ele_login)=".count($ele_login)."<br />";
-
-		if(isset($id_incident)) {
-			for($i=0;$i<count($ele_login);$i++) {
-				$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."';";
-				//echo "$sql<br />\n";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)==0) {
-					//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='$qualite[$i]';";
-					//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."', avertie='avertie='".$avertie[$i]."';";
-					$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve';";
+			else {
+	
+				$temoin_modif="n";
+				$sql="UPDATE s_incidents SET ";
+				if(isset($display_date)) {
+					/*
+					$annee = substr($display_date,0,4);
+					$mois =  substr($display_date,5,2);
+					$jour =  substr($display_date,8,2);
+					*/
+					$jour =  substr($display_date,0,2);
+					$mois =  substr($display_date,3,2);
+					$annee = substr($display_date,6,4);
+					/*
+					echo "\$jour=$jour<br />";
+					echo "\$mois=$mois<br />";
+					echo "\$annee=$annee<br />";
+					*/
+	
+					if(!checkdate($mois,$jour,$annee)) {
+						$annee = strftime("%Y");
+						$mois = strftime("%m");
+						$jour = strftime("%d");
+	
+						$msg.="La date proposée n'était pas valide. Elle a été remplacée par la date du jour courant.";
+					}
+	
+					$sql.="date='$annee-$mois-$jour' ,";
+	
+					$temoin_modif="y";
+				}
+	
+				if(isset($display_heure)) {
+					$sql.="heure='$display_heure' ,";
+					$temoin_modif="y";
+				}
+	
+				if(isset($nature)) {
+					$sql.="nature='".traitement_magic_quotes(corriger_caracteres($nature))."' ,";
+					//on vérifie si une catégorie est définie pour cette nature
+					$sql2="SELECT id_categorie FROM s_incidents WHERE nature='".traitement_magic_quotes(corriger_caracteres($nature))."' GROUP BY id_categorie";
+					$res2=mysql_query($sql2);
+					//if($res2) {
+					if(mysql_num_rows($res2)>0) {
+						while ($lign_cat=mysql_fetch_object($res2)){
+							$tab_res[]=$lign_cat->id_categorie;
+						}
+						//il ne devrait pas y avoir plus d'un enregistrement; dans le cas contraire on envoi un message
+						if (count($tab_res)>1) {$msg.="Il y a plusieurs catégories affectées à cette nature. La première est retenue pour cet incident. Vous devriez mettre à jour vos catégories d'incidents.<br />";}
+						//on affecte la categorie a l'incident ou on met à null dans le cas contraire;
+						if ($tab_res['0']==null) {$sql.="id_categorie=NULL ,";}
+						else {$sql.="id_categorie='".$tab_res['0']."' ,";}
+					} 
+					$temoin_modif="y";
+				}
+	
+				if (isset($NON_PROTECT["description"])){
+					$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
+	
+					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+	
+					$sql.="description='".$description."' ,";
+					$temoin_modif="y";
+				}
+	
+				if(isset($id_lieu)) {
+					$sql.="id_lieu='$id_lieu' ,";
+					$temoin_modif="y";
+				}
+	
+	
+				/*
+				// Recuperation du message_id pour les fils de discussion dans les mails
+				$sql_mi="SELECT message_id FROM s_incidents WHERE id_incident='$id_incident';";
+				$res_mi=mysql_query($sql_mi);
+				$lig_mi=mysql_fetch_object($res_mi);
+				if($lig_mi->message_id=="") {
+					$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+					$temoin_modif="y";
+					$sql.=" message_id='$message_id', ";
+				}
+				else {
+					$references_mail=$lig_mi->message_id;
+				}
+				*/
+	
+	
+				// Pour faire sauter le ", " en fin de $sql:
+				$sql=substr($sql,0,strlen($sql)-2);
+	
+				$sql.=" WHERE id_incident='$id_incident';";
+	
+				if($temoin_modif=="y") {
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
-						$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
+						$msg.="ERREUR lors de la mise à jour de l'incident ".$id_incident."<br />\n";
+					}
+					else {
+						$msg.="Mise à jour de l'incident n°".$id_incident." effectuée.<br />\n";
 					}
 				}
-				/*
-				else {
-					$sql="UPDATE s_protagonistes SET qualite='$qualite[$i]' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
-					echo "$sql<br />\n";
-					$res=mysql_query($sql);
-					if(!$res) {
-						$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
-					}
+	
+				$texte_mail="Mise à jour par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident)";
+				if(isset($display_heure)) {
+					$texte_mail.=" survenu le $jour/$mois/$annee à/en $display_heure:\n";
 				}
-				*/
+				if(isset($nature)) {
+					$texte_mail.="\nNature: $nature\nDescription: $description\n";
+				}
 			}
-
-
-			for($i=0;$i<count($u_login);$i++) {
-				$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
-				//echo "$sql<br />\n";
-				$res=mysql_query($sql);
-				if(mysql_num_rows($res)==0) {
-					$tmp_statut="";
-					$sql="SELECT statut FROM utilisateurs WHERE login='".$u_login[$i]."'";
-					$res_statut=mysql_query($sql);
-					if(mysql_num_rows($res_statut)>0) {
-						$lig_statut=mysql_fetch_object($res_statut);
-						$tmp_statut=$lig_statut->statut;
-
-						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
+	
+			//echo "\$id_incident=$id_incident<br />";
+			//echo "count(\$ele_login)=".count($ele_login)."<br />";
+	
+			if(isset($id_incident)) {
+				for($i=0;$i<count($ele_login);$i++) {
+					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."';";
+					//echo "$sql<br />\n";
+					$res=mysql_query($sql);
+					if(mysql_num_rows($res)==0) {
+						//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='$qualite[$i]';";
+						//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."', avertie='avertie='".$avertie[$i]."';";
+						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
-							$msg.="ERREUR lors de l'enregistrement de ".$u_login[$i]."<br />\n";
+							$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
 						}
 					}
+					/*
 					else {
-						$msg.="ERREUR lors de l'enregistrement de ".$u_login[$i].": statut inconnu???<br />\n";
+						$sql="UPDATE s_protagonistes SET qualite='$qualite[$i]' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
+						echo "$sql<br />\n";
+						$res=mysql_query($sql);
+						if(!$res) {
+							$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
+						}
+					}
+					*/
+				}
+	
+	
+				for($i=0;$i<count($u_login);$i++) {
+					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
+					//echo "$sql<br />\n";
+					$res=mysql_query($sql);
+					if(mysql_num_rows($res)==0) {
+						$tmp_statut="";
+						$sql="SELECT statut FROM utilisateurs WHERE login='".$u_login[$i]."'";
+						$res_statut=mysql_query($sql);
+						if(mysql_num_rows($res_statut)>0) {
+							$lig_statut=mysql_fetch_object($res_statut);
+							$tmp_statut=$lig_statut->statut;
+	
+							$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
+							//echo "$sql<br />\n";
+							$res=mysql_query($sql);
+							if(!$res) {
+								$msg.="ERREUR lors de l'enregistrement de ".$u_login[$i]."<br />\n";
+							}
+						}
+						else {
+							$msg.="ERREUR lors de l'enregistrement de ".$u_login[$i].": statut inconnu???<br />\n";
+						}
 					}
 				}
-			}
-
-
-			if(isset($mesure_ele_login)) {
-				// Recherche des mesures déjà enregistrées:
-				for($i=0;$i<count($mesure_ele_login);$i++) {
-
-					$tab_mes_enregistree=array();
-					//$sql="SELECT mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
-					$sql="SELECT id_mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
-					$res_mes=mysql_query($sql);
-					if(mysql_num_rows($res_mes)>0) {
-						while($lig_mes=mysql_fetch_object($res_mes)) {
-							//$tab_mes_enregistree[]=$lig_mes->mesure;
-							$tab_mes_enregistree[]=$lig_mes->id_mesure;
+	
+	
+				if(isset($mesure_ele_login)) {
+					// Recherche des mesures déjà enregistrées:
+					for($i=0;$i<count($mesure_ele_login);$i++) {
+	
+						$tab_mes_enregistree=array();
+						//$sql="SELECT mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
+						$sql="SELECT id_mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
+						$res_mes=mysql_query($sql);
+						if(mysql_num_rows($res_mes)>0) {
+							while($lig_mes=mysql_fetch_object($res_mes)) {
+								//$tab_mes_enregistree[]=$lig_mes->mesure;
+								$tab_mes_enregistree[]=$lig_mes->id_mesure;
+							}
+						}
+	
+						unset($mesure_prise);
+						$mesure_prise=isset($_POST['mesure_prise_'.$i]) ? $_POST['mesure_prise_'.$i] : array();
+						unset($mesure_demandee);
+						$mesure_demandee=isset($_POST['mesure_demandee_'.$i]) ? $_POST['mesure_demandee_'.$i] : array();
+	
+						//for($i=0;$i<count($mesure_demandee);$i++) {
+						//}
+	
+						//$tab_mesure_possible=array();
+						//$sql="SELECT mesure FROM s_mesures;";
+						$sql="SELECT * FROM s_mesures;";
+						$res_mes=mysql_query($sql);
+						if(mysql_num_rows($res_mes)>0) {
+							while($lig_mes=mysql_fetch_object($res_mes)) {
+								//$tab_mesure_possible[]=$lig_mes->mesure;
+	
+								/*
+								if(in_array($lig_mes->mesure,$tab_mes_enregistree)) {
+									if((!in_array($lig_mes->mesure,$mesure_prise))&&
+										(!in_array($lig_mes->mesure,$mesure_demandee))) {
+								*/
+								if(in_array($lig_mes->id,$tab_mes_enregistree)) {
+									if((!in_array($lig_mes->id,$mesure_prise))&&
+										(!in_array($lig_mes->id,$mesure_demandee))) {
+										// Cette mesure n'a plus lieu d'être enregistrée
+										//$sql="DELETE FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."' AND mesure='".$lig_mes->mesure."';";
+										$sql="DELETE FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."' AND id_mesure='".$lig_mes->id."';";
+										$suppr=mysql_query($sql);
+										if(!$suppr) {
+											$msg.="ERREUR lors de la suppression de la mesure ".$lig_mes->mesure." pour ".$mesure_ele_login[$i]."<br />\n";
+										}
+									}
+								}
+								else {
+									//if(in_array($lig_mes->mesure,$mesure_prise)) {
+									//if((in_array($lig_mes->mesure,$mesure_prise))||
+									//	(in_array($lig_mes->mesure,$mesure_demandee))) {
+									if((in_array($lig_mes->id,$mesure_prise))||
+										(in_array($lig_mes->id,$mesure_demandee))) {
+										// Cette mesure doit être enregistrée
+										//$sql="INSERT INTO s_traitement_incident SET id_incident='$id_incident', login_ele='".$mesure_ele_login[$i]."', mesure='".$lig_mes->mesure."', login_u='".$_SESSION['login']."';";
+										$sql="INSERT INTO s_traitement_incident SET id_incident='$id_incident', login_ele='".$mesure_ele_login[$i]."', id_mesure='".$lig_mes->id."', login_u='".$_SESSION['login']."';";
+										$insert=mysql_query($sql);
+										if(!$insert) {
+											$msg.="ERREUR lors de l'enregistrement de la mesure ".$lig_mes->mesure." pour ".$mesure_ele_login[$i]."<br />\n";
+										}
+									}
+	
+									if((in_array($lig_mes->id,$mesure_demandee))) {unset($clore_incident);}
+								}
+							}
 						}
 					}
-
-					unset($mesure_prise);
-					$mesure_prise=isset($_POST['mesure_prise_'.$i]) ? $_POST['mesure_prise_'.$i] : array();
-					unset($mesure_demandee);
-					$mesure_demandee=isset($_POST['mesure_demandee_'.$i]) ? $_POST['mesure_demandee_'.$i] : array();
-
-					//for($i=0;$i<count($mesure_demandee);$i++) {
-					//}
-
-					//$tab_mesure_possible=array();
-					//$sql="SELECT mesure FROM s_mesures;";
-					$sql="SELECT * FROM s_mesures;";
-					$res_mes=mysql_query($sql);
-					if(mysql_num_rows($res_mes)>0) {
-						while($lig_mes=mysql_fetch_object($res_mes)) {
-							//$tab_mesure_possible[]=$lig_mes->mesure;
-
-							/*
-							if(in_array($lig_mes->mesure,$tab_mes_enregistree)) {
-								if((!in_array($lig_mes->mesure,$mesure_prise))&&
-									(!in_array($lig_mes->mesure,$mesure_demandee))) {
-							*/
-							if(in_array($lig_mes->id,$tab_mes_enregistree)) {
-								if((!in_array($lig_mes->id,$mesure_prise))&&
-									(!in_array($lig_mes->id,$mesure_demandee))) {
-									// Cette mesure n'a plus lieu d'être enregistrée
-									//$sql="DELETE FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."' AND mesure='".$lig_mes->mesure."';";
-									$sql="DELETE FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."' AND id_mesure='".$lig_mes->id."';";
-									$suppr=mysql_query($sql);
-									if(!$suppr) {
-										$msg.="ERREUR lors de la suppression de la mesure ".$lig_mes->mesure." pour ".$mesure_ele_login[$i]."<br />\n";
+				}
+	
+				if(isset($clore_incident)) {
+					$sql="UPDATE s_incidents SET etat='clos' WHERE id_incident='$id_incident';";
+					$update=mysql_query($sql);
+					if(!$update) {
+						$msg.="ERREUR lors de la clôture de l'incident n°$id_incident.<br />\n";
+					}
+					else {
+						$msg.="Clôture de l'incident n°$id_incident.<br />\n";
+					}
+				}
+	
+				$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+				if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
+					$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
+				}
+	
+				if($envoi_mail_actif=='y') {
+	
+					$temoin_envoyer_mail="y";
+					//echo "nature=$nature<br />";
+					if((!isset($nature))||($nature=='')) {
+						$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident' AND (nature!='' OR description!='');";
+						//echo "$sql<br />";
+						$res_test=mysql_query($sql);
+						if(mysql_num_rows($res_test)==0) {
+							$temoin_envoyer_mail="n";
+						}
+					}
+	
+					if($temoin_envoyer_mail=="y") {
+	
+						// Recuperation du message_id pour les fils de discussion dans les mails
+						$sql_mi="SELECT message_id FROM s_incidents WHERE id_incident='$id_incident';";
+						$res_mi=mysql_query($sql_mi);
+						$lig_mi=mysql_fetch_object($res_mi);
+						if($lig_mi->message_id=="") {
+							$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+							$sql="UPDATE s_incidents SET message_id='$message_id' WHERE id_incident='$id_incident';";
+							$update=mysql_query($sql);
+						}
+						else {
+							$references_mail=$lig_mi->message_id;
+						}
+	
+						$tab_alerte_classe=array();
+	
+						$info_classe_prot="";
+						$liste_protagonistes_responsables="";
+						$sql="SELECT * FROM s_protagonistes WHERE id_incident='$id_incident' ORDER BY login;";
+						//echo "$sql<br />";
+						$res_prot=mysql_query($sql);
+						if(mysql_num_rows($res_prot)>0) {
+							$texte_mail.="\n";
+							$texte_mail.="Protagonistes de l'incident: \n";
+							while($lig_prot=mysql_fetch_object($res_prot)) {
+								$texte_mail.=get_nom_prenom_eleve($lig_prot->login)." ($lig_prot->qualite)\n";
+	
+								if(strtolower($lig_prot->qualite)=='responsable') {
+									$sql="SELECT DISTINCT c.classe FROM classes c,j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig_prot->login' ORDER BY jec.periode DESC limit 1;";
+									//echo "$sql<br />";
+									$res_prot_classe=mysql_query($sql);
+									if(mysql_num_rows($res_prot)>0) {
+										$lig_prot_classe=mysql_fetch_object($res_prot_classe);
+										$info_classe_prot="[$lig_prot_classe->classe]";
+								
+										if(getSettingValue('mod_disc_sujet_mail_sans_nom_eleve')!="n") {
+											if($liste_protagonistes_responsables!="") {$liste_protagonistes_responsables.=", ";}
+											$liste_protagonistes_responsables.=$lig_prot->login;
+											//echo "\$liste_protagonistes_responsables=$liste_protagonistes_responsables<br />";
+										}
+									}
+								}
+	
+								$sql="SELECT * FROM s_mesures sm, s_traitement_incident sti WHERE sti.id_incident='$id_incident' AND sti.login_ele='".$lig_prot->login."' AND sti.id_mesure=sm.id ORDER BY type, mesure;";
+								//echo "$sql<br />";
+								$res_mes=mysql_query($sql);
+								if(mysql_num_rows($res_mes)>0) {
+									while($lig_mes=mysql_fetch_object($res_mes)) {
+										$texte_mail.="   $lig_mes->mesure ($lig_mes->type)\n";
+									}
+									$texte_mail.="\n";
+								}
+		
+								// On va avoir des personnes alertees inutilement pour les élèves qui ont changé de classe.
+								// NON
+								$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='$lig_prot->login' ORDER BY periode DESC LIMIT 1;";
+								$res_clas_prot=mysql_query($sql);
+								if(mysql_num_rows($res_clas_prot)>0) {
+									$lig_clas_prot=mysql_fetch_object($res_clas_prot);
+									if(!in_array($lig_clas_prot->id_classe,$tab_alerte_classe)) {
+										$tab_alerte_classe[]=$lig_clas_prot->id_classe;
 									}
 								}
 							}
-							else {
-								//if(in_array($lig_mes->mesure,$mesure_prise)) {
-								//if((in_array($lig_mes->mesure,$mesure_prise))||
-								//	(in_array($lig_mes->mesure,$mesure_demandee))) {
-								if((in_array($lig_mes->id,$mesure_prise))||
-									(in_array($lig_mes->id,$mesure_demandee))) {
-									// Cette mesure doit être enregistrée
-									//$sql="INSERT INTO s_traitement_incident SET id_incident='$id_incident', login_ele='".$mesure_ele_login[$i]."', mesure='".$lig_mes->mesure."', login_u='".$_SESSION['login']."';";
-									$sql="INSERT INTO s_traitement_incident SET id_incident='$id_incident', login_ele='".$mesure_ele_login[$i]."', id_mesure='".$lig_mes->id."', login_u='".$_SESSION['login']."';";
-									$insert=mysql_query($sql);
-									if(!$insert) {
-										$msg.="ERREUR lors de l'enregistrement de la mesure ".$lig_mes->mesure." pour ".$mesure_ele_login[$i]."<br />\n";
-									}
-								}
-
-								if((in_array($lig_mes->id,$mesure_demandee))) {unset($clore_incident);}
-							}
 						}
-					}
-				}
-			}
-
-			if(isset($clore_incident)) {
-				$sql="UPDATE s_incidents SET etat='clos' WHERE id_incident='$id_incident';";
-				$update=mysql_query($sql);
-				if(!$update) {
-					$msg.="ERREUR lors de la clôture de l'incident n°$id_incident.<br />\n";
-				}
-				else {
-					$msg.="Clôture de l'incident n°$id_incident.<br />\n";
-				}
-			}
-
-			$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-			if(($envoi_mail_actif!='n')&&($envoi_mail_actif!='y')) {
-				$envoi_mail_actif='y'; // Passer à 'n' pour faire des tests hors ligne... la phase d'envoi de mail peut sinon ensabler.
-			}
-
-			if($envoi_mail_actif=='y') {
-
-				$temoin_envoyer_mail="y";
-				//echo "nature=$nature<br />";
-				if((!isset($nature))||($nature=='')) {
-					$sql="SELECT * FROM s_incidents WHERE id_incident='$id_incident' AND (nature!='' OR description!='');";
-					//echo "$sql<br />";
-					$res_test=mysql_query($sql);
-					if(mysql_num_rows($res_test)==0) {
-						$temoin_envoyer_mail="n";
-					}
-				}
-
-				if($temoin_envoyer_mail=="y") {
-
-					// Recuperation du message_id pour les fils de discussion dans les mails
-					$sql_mi="SELECT message_id FROM s_incidents WHERE id_incident='$id_incident';";
-					$res_mi=mysql_query($sql_mi);
-					$lig_mi=mysql_fetch_object($res_mi);
-					if($lig_mi->message_id=="") {
-						$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
-						$sql="UPDATE s_incidents SET message_id='$message_id' WHERE id_incident='$id_incident';";
-						$update=mysql_query($sql);
-					}
-					else {
-						$references_mail=$lig_mi->message_id;
-					}
-
-					$tab_alerte_classe=array();
-
-$info_classe_prot="";
-$liste_protagonistes_responsables="";
-					$sql="SELECT * FROM s_protagonistes WHERE id_incident='$id_incident' ORDER BY login;";
-					//echo "$sql<br />";
-					$res_prot=mysql_query($sql);
-					if(mysql_num_rows($res_prot)>0) {
-						$texte_mail.="\n";
-						$texte_mail.="Protagonistes de l'incident: \n";
-						while($lig_prot=mysql_fetch_object($res_prot)) {
-							$texte_mail.=get_nom_prenom_eleve($lig_prot->login)." ($lig_prot->qualite)\n";
-
-
-if(strtolower($lig_prot->qualite)=='responsable') {
-	$sql="SELECT DISTINCT c.classe FROM classes c,j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig_prot->login' ORDER BY jec.periode DESC limit 1;";
-	//echo "$sql<br />";
-	$res_prot_classe=mysql_query($sql);
-	if(mysql_num_rows($res_prot)>0) {
-		$lig_prot_classe=mysql_fetch_object($res_prot_classe);
-		$info_classe_prot="[$lig_prot_classe->classe]";
-
-		if(getSettingValue('mod_disc_sujet_mail_sans_nom_eleve')!="n") {
-			if($liste_protagonistes_responsables!="") {$liste_protagonistes_responsables.=", ";}
-			$liste_protagonistes_responsables.=$lig_prot->login;
-			//echo "\$liste_protagonistes_responsables=$liste_protagonistes_responsables<br />";
-		}
-	}
-}
-
-							$sql="SELECT * FROM s_mesures sm, s_traitement_incident sti WHERE sti.id_incident='$id_incident' AND sti.login_ele='".$lig_prot->login."' AND sti.id_mesure=sm.id ORDER BY type, mesure;";
-							//echo "$sql<br />";
-							$res_mes=mysql_query($sql);
-							if(mysql_num_rows($res_mes)>0) {
-								while($lig_mes=mysql_fetch_object($res_mes)) {
-									$texte_mail.="   $lig_mes->mesure ($lig_mes->type)\n";
-								}
-								$texte_mail.="\n";
+	
+						//echo "\$texte_mail=$texte_mail<br />";
+	
+						if(count($tab_alerte_classe)>0) {
+							$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe);
+							if($destinataires=="") {
+								$destinataires=getSettingValue("gepiAdminAdress");
 							}
 	
-							// On va avoir des personnes alertees inutilement pour les élèves qui ont changé de classe.
-							// NON
-							$sql="SELECT DISTINCT id_classe FROM j_eleves_classes WHERE login='$lig_prot->login' ORDER BY periode DESC LIMIT 1;";
-							$res_clas_prot=mysql_query($sql);
-							if(mysql_num_rows($res_clas_prot)>0) {
-								$lig_clas_prot=mysql_fetch_object($res_clas_prot);
-								if(!in_array($lig_clas_prot->id_classe,$tab_alerte_classe)) {
-									$tab_alerte_classe[]=$lig_clas_prot->id_classe;
-								}
-							}
-						}
-					}
-
-//echo "\$texte_mail=$texte_mail<br />";
-
-
-					if(count($tab_alerte_classe)>0) {
-						$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe);
-						if($destinataires=="") {
-							$destinataires=getSettingValue("gepiAdminAdress");
-						}
-
-						if($destinataires!="") {
-							$texte_mail=$texte_mail."\n\n"."Message: $msg";
-							$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-							if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
-		
-							$header_mail="";
-							if(isset($message_id)) {$header_mail.="Message-id: $message_id\r\n";}
-							if(isset($references_mail)) {$header_mail.="References: $references_mail\r\n";}
-		
-							// On envoie le mail
-							//$envoi = mail(getSettingValue("gepiAdminAdress"),
-							$envoi = mail($destinataires,
-								//$gepiPrefixeSujetMail."GEPI : Incident num $id_incident",
-								$gepiPrefixeSujetMail."[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables,
+							if($destinataires!="") {
+								$texte_mail=$texte_mail."\n\n"."Message: $msg";
+								$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+								if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+			
+								$header_mail="";
+								if(isset($message_id)) {$header_mail.="Message-id: $message_id\r\n";}
+								if(isset($references_mail)) {$header_mail.="References: $references_mail\r\n";}
+			
+								// On envoie le mail
+								//$envoi = mail(getSettingValue("gepiAdminAdress"),
+								$envoi = mail($destinataires,
+									//$gepiPrefixeSujetMail."GEPI : Incident num $id_incident",
+									$gepiPrefixeSujetMail."[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables,
+									$texte_mail,
+									"From: Mail automatique Gepi\r\n".$header_mail."X-Mailer: PHP/" . phpversion());
+							/*
+	$msg.="Envoi d'un mail:<br /><pre>mail($destinataires,
+								//$gepiPrefixeSujetMail.\"GEPI : Incident num $id_incident\",
+								$gepiPrefixeSujetMail.\"[GEPI][Incident n°$id_incident]\".$info_classe_prot.$liste_protagonistes_responsables,
 								$texte_mail,
-								"From: Mail automatique Gepi\r\n".$header_mail."X-Mailer: PHP/" . phpversion());
-						/*
-$msg.="Envoi d'un mail:<br /><pre>mail($destinataires,
-							//$gepiPrefixeSujetMail.\"GEPI : Incident num $id_incident\",
-							$gepiPrefixeSujetMail.\"[GEPI][Incident n°$id_incident]\".$info_classe_prot.$liste_protagonistes_responsables,
-							$texte_mail,
-							\"From: Mail automatique Gepi\r\n\".$header_mail.\"X-Mailer: PHP/\" . phpversion()</pre>";
-						*/
+								\"From: Mail automatique Gepi\r\n\".$header_mail.\"X-Mailer: PHP/\" . phpversion()</pre>";
+							*/
+							}
 						}
 					}
 				}
