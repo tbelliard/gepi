@@ -621,7 +621,7 @@ $tab_req[] = "INSERT INTO droits SET id='/mod_gest_aid/admin.php',administrateur
 $tab_req[] = "INSERT INTO droits VALUES ('/saisie/ajax_edit_limite.php', 'V', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Edition des bulletins simplifiés (documents de travail)', '');";
 //$tab_req[] = "INSERT INTO droits VALUES ( '/mod_plugins/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Ajouter/enlever des plugins', '');";
 
-$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/check_nature_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Recherche de natures d incident', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/check_nature_incident.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Discipline: Recherche de natures d incident', '');";
 
 $tab_req[] = "INSERT INTO droits SET id='/groupes/signalement_eleves.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Groupes: signalement des erreurs d affectation élève',statut='';";
 
