@@ -152,7 +152,7 @@ if ($choix_creneau_obj != null) {
 <table class="tab_edt" summary="Liste des absents r&eacute;partie par classe">
 <?php
 // On affiche la liste des classes
-$classe_col = ClasseQuery::create()->orderByNom()->distinct()->find();
+$classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->distinct()->find();
 $dt_debut_creneau = clone $dt_date_absence_eleve;
 $dt_debut_creneau->setTime($choix_creneau_obj->getHeuredebutDefiniePeriode('H'), $choix_creneau_obj->getHeuredebutDefiniePeriode('i'));
 $dt_fin_creneau = clone $dt_date_absence_eleve;

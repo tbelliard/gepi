@@ -120,7 +120,7 @@ $dt_fin = clone $dt_date_absence_eleve;
 $dt_fin->setTime(23,59,59);
 
 if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $classe_col = ClasseQuery::create()->find();
+    $classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
 } else {
     $classe_col = $utilisateur->getClasses();
 }

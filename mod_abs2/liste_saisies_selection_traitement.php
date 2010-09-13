@@ -404,7 +404,7 @@ echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_classe\" onchange='submit()'>");
 echo "<option value=''></option>\n";
-foreach (ClasseQuery::create()->find() as $classe) {
+foreach (ClasseQuery::create()->orderByNom()->orderByNomComplet()->find() as $classe) {
 	echo "<option value='".$classe->getId()."'";
 	if (getFiltreRechercheParam('filter_classe') === (string) $classe->getId()) echo " SELECTED ";
 	echo ">";

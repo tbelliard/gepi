@@ -183,7 +183,7 @@ if (!$groupe_col->isEmpty()) {
 
 //on affiche une boite de selection avec les classes
 if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $classe_col = ClasseQuery::create()->find();
+    $classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
 } else {
     $classe_col = $utilisateur->getClasses();
 }
