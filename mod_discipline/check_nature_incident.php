@@ -79,7 +79,7 @@ if(isset($chaine_rech)) {
 	}
 }
 else {
-	echo "Aucune élément pour la recherche d'incident.";
+	echo "Aucun élément pour la recherche d'incident.";
 }
 
 ?>
