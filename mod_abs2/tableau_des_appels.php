@@ -307,10 +307,14 @@ foreach($classe_col as $classe){
 			->find();
 	if (!$abs_col->isEmpty()) {
 	    $aid_deja_sorties = Array();
-	    foreach ($abs_col as $abs) {
-		    if ($abs->getIdAid()!==null && !in_array($abs->getIdAid(), $aid_deja_sorties)) {
-			echo 'Appel fait pour l\'aid '.$abs->getAidDetails()->getNom();
-			$aid_deja_sorties[] = $abs->getAidDetails()->getId();
+	    foreach ($abs_col as $absenceSaisie) {
+		    if ($absenceSaisie->getIdAid()!==null && !in_array($absenceSaisie->getIdAid(), $aid_deja_sorties)) {
+			echo  $absenceSaisie->getCreatedAt('H:i').' ';
+			echo  $absenceSaisie->getAidDetails()->getNom().' ';
+			echo  $absenceSaisie->getUtilisateurProfessionnel()->getCivilite().' '
+			    .$absenceSaisie->getUtilisateurProfessionnel()->getNom().' '
+			    .strtoupper(substr($absenceSaisie->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
+			$aid_deja_sorties[] = $absenceSaisie->getAidDetails()->getId();
 			echo '<br/>';
 		    }
 		    if ($absenceSaisie->getEleve() != null) {
