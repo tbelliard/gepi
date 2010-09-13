@@ -829,6 +829,13 @@ if (getSettingValue("statuts_prives") == "y") {
 ?>
 
 </select>
+<?php
+if (getSettingValue("statuts_prives") == "y") {
+	if ($user_statut == "autre") {
+		echo "<a href='creer_statut.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Préciser le statut 'autre'</a>";
+	}
+}
+?>
 <br />
 
 <br />Etat :<select name="reg_etat" size="1" onchange="changement()">
