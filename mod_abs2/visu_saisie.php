@@ -148,6 +148,7 @@ if ($saisie->getEleve() == null) {
     echo '<TD>Élève : </td>';
     echo '<TD>';
     echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
+    echo ' '.$saisie->getEleve()->getClasseNom();
     if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
 	$nom_photo = $saisie->getEleve()->getNomPhoto(1);
 	//$photos = "../photos/eleves/".$nom_photo;
