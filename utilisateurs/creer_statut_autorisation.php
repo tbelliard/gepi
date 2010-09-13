@@ -54,6 +54,7 @@ $autorise[16]= array('/mod_annees_anterieures/consultation_annee_anterieure.php'
 $autorise[17]= array('/mod_trombinoscopes/trombinoscopes.php', '/mod_trombinoscopes/trombi_impr.php');
 $autorise[18]= array('/mod_discipline/index.php',
 					 '/mod_discipline/saisie_incident.php',
+					 '/mod_discipline/check_nature_incident.php',
 					 '/mod_discipline/incidents_sans_protagonistes.php',
 					 '/mod_discipline/sauve_role.php',
 					 '/mod_discipline/update_colonne_retenue.php',
