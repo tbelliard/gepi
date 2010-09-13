@@ -234,7 +234,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $val
 		$cpt_photo = $cpt_photo + 1;
 	}
 
-	if($nb_photos_proposees==$nb_succes_photos) {
+	if(($nb_photos_proposees==$nb_succes_photos)&&($nb_photos_proposees>0)) {
 		if($nb_succes_photos==1){
 			$msg.="Téléchargement réussi.";
 		}
@@ -247,6 +247,9 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $val
 
 unset($mode);
 $mode = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["mode"] : '');
+
+$tab_statuts=array('administrateur','cpe','professeur','scolarite','secours','autre');
+$afficher_statut=isset($_POST['afficher_statut']) ? $_POST['afficher_statut'] : (isset($_GET['afficher_statut']) ? $_GET['afficher_statut'] : "");
 
 //**************** EN-TETE *****************************
 if($mode=='personnels') {
@@ -322,7 +325,7 @@ if (getSettingValue("statuts_prives") == "y") {
 ?>
 </p>
 <p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p>
-<form enctype="multipart/form-data" action="index.php" method="post">
+<form enctype="multipart/form-data" action="index.php" name="form1" method="post">
 <table border='0' summary='Tableau de choix'>
 <tr>
 <td><p>Afficher : </p></td>
@@ -331,6 +334,37 @@ if (getSettingValue("statuts_prives") == "y") {
  &nbsp;&nbsp;<label for='display_actifs' style='cursor: pointer;'>les utilisateurs actifs</label> <input type="radio" id='display_actifs' name="display" value='actifs' <?php if ($display=='actifs') {echo " checked";} ?> /></p></td>
  <td><p>
  &nbsp;&nbsp;<label for='display_inactifs' style='cursor: pointer;'>les utilisateurs inactifs</label> <input type="radio" name="display" id='display_inactifs' value='inactifs' <?php if ($display=='inactifs') {echo " checked";} ?> /></p></td>
+
+
+ <td>
+<p>
+ &nbsp;&nbsp;<select name='afficher_statut' onchange="document.forms['form1'].submit();">
+<option value=''>TOUS</option>
+<?php
+echo "<option value='administrateur'\n";
+if($afficher_statut=="administrateur") {echo " selected='true'";}
+echo ">Administrateurs</option>\n";
+echo "<option value='cpe'\n";
+if($afficher_statut=="cpe") {echo " selected='true'";}
+echo ">Cpe</option>\n";
+echo "<option value='professeur'\n";
+if($afficher_statut=="professeur") {echo " selected='true'";}
+echo ">Professeurs</option>\n";
+echo "<option value='scolarite'\n";
+if($afficher_statut=="scolarite") {echo " selected='true'";}
+echo ">Scolarité</option>\n";
+echo "<option value='secours'\n";
+if($afficher_statut=="secours") {echo " selected='true'";}
+echo ">Secours</option>\n";
+echo "<option value='autre'\n";
+if($afficher_statut=="autre") {echo " selected='true'";}
+echo ">Autre</option>\n";
+
+?>
+</select>
+</p>
+</td>
+
  <td><p><input type='submit' value='Valider' /></p></td>
  </tr>
  </table>
@@ -341,9 +375,15 @@ if (getSettingValue("statuts_prives") == "y") {
 // Affichage du tableau
 //echo "<table border=1 cellpadding=3>\n";
 echo "<table class='boireaus' cellpadding='3' summary='Tableau des utilisateurs'>\n";
-echo "<tr><th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=login&amp;display=$display'>Nom de login</a></b></p></th>\n";
-echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,prenom&amp;display=$display'>Nom et prénom</a></b></p></th>\n";
-echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display'>Statut</a></b></p></th>\n";
+echo "<tr><th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=login&amp;display=$display";
+if($afficher_statut!="") {echo "&amp;afficher_statut=$afficher_statut";}
+echo "'>Nom de login</a></b></p></th>\n";
+echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,prenom&amp;display=$display";
+if($afficher_statut!="") {echo "&amp;afficher_statut=$afficher_statut";}
+echo "'>Nom et prénom</a></b></p></th>\n";
+echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display";
+if($afficher_statut!="") {echo "&amp;afficher_statut=$afficher_statut";}
+echo "'>Statut</a></b></p></th>\n";
 echo "<th><p class=small><b>matière(s) si professeur</b></p></th>\n";
 echo "<th><p class=small><b>classe(s)</b></p></th>\n";
 echo "<th><p class=small><b>".getSettingValue('gepi_prof_suivi')."</b></p></th>\n";
@@ -353,14 +393,21 @@ echo "<th><p class=small><b>imprimer fiche bienvenue</b></p></th>\n";
     	echo "<th><p><input type='submit' value='Télécharger les photos' name='bouton1' /></th>\n";
     }
 echo "</tr>\n";
-$calldata = mysql_query("SELECT * FROM utilisateurs WHERE (" .
-		"statut = 'administrateur' OR " .
-		"statut = 'professeur' OR " .
-		"statut = 'scolarite' OR " .
-		"statut = 'cpe' OR " .
-		"statut = 'secours' OR " .
-		"statut = 'autre') " .
-		"ORDER BY $order_by");
+if(($afficher_statut!="")&&(in_array($afficher_statut,$tab_statuts))) {
+	$sql="SELECT * FROM utilisateurs WHERE (statut = '$afficher_statut') 
+		ORDER BY $order_by;";
+}
+else {
+	$sql="SELECT * FROM utilisateurs WHERE (
+		statut = 'administrateur' OR 
+		statut = 'professeur' OR 
+		statut = 'scolarite' OR 
+		statut = 'cpe' OR 
+		statut = 'secours' OR 
+		statut = 'autre') 
+		ORDER BY $order_by;";
+}
+$calldata = mysql_query($sql);
 $nombreligne = mysql_num_rows($calldata);
 $i = 0;
 $alt=1;
@@ -440,7 +487,7 @@ while ($i < $nombreligne){
     }
     if ($col[$i][4]=='') {$col[$i][4] = "&nbsp;";}
 
-    // Affichage des classes
+    // Affichage des classes/enseignements
     $call_classes = mysql_query("SELECT g.id group_id, g.name name, c.classe classe, c.id classe_id " .
             "FROM j_groupes_professeurs jgp, j_groupes_classes jgc, groupes g, classes c WHERE (" .
             "jgp.login = '$user_login' and " .
@@ -549,7 +596,7 @@ while ($i < $nombreligne){
     }else{
 	    echo "<td><p class='small'><span class='bold'>{$col[$i][4]}</span></p></td>\n";
 	}
-
+	// Liste des enseignements auxquels est associé le professeur
     echo "<td><p class='small'><span class='bold'>{$col[$i][5]}</span></p></td>\n";
     // Affichage de la classe suivie
     echo "<td><p class='small'><span class='bold'>{$col[$i][6]}</span></p></td>\n";
