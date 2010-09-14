@@ -133,6 +133,17 @@ class Eleve extends BaseEleve {
 	}
 
 	/**
+	 * Initializes the collPeriodeNotes collection.
+	 *
+	 * @return     void
+	 */
+	public function initPeriodeNotes()
+	{
+		$this->collPeriodeNotes = new PropelObjectCollection();
+		$this->collPeriodeNotes->setModel('Classe');
+	}
+
+	/**
 	 * Initializes the collAbsenceEleveSaisiesParJour collection.
 	 *
 	 * @param      strind $date_string clé date du jour format('d/m/Y')
