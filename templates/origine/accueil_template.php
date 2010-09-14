@@ -211,6 +211,7 @@
 	<?php
 	if (count($afficheAccueil->titre_Menu)) {
 	  foreach ($afficheAccueil->titre_Menu as $newEntreeMenu) {
+      if ($newEntreeMenu->texte!='bloc_invisible') {
 ?>
 		<h2 class="<?php echo $newEntreeMenu->classe ?>">
 			<img src="<?php echo $newEntreeMenu->icone['chemin'] ?>" alt="<?php echo $newEntreeMenu->icone['alt'] ?>" /> - <?php echo $newEntreeMenu->texte ?>
@@ -221,9 +222,9 @@
 		if ($newEntreeMenu->texte=="Votre flux RSS") {
 ?>
 		  <div class='div_tableau'>
-<?php				  
+<?php
 		  if ($afficheAccueil->canal_rss["mode"]==1) {
-?>	
+?>
 			<h3 class="colonne ie_gauche flux_rss" title="A utiliser avec un lecteur de flux rss" onclick="changementDisplay('divuri', 'divexpli')" >
 			  Votre uri pour les cahiers de textes
 			</h3>
@@ -238,9 +239,9 @@
 			  </span>
 			</p>
 
-<?php 		
+<?php
 		  }else if ($afficheAccueil->canal_rss["mode"]==2){
-?>	
+?>
 			<h3 class="colonne ie_gauche">
 			  Votre uri pour les cahiers de textes
 			</h3>
@@ -249,7 +250,7 @@
 			</p>
 <?php
 		  }
-?>	
+?>
 		  </div>
 <?php
 		}else{
@@ -292,6 +293,7 @@
 				</div>
 <?php
 			  }
+			}
 			}
 			unset($newentree);
 		  }
@@ -349,7 +351,7 @@
 				";
 		}
 	}
- * 
+ *
  */
 ?>
 <!-- fin RSS	-->
