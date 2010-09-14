@@ -343,7 +343,7 @@ if (isset($use_observeur) AND $use_observeur == 'ok') {
 <!-- ************************* -->
 <!-- Début du corps de la page -->
 <!-- ************************* -->
-<body onload="show_message_deconnexion();<?php echo $charger_observeur; ?>">
+<body onload="show_message_deconnexion();<?php echo $charger_observeur; ?>" <?php if (isset($dojo)) {echo 'class=" claro " style="font:11pt Verdana,sans-serif;"';}?> >
 
 <?php
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {

@@ -76,14 +76,22 @@ $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? 
 $type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(isset($_GET["type_selection"]) ? $_GET["type_selection"] : NULL);
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :(isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] :(isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
 $choix_regime = isset($_POST["choix_regime"]) ? $_POST["choix_regime"] :(isset($_GET["choix_regime"]) ? $_GET["choix_regime"] : NULL);
-if ($date_absence_eleve != null) {$_SESSION["date_absence_eleve"] = $date_absence_eleve;}
+//if ($date_absence_eleve != null) {$_SESSION["date_absence_eleve"] = $date_absence_eleve;}
 
 //initialisation des variables
 $current_classe = null;
 $current_groupe = null;
 $current_aid = null;
 if ($date_absence_eleve != null) {
-    $dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
+    try {
+	$dt_date_absence_eleve = new DateTime(str_replace("/",".",$date_absence_eleve));
+    } catch (Exception $x) {
+	try {
+	    $dt_date_absence_eleve = new DateTime($date_absence_eleve);
+	} catch (Exception $x) {
+	   $dt_date_absence_eleve = new DateTime('now');
+	}
+    }
 } else {
     $dt_date_absence_eleve = new DateTime('now');
 }
@@ -261,13 +269,13 @@ if (isset($message_enregistrement)) {
 $eleve_col = new PropelCollection();
 
 if ($type_selection == 'id_eleve') {
-    $query = EleveQuery::create();
+    $query = EleveQuery::create()->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC);
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
     $eleve_col->append($query->findPk($id_eleve));
 } else if ($type_selection == 'nom_eleve') {
-    $query = EleveQuery::create();
+    $query = EleveQuery::create()->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC);
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
@@ -301,9 +309,9 @@ if ($type_selection == 'id_eleve') {
 }
 
 ?>
-	<div class="centre_tout_moyen" style="width : 900px;">
+	<div class="centre_tout_moyen" style="width : 900px;" >
 			    <!-- <p class="expli_page choix_fin"> -->
-				    <form action="./absences_du_jour.php" name="absences_du_jour" method="post" style="width: 100%;">
+				    <form action="./absences_du_jour.php" name="absences_du_jour" id="absences_du_jour" method="post" style="width: 100%;">
 			    <p class="expli_page choix_fin">
 				<input type="hidden" name="type_selection" value="<?php echo $type_selection?>"/>
 				<input type="hidden" name="nom_eleve" value="<?php echo $nom_eleve?>"/>
@@ -311,18 +319,8 @@ if ($type_selection == 'id_eleve') {
 				<input type="hidden" name="id_groupe" value="<?php echo $id_groupe?>"/>
 				<input type="hidden" name="id_classe" value="<?php echo $id_classe?>"/>
 				<input type="hidden" name="id_aid" value="<?php echo $id_aid?>"/>
-				    <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
-				    <script type="text/javascript">
-					Calendar.setup({
-					    inputField     :    "date_absence_eleve_1",     // id of the input field
-					    ifFormat       :    "%d/%m/%Y",      // format of the input field
-					    button         :    "date_absence_eleve_1",  // trigger for the calendar (button ID)
-					    align          :    "Bl",           // alignment (defaults to "Bl")
-					    singleClick    :    true
-					});
-				    </script>
-				    <button type="submit">Changer</button>
-				    <button onclick="
+				    <input onchange="document.absences_du_jour.submit()" size="8" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
+				    <button dojoType="dijit.form.Button" type="submit" onClick="
 					document.absences_du_jour.type_selection.value='';
 					document.absences_du_jour.nom_eleve.value='';
 					document.absences_du_jour.id_eleve.value='';
@@ -336,33 +334,43 @@ if ($type_selection == 'id_eleve') {
 				<!--     <br/> -->
 			<!-- </p> -->
 <?php if (!$eleve_col->isEmpty()) { ?>
-			<form id="creer_traitement" name="creer_traitement" method="post" action="./absences_du_jour.php" class="claro">
+			<form dojoType="dijit.form.Form" jsId="creer_traitement" id="creer_traitement" name="creer_traitement" method="post" action="./absences_du_jour.php">
 			<input type="hidden" id="creation_traitement" name="creation_traitement" value="no"/>
 			<input type="hidden" id="ajout_traitement" name="ajout_traitement" value="no"/>
 			<input type="hidden" id="id_traitement" name="id_traitement" value=""/>
 			<p>
 			<div dojoType="dijit.form.ComboButton">
-			    <span>Ajouter Les saisies cochées à un traitement</span>
+			    <span>Ajouter au traitement</span>
 			    <div dojoType="dijit.Menu">
-				<div dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
+				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
 				    Creer un nouveau traitement
-				</div>
-				<div dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement)">
-				    Creer un nouveau traitement dans une popup
-				</div>
+				</button>
 			<?php
 			$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 			if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
 			    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-			    echo '	<div dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; document.creer_traitement.submit();">'."\n";
+			    echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; document.creer_traitement.submit();">'."\n";
 			    echo '	    Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')'."\n";
-			    echo '	</div>'."\n";
-			    echo '	<div dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; pop_it(document.creer_traitement);">'."\n";
-			    echo '	    Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().') dans une popup'."\n";
-			    echo '	</div>'."\n";
+			    echo '	</button>'."\n";
 			}
 			?>
-
+			    </div>
+			</div>
+			<div dojoType="dijit.form.ComboButton">
+			    <span>Ajouter au traitement (popup)</span>
+			    <div dojoType="dijit.Menu">
+				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement)">
+				    Creer un nouveau traitement dans une popup
+				</button>
+			<?php
+			$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
+			if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
+			    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
+			    echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; pop_it(document.creer_traitement);">'."\n";
+			    echo '	    Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().') dans une popup'."\n";
+			    echo '	</button>'."\n";
+			}
+			?>
 			    </div>
 			</div>
 			</p>
@@ -421,7 +429,7 @@ if ($type_selection == 'id_eleve') {
 <?php
 			echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().') ('.$regime_eleve.')';
 			echo ' ';
-			echo $eleve->getClasseNomComplet($dt_date_absence_eleve);
+			echo $eleve->getClasseNom($dt_date_absence_eleve);
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
 			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
 			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
@@ -514,39 +522,39 @@ if ($type_selection == 'id_eleve') {
 
 			echo '<td>';
 			echo 'Sélectionner: ';
-			echo '<a href="" onclick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true); return false;">Tous</a>, ';
-			echo '<a href="" onclick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false); return false;">Aucun</a>, ';
-			echo '<a href="" onclick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false);
-			    SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'saisie_vierge_eleve_id_'.$eleve->getPrimaryKey().'\', true);
+			echo '<a href="" onclick="SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true); return false;">Tous</a>, ';
+			echo '<a href="" onclick="SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false); return false;">Aucun</a>, ';
+			echo '<a href="" onclick="SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false);
+			    SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'saisie_vierge_eleve_id_'.$eleve->getPrimaryKey().'\', true);
 			    return false;">Non traités</a>, ';
-			echo '<a href="" onclick="SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true);
-			    SetAllCheckBoxes(\'liste_absence_eleve\', \'select_saisie[]\', \'saisie_notifie_eleve_id_'.$eleve->getPrimaryKey().'\', false);
+			echo '<a href="" onclick="SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true);
+			    SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'saisie_notifie_eleve_id_'.$eleve->getPrimaryKey().'\', false);
 			    return false;">Non notifiés</a>';
 			echo '</td>';
 			echo '<td>';
 			echo '<div dojoType="dijit.form.ComboButton">
 			    <span>Ajouter au traitement</span>
 			    <div dojoType="dijit.Menu">
-				<div dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
+				<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
 				    Creer un nouveau traitement
-				</div>';
+				</button>';
 			foreach ($traitement_col as $traitement) {
-			    echo '<div dojoType="dijit.MenuItem" onClick="document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.creer_traitement.submit();">';
+			    echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.creer_traitement.submit();">';
 			    echo ' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
-			    echo '</div>';
+			    echo '</button>';
 			}
 			echo '</div></div>';
 
 			echo '<div dojoType="dijit.form.ComboButton">
 			    <span>Ajouter dans une popup</span>
 			    <div dojoType="dijit.Menu">
-				<div dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
+				<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
 				    Creer un nouveau traitement dans une popup
-				</div>';
+				</button>';
 			foreach ($traitement_col as $traitement) {
-			    echo '<div dojoType="dijit.MenuItem" onClick="document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; pop_it(document.creer_traitement);">';
+			    echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; pop_it(document.creer_traitement);">';
 			    echo ' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
-			    echo '</div>';
+			    echo '</button>';
 			}
 			echo '</div></div>';
 			echo '</td>';
@@ -562,6 +570,31 @@ if ($type_selection == 'id_eleve') {
     echo '<td style="border : 1px solid; background-color : purple;">Saisies conflictuelles</td>';
     echo '<td style="border : 1px solid;">Sans couleur : pas de saisie</td>';
     echo '</tr></table>';
+    ?>
+    <div dojoType="dijit.form.ComboButton">
+	<span>Ajouter Les saisies cochées à un traitement</span>
+	<div dojoType="dijit.Menu">
+	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
+		Creer un nouveau traitement
+	    </button>
+	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement)">
+		Creer un nouveau traitement dans une popup
+	    </button>
+    <?php
+    $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
+    if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
+	$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
+	echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; document.creer_traitement.submit();">'."\n";
+	echo '	    Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')'."\n";
+	echo '	</button>'."\n";
+	echo '	<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.getElementById(\'id_traitement\').value = \''.$id_traitement.'\'; pop_it(document.creer_traitement);">'."\n";
+	echo '	    Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().') dans une popup'."\n";
+	echo '	</button>'."\n";
+    }
+    ?>
+	</div>
+    </div>
+    <?php
     echo '<input type="hidden" name="nb_checkbox" value="'.$nb_checkbox.'"/>';
 
 } else {
@@ -575,6 +608,9 @@ echo "</div>\n";
 $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dijit.form.Button");
     dojo.require("dijit.Menu");
+    dojo.require("dijit.form.Form");
+    dojo.require("dijit.form.CheckBox");
+    dojo.require("dijit.form.DateTextBox");
 </script>';
 
 require_once("../lib/footer.inc.php");
