@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -175,12 +175,40 @@ if ( $classe != 'toutes' and $groupe != 'toutes' and $discipline != 'toutes' and
 									AND id = '".$classe."'
 									GROUP BY nom, prenom"; }
 	// élève d'un groupe
-		if ( $action_affiche === 'groupe' ) { $requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
+		if ( $action_affiche === 'groupe' ) { 
+			/*
+			$requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
 									FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg
 									WHERE jeg.login = e.login
 									AND jeg.id_groupe = g.id
 									AND g.id = '".$groupe."'
-									GROUP BY nom, prenom"; }
+									GROUP BY nom, prenom"; 
+			*/
+			if((isset($_GET['order_by']))&&($_GET['order_by']=='classe')) {
+				$grp_order_by="c.classe, e.nom, e.prenom";
+				$requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
+										FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c
+										WHERE jeg.login = e.login
+										AND jec.login = e.login
+										AND jec.id_classe=c.id
+										AND jeg.id_groupe = g.id
+										AND g.id = '".$groupe."'
+										GROUP BY nom, prenom
+										ORDER BY $grp_order_by;";
+			}
+			else {
+				$grp_order_by="nom, prenom";
+				$requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
+										FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg
+										WHERE jeg.login = e.login
+										AND jeg.id_groupe = g.id
+										AND g.id = '".$groupe."'
+										GROUP BY nom, prenom
+										ORDER BY $grp_order_by;";
+			}
+
+
+		}
 
 	// professeurs d'une équipe pédagogique
 		if ( $action_affiche === 'equipepeda' ) { $requete_trombi = 'SELECT * FROM '.$prefix_base.'utilisateurs u, '.$prefix_base.'j_groupes_professeurs jgp, '.$prefix_base.'j_groupes_classes jgc, '.$prefix_base.'classes c

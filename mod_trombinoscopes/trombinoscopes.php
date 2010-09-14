@@ -253,7 +253,13 @@ function reactiver(mavar) {
 		//echo " | <a href='trombinoscopes.php'>Retour à la sélection</a>";
 
 		if(acces('/mod_trombinoscopes/trombi_impr.php',$_SESSION['statut'])) {
-			echo " | <a href='trombi_impr.php?classe=$classe&amp;groupe=$groupe&amp;equipepeda=$equipepeda&amp;discipline=$discipline&amp;statusgepi=$statusgepi&amp;affdiscipline=$affdiscipline' target='_blank'>Format imprimable</a>";
+			echo " | <a href='trombi_impr.php?classe=$classe&amp;groupe=$groupe&amp;equipepeda=$equipepeda&amp;discipline=$discipline&amp;statusgepi=$statusgepi&amp;affdiscipline=$affdiscipline";
+
+			if((isset($_POST['order_by']))&&($_POST['order_by']=='classe')) {
+				echo "&amp;order_by=classe";
+			}
+
+			echo "' target='_blank'>Format imprimable</a>";
 		}
 	}
 
@@ -512,7 +518,11 @@ function reactiver(mavar) {
 			}
 
 			echo "</optgroup>\n";
-			echo "</select><br /><br />";
+			echo "</select>\n";
+			echo "<br />\n";
+			echo "<span style='margin-left: 15px;'><input type='radio' order_by_alpha' name='order_by' value='alpha' checked /><label for='order_by_alpha'> Tri alphabétique</span></label><br />\n";
+			echo "<span style='margin-left: 15px;'><input type='radio' id='order_by_classe' name='order_by' value='classe' /><label for='order_by_classe'> Tri par classe</span></label><br />\n";
+			echo "<br />";
 
 			echo "<input value='2' name='etape' type='hidden' />\n";
 
@@ -884,12 +894,29 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 
 		$repertoire = 'eleves';
 
-		$requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
-								FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg
-								WHERE jeg.login = e.login
-								AND jeg.id_groupe = g.id
-								AND g.id = '".$groupe."'
-								GROUP BY nom, prenom";
+		if((isset($_POST['order_by']))&&($_POST['order_by']=='classe')) {
+			$grp_order_by="c.classe, e.nom, e.prenom";
+			$requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
+									FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg, ".$prefix_base."j_eleves_classes jec, ".$prefix_base."classes c
+									WHERE jeg.login = e.login
+									AND jec.login = e.login
+									AND jec.id_classe=c.id
+									AND jeg.id_groupe = g.id
+									AND g.id = '".$groupe."'
+									GROUP BY nom, prenom
+									ORDER BY $grp_order_by;";
+		}
+		else {
+			$grp_order_by="nom, prenom";
+			$requete_trombi = "SELECT jeg.login, jeg.id_groupe, jeg.periode, e.login, e.nom, e.prenom, e.elenoet, g.id, g.name, g.description
+									FROM ".$prefix_base."eleves e, ".$prefix_base."groupes g, ".$prefix_base."j_eleves_groupes jeg
+									WHERE jeg.login = e.login
+									AND jeg.id_groupe = g.id
+									AND g.id = '".$groupe."'
+									GROUP BY nom, prenom
+									ORDER BY $grp_order_by;";
+		}
+		//echo "$requete_trombi<br />";
 	}
 	//if ( $action_affiche === 'equipepeda' ) { echo "Equipe pédagogique : ".htmlentities($donnees_qui['nom_complet']); }
 	//if ( $action_affiche === 'discipline' ) { echo "Discipline : ".htmlentities($donnees_qui['nom_complet'])." (".htmlentities($donnees_qui['matiere']).")"; }
@@ -1056,6 +1083,162 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 			if($tmp_id_classe==-1) {$tmp_id_classe=1;}
 		}
 	}
+
+
+	//===================================================
+	// On arrive ici avec un $_POST... donc ce n'est pas évalué.
+	if(isset($_GET['experimental'])) {
+		$largeur_photo=100;
+		$marge=4;
+
+		if((isset($_GET['largeur_photo']))&&($_GET['largeur_photo']!="")) {
+			$test=my_ereg_replace("[^0-9]","",$_GET['largeur_photo']);
+			if($test!="") {
+				if($test>0) {
+					$largeur_photo=$test;
+				}
+			}
+		}
+
+		if((isset($_GET['marge']))&&($_GET['marge']!="")) {
+			$test=my_ereg_replace("[^0-9]","",$_GET['marge']);
+			if($test!="") {
+				if($test>0) {
+					$marge=$test;
+				}
+			}
+		}
+
+		$largeur_div=$largeur_photo+2*$marge;
+
+		$i = 1;
+		while( $i < $total) {
+			//echo "<tr align='center' valign='top'>\n";
+			//for($j=0;$j<3;$j++){
+			//	echo "<td>\n";
+			echo "<div style='float:left; width: ".$largeur_div."px; margin: ".$marge."px; padding: ".$marge."px; border: 1px solid black;'>\n";
+				if ($i < $total) {
+					$nom_es = strtoupper($nom_trombinoscope[$i]);
+					$prenom_es = ucfirst($prenom_trombinoscope[$i]);
+	
+					if (($action_affiche=='equipepeda')||
+						($action_affiche=='discipline')||
+						($action_affiche=='statusgepi')) {
+	
+						if(($_SESSION['statut']=='eleve')&&(isset($tmp_id_classe))) {
+							$alt_nom_prenom_aff=affiche_utilisateur($login_trombinoscope[$i],$tmp_id_classe);
+							$nom_prenom_aff=$alt_nom_prenom_aff."</span>";
+						}
+						elseif(($_SESSION['statut']=='responsable')&&(isset($tmp_id_classe))) {
+							$alt_nom_prenom_aff=affiche_utilisateur($login_trombinoscope[$i],$tmp_id_classe);
+							$nom_prenom_aff=$alt_nom_prenom_aff."</span>";
+						}
+						else {
+							$nom_prenom_aff="<b>".$nom_es."</b></span><br />".$prenom_es;
+							$alt_nom_prenom_aff=$nom_es." ".$prenom_es;
+						}
+					}
+					else {
+						$nom_prenom_aff="<b>".$nom_es."</b></span><br />".$prenom_es;
+						$alt_nom_prenom_aff=$nom_es." ".$prenom_es;
+					}
+	
+					$nom_photo = nom_photo($id_photo_trombinoscope[$i],$repertoire);
+					//$photo = "../photos/".$repertoire."/".$nom_photo;
+					$photo = $nom_photo;
+	
+					//if (($nom_photo != "") and (file_exists($photo))) {
+					if (($nom_photo) and (file_exists($photo))) {
+						$valeur=redimensionne_image($photo);
+	
+						$info_image = getimagesize($photo);
+						// largeur et hauteur de l'image d'origine
+						$largeur = $info_image[0];
+						$hauteur = $info_image[1];
+						/*
+						// largeur et/ou hauteur maximum à afficher
+						if(basename($_SERVER['PHP_SELF'],".php") === "trombi_impr") {
+							// si pour impression
+							$taille_max_largeur = getSettingValue("l_max_imp_trombinoscopes");
+							$taille_max_hauteur = getSettingValue("h_max_imp_trombinoscopes");
+						} else {
+						// si pour l'affichage écran
+							$taille_max_largeur = getSettingValue("l_max_aff_trombinoscopes");
+							$taille_max_hauteur = getSettingValue("h_max_aff_trombinoscopes");
+						}
+					
+						// calcule le ratio de redimensionnement
+						$ratio_l = $largeur / $taille_max_largeur;
+						$ratio_h = $hauteur / $taille_max_hauteur;
+						$ratio = ($ratio_l > $ratio_h)?$ratio_l:$ratio_h;
+						*/
+	
+						$ratio=$largeur/$largeur_photo;
+	
+						// définit largeur et hauteur pour la nouvelle image
+						$nouvelle_largeur = $largeur / $ratio;
+						$nouvelle_hauteur = $hauteur / $ratio;
+	
+						$valeur[0]=$nouvelle_largeur;
+						$valeur[1]=$nouvelle_hauteur;
+	
+					} else {
+						//$valeur[0]=getSettingValue("l_max_aff_trombinoscopes");
+						//$valeur[1]=getSettingValue("h_max_aff_trombinoscopes");
+	
+						$valeur[0]=$largeur_photo;
+						$valeur[1]=$largeur_photo;
+					}
+	
+					echo "<img src='";
+					//if (($nom_photo != "") and (file_exists($photo))) {
+					if (($nom_photo) and (file_exists($photo))) {
+						echo $photo;
+					}
+					else {
+						echo "images/trombivide.jpg";
+					}
+	
+					//echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt='".$prenom_es." ".$nom_es."' title='".$prenom_es." ".$nom_es."' />\n";
+					echo "' style='border: 0px; width: ".$valeur[0]."px; height: ".$valeur[1]."px;' alt=\"".$alt_nom_prenom_aff."\" title=\"".$alt_nom_prenom_aff."\" />\n";
+					echo "<br /><span style='font-family: Arial, Helvetica, sans-serif'>\n";
+	
+					//echo "<b>$nom_es</b></span><br />\n";
+					//echo $prenom_es;
+					echo $nom_prenom_aff;
+	
+					if ( $matiere_prof[$i] != '' ) {
+						echo "<span style='font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i]</span>\n";
+					}
+					if (( $action_affiche === 'groupe' )&&(strstr($current_group['classlist_string'],","))) {
+						/*
+						$sql="SELECT c.classe FROM j_eleves_classes jec, classes c WHERE jec.id_classe=c.id AND jec.login='".$login_trombinoscope[$i]."' ORDER BY jec.periode;";
+						$res_class_ele=mysql_query($sql);
+						*/
+						$tab_ele_classes=get_class_from_ele_login($login_trombinoscope[$i]);
+						echo "<br />".$tab_ele_classes['liste'];
+					}
+	
+					$i = $i + 1;
+					//echo "</span>\n";
+				}
+				else{
+					echo "&nbsp;";
+				}
+			//	echo "</td>\n";
+				echo "</div>\n";
+			//}
+			//echo "</tr>\n";
+	
+			//echo "<div style='width: 100%; height: ".$marge."px; border: 1px solid green;'></div>\n";
+		}
+		echo "</div>\n";
+		echo "<p align='center'><img src='images/barre.gif' width='550' height='2' alt='Barre' /></p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+	//===================================================
+
 
 	echo "<table width='100%' border='0' cellspacing='0' cellpadding='4' summary='Trombino'>\n";
 
