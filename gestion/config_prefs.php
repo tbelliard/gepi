@@ -31,7 +31,8 @@ if ($resultat_session == 'c') {
     die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
-    die();};
+    die();
+}
 
 // INSERT INTO droits VALUES ('/gestion/consult_prefs.php', 'V', 'V', 'F', 'F', 'F', 'F', 'F', 'Définition des préférences d utilisateurs', '');
 if (!checkAccess()) {
@@ -350,6 +351,8 @@ $titre_page = "Configuration des interfaces simplifiées";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 // Initialisation de la variable utilisée pour noter si des modifications ont été effectuées dans la page.
 echo "<script type='text/javascript'>
 	change='no';
@@ -549,6 +552,7 @@ else{
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
 		$lignes_entete.="<th rowspan='2'>Afficher les infobulles</th>\n";
 		$lignes_entete.="<th colspan='6'>Afficher les liens pour</th>\n";
+		if($_SESSION['statut']!='professeur') {$lignes_entete.="<th rowspan='3'>Tout cocher / décocher</th>\n";}
 		$lignes_entete.="</tr>\n";
 
 		// 2ème ligne
@@ -609,6 +613,13 @@ else{
 			//for($j=0;$j<count($tabchamps);$j++){
 			for($j=1;$j<count($tabchamps);$j++){
 				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
+			}
+
+			if($_SESSION['statut']!='professeur') {
+				echo "<th>";
+				echo "<a href='javascript:coche_ligne($i,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+				echo "<a href='javascript:coche_ligne($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+				echo "</th>\n";
 			}
 
 			echo "</tr>\n";
@@ -689,6 +700,7 @@ else{
 		} else {
 			$lignes_entete.="<th colspan='7'>Afficher les champs</th>\n";
 		}
+		if($_SESSION['statut']!='professeur') {$lignes_entete.="<th rowspan='3'>Tout cocher / décocher</th>\n";}
 		$lignes_entete.="</tr>\n";
 
 		// 2ème ligne
@@ -745,6 +757,13 @@ else{
 				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
 			}
 
+			if($_SESSION['statut']!='professeur') {
+				echo "<th>";
+				echo "<a href='javascript:coche_ligne($i,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+				echo "<a href='javascript:coche_ligne($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+				echo "</th>\n";
+			}
+
 			echo "</tr>\n";
 			//$i++;
 		}
@@ -772,6 +791,7 @@ else{
 		}
 		$lignes_entete.="<th rowspan='2'>Utiliser l'interface simplifiée</th>\n";
 		$lignes_entete.="<th colspan='7'>Afficher les champs</th>\n";
+		if($_SESSION['statut']!='professeur') {$lignes_entete.="<th rowspan='3'>Tout cocher / décocher</th>\n";}
 		$lignes_entete.="</tr>\n";
 
 		// 2ème ligne
@@ -825,6 +845,12 @@ else{
 				cellule_checkbox($prof[$i]['login'],$tabchamps[$j],$i,'');
 			}
 
+			if($_SESSION['statut']!='professeur') {
+				echo "<th>";
+				echo "<a href='javascript:coche_ligne($i,true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
+				echo "<a href='javascript:coche_ligne($i,false)'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>\n";
+				echo "</th>\n";
+			}
 			echo "</tr>\n";
 			//$i++;
 		}
@@ -876,6 +902,19 @@ else{
 				document.getElementById(item+'_'+k).checked=statut;
 
 				document.getElementById('td_'+item+'_'+k).style.backgroundColor='$couleur_modif';
+			}
+		}
+		changement();
+	}
+
+	tab_item=new Array('accueil_simpl','accueil_infobulles','accueil_ct','accueil_cn','accueil_bull','accueil_visu','accueil_trombino','accueil_liste_pdf','add_modif_conteneur_simpl','add_modif_conteneur_nom_court','add_modif_conteneur_nom_complet','add_modif_conteneur_description','add_modif_conteneur_coef','add_modif_conteneur_boite','add_modif_conteneur_aff_display_releve_notes','add_modif_conteneur_aff_display_bull','add_modif_dev_simpl','add_modif_dev_nom_court','add_modif_dev_nom_complet','add_modif_dev_description','add_modif_dev_coef','add_modif_dev_note_autre_que_referentiel','add_modif_dev_date','add_modif_dev_date_ele_resp','add_modif_dev_boite');
+	function coche_ligne(ligne,statut){
+		// statut: true ou false
+		for(k=0;k<tab_item.length;k++){
+			if(document.getElementById(tab_item[k]+'_'+ligne)){
+				document.getElementById(tab_item[k]+'_'+ligne).checked=statut;
+
+				document.getElementById('td_'+tab_item[k]+'_'+ligne).style.backgroundColor='$couleur_modif';
 			}
 		}
 		changement();
