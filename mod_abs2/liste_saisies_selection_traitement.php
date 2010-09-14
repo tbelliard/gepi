@@ -225,9 +225,9 @@ if ($order == "asc_id") {
 } else if ($order == "des_utilisateur") {
     $query->useUtilisateurProfessionnelQuery()->orderBy('Nom', Criteria::DESC)->endUse();
 } else if ($order == "asc_eleve") {
-    $query->useEleveQuery()->orderBy('Nom', Criteria::ASC)->endUse();
+    $query->useEleveQuery()->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC)->endUse();
 } else if ($order == "des_eleve") {
-    $query->useEleveQuery()->orderBy('Prenom', Criteria::DESC)->endUse();
+    $query->useEleveQuery()->orderBy('Nom', Criteria::DESC)->orderBy('Prenom', Criteria::DESC)->endUse();
 } else if ($order == "asc_classe") {
     $query->useClasseQuery()->orderBy('NomComplet', Criteria::ASC)->endUse();
 } else if ($order == "des_classe") {

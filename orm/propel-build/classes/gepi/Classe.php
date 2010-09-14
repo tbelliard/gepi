@@ -158,7 +158,7 @@ class Classe extends BaseClasse {
 		} else {
 		    $query->useJEleveClasseQuery()->filterByClasse($this)->endUse();
  		}
-		$query->orderByNom()->distinct();
+		$query->orderByNom()->orderByPrenom()->distinct();
 		return $query->find();
 	}
 

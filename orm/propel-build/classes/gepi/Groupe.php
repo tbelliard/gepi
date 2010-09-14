@@ -228,7 +228,7 @@ class Groupe extends BaseGroupe {
 		} else {
 		    $query->useJEleveGroupeQuery()->filterByGroupe($this)->endUse();
 		}
-		$query->orderByNom()->distinct();
+		$query->orderByNom()->orderByPrenom()->distinct();
 		return $query->find();
 	}
 
