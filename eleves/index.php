@@ -1474,7 +1474,7 @@ if(isset($quelles_classes)) {
 	if($nombreligne>1) {echo "s";}
 	echo "</p>\n";
 
-	echo "<input type='text' name='quelles_classes' value='$quelles_classes' />\n";
+	echo "<input type='hidden' name='quelles_classes' value='$quelles_classes' />\n";
 	// Dans le cas scolarite, la liste des classes est dans la table tempo
 	if(isset($motif_rech)){
 		echo "<input type='hidden' name='motif_rech' value='$motif_rech' />\n";
@@ -1491,7 +1491,13 @@ if(isset($quelles_classes)) {
 	<input type="hidden" name="action" value="depot_photo" />
 	<input type="hidden" name="total_photo" value="<?php echo $nombreligne; ?>" />
 	</form>
+
 	<?php
+
+	$max_file_uploads=ini_get('max_file_uploads');
+	if(($max_file_uploads!="")&&(strlen(my_ereg_replace("[^0-9]","",$max_file_uploads))==strlen($max_file_uploads))&&($max_file_uploads>0)) {
+		echo "<p><i>Note</i>&nbsp;: L'upload des photos est limité à $max_file_uploads fichier(s) simultanément.</p>\n";
+	}
 }
 require("../lib/footer.inc.php");
 ?>
