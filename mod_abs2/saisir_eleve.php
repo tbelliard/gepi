@@ -273,7 +273,7 @@ if ($type_selection == 'id_eleve') {
 if (!$eleve_col->isEmpty()) {
 ?>
     <div class="centre_tout_moyen" style="width : 940px;">
-		<form method="post" action="enregistrement_saisie_eleve.php" id="liste_absence_eleve">
+		<form autocomplete = "off" method="post" action="enregistrement_saisie_eleve.php" id="liste_absence_eleve">
 <p>
 		    <input type="hidden" name="total_eleves" value="<?php echo($eleve_col->count()); ?>"/>
 </p>
