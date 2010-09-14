@@ -23,8 +23,23 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 *
 	 */
 	public function getDescription() {
-	    $desc = '';
+	    $desc = 'créé le ';
 	    $desc .= strftime("%a %d/%m/%Y", $this->getUpdatedAt('U'));
+	    $eleve_col = new PropelCollection();
+	    foreach ($this->getAbsenceEleveSaisies() as $abs_saisie) {
+		if ($abs_saisie->getEleve() != null) {
+		    $eleve_col->add($abs_saisie->getEleve());
+		}
+	    }
+	    foreach ($eleve_col as $eleve) {
+		if ($eleve_col->isFirst()) {
+		    $desc .= '; ';
+		}
+		$desc .= $eleve->getNom().' '.$eleve->getPrenom();
+		if (!$eleve_col->isLast()) {
+		    $desc .= ',';
+		}
+	    }
 	    if ($this->getAbsenceEleveType() != null) {
 		$desc .= "; type : ".$this->getAbsenceEleveType()->getNom();
 	    }
