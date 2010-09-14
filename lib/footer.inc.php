@@ -157,4 +157,10 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 ?>
 
 </body>
+<?php
+//ajout pour dojo
+if (isset($javascript_footer_texte_specifique)) {
+    echo $javascript_footer_texte_specifique;
+}
+?>
 </html>
