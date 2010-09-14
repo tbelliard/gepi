@@ -106,7 +106,12 @@ if ($test->versionGd()) {
 	- Le temps maximum alloué à php pour traiter un script est de '.$test->maxExecution().' secondes'.$warning_maxExec.' (<i>max_execution_time</i>).
 	<br />
 	- La taille maximum d\'un fichier envoyé à Gepi est de '.$test->tailleMaxFichier().' (<i>upload_max_filesize</i>).
-	<br />
+	<br />';
+	$max_file_uploads=ini_get('max_file_uploads');
+	echo '
+	- Il peut être uploadé au maximum '.$max_file_uploads.' fichier(s) à la fois (<i>max_file_uploads</i>).
+	<br />';
+	echo '
 	- La durée maximum de session est réglée à '.ini_get("session.gc_maxlifetime").' secondes, soit un maximum de '.(ini_get("session.gc_maxlifetime")/60).' minutes (<i>session.maxlifetime</i> dans le fichier php.ini).';
 
 	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
