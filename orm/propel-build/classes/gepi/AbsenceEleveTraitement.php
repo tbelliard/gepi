@@ -37,7 +37,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 		}
 		$desc .= $eleve->getNom().' '.$eleve->getPrenom();
 		if (!$eleve_col->isLast()) {
-		    $desc .= ',';
+		    $desc .= ', ';
 		}
 	    }
 	    if ($this->getAbsenceEleveType() != null) {
