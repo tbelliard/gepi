@@ -96,6 +96,10 @@ if ($id_semaine == null || $id_semaine == -1 || !is_numeric($id_semaine) || $id_
 }
 $current_semaine = EdtSemaineQuery::create()->findPk($id_semaine);
 
+if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale")!='y' && getSettingValue("abs2_saisie_prof_decale_journee")!='y') {
+    $id_creneau == null;
+}
+
 if ($utilisateur->getStatut() == 'professeur' && (getSettingValue("abs2_saisie_prof_decale")!='y')) {
     $dt_date_absence_eleve = new DateTime('now');
 } elseif ($date_absence_eleve != null) {
@@ -771,7 +775,7 @@ function redimensionne_image_petit($photo)
 	    $current_creneau = EdtCreneauPeer::retrieveEdtCreneauActuel();
 	    if ($current_creneau != null) {
 		echo $current_creneau->getDescription().' ';
-		echo '<input type="hidden" name="id_creneau" value="'.$id_creneau.'"/>';
+		echo '<input type="hidden" name="id_creneau" value="'.$current_creneau->getIdDefiniePeriode().'"/>';
 	    } else {
 		echo "Aucun creneau actuellement.&nbsp;";
 	    }
