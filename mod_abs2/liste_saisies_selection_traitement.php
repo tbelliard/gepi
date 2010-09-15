@@ -63,7 +63,6 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
 }
 
 if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
-    echo'auieauie';
     include('creation_traitement.php');
 }
 
