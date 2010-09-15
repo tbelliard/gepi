@@ -1469,6 +1469,16 @@ if ($test == -1) {
 	}
 }
 
+$test = sql_query1("SHOW TABLES LIKE 'edt_semaines'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'edt_semaines'. ";
+	$sql="CREATE TABLE edt_semaines (id_edt_semaine int(11) NOT NULL auto_increment,num_edt_semaine int(11) NOT NULL default '0',type_edt_semaine varchar(10) NOT NULL default '', num_semaines_etab int(11) NOT NULL default '0', PRIMARY KEY  (id_edt_semaine));";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'edt_semaines': ".$result_inter."<br />";
+	}
+}
+
 //==========================================================
 // Modification Delineau
 $result .= "<br /><br /><b>Ajout d'une table pour les \"super-gestionnaires\" d'AID :</b><br />";
