@@ -309,7 +309,7 @@ if ($type_selection == 'id_eleve') {
 }
 
 ?>
-	<div class="centre_tout_moyen" style="width : 900px;" >
+	<div style="text-align: center">
 			    <!-- <p class="expli_page choix_fin"> -->
 				    <form action="./absences_du_jour.php" name="absences_du_jour" id="absences_du_jour" method="post" style="width: 100%;">
 			    <p class="expli_page choix_fin">
@@ -425,7 +425,7 @@ if ($type_selection == 'id_eleve') {
 			$aff_compter_hier = ($compter_hier >= 1) ? $compter_hier.' enr.' : '';
 ?>
 			<td<?php echo $color_hier; ?>><?php echo $aff_compter_hier; ?></td>
-			<td class='td_abs_eleves'>
+			<td>
 <?php
 			echo strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().') ('.$regime_eleve.')';
 			echo ' ';
@@ -520,7 +520,7 @@ if ($type_selection == 'id_eleve') {
 			    </td>';
 			}
 
-			echo '<td>';
+			echo '<td style="width : 7em">';
 			echo 'Sélectionner: ';
 			echo '<a href="" onclick="SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true); return false;">Tous</a>, ';
 			echo '<a href="" onclick="SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false); return false;">Aucun</a>, ';
