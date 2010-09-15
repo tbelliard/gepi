@@ -62,7 +62,8 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
     die("acces interdit");
 }
 
-if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_saisie_traitement"])) {
+if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
+    echo'auieauie';
     include('creation_traitement.php');
 }
 
@@ -303,12 +304,12 @@ echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y">Réinitialiser les filtres</button> ';
 echo '</p><p>';
 //echo '<br/>';
-echo '<button type="submit" name="creation_traitement" value="creation_traitement">Créer un traitement</button>';
+echo '<button type="submit" name="creation_traitement" value="yes">Créer un traitement</button>';
 
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
     $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-    echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
+    echo '<button type="submit" name="ajout_traitement" value="yes">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
     echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
 }
 if (isset($message_erreur_traitement)) {
@@ -1073,12 +1074,12 @@ echo '<a href="" onclick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\
 echo '</p><p>';
 //echo '<br/>';
 
-echo '<button type="submit" name="creation_traitement" value="creation_traitement">Créer un traitement</button>';
+echo '<button type="submit" name="creation_traitement" value="yes">Créer un traitement</button>';
 
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
     $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-    echo '<button type="submit" name="ajout_saisie_traitement" value="ajout_saisie_traitement">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
+    echo '<button type="submit" name="ajout_traitement" value="yes">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
     echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
 }
 if (isset($message_erreur_traitement)) {
