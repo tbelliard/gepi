@@ -1045,14 +1045,23 @@ class class_accueil_ordre_menu extends class_page_accueil {
 
 	  while ($i < $nb_aid) {
 		$indice_aid = @mysql_result($call_data, $i, "indice_aid");
-		$call_prof = mysql_query("SELECT *
+		$call_prof1 = mysql_query("SELECT *
 					FROM j_aid_utilisateurs_gest
 					WHERE indice_aid = '".$indice_aid."'");
-		$nb_result = mysql_num_rows($call_prof);
+		$nb_result1 = mysql_num_rows($call_prof1);
+		$call_prof2 = mysql_query("SELECT *
+					FROM j_aidcateg_super_gestionnaires
+					WHERE indice_aid = '".$indice_aid."'");
+		$nb_result2 = mysql_num_rows($call_prof2);
 
-		if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
+		if (($nb_result1 != 0) or ($nb_result2 != 0)) {
 		  $nom_aid = @mysql_result($call_data, $i, "nom");
-		  $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
+  		if ($nb_result2 != 0)
+      		$this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
+				  $nom_aid,
+				  "Cet outil vous permet de gérer les groupes (création, suppression, modification).");
+			else
+      		$this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
 				  $nom_aid,
 				  "Cet outil vous permet de gérer l'appartenance des élèves aux différents groupes.");
 		}

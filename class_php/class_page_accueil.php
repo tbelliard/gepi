@@ -1,3 +1,4 @@
+
 <?php
 /*
  * $Id$
@@ -21,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
- 
+
 
 /**
  * Description of class_page_accueil
@@ -358,14 +359,14 @@ class class_page_accueil {
   }
 
   protected function absences_vie_scol() {
-  
+
 			$this->b=0;
 		if (getSettingValue("active_module_absence")=='y') {
 
 			$this->creeNouveauItem('/mod_absences/gestion/gestion_absences.php',
 					"Gestion Absences, dispenses, retards et infirmeries",
 					"Cet outil vous permet de gérer les absences, dispenses, retards et autres bobos à l'infirmerie des ".$this->gepiSettings['denomination_eleves'].".");
-					
+
 			$this->creeNouveauItem('/mod_absences/gestion/voir_absences_viescolaire.php',
 					"Visualiser les absences",
 					"Vous pouvez visualiser créneau par créneau la saisie des absences.");
@@ -376,12 +377,12 @@ class class_page_accueil {
 				"Gestion des Absences",
 				"Cet outil vous permet de gérer les absences des élèves");
 	  }
-	  
+
 			if ($this->b>0){
 			$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
 			return true;
 			}
-		
+
   }
 
   protected function absences_profs(){
@@ -405,7 +406,7 @@ class class_page_accueil {
 		$this->creeNouveauTitre('accueil',"Gestion des retards et absences",'images/icons/absences.png');
 		return true;
 	  }
-		
+
     }
   }
 
@@ -535,10 +536,10 @@ class class_page_accueil {
 
 	$condition = (
 	getSettingValue("active_cahiers_texte")=='y' AND (
-		($this->statutUtilisateur == "cpe" 
+		($this->statutUtilisateur == "cpe"
 			AND getSettingValue("GepiAccesCdtCpe") == 'yes'
 			AND getSettingValue("GepiAccesCdtCpeRestreint") != 'yes')
-		OR ($this->statutUtilisateur == "scolarite" 
+		OR ($this->statutUtilisateur == "scolarite"
 			AND getSettingValue("GepiAccesCdtScol") == 'yes'
 			AND getSettingValue("GepiAccesCdtScolRestreint") != 'yes')
 	));
@@ -619,7 +620,7 @@ class class_page_accueil {
 			  "Cet outil vous permet de visualiser les trombinoscopes des classes.");
 
 	  // On appelle les aid "trombinoscope"
-	  $call_data = mysql_query("SELECT * FROM aid_config 
+	  $call_data = mysql_query("SELECT * FROM aid_config
 								WHERE indice_aid= '".getSettingValue("num_aid_trombinoscopes")."'
 								ORDER BY nom");
 	  $nb_aid = mysql_num_rows($call_data);
@@ -775,7 +776,7 @@ class class_page_accueil {
 		($this->statutUtilisateur == "responsable" AND getSettingValue("GepiAccesCahierTexteParent") == 'yes')
 		OR ($this->statutUtilisateur == "eleve" AND getSettingValue("GepiAccesCahierTexteEleve") == 'yes')
 	));
-	
+
 	if ($condition) {
 		if ($this->statutUtilisateur == "responsable") {
 		  $this->creeNouveauItem("/cahier_texte/consultation.php",
@@ -1014,7 +1015,7 @@ class class_page_accueil {
 //            GepiAccesRestrAccesAppProfP : peut saisir les avis du conseil de classe pour sa classe
 	if ((($this->test_prof_suivi != "0")
 					AND ($this->statutUtilisateur=='professeur')
-					AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes')) 
+					AND (getSettingValue("GepiAccesRestrAccesAppProfP")=='yes'))
 			 OR ($this->statutUtilisateur=='scolarite')
 			 OR ($this->statutUtilisateur=='administrateur')){
 	  $this->creeNouveauItem("/classes/acces_appreciations.php",
@@ -1026,10 +1027,10 @@ class class_page_accueil {
 
 	if ((($this->test_prof_suivi != "0")
 					AND ($this->statutUtilisateur=='professeur')
-					AND (getSettingValue("GepiProfImprBul")=='yes') 
-					AND (getSettingValue("GepiProfImprBulSettings")=='yes')) 
+					AND (getSettingValue("GepiProfImprBul")=='yes')
+					AND (getSettingValue("GepiProfImprBulSettings")=='yes'))
 			OR (($this->statutUtilisateur=='scolarite')
-					AND (getSettingValue("GepiScolImprBulSettings")=='yes')) 
+					AND (getSettingValue("GepiScolImprBulSettings")=='yes'))
 			OR (($this->statutUtilisateur=='administrateur')
 					AND (getSettingValue("GepiAdminImprBulSettings")=='yes'))){
 	  $this->creeNouveauItem("/bulletin/param_bull.php",
@@ -1050,8 +1051,8 @@ class class_page_accueil {
 	}
 
 	if ((($this->test_prof_suivi != "0")
-					AND (getSettingValue("GepiProfImprBul")=='yes')) 
-			OR ($this->statutUtilisateur!='professeur')){ 	  
+					AND (getSettingValue("GepiProfImprBul")=='yes'))
+			OR ($this->statutUtilisateur!='professeur')){
 	  $this->creeNouveauItem("/bulletin/bull_index.php",
 			  "Visualisation et impression des bulletins",
 			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.");
@@ -1109,7 +1110,7 @@ class class_page_accueil {
 			"Impression PDF de listes",
 			"Ceci vous permet d'imprimer en PDF des listes avec les ".$this->gepiSettings['denomination_eleves'].", à l'unité ou en série. L'apparence des listes est paramétrable.");
 
-	if(($this->statutUtilisateur=='scolarite')||(($this->statutUtilisateur=='professeur') 
+	if(($this->statutUtilisateur=='scolarite')||(($this->statutUtilisateur=='professeur')
 			AND ($this->test_prof_suivi != "0"))){
 	  $this->creeNouveauItem("/saisie/impression_avis.php",
 			  "Impression PDF des avis du conseil de classe",
@@ -1155,31 +1156,31 @@ class class_page_accueil {
 			  "Bulletins simplifiés d'une classe.");
 	}
 	elseif(($this->statutUtilisateur=='professeur')&&(getSettingValue("GepiAccesBulletinSimplePP")=="yes")) {
-	  $sql="SELECT 1=1 FROM j_eleves_professeurs 
+	  $sql="SELECT 1=1 FROM j_eleves_professeurs
 			WHERE professeur='".$this->loginUtilisateur."';";
 	  $test_pp=mysql_num_rows(mysql_query($sql));
-	  if($test_pp>0) { 
+	  if($test_pp>0) {
 		$this->creeNouveauItem("/prepa_conseil/index3.php",
 				"Visualiser les bulletins simplifiés",
 				"Bulletins simplifiés d'une classe.");
 	  }
 	}
 
-	$call_data = mysql_query("SELECT * FROM aid_config 
-					WHERE display_bulletin = 'y' 
-					OR bull_simplifie = 'y' 
+	$call_data = mysql_query("SELECT * FROM aid_config
+					WHERE display_bulletin = 'y'
+					OR bull_simplifie = 'y'
 					ORDER BY nom");
 	$nb_aid = mysql_num_rows($call_data);
 
 	$i=0;
 	while ($i < $nb_aid) {
 	  $indice_aid = @mysql_result($call_data, $i, "indice_aid");
-	  $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs 
+	  $call_prof = mysql_query("SELECT * FROM j_aid_utilisateurs
 								WHERE (id_utilisateur = '".$this->loginUtilisateur."'
 								AND indice_aid = '".$indice_aid."')");
 	  $nb_result = mysql_num_rows($call_prof);
 	  if ($nb_result != 0) {
-		$nom_aid = @mysql_result($call_data, $i, "nom");	 
+		$nom_aid = @mysql_result($call_data, $i, "nom");
 		$this->creeNouveauItem("/prepa_conseil/visu_aid.php?indice_aid=".$indice_aid,
 				"Visualiser des appréciations ".$nom_aid,
 				"Cet outil permet la visualisation et l'impression des appréciations des ".$this->gepiSettings['denomination_eleves']." pour les ".$nom_aid.".");
@@ -1189,7 +1190,7 @@ class class_page_accueil {
 
 	if(($this->statutUtilisateur=='professeur')&&(getSettingValue('GepiAccesGestElevesProfP')=='yes')) {
 	  // Le professeur est-il professeur principal dans une classe au moins.
-	  $sql="SELECT 1=1 FROM j_eleves_professeurs 
+	  $sql="SELECT 1=1 FROM j_eleves_professeurs
 			WHERE professeur='".$this->loginUtilisateur."';";
 	  $test=mysql_query($sql);
 	  if (mysql_num_rows($test)>0) {
@@ -1339,7 +1340,7 @@ class class_page_accueil {
 
 		  if($AAResponsable=="yes"){
 			// Est-ce que le responsable est bien associé à un élève?
-			$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e 
+			$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e
 				WHERE rp.pers_id=r.pers_id AND
 					  r.ele_id=e.ele_id AND
 					  rp.login='".$this->loginUtilisateur."'";
@@ -1393,7 +1394,7 @@ class class_page_accueil {
 	  $this->creeNouveauItem("/mod_inscription/inscription_config.php",
 			  "Configuration du module d'inscription/visualisation",
 			  "Configuration des différents paramètres du module");
-  
+
 	  if (getSettingValue("active_inscription_utilisateurs")=='y'){
 		$this->creeNouveauItem("/mod_inscription/inscription_index.php",
 				"Accès au module d'inscription/visualisation",
@@ -1657,15 +1658,24 @@ class class_page_accueil {
 
 	  while ($i < $nb_aid) {
 		$indice_aid = @mysql_result($call_data, $i, "indice_aid");
-		$call_prof = mysql_query("SELECT *
-					FROM j_aid_utilisateurs_gest
-					WHERE (id_utilisateur = '" . $this->loginUtilisateur . "'
-					AND indice_aid = '$indice_aid')");
-		$nb_result = mysql_num_rows($call_prof);
 
-		if (($nb_result != 0) or ($this->statutUtilisateur == 'secours')) {
+		$call_prof1 = mysql_query("SELECT *
+					FROM j_aid_utilisateurs_gest
+					WHERE indice_aid = '".$indice_aid."' and id_utilisateur='".$this->loginUtilisateur."'");
+		$nb_result1 = mysql_num_rows($call_prof1);
+		$call_prof2 = mysql_query("SELECT *
+					FROM j_aidcateg_super_gestionnaires
+					WHERE indice_aid = '".$indice_aid."' and id_utilisateur='".$this->loginUtilisateur."'");
+		$nb_result2 = mysql_num_rows($call_prof2);
+
+		if (($nb_result1 != 0) or ($nb_result2 != 0)) {
 		  $nom_aid = @mysql_result($call_data, $i, "nom");
-		  $this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
+  		if ($nb_result2 != 0)
+      		$this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
+				  $nom_aid,
+				  "Cet outil vous permet de gérer les groupes (création, suppression, modification).");
+			else
+      		$this->creeNouveauItem("/aid/index2.php?indice_aid=".$indice_aid,
 				  $nom_aid,
 				  "Cet outil vous permet de gérer l'appartenance des élèves aux différents groupes.");
 		}

@@ -43,6 +43,12 @@ if (!checkAccess()) {
 die();
 }
 
+// Vérification du niveau de gestion des AIDs
+if (NiveauGestionAid($_SESSION["login"],$indice_aid) < 5) {
+    header("Location: ../logout.php?auto=1");
+    die();
+}
+
 if(!isset($mess)) {$mess="";}
 
 if (isset($is_posted) and ($is_posted =="1")) {

@@ -1838,7 +1838,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
   $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=-1\">(Choisissez une classe)";
   // Ligne suivante corrigée sur suggestion tout à fait pertinente de Stéphane, mail du 1er septembre 06
 
-	
+
   if (isset($_SESSION['statut']) && ($_SESSION['statut']=='scolarite'
 		  && getSettingValue('GepiAccesCdtScolRestreint')=="yes")){
   $sql = "SELECT DISTINCT c.id, c.classe
@@ -1849,7 +1849,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 	  AND jsc.login='".$_SESSION ['login']."'
 		)
 	ORDER BY classe ;";
-  
+
   } else if (isset($_SESSION['statut']) && ($_SESSION['statut']=='cpe'
 		  && getSettingValue('GepiAccesCdtCpeRestreint')=="yes")){
 
@@ -1877,7 +1877,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
 
   $res = sql_query($sql);
 
-  
+
   if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
   {
     $selected = ($row[0] == $current) ? "selected" : "";
@@ -1918,7 +1918,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	*/
   // Pour le multisite, on doit récupérer le RNE de l'établissement
   $prof="";
-  
+
   $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
   $aff_input_rne = $aff_get_rne = NULL;
   if ($rne != 'aucun') {
@@ -3182,7 +3182,7 @@ function param_edt($statut){
 * Renvoie NULL si :
  *
 * - le module trombinoscope n'est pas activé
- * 
+ *
 * - ou bien la photo n'existe pas.
 *
 *@var $_elenoet_ou_login : selon les cas, soir l'elenoet de l'élève ou bien lelogin du professeur
@@ -3283,7 +3283,7 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 			}
 
 		}
-		
+
 	  }
 	}
 	// Cas des non-élèves
@@ -3609,20 +3609,24 @@ function NiveauGestionAid($_login,$_indice_aid,$_id_aid="") {
     if (getSettingValue("active_mod_gest_aid")=="y") {
       // l'id de l'aid n'est pas défini : on regarde si l'utilisateur est gestionnaire d'au moins une aid dans la catégorie
       if ($_id_aid == "") {
-        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
-        if ($test >= 1) {
+        $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
+        $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
+        if ($test2 >= 1) {
+            return 5;
+        } else if ($test1 >= 1) {
             return 1;
-        } else {
-            return 0;
-        }
+        } else
+          return 0;
       } else {
       // l'id de l'aid est défini : on regarde si l'utilisateur est gestionnaire de cette aid
-        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."' and id_aid = '".$_id_aid."')");
-        if ($test == 1) {
+        $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."' and id_aid = '".$_id_aid."')");
+        $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_indice_aid."')");
+        if ($test2 >= 1) {
+            return 5;
+        } else if ($test1 >= 1) {
             return 1;
-        } else {
-            return 0;
-        }
+        } else
+          return 0;
       }
     } else
       return 0;
@@ -3636,10 +3640,12 @@ function PeutEffectuerActionSuppression($_login,$_action,$_cible1,$_cible2,$_cib
         die();
     }
     if (getSettingValue("active_mod_gest_aid")=="y") {
-      if ($_action=="del_eleve_aid") {
+      if (($_action=="del_eleve_aid") or ($_action=="del_prof_aid") or ($_action=="del_aid")) {
       // on regarde si l'utilisateur est gestionnaire de l'aid
-        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_cible3."' and id_aid = '".$_cible2."')");
-        if ($test == 1) {
+        $test1 = sql_query1("SELECT count(id_utilisateur) FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_cible3."' and id_aid = '".$_cible2."')");
+        $test2 = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '" . $_login . "' and indice_aid = '".$_cible3."')");
+        $test = max($test1,$test2);
+        if ($test >= 1) {
             return TRUE;
         } else {
             return FALSE;
@@ -4371,36 +4377,36 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		if($largeur_utile>0) {
 			$style_courant='';
 			$pdf->SetFont('',$style_courant);
-	
+
 			// On va supprimer les retours à la ligne
 			$texte=trim(my_ereg_replace("\n"," ",$texte));
 			if($my_echo_debug==1) my_echo_debug("\$texte=$texte\n");
-	
+
 			// On supprime les balises
 			$texte=preg_replace('/<(.*)>/U','',$texte);
 			if($my_echo_debug==1) my_echo_debug("\$texte=$texte\n");
 			for($j=0;$j<strlen($texte);$j++) {
-	
+
 				if(!isset($ligne[$cpt])) {
 					$ligne[$cpt]='';
 				}
 				if($my_echo_debug==1) my_echo_debug("\$ligne[$cpt]=\"$ligne[$cpt]\"\n");
-	
+
 				$chaine=$ligne[$cpt].substr($texte,$j,1);
 				if($my_echo_debug==1) my_echo_debug("\$chaine=\"$chaine\"\n");
-	
+
 				if($pdf->GetStringWidth($chaine)>$largeur_utile) {
-	
+
 					if($my_echo_debug==1) my_echo_debug("Avec \$chaine, ça dépasse.\n");
-	
+
 					if($cpt+1>$nb_max_lig) {
 						$longueur_max_atteinte="y";
-	
+
 						if($my_echo_debug==1) my_echo_debug("\$cpt=$cpt et \$nb_max_lig=$nb_max_lig.\nOn ne peut plus ajouter une ligne.\n");
-	
+
 						break;
 					}
-	
+
 					$cpt++;
 					$ligne[$cpt]=substr($texte,$j,1);
 					if($my_echo_debug==1) my_echo_debug("On commence une nouvelle ligne avec le dernier caractère: \"".substr($texte,$j-1,1)."\"\n");
@@ -4411,7 +4417,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 					if($my_echo_debug==1) my_echo_debug("\$ligne[$cpt]=\"$ligne[$cpt]\"\n");
 				}
 			}
-	
+
 			if($my_echo_debug==1) my_echo_debug("On a fini le texte... ou atteint une limite\n");
 
 		}
@@ -4428,18 +4434,18 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	$hauteur_totale=($cpt+1)*$hauteur_texte_mm*(1+$r_interligne);
 	// Marge verticale en mm entre les lignes
 	$marge_verticale=$hauteur_texte_mm*$r_interligne;
-	
-	
+
+
 	if($my_echo_debug==1) my_echo_debug("\$hauteur_texte=".$hauteur_texte."\n");
 	if($my_echo_debug==1) my_echo_debug("\$hauteur_texte_mm=".$hauteur_texte_mm."\n");
 	if($my_echo_debug==1) my_echo_debug("\$hauteur_totale=".$hauteur_totale."\n");
 	if($my_echo_debug==1) my_echo_debug("\$marge_verticale=".$marge_verticale."\n");
-	
-	
+
+
 	// On trace le rectangle (vide) du cadre:
 	$pdf->SetXY($x,$y);
 	$pdf->Cell($largeur_dispo,$h_cell, '',$bordure,2,'');
-	
+
 	// On va écrire les lignes avec la taille de police optimale déterminée (cf. $ifmax)
 	$nb_lig=count($ligne);
 	$h=$nb_lig*$hauteur_texte_mm*(1+$r_interligne);
@@ -4447,7 +4453,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 	if($my_echo_debug==1) my_echo_debug("\$t=".$t."\n");
 	$bord_debug='';
 	//$bord_debug='LRBT';
-	
+
 	// On ne gère que les v_align Top et Center... et ajout d'un mode aéré
 	if($v_align=='E') {
 		// Mode aéré
@@ -4459,15 +4465,15 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		//$decalage_v_top=($h_cell-$nb_lig*$hauteur_texte_mm-($nb_lig-1)*$marge_verticale)/2;
 		$decalage_v_top=($h_cell-($nb_lig+1)*$hauteur_texte_mm-$nb_lig*$marge_verticale)/2;
 	}
-	
+
 	for($i=0;$i<count($ligne);$i++) {
-	
+
 		if($v_align=='T') {
 			$pdf->SetXY($x,$y+$i*($hauteur_texte_mm+$marge_verticale));
-	
+
 			// Pour pouvoir afficher le $bord_debug
 			$pdf->Cell($largeur_dispo,$hauteur_texte_mm+2*$marge_verticale, '',$bord_debug,1,$align);
-	
+
 			$y_courant=$y+$i*($hauteur_texte_mm+$marge_verticale)-$marge_verticale;
 			$pdf->SetXY($x,$y_courant);
 			if($my_echo_debug==1) {
@@ -4480,20 +4486,20 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		elseif($v_align=='E') {
 			$y_courant=$y+$marge_verticale+$i*($hauteur_texte_mm+$espace_v);
 			$pdf->SetXY($x,$y_courant);
-	
+
 			// Pour pouvoir afficher le $bord_debug
 			$pdf->Cell($largeur_dispo,$h_cell/$nb_lig, '',$bord_debug,1,$align);
-	
+
 			$pdf->SetXY($x,$y_courant);
 			$pdf->myWriteHTML($ligne[$i]);
 		}
 		else {
 			$y_courant=$y+$decalage_v_top+$i*($hauteur_texte_mm+$marge_verticale);
-	
+
 			// Pour pouvoir afficher le $bord_debug A REFAIRE
 			//$pdf->SetXY($x,$y_courant);
 			//$pdf->Cell($largeur_dispo,$h_cell/count($tab_lig[$ifmax]['lignes']), '',$bord_debug,1,$align);
-	
+
 			$pdf->SetXY($x,$y_courant);
 			/*
 			if(preg_match('/<(.*)>/U',$ligne[$i])) {
@@ -5238,16 +5244,16 @@ function cree_repertoire_multisite() {
 
 /**
  * Recherche les élèves sans photos
- * 
+ *
  * @return array tableau de login - nom - prénom - classe - classe court - eleonet
  */
 function recherche_eleves_sans_photo() {
   $eleve=NULL;
   $requete_liste_eleve = "SELECT e.elenoet, e.login, e.nom, e.prenom, c.nom_complet, c.classe
 	FROM eleves e, j_eleves_classes jec, classes c
-	WHERE e.login = jec.login 
-	AND jec.id_classe = c.id 
-	GROUP BY e.login 
+	WHERE e.login = jec.login
+	AND jec.id_classe = c.id
+	GROUP BY e.login
 	ORDER BY id_classe, nom, prenom ASC";
   $res_eleve = mysql_query($requete_liste_eleve);
   while ($row = mysql_fetch_object($res_eleve)) {
@@ -5287,7 +5293,7 @@ function recherche_personnel_sans_photo($statut='professeur') {
 function efface_photos($photos) {
 // on liste les fichier du dossier photos/personnels ou photos/eleves
   if (!($photos=="eleves" || $photos=="personnels"))
-	return ("Le dossier <strong>".$photos."</strong> n'ai pas valide.");  
+	return ("Le dossier <strong>".$photos."</strong> n'ai pas valide.");
   if (cree_zip_archive("photos")==TRUE){
 	$fichier_sup=array();
 	if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
@@ -5366,7 +5372,7 @@ function suivi_ariane($lien,$texte){
 
 /**
  * Affiche le fil d'Ariane
- * 
+ *
  * @param <boolean> $validation si True,
  * une validation sera demandée en cas de modification de la page
  * @param <texte> $themessage message à afficher lors de la confirmation
@@ -5422,7 +5428,7 @@ function path_niveau($niveau=1){
  *
  * @param text $dossier_a_archiver limité à documents ou photos
  * @param int $niveau niveau dans l'arborescence de la page appelante, racine = 0
- * @return bool 
+ * @return bool
  */
 function cree_zip_archive($dossier_a_archiver,$niveau=1) {
   $path = path_niveau();
@@ -5462,7 +5468,7 @@ function cree_zip_archive($dossier_a_archiver,$niveau=1) {
 		return TRUE;
 	  }
 	}
-  }  
+  }
 }
 
 /**

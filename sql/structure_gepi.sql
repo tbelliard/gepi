@@ -164,6 +164,8 @@ DROP TABLE IF EXISTS `inscription_j_login_items`;
 CREATE TABLE IF NOT EXISTS inscription_j_login_items (login varchar(20) NOT NULL default '', id int(11) NOT NULL default '0');
 DROP TABLE IF EXISTS `j_aidcateg_utilisateurs`;
 CREATE TABLE  IF NOT EXISTS `j_aidcateg_utilisateurs` (`indice_aid` INT NOT NULL ,`id_utilisateur` VARCHAR( 50 ) NOT NULL);
+DROP TABLE IF EXISTS `j_aidcateg_super_gestionnaires`;
+CREATE TABLE  IF NOT EXISTS `j_aidcateg_super_gestionnaires` (`indice_aid` INT NOT NULL ,`id_utilisateur` VARCHAR( 50 ) NOT NULL);
 DROP TABLE IF EXISTS `aid_familles`;
 CREATE TABLE IF NOT EXISTS `aid_familles` (`ordre_affichage` smallint(6) NOT NULL default '0',`id` smallint(6) NOT NULL default '0',`type` varchar(250) NOT NULL default '');
 DROP TABLE IF EXISTS `aid_public`;

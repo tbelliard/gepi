@@ -70,7 +70,7 @@ if (!isset($is_posted)) {
     if ($nb_test == 0) {
 
         // Par sécurité, on efface d'éventuelles données résiduelles dans les tables j_aid_utilisateurs et j_aid_eleves
-
+        $del = mysql_query("DELETE FROM j_aidcateg_super_gestionnaires WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM j_aid_utilisateurs_gest WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM j_aid_eleves WHERE indice_aid='$indice_aid'");

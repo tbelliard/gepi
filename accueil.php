@@ -170,7 +170,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Accueil"))
 	  echo $_SESSION['ariane']['texte'][$index];
 	  echo "<br />";
 	}
- * 
+ *
  */
 
 /*
@@ -321,7 +321,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 			}else{
 				$lig_pers=mysql_fetch_object($res_pers);
 				$alt=$alt*(-1);
- 
+
 /*
 				//$texte.="<tr class='lig$alt'><td>";
 				if($lig_pers->email!="") {
@@ -374,15 +374,15 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 // christian : demande d'enregistrement
 	//if (($force_ref) or (1==1)){
 	if (($force_ref)) {
- 
+
 /*
 		?><div style="border-style:solid; border-width:1px; border-color: #6F6968; background-color: #CFD7FF;  padding: 2px; margin-left: 60px; margin-right: 60px; margin-top: 2px; margin-bottom: 2px;  text-align: center; color: #1C1A8F; font-weight: bold;"><p>Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.<br /><a href="javascript:ouvre_popup_reference('<?php echo($gepiPath); ?>/referencement.php?etape=explication')" title="Pourquoi est-ce utile ?">Pourquoi est-ce utile ?</a> / <a href="javascript:ouvre_popup_reference('<?php echo($gepiPath); ?>/referencement.php?etape=1')" title="Référencer votre établissement">Référencer votre établissement</a>.</p></div><?php
 
 		$tbs_referencement[]=array("texte"=>"Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=explication","titre"=>"Pourquoi est-ce utile ?");
 		$tbs_referencement[]=array("texte"=>"Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=1","titre"=>"Référencer votre établissement");
- * 
+ *
  */
-	
+
 		$afficheAccueil->referencement[]=array("texte"=>"Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=explication","titre"=>"Pourquoi est-ce utile ?");
 		$afficheAccueil->referencement[]=array("texte"=>"Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.","lien"=>"$gepiPath/referencement.php?etape=1","titre"=>"Référencer votre établissement");
 	}
@@ -424,6 +424,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 			$tbs_signalement.="<a href='groupes/edit_eleves.php?id_groupe=".$lig_sign->id_groupe."&amp;id_classe=".$current_group_sign['classes']['list'][0]."'>".$current_group_sign['name']." (<i>".$current_group_sign['description']." ".$current_group_sign['classlist_string']."</i>)</a> signalé par ".affiche_utilisateur($lig_sign->declarant,$current_group_sign['classes']['list'][0])."<br />\n";
 		}
 		$tbs_signalement.="</p>\n";
+		$afficheAccueil->signalement=$tbs_signalement;
 	}
 
 	//echo "</div>\n";
@@ -574,7 +575,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 	if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -669,7 +670,7 @@ if (getSettingValue("active_module_absence")=='y') {
 		}
 	}
 }
- * 
+ *
  */
 
 
@@ -708,7 +709,7 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
       if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -738,7 +739,7 @@ if (getSettingValue("active_module_absence_professeur")=='y') {
     }
 	}
 }
- * 
+ *
  */
 
 /****************************************************************************************
@@ -847,7 +848,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -875,7 +876,7 @@ if ($affiche=='yes') {
 		}
 	}
 }
- * 
+ *
  */
 /******************
 	Fin de saisie
@@ -954,7 +955,7 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
 
 
 	if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -983,7 +984,7 @@ if (($active_module_trombinoscopes=='y')||($active_module_trombino_pers=='y')) {
 		}
 	}
 }
- * 
+ *
  */
 
 /**********************************************************************
@@ -1046,7 +1047,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -1076,7 +1077,7 @@ if ($affiche=='yes') {
 
 
 }
- * 
+ *
  */
 
 /**********************************
@@ -1119,7 +1120,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -1143,7 +1144,7 @@ if ($affiche=='yes') {
 		}
 	}
 }
- * 
+ *
  */
 
 /**********************************
@@ -1181,7 +1182,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
 }
 	// Ajout d'un test param_edt() pour savoir si l'admin a activé ou non le module EdT - Calendrier
 if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
- * 
+ *
  */
 /*
 	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Emploi du temps</h2>\n";
@@ -1205,7 +1206,7 @@ if ($affiche=='yes' AND param_edt($_SESSION["statut"]) == 'yes') {
 	}
 
 }
- * 
+ *
  */
 
 /************************
@@ -1315,7 +1316,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -1340,7 +1341,7 @@ if ($affiche=='yes') {
 	}
 
 }
- * 
+ *
  */
 
 /******************************************************************
@@ -1411,7 +1412,7 @@ if ($nb_total != 0) {
   	}
   }
 }
- * 
+ *
  */
 /**************************************************
 	Fin outils complémentaires de gestion des AID
@@ -1510,7 +1511,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
     //else{echo "$chemin[$i] refusé<br />";}
 }
 if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -1539,7 +1540,7 @@ if ($affiche=='yes') {
 	}
 
 }
- * 
+ *
  */
 
 /*******************************************
@@ -1704,7 +1705,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -1733,7 +1734,7 @@ if ($affiche=='yes') {
 	}
 
 }
- * 
+ *
  */
 
 /***********************************
@@ -1798,7 +1799,7 @@ L'opération renseigne également les tables nécessaires pour générer les Fiches b
 	}
 
 	if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -1828,7 +1829,7 @@ L'opération renseigne également les tables nécessaires pour générer les Fiches b
 
 	}
 }
- * 
+ *
  */
 
 /************************
@@ -1949,7 +1950,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
- * 
+ *
  */
 	/*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -1979,7 +1980,7 @@ if (getSettingValue("active_annees_anterieures")=='y') {
 
 	}
 }
- * 
+ *
  */
 
 /***********************************
@@ -2007,7 +2008,7 @@ for ($i=0;$i<$nb_ligne;$i++) {
     if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 }
 if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -2037,7 +2038,7 @@ if ($affiche=='yes') {
 	}
 
 }
- * 
+ *
  */
 
 /*************************
@@ -2067,7 +2068,7 @@ if (getSettingValue("active_inscription")=='y') {
       if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
   }
   if ($affiche=='yes') {
- * 
+ *
  */
 /*
 		// modification Régis : créer des <h2> pour faciliter la navigation
@@ -2097,7 +2098,7 @@ if (getSettingValue("active_inscription")=='y') {
 
   }
 }
- * 
+ *
  */
 
 /*****************************
@@ -2125,7 +2126,7 @@ if (getSettingValue("active_mod_discipline")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
- * 
+ *
  */
 /*
 			echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Discipline</h2>\n";
@@ -2148,7 +2149,7 @@ if (getSettingValue("active_mod_discipline")=='y') {
 		}
 	}
 }
- * 
+ *
  */
 
 /*****************************
@@ -2175,7 +2176,7 @@ if (getSettingValue("active_mod_ooo")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
- * 
+ *
  */
 /*
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
@@ -2202,7 +2203,7 @@ if (getSettingValue("active_mod_ooo")=='y') {
 
 	}
 }
- * 
+ *
  */
 
 /*****************************
@@ -2248,7 +2249,7 @@ while ($plugin = mysql_fetch_object($query)){
 
     if ($nb_ligne >= 1){
     	$descriptionPlugin= iconv("utf-8","iso-8859-1",$plugin->description);
- * 
+ *
  */
 /*
       echo "<h2 class='accueil'><img src='./images/icons/package.png' alt='#' /> - ".str_replace("_", " ", $plugin->nom)." (plugin)</h2>
@@ -2285,7 +2286,7 @@ while ($plugin = mysql_fetch_object($query)){
     }
 
 }
- * 
+ *
  */
 
 /*****************************
@@ -2312,7 +2313,7 @@ if (getSettingValue("active_mod_genese_classes")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
- * 
+ *
  */
 /*
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
@@ -2338,7 +2339,7 @@ if (getSettingValue("active_mod_genese_classes")=='y') {
 		}
 	}
 }
- * 
+ *
  */
 
 /*****************************
@@ -2354,7 +2355,7 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 
 	// Les flux rss sont ouverts pour les élèves
 	$tbs_canal_rss_flux=1;
- * 
+ *
  */
 
 /*
@@ -2368,7 +2369,7 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 
 		$uri_el = retourneUri($_SESSION["login"], $test_https, 'cdt');
 		$tbs_canal_rss[]=array("lien"=>$uri_el["uri"] , "texte"=>$uri_el["text"], "mode"=>1 , "expli"=>"En cliquant sur la cellule de gauche, vous pourrez récupérer votre URI (si vous avez activé le javascript sur votre navigateur).");
- * 
+ *
  */
 /*
 		echo '
@@ -2389,7 +2390,7 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 
 	}elseif(getSettingValue("rss_acces_ele") == 'csv'){
 		$tbs_canal_rss[]=array("lien"=>"" , "texte"=>"", "mode"=>2, "expli"=>"");
- * 
+ *
  */
 /*
 		echo '
@@ -2401,14 +2402,14 @@ if (getSettingValue("rss_cdt_eleve") == 'y' AND $_SESSION["statut"] == "eleve") 
 */
 /*
 	}
- * 
+ *
  */
 /*
 	echo '</table>';
 */
 /*
 }
- * 
+ *
  */
 /******************************************************************
 	Fin lien vers les flux rss pour les élèves s'ils sont activés
@@ -2429,7 +2430,7 @@ if ($_SESSION["statut"] == 'autre') {
 	// On récupère la liste des fichiers à autoriser
 	require_once("utilisateurs/creer_statut_autorisation.php");
 	$nbre_a = count($autorise);
- * 
+ *
  */
 /*
 	// modification Régis : créer des <h2> pour faciliter la navigation
@@ -2470,7 +2471,7 @@ if ($_SESSION["statut"] == 'autre') {
 				}else{
 					$var = '';
 				}
- * 
+ *
  */
 /*
 			echo '
@@ -2489,7 +2490,7 @@ if ($_SESSION["statut"] == 'autre') {
 		}
 		$a++;
 	}
- * 
+ *
  */
 /*
 	echo '</table>';
@@ -2503,7 +2504,7 @@ if ($_SESSION["statut"] == 'autre') {
 */
 /*
 }
- * 
+ *
  */
 // ========================== fin Statut AUTRE =============================
 
@@ -2528,7 +2529,7 @@ if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Epreuves blanches</h2>\n";
@@ -2551,7 +2552,7 @@ if (getSettingValue("active_mod_epreuve_blanche")=='y') {
 		}
 	}
 }
- * 
+ *
  */
 
 /*****************************
@@ -2578,7 +2579,7 @@ if (getSettingValue("active_mod_examen_blanc")=='y') {
 		if (acces($chemin[$i],$_SESSION['statut'])==1)  {$affiche = 'yes';}
 	}
 	if ($affiche=='yes') {
- * 
+ *
  */
 /*
 	echo "<h2 class='accueil'><img src='./images/icons/document.png' alt=''/> - Epreuves blanches</h2>\n";
@@ -2601,7 +2602,7 @@ if (getSettingValue("active_mod_examen_blanc")=='y') {
 		}
 	}
 }
- * 
+ *
  */
 
 /*****************************
@@ -2640,7 +2641,7 @@ if (getSettingValue("active_mod_apb")=='y') {
 		}
 	}
 }
- * 
+ *
  */
 
 /*****************************
@@ -2704,7 +2705,7 @@ if (getSettingValue("active_mod_gest_aid")=='y') {
 		}
 	}
 }
- * 
+ *
  */
 /*******************************
   Fin Module Gestionnaire d'AID
@@ -2739,7 +2740,7 @@ include($nom_gabarit);
 unset($tbs_menu,$tbs_message_admin,$tbs_nom_connecte,$tbs_referencement,$tbs_probleme_dir,$tbs_interface_graphique,$tbs_message,$tbs_canal_rss);
 unset($tbs_refresh,$tbs_librairies,$tbs_CSS,$tbs_statut,$donnees_enfant,$tbs_premier_menu,$tbs_deux_menu);
 unset($tbs_menu_prof);
- * 
+ *
  */
 
 ?>

@@ -153,6 +153,7 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 2)) {
 "j_aid_utilisateurs",
 "j_aid_utilisateurs_gest",
 "j_aidcateg_utilisateurs",
+"j_aidcateg_super_gestionnaires",
 "j_eleves_classes",
 "j_eleves_cpe",
 "j_eleves_etablissements",

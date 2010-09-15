@@ -1469,5 +1469,20 @@ if ($test == -1) {
 	}
 }
 
+//==========================================================
+// Modification Delineau
+$result .= "<br /><br /><b>Ajout d'une table pour les \"super-gestionnaires\" d'AID :</b><br />";
+$result .= "<br />&nbsp;->Tentative de création de la table j_aidcateg_super_gestionnaires.<br />";
+$test = sql_query1("SHOW TABLES LIKE 'j_aidcateg_super_gestionnaires'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_aidcateg_super_gestionnaires (indice_aid INT NOT NULL ,id_utilisateur VARCHAR( 50 ) NOT NULL);");
+	if ($result_inter == '')
+	$result .= "<font color=\"green\">La table j_aidcateg_super_gestionnaires a été créée !</font><br />";
+	else
+	$result .= $result_inter."<br />";
+} else {
+		$result .= "<font color=\"blue\">La table j_aidcateg_super_gestionnaires existe déjà.</font><br />";
+}
+
 
 ?>

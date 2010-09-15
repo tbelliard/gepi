@@ -125,7 +125,12 @@ echo " />&nbsp;<label for='activer_y' style='cursor: pointer;'>Activer la possib
 if (getSettingValue('active_mod_gest_aid')=='n') {echo ' checked';}
 echo " />&nbsp;<label for='activer_n' style='cursor: pointer;'>Désactiver la possibilité de définir des gestionnaires d'AID</label>
 <br />\n";
-echo "<p>En activant le module, l'administrateur peut définir pour chaque AID un ou plusieurs gestionnaires parmi les utilisateurs. Ces gestionnaires auront alors dans leur menu une rubrique supplémentaire leur permettant d'ajouter ou de supprimer des élèves.</p>";
+echo "<p>En activant le module, l'administrateur peut définir :
+<ul>
+<li> pour chaque catégorie d'AID, un ou plusieurs "super-gestionnaires" parmi les utilisateurs. Ces utilisateurs auront alors dans leur menu une rubrique supplémentaire leur permettant d'ajouter, supprimer ou modifier des AID, ainsi que des  élèves ou professeurs appartenant à ces AID.</li>
+<li> pour chaque AID un ou plusieurs gestionnaires parmi les utilisateurs. Ces gestionnaires auront alors dans leur menu une rubrique supplémentaire leur permettant d'ajouter ou de supprimer des élèves.</li>
+</ul>
+</p>";
 echo " <input type='submit' name='valider' value='Valider' /></p>\n";
 
 echo "</form>\n";

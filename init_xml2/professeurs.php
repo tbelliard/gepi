@@ -93,6 +93,8 @@ $liste_tables_del = array(
 //"j_aid_eleves",
 "j_aid_utilisateurs",
 "j_aid_utilisateurs_gest",
+"j_aidcateg_super_gestionnaires",
+"j_aidcateg_utilisateurs",
 "j_groupes_professeurs",
 //"j_eleves_classes",
 //"j_eleves_etablissements",

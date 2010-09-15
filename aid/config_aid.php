@@ -106,8 +106,6 @@ if (isset($is_posted) and ($is_posted == "1")) {
 		    }
 		    $i++;
 		} // while
-
-
     if (isset($_POST["reg_prof_login"]) and ($_POST["reg_prof_login"] !="")) {
         // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
         $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and indice_aid='$indice_aid')");
@@ -118,6 +116,32 @@ if (isset($is_posted) and ($is_posted == "1")) {
             if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
         }
     }
+		// Suppression de "super-gestionaires"
+		$call_profs = mysql_query("SELECT id_utilisateur FROM j_aidcateg_super_gestionnaires WHERE (indice_aid='$indice_aid')");
+		$nb_profs = mysql_num_rows($call_profs);
+		$i = 0;
+		while($i < $nb_profs) {
+		    $login_gestionnaire = mysql_result($call_profs,$i);
+		    if (isset($_POST["delete_gestionnaire_".$login_gestionnaire])) {
+		        $reg_data = mysql_query("delete from j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$login_gestionnaire' and indice_aid='$indice_aid')");
+            if (!$reg_data) $msg_inter .= "Erreur lors de la suppression du professeur $login_gestionnaire!<br />";
+		    }
+		    $i++;
+		} // while
+
+
+    if (isset($_POST["reg_gestionnaire_login"]) and ($_POST["reg_gestionnaire_login"] !="")) {
+        // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
+        $test = sql_query1("SELECT count(id_utilisateur) FROM j_aidcateg_super_gestionnaires WHERE (id_utilisateur = '$reg_gestionnaire_login' and indice_aid='$indice_aid')");
+        if ($test != "0") {
+            $msg = "Le professeur que vous avez tenté d'ajouter appartient déjà à cet AID";
+        } else {
+            $reg_data = mysql_query("INSERT INTO j_aidcateg_super_gestionnaires SET id_utilisateur= '".$_POST["reg_gestionnaire_login"]."', indice_aid='".$indice_aid."'");
+            if (!$reg_data) $msg_inter .= "Erreur lors de l'ajout du professeur !<br />";
+        }
+    }
+
+
     if ($msg_inter !="") {
         $msg = $msg_inter;
     } else {
@@ -371,6 +395,48 @@ Par d&eacute;faut, un &eacute;l&egrave;ve ne peut &ecirc;tre inscrit dans plus d
 </p>
 
 <hr />
+<?php
+// si le plugin "gestion_autorisations_publications" existe et est activé, on exclue la rubrique correspondante
+$test_plugin = sql_query1("select ouvert from plugins where nom='gestion_autorisations_publications'");
+
+if ((getSettingValue("active_mod_gest_aid")=="y") and ($test_plugin=='y') and (getSettingValue("indice_aid_autorisations_publi") != $indice_aid)) {
+?>
+<p><b>Ajout/suppression de "super-gestionnaires"</b></p>
+<p>En plus des professeurs responsable de chaque AID, vous pouvez indiquer ci-dessous des utilisateurs (professeurs ou CPE) ayant le droit de g&eacute;rer les AIDs de cette cat&eacute;gorie (ajout, suppression, modification d'AID, de professeurs ou d'&eacute;l&egrave;ves)</p>
+<?php
+$call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aidcateg_super_gestionnaires j WHERE (j.indice_aid='$indice_aid' and u.login=j.id_utilisateur and (statut='professeur' or statut='cpe'))  order by u.nom, u.prenom");
+$nombre = mysql_num_rows($call_liste_data);
+if ($nombre !=0)
+    echo "<table border=0>";
+$i = "0";
+while ($i < $nombre) {
+    $login_gestionnaire = mysql_result($call_liste_data, $i, "login");
+    $nom_prof = mysql_result($call_liste_data, $i, "nom");
+    $prenom_prof = @mysql_result($call_liste_data, $i, "prenom");
+    echo "<tr><td><b>";
+    echo "$nom_prof $prenom_prof</b></td><td> <input type=\"checkbox\" name=\"delete_gestionnaire_".$login_gestionnaire."\" value=\"y\" /> (cocher pour supprimer)</td></tr>\n";
+
+    $i++;
+}
+if ($nombre !=0)
+    echo "</table>";
+echo "<select size=1 name=reg_gestionnaire_login>\n";
+echo "<option value=''>(aucun)</option>\n";
+$call_prof = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE  etat!='inactif' AND (statut = 'professeur' OR statut = 'cpe') order by nom");
+$nombreligne = mysql_num_rows($call_prof);
+$i = "0" ;
+while ($i < $nombreligne) {
+    $login_prof = mysql_result($call_prof, $i, 'login');
+    $nom_el = mysql_result($call_prof, $i, 'nom');
+    $prenom_el = mysql_result($call_prof, $i, 'prenom');
+    echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
+    $i++;
+}
+?>
+</select>
+<hr />
+<?php } ?>
+
 <p><b>Outils complémentaires de gestion des AIDs :</b></p>
 <p>En activant les outils complémentaires de gestion des AIDs, vous avez accès à des champs supplémentaires
 (attribution d'une salle, possibilité de définir un résumé, le type de production, des mots_clés, un public destinataire...).
@@ -411,16 +477,16 @@ $call_prof = mysql_query("SELECT login, nom, prenom FROM utilisateurs WHERE  eta
 $nombreligne = mysql_num_rows($call_prof);
 $i = "0" ;
 while ($i < $nombreligne) {
-    $login_prof = mysql_result($call_prof, $i, 'login');
+    $login_gestionnaire = mysql_result($call_prof, $i, 'login');
     $nom_el = mysql_result($call_prof, $i, 'nom');
     $prenom_el = mysql_result($call_prof, $i, 'prenom');
-    echo "<option value=\"".$login_prof."\">".$nom_el." ".$prenom_el."</option>\n";
+    echo "<option value=\"".$login_gestionnaire."\">".$nom_el." ".$prenom_el."</option>\n";
     $i++;
 }
 
 ?>
 </select>
-<p><b>Feuille de présence : </b></p>
+<hr /><p><b>Feuille de présence : </b></p>
 <p>En cochant la case présence ci-dessous, vous avez la possibilité, dans l'interface de visualisation, d'afficher un lien permettant d'imprimer des feuilles de présence.</p>
 <p>
 <input type="checkbox" id="feuillePresence" name="feuille_presence" value="y" <?php if ($feuille_presence == "y") { echo ' checked="checked"';} ?> />

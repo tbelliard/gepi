@@ -58,7 +58,7 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) <= 0) {
     die();
 }
 
-if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_prof) and ($add_prof == "yes"))) {
+if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof) and ($add_prof == "yes"))) {
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
     $test = mysql_query("SELECT * FROM j_aid_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
     $test2 = mysql_num_rows($test);
@@ -232,7 +232,7 @@ require_once("../lib/header.inc");
 
 
 // On affiche un select avec la liste des aid de cette catégorie
-if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 10)
+if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5)
     $sql = "SELECT id, nom FROM aid WHERE indice_aid = '".$indice_aid."' ORDER BY numero, nom";
 else if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 1)
     $sql = "SELECT a.id, a.nom FROM aid a, j_aid_utilisateurs_gest j WHERE a.indice_aid = '".$indice_aid."' and j.id_utilisateur = '" . $_SESSION["login"] . "' and j.indice_aid = '".$indice_aid."' and  a.id=j.id_aid ORDER BY a.numero, a.nom";

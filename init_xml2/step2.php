@@ -119,7 +119,6 @@ $liste_tables_del = array(
 "j_aid_eleves",
 "j_aid_utilisateurs",
 "j_aid_eleves_resp",
-"j_aid_utilisateurs_gest",
 "j_eleves_classes",
 //==========================
 // On ne vide plus la table chaque année

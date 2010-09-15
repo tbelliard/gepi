@@ -301,6 +301,14 @@ if (getSettingValue("active_mod_gest_aid")=="y") {
     $tab["j_aid_utilisateurs_gest"][3] = "id_utilisateur";  // nom du champ de la table de liaison lié à la deuxième table
     $tab["j_aid_utilisateurs_gest"][4] = "id";  // nom du champ de la première table lié à la table de liaison
     $tab["j_aid_utilisateurs_gest"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+
+    $tab["j_aidcateg_super_gestionnaires"][0] = "aid_config"; //1ère table
+    $tab["j_aidcateg_super_gestionnaires"][1] = "utilisateurs"; // 2ème table
+    $tab["j_aidcateg_super_gestionnaires"][2] = "indice_aid"; // nom du champ de la table de liaison lié à la première table
+    $tab["j_aidcateg_super_gestionnaires"][3] = "id_utilisateur";  // nom du champ de la table de liaison lié à la deuxième table
+    $tab["j_aidcateg_super_gestionnaires"][4] = "indice_aid";  // nom du champ de la première table lié à la table de liaison
+    $tab["j_aidcateg_super_gestionnaires"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
+
 }
     $tab["j_aidcateg_utilisateurs"][0] = "aid_config"; //1ère table
     $tab["j_aidcateg_utilisateurs"][1] = "utilisateurs"; // 2ème table

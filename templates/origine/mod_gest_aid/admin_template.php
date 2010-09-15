@@ -95,13 +95,11 @@
 
 	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" id='form1'>
 	  <p>
-		<em>
-		  En activant le module, l'administrateur peut définir pour chaque AID un ou plusieurs gestionnaires
-		  parmi les utilisateurs.
-		<br />
-		Ces gestionnaires auront alors dans leur menu une rubrique supplémentaire leur permettant d'ajouter ou
-		de supprimer des élèves.
-		</em>
+      En activant le module, l'administrateur peut définir :
+      <ul>
+      <li> pour chaque catégorie d'AID, un ou plusieurs "super-gestionnaires" parmi les utilisateurs. Ces utilisateurs auront alors dans leur menu une rubrique supplémentaire leur permettant d'ajouter, supprimer ou modifier des AID, ainsi que des  élèves ou professeurs appartenant à ces AID.</li>
+      <li> pour chaque AID un ou plusieurs gestionnaires parmi les utilisateurs. Ces gestionnaires auront alors dans leur menu une rubrique supplémentaire leur permettant d'ajouter ou de supprimer des élèves.</li>
+      </ul>
 	  </p>
 
 	  <fieldset class="no_bordure">
@@ -112,7 +110,7 @@
 			   value='y'
 			   <?php if (getSettingValue('active_mod_gest_aid')=='y') echo ' checked="checked"'; ?>/>
 		<label for='activer_y'>
-		  Activer la possibilité de définir des gestionnaires d'AID
+		  Activer la possibilité de définir des gestionnaires d'AID ou des "super-gestionnaires" de cat&eacute;gorie d'AID
 		</label>
 		<br />
 		<input type='radio'
@@ -121,7 +119,7 @@
 			   value='n'
 			   <?php if (getSettingValue('active_mod_gest_aid')=='n') echo ' checked="checked"'; ?>/>
 		<label for='activer_n'>
-		  Désactiver la possibilité de définir des gestionnaires d'AID
+		  Désactiver la possibilité de définir des gestionnaires d'AID ou des "super-gestionnaires" de cat&eacute;gorie d'AID
 		</label>
 	  </fieldset>
 	  <p class="center">
