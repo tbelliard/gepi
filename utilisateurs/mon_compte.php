@@ -260,13 +260,13 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 										$source = imagecreatefromjpeg($repertoire.$nouveau_code_photo.".jpg"); // La photo est la source
 										if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
 										if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
-		
+
 										// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
 										$largeur_source = imagesx($source);
 										$hauteur_source = imagesy($source);
 										$largeur_destination = imagesx($destination);
 										$hauteur_destination = imagesy($destination);
-		
+
 										// On crée la miniature
 										imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
 										if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
@@ -292,6 +292,14 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 	}
 	//elseif($_SESSION['statut']=='eleve') {
 	elseif(($_SESSION['statut']=='eleve')&&(getSettingValue("active_module_trombinoscopes")=='y')&&(getSettingValue("GepiAccesModifMaPhotoEleve")=='yes')) {
+		// En multisite, on ajoute le répertoire RNE
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			  // On récupère le RNE de l'établissement
+		  $repertoire="../photos/".getSettingValue("gepiSchoolRne")."/eleves/";
+		}else{
+		  $repertoire="../photos/eleves/";
+		}
+
 		$sql="SELECT elenoet FROM eleves WHERE login='".$_SESSION['login']."';";
 		$res_elenoet=mysql_query($sql);
 		if(mysql_num_rows($res_elenoet)>0) {
@@ -342,7 +350,7 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 									$filephoto_name=$_FILES['filephoto']['name'];
 									$filephoto_size=$_FILES['filephoto']['size'];
 									$filephoto_type=$_FILES['filephoto']['type'];
-									if ((!preg_match('/jpg$/',$filephoto_name)) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ) {
+									if ((!preg_match('/jpg$/',strtolower($filephoto_name))) || ($filephoto_type != "image/jpeg" && $filephoto_type != "image/pjpeg") ) {
 										//$msg = "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.";
 										if($msg!="") {$msg.="<br />";}
 										$msg .= "Erreur : seuls les fichiers ayant l'extension .jpg sont autorisés.\n";
@@ -365,13 +373,13 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 												$source = imagecreatefromjpeg($repertoire.$reg_no_gep.".jpg"); // La photo est la source
 												if (getSettingValue("active_module_trombinoscopes_rt")=='') { $destination = imagecreatetruecolor(getSettingValue("l_resize_trombinoscopes"), getSettingValue("h_resize_trombinoscopes")); } // On crée la miniature vide
 												if (getSettingValue("active_module_trombinoscopes_rt")!='') { $destination = imagecreatetruecolor(getSettingValue("h_resize_trombinoscopes"), getSettingValue("l_resize_trombinoscopes")); } // On crée la miniature vide
-			
+
 												// Les fonctions imagesx et imagesy renvoient la largeur et la hauteur d'une image
 												$largeur_source = imagesx($source);
 												$hauteur_source = imagesy($source);
 												$largeur_destination = imagesx($destination);
 												$hauteur_destination = imagesy($destination);
-			
+
 												// On crée la miniature
 												imagecopyresampled($destination, $source, 0, 0, 0, 0, $largeur_destination, $hauteur_destination, $largeur_source, $hauteur_source);
 												if (getSettingValue("active_module_trombinoscopes_rt")!='') { $degrees = getSettingValue("active_module_trombinoscopes_rt"); /* $destination = imagerotate($destination,$degrees); */$destination = ImageRotateRightAngle($destination,$degrees); }
@@ -816,7 +824,7 @@ if ($editable_user) {
 
 	echo "<br /><span style='color: red;'>Il est fortement conseillé de ne pas choisir un mot de passe trop simple</b>.</span>";
 	echo "<br /><b>Votre mot de passe est strictement personnel, vous ne devez pas le diffuser,<span style='color: red;'> il garantit la sécurité de votre travail.</b></span></p>\n";
-	echo "<script type=\"text/javascript\" src=\"../lib/pwd_strength.js\"></script>";	
+	echo "<script type=\"text/javascript\" src=\"../lib/pwd_strength.js\"></script>";
 
 	echo "<table summary='Mot de passe'><tr>\n";
 	echo "<td>Ancien mot de passe : </td><td><input type=password name=no_anti_inject_password_a size=20 /></td>\n";
@@ -824,7 +832,7 @@ if ($editable_user) {
 	echo "<td>Nouveau mot de passe (".getSettingValue("longmin_pwd") ." caractères minimum) :</td>";
 	echo "<td> <input id=\"mypassword\" type=password name=no_anti_inject_password1 size=20 onkeyup=\"runPassword(this.value, 'mypassword');\" />";
 	echo "<td>";
-	echo "Complexité de votre mot de passe : ";	
+	echo "Complexité de votre mot de passe : ";
 	echo "		<div style=\"width: 150px;\"> ";
 	echo "			<div id=\"mypassword_text\" style=\"font-size: 11px;\"></div>";
 	echo "			<div id=\"mypassword_bar\" style=\"font-size: 1px; height: 3px; width: 0px; border: 1px solid white;\"></div> ";
