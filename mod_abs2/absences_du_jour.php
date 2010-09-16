@@ -157,6 +157,7 @@ if (!$groupe_col->isEmpty()) {
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
+    echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
     echo '<button type="submit">Afficher les eleves</button>';
 	echo "</p>\n";
     echo "</form>";
@@ -184,6 +185,7 @@ if (!$classe_col->isEmpty()) {
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
+    echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
     echo '<button type="submit">Afficher les eleves</button>';
 	echo "</p>\n";
     echo "</form>";
@@ -214,6 +216,7 @@ if (!$aid_col->isEmpty()) {
 	    echo "</option>\n";
     }
     echo "</select>&nbsp;";
+    echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
     echo '<button type="submit">Afficher les eleves</button>';
 	echo "</p>\n";
     echo "</form>";
@@ -226,6 +229,7 @@ echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100
 	echo "<p>\n";
 echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
 echo '<input type="text" name="nom_eleve" size="10" value="'.$nom_eleve.'"/> ';
+echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
 echo '<button type="submit">Rechercher</button>';
 	echo "</p>\n";
 echo '</form>';
@@ -251,6 +255,7 @@ echo ("Régime : <select name=\"choix_regime\" onchange='submit()' class=\"small\
 	    echo 'int.';
 	    echo "</option>\n";
     echo "</select>&nbsp;";
+    echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
     echo '<button type="submit">Filtrer sur le régime</button>';
 echo '</form>';
 echo '</td>';
@@ -319,6 +324,8 @@ if ($type_selection == 'id_eleve') {
 				<input type="hidden" name="id_groupe" value="<?php echo $id_groupe?>"/>
 				<input type="hidden" name="id_classe" value="<?php echo $id_classe?>"/>
 				<input type="hidden" name="id_aid" value="<?php echo $id_aid?>"/>
+                                <input type="hidden" name="choix_regime" value="<?php echo $choix_regime?>"/>
+                                <input type="hidden" name="date_absence_eleve" value="<?php echo $date_absence_eleve?>"/>
 				    <input onchange="document.absences_du_jour.submit()" size="8" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
 				    <button dojoType="dijit.form.Button" type="submit" onClick="
 					document.absences_du_jour.type_selection.value='';
@@ -327,6 +334,7 @@ if ($type_selection == 'id_eleve') {
 					document.absences_du_jour.id_groupe.value='';
 					document.absences_du_jour.id_classe.value='';
 					document.absences_du_jour.id_aid.value='';
+                                        document.absences_du_jour.choix_regime.value='';
 					document.absences_du_jour.date_absence_eleve.value='';
 					return true;">Réinitialiser les filtres</button>
 			    </p>
