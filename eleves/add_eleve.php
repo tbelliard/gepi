@@ -71,7 +71,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -129,7 +129,8 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		$msg = '';
 		$ok = 'yes';
 		//if (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{0,11}$", $reg_login)) {
-		if (my_ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,11}$", $reg_login)) {
+		//if (my_ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,11}$", $reg_login)) {
+		if (my_ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$", $reg_login)) {
 			if ($reg_no_gep != '') {
 				$test1 = mysql_query("SELECT login FROM eleves WHERE elenoet='$reg_no_gep'");
 				$count1 = mysql_num_rows($test1);
@@ -674,7 +675,7 @@ echo "<tr>\n";
         echo " /></td>\n";
     } else {
         echo "<td>Identifiant GEPI * : </td>
-        <td><input type=text name=reg_login size=20 value=\"\" /></td>\n";
+        <td><input type=text name=reg_login size=20 value=\"\" maxlength='".$longmax_login."' /> (<i>max.$longmax_login caractères</i>)</td>\n";
     }
     ?>
 </tr>
