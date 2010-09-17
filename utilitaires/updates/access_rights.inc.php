@@ -684,6 +684,10 @@ $tab_req[] = "INSERT INTO droits VALUES ( '/bulletin/autorisation_exceptionnelle
 
 $tab_req[] = "INSERT INTO droits SET id='/init_csv/export_tables.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Initialisation CSV: Export tables',statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_trombinoscopes/trombino_pdf.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Trombinoscopes PDF', statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/mod_trombinoscopes/trombino_decoupe.php', administrateur='V', professeur='F', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Génération d une grille PDF pour les trombinoscopes,...', statut='';";
+
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

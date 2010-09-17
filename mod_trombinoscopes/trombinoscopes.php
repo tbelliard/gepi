@@ -238,6 +238,10 @@ function reactiver(mavar) {
 	echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	echo " | <a href='trombinoscopes.php'>Effectuer une autre sélection</a>";
 
+	if($_SESSION['statut']=='administrateur') {
+		echo " | <a href='trombino_decoupe.php'>Découpe trombinoscope</a>";
+	}
+
 	function acces($id,$statut) {
 		$tab_id = explode("?",$id);
 		$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
@@ -260,6 +264,16 @@ function reactiver(mavar) {
 			}
 
 			echo "' target='_blank'>Format imprimable</a>";
+
+
+
+			echo " | <a href='trombino_pdf.php?classe=$classe&amp;groupe=$groupe&amp;equipepeda=$equipepeda&amp;discipline=$discipline&amp;statusgepi=$statusgepi&amp;affdiscipline=$affdiscipline";
+
+			if((isset($_POST['order_by']))&&($_POST['order_by']=='classe')) {
+				echo "&amp;order_by=classe";
+			}
+
+			echo "' target='_blank'>Format PDF</a>";
 		}
 	}
 

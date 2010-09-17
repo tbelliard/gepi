@@ -925,3 +925,5 @@ INSERT INTO droits VALUES ('/cahier_texte_2/see_all.php', 'F', 'V', 'V', 'V', 'V
 INSERT INTO droits VALUES ('/cahier_texte_2/creer_sequence.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte - sequences', '1');
 INSERT INTO droits VALUES ('/cahier_texte_2/creer_seq_ajax_step1.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Cahier de texte - sequences', '1');
 INSERT INTO setting VALUES ('unzipped_max_filesize', '10');
+INSERT INTO droits SET id='/mod_trombinoscopes/trombino_pdf.php', administrateur='V', professeur='V', cpe='V', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Trombinoscopes PDF', statut='';
+INSERT INTO droits SET id='/mod_trombinoscopes/trombino_decoupe.php', administrateur='V', professeur='F', cpe='F', scolarite='V', eleve='F', responsable='F', secours='F', autre='F', description='Génération d une grille PDF pour les trombinoscopes,...', statut='';
