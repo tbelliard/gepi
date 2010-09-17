@@ -1385,10 +1385,19 @@ if (isset($action) and ($action == 'system_dump'))  {
     $filetype = "sql.gz";
     $filename=$path.$nomsql.".".$filetype;
     // Juste pour être sûr :
-    $dbHost = escapeshellarg($dbHost);
-    $dbUser = escapeshellarg($dbUser);
-    $dbPass = escapeshellarg($dbPass);
-    $dbDb = escapeshellarg($dbDb);
+	$no_escapeshellarg=getSettingValue('no_escapeshellarg');
+	if($no_escapeshellarg=='y') {
+		$dbHost = my_ereg_replace("[^A-Za-z0-9_-.]","",$dbHost);
+		$dbUser = my_ereg_replace("[^A-Za-z0-9_-.]","",$dbUser);
+		$dbPass = my_ereg_replace("[^A-Za-z0-9_-.]","",$dbPass);
+		$dbDb = my_ereg_replace("[^A-Za-z0-9_-.]","",$dbDb);
+	}
+	else {
+		$dbHost = escapeshellarg($dbHost);
+		$dbUser = escapeshellarg($dbUser);
+		$dbPass = escapeshellarg($dbPass);
+		$dbDb = escapeshellarg($dbDb);
+	}
 
 	$req_version = mysql_result(mysql_query("SELECT version();"), 0);
 	$ver_mysql = explode(".", $req_version);
