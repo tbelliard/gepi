@@ -14,7 +14,7 @@
 	} else if ($resultat_session == '0') {
 		header("Location: ../logout.php?auto=1");
 		die();
-	};
+	}
 
 	if (!checkAccess()) {
 		header("Location: ../logout.php?auto=1");
