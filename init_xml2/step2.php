@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -119,6 +119,7 @@ $liste_tables_del = array(
 "j_aid_eleves",
 "j_aid_utilisateurs",
 "j_aid_eleves_resp",
+"j_aid_utilisateurs_gest",
 "j_eleves_classes",
 //==========================
 // On ne vide plus la table chaque année
@@ -180,12 +181,14 @@ if (!isset($step2)) {
 				$flag=1;
 			}
 		}
-
-		if($chaine_tables!="") {$chaine_tables.=", ";}
-		$chaine_tables.=$liste_tables_del[$j];
-
         $j++;
     }
+
+	for($loop=0;$loop<count($liste_tables_del);$loop++) {
+		if($chaine_tables!="") {$chaine_tables.=", ";}
+		$chaine_tables.="'".$liste_tables_del[$loop]."'";
+	}
+
     if ($flag != 0){
         echo "<p><b>ATTENTION ...</b><br />\n";
         echo "Des données concernant la constitution des classes et l'affectation des élèves dans les classes sont présentes dans la base GEPI ! Si vous poursuivez la procédure, ces données seront définitivement effacées !</p>\n";

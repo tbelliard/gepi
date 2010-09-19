@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -104,6 +104,9 @@ if (!isset($step1)) {
 		echo "<p><b>ATTENTION ...</b><br />";
 		echo "Des données concernant l'affectation de professeurs dans des classes sont actuellement présentes dans la base GEPI<br /></p>";
 		echo "<p>Si vous poursuivez la procédure ces données seront effacées.</p>";
+
+		echo "<p>Les tables vidées seront&nbsp;: 'j_groupes_professeurs' et 'j_professeurs_matieres'</p>\n";
+
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
 		echo "<input type=hidden name='step1' value='y' />";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";

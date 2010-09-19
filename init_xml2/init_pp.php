@@ -4,7 +4,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -73,7 +73,7 @@ if (!isset($step1)) {
 	}
 	if ($flag != 0){
 		echo "<p><b>ATTENTION ...</b><br />\n";
-		echo "Des professeurs principaux sont actuellement définis dans la base GEPI<br /></p>\n";
+		echo "Des professeurs principaux sont actuellement définis dans la base GEPI (<i>table 'j_eleves_professeurs'</i>)<br /></p>\n";
 		//echo "<p>Si vous poursuivez la procédure ces données seront supprimées et remplacées par celles de votre fichier F_DIV.CSV</p>\n";
 		echo "<p>Si vous poursuivez la procédure ces données seront supprimées et remplacées par celles de votre import XML.</p>\n";
 

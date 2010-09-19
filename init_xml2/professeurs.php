@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -93,8 +93,6 @@ $liste_tables_del = array(
 //"j_aid_eleves",
 "j_aid_utilisateurs",
 "j_aid_utilisateurs_gest",
-"j_aidcateg_super_gestionnaires",
-"j_aidcateg_utilisateurs",
 "j_groupes_professeurs",
 //"j_eleves_classes",
 //"j_eleves_etablissements",
@@ -143,6 +141,7 @@ echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation
 if (!isset($step1)) {
 	$j=0;
 	$flag=0;
+	$chaine_tables="";
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE '$liste_tables_del[$j]'"));
 		if($test==1){
@@ -153,6 +152,11 @@ if (!isset($step1)) {
 		$j++;
 	}
 
+	for($loop=0;$loop<count($liste_tables_del);$loop++) {
+		if($chaine_tables!="") {$chaine_tables.=", ";}
+		$chaine_tables.="'".$liste_tables_del[$loop]."'";
+	}
+
 	$test = mysql_result(mysql_query("SELECT count(*) FROM utilisateurs WHERE statut='professeur'"),0);
 	if ($test != 0) {$flag=1;}
 
@@ -160,6 +164,9 @@ if (!isset($step1)) {
 		echo "<p><b>ATTENTION ...</b><br />\n";
 		echo "Des données concernant les professeurs sont actuellement présentes dans la base GEPI<br /></p>\n";
 		echo "<p>Si vous poursuivez la procédure les données telles que notes, appréciations, ... seront effacées.</p>\n";
+
+		echo "<p>Les tables vidées seront&nbsp;: $chaine_tables</p>\n";
+
 		echo "<ul><li>Seules la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matières et les professeurs seront conservées.</li>\n";
 		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base CSV de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>\n";
 		echo "</ul>\n";
