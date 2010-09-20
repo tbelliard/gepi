@@ -271,10 +271,36 @@ echo '</TD></tr>';
 echo '<tr><TD>';
 echo 'Traitement : ';
 echo '</TD><TD style="background-color:#ebedb5;">';
+$type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
+$total_traitements_modifiable = 0;
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-    //on affiche les traitements uniquement si ils ne sont pas modifiables, car si ils sont modifiables on va afficher un input pour pouvoir les modifier
-    if ($traitement->getUtilisateurId() != $utilisateur->getPrimaryKey() || ! $traitement->getModifiable()) {
-	echo "<nobr>";
+    //si c'est un traitement créé par un prof on va afficher une select box de modification si possible
+    echo "<nobr>";
+    if ($utilisateur->getStatut() == 'professeur' && $traitement->getUtilisateurId() == $utilisateur->getPrimaryKey() && $traitement->getModifiable()) {
+	$total_traitements_modifiable = $total_traitements_modifiable + 1;
+	$type_autorises->getFirst();
+	echo $traitement->getDescription().' : ';
+	if ($type_autorises->count() != 0) {
+		echo '<input type="hidden" name="id_traitement[';
+		echo ($total_traitements_modifiable - 1);
+		echo ']" value="'.$traitement->getId().'"/>';
+		echo ("<select name=\"type_traitement[");
+		echo ($total_traitements_modifiable - 1);
+		echo ("]\">");
+		echo "<option value='-1'></option>\n";
+		foreach ($type_autorises as $type) {
+		    //$type = new AbsenceEleveTypeStatutAutorise();
+			echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
+			if ($type->getAbsenceEleveType()->getId() == $traitement->getATypeId()) {
+			    echo "selected";
+			}
+			echo ">";
+			echo $type->getAbsenceEleveType()->getNom();
+			echo "</option>\n";
+		}
+		echo "</select>";
+	}
+    }else {
 	if ($utilisateur->getStatut() != 'professeur') {
 	    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."' style='display: block; height: 100%;'> ";
 	    echo $traitement->getDescription();
@@ -282,60 +308,28 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 	} else {
 	    echo $traitement->getDescription();
 	}
-	echo "</nobr><br/>";
     }
+    echo "</nobr>";
+    echo "<br/><br/>";
+}
+//on autorise un ajout rapide seulement si il n'y a aucun traitement rapidement modifiable
+if ($total_traitements_modifiable == 0) {
+    echo ("<select name=\"ajout_type_absence\">");
+    echo "<option value='-1'></option>\n";
+    foreach ($type_autorises as $type) {
+	//$type = new AbsenceEleveTypeStatutAutorise();
+	    echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
+	    echo ">";
+	    echo $type->getAbsenceEleveType()->getNom();
+	    echo "</option>\n";
+    }
+    echo "</select>";
+    echo '<button type="submit" name="modifier_type" value="vrai">Ajouter</button>';
+} else {
+    echo '<button type="submit" name="modifier_type" value="vrai">Mod. le type</button>';
 }
 
-$total_traitements_modifiable = 0;
-$type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
-foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-    //on affiche les traitements uniquement si ils ne sont pas modifiables, car si ils sont modifiables on va afficher un input pour pouvoir les modifier
-    if ($traitement->getUtilisateurId() != $utilisateur->getPrimaryKey() || !$traitement->getModifiable()) {
-	continue;
-    }
-    $total_traitements_modifiable = $total_traitements_modifiable + 1;
-    $type_autorises->getFirst();
-    if ($type_autorises->count() != 0) {
-	    echo '<input type="hidden" name="id_traitement[';
-	    echo ($total_traitements_modifiable - 1);
-	    echo ']" value="'.$traitement->getId().'"/>';
-	    echo ("<select name=\"type_traitement[");
-	    echo ($total_traitements_modifiable - 1);
-	    echo ("]\">");
-	    echo "<option value='-1'></option>\n";
-	    foreach ($type_autorises as $type) {
-		//$type = new AbsenceEleveTypeStatutAutorise();
-		    echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
-		    if ($type->getAbsenceEleveType()->getId() == $traitement->getATypeId()) {
-			echo "selected";
-		    }
-		    echo ">";
-		    echo $type->getAbsenceEleveType()->getNom();
-		    echo "</option>\n";
-	    }
-	    echo "</select><br>";
-    }
-}
 echo '<input type="hidden" name="total_traitements" value="'.$total_traitements_modifiable.'"/>';
-
-if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") {
-//pour les cpe et scola, ajouter un type est fait avec ajout d'un traitement, donc on affiche pas ce bloc
-    if ($total_traitements_modifiable == 0) {
-	echo ("<select name=\"ajout_type_absence\">");
-	echo "<option value='-1'></option>\n";
-	foreach ($type_autorises as $type) {
-	    //$type = new AbsenceEleveTypeStatutAutorise();
-		echo "<option value='".$type->getAbsenceEleveType()->getId()."'";
-		echo ">";
-		echo $type->getAbsenceEleveType()->getNom();
-		echo "</option>\n";
-	}
-	echo "</select>";
-    }
-    if (!$modifiable) {
-	echo '<button type="submit" name="modifier_type" value="vrai">Modifier le type</button>';
-    }
-}
 
 echo '</TD></tr>';
 
