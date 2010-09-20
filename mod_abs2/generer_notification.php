@@ -66,19 +66,14 @@ include_once 'lib/function.php';
 
 //récupération des paramètres de la requète
 $id_notification = isset($_POST["id_notification"]) ? $_POST["id_notification"] :(isset($_GET["id_notification"]) ? $_GET["id_notification"] :NULL);
-$commentaire = isset($_POST["commentaire"]) ? $_POST["commentaire"] :(isset($_GET["commentaire"]) ? $_GET["commentaire"] :NULL);
-$modif = isset($_POST["modif"]) ? $_POST["modif"] :(isset($_GET["modif"]) ? $_GET["modif"] :NULL);
+
+$notification = AbsenceEleveNotificationQuery::create()->findPk($id_notification);
 
 $message_enregistrement = '';
-$notification = AbsenceEleveNotificationQuery::create()->findPk($id_notification);
+
 if ($notification == null && !isset($_POST["creation_notification"])) {
     $message_enregistrement .= 'Generation impossible : notification non trouvée. ';
     include("visu_notification.php");
-    die();
-}
-
-if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER_PAR_LOT) {
-   include("visu_notification.php");
     die();
 }
 
@@ -86,95 +81,23 @@ if ($notification->getTypeNotification() != AbsenceEleveNotification::$TYPE_COUR
     $message_enregistrement .= 'Génération impossible : envoi déjà effectué. ';
     include("visu_notification.php");
     die();
-
 }
-// load the TinyButStrong libraries
-if (version_compare(PHP_VERSION,'5')<0) {
-    include_once('../tbs/tbs_class.php'); // TinyButStrong template engine for PHP 4
-} else {
-    include_once('../tbs/tbs_class_php5.php'); // TinyButStrong template engine
-}
-include_once('../tbs/plugins/tbsdb_php.php');
-
-$TBS = new clsTinyButStrong; // new instance of TBS
 
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
-    include_once('../tbs/plugins/tbs_plugin_opentbs.php');
-    $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
-
     // Load the template
-	$modele_lettre_parents=repertoire_modeles("modele_lettre_parents.odt");
-    $TBS->LoadTemplate($modele_lettre_parents);
-
-
-    //on va mettre les champs dans des variables simple
-    if ($notification->getResponsableEleveAdresse() != null && $notification->getResponsableEleveAdresse()->getResponsableEleves()->count() == 1) {
-	//echo 'dest1';
-	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
-	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
-    } elseif ($notification->getResponsableEleveAdresse() != null) {
-	//echo 'dest2';
-	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
-	$destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom());
-	$responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getNext();
-	$destinataire .= '  '.strtoupper($responsable->getCivilite()).' '.strtoupper($responsable->getNom());;
-    } else {
-	$destinataire = '';
-    }
-    $TBS->MergeField('destinataire',$destinataire);
-
-    $adr = $notification->getResponsableEleveAdresse();
-    if ($adr == null) {
-	$adr = new ResponsableEleveAdresse();
-    }
-    $TBS->MergeField('adr',$adr);
-
-
-    $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
-    $adr_etablissement = new ResponsableEleveAdresse();
-    $adr_etablissement->setAdr1(getSettingValue("gepiSchoolAdress1"));
-    $adr_etablissement->setAdr2(getSettingValue("gepiSchoolAdress2"));
-    $adr_etablissement->setCp(getSettingValue("gepiSchoolZipCode"));
-    $adr_etablissement->setCommune(getSettingValue("gepiSchoolCity"));
-    $TBS->MergeField('adr_etab',$adr_etablissement);
-
-    //telephone fax mail
-    $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));
-    $TBS->MergeField('fax_etab',getSettingValue("gepiSchoolFax"));
-
-    $email_abs_etab = getSettingValue("gepiAbsenceEmail");
-    if ($email_abs_etab == null || $email_abs_etab == '') {
-	$email_abs_etab = getSettingValue("gepiSchoolEmail");
-    }
-    $TBS->MergeField('mail_etab', $email_abs_etab);
-
-    $TBS->MergeField('notif_id',$notification->getId());
-
-    //on récupère la liste des noms d'eleves
-    $eleve_col = new PropelCollection();
-    foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
-	$eleve_col->add($saisie->getEleve());
-    }
-
-    $TBS->MergeBlock('el_col',$eleve_col);
-
-    $query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
-	->useJTraitementSaisieEleveQuery()
-	->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
-	    ->orderBy("DebutAbs", Criteria::ASC)
-	    ->find()';
-
-    $TBS->MergeBlock('saisies', 'php', $query_string);
+    $modele_lettre_parents=repertoire_modeles("modele_lettre_parents.odt");
+    include_once '../orm/helpers/AbsencesNotificationHelper.php';
+    $TBS = AbsencesNotificationHelper::MergeNotification($notification, $modele_lettre_parents);
 
     $notification->setDateEnvoi('now');
     $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_EN_COURS);
     $notification->save();
 
     // Output as a download file (some automatic fields are merged here)
+    include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+    include_once('../tbs/tbs_class_php5.php');
     $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, 'abs_notif_'.$notification->getId().'.odt');
-
-    // Save as file on the disk (code example)
-    //$TBS->Show(OPENTBS_FILE+TBS_EXIT, $file_name);
+    die();
 
 } else if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL) {
     if ($notification->getEmail() == null || $notification->getEmail() == '') {
@@ -191,51 +114,10 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     }
     
     // Load the template
-	$email=repertoire_modeles('email.txt');
-    $TBS->LoadTemplate($email);
-    
-    $destinataire = '';
-    foreach ($notification->getResponsableEleves() as $responsable) {
-	$destinataire .= $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom()).' ';
-    }
-    $TBS->MergeField('destinataire',$destinataire);
-
-    $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
-
-    //telephone fax mail
-    $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));
-    $TBS->MergeField('fax_etab',getSettingValue("gepiSchoolFax"));
-
-    $email_abs_etab = getSettingValue("gepiAbsenceEmail");
-    if ($email_abs_etab == null || $email_abs_etab == '') {
-	$email_abs_etab = getSettingValue("gepiSchoolEmail");
-    }
-    $TBS->MergeField('mail_etab', $email_abs_etab);
-
-    $TBS->MergeField('notif_id',$notification->getId());
-
-    //on récupère la liste des noms d'eleves
-    $eleve_col = new PropelCollection();
-    foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
-	$eleve_col->add($saisie->getEleve());
-    }
-
-    $TBS->MergeBlock('el_col',$eleve_col);
-
-    $query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
-	->useJTraitementSaisieEleveQuery()
-	->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
-	    ->orderBy("DebutAbs", Criteria::ASC)
-	    ->find()';
-
-    $TBS->MergeBlock('saisies', 'php', $query_string);
-
-    // Output as a download file (some automatic fields are merged here)
-    $TBS->Show(TBS_NOTHING, 'absence.odt');
+    $email=repertoire_modeles('email.txt');
+    include_once '../orm/helpers/AbsencesNotificationHelper.php';
+    $TBS = AbsencesNotificationHelper::MergeNotification($notification, $email);
     $message = $TBS->Source;
-
-    // On envoie le mail
-    //$envoi = mail(getSettingValue("gepiAdminAdress"),
 
     $envoi = mail($notification->getEmail(),
 	    "Notification d'absence ".getSettingValue("gepiSchoolName").' - Ref : '.$notification->getId().' -',
@@ -261,47 +143,9 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     }
 
     // Load the template
-	$sms=repertoire_modeles('sms.txt');
-    $TBS->LoadTemplate($sms);
-
-    $destinataire = '';
-    foreach ($notification->getResponsableEleves() as $responsable) {
-	$destinataire .= $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom()).' ';
-    }
-    $TBS->MergeField('destinataire',$destinataire);
-
-    $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
-
-    //telephone fax mail
-    $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));
-    $TBS->MergeField('fax_etab',getSettingValue("gepiSchoolFax"));
-
-    $email_abs_etab = getSettingValue("gepiAbsenceEmail");
-    if ($email_abs_etab == null || $email_abs_etab == '') {
-	$email_abs_etab = getSettingValue("gepiSchoolEmail");
-    }
-    $TBS->MergeField('mail_etab', $email_abs_etab);
-
-    $TBS->MergeField('notif_id',$notification->getId());
-
-    //on récupère la liste des noms d'eleves
-    $eleve_col = new PropelCollection();
-    foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
-	$eleve_col->add($saisie->getEleve());
-    }
-
-    $TBS->MergeBlock('el_col',$eleve_col);
-
-    $query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
-	->useJTraitementSaisieEleveQuery()
-	->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
-	    ->orderBy("DebutAbs", Criteria::ASC)
-	    ->find()';
-
-    $TBS->MergeBlock('saisies', 'php', $query_string);
-
-    // Output as a download file (some automatic fields are merged here)
-    $TBS->Show(TBS_NOTHING, 'absence.odt');
+    $sms=repertoire_modeles('sms.txt');
+    include_once '../orm/helpers/AbsencesNotificationHelper.php';
+    $TBS = AbsencesNotificationHelper::MergeNotification($notification, $sms);
     $message = $TBS->Source;
 
     if (getSettingValue("abs2_sms_prestataire")=='tm4b') {
@@ -396,13 +240,4 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 }
 
 include('visu_notification.php');
-
-// utiliser pour formater certain champs dans les modele tbs
-function tbs_str($FieldName,&$CurrRec) {
-    $CurrRec = html_entity_decode($CurrRec,ENT_QUOTES);
-    $CurrRec = str_replace('\"','"',str_replace("\'","'",$CurrRec));
-    $CurrRec = str_replace('\\'.htmlspecialchars('"',ENT_QUOTES),htmlspecialchars('"',ENT_QUOTES),str_replace("\\".htmlspecialchars("'",ENT_QUOTES),htmlspecialchars("'",ENT_QUOTES),$CurrRec));
-
-    $CurrRec = stripslashes($CurrRec);
-}
 ?>
