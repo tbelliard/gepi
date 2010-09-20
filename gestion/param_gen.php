@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -521,7 +521,7 @@ $titre_page = "Paramètres généraux";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"<?php
+<p class=bold><a href="index.php#param_gen"<?php
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 ?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <form action="param_gen.php" method="post" name="form1" style="width: 100%;">

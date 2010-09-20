@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -70,7 +70,7 @@ if (isset($_GET['action'])) {
 $titre_page = "Sécurité Gepi";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a> | ";
+echo "<p class=bold><a href='index.php#security_panel'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='security_policy.php'>Définir la politique de sécurité</a> | ";
 $sql="SELECT 1=1 FROM tentatives_intrusion WHERE statut='';";
 $test_arch=mysql_query($sql);
 if(mysql_num_rows($test_arch)>0) {

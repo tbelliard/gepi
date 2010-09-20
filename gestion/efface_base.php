@@ -49,7 +49,7 @@ if (isset($_POST['confirm']) and ($_POST['confirm']=='Non')) {
 $titre_page = "Outil de gestion | Effacement des données élèves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-?><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+?><p class=bold><a href='index.php#efface_base'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <H2>Effacement de la base</H2>
 <?php
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 1)) {

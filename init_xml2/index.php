@@ -45,7 +45,7 @@ $titre_page = "Outil d'initialisation de l'année";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class='bold'><a href="../gestion/index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class='bold'><a href="../gestion/index.php#init_xml2"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <?php if (getSettingValue('use_ent') == 'y') {
 	echo '<p>Avant de commencer, vous devez récupérer les logins de vos utilisateurs dans l\'ENT : <a href="../mod_ent/index.php">RECUPERER</a></p>';
 }

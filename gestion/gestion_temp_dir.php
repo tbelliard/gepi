@@ -167,7 +167,7 @@ $titre_page = "Outil de gestion | Gestion des dossiers temporaires";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a> | \n";
+echo "<p class='bold'><a href='index.php#gestion_temp_dir'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a> | \n";
 if(isset($reinitialiser)){
 	echo "<a href='".$_SERVER['PHP_SELF']."'>Suppression</a>";
 	echo "</p>\n";

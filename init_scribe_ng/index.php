@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -44,7 +44,7 @@ $titre_page = "Outil d'initialisation de l'année pour l'annuaire LDAP Scribe NG"
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="../gestion/index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class=bold><a href="../gestion/index.php#init_scribe_ng"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter, directement depuis l'annuaire LDAP de Scribe NG. Celui-ci doit donc avoir été préalablement alimenté. Cette procédure ne s'effectue qu'une seule fois.</p>
 <ul>
 <li>Au cours de la procédure, le cas échéant, certaines données de l'année passée seront définitivement effacées de la base GEPI (élèves, notes, appréciations, ...) . Seules seront conservées les données suivantes :<br /><br />

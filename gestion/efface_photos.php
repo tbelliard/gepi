@@ -1,7 +1,7 @@
 <?php
 @set_time_limit(0);
 /*
- * Last modification  : 10/04/2007
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -46,7 +46,7 @@ if (!checkAccess()) {
 $titre_page = "Outil de gestion | Effacement des photos élèves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-?><p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+?><p class=bold><a href='index.php#efface_photos'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <h2>Effacement des photos d'élèves</h2>
 <?php
 		// En multisite, on ajoute le répertoire RNE

@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -282,7 +282,7 @@ if ($pb_maj_bd != 'yes') {
 	} else {
 		echo "<h3>Mise à jour de la base de données</h3>";
 		echo "<p><b>Votre base de données est à jour. Vous n'avez pas de mise à jour à effectuer.</b></p>";
-		echo "<center><p class='grand'><b><a href='../gestion/index.php'>Retour</a></b></p></center>";
+		echo "<center><p class='grand'><b><a href='../gestion/index.php#maj'>Retour</a></b></p></center>";
 		echo "<form action=\"maj.php\" method=\"post\">";
 		//echo "<p><b>Néanmoins, vous pouvez forcer la mise à jour. Cette procédure, bien que sans risque, n'est utile que dans certains cas précis.</b></font><br />";
 		echo "<p><b>Néanmoins, vous pouvez forcer la mise à jour. Cette procédure, bien que sans risque, n'est utile que dans certains cas précis.</b><br />";

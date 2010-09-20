@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -367,7 +367,7 @@ echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SE
 echo "<div class='norme'><p class=bold>";
 echo "<a href='";
 if($_SESSION['statut']=='administrateur'){
-	echo "index.php";
+	echo "index.php#config_prefs";
 }
 else{
 	echo "../accueil.php";

@@ -71,7 +71,7 @@ $style_specifique = "edt_organisation/style_edt";
 require_once("../lib/header.inc");
 /*++++++++++++++++++++++ fin entête ++++++++++++++++++++++++++++++++++++*/
 echo '
-<p class="bold"><a href="../gestion/index.php">
+<p class="bold"><a href="../gestion/index.php#test_serveur">
 	<img src="../images/icons/back.png" alt="Retour" class="back_link" /> Retour</a>
 </p>
 ';

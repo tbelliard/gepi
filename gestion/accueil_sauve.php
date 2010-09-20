@@ -1472,7 +1472,7 @@ if (isset($action) and ($action == 'zip'))  {
 <?php
 
 if(!isset($quitter_la_page)){
-	echo "<p class='bold'><a href='index.php'";
+	echo "<p class='bold'><a href='index.php#accueil_sauve'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 	//echo "</p>\n";

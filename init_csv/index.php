@@ -32,7 +32,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -45,7 +45,7 @@ $titre_page = "Outil d'initialisation de l'année";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="../gestion/index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='export_tables.php'>Exporter au format CSV le contenu actuel des tables</a></p>
+<p class=bold><a href="../gestion/index.php#init_csv"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='export_tables.php'>Exporter au format CSV le contenu actuel des tables</a></p>
 
 <p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.<br />
 <?php

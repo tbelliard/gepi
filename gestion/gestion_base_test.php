@@ -49,7 +49,7 @@ if (!isset($action) or ($action != "restaure")) {
     } else if ($resultat_session == '0') {
         header("Location: ../logout.php?auto=1");
         die();
-    };
+    }
 }
 
 if (!isset($action) or ($action != "restaure")) {
@@ -676,7 +676,7 @@ if (isset($action) and ($action == 'dump'))  {
 <?php
 
 if(!isset($quitter_la_page)){
-	echo "<p class='bold'><a href='index.php'";
+	echo "<p class='bold'><a href='index.php#gestion_base_test'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo "><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }

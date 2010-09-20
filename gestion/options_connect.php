@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -40,7 +40,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -202,7 +202,7 @@ $mode_navig = isset($_POST["mode_navig"]) ? $_POST["mode_navig"] : (isset($_GET[
 if ($mode_navig == 'accueil') {
     $retour = "../accueil.php";
 } else {
-    $retour = "index.php";
+    $retour = "index.php#options_connect";
 }
 
 echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
