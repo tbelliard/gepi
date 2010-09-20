@@ -23,8 +23,12 @@
  
 function observeur(){
 	document.getElementById('login').focus();
-	document.getElementById('bt_gabarit').className="cache";
-	document.getElementById('titre_switcher').className="cache";
+	if (document.getElementById('bt_gabarit') != null) {
+	    document.getElementById('bt_gabarit').className="cache";
+	}
+	if (document.getElementById('titre_switcher') != null) {
+	    document.getElementById('titre_switcher').className="cache";
+	}
 
 	
 	new Event.observe("template", 'change', changetemplate,false);	
