@@ -1316,14 +1316,6 @@ if(isset($quelles_classes)) {
 
 	}
 
-	echo "<script type='text/javascript'>
-	// Ajout d'un champ FILE... pour éviter la limite de max_file_uploads (on n'a que le nombre de champs FILE correspondant à ce que l'on souhaite effectivement uploader
-	function add_file_upload(i) {
-		if(document.getElementById('span_file_'+i)) {
-			document.getElementById('span_file_'+i).innerHTML='<input type=\'file\' name=\'photo['+i+']\' />';
-		}
-	}
-</script>\n";
 
 	echo "<table border='1' cellpadding='2' class='boireaus'  summary='Tableau des élèves de la classe'>\n";
 	echo "<tr>\n";
@@ -1486,7 +1478,9 @@ if(isset($quelles_classes)) {
 			else {
 				//echo "<span id='span_file_$i'></span>";
 				echo "<span id='span_file_$i'>";
-				echo "<a href='javascript:add_file_upload($i)'><img src='../images/ico_edit16plus.png' width='16' height='16' alt='Choisir un fichier à uploader' /></a>";
+				//echo "<a href='javascript:add_file_upload($i)'><img src='../images/ico_edit16plus.png' width='16' height='16' alt='Choisir un fichier à uploader' /></a>";
+				// Pour que si JavaScript est désactivé, on ait quand même le champ FILE
+				echo "<input name='photo[$i]' type='file' />\n";
 				echo "</span>";
 			}
 
@@ -1500,6 +1494,22 @@ if(isset($quelles_classes)) {
 	echo "<p>Total : $nombreligne élève";
 	if($nombreligne>1) {echo "s";}
 	echo "</p>\n";
+
+	echo "<script type='text/javascript'>
+	// Ajout d'un champ FILE... pour éviter la limite de max_file_uploads (on n'a que le nombre de champs FILE correspondant à ce que l'on souhaite effectivement uploader
+	function add_file_upload(i) {
+		if(document.getElementById('span_file_'+i)) {
+			document.getElementById('span_file_'+i).innerHTML='<input type=\'file\' name=\'photo['+i+']\' />';
+		}
+	}
+
+	// On remplace les champs FILE par des liens d'ajout de champ FILE... au cas où JavaScript serait désactivé.
+	for(i=0;i<$i;i++) {
+		if(document.getElementById('span_file_'+i)) {
+			document.getElementById('span_file_'+i).innerHTML='<a href=\'javascript:add_file_upload('+i+')\'><img src=\'../images/ico_edit16plus.png\' width=\'16\' height=\'16\' alt=\'Choisir un fichier à uploader\' /></a>';
+		}
+	}
+</script>\n";
 
 	echo "<input type='hidden' name='quelles_classes' value='$quelles_classes' />\n";
 	// Dans le cas scolarite, la liste des classes est dans la table tempo
