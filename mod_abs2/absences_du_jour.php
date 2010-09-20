@@ -132,6 +132,14 @@ require_once("../lib/header.inc");
 include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
 //===========================
+
+?><!--//affichage d'une page blanche de chargement pour les widget dojo.-->
+<div id="overlay_container"></div>
+<script language="javascript">
+   dojo.byId("overlay_container").innerHTML = '<div id="overlay" style="background:#fff; width:100%; height:100%; position:absolute; top:0; left:0;"><div class="innerOverlay">Chargement</div></div>';
+</script><?php
+
+
 echo "<div class='css-panes' id='containDiv'>\n";
 
 echo "<table cellspacing='15px' cellpadding='5px'><tr>";
@@ -602,6 +610,7 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dijit.form.Form");
     dojo.require("dijit.form.CheckBox");
     dojo.require("dijit.form.DateTextBox");
+    dojo.require("dojo.parser");
 
     dojo.addOnLoad(function() {
 	dojo.query("[add_select_shorcuts_button=true]").forEach(function(node, index, arr){
@@ -658,6 +667,9 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 	    });
 	    node.appendChild(button.domNode);
 	});
+
+	//effacement de la page blanche de chargement
+	dojo.byId("overlay").hide();
     });
 </script>';
 
