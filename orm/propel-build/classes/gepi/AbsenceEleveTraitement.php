@@ -23,7 +23,8 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 *
 	 */
 	public function getDescription() {
-	    $desc = 'créé le ';
+	    $desc = 'n° '.$this->getId();
+	    $desc .= ' créé le ';
 	    $desc .= strftime("%a %d/%m/%Y", $this->getUpdatedAt('U'));
 	    $eleve_col = new PropelCollection();
 	    foreach ($this->getAbsenceEleveSaisies() as $abs_saisie) {

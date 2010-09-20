@@ -83,6 +83,11 @@ if(($_SESSION['statut']=='cpe')||
     else {echo "style='background-color:#ecf6f8;' ";}
     echo "title='Notification'>Notification</a></li>\n";
 
+    echo "<li><a href='generer_notifications_par_lot.php' ";
+    if($onglet_abs=='generer_notifications_par_lot.php') {echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";}
+    else {echo "style='background-color:#ecf6f8;' ";}
+    echo "title='Envoi par lot'>Envoi par lot</a></li>\n";
+
     if($onglet_abs=='saisir_eleve.php' || $onglet_abs=='enregistrement_saisie_eleve.php' || $onglet_abs=='saisir_groupe.php' || $onglet_abs=='enregistrement_saisie_groupe.php') {
 	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Saisie_cpe">wiki</a></div>';
     } else if($onglet_abs=='liste_notifications.php') {
