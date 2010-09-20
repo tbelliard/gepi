@@ -70,6 +70,8 @@ $commentaire = isset($_POST["commentaire"]) ? $_POST["commentaire"] :(isset($_GE
 
 $message_enregistrement = '';
 $saisie = AbsenceEleveSaisieQuery::create()->findPk($id_saisie);
+//on charge les traitements
+$saisie->getAbsenceEleveTraitements();
 if ($saisie == null) {
     $message_enregistrement .= 'Modification impossible : saisie non trouvée.';
     include("visu_saisie.php");
@@ -216,6 +218,7 @@ function modif_type ($saisie, $utilisateur) {
 		$traitement->setAbsenceEleveType($type);
 		$traitement->setUtilisateurProfessionnel($utilisateur);
 		$traitement->save();
+		$saisie->addAbsenceEleveTraitement($traitement);
 	    } else {
 		$message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	    }
