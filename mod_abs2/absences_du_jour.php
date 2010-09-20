@@ -136,7 +136,13 @@ include('menu_bilans.inc.php');
 ?><!--//affichage d'une page blanche de chargement pour les widget dojo.-->
 <div id="overlay_container"></div>
 <script language="javascript">
+   dojo.style("overlay_container", "opacity", "0");
    dojo.byId("overlay_container").innerHTML = '<div id="overlay" style="background:#fff; width:100%; height:100%; position:absolute; top:0; left:0;"><div class="innerOverlay">Chargement</div></div>';
+    var fadeArgs = {
+	node: "overlay_container",
+	duration: 250
+    };
+    dojo.fadeIn(fadeArgs).play();
 </script><?php
 
 
@@ -669,7 +675,14 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
 	});
 
 	//effacement de la page blanche de chargement
-	dojo.byId("overlay").hide();
+	dojo.fadeOut({
+		      node:"overlay",
+                      onEnd: function(){
+                             // hide it completely after fadeout
+                             dojo.style("overlay","display","none");
+                      }
+                }).play();
+	//dojo.byId("overlay").hide();
     });
 </script>';
 
