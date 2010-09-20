@@ -211,34 +211,6 @@ if ($notification->getModifiable()) {
 }
 echo '</td></tr>';
 
-echo '<tr><td>';
-echo 'Statut : ';
-echo '</td><td>';
-//on ne modifie manuellement le statut si le type est courrier ou communication téléphonique
-if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_TELEPHONIQUE) {
-    echo '<form method="post" action="enregistrement_modif_notification.php">';
-	echo '<p>';
-    echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
-    echo '<input type="hidden" name="modif" value="statut"/>';
-    echo ("<select name=\"statut\" onchange='submit()'>");
-    $i = 0;
-    while (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i])) {
-	echo "<option value='$i'";
-	if ($notification->getStatutEnvoi() == $i) {
-	    echo ' selected="selected" ';
-	}
-	echo ">".AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i]."</option>\n";
-	$i = $i + 1;
-    }
-    echo "</select>";
-    echo '<button type="submit">Modifier</button>';
-	echo '</p>';
-    echo '</form>';
-} else {
-    echo AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()];
-}
-echo '</td></tr>';
-
 
 if ($notification->getErreurMessageEnvoi() != null && $notification->getErreurMessageEnvoi() != '') {
     echo '<tr><td>';
@@ -504,6 +476,55 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     echo '</td></tr>';
 }
 
+echo '<tr><td>';
+echo 'Statut : ';
+echo '</td><td>';
+//on ne modifie manuellement le statut si le type est courrier ou communication téléphonique
+if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER || $notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_TELEPHONIQUE) {
+    echo '<form method="post" action="enregistrement_modif_notification.php">';
+	echo '<p>';
+    echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+    echo '<input type="hidden" name="modif" value="statut"/>';
+    echo ("<select name=\"statut\" onchange='submit()'>");
+    $i = 0;
+    while (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i])) {
+	echo "<option value='$i'";
+	if ($notification->getStatutEnvoi() == $i) {
+	    echo ' selected="selected" ';
+	}
+	echo ">".AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i]."</option>\n";
+	$i = $i + 1;
+    }
+    echo "</select>";
+    echo '<button type="submit">Modifier</button>';
+	echo '</p>';
+    echo '</form>';
+} else if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL ||
+	$notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_PRET_A_ENVOYER) {
+    //on autorise un changement de statut entre initial et pret a envoyer
+    echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<p>';
+    echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+    echo '<input type="hidden" name="modif" value="statut"/>';
+    echo ("<select name=\"statut\" onchange='submit()'>");
+
+    echo "<option value='".AbsenceEleveNotification::$STATUT_INITIAL."'";
+    if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL) { echo ' selected="selected" ';}
+    echo ">".AbsenceEleveNotification::$LISTE_LABEL_STATUT[AbsenceEleveNotification::$STATUT_INITIAL]."</option>\n";
+
+    echo "<option value='".AbsenceEleveNotification::$STATUT_PRET_A_ENVOYER."'";
+    if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_PRET_A_ENVOYER) { echo ' selected="selected" ';}
+    echo ">".AbsenceEleveNotification::$LISTE_LABEL_STATUT[AbsenceEleveNotification::$STATUT_PRET_A_ENVOYER]."</option>\n";
+
+    echo "</select>";
+    echo '<button type="submit">Modifier</button>';
+    echo '</p>';
+    echo '</form>';
+} else {
+    echo AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()];
+}
+echo '</td></tr>';
+
 
 echo '<tr><td>';
 echo 'Créé par : ';
@@ -537,7 +558,10 @@ if ($notification->getdateEnvoi() != null) {
     }
 }
 
-if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER  || $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL) {
+if ($notification->getTypeNotification() != AbsenceEleveNotification::$TYPE_TELEPHONIQUE &&
+	($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER  ||
+	$notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL  ||
+	$notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_PRET_A_ENVOYER)) {
     echo '<tr><td colspan="2" style="text-align : center;">';
     echo '<form method="post" action="generer_notification.php">';
     echo '<p>';
@@ -555,7 +579,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     echo '</form>';
     echo '</td></tr>';
 }
-if ($notification->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_INITIAL) {
+if ($notification->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_INITIAL && $notification->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_INITIAL) {
     echo '<tr><td colspan="2" style="text-align : center;">';
     echo '<form method="post" action="enregistrement_modif_notification.php">';
 	echo '<p>';
