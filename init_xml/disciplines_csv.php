@@ -86,6 +86,9 @@ $liste_tables_del = array(
 "ct_devoirs_entry",
 "ct_documents",
 "ct_entry",
+"ct_devoirs_documents",
+"ct_private_entry",
+"ct_sequences",
 //"setting"
 );
 
