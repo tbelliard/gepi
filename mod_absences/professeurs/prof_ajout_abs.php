@@ -852,7 +852,7 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
 			if($temoin_classe_concernee=="y") {
 	            $_periode = $rep_periode_courante["numero_periode"];
 				//$periode_edt_trouvee="y";
-				break;
+				//break;
 			}
         }
     }
@@ -1309,13 +1309,16 @@ if ( $etape === '2' AND $classe != 'toutes' AND ( $classe != '' OR $eleve_initia
       $nom_photo = nom_photo($data_liste_eleve['elenoet'],"eleves",2);
 			//$photos = "../../photos/eleves/".$nom_photo;
 			//if (($nom_photo == "") or (!(file_exists($photos)))) {
-			if (($nom_photo == NULL) or (!(file_exists($photos)))) {
-				$photos = "../../mod_trombinoscopes/images/trombivide.jpg";
+			if (($nom_photo == NULL) or (!(file_exists($nom_photo)))) {
+				$nom_photo = "../../mod_trombinoscopes/images/trombivide.jpg";
 			}
-			$valeur = redimensionne_image_petit($photos);
+			$valeur = redimensionne_image_petit($nom_photo);
 ?>
 				<td>
-					<img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
+<?php
+//echo $nom_photo;
+?>
+					<img src="<?php echo $nom_photo; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
 				</td>
 <?php
 		}
