@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 $liste_tables_del = array(
 //"absences",
@@ -83,6 +83,9 @@ $liste_tables_del = array(
 "cn_devoirs",
 "cn_notes_conteneurs",
 "cn_notes_devoirs",
+"ct_devoirs_entry",
+"ct_documents",
+"ct_entry",
 //"setting"
 );
 
