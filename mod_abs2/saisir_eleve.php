@@ -203,7 +203,7 @@ if (!$classe_col->isEmpty()) {
 	}
 	echo "</select>&nbsp;";
 
-	echo '<button type="submit">Afficher les eleves</button>';
+	echo '<button type="submit">Afficher les élèves</button>';
 	echo '</p>';
 	echo "</form>";
 	echo "</td>";
@@ -233,7 +233,7 @@ if (!$aid_col->isEmpty()) {
 	}
 	echo "</select>&nbsp;";
 
-	echo '<button type="submit">Afficher les eleves</button>';
+	echo '<button type="submit">Afficher les élèves</button>';
 echo '</p>';
 	echo "</form>";
 	echo "</td>";

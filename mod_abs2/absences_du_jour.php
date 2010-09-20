@@ -168,7 +168,7 @@ if (!$groupe_col->isEmpty()) {
     }
     echo "</select>&nbsp;";
     echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button type="submit">Afficher les eleves</button>';
+    echo '<button type="submit">Afficher les élèves</button>';
 	echo "</p>\n";
     echo "</form>";
     echo "</td>";
@@ -196,7 +196,7 @@ if (!$classe_col->isEmpty()) {
     }
     echo "</select>&nbsp;";
     echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button type="submit">Afficher les eleves</button>';
+    echo '<button type="submit">Afficher les élèves</button>';
 	echo "</p>\n";
     echo "</form>";
     echo "</td>";
@@ -227,7 +227,7 @@ if (!$aid_col->isEmpty()) {
     }
     echo "</select>&nbsp;";
     echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button type="submit">Afficher les eleves</button>';
+    echo '<button type="submit">Afficher les élèves</button>';
 	echo "</p>\n";
     echo "</form>";
     echo "</td>";
@@ -361,7 +361,7 @@ if ($type_selection == 'id_eleve') {
 			    <span>Ajouter au traitement</span>
 			    <div dojoType="dijit.Menu" style="display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
-				    Creer un nouveau traitement
+				    Créer un nouveau traitement
 				</button>
 			<?php
 			$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
@@ -378,7 +378,7 @@ if ($type_selection == 'id_eleve') {
 			    <span>Ajouter au traitement (popup)</span>
 			    <div dojoType="dijit.Menu" style="display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement)">
-				    Creer un nouveau traitement dans une popup
+				    Créer un nouveau traitement dans une popup
 				</button>
 			<?php
 			$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
@@ -537,7 +537,7 @@ if ($type_selection == 'id_eleve') {
 			    <span>Ajouter au traitement</span>
 			    <div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
-				    Creer un nouveau traitement
+				    Créer un nouveau traitement
 				</button>';
 			foreach ($traitement_col as $traitement) {
 			    echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; document.creer_traitement.submit();">';
@@ -550,7 +550,7 @@ if ($type_selection == 'id_eleve') {
 			    <span>Ajouter (popup)</span>
 			    <div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
-				    Creer un nouveau traitement (popup)
+				    Créer un nouveau traitement (popup)
 				</button>';
 			foreach ($traitement_col as $traitement) {
 			    echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; pop_it(document.creer_traitement);">';
@@ -565,9 +565,9 @@ if ($type_selection == 'id_eleve') {
     echo " </tbody>";
     echo "</table>";
     echo '<table><tr>';
-    echo '<td>Legende : </td>';
+    echo '<td>Légende : </td>';
     echo '<td style="border : 1px solid; background-color : red;">absent</td>';
-    echo '<td style="border : 1px solid; background-color : green;">present</td>';
+    echo '<td style="border : 1px solid; background-color : green;">présent</td>';
     echo '<td style="border : 1px solid; background-color : purple;">Saisies conflictuelles</td>';
     echo '<td style="border : 1px solid;">Sans couleur : pas de saisie</td>';
     echo '</tr></table>';
@@ -576,10 +576,10 @@ if ($type_selection == 'id_eleve') {
 	<span>Ajouter Les saisies cochées à un traitement</span>
 	<div dojoType="dijit.Menu" style="display: inline">
 	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
-		Creer un nouveau traitement
+		Créer un nouveau traitement
 	    </button>
 	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement)">
-		Creer un nouveau traitement dans une popup
+		Créer un nouveau traitement dans une popup
 	    </button>
     <?php
     $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
