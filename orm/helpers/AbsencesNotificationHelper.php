@@ -64,17 +64,24 @@ class AbsencesNotificationHelper {
     
     //on récupère la liste des noms d'eleves
     $eleve_col = new PropelCollection();
-    foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
-	$eleve_col->add($saisie->getEleve());
+    if ($notification->getAbsenceEleveTraitement() != null) {
+	foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
+	    $eleve_col->add($saisie->getEleve());
+	}
     }
 
     $TBS->MergeBlock('el_col',$eleve_col);
 
-    $query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
-	->useJTraitementSaisieEleveQuery()
-	->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
-	    ->orderBy("DebutAbs", Criteria::ASC)
-	    ->find()';
+    if ($notification->getAbsenceEleveTraitement() != null) {
+	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
+	    ->useJTraitementSaisieEleveQuery()
+	    ->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
+		->orderBy("DebutAbs", Criteria::ASC)
+		->find()';
+    } else {
+	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
+	    ->where(0 <> 0)->find()';
+    }
 
     $TBS->MergeBlock('saisies', 'php', $query_string);
 
@@ -145,11 +152,15 @@ class AbsencesNotificationHelper {
 	return 'Seul une notification de type email ou sms peut être envoyée avec cette méthode';
     } elseif ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL) {
 	if ($notification->getEmail() == null || $notification->getEmail() == '') {
+	    $notification->setErreurMessageEnvoi('email non renseigné');
+	    $notification->save();
 	    return 'Echec de l\'envoi : email non renseigné.';
 	}
 
 	include('../lib/email_validator.php');
 	if (!validEmail($notification->getEmail())) {
+	    $notification->setErreurMessageEnvoi('adresse email non valide');
+	    $notification->save();
 	    return 'Erreur : adresse email non valide.';
 	}
 
@@ -168,8 +179,9 @@ class AbsencesNotificationHelper {
 	    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_SUCCES);
 	    $return_message = '';
 	} else {
+	    $return_message = 'Non accepté pour livraison.';
+	    $notification->setErreurMessageEnvoi($return_message);
 	    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_ECHEC);
-	    $return_message = 'Echec de l\'envoi.';
 	}
 	$notification->save();
 	return $return_message;

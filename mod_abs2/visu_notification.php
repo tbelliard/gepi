@@ -115,62 +115,64 @@ echo 'Saisies : ';
 echo '</td><td>';
 echo '<table style="background-color:#cae7cb;">';
 $eleve_prec_id = null;
-foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
-    //$saisie = new AbsenceEleveSaisie();
-    if ($saisie->getEleve() == null) {
-	if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isFirst()) {
-	    echo '</td></tr>';
-	}
-	echo '<tr><td>';
-	echo 'Aucune absence';
-	if ($saisie->getGroupe() != null) {
-	    echo ' pour le groupe ';
-	    echo $saisie->getGroupe()->getdescription();
-	}
-	if ($saisie->getClasse() != null) {
-	    echo ' pour la classe ';
-	    echo $saisie->getClasse()->getNom();
-	}
-	if ($saisie->getAidDetails() != null) {
-	    echo ' pour l\'aid ';
-	    echo $saisie->getAidDetails()->getNom();
-	}
-	echo '<tr><td>';
-    } elseif ($eleve_prec_id != $saisie->getEleve()->getPrimaryKey()) {
-	if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isFirst()) {
-	    echo '</td></tr>';
-	}
-	echo '<tr><td>';
-	echo '<div>';
-	echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
-	if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
-	    $nom_photo = $saisie->getEleve()->getNomPhoto(1);
-	    //$photos = "../photos/eleves/".$nom_photo;
-	    $photos = $nom_photo;
-	    //if (($nom_photo == "") or (!(file_exists($photos)))) {
-	    if (($nom_photo == NULL) or (!(file_exists($photos)))) {
-		    $photos = "../mod_trombinoscopes/images/trombivide.jpg";
+if ($notification->getAbsenceEleveTraitement() != null) {
+    foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
+	//$saisie = new AbsenceEleveSaisie();
+	if ($saisie->getEleve() == null) {
+	    if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isFirst()) {
+		echo '</td></tr>';
 	    }
-	    $valeur = redimensionne_image_petit($photos);
-	    echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
+	    echo '<tr><td>';
+	    echo 'Aucune absence';
+	    if ($saisie->getGroupe() != null) {
+		echo ' pour le groupe ';
+		echo $saisie->getGroupe()->getdescription();
+	    }
+	    if ($saisie->getClasse() != null) {
+		echo ' pour la classe ';
+		echo $saisie->getClasse()->getNom();
+	    }
+	    if ($saisie->getAidDetails() != null) {
+		echo ' pour l\'aid ';
+		echo $saisie->getAidDetails()->getNom();
+	    }
+	    echo '<tr><td>';
+	} elseif ($eleve_prec_id != $saisie->getEleve()->getPrimaryKey()) {
+	    if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isFirst()) {
+		echo '</td></tr>';
+	    }
+	    echo '<tr><td>';
+	    echo '<div>';
+	    echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
+	    if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
+		$nom_photo = $saisie->getEleve()->getNomPhoto(1);
+		//$photos = "../photos/eleves/".$nom_photo;
+		$photos = $nom_photo;
+		//if (($nom_photo == "") or (!(file_exists($photos)))) {
+		if (($nom_photo == NULL) or (!(file_exists($photos)))) {
+			$photos = "../mod_trombinoscopes/images/trombivide.jpg";
+		}
+		$valeur = redimensionne_image_petit($photos);
+		echo ' <img src="'.$photos.'" style="width: '.$valeur[0].'px; height: '.$valeur[1].'px; border: 0px; vertical-align: middle;" alt="" title="" />';
+	    }
+	    if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
+		//echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' target='_blank'>";
+		echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' >";
+		echo ' (voir fiche)';
+		echo "</a>";
+	    }
+	    echo '</div>';
+	    echo '<br/>';
+	    $eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
 	}
-	if ($utilisateur->getAccesFicheEleve($saisie->getEleve())) {
-	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' target='_blank'>";
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$saisie->getEleve()->getLogin()."' >";
-	    echo ' (voir fiche)';
-	    echo "</a>";
-	}
+	echo '<div>';
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
+	echo $saisie->getdateDescription();
+	echo "</a>";
 	echo '</div>';
-	echo '<br/>';
-	$eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
-    }
-    echo '<div>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
-    echo $saisie->getdateDescription();
-    echo "</a>";
-    echo '</div>';
-    if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isLast()) {
-	echo '<br/>';
+	if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isLast()) {
+	    echo '<br/>';
+	}
     }
 }
 echo '</td></tr>';
@@ -246,23 +248,25 @@ foreach ($notification->getResponsableEleves() as $responsable) {
     }
 }
 if ($notification->getModifiable()) {
-    if ($notification->getResponsableEleves()->count() != $notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies()->count()) {
-	echo '<div>';
-	echo '<form method="post" action="enregistrement_modif_notification.php">';
-	echo '<p>';
-	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
-	echo '<input type="hidden" name="modif" value="ajout_responsable"/>';
-	echo ("<select name=\"pers_id\">");
-	foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
-	    $responsable = $responsable_information->getResponsableEleve();
-	    echo '<option value="'.$responsable->getPersId().'"';
-	    echo ">".$responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom()."</option>\n";
+    if ($notification->getAbsenceEleveTraitement() != null) {
+	if ($notification->getResponsableEleves()->count() != $notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies()->count()) {
+	    echo '<div>';
+	    echo '<form method="post" action="enregistrement_modif_notification.php">';
+	    echo '<p>';
+	    echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
+	    echo '<input type="hidden" name="modif" value="ajout_responsable"/>';
+	    echo ("<select name=\"pers_id\">");
+	    foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
+		$responsable = $responsable_information->getResponsableEleve();
+		echo '<option value="'.$responsable->getPersId().'"';
+		echo ">".$responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom()."</option>\n";
+	    }
+	    echo "</select>";
+	    echo '<button type="submit">Ajouter</button>';
+	    echo '</p>';
+	    echo '</form>';
+	    echo '</div>';
 	}
-	echo "</select>";
-	echo '<button type="submit">Ajouter</button>';
-	echo '</p>';
-	echo '</form>';
-	echo '</div>';
     }
 }
 echo '</td></tr>';
@@ -429,9 +433,11 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 	echo '<input type="hidden" name="modif" value="adresse"/>';
 	echo ("<select name=\"adr_id\" onchange='submit()'>");
 	$adresse_col = new PropelCollection();
-	foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
-	    if ($responsable_information->getResponsableEleve() != null && $responsable_information->getResponsableEleve()->getResponsableEleveAdresse() != null) {
-		 $adresse_col->add($responsable_information->getResponsableEleve()->getResponsableEleveAdresse());
+	if ($notification->getAbsenceEleveTraitement() != null) {
+	    foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
+		if ($responsable_information->getResponsableEleve() != null && $responsable_information->getResponsableEleve()->getResponsableEleveAdresse() != null) {
+		     $adresse_col->add($responsable_information->getResponsableEleve()->getResponsableEleveAdresse());
+		}
 	    }
 	}
 	foreach ($adresse_col as $responsable_addresse) {

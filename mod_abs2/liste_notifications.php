@@ -497,9 +497,11 @@ foreach ($results as $notification) {
     //donnees eleve
     echo '<td>';
     $eleve_col = new PropelObjectCollection();
-    foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
-	if ($saisie->getEleve() != null) {
-	    $eleve_col->add($saisie->getEleve());
+    if ($notification->getAbsenceEleveTraitement() != null) {
+	foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
+	    if ($saisie->getEleve() != null) {
+		$eleve_col->add($saisie->getEleve());
+	    }
 	}
     }
     foreach ($eleve_col as $eleve) {
