@@ -1655,6 +1655,28 @@ col2 varchar(100) NOT NULL default ''
 	echo "</p>\n";
 
 	echo "<p>Terminé.</p>\n";
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'clean_cdt') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<p><b>Nettoyage des tables du module Cahier de textes&nbsp;:</b> \n";
+	$tab_table=array("ct_devoirs_entry",
+					"ct_documents",
+					"ct_entry",
+					"ct_devoirs_documents",
+					"ct_private_entry",
+					"ct_sequences");
+	for($i=0;$i<count($tab_table);$i++) {
+		if($i>0) {echo ", ";}
+		echo $tab_table[$i];
+		$sql="TRUNCATE TABLE $tab_table[$i];";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+	}
+	echo "</p>\n";
+
+	echo "<p>Terminé.</p>\n";
 } elseif(isset($_POST['action']) AND $_POST['action'] == 'verif_interclassements') {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
@@ -1879,6 +1901,17 @@ else {
 	echo "<input type=submit value=\"Vider les tables du module Discipline\" />\n";
 	echo "</center>\n";
     echo "<input type='hidden' name='action' value='clean_discipline' />\n";
+	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+    echo "</form>\n";
+
+    echo "<hr />\n";
+
+    echo "<p>Au changement d'année, il faut archiver le Cahier de Textes, puis le vider.</p>\n";
+    echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+    echo "<center>\n";
+	echo "<input type=submit value=\"Vider les tables du module Cahier de Textes\" />\n";
+	echo "</center>\n";
+    echo "<input type='hidden' name='action' value='clean_cdt' />\n";
 	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
     echo "</form>\n";
 
