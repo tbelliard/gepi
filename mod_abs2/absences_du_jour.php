@@ -347,9 +347,9 @@ if ($type_selection == 'id_eleve') {
 			<input type="hidden" id="ajout_traitement" name="ajout_traitement" value="no"/>
 			<input type="hidden" id="id_traitement" name="id_traitement" value=""/>
 			<p>
-			<div dojoType="dijit.form.ComboButton">
+			<div dojoType="dijit.form.DropDownButton" style="display: inline">
 			    <span>Ajouter au traitement</span>
-			    <div dojoType="dijit.Menu">
+			    <div dojoType="dijit.Menu" style="display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
 				    Creer un nouveau traitement
 				</button>
@@ -364,9 +364,9 @@ if ($type_selection == 'id_eleve') {
 			?>
 			    </div>
 			</div>
-			<div dojoType="dijit.form.ComboButton">
+			<div dojoType="dijit.form.DropDownButton" style="display: inline">
 			    <span>Ajouter au traitement (popup)</span>
-			    <div dojoType="dijit.Menu">
+			    <div dojoType="dijit.Menu" style="display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; pop_it(document.creer_traitement)">
 				    Creer un nouveau traitement dans une popup
 				</button>
@@ -489,19 +489,12 @@ if ($type_selection == 'id_eleve') {
 					    }
 					    $saisie_affiches[] = $saisie->getPrimaryKey();
 					    $nb_checkbox = $nb_checkbox + 1;
-					    if ($saisie->getNotifiee()) {
-						$prop = 'saisie_notifie';
-					    } elseif ($saisie->getTraitee()) {
-						$prop = 'saisie_traite';
-					    } else {
-						$prop = 'saisie_vierge';
-					    }
-					    //echo '<nobr>';
-					    echo '<nobr><input name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" id="'.$prop.'_eleve_id_'.$eleve->getPrimaryKey().'_saisie_id_'.$saisie->getPrimaryKey().'"/>';
+					    echo '<nobr><input eleve_id="'.$eleve->getPrimaryKey().'" name="select_saisie[]" value="'.$saisie->getPrimaryKey().'" type="checkbox" ';
+					    if ($saisie->getNotifiee()) {echo 'saisie_notifiee="true"';}
+					    if ($saisie->getTraitee()) {echo 'saisie_traitee="true"';}
+					    echo '/>';
 					    echo ("<a style='font-size:88%;' href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>".$saisie->getPrimaryKey());
-					    if ($prop == 'saisie_notifie') {
-						echo " (notifiée)";
-					    }
+					    if ($saisie->getNotifiee()) {echo " (notifiée)";}
 					    echo '</nobr> ';
 					    echo $saisie->getTypesDescription();
 					    echo '</a>';
@@ -529,20 +522,10 @@ if ($type_selection == 'id_eleve') {
 			}
 
 			echo '<td style="width : 7em">';
-			echo 'Sélectionner: ';
-			echo '<a href="" onclick="SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true); return false;">Tous</a>, ';
-			echo '<a href="" onclick="SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false); return false;">Aucun</a>, ';
-			echo '<a href="" onclick="SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', false);
-			    SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'saisie_vierge_eleve_id_'.$eleve->getPrimaryKey().'\', true);
-			    return false;">Non traités</a>, ';
-			echo '<a href="" onclick="SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'eleve_id_'.$eleve->getPrimaryKey().'\', true);
-			    SetAllCheckBoxes(\'creer_traitement\', \'select_saisie[]\', \'saisie_notifie_eleve_id_'.$eleve->getPrimaryKey().'\', false);
-			    return false;">Non notifiés</a>';
-			echo '</td>';
-			echo '<td>';
-			echo '<div dojoType="dijit.form.ComboButton">
+			echo '<div add_select_shorcuts_button="true" eleve_id="'.$eleve->getPrimaryKey().'"></div>';
+			echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
 			    <span>Ajouter au traitement</span>
-			    <div dojoType="dijit.Menu">
+			    <div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; document.creer_traitement.submit();">
 				    Creer un nouveau traitement
 				</button>';
@@ -551,13 +534,13 @@ if ($type_selection == 'id_eleve') {
 			    echo ' Ajouter au traitement n° '.$traitement->getId().' ('.$traitement->getDescription().')';
 			    echo '</button>';
 			}
-			echo '</div></div>';
+			echo '</div></div><br/>';
 
-			echo '<div dojoType="dijit.form.ComboButton">
-			    <span>Ajouter dans une popup</span>
-			    <div dojoType="dijit.Menu">
+			echo '<div dojoType="dijit.form.DropDownButton"  style="white-space: nowrap; display: inline">
+			    <span>Ajouter (popup)</span>
+			    <div dojoType="dijit.Menu"  style="white-space: nowrap; display: inline">
 				<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'creation_traitement\').value = \'yes\'; document.getElementById(\'ajout_traitement\').value = \'no\'; pop_it(document.creer_traitement);">
-				    Creer un nouveau traitement dans une popup
+				    Creer un nouveau traitement (popup)
 				</button>';
 			foreach ($traitement_col as $traitement) {
 			    echo '<button dojoType="dijit.MenuItem" onClick="document.getElementById(\'id_traitement\').value = \''.$traitement->getId().'\'; document.getElementById(\'creation_traitement\').value = \'no\'; document.getElementById(\'ajout_traitement\').value = \'yes\'; pop_it(document.creer_traitement);">';
@@ -579,9 +562,9 @@ if ($type_selection == 'id_eleve') {
     echo '<td style="border : 1px solid;">Sans couleur : pas de saisie</td>';
     echo '</tr></table>';
     ?>
-    <div dojoType="dijit.form.ComboButton">
+    <div dojoType="dijit.form.DropDownButton" style="display: inline">
 	<span>Ajouter Les saisies cochées à un traitement</span>
-	<div dojoType="dijit.Menu">
+	<div dojoType="dijit.Menu" style="display: inline">
 	    <button dojoType="dijit.MenuItem" onClick="document.getElementById('creation_traitement').value = 'yes'; document.getElementById('ajout_traitement').value = 'no'; document.creer_traitement.submit();">
 		Creer un nouveau traitement
 	    </button>
@@ -619,6 +602,63 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dijit.form.Form");
     dojo.require("dijit.form.CheckBox");
     dojo.require("dijit.form.DateTextBox");
+
+    dojo.addOnLoad(function() {
+	dojo.query("[add_select_shorcuts_button=true]").forEach(function(node, index, arr){
+	    var menu = new dijit.Menu({
+		style: "display: none;"
+	    });
+	    var menuItem1 = new dijit.MenuItem({
+		label: "tous",
+		onClick: function() {
+		    var eleve_id = dojo.attr(node,\'eleve_id\');
+		    var query_string = \'input[type=checkbox][eleve_id=\'+eleve_id+\']\';
+		    dojo.query(query_string).attr(\'checked\', true);
+		}
+	    });
+	    menu.addChild(menuItem1);
+
+	    var menuItem2 = new dijit.MenuItem({
+		label: "aucun",
+		onClick: function() {
+		    var eleve_id = dojo.attr(node,\'eleve_id\');
+		    var query_string = \'input[type=checkbox][eleve_id=\'+eleve_id+\']\';
+		    dojo.query(query_string).attr(\'checked\', false);
+		}
+	    });
+	    menu.addChild(menuItem2);
+
+	    var menuItem3 = new dijit.MenuItem({
+		label: "non traités",
+		onClick: function() {
+		    var eleve_id = dojo.attr(node,\'eleve_id\');
+		    var query_string = \'input[type=checkbox][eleve_id=\'+eleve_id+\']\';
+		    dojo.query(query_string).attr(\'checked\', true);
+		    query_string = \'input[type=checkbox][eleve_id=\'+eleve_id+\'][saisie_traitee=true]\';
+		    dojo.query(query_string).attr(\'checked\', false);
+		}
+	    });
+	    menu.addChild(menuItem3);
+
+	    var menuItem4 = new dijit.MenuItem({
+		label: "non notifiés",
+		onClick: function() {
+		    var eleve_id = dojo.attr(node,\'eleve_id\');
+		    var query_string = \'input[type=checkbox][eleve_id=\'+eleve_id+\']\';
+		    dojo.query(query_string).attr(\'checked\', true);
+		    query_string = \'input[type=checkbox][eleve_id=\'+eleve_id+\'][saisie_notifiee=true]\';
+		    dojo.query(query_string).attr(\'checked\', false);
+		}
+	    });
+	    menu.addChild(menuItem4);
+
+	    var button = new dijit.form.DropDownButton({
+		label: "Selectionner",
+		dropDown: menu
+	    });
+	    node.appendChild(button.domNode);
+	});
+    });
 </script>';
 
 require_once("../lib/footer.inc.php");
