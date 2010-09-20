@@ -326,7 +326,7 @@ if ($type_selection == 'id_eleve') {
 				<input type="hidden" name="id_aid" value="<?php echo $id_aid?>"/>
                                 <input type="hidden" name="choix_regime" value="<?php echo $choix_regime?>"/>
                                 <input type="hidden" name="date_absence_eleve" value="<?php echo $date_absence_eleve?>"/>
-				    <input onchange="document.absences_du_jour.submit()" size="8" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
+				    <input onchange="document.absences_du_jour.submit()" style="width : 7em" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
 				    <button dojoType="dijit.form.Button" type="submit" onClick="
 					document.absences_du_jour.type_selection.value='';
 					document.absences_du_jour.nom_eleve.value='';
