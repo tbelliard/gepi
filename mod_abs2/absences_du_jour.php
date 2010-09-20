@@ -117,10 +117,6 @@ if ($type_selection == 'id_groupe') {
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
-$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
-$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 $javascript_specifique[] = "mod_abs2/lib/include";
 $titre_page = "Absences du jour";
 $utilisation_jsdivdrag = "non";
