@@ -62,8 +62,9 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
     die("acces interdit");
 }
 
-if (isset($_POST["generer_lot"])) {
-    include('generer_lot_notification.php');
+if (isset($_POST["generer_notifications_par_lot"])) {
+    include('generer_notifications_par_lot.php');
+    die();
 }
 
 include('include_requetes_filtre_de_recherche.php');
@@ -194,7 +195,7 @@ if ($notifications_col->haveToPaginate()) {
     echo "sur ".$nb_pages." page(s) ";
     echo "| ";
 }
-echo "<div>Voir ";
+echo "Voir ";
 echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
 echo "par page|  Nombre d'enregistrements : ";
 echo $notifications_col->count();
@@ -217,13 +218,14 @@ echo "&nbsp;&nbsp;&nbsp;";
 				">
 		Réinitialiser les filtres
 	    </button>
-	    <button type="submit" name="generer_lot" value="y" dojoType="dijit.MenuItem" onClick="
+	    <button type="submit" name="generer_notifications_par_lot" value="y" dojoType="dijit.MenuItem" onClick="
 		//Create an input type dynamically.
 		var element = document.createElement('input');
 		element.setAttribute('type', 'hidden');
-		element.setAttribute('name', 'generer_lot');
+		element.setAttribute('name', 'generer_notifications_par_lot');
 		element.setAttribute('value', 'y');
 		document.liste_notifications.appendChild(element);
+		document.liste_notifications.action = 'generer_notifications_par_lot.php';
 		document.liste_notifications.submit();
 				">
 		Generer par lot les notifications sélectionnées
@@ -235,7 +237,6 @@ echo "&nbsp;&nbsp;&nbsp;";
    dojo.byId("action_bouton").hide();
 </script>
 <?php
-echo '</div>';
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0; width:100%;">';
 
 echo '<thead>';
@@ -538,27 +539,28 @@ foreach ($results as $notification) {
 
     //donnees saisies
     echo '<td>';
-    if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isEmpty()) {
+    if ($notification->getAbsenceEleveTraitement() != null && !$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isEmpty()) {
 	echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; width:100%'>";
-    }
-    foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
-	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
-	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
-	echo $saisie->getDescription();
-	echo "</a>";
-	echo "</td>";
-	echo "</tr>";
-    }
-    if (!$notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies()->isEmpty()) {
+	foreach ($notification->getAbsenceEleveTraitement()->getAbsenceEleveSaisies() as $saisie) {
+	    echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
+	    echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
+	    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
+	    echo $saisie->getDescription();
+	    echo "</a>";
+	    echo "</td>";
+	    echo "</tr>";
+	}
 	echo "</table>";
     }
     echo '</td>';
 
-    echo '<td><div>';
-    echo "<a href='visu_traitement.php?id_traitement=".$notification->getAbsenceEleveTraitement()->getPrimaryKey()."' style='display: block; height: 100%;'> ";
-    echo $notification->getAbsenceEleveTraitement()->getDescription();
-    echo "</a></div>";
+    echo '<td>';
+    if ($notification->getAbsenceEleveTraitement() != null) {
+	echo '<div>';
+	echo "<a href='visu_traitement.php?id_traitement=".$notification->getAbsenceEleveTraitement()->getPrimaryKey()."' style='display: block; height: 100%;'> ";
+	echo $notification->getAbsenceEleveTraitement()->getDescription();
+	echo "</a></div>";
+    }
     echo '</td>';
 
     echo '<td>';
