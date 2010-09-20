@@ -1316,6 +1316,15 @@ if(isset($quelles_classes)) {
 
 	}
 
+	echo "<script type='text/javascript'>
+	// Ajout d'un champ FILE... pour éviter la limite de max_file_uploads (on n'a que le nombre de champs FILE correspondant à ce que l'on souhaite effectivement uploader
+	function add_file_upload(i) {
+		if(document.getElementById('span_file_'+i)) {
+			document.getElementById('span_file_'+i).innerHTML='<input type=\'file\' name=\'photo['+i+']\' />';
+		}
+	}
+</script>\n";
+
 	echo "<table border='1' cellpadding='2' class='boireaus'  summary='Tableau des élèves de la classe'>\n";
 	echo "<tr>\n";
 	echo "<td><p>Identifiant</p></td>\n";
@@ -1428,15 +1437,19 @@ if(isset($quelles_classes)) {
 				($_SESSION['statut']!="professeur"))) {
 
 			//echo "<td style='white-space: nowrap;'><input name='photo[$i]' type='file' />\n";
-			echo "<td style='white-space: nowrap; text-align:left;'><input name='photo[$i]' type='file' />\n";
+			echo "<td style='white-space: nowrap; text-align:center;'>\n";
 
-      // Dans le cas du multisite, on préfère le login pour afficher les photos
-      $nom_photo_test = (isset ($multisite) AND $multisite == 'y') ? $eleve_login : $elenoet;
+			//echo "<input name='photo[$i]' type='file' />\n";
+
+			// Dans le cas du multisite, on préfère le login pour afficher les photos
+			$nom_photo_test = (isset ($multisite) AND $multisite == 'y') ? $eleve_login : $elenoet;
 			echo "<input type='hidden' name='quiestce[$i]' value=\"$nom_photo_test\" />\n";
 
 			$photo=nom_photo($elenoet);
 			$temoin_photo="";
 			if($photo){
+				echo "<div style='width: 32px; height: 32px; float:right;'>";
+
 				$titre="$eleve_nom $eleve_prenom";
 
 				$texte="<div align='center'>\n";
@@ -1461,6 +1474,20 @@ if(isset($quelles_classes)) {
 				}
 				echo "' width='32' height='32'  align='middle' border='0' alt='photo présente' title='photo présente' />";
 				echo "</a>";
+
+				echo "</div>";
+			}
+
+
+			if($nom_photo_test=="") {
+				// Dans le cas multisite, le login élève est forcément renseigné
+				echo "<span style='color:red'>Elenoet non renseigné</span>";
+			}
+			else {
+				//echo "<span id='span_file_$i'></span>";
+				echo "<span id='span_file_$i'>";
+				echo "<a href='javascript:add_file_upload($i)'><img src='../images/ico_edit16plus.png' width='16' height='16' alt='Choisir un fichier à uploader' /></a>";
+				echo "</span>";
 			}
 
 			echo "</td>\n";
