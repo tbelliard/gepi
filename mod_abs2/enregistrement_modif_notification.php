@@ -142,7 +142,13 @@ if ( $modif == 'type') {
 } elseif ($modif == 'adresse') {
     $notification->setAdrId($_POST["adr_id"]);
 } elseif ($modif == 'duplication') {
-    $clone = $notification->copy(true); //deep copy
+    $clone = $notification->copy(); //no deep copy
+    $clone->save();
+    $id = $clone->getId();
+    //this is done to avoid a bug in deepcopy
+    $notification->copyInto($clone, true);// deep copy
+    $clone->setId($id);
+    $clone->setNew(false);
     $clone->setStatutEnvoi(AbsenceEleveNotification::$STATUT_INITIAL);
     $clone->setDateEnvoi(null);
     $clone->setErreurMessageEnvoi(null);
