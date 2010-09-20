@@ -250,7 +250,7 @@ if ($affichage == 'html') {
     $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 
     // Load the template
-	$extraction_demi_journees=repertoire_modeles('extraction_demi-journees.ods');
+	$extraction_demi_journees=repertoire_modeles('absence_extraction_demi-journees.ods');
     $TBS->LoadTemplate($extraction_demi_journees);
 
     $titre = 'Extrait des demi-journées d\'absences du '.$dt_date_absence_eleve_debut->format('d/m/Y').' au '.$dt_date_absence_eleve_fin->format('d/m/Y');

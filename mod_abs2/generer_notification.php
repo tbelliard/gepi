@@ -85,7 +85,7 @@ if ($notification->getTypeNotification() != AbsenceEleveNotification::$TYPE_COUR
 
 if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
     // Load the template
-    $modele_lettre_parents=repertoire_modeles("modele_lettre_parents.odt");
+    $modele_lettre_parents=repertoire_modeles("absence_modele_lettre_parents.odt");
     include_once '../orm/helpers/AbsencesNotificationHelper.php';
     $TBS = AbsencesNotificationHelper::MergeNotification($notification, $modele_lettre_parents);
 
@@ -99,7 +99,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 
 } else if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL) {
     // Load the template
-    $email=repertoire_modeles('email.txt');
+    $email=repertoire_modeles('absence_email.txt');
     include_once '../orm/helpers/AbsencesNotificationHelper.php';
     $TBS = AbsencesNotificationHelper::MergeNotification($notification, $email);
     $message = $TBS->Source;
@@ -107,14 +107,8 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
     $retour_envoi = AbsencesNotificationHelper::EnvoiNotification($notification, $message);
 
 } else if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS) {
-    if (getSettingValue("abs2_sms")!='y') {
-	$message_enregistrement = 'Envoi de sms désactivé.';
-	include('visu_notification.php');
-	die();
-    }
-
     // Load the template
-    $sms=repertoire_modeles('sms.txt');
+    $sms=repertoire_modeles('absence_sms.txt');
     include_once '../orm/helpers/AbsencesNotificationHelper.php';
     $TBS = AbsencesNotificationHelper::MergeNotification($notification, $sms);
     $message = $TBS->Source;
