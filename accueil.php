@@ -420,7 +420,7 @@ Veuillez vérifier que le répertoire /temp de Gepi est accessible en écriture par
 			$tmp_tab_champ=array('classes');
 			//$tab_group_sign[$lig_sign->id_groupe]=get_group($lig_sign->id_groupe,$tmp_tab_champ);
 			$current_group_sign=get_group($lig_sign->id_groupe,$tmp_tab_champ);
-
+			$current_group_sign['description']=str_replace  ( "&"  , "&amp;"  , $current_group_sign['description'] );
 			$tbs_signalement.="<a href='groupes/edit_eleves.php?id_groupe=".$lig_sign->id_groupe."&amp;id_classe=".$current_group_sign['classes']['list'][0]."'>".$current_group_sign['name']." (<em>".$current_group_sign['description']." ".$current_group_sign['classlist_string']."</em>)</a> signalé par ".affiche_utilisateur($lig_sign->declarant,$current_group_sign['classes']['list'][0])."<br />\n";
 		}
 		$tbs_signalement.="</p>\n";

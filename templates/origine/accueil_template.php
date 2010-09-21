@@ -150,11 +150,7 @@
 ?>
 	
 <!-- erreurs d'affectation d'élèves -->
-<?php
-	if (isset ($tbs_signalement)) {
-		echo $tbs_signalement;
-	}
-?>
+
 
 	</div>
 	<a name="contenu" class="invisible">Début de la page</a>
