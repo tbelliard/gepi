@@ -80,6 +80,35 @@ function AfficheDatesDebutFinSemaine() {
 
 // ========================================================================
 //
+//
+// =========================================================================
+function RecupereTimestampJour ($jour) {
+
+    //setlocale (LC_TIME, 'fr_FR','fra');
+    if ((1<=$_SESSION['week_selected']) AND ($_SESSION['week_selected'] <= 28)) {
+    //if ((1<=date("n")) AND (date("n") <=8)) {
+	    $annee = date("Y")+1;
+    }
+    else {
+	    $annee = date("Y");
+    }
+    $ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+    while (date("D", $ts) != "Mon") {
+	    $ts-=86400;
+    }
+    $semaine = 1;
+    
+    while ($semaine != $_SESSION['week_selected']) {
+	    $ts+=86400*7;
+	    $semaine++;
+    }
+	$timestamp = $ts+86400*($jour+0);
+    return $timestamp;
+}
+
+
+// ========================================================================
+//
 //      Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
 //      Usage : 
 //      $tab = RecupereLundisVendredis();

@@ -27,6 +27,16 @@ if (isset($_GET['traite_anti_inject']) || isset($_POST['traite_anti_inject'])) $
 // Initialisations files
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
+
+//=================================
+//
+//	emplois du temps - requirements
+//
+//=================================
+include("../edt_organisation/cdt_requirements.php");
+
+
+
 //echo("Debug Locale : ".setLocale(LC_TIME,0));
 
 // Resume session
@@ -39,10 +49,10 @@ if ($resultat_session == 'c') {
     die();
 };
 
-if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
-}
+//if (!checkAccess()) {
+//    header("Location: ../logout.php?auto=1");
+//    die();
+//}
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
@@ -61,8 +71,8 @@ $_SESSION['cacher_header'] = "y";
 //**************** EN-TETE *****************
 $titre_page = "Cahier de textes";
 
-$style_specifique = "lib/DHTMLcalendar/calendarstyle";
-$javascript_specifique = "cahier_texte_2/init_cahier_texte_2";
+$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
+$javascript_specifique[] = "cahier_texte_2/init_cahier_texte_2";
 $utilisation_win = 'oui';
 $utilisation_jsdivdrag = "non";
 $windows_effects = "non";
@@ -86,6 +96,12 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6' ) !== FALSE) {
     header("Location: ../cahier_texte/index.php");
     die();
 }
+//=================================
+//
+//		Init emplois du temps
+//
+//=================================
+include("../edt_organisation/cdt_initialisation.php");
 
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
@@ -172,5 +188,12 @@ echo "<a href='creer_sequence.php'>Pr&eacute;parer une s&eacute;quence enti&egra
 echo "<td width='250 px'></td>";
 echo "</tr>\n";
 echo "</table>\n<hr />";
+//=================================
+//
+//	emplois du temps - affichage
+//
+//=================================
+require_once("../edt_organisation/cdt_voir_view.php");
+
 require("../lib/footer.inc.php");
 ?>

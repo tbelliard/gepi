@@ -42,7 +42,7 @@ function initPage () {
 			    }
 	    );
 	} else {
-            getWinDernieresNotices().show();
+            getWinDernieresNotices().hide();
 	}
 }
 

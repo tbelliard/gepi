@@ -33,10 +33,10 @@ $analyse = explode("/", $serveur_script);
 
 // ========================= Récupérer le bon fichier de langue
 
-require_once('./choix_langue.php');
+require_once('../edt_organisation/choix_langue.php');
 
 
-require_once('./fonctions_calendrier.php');
+require_once('../edt_organisation/fonctions_calendrier.php');
 //===========================INITIALISATION DES VARIABLES=======
 
 // Pour éviter d'avoir un décalage dans les infobulles
