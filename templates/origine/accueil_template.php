@@ -136,6 +136,7 @@
 <!-- messages de sécurité -->
 <?php
 	if (count($afficheAccueil->probleme_dir)) {
+	
 	  foreach ($afficheAccueil->probleme_dir as $value) {
 ?>
 		<p  class="rouge center">
@@ -145,6 +146,13 @@
 <?php
 	  }
 	  unset($value);
+	}
+?>
+	
+<!-- erreurs d'affectation d'élèves -->
+<?php
+	if (isset ($tbs_signalement)) {
+		echo $tbs_signalement;
 	}
 ?>
 
