@@ -280,7 +280,7 @@ if (isset($message_enregistrement)) {
     echo($message_enregistrement);
 }
 
-//afichage des eleves. Il nous faut au moins un groupe ou une aid
+//afichage des eleves.
 $eleve_col = new PropelCollection();
 
 if ($type_selection == 'id_eleve') {
@@ -296,7 +296,7 @@ if ($type_selection == 'id_eleve') {
     }
     $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
 }else if ($type_selection == 'choix_regime' && $choix_regime!=-1) {
-    $query = EleveQuery::create();
+    $query = EleveQuery::create()->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC);
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
@@ -317,7 +317,8 @@ if ($type_selection == 'id_eleve') {
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);        
     }
-    $eleve_col = $query            
+    $eleve_col = $query
+            ->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC)
 	    ->useAbsenceEleveSaisieQuery()
 	    ->filterByPlageTemps($dt_debut, $dt_fin)
 	    ->endUse()->distinct()->find();
