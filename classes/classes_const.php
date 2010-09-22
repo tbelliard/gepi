@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -316,10 +316,6 @@ $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'")
 $classe = mysql_result($call_classe, "0", "classe");
 
 //debug_var();
-?>
-
-<?php
-
 //=============================
 // MODIF: boireaus
 
@@ -493,13 +489,117 @@ $nombreligne = mysql_num_rows($call_eleves);
 if ($nombreligne == '0') {
 	echo "<p>Il n'y a pas d'élèves actuellement dans cette classe.</p>\n";
 } else {
+
+	echo "<script type='text/javascript'>
+function imposer_pp() {
+	index_selection=document.getElementById('pp_a_imposer').selectedIndex;
+	for (var i=0;i<$nombreligne;i++) {
+		if(document.getElementById('prof_principal_'+i)) {
+			document.getElementById('prof_principal_'+i).selectedIndex=index_selection;
+		}
+	}
+	changement();
+}
+
+function imposer_cpe() {
+	index_selection=document.getElementById('cpe_a_imposer').selectedIndex;
+	for (var i=0;i<$nombreligne;i++) {
+		if(document.getElementById('cpe_resp_'+i)) {
+			document.getElementById('cpe_resp_'+i).selectedIndex=index_selection;
+		}
+	}
+	changement();
+}
+
+</script>
+";
+
+	// Liste des profs pour prof_principal
+	$call_prof = mysql_query("SELECT DISTINCT u.login, u.nom, u.prenom " .
+			"FROM utilisateurs u, j_groupes_professeurs jgp, j_groupes_classes jgc WHERE (" .
+			"u.statut = 'professeur' and " .
+			"u.login = jgp.login and " .
+			"jgp.id_groupe = jgc.id_groupe and " .
+			"jgc.id_classe = '".$id_classe."'" .
+			") ORDER BY u.login");
+	$nb = mysql_num_rows($call_prof);
+	$i=0;
+	while ($i < $nb) {
+		$tab_profsuivi[$i] = mysql_result($call_prof, $i, "login");
+		$tab_profnom[$i] = mysql_result($call_prof, $i, "nom");
+		$tab_profprenom[$i] = mysql_result($call_prof, $i, "prenom");
+		$i++;
+	}
+
+	// Recherche des PP de la classe
+	$sql="SELECT DISTINCT professeur FROM j_eleves_professeurs WHERE (id_classe='$id_classe')";
+	$test_pp=mysql_query($sql);
+	if(mysql_num_rows($test_pp)==1) {
+		$lig_pp=mysql_fetch_object($test_pp);
+		$login_pp_unique_actuel=$lig_pp->professeur;
+	}
+	else {
+		$login_pp_unique_actuel="";
+	}
+
+	// Liste des CPE
+	$call_cpe = mysql_query("SELECT login,nom,prenom FROM utilisateurs WHERE (statut='cpe' AND etat='actif')");
+	$nb = mysql_num_rows($call_cpe);
+	$i=0;
+	while ($i < $nb) {
+		$tab_cperesp[$i] = mysql_result($call_cpe, $i, "login");
+		$tab_cpenom[$i] = mysql_result($call_cpe, $i, "nom");
+		$tab_cpeprenom[$i] = mysql_result($call_cpe, $i, "prenom");
+		$i++;
+	}
+
+	// Recherche des CPE de la classe
+	$sql="SELECT DISTINCT cpe_login FROM j_eleves_cpe jecpe, j_eleves_classes jec WHERE (jec.login=jecpe.e_login AND jec.id_classe='$id_classe')";
+	$test_cpe=mysql_query($sql);
+	if(mysql_num_rows($test_cpe)==1) {
+		$lig_cpe=mysql_fetch_object($test_cpe);
+		$login_cpe_unique_actuel=$lig_cpe->cpe_login;
+	}
+	else {
+		$login_cpe_unique_actuel="";
+	}
+
+
 	$k = '0';
 	echo "<table class='boireaus' border='1' cellpadding='5' class='boireaus' summary='Elèves'>\n";
 	echo "<tr>\n";
 	echo "<th>Nom Prénom </th>\n";
 	echo "<th>Régime</th>\n";
 	echo "<th>Redoublant</th>\n";
-	echo "<th>".ucfirst(getSettingValue("gepi_prof_suivi"))."</th><th>CPE responsable</th>\n";
+	echo "<th>".ucfirst(getSettingValue("gepi_prof_suivi"));
+	echo "<select size='1' name='pp_a_imposer' id='pp_a_imposer' style='font-size:small;'";
+	echo ">\n";
+	echo "<option value='0'>(vide)</option>\n";
+	for($loop=0;$loop<count($tab_profsuivi);$loop++) {
+		$ind=$loop+1;
+		echo "<option value='$ind'";
+		if($tab_profsuivi[$loop]==$login_pp_unique_actuel) {echo " selected='true'";}
+		echo ">".ucwords(strtolower($tab_profprenom[$loop]))." ".strtoupper($tab_profnom[$loop])."</option>\n";
+	}
+	echo "</select>\n";
+	echo "&nbsp;<a href='javascript: imposer_pp();' title='Imposer pour tous les élèves'><img src='../images/icons/wizard.png' width='16' height='16' alt='Imposer pour tous les élèves' /></a>\n";
+
+
+	echo "</th>\n";
+	echo "<th>CPE responsable\n";
+	echo "<select size='1' name='cpe_a_imposer' id='cpe_a_imposer' style='font-size:small;'";
+	echo ">\n";
+	echo "<option value='0'>(vide)</option>\n";
+	for($loop=0;$loop<count($tab_cperesp);$loop++) {
+		$ind=$loop+1;
+		echo "<option value='$ind'";
+		if($tab_cperesp[$loop]==$login_cpe_unique_actuel) {echo " selected='true'";}
+		echo ">".ucwords(strtolower($tab_cpeprenom[$loop]))." ".strtoupper($tab_cpenom[$loop])."</option>\n";
+	}
+	echo "</select>\n";
+	echo "&nbsp;<a href='javascript: imposer_cpe();' title='Imposer pour tous les élèves'><img src='../images/icons/wizard.png' width='16' height='16' alt='Imposer pour tous les élèves' /></a>\n";
+	echo "</th>\n";
+
 	$i="1";
 	while ($i < $nb_periode) {
 		//echo "<th><p class=\"small\">Retirer de la classe<br />$nom_periode[$i]</p></th>\n";
@@ -524,9 +624,9 @@ if ($nombreligne == '0') {
 		$regime_login = "regime_".$login_eleve;
 		$doublant_login = "doublant_".$login_eleve;
 		$i="1";
-			while ($i < $nb_periode) {
+		while ($i < $nb_periode) {
 			$delete_login[$i] = "delete_".$login_eleve."_".$i;
-		$i++;
+			$i++;
 		}
 		$call_data_eleves = mysql_query("SELECT * FROM eleves WHERE (login = '$login_eleve')");
 		$nom_eleve = @mysql_result($call_data_eleves, '0', 'nom');
@@ -617,30 +717,16 @@ if ($nombreligne == '0') {
 		//=========================
 		// MODIF: boireaus 20071010
 		//echo "<p><select size='1' name='$prof_login'>\n";
-		echo "<p><select size='1' name='prof_principal[$k]'";
+		echo "<p><select size='1' name='prof_principal[$k]' id='prof_principal_$k'";
 		echo " onchange='changement()'";
 		echo ">\n";
 		//=========================
 		$profsuivi = '(vide)';
 		echo "<option value='$profsuivi'>(vide)</option>\n";
-		$call_prof = mysql_query("SELECT DISTINCT u.login, u.nom, u.prenom " .
-				"FROM utilisateurs u, j_groupes_professeurs jgp, j_groupes_classes jgc WHERE (" .
-				"u.statut = 'professeur' and " .
-				"u.login = jgp.login and " .
-				"jgp.id_groupe = jgc.id_groupe and " .
-				"jgc.id_classe = '".$id_classe."'" .
-				") ORDER BY u.login");
-		$nb = mysql_num_rows($call_prof);
-		$i='0';
-		while ($i < $nb) {
-			$profsuivi = mysql_result($call_prof, $i, "login");
-			$prof_nom = mysql_result($call_prof, $i, "nom");
-			$prof_prenom = mysql_result($call_prof, $i, "prenom");
-			echo "<option value='$profsuivi'";
-			if ($profsuivi==$eleve_profsuivi) { echo " selected";}
-			//echo ">$prof_prenom $prof_nom</option>\n";
-			echo ">".ucwords(strtolower($prof_prenom))." ".strtoupper($prof_nom)."</option>\n";
-		$i++;
+		for($loop=0;$loop<count($tab_profsuivi);$loop++) {
+			echo "<option value='$tab_profsuivi[$loop]'";
+			if ($tab_profsuivi[$loop]==$eleve_profsuivi) { echo " selected";}
+			echo ">".ucwords(strtolower($tab_profprenom[$loop]))." ".strtoupper($tab_profnom[$loop])."</option>\n";
 		}
 		echo "</select></p>\n";
 		echo "</td>\n";
@@ -649,23 +735,17 @@ if ($nombreligne == '0') {
 		//=========================
 		// MODIF: boireaus 20071010
 		//echo "<p><select size='1' name='$cpe_login'>\n";
-		echo "<p><select size='1' name='cpe_resp[$k]'";
+		echo "<p><select size='1' name='cpe_resp[$k]' id='cpe_resp_$k'";
 		echo " onchange='changement()'";
 		echo ">\n";
 		//=========================
-			$cperesp = "(vide)";
-			echo "<option value='$cperesp'>(vide)</option>\n";
-			$call_cpe = mysql_query("SELECT login,nom,prenom FROM utilisateurs WHERE (statut='cpe' AND etat='actif')");
-			$nb = mysql_num_rows($call_cpe);
-			for ($i="0";$i<$nb;$i++) {
-				$cperesp = mysql_result($call_cpe, $i, "login");
-				$cperesp_nom = mysql_result($call_cpe, $i, "nom");
-				$cperesp_prenom = mysql_result($call_cpe, $i, "prenom");
-				echo "<option value='$cperesp'";
-					if ($cperesp == $eleve_cperesp) echo " selected";
-				echo ">" . $cperesp_prenom . " " . $cperesp_nom ;
-				echo "</option>\n";
-			}
+		$cperesp = "(vide)";
+		echo "<option value='$cperesp'>(vide)</option>\n";
+		for($loop=0;$loop<count($tab_cperesp);$loop++) {
+			echo "<option value='$tab_cperesp[$loop]'";
+			if ($tab_cperesp[$loop]==$eleve_cperesp) { echo " selected";}
+			echo ">".ucwords(strtolower($tab_cpeprenom[$loop]))." ".strtoupper($tab_cpenom[$loop])."</option>\n";
+		}
 		echo "</select></p>\n";
 		echo "</td>\n";
 
