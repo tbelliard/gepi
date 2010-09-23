@@ -5062,7 +5062,7 @@ function get_nom_prenom_eleve($login_ele,$mode='simple') {
 			return civ_nom_prenom($login_ele)." (non-élève)";
 		}
 		else {
-			return "Elève inconnu";
+			return "Elève inconnu ($login_ele)";
 		}
 	}
 	else {
