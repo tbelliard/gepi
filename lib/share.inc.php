@@ -5055,10 +5055,11 @@ function get_nom_prenom_eleve($login_ele,$mode='simple') {
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
+		// Si ce n'est pas un élève, c'est peut-être un utilisateur prof, cpe, responsable,...
 		$sql="SELECT 1=1 FROM utilisateurs WHERE login='$login_ele';";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
-			return civ_nom_prenom($login)." (non-élève)";
+			return civ_nom_prenom($login_ele)." (non-élève)";
 		}
 		else {
 			return "Elève inconnu";
