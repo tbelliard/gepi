@@ -1953,7 +1953,7 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
    $test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$row[0]."' and u.login=j.login) ORDER BY nom, prenom";
    $res_prof = sql_query($test_prof);
    $chaine = "";
-   for ($k=0;$prof==sql_row($res_prof,$k);$k++) {
+   for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
      if ($k != 0) $chaine .= ", ";
      $chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
    }
