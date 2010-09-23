@@ -46,6 +46,13 @@ if (!checkAccess()) {
 	die();
 }
 
+if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
+	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
 include "../class_php/class_menu_general.php";
 
 //**************** EN-TETE *****************

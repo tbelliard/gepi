@@ -40,6 +40,14 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 	die();
 }
+
+if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
+	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
 /*
 function get_nom_prenom_eleve($login_ele) {
 	$sql="SELECT nom,prenom FROM eleves WHERE login='$login_ele';";
@@ -99,7 +107,7 @@ $titre_page = "Discipline: Statistiques";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-debug_var();
+//debug_var();
 
 echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 

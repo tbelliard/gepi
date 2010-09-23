@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
  *
  * This file is part of GEPI.
  *
@@ -44,6 +44,13 @@ if (mysql_num_rows($test) == 0) {
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
+}
+
+if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
+	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
 }
 
 require('sanctions_func_lib.php');
@@ -110,7 +117,7 @@ if ((isset($categorie)) && ($categorie != '')) {
 $themessage = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 //$titre_page = "Sanctions: Définition des qualités";
-$titre_page = "Sanctions: Définition des catégories";
+$titre_page = "Discipline: Définition des catégories";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();

@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -40,6 +40,13 @@ if ($resultat_session == 'c') {
 // maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/saisie_qualites.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Saisie des qualités', '');;";
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
+	die();
+}
+
+if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
+	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	header("Location: ../accueil.php?msg=$mess");
 	die();
 }
 
@@ -103,7 +110,7 @@ if((isset($qualite))&&($qualite!='')) {
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 //$titre_page = "Sanctions: Définition des qualités";
-$titre_page = "Sanctions: Définition des rôles";
+$titre_page = "Discipline: Définition des rôles";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 

@@ -44,6 +44,13 @@ if (!checkAccess()) {
 	die();
 }
 
+if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
+	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
 require('sanctions_func_lib.php');
 
 $suppr_mesure=isset($_POST['suppr_mesure']) ? $_POST['suppr_mesure'] : NULL;
@@ -140,7 +147,7 @@ if(isset($mesure)) {
 
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
-$titre_page = "Sanctions: Définition des mesures";
+$titre_page = "Discipline: Définition des mesures";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 

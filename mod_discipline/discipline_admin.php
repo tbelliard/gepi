@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -47,6 +47,16 @@ if (!checkAccess()) {
   header("Location: ../logout.php?auto=1");
   die();
 }
+
+/*
+// SURTOUT PAS: Cette page sert à activer/désactiver le module.
+if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
+	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+*/
 
 //$msg = '';
 if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
