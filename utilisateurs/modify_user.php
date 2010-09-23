@@ -958,7 +958,7 @@ echo "<input type=hidden name=max_mat value=$nb_mat />\n";
 			$duree = '7';
 		}
 		
-		journal_connexions($user_login,$duree,'autre');
+		journal_connexions($user_login,$duree,'modify_user');
 
 	}
 

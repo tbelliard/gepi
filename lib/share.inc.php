@@ -5197,7 +5197,7 @@ function test_ecriture_style_screen_ajout() {
 	}
 }
 
-function journal_connexions($login,$duree,$mode='perso') {
+function journal_connexions($login,$duree,$page='mon_compte') {
 	switch( $duree ) {
 	case 7:
 		$display_duree="une semaine";
@@ -5222,7 +5222,7 @@ function journal_connexions($login,$duree,$mode='perso') {
 		break;
 	}
 
-	if($mode=='perso') {
+	if($page=='mon_compte') {
 		echo "<h2>Journal de vos connexions depuis <b>".$display_duree."</b>**</h2>\n";
 	}
 	else {
@@ -5335,8 +5335,12 @@ function journal_connexions($login,$duree,$mode='perso') {
 	
 	echo "<form action=\"".$_SERVER['PHP_SELF']."#connexion\" name=\"form_affiche_log\" method=\"post\">\n";
 
-	if($mode!='perso') {
+	if($page=='modify_user') {
 		echo "<input type='hidden' name='user_login' value='$login' />\n";
+		echo "<input type='hidden' name='journal_connexions' value='y' />\n";
+	}
+	elseif($page=='modify_eleve') {
+		echo "<input type='hidden' name='eleve_login' value='$login' />\n";
 		echo "<input type='hidden' name='journal_connexions' value='y' />\n";
 	}
 
