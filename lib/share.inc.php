@@ -5197,6 +5197,179 @@ function test_ecriture_style_screen_ajout() {
 	}
 }
 
+function journal_connexions($login,$duree,$mode='perso') {
+	switch( $duree ) {
+	case 7:
+		$display_duree="une semaine";
+		break;
+	case 15:
+		$display_duree="quinze jours";
+		break;
+	case 30:
+		$display_duree="un mois";
+		break;
+	case 60:
+		$display_duree="deux mois";
+		break;
+	case 183:
+		$display_duree="six mois";
+		break;
+	case 365:
+		$display_duree="un an";
+		break;
+	case 'all':
+		$display_duree="le début";
+		break;
+	}
+
+	if($mode=='perso') {
+		echo "<h2>Journal de vos connexions depuis <b>".$display_duree."</b>**</h2>\n";
+	}
+	else {
+		echo "<h2>Journal des connexions de ".civ_nom_prenom($login)." depuis <b>".$display_duree."</b>**</h2>\n";
+	}
+	$requete = '';
+	if ($duree != 'all') {$requete = "and START > now() - interval " . $duree . " day";}
+	
+	$sql = "select START, SESSION_ID, REMOTE_ADDR, USER_AGENT, AUTOCLOSE, END from log where LOGIN = '".$login."' ".$requete." order by START desc";
+	//echo "$sql<br />";	
+	$day_now   = date("d");
+	$month_now = date("m");
+	$year_now  = date("Y");
+	$hour_now  = date("H");
+	$minute_now = date("i");
+	$seconde_now = date("s");
+	$now = mktime($hour_now, $minute_now, $seconde_now, $month_now, $day_now, $year_now);
+	
+	echo "<ul>
+<li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erroné.</li>
+<li>Les lignes en orange signalent une session close pour laquelle vous ne vous êtes pas déconnecté correctement.</li>
+<li>Les lignes en noir signalent une session close normalement.</li>
+<li>Les lignes en vert indiquent les sessions en cours (cela peut correspondre à une connexion actuellement close mais pour laquelle vous ne vous êtes pas déconnecté correctement).</li>
+</ul>
+<table class='col' style='width: 90%; margin-left: auto; margin-right: auto; margin-bottom: 32px;' cellpadding='5' cellspacing='0' summary='Connexions'>
+	<tr>
+		<th class='col'>Début session</th>
+		<th class='col'>Fin session</th>
+		<th class='col'>Adresse IP et nom de la machine cliente</th>
+		<th class='col'>Navigateur</th>
+	</tr>
+";
+
+	$res = sql_query($sql);
+	if ($res) {
+		for ($i = 0; ($row = sql_row($res, $i)); $i++)
+		{
+			$annee_b = substr($row[0],0,4);
+			$mois_b =  substr($row[0],5,2);
+			$jour_b =  substr($row[0],8,2);
+			$heures_b = substr($row[0],11,2);
+			$minutes_b = substr($row[0],14,2);
+			$secondes_b = substr($row[0],17,2);
+			$date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
+	
+			$annee_f = substr($row[5],0,4);
+			$mois_f =  substr($row[5],5,2);
+			$jour_f =  substr($row[5],8,2);
+			$heures_f = substr($row[5],11,2);
+			$minutes_f = substr($row[5],14,2);
+			$secondes_f = substr($row[5],17,2);
+			$date_fin = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
+			$end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
+	
+			$temp1 = '';
+			$temp2 = '';
+			if ($end_time > $now) {
+				$temp1 = "<font color='green'>";
+				$temp2 = "</font>";
+			} else if (($row[4] == 1) or ($row[4] == 2) or ($row[4] == 3)) {
+				//$temp1 = "<font color=orange>\n";
+				$temp1 = "<font color='#FFA500'>";
+				$temp2 = "</font>";
+			} else if ($row[4] == 4) {
+				$temp1 = "<b><font color='red'>";
+				$temp2 = "</font></b>";
+	
+			}
+	
+			echo "<tr>\n";
+			echo "<td class=\"col\">".$temp1.$date_debut.$temp2."</td>\n";
+			if ($row[4] == 2) {
+				echo "<td class=\"col\">".$temp1."Tentative de connexion<br />avec mot de passe erroné.".$temp2."</td>\n";
+			}
+			else {
+				echo "<td class=\"col\">".$temp1.$date_fin.$temp2."</td>\n";
+			}
+			if (!(isset($active_hostbyaddr)) or ($active_hostbyaddr == "all")) {
+				$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
+			}
+			else if ($active_hostbyaddr == "no_local") {
+				if ((substr($row[2],0,3) == 127) or
+					(substr($row[2],0,3) == 10.) or
+					(substr($row[2],0,7) == 192.168)) {
+					$result_hostbyaddr = "";
+				}
+				else {
+					$tabip=explode(".",$row[2]);
+					if(($tabip[0]==172)&&($tabip[1]>=16)&&($tabip[1]<=31)) {
+						$result_hostbyaddr = "";
+					}
+					else {
+						$result_hostbyaddr = " - ".@gethostbyaddr($row[2]);
+					}
+				}
+			}
+			else {
+				$result_hostbyaddr = "";
+			}
+	
+			echo "<td class=\"col\"><span class='small'>".$temp1.$row[2].$result_hostbyaddr.$temp2. "</span></td>\n";
+			echo "<td class=\"col\">".$temp1. detect_browser($row[3]) .$temp2. "</td>\n";
+			echo "</tr>\n";
+			flush();
+		}
+	}
+	
+	
+	echo "</table>\n";
+	
+	echo "<form action=\"".$_SERVER['PHP_SELF']."#connexion\" name=\"form_affiche_log\" method=\"post\">\n";
+
+	if($mode!='perso') {
+		echo "<input type='hidden' name='user_login' value='$login' />\n";
+		echo "<input type='hidden' name='journal_connexions' value='y' />\n";
+	}
+
+	echo "Afficher le journal des connexions depuis : <select name=\"duree\" size=\"1\">\n";
+	echo "<option ";
+	if ($duree == 7) echo "selected";
+	echo " value=7>Une semaine</option>\n";
+	echo "<option ";
+	if ($duree == 15) echo "selected";
+	echo " value=15 >Quinze jours</option>\n";
+	echo "<option ";
+	if ($duree == 30) echo "selected";
+	echo " value=30>Un mois</option>\n";
+	echo "<option ";
+	if ($duree == 60) echo "selected";
+	echo " value=60>Deux mois</option>\n";
+	echo "<option ";
+	if ($duree == 183) echo "selected";
+	echo " value=183>Six mois</option>\n";
+	echo "<option ";
+	if ($duree == 365) echo "selected";
+	echo " value=365>Un an</option>\n";
+	echo "<option ";
+	if ($duree == 'all') echo "selected";
+	echo " value='all'>Le début</option>\n";
+	echo "</select>\n";
+	echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" />\n";
+	
+	echo "</form>\n";
+	
+	echo "<p class='small'>** Les renseignements ci-dessus peuvent vous permettre de vérifier qu'une connexion pirate n'a pas été effectuée sur votre compte.
+	Dans le cas d'une connexion inexpliquée, vous devez immédiatement en avertir l'<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">administrateur</a>.</p>\n";
+}
 
 /**********************************************************************************************
  *                                  Fonctions Trombinoscope

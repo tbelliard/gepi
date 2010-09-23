@@ -680,6 +680,15 @@ if(($_SESSION['statut']=='administrateur')||
 			echo "<tr>\n";
 			echo "<td style='text-align: center;'>\n";
 
+				// En multisite, on ajoute le répertoire RNE
+				if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+					// On récupère le RNE de l'établissement
+					$repertoire="../photos/".getSettingValue("gepiSchoolRne")."/personnels/";
+				}
+				else{
+					$repertoire="../photos/personnels/";
+				}
+
 				$code_photo = md5(strtolower($user_login));
 
 				$photo=$repertoire.$code_photo.".jpg";
@@ -850,6 +859,7 @@ if ($affiche_bouton_submit=='yes')
 	echo "<input type=\"hidden\" name=\"valid\" value=\"yes\" />\n";
 echo "</form>\n";
 echo "  <hr />\n";
+
 // Journal des connexions
 echo "<a name=\"connexion\"></a>\n";
 if (isset($_POST['duree'])) {
@@ -857,6 +867,11 @@ $duree = $_POST['duree'];
 } else {
 $duree = '7';
 }
+
+journal_connexions($_SESSION['login'],$duree);
+
+/*
+
 switch( $duree ) {
 case 7:
 $display_duree="une semaine";
@@ -883,7 +898,7 @@ break;
 
 echo "<h2>Journal de vos connexions depuis <b>".$display_duree."</b>**</h2>\n";
 $requete = '';
-if ($duree != 'all') $requete = "and START > now() - interval " . $duree . " day";
+if ($duree != 'all') {$requete = "and START > now() - interval " . $duree . " day";}
 
 $sql = "select START, SESSION_ID, REMOTE_ADDR, USER_AGENT, AUTOCLOSE, END from log where LOGIN = '".$_SESSION['login']."' ".$requete." order by START desc";
 
@@ -987,7 +1002,7 @@ if ($res) {
 
 echo "</table>\n";
 
-echo "<form action=\"mon_compte.php\" name=\"form_affiche_log\" method=\"post\">\n";
+echo "<form action=\"".$_SERVER['PHP_SELF']."\" name=\"form_affiche_log\" method=\"post\">\n";
 echo "Afficher le journal des connexions depuis : <select name=\"duree\" size=\"1\">\n";
 echo "<option ";
 if ($duree == 7) echo "selected";
@@ -1013,9 +1028,10 @@ echo " value='all'>Le début</option>\n";
 echo "</select>\n";
 echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" />\n";
 
-
 echo "</form>\n";
+
 echo "<p class='small'>** Les renseignements ci-dessus peuvent vous permettre de vérifier qu'une connexion pirate n'a pas été effectuée sur votre compte.
-Dans le cas contraire, vous devez immédiatement en avertir l'<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">administrateur</a>.</p>\n";
+Dans le cas d'une connexion inexpliquée, vous devez immédiatement en avertir l'<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">administrateur</a>.</p>\n";
+*/
 require("../lib/footer.inc.php");
 ?>

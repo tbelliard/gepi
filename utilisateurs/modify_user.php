@@ -49,11 +49,14 @@ if (!checkAccess()) {
 $user_login = isset($_POST["user_login"]) ? $_POST["user_login"] : (isset($_GET["user_login"]) ? $_GET["user_login"] : NULL);
 $msg = '';
 
+$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
+$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
+
 // pour module trombinoscope
 $photo_largeur_max=150;
 $photo_hauteur_max=150;
 
-function redimensionne_image($photo){
+function redimensionne_image($photo) {
 	global $photo_largeur_max, $photo_hauteur_max;
 
 	// prendre les informations sur l'image
@@ -653,7 +656,11 @@ if ($ldap_write_access) {
 
 <form enctype="multipart/form-data" action="modify_user.php" method="post">
 <fieldset>
-
+<?php
+if (isset($user_login)) {
+	echo "<div style='float:right; width:; height:;'><a href='".$_SERVER['PHP_SELF']."?user_login=$user_login&amp;journal_connexions=y#connexion' title='Journal des connexions'><img src='../images/icons/document.png' width='16' height='16' alt='Journal des connexions' /></a></div>\n";
+}
+?>
 <!--span class = "norme"-->
 <div class = "norme">
 <b>Identifiant <?php
@@ -940,6 +947,21 @@ echo "<input type=hidden name=max_mat value=$nb_mat />\n";
 			echo "</form>\n";
 		}
 	}
+	echo "<p>&nbsp;</p>\n";
+
+	if($journal_connexions=='y') {
+		// Journal des connexions
+		echo "<a name=\"connexion\"></a>\n";
+		if (isset($_POST['duree'])) {
+			$duree = $_POST['duree'];
+		} else {
+			$duree = '7';
+		}
+		
+		journal_connexions($user_login,$duree,'autre');
+
+	}
+
 	echo "<p>&nbsp;</p>\n";
 ?>
 
