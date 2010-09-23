@@ -5197,7 +5197,7 @@ function test_ecriture_style_screen_ajout() {
 	}
 }
 
-function journal_connexions($login,$duree,$page='mon_compte') {
+function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	switch( $duree ) {
 	case 7:
 		$display_duree="une semaine";
@@ -5341,6 +5341,10 @@ function journal_connexions($login,$duree,$page='mon_compte') {
 	}
 	elseif($page=='modify_eleve') {
 		echo "<input type='hidden' name='eleve_login' value='$login' />\n";
+		echo "<input type='hidden' name='journal_connexions' value='y' />\n";
+	}
+	elseif($page=='modify_resp') {
+		echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
 		echo "<input type='hidden' name='journal_connexions' value='y' />\n";
 	}
 

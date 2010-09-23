@@ -449,7 +449,7 @@ while ($current_parent = mysql_fetch_object($quels_parents)) {
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt' style='text-align:center;'>\n";
 		echo "<td>";
-			echo "<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."'>".$current_parent->login."</a>";
+			echo "<a href='../responsables/modify_resp.php?pers_id=".$current_parent->pers_id."&amp;journal_connexions=y'>".$current_parent->login."</a>";
 		echo "</td>\n";
 		echo "<td>";
 			echo $current_parent->nom . " " . $current_parent->prenom;

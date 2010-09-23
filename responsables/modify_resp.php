@@ -674,6 +674,7 @@ if(isset($quitter_la_page)) {
 $temoin_adr=0;
 //if (isset($ereno)) {
 if (isset($pers_id)) {
+
 	echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
 	// Recherche des infos sur le responsable:
 	/*
@@ -747,7 +748,29 @@ echo "<td valign='top'>\n";
 
 	// Affichage du tableau de la saisie des nom, prenom, adresse, tel,...
 	echo "<p><b>Responsable:</b>\n";
-	if(isset($pers_id)){echo " (<i>n°$pers_id</i>)";}
+	if(isset($pers_id)){
+		echo " (<i>n°$pers_id</i>)";
+
+		$sql="SELECT u.login FROM utilisateurs u, resp_pers rp WHERE rp.login=u.login AND rp.pers_id='$pers_id' AND u.login!='';";
+		$test_compte=mysql_query($sql);
+		if(mysql_num_rows($test_compte)>0) {
+			$compte_resp_existe="y";
+			$lig_resp_login=mysql_fetch_object($test_compte);
+
+			$resp_login=$lig_resp_login->login;
+		}
+		else {
+			$compte_resp_existe="n";
+		}
+	
+		if(($compte_resp_existe=="y")&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+			$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
+			$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
+		
+			echo " <a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;journal_connexions=y#connexion' title='Journal des connexions'><img src='../images/icons/document.png' width='16' height='16' alt='Journal des connexions' /></a>\n";
+		}
+
+	}
 	echo "</p>\n";
 
 	echo "<table>\n";
@@ -1207,8 +1230,22 @@ if(mysql_num_rows($res_adr)>0){
 */
 
 echo "<input type='hidden' name='is_posted' value='1' />\n";
+echo "</form>\n";
+
+if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='y')&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+	echo "<hr />\n";
+	// Journal des connexions
+	echo "<a name=\"connexion\"></a>\n";
+	if (isset($_POST['duree'])) {
+		$duree = $_POST['duree'];
+	} else {
+		$duree = '7';
+	}
+	
+	journal_connexions($resp_login,$duree,'modify_resp',$pers_id);
+	echo "<p><br /></p>\n";
+}
 ?>
-</form>
 
 <!--font color='red'>A FAIRE: SUPPRESSION d'adresse.</font-->
 <?php require("../lib/footer.inc.php");?>
