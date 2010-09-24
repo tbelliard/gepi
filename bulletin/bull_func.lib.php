@@ -1061,6 +1061,13 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$pdf;
 		//=========================================
 
+		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+			// On récupère le RNE de l'établissement
+			$rep_photos="../photos/".getSettingValue("gepiSchoolRne")."/eleves/";
+		}else{
+			$rep_photos="../photos/eleves/";
+		}
+
 	//==============
 	//Ajout J.Etheve
 	// ***** flag pour l'affichage de la moyenne générale non coefficientée
@@ -1707,11 +1714,17 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$ajouter = '0';
 			}
 
-
+			/*
 			$photo[$i]="../photos/eleves/".$tab_bull['eleve'][$i]['elenoet'].".jpg";
 			if(!file_exists($photo[$i])) {
 				$photo[$i]="../photos/eleves/0".$tab_bull['eleve'][$i]['elenoet'].".jpg";
 			}
+			*/
+			$photo[$i]=$rep_photos.$tab_bull['eleve'][$i]['elenoet'].".jpg";
+			if(!file_exists($photo[$i])) {
+				$photo[$i]=$rep_photos."0".$tab_bull['eleve'][$i]['elenoet'].".jpg";
+			}
+
 
 			if($tab_modele_pdf["active_photo"][$classe_id]==='1' and $photo[$i]!='' and file_exists($photo[$i])) {
 				$L_photo_max = ($hauteur_cadre_eleve - ( $ajouter * 2 )) * 2.8;
