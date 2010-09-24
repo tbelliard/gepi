@@ -1,8 +1,8 @@
 <?php
 /*
-* Last modification  : 28/09/2006
+* $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //INSERT INTO droits VALUES ('/groupes/popup.php', 'V', 'V', 'V', 'V', 'F', 'F', 'Visualisation des équipes pédagogiques', '');
 if (!checkAccess()) {
@@ -151,6 +151,8 @@ if($gepi_prof_suivi==""){
 	//echo "<p>".urldecode($_GET['chaine'])."</p>\n";
 	//echo "<p>".rawurldecode($_GET['chaine'])."</p>";
 
+	$tabmail=array();
+
 	if($id_groupe=="VIE_SCOLAIRE"){
         // Liste des CPE:
         //$sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
@@ -177,7 +179,7 @@ if($gepi_prof_suivi==""){
         }
 
 
-		$sql="SELECT DISTINCT e.nom,e.prenom FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
+		$sql="SELECT DISTINCT e.nom,e.prenom,e.email FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
 		$res_eleves=mysql_query($sql);
 		$nb_eleves=mysql_num_rows($res_eleves);
 
@@ -185,7 +187,15 @@ if($gepi_prof_suivi==""){
 		if($nb_eleves>0){
 			echo "<p>";
 			while($lig_eleve=mysql_fetch_object($res_eleves)){
-				echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+				if($lig_eleve->email!=""){
+					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=[GEPI]")."'>";
+					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+					echo "</a>";
+					$tabmail[]=$lig_eleve->email;
+				}
+				else{
+					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+				}
 			}
 			echo "</p>\n";
 		}
@@ -227,7 +237,7 @@ if($gepi_prof_suivi==""){
 
 
 		//$sql="SELECT DISTINCT e.nom,e.prenom FROM j_eleves_groupes jeg,eleves e WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' ORDER BY e.nom,e.prenom";
-		$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
+		$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
 		$res_eleves=mysql_query($sql);
 		$nb_eleves=mysql_num_rows($res_eleves);
 
@@ -239,13 +249,23 @@ if($gepi_prof_suivi==""){
 		if($nb_eleves>0){
 			echo "<p>";
 			while($lig_eleve=mysql_fetch_object($res_eleves)){
-				echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+
+				if($lig_eleve->email!=""){
+					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=[GEPI]")."'>";
+					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+					echo "</a>";
+					$tabmail[]=$lig_eleve->email;
+				}
+				else{
+					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+				}
+
 			}
 			echo "</p>\n";
 		}
 	}
-	else{
-		$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login";
+	else {
+		$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login";
 		if(isset($_GET['orderby'])){
 			if($_GET['orderby']=='nom'){
 				$orderby=" ORDER BY e.nom,e.prenom";
@@ -265,10 +285,36 @@ if($gepi_prof_suivi==""){
 			echo "<table border='0'>\n";
 			echo "<tr><td><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom'>Elève</a></td><td><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=classe'>Classe</a></td></tr>\n";
 			while($lig_eleve=mysql_fetch_object($res_eleves)){
-				echo "<tr><td>$lig_eleve->nom $lig_eleve->prenom</td><td>$lig_eleve->classe</td></tr>\n";
+				echo "<tr><td>";
+				if($lig_eleve->email!=""){
+					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=[GEPI]")."'>";
+					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+					echo "</a>";
+					$tabmail[]=$lig_eleve->email;
+				}
+				else{
+					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
+				}
+				echo "</td><td>$lig_eleve->classe</td></tr>\n";
 			}
 			echo "</table>\n";
 		}
+	}
+
+	$chaine_mail="";
+	if(count($tabmail)>0){
+		unset($tabmail2);
+		$tabmail2=array();
+		//$tabmail=array_unique($tabmail);
+		//sort($tabmail);
+		$chaine_mail=$tabmail[0];
+		for ($i=1;$i<count($tabmail);$i++) {
+			if((isset($tabmail[$i]))&&(!in_array($tabmail[$i],$tabmail2))) {
+				$chaine_mail.=",".$tabmail[$i];
+				$tabmail2[]=$tabmail[$i];
+			}
+		}
+		echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves de l'enseignement</a>.</p>\n";
 	}
 ?>
 <script language="JavaScript" type="text/javascript">
