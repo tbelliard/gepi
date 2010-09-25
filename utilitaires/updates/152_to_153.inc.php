@@ -1495,4 +1495,23 @@ if ($test == -1) {
 }
 
 
+// Modification Eric
+// ============= Insertion d'un champ pour le module discipline
+
+$sql = "SELECT commentaire FROM s_incidents LIMIT 1";
+$req_rank = mysql_query($sql);
+if (!$req_rank){
+    $sql_request = "ALTER TABLE `s_incidents` ADD `commentaire` TEXT NOT NULL ";
+    $req_add_rank = mysql_query($sql_request);
+    if ($req_add_rank) {
+        $result .= "<p style=\"color:green;\">Ajout du champ commentaire dans la table <strong>s_incidents</strong> : ok.</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Ajout du champ commentaire à la table <strong>s_incidents</strong> : Erreur.</p>";
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Ajout du champ commentaire à la table <strong>s_incidents</strong> : déjà réalisé.</p>";
+}
+
 ?>

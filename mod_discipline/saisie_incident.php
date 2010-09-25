@@ -52,6 +52,9 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 
 require('sanctions_func_lib.php');
 
+// Paramètre pour autoriser ou non une zone de saisie de commentaires pour un incident
+$autorise_commentaires_mod_disc = getSettingValue("autorise_commentaires_mod_disc");
+
 function choix_heure($champ_heure,$div_choix_heure) {
 	global $tabdiv_infobulle;
 
@@ -486,7 +489,19 @@ if($etat_incident!='clos') {
 					$sql.="description='".$description."' ,";
 					$temoin_modif="y";
 				}
+				
+				// Ajout Eric zone de commentaire
+				if (isset($NON_PROTECT["commentaire"])){
+					$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
 	
+					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
+	
+					$sql.="commentaire='".$commentaire."' ,";
+					$temoin_modif="y";
+				}
+				// Fin ajout Eric
+				
 				if(isset($id_lieu)) {
 					$sql.="id_lieu='$id_lieu' ,";
 					$temoin_modif="y";
@@ -1796,7 +1811,6 @@ echo "<script type='text/javascript'>
 	else {
 		echo $nature;
 	}
-
 	echo "</td>\n";
 	echo "</tr>\n";
 	//========================
@@ -1811,7 +1825,7 @@ echo "<script type='text/javascript'>
 	$tabdiv_infobulle[]=creer_div_infobulle('div_explication_description',"Description de l'incident","",$texte,"",18,0,'y','y','n','n');
 	echo "</td>\n";
 	echo "<td style='text-align:left;'";
-	if($etat_incident!='clos') {echo " colspan='2'";}
+	if($etat_incident!='clos') {if ($autorise_commentaires_mod_disc !="yes") echo " colspan='2'";}
 	echo ">\n";
 
 	if($etat_incident!='clos') {
@@ -1823,6 +1837,17 @@ echo "<script type='text/javascript'>
 	
 
 	echo "</td>\n";
+	// Ajout Eric
+	if ($autorise_commentaires_mod_disc=="yes") {
+	    echo "<td style='text-align:center;'>";
+		echo "<b>Zone de dialogue sur l'incident</b>";
+		echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_commentaires','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
+		$texte="Cette zone de texte est disponible pour dialoguer avec la vie scolaire des modalités particulières de traitement de l'incident ou suivre les suites de celui-ci.<br /> Horaire et lieu d'une retenue demandée, demande de convocation de l'élève par le CPE, ...";
+		$tabdiv_infobulle[]=creer_div_infobulle('div_explication_commentaires',"Zone de texte : dialogue","",$texte,"",18,0,'y','y','n','n');
+	    echo "<textarea id=\"commentaire\"  name=\"no_anti_inject_commentaire\" rows='8' cols='60' onchange=\"changement()\">$commentaire</textarea>\n";
+	    echo "</td>";
+	}
+	// Fin ajout Eric
 
 	//========================
 	if(count($ele_login)>0) {

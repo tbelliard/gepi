@@ -120,6 +120,30 @@ interface discipline_admin {
 	  </label>
 	</fieldset>
 
+	<h2>Autoriser l'utilisation d'une zone commentaire dans la gestion des incidents</h2>
+	  <fieldset class="no_bordure">
+		<legend class="invisible">Zone de dialogue</legend>
+		  <input type='radio'
+				 name='autorise_commentaires_mod_disc'
+				 id='autorise_commentaires_mod_disc_y'
+				 value='yes'
+			 onchange='changement();'
+			   <?php if (getSettingValue("autorise_commentaires_mod_disc") == "yes") echo " checked='checked'";?> />
+		<label for='autorise_commentaires_mod_disc_y' style='cursor: pointer;'>
+		  Activer une zone de dialogue relavive à chaque incident. <br/>Cette zone permet de commenter l'évolution du traitement de l'incident, de formuler une demande au CPE, ... 
+		</label>
+	  <br />
+		  <input type='radio'
+				 name='autorise_commentaires_mod_disc'
+				 id='autorise_commentaires_mod_disc_n'
+				 value='no'
+			 onchange='changement();'
+			   <?php if (getSettingValue("autorise_commentaires_mod_disc") == "no") echo " checked='checked'";?> />
+		<label for='visa_cdt_inter_modif_notices_visees_n' style='cursor: pointer;'>
+		  Désactiver la zone de dialogue relative à chaque incident.
+		</label>
+	  </fieldset>
+	
 	<p class="center">
 	  <input type="hidden" name="is_posted" value="1" />
 	  <input type="submit" value="Enregistrer"/>
