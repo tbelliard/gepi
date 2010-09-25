@@ -97,7 +97,9 @@ if ($id_semaine == null || $id_semaine == -1 || !is_numeric($id_semaine) || $id_
 $current_semaine = EdtSemaineQuery::create()->findPk($id_semaine);
 
 if ($utilisateur->getStatut() == 'professeur' && getSettingValue("abs2_saisie_prof_decale")!='y' && getSettingValue("abs2_saisie_prof_decale_journee")!='y') {
-    $id_creneau == null;
+    $id_creneau = null;
+    $id_cours = null;
+    $type_selection = null;
 }
 
 if ($utilisateur->getStatut() == 'professeur' && (getSettingValue("abs2_saisie_prof_decale")!='y')) {
