@@ -332,7 +332,7 @@ if ($compter >= 1) {
           <td><?php echo $heurefin_creneau; ?></td>
           <td><?php echo $data_periode['type_creneaux']; ?></td>
           <td><a href="admin_periodes_absences.php?action=modifier<?php echo $aff_creneau_diff; ?>&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>"><img src="../images/icons/configure.png" title="Modifier" border="0" alt="Modifier" /></a></td>
-          <td><a href="admin_periodes_absences.php?action=visualiser<?php echo $aff_creneau_diff; ?>&amp;action_sql=supprimer&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>" onClick="return confirm('Etes-vous certain de vouloir supprimer ce créneau ?')"><img src="../images/x2.png" width="22" height="22" title="Supprimer" border="0" alt="Supprimer" /></a></td>
+          <td><a href="admin_periodes_absences.php?action=visualiser<?php echo $aff_creneau_diff; ?>&amp;action_sql=supprimer&amp;id_periode=<?php echo $data_periode['id_definie_periode']; ?>" onClick="return confirm('Etes-vous certain de vouloir supprimer ce créneau ?')"><img src="../templates/DefaultEDT/images/delete2.png" width="22" height="22" title="Supprimer" border="0" alt="Supprimer" /></a></td>
         </tr>
      <?php } ?>
     </table>
@@ -404,7 +404,7 @@ echo '			</select>
         if ($i === '1') { $i = '2'; $couleur_cellule = 'couleur_ligne_1'; } else { $couleur_cellule = 'couleur_ligne_2'; $i = '1'; } ?>
         <?php if (isset($verification_erreur[$nb]) and $verification_erreur[$nb] != 1) { ?>
          <tr>
-          <td><img src="../images/attention.png" width="28" height="28" alt="" /></td>
+          <td><img src="../templates/DefaultEDT/images/attention.png" width="55" height="53" alt="" /></td>
           <td colspan="3" class="erreur_rouge_jaune"><b>- Erreur -<br />
           <?php if ($verification_erreur[$nb] == 2) { ?>Ce créneau horaire existe déja<?php } ?>
           <?php if ($verification_erreur[$nb] == 5) { ?>L'heure de fin n'est pas définie<?php } ?>
