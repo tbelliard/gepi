@@ -2404,13 +2404,13 @@ function get_user_temp_directory(){
 		$dirname=$lig_temp_dir->temp_dir;
 
 		if(($dirname!="")&&(strlen(my_ereg_replace("[A-Za-z0-9_.]","",$dirname))==0)) {
-			if(file_exists("../temp/".$dirname)){
+			if(file_exists("temp/".$dirname)){
+				return $dirname;
+			}
+			else if(file_exists("../temp/".$dirname)) {
 				return $dirname;
 			}
 			else if(file_exists("../../temp/".$dirname)) {
-				return $dirname;
-			}
-			else if(file_exists("temp/".$dirname)) {
 				return $dirname;
 			}
 			else{
