@@ -82,6 +82,8 @@ $salleslibres=isset($_GET['salleslibres']) ? $_GET['salleslibres'] : (isset($_PO
 // Pour revenir proprement, on crée le $_SESSION["retour"]
 $_SESSION["retour"] = "index_edt";
 
+VerifierTablesDelestage();
+
     if ($salleslibres == "ok") {
         include('edt_chercher.php');
     }
