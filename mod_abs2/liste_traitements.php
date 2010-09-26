@@ -436,7 +436,7 @@ if (getFiltreRechercheParam('filter_justification') == 'SANS') echo " selected='
 echo ">";
 echo 'SANS JUSTIFICATION';
 echo "</option>\n";
-foreach (AbsenceEleveJustificationQuery::create()->find() as $justification) {
+foreach (AbsenceEleveJustificationQuery::create()->orderByRank()->find() as $justification) {
 	echo "<option value='".$justification->getId()."'";
 	if (getFiltreRechercheParam('filter_justification') === (string) $justification->getId()) echo " selected='selected' ";
 	echo ">";
