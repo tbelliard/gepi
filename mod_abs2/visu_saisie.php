@@ -271,7 +271,7 @@ echo '</TD></tr>';
 echo '<tr><TD>';
 echo 'Traitement : ';
 echo '</TD><TD style="background-color:#ebedb5;">';
-$type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
+$type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
 $total_traitements_modifiable = 0;
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
     //si c'est un traitement créé par un prof on va afficher une select box de modification si possible

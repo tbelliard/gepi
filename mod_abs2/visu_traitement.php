@@ -229,7 +229,7 @@ echo 'Type : ';
 echo '</td><td>';
 //on ne modifie le type que si aucun envoi n'a ete fait
 if ($traitement->getModifiable()) {
-    $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->find();
+    $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
     if ($type_autorises->count() != 0) {
 	echo '<form method="post" action="enregistrement_modif_traitement.php">';
 	echo '<p>';

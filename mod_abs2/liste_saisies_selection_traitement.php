@@ -621,7 +621,7 @@ echo "<option value=''></option>\n";
 echo "<option value='SANS'";
 if (getFiltreRechercheParam('filter_type') == 'SANS') echo " selected='selected' ";
 echo ">SANS TYPE</option>\n";
-foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
+foreach (AbsenceEleveTypeQuery::create()->orderBySortableRank()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
 	if (getFiltreRechercheParam('filter_type') === (string) $type->getId()) echo " SELECTED ";
 	echo ">";

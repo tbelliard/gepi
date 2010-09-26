@@ -584,7 +584,7 @@ echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_type\" onchange='submit()'>");
 echo "<option value=''></option>\n";
-foreach (AbsenceEleveTypeQuery::create()->find() as $type) {
+foreach (AbsenceEleveTypeQuery::create()->orderBySortableRank()->find() as $type) {
 	echo "<option value='".$type->getId()."'";
 	if (getFiltreRechercheParam('filter_type') === (string) $type->getId()) echo " SELECTED ";
 	echo ">";
