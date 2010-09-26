@@ -102,6 +102,7 @@ if ($action == 'supprimer') {
 	$type->setJustificationExigible($justification_exigible);
 	$type->setSousResponsabiliteEtablissement($sous_responsabilite_etablissement);
 	$type->setManquementObligationPresence($manquement_obligation_presence);
+	$type->setRetardBulletin($retard_bulletin);
 	$type->setTypeSaisie($type_saisie);
 	$type->getAbsenceEleveTypeStatutAutorises(); //corrige un bug de propel sur la lecture de la base
 	if ($ajout_statut_type_saisie != '') {
@@ -263,20 +264,20 @@ echo "</p>";
 	  <td><?php if ($type->getJustificationExigible()) { ?><img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' /><?php } ?></td>
 	  <td>
 	    <?php if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
-		else if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
+		else if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
 		//si le ManquementObligationPresence est non precisé on affiche rien
 	    ?>
 	  </td>
 	  <td>
 	    <?php if ($type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
-		else if ($type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
+		else if ($type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
 		//si le ManquementObligationPresence est non precisé on affiche rien
 	    ?>
 	  </td>
 	  <td>
 	    <?php if ($type->getRetardBulletin() == AbsenceEleveType::$RETARD_BULLETIN_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
 		//else if ($type->getRetardBulletin() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
-		else { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
+		else { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
 	    ?>
 	  </td>
 	  <td><?php if ($type->getTypeSaisie() != AbsenceEleveType::$TYPE_SAISIE_NON_PRECISE) {echo $type->getTypeSaisieDescription();} ?></td>
