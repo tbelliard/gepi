@@ -1,2 +1,23 @@
 AddType application/octet-stream .sql
 AddType application/octet-stream .csv
+
+# cache images for 1 month, do not require revalidation
+<FilesMatch "\.(gif|jpe?g|png|flv|swf|ico)$">
+Header set Cache-Control: "max-age=1296000"
+</FilesMatch>
+#
+# cache scripts, css for 1 week, do not require revalidation
+<FilesMatch "\.(js|css)$">
+Header set Cache-Control: "max-age=604800"
+</FilesMatch>
+#
+# Cache txt, html, and htm pages for 1 week, require revalidation
+<FilesMatch "\.(txt|html?)$">
+Header set Cache-Control: "max-age=604800, must-revalidate"
+</FilesMatch>
+#
+# disable caching for dynamic files
+<FilesMatch "\.(pl|php|[sf]?cgi|spl|pdf)$">
+Header set Cache-Control: "max-age=0, no-store"
+</FilesMatch>
+
