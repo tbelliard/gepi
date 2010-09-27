@@ -389,6 +389,18 @@ if($etat_incident!='clos') {
 				else {
 					$description="";
 				}
+				
+				// Ajout Eric zone de commentaire
+				if (isset($NON_PROTECT["commentaire"])){
+					$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
+	
+					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+					$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
+	
+				} else {
+				    $commentaire="";
+				}
+				// Fin ajout Eric
 	
 				if(!isset($id_lieu)) {
 					$id_lieu="";
@@ -495,11 +507,11 @@ if($etat_incident!='clos') {
 					$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
 	
 					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-					$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
+					$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
 	
 					$sql.="commentaire='".$commentaire."' ,";
 					$temoin_modif="y";
-				}
+				};
 				// Fin ajout Eric
 				
 				if(isset($id_lieu)) {
@@ -539,6 +551,7 @@ if($etat_incident!='clos') {
 						$msg.="Mise à jour de l'incident n°".$id_incident." effectuée.<br />\n";
 					}
 				}
+				
 	
 				$texte_mail="Mise à jour par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident)";
 				if(isset($display_heure)) {
@@ -1548,7 +1561,8 @@ elseif($step==2) {
 	// Initialisation de variables:
 	$nature="";
 	$description="";
-
+    $commentaire="";
+	
 	if(isset($id_incident)) {
 		if($etat_incident!='clos') {
 			echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";
@@ -1564,6 +1578,7 @@ elseif($step==2) {
 			}
 			$nature=$lig_inc->nature;
 			$description=$lig_inc->description;
+			$commentaire=$lig_inc->commentaire;
 		}
 	}
 
