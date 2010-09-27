@@ -129,6 +129,4 @@ class EdtEmplacementCoursHelper {
 	    return null;
 	}
 
-}
-?>
-
+}?>
