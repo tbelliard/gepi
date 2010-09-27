@@ -64,31 +64,7 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
 
 include('include_requetes_filtre_de_recherche.php');
 
-$page_number = isset($_POST["page_number"]) ? $_POST["page_number"] :(isset($_GET["page_number"]) ? $_GET["page_number"] :(isset($_SESSION["page_number"]) ? $_SESSION["page_number"] : NULL));
-if (!is_numeric($page_number) || $reinit_filtre == 'y') {
-    $page_number = 1;
-}
-
-$page_deplacement = isset($_POST["page_deplacement"]) ? $_POST["page_deplacement"] :(isset($_GET["page_deplacement"]) ? $_GET["page_deplacement"] :NULL);
-if ($page_deplacement == "+") {
-    $page_number = $page_number + 1;
-} else if ($page_deplacement == "-") {
-    $page_number = $page_number - 1;
-}
-if ($page_number < 1) {
-    $page_number = 1;
-}
-if (isset($page_number) && $page_number != null) $_SESSION['page_number'] = $page_number;
-//if (isset($page_deplacement) && $page_deplacement != null) $_SESSION['page_deplacement'] = $page_deplacement;
-
-$item_per_page = isset($_POST["item_per_page"]) ? $_POST["item_per_page"] :(isset($_GET["item_per_page"]) ? $_GET["item_per_page"] :(isset($_SESSION["item_per_page"]) ? $_SESSION["item_per_page"] : NULL));
-if (!is_numeric($item_per_page)) {
-    $item_per_page = 14;
-}
-if ($item_per_page < 1) {
-    $item_per_page = 1;
-}
-if (isset($item_per_page) && $item_per_page != null) $_SESSION['item_per_page'] = $item_per_page;
+include('include_pagination.php');
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
