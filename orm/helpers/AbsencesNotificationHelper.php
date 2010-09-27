@@ -157,7 +157,7 @@ class AbsencesNotificationHelper {
 	    return 'Echec de l\'envoi : email non renseigné.';
 	}
 
-	include('../lib/email_validator.php');
+	require_once('../lib/email_validator.php');
 	if (!validEmail($notification->getEmail())) {
 	    $notification->setErreurMessageEnvoi('adresse email non valide');
 	    $notification->save();
