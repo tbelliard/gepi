@@ -252,14 +252,14 @@ class EdtEmplacementCours extends BaseEdtEmplacementCours {
 		    $JGroupesClassesJoin->setJoinType(Criteria::LEFT_JOIN);
 		    $qroupeTableMap = Propel::getDatabaseMap(GroupePeer::DATABASE_NAME)->getTableByPhpName('Groupe');
 		    $relationJGroupesClasses = $qroupeTableMap->getRelation('JGroupesClasses');
-		    $JGroupesClassesJoin->setRelationMap($relationJGroupesClasses, null, '');
+		    $JGroupesClassesJoin->setRelationMap($relationJGroupesClasses);
 		    $width["JGroupesClasses"] = $JGroupesClassesJoin;
 
 		    $classeJoin = new ModelJoin();
 		    $classeJoin->setJoinType(Criteria::LEFT_JOIN);
 		    $jGroupesClassesTableMap = Propel::getDatabaseMap(GroupePeer::DATABASE_NAME)->getTableByPhpName('JGroupesClasses');
 		    $relationClasse = $jGroupesClassesTableMap->getRelation('Classe');
-		    $classeJoin->setRelationMap($relationClasse, null, '');
+		    $classeJoin->setRelationMap($relationClasse);
 		    $classeJoin->setPreviousJoin($JGroupesClassesJoin);
 		    $width["Classe"] = $classeJoin;
 
