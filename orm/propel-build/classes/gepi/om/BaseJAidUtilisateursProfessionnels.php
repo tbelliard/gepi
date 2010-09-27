@@ -14,7 +14,7 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'JAidUtilisateursProfessionnelsPeer';
+	const PEER = 'JAidUtilisateursProfessionnelsPeer';
 
 	/**
 	 * The Peer class.
@@ -237,7 +237,6 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aAidDetails = null;
 			$this->aUtilisateurProfessionnel = null;
 		} // if (deep)
@@ -261,7 +260,7 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 		if ($con === null) {
 			$con = Propel::getConnection(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -303,7 +302,7 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 		if ($con === null) {
 			$con = Propel::getConnection(JAidUtilisateursProfessionnelsPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -525,7 +524,7 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -653,7 +652,7 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 		$pks = array();
 		$pks[0] = $this->getIdAid();
 		$pks[1] = $this->getIdUtilisateur();
-		
+
 		return $pks;
 	}
 
@@ -773,11 +772,11 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 		if ($this->aAidDetails === null && (($this->id_aid !== "" && $this->id_aid !== null))) {
 			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAidDetails->addJAidUtilisateursProfessionnelss($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aAidDetails->addJAidUtilisateursProfessionnelss($this);
 			 */
 		}
 		return $this->aAidDetails;
@@ -822,11 +821,11 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 		if ($this->aUtilisateurProfessionnel === null && (($this->id_utilisateur !== "" && $this->id_utilisateur !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->id_utilisateur, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addJAidUtilisateursProfessionnelss($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUtilisateurProfessionnel->addJAidUtilisateursProfessionnelss($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;

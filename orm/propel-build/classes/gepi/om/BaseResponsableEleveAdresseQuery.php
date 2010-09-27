@@ -28,13 +28,13 @@
  * @method     ResponsableEleveAdresseQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ResponsableEleveAdresseQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ResponsableEleveAdresseQuery leftJoinResponsableEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the ResponsableEleve relation
- * @method     ResponsableEleveAdresseQuery rightJoinResponsableEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ResponsableEleve relation
- * @method     ResponsableEleveAdresseQuery innerJoinResponsableEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the ResponsableEleve relation
+ * @method     ResponsableEleveAdresseQuery leftJoinResponsableEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResponsableEleve relation
+ * @method     ResponsableEleveAdresseQuery rightJoinResponsableEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResponsableEleve relation
+ * @method     ResponsableEleveAdresseQuery innerJoinResponsableEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the ResponsableEleve relation
  *
- * @method     ResponsableEleveAdresseQuery leftJoinAbsenceEleveNotification($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveNotification relation
- * @method     ResponsableEleveAdresseQuery rightJoinAbsenceEleveNotification($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveNotification relation
- * @method     ResponsableEleveAdresseQuery innerJoinAbsenceEleveNotification($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     ResponsableEleveAdresseQuery leftJoinAbsenceEleveNotification($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     ResponsableEleveAdresseQuery rightJoinAbsenceEleveNotification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     ResponsableEleveAdresseQuery innerJoinAbsenceEleveNotification($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
  *
  * @method     ResponsableEleveAdresse findOne(PropelPDO $con = null) Return the first ResponsableEleveAdresse matching the query
  * @method     ResponsableEleveAdresse findOneOrCreate(PropelPDO $con = null) Return the first ResponsableEleveAdresse matching the query, or a new ResponsableEleveAdresse object populated from the query conditions when no match is found
@@ -363,7 +363,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function joinResponsableEleve($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinResponsableEleve($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ResponsableEleve');
@@ -398,7 +398,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useResponsableEleveQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useResponsableEleveQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinResponsableEleve($relationAlias, $joinType)
@@ -427,7 +427,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
 	 */
-	public function joinAbsenceEleveNotification($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinAbsenceEleveNotification($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveNotification');
@@ -462,7 +462,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveNotificationQuery A secondary query class using the current class as primary query
 	 */
-	public function useAbsenceEleveNotificationQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useAbsenceEleveNotificationQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinAbsenceEleveNotification($relationAlias, $joinType)

@@ -36,53 +36,53 @@
  * @method     EleveQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     EleveQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     EleveQuery leftJoinJEleveClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the JEleveClasse relation
- * @method     EleveQuery rightJoinJEleveClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JEleveClasse relation
- * @method     EleveQuery innerJoinJEleveClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the JEleveClasse relation
+ * @method     EleveQuery leftJoinJEleveClasse($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveClasse relation
+ * @method     EleveQuery rightJoinJEleveClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveClasse relation
+ * @method     EleveQuery innerJoinJEleveClasse($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveClasse relation
  *
- * @method     EleveQuery leftJoinJEleveCpe($relationAlias = '') Adds a LEFT JOIN clause to the query using the JEleveCpe relation
- * @method     EleveQuery rightJoinJEleveCpe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JEleveCpe relation
- * @method     EleveQuery innerJoinJEleveCpe($relationAlias = '') Adds a INNER JOIN clause to the query using the JEleveCpe relation
+ * @method     EleveQuery leftJoinJEleveCpe($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveCpe relation
+ * @method     EleveQuery rightJoinJEleveCpe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveCpe relation
+ * @method     EleveQuery innerJoinJEleveCpe($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveCpe relation
  *
- * @method     EleveQuery leftJoinJEleveGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the JEleveGroupe relation
- * @method     EleveQuery rightJoinJEleveGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JEleveGroupe relation
- * @method     EleveQuery innerJoinJEleveGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the JEleveGroupe relation
+ * @method     EleveQuery leftJoinJEleveGroupe($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveGroupe relation
+ * @method     EleveQuery rightJoinJEleveGroupe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveGroupe relation
+ * @method     EleveQuery innerJoinJEleveGroupe($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveGroupe relation
  *
- * @method     EleveQuery leftJoinJEleveProfesseurPrincipal($relationAlias = '') Adds a LEFT JOIN clause to the query using the JEleveProfesseurPrincipal relation
- * @method     EleveQuery rightJoinJEleveProfesseurPrincipal($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JEleveProfesseurPrincipal relation
- * @method     EleveQuery innerJoinJEleveProfesseurPrincipal($relationAlias = '') Adds a INNER JOIN clause to the query using the JEleveProfesseurPrincipal relation
+ * @method     EleveQuery leftJoinJEleveProfesseurPrincipal($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveProfesseurPrincipal relation
+ * @method     EleveQuery rightJoinJEleveProfesseurPrincipal($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveProfesseurPrincipal relation
+ * @method     EleveQuery innerJoinJEleveProfesseurPrincipal($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveProfesseurPrincipal relation
  *
- * @method     EleveQuery leftJoinEleveRegimeDoublant($relationAlias = '') Adds a LEFT JOIN clause to the query using the EleveRegimeDoublant relation
- * @method     EleveQuery rightJoinEleveRegimeDoublant($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EleveRegimeDoublant relation
- * @method     EleveQuery innerJoinEleveRegimeDoublant($relationAlias = '') Adds a INNER JOIN clause to the query using the EleveRegimeDoublant relation
+ * @method     EleveQuery leftJoinEleveRegimeDoublant($relationAlias = null) Adds a LEFT JOIN clause to the query using the EleveRegimeDoublant relation
+ * @method     EleveQuery rightJoinEleveRegimeDoublant($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EleveRegimeDoublant relation
+ * @method     EleveQuery innerJoinEleveRegimeDoublant($relationAlias = null) Adds a INNER JOIN clause to the query using the EleveRegimeDoublant relation
  *
- * @method     EleveQuery leftJoinResponsableInformation($relationAlias = '') Adds a LEFT JOIN clause to the query using the ResponsableInformation relation
- * @method     EleveQuery rightJoinResponsableInformation($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ResponsableInformation relation
- * @method     EleveQuery innerJoinResponsableInformation($relationAlias = '') Adds a INNER JOIN clause to the query using the ResponsableInformation relation
+ * @method     EleveQuery leftJoinResponsableInformation($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResponsableInformation relation
+ * @method     EleveQuery rightJoinResponsableInformation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResponsableInformation relation
+ * @method     EleveQuery innerJoinResponsableInformation($relationAlias = null) Adds a INNER JOIN clause to the query using the ResponsableInformation relation
  *
- * @method     EleveQuery leftJoinJEleveAncienEtablissement($relationAlias = '') Adds a LEFT JOIN clause to the query using the JEleveAncienEtablissement relation
- * @method     EleveQuery rightJoinJEleveAncienEtablissement($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JEleveAncienEtablissement relation
- * @method     EleveQuery innerJoinJEleveAncienEtablissement($relationAlias = '') Adds a INNER JOIN clause to the query using the JEleveAncienEtablissement relation
+ * @method     EleveQuery leftJoinJEleveAncienEtablissement($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveAncienEtablissement relation
+ * @method     EleveQuery rightJoinJEleveAncienEtablissement($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveAncienEtablissement relation
+ * @method     EleveQuery innerJoinJEleveAncienEtablissement($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveAncienEtablissement relation
  *
- * @method     EleveQuery leftJoinJAidEleves($relationAlias = '') Adds a LEFT JOIN clause to the query using the JAidEleves relation
- * @method     EleveQuery rightJoinJAidEleves($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JAidEleves relation
- * @method     EleveQuery innerJoinJAidEleves($relationAlias = '') Adds a INNER JOIN clause to the query using the JAidEleves relation
+ * @method     EleveQuery leftJoinJAidEleves($relationAlias = null) Adds a LEFT JOIN clause to the query using the JAidEleves relation
+ * @method     EleveQuery rightJoinJAidEleves($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JAidEleves relation
+ * @method     EleveQuery innerJoinJAidEleves($relationAlias = null) Adds a INNER JOIN clause to the query using the JAidEleves relation
  *
- * @method     EleveQuery leftJoinAbsenceEleveSaisie($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
- * @method     EleveQuery rightJoinAbsenceEleveSaisie($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
- * @method     EleveQuery innerJoinAbsenceEleveSaisie($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     EleveQuery leftJoinAbsenceEleveSaisie($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     EleveQuery rightJoinAbsenceEleveSaisie($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     EleveQuery innerJoinAbsenceEleveSaisie($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
  *
- * @method     EleveQuery leftJoinCreditEcts($relationAlias = '') Adds a LEFT JOIN clause to the query using the CreditEcts relation
- * @method     EleveQuery rightJoinCreditEcts($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CreditEcts relation
- * @method     EleveQuery innerJoinCreditEcts($relationAlias = '') Adds a INNER JOIN clause to the query using the CreditEcts relation
+ * @method     EleveQuery leftJoinCreditEcts($relationAlias = null) Adds a LEFT JOIN clause to the query using the CreditEcts relation
+ * @method     EleveQuery rightJoinCreditEcts($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CreditEcts relation
+ * @method     EleveQuery innerJoinCreditEcts($relationAlias = null) Adds a INNER JOIN clause to the query using the CreditEcts relation
  *
- * @method     EleveQuery leftJoinCreditEctsGlobal($relationAlias = '') Adds a LEFT JOIN clause to the query using the CreditEctsGlobal relation
- * @method     EleveQuery rightJoinCreditEctsGlobal($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CreditEctsGlobal relation
- * @method     EleveQuery innerJoinCreditEctsGlobal($relationAlias = '') Adds a INNER JOIN clause to the query using the CreditEctsGlobal relation
+ * @method     EleveQuery leftJoinCreditEctsGlobal($relationAlias = null) Adds a LEFT JOIN clause to the query using the CreditEctsGlobal relation
+ * @method     EleveQuery rightJoinCreditEctsGlobal($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CreditEctsGlobal relation
+ * @method     EleveQuery innerJoinCreditEctsGlobal($relationAlias = null) Adds a INNER JOIN clause to the query using the CreditEctsGlobal relation
  *
- * @method     EleveQuery leftJoinArchiveEcts($relationAlias = '') Adds a LEFT JOIN clause to the query using the ArchiveEcts relation
- * @method     EleveQuery rightJoinArchiveEcts($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ArchiveEcts relation
- * @method     EleveQuery innerJoinArchiveEcts($relationAlias = '') Adds a INNER JOIN clause to the query using the ArchiveEcts relation
+ * @method     EleveQuery leftJoinArchiveEcts($relationAlias = null) Adds a LEFT JOIN clause to the query using the ArchiveEcts relation
+ * @method     EleveQuery rightJoinArchiveEcts($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ArchiveEcts relation
+ * @method     EleveQuery innerJoinArchiveEcts($relationAlias = null) Adds a INNER JOIN clause to the query using the ArchiveEcts relation
  *
  * @method     Eleve findOne(PropelPDO $con = null) Return the first Eleve matching the query
  * @method     Eleve findOneOrCreate(PropelPDO $con = null) Return the first Eleve matching the query, or a new Eleve object populated from the query conditions when no match is found
@@ -511,7 +511,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinJEleveClasse($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJEleveClasse($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveClasse');
@@ -546,7 +546,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    JEleveClasseQuery A secondary query class using the current class as primary query
 	 */
-	public function useJEleveClasseQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJEleveClasseQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJEleveClasse($relationAlias, $joinType)
@@ -575,7 +575,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinJEleveCpe($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJEleveCpe($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveCpe');
@@ -610,7 +610,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    JEleveCpeQuery A secondary query class using the current class as primary query
 	 */
-	public function useJEleveCpeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJEleveCpeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJEleveCpe($relationAlias, $joinType)
@@ -639,7 +639,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinJEleveGroupe($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJEleveGroupe($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveGroupe');
@@ -674,7 +674,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    JEleveGroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useJEleveGroupeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJEleveGroupeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJEleveGroupe($relationAlias, $joinType)
@@ -703,7 +703,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinJEleveProfesseurPrincipal($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJEleveProfesseurPrincipal($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveProfesseurPrincipal');
@@ -738,7 +738,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery A secondary query class using the current class as primary query
 	 */
-	public function useJEleveProfesseurPrincipalQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJEleveProfesseurPrincipalQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJEleveProfesseurPrincipal($relationAlias, $joinType)
@@ -767,7 +767,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinEleveRegimeDoublant($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinEleveRegimeDoublant($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EleveRegimeDoublant');
@@ -802,7 +802,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveRegimeDoublantQuery A secondary query class using the current class as primary query
 	 */
-	public function useEleveRegimeDoublantQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useEleveRegimeDoublantQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinEleveRegimeDoublant($relationAlias, $joinType)
@@ -831,7 +831,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinResponsableInformation($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinResponsableInformation($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ResponsableInformation');
@@ -866,7 +866,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableInformationQuery A secondary query class using the current class as primary query
 	 */
-	public function useResponsableInformationQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useResponsableInformationQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinResponsableInformation($relationAlias, $joinType)
@@ -895,7 +895,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinJEleveAncienEtablissement($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJEleveAncienEtablissement($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveAncienEtablissement');
@@ -930,7 +930,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    JEleveAncienEtablissementQuery A secondary query class using the current class as primary query
 	 */
-	public function useJEleveAncienEtablissementQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJEleveAncienEtablissementQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJEleveAncienEtablissement($relationAlias, $joinType)
@@ -959,7 +959,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinJAidEleves($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJAidEleves($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JAidEleves');
@@ -994,7 +994,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    JAidElevesQuery A secondary query class using the current class as primary query
 	 */
-	public function useJAidElevesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJAidElevesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJAidEleves($relationAlias, $joinType)
@@ -1023,7 +1023,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinAbsenceEleveSaisie($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinAbsenceEleveSaisie($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
@@ -1058,7 +1058,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery A secondary query class using the current class as primary query
 	 */
-	public function useAbsenceEleveSaisieQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useAbsenceEleveSaisieQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinAbsenceEleveSaisie($relationAlias, $joinType)
@@ -1087,7 +1087,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinCreditEcts($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinCreditEcts($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CreditEcts');
@@ -1122,7 +1122,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery A secondary query class using the current class as primary query
 	 */
-	public function useCreditEctsQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useCreditEctsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinCreditEcts($relationAlias, $joinType)
@@ -1151,7 +1151,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinCreditEctsGlobal($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinCreditEctsGlobal($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CreditEctsGlobal');
@@ -1186,7 +1186,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsGlobalQuery A secondary query class using the current class as primary query
 	 */
-	public function useCreditEctsGlobalQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useCreditEctsGlobalQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinCreditEctsGlobal($relationAlias, $joinType)
@@ -1215,7 +1215,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function joinArchiveEcts($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinArchiveEcts($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ArchiveEcts');
@@ -1250,7 +1250,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    ArchiveEctsQuery A secondary query class using the current class as primary query
 	 */
-	public function useArchiveEctsQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useArchiveEctsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinArchiveEcts($relationAlias, $joinType)

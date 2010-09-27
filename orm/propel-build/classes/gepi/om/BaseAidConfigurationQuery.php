@@ -42,9 +42,9 @@
  * @method     AidConfigurationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     AidConfigurationQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     AidConfigurationQuery leftJoinAidDetails($relationAlias = '') Adds a LEFT JOIN clause to the query using the AidDetails relation
- * @method     AidConfigurationQuery rightJoinAidDetails($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AidDetails relation
- * @method     AidConfigurationQuery innerJoinAidDetails($relationAlias = '') Adds a INNER JOIN clause to the query using the AidDetails relation
+ * @method     AidConfigurationQuery leftJoinAidDetails($relationAlias = null) Adds a LEFT JOIN clause to the query using the AidDetails relation
+ * @method     AidConfigurationQuery rightJoinAidDetails($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AidDetails relation
+ * @method     AidConfigurationQuery innerJoinAidDetails($relationAlias = null) Adds a INNER JOIN clause to the query using the AidDetails relation
  *
  * @method     AidConfiguration findOne(PropelPDO $con = null) Return the first AidConfiguration matching the query
  * @method     AidConfiguration findOneOrCreate(PropelPDO $con = null) Return the first AidConfiguration matching the query, or a new AidConfiguration object populated from the query conditions when no match is found
@@ -572,7 +572,7 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
 	 */
-	public function joinAidDetails($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinAidDetails($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AidDetails');
@@ -607,7 +607,7 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 *
 	 * @return    AidDetailsQuery A secondary query class using the current class as primary query
 	 */
-	public function useAidDetailsQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useAidDetailsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinAidDetails($relationAlias, $joinType)

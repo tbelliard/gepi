@@ -32,17 +32,17 @@
  * @method     ResponsableEleveQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ResponsableEleveQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ResponsableEleveQuery leftJoinResponsableEleveAdresse($relationAlias = '') Adds a LEFT JOIN clause to the query using the ResponsableEleveAdresse relation
- * @method     ResponsableEleveQuery rightJoinResponsableEleveAdresse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ResponsableEleveAdresse relation
- * @method     ResponsableEleveQuery innerJoinResponsableEleveAdresse($relationAlias = '') Adds a INNER JOIN clause to the query using the ResponsableEleveAdresse relation
+ * @method     ResponsableEleveQuery leftJoinResponsableEleveAdresse($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResponsableEleveAdresse relation
+ * @method     ResponsableEleveQuery rightJoinResponsableEleveAdresse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResponsableEleveAdresse relation
+ * @method     ResponsableEleveQuery innerJoinResponsableEleveAdresse($relationAlias = null) Adds a INNER JOIN clause to the query using the ResponsableEleveAdresse relation
  *
- * @method     ResponsableEleveQuery leftJoinResponsableInformation($relationAlias = '') Adds a LEFT JOIN clause to the query using the ResponsableInformation relation
- * @method     ResponsableEleveQuery rightJoinResponsableInformation($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ResponsableInformation relation
- * @method     ResponsableEleveQuery innerJoinResponsableInformation($relationAlias = '') Adds a INNER JOIN clause to the query using the ResponsableInformation relation
+ * @method     ResponsableEleveQuery leftJoinResponsableInformation($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResponsableInformation relation
+ * @method     ResponsableEleveQuery rightJoinResponsableInformation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResponsableInformation relation
+ * @method     ResponsableEleveQuery innerJoinResponsableInformation($relationAlias = null) Adds a INNER JOIN clause to the query using the ResponsableInformation relation
  *
- * @method     ResponsableEleveQuery leftJoinJNotificationResponsableEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the JNotificationResponsableEleve relation
- * @method     ResponsableEleveQuery rightJoinJNotificationResponsableEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JNotificationResponsableEleve relation
- * @method     ResponsableEleveQuery innerJoinJNotificationResponsableEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the JNotificationResponsableEleve relation
+ * @method     ResponsableEleveQuery leftJoinJNotificationResponsableEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the JNotificationResponsableEleve relation
+ * @method     ResponsableEleveQuery rightJoinJNotificationResponsableEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JNotificationResponsableEleve relation
+ * @method     ResponsableEleveQuery innerJoinJNotificationResponsableEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the JNotificationResponsableEleve relation
  *
  * @method     ResponsableEleve findOne(PropelPDO $con = null) Return the first ResponsableEleve matching the query
  * @method     ResponsableEleve findOneOrCreate(PropelPDO $con = null) Return the first ResponsableEleve matching the query, or a new ResponsableEleve object populated from the query conditions when no match is found
@@ -419,7 +419,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function joinResponsableEleveAdresse($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinResponsableEleveAdresse($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ResponsableEleveAdresse');
@@ -454,7 +454,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveAdresseQuery A secondary query class using the current class as primary query
 	 */
-	public function useResponsableEleveAdresseQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useResponsableEleveAdresseQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinResponsableEleveAdresse($relationAlias, $joinType)
@@ -483,7 +483,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function joinResponsableInformation($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinResponsableInformation($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ResponsableInformation');
@@ -518,7 +518,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableInformationQuery A secondary query class using the current class as primary query
 	 */
-	public function useResponsableInformationQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useResponsableInformationQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinResponsableInformation($relationAlias, $joinType)
@@ -547,7 +547,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function joinJNotificationResponsableEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJNotificationResponsableEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JNotificationResponsableEleve');
@@ -582,7 +582,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 *
 	 * @return    JNotificationResponsableEleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useJNotificationResponsableEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJNotificationResponsableEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJNotificationResponsableEleve($relationAlias, $joinType)

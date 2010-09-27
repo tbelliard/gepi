@@ -14,7 +14,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'EdtEmplacementCoursPeer';
+	const PEER = 'EdtEmplacementCoursPeer';
 
 	/**
 	 * The Peer class.
@@ -698,7 +698,6 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aGroupe = null;
 			$this->aAidDetails = null;
 			$this->aEdtSalle = null;
@@ -706,7 +705,6 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 			$this->aEdtCalendrierPeriode = null;
 			$this->aUtilisateurProfessionnel = null;
 			$this->collAbsenceEleveSaisies = null;
-
 		} // if (deep)
 	}
 
@@ -728,7 +726,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(EdtEmplacementCoursPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -770,7 +768,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(EdtEmplacementCoursPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -1090,7 +1088,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1427,11 +1425,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aGroupe === null && (($this->id_groupe !== "" && $this->id_groupe !== null))) {
 			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aGroupe->addEdtEmplacementCourss($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aGroupe->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aGroupe;
@@ -1476,11 +1474,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aAidDetails === null && (($this->id_aid !== "" && $this->id_aid !== null))) {
 			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAidDetails->addEdtEmplacementCourss($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aAidDetails->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aAidDetails;
@@ -1525,11 +1523,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aEdtSalle === null && (($this->id_salle !== "" && $this->id_salle !== null))) {
 			$this->aEdtSalle = EdtSalleQuery::create()->findPk($this->id_salle, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEdtSalle->addEdtEmplacementCourss($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEdtSalle->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aEdtSalle;
@@ -1574,11 +1572,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aEdtCreneau === null && (($this->id_definie_periode !== "" && $this->id_definie_periode !== null))) {
 			$this->aEdtCreneau = EdtCreneauQuery::create()->findPk($this->id_definie_periode, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEdtCreneau->addEdtEmplacementCourss($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEdtCreneau->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aEdtCreneau;
@@ -1623,11 +1621,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aEdtCalendrierPeriode === null && (($this->id_calendrier !== "" && $this->id_calendrier !== null))) {
 			$this->aEdtCalendrierPeriode = EdtCalendrierPeriodeQuery::create()->findPk($this->id_calendrier, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEdtCalendrierPeriode->addEdtEmplacementCourss($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEdtCalendrierPeriode->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aEdtCalendrierPeriode;
@@ -1672,11 +1670,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aUtilisateurProfessionnel === null && (($this->login_prof !== "" && $this->login_prof !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->login_prof, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addEdtEmplacementCourss($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUtilisateurProfessionnel->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;

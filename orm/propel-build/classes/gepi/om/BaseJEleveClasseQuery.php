@@ -20,13 +20,13 @@
  * @method     JEleveClasseQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JEleveClasseQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JEleveClasseQuery leftJoinEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the Eleve relation
- * @method     JEleveClasseQuery rightJoinEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Eleve relation
- * @method     JEleveClasseQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
+ * @method     JEleveClasseQuery leftJoinEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the Eleve relation
+ * @method     JEleveClasseQuery rightJoinEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Eleve relation
+ * @method     JEleveClasseQuery innerJoinEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the Eleve relation
  *
- * @method     JEleveClasseQuery leftJoinClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the Classe relation
- * @method     JEleveClasseQuery rightJoinClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Classe relation
- * @method     JEleveClasseQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
+ * @method     JEleveClasseQuery leftJoinClasse($relationAlias = null) Adds a LEFT JOIN clause to the query using the Classe relation
+ * @method     JEleveClasseQuery rightJoinClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Classe relation
+ * @method     JEleveClasseQuery innerJoinClasse($relationAlias = null) Adds a INNER JOIN clause to the query using the Classe relation
  *
  * @method     JEleveClasse findOne(PropelPDO $con = null) Return the first JEleveClasse matching the query
  * @method     JEleveClasse findOneOrCreate(PropelPDO $con = null) Return the first JEleveClasse matching the query, or a new JEleveClasse object populated from the query conditions when no match is found
@@ -273,7 +273,7 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
 	 */
-	public function joinEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Eleve');
@@ -308,7 +308,7 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinEleve($relationAlias, $joinType)
@@ -337,7 +337,7 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
 	 */
-	public function joinClasse($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinClasse($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Classe');
@@ -372,7 +372,7 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery A secondary query class using the current class as primary query
 	 */
-	public function useClasseQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useClasseQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinClasse($relationAlias, $joinType)

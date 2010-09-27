@@ -18,17 +18,17 @@
  * @method     JEleveProfesseurPrincipalQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JEleveProfesseurPrincipalQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JEleveProfesseurPrincipalQuery leftJoinEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the Eleve relation
- * @method     JEleveProfesseurPrincipalQuery rightJoinEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Eleve relation
- * @method     JEleveProfesseurPrincipalQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
+ * @method     JEleveProfesseurPrincipalQuery leftJoinEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the Eleve relation
+ * @method     JEleveProfesseurPrincipalQuery rightJoinEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Eleve relation
+ * @method     JEleveProfesseurPrincipalQuery innerJoinEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the Eleve relation
  *
- * @method     JEleveProfesseurPrincipalQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     JEleveProfesseurPrincipalQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     JEleveProfesseurPrincipalQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JEleveProfesseurPrincipalQuery leftJoinUtilisateurProfessionnel($relationAlias = null) Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JEleveProfesseurPrincipalQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JEleveProfesseurPrincipalQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
- * @method     JEleveProfesseurPrincipalQuery leftJoinClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the Classe relation
- * @method     JEleveProfesseurPrincipalQuery rightJoinClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Classe relation
- * @method     JEleveProfesseurPrincipalQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
+ * @method     JEleveProfesseurPrincipalQuery leftJoinClasse($relationAlias = null) Adds a LEFT JOIN clause to the query using the Classe relation
+ * @method     JEleveProfesseurPrincipalQuery rightJoinClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Classe relation
+ * @method     JEleveProfesseurPrincipalQuery innerJoinClasse($relationAlias = null) Adds a INNER JOIN clause to the query using the Classe relation
  *
  * @method     JEleveProfesseurPrincipal findOne(PropelPDO $con = null) Return the first JEleveProfesseurPrincipal matching the query
  * @method     JEleveProfesseurPrincipal findOneOrCreate(PropelPDO $con = null) Return the first JEleveProfesseurPrincipal matching the query, or a new JEleveProfesseurPrincipal object populated from the query conditions when no match is found
@@ -247,7 +247,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
-	public function joinEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Eleve');
@@ -282,7 +282,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinEleve($relationAlias, $joinType)
@@ -311,7 +311,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
@@ -346,7 +346,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)
@@ -375,7 +375,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
-	public function joinClasse($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinClasse($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Classe');
@@ -410,7 +410,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery A secondary query class using the current class as primary query
 	 */
-	public function useClasseQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useClasseQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinClasse($relationAlias, $joinType)

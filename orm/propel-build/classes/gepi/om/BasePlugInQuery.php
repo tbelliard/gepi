@@ -22,13 +22,13 @@
  * @method     PlugInQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     PlugInQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     PlugInQuery leftJoinPlugInAutorisation($relationAlias = '') Adds a LEFT JOIN clause to the query using the PlugInAutorisation relation
- * @method     PlugInQuery rightJoinPlugInAutorisation($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PlugInAutorisation relation
- * @method     PlugInQuery innerJoinPlugInAutorisation($relationAlias = '') Adds a INNER JOIN clause to the query using the PlugInAutorisation relation
+ * @method     PlugInQuery leftJoinPlugInAutorisation($relationAlias = null) Adds a LEFT JOIN clause to the query using the PlugInAutorisation relation
+ * @method     PlugInQuery rightJoinPlugInAutorisation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PlugInAutorisation relation
+ * @method     PlugInQuery innerJoinPlugInAutorisation($relationAlias = null) Adds a INNER JOIN clause to the query using the PlugInAutorisation relation
  *
- * @method     PlugInQuery leftJoinPlugInMiseEnOeuvreMenu($relationAlias = '') Adds a LEFT JOIN clause to the query using the PlugInMiseEnOeuvreMenu relation
- * @method     PlugInQuery rightJoinPlugInMiseEnOeuvreMenu($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PlugInMiseEnOeuvreMenu relation
- * @method     PlugInQuery innerJoinPlugInMiseEnOeuvreMenu($relationAlias = '') Adds a INNER JOIN clause to the query using the PlugInMiseEnOeuvreMenu relation
+ * @method     PlugInQuery leftJoinPlugInMiseEnOeuvreMenu($relationAlias = null) Adds a LEFT JOIN clause to the query using the PlugInMiseEnOeuvreMenu relation
+ * @method     PlugInQuery rightJoinPlugInMiseEnOeuvreMenu($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PlugInMiseEnOeuvreMenu relation
+ * @method     PlugInQuery innerJoinPlugInMiseEnOeuvreMenu($relationAlias = null) Adds a INNER JOIN clause to the query using the PlugInMiseEnOeuvreMenu relation
  *
  * @method     PlugIn findOne(PropelPDO $con = null) Return the first PlugIn matching the query
  * @method     PlugIn findOneOrCreate(PropelPDO $con = null) Return the first PlugIn matching the query, or a new PlugIn object populated from the query conditions when no match is found
@@ -280,7 +280,7 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
 	 */
-	public function joinPlugInAutorisation($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinPlugInAutorisation($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PlugInAutorisation');
@@ -315,7 +315,7 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInAutorisationQuery A secondary query class using the current class as primary query
 	 */
-	public function usePlugInAutorisationQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function usePlugInAutorisationQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinPlugInAutorisation($relationAlias, $joinType)
@@ -344,7 +344,7 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
 	 */
-	public function joinPlugInMiseEnOeuvreMenu($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinPlugInMiseEnOeuvreMenu($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PlugInMiseEnOeuvreMenu');
@@ -379,7 +379,7 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 *
 	 * @return    PlugInMiseEnOeuvreMenuQuery A secondary query class using the current class as primary query
 	 */
-	public function usePlugInMiseEnOeuvreMenuQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function usePlugInMiseEnOeuvreMenuQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinPlugInMiseEnOeuvreMenu($relationAlias, $joinType)

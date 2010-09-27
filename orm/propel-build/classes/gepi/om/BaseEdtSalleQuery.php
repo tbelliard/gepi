@@ -18,9 +18,9 @@
  * @method     EdtSalleQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     EdtSalleQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     EdtSalleQuery leftJoinEdtEmplacementCours($relationAlias = '') Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
- * @method     EdtSalleQuery rightJoinEdtEmplacementCours($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
- * @method     EdtSalleQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     EdtSalleQuery leftJoinEdtEmplacementCours($relationAlias = null) Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     EdtSalleQuery rightJoinEdtEmplacementCours($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     EdtSalleQuery innerJoinEdtEmplacementCours($relationAlias = null) Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
  * @method     EdtSalle findOne(PropelPDO $con = null) Return the first EdtSalle matching the query
  * @method     EdtSalle findOneOrCreate(PropelPDO $con = null) Return the first EdtSalle matching the query, or a new EdtSalle object populated from the query conditions when no match is found
@@ -224,7 +224,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 *
 	 * @return    EdtSalleQuery The current query, for fluid interface
 	 */
-	public function joinEdtEmplacementCours($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinEdtEmplacementCours($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtEmplacementCours');
@@ -259,7 +259,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery A secondary query class using the current class as primary query
 	 */
-	public function useEdtEmplacementCoursQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useEdtEmplacementCoursQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinEdtEmplacementCours($relationAlias, $joinType)

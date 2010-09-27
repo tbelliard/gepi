@@ -22,9 +22,9 @@
  * @method     PlugInAutorisationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     PlugInAutorisationQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     PlugInAutorisationQuery leftJoinPlugIn($relationAlias = '') Adds a LEFT JOIN clause to the query using the PlugIn relation
- * @method     PlugInAutorisationQuery rightJoinPlugIn($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PlugIn relation
- * @method     PlugInAutorisationQuery innerJoinPlugIn($relationAlias = '') Adds a INNER JOIN clause to the query using the PlugIn relation
+ * @method     PlugInAutorisationQuery leftJoinPlugIn($relationAlias = null) Adds a LEFT JOIN clause to the query using the PlugIn relation
+ * @method     PlugInAutorisationQuery rightJoinPlugIn($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PlugIn relation
+ * @method     PlugInAutorisationQuery innerJoinPlugIn($relationAlias = null) Adds a INNER JOIN clause to the query using the PlugIn relation
  *
  * @method     PlugInAutorisation findOne(PropelPDO $con = null) Return the first PlugInAutorisation matching the query
  * @method     PlugInAutorisation findOneOrCreate(PropelPDO $con = null) Return the first PlugInAutorisation matching the query, or a new PlugInAutorisation object populated from the query conditions when no match is found
@@ -285,7 +285,7 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
 	 */
-	public function joinPlugIn($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinPlugIn($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PlugIn');
@@ -320,7 +320,7 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery A secondary query class using the current class as primary query
 	 */
-	public function usePlugInQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function usePlugInQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinPlugIn($relationAlias, $joinType)

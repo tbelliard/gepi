@@ -14,7 +14,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'UtilisateurProfessionnelPeer';
+	const PEER = 'UtilisateurProfessionnelPeer';
 
 	/**
 	 * The Peer class.
@@ -1071,39 +1071,25 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->collJGroupesProfesseurss = null;
-
 			$this->collJScolClassess = null;
-
 			$this->collCahierTexteCompteRendus = null;
-
 			$this->collCahierTexteTravailAFaires = null;
-
 			$this->collCahierTexteNoticePrivees = null;
-
 			$this->collJEleveCpes = null;
-
 			$this->collJEleveProfesseurPrincipals = null;
-
 			$this->collJAidUtilisateursProfessionnelss = null;
-
 			$this->collAbsenceEleveSaisies = null;
-
 			$this->collModifiedAbsenceEleveSaisies = null;
-
 			$this->collAbsenceEleveTraitements = null;
-
 			$this->collModifiedAbsenceEleveTraitements = null;
-
 			$this->collAbsenceEleveNotifications = null;
-
 			$this->collJProfesseursMatieress = null;
-
 			$this->collPreferenceUtilisateurProfessionnels = null;
-
 			$this->collEdtEmplacementCourss = null;
-
+			$this->collGroupes = null;
+			$this->collAidDetailss = null;
+			$this->collMatieres = null;
 		} // if (deep)
 	}
 
@@ -1125,7 +1111,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		if ($con === null) {
 			$con = Propel::getConnection(UtilisateurProfessionnelPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -1167,7 +1153,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		if ($con === null) {
 			$con = Propel::getConnection(UtilisateurProfessionnelPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -1656,7 +1642,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 *
@@ -4867,7 +4853,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$jGroupesProfesseurs = new JGroupesProfesseurs();
 			$jGroupesProfesseurs->setGroupe($groupe);
 			$this->addJGroupesProfesseurs($jGroupesProfesseurs);
-			
+
 			$this->collGroupes[]= $groupe;
 		}
 	}
@@ -4980,7 +4966,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$jAidUtilisateursProfessionnels = new JAidUtilisateursProfessionnels();
 			$jAidUtilisateursProfessionnels->setAidDetails($aidDetails);
 			$this->addJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels);
-			
+
 			$this->collAidDetailss[]= $aidDetails;
 		}
 	}
@@ -5093,7 +5079,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$jProfesseursMatieres = new JProfesseursMatieres();
 			$jProfesseursMatieres->setMatiere($matiere);
 			$this->addJProfesseursMatieres($jProfesseursMatieres);
-			
+
 			$this->collMatieres[]= $matiere;
 		}
 	}

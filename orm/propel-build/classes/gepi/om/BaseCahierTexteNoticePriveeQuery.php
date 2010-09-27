@@ -26,17 +26,17 @@
  * @method     CahierTexteNoticePriveeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     CahierTexteNoticePriveeQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     CahierTexteNoticePriveeQuery leftJoinGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the Groupe relation
- * @method     CahierTexteNoticePriveeQuery rightJoinGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Groupe relation
- * @method     CahierTexteNoticePriveeQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
+ * @method     CahierTexteNoticePriveeQuery leftJoinGroupe($relationAlias = null) Adds a LEFT JOIN clause to the query using the Groupe relation
+ * @method     CahierTexteNoticePriveeQuery rightJoinGroupe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Groupe relation
+ * @method     CahierTexteNoticePriveeQuery innerJoinGroupe($relationAlias = null) Adds a INNER JOIN clause to the query using the Groupe relation
  *
- * @method     CahierTexteNoticePriveeQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     CahierTexteNoticePriveeQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     CahierTexteNoticePriveeQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     CahierTexteNoticePriveeQuery leftJoinUtilisateurProfessionnel($relationAlias = null) Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     CahierTexteNoticePriveeQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     CahierTexteNoticePriveeQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
- * @method     CahierTexteNoticePriveeQuery leftJoinCahierTexteSequence($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteSequence relation
- * @method     CahierTexteNoticePriveeQuery rightJoinCahierTexteSequence($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteSequence relation
- * @method     CahierTexteNoticePriveeQuery innerJoinCahierTexteSequence($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteSequence relation
+ * @method     CahierTexteNoticePriveeQuery leftJoinCahierTexteSequence($relationAlias = null) Adds a LEFT JOIN clause to the query using the CahierTexteSequence relation
+ * @method     CahierTexteNoticePriveeQuery rightJoinCahierTexteSequence($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CahierTexteSequence relation
+ * @method     CahierTexteNoticePriveeQuery innerJoinCahierTexteSequence($relationAlias = null) Adds a INNER JOIN clause to the query using the CahierTexteSequence relation
  *
  * @method     CahierTexteNoticePrivee findOne(PropelPDO $con = null) Return the first CahierTexteNoticePrivee matching the query
  * @method     CahierTexteNoticePrivee findOneOrCreate(PropelPDO $con = null) Return the first CahierTexteNoticePrivee matching the query, or a new CahierTexteNoticePrivee object populated from the query conditions when no match is found
@@ -372,7 +372,7 @@ abstract class BaseCahierTexteNoticePriveeQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteNoticePriveeQuery The current query, for fluid interface
 	 */
-	public function joinGroupe($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinGroupe($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
@@ -407,7 +407,7 @@ abstract class BaseCahierTexteNoticePriveeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useGroupeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinGroupe($relationAlias, $joinType)
@@ -436,7 +436,7 @@ abstract class BaseCahierTexteNoticePriveeQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteNoticePriveeQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
@@ -471,7 +471,7 @@ abstract class BaseCahierTexteNoticePriveeQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)
@@ -500,7 +500,7 @@ abstract class BaseCahierTexteNoticePriveeQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteNoticePriveeQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteSequence($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinCahierTexteSequence($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteSequence');
@@ -535,7 +535,7 @@ abstract class BaseCahierTexteNoticePriveeQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteSequenceQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteSequenceQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useCahierTexteSequenceQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinCahierTexteSequence($relationAlias, $joinType)

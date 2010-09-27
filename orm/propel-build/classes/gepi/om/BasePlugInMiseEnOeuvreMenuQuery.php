@@ -24,9 +24,9 @@
  * @method     PlugInMiseEnOeuvreMenuQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     PlugInMiseEnOeuvreMenuQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     PlugInMiseEnOeuvreMenuQuery leftJoinPlugIn($relationAlias = '') Adds a LEFT JOIN clause to the query using the PlugIn relation
- * @method     PlugInMiseEnOeuvreMenuQuery rightJoinPlugIn($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PlugIn relation
- * @method     PlugInMiseEnOeuvreMenuQuery innerJoinPlugIn($relationAlias = '') Adds a INNER JOIN clause to the query using the PlugIn relation
+ * @method     PlugInMiseEnOeuvreMenuQuery leftJoinPlugIn($relationAlias = null) Adds a LEFT JOIN clause to the query using the PlugIn relation
+ * @method     PlugInMiseEnOeuvreMenuQuery rightJoinPlugIn($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PlugIn relation
+ * @method     PlugInMiseEnOeuvreMenuQuery innerJoinPlugIn($relationAlias = null) Adds a INNER JOIN clause to the query using the PlugIn relation
  *
  * @method     PlugInMiseEnOeuvreMenu findOne(PropelPDO $con = null) Return the first PlugInMiseEnOeuvreMenu matching the query
  * @method     PlugInMiseEnOeuvreMenu findOneOrCreate(PropelPDO $con = null) Return the first PlugInMiseEnOeuvreMenu matching the query, or a new PlugInMiseEnOeuvreMenu object populated from the query conditions when no match is found
@@ -311,7 +311,7 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	 *
 	 * @return    PlugInMiseEnOeuvreMenuQuery The current query, for fluid interface
 	 */
-	public function joinPlugIn($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinPlugIn($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PlugIn');
@@ -346,7 +346,7 @@ abstract class BasePlugInMiseEnOeuvreMenuQuery extends ModelCriteria
 	 *
 	 * @return    PlugInQuery A secondary query class using the current class as primary query
 	 */
-	public function usePlugInQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function usePlugInQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinPlugIn($relationAlias, $joinType)

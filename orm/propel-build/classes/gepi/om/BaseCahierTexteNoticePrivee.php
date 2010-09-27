@@ -14,7 +14,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'CahierTexteNoticePriveePeer';
+	const PEER = 'CahierTexteNoticePriveePeer';
 
 	/**
 	 * The Peer class.
@@ -525,7 +525,6 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aGroupe = null;
 			$this->aUtilisateurProfessionnel = null;
 			$this->aCahierTexteSequence = null;
@@ -550,7 +549,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		if ($con === null) {
 			$con = Propel::getConnection(CahierTexteNoticePriveePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -592,7 +591,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		if ($con === null) {
 			$con = Propel::getConnection(CahierTexteNoticePriveePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -850,7 +849,7 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1129,11 +1128,11 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
 			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aGroupe->addCahierTexteNoticePrivees($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aGroupe->addCahierTexteNoticePrivees($this);
 			 */
 		}
 		return $this->aGroupe;
@@ -1178,11 +1177,11 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		if ($this->aUtilisateurProfessionnel === null && (($this->id_login !== "" && $this->id_login !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->id_login, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addCahierTexteNoticePrivees($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUtilisateurProfessionnel->addCahierTexteNoticePrivees($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -1227,11 +1226,11 @@ abstract class BaseCahierTexteNoticePrivee extends BaseObject  implements Persis
 		if ($this->aCahierTexteSequence === null && ($this->id_sequence !== null)) {
 			$this->aCahierTexteSequence = CahierTexteSequenceQuery::create()->findPk($this->id_sequence, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aCahierTexteSequence->addCahierTexteNoticePrivees($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aCahierTexteSequence->addCahierTexteNoticePrivees($this);
 			 */
 		}
 		return $this->aCahierTexteSequence;

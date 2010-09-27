@@ -14,7 +14,7 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'ResponsableInformationPeer';
+	const PEER = 'ResponsableInformationPeer';
 
 	/**
 	 * The Peer class.
@@ -311,7 +311,6 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aEleve = null;
 			$this->aResponsableEleve = null;
 		} // if (deep)
@@ -335,7 +334,7 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 		if ($con === null) {
 			$con = Propel::getConnection(ResponsableInformationPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -377,7 +376,7 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 		if ($con === null) {
 			$con = Propel::getConnection(ResponsableInformationPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -605,7 +604,7 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -745,7 +744,7 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 		$pks = array();
 		$pks[0] = $this->getEleId();
 		$pks[1] = $this->getRespLegal();
-		
+
 		return $pks;
 	}
 
@@ -869,11 +868,11 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 				->filterByResponsableInformation($this) // here
 				->findOne($con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEleve->addResponsableInformations($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEleve->addResponsableInformations($this);
 			 */
 		}
 		return $this->aEleve;
@@ -918,11 +917,11 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 		if ($this->aResponsableEleve === null && (($this->pers_id !== "" && $this->pers_id !== null))) {
 			$this->aResponsableEleve = ResponsableEleveQuery::create()->findPk($this->pers_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aResponsableEleve->addResponsableInformations($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aResponsableEleve->addResponsableInformations($this);
 			 */
 		}
 		return $this->aResponsableEleve;

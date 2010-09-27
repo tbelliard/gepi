@@ -16,13 +16,13 @@
  * @method     JScolClassesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JScolClassesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JScolClassesQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     JScolClassesQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     JScolClassesQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JScolClassesQuery leftJoinUtilisateurProfessionnel($relationAlias = null) Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JScolClassesQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JScolClassesQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
- * @method     JScolClassesQuery leftJoinClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the Classe relation
- * @method     JScolClassesQuery rightJoinClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Classe relation
- * @method     JScolClassesQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
+ * @method     JScolClassesQuery leftJoinClasse($relationAlias = null) Adds a LEFT JOIN clause to the query using the Classe relation
+ * @method     JScolClassesQuery rightJoinClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Classe relation
+ * @method     JScolClassesQuery innerJoinClasse($relationAlias = null) Adds a INNER JOIN clause to the query using the Classe relation
  *
  * @method     JScolClasses findOne(PropelPDO $con = null) Return the first JScolClasses matching the query
  * @method     JScolClasses findOneOrCreate(PropelPDO $con = null) Return the first JScolClasses matching the query, or a new JScolClasses object populated from the query conditions when no match is found
@@ -214,7 +214,7 @@ abstract class BaseJScolClassesQuery extends ModelCriteria
 	 *
 	 * @return    JScolClassesQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
@@ -249,7 +249,7 @@ abstract class BaseJScolClassesQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)
@@ -278,7 +278,7 @@ abstract class BaseJScolClassesQuery extends ModelCriteria
 	 *
 	 * @return    JScolClassesQuery The current query, for fluid interface
 	 */
-	public function joinClasse($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinClasse($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Classe');
@@ -313,7 +313,7 @@ abstract class BaseJScolClassesQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery A secondary query class using the current class as primary query
 	 */
-	public function useClasseQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useClasseQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinClasse($relationAlias, $joinType)

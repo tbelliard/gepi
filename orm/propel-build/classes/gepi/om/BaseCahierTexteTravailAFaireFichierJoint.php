@@ -14,7 +14,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJoint extends BaseObject  impl
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'CahierTexteTravailAFaireFichierJointPeer';
+	const PEER = 'CahierTexteTravailAFaireFichierJointPeer';
 
 	/**
 	 * The Peer class.
@@ -368,7 +368,6 @@ abstract class BaseCahierTexteTravailAFaireFichierJoint extends BaseObject  impl
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aCahierTexteTravailAFaire = null;
 		} // if (deep)
 	}
@@ -391,7 +390,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJoint extends BaseObject  impl
 		if ($con === null) {
 			$con = Propel::getConnection(CahierTexteTravailAFaireFichierJointPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -433,7 +432,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJoint extends BaseObject  impl
 		if ($con === null) {
 			$con = Propel::getConnection(CahierTexteTravailAFaireFichierJointPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -659,7 +658,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJoint extends BaseObject  impl
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -918,11 +917,11 @@ abstract class BaseCahierTexteTravailAFaireFichierJoint extends BaseObject  impl
 		if ($this->aCahierTexteTravailAFaire === null && ($this->id_ct_devoir !== null)) {
 			$this->aCahierTexteTravailAFaire = CahierTexteTravailAFaireQuery::create()->findPk($this->id_ct_devoir, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aCahierTexteTravailAFaire->addCahierTexteTravailAFaireFichierJoints($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aCahierTexteTravailAFaire->addCahierTexteTravailAFaireFichierJoints($this);
 			 */
 		}
 		return $this->aCahierTexteTravailAFaire;

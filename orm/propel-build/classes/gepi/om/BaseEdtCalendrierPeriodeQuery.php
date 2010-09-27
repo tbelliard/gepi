@@ -36,9 +36,9 @@
  * @method     EdtCalendrierPeriodeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     EdtCalendrierPeriodeQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     EdtCalendrierPeriodeQuery leftJoinEdtEmplacementCours($relationAlias = '') Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
- * @method     EdtCalendrierPeriodeQuery rightJoinEdtEmplacementCours($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
- * @method     EdtCalendrierPeriodeQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     EdtCalendrierPeriodeQuery leftJoinEdtEmplacementCours($relationAlias = null) Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     EdtCalendrierPeriodeQuery rightJoinEdtEmplacementCours($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     EdtCalendrierPeriodeQuery innerJoinEdtEmplacementCours($relationAlias = null) Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
  * @method     EdtCalendrierPeriode findOne(PropelPDO $con = null) Return the first EdtCalendrierPeriode matching the query
  * @method     EdtCalendrierPeriode findOneOrCreate(PropelPDO $con = null) Return the first EdtCalendrierPeriode matching the query, or a new EdtCalendrierPeriode object populated from the query conditions when no match is found
@@ -521,7 +521,7 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
 	 */
-	public function joinEdtEmplacementCours($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinEdtEmplacementCours($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtEmplacementCours');
@@ -556,7 +556,7 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery A secondary query class using the current class as primary query
 	 */
-	public function useEdtEmplacementCoursQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useEdtEmplacementCoursQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinEdtEmplacementCours($relationAlias, $joinType)

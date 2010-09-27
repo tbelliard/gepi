@@ -20,9 +20,9 @@
  * @method     AbsenceEleveMotifQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     AbsenceEleveMotifQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     AbsenceEleveMotifQuery leftJoinAbsenceEleveTraitement($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveTraitement relation
- * @method     AbsenceEleveMotifQuery rightJoinAbsenceEleveTraitement($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveTraitement relation
- * @method     AbsenceEleveMotifQuery innerJoinAbsenceEleveTraitement($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveTraitement relation
+ * @method     AbsenceEleveMotifQuery leftJoinAbsenceEleveTraitement($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveTraitement relation
+ * @method     AbsenceEleveMotifQuery rightJoinAbsenceEleveTraitement($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveTraitement relation
+ * @method     AbsenceEleveMotifQuery innerJoinAbsenceEleveTraitement($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveTraitement relation
  *
  * @method     AbsenceEleveMotif findOne(PropelPDO $con = null) Return the first AbsenceEleveMotif matching the query
  * @method     AbsenceEleveMotif findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveMotif matching the query, or a new AbsenceEleveMotif object populated from the query conditions when no match is found
@@ -259,7 +259,7 @@ abstract class BaseAbsenceEleveMotifQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveMotifQuery The current query, for fluid interface
 	 */
-	public function joinAbsenceEleveTraitement($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinAbsenceEleveTraitement($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveTraitement');
@@ -294,7 +294,7 @@ abstract class BaseAbsenceEleveMotifQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTraitementQuery A secondary query class using the current class as primary query
 	 */
-	public function useAbsenceEleveTraitementQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useAbsenceEleveTraitementQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinAbsenceEleveTraitement($relationAlias, $joinType)

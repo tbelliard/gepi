@@ -42,41 +42,41 @@
  * @method     AbsenceEleveSaisieQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     AbsenceEleveSaisieQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     AbsenceEleveSaisieQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     AbsenceEleveSaisieQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     AbsenceEleveSaisieQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     AbsenceEleveSaisieQuery leftJoinUtilisateurProfessionnel($relationAlias = null) Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     AbsenceEleveSaisieQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     AbsenceEleveSaisieQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
- * @method     AbsenceEleveSaisieQuery leftJoinEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the Eleve relation
- * @method     AbsenceEleveSaisieQuery rightJoinEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Eleve relation
- * @method     AbsenceEleveSaisieQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
+ * @method     AbsenceEleveSaisieQuery leftJoinEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the Eleve relation
+ * @method     AbsenceEleveSaisieQuery rightJoinEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Eleve relation
+ * @method     AbsenceEleveSaisieQuery innerJoinEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the Eleve relation
  *
- * @method     AbsenceEleveSaisieQuery leftJoinEdtCreneau($relationAlias = '') Adds a LEFT JOIN clause to the query using the EdtCreneau relation
- * @method     AbsenceEleveSaisieQuery rightJoinEdtCreneau($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtCreneau relation
- * @method     AbsenceEleveSaisieQuery innerJoinEdtCreneau($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtCreneau relation
+ * @method     AbsenceEleveSaisieQuery leftJoinEdtCreneau($relationAlias = null) Adds a LEFT JOIN clause to the query using the EdtCreneau relation
+ * @method     AbsenceEleveSaisieQuery rightJoinEdtCreneau($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EdtCreneau relation
+ * @method     AbsenceEleveSaisieQuery innerJoinEdtCreneau($relationAlias = null) Adds a INNER JOIN clause to the query using the EdtCreneau relation
  *
- * @method     AbsenceEleveSaisieQuery leftJoinEdtEmplacementCours($relationAlias = '') Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
- * @method     AbsenceEleveSaisieQuery rightJoinEdtEmplacementCours($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
- * @method     AbsenceEleveSaisieQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     AbsenceEleveSaisieQuery leftJoinEdtEmplacementCours($relationAlias = null) Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     AbsenceEleveSaisieQuery rightJoinEdtEmplacementCours($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     AbsenceEleveSaisieQuery innerJoinEdtEmplacementCours($relationAlias = null) Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
- * @method     AbsenceEleveSaisieQuery leftJoinGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the Groupe relation
- * @method     AbsenceEleveSaisieQuery rightJoinGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Groupe relation
- * @method     AbsenceEleveSaisieQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
+ * @method     AbsenceEleveSaisieQuery leftJoinGroupe($relationAlias = null) Adds a LEFT JOIN clause to the query using the Groupe relation
+ * @method     AbsenceEleveSaisieQuery rightJoinGroupe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Groupe relation
+ * @method     AbsenceEleveSaisieQuery innerJoinGroupe($relationAlias = null) Adds a INNER JOIN clause to the query using the Groupe relation
  *
- * @method     AbsenceEleveSaisieQuery leftJoinClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the Classe relation
- * @method     AbsenceEleveSaisieQuery rightJoinClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Classe relation
- * @method     AbsenceEleveSaisieQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
+ * @method     AbsenceEleveSaisieQuery leftJoinClasse($relationAlias = null) Adds a LEFT JOIN clause to the query using the Classe relation
+ * @method     AbsenceEleveSaisieQuery rightJoinClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Classe relation
+ * @method     AbsenceEleveSaisieQuery innerJoinClasse($relationAlias = null) Adds a INNER JOIN clause to the query using the Classe relation
  *
- * @method     AbsenceEleveSaisieQuery leftJoinAidDetails($relationAlias = '') Adds a LEFT JOIN clause to the query using the AidDetails relation
- * @method     AbsenceEleveSaisieQuery rightJoinAidDetails($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AidDetails relation
- * @method     AbsenceEleveSaisieQuery innerJoinAidDetails($relationAlias = '') Adds a INNER JOIN clause to the query using the AidDetails relation
+ * @method     AbsenceEleveSaisieQuery leftJoinAidDetails($relationAlias = null) Adds a LEFT JOIN clause to the query using the AidDetails relation
+ * @method     AbsenceEleveSaisieQuery rightJoinAidDetails($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AidDetails relation
+ * @method     AbsenceEleveSaisieQuery innerJoinAidDetails($relationAlias = null) Adds a INNER JOIN clause to the query using the AidDetails relation
  *
- * @method     AbsenceEleveSaisieQuery leftJoinModifieParUtilisateur($relationAlias = '') Adds a LEFT JOIN clause to the query using the ModifieParUtilisateur relation
- * @method     AbsenceEleveSaisieQuery rightJoinModifieParUtilisateur($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ModifieParUtilisateur relation
- * @method     AbsenceEleveSaisieQuery innerJoinModifieParUtilisateur($relationAlias = '') Adds a INNER JOIN clause to the query using the ModifieParUtilisateur relation
+ * @method     AbsenceEleveSaisieQuery leftJoinModifieParUtilisateur($relationAlias = null) Adds a LEFT JOIN clause to the query using the ModifieParUtilisateur relation
+ * @method     AbsenceEleveSaisieQuery rightJoinModifieParUtilisateur($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ModifieParUtilisateur relation
+ * @method     AbsenceEleveSaisieQuery innerJoinModifieParUtilisateur($relationAlias = null) Adds a INNER JOIN clause to the query using the ModifieParUtilisateur relation
  *
- * @method     AbsenceEleveSaisieQuery leftJoinJTraitementSaisieEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the JTraitementSaisieEleve relation
- * @method     AbsenceEleveSaisieQuery rightJoinJTraitementSaisieEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JTraitementSaisieEleve relation
- * @method     AbsenceEleveSaisieQuery innerJoinJTraitementSaisieEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the JTraitementSaisieEleve relation
+ * @method     AbsenceEleveSaisieQuery leftJoinJTraitementSaisieEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the JTraitementSaisieEleve relation
+ * @method     AbsenceEleveSaisieQuery rightJoinJTraitementSaisieEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JTraitementSaisieEleve relation
+ * @method     AbsenceEleveSaisieQuery innerJoinJTraitementSaisieEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the JTraitementSaisieEleve relation
  *
  * @method     AbsenceEleveSaisie findOne(PropelPDO $con = null) Return the first AbsenceEleveSaisie matching the query
  * @method     AbsenceEleveSaisie findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveSaisie matching the query, or a new AbsenceEleveSaisie object populated from the query conditions when no match is found
@@ -667,7 +667,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
@@ -702,7 +702,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)
@@ -731,7 +731,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function joinEleve($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinEleve($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Eleve');
@@ -766,7 +766,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useEleveQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useEleveQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinEleve($relationAlias, $joinType)
@@ -795,7 +795,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function joinEdtCreneau($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinEdtCreneau($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtCreneau');
@@ -830,7 +830,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery A secondary query class using the current class as primary query
 	 */
-	public function useEdtCreneauQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useEdtCreneauQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinEdtCreneau($relationAlias, $joinType)
@@ -859,7 +859,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function joinEdtEmplacementCours($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinEdtEmplacementCours($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtEmplacementCours');
@@ -894,7 +894,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery A secondary query class using the current class as primary query
 	 */
-	public function useEdtEmplacementCoursQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useEdtEmplacementCoursQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinEdtEmplacementCours($relationAlias, $joinType)
@@ -923,7 +923,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function joinGroupe($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinGroupe($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
@@ -958,7 +958,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupeQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useGroupeQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinGroupe($relationAlias, $joinType)
@@ -987,7 +987,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function joinClasse($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinClasse($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Classe');
@@ -1022,7 +1022,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery A secondary query class using the current class as primary query
 	 */
-	public function useClasseQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useClasseQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinClasse($relationAlias, $joinType)
@@ -1051,7 +1051,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function joinAidDetails($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinAidDetails($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AidDetails');
@@ -1086,7 +1086,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AidDetailsQuery A secondary query class using the current class as primary query
 	 */
-	public function useAidDetailsQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useAidDetailsQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinAidDetails($relationAlias, $joinType)
@@ -1115,7 +1115,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function joinModifieParUtilisateur($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinModifieParUtilisateur($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ModifieParUtilisateur');
@@ -1150,7 +1150,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useModifieParUtilisateurQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useModifieParUtilisateurQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinModifieParUtilisateur($relationAlias, $joinType)
@@ -1179,7 +1179,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function joinJTraitementSaisieEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJTraitementSaisieEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JTraitementSaisieEleve');
@@ -1214,7 +1214,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    JTraitementSaisieEleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useJTraitementSaisieEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJTraitementSaisieEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJTraitementSaisieEleve($relationAlias, $joinType)

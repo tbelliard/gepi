@@ -14,7 +14,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'ClassePeer';
+	const PEER = 'ClassePeer';
 
 	/**
 	 * The Peer class.
@@ -1282,21 +1282,14 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->collPeriodeNotes = null;
-
 			$this->collJScolClassess = null;
-
 			$this->collJGroupesClassess = null;
-
 			$this->collJEleveClasses = null;
-
 			$this->collJEleveProfesseurPrincipals = null;
-
 			$this->collAbsenceEleveSaisies = null;
-
 			$this->collJCategoriesMatieresClassess = null;
-
+			$this->collCategorieMatieres = null;
 		} // if (deep)
 	}
 
@@ -1318,7 +1311,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(ClassePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -1360,7 +1353,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(ClassePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -1740,7 +1733,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 *
@@ -3379,7 +3372,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			$jCategoriesMatieresClasses = new JCategoriesMatieresClasses();
 			$jCategoriesMatieresClasses->setCategorieMatiere($categorieMatiere);
 			$this->addJCategoriesMatieresClasses($jCategoriesMatieresClasses);
-			
+
 			$this->collCategorieMatieres[]= $categorieMatiere;
 		}
 	}

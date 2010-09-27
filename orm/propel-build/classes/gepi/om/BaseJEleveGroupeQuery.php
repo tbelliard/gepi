@@ -18,13 +18,13 @@
  * @method     JEleveGroupeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JEleveGroupeQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JEleveGroupeQuery leftJoinEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the Eleve relation
- * @method     JEleveGroupeQuery rightJoinEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Eleve relation
- * @method     JEleveGroupeQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
+ * @method     JEleveGroupeQuery leftJoinEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the Eleve relation
+ * @method     JEleveGroupeQuery rightJoinEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Eleve relation
+ * @method     JEleveGroupeQuery innerJoinEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the Eleve relation
  *
- * @method     JEleveGroupeQuery leftJoinGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the Groupe relation
- * @method     JEleveGroupeQuery rightJoinGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Groupe relation
- * @method     JEleveGroupeQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
+ * @method     JEleveGroupeQuery leftJoinGroupe($relationAlias = null) Adds a LEFT JOIN clause to the query using the Groupe relation
+ * @method     JEleveGroupeQuery rightJoinGroupe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Groupe relation
+ * @method     JEleveGroupeQuery innerJoinGroupe($relationAlias = null) Adds a INNER JOIN clause to the query using the Groupe relation
  *
  * @method     JEleveGroupe findOne(PropelPDO $con = null) Return the first JEleveGroupe matching the query
  * @method     JEleveGroupe findOneOrCreate(PropelPDO $con = null) Return the first JEleveGroupe matching the query, or a new JEleveGroupe object populated from the query conditions when no match is found
@@ -238,7 +238,7 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
 	 */
-	public function joinEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Eleve');
@@ -273,7 +273,7 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinEleve($relationAlias, $joinType)
@@ -302,7 +302,7 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
 	 */
-	public function joinGroupe($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinGroupe($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
@@ -337,7 +337,7 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useGroupeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinGroupe($relationAlias, $joinType)

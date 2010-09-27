@@ -14,7 +14,7 @@ abstract class BaseJEleveGroupe extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'JEleveGroupePeer';
+	const PEER = 'JEleveGroupePeer';
 
 	/**
 	 * The Peer class.
@@ -312,7 +312,6 @@ abstract class BaseJEleveGroupe extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aEleve = null;
 			$this->aGroupe = null;
 		} // if (deep)
@@ -336,7 +335,7 @@ abstract class BaseJEleveGroupe extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(JEleveGroupePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -378,7 +377,7 @@ abstract class BaseJEleveGroupe extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(JEleveGroupePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -603,7 +602,7 @@ abstract class BaseJEleveGroupe extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -739,7 +738,7 @@ abstract class BaseJEleveGroupe extends BaseObject  implements Persistent
 		$pks[0] = $this->getLogin();
 		$pks[1] = $this->getIdGroupe();
 		$pks[2] = $this->getPeriode();
-		
+
 		return $pks;
 	}
 
@@ -863,11 +862,11 @@ abstract class BaseJEleveGroupe extends BaseObject  implements Persistent
 				->filterByJEleveGroupe($this) // here
 				->findOne($con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEleve->addJEleveGroupes($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEleve->addJEleveGroupes($this);
 			 */
 		}
 		return $this->aEleve;
@@ -912,11 +911,11 @@ abstract class BaseJEleveGroupe extends BaseObject  implements Persistent
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
 			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aGroupe->addJEleveGroupes($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aGroupe->addJEleveGroupes($this);
 			 */
 		}
 		return $this->aGroupe;

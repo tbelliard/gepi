@@ -14,7 +14,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'AbsenceEleveTraitementPeer';
+	const PEER = 'AbsenceEleveTraitementPeer';
 
 	/**
 	 * The Peer class.
@@ -661,16 +661,14 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aUtilisateurProfessionnel = null;
 			$this->aAbsenceEleveType = null;
 			$this->aAbsenceEleveMotif = null;
 			$this->aAbsenceEleveJustification = null;
 			$this->aModifieParUtilisateur = null;
 			$this->collJTraitementSaisieEleves = null;
-
 			$this->collAbsenceEleveNotifications = null;
-
+			$this->collAbsenceEleveSaisies = null;
 		} // if (deep)
 	}
 
@@ -692,7 +690,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -734,7 +732,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveTraitementPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -1067,7 +1065,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1386,11 +1384,11 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if ($this->aUtilisateurProfessionnel === null && (($this->utilisateur_id !== "" && $this->utilisateur_id !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->utilisateur_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addAbsenceEleveTraitements($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUtilisateurProfessionnel->addAbsenceEleveTraitements($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -1435,11 +1433,11 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if ($this->aAbsenceEleveType === null && ($this->a_type_id !== null)) {
 			$this->aAbsenceEleveType = AbsenceEleveTypeQuery::create()->findPk($this->a_type_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAbsenceEleveType->addAbsenceEleveTraitements($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aAbsenceEleveType->addAbsenceEleveTraitements($this);
 			 */
 		}
 		return $this->aAbsenceEleveType;
@@ -1484,11 +1482,11 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if ($this->aAbsenceEleveMotif === null && ($this->a_motif_id !== null)) {
 			$this->aAbsenceEleveMotif = AbsenceEleveMotifQuery::create()->findPk($this->a_motif_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAbsenceEleveMotif->addAbsenceEleveTraitements($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aAbsenceEleveMotif->addAbsenceEleveTraitements($this);
 			 */
 		}
 		return $this->aAbsenceEleveMotif;
@@ -1533,11 +1531,11 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if ($this->aAbsenceEleveJustification === null && ($this->a_justification_id !== null)) {
 			$this->aAbsenceEleveJustification = AbsenceEleveJustificationQuery::create()->findPk($this->a_justification_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAbsenceEleveJustification->addAbsenceEleveTraitements($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aAbsenceEleveJustification->addAbsenceEleveTraitements($this);
 			 */
 		}
 		return $this->aAbsenceEleveJustification;
@@ -1582,11 +1580,11 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		if ($this->aModifieParUtilisateur === null && (($this->modifie_par_utilisateur_id !== "" && $this->modifie_par_utilisateur_id !== null))) {
 			$this->aModifieParUtilisateur = UtilisateurProfessionnelQuery::create()->findPk($this->modifie_par_utilisateur_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aModifieParUtilisateur->addModifiedAbsenceEleveTraitements($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aModifieParUtilisateur->addModifiedAbsenceEleveTraitements($this);
 			 */
 		}
 		return $this->aModifieParUtilisateur;
@@ -1993,7 +1991,7 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 			$jTraitementSaisieEleve = new JTraitementSaisieEleve();
 			$jTraitementSaisieEleve->setAbsenceEleveSaisie($absenceEleveSaisie);
 			$this->addJTraitementSaisieEleve($jTraitementSaisieEleve);
-			
+
 			$this->collAbsenceEleveSaisies[]= $absenceEleveSaisie;
 		}
 	}

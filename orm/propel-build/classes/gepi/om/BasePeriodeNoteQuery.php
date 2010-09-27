@@ -24,9 +24,9 @@
  * @method     PeriodeNoteQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     PeriodeNoteQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     PeriodeNoteQuery leftJoinClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the Classe relation
- * @method     PeriodeNoteQuery rightJoinClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Classe relation
- * @method     PeriodeNoteQuery innerJoinClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the Classe relation
+ * @method     PeriodeNoteQuery leftJoinClasse($relationAlias = null) Adds a LEFT JOIN clause to the query using the Classe relation
+ * @method     PeriodeNoteQuery rightJoinClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Classe relation
+ * @method     PeriodeNoteQuery innerJoinClasse($relationAlias = null) Adds a INNER JOIN clause to the query using the Classe relation
  *
  * @method     PeriodeNote findOne(PropelPDO $con = null) Return the first PeriodeNote matching the query
  * @method     PeriodeNote findOneOrCreate(PropelPDO $con = null) Return the first PeriodeNote matching the query, or a new PeriodeNote object populated from the query conditions when no match is found
@@ -327,7 +327,7 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
-	public function joinClasse($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinClasse($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Classe');
@@ -362,7 +362,7 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery A secondary query class using the current class as primary query
 	 */
-	public function useClasseQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useClasseQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinClasse($relationAlias, $joinType)

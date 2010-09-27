@@ -14,7 +14,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'AbsenceEleveNotificationPeer';
+	const PEER = 'AbsenceEleveNotificationPeer';
 
 	/**
 	 * The Peer class.
@@ -863,12 +863,11 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aUtilisateurProfessionnel = null;
 			$this->aAbsenceEleveTraitement = null;
 			$this->aResponsableEleveAdresse = null;
 			$this->collJNotificationResponsableEleves = null;
-
+			$this->collResponsableEleves = null;
 		} // if (deep)
 	}
 
@@ -890,7 +889,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveNotificationPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -932,7 +931,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveNotificationPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -1235,7 +1234,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1570,11 +1569,11 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($this->aUtilisateurProfessionnel === null && (($this->utilisateur_id !== "" && $this->utilisateur_id !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->utilisateur_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addAbsenceEleveNotifications($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUtilisateurProfessionnel->addAbsenceEleveNotifications($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -1619,11 +1618,11 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($this->aAbsenceEleveTraitement === null && ($this->a_traitement_id !== null)) {
 			$this->aAbsenceEleveTraitement = AbsenceEleveTraitementQuery::create()->findPk($this->a_traitement_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAbsenceEleveTraitement->addAbsenceEleveNotifications($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aAbsenceEleveTraitement->addAbsenceEleveNotifications($this);
 			 */
 		}
 		return $this->aAbsenceEleveTraitement;
@@ -1668,11 +1667,11 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($this->aResponsableEleveAdresse === null && (($this->adr_id !== "" && $this->adr_id !== null))) {
 			$this->aResponsableEleveAdresse = ResponsableEleveAdresseQuery::create()->findPk($this->adr_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aResponsableEleveAdresse->addAbsenceEleveNotifications($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aResponsableEleveAdresse->addAbsenceEleveNotifications($this);
 			 */
 		}
 		return $this->aResponsableEleveAdresse;
@@ -1920,7 +1919,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$jNotificationResponsableEleve = new JNotificationResponsableEleve();
 			$jNotificationResponsableEleve->setResponsableEleve($responsableEleve);
 			$this->addJNotificationResponsableEleve($jNotificationResponsableEleve);
-			
+
 			$this->collResponsableEleves[]= $responsableEleve;
 		}
 	}

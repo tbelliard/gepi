@@ -14,7 +14,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'JNotificationResponsableElevePeer';
+	const PEER = 'JNotificationResponsableElevePeer';
 
 	/**
 	 * The Peer class.
@@ -237,7 +237,6 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aAbsenceEleveNotification = null;
 			$this->aResponsableEleve = null;
 		} // if (deep)
@@ -261,7 +260,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		if ($con === null) {
 			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -303,7 +302,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		if ($con === null) {
 			$con = Propel::getConnection(JNotificationResponsableElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -525,7 +524,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -653,7 +652,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		$pks = array();
 		$pks[0] = $this->getANotificationId();
 		$pks[1] = $this->getPersId();
-		
+
 		return $pks;
 	}
 
@@ -773,11 +772,11 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		if ($this->aAbsenceEleveNotification === null && ($this->a_notification_id !== null)) {
 			$this->aAbsenceEleveNotification = AbsenceEleveNotificationQuery::create()->findPk($this->a_notification_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAbsenceEleveNotification->addJNotificationResponsableEleves($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aAbsenceEleveNotification->addJNotificationResponsableEleves($this);
 			 */
 		}
 		return $this->aAbsenceEleveNotification;
@@ -822,11 +821,11 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		if ($this->aResponsableEleve === null && (($this->pers_id !== "" && $this->pers_id !== null))) {
 			$this->aResponsableEleve = ResponsableEleveQuery::create()->findPk($this->pers_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aResponsableEleve->addJNotificationResponsableEleves($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aResponsableEleve->addJNotificationResponsableEleves($this);
 			 */
 		}
 		return $this->aResponsableEleve;

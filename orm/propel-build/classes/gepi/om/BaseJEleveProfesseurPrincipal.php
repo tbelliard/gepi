@@ -14,7 +14,7 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'JEleveProfesseurPrincipalPeer';
+	const PEER = 'JEleveProfesseurPrincipalPeer';
 
 	/**
 	 * The Peer class.
@@ -286,7 +286,6 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aEleve = null;
 			$this->aUtilisateurProfessionnel = null;
 			$this->aClasse = null;
@@ -311,7 +310,7 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 		if ($con === null) {
 			$con = Propel::getConnection(JEleveProfesseurPrincipalPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -353,7 +352,7 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 		if ($con === null) {
 			$con = Propel::getConnection(JEleveProfesseurPrincipalPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -591,7 +590,7 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -730,7 +729,7 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 		$pks[0] = $this->getLogin();
 		$pks[1] = $this->getProfesseur();
 		$pks[2] = $this->getIdClasse();
-		
+
 		return $pks;
 	}
 
@@ -854,11 +853,11 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 				->filterByJEleveProfesseurPrincipal($this) // here
 				->findOne($con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEleve->addJEleveProfesseurPrincipals($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEleve->addJEleveProfesseurPrincipals($this);
 			 */
 		}
 		return $this->aEleve;
@@ -903,11 +902,11 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 		if ($this->aUtilisateurProfessionnel === null && (($this->professeur !== "" && $this->professeur !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->professeur, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addJEleveProfesseurPrincipals($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUtilisateurProfessionnel->addJEleveProfesseurPrincipals($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -952,11 +951,11 @@ abstract class BaseJEleveProfesseurPrincipal extends BaseObject  implements Pers
 		if ($this->aClasse === null && ($this->id_classe !== null)) {
 			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aClasse->addJEleveProfesseurPrincipals($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aClasse->addJEleveProfesseurPrincipals($this);
 			 */
 		}
 		return $this->aClasse;

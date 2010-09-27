@@ -14,7 +14,7 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'PreferenceUtilisateurProfessionnelPeer';
+	const PEER = 'PreferenceUtilisateurProfessionnelPeer';
 
 	/**
 	 * The Peer class.
@@ -262,7 +262,6 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aUtilisateurProfessionnel = null;
 		} // if (deep)
 	}
@@ -285,7 +284,7 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 		if ($con === null) {
 			$con = Propel::getConnection(PreferenceUtilisateurProfessionnelPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -327,7 +326,7 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 		if ($con === null) {
 			$con = Propel::getConnection(PreferenceUtilisateurProfessionnelPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -539,7 +538,7 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -670,7 +669,7 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 		$pks = array();
 		$pks[0] = $this->getName();
 		$pks[1] = $this->getLogin();
-		
+
 		return $pks;
 	}
 
@@ -791,11 +790,11 @@ abstract class BasePreferenceUtilisateurProfessionnel extends BaseObject  implem
 		if ($this->aUtilisateurProfessionnel === null && (($this->login !== "" && $this->login !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->login, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addPreferenceUtilisateurProfessionnels($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUtilisateurProfessionnel->addPreferenceUtilisateurProfessionnels($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;

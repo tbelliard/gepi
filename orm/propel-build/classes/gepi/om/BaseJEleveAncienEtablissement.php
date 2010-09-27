@@ -14,7 +14,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'JEleveAncienEtablissementPeer';
+	const PEER = 'JEleveAncienEtablissementPeer';
 
 	/**
 	 * The Peer class.
@@ -263,7 +263,6 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aEleve = null;
 			$this->aAncienEtablissement = null;
 		} // if (deep)
@@ -287,7 +286,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		if ($con === null) {
 			$con = Propel::getConnection(JEleveAncienEtablissementPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -329,7 +328,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		if ($con === null) {
 			$con = Propel::getConnection(JEleveAncienEtablissementPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -551,7 +550,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -679,7 +678,7 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		$pks = array();
 		$pks[0] = $this->getIdEleve();
 		$pks[1] = $this->getIdEtablissement();
-		
+
 		return $pks;
 	}
 
@@ -799,11 +798,11 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		if ($this->aEleve === null && (($this->id_eleve !== "" && $this->id_eleve !== null))) {
 			$this->aEleve = EleveQuery::create()->findPk($this->id_eleve, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEleve->addJEleveAncienEtablissements($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEleve->addJEleveAncienEtablissements($this);
 			 */
 		}
 		return $this->aEleve;
@@ -848,11 +847,11 @@ abstract class BaseJEleveAncienEtablissement extends BaseObject  implements Pers
 		if ($this->aAncienEtablissement === null && (($this->id_etablissement !== "" && $this->id_etablissement !== null))) {
 			$this->aAncienEtablissement = AncienEtablissementQuery::create()->findPk($this->id_etablissement, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAncienEtablissement->addJEleveAncienEtablissements($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aAncienEtablissement->addJEleveAncienEtablissements($this);
 			 */
 		}
 		return $this->aAncienEtablissement;

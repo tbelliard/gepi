@@ -16,13 +16,13 @@
  * @method     JNotificationResponsableEleveQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JNotificationResponsableEleveQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JNotificationResponsableEleveQuery leftJoinAbsenceEleveNotification($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveNotification relation
- * @method     JNotificationResponsableEleveQuery rightJoinAbsenceEleveNotification($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveNotification relation
- * @method     JNotificationResponsableEleveQuery innerJoinAbsenceEleveNotification($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     JNotificationResponsableEleveQuery leftJoinAbsenceEleveNotification($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     JNotificationResponsableEleveQuery rightJoinAbsenceEleveNotification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveNotification relation
+ * @method     JNotificationResponsableEleveQuery innerJoinAbsenceEleveNotification($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveNotification relation
  *
- * @method     JNotificationResponsableEleveQuery leftJoinResponsableEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the ResponsableEleve relation
- * @method     JNotificationResponsableEleveQuery rightJoinResponsableEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ResponsableEleve relation
- * @method     JNotificationResponsableEleveQuery innerJoinResponsableEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the ResponsableEleve relation
+ * @method     JNotificationResponsableEleveQuery leftJoinResponsableEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResponsableEleve relation
+ * @method     JNotificationResponsableEleveQuery rightJoinResponsableEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResponsableEleve relation
+ * @method     JNotificationResponsableEleveQuery innerJoinResponsableEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the ResponsableEleve relation
  *
  * @method     JNotificationResponsableEleve findOne(PropelPDO $con = null) Return the first JNotificationResponsableEleve matching the query
  * @method     JNotificationResponsableEleve findOneOrCreate(PropelPDO $con = null) Return the first JNotificationResponsableEleve matching the query, or a new JNotificationResponsableEleve object populated from the query conditions when no match is found
@@ -214,7 +214,7 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	 *
 	 * @return    JNotificationResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function joinAbsenceEleveNotification($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinAbsenceEleveNotification($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveNotification');
@@ -249,7 +249,7 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveNotificationQuery A secondary query class using the current class as primary query
 	 */
-	public function useAbsenceEleveNotificationQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useAbsenceEleveNotificationQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinAbsenceEleveNotification($relationAlias, $joinType)
@@ -278,7 +278,7 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	 *
 	 * @return    JNotificationResponsableEleveQuery The current query, for fluid interface
 	 */
-	public function joinResponsableEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinResponsableEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ResponsableEleve');
@@ -313,7 +313,7 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useResponsableEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useResponsableEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinResponsableEleve($relationAlias, $joinType)

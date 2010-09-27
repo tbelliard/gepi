@@ -18,13 +18,13 @@
  * @method     JProfesseursMatieresQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JProfesseursMatieresQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JProfesseursMatieresQuery leftJoinMatiere($relationAlias = '') Adds a LEFT JOIN clause to the query using the Matiere relation
- * @method     JProfesseursMatieresQuery rightJoinMatiere($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Matiere relation
- * @method     JProfesseursMatieresQuery innerJoinMatiere($relationAlias = '') Adds a INNER JOIN clause to the query using the Matiere relation
+ * @method     JProfesseursMatieresQuery leftJoinMatiere($relationAlias = null) Adds a LEFT JOIN clause to the query using the Matiere relation
+ * @method     JProfesseursMatieresQuery rightJoinMatiere($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Matiere relation
+ * @method     JProfesseursMatieresQuery innerJoinMatiere($relationAlias = null) Adds a INNER JOIN clause to the query using the Matiere relation
  *
- * @method     JProfesseursMatieresQuery leftJoinProfesseur($relationAlias = '') Adds a LEFT JOIN clause to the query using the Professeur relation
- * @method     JProfesseursMatieresQuery rightJoinProfesseur($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Professeur relation
- * @method     JProfesseursMatieresQuery innerJoinProfesseur($relationAlias = '') Adds a INNER JOIN clause to the query using the Professeur relation
+ * @method     JProfesseursMatieresQuery leftJoinProfesseur($relationAlias = null) Adds a LEFT JOIN clause to the query using the Professeur relation
+ * @method     JProfesseursMatieresQuery rightJoinProfesseur($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Professeur relation
+ * @method     JProfesseursMatieresQuery innerJoinProfesseur($relationAlias = null) Adds a INNER JOIN clause to the query using the Professeur relation
  *
  * @method     JProfesseursMatieres findOne(PropelPDO $con = null) Return the first JProfesseursMatieres matching the query
  * @method     JProfesseursMatieres findOneOrCreate(PropelPDO $con = null) Return the first JProfesseursMatieres matching the query, or a new JProfesseursMatieres object populated from the query conditions when no match is found
@@ -254,7 +254,7 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	 *
 	 * @return    JProfesseursMatieresQuery The current query, for fluid interface
 	 */
-	public function joinMatiere($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinMatiere($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Matiere');
@@ -289,7 +289,7 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	 *
 	 * @return    MatiereQuery A secondary query class using the current class as primary query
 	 */
-	public function useMatiereQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useMatiereQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinMatiere($relationAlias, $joinType)
@@ -318,7 +318,7 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	 *
 	 * @return    JProfesseursMatieresQuery The current query, for fluid interface
 	 */
-	public function joinProfesseur($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinProfesseur($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Professeur');
@@ -353,7 +353,7 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useProfesseurQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useProfesseurQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinProfesseur($relationAlias, $joinType)

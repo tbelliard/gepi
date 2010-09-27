@@ -14,7 +14,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'AbsenceEleveSaisiePeer';
+	const PEER = 'AbsenceEleveSaisiePeer';
 
 	/**
 	 * The Peer class.
@@ -1028,7 +1028,6 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aUtilisateurProfessionnel = null;
 			$this->aEleve = null;
 			$this->aEdtCreneau = null;
@@ -1038,7 +1037,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->aAidDetails = null;
 			$this->aModifieParUtilisateur = null;
 			$this->collJTraitementSaisieEleves = null;
-
+			$this->collAbsenceEleveTraitements = null;
 		} // if (deep)
 	}
 
@@ -1060,7 +1059,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -1102,7 +1101,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -1476,7 +1475,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1840,11 +1839,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aUtilisateurProfessionnel === null && (($this->utilisateur_id !== "" && $this->utilisateur_id !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->utilisateur_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addAbsenceEleveSaisies($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUtilisateurProfessionnel->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -1889,11 +1888,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aEleve === null && ($this->eleve_id !== null)) {
 			$this->aEleve = EleveQuery::create()->findPk($this->eleve_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEleve->addAbsenceEleveSaisies($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEleve->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aEleve;
@@ -1938,11 +1937,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aEdtCreneau === null && ($this->id_edt_creneau !== null)) {
 			$this->aEdtCreneau = EdtCreneauQuery::create()->findPk($this->id_edt_creneau, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEdtCreneau->addAbsenceEleveSaisies($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEdtCreneau->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aEdtCreneau;
@@ -1987,11 +1986,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aEdtEmplacementCours === null && ($this->id_edt_emplacement_cours !== null)) {
 			$this->aEdtEmplacementCours = EdtEmplacementCoursQuery::create()->findPk($this->id_edt_emplacement_cours, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEdtEmplacementCours->addAbsenceEleveSaisies($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEdtEmplacementCours->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aEdtEmplacementCours;
@@ -2036,11 +2035,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
 			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aGroupe->addAbsenceEleveSaisies($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aGroupe->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aGroupe;
@@ -2085,11 +2084,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aClasse === null && ($this->id_classe !== null)) {
 			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aClasse->addAbsenceEleveSaisies($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aClasse->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aClasse;
@@ -2134,11 +2133,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aAidDetails === null && ($this->id_aid !== null)) {
 			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAidDetails->addAbsenceEleveSaisies($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aAidDetails->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aAidDetails;
@@ -2183,11 +2182,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aModifieParUtilisateur === null && (($this->modifie_par_utilisateur_id !== "" && $this->modifie_par_utilisateur_id !== null))) {
 			$this->aModifieParUtilisateur = UtilisateurProfessionnelQuery::create()->findPk($this->modifie_par_utilisateur_id, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aModifieParUtilisateur->addModifiedAbsenceEleveSaisies($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aModifieParUtilisateur->addModifiedAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aModifieParUtilisateur;
@@ -2435,7 +2434,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$jTraitementSaisieEleve = new JTraitementSaisieEleve();
 			$jTraitementSaisieEleve->setAbsenceEleveTraitement($absenceEleveTraitement);
 			$this->addJTraitementSaisieEleve($jTraitementSaisieEleve);
-			
+
 			$this->collAbsenceEleveTraitements[]= $absenceEleveTraitement;
 		}
 	}

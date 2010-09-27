@@ -16,13 +16,13 @@
  * @method     JGroupesProfesseursQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JGroupesProfesseursQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JGroupesProfesseursQuery leftJoinGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the Groupe relation
- * @method     JGroupesProfesseursQuery rightJoinGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Groupe relation
- * @method     JGroupesProfesseursQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
+ * @method     JGroupesProfesseursQuery leftJoinGroupe($relationAlias = null) Adds a LEFT JOIN clause to the query using the Groupe relation
+ * @method     JGroupesProfesseursQuery rightJoinGroupe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Groupe relation
+ * @method     JGroupesProfesseursQuery innerJoinGroupe($relationAlias = null) Adds a INNER JOIN clause to the query using the Groupe relation
  *
- * @method     JGroupesProfesseursQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     JGroupesProfesseursQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     JGroupesProfesseursQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JGroupesProfesseursQuery leftJoinUtilisateurProfessionnel($relationAlias = null) Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JGroupesProfesseursQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JGroupesProfesseursQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
  * @method     JGroupesProfesseurs findOne(PropelPDO $con = null) Return the first JGroupesProfesseurs matching the query
  * @method     JGroupesProfesseurs findOneOrCreate(PropelPDO $con = null) Return the first JGroupesProfesseurs matching the query, or a new JGroupesProfesseurs object populated from the query conditions when no match is found
@@ -214,7 +214,7 @@ abstract class BaseJGroupesProfesseursQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesProfesseursQuery The current query, for fluid interface
 	 */
-	public function joinGroupe($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinGroupe($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
@@ -249,7 +249,7 @@ abstract class BaseJGroupesProfesseursQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useGroupeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinGroupe($relationAlias, $joinType)
@@ -278,7 +278,7 @@ abstract class BaseJGroupesProfesseursQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesProfesseursQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
@@ -313,7 +313,7 @@ abstract class BaseJGroupesProfesseursQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)

@@ -14,7 +14,7 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'JAidElevesPeer';
+	const PEER = 'JAidElevesPeer';
 
 	/**
 	 * The Peer class.
@@ -237,7 +237,6 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aAidDetails = null;
 			$this->aEleve = null;
 		} // if (deep)
@@ -261,7 +260,7 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(JAidElevesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -303,7 +302,7 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(JAidElevesPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -525,7 +524,7 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -653,7 +652,7 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 		$pks = array();
 		$pks[0] = $this->getIdAid();
 		$pks[1] = $this->getLogin();
-		
+
 		return $pks;
 	}
 
@@ -773,11 +772,11 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 		if ($this->aAidDetails === null && (($this->id_aid !== "" && $this->id_aid !== null))) {
 			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aAidDetails->addJAidElevess($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aAidDetails->addJAidElevess($this);
 			 */
 		}
 		return $this->aAidDetails;
@@ -824,11 +823,11 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 				->filterByJAidEleves($this) // here
 				->findOne($con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEleve->addJAidElevess($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEleve->addJAidElevess($this);
 			 */
 		}
 		return $this->aEleve;

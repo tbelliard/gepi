@@ -16,13 +16,13 @@
  * @method     JEleveAncienEtablissementQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JEleveAncienEtablissementQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JEleveAncienEtablissementQuery leftJoinEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the Eleve relation
- * @method     JEleveAncienEtablissementQuery rightJoinEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Eleve relation
- * @method     JEleveAncienEtablissementQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
+ * @method     JEleveAncienEtablissementQuery leftJoinEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the Eleve relation
+ * @method     JEleveAncienEtablissementQuery rightJoinEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Eleve relation
+ * @method     JEleveAncienEtablissementQuery innerJoinEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the Eleve relation
  *
- * @method     JEleveAncienEtablissementQuery leftJoinAncienEtablissement($relationAlias = '') Adds a LEFT JOIN clause to the query using the AncienEtablissement relation
- * @method     JEleveAncienEtablissementQuery rightJoinAncienEtablissement($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AncienEtablissement relation
- * @method     JEleveAncienEtablissementQuery innerJoinAncienEtablissement($relationAlias = '') Adds a INNER JOIN clause to the query using the AncienEtablissement relation
+ * @method     JEleveAncienEtablissementQuery leftJoinAncienEtablissement($relationAlias = null) Adds a LEFT JOIN clause to the query using the AncienEtablissement relation
+ * @method     JEleveAncienEtablissementQuery rightJoinAncienEtablissement($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AncienEtablissement relation
+ * @method     JEleveAncienEtablissementQuery innerJoinAncienEtablissement($relationAlias = null) Adds a INNER JOIN clause to the query using the AncienEtablissement relation
  *
  * @method     JEleveAncienEtablissement findOne(PropelPDO $con = null) Return the first JEleveAncienEtablissement matching the query
  * @method     JEleveAncienEtablissement findOneOrCreate(PropelPDO $con = null) Return the first JEleveAncienEtablissement matching the query, or a new JEleveAncienEtablissement object populated from the query conditions when no match is found
@@ -219,7 +219,7 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    JEleveAncienEtablissementQuery The current query, for fluid interface
 	 */
-	public function joinEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Eleve');
@@ -254,7 +254,7 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinEleve($relationAlias, $joinType)
@@ -283,7 +283,7 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    JEleveAncienEtablissementQuery The current query, for fluid interface
 	 */
-	public function joinAncienEtablissement($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinAncienEtablissement($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AncienEtablissement');
@@ -318,7 +318,7 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    AncienEtablissementQuery A secondary query class using the current class as primary query
 	 */
-	public function useAncienEtablissementQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useAncienEtablissementQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinAncienEtablissement($relationAlias, $joinType)

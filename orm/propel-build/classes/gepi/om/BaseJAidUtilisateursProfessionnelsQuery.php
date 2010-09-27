@@ -16,13 +16,13 @@
  * @method     JAidUtilisateursProfessionnelsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JAidUtilisateursProfessionnelsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JAidUtilisateursProfessionnelsQuery leftJoinAidDetails($relationAlias = '') Adds a LEFT JOIN clause to the query using the AidDetails relation
- * @method     JAidUtilisateursProfessionnelsQuery rightJoinAidDetails($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AidDetails relation
- * @method     JAidUtilisateursProfessionnelsQuery innerJoinAidDetails($relationAlias = '') Adds a INNER JOIN clause to the query using the AidDetails relation
+ * @method     JAidUtilisateursProfessionnelsQuery leftJoinAidDetails($relationAlias = null) Adds a LEFT JOIN clause to the query using the AidDetails relation
+ * @method     JAidUtilisateursProfessionnelsQuery rightJoinAidDetails($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AidDetails relation
+ * @method     JAidUtilisateursProfessionnelsQuery innerJoinAidDetails($relationAlias = null) Adds a INNER JOIN clause to the query using the AidDetails relation
  *
- * @method     JAidUtilisateursProfessionnelsQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     JAidUtilisateursProfessionnelsQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     JAidUtilisateursProfessionnelsQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JAidUtilisateursProfessionnelsQuery leftJoinUtilisateurProfessionnel($relationAlias = null) Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JAidUtilisateursProfessionnelsQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     JAidUtilisateursProfessionnelsQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
  * @method     JAidUtilisateursProfessionnels findOne(PropelPDO $con = null) Return the first JAidUtilisateursProfessionnels matching the query
  * @method     JAidUtilisateursProfessionnels findOneOrCreate(PropelPDO $con = null) Return the first JAidUtilisateursProfessionnels matching the query, or a new JAidUtilisateursProfessionnels object populated from the query conditions when no match is found
@@ -219,7 +219,7 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	 *
 	 * @return    JAidUtilisateursProfessionnelsQuery The current query, for fluid interface
 	 */
-	public function joinAidDetails($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinAidDetails($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AidDetails');
@@ -254,7 +254,7 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	 *
 	 * @return    AidDetailsQuery A secondary query class using the current class as primary query
 	 */
-	public function useAidDetailsQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useAidDetailsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinAidDetails($relationAlias, $joinType)
@@ -283,7 +283,7 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	 *
 	 * @return    JAidUtilisateursProfessionnelsQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
@@ -318,7 +318,7 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)

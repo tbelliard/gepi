@@ -30,21 +30,21 @@
  * @method     CahierTexteCompteRenduQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     CahierTexteCompteRenduQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     CahierTexteCompteRenduQuery leftJoinGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the Groupe relation
- * @method     CahierTexteCompteRenduQuery rightJoinGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Groupe relation
- * @method     CahierTexteCompteRenduQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
+ * @method     CahierTexteCompteRenduQuery leftJoinGroupe($relationAlias = null) Adds a LEFT JOIN clause to the query using the Groupe relation
+ * @method     CahierTexteCompteRenduQuery rightJoinGroupe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Groupe relation
+ * @method     CahierTexteCompteRenduQuery innerJoinGroupe($relationAlias = null) Adds a INNER JOIN clause to the query using the Groupe relation
  *
- * @method     CahierTexteCompteRenduQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     CahierTexteCompteRenduQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     CahierTexteCompteRenduQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     CahierTexteCompteRenduQuery leftJoinUtilisateurProfessionnel($relationAlias = null) Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     CahierTexteCompteRenduQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     CahierTexteCompteRenduQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
- * @method     CahierTexteCompteRenduQuery leftJoinCahierTexteSequence($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteSequence relation
- * @method     CahierTexteCompteRenduQuery rightJoinCahierTexteSequence($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteSequence relation
- * @method     CahierTexteCompteRenduQuery innerJoinCahierTexteSequence($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteSequence relation
+ * @method     CahierTexteCompteRenduQuery leftJoinCahierTexteSequence($relationAlias = null) Adds a LEFT JOIN clause to the query using the CahierTexteSequence relation
+ * @method     CahierTexteCompteRenduQuery rightJoinCahierTexteSequence($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CahierTexteSequence relation
+ * @method     CahierTexteCompteRenduQuery innerJoinCahierTexteSequence($relationAlias = null) Adds a INNER JOIN clause to the query using the CahierTexteSequence relation
  *
- * @method     CahierTexteCompteRenduQuery leftJoinCahierTexteCompteRenduFichierJoint($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteCompteRenduFichierJoint relation
- * @method     CahierTexteCompteRenduQuery rightJoinCahierTexteCompteRenduFichierJoint($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteCompteRenduFichierJoint relation
- * @method     CahierTexteCompteRenduQuery innerJoinCahierTexteCompteRenduFichierJoint($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteCompteRenduFichierJoint relation
+ * @method     CahierTexteCompteRenduQuery leftJoinCahierTexteCompteRenduFichierJoint($relationAlias = null) Adds a LEFT JOIN clause to the query using the CahierTexteCompteRenduFichierJoint relation
+ * @method     CahierTexteCompteRenduQuery rightJoinCahierTexteCompteRenduFichierJoint($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CahierTexteCompteRenduFichierJoint relation
+ * @method     CahierTexteCompteRenduQuery innerJoinCahierTexteCompteRenduFichierJoint($relationAlias = null) Adds a INNER JOIN clause to the query using the CahierTexteCompteRenduFichierJoint relation
  *
  * @method     CahierTexteCompteRendu findOne(PropelPDO $con = null) Return the first CahierTexteCompteRendu matching the query
  * @method     CahierTexteCompteRendu findOneOrCreate(PropelPDO $con = null) Return the first CahierTexteCompteRendu matching the query, or a new CahierTexteCompteRendu object populated from the query conditions when no match is found
@@ -428,7 +428,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function joinGroupe($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinGroupe($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
@@ -463,7 +463,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useGroupeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinGroupe($relationAlias, $joinType)
@@ -492,7 +492,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
@@ -527,7 +527,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)
@@ -556,7 +556,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteSequence($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinCahierTexteSequence($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteSequence');
@@ -591,7 +591,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteSequenceQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteSequenceQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useCahierTexteSequenceQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinCahierTexteSequence($relationAlias, $joinType)
@@ -620,7 +620,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteCompteRenduFichierJoint($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinCahierTexteCompteRenduFichierJoint($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteCompteRenduFichierJoint');
@@ -655,7 +655,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduFichierJointQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteCompteRenduFichierJointQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useCahierTexteCompteRenduFichierJointQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinCahierTexteCompteRenduFichierJoint($relationAlias, $joinType)

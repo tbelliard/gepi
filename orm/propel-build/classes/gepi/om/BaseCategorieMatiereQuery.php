@@ -20,17 +20,17 @@
  * @method     CategorieMatiereQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     CategorieMatiereQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     CategorieMatiereQuery leftJoinJGroupesClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JGroupesClasses relation
- * @method     CategorieMatiereQuery rightJoinJGroupesClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
- * @method     CategorieMatiereQuery innerJoinJGroupesClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesClasses relation
+ * @method     CategorieMatiereQuery leftJoinJGroupesClasses($relationAlias = null) Adds a LEFT JOIN clause to the query using the JGroupesClasses relation
+ * @method     CategorieMatiereQuery rightJoinJGroupesClasses($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
+ * @method     CategorieMatiereQuery innerJoinJGroupesClasses($relationAlias = null) Adds a INNER JOIN clause to the query using the JGroupesClasses relation
  *
- * @method     CategorieMatiereQuery leftJoinMatiere($relationAlias = '') Adds a LEFT JOIN clause to the query using the Matiere relation
- * @method     CategorieMatiereQuery rightJoinMatiere($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Matiere relation
- * @method     CategorieMatiereQuery innerJoinMatiere($relationAlias = '') Adds a INNER JOIN clause to the query using the Matiere relation
+ * @method     CategorieMatiereQuery leftJoinMatiere($relationAlias = null) Adds a LEFT JOIN clause to the query using the Matiere relation
+ * @method     CategorieMatiereQuery rightJoinMatiere($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Matiere relation
+ * @method     CategorieMatiereQuery innerJoinMatiere($relationAlias = null) Adds a INNER JOIN clause to the query using the Matiere relation
  *
- * @method     CategorieMatiereQuery leftJoinJCategoriesMatieresClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JCategoriesMatieresClasses relation
- * @method     CategorieMatiereQuery rightJoinJCategoriesMatieresClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JCategoriesMatieresClasses relation
- * @method     CategorieMatiereQuery innerJoinJCategoriesMatieresClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JCategoriesMatieresClasses relation
+ * @method     CategorieMatiereQuery leftJoinJCategoriesMatieresClasses($relationAlias = null) Adds a LEFT JOIN clause to the query using the JCategoriesMatieresClasses relation
+ * @method     CategorieMatiereQuery rightJoinJCategoriesMatieresClasses($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JCategoriesMatieresClasses relation
+ * @method     CategorieMatiereQuery innerJoinJCategoriesMatieresClasses($relationAlias = null) Adds a INNER JOIN clause to the query using the JCategoriesMatieresClasses relation
  *
  * @method     CategorieMatiere findOne(PropelPDO $con = null) Return the first CategorieMatiere matching the query
  * @method     CategorieMatiere findOneOrCreate(PropelPDO $con = null) Return the first CategorieMatiere matching the query, or a new CategorieMatiere object populated from the query conditions when no match is found
@@ -267,7 +267,7 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	 *
 	 * @return    CategorieMatiereQuery The current query, for fluid interface
 	 */
-	public function joinJGroupesClasses($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJGroupesClasses($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JGroupesClasses');
@@ -302,7 +302,7 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery A secondary query class using the current class as primary query
 	 */
-	public function useJGroupesClassesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJGroupesClassesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJGroupesClasses($relationAlias, $joinType)
@@ -331,7 +331,7 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	 *
 	 * @return    CategorieMatiereQuery The current query, for fluid interface
 	 */
-	public function joinMatiere($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinMatiere($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Matiere');
@@ -366,7 +366,7 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	 *
 	 * @return    MatiereQuery A secondary query class using the current class as primary query
 	 */
-	public function useMatiereQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useMatiereQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinMatiere($relationAlias, $joinType)
@@ -395,7 +395,7 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	 *
 	 * @return    CategorieMatiereQuery The current query, for fluid interface
 	 */
-	public function joinJCategoriesMatieresClasses($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJCategoriesMatieresClasses($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JCategoriesMatieresClasses');
@@ -430,7 +430,7 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	 *
 	 * @return    JCategoriesMatieresClassesQuery A secondary query class using the current class as primary query
 	 */
-	public function useJCategoriesMatieresClassesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJCategoriesMatieresClassesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJCategoriesMatieresClasses($relationAlias, $joinType)

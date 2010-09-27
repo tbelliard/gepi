@@ -18,9 +18,9 @@
  * @method     AbsenceEleveTypeStatutAutoriseQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     AbsenceEleveTypeStatutAutoriseQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     AbsenceEleveTypeStatutAutoriseQuery leftJoinAbsenceEleveType($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveType relation
- * @method     AbsenceEleveTypeStatutAutoriseQuery rightJoinAbsenceEleveType($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveType relation
- * @method     AbsenceEleveTypeStatutAutoriseQuery innerJoinAbsenceEleveType($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveType relation
+ * @method     AbsenceEleveTypeStatutAutoriseQuery leftJoinAbsenceEleveType($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveType relation
+ * @method     AbsenceEleveTypeStatutAutoriseQuery rightJoinAbsenceEleveType($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveType relation
+ * @method     AbsenceEleveTypeStatutAutoriseQuery innerJoinAbsenceEleveType($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveType relation
  *
  * @method     AbsenceEleveTypeStatutAutorise findOne(PropelPDO $con = null) Return the first AbsenceEleveTypeStatutAutorise matching the query
  * @method     AbsenceEleveTypeStatutAutorise findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveTypeStatutAutorise matching the query, or a new AbsenceEleveTypeStatutAutorise object populated from the query conditions when no match is found
@@ -233,7 +233,7 @@ abstract class BaseAbsenceEleveTypeStatutAutoriseQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeStatutAutoriseQuery The current query, for fluid interface
 	 */
-	public function joinAbsenceEleveType($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinAbsenceEleveType($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveType');
@@ -268,7 +268,7 @@ abstract class BaseAbsenceEleveTypeStatutAutoriseQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveTypeQuery A secondary query class using the current class as primary query
 	 */
-	public function useAbsenceEleveTypeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useAbsenceEleveTypeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinAbsenceEleveType($relationAlias, $joinType)

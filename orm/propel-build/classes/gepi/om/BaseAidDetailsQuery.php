@@ -60,25 +60,25 @@
  * @method     AidDetailsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     AidDetailsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     AidDetailsQuery leftJoinAidConfiguration($relationAlias = '') Adds a LEFT JOIN clause to the query using the AidConfiguration relation
- * @method     AidDetailsQuery rightJoinAidConfiguration($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AidConfiguration relation
- * @method     AidDetailsQuery innerJoinAidConfiguration($relationAlias = '') Adds a INNER JOIN clause to the query using the AidConfiguration relation
+ * @method     AidDetailsQuery leftJoinAidConfiguration($relationAlias = null) Adds a LEFT JOIN clause to the query using the AidConfiguration relation
+ * @method     AidDetailsQuery rightJoinAidConfiguration($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AidConfiguration relation
+ * @method     AidDetailsQuery innerJoinAidConfiguration($relationAlias = null) Adds a INNER JOIN clause to the query using the AidConfiguration relation
  *
- * @method     AidDetailsQuery leftJoinJAidUtilisateursProfessionnels($relationAlias = '') Adds a LEFT JOIN clause to the query using the JAidUtilisateursProfessionnels relation
- * @method     AidDetailsQuery rightJoinJAidUtilisateursProfessionnels($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JAidUtilisateursProfessionnels relation
- * @method     AidDetailsQuery innerJoinJAidUtilisateursProfessionnels($relationAlias = '') Adds a INNER JOIN clause to the query using the JAidUtilisateursProfessionnels relation
+ * @method     AidDetailsQuery leftJoinJAidUtilisateursProfessionnels($relationAlias = null) Adds a LEFT JOIN clause to the query using the JAidUtilisateursProfessionnels relation
+ * @method     AidDetailsQuery rightJoinJAidUtilisateursProfessionnels($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JAidUtilisateursProfessionnels relation
+ * @method     AidDetailsQuery innerJoinJAidUtilisateursProfessionnels($relationAlias = null) Adds a INNER JOIN clause to the query using the JAidUtilisateursProfessionnels relation
  *
- * @method     AidDetailsQuery leftJoinJAidEleves($relationAlias = '') Adds a LEFT JOIN clause to the query using the JAidEleves relation
- * @method     AidDetailsQuery rightJoinJAidEleves($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JAidEleves relation
- * @method     AidDetailsQuery innerJoinJAidEleves($relationAlias = '') Adds a INNER JOIN clause to the query using the JAidEleves relation
+ * @method     AidDetailsQuery leftJoinJAidEleves($relationAlias = null) Adds a LEFT JOIN clause to the query using the JAidEleves relation
+ * @method     AidDetailsQuery rightJoinJAidEleves($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JAidEleves relation
+ * @method     AidDetailsQuery innerJoinJAidEleves($relationAlias = null) Adds a INNER JOIN clause to the query using the JAidEleves relation
  *
- * @method     AidDetailsQuery leftJoinAbsenceEleveSaisie($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
- * @method     AidDetailsQuery rightJoinAbsenceEleveSaisie($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
- * @method     AidDetailsQuery innerJoinAbsenceEleveSaisie($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     AidDetailsQuery leftJoinAbsenceEleveSaisie($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     AidDetailsQuery rightJoinAbsenceEleveSaisie($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     AidDetailsQuery innerJoinAbsenceEleveSaisie($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
  *
- * @method     AidDetailsQuery leftJoinEdtEmplacementCours($relationAlias = '') Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
- * @method     AidDetailsQuery rightJoinEdtEmplacementCours($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
- * @method     AidDetailsQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     AidDetailsQuery leftJoinEdtEmplacementCours($relationAlias = null) Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     AidDetailsQuery rightJoinEdtEmplacementCours($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     AidDetailsQuery innerJoinEdtEmplacementCours($relationAlias = null) Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
  * @method     AidDetails findOne(PropelPDO $con = null) Return the first AidDetails matching the query
  * @method     AidDetails findOneOrCreate(PropelPDO $con = null) Return the first AidDetails matching the query, or a new AidDetails object populated from the query conditions when no match is found
@@ -809,7 +809,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
 	 */
-	public function joinAidConfiguration($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinAidConfiguration($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AidConfiguration');
@@ -844,7 +844,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 *
 	 * @return    AidConfigurationQuery A secondary query class using the current class as primary query
 	 */
-	public function useAidConfigurationQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useAidConfigurationQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinAidConfiguration($relationAlias, $joinType)
@@ -873,7 +873,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
 	 */
-	public function joinJAidUtilisateursProfessionnels($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJAidUtilisateursProfessionnels($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JAidUtilisateursProfessionnels');
@@ -908,7 +908,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 *
 	 * @return    JAidUtilisateursProfessionnelsQuery A secondary query class using the current class as primary query
 	 */
-	public function useJAidUtilisateursProfessionnelsQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJAidUtilisateursProfessionnelsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJAidUtilisateursProfessionnels($relationAlias, $joinType)
@@ -937,7 +937,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
 	 */
-	public function joinJAidEleves($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJAidEleves($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JAidEleves');
@@ -972,7 +972,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 *
 	 * @return    JAidElevesQuery A secondary query class using the current class as primary query
 	 */
-	public function useJAidElevesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJAidElevesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJAidEleves($relationAlias, $joinType)
@@ -1001,7 +1001,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
 	 */
-	public function joinAbsenceEleveSaisie($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinAbsenceEleveSaisie($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
@@ -1036,7 +1036,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery A secondary query class using the current class as primary query
 	 */
-	public function useAbsenceEleveSaisieQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useAbsenceEleveSaisieQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinAbsenceEleveSaisie($relationAlias, $joinType)
@@ -1065,7 +1065,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
 	 */
-	public function joinEdtEmplacementCours($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinEdtEmplacementCours($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtEmplacementCours');
@@ -1100,7 +1100,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery A secondary query class using the current class as primary query
 	 */
-	public function useEdtEmplacementCoursQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useEdtEmplacementCoursQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinEdtEmplacementCours($relationAlias, $joinType)

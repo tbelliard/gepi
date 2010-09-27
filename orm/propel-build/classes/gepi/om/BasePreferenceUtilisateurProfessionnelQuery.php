@@ -18,9 +18,9 @@
  * @method     PreferenceUtilisateurProfessionnelQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     PreferenceUtilisateurProfessionnelQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     PreferenceUtilisateurProfessionnelQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     PreferenceUtilisateurProfessionnelQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     PreferenceUtilisateurProfessionnelQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     PreferenceUtilisateurProfessionnelQuery leftJoinUtilisateurProfessionnel($relationAlias = null) Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     PreferenceUtilisateurProfessionnelQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     PreferenceUtilisateurProfessionnelQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
  * @method     PreferenceUtilisateurProfessionnel findOne(PropelPDO $con = null) Return the first PreferenceUtilisateurProfessionnel matching the query
  * @method     PreferenceUtilisateurProfessionnel findOneOrCreate(PropelPDO $con = null) Return the first PreferenceUtilisateurProfessionnel matching the query, or a new PreferenceUtilisateurProfessionnel object populated from the query conditions when no match is found
@@ -241,7 +241,7 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    PreferenceUtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
@@ -276,7 +276,7 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)

@@ -16,13 +16,13 @@
  * @method     JGroupesMatieresQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JGroupesMatieresQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JGroupesMatieresQuery leftJoinGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the Groupe relation
- * @method     JGroupesMatieresQuery rightJoinGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Groupe relation
- * @method     JGroupesMatieresQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
+ * @method     JGroupesMatieresQuery leftJoinGroupe($relationAlias = null) Adds a LEFT JOIN clause to the query using the Groupe relation
+ * @method     JGroupesMatieresQuery rightJoinGroupe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Groupe relation
+ * @method     JGroupesMatieresQuery innerJoinGroupe($relationAlias = null) Adds a INNER JOIN clause to the query using the Groupe relation
  *
- * @method     JGroupesMatieresQuery leftJoinMatiere($relationAlias = '') Adds a LEFT JOIN clause to the query using the Matiere relation
- * @method     JGroupesMatieresQuery rightJoinMatiere($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Matiere relation
- * @method     JGroupesMatieresQuery innerJoinMatiere($relationAlias = '') Adds a INNER JOIN clause to the query using the Matiere relation
+ * @method     JGroupesMatieresQuery leftJoinMatiere($relationAlias = null) Adds a LEFT JOIN clause to the query using the Matiere relation
+ * @method     JGroupesMatieresQuery rightJoinMatiere($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Matiere relation
+ * @method     JGroupesMatieresQuery innerJoinMatiere($relationAlias = null) Adds a INNER JOIN clause to the query using the Matiere relation
  *
  * @method     JGroupesMatieres findOne(PropelPDO $con = null) Return the first JGroupesMatieres matching the query
  * @method     JGroupesMatieres findOneOrCreate(PropelPDO $con = null) Return the first JGroupesMatieres matching the query, or a new JGroupesMatieres object populated from the query conditions when no match is found
@@ -214,7 +214,7 @@ abstract class BaseJGroupesMatieresQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesMatieresQuery The current query, for fluid interface
 	 */
-	public function joinGroupe($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinGroupe($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
@@ -249,7 +249,7 @@ abstract class BaseJGroupesMatieresQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useGroupeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinGroupe($relationAlias, $joinType)
@@ -278,7 +278,7 @@ abstract class BaseJGroupesMatieresQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesMatieresQuery The current query, for fluid interface
 	 */
-	public function joinMatiere($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinMatiere($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Matiere');
@@ -313,7 +313,7 @@ abstract class BaseJGroupesMatieresQuery extends ModelCriteria
 	 *
 	 * @return    MatiereQuery A secondary query class using the current class as primary query
 	 */
-	public function useMatiereQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useMatiereQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinMatiere($relationAlias, $joinType)

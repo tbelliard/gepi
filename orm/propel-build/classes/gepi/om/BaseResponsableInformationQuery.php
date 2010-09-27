@@ -20,13 +20,13 @@
  * @method     ResponsableInformationQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ResponsableInformationQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ResponsableInformationQuery leftJoinEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the Eleve relation
- * @method     ResponsableInformationQuery rightJoinEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Eleve relation
- * @method     ResponsableInformationQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
+ * @method     ResponsableInformationQuery leftJoinEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the Eleve relation
+ * @method     ResponsableInformationQuery rightJoinEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Eleve relation
+ * @method     ResponsableInformationQuery innerJoinEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the Eleve relation
  *
- * @method     ResponsableInformationQuery leftJoinResponsableEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the ResponsableEleve relation
- * @method     ResponsableInformationQuery rightJoinResponsableEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the ResponsableEleve relation
- * @method     ResponsableInformationQuery innerJoinResponsableEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the ResponsableEleve relation
+ * @method     ResponsableInformationQuery leftJoinResponsableEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the ResponsableEleve relation
+ * @method     ResponsableInformationQuery rightJoinResponsableEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ResponsableEleve relation
+ * @method     ResponsableInformationQuery innerJoinResponsableEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the ResponsableEleve relation
  *
  * @method     ResponsableInformation findOne(PropelPDO $con = null) Return the first ResponsableInformation matching the query
  * @method     ResponsableInformation findOneOrCreate(PropelPDO $con = null) Return the first ResponsableInformation matching the query, or a new ResponsableInformation object populated from the query conditions when no match is found
@@ -271,7 +271,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
 	 */
-	public function joinEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Eleve');
@@ -306,7 +306,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinEleve($relationAlias, $joinType)
@@ -335,7 +335,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
 	 */
-	public function joinResponsableEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinResponsableEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('ResponsableEleve');
@@ -370,7 +370,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 *
 	 * @return    ResponsableEleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useResponsableEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useResponsableEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinResponsableEleve($relationAlias, $joinType)

@@ -14,7 +14,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'EdtCalendrierPeriodePeer';
+	const PEER = 'EdtCalendrierPeriodePeer';
 
 	/**
 	 * The Peer class.
@@ -806,9 +806,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->collEdtEmplacementCourss = null;
-
 		} // if (deep)
 	}
 
@@ -830,7 +828,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		if ($con === null) {
 			$con = Propel::getConnection(EdtCalendrierPeriodePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -872,7 +870,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		if ($con === null) {
 			$con = Propel::getConnection(EdtCalendrierPeriodePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -1103,7 +1101,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 *

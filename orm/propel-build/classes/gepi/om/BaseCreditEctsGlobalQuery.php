@@ -18,9 +18,9 @@
  * @method     CreditEctsGlobalQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     CreditEctsGlobalQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     CreditEctsGlobalQuery leftJoinEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the Eleve relation
- * @method     CreditEctsGlobalQuery rightJoinEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Eleve relation
- * @method     CreditEctsGlobalQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
+ * @method     CreditEctsGlobalQuery leftJoinEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the Eleve relation
+ * @method     CreditEctsGlobalQuery rightJoinEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Eleve relation
+ * @method     CreditEctsGlobalQuery innerJoinEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the Eleve relation
  *
  * @method     CreditEctsGlobal findOne(PropelPDO $con = null) Return the first CreditEctsGlobal matching the query
  * @method     CreditEctsGlobal findOneOrCreate(PropelPDO $con = null) Return the first CreditEctsGlobal matching the query, or a new CreditEctsGlobal object populated from the query conditions when no match is found
@@ -231,7 +231,7 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsGlobalQuery The current query, for fluid interface
 	 */
-	public function joinEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Eleve');
@@ -266,7 +266,7 @@ abstract class BaseCreditEctsGlobalQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinEleve($relationAlias, $joinType)

@@ -16,13 +16,13 @@
  * @method     JAidElevesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     JAidElevesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     JAidElevesQuery leftJoinAidDetails($relationAlias = '') Adds a LEFT JOIN clause to the query using the AidDetails relation
- * @method     JAidElevesQuery rightJoinAidDetails($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AidDetails relation
- * @method     JAidElevesQuery innerJoinAidDetails($relationAlias = '') Adds a INNER JOIN clause to the query using the AidDetails relation
+ * @method     JAidElevesQuery leftJoinAidDetails($relationAlias = null) Adds a LEFT JOIN clause to the query using the AidDetails relation
+ * @method     JAidElevesQuery rightJoinAidDetails($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AidDetails relation
+ * @method     JAidElevesQuery innerJoinAidDetails($relationAlias = null) Adds a INNER JOIN clause to the query using the AidDetails relation
  *
- * @method     JAidElevesQuery leftJoinEleve($relationAlias = '') Adds a LEFT JOIN clause to the query using the Eleve relation
- * @method     JAidElevesQuery rightJoinEleve($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Eleve relation
- * @method     JAidElevesQuery innerJoinEleve($relationAlias = '') Adds a INNER JOIN clause to the query using the Eleve relation
+ * @method     JAidElevesQuery leftJoinEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the Eleve relation
+ * @method     JAidElevesQuery rightJoinEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Eleve relation
+ * @method     JAidElevesQuery innerJoinEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the Eleve relation
  *
  * @method     JAidEleves findOne(PropelPDO $con = null) Return the first JAidEleves matching the query
  * @method     JAidEleves findOneOrCreate(PropelPDO $con = null) Return the first JAidEleves matching the query, or a new JAidEleves object populated from the query conditions when no match is found
@@ -219,7 +219,7 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 *
 	 * @return    JAidElevesQuery The current query, for fluid interface
 	 */
-	public function joinAidDetails($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinAidDetails($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AidDetails');
@@ -254,7 +254,7 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 *
 	 * @return    AidDetailsQuery A secondary query class using the current class as primary query
 	 */
-	public function useAidDetailsQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useAidDetailsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinAidDetails($relationAlias, $joinType)
@@ -283,7 +283,7 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 *
 	 * @return    JAidElevesQuery The current query, for fluid interface
 	 */
-	public function joinEleve($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinEleve($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Eleve');
@@ -318,7 +318,7 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery A secondary query class using the current class as primary query
 	 */
-	public function useEleveQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useEleveQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinEleve($relationAlias, $joinType)

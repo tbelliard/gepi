@@ -14,7 +14,7 @@ abstract class BaseJEleveCpe extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'JEleveCpePeer';
+	const PEER = 'JEleveCpePeer';
 
 	/**
 	 * The Peer class.
@@ -269,7 +269,6 @@ abstract class BaseJEleveCpe extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aEleve = null;
 			$this->aUtilisateurProfessionnel = null;
 		} // if (deep)
@@ -293,7 +292,7 @@ abstract class BaseJEleveCpe extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(JEleveCpePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -335,7 +334,7 @@ abstract class BaseJEleveCpe extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(JEleveCpePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -557,7 +556,7 @@ abstract class BaseJEleveCpe extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -685,7 +684,7 @@ abstract class BaseJEleveCpe extends BaseObject  implements Persistent
 		$pks = array();
 		$pks[0] = $this->getELogin();
 		$pks[1] = $this->getCpeLogin();
-		
+
 		return $pks;
 	}
 
@@ -807,11 +806,11 @@ abstract class BaseJEleveCpe extends BaseObject  implements Persistent
 				->filterByJEleveCpe($this) // here
 				->findOne($con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aEleve->addJEleveCpes($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aEleve->addJEleveCpes($this);
 			 */
 		}
 		return $this->aEleve;
@@ -856,11 +855,11 @@ abstract class BaseJEleveCpe extends BaseObject  implements Persistent
 		if ($this->aUtilisateurProfessionnel === null && (($this->cpe_login !== "" && $this->cpe_login !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->cpe_login, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addJEleveCpes($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUtilisateurProfessionnel->addJEleveCpes($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;

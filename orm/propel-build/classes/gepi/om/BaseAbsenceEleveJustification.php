@@ -14,7 +14,7 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'AbsenceEleveJustificationPeer';
+	const PEER = 'AbsenceEleveJustificationPeer';
 
 	/**
 	 * The Peer class.
@@ -300,9 +300,7 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->collAbsenceEleveTraitements = null;
-
 		} // if (deep)
 	}
 
@@ -324,7 +322,7 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveJustificationPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -371,7 +369,7 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveJustificationPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -593,7 +591,7 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 *

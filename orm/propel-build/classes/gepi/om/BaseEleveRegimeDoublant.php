@@ -14,7 +14,7 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'EleveRegimeDoublantPeer';
+	const PEER = 'EleveRegimeDoublantPeer';
 
 	/**
 	 * The Peer class.
@@ -262,7 +262,6 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aEleve = null;
 		} // if (deep)
 	}
@@ -285,7 +284,7 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(EleveRegimeDoublantPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -327,7 +326,7 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(EleveRegimeDoublantPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -539,7 +538,7 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.

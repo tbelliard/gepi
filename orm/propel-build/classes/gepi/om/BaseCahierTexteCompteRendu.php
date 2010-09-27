@@ -14,7 +14,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'CahierTexteCompteRenduPeer';
+	const PEER = 'CahierTexteCompteRenduPeer';
 
 	/**
 	 * The Peer class.
@@ -616,12 +616,10 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->aGroupe = null;
 			$this->aUtilisateurProfessionnel = null;
 			$this->aCahierTexteSequence = null;
 			$this->collCahierTexteCompteRenduFichierJoints = null;
-
 		} // if (deep)
 	}
 
@@ -643,7 +641,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if ($con === null) {
 			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -685,7 +683,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if ($con === null) {
 			$con = Propel::getConnection(CahierTexteCompteRenduPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -965,7 +963,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
@@ -1272,11 +1270,11 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
 			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aGroupe->addCahierTexteCompteRendus($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aGroupe->addCahierTexteCompteRendus($this);
 			 */
 		}
 		return $this->aGroupe;
@@ -1321,11 +1319,11 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if ($this->aUtilisateurProfessionnel === null && (($this->id_login !== "" && $this->id_login !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->id_login, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aUtilisateurProfessionnel->addCahierTexteCompteRendus($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aUtilisateurProfessionnel->addCahierTexteCompteRendus($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -1370,11 +1368,11 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if ($this->aCahierTexteSequence === null && ($this->id_sequence !== null)) {
 			$this->aCahierTexteSequence = CahierTexteSequenceQuery::create()->findPk($this->id_sequence, $con);
 			/* The following can be used additionally to
-			   guarantee the related object contains a reference
-			   to this object.  This level of coupling may, however, be
-			   undesirable since it could result in an only partially populated collection
-			   in the referenced object.
-			   $this->aCahierTexteSequence->addCahierTexteCompteRendus($this);
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aCahierTexteSequence->addCahierTexteCompteRendus($this);
 			 */
 		}
 		return $this->aCahierTexteSequence;

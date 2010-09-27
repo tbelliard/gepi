@@ -66,33 +66,33 @@
  * @method     ClasseQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     ClasseQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ClasseQuery leftJoinPeriodeNote($relationAlias = '') Adds a LEFT JOIN clause to the query using the PeriodeNote relation
- * @method     ClasseQuery rightJoinPeriodeNote($relationAlias = '') Adds a RIGHT JOIN clause to the query using the PeriodeNote relation
- * @method     ClasseQuery innerJoinPeriodeNote($relationAlias = '') Adds a INNER JOIN clause to the query using the PeriodeNote relation
+ * @method     ClasseQuery leftJoinPeriodeNote($relationAlias = null) Adds a LEFT JOIN clause to the query using the PeriodeNote relation
+ * @method     ClasseQuery rightJoinPeriodeNote($relationAlias = null) Adds a RIGHT JOIN clause to the query using the PeriodeNote relation
+ * @method     ClasseQuery innerJoinPeriodeNote($relationAlias = null) Adds a INNER JOIN clause to the query using the PeriodeNote relation
  *
- * @method     ClasseQuery leftJoinJScolClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JScolClasses relation
- * @method     ClasseQuery rightJoinJScolClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JScolClasses relation
- * @method     ClasseQuery innerJoinJScolClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JScolClasses relation
+ * @method     ClasseQuery leftJoinJScolClasses($relationAlias = null) Adds a LEFT JOIN clause to the query using the JScolClasses relation
+ * @method     ClasseQuery rightJoinJScolClasses($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JScolClasses relation
+ * @method     ClasseQuery innerJoinJScolClasses($relationAlias = null) Adds a INNER JOIN clause to the query using the JScolClasses relation
  *
- * @method     ClasseQuery leftJoinJGroupesClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JGroupesClasses relation
- * @method     ClasseQuery rightJoinJGroupesClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
- * @method     ClasseQuery innerJoinJGroupesClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesClasses relation
+ * @method     ClasseQuery leftJoinJGroupesClasses($relationAlias = null) Adds a LEFT JOIN clause to the query using the JGroupesClasses relation
+ * @method     ClasseQuery rightJoinJGroupesClasses($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
+ * @method     ClasseQuery innerJoinJGroupesClasses($relationAlias = null) Adds a INNER JOIN clause to the query using the JGroupesClasses relation
  *
- * @method     ClasseQuery leftJoinJEleveClasse($relationAlias = '') Adds a LEFT JOIN clause to the query using the JEleveClasse relation
- * @method     ClasseQuery rightJoinJEleveClasse($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JEleveClasse relation
- * @method     ClasseQuery innerJoinJEleveClasse($relationAlias = '') Adds a INNER JOIN clause to the query using the JEleveClasse relation
+ * @method     ClasseQuery leftJoinJEleveClasse($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveClasse relation
+ * @method     ClasseQuery rightJoinJEleveClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveClasse relation
+ * @method     ClasseQuery innerJoinJEleveClasse($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveClasse relation
  *
- * @method     ClasseQuery leftJoinJEleveProfesseurPrincipal($relationAlias = '') Adds a LEFT JOIN clause to the query using the JEleveProfesseurPrincipal relation
- * @method     ClasseQuery rightJoinJEleveProfesseurPrincipal($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JEleveProfesseurPrincipal relation
- * @method     ClasseQuery innerJoinJEleveProfesseurPrincipal($relationAlias = '') Adds a INNER JOIN clause to the query using the JEleveProfesseurPrincipal relation
+ * @method     ClasseQuery leftJoinJEleveProfesseurPrincipal($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveProfesseurPrincipal relation
+ * @method     ClasseQuery rightJoinJEleveProfesseurPrincipal($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveProfesseurPrincipal relation
+ * @method     ClasseQuery innerJoinJEleveProfesseurPrincipal($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveProfesseurPrincipal relation
  *
- * @method     ClasseQuery leftJoinAbsenceEleveSaisie($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
- * @method     ClasseQuery rightJoinAbsenceEleveSaisie($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
- * @method     ClasseQuery innerJoinAbsenceEleveSaisie($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     ClasseQuery leftJoinAbsenceEleveSaisie($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     ClasseQuery rightJoinAbsenceEleveSaisie($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     ClasseQuery innerJoinAbsenceEleveSaisie($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
  *
- * @method     ClasseQuery leftJoinJCategoriesMatieresClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JCategoriesMatieresClasses relation
- * @method     ClasseQuery rightJoinJCategoriesMatieresClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JCategoriesMatieresClasses relation
- * @method     ClasseQuery innerJoinJCategoriesMatieresClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JCategoriesMatieresClasses relation
+ * @method     ClasseQuery leftJoinJCategoriesMatieresClasses($relationAlias = null) Adds a LEFT JOIN clause to the query using the JCategoriesMatieresClasses relation
+ * @method     ClasseQuery rightJoinJCategoriesMatieresClasses($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JCategoriesMatieresClasses relation
+ * @method     ClasseQuery innerJoinJCategoriesMatieresClasses($relationAlias = null) Adds a INNER JOIN clause to the query using the JCategoriesMatieresClasses relation
  *
  * @method     Classe findOne(PropelPDO $con = null) Return the first Classe matching the query
  * @method     Classe findOneOrCreate(PropelPDO $con = null) Return the first Classe matching the query, or a new Classe object populated from the query conditions when no match is found
@@ -881,7 +881,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function joinPeriodeNote($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinPeriodeNote($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('PeriodeNote');
@@ -916,7 +916,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    PeriodeNoteQuery A secondary query class using the current class as primary query
 	 */
-	public function usePeriodeNoteQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function usePeriodeNoteQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinPeriodeNote($relationAlias, $joinType)
@@ -945,7 +945,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function joinJScolClasses($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJScolClasses($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JScolClasses');
@@ -980,7 +980,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    JScolClassesQuery A secondary query class using the current class as primary query
 	 */
-	public function useJScolClassesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJScolClassesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJScolClasses($relationAlias, $joinType)
@@ -1009,7 +1009,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function joinJGroupesClasses($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJGroupesClasses($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JGroupesClasses');
@@ -1044,7 +1044,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery A secondary query class using the current class as primary query
 	 */
-	public function useJGroupesClassesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJGroupesClassesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJGroupesClasses($relationAlias, $joinType)
@@ -1073,7 +1073,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function joinJEleveClasse($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJEleveClasse($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveClasse');
@@ -1108,7 +1108,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    JEleveClasseQuery A secondary query class using the current class as primary query
 	 */
-	public function useJEleveClasseQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJEleveClasseQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJEleveClasse($relationAlias, $joinType)
@@ -1137,7 +1137,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function joinJEleveProfesseurPrincipal($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJEleveProfesseurPrincipal($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveProfesseurPrincipal');
@@ -1172,7 +1172,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery A secondary query class using the current class as primary query
 	 */
-	public function useJEleveProfesseurPrincipalQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJEleveProfesseurPrincipalQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJEleveProfesseurPrincipal($relationAlias, $joinType)
@@ -1201,7 +1201,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function joinAbsenceEleveSaisie($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinAbsenceEleveSaisie($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
@@ -1236,7 +1236,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery A secondary query class using the current class as primary query
 	 */
-	public function useAbsenceEleveSaisieQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useAbsenceEleveSaisieQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinAbsenceEleveSaisie($relationAlias, $joinType)
@@ -1265,7 +1265,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
 	 */
-	public function joinJCategoriesMatieresClasses($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJCategoriesMatieresClasses($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JCategoriesMatieresClasses');
@@ -1300,7 +1300,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 *
 	 * @return    JCategoriesMatieresClassesQuery A secondary query class using the current class as primary query
 	 */
-	public function useJCategoriesMatieresClassesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJCategoriesMatieresClassesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJCategoriesMatieresClasses($relationAlias, $joinType)

@@ -20,45 +20,45 @@
  * @method     GroupeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     GroupeQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     GroupeQuery leftJoinJGroupesProfesseurs($relationAlias = '') Adds a LEFT JOIN clause to the query using the JGroupesProfesseurs relation
- * @method     GroupeQuery rightJoinJGroupesProfesseurs($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesProfesseurs relation
- * @method     GroupeQuery innerJoinJGroupesProfesseurs($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesProfesseurs relation
+ * @method     GroupeQuery leftJoinJGroupesProfesseurs($relationAlias = null) Adds a LEFT JOIN clause to the query using the JGroupesProfesseurs relation
+ * @method     GroupeQuery rightJoinJGroupesProfesseurs($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JGroupesProfesseurs relation
+ * @method     GroupeQuery innerJoinJGroupesProfesseurs($relationAlias = null) Adds a INNER JOIN clause to the query using the JGroupesProfesseurs relation
  *
- * @method     GroupeQuery leftJoinJGroupesMatieres($relationAlias = '') Adds a LEFT JOIN clause to the query using the JGroupesMatieres relation
- * @method     GroupeQuery rightJoinJGroupesMatieres($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesMatieres relation
- * @method     GroupeQuery innerJoinJGroupesMatieres($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesMatieres relation
+ * @method     GroupeQuery leftJoinJGroupesMatieres($relationAlias = null) Adds a LEFT JOIN clause to the query using the JGroupesMatieres relation
+ * @method     GroupeQuery rightJoinJGroupesMatieres($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JGroupesMatieres relation
+ * @method     GroupeQuery innerJoinJGroupesMatieres($relationAlias = null) Adds a INNER JOIN clause to the query using the JGroupesMatieres relation
  *
- * @method     GroupeQuery leftJoinJGroupesClasses($relationAlias = '') Adds a LEFT JOIN clause to the query using the JGroupesClasses relation
- * @method     GroupeQuery rightJoinJGroupesClasses($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
- * @method     GroupeQuery innerJoinJGroupesClasses($relationAlias = '') Adds a INNER JOIN clause to the query using the JGroupesClasses relation
+ * @method     GroupeQuery leftJoinJGroupesClasses($relationAlias = null) Adds a LEFT JOIN clause to the query using the JGroupesClasses relation
+ * @method     GroupeQuery rightJoinJGroupesClasses($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JGroupesClasses relation
+ * @method     GroupeQuery innerJoinJGroupesClasses($relationAlias = null) Adds a INNER JOIN clause to the query using the JGroupesClasses relation
  *
- * @method     GroupeQuery leftJoinCahierTexteCompteRendu($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteCompteRendu relation
- * @method     GroupeQuery rightJoinCahierTexteCompteRendu($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteCompteRendu relation
- * @method     GroupeQuery innerJoinCahierTexteCompteRendu($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteCompteRendu relation
+ * @method     GroupeQuery leftJoinCahierTexteCompteRendu($relationAlias = null) Adds a LEFT JOIN clause to the query using the CahierTexteCompteRendu relation
+ * @method     GroupeQuery rightJoinCahierTexteCompteRendu($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CahierTexteCompteRendu relation
+ * @method     GroupeQuery innerJoinCahierTexteCompteRendu($relationAlias = null) Adds a INNER JOIN clause to the query using the CahierTexteCompteRendu relation
  *
- * @method     GroupeQuery leftJoinCahierTexteTravailAFaire($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteTravailAFaire relation
- * @method     GroupeQuery rightJoinCahierTexteTravailAFaire($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteTravailAFaire relation
- * @method     GroupeQuery innerJoinCahierTexteTravailAFaire($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteTravailAFaire relation
+ * @method     GroupeQuery leftJoinCahierTexteTravailAFaire($relationAlias = null) Adds a LEFT JOIN clause to the query using the CahierTexteTravailAFaire relation
+ * @method     GroupeQuery rightJoinCahierTexteTravailAFaire($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CahierTexteTravailAFaire relation
+ * @method     GroupeQuery innerJoinCahierTexteTravailAFaire($relationAlias = null) Adds a INNER JOIN clause to the query using the CahierTexteTravailAFaire relation
  *
- * @method     GroupeQuery leftJoinCahierTexteNoticePrivee($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteNoticePrivee relation
- * @method     GroupeQuery rightJoinCahierTexteNoticePrivee($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteNoticePrivee relation
- * @method     GroupeQuery innerJoinCahierTexteNoticePrivee($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteNoticePrivee relation
+ * @method     GroupeQuery leftJoinCahierTexteNoticePrivee($relationAlias = null) Adds a LEFT JOIN clause to the query using the CahierTexteNoticePrivee relation
+ * @method     GroupeQuery rightJoinCahierTexteNoticePrivee($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CahierTexteNoticePrivee relation
+ * @method     GroupeQuery innerJoinCahierTexteNoticePrivee($relationAlias = null) Adds a INNER JOIN clause to the query using the CahierTexteNoticePrivee relation
  *
- * @method     GroupeQuery leftJoinJEleveGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the JEleveGroupe relation
- * @method     GroupeQuery rightJoinJEleveGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JEleveGroupe relation
- * @method     GroupeQuery innerJoinJEleveGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the JEleveGroupe relation
+ * @method     GroupeQuery leftJoinJEleveGroupe($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveGroupe relation
+ * @method     GroupeQuery rightJoinJEleveGroupe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveGroupe relation
+ * @method     GroupeQuery innerJoinJEleveGroupe($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveGroupe relation
  *
- * @method     GroupeQuery leftJoinAbsenceEleveSaisie($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
- * @method     GroupeQuery rightJoinAbsenceEleveSaisie($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
- * @method     GroupeQuery innerJoinAbsenceEleveSaisie($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     GroupeQuery leftJoinAbsenceEleveSaisie($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     GroupeQuery rightJoinAbsenceEleveSaisie($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     GroupeQuery innerJoinAbsenceEleveSaisie($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
  *
- * @method     GroupeQuery leftJoinCreditEcts($relationAlias = '') Adds a LEFT JOIN clause to the query using the CreditEcts relation
- * @method     GroupeQuery rightJoinCreditEcts($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CreditEcts relation
- * @method     GroupeQuery innerJoinCreditEcts($relationAlias = '') Adds a INNER JOIN clause to the query using the CreditEcts relation
+ * @method     GroupeQuery leftJoinCreditEcts($relationAlias = null) Adds a LEFT JOIN clause to the query using the CreditEcts relation
+ * @method     GroupeQuery rightJoinCreditEcts($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CreditEcts relation
+ * @method     GroupeQuery innerJoinCreditEcts($relationAlias = null) Adds a INNER JOIN clause to the query using the CreditEcts relation
  *
- * @method     GroupeQuery leftJoinEdtEmplacementCours($relationAlias = '') Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
- * @method     GroupeQuery rightJoinEdtEmplacementCours($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
- * @method     GroupeQuery innerJoinEdtEmplacementCours($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     GroupeQuery leftJoinEdtEmplacementCours($relationAlias = null) Adds a LEFT JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     GroupeQuery rightJoinEdtEmplacementCours($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EdtEmplacementCours relation
+ * @method     GroupeQuery innerJoinEdtEmplacementCours($relationAlias = null) Adds a INNER JOIN clause to the query using the EdtEmplacementCours relation
  *
  * @method     Groupe findOne(PropelPDO $con = null) Return the first Groupe matching the query
  * @method     Groupe findOneOrCreate(PropelPDO $con = null) Return the first Groupe matching the query, or a new Groupe object populated from the query conditions when no match is found
@@ -286,7 +286,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
 	 */
-	public function joinJGroupesProfesseurs($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJGroupesProfesseurs($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JGroupesProfesseurs');
@@ -321,7 +321,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesProfesseursQuery A secondary query class using the current class as primary query
 	 */
-	public function useJGroupesProfesseursQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJGroupesProfesseursQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJGroupesProfesseurs($relationAlias, $joinType)
@@ -350,7 +350,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
 	 */
-	public function joinJGroupesMatieres($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJGroupesMatieres($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JGroupesMatieres');
@@ -385,7 +385,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesMatieresQuery A secondary query class using the current class as primary query
 	 */
-	public function useJGroupesMatieresQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJGroupesMatieresQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJGroupesMatieres($relationAlias, $joinType)
@@ -414,7 +414,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
 	 */
-	public function joinJGroupesClasses($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJGroupesClasses($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JGroupesClasses');
@@ -449,7 +449,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JGroupesClassesQuery A secondary query class using the current class as primary query
 	 */
-	public function useJGroupesClassesQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJGroupesClassesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJGroupesClasses($relationAlias, $joinType)
@@ -478,7 +478,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteCompteRendu($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinCahierTexteCompteRendu($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteCompteRendu');
@@ -513,7 +513,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteCompteRenduQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useCahierTexteCompteRenduQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinCahierTexteCompteRendu($relationAlias, $joinType)
@@ -542,7 +542,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteTravailAFaire($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinCahierTexteTravailAFaire($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteTravailAFaire');
@@ -577,7 +577,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteTravailAFaireQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteTravailAFaireQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useCahierTexteTravailAFaireQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinCahierTexteTravailAFaire($relationAlias, $joinType)
@@ -606,7 +606,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteNoticePrivee($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinCahierTexteNoticePrivee($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteNoticePrivee');
@@ -641,7 +641,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteNoticePriveeQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteNoticePriveeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useCahierTexteNoticePriveeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinCahierTexteNoticePrivee($relationAlias, $joinType)
@@ -670,7 +670,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
 	 */
-	public function joinJEleveGroupe($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJEleveGroupe($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveGroupe');
@@ -705,7 +705,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    JEleveGroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useJEleveGroupeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJEleveGroupeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJEleveGroupe($relationAlias, $joinType)
@@ -734,7 +734,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
 	 */
-	public function joinAbsenceEleveSaisie($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinAbsenceEleveSaisie($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
@@ -769,7 +769,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery A secondary query class using the current class as primary query
 	 */
-	public function useAbsenceEleveSaisieQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useAbsenceEleveSaisieQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinAbsenceEleveSaisie($relationAlias, $joinType)
@@ -798,7 +798,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
 	 */
-	public function joinCreditEcts($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinCreditEcts($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CreditEcts');
@@ -833,7 +833,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    CreditEctsQuery A secondary query class using the current class as primary query
 	 */
-	public function useCreditEctsQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useCreditEctsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinCreditEcts($relationAlias, $joinType)
@@ -862,7 +862,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
 	 */
-	public function joinEdtEmplacementCours($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinEdtEmplacementCours($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtEmplacementCours');
@@ -897,7 +897,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery A secondary query class using the current class as primary query
 	 */
-	public function useEdtEmplacementCoursQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useEdtEmplacementCoursQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinEdtEmplacementCours($relationAlias, $joinType)

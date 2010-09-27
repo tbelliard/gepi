@@ -22,9 +22,9 @@
  * @method     CahierTexteTravailAFaireFichierJointQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     CahierTexteTravailAFaireFichierJointQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     CahierTexteTravailAFaireFichierJointQuery leftJoinCahierTexteTravailAFaire($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteTravailAFaire relation
- * @method     CahierTexteTravailAFaireFichierJointQuery rightJoinCahierTexteTravailAFaire($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteTravailAFaire relation
- * @method     CahierTexteTravailAFaireFichierJointQuery innerJoinCahierTexteTravailAFaire($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteTravailAFaire relation
+ * @method     CahierTexteTravailAFaireFichierJointQuery leftJoinCahierTexteTravailAFaire($relationAlias = null) Adds a LEFT JOIN clause to the query using the CahierTexteTravailAFaire relation
+ * @method     CahierTexteTravailAFaireFichierJointQuery rightJoinCahierTexteTravailAFaire($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CahierTexteTravailAFaire relation
+ * @method     CahierTexteTravailAFaireFichierJointQuery innerJoinCahierTexteTravailAFaire($relationAlias = null) Adds a INNER JOIN clause to the query using the CahierTexteTravailAFaire relation
  *
  * @method     CahierTexteTravailAFaireFichierJoint findOne(PropelPDO $con = null) Return the first CahierTexteTravailAFaireFichierJoint matching the query
  * @method     CahierTexteTravailAFaireFichierJoint findOneOrCreate(PropelPDO $con = null) Return the first CahierTexteTravailAFaireFichierJoint matching the query, or a new CahierTexteTravailAFaireFichierJoint object populated from the query conditions when no match is found
@@ -294,7 +294,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	 *
 	 * @return    CahierTexteTravailAFaireFichierJointQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteTravailAFaire($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinCahierTexteTravailAFaire($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteTravailAFaire');
@@ -329,7 +329,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	 *
 	 * @return    CahierTexteTravailAFaireQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteTravailAFaireQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useCahierTexteTravailAFaireQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinCahierTexteTravailAFaire($relationAlias, $joinType)

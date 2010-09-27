@@ -36,33 +36,33 @@
  * @method     EdtEmplacementCoursQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     EdtEmplacementCoursQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     EdtEmplacementCoursQuery leftJoinGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the Groupe relation
- * @method     EdtEmplacementCoursQuery rightJoinGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Groupe relation
- * @method     EdtEmplacementCoursQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
+ * @method     EdtEmplacementCoursQuery leftJoinGroupe($relationAlias = null) Adds a LEFT JOIN clause to the query using the Groupe relation
+ * @method     EdtEmplacementCoursQuery rightJoinGroupe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Groupe relation
+ * @method     EdtEmplacementCoursQuery innerJoinGroupe($relationAlias = null) Adds a INNER JOIN clause to the query using the Groupe relation
  *
- * @method     EdtEmplacementCoursQuery leftJoinAidDetails($relationAlias = '') Adds a LEFT JOIN clause to the query using the AidDetails relation
- * @method     EdtEmplacementCoursQuery rightJoinAidDetails($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AidDetails relation
- * @method     EdtEmplacementCoursQuery innerJoinAidDetails($relationAlias = '') Adds a INNER JOIN clause to the query using the AidDetails relation
+ * @method     EdtEmplacementCoursQuery leftJoinAidDetails($relationAlias = null) Adds a LEFT JOIN clause to the query using the AidDetails relation
+ * @method     EdtEmplacementCoursQuery rightJoinAidDetails($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AidDetails relation
+ * @method     EdtEmplacementCoursQuery innerJoinAidDetails($relationAlias = null) Adds a INNER JOIN clause to the query using the AidDetails relation
  *
- * @method     EdtEmplacementCoursQuery leftJoinEdtSalle($relationAlias = '') Adds a LEFT JOIN clause to the query using the EdtSalle relation
- * @method     EdtEmplacementCoursQuery rightJoinEdtSalle($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtSalle relation
- * @method     EdtEmplacementCoursQuery innerJoinEdtSalle($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtSalle relation
+ * @method     EdtEmplacementCoursQuery leftJoinEdtSalle($relationAlias = null) Adds a LEFT JOIN clause to the query using the EdtSalle relation
+ * @method     EdtEmplacementCoursQuery rightJoinEdtSalle($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EdtSalle relation
+ * @method     EdtEmplacementCoursQuery innerJoinEdtSalle($relationAlias = null) Adds a INNER JOIN clause to the query using the EdtSalle relation
  *
- * @method     EdtEmplacementCoursQuery leftJoinEdtCreneau($relationAlias = '') Adds a LEFT JOIN clause to the query using the EdtCreneau relation
- * @method     EdtEmplacementCoursQuery rightJoinEdtCreneau($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtCreneau relation
- * @method     EdtEmplacementCoursQuery innerJoinEdtCreneau($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtCreneau relation
+ * @method     EdtEmplacementCoursQuery leftJoinEdtCreneau($relationAlias = null) Adds a LEFT JOIN clause to the query using the EdtCreneau relation
+ * @method     EdtEmplacementCoursQuery rightJoinEdtCreneau($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EdtCreneau relation
+ * @method     EdtEmplacementCoursQuery innerJoinEdtCreneau($relationAlias = null) Adds a INNER JOIN clause to the query using the EdtCreneau relation
  *
- * @method     EdtEmplacementCoursQuery leftJoinEdtCalendrierPeriode($relationAlias = '') Adds a LEFT JOIN clause to the query using the EdtCalendrierPeriode relation
- * @method     EdtEmplacementCoursQuery rightJoinEdtCalendrierPeriode($relationAlias = '') Adds a RIGHT JOIN clause to the query using the EdtCalendrierPeriode relation
- * @method     EdtEmplacementCoursQuery innerJoinEdtCalendrierPeriode($relationAlias = '') Adds a INNER JOIN clause to the query using the EdtCalendrierPeriode relation
+ * @method     EdtEmplacementCoursQuery leftJoinEdtCalendrierPeriode($relationAlias = null) Adds a LEFT JOIN clause to the query using the EdtCalendrierPeriode relation
+ * @method     EdtEmplacementCoursQuery rightJoinEdtCalendrierPeriode($relationAlias = null) Adds a RIGHT JOIN clause to the query using the EdtCalendrierPeriode relation
+ * @method     EdtEmplacementCoursQuery innerJoinEdtCalendrierPeriode($relationAlias = null) Adds a INNER JOIN clause to the query using the EdtCalendrierPeriode relation
  *
- * @method     EdtEmplacementCoursQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     EdtEmplacementCoursQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     EdtEmplacementCoursQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     EdtEmplacementCoursQuery leftJoinUtilisateurProfessionnel($relationAlias = null) Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     EdtEmplacementCoursQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     EdtEmplacementCoursQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
- * @method     EdtEmplacementCoursQuery leftJoinAbsenceEleveSaisie($relationAlias = '') Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
- * @method     EdtEmplacementCoursQuery rightJoinAbsenceEleveSaisie($relationAlias = '') Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
- * @method     EdtEmplacementCoursQuery innerJoinAbsenceEleveSaisie($relationAlias = '') Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     EdtEmplacementCoursQuery leftJoinAbsenceEleveSaisie($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     EdtEmplacementCoursQuery rightJoinAbsenceEleveSaisie($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisie relation
+ * @method     EdtEmplacementCoursQuery innerJoinAbsenceEleveSaisie($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveSaisie relation
  *
  * @method     EdtEmplacementCours findOne(PropelPDO $con = null) Return the first EdtEmplacementCours matching the query
  * @method     EdtEmplacementCours findOneOrCreate(PropelPDO $con = null) Return the first EdtEmplacementCours matching the query, or a new EdtEmplacementCours object populated from the query conditions when no match is found
@@ -482,7 +482,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function joinGroupe($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinGroupe($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
@@ -517,7 +517,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupeQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useGroupeQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinGroupe($relationAlias, $joinType)
@@ -546,7 +546,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function joinAidDetails($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinAidDetails($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AidDetails');
@@ -581,7 +581,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    AidDetailsQuery A secondary query class using the current class as primary query
 	 */
-	public function useAidDetailsQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useAidDetailsQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinAidDetails($relationAlias, $joinType)
@@ -610,7 +610,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function joinEdtSalle($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinEdtSalle($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtSalle');
@@ -645,7 +645,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtSalleQuery A secondary query class using the current class as primary query
 	 */
-	public function useEdtSalleQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useEdtSalleQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinEdtSalle($relationAlias, $joinType)
@@ -674,7 +674,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function joinEdtCreneau($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinEdtCreneau($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtCreneau');
@@ -709,7 +709,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtCreneauQuery A secondary query class using the current class as primary query
 	 */
-	public function useEdtCreneauQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useEdtCreneauQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinEdtCreneau($relationAlias, $joinType)
@@ -738,7 +738,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function joinEdtCalendrierPeriode($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinEdtCalendrierPeriode($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('EdtCalendrierPeriode');
@@ -773,7 +773,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtCalendrierPeriodeQuery A secondary query class using the current class as primary query
 	 */
-	public function useEdtCalendrierPeriodeQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useEdtCalendrierPeriodeQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinEdtCalendrierPeriode($relationAlias, $joinType)
@@ -802,7 +802,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
@@ -837,7 +837,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)
@@ -866,7 +866,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
-	public function joinAbsenceEleveSaisie($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinAbsenceEleveSaisie($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('AbsenceEleveSaisie');
@@ -901,7 +901,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery A secondary query class using the current class as primary query
 	 */
-	public function useAbsenceEleveSaisieQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useAbsenceEleveSaisieQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinAbsenceEleveSaisie($relationAlias, $joinType)

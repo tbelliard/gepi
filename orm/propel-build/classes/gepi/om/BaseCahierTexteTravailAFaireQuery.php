@@ -26,21 +26,21 @@
  * @method     CahierTexteTravailAFaireQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     CahierTexteTravailAFaireQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     CahierTexteTravailAFaireQuery leftJoinGroupe($relationAlias = '') Adds a LEFT JOIN clause to the query using the Groupe relation
- * @method     CahierTexteTravailAFaireQuery rightJoinGroupe($relationAlias = '') Adds a RIGHT JOIN clause to the query using the Groupe relation
- * @method     CahierTexteTravailAFaireQuery innerJoinGroupe($relationAlias = '') Adds a INNER JOIN clause to the query using the Groupe relation
+ * @method     CahierTexteTravailAFaireQuery leftJoinGroupe($relationAlias = null) Adds a LEFT JOIN clause to the query using the Groupe relation
+ * @method     CahierTexteTravailAFaireQuery rightJoinGroupe($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Groupe relation
+ * @method     CahierTexteTravailAFaireQuery innerJoinGroupe($relationAlias = null) Adds a INNER JOIN clause to the query using the Groupe relation
  *
- * @method     CahierTexteTravailAFaireQuery leftJoinUtilisateurProfessionnel($relationAlias = '') Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     CahierTexteTravailAFaireQuery rightJoinUtilisateurProfessionnel($relationAlias = '') Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
- * @method     CahierTexteTravailAFaireQuery innerJoinUtilisateurProfessionnel($relationAlias = '') Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     CahierTexteTravailAFaireQuery leftJoinUtilisateurProfessionnel($relationAlias = null) Adds a LEFT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     CahierTexteTravailAFaireQuery rightJoinUtilisateurProfessionnel($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UtilisateurProfessionnel relation
+ * @method     CahierTexteTravailAFaireQuery innerJoinUtilisateurProfessionnel($relationAlias = null) Adds a INNER JOIN clause to the query using the UtilisateurProfessionnel relation
  *
- * @method     CahierTexteTravailAFaireQuery leftJoinCahierTexteSequence($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteSequence relation
- * @method     CahierTexteTravailAFaireQuery rightJoinCahierTexteSequence($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteSequence relation
- * @method     CahierTexteTravailAFaireQuery innerJoinCahierTexteSequence($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteSequence relation
+ * @method     CahierTexteTravailAFaireQuery leftJoinCahierTexteSequence($relationAlias = null) Adds a LEFT JOIN clause to the query using the CahierTexteSequence relation
+ * @method     CahierTexteTravailAFaireQuery rightJoinCahierTexteSequence($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CahierTexteSequence relation
+ * @method     CahierTexteTravailAFaireQuery innerJoinCahierTexteSequence($relationAlias = null) Adds a INNER JOIN clause to the query using the CahierTexteSequence relation
  *
- * @method     CahierTexteTravailAFaireQuery leftJoinCahierTexteTravailAFaireFichierJoint($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteTravailAFaireFichierJoint relation
- * @method     CahierTexteTravailAFaireQuery rightJoinCahierTexteTravailAFaireFichierJoint($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteTravailAFaireFichierJoint relation
- * @method     CahierTexteTravailAFaireQuery innerJoinCahierTexteTravailAFaireFichierJoint($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteTravailAFaireFichierJoint relation
+ * @method     CahierTexteTravailAFaireQuery leftJoinCahierTexteTravailAFaireFichierJoint($relationAlias = null) Adds a LEFT JOIN clause to the query using the CahierTexteTravailAFaireFichierJoint relation
+ * @method     CahierTexteTravailAFaireQuery rightJoinCahierTexteTravailAFaireFichierJoint($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CahierTexteTravailAFaireFichierJoint relation
+ * @method     CahierTexteTravailAFaireQuery innerJoinCahierTexteTravailAFaireFichierJoint($relationAlias = null) Adds a INNER JOIN clause to the query using the CahierTexteTravailAFaireFichierJoint relation
  *
  * @method     CahierTexteTravailAFaire findOne(PropelPDO $con = null) Return the first CahierTexteTravailAFaire matching the query
  * @method     CahierTexteTravailAFaire findOneOrCreate(PropelPDO $con = null) Return the first CahierTexteTravailAFaire matching the query, or a new CahierTexteTravailAFaire object populated from the query conditions when no match is found
@@ -367,7 +367,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function joinGroupe($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinGroupe($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('Groupe');
@@ -402,7 +402,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 *
 	 * @return    GroupeQuery A secondary query class using the current class as primary query
 	 */
-	public function useGroupeQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useGroupeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinGroupe($relationAlias, $joinType)
@@ -431,7 +431,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function joinUtilisateurProfessionnel($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinUtilisateurProfessionnel($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('UtilisateurProfessionnel');
@@ -466,7 +466,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 *
 	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
 	 */
-	public function useUtilisateurProfessionnelQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useUtilisateurProfessionnelQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinUtilisateurProfessionnel($relationAlias, $joinType)
@@ -495,7 +495,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteSequence($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function joinCahierTexteSequence($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteSequence');
@@ -530,7 +530,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteSequenceQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteSequenceQuery($relationAlias = '', $joinType = Criteria::LEFT_JOIN)
+	public function useCahierTexteSequenceQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
 	{
 		return $this
 			->joinCahierTexteSequence($relationAlias, $joinType)
@@ -559,7 +559,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteTravailAFaireFichierJoint($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinCahierTexteTravailAFaireFichierJoint($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteTravailAFaireFichierJoint');
@@ -594,7 +594,7 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteTravailAFaireFichierJointQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteTravailAFaireFichierJointQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useCahierTexteTravailAFaireFichierJointQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinCahierTexteTravailAFaireFichierJoint($relationAlias, $joinType)

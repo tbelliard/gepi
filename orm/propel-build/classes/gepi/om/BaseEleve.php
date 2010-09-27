@@ -14,7 +14,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	/**
 	 * Peer class name
 	 */
-  const PEER = 'ElevePeer';
+	const PEER = 'ElevePeer';
 
 	/**
 	 * The Peer class.
@@ -748,31 +748,20 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
-
 			$this->collJEleveClasses = null;
-
 			$this->collJEleveCpes = null;
-
 			$this->collJEleveGroupes = null;
-
 			$this->collJEleveProfesseurPrincipals = null;
-
 			$this->singleEleveRegimeDoublant = null;
-
 			$this->collResponsableInformations = null;
-
 			$this->collJEleveAncienEtablissements = null;
-
 			$this->collJAidElevess = null;
-
 			$this->collAbsenceEleveSaisies = null;
-
 			$this->collCreditEctss = null;
-
 			$this->collCreditEctsGlobals = null;
-
 			$this->collArchiveEctss = null;
-
+			$this->collAncienEtablissements = null;
+			$this->collAidDetailss = null;
 		} // if (deep)
 	}
 
@@ -794,7 +783,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(ElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		try {
 			$ret = $this->preDelete($con);
@@ -836,7 +825,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if ($con === null) {
 			$con = Propel::getConnection(ElevePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
-		
+
 		$con->beginTransaction();
 		$isInsert = $this->isNew();
 		try {
@@ -1247,7 +1236,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 * type constants.
 	 *
 	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME,
-	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. 
+	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
 	 *
@@ -3332,7 +3321,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$jEleveAncienEtablissement = new JEleveAncienEtablissement();
 			$jEleveAncienEtablissement->setAncienEtablissement($ancienEtablissement);
 			$this->addJEleveAncienEtablissement($jEleveAncienEtablissement);
-			
+
 			$this->collAncienEtablissements[]= $ancienEtablissement;
 		}
 	}
@@ -3445,7 +3434,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$jAidEleves = new JAidEleves();
 			$jAidEleves->setAidDetails($aidDetails);
 			$this->addJAidEleves($jAidEleves);
-			
+
 			$this->collAidDetailss[]= $aidDetails;
 		}
 	}

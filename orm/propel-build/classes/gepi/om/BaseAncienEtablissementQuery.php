@@ -24,9 +24,9 @@
  * @method     AncienEtablissementQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     AncienEtablissementQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     AncienEtablissementQuery leftJoinJEleveAncienEtablissement($relationAlias = '') Adds a LEFT JOIN clause to the query using the JEleveAncienEtablissement relation
- * @method     AncienEtablissementQuery rightJoinJEleveAncienEtablissement($relationAlias = '') Adds a RIGHT JOIN clause to the query using the JEleveAncienEtablissement relation
- * @method     AncienEtablissementQuery innerJoinJEleveAncienEtablissement($relationAlias = '') Adds a INNER JOIN clause to the query using the JEleveAncienEtablissement relation
+ * @method     AncienEtablissementQuery leftJoinJEleveAncienEtablissement($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveAncienEtablissement relation
+ * @method     AncienEtablissementQuery rightJoinJEleveAncienEtablissement($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveAncienEtablissement relation
+ * @method     AncienEtablissementQuery innerJoinJEleveAncienEtablissement($relationAlias = null) Adds a INNER JOIN clause to the query using the JEleveAncienEtablissement relation
  *
  * @method     AncienEtablissement findOne(PropelPDO $con = null) Return the first AncienEtablissement matching the query
  * @method     AncienEtablissement findOneOrCreate(PropelPDO $con = null) Return the first AncienEtablissement matching the query, or a new AncienEtablissement object populated from the query conditions when no match is found
@@ -311,7 +311,7 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    AncienEtablissementQuery The current query, for fluid interface
 	 */
-	public function joinJEleveAncienEtablissement($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinJEleveAncienEtablissement($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('JEleveAncienEtablissement');
@@ -346,7 +346,7 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 	 *
 	 * @return    JEleveAncienEtablissementQuery A secondary query class using the current class as primary query
 	 */
-	public function useJEleveAncienEtablissementQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useJEleveAncienEtablissementQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinJEleveAncienEtablissement($relationAlias, $joinType)

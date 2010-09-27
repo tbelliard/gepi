@@ -22,9 +22,9 @@
  * @method     CahierTexteCompteRenduFichierJointQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     CahierTexteCompteRenduFichierJointQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     CahierTexteCompteRenduFichierJointQuery leftJoinCahierTexteCompteRendu($relationAlias = '') Adds a LEFT JOIN clause to the query using the CahierTexteCompteRendu relation
- * @method     CahierTexteCompteRenduFichierJointQuery rightJoinCahierTexteCompteRendu($relationAlias = '') Adds a RIGHT JOIN clause to the query using the CahierTexteCompteRendu relation
- * @method     CahierTexteCompteRenduFichierJointQuery innerJoinCahierTexteCompteRendu($relationAlias = '') Adds a INNER JOIN clause to the query using the CahierTexteCompteRendu relation
+ * @method     CahierTexteCompteRenduFichierJointQuery leftJoinCahierTexteCompteRendu($relationAlias = null) Adds a LEFT JOIN clause to the query using the CahierTexteCompteRendu relation
+ * @method     CahierTexteCompteRenduFichierJointQuery rightJoinCahierTexteCompteRendu($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CahierTexteCompteRendu relation
+ * @method     CahierTexteCompteRenduFichierJointQuery innerJoinCahierTexteCompteRendu($relationAlias = null) Adds a INNER JOIN clause to the query using the CahierTexteCompteRendu relation
  *
  * @method     CahierTexteCompteRenduFichierJoint findOne(PropelPDO $con = null) Return the first CahierTexteCompteRenduFichierJoint matching the query
  * @method     CahierTexteCompteRenduFichierJoint findOneOrCreate(PropelPDO $con = null) Return the first CahierTexteCompteRenduFichierJoint matching the query, or a new CahierTexteCompteRenduFichierJoint object populated from the query conditions when no match is found
@@ -294,7 +294,7 @@ abstract class BaseCahierTexteCompteRenduFichierJointQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduFichierJointQuery The current query, for fluid interface
 	 */
-	public function joinCahierTexteCompteRendu($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function joinCahierTexteCompteRendu($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		$tableMap = $this->getTableMap();
 		$relationMap = $tableMap->getRelation('CahierTexteCompteRendu');
@@ -329,7 +329,7 @@ abstract class BaseCahierTexteCompteRenduFichierJointQuery extends ModelCriteria
 	 *
 	 * @return    CahierTexteCompteRenduQuery A secondary query class using the current class as primary query
 	 */
-	public function useCahierTexteCompteRenduQuery($relationAlias = '', $joinType = Criteria::INNER_JOIN)
+	public function useCahierTexteCompteRenduQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
 	{
 		return $this
 			->joinCahierTexteCompteRendu($relationAlias, $joinType)
