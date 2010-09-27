@@ -78,6 +78,8 @@ $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence
 $choix_regime = isset($_POST["choix_regime"]) ? $_POST["choix_regime"] :(isset($_GET["choix_regime"]) ? $_GET["choix_regime"] : NULL);
 //if ($date_absence_eleve != null) {$_SESSION["date_absence_eleve"] = $date_absence_eleve;}
 
+include('include_pagination.php');
+
 //initialisation des variables
 $current_classe = null;
 $current_groupe = null;
@@ -139,7 +141,8 @@ include('menu_bilans.inc.php');
 	duration: 250
     };
     dojo.fadeIn(fadeArgs).play();
-</script><?php
+</script>
+<?php
 
 
 echo "<div class='css-panes' id='containDiv'>\n";
@@ -294,13 +297,13 @@ if ($type_selection == 'id_eleve') {
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
-    $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
+    $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->paginate($page_number, $item_per_page);
 }else if ($type_selection == 'choix_regime' && $choix_regime!=-1) {
     $query = EleveQuery::create()->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC);
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
-    $eleve_col = $query->filterByRegime($choix_regime)->find();
+    $eleve_col = $query->filterByRegime($choix_regime)->paginate($page_number, $item_per_page);
 } elseif ($current_groupe != null) {
     $eleve_col = $current_groupe->getEleves();
 } elseif ($current_aid != null) {
@@ -313,6 +316,8 @@ if ($type_selection == 'id_eleve') {
     $dt_debut->setTime(0,0,0);
     $dt_fin = clone $dt_date_absence_eleve;
     $dt_fin->setTime(23,59,59);
+    //on récupere les saisies car avant puis on va filtrer avec les ids car filterManquementObligationPresence bug un peu avec les requetes imbriquées
+    $saisie_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut, $dt_fin)->filterManquementObligationPresence()->setFormatter(ModelCriteria::FORMAT_ARRAY)->find();
     $query = EleveQuery::create();
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);        
@@ -320,8 +325,8 @@ if ($type_selection == 'id_eleve') {
     $eleve_col = $query
             ->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC)
 	    ->useAbsenceEleveSaisieQuery()
-	    ->filterByPlageTemps($dt_debut, $dt_fin)
-	    ->endUse()->distinct()->find();
+	    ->filterById($saisie_col->toKeyValue('Id', 'Id'))
+	    ->endUse()->distinct()->paginate($page_number, $item_per_page);
 }
 
 ?>
@@ -337,6 +342,7 @@ if ($type_selection == 'id_eleve') {
 				<input type="hidden" name="id_aid" value="<?php echo $id_aid?>"/>
                                 <input type="hidden" name="choix_regime" value="<?php echo $choix_regime?>"/>
                                 <input type="hidden" name="date_absence_eleve" value="<?php echo $date_absence_eleve?>"/>
+                                <input type="hidden" name="reinit_filtre" value="n"/>
 				    <input onchange="document.absences_du_jour.submit()" style="width : 7em" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
 				    <button dojoType="dijit.form.Button" type="submit" onClick="
 					document.absences_du_jour.type_selection.value='';
@@ -347,12 +353,32 @@ if ($type_selection == 'id_eleve') {
 					document.absences_du_jour.id_aid.value='';
                                         document.absences_du_jour.choix_regime.value='';
 					document.absences_du_jour.date_absence_eleve.value='';
+					document.absences_du_jour.reinit_filtre.value='y';
 					return true;">Réinitialiser les filtres</button>
 			    </p>
+			<?php
+			if ($eleve_col->count() != 0) {
+			    if (method_exists($eleve_col, 'haveToPaginate')) {
+				if ($eleve_col->haveToPaginate()) {
+				    echo "Page ";
+				    echo '<input type="submit" name="page_deplacement" value="-"/>';
+				    echo '<input type="text" name="page_number" size="1" value="'.$eleve_col->getPage().'"/>';
+				    echo '<input type="submit" name="page_deplacement" value="+"/> ';
+				    echo "sur ".$eleve_col->getLastPage()." page(s) ";
+				    echo "| ";
+				}
+				echo "Voir ";
+				echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
+				echo " par page |  Nombre d'enregistrements : ";
+				echo $eleve_col->count();
+				echo '<button dojoType="dijit.form.Button" type="submit">Afficher</button>';
+			    }
+			}
+			?>
 			    </form>
 				<!--     <br/> -->
 			<!-- </p> -->
-<?php if (!$eleve_col->isEmpty()) { ?>
+<?php if ($eleve_col->count() != 0) { ?>
 			<form dojoType="dijit.form.Form" jsId="creer_traitement" id="creer_traitement" name="creer_traitement" method="post" action="./absences_du_jour.php">
 			<input type="hidden" id="creation_traitement" name="creation_traitement" value="no"/>
 			<input type="hidden" id="ajout_traitement" name="ajout_traitement" value="no"/>
@@ -413,7 +439,9 @@ if ($type_selection == 'id_eleve') {
 
     <?php
     $nb_checkbox = 0; //nombre de checkbox
+    $compteur = 0;
     foreach($eleve_col as $eleve) {
+	$compteur = $compteur + 1;
         $regime_eleve=EleveRegimeDoublantQuery::create()->findPk($eleve->getlogin())->getRegime();
 		//$eleve = new Eleve();
 			$traitement_col = new PropelCollection();//liste des traitements pour afficher des boutons 'ajouter au traitement'
@@ -430,7 +458,7 @@ if ($type_selection == 'id_eleve') {
 			    continue;
 			}
 			$saisie_affiches = array ();
-			if ($eleve_col->getPosition() %2 == '1') {
+			if ($compteur % 2 == '1') {
 				$background_couleur="#E8F1F4";
 			} else {
 				$background_couleur="#C6DCE3";
