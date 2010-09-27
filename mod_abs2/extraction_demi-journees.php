@@ -186,6 +186,7 @@ if ($affichage != null && $affichage != '') {
 }
 
 if ($affichage == 'html') {
+    echo 'Total élèves : '.$eleve_col->count();
     echo '<table style="border:1px solid">';
     $precedent_eleve_id = null;
     echo '<tr style="border:1px solid">';
@@ -211,6 +212,10 @@ if ($affichage == 'html') {
     echo '</td>';
 
     echo '</tr>';
+
+    $nb_demijournees = 0;
+    $nb_nonjustifiees = 0;
+    $nb_retards = 0;
     foreach ($eleve_col as $eleve) {
 	    echo '<tr style="border:1px solid">';
 	    
@@ -224,18 +229,44 @@ if ($affichage == 'html') {
 
 	    echo '<td style="border:1px solid;">';
 	    echo $eleve->getDemiJourneesAbsencePreRempli();
+	    $nb_demijournees = $nb_demijournees + $eleve->getDemiJourneesAbsencePreRempli();
 	    echo '</td>';
 
 	    echo '<td style="border:1px solid;">';
 	    echo $eleve->getDemiJourneesNonJustifieesPreRempli();
+	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getDemiJourneesNonJustifieesPreRempli();
 	    echo '</td>';
 
 	    echo '<td style="border:1px solid;">';
 	    echo $eleve->getRetardsPreRempli();
+	    $nb_retards = $nb_retards + $eleve->getRetardsPreRempli();
 	    echo '</td>';
 
 	    echo '</tr>';
     }
+    echo '<tr style="border:1px solid">';
+
+    echo '<td style="border:1px solid;">';
+    echo 'Total élèves : ';
+    echo $eleve_col->count();
+    echo '</td>';
+
+    echo '<td style="border:1px solid;">';
+    echo '</td>';
+
+    echo '<td style="border:1px solid;">';
+    echo $nb_demijournees;
+    echo '</td>';
+
+    echo '<td style="border:1px solid;">';
+    echo $nb_nonjustifiees;
+    echo '</td>';
+
+    echo '<td style="border:1px solid;">';
+    echo $nb_retards;
+    echo '</td>';
+
+    echo '</tr>';
     echo '<h5>Extraction faite le '.date("d/m/Y - h:i").'</h5>';
 } else if ($affichage == 'ods') {
     // load the TinyButStrong libraries
@@ -267,6 +298,9 @@ if ($affichage == 'html') {
     $TBS->MergeField('titre', $titre);
 
     $eleve_array_avec_data = Array();
+    $nb_demijournees = 0;
+    $nb_nonjustifiees = 0;
+    $nb_retards = 0;
     foreach ($eleve_col as $eleve) {
 	$eleve_array_avec_data[$eleve->getPrimaryKey()] = Array(
 	    'eleve' => $eleve
@@ -274,10 +308,19 @@ if ($affichage == 'html') {
 	    , 'getDemiJourneesNonJustifieesPreRempli' => $eleve->getDemiJourneesNonJustifieesPreRempli()
 	    , 'getRetardsPreRempli' => $eleve->getRetardsPreRempli()
 		);
+
+	    $nb_demijournees = $nb_demijournees + $eleve->getDemiJourneesAbsencePreRempli();
+	    $nb_nonjustifiees = $nb_nonjustifiees + $eleve->getDemiJourneesNonJustifieesPreRempli();
+	    $nb_retards = $nb_retards + $eleve->getRetardsPreRempli();
     }
 
 
     $TBS->MergeBlock('eleve_col', $eleve_array_avec_data);
+
+    $TBS->MergeField('eleve_count', $eleve_col->count());
+    $TBS->MergeField('nb_demijournees',$nb_demijournees);
+    $TBS->MergeField('nb_nonjustifiees', $nb_nonjustifiees);
+    $TBS->MergeField('nb_retards', $nb_retards);
 
     // Output as a download file (some automatic fields are merged here)
     $nom_fichier = 'extrait_demi-journee_';
