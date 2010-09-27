@@ -53,12 +53,12 @@ class AbsenceEleveSaisieQuery extends BaseAbsenceEleveSaisieQuery {
         public function filterManquementObligationPresence($value = true)
         {
 	    $this->setComment('filterManquementObligationPresence');
-	    $this->groupById()
-		->useJTraitementSaisieEleveQuery('', Criteria::LEFT_JOIN)
-		->useAbsenceEleveTraitementQuery('', Criteria::LEFT_JOIN)
-		->useAbsenceEleveTypeQuery('', Criteria::LEFT_JOIN)
-		->endUse()->endUse()->endUse()
-		->withColumn('group_concat(manquement_obligation_presence)', 'types_concat');
+
+	    $this->joinJTraitementSaisieEleve()
+		->join('JTraitementSaisieEleve.AbsenceEleveTraitement', Criteria::LEFT_JOIN)
+		->join('AbsenceEleveTraitement.AbsenceEleveType', Criteria::LEFT_JOIN)
+		->withColumn('group_concat(manquement_obligation_presence)', 'types_concat')
+		->groupById();
 	    if ($value === true) {
 		if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y' && getSettingValue("abs2_saisie_multi_type_sans_manquement")!='y') {
 		    $criteria = new Criteria();
