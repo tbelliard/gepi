@@ -356,59 +356,65 @@ array_walk($_COOKIE, 'anti_inject');
 //On rétablit les "&" dans $_SERVER['REQUEST_URI']
 $_SERVER['REQUEST_URI'] = str_replace("&amp;","&",$_SERVER['REQUEST_URI']);
 
-$sql="SELECT 1=1 FROM setting WHERE name='filtrage_extensions_fichiers' AND value='n';";
-$test=mysql_query($sql);
-if(mysql_num_rows($test)==0) {
-	// Et on traite les fichiers uploadés
-	if (!isset($AllowedFilesExtensions)) {
-		//$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif","ico","jpg","odg","odp","ods","odt","pdf","png","ppt","swf","txt","xcf","xls","zip","pps");
-		$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif", "gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","sql","swf","txt","xcf","xls","xml","zip","pps", "docx");
-	}
-	
-	if (isset($_FILES) and !empty($_FILES)) {		
-		foreach ($_FILES as &$file) {
-			if (is_array($file['name'])) {
-				$i = 0;
-				while (isset($file['name'][$i])) {
-					if ($file['name'][$i] != "") {
-						if (!is_uploaded_file($file['tmp_name'][$i])) {
-							$file['name'][$i] = "";
+if((isset($filtrage_extensions_fichiers_table_ct_types_documents))&&($filtrage_extensions_fichiers_table_ct_types_documents=='y')) {
+	// On ne filtre pas ici.
+	// Le filtrage est assuré dans le module CDT
+}
+else {
+	$sql="SELECT 1=1 FROM setting WHERE name='filtrage_extensions_fichiers' AND value='n';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)==0) {
+		// Et on traite les fichiers uploadés
+		if (!isset($AllowedFilesExtensions)) {
+			//$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif","ico","jpg","odg","odp","ods","odt","pdf","png","ppt","swf","txt","xcf","xls","zip","pps");
+			$AllowedFilesExtensions = array("bmp","csv","doc","epg","gif", "gz","ico","jpg","jpeg","odg","odp","ods","odt","pdf","png","ppt","sql","swf","txt","xcf","xls","xml","zip","pps", "docx");
+		}
+		
+		if (isset($_FILES) and !empty($_FILES)) {		
+			foreach ($_FILES as &$file) {
+				if (is_array($file['name'])) {
+					$i = 0;
+					while (isset($file['name'][$i])) {
+						if ($file['name'][$i] != "") {
+							if (!is_uploaded_file($file['tmp_name'][$i])) {
+								$file['name'][$i] = "";
+							}
+							$delete_file = true;
+							$k = 0;
+							trim($file['name'][$i]);
+							while (isset($AllowedFilesExtensions[$k])) {
+								if (preg_match("/".$AllowedFilesExtensions[$k]."$/i",$file['name'][$i])) $delete_file = false;
+								$k++;
+							}
+							if ($delete_file) {
+								$file['name'][$i] = "";
+								unlink($file['tmp_name'][$i]);
+							}
 						}
-						$delete_file = true;
-						$k = 0;
-						trim($file['name'][$i]);
-						while (isset($AllowedFilesExtensions[$k])) {
-							if (preg_match("/".$AllowedFilesExtensions[$k]."$/i",$file['name'][$i])) $delete_file = false;
-							$k++;
-						}
-						if ($delete_file) {
-							$file['name'][$i] = "";
-							unlink($file['tmp_name'][$i]);
-						}
+						$i++;
 					}
-					$i++;
 				}
-			}
-			else {
-				if (isset($file['name'])) {
-					if ($file['name'] != "") {
-						if (!is_uploaded_file($file['tmp_name'])) {
-							$file['name'] = "";
+				else {
+					if (isset($file['name'])) {
+						if ($file['name'] != "") {
+							if (!is_uploaded_file($file['tmp_name'])) {
+								$file['name'] = "";
+							}
+							$delete_file = true;
+							$k = 0;
+							trim($file['name']);
+							while (isset($AllowedFilesExtensions[$k])) {
+								if (preg_match("/".$AllowedFilesExtensions[$k]."$/i",$file['name'])) $delete_file = false;
+								$k++;
+							}
+							if ($delete_file) {
+								$file['name'] = "";
+								unlink($file['tmp_name']);
+							}
 						}
-						$delete_file = true;
-						$k = 0;
-						trim($file['name']);
-						while (isset($AllowedFilesExtensions[$k])) {
-							if (preg_match("/".$AllowedFilesExtensions[$k]."$/i",$file['name'])) $delete_file = false;
-							$k++;
-						}
-						if ($delete_file) {
-							$file['name'] = "";
-							unlink($file['tmp_name']);
-						}
-					}
-				}		
-			
+					}		
+				
+				}
 			}
 		}
 	}
