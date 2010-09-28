@@ -644,7 +644,8 @@ function imposer_cpe() {
 		echo "<tr class='lig$alt white_hover'>\n";
 		echo "<td><p>";
 
-		echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Editer la fiche élève' target='_blank' style='color: black;'>";
+		//echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Editer la fiche élève' target='_blank' style='color: black;'>";
+		echo "<a href='../eleves/modify_eleve.php?eleve_login=".$login_eleve."' onclick=\"return confirm_abandon (this, change, '$themessage')\" title='Editer la fiche élève' target='_blank'>";
  		echo strtoupper($nom_eleve)." ".$prenom_eleve;
 		echo "</a>\n";
 
