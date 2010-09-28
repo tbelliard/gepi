@@ -26,16 +26,17 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
 // Check access
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 
@@ -123,16 +124,24 @@ if (isset($_GET['id'])) {
   <p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>|<a href="modify_type_doc.php?id=ajout"> Ajouter un type de fichier </a></p>
   <H2>Types de fichiers autorisés en téléchargement</h2>
   <form action="modify_type_doc.php" name="formulaire2" method="post">
-  <table border="1"><tr><td><b>Extension</b></td><td><b>Type/Description</b></td><td><b>Autorisé</b></td><td><input type="submit" name="bouton_sup" value="Supprimer" onclick="return confirmlink(this, '', 'Confirmation de la suppression')" /></td></tr>
+  <table border="1" class='boireaus' summary='Choix des extensions'>
+<tr>
+<th><b>Extension</b></th>
+<th><b>Type/Description</b></th>
+<th><b>Autorisé</b></th>
+<th><input type="submit" name="bouton_sup" value="Supprimer" onclick="return confirmlink(this, '', 'Confirmation de la suppression')" /></th>
+</tr>
   <?php
+  $alt=1;
   $query = "SELECT id_type, extension, titre, upload  FROM ct_types_documents ORDER BY extension";
   $result = sql_query($query);
   for ($i=0; ($row=sql_row($result,$i)); $i++) {
+      $alt=$alt*(-1);
       $id = $row[0];
       $ext = $row[1];
       ($row[2]!='') ? $description = $row[2]:$description="-";
       $upload = $row[3];
-      echo "<tr><td><a href='modify_type_doc.php?id=".$id."'>".$ext."</a></td><td>".$description."</td><td>".$upload."</td><td><input type=\"checkbox\" name=\"sup_".$id."\" /></td></tr>";
+      echo "<tr class='lig$alt white_hover'><td><a href='modify_type_doc.php?id=".$id."'>".$ext."</a></td><td>".$description."</td><td>".$upload."</td><td><input type=\"checkbox\" name=\"sup_".$id."\" /></td></tr>";
   }
   echo "</table></form>";
 }
