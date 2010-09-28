@@ -42,15 +42,7 @@ $visioedt = 'prof1';
 //		
 // =============================================================================
 
-if ($visioedt == 'prof1') {
-    $type_edt = $login_edt;
-}
-elseif ($visioedt == 'classe1') {
-    $type_edt = $classe;
-}
-elseif ($visioedt == 'salle1') {
-    $type_edt = $salle;
-}
+$type_edt = $login_edt;
 
 if ($message != "") {
     $_SESSION["message"] = "";
@@ -63,37 +55,16 @@ if ($bascule_edt != NULL) {
 if (!isset($_SESSION['bascule_edt'])) {
     $_SESSION['bascule_edt'] = 'semaine';
 }
-if ($_SESSION['bascule_edt'] == 'periode') {
-    if (PeriodesExistent()) {
-        if ($period_id != NULL) {
-            $_SESSION['period_id'] = $period_id;
-        }
-        if (!isset($_SESSION['period_id'])) {
-            $_SESSION['period_id'] = ReturnIdPeriod(date("U"));
-        }
-        if (!PeriodExistsInDB($_SESSION['period_id'])) {
-            $_SESSION['period_id'] = ReturnFirstIdPeriod();    
-        }
-        $DisplayPeriodBar = true;
-        $DisplayWeekBar = false;
-    }
-    else {
-        $DisplayWeekBar = false;
-        $DisplayPeriodBar = false;
-        $_SESSION['period_id'] = 0;
-    }
+$_SESSION['period_id'] = 0;
+$DisplayPeriodBar = false;
+$DisplayWeekBar = true;
+if ($week_selected != NULL) {
+	$_SESSION['week_selected'] = $week_selected;
 }
-else {
-	$_SESSION['period_id'] = 0;
-    $DisplayPeriodBar = false;
-    $DisplayWeekBar = true;
-    if ($week_selected != NULL) {
-        $_SESSION['week_selected'] = $week_selected;
-    }
-    if (!isset($_SESSION['week_selected'])) {
-        $_SESSION['week_selected'] = date("W");
-    }
+if (!isset($_SESSION['week_selected'])) {
+	$_SESSION['week_selected'] = date("W");
 }
+
 // =================== Forcer l'affichage d'un edt si l'utilisateur est un prof 
 if (!isset($login_edt)) {
     if (($_SESSION['statut'] == "professeur") AND ($visioedt == "prof1")) {
@@ -108,43 +79,12 @@ if (!isset($login_edt)) {
 // =================== Construire les emplois du temps
 
 if(isset($login_edt)){
-
     $type_edt = isset($_GET["type_edt_2"]) ? $_GET["type_edt_2"] : (isset($_POST["type_edt_2"]) ? $_POST["type_edt_2"] : NULL);
-    if ($type_edt == "prof")
-    {
-        $tab_data = ConstruireEDTProf($login_edt, $_SESSION['period_id']);
-        $entetes = ConstruireEnteteEDT();
-        $creneaux = ConstruireCreneauxEDT();
-        $DisplayEDT = true;
-    }
-    else if ($type_edt == "classe")
-    {
-        $tab_data = ConstruireEDTClasse($login_edt, $_SESSION['period_id']);
-        $entetes = ConstruireEnteteEDT();
-        $creneaux = ConstruireCreneauxEDT();
-        $DisplayEDT = true;
-
-    }
-    else if ($type_edt == "salle")
-    {
-        $tab_data = ConstruireEDTSalle($login_edt , $_SESSION['period_id']);
-        $entetes = ConstruireEnteteEDT();
-        $creneaux = ConstruireCreneauxEDT();
-        $DisplayEDT = true;
-
-    }
-    else if ($type_edt == "eleve")
-    {
-        $tab_data = ConstruireEDTEleve($login_edt , $_SESSION['period_id']);
-        $entetes = ConstruireEnteteEDT();
-        $creneaux = ConstruireCreneauxEDT();
-        $DisplayEDT = true;
-
-    }
-    else {
-        $DisplayEDT = false;
-    }
-
+    $tab_data = ConstruireEDTProf($login_edt, $_SESSION['period_id']);
+    $entetes = ConstruireEnteteEDT();
+    $creneaux = ConstruireCreneauxEDT();
+    $DisplayEDT = true;
+	RecupereNotices($tab_data, $entetes);
 }
 else {
     $DisplayEDT = false;

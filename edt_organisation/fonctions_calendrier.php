@@ -156,6 +156,70 @@ function RecupereLundisVendredis () {
     return $tab_select_semaine;
 }
 
+// ========================================================================
+//
+//      Récupère les dates des lundis et vendredis de toutes les semaines de l'année scolaire courante
+//      Usage : 
+//      $tab = RecupereJoursSemaine();
+//      echo $tab[0]["lundis"];         // renvoie la date du lundi de la semaine 01     
+//      echo $tab[5]["vendredis"];      // renvoie la date du vendredi de la semaine 06 
+//
+// =========================================================================
+function RecupereJoursSemaine () {
+
+    $tab_select_semaine = array();
+    setlocale (LC_TIME, 'fr_FR','fra');
+    
+    if ((1<=date("n")) AND (date("n") <=8)) {
+	    $annee = date("Y");
+    }
+    else {
+	    $annee = date("Y")+1;
+    }
+    $ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+    while (date("D", $ts) != "Mon") {
+	    $ts-=86400;
+    }
+    $semaine = 1;
+    $ts_ref = $ts;
+    $tab_select_semaine[$semaine-1]["lundi"] = strftime("%d", $ts);
+    $tab_select_semaine[$semaine-1]["mardi"] = strftime("%d", $ts+86400*1);
+    $tab_select_semaine[$semaine-1]["mercredi"] = strftime("%d", $ts+86400*2);
+	$tab_select_semaine[$semaine-1]["jeudi"] = strftime("%d", $ts+86400*3);
+    $tab_select_semaine[$semaine-1]["vendredi"] = strftime("%d", $ts+86400*4);
+    $tab_select_semaine[$semaine-1]["samedi"] = strftime("%d", $ts+86400*5);
+    
+    while ($semaine <=30) {
+	    $ts+=86400*7;
+	    $semaine++;
+    $tab_select_semaine[$semaine-1]["lundi"] = strftime("%d", $ts);
+    $tab_select_semaine[$semaine-1]["mardi"] = strftime("%d", $ts+86400*1);
+    $tab_select_semaine[$semaine-1]["mercredi"] = strftime("%d", $ts+86400*2);
+	$tab_select_semaine[$semaine-1]["jeudi"] = strftime("%d", $ts+86400*3);
+    $tab_select_semaine[$semaine-1]["vendredi"] = strftime("%d", $ts+86400*4);
+    $tab_select_semaine[$semaine-1]["samedi"] = strftime("%d", $ts+86400*5);
+    }
+    $semaine = NumLastWeek();
+    $ts = $ts_ref;
+    $ts-=86400*7;
+    $tab_select_semaine[$semaine-1]["lundi"] = strftime("%d", $ts);
+    $tab_select_semaine[$semaine-1]["mardi"] = strftime("%d", $ts+86400*1);
+    $tab_select_semaine[$semaine-1]["mercredi"] = strftime("%d", $ts+86400*2);
+	$tab_select_semaine[$semaine-1]["jeudi"] = strftime("%d", $ts+86400*3);
+    $tab_select_semaine[$semaine-1]["vendredi"] = strftime("%d", $ts+86400*4);
+    $tab_select_semaine[$semaine-1]["samedi"] = strftime("%d", $ts+86400*5);
+    while ($semaine >=33) {
+	    $ts-=86400*7;
+	    $semaine--;
+    $tab_select_semaine[$semaine-1]["lundi"] = strftime("%d", $ts);
+    $tab_select_semaine[$semaine-1]["mardi"] = strftime("%d", $ts+86400*1);
+    $tab_select_semaine[$semaine-1]["mercredi"] = strftime("%d", $ts+86400*2);
+	$tab_select_semaine[$semaine-1]["jeudi"] = strftime("%d", $ts+86400*3);
+    $tab_select_semaine[$semaine-1]["vendredi"] = strftime("%d", $ts+86400*4);
+    $tab_select_semaine[$semaine-1]["samedi"] = strftime("%d", $ts+86400*5);
+    }
+    return $tab_select_semaine;
+}
 
 // ===================================================
 //

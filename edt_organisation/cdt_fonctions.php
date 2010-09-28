@@ -1,10 +1,44 @@
 <?php
+
+// =============================================================================
+//
+//          
+//
+// =============================================================================
+function RecupereNotices(&$tab_data, $entetes) {
+
+	$jour = 0;
+	while (isset($entetes['entete'][$jour])) {
+		$timestamp = RecupereTimestampJour($jour);
+		$timestamp-=3600;		
+		//echo strftime("%S %M %H %d %b %Y", $timestamp)."<br/>";
+		//echo $timestamp."<br/>";
+		$index_box = 0;
+		while (isset($tab_data[$jour]['type'][$index_box]))
+		{
+		$tab_data[$jour]['id_ct'][$index_box] = 0;
+		if ($tab_data[$jour]['type'][$index_box] == "cours") {
+			$id_groupe = $tab_data[$jour]['id_groupe'][$index_box];
+			$sql_request = "SELECT id_ct , date_ct FROM ct_entry WHERE id_groupe = '".$id_groupe."' AND 
+																date_ct = '".$timestamp."'";
+			//echo $sql_request."<br/>";
+			$req = mysql_query($sql_request);
+			if ($rep = mysql_fetch_array($req)) {
+			//echo $rep['id_ct']."  ".$rep['date_ct'];
+				$tab_data[$jour]['id_ct'][$index_box] = $rep['id_ct'];
+			}
+		}
+		$index_box++;
+		}
+		$jour++;
+	}
+}
 // =============================================================================
 //
 //          Affiche un "+" pour créer un nouveau cours sur un créneau vide
 //
 // =============================================================================
-function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_dec, $jour)
+function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_dec, $jour, $id_ct)
 {
 
     // On envoie le lien si et seulement si c'est un administrateur ou un scolarite ou si l'admin a donné le droit aux professeurs
@@ -14,27 +48,48 @@ function AfficheIconePlusNew_CDT($id_groupe, $login_edt, $type_edt, $heuredeb_de
         {
             $deb = "debut";
         }
-        echo ("<span class=\"image\">");
-		$MaDate = RecupereTimestampJour($jour);
-		echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
-				id_groupe = '".$id_groupe."';
-				getWinDernieresNotices().hide();
-				getWinListeNotices();
-				new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'ISO-8859-1'});
-				getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=".$id_groupe."&today=".$MaDate."', { 
-							encoding: 'ISO-8859-1',
-							onComplete : 
-							function() {
-								initWysiwyg();
+		if ($id_ct == 0) {
+			echo ("<span class=\"image\">");
+			$MaDate = RecupereTimestampJour($jour) - 3600;
+			echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
+					id_groupe = '".$id_groupe."';
+					getWinDernieresNotices().hide();
+					getWinListeNotices();
+					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'ISO-8859-1'});
+					getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe=".$id_groupe."&today=".$MaDate."', { 
+								encoding: 'ISO-8859-1',
+								onComplete : 
+								function() {
+									initWysiwyg();
+								}
 							}
-						}
-				);
-				return false;
-			\">
-			<img src=\"../templates/".NameTemplateEDT()."/images/ico_plus2.png\" title=\"Ajouter Compte-rendu\" alt=\"Ajouter Compte-rendu\" /></a>";
-	    //echo "<a href='../cahier_texte_2/ajax_edition_compte_rendu.php?id_groupe=".$id_groupe."&today=".$MaDate."' target='_parent'>
-        //<img src=\"../templates/".NameTemplateEDT()."/images/ico_plus2.png\" title=\"Ajouter Compte-rendu\" alt=\"Ajouter Compte-rendu\" /></a>";
-        echo ("</span>\n");
+					);
+					return false;
+				\">
+				<img src=\"../templates/".NameTemplateEDT()."/images/cdt_vide.png\" title=\"Ajouter Compte-rendu\" alt=\"Ajouter Compte-rendu\" /></a>";
+			echo ("</span>\n");
+		}
+		else {
+			echo ("<span class=\"image\">");
+			$MaDate = RecupereTimestampJour($jour);
+			echo "<a href=\"#\" style=\"font-size: 11pt;\"  onclick=\"javascript:
+					id_groupe = '".$id_groupe."';
+					getWinDernieresNotices().hide();
+					getWinListeNotices();
+					new Ajax.Updater('affichage_liste_notice', './ajax_affichages_liste_notices.php?id_groupe=".$id_groupe."', {encoding: 'ISO-8859-1'});
+					getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_ct=".$id_ct."&id_groupe=".$id_groupe."&today=".$MaDate."', { 
+								encoding: 'ISO-8859-1',
+								onComplete : 
+								function() {
+									initWysiwyg();
+								}
+							}
+					);
+					return false;
+				\">
+				<img src=\"../templates/".NameTemplateEDT()."/images/cdt_rempli.png\" title=\"Editer Compte-rendu\" alt=\"Ajouter Compte-rendu\" /></a>";
+			echo ("</span>\n");
+		}
     }
 }
 // ======================================================
@@ -103,7 +158,7 @@ function AfficheBarCommutateurSemaines_CDT($login_edt, $visioedt, $type_edt_2, $
 // =============================================================================
 function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, $period) 
 {
-
+	$tab_dates = RecupereJoursSemaine();
     echo ("<div class=\"fenetre\">\n");
 
     echo("<div class=\"contenu\">
@@ -128,7 +183,7 @@ function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, 
 
         echo("<div class=\"colonne".$creneaux['nb_creneaux']."\">\n");
         $jour_sem = $entetes['entete'][$jour];
-        echo("<h2 class=\"entete\"><div class=\"cadre\"><strong>".$jour_sem."</strong></div></h2>\n");
+        echo("<h2 class=\"entete\"><div class=\"cadre\"><strong>".$jour_sem."</strong> ".$tab_dates[$_SESSION['week_selected']-1][$jour_sem]."</div></h2>\n");
         $index_box = 0;
         while (isset($tab_data[$jour]['type'][$index_box]))
         {
@@ -168,13 +223,12 @@ function AfficherEDT_CDT($tab_data, $entetes, $creneaux, $type_edt, $login_edt, 
                 echo ("<div class=\"".$tab_data[$jour]['couleur'][$index_box]."\">");
                 echo $tab_data[$jour]['contenu'][$index_box];
                 echo ("<div class=\"ButtonBar\">");
-                AfficheIconePlusNew_CDT($tab_data[$jour]['id_groupe'][$index_box], $login_edt, $type_edt, $tab_data[$jour]['heuredeb_dec'][$index_box], $jour);				
-                //AfficheEffacerIcone($type_edt,$login_edt,$tab_data[$jour]['id_cours'][$index_box], $period);
-                //AfficheModifierIcone($type_edt,$login_edt,$tab_data[$jour]['id_cours'][$index_box], $period);
-                if ($isIconeAddUsable)
-                {
-                    //AfficheIconePlusAdd($type_edt,0,$login_edt,$jour_sem,$tab_data[$jour]['id_creneau'][$index_box], $period);
-                }
+				if ($tab_data[$jour]['id_groupe'][$index_box] != 0) {
+					AfficheIconePlusNew_CDT($tab_data[$jour]['id_groupe'][$index_box], $login_edt, $type_edt, $tab_data[$jour]['heuredeb_dec'][$index_box], $jour, $tab_data[$jour]['id_ct'][$index_box]);
+				}
+				else {
+					// -------- C'est un AID, non géré par CDT2
+				}
                 echo ("</div>\n");
                 echo ("</div></div>\n");   
    
