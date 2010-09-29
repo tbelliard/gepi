@@ -199,14 +199,47 @@ case 'eleves' :
 echo "<input type='submit' name=\"ok\" value='Enregistrer' />\n";
 
 echo "<br /><br />\n";
-echo "<b><a href=\"./modele_fiche_information.php?fiche=$fiche\" target='_blank' >Aperçu de la fiche d'information</a></b>\n";
-echo "Attention : la mise en page des fiches est très différente à l'écran et à l'impression.";
-echo "Veillez à utiliser la fonction \"aperçu avant impression\" afin de vous rendre compte du résultat.\n";
-
+echo "<b><a href=\"./modele_fiche_information.php?fiche=$fiche\" target='_blank' >Aperçu de la fiche d'information</a></b><br />\n";
+echo "<i>Attention&nbsp;:</i> la mise en page des fiches est très différente à l'écran et à l'impression.";
+echo "Veillez à utiliser la fonction \"aperçu avant impression\" afin de vous rendre compte du résultat.<br />\n";
 
 //echo "</td>\n</tr>\n";
 //echo "</table>\n";
 echo "</div>\n";
+
+if($fiche=="responsables") {
+	echo "<br />\n";
+	echo "<p><b>ATTENTION&nbsp;:</b> Les dimensions et positionnement du bloc adresse des responsables sont ceux du ";
+	if(getSettingValue('GepiAdminImprBulSettings')=='yes') {
+		echo "<a href='../bulletins/param_bull.php'>Paramétrage d'impression des bulletins HTML</a>";
+	}
+	else {
+		echo "Paramétrage d'impression des bulletins HTML";
+	}
+	echo ".</p>\n";
+
+	$addressblock_padding_right=getSettingValue("addressblock_padding_right");
+	$addressblock_padding_top=getSettingValue("addressblock_padding_top");
+	$addressblock_padding_text=getSettingValue("addressblock_padding_text");
+	$addressblock_length=getSettingValue("addressblock_length");
+
+	echo "<p style='margin-left: 3em;'>\n";
+	echo "Espace entre la marge droite de la feuille et le bloc 'adresse' : ".$addressblock_padding_right."&nbsp;mm\n";
+	if($addressblock_padding_right>200) {echo " <span style='color='red'>Cette valeur parait élevée. Y aurait-il une erreur?</span>";}
+	echo "<br />\n";
+	echo "Espace entre la marge haute de la feuille et le bloc 'adresse' : ".$addressblock_padding_top."&nbsp;mm\n";
+	if($addressblock_padding_top>290) {echo " <span style='color='red'>Cette valeur parait élevée. Y aurait-il une erreur?</span>";}
+	echo "<br />\n";
+	echo "Espace vertical entre le bloc 'adresse' et le bloc des résultats : ".$addressblock_padding_text."&nbsp;mm\n";
+	if($addressblock_padding_text>100) {echo " <span style='color='red'>Cette valeur parait élevée. Y aurait-il une erreur?</span>";}
+	echo "<br />\n";
+	echo "Longueur du bloc 'adresse' : ".$addressblock_length."&nbsp;mm\n";
+	if($addressblock_length>170) {echo " <span style='color='red'>Cette valeur parait élevée. Y aurait-il une erreur?</span>";}
+	echo "<br />\n";
+	echo "</p>\n";
+
+	echo "<p>Si vous devez apporter des corrections, c'est dans 'Paramétrage d'impression des bulletins HTML' que cela se passe.</p>\n";
+}
 
 ?>
 </form>
