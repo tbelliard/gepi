@@ -92,7 +92,7 @@ if (($donnees_personne_csv)) {
 	break;
 	case 'responsable':
 			//pour un responsable
-			$fd.="CLASSE;IDENTIFIANT;NUM_LEGAL;CIVILITE;NOM;PRENOM;MOT_DE_PASSE;COURRIEL;ARD1;ADR2;ADR3;ADR4;CP;COMMUNE;PAYS;ELV1;ELV2;ELV3;ELV4;ELV5;ELV6;ELV7\n";
+			$fd.="CLASSE;IDENTIFIANT;NUM_LEGAL;CIVILITE;NOM;PRENOM;MOT_DE_PASSE;COURRIEL;ARD1;ADR2;ADR3;ADR4;CP;COMMUNE;PAYS;ELV1;ELV1_LOGIN;ELV2;ELV2_LOGIN;ELV3;ELV3_LOGIN;ELV4;ELV4_LOGIN;ELV5;ELV5_LOGIN;ELV6;ELV6_LOGIN;ELV7;ELV7_LOGIN\n";
 			for ($i=0 ; $i<$nb_enr_tableau ; $i++) {
 				if(isset($donnees_personne_csv['login'][$i])){
 					$classe = $donnees_personne_csv['classe'][$i];
@@ -117,7 +117,15 @@ if (($donnees_personne_csv)) {
 					$elv5 = isset($donnees_personne_csv['elv5'][$i]) ? $donnees_personne_csv['elv5'][$i] : "";
 					$elv6 = isset($donnees_personne_csv['elv6'][$i]) ? $donnees_personne_csv['elv6'][$i] : "";
 					$elv7 = isset($donnees_personne_csv['elv7'][$i]) ? $donnees_personne_csv['elv7'][$i] : "";
-					$fd.="$classe;$login;$num_legal;$civilite;$nom;$prenom;$password;$email;$adr1;$adr2;$adr3;$adr4;$cp;$commune;$pays;$elv1;$elv2;$elv3;$elv4;$elv5;$elv6;$elv7\n";
+					$elv1_login = isset($donnees_personne_csv['elv1_login'][$i]) ? $donnees_personne_csv['elv1_login'][$i] : "";
+					$elv2_login = isset($donnees_personne_csv['elv2_login'][$i]) ? $donnees_personne_csv['elv2_login'][$i] : "";
+					$elv3_login = isset($donnees_personne_csv['elv3_login'][$i]) ? $donnees_personne_csv['elv3_login'][$i] : "";
+					$elv4_login = isset($donnees_personne_csv['elv4_login'][$i]) ? $donnees_personne_csv['elv4_login'][$i] : "";
+					$elv5_login = isset($donnees_personne_csv['elv5_login'][$i]) ? $donnees_personne_csv['elv5_login'][$i] : "";
+					$elv6_login = isset($donnees_personne_csv['elv6_login'][$i]) ? $donnees_personne_csv['elv6_login'][$i] : "";
+					$elv7_login = isset($donnees_personne_csv['elv7_login'][$i]) ? $donnees_personne_csv['elv7_login'][$i] : "";
+
+					$fd.="$classe;$login;$num_legal;$civilite;$nom;$prenom;$password;$email;$adr1;$adr2;$adr3;$adr4;$cp;$commune;$pays;$elv1;$elv1_login;$elv2;$elv2_login;$elv3;$elv3_login;$elv4;$elv4_login;$elv5;$elv5_login;$elv6;$elv6_login;$elv7;$elv7_login\n";
 				}
 			}
 	break;

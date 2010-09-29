@@ -235,7 +235,7 @@ else {
 								     responsables2 re,
 								     classes c,
 								     j_eleves_classes jec,
-								     eleves e, 
+								     eleves e,
 								     resp_adr ra
 								WHERE (
 								u.statut = 'responsable' AND
@@ -436,6 +436,7 @@ while ($p < $nb_users) {
 			// =====================
 			*/
 
+			$elv_resp['login'][$i] = mysql_result($call_resp_eleves, $i, "login");
 			$elv_resp['nom'][$i] = mysql_result($call_resp_eleves, $i, "nom");
 			$elv_resp['prenom'][$i] = mysql_result($call_resp_eleves, $i, "prenom");
 			$elv_resp['classe'][$i] = mysql_result($call_resp_eleves, $i, "classe");
@@ -618,15 +619,15 @@ while ($p < $nb_users) {
 			// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
 			$largeur1=getSettingValue("addressblock_logo_etab_prop") ? getSettingValue("addressblock_logo_etab_prop") : 40;
 			$largeur2=100-$largeur1;
-		
+
 			// Taille des polices sur le bloc adresse:
 			$addressblock_font_size=getSettingValue("addressblock_font_size") ? getSettingValue("addressblock_font_size") : 12;
-		
+
 			// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
 			$addressblock_classe_annee=getSettingValue("addressblock_classe_annee") ? getSettingValue("addressblock_classe_annee") : 35;
 			// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
 			$addressblock_classe_annee2=round(100*$addressblock_classe_annee/(100-$largeur1));
-		
+
 			// Débug sur l'entête pour afficher les cadres
 			$addressblock_debug=getSettingValue("addressblock_debug") ? getSettingValue("addressblock_debug") : "n";
 
@@ -870,6 +871,16 @@ width:".$largeur1."%;\n";
 							case 5 : $donnees_personne_csv['elv6'][$pcsv] = $chaine_elv; Break;
 							case 6 : $donnees_personne_csv['elv7'][$pcsv] = $chaine_elv; Break;
 						}
+						switch ($i) {
+							case 0 : $donnees_personne_csv['elv1_login'][$pcsv] = $elv_resp['login'][$i]; Break;
+							case 1 : $donnees_personne_csv['elv2_login'][$pcsv] = $elv_resp['login'][$i]; Break;
+							case 2 : $donnees_personne_csv['elv3_login'][$pcsv] = $elv_resp['login'][$i]; Break;
+							case 3 : $donnees_personne_csv['elv4_login'][$pcsv] = $elv_resp['login'][$i]; Break;
+							case 4 : $donnees_personne_csv['elv5_login'][$pcsv] = $elv_resp['login'][$i]; Break;
+							case 5 : $donnees_personne_csv['elv6_login'][$pcsv] = $elv_resp['login'][$i]; Break;
+							case 6 : $donnees_personne_csv['elv7_login'][$pcsv] = $elv_resp['login'][$i]; Break;
+						}
+
 						$i++;
 					}
 				}
@@ -933,15 +944,15 @@ width:".$largeur1."%;\n";
 			// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
 			$largeur1=getSettingValue("addressblock_logo_etab_prop") ? getSettingValue("addressblock_logo_etab_prop") : 40;
 			$largeur2=100-$largeur1;
-		
+
 			// Taille des polices sur le bloc adresse:
 			$addressblock_font_size=getSettingValue("addressblock_font_size") ? getSettingValue("addressblock_font_size") : 12;
-		
+
 			// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
 			$addressblock_classe_annee=getSettingValue("addressblock_classe_annee") ? getSettingValue("addressblock_classe_annee") : 35;
 			// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
 			$addressblock_classe_annee2=round(100*$addressblock_classe_annee/(100-$largeur1));
-		
+
 			// Débug sur l'entête pour afficher les cadres
 			$addressblock_debug=getSettingValue("addressblock_debug") ? getSettingValue("addressblock_debug") : "n";
 
@@ -957,15 +968,15 @@ width:".$largeur1."%;\n";
 			// PROPORTION 30%/70% POUR LE 1er TABLEAU ET ...
 			$largeur1=getSettingValue("addressblock_logo_etab_prop") ? getSettingValue("addressblock_logo_etab_prop") : 40;
 			$largeur2=100-$largeur1;
-		
+
 			// Taille des polices sur le bloc adresse:
 			$addressblock_font_size=getSettingValue("addressblock_font_size") ? getSettingValue("addressblock_font_size") : 12;
-		
+
 			// Taille de la cellule Classe et Année scolaire sur le bloc adresse:
 			$addressblock_classe_annee=getSettingValue("addressblock_classe_annee") ? getSettingValue("addressblock_classe_annee") : 35;
 			// Calcul du pourcentage par rapport au tableau contenant le bloc Classe, Année,...
 			$addressblock_classe_annee2=round(100*$addressblock_classe_annee/(100-$largeur1));
-		
+
 			// Débug sur l'entête pour afficher les cadres
 			$addressblock_debug=getSettingValue("addressblock_debug") ? getSettingValue("addressblock_debug") : "n";
 
