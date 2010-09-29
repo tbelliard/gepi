@@ -594,6 +594,7 @@ if (!isset($suite)) {
 			$j="1";
 			while ($j<$nb_periode) {
 				$tab_per[]=$j;
+				//echo "\$tab_per[]=$j<br />";
 				$j++;
 			}
 
@@ -681,6 +682,7 @@ if (!isset($suite)) {
 							for($l=0;$l<count($tab_per);$l++) {
 								if($l>0) {echo "-";}
 								$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele[$k]."' AND periode='".$tab_per[$l]."';";
+								//echo "$sql<br />";
 								$res_ele_grp=mysql_query($sql);
 								if(mysql_num_rows($res_ele_grp)==0) {
 									$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele[$k]."', periode='".$tab_per[$l]."';";
@@ -722,11 +724,16 @@ if (!isset($suite)) {
 		for ($i=0;$i<count($groupes);$i++) {
 			$code_groupe=$groupes[$i]['code'];
 			$libelle_groupe=$groupes[$i]['libelle_long'];
-	
+
+			//echo "<p>\$code_groupe=$code_groupe<br />";
+			//echo "\$libelle_groupe=$libelle_groupe<br />";
+
 			$tab_clas=array();
 			$tab_ele=array();
 			$tab_per_clas=array();
-	
+
+			$max_per=0;
+
 			$list_classe="";
 	
 			$cpt_clas=0;
@@ -740,12 +747,15 @@ if (!isset($suite)) {
 					$lig_clas=mysql_fetch_object($res_clas);
 					$id_classe=$lig_clas->id;
 	
+					//echo "\$id_classe=$id_classe<br />";
+
 					// Récupération des périodes de la classe
 					//$tab_per=array();
 					$periode_query=mysql_query("SELECT MAX(num_periode) FROM periodes WHERE id_classe='$id_classe';");
 					if(mysql_num_rows($periode_query)>0) {
-						$tab_per_clas[]=mysql_result($periode_query,0);
-	
+						$max_per=mysql_result($periode_query,0);
+						$tab_per_clas[]=$max_per;
+
 						$tab_test=array_unique($tab_per_clas);
 						if(count($tab_test)==1) {
 							// Récupération des élèves de la classe
@@ -765,8 +775,12 @@ if (!isset($suite)) {
 							$list_classe.=$classe;
 						}
 						else {
-							echo "<p style='color:red'>PB: Des classes n'ayant pas le même nombre de périodes sont associées dans un même groupe.</p>\n";
+							echo "<p style='color:red'>PROBLEME&nbsp;: Des classes n'ayant pas le même nombre de périodes sont associées dans un même groupe.</p>\n";
 						}
+
+						//for($loop=0;$loop<count($tab_test);$loop++) {
+						//	echo "Périodes \$tab_test[$loop]=$tab_test[$loop]<br />";
+						//}
 					}
 				}
 			}
@@ -841,12 +855,16 @@ if (!isset($suite)) {
 					for($k=0;$k<count($tab_ele);$k++) {
 						if($k>0) {echo " - ";}
 						echo $tab_ele[$k]." (";
-						for($l=0;$l<count($tab_per);$l++) {
+						//for($l=0;$l<count($tab_per);$l++) {
+						for($l=1;$l<=$max_per;$l++) {
 							if($l>0) {echo "-";}
-							$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele[$k]."' AND periode='".$tab_per[$l]."';";
+							//$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele[$k]."' AND periode='".$tab_per[$l]."';";
+							$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND login='".$tab_ele[$k]."' AND periode='".$l."';";
+							//echo "$sql<br />";
 							$res_ele_grp=mysql_query($sql);
 							if(mysql_num_rows($res_ele_grp)==0) {
-								$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele[$k]."', periode='".$tab_per[$l]."';";
+								//$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele[$k]."', periode='".$tab_per[$l]."';";
+								$sql="INSERT INTO j_eleves_groupes SET id_groupe='$id_groupe', login='".$tab_ele[$k]."', periode='".$l."';";
 								if($insert=mysql_query($sql)) {
 									echo "<span style='color:green;'>";
 								}
@@ -858,7 +876,8 @@ if (!isset($suite)) {
 							else {
 								echo "<span style='color:black;'>";
 							}
-							echo $tab_per[$l]."</span>";
+							//echo $tab_per[$l]."</span>";
+							echo $l."</span>";
 						}
 						echo ")";
 					}
@@ -1420,6 +1439,7 @@ else {
 											affiche_debug("\$nb_eleves=$nb_eleves<br />\n");
 											$nb_per = mysql_result(mysql_query("SELECT count(*) FROM periodes WHERE id_classe = '" . $id_classe . "'"), 0);
 											affiche_debug("\$nb_per=$nb_per<br />\n");
+											//echo "\$nb_per=$nb_per<br />";
 
 											// DEBUG :: echo "<br/>Classe : " . $id_classe . "<br/>Nb el. : " . $nb_eleves . "<br/>Nb per.: " . $nb_per . "<br/><br/>";
 											if($nb_eleves>0){
