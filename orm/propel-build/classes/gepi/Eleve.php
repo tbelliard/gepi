@@ -946,6 +946,7 @@ class Eleve extends BaseEleve {
 			$now = new DateTime('now');
 			$periode = $this->getPeriodeNote($now);
 		}
+		return $periode;
 	    } else if (is_numeric($periode)) {
 		foreach ($this->getPeriodeNotes() as $periode_temp) {
 		    if ($periode_temp->getNumPeriode() == $periode) {
