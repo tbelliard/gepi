@@ -1861,6 +1861,115 @@ position: absolute; background-color: yellow; border: 1px solid silver;
      overflow:hidden;
 }
 
+.cadreCouleur14  {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#799C13;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur15 {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#4BA829;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur16 {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#D4D600;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur17 {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#FFEC00;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur18 {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#FCC300;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur19 {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#DBAA73;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur20 {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#745A32;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur21 {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#E95D0F;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur22 {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#99141B;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur23 {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#009EE0;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
+
+.cadreCouleur24 {
+     position:relative;
+     border-left:1px solid #000000;
+     border-top:1px solid #000000;
+     background-color:#C19CC4;
+     padding:0 0 0 0;
+     height:100%;
+     overflow:hidden;
+}
 .cadreCouleurnone {
      position:relative;
      border-left:1px solid #000000;

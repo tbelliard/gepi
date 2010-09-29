@@ -91,7 +91,18 @@ if ($nouvelle_couleur == "non") {
 			<option value="green" class="cadreCouleur11" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'11\');"></option>
 			<option value="olive" class="cadreCouleur12" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'12\');"></option>
 			<option value="teal" class="cadreCouleur13" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'13\');"></option>
-		</select>
+			<option value="14" class="cadreCouleur14" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'14\');"></option>
+			<option value="15" class="cadreCouleur15" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'15\');"></option>
+			<option value="16" class="cadreCouleur16" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'16\');"></option>
+			<option value="17" class="cadreCouleur17" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'17\');"></option>
+			<option value="18" class="cadreCouleur18" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'18\');"></option>
+			<option value="19" class="cadreCouleur19" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'19\');"></option>
+			<option value="20" class="cadreCouleur20" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'20\');"></option>
+			<option value="21" class="cadreCouleur21" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'21\');"></option>
+			<option value="22" class="cadreCouleur22" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'22\');"></option>
+			<option value="23" class="cadreCouleur23" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'23\');"></option>
+			<option value="24" class="cadreCouleur24" onclick="couleursEdtAjax(\''.$M_couleur.'\', \'24\');"></option>			
+			</select>
 	</form>
 </td>
 	';
