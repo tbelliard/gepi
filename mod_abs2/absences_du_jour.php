@@ -445,18 +445,7 @@ if ($type_selection == 'id_eleve') {
         $regime_eleve=EleveRegimeDoublantQuery::create()->findPk($eleve->getlogin())->getRegime();
 		//$eleve = new Eleve();
 			$traitement_col = new PropelCollection();//liste des traitements pour afficher des boutons 'ajouter au traitement'
-			$manque = true;
-			foreach ($eleve->getAbsenceEleveSaisiesDuJour($dt_date_absence_eleve) as $absence) {
-			    if ($absence->getManquementObligationPresence()) {
-				$manque = false;
-				break;
-			    }
-			}
-			if ($manque) {
-			    //l'eleve n'a manque aucune obligation
-			    //donc on ne l'affiche pas
-			    continue;
-			}
+
 			$saisie_affiches = array ();
 			if ($compteur % 2 == '1') {
 				$background_couleur="#E8F1F4";
