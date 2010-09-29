@@ -189,7 +189,7 @@ if ($affichage != null && $affichage != '') {
 	->filterByEleveId($eleve_col->toKeyValue('IdEleve', 'IdEleve'));
 
     if ($type_extrait == '1') {
-	$saisie_query->filterManquementObligationPresence(true);
+	$saisie_query->filterByManquementObligationPresence(true);
     }
 
     $saisie_query->useEleveQuery()->orderByNom()->orderByPrenom()->endUse();

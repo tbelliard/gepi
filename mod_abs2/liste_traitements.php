@@ -156,7 +156,7 @@ if (isFiltreRechercheParam('filter_statut_notification')) {
     }
 }
 if (isFiltreRechercheParam('filter_manqement_obligation')) {
-    $query->filterManquementObligationPresence(getFiltreRechercheParam('filter_manqement_obligation')=='y');
+    $query->filterByManquementObligationPresence(getFiltreRechercheParam('filter_manqement_obligation')=='y');
 }
 
 if (getFiltreRechercheParam('order') == "asc_id") {

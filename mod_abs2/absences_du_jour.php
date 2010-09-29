@@ -317,7 +317,7 @@ if ($type_selection == 'id_eleve') {
     $dt_fin = clone $dt_date_absence_eleve;
     $dt_fin->setTime(23,59,59);
     //on récupere les saisies car avant puis on va filtrer avec les ids car filterManquementObligationPresence bug un peu avec les requetes imbriquées
-    $saisie_col = AbsenceEleveSaisieQuery::create()->select('Id')->filterByPlageTemps($dt_debut, $dt_fin)->filterManquementObligationPresence()->setFormatter(ModelCriteria::FORMAT_ARRAY)->find();
+    $saisie_col = AbsenceEleveSaisieQuery::create()->select('Id')->filterByPlageTemps($dt_debut, $dt_fin)->filterByManquementObligationPresence()->setFormatter(ModelCriteria::FORMAT_ARRAY)->find();
     $query = EleveQuery::create();
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);        

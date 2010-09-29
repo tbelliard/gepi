@@ -188,7 +188,7 @@ if (isFiltreRechercheParam('filter_type')) {
     }
 }
 if (isFiltreRechercheParam('filter_manqement_obligation')) {
-    $query->filterManquementObligationPresence(getFiltreRechercheParam('filter_manqement_obligation')=='y');
+    $query->filterByManquementObligationPresence(getFiltreRechercheParam('filter_manqement_obligation')=='y');
 }
 
 $order = getFiltreRechercheParam('order');

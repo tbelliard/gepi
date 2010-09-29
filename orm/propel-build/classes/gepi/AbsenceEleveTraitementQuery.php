@@ -22,7 +22,7 @@ class AbsenceEleveTraitementQuery extends BaseAbsenceEleveTraitementQuery {
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-        public function filterManquementObligationPresence($value = true) {
+        public function filterByManquementObligationPresence($value = true) {
 	    if ($value === true) {
 		if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y') {
 		    $this->useAbsenceEleveTypeQuery('', Criteria::LEFT_JOIN)
