@@ -2351,6 +2351,23 @@ if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")) {
 	echo "<p><br /></p>\n";
 }
 
+if((isset($eleve_login))&&($compte_eleve_existe=="y")&&($journal_connexions=='n')&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+	//$sql="SELECT 1=1 FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
+	//$sql="SELECT 1=1 FROM utilisateurs WHERE login='$eleve_login';";
+	//$test_compte=mysql_query($sql);
+	//if(mysql_num_rows($test_compte)>0) {$compte_eleve_existe="y";} else {$compte_eleve_existe="n";}
+
+	//if(($compte_eleve_existe=="y")&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+		$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
+		$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
+
+		echo "<hr />\n";
+	
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?eleve_login=$eleve_login&amp;journal_connexions=y#connexion' title='Journal des connexions'>Journal des connexions</a></p>\n";
+	//}
+}
+
+
 if((isset($eleve_login))&&($compte_eleve_existe=="y")&&($journal_connexions=='y')&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
 	echo "<hr />\n";
 	// Journal des connexions

@@ -949,6 +949,10 @@ echo "<input type=hidden name=max_mat value=$nb_mat />\n";
 	}
 	echo "<p>&nbsp;</p>\n";
 
+	if((isset($user_login))&&($journal_connexions=='n')) {
+		echo "<p><a href='".$_SERVER['PHP_SELF']."?user_login=$user_login&amp;journal_connexions=y#connexion' title='Journal des connexions'>Journal des connexions</a></p>\n";
+	}
+
 	if($journal_connexions=='y') {
 		// Journal des connexions
 		echo "<a name=\"connexion\"></a>\n";

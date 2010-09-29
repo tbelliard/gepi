@@ -762,7 +762,7 @@ echo "<td valign='top'>\n";
 		else {
 			$compte_resp_existe="n";
 		}
-	
+
 		if(($compte_resp_existe=="y")&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
 			$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
 			$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
@@ -1231,6 +1231,14 @@ if(mysql_num_rows($res_adr)>0){
 
 echo "<input type='hidden' name='is_posted' value='1' />\n";
 echo "</form>\n";
+
+if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='n')&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
+	//$journal_connexions=isset($_POST['journal_connexions']) ? $_POST['journal_connexions'] : (isset($_GET['journal_connexions']) ? $_GET['journal_connexions'] : 'n');
+	//$duree=isset($_POST['duree']) ? $_POST['duree'] : NULL;
+
+	echo "<hr />\n";
+	echo "<p><a href='".$_SERVER['PHP_SELF']."?pers_id=$pers_id&amp;journal_connexions=y#connexion' title='Journal des connexions'>Journal des connexions</a></p>\n";
+}
 
 if((isset($pers_id))&&($compte_resp_existe=="y")&&($journal_connexions=='y')&&(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite"))) {
 	echo "<hr />\n";
