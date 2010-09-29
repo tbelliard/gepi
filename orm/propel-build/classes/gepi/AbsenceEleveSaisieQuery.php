@@ -25,7 +25,7 @@ class AbsenceEleveSaisieQuery extends BaseAbsenceEleveSaisieQuery {
 	 */
         public function filterByPlageTemps($dt_debut = null, $dt_fin = null)
         {
-	    if ($dt_debut != null && $dt_fin != null && $dt_debut == $dt_fin) {
+	    if ($dt_debut != null && $dt_fin != null && $dt_debut->format('U') == $dt_fin->format('U')) {
 		//on a pas une plage de temps mais deux fois le meme moment
 		//on va renvoyer aussi les saisies qui debutent a ce momement
 		$this->filterByFinAbs($dt_debut, Criteria::GREATER_THAN);
