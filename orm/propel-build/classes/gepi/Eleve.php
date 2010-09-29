@@ -21,6 +21,11 @@ class Eleve extends BaseEleve {
 	protected $collPeriodeNotes;
 
 	/**
+	 * @var        array PeriodesNote[] Collection to store aggregation of PeriodesNote objects.
+	 */
+	protected $collCachePeriodeNotesResult;
+
+	/**
 	 * @var        array Classe[][] Collection to store aggregation of Classes objects. There is a collection for each periode
 	 */
 	protected $collClasses;
@@ -931,43 +936,36 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return	PeriodeNote
 	 */
-	public function getPeriodeNote($periode = null) {
-	    if ($periode instanceof DateTime) {
+	public function getPeriodeNote($periode_param = null) {
+	    $result = null;
+	    if ($periode_param instanceof DateTime) {
 		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getDateDebut('U') <= $periode->format('U')
-			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode->format('U')))
+		    if ($periode_temp->getDateDebut('U') <= $periode_param->format('U')
+			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode_param->format('U')))
 		    {
-			return $periode_temp;
+			$result = $periode_temp;
+			break;
 		    }
 		}
-	    } else if ($periode === null) {
+	    } else if ($periode_param === null) {
 		$periode = $this->getPeriodeNoteOuverte();
 		if ($periode == null) {
 			$now = new DateTime('now');
-			$periode = $this->getPeriodeNote($now);
+			$result = $this->getPeriodeNote($now);
 		}
-		return $periode;
-	    } else if (is_numeric($periode)) {
+	    } else if (is_numeric($periode_param)) {
 		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getNumPeriode() == $periode) {
-			return $periode_temp;
+		    if ($periode_temp->getNumPeriode() == $periode_param) {
+			$result = $periode_temp;
+			break;
 		    }
 		}
-	    } else if ($periode instanceof PeriodeNote) {
-		return $periode;
-	    } else if ($periode instanceof DateTime) {
-		foreach ($this->getPeriodeNotes() as $periode_temp) {
-		    if ($periode_temp->getDateDebut('U') <= $periode->format('U')
-			    && ($periode_temp->getDateFin(null) === null || $periode_temp->getDateFin('U') > $periode->format('U')))
-		    {
-			return $periode_temp;
-		    }
-		}
+	    } else if ($periode_param instanceof PeriodeNote) {
+		$result = $periode_param;
 	    } else {
 		    throw new PropelException('Argument $periode doit etre de type numerique ou une instance de PeriodeNote ou un DateTime.');
 	    }
-
-	    return null;
+	    return $result;
 	}
 
 
