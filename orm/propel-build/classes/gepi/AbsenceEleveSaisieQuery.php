@@ -54,7 +54,8 @@ class AbsenceEleveSaisieQuery extends BaseAbsenceEleveSaisieQuery {
         {
 	    $this->setComment('filterManquementObligationPresence');
 
-	    $this->joinJTraitementSaisieEleve()
+	    $this
+		->join('AbsenceEleveSaisie.JTraitementSaisieEleve', Criteria::LEFT_JOIN)
 		->join('JTraitementSaisieEleve.AbsenceEleveTraitement', Criteria::LEFT_JOIN)
 		->join('AbsenceEleveTraitement.AbsenceEleveType', Criteria::LEFT_JOIN)
 		->withColumn('group_concat(manquement_obligation_presence)', 'types_concat')
