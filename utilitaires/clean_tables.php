@@ -180,7 +180,8 @@ function etape7() {
 function etape8() {
     global $TPSCOUR,$offset,$duree,$cpt,$nb_lignes;
     // Cas de la table matieres_appreciations
-    $req = mysql_query("SELECT * FROM matieres_notes order by login,matiere,periode");
+    //$req = mysql_query("SELECT * FROM matieres_notes order by login,matiere,periode");
+    $req = mysql_query("SELECT * FROM matieres_notes order by login,id_groupe,periode");
     $nb_lignes = mysql_num_rows($req);
     if ($offset >= $nb_lignes) {
         $offset = -1;
@@ -704,11 +705,12 @@ if (getSettingValue("active_mod_gest_aid")=="y") {
 
     if(isset($offset)){
 
-       if ($offset>=0)
+       if (($offset>=0)&&($nb_lignes>0)) {
            $percent=min(100,round(100*$offset/$nb_lignes,0));
-        else $percent=100;
+		}
+        else {$percent=100;}
     }
-    else $percent=0;
+    else {$percent=0;}
     if ($percent >= 0) {
         $percentwitdh=$percent*4;
 
@@ -751,11 +753,12 @@ if (getSettingValue("active_mod_gest_aid")=="y") {
         $nb_lignes = $_GET['nb_lignes'];
     }
     if(isset($offset)){
-        if ($offset>=0)
+       if (($offset>=0)&&($nb_lignes>0)) {
            $percent=min(100,round(100*$offset/$nb_lignes,0));
-        else $percent=100;
+		}
+        else {$percent=100;}
     }
-    else $percent=0;
+    else {$percent=0;}
     if ($percent >= 0) {
         $percentwitdh=$percent*4;
         echo "<div align='center'><table width=\"400\" border=\"0\">
@@ -832,6 +835,67 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 	//===========
 	// A FAIRE
 	//===========
+	/*
+	// Problème la requête est très longue
+	mysql> select * from j_eleves_groupes where concat(login,"|",periode) not in (select concat(login,"|",periode) from j_eleves_classes);
+	Empty set (3 min 1.34 sec)
+	
+	mysql>                                
+	*/
+
+	if(!isset($_POST['nettoyage_grp'])) {
+		// BOUCLE classes... récupérer le nombre de périodes... et supprimer ce qui est associé pour les périodes supérieures dans j_eleves_classes et j_eleves_groupes... contrôler avant si il y a des données dans matieres_appreciations, matieres_notes, avis_conseil_classe et cn_cahier_notes
+
+		echo "<p class='bold'>Recherche des élèves affectés dans des groupes sur des périodes non associées à leur classe.</p>\n";
+	
+		// BOUCLE sur les classes
+		$sql="SELECT id FROM classes ORDER BY classe;";
+		//echo "$sql<br />\n";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			echo "<p>Aucune classe n'est enregistrée dans la table 'classes'.</p>\n";
+		}
+		else {
+			$nb_corrections=0;
+			$nb_erreurs=0;
+			$prof_precedent="";
+			while($lig=mysql_fetch_object($res)) {
+	
+				echo "<p><b>Classe ".get_class_from_id($lig->id)."</b><br />\n";
+	
+				$sql="SELECT jeg.* FROM j_eleves_groupes jeg, j_groupes_classes jgc WHERE jgc.id_classe='$lig->id' AND jeg.id_groupe=jgc.id_groupe AND jeg.periode NOT IN (SELECT num_periode FROM periodes WHERE id_classe='$lig->id');";
+				//echo "$sql<br />\n";
+				$res2=mysql_query($sql);
+				if(mysql_num_rows($res2)>0) {
+					$nb_suppr=0;
+					echo mysql_num_rows($res2)." inscriptions en erreur d'élèves dans 'j_eleves_groupes' pour une période non associée à la classe ".get_class_from_id($lig->id)."&nbsp;: ";
+
+					while($lig2=mysql_fetch_object($res2)) {
+						$sql="SELECT * FROM matieres_notes WHERE login='$lig2->login' AND id_groupe='$lig2->id_groupe' AND periode='$lig2->periode';";
+						//echo "$sql<br />\n";
+						$res_liste_notes=mysql_query($sql);
+
+						$sql="SELECT * FROM matieres_appreciations WHERE login='$lig2->login' AND id_groupe='$lig2->id_groupe' AND periode='$lig2->periode';";
+						//echo "$sql<br />\n";
+						$res_liste_appreciations=mysql_query($sql);
+
+						if((mysql_num_rows($res_liste_notes)==0)&&(mysql_num_rows($res_liste_appreciations)==0)){
+							$sql="DELETE FROM j_eleves_groupes WHERE id_groupe='$lig2->id_groupe' AND login='$lig2->login' AND periode='$lig2->periode';";
+							//echo "$sql<br />\n";
+							$resultat_nettoyage_initial=mysql_query($sql);
+							if($resultat_nettoyage_initial) {$nb_suppr++;}
+						}
+						else {
+							echo "<br />\n";
+							echo "<span style='color:red'>Bulletins non vides pour $lig2->login sur la période $lig2->periode.</span><br />\n";
+						}
+						//echo "$lig2->id_groupe $lig2->login $lig2->periode<br />\n";
+					}
+					echo "$nb_suppr suppressions.<br />\n";
+				}
+			}
+		}
+	}
 
 	// Elèves dans des groupes pour lesquels l'association classe/groupe n'existe pas dans j_groupes_classes pour leurs classes
 	//===========
@@ -1803,6 +1867,74 @@ col2 varchar(100) NOT NULL default ''
 	}
 	echo "<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
 	echo "<p>Terminé.</p>\n";
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'controle_categories_matieres') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<p><b>Contrôler des catégories de matières&nbsp;:</b> \n";
+	echo "</p>\n";
+
+	$sql="SELECT id FROM classes ORDER BY classe;";
+	//echo "$sql<br />\n";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		echo "<p>Aucune classe n'est enregistrée dans la table 'classes'.</p>\n";
+	}
+	else {
+		$nb_corrections=0;
+		$nb_erreurs=0;
+		$prof_precedent="";
+		while($lig=mysql_fetch_object($res)) {
+			// categorie_id=='0' pour la "catégorie" Aucune... non présente dans matieres_categories
+			$sql="SELECT DISTINCT categorie_id, id_classe FROM j_groupes_classes jgc WHERE id_classe='$lig->id' and categorie_id!='0' AND categorie_id not in (select categorie_id from j_matieres_categories_classes where classe_id='$lig->id');";
+			$res2=mysql_query($sql);
+			if(mysql_num_rows($res2)>0) {
+				while($lig2=mysql_fetch_object($res2)) {
+
+					$sql="SELECT id, nom_court, nom_complet, priority FROM matieres_categories WHERE id='$lig2->categorie_id'";
+					$res_cat=mysql_query($sql);
+					if(mysql_num_rows($res_cat)==0) {
+						echo "<span style='color:red'>La catégorie n°$lig2->categorie_id n'existe pas dans la table 'matieres_categories'.</span><br />";
+						$nb_erreurs++;
+					}
+					else {
+						$lig_cat=mysql_fetch_object($res_cat);
+	
+						echo "Insertion de l'association de la catégorie de matière '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) avec la classe ".get_class_from_id($lig->id)."&nbsp;: ";
+						$sql="INSERT INTO j_matieres_categories_classes SET classe_id='$lig->id', categorie_id='$lig2->categorie_id', priority='$lig_cat->priority', affiche_moyenne='0';";
+						$res3=mysql_query($sql);
+						if(!$res3) {
+							echo "<span style='color:red'>Echec</span>";
+							$nb_erreurs++;
+						}
+						else {
+							echo "<span style='color:green'>Succès</span>";
+							$nb_corrections++;
+						}
+						echo "<br />";
+					}
+				}
+			}
+			$cpt++;
+		}
+	}
+
+	$sql="SELECT * FROM matieres_categories WHERE id='0';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		$lig_cat=mysql_fetch_object($test);
+		echo "<p><span style='color:red'>Anomalie&nbsp;:</span> Une catégorie de matière '$lig_cat->nom_court' (<i>'$lig_cat->nom_complet'</i>) a l'identifiant 0 dans la table 'matieres_categories'.<br />Cet identifiant est réservé à la \"catégorie\" Aucune qui sert pour les matières ne devant être dans aucune catégorie (<i>une astuce qui permet de ne pas faire apparaitre certains enseignements sur les bulletins (demi-groupes de TP par exemple)</i>).</p>\n";
+		echo "<p>Suppression de cette catégorie&nbsp;: ";
+		$sql="DELETE FROM matieres_categories WHERE id='0';";
+		$del=mysql_query($sql);
+		if($del) {echo "<span style='color:green'>Succès</span>";} else {echo "<span style='color:red'>Echec</span>";}
+		echo "</p>";
+	}
+
+	echo "<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
+	echo "<p>Terminé.</p>\n";
+
 }
 else {
     echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
@@ -1931,6 +2063,15 @@ else {
     echo "<center>\n";
 	echo "<input type=submit value=\"Corriger les ordres de matières des professeurs\" />\n";
     echo "<input type='hidden' name='action' value='corrige_ordre_matieres_professeurs' />\n";
+    echo "</form>\n";
+
+    echo "<hr />\n";
+
+    echo "<p>Contrôle catégories de matières.<br />Si les vous n'obtenez aucune matière dans les relevés de notes quand les Catégories de matières sont cochées dans 'Gestion des bases/Gestion des classes/&lt;Une_classe&gt; Paramètres', les informations de la table 'j_matieres_categories_classes' sont probablement incomplètes.</p>\n";
+    echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+    echo "<center>\n";
+	echo "<input type=submit value=\"Contrôler les catégories de matières\" />\n";
+    echo "<input type='hidden' name='action' value='controle_categories_matieres' />\n";
     echo "</form>\n";
 
 }
