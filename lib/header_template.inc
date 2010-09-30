@@ -456,6 +456,7 @@ if (isset($titre_page)) {
 		$chaine_enfants="";
 		if(count($tab_tmp_ele)>0) {
 			$nom_enfant=$tab_tmp_ele[1];
+//echo "\$chaine_enfants=\$tab_tmp_ele[1]=$tab_tmp_ele[1]<br />";
 			$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[0]);
 			if(count($tab_tmp_info_classes)>0) {
 				$classe_enfant=$tab_tmp_info_classes[count($tab_tmp_info_classes)-1];
@@ -464,7 +465,8 @@ if (isset($titre_page)) {
 			}
 			$donnees_enfant[]=array("nom"=>$nom_enfant , "classe"=>$classe_enfant) ;
 			for($i=3;$i<count($tab_tmp_ele);$i+=2) {
-				$nom_enfant=", ".$tab_tmp_ele[1];
+				$nom_enfant=", ".$tab_tmp_ele[$i];
+//echo "\$nom_enfant=$nom_enfant<br />";
 				unset($tab_tmp_info_classes);
 				$tab_tmp_info_classes=get_noms_classes_from_ele_login($tab_tmp_ele[$i-1]);
 				if(count($tab_tmp_info_classes)>0) {
