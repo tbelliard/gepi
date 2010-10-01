@@ -818,7 +818,16 @@ echo "<td valign='top'>\n";
 	echo "<tr><td>Tel.perso : </td><td><input type=text size=15 name=tel_pers value = \"".$tel_pers."\" onchange='changement();' /></td></tr>\n";
 	echo "<tr><td>Tel.portable : </td><td><input type=text size=15 name=tel_port value = \"".$tel_port."\" onchange='changement();' /></td></tr>\n";
 	echo "<tr><td>Tel.professionnel : </td><td><input type=text size=15 name=tel_prof value = \"".$tel_prof."\" onchange='changement();' /></td></tr>\n";
-	echo "<tr><td>Mel : </td><td><input type=text size=50 name=mel value = \"".$mel."\" onchange='changement();' /></td></tr>\n";
+	echo "<tr><td>Mel : </td><td><input type=text size=46 name=mel value = \"".$mel."\" onchange='changement();' />";
+	if($mel!='') {
+		$tmp_date=getdate();
+		echo " <a href='mailto:".$mel."?subject=GEPI&amp;body=";
+		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+		echo ",%0d%0aCordialement.'>";
+		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
+		echo "</a>";
+	}
+	echo "</td></tr>\n";
 	echo "</table>\n";
 
 echo "</td>\n";
