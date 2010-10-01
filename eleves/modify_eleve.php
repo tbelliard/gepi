@@ -1627,11 +1627,20 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	</tr>
 	<tr>
 		<th style='text-align:left;'>Email : </th>
-		<td><input type=text name='reg_email' size=20 ";
+		<td><input type=text name='reg_email' size=18 ";
 	if (isset($eleve_email)) {
 		echo "value=\"".$eleve_email."\"";
 	}
-	echo " onchange='changement();' /></td>
+	echo " onchange='changement();' />";
+	if($eleve_email!='') {
+		$tmp_date=getdate();
+		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
+		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+		echo ",%0d%0aCordialement.'>";
+		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
+		echo "</a>";
+	}
+	echo "</td>
 	</tr>
 	<tr>
     <th style='text-align:left;'>Identifiant National : </th>\n";
