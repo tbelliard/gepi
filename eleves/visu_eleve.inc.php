@@ -1134,6 +1134,15 @@ Patientez pendant l'extraction des données... merci.
 				echo "<tr><th style='text-align: left;'>N°INE&nbsp;:</th><td>".$tab_ele['no_gep']."</td></tr>\n";
 			}
 
+			echo "<tr><th style='text-align: left;'>Email&nbsp;:</th><td>";
+			$tmp_date=getdate();
+			echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
+			if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+			echo ",%0d%0aCordialement.'>";
+			echo $tab_ele['email'];
+			echo "</a>";
+			echo "</td></tr>\n";
+
 			//echo "<tr><th>:</th><td>".$tab_ele['']."</td></tr>\n";
 			echo "</table>\n";
 		echo "</td>\n";
@@ -1209,7 +1218,16 @@ Patientez pendant l'extraction des données... merci.
 						if($tab_ele['resp'][$i]['tel_pers']!='') {echo "<tr><th style='text-align: left;'>Tél.pers:</th><td>".$tab_ele['resp'][$i]['tel_pers']."</td></tr>\n";}
 						if($tab_ele['resp'][$i]['tel_port']!='') {echo "<tr><th style='text-align: left;'>Tél.port:</th><td>".$tab_ele['resp'][$i]['tel_port']."</td></tr>\n";}
 						if($tab_ele['resp'][$i]['tel_prof']!='') {echo "<tr><th style='text-align: left;'>Tél.prof:</th><td>".$tab_ele['resp'][$i]['tel_prof']."</td></tr>\n";}
-						if($tab_ele['resp'][$i]['mel']!='') {echo "<tr><th style='text-align: left;'>Courriel:</th><td>".$tab_ele['resp'][$i]['mel']."</td></tr>\n";}
+						if($tab_ele['resp'][$i]['mel']!='') {
+							$tmp_date=getdate();
+							echo "<tr><th style='text-align: left;'>Courriel:</th><td>";
+							echo "<a href='mailto:".$tab_ele['resp'][$i]['mel']."?subject=GEPI&amp;body=";
+							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+							echo ",%0d%0aCordialement.'>";
+							echo $tab_ele['resp'][$i]['mel'];
+							echo "</a>";
+							echo "</td></tr>\n";
+						}
 
 						if(!isset($tab_ele['resp'][$i]['etat'])) {
 							echo "<tr><th style='text-align: left;'>Dispose d'un compte:</th><td>Non</td></tr>\n";
