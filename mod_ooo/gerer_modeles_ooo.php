@@ -63,23 +63,23 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
 
     //modèle ABS2
 	$entete_section[]="MODULE ABSENCE";
-    $fich[]="extraction_demi-journees.ods";
+    $fich[]="absence_extraction_demi-journees.ods";
     $utilisation[]="ABS2 : Tableau des demi-journées d'absences";
 	
 	$entete_section[]="";
-    $fich[]="extraction_saisies.ods";
+    $fich[]="absence_extraction_saisies.ods";
     $utilisation[]="ABS2 : Tableau des saisies d'absences";
 	
 	$entete_section[]="";
-    $fich[]="modele_lettre_parents.odt";
+    $fich[]="absence_modele_lettre_parents.odt";
     $utilisation[]="ABS2 : Modèle de lettre aux parents";
 	
 	$entete_section[]="";
-    $fich[]="email.txt";
+    $fich[]="absence_email.txt";
     $utilisation[]="ABS2 : Modèle du courriel envoyé aux parents";
 	
 	$entete_section[]="";
-    $fich[]="sms.txt";
+    $fich[]="absence_sms.txt";
     $utilisation[]="ABS2 : Modèle de SMS envoyé aux parents";
 
 
