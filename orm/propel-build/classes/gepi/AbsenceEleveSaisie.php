@@ -557,7 +557,6 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		if ($this->getEleve() === null) {
 		    $this->boolSaisiesContradictoiresManquementObligation = false;
 		    $this->collectionSaisiesContradictoiresManquementObligation = $result;
-		    return false;
 		} else {
 
 		    //on regarde les saisies sur cet eleve
