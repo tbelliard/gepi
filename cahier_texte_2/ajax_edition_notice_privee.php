@@ -103,7 +103,7 @@ if ($cahierTexteNoticePrivee != null) {
 }
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
-if ($cahierTexteNoticePrivee->getIdLogin() != $utilisateur->getLogin()) {
+if (strtolower($cahierTexteNoticePrivee->getIdLogin()) != strtolower($utilisateur->getLogin())) {
 	echo("Erreur edition de notice privee : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
 }
