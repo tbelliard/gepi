@@ -175,6 +175,7 @@ if(isset($definition_salles)) {
 				}
 			}
 
+			$tab_salle_existante=array();
 			if(isset($id_salle_existante)) {
 				for($i=0;$i<count($id_salle_existante);$i++) {
 					$sql="SELECT salle FROM eb_salles WHERE id='$id_salle_existante[$i]';";
