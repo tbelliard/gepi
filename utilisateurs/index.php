@@ -488,12 +488,13 @@ while ($i < $nombreligne){
     if ($col[$i][4]=='') {$col[$i][4] = "&nbsp;";}
 
     // Affichage des classes/enseignements
-    $call_classes = mysql_query("SELECT g.id group_id, g.name name, c.classe classe, c.id classe_id " .
+    $sql="SELECT g.id group_id, g.name name, c.classe classe, c.id classe_id " .
             "FROM j_groupes_professeurs jgp, j_groupes_classes jgc, groupes g, classes c WHERE (" .
             "jgp.login = '$user_login' and " .
             "g.id = jgp.id_groupe and " .
             "jgc.id_groupe = jgp.id_groupe and " .
-            "c.id = jgc.id_classe) order by jgc.id_classe");
+            "c.id = jgc.id_classe) order by c.classe;";
+    $call_classes = mysql_query($sql);
     $nb_classes = mysql_num_rows($call_classes);
     $k = 0;
     $col[$i][5] = '';
