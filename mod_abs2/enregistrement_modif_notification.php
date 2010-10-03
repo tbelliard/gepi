@@ -86,18 +86,27 @@ if ( isset($_POST["creation_notification"])) {
 	$notification = new AbsenceEleveNotification();
 	$notification->setUtilisateurProfessionnel($utilisateur);
 	$notification->setAbsenceEleveTraitement($traitement);
-	//on a?oute tout les responsable légaux
-	$resp_col = new PropelCollection();
+
+	$responsable_eleve1 = null;
+	$responsable_eleve2 = null;
 	foreach ($traitement->getResponsablesInformationsSaisies() as $responsable_information) {
-	    $resp_col->add($responsable_information->getResponsableEleve());
 	    if ($responsable_information->getRespLegal() == '1') {
-		$notification->setEmail($responsable_information->getResponsableEleve()->getMel());
-		$notification->setTelephone($responsable_information->getResponsableEleve()->getTelPort());
-		$notification->setAdrId($responsable_information->getResponsableEleve()->getAdrId());
+		$responsable_eleve1 = $responsable_information->getResponsableEleve();
+	    } else if ($responsable_information->getRespLegal() == '2') {
+		$responsable_eleve2 = $responsable_information->getResponsableEleve();
 	    }
 	}
-	foreach ($resp_col as $responsable) {
-	    $notification->addResponsableEleve($responsable);
+	if ($responsable_eleve1 != null) {
+	    $notification->setEmail($responsable_eleve1->getMel());
+	    $notification->setTelephone($responsable_eleve1->getTelPort());
+	    $notification->setAdrId($responsable_eleve1->getAdrId());
+	    $notification->addResponsableEleve($responsable_eleve1);
+	}
+	if ($responsable_eleve2 != null) {
+	    if ($responsable_eleve1 == null
+		    || $responsable_eleve2->getAdrId() == $responsable_eleve1->getAdrId()) {
+		$notification->addResponsableEleve($responsable_eleve2);
+	    }
 	}
 	$notification->save();
 	$_POST["id_notification"] = $notification->getId();
