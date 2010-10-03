@@ -133,6 +133,11 @@
 		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id" />
 		</foreign-key>
+		<column name="id_aid" required="true" type="INTEGER" description="Cle etrangere de l'aid auquel appartient le compte rendu" />
+		<foreign-key foreignTable="aid" onDelete="cascade">
+			<reference local="id_aid" foreign="id" />
+		</foreign-key>
+
 		<column name="id_login" type="VARCHAR" size="32" description="Cle etrangere de l'utilisateur auquel appartient le compte rendu" />
 		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
 			<reference local="id_login" foreign="login" />
@@ -163,6 +168,10 @@
 		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id" />
 		</foreign-key>
+		<column name="id_aid" required="true" type="INTEGER" description="Cle etrangere de l'aid auquel appartient le travail a faire" />
+		<foreign-key foreignTable="aid" onDelete="cascade">
+			<reference local="id_aid" foreign="id" />
+		</foreign-key>		
 		<column name="id_login" type="VARCHAR" size="32" description="Cle etrangere du l'utilisateur auquel appartient ce travail a faire" />
 		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
 			<reference local="id_login" foreign="login" />
@@ -193,6 +202,10 @@
 		<foreign-key foreignTable="groupes" onDelete="cascade">
 			<reference local="id_groupe" foreign="id" />
 		</foreign-key>
+		<column name="id_aid" required="true" type="INTEGER" description="Cle etrangere de l'aid auquel appartient la notice privee" />
+		<foreign-key foreignTable="aid" onDelete="cascade">
+			<reference local="id_aid" foreign="id" />
+		</foreign-key>		
 		<column name="id_login" type="VARCHAR" size="32" description="Cle etrangere de l'utilisateur auquel appartient le compte rendu" />
 		<foreign-key foreignTable="utilisateurs" onDelete="setnull">
 			<reference local="id_login" foreign="login" />
