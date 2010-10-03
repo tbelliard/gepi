@@ -214,7 +214,7 @@ id_mesure INT( 11 ) NOT NULL
 );";
 $creation=mysql_query($sql);
 
-$sql="SHOW TABLES LIKE 's_mesures';";
+$sql="SHOW TABLES LIKE 's_lieux_incidents';";
 $test_table=mysql_query($sql);
 if(mysql_num_rows($test_table)==0) {
 	$sql="CREATE TABLE IF NOT EXISTS s_lieux_incidents (
