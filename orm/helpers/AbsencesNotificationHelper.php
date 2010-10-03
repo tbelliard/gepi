@@ -88,16 +88,21 @@ class AbsencesNotificationHelper {
 
     if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
 	//on va mettre les champs dans des variables simple
-	if ($notification->getResponsableEleveAdresse() != null && $notification->getResponsableEleveAdresse()->getResponsableEleves()->count() == 1) {
+	//echo $notification->getResponsableEleveAdresse()->getResponsableEleves()->count();
+	if ($notification->getResponsableEleveAdresse() != null && $notification->getResponsableEleves()->count() == 1) {
 	    //echo 'dest1';
-	    $responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
+	    $responsable = $notification->getResponsableEleves()->getFirst();
 	    $destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.strtoupper($responsable->getPrenom());
 	} elseif ($notification->getResponsableEleveAdresse() != null) {
 	    //echo 'dest2';
-	    $responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getFirst();
-	    $destinataire = $responsable->getCivilite().' '.strtoupper($responsable->getNom());
-	    $responsable = $notification->getResponsableEleveAdresse()->getResponsableEleves()->getNext();
-	    $destinataire .= '  '.strtoupper($responsable->getCivilite()).' '.strtoupper($responsable->getNom());
+	    $responsable1 = $notification->getResponsableEleves()->getFirst();
+	    $responsable2 = $notification->getResponsableEleves()->getNext();
+	    if (strtoupper($responsable1->getNom()) == strtoupper($responsable2->getNom())) {
+		$destinataire = $responsable1->getCivilite().' et '.$responsable2->getCivilite().' '.strtoupper($responsable1->getNom());
+	    } else {
+		$destinataire = $responsable1->getCivilite().' '.strtoupper($responsable1->getNom());
+		$destinataire .= ' et '.$responsable2->getCivilite().' '.strtoupper($responsable2->getNom());
+	    }
 	} else {
 	    $destinataire = '';
 	}
