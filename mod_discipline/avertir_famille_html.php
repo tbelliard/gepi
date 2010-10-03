@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // SQL : INSERT INTO droits VALUES ( '/mod_discipline/avertir_famille_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Avertir famille incident', '');
 // maj : $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/avertir_famille_html.php', 'V', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Discipline: Avertir famille incident', '');;";
@@ -70,17 +70,31 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 
 	$logo_etab=getSettingValue("logo_etab") ? getSettingValue("logo_etab") : "";
 
-
+	/*
 	$addressblock_length=70;
 	$addressblock_padding_top=50;
 	$addressblock_padding_text=5;
 	$addressblock_padding_right=20;
 	$addressblock_font_size=12;
+	*/
+	$addressblock_length=getSettingValue('addressblock_length');
+	$addressblock_padding_top=getSettingValue('addressblock_padding_top');
+	$addressblock_padding_text=getSettingValue('addressblock_padding_text');
+	$addressblock_padding_right=getSettingValue('addressblock_padding_right');
+	$addressblock_font_size=getSettingValue('addressblock_font_size');
+
+	$margin_left=10;
+	$margin_right=10;
+	$margin_top=10;
+	$margin_bottom=10;
+
+	$debug='n';
 
 	$ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : array());
 
 	if (isset($NON_PROTECT["courrier"])){
-		$courrier=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["courrier"]));
+		//$courrier=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["courrier"]));
+		$courrier=$NON_PROTECT["courrier"];
 
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 		$courrier=my_ereg_replace('(\\\r\\\n)+',"\r\n",$courrier);
@@ -150,14 +164,29 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	$bull_affich_nom_etab="y";
 	$bull_affich_adr_etab="y";
 
+
+/*
+	echo "<div style='margin-left:".$margin_left."mm;
+margin-top:".$margin_top."mm;
+margin-right:".$margin_right."mm;
+margin-bottom:".$margin_bottom."mm;
+'>\n";
+*/
+
+
+
 	// Logo et étab en haut à gauche:
 	echo "<div style='float:left;
 left:0px;
 top:0px;
+text-align: left;
 /*width:40%;*/
-
+";
+	if($debug=='y') {
+		echo "
 /* debug */
 border: 1px solid green;\n";
+	}
 	echo "'>\n";
 
 	echo "<table summary='Tableau du logo et infos établissement'";
@@ -171,8 +200,8 @@ border: 1px solid green;\n";
 	if (($nom_fic_logo != '') and (file_exists($nom_fic_logo_c))) {
 		echo "<td style=\"text-align: left;\"><img src=\"".$nom_fic_logo_c."\" border=\"0\" alt=\"Logo\" /></td>\n";
 	}
-	echo "<td style='text-align: center;'>";
-	echo "<p class='bulletin'>";
+	echo "<td style='text-align: left;'>";
+	echo "<p>";
 	if($bull_affich_nom_etab=="y"){
 		echo "<span class=\"bgrand\">".$gepiSchoolName."</span>";
 	}
@@ -211,12 +240,14 @@ padding-top:".$addressblock_padding_top."mm;
 padding-bottom:".$addressblock_padding_text."mm;
 padding-right:".$addressblock_padding_right."mm;\n";
 //if($addressblock_debug=="y"){echo "border: 1px solid blue;\n";}
-echo "font-size: ".$addressblock_font_size."pt;
+echo "font-size: ".$addressblock_font_size."pt;\n";
 
+	if($debug=='y') {
+		echo "
 /* debug */
-border: 1px solid blue;
-
-'>
+border: 1px solid blue;\n";
+	}
+	echo "'>
 <div align='left'>
 $ligne1<br />
 $ligne2<br />
@@ -226,14 +257,22 @@ $ligne3
 
 	echo "<div style='clear: both;'></div>\n";
 
-	echo "<div style='margin:10%; border: 1px solid red;'>".nl2br(htmlentities($courrier))."</div>\n";
+	echo "<h1 align='center'>Notification d'incident</h1>\n";
 
+	echo "<div style='margin:3em;";
+	if($debug=='y') {echo " border: 1px solid red;";}
+	echo "'>".nl2br($courrier)."</div>\n";
+
+/*
 	echo "<pre style='color:red;'><b>A FAIRE:</b> Paramètres:
 Avec/sans logo, tel/fax
 Marges
 Dimensions et position du bloc adresse resp.
 Taille des polices
 </pre>\n";
+*/
+
+//	echo "</div>\n";
 
 	echo "</body>\n";
 	echo "</html>\n";
