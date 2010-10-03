@@ -445,7 +445,7 @@ function ConstruireColonneEleve($elapse_time, &$tab_cours, $index_record, $duree
             $k = (int)($elapse_time1 / 2);
         }
         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $tab_cours['id_groupe'][$index_record],$tab_cours['id_aid'][$index_record], $id_semaine, $period);
-        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][$index_record], "cellule".$tab_cours['duree'][$index_record], "cadreCouleur", $contenu);
+        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][$index_record], "cellule".$tab_cours['duree'][$index_record], $tab_cours['couleur'][$index_record], $contenu);
         $elapse_time1 += $duree1;
         $k = (int)($elapse_time1 / 2);
     }
@@ -492,21 +492,21 @@ function ConstruireColonneEleve($elapse_time, &$tab_cours, $index_record, $duree
     
             if (($heuredeb_dec_1 != 0) AND ($id_semaine_1 == $tab_cours['id_semaine'][$index_record])) {
                 $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $tab_cours['id_groupe'][0],$tab_cours['id_aid'][0], $id_semaine_1, $period);
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][0], "cellule".$duree1_aux, "cadreCouleur", $contenu);
+                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][0], "cellule".$duree1_aux, $tab_cours['couleur'][0], $contenu);
                 $duree1 += (int)$duree1_aux;
                 $elapse_time1 += (int)$duree1_aux;
                 $k = (int)($elapse_time1 / 2);
             }
             else if (($heuredeb_dec_2 != 0) AND ($id_semaine_2 == $tab_cours['id_semaine'][$index_record])) {
                 $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $tab_cours['id_groupe'][1],$tab_cours['id_aid'][1], $id_semaine_2, $period);
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][1], "cellule".$duree2_aux, "cadreCouleur", $contenu);
+                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][1], "cellule".$duree2_aux, $tab_cours['couleur'][1], $contenu);
                 $duree1 += (int)$duree2_aux;
                 $elapse_time1 += (int)$duree2_aux;
                 $k = (int)($elapse_time1 / 2);
             }
             if (($heuredeb_dec_3 != 0) AND ($id_semaine_3 == $tab_cours['id_semaine'][$index_record])) {
                 $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $tab_cours['id_groupe'][2],$tab_cours['id_aid'][2], $id_semaine_3, $period);
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][2], "cellule".$duree3_aux, "cadreCouleur", $contenu);
+                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][2], "cellule".$duree3_aux, $tab_cours['couleur'][2], $contenu);
                 $duree1 += (int)$duree3_aux;
                 $elapse_time1 += (int)$duree3_aux;
                 $k = (int)($elapse_time1 / 2);
@@ -560,7 +560,7 @@ function ConstruireColonneEleve($elapse_time, &$tab_cours, $index_record, $duree
                }
             }
             $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $tab_demi_cours['id_groupe'][$rang_demicours],$tab_demi_cours['id_aid'][$rang_demicours],$tab_demi_cours['id_semaine'][$rang_demicours], $period);
-            RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $tab_demi_cours['id_cours'][$rang_demicours], "cellule".$tab_demi_cours['duree'][$rang_demicours], "cadreCouleur", $contenu);
+            RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $tab_demi_cours['id_cours'][$rang_demicours], "cellule".$tab_demi_cours['duree'][$rang_demicours], $tab_demi_cours['couleur'][$rang_demicours], $contenu);
             $duree1 += (int)$tab_demi_cours['duree'][$rang_demicours];
             $elapse_time1 += (int)$tab_demi_cours['duree'][$rang_demicours];
             $k = (int)($elapse_time1 / 2);
@@ -573,7 +573,7 @@ function ConstruireColonneEleve($elapse_time, &$tab_cours, $index_record, $duree
                 $elapse_time1++;                        
             }
             $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $tab_demi_cours['id_groupe'][0],$tab_demi_cours['id_aid'][0], $tab_demi_cours['id_semaine'][0], $period);
-            RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $tab_demi_cours['id_cours'][0], "cellule".$tab_demi_cours['duree'][0], "cadreCouleur", $contenu);
+            RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $tab_demi_cours['id_cours'][0], "cellule".$tab_demi_cours['duree'][0], $tab_demi_cours['couleur'][0], $contenu);
             $duree1 += (int)$tab_demi_cours['duree'][0];
             $elapse_time1 += (int)$tab_demi_cours['duree'][0];
             if (($tab_demi_cours['heuredeb_dec'][0] == 0) AND ($tab_demi_cours['duree'][0] == 1))  {
@@ -644,7 +644,7 @@ function ConstruireColonneEleveTiers($elapse_time, &$tab_cours, $index_record, $
             $k = (int)($elapse_time1 / 2);
         }
         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $tab_cours['id_groupe'][$index_record],$tab_cours['id_aid'][$index_record], $id_semaine, $period);
-        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][$index_record], "cellule".$tab_cours['duree'][$index_record], "cadreCouleur", $contenu);
+        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][$index_record], "cellule".$tab_cours['duree'][$index_record], $tab_cours['couleur'][$index_record], $contenu);
         $elapse_time1 += $duree1;
         $k = (int)($elapse_time1 / 2);
     }
@@ -691,21 +691,21 @@ function ConstruireColonneEleveTiers($elapse_time, &$tab_cours, $index_record, $
     
             if (($heuredeb_dec_1 != 0) AND ($id_semaine_1 == $tab_cours['id_semaine'][$index_record])) {
                 $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $tab_cours['id_groupe'][0],$tab_cours['id_aid'][0], $id_semaine_1, $period);
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][0], "cellule".$duree1_aux, "cadreCouleur", $contenu);
+                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][0], "cellule".$duree1_aux, $tab_cours['couleur'][0], $contenu);
                 $duree1 += (int)$duree1_aux;
                 $elapse_time1 += (int)$duree1_aux;
                 $k = (int)($elapse_time1 / 2);
             }
             else if (($heuredeb_dec_2 != 0) AND ($id_semaine_2 == $tab_cours['id_semaine'][$index_record])) {
                 $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $tab_cours['id_groupe'][1], $tab_cours['id_aid'][1], $id_semaine_2, $period);
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][1], "cellule".$duree2_aux, "cadreCouleur", $contenu);
+                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][1], "cellule".$duree2_aux, $tab_cours['couleur'][1], $contenu);
                 $duree1 += (int)$duree2_aux;
                 $elapse_time1 += (int)$duree2_aux;
                 $k = (int)($elapse_time1 / 2);
             }
             if (($heuredeb_dec_3 != 0) AND ($id_semaine_3 == $tab_cours['id_semaine'][$index_record])) {
                 $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $tab_cours['id_groupe'][2],$tab_cours['id_aid'][2], $id_semaine_3, $period);
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][2], "cellule".$duree3_aux, "cadreCouleur", $contenu);
+                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], "", $tab_cours['id_cours'][2], "cellule".$duree3_aux, $tab_cours['couleur'][2], $contenu);
                 $duree1 += (int)$duree3_aux;
                 $elapse_time1 += (int)$duree3_aux;
                 $k = (int)($elapse_time1 / 2);
@@ -762,7 +762,7 @@ function ConstruireColonneEleveTiers($elapse_time, &$tab_cours, $index_record, $
                     //echo "alpha4<br/>";
             }
             $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $tab_demi_cours['id_groupe'][$rang_demicours],$tab_demi_cours['id_aid'][$rang_demicours], $tab_demi_cours['id_semaine'][$rang_demicours], $period);
-            RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $tab_demi_cours['id_cours'][$rang_demicours], "cellule".$tab_demi_cours['duree'][$rang_demicours], "cadreCouleur", $contenu);
+            RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $tab_demi_cours['id_cours'][$rang_demicours], "cellule".$tab_demi_cours['duree'][$rang_demicours], $tab_demi_cours['couleur'][$rang_demicours], $contenu);
             $duree1 += (int)$tab_demi_cours['duree'][$rang_demicours];
             $elapse_time1 += (int)$tab_demi_cours['duree'][$rang_demicours];
             $k = (int)($elapse_time1 / 2);
@@ -775,7 +775,7 @@ function ConstruireColonneEleveTiers($elapse_time, &$tab_cours, $index_record, $
                 $elapse_time1++;                        
             }
             $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $tab_demi_cours['id_groupe'][0],$tab_demi_cours['id_aid'][0], $tab_demi_cours['id_semaine'][0], $period);
-            RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $tab_demi_cours['id_cours'][0], "cellule".$tab_demi_cours['duree'][0], "cadreCouleur", $contenu);
+            RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], "", $tab_demi_cours['id_cours'][0], "cellule".$tab_demi_cours['duree'][0], $tab_demi_cours['couleur'][0], $contenu);
             $duree1 += (int)$tab_demi_cours['duree'][0];
             $elapse_time1 += (int)$tab_demi_cours['duree'][0];
             if (($tab_demi_cours['heuredeb_dec'][0] == 0) AND ($tab_demi_cours['duree'][0] == 1))  {
