@@ -1050,7 +1050,9 @@ if(isset($id_incident)) {
 				echo "</i>)";
 				echo "</td>\n";
 
-				echo "<td>";
+				echo "<td";
+				echo " id='td_qualite_protagoniste_$cpt'";
+				echo ">";
 				if($etat_incident!='clos') {
 					echo "<input type='hidden' name='ele_login[$cpt]' value=\"$lig->login\" />\n";
 
@@ -1102,7 +1104,9 @@ if(isset($id_incident)) {
 					echo "<td>$lig->statut</td>\n";
 				}
 
-				echo "<td>";
+				echo "<td";
+				echo " id='td_qualite_protagoniste_$cpt'";
+				echo ">";
 				if($etat_incident!='clos') {
 					echo "<input type='hidden' name='u_login[$cpt]' value=\"$lig->login\" />\n";
 
@@ -1190,6 +1194,32 @@ if(isset($id_incident)) {
 			$cpt++;
 		}
 		echo "</table>\n";
+
+		if($cpt>0) {
+			echo "<script type='text/javascript'>
+	function check_protagonistes_sans_qualite() {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('td_qualite_protagoniste_'+i)) {
+				if(document.getElementById('qualite_'+i)) {
+					//alert(document.getElementById('qualite_'+i).selectedIndex);
+					if(document.getElementById('qualite_'+i).selectedIndex==0) {
+						document.getElementById('td_qualite_protagoniste_'+i).style.backgroundColor='red';
+					}
+					else {
+						document.getElementById('td_qualite_protagoniste_'+i).style.backgroundColor='';
+					}
+				}
+			}
+		}
+
+
+		setTimeout('check_protagonistes_sans_qualite()',5000);
+	}
+
+	setTimeout('check_protagonistes_sans_qualite()',1000);
+</script>\n";
+		}
+
 		if($etat_incident!='clos') {
 			echo "<input type='hidden' name='nb_protagonistes' value='$cpt' />\n";
 			echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";
