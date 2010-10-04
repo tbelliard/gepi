@@ -26,6 +26,16 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	protected $manquementObligationPresence;
 
 	/**
+	 * @var        bool to store the manquementObligationPresenceSpecifie_NON_PRECISE state
+	 */
+	protected $manquementObligationPresenceSpecifie_NON_PRECISE;
+
+	/**
+	 * @var        bool to store the justifie state
+	 */
+	protected $justifiee;
+
+	/**
 	 * @var        bool to store aggregation of retard value
 	 */
 	protected $retard;
@@ -312,12 +322,30 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 *
 	 */
 	public function getJustifiee() {
-	    foreach($this->getAbsenceEleveTraitements() as $traitement) {
-		if ($traitement->getAbsenceEleveJustification() != null) {
-		    return true;
+	    if (!isset($this->justifiee) || $this->justifiee === null) {
+		$justifiee_sans = false;
+		$justifiee_avec = false;
+		foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+			if ($traitement->getAbsenceEleveJustification() != null) {
+			    $justifiee_avec = true;
+			} else {
+			    $justifiee_sans = true;
+			}
+			if ($justifiee_avec && $justifiee_sans) {
+			    break;
+			}
+		}
+
+		if ($justifiee_avec && $justifiee_sans ) {
+		    //on a aucune information on renvoit le reglage adequat
+		    $this->manquementObligationPresenceSpecifie_NON_PRECISE = (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y');
+		} else if ($justifiee_avec) {
+		    $this->manquementObligationPresenceSpecifie_NON_PRECISE =  true;
+		} else {
+		    $this->manquementObligationPresenceSpecifie_NON_PRECISE =  false;
 		}
 	    }
-	    return false;
+	    return $this->manquementObligationPresenceSpecifie_NON_PRECISE;
 	}
 
 	/**
