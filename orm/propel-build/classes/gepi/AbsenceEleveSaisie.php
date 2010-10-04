@@ -282,6 +282,34 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 	/**
 	 *
+	 *
+	 * Renvoi true ou false si la saisie a un type de manquement spécifié a 'non précisé'
+	 * Cette propriété est calculé par l'intermediaire des types de traitement
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getManquementObligationPresenceSpecifie_NON_PRECISE() {
+	    if (!isset($this->manquementObligationPresenceSpecifie_NON_PRECISE) || $this->manquementObligationPresenceSpecifie_NON_PRECISE === null) {
+		$type_non_precise = false;
+		foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+		    if ($traitement->getAbsenceEleveType() != null) {
+			if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI
+				|| $traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) {
+			    $type_non_precise = false;
+			    break;
+			} else if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE) {
+			    $type_non_precise = true;
+			}
+		    }
+		}
+		$this->manquementObligationPresenceSpecifie_NON_PRECISE = $type_non_precise;
+	    }
+	    return $this->manquementObligationPresenceSpecifie_NON_PRECISE;
+	}
+
+	/**
+	 *
 	 * Renvoi 'oui' ou 'non' si l'eleve manque une obligation de presence
 	 * Ajoute pour les modele tbs
 	 *

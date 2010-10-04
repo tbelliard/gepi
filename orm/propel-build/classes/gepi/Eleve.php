@@ -1023,6 +1023,8 @@ class Eleve extends BaseEleve {
 			    if ($saisie_contra->getId() != $saisie->getId()
 				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
+				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
 				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
 				$contra = true;
 				break;
@@ -1200,7 +1202,9 @@ class Eleve extends BaseEleve {
 			    if ($saisie_contra->getId() != $saisie->getId()
 				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
 				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
-				    && ($saisie_contra->getRetard() || $saisie_contra->getJustifiee())) {
+				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
+				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
+				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence() || $saisie_contra->getJustifiee())) {
 				$contra = true;
 				break;
 			    }
