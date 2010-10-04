@@ -65,14 +65,35 @@ class Eleve extends BaseEleve {
 				// return empty collection
 				$this->initClasses($periode_num);
 			} else {
-				$query = ClasseQuery::create();
-				if ($periode != null) {
-					$query->useJEleveClasseQuery()->filterByEleve($this)->filterByPeriode($periode_num)->endUse();
-				} else {
-					$query->useJEleveClasseQuery()->filterByEleve($this)->endUse();
+				$classe_hydrated = false;
+				if (null !== $this->collJEleveClasses) {
+				    //on teste si la collection de collJEleveClasses est hydratee avec les classes
+				    if ($this->collJEleveClasses->getFirst() != null) {
+					if ($this->collJEleveClasses->getFirst()->isClasseHydrated()) {
+					    $classe_hydrated = true;
+					}
+				    }
 				}
-				$query->orderByNomComplet()->distinct();
-				$this->collClasses[$periode_num] = $query->find();
+
+				if ($classe_hydrated) {
+				    foreach ($this->getJEleveClasses() as $JEleveClasse) {
+					if ($JEleveClasse->getClasse() != null) {
+					    if(!isset($this->collClasses[$JEleveClasse->getPeriode()]) || null === $this->collClasses[$JEleveClasse->getPeriode()]) {
+						$this->initClasses($JEleveClasse->getPeriode());
+					    }
+					    $this->collClasses[$JEleveClasse->getPeriode()]->add($JEleveClasse->getClasse());
+					}
+				    }
+				} else {
+				    $query = ClasseQuery::create();
+				    if ($periode != null) {
+					    $query->useJEleveClasseQuery()->filterByEleve($this)->filterByPeriode($periode_num)->endUse();
+				    } else {
+					    $query->useJEleveClasseQuery()->filterByEleve($this)->endUse();
+				    }
+				    $query->orderByNomComplet()->distinct();
+				    $this->collClasses[$periode_num] = $query->find();
+				}
 			}
 		}
 		return $this->collClasses[$periode_num];

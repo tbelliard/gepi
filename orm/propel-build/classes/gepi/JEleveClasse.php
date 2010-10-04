@@ -26,5 +26,9 @@ class JEleveClasse extends BaseJEleveClasse {
 	    return PeriodeNoteQuery::create()->filterByIdClasse($this->getIdClasse())->filterByNumPeriode($this->getPeriode())->findOne();
 	}
 
+	public function isClasseHydrated() {
+	    return $this->aClasse != null;
+	}
+
 	
 } // JEleveClasse
