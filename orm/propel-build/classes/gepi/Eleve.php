@@ -1013,9 +1013,25 @@ class Eleve extends BaseEleve {
 	    
 	    //on filtre les saisie qu'on ne veut pas compter
 	    $abs_saisie_col_filtre = new PropelCollection();
+	    $abs_saisie_col_2 = clone $abs_saisie_col;
 	    foreach ($abs_saisie_col as $saisie) {
 		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-		    $abs_saisie_col_filtre->append($saisie);
+		    $contra = false;
+		    if (getSettingValue("abs2_saisie_multi_type_sans_manquement")!='y') {
+			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
+			foreach ($abs_saisie_col_2 as $saisie_contra) {
+			    if ($saisie_contra->getId() != $saisie->getId()
+				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
+				$contra = true;
+				break;
+			    }
+			}
+		    }
+		    if (!$contra) {
+			$abs_saisie_col_filtre->append($saisie);
+		    }
 		}
 	    }
 
@@ -1174,9 +1190,25 @@ class Eleve extends BaseEleve {
 
 	    //on filtre les saisie qu'on ne veut pas compter
 	    $abs_saisie_col_filtre = new PropelCollection();
+	    $abs_saisie_col_2 = clone $abs_saisie_col;
 	    foreach ($abs_saisie_col as $saisie) {
 		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence() && !$saisie->getJustifiee()) {
-		    $abs_saisie_col_filtre->append($saisie);
+		    $contra = false;
+		    if (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y') {
+			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
+			foreach ($abs_saisie_col_2 as $saisie_contra) {
+			    if ($saisie_contra->getId() != $saisie->getId()
+				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+				    && ($saisie_contra->getRetard() || $saisie_contra->getJustifiee())) {
+				$contra = true;
+				break;
+			    }
+			}
+		    }
+		    if (!$contra) {
+			$abs_saisie_col_filtre->append($saisie);
+		    }
 		}
 	    }
 
