@@ -248,4 +248,13 @@ class Classe extends BaseClasse {
 		}
 		return null;
 	}
+
+ 	/**
+	 * Retourne la collection de periode de note privée a des fins d'optimisation
+	 *
+	 * @return     PropelObjectCollection
+	 */
+	public function getProtectedCollPeriodeNote() {
+	    return $this->collPeriodeNotes;
+	}
 } // Classe

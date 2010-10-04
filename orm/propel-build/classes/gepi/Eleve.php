@@ -84,6 +84,10 @@ class Eleve extends BaseEleve {
 					    $this->collClasses[$JEleveClasse->getPeriode()]->add($JEleveClasse->getClasse());
 					}
 				    }
+				    if ($this->collClasses[$periode_num] == null) {
+					//rien n'a été trouvé pour cette période, on renvoi une collection vide
+					$this->initClasses($periode_num);
+				    }
 				} else {
 				    $query = ClasseQuery::create();
 				    if ($periode != null) {
@@ -1430,6 +1434,29 @@ class Eleve extends BaseEleve {
 
 	    //rien n'a ete saisie (aucun cours a cette heure), en renvoi non present par defaut
 	    return false;
+	}
+
+	/**
+	 *
+	 * Hydrate la collection des périodes de notes (il faut une requete adéquate : EleveQuery->joinWithPeriodeNotes()
+	 *
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     Boolean
+	 *
+	 */
+	public function hydratePeriodeNotes() {
+	    $this->initPeriodeNotes();
+	    foreach ($this->getJEleveClasses() as $JEleveClasses) {
+		if ($JEleveClasses->getClasse() != null && $JEleveClasses->getClasse()->getProtectedCollPeriodeNote() != null) {
+		    foreach ($JEleveClasses->getClasse()->getProtectedCollPeriodeNote() as $periode_note) {
+			if ($periode_note->getNumPeriode() == $JEleveClasses->getPeriode()) {
+			    $this->collPeriodeNotes->add($periode_note);
+			    break;
+			}
+		    }
+		}
+	    }
 	}
 
 } // Eleve
