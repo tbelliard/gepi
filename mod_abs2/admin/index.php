@@ -104,6 +104,16 @@ if (isset($_POST['abs2_heure_demi_journee'])) {
 if (isset($_POST['is_posted'])) {
 	if ($_POST['is_posted']=='1') {
 
+		if (isset($_POST['abs2_alleger_abs_du_jour'])) {
+			if (!saveSetting("abs2_alleger_abs_du_jour", $_POST['abs2_alleger_abs_du_jour'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_alleger_abs_du_jour";
+			}
+		} else {
+			if (!saveSetting("abs2_alleger_abs_du_jour", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_alleger_abs_du_jour";
+			}
+		}
+
 		if (isset($_POST['abs2_saisie_prof_decale_journee'])) {
 			if (!saveSetting("abs2_saisie_prof_decale_journee", $_POST['abs2_saisie_prof_decale_journee'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sur la journée pour les professeurs !";
@@ -269,6 +279,11 @@ suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accè
 	<?php if (getSettingValue("active_module_absence")=='n') echo ' checked="checked"'; ?> />
 	<label for="activerN">&nbsp;Désactiver le module de la gestion des absences</label>
 	<input type="hidden" name="is_posted" value="1" />
+</p>
+<p>
+	<input type="checkbox" name="abs2_alleger_abs_du_jour" value="y"
+	<?php if (getSettingValue("abs2_alleger_abs_du_jour")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_alleger_abs_du_jour">&nbsp;Alleger les calculs de la page absence du jour : désactive la recherche des saisies contradictoires et des présences.</label>
 </p>
 <p>
 E-mail gestion absence établissement :

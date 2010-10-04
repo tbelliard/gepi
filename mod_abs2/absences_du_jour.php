@@ -473,7 +473,7 @@ $eleve_col = $query->distinct()->paginate($page_number, $item_per_page);
 					$violet = false;
 					foreach ($absences_du_creneau as $absence) {
 					    $traitement_col->addCollection($absence->getAbsenceEleveTraitements());
-					    if ($absence->isSaisiesContradictoiresManquementObligation()) {
+					    if (getSettingValue("abs2_alleger_abs_du_jour")!='y' && $absence->isSaisiesContradictoiresManquementObligation()) {
 					    //if (!($absence->getSaisiesContradictoiresManquementObligation()->isEmpty())) {
 						$violet = true;
 						break;
@@ -489,7 +489,7 @@ $eleve_col = $query->distinct()->paginate($page_number, $item_per_page);
 					} else {
 					    $dt_green = clone $dt_date_absence_eleve;
 					    $dt_green->setTime($edt_creneau->getHeuredebutDefiniePeriode('H'), $edt_creneau->getHeuredebutDefiniePeriode('i'), 0);
-					    if ($eleve->getPresent($dt_green)) {
+					    if (getSettingValue("abs2_alleger_abs_du_jour")!='y' && $eleve->getPresent($dt_green)) {
 						$style = 'style="background-color : green"';
 					    } else {
 						$style = '';
@@ -570,13 +570,15 @@ $eleve_col = $query->distinct()->paginate($page_number, $item_per_page);
 
     echo " </tbody>";
     echo "</table>";
-    echo '<table><tr>';
-    echo '<td>Légende : </td>';
-    echo '<td style="border : 1px solid; background-color : red;">absent</td>';
-    echo '<td style="border : 1px solid; background-color : green;">présent</td>';
-    echo '<td style="border : 1px solid; background-color : purple;">Saisies conflictuelles</td>';
-    echo '<td style="border : 1px solid;">Sans couleur : pas de saisie</td>';
-    echo '</tr></table>';
+    if (getSettingValue("abs2_alleger_abs_du_jour")!='y') {
+	echo '<table><tr>';
+	echo '<td>Légende : </td>';
+	echo '<td style="border : 1px solid; background-color : red;">absent</td>';
+	echo '<td style="border : 1px solid; background-color : green;">présent</td>';
+	echo '<td style="border : 1px solid; background-color : purple;">Saisies conflictuelles</td>';
+	echo '<td style="border : 1px solid;">Sans couleur : pas de saisie</td>';
+	echo '</tr></table>';
+    }
     ?>
     <div dojoType="dijit.form.DropDownButton" style="display: inline">
 	<span>Ajouter Les saisies cochées à un traitement</span>
