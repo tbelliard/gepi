@@ -153,8 +153,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 		return (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y');
 	    } else {
 		return (
-			$this->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE
-			|| $this->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI);
+			$this->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI);
 	    }
 	}
 
@@ -164,7 +163,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 * une saisie qui n'est pas sous la responsabilite de l'etablissement sere comptee dans le bulletin
 	 * une saisie qui est sous la responsabilite de l'etablissement ne sera pas comptee dans le bulletin
 	 * si on a un type de responsabilite specifié a non_precisé (comme le type 'erreur de saisie'),
-	 * on renvoi une resp etab (sinon l'utilisateur aurait specifier un type $MANQU_OBLIG_PRESE_VRAI)
+	 * on renvoi une resp etab a vrai (sinon l'utilisateur aurait specifier un type $MANQU_OBLIG_PRESE_VRAI)
 	 * @return     boolean
 	 *
 	 */
@@ -178,7 +177,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	    }
 	}
 
-	
+
 	/**
 	 * Ajout manuel : renseignement automatique de l'utilisateur qui a créé ou modifié la saisie
 	 * Persists this object to the database.
