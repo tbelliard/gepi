@@ -1017,7 +1017,7 @@ class Eleve extends BaseEleve {
 	    foreach ($abs_saisie_col as $saisie) {
 		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
 		    $contra = false;
-		    if (getSettingValue("abs2_saisie_multi_type_sans_manquement")!='y') {
+		    if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
 			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
 			foreach ($abs_saisie_col_2 as $saisie_contra) {
 			    if ($saisie_contra->getId() != $saisie->getId()
