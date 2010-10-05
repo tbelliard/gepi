@@ -191,6 +191,31 @@ if (isFiltreRechercheParam('filter_manqement_obligation')) {
     $query->filterByManquementObligationPresence(getFiltreRechercheParam('filter_manqement_obligation')=='y');
 }
 
+//on va filtrer sur les saisies possiblement rattachées à un traitement
+$recherche_saisie_a_rattacher = getFiltreRechercheParam('filter_recherche_saisie_a_rattacher');
+//récupération des paramètres de la requète
+$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
+if (isset($id_traitement) && $id_traitement != null) $_SESSION['id_traitement'] = $id_traitement;
+$traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
+if ($recherche_saisie_a_rattacher == 'oui' && $traitement != null) {
+    $date_debut = null;
+    $date_fin = null;
+    $id_eleve_array = null;
+    $id_saisie_array = null;
+    foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {//$saisie = new AbsenceEleveSaisie();
+	if ($date_debut == null || $saisie->getDebutAbs('U') < $date_debut->format('U')) {
+	    $date_debut = clone $saisie->getDebutAbs(null);
+	}
+	if ($date_fin == null || $saisie->getFinAbs('U') > $date_fin->format('U')) {
+	    $date_fin = clone $saisie->getFinAbs(null);
+	}
+	$id_eleve_array[] = $saisie->getEleveId();
+	$id_saisie_array[] = $saisie->getId();
+    }
+    $query->filterByPlageTemps($date_debut, $date_fin)->filterByEleveId($id_eleve_array)->filterById($id_saisie_array, Criteria::NOT_IN);
+}
+
+
 $order = getFiltreRechercheParam('order');
 if ($order == "asc_id") {
     $query->orderBy('Id', Criteria::ASC);
@@ -277,12 +302,14 @@ echo $saisies_col->count();
 echo "&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y">Réinitialiser les filtres</button> ';
+if (getFiltreRechercheParam('filter_recherche_saisie_a_rattacher') == 'oui' && $traitement != null) {
+    echo 'filtre actif : recherche de saisies a rattacher au traitement n° '.$traitement->getId();
+}
 echo '</p><p>';
 //echo '<br/>';
 echo '<button type="submit" name="creation_traitement" value="yes">Créer un traitement</button>';
 
-$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
-if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
+if ($traitement != null) {
     $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
     echo '<button type="submit" name="ajout_traitement" value="yes">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
     echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';

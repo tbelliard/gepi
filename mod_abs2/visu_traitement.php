@@ -219,6 +219,16 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo '<br/>';
     }
 }
+if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
+    echo '<br/>';
+    echo '<form method="post" action="liste_saisies_selection_traitement.php">';
+    echo '<p>';
+    echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
+    echo '<input type="hidden" name="filter_recherche_saisie_a_rattacher" value="oui"/>';
+    echo '<button type="submit">Chercher des saisies à rattacher</button>';
+    echo '</p>';
+    echo '</form>';
+}
 echo '</td></tr>';
 echo '</table>';
 
