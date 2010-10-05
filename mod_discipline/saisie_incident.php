@@ -1609,6 +1609,7 @@ elseif($step==2) {
 			$nature=$lig_inc->nature;
 			$description=$lig_inc->description;
 			$commentaire=$lig_inc->commentaire;
+			$id_lieu=$lig_inc->id_lieu;
 		}
 	}
 
