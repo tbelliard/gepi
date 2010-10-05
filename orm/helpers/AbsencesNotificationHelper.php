@@ -72,19 +72,53 @@ class AbsencesNotificationHelper {
 
     $TBS->MergeBlock('el_col',$eleve_col);
 
-    if ($notification->getAbsenceEleveTraitement() != null) {
-	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
-	    ->useJTraitementSaisieEleveQuery()
-	    ->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
-		->orderBy("DebutAbs", Criteria::ASC)
-		->find()';
-    } else {
-	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
-	    ->where(0 <> 0)->find()';
+//    if ($notification->getAbsenceEleveTraitement() != null) {
+//	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
+//	    ->useJTraitementSaisieEleveQuery()
+//	    ->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
+//		->orderBy("DebutAbs", Criteria::ASC)
+//		->find()';
+//    } else {
+//	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
+//	    ->where(0 <> 0)->find()';
+//    }
+//
+//    $TBS->MergeBlock('saisies', 'php', $query_string);
+
+
+    $heure_demi_journee = 11;
+    $minute_demi_journee = 50;
+    try {
+	$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
+	$heure_demi_journee = $dt_demi_journee->format('H');
+	$minute_demi_journee = $dt_demi_journee->format('i');
+    } catch (Exception $x) {
     }
+    $temps_demi_journee = $heure_demi_journee.$minute_demi_journee;
 
-    $TBS->MergeBlock('saisies', 'php', $query_string);
-
+    foreach($eleve_col as $eleve) {
+	$demi_journee_string_col = new PropelCollection();array ();
+        $abs_col = AbsenceEleveSaisieQuery::create()->filterByEleve($eleve)
+		->useJTraitementSaisieEleveQuery()
+		->filterByATraitementId($notification->getAbsenceEleveTraitement()->getId())->endUse()
+		->orderBy("DebutAbs", Criteria::ASC)
+		->find();
+	require_once("helpers/AbsencesEleveSaisieHelper.php");
+	$demi_j = AbsencesEleveSaisieHelper::compte_demi_journee($abs_col);
+	foreach($demi_j as $date) {
+	    $str = 'Le ';
+	    $str .= (strftime("%a %d/%m/%Y", $date->format('U')));
+	    if ($date->format('Hi') < $temps_demi_journee) {
+		$str .= ' le matin';
+	    } else {
+		$str .= ' l\'après midi';
+	    }
+	    $demi_journee_string_col->append($str);
+	}
+	//var_dump($demi_journee_string_col);die;
+	//if (count($demi_journee_string_col) == 0) die;
+	$TBS->MergeBlock('demi_j_string_eleve_id_'.$eleve->getIdEleve(), $demi_journee_string_col);
+    }
 
     if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
 	//on va mettre les champs dans des variables simple
