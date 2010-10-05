@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS `responsables2` (`ele_id` varchar(10) NOT NULL, `pers
 DROP TABLE IF EXISTS `resp_adr`;
 CREATE TABLE IF NOT EXISTS `resp_adr` (`adr_id` varchar(10) NOT NULL,`adr1` varchar(100) NOT NULL,`adr2` varchar(100) NOT NULL,`adr3` varchar(100) NOT NULL,`adr4` varchar(100) NOT NULL,`cp` varchar(6) NOT NULL,`pays` varchar(50) NOT NULL,`commune` varchar(50) NOT NULL,PRIMARY KEY  (`adr_id`));
 DROP TABLE IF EXISTS `resp_pers`;
-CREATE TABLE IF NOT EXISTS `resp_pers` (`pers_id` varchar(10) NOT NULL,`login` varchar(50) NOT NULL,`nom` varchar(30) NOT NULL,`prenom` varchar(30) NOT NULL,`civilite` varchar(5) NOT NULL,`tel_pers` varchar(255) NOT NULL,`tel_port` varchar(255) NOT NULL,`tel_prof` varchar(255) NOT NULL,`mel` varchar(100) NOT NULL,`adr_id` varchar(10) NOT NULL,PRIMARY KEY  (`pers_id`), INDEX login ( `login` ), INDEX adr_id ( `adr_id` ));
+CREATE TABLE IF NOT EXISTS `resp_pers` (`pers_id` varchar(10) NOT NULL,`login` varchar(50) NOT NULL,`nom` varchar(50) NOT NULL,`prenom` varchar(50) NOT NULL,`civilite` varchar(5) NOT NULL,`tel_pers` varchar(255) NOT NULL,`tel_port` varchar(255) NOT NULL,`tel_prof` varchar(255) NOT NULL,`mel` varchar(100) NOT NULL,`adr_id` varchar(10) NOT NULL,PRIMARY KEY  (`pers_id`), INDEX login ( `login` ), INDEX adr_id ( `adr_id` ));
 DROP TABLE IF EXISTS `tentatives_intrusion`;
 CREATE TABLE `tentatives_intrusion` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,`login` VARCHAR( 255 ) NULL ,`adresse_ip` VARCHAR( 255 ) NOT NULL ,`date` DATETIME NOT NULL ,`niveau` SMALLINT NOT NULL ,`fichier` VARCHAR( 255 ) NOT NULL ,`description` TEXT NOT NULL ,`statut` VARCHAR( 255 ) NOT NULL ,PRIMARY KEY ( `id`, `login` ));
 DROP TABLE IF EXISTS `etiquettes_formats`;
