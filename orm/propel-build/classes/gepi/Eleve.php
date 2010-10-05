@@ -1044,7 +1044,7 @@ class Eleve extends BaseEleve {
 		$date_fin_iteration->setTime(23,59);
 	    }
 
-	    return $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre, EdtHorairesEtablissementQuery::create()->find());
+	    return $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre);
 	}
 
  	private function getAbsColDecompteDemiJournee($date_debut, $date_fin) {
@@ -1072,7 +1072,23 @@ class Eleve extends BaseEleve {
 	    return $abs_saisie_col;
 	}
 
-	private function compte_demi_journee($date_debut_iteration, $date_fin_iteration, $abs_saisie_col, $horaire_col) {
+	private function compte_demi_journee($date_debut_iteration, $date_fin_iteration, $abs_saisie_col) {
+	    if ($date_debut_iteration == null) {
+		foreach ($abs_saisie_col as $saisie) {
+		    if ($date_debut_iteration == null || $saisie->getDebutAbs('U') < $date_debut_iteration->format('U')) {
+			$date_debut_iteration = clone $saisie->getDebutAbs(null);
+		    }
+		}
+	    }
+	    if ($date_fin_iteration == null) {
+		foreach ($abs_saisie_col as $saisie) {
+		    if ($date_fin_iteration == null || $saisie->getFinAbs('U') > $date_fin_iteration->format('U')) {
+			$date_fin_iteration = clone $saisie->getFinAbs(null);
+		    }
+		}
+	    }
+
+	    $horaire_tab = EdtHorairesEtablissementQuery::create()->find()->getArrayCopy('JourHoraireEtablissement');
 	    $heure_demi_journee = 11;
 	    $minute_demi_journee = 50;
 	    try {
@@ -1084,7 +1100,6 @@ class Eleve extends BaseEleve {
 
 	    $result = new PropelCollection();
 	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
-	    $horaire_tab = $horaire_col->getArrayCopy('JourHoraireEtablissement');
 	    $date_compteur = clone $date_debut_iteration;
 	    foreach($abs_saisie_col as $saisie) {
 		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
@@ -1223,7 +1238,7 @@ class Eleve extends BaseEleve {
 		$date_fin_iteration->setTime(23,59);
 	    }
 
-	    return $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre, EdtHorairesEtablissementQuery::create()->find());
+	    return $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre);
 	}
 
  	/**
@@ -1280,17 +1295,17 @@ class Eleve extends BaseEleve {
 		$date_fin_iteration->setTime(23,59);
 	    }
 
-	    $retards_result = $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre, EdtHorairesEtablissementQuery::create()->find());
+	    $retards_result = $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre);
 
 	    //on recupere les demi-journees pendant lesquels l'eleve est absent
-	    $absences = $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre, EdtHorairesEtablissementQuery::create()->find());
+	    $absences = $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre);
 	    $abs_saisie_col_filtre_abs = new PropelCollection();
 	    foreach ($abs_saisie_col as $saisie) {
 		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
 		    $abs_saisie_col_filtre_abs->append($saisie);
 		}
 	    }
-	    $abs_result = $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre_abs, EdtHorairesEtablissementQuery::create()->find());
+	    $abs_result = $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre_abs);
 	    $abs_result_timestamp_array = Array();
 	    foreach ($abs_result as $dateTime) {
 		$abs_result_timestamp_array[] = $dateTime->format('U');
