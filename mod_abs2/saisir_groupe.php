@@ -233,36 +233,6 @@ if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
     }
 }
 
-if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-    $classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
-} else {
-    $classe_col = $utilisateur->getClasses();
-}
-
-if (!$classe_col->isEmpty()) {
-    echo "<td style='border : 1px solid; padding : 10 px;'>";
-	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
-	echo "<p>";
-    echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-    echo ("Classe : <select name=\"id_classe\" class=\"small\">");
-    echo "<option value='-1'>choisissez une classe</option>\n";
-    foreach ($classe_col as $classe) {
-	    echo "<option value='".$classe->getId()."'";
-	    if ($id_classe == $classe->getId()) echo " selected='selected' ";
-	    echo ">";
-	    echo $classe->getNom();
-	    echo "</option>\n";
-    }
-    echo "</select>&nbsp;";
-    format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve);
-    echo '<button type="submit">Afficher les élèves</button>';
-    echo "</p>";
-    echo "</form>";
-    echo "</td>";
-} else {
-    echo '<td>Aucune classe avec élève affecté n\'a été trouvée</td>';
-}
-
 
 if (getSettingValue("abs2_saisie_prof_hors_cours")!='y'
 	&& $utilisateur->getStatut() == "professeur") {
@@ -380,6 +350,38 @@ if (getSettingValue("abs2_saisie_prof_decale_journee")!='y'
 	echo "</td>";
     }
 }
+
+
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    $classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
+} else {
+    $classe_col = $utilisateur->getClasses();
+}
+if (!$classe_col->isEmpty()) {
+    echo "<td style='border : 1px solid; padding : 10 px;'>";
+	echo "<form action=\"./saisir_groupe.php\" method=\"post\" style=\"width: 100%;\">\n";
+	echo "<p>";
+    echo '<input type="hidden" name="type_selection" value="id_classe"/>';
+    echo ("Classe : <select name=\"id_classe\" class=\"small\">");
+    echo "<option value='-1'>choisissez une classe</option>\n";
+    foreach ($classe_col as $classe) {
+	    echo "<option value='".$classe->getId()."'";
+	    if ($id_classe == $classe->getId()) echo " selected='selected' ";
+	    echo ">";
+	    echo $classe->getNom();
+	    echo "</option>\n";
+    }
+    echo "</select>&nbsp;";
+    format_selectbox_heure($utilisateur, $id_creneau, $dt_date_absence_eleve);
+    echo '<button type="submit">Afficher les élèves</button>';
+    echo "</p>";
+    echo "</form>";
+    echo "</td>";
+} else {
+    echo '<td>Aucune classe avec élève affecté n\'a été trouvée</td>';
+}
+
+
 echo "</tr></table>";
 
 if (isset($message_enregistrement)) {
