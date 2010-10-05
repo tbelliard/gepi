@@ -1043,8 +1043,8 @@ class Eleve extends BaseEleve {
 		$date_fin_iteration = new DateTime('now');
 		$date_fin_iteration->setTime(23,59);
 	    }
-
-	    return $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre);
+	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
 
  	private function getAbsColDecompteDemiJournee($date_debut, $date_fin) {
@@ -1070,98 +1070,6 @@ class Eleve extends BaseEleve {
 		$_REQUEST[$request_query_hash] = $abs_saisie_col;
 	    }
 	    return $abs_saisie_col;
-	}
-
-	private function compte_demi_journee($date_debut_iteration, $date_fin_iteration, $abs_saisie_col) {
-	    if ($date_debut_iteration == null) {
-		foreach ($abs_saisie_col as $saisie) {
-		    if ($date_debut_iteration == null || $saisie->getDebutAbs('U') < $date_debut_iteration->format('U')) {
-			$date_debut_iteration = clone $saisie->getDebutAbs(null);
-		    }
-		}
-	    }
-	    if ($date_fin_iteration == null) {
-		foreach ($abs_saisie_col as $saisie) {
-		    if ($date_fin_iteration == null || $saisie->getFinAbs('U') > $date_fin_iteration->format('U')) {
-			$date_fin_iteration = clone $saisie->getFinAbs(null);
-		    }
-		}
-	    }
-
-	    $horaire_tab = EdtHorairesEtablissementQuery::create()->find()->getArrayCopy('JourHoraireEtablissement');
-	    $heure_demi_journee = 11;
-	    $minute_demi_journee = 50;
-	    try {
-		$dt_demi_journee = new DateTime(getSettingValue("abs2_heure_demi_journee"));
-		$heure_demi_journee = $dt_demi_journee->format('H');
-		$minute_demi_journee = $dt_demi_journee->format('i');
-	    } catch (Exception $x) {
-	    }
-
-	    $result = new PropelCollection();
-	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
-	    $date_compteur = clone $date_debut_iteration;
-	    foreach($abs_saisie_col as $saisie) {
-		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
-		    $date_compteur = clone $saisie->getDebutAbs(null);
-		    if ($date_compteur->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
-			$date_compteur->setTime(0, 0);
-		    } else {
-			$date_compteur->setTime($heure_demi_journee, $minute_demi_journee);//on calle la demi journée a 11h50
-		    }
-		}
-		if ($date_compteur->format('U') > $date_fin_iteration->format('U')) {
-		    break;
-		}
-		$max = 0;
-		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration->format('U') && $max < 200) {
-		    //est-ce un jour de la semaine ouvert ?
-		    $jour_semaine = $semaine_declaration[$date_compteur->format("w")];
-		    $horaire = null;
-		    if (isset($horaire_tab[$jour_semaine])) {
-			$horaire = $horaire_tab[$jour_semaine];
-		    }
-		    if ($horaire == null 
-			    || $date_compteur->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')
-			    ||	$date_compteur->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
-			//etab fermé
-			$date_compteur->modify("+55 minutes");
-			continue;
-		    }
-
-		    //est-ce une période ouverte
-		    $edt_periode_courante = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($date_compteur);
-		    if ($edt_periode_courante != null 
-			    && ($edt_periode_courante->getEtabfermeCalendrier() == 0 || $edt_periode_courante->getEtabvacancesCalendrier() == 1)) {
-			//etab fermé
-			$date_compteur->modify("+12 hours");
-			continue;
-		    }
-
-		    //etab ouvert
-		    if ($date_compteur->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
-			$date_compteur->setTime(0, 0);
-		    } else {
-			$date_compteur->setTime($heure_demi_journee, $minute_demi_journee);
-		    }
-		    $date_compteur_suivante = clone $date_compteur;
-		    $date_compteur_suivante->modify("+15 hours");//en ajoutant 15 heure on est sur de passer a la demi-journee suivante
-		    if ($date_compteur_suivante->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
-			$date_compteur_suivante->setTime(0, 0);
-		    } else {
-			$date_compteur_suivante->setTime($heure_demi_journee, $minute_demi_journee);
-		    }
-		    if ($saisie->getDebutAbs('U') < $date_compteur_suivante->format('U') && $saisie->getFinAbs('U') > $date_compteur->format('U')) {
-			$result->append(clone $date_compteur);
-			//on ajoute 1h35
-			//pour eviter le cas ou on a une saisie par exemple sur 11h45 -> 13h et de la compter comme deux demi-journees
-			$date_compteur_suivante->modify("+1 hour");
-			$date_compteur_suivante->modify("+35 minutes");
-		    }
-		    $date_compteur = clone $date_compteur_suivante;
-		}
-	    }
-	    return $result;
 	}
 
 	/**
@@ -1238,7 +1146,8 @@ class Eleve extends BaseEleve {
 		$date_fin_iteration->setTime(23,59);
 	    }
 
-	    return $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre);
+	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
 
  	/**
@@ -1295,17 +1204,20 @@ class Eleve extends BaseEleve {
 		$date_fin_iteration->setTime(23,59);
 	    }
 
-	    $retards_result = $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre);
+	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    $retards_result = AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 
 	    //on recupere les demi-journees pendant lesquels l'eleve est absent
-	    $absences = $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre);
+	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    $absences = AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	    $abs_saisie_col_filtre_abs = new PropelCollection();
 	    foreach ($abs_saisie_col as $saisie) {
 		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
 		    $abs_saisie_col_filtre_abs->append($saisie);
 		}
 	    }
-	    $abs_result = $this->compte_demi_journee($date_debut, $date_fin_iteration, $abs_saisie_col_filtre_abs);
+	    require_once("helpers/AbsencesEleveSaisieHelper.php");
+	    $abs_result = AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre_abs, $date_debut, $date_fin_iteration);
 	    $abs_result_timestamp_array = Array();
 	    foreach ($abs_result as $dateTime) {
 		$abs_result_timestamp_array[] = $dateTime->format('U');
