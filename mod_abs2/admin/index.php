@@ -203,6 +203,16 @@ if (isset($_POST['is_posted'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_sous_responsabilite_etab !";
 			}
 		}
+
+		if (isset($_POST['abs2_saisie_multi_type_non_justifiee'])) {
+			if (!saveSetting("abs2_saisie_multi_type_non_justifiee", $_POST['abs2_saisie_multi_type_non_justifiee'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_non_justifiee !";
+			}
+		} else {
+			if (!saveSetting("abs2_saisie_multi_type_non_justifiee", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_saisie_multi_type_non_justifiee !";
+			}
+		}
 //		if (isset($_POST['abs2_modification_saisie_sans_limite'])) {
 //			if (!saveSetting("abs2_modification_saisie_sans_limite", $_POST['abs2_modification_saisie_sans_limite'])) {
 //				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la modification sasie par les professeurs dans l'heure suivant la saisie !";
