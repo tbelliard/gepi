@@ -299,6 +299,7 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 			echo "</option>\n";
 		}
 		echo "</select>";
+		echo '<button type="submit" name="modifier_type" value="vrai">Mod. le type</button>';
 	}
     }else {
 	if ($utilisateur->getStatut() != 'professeur') {
@@ -313,7 +314,7 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
     echo "<br/><br/>";
 }
 //on autorise un ajout rapide seulement si il n'y a aucun traitement rapidement modifiable
-if ($total_traitements_modifiable == 0) {
+if ($total_traitements_modifiable == 0 && $utilisateur->getStatut() == 'professeur') {
     echo ("<select name=\"ajout_type_absence\">");
     echo "<option value='-1'></option>\n";
     foreach ($type_autorises as $type) {
@@ -325,8 +326,6 @@ if ($total_traitements_modifiable == 0) {
     }
     echo "</select>";
     echo '<button type="submit" name="modifier_type" value="vrai">Ajouter</button>';
-} else {
-    echo '<button type="submit" name="modifier_type" value="vrai">Mod. le type</button>';
 }
 
 echo '<input type="hidden" name="total_traitements" value="'.$total_traitements_modifiable.'"/>';
