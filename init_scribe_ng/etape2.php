@@ -93,7 +93,7 @@ if ($_POST['step'] == "2") {
             // Si un nombre de periodes a ete selectionne pour cette classe, on cree les periodes
             // Pour chaque periode, jusqu'au nombre souhaite (REVOIR pour choix non faits...)
             for ($i=1; $i<=$_POST[$indice]; $i++) {
-                $req_insertion_periode = "INSERT INTO periodes VALUES ('P$i','$i','T', '$key',NULL)";
+                $req_insertion_periode = "INSERT INTO periodes VALUES ('P$i','$i','T', '$key',NULL,NULL)";
                 mysql_query($req_insertion_periode);
                 // Si tout s'est bien deroule
                 if (mysql_errno() != 0) {
