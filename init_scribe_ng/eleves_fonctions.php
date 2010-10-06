@@ -51,13 +51,8 @@ function formater_date_pour_mysql($date) {
 
 function is_table_vide($table_name) {
     $query_count = "select count(*) from $table_name";
-    $req = mysql_query($query_count);
-    if ($count = mysql_fetch_array($req)) {
-       return ($count==0?1:0);
-    }
-    else {
-        return 0;
-    }
+    $count = mysql_result(mysql_query($query_count), 0);
+    return ($count == 0 ? true : false);
 }
 
 ?>
