@@ -109,7 +109,14 @@ class AbsencesNotificationHelper {
 	    $str = 'Le ';
 	    $str .= (strftime("%a %d/%m/%Y", $date->format('U')));
 	    if ($date->format('Hi') < $temps_demi_journee) {
-		$str .= ' le matin';
+		$next_date = $demi_j->getNext();
+		if ($next_date != null && $next_date->format('Y-m-d') == $date->format('Y-m-d')) {
+		    $str .= ' la journée';
+		} else {
+		    $str .= ' le matin';
+		    //on recule le pointeur car on l'a avancé avec $demi_j->getNext()
+		    $demi_j->getPrevious();
+		}
 	    } else {
 		$str .= ' l\'après midi';
 	    }
