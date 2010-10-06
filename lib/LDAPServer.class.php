@@ -325,7 +325,7 @@ class LDAPServer {
 			$path = dirname(__FILE__)."/../".self::config_file;
 			include($path);
 
-			$available_settings = get_class_vars(get_class($this));
+			$available_settings = get_object_vars($this);
 			foreach($available_settings as $key => $value) {
 				$varname = "ldap_".$key;
 				if (isset($$varname)) {
