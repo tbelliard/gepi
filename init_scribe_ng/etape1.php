@@ -188,7 +188,7 @@ if (isset($_POST['step'])) {
                           * Creation de la classe correspondante
                           */
                           $nouvelle_classe = new Classe();
-                          $nouvelle_classe->setClasse($code_classe);
+                          $nouvelle_classe->setNom($code_classe);
 
                           $nouvelle_classe->save();
                           $classes_inserees++;

@@ -91,7 +91,7 @@ if ($_POST['step'] == "6") {
     // On boucle sur chaque équipe, ce qui revient à boucler sur les classes
     foreach($classes as $classe_courante) {
         # On a une classe, on poursuit
-        if (array_key_exists($classe_courante->getClasse(), $donnees_equipes)) {
+        if (array_key_exists($classe_courante->getNom(), $donnees_equipes)) {
           
           # On initialisation la liste des élèves de la classe
           
@@ -107,7 +107,7 @@ if ($_POST['step'] == "6") {
           
           
           # On passe tous les profs de l'équipe
-          foreach($donnees_equipes[$classe_courante->getClasse()] as $login_prof) {
+          foreach($donnees_equipes[$classe_courante->getNom()] as $login_prof) {
             
             $prof = UtilisateurProfessionnelPeer::retrieveByPK($login_prof);
             if ($prof) {
