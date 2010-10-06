@@ -366,14 +366,14 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
 		if ($justifiee_avec && $justifiee_sans ) {
 		    //on a aucune information on renvoit le reglage adequat
-		    $this->manquementObligationPresenceSpecifie_NON_PRECISE = (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y');
+		    $this->justifiee = (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y');
 		} else if ($justifiee_avec) {
-		    $this->manquementObligationPresenceSpecifie_NON_PRECISE =  true;
+		    $this->justifiee =  true;
 		} else {
-		    $this->manquementObligationPresenceSpecifie_NON_PRECISE =  false;
+		    $this->justifiee =  false;
 		}
 	    }
-	    return $this->manquementObligationPresenceSpecifie_NON_PRECISE;
+	    return $this->justifiee;
 	}
 
 	/**
