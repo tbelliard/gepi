@@ -129,6 +129,13 @@ if (isFiltreRechercheParam('filter_type')) {
 	$query->filterByATypeId(getFiltreRechercheParam('filter_type'));
     }
 }
+if (isFiltreRechercheParam('filter_motif')) {
+    if (getFiltreRechercheParam('filter_motif') == 'SANS') {
+	$query->filterByAMotifId(null);
+    } else {
+	$query->filterByAMotifId(getFiltreRechercheParam('filter_motif'));
+    }
+}
 if (isFiltreRechercheParam('filter_justification')) {
     if (getFiltreRechercheParam('filter_justification') == 'SANS') {
 	$query->filterByAJustificationId(null);
@@ -187,6 +194,10 @@ if (getFiltreRechercheParam('order') == "asc_id") {
     $query->orderBy('ATypeId', Criteria::ASC);
 } else if (getFiltreRechercheParam('order') == "des_type") {
     $query->orderBy('ATypeId', Criteria::DESC);
+} else if (getFiltreRechercheParam('order') == "asc_motif") {
+    $query->orderBy('AMotifId', Criteria::ASC);
+} else if (getFiltreRechercheParam('order') == "des_motif") {
+    $query->orderBy('AMotifId', Criteria::DESC);
 } else if (getFiltreRechercheParam('order') == "asc_justification") {
     $query->orderBy('AJustificationId', Criteria::ASC);
 } else if (getFiltreRechercheParam('order') == "des_justification") {
@@ -390,7 +401,36 @@ echo '<th>';
 //echo '/><br/>sous resp. etab.';
 echo 'Sous resp. étab.';
 echo '</th>';
-
+//en tete motif d'absence
+echo '<th>';
+echo '<span style="white-space: nowrap;"> ';
+//echo '<nobr>';
+echo '<input type="image" src="../images/up.png" title="monter" style="vertical-align: middle;width:15px; height:15px; ';
+if ($order == "asc_motif") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="asc_motif"/>';
+echo '<input type="image" src="../images/down.png" title="descendre" style="vertical-align: middle;width:15px; height:15px; ';
+if ($order == "des_motif") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+echo 'border-width:1px;" alt="" name="order" value="des_motif"/>';
+echo '</span>';
+echo '<br />';
+echo 'Motif';
+echo '<br />';
+echo ("<select name=\"filter_motif\" onchange='submit()'>");
+echo "<option value=''></option>\n";
+echo "<option value='SANS'";
+if (getFiltreRechercheParam('filter_motif') == 'SANS') echo " selected='selected' ";
+echo ">";
+echo 'SANS MOTIF';
+echo "</option>\n";
+foreach (AbsenceEleveMotifQuery::create()->orderByRank()->find() as $motif) {
+	echo "<option value='".$motif->getId()."'";
+	if (getFiltreRechercheParam('filter_motif') === (string) $motif->getId()) echo " selected='selected' ";
+	echo ">";
+	echo $motif->getNom();
+	echo "</option>\n";
+}
+echo "</select>";
+echo '</th>';
 //en tete justification d'absence
 echo '<th>';
 echo '<span style="white-space: nowrap;"> ';
@@ -673,7 +713,14 @@ foreach ($results as $traitement) {
 	echo 'non';
     }
     echo '</td>';
-
+    //donnees motif
+    echo '<td>';
+    if ($traitement->getAbsenceEleveMotif() != null) {
+	echo $traitement->getAbsenceEleveMotif()->getNom();
+    } else {
+	echo "&nbsp;";
+    }
+    echo "</a>";
     //donnees justification
     //echo '<td><nobr>';
     echo '<td>';
