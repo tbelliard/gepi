@@ -30,6 +30,12 @@
 //
 //                                  PROTOS
 //
+//
+// array 	function RetrieveWeeks()
+// string 	function RetrieveColumnWeek($tab_data, $index_box, $jour, $week)
+// void 	function SwapContainers(&$tab_data, &$index_box, $jour)
+// void 	function FixColumnPositions(&$tab_data, $entetes) 
+// void 	function VerifierTablesDelestage() 
 // array    function EtudeDeCasTroisCours($tab_cours) 
 // array    function ConstruireEnteteEDT() 
 // array    function ConstruireCreneauxEDT() 
@@ -37,7 +43,193 @@
 // string   function NameTemplateEDT()
 // string   function ContenuCreneau($id_creneaux, $jour_semaine, $type_edt, $enseignement)
 
+// =============================================================================
+//
+//		fonction interne pour FixColumnPositions
+//
+// =============================================================================
+function RetrieveWeeks() {
+	$week = array();
+	$week[0] = "";
+	$week[1] = "";
+	$sql_request = "SELECT DISTINCT type_edt_semaine FROM edt_semaines ORDER BY type_edt_semaine";
+	$req = mysql_query($sql_request);
+	if ($req) {
+		$i = 0;
+		while ($rep = mysql_fetch_array($req)) {
+			if ($rep['type_edt_semaine'] != "") {
+				$week[$i] = "Sem.".$rep['type_edt_semaine'];
+				$i++;
+			}
+		}
+	}
+	return $week;
+}
 
+// =============================================================================
+//
+//		fonction interne pour FixColumnPositions
+//
+// =============================================================================
+function RetrieveColumnWeek($tab_data, $index_box, $jour, $week) {
+	$index_box++;
+	$NotFound = TRUE;
+	$ReturnValue = "";
+	while (($tab_data[$jour]['type'][$index_box] != "fin_conteneur") AND ($NotFound)){
+		$pos1 = strpos($tab_data[$jour]['contenu'][$index_box], $week[0]);
+		$pos2 = strpos($tab_data[$jour]['contenu'][$index_box], $week[1]);
+		if ($pos1 !== FALSE) {
+			$NotFound = FALSE;
+			$ReturnValue = $week[0];
+		}
+		else if ($pos2 !== FALSE) {
+			$NotFound = FALSE;
+			$ReturnValue = $week[1];
+		}
+		$index_box++;
+	}
+	return $ReturnValue;
+}
+
+// =============================================================================
+//
+//		fonction interne pour FixColumnPositions
+//
+// =============================================================================
+function SwapContainers(&$tab_data, &$index_box, $jour) {
+	$aux_tab = array();
+	$index_container1 = $index_box;
+	$index_container2 = $index_box+1;
+	while ($tab_data[$jour]['type'][$index_container2] != "conteneur") {
+		$index_container2++;	
+	}
+	$index = $index_container1;
+	$index_destination = 0;
+	while ($tab_data[$jour]['type'][$index] != "fin_conteneur") {
+		RemplirBox($tab_data[$jour]['elapse_time'][$index],
+					$aux_tab[$jour], 
+					$index_destination, 
+					$tab_data[$jour]['type'][$index],
+					$tab_data[$jour]['id_creneau'][$index],
+					$tab_data[$jour]['id_groupe'][$index],
+					$tab_data[$jour]['id_cours'][$index],
+					$tab_data[$jour]['duree'][$index],
+					$tab_data[$jour]['couleur'][$index],
+					$tab_data[$jour]['contenu'][$index]);
+		$index++;
+	}
+	RemplirBox($tab_data[$jour]['elapse_time'][$index],
+				$aux_tab[$jour], 
+				$index_destination, 
+				$tab_data[$jour]['type'][$index],
+				$tab_data[$jour]['id_creneau'][$index],
+				$tab_data[$jour]['id_groupe'][$index],
+				$tab_data[$jour]['id_cours'][$index],
+				$tab_data[$jour]['duree'][$index],
+				$tab_data[$jour]['couleur'][$index],
+				$tab_data[$jour]['contenu'][$index]);
+
+	// =========================================
+	$index = $index_container2;
+	$index_destination = $index_container1;
+	while ($tab_data[$jour]['type'][$index] != "fin_conteneur") {
+
+		RemplirBox($tab_data[$jour]['elapse_time'][$index],
+					$tab_data[$jour], 
+					$index_destination, 
+					$tab_data[$jour]['type'][$index],
+					$tab_data[$jour]['id_creneau'][$index],
+					$tab_data[$jour]['id_groupe'][$index],
+					$tab_data[$jour]['id_cours'][$index],
+					$tab_data[$jour]['duree'][$index],
+					$tab_data[$jour]['couleur'][$index],
+					$tab_data[$jour]['contenu'][$index]);
+		$index++;
+	}
+	RemplirBox($tab_data[$jour]['elapse_time'][$index],
+				$tab_data[$jour], 
+				$index_destination, 
+				$tab_data[$jour]['type'][$index],
+				$tab_data[$jour]['id_creneau'][$index],
+				$tab_data[$jour]['id_groupe'][$index],
+				$tab_data[$jour]['id_cours'][$index],
+				$tab_data[$jour]['duree'][$index],
+				$tab_data[$jour]['couleur'][$index],
+				$tab_data[$jour]['contenu'][$index]);	
+
+				
+	// =========================================
+	$index = 0;
+
+	while ($aux_tab[$jour]['type'][$index] != "fin_conteneur") {
+		RemplirBox($aux_tab[$jour]['elapse_time'][$index],
+					$tab_data[$jour], 
+					$index_destination, 
+					$aux_tab[$jour]['type'][$index],
+					$aux_tab[$jour]['id_creneau'][$index],
+					$aux_tab[$jour]['id_groupe'][$index],
+					$aux_tab[$jour]['id_cours'][$index],
+					$aux_tab[$jour]['duree'][$index],
+					$aux_tab[$jour]['couleur'][$index],
+					$aux_tab[$jour]['contenu'][$index]);
+		$index++;
+	}
+	RemplirBox($aux_tab[$jour]['elapse_time'][$index],
+				$aux_tab[$jour], 
+				$index_destination, 
+				$aux_tab[$jour]['type'][$index],
+				$aux_tab[$jour]['id_creneau'][$index],
+				$aux_tab[$jour]['id_groupe'][$index],
+				$aux_tab[$jour]['id_cours'][$index],
+				$aux_tab[$jour]['duree'][$index],
+				$aux_tab[$jour]['couleur'][$index],
+				$aux_tab[$jour]['contenu'][$index]);
+	
+	$index_box = $index_destination-1;
+
+}
+
+// =============================================================================
+//
+//		Organise les créneaux Semaine A - Semaine B
+//		de façon à rendre la lecture plus élégante
+//		les créneaux Sem.B sont tous alignés à droite
+//		les créneaux Sem.A sont tous alignés à gauche
+//
+// =============================================================================
+function FixColumnPositions(&$tab_data, $entetes) 
+{
+	$week = array();
+	$week = RetrieveWeeks();
+    $jour = 0;
+	$conteneur = 0;
+    while (isset($entetes['entete'][$jour])) {
+        $index_box = 0;
+        while (isset($tab_data[$jour]['type'][$index_box]))
+        {
+            if ($tab_data[$jour]['type'][$index_box] == "conteneur")
+            {
+				$conteneur++;
+				$pos = strpos($tab_data[$jour]['duree'][$index_box], "demicellule");
+				if (!($pos === FALSE)) {
+					if ($conteneur != 1) {
+						$conteneur = 0;
+					}
+					else {
+						$ColumnWeek = RetrieveColumnWeek($tab_data, $index_box, $jour, $week);
+						if ($ColumnWeek == $week[1]) {
+							SwapContainers($tab_data, $index_box, $jour);
+							$conteneur = 0;
+						}
+					}
+				}
+            }
+            $index_box++;
+        }
+        $jour++;
+    }
+
+}
 // ======================================================
 //
 //

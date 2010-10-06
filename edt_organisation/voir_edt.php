@@ -151,7 +151,7 @@ if(isset($login_edt)){
     else {
         $DisplayEDT = false;
     }
-
+	FixColumnPositions($tab_data, $entetes);
 }
 else {
     $DisplayEDT = false;

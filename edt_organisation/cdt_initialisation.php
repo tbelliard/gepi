@@ -84,7 +84,9 @@ if(isset($login_edt)){
     $entetes = ConstruireEnteteEDT();
     $creneaux = ConstruireCreneauxEDT();
     $DisplayEDT = true;
+	FixColumnPositions($tab_data, $entetes);
 	RecupereNotices($tab_data, $entetes);
+	
 }
 else {
     $DisplayEDT = false;
