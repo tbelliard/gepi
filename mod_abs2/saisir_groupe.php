@@ -377,8 +377,6 @@ if (!$classe_col->isEmpty()) {
     echo "</p>";
     echo "</form>";
     echo "</td>";
-} else {
-    echo '<td>Aucune classe avec élève affecté n\'a été trouvée</td>';
 }
 
 
