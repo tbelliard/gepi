@@ -175,8 +175,8 @@ function modif_type ($saisie, $utilisateur) {
     for($i=0; $i<$total_traitements; $i++) {
 
 	//on test si on a un traitement a modifer
-	if (!(isset($_POST['id_traitement'][$i]) && $_POST['id_traitement'][$i] != -1) ) {
-	    $message_enregistrement .= "Probleme avec l'id traitement : ".$_POST['id_traitement'][$i]."<br/>";
+	if (!(isset($_POST['id_traitement'][$i]) || $_POST['id_traitement'][$i] == -1) ) {
+	    //$message_enregistrement .= "Probleme avec l'id traitement : ".$_POST['id_traitement'][$i]."<br/>";
 	    continue;
 	}
 
@@ -225,6 +225,8 @@ function modif_type ($saisie, $utilisateur) {
 	} else {
 	    $message_enregistrement .= "Probleme avec l'id du type d'absence : ".$_POST['type_absence_eleve'][$i]."<br/>";
 	}
+    } else if ($ajout_type_absence == -1) {
+	$message_enregistrement .= "Il faut préciser un type<br/>";
     }
 
     return $message_enregistrement;
