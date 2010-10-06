@@ -237,8 +237,8 @@ echo '</td></tr>';
 echo '<tr><td>';
 echo 'Type : ';
 echo '</td><td>';
-//on ne modifie le type que si aucun envoi n'a ete fait
-if ($traitement->getModifiable()) {
+//on ne modifie le type que si aucun envoi n'a ete fait //on fait non
+//if ($traitement->getModifiable()) {
     $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
     if ($type_autorises->count() != 0) {
 	echo '<form method="post" action="enregistrement_modif_traitement.php">';
@@ -271,11 +271,11 @@ if ($traitement->getModifiable()) {
 	echo '</p>';
 	echo '</form>';
     }
-} else {
-    if ($traitement->getAbsenceEleveType() != null) {
-	echo $traitement->getAbsenceEleveType()->getNom();
-    }
-}
+//} else {
+//    if ($traitement->getAbsenceEleveType() != null) {
+//	echo $traitement->getAbsenceEleveType()->getNom();
+//    }
+//}
 echo '</td></tr>';
 
 echo '<tr><td>';
