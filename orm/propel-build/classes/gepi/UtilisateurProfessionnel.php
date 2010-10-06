@@ -342,9 +342,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		    $classeJoin->setPreviousJoin($j_groupes_classesJoin);
 		    $width["Classe"] = $classeJoin;
 
-		    echo 'constructing formatter';
 		    $formatter->setWith($width);
-		    echo 'return formatter';
 		    UtilisateurProfessionnel::$groupeFormatter = $formatter;
 	    }
 	    return UtilisateurProfessionnel::$groupeFormatter;
