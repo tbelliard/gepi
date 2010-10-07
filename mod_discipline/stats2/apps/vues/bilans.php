@@ -219,7 +219,14 @@
           </tbody>
                   <?php if (!isset($totaux_indiv[$titre])) { ?>
           <tfoot>
-            <tr><td colspan="2">Total</td><td><?php if(isset($totaux_par_classe[$titre]['incidents']))echo $totaux_par_classe[$titre]['incidents']; else echo'0';?></td><td><?php if(isset($totaux['L\'Etablissement']['mesures'])) echo $totaux_par_classe[$titre]['mesures']; else echo'0';?></td><td><?php  if(isset($totaux['L\'Etablissement']['mesures']) && $totaux['L\'Etablissement']['mesures']>0) echo round(100*($totaux_par_classe[$titre]['mesures']/$totaux['L\'Etablissement']['mesures']),2); else echo'0';?></td>
+            <tr>
+              <?php if($titre=='L\'Etablissement' || $titre=='Tous les élèves' ||$titre=='Tous les personnels' ){?>
+              <td colspan="3">
+              <?php } else{ ?>
+              <td colspan="2">
+              <?php } ?>
+              Total</td>
+              <td><?php if(isset($totaux_par_classe[$titre]['incidents']))echo $totaux_par_classe[$titre]['incidents']; else echo'0';?></td><td><?php if(isset($totaux['L\'Etablissement']['mesures'])) echo $totaux_par_classe[$titre]['mesures']; else echo'0';?></td><td><?php  if(isset($totaux['L\'Etablissement']['mesures']) && $totaux['L\'Etablissement']['mesures']>0) echo round(100*($totaux_par_classe[$titre]['mesures']/$totaux['L\'Etablissement']['mesures']),2); else echo'0';?></td>
               <td><?php if(isset($totaux_par_classe[$titre]['sanctions'])) echo $totaux_par_classe[$titre]['sanctions']; else echo'0';?></td><td><?php if(isset($totaux['L\'Etablissement']['sanctions']) && $totaux['L\'Etablissement']['sanctions']>0) echo round(100*($totaux_par_classe[$titre]['sanctions']/$totaux['L\'Etablissement']['sanctions']),2); else echo'0';?></td>
               <td><?php if(isset($totaux_par_classe[$titre]['heures_retenues'])) echo $totaux_par_classe[$titre]['heures_retenues']; else echo'0';?></td><td><?php if(isset($totaux['L\'Etablissement']['heures_retenues']) && $totaux['L\'Etablissement']['heures_retenues']>0) echo round(100*($totaux_par_classe[$titre]['heures_retenues']/$totaux['L\'Etablissement']['heures_retenues']),2); else echo'0';?></td>
               <td><?php if(isset($totaux_par_classe[$titre]['jours_exclusions'])) echo $totaux_par_classe[$titre]['jours_exclusions']; else echo'0';?></td><td><?php if(isset($totaux['L\'Etablissement']['jours_exclusions']) && $totaux['L\'Etablissement']['jours_exclusions']>0) echo round(100*($totaux_par_classe[$titre]['jours_exclusions']/$totaux['L\'Etablissement']['jours_exclusions']),2);else echo'0';?></td>
