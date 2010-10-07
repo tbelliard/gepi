@@ -76,6 +76,18 @@ if (!isset($login_edt)) {
     }
 }
 
+if (PeriodesExistent()) {
+	if (!isset($_SESSION['period_id'])) {
+		$_SESSION['period_id'] = ReturnIdPeriod(RecupereTimestampJour(0));
+	}
+	if (!PeriodExistsInDB($_SESSION['period_id'])) {
+		$_SESSION['period_id'] = ReturnFirstIdPeriod();    
+	}
+}
+else {
+	$_SESSION['period_id'] = 0;
+}
+
 // =================== Construire les emplois du temps
 
 if(isset($login_edt)){

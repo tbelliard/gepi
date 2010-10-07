@@ -122,6 +122,7 @@ if(isset($login_edt)){
         $tab_data = ConstruireEDTProf($login_edt, $_SESSION['period_id']);
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
+		FixColumnPositions($tab_data, $entetes);		
         $DisplayEDT = true;
     }
     else if ($type_edt == "classe")
@@ -137,6 +138,7 @@ if(isset($login_edt)){
         $tab_data = ConstruireEDTSalle($login_edt , $_SESSION['period_id']);
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
+		FixColumnPositions($tab_data, $entetes);		
         $DisplayEDT = true;
 
     }
@@ -151,7 +153,7 @@ if(isset($login_edt)){
     else {
         $DisplayEDT = false;
     }
-	FixColumnPositions($tab_data, $entetes);
+
 }
 else {
     $DisplayEDT = false;
