@@ -568,7 +568,11 @@ foreach($eleve_col as $eleve) {
 					<input type="hidden" name="id_eleve_absent[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getIdEleve(); ?>" />
 <?php
 
-			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')</span> ';
+			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
+                        if(!isset($current_classe)){
+                            echo ' '.$eleve->getClasse()->getNom().'';
+                        }
+                        echo'</span>';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
 			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
 			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
