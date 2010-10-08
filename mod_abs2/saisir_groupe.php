@@ -569,8 +569,11 @@ foreach($eleve_col as $eleve) {
 <?php
 
 			echo '<span class="td_abs_eleves">'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
-                        if(!isset($current_classe)){
-                            echo ' '.$eleve->getClasse()->getNom().'';
+			if (	(isset($current_groupe) && $current_groupe != null && $current_groupe->getClasses()->count() == 1)
+				|| (isset($current_classe) && $current_classe != null)) {
+			    //si le groupe a une seule classe ou si c'est une classe qui est sélectionner pas la peine d'afficher la classe.
+			} else {
+                            echo ' '.$eleve->getClasse()->getNom().' ';
                         }
                         echo'</span>';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
