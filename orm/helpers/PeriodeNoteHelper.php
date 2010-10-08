@@ -18,7 +18,7 @@ class PeriodeNoteHelper {
 	 */
 	public static function getNumPeriode($periode) {
 		if ($periode === null || $periode === '') {
-			return 'null';
+			return null;
 		} elseif ($periode instanceof PeriodeNote) {
 			return $periode->getNumPeriode();
 		} else {
