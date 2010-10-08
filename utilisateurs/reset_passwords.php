@@ -658,7 +658,7 @@ while ($p < $nb_users) {
 				$ligne2=$lig_adr_resp->adr1;
 				$ligne3=$lig_adr_resp->cp." ".$lig_adr_resp->commune;
 
-				if($lig_adr_resp->civilite="") {
+				if($lig_adr_resp->civilite!="") {
 					$ligne1=$lig_adr_resp->civilite." ".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
 				}
 				else {
@@ -1007,7 +1007,7 @@ width:".$largeur1."%;\n";
 				$ligne2=$lig_adr_resp->adr1;
 				$ligne3=$lig_adr_resp->cp." ".$lig_adr_resp->commune;
 
-				if($lig_adr_resp->civilite="") {
+				if($lig_adr_resp->civilite!="") {
 					$ligne1=$lig_adr_resp->civilite." ".$lig_adr_resp->nom." ".$lig_adr_resp->prenom;
 				}
 				else {
