@@ -3428,6 +3428,15 @@ function VerifAccesFicheProjet($_login,$aid_id,$indice_aid,$champ,$mode,$annee='
         die();
     }
 
+
+    // S'agit-il d'un super gestionnaire ?
+    $test_super_gestionnaire = sql_query1("select count(id_utilisateur) from j_aidcateg_super_gestionnaires where indice_aid='".$indice_aid."' and id_utilisateur='".$_login."'");
+    if  ($test_super_gestionnaire != "0") {
+        return TRUE;
+        die();
+    }
+
+
     // S'agit-il d'un utilisateurs ayant des droits sur l'ensemble des AID de la catégorie
     $test_droits_special = sql_query1("select count(id_utilisateur) from j_aidcateg_utilisateurs where indice_aid='".$indice_aid."' and id_utilisateur='".$_login."'");
     // Cas d'un élève
@@ -5230,9 +5239,9 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	}
 	$requete = '';
 	if ($duree != 'all') {$requete = "and START > now() - interval " . $duree . " day";}
-	
+
 	$sql = "select START, SESSION_ID, REMOTE_ADDR, USER_AGENT, AUTOCLOSE, END from log where LOGIN = '".$login."' ".$requete." order by START desc";
-	//echo "$sql<br />";	
+	//echo "$sql<br />";
 	$day_now   = date("d");
 	$month_now = date("m");
 	$year_now  = date("Y");
@@ -5240,7 +5249,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	$minute_now = date("i");
 	$seconde_now = date("s");
 	$now = mktime($hour_now, $minute_now, $seconde_now, $month_now, $day_now, $year_now);
-	
+
 	echo "<ul>
 <li>Les lignes en rouge signalent une tentative de connexion avec un mot de passe erroné.</li>
 <li>Les lignes en orange signalent une session close pour laquelle vous ne vous êtes pas déconnecté correctement.</li>
@@ -5267,7 +5276,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 			$minutes_b = substr($row[0],14,2);
 			$secondes_b = substr($row[0],17,2);
 			$date_debut = $jour_b."/".$mois_b."/".$annee_b." à ".$heures_b." h ".$minutes_b;
-	
+
 			$annee_f = substr($row[5],0,4);
 			$mois_f =  substr($row[5],5,2);
 			$jour_f =  substr($row[5],8,2);
@@ -5276,7 +5285,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 			$secondes_f = substr($row[5],17,2);
 			$date_fin = $jour_f."/".$mois_f."/".$annee_f." à ".$heures_f." h ".$minutes_f;
 			$end_time = mktime($heures_f, $minutes_f, $secondes_f, $mois_f, $jour_f, $annee_f);
-	
+
 			$temp1 = '';
 			$temp2 = '';
 			if ($end_time > $now) {
@@ -5289,9 +5298,9 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 			} else if ($row[4] == 4) {
 				$temp1 = "<b><font color='red'>";
 				$temp2 = "</font></b>";
-	
+
 			}
-	
+
 			echo "<tr>\n";
 			echo "<td class=\"col\">".$temp1.$date_debut.$temp2."</td>\n";
 			if ($row[4] == 2) {
@@ -5322,17 +5331,17 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 			else {
 				$result_hostbyaddr = "";
 			}
-	
+
 			echo "<td class=\"col\"><span class='small'>".$temp1.$row[2].$result_hostbyaddr.$temp2. "</span></td>\n";
 			echo "<td class=\"col\">".$temp1. detect_browser($row[3]) .$temp2. "</td>\n";
 			echo "</tr>\n";
 			flush();
 		}
 	}
-	
-	
+
+
 	echo "</table>\n";
-	
+
 	echo "<form action=\"".$_SERVER['PHP_SELF']."#connexion\" name=\"form_affiche_log\" method=\"post\">\n";
 
 	if($page=='modify_user') {
@@ -5372,9 +5381,9 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 	echo " value='all'>Le début</option>\n";
 	echo "</select>\n";
 	echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" />\n";
-	
+
 	echo "</form>\n";
-	
+
 	echo "<p class='small'>** Les renseignements ci-dessus peuvent vous permettre de vérifier qu'une connexion pirate n'a pas été effectuée sur votre compte.
 	Dans le cas d'une connexion inexpliquée, vous devez immédiatement en avertir l'<a href=\"mailto:" . getSettingValue("gepiAdminAdress") . "\">administrateur</a>.</p>\n";
 }
