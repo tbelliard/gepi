@@ -797,7 +797,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="9")) or (isset($_GET['maj']
 
 	$temoin_aberrations_groupes=0;
 
-	$table=array('j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes');
+	$table=array('j_signalement', 'j_groupes_classes','j_groupes_matieres','j_groupes_professeurs','j_eleves_groupes');
 
 	if(!isset($_POST['nettoyage_grp'])) {
 		echo "<h2>Nettoyage des aberrations sur les groupes</h2>\n";
