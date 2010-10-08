@@ -53,7 +53,9 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 
 header('Content-Type: text/html; charset=ISO-8859-1');
 
-$chaine_rech=isset($_GET['chaine_rech']) ? $_GET['chaine_rech'] : NULL;
+//$chaine_rech=isset($_GET['chaine_rech']) ? $_GET['chaine_rech'] : NULL;
+$nature=isset($_POST['nature']) ? $_POST['nature'] : NULL;
+$chaine_rech=$nature;
 
 if(isset($chaine_rech)) {
 	// Pour debug:
@@ -62,7 +64,8 @@ if(isset($chaine_rech)) {
 	//$chaine_mysql="(";
 	$chaine_mysql=" 1 AND (";
 	//$tab=explode("_",substr($chaine_rech,1)); // On vire le _ de début de chaine
-	$tab=explode("_",my_ereg_replace("^_","",$chaine_rech)); // On vire le _ de début de chaine
+	//$tab=explode("_",my_ereg_replace("^_","",$chaine_rech)); // On vire le _ de début de chaine
+	$tab=explode(" ",$chaine_rech); // On vire le _ de début de chaine
 	for($i=0;$i<count($tab);$i++) {
 		if($tab[$i]!='') {
 			if($i>0) {$chaine_mysql.=" OR ";}
@@ -75,11 +78,16 @@ if(isset($chaine_rech)) {
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
+		echo "<ul>";
 		$alt=1;
 		while($lig=mysql_fetch_object($res)) {
 			$alt=$alt*(-1);
-			echo "<div class='lig$alt white_hover'><a href='#' onclick=\"document.getElementById('nature').value='".addslashes(ucfirst($lig->nature))."';cacher_div('div_choix_nature2');document.getElementById('nature').focus();return false;\">".ucfirst($lig->nature)."</a></div>";
+
+			//echo "<div class='lig$alt white_hover'><a href='#' onclick=\"document.getElementById('nature').value='".addslashes(ucfirst($lig->nature))."';cacher_div('div_choix_nature2');document.getElementById('nature').focus();return false;\">".ucfirst($lig->nature)."</a></div>";
+
+			echo '<li><a href="#" onclick="return false">'.$lig->nature.'</a></li>';
 		}
+		echo "</ul>";
 	}
 	else {
 		echo "Aucun incident de même nature n'a été trouvé.";
@@ -88,5 +96,4 @@ if(isset($chaine_rech)) {
 else {
 	echo "Aucun élément pour la recherche d'incident.";
 }
-
 ?>

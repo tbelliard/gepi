@@ -825,6 +825,17 @@ if($etat_incident!='clos') {
 	}
 }
 
+//$utilisation_scriptaculous="y";
+//$utilisation_jsdivdrag='non';
+//$javascript_specifique[]="lib/prototype";
+$javascript_specifique[]="lib/scriptaculous";
+$javascript_specifique[]="lib/unittest";
+$javascript_specifique[]="lib/effects";
+$javascript_specifique[]="lib/controls";
+$javascript_specifique[]="lib/builder";
+$style_specifique[]="mod_discipline/mod_discipline";
+
+
 $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 $titre_page = "Discipline: Signaler un incident";
@@ -1754,8 +1765,18 @@ elseif($step==2) {
 
 	if($etat_incident!='clos') {
 		echo "<input type='text' name='nature' id='nature' size='30' value=\"".$nature."\" ";
-		echo "onkeyup='check_incident()' ";
+		//echo "onkeyup='check_incident()' ";
 		echo "/>\n";
+		echo "<div id='div_completion_nature' class='infobulle_corps'></div>\n";
+
+		echo "<script type='text/javascript'>
+new Ajax.Autocompleter (
+	'nature',      // ID of the source field
+	'div_completion_nature',  // ID of the DOM element to update
+	'check_nature_incident.php', // Remote script URI
+	{method: 'post', paramName: 'nature'}
+);
+</script>\n";
 
 		$sql="SELECT DISTINCT nature FROM s_incidents WHERE nature!='' ORDER BY nature;";
 		$res_nat=mysql_query($sql);
