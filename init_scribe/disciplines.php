@@ -32,7 +32,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -62,6 +62,7 @@ $liste_tables_del = array(
 "j_groupes_classes",
 "j_groupes_professeurs",
 "j_groupes_matieres",
+"j_signalement",
 //"log",
 //"matieres",
 "matieres_appreciations",

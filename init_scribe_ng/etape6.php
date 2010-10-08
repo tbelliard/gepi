@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -64,6 +64,7 @@ if ($_POST['step'] == "6") {
     if (!is_table_vide("j_groupes_professeurs")) { vider_table_seule("j_groupes_professeurs"); }
     if (!is_table_vide("j_eleves_groupes")) { vider_table_seule("j_eleves_groupes"); }
     if (!is_table_vide("j_groupes_matieres")) { vider_table_seule("j_groupes_matieres"); }
+    if (!is_table_vide("j_signalement")) { vider_table_seule("j_signalement"); }
 
     // On se connecte au LDAP
     $ldap->connect();

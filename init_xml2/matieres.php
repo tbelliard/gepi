@@ -14,7 +14,7 @@
 	} else if ($resultat_session == '0') {
 		header("Location: ../logout.php?auto=1");
 		die();
-	};
+	}
 
 	if (!checkAccess()) {
 		header("Location: ../logout.php?auto=1");
@@ -78,6 +78,7 @@
 "j_groupes_matieres",
 "j_groupes_professeurs",
 "j_groupes_classes",
+"j_signalement",
 "eleves_groupes_settings",
 //"j_eleves_professeurs",
 //"j_eleves_regime",

@@ -35,7 +35,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 die();
-};
+}
 
 $liste_tables_del = array(
 //"absences",
@@ -57,6 +57,7 @@ $liste_tables_del = array(
 "j_groupes_matieres",
 "j_groupes_professeurs",
 "j_groupes_classes",
+"j_signalement",
 //"j_eleves_professeurs",
 //"j_eleves_regime",
 //"j_professeurs_matieres",
