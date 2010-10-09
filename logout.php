@@ -97,15 +97,15 @@ if (isset($_COOKIE["RNE"])) {
 
 include('./templates/origine/logout_template.php');
 
-
-// On efface le dossier temporaire
-if ($temp_perso){
-  foreach (glob($temp_perso."/*") as $filename) {
-	if (is_file($filename) && (!strstr($filename, 'index.html'))){
-	  @unlink ($filename);
+if(getSettingValue('temporary_dir_no_cleaning')!='yes') {
+	// On efface le dossier temporaire
+	if ($temp_perso) {
+		foreach (glob($temp_perso."/*") as $filename) {
+			if (is_file($filename) && (!strstr($filename, 'index.html'))){
+				@unlink ($filename);
+			}
+		}
+	unset ($filename);
 	}
-  }
-  unset ($filename);
 }
-
 ?>
