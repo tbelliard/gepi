@@ -73,6 +73,16 @@ $_SESSION['uid_prime'] = $uid_post;
 $ctTravailAFaire = CahierTexteTravailAFairePeer::retrieveByPK($id_devoir);
 if ($ctTravailAFaire != null) {
 	$groupe = $ctTravailAFaire->getGroupe();
+
+	if ($groupe == null) {
+		echo("Erreur enregistrement de devoir : Pas de groupe associé au devoir");
+		die;
+	}
+
+	if (!$groupe->belongsTo($utilisateur)) {
+		echo "Erreur edition de compte rendu : le groupe n'appartient pas au professeur";
+		die();
+	}
 }
 
 //si pas  du compte rendu trouvé, récupération du groupe dans la requete et création d'un nouvel objet CahierTexteCompteRendu

@@ -72,15 +72,21 @@ $_SESSION['uid_prime'] = $uid_post;
 //récupération du compte rendu
 //$ctCompteRendu = new CahierTexteCompteRendu();
 if ($id_ct != null) {
-	$criteria = new Criteria();
-	$criteria->add(CahierTexteCompteRenduPeer::ID_CT, $id_ct, "=");
-	$ctCompteRendus = $utilisateur->getCahierTexteCompteRendus($criteria);
+	//$criteria = new Criteria();
+	//$criteria->add(CahierTexteCompteRenduPeer::ID_CT, $id_ct, "=");
+	//$ctCompteRendus = $utilisateur->getCahierTexteCompteRendus($criteria);
+	$ctCompteRendu = CahierTexteCompteRenduQuery::create()->findPk($id_ct);
 	$ctCompteRendu = $ctCompteRendus[0];
 	if ($ctCompteRendu == null) {
 		echo "Erreur enregistrement de compte rendu : Compte rendu non trouvé";
 		die();
 	}
 	$groupe = $ctCompteRendu->getGroupe();
+
+	if (!$groupe->belongsTo($utilisateur)) {
+		echo "Erreur edition de compte rendu : le groupe n'appartient pas au professeur";
+		die();
+	}
 } else {
 	//si pas  du compte rendu précisé, récupération du groupe dans la requete et création d'un nouvel objet CahierTexteCompteRendu
 	foreach ($utilisateur->getGroupes() as $group) {
@@ -93,6 +99,7 @@ if ($id_ct != null) {
 		echo("Erreur enregistrement de compte rendu : pas de groupe ou mauvais groupe spécifié");
 		die;
 	}
+
 	//pas de notices, on lance une création de notice
 	$ctCompteRendu = new CahierTexteCompteRendu();
 	$ctCompteRendu->setIdGroupe($groupe->getId());

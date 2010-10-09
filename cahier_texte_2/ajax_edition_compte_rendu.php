@@ -68,6 +68,11 @@ if ($ctCompteRendu != null) {
 	$groupe = $ctCompteRendu->getGroupe();
 	$today = $ctCompteRendu->getDateCt();
 
+	if ($groupe == null) {
+		echo("Erreur enregistrement de devoir : Pas de groupe associé au compte-rendu");
+		die;
+	}
+
 	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
 		echo "Erreur edition de compte rendu : le groupe n'appartient pas au professeur";

@@ -64,6 +64,11 @@ if ($ctTravailAFaire != null) {
 	$groupe = $ctTravailAFaire->getGroupe();
 	$today = $ctTravailAFaire->getDateCt();
 
+	if ($groupe == null) {
+		echo("Erreur edition de devoir : Pas de groupe associé au devoir");
+		die;
+	}
+
 	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
 	if (!$groupe->belongsTo($utilisateur)) {
 		echo "Erreur edition de devoir : le groupe n'appartient pas au professeur";
