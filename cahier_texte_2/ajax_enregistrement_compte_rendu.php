@@ -72,10 +72,10 @@ $_SESSION['uid_prime'] = $uid_post;
 //récupération du compte rendu
 //$ctCompteRendu = new CahierTexteCompteRendu();
 if ($id_ct != null) {
-	//$criteria = new Criteria();
-	//$criteria->add(CahierTexteCompteRenduPeer::ID_CT, $id_ct, "=");
-	//$ctCompteRendus = $utilisateur->getCahierTexteCompteRendus($criteria);
-	$ctCompteRendu = CahierTexteCompteRenduQuery::create()->findPk($id_ct);
+	$criteria = new Criteria();
+	$criteria->add(CahierTexteCompteRenduPeer::ID_CT, $id_ct, "=");
+	$ctCompteRendus = $utilisateur->getCahierTexteCompteRendus($criteria);
+	//$ctCompteRendu = CahierTexteCompteRenduQuery::create()->findPk($id_ct);
 	$ctCompteRendu = $ctCompteRendus[0];
 	if ($ctCompteRendu == null) {
 		echo "Erreur enregistrement de compte rendu : Compte rendu non trouvé";
