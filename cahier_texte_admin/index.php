@@ -53,7 +53,8 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
    header("Location: ../logout.php?auto=1");
    die();
-};
+}
+
 // Check access
 if (!checkAccess()) {
    header("Location: ../logout.php?auto=1");
@@ -136,6 +137,17 @@ if (isset($_POST['delai_devoirs'])) {
 if (isset($_POST['is_posted']) && ($msg=="") ){
   $msg = "Les modifications ont été enregistrées !";
   $post_reussi=TRUE;
+}
+
+if (isset($_POST['cdt_autoriser_modif_binome'])) {
+	if ($_POST['cdt_autoriser_modif_binome'] == "yes") {
+		$temp = "yes";
+	} else {
+		$temp = "no";
+	}
+	if (!saveSetting("cdt_autoriser_modif_binome", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de cdt_autoriser_modif_binome !";
+	}
 }
 
 // on demande une validation si on quitte sans enregistrer les changements

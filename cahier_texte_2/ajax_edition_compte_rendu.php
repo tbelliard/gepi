@@ -100,7 +100,8 @@ if ($ctCompteRendu != null) {
 }
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
-if (strtolower($ctCompteRendu->getIdLogin()) != strtolower($utilisateur->getLogin())) {
+if((strtolower($ctCompteRendu->getIdLogin()) != strtolower($utilisateur->getLogin()))&&
+(getSettingValue("cdt_autoriser_modif_binome")!="yes")) {
 	echo("Erreur edition de compte rendu : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
 }
