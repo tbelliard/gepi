@@ -1209,12 +1209,14 @@ if(isset($id_incident)) {
 		if($cpt>0) {
 			echo "<script type='text/javascript'>
 	function check_protagonistes_sans_qualite() {
+		temoin_qualite_protagoniste='n';
 		for(i=0;i<$cpt;i++) {
 			if(document.getElementById('td_qualite_protagoniste_'+i)) {
 				if(document.getElementById('qualite_'+i)) {
 					//alert(document.getElementById('qualite_'+i).selectedIndex);
 					if(document.getElementById('qualite_'+i).selectedIndex==0) {
 						document.getElementById('td_qualite_protagoniste_'+i).style.backgroundColor='red';
+						temoin_qualite_protagoniste='y';
 					}
 					else {
 						document.getElementById('td_qualite_protagoniste_'+i).style.backgroundColor='';
@@ -1222,12 +1224,14 @@ if(isset($id_incident)) {
 				}
 			}
 		}
+		if(temoin_qualite_protagoniste=='y') {
+			alert('Le rôle d\'un protagoniste n\'est pas renseigné.');
+		}
 
-
-		setTimeout('check_protagonistes_sans_qualite()',5000);
+		setTimeout('check_protagonistes_sans_qualite()',10000);
 	}
 
-	setTimeout('check_protagonistes_sans_qualite()',1000);
+	setTimeout('check_protagonistes_sans_qualite()',10000);
 </script>\n";
 		}
 
