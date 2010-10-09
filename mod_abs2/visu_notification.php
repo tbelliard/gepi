@@ -259,7 +259,8 @@ if ($notification->getModifiable()) {
 	    foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
 		$responsable = $responsable_information->getResponsableEleve();
 		echo '<option value="'.$responsable->getPersId().'"';
-		echo ">".$responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom()."</option>\n";
+		echo ">".$responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom()
+			.' (resp '.$responsable_information->getRespLegal().")</option>\n";
 	    }
 	    echo "</select>";
 	    echo '<button type="submit">Ajouter</button>';
