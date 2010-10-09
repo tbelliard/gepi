@@ -67,6 +67,13 @@ $ctCompteRendu = CahierTexteCompteRenduPeer::retrieveByPK($id_ct);
 if ($ctCompteRendu != null) {
 	$groupe = $ctCompteRendu->getGroupe();
 	$today = $ctCompteRendu->getDateCt();
+
+	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
+	if (!$groupe->belongsTo($utilisateur)) {
+		echo "Erreur edition de compte rendu : le groupe n'appartient pas au professeur";
+		die();
+	}
+
 } else {
 	//si pas de notice précisé, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
 	$id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
@@ -101,7 +108,7 @@ if ($ctCompteRendu != null) {
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
 if((strtolower($ctCompteRendu->getIdLogin()) != strtolower($utilisateur->getLogin()))&&
-(getSettingValue("cdt_autoriser_modif_binome")!="yes")) {
+(getSettingValue("cdt_autoriser_modif_multiprof")!="yes")) {
 	echo("Erreur edition de compte rendu : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
 }

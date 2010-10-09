@@ -63,6 +63,13 @@ $ctTravailAFaire = CahierTexteTravailAFairePeer::retrieveByPK($id_devoir);
 if ($ctTravailAFaire != null) {
 	$groupe = $ctTravailAFaire->getGroupe();
 	$today = $ctTravailAFaire->getDateCt();
+
+	// Vérification : est-ce que l'utilisateur a le droit de travailler sur ce groupe ?
+	if (!$groupe->belongsTo($utilisateur)) {
+		echo "Erreur edition de devoir : le groupe n'appartient pas au professeur";
+		die();
+	}
+
 } else {
 	//si pas de notice précisé, récupération du groupe dans la requete et recherche d'une notice pour la date précisée ou création d'une nouvelle notice
 	//pas de notices, on lance une création de notice
@@ -97,7 +104,7 @@ if ($ctTravailAFaire != null) {
 
 // Vérification : est-ce que l'utilisateur a le droit de modifier cette entré ?
 if ((strtolower($ctTravailAFaire->getIdLogin()) != strtolower($utilisateur->getLogin()))&&
-(getSettingValue("cdt_autoriser_modif_binome")!="yes")) {
+(getSettingValue("cdt_autoriser_modif_multiprof")!="yes")) {
 	echo("Erreur edition de devoir : vous n'avez pas le droit de modifier cette notice car elle appartient à un autre professeur.");
 	die();
 }

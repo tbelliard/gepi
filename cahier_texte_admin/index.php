@@ -139,14 +139,14 @@ if (isset($_POST['is_posted']) && ($msg=="") ){
   $post_reussi=TRUE;
 }
 
-if (isset($_POST['cdt_autoriser_modif_binome'])) {
-	if ($_POST['cdt_autoriser_modif_binome'] == "yes") {
+if (isset($_POST['cdt_autoriser_modif_multiprof'])) {
+	if ($_POST['cdt_autoriser_modif_multiprof'] == "yes") {
 		$temp = "yes";
 	} else {
 		$temp = "no";
 	}
-	if (!saveSetting("cdt_autoriser_modif_binome", $temp)) {
-		$msg .= "Erreur lors de l'enregistrement de cdt_autoriser_modif_binome !";
+	if (!saveSetting("cdt_autoriser_modif_multiprof", $temp)) {
+		$msg .= "Erreur lors de l'enregistrement de cdt_autoriser_modif_multiprof !";
 	}
 }
 
