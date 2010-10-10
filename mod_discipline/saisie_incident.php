@@ -552,8 +552,14 @@ if($etat_incident!='clos') {
 					}
 				}
 				
+				$sql_declarant="SELECT declarant FROM s_incidents WHERE id_incident='$id_incident';";
+		        $res_declarant=mysql_query($sql_declarant);
+		        if(mysql_num_rows($res_declarant)>0) {
+			        $lig_decclarant=mysql_fetch_object($res_declarant);
+			        $texte_mail= "Déclaration initiale de l'incident par ".u_p_nom($lig_decclarant->declarant)."\n";
+		        }
 	
-				$texte_mail="Mise à jour par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident)";
+				$texte_mail.="Mise à jour par ".civ_nom_prenom($_SESSION['login'])." d'un incident (n°$id_incident)";
 				if(isset($display_heure)) {
 					$texte_mail.=" survenu le $jour/$mois/$annee à/en $display_heure:\n";
 				}
@@ -744,7 +750,9 @@ if($etat_incident!='clos') {
 							$texte_mail.="\n";
 							$texte_mail.="Protagonistes de l'incident: \n";
 							while($lig_prot=mysql_fetch_object($res_prot)) {
-								$texte_mail.=get_nom_prenom_eleve($lig_prot->login)." ($lig_prot->qualite)\n";
+							    $classe_elv = get_noms_classes_from_ele_login($lig_prot->login);
+								if ($classe_elv[0] != "") {$classe_elv[0]="[".$classe_elv[0]."]";};
+								$texte_mail.=get_nom_prenom_eleve($lig_prot->login)." $classe_elv[0] ($lig_prot->qualite)\n";
 	
 								if(strtolower($lig_prot->qualite)=='responsable') {
 									$sql="SELECT DISTINCT c.classe FROM classes c,j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig_prot->login' ORDER BY jec.periode DESC limit 1;";
