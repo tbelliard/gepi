@@ -1902,7 +1902,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
   return $out_html;
 }
 
-function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
+function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day, $special='')
 {
 	// $id_ref peut être soit l'ID d'une classe, auquel cas on affiche tous les groupes
 	// pour la classe, soit le login d'un élève, auquel cas on affiche tous les groupes
@@ -1916,89 +1916,100 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day)
 	$out_html = "<form name=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\"><strong><em>Matière :</em></strong><br />
 	<select name=\"matiere\" onchange=\"matiere_go()\">\n";
 	*/
-  // Pour le multisite, on doit récupérer le RNE de l'établissement
-  $prof="";
-
-  $rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
-  $aff_input_rne = $aff_get_rne = NULL;
-  if ($rne != 'aucun') {
-	$aff_input_rne = '<input type="hidden" name="rne" value="' . $rne . '" />' . "\n";
-	$aff_get_rne = '&amp;rne=' . $rne;
-  }
-	$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n" . $aff_input_rne . "\n
-  <h2 class='h2_label'> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label>\n</h2>\n<p>\n<select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";
-
-	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
-  if (is_numeric($id_ref)) {
-  	  //$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>";
-  	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>\n";
-	  $sql = "select DISTINCT g.id, g.name, g.description from j_groupes_classes jgc, groupes g, ct_entry ct where (" .
-	        "jgc.id_classe='".$id_ref."' and " .
-	        "g.id = jgc.id_groupe and " .
-	        "jgc.id_groupe = ct.id_groupe" .
-	        ") order by g.name";
-  } else {
-	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
-  	  //$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>";
-  	  $out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>\n";
-	  $sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
-	        "jec.login='".$id_ref."' and " .
-	        "g.id = jec.id_groupe and " .
-	        "jec.id_groupe = ct.id_groupe" .
-	        ") order by g.name";
-  }
-  $res = sql_query($sql);
-  if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
-  {
-   $test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$row[0]."' and u.login=j.login) ORDER BY nom, prenom";
-   $res_prof = sql_query($test_prof);
-   $chaine = "";
-   for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
-     if ($k != 0) $chaine .= ", ";
-     $chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
-   }
-   //$chaine .= ")";
-
-
-   //$selected = ($row[0] == $current) ? "selected" : "";
-   $selected = ($row[0] == $current) ? "selected=\"selected\"" : "";
-   if (is_numeric($id_ref)) {
-   		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
-   } else {
-   		$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
-   }
-	// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
-   //$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
-   $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
-   }
-  $out_html .= "\n</select>\n</p>\n
-
-  <script type=\"text/javascript\">
-  <!--
-  function matiere_go()
-  {
-    box = document.forms[\"matiere\"].matiere;
-    destination = box.options[box.selectedIndex].value;
-    if (destination) location.href = destination;
-  }
-  // -->
-  </script>
-
-  <noscript><p>\n";
-     if (is_numeric($id_ref)) {
-     $out_html .= "<input type=\"hidden\" name=\"id_classe\" value=\"$id_ref\" />\n";
-   } else {
-     $out_html .= "<input type=\"hidden\" name=\"login_eleve\" value=\"$id_ref\" />\n";
-   }
-     $out_html .= "<input type=\"hidden\" name=\"year\" value=\"$year\" />
-     <input type=\"hidden\" name=\"month\" value=\"$month\" />
-     <input type=\"hidden\" name=\"day\" value=\"$day\" />
-     <input type=\"submit\" value=\"OK\" />
-	</p>
-  </noscript>
-  </form>\n";
+	// Pour le multisite, on doit récupérer le RNE de l'établissement
+	$prof="";
+	
+	$rne = isset($_GET['rne']) ? $_GET['rne'] : (isset($_POST['rne']) ? $_POST['rne'] : 'aucun');
+	$aff_input_rne = $aff_get_rne = NULL;
+	if ($rne != 'aucun') {
+		$aff_input_rne = '<input type="hidden" name="rne" value="' . $rne . '" />' . "\n";
+		$aff_get_rne = '&amp;rne=' . $rne;
+	}
+		$out_html = "<form id=\"matiere\"  method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n" . $aff_input_rne . "\n
+	<h2 class='h2_label'> \n<label for=\"enseignement\"><strong><em>Matière :<br /></em></strong></label>\n</h2>\n<p>\n<select id=\"enseignement\" name=\"matiere\" onchange=\"matiere_go()\">\n ";
+	
+		// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
+	if (is_numeric($id_ref)) {
+		//$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>";
+		$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;id_classe=$id_ref\">(Choisissez un enseignement)</option>\n";
+	
+		if($special!='') {
+			$selected=""; // A GERER PLUS TARD
+			if (is_numeric($id_ref)) {
+				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
+			} else {
+				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
+			}
+			$out_html .= "<option $selected value=\"$link2\">Toutes les matières</option>\n";
+		}
+	
+		$sql = "select DISTINCT g.id, g.name, g.description from j_groupes_classes jgc, groupes g, ct_entry ct where (" .
+				"jgc.id_classe='".$id_ref."' and " .
+				"g.id = jgc.id_groupe and " .
+				"jgc.id_groupe = ct.id_groupe" .
+				") order by g.name";
+	} else {
+		// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
+		//$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>";
+		$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>\n";
+		$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
+				"jec.login='".$id_ref."' and " .
+				"g.id = jec.id_groupe and " .
+				"jec.id_groupe = ct.id_groupe" .
+				") order by g.name";
+	}
+	$res = sql_query($sql);
+	if ($res) for ($i = 0; ($row = sql_row($res, $i)); $i++)
+	{
+		$test_prof = "SELECT nom, prenom FROM j_groupes_professeurs j, utilisateurs u WHERE (j.id_groupe='".$row[0]."' and u.login=j.login) ORDER BY nom, prenom";
+		$res_prof = sql_query($test_prof);
+		$chaine = "";
+		for ($k=0;$prof=sql_row($res_prof,$k);$k++) {
+			if ($k != 0) $chaine .= ", ";
+			$chaine .= htmlspecialchars($prof[0])." ".substr(htmlspecialchars($prof[1]),0,1).".";
+		}
+		//$chaine .= ")";
+		
+		
+		//$selected = ($row[0] == $current) ? "selected" : "";
+		$selected = ($row[0] == $current) ? "selected=\"selected\"" : "";
+		if (is_numeric($id_ref)) {
+			$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
+		} else {
+			$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=$row[0]" . $aff_get_rne;
+		}
+		// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
+		//$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
+		$out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($row[2] . " - ")." ".$chaine."</option>";
+	}
+	$out_html .= "\n</select>\n</p>\n
+	
+	<script type=\"text/javascript\">
+	<!--
+	function matiere_go()
+	{
+		box = document.forms[\"matiere\"].matiere;
+		destination = box.options[box.selectedIndex].value;
+		if (destination) location.href = destination;
+	}
+	// -->
+	</script>
+	
+	<noscript><p>\n";
+		if (is_numeric($id_ref)) {
+			$out_html .= "<input type=\"hidden\" name=\"id_classe\" value=\"$id_ref\" />\n";
+		} else {
+			$out_html .= "<input type=\"hidden\" name=\"login_eleve\" value=\"$id_ref\" />\n";
+		}
+		$out_html .= "<input type=\"hidden\" name=\"year\" value=\"$year\" />
+		<input type=\"hidden\" name=\"month\" value=\"$month\" />
+		<input type=\"hidden\" name=\"day\" value=\"$day\" />
+		<input type=\"submit\" value=\"OK\" />
+		</p>
+	</noscript>
+	</form>\n";
 	// correction W3C : ajout de \" pour encadrer submit ci-dessus et de <p>...</p> pour encadrer <input...>
-  return $out_html;
+	return $out_html;
 }
 
 function make_eleve_select_html($link, $login_resp, $current, $year, $month, $day)
