@@ -250,9 +250,11 @@ class class_page_accueil {
 	$this->plugins();
 
 /***** Module Genese des classes *****/
-	$this->verif_exist_ordre_menu('bloc_Genese_classes');
-	if ($this->geneseClasses())
-	$this->chargeAutreNom('bloc_Genese_classes');
+	if (getSettingAOui("active_mod_genese_classes")) {
+	  $this->verif_exist_ordre_menu('bloc_Genese_classes');
+	  if ($this->geneseClasses())
+	  $this->chargeAutreNom('bloc_Genese_classes');
+	}
 
 /***** Lien vers les flux rss pour les élèves s'ils sont activés *****/
 	$this->verif_exist_ordre_menu('bloc_RSS');
