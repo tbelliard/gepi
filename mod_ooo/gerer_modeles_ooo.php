@@ -75,6 +75,10 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $utilisation[]="ABS2 : Modèle de lettre aux parents";
 	
 	$entete_section[]="";
+    $fich[]="absence_modele_impression_par_lot.odt";
+    $utilisation[]="ABS2 : Modèle d'impression par lot";
+
+	$entete_section[]="";
     $fich[]="absence_email.txt";
     $utilisation[]="ABS2 : Modèle du courriel envoyé aux parents";
 	
