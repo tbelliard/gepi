@@ -111,7 +111,8 @@ elseif ($_SESSION['statut'] == "responsable") {
 $selected_eleve_login = $selected_eleve ? $selected_eleve->login : "";
 
 // Nom complet de la classe
-if($id_classe!='-1') {
+//if($id_classe!='-1') {
+if (($id_classe!=-1)&&($id_classe!='')) {
 	$sql="SELECT classe FROM classes WHERE id='$id_classe';";
 	$appel_classe=mysql_query($sql);
 	if(mysql_num_rows($appel_classe)>0) {
@@ -202,7 +203,7 @@ echo "<div class='centre_table'>\n";
 						echo " - classe de ".$current_group['classlist_string'];
 					}
 				}
-				if ($id_classe != -1) {
+				if (($id_classe!=-1)&&($id_classe!='')) {
 					echo "<br />\n$classe_nom\n";
 				}
 			echo "</span>\n";
