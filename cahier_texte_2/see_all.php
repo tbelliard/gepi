@@ -158,6 +158,9 @@ if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
 require_once("../lib/header.inc");
 if ($current_imprime=='y') echo "<div id='container'>\n";
 //**************** FIN EN-TETE *************
+
+//debug_var();
+
 // Création d'un espace entre le bandeau et le reste 
 echo "<p></p>\n";
 
@@ -171,9 +174,24 @@ echo "<div class='centre_table'>\n";
 	echo "<div class='ct_col_gauche'>\n";
 		if ($current_imprime=='n') {
 			if ($_SESSION['statut'] == 'responsable') {
-				echo make_eleve_select_html('see_all.php', $_SESSION['login'], $selected_eleve, $year, $month, $day);
+				//echo make_eleve_select_html('see_all.php', $_SESSION['login'], $selected_eleve, $year, $month, $day);
+				if((isset($id_groupe))&&($id_groupe=='Toutes_matieres')) {
+					echo make_eleve_select_html('see_all.php', $_SESSION['login'], $selected_eleve, $year, $month, $day, "Toutes_matieres");
+				}
+				else {
+					echo make_eleve_select_html('see_all.php', $_SESSION['login'], $selected_eleve, $year, $month, $day, "avec_choix_Toutes_matieres");
+				}
 			}
-			if ($selected_eleve_login != "") {echo make_matiere_select_html('see_all.php', $selected_eleve_login, $id_groupe, $year, $month, $day);}
+
+			if ($selected_eleve_login != "") {
+				//echo make_matiere_select_html('see_all.php', $selected_eleve_login, $id_groupe, $year, $month, $day);
+				if((isset($id_groupe))&&($id_groupe=='Toutes_matieres')) {
+					echo make_matiere_select_html('see_all.php', $selected_eleve_login, $id_groupe, $year, $month, $day, "Toutes_matieres");
+				}
+				else {
+					echo make_matiere_select_html('see_all.php', $selected_eleve_login, $id_groupe, $year, $month, $day, "avec_choix_Toutes_matieres");
+				}
+			}
 
 			if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 				echo make_classes_select_html('see_all.php', $id_classe, $year, $month, $day);
@@ -242,7 +260,22 @@ if ($current_group) {
 	echo "</div>\n";
 }
 
-if(($id_groupe=='Toutes_matieres')&&($id_classe!=-1)) {
+//echo "\$id_classe=$id_classe<br />";
+//if(($id_groupe=='Toutes_matieres')&&($id_classe!=-1)) {
+if(($id_groupe=='Toutes_matieres')&&
+(($selected_eleve_login!='')||($id_classe!=-1))) {
+	if($id_classe==-1) {
+		// Cas élève
+		$sql="SELECT id_classe FROM j_eleves_classes WHERE login='$selected_eleve_login' ORDER BY periode DESC LIMIT 1;";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			require("../lib/footer.inc.php");
+			die();
+		}
+		$lig=mysql_fetch_object($res);
+		$id_classe=$lig->id_classe;
+	}
+
 	echo "<div class='no_print'>\n";
 		if ($current_imprime=='n') {
 			if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR $_SESSION["statut"] == "cpe" OR $_SESSION["statut"] == "autre") {
@@ -279,7 +312,7 @@ if(($id_groupe=='Toutes_matieres')&&($id_classe!=-1)) {
 		AND jgc.id_classe='$id_classe'
 		) ORDER BY date_ct DESC, heure_entry DESC, jgc.priorite DESC;";
 		//) ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre.", jgc.priorite;";
-		//echo "$sql<br />";
+	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	$cpt=0;
 	while($lig=mysql_fetch_object($res)) {

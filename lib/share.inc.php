@@ -1953,6 +1953,18 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 		// correction W3C : ajout de la balise de fin </option> à la fin de $out_html
 		//$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>";
 		$out_html .= "<option value=\"".$link."?&amp;year=".$year."&amp;month=".$month."&amp;day=".$day."&amp;login_eleve=$id_ref\">(Choisissez un enseignement)</option>\n";
+
+		if($special!='') {
+			$selected="";
+			if($special=='Toutes_matieres') {$selected=" selected='true'";}
+			if (is_numeric($id_ref)) {
+				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;id_classe=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
+			} else {
+				$link2 = "$link?&amp;year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=$id_ref&amp;id_groupe=Toutes_matieres" . $aff_get_rne;
+			}
+			$out_html .= "<option $selected value=\"$link2\"$selected>Toutes les matières</option>\n";
+		}
+
 		$sql = "select DISTINCT g.id, g.name, g.description from j_eleves_groupes jec, groupes g, ct_entry ct where (" .
 				"jec.login='".$id_ref."' and " .
 				"g.id = jec.id_groupe and " .
