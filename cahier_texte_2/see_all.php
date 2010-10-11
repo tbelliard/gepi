@@ -176,7 +176,14 @@ echo "<div class='centre_table'>\n";
 
 			if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 				echo make_classes_select_html('see_all.php', $id_classe, $year, $month, $day);
-				if ($id_classe != -1) {echo make_matiere_select_html('see_all.php', $id_classe, $id_groupe, $year, $month, $day,1);}
+				if ($id_classe != -1) {
+					if((isset($id_groupe))&&($id_groupe=='Toutes_matieres')) {
+						echo make_matiere_select_html('see_all.php', $id_classe, $id_groupe, $year, $month, $day,"Toutes_matieres");
+					}
+					else {
+						echo make_matiere_select_html('see_all.php', $id_classe, $id_groupe, $year, $month, $day,"avec_choix_Toutes_matieres");
+					}
+				}
 			}
 		}
 	echo "</div>\n";
@@ -238,7 +245,7 @@ if(($id_groupe=='Toutes_matieres')&&($id_classe!=-1)) {
 	echo "<div class='no_print'>\n";
 		if ($current_imprime=='n') {
 			if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR $_SESSION["statut"] == "cpe" OR $_SESSION["statut"] == "autre") {
-				echo "<a href='see_all.php>>'>\n<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour\n</a> - ";
+				echo "<a href='see_all.php'>\n<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour\n</a> - ";
 				if ($_SESSION["statut"] == "professeur") {
 					echo "<a href='./index.php'>\n<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour vers mes cahiers de textes\n</a> - ";
 				}
@@ -323,9 +330,14 @@ if(($id_groupe=='Toutes_matieres')&&($id_classe!=-1)) {
 
 	for($i=0;$i<count($tab_dates);$i++) {
 		echo "<div class='infobulle_corps' style='border:1px solid black; margin:3px; padding: 3px;'>\n";
-		echo "<h2>$tab_dates[$i]</h2>\n";
+		echo "<h3 class='see_all_h3'>$tab_dates[$i]</h3>\n";
 		$alt=1;
 		echo "<table class='boireaus' summary='' width='100%'>\n";
+		echo "<tr>\n";
+		echo "<th>Enseignement</th>\n";
+		echo "<th>Travail à faire</th>\n";
+		echo "<th>Compte-rendu de séance</th>\n";
+		echo "</tr>\n";
 		for($j=0;$j<count($tab_id_grp);$j++) {
 			if((isset($tab_dev[$tab_dates[$i]][$tab_id_grp[$j]]))||(isset($tab_notices[$tab_dates[$i]][$tab_id_grp[$j]]))) {
 				if(!isset($tab_grp[$tab_id_grp[$j]])) {
@@ -350,7 +362,14 @@ if(($id_groupe=='Toutes_matieres')&&($id_classe!=-1)) {
 					//for($k=0;$k<count($tab_dev[$tab_dates[$i]][$tab_id_grp[$j]]);$k++) {
 						//echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black;'>".$tab_dev[$tab_dates[$i]][$tab_id_grp[$j]][$k]['contenu']."</div>\n";
 					foreach($tab_dev[$tab_dates[$i]][$tab_id_grp[$j]] as $key => $value) {
-						echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black;'>".$value['contenu']."</div>\n";
+						echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
+						$adj=affiche_docs_joints($value['id_ct'],"t");
+						if($adj!='') {
+							echo "<div style='border: 1px dashed black'>\n";
+							echo $adj;
+							echo "</div>\n";
+						}
+						echo "</div>\n";
 					}
 				}
 				echo "</td>\n";
@@ -359,7 +378,14 @@ if(($id_groupe=='Toutes_matieres')&&($id_classe!=-1)) {
 				if(isset($tab_notices[$tab_dates[$i]][$tab_id_grp[$j]])) {
 					//for($k=0;$k<count($tab_notices[$tab_dates[$i]][$tab_id_grp[$j]]);$k++) {
 					foreach($tab_notices[$tab_dates[$i]][$tab_id_grp[$j]] as $key => $value) {
-						echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black;'>".$value['contenu']."</div>\n";
+						echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
+						$adj=affiche_docs_joints($value['id_ct'],"c");
+						if($adj!='') {
+							echo "<div style='border: 1px dashed black'>\n";
+							echo $adj;
+							echo "</div>\n";
+						}
+						echo "</div>\n";
 					}
 				}
 				echo "</td>\n";
