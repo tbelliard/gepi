@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 24/05/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -376,6 +376,15 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $mess[] = "Table de jointure élève/régime";
     $test_nb[] = "SELECT * FROM j_eleves_regime WHERE login ='$cible1'";
     $req[] = "DELETE FROM j_eleves_regime WHERE login ='$cible1'";
+
+	$test_existence=mysql_query("SHOW TABLES LIKE 'j_signalement';");
+	if(mysql_num_rows($test_existence)>0){
+		$mess[] = "Table des signalements d'erreurs d'affectation";
+		$test_nb[] = "SELECT * FROM j_signalement WHERE login='$cible1'";
+		$req[] = "DELETE FROM j_signalement WHERE login='$cible1'";
+
+		$nombre_req++;
+	}
 
 	$nombre_req++;
 
