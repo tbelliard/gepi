@@ -573,7 +573,9 @@ foreach($eleve_col as $eleve) {
 				|| (isset($current_classe) && $current_classe != null)) {
 			    //si le groupe a une seule classe ou si c'est une classe qui est sélectionner pas la peine d'afficher la classe.
 			} else {
-                            echo ' '.$eleve->getClasse()->getNom().' ';
+                            if ($eleve->getClasse() != null) {
+                                echo ' '.$eleve->getClasse()->getNom().' ';
+                            }
                         }
                         echo'</span>';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
