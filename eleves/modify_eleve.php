@@ -2167,6 +2167,7 @@ if(isset($eleve_login)){
 					echo "<td>\n";
 					$lig_adr=mysql_fetch_object($res_adr);
 
+					if(!isset($adr_id_1er_resp)) {$adr_id_1er_resp='';}
 					if(($lig_adr->adr_id!="")&&($lig_adr->adr_id!=$adr_id_1er_resp)){
 						$adr_id_2eme_resp=$lig_adr->adr_id;
 						if("$lig_adr->adr1"!=""){$chaine_adr2.="$lig_adr->adr1, ";}
