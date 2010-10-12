@@ -399,7 +399,7 @@
 ?>
 						<tr  class='<?php echo $newentree['style']; ?>'>
 							<td>
-								<a href='mailto:$newentree[courriel]'>
++                               <a href='mailto:<?php echo $newentree[courriel]; ?>'>
 									<?php echo $newentree['texte']; ?>
 								</a>
 							</td>
