@@ -316,17 +316,26 @@ if(($id_groupe=='Toutes_matieres')&&
 	$res=mysql_query($sql);
 	$cpt=0;
 	while($lig=mysql_fetch_object($res)) {
-		//echo "$lig->date_ct<br />";
-		$date_notice=strftime("%a %d %b %y", $lig->date_ct);
-		if(!in_array($date_notice,$tab_dates)) {
-			$tab_dates[]=$date_notice;
-			$tab_dates2[]=$lig->date_ct;
+		$notice_visible="y";
+		if($lig->date_ct>time()) {
+			if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+				$notice_visible="n";
+			}
 		}
-		$tab_notices[$date_notice][$lig->id_groupe][$cpt]['id_ct']=$lig->id_ct;
-		$tab_notices[$date_notice][$lig->id_groupe][$cpt]['id_login']=$lig->id_login;
-		$tab_notices[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu;
-		//echo " <span style='color:red'>\$tab_notices[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu</span><br />";
-		$cpt++;
+
+		if($notice_visible=="y") {
+			//echo "$lig->date_ct<br />";
+			$date_notice=strftime("%a %d %b %y", $lig->date_ct);
+			if(!in_array($date_notice,$tab_dates)) {
+				$tab_dates[]=$date_notice;
+				$tab_dates2[]=$lig->date_ct;
+			}
+			$tab_notices[$date_notice][$lig->id_groupe][$cpt]['id_ct']=$lig->id_ct;
+			$tab_notices[$date_notice][$lig->id_groupe][$cpt]['id_login']=$lig->id_login;
+			$tab_notices[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu;
+			//echo " <span style='color:red'>\$tab_notices[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu</span><br />";
+			$cpt++;
+		}
 	}
 
 	$sql="SELECT ctd.* FROM ct_devoirs_entry ctd, j_groupes_classes jgc WHERE (contenu != ''
@@ -470,15 +479,29 @@ echo "<div class='see_all_general couleur_bord_tableau_notice'>".$html."</div>";
 	// echo "<div  style=\"border-bottom-style: solid; border-width:2px; border-color: ".$couleur_bord_tableau_notice."; \"><strong>CAHIER DE TEXTES: comptes rendus de séance</strong></div><br />";
 echo "<h2 class='grande_ligne couleur_bord_tableau_notice'>\n<strong>CAHIER DE TEXTES: comptes rendus de séance</strong>\n</h2>\n";
 
-$req_notices =
-	"select 'c' type, contenu, date_ct, id_ct
-	from ct_entry
-	where (contenu != ''
-	and id_groupe='".$id_groupe."'
-	and date_ct != ''
-	and date_ct >= '".getSettingValue("begin_bookings")."'
-	and date_ct <= '".getSettingValue("end_bookings")."')
-	ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
+if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
+	$req_notices =
+		"select 'c' type, contenu, date_ct, id_ct
+		from ct_entry
+		where (contenu != ''
+		and id_groupe='".$id_groupe."'
+		and date_ct != ''
+		and date_ct >= '".getSettingValue("begin_bookings")."'
+		and date_ct <= '".getSettingValue("end_bookings")."'
+		and date_ct <= '".time()."')
+		ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
+}
+else {
+	$req_notices =
+		"select 'c' type, contenu, date_ct, id_ct
+		from ct_entry
+		where (contenu != ''
+		and id_groupe='".$id_groupe."'
+		and date_ct != ''
+		and date_ct >= '".getSettingValue("begin_bookings")."'
+		and date_ct <= '".getSettingValue("end_bookings")."')
+		ORDER BY date_ct ".$current_ordre.", heure_entry ".$current_ordre;
+}
 //echo "$req_notices<br />";
 $res_notices = mysql_query($req_notices);
 $notice = mysql_fetch_object($res_notices);
