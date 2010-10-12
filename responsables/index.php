@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -60,11 +60,35 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))){
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)==0){
 					// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
-					$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
+					$sql="SELECT adr_id, login FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 					//echo "$sql<br />\n";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)>0){
 						$lig1=mysql_fetch_object($res1);
+
+
+						$sql="SELECT statut FROM utilisateurs WHERE login='$lig1->login';";
+						//echo "$sql<br />\n";
+						$res3=mysql_query($sql);
+						if(mysql_num_rows($res3)>0){
+							$lig3=mysql_fetch_object($res3);
+							if($lig3->statut=='responsable') {
+								$sql="DELETE FROM utilisateurs WHERE login='$lig1->login';";
+								//echo "$sql<br />\n";
+								$res4=mysql_query($sql);
+								if(!$res4){
+									$msg.="Erreur lors de la suppression du compte d'utilisateur $lig1->login.<br />\n";
+								}
+								else {
+									$msg.="Compte d'utilisateur $lig1->login supprimé.<br />\n";
+								}
+							}
+							else {
+								$msg.="ANOMALIE: Un compte d'utilisateur existe associé au login $lig1->login, mais pas de statut responsable&nbsp;: $lig3->statut<br />\n";
+							}
+						}
+
+
 						$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 						//echo "$sql<br />\n";
 						$res2=mysql_query($sql);
@@ -72,6 +96,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))){
 							$msg.="Erreur lors de la suppression du responsable $suppr_resp[$i] de la table 'resp_pers'.<br />\n";
 						}
 						else{
+							// On supprime l'adresse si elle n'est plus associée à aucun parent
 							$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id';";
 							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
@@ -110,11 +135,37 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))){
 				$res_test=mysql_query($sql);
 				if(mysql_num_rows($res_test)==0){
 					// On vérifie que la personne existe et on en récupère l'identifiant d'adresse (éventuellement vide)
-					$sql="SELECT adr_id FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
+					$sql="SELECT adr_id, login FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 					//echo "$sql<br />\n";
 					$res1=mysql_query($sql);
 					if(mysql_num_rows($res1)>0){
 						$lig1=mysql_fetch_object($res1);
+
+
+
+						$sql="SELECT statut FROM utilisateurs WHERE login='$lig1->login';";
+						//echo "$sql<br />\n";
+						$res3=mysql_query($sql);
+						if(mysql_num_rows($res3)>0){
+							$lig3=mysql_fetch_object($res3);
+							if($lig3->statut=='responsable') {
+								$sql="DELETE FROM utilisateurs WHERE login='$lig1->login';";
+								//echo "$sql<br />\n";
+								$res4=mysql_query($sql);
+								if(!$res4){
+									$msg.="Erreur lors de la suppression du compte d'utilisateur $lig1->login.<br />\n";
+								}
+								else {
+									$msg.="Compte d'utilisateur $lig1->login supprimé.<br />\n";
+								}
+							}
+							else {
+								$msg.="ANOMALIE: Un compte d'utilisateur existe associé au login $lig1->login, mais pas de statut responsable&nbsp;: $lig3->statut<br />\n";
+							}
+						}
+
+
+
 						$sql="DELETE FROM resp_pers WHERE pers_id='$suppr_resp[$i]';";
 						//echo "$sql<br />\n";
 						$res2=mysql_query($sql);
@@ -122,6 +173,7 @@ if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))){
 							$msg.="Erreur lors de la suppression du responsable $suppr_resp[$i] de la table 'resp_pers'.<br />\n";
 						}
 						else{
+							// On supprime l'adresse si elle n'est plus associée à aucun parent
 							$sql="SELECT 1=1 FROM resp_pers WHERE adr_id='$lig1->adr_id';";
 							//echo "$sql<br />\n";
 							$res3=mysql_query($sql);
