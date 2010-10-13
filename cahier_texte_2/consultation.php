@@ -157,12 +157,12 @@ settype($day,"integer");
 settype($year,"integer");
 $minyear = strftime("%Y", getSettingValue("begin_bookings"));
 $maxyear = strftime("%Y", getSettingValue("end_bookings"));
-if ($day < 1) $day = 1;
-if ($day > 31) $day = 31;
-if ($month < 1) $month = 1;
-if ($month > 12) $month = 12;
-if ($year < $minyear) $year = $minyear;
-if ($year > $maxyear) $year = $maxyear;
+if ($day < 1) {$day = 1;}
+if ($day > 31) {$day = 31;}
+if ($month < 1) {$month = 1;}
+if ($month > 12) {$month = 12;}
+if ($year < $minyear) {$year = $minyear;}
+if ($year > $maxyear) {$year = $maxyear;}
 
 // On empêche un élève ou un parent de voir les CR des jours futurs
   /* --------- Ajout pour les séquences ---------------- */
@@ -294,16 +294,18 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
         $aujourdhui = mktime(0,0,0,date("m"),date("d"),date("Y"));
         $jour = mktime(0, 0, 0, date('m',$aujourdhui), (date('d',$aujourdhui) + $i), date('Y',$aujourdhui) );
         if (is_numeric($id_classe) AND $id_classe > 0) {
-	        $appel_devoirs_cahier_texte = mysql_query("SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	        $sql="SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
 	            "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jc WHERE (" .
 	            "ct.id_groupe = jc.id_groupe and " .
 	            "g.id = jc.id_groupe and " .
 	            "jc.id_classe = '" . $id_classe . "' and " .
 	            "ct.contenu != '' and " .
-	            "ct.date_ct = '$jour')");
+	            "ct.date_ct = '$jour');";
 
         } elseif ($selected_eleve) {
-	        $sql="SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	        //$sql="SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+//                "jec.periode = '1' and " .
+	        $sql="SELECT DISTINCT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
@@ -312,12 +314,12 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
                 "p.verouiller = 'N' and " .
                 "p.id_classe = jec.id_classe and " .
                 "jec.login = '" . $selected_eleve->login ."' and " .
-                "jec.periode = '1' and " .
                 "ct.contenu != '' and " .
                 "ct.date_ct = '$jour')";
-
-          $appel_devoirs_cahier_texte = mysql_query($sql);
         }
+		//echo strftime("%a %d/%m/%y",$jour)."<br />";
+		//echo "$sql<br /><br />";
+		$appel_devoirs_cahier_texte = mysql_query($sql);
         $nb_devoirs_cahier_texte = mysql_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
         if ($nb_devoirs_cahier_texte != 0) {
@@ -446,7 +448,8 @@ echo "<div class=\"centre_cont_texte\">\n";
         // On regarde pour chaque jour, s'il y a des devoirs dans à faire
           if ($selected_eleve) {
 // On détermine la période active, pour ne pas avoir de duplication des entrées
-	         $appel_devoirs_cahier_texte = mysql_query("SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+//                "jec.periode = '1' and " .
+	         $sql="SELECT DISTINCT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
@@ -455,18 +458,20 @@ echo "<div class=\"centre_cont_texte\">\n";
                 "p.verouiller = 'N' and " .
                 "p.id_classe = jec.id_classe and " .
                 "jec.login = '" . $selected_eleve->login ."' and " .
-                "jec.periode = '1' and " .
                 "ct.contenu != '' and " .
-                "ct.date_ct = '$jour')");
+                "ct.date_ct = '$jour');";
           } else {
-	         $appel_devoirs_cahier_texte = mysql_query("SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
+	         $sql="SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
 	             "FROM ct_devoirs_entry ct, groupes g, j_groupes_classes jgc WHERE (" .
 	             "ct.id_groupe = jgc.id_groupe and " .
 	             "g.id = jgc.id_groupe and " .
 	             "jgc.id_classe = '" . $id_classe . "' and " .
 	             "ct.contenu != '' and " .
-	             "ct.date_ct = '$jour')");
+	             "ct.date_ct = '$jour');";
           }
+		//echo strftime("%a %d/%m/%y",$jour)."<br />";
+		//echo "$sql<br /><br />";
+			$appel_devoirs_cahier_texte = mysql_query($sql);
           $nb_devoirs_cahier_texte = mysql_num_rows($appel_devoirs_cahier_texte);
           $ind = 0;
           if ($nb_devoirs_cahier_texte != 0) {
