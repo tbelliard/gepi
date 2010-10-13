@@ -244,7 +244,7 @@ echo "</p>";
         <td>Justification exigible</td>
 	<td>L'élève est sous la responsabilité de l'établissement</td>
 	<td>Manquement obligations (apparaît sur le bulletin)</td>
-	<td>Comptabilisée comme retard sur le bulletin (apparaît sur le bulletin)</td>
+	<td>Retard</td>
         <td>Type de saisie</td>
 	<td>Statut(s) autorisé(s) à la saisie</td>
         <td style="width: 25px;"></td>
