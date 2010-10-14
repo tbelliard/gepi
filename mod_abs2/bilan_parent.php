@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @version $Id$
+ * @version $Id: bilan_parent.php 5164 2010-09-01 22:39:14Z regis $
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -183,14 +183,13 @@ $dt_fin->setTime(23,59,59);
 <?php
 	  // On traite alors pour chaque créneau
 	  foreach($creneau_col as $creneau) {
-		$abs_col = $eleve->getAbsenceEleveSaisiesDuCreneau($creneau, $dt_date_absence_eleve);
+		$abs_col = $eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $dt_date_absence_eleve);
 		if ($abs_col->isEmpty()){
 ?>
 	  <td> </td>
 <?php
 		} else {
-		  foreach($abs_col as $abs) {
-			if ($abs->getManquementObligationPresence()) {
+		  foreach($abs_col as $abs) {			
 			  if ($abs->getJustifiee()){
 				if ($abs->getRetard()){
 ?>
@@ -212,15 +211,7 @@ $dt_fin->setTime(23,59,59);
 <?php
 				}
 			  }
-			} else if ($abs->getRetard()){
-?>
-	  <td style="background-color:lime;">R</td>
-<?php
-			} else {
-?>
-	  <td style="background-color:green;">C</td>
-<?php
-			}
+			
 			break;
 		  }
 
@@ -235,7 +226,7 @@ $dt_fin->setTime(23,59,59);
 
   <p>
 	<span style="background-color:red;">&nbsp;&nbsp;NJ&nbsp;&nbsp;</span>
-	Manquement aux obligations scolaires : absence non justifiée
+	Manquement aux obligations scolaires : Absence non justifiée
   </p>
   <p>
 	<span style="background-color:fuchsia;">&nbsp;RNJ&nbsp;</span>
@@ -243,25 +234,14 @@ $dt_fin->setTime(23,59,59);
   </p>
   <p>
 	<span style="background-color:blue;">&nbsp;&nbsp;&nbsp;J&nbsp;&nbsp;&nbsp;&nbsp;</span>
-	Manquement aux obligations scolaires : absence justifiée
+	Manquement aux obligations scolaires : Absence justifiée
   </p>
   <p>
 	<span style="background-color:aqua;">&nbsp;&nbsp;RJ&nbsp;&nbsp;</span>
 	Manquement aux obligations scolaires : Retard justifiée
   </p>
-  <p>
-	<span style="background-color:green;">&nbsp;&nbsp;&nbsp;C&nbsp;&nbsp;&nbsp;</span>
-	Absence cadre scolaire (Infirmerie, sortie scolaire...)
-  </p>
-  <p>
-	<span style="background-color:lime;">&nbsp;&nbsp;&nbsp;R&nbsp;&nbsp;&nbsp;</span>
-	Retard intercours
-  </p>
-
-
+ 
 <!-- Absences totales -->
-
-
 
 <form id="toutes_abs" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 <h2>
@@ -345,19 +325,16 @@ $dt_fin->setTime(23,59,59);
 	  <td style="text-align:center;"><?php echo $date_actuelle->format('d/m/Y'); ?></td>
 <?php
 	  foreach($creneau_col as $creneau) {
-		$abs_col = $eleve->getAbsenceEleveSaisiesDuCreneau($creneau, $abs->getDebutAbs());
+		$abs_col = $eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $date_actuelle);
 		if ($abs_col->isEmpty()){
 ?>
 	  <td></td>
 <?php
 
 		} else {
-		  foreach($abs_col as $abs) {
-			if ($abs->getManquementObligationPresence()) {
-?>
-<?php
+		  foreach($abs_col as $abs) {			
 			  if ($abs->getJustifiee()){
-				if ($abs->getRetard()){
+                            if ($abs->getRetard()){
 				  ?>
 				  <td style="background:aqua;">RJ</td>
 				  <?php
@@ -379,21 +356,7 @@ $dt_fin->setTime(23,59,59);
 <?php
 				}
 			  }
-			  break;
-			} else {
-			  if ($abs->getRetard()){
-?>
-	  <td style="background-color:lime;">
-		R
-<?php
-			  } else {
-?>
-	  <td style="background-color:green;">
-		C
-<?php
-			  }
-			}
-			break;
+			  break;		
 		  }
 ?>
 	  </td>
