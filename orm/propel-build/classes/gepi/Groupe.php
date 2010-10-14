@@ -306,13 +306,19 @@ class Groupe extends BaseGroupe {
 	 * @param      PropelPDO $con (optional) The PropelPDO connection to use.
 	 * @return     array Eleves[]
 	 */
-	public function addEleve(Eleve $eleve, $periode) {
+	public function addEleve(Eleve $eleve, $num_periode_notes = null) {
 		if ($eleve->getIdEleve() == null) {
 			throw new PropelException("Eleve id ne doit pas etre null");
 		}
+		if ($num_periode_notes == null) {
+		    $periode = $this->getPeriodeNoteOuverte();
+		    if ($periode != null) {
+			$num_periode_notes = $periode->getNumPeriode();
+		    }
+		}
 		$jEleveGroupe = new JEleveGroupe();
 		$jEleveGroupe->setEleve($eleve);
-		$jEleveGroupe->setPeriode($periode);
+		$jEleveGroupe->setPeriode($num_periode_notes);
 		$this->addJEleveGroupe($jEleveGroupe);
 		$jEleveGroupe->save();
 		$eleve->clearPeriodeNotes();

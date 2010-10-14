@@ -259,7 +259,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function getGroupes($periode = null) {
-		$periode = $this->getPeriodeNote($periode);
+		//$periode = $this->getPeriodeNote($periode); on ne vérifie pas si l'objet période existe vraiment
 		require_once("helpers/PeriodeNoteHelper.php");
 		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
 		if(!isset($this->collGroupes[$periode_num]) || null === $this->collGroupes[$periode_num]) {
