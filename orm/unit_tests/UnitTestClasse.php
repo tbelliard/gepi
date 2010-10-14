@@ -13,7 +13,7 @@ class UnitTestClasse {
 	public static function getClasse() {
 		//Creation d'un groupe
 		$classe = new Classe();
-		$classe->setClasse('UnitTestClasse');
+		$classe->setNom('UnitTestClasse');
 		return $classe;
 	}
 }
