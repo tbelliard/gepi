@@ -259,7 +259,7 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function getGroupes($periode = null) {
-		//$periode = $this->getPeriodeNote($periode); on ne vÃ©rifie pas si l'objet pÃ©riode existe vraiment
+		//$periode = $this->getPeriodeNote($periode); on ne vérifie pas si l'objet période existe vraiment
 		require_once("helpers/PeriodeNoteHelper.php");
 		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
 		if(!isset($this->collGroupes[$periode_num]) || null === $this->collGroupes[$periode_num]) {
@@ -1269,7 +1269,6 @@ class Eleve extends BaseEleve {
 			    // return empty collection
 			    $this->initPeriodeNotes();
 		    } else {
-//			
 			    $sql = "SELECT /* log pour sql manuel */ DISTINCT periodes.NOM_PERIODE, periodes.NUM_PERIODE, periodes.VEROUILLER, periodes.ID_CLASSE, periodes.DATE_VERROUILLAGE, periodes.DATE_FIN FROM `periodes` INNER JOIN classes ON (periodes.ID_CLASSE=classes.ID) INNER JOIN j_eleves_classes ON (classes.ID=j_eleves_classes.ID_CLASSE) WHERE j_eleves_classes.LOGIN='".$this->getLogin()."' AND j_eleves_classes.periode = periodes.num_periode";
 			    $con = Propel::getConnection(PeriodeNotePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 			    $stmt = $con->prepare($sql);
@@ -1295,6 +1294,48 @@ class Eleve extends BaseEleve {
 
 
 	/**
+	 *
+	 * Renvoi une collection de saisies qui montrent un manquement à l'obligation de présence.
+         * Une saisie qui est contré par une saisie de présence n'est pas retournée.
+         * Ne renvoi pas les saisies de type retard
+	 *
+	 * @param      DateTime $dateDebut
+	 * @param      DateTime $dateFin
+	 * @return     PropelObjectCollection
+	 *
+	 */
+	public function  getAbsenceEleveSaisiesManquementObligationPresence($dateDebut = null, $dateFin = null) {
+ 	    $abs_saisie_col = $this->getAbsenceEleveSaisiesFilterByDate($dateDebut, $dateFin);
+	    //on filtre les saisie qu'on ne veut pas compter
+	    $abs_saisie_col_filtre = new PropelCollection();
+	    $abs_saisie_col_2 = clone $abs_saisie_col;
+	    foreach ($abs_saisie_col as $saisie) {
+		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
+		    $contra = false;
+		    if (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y') {
+			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
+			foreach ($abs_saisie_col_2 as $saisie_contra) {
+			    if ($saisie_contra->getId() != $saisie->getId()
+				    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
+				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
+				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
+				$contra = true;
+				break;
+			    }
+			}
+		    }
+		    if (!$contra) {
+                        //on a une saisie qui est en manquement et qui n'est pas contrée
+			$abs_saisie_col_filtre->append($saisie);
+		    }
+		}
+	    }
+            return $abs_saisie_col_filtre;
+        }
+
+        /**
 	 *
 	 * Renvoi true / false selon que l'eleve est present a l'heure donnee.
 	 * On ne peut certifier la presence a 100% vu que seule les absences sont saisies (et non les presences)

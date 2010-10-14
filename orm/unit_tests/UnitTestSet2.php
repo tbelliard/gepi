@@ -128,6 +128,20 @@ if ($absenceSaisie == null) {
 	}
 }
 
+$absenceSaisie2 = UnitTestAbsenceSaise::getAbsenceSaisie();
+$absenceSaisie2->setDebutAbs(new DateTime('2010-01-01 13:00'));
+$absenceSaisie2->setFinAbs(new DateTime('2010-01-01 13:01'));
+$absenceSaisie2->setEleve($newEleve);
+$absenceSaisie2->save();//normalement cette saisie va ètre comptée en retard et non en manquementObligationPresence
+
+$absenceSaisies = $newEleve->getAbsenceEleveSaisiesManquementObligationPresence();
+if ($absenceSaisies->count() != 1) {
+	echo ($logger->getDisplay());
+	echo('test 1 recuperation absence saisie eleve manquement obligation a partir d\'un eleve a <font color="red">echoue</font> <br><br/>');
+} else {
+	echo('test 1 recuperation absence saisie eleve manquement obligation a partir d\'un eleve a reussi<br><br/>');
+}
+
 
 purgeDonneesTest($logger);
 Propel::setLogger(null);
