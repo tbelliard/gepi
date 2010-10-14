@@ -1302,7 +1302,6 @@ class Eleve extends BaseEleve {
 	 *
 	 * Renvoi une collection de saisies qui montrent un manquement à l'obligation de présence.
          * Une saisie qui est contré par une saisie de présence n'est pas retournée.
-         * Ne renvoi pas les saisies de type retard
 	 *
 	 * @param      DateTime $dateDebut
 	 * @param      DateTime $dateFin
@@ -1315,7 +1314,7 @@ class Eleve extends BaseEleve {
 	    $abs_saisie_col_filtre = new PropelCollection();
 	    $abs_saisie_col_2 = clone $abs_saisie_col;
 	    foreach ($abs_saisie_col as $saisie) {
-		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
+		if ($saisie->getManquementObligationPresence()) {
 		    $contra = false;
 		    if (getSettingValue("abs2_saisie_multi_type_non_justifiee")!='y') {
 			//on va vérifier si il n'y a pas une saisie contradictoire simultanée
@@ -1325,7 +1324,7 @@ class Eleve extends BaseEleve {
 				    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
 				    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()
 				    //si c'est une saisie specifiquement a non precise c'est du type erreur de saisie on ne la prend pas en compte
-				    && ($saisie_contra->getRetard() || !$saisie_contra->getManquementObligationPresence())) {
+				    && (!$saisie_contra->getManquementObligationPresence())) {
 				$contra = true;
 				break;
 			    }
