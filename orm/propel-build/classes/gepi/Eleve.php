@@ -261,17 +261,20 @@ class Eleve extends BaseEleve {
 	public function getGroupes($periode = null) {
 		//$periode = $this->getPeriodeNote($periode); on ne vérifie pas si l'objet période existe vraiment
 		require_once("helpers/PeriodeNoteHelper.php");
-		$periode_num = PeriodeNoteHelper::getNumPeriode($periode);
-		if(!isset($this->collGroupes[$periode_num]) || null === $this->collGroupes[$periode_num]) {
-			if ($this->isNew() && null === $this->collGroupes[$periode_num]) {
+		$periode_key = PeriodeNoteHelper::getNumPeriode($periode);
+                if ($periode_key === null) {
+                    $periode_key = 'null'; // utile pour le clés du vecteur $this->collGroupes
+                }
+		if(!isset($this->collGroupes[$periode_key]) || null === $this->collGroupes[$periode_key]) {
+			if ($this->isNew() && null === $this->collGroupes[$periode_key]) {
 				// return empty collection
-				$this->initGroupes($periode_num);
+				$this->initGroupes($periode_key);
 			} else {
 				$query = GroupeQuery::create();
-				if ($periode_num != null) {
+				if ($periode_key != 'null') {
 					$query->useJEleveGroupeQuery()
 					    ->filterByEleve($this)
-					    ->filterByPeriode($periode_num)
+					    ->filterByPeriode($periode_key)
 					    ->endUse();
 				} else {
 					$query->useJEleveGroupeQuery()
@@ -279,10 +282,10 @@ class Eleve extends BaseEleve {
 					    ->endUse();
 				}
 				$query->orderByName()->distinct();
-				$this->collGroupes[$periode_num] = $query->find();
+				$this->collGroupes[$periode_key] = $query->find();
 			}
 		}
-		return $this->collGroupes[$periode_num];
+		return $this->collGroupes[$periode_key];
 	}
 
 	/**
@@ -573,7 +576,9 @@ class Eleve extends BaseEleve {
 	    }
 
 	    //si il n'y a aucune periode ouverte actuellement, on renvoi tous les groupe et donc tous les emplacements de cours
+            var_dump($this->getPeriodeNote($dt));
 	    $colGroupeId = $this->getGroupes($this->getPeriodeNote($dt))->getPrimaryKeys();
+            var_dump($colGroupeId);
 
 	    $query = EdtEmplacementCoursQuery::create()->filterByIdGroupe($colGroupeId)
 		    ->filterByIdCalendrier(0)
