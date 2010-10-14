@@ -777,7 +777,7 @@ class Eleve extends BaseEleve {
 	public function getAbsenceEleveSaisiesFilterByDate($dt_debut, $dt_fin) {
 	    $result = new PropelObjectCollection();
 	    $result->setModel('AbsenceEleveSaisie');
-	    if ($dt_debut->format('d/m/Y') == $dt_fin->format('d/m/Y')) {
+	    if ($dt_debut != null && $dt_debut->format('d/m/Y') == $dt_fin->format('d/m/Y')) {
 		//on a une date de debut et de fin le meme jour, on va optimiser un peu
 		$saisie_col = $this->getAbsenceEleveSaisiesDuJour($dt_debut);
 	    } else {

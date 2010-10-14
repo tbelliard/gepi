@@ -216,14 +216,14 @@ class Groupe extends BaseGroupe {
 	 * @return     PropelObjectCollection Eleves[]
 	 *
 	 */
-	public function getEleves($periode = NULL) {
-		if ($periode == NULL) {
+	public function getEleves($periode = null) {
+		if ($periode === null) {
 		    if ($this->getPeriodeNoteOuverte() != null) {
 			$periode = $this->getPeriodeNoteOuverte()->getNumPeriode();
 		    }
 		}
 		$query = EleveQuery::create();
-		if ($periode != NULL) {
+		if ($periode !== null) {
 		    $query->useJEleveGroupeQuery()->filterByGroupe($this)->filterByPeriode($periode)->endUse();
 		} else {
 		    $query->useJEleveGroupeQuery()->filterByGroupe($this)->endUse();
