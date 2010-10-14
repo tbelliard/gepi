@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -86,11 +86,14 @@ if ($nombre_lignes != 0) {
 		$sql="select id_classe from periodes where id_classe = '$id_classe';";
 		$res_nb_per=mysql_query($sql);
 		$nb_per = mysql_num_rows($res_nb_per);
+		echo "<td>\n";
 		if ($nb_per != 0) {
-			echo "<td>\n";
 			echo "<a href='classes_const.php?id_classe=$id_classe'><img src='../images/icons/edit_user.png' alt='' /> Élèves</a>\n";
-			echo "</td>\n";
 		}
+		else {
+			echo "&nbsp;";
+		}
+		echo "</td>\n";
 
 		echo "<td>\n";
 		echo "<a href='../groupes/edit_class.php?id_classe=$id_classe'> <img src='../images/icons/document.png' alt='' /> Enseignements</a>\n";
