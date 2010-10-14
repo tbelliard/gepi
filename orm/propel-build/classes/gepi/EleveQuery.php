@@ -74,6 +74,7 @@ class EleveQuery extends BaseEleveQuery {
                 ($utilisateurProfessionnel->getStatut() != "cpe"
                 && $utilisateurProfessionnel->getStatut() != "professeur"
                 && $utilisateurProfessionnel->getStatut() != "scolarite"
+                && $utilisateurProfessionnel->getStatut() != "responsable"
                 && $utilisateurProfessionnel->getStatut() != "autre")) {
             //on filtre tout
             return $this->where('1 <> 1');
@@ -90,6 +91,9 @@ class EleveQuery extends BaseEleveQuery {
             $this->useJEleveClasseQuery()->addJoin(JEleveClassePeer::ID_CLASSE, JScolClassesPeer::ID_CLASSE, Criteria::INNER_JOIN)
                     ->add(JScolClassesPeer::LOGIN, $utilisateurProfessionnel->getLogin())
                     ->endUse()->distinct();
+            return $this;
+        } else if ($utilisateurProfessionnel->getStatut() == "responsable") {
+            $this->useResponsableInformationQuery()->useResponsableEleveQuery()->filterByLogin($utilisateurProfessionnel->getLogin())->endUse()->endUse();
             return $this;
         }
     }
