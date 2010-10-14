@@ -165,13 +165,12 @@ $dt_fin->setTime(23,59,59);
 	</tr>
 
 <?php
-	$eleve_query = EleveQuery::create()
+	$eleve_col =  EleveQuery::create()
 		->orderByNom()
-		->useResponsableInformationQuery()->useResponsableEleveQuery()->filterByLogin($_SESSION['login'])->endUse()->endUse()
-		->distinct();
-	
-	$eleve_col = $eleve_query->find();
-	foreach($eleve_col as $eleve){
+		->filterByUtilisateurProfessionnel($utilisateur)
+		->distinct()->find();
+
+        foreach($eleve_col as $eleve){
 	  $affiche = false;
 ?>
 	<tr>
@@ -273,13 +272,11 @@ $dt_fin->setTime(23,59,59);
 <?php
 
 
-	$eleve_query = EleveQuery::create()
+	$eleve_col = EleveQuery::create()
 		->orderByNom()
-		->useResponsableInformationQuery()->useResponsableEleveQuery()->filterByLogin($_SESSION['login'])->endUse()->endUse()
+		->filterByUtilisateurProfessionnel($utilisateur)
 		->useAbsenceEleveSaisieQuery()->filterByPlageTemps($dt_debut_toutes, $dt_fin_toutes)->endUse()
-		->distinct();
-
-	$eleve_col = $eleve_query->find();
+		->distinct()->find();
 
 
 	foreach($eleve_col as $eleve){
