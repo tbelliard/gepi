@@ -425,17 +425,6 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
-// Test d'écriture dans /backup
-$test_write = test_ecriture_backup();
-if ($test_write == 'no') {
-    echo "<h3 class='gepi'>Problème de droits d'accès :</h3>\n";
-    echo "<p>Le répertoire \"/backup\" n'est pas accessible en écriture.</p>\n";
-    echo "<p>Vous ne pouvez donc pas accéder aux fonctions de sauvegarde/restauration de GEPI.
-    Contactez l'administrateur technique afin de régler ce problème.</p>\n";
-    require("../lib/footer.inc.php");
-    die();
-}
-
 if (!function_exists("gzwrite")) {
     echo "<h3 class='gepi'>Problème de configuration :</h3>\n";
     echo "<p>Les fonctions de compression 'zlib' ne sont pas activées. Vous devez configurer PHP pour qu'il utilise 'zlib'.</p>\n";
