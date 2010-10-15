@@ -1667,6 +1667,12 @@ else {
 	include("extraction_donnees_releves_notes.php");
 	//========================================
 
+	// DEBUG:
+	/*
+	echo "\$tab_releve[$id_classe][$periode_num]['eleve'][0]['groupe'][0]['id_cn'][2367]['conteneurs'][0]['moy']=".$tab_releve[$id_classe][$periode_num]['eleve'][0]['groupe'][0]['id_cn'][2367]['conteneurs'][0]['moy']."<br />\n";
+	echo "\$tab_releve[$id_classe][$periode_num]['eleve'][0]['groupe'][0]['devoir'][1]['note']=".$tab_releve[$id_classe][$periode_num]['eleve'][0]['groupe'][0]['devoir'][1]['note']."<br />\n";
+	echo "\$tab_releve[$id_classe][$periode_num]['eleve'][0]['groupe'][0]['devoir'][1]['statut']=".$tab_releve[$id_classe][$periode_num]['eleve'][0]['groupe'][0]['devoir'][1]['statut']."<br />\n";
+	*/
 
 	//========================================================================
 	// A CE STADE LE TABLEAU $tab_releve EST RENSEIGNé

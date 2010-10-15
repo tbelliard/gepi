@@ -144,7 +144,8 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 			$eleve_date=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['date'];
 			// Coef du devoir:
 			$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
-	
+
+
 			//==========================================
 			// On teste s'il y aura une "Note" à afficher
 			if (($eleve_statut != '') and ($eleve_statut != 'v')) {
@@ -262,7 +263,16 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 				$eleve_date=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['date'];
 				// Coef du devoir:
 				$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
-		
+
+				// DEBUG:
+				/*
+				if($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur']=='2368') {
+					echo "_______________________<br />\n";
+					echo "liste_notes_pdf()<br />\n";
+					echo "Note eleve $i: \$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note']=$eleve_note<br />\n";
+					echo "Note eleve $i: \$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut']=$eleve_statut<br />\n";
+				}
+				*/
 				//==========================================
 				// On teste s'il y aura une "Note" à afficher
 				/*
@@ -285,9 +295,10 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 					$affiche_note.=$eleve_statut;
 					if($use_cell_ajustee!="n") {$affiche_note.="</b>";}
 				}
-				//elseif ($eleve_statut == 'v') {
-				//	$affiche_note = "";
-				//}
+				elseif ($eleve_statut == 'v') {
+					// Dans le cas où il n'y a pas de note (champ note vide), on a $eleve_statut='v' et $eleve_note='0.0' mais il ne faut pas afficher zéro.
+					$affiche_note.="-";
+				}
 				elseif ($eleve_note != '') {
 					if($use_cell_ajustee!="n") {$affiche_note.="<b>";}
 					$affiche_note.=$eleve_note;
@@ -370,7 +381,14 @@ function liste_notes_pdf($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 					$tiret = "yes";
 				}
 			}
-	
+
+			// DEBUG:
+			/*
+			if($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur']=='2368') {
+				echo "\$retour=$retour<br />\n";
+				//echo "________________________<br />\n";
+			}
+			*/
 			$m++;
 		}
 	}
@@ -1829,6 +1847,14 @@ function releve_pdf($tab_rel,$i) {
 	}
 	//=========================================
 
+	// DEBUG:
+	/*
+	echo "___________________________________________<br />\n";
+	echo "releve_pdf()<br />\n";
+	echo "\$tab_rel['eleve'][0]['groupe'][0]['id_cn'][2367]['conteneurs'][0]['moy']=".$tab_rel['eleve'][0]['groupe'][0]['id_cn'][2367]['conteneurs'][0]['moy']."<br />\n";
+	echo "\$tab_rel['eleve'][0]['groupe'][0]['devoir'][1]['note']=".$tab_rel['eleve'][0]['groupe'][0]['devoir'][1]['note']."<br />\n";
+	*/
+
 	// Pour gérer le cas appel depuis bulletin_pdf pour un recto/verso
 	if(isset($num_resp_bull)) {
 		$nb_releves=1;
@@ -2533,6 +2559,7 @@ function releve_pdf($tab_rel,$i) {
 								unset($tmp_tab);
 								$tmp_tab[]=$tmp_id_cn;
 								//$chaine_notes.="<u><b>Racine ($tmp_id_cn)&nbsp;:</b></u> \n";
+								//echo "\$retour_liste_notes_pdf=liste_notes_pdf(\$tab_rel,$i,$m,\$tmp_tab);<br >\n";
 								$retour_liste_notes_pdf=liste_notes_pdf($tab_rel,$i,$m,$tmp_tab);
 								if($retour_liste_notes_pdf!='') {
 									//$chaine_notes.="<u><b>Racine ($tmp_id_cn)&nbsp;:</b></u> \n";

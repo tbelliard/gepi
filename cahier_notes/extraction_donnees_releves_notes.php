@@ -475,6 +475,7 @@
 							$sql.=") " .
 							"ORDER BY jgc.priorite,jgm.id_matiere";
 						}
+//echo "$sql<br />";
 						$appel_liste_groupes = mysql_query($sql);
 						$nombre_groupes = mysql_num_rows($appel_liste_groupes);
 
@@ -595,7 +596,8 @@
 										cnc.id_conteneur=cc.id AND
 										cc.id='$lig_cnt->id'
 										);";
-										//if($current_groupe==1136) {echo "$sql<br />";}
+										// DEBUG:
+										//if($current_groupe==760) {echo "$sql<br />\n";}
 										$res_note_conteneur=mysql_query($sql);
 										if(mysql_num_rows($res_note_conteneur)==0) {
 											$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']="-";
@@ -609,6 +611,8 @@
 												$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']="-";
 											}
 										}
+										// DEBUG:
+										//if($current_groupe==760) {echo "\$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']=".$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']."<br />\n";}
 
 										$cpt++;
 									}
