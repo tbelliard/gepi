@@ -333,12 +333,12 @@ if (getSettingValue("active_mod_gest_aid")=="y") {
     $tab["j_eleves_regime"][4] = "login";  // nom du champ de la première table lié à la table de liaison
     $tab["j_eleves_regime"][5] = "login";  // nom du champ de la deuxième table lié à la table de liaison
 
-    $tab[" j_professeurs_matieres"][0] = "utilisateurs"; //1ère table
-    $tab[" j_professeurs_matieres"][1] = "matieres"; // 2ème table
-    $tab[" j_professeurs_matieres"][2] = "id_professeur"; // nom du champ de la table de liaison lié à la première table
-    $tab[" j_professeurs_matieres"][3] = "id_matiere";  // nom du champ de la table de liaison lié à la deuxième table
-    $tab[" j_professeurs_matieres"][4] = "login";  // nom du champ de la première table lié à la table de liaison
-    $tab[" j_professeurs_matieres"][5] = "matiere";  // nom du champ de la deuxième table lié à la table de liaison
+    $tab["j_professeurs_matieres"][0] = "utilisateurs"; //1ère table
+    $tab["j_professeurs_matieres"][1] = "matieres"; // 2ème table
+    $tab["j_professeurs_matieres"][2] = "id_professeur"; // nom du champ de la table de liaison lié à la première table
+    $tab["j_professeurs_matieres"][3] = "id_matiere";  // nom du champ de la table de liaison lié à la deuxième table
+    $tab["j_professeurs_matieres"][4] = "login";  // nom du champ de la première table lié à la table de liaison
+    $tab["j_professeurs_matieres"][5] = "matiere";  // nom du champ de la deuxième table lié à la table de liaison
 
 
     foreach ($tab as $key => $val) {
@@ -403,6 +403,19 @@ if (getSettingValue("active_mod_gest_aid")=="y") {
             echo "<font color=\"green\">Aucune ligne n'a été supprimée.</font><br />\n";
 
       }
+
+        if($key=='j_professeurs_matieres') {
+            // Le test plus haut ne fonctionne pas completement: s'il y a eu des collisions de logins (?) d'une année sur l'autre, et des tables non nettoyées, on peut se retrouver avec un login attribué à un parent alors que c'était le login d'un prof l'année précédente... et si j_professeurs_matieres n'a pas été nettoyée, on se retrouve avec un parent d'élève proposé comme professeur lors de l'ajout d'enseignement
+            //$sql="select * from j_professeurs_matieres j, resp_pers rp where rp.login=j.id_professeur AND j.id_professeur not in (select login from utilisateurs where statut='professeur');";
+            $sql="SELECT * FROM j_professeurs_matieres j WHERE j.id_professeur NOT IN (SELECT login FROM utilisateurs WHERE statut='professeur');";
+            $test=mysql_query($sql);
+            if(mysql_num_rows($test)>0) {
+				$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur NOT IN (SELECT login FROM utilisateurs WHERE statut='professeur');";
+				$del=mysql_query($sql);
+                if($del) {echo "<font color=\"red\">Suppression de ".mysql_num_rows($test)." enregistrements supplémentaires.</font><br />";}
+            }
+        }
+
         echo "<b>La table $key est OK.</b><br />\n";
     }
     echo "<form action=\"clean_tables.php\" method=\"post\">\n";
