@@ -525,7 +525,10 @@ echo "</p>\n";
 echo "<p>Cochez les professeurs qui participent à cet enseignement : </p>\n";
 
 
-$calldata = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.login");
+//$calldata = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.login");
+$sql="SELECT u.login, u.nom, u.prenom, u.civilite, u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
+//echo "$sql<br />";
+$calldata = mysql_query($sql);
 $nb = mysql_num_rows($calldata);
 $prof_list = array();
 $prof_list["list"] = array();
@@ -534,8 +537,11 @@ for ($i=0;$i<$nb;$i++) {
 	$prof_nom = mysql_result($calldata, $i, "nom");
 	$prof_prenom = mysql_result($calldata, $i, "prenom");
 	$civilite = mysql_result($calldata, $i, "civilite");
+	$prof_statut = mysql_result($calldata, $i, "statut");
+
 	$prof_list["list"][] = $prof_login;
-	$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite);
+	//$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite);
+	$prof_list["users"][$prof_login] = array("login" => $prof_login, "nom" => $prof_nom, "prenom" => $prof_prenom, "civilite" => $civilite, "statut" => $prof_statut);
 }
 
 if (count($prof_list["list"]) == "0") {
@@ -545,26 +551,64 @@ if (count($prof_list["list"]) == "0") {
 	$total_profs = array_unique($total_profs);
 
 	$p = 0;
+	echo "<table class='boireaus'>\n";
+	$alt=1;
+	$temoin_nettoyage_requis='n';
 	foreach($total_profs as $prof_login) {
-		echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
-		echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' ";
-		echo "onchange='changement();'";
-		if (in_array($prof_login, $reg_professeurs)) {
-			if (array_key_exists($prof_login, $current_group["profs"]["users"])){
-				echo " checked /><label for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
-					$current_group["profs"]["users"][$prof_login]["prenom"] . " " .
-					$current_group["profs"]["users"][$prof_login]["nom"] . "</label><br />\n";
+		$alt=$alt*(-1);
+		if($prof_list["users"][$prof_login]["statut"]=='professeur') {
+			echo "<tr class='lig$alt'>\n";
+			echo "<td>\n";
+			echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
+			echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' ";
+			echo "onchange='changement();'";
+			if (in_array($prof_login, $reg_professeurs)) {
+				if (array_key_exists($prof_login, $current_group["profs"]["users"])){
+					echo " checked />\n";
+					echo "</td>\n";
+					echo "<td style='text-align:left;'>\n";
+					echo "<label for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
+						$current_group["profs"]["users"][$prof_login]["prenom"] . " " .
+						$current_group["profs"]["users"][$prof_login]["nom"] . "</label><br />\n";
+				} else {
+					echo " checked />\n";
+					echo "</td>\n";
+					echo "<td style='text-align:left;'>\n";
+					echo "<label for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
+						$prof_list["users"][$prof_login]["prenom"] . " " .
+						$prof_list["users"][$prof_login]["nom"] . "</label><br />\n";
+				}
 			} else {
-				echo " checked /><label for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
-					$prof_list["users"][$prof_login]["prenom"] . " " .
-					$prof_list["users"][$prof_login]["nom"] . "</label><br />\n";
+				echo " />\n";
+				echo "</td>\n";
+				echo "<td style='text-align:left;'>\n";
+				echo "<label for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
+						$prof_list["users"][$prof_login]["prenom"] . " " .
+						$prof_list["users"][$prof_login]["nom"] . "</label><br />\n";
 			}
-		} else {
-			echo " /><label for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
-					$prof_list["users"][$prof_login]["prenom"] . " " .
-					$prof_list["users"][$prof_login]["nom"] . "</label><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+			$p++;
 		}
-		$p++;
+		else {
+			echo "<tr class='lig$alt'>\n";
+			echo "<td>\n";
+			echo "&nbsp;&nbsp;";
+			echo "</td>\n";
+			echo "<td style='text-align:left;'>\n";
+			echo "<b>ANOMALIE</b>&nbsp;:";
+			echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
+			echo " (<i style='color:red'>compte ".$prof_list["users"][$prof_login]["statut"]."</i>)";
+			echo "<br />\n";
+			$temoin_nettoyage_requis='y';
+			//echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+	}
+	echo "</table>\n";
+	if($temoin_nettoyage_requis!='n') {
+		echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
 	}
 }
 
