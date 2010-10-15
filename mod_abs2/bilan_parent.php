@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * @version $Id: bilan_parent.php 5164 2010-09-01 22:39:14Z regis $
+ * @version $Id$
  *
  * Copyright 2010 Josselin Jacquard
  *
@@ -114,6 +114,24 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 
+//renvoi la priorite d'affichage : 1:Retard Justifie ; 2 Absence Justifiee ; 3 Retard Non justifé ; 4 Absence non justifiée
+function get_priorite($abs) {  
+  if ($abs->getJustifiee()) {
+    if ($abs->getRetard()) {
+      $priorite = 1;
+    } else {
+      $priorite = 2;
+    }
+  } else {
+    if ($abs->getRetard()) {
+      $priorite = 3;
+    } else {
+      $priorite = 4;
+    }
+  }
+  return($priorite);
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Absences";
 require_once("../lib/header.inc");
@@ -181,41 +199,43 @@ $dt_fin->setTime(23,59,59);
 	  </td>
 <?php
 	  // On traite alors pour chaque créneau
-	  foreach($creneau_col as $creneau) {
-		$abs_col = $eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $dt_date_absence_eleve);
-		if ($abs_col->isEmpty()){
+	  foreach ($creneau_col as $creneau) {
+                  $abs_col = $eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $dt_date_absence_eleve);
+                  if ($abs_col->isEmpty()) {
 ?>
-	  <td> </td>
+        	  <td> </td>
 <?php
-		} else {
-		  foreach($abs_col as $abs) {			
-			  if ($abs->getJustifiee()){
-				if ($abs->getRetard()){
+                  } else {
+                    $priorite = 5;
+                    foreach ($abs_col as $abs) {
+                      if (get_priorite($abs) < $priorite) {
+                        $priorite = get_priorite($abs);
+                      }
+                    }
+                    switch ($priorite) {
+                      case 1:
 ?>
-	  <td style="background:aqua;">RJ</td>
+                            <td style="background:aqua;">RJ</td>
 <?php
-				}else {
+                        break;
+                      case 2:
 ?>
-	  <td style="background-color:blue;">J</td>
+                            <td style="background:blue;">J</td>
 <?php
-				}
-			  } else {
-				if ($abs->getRetard()){
+                        break;
+                      case 3:
 ?>
-	  <td style="background:fuchsia;">RNJ</td>
+                            <td style="background:fuchsia;">RNJ</td>
 <?php
-				}else {
+                        break;
+                      case 4:
 ?>
-	  <td style="background-color:red;">NJ</td>
+                            <td style="background:red;">NJ</td>
 <?php
-				}
-			  }
-			
-			break;
-		  }
-
-		}
-	  }
+                        break;
+                    }
+                  }
+                }
 ?>
 	</tr>
 <?php
@@ -321,45 +341,43 @@ $dt_fin->setTime(23,59,59);
 	<tr>
 	  <td style="text-align:center;"><?php echo $date_actuelle->format('d/m/Y'); ?></td>
 <?php
-	  foreach($creneau_col as $creneau) {
-		$abs_col = $eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $date_actuelle);
-		if ($abs_col->isEmpty()){
+            foreach ($creneau_col as $creneau) {
+                      $abs_col = $eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $date_actuelle);
+                      if ($abs_col->isEmpty()) {
 ?>
-	  <td></td>
+            	  <td></td>
 <?php
-
-		} else {
-		  foreach($abs_col as $abs) {			
-			  if ($abs->getJustifiee()){
-                            if ($abs->getRetard()){
-				  ?>
-				  <td style="background:aqua;">RJ</td>
-				  <?php
-				}else {
+                      } else {
+                        $priorite = 5;
+                        foreach ($abs_col as $abs) {
+                          if (get_priorite($abs) < $priorite) {
+                            $priorite = get_priorite($abs);                            
+                          }
+                        }
+                        switch ($priorite) {
+                          case 1:
 ?>
-	  <td style="background-color:blue;">
-		J
+                                <td style="background:aqua;">RJ</td>
 <?php
-				}
-			  }else{
-				if ($abs->getRetard()){
-				  ?>
-				  <td style="background:fuchsia;">RNJ
-				  <?php
-				}else {
+                            break;
+                          case 2:
 ?>
-	  <td style="background-color:red;">
-		NJ
+                                <td style="background:blue;">J</td>
 <?php
-				}
-			  }
-			  break;		
-		  }
+                            break;
+                          case 3:
 ?>
-	  </td>
+                                <td style="background:fuchsia;">RNJ</td>
 <?php
-		}
-	  }
+                            break;
+                          case 4:
+?>
+                                <td style="background:red;">NJ</td>
+            <?php
+                            break;
+                        }
+                      }
+                    }
 ?>
 	</tr>
 <?php
@@ -387,6 +405,5 @@ date_date_set($date_actuelle, $date_actuelle->format('Y'),$date_actuelle->format
   <p class="bold small">Impression faite le <?php echo date("d/m/Y - H:i"); ?>.</p>
 </div>
 <?php
-
 require("../lib/footer.inc.php");
 ?>
