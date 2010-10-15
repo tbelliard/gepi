@@ -63,9 +63,15 @@ $affiche_message = isset($_POST["affiche_message"]) ? $_POST["affiche_message"] 
 $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : "classe");
 
 if ($id_devoir)  {
-	$appel_devoir = mysql_query("SELECT * FROM cn_devoirs WHERE id ='$id_devoir'");
+	$sql="SELECT * FROM cn_devoirs WHERE id ='$id_devoir';";
+	//echo "$sql<br />";
+	$appel_devoir = mysql_query($sql);
 	$nom_devoir = mysql_result($appel_devoir, 0, 'nom_court');
-	$query = mysql_query("SELECT id_conteneur, id_racine FROM cn_devoirs WHERE id = '$id_devoir'");
+	$ramener_sur_referentiel_dev_choisi=mysql_result($appel_devoir, 0, 'ramener_sur_referentiel');
+	$note_sur_dev_choisi=mysql_result($appel_devoir, 0, 'note_sur');
+
+	$sql="SELECT id_conteneur, id_racine FROM cn_devoirs WHERE id = '$id_devoir';";
+	$query = mysql_query($sql);
 	$id_racine = mysql_result($query, 0, 'id_racine');
 	$id_conteneur = mysql_result($query, 0, 'id_conteneur');
 } else if ((isset($_POST['id_conteneur'])) or (isset($_GET['id_conteneur']))) {
@@ -211,6 +217,7 @@ if (isset($_POST['notes'])) {
 	$fin_note = 'yes';
 	$indice = $_POST['debut_import']-2;
 	$tempo = '';
+	if(!isset($note_sur_dev_choisi)) {$note_sur_dev_choisi=20;}
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
 		$car = substr($temp, $i, 1);
 		//if (ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
@@ -218,7 +225,7 @@ if (isset($_POST['notes'])) {
 			if (($fin_note=='yes') or ($i == $longueur-1)) {
 				$fin_note = 'no';
 				if (is_numeric($tempo)) {
-					if ($tempo <= 20) {
+					if ($tempo <= $note_sur_dev_choisi) {
 						$note_import[$indice] = $tempo;
 						$indice++;
 					} else {
@@ -463,13 +470,12 @@ else{
 //$titre_pdf = urlencode($titre);
 //$titre_pdf = urlencode(traite_accents_utf8($titre));
 $titre_pdf = urlencode(traite_accents_utf8(html_entity_decode($titre)));
-if ($id_devoir != 0) $titre .= " - SAISIE";  else $titre .= " - VISUALISATION";
+if ($id_devoir != 0) {$titre .= " - SAISIE";} else {$titre .= " - VISUALISATION";}
 
 echo "<script type=\"text/javascript\" language=\"javascript\">";
 if (isset($_POST['debut_import'])) {
 	$temp = $_POST['debut_import']-1;
-	if ((isset($note_import[$temp])) and ($note_import[$temp] != '')) echo "change = 'yes';"; else echo "change = 'no';";
-
+	if ((isset($note_import[$temp])) and ($note_import[$temp] != '')) {echo "change = 'yes';";} else {echo "change = 'no';";}
 } else {
 	echo "change = 'no';";
 }
@@ -486,8 +492,8 @@ while ($j < $nb_dev) {
 	$nom_dev[$j] = mysql_result($appel_dev, $j, 'nom_court');
 	$id_dev[$j] = mysql_result($appel_dev, $j, 'id');
 	$coef[$j] = mysql_result($appel_dev, $j, 'coef');
-        $note_sur[$j] = mysql_result($appel_dev, $j, 'note_sur');
-        $ramener_sur_referentiel[$j] = mysql_result($appel_dev, $j, 'ramener_sur_referentiel');
+	$note_sur[$j] = mysql_result($appel_dev, $j, 'note_sur');
+	$ramener_sur_referentiel[$j] = mysql_result($appel_dev, $j, 'ramener_sur_referentiel');
 	$facultatif[$j] = mysql_result($appel_dev, $j, 'facultatif');
 	$display_parents[$j] = mysql_result($appel_dev, $j, 'display_parents');
 	$date = mysql_result($appel_dev, $j, 'date');
@@ -699,8 +705,8 @@ if (isset($_POST['ok'])) {
 	}
 
 }
-if (!isset($_SESSION['affiche_comment'])) $_SESSION['affiche_comment'] = 'yes';
-if (!isset($_SESSION['affiche_tous'])) $_SESSION['affiche_tous'] = 'no';
+if (!isset($_SESSION['affiche_comment'])) {$_SESSION['affiche_comment'] = 'yes';}
+if (!isset($_SESSION['affiche_tous'])) {$_SESSION['affiche_tous'] = 'no';}
 $nb_dev_sous_cont = 0;
 
 // Premier formulaire pour masquer ou non les colonnes "commentaires" non vides des évaluations verrouillées
@@ -761,7 +767,7 @@ if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 
 // Début du deuxième formulaire
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post  name=\"form2\">\n";
-if ($id_devoir != 0) echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+if ($id_devoir != 0) {echo "<center><input type='submit' value='Enregistrer' /></center>\n";}
 
 // Couleurs utilisées
 $couleur_devoirs = '#AAE6AA';
@@ -960,6 +966,7 @@ foreach ($liste_eleves as $eleve) {
 				$mess_note[$i][$k] =$mess_note[$i][$k].$note_import[$current_displayed_line];
 				$mess_note_pdf[$i][$k] = $note_import[$current_displayed_line];
 			} else {
+//echo "<p>\$eleve_statut=$eleve_statut<br />\$eleve_note=$eleve_note<br />";
 				if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 					$mess_note[$i][$k] = $mess_note[$i][$k].$eleve_statut;
 					$mess_note_pdf[$i][$k] = $eleve_statut;
@@ -1923,7 +1930,7 @@ if ($id_devoir) {
 	echo "</select>\n";
 	echo "</td><td>\n";
 	echo "Coller ci-dessous les données à importer : <br />\n";
-	if (isset($_POST['notes'])) $notes = $_POST['notes']; $notes='';
+	if (isset($_POST['notes'])) {$notes=preg_replace("/\\\\n/","\n",preg_replace("/\\\\r/","\r",$_POST['notes']));} else {$notes='';}
 	//echo "<textarea name='notes' rows='3' cols='40' wrap='virtual'>$notes</textarea>\n";
 	echo "<textarea name='notes' rows='3' cols='40' class='wrap'>$notes</textarea>\n";
 	echo "</td></tr></table>\n";
@@ -1991,8 +1998,9 @@ if ($id_devoir) {
 	}
 	echo "</select>\n";
 	echo "</td><td>\n";
-	echo "Coller ci-dessous les données à importer : <br />\n";
-	if (isset($_POST['appreciations'])) $appreciations = $_POST['appreciations']; $appreciations='';
+	echo "Coller ci-dessous les données à importer&nbsp;: <br />\n";
+	//if (isset($_POST['appreciations'])) $appreciations = $_POST['appreciations']; $appreciations='';
+	if (isset($_POST['appreciations'])) {$appreciations = preg_replace("/\\\\n/","\n",preg_replace("/\\\\r/","\r",$_POST['appreciations']));} else {$appreciations='';}
 	echo "<textarea name='appreciations' rows='3' cols='40' class='wrap'>$appreciations</textarea>\n";
 	echo "</td></tr></table>\n";
 	echo "<input type='hidden' name='id_conteneur' value='$id_conteneur' />\n";
