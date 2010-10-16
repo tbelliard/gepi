@@ -1820,6 +1820,14 @@ Patientez pendant l'extraction des données... merci.
 						echo "<td colspan='2' style='text-align:left;'>\n";
 						//echo "Date ".jour_en_fr(date("D",$tab_ele['cdt'][$j]['dev'][$k]['date_ct']))." ".date("d/m/Y",$tab_ele['cdt'][$j]['dev'][$k]['date_ct'])."<br />\n";
 						echo nl2br($tab_ele['cdt'][$j]['dev'][$k]['contenu']);
+
+						$adj=affiche_docs_joints($tab_ele['cdt'][$j]['dev'][$k]['id_ct'],"t");
+						if($adj!='') {
+							echo "<div style='border: 1px dashed black'>\n";
+							echo $adj;
+							echo "</div>\n";
+						}
+
 						//echo "</div>\n";
 						echo "</td>\n";
 						echo "</tr>\n";
@@ -1851,6 +1859,13 @@ Patientez pendant l'extraction des données... merci.
 						echo "<tr style='background-color:$couleur_entry;'>\n";
 						echo "<td colspan='2' style='text-align:left;'>\n";
 						echo nl2br($tab_ele['cdt'][$j]['entry'][$k]['contenu']);
+
+						$adj=affiche_docs_joints($tab_ele['cdt'][$j]['entry'][$k]['id_ct'],"c");
+						if($adj!='') {
+							echo "<div style='border: 1px dashed black'>\n";
+							echo $adj;
+							echo "</div>\n";
+						}
 						echo "</td>\n";
 						echo "</tr>\n";
 						echo "</table>\n";
