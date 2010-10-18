@@ -416,6 +416,7 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 		$gepiSchoolPays,
 		$gepiSchoolTel,
 		$gepiSchoolFax,
+		$gepiSchoolMail,
 		$gepiYear,
 
 		$logo_etab,
