@@ -637,10 +637,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			} else {
 			    $query = AbsenceEleveSaisieQuery::create();
 			    $query->filterByPlageTemps($this->getDebutAbs(null), $this->getFinAbs(null))
-				//->filterByEleveId(Array(null, $this->getEleveId()))
-				->leftJoinWith('AbsenceEleveSaisie.JTraitementSaisieEleve')
-				->leftJoinWith('JTraitementSaisieEleve.AbsenceEleveTraitement')
-				->leftJoinWith('AbsenceEleveTraitement.AbsenceEleveType');
+				->add(AbsenceEleveSaisiePeer::ELEVE_ID, NULL)
+                                ->addOr(AbsenceEleveSaisiePeer::ELEVE_ID, $this->getEleveId())
+                                ;
 			    $saisie_col = $query->find();
 			    $_REQUEST['query_AbsenceEleveSaisieQuery_getSaisiesContradictoires_'.$this->getDebutAbs('U').'_'.$this->getFinAbs('U')] = $saisie_col;
 			}
