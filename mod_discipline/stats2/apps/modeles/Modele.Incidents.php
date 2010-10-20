@@ -75,8 +75,8 @@ Class Modele_Incidents extends Modele {
     return $this->get_sanctions_incident($liste_incidents);
   }
 
-  public function get_incidents($du,$au,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
-    return $this->get_infos_incidents($du,$au,$filtre_cat,$filtre_mes,$filtre_san,$filtre_role);
+  public function get_incidents($choix,$titre,$du,$au,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
+     return $this->get_infos_incidents($choix,$titre,$du,$au,$filtre_cat,$filtre_mes,$filtre_san,$filtre_role);
 
   }
   public function get_nombre_total_incidents($liste_incidents=Null) {
