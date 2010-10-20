@@ -404,8 +404,12 @@ class ClassIncidents {
   }
   private function get_nbre_mesures_indiv($eleve,$incidents,$mesures) {
     $this->cpt=0;
-    foreach ($incidents as $incident) {
-      if (isset($mesures[$incident][$eleve]))$this->cpt=$this->cpt+count($mesures[$incident][$eleve]) ;
+    foreach ($incidents as $incident) {    
+      if (isset($mesures[$incident][$eleve])){
+        foreach($mesures[$incident][$eleve] as $mesure){
+          if($mesure->type=='prise')$this->cpt++;
+        }
+      }
     }
     return($this->cpt);
   }
