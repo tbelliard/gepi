@@ -201,9 +201,9 @@ if (isset ($_POST['maj'])) {
             require 'updates/152_to_153.inc.php';
 	}
 
-//	if (($force_maj == 'yes') or (quelle_maj("mod_abs2"))) {
-//            require 'updates/mod_abs2.inc.php';
-//	}
+	if (($force_maj == 'yes') or (quelle_maj("1.5.3.1"))) {
+            require 'updates/153_to_1531.inc.php';
+	}
 
 	// Mise à jour du numéro de version
 	saveSetting("version", $gepiVersion);
