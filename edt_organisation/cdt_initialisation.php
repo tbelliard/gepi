@@ -96,7 +96,7 @@ if(isset($login_edt)){
     $entetes = ConstruireEnteteEDT();
     $creneaux = ConstruireCreneauxEDT();
     $DisplayEDT = true;
-	FixColumnPositions($tab_data, $entetes);
+	//	FixColumnPositions($tab_data, $entetes);		// en cours de dével
 	RecupereNotices($tab_data, $entetes);
 	
 }
