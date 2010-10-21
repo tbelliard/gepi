@@ -60,7 +60,12 @@ function test_unique_login($s) {
         if ($test2 != "0") {
             return 'no';
         } else {
-            return 'yes';
+			$test3 = mysql_num_rows(mysql_query("SELECT login FROM resp_pers WHERE (login='$s' OR login='".strtoupper($s)."')"));
+			if ($test3 != "0") {
+				return 'no';
+			} else {
+	            return 'yes';
+	        }
         }
     }
 }
