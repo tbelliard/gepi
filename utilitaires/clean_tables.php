@@ -1679,26 +1679,44 @@ col2 varchar(100) NOT NULL default ''
 		}
 		*/
 
-		echo "absences_rb";
+		echo "absences_rb (abs1)";
 		$sql="DELETE FROM absences_rb WHERE date_saisie < ".mktime("0","0","0",$mois,$jour,$annee).";";
 		//echo "$sql<br />\n";
 		$suppr=mysql_query($sql);
 		echo ", ";
 
-		echo "absences_eleves";
+		echo "absences_eleves (abs1)";
 		$sql="DELETE FROM absences_eleves WHERE a_date_absence_eleve < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
 		$suppr=mysql_query($sql);
 		echo ", ";
 
-		echo "absences_repas";
+		echo "absences_repas (abs1)";
 		$sql="DELETE FROM absences_repas WHERE a_date_absence_eleve < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
 		$suppr=mysql_query($sql);
 		echo ", ";
 
-		echo "lettres_suivis";
+		echo "lettres_suivis (abs1)";
 		$sql="DELETE FROM lettres_suivis WHERE emis_date_lettre_suivi < date('$annee-$mois-$jour');";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+		echo ", ";
+
+		echo "a_saisies (abs2)";
+		$sql="DELETE FROM a_saisies WHERE debut_abs < date('$annee-$mois-$jour');";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+		echo ", ";
+
+		echo "a_traitements (abs2)";
+		$sql="DELETE FROM a_traitements WHERE created_at < date('$annee-$mois-$jour');";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+		echo ", ";
+
+		echo "a_notifications (abs2)";
+		$sql="DELETE FROM a_notifications WHERE created_at < date('$annee-$mois-$jour');";
 		//echo "$sql<br />\n";
 		$suppr=mysql_query($sql);
 
