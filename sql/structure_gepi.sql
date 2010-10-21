@@ -27,6 +27,8 @@ DROP TABLE IF EXISTS `ct_devoirs_entry`;
 CREATE TABLE `ct_devoirs_entry` ( `id_ct` int(11) NOT NULL auto_increment, `id_groupe` INT(11) NOT NULL, `date_ct` int(11) NOT NULL default '0', `id_login` varchar(32) NOT NULL default '',id_sequence INT ( 11 ) NOT NULL DEFAULT '0', `contenu` text NOT NULL, `vise` CHAR( 1 ) NOT NULL DEFAULT 'n', PRIMARY KEY (`id_ct`), KEY `id_groupe` (`id_groupe`), INDEX groupe_date (`id_groupe`, `date_ct`));
 DROP TABLE IF EXISTS `ct_documents`;
 CREATE TABLE `ct_documents` ( `id` int(11) NOT NULL auto_increment, `id_ct` int(11) NOT NULL default '0', `titre` varchar(255) NOT NULL default '', `taille` int(11) NOT NULL default '0', `emplacement` varchar(255) NOT NULL default '', PRIMARY KEY  (`id`));
+DROP TABLE IF EXISTS `ct_devoirs_documents`;
+CREATE TABLE `ct_devoirs_documents` ( `id` int(11) NOT NULL auto_increment, `id_ct_devoir` int(11) NOT NULL default '0', `titre` varchar(255) NOT NULL default '', `taille` int(11) NOT NULL default '0', `emplacement` varchar(255) NOT NULL default '', PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `ct_entry`;
 CREATE TABLE `ct_entry` ( `id_ct` int(11) NOT NULL auto_increment, `heure_entry` time NOT NULL default '00:00:00', `id_groupe` INT(11) NOT NULL, `date_ct` int(11) NOT NULL default '0', `id_login` varchar(32) NOT NULL default '', id_sequence INT ( 11 ) NOT NULL DEFAULT '0', `contenu` text NOT NULL, `vise` CHAR( 1 ) NOT NULL DEFAULT 'n', `visa` CHAR( 1 ) NOT NULL DEFAULT 'n', PRIMARY KEY (`id_ct`), KEY `id_groupe` (`id_groupe`), INDEX id_date_heure (id_groupe, date_ct, heure_entry));
 DROP TABLE IF EXISTS `ct_types_documents`;
