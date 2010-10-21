@@ -275,7 +275,7 @@ function ReturnIdPeriod($date_ts) {
 	$endprocess = false;
     $retour = 0;
 	while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
-		if (($rep_periode['debut_calendrier_ts'] <= $date_ts) AND ($rep_periode['fin_calendrier_ts'] >= $date_ts)) { 
+		if (($rep_periode['debut_calendrier_ts'] < $date_ts) AND ($rep_periode['fin_calendrier_ts'] > $date_ts)) { 
 			$retour = $rep_periode['id_calendrier'];
 			$endprocess = true;
 		}

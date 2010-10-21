@@ -122,7 +122,7 @@ if(isset($login_edt)){
         $tab_data = ConstruireEDTProf($login_edt, $_SESSION['period_id']);
         $entetes = ConstruireEnteteEDT();
         $creneaux = ConstruireCreneauxEDT();
-		//FixColumnPositions($tab_data, $entetes);		// en cours de devel
+		FixColumnPositions($tab_data, $entetes);		// en cours de devel
         $DisplayEDT = true;
     }
     else if ($type_edt == "classe")

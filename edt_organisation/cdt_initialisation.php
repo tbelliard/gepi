@@ -55,7 +55,6 @@ if ($bascule_edt != NULL) {
 if (!isset($_SESSION['bascule_edt'])) {
     $_SESSION['bascule_edt'] = 'semaine';
 }
-$_SESSION['period_id'] = 0;
 $DisplayPeriodBar = false;
 $DisplayWeekBar = true;
 if ($week_selected != NULL) {
@@ -77,9 +76,7 @@ if (!isset($login_edt)) {
 }
 
 if (PeriodesExistent()) {
-	if (!isset($_SESSION['period_id'])) {
-		$_SESSION['period_id'] = ReturnIdPeriod(RecupereTimestampJour(0));
-	}
+	$_SESSION['period_id'] = ReturnIdPeriod(RecupereTimestampJour(1));
 	if (!PeriodExistsInDB($_SESSION['period_id'])) {
 		$_SESSION['period_id'] = ReturnFirstIdPeriod();    
 	}
@@ -96,7 +93,7 @@ if(isset($login_edt)){
     $entetes = ConstruireEnteteEDT();
     $creneaux = ConstruireCreneauxEDT();
     $DisplayEDT = true;
-	//	FixColumnPositions($tab_data, $entetes);		// en cours de dével
+	FixColumnPositions($tab_data, $entetes);		// en cours de dével
 	RecupereNotices($tab_data, $entetes);
 	
 }
