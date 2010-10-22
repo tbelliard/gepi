@@ -33,7 +33,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -250,6 +250,8 @@ $mode = isset($_POST["mode"]) ? $_POST["mode"] : (isset($_GET["mode"]) ? $_GET["
 
 $tab_statuts=array('administrateur','cpe','professeur','scolarite','secours','autre');
 $afficher_statut=isset($_POST['afficher_statut']) ? $_POST['afficher_statut'] : (isset($_GET['afficher_statut']) ? $_GET['afficher_statut'] : "");
+$afficher_auth_mode=isset($_POST['afficher_auth_mode']) ? $_POST['afficher_auth_mode'] : (isset($_GET['afficher_auth_mode']) ? $_GET['afficher_auth_mode'] : "");
+$tab_auth_mode=array('gepi', 'ldap', 'sso');
 
 //**************** EN-TETE *****************************
 if($mode=='personnels') {
@@ -339,7 +341,7 @@ if (getSettingValue("statuts_prives") == "y") {
  <td>
 <p>
  &nbsp;&nbsp;<select name='afficher_statut' onchange="document.forms['form1'].submit();">
-<option value=''>TOUS</option>
+<option value=''>Tout statut</option>
 <?php
 echo "<option value='administrateur'\n";
 if($afficher_statut=="administrateur") {echo " selected='true'";}
@@ -365,6 +367,29 @@ echo ">Autre</option>\n";
 </p>
 </td>
 
+<?php
+$sql="SELECT DISTINCT auth_mode FROM utilisateurs ORDER BY auth_mode;";
+$test_auth_mode=mysql_query($sql);
+if(mysql_num_rows($test_auth_mode)==1) {
+	$lig_auth_mode=mysql_fetch_object($test_auth_mode);
+	echo "<input type='hidden' name='afficher_auth_mode' value='$lig_auth_mode->auth_mode' />\n";
+}
+else {
+	echo "<td>\n";
+	echo "<p>\n";
+	echo "&nbsp;&nbsp;<select name='afficher_auth_mode' onchange=\"document.forms['form1'].submit();\">
+	<option value=''>Tout auth_mode</option>\n";
+	while($lig_auth_mode=mysql_fetch_object($test_auth_mode)) {
+		echo "<option value='$lig_auth_mode->auth_mode'\n";
+		if($afficher_auth_mode=="$lig_auth_mode->auth_mode") {echo " selected='true'";}
+		echo ">$lig_auth_mode->auth_mode</option>\n";
+	}
+	echo "</select>\n";
+	echo "</p>\n";
+	echo "</td>\n";
+}
+?>
+
  <td><p><input type='submit' value='Valider' /></p></td>
  </tr>
  </table>
@@ -377,12 +402,15 @@ echo ">Autre</option>\n";
 echo "<table class='boireaus' cellpadding='3' summary='Tableau des utilisateurs'>\n";
 echo "<tr><th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=login&amp;display=$display";
 if($afficher_statut!="") {echo "&amp;afficher_statut=$afficher_statut";}
+if($afficher_auth_mode!="") {echo "&amp;afficher_auth_mode=$afficher_auth_mode";}
 echo "'>Nom de login</a></b></p></th>\n";
 echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=nom,prenom&amp;display=$display";
 if($afficher_statut!="") {echo "&amp;afficher_statut=$afficher_statut";}
+if($afficher_auth_mode!="") {echo "&amp;afficher_auth_mode=$afficher_auth_mode";}
 echo "'>Nom et prénom</a></b></p></th>\n";
 echo "<th><p class=small><b><a href='index.php?mode=$mode&amp;order_by=statut,nom,prenom&amp;display=$display";
 if($afficher_statut!="") {echo "&amp;afficher_statut=$afficher_statut";}
+if($afficher_auth_mode!="") {echo "&amp;afficher_auth_mode=$afficher_auth_mode";}
 echo "'>Statut</a></b></p></th>\n";
 echo "<th><p class=small><b>matière(s) si professeur</b></p></th>\n";
 echo "<th><p class=small><b>classe(s)</b></p></th>\n";
@@ -394,18 +422,37 @@ echo "<th><p class=small><b>imprimer fiche bienvenue</b></p></th>\n";
     }
 echo "</tr>\n";
 if(($afficher_statut!="")&&(in_array($afficher_statut,$tab_statuts))) {
-	$sql="SELECT * FROM utilisateurs WHERE (statut = '$afficher_statut') 
-		ORDER BY $order_by;";
+	if(($afficher_auth_mode!="")&&(in_array($afficher_auth_mode,$tab_auth_mode))) {
+		$sql="SELECT * FROM utilisateurs WHERE (statut = '$afficher_statut' AND auth_mode='$afficher_auth_mode')
+			ORDER BY $order_by;";
+	}
+	else {
+		$sql="SELECT * FROM utilisateurs WHERE (statut = '$afficher_statut') 
+			ORDER BY $order_by;";
+	}
 }
 else {
-	$sql="SELECT * FROM utilisateurs WHERE (
-		statut = 'administrateur' OR 
-		statut = 'professeur' OR 
-		statut = 'scolarite' OR 
-		statut = 'cpe' OR 
-		statut = 'secours' OR 
-		statut = 'autre') 
-		ORDER BY $order_by;";
+	if(($afficher_auth_mode!="")&&(in_array($afficher_auth_mode,$tab_auth_mode))) {
+		$sql="SELECT * FROM utilisateurs WHERE ((
+			statut = 'administrateur' OR 
+			statut = 'professeur' OR 
+			statut = 'scolarite' OR 
+			statut = 'cpe' OR 
+			statut = 'secours' OR 
+			statut = 'autre')
+			AND auth_mode='$afficher_auth_mode')
+			ORDER BY $order_by;";
+	}
+	else {
+		$sql="SELECT * FROM utilisateurs WHERE (
+			statut = 'administrateur' OR 
+			statut = 'professeur' OR 
+			statut = 'scolarite' OR 
+			statut = 'cpe' OR 
+			statut = 'secours' OR 
+			statut = 'autre') 
+			ORDER BY $order_by;";
+	}
 }
 $calldata = mysql_query($sql);
 $nombreligne = mysql_num_rows($calldata);
