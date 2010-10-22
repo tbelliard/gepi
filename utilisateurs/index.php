@@ -331,11 +331,11 @@ if (getSettingValue("statuts_prives") == "y") {
 <table border='0' summary='Tableau de choix'>
 <tr>
 <td><p>Afficher : </p></td>
-<td><p><label for='display_tous' style='cursor: pointer;'>tous les utilisateurs</label> <input type="radio" name="display" id='display_tous' value='tous' <?php if ($display=='tous') {echo " checked";} ?> /></p></td>
+<td><p><label for='display_tous' style='cursor: pointer;'>tous les utilisateurs</label> <input type="radio" name="display" id='display_tous' value='tous' <?php if ($display=='tous') {echo " checked";} ?> onchange="document.forms['form1'].submit();" /></p></td>
 <td><p>
- &nbsp;&nbsp;<label for='display_actifs' style='cursor: pointer;'>les utilisateurs actifs</label> <input type="radio" id='display_actifs' name="display" value='actifs' <?php if ($display=='actifs') {echo " checked";} ?> /></p></td>
+ &nbsp;&nbsp;<label for='display_actifs' style='cursor: pointer;'>les utilisateurs actifs</label> <input type="radio" id='display_actifs' name="display" value='actifs' <?php if ($display=='actifs') {echo " checked";} ?> onchange="document.forms['form1'].submit();" /></p></td>
  <td><p>
- &nbsp;&nbsp;<label for='display_inactifs' style='cursor: pointer;'>les utilisateurs inactifs</label> <input type="radio" name="display" id='display_inactifs' value='inactifs' <?php if ($display=='inactifs') {echo " checked";} ?> /></p></td>
+ &nbsp;&nbsp;<label for='display_inactifs' style='cursor: pointer;'>les utilisateurs inactifs</label> <input type="radio" name="display" id='display_inactifs' value='inactifs' <?php if ($display=='inactifs') {echo " checked";} ?> onchange="document.forms['form1'].submit();" /></p></td>
 
 
  <td>
