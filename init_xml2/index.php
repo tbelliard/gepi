@@ -53,6 +53,14 @@ require_once("../lib/header.inc");
 
 <p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.<br />
 <?php
+
+	if((getSettingValue('use_sso')=="lcs")||(getSettingValue('use_sso')=="ldap_scribe")) {
+		echo "<p style='color:red;'><b>ATTENTION&nbsp;:</b> Vous utilisez un serveur LCS ou SCRIBE.<br />
+		Il existe un mode d'initialisation de l'année propre à <a href='../init_lcs/index.php'>LCS</a> d'une part et à SCRIBE d'autre part (<i><a href='../init_scribe/index.php'>Scribe</a> et <a href='../init_scribe_ng/index.php'>Scribe_ng</a></i>).<br />
+		Si vous initialisez l'année avec le mode XML, vous ne pourrez pas utiliser les comptes de votre serveur LCS/SCRIBE par la suite pour accéder à GEPI.<br />Réfléchissez-y à deux fois avant de poursuivre.</p>\n";
+		echo "<br />\n";
+	}
+
 	$sql="SELECT 1=1 FROM matieres_notes LIMIT 1;";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
