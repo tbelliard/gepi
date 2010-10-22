@@ -520,10 +520,10 @@ if (isset($titre_page)) {
 		if (getSettingValue("contact_admin_mailto")=='y') {
 			$gepiAdminAdress=getSettingValue("gepiAdminAdress");
 			$tmp_date=getdate();
-			$lien="<a href='mailto:$gepiAdminAdress?Subject=Gepi&amp;body=";
+			$lien="mailto:$gepiAdminAdress?Subject=Gepi&amp;body=";
 			if ($tmp_date['hours']>=18) {$lien.= "Bonsoir";} else {$lien.= "Bonjour";}
-			$lien.=",%0d%0aCordialement.";
-			$tbs_deux_menu[][]=array("lien"=>$lien , "onclick"=> ""  , "texte"=>"Contacter l'administrateur");
+			$lien.=",%0d%0a%0d%0a%0d%0a%0d%0aCordialement.";
+			$tbs_deux_menu[]=array("lien"=>$lien , "onclick"=> ""  , "texte"=>"Contacter l'administrateur");
 		}else{
 			$tbs_deux_menu[]=array("lien"=>"$gepiPath/gestion/contacter_admin.php" , "onclick"=> "onclick=\"centrerpopup('$gepiPath/gestion/contacter_admin.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes'); return false;\""  , "texte"=>"Contacter l'administrateur");
 		}
