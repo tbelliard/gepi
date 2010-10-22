@@ -963,10 +963,11 @@ foreach ($liste_eleves as $eleve) {
 			}
 
 			if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
-				$mess_note[$i][$k] =$mess_note[$i][$k].$note_import[$current_displayed_line];
+				$mess_note[$i][$k]=$mess_note[$i][$k].$note_import[$current_displayed_line];
 				$mess_note_pdf[$i][$k] = $note_import[$current_displayed_line];
-			} else {
-//echo "<p>\$eleve_statut=$eleve_statut<br />\$eleve_note=$eleve_note<br />";
+			}
+			else {
+				//echo "<p>\$eleve_login[$i]=$eleve_login[$i] \$i=$i et \$k=$j<br />\$eleve_statut=$eleve_statut<br />\$eleve_note=$eleve_note<br />";
 				if (($eleve_statut != '') and ($eleve_statut != 'v')) {
 					$mess_note[$i][$k] = $mess_note[$i][$k].$eleve_statut;
 					$mess_note_pdf[$i][$k] = $eleve_statut;
@@ -974,12 +975,27 @@ foreach ($liste_eleves as $eleve) {
 					$mess_note_pdf[$i][$k] = "";
 				} else {
 					$mess_note[$i][$k] = $mess_note[$i][$k].$eleve_note;
-					$mess_note_pdf[$i][$k] = number_format($eleve_note,1, ',', ' ');
 
-					//=========================
-					// AJOUT: boireaus 20080607
-					$tab_graph[$k][]=number_format($eleve_note,1, '.', ' ');
-					//=========================
+					if($eleve_note=="") {
+						// Ca ne devrait pas arriver... si: quand le devoir est créé, mais qu'aucune note n'est saisie, ni enregistrement encore effectué.
+						// Le simple fait de cliquer sur Enregistrer remplit la table cn_notes_devoirs avec eleve_note='0.0' et eleve_statut='v' et on n'a plus l'erreur
+						$mess_note_pdf[$i][$k] = $eleve_note;
+					}
+					else {
+						if((preg_match("/^[0-9]*.[0-9]*$/",$eleve_note))||
+						(preg_match("/^[0-9]*,[0-9]*$/",$eleve_note))||
+						(preg_match("/^[0-9]*$/",$eleve_note))) {
+							$mess_note_pdf[$i][$k] = number_format($eleve_note,1, ',', ' ');
+			
+							//=========================
+							// AJOUT: boireaus 20080607
+							$tab_graph[$k][]=number_format($eleve_note,1, '.', ' ');
+							//=========================
+						}
+						else {
+							echo "<p style='color:red;'>BIZARRE: \$eleve_login[$i]=$eleve_login[$i] \$i=$i et \$k=$j<br />\$eleve_statut=$eleve_statut<br />\$eleve_note=$eleve_note<br />\n";
+						}
+					}
 				}
 			}
 			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N") {
