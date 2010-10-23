@@ -100,7 +100,7 @@ $dt_debut_toutes->setTime(0,0,0);
 $dt_fin_toutes->setTime(23,59,59);
 
 //$date_interval= new DateInterval("P1D");
-$date_traite="";
+//$date_traite="";
 // Fin Initialisation toutes absences
 
 
@@ -327,16 +327,17 @@ $dt_fin->setTime(23,59,59);
 	</tr>
 <?php
 		unset ($date_actuelle);
-
 		$date_actuelle=clone $dt_fin_toutes ;
 
 		while ($date_actuelle >= $dt_debut_toutes) {
-			foreach($eleve->getAbsenceEleveSaisiesDuJour($date_actuelle) as $abs) {
-			if ($date_traite==$date_actuelle->format('d/m/Y')){
-			  break;
-			} else {
-			  $date_traite=$date_actuelle->format('d/m/Y');
-			}
+            //on n'affiche pas les jours ou il n'y a que des saisies non souhaitées
+            $affichage=false;
+			foreach($eleve->getAbsenceEleveSaisiesDuJour($date_actuelle) as $abs) {          
+              if($abs->getManquementObligationPresence()){
+                 $affichage=true;
+              }
+            }
+            if($affichage){
 ?>
 	<tr>
 	  <td style="text-align:center;"><?php echo $date_actuelle->format('d/m/Y'); ?></td>
@@ -381,7 +382,7 @@ $dt_fin->setTime(23,59,59);
 ?>
 	</tr>
 <?php
-	}
+            }
   //$date_actuelle = date_add($date_actuelle , $date_interval);
 
 date_date_set($date_actuelle, $date_actuelle->format('Y'),$date_actuelle->format('m'), $date_actuelle->format('d')-1);
