@@ -52,7 +52,6 @@ class AbsencesEleveSaisieHelper {
 		}
 	    }
 
-	    $horaire_tab = EdtHorairesEtablissementQuery::create()->find()->getArrayCopy('JourHoraireEtablissement');
 	    $heure_demi_journee = 11;
 	    $minute_demi_journee = 50;
 	    try {
@@ -63,8 +62,9 @@ class AbsencesEleveSaisieHelper {
 	    }
 
 	    $result = new PropelCollection();
-	    $semaine_declaration = array("dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi");
 	    $date_compteur = clone $date_debut_iteration;
+            $horaire_tab = EdtHorairesEtablissementPeer::retrieveAllEdtHorairesEtablissementArrayCopy();
+            require_once("helpers/EdtHelper.php");
 	    foreach($abs_saisie_col as $saisie) {
 		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
 		    $date_compteur = clone $saisie->getDebutAbs(null);
@@ -80,29 +80,29 @@ class AbsencesEleveSaisieHelper {
 		$max = 0;
 		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration->format('U') && $max < 200) {
 		    //est-ce un jour de la semaine ouvert ?
-		    $jour_semaine = $semaine_declaration[$date_compteur->format("w")];
-		    $horaire = null;
-		    if (isset($horaire_tab[$jour_semaine])) {
-			$horaire = $horaire_tab[$jour_semaine];
-		    }
-		    if ($horaire == null
-			    || $date_compteur->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')
-			    ||	$date_compteur->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
-			//etab fermé
-			$date_compteur->modify("+55 minutes");
-			continue;
-		    }
-
-		    //est-ce une période ouverte
-		    $edt_periode_courante = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($date_compteur);
-		    if ($edt_periode_courante != null
-			    && ($edt_periode_courante->getEtabfermeCalendrier() == 0 || $edt_periode_courante->getEtabvacancesCalendrier() == 1)) {
+		    if (!EdtHelper::isJourneeOuverte($date_compteur)) {
 			//etab fermé
 			$date_compteur->modify("+12 hours");
 			continue;
-		    }
+                    } elseif (!EdtHelper::isEtablissementOuvert($date_compteur)) {
+                        $date_compteur->modify("+55 minutes");
+                        continue;
+                    }
+//		    } else {
+//                        $jour_semaine = EdtHelper::$semaine_declaration[$date_compteur->format("w")];
+//                        $horaire = null;
+//                        if (isset($horaire_tab[$jour_semaine])) {
+//                            $horaire = $horaire_tab[$jour_semaine];
+//                        }
+//                        if ($horaire == null
+//                                || $date_compteur->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')
+//                                ||	$date_compteur->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
+//                            //etab fermé
+//                            $date_compteur->modify("+55 minutes");
+//                            continue;
+//                        }
+//                    }
 
-		    //etab ouvert
 		    if ($date_compteur->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
 			$date_compteur->setTime(0, 0);
 		    } else {
