@@ -193,6 +193,10 @@ $test = 'templates/accueil_externe.php' ;
 	$tbs_SSO_lien = "";
 	if ($session_gepi->auth_sso) {
 		$tbs_SSO_lien = 'login_sso.php';
+	// ajouter un test sur plugin_sso_table
+		if (mb_strlen(getSettingValue('login_sso_url'))>0) {
+			$tbs_SSO_lien = getSettingValue('login_sso_url');
+		}
 	}
 
 	

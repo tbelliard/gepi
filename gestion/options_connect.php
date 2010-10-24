@@ -145,8 +145,13 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 	    }
 		saveSetting("statut_utilisateur_defaut", $_POST['statut_utilisateur_defaut']);
 	}
+	
+	if (isset($_POST['login_sso_url'])) {
+		saveSetting("login_sso_url", $_POST['login_sso_url']);
+	}
 
 }
+
 
 
 // Load settings
@@ -352,9 +357,16 @@ echo "<input type='text' size='60' name='sso_url_portail' value='".$gepiSettings
 echo "</p>\n";
 
 echo "<p><input type='checkbox' name='sso_hide_logout' value='yes' id='label_sso_hide_logout'";
-if ($gepiSettings['sso_hide_logout'] == 'yes') echo " checked ";
+if ($gepiSettings['sso_hide_logout'] == 'yes') echo " checked='checked' ";
 echo " /> <label for='label_sso_hide_logout' style='cursor: pointer;'>Sessions SSO uniquement : masquer le lien de déconnexion (soyez sûr que l'utilisateur dispose alors d'un moyen alternatif de se déconnecter).";
 echo "</label>\n";
+echo "</p>\n";
+
+echo "<br/>\n";
+echo "<p>\n";
+echo "<label for='login_sso_url' style='cursor: pointer;'>Fichier d'identification SSO alternatif (à utiliser à la place de login_sso.php) : </label>\n";
+echo "<input type='text' size='60' name='login_sso_url' value='".getSettingValue('login_sso_url')."' id='login_sso_url' />\n";
+
 echo "</p>\n";
 
 echo "<br/>\n";
