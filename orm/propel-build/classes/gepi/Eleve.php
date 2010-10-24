@@ -797,7 +797,7 @@ class Eleve extends BaseEleve {
 		}
 	    }
 	    foreach ($saisie_col as $saisie) {
-		if ($dt_debut != null && $dt_fin!= null && $dt_debut == $dt_fin) {
+		if ($dt_debut != null && $dt_fin!= null && $dt_debut->format('U') == $dt_fin->format('U')) {
 		    //si on a un seul dateTime pour la plage de recherche, on renvoi les saisie qui chevauchent cette date
 		    //ainsi que les saisies qui commence juste à cette date
 		    if ($dt_debut->format('U') >=  $saisie->getFinAbs('U')) {
