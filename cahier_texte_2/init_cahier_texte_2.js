@@ -334,7 +334,6 @@ function initWysiwyg() {
 		//creation de l'instance
 		//En fonction de la largeur, on change le menu pour eviter de le couper si la largeur est trop petite
 		if (GetWidth() < 1100) {
-                    alert
 		    CKEDITOR.replace( 'contenu', {
 			language : 'fr',
 			skin : 'kama',
