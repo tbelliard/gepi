@@ -76,21 +76,35 @@ CKEDITOR.config =
 
 	/**
 	 * The writting direction of the language used to write the editor
-	 * contents. Allowed values are 'ltr' for Left-To-Right language (like
-	 * English), or 'rtl' for Right-To-Left languages (like Arabic).
-	 * @default 'ltr'
+	 * contents. Allowed values are:
+	 * <ul>
+	 *     <li>'ui' - which indicate content direction will be the same with the user interface language direction;</li>
+	 *     <li>'ltr' - for Left-To-Right language (like English);</li>
+	 *     <li>'rtl' - for Right-To-Left languages (like Arabic).</li>
+	 * </ul>
+	 * @default 'ui'
 	 * @type String
 	 * @example
 	 * config.contentsLangDirection = 'rtl';
 	 */
-	contentsLangDirection : 'ltr',
+	contentsLangDirection : 'ui',
+
+	/**
+	 * Language code of  the writting language which is used to author the editor
+	 * contents.
+	 * @default Same value with editor's UI language.
+	 * @type String
+	 * @example
+	 * config.contentsLanguage = 'fr';
+	 */
+	contentsLanguage : '',
 
 	/**
 	 * The user interface language localization to use. If empty, the editor
 	 * automatically localize the editor to the user language, if supported,
 	 * otherwise the {@link CKEDITOR.config.defaultLanguage} language is used.
-	 * @default true
-	 * @type Boolean
+	 * @default '' (empty)
+	 * @type String
 	 * @example
 	 * // Load the German interface.
 	 * config.language = 'de';
@@ -130,6 +144,18 @@ CKEDITOR.config =
 	enterMode : CKEDITOR.ENTER_P,
 
 	/**
+	 * Force the respect of {@link CKEDITOR.config.enterMode} as line break regardless of the context,
+	 * E.g. If {@link CKEDITOR.config.enterMode} is set to {@link CKEDITOR.ENTER_P},
+	 * press enter key inside a 'div' will create a new paragraph with 'p' instead of 'div'.
+	 * @since 3.2.1
+	 * @default false
+	 * @example
+	 * // Not recommended.
+	 * config.forceEnterMode = true;
+	 */
+	forceEnterMode : false,
+
+	/**
 	 * Just like the {@link CKEDITOR.config.enterMode} setting, it defines the behavior for the SHIFT+ENTER key.
 	 * The allowed values are the following constants, and their relative
 	 * behavior:
@@ -167,14 +193,18 @@ CKEDITOR.config =
 	docType : '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
 
 	/**
-	 * Sets the 'id' attribute to be used on body if it doesn't have one.
+	 * Sets the "id" attribute to be used on the body element of the editing
+	 * area.
+	 * @since 3.1
 	 * @type String
 	 * @default ''
 	 */
 	bodyId : '',
 
 	/**
-	 * Sets the 'class' attribute to be used on body if it doesn't have one.
+	 * Sets the "class" attribute to be used on the body element of the editing
+	 * area.
+	 * @since 3.1
 	 * @type String
 	 * @default ''
 	 */
@@ -185,6 +215,7 @@ CKEDITOR.config =
 	 * HTML page. A full page includes the &lt;html&gt;, &lt;head&gt; and
 	 * &lt;body&gt; tags. The final output will also reflect this setting,
 	 * including the &lt;body&gt; contents only if this setting is disabled.
+	 * @since 3.1
 	 * @type Boolean
 	 * @default false
 	 * @example
@@ -212,7 +243,63 @@ CKEDITOR.config =
 	 * @type String
 	 * @example
 	 */
-	plugins : 'about,basicstyles,blockquote,button,clipboard,colorbutton,colordialog,contextmenu,div,elementspath,enterkey,entities,filebrowser,find,flash,font,format,forms,horizontalrule,htmldataprocessor,image,indent,justify,keystrokes,link,list,maximize,newpage,pagebreak,pastefromword,pastetext,popup,preview,print,removeformat,resize,save,scayt,smiley,showblocks,showborders,sourcearea,stylescombo,table,tabletools,specialchar,tab,templates,toolbar,undo,wysiwygarea,wsc',
+	plugins :
+		'about,' +
+		'a11yhelp,' +
+		'basicstyles,' +
+		'bidi,' +
+		'blockquote,' +
+		'button,' +
+		'clipboard,' +
+		'colorbutton,' +
+		'colordialog,' +
+		'contextmenu,' +
+		'dialogadvtab,' +
+		'div,' +
+		'elementspath,' +
+		'enterkey,' +
+		'entities,' +
+		'filebrowser,' +
+		'find,' +
+		'flash,' +
+		'font,' +
+		'format,' +
+		'forms,' +
+		'horizontalrule,' +
+		'htmldataprocessor,' +
+		'image,' +
+		'indent,' +
+		'justify,' +
+		'keystrokes,' +
+		'link,' +
+		'list,' +
+		'liststyle,' +
+		'maximize,' +
+		'newpage,' +
+		'pagebreak,' +
+		'pastefromword,' +
+		'pastetext,' +
+		'popup,' +
+		'preview,' +
+		'print,' +
+		'removeformat,' +
+		'resize,' +
+		'save,' +
+		'scayt,' +
+		'smiley,' +
+		'showblocks,' +
+		'showborders,' +
+		'sourcearea,' +
+		'stylescombo,' +
+		'table,' +
+		'tabletools,' +
+		'specialchar,' +
+		'tab,' +
+		'templates,' +
+		'toolbar,' +
+		'undo,' +
+		'wysiwygarea,' +
+		'wsc',
 
 	/**
 	 * List of additional plugins to be loaded. This is a tool setting which
@@ -298,5 +385,21 @@ CKEDITOR.config =
 	 */
 	baseFloatZIndex : 10000
 };
+
+/**
+ * Indicates that some of the editor features, like alignement and text
+ * direction, should used the "computed value" of the feature to indicate it's
+ * on/off state, instead of using the "real value".
+ *
+ * If enabled, in a left to right written document, the "Left Justify"
+ * alignment button will show as active, even if the aligment style is not
+ * explicitly applied to the current paragraph in the editor.
+ * @name CKEDITOR.config.useComputedState
+ * @type Boolean
+ * @default true
+ * @since 3.4
+ * @example
+ * config.useComputedState = false;
+ */
 
 // PACKAGER_RENAME( CKEDITOR.config )

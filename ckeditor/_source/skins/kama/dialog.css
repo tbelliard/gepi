@@ -67,12 +67,6 @@ body .cke_dialog
 	margin-bottom: 10px;
 }
 
-.cke_skin_kama .cke_browser_ie.cke_rtl .cke_dialog_title
-{
-	position: static !important;
-	unicode-bidi: bidi-override;
-}
-
 .cke_skin_kama .cke_dialog_contents
 {
 	background-color: #ebebeb;
@@ -169,6 +163,12 @@ body .cke_dialog
 	background-color: #f1f1e3;
 }
 
+.cke_skin_kama .cke_hc a:hover.cke_dialog_tab
+{
+	padding: 2px 6px !important;
+	border-width: 3px;
+}
+
 .cke_skin_kama a.cke_dialog_tab_selected,
 .cke_skin_kama a:link.cke_dialog_tab_selected,
 .cke_skin_kama a:active.cke_dialog_tab_selected,
@@ -177,6 +177,16 @@ body .cke_dialog
 {
 	background-position: 0 -1279px;
 	cursor: default;
+}
+
+.cke_skin_kama .cke_hc a.cke_dialog_tab_selected,
+.cke_skin_kama .cke_hc a:link.cke_dialog_tab_selected,
+.cke_skin_kama .cke_hc a:active.cke_dialog_tab_selected,
+.cke_skin_kama .cke_hc a:hover.cke_dialog_tab_selected,
+.cke_skin_kama .cke_hc a:visited.cke_dialog_tab_selected
+{
+	padding: 2px 6px !important;
+	border-width: 3px;
 }
 
 /* single_page */
@@ -195,7 +205,7 @@ body .cke_dialog
 /* IE7 + IE quirks */
 .cke_skin_kama .cke_browser_ie7.cke_single_page .cke_dialog_contents
 {
-	margin-top: -10px;
+	margin-top: 0px;
 	position: relative;
 	margin-bottom: -22px;
 }
@@ -227,6 +237,22 @@ body .cke_dialog
 	background-color: white;
 	border: 1px solid #a0a0a0;
 	padding: 1px 0px;
+}
+
+.cke_skin_kama .cke_browser_ie.cke_rtl div.cke_dialog_ui_input_text {
+	padding-right: 1px;
+}
+
+.cke_skin_kama .cke_browser_gecko.cke_hc div.cke_dialog_ui_input_text,
+.cke_skin_kama .cke_browser_gecko.cke_hc div.cke_dialog_ui_input_password
+{
+	border-width: 0px;
+}
+
+.cke_skin_kama .cke_browser_gecko18.cke_hc div.cke_dialog_ui_input_text,
+.cke_skin_kama .cke_browser_gecko18.cke_hc div.cke_dialog_ui_input_password
+{
+	border-width: 1px;
 }
 
 .cke_skin_kama textarea.cke_dialog_ui_input_textarea
@@ -294,6 +320,7 @@ body .cke_dialog
 	background: transparent url(images/sprites.png) repeat-x scroll 0 -1069px;
 	_background: none;
 	padding: 5px 0;
+	text-align: center;
 }
 
 .cke_skin_kama .cke_browser_iequirks a.cke_dialog_ui_button
@@ -332,7 +359,7 @@ body .cke_dialog
 }
 .cke_skin_kama .cke_browser_webkit a.cke_dialog_ui_button
 {
-	float: right;
+	display:inline-block;
 	padding-top: 3px;
 	padding-bottom: 2px;
 	margin: 2px 0;
@@ -403,6 +430,8 @@ body .cke_dialog
 	color: #222;
 	display: inline-block;
 	cursor: default;
+	min-width: 60px;
+	+margin: 2px 0; /* IE7 */
 }
 
 /* Gecko 1.8 does not support display: inline-block */
@@ -423,6 +452,13 @@ body .cke_dialog
 .cke_skin_kama a:active.cke_dialog_ui_button
 {
 	background-position: 0 -1179px;
+}
+
+.cke_skin_kama .cke_hc a:hover.cke_dialog_ui_button,
+.cke_skin_kama .cke_hc a:focus.cke_dialog_ui_button,
+.cke_skin_kama .cke_hc a:active.cke_dialog_ui_button
+{
+	border-width: 2px;
 }
 
 /* Skip hover effect on IE6 */
@@ -491,7 +527,7 @@ body .cke_dialog
 
 /* close_button */
 
-.cke_skin_kama .cke_dialog_close_button
+.cke_skin_kama .cke_dialog .cke_dialog_body .cke_dialog_close_button
 {
 	background-image: url(images/sprites.png);
 	background-repeat: no-repeat;
@@ -502,7 +538,6 @@ body .cke_dialog
 	height: 20px;
 	width: 20px;
 	top: 5px;
-
 	/* IE 6 */
 	_background-image: url(images/sprites_ie6.png);
 }
@@ -575,7 +610,7 @@ body .cke_dialog
 	background-color: white;
 }
 
-.cke_skin_kama iframe.cke_dialog_ui_input_file
+.cke_skin_kama .cke_dialog_ui_input_file
 {
 	width: 100%;
 	height: 25px;
@@ -645,12 +680,10 @@ body .cke_dialog
 {
 	border: outset 1px;
 	cursor: pointer;
-	cursor: hand;
 }
 
-.cke_skin_kama .cke_dialog  #ImagePreviewBox
+.cke_skin_kama .cke_dialog  .ImagePreviewBox
 {
-	white-space : normal;
 	border : 2px ridge black;
 	overflow : scroll;
 	height : 160px;
@@ -658,7 +691,18 @@ body .cke_dialog
 	padding : 2px;
 	background-color : white;
 }
-.cke_skin_kama .cke_dialog  #ImagePreviewLoader
+
+.cke_skin_kama .cke_dialog .ImagePreviewBox table td {
+	white-space: normal;
+}
+
+/* Fix iframedialog's height doesn't stretch to 100% #4863.*/
+.cke_skin_kama .cke_browser_iequirks .cke_dialog_page_contents
+{
+	_position: absolute;
+}
+
+.cke_skin_kama .cke_dialog  .ImagePreviewLoader
 {
 	position: absolute;
 	white-space : normal;
@@ -673,7 +717,7 @@ body .cke_dialog
 	background-color : #e4e4e4;
 }
 
-.cke_skin_kama .cke_dialog  #FlashPreviewBox
+.cke_skin_kama .cke_dialog  .FlashPreviewBox
 {
 	white-space : normal;
 	border : 2px ridge black;
@@ -682,6 +726,27 @@ body .cke_dialog
 	width : 390px;
 	padding : 2px;
 	background-color : white;
+}
+
+.cke_skin_kama .cke_dialog .cke_pastetext
+{
+	width: 346px;
+	height: 170px;
+}
+
+.cke_skin_kama .cke_dialog .cke_pastetext textarea
+{
+	width: 340px;
+	height: 170px;
+	resize: none;
+}
+
+.cke_skin_kama .cke_dialog iframe.cke_pasteframe
+{
+	width: 346px;
+	height: 130px;
+	background-color: white;
+	border: 1px solid black;
 }
 
 .cke_skin_kama .cke_dialog .cke_dark_background
@@ -700,7 +765,6 @@ body .cke_dialog
 .cke_skin_kama .cke_dialog .cke_hand
 {
 	cursor: pointer;
-	cursor: hand;
 }
 
 .cke_skin_kama .cke_disabled
@@ -733,16 +797,41 @@ body .cke_dialog
 {
 	display: inline;
 	cursor: pointer;
-	cursor: hand;
 	font-weight: bold;
 	position: relative;
 	top: 3px;
 }
+
+.cke_skin_kama .cke_dialog_body .cke_label
+{
+	display: none;
+}
+
+.cke_skin_kama .cke_dialog_body label.cke_required
+{
+	font-weight: bold;
+}
+
+.cke_skin_kama .cke_hc .cke_dialog_body .cke_label
+{
+	display: inline;
+}
+
 .cke_skin_kama .cke_hc a.cke_btn_locked,
 .cke_skin_kama .cke_hc a.cke_btn_unlocked,
 .cke_skin_kama .cke_hc a.cke_btn_reset
 {
 	border-style: solid;
+	float: left;
+	width: auto;
+	height: auto;
+}
+
+.cke_skin_kama .cke_rtl.cke_hc a.cke_btn_locked,
+.cke_skin_kama .cke_rtl.cke_hc a.cke_btn_unlocked,
+.cke_skin_kama .cke_rtl.cke_hc a.cke_btn_reset
+{
+	float: right;
 }
 
 .cke_skin_kama a.cke_smile img
@@ -756,4 +845,12 @@ body .cke_dialog
 .cke_skin_kama a.cke_smile:hover img
 {
 	border-color: #C7C78F;
+}
+
+.cke_skin_kama .cke_hc .cke_dialog_tabs a,
+.cke_skin_kama .cke_hc .cke_dialog_footer a
+{
+	opacity: 1.0;
+	filter: alpha(opacity=100);
+	border: 1px solid white;
 }

@@ -60,6 +60,10 @@ CKEDITOR.htmlParser.basicWriter = CKEDITOR.tools.createClass(
 		 */
 		attribute : function( attName, attValue )
 		{
+			// Browsers don't always escape special character in attribute values. (#4683, #4719).
+			if ( typeof attValue == 'string' )
+				attValue = CKEDITOR.tools.htmlEncodeAttr( attValue );
+
 			this._.output.push( ' ', attName, '="', attValue, '"' );
 		},
 

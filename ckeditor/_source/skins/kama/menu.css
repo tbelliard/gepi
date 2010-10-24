@@ -26,11 +26,11 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 	display:block;
 }
 
-.cke_skin_kama .cke_menuitem a.cke_disabled:hover,
-.cke_skin_kama .cke_menuitem a.cke_disabled:focus,
-.cke_skin_kama .cke_menuitem a.cke_disabled:active
+.cke_hc .cke_menuitem a:hover,
+.cke_hc .cke_menuitem a:focus,
+.cke_hc .cke_menuitem a:active
 {
-	background-color: transparent !important;
+	border: 2px solid;
 }
 
 .cke_skin_kama .cke_menuitem .cke_icon
@@ -42,6 +42,11 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 	width: 16px;
 	height: 16px;
 	float: left;
+}
+
+.cke_rtl .cke_skin_kama .cke_menuitem .cke_icon
+{
+	background-image: url(icons_rtl.png);
 }
 
 .cke_skin_kama .cke_menuitem .cke_disabled .cke_icon
@@ -94,8 +99,10 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 	height:19px;
 	margin-left: 24px;
 	background-color: #fff;
-	_overflow: hidden;
-	_width: 80px;
+}
+/* Set these after the document has been loaded and we know the dimensions*/
+.cke_skin_kama .cke_frameLoaded .cke_menuitem .cke_label
+{
 	filter: alpha(opacity=70); /* IE */
 	opacity: 0.70; /* Safari, Opera and Mozilla */
 }
@@ -162,6 +169,22 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 	_background-image: url(images/sprites_ie6.png);
 	background-position: 0px -1390px;
 	background-repeat: no-repeat;
+}
+
+.cke_skin_kama .cke_menuarrow span
+{
+	display: none;
+}
+
+.cke_hc .cke_skin_kama .cke_menuarrow
+{
+	width: auto;
+	margin-top: 0;
+}
+
+.cke_hc .cke_skin_kama .cke_menuarrow span
+{
+	display: inline;
 }
 
 /* #3766 In the context menu, long labels with second level menu get wrapped */

@@ -64,6 +64,7 @@ CKEDITOR.htmlParser.fragment = function()
 			html = [],
 			fragment = new CKEDITOR.htmlParser.fragment(),
 			pendingInline = [],
+			pendingBRs = [],
 			currentNode = fragment,
 		    // Indicate we're inside a <pre> element, spaces should be touched differently.
 			inPre = false,
@@ -71,6 +72,8 @@ CKEDITOR.htmlParser.fragment = function()
 
 		function checkPending( newTagName )
 		{
+			var pendingBRsSent;
+
 			if ( pendingInline.length > 0 )
 			{
 				for ( var i = 0 ; i < pendingInline.length ; i++ )
@@ -82,6 +85,12 @@ CKEDITOR.htmlParser.fragment = function()
 
 					if ( ( !currentDtd || currentDtd[ pendingName ] ) && ( !newTagName || !pendingDtd || pendingDtd[ newTagName ] || !CKEDITOR.dtd[ newTagName ] ) )
 					{
+						if ( !pendingBRsSent )
+						{
+							sendPendingBRs();
+							pendingBRsSent = 1;
+						}
+
 						// Get a clone for the pending element.
 						pendingElement = pendingElement.clone();
 
@@ -97,6 +106,12 @@ CKEDITOR.htmlParser.fragment = function()
 					}
 				}
 			}
+		}
+
+		function sendPendingBRs( brsToIgnore )
+		{
+			while ( pendingBRs.length - ( brsToIgnore || 0 ) > 0 )
+				currentNode.add( pendingBRs.shift() );
 		}
 
 		function addElement( element, target, enforceCurrent )
@@ -181,6 +196,12 @@ CKEDITOR.htmlParser.fragment = function()
 				return;
 			}
 
+			if ( tagName == 'br' )
+			{
+				pendingBRs.push( element );
+				return;
+			}
+
 			var currentName = currentNode.name;
 
 			var currentDtd = currentName
@@ -196,7 +217,7 @@ CKEDITOR.htmlParser.fragment = function()
 					addPoint;   // New position to start adding nodes.
 
 				// Fixing malformed nested lists by moving it into a previous list item. (#3828)
-				if( tagName in listBlocks
+				if ( tagName in listBlocks
 					&& currentName in listBlocks )
 				{
 					var children = currentNode.children,
@@ -239,7 +260,7 @@ CKEDITOR.htmlParser.fragment = function()
 					reApply = true;
 				}
 
-				if( addPoint )
+				if ( addPoint )
 					currentNode = addPoint;
 				// Try adding it to the return point, or the parent element.
 				else
@@ -253,6 +274,7 @@ CKEDITOR.htmlParser.fragment = function()
 			}
 
 			checkPending( tagName );
+			sendPendingBRs();
 
 			element.parent = currentNode;
 			element.returnPoint = returnPoint;
@@ -308,8 +330,11 @@ CKEDITOR.htmlParser.fragment = function()
 
 				currentNode = candidate;
 
-				if( currentNode.name == 'pre' )
+				if ( currentNode.name == 'pre' )
 					inPre = false;
+
+				if ( candidate._.isBlockLike )
+					sendPendingBRs();
 
 				addElement( candidate, candidate.parent );
 
@@ -321,7 +346,7 @@ CKEDITOR.htmlParser.fragment = function()
 				pendingInline = pendingInline.concat( newPendingInline );
 			}
 
-			if( tagName == 'body' )
+			if ( tagName == 'body' )
 				fixForBody = false;
 		};
 
@@ -336,6 +361,7 @@ CKEDITOR.htmlParser.fragment = function()
 					return;
 			}
 
+			sendPendingBRs();
 			checkPending();
 
 			if ( fixForBody
@@ -365,6 +391,9 @@ CKEDITOR.htmlParser.fragment = function()
 
 		// Parse it.
 		parser.parse( fragmentHtml );
+
+		// Send all pending BRs except one, which we consider a unwanted bogus. (#5293)
+		sendPendingBRs( !CKEDITOR.env.ie && 1 );
 
 		// Close all pending nodes.
 		while ( currentNode.type )

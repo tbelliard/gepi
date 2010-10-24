@@ -21,20 +21,19 @@ CKEDITOR.plugins.add( 'format',
 		{
 			var tag = tags[ i ];
 			styles[ tag ] = new CKEDITOR.style( config[ 'format_' + tag ] );
+			styles[ tag ]._.enterMode = editor.config.enterMode;
 		}
 
 		editor.ui.addRichCombo( 'Format',
 			{
 				label : lang.label,
 				title : lang.panelTitle,
-				voiceLabel : lang.voiceLabel,
 				className : 'cke_format',
-				multiSelect : false,
-
 				panel :
 				{
 					css : editor.skin.editor.css.concat( config.contentsCss ),
-					voiceLabel : lang.panelVoiceLabel
+					multiSelect : false,
+					attributes : { 'aria-label' : lang.panelTitle }
 				},
 
 				init : function()

@@ -69,6 +69,7 @@
 	filter: alpha(opacity=70); /* IE */
 	opacity: 0.70; /* Safari, Opera and Mozilla */
 	background-color: #f1f1e3;	/* Because of IE6+ClearType */
+	cursor: default;
 }
 
 .cke_skin_v2 .cke_rtl .cke_rcombo .cke_label
@@ -103,6 +104,7 @@
 	overflow: hidden;
 	display: inline-block;
 	vertical-align: top;
+	cursor: default;
 }
 
 .cke_skin_v2 .cke_ltr .cke_rcombo .cke_text
@@ -144,6 +146,16 @@
 	border-bottom: 1px solid #8f8f73;
 	width: 14px;
 	height: 20px;
+}
+
+.cke_skin_v2 .cke_rcombo .cke_openbutton span
+{
+	display: none;
+}
+
+.cke_skin_v2 .cke_hc .cke_rcombo .cke_openbutton span
+{
+	display	: inline;
 }
 
 .cke_skin_v2 .cke_ltr .cke_rcombo .cke_openbutton
@@ -271,4 +283,15 @@
 .cke_skin_v2 .cke_browser_ie .cke_rtl .cke_rcombo .cke_label
 {
 	float: none;
+}
+
+.cke_skin_v2 .cke_browser_iequirks .cke_rcombo .cke_openbutton
+{
+	height: 22px;
+}
+
+.cke_skin_v2 .cke_rtl .cke_rcombo .cke_font .cke_text,
+.cke_skin_v2 .cke_rtl .cke_rcombo .cke_fontSize .cke_text
+{
+	direction: ltr;
 }

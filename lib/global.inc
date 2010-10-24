@@ -175,7 +175,7 @@ $gepiBetaVersion = "";
 // automatique du site web de Gepi. Elle n'est vraiment utile que pour les
 // branches stables, pas pour le trunk, qui correspond de toute façon à la
 // version la plus récente.
-$gepiSvnRev="5698 post;  git : trunk 63888c6dca5a76d6fb3cb852c5832ccd4370e13a;  2010-10-21 16:04";
+$gepiSvnRev="5733; git : trunk db15fcfe6178f4c6eab925dbbfc2d41977738944;  2010-10-24 13:01";
 
 
 // Forcer l'utilisation du module de gestion des mise à jour de GEPI

@@ -129,11 +129,15 @@ CKEDITOR.plugins.add( 'floatpanel',
 
 				element.setStyles(
 					{
-						top : top + 'px',
-						left : '-3000px',
-						opacity : '0',	// FF3 is ignoring "visibility"
+						top : '-30000px',
 						display	: ''
 					});
+				// Don't use display or visibility style because we need to
+				// calculate the rendering layout later and focus the element.
+				element.setOpacity( 0 );
+
+				// To allow the context menu to decrease back their width
+				element.getFirst().removeStyle( 'width' );
 
 				// Configure the IFrame blur event. Do that only once.
 				if ( !this._.blurSet )
@@ -155,10 +159,10 @@ CKEDITOR.plugins.add( 'floatpanel',
 							// the blur event may get fired even when focusing
 							// inside the window itself, so we must ensure the
 							// target is out of it.
-							var target = ev.data.getTarget(),
-								targetWindow = target.getWindow && target.getWindow();
-
-							if ( targetWindow && targetWindow.equals( focused ) )
+							var target;
+							if ( CKEDITOR.env.ie && !this.allowBlur()
+								 || ( target = ev.data.getTarget() )
+								      && target.getName && target.getName() != 'iframe' )
 								return;
 
 							if ( this.visible && !this._.activeChild && !isShowing )
@@ -179,9 +183,10 @@ CKEDITOR.plugins.add( 'floatpanel',
 					this._.blurSet = 1;
 				}
 
-				panel.onEscape = CKEDITOR.tools.bind( function()
+				panel.onEscape = CKEDITOR.tools.bind( function( keystroke )
 					{
-						this.onEscape && this.onEscape();
+						if ( this.onEscape && this.onEscape( keystroke ) === false )
+							return false;
 					},
 					this );
 
@@ -192,9 +197,34 @@ CKEDITOR.plugins.add( 'floatpanel',
 
 						var panelLoad = CKEDITOR.tools.bind( function ()
 						{
+							var target = element.getFirst();
+
 							if ( block.autoSize )
 							{
-								var target = element.getFirst();
+								// We must adjust first the width or IE6 could include extra lines in the height computation
+								var widthNode = block.element.$;
+
+								if ( CKEDITOR.env.gecko || CKEDITOR.env.opera )
+									widthNode = widthNode.parentNode;
+
+								if ( CKEDITOR.env.ie )
+									widthNode = widthNode.document.body;
+
+								var width = widthNode.scrollWidth;
+								// Account for extra height needed due to IE quirks box model bug:
+								// http://en.wikipedia.org/wiki/Internet_Explorer_box_model_bug
+								// (#3426)
+								if ( CKEDITOR.env.ie && CKEDITOR.env.quirks && width > 0 )
+									width += ( target.$.offsetWidth || 0 ) - ( target.$.clientWidth || 0 );
+								// A little extra at the end.
+								// If not present, IE6 might break into the next line, but also it looks better this way
+								width += 4 ;
+
+								target.setStyle( 'width', width + 'px' );
+
+								// IE doesn't compute the scrollWidth if a filter is applied previously
+								block.element.addClass( 'cke_frameLoaded' );
+
 								var height = block.element.$.scrollHeight;
 
 								// Account for extra height needed due to IE quirks box model bug:
@@ -209,7 +239,7 @@ CKEDITOR.plugins.add( 'floatpanel',
 								panel._.currentBlock.element.setStyle( 'display', 'none' ).removeStyle( 'display' );
 							}
 							else
-								element.getFirst().removeStyle( 'height' );
+								target.removeStyle( 'height' );
 
 							var panelElement = panel.element,
 								panelWindow = panelElement.getWindow(),
@@ -227,40 +257,48 @@ CKEDITOR.plugins.add( 'floatpanel',
 								left += ( panelSize.width * ( rtl ? 1 : -1 ) );
 
 							// Vertical off screen is simpler.
-							if( top + panelSize.height > viewportSize.height + windowScroll.y )
+							if ( top + panelSize.height > viewportSize.height + windowScroll.y )
 								top -= panelSize.height;
+
+							// If IE is in RTL, we have troubles with absolute
+							// position and horizontal scrolls. Here we have a
+							// series of hacks to workaround it. (#6146)
+							if ( CKEDITOR.env.ie )
+							{
+								var offsetParent = new CKEDITOR.dom.element( element.$.offsetParent ),
+									scrollParent = offsetParent;
+
+								// Quirks returns <body>, but standards returns <html>.
+								if ( scrollParent.getName() == 'html' )
+									scrollParent = scrollParent.getDocument().getBody();
+
+								if ( scrollParent.getComputedStyle( 'direction' ) == 'rtl' )
+								{
+									// For IE8, there is not much logic on this, but it works.
+									if ( CKEDITOR.env.ie8Compat )
+										left -= element.getDocument().getDocumentElement().$.scrollLeft * 2;
+									else
+										left -= ( offsetParent.$.scrollWidth - offsetParent.$.clientWidth );
+								}
+							}
 
 							element.setStyles(
 								{
 									top : top + 'px',
-									left : left + 'px',
-									opacity : '1'
+									left : left + 'px'
 								} );
-
+							element.setOpacity( 1 );
 						} , this );
 
 						panel.isLoaded ? panelLoad() : panel.onLoad = panelLoad;
 
 						// Set the panel frame focus, so the blur event gets fired.
 						CKEDITOR.tools.setTimeout( function()
-							{
-								if ( definition.voiceLabel )
-								{
-									if ( CKEDITOR.env.gecko )
-									{
-										var container = iframe.getParent();
-										container.setAttribute( 'role', 'region' );
-										container.setAttribute( 'title', definition.voiceLabel );
-										iframe.setAttribute( 'role', 'region' );
-										iframe.setAttribute( 'title', ' ' );
-									}
-								}
-
-								iframe.$.contentWindow.focus();
-								// We need this get fired manually because of unfired focus() function.
-								this.allowBlur( true );
-
-							}, 0, this);
+						{
+							iframe.$.contentWindow.focus();
+							// We need this get fired manually because of unfired focus() function.
+							this.allowBlur( true );
+						}, 0, this);
 					}, 0, this);
 				this.visible = 1;
 
@@ -343,11 +381,11 @@ CKEDITOR.plugins.add( 'floatpanel',
 	{
 		var isLastInstance = CKEDITOR.tools.isEmpty( CKEDITOR.instances );
 
-		for( var i in panels )
+		for ( var i in panels )
 		{
 			var panel = panels[ i ];
 			// Safe to destroy it since there're no more instances.(#4241)
-			if( isLastInstance )
+			if ( isLastInstance )
 				panel.destroy();
 			// Panel might be used by other instances, just hide them.(#4552)
 			else

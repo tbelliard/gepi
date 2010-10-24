@@ -12,7 +12,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 {
 	CKEDITOR.plugins.add( 'div',
 	{
-		requires : [ 'editingblock', 'domiterator' ],
+		requires : [ 'editingblock', 'domiterator', 'styles' ],
 
 		init : function( editor )
 		{
@@ -47,7 +47,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 						for ( var i = 0 ; i < ranges.length ; i++ )
 						{
 							range = ranges[ i ];
-							if( range.collapsed )
+							if ( range.collapsed )
 								findDiv( selection.getStartElement() );
 							else
 							{
@@ -95,7 +95,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 				{
 					editor.contextMenu.addListener( function( element, selection )
 						{
-							if ( !element )
+							if ( !element || element.isReadOnly())
 								return null;
 
 							var elementPath = new CKEDITOR.dom.elementPath( element ),

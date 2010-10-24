@@ -31,7 +31,11 @@ CKEDITOR.lang['en'] =
 	 * Screenreader titles. Please note that screenreaders are not always capable
 	 * of reading non-English words. So be careful while translating it.
 	 */
-	editorTitle		: 'Rich text editor, %1',
+	editorTitle : 'Rich text editor, %1, press ALT 0 for help.',
+
+	// ARIA descriptions.
+	toolbar	: 'Toolbar',
+	editor	: 'Rich Text Editor',
 
 	// Toolbar buttons without dialogs.
 	source			: 'Source',
@@ -68,12 +72,12 @@ CKEDITOR.lang['en'] =
 		flash			: 'Flash',
 		form			: 'Form',
 		checkbox		: 'Checkbox',
-		radio		: 'Radio Button',
+		radio			: 'Radio Button',
 		textField		: 'Text Field',
 		textarea		: 'Textarea',
 		hiddenField		: 'Hidden Field',
 		button			: 'Button',
-		select	: 'Selection Field',
+		select			: 'Selection Field',
 		imageButton		: 'Image Button',
 		notSet			: '<not set>',
 		id				: 'Id',
@@ -88,27 +92,46 @@ CKEDITOR.lang['en'] =
 		cssStyle		: 'Style',
 		ok				: 'OK',
 		cancel			: 'Cancel',
+		close			: 'Close',
+		preview			: 'Preview',
 		generalTab		: 'General',
 		advancedTab		: 'Advanced',
-		validateNumberFailed	: 'This value is not a number.',
+		validateNumberFailed : 'This value is not a number.',
 		confirmNewPage	: 'Any unsaved changes to this content will be lost. Are you sure you want to load new page?',
 		confirmCancel	: 'Some of the options have been changed. Are you sure to close the dialog?',
+		options			: 'Options',
+		target			: 'Target',
+		targetNew		: 'New Window (_blank)',
+		targetTop		: 'Topmost Window (_top)',
+		targetSelf		: 'Same Window (_self)',
+		targetParent	: 'Parent Window (_parent)',
+		langDirLTR		: 'Left to Right (LTR)',
+		langDirRTL		: 'Right to Left (RTL)',
+		styles			: 'Style',
+		cssClasses		: 'Stylesheet Classes',
 
 		// Put the voice-only part of the label in the span.
 		unavailable		: '%1<span class="cke_accessibility">, unavailable</span>'
+	},
+
+	contextmenu :
+	{
+		options : 'Context Menu Options'
 	},
 
 	// Special char dialog.
 	specialChar		:
 	{
 		toolbar		: 'Insert Special Character',
-		title		: 'Select Special Character'
+		title		: 'Select Special Character',
+		options : 'Special Character Options'
 	},
 
 	// Link dialog.
 	link :
 	{
 		toolbar		: 'Link',
+		other 		: '<other>',
 		menu		: 'Edit Link',
 		title		: 'Link',
 		info		: 'Link Info',
@@ -116,22 +139,17 @@ CKEDITOR.lang['en'] =
 		upload		: 'Upload',
 		advanced	: 'Advanced',
 		type		: 'Link Type',
+		toUrl		: 'URL',
 		toAnchor	: 'Link to anchor in the text',
 		toEmail		: 'E-mail',
-		target		: 'Target',
-		targetNotSet	: '<not set>',
-		targetFrame	: '<frame>',
-		targetPopup	: '<popup window>',
-		targetNew	: 'New Window (_blank)',
-		targetTop	: 'Topmost Window (_top)',
-		targetSelf	: 'Same Window (_self)',
-		targetParent	: 'Parent Window (_parent)',
+		targetFrame		: '<frame>',
+		targetPopup		: '<popup window>',
 		targetFrameName	: 'Target Frame Name',
 		targetPopupName	: 'Popup Window Name',
 		popupFeatures	: 'Popup Window Features',
 		popupResizable	: 'Resizable',
 		popupStatusBar	: 'Status Bar',
-		popupLocationBar	: 'Location Bar',
+		popupLocationBar: 'Location Bar',
 		popupToolbar	: 'Toolbar',
 		popupMenuBar	: 'Menu Bar',
 		popupFullScreen	: 'Full Screen (IE)',
@@ -143,7 +161,6 @@ CKEDITOR.lang['en'] =
 		popupTop		: 'Top Position',
 		id				: 'Id',
 		langDir			: 'Language Direction',
-		langDirNotSet	: '<not set>',
 		langDirLTR		: 'Left to Right (LTR)',
 		langDirRTL		: 'Right to Left (RTL)',
 		acccessKey		: 'Access Key',
@@ -176,6 +193,30 @@ CKEDITOR.lang['en'] =
 		errorName	: 'Please type the anchor name'
 	},
 
+	// List style dialog
+	list:
+	{
+		numberedTitle		: 'Numbered List Properties',
+		bulletedTitle		: 'Bulleted List Properties',
+		type				: 'Type',
+		start				: 'Start',
+		validateStartNumber				:'List start number must be a whole number.',
+		circle				: 'Circle',
+		disc				: 'Disc',
+		square				: 'Square',
+		none				: 'None',
+		notset				: '<not set>',
+		armenian			: 'Armenian numbering',
+		georgian			: 'Georgian numbering (an, ban, gan, etc.)',
+		lowerRoman			: 'Lower Roman (i, ii, iii, iv, v, etc.)',
+		upperRoman			: 'Upper Roman (I, II, III, IV, V, etc.)',
+		lowerAlpha			: 'Lower Alpha (a, b, c, d, e, etc.)',
+		upperAlpha			: 'Upper Alpha (A, B, C, D, E, etc.)',
+		lowerGreek			: 'Lower Greek (alpha, beta, gamma, etc.)',
+		decimal				: 'Decimal (1, 2, 3, etc.)',
+		decimalLeadingZero	: 'Decimal leading zero (01, 02, 03, etc.)'
+	},
+
 	// Find And Replace Dialog
 	findAndReplace :
 	{
@@ -203,13 +244,13 @@ CKEDITOR.lang['en'] =
 		columns		: 'Columns',
 		border		: 'Border size',
 		align		: 'Alignment',
-		alignNotSet	: '<Not set>',
 		alignLeft	: 'Left',
 		alignCenter	: 'Center',
 		alignRight	: 'Right',
 		width		: 'Width',
 		widthPx		: 'pixels',
 		widthPc		: 'percent',
+		widthUnit	: 'width unit',
 		height		: 'Height',
 		cellSpace	: 'Cell spacing',
 		cellPad		: 'Cell padding',
@@ -260,7 +301,7 @@ CKEDITOR.lang['en'] =
 			invalidHeight	: 'Cell height must be a number.',
 			invalidRowSpan	: 'Rows span must be a whole number.',
 			invalidColSpan	: 'Columns span must be a whole number.',
-			chooseColor : 'Choose'
+			chooseColor		: 'Choose'
 		},
 
 		row :
@@ -307,13 +348,7 @@ CKEDITOR.lang['en'] =
 		menu		: 'Form Properties',
 		action		: 'Action',
 		method		: 'Method',
-		encoding	: 'Encoding',
-		target		: 'Target',
-		targetNotSet	: '<not set>',
-		targetNew	: 'New Window (_blank)',
-		targetTop	: 'Topmost Window (_top)',
-		targetSelf	: 'Same Window (_self)',
-		targetParent	: 'Parent Window (_parent)'
+		encoding	: 'Encoding'
 	},
 
 	// Select Field Dialog.
@@ -371,27 +406,31 @@ CKEDITOR.lang['en'] =
 		title		: 'Image Properties',
 		titleButton	: 'Image Button Properties',
 		menu		: 'Image Properties',
-		infoTab	: 'Image Info',
+		infoTab		: 'Image Info',
 		btnUpload	: 'Send it to the Server',
-		url		: 'URL',
-		upload	: 'Upload',
-		alt		: 'Alternative Text',
+		upload		: 'Upload',
+		alt			: 'Alternative Text',
 		width		: 'Width',
-		height	: 'Height',
+		height		: 'Height',
 		lockRatio	: 'Lock Ratio',
+		unlockRatio	: 'Unlock Ratio',
 		resetSize	: 'Reset Size',
-		border	: 'Border',
-		hSpace	: 'HSpace',
-		vSpace	: 'VSpace',
+		border		: 'Border',
+		hSpace		: 'HSpace',
+		vSpace		: 'VSpace',
 		align		: 'Align',
 		alignLeft	: 'Left',
 		alignRight	: 'Right',
-		preview	: 'Preview',
 		alertUrl	: 'Please type the image URL',
-		linkTab	: 'Link',
+		linkTab		: 'Link',
 		button2Img	: 'Do you want to transform the selected image button on a simple image?',
 		img2Button	: 'Do you want to transform the selected image on a image button?',
-		urlMissing : 'Image source URL is missing.'
+		urlMissing	: 'Image source URL is missing.',
+		validateWidth	: 'Width must be a whole number.',
+		validateHeight	: 'Height must be a whole number.',
+		validateBorder	: 'Border must be a whole number.',
+		validateHSpace	: 'HSpace must be a whole number.',
+		validateVSpace	: 'VSpace must be a whole number.'
 	},
 
 	// Flash Dialog
@@ -399,51 +438,51 @@ CKEDITOR.lang['en'] =
 	{
 		properties		: 'Flash Properties',
 		propertiesTab	: 'Properties',
-		title		: 'Flash Properties',
-		chkPlay		: 'Auto Play',
-		chkLoop		: 'Loop',
-		chkMenu		: 'Enable Flash Menu',
-		chkFull		: 'Allow Fullscreen',
- 		scale		: 'Scale',
+		title			: 'Flash Properties',
+		chkPlay			: 'Auto Play',
+		chkLoop			: 'Loop',
+		chkMenu			: 'Enable Flash Menu',
+		chkFull			: 'Allow Fullscreen',
+ 		scale			: 'Scale',
 		scaleAll		: 'Show all',
 		scaleNoBorder	: 'No Border',
 		scaleFit		: 'Exact Fit',
 		access			: 'Script Access',
 		accessAlways	: 'Always',
-		accessSameDomain	: 'Same domain',
-		accessNever	: 'Never',
-		align		: 'Align',
-		alignLeft	: 'Left',
-		alignAbsBottom: 'Abs Bottom',
-		alignAbsMiddle: 'Abs Middle',
+		accessSameDomain: 'Same domain',
+		accessNever		: 'Never',
+		align			: 'Align',
+		alignLeft		: 'Left',
+		alignAbsBottom	: 'Abs Bottom',
+		alignAbsMiddle	: 'Abs Middle',
 		alignBaseline	: 'Baseline',
-		alignBottom	: 'Bottom',
-		alignMiddle	: 'Middle',
-		alignRight	: 'Right',
+		alignBottom		: 'Bottom',
+		alignMiddle		: 'Middle',
+		alignRight		: 'Right',
 		alignTextTop	: 'Text Top',
-		alignTop	: 'Top',
-		quality		: 'Quality',
-		qualityBest		 : 'Best',
-		qualityHigh		 : 'High',
-		qualityAutoHigh	 : 'Auto High',
-		qualityMedium	 : 'Medium',
-		qualityAutoLow	 : 'Auto Low',
-		qualityLow		 : 'Low',
-		windowModeWindow	 : 'Window',
-		windowModeOpaque	 : 'Opaque',
-		windowModeTransparent	 : 'Transparent',
-		windowMode	: 'Window mode',
-		flashvars	: 'Variables for Flash',
-		bgcolor	: 'Background color',
-		width	: 'Width',
-		height	: 'Height',
-		hSpace	: 'HSpace',
-		vSpace	: 'VSpace',
-		validateSrc : 'URL must not be empty.',
-		validateWidth : 'Width must be a number.',
-		validateHeight : 'Height must be a number.',
-		validateHSpace : 'HSpace must be a number.',
-		validateVSpace : 'VSpace must be a number.'
+		alignTop		: 'Top',
+		quality			: 'Quality',
+		qualityBest		: 'Best',
+		qualityHigh		: 'High',
+		qualityAutoHigh	: 'Auto High',
+		qualityMedium	: 'Medium',
+		qualityAutoLow	: 'Auto Low',
+		qualityLow		: 'Low',
+		windowModeWindow: 'Window',
+		windowModeOpaque: 'Opaque',
+		windowModeTransparent : 'Transparent',
+		windowMode		: 'Window mode',
+		flashvars		: 'Variables for Flash',
+		bgcolor			: 'Background color',
+		width			: 'Width',
+		height			: 'Height',
+		hSpace			: 'HSpace',
+		vSpace			: 'VSpace',
+		validateSrc		: 'URL must not be empty.',
+		validateWidth	: 'Width must be a number.',
+		validateHeight	: 'Height must be a number.',
+		validateHSpace	: 'HSpace must be a number.',
+		validateVSpace	: 'VSpace must be a number.'
 	},
 
 	// Speller Pages Dialog
@@ -472,90 +511,91 @@ CKEDITOR.lang['en'] =
 	smiley :
 	{
 		toolbar	: 'Smiley',
-		title	: 'Insert a Smiley'
+		title	: 'Insert a Smiley',
+		options : 'Smiley Options'
 	},
 
 	elementsPath :
 	{
+		eleLabel : 'Elements path',
 		eleTitle : '%1 element'
 	},
 
-	numberedlist : 'Insert/Remove Numbered List',
-	bulletedlist : 'Insert/Remove Bulleted List',
-	indent : 'Increase Indent',
-	outdent : 'Decrease Indent',
+	numberedlist	: 'Insert/Remove Numbered List',
+	bulletedlist	: 'Insert/Remove Bulleted List',
+	indent			: 'Increase Indent',
+	outdent			: 'Decrease Indent',
 
 	justify :
 	{
-		left : 'Left Justify',
-		center : 'Center Justify',
-		right : 'Right Justify',
-		block : 'Block Justify'
+		left	: 'Left Justify',
+		center	: 'Center Justify',
+		right	: 'Right Justify',
+		block	: 'Block Justify'
 	},
 
-	blockquote : 'Blockquote',
+	blockquote : 'Block Quote',
 
 	clipboard :
 	{
 		title		: 'Paste',
-		cutError	: 'Your browser security settings don\'t permit the editor to automatically execute cutting operations. Please use the keyboard for that (Ctrl+X).',
-		copyError	: 'Your browser security settings don\'t permit the editor to automatically execute copying operations. Please use the keyboard for that (Ctrl+C).',
-		pasteMsg	: 'Please paste inside the following box using the keyboard (<strong>Ctrl+V</strong>) and hit OK',
-		securityMsg	: 'Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.'
+		cutError	: 'Your browser security settings don\'t permit the editor to automatically execute cutting operations. Please use the keyboard for that (Ctrl/Cmd+X).',
+		copyError	: 'Your browser security settings don\'t permit the editor to automatically execute copying operations. Please use the keyboard for that (Ctrl/Cmd+C).',
+		pasteMsg	: 'Please paste inside the following box using the keyboard (<strong>Ctrl/Cmd+V</strong>) and hit OK',
+		securityMsg	: 'Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.',
+		pasteArea	: 'Paste Area'
 	},
 
 	pastefromword :
 	{
-		confirmCleanup : 'The text you want to paste seems to be copied from Word. Do you want to clean it before pasting?',
-		toolbar : 'Paste from Word',
-		title : 'Paste from Word',
-		error : 'It was not possible to clean up the pasted data due to an internal error'
+		confirmCleanup	: 'The text you want to paste seems to be copied from Word. Do you want to clean it before pasting?',
+		toolbar			: 'Paste from Word',
+		title			: 'Paste from Word',
+		error			: 'It was not possible to clean up the pasted data due to an internal error'
 	},
 
 	pasteText :
 	{
-		button : 'Paste as plain text',
-		title : 'Paste as Plain Text'
+		button	: 'Paste as plain text',
+		title	: 'Paste as Plain Text'
 	},
 
 	templates :
 	{
-		button : 'Templates',
-		title : 'Content Templates',
-		insertOption: 'Replace actual contents',
-		selectPromptMsg: 'Please select the template to open in the editor',
-		emptyListMsg : '(No templates defined)'
+		button			: 'Templates',
+		title			: 'Content Templates',
+		options : 'Template Options',
+		insertOption	: 'Replace actual contents',
+		selectPromptMsg	: 'Please select the template to open in the editor',
+		emptyListMsg	: '(No templates defined)'
 	},
 
 	showBlocks : 'Show Blocks',
 
 	stylesCombo :
 	{
-		label : 'Styles',
-		voiceLabel : 'Styles',
-		panelVoiceLabel : 'Select a style',
-		panelTitle1 : 'Block Styles',
-		panelTitle2 : 'Inline Styles',
-		panelTitle3 : 'Object Styles'
+		label		: 'Styles',
+		panelTitle	: 'Formatting Styles',
+		panelTitle1	: 'Block Styles',
+		panelTitle2	: 'Inline Styles',
+		panelTitle3	: 'Object Styles'
 	},
 
 	format :
 	{
-		label : 'Format',
-		voiceLabel : 'Format',
-		panelTitle : 'Paragraph Format',
-		panelVoiceLabel : 'Select a paragraph format',
+		label		: 'Format',
+		panelTitle	: 'Paragraph Format',
 
-		tag_p : 'Normal',
-		tag_pre : 'Formatted',
-		tag_address : 'Address',
-		tag_h1 : 'Heading 1',
-		tag_h2 : 'Heading 2',
-		tag_h3 : 'Heading 3',
-		tag_h4 : 'Heading 4',
-		tag_h5 : 'Heading 5',
-		tag_h6 : 'Heading 6',
-		tag_div : 'Normal (DIV)'
+		tag_p		: 'Normal',
+		tag_pre		: 'Formatted',
+		tag_address	: 'Address',
+		tag_h1		: 'Heading 1',
+		tag_h2		: 'Heading 2',
+		tag_h3		: 'Heading 3',
+		tag_h4		: 'Heading 4',
+		tag_h5		: 'Heading 5',
+		tag_h6		: 'Heading 6',
+		tag_div		: 'Normal (DIV)'
 	},
 
 	div :
@@ -577,26 +617,25 @@ CKEDITOR.lang['en'] =
 
 	font :
 	{
-		label : 'Font',
-		voiceLabel : 'Font',
-		panelTitle : 'Font Name',
-		panelVoiceLabel : 'Select a font'
+		label		: 'Font',
+		voiceLabel	: 'Font',
+		panelTitle	: 'Font Name'
 	},
 
 	fontSize :
 	{
-		label : 'Size',
-		voiceLabel : 'Font Size',
-		panelTitle : 'Font Size',
-		panelVoiceLabel : 'Select a font size'
+		label		: 'Size',
+		voiceLabel	: 'Font Size',
+		panelTitle	: 'Font Size'
 	},
 
 	colorButton :
 	{
-		textColorTitle : 'Text Color',
-		bgColorTitle : 'Background Color',
-		auto : 'Automatic',
-		more : 'More Colors...'
+		textColorTitle	: 'Text Color',
+		bgColorTitle	: 'Background Color',
+		panelTitle		: 'Colors',
+		auto			: 'Automatic',
+		more			: 'More Colors...'
 	},
 
 	colors :
@@ -608,7 +647,7 @@ CKEDITOR.lang['en'] =
 		'008080' : 'Teal',
 		'000080' : 'Navy',
 		'4B0082' : 'Indigo',
-		'696969' : 'Dim Gray',
+		'696969' : 'Dark Gray',
 		'B22222' : 'Fire Brick',
 		'A52A2A' : 'Brown',
 		'DAA520' : 'Golden Rod',
@@ -624,7 +663,7 @@ CKEDITOR.lang['en'] =
 		'0FF' : 'Cyan',
 		'00F' : 'Blue',
 		'EE82EE' : 'Violet',
-		'A9A9A9' : 'Dark Gray',
+		'A9A9A9' : 'Dim Gray',
 		'FFA07A' : 'Light Salmon',
 		'FFA500' : 'Orange',
 		'FFFF00' : 'Yellow',
@@ -645,30 +684,45 @@ CKEDITOR.lang['en'] =
 
 	scayt :
 	{
-		title : 'Spell Check As You Type',
-		enable : 'Enable SCAYT',
-		disable : 'Disable SCAYT',
-		about : 'About SCAYT',
-		toggle : 'Toggle SCAYT',
-		options : 'Options',
-		langs : 'Languages',
-		moreSuggestions : 'More suggestions',
-		ignore : 'Ignore',
-		ignoreAll : 'Ignore All',
-		addWord : 'Add Word',
-		emptyDic : 'Dictionary name should not be empty.',
-		optionsTab : 'Options',
-		languagesTab : 'Languages',
-		dictionariesTab : 'Dictionaries',
-		aboutTab : 'About'
+		title			: 'Spell Check As You Type',
+		opera_title		: 'Not supported by Opera',
+		enable			: 'Enable SCAYT',
+		disable			: 'Disable SCAYT',
+		about			: 'About SCAYT',
+		toggle			: 'Toggle SCAYT',
+		options			: 'Options',
+		langs			: 'Languages',
+		moreSuggestions	: 'More suggestions',
+		ignore			: 'Ignore',
+		ignoreAll		: 'Ignore All',
+		addWord			: 'Add Word',
+		emptyDic		: 'Dictionary name should not be empty.',
+
+		optionsTab		: 'Options',
+		allCaps			: 'Ignore All-Caps Words',
+		ignoreDomainNames : 'Ignore Domain Names',
+		mixedCase		: 'Ignore Words with Mixed Case',
+		mixedWithDigits	: 'Ignore Words with Numbers',
+
+		languagesTab	: 'Languages',
+
+		dictionariesTab	: 'Dictionaries',
+		dic_field_name	: 'Dictionary name',
+		dic_create		: 'Create',
+		dic_restore		: 'Restore',
+		dic_delete		: 'Delete',
+		dic_rename		: 'Rename',
+		dic_info		: 'Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.',
+
+		aboutTab		: 'About'
 	},
 
 	about :
 	{
-		title : 'About CKEditor',
-		dlgTitle : 'About CKEditor',
-		moreInfo : 'For licensing information please visit our web site:',
-		copy : 'Copyright &copy; $1. All rights reserved.'
+		title		: 'About CKEditor',
+		dlgTitle	: 'About CKEditor',
+		moreInfo	: 'For licensing information please visit our web site:',
+		copy		: 'Copyright &copy; $1. All rights reserved.'
 	},
 
 	maximize : 'Maximize',
@@ -676,22 +730,29 @@ CKEDITOR.lang['en'] =
 
 	fakeobjects :
 	{
-		anchor : 'Anchor',
-		flash : 'Flash Animation',
-		div : 'Page Break',
-		unknown : 'Unknown Object'
+		anchor	: 'Anchor',
+		flash	: 'Flash Animation',
+		div		: 'Page Break',
+		unknown	: 'Unknown Object'
 	},
 
 	resize : 'Drag to resize',
 
 	colordialog :
 	{
-		title : 'Select color',
-		highlight : 'Highlight',
-		selected : 'Selected',
-		clear : 'Clear'
+		title		: 'Select color',
+		options	:	'Color Options',
+		highlight	: 'Highlight',
+		selected	: 'Selected Color',
+		clear		: 'Clear'
 	},
 
-	toolbarCollapse : 'Collapse Toolbar',
-	toolbarExpand : 'Expand Toolbar'
+	toolbarCollapse	: 'Collapse Toolbar',
+	toolbarExpand	: 'Expand Toolbar',
+
+	bidi :
+	{
+		ltr : 'Text direction from left to right',
+		rtl : 'Text direction from right to left'
+	}
 };

@@ -122,6 +122,8 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 		editor.skinPath = skinPath;
 		editor.skinClass = 'cke_skin_' + skinName;
 
+		editor.tabIndex = editor.config.tabIndex || editor.element.getAttribute( 'tabindex' ) || 0;
+
 		// Fire the "configLoaded" event.
 		editor.fireOnce( 'configLoaded' );
 
@@ -143,6 +145,9 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 				// We're not able to support RTL in Firefox 2 at this time.
 				if ( CKEDITOR.env.gecko && CKEDITOR.env.version < 10900 && editor.lang.dir == 'rtl' )
 					editor.lang.dir = 'ltr';
+
+				var config = editor.config;
+				config.contentsLangDirection == 'ui' && ( config.contentsLangDirection = editor.lang.dir );
 
 				loadPlugins( editor );
 			});
@@ -329,7 +334,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 		for ( var name in commands )
 		{
 			command = commands[ name ];
-			command[ command.modes[ mode ] ? 'enable' : 'disable' ]();
+			command[ command.startDisabled ? 'disable' : command.modes[ mode ] ? 'enable' : 'disable' ]();
 		}
 	}
 
@@ -466,7 +471,43 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 			if ( !noUpdate )
 				this.updateElement();
 
+			if ( this.mode )
+			{
+				// ->		currentMode.unload( holderElement );
+				this._.modes[ this.mode ].unload( this.getThemeSpace( 'contents' ) );
+			}
+
 			this.theme.destroy( this );
+
+			var toolbars,
+				index = 0,
+				j,
+				items,
+				instance;
+
+			if ( this.toolbox )
+			{
+				toolbars = this.toolbox.toolbars;
+				for ( ; index < toolbars.length ; index++ )
+				{
+					items = toolbars[ index ].items;
+					for ( j = 0 ; j < items.length ; j++ )
+					{
+						instance = items[ j ];
+						if ( instance.clickFn ) CKEDITOR.tools.removeFunction( instance.clickFn );
+						if ( instance.keyDownFn ) CKEDITOR.tools.removeFunction( instance.keyDownFn );
+
+						if ( instance.index ) CKEDITOR.ui.button._.instances[ instance.index ] = null;
+					}
+				}
+			}
+
+			if ( this.contextMenu )
+				CKEDITOR.tools.removeFunction( this.contextMenu._.functionId );
+
+			if ( this._.filebrowserFn )
+				CKEDITOR.tools.removeFunction( this._.filebrowserFn );
+
 			this.fire( 'destroy' );
 			CKEDITOR.remove( this );
 			CKEDITOR.fire( 'instanceDestroyed', null, this );
@@ -575,19 +616,21 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 		},
 
 		/**
-		 * Sets the editor data. The data must be provided in raw format (HTML).
-		 * <b>Note:</b> This's an asynchronous method, the {@param callback}
-		 * function should be relied on if you want to interact with the editor
-		 * after data is fully loaded.
-		 *
-		 * @param {String} data HTML code to replace the curent content in the editor.
-		 * @param {Function} callback Function to be called after the setData is completed.
+		 * Sets the editor data. The data must be provided in raw format (HTML).<br />
+		 * <br />
+		 * Note that this menthod is asynchronous. The "callback" parameter must
+		 * be used if interaction with the editor is needed after setting the data.
+		 * @param {String} data HTML code to replace the curent content in the
+		 *		editor.
+		 * @param {Function} callback Function to be called after the setData
+		 *		is completed.
 		 * @example
-		 * CKEDITOR.instances.editor1.<b>setData( '&lt;p&gt;This is the editor data.&lt;/p&gt;' )</b>;
-		 * CKEDITOR.instances.editor1.setData( '&lt;p&gt;Some other editor data.&lt;/p&gt;', function()
-		 * {
-		 * 		CKEDITOR.instances.editor1.checkDirty(); 	// true
-		 * } );
+		 * CKEDITOR.instances.editor1.<b>setData</b>( '&lt;p&gt;This is the editor data.&lt;/p&gt;' );
+		 * @example
+		 * CKEDITOR.instances.editor1.<b>setData</b>( '&lt;p&gt;Some other editor data.&lt;/p&gt;', function()
+		 *     {
+		 *         this.checkDirty();    // true
+		 *     });
 		 */
 		setData : function( data , callback )
 		{
@@ -599,6 +642,7 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 					callback.call( evt.editor );
 				} );
 			}
+
 			// Fire "setData" so data manipulation may happen.
 			var eventData = { dataValue : data };
 			this.fire( 'setData', eventData );
@@ -658,7 +702,7 @@ CKEDITOR.tools.extend( CKEDITOR.editor.prototype,
 			{
 				var data = this.getData();
 
-				if( this.config.htmlEncodeOutput )
+				if ( this.config.htmlEncodeOutput )
 					data = CKEDITOR.tools.htmlEncode( data );
 
 				if ( element.is( 'textarea' ) )
@@ -685,8 +729,31 @@ CKEDITOR.on( 'loaded', function()
 /**
  * Whether escape HTML when editor update original input element.
  * @name CKEDITOR.config.htmlEncodeOutput
- * @type {Boolean}
+ * @since 3.1
+ * @type Boolean
  * @default false
  * @example
  * config.htmlEncodeOutput = true;
+ */
+
+/**
+ * Fired when a CKEDITOR instance is created, but still before initializing it.
+ * To interact with a fully initialized instance, use the
+ * {@link CKEDITOR#instanceReady} event instead.
+ * @name CKEDITOR#instanceCreated
+ * @event
+ * @param {CKEDITOR.editor} editor The editor instance that has been created.
+ */
+
+/**
+ * Fired when a CKEDITOR instance is destroyed.
+ * @name CKEDITOR#instanceDestroyed
+ * @event
+ * @param {CKEDITOR.editor} editor The editor instance that has been destroyed.
+ */
+
+/**
+ * Fired when all plugins are loaded and initialized into the editor instance.
+ * @name CKEDITOR#pluginsLoaded
+ * @event
  */

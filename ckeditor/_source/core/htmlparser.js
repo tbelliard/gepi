@@ -172,6 +172,12 @@ CKEDITOR.htmlParser = function()
 				if ( ( tagName = parts[ 3 ] ) )
 				{
 					tagName = tagName.toLowerCase();
+
+					// There are some tag names that can break things, so let's
+					// simply ignore them when parsing. (#5224)
+					if ( /="/.test( tagName ) )
+						continue;
+
 					var attribs = {},
 						attribMatch,
 						attribsPart = parts[ 4 ],
@@ -201,7 +207,7 @@ CKEDITOR.htmlParser = function()
 				}
 
 				// Comment
-				if( ( tagName = parts[ 2 ] ) )
+				if ( ( tagName = parts[ 2 ] ) )
 					this.onComment( tagName );
 			}
 

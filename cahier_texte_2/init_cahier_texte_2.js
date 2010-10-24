@@ -334,11 +334,13 @@ function initWysiwyg() {
 		//creation de l'instance
 		//En fonction de la largeur, on change le menu pour eviter de le couper si la largeur est trop petite
 		if (GetWidth() < 1100) {
+                    alert
 		    CKEDITOR.replace( 'contenu', {
 			language : 'fr',
 			skin : 'kama',
 			resize_enabled : false,
 			startupFocus : true,
+                        removePlugins : 'elementspath',
 			toolbar :
 			[
 			    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
@@ -347,7 +349,7 @@ function initWysiwyg() {
 			    ['NumberedList','BulletedList'],
 			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 			    ['Outdent','Indent'],
-			    ['Link','Unlink','Table','HorizontalRule','Smiley','SpecialChar'],
+			    ['Link','Unlink','Table','HorizontalRule','SpecialChar'],
 			    ['Styles','Format','Font','FontSize'],
 			    ['TextColor','BGColor'],
 			    ['Maximize', 'About']
@@ -359,6 +361,7 @@ function initWysiwyg() {
 			skin : 'kama',
 			resize_enabled : false,
 			startupFocus : true,
+                        removePlugins : 'elementspath',
 			toolbar :
 			[
 			    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
@@ -368,16 +371,13 @@ function initWysiwyg() {
 			    ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
 			    '/',
 			    ['Outdent','Indent'],
-			    ['Link','Unlink','Table','HorizontalRule','Smiley','SpecialChar'],
+			    ['Link','Unlink','Table','HorizontalRule','SpecialChar'],
 			    ['Styles','Format','Font','FontSize'],
 			    ['TextColor','BGColor'],
 			    ['Maximize', 'About']
 			]
 		    } );
 		}
-
-		//hide the bottom bar of CKEditor
-		$('cke_bottom_contenu').hide();
 	}
 }
 

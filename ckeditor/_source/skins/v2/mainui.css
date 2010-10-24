@@ -110,6 +110,18 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 	float: left;
 }
 
+.cke_skin_v2 .cke_resizer_horizontal,
+.cke_skin_v2 .cke_rtl .cke_resizer_horizontal
+{
+	cursor: e-resize;
+}
+
+.cke_skin_v2 .cke_resizer_vertical,
+.cke_skin_v2 .cke_rtl .cke_resizer_vertical
+{
+	cursor: n-resize;
+}
+
 .cke_skin_v2 .cke_maximized .cke_resizer
 {
 	display: none;
@@ -119,4 +131,24 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 .cke_skin_v2 .cke_browser_ie7 .cke_contents textarea
 {
 	position: absolute;
+}
+
+/* All voice labels are not displayed. */
+.cke_skin_v2 .cke_voice_label
+{
+	display: none;
+}
+
+.cke_skin_v2 legend.cke_voice_label
+{
+	display: none;
+}
+
+.cke_skin_v2 .cke_browser_ie legend.cke_voice_label
+{
+	position: absolute;
+	display: block;
+	width: 0;
+	height: 0;
+	overflow: hidden;
 }

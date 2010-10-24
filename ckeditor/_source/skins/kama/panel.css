@@ -47,7 +47,11 @@ html.cke_skin_kama_container
 body.cke_panel_frame
 {
 	overflow: auto;
-	overflow-x: hidden;
+}
+
+.cke_panel_frame .cke_label
+{
+	display: none;
 }
 
 ul.cke_panel_list
@@ -68,7 +72,7 @@ li.cke_panel_listItem
 	padding: 2px;
 	display: block;
 	border: 1px solid #fff;
-	color: inherit;
+	color: inherit !important;
 	text-decoration: none;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -102,6 +106,15 @@ li.cke_panel_listItem
 {
 	border-color: #316ac5;
 	background-color: #dff1ff;
+}
+
+.cke_hc .cke_panel_listItem.cke_selected a,
+.cke_hc .cke_panel_listItem a:hover,
+.cke_hc .cke_panel_listItem a:focus,
+.cke_hc .cke_panel_listItem a:active
+{
+	border-width: 3px;
+	padding: 0px;
 }
 
 .cke_panel_grouptitle
@@ -139,8 +152,8 @@ li.cke_panel_listItem
 .cke_colorblock
 {
 	padding: 3px;
-    font-size: 11px;
-    font-family: 'Microsoft Sans Serif', Tahoma, Arial, Verdana, Sans-Serif;
+   font-size: 11px;
+   font-family: 'Microsoft Sans Serif', Tahoma, Arial, Verdana, Sans-Serif;
 }
 
 .cke_colorblock,
@@ -154,7 +167,7 @@ span.cke_colorbox
 {
 	width: 10px;
 	height: 10px;
-    border: #808080 1px solid;
+   border: #808080 1px solid;
 	float: left;
 }
 
@@ -165,30 +178,31 @@ span.cke_colorbox
 
 a.cke_colorbox
 {
-    border: #fff 1px solid;
-    padding: 2px;
-    float: left;
+	border: #fff 1px solid;
+	padding: 2px;
+	float: left;
 }
 
 .cke_rtl a.cke_colorbox
 {
-    float: right;
+	float: right;
 }
 
 a:hover.cke_colorbox,
 a:focus.cke_colorbox,
 a:active.cke_colorbox
 {
-    border: #316ac5 1px solid;
-    background-color: #dff1ff;
+	border: #316ac5 1px solid;
+	background-color: #dff1ff;
 }
 
 a.cke_colorauto,
 a.cke_colormore
 {
-    border: #fff 1px solid;
-    padding: 2px;
-    display: block;
+	border: #fff 1px solid;
+	padding: 2px;
+	display: block;
+	cursor: pointer;
 }
 
 a:hover.cke_colorauto,
@@ -198,6 +212,6 @@ a:focus.cke_colormore,
 a:active.cke_colorauto,
 a:active.cke_colormore
 {
-    border: #316ac5 1px solid;
-    background-color: #dff1ff;
+	border: #316ac5 1px solid;
+	background-color: #dff1ff;
 }

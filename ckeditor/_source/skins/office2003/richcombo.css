@@ -60,6 +60,7 @@
 {
 	display: inline-block;
 	float: left;
+	cursor: default;
 
 	line-height: 24px;
 	height: 24px;
@@ -108,6 +109,7 @@
 	overflow: hidden;
 	display: inline-block;
 	vertical-align: top;
+	cursor: default;
 }
 
 .cke_skin_office2003 .cke_ltr .cke_rcombo .cke_text
@@ -149,6 +151,16 @@
 	border-bottom: 1px solid #8f8f73;
 	width: 14px;
 	height: 22px;
+}
+
+.cke_skin_office2003 .cke_rcombo .cke_openbutton span
+{
+	display: none;
+}
+
+.cke_skin_office2003 .cke_hc .cke_rcombo .cke_openbutton span
+{
+	display	: inline;
 }
 
 .cke_skin_office2003 .cke_ltr .cke_rcombo .cke_openbutton
@@ -276,4 +288,10 @@
 .cke_skin_office2003 .cke_browser_ie .cke_rtl .cke_rcombo .cke_label
 {
 	float: none;
+}
+
+.cke_skin_office2003 .cke_rtl .cke_rcombo .cke_font .cke_text,
+.cke_skin_office2003 .cke_rtl .cke_rcombo .cke_fontSize .cke_text
+{
+	direction: ltr;
 }
