@@ -301,7 +301,6 @@ function rappel_incident($id_incident) {
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
-
 		echo "</table>\n";
 	}
 	else {
@@ -617,7 +616,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 	$tab_incident=array();
 	$tab_sanction=array();
 	$tab_mesure=array();
-
+	$zone_de_commentaire = "";
 	$sql="SELECT * FROM s_incidents si, s_protagonistes sp WHERE si.id_incident=sp.id_incident AND sp.login='$ele_login' $restriction_date ORDER BY si.date DESC;";
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
@@ -632,6 +631,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 		$retour.="<th>Suivi</th>\n";
 		$retour.="</tr>\n";
 		$alt_1=1;
+		
 		while($lig=mysql_fetch_object($res)) {
 			$alt_1=$alt_1*(-1);
 			$retour.="<tr class='lig$alt_1'>\n";
@@ -646,6 +646,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 			$retour.="<br />\n";
 
 			$retour.="<span style='font-size:small;'>".u_p_nom($lig->declarant)."</span>";
+			
+			$zone_de_commentaire = $lig->commentaire;
 
 			$retour.="</td>\n";
 			$retour.="<td>".$lig->qualite."</td>\n";
@@ -728,11 +730,11 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 								$retour.="<td>demandée par ".u_p_nom($lig_suivi->login_u)."</td>\n";
 							}
 							$retour.="</tr>\n";
-						}
+	
+						}	
 						$retour.="</table>\n";
-
-					}
-
+					}		
+						
 					$sql="SELECT * FROM s_sanctions s WHERE s.id_incident='$lig->id_incident' AND s.login='$lig_prot->login' ORDER BY nature;";
 					//echo "$sql<br />\n";
 					$res_suivi=mysql_query($sql);
@@ -804,6 +806,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							$retour.="<td>$lig_suivi->effectuee</td>\n";
 							$retour.="</tr>\n";
 						}
+						
 						$retour.="</table>\n";
 
 					}
@@ -811,8 +814,15 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 					$retour.="</td>\n";
 
 					$retour.="</tr>\n";
+
 				}
 				$retour.="</table>\n";
+				
+				// Ajout Eric de la zone de commentaire
+				//affichage du commentaire
+				if ($zone_de_commentaire !="") {
+				$retour .=  "<p style='text-align:left;'><b>Commentaires sur l'incident&nbsp;:&nbsp;</b></br></br>$zone_de_commentaire</p>";	
+				}
 			}
 
 			$retour.="</td>\n";

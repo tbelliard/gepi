@@ -814,6 +814,7 @@ if(!isset($id_incident)) {
 	// Ne proposer le bouton pour supprimer qu'à certains utilisateurs?
 	//echo "<th><input type='submit' name='supprimer' value='Suppr' /></th>\n";
 	if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
+	    echo "<th>Imprimer le rapport d'incident</th>\n";
 		echo "<th>Suppr</th>\n";
 	}
 	//echo "<th></th>\n";
@@ -1164,6 +1165,15 @@ if(!isset($id_incident)) {
 			}
 			echo "</td>\n";
 
+			//Ajout Eric ===============================
+			// Colonne imprimer
+			if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
+				echo "<td>\n";
+				echo "<a href='../mod_ooo/rapport_incident.php?mode=module_discipline&id_incident=$lig->id_incident' title='Imprimer le rapport d'\incident'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer le Rapport d\'incident'></a>\n";
+				echo "</td>\n";
+			}
+			//===============================
+			
 			//=================================================
 			// Colonne suppression
 			if(($_SESSION['statut']!='professeur')&&($_SESSION['statut']!='autre')) {
