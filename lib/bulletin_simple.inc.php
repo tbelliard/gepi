@@ -979,7 +979,7 @@ if ($on_continue == 'yes') {
 	$nb=$periode1;
 	while ($nb < $periode2+1) {
 		//On vérifie si le module est activé
-		if (getSettingValue("active_module_absence")!='2') {
+		if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
 		    $current_eleve_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$current_eleve_login' AND periode='$nb')");
 		    $eleve_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "nb_absences");
 		    $eleve_abs_nj[$nb] = @mysql_result($current_eleve_absences_query, 0, "non_justifie");

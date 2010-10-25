@@ -114,7 +114,17 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 
-		if (isset($_POST['abs2_saisie_prof_decale_journee'])) {
+		if (isset($_POST['abs2_import_manuel_bulletin'])) {
+			if (!saveSetting("abs2_import_manuel_bulletin", $_POST['abs2_import_manuel_bulletin'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_import_manuel_bulletin";
+			}
+		} else {
+			if (!saveSetting("abs2_import_manuel_bulletin", 'n')) {
+				$msg = "Erreur lors de l'enregistrement du paramètre abs2_import_manuel_bulletin";
+			}
+		}
+
+                if (isset($_POST['abs2_saisie_prof_decale_journee'])) {
 			if (!saveSetting("abs2_saisie_prof_decale_journee", $_POST['abs2_saisie_prof_decale_journee'])) {
 				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie décalée sur la journée pour les professeurs !";
 			}
@@ -289,6 +299,11 @@ suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accè
 	<?php if (getSettingValue("active_module_absence")=='n') echo ' checked="checked"'; ?> />
 	<label for="activerN">&nbsp;Désactiver le module de la gestion des absences</label>
 	<input type="hidden" name="is_posted" value="1" />
+</p>
+<p>
+	<input type="checkbox" name="abs2_import_manuel_bulletin" value="y"
+	<?php if (getSettingValue("abs2_import_manuel_bulletin")=='y') echo " checked='checked'"; ?> />
+	<label for="abs2_import_manuel_bulletin">&nbsp;Utiliser un import (manuel, gep ou sconet) pour les bulletins et fiches élève.</label>
 </p>
 <p>
 	<input type="checkbox" name="abs2_alleger_abs_du_jour" value="y"

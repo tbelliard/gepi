@@ -422,7 +422,7 @@ class class_page_accueil {
 	if($test_mac AND mysql_num_rows($test_mac)>0) {$afficher_correction_validation="y";}
 
 
-        if (getSettingValue("active_module_absence")!='2') {
+        if (getSettingValue("active_module_absence")!='2' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
 	  $this->creeNouveauItem("/absences/index.php",
 			  "Bulletins : saisie des absences",
 			  "Cet outil vous permet de saisir les absences sur les bulletins." );

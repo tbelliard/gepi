@@ -1995,7 +1995,7 @@ Patientez pendant l'extraction des données... merci.
 			if($onglet!="absences") {echo " display:none;";}
 			echo "background-color: ".$tab_couleur['absences']."; ";
 			echo "'>";
-			if(getSettingValue("active_module_absence")=='y') {
+			if(getSettingValue("active_module_absence")=='y' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
 			    echo "<h2>Absences et retards de l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
 
 			    if(count($tab_ele['absences'])==0) {
