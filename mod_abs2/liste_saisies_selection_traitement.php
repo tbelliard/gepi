@@ -104,7 +104,6 @@ if (isFiltreRechercheParam('filter_marqueur_appel')) {
     $query->filterByEleveId(null);
 }
 if (isFiltreRechercheParam('filter_classe')) {
-    echo 'ok_filter_classe : '.getFiltreRechercheParam('filter_classe');
     $query->leftJoin('AbsenceEleveSaisie.Eleve');
     $query->leftJoin('Eleve.JEleveClasse');
     $query->condition('cond1', 'JEleveClasse.IdClasse = ?', getFiltreRechercheParam('filter_classe'));
