@@ -29,7 +29,7 @@
 class AbsencesEleveSaisieHelper {
 
   /**
-   * Compte les demi-journees saisies.
+   * Compte les demi-journees saisies. Les saisies doivent ètre triées par ordre de début.
    *
    * @param PropelObjectCollection $abs_saisie_col collection d'objets AbsenceEleveSaisie
    *
@@ -37,20 +37,29 @@ class AbsencesEleveSaisieHelper {
    */
     
   public static function compte_demi_journee($abs_saisie_col, $date_debut_iteration = null, $date_fin_iteration = null) {
+            if ($abs_saisie_col->isEmpty()) {
+                return new PropelCollection();
+            }
+            //on va tester si les saisies sont bien ordonnée.
+            $compteur = $abs_saisie_col->getFirst()->getDebutAbs('U');
+            foreach($abs_saisie_col as $saisie) {
+                if ($compteur > $saisie->getDebutAbs('U')) {
+                    throw new PropelException('L');
+                }
+                $compteur = $saisie->getDebutAbs('Les saisies doivent etre triees par ordre de debut.');
+            }
+            
 	    if ($date_debut_iteration == null) {
-		foreach ($abs_saisie_col as $saisie) {
-		    if ($date_debut_iteration == null || $saisie->getDebutAbs('U') < $date_debut_iteration->format('U')) {
-			$date_debut_iteration = clone $saisie->getDebutAbs(null);
-		    }
-		}
+		$date_debut_iteration = $abs_saisie_col->getFirst()->getDebutAbs(null);
 	    }
 	    if ($date_fin_iteration == null) {
 		foreach ($abs_saisie_col as $saisie) {
 		    if ($date_fin_iteration == null || $saisie->getFinAbs('U') > $date_fin_iteration->format('U')) {
-			$date_fin_iteration = clone $saisie->getFinAbs(null);
+			$date_fin_iteration = $saisie->getFinAbs(null);
 		    }
 		}
 	    }
+            $date_fin_iteration_timestamp = $date_fin_iteration->format('U');
 
 	    $heure_demi_journee = 11;
 	    $minute_demi_journee = 50;
@@ -74,11 +83,11 @@ class AbsencesEleveSaisieHelper {
 			$date_compteur->setTime($heure_demi_journee, $minute_demi_journee);//on calle la demi journée a 11h50
 		    }
 		}
-		if ($date_compteur->format('U') > $date_fin_iteration->format('U')) {
+		if ($date_compteur->format('U') > $date_fin_iteration_timestamp) {
 		    break;
 		}
-		$max = 0;
-		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration->format('U') && $max < 200) {
+                
+		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration_timestamp && $max < 200) {
 		    //est-ce un jour de la semaine ouvert ?
 		    if (!EdtHelper::isJourneeOuverte($date_compteur)) {
 			//etab fermé
@@ -111,7 +120,7 @@ class AbsencesEleveSaisieHelper {
 			$date_compteur_suivante->modify("+1 hour");
 			$date_compteur_suivante->modify("+35 minutes");
 		    }
-		    $date_compteur = clone $date_compteur_suivante;
+		    $date_compteur = $date_compteur_suivante;
 		}
 	    }
 	    return $result;
