@@ -82,27 +82,16 @@ class AbsencesEleveSaisieHelper {
 		    //est-ce un jour de la semaine ouvert ?
 		    if (!EdtHelper::isJourneeOuverte($date_compteur)) {
 			//etab fermé
-			$date_compteur->modify("+12 hours");
+			$date_compteur->modify("+9 hours");
 			continue;
                     } elseif (!EdtHelper::isEtablissementOuvert($date_compteur)) {
-                        $date_compteur->modify("+55 minutes");
+                        $date_compteur->modify("+54 minutes");
+                        continue;
+                    } elseif ($date_compteur->format('U') < $saisie->getDebutAbs('U') && !EdtHelper::isEtablissementOuvert($saisie->getDebutAbs(null))) {
+                        $date_compteur->modify("+54 minutes");
                         continue;
                     }
-//		    } else {
-//                        $jour_semaine = EdtHelper::$semaine_declaration[$date_compteur->format("w")];
-//                        $horaire = null;
-//                        if (isset($horaire_tab[$jour_semaine])) {
-//                            $horaire = $horaire_tab[$jour_semaine];
-//                        }
-//                        if ($horaire == null
-//                                || $date_compteur->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')
-//                                ||	$date_compteur->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
-//                            //etab fermé
-//                            $date_compteur->modify("+55 minutes");
-//                            continue;
-//                        }
-//                    }
-
+                    
 		    if ($date_compteur->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
 			$date_compteur->setTime(0, 0);
 		    } else {
@@ -127,7 +116,6 @@ class AbsencesEleveSaisieHelper {
 	    }
 	    return $result;
 	}
-
 }
 
 ?>
