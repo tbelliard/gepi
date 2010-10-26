@@ -76,14 +76,28 @@ class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer {
 				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
 			}
 		}
-
+        $edt_periode_actuelle=Null;
 		foreach (EdtCalendrierPeriodePeer::retrieveAllEdtCalendrierPeriodesOrderByTime() as $edtPeriode) {
-		    if ($edtPeriode->getJourdebutCalendrier('Y-m-d') <= $dt->format('Y-m-d')
+          if ($edtPeriode->getJourdebutCalendrier('Y-m-d') <= $dt->format('Y-m-d')
 			    &&	$edtPeriode->getJourfinCalendrier('Y-m-d') >= $dt->format('Y-m-d')) {
-			return $edtPeriode;
-		    }
+			   if (is_null($edt_periode_actuelle)){ //c'est la première periode rencontrée qui correspond
+                 $edt_periode_actuelle=$edtPeriode;
+               }else{
+                 if ($edtPeriode->getDebutCalendrierTs() == $edt_periode_actuelle->getDebutCalendrierTs()
+                      && $edtPeriode->getFinCalendrierTs()< $edt_periode_actuelle->getFinCalendrierTs() ) {
+                   //une nouvelle période commence au même instant que la précédente et fini avant
+                   $edt_periode_actuelle=$edtPeriode;
+                 }else{
+                   if ($edtPeriode->getDebutCalendrierTs() > $edt_periode_actuelle->getDebutCalendrierTs()) {
+                     //une nouvelle période comprenant la date du jour à commencée après celle retenue
+                   $edt_periode_actuelle=$edtPeriode;
+                   }
+                 }
+               }
+		  }                     
 		}
-		return null;
+        return $edt_periode_actuelle;
+		//return null;
 //		return EdtCalendrierPeriodeQuery::create()
 //			->filterByJourdebutCalendrier($dt, Criteria::LESS_EQUAL)
 //			//->filterByHeuredebutCalendrier($dt, Criteria::GREATER_EQUAL)
