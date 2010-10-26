@@ -237,7 +237,7 @@
 				<?php echo $afficheAccueil->canal_rss['expli']; ?>
 			  </span>
 			  <span id="divuri" style="display: none;">
-				<a href="" onclick="window.open(this.href, '_blank'); return false;"  <?php echo $afficheAccueil->canal_rss['lien']; ?> >
+				<a href="<?php echo $afficheAccueil->canal_rss['lien']; ?>" onclick="window.open(this.href, '_blank'); return false;" >
 				  <?php echo $afficheAccueil->canal_rss['texte']; ?>
 				</a>
 			  </span>
