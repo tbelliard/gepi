@@ -87,7 +87,7 @@ class AbsencesEleveSaisieHelper {
 		    break;
 		}
                 
-		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration_timestamp && $max < 200) {
+		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration_timestamp) {
 		    //est-ce un jour de la semaine ouvert ?
 		    if (!EdtHelper::isJourneeOuverte($date_compteur)) {
 			//etab fermé
