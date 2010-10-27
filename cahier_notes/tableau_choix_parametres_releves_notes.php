@@ -126,7 +126,7 @@
 	//=================================
 	// 20100526
 	// Il ne faut peut-être pas l'autoriser pour tous les utilisateurs?
-	if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+	//if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td style='text-align:left;'>Avec la moyenne de la classe pour chaque devoir\n";
@@ -156,7 +156,7 @@
 		echo "<a href=\"javascript:CocheLigne('rn_moy_min_max_classe')\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheLigne('rn_moy_min_max_classe')\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 		echo "</td>\n";
 		echo "</tr>\n";
-	}
+	//}
 	//=================================
 
 

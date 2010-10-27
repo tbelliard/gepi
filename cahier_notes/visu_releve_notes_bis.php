@@ -924,11 +924,16 @@ function ToutDeCocher() {
 		}
 		echo "	DecocheLigne('rn_app');
 	DecocheLigne('rn_adr_resp');
-}
+}";
 
-document.getElementById('div_param_releve').style.display='none';
 
-</script>\n";
+if(($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
+    echo "document.getElementById('div_param_releve').style.display='none';";
+} else {
+    echo "document.getElementById('div_param_releve').style.display='';";
+};
+
+echo "</script>\n";
 
 	}
 	//===========================================================
