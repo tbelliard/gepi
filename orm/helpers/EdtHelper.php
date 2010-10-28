@@ -39,29 +39,11 @@ class EdtHelper {
    * @return boolean
    */
     public static function isEtablissementOuvert($dt){
-            $jour_semaine = EdtHelper::$semaine_declaration[$dt->format("w")];
-	    $horaire_tab = EdtHorairesEtablissementPeer::retrieveAllEdtHorairesEtablissementArrayCopy();
-            $horaire = null;
-            if (isset($horaire_tab[$jour_semaine])) {
-                $horaire = $horaire_tab[$jour_semaine];
+            if (!EdtHelper::isHoraireOuvert($dt) || !EdtHelper::isJourneeOuverte($dt)) {
+                return false;
             } else {
-                return false;
+                return true;
             }
-            if ($dt->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')
-                    ||	$dt->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
-                //etab fermé
-                return false;
-            }
-
-            //est-ce une période de calendrier ouverte
-            $edt_periode_courante = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($dt);
-            if ($edt_periode_courante != null
-                    && ($edt_periode_courante->getEtabfermeCalendrier() == 0 || $edt_periode_courante->getEtabvacancesCalendrier() == 1)) {
-                //etab fermé
-                return false;
-            }
-            
-            return true;
     }
 
 
@@ -83,6 +65,29 @@ class EdtHelper {
             $edt_periode_courante = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($dt);
             if ($edt_periode_courante != null
                     && ($edt_periode_courante->getEtabfermeCalendrier() == 0 || $edt_periode_courante->getEtabvacancesCalendrier() == 1)) {
+                //etab fermé
+                return false;
+            }
+
+            return true;
+    }
+
+ /**
+   * Renvoi vrai ou faux selon que l'établissement est ouvert à cette horaire (sans se préocupper des vacances)
+   *
+   * @param      mixed $dt
+   * @return boolean
+   */
+    public static function isHoraireOuvert($dt){
+            $jour_semaine = EdtHelper::$semaine_declaration[$dt->format("w")];
+	    $horaire_tab = EdtHorairesEtablissementPeer::retrieveAllEdtHorairesEtablissementArrayCopy();
+            if (isset($horaire_tab[$jour_semaine])) {
+                $horaire = $horaire_tab[$jour_semaine];
+            } else {
+                return false;
+            }
+            if ($dt->format('Hi') >= $horaire->getFermetureHoraireEtablissement('Hi')
+                    ||	$dt->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
                 //etab fermé
                 return false;
             }
