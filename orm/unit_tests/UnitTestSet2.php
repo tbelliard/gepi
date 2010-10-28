@@ -135,7 +135,7 @@ $absenceSaisie2->setEleve($newEleve);
 $absenceSaisie2->save();//normalement cette saisie va ètre comptée en retard et non en manquementObligationPresence
 
 $absenceSaisies = $newEleve->getAbsenceEleveSaisiesManquementObligationPresence();
-if ($absenceSaisies->count() != 1) {
+if ($absenceSaisies->count() != 2) {
 	echo ($logger->getDisplay());
 	echo('test 1 recuperation absence saisie eleve manquement obligation a partir d\'un eleve a <font color="red">echoue</font> <br><br/>');
 } else {
