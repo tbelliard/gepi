@@ -86,13 +86,22 @@ class AbsencesEleveSaisieHelper {
 		while ($date_compteur->format('U') < $saisie->getFinAbs('U') && $date_compteur->format('U') < $date_fin_iteration_timestamp) {
 		    //est-ce un jour de la semaine ouvert ?
 		    if (!EdtHelper::isJourneeOuverte($date_compteur)) {
-			//etab fermé
-			$date_compteur->modify("+9 hours");
+			//etab fermé on va passer au lendemain
+                        $date_compteur->setTime(23, 59);
+                        $date_compteur->modify("+1minutes");
 			continue;
-                    } elseif (!EdtHelper::isEtablissementOuvert($date_compteur)) {
-                        $date_compteur->modify("+21 minutes");
+                    } elseif (!EdtHelper::isHoraireOuvert($date_compteur)) {
+                        $horaire = $horaire_tab[EdtHelper::$semaine_declaration[$date_compteur->format("w")]];
+                        if ($date_compteur->format('Hi') < $horaire->getOuvertureHoraireEtablissement('Hi')) {
+                            //c'est le matin, on règle sur l'heure d'ouverture
+                            $date_compteur->setTime($horaire->getOuvertureHoraireEtablissement('H'), $horaire->getOuvertureHoraireEtablissement('i'));
+                        } else {
+                            //on est apres la fermeture, on va passer au lendemain
+                            $date_compteur->setTime(23, 59);
+                            $date_compteur->modify("+1minutes");
+                        }
                         continue;
-                    } elseif ($date_compteur->format('U') < $saisie->getDebutAbs('U') && !EdtHelper::isEtablissementOuvert($saisie->getDebutAbs(null))) {
+                    } elseif ($date_compteur->format('U') < $saisie->getDebutAbs('U') && !EdtHelper::isHoraireOuvert($saisie->getDebutAbs(null))) {
                         $date_compteur->modify("+21minutes");
                         continue;
                     }
