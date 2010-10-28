@@ -40,6 +40,7 @@ class AbsencesEleveSaisieHelper {
             if ($abs_saisie_col->isEmpty()) {
                 return new PropelCollection();
             }
+
             //on va tester si les saisies sont bien ordonnée.
             $compteur = $abs_saisie_col->getFirst()->getDebutAbs('U');
             foreach($abs_saisie_col as $saisie) {
@@ -77,11 +78,6 @@ class AbsencesEleveSaisieHelper {
 	    foreach($abs_saisie_col as $saisie) {
 		if ($date_compteur->format('U') < $saisie->getDebutAbs('U')) {
 		    $date_compteur = clone $saisie->getDebutAbs(null);
-		    if ($date_compteur->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
-			$date_compteur->setTime(0, 0);
-		    } else {
-			$date_compteur->setTime($heure_demi_journee, $minute_demi_journee);//on calle la demi journée a 11h50
-		    }
 		}
 		if ($date_compteur->format('U') > $date_fin_iteration_timestamp) {
 		    break;
@@ -94,10 +90,10 @@ class AbsencesEleveSaisieHelper {
 			$date_compteur->modify("+9 hours");
 			continue;
                     } elseif (!EdtHelper::isEtablissementOuvert($date_compteur)) {
-                        $date_compteur->modify("+54 minutes");
+                        $date_compteur->modify("+21 minutes");
                         continue;
                     } elseif ($date_compteur->format('U') < $saisie->getDebutAbs('U') && !EdtHelper::isEtablissementOuvert($saisie->getDebutAbs(null))) {
-                        $date_compteur->modify("+54 minutes");
+                        $date_compteur->modify("+21minutes");
                         continue;
                     }
                     
