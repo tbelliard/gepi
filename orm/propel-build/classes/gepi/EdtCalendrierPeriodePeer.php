@@ -77,26 +77,23 @@ class EdtCalendrierPeriodePeer extends BaseEdtCalendrierPeriodePeer {
 			}
 		}
         $edt_periode_actuelle=Null;
+        $intervalle_periode=Null;
 		foreach (EdtCalendrierPeriodePeer::retrieveAllEdtCalendrierPeriodesOrderByTime() as $edtPeriode) {
           if ($edtPeriode->getJourdebutCalendrier('Y-m-d') <= $dt->format('Y-m-d')
 			    &&	$edtPeriode->getJourfinCalendrier('Y-m-d') >= $dt->format('Y-m-d')) {
 			   if (is_null($edt_periode_actuelle)){ //c'est la première periode rencontrée qui correspond
                  $edt_periode_actuelle=$edtPeriode;
+                 $intervalle_periode=$edtPeriode->getFinCalendrierTs()-$edtPeriode->getDebutCalendrierTs();  
                }else{
-                 if ($edtPeriode->getDebutCalendrierTs() == $edt_periode_actuelle->getDebutCalendrierTs()
-                      && $edtPeriode->getFinCalendrierTs()< $edt_periode_actuelle->getFinCalendrierTs() ) {
-                   //une nouvelle période commence au même instant que la précédente et fini avant
-                   $edt_periode_actuelle=$edtPeriode;
-                 }else{
-                   if ($edtPeriode->getDebutCalendrierTs() > $edt_periode_actuelle->getDebutCalendrierTs()) {
-                     //une nouvelle période comprenant la date du jour à commencée après celle retenue
-                   $edt_periode_actuelle=$edtPeriode;
-                   }
-                 }
-               }
-		  }                     
-		}
-        return $edt_periode_actuelle;
+          //si une periode plus courte correspond on prend celle là
+          if ($edtPeriode->getFinCalendrierTs()-$edtPeriode->getDebutCalendrierTs()<=$intervalle_periode) {
+            $edt_periode_actuelle = $edtPeriode;
+            $intervalle_periode=$edtPeriode->getFinCalendrierTs()-$edtPeriode->getDebutCalendrierTs();
+          }
+        }
+      }
+    }
+    return $edt_periode_actuelle;
 		//return null;
 //		return EdtCalendrierPeriodeQuery::create()
 //			->filterByJourdebutCalendrier($dt, Criteria::LESS_EQUAL)
