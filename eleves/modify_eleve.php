@@ -285,7 +285,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	// Validation de modifications dans le formulaire de nom, prénom,...
 	if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 		// Détermination du format de la date de naissance
-		$call_eleve_test = mysql_query("SELECT naissance FROM eleves WHERE");
+		$call_eleve_test = mysql_query("SELECT naissance FROM eleves WHERE 1");
 		$test_eleve_naissance = @mysql_result($call_eleve_test, "0", "naissance");
 		$format = strlen($test_eleve_naissance);
 
