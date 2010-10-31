@@ -202,7 +202,7 @@ if ($mode==1) {
 	sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'');
 }
 
-
+//debug_var();
 //-------------------------------------------------------------------------------------------------------------------
 if (isset($_POST['notes'])) {
 	//=======================================================
@@ -210,8 +210,12 @@ if (isset($_POST['notes'])) {
 	// J'ai déplacé vers le bas l'alert Javascript qui lors d'un import des notes était inscrit avant même la balise <html>
 	// Cela faisait une page HTML non valide.
 	$temp = $_POST['notes']." 1";
+	//echo "<pre>";
+	//echo "\$temp=$temp<br />";
 	$temp = my_ereg_replace("\\\\r","\r",$temp);
 	$temp = my_ereg_replace("\\\\n","\n",$temp);
+	//echo "\$temp=$temp<br />";
+	//echo "</pre>";
 	$longueur = strlen($temp);
 	$i = 0;
 	$fin_note = 'yes';
@@ -220,11 +224,14 @@ if (isset($_POST['notes'])) {
 	if(!isset($note_sur_dev_choisi)) {$note_sur_dev_choisi=20;}
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
 		$car = substr($temp, $i, 1);
+		//echo "<p>\$car='$car'<br />";
 		//if (ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
-		if (my_ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
+		//if (my_ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
+		if (my_ereg('^[0-9.,a-zA-Z-]{1}$', $car)) {
 			if (($fin_note=='yes') or ($i == $longueur-1)) {
 				$fin_note = 'no';
 				if (is_numeric($tempo)) {
+					//echo "is_numeric($tempo)<br />";
 					if ($tempo <= $note_sur_dev_choisi) {
 						$note_import[$indice] = $tempo;
 						$indice++;
@@ -233,15 +240,18 @@ if (isset($_POST['notes'])) {
 						$indice++;
 					}
 				} else {
+					//echo "NO is_numeric($tempo)<br />";
 					$note_import[$indice] = $tempo;
 					$indice++;
 				}
 				$tempo = '';
 			}
 			$tempo=$tempo.$car;
+			//echo "\$tempo='$tempo'<br />";
 		} else {
 			$fin_note = 'yes';
 		}
+		//echo "\$fin_note=$fin_note<br />";
 		$i++;
 	}
 }
