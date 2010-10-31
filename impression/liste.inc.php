@@ -123,7 +123,8 @@ global $prefix_base ;
 			$eleve_classe_nom_complet=$lig_tmp->nom_complet;
 		}
 		// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance,ereno...
-		$sql="SELECT id_classe,naissance,ereno,doublant,regime FROM eleves, j_eleves_classes, j_eleves_regime WHERE eleves.login='$eleve_login' AND j_eleves_classes.login='$eleve_login' AND j_eleves_regime.login='$eleve_login'";
+		//$sql="SELECT id_classe,naissance,ereno,doublant,regime FROM eleves, j_eleves_classes, j_eleves_regime WHERE eleves.login='$eleve_login' AND j_eleves_classes.login='$eleve_login' AND j_eleves_regime.login='$eleve_login'";
+		$sql="SELECT id_classe,naissance,ereno FROM eleves, j_eleves_classes WHERE eleves.login='$eleve_login' AND j_eleves_classes.login=eleves.login;";
 	    //echo "$sql<br />";
 		$res_tmp=mysql_query($sql);
 
@@ -134,9 +135,20 @@ global $prefix_base ;
 			$lig_tmp=mysql_fetch_object($res_tmp);
 			$eleve_naissance=$lig_tmp->naissance;
 			$eleve_ereno=$lig_tmp->ereno;
-			$eleve_doublant=$lig_tmp->doublant;
-			$eleve_regime=$lig_tmp->regime;
 			$eleve_id_classe=$lig_tmp->id_classe;	
+
+			// A quoi servent les données ci-dessous? Je n'ai pas vu dans les pages appelant liste.inc.php
+			$sql="SELECT doublant,regime FROM j_eleves_regime WHERE login='$eleve_login';";
+			$res_regime=mysql_query($sql);
+			if(mysql_num_rows($res_regime)==0) {
+				$eleve_doublant='';
+				$eleve_regime='';
+			}
+			else {
+				$lig_tmp2=mysql_fetch_object($res_regime);
+				$eleve_doublant=$lig_tmp2->doublant;
+				$eleve_regime=$lig_tmp2->regime;
+			}
 		}
         //pour rendre compatible groupe et classe  par la suite
 		$donnees_eleves[$cpt_i]['login'] = $eleve_login; 
