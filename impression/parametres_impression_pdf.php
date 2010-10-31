@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 10/02/2007
+ * $Id$
  *
- * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -64,7 +64,7 @@ if ($ok==0) {
 	} else if ($resultat_session == '0') {
 		header("Location: ../logout.php?auto=1");
 		die();
-	};
+	}
 
 	//INSERT INTO droits VALUES ('/impression/parametres_impression_pdf.php', 'V', 'V', 'V', 'V', 'V', 'V', 'Impression des listes PDF; réglage des paramètres', '');
 	if (!checkAccess()) {
@@ -84,47 +84,59 @@ echo " | <a href='./impression.php'>Impression rapide à l'unité</a>";
 echo " | <a href='./impression_serie.php'>Impression en série</a>";
 echo "</p>\n";
 
-echo "<h3>Choix des paramètres : </h3>\n";
+echo "<h3>Choix des paramètres&nbsp;: </h3>\n";
 
 echo "<div>\n
    <fieldset>\n";
-       echo "<legend>Modifiez l'apparence du document PDF :</legend>\n";
-	   echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"choix_parametres\">\n";
-	   echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" /><br />\n";
-       echo "<br />\n";
-	   echo "<b>Définition des marges du document :</b><br />\n";
-	   echo "&nbsp;&nbsp;Marge à gauche : <input type=\"text\" name=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"10\" /> <br />\n";
-	   echo "&nbsp;&nbsp;Marge à droite : <input type=\"text\" name=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"10\" /> <br />\n";
-	   echo "&nbsp;&nbsp;Marge du haut : <input type=\"text\" name=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"10\" /> <br />\n";
-	   echo "&nbsp;&nbsp;Marge du bas : <input type=\"text\" name=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"10\" /> <br />\n";
-	   echo "&nbsp;&nbsp;Option marge reliure ? <input type=\"radio\" name=\"marge_reliure\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"marge_reliure\" value=\"0\" /> Non<br />\n";
-	   echo "&nbsp;&nbsp;Option emplacement des perforations classeur  ? <input type=\"radio\" name=\"avec_emplacement_trous\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"avec_emplacement_trous\" value=\"0\" /> Non<br />\n";
-	   echo "<br />\n";
-	   echo "<b>Informations à afficher sur le document :</b><br />\n";
-	   echo "&nbsp;&nbsp;Afficher le professeur responsable de la classe ? <input type=\"radio\" name=\"affiche_pp\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"affiche_pp\" value=\"0\" /> Non<br />\n";
-	   echo "&nbsp;&nbsp;Afficher une ligne de texte avant le tableau  ? <input type=\"radio\" name=\"avec_ligne_texte\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"avec_ligne_texte\" value=\"0\" /> Non ";
-       echo "&nbsp;Texte : &nbsp;<input type=\"text\" name=\"ligne_texte\" size=\"50\" value=\"&nbsp;\" /> <br />\n";
-	   echo "&nbsp;&nbsp;Afficher l'effectif de la classe ? <input type=\"radio\" name=\"afficher_effectif\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"afficher_effectif\" value=\"0\" /> Non<br />\n";
-	   echo "<br />\n";
-	   echo "<b>Styles du tableau : </b><br />\n";
-	   echo "&nbsp;&nbsp;Tout sur une seule page ? <input type=\"radio\" name=\"une_seule_page\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"une_seule_page\" value=\"0\" /> Non<br />\n";
-	   echo "&nbsp;&nbsp;Hauteur d'une ligne : <input type=\"text\" name=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"8\" /> <br />\n";
-	   echo "&nbsp;&nbsp;Largeur d'une colonne : <input type=\"text\" name=\"l_colonne\" size=\"2\" maxlength=\"2\" value=\"8\" /> <br />\n";
-	   echo "&nbsp;&nbsp;Largeur colonne Nom / Prénom : <input type=\"text\" name=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"40\" /> <br />\n";
-	   echo "&nbsp;&nbsp;Nombre ligne(s) avant : <input type=\"text\" name=\"nb_ligne_avant\" size=\"2\" maxlength=\"2\" value=\"2\" /> \n";
-	   echo "&nbsp;&nbsp;Hauteur de la première ligne avant : <input type=\"text\" name=\"h_ligne1_avant\" size=\"2\" maxlength=\"2\" value=\"25\" /> <br />\n";
-	   echo "&nbsp;&nbsp;Nombre ligne(s) après : <input type=\"text\" name=\"nb_ligne_apres\" size=\"2\" maxlength=\"2\" value=\"1\" /> <br />\n";
-	   echo "&nbsp;&nbsp;Quadrillage total des cellules ? <input type=\"radio\" name=\"encadrement_total_cellules\" value=\"1\" checked /> Oui [ <input type=\"radio\" name=\"encadrement_total_cellules\" value=\"0\" /> Non \n";
-	   echo "&nbsp;&nbsp;Nombre de cellules quadrillées après le nom : <input type=\"text\" name=\"nb_cellules_quadrillees\" size=\"2\" maxlength=\"2\" value=\"5\" /> ] <br />\n";
-       echo "<br />\n";
-	   echo "<b>Informations en bas du document : </b><br />\n";
-	   echo "&nbsp;&nbsp;Réserver une zone vide sous le tableau ? <input type=\"radio\" name=\"zone_vide\" value=\"1\" checked /> Oui <input type=\"radio\" name=\"zone_vide\" value=\"0\" /> Non";
-	   echo "&nbsp;&nbsp;Hauteur de la zone : <input type=\"text\" name=\"hauteur_zone_finale\" size=\"2\" maxlength=\"2\" value=\"20\" /> (0 tout ce qui reste)<br />\n";
-	   echo "<input value=\"1\" name=\"ok\" type=\"hidden\" />\n";
-	   echo "<br />\n";
-	   echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" />\n";
-       echo "<br />\n";
-     echo "</form>\n";
+		echo "<legend>Modifiez l'apparence du document PDF&nbsp;:</legend>\n";
+		echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"choix_parametres\">\n";
+		echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" /><br />\n";
+		echo "<br />\n";
+
+		echo "<b>Définition des marges du document&nbsp;:</b></p>\n";
+		echo "<table style='margin-left: 1em;' border='0'>\n";
+		echo "<tr><td>Marge à gauche&nbsp;:</td><td><input type=\"text\" name=\"marge_gauche\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
+		echo "<tr><td>Marge à droite&nbsp;:</td><td><input type=\"text\" name=\"marge_droite\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
+		echo "<tr><td>Marge du haut&nbsp;:</td><td><input type=\"text\" name=\"marge_haut\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
+		echo "<tr><td>Marge du bas&nbsp;:</td><td><input type=\"text\" name=\"marge_bas\" size=\"2\" maxlength=\"2\" value=\"10\" /></td></tr>\n";
+
+		echo "<tr><td>Option marge reliure ?</td><td><input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_1\" value=\"1\" checked /><label for='marge_reliure_1'> Oui</label> <input type=\"radio\" name=\"marge_reliure\" id=\"marge_reliure_0\" value=\"0\" /><label for='marge_reliure_0'> Non</label></td></tr>\n";
+		echo "<tr><td>Option emplacement des<br />perforations classeur  ?</td><td><input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_1\" value=\"1\" checked /><label for='avec_emplacement_trous_1'> Oui</label> <input type=\"radio\" name=\"avec_emplacement_trous\" id=\"avec_emplacement_trous_0\" value=\"0\" /><label for='avec_emplacement_trous_0'> Non</label></td></tr>\n";
+		echo "</table>\n";
+
+		echo "<br />\n";
+
+		echo "<b>Informations à afficher sur le document&nbsp;:</b><br />\n";
+		echo "<table style='margin-left: 1em;' border='0'>\n";
+		echo "<tr><td>Afficher le professeur responsable de la classe ?</td><td><input type=\"radio\" name=\"affiche_pp\" id=\"affiche_pp_1\" value=\"1\" checked /><label for='affiche_pp_1'> Oui</label> <input type=\"radio\" name=\"affiche_pp\" id=\"affiche_pp_0\" value=\"0\" /><label for='affiche_pp_0'> Non</label></td></tr>\n";
+		echo "<tr><td valign='top'>Afficher une ligne de texte avant le tableau  ?</td><td><input type=\"radio\" name=\"avec_ligne_texte\" id=\"avec_ligne_texte_1\" value=\"1\" checked /><label for='avec_ligne_texte_1'> Oui</label> <input type=\"radio\" name=\"avec_ligne_texte\" id=\"avec_ligne_texte_0\" value=\"0\" /><label for='avec_ligne_texte_0'> Non</label><br />";
+		echo "Texte&nbsp;: &nbsp;<input type=\"text\" name=\"ligne_texte\" size=\"50\" value=\"&nbsp;\" /></td></tr>\n";
+		echo "<tr><td>Afficher l'effectif de la classe ?</td><td><input type=\"radio\" name=\"afficher_effectif\" id=\"afficher_effectif_1\" value=\"1\" checked /><label for='afficher_effectif_1'> Oui</label> <input type=\"radio\" name=\"afficher_effectif\" id=\"afficher_effectif_0\" value=\"0\" /><label for='afficher_effectif_0'> Non</label></td></tr>\n";
+		echo "</table>\n";
+
+		echo "<br />\n";
+		echo "<b>Styles du tableau&nbsp;: </b><br />\n";
+		echo "<table style='margin-left: 1em;' border='0'>\n";
+		echo "<tr><td>Tout sur une seule page ?</td><td><input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_1\" value=\"1\" checked /><label for='une_seule_page_1'> Oui</label> <input type=\"radio\" name=\"une_seule_page\" id=\"une_seule_page_0\" value=\"0\" /><label for='une_seule_page_0'> Non</label></td></tr>\n";
+		echo "<tr><td>Hauteur d'une ligne&nbsp;:</td><td><input type=\"text\" name=\"h_ligne\" size=\"2\" maxlength=\"2\" value=\"8\" /> </td></tr>\n";
+		echo "<tr><td>Largeur d'une colonne&nbsp;:</td><td><input type=\"text\" name=\"l_colonne\" size=\"2\" maxlength=\"2\" value=\"8\" /> </td></tr>\n";
+		echo "<tr><td>Largeur colonne Nom / Prénom&nbsp;:</td><td><input type=\"text\" name=\"l_nomprenom\" size=\"2\" maxlength=\"2\" value=\"40\" /> </td></tr>\n";
+		echo "<tr><td>Nombre ligne(s) avant&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_avant\" size=\"2\" maxlength=\"2\" value=\"2\" /> \n";
+		echo "<tr><td>Hauteur de la première ligne avant&nbsp;:</td><td><input type=\"text\" name=\"h_ligne1_avant\" size=\"2\" maxlength=\"2\" value=\"25\" /> </td></tr>\n";
+		echo "<tr><td>Nombre ligne(s) après&nbsp;:</td><td><input type=\"text\" name=\"nb_ligne_apres\" size=\"2\" maxlength=\"2\" value=\"1\" /> </td></tr>\n";
+		echo "<tr><td>Quadrillage total des cellules ?</td><td><input type=\"radio\" name=\"encadrement_total_cellules\" id=\"encadrement_total_cellules_1\" value=\"1\" checked /><label for='encadrement_total_cellules_1'> Oui</label> [ <input type=\"radio\" name=\"encadrement_total_cellules\" id=\"encadrement_total_cellules_0\" value=\"0\" /><label for='encadrement_total_cellules_0'> Non</label> \n";
+		echo "<tr><td>&nbsp;</td><td>Nombre de cellules quadrillées après le nom&nbsp;: <input type=\"text\" name=\"nb_cellules_quadrillees\" size=\"2\" maxlength=\"2\" value=\"5\" /> ] </td></tr>\n";
+		echo "</table>\n";
+		echo "<br />\n";
+
+		echo "<b>Informations en bas du document&nbsp;: </b><br />\n";
+		echo "&nbsp;&nbsp;Réserver une zone vide sous le tableau ? <input type=\"radio\" name=\"zone_vide\" id=\"zone_vide_1\" value=\"1\" checked /><label for='zone_vide_1'> Oui</label> <input type=\"radio\" name=\"zone_vide\" id=\"zone_vide_0\" value=\"0\" /><label for='zone_vide_0'> Non</label><br />\n";
+		echo "&nbsp;&nbsp;Hauteur de la zone&nbsp;: <input type=\"text\" name=\"hauteur_zone_finale\" size=\"2\" maxlength=\"2\" value=\"20\" /> (0 tout ce qui reste)<br />\n";
+		echo "<input value=\"1\" name=\"ok\" type=\"hidden\" />\n";
+		echo "<br />\n";
+		echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" />\n";
+		echo "<br />\n";
+		echo "</form>\n";
    echo "</fieldset>\n
  </div>";
 	require("../lib/footer.inc.php");
