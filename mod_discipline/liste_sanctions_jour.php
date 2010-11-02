@@ -240,6 +240,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<th>Heure fin</th>\n";
 	echo "<th>Lieu</th>\n";
 	echo "<th>Travail</th>\n";
+    echo "<th>Effectuée</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
 	while($lig_sanction=mysql_fetch_object($res_sanction)) {
@@ -279,10 +280,19 @@ if(mysql_num_rows($res_sanction)>0) {
 		}
 		echo "</td>\n";
 
+        echo "<td>\n";
+		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
+		if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
+		echo "onchange='changement();' ";
+		echo "/>\n";
+		echo "<input type='hidden' name='form_id_sanction[]' value='$lig_sanction->id_sanction' />\n";
+		echo "</td>\n";
+
 		echo "</tr>\n";
 		$cpt_sanctions++;
 	}
 	echo "</table>\n";
+    echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
 	echo "</blockquote>\n";
 }
 
