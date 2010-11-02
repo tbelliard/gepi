@@ -47,7 +47,7 @@ class AbsencesEleveSaisieHelper {
                 if ($compteur > $saisie->getDebutAbs('U')) {
                     throw new PropelException('L');
                 }
-                $compteur = $saisie->getDebutAbs('Les saisies doivent etre triees par ordre de debut.');
+                $compteur = $saisie->getDebutAbs('Les saisies doivent etre triees par ordre chronologique de debut d absence.');
             }
             
 	    if ($date_debut_iteration == null) {
@@ -88,7 +88,7 @@ class AbsencesEleveSaisieHelper {
 		    if (!EdtHelper::isJourneeOuverte($date_compteur)) {
 			//etab fermé on va passer au lendemain
                         $date_compteur->setTime(23, 59);
-                        $date_compteur->modify("+1minutes");
+                        $date_compteur->modify("+2 hours");
 			continue;
                     } elseif (!EdtHelper::isHoraireOuvert($date_compteur)) {
                         $horaire = $horaire_tab[EdtHelper::$semaine_declaration[$date_compteur->format("w")]];
@@ -98,11 +98,11 @@ class AbsencesEleveSaisieHelper {
                         } else {
                             //on est apres la fermeture, on va passer au lendemain
                             $date_compteur->setTime(23, 59);
-                            $date_compteur->modify("+1minutes");
+                            $date_compteur->modify("+2 hours");
                         }
                         continue;
                     } elseif ($date_compteur->format('U') < $saisie->getDebutAbs('U') && !EdtHelper::isHoraireOuvert($saisie->getDebutAbs(null))) {
-                        $date_compteur->modify("+21minutes");
+                        $date_compteur->modify("+19 minutes");
                         continue;
                     }
                     
