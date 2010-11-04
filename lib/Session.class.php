@@ -21,6 +21,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+$debug_test_mdp="n";
+$debug_test_mdp_file="/tmp/test_mdp.txt";
 
 # Cette classe sert à manipuler la session en cours.
 # Elle gère notamment l'authentification des utilisateurs
@@ -127,6 +129,7 @@ class Session {
 	# 8 : multisite ; impossibilité d'obtenir le RNE de l'utilisateur qui s'est authentifié correctement.
 	# 9 : échec de l'authentification (mauvais couple login/mot de passe, sans doute).
 	public function authenticate($_login = null, $_password = null) {
+		global $debug_test_mdp, $debug_test_mdp_file;
 
 		// Quelques petits tests de sécurité
 
@@ -136,6 +139,12 @@ class Session {
 	      return "3";
 		  die();
 	    }
+
+		if($debug_test_mdp=="y") {
+			$f_tmp=fopen($debug_test_mdp_file,"a+");
+			fwrite($f_tmp,strftime("%a %d/%m/%Y - %H%M%S").": \$_login=$_login et \$_password=$_password\n");
+			fclose($f_tmp);
+		}
 
 	    // On initialise la session de l'utilisateur.
 	    // On commence par extraire le mode d'authentification défini
@@ -586,6 +595,8 @@ class Session {
 	}
 
 	private function authenticate_gepi($_login,$_password) {
+		global $debug_test_mdp, $debug_test_mdp_file;
+
 		if ($this->use_uppercase_login($_login)) {
 			# On passe le login en majuscule pour toute la session.
 			$_login = strtoupper($_login);
@@ -598,9 +609,64 @@ class Session {
 				# Le mot de passe correspond. C'est bon !
 				$this->login = $_login;
 				$this->current_auth_mode = "gepi";
+
+				if($debug_test_mdp=="y") {
+					$f_tmp=fopen($debug_test_mdp_file,"a+");
+					fwrite($f_tmp,"Authentification OK sans modification\n");
+					fclose($f_tmp);
+				}
 				return true;
 			} else {
-				return false;
+				//if(getSettingValue('auth_tout_terrain')=="y") {
+					if(getSettingValue('filtrage_html')=='htmlpurifier') {
+						if (mysql_result($query, 0, "password") == md5(unhtmlentities($_password))) {
+							# Le mot de passe correspond. C'est bon !
+							$this->login = $_login;
+							$this->current_auth_mode = "gepi";
+	
+							if($debug_test_mdp=="y") {
+								$f_tmp=fopen($debug_test_mdp_file,"a+");
+								fwrite($f_tmp,"Authentification OK avec unhtmlentities()\n");
+								fclose($f_tmp);
+							}
+							return true;
+						} else {
+	
+							if($debug_test_mdp=="y") {
+								$f_tmp=fopen($debug_test_mdp_file,"a+");
+								fwrite($f_tmp,"Authentification en echec avec et sans modification unhtmlentities\n");
+								fclose($f_tmp);
+							}
+							return false;
+						}
+					}
+					else {
+						if (mysql_result($query, 0, "password") == md5(htmlentities($_password))) {
+							# Le mot de passe correspond. C'est bon !
+							$this->login = $_login;
+							$this->current_auth_mode = "gepi";
+	
+							if($debug_test_mdp=="y") {
+								$f_tmp=fopen($debug_test_mdp_file,"a+");
+								fwrite($f_tmp,"Authentification OK avec htmlentities()\n");
+								fclose($f_tmp);
+							}
+							return true;
+						} else {
+							if($debug_test_mdp=="y") {
+								$f_tmp=fopen($debug_test_mdp_file,"a+");
+								fwrite($f_tmp,"Authentification en echec avec et sans modification htmlentities\n");
+								fclose($f_tmp);
+							}
+							return false;
+						}
+					}
+				/*
+				}
+				else {
+					return false;
+				}
+				*/
 			}
 		} else {
 			# Le login est erroné (n'existe pas dans la base)
