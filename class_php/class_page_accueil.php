@@ -1110,6 +1110,16 @@ class class_page_accueil {
 			"Consultation d'un ".$this->gepiSettings['denomination_eleve'],
 			"Ce menu vous permet de consulter dans une même page les informations concernant un ".$this->gepiSettings['denomination_eleve']." (enseignements suivis, bulletins, relevés de notes, ".$this->gepiSettings['denomination_responsables'].",...). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.");
 
+	if(getSettingValue("active_cahiers_texte")=="y") {
+		if(($this->statutUtilisateur=="professeur") OR
+			(($this->statutUtilisateur=="cpe")&&((getSettingValue("GepiAccesCdtCpe")=="yes")||(getSettingValue("GepiAccesCdtCpeRestreint")=="yes"))) OR
+			(($this->statutUtilisateur == "scolarite")&&((getSettingValue("GepiAccesCdtScol")=="yes")||(getSettingValue("GepiAccesCdtScolRestreint")=="yes")))) {
+				$this->creeNouveauItem("/cahier_texte_2/see_all.php",
+					"Consultation des cahiers de textes",
+					"Ce menu vous permet de consulter les cahiers de textes.");
+		}
+	}
+
 	$this->creeNouveauItem("/impression/impression_serie.php",
 			"Impression PDF de listes",
 			"Ceci vous permet d'imprimer en PDF des listes avec les ".$this->gepiSettings['denomination_eleves'].", à l'unité ou en série. L'apparence des listes est paramétrable.");
