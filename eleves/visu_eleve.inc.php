@@ -1136,6 +1136,7 @@ Patientez pendant l'extraction des données... merci.
 
 			echo "<tr><th style='text-align: left;'>Email&nbsp;:</th><td>";
 			$tmp_date=getdate();
+			//echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
 			echo "<a href='mailto:".$tab_ele['email']."?subject=GEPI&amp;body=";
 			if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 			echo ",%0d%0aCordialement.'>";
@@ -1353,7 +1354,10 @@ Patientez pendant l'extraction des données... merci.
 					echo "<td>\n";
 					for($j=0;$j<count($tab_ele['groupes'][$i]['prof']);$j++) {
 						if($tab_ele['groupes'][$i]['prof'][$j]['email']!='') {
-							echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."'>";
+							//echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."'>";
+							echo "<a href='mailto:".$tab_ele['groupes'][$i]['prof'][$j]['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+							if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+							echo ",%0d%0aCordialement.'>";
 						}
 						if(isset($tab_ele['classe'][0]['id_classe'])) {
 							echo affiche_utilisateur($tab_ele['groupes'][$i]['prof'][$j]['prof_login'], $tab_ele['classe'][0]['id_classe']);
@@ -1390,7 +1394,11 @@ Patientez pendant l'extraction des données... merci.
 				for($loop=0;$loop<count($tab_ele['classe']);$loop++) {
 					if($loop>0) {echo ", ";}
 					if($tab_ele['classe'][$loop]['pp']['email']!="") {
-						echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
+						//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
+						//echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."'>";
+						echo "<a href='mailto:".$tab_ele['classe'][$loop]['pp']['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+						if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+						echo ",%0d%0aCordialement.'>";
 					}
 					echo $tab_ele['classe'][$loop]['pp']['civ_nom_prenom'];
 					if($tab_ele['classe'][$loop]['pp']['email']!="") {
@@ -1402,7 +1410,11 @@ Patientez pendant l'extraction des données... merci.
 
 				echo "<p><b>CPE chargé(e) du suivi</b>: ";
 				if($tab_ele['cpe']['email']!="") {
-					echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
+					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
+					//echo "<a href='mailto:".$tab_ele['cpe']['email']."'>";
+					echo "<a href='mailto:".$tab_ele['cpe']['email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
+					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
+					echo ",%0d%0aCordialement.'>";
 				}
 				echo $tab_ele['cpe']['civ_nom_prenom'];
 				if($tab_ele['cpe']['email']!="") {
@@ -1412,7 +1424,8 @@ Patientez pendant l'extraction des données... merci.
 
 				if($tab_ele['equipe_liste_email']!="") {
 					$tmp_date=getdate();
-					echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI&amp;body=";
+					//echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI&amp;body=";
+					echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
 					if(my_ereg(",",$tab_ele['equipe_liste_email'])) {echo " à tou(te)s";}
 					echo ",%0d%0aCordialement.'>tous les enseignants et au CPE de l'élève</a>.</p>\n";
