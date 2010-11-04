@@ -314,7 +314,8 @@ if($gepi_prof_suivi==""){
 				$tabmail2[]=$tabmail[$i];
 			}
 		}
-		echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves de l'enseignement</a>.</p>\n";
+		//echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves de l'enseignement</a>.</p>\n";
+		echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves</a>.</p>\n";
 	}
 ?>
 <script language="JavaScript" type="text/javascript">
