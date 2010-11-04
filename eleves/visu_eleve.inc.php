@@ -242,9 +242,16 @@ else {
 		}
 		// =================================
 
+		// Initialisation
+		if(!isset($onglet)) {
+			$onglet="eleve";
+		}
+
 		if($ele_login_prec!=""){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_prec&amp;id_classe=$id_classe";
-			echo "'>".ucfirst($gepiSettings['denomination_eleve'])." précédent</a>";
+			echo "'";
+			echo " onclick=\"passer_a_eleve('$ele_login_prec','$id_classe');return false;\"";
+			echo ">".ucfirst($gepiSettings['denomination_eleve'])." précédent</a>";
 		}
 		if($chaine_options_eleves!="") {
 			echo " | <select name='ele_login' onchange=\"document.forms['form1'].submit();\">\n";
@@ -253,7 +260,9 @@ else {
 		}
 		if($ele_login_suiv!=""){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?ele_login=$ele_login_suiv&amp;id_classe=$id_classe";
-			echo "'>".ucfirst($gepiSettings['denomination_eleve'])." suivant</a>";
+			echo "'";
+			echo " onclick=\"passer_a_eleve('$ele_login_suiv','$id_classe');return false;\"";
+			echo ">".ucfirst($gepiSettings['denomination_eleve'])." suivant</a>";
 		}
 
 		//echo "</p>\n";
@@ -265,6 +274,10 @@ else {
 
 	echo "</p>\n";
 	echo "</div>\n";
+
+	echo "<input type='hidden' name='onglet' id='onglet_courant' value='";
+	if(isset($onglet)) {echo $onglet;}
+	echo "' />\n";
 	echo "</form>\n";
 
 	// Affichage des onglets pour l'élève choisi
@@ -278,6 +291,17 @@ Patientez pendant l'extraction des données... merci.
 
 	echo "<script type='text/javascript'>
 	document.getElementById('patience').innerHTML=\"Patientez pendant l'extraction des données... merci.\";
+
+	function passer_a_eleve(ele_login,id_classe) {
+		if(document.getElementById('onglet_courant')) {
+			onglet=document.getElementById('onglet_courant').value;
+		}
+		else {
+			onglet='eleve';
+		}
+		//alert('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
+		document.location.replace('".$_SERVER['PHP_SELF']."?id_classe='+id_classe+'&ele_login='+ele_login+'&onglet='+onglet);
+	}
 </script>\n";
 
 	flush();
@@ -896,11 +920,12 @@ Patientez pendant l'extraction des données... merci.
 	document.getElementById('patience').style.display='none';
 </script>\n";
 
+		/*
 		// Initialisation
 		if(!isset($onglet)) {
 			$onglet="eleve";
 		}
-
+		*/
 		//====================================
 		// Onglet Informations générales sur l'élève
 		echo "<div id='t_eleve' class='t_onglet' style='";
@@ -2359,6 +2384,8 @@ Patientez pendant l'extraction des données... merci.
 
 			document.getElementById('t_'+id).style.borderBottomWidth='0px';
 		}
+
+		document.getElementById('onglet_courant').value=id;
 	}
 
 	function affiche_onglet_bull(id) {
@@ -2406,6 +2433,13 @@ Patientez pendant l'extraction des données... merci.
 	}
 </script>\n";
 
+		/*
+		echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo "<input type='hidden' name='onglet_courant' id='onglet_courant' value='";
+		if(isset($onglet)) {echo $onglet;}
+		echo "' />\n";
+		echo "</form>\n";
+		*/
 		echo "<p><br /></p>\n";
 	}
 }
