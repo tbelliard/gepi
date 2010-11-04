@@ -144,6 +144,7 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 		*/
+		$reg_eleves[$period["num_periode"]]=array();
 
 		for($i=0;$i<count($login_eleve);$i++){
 			if(isset($_POST['eleve_'.$period["num_periode"].'_'.$i])) {
