@@ -622,7 +622,7 @@ class Session {
 
 						$tmp_mdp = get_html_translation_table(HTML_ENTITIES);
 						$tmp_mdp = array_flip ($tmp_mdp);
-						$_password_unhtmlentities = strtr ($_password, $tmp);
+						$_password_unhtmlentities = strtr ($_password, $tmp_mdp);
 
 						//if (mysql_result($query, 0, "password") == md5(unhtmlentities($_password))) {
 						if (mysql_result($query, 0, "password") == md5($_password_unhtmlentities)) {
