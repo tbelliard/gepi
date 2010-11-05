@@ -619,7 +619,13 @@ class Session {
 			} else {
 				//if(getSettingValue('auth_tout_terrain')=="y") {
 					if(getSettingValue('filtrage_html')=='htmlpurifier') {
-						if (mysql_result($query, 0, "password") == md5(unhtmlentities($_password))) {
+
+						$tmp_mdp = get_html_translation_table(HTML_ENTITIES);
+						$tmp_mdp = array_flip ($tmp_mdp);
+						$_password_unhtmlentities = strtr ($_password, $tmp);
+
+						//if (mysql_result($query, 0, "password") == md5(unhtmlentities($_password))) {
+						if (mysql_result($query, 0, "password") == md5($_password_unhtmlentities)) {
 							# Le mot de passe correspond. C'est bon !
 							$this->login = $_login;
 							$this->current_auth_mode = "gepi";
