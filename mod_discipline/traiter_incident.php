@@ -352,6 +352,13 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 						$msg.="ERREUR lors de la suppression de travaux attachés à l'incident ".$suppr_incident[$i].".<br />\n";
 						$temoin_erreur="y";
 					}
+
+					$sql="DELETE FROM s_autres_sanctions WHERE id_sanction='$lig->id_sanction';";
+					$res=mysql_query($sql);
+					if(!$res) {
+						$msg.="ERREUR lors de la suppression d'autres sanctions attachées à l'incident ".$suppr_incident[$i].".<br />\n";
+						$temoin_erreur="y";
+					}
 				}
 
 				if($temoin_erreur=="n") {
@@ -365,11 +372,21 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 			}
 
 			if($temoin_erreur=="n") {
-				$sql="DELETE FROM s_incidents WHERE id_incident='$suppr_incident[$i]';";
+				$sql="DELETE FROM s_traitement_incident WHERE id_incident='$suppr_incident[$i]';";
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(!$res) {
-					$msg.="ERREUR lors de la suppression de l'incident ".$suppr_incident[$i].".<br />\n";
+					$msg.="ERREUR lors de la suppression des traitements d'incident (mesures) de l'incident ".$suppr_incident[$i].".<br />\n";
+					$temoin_erreur="y";
+				}
+	
+				if($temoin_erreur=="n") {
+					$sql="DELETE FROM s_incidents WHERE id_incident='$suppr_incident[$i]';";
+					//echo "$sql<br />\n";
+					$res=mysql_query($sql);
+					if(!$res) {
+						$msg.="ERREUR lors de la suppression de l'incident ".$suppr_incident[$i].".<br />\n";
+					}
 				}
 			}
 		}
