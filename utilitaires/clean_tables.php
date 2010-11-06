@@ -2000,6 +2000,57 @@ col2 varchar(100) NOT NULL default ''
 	echo "<p><b>Nettoyage des tables du module Discipline&nbsp;:</b><br />\n";
 
 	$cpt_nettoyage=0;
+
+	//insert into s_traitement_incident set login_ele='titi', id_incident='4';
+
+	$sql="select * from s_traitement_incident str where str.login_ele not in (select login from s_protagonistes spr where spr.id_incident=str.id_incident);";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		echo mysql_num_rows($test)." protagonistes dans un traitement d'incident ne correspondent à aucun protagoniste d'incident&nbsp;: ";
+
+		$nb_err=0;
+		$nb_suppr=0;
+		while($lig_tmp=mysql_fetch_object($test)) {
+			$sql="delete from s_traitement_incident where id_incident='$lig_tmp->id_incident' and login_ele='$lig_tmp->login_ele';";
+			$del=mysql_query($sql);
+			if($del) {$nb_suppr++;} else {$nb_err++;}
+		}
+
+		if($nb_err==0) {
+			echo "<span style='color:green'>nettoyés</span>";
+			$cpt_nettoyage+=mysql_num_rows($test);
+		}
+		else {
+			echo "<span style='color:green'>$nb_suppr nettoyés</span>, <span style='color:red'>$nb_err erreur lors du nettoyage</span>";
+		}
+		echo "<br />\n";
+	}
+
+	//insert into s_sanctions set login='toto', id_incident='4';
+
+	$sql="select * from s_sanctions san where san.login not in (select login from s_protagonistes spr where spr.id_incident=san.id_incident);";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		echo mysql_num_rows($test)." protagonistes dans une sanction ne correspondent à aucun protagoniste d'incident&nbsp;: ";
+
+		$nb_err=0;
+		$nb_suppr=0;
+		while($lig_tmp=mysql_fetch_object($test)) {
+			$sql="delete from s_sanctions where id_incident='$lig_tmp->id_incident' and login='$lig_tmp->login';";
+			$del=mysql_query($sql);
+			if($del) {$nb_suppr++;} else {$nb_err++;}
+		}
+
+		if($nb_err==0) {
+			echo "<span style='color:green'>nettoyés</span>";
+			$cpt_nettoyage+=mysql_num_rows($test);
+		}
+		else {
+			echo "<span style='color:green'>$nb_suppr nettoyés</span>, <span style='color:red'>$nb_err erreur lors du nettoyage</span>";
+		}
+		echo "<br />\n";
+	}
+
 	$sql="select * from s_traitement_incident where id_incident not in (select id_incident from s_incidents);";
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {
