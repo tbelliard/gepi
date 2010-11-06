@@ -1966,6 +1966,112 @@ col2 varchar(100) NOT NULL default ''
 	echo "<p>$nb_corrections correction(s) effectuée(s) avec $nb_erreurs erreur(s).</p>";
 	echo "<p>Terminé.</p>\n";
 
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'vidage_mod_discipline') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<p><b>Vidage des tables du module Discipline&nbsp;:</b> \n";
+	$tab_table=array(//"s_alerte_mail",
+		"s_autres_sanctions",
+		"s_communication",
+		"s_exclusions",
+		"s_incidents",
+		"s_protagonistes",
+		"s_retenues",
+		"s_sanctions",
+		"s_traitement_incident",
+		"s_travail");
+	for($i=0;$i<count($tab_table);$i++) {
+		if($i>0) {echo ", ";}
+		echo $tab_table[$i];
+		$sql="TRUNCATE TABLE $tab_table[$i];";
+		//echo "$sql<br />\n";
+		$suppr=mysql_query($sql);
+	}
+	echo "</p>\n";
+
+	echo "<p>Terminé.</p>\n";
+} elseif (isset($_POST['action']) AND $_POST['action'] == 'nettoyage_mod_discipline') {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<p><b>Nettoyage des tables du module Discipline&nbsp;:</b><br />\n";
+
+	$cpt_nettoyage=0;
+	$sql="select * from s_traitement_incident where id_incident not in (select id_incident from s_incidents);";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		echo mysql_num_rows($test)." traitements ne correspondent à aucun incident&nbsp;: ";
+		$sql="delete from s_traitement_incident where id_incident not in (select id_incident from s_incidents);";
+		$del=mysql_query($sql);
+		if($del) {
+			echo "<span style='color:green'>nettoyés</span>";
+			$cpt_nettoyage+=mysql_num_rows($test);
+		}
+		else {
+			echo "<span style='color:red'>erreur lors du nettoyage</span>";
+		}
+		echo "<br />\n";
+	}
+
+	$sql="select * from s_protagonistes where id_incident not in (select id_incident from s_incidents);";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		echo mysql_num_rows($test)." protagonistes ne correspondent à aucun incident&nbsp;: ";
+		$sql="delete from s_protagonistes where id_incident not in (select id_incident from s_incidents);";
+		$del=mysql_query($sql);
+		if($del) {
+			echo "<span style='color:green'>nettoyés</span>";
+			$cpt_nettoyage+=mysql_num_rows($test);
+		}
+		else {
+			echo "<span style='color:red'>erreur lors du nettoyage</span>";
+		}
+		echo "<br />\n";
+	}
+
+	$sql="select * from s_sanctions where id_incident not in (select id_incident from s_incidents);";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		echo mysql_num_rows($test)." sanctions ne correspondent à aucun incident&nbsp;: ";
+		$sql="delete from s_sanctions where id_incident not in (select id_incident from s_incidents);";
+		$del=mysql_query($sql);
+		if($del) {
+			echo "<span style='color:green'>nettoyés</span>";
+			$cpt_nettoyage+=mysql_num_rows($test);
+		}
+		else {
+			echo "<span style='color:red'>erreur lors du nettoyage</span>";
+		}
+		echo "<br />\n";
+	}
+
+	$tab_sanction=array("s_exclusions","s_retenues","s_travail","s_autres_sanctions");
+	$tab_txt_sanction=array("exclusions","retenues","travaux","autres sanctions");
+	for($loop=0;$loop<count($tab_sanction);$loop++) {
+		$sql="select * from ".$tab_sanction[$loop]." where id_sanction not in (select id_sanction from s_sanctions);";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)>0) {
+			echo mysql_num_rows($test)." ".$tab_txt_sanction[$loop]." ne correspondent à aucune sanction&nbsp;: ";
+			$sql="delete from s_sanctions where id_incident not in (select id_incident from s_incidents);";
+			$del=mysql_query($sql);
+			if($del) {
+				echo "<span style='color:green'>nettoyés</span>";
+				$cpt_nettoyage+=mysql_num_rows($test);
+			}
+			else {
+				echo "<span style='color:red'>erreur lors du nettoyage</span>";
+			}
+			echo "<br />\n";
+		}
+	}
+
+	if($cpt_nettoyage==0) {echo "Aucune scorie n'a été trouvée.";}
+	echo "</p>\n";
+
+	echo "<p>Terminé.</p>\n";
 }
 else {
     echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
@@ -2105,6 +2211,23 @@ else {
     echo "<input type='hidden' name='action' value='controle_categories_matieres' />\n";
     echo "</form>\n";
 
+    echo "<hr />\n";
+
+    echo "<p>Nettoyage de scories dans le module Discipline.</p>\n";
+    echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+    echo "<center>\n";
+	echo "<input type=submit value=\"Nettoyage des tables du module Discipline\" />\n";
+    echo "<input type='hidden' name='action' value='nettoyage_mod_discipline' />\n";
+    echo "</form>\n";
+
+    echo "<hr />\n";
+
+    echo "<p>Vider les tables du module Discipline.</p>\n";
+    echo "<form action=\"clean_tables.php\" method=\"post\">\n";
+    echo "<center>\n";
+	echo "<input type=submit value=\"Vidage des tables du module Discipline\" />\n";
+    echo "<input type='hidden' name='action' value='vidage_mod_discipline' />\n";
+    echo "</form>\n";
 }
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
