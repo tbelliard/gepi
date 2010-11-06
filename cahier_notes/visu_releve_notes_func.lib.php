@@ -2185,7 +2185,17 @@ function releve_pdf($tab_rel,$i) {
 					}
 				}
 				$pdf->Cell(90,7, $texte_1_responsable,0,2,'');
-
+				
+				//Ajout Eric le 6-11-2010 Num du Resp légal sur le relevé
+				$pdf->SetXY($X_parent+82,$Y_parent-3);
+				$pdf->SetFont($caractere_utilse,'',6); //6==> hauteur de caractère
+				$num=$num_resp+1;
+				$num_legal= "(Resp ".$num.")";
+				$pdf->Cell(90,7,$num_legal,0,2,'');
+				// On remet le curseur à la bonne position pour la suite de l'adresse
+				$pdf->SetXY($X_parent,$Y_parent+7);
+				// Fin modif Eric
+				
 				$pdf->SetFont($caractere_utilse,'',10);
 				//$texte_1_responsable = $adresse1_parents[$ident_eleve_aff][$responsable_place];
 				$texte_1_responsable=$tab_adr_ligne2[$num_resp];
