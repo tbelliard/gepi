@@ -1248,8 +1248,10 @@ foreach ($liste_eleves as $eleve_login) {
 						//$_photo_eleve = (isset ($multisite) AND $multisite == 'y') ? $eleve_login : $lig_ele->elenoet;
 						$_photo_eleve = nom_photo($lig_ele->elenoet);
 						//if(file_exists("../photos/eleves/".$_photo_eleve.".jpg")) {
-						if(file_exists($_photo_eleve.".jpg")) {
-							$mess[$k].=";affiche_photo('".$_photo_eleve.".jpg','".addslashes(strtoupper($eleve_nom)." ".ucfirst(strtolower($eleve_prenom)))."')";
+						//if(file_exists($_photo_eleve.".jpg")) {
+							//$mess[$k].=";affiche_photo('".$_photo_eleve.".jpg','".addslashes(strtoupper($eleve_nom)." ".ucfirst(strtolower($eleve_prenom)))."')";
+						if(file_exists($_photo_eleve)) {
+							$mess[$k].=";affiche_photo('".$_photo_eleve."','".addslashes(strtoupper($eleve_nom)." ".ucfirst(strtolower($eleve_prenom)))."')";
 						}
 						else {
 							$mess[$k].="document.getElementById('div_photo_eleve').innerHTML='';";
