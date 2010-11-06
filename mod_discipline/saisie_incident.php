@@ -261,11 +261,26 @@ if($etat_incident!='clos') {
 	if((isset($_POST['suppr_ele_incident']))&&(isset($id_incident))) {
 		$suppr_ele_incident=$_POST['suppr_ele_incident'];
 		for($i=0;$i<count($suppr_ele_incident);$i++) {
-			$sql="DELETE FROM s_protagonistes WHERE login='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
-			//echo "$sql<br />\n";
-			$res=mysql_query($sql);
-			if(!$res) {
-				$msg.="ERREUR lors de la suppression de ".$suppr_ele_incident[$i]." pour l'incident $id_incident<br />\n";
+			$sql="SELECT 1=1 FROM s_sanctions WHERE login='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
+			$test_sanction=mysql_query($sql);
+			if(mysql_num_rows($test_sanction)>0) {
+				$msg.="ERREUR: Il n'est pas possible de supprimer ".$suppr_ele_incident[$i]." pour l'incident $id_incident car une ou des sanctions sont prises. Vous devez d'abord supprimer les sanctions associées.<br />\n";
+			}
+			else {
+				$sql="DELETE FROM s_traitement_incident WHERE login_ele='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
+				//echo "$sql<br />";
+				$menage=mysql_query($sql);
+				if(!$menage) {
+					$msg.="ERREUR lors de la suppression des traitements associés à ".$suppr_ele_incident[$i]." pour l'incident $id_incident. Les mesures demandées ou prises posent un problème.<br />\n";
+				}
+				else {
+					$sql="DELETE FROM s_protagonistes WHERE login='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
+					//echo "$sql<br />\n";
+					$res=mysql_query($sql);
+					if(!$res) {
+						$msg.="ERREUR lors de la suppression de ".$suppr_ele_incident[$i]." pour l'incident $id_incident<br />\n";
+					}
+				}
 			}
 		}
 	}
@@ -998,6 +1013,8 @@ if(isset($id_incident)) {
 		}
 	}
 
+	//echo "count(\$ele_login)=".count($ele_login)."<br />";
+
 	$sql="SELECT * FROM s_protagonistes WHERE id_incident='$id_incident' ORDER BY statut,qualite,login;";
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
@@ -1038,6 +1055,7 @@ if(isset($id_incident)) {
 		}
 
 		echo "</tr>\n";
+		$ele_login=array();
 		$alt=1;
 		$cpt=0;
 		while($lig=mysql_fetch_object($res)) {
@@ -1595,6 +1613,7 @@ elseif($step==2) {
 		echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire'>\n";
 	}
 
+	//echo "count(\$ele_login)=".count($ele_login)."<br />";
 	// Si aucune date n'est encore saisie, proposer la date du jour
 	$annee = strftime("%Y");
 	$mois = strftime("%m");
@@ -1989,7 +2008,7 @@ echo "<script type='text/javascript'>
 				}
 				echo "</tr>\n";
 
-
+				//echo "<tr><td>count(\$ele_login)=".count($ele_login)."</td></tr>";
 				// Boucle sur la liste des élèves
 				$alt2=1;
 				for($i=0;$i<count($ele_login);$i++) {
