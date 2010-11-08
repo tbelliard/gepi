@@ -369,7 +369,9 @@ if((isset($id_classe))&&
 									if(in_array('app',$champ_eleve)) {
 										$csv.=';"';
 										// Si on fait l'export avant que les bulletins ne soient remplis, on ne récupère rien:
-										if(isset($tab_ele_note_grp[$tab_ele[$m]])) {$csv.=clean_string_csv($tab_ele_app_grp[$tab_ele[$m]]);}
+										//echo "\$tab_ele[$m]=$tab_ele[$m]<br />";
+										//echo "\$tab_ele_app_grp[$tab_ele[$m]]=".$tab_ele_app_grp[$tab_ele[$m]]."<br />";
+										if(isset($tab_ele_app_grp[$tab_ele[$m]])) {$csv.=clean_string_csv($tab_ele_app_grp[$tab_ele[$m]]);}
 										$csv.='"';
 									}
 		
