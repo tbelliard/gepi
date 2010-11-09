@@ -141,6 +141,10 @@ if (isset($is_posted) and ($is_posted == '2')) {
 
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if (isset($is_posted) and ($is_posted == '1')) {
+
+		$delete_eleve=isset($_POST['delete_eleve']) ? $_POST['delete_eleve'] : array();
+		if(!is_array($delete_eleve)) {$delete_eleve=array();$msg="Erreur: La liste d'élèves à supprimer devrait être un tableau.<br />";}
+
 		$calldata = mysql_query("SELECT * FROM eleves");
 		$nombreligne = mysql_num_rows($calldata);
 		$i = 0;
@@ -149,9 +153,10 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		while ($i < $nombreligne){
 			$eleve_login = mysql_result($calldata, $i, "login");
 			$eleve_elenoet = mysql_result($calldata, $i, "elenoet");
-			$delete_login = 'delete_'.$eleve_login;
-			$del_eleve = isset($_POST[$delete_login])?$_POST[$delete_login]:NULL;
-			if ($del_eleve == 'yes') {
+			//$delete_login = 'delete_'.$eleve_login;
+			//$del_eleve = isset($_POST[$delete_login])?$_POST[$delete_login]:NULL;
+			//if ($del_eleve == 'yes') {
+			if(in_array($eleve_login,$delete_eleve)) {
 				$liste_cible = $liste_cible.$eleve_login.";";
 				$liste_cible2 = $liste_cible2.$eleve_elenoet.";";
 			}
@@ -1407,7 +1412,7 @@ if(isset($quelles_classes)) {
 			$eleve_profsuivi_prenom = @mysql_result($call_suivi, 0, "prenom");
 		}
 		if ($eleve_profsuivi_nom == '') {$eleve_profsuivi_nom = "<font color='red'>N/A</font>";}
-		$delete_login = 'delete_'.$eleve_login;
+		//$delete_login = 'delete_'.$eleve_login;
 		$alt=$alt*(-1);
 		echo "<tr class='lig$alt'>\n";
 		echo "<td><p>" . $eleve_login . "</p></td>\n";
@@ -1421,7 +1426,8 @@ if(isset($quelles_classes)) {
 
 		if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			//echo "<td><p><center><INPUT TYPE=CHECKBOX NAME='$delete_login' VALUE='yes' /></center></p></td></tr>\n";
-			echo "<td><p align='center'><input type='checkbox' name='$delete_login' value='yes' /></p></td>\n";
+			//echo "<td><p align='center'><input type='checkbox' name='$delete_login' value='yes' /></p></td>\n";
+			echo "<td><p align='center'><input type='checkbox' name='delete_eleve[]' value='$eleve_login' /></p></td>\n";
 		}
 
 		if ((getSettingValue("active_module_trombinoscopes")=='y')&&
