@@ -689,8 +689,11 @@ $tab_req[] = "INSERT INTO droits SET id='/mod_trombinoscopes/trombino_decoupe.ph
 
 $tab_req[] = "INSERT INTO droits SET id='/groupes/menage_eleves_groupes.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Groupes: Desinscription des eleves sans notes ni appreciations',statut='';";
 
-$tab_req[] = "INSERT INTO droits SET id='/eleves/export_donnees_bulletins.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Export de données des bulletins',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/eleves/export_donnees_bulletins.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Export de données des bulletins',statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/statistiques/index.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques: Index',statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/statistiques/classes_effectifs.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques: classe, effectifs',statut='';";
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {

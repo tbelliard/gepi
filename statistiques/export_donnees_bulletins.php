@@ -39,10 +39,10 @@ if ($resultat_session == "c") {
     die();
 }
 
-$sql="SELECT 1=1 FROM droits WHERE id='/eleves/export_donnees_bulletins.php';";
+$sql="SELECT 1=1 FROM droits WHERE id='/statistiques/export_donnees_bulletins.php';";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
-$sql="INSERT INTO droits SET id='/eleves/export_donnees_bulletins.php',
+$sql="INSERT INTO droits SET id='/statistiques/export_donnees_bulletins.php',
 administrateur='V',
 professeur='F',
 cpe='F',
@@ -423,7 +423,8 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
-echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+//echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<p class='bold'><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 if(!isset($id_classe)) {
 	echo "</p>\n";
