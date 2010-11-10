@@ -1055,11 +1055,17 @@ class class_page_accueil {
 	}
 
 	if ((($this->test_prof_suivi != "0")
-					AND (getSettingValue("GepiProfImprBul")=='yes'))
+				AND (getSettingValue("GepiProfImprBul")=='yes'))
 			OR ($this->statutUtilisateur!='professeur')){
 	  $this->creeNouveauItem("/bulletin/bull_index.php",
 			  "Visualisation et impression des bulletins",
 			  "Cet outil vous permet de visualiser à l'écran et d'imprimer les bulletins, classe par classe.");
+	}
+
+	if ($this->statutUtilisateur=='administrateur'){
+	  $this->creeNouveauItem("/eleves/export_donnees_bulletins.php",
+			  "Extractions statistiques",
+			  "Cet outil vous permet d'extraire des données des bulletins à des fins statisitiques.");
 	}
 
 	if ($this->b>0){
