@@ -409,10 +409,10 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 /*            left:28px;*/
     /* float:left; */
     /* position:relative; */
-	width: 90%; 
+	width: 95%; 
     background-color:white;
 	font-size: 1em;
-	padding:5px 0 0 0px;
+	padding:0px 0 0 0px;
 	margin:0px 0px 0px 0px;
 }
 
@@ -470,8 +470,9 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 .fenetre .contenu .tableau{
 	padding: 10px 20px 20px 10px;
     position:relative;
+	float: right;
 	margin: 0px auto;
-	width : 98%;
+	width : 90%;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
 	font-size: 0.8em;
 	color: black;
