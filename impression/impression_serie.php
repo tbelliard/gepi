@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -47,6 +47,7 @@ $id_choix_periode=isset($_POST['id_choix_periode']) ? $_POST["id_choix_periode"]
 $titre_page = "Impression de listes au format PDF";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
+//debug_var();
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo " | <a href='./impression.php'>Impression rapide à l'unité</a>";
@@ -88,6 +89,30 @@ if ($id_choix_periode == 0) {
 
 }
 else {
+	$id_modele_defaut="";
+	// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
+	$sql="SELECT * FROM modeles_grilles_pdf WHERE login='".$_SESSION['login']."' ORDER BY nom_modele;";
+	//echo "$sql<br />";
+	$res_modeles=mysql_query($sql);
+	$nb_modeles=mysql_num_rows($res_modeles);
+	$cpt=0;
+	if($nb_modeles>0) {
+		while($lig=mysql_fetch_object($res_modeles)) {
+			$tab_modele[$cpt]['id_modele']=$lig->id_modele;
+			$tab_modele[$cpt]['nom_modele']=$lig->nom_modele;
+
+			if($lig->par_defaut=='y') {
+				$id_modele_defaut=$lig->id_modele;
+			}
+
+			$cpt++;
+		}
+	}
+
+	if(isset($_SESSION['id_modele'])) {
+		$id_modele_defaut=$_SESSION['id_modele'];
+	}
+
 	if(!isset($_POST['passer_au_choix_des_groupes'])) {
 		echo "<div style=\"text-align: center;\">\n";
 		echo "<fieldset>\n";
@@ -123,6 +148,38 @@ else {
 			echo "		</optgroup>\n";
 			echo "	</select>\n";
 			echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
+
+			// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
+			/*
+			$sql="SELECT * FROM modeles_grilles_pdf WHERE login='".$_SESSION['login']."' ORDER BY nom_modele;";
+			echo "$sql<br />";
+			$res_modeles=mysql_query($sql);
+			$nb_modeles=mysql_num_rows($res_modeles);
+			$cpt=0;
+			*/
+			if($nb_modeles>0) {
+				/*
+				while($lig=mysql_fetch_object($res_modeles)) {
+					$tab_modele[$cpt]['id_modele']=$lig->id_modele;
+					$tab_modele[$cpt]['nom_modele']=$lig->nom_modele;
+					$cpt++;
+				}
+				*/
+
+				echo "<br />\n";
+				echo "Modèle de réglages&nbsp;: <br /><select name='id_modele'>\n";
+				echo "<option value=''>Réglages par défaut de Gepi</option>\n";
+				for($loop=0;$loop<count($tab_modele);$loop++) {
+					echo "<option value='".$tab_modele[$loop]['id_modele']."'";
+					if($tab_modele[$loop]['id_modele']==$id_modele_defaut) {echo " selected='true'";}
+					echo ">".$tab_modele[$loop]['nom_modele']."</option>\n";
+				}
+				echo "</select>\n";
+			}
+			else {
+				// On utilisera les paramètres par défaut
+			}
+
 			echo "<br /><br /> <input value=\"Valider les classes\" name=\"Valider\" type=\"submit\" />\n";
 			echo "<br />\n";
 		}
@@ -134,7 +191,7 @@ else {
 			echo "<p align='left'>Ou</p>\n";
 	
 			echo "<h3 align='left'>Liste des enseignements : </h3>\n";
-	
+
 			echo "<fieldset>\n";
 			echo "<legend>Sélectionnez la (ou les) classe(s) dans laquelle/lesquelles rechercher des listes de groupes.</legend>\n";
 			//echo "<form method=\"post\" action=\"liste_pdf.php\" target='_blank' name=\"imprime_pdf\">\n";
@@ -167,6 +224,22 @@ else {
 				}
 				echo "		</optgroup>\n";
 				echo "	</select>\n";
+
+				if($nb_modeles>0) {
+					echo "<br />\n";
+					echo "Modèle de réglages&nbsp;: <br /><select name='id_modele'>\n";
+					echo "<option value=''>Réglages par défaut de Gepi</option>\n";
+					for($loop=0;$loop<count($tab_modele);$loop++) {
+						echo "<option value='".$tab_modele[$loop]['id_modele']."'";
+						if($tab_modele[$loop]['id_modele']==$id_modele_defaut) {echo " selected='true'";}
+						echo ">".$tab_modele[$loop]['nom_modele']."</option>\n";
+					}
+					echo "</select>\n";
+				}
+				else {
+					// On utilisera les paramètres par défaut
+				}
+
 				//echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
 				echo "<input value=\"".$id_choix_periode."\" name=\"id_choix_periode\" type=\"hidden\" />\n";
 				echo "<input type=\"hidden\" name=\"passer_au_choix_des_groupes\" value='y' />\n";
@@ -224,6 +297,22 @@ else {
 			echo "<input type=\"radio\" name=\"tri\" id='tri_classe' value=\"classes\" /><label for='tri_classe''> Par classe puis alphabétique</label><br />\n";
 			echo "<input type=\"radio\" name=\"tri\" id='tri_alpha' value=\"alpha\" checked /><label for='tri_alpha''> Alphabétique</label><br />\n";
 
+			// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
+			if($nb_modeles>0) {
+				echo "<br />\n";
+				echo "Modèle de réglages&nbsp;: <br /><select name='id_modele'>\n";
+				echo "<option value=''>Réglages par défaut de Gepi</option>\n";
+				for($loop=0;$loop<count($tab_modele);$loop++) {
+					echo "<option value='".$tab_modele[$loop]['id_modele']."'";
+					if($tab_modele[$loop]['id_modele']==$id_modele_defaut) {echo " selected='true'";}
+					echo ">".$tab_modele[$loop]['nom_modele']."</option>\n";
+				}
+				echo "</select>\n";
+			}
+			else {
+				// On utilisera les paramètres par défaut
+			}
+
 			echo "<input value=\"".$id_choix_periode."\" name=\"id_choix_periode\" type=\"hidden\" />\n";
 			echo "<br /><br /> <input value=\"Valider les enseignements\" name=\"Valider\" type=\"submit\" />\n";
 			echo "</form>\n";
@@ -248,17 +337,17 @@ else {
 if ($id_choix_periode != 0) {
 	// Dans le cadre d'un professeur il peut choisir ses enseignements.
 	if($_SESSION['statut']=='professeur') {
-	echo "<h3>Liste des enseignements : </h3>\n";
-	
-	$groups=get_groups_for_prof($_SESSION["login"]);
-	
-	/*
-	echo "<pre>";
-		print_r($groups);
-	echo "</pre>";
-	*/
-	
-	// sélection multiple avec choix de la période
+		echo "<h3>Liste des enseignements : </h3>\n";
+		
+		$groups=get_groups_for_prof($_SESSION["login"]);
+		
+		/*
+		echo "<pre>";
+			print_r($groups);
+		echo "</pre>";
+		*/
+		
+		// sélection multiple avec choix de la période
 		echo "<div style=\"text-align: center;\">\n";
 		echo "   <fieldset>\n
 		<legend>Sélectionnez le (ou les) enseignement(s) pour lesquels vous souhaitez imprimer les listes.</legend>\n";
@@ -285,6 +374,23 @@ if ($id_choix_periode != 0) {
 		echo "Option de tri&nbsp;:<br />\n";
 		echo "<input type=\"radio\" name=\"tri\" id='tri_classe' value=\"classes\" /><label for='tri_classe''> Par classe puis alphabétique</label><br />\n";
 		echo "<input type=\"radio\" name=\"tri\" id='tri_alpha' value=\"alpha\" checked /><label for='tri_alpha''> Alphabétique</label><br />\n";
+
+		// Rechercher les modèles existants... proposer le modèle par défaut de l'utilisateur mais aussi le modèle par défaut de gepi
+		if($nb_modeles>0) {
+			echo "<br />\n";
+			echo "Modèle de réglages&nbsp;: <br /><select name='id_modele'>\n";
+			echo "<option value=''>Réglages par défaut de Gepi</option>\n";
+			for($loop=0;$loop<count($tab_modele);$loop++) {
+				echo "<option value='".$tab_modele[$loop]['id_modele']."'";
+				if($tab_modele[$loop]['id_modele']==$id_modele_defaut) {echo " selected='true'";}
+				echo ">".$tab_modele[$loop]['nom_modele']."</option>\n";
+			}
+			echo "</select>\n";
+		}
+		else {
+			// On utilisera les paramètres par défaut
+		}
+
 
 		echo "<input value=\"".$id_choix_periode."\" name=\"id_periode\" type=\"hidden\" />\n";
 		echo "<br /><br /> <input value=\"Valider les enseignements\" name=\"Valider\" type=\"submit\" />\n";

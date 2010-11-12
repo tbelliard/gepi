@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -66,7 +66,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //INSERT INTO droits VALUES ('/impression/liste_pdf.php', 'V', 'V', 'V', 'V', 'V', 'V', 'Impression des listes (PDF)', '');
 if (!checkAccess()) {
@@ -77,64 +77,91 @@ if (!checkAccess()) {
 // LES OPTIONS DEBUT
 
 
-if (!isset($_SESSION['marge_haut'])) { $MargeHaut = 10 ; } else {$MargeHaut =  $_SESSION['marge_haut'];}
-if (!isset($_SESSION['marge_droite'])) { $MargeDroite = 10 ; } else {$MargeDroite =  $_SESSION['marge_droite'];}
-if (!isset($_SESSION['marge_gauche'])) { $MargeGauche = 10 ; } else {$MargeGauche =  $_SESSION['marge_gauche'];}
-if (!isset($_SESSION['marge_bas'])) { $MargeBas = 10 ; } else {$MargeBas =  $_SESSION['marge_bas'];}
-if (!isset($_SESSION['marge_reliure'])) { $avec_reliure = 1 ; } else {$avec_reliure =  $_SESSION['marge_reliure'];}
+if (!isset($_SESSION['marge_haut'])) { $marge_haut = 10 ; } else {$marge_haut =  $_SESSION['marge_haut'];}
+if (!isset($_SESSION['marge_droite'])) { $marge_droite = 10 ; } else {$marge_droite =  $_SESSION['marge_droite'];}
+if (!isset($_SESSION['marge_gauche'])) { $marge_gauche = 10 ; } else {$marge_gauche =  $_SESSION['marge_gauche'];}
+if (!isset($_SESSION['marge_bas'])) { $marge_bas = 10 ; } else {$marge_bas =  $_SESSION['marge_bas'];}
+if (!isset($_SESSION['marge_reliure'])) { $marge_reliure = 1 ; } else {$marge_reliure =  $_SESSION['marge_reliure'];}
 if (!isset($_SESSION['avec_emplacement_trous'])) { $avec_emplacement_trous = 1 ; } else {$avec_emplacement_trous =  $_SESSION['avec_emplacement_trous'];}
 
 
 //Gestion de la marge à gauche pour une reliure éventuelle ou des feuilles perforées.
-if ($avec_reliure==1) {
-  if ($MargeGauche < 18) {$MargeGauche = 18;}
+if ($marge_reliure==1) {
+  if ($marge_gauche < 18) {$marge_gauche = 18;}
 }
 
 
 //Calcul de la Zone disponible
-$EspaceX = LargeurPage - $MargeDroite - $MargeGauche ;
-$EspaceY = HauteurPage - $MargeHaut - $MargeBas;
+$EspaceX = LargeurPage - $marge_droite - $marge_gauche ;
+$EspaceY = HauteurPage - $marge_haut - $marge_bas;
 
-$X_tableau = $MargeGauche;
+$X_tableau = $marge_gauche;
 
 
 //entête classe et année scolaire
 $L_entete_classe = 65;
 $H_entete_classe = 14;
-$X_entete_classe = $EspaceX - $L_entete_classe + $MargeGauche;
-$Y_entete_classe = $MargeHaut;
+$X_entete_classe = $EspaceX - $L_entete_classe + $marge_gauche;
+$Y_entete_classe = $marge_haut;
 
-$X_entete_matiere = $MargeGauche;
-$Y_entete_matiere = $MargeHaut;
+$X_entete_matiere = $marge_gauche;
+$Y_entete_matiere = $marge_haut;
 $L_entete_discipline = 65;
 $H_entete_discipline = 14;
 
 // LES OPTIONS suite
 
 
-if (!isset($_SESSION['h_ligne'])) { $h_cell = 8 ; } else {$h_cell =  $_SESSION['h_ligne'];} //hauteur d'une ligne du tableau
-if (!isset($_SESSION['l_colonne'])) { $l_cell = 8 ; } else {$l_cell =  $_SESSION['l_colonne'];} // largeur d'une colonne
-if (!isset($_SESSION['l_nomprenom'])) { $l_cell_nom = 40 ; } else {$l_cell_nom =  $_SESSION['l_nomprenom'];} // la largeur de la colonne nom - prénom
+if (!isset($_SESSION['h_ligne'])) { $h_ligne = 8 ; } else {$h_ligne =  $_SESSION['h_ligne'];} //hauteur d'une ligne du tableau
+if (!isset($_SESSION['l_colonne'])) { $l_colonne = 8 ; } else {$l_colonne =  $_SESSION['l_colonne'];} // largeur d'une colonne
+if (!isset($_SESSION['l_nomprenom'])) { $l_nomprenom = 40 ; } else {$l_nomprenom =  $_SESSION['l_nomprenom'];} // la largeur de la colonne nom - prénom
 
 if (!isset($_SESSION['nb_ligne_avant'])) { $nb_ligne_avant = 2 ; } else {$nb_ligne_avant =  $_SESSION['nb_ligne_avant'];}
-if (!isset($_SESSION['h_ligne1_avant'])) { $h_premiere_cell = 25 ; } else {$h_premiere_cell =  $_SESSION['h_ligne1_avant'];} //Hauteur de la 1ère ligne avant
+if (!isset($_SESSION['h_ligne1_avant'])) { $h_ligne1_avant = 25 ; } else {$h_ligne1_avant =  $_SESSION['h_ligne1_avant'];} //Hauteur de la 1ère ligne avant
 if (!isset($_SESSION['nb_ligne_apres'])) { $nb_ligne_apres = 1 ; } else {$nb_ligne_apres =  $_SESSION['nb_ligne_apres'];}
 
-if (!isset($_SESSION['affiche_pp'])) { $option_affiche_pp = 1 ; } else {$option_affiche_pp =  $_SESSION['affiche_pp'];}// 0 On n'affiche pas le PP 1 on l'affiche
+if (!isset($_SESSION['affiche_pp'])) { $affiche_pp = 1 ; } else {$affiche_pp =  $_SESSION['affiche_pp'];}// 0 On n'affiche pas le PP 1 on l'affiche
 
-if (!isset($_SESSION['avec_ligne_texte'])) { $option_ligne_texte = 1 ; } else {$option_ligne_texte =  $_SESSION['avec_ligne_texte'];} //Permet d'inscrire une ligne de texte sous les entête, avant la tableau
+if (!isset($_SESSION['avec_ligne_texte'])) { $avec_ligne_texte = 1 ; } else {$avec_ligne_texte =  $_SESSION['avec_ligne_texte'];} //Permet d'inscrire une ligne de texte sous les entête, avant la tableau
 if (!isset($_SESSION['ligne_texte'])) { $ligne_texte = " " ; } else {$ligne_texte =  $_SESSION['ligne_texte'];} // La ligne de texte
 
-if (!isset($_SESSION['afficher_effectif'])) { $option_effectif = 1 ; } else {$option_effectif =  $_SESSION['afficher_effectif'];}// Indique l'effectif dans le tableau
+if (!isset($_SESSION['afficher_effectif'])) { $afficher_effectif = 1 ; } else {$afficher_effectif =  $_SESSION['afficher_effectif'];}// Indique l'effectif dans le tableau
 
-if (!isset($_SESSION['une_seule_page'])) { $option_tout_une_page = 1 ; } else {$option_tout_une_page =  $_SESSION['une_seule_page'];} // Faire tenir sur une seule page la classe 0 nom - 1 oui
+if (!isset($_SESSION['une_seule_page'])) { $une_seule_page = 1 ; } else {$une_seule_page =  $_SESSION['une_seule_page'];} // Faire tenir sur une seule page la classe 0 nom - 1 oui
 
 
-if (!isset($_SESSION['encadrement_total_cellules'])) { $option_quadrillage = 1 ; } else {$option_quadrillage =  $_SESSION['encadrement_total_cellules'];}// 1 quagrillage de toute la ligne. 0 quadrillage partiel déterminé par $nb_max_col_ligne
-if (!isset($_SESSION['nb_cellules_quadrillees'])) { $nb_max_col_ligne = 5 ; } else {$nb_max_col_ligne =  $_SESSION['nb_cellules_quadrillees'];}//nombre de ligne au debut du quadrillage avant un bloc vide
-if (!isset($_SESSION['zone_vide'])) { $option_bloc_final = 1 ; } else {$option_bloc_final =  $_SESSION['zone_vide'];}//0 non 1 OUI
-if (!isset($_SESSION['hauteur_zone_finale'])) { $hauteur_bloc_final = 20 ; } else {$hauteur_bloc_final =  $_SESSION['hauteur_zone_finale'];}//si 0 == > on prend ce qui reste
+if (!isset($_SESSION['encadrement_total_cellules'])) { $encadrement_total_cellules = 1 ; } else {$encadrement_total_cellules =  $_SESSION['encadrement_total_cellules'];}// 1 quagrillage de toute la ligne. 0 quadrillage partiel déterminé par $nb_cellules_quadrillees
+if (!isset($_SESSION['nb_cellules_quadrillees'])) { $nb_cellules_quadrillees = 5 ; } else {$nb_cellules_quadrillees =  $_SESSION['nb_cellules_quadrillees'];}//nombre de ligne au debut du quadrillage avant un bloc vide
+if (!isset($_SESSION['zone_vide'])) { $zone_vide = 1 ; } else {$zone_vide =  $_SESSION['zone_vide'];}//0 non 1 OUI
+if (!isset($_SESSION['hauteur_zone_finale'])) { $hauteur_zone_finale = 20 ; } else {$hauteur_zone_finale =  $_SESSION['hauteur_zone_finale'];}//si 0 == > on prend ce qui reste
 
+if(isset($_POST['id_modele'])) {
+	if($_POST['id_modele']!='') {
+		$sql="SELECT * FROM modeles_grilles_pdf_valeurs WHERE id_modele='".$_POST['id_modele']."';";
+		//echo "$sql<br >\n";
+		$res_modele=mysql_query($sql);
+		if(mysql_num_rows($res_modele)) {
+			while($lig_modele=mysql_fetch_object($res_modele)) {
+				$nom_champ=$lig_modele->nom;
+				$$nom_champ=$lig_modele->valeur;
+				/*
+				echo "\$nom_champ=$lig_modele->nom<br >\n";
+				echo "\$$nom_champ=$lig_modele->valeur<br >\n";
+				echo "\$$nom_champ=".$$nom_champ."<br >\n\n";
+				*/
+			}
+			$_SESSION['id_modele']=$_POST['id_modele'];
+		}
+		else {
+			unset($_SESSION['id_modele']);
+		}
+	}
+	else {
+		unset($_SESSION['id_modele']);
+	}
+}
+
+//debug_var();
 
 $nb_ligne_avant_initial = $nb_ligne_avant; //pour l'enchainemenet de PDF !
 
@@ -142,22 +169,22 @@ $texte = '';
 
 $nb_colonne = 0;
 //Calcul du nombre de colonnes en fonction des marges et de la largeur de la colonne.
-$nb_colonne = ($EspaceX - $l_cell_nom) / $l_cell;
+$nb_colonne = ($EspaceX - $l_nomprenom) / $l_colonne;
 $nb_colonne = intval(abs($nb_colonne)); //partie entière
 
 
 // Cas d'un quadrillage total
-if ($option_quadrillage ==1) {
-  $nb_max_col_ligne = $nb_colonne; //nb ce cellule après le nom
+if ($encadrement_total_cellules ==1) {
+  $nb_cellules_quadrillees = $nb_colonne; //nb ce cellule après le nom
 } // Sinon avec le calcul.
 
 
 // Définition de la page
 $pdf=new rel_PDF("P","mm","A4");
-$pdf->SetTopMargin($MargeHaut);
-$pdf->SetRightMargin($MargeDroite);
-$pdf->SetLeftMargin($MargeGauche);
-$pdf->SetAutoPageBreak(true, $MargeBas);
+$pdf->SetTopMargin($marge_haut);
+$pdf->SetRightMargin($marge_droite);
+$pdf->SetLeftMargin($marge_gauche);
+$pdf->SetAutoPageBreak(true, $marge_bas);
 
 
 //On recupère les variables pour l'affichage et on traite leur existance.
@@ -258,10 +285,10 @@ if ($id_liste_groupes!=NULL) {
 
 		// CALCUL de VARIABLES
 		//Calcul de la hauteur de la ligne dans le cas de l'option tout sur une ligne
-		if ($option_tout_une_page == 1) {
-			  $hauteur_disponible = HauteurPage - $MargeHaut - $MargeBas - $H_entete_classe - 5 - 2.5 - $hauteur_bloc_final; //2.5 ==> avant le pied de page
+		if ($une_seule_page == 1) {
+			  $hauteur_disponible = HauteurPage - $marge_haut - $marge_bas - $H_entete_classe - 5 - 2.5 - $hauteur_zone_finale; //2.5 ==> avant le pied de page
 
-			  if ($option_ligne_texte ==1) {
+			  if ($avec_ligne_texte ==1) {
 				$hauteur_disponible = $hauteur_disponible - 12.5;
 			  }
 
@@ -269,25 +296,25 @@ if ($id_liste_groupes!=NULL) {
 			  $nb_ligne_demande = $nb_eleves + $nb_ligne_avant + $nb_ligne_apres;
 
 			  // cas 1ère ligne plus haute
-			  if (($h_premiere_cell !=0)){
-				$hauteur_disponible = $hauteur_disponible - $h_premiere_cell;
+			  if (($h_ligne1_avant !=0)){
+				$hauteur_disponible = $hauteur_disponible - $h_ligne1_avant;
 				$nb_ligne_demande--;
 			  }
 
-			  $h_cell = $hauteur_disponible / $nb_ligne_demande ;
-			  //echo $h_cell;
+			  $h_ligne = $hauteur_disponible / $nb_ligne_demande ;
+			  //echo $h_ligne;
 
-			  //Cas particulier ou après calcul, H_cell > $h_premiere_cell
-			  if ($h_cell>$h_premiere_cell) {
-				  $hauteur_disponible = HauteurPage - $MargeHaut - $MargeBas - $H_entete_classe - 5 - 2.5 - $hauteur_bloc_final; //2.5 ==> avant le pied de page
+			  //Cas particulier ou après calcul, h_ligne > $h_ligne1_avant
+			  if ($h_ligne>$h_ligne1_avant) {
+				  $hauteur_disponible = HauteurPage - $marge_haut - $marge_bas - $H_entete_classe - 5 - 2.5 - $hauteur_zone_finale; //2.5 ==> avant le pied de page
 
-				  if ($option_ligne_texte ==1) {
+				  if ($avec_ligne_texte ==1) {
 					$hauteur_disponible = $hauteur_disponible - 12.5;
 				  }
 				  // le nombre de lignes demandées.
 				  $nb_ligne_demande = $nb_eleves + $nb_ligne_avant + $nb_ligne_apres;
 
-				  $h_cell = ($hauteur_disponible / $nb_ligne_demande );
+				  $h_ligne = ($hauteur_disponible / $nb_ligne_demande );
 			  }
 		}
 
@@ -315,7 +342,7 @@ if ($id_liste_groupes!=NULL) {
 			   $current_classe = mysql_result($calldata, 0, "classe");
 			}
 
-			if (($option_affiche_pp==1)) {
+			if (($affiche_pp==1)) {
 			   if ($id_groupe == NULL) {
 				   $pdf->CellFitScale($L_entete_classe,$H_entete_classe / 2,'Classe de '.$current_classe,'LTR',2,'C');
 				   $pdf->SetFont($caractere_utilise,'I',8.5);
@@ -392,10 +419,10 @@ if ($id_liste_groupes!=NULL) {
 			}
 
 			$Y_courant=$pdf->GetY()+2.5;
-			$pdf->Setxy($MargeGauche,$Y_courant);
+			$pdf->Setxy($marge_gauche,$Y_courant);
 
 		//La ligne de texte après les entêtes
-			if ($option_ligne_texte==1) {
+			if ($avec_ligne_texte==1) {
 			    if ($ligne_texte == '') {$ligne_texte=' ';}
 				$pdf->CellFitScale(0,10,$ligne_texte,'',2,'C');
 				$Y_courant=$pdf->GetY()+2.5;
@@ -409,35 +436,35 @@ if ($id_liste_groupes!=NULL) {
 			if ($nb_ligne_avant > 0) {
 
 				//la première ligne peut être plus haute
-				if ($h_premiere_cell > $h_cell) {
+				if ($h_ligne1_avant > $h_ligne) {
 					//Une première ligne qui peut être plus haute (date ou nom du devoir par ex)
 					$pdf->Setxy($X_tableau,$y_tmp);
 
 					// Option effectif
-					if (($option_effectif == 1) and ($nb_ligne_avant == 1)) {
+					if (($afficher_effectif == 1) and ($nb_ligne_avant == 1)) {
 					  //on indique ici le nombre d'élève dans la classe (option)
 					  $texte = 'Effectif : '.$nb_eleves;
-					  $pdf->Cell($l_cell_nom,$h_premiere_cell,$texte,'R',2,'C',2);
+					  $pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',2,'C',2);
 					} else {
-						//$pdf->Cell($l_cell_nom,$h_premiere_cell,' ','R',2,'C',2);
+						//$pdf->Cell($l_nomprenom,$h_ligne1_avant,' ','R',2,'C',2);
 						// Avec le 'R' pas de bordure
-						$pdf->Cell($l_cell_nom,$h_premiere_cell,' ','R',2,'L',0);
+						$pdf->Cell($l_nomprenom,$h_ligne1_avant,' ','R',2,'L',0);
 					}
 
 					//la fin du quadrillage
 					for($i=0; $i < $nb_colonne ; $i++) {
-						$pdf->Setxy($X_tableau+$l_cell_nom + $i*$l_cell,$y_tmp);
-						if ($i<$nb_max_col_ligne) {
-							//$pdf->Cell($l_cell,$h_premiere_cell,'',1,2,'C',2); //le quadrillage
+						$pdf->Setxy($X_tableau+$l_nomprenom + $i*$l_colonne,$y_tmp);
+						if ($i<$nb_cellules_quadrillees) {
+							//$pdf->Cell($l_colonne,$h_ligne1_avant,'',1,2,'C',2); //le quadrillage
 							// Cell(largeur,hauteur,texte,epaisseur_bord,???,alignement,remplissage)
-							$pdf->Cell($l_cell,$h_premiere_cell,'',1,2,'C',0); //le quadrillage
+							$pdf->Cell($l_colonne,$h_ligne1_avant,'',1,2,'C',0); //le quadrillage
 						} else {
 							if ($i < ($nb_colonne-1)) {
-								//$pdf->Cell($l_cell,$h_premiere_cell,'','TB',2,'C',2); //suivant le type : plus de quadrillage
-								$pdf->Cell($l_cell,$h_premiere_cell,'','TB',2,'C',0);
+								//$pdf->Cell($l_colonne,$h_ligne1_avant,'','TB',2,'C',2); //suivant le type : plus de quadrillage
+								$pdf->Cell($l_colonne,$h_ligne1_avant,'','TB',2,'C',0);
 							} else {
-								//$pdf->Cell($l_cell,$h_premiere_cell,'','TBR',2,'C',2); // pour le dernier, on clos le tableau
-								$pdf->Cell($l_cell,$h_premiere_cell,'','TBR',2,'C',0); // pour le dernier, on clos le tableau
+								//$pdf->Cell($l_colonne,$h_ligne1_avant,'','TBR',2,'C',2); // pour le dernier, on clos le tableau
+								$pdf->Cell($l_colonne,$h_ligne1_avant,'','TBR',2,'C',0); // pour le dernier, on clos le tableau
 							}
 						}
 					}
@@ -454,36 +481,36 @@ if ($id_liste_groupes!=NULL) {
 					//echo $j."<br>";
 					//echo $nb_ligne_avant."<br>";;
 
-					if (($option_effectif == 1) and ($nb_ligne_avant == 1)) { // Attention possibilite de cas non traité
+					if (($afficher_effectif == 1) and ($nb_ligne_avant == 1)) { // Attention possibilite de cas non traité
 
 					  //on indique ici le nombre d'élève dans la classe (option)
 					//on indique ici le nombre d'élève dans la classe (option)
 					$texte = 'Effectif : '.$nb_eleves;
 					}
-					if (($option_effectif == 1) and ($j == $nb_ligne_avant-2)) {
+					if (($afficher_effectif == 1) and ($j == $nb_ligne_avant-2)) {
 
-					  $pdf->Cell($l_cell_nom,$h_premiere_cell,$texte,'R',0,'C',0);
+					  $pdf->Cell($l_nomprenom,$h_ligne1_avant,$texte,'R',0,'C',0);
 					} else {
 						  if (($nb_ligne_avant-2 <=0) and ($nb_ligne_avant < 2)) {
-							$pdf->Cell($l_cell_nom,$h_cell,$texte,'R',0,'C',0);
+							$pdf->Cell($l_nomprenom,$h_ligne,$texte,'R',0,'C',0);
 						  } else {
-							$pdf->Cell($l_cell_nom,$h_cell,'','R',0,'C',0);
+							$pdf->Cell($l_nomprenom,$h_ligne,'','R',0,'C',0);
 						  }
 					}
 
 					for($i=0; $i < $nb_colonne ; $i++) {
-						$pdf->Setxy($X_tableau+$l_cell_nom + $i*$l_cell,$y_tmp);
-						if ($i<$nb_max_col_ligne) {
-						   $pdf->Cell($l_cell,$h_cell,'',1,0,'C',0); //le quadrillage
+						$pdf->Setxy($X_tableau+$l_nomprenom + $i*$l_colonne,$y_tmp);
+						if ($i<$nb_cellules_quadrillees) {
+						   $pdf->Cell($l_colonne,$h_ligne,'',1,0,'C',0); //le quadrillage
 						} else {
 						   if ($i < ($nb_colonne-1)) {
-							 $pdf->Cell($l_cell,$h_cell,'','TB',0,'C',0); //suivant le type : plus de quadrillage
+							 $pdf->Cell($l_colonne,$h_ligne,'','TB',0,'C',0); //suivant le type : plus de quadrillage
 						   } else {
-							   $pdf->Cell($l_cell,$h_cell,'','TBR',0,'C',0); // pour le dernier, on clos le tableau
+							   $pdf->Cell($l_colonne,$h_ligne,'','TBR',0,'C',0); // pour le dernier, on clos le tableau
 						   }
 						}
 					}
-					$y_tmp = $y_tmp + $h_cell;
+					$y_tmp = $y_tmp + $h_ligne;
 					$pdf->ln();
 				}
 
@@ -502,23 +529,23 @@ if ($id_liste_groupes!=NULL) {
 				} else {
 					$texte = strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".ucfirst($donnees_eleves[$nb_eleves_i]['prenom']);
 				}
-				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
+				$pdf->CellFitScale($l_nomprenom,$h_ligne,$texte,1,0,'L',0); //$l_nomprenom.' - '.$h_ligne.' / '.$X_tableau.' - '.$y_tmp
 				for($i=0; $i < $nb_colonne ; $i++) {
 					$y_tmp = $pdf->GetY();
-					$pdf->Setxy($X_tableau+$l_cell_nom + $i*$l_cell,$y_tmp);
-					if ($i<$nb_max_col_ligne) {
-					   $pdf->Cell($l_cell,$h_cell,'',1,0,'C',0); //le quadrillage
+					$pdf->Setxy($X_tableau+$l_nomprenom + $i*$l_colonne,$y_tmp);
+					if ($i<$nb_cellules_quadrillees) {
+					   $pdf->Cell($l_colonne,$h_ligne,'',1,0,'C',0); //le quadrillage
 					} else {
 					   if ($i < ($nb_colonne-1)) {
-						 $pdf->Cell($l_cell,$h_cell,'','TB',0,'C',0); //suivant le type : plus de quadrillage
+						 $pdf->Cell($l_colonne,$h_ligne,'','TB',0,'C',0); //suivant le type : plus de quadrillage
 					   } else {
-						   $pdf->Cell($l_cell,$h_cell,'','TBR',0,'C',0); // pour le dernier, on clos le tableau
+						   $pdf->Cell($l_colonne,$h_ligne,'','TBR',0,'C',0); // pour le dernier, on clos le tableau
 					   }
 					}
 				}
 				$pdf->ln();
 				$nb_eleves_i = $nb_eleves_i + 1;
-				//$y_tmp = $y_tmp + $h_cell;
+				//$y_tmp = $y_tmp + $h_ligne;
 			}
 			$y_tmp = $pdf->GetY();
 
@@ -528,17 +555,17 @@ if ($id_liste_groupes!=NULL) {
 				for($j=0; $j < $nb_ligne_apres ; $j++) {
 					$y_tmp = $pdf->GetY();
 					$pdf->Setxy($X_tableau,$y_tmp);
-					$pdf->Cell($l_cell_nom,$h_cell,' ',1,0,'C',0);
+					$pdf->Cell($l_nomprenom,$h_ligne,' ',1,0,'C',0);
 
 					for($i=0; $i < $nb_colonne ; $i++) {
-						$pdf->Setxy($X_tableau+$l_cell_nom + $i*$l_cell,$y_tmp);
-						if ($i<$nb_max_col_ligne) {
-						   $pdf->Cell($l_cell,$h_cell,'',1,0,'C',0); //le quadrillage
+						$pdf->Setxy($X_tableau+$l_nomprenom + $i*$l_colonne,$y_tmp);
+						if ($i<$nb_cellules_quadrillees) {
+						   $pdf->Cell($l_colonne,$h_ligne,'',1,0,'C',0); //le quadrillage
 						} else {
 						   if ($i < ($nb_colonne-1)) {
-							 $pdf->Cell($l_cell,$h_cell,'','TB',0,'C',0); //suivant le type : plus de quadrillage
+							 $pdf->Cell($l_colonne,$h_ligne,'','TB',0,'C',0); //suivant le type : plus de quadrillage
 						   } else {
-							   $pdf->Cell($l_cell,$h_cell,'','TBR',0,'C',0); // pour le dernier, on clos le tableau
+							   $pdf->Cell($l_colonne,$h_ligne,'','TBR',0,'C',0); // pour le dernier, on clos le tableau
 						   }
 						}
 					}
@@ -548,17 +575,17 @@ if ($id_liste_groupes!=NULL) {
 			}
 
 			//le bloc du bas encadré.
-			if ($option_bloc_final==1) {
+			if ($zone_vide==1) {
 			  $y_tmp = $pdf->GetY()+2.5;
 			  $pdf->Setxy($X_tableau,$y_tmp);
-			  if ($hauteur_bloc_final ==0) {
+			  if ($hauteur_zone_finale ==0) {
 				// on prend tout ce qui reste
-				$espace_restant = $EspaceY - $y_tmp + $MargeBas -2.5;
+				$espace_restant = $EspaceY - $y_tmp + $marge_bas -2.5;
 				if ($espace_restant >= 10) { // on ne met le bloc que si lespace est > à 10
 				  $pdf->Cell(0,$espace_restant,' ',1,0,'C',0);
 				}
 			  } else {
-				$pdf->Cell(0,$hauteur_bloc_final -2.5,' ',1,0,'C',0);
+				$pdf->Cell(0,$hauteur_zone_finale -2.5,' ',1,0,'C',0);
 			  }
 			}
 		} // FOR
