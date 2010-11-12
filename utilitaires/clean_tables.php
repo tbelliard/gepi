@@ -40,12 +40,14 @@ if (!checkAccess()) {
 
 $valid = isset($_POST["valid"]) ? $_POST["valid"] : 'no';
 
+//==================================
 // header
 $titre_page = "Vérification/nettoyage des tables de la base de données GEPI";
 require_once("../lib/header.inc");
+//==================================
 
 //$total_etapes = 8;
-$total_etapes = 10;
+$total_etapes = 11;
 $duree = 8;
 if (!isset($_GET['cpt'])) {
     $cpt = 0;
@@ -64,6 +66,8 @@ if ($maj=="9") {
 	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
 	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a></p>\n";
 }
+
+//debug_var();
 
 function init_time() {
     global $TPSDEB,$TPSCOUR;
@@ -339,7 +343,6 @@ if (getSettingValue("active_mod_gest_aid")=="y") {
     $tab["j_professeurs_matieres"][3] = "id_matiere";  // nom du champ de la table de liaison lié à la deuxième table
     $tab["j_professeurs_matieres"][4] = "login";  // nom du champ de la première table lié à la table de liaison
     $tab["j_professeurs_matieres"][5] = "matiere";  // nom du champ de la deuxième table lié à la table de liaison
-
 
     foreach ($tab as $key => $val) {
        $cpt=0;
@@ -1150,6 +1153,7 @@ col2 varchar(100) NOT NULL default ''
 
 		echo "<p>Vous allez supprimer les comptes d'élèves ayant quitté l'établissement et de responsables n'ayant plus d'enfant scolarisé dans l'établissement.</p>\n";
 
+		echo "<input type='hidden' name='maj' value='10' />\n";
 		echo "<input type='submit' name='nettoyage_ele_resp' value='Supprimer' />\n";
 
 	}
@@ -1261,6 +1265,8 @@ col2 varchar(100) NOT NULL default ''
 			echo "<input type='hidden' name='cpt_suppr' value='$cpt_suppr' />\n";
 			echo "<input type='submit' name='suite' value='Poursuivre' />\n";
 
+			echo "<input type='hidden' name='maj' value='10' />\n";
+
 			if($cpt_suppr_etape==0) {
 				echo "<script type='text/javascript'>
 	setTimeout(\"document.forms['formulaire'].submit();\",3000);
@@ -1280,16 +1286,80 @@ col2 varchar(100) NOT NULL default ''
 				echo "<p>$cpt_suppr comptes ont été supprimés.</p>\n";
 			}
 
-			echo "<hr />\n";
-			echo "<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+			//echo "<hr />\n";
+			//echo "<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
+
+			echo "<input type='hidden' name='maj' value='11' />\n";
+			echo "<input type='submit' name='suite' value='Poursuivre' />\n";
+
 		}
 	}
 
-	echo "<input type='hidden' name='maj' value='10' />\n";
+	//echo "<input type='hidden' name='maj' value='10' />\n";
 	echo "<input type='hidden' name='nettoyage_comptes_ele_resp' value='y' />\n";
 
 	echo "</form>\n";
 
+}
+elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj']) and (($_GET['maj'])=="11"))) {
+	echo "<p class=bold><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil</a> ";
+	echo "| <a href='clean_tables.php'>Retour page Vérification / Nettoyage des tables</a>\n";
+	echo "</p>\n";
+
+	echo "<h2 align=\"center\">Etape 11/$total_etapes</h2>\n";
+
+	echo "<h2>Nettoyage des modèles de grilles PDF</h2>\n";
+
+	$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE login NOT IN (SELECT login FROM utilisateurs);";
+	$test=mysql_query($sql);
+	$nb_scories=mysql_num_rows($test);
+	if($nb_scories==0) {
+		echo "<p>Toutes les grilles sont associées à des utilisateurs existants.</p>\n";
+	}
+	else {
+		echo "<p>$nb_scories grille(s) ne sont associées à aucun utilisateurs existants&nbsp;: ";
+
+		$sql="DELETE FROM modeles_grilles_pdf WHERE login NOT IN (SELECT login FROM utilisateurs);";
+		$del=mysql_query($sql);
+		if($del) {echo "<span style='color:green'>Nettoyées</span>";}
+		else {echo "<span style='color:red'>Echec du nettoyage</span>";}
+		echo "</p>\n";
+	}
+
+	$sql="SELECT 1=1 FROM modeles_grilles_pdf WHERE id_modele NOT IN (SELECT id_modele FROM modeles_grilles_pdf_valeurs);";
+	$test=mysql_query($sql);
+	$nb_scories=mysql_num_rows($test);
+	if($nb_scories==0) {
+		echo "<p>Toutes les grilles sont associées à des paramètres de grilles.</p>\n";
+	}
+	else {
+		echo "<p>$nb_scories grille(s) ne sont associées à aucun paramètre de grille&nbsp;: ";
+
+		$sql="DELETE FROM modeles_grilles_pdf WHERE id_modele NOT IN (SELECT id_modele FROM modeles_grilles_pdf_valeurs);";
+		$del=mysql_query($sql);
+		if($del) {echo "<span style='color:green'>Nettoyées</span>";}
+		else {echo "<span style='color:red'>Echec du nettoyage</span>";}
+		echo "</p>\n";
+	}
+
+	$sql="SELECT 1=1 FROM modeles_grilles_pdf_valeurs WHERE id_modele NOT IN (SELECT id_modele FROM modeles_grilles_pdf);";
+	$test=mysql_query($sql);
+	$nb_scories=mysql_num_rows($test);
+	if($nb_scories==0) {
+		echo "<p>Tous les paramètres de grilles sont associés à des grilles existantes.</p>\n";
+	}
+	else {
+		echo "<p>$nb_scories paramètres de grilles ne sont associées à aucune grille&nbsp;: ";
+
+		$sql="DELETE FROM modeles_grilles_pdf_valeurs WHERE id_modele NOT IN (SELECT id_modele FROM modeles_grilles_pdf);";
+		$del=mysql_query($sql);
+		if($del) {echo "<span style='color:green'>Nettoyées</span>";}
+		else {echo "<span style='color:red'>Echec du nettoyage</span>";}
+		echo "</p>\n";
+	}
+
+	echo "<hr />\n";
+	echo "<h2 align=\"center\">Fin de la vérification des tables</h2>\n";
 
 } elseif (isset($_POST['action']) AND $_POST['action'] == 'check_auto_increment') {
 	// Le code de Stéphane concernant la vérification des auto_increment après le bug détecté
@@ -2279,6 +2349,7 @@ else {
 	echo "<input type=submit value=\"Vidage des tables du module Discipline\" />\n";
     echo "<input type='hidden' name='action' value='vidage_mod_discipline' />\n";
     echo "</form>\n";
+
 }
 echo "<p><br /></p>\n";
 require("../lib/footer.inc.php");
