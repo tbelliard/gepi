@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -139,6 +139,7 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $mess[1] = "Mise à jour de la table eleves";
     $test_nb[1] = "SELECT * FROM eleves WHERE ereno='$cible1'";
     $req[1] = "UPDATE eleves SET ereno='' WHERE ereno='$cible1'";
+
     break;
 
 
@@ -190,6 +191,16 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
     $mess[] = "Table de jointure Aid/utilisateurs gestionnaires :";
     $test_nb[] = "SELECT * FROM j_aid_utilisateurs_gest WHERE id_utilisateur='$cible1'";
     $req[] = "DELETE FROM j_aid_utilisateurs_gest WHERE id_utilisateur='$cible1';";
+    $nombre_req++;
+
+    $mess[] = "Table des modèles de grilles PDF :";
+    $test_nb[] = "select * from modeles_grilles_pdf_valeurs mv, modeles_grilles_pdf m where m.id_modele=mv.id_modele and m.login='$cible1'";
+    $req[] = "delete from modeles_grilles_pdf_valeurs where id_modele in (select id_modele from modeles_grilles_pdf where login='$cible1');";
+    $nombre_req++;
+
+    $mess[] = "Table des valeurs des modèles de grilles PDF :";
+    $test_nb[] = "select * from modeles_grilles_pdf where login='$cible1'";
+    $req[] = "delete from modeles_grilles_pdf WHERE login='$cible1';";
     $nombre_req++;
 
 
