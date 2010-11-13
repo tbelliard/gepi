@@ -1063,9 +1063,9 @@ class class_page_accueil {
 	}
 
 	if ($this->statutUtilisateur=='administrateur'){
-	  $this->creeNouveauItem("/eleves/export_donnees_bulletins.php",
+	  $this->creeNouveauItem("/statistiques/index.php",
 			  "Extractions statistiques",
-			  "Cet outil vous permet d'extraire des données des bulletins à des fins statisitiques.");
+			  "Cet outil vous permet d'extraire des données à des fins statisitiques. (des bulletins, ...)");
 	}
 
 	if ($this->b>0){

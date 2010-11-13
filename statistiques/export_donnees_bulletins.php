@@ -286,7 +286,7 @@ if((isset($id_classe))&&
 											$test_ele_clas_per=mysql_query($sql);
 											if(mysql_num_rows($test_ele_clas_per)>0) {
 												if(in_array($lig_app->login,$tab_ele)) {
-													$tab_ele_app_grp[$lig_app->login]=$lig_app->app;
+													$tab_ele_app_grp[$lig_app->login]=$lig_app->appreciation;
 												}
 											}
 										}
