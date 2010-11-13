@@ -28,6 +28,8 @@ if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $
 // Pour ne pas interférer avec fckeditor
 if (isset($_POST['notes'])) $traite_anti_inject = 'no';
 
+$filtrage_extensions_fichiers_table_ct_types_documents='y';
+
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 require_once("../lib/transform_functions.php");
@@ -910,7 +912,6 @@ $reduce = isset($_POST["reduce"]) ? $_POST["reduce"] :(isset($_GET["reduce"]) ? 
 if ($reduce == "off") {
     echo "<div style=\"position:absolute;top:350px;left:30%;border:2px solid black;background-color:white;width:610px;height:20px;text-align:center;\">";
     echo "<a href=\"./index.php?reduce=on\">cacher la fenêtre de saisie</a>";
-    //echo "<div>";
 }
 else {
     echo "<div style=\"position:absolute;top:350px;left:30%;border:2px solid black;background-color:white;width:610px;height:20px;text-align:center;\">";
@@ -919,6 +920,7 @@ else {
     echo "<div style=\"display:none;\">";
 }
 // ===============================
+
 
 echo "<fieldset style=\"width:100%;border: 5px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background: ".$color_fond_notices[$type_couleur].";\">\n";
 if (isset($edit_devoir)) {
