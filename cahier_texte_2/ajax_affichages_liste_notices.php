@@ -110,7 +110,7 @@ if(getSettingValue('cahier_texte_acces_public')!='no'){
 	//echo "<a href='./see_all.php?year=". date("Y") ."&month=". date("m") ."&day=". date("d") ."&id_classe=" . $classes_du_groupe[0]->getId() ."&id_groupe=" . $current_group->getId() ."'>Visualiser les cahiers de textes</a>\n<br>";
 	echo "<a href='./see_all.php?id_groupe=" . $current_group->getId() ."'>Visualiser les cahiers de textes</a>\n<br>";
 }
-echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a><br/>";
+echo "Export au <a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>format csv</a> / <a href='./export_cdt.php?id_groupe=".$current_group->getId()."'>format html</a><br/>";
 //echo "<p style=\"background-color: silver; padding: 2px; border: 1px solid black; font-weight: bold;\">" . $current_group->getDescriptionAvecClasses() . "</p><br/>\n";
 
 if ((getSettingValue("cahiers_texte_login_pub") != '') and (getSettingValue("cahiers_texte_passwd_pub") != ''))
