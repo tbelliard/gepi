@@ -1065,7 +1065,7 @@ class class_page_accueil {
 	if ($this->statutUtilisateur=='administrateur'){
 	  $this->creeNouveauItem("/statistiques/index.php",
 			  "Extractions statistiques",
-			  "Cet outil vous permet d'extraire des données à des fins statisitiques. (des bulletins, ...)");
+			  "Cet outil vous permet d'extraire des données à des fins statistiques (des bulletins, ...).");
 	}
 
 	if ($this->b>0){
