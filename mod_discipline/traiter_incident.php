@@ -273,6 +273,8 @@ $heure_incident=isset($_POST['heure_incident']) ? $_POST['heure_incident'] : (is
 $nature_incident=isset($_POST['nature_incident']) ? $_POST['nature_incident'] : (isset($_GET['nature_incident']) ? $_GET['nature_incident'] : "---");
 $protagoniste_incident=isset($_POST['protagoniste_incident']) ? $_POST['protagoniste_incident'] : (isset($_GET['protagoniste_incident']) ? $_GET['protagoniste_incident'] : "");
 
+$declarant_incident=isset($_POST['declarant_incident']) ? $_POST['declarant_incident'] : (isset($_GET['declarant_incident']) ? $_GET['declarant_incident'] : "");
+
 $incidents_clos=isset($_POST['incidents_clos']) ? $_POST['incidents_clos'] : (isset($_GET['incidents_clos']) ? $_GET['incidents_clos'] : "n");
 
 $id_classe_incident=isset($_POST['id_classe_incident']) ? $_POST['id_classe_incident'] : (isset($_GET['id_classe_incident']) ? $_GET['id_classe_incident'] : "");
@@ -666,7 +668,56 @@ if(!isset($id_incident)) {
 	}
 	echo "</select>\n";
 	echo "</th>\n";
+	
+	if (!(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre'))) {
+		echo "<th>Déclarant\n";
+		echo "<br />\n";
+		echo "<select name='declarant_incident' onchange=\"document.formulaire.submit();\">\n";
+		//echo "<option value=''>---</option>\n";
+		echo "<option value='---'>---</option>\n";
+		if($_SESSION['statut']=='professeur') {
+			//$sql="SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND si.nature!='' AND sp.id_incident=si.id_incident ORDER BY si.nature ASC;";
 
+			//$sql="(SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND si.nature!='' AND sp.id_incident=si.id_incident)";
+			//$sql.=" UNION (SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND si.nature!='' AND sp.id_incident=si.id_incident)";
+
+			$sql="(SELECT DISTINCT si.declarant FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident)";
+			$sql.=" UNION (SELECT DISTINCT si.declarant FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
+			//$sql.=" ORDER BY si.nature ASC;";
+			$sql.=" ORDER BY declarant ASC;";
+		}
+		else {
+			//$sql="SELECT DISTINCT si.nature FROM s_incidents si WHERE si.nature!='' ORDER BY si.nature ASC;";
+			$sql="SELECT DISTINCT si.declarant FROM s_incidents si ORDER BY si.declarant ASC;";
+		}
+		$res_declarant=mysql_query($sql);
+		while($lig_declarant=mysql_fetch_object($res_declarant)) {
+			echo "<option value='$lig_declarant->declarant'";
+			if($nature_declarant==$lig_declarant->declarant) {echo " selected='selected'";}
+			if($lig_declarant->declarant!='') {
+			    $sql_declarant="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$lig_declarant->declarant';";
+				//echo "$sql<br />\n";
+			    $res1_declarant=mysql_query($sql_declarant);
+				if(mysql_num_rows($res1_declarant)>0) {
+					$lig1_declarant=mysql_fetch_object($res1_declarant);
+					$chaine=$lig1_declarant->civilite." ".strtoupper($lig1_declarant->nom)." ".ucfirst(substr($lig1_declarant->prenom,0,1));
+					//echo $lig_declarant->civilite." ".strtoupper($lig_declarant->nom)." ".ucfirst(substr($lig_declarant->prenom,0,1)).".";	
+				}
+				else {
+					echo "ERREUR: Login $lig1_declarant->declarant inconnu";
+				}
+			
+				echo ">".substr($chaine,0,40)."</option>\n";
+			}
+			else {
+				echo ">(vide)</option>\n";
+			}
+		}
+		echo "</select>\n";
+		//echo "$sql<br />\n";
+		echo "</th>\n";
+	}
+	
 	echo "<th>Nature\n";
 	echo "<br />\n";
 	echo "<select name='nature_incident' onchange=\"document.formulaire.submit();\">\n";
@@ -877,6 +928,25 @@ if(!isset($id_incident)) {
 				echo "<td>".formate_date($lig->date)."</td>\n";
 			}
 			echo "<td>$lig->heure</td>\n";
+			
+			//=================================================
+			// Colonne declarant	
+            if (!(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre'))) {			
+				echo "<td>";
+				$sql_declarant="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$lig->declarant';";
+				//echo "$sql<br />\n";
+				$res_declarant=mysql_query($sql_declarant);
+				if(mysql_num_rows($res_declarant)>0) {
+					$lig_declarant=mysql_fetch_object($res_declarant);
+					echo $lig_declarant->civilite." ".strtoupper($lig_declarant->nom)." ".ucfirst(substr($lig_declarant->prenom,0,1)).".";	
+				}
+				else {
+					echo "ERREUR: Login $lig->declarant inconnu";
+				}
+				echo "</td>\n";
+			}
+			//=================================================
+			// Colonne nature
 			echo "<td>$lig->nature</td>\n";
 			echo "<td>\n";
 			$sql="SELECT * FROM s_protagonistes WHERE id_incident='$lig->id_incident' ORDER BY statut,qualite,login;";
