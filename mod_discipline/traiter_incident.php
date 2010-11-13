@@ -466,7 +466,7 @@ if(!isset($id_incident)) {
 	if($nature_incident!="---") {$ajout_sql.=" AND si.nature='$nature_incident'";$chaine_criteres.="&amp;nature_incident=$nature_incident";}
 	if($protagoniste_incident!="") {$ajout_sql.=" AND sp.login='$protagoniste_incident'";$chaine_criteres.="&amp;protagoniste_incident=$protagoniste_incident";}
 
-	if($declarant_incident!="") {$ajout_sql.=" AND si.declarant='$declarant_incident'";$chaine_criteres.="&amp;declarant_incident=$declarant_incident";}
+	if($declarant_incident!="---") {$ajout_sql.=" AND si.declarant='$declarant_incident'";$chaine_criteres.="&amp;declarant_incident=$declarant_incident";}
 
 	if($id_classe_incident!="") {
 		$chaine_criteres.="&amp;id_classe_incident=$id_classe_incident";
@@ -543,7 +543,6 @@ if(!isset($id_incident)) {
 	$sql.=" ORDER BY date DESC, heure DESC;";
 	$sql2.=" ORDER BY date DESC, heure DESC;";
 
-
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -555,6 +554,7 @@ if(!isset($id_incident)) {
 			if(($date_incident!="")||
 			($heure_incident!="")||
 			($nature_incident!="---")||
+			($declarant_incident!="---")||
 			($protagoniste_incident!="")||
 			($declarant_incident!="")||
 			($id_classe_incident!="")) {echo " avec les critères choisis";}
@@ -567,6 +567,7 @@ if(!isset($id_incident)) {
 				if(($date_incident!="")||
 				($heure_incident!="")||
 				($nature_incident!="---")||
+				($declarant_incident!="---")||
 				($protagoniste_incident!="")||
 				($declarant_incident!="")||
 				($id_classe_incident!="")) {echo " avec les critères choisis";}
@@ -577,6 +578,7 @@ if(!isset($id_incident)) {
 				if(($date_incident!="")||
 				($heure_incident!="")||
 				($nature_incident!="---")||
+				($declarant_incident!="---")||
 				($protagoniste_incident!="")||
 				($declarant_incident!="")||
 				($id_classe_incident!="")) {echo " avec les critères choisis";}
@@ -676,31 +678,25 @@ if(!isset($id_incident)) {
 		//echo "<option value=''>---</option>\n";
 		echo "<option value='---'>---</option>\n";
 		if($_SESSION['statut']=='professeur') {
-			//$sql="SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND si.nature!='' AND sp.id_incident=si.id_incident ORDER BY si.nature ASC;";
-
-			//$sql="(SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND si.nature!='' AND sp.id_incident=si.id_incident)";
-			//$sql.=" UNION (SELECT DISTINCT si.nature FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND si.nature!='' AND sp.id_incident=si.id_incident)";
-
 			$sql="(SELECT DISTINCT si.declarant FROM s_incidents si, s_protagonistes sp WHERE (sp.login='".$_SESSION['login']."' OR si.declarant='".$_SESSION['login']."') AND sp.id_incident=si.id_incident)";
 			$sql.=" UNION (SELECT DISTINCT si.declarant FROM s_incidents si, s_protagonistes sp, j_eleves_professeurs jep WHERE jep.login=sp.login AND jep.professeur='".$_SESSION['login']."' AND sp.id_incident=si.id_incident)";
 			//$sql.=" ORDER BY si.nature ASC;";
 			$sql.=" ORDER BY declarant ASC;";
 		}
 		else {
-			//$sql="SELECT DISTINCT si.nature FROM s_incidents si WHERE si.nature!='' ORDER BY si.nature ASC;";
 			$sql="SELECT DISTINCT si.declarant FROM s_incidents si ORDER BY si.declarant ASC;";
 		}
 		$res_declarant=mysql_query($sql);
 		while($lig_declarant=mysql_fetch_object($res_declarant)) {
 			echo "<option value='$lig_declarant->declarant'";
-			if($nature_declarant==$lig_declarant->declarant) {echo " selected='selected'";}
+			if($declarant_incident==$lig_declarant->declarant) {echo " selected='selected'";}
 			if($lig_declarant->declarant!='') {
 			    $sql_declarant="SELECT nom,prenom,civilite,statut FROM utilisateurs WHERE login='$lig_declarant->declarant';";
 				//echo "$sql<br />\n";
 			    $res1_declarant=mysql_query($sql_declarant);
 				if(mysql_num_rows($res1_declarant)>0) {
 					$lig1_declarant=mysql_fetch_object($res1_declarant);
-					$chaine=$lig1_declarant->civilite." ".strtoupper($lig1_declarant->nom)." ".ucfirst(substr($lig1_declarant->prenom,0,1));
+					$chaine=strtoupper($lig1_declarant->nom)." ".ucfirst(substr($lig1_declarant->prenom,0,1));
 					//echo $lig_declarant->civilite." ".strtoupper($lig_declarant->nom)." ".ucfirst(substr($lig_declarant->prenom,0,1)).".";	
 				}
 				else {
@@ -763,10 +759,10 @@ if(!isset($id_incident)) {
 	//$sql="SELECT DISTINCT sp.login FROM s_protagonistes sp, eleves e ORDER BY e.nom, e.prenom ASC;";
 	//$sql="SELECT DISTINCT sp.login FROM s_protagonistes sp, eleves e WHERE sp.login=e.login ORDER BY e.nom, e.prenom ASC;";
 
-	$sql="(SELECT DISTINCT sp.login FROM s_protagonistes sp, eleves e WHERE sp.login=e.login ORDER BY nom, prenom ASC)";
+	$sql="(SELECT DISTINCT sp.login, e.login, e.nom, e.prenom FROM s_protagonistes sp, eleves e WHERE sp.login=e.login ORDER BY nom, prenom ASC)";
 	if(($_SESSION['statut']!='professeur')||($_SESSION['statut']!='autre')) {
-		$sql.=" UNION (SELECT DISTINCT sp.login FROM s_protagonistes sp, utilisateurs u WHERE sp.login=u.login ORDER BY u.statut, u.nom, u.prenom ASC)";
-		//$sql.=" ORDER BY nom, prenom ASC;";
+		$sql.=" UNION (SELECT DISTINCT sp.login, u.login, u.nom, u.prenom FROM s_protagonistes sp, utilisateurs u WHERE sp.login=u.login ORDER BY u.statut, u.nom, u.prenom ASC)";
+		$sql.=" ORDER BY nom, prenom ASC;";
 	}
 	//echo "$sql<br />";
 	$res_protagonistes=mysql_query($sql);
