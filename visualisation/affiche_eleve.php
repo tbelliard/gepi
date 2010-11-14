@@ -3653,8 +3653,126 @@ function eleve_suivant(){
 
 			// A FAIRE:
 			// Faire apparaitre les absences...
-		}
+			
+			// Bibliothèque de fonctions de la page consultation élève.
+			include("../eleves/visu_ele_func.lib.php");
+			// On extrait un tableau de l'ensemble des infos sur l'élève (bulletins, relevés de notes,... inclus)
+			$tab_ele=info_eleve($eleve1);
+			
+			//A FAIRE variable à utiliser et à initialiser pour afficher les absences sous le graphique
+			$afficher_absences='y';
+			
+			//La variable 	$num_periode_choisie 	  contient le numéro de la période en cours 
+				
+			if($afficher_absences=="y") {
+				if(getSettingValue("active_module_absence")=='y' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
+				   
+				   // Affichage ligne
+				   $info_absence="<center>";
+					if(count($tab_ele['absences'])==0) {
+					    $info_absence.="Aucun bilan d'absences n'est enregistré.";
+				    }
+				    else {
+						if($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0')
+						{
+							$info_absence.="Aucune demi-journée d'absence.";
+						} else {
+							$info_absence.="Nombre de demi-journées d'absence ";
+							if ($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0'){
+								$info_absence = $info_absence."justifiées ";
+							}
+							$info_absence = $info_absence.": ".$tab_ele['absences'][$num_periode_choisie-1]['nb_absences']."</b>";
+							if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '0')
+							{
+								$info_absence = $info_absence." (dont <b>".$tab_ele['absences'][$num_periode_choisie-1]['non_justifie']."</b> non justifiée";
+								if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '1') { $info_absence = $info_absence."s"; }
+								$info_absence = $info_absence.")";
+							}
+							$info_absence = $info_absence.".";
+						}
+				
+						if($tab_ele['absences'][$num_periode_choisie-1]['nb_retards'] != '0')
+						{
+							$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_ele['absences'][$num_periode_choisie-1]['nb_retards']."</b>";
+						}
+				    }
+				    echo $info_absence."</center>";
+/*  A supprimer				   
+				    //Affichage tableau
+				    if(count($tab_ele['absences'])==0) {
+					    echo "<p>Aucun bilan d'absences n'est enregistré.</p>\n";
+				    }
+				    else {
+					    echo "<table class='boireaus' summary='Bilan des absences'>\n";
+					    echo "<tr>\n";
+					    echo "<th>Nombre 1/2 journées d'absence sur la période</th>\n";
+					    echo "<th>dont non justifiées</th>\n";
+					    echo "<th>Nombre de retards</th>\n";
+					    echo "</tr>\n";
+					    $alt=-1; 
+						echo "<tr class='lig$alt'>\n";
+						//echo "<td>N° ".$tab_ele['absences'][$num_periode_choisie-1]['periode']."</td>\n";
+						echo "<td>".$tab_ele['absences'][$num_periode_choisie-1]['nb_absences']."</td>\n";
+						echo "<td>".$tab_ele['absences'][$num_periode_choisie-1]['non_justifie']."</td>\n";
+						echo "<td>".$tab_ele['absences'][$num_periode_choisie-1]['nb_retards']."</td>\n";
+						echo "</tr>\n";
+					    echo "</table>\n";
+				    }
+*/
+				}
+// A décommenter pour le module abs 2 				
+				/* elseif (getSettingValue("active_module_absence")=='2') {
+				    // Initialisations files
+				    require_once("../lib/initialisationsPropel.inc.php");
+				    $eleve = EleveQuery::create()->findOneByLogin($eleve1);
 
+				    echo "<table class='boireaus' summary='Bilan des absences'>\n";
+				    echo "<tr>\n";
+				    echo "<th>Absences sur la période</th>\n";
+				    echo "<th>Nombre de 1/2 journées</th>\n";
+				    echo "<th>dont non justifiées</th>\n";
+				    echo "<th>Nombre de retards</th>\n";
+				    echo "</tr>\n";
+				    $alt=1;
+					
+					// Il ne faudrait afficher que le T1, T2 ou T3 en se basant sur la variable $num_periode_choisie
+					
+				    foreach($eleve->getPeriodeNotes() as $periode_note) {
+					    //$periode_note = new PeriodeNote();
+					    if ($periode_note->getDateDebut() == null) {
+						//periode non commencee
+						continue;
+					    }
+					    $alt=$alt*(-1);
+					    echo "<tr class='lig$alt'>\n";
+					    echo "<td>".$periode_note->getNomPeriode();
+					    echo " du ".$periode_note->getDateDebut('d/m/Y');
+					    echo " au ";
+					    if ($periode_note->getDateFin() == null) {
+						$now = new DateTime('now');
+						echo $now->format('d/m/Y');
+					    } else {
+						echo $periode_note->getDateFin('d/m/Y');
+					    }
+					    echo "</td>\n";
+					    echo "<td>";
+					    echo $eleve->getDemiJourneesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+					    echo "</td>\n";
+					    echo "<td>";
+					    echo $eleve->getDemiJourneesNonJustifieesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+					    echo "</td>\n";
+					    echo "<td>";
+					    echo $eleve->getRetards($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+					    echo "</td>\n";
+					    echo "</tr>\n";
+				    }
+				    echo "</table>\n";
+				}
+*/
+			}
+		}
+	    // FIN DE L'AFFICHAGE DES ABSENCES
+		
 		//=========================
 		// AJOUT: boireaus 20090115
 		// La variable peut être vide si on n'a pas choisi ce mode d'affichage ou si on n'a pas le droit de saisie, ou péridoe close,...
