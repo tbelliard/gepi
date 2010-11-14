@@ -1255,6 +1255,9 @@ else {
 			$tab_modele_pdf["affiche_ine"][$tab_id_classe[$loop_classe]] = '0'; // affiche l'INE de l'élève
 
 			$tab_modele_pdf["affiche_moyenne_general_coef_1"][$tab_id_classe[$loop_classe]] = '0'; // affichage des moyennes générales avec coef 1 en plus des autres coeff saisis dans Gestion des classes/<Classe> Enseignements
+			
+			$tab_modele_pdf["affiche_numero_responsable"][$tab_id_classe[$loop_classe]] = '0'; // affichage du numéro du responsable legal de l'élève dont le bulletin est imprimé. 1 ==> affiche 0 ==> n'affiche pas
+			
 
 			//================================
 			//================================
@@ -1886,7 +1889,12 @@ else {
 				// Les paramètres HTML sont généraux à toutes les classes sauf ceux décidés directement dans bull_index.php alors que les paramètres PDF sont essentiellement liés aux modèles.
 				$tab_bulletin[$id_classe][$periode_num]['affiche_moyenne_general_coef_1']=0;
 			}
-
+			
+			//ERIC
+			if($mode_bulletin=="pdf") { // affichage du numéro du responsable
+				$tab_bulletin[$id_classe][$periode_num]['affiche_numero_responsable']=$tab_modele_pdf["affiche_numero_responsable"][$tab_id_classe[$loop_classe]];
+			}
+			
 			// Variables récupérées de calcul_moy_gen.inc.php
 			// Quartiles au niveau moyenne générale:
 			// $place_eleve_classe est un tableau d'indice [$i] le numéro de l'élève

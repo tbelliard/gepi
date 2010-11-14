@@ -151,6 +151,8 @@
 	$champ_bull_pdf[]="affiche_ine";
 
 	$champ_bull_pdf[]="affiche_moyenne_general_coef_1";
+	
+	$champ_bull_pdf[]="affiche_numero_responsable";
 
 	//=========================
 	// AJOUT: boireaus 20081224
@@ -324,6 +326,8 @@
 	$val_defaut_champ_bull_pdf["affiche_ine"]=0;
 
 	$val_defaut_champ_bull_pdf["affiche_moyenne_general_coef_1"]=0;
+	
+	$val_defaut_champ_bull_pdf["affiche_numero_responsable"]=0;
 
 	//=========================
 	// AJOUT: boireaus 20081224

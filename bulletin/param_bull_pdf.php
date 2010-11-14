@@ -407,6 +407,8 @@ if(isset($_POST['valide_modif_model'])) {
 	if (empty($_GET['affiche_moyenne_general_coef_1']) and empty($_POST['affiche_moyenne_general_coef_1'])) { $affiche_moyenne_general_coef_1 = ''; }
 	else { if (isset($_GET['affiche_moyenne_general_coef_1'])) { $affiche_moyenne_general_coef_1 = $_GET['affiche_moyenne_general_coef_1']; } if (isset($_POST['affiche_moyenne_general_coef_1'])) { $affiche_moyenne_general_coef_1 = $_POST['affiche_moyenne_general_coef_1']; } }
 
+	if (empty($_GET['affiche_numero_responsable']) and empty($_POST['affiche_numero_responsable'])) { $affiche_numero_responsable = ''; }
+	else { if (isset($_GET['affiche_numero_responsable'])) { $affiche_numero_responsable = $_GET['affiche_numero_responsable']; } if (isset($_POST['affiche_numero_responsable'])) { $affiche_numero_responsable = $_POST['affiche_numero_responsable']; } }
 
 // fin Christian
 //===================================================
@@ -1203,6 +1205,8 @@ function DecocheCheckbox() {
 			<input name="imprime_pour" value="1" type="radio" <?php if( (!empty($imprime_pour) and $imprime_pour==='1') or empty($imprime_pour) ) { ?>checked="checked"<?php } ?> />&nbsp;seulement pour le 1er responsable<br />
 			<input name="imprime_pour" value="2" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='2') { ?>checked="checked"<?php } ?> />&nbsp;le 1er et 2ème responsable s'ils n'ont pas la même adresse<br />
 			<input name="imprime_pour" value="3" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='3') { ?>checked="checked"<?php } ?> />&nbsp;forcer pour le 1er et 2ème responsable<br /><br />
+			
+			<input name="affiche_numero_responsable" id="affiche_numero_responsable" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_numero_responsable) and $affiche_numero_responsable==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_numero_responsable" style="cursor: pointer;">Afficher le numéro du responsable</label><br /><br />
 			</td>
 		</tr>
 		<tr>

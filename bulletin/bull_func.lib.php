@@ -1082,6 +1082,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 	$affiche_deux_moy_gen=$tab_bull['affiche_moyenne_general_coef_1'];
 	// *****
 
+	$affiche_numero_responsable=$tab_bull['affiche_numero_responsable'];
+	
 	if(($nb_releve_par_page!=1)||($nb_releve_par_page!=2)) {
 		// Actuellement, on n'a qu'un bulletin par page/recto donc qu'un relevé de notes par verso, mais sait-on jamais un jour...
 		$nb_releve_par_page=1;
@@ -1573,7 +1575,20 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				}
 			}
 			$pdf->Cell(90,7, traite_accents_utf8($texte_1_responsable),0,2,'');
-
+			
+			// ERIC
+			if ($tab_modele_pdf["affiche_numero_responsable"][$classe_id] == '1') {
+			    //Ajout Eric le 13-11-2010 Num du Resp légal sur le bulletin
+				$pdf->SetXY($tab_modele_pdf["X_parent"][$classe_id]+90-8,$tab_modele_pdf["Y_parent"][$classe_id]-3);
+				$pdf->SetFont($caractere_utilse,'',6); //6==> hauteur de caractère
+				$num=$num_resp_bull+1; // on se base sur le nombre de bulletin à imprimer
+				$num_legal= "(Resp ".$num.")";
+				$pdf->Cell(90,7,$num_legal,0,2,'');
+				// On remet le curseur à la bonne position pour la suite de l'adresse
+				$pdf->SetXY($tab_modele_pdf["X_parent"][$classe_id],$tab_modele_pdf["Y_parent"][$classe_id]+7);
+				// Fin modif Eric
+            }   
+				
 			$texte_1_responsable = $tab_adr_ligne2[$num_resp_bull];
 			$hauteur_caractere=10;
 			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere);
