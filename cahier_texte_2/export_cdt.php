@@ -869,7 +869,7 @@ if(isset($id_groupe)&&($_SESSION['statut']=='professeur')) {
 			if(isset($tab_dev[$tab_dates[$k]])) {
 				foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
 					$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
-					$adj=affiche_docs_joints($value['id_ct'],"t");
+					$adj=my_affiche_docs_joints($value['id_ct'],"t");
 					if($adj!='') {
 						$html.="<div style='border: 1px dashed black'>\n";
 						$html.=$adj;
@@ -887,7 +887,7 @@ if(isset($id_groupe)&&($_SESSION['statut']=='professeur')) {
 			if(isset($tab_notices[$tab_dates[$k]])) {
 				foreach($tab_notices[$tab_dates[$k]] as $key => $value) {
 					$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
-					$adj=affiche_docs_joints($value['id_ct'],"c");
+					$adj=my_affiche_docs_joints($value['id_ct'],"c");
 					if($adj!='') {
 						$html.="<div style='border: 1px dashed black'>\n";
 						$html.=$adj;
