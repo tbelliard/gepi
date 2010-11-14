@@ -3,7 +3,7 @@
  *
  * $Id: admin_horaire_ouverture.php 3413 2009-09-12 08:05:14Z crob $
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero
  *
  * This file is part of GEPI.
  *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // Check access
 if (!checkAccess()) {
@@ -111,6 +111,7 @@ if (empty($_GET['pause']) and empty($_POST['pause'])) { $pause = ''; }
 // ajout et mise à jour de la base
 if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 {
+	$chaine_jours_ouverts="";
 	$i = '0';
 	while ( $i < '7' )
 	{
@@ -135,7 +136,14 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 				$requete = "UPDATE ".$prefix_base."horaires_etablissement SET date_horaire_etablissement = '".$date_horaire_etablissement."', jour_horaire_etablissement = '".$jour_horaire_etablissement."', ouverture_horaire_etablissement = '".$ouverture_horaire_etablissement."', fermeture_horaire_etablissement = '".$fermeture_horaire_etablissement."', pause_horaire_etablissement = '".$pause_horaire_etablissement."', ouvert_horaire_etablissement = '".$ouvert_horaire_etablissement."' WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' AND date_horaire_etablissement = '0000-00-00'";
 			}
 	        mysql_query($requete) or die('Erreur SQL !'.$requete.'<br />'.mysql_error());
-		}else{
+
+			if($chaine_jours_ouverts!="") {$chaine_jours_ouverts.=",";}
+			if($ouverture_horaire_etablissement!=$fermeture_horaire_etablissement) {
+				$num_jour=$i+1;
+				$chaine_jours_ouverts.="'$num_jour'";
+			}
+
+		} else{
 			// On teste si le jour en question existe et on passe à 0 le dernier champ
 			$test = mysql_query("SELECT * FROM horaires_etablissement
 										WHERE jour_horaire_etablissement = '".$tab_sem[$i]."' LIMIT 1");
@@ -158,6 +166,12 @@ if ( $action_sql === 'ajouter' or $action_sql === 'modifier' )
 	$i = $i + 1;
 	}
 
+	$f=fopen("../temp/info_jours.js","w+");
+	fwrite($f,"// Tableau des jours ouverts
+// 0 pour dimanche,
+// 1 pour lundi,...
+var tab_jours_ouverture=new Array($chaine_jours_ouverts);");
+	fclose($f);
 }
 
 
@@ -201,6 +215,7 @@ echo "<br/>\n";
 echo "<div id=\"lecorps\">\n";
 require_once("./menu.inc.new.php"); 
 
+//debug_var();
 ?>
 
 <?php if ($action === "visualiser") { ?>

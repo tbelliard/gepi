@@ -244,6 +244,65 @@ echo "
 
 echo "</legend>\n";
 
+
+
+//=================================================
+/*
+//echo "<input type='text' name='tmp_test' id='tmp_test' value='' />\n";
+$tab_jours_ouverture=array();
+$sql="select jour_horaire_etablissement from horaires_etablissement where ouverture_horaire_etablissement!=fermeture_horaire_etablissement;";
+$res_jours_ouverture=mysql_query($sql);
+$chaine_jours="";
+if(mysql_num_rows($res_jours_ouverture)>0) {
+	$cpt_jo=0;
+	while($lig_jo=mysql_fetch_object($res_jours_ouverture)) {
+		if($cpt_jo>0) {$chaine_jours.=",";}
+
+		$tab_jours_ouverture[$cpt_jo]=$lig_jo->jour_horaire_etablissement;
+		if($tab_jours_ouverture[$cpt_jo]=='lundi') {
+			$tab_jours_ouverture[$cpt_jo]='mon';
+			$chaine_jours.="1";
+		}
+		elseif($tab_jours_ouverture[$cpt_jo]=='mardi') {
+			$tab_jours_ouverture[$cpt_jo]='tue';
+			$chaine_jours.="2";
+		}
+		elseif($tab_jours_ouverture[$cpt_jo]=='mercredi') {
+			$tab_jours_ouverture[$cpt_jo]='wed';
+			$chaine_jours.="3";
+		}
+		elseif($tab_jours_ouverture[$cpt_jo]=='jeudi') {
+			$tab_jours_ouverture[$cpt_jo]='thu';
+			$chaine_jours.="4";
+		}
+		elseif($tab_jours_ouverture[$cpt_jo]=='vendredi') {
+			$tab_jours_ouverture[$cpt_jo]='fri';
+			$chaine_jours.="5";
+		}
+		elseif($tab_jours_ouverture[$cpt_jo]=='samedi') {
+			$tab_jours_ouverture[$cpt_jo]='sat';
+			$chaine_jours.="6";
+		}
+		elseif($tab_jours_ouverture[$cpt_jo]=='dimanche') {
+			$tab_jours_ouverture[$cpt_jo]='sun';
+			$chaine_jours.="0";
+		}
+
+		//$chaine_jours.="'".$tab_jours_ouverture[$cpt_jo]."'";
+
+		$cpt_jo++;
+	}
+}
+echo "<script type='text/javascript'>
+var tab_jours_ouverture=new Array($chaine_jours);
+//getCurrentNameDay();
+//getCurrentNumDay();
+</script>\n";
+*/
+//=================================================
+
+
+
 echo "<div id=\"dupplication_notice\" style='display: none;'>oulalala</div>";
 echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu_form\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_compte_rendu.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementCompteRenduCallback})\" style=\"width: 100%;\">\n";
@@ -271,7 +330,7 @@ if (isset($info)) {
 
 //si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient Succès
 $label_enregistrer = "Enregistrer";
-if ($succes_modification == 'oui') $label_enregistrer='Succès';
+if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 ?>
 <table border="0" width="100%" summary="Tableau de saisie de notice">
 	<tr>
@@ -296,6 +355,15 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		if (!isset($info)) {
 			$hier = $today - 3600*24;
 			$demain = $today + 3600*24;
+			/*
+			if(count($tab_jours_ouverture)>0) {
+				$cpt_jo=0; // Pour éviter une boucle infinie en cas de blague
+				while((!in_array(strtolower(strftime("%a",$demain)),$tab_jours_ouverture))&&($cpt_jo<7)) {
+					$demain = $today + 3600*24;
+					$cpt_jo++;
+				}
+			}
+			*/
 			echo "</td><td><a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'>&lt;&lt;</a></td>
 			<td align=center>Aujourd'hui</td>
 			<td align=right><a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'>&gt;&gt;</a></td></tr>\n";	echo "\n";

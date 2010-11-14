@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2011 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -19,6 +19,9 @@
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
+// Initialisation... pour que le tableau existe, même si on ne définit pas le tableau dans ../temp/info_jours.js
+var tab_jours_ouverture=new Array();
 
 //page initialisation
 Event.observe(window, 'load', initPage);
@@ -69,6 +72,7 @@ include('../lib/DHTMLcalendar/lang/calendar-fr.js');
 include('../lib/DHTMLcalendar/calendar-setup.js');
 include('../ckeditor/ckeditor.js');
 include('../edt_effets/javascripts/window.js');
+include('../temp/info_jours.js');
 
 function getWinListeNotices() {
 	if (typeof winListeNotices=="undefined") {
@@ -486,9 +490,15 @@ function completeEnregistrementCompteRenduCallback(response) {
 		id_ct_en_cours = response;
 		var url;
 		if ($F('passer_a') == 'passer_devoir') {
+			/*
 			url = './ajax_edition_devoir.php?today=' + getTomorrowCalendarUnixDate() +'&id_groupe=' + id_groupe;
 			object_en_cours_edition = 'devoir';
 			updateCalendarWithUnixDate(getTomorrowCalendarUnixDate());
+			*/
+			url = './ajax_edition_devoir.php?today=' + GetNextOpenDayUnixDate() +'&id_groupe=' + id_groupe;
+			object_en_cours_edition = 'devoir';
+			updateCalendarWithUnixDate(GetNextOpenDayUnixDate());
+
 		} else {
 			url = './ajax_edition_compte_rendu.php?succes_modification=oui&id_ct=' + id_ct_en_cours + '&id_groupe=' + id_groupe + '&today=' + getCalendarUnixDate();
 		}
@@ -691,6 +701,66 @@ function getTomorrowCalendarUnixDate() {
   calendarInstanciation.date.setMilliseconds(0);
   return Math.round(calendarInstanciation.date.getTime()/1000 + 3600*24);
 }
+
+//=====================================
+//var tab_jours_ouverture=new Array('1','2','3','4','5');
+
+function GetNextOpenDayUnixDate() {
+	//var tab_jours_ouverture=new Array('1','2','3','4','5');
+
+	calendarInstanciation.date.setHours(0);
+	calendarInstanciation.date.setMinutes(0);
+	calendarInstanciation.date.setSeconds(0);
+	calendarInstanciation.date.setMilliseconds(0);
+
+	//if(tab_jours_ouverture.length>0) {
+	if((tab_jours_ouverture)&&(tab_jours_ouverture.length>0)) {
+		// timestamp courant
+		timestamp=Math.round(calendarInstanciation.date.getTime()/1000);
+
+		jour=calendarInstanciation.date.getDate();
+		mois=calendarInstanciation.date.getMonth()+1;
+		annee=calendarInstanciation.date.getFullYear();
+		//alert('Date='+jour+'/'+mois+'/'+annee);
+		//alert('timestamp='+timestamp);
+
+		// On crée une date de test
+		var testDate = new Date();
+		testDate.setTime(timestamp*1000);
+
+		// Initialisation pour faire au moins un tour dans la boucle
+		jour_ouvert='n';
+
+		var cpt_tmp=0; // Sécurité pour éviter une boucle infinie
+		while((jour_ouvert=='n')&&(cpt_tmp<7)) {
+
+			timestamp+=3600*24;
+			//alert('timestamp='+timestamp);
+
+			testDate.setTime(timestamp*1000);
+			//calendarInstanciation.setDate(testDate);
+
+			for(i=0;i<tab_jours_ouverture.length;i++) {
+				//alert("tab_jours_ouverture["+i+"]="+tab_jours_ouverture[i]+" et testDate.getDay()="+testDate.getDay())
+				// testDate.getDay() donne le numéro du jour avec 0 pour dimanche
+				if(tab_jours_ouverture[i]==testDate.getDay()) {
+					jour_ouvert='y';
+					break;
+				}
+			}
+			cpt_tmp++;
+		}
+		// Il faut retourner timestamp (calculé d'après le jour en cours d'édition) et ne pas effectuer de setTime() modifiant la date courante parce qu'on appelle deux fois la fonction en cliquant sur Passer aux devoirs du lendemain... et on passerait alors deux jours au lieu d'un
+		//calendarInstanciation.date.setTime(timestamp*1000);
+		//return Math.round(calendarInstanciation.date.getTime()/1000);
+		return timestamp;
+	}
+	else {
+		// On n'a pas récupéré de jours ouverts dans la base
+		return Math.round(calendarInstanciation.date.getTime()/1000 + 3600*24);
+	}
+}
+//=====================================
 
 //gestion de la fonctionnalite chaine des fenetre liste notice et edition notice
 chaineActive = true;
