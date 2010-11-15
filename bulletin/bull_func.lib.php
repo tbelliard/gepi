@@ -1580,7 +1580,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			if ($tab_modele_pdf["affiche_numero_responsable"][$classe_id] == '1') {
 			    //Ajout Eric le 13-11-2010 Num du Resp légal sur le bulletin
 				$pdf->SetXY($tab_modele_pdf["X_parent"][$classe_id]+90-8,$tab_modele_pdf["Y_parent"][$classe_id]-3);
-				$pdf->SetFont($caractere_utilse,'',6); //6==> hauteur de caractère
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',6); //6==> hauteur de caractère
 				$num=$num_resp_bull+1; // on se base sur le nombre de bulletin à imprimer
 				$num_legal= "(Resp ".$num.")";
 				$pdf->Cell(90,7,$num_legal,0,2,'');
