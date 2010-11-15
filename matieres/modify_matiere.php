@@ -60,10 +60,14 @@ if (isset($_POST['isposted'])) {
                 // MODIF: boireaus
                 // Quand on poste un &, c'est un &amp; qui est reçu.
                 //$matiere_nom_complet = $_POST['matiere_nom_complet'];
+				//echo "\$matiere_nom_complet=$matiere_nom_complet<br />\n";
                 $matiere_nom_complet = html_entity_decode_all_version($_POST['matiere_nom_complet']);
+				//echo "\$matiere_nom_complet=$matiere_nom_complet<br />\n";
                 //========================
                 $matiere_priorite = $_POST['matiere_priorite'];
-                $register_matiere = mysql_query("INSERT INTO matieres SET matiere='".$matiere_name."', nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n'");
+                $sql="INSERT INTO matieres SET matiere='".$matiere_name."', nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "',matiere_aid='n',matiere_atelier='n';";
+				//echo "$sql<br />\n";
+                $register_matiere = mysql_query($sql);
                 if (!$register_matiere) {
                     $msg = rawurlencode("Une erreur s'est produite lors de l'enregistrement de la nouvelle matière.");
                     $ok = 'no';
@@ -81,6 +85,7 @@ if (isset($_POST['isposted'])) {
     } else {
 
         $matiere_nom_complet = $_POST['matiere_nom_complet'];
+		$matiere_nom_complet = html_entity_decode_all_version($_POST['matiere_nom_complet']);
         $matiere_priorite = $_POST['matiere_priorite'];
         $matiere_name = $_POST['matiere_name'];
         if (!is_numeric($_POST['matiere_categorie'])) {
@@ -89,7 +94,9 @@ if (isset($_POST['isposted'])) {
             $matiere_categorie = $_POST['matiere_categorie'];
         }
 
-        $register_matiere = mysql_query("UPDATE matieres SET nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "' WHERE matiere='".$matiere_name."'");
+        $sql="UPDATE matieres SET nom_complet='".$matiere_nom_complet."', priority='".$matiere_priorite."', categorie_id = '" . $matiere_categorie . "' WHERE matiere='".$matiere_name."';";
+		//echo "$sql<br />\n";
+        $register_matiere = mysql_query($sql);
 
         if (!$register_matiere) {
             $msg = rawurlencode("Une erreur s'est produite lors de la modification de la matière");
