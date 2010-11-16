@@ -1537,9 +1537,27 @@ if(isset($quelles_classes)) {
 
 	<?php
 
+	echo "<br />\n";
+	$temoin_notes_bas_de_page="n";
 	$max_file_uploads=ini_get('max_file_uploads');
 	if(($max_file_uploads!="")&&(strlen(my_ereg_replace("[^0-9]","",$max_file_uploads))==strlen($max_file_uploads))&&($max_file_uploads>0)) {
-		echo "<p><i>Note</i>&nbsp;: L'upload des photos est limité à $max_file_uploads fichier(s) simultanément.</p>\n";
+		echo "<p><i>Notes</i>&nbsp;:</p>\n";
+		echo "<ul>\n";
+		echo "<li><p>L'upload des photos est limité à $max_file_uploads fichier(s) simultanément.</p></li>\n";
+		$temoin_notes_bas_de_page="y";
+	}
+
+	if($_SESSION['statut']=='administrateur') {
+		if($temoin_notes_bas_de_page=="n") {
+			echo "<p><i>Notes</i>&nbsp;:</p>\n";
+			echo "<ul>\n";
+		}
+		echo "<li><i>Note</i>&nbsp;: Il est possible d'uploader un fichier <a href='../mod_trombinoscopes/trombinoscopes_admin.php#formEnvoi'>ZIP d'un lot de photos</a> plutôt que les uploader une par une.<br />Il faut que les photos soient nommées au format ELENOET.JPG</p></li>\n";
+		$temoin_notes_bas_de_page="y";
+	}
+
+	if($temoin_notes_bas_de_page=="y") {
+		echo "</ul>\n";
 	}
 }
 require("../lib/footer.inc.php");
