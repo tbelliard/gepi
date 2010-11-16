@@ -489,6 +489,8 @@ if (!isset($aid_trouve)) {
 		  </em>
 		</p>
 
+		<p>La <b>taille maximale</b> d'un fichier uploadé vers le serveur est de <b><?php echo ini_get('upload_max_filesize');?></b><br />Effectuez si nécessaire votre upload en plusieurs fichiers Zip.</p>
+
 	  </fieldset>
 	</form>
 
