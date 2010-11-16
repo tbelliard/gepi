@@ -36,12 +36,18 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
-/*if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-    die();
-}*/
+// Il faudra corriger le droit dans utilitaires/updates/access_rights.inc.php
+//$tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/see_all.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Consultation des cahiers de texte', '');";
+//$tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte/see_all.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Consultation des cahiers de texte', '');";
+// Passer à V pour administrateur
+if($_SESSION['statut']!='administrateur') {
+	if (!checkAccess()) {
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+}
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
@@ -194,7 +200,8 @@ echo "</div>\n";
 if ($current_group) {
 	echo "<div class='no_print'>\n";
 		if ($current_imprime=='n') {
-			if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR $_SESSION["statut"] == "cpe" OR $_SESSION["statut"] == "autre") {
+			//if ($_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR $_SESSION["statut"] == "cpe" OR $_SESSION["statut"] == "autre") {
+			if ($_SESSION["statut"] == "administrateur" OR $_SESSION["statut"] == "professeur" OR $_SESSION["statut"] == "scolarite" OR $_SESSION["statut"] == "cpe" OR $_SESSION["statut"] == "autre") {
 				echo "<a href='see_all.php'>\n<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour\n</a> - ";
 				if ($_SESSION["statut"] == "professeur") {
 					echo "<a href='./index.php'>\n<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour vers mes cahiers de textes\n</a> - ";
