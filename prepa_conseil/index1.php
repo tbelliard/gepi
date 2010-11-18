@@ -40,10 +40,13 @@ if (!checkAccess()) {
     die();
 }
 
-if (!isset($en_tete)) $en_tete = "yes";
-if (!isset($stat)) $stat = "no";
-if (!isset($larg_tab)) $larg_tab = 680;
-if (!isset($bord)) $bord = 1;
+if (!isset($bord)) {$bord=isset($_SESSION['prepa_conseil_index1_bord']) ? $_SESSION['prepa_conseil_index1_bord'] : NULL;}
+if (!isset($larg_tab)) {$larg_tab=isset($_SESSION['prepa_conseil_index1_larg_tab']) ? $_SESSION['prepa_conseil_index1_larg_tab'] : NULL;}
+
+if (!isset($en_tete)) {$en_tete = "yes";}
+if (!isset($stat)) {$stat = "no";}
+if (!isset($larg_tab)) {$larg_tab = 680;}
+if (!isset($bord)) {$bord = 1;}
 $order_by = isset($_GET['order_by']) ? $_GET['order_by'] : (isset($_POST['order_by']) ? $_POST["order_by"] : "nom");
 $id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 if (is_numeric($id_groupe) && $id_groupe > 0) {
@@ -1453,18 +1456,19 @@ if (!$current_group) {
     $i="1";
     while ($i < $nb_periode) {
         $name1 = "visu_note_".$i;
-        if (isset($_POST[$name1])) {
-            $temp1 = $_POST[$name1];
+        if ((isset($_POST[$name1]))||(isset($_GET[$name1]))) {
+            $temp1 = isset($_POST[$name1]) ? $_POST[$name1] : $_GET[$name1];
             echo "<input type='hidden' name='$name1' value='$temp1' />\n";
         }
         $name2 = "visu_app_".$i;
-        if (isset($_POST[$name2])) {
-            $temp2 = $_POST[$name2];
+        if ((isset($_POST[$name2]))||(isset($_GET[$name2]))) {
+            $temp2 = isset($_POST[$name2]) ? $_POST[$name2] : $_GET[$name2];
             echo "<input type='hidden' name='$name2' value='$temp2' />\n";
         }
-
         $i++;
     }
+
+
 	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
 		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
 	}
@@ -1538,17 +1542,18 @@ if (!$current_group) {
     $i="1";
     while ($i < $nb_periode) {
         $name1 = "visu_note_".$i;
-        if (isset($_POST[$name1])) {
-            $temp1 = $_POST[$name1];
+        if ((isset($_POST[$name1]))||(isset($_GET[$name1]))) {
+            $temp1 = isset($_POST[$name1]) ? $_POST[$name1] : $_GET[$name1];
             echo "<input type='hidden' name='$name1' value='$temp1' />\n";
         }
         $name2 = "visu_app_".$i;
-        if (isset($_POST[$name2])) {
-            $temp2 = $_POST[$name2];
+        if ((isset($_POST[$name2]))||(isset($_GET[$name2]))) {
+            $temp2 = isset($_POST[$name2]) ? $_POST[$name2] : $_GET[$name2];
             echo "<input type='hidden' name='$name2' value='$temp2' />\n";
         }
         $i++;
     }
+
 	if(isset($order_by)) {echo "<input type='hidden' name='order_by' value='$order_by' />\n";}
 
 	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
@@ -1625,5 +1630,9 @@ if (!$current_group) {
     }
 
 }
+
+if(isset($bord)) {$_SESSION['prepa_conseil_index1_bord']=$bord;}
+if(isset($larg_tab)) {$_SESSION['prepa_conseil_index1_larg_tab']=$larg_tab;}
+
 require("../lib/footer.inc.php");
 ?>
