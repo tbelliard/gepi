@@ -47,6 +47,8 @@ function AfficheNiveauGraviteRequete($_texte,$_niveau){
     }
 }
 
+// Controle attaques CSRF
+check_token();
 
 // Initialisation
 $liste_cible = isset($_POST["liste_cible"]) ? $_POST["liste_cible"] :(isset($_GET["liste_cible"]) ? $_GET["liste_cible"] :NULL);
@@ -507,6 +509,13 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
         require_once("../lib/header.inc");
         //**************** FIN EN-TETE *****************
         ?><form action="confirm_query.php" method="post" enctype="application/x-www-form-urlencoded"><?php
+
+		//=====================
+		// Sécurité: 20101118
+		//echo "<input type='hidden' name='csrf_alea' value='".$csrf_alea."' />\n";
+		echo add_token_field();
+		//=====================
+
         echo "<p class='grand'>Confirmation de la suppression : ";
         echo "<input type='submit' name='confirm' value='Oui' /> ";
         echo "<input type='submit' name='confirm' value='Non' /></p>";
@@ -589,12 +598,22 @@ if (($k < $nb_cible1) and ($tab_cible1[$k] != '')){
             echo "<p><a href='confirm_query.php?cible1=$cible1&amp;cible2=$cible2&amp;cible3=$cible3&amp;action=$action&amp;k=$k&amp;liste_cible=$liste_cible";
             if (isset($liste_cible2)) echo "&amp;liste_cible2=$liste_cible2";
             if (isset($liste_cible3)) echo "&amp;liste_cible3=$liste_cible3";
+			//===========================
+			// Sécurité: 20101118
+			//echo "&amp;csrf_alea=".$csrf_alea;
+			echo add_token_in_url();
+			//===========================
             echo "'>Suite</a></p>";
             die();
         } else {
             $page ="Location: confirm_query.php?cible1=$cible1&cible2=$cible2&cible3=$cible3&action=$action&k=$k&liste_cible=$liste_cible";
             if (isset($liste_cible2)) $page .= "&liste_cible2=$liste_cible2";
             if (isset($liste_cible3)) $page .= "&liste_cible3=$liste_cible3";
+			//===========================
+			// Sécurité: 20101118
+			//$page.="&csrf_alea=".$csrf_alea;
+			$page.=add_token_in_url(false);
+			//===========================
             header($page);
             die();
         }

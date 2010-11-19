@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -139,6 +139,8 @@ if (isset($_GET['id_groupe']) and isset($_GET['periode_num'])) {
 
 // Recopie de la structure de la periode précédente
 if ((isset($_GET['creer_structure'])) and ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)) {
+  check_token();
+
   function recopie_arbo($id_racine, $id_prec,$id_new) {
     global $vide;
     $query_cont = mysql_query("SELECT * FROM cn_conteneurs
@@ -234,7 +236,8 @@ if  (isset($id_racine) and ($id_racine!='')) {
 		fwrite($fich,"==================================\n");
 		fclose($fich);
 		*/
-	    if((isset($_GET['alea']))&&($_GET['alea']==$_SESSION['gepi_alea'])) {
+	    //if((isset($_GET['alea']))&&($_GET['alea']==$_SESSION['gepi_alea'])) {
+		check_token();
 
 			$sql0="SELECT id_conteneur FROM cn_devoirs WHERE id='$temp'";
 			//echo "$sql0<br />";
@@ -268,18 +271,22 @@ if  (isset($id_racine) and ($id_racine!='')) {
 					mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_racine,$arret);
 				}
 			}
+		/*
 		}
 		else {
 			$texte_mail="Tentative de suppression de devoir avec un aléa qui ne coïncide pas avec celui de la session\nLa suppression tentée était \$_SERVER['REQUEST_URI']=".$_SERVER['REQUEST_URI']."\n";
 			mail_alerte("Anomalie de suppression de devoir",$texte_mail,'y');
 			echo "<p style='color:red'>$texte_mail</p>\n";
 		}
+		*/
     }
     //
     // Supression d'un conteneur
     //
     if ((isset($_GET['del_cont'])) and ($_GET['js_confirmed'] ==1)) {
-	    if((isset($_GET['alea']))&&($_GET['alea']==$_SESSION['gepi_alea'])) {
+		check_token();
+
+	    //if((isset($_GET['alea']))&&($_GET['alea']==$_SESSION['gepi_alea'])) {
 			$temp = $_GET['del_cont'];
 			$sql= mysql_query("SELECT id FROM cn_devoirs WHERE id_conteneur='$temp'");
 			$nb_dev = mysql_num_rows($sql);
@@ -305,12 +312,14 @@ if  (isset($id_racine) and ($id_racine!='')) {
 				}
 	
 			}
+		/*
 		}
 		else {
 			$texte_mail="Tentative de suppression d'un conteneur avec un aléa qui ne coïncide pas avec celui de la session\nLa suppression tentée était \$_SERVER['REQUEST_URI']=".$_SERVER['REQUEST_URI']."\n";
 			mail_alerte("Anomalie de suppression de conteneur",$texte_mail,'y');
 			echo "<p style='color:red'>$texte_mail</p>\n";
 		}
+		*/
     }
 
     //echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"index.php\" method=\"POST\">\n";
@@ -510,15 +519,15 @@ var tab_per_cn=new Array();\n";
 
         //echo "<br/><a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
         echo "<a href='add_modif_conteneur.php?id_racine=$id_racine&amp;mode_navig=retour_index'> Créer un";
-    if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
-    echo " ".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
+        if(getSettingValue("gepi_denom_boite_genre")=='f'){echo "e";}
+        echo " ".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))." </a> | \n";
 
         //echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&mode_navig=retour_index'>Créer une évaluation</a>|";
         echo "<a href='add_modif_dev.php?id_conteneur=$id_racine&amp;mode_navig=retour_index'> Créer une évaluation </a> | \n";
         if ($periode_num!='1')  {
             $themessage = 'En cliquant sur OK, vous allez créer la même structure de boîtes que celle de la période précédente. Si des boîtes existent déjà, elles ne seront pas supprimées.';
             //echo "<a href='index.php?id_groupe=$id_groupe&periode_num=$periode_num&creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Créer la même structure que la période précédent</a>|";
-            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a> | \n";
+            echo "<a href='index.php?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;creer_structure=yes".add_token_in_url()."'  onclick=\"return confirm_abandon (this, 'yes', '$themessage')\"> Créer la même structure que la période précédente</a> | \n";
 			//echo "&nbsp;| \n";
         }
     }

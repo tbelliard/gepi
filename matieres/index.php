@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -41,6 +41,7 @@ $msg = '';
 $error = false;
 if (isset($_POST['is_posted'])) {
     // Les données ont été postées, on met à jour
+    check_token();
 
     $get_all_matieres = mysql_query("SELECT matiere, priority, categorie_id FROM matieres");
     while ($row = mysql_fetch_object($get_all_matieres)) {
@@ -123,6 +124,9 @@ require_once("../lib/header.inc");
  | <a href='matieres_csv.php'<?php echo insert_confirm_abandon();?>>Importer un CSV de la liste des matières</a>
 </p>
 <form enctype="multipart/form-data" action="index.php" method=post>
+<?php
+echo add_token_field();
+?>
 <input type='submit' value='Enregistrer' style='margin-left: 10%; margin-bottom: 0px;' />
 <p><label for='forcer_defauts' style='cursor: pointer;'>Pour toutes les classes, forcer les valeurs définies pour toutes les matières ci-dessous <input type='checkbox' name='forcer_defauts' id='forcer_defauts' value='yes' /></label>
 <br/><b>Attention !</b> Cette fonction effacera tous vos changements manuels concernant la priorité et la catégorie de chaque matière dans les différentes classes !</p>

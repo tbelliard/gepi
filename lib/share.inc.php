@@ -2,9 +2,121 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 */
 
+function generate_token() {
+	$length = rand(35, 45);
+	for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+	// Virer le gepi_alea par la suite
+	$_SESSION["gepi_alea"] = $r;
+	//$_SESSION["token"] = $r;
+}
+
+function add_token_field() {
+	return "<input type='hidden' name='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
+}
+
+function add_token_in_url($html_chars = true) {
+	if($html_chars) {
+		return "&amp;csrf_alea=".$_SESSION['gepi_alea'];
+	}
+	else {
+		return "&csrf_alea=".$_SESSION['gepi_alea'];
+	}
+}
+
+function check_token() {
+	global $niveau_arbo;
+
+	$csrf_alea=isset($_POST['csrf_alea']) ? $_POST['csrf_alea'] : (isset($_GET['csrf_alea']) ? $_GET['csrf_alea'] : "");
+
+	if(isset($niveau_arbo)) {
+		if($niveau_arbo=="0") {
+		}
+		elseif($niveau_arbo==1) {
+			$pref_arbo="..";
+		}
+		elseif($niveau_arbo==2) {
+			$pref_arbo="../..";
+		}
+		elseif($niveau_arbo==3) {
+			$pref_arbo="../../..";
+		}
+		elseif ($niveau_arbo == "public") {
+			$pref_arbo="..";
+			// A REVOIR... SI C'EST PUBLIC, ON N'EST PAS LOGUé
+			// NORMALEMENT, EN PUBLIC on ne devrait pas avoir de page sensible
+		}
+	}
+	else {
+		$pref_arbo="..";
+	}
+
+	if($csrf_alea!=$_SESSION['gepi_alea']) {
+		action_alea_invalide();
+		header("Location: $pref_arbo/accueil.php?msg=alea_invalide");
+		die();
+	}
+}
+
+/**
+ * Action en cas d'attaque CSRF
+ *
+ */
+function action_alea_invalide() {
+	//debug_var();
+	/*
+	$_SERVER['REQUEST_URI']=	/steph/gepi-trunk/lib/confirm_query.php
+	$_SERVER['SCRIPT_NAME']=	/steph/gepi-trunk/lib/confirm_query.php
+	$_SERVER['PHP_SELF']=	/steph/gepi-trunk/lib/confirm_query.php
+	*/
+
+	$details="La page cible était ".$_SERVER['PHP_SELF']." avec les variables suivantes:\n";
+	$details.="Variables en \$_POST:\n";
+	foreach($_POST as $key => $value) {
+		//if(!is_array($value)) {
+			$details.="   \$_POST[$key]=$value\n";
+		/*
+		}
+		else {
+
+		}
+		*/
+	}
+
+	$details.="Variables en \$_GET:\n";
+	foreach($_GET as $key => $value) {
+		$details.="   \$_GET[$key]=$value\n";
+	}
+
+	// Envoyer un mail à l'admin
+	$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+	if($envoi_mail_actif=="y") {
+		$destinataire=getSettingValue('gepiAdminAdress');
+		if($destinataire!='') {
+			$sujet="Attaque CRSF";
+			$message="La variable csrf_alea ne coincide pas avec le gepi_alea en SESSION.\n";
+			$message.=$details;
+			envoi_mail($sujet, $message,$destinataire);
+		}
+	}
+}
+
+/**
+ * Envoi de mail
+ *
+ */
+function envoi_mail($sujet, $message,$destinataire) {
+	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+
+	// On envoie le mail
+	$envoi = mail($destinataire,
+		$gepiPrefixeSujetMail."GEPI : $sujet",
+		$message,
+	"From: Mail automatique Gepi\r\n"."X-Mailer: PHP/" . phpversion());
+}
 
 /**
  * Verification de la validité d'un mot de passe
@@ -1047,8 +1159,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />";}
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
 					echo "</i>)";
-
-					echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev&amp;alea=".$_SESSION['gepi_alea']."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
+					//echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev&amp;alea=".$_SESSION['gepi_alea']."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
+					echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo "</li>\n";
 					$j++;
 				}
@@ -1093,7 +1205,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 
 					if(($nb_dev==0)&&($nb_sous_cont==0)) {
 						//echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
-						echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont&amp;alea=".$_SESSION['gepi_alea']."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
+						//echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont&amp;alea=".$_SESSION['gepi_alea']."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
+						echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
 					}
 					else {
 						echo " - <a href = '#' onclick='alert(\"$message_cont_non_vide\")'><font color='gray'>Suppression</font></a>\n";
@@ -1128,7 +1241,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
 							echo "</i>)";
 
-							echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev&amp;alea=".$_SESSION['gepi_alea']."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
+							//echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev&amp;alea=".$_SESSION['gepi_alea']."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
+							echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 							echo "</li>\n";
 							$j++;
 						}

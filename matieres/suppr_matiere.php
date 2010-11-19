@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //INSERT INTO `droits` VALUES ('/matieres/suppr_matiere.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Suppression d une matiere', '');
 if (!checkAccess()) {
@@ -109,6 +109,7 @@ if(!isset($confirmation_suppr)) {
 
 	// Formulaire de confirmation de suppression
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+	echo add_token_field();
 	echo "<input type='hidden' name='matiere' value=\"$matiere\" />\n";
 	echo "<p><input type='submit' name='confirmation_suppr' value='Supprimer la matière' /></p>\n";
 	echo "</form>\n";
@@ -116,6 +117,8 @@ if(!isset($confirmation_suppr)) {
 
 }
 else {
+	check_token();
+
 	// Suppression proprement dite... avec une boucle sur les groupes pour ne pas risquer un timeout
 	// Et finir par la suppression de la matière
 

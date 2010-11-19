@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -44,7 +44,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -59,6 +59,8 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) <= 0) {
 }
 
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof) and ($add_prof == "yes"))) {
+	check_token();
+
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
     $test = mysql_query("SELECT * FROM j_aid_utilisateurs WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
     $test2 = mysql_num_rows($test);
@@ -74,6 +76,8 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 5) and (isset($add_prof
 }
 
 if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_prof_gest) and ($add_prof_gest == "yes"))) {
+	check_token();
+
     // On commence par vérifier que le professeur n'est pas déjà présent dans cette liste.
     $test = mysql_query("SELECT * FROM j_aid_utilisateurs_gest WHERE (id_utilisateur = '$reg_prof_login' and id_aid = '$aid_id' and indice_aid='$indice_aid')");
     $test2 = mysql_num_rows($test);
@@ -87,6 +91,7 @@ if ((NiveauGestionAid($_SESSION["login"],$indice_aid) >= 10) and (isset($add_pro
     }
     $flag = "prof_gest";
 }
+
 // On appelle les informations de l'aid pour les afficher :
 $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = '$indice_aid'");
 $nom_aid = @mysql_result($call_data, 0, "nom");
@@ -94,6 +99,8 @@ $activer_outils_comp = @mysql_result($call_data, 0, "outils_complementaires");
 $autoriser_inscript_multiples = @mysql_result($call_data, 0, "autoriser_inscript_multiples");
 
 if (isset($add_eleve) and ($add_eleve == "yes")) {
+	check_token();
+
     // Les élèves responsable : à chercher parmi les élèves de l'AID
     // On commence par supprimer les élèves responsables
     sql_query("delete from j_aid_eleves_resp where id_aid='$aid_id' and indice_aid='$indice_aid'");
@@ -136,6 +143,8 @@ if (isset($add_eleve) and ($add_eleve == "yes")) {
 }
 
 if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
+	check_token();
+
     $msg = "";
     // On récupère la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
@@ -165,6 +174,8 @@ if (isset($_POST["toutes_aids"]) and ($_POST["toutes_aids"] == "y")) {
 }
 
 if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
+	check_token();
+
     $msg = "";
     // On récupère la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
@@ -187,6 +198,8 @@ if (isset($_POST["selection_aids"]) and ($_POST["selection_aids"] == "y")) {
 
 
 if (isset($_POST["toutes_aids_gest"]) and ($_POST["toutes_aids_gest"] == "y")) {
+	check_token();
+
     $msg = "";
     // On récupère la liste des profs responsable de cette Aids :
     $sql = "SELECT id_utilisateur FROM j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and j.indice_aid='$indice_aid')";
@@ -299,6 +312,9 @@ if ($flag == "prof") { ?>
     $call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysql_num_rows($call_liste_data);
     echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">";
+
+	echo add_token_field();
+
     if ($nombre !=0) {
     ?>
         <p class='bold'>Liste des professeurs responsables :</p>
@@ -314,7 +330,7 @@ if ($flag == "prof") { ?>
         $nom_prof = mysql_result($call_liste_data, $i, "nom");
         $prenom_prof = @mysql_result($call_liste_data, $i, "prenom");
         echo "<tr><td><b>";
-        echo "$nom_prof $prenom_prof</b></td><td><a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_prof_aid'>\n<font size=2><img src=\"../images/icons/delete.png\" title=\"Supprimer ce professeur\" alt=\"Supprimer\" /></font></a></td>\n";
+        echo "$nom_prof $prenom_prof</b></td><td><a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_prof_aid".add_token_in_url()."'>\n<font size=2><img src=\"../images/icons/delete.png\" title=\"Supprimer ce professeur\" alt=\"Supprimer\" /></font></a></td>\n";
         echo "</tr>";
     $i++;
     }
@@ -356,6 +372,8 @@ if ($flag == "prof") { ?>
       <hr /><H2>Affecter cette liste aux Aids sans professeur responsable</H2>
       Si vous cliquez sur le bouton ci-dessous, les professeurs de la liste ci-dessus seront également affectés à toutes les AIDs de cette catégorie n'ayant pas encore de professeur responsable.
       <?php
+		echo add_token_field();
+
       echo "<input type=\"hidden\" name=\"toutes_aids\" value=\"y\" />\n";
       echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
       echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
@@ -365,6 +383,8 @@ if ($flag == "prof") { ?>
       <form enctype="multipart/form-data" action="modify_aid.php" method="post">
       <hr /><H2>Affecter cette liste aux Aids s&eacute;lectionn&eacute;es</H2>
       <?php
+		echo add_token_field();
+
       echo "<input type=\"hidden\" name=\"selection_aids\" value=\"y\" />\n";
       echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
       echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
@@ -393,6 +413,9 @@ if ($flag == "prof_gest") { ?>
    <p class='grand'><?php echo "$nom_aid  $aid_nom";?></p>
    <?php
     echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">";
+
+	echo add_token_field();
+
     $call_liste_data = mysql_query("SELECT u.login, u.prenom, u.nom FROM utilisateurs u, j_aid_utilisateurs_gest j WHERE (j.id_aid='$aid_id' and u.login=j.id_utilisateur and j.indice_aid='$indice_aid')  order by u.nom, u.prenom");
     $nombre = mysql_num_rows($call_liste_data);
     if ($nombre !=0) {
@@ -408,7 +431,7 @@ if ($flag == "prof_gest") { ?>
         $nom_prof = mysql_result($call_liste_data, $i, "nom");
         $prenom_prof = @mysql_result($call_liste_data, $i, "prenom");
         echo "<tr><td><b>";
-        echo "$nom_prof $prenom_prof</b></td><td><a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_gest_aid'>\n<font size=2><img src=\"../images/icons/delete.png\" title=\"Supprimer ce professeur\" alt=\"Supprimer\" /></font></a></td>\n";
+        echo "$nom_prof $prenom_prof</b></td><td><a href='../lib/confirm_query.php?liste_cible=$login_prof&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_gest_aid".add_token_in_url()."'>\n<font size=2><img src=\"../images/icons/delete.png\" title=\"Supprimer ce professeur\" alt=\"Supprimer\" /></font></a></td>\n";
         echo "</tr>";
     $i++;
     }
@@ -449,6 +472,8 @@ if ($flag == "prof_gest") { ?>
       <hr /><H2>Affecter cette liste aux Aids sans gestionnaire</H2>
       Si vous cliquez sur le bouton ci-dessous, les utilisateurs de la liste ci-dessus seront également affectés à toutes les AIDs de cette catégorie n'ayant pas encore de gestionnaire.
       <?php
+		echo add_token_field();
+
       echo "<input type=\"hidden\" name=\"toutes_aids_gest\" value=\"y\" />\n";
       echo "<input type=\"hidden\" name=\"indice_aid\" value=\"".$indice_aid."\" />\n";
       echo "<input type=\"hidden\" name=\"aid_id\" value=\"".$aid_id."\" />\n";
@@ -477,6 +502,9 @@ if ($flag == "eleve") {
     $vide = 1;
     // Ajout d'un tableau
 echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"post\">\n";
+
+	echo add_token_field();
+
 	echo "<table class=\"aid_tableau\" border=\"0\" summary=''>";
     // appel de la liste des élèves de l'AID :
     $call_liste_data = mysql_query("SELECT DISTINCT e.login, e.nom, e.prenom, e.elenoet
@@ -513,7 +541,7 @@ echo "<form enctype=\"multipart/form-data\" action=\"modify_aid.php\" method=\"p
         $classe_eleve = @mysql_result($call_classe, '0', "classe");
         $v_elenoet=mysql_result($call_liste_data, $i, 'elenoet');
         echo "<tr><td>\n";
-        echo "<b>$nom_eleve $prenom_eleve</b>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
+        echo "<b>$nom_eleve $prenom_eleve</b>, $classe_eleve </td>\n<td> <a href='../lib/confirm_query.php?liste_cible=$login_eleve&amp;liste_cible2=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_eleve_aid".add_token_in_url()."'><img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" /></a>\n";
 
         // Dans le cas où la catégorie d'AID est utilisée pour la gestion des accès au trombinoscope, on ajouter un lien sur la photo de l'élève.
         if ((getSettingValue("num_aid_trombinoscopes")==$indice_aid) and (getSettingValue("active_module_trombinoscopes")=='y')) {

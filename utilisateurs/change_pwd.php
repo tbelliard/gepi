@@ -2,7 +2,7 @@
 /*
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -51,6 +51,9 @@ $ine_password=isset($_POST["ine_password"]) ? $_POST["ine_password"] : NULL;
 $ine_password=my_ereg_replace("[^A-Za-z0-9]","",$ine_password);
 
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
+
+	check_token();
+
     $user_statut = sql_query1("SELECT statut FROM utilisateurs WHERE login='".$user_login."'");
     if (($user_statut == 'professeur') or ($user_statut == 'cpe') or ($user_statut == 'responsable')) {
         // Mot de passe comportant des lettres et des chiffres
@@ -154,6 +157,9 @@ if (strtoupper($user_login) != strtoupper($_SESSION['login'])) {
         $flag = 1;
 	}
     echo "<form enctype=\"multipart/form-data\" action=\"change_pwd.php\" method='post'>\n";
+
+	echo add_token_field();
+
     echo "<div class=\"norme\">";
     echo "Identifiant : ".$user_login;
     echo "<br />Nom : $user_nom&nbsp;&nbsp;&nbsp;Prénom : $user_prenom";

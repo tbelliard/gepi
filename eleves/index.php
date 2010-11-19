@@ -142,6 +142,8 @@ if (isset($is_posted) and ($is_posted == '2')) {
 if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if (isset($is_posted) and ($is_posted == '1')) {
 
+		check_token();
+
 		$delete_eleve=isset($_POST['delete_eleve']) ? $_POST['delete_eleve'] : array();
 		if(!is_array($delete_eleve)) {$delete_eleve=array();$msg="Erreur: La liste d'élèves à supprimer devrait être un tableau.<br />";}
 
@@ -270,6 +272,8 @@ function test_ecriture_backup() {
 }
 
 if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
+	check_token();
+
 	$msg="";
 	$cpt_photos_mises_en_place=0;
 	$cpt_photo = 0;
@@ -536,6 +540,8 @@ if (!isset($quelles_classes)) {
 
 		echo "<form enctype='multipart/form-data' action='index.php' method='post' name='formulaire'>\n";
 		echo "<table cellpadding='5' width='100%' border='0' summary='Choix du mode'>\n";
+
+		//echo add_token_field();
 
 		echo "<tr>\n";
 		echo "<td>\n";
@@ -942,6 +948,8 @@ if(isset($quelles_classes)) {
 
 	echo "<form enctype=\"multipart/form-data\" action=\"index.php\" method=\"post\">\n";
 	if (!isset($order_type)) { $order_type='nom,prenom';}
+
+	echo add_token_field();
 
 	/*
 	echo "<table border='1' cellpadding='2' class='boireaus'>\n";

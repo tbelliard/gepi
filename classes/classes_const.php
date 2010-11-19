@@ -47,6 +47,8 @@ $_SESSION['chemin_retour'] = $gepiPath."/classes/classes_const.php?id_classe=".$
 
 
 if (isset($is_posted)) {
+	check_token();
+
 	$reg_ok = 'yes';
 	$call_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' AND e.login = c.login)");
 	$nombreligne = mysql_num_rows($call_eleves);
@@ -397,7 +399,7 @@ if(!isset($quitter_la_page)){
 
 	echo "<form enctype='multipart/form-data' action='classes_const.php' method='post'>\n";
 }
-else{
+else {
 	// Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)
 	// Après modification éventuelle, il faut quitter cette page.
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
@@ -443,6 +445,8 @@ else{
 	echo "<input type='hidden' name='quitter_la_page' value='y' />\n";
 	// Il va falloir faire en sorte que la page destination tienne compte de la variable...
 }
+
+echo add_token_field();
 
 //debug_var();
 

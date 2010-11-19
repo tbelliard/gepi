@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -47,6 +47,7 @@ $_POST['reg_auth_mode'] = (!isset($_POST['reg_auth_mode']) OR !in_array($_POST['
 
 if ($create_mode == "classe" OR $create_mode == "individual") {
 	// On a une demande de création, on continue
+	check_token();
 
 	// On veut alimenter la variable $quels_parents avec un résultat mysql qui contient
 	// la liste des parents pour lesquels on veut créer un compte
@@ -142,10 +143,11 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 					if ($nbre >= 1 AND $nbre < 2) {
 						$reg_login = mysql_result($query_p, 0,"login_u");
-					}else{
+					}
+					else {
 						// Il faudrait alors proposer une alternative à ce cas et permettre de chercher à la main le bon responsable dans la source
 						//$reg_login = "erreur_".$k; // en attendant une solution viable, on génère le login du responsable
-            $reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login"));
+						$reg_login = generate_unique_login($current_parent->nom, $current_parent->prenom, getSettingValue("mode_generation_login"));
 					}
 				}
 			} else {
@@ -156,6 +158,8 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 			}
 
 			if(($reg_login)&&($reg_login!='')) {
+				//check_token();
+
 				// Si on a un accès LDAP en écriture, on créé le compte sur le LDAP
 				// On ne procède que si le LDAP est configuré en écriture, qu'on a activé
 				// l'auth LDAP ou SSO, et que c'est un de ces deux modes qui a été choisi pour cet utilisateur.
@@ -226,7 +230,7 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 		if ($nb_comptes > 0 && ($_POST['reg_auth_mode'] == "auth_locale" || $gepiSettings['ldap_write_access'] == "yes")) {
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
-				$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_login=".$reg_login."'>";
+				$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_login=".$reg_login.add_token_in_url()."'>";
 				$msg .= "Pour initialiser le(s) mot(s) de passe, vous devez suivre ce lien maintenant !";
 				$msg .= "</a>";
 			} else {
@@ -234,14 +238,14 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
 				// =====================
 				if ($_POST['classe'] == "all") {
-				    $msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
-				    $msg .= " ou <a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;affiche_adresse_resp=y&amp;creation_comptes_classe=y'>(Impression HTML avec adresse)</a>";
-					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=csv&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+				    $msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;creation_comptes_classe=y".add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+				    $msg .= " ou <a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=html&amp;affiche_adresse_resp=y&amp;creation_comptes_classe=y".add_token_in_url()."'>(Impression HTML avec adresse)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;mode=csv&amp;creation_comptes_classe=y".add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
 					$msg.="<br/>";
 				} elseif (is_numeric($_POST['classe'])) {
-					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
-					$msg .= " ou <a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;affiche_adresse_resp=y&amp;creation_comptes_classe=y'>(Impression HTML avec adresse)</a>";
-					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv&amp;creation_comptes_classe=y'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;creation_comptes_classe=y".add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Impression HTML)</a>";
+					$msg .= " ou <a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=html&amp;affiche_adresse_resp=y&amp;creation_comptes_classe=y".add_token_in_url()."'>(Impression HTML avec adresse)</a>";
+					$msg .= "<br/><a target='_blank' href='reset_passwords.php?user_status=responsable&amp;user_classe=".$_POST['classe']."&amp;mode=csv&amp;creation_comptes_classe=y".add_token_in_url()."'>Imprimer la ou les fiche(s) de bienvenue (Export CSV)</a>";
 					$msg.="<br/>";
 				}
 				// =====================
@@ -339,6 +343,11 @@ else{
 	echo "<p><b>Créer des comptes par lot</b> :</p>\n";
 	echo "<blockquote>\n";
 	echo "<form action='create_responsable.php' method='post'>\n";
+	//=====================
+	// Sécurité: 20101118
+	echo add_token_field();
+	//=====================
+
 	echo "<input type='hidden' name='mode' value='classe' />\n";
 	//===========================
 	// AJOUT: boireaus 20071102
@@ -459,6 +468,10 @@ else{
 
 	echo "<p>Cliquez sur le bouton 'Créer' d'un responsable pour créer un compte associé.</p>\n";
 	echo "<form id='form_create_one_resp' action='create_responsable.php' method='post'>\n";
+	//=====================
+	// Sécurité: 20101118
+	echo add_token_field();
+	//=====================
 	echo "<input type='hidden' name='mode' value='individual' />\n";
 	echo "<input id='create_pers_id' type='hidden' name='pers_id' value='' />\n";
 

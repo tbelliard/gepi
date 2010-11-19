@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -126,7 +126,7 @@ while ($i < $nombre_lignes){
 	if($current_cp!='999') {echo sprintf("%05d",$current_cp);} else {echo $current_cp;}
 	echo "</td>\n";
     echo "<td>$current_ville</td>\n";
-    echo "<td><a href='../lib/confirm_query.php?liste_cible=$current_id&amp;action=del_etab'>Supprimer</a></td></tr>\n";
+    echo "<td><a href='../lib/confirm_query.php?liste_cible=$current_id&amp;action=del_etab".add_token_in_url()."'>Supprimer</a></td></tr>\n";
 	$i++;
 }
 echo "</table>\n";

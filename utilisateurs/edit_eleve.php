@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -74,220 +74,225 @@ if ($mode == "classe") {
 // L'édition se fait directement sur la page de gestion des responsables
 
 if (!$error) {
-if ($action == "rendre_inactif") {
-	// Désactivation d'utilisateurs actifs
-	if ($mode == "individual") {
-		// Désactivation pour un utilisateur unique
-		$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['eleve_login']."' AND etat = 'actif')"), 0);
-		if ($test == "0") {
-			$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà inactif.";
-		} else {
-			$res = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE (login = '".$_GET['eleve_login']."')");
-			if ($res) {
-				$msg .= "L'utilisateur ".$_GET['eleve_login'] . " a été désactivé.";
+
+	if($action) {
+		check_token();
+	}
+
+	if ($action == "rendre_inactif") {
+		// Désactivation d'utilisateurs actifs
+		if ($mode == "individual") {
+			// Désactivation pour un utilisateur unique
+			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['eleve_login']."' AND etat = 'actif')"), 0);
+			if ($test == "0") {
+				$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà inactif.";
 			} else {
-				$msg .= "Erreur lors de la désactivation de l'utilisateur.";
-			}
-		}
-	} elseif ($mode == "classe" and !$error) {
-		// Pour tous les élèves qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
-		while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_eleve->login ."'"), 0);
-			if ($test > 0) {
-				// L'utilisateur existe bien dans la tables utilisateurs, on désactive
-				$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE login = '" . $current_eleve->login . "'");
-				if (!$res) {
-					$msg .= "Erreur lors de la désactivation du compte ".$current_eleve->login."<br/>";
+				$res = mysql_query("UPDATE utilisateurs SET etat='inactif' WHERE (login = '".$_GET['eleve_login']."')");
+				if ($res) {
+					$msg .= "L'utilisateur ".$_GET['eleve_login'] . " a été désactivé.";
 				} else {
-					$nb_comptes++;
+					$msg .= "Erreur lors de la désactivation de l'utilisateur.";
 				}
 			}
+		} elseif ($mode == "classe" and !$error) {
+			// Pour tous les élèves qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
+			while ($current_eleve = mysql_fetch_object($quels_eleves)) {
+				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_eleve->login ."'"), 0);
+				if ($test > 0) {
+					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
+					$res = mysql_query("UPDATE utilisateurs SET etat = 'inactif' WHERE login = '" . $current_eleve->login . "'");
+					if (!$res) {
+						$msg .= "Erreur lors de la désactivation du compte ".$current_eleve->login."<br/>";
+					} else {
+						$nb_comptes++;
+					}
+				}
+			}
+			$msg .= "$nb_comptes comptes ont été désactivés.";
 		}
-		$msg .= "$nb_comptes comptes ont été désactivés.";
-	}
-} elseif ($action == "rendre_actif") {
-	// Activation d'utilisateurs préalablement désactivés
-	if ($mode == "individual") {
-		// Activation pour un utilisateur unique
-		$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['eleve_login']."' AND etat = 'inactif')"), 0);
-		if ($test == "0") {
-			$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà actif.";
-		} else {
-			$res = mysql_query("UPDATE utilisateurs SET etat='actif' WHERE (login = '".$_GET['eleve_login']."')");
-			if ($res) {
-				$msg .= "L'utilisateur ".$_GET['eleve_login'] . " a été activé.";
+	} elseif ($action == "rendre_actif") {
+		// Activation d'utilisateurs préalablement désactivés
+		if ($mode == "individual") {
+			// Activation pour un utilisateur unique
+			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['eleve_login']."' AND etat = 'inactif')"), 0);
+			if ($test == "0") {
+				$msg .= "Erreur lors de la désactivation de l'utilisateur : celui-ci n'existe pas ou bien est déjà actif.";
 			} else {
-				$msg .= "Erreur lors de l'activation de l'utilisateur.";
-			}
-		}
-	} elseif ($mode == "classe") {
-		// Pour tous les élèves qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
-		while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_eleve->login ."'"), 0);
-			if ($test > 0) {
-				// L'utilisateur existe bien dans la tables utilisateurs, on désactive
-				$res = mysql_query("UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $current_eleve->login . "'");
-				if (!$res) {
-					$msg .= "Erreur lors de l'activation du compte ".$current_eleve->login."<br/>";
+				$res = mysql_query("UPDATE utilisateurs SET etat='actif' WHERE (login = '".$_GET['eleve_login']."')");
+				if ($res) {
+					$msg .= "L'utilisateur ".$_GET['eleve_login'] . " a été activé.";
 				} else {
-					$nb_comptes++;
+					$msg .= "Erreur lors de l'activation de l'utilisateur.";
 				}
 			}
-		}
-		$msg .= "$nb_comptes comptes ont été activés.";
-	}
-
-} elseif ($action == "supprimer") {
-	$ldap_write_access=false;
-
-	//if ($gepiSettings['ldap_write_access']) {
-	if ($gepiSettings['ldap_write_access']=='yes') {
-		//echo "\$ldap_write_access<br />";
-		$ldap_write_access = true;
-		$ldap_server = new LDAPServer;
-	}
-
-	// Suppression d'un ou plusieurs utilisateurs
-	if ($mode == "individual") {
-		// Suppression pour un utilisateur unique
-		$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['eleve_login']."')"), 0);
-		if ($test == "0") {
-			$msg .= "Erreur lors de la suppression de l'utilisateur : celui-ci n'existe pas.";
-		} else {
-			$res = mysql_query("DELETE FROM utilisateurs WHERE (login = '".$_GET['eleve_login']."')");
-			if ($res) {
-				$msg .= "L'utilisateur ".$_GET['eleve_login'] . " a été supprimé.";
-				if ($ldap_write_access) {
-					if ($ldap_server->test_user($_GET['eleve_login'])) {
-						$write_ldap_success = $ldap_server->delete_user($_GET['eleve_login']);
-						if ($write_ldap_success) {
-							$msg .= "<br/>L'utilisateur a été supprimé de l'annuaire LDAP.";
-						}
+		} elseif ($mode == "classe") {
+			// Pour tous les élèves qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
+			while ($current_eleve = mysql_fetch_object($quels_eleves)) {
+				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_eleve->login ."'"), 0);
+				if ($test > 0) {
+					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
+					$res = mysql_query("UPDATE utilisateurs SET etat = 'actif' WHERE login = '" . $current_eleve->login . "'");
+					if (!$res) {
+						$msg .= "Erreur lors de l'activation du compte ".$current_eleve->login."<br/>";
+					} else {
+						$nb_comptes++;
 					}
 				}
+			}
+			$msg .= "$nb_comptes comptes ont été activés.";
+		}
+	
+	} elseif ($action == "supprimer") {
+		$ldap_write_access=false;
+	
+		//if ($gepiSettings['ldap_write_access']) {
+		if ($gepiSettings['ldap_write_access']=='yes') {
+			//echo "\$ldap_write_access<br />";
+			$ldap_write_access = true;
+			$ldap_server = new LDAPServer;
+		}
+	
+		// Suppression d'un ou plusieurs utilisateurs
+		if ($mode == "individual") {
+			// Suppression pour un utilisateur unique
+			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE (login = '" . $_GET['eleve_login']."')"), 0);
+			if ($test == "0") {
+				$msg .= "Erreur lors de la suppression de l'utilisateur : celui-ci n'existe pas.";
 			} else {
-				$msg .= "Erreur lors de la suppression de l'utilisateur.";
-			}
-		}
-	} elseif ($mode == "classe") {
-		// Pour tous les élèves qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
-		while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_eleve->login ."'"), 0);
-			if ($test > 0) {
-				// L'utilisateur existe bien dans la tables utilisateurs, on désactive
-				$res = mysql_query("DELETE FROM utilisateurs WHERE login = '" . $current_eleve->login . "'");
-				if (!$res) {
-					$msg .= "Erreur lors de la suppression du compte ".$current_eleve->login."<br/>";
+				$res = mysql_query("DELETE FROM utilisateurs WHERE (login = '".$_GET['eleve_login']."')");
+				if ($res) {
+					$msg .= "L'utilisateur ".$_GET['eleve_login'] . " a été supprimé.";
+					if ($ldap_write_access) {
+						if ($ldap_server->test_user($_GET['eleve_login'])) {
+							$write_ldap_success = $ldap_server->delete_user($_GET['eleve_login']);
+							if ($write_ldap_success) {
+								$msg .= "<br/>L'utilisateur a été supprimé de l'annuaire LDAP.";
+							}
+						}
+					}
 				} else {
-					$nb_comptes++;
-					if ($ldap_write_access && $current_eleve->auth_mode != 'gepi') {
-						if (!$ldap_server->test_user($current_eleve->login)) {
-							// L'utilisateur n'a pas été trouvé dans l'annuaire.
-							$write_ldap_success = true;
-						} else {
-							$write_ldap_success = $ldap_server->delete_user($current_eleve->login);
+					$msg .= "Erreur lors de la suppression de l'utilisateur.";
+				}
+			}
+		} elseif ($mode == "classe") {
+			// Pour tous les élèves qu'on a déjà sélectionnés un peu plus haut, on désactive les comptes
+			while ($current_eleve = mysql_fetch_object($quels_eleves)) {
+				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_eleve->login ."'"), 0);
+				if ($test > 0) {
+					// L'utilisateur existe bien dans la tables utilisateurs, on désactive
+					$res = mysql_query("DELETE FROM utilisateurs WHERE login = '" . $current_eleve->login . "'");
+					if (!$res) {
+						$msg .= "Erreur lors de la suppression du compte ".$current_eleve->login."<br/>";
+					} else {
+						$nb_comptes++;
+						if ($ldap_write_access && $current_eleve->auth_mode != 'gepi') {
+							if (!$ldap_server->test_user($current_eleve->login)) {
+								// L'utilisateur n'a pas été trouvé dans l'annuaire.
+								$write_ldap_success = true;
+							} else {
+								$write_ldap_success = $ldap_server->delete_user($current_eleve->login);
+							}
 						}
 					}
 				}
 			}
+			$msg .= "$nb_comptes comptes ont été supprimés.";
 		}
-		$msg .= "$nb_comptes comptes ont été supprimés.";
-	}
-} elseif ($action == "reinit_password") {
-	if ($mode != "classe") {
-		$msg .= "Erreur : Vous devez sélectionner une classe.";
-	} elseif ($mode == "classe") {
-
-		if(isset($mdp_INE)) {
-			$chaine_mdp_INE="&amp;mdp_INE=$mdp_INE";
-		}
-		else {
-			$chaine_mdp_INE="";
-		}
-
-		if ($_POST['classe'] == "all") {
-			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=html$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
-            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=csv$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
-            $msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=pdf$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
-		} else if (is_numeric($_POST['classe'])) {
-			$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
-			$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf$chaine_mdp_INE\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
-		}
-	}
-} elseif ($action == "change_auth_mode") {
-	$ldap_write_access = false;
-	if ($gepiSettings['ldap_write_access'] == "yes") {
-		$ldap_write_access = true;
-		$ldap_server = new LDAPServer;
-	}
-	$nb_comptes = 0;
-	$reg_auth_mode = (in_array($_POST['reg_auth_mode'], array("gepi", "ldap", "sso"))) ? $_POST['reg_auth_mode'] : "gepi";
-	if ($mode != "classe") {
-		$msg .= "Erreur : Vous devez sélectionner une classe.";
-	} elseif ($mode == "classe") {
-		while ($current_eleve = mysql_fetch_object($quels_eleves)) {
-			$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_eleve->login ."'"), 0);
-			if ($test > 0) {
-				// L'utilisateur existe bien dans la tables utilisateurs, on modifie
-				// Si on change le mode d'authentification, il faut quelques opérations particulières
-				$old_auth_mode = $current_eleve->auth_mode;
-				if ($_POST['reg_auth_mode'] != $old_auth_mode) {
-					// On modifie !
-					$nb_comptes++;
-					$res = mysql_query("UPDATE utilisateurs SET auth_mode = '".$reg_auth_mode."' WHERE login = '".$current_eleve->login."'");
-
-					// On regarde si des opérations spécifiques sont nécessaires
-					if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
-						// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
-						$oldmd5password = mysql_result(mysql_query("SELECT password FROM utilisateurs WHERE login = '".$current_eleve->login."'"), 0);
-						mysql_query("UPDATE utilisateurs SET password = '' WHERE login = '".$current_eleve->login."'");
-						// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
-						if ($ldap_write_access) {
-							$create_ldap_user = true;
-						}
-					} elseif (($old_auth_mode == "sso" || $old_auth_mode == "ldap") && $_POST['reg_auth_mode'] == "gepi") {
-						// Passage au mode Gepi, rien de spécial à faire, si ce n'est annoncer à l'administrateur
-						// qu'il va falloir réinitialiser les mots de passe
-						$pass_init_required = true;
-						// Et si accès en écriture au LDAP, on supprime le compte.
-						if ($ldap_write_access) {
-							$delete_ldap_user = true;
-						}
-					}
-
-					// On effectue les opérations LDAP
-					if (isset($create_ldap_user) && $create_ldap_user) {
-						if (!$ldap_server->test_user($current_eleve->login)) {
-							$eleve = mysql_fetch_object(mysql_query("SELECT distinct(e.login), e.nom, e.prenom, e.sexe, e.email " .
-													"FROM eleves e WHERE (" .
-													"e.login = '" . $current_eleve->login."')"));
-							$reg_civilite = $eleve->sexe == "M" ? "M." : "Mlle";
-							$write_ldap_success = $ldap_server->add_user($eleve->login, $eleve->nom, $eleve->prenom, $eleve->email, $reg_civilite, md5(rand()), "eleve");
-							// On transfert le mot de passe à la main
-							$ldap_server->set_manual_password($current_eleve->login, "{MD5}".base64_encode(pack("H*",$oldmd5password)));
-						}
-					}
-					if (isset($delete_ldap_user) && $delete_ldap_user) {
-						if (!$ldap_server->test_user($current_eleve->login)) {
-							// L'utilisateur n'a pas été trouvé dans l'annuaire.
-							$write_ldap_success = true;
-						} else {
-							$write_ldap_success = $ldap_server->delete_user($current_eleve->login);
-						}
-					}
-
-				}
+	} elseif ($action == "reinit_password") {
+		if ($mode != "classe") {
+			$msg .= "Erreur : Vous devez sélectionner une classe.";
+		} elseif ($mode == "classe") {
+	
+			if(isset($mdp_INE)) {
+				$chaine_mdp_INE="&amp;mdp_INE=$mdp_INE";
+			}
+			else {
+				$chaine_mdp_INE="";
+			}
+	
+			if ($_POST['classe'] == "all") {
+				$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve'.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+				$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=html$chaine_mdp_INE".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+				$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=csv$chaine_mdp_INE".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+				$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;mode=pdf$chaine_mdp_INE".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
+			} else if (is_numeric($_POST['classe'])) {
+				$msg .= "Vous allez réinitialiser les mots de passe de tous les utilisateurs ayant le statut 'eleve' pour cette classe.<br/>Si vous êtes vraiment sûr de vouloir effectuer cette opération, cliquez sur le lien ci-dessous :";
+				$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html$chaine_mdp_INE".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Impression HTML)</a>";
+				$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv$chaine_mdp_INE".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Export CSV)</a>";
+				$msg .= "<br/><a href=\"reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf$chaine_mdp_INE".add_token_in_url()."\" target='_blank'>Réinitialiser les mots de passe (Impression PDF)</a>";
 			}
 		}
-		$msg .= "$nb_comptes comptes ont été modifiés.";
-		if (isset($pass_init_required) && $pass_init_required) {
-			$msg .= "<br/>Attention ! Des modifications appliquées nécessitent la réinitialisation de mots de passe !";
+	} elseif ($action == "change_auth_mode") {
+		$ldap_write_access = false;
+		if ($gepiSettings['ldap_write_access'] == "yes") {
+			$ldap_write_access = true;
+			$ldap_server = new LDAPServer;
+		}
+		$nb_comptes = 0;
+		$reg_auth_mode = (in_array($_POST['reg_auth_mode'], array("gepi", "ldap", "sso"))) ? $_POST['reg_auth_mode'] : "gepi";
+		if ($mode != "classe") {
+			$msg .= "Erreur : Vous devez sélectionner une classe.";
+		} elseif ($mode == "classe") {
+			while ($current_eleve = mysql_fetch_object($quels_eleves)) {
+				$test = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '" . $current_eleve->login ."'"), 0);
+				if ($test > 0) {
+					// L'utilisateur existe bien dans la tables utilisateurs, on modifie
+					// Si on change le mode d'authentification, il faut quelques opérations particulières
+					$old_auth_mode = $current_eleve->auth_mode;
+					if ($_POST['reg_auth_mode'] != $old_auth_mode) {
+						// On modifie !
+						$nb_comptes++;
+						$res = mysql_query("UPDATE utilisateurs SET auth_mode = '".$reg_auth_mode."' WHERE login = '".$current_eleve->login."'");
+	
+						// On regarde si des opérations spécifiques sont nécessaires
+						if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
+							// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
+							$oldmd5password = mysql_result(mysql_query("SELECT password FROM utilisateurs WHERE login = '".$current_eleve->login."'"), 0);
+							mysql_query("UPDATE utilisateurs SET password = '' WHERE login = '".$current_eleve->login."'");
+							// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
+							if ($ldap_write_access) {
+								$create_ldap_user = true;
+							}
+						} elseif (($old_auth_mode == "sso" || $old_auth_mode == "ldap") && $_POST['reg_auth_mode'] == "gepi") {
+							// Passage au mode Gepi, rien de spécial à faire, si ce n'est annoncer à l'administrateur
+							// qu'il va falloir réinitialiser les mots de passe
+							$pass_init_required = true;
+							// Et si accès en écriture au LDAP, on supprime le compte.
+							if ($ldap_write_access) {
+								$delete_ldap_user = true;
+							}
+						}
+	
+						// On effectue les opérations LDAP
+						if (isset($create_ldap_user) && $create_ldap_user) {
+							if (!$ldap_server->test_user($current_eleve->login)) {
+								$eleve = mysql_fetch_object(mysql_query("SELECT distinct(e.login), e.nom, e.prenom, e.sexe, e.email " .
+														"FROM eleves e WHERE (" .
+														"e.login = '" . $current_eleve->login."')"));
+								$reg_civilite = $eleve->sexe == "M" ? "M." : "Mlle";
+								$write_ldap_success = $ldap_server->add_user($eleve->login, $eleve->nom, $eleve->prenom, $eleve->email, $reg_civilite, md5(rand()), "eleve");
+								// On transfert le mot de passe à la main
+								$ldap_server->set_manual_password($current_eleve->login, "{MD5}".base64_encode(pack("H*",$oldmd5password)));
+							}
+						}
+						if (isset($delete_ldap_user) && $delete_ldap_user) {
+							if (!$ldap_server->test_user($current_eleve->login)) {
+								// L'utilisateur n'a pas été trouvé dans l'annuaire.
+								$write_ldap_success = true;
+							} else {
+								$write_ldap_success = $ldap_server->delete_user($current_eleve->login);
+							}
+						}
+	
+					}
+				}
+			}
+			$msg .= "$nb_comptes comptes ont été modifiés.";
+			if (isset($pass_init_required) && $pass_init_required) {
+				$msg .= "<br/>Attention ! Des modifications appliquées nécessitent la réinitialisation de mots de passe !";
+			}
 		}
 	}
-}
 }
 
 //**************** EN-TETE *****************
@@ -310,6 +315,9 @@ echo "</p>\n";
 
 //echo "<p><b>Actions par lot</b> :";
 echo "<form action='edit_eleve.php' method='post'>\n";
+
+echo add_token_field();
+
 echo "<p style='font-weight:bold;'>Actions par lot pour les comptes élèves existants : </p>\n";
 echo "<blockquote>\n";
 echo "<p>\n";
@@ -450,20 +458,20 @@ while ($current_eleve = mysql_fetch_object($quels_eleves)) {
 			if ($current_eleve->etat == "actif") {
 				echo "<font color='green'>".$current_eleve->etat."</font>";
 				echo "<br />\n";
-				echo "<a href='edit_eleve.php?action=rendre_inactif&amp;mode=individual&amp;eleve_login=".$current_eleve->login."'>Désactiver";
+				echo "<a href='edit_eleve.php?action=rendre_inactif&amp;mode=individual&amp;eleve_login=".$current_eleve->login.add_token_in_url()."'>Désactiver";
 			} else {
 				echo "<font color='red'>".$current_eleve->etat."</font>";
 				echo "<br />\n";
-				echo "<a href='edit_eleve.php?action=rendre_actif&amp;mode=individual&amp;eleve_login=".$current_eleve->login."'>Activer";
+				echo "<a href='edit_eleve.php?action=rendre_actif&amp;mode=individual&amp;eleve_login=".$current_eleve->login.add_token_in_url()."'>Activer";
 			}
 			echo "</a>\n";
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>\n";
+		echo "<a href='edit_eleve.php?action=supprimer&amp;mode=individual&amp;eleve_login=".$current_eleve->login.add_token_in_url()."' onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir supprimer l\'utilisateur ?')\">Supprimer</a>\n";
 
 		if($current_eleve->etat == "actif" && ($current_eleve->auth_mode == "gepi" || $gepiSettings['ldap_write_access'] == "yes")) {
 			echo "<br />";
-			echo "Réinitialiser le mot de passe : <a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_status=eleve&amp;mode=html\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Aléatoirement</a>";
+			echo "Réinitialiser le mot de passe : <a href=\"reset_passwords.php?user_login=".$current_eleve->login."&amp;user_status=eleve&amp;mode=html".add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera le mot de passe de l\'utilisateur avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant la fiche-bienvenue à imprimer immédiatement pour distribution à l\'utilisateur concerné.')\" target='_blank'>Aléatoirement</a>";
 			echo " - <a href=\"change_pwd.php?user_login=".$current_eleve->login."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci réinitialisera le mot de passe de l\'utilisateur avec un mot de passe que vous choisirez.\\n En cliquant sur OK, vous lancerez une page qui vous demandera de saisir un mot de passe et de le valider.')\" target='_blank'>choisi </a>";
 		}
 		echo "</td>\n";

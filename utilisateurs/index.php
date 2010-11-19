@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -28,16 +28,16 @@ require_once("../lib/initialisations.inc.php");
 $resultat_session = $session_gepi->security_check();
 
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 $msg="";
@@ -154,7 +154,7 @@ function test_ecriture_backup() {
     return $ok;
 }
 
-// fonction de sécuritée
+// fonction de sécurité
 // uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
 // autoriser la validation de formulaire $uid_post===$_SESSION['uid_prime']
  if(empty($_SESSION['uid_prime'])) { $_SESSION['uid_prime']=''; }
@@ -165,12 +165,13 @@ function test_ecriture_backup() {
 	    $uid_post = my_eregi_replace('%20',' ',$uid_post);
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'oui'; } else { $valide_form = 'non'; }
 	$_SESSION['uid_prime'] = $uid;
-// fin de la fonction de sécuritée
+// fin de la fonction de sécurité
 	
 
 
 	
 if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $valide_form === 'oui' )  {
+	check_token();
 	$nb_succes_photos=0;
 	$nb_photos_proposees=0;
 	$cpt_photo = 0;
@@ -311,8 +312,8 @@ if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemo
     		" - <a href=\"reset_passwords.php?mode=csv\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera un fichier CSV contenant les informations nécessaires à un traitement automatisé.')\" target='_blank'>CSV</a>";
 	*/
     echo " | Réinitialiser mots de passe : " .
-    		"<a href=\"reset_passwords.php?mode=html\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\" target='_blank'>HTML</a>" .
-    		" - <a href=\"reset_passwords.php?mode=csv\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera un fichier CSV contenant les informations nécessaires à un traitement automatisé.')\" target='_blank'>CSV</a>";
+    		"<a href=\"reset_passwords.php?mode=html".add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera une page contenant les fiches-bienvenue à imprimer immédiatement pour distribution aux utilisateurs concernés.')\" target='_blank'>HTML</a>" .
+    		" - <a href=\"reset_passwords.php?mode=csv".add_token_in_url()."\" onclick=\"javascript:return confirm('Êtes-vous sûr de vouloir effectuer cette opération ?\\n Celle-ci est irréversible, et réinitialisera les mots de passe de tous les utilisateurs marqués actifs, avec un mot de passe alpha-numérique généré aléatoirement.\\n En cliquant sur OK, vous lancerez la procédure, qui génèrera un fichier CSV contenant les informations nécessaires à un traitement automatisé.')\" target='_blank'>CSV</a>";
 
 	echo " | <a href='impression_bienvenue.php?mode=personnels'>Fiches bienvenue</a>";
 }
@@ -328,6 +329,9 @@ if (getSettingValue("statuts_prives") == "y") {
 </p>
 <p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p>
 <form enctype="multipart/form-data" action="index.php" name="form1" method="post">
+<?php
+add_token_field();
+?>
 <table border='0' summary='Tableau de choix'>
 <tr>
 <td><p>Afficher : </p></td>
@@ -649,7 +653,7 @@ while ($i < $nombreligne){
     // Affichage de la classe suivie
     echo "<td><p class='small'><span class='bold'>{$col[$i][6]}</span></p></td>\n";
     // Affichage du lien 'supprimer'
-    echo "<td><p class='small'><span class='bold'><a href='../lib/confirm_query.php?liste_cible={$col[$i][1]}&amp;action=del_utilisateur&amp;chemin_retour=$chemin_retour'>supprimer</a></span></p></td>\n";
+    echo "<td><p class='small'><span class='bold'><a href='../lib/confirm_query.php?liste_cible={$col[$i][1]}&amp;action=del_utilisateur&amp;chemin_retour=$chemin_retour".add_token_in_url()."'>supprimer</a></span></p></td>\n";
     // Affichage du lien pour l'impression des paramètres
     echo "<td><p class='small'><span class='bold'><a target=\"_blank\" href='impression_bienvenue.php?user_login={$col[$i][1]}'>imprimer la 'fiche bienvenue'</a></span></p></td>\n";
 

@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -49,6 +49,7 @@ $mdp_INE=isset($_POST["mdp_INE"]) ? $_POST["mdp_INE"] : (isset($_GET["mdp_INE"])
 
 if ($create_mode == "classe" OR $create_mode == "individual") {
 	// On a une demande de création, on continue
+	check_token();
 
 	// On veut alimenter la variable $quels_eleves avec un résultat mysql qui contient
 	// la liste des élèves pour lesquels on veut créer un compte
@@ -84,6 +85,8 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 	}
 
 	if (!$error) {
+		//check_token();
+
 		$nb_comptes_preexistants=0;
 
 		$nb_comptes = 0;
@@ -173,19 +176,19 @@ if ($create_mode == "classe" OR $create_mode == "individual") {
 
 			if ($create_mode == "individual") {
 				// Mode de création de compte individuel. On fait un lien spécifique pour la fiche de bienvenue
-	            $msg .= "<a href='reset_passwords.php?user_login=".$_POST['eleve_login']."$chaine_mdp_INE' target='_blank'>Imprimer la fiche 'identifiants'</a>";
+	            $msg .= "<a href='reset_passwords.php?user_login=".$_POST['eleve_login']."$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la fiche 'identifiants'</a>";
 			} else {
 				// On est ici en mode de création par classe
 				// Si on opère sur toutes les classes, on ne spécifie aucune classe
 
             	if ($_POST['classe'] == "all") {
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=html$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=csv$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=pdf$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=html$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=csv$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;mode=pdf$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
 				} elseif (is_numeric($_POST['classe'])) {
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
-				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf$chaine_mdp_INE' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=html$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression HTML)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=csv$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Export CSV)</a>";
+				    $msg .= "<br /><a href='reset_passwords.php?user_status=eleve&amp;user_classe=".$_POST['classe']."&amp;mode=pdf$chaine_mdp_INE".add_token_in_url()."' target='_blank'>Imprimer la ou les fiche(s) 'identifiants' (Impression PDF)</a>";
 				}
 			}
 			$msg .= "<br />Vous devez effectuer cette opération maintenant !";
@@ -237,6 +240,7 @@ else{
 
 	echo "<p>Sélectionnez le mode d'authentification appliqué aux comptes :</p>";
 	echo "<form action='create_eleve.php' method='post'>\n";
+	echo add_token_field();
 	echo "<select name='reg_auth_mode' size='1'>";
 	if ($session_gepi->auth_locale) {
 		echo "<option value='auth_locale'>Authentification locale (base Gepi)</option>";
@@ -377,6 +381,7 @@ else{
 
 	echo "<p>Cliquez sur le bouton 'Créer' d'un élève pour créer un compte associé.</p>\n";
 	echo "<form id='form_create_one_eleve' action='create_eleve.php' method='post'>\n";
+	echo add_token_field();
 	echo "<input type='hidden' name='mode' value='individual' />\n";
 	echo "<input type='hidden' name='mdp_INE' id='indiv_mdp_INE' value='' />\n";
 	echo "<input id='eleve_login' type='hidden' name='eleve_login' value='' />\n";
