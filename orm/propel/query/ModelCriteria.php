@@ -1060,8 +1060,7 @@ class ModelCriteria extends Criteria
 	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		$criteria->limit(1);
-		$stmt = $criteria->getSelectStatement($con);
-		if (!$ret = $this->findOne($con)) {
+		if (!$ret = $criteria->findOne($con)) {
 			$class = $this->getModelName();
 			$obj = new $class();
 			foreach ($this->keys() as $key) {
@@ -1155,7 +1154,7 @@ class ModelCriteria extends Criteria
 			BasePeer::populateStmtValues($stmt, $params, $dbMap, $db);
 			$stmt->execute();
 		} catch (Exception $e) {
-			if ($stmt) {
+			if (isset($stmt)) {
 				$stmt = null; // close
 			}
 			Propel::log($e->getMessage(), Propel::LOG_ERR);
@@ -1315,7 +1314,7 @@ class ModelCriteria extends Criteria
 					if ($this->getHaving()) {
 						throw new PropelException('Propel cannot create a COUNT query when using HAVING and  duplicate column names in the SELECT part');
 					}
-					BasePeer::turnSelectColumnsToAliases($this);
+					$db->turnSelectColumnsToAliases($this);
 				}
 				$selectSql = BasePeer::createSelectSql($this, $params);
 				$sql = 'SELECT COUNT(*) FROM (' . $selectSql . ') propelmatch4cnt';
