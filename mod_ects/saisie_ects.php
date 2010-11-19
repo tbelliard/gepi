@@ -562,7 +562,7 @@ function updateMention(id,valeur){
         echo " | <a href='".$_SERVER['PHP_SELF']."?mode=$mode_saisie&fiche=y&amp;periode_num=$periode_num&amp;current_eleve_login=$ele_login_suiv&amp;id_classe=$id_classe";
         echo "'>".ucfirst($gepiSettings['denomination_eleve'])." suivant</a>";
     }
-    echo " - ".$Classe->getClasse();
+    echo " - ".$Classe->getNom();
     //echo "</p>\n";
 
     echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
