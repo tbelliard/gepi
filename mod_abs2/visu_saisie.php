@@ -107,7 +107,7 @@ if ($saisie != null) {
 //Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session,
 //si elle date de moins de 24 heure (sauf pour le statut prof)
 //elle date de moins d'une heure et l'option a ete coché partie admin pour le statut prof
-$modifiable = $saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && ($saisie->getCreatedAt('U') > (time() - 24*3600));
+$modifiable = $saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && ($saisie->getCreatedAt('U') > (time() - 72*3600));
 if ($modifiable && $utilisateur->getStatut() == 'professeur') {
     if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
 	$modifiable =  ($saisie->getCreatedAt('U') > (time() - 3600));
