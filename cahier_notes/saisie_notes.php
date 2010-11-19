@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -205,6 +205,7 @@ if ($mode==1) {
 //debug_var();
 //-------------------------------------------------------------------------------------------------------------------
 if (isset($_POST['notes'])) {
+	check_token();
 	//=======================================================
 	// MODIF: boireaus
 	// J'ai déplacé vers le bas l'alert Javascript qui lors d'un import des notes était inscrit avant même la balise <html>
@@ -259,6 +260,8 @@ if (isset($_POST['notes'])) {
 // Ajout delineau -> fonctionnalité de copier/coller d'appréciations
 //-------------------------------------------------------------------------------------------------------------------
 if (isset($_POST['appreciations'])) {
+	check_token();
+
 	$temp = $_POST['appreciations']." 1";
 	// $temp = ereg_replace("\\\\r","`",$temp);
 	$temp = my_ereg_replace("\\\\r","`",$temp);
@@ -291,6 +294,7 @@ if (isset($_POST['appreciations'])) {
 
 
 if (isset($_POST['is_posted'])) {
+	check_token();
 
 	//=========================
 	// AJOUT: boireaus 20071010
@@ -777,7 +781,10 @@ if (($nb_dev == 0) and ($nb_sous_cont==0)) {
 
 // Début du deuxième formulaire
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post  name=\"form2\">\n";
-if ($id_devoir != 0) {echo "<center><input type='submit' value='Enregistrer' /></center>\n";}
+if ($id_devoir != 0) {
+	echo add_token_field();
+	echo "<center><input type='submit' value='Enregistrer' /></center>\n";
+}
 
 // Couleurs utilisées
 $couleur_devoirs = '#AAE6AA';
@@ -1933,6 +1940,7 @@ if((!isset($id_devoir))||($id_devoir=='')||($id_devoir=='0')) {
 if ($id_devoir) {
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
+	echo add_token_field();
 	echo "<h3 class='gepi'>Importation directe des notes par copier/coller à partir d'un tableur</h3>\n";
 	echo "<table summary=\"Tableau d'import\"><tr>\n";
 	echo "<td>De la ligne : ";
@@ -2002,6 +2010,7 @@ if ($id_devoir) {
 if ($id_devoir) {
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
+	echo add_token_field();
 	echo "<h3 class='gepi'>Importation directe des appréciations par copier/coller à partir d'un tableur</h3>\n";
 	echo "<table summary=\"Tableau d'import\"><tr>\n";
 	echo "<td>De la ligne : ";

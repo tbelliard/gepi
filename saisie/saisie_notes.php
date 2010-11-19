@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -76,6 +76,7 @@ if ($_SESSION['statut'] != "secours") {
 
 
 if (isset($is_posted) and ($is_posted == 'yes')) {
+	check_token();
 
 	$k=$periode_cn;
 	//=========================
@@ -212,7 +213,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
 
 	$affiche_message = 'yes';
 }
-if (!isset($is_posted)) $is_posted = '';
+if (!isset($is_posted)) {$is_posted = '';}
 $themessage  = 'Des notes ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 $message_enregistrement = "Les modifications ont été enregistrées !";
 //**************** EN-TETE *****************
@@ -519,7 +520,7 @@ echo "</form>\n";
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des moyennes</h2>\n";
 
 echo "<script type=\"text/javascript\" language=\"javascript\">\n";
-if (($affiche_bascule == 'yes') and ($is_posted == 'bascule')) echo "change = 'yes';"; else echo "change = 'no';";
+if (($affiche_bascule == 'yes') and ($is_posted == 'bascule')) {echo "change = 'yes';";} else {echo "change = 'no';";}
 echo "</script>\n";
 
 //echo "<table  border=\"0\">\n";
@@ -531,12 +532,16 @@ if ($affiche_bascule == 'yes') {
 	if ($id_racine == '') {echo "<font color=\"#FF0000\">Actuellement, vous n'utilisez pas le cahier de notes. Il n'y a donc aucune note à importer.</font>\n";}
 
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\"post\">\n";
+	echo add_token_field();
 	if ($is_posted != 'bascule') {
 		//echo "<tr><td><input type=\"submit\" value=\"Recopier\"></td><td> : Recopier la colonne \"carnet de notes\" dans la colonne \"bulletin\"</td></tr>\n";
 		echo "<input type=\"submit\" value=\"Recopier\" /> : Recopier la colonne \"carnet de notes\" dans la colonne \"bulletin\"\n";
 		echo "<input type=\"hidden\" name=\"is_posted\" value=\"bascule\" />\n";
 	} 
 	else {
+		// Si une Recopie a été effectuée ou provoquée, le token doit être correct.
+		check_token();
+
 		//echo "<tr><td><input type=\"submit\" value=\"Annuler recopie\"></td><td> : Afficher dans la colonne \"bulletin\" les moyennes actuellement enregistrées</td></tr>\n";
 		echo "<input type=\"submit\" value=\"Annuler recopie\" /> : Afficher dans la colonne \"bulletin\" les moyennes actuellement enregistrées\n";
 	}
@@ -597,6 +602,7 @@ function verifcol(num_id){
 
 
 echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=\"post\" name=\"saisie\">\n";
+echo add_token_field();
 ?>
 
 <!--tr><td><input type=submit value=Enregistrer></td><td> : Enregistrer les moyennes dans le bulletin</td></tr></table-->

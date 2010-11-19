@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -79,6 +79,7 @@ if ($_SESSION['statut'] != "secours") {
 $msg="";
 
 if (isset($_POST['is_posted'])) {
+	check_token();
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 
@@ -258,6 +259,8 @@ if (isset($_POST['is_posted'])) {
 //elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))) {
 //elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))&&(getSettingValue('autoriser_correction_bulletin')=='y')) {
 elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_periode']))&&(isset($_POST['no_anti_inject_correction_app_eleve']))) {
+	check_token();
+
 	// Dispositif pour proposer des corrections une fois la période close.
 	$correction_login_eleve=$_POST['correction_login_eleve'];
 	$correction_periode=$_POST['correction_periode'];
@@ -634,6 +637,7 @@ echo "</form>\n";
 ?>
 <form enctype="multipart/form-data" action="saisie_appreciations.php" method="post">
 <?php
+echo add_token_field();
 
 //=========================
 // AJOUT: boireaus 20090126
@@ -779,10 +783,10 @@ function focus_suivant(num){
 			Elles sont indiquées ci-dessous en rouge. Voulez-vous les restaurer ?
 		</p>
 		<p class=\"red\">
-		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=oui\">OUI</a>
+		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=oui".add_token_in_url()."\">OUI</a>
 		(elles remplaceront alors la saisie précédente)
 			-
-		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=non\">NON</a>
+		<a href=\"./saisie_appreciations.php?id_groupe=".$current_group["id"]."&amp;restauration=non".add_token_in_url()."\">NON</a>
 		(elles seront alors définitivement perdues)
 		</p>
 		";
@@ -1526,6 +1530,7 @@ if(($_SESSION['statut']=='professeur')&&
 ((substr(getSettingValue('autoriser_correction_bulletin'),0,1)=='y')||($une_autorisation_exceptionnelle_de_saisie_au_moins=='y'))) {
 	$titre="Correction d'une appréciation";
 	$texte="<form enctype=\"multipart/form-data\" action=\"saisie_appreciations.php\" name='form_correction' method=\"post\">\n";
+	$texte.=add_token_field();
 	$texte.="Vous pouvez proposer une correction pour <span id='span_correction_login_eleve' class='bold'>...</span> sur la période <span id='span_correction_periode' class='bold'>...</span>&nbsp;: ";
 	$texte.="<input type='hidden' name='correction_login_eleve' id='correction_login_eleve' value='' />\n";
 	$texte.="<input type='hidden' name='correction_periode' id='correction_periode' value='' />\n";
