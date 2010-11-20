@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -40,6 +40,7 @@ if (!checkAccess()) {
 
 
 if (isset($_POST['isposted'])) {
+	check_token();
     $ok = 'yes';
     if (isset($_POST['reg_current_matiere'])) {
         // On vérifie d'abord que l'identifiant est constitué uniquement de lettres et de chiffres :
@@ -134,6 +135,7 @@ require_once("../lib/header.inc");
 <p class=bold><a href="index.php"<?php echo insert_confirm_abandon();?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type=submit value=Enregistrer></input>
 </p>
 <?php
+echo add_token_field();
 // On va chercher les infos de la matière que l'on souhaite modifier
 if (isset($_GET['current_matiere'])) {
     $call_data = mysql_query("SELECT nom_complet, priority, categorie_id from matieres WHERE matiere='".$_GET['current_matiere']."'");
