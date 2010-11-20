@@ -1,8 +1,8 @@
 <?php
 /*
-* Last modification  : 04/01/2006
+* $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -45,6 +45,7 @@ if (!checkAccess()) {
 
 $champs_vides = "non";
 if (isset($is_posted) and ($is_posted == '1')) {
+	check_token();
 	if (($id != '') and ($nom_etab != '') and ($niveau_etab != '') and ($type_etab != '') and ($cp_etab != '') ) {
 		$call_test = mysql_query("SELECT * FROM etablissements WHERE id = '$id'");
 		$count = mysql_num_rows($call_test);
@@ -107,6 +108,9 @@ if (!isset($type_etab)) $type_etab='aucun';
 
 ?>
 <form enctype="multipart/form-data" action="modify_etab.php" method="post">
+<?php
+echo add_token_field();
+?>
 <div class='norme'>
 <table>
 <?php
