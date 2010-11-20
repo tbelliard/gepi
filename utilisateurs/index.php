@@ -168,7 +168,7 @@ function test_ecriture_backup() {
 // fin de la fonction de sécurité
 	
 
-
+//debug_var();
 	
 if (isset($action) and ($action == 'depot_photo') and $total_photo != 0 and $valide_form === 'oui' )  {
 	check_token();
@@ -328,9 +328,10 @@ if (getSettingValue("statuts_prives") == "y") {
 ?>
 </p>
 <p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p>
+
 <form enctype="multipart/form-data" action="index.php" name="form1" method="post">
 <?php
-add_token_field();
+//echo add_token_field();
 ?>
 <table border='0' summary='Tableau de choix'>
 <tr>
@@ -397,8 +398,24 @@ else {
  <td><p><input type='submit' value='Valider' /></p></td>
  </tr>
  </table>
+
 <input type='hidden' name='mode' value='<?php echo $mode; ?>' />
 <input type='hidden' name='order_by' value='<?php echo $order_by; ?>' />
+</form>
+
+
+
+<form enctype="multipart/form-data" action="index.php" name="form2" method="post">
+<?php
+echo add_token_field();
+
+echo "<input type='hidden' name='display' value='$display' />
+<input type='hidden' name='afficher_auth_mode' value='$afficher_auth_mode' />
+<input type='hidden' name='afficher_statut' value='$afficher_statut' />
+<input type='hidden' name='mode' value='$mode' />
+<input type='hidden' name='order_by' value='$order_by' />\n";
+
+?>
 
 <?php
 // Affichage du tableau
