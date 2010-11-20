@@ -55,7 +55,7 @@ function check_token() {
 
 	if($csrf_alea!=$_SESSION['gepi_alea']) {
 		action_alea_invalide();
-		header("Location: $pref_arbo/accueil.php?msg=alea_invalide");
+		header("Location: $pref_arbo/accueil.php?msg=Opération non autorisée");
 		die();
 	}
 }
@@ -72,7 +72,10 @@ function action_alea_invalide() {
 	$_SERVER['PHP_SELF']=	/steph/gepi-trunk/lib/confirm_query.php
 	*/
 
-	$details="La page cible était ".$_SERVER['PHP_SELF']." avec les variables suivantes:\n";
+	// NE pas donner dans le mail les valeurs du token pour éviter des problèmes lors d'une éventuelle capture du mail.
+
+	$details="La personne victime de l'attaque était ".$_SESSION['login'].".\n";
+	$details.="La page cible était ".$_SERVER['PHP_SELF']." avec les variables suivantes:\n";
 	$details.="Variables en \$_POST:\n";
 	foreach($_POST as $key => $value) {
 		//if(!is_array($value)) {
@@ -92,10 +95,10 @@ function action_alea_invalide() {
 
 	// Envoyer un mail à l'admin
 	$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-	if($envoi_mail_actif=="y") {
+	if($envoi_mail_actif!="n") {
 		$destinataire=getSettingValue('gepiAdminAdress');
 		if($destinataire!='') {
-			$sujet="Attaque CRSF";
+			$sujet="Attaque CSRF";
 			$message="La variable csrf_alea ne coincide pas avec le gepi_alea en SESSION.\n";
 			$message.=$details;
 			envoi_mail($sujet, $message,$destinataire);
