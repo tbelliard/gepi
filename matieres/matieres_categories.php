@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -48,6 +48,7 @@ if ($orderby != "nom_court" AND $orderby != "nom_complet" AND $orderby != "prior
 $msg = null;
 
 if (isset($_POST['action'])) {
+	check_token();
     $error = false;
     if ($_POST['action'] == "add") {
         // On enregistre une nouvelle catégorie
@@ -155,6 +156,7 @@ if (isset($_GET['action'])) {
         // On ajoute une catégorie
         // On affiche le formulaire d'ajout
         echo "<form enctype='multipart/form-data' action='matieres_categories.php' name='formulaire' method=post>";
+		echo add_token_field();
         echo "<input type='hidden' name='action' value='add'>";
         echo "<p>Nom court (utilisé dans les outils de configuration) : <input type='text' name='nom_court'></p>";
         echo "<p>Intitulé complet (utilisé sur les documents officiels) : <input type='text' name='nom_complet'></p>";
@@ -181,6 +183,7 @@ if (isset($_GET['action'])) {
 				echo "<p style='color:red'>ANOMALIE&nbsp;: Il ne devrait pas exister de catégorie intitulée 'Aucune'.<br />Voir <a href='http://www.sylogix.org/wiki/gepi/Enseignement_invisible'>http://www.sylogix.org/wiki/gepi/Enseignement_invisible</a> et <a href='http://www.sylogix.org/wiki/gepi/Suppr_Cat_Aucune'>http://www.sylogix.org/wiki/gepi/Suppr_Cat_Aucune</a> pour des explications</p>\n";
 			}
             echo "<form enctype='multipart/form-data' action='matieres_categories.php' name='formulaire' method=post>";
+			echo add_token_field();
             echo "<input type='hidden' name='action' value='edit'>";
             echo "<input type='hidden' name='categorie_id' value='".$current_cat["id"] . "'>";
             echo "<p>Nom court (utilisé dans les outils de configuration) : <input type='text' name='nom_court' value='".html_entity_decode_all_version($current_cat["nom_court"]) ."' /></p>";
@@ -230,6 +233,7 @@ if (isset($_GET['action'])) {
         echo "<td>";
         if ($current_cat["id"] != "1") {
             echo "<form enctype='multipart/form-data' action='matieres_categories.php' name='formulaire' method=post>\n";
+			echo add_token_field();
             echo "<input type='hidden' name='action' value='delete' />\n";
             echo "<input type='hidden' name='categorie_id' value='".$current_cat["id"]."' />\n";
             echo "<input type='submit' value='Supprimer' />\n</form>\n";
