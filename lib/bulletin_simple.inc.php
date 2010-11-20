@@ -999,7 +999,7 @@ if ($on_continue == 'yes') {
 			$eleve_app_abs[$nb] = @mysql_result($current_eleve_absences_query, 0, "appreciation");
 		    }
 		}
-		if (($eleve_abs[$nb] != '') and ($eleve_abs_nj[$nb] != '')) {
+		if (($eleve_abs[$nb] !== '') and ($eleve_abs_nj[$nb] !== '')) {
 			$eleve_abs_j[$nb] = $eleve_abs[$nb]-$eleve_abs_nj[$nb];
 		} else {
 			$eleve_abs_j[$nb] = "?";
