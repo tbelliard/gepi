@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -82,6 +82,8 @@ foreach ($current_group["periodes"] as $period) {
 }
 $msg = null;
 if (isset($_POST['is_posted'])) {
+	check_token();
+
 	$error = false;
 
 	// On vide les signalements par un prof lors de l'enregistrement
@@ -146,7 +148,7 @@ if (isset($_POST['is_posted'])) {
 		*/
 		$reg_eleves[$period["num_periode"]]=array();
 
-		for($i=0;$i<count($login_eleve);$i++){
+		for($i=0;$i<count($login_eleve);$i++) {
 			if(isset($_POST['eleve_'.$period["num_periode"].'_'.$i])) {
 				$id=$login_eleve[$i];
 				$reg_eleves[$period["num_periode"]][] = $id;
@@ -168,7 +170,7 @@ if (isset($_POST['is_posted'])) {
 		/*
 		$msg.="count(\$reg_eleves)=count($reg_eleves)=".count($reg_eleves)."<br />";
 		$msg.="count(\$reg_clazz)=count($reg_clazz)=".count($reg_clazz)."<br />";
-		$msg.="$reg_clazz[0]=".$reg_clazz[0]."<br />";
+		$msg.="\$reg_clazz[0]=".$reg_clazz[0]."<br />";
 		$msg.="update_group($id_groupe, $reg_nom_groupe, $reg_nom_complet, $reg_matiere, $reg_clazz, $reg_professeurs, $reg_eleves);<br />";
 		*/
 		//==========================================
@@ -182,7 +184,8 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Le groupe a bien été mis à jour.";
 			}
 		}
-		else{
+		else {
+			// Sauf erreur, $reg_eleves est toujours initialisé, on ne passe plus ici.
 			$login_eleve=$_POST['login_eleve'];
 			debug_edit_eleves("count(\$login_eleve)=".count($login_eleve));
 			foreach($current_group["periodes"] as $period) {
@@ -443,6 +446,8 @@ echo "</form>\n";
 <form enctype="multipart/form-data" action="edit_eleves.php" name="formulaire" method='post'>
 <p><input type='submit' value='Enregistrer' /></p>
 <?php
+
+echo add_token_field();
 
 // Edition des élèves
 

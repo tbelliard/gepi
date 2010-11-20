@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 //INSERT INTO `droits` VALUES ('/groupes/edit_class_grp_lot.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Gestion des enseignements simples par lot.', '');
 if (!checkAccess()) {
@@ -93,6 +93,8 @@ if(mysql_num_rows($res_class_tmp)>0){
 
 
 if (isset($_POST['is_posted'])) {
+	check_token();
+
 	$checkmat=$_POST['checkmat'];
 	//$id_grp=$_POST['id_grp'];
 	$id_grp=isset($_POST['id_grp']) ? $_POST['id_grp'] : NULL;
@@ -371,6 +373,7 @@ else {
 
 //echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group' method='get'>";
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' name='new_groups' method='post'>\n";
+echo add_token_field();
 echo "<input type='hidden' name='tri_matiere' value='$tri_matiere' />\n";
 
 echo "<table border='0' class='boireaus' summary='Tableau des matières'>\n";

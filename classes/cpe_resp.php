@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 22/08/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -40,6 +40,7 @@ if (!checkAccess()) {
 }
 
 if (isset($_POST['action']) and ($_POST['action'] == "reg_cperesp")) {
+	check_token();
     $msg = '';
     $notok = false;
     $call_data = mysql_query("SELECT * FROM classes ORDER BY classe");
@@ -125,6 +126,7 @@ $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 	echo "<p><a href='javascript:checkAll()'>Tout cocher</a> - <a href='javascript:UncheckAll()'>Tout décocher</a></p>\n";
 
 	echo "<form name='setCpeResp' action='cpe_resp.php?disp_filter=" . $disp_filter . "' method='post'>";
+	echo add_token_field();
 
 	echo "<p><select size = 1 name='reg_cpelogin'>";
 	$cperesp = "vide";

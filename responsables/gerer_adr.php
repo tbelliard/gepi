@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -48,7 +48,9 @@ if(!isset($msg)){
 	$msg="";
 }
 
-if(isset($suppr_ad)){
+if(isset($suppr_ad)) {
+	check_token();
+
 	$temoin_suppr=0;
 	for($i=0;$i<count($suppr_ad);$i++){
 		$sql="SELECT pers_id FROM resp_pers WHERE adr_id='$suppr_ad[$i]'";
@@ -283,6 +285,7 @@ if(mysql_num_rows($res_adr)>0){
 	//echo "<b>ou</b> <input type='checkbox' name='select_ad_existante' id='select_ad_existante' value='y' onchange='modif_div_ad()' /> Sélectionner une adresse existante.";
 
 	echo "<form enctype=\"multipart/form-data\" name=\"choix_adr\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+	echo add_token_field();
 	echo "<input type='hidden' name='nb_adr' value='$nb_adr' />\n";
 	echo "<input type='hidden' name='num_premier_adr_rech' value='$num_premier_adr_rech' />\n";
 	echo "<input type='hidden' name='champ_rech' value='$champ_rech' />\n";

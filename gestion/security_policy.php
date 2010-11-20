@@ -44,150 +44,151 @@ if (!checkAccess()) {
 // Enregistrement des données postées
 
 if (isset($_POST) and !empty($_POST)) {
+	check_token();
 
-// Envoyer un email à l'administrateur systématiquement
-if (isset($_POST['security_alert_email_admin'])) {
-	$reg = "yes";
-} else {
-	$reg = "no";
-}
-if (!saveSetting(("security_alert_email_admin"), $reg)) {
-    $msg = "Erreur lors de l'enregistrement de security_alert_email_admin !";
-}
+	// Envoyer un email à l'administrateur systématiquement
+	if (isset($_POST['security_alert_email_admin'])) {
+		$reg = "yes";
+	} else {
+		$reg = "no";
+	}
+	if (!saveSetting(("security_alert_email_admin"), $reg)) {
+		$msg = "Erreur lors de l'enregistrement de security_alert_email_admin !";
+	}
 
-// Niveau minimal pour l'envoi du mail
-if (isset($_POST['security_alert_email_min_level'])) {
-    $reg = $_POST['security_alert_email_min_level'];
-    if (!is_numeric($reg)) $reg = 1;
-    if (!saveSetting(("security_alert_email_min_level"), $reg)) {
-        $msg = "Erreur lors de l'enregistrement de security_alert_email_min_level !";
-    }
-}
+	// Niveau minimal pour l'envoi du mail
+	if (isset($_POST['security_alert_email_min_level'])) {
+		$reg = $_POST['security_alert_email_min_level'];
+		if (!is_numeric($reg)) $reg = 1;
+		if (!saveSetting(("security_alert_email_min_level"), $reg)) {
+			$msg = "Erreur lors de l'enregistrement de security_alert_email_min_level !";
+		}
+	}
 
-// Niveau d'alerte 1
+	// Niveau d'alerte 1
+	
+	// Utilisateur sans antécédent
+	
+	// Seuil
+	if (isset($_POST['security_alert1_normal_cumulated_level'])) {
+		$reg = $_POST['security_alert1_normal_cumulated_level'];
+		if (!is_numeric($reg)) $reg = 1;
+		if (!saveSetting(("security_alert1_normal_cumulated_level"), $reg)) {
+			$msg = "Erreur lors de l'enregistrement de security_alert1_normal_cumulated_level !";
+		}
+	}
 
-// Utilisateur sans antécédent
-
-// Seuil
-if (isset($_POST['security_alert1_normal_cumulated_level'])) {
-    $reg = $_POST['security_alert1_normal_cumulated_level'];
-    if (!is_numeric($reg)) $reg = 1;
-    if (!saveSetting(("security_alert1_normal_cumulated_level"), $reg)) {
-        $msg = "Erreur lors de l'enregistrement de security_alert1_normal_cumulated_level !";
-    }
-}
-
-// Envoyer un email à l'administrateur
-if (isset($_POST['security_alert1_normal_email_admin'])) {
-	$reg = "yes";
-} else {
-	$reg = "no";
-}
+	// Envoyer un email à l'administrateur
+	if (isset($_POST['security_alert1_normal_email_admin'])) {
+		$reg = "yes";
+	} else {
+		$reg = "no";
+	}
     if (!saveSetting(("security_alert1_normal_email_admin"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_normal_email_admin !";
     }
 
-// Désactiver le compte de l'utilisateur
-if (isset($_POST['security_alert1_normal_block_user'])) {
-	$reg = "yes";
-} else {
-	$reg = "no";
-}
+	// Désactiver le compte de l'utilisateur
+	if (isset($_POST['security_alert1_normal_block_user'])) {
+		$reg = "yes";
+	} else {
+		$reg = "no";
+	}
     if (!saveSetting(("security_alert1_normal_block_user"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_normal_block_user !";
     }
 
-// Utilisateur surveillé
+	// Utilisateur surveillé
+	
+	// Seuil
+	if (isset($_POST['security_alert1_probation_cumulated_level'])) {
+		$reg = $_POST['security_alert1_probation_cumulated_level'];
+		if (!is_numeric($reg)) $reg = 1;
+		if (!saveSetting(("security_alert1_probation_cumulated_level"), $reg)) {
+			$msg = "Erreur lors de l'enregistrement de security_alert1_probation_cumulated_level !";
+		}
+	}
 
-// Seuil
-if (isset($_POST['security_alert1_probation_cumulated_level'])) {
-    $reg = $_POST['security_alert1_probation_cumulated_level'];
-    if (!is_numeric($reg)) $reg = 1;
-    if (!saveSetting(("security_alert1_probation_cumulated_level"), $reg)) {
-        $msg = "Erreur lors de l'enregistrement de security_alert1_probation_cumulated_level !";
-    }
-}
-
-// Envoyer un email à l'administrateur
-if (isset($_POST['security_alert1_probation_email_admin'])) {
-	$reg = "yes";
-} else {
-	$reg = "no";
-}
+	// Envoyer un email à l'administrateur
+	if (isset($_POST['security_alert1_probation_email_admin'])) {
+		$reg = "yes";
+	} else {
+		$reg = "no";
+	}
     if (!saveSetting(("security_alert1_probation_email_admin"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_probation_email_admin !";
     }
 
-// Désactiver le compte de l'utilisateur
-if (isset($_POST['security_alert1_probation_block_user'])) {
-	$reg = "yes";
-} else {
-	$reg = "no";
-}
+	// Désactiver le compte de l'utilisateur
+	if (isset($_POST['security_alert1_probation_block_user'])) {
+		$reg = "yes";
+	} else {
+		$reg = "no";
+	}
     if (!saveSetting(("security_alert1_probation_block_user"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert1_probation_block_user !";
     }
 
-// Niveau d'alerte 2
-
-// Utilisateur sans antécédent
-
-// Seuil
-if (isset($_POST['security_alert2_normal_cumulated_level'])) {
-    $reg = $_POST['security_alert2_normal_cumulated_level'];
-    if (!is_numeric($reg)) $reg = 1;
-    if (!saveSetting(("security_alert2_normal_cumulated_level"), $reg)) {
-        $msg = "Erreur lors de l'enregistrement de security_alert2_normal_cumulated_level !";
-    }
-}
-
-// Envoyer un email à l'administrateur
-if (isset($_POST['security_alert2_normal_email_admin'])) {
-	$reg = "yes";
-} else {
-	$reg = "no";
-}
+	// Niveau d'alerte 2
+	
+	// Utilisateur sans antécédent
+	
+	// Seuil
+	if (isset($_POST['security_alert2_normal_cumulated_level'])) {
+		$reg = $_POST['security_alert2_normal_cumulated_level'];
+		if (!is_numeric($reg)) $reg = 1;
+		if (!saveSetting(("security_alert2_normal_cumulated_level"), $reg)) {
+			$msg = "Erreur lors de l'enregistrement de security_alert2_normal_cumulated_level !";
+		}
+	}
+	
+	// Envoyer un email à l'administrateur
+	if (isset($_POST['security_alert2_normal_email_admin'])) {
+		$reg = "yes";
+	} else {
+		$reg = "no";
+	}
     if (!saveSetting(("security_alert2_normal_email_admin"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_normal_email_admin !";
     }
 
-// Désactiver le compte de l'utilisateur
-if (isset($_POST['security_alert2_normal_block_user'])) {
-	$reg = "yes";
-} else {
-	$reg = "no";
-}
+	// Désactiver le compte de l'utilisateur
+	if (isset($_POST['security_alert2_normal_block_user'])) {
+		$reg = "yes";
+	} else {
+		$reg = "no";
+	}
     if (!saveSetting(("security_alert2_normal_block_user"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_normal_block_user !";
     }
 
-// Utilisateur surveillé
-
-// Seuil
-if (isset($_POST['security_alert2_probation_cumulated_level'])) {
-    $reg = $_POST['security_alert2_probation_cumulated_level'];
-    if (!is_numeric($reg)) $reg = 1;
-    if (!saveSetting(("security_alert2_probation_cumulated_level"), $reg)) {
-        $msg = "Erreur lors de l'enregistrement de security_alert2_probation_cumulated_level !";
-    }
-}
-
-// Envoyer un email à l'administrateur
-if (isset($_POST['security_alert2_probation_email_admin'])) {
-	$reg = "yes";
-} else {
-	$reg = "no";
-}
+	// Utilisateur surveillé
+	
+	// Seuil
+	if (isset($_POST['security_alert2_probation_cumulated_level'])) {
+		$reg = $_POST['security_alert2_probation_cumulated_level'];
+		if (!is_numeric($reg)) $reg = 1;
+		if (!saveSetting(("security_alert2_probation_cumulated_level"), $reg)) {
+			$msg = "Erreur lors de l'enregistrement de security_alert2_probation_cumulated_level !";
+		}
+	}
+	
+	// Envoyer un email à l'administrateur
+	if (isset($_POST['security_alert2_probation_email_admin'])) {
+		$reg = "yes";
+	} else {
+		$reg = "no";
+	}
     if (!saveSetting(("security_alert2_probation_email_admin"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_probation_email_admin !";
     }
 
-// Désactiver le compte de l'utilisateur
-if (isset($_POST['security_alert2_probation_block_user'])) {
-	$reg = "yes";
-} else {
-	$reg = "no";
-}
+	// Désactiver le compte de l'utilisateur
+	if (isset($_POST['security_alert2_probation_block_user'])) {
+		$reg = "yes";
+	} else {
+		$reg = "no";
+	}
     if (!saveSetting(("security_alert2_probation_block_user"), $reg)) {
         $msg = "Erreur lors de l'enregistrement de security_alert2_probation_block_user !";
     }
@@ -200,6 +201,7 @@ if (isset($_POST['security_alert2_probation_block_user'])) {
 
 //echo "\$filtrage_html=$filtrage_html<br />";
 if (isset($_POST['filtrage_html'])) {
+	check_token();
 	if(($_POST['filtrage_html']=='inputfilter')||
 		($_POST['filtrage_html']=='htmlpurifier')||
 		($_POST['filtrage_html']=='pas_de_filtrage_html')) {
@@ -265,6 +267,7 @@ debug_var();
 echo "<p class='bold'><a href='".$url_retour['path']."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 
 echo "<form action='security_policy.php' method='post'>\n";
+echo add_token_field();
 echo "<center><input type='submit' value='Enregistrer' /></center>\n";
 
 // Gestion des tentatives d'intrusion

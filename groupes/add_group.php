@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -68,6 +68,8 @@ if(isset($reg_matiere)){
 $reg_clazz = array();
 
 if (isset($_POST['is_posted'])) {
+	check_token();
+
     $error = false;
     $reg_nom_groupe = html_entity_decode_all_version($_POST['groupe_nom_court']);
     $reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet']);
@@ -176,7 +178,7 @@ $titre_page = "Gestion des groupes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 ?>
-<p class=bold>
+<p class="bold">
 <a href="edit_class.php?id_classe=<?php echo $id_classe;?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 </p>
 <?php
@@ -196,6 +198,8 @@ if ($mode == "groupe") {
 
 <p>Matière enseignée à ce groupe :
 <?php
+
+echo add_token_field();
 
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 $nb_mat = mysql_num_rows($query);

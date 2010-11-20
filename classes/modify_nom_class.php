@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -46,6 +46,8 @@ if (!checkAccess()) {
 $msg = null;
 
 if (isset($is_posted) and ($is_posted == '1')) {
+	check_token();
+
 	if (isset($display_rang)) $display_rang = 'y'; else $display_rang = 'n';
 	if (isset($display_address)) $display_address = 'y'; else $display_address = 'n';
 	if (isset($display_coef)) $display_coef = 'y'; else $display_coef = 'n';
@@ -423,7 +425,10 @@ if (isset($id_classe)) {
 }
 
 ?>
-<form enctype="multipart/form-data" action="modify_nom_class.php" method=post>
+<form enctype="multipart/form-data" action="modify_nom_class.php" method="post">
+<?php
+echo add_token_field();
+?>
 <p>Nom court de la classe&nbsp;: <input type=text size=30 name=reg_class_name value = "<?php echo $classe; ?>" onchange='changement()' /></p>
 <p>Nom complet de la classe&nbsp;: <input type=text size=50 name=reg_nom_complet value = "<?php echo $nom_complet; ?>"  onchange='changement()' /></p>
 <p>Prénom et nom du signataire des bulletins<?php if ($gepiSettings['active_mod_ects'] == "y") echo " et des attestations ECTS" ?> (chef d'établissement ou son représentant)&nbsp;: <br /><input type=text size=30 name=reg_suivi_par value = "<?php echo $suivi_par; ?>"  onchange='changement()' /></p>

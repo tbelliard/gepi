@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 //include("../fckeditor/fckeditor.php") ;
 
 
@@ -93,6 +93,7 @@ if(isset($import_message)) {
 	echo "<p>Le fichier doit contenir un message par ligne.</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 	echo "<p><input type='submit' name='valide_import_message' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -102,6 +103,7 @@ if(isset($import_message)) {
 	die();
 }
 elseif(isset($valide_import_message)) {
+	check_token(false);
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
@@ -163,6 +165,7 @@ elseif(isset($valide_import_message)) {
 }
 
 echo "<form name='formulaire' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+echo add_token_field();
 
 $id_message=isset($_POST['id_message']) ? $_POST['id_message'] : array();
 $suppr=isset($_POST['suppr']) ? $_POST['suppr'] : array();
@@ -170,6 +173,7 @@ $suppr=isset($_POST['suppr']) ? $_POST['suppr'] : array();
 $compteur_nb_messages=isset($_POST['compteur_nb_messages']) ? $_POST['compteur_nb_messages'] : NULL;
 
 if(isset($compteur_nb_messages)){
+	check_token();
 
 	// Validation des saisies/modifs...
 	for($i=1;$i<=$compteur_nb_messages;$i++){

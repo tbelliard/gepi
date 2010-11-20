@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -51,6 +51,8 @@ $quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : 
 
 //if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
 if (isset($_POST['action']) and ($_POST['action'] == "reg_scolresp")) {
+	check_token();
+
 	$msg = '';
 	$notok = false;
 	//$res_clas = mysql_query("SELECT * FROM classes ORDER BY classe");
@@ -145,6 +147,7 @@ require_once("../lib/header.inc");
 $_SESSION['chemin_retour'] = $_SERVER['REQUEST_URI'];
 
 echo "<form name='setScolResp' action='scol_resp.php?disp_filter=" . $disp_filter . "' method='post'>\n";
+echo add_token_field();
 
 if(!isset($quitter_la_page)){
 	echo "<p class='bold'>";

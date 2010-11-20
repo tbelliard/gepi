@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -49,7 +49,9 @@ if(!isset($pers_id)){
     die();
 }
 
-if(isset($is_posted)){
+if(isset($is_posted)) {
+	check_token();
+
 	if(!isset($msg)){
 		$msg="";
 	}
@@ -337,6 +339,7 @@ else{
 
 
 	echo "<form enctype=\"multipart/form-data\" name=\"choix_adr\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+	echo add_token_field();
 
 	if(isset($quitter_la_page)) {
 		echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";

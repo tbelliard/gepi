@@ -103,6 +103,8 @@ if (isset($_POST['valid_chgt_mdp'])) {
 // Protection contre les attaques.
 //
 if (isset($_POST['valid_param_mdp'])) {
+	check_token();
+
     settype($_POST['nombre_tentatives_connexion'],"integer");
     settype($_POST['temps_compte_verrouille'],"integer");
     if ($_POST['nombre_tentatives_connexion'] < 1) $_POST['nombre_tentatives_connexion'] = 1;
@@ -127,6 +129,8 @@ if (isset($_POST['valid_param_mdp'])) {
 
 //Activation / désactivation du login
 if (isset($_POST['disable_login'])) {
+	check_token();
+
     if (!saveSetting("disable_login", $_POST['disable_login'])) {
         $msg = "Il y a eu un problème lors de l'enregistrement du paramètre d'activation/désactivation des connexions.";
     } else {
@@ -136,6 +140,8 @@ if (isset($_POST['disable_login'])) {
 
 //Activation / désactivation de la procédure de réinitialisation du mot de passe par email
 if (isset($_POST['enable_password_recovery'])) {
+	check_token();
+
     if (!saveSetting("enable_password_recovery", $_POST['enable_password_recovery'])) {
         $msg = "Il y a eu un problème lors de l'enregistrement du paramètre d'activation/désactivation des connexions.";
     } else {
@@ -178,6 +184,8 @@ if(isset($_GET['mode'])){
 
 
 if(isset($_POST['valid_envoi_mail_connexion'])){
+	check_token();
+
 	$envoi_mail_connexion=isset($_POST['envoi_mail_connexion']) ? $_POST['envoi_mail_connexion'] : "n";
 	if($envoi_mail_connexion!="y") {
 		$envoi_mail_connexion="n";
@@ -190,14 +198,17 @@ if(isset($_POST['valid_envoi_mail_connexion'])){
 }
 
 if(isset($_POST['valid_message'])){
+	check_token();
+
 	$message_login=isset($_POST['message_login']) ? $_POST['message_login'] : 0;
 	//$sql="UPDATE setting SET value='$message_login' WHERE name='message_login'";
 	saveSetting('message_login',$message_login);
 }
 
-
+//================================
 // End standart header
 require_once("../lib/header.inc");
+//================================
 
 //debug_var();
 
@@ -224,12 +235,12 @@ $sql = "select u.login, concat(u.prenom, ' ', u.nom) utilisa, u.email from log l
 
 $res = sql_query($sql);
 if ($res) {
-    for ($i = 0; ($row = sql_row($res, $i)); $i++)
-    {
-    echo("<li>" . $row[1]. " | <a href=\"mailto:" . $row[2] . "\">Envoyer un mail</a> |");
-    if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe"))
-        echo "<a href=\"../utilisateurs/change_pwd.php?user_login=" . $row[0] . "\">Déconnecter en changeant le mot de passe</a>";
-    echo "</li>";
+    for ($i = 0; ($row = sql_row($res, $i)); $i++) {
+		echo("<li>" . $row[1]. " | <a href=\"mailto:" . $row[2] . "\">Envoyer un mail</a> |");
+		if ((getSettingValue('use_sso') != "cas" and getSettingValue("use_sso") != "lemon"  and getSettingValue("use_sso") != "lcs" and getSettingValue("use_sso") != "ldap_scribe")) {
+			echo "<a href=\"../utilisateurs/change_pwd.php?user_login=".$row[0].add_token_in_url()."\">Déconnecter en changeant le mot de passe</a>";
+		}
+		echo "</li>";
     }
 }
 
@@ -260,6 +271,7 @@ else{
 echo "<p>En désactivant les connexions, vous rendez impossible la connexion au site pour les utilisateurs, hormis les administrateurs.</p>\n";
 
 echo "<form action=\"gestion_connect.php\" name=\"form_acti_connect\" method=\"post\">\n";
+echo add_token_field();
 
 echo "<table border='0' summary='Activation/désactivation des connexions'>\n";
 echo "<tr>\n";
@@ -322,6 +334,7 @@ if(mysql_num_rows($res)==0) {
 }
 else {
 	echo "<form action=\"gestion_connect.php\" name=\"form_message_login\" method=\"post\">\n";
+	echo add_token_field();
 
 	echo "<table summary='Choix du message'>\n";
 	echo "<tr>\n";
@@ -388,6 +401,7 @@ echo "<p>Configuration de GEPI de manière à bloquer temporairement le compte d'u
 et/ou mettre en liste noire, la ou les adresses IP incriminées.<br /></p>";
 
 echo "<form action=\"gestion_connect.php\" name=\"form_param_mdp\" method=\"post\">";
+echo add_token_field();
 echo "<table summary='Paramétrage'><tr>";
 echo "<td>Nombre maximum de tentatives de connexion infructueuses: </td>";
 echo "<td><input type=\"text\" name=\"nombre_tentatives_connexion\" value=\"".getSettingValue("nombre_tentatives_connexion")."\" size=\"20\" /></td>";
@@ -409,6 +423,7 @@ echo "<h3 class='gepi'>Avertissement lors des connexions</h3>";
 echo "<p>Il est possible d'avertir les utilisateurs par mail lors de leur connexion, sous réserve que leur adresse mail soit renseignée dans Gepi (<i>information modifiable par le lien 'Gérer mon compte'</i>).<br />Si l'adresse n'est pas renseignée aucun mail ne peut parvenir à l'utilisateur qui se connecte.<br />Si l'adresse est correctement renseignée, en cas d'usurpation comme de connexion légitime, l'utilisateur recevra un mail.<br />S'il ne réagit pas en changeant de mot de passe et en avertissant l'administrateur lors d'une usurpation, des intrusions ultérieures pourront être opérées sans que l'utilisateur soit averti si l'intrus prend soin de supprimer/modifier l'adresse mail dans 'Gérer mon compte'.</p>\n";
 
 echo "<form action=\"gestion_connect.php\" name=\"form_mail_connexion\" method=\"post\">";
+echo add_token_field();
 echo "<table summary='Mail'>\n";
 echo "<tr>\n";
 echo "<td valign='top'>Activer l'envoi de mail lors de la connexion: </td>\n";

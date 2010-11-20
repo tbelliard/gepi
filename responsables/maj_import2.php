@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -396,6 +396,7 @@ if(!isset($step)) {
 	echo "<p>Vous allez importer des fichiers d'exports XML de Sconet.<br />\nLes fichiers requis au cours de la procédure sont dans un premier temps ElevesAvecAdresses.xml, puis le fichier ResponsablesAvecAdresses.xml</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 
 	//echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=hidden name='step' value='0' />\n";
@@ -470,6 +471,8 @@ else{
 		case "0":
 			// Affichage des informations élèves
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			check_token(false);
 
 			$xml_file = isset($_FILES["eleves_xml_file"]) ? $_FILES["eleves_xml_file"] : NULL;
 
@@ -1770,6 +1773,8 @@ else{
 				echo "<p>Les élèves notés dans Sconet comme ayant quitté l'établissement peuvent être désinscrits des classes et enseignements sur les périodes futures.<br />On recherche ci-dessus les périodes sur lesquelles les élèves n'ont pas de note ni quoi que ce soit sur le bulletin.</p>\n";
 				echo "</blockquote>\n";
 
+				echo add_token_field();
+
 				echo "</form>\n";
 			}
 
@@ -1783,6 +1788,8 @@ else{
 
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
+
+			check_token(false);
 
 			// On vide la table dont on va se resservir plus tard:
 			$sql="TRUNCATE TABLE tempo2;";
@@ -2597,7 +2604,7 @@ else{
 
 
 
-				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
+				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 				//echo "<p align='center'><input type=submit value='Enregistrer les modifications' /></p>\n";
 
 				//echo "<table border='1'>\n";
@@ -3096,6 +3103,7 @@ else{
 									echo "<a href='../classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=A_EFFECTUER_Changement_de_classe_vers_".remplace_accents(stripslashes($affiche[9]))."_pour_".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom),'all')."' target='_blank'>";
 									echo "$lig_clas1->classe -&gt; $affiche[9]";
 									echo "</a>";
+// RENSEIGNER UNE TABLE AVEC L'INDICATION QU'IL Y AURA UNE MODIF A FAIRE...
 								}
 								else {
 									echo "'>";
@@ -3322,12 +3330,17 @@ else{
 
 				echo "<p align='center'><input type=submit value='Valider' /></p>\n";
 				//echo "<p align='center'><input type=submit value='Enregistrer les modifications' /></p>\n";
+
+				echo add_token_field();
+
 				echo "</form>\n";
 			}
 
 			break;
 		case "5":
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
+
+			check_token(false);
 
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
@@ -4112,6 +4125,8 @@ else{
 			echo "<input type='hidden' name='step' value='7' />\n";
 			echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 
+			echo add_token_field();
+
 			echo "</form>\n";
 			break;
 
@@ -4126,10 +4141,13 @@ else{
 			$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 			$maxper=isset($_POST['maxper']) ? $_POST['maxper'] : NULL;
 
-			if(!isset($login_eleve)){
+			if(!isset($login_eleve)) {
 				echo "<p>Vous n'avez affecté aucun élève.</p>\n";
 			}
-			else{
+			else {
+
+				check_token(false);
+
 				echo "<p>\n";
 				for($i=0;$i<count($login_eleve);$i++){
 					$sql="SELECT nom, prenom FROM eleves WHERE login='$login_eleve[$i]'";
@@ -4225,6 +4243,8 @@ else{
 			$eleve=isset($_POST['eleve']) ? $_POST['eleve'] : NULL;
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo add_token_field();
+
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
@@ -4259,6 +4279,9 @@ else{
 
 			}
 			else{
+
+				check_token(false);
+
 				$login_eleve=isset($_POST['login_eleve']) ? $_POST['login_eleve'] : NULL;
 				$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 				$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode";
@@ -4679,6 +4702,8 @@ else{
 				echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ResponsablesAvecAdresses.zip)</p>";
 			}
 
+			echo add_token_field();
+
 			echo "<input type='checkbox' name='ne_pas_proposer_resp_sans_eleve' id='ne_pas_proposer_resp_sans_eleve' value='non' checked />\n";
 			//$ne_pas_proposer_resp_sans_eleve
 			echo "<label for='ne_pas_proposer_resp_sans_eleve' style='cursor: pointer;'> Ne pas proposer d'ajouter les responsables non associés à des élèves.</label><br />(<i>de telles entrées peuvent subsister en très grand nombre dans Sconet</i>)<br />\n";
@@ -4713,6 +4738,8 @@ else{
 
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
+
+			check_token(false);
 
 			$_SESSION['ne_pas_proposer_resp_sans_eleve']=$ne_pas_proposer_resp_sans_eleve;
 
@@ -6095,6 +6122,7 @@ else{
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
 			//echo "<input type='hidden' name='step' value='15' />\n";
 			echo "<input type='hidden' name='step' value='14c' />\n";
+			echo add_token_field();
 			//==============================
 
 			$sql="SELECT col2 FROM tempo2 WHERE col1='pers_id_disparu';";
@@ -6246,6 +6274,8 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
+			check_token(false);
+
 			$valid_pers_id=isset($_POST['valid_pers_id']) ? $_POST['valid_pers_id'] : NULL;
 
 			if(is_array($valid_pers_id)) {
@@ -6267,6 +6297,23 @@ else{
 						//echo "$sql<br />\n";
 						if(mysql_query($sql)) {echo "<span style='color:green;'>OK</span>";} else {echo "<span style='color:red;'>ERREUR</span>";}
 
+						echo "<br />\n";
+
+						$sql="SELECT u.login, u.statut FROM utilisateurs u, resp_pers rp WHERE u.login=rp.login AND rp.login!='' AND rp.pers_id='".$valid_pers_id[$i]."';";
+						$test_utilisateur=mysql_query($sql);
+						if(mysql_num_rows($test_utilisateur)>0) {
+							$lig_u=mysql_fetch_object($test_utilisateur);
+							if($lig_u->statut=='responsable') {
+								echo "Suppression du compte d'utilisateur associé à la personne: ";
+								$sql="DELETE FROM utilisateurs WHERE login='".$lig_u->login."';";
+								info_debug($sql);
+								//echo "$sql<br />\n";
+								if(mysql_query($sql)) {echo "<span style='color:green;'>OK</span>";} else {echo "<span style='color:red;'>ERREUR</span>";}
+							}
+							else {
+								echo "<span style='color:red;'>ANOMALIE</span>&nbsp;: Le responsable n°".$valid_pers_id[$i]." était associé au compte d'utilisateur '$lig_u->login' dont le statut est '$lig_u->statut'.<br />Vous devriez chercher comment cela a pu se produire.";
+							}
+						}
 						echo "<br />\n";
 
 						// Supprimer la personne
@@ -6394,8 +6441,9 @@ else{
 			//==============================
 			echo "<input type='hidden' name='ne_pas_proposer_redoublonnage_adresse' value='$ne_pas_proposer_redoublonnage_adresse' />\n";
 			echo "<input type='hidden' name='eff_tranche' value='$eff_tranche' />\n";
+			echo add_token_field();
 
-			if(!isset($parcours_diff)){
+			if(!isset($parcours_diff)) {
 				info_debug("========================================================");
 				//$sql="SELECT 1=1 FROM tempo2 WHERE col1='pers_id';";
 				$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id';";
@@ -6428,6 +6476,8 @@ else{
 				echo "<input type='hidden' name='total_pers_diff' value='".mysql_num_rows($test)."' />\n";
 			}
 			else{
+				check_token(false);
+
 				info_debug("========================");
 				info_debug("Enregistrement des validations/refus de la tranche...");
 				if(isset($valid_pers_id)){
@@ -7219,6 +7269,8 @@ else{
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
+			check_token(false);
+
 			//echo "<p>On doit parcourir 'tempo2' en recherchant 'pers_id_confirm'.</p>\n";
 
 			$sql="SELECT DISTINCT col2 FROM tempo2 WHERE col1='pers_id_confirm';";
@@ -7693,6 +7745,7 @@ else{
 				echo "<p>Parcourir les différences par tranches de <input type='text' name='eff_tranche' value='".min(20,$nb_associations_a_consulter)."' size='3' /> sur un total de $nb_associations_a_consulter.<br />\n";
 
 				echo "Ne pas proposer de supprimer des responsables non associés à des élèves <input type='checkbox' name='suppr_resp_non_assoc' value='n' /><br />\n";
+				echo add_token_field();
 				echo "<input type='submit' value='Afficher les différences' /></p>\n";
 /*
 				echo "<script type='text/javascript'>
@@ -7711,6 +7764,8 @@ else{
 
 			echo "<h2>Import/mise à jour des associations responsables/élèves</h2>\n";
 
+			check_token(false);
+
 			info_debug("==============================================");
 			info_debug("=============== Phase step $step =================");
 
@@ -7721,6 +7776,7 @@ else{
 			
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+			echo add_token_field();
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
@@ -8584,6 +8640,7 @@ else{
 				}
 
 				echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+				echo add_token_field();
 
 				echo "<table class='boireaus' summary='Tableau des responsabilités disparues'>\n";
 				echo "<tr>\n";
@@ -8692,6 +8749,8 @@ else{
 			break;
 		case "21":
 			echo "<h2>Traitement des responsabilités disparues</h2>\n";
+
+			check_token(false);
 
 			$suppr_resp_ele=isset($_POST['suppr_resp_ele']) ? $_POST['suppr_resp_ele'] : NULL;
 

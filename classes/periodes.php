@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -45,6 +45,8 @@ die();
 }
 
 if (isset($is_posted) and ($is_posted == "yes")) {
+	check_token();
+
     $msg = '';
     //
     // Insertion et suppresion de périodes
@@ -264,6 +266,9 @@ echo "</form>\n";
 <p><b>Remarque : </b>Le verrouillage/déverrouillage d'une période est possible en étant connecté sous un compte ayant le statut "scolarité".</p>
 
 <?php
+
+echo add_token_field();
+
 echo "<p>Nombre de périodes : ";
 
 //$sql="SELECT 1=1 FROM j_groupes_classes WHERE id_classe='$id_classe';";

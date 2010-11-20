@@ -106,6 +106,8 @@ if(mysql_num_rows($res_class_tmp)>0){
 $priority_defaut = 5;
 
 if (isset($_POST['is_posted'])) {
+	check_token();
+
     $error = false;
 
     foreach ($_POST as $key => $value) {
@@ -177,6 +179,8 @@ if (isset($_POST['is_posted'])) {
 }
 
 if (isset($_GET['action'])) {
+	check_token();
+
     $msg = null;
     //if ($_GET['action'] == "delete_group") {
     if(($_GET['action'] == "delete_group")&&(isset($_GET['confirm_delete_group']))&&($_GET['confirm_delete_group'] == "y")) {
@@ -219,6 +223,8 @@ require_once("../lib/header.inc");
 
 
 if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['confirm_delete_group']))) {
+	check_token(false);
+
 	// On va détailler ce qui serait supprimé en cas de confirmation
 	$tmp_group=get_group($_GET['id_groupe']);
 	echo "<div style='border: 2px solid red;'>\n";
@@ -311,12 +317,12 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 			echo "<p>Si vous souhaitez effectuer ";
 			echo "malgré tout ";
 			echo "la suppression de l'enseignement&nbsp;: ";
-			echo "<a href='edit_class.php?id_groupe=".$_GET['id_groupe']."&amp;action=delete_group&amp;confirm_delete_group=y&amp;id_classe=$id_classe' onclick=\"return confirmlink(this, 'ATTENTION !!! L\'enseignement n\'est pas totalement vide, même si les bulletins ne contiennent pas de référence à cet enseignement.\\nEtes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a>";
+			echo "<a href='edit_class.php?id_groupe=".$_GET['id_groupe']."&amp;action=delete_group&amp;confirm_delete_group=y&amp;id_classe=$id_classe".add_token_in_url()."' onclick=\"return confirmlink(this, 'ATTENTION !!! L\'enseignement n\'est pas totalement vide, même si les bulletins ne contiennent pas de référence à cet enseignement.\\nEtes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\">Supprimer</a>";
 			echo "</p>\n";
 		}
 		else {
 			echo "<p>Si vous souhaitez confirmer la suppression de l'enseignement&nbsp;: ";
-			echo "<a href='edit_class.php?id_groupe=".$_GET['id_groupe']."&amp;action=delete_group&amp;confirm_delete_group=y&amp;id_classe=$id_classe'>Supprimer</a>";
+			echo "<a href='edit_class.php?id_groupe=".$_GET['id_groupe']."&amp;action=delete_group&amp;confirm_delete_group=y&amp;id_classe=$id_classe".add_token_in_url()."'>Supprimer</a>";
 			echo "</p>\n";
 		}
 	}
@@ -500,7 +506,10 @@ if(count($groups)==0){
     die();
 }
 ?>
-<form enctype="multipart/form-data" action="edit_class.php" name="formulaire" method=post>
+<form enctype="multipart/form-data" action="edit_class.php" name="formulaire" method="post">
+<?php
+echo add_token_field();
+?>
 <!--form enctype="multipart/form-data" action="edit_class.php" name="formulaire" id="form_mat" method=post-->
 
 <!--p>Définir les priorités d'après <input type='button' value="l'ordre alphabétique" onClick="ordre_alpha();" /> / <input type='button' value="l'ordre par défaut des matières" onClick="ordre_defaut();" /><br /-->
@@ -591,7 +600,7 @@ for($i=0;$i<10;$i++){
         echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
         echo "<table border = '0' width='100%' summary='Suppression'><tr><td width='25%'>";
         //echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe' onclick=\"return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
-        echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe'><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
+        echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe".add_token_in_url()."'><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
         echo " -- <span class=\"norme\">";
         echo "<b>";
         if ($total == "1") {

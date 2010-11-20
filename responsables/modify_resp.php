@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -50,6 +50,8 @@ echo "\$_GET[is_posted]=".$_GET['is_posted']."<br />";
 */
 
 if (isset($is_posted) and ($is_posted == '1')) {
+	check_token();
+
 	$msg="";
 
 	//$adr_id_existant=isset($_POST['adr_id_existant']) ? $_POST['adr_id_existant'] : '';
@@ -595,6 +597,7 @@ if(isset($associer_eleve)) {
 
 			if($compteur==0){
 				echo "<form enctype='multipart/form-data' name='resp' action='modify_resp.php' method='post'>\n";
+				echo add_token_field();
 				echo "<input type='hidden' name='pers_id' value='$pers_id' />\n";
 
 				if(isset($quitter_la_page)) {
@@ -666,6 +669,7 @@ else {
 echo "</p>\n";
 
 echo "<form enctype='multipart/form-data' name='resp' action='modify_resp.php' method='post'>\n";
+echo add_token_field();
 
 if(isset($quitter_la_page)) {
 	echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";

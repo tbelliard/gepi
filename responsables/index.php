@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -44,7 +44,9 @@ if (!checkAccess()) {
 }
 
 //if(isset($suppr_resp)){
-if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))){
+if((isset($suppr_resp1))||(isset($suppr_resp2))||(isset($suppr_resp0))) {
+	check_token();
+
 	$msg="";
 
 	if(isset($suppr_resp1)){
@@ -535,6 +537,7 @@ echo ".</p>\n";
 
 
 echo "<form enctype='multipart/form-data' name='liste_resp' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+echo add_token_field();
 
 echo "<p align='center'>";
 if(!isset($debut)){

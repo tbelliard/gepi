@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -71,6 +71,7 @@ $order_by=isset($_POST['order_by']) ? $_POST['order_by'] : (isset($_GET['order_b
 
 //if(isset($_POST['Valider_repartition'])) {
 if(isset($_POST['enregistrer_repartition'])) {
+	check_token();
 
 	$msg="";
 	$nb_modif=0;
@@ -172,6 +173,8 @@ if(isset($_POST['enregistrer_repartition'])) {
 
 //if(isset($_POST['Valider_recopie'])) {
 if(isset($_POST['enregistrer_recopie'])) {
+	check_token();
+
 	$msg="";
 	$nb_modif=0;
 
@@ -319,10 +322,6 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
-?>
-
-<?php
-
 //=================================================================================================
 // Choix de la classe 
 
@@ -338,6 +337,7 @@ if(!isset($id_classe)) {
 	$nb_classes=mysql_num_rows($call_classes);
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+
 	// Affichage sur 3 colonnes
 	$nb_classes_par_colonne=round($nb_classes/3);
 
@@ -594,6 +594,7 @@ if(!isset($_POST['recopie_select'])) {
 	//===============================
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+	echo add_token_field();
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
 	
@@ -796,6 +797,7 @@ if(!isset($_POST['recopie_select'])) {
 
 	//===============================
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form3' method='post'>\n";
+	echo add_token_field();
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
 	echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
@@ -898,6 +900,7 @@ else {
 	}
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
+	echo add_token_field();
 	for($i=0;$i<count($id_classe);$i++) {echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";}
 	for($i=0;$i<count($id_groupe);$i++) {echo "<input type='hidden' name='id_groupe[]' value='$id_groupe[$i]' />\n";}
 	

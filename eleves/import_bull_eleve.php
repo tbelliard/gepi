@@ -4,7 +4,7 @@
  *
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -278,6 +278,7 @@ else {
 		//echo nl2br(get_bull($ele_login));
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+		echo add_token_field();
 		echo "Fichier à importer: <input type='file' name='csv_file' value='' />\n";
 		echo "<input type='hidden' name='ele_login' value=\"$ele_login\" />\n";
 		echo "<input type='submit' name='envoi' value='Envoyer' />\n";
@@ -299,6 +300,7 @@ else {
 		$csv_file=$_FILES["csv_file"];
 		//echo "\$csv_file['tmp_name']=".$csv_file['tmp_name']."<br />";
 
+		check_token(false);
 
 		//flush();
 

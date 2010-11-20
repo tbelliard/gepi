@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -50,7 +50,7 @@ $msg="";
 $id_classe = isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
 $id_groupe = isset($_GET['id_groupe']) ? $_GET['id_groupe'] : (isset($_POST['id_groupe']) ? $_POST["id_groupe"] : NULL);
 
-if (!is_numeric($id_groupe)) $id_groupe = 0;
+if (!is_numeric($id_groupe)) {$id_groupe = 0;}
 $current_group = get_group($id_groupe);
 $reg_nom_groupe = $current_group["name"];
 $reg_nom_complet = $current_group["description"];
@@ -224,6 +224,8 @@ if(isset($step)){
 		}
 	}
 	elseif($step==2){
+
+		check_token();
 
 		/*
 		if(!isset($tab_classe)){
@@ -552,6 +554,7 @@ else {
 	}
 	*/
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 	echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
 	echo "<input type='hidden' name='nb_classes' value='$nb_classes' />\n";

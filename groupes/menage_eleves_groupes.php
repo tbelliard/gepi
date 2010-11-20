@@ -62,6 +62,8 @@ $id_classe = isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_
 $num_periode = isset($_GET['num_periode']) ? $_GET['num_periode'] : (isset($_POST['num_periode']) ? $_POST["num_periode"] : NULL);
 
 if((isset($id_classe))&&(isset($num_periode))&&(isset($_GET['confirmation_menage']))&&($_GET['confirmation_menage']=='y')) {
+	check_token();
+
 	$nb_desinscriptions=0;
 	$nb_erreurs_desinscriptions=0;
 	if((preg_match("/^[0-9]*$/",$id_classe))&&(preg_match("/^[0-9]*$/",$num_periode))) {
@@ -319,7 +321,7 @@ while($lig_group=mysql_fetch_object($query)) {
 }
 
 if((!isset($_GET['confirmation_menage']))||($_GET['confirmation_menage']=='n')) {
-	echo "<p><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;num_periode=$num_periode&amp;confirmation_menage=y'>Confirmer les désinscriptions</a>.</p>\n";
+	echo "<p><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;num_periode=$num_periode&amp;confirmation_menage=y".add_token_in_url()."'>Confirmer les désinscriptions</a>.</p>\n";
 }
 
 echo "<p><br /></p>\n";
