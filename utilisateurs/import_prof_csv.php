@@ -51,7 +51,7 @@ header('Expires: 0');
 $fd = '';
 
 //$appel_donnees = mysql_query("SELECT * FROM utilisateurs ORDER BY nom, prenom");
-$appel_donnees = mysql_query("SELECT * FROM utilisateurs WHERE statut='professeur' AND statut='actif' ORDER BY nom, prenom;");
+$appel_donnees = mysql_query("SELECT * FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom, prenom;");
 $nombre_lignes = mysql_num_rows($appel_donnees);
 
 $j= 0;
