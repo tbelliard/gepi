@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -49,7 +49,7 @@ if (!isset($action) or ($action != "restaure")) {
     } else if ($resultat_session == '0') {
         header("Location: ../logout.php?auto=1");
         die();
-    };
+    }
 }
 
 if (!isset($action) or ($action != "restaure")) {
@@ -74,6 +74,8 @@ $dirname = getSettingValue("backup_directory");
 
 // Téléchargement d'un fichier vers backup
 if (isset($action) and ($action == 'upload'))  {
+	check_token();
+
     $sav_file = isset($_FILES["sav_file"]) ? $_FILES["sav_file"] : NULL;
 
 //echo "\$sav_file['tmp_name']=".$sav_file['tmp_name']."<br />";
@@ -98,6 +100,8 @@ if (isset($action) and ($action == 'upload'))  {
 
 // Suppression d'un fichier
 if (isset($action) and ($action == 'sup'))  {
+	check_token();
+
     if (isset($_GET['file']) && ($_GET['file']!='')) {
         if (@unlink("../backup/".$dirname."/".$_GET['file'])) {
             $msg = "Le fichier <b>".$_GET['file']."</b> a été supprimé.<br />\n";
@@ -110,6 +114,8 @@ if (isset($action) and ($action == 'sup'))  {
 
 // Protection du répertoire backup
 if (isset($action) and ($action == 'protect'))  {
+	check_token();
+
     include_once("../lib/class.htaccess.php");
     // Instance of the htaccess class
     // $ht = & new htaccess(TRUE);
@@ -152,6 +158,8 @@ if (isset($action) and ($action == 'protect'))  {
 
 // Suppression de la protection
 if (isset($action) and ($action == 'del_protect'))  {
+	check_token();
+
    if ((@unlink("../backup/".$dirname."/.htaccess")) and (@unlink("../backup/".$dirname."/.htpasswd"))) {
        $msg = "Les fichiers .htaccess et .htpasswd ont été supprimés. Le répertoire /backup n'est plus protégé\n";
    }
@@ -940,6 +948,8 @@ if (!function_exists("gzwrite")) {
 
 // Confirmation de la restauration
 if (isset($action) and ($action == 'restaure_confirm'))  {
+	check_token();
+
     echo "<h3>Confirmation de la restauration de la base</h3>\n";
     echo "Fichier sélectionné pour la restauration : <b>".$_GET['file']."</b>\n";
     echo "<p><b>ATTENTION :</b> La procédure de restauration de la base est <b>irréversible</b>. Le fichier de restauration doit être valide. Selon le contenu de ce fichier, tout ou partie de la structure actuelle de la base ainsi que des données existantes peuvent être supprimées et remplacées par la structure et les données présentes dans le fichier.
@@ -967,6 +977,7 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
     echo "<tr>\n";
     echo "<td>\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=post name=formulaire_oui>\n";
+		echo add_token_field();
 		echo "<table summary='Oui'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
@@ -1007,6 +1018,8 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
 
 // Restauration
 if (isset($action) and ($action == 'restaure'))  {
+	check_token();
+
     unset($file);
     $file = isset($_POST["file"]) ? $_POST["file"] : (isset($_GET["file"]) ? $_GET["file"] : NULL);
 
@@ -1037,15 +1050,15 @@ if (isset($action) and ($action == 'restaure'))  {
 		if ($offset!=-1) {
 			if (restoreMySqlDump_old($path.$file,$duree)) {
 				if (isset($debug)) {
-					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way\">ici</a> pour poursuivre la restauration</b>\n";
+					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url()."\">ici</a> pour poursuivre la restauration</b>\n";
 				}
 
 				if (!isset($debug)) {
-					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way\">ici</a></b>\n";
+					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url()."\">ici</a></b>\n";
 				}
 
 				if (!isset($debug)) {
-					echo "<script>window.location=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way\";</script>\n";
+					echo "<script>window.location=\"accueil_sauve.php?action=restaure&file=".$file."&duree=$duree&offset=$offset&cpt=$cpt&path=$path&restauration_old_way=$restauration_old_way".add_token_in_url(false)."\";</script>\n";
 				}
 				flush();
 				exit;
@@ -1210,7 +1223,7 @@ value VARCHAR(255) NOT NULL);";
 			echo "<input type='hidden' name='suite_restauration' value='y' />\n";
 			echo "<input type='hidden' name='action' value='restaure' />\n";
 			echo "<input type='hidden' name='debug_restaure' value='$debug_restaure' />\n";
-
+			echo add_token_field();
 			echo "<input type='hidden' name='ne_pas_restaurer_log' value='$ne_pas_restaurer_log' />\n";
 			echo "<input type='hidden' name='ne_pas_restaurer_tentatives_intrusion' value='$ne_pas_restaurer_tentatives_intrusion' />\n";
 
@@ -1231,6 +1244,7 @@ value VARCHAR(255) NOT NULL);";
 			//if(isset($nom_table)) {
 			//	echo "&nom_table=$nom_table";
 			//}
+			echo add_token_in_url();
 			echo "&amp;suite_restauration=y";
 			echo "&amp;debug_restaure=$debug_restaure";
 			echo "&amp;ne_pas_restaurer_log=$ne_pas_restaurer_log";
@@ -1258,6 +1272,7 @@ if (isset($action) and ($action == 'dump'))  {
     $nomsql = $dbDb."_le_".date("Y_m_d_\a_H\hi");
     $cur_time=date("Y-m-d H:i");
     $filename=$path.$nomsql.".".$filetype;
+	// Ce nom est modifié à chaque passage dans action=dump, mais pour les passages suivant le premier, on reçoit $fichier en $_GET donc on n'utilise pas $filename
 
     if (!isset($_GET["duree"])&&is_file($filename)){
         echo "<font color=\"#FF0000\"><center><b>Le fichier existe déjà. Patientez une minute avant de retenter la sauvegarde.</b></center></font>\n<hr />\n";
@@ -1278,7 +1293,10 @@ if (isset($action) and ($action == 'dump'))  {
          //si le nom du fichier n'est pas en paramètre le mettre ici
          if (!isset($_GET["fichier"])) {
              $fichier=$filename;
-         } else $fichier=$_GET["fichier"];
+         } else {
+			check_token();
+			$fichier=$_GET["fichier"];
+		}
 
 
         $tab=mysql_list_tables($dbDb);
@@ -1301,18 +1319,21 @@ if (isset($action) and ($action == 'dump'))  {
         if ($offsettable>=0){
             if (backupMySql($dbDb,$fichier,$duree,$rowlimit)) {
                 if (isset($debug)) {
-					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
+					echo "<br />\n<b>Cliquez <a href=\"accueil_sauve.php?action=dump&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt&amp;fichier=$fichier&amp;path=$path";
 					if(isset($quitter_la_page)) {echo "&amp;quitter_la_page=y";}
+					echo add_token_in_url();
 					echo "\">ici</a> pour poursuivre la sauvegarde.</b>\n";
 				}
                 if (!isset($debug)) {
-					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
+					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"accueil_sauve.php?action=dump&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt&amp;fichier=$fichier&amp;path=$path";
 					if(isset($quitter_la_page)) {echo "&amp;quitter_la_page=y";}
+					echo add_token_in_url();
 					echo "\">ici</a></b>\n";
 				}
                 if (!isset($debug)) {
 					echo "<script>window.location=\"accueil_sauve.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
 					if(isset($quitter_la_page)) {echo "&quitter_la_page=y";}
+					echo add_token_in_url(false);
 					echo "\";</script>\n";
 				}
                 flush();
@@ -1376,6 +1397,8 @@ if (isset($action) and ($action == 'dump'))  {
 }
 
 if (isset($action) and ($action == 'system_dump'))  {
+	check_token();
+
 	// On enregistre le paramètre pour s'en souvenir la prochaine fois
 	saveSetting("mode_sauvegarde", "mysqldump");
 
@@ -1429,6 +1452,8 @@ if (isset($action) and ($action == 'system_dump'))  {
 
 //Ajout Eric
 if (isset($action) and ($action == 'zip'))  {
+	check_token();
+
   define( 'PCLZIP_TEMPORARY_DIR', '../backup/' );
   require_once('../lib/pclzip.lib.php');
 
@@ -1522,6 +1547,7 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
     echo "<p><font color=\"#FF0000\"><b>Le répertoire \"/backup\" n'est actuellement pas protégé</b></font>.
     Si vous stockez des fichiers dans ce répertoire, ils seront accessibles de l'extérieur à l'aide d'un simple navigateur.</p>\n";
     echo "<form action=\"accueil_sauve.php\" name=\"protect\" method=\"post\">\n";
+	echo add_token_field();
     echo "<table><tr><td>Nouvel identifiant : </td><td><input type=\"text\" name=\"login_backup\" value=\"\" size=\"20\" /></td></tr>\n";
     echo "<tr><td>Nouveau mot de passe : </td><td><input type=\"password\" name=\"pwd1_backup\" value=\"\" size=\"20\" /></td></tr>\n";
     echo "<tr><td>Confirmation du mot de passe : </td><td><input type=\"password\" name=\"pwd2_backup\" value=\"\" size=\"20\" /></td></tr></table>\n";
@@ -1545,6 +1571,7 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
 			ou bien pour définir un nouvel <b>identifiant et un mot de passe</b></p>\n";
     echo "
 			<form action=\"accueil_sauve.php\" name=\"del_protect\" method=\"post\">\n";
+	echo add_token_field();
     echo "
 			<p align=\"center\"><input type=\"submit\" Value=\"Modifier/supprimer la protection du répertoire\" /></p>\n";
     echo "
@@ -1563,7 +1590,10 @@ if (!(file_exists("../backup/".$dirname."/.htaccess")) or !(file_exists("../back
 <p>Deux méthodes de sauvegarde sont disponibles : l'utilisation de la commande système mysqldump ou bien le système intégré à Gepi.<br/>
 La première méthode (mysqldump) est vigoureusement recommandée car beaucoup moins lourde en ressources, mais ne fonctionnera que sur certaines configurations serveurs.<br />
 La seconde méthode est lourde en ressources mais passera sur toutes les configurations.</p>
-<form enctype="multipart/form-data" action="accueil_sauve.php" method=post name=formulaire>
+<form enctype="multipart/form-data" action="accueil_sauve.php" method="post" name="formulaire">
+<?php
+	echo add_token_field();
+?>
 <center><input type="submit" value="Sauvegarder" />
 <select name='action' size='1'>
 <option value='system_dump'<?php if (getSettingValue("mode_sauvegarde") == "mysqldump") echo " SELECTED";?>>avec mysqldump</option>
@@ -1628,12 +1658,12 @@ if ($n > 0) {
         //echo "<tr><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
         $alt=$alt*(-1);
 		echo "<tr class='lig$alt'><td><i>".$value."</i>&nbsp;&nbsp;(". round((filesize("../backup/".$dirname."/".$value)/1024),0)." Ko) </td>\n";
-        echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value'>Supprimer</a></td>\n";
+        echo "<td><a href='accueil_sauve.php?action=sup&amp;file=$value".add_token_in_url()."'>Supprimer</a></td>\n";
 		//if (($value=='_photos.zip')||($value=='_cdt.zip')){
 		if ((my_ereg('^_photos',$value)&&my_ereg('.zip$',$value))||(my_ereg('^_cdt',$value)&&my_ereg('.zip$',$value))){
 		   echo "<td> </td>\n";
 		} else {
-            echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value'>Restaurer</a></td>\n";
+            echo "<td><a href='accueil_sauve.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."'>Restaurer</a></td>\n";
 		}
         echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
         echo "<td><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";
@@ -1646,6 +1676,7 @@ if ($n > 0) {
 
 echo "<h3>Uploader un fichier (de restauration) vers le répertoire backup</h3>\n";
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire2\">\n";
+echo add_token_field();
 $sav_file="";
 echo "Les fichiers de sauvegarde sont sauvegardés dans un sous-répertoire du répertoire \"/backup\", dont le nom change de manière aléatoire régulièrement.
 Si vous le souhaitez, vous pouvez uploader un fichier de sauvegarde directement dans ce répertoire.
@@ -1683,6 +1714,7 @@ echo "<h3 id=\"zip\">Créer une archive (Zip) de dossiers de Gepi</h3>\n";
 echo "Une fois créée, pour télécharger l'archive, rendez-vous à la section \"Fichiers de restauration\" de cette page. <br />";
 echo "<p style=\"color: red;\">ATTENTION : veillez à supprimer le fichier créé une fois l'archive téléchargée.</p>";
 echo "<form enctype=\"multipart/form-data\" action=\"accueil_sauve.php\" method=\"post\" name=\"formulaire3\">\n";
+echo add_token_field();
 echo "<br />Dossier à sauvegarder :<br />";
 if ($multisite != 'y'){
     // En attendant d'avoir trouvé une solution élégante, on interdit la sauvegarde des photos en multisite (trop lourde pour les serveurs)

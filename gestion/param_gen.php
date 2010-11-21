@@ -43,6 +43,8 @@ if (!checkAccess()) {
 
 $msg = '';
 if (isset($_POST['sup_logo'])) {
+	check_token();
+
 	$dest = '../images/';
 	$ok = false;
 	if ($f = @fopen("$dest/.test", "w")) {
@@ -61,7 +63,10 @@ if (isset($_POST['sup_logo'])) {
 	}
 
 }
+
 if (isset($_POST['valid_logo'])) {
+	check_token();
+
 	$doc_file = isset($_FILES["doc_file"]) ? $_FILES["doc_file"] : NULL;
 	//if (ereg("\.([^.]+)$", $doc_file['name'], $match)) {
 	//$match=array();
@@ -102,104 +107,111 @@ if (isset($_POST['valid_logo'])) {
 		$msg = "Le fichier sélectionné n'est pas valide !";
 	}
 }
-// Max session length
-if (isset($_POST['sessionMaxLength'])) {
-	if (!(my_ereg ("^[0-9]{1,}$", $_POST['sessionMaxLength'])) || $_POST['sessionMaxLength'] < 1) {
-		$_POST['sessionMaxLength'] = 30;
-	}
-	if (!saveSetting("sessionMaxLength", $_POST['sessionMaxLength'])) {
-		$msg .= "Erreur lors de l'enregistrement da durée max d'inactivité !";
-	}
-}
-if (isset($_POST['gepiSchoolRne'])) {
-	if (!saveSetting("gepiSchoolRne", $_POST['gepiSchoolRne'])) {
-		$msg .= "Erreur lors de l'enregistrement du numéro RNE de l'établissement !";
-	}
-}
-if (isset($_POST['gepiYear'])) {
-	if (!saveSetting("gepiYear", $_POST['gepiYear'])) {
-		$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
-	}
-}
-if (isset($_POST['gepiSchoolName'])) {
-	if (!saveSetting("gepiSchoolName", $_POST['gepiSchoolName'])) {
-		$msg .= "Erreur lors de l'enregistrement du nom de l'établissement !";
-	}
-}
-if (isset($_POST['gepiSchoolStatut'])) {
-	if (!saveSetting("gepiSchoolStatut", $_POST['gepiSchoolStatut'])) {
-		$msg .= "Erreur lors de l'enregistrement du statut de l'établissement !";
-	}
-}
-if (isset($_POST['gepiSchoolAdress1'])) {
-	if (!saveSetting("gepiSchoolAdress1", $_POST['gepiSchoolAdress1'])) {
-		$msg .= "Erreur lors de l'enregistrement de l'adresse !";
-	}
-}
-if (isset($_POST['gepiSchoolAdress2'])) {
-	if (!saveSetting("gepiSchoolAdress2", $_POST['gepiSchoolAdress2'])) {
-		$msg .= "Erreur lors de l'enregistrement de l'adresse !";
-	}
-}
-if (isset($_POST['gepiSchoolZipCode'])) {
-	if (!saveSetting("gepiSchoolZipCode", $_POST['gepiSchoolZipCode'])) {
-		$msg .= "Erreur lors de l'enregistrement du code postal !";
-	}
-}
-if (isset($_POST['gepiSchoolCity'])) {
-	if (!saveSetting("gepiSchoolCity", $_POST['gepiSchoolCity'])) {
-		$msg .= "Erreur lors de l'enregistrement de la ville !";
-	}
-}
-if (isset($_POST['gepiSchoolPays'])) {
-	if (!saveSetting("gepiSchoolPays", $_POST['gepiSchoolPays'])) {
-		$msg .= "Erreur lors de l'enregistrement du pays !";
-	}
-}
-if (isset($_POST['gepiSchoolAcademie'])) {
-	if (!saveSetting("gepiSchoolAcademie", $_POST['gepiSchoolAcademie'])) {
-		$msg .= "Erreur lors de l'enregistrement de l'académie !";
-	}
-}
-if (isset($_POST['gepiSchoolTel'])) {
-	if (!saveSetting("gepiSchoolTel", $_POST['gepiSchoolTel'])) {
-		$msg .= "Erreur lors de l'enregistrement du numéro de téléphone !";
-	}
-}
-if (isset($_POST['gepiSchoolFax'])) {
-	if (!saveSetting("gepiSchoolFax", $_POST['gepiSchoolFax'])) {
-		$msg .= "Erreur lors de l'enregistrement du numéro de fax !";
-	}
-}
-if (isset($_POST['gepiSchoolEmail'])) {
-	if (!saveSetting("gepiSchoolEmail", $_POST['gepiSchoolEmail'])) {
-		$msg .= "Erreur lors de l'adresse électronique !";
-	}
-}
-if (isset($_POST['gepiAdminNom'])) {
-	if (!saveSetting("gepiAdminNom", $_POST['gepiAdminNom'])) {
-		$msg .= "Erreur lors de l'enregistrement du nom de l'administrateur !";
-	}
-}
-if (isset($_POST['gepiAdminPrenom'])) {
-	if (!saveSetting("gepiAdminPrenom", $_POST['gepiAdminPrenom'])) {
-		$msg .= "Erreur lors de l'enregistrement du prénom de l'administrateur !";
-	}
-}
-if (isset($_POST['gepiAdminFonction'])) {
-	if (!saveSetting("gepiAdminFonction", $_POST['gepiAdminFonction'])) {
-		$msg .= "Erreur lors de l'enregistrement de la fonction de l'administrateur !";
-	}
-}
 
-if (isset($_POST['gepiAdminAdress'])) {
-	if (!saveSetting("gepiAdminAdress", $_POST['gepiAdminAdress'])) {
-		$msg .= "Erreur lors de l'enregistrement de l'adresse email !";
-	}
-}
+
 
 if (isset($_POST['is_posted'])) {
 	if ($_POST['is_posted']=='1') {
+		check_token();
+
+
+
+		// Max session length
+		if (isset($_POST['sessionMaxLength'])) {
+			if (!(my_ereg ("^[0-9]{1,}$", $_POST['sessionMaxLength'])) || $_POST['sessionMaxLength'] < 1) {
+				$_POST['sessionMaxLength'] = 30;
+			}
+			if (!saveSetting("sessionMaxLength", $_POST['sessionMaxLength'])) {
+				$msg .= "Erreur lors de l'enregistrement da durée max d'inactivité !";
+			}
+		}
+		if (isset($_POST['gepiSchoolRne'])) {
+			if (!saveSetting("gepiSchoolRne", $_POST['gepiSchoolRne'])) {
+				$msg .= "Erreur lors de l'enregistrement du numéro RNE de l'établissement !";
+			}
+		}
+		if (isset($_POST['gepiYear'])) {
+			if (!saveSetting("gepiYear", $_POST['gepiYear'])) {
+				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
+			}
+		}
+		if (isset($_POST['gepiSchoolName'])) {
+			if (!saveSetting("gepiSchoolName", $_POST['gepiSchoolName'])) {
+				$msg .= "Erreur lors de l'enregistrement du nom de l'établissement !";
+			}
+		}
+		if (isset($_POST['gepiSchoolStatut'])) {
+			if (!saveSetting("gepiSchoolStatut", $_POST['gepiSchoolStatut'])) {
+				$msg .= "Erreur lors de l'enregistrement du statut de l'établissement !";
+			}
+		}
+		if (isset($_POST['gepiSchoolAdress1'])) {
+			if (!saveSetting("gepiSchoolAdress1", $_POST['gepiSchoolAdress1'])) {
+				$msg .= "Erreur lors de l'enregistrement de l'adresse !";
+			}
+		}
+		if (isset($_POST['gepiSchoolAdress2'])) {
+			if (!saveSetting("gepiSchoolAdress2", $_POST['gepiSchoolAdress2'])) {
+				$msg .= "Erreur lors de l'enregistrement de l'adresse !";
+			}
+		}
+		if (isset($_POST['gepiSchoolZipCode'])) {
+			if (!saveSetting("gepiSchoolZipCode", $_POST['gepiSchoolZipCode'])) {
+				$msg .= "Erreur lors de l'enregistrement du code postal !";
+			}
+		}
+		if (isset($_POST['gepiSchoolCity'])) {
+			if (!saveSetting("gepiSchoolCity", $_POST['gepiSchoolCity'])) {
+				$msg .= "Erreur lors de l'enregistrement de la ville !";
+			}
+		}
+		if (isset($_POST['gepiSchoolPays'])) {
+			if (!saveSetting("gepiSchoolPays", $_POST['gepiSchoolPays'])) {
+				$msg .= "Erreur lors de l'enregistrement du pays !";
+			}
+		}
+		if (isset($_POST['gepiSchoolAcademie'])) {
+			if (!saveSetting("gepiSchoolAcademie", $_POST['gepiSchoolAcademie'])) {
+				$msg .= "Erreur lors de l'enregistrement de l'académie !";
+			}
+		}
+		if (isset($_POST['gepiSchoolTel'])) {
+			if (!saveSetting("gepiSchoolTel", $_POST['gepiSchoolTel'])) {
+				$msg .= "Erreur lors de l'enregistrement du numéro de téléphone !";
+			}
+		}
+		if (isset($_POST['gepiSchoolFax'])) {
+			if (!saveSetting("gepiSchoolFax", $_POST['gepiSchoolFax'])) {
+				$msg .= "Erreur lors de l'enregistrement du numéro de fax !";
+			}
+		}
+		if (isset($_POST['gepiSchoolEmail'])) {
+			if (!saveSetting("gepiSchoolEmail", $_POST['gepiSchoolEmail'])) {
+				$msg .= "Erreur lors de l'adresse électronique !";
+			}
+		}
+		if (isset($_POST['gepiAdminNom'])) {
+			if (!saveSetting("gepiAdminNom", $_POST['gepiAdminNom'])) {
+				$msg .= "Erreur lors de l'enregistrement du nom de l'administrateur !";
+			}
+		}
+		if (isset($_POST['gepiAdminPrenom'])) {
+			if (!saveSetting("gepiAdminPrenom", $_POST['gepiAdminPrenom'])) {
+				$msg .= "Erreur lors de l'enregistrement du prénom de l'administrateur !";
+			}
+		}
+		if (isset($_POST['gepiAdminFonction'])) {
+			if (!saveSetting("gepiAdminFonction", $_POST['gepiAdminFonction'])) {
+				$msg .= "Erreur lors de l'enregistrement de la fonction de l'administrateur !";
+			}
+		}
+		
+		if (isset($_POST['gepiAdminAdress'])) {
+			if (!saveSetting("gepiAdminAdress", $_POST['gepiAdminAdress'])) {
+				$msg .= "Erreur lors de l'enregistrement de l'adresse email !";
+			}
+		}
+
 		if (isset($_POST['gepiAdminAdressPageLogin'])) {
 			if (!saveSetting("gepiAdminAdressPageLogin", 'y')) {
 				$msg .= "Erreur lors de l'enregistrement de l'affichage de adresse email sur la page de login !";
@@ -222,11 +234,8 @@ if (isset($_POST['is_posted'])) {
 			}
 		}
 		
-	}
-}
 
-if (isset($_POST['is_posted'])) {
-	if ($_POST['is_posted']=='1') {
+
 		if (isset($_POST['gepiAdminAdressFormHidden'])) {
 			if (!saveSetting("gepiAdminAdressFormHidden", 'n')) {
 				$msg .= "Erreur lors de l'enregistrement de l'affichage de adresse email dans le formulaire [Contacter l'administrateur] !";
@@ -237,258 +246,268 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement du non-affichage de adresse email dans le formulaire [Contacter l'administrateur] !";
 			}
 		}
-	}
-}
 
 
-if (isset($_POST['longmin_pwd'])) {
-	if (!saveSetting("longmin_pwd", $_POST['longmin_pwd'])) {
-		$msg .= "Erreur lors de l'enregistrement de la longueur minimale du mot de passe !";
-	}
-}
 
-if (isset($_POST['mode_generation_pwd_majmin'])) {
-	if (!saveSetting("mode_generation_pwd_majmin", $_POST['mode_generation_pwd_majmin'])) {
-		$msg .= "Erreur lors de l'enregistrement du paramètre Min/Maj sur les mots de passe !";
-	}
-}
-
-if (isset($_POST['is_posted'])) {
-	if (isset($_POST['mode_generation_pwd_excl'])) {
-		if (!saveSetting("mode_generation_pwd_excl", $_POST['mode_generation_pwd_excl'])) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
-		}
-	}
-	else{
-		if (!saveSetting("mode_generation_pwd_excl", 'n')) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
-		}
-	}
-
-	//===============================================================
-	// Traitement des problemes de points d'interrogation à la place des accents
-	if (isset($_POST['mode_utf8_bulletins_pdf'])) {
-		if (!saveSetting("mode_utf8_bulletins_pdf", $_POST['mode_utf8_bulletins_pdf'])) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
-		}
-	}
-	else{
-		if (!saveSetting("mode_utf8_bulletins_pdf", 'n')) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
-		}
-	}
-	/*
-	if (isset($_POST['mode_utf8_listes_pdf'])) {
-		if (!saveSetting("mode_utf8_listes_pdf", $_POST['mode_utf8_listes_pdf'])) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
-		}
-	}
-	else{
-		if (!saveSetting("mode_utf8_listes_pdf", 'n')) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
-		}
-	}
-	*/
-	if (isset($_POST['mode_utf8_visu_notes_pdf'])) {
-		if (!saveSetting("mode_utf8_visu_notes_pdf", $_POST['mode_utf8_visu_notes_pdf'])) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
-		}
-	}
-	else{
-		if (!saveSetting("mode_utf8_visu_notes_pdf", 'n')) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
-		}
-	}
-
-	if (isset($_POST['type_bulletin_par_defaut'])) {
-		if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')) {
-			if (!saveSetting("type_bulletin_par_defaut", $_POST['type_bulletin_par_defaut'])) {
-				$msg .= "Erreur lors de l'enregistrement du paramètre type_bulletin_par_defaut !";
+	
+	
+		if (isset($_POST['longmin_pwd'])) {
+			if (!saveSetting("longmin_pwd", $_POST['longmin_pwd'])) {
+				$msg .= "Erreur lors de l'enregistrement de la longueur minimale du mot de passe !";
 			}
 		}
-		else {
-			$msg .= "Valeur erronée pour l'enregistrement du paramètre type_bulletin_par_defaut !";
+		
+		if (isset($_POST['mode_generation_pwd_majmin'])) {
+			if (!saveSetting("mode_generation_pwd_majmin", $_POST['mode_generation_pwd_majmin'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre Min/Maj sur les mots de passe !";
+			}
 		}
-	}
-
-	/*
-	if (isset($_POST['mode_utf8_releves_pdf'])) {
-		if (!saveSetting("mode_utf8_releves_pdf", $_POST['mode_utf8_releves_pdf'])) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_releves_pdf !";
+	
+		if (isset($_POST['mode_generation_pwd_excl'])) {
+			if (!saveSetting("mode_generation_pwd_excl", $_POST['mode_generation_pwd_excl'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
+			}
 		}
-	}
-	else{
-		if (!saveSetting("mode_utf8_releves_pdf", 'n')) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_releves_pdf !";
+		else{
+			if (!saveSetting("mode_generation_pwd_excl", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
+			}
 		}
-	}
-	*/
-
-	if (isset($_POST['exp_imp_chgt_etab'])) {
-		if (!saveSetting("exp_imp_chgt_etab", $_POST['exp_imp_chgt_etab'])) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre exp_imp_chgt_etab !";
+	
+		//===============================================================
+		// Traitement des problemes de points d'interrogation à la place des accents
+		if (isset($_POST['mode_utf8_bulletins_pdf'])) {
+			if (!saveSetting("mode_utf8_bulletins_pdf", $_POST['mode_utf8_bulletins_pdf'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
+			}
 		}
-	}
-	else{
-		if (!saveSetting("exp_imp_chgt_etab", 'no')) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre exp_imp_chgt_etab !";
+		else{
+			if (!saveSetting("mode_utf8_bulletins_pdf", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_bulletins_pdf !";
+			}
 		}
-	}
-
-	if (isset($_POST['ele_lieu_naissance'])) {
-		if (!saveSetting("ele_lieu_naissance", $_POST['ele_lieu_naissance'])) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
+		/*
+		if (isset($_POST['mode_utf8_listes_pdf'])) {
+			if (!saveSetting("mode_utf8_listes_pdf", $_POST['mode_utf8_listes_pdf'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
+			}
 		}
-	}
-	else{
-		if (!saveSetting("ele_lieu_naissance", 'no')) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
+		else{
+			if (!saveSetting("mode_utf8_listes_pdf", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_listes_pdf !";
+			}
 		}
-	}
-
-	if (isset($_POST['avis_conseil_classe_a_la_mano'])) {
-		if (!saveSetting("avis_conseil_classe_a_la_mano", $_POST['avis_conseil_classe_a_la_mano'])) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre avis_conseil_classe_a_la_mano !";
+		*/
+		if (isset($_POST['mode_utf8_visu_notes_pdf'])) {
+			if (!saveSetting("mode_utf8_visu_notes_pdf", $_POST['mode_utf8_visu_notes_pdf'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
+			}
 		}
-	}
-	else{
-		if (!saveSetting("avis_conseil_classe_a_la_mano", 'n')) {
-			$msg .= "Erreur lors de l'enregistrement du paramètre avis_conseil_classe_a_la_mano !";
+		else{
+			if (!saveSetting("mode_utf8_visu_notes_pdf", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_visu_notes_pdf !";
+			}
 		}
-	}
-
-
-	//===============================================================
-}
-
-// Dénomination du professeur de suivi
-if (isset($_POST['gepi_prof_suivi'])) {
-	if (!saveSetting("gepi_prof_suivi", $_POST['gepi_prof_suivi'])) {
-		$msg .= "Erreur lors de l'enregistrement de gepi_prof_suivi !";
-	}
-}
-
-// Dénomination des professeurs
-if (isset($_POST['denomination_professeur'])) {
-	if (!saveSetting("denomination_professeur", $_POST['denomination_professeur'])) {
-		$msg .= "Erreur lors de l'enregistrement de denomination_professeur !";
-	}
-}
-if (isset($_POST['denomination_professeurs'])) {
-	if (!saveSetting("denomination_professeurs", $_POST['denomination_professeurs'])) {
-		$msg .= "Erreur lors de l'enregistrement de denomination_professeurs !";
-	}
-}
-
-// Dénomination des responsables légaux
-if (isset($_POST['denomination_responsable'])) {
-	if (!saveSetting("denomination_responsable", $_POST['denomination_responsable'])) {
-		$msg .= "Erreur lors de l'enregistrement de denomination_responsable !";
-	}
-}
-if (isset($_POST['denomination_responsables'])) {
-	if (!saveSetting("denomination_responsables", $_POST['denomination_responsables'])) {
-		$msg .= "Erreur lors de l'enregistrement de denomination_responsables !";
-	}
-}
-
-// Dénomination des élèves
-if (isset($_POST['denomination_eleve'])) {
-	if (!saveSetting("denomination_eleve", $_POST['denomination_eleve'])) {
-		$msg .= "Erreur lors de l'enregistrement de denomination_eleve !";
-	}
-}
-if (isset($_POST['denomination_eleves'])) {
-	if (!saveSetting("denomination_eleves", $_POST['denomination_eleves'])) {
-		$msg .= "Erreur lors de l'enregistrement de denomination_eleves !";
-	}
-}
-// Initialiser à 'Boite'
-if (isset($_POST['gepi_denom_boite'])) {
-	if (!saveSetting("gepi_denom_boite", $_POST['gepi_denom_boite'])) {
-		$msg .= "Erreur lors de l'enregistrement de gepi_denom_boite !";
-	}
-}
-if (isset($_POST['gepi_denom_boite_genre'])) {
-	if (!saveSetting("gepi_denom_boite_genre", $_POST['gepi_denom_boite_genre'])) {
-		$msg .= "Erreur lors de l'enregistrement de gepi_denom_boite_genre !";
-	}
-}
-
-if (isset($_POST['gepi_stylesheet'])) {
-	if (!saveSetting("gepi_stylesheet", $_POST['gepi_stylesheet'])) {
-		$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
-	}
-}
-
-if (isset($_POST['num_enregistrement_cnil'])) {
-	if (!saveSetting("num_enregistrement_cnil", $_POST['num_enregistrement_cnil'])) {
-		$msg .= "Erreur lors de l'enregistrement du numéro d'enregistrement à la CNIL !";
-	}
-}
-
-if (isset($_POST['mode_generation_login'])) {
-	if (!saveSetting("mode_generation_login", $_POST['mode_generation_login'])) {
-		$msg .= "Erreur lors de l'enregistrement du mode de génération des logins !";
-	}
-	// On en profite pour mettre à jour la variable $longmax_login -> settings : longmax_login
-			$nbre_carac = 12;
-		if ($_POST['mode_generation_login'] == 'name8' OR $_POST['mode_generation_login'] == 'fname8' OR $_POST['mode_generation_login'] == 'namef8') {
-			$nbre_carac = 8;
+	
+		if (isset($_POST['type_bulletin_par_defaut'])) {
+			if(($_POST['type_bulletin_par_defaut']=='html')||($_POST['type_bulletin_par_defaut']=='pdf')) {
+				if (!saveSetting("type_bulletin_par_defaut", $_POST['type_bulletin_par_defaut'])) {
+					$msg .= "Erreur lors de l'enregistrement du paramètre type_bulletin_par_defaut !";
+				}
+			}
+			else {
+				$msg .= "Valeur erronée pour l'enregistrement du paramètre type_bulletin_par_defaut !";
+			}
 		}
-		elseif ($_POST['mode_generation_login'] == 'fname19' OR $_POST['mode_generation_login'] == 'firstdotname19') {
-			$nbre_carac = 19;
+	
+		/*
+		if (isset($_POST['mode_utf8_releves_pdf'])) {
+			if (!saveSetting("mode_utf8_releves_pdf", $_POST['mode_utf8_releves_pdf'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_releves_pdf !";
+			}
 		}
-		elseif ($_POST['mode_generation_login'] == 'firstdotname') {
-			$nbre_carac = 30;
+		else{
+			if (!saveSetting("mode_utf8_releves_pdf", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre mode_utf8_releves_pdf !";
+			}
 		}
-		else {
-			$nbre_carac = 12;
+		*/
+	
+		if (isset($_POST['exp_imp_chgt_etab'])) {
+			if (!saveSetting("exp_imp_chgt_etab", $_POST['exp_imp_chgt_etab'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre exp_imp_chgt_etab !";
+			}
 		}
-	$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
-	$modif_maxlong = mysql_query($req);
-}
+		else{
+			if (!saveSetting("exp_imp_chgt_etab", 'no')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre exp_imp_chgt_etab !";
+			}
+		}
+	
+		if (isset($_POST['ele_lieu_naissance'])) {
+			if (!saveSetting("ele_lieu_naissance", $_POST['ele_lieu_naissance'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
+			}
+		}
+		else{
+			if (!saveSetting("ele_lieu_naissance", 'no')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre ele_lieu_naissance !";
+			}
+		}
+	
+		if (isset($_POST['avis_conseil_classe_a_la_mano'])) {
+			if (!saveSetting("avis_conseil_classe_a_la_mano", $_POST['avis_conseil_classe_a_la_mano'])) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre avis_conseil_classe_a_la_mano !";
+			}
+		}
+		else{
+			if (!saveSetting("avis_conseil_classe_a_la_mano", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre avis_conseil_classe_a_la_mano !";
+			}
+		}
+	
+	
+		//===============================================================
+	
+	
+		// Dénomination du professeur de suivi
+		if (isset($_POST['gepi_prof_suivi'])) {
+			if (!saveSetting("gepi_prof_suivi", $_POST['gepi_prof_suivi'])) {
+				$msg .= "Erreur lors de l'enregistrement de gepi_prof_suivi !";
+			}
+		}
+		
+		// Dénomination des professeurs
+		if (isset($_POST['denomination_professeur'])) {
+			if (!saveSetting("denomination_professeur", $_POST['denomination_professeur'])) {
+				$msg .= "Erreur lors de l'enregistrement de denomination_professeur !";
+			}
+		}
+		if (isset($_POST['denomination_professeurs'])) {
+			if (!saveSetting("denomination_professeurs", $_POST['denomination_professeurs'])) {
+				$msg .= "Erreur lors de l'enregistrement de denomination_professeurs !";
+			}
+		}
+		
+		// Dénomination des responsables légaux
+		if (isset($_POST['denomination_responsable'])) {
+			if (!saveSetting("denomination_responsable", $_POST['denomination_responsable'])) {
+				$msg .= "Erreur lors de l'enregistrement de denomination_responsable !";
+			}
+		}
+		if (isset($_POST['denomination_responsables'])) {
+			if (!saveSetting("denomination_responsables", $_POST['denomination_responsables'])) {
+				$msg .= "Erreur lors de l'enregistrement de denomination_responsables !";
+			}
+		}
+		
+		// Dénomination des élèves
+		if (isset($_POST['denomination_eleve'])) {
+			if (!saveSetting("denomination_eleve", $_POST['denomination_eleve'])) {
+				$msg .= "Erreur lors de l'enregistrement de denomination_eleve !";
+			}
+		}
+		if (isset($_POST['denomination_eleves'])) {
+			if (!saveSetting("denomination_eleves", $_POST['denomination_eleves'])) {
+				$msg .= "Erreur lors de l'enregistrement de denomination_eleves !";
+			}
+		}
+		// Initialiser à 'Boite'
+		if (isset($_POST['gepi_denom_boite'])) {
+			if (!saveSetting("gepi_denom_boite", $_POST['gepi_denom_boite'])) {
+				$msg .= "Erreur lors de l'enregistrement de gepi_denom_boite !";
+			}
+		}
+		if (isset($_POST['gepi_denom_boite_genre'])) {
+			if (!saveSetting("gepi_denom_boite_genre", $_POST['gepi_denom_boite_genre'])) {
+				$msg .= "Erreur lors de l'enregistrement de gepi_denom_boite_genre !";
+			}
+		}
+		
+		if (isset($_POST['gepi_stylesheet'])) {
+			if (!saveSetting("gepi_stylesheet", $_POST['gepi_stylesheet'])) {
+				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
+			}
+		}
+		
+		if (isset($_POST['num_enregistrement_cnil'])) {
+			if (!saveSetting("num_enregistrement_cnil", $_POST['num_enregistrement_cnil'])) {
+				$msg .= "Erreur lors de l'enregistrement du numéro d'enregistrement à la CNIL !";
+			}
+		}
+		
+		if (isset($_POST['mode_generation_login'])) {
+			if (!saveSetting("mode_generation_login", $_POST['mode_generation_login'])) {
+				$msg .= "Erreur lors de l'enregistrement du mode de génération des logins !";
+			}
+			// On en profite pour mettre à jour la variable $longmax_login -> settings : longmax_login
+					$nbre_carac = 12;
+				if ($_POST['mode_generation_login'] == 'name8' OR $_POST['mode_generation_login'] == 'fname8' OR $_POST['mode_generation_login'] == 'namef8') {
+					$nbre_carac = 8;
+				}
+				elseif ($_POST['mode_generation_login'] == 'fname19' OR $_POST['mode_generation_login'] == 'firstdotname19') {
+					$nbre_carac = 19;
+				}
+				elseif ($_POST['mode_generation_login'] == 'firstdotname') {
+					$nbre_carac = 30;
+				}
+				else {
+					$nbre_carac = 12;
+				}
+			$req = "UPDATE setting SET value = '".$nbre_carac."' WHERE name = 'longmax_login'";
+			$modif_maxlong = mysql_query($req);
+		}
+		
+		
+		if (isset($_POST['unzipped_max_filesize'])) {
+			$unzipped_max_filesize=$_POST['unzipped_max_filesize'];
+			if(substr($unzipped_max_filesize,0,1)=="-") {$unzipped_max_filesize=-1;}
+			elseif(strlen(my_ereg_replace("[0-9]","",$unzipped_max_filesize))!=0) {
+				$unzipped_max_filesize=10;
+				$msg .= "Caractères invalides pour le paramètre unzipped_max_filesize<br />Initialisation à 10 Mo !";
+			}
+		
+			if (!saveSetting("unzipped_max_filesize", $unzipped_max_filesize)) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre unzipped_max_filesize !";
+			}
+		}
 
 
-if (isset($_POST['unzipped_max_filesize'])) {
-	$unzipped_max_filesize=$_POST['unzipped_max_filesize'];
-	if(substr($unzipped_max_filesize,0,1)=="-") {$unzipped_max_filesize=-1;}
-	elseif(strlen(my_ereg_replace("[0-9]","",$unzipped_max_filesize))!=0) {
-		$unzipped_max_filesize=10;
-		$msg .= "Caractères invalides pour le paramètre unzipped_max_filesize<br />Initialisation à 10 Mo !";
-	}
 
-	if (!saveSetting("unzipped_max_filesize", $unzipped_max_filesize)) {
-		$msg .= "Erreur lors de l'enregistrement du paramètre unzipped_max_filesize !";
+		if (isset($_POST['delais_apres_cloture'])) {
+			$delais_apres_cloture=$_POST['delais_apres_cloture'];
+			if (!(my_ereg ("^[0-9]{1,}$", $delais_apres_cloture)) || $delais_apres_cloture < 0) {
+				//$delais_apres_cloture=0;
+				$msg .= "Erreur lors de l'enregistrement de delais_apres_cloture !";
+			}
+			else {
+				if (!saveSetting("delais_apres_cloture", $delais_apres_cloture)) {
+					$msg .= "Erreur lors de l'enregistrement de delais_apres_cloture !";
+				}
+			}
+		}
+		
+		if (isset($_POST['acces_app_ele_resp'])) {
+			$acces_app_ele_resp=$_POST['acces_app_ele_resp'];
+			if (!saveSetting("acces_app_ele_resp", $acces_app_ele_resp)) {
+				$msg .= "Erreur lors de l'enregistrement de acces_app_ele_resp !";
+			}
+		}
+
+
+
 	}
 }
 
 
 if (isset($_POST['gepi_pmv'])) {
+	check_token();
+
 	if (!saveSetting("gepi_pmv", $_POST['gepi_pmv'])) {
 		$msg .= "Erreur lors de l'enregistrement de gepi_pmv !";
 	}
 }
 
-if (isset($_POST['delais_apres_cloture'])) {
-	$delais_apres_cloture=$_POST['delais_apres_cloture'];
-	if (!(my_ereg ("^[0-9]{1,}$", $delais_apres_cloture)) || $delais_apres_cloture < 0) {
-		//$delais_apres_cloture=0;
-		$msg .= "Erreur lors de l'enregistrement de delais_apres_cloture !";
-	}
-	else {
-		if (!saveSetting("delais_apres_cloture", $delais_apres_cloture)) {
-			$msg .= "Erreur lors de l'enregistrement de delais_apres_cloture !";
-		}
-	}
-}
-
-if (isset($_POST['acces_app_ele_resp'])) {
-	$acces_app_ele_resp=$_POST['acces_app_ele_resp'];
-	if (!saveSetting("acces_app_ele_resp", $acces_app_ele_resp)) {
-		$msg .= "Erreur lors de l'enregistrement de acces_app_ele_resp !";
-	}
-}
 
 /*
 if(isset($_POST['is_posted'])){
@@ -525,6 +544,9 @@ require_once("../lib/header.inc");
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 ?>><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <form action="param_gen.php" method="post" name="form1" style="width: 100%;">
+<?php
+echo add_token_field();
+?>
 <table style="width: 100%; border: 0;" cellpadding="5" cellspacing="5" summary='Paramètres'>
 	<tr>
 		<td style="width: 60%;font-variant: small-caps;">
@@ -1065,6 +1087,9 @@ responsables&nbsp;:<br />
 </form>
 <hr />
 <form enctype="multipart/form-data" action="param_gen.php" method="post" name="form2" style="width: 100%;">
+<?php
+echo add_token_field();
+?>
 <table border='0' cellpadding="5" cellspacing="5" summary='Logo'>
 <?php
 echo "<tr><td colspan=2 style=\"font-variant: small-caps;\"><b>Logo de l'établissement : </b></td></tr>\n";
@@ -1091,6 +1116,9 @@ Il a aussi été signalé que les JPEG progressifs/entrelacés peuvent perturber la 
 
 <hr />
 <form enctype="multipart/form-data" action="param_gen.php" method="post" name="form3" style="width: 100%;">
+<?php
+echo add_token_field();
+?>
 <table border='0' cellpadding="5" cellspacing="5" summary='Pmv'>
 	<tr>
 		<td style="font-variant: small-caps;">

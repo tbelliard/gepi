@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -129,6 +129,8 @@ $tab[0]='style_body_backgroundcolor';
 
 //if(isset($_POST['ok'])) {
 if(isset($_POST['is_posted'])) {
+	check_token();
+
 	$err_no=0;
 	$msg="";
 
@@ -987,6 +989,7 @@ $tab_html_couleurs=Array("aliceblue","antiquewhite","aqua","aquamarine","azure",
 */
 
 echo "<form id='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+echo add_token_field();
 	echo "<h2><strong>Couleurs:</strong></h2>\n";
 	// echo "<blockquote>\n";
 		echo "<div class='tableau_param_couleur'>\n";

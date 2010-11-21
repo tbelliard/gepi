@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -42,6 +42,7 @@ include("../fckeditor/fckeditor.php") ;
 if(!isset($msg)){$msg="";}
 
 if (isset($_POST['ok'])) {
+	check_token();
 	$error = false;
 
 	if	(isset($_POST['impression_personnelFCK'])) {
@@ -100,6 +101,8 @@ require_once("../lib/header.inc");
 if (!loadSettings()) {
     die("Erreur chargement settings");
 }
+
+echo add_token_field();
 
 echo "<br />";
 echo "<p>Lors de la création d'un utilisateur, il vous est possible d'imprimer une feuille d'information contenant les paramètres de connexion à GEPI, le texte diffère selon le statut de l'utilisateur créé. Attention, ce texte est au format html !</p>\n";

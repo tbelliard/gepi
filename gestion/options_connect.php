@@ -51,6 +51,8 @@ if (!checkAccess()) {
 // Enregistrement de la durée de conservation des données
 
 if (isset($_POST['duree'])) {
+	check_token();
+
     if (!saveSetting(("duree_conservation_logs"), $_POST['duree'])) {
         $msg = "Erreur lors de l'enregistrement de la durée de conservation des connexions !";
     } else {
@@ -60,6 +62,7 @@ if (isset($_POST['duree'])) {
 
 
 if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1") {
+	check_token();
 
 	if (isset($_POST['auth_sso'])) {
 	    if (!in_array($_POST['auth_sso'], array("none","lemon","cas","lcs"))) {
@@ -165,6 +168,8 @@ if (!loadSettings()) {
 // Suppression du journal de connexion
 
 if (isset($_POST['valid_sup_logs']) ) {
+	check_token();
+
     $sql = "delete from log where END < now()";
     $res = sql_query($sql);
     if ($res) {
@@ -176,6 +181,8 @@ if (isset($_POST['valid_sup_logs']) ) {
 
 // Changement de mot de passe obligatoire
 if (isset($_POST['valid_chgt_mdp'])) {
+	check_token();
+
 	if ((!$session_gepi->auth_ldap && !$session_gepi->auth_sso) || getSettingValue("ldap_write_access")) {
     	$sql = "UPDATE utilisateurs SET change_mdp='y' where login != '".$_SESSION['login']."'";
 	} else {
@@ -193,6 +200,8 @@ if (isset($_POST['valid_chgt_mdp'])) {
 
 //Activation / désactivation de la procédure de réinitialisation du mot de passe par email
 if (isset($_POST['enable_password_recovery'])) {
+	check_token();
+
     if (!saveSetting("enable_password_recovery", $_POST['enable_password_recovery'])) {
         $msg = "Il y a eu un problème lors de l'enregistrement du paramètre d'activation/désactivation de la procédure de récupération automatisée des mots de passe.";
     } else {
@@ -218,6 +227,7 @@ echo "<p class=bold><a href=\"".$retour."\"><img src='../images/icons/back.png' 
 //
 echo "<h3 class='gepi'>Mots de passe perdus</h3>\n";
 echo "<form action=\"options_connect.php\" method=\"post\">\n";
+echo add_token_field();
 echo "<input type='radio' name='enable_password_recovery' value='no' id='label_1b'";
 if (getSettingValue("enable_password_recovery")=='no') echo " checked ";
 echo " /> <label for='label_1b' style='cursor: pointer;'>Désactiver la procédure automatisée de récupération de mot de passe</label>\n";
@@ -242,6 +252,7 @@ if ($session_gepi->auth_locale ||
 echo "<h3 class='gepi'>Changement du mot de passe obligatoire lors de la prochaine connexion</h3>\n";
 echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>tous les utilisateurs</b> dont le mot de passe est éditable par Gepi (les utilisateurs locaux, ou bien tous les utilisateurs si un accès LDAP en écriture a été configuré) seront amenés à changer leur mot de passe lors de leur prochaine connexion.</p>\n";
 echo "<form action=\"options_connect.php\" name=\"form_chgt_mdp\" method=\"post\">\n";
+echo add_token_field();
 echo "<center><input type=\"submit\" name=\"valid_chgt_mdp\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir forcer le changement de mot de passe de tous les utilisateurs ?', 'Confirmation')\" /></center>\n";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
 echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;\"/>\n";
@@ -260,6 +271,7 @@ echo "<p>Si vous paramétrez un accès LDAP en écriture, les mots de passe des uti
 echo "<p>Si vous utilisez CAS, vous devez entrer les informations de configuration du serveur CAS dans le fichier /secure/config_cas.inc.php (un modèle de configuration se trouve dans le fichier /secure/config_cas.cfg).</p>\n";
 echo "<p>Si vous utilisez l'authentification sur serveur LDAP, ou bien que vous activez l'accès LDAP en écriture, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur (un modèle se trouve dans /secure/config_ldap.cfg).</p>\n";
 echo "<form action=\"options_connect.php\" name=\"form_auth\" method=\"post\">\n";
+echo add_token_field();
 
 echo "<p><strong>Modes d'authentification :</strong></p>\n";
 echo "<p><input type='checkbox' name='auth_locale' value='yes' id='label_auth_locale'";
@@ -391,6 +403,7 @@ echo "<p>Conformément à la loi loi informatique et liberté 78-17 du 6 janvier 19
 Cependant par sécurité, il est conseillé de conserver une trace des connexions sur un laps de temps suffisamment long.
 </p>\n";
 echo "<form action=\"options_connect.php\" name=\"form_chgt_duree\" method=\"post\">\n";
+echo add_token_field();
 echo "Durée de conservation des informations sur les connexions : <select name=\"duree\" size=\"1\">\n";
 echo "<option ";
 $duree = getSettingValue("duree_conservation_logs");
@@ -427,6 +440,7 @@ echo "<p>Nombre d'entrées actuellement présentes dans le journal de connexion : 
 echo "Actuellement, le journal contient l'historique des connexions depuis le <b>".$jour."/".$mois."/".$annee."</b></p>\n";
 echo "<p><b>ATTENTION : </b>En validant le bouton ci-dessous, <b>toutes les entrées du journal de connexion (hormis les connexions en cours) seront supprimées</b>.</p>\n";
 echo "<form action=\"options_connect.php\" name=\"form_sup_logs\" method=\"post\">\n";
+echo add_token_field();
 echo "<center><input type=\"submit\" name=\"valid_sup_logs\" value=\"Valider\" onclick=\"return confirmlink(this, 'Êtes-vous sûr de vouloir supprimer tout l\'historique du journal de connexion ?', 'Confirmation')\" /></center>\n";
 echo "<input type=hidden name=mode_navig value='$mode_navig' />\n";
 echo "</form><br/>\n";

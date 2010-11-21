@@ -103,6 +103,8 @@ if($_SESSION['statut']!="administrateur"){
 	// On traite si c'est demandé
 			$messageMenu = '';
 if ($modifier_le_menu == "ok") {
+	check_token();
+
 	// On fait la modif demandée
 	// pour l'administrateur général
 	if ($_SESSION["statut"] == "administrateur"){
@@ -135,6 +137,8 @@ if ($modifier_le_menu == "ok") {
 	$message_header_prof = NULL;
 
 if ($modifier_entete_prof == 'ok') {
+	check_token();
+
 	// On traite alors la demande
 	$reglage = isset($_POST['header_bas']) ? $_POST['header_bas'] : 'n';
 
@@ -158,7 +162,8 @@ if((isset($page))&&($_SESSION['statut']=="administrateur")){
 	}
 }
 
-if(isset($enregistrer)){
+if(isset($enregistrer)) {
+	check_token();
 	for($i=0;$i<count($prof);$i++){
 		//if($page=='accueil_simpl'){
 		if(($page=='accueil_simpl')||($_SESSION['statut']=='professeur')){
@@ -392,6 +397,7 @@ else{
 	}
 	echo "</div>\n";
 
+	echo add_token_field();
 
 	unset($prof);
 	$prof=array();
@@ -981,6 +987,11 @@ if ($_SESSION["statut"] == "administrateur") {
 if ($aff == "oui") {
 	echo '
 		<form name="change_menu" method="post" action="./config_prefs.php">
+';
+
+	echo add_token_field();
+
+	echo '
 	<fieldset id="afficherBarreMenu" style="border: 1px solid grey;">
 		<legend style="border: 1px solid grey;">Gérer la barre horizontale du menu</legend>
 			<input type="hidden" name="modifier_le_menu" value="ok" />
@@ -1004,6 +1015,12 @@ if ($_SESSION["statut"] == 'administrateur') {
 	// On propose de pouvoir obliger tous les professeurs à avoir un header court
 	echo '
 		<form name="change_header_prof" method="post" action="config_prefs.php">
+';
+
+	echo add_token_field();
+
+	echo '
+
 			<fieldset style="border: 1px solid grey;">
 				<legend style="border: 1px solid grey;">Gérer la hauteur de l\'entête pour les professeurs</legend>
 				<input type="hidden" name="modifier_entete_prof" value="ok" />

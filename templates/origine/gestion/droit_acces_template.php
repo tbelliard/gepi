@@ -70,7 +70,9 @@
 <!-- début corps -->
 
   <form action="droits_acces.php" method="post" id="form1">
-	
+	<?php
+		echo add_token_field();
+	?>
 	<p class="center">
 	  <input type="hidden" name="is_posted" value="1" />
 	  <input type="submit" name = "OK" value="Enregistrer" />
