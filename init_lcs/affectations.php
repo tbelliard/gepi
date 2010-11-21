@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -61,16 +61,16 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 // Initialisation
@@ -82,7 +82,7 @@ $titre_page = "Outil d'initialisation de l'année : affectation des matières et d
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold><a href='../init_lcs/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<p class='bold'><a href='../init_lcs/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 function is_prof($login,$matiere) {
     $test = sql_query1("select count(id_professeur) from j_professeurs_matieres where id_professeur = '".$login."' and id_matiere = '".$matiere."'");
@@ -92,6 +92,8 @@ function is_prof($login,$matiere) {
         return false;
 }
 if (isset($_POST['is_posted'])) {
+	check_token();
+
     // L'admin a validé la procédure, on procède donc...
     $j=0;
     while ($j < count($liste_tables_del)) {
@@ -210,6 +212,7 @@ if (isset($_POST['is_posted'])) {
     echo "<p>Tous les élèves sont systématiquement affectés pour toutes les périodes de l'année.</p>";
     echo "<p>Le résultat n'est pas parfait et vous aurez besoin de faire des ajustements classe par classe.</p>";
     echo "<form enctype='multipart/form-data' action='affectations.php' method=post>";
+	echo add_token_field();
     echo "<input type=hidden name='is_posted' value='yes'>";
     echo "<input type=hidden name='record' value='no'>";
     echo "<p>Etes-vous sûr de vouloir continuer ?</p>";

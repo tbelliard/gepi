@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -51,16 +51,16 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 $liste_tables_del = array(
@@ -119,6 +119,8 @@ require_once("../lib/header.inc");
 echo "<p class=bold><a href='../init_lcs/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 if (isset($_POST['is_posted'])) {
+	check_token();
+
     // L'admin a validé la procédure, on procède donc...
 
     // On se connecte au LDAP
@@ -203,6 +205,7 @@ if (isset($_POST['is_posted'])) {
     } elseif ($_POST['record'] == "no") {
 
             echo "<form action='disciplines.php' method='post' name='formulaire'>";
+			echo add_token_field();
             echo "<input type=hidden name='record' value='yes'>";
             echo "<input type=hidden name='is_posted' value='yes'>";
 
@@ -254,6 +257,7 @@ if (isset($_POST['is_posted'])) {
     echo "<li>Association professeurs <-> matières</li>";
     echo "</ul>";
     echo "<form enctype='multipart/form-data' action='disciplines.php' method=post>";
+	echo add_token_field();
     echo "<input type=hidden name='is_posted' value='yes'>";
     echo "<input type=hidden name='record' value='no'>";
 

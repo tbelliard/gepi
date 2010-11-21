@@ -3,7 +3,7 @@
  *
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -56,11 +56,12 @@ echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour
 echo "</p>\n";
 
 // Traitement particulier LCS : on met à jour l'identifiant national dans eleves (np_gep)
-if(getSettingValue('auth_sso')=="lcs")
- echo "<h2>Mise à jour des données élèves et responsables</h2>\n";
-else
- echo "<h2>Conversion eleves/responsables</h2>\n";
-
+if(getSettingValue('auth_sso')=="lcs") {
+	echo "<h2>Mise à jour des données élèves et responsables</h2>\n";
+}
+else {
+	echo "<h2>Conversion eleves/responsables</h2>\n";
+}
 
 // Suppression de l'adresse de retour mise pour permettre la génération des CSV
 if(isset($_SESSION['ad_retour'])){
@@ -178,9 +179,11 @@ if($temoin==1){
 		if(!isset($confirmer)){
 			echo "<p><b>ATTENTION:</b> Le mode sans SCONET ne permet pas de mises à jour en cours d'année.<br />\nCela signifie que les corrections effectuées sur votre logiciel de gestion des élèves et responsables (<i>changements d'adresses, corrections,...</i>) ne pourront pas être automatiquement importées dans GEPI.<br />Vous aurez donc une double-saisie à effectuer pour gérer ces mises à jour.<br />\nLe mode avec SCONET, lui, permettrait d'importer les corrections en cours d'année.</p>\n";
 			echo "<p>Ce choix est irréversible.<br />\nEtes-vous sûr que vous ne souhaitez pas utiliser l'import avec SCONET?</p>\n";
-			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=2&amp;confirmer=oui'>OUI</a> ou <a href='".$_SERVER['PHP_SELF']."'>NON</a></p>\n";
+			echo "<p><a href='".$_SERVER['PHP_SELF']."?mode=2&amp;confirmer=oui".add_token_in_url()."'>OUI</a> ou <a href='".$_SERVER['PHP_SELF']."'>NON</a></p>\n";
 		}
 		else{
+			check_token(false);
+
 			$erreur=0;
 			$sql="SELECT * FROM eleves ORDER BY nom,prenom";
 			$res1=mysql_query($sql);
@@ -447,6 +450,7 @@ if($temoin==1){
 		if (!isset($is_posted)) {
 			echo "<p>Vous allez importer les fichiers <b>CSV</b> (<i><a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>générés</a> à partir des exports XML de Sconet</i>).</p>\n";
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>\n";
+			echo add_token_field();
 			echo "<input type=hidden name='is_posted' value='yes' />\n";
 			echo "<input type=hidden name='mode' value='1' />\n";
 			echo "<p>Sélectionnez le fichier <b>ELEVES.CSV</b>:<br /><input type=\"file\" size=\"80\" name=\"ele_file\" /></p>\n";
@@ -458,6 +462,8 @@ if($temoin==1){
 			echo "</form>\n";
 		}
 		else {
+			check_token();
+
 			unset($tab_elenoet_non_trouves);
 			$tab_elenoet_non_trouves=array();
 
