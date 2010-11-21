@@ -26,7 +26,9 @@ function add_token_in_url($html_chars = true) {
 	}
 }
 
-function check_token() {
+function check_token($redirection=true) {
+	// Avant le Header, on appelle check_token()
+	// Après le Header, on appelle check_token(false)
 	global $niveau_arbo;
 
 	$csrf_alea=isset($_POST['csrf_alea']) ? $_POST['csrf_alea'] : (isset($_GET['csrf_alea']) ? $_GET['csrf_alea'] : "");
@@ -55,7 +57,13 @@ function check_token() {
 
 	if($csrf_alea!=$_SESSION['gepi_alea']) {
 		action_alea_invalide();
-		header("Location: $pref_arbo/accueil.php?msg=Opération non autorisée");
+		if($redirection) {
+			header("Location: $pref_arbo/accueil.php?msg=Opération non autorisée");
+		}
+		else {
+			echo "<p style='color:red'>Opération non autorisée</p>\n";
+			require("$pref_arbo/lib/footer.inc.php");
+		}
 		die();
 	}
 }
@@ -110,7 +118,7 @@ function action_alea_invalide() {
  * Envoi de mail
  *
  */
-function envoi_mail($sujet, $message,$destinataire) {
+function envoi_mail($sujet, $message, $destinataire) {
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
