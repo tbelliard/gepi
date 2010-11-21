@@ -30,6 +30,8 @@ function check_token($redirection=true) {
 	// Avant le Header, on appelle check_token()
 	// Après le Header, on appelle check_token(false)
 	global $niveau_arbo;
+	global $gepiPath;
+	global $gepiShowGenTime;
 
 	$csrf_alea=isset($_POST['csrf_alea']) ? $_POST['csrf_alea'] : (isset($_GET['csrf_alea']) ? $_GET['csrf_alea'] : "");
 

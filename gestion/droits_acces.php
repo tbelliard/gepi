@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -82,6 +82,10 @@ if (isset($_POST['OK'])) {
   $droitAffiche= new class_droit_acces_template();
 }
 //debug_var();
+
+if(isset($_POST['is_posted'])) {
+	check_token(false);
+}
 
 /*
 

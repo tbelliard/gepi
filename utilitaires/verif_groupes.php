@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //INSERT INTO `droits` VALUES ('/utilitaires/verif_groupes.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Vérification des incohérences d appartenances à des groupes', '');
 if (!checkAccess()) {
@@ -67,9 +67,11 @@ if(!isset($verif)) {
 	echo "<p>Cette page est destinée à repérer la cause d'éventuelles erreurs du type:</p>\n";
 	echo "<pre style='color:green;'>Warning: mysql_result(): Unable to jump to row 0
 on MySQL result index 468 in /var/wwws/gepi/lib/groupes.inc.php on line 143</pre>\n";
-	echo "<p>Pour procéder à la vérification, cliquez sur ce lien: <a href='".$_SERVER['PHP_SELF']."?verif=oui'>Vérification</a><br />(<i>l'opération peut être très longue</i>)</p>\n";
+	echo "<p>Pour procéder à la vérification, cliquez sur ce lien: <a href='".$_SERVER['PHP_SELF']."?verif=oui".add_token_in_url()."'>Vérification</a><br />(<i>l'opération peut être très longue</i>)</p>\n";
 }
-else{
+else {
+	check_token(false);
+
 	$ini=isset($_POST['ini']) ? $_POST['ini'] : NULL;
 
 
@@ -350,7 +352,9 @@ else{
 										echo $info;
 										$chaine_rapport.=$info;
 									}
-									$info="il faudra effectuer un <a href='clean_tables.php?maj=9'>nettoyage des tables de la base de données GEPI</a> (<i>après une <a href='../gestion/accueil_sauve.php?action=dump' target='blank'>sauvegarde de la base</a></i>).<br />\n";
+									$info="il faudra effectuer un <a href='clean_tables.php?maj=9".add_token_in_url()."'>nettoyage des tables de la base de données GEPI</a> (<i>après une <a href='../gestion/accueil_sauve.php?action=";
+									if(getSettingValue("mode_sauvegarde")=="gepi") {$info.="dump";} else {$info.="system_dump";}
+									$info.=add_token_in_url()."' target='blank'>sauvegarde de la base</a></i>).<br />\n";
 									$info.="</p>\n";
 									echo $info;
 									$chaine_rapport.=$info;
@@ -398,6 +402,7 @@ else{
 		$insert=mysql_query($sql);
 
 		echo "<form action=\"".$_SERVER['PHP_SELF']."#suite\" name='suite' method=\"post\">\n";
+		echo add_token_field();
 		echo "<input type=\"hidden\" name=\"verif\" value=\"y\" />\n";
 		echo "<input type=\"hidden\" name=\"ini\" value=\"$ini\" />\n";
 		echo "<input type=\"hidden\" name=\"c_est_parti\" value=\"y\" />\n";
@@ -429,8 +434,10 @@ else{
 			echo "Pour corriger, il faut passer par 'Gestion des bases/Gestion des classes/Gérer les élèves' et contrôler pour quelles périodes l'élève est dans la classe.<br />\n";
 			echo "Puis, cliquer sur le lien 'Matières suivies' pour cet élève et décocher l'élève des périodes souhaitées appropriées.<br />\n";
 			echo "</p>\n";
-			echo "<p>Il se peut également qu'un <a href='clean_tables.php?maj=9'>nettoyage de la base (<i>étape des Groupes</i>)</a> soit nécessaire.<br />\n";
-			echo "Prenez soin de faire une <a href='../gestion/accueil_sauve.php?action=dump' target='blank'>sauvegarde de la base</a> auparavant par précaution.<br />\n";
+			echo "<p>Il se peut également qu'un <a href='clean_tables.php?maj=9".add_token_in_url()."'>nettoyage de la base (<i>étape des Groupes</i>)</a> soit nécessaire.<br />\n";
+			echo "Prenez soin de faire une <a href='../gestion/accueil_sauve.php?action=";
+			if(getSettingValue("mode_sauvegarde")=="gepi") {$info.="dump";} else {$info.="system_dump";}
+			$info.=add_token_in_url()."' target='blank'>sauvegarde de la base</a> auparavant par précaution.<br />\n";
 		}
 
 		echo "<hr />\n";
@@ -471,8 +478,10 @@ else{
 		}
 		else{
 			echo "<p>Une ou des erreurs ont été relevées.<br />\n";
-			echo "Pour corriger, vous devriez procéder à un <a href='clean_tables.php?maj=9'>nettoyage de la base (<i>étape des Groupes</i>)</a>.<br />\n";
-			echo "Prenez soin de faire une <a href='../gestion/accueil_sauve.php?action=dump' target='blank'>sauvegarde de la base</a> auparavant par précaution.<br />\n";
+			echo "Pour corriger, vous devriez procéder à un <a href='clean_tables.php?maj=9".add_token_in_url()."'>nettoyage de la base (<i>étape des Groupes</i>)</a>.<br />\n";
+			echo "Prenez soin de faire une <a href='../gestion/accueil_sauve.php?action=";
+			if(getSettingValue("mode_sauvegarde")=="gepi") {$info.="dump";} else {$info.="system_dump";}
+			$info.=add_token_in_url()."' target='blank'>sauvegarde de la base</a> auparavant par précaution.<br />\n";
 			echo "</p>\n";
 		}
 	}

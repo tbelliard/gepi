@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -49,15 +49,18 @@ require_once("../lib/header.inc");
 ?><p class=bold><a href='index.php#efface_photos'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 <h2>Effacement des photos d'élèves</h2>
 <?php
-		// En multisite, on ajoute le répertoire RNE
-		if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
-			  // On récupère le RNE de l'établissement
-		  $rep_photos='../photos/'.getSettingValue("gepiSchoolRne")."/eleves";
-		}else{
-		  $rep_photos='../photos/eleves';		
-		}
+// En multisite, on ajoute le répertoire RNE
+if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
+	// On récupère le RNE de l'établissement
+	$rep_photos='../photos/'.getSettingValue("gepiSchoolRne")."/eleves";
+}
+else {
+	$rep_photos='../photos/eleves';		
+}
 
-if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))){
+if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))) {
+	check_token(false);
+
 	$handle=opendir($rep_photos);
 	//$tab_file = array();
 	$n=0;
@@ -99,7 +102,7 @@ if((isset($_POST['is_posted']))&&(isset($_POST['supprimer']))){
 		echo "</p>\n";
 	}
 }
-else{
+else {
     echo "<p><b>ATTENTION:</b> Cette procédure efface toutes les photos non associées à des élèves.</p>\n";
 
 	$handle=opendir($rep_photos);
@@ -136,6 +139,7 @@ else{
 
 		echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>\n";
 		echo "<form action='".$_SERVER['PHP_SELF']."' method=\"post\" name=\"formulaire\">\n";
+		echo add_token_field();
 		echo "<input type='hidden' name=is_posted value = '1' />\n";
 		echo "<input type='submit' name='supprimer' value='Supprimer ces photos' />\n";
 		echo "</form>\n";

@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 // INSERT INTO droits VALUES ('/cahier_notes/correction_bug_maj_moy_conteneurs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Correction des moyennes des conteneurs', '');
 /*
@@ -122,6 +122,7 @@ if(!isset($_POST['recalculer'])){
 		}
 		else {
 			echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
+			echo add_token_field();
 
 			for($i=0;$i<count($num_periode);$i++) {
 				echo "<input type='hidden' name='num_periode[]' value='".$num_periode[$i]."' />\n";
@@ -193,6 +194,8 @@ else{
 	else{
 	*/
 		echo "<h2>Recalcul des moyennes des conteneurs</h2>\n";
+
+		check_token(false);
 
 		echo "<p><a href=\"javascript:affiche_lig('affiche')\">Afficher toutes les lignes</a><br />\nOu <a 	href=\"javascript:affiche_lig('cache')\">n'afficher que les changements</a>.</p>\n";
 

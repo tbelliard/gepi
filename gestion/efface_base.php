@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -54,6 +54,9 @@ require_once("../lib/header.inc");
 <?php
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 1)) {
     if ($_POST['confirm']=='Oui') {
+		check_token(false);
+
+		echo add_token_field();
         ?>
         <center><p class='grand'><font color='red'><b>ATTENTION, la suppression des données est irréversible !</b></font></p>
         <form action="efface_base.php" method="post" name="formulaire">
@@ -84,6 +87,7 @@ if (!isset($_POST['is_posted'])) {
     </ul>";
 
 
+	echo add_token_field();
 
     echo "<p><b>Etes-vous sûr de vouloir continuer ?</b></p>";
     echo "<form action=\"efface_base.php\" method=\"post\" name=\"formulaire\">";
@@ -95,6 +99,8 @@ if (!isset($_POST['is_posted'])) {
 }
 
 if (isset($_POST['is_posted']) and ($_POST['is_posted'] == 2)) {
+	check_token(false);
+
    $liste_tables_del = array(
 "absences",
 //"absences_actions",

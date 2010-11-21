@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -74,6 +74,7 @@ $dirname = "donnees_test";
 
 // Téléchargement d'un fichier vers backup
 if (isset($action) and ($action == 'upload'))  {
+	check_token();
     $sav_file = isset($_FILES["sav_file"]) ? $_FILES["sav_file"] : NULL;
     if (!isset($sav_file['tmp_name']) or ($sav_file['tmp_name'] =='')) {
         $msg = "Erreur de téléchargement.";
@@ -94,6 +95,7 @@ if (isset($action) and ($action == 'upload'))  {
 
 // Protection du répertoire backup
 if (isset($action) and ($action == 'protect'))  {
+	check_token();
     include_once("../lib/class.htaccess.php");
     // Instance of the htaccess class
     //$ht = & new htaccess(TRUE);
@@ -136,6 +138,7 @@ if (isset($action) and ($action == 'protect'))  {
 
 // Suppression de la protection
 if (isset($action) and ($action == 'del_protect'))  {
+	check_token();
    if ((@unlink("../backup/".$dirname."/.htaccess")) and (@unlink("../backup/".$dirname."/.htpasswd"))) {
        $msg = "Les fichiers .htaccess et .htpasswd ont été supprimés. Le répertoire /backup n'est plus protégé\n";
    }
@@ -395,11 +398,12 @@ function get_content($db, $table,$from,$limit) {
 $filetype = "sql";
 
 // Chemin vers /backup
-if (!isset($_GET["path"]))
+if (!isset($_GET["path"])) {
     $path="../backup/" . $dirname . "/" ;
-else
+}
+else {
     $path=$_GET["path"];
-
+}
 
 
 // Durée d'une portion
@@ -436,6 +440,8 @@ if (!function_exists("gzwrite")) {
 
 // Confirmation de la restauration
 if (isset($action) and ($action == 'restaure_confirm'))  {
+	check_token(false);
+
     echo "<h3>Confirmation de chargement des données de test. Attention, ne pas faire sur une base de production</h3>\n";
     echo "Fichier sélectionné pour la restauration : <b>".$_GET['file']."</b><br/>";
     echo "Attention, les donnée vont etre écrasées, et il y des entrées (tables de jointures) qui seront dupliquée si les contraintes de cles primaires ne sont pas bonnes.\n";
@@ -447,6 +453,7 @@ if (isset($action) and ($action == 'restaure_confirm'))  {
     echo "<tr>\n";
     echo "<td>\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"gestion_base_test.php\" method=post name=formulaire_oui>\n";
+		echo add_token_field();
 		echo "<table summary='Oui'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";
@@ -485,6 +492,7 @@ $succes_etape='n';
 
 // Restauration
 if (isset($action) and ($action == 'restaure'))  {
+	check_token();
     unset($file);
     $file = isset($_POST["file"]) ? $_POST["file"] : (isset($_GET["file"]) ? $_GET["file"] : NULL);
 
@@ -534,6 +542,7 @@ $quitter_la_page=isset($_POST['quitter_la_page']) ? $_POST['quitter_la_page'] : 
 
 // Sauvegarde
 if (isset($action) and ($action == 'dump'))  {
+	check_token(false);
 	// On enregistre le paramètre pour s'en souvenir la prochaine fois
 	saveSetting("mode_sauvegarde", "gepi");
 	if (isset($_POST['sauve_duree'])) {
@@ -587,18 +596,21 @@ if (isset($action) and ($action == 'dump'))  {
         if ($offsettable>=0){
             if (backupMySql($dbDb,$fichier,$duree,$rowlimit)) {
                 if (isset($debug)) {
-					echo "<br />\n<b>Cliquez <a href=\"gestion_base_test.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
+					echo "<br />\n<b>Cliquez <a href=\"gestion_base_test.php?action=dump&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt&amp;fichier=$fichier&amp;path=$path";
 					if(isset($quitter_la_page)) {echo "&amp;quitter_la_page=y";}
+					echo add_token_in_url();
 					echo "\">ici</a> pour poursuivre la sauvegarde.</b>\n";
 				}
                 if (!isset($debug)) {
-					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"gestion_base_test.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
+					echo "<br />\n<b>Redirection automatique sinon cliquez <a href=\"gestion_base_test.php?action=dump&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt&amp;fichier=$fichier&amp;path=$path";
 					if(isset($quitter_la_page)) {echo "&amp;quitter_la_page=y";}
+					echo add_token_in_url();
 					echo "\">ici</a></b>\n";
 				}
                 if (!isset($debug)) {
 					echo "<script>window.location=\"gestion_base_test.php?action=dump&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier&path=$path";
 					if(isset($quitter_la_page)) {echo "&quitter_la_page=y";}
+					echo add_token_in_url(false);
 					echo "\";</script>\n";
 				}
                 flush();
@@ -708,7 +720,7 @@ if ($n > 0) {
 		if ((my_ereg('^_photos',$value)&&my_ereg('.zip$',$value))||(my_ereg('^_cdt',$value)&&my_ereg('.zip$',$value))){
 		   echo "<td> </td>\n";
 		} else {
-            echo "<td><a href='gestion_base_test.php?action=restaure_confirm&amp;file=$value'>Charger les données</a></td>\n";
+            echo "<td><a href='gestion_base_test.php?action=restaure_confirm&amp;file=$value".add_token_in_url()."'>Charger les données</a></td>\n";
 		}
         echo "<td><a href='savebackup.php?fileid=$m'>Télécharger</a></td>\n";
         echo "<td><a href='../backup/".$dirname."/".$value."'>Téléch. direct</a></td>\n";
@@ -726,7 +738,10 @@ if ($n > 0) {
 <center><input type="submit" value="Sauvegarder" />
 <input type="hidden" name='action' value="dump"/>
 </center>
-
+<?php
+echo add_token_field();
+?>
+</form>
 
 <?php
 echo "<h3>Documentation de la base de test : </h3>\n";
