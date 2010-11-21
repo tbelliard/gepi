@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 10/05/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -27,16 +27,16 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 //**************** EN-TETE *****************
@@ -44,9 +44,11 @@ $titre_page = "Outil d'initialisation de l'année : Importation des professeurs";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<p class=bold><a href='../init_scribe/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<p class='bold'><a href='../init_scribe/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 if (isset($_POST['is_posted'])) {
+	check_token();
+
 	// L'admin a validé la procédure, on procède donc...
 	include "../lib/eole_sync_functions.inc.php";
 	// On commence par récupérer tous les profs depuis le LDAP
@@ -111,6 +113,7 @@ if (isset($_POST['is_posted'])) {
 	echo "<li>Si l'utilisateur existe déjà, ses informations de base sont mises à jour et il passe en état 'actif', devenant directement utilisable</li>";
 	echo "</ul>";
 	echo "<form enctype='multipart/form-data' action='professeurs.php' method=post>";
+	echo add_token_field();
     echo "<input type=hidden name='is_posted' value='yes'>";
     
     echo "<p>Etes-vous sûr de vouloir importer tous les utilisateurs depuis l'annuaire du serveur Scribe vers Gepi ?</p>";

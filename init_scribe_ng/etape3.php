@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2010 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
+ * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
  *
  * This file is part of GEPI.
  *
@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -56,6 +56,7 @@ echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt=
 
 
 if ($_POST['step'] == "3") {
+	check_token(false);
 
     // On se connecte au LDAP
     $ldap->connect();
@@ -231,6 +232,7 @@ if ($_POST['step'] == "3") {
     }
     echo "<br>";
     echo "<form enctype='multipart/form-data' action='etape4.php' method=post>";
+	//echo add_token_field();
     echo "<input type=hidden name='step' value='4'>";
     echo "<input type=hidden name='record' value='no'>";
 
@@ -252,6 +254,7 @@ else {
     }
 
     echo "<form enctype='multipart/form-data' action='etape3.php' method=post>";
+	echo add_token_field();
     echo "<input type=hidden name='step' value='3'>";
     echo "<input type='submit' value='Je suis sûr'>";
     echo "</form>";

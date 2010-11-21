@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -27,16 +27,16 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 $liste_tables_del = array(
@@ -149,9 +149,11 @@ document.formulaire.elements[i+a].value = b ;
 
 
 
-echo "<p class=bold><a href='../init_scribe/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
+echo "<p class='bold'><a href='../init_scribe/index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 if (isset($_POST['step'])) {
+	check_token(false);
+
     // L'admin a validé la procédure, on procède donc...
     include "../lib/eole_sync_functions.inc.php";
 
@@ -266,6 +268,7 @@ if (isset($_POST['step'])) {
             echo "<p>Vous venez d'effectuer l'enregistrement des données concernant les classes. S'il n'y a pas eu d'erreurs, vous pouvez aller à l'étape suivante pour enregistrer les données concernant les élèves.";
             echo "<center>";
             echo "<form enctype='multipart/form-data' action='eleves.php' method=post name='formulaire'>";
+			echo add_token_field();
             echo "<input type=hidden name='record' value='no'>";
             echo "<input type=hidden name='step' value='2'>";
             echo "<input type='submit' value=\"Accéder à l'étape 2\">";
@@ -286,6 +289,7 @@ if (isset($_POST['step'])) {
             $data = ldap_get_entries($ldap_server->ds,$sr);
 
             echo "<form enctype='multipart/form-data' action='eleves.php' method=post name='formulaire'>";
+			echo add_token_field();
             echo "<input type=hidden name='record' value='yes'>";
             echo "<input type=hidden name='step' value='1'>";
 
@@ -511,6 +515,7 @@ if (isset($_POST['step'])) {
     echo "<li>Affectation des élèves aux classes</li>";
     echo "</ul>";
     echo "<form enctype='multipart/form-data' action='eleves.php' method=post>";
+	echo add_token_field();
     echo "<input type=hidden name='step' value='1'>";
     echo "<input type=hidden name='record' value='no'>";
     $j=0;

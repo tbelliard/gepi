@@ -1,9 +1,9 @@
 <?php
 @set_time_limit(0);
 /*
-* Last modification  : 15/09/2006
+* $Id$
 *
-* Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -103,7 +103,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des matières";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class='bold'><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des associations profs-matières-classes (enseignements)</h3></center>";
@@ -128,12 +128,14 @@ if (!isset($_POST["action"])) {
             "DURANT.PATRICE;ANGL2;1S1!1S2!1S3;OPT</p>";
     echo "<p>Veuillez préciser le nom complet du fichier <b>prof_disc_classes.csv</b>.";
     echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>";
+	echo add_token_field();
     echo "<input type='hidden' name='action' value='upload_file' />";
     echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />";
     echo "<p><input type='submit' value='Valider' />";
     echo "</form>";
 
 } else {
+	check_token(false);
     //
     // Quelque chose a été posté
     //
@@ -358,6 +360,7 @@ if (!isset($_POST["action"])) {
                 // Maintenant on va afficher tout ça.
 
                 echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>";
+				echo add_token_field();
                 echo "<input type='hidden' name='action' value='save_data' />";
                 echo "<table>";
                 echo "<tr><td>Login prof</td><td>Matière</td><td>Classe(s)</td><td>Type</td></tr>";

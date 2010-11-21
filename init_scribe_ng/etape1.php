@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2010 Thomas Belliard + auteur initial du script (ac. Orléans-Tours)
+ * Copyright 2001, 2011 Thomas Belliard + auteur initial du script (ac. Orléans-Tours)
  *
  * This file is part of GEPI.
  *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -54,6 +54,7 @@ $ldap = new LDAPServerScribe();
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 if (isset($_POST['step'])) {
+	check_token(false);
 
     // Compteurs pour les insertions
     $classes_inserees = 0;
@@ -261,6 +262,7 @@ if (isset($_POST['step'])) {
     // On a pris que les classes correspondant au SIREN de l'établissement
     echo "<br>";
     echo "<form enctype='multipart/form-data' action='etape2.php' method=post>";
+	//echo add_token_field();
     echo "<input type=hidden name='step' value='1'>";
     echo "<input type=hidden name='record' value='no'>";
 
@@ -283,6 +285,7 @@ else {
     echo "</ul>";
 
     echo "<form enctype='multipart/form-data' action='etape1.php' method=post>";
+	echo add_token_field();
     echo "<input type=hidden name='step' value='1'>";
     echo "<input type=hidden name='record' value='no'>";
 

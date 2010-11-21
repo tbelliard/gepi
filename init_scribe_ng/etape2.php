@@ -3,7 +3,7 @@
 /*
  * $Id: eleves.php 2366 2008-09-10 12:26:23Z delineau $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -61,6 +61,7 @@ echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt=
      *  - Associer les eleves a leurs classes
     */
 if ($_POST['step'] == "2") {
+	check_token(false);
 
     // On se connecte au LDAP
     $ldap->connect();
@@ -177,6 +178,7 @@ if ($_POST['step'] == "2") {
 
         echo "<br>";
         echo "<form enctype='multipart/form-data' action='etape3.php' method=post>";
+		//echo add_token_field();
         echo "<input type=hidden name='step' value='2'>";
         echo "<input type=hidden name='record' value='no'>";
 
@@ -206,6 +208,7 @@ else {
             echo "<p>Voici la liste des classes présentes dans GEPI pour lesquelles aucune p&eacute;riode n'a &eacute;t&eacute; d&eacute;finie,<br>";
             echo "<br><p><b>Choisissez pour chaque classe le nombre de p&eacute;riodes : </b></p>";
             echo "<form enctype='multipart/form-data' action='etape2.php' method=post>";
+			echo add_token_field();
             echo "<input type=hidden name='step' value='2'><br>";
             $classes_concernees = array();
             while($row = mysql_fetch_object($res)) {

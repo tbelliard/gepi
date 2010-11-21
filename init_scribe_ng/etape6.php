@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2010 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
+ * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
  *
  * This file is part of GEPI.
  *
@@ -55,6 +55,7 @@ $ldap = new LDAPServerScribe();
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 if ($_POST['step'] == "6") {
+	check_token(false);
 
     /*
      * Vidage des tables necessaires
@@ -171,6 +172,7 @@ if ($_POST['step'] == "6") {
 
     echo "<br/>";
     echo "<form enctype='multipart/form-data' action='etape7.php' method=post>";
+	//echo add_token_field();
     echo "<input type=hidden name='step' value='7'>";
     echo "<input type=hidden name='record' value='no'>";
 
@@ -187,6 +189,7 @@ else {
     echo "<p>Cette étape reste facultative, si vous préférez créer à la main les enseignements à travers les interfaces dédiées de Gepi.</p>";
     echo "<p>Tous les groupes existants dans la base actuelle seront supprimés !</p>";
     echo "<form enctype='multipart/form-data' action='etape6.php' method=post>";
+	echo add_token_field();
     echo "<input type=hidden name='step' value='6'>";
     echo "<input type='submit' value='Je suis sûr'>";
     echo "</form>";

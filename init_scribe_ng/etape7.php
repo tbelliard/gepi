@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2010 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
+ * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
  *
  * This file is part of GEPI.
  *
@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -55,7 +55,7 @@ $ldap = new LDAPServerScribe();
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 if ($_POST['step'] == "7") {
-
+	check_token(false);
 
     // On se connecte au LDAP
     $ldap->connect();
@@ -114,6 +114,7 @@ if ($_POST['step'] == "7") {
     echo "<br/><br/>Nombre de personnels trouvés : $nb_pers"."<br/><br/>";
 
     echo "<form enctype='multipart/form-data' action='../accueil_admin.php' method=post>";
+	//echo add_token_field();
 
     echo "<p>Si vous etes arriv&eacute;s &agrave; cette &eacute;tape, vous avez termin&eacute; l'import des donnees provenant de l'annuaire ENT.</p>";
     echo "<p>Vous pouvez maintenant aller dans la partie gestion des bases pour affiner les différentes données importées.</p>";
@@ -128,6 +129,7 @@ else {
     echo "<br><p>L'&eacute;tape 7 vous permet d'importer les comptes des personnels non-enseignant de l'établissement.</p>";
     echo "<p>Note importante : l'annuaire LDAP ne permettant pas de distinguer les personnels entre eux, tous les utilisateurs trouvés et n'existant pas déjà dans la base seront initialisés avec le statut 'scolarite'. Il est donc indispensable que vous redéfinissiez les bons statuts dans l'interface de gestion des comptes d'accès.</p>";
     echo "<form enctype='multipart/form-data' action='etape7.php' method=post>";
+	echo add_token_field();
     echo "<input type=hidden name='step' value='7'>";
     echo "<input type='submit' value='Je suis sûr'>";
     echo "</form>";

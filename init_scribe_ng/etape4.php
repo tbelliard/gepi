@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2010 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
+ * Copyright 2001, 2011 Thomas Belliard + auteur du script original (ac. Orléans-Tours)
  *
  * This file is part of GEPI.
  *
@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -55,7 +55,7 @@ $ldap = new LDAPServerScribe();
 echo "<p class=bold><a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>";
 
 if ($_POST['step'] == "4") {
-
+	check_token(false);
 
     // On se connecte au LDAP
     $ldap->connect();
@@ -144,6 +144,7 @@ if ($_POST['step'] == "4") {
     echo "<br/><br/>Professeurs trouvés : $nb_profs"."<br/><br/>";
 
     echo "<form enctype='multipart/form-data' action='etape5.php' method=post>";
+	//echo add_token_field();
     echo "<input type=hidden name='step' value='5'>";
     echo "<input type=hidden name='record' value='no'>";
 
@@ -157,6 +158,7 @@ else {
 
     echo "<br><p>L'&eacute;tape 4 vous permet d'importer les professeurs et leur qualit&eacute; de professeur principal.</p>";
     echo "<form enctype='multipart/form-data' action='etape4.php' method=post>";
+	echo add_token_field();
     echo "<input type=hidden name='step' value='4'>";
     echo "<input type='submit' value='Je suis sûr'>";
     echo "</form>";
