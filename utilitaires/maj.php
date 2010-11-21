@@ -69,7 +69,7 @@ if (isset ($_POST['submit'])) {
 	}
 }
 
-
+//debug_var();
 
 $valid = isset ($_POST["valid"]) ? $_POST["valid"] : 'no';
 $force_maj = isset ($_POST["force_maj"]) ? $_POST["force_maj"] : '';
@@ -133,7 +133,7 @@ if (($resultat_session == '0') and ($valid != 'yes')) {
 	echo('
 		<form action="maj.php" method="POST" style="width: 100%; margin-top: 24px; margin-bottom: 48px;">
 			<div class="center">
-				<H2 align="center"><?php echo "Mise à jour de la base de donnée GEPI<br />(Accès administrateur)"; ?></H2>
+				<H2 align="center">Mise à jour de la base de donnée GEPI<br />(Accès administrateur)</H2>
 			');
 
 	if (isset ($message)) {
@@ -161,7 +161,7 @@ if (($resultat_session == '0') and ($valid != 'yes')) {
 ');
 
 	die();
-};
+}
 
 if ((isset ($_SESSION['statut'])) and ($_SESSION['statut'] != 'administrateur')) {
 	if(($is_lcs_plugin!='yes')||($login_user!='admin')) {
@@ -171,6 +171,8 @@ if ((isset ($_SESSION['statut'])) and ($_SESSION['statut'] != 'administrateur'))
 }
 
 if (isset ($_POST['maj'])) {
+	//check_token();
+
 //if ((isset ($_POST['maj'])) || (($is_lcs_plugin!='yes')&&(isset($login_user))&&($login_user=='admin'))) {
 	$pb_maj = '';
 	// On commence la mise à jour
@@ -261,6 +263,7 @@ if ($pb_maj_bd != 'yes') {
 		if (isset ($_SESSION['statut'])) {
 			echo "<p>Il est vivement conseillé de faire une sauvegarde de la base MySql avant de procéder à la mise à jour</p>";
 			echo "<center><form enctype=\"multipart/form-data\" action=\"../gestion/accueil_sauve.php\" method=post name=formulaire>";
+			//echo add_token_field();
 			if (getSettingValue("mode_sauvegarde") == "mysqldump") {
 				echo "<input type='hidden' name='action' value='system_dump' />";
 			} else {
@@ -270,6 +273,7 @@ if ($pb_maj_bd != 'yes') {
 		}
 		echo "<p>Remarque : la procédure de mise à jour vers la version <b>GEPI " . $gepiVersion . $rc . $beta . "</b> est utilisable à partir d'une version GEPI 1.2 ou plus récente.</p>";
 		echo "<form action=\"maj.php\" method=\"post\">";
+		//echo add_token_field();
 		echo "<p><font color=red><b>ATTENTION : Votre base de données ne semble pas être à jour.";
 		if ($version_old != '')
 		echo " Numéro de version de la base de données : GEPI " . $version_old . $rc_old . $beta_old;
@@ -284,6 +288,7 @@ if ($pb_maj_bd != 'yes') {
 		echo "<p><b>Votre base de données est à jour. Vous n'avez pas de mise à jour à effectuer.</b></p>";
 		echo "<center><p class='grand'><b><a href='../gestion/index.php#maj'>Retour</a></b></p></center>";
 		echo "<form action=\"maj.php\" method=\"post\">";
+		//echo add_token_field();
 		//echo "<p><b>Néanmoins, vous pouvez forcer la mise à jour. Cette procédure, bien que sans risque, n'est utile que dans certains cas précis.</b></font><br />";
 		echo "<p><b>Néanmoins, vous pouvez forcer la mise à jour. Cette procédure, bien que sans risque, n'est utile que dans certains cas précis.</b><br />";
 		echo "Cliquez sur le bouton suivant pour effectuer la mise à jour forcée vers la version <b>GEPI " . $gepiVersion . $rc . $beta . "</b></p>";
@@ -298,6 +303,7 @@ if ($pb_maj_bd != 'yes') {
 	echo "<p><b><font color = 'red'>Une ou plusieurs erreurs ont été rencontrées lors de la dernière mise à jour de la base de données
 .</font></b></p>";
 	echo "<form action=\"maj.php\" method=\"post\">";
+	//echo add_token_field();
 	echo "<p><b>Si vous pensez avoir réglé les problèmes entraînant ces erreurs, vous pouvez tenter une nouvelle mise à jour</b>";
 	echo " en cliquant sur le bouton suivant pour effectuer la mise à jour vers la version <b>GEPI " . $gepiVersion . $rc . $beta . "</b>.</p>";
 	echo "<center><input type=submit value='Tenter une nouvelle mise à jour' /></center>";
