@@ -9,16 +9,16 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if (!checkAccess()) {
-header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 //**************** EN-TETE *****************
@@ -94,7 +94,9 @@ function createRandomPassword() {
 
 
 
-            if(isset($_GET['nettoyage'])){
+            if(isset($_GET['nettoyage'])) {
+				check_token(false);
+
                 //echo "<h1 align='center'>Suppression des CSV</h1>\n";
                 echo "<h2 align='center'>Suppression des CSV</h2>\n";
                 echo "<p>Si des fichiers CSV existent, ils seront supprimés...</p>\n";
@@ -111,14 +113,15 @@ function createRandomPassword() {
                     }
                 }
             }
-            else{
+            else {
                 //echo "<h1 align='center'>Lecture du XML Emploi du temps de Sts-web et génération de CSV</h1>\n";
                 echo "<h2 align='center'>Lecture du XML Emploi du temps de Sts-web et génération de CSV</h2>\n";
-                if(!isset($_POST['is_posted'])){
+                if(!isset($_POST['is_posted'])) {
                     //echo "<p>Cette page permet de remplir des tableaux PHP avec les informations professeurs, matières,... mais pas encore les liaisons profs/matières/classes.<br />Elle génère des fichiers CSV permettant un import des comptes profs pour GEPI.</p>\n";
                     echo "<p>Cette page permet de remplir des tables temporaires avec les informations professeurs, matières,...<br />Elle génère des fichiers CSV permettant un import des comptes profs pour GEPI.</p>\n";
                     echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
                     echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+					echo add_token_field();
                     echo "<p>Veuillez fournir le fichier XML: \n";
                     echo "<p><input type=\"file\" size=\"80\" name=\"xml_file\" />\n";
                     echo "<input type='hidden' name='is_posted' value='yes' />\n";
@@ -130,7 +133,9 @@ function createRandomPassword() {
                     echo "<p><input type='submit' value='Valider' /></p>\n";
                     echo "</form>\n";
                 }
-                else{
+                else {
+					check_token(false);
+
 					$post_max_size=ini_get('post_max_size');
 					$upload_max_filesize=ini_get('upload_max_filesize');
 					$max_execution_time=ini_get('max_execution_time');
@@ -1823,7 +1828,7 @@ die();
                         if($_POST['mdp']=="alea"){
                             echo "<p>Voici également une <a href='../backup/$dirname/csv/profs.html' target='_blank'>page des mots de passe initiaux des professeurs</a> à imprimer avant de procéder au nettoyage ci-dessous.</p>\n";
                         }
-                        echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Nettoyage</a></p>\n";
+                        echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui".add_token_in_url()."'>Nettoyage</a></p>\n";
                         echo "</div>\n";
                     }
                     else{

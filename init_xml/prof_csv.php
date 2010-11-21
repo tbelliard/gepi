@@ -29,17 +29,19 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if (!checkAccess()) {
-header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
+
+check_token();
 
 $liste_tables_del = array(
 //"absences",
@@ -98,7 +100,7 @@ require_once("../lib/header.inc");
 //verif_active_dbase();
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des professeurs</h3></center>";
 
@@ -126,6 +128,7 @@ if (!isset($step1)) {
 		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base CSV de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>";
 		echo "</ul>";
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
+		echo add_token_field();
 		echo "<input type=hidden name='step1' value='y' />";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
 		echo "</form>";
@@ -150,6 +153,7 @@ if (!isset($is_posted)) {
 	$del = @mysql_query("DELETE FROM tempo2");
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>";
+	echo add_token_field();
 	echo "<p>Importation du fichier <b>F_wind.csv</b> contenant les données relatives aux professeurs.";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>F_wind.csv</b>.";
 	echo "<input type=hidden name='is_posted' value='yes' />";
@@ -185,7 +189,7 @@ if (!isset($is_posted)) {
 		$fp=fopen($dbf_file['tmp_name'],"r");
 		if(!$fp) {
 		echo "<p>Impossible d'ouvrir le fichier CSV !</p>";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?a=a".add_token_in_url()."'>Cliquer ici </a> pour recommencer !</center></p>";
 		} else {
 			// on constitue le tableau des champs à extraire
 			$tabchamps = array("AINOMU","AIPREN","AICIVI","NUMIND","FONCCO","INDNNI" );
@@ -515,15 +519,15 @@ if (!isset($is_posted)) {
 				echo "<br /><p>Vous pouvez procéder à la cinquième phase d'affectation des matières à chaque professeur, d'affectation des professeurs dans chaque classe et de définition des options suivies par les élèves.</p>";
 			}
 			//echo "<center><p><b><a href='prof_disc_classe.php'>Procéder à la cinquième phase d'initialisation</a></b></p></center><br /><br />";
-			echo "<center><p><b><a href='prof_disc_classe_csv.php'>Procéder à la cinquième phase d'initialisation</a></b></p></center><br /><br />";
+			echo "<center><p><b><a href='prof_disc_classe_csv.php?a=a".add_token_in_url()."'>Procéder à la cinquième phase d'initialisation</a></b></p></center><br /><br />";
 		}
 	} else if (trim($dbf_file['name'])=='') {
 		echo "<p>Aucun fichier n'a été sélectionné !<br />";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?a=a".add_token_in_url()."'>Cliquer ici </a> pour recommencer !</center></p>";
 
 	} else {
 		echo "<p>Le fichier sélectionné n'est pas valide !<br />";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?a=a".add_token_in_url()."'>Cliquer ici </a> pour recommencer !</center></p>";
 	}
 }
 require("../lib/footer.inc.php");

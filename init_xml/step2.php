@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -30,18 +30,20 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
+
+check_token();
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 2";
@@ -174,6 +176,7 @@ if (!isset($step2)) {
         echo "<p><b>ATTENTION ...</b><br />\n";
         echo "Des données concernant la constitution des classes et l'affectation des élèves dans les classes sont présentes dans la base GEPI ! Si vous poursuivez la procédure, ces données seront définitivement effacées !</p>\n";
         echo "<form enctype='multipart/form-data' action='step2.php' method=post>\n";
+		echo add_token_field();
         echo "<input type=hidden name='step2' value='y' />\n";
         echo "<input type='submit' value='Poursuivre la procédure' />\n";
         echo "</form>\n";
@@ -283,7 +286,7 @@ if (isset($is_posted)) {
 
     $res = mysql_query("delete from periodes where verouiller='T'");
     echo "<p>Vous venez d'effectuer l'enregistrement des données concernant les classes. S'il n'y a pas eu d'erreurs, vous pouvez aller à l'étape suivante pour enregistrer les données concernant les élèves.";
-    echo "<center><p><a href='step3.php'>Accéder à l'étape 3</a></p></center>";
+    echo "<center><p><a href='step3.php?a=a".add_token_in_url()."'>Accéder à l'étape 3</a></p></center>";
 } else {
     // On commence par "marquer" les classes existantes dans la base
     $sql = mysql_query("UPDATE periodes SET verouiller='T'");
@@ -293,6 +296,7 @@ if (isset($is_posted)) {
     $nb = mysql_num_rows($call_data);
     $i = "0";
     echo "<form enctype='multipart/form-data' action='step2.php' method=post name='formulaire'>";
+	echo add_token_field();
     echo "<input type=hidden name='is_posted' value='yes' />";
     echo "<p>Les classes en vert indiquent des classes déjà existantes dans la base GEPI.<br />Les classes en rouge indiquent des classes nouvelles et qui vont être ajoutées à la base GEPI.<br /></p>";
     echo "<p>Pour les nouvelles classes, des noms standards sont utilisés pour les périodes (période 1, période 2...), et seule la première période n'est pas verrouillée. Vous pourrez modifier ces paramètres ultérieurement</p>";

@@ -29,17 +29,19 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if (!checkAccess()) {
-header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
+
+check_token();
 
 //=====================================
 // AJOUT: boireaus
@@ -71,7 +73,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des relations pro
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 // On vérifie si l'extension d_base est active
@@ -92,6 +94,7 @@ if (!isset($step1)) {
 		echo "Des données concernant l'affectation de professeurs dans des classes sont actuellement présentes dans la base GEPI<br /></p>";
 		echo "<p>Si vous poursuivez la procédure ces données seront effacées.</p>";
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
+		echo add_token_field();
 		echo "<input type=hidden name='step1' value='y' />";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
 		echo "</form>";
@@ -106,6 +109,7 @@ if (!isset($is_posted)) {
 
 	echo "<p>Importation des fichiers <b>F_men.csv</b> et <b>F_gpd.csv</b> contenant les données de relations entre professeurs, matière et classes.";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>";
+	echo add_token_field();
 	echo "<p>Veuillez préciser le nom complet du fichier <b>F_men.csv</b>.";
 	echo "<p><input type='file' size='80' name='dbf_file' />";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>F_gpd.csv</b>.";
@@ -130,13 +134,13 @@ if (!isset($is_posted)) {
 			//@dbase_close($fp2);
 			echo "<p>Impossible d'ouvrir le fichier F_MEN.CSV !</p>";
 			fclose($fp2);
-			echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?a=a".add_token_in_url()."'>Cliquer ici </a> pour recommencer !</center></p>";
 		} else if (!$fp2) {
 			//echo "<p>Impossible d'ouvrir le fichier F_GPD.DBF !</p>";
 			//@dbase_close($fp);
 			echo "<p>Impossible d'ouvrir le fichier F_GPD.CSV !</p>";
 			fclose($fp);
-			echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?a=a".add_token_in_url()."'>Cliquer ici </a> pour recommencer !</center></p>";
 		} else {
 			// on constitue le tableau des champs à extraire dans $fp2
 			$tabchamps2 = array("GROCOD","DIVCOD");
@@ -542,15 +546,15 @@ if (!isset($is_posted)) {
 				echo "<p>L'importation des relations professeurs/matières et professeurs/classes dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à l'étape suivante d'importation des options suivies par les élèves.</p>";
 
 			}
-			echo "<center><p><a href='init_options.php'>Importer les options suivies par les élèves</a></p></center>";
+			echo "<center><p><a href='init_options.php?a=a".add_token_in_url()."'>Importer les options suivies par les élèves</a></p></center>";
 		}
 	} else if ((trim($dbf_file['name'])=='') or (trim($dbf_file2['name'])=='')) {
 		echo "<p>Veuillez préciser les fichiers !<br />";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?a=a".add_token_in_url()."'>Cliquer ici </a> pour recommencer !</center></p>";
 
 	} else {
 		echo "<p>Fichier(s) sélectionné(s) non valide(s) !<br />";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>Cliquer ici </a> pour recommencer !</center></p>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?a=a".add_token_in_url()."'>Cliquer ici </a> pour recommencer !</center></p>";
 	}
 }
 require("../lib/footer.inc.php");

@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -31,41 +31,43 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 
 if (!checkAccess()) {
-header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année : Importation des élèves - Etape 1";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 // On vérifie si l'extension d_base est active
 //verif_active_dbase();
 
-echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves,  constitution des classes et affectation des élèves dans les classes</h3></center>\n";
+echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation des élèves, constitution des classes et affectation des élèves dans les classes</h3></center>\n";
 
 
 if (!isset($is_posted)) {
 	echo "<p>Vous allez effectuer la première étape : elle consiste à importer le fichier <b>ELEVES.CSV</b> (<i>généré à partir des exports XML de Sconet</i>) contenant toutes les données dans une table temporaire de la base de données de <b>GEPI</b>.";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>ELEVES.CSV</b>.";
 	echo "<form enctype='multipart/form-data' action='step1.php' method=post>\n";
+	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 	echo "<p><input type=submit value='Valider' /></p>\n";
 	echo "</form>\n";
 } else {
+	check_token(false);
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 	if(strtoupper($csv_file['name']) == "ELEVES.CSV"){
 		//$fp = dbase_open($csv_file['tmp_name'], 0);
@@ -236,7 +238,7 @@ if (!isset($is_posted)) {
 			}
 			else {
 				echo "<p>Les $nblignes lignes du fichier ELEVES.CSV ont été analysées.<br />$nb_reg_ok lignes de données correspondant à des élèves de l'année en cours ont été enregistrées dans une table temporaire.<br />Il n'y a pas eu d'erreurs, vous pouvez procéder à l'étape suivante.</p>";
-				echo "<center><p><a href='step2.php'>Accéder à l'étape 2</a></p></center>";
+				echo "<center><p><a href='step2.php?a=a".add_token_in_url()."'>Accéder à l'étape 2</a></p></center>";
 			}
 		}
 	}

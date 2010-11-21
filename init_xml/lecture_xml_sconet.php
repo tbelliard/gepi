@@ -9,12 +9,12 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -83,6 +83,8 @@ function extr_valeur($lig){
 			}
 
 			if(isset($_GET['nettoyage'])){
+				check_token(false);
+
 				//echo "<h1 align='center'>Suppression des CSV</h1>\n";
 				echo "<h2 align='center'>Suppression des CSV</h2>\n";
 				echo "<p class=bold><a href='";
@@ -127,7 +129,7 @@ function extr_valeur($lig){
 					echo "</p>\n";
 					echo "<p>Pour éviter des problèmes de taille maximale des upload, les extractions se font en deux étapes.</p>";
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-
+					echo add_token_field();
 					echo "<input type='radio' name='etape' value='1' id='etape_eleves' checked /> <label for='etape_eleves'>Etape 1: Elèves</label><br />\n";
 					echo "<input type='radio' name='etape' value='2' id='etape_resp' /> <label for='etape_resp'>Etape 2: Responsables</label><br />\n";
 
@@ -136,10 +138,12 @@ function extr_valeur($lig){
 					echo "<p>Les fichiers réclamés ici doivent être récupérés depuis Sconet.<br />Demandez gentiment à votre secrétaire de se rendre dans 'Sconet/Accès Base élèves mode normal/Exploitation/Exports standard/Exports XML génériques' pour récupérer les fichiers ElevesAvecAdresses.xml, Nomenclature.xml et ResponsablesAvecAdresses.xml.</p>\n";
 					echo "</form>\n";
 				}
-				else{
+				else {
 					echo "<a href='".$_SERVER['PHP_SELF']."'> | Autre import</a></p>\n";
 
-					if(!isset($_POST['is_posted'])){
+					check_token(false);
+
+					if(!isset($_POST['is_posted'])) {
 						//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations élèves, responsables,...<br />\n";
 						echo "<p>Cette page permet de remplir des tables temporaires avec les informations élèves, responsables,...<br />\n";
 						echo "</p>\n";
@@ -168,6 +172,7 @@ function extr_valeur($lig){
 						echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
 						*/
 						echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+						echo add_token_field();
 
 						if($etape==1){
 							echo "<p>Veuillez fournir le fichier ElevesAvecAdresses.xml (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
@@ -192,7 +197,7 @@ function extr_valeur($lig){
 						echo "<p><input type='submit' value='Valider' /></p>\n";
 						echo "</form>\n";
 					}
-					else{
+					else {
 						$post_max_size=ini_get('post_max_size');
 						$upload_max_filesize=ini_get('upload_max_filesize');
 						$max_execution_time=ini_get('max_execution_time');
@@ -1411,7 +1416,7 @@ function dragStop(event) {
 							echo "<tr><td>Fichier Etablissements:</td><td><a href='save_csv.php?fileid=9'>etablissements.csv</a></td></tr>\n";
 							echo "<tr><td>Fichier Elève/Etablissement:</td><td><a href='save_csv.php?fileid=10'>eleve_etablissement.csv</a></td></tr>\n";
 							echo "</table>\n";
-							echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Nettoyage</a></p>\n";
+							echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui".add_token_in_url()."'>Nettoyage</a></p>\n";
 
 							if(count($remarques)>0){
 								echo "<p><b>Attention:</b> Des anomalies ont été relevées.<br />Suivez ce lien pour en <a href='#remarques'>consulter le détail</a></p>";
@@ -1953,7 +1958,7 @@ function dragStop(event) {
 							echo "<tr><td>Fichier Responsables:</td><td><a href='save_csv.php?fileid=7'>responsables.csv</a></td></tr>\n";
 							echo "<tr><td>Fichier Adresses:</td><td><a href='save_csv.php?fileid=8'>adresses.csv</a></td></tr>\n";
 							echo "</table>\n";
-							echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Nettoyage</a></p>\n";
+							echo "<p>Pour supprimer les fichiers après récupération: <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui".add_token_in_url()."'>Nettoyage</a></p>\n";
 							if(count($remarques)>0){
 								echo "<p><b>Attention:</b> Des anomalies ont été relevées.<br />Suivez ce lien pour en <a href='#remarques'>consulter le détail</a></p>";
 							}

@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -27,17 +27,17 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 /*
@@ -51,7 +51,7 @@ $titre_page = "Outil d'initialisation de l'année";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="../gestion/index.php#init_xml"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
+<p class="bold"><a href="../gestion/index.php#init_xml"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <p>Vous allez effectuer l'initialisation de l'année scolaire qui vient de débuter.<br />
 <?php
@@ -131,12 +131,12 @@ require_once("../lib/header.inc");
 		<li><p><a href='step1.php'>Procéder à la première phase</a> d'importation des élèves,  de constitution des classes et d'affectation des élèves dans les classes : le fichier <b>ELEVES.CSV</b> est requis.</p></li>
 		<li><p><a href='responsables.php'>Procéder à la deuxième phase</a> d'importation des responsables des élèves : les fichiers <b>PERSONNES.CSV</b>, <b>RESPONSABLES.CSV</b> et <b>ADRESSES.CSV</b> sont requis.</p></li>
 		<li><p><a href='disciplines_csv.php'>Procéder à la troisième phase</a> d'importation des matières : le fichier <b>F_tmt.csv</b> est requis.</p></li>
-		<li><p><a href='prof_csv.php'>Procéder à la quatrième phase</a> d'importation des professeurs : le fichier <b>F_wind.csv</b> est requis.</p></li>
-		<li><p><a href='prof_disc_classe_csv.php'>Procéder à la cinquième phase</a> d'affectation des matières à chaque professeur, d'affectation des professeurs dans chaque classe  et de définition des options suivies par les élèves : les fichiers <b>F_men.csv</b> et <b>F_gpd.csv</b> sont requis.</p></li>
+		<li><p><a href='prof_csv.php?a=a<?php echo add_token_in_url();?>'>Procéder à la quatrième phase</a> d'importation des professeurs : le fichier <b>F_wind.csv</b> est requis.</p></li>
+		<li><p><a href='prof_disc_classe_csv.php?a=a<?php echo add_token_in_url();?>'>Procéder à la cinquième phase</a> d'affectation des matières à chaque professeur, d'affectation des professeurs dans chaque classe  et de définition des options suivies par les élèves : les fichiers <b>F_men.csv</b> et <b>F_gpd.csv</b> sont requis.</p></li>
 
 		<li><p><a href='init_pp.php'>Procéder à la sixième phase</a>: Initialisation des professeurs principaux.</p></li>
 
-		<li><p><a href='clean_tables.php'>Procéder à la septième phase</a> de nettoyage des données : les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p></li>
+		<li><p><a href='clean_tables.php?a=a<?php echo add_token_in_url();?>'>Procéder à la septième phase</a> de nettoyage des données : les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p></li>
 
 	</ul>
 </li>

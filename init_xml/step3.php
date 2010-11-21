@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -42,6 +42,7 @@ if (!checkAccess()) {
     die();
 }
 
+check_token();
 
 // MODIF A FAIRE:
 // ALTER TABLE `eleves` ADD `ele_id` VARCHAR( 10 ) NOT NULL ;
@@ -426,6 +427,7 @@ else {
         if ($affiche != 'partiel') {
             echo "<p>--> Pour n'afficher que les lignes ou des problèmes ont été détectés, cliquez sur le bouton \"Affichage partiel\" :</p>";
             echo "<form enctype='multipart/form-data' action='step3.php' method=post>";
+			echo add_token_field();
             echo "<input type=hidden name='is_posted' value='no' />";
             echo "<input type=hidden name='affiche' value='partiel' />";
             echo "<center><input type='submit' value='Affichage partiel' /></center>";
@@ -433,6 +435,7 @@ else {
         } else {
             echo "<p>--> Pour afficher toutes les lignes, cliquez sur le bouton \"Afficher tout\" :</p>";
             echo "<form enctype='multipart/form-data' action='step3.php' method=post>";
+			echo add_token_field();
             echo "<input type=hidden name='is_posted' value='no' />";
             echo "<input type=hidden name='affiche' value='tout' />";
             echo "<center><input type='submit' value='Afficher tout' /></center>";
@@ -441,6 +444,7 @@ else {
     }
     echo "<p>--> Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>";
     echo "<form enctype='multipart/form-data' action='step3.php' method=post>";
+	echo add_token_field();
 
     //echo "<p>Si vous disposez d'un fichier ELEVE_ETABLISSEMENT.CSV, vous pouvez le fournir maintenant:<br />";
     //echo "<input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";

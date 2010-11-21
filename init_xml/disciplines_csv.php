@@ -4,7 +4,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -104,7 +104,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des matières";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 
 <?php
 
@@ -129,6 +129,7 @@ if (!isset($step1)) {
 		echo "<p>Seules la table contenant les matières et la table mettant en relation les matières et les professeurs seront conservées.</p>";
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
+		echo add_token_field();
 		echo "<input type=hidden name='step1' value='y' />";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
 		echo "</form>";
@@ -140,17 +141,20 @@ if (!isset($step1)) {
 }
 
 if (!isset($is_posted)) {
-	$j=0;
-	while ($j < count($liste_tables_del)) {
-		if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-			$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+	if(isset($step1)) {
+		$j=0;
+		while ($j < count($liste_tables_del)) {
+			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			}
+			$j++;
 		}
-		$j++;
 	}
 
 	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
 	echo "<p>Importation du fichier <b>F_tmt.csv</b> contenant les données relatives aux matières : veuillez préciser le nom complet du fichier <b>F_tmt.csv</b>.";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
+	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />";
 	echo "<input type=hidden name='step1' value='y' />";
 	echo "<p><input type='file' size='80' name='dbf_file' />";
@@ -275,7 +279,7 @@ if (!isset($is_posted)) {
 			} else {
 				echo "<p>L'importation des matières dans la base GEPI a été effectuée avec succès !<br />Vous pouvez procéder à la quatrième phase d'importation des professeurs.</p>";
 			}
-			echo "<center><p><a href='prof_csv.php'>Importation des professeurs</a></p></center>";
+			echo "<center><p><a href='prof_csv.php?a=a".add_token_in_url()."'>Importation des professeurs</a></p></center>";
 		}
 	} else if (trim($dbf_file['name'])=='') {
 		echo "<p>Aucun fichier n'a été sélectionné !<br />";

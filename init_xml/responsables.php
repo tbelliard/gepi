@@ -29,12 +29,12 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 $liste_tables_del = array(
 //"absences",
@@ -88,8 +88,8 @@ $liste_tables_del = array(
 
 
 if (!checkAccess()) {
-header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 //**************** EN-TETE *****************
@@ -121,6 +121,8 @@ if(!isset($step1)) {
 		echo "Des données concernant les responsables sont actuellement présentes dans la base GEPI<br /></p>\n";
 		echo "<p>Si vous poursuivez la procédure ces données seront effacées.</p>\n";
 		echo "<form enctype='multipart/form-data' action='responsables.php' method=post>\n";
+		echo add_token_field();
+		echo "<input type=hidden name='verif_tables_non_vides' value='y' />\n";
 		echo "<input type=hidden name='step1' value='y' />\n";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
 		echo "</form>\n";
@@ -168,22 +170,26 @@ if (!isset($is_posted)) {
 	$res_create_table3=mysql_query($sql);
 
 
-	$j=0;
-	while ($j < count($liste_tables_del)) {
-		if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-		$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+	if(isset($verif_tables_non_vides)) {
+		check_token(false);
+		$j=0;
+		while ($j < count($liste_tables_del)) {
+			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+			$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			}
+			$j++;
 		}
-		$j++;
-	}
 
-	// Suppression des comptes de responsables:
-	$sql="DELETE FROM utilisateurs WHERE statut='responsables';";
-	$del=mysql_query($sql);
+		// Suppression des comptes de responsables:
+		$sql="DELETE FROM utilisateurs WHERE statut='responsables';";
+		$del=mysql_query($sql);
+	}
 
 	echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>";
 	//echo "<p>Importation des fichiers <b>PERSONNES.CSV</b>, <b>RESPONSABLES.CSV</b> et <b>ADRESSES.CSV</b> contenant les données relatives aux responsables : veuillez préciser le nom complet du fichier <b>F_ere.dbf</b>.\n";
 	echo "<p>Importation des fichiers <b>PERSONNES.CSV</b>, <b>RESPONSABLES.CSV</b> et <b>ADRESSES.CSV</b> contenant les données relatives aux responsables.\n";
 	echo "<form enctype='multipart/form-data' action='responsables.php' method=post>\n";
+	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
 	//echo "<input type=hidden name='step1' value='y' />\n";
 	echo "<p>Sélectionnez le fichier <b>PERSONNES.CSV</b>:<br /><input type='file' size='80' name='pers_file' />\n";
@@ -193,6 +199,7 @@ if (!isset($is_posted)) {
 	echo "</form>\n";
 
 } else {
+	check_token(false);
 	$nb_reg_no1=-1;
 	$nb_reg_no2=-1;
 	$nb_reg_no3=-1;
