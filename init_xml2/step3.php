@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -64,6 +64,7 @@ echo "<center><h3 class='gepi'>Première phase d'initialisation<br />Importation 
 echo "<center><h3 class='gepi'>Troisième étape : Enregistrement des élèves et affectation des élèves dans les classes</h3></center>\n";
 
 if (isset($is_posted) and ($is_posted == "yes")) {
+	check_token(false);
     //$call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ERENO,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import ORDER BY DIVCOD,ELENOM,ELEPRE");
     //$call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
     $call_data = mysql_query("SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP,LIEU_NAISSANCE FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
@@ -465,13 +466,14 @@ else {
 			<p>--> Avant d\'enregistrer, vous allez vérifier tous les logins potentiellement erronés.</p>
 			<p><a href="../mod_ent/gestion_ent_eleves.php">Vérifier les logins</a></p>
 		';
-    }else{
+    } else {
 	    echo "<p>--> Pour Enregistrer toutes les données dans la base <b>GEPI</b>, cliquez sur le bouton \"Enregistrer\" !</p>\n";
     	echo "<form enctype='multipart/form-data' action='step3.php' method='post'>\n";
 
 	    //echo "<p>Si vous disposez d'un fichier ELEVE_ETABLISSEMENT.CSV, vous pouvez le fournir maintenant:<br />";
     	//echo "<input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
+		echo add_token_field();
 	    echo "<input type='hidden' name='is_posted' value='yes' />\n";
     	echo "<p style='text-align: center;'><input type='submit' value='Enregistrer' /></p>\n";
     	echo "</form>\n";

@@ -39,8 +39,8 @@ if ($resultat_session == 'c') {
 
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 
@@ -196,6 +196,7 @@ if (!isset($step2)) {
 		echo "<p>Les tables vidées seront&nbsp;: $chaine_tables</p>\n";
 
         echo "<form enctype='multipart/form-data' action='step2.php' method='post'>\n";
+		echo add_token_field();
         echo "<input type=hidden name='step2' value='y' />\n";
         echo "<input type='submit' value='Poursuivre la procédure' />\n";
         echo "</form>\n";
@@ -204,7 +205,7 @@ if (!isset($step2)) {
     }
 }
 
-
+check_token(false);
 
 if (isset($is_posted)) {
     $j=0;
@@ -336,6 +337,7 @@ if (isset($is_posted)) {
     $nb = mysql_num_rows($call_data);
     $i = "0";
     echo "<form enctype='multipart/form-data' action='step2.php' method=post name='formulaire'>";
+	echo add_token_field();
     echo "<input type=hidden name='is_posted' value='yes' />";
     echo "<p>Les classes en vert indiquent des classes déjà existantes dans la base GEPI.<br />Les classes en rouge indiquent des classes nouvelles et qui vont être ajoutées à la base GEPI.<br /></p>";
     echo "<p>Pour les nouvelles classes, des noms standards sont utilisés pour les périodes (période 1, période 2...), et seule la première période n'est pas verrouillée. Vous pourrez modifier ces paramètres ultérieurement</p>";

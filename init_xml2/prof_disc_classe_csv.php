@@ -48,6 +48,9 @@ if($_SESSION['statut']!='administrateur') {
 	die();
 }
 */
+
+check_token();
+
 //===========================================
 
 $step1=isset($_POST['step1']) ? $_POST['step1'] : (isset($_GET['step1']) ? $_GET['step1'] : NULL);
@@ -107,13 +110,17 @@ if (!isset($step1)) {
 
 		echo "<p>Les tables vidées seront&nbsp;: 'j_groupes_professeurs' et 'j_professeurs_matieres'</p>\n";
 
-		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>";
-		echo "<input type=hidden name='step1' value='y' />";
-		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />";
-		echo "</form>";
+		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo add_token_field();
+		echo "<input type='hidden' name='step1' value='y' />\n";
+		echo "<input type='hidden' name='temoin_nettoyage_a_faire' value='y' />\n";
+		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
+		echo "</form>\n";
+		require("../lib/footer.inc.php");
 		die();
 	}
 }
+
 
 $tempdir=get_user_temp_directory();
 if(!$tempdir){
@@ -125,8 +132,11 @@ if(!$tempdir){
 //if (!isset($is_posted)) {
 if (!isset($suite)) {
 
-	$del = @mysql_query("DELETE FROM j_groupes_professeurs");
-	$del = @mysql_query("DELETE FROM j_professeurs_matieres");
+	//if(isset($_POST['temoin_nettoyage_a_faire'])) {
+	//	check_token(false);
+		$del = @mysql_query("DELETE FROM j_groupes_professeurs");
+		$del = @mysql_query("DELETE FROM j_professeurs_matieres");
+	//}
 
 	/*
 	echo "<p>Importation des fichiers <b>F_men.csv</b> et <b>F_gpd.csv</b> contenant les données de relations entre professeurs, matière et classes.";
@@ -918,7 +928,7 @@ if (!isset($suite)) {
 	}
 
 	//}
-	echo "<p align='center'><a href='init_options.php'>Importer les options suivies par les élèves</a></p>\n";
+	echo "<p align='center'><a href='init_options.php?a=a".add_token_in_url()."'>Importer les options suivies par les élèves</a></p>\n";
 	echo "<p><br /></p>\n";
 
 
@@ -1054,7 +1064,7 @@ if (!isset($suite)) {
 	fclose($fich);
 
 	echo "<p>Deux fichiers CSV temporaires ont été générés.<br />Le traitement va pouvoir commencer.</p>\n";
-	echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step1=y&amp;suite=y'>Procéder au traitement</a></p>\n";
+	echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step1=y&amp;suite=y".add_token_in_url()."'>Procéder au traitement</a></p>\n";
 	echo "<p><br /></p>\n";
 
 }
@@ -1499,7 +1509,7 @@ else {
 
             echo "<p>Contrôlez dans la page si vous n'avez pas d'erreur (<i>signalée en rouge le cas échéant</i>), puis vous pouvez procéder à l'étape suivante d'importation des options suivies par les élèves.</p>";
 
-			echo "<center><p><a href='init_options.php'>Importer les options suivies par les élèves</a></p></center>";
+			echo "<center><p><a href='init_options.php?a=a".add_token_in_url()."'>Importer les options suivies par les élèves</a></p></center>";
 			echo "<p><br /></p>\n";
 		}
 	/*

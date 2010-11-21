@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -70,6 +70,7 @@ if (!isset($_POST["action"])) {
 	echo "<p>Remarque : vous pouvez ne spécifier qu'une seule ligne par élève, en indiquant toutes les matières suivies dans le deuxième champ en séparant les identifiants de matières avec un point d'exclamation, mais vous pouvez également avoir une ligne pour une association simple, et avoir autant de lignes que d'enseignements suivis par l'élève.</p>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves_options.csv</b>.\n";
 	echo "<form enctype='multipart/form-data' action='eleves_options.php' method='post'>\n";
+	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
@@ -83,6 +84,7 @@ if (!isset($_POST["action"])) {
 	// Quelque chose a été posté
 	//
 	if ($_POST['action'] == "save_data") {
+		check_token(false);
 		//
 		// On enregistre les données dans la base.
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
@@ -189,6 +191,7 @@ if (!isset($_POST["action"])) {
 
 
 	} else if ($_POST['action'] == "upload_file") {
+		check_token(false);
 		//
 		// Le fichier vient d'être envoyé et doit être traité
 		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
@@ -261,6 +264,7 @@ if (!isset($_POST["action"])) {
 				// Maintenant on va afficher tout ça.
 
 				echo "<form enctype='multipart/form-data' action='eleves_options.php' method='post'>\n";
+				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
 				echo "<table class='boireaus' summary='Elèves/options'>\n";
 				echo "<tr><th>ID interne de l'élève</th><th>Matières</th></tr>\n";

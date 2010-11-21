@@ -51,7 +51,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des professeurs p
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 
 <?php
 
@@ -71,6 +71,7 @@ if (!isset($step1)) {
 		}
 		$j++;
 	}
+
 	if ($flag != 0){
 		echo "<p><b>ATTENTION ...</b><br />\n";
 		echo "Des professeurs principaux sont actuellement définis dans la base GEPI (<i>table 'j_eleves_professeurs'</i>)<br /></p>\n";
@@ -78,6 +79,7 @@ if (!isset($step1)) {
 		echo "<p>Si vous poursuivez la procédure ces données seront supprimées et remplacées par celles de votre import XML.</p>\n";
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo add_token_field();
 		echo "<input type='hidden' name='step1' value='y' />\n";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
 		echo "</form>\n";
@@ -95,13 +97,16 @@ if(!$tempdir){
 }
 
 if (!isset($is_posted)) {
-	$j=0;
-	while ($j < count($liste_tables_del)) {
-		if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-			//echo "DELETE FROM $liste_tables_del[$j]<br />";
-			$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+	if(isset($step1)) {
+		check_token(false);
+		$j=0;
+		while ($j < count($liste_tables_del)) {
+			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+				//echo "DELETE FROM $liste_tables_del[$j]<br />";
+				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+			}
+			$j++;
 		}
-		$j++;
 	}
 
 	if(!file_exists("../temp/$tempdir/f_div.csv")){
@@ -114,6 +119,7 @@ if (!isset($is_posted)) {
 	//echo "<p>Importation du fichier <b>F_div.csv</b> (<i>généré lors de l'importation des professeurs</i>) contenant les associations classe/professeur principal.</p>\n";
 	echo "<p>Importation des associations classe/professeur principal.</p>\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=hidden name='step1' value='y' />\n";
 	//echo "<p><input type='file' size='80' name='dbf_file' />";
@@ -121,6 +127,7 @@ if (!isset($is_posted)) {
 	echo "</form>\n";
 
 } else {
+	check_token(false);
 	//$dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
 	//if(strtoupper($dbf_file['name']) == "F_TMT.DBF") {
 	//if(strtoupper($dbf_file['name']) == "F_DIV.CSV") {
@@ -296,13 +303,13 @@ if (!isset($is_posted)) {
 				if(getSettingValue("mode_sauvegarde")=="mysqldump") {$mode_sauvegarde="system_dump";}
 				else {$mode_sauvegarde="dump";}
 
-				echo "<p>Avant de procéder à un nettoyage des tables pour supprimer les données inutiles, vous devriez effectuer une <a href='../gestion/accueil_sauve.php?action=$mode_sauvegarde&amp;quitter_la_page=y' target='_blank'>sauvegarde</a><br />\n";
+				echo "<p>Avant de procéder à un nettoyage des tables pour supprimer les données inutiles, vous devriez effectuer une <a href='../gestion/accueil_sauve.php?action=$mode_sauvegarde&amp;quitter_la_page=y".add_token_in_url()."' target='_blank'>sauvegarde</a><br />\n";
 				echo "Après cette sauvegarde, effectuez le nettoyage en repassant par 'Gestion générale/Initialisation des données à partir de fichiers DBF et XML/Procéder à la septième phase'.<br />\n";
 				echo "Si les données sont effectivement inutiles, c'est terminé.<br />\n";
 				echo "Sinon, vous pourrez restaurer votre sauvegarde et vous aurez pu noter les associations profs/matières/classes manquantes... à effectuer par la suite manuellement dans 'Gestion des bases'.</p>\n";
 
 				echo "<p>Vous pouvez procéder à l'étape suivante de nettoyage des tables GEPI.</p>\n";
-				echo "<center><p><a href='clean_tables.php'>Suppression des données inutiles</a></p></center>\n";
+				echo "<center><p><a href='clean_tables.php?a=a".add_token_in_url()."'>Suppression des données inutiles</a></p></center>\n";
 			}
 		}
 	/*

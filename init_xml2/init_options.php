@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -42,6 +42,8 @@ if (!checkAccess()) {
 	die();
 }
 
+check_token();
+
 /*
 if($_SESSION['statut']!='administrateur') {
 	header("Location: ../logout.php?auto=1");
@@ -55,7 +57,7 @@ $titre_page = "Outil d'initialisation de l'année | Initialisation  des options p
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 // On vérifie si l'extension d_base est active
 //verif_active_dbase();

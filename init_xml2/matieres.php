@@ -130,6 +130,8 @@
 	// =======================================================
 	// EST-CE ENCORE UTILE?
 	if(isset($_GET['nettoyage'])){
+		check_token(false);
+
 		//echo "<h1 align='center'>Suppression des CSV</h1>\n";
 		echo "<h2>Suppression des XML</h2>\n";
 		echo "<p class=bold><a href='";
@@ -177,7 +179,7 @@
 		echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 		//echo " | <a href='".$_SERVER['PHP_SELF']."'>Autre import</a>";
-		echo " | <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Suppression des fichiers XML existants</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui".add_token_in_url()."'>Suppression des fichiers XML existants</a>";
 		echo "</p>\n";
 		//echo "</div>\n";
 
@@ -208,6 +210,7 @@
 					echo "<p>Les tables vidées seront&nbsp;: $chaine_tables</p>\n";
 
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+					echo add_token_field();
 					echo "<input type=hidden name='verif_tables_non_vides' value='y' />\n";
 					echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
 					echo "</form>\n";
@@ -219,14 +222,17 @@
 			}
 
 
-			$j=0;
-			while ($j < count($liste_tables_del)) {
-				if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-					$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
-				}
-				$j++;
-			}
+			if(isset($verif_tables_non_vides)) {
+				check_token(false);
 
+				$j=0;
+				while ($j < count($liste_tables_del)) {
+					if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+						$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+					}
+					$j++;
+				}
+			}
 
 			echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération que si la constitution des classes a été effectuée !</p>\n";
 
@@ -235,6 +241,7 @@
 			echo "<p>Il faut lui fournir un Export XML réalisé depuis l'application STS-web.<br />Demandez gentiment à votre secrétaire d'accéder à STS-web et d'effectuer 'Mise à jour/Exports/Emplois du temps'.</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo add_token_field();
 			echo "<p>Veuillez fournir le fichier XML <b>sts_emp_<i>RNE</i>_<i>ANNEE</i>.xml</b>&nbsp;: \n";
 			echo "<p><input type=\"file\" size=\"65\" name=\"xml_file\" />\n";
 			echo "<p><input type=\"hidden\" name=\"step\" value=\"0\" />\n";
@@ -248,6 +255,8 @@
 			echo "</form>\n";
 		}
 		else{
+			check_token(false);
+
 			$post_max_size=ini_get('post_max_size');
 			$upload_max_filesize=ini_get('upload_max_filesize');
 			$max_execution_time=ini_get('max_execution_time');

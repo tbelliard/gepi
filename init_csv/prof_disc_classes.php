@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -106,7 +106,7 @@ require_once("../lib/header.inc");
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Sixième phase d'initialisation<br />Importation des associations profs-matières-classes (enseignements)</h3></center>\n";
@@ -131,6 +131,7 @@ if (!isset($_POST["action"])) {
 			"DURANT.PATRICE;ANGL2;1S1!1S2!1S3;OPT</p>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_prof_disc_classes.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>\n";
+	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
 
@@ -144,6 +145,7 @@ if (!isset($_POST["action"])) {
 	// Quelque chose a été posté
 	//
 	if ($_POST['action'] == "save_data") {
+		check_token(false);
 		//
 		// On enregistre les données dans la base.
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
@@ -280,6 +282,7 @@ if (!isset($_POST["action"])) {
 
 
 	} else if ($_POST['action'] == "upload_file") {
+		check_token(false);
 		//
 		// Le fichier vient d'être envoyé et doit être traité
 		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
@@ -358,6 +361,7 @@ if (!isset($_POST["action"])) {
 				// Maintenant on va afficher tout ça.
 
 				echo "<form enctype='multipart/form-data' action='prof_disc_classes.php' method='post'>\n";
+				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
 				echo "<table border='1' class='boireaus' summary='Prof/matière/classe/type'>\n";
 				echo "<tr><th>Login prof</th><th>Matière</th><th>Classe(s)</th><th>Type</th></tr>\n";

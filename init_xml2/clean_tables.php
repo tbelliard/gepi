@@ -4,7 +4,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -44,6 +44,8 @@ if (!checkAccess()) {
 	die();
 }
 
+check_token();
+
 $liste_tables_del = array(
 "classes",
 "eleves",
@@ -68,13 +70,14 @@ $titre_page = "Outil d'initialisation de l'année : Nettoyage des tables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 echo "<center><h3 class='gepi'>Septième phase d'initialisation<br />Nettoyage des tables</h3></center>\n";
 if (!isset($is_posted)) {
 echo "<p><b>ATTENTION ...</b> : vous ne devez procéder à cette opération uniquement si toutes les données (élèves, classes, professeurs, disciplines, options) ont été définies !</p>\n";
 echo "<p>Les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p>\n";
 echo "<form enctype='multipart/form-data' action='clean_tables.php' method='post'>\n";
+echo add_token_field();
 echo "<input type=hidden name='is_posted' value='yes' />\n";
 echo "<p><input type=submit value='Procéder au nettoyage' /></p>\n";
 echo "</form>\n";
@@ -234,7 +237,7 @@ echo "</form>\n";
 	//echo "<p>Fin de la procédure !</p>";
 	echo "<p>Fin de la procédure d'importation!</p>\n";
 
-	echo "<p><a href='clean_temp.php'>Supprimer les XML et CSV pouvant subsister dans votre dossier temporaire.</a></p>\n";
+	echo "<p><a href='clean_temp.php?a=a".add_token_in_url()."'>Supprimer les XML et CSV pouvant subsister dans votre dossier temporaire.</a></p>\n";
 	echo "<p><br /></p>\n";
 
 	//echo "<p><b>Etape ajoutée:</b> Si vous disposez du F_DIV.CSV, vous pouvez <a href='init_pp.php'>initialiser les professeurs principaux</a>.</p>";

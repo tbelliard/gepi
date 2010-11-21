@@ -134,7 +134,7 @@ require_once("../lib/header.inc");
 //verif_active_dbase();
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 echo "<center><h3 class='gepi'>Quatrième phase d'initialisation<br />Importation des professeurs</h3></center>\n";
 
@@ -167,10 +167,12 @@ if (!isset($step1)) {
 
 		echo "<p>Les tables vidées seront&nbsp;: $chaine_tables</p>\n";
 
-		echo "<ul><li>Seules la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matières et les professeurs seront conservées.</li>\n";
+		echo "<ul><li>Seule la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matières et les professeurs seront conservées.</li>\n";
 		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base CSV de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>\n";
 		echo "</ul>\n";
+
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo add_token_field();
 		echo "<input type=hidden name='step1' value='y' />\n";
 		echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
 		echo "</form>\n";
@@ -182,19 +184,23 @@ if (!isset($step1)) {
 }
 
 if (!isset($is_posted)) {
-	$j=0;
-	while ($j < count($liste_tables_del)) {
-		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE '$liste_tables_del[$j]'"));
-		if($test==1){
-			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-				$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+	if(isset($step1)) {
+		check_token(false);
+		$j=0;
+		while ($j < count($liste_tables_del)) {
+			$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE '$liste_tables_del[$j]'"));
+			if($test==1){
+				if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+					$del = @mysql_query("DELETE FROM $liste_tables_del[$j]");
+				}
 			}
+			$j++;
 		}
-		$j++;
 	}
 	$del = @mysql_query("DELETE FROM tempo2");
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 	//echo "<p>Importation du fichier <b>F_wind.csv</b> contenant les données relatives aux professeurs.";
 
 	echo "<p>Importation du fichier <b>sts.xml</b> contenant les données relatives aux professeurs.\n";
@@ -248,6 +254,8 @@ if (!isset($is_posted)) {
 
 }
 else {
+	check_token();
+
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir){
 		echo "<p style='color:red'>Il semble que le dossier temporaire de l'utilisateur ".$_SESSION['login']." ne soit pas défini!?</p>\n";
@@ -937,7 +945,7 @@ else {
 
 	}else{
 
-		echo '<p style="text-align: center; font-weight: bold;"><a href="prof_disc_classe_csv.php">Procéder à la cinquième phase d\'initialisation</a></p>'."\n";
+		echo '<p style="text-align: center; font-weight: bold;"><a href="prof_disc_classe_csv.php?a=a'.add_token_in_url().'">Procéder à la cinquième phase d\'initialisation</a></p>'."\n";
 
 	}
 

@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -114,6 +114,8 @@ $gepiSchoolRne=getSettingValue("gepiSchoolRne") ? getSettingValue("gepiSchoolRne
 
 $en_tete=isset($_POST['en_tete']) ? $_POST['en_tete'] : "no";
 
+//debug_var();
+
 ?>
 <p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
@@ -140,6 +142,7 @@ if (!isset($_POST["action"])) {
 			"</ul>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_eleves.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='eleves.php' method='post'>\n";
+	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
 	echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
@@ -151,6 +154,7 @@ if (!isset($_POST["action"])) {
 	// Quelque chose a été posté
 	//
 	if ($_POST['action'] == "save_data") {
+		check_token(false);
 		//
 		// On enregistre les données dans la base.
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
@@ -398,6 +402,7 @@ if (!isset($_POST["action"])) {
 		saveSetting("conv_new_resp_table", 0);
 
 	} else if ($_POST['action'] == "upload_file") {
+		check_token(false);
 		//
 		// Le fichier vient d'être envoyé et doit être traité
 		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
@@ -457,7 +462,7 @@ if (!isset($_POST["action"])) {
 							//$tabligne[0] = preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])));
 							$tabligne[0] = my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe",preg_replace("/[^A-Za-z .\-àâäéèêëîïôöùûüçÀÄÂÉÈÊËÎÏÔÖÙÛÜÇ]/","",trim(strtoupper($tabligne[0])))))));
 							//=====================================
-							if (strlen($tabligne[0]) > 50) $tabligne[0] = substr($tabligne[0], 0, 50);
+							if (strlen($tabligne[0]) > 50) {$tabligne[0] = substr($tabligne[0], 0, 50);}
 
 							//=====================================
 							// MODIF: boireaus
@@ -533,6 +538,7 @@ if (!isset($_POST["action"])) {
 				// Maintenant on va afficher tout ça.
 
 				echo "<form enctype='multipart/form-data' action='eleves.php' method='post'>\n";
+				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
 				echo "<table class='boireaus' border='1' summary='Tableau des élèves'>\n";
 				echo "<tr><th>Nom</th><th>Prénom</th><th>Sexe</th><th>Date de naissance</th><th>n° étab.</th><th>n° nat.</th><th>Code étab.</th><th>Double.</th><th>Régime</th></tr>\n";

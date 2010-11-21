@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -117,6 +117,7 @@ if (!isset($_POST["action"])) {
 			"</ul>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_responsables.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>\n";
+	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" />\n";
     echo "<p><label for='en_tete' style='cursor:pointer;'>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre</label>&nbsp;<input type='checkbox' name='en_tete' id='en_tete' value='yes' checked /></p>\n";
@@ -129,6 +130,7 @@ if (!isset($_POST["action"])) {
 	// Quelque chose a été posté
 	//
 	if ($_POST['action'] == "save_data") {
+		check_token(false);
 		//
 		// On enregistre les données dans la base.
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
@@ -291,6 +293,7 @@ if (!isset($_POST["action"])) {
 		saveSetting("conv_new_resp_table", 0);
 
 	} else if ($_POST['action'] == "upload_file") {
+		check_token(false);
 		//
 		// Le fichier vient d'être envoyé et doit être traité
 		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
@@ -394,6 +397,7 @@ if (!isset($_POST["action"])) {
 				// Maintenant on va afficher tout ça.
 
 				echo "<form enctype='multipart/form-data' action='responsables.php' method='post'>\n";
+				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
 				echo "<table class='boireaus' summary='Tableau des responsables'>\n";
 				echo "<tr><th>ID élève</th><th>Nom</th><th>Prénom</th><th>Civilité</th><th>Ligne 1 adresse</th><th>Ligne 2 adresse</th><th>Code postal</th><th>Commune</th></tr>\n";

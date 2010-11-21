@@ -137,7 +137,8 @@
 
 	// =======================================================
 	// EST-CE ENCORE UTILE?
-	if(isset($_GET['nettoyage'])){
+	if(isset($_GET['nettoyage'])) {
+		check_token(false);
 		//echo "<h1 align='center'>Suppression des CSV</h1>\n";
 		echo "<h2>Suppression des XML</h2>\n";
 		echo "<p class=bold><a href='";
@@ -171,7 +172,7 @@
 		die();
 	}
 	// =======================================================
-	else{
+	else {
 		echo "<center><h3 class='gepi'>Deuxième phase d'initialisation<br />Importation des responsables</h3></center>\n";
 		echo "<p class=bold><a href='";
 		if(isset($_SESSION['ad_retour'])){
@@ -184,15 +185,15 @@
 		echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 		//echo " | <a href='".$_SERVER['PHP_SELF']."'>Autre import</a>";
-		echo " | <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Suppression des fichiers XML existants</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui".add_token_in_url()."'>Suppression des fichiers XML existants</a>";
 		echo "</p>\n";
 		//echo "</div>\n";
 
-
+//debug_var();
 
 
 		//if(!isset($_POST['is_posted'])){
-		if(!isset($step)){
+		if(!isset($step)) {
 			if(!isset($verif_tables_non_vides)) {
 				$j=0;
 				$flag=0;
@@ -216,6 +217,7 @@
 					echo "<p>Les tables vidées seront&nbsp;: $chaine_tables</p>\n";
 
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+					echo add_token_field();
 					echo "<input type=hidden name='verif_tables_non_vides' value='y' />\n";
 					echo "<input type='submit' name='confirm' value='Poursuivre la procédure' />\n";
 					echo "</form>\n";
@@ -263,25 +265,30 @@ temoin VARCHAR( 50 ) NOT NULL
 			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$svg_insert=mysql_query($sql);
 
-
-			$j=0;
-			while ($j < count($liste_tables_del)) {
-				if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-					$sql="DELETE FROM $liste_tables_del[$j];";
-					if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-					$del=@mysql_query($sql);
+	
+			if(isset($verif_tables_non_vides)) {
+				check_token(false);
+				$j=0;
+				while ($j < count($liste_tables_del)) {
+					if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+						$sql="DELETE FROM $liste_tables_del[$j];";
+						if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+						$del=@mysql_query($sql);
+					}
+					$j++;
 				}
-				$j++;
+	
+				// Suppression des comptes de responsables:
+				$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
+				//echo "$sql<br />";
+				if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+				$del=mysql_query($sql);
 			}
-
-			// Suppression des comptes de responsables:
-			$sql="DELETE FROM utilisateurs WHERE statut='responsable';";
-			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-			$del=mysql_query($sql);
 
 			echo "<p><b>ATTENTION ...</b><br />Vous ne devez procéder à cette opération uniquement si la constitution des classes a été effectuée !</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo add_token_field();
 			echo "<p>Veuillez fournir le fichier ResponsablesAvecAdresses.xml:<br />\n";
 			echo "<input type=\"file\" size=\"65\" name=\"responsables_xml_file\" /><br />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
@@ -292,7 +299,8 @@ temoin VARCHAR( 50 ) NOT NULL
 			echo "<p><input type='submit' value='Valider' /></p>\n";
 			echo "</form>\n";
 		}
-		else{
+		else {
+			check_token(false);
 			$post_max_size=ini_get('post_max_size');
 			$upload_max_filesize=ini_get('upload_max_filesize');
 			$max_execution_time=ini_get('max_execution_time');
@@ -621,7 +629,7 @@ temoin VARCHAR( 50 ) NOT NULL
 							//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
 							//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
 
-							echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1'>Suite</a></p>\n";
+							echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
 
 							require("../lib/footer.inc.php");
 							die();
@@ -635,7 +643,9 @@ temoin VARCHAR( 50 ) NOT NULL
 					}
 				}
 			} // Fin du $step=0
-			elseif($step==1){
+			elseif($step==1) {
+				check_token(false);
+
 				$dest_file="../temp/".$tempdir."/responsables.xml";
 				$fp=fopen($dest_file,"r");
 				if(!$fp){
@@ -851,13 +861,14 @@ temoin VARCHAR( 50 ) NOT NULL
 
 					//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_responsables2_import'.</p>\n";
 
-					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2'>Suite</a></p>\n";
+					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2".add_token_in_url()."'>Suite</a></p>\n";
 
 					require("../lib/footer.inc.php");
 					die();
 				}
 			} // Fin du $step=1
 			elseif($step==2){
+				check_token(false);
 				$dest_file="../temp/".$tempdir."/responsables.xml";
 				$fp=fopen($dest_file,"r");
 				if(!$fp){
@@ -1044,13 +1055,14 @@ temoin VARCHAR( 50 ) NOT NULL
 					}
 					//echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_resp_adr_import'.</p>\n";
 
-					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3'>Suite</a></p>\n";
+					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>Suite</a></p>\n";
 
 					require("../lib/footer.inc.php");
 					die();
 				}
 			}
 			else{
+				check_token(false);
 				// TERMINé?
 				// A LA DERNIERE ETAPE, IL FAUT SUPPRIMER LE FICHIER "../temp/".$tempdir."/responsables.xml"
 

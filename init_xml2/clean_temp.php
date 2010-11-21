@@ -41,6 +41,7 @@ if (!checkAccess()) {
 	die();
 }
 
+check_token();
 
 //**************** EN-TETE *****************
 $titre_page = "Outil d'initialisation de l'année: Suppression des fichiers temporaires";
@@ -48,7 +49,7 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil initialisation</a></p>
 <?php
 echo "<center><h3 class='gepi'>Suppression des fichiers temporaires</h3></center>\n";
 
@@ -81,6 +82,7 @@ if (!isset($is_posted)) {
 	}
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 	echo "<input type=hidden name='step1' value='y' />\n";
 	echo "<input type='submit' name='is_posted' value='Supprimer les fichiers' />\n";
 	echo "</form>\n";

@@ -14,7 +14,7 @@
 	} else if ($resultat_session == '0') {
 		header("Location: ../logout.php?auto=1");
 		die();
-	};
+	}
 
 	if (!checkAccess()) {
 		header("Location: ../logout.php?auto=1");
@@ -94,7 +94,8 @@
 
 	// =======================================================
 	// EST-CE ENCORE UTILE?
-	if(isset($_GET['nettoyage'])){
+	if(isset($_GET['nettoyage'])) {
+		check_token(false);
 		//echo "<h1 align='center'>Suppression des CSV</h1>\n";
 		echo "<h2>Suppression des XML</h2>\n";
 		echo "<p class=bold><a href='";
@@ -142,16 +143,17 @@
 		echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 
 		//echo " | <a href='".$_SERVER['PHP_SELF']."'>Autre import</a>";
-		echo " | <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui'>Suppression des fichiers XML existants</a>";
+		echo " | <a href='".$_SERVER['PHP_SELF']."?nettoyage=oui".add_token_in_url()."'>Suppression des fichiers XML existants</a>";
 		echo "</p>\n";
 		//echo "</div>\n";
 
 		//if(!isset($_POST['is_posted'])){
-		if(!isset($step)){
+		if(!isset($step)) {
 			echo "<p>Cette page permet de remplir des tables temporaires avec les informations élèves.<br />\n";
 			echo "</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo add_token_field();
 			echo "<p>Veuillez fournir le fichier ElevesAvecAdresses.xml (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
 			echo "<input type=\"file\" size=\"65\" name=\"eleves_xml_file\" /><br />\n";
 			if ($gepiSettings['unzipped_max_filesize']>=0) {
@@ -163,6 +165,7 @@
 			echo "</form>\n";
 		}
 		else{
+			check_token(false);
 			$post_max_size=ini_get('post_max_size');
 			$upload_max_filesize=ini_get('upload_max_filesize');
 			$max_execution_time=ini_get('max_execution_time');
@@ -520,7 +523,7 @@
 							echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
 
 							//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
-							echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1'>Suite</a></p>\n";
+							echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
 
 							require("../lib/footer.inc.php");
 							die();
@@ -1006,7 +1009,7 @@
 				echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_gep_import2'.</p>\n";
 
 				//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=2'>Suite</a></p>\n";
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2".add_token_in_url()."'>Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();
@@ -1195,7 +1198,7 @@
 					echo "<p>$stat option(s) ont été mises à jour dans la table 'temp_gep_import2'.</p>\n";
 
 					//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=3'>Suite</a></p>\n";
-					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3'>Suite</a></p>\n";
+					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>Suite</a></p>\n";
 
 					require("../lib/footer.inc.php");
 					die();
@@ -1204,6 +1207,7 @@
 			elseif($step==3){
 
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+				echo add_token_field();
 				echo "<p>Les codes numériques des options doivent maintenant être traduits en leurs équivalents alphabétiques (<i>ex.: 030201 -&gt; AGL1</i>).</p>\n";
 				echo "<p>Veuillez fournir le fichier Nomenclature.xml:<br />\n";
 				echo "<input type=\"file\" size=\"65\" name=\"nomenclature_xml_file\" /></p>\n";
@@ -1518,7 +1522,7 @@
 						// NON... traité autrement sans modifier la table 'etablissements'
 						//echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=5'>Suite</a></p>\n";
 						// SI: L'association élève/rne est faite en step3.php
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7'>Suite</a></p>\n";
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7".add_token_in_url()."'>Suite</a></p>\n";
 
 						require("../lib/footer.inc.php");
 						die();
@@ -1536,11 +1540,11 @@
 				if(mysql_num_rows($res_etab)==0){
 					echo "<p>Aucun établissement précédent n'a été trouvé.</p>\n";
 
-					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7'>Suite</a></p>\n";
+					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7".add_token_in_url()."'>Suite</a></p>\n";
 				}
 				else{
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-
+					echo add_token_field();
 					/*
 					// Transféré vers /style.css
 					echo "<style type='text/css'>
@@ -1823,7 +1827,7 @@
 					}
 				}
 
-				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=7".add_token_in_url()."'>Suite</a></p>\n";
 
 				require("../lib/footer.inc.php");
 				die();

@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -47,7 +47,7 @@ $titre_page = "Outil d'initialisation de l'année : Importation des matières";
 require_once("../lib/header.inc");
 //************** FIN EN-TETE ***************
 ?>
-<p class=bold><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil initialisation</a></p>
+<p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/>Retour accueil initialisation</a></p>
 <?php
 
 echo "<center><h3 class='gepi'>Troisième phase d'initialisation<br />Importation des matières</h3></center>\n";
@@ -66,6 +66,7 @@ if (!isset($_POST["action"])) {
 			"</ul>\n";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>g_disciplines.csv</b>.</p>\n";
 	echo "<form enctype='multipart/form-data' action='disciplines.php' method='post'>\n";
+	echo add_token_field();
 	echo "<input type='hidden' name='action' value='upload_file' />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 	//echo "<p><input type=\"checkbox\" name=\"ligne_entete\" value='y' /> Cocher si le fichier comporte une ligne d'entête.</p>\n";
@@ -78,6 +79,7 @@ if (!isset($_POST["action"])) {
 	// Quelque chose a été posté
 	//
 	if ($_POST['action'] == "save_data") {
+		check_token(false);
 		//
 		// On enregistre les données dans la base.
 		// Le fichier a déjà été affiché, et l'utilisateur est sûr de vouloir enregistrer
@@ -150,6 +152,7 @@ if (!isset($_POST["action"])) {
 
 
 	} else if ($_POST['action'] == "upload_file") {
+		check_token(false);
 		//
 		// Le fichier vient d'être envoyé et doit être traité
 		// On va donc afficher le contenu du fichier tel qu'il va être enregistré dans Gepi
@@ -220,6 +223,7 @@ if (!isset($_POST["action"])) {
 				// Maintenant on va afficher tout ça.
 
 				echo "<form enctype='multipart/form-data' action='disciplines.php' method='post'>\n";
+				echo add_token_field();
 				echo "<input type='hidden' name='action' value='save_data' />\n";
 				echo "<table border='1' class='boireaus' summary='Tableau des matières'>\n";
 				echo "<tr><th>Nom court (unique)</th><th>Nom long</th></tr>\n";
