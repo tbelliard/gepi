@@ -28,8 +28,8 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
@@ -45,6 +45,8 @@ $_SESSION["retour"] = 'admin_ct';
 
 // Suppression d'un ou plusieurs cahiers de texte
 if (isset($_POST['sup_ct'])) {
+	check_token();
+
   //$sql="SELECT DISTINCT id_groupe, id_login FROM ct_entry ORDER BY id_groupe;";
   $sql="SELECT DISTINCT id_groupe FROM ct_entry ORDER BY id_groupe;";
   //echo "$sql<br />\n";
@@ -156,6 +158,7 @@ if (isset($_POST['sup_ct'])) {
 
 // Modification d'un cahier de texte - Etape 2
 if (isset($_POST['action'])) {
+	check_token();
   $id_groupe = $_POST['id_groupe'];
   $id_prop = $_POST['id_prop'];
 
@@ -193,6 +196,7 @@ require_once("../lib/header.inc");
 
 // Modification d'un cahier de texte - Etape 1
 if (isset($_GET['action'])) {
+	check_token(false);
   echo "<p class='bold'><a href=\"admin_ct.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
   $id_groupe = $_GET['id_groupe'];
   $id_prop = $_GET['id_prop'];
@@ -221,6 +225,7 @@ if (isset($_GET['action'])) {
 
   if ($_GET['action'] == 'modif_groupe') {
      echo "<form action=\"admin_ct.php\" name=\"formulaire2\" method=\"post\">\n";
+	echo add_token_field();
      echo "<H2>Cahier de texte - Modification du groupe</h2>\n";
      echo "<p>Groupe actuel : <b>".$nom_groupe."</b><br />\n";
      echo "Dans la (les) classe(s) de : <b>".$classes."</b><br />\n";
@@ -259,8 +264,10 @@ if (isset($_GET['action'])) {
   }
 
   if ($_GET['action'] == 'modif_prop') {
+	check_token(false);
 
      echo "<form action=\"admin_ct.php\" name=\"formulaire2\" method=\"post\">\n";
+	echo add_token_field();
      echo "<H2>Cahier de texte - Modification du propriétaire</h2>\n";
      echo "<p>Groupe actuel : <b>".$nom_groupe."</b><br />\n";
      echo "Classe(s) de : <b>".$classes."</b><br />\n";
@@ -298,6 +305,9 @@ if (!(isset($_GET['action']))) {
 
 
   <form action="admin_ct.php" name="formulaire1" method="post">
+<?php
+	echo add_token_field();
+?>
   <table border="1" class='boireaus' summary='Administration des CDT'><tr valign='center' align='center'>
   <th><b><a href='admin_ct.php?order_by=jc.id_classe,jm.id_matiere'>Classe(s)</a></b></th>
   <th><b><a href='admin_ct.php?order_by=jm.id_matiere,jc.id_classe'>Groupe</a></b></th>
@@ -355,8 +365,8 @@ if (!(isset($_GET['action']))) {
       // Affichage des lignes
       $alt=$alt*(-1);
       echo "<tr class='lig$alt white_hover'><td>".$classes."</td>\n";
-      echo "<td><a href='admin_ct.php?id_groupe=".$id_groupe."&id_prop=".$id_prop."&action=modif_groupe' title='modifier la matière'>".$nom_groupe."</a></td>\n";
-      echo "<td><a href='admin_ct.php?id_groupe=".$id_groupe."&id_prop=".$id_prop."&action=modif_prop' title='modifier le propriétaire'>".$nom_prof."</a></td>\n";
+      echo "<td><a href='admin_ct.php?id_groupe=".$id_groupe."&id_prop=".$id_prop."&action=modif_groupe".add_token_in_url()."' title='modifier la matière'>".$nom_groupe."</a></td>\n";
+      echo "<td><a href='admin_ct.php?id_groupe=".$id_groupe."&id_prop=".$id_prop."&action=modif_prop".add_token_in_url()."' title='modifier le propriétaire'>".$nom_prof."</a></td>\n";
       echo "<td>".$nb_ct."</td>\n";
       echo "<td>".$nb_ct_devoirs."</td>\n";
       //echo "<td><a href='../public/index.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>\n";

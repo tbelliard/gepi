@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,12 +34,12 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 // Check access
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -51,6 +51,8 @@ include("../fckeditor/fckeditor.php") ;
 $texte_visa_cdt = getSettingValue("texte_visa_cdt");
 
 if (isset($_POST['ok_enr_visa'])) {
+	check_token();
+
 	$error = false;
 	if	(isset($_POST['texte_visa_FCK'])) {
 			$txt = html_entity_decode_all_version($_POST['texte_visa_FCK']);
@@ -65,6 +67,8 @@ if (isset($_POST['ok_enr_visa'])) {
 }
 
 if (isset($_POST['begin_day']) and isset($_POST['begin_month']) and isset($_POST['begin_year'])) {
+	check_token();
+
     $date_signature = mktime(0,0,0,$_POST['begin_month'],$_POST['begin_day'],$_POST['begin_year']);
     if (!saveSetting("date_signature", $date_signature)) $msg .= "Erreur lors de l'enregistrement de date de signature des cahiers de textes !";
 }
@@ -74,6 +78,8 @@ $date_signature = getSettingValue("date_signature");
 
 // visa d'un ou plusieurs cahiers de texte
 if (isset($_POST['visa_ct'])) {
+	check_token();
+
   // les entrées
   // on vise les notices (le champs vise de la table ct_entry est mis à 'y')
   $query = sql_query("SELECT DISTINCT id_groupe, id_login FROM ct_entry ORDER BY id_groupe");
@@ -133,11 +139,13 @@ if (isset($_POST['visa_ct'])) {
 }
 
 
-
+//=============================================
 // header
 $titre_page = "Signature des cahiers de textes";
 require_once("../lib/header.inc");
+//=============================================
 
+//debug_var();
 
 if (!(isset($_GET['action']))) {
   // Affichage du tableau complet
@@ -160,12 +168,12 @@ if (!(isset($_GET['action']))) {
 </ul>
   <br /><br />
 
-<?PHP
+<?php
 echo "<div style='width: 750px;'>\n";
 echo "<fieldset style=\"border: 1px solid grey; font-size: 0.8em; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
 
 echo "<form enctype=\"multipart/form-data\" action=\"visa_ct.php\" method=\"post\">\n";
-
+echo add_token_field();
 echo "<h2 class='gepi' style=\"text-align: center;\">Texte du visa à apposer sur les cahiers de textes</h2>\n";
 echo "<p><em>Mise en forme du visa :</em></p><p>\n";
 
@@ -186,24 +194,27 @@ echo "</div>\n";
 ?>
 
   <form action="visa_ct.php" method="post">
-  <table border="1"><tr valign='middle' align='center'>
-  <td><b><a href='visa_ct.php?order_by=jc.id_classe,jm.id_matiere'>Classe(s)</a></b></td>
-  <td><b><a href='visa_ct.php?order_by=jm.id_matiere,jc.id_classe'>Groupe</a></b></td>
-  <td><b><a href='visa_ct.php?order_by=ct.id_login,jc.id_classe,jm.id_matiere'>Propriétaire</a></b></td>
-  <td><b>Nombre<br />de notices</b></td>
-  <td><b>Nombre<br />de notices<br />"devoirs"</b></td>
-  <td>
-  <b>Action</b></td>
-  <td><b><input type="submit" name="visa_ct" value="Signer les cahiers" onclick="return confirmlink(this, 'La signature d\'un cahier de texte est définitive. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la signature')" /></b>
+<?php
+	echo add_token_field();
+?>
+  <table class='boireaus' border="1"><tr valign='middle' align='center'>
+  <th><b><a href='visa_ct.php?order_by=jc.id_classe,jm.id_matiere'>Classe(s)</a></b></th>
+  <th><b><a href='visa_ct.php?order_by=jm.id_matiere,jc.id_classe'>Groupe</a></b></th>
+  <th><b><a href='visa_ct.php?order_by=ct.id_login,jc.id_classe,jm.id_matiere'>Propriétaire</a></b></th>
+  <th><b>Nombre<br />de notices</b></th>
+  <th><b>Nombre<br />de notices<br />"devoirs"</b></th>
+  <th>
+  <b>Action</b></th>
+  <th><b><input type="submit" name="visa_ct" value="Signer les cahiers" onclick="return confirmlink(this, 'La signature d\'un cahier de texte est définitive. Etes-vous sûr de vouloir continuer ?', 'Confirmation de la signature')" /></b>
   <p><b>dont la date est inférieure au</b></p>
   <?php
         $bday = strftime("%d", getSettingValue("date_signature"));
         $bmonth = strftime("%m", getSettingValue("date_signature"));
         $byear = strftime("%Y", getSettingValue("date_signature"));
         genDateSelector("begin_", $bday, $bmonth, $byear,"more_years") ?>
-  </td>
+  </th>
   
-  <td><b>Nombre de visa</b></td></tr>
+  <th><b>Nombre de visa</b></th></tr>
 
   <?php
   if (!isset($_GET['order_by'])) {
@@ -214,8 +225,10 @@ echo "</div>\n";
 
   $iter = 0; // itérateur
 
+	$alt=1;
   $query = sql_query("SELECT DISTINCT ct.id_groupe, ct.id_login FROM ct_entry ct, j_groupes_classes jc, j_groupes_matieres jm WHERE (jc.id_groupe = ct.id_groupe AND jm.id_groupe = ct.id_groupe) ORDER BY ".$order_by);
   for ($i=0; ($row=sql_row($query,$i)); $i++) {
+	$alt=$alt*(-1);
       $id_groupe = $row[0];
       $id_prop = $row[1];
       $nom_groupe = sql_query1("select name from groupes where id = '".$id_groupe."'");
@@ -251,7 +264,7 @@ echo "</div>\n";
 
 
       // Affichage des lignes
-      echo "<tr><td>".$classes."</td>";
+      echo "<tr class='lig$alt white_hover'><td>".$classes."</td>";
       echo "<td>".$nom_groupe."</td>";
       echo "<td>".$nom_prof."</td>";
       echo "<td>".$nb_ct."</td>";
@@ -271,6 +284,7 @@ echo "</div>\n";
     $iter++;
   }
   echo "</table></form>";
+	echo "<br />";
 }
 require ("../lib/footer.inc.php");
 ?>

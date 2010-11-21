@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -65,88 +65,90 @@ if (!checkAccess()) {
  *    Enregistrement des variables passées en $_POST si besoin
  ******************************************************************/
 $msg = "";
-if (isset($_POST['activer'])) {
-    if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-}
-
-if (isset($_POST['version'])) {
-    if (!saveSetting("GepiCahierTexteVersion", $_POST['version'])) $msg = "Erreur lors de l'enregistrement du numero de version du cahier de texte !";
-}
-
-if (isset($_POST['cahiers_texte_login_pub'])) {
-    $mdp = $_POST['cahiers_texte_passwd_pub'];
-    $user_ct = $_POST['cahiers_texte_login_pub'];
-
-    if ((trim($mdp)=='') and (trim($user_ct) !='')) {
-        $_POST['cahiers_texte_login_pub'] = '';
-       $msg .= "Vous devez choisir un identifiant.";
-    }
-    if ((trim($mdp) !='')and (trim($user_ct) == '')) {
-       $_POST['cahiers_texte_passwd_pub'] = '';
-        $msg .= "Vous devez choisir un mot de passe.";
-    }
-
-    if (!saveSetting("cahiers_texte_passwd_pub", $_POST['cahiers_texte_passwd_pub']))
-			$msg .= "Erreur lors de l'enregistrement du mot de passe !";
-//    include_once( '../lib/class.htaccess.php' );
-    if (!saveSetting("cahiers_texte_login_pub", $_POST['cahiers_texte_login_pub']))
-			$msg .= "Erreur lors de l'enregistrement du login !";
-
-}
-
-if (isset($_POST['begin_day']) and isset($_POST['begin_month']) and isset($_POST['begin_year'])) {
-    $begin_bookings = mktime(0,0,0,$_POST['begin_month'],$_POST['begin_day'],$_POST['begin_year']);
-    if (!saveSetting("begin_bookings", $begin_bookings))
-			$msg .= "Erreur lors de l'enregistrement de begin_bookings !";
-}
-if (isset($_POST['end_day']) and isset($_POST['end_month']) and isset($_POST['end_year'])) {
-    $end_bookings = mktime(0,0,0,$_POST['end_month'],$_POST['end_day'],$_POST['end_year']);
-    if (!saveSetting("end_bookings", $end_bookings))
-			$msg .= "Erreur lors de l'enregistrement de end_bookings !";
-}
-
-if (isset($_POST['cahier_texte_acces_public'])) {
-	if ($_POST['cahier_texte_acces_public'] == "yes") {
-	    $temp = "yes";
-	} else {
-	    $temp = "no";
-	    }
-	if (!saveSetting("cahier_texte_acces_public", $temp)) {
-	    $msg .= "Erreur lors de l'enregistrement de cahier_texte_acces_public !";
+if (isset($_POST['is_posted'])) {
+	if (isset($_POST['activer'])) {
+		if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 	}
-}
-
-//ajout Eric visa CDT
-if (isset($_POST['visa_cdt_inter_modif_notices_visees'])) {
-	if ($_POST['visa_cdt_inter_modif_notices_visees'] == "yes") {
-	    $temp = "yes";
-	} else {
-	    $temp = "no";
-	    }
-	if (!saveSetting("visa_cdt_inter_modif_notices_visees", $temp)) {
-	    $msg .= "Erreur lors de l'enregistrement de visa_cdt_inter_modif_notices_visees !";
+	
+	if (isset($_POST['version'])) {
+		if (!saveSetting("GepiCahierTexteVersion", $_POST['version'])) $msg = "Erreur lors de l'enregistrement du numero de version du cahier de texte !";
 	}
-}
-//Fin ajout Eric
-
-if (isset($_POST['delai_devoirs'])) {
-    if (!saveSetting("delai_devoirs", $_POST['delai_devoirs']))
-			$msg .= "Erreur lors de l'enregistrement du délai de visualisation des devoirs";
-}
-
-if (isset($_POST['is_posted']) && ($msg=="") ){
-  $msg = "Les modifications ont été enregistrées !";
-  $post_reussi=TRUE;
-}
-
-if (isset($_POST['cdt_autoriser_modif_multiprof'])) {
-	if ($_POST['cdt_autoriser_modif_multiprof'] == "yes") {
-		$temp = "yes";
-	} else {
-		$temp = "no";
+	
+	if (isset($_POST['cahiers_texte_login_pub'])) {
+		$mdp = $_POST['cahiers_texte_passwd_pub'];
+		$user_ct = $_POST['cahiers_texte_login_pub'];
+	
+		if ((trim($mdp)=='') and (trim($user_ct) !='')) {
+			$_POST['cahiers_texte_login_pub'] = '';
+		$msg .= "Vous devez choisir un identifiant.";
+		}
+		if ((trim($mdp) !='')and (trim($user_ct) == '')) {
+		$_POST['cahiers_texte_passwd_pub'] = '';
+			$msg .= "Vous devez choisir un mot de passe.";
+		}
+	
+		if (!saveSetting("cahiers_texte_passwd_pub", $_POST['cahiers_texte_passwd_pub']))
+				$msg .= "Erreur lors de l'enregistrement du mot de passe !";
+	//    include_once( '../lib/class.htaccess.php' );
+		if (!saveSetting("cahiers_texte_login_pub", $_POST['cahiers_texte_login_pub']))
+				$msg .= "Erreur lors de l'enregistrement du login !";
+	
 	}
-	if (!saveSetting("cdt_autoriser_modif_multiprof", $temp)) {
-		$msg .= "Erreur lors de l'enregistrement de cdt_autoriser_modif_multiprof !";
+	
+	if (isset($_POST['begin_day']) and isset($_POST['begin_month']) and isset($_POST['begin_year'])) {
+		$begin_bookings = mktime(0,0,0,$_POST['begin_month'],$_POST['begin_day'],$_POST['begin_year']);
+		if (!saveSetting("begin_bookings", $begin_bookings))
+				$msg .= "Erreur lors de l'enregistrement de begin_bookings !";
+	}
+	if (isset($_POST['end_day']) and isset($_POST['end_month']) and isset($_POST['end_year'])) {
+		$end_bookings = mktime(0,0,0,$_POST['end_month'],$_POST['end_day'],$_POST['end_year']);
+		if (!saveSetting("end_bookings", $end_bookings))
+				$msg .= "Erreur lors de l'enregistrement de end_bookings !";
+	}
+	
+	if (isset($_POST['cahier_texte_acces_public'])) {
+		if ($_POST['cahier_texte_acces_public'] == "yes") {
+			$temp = "yes";
+		} else {
+			$temp = "no";
+			}
+		if (!saveSetting("cahier_texte_acces_public", $temp)) {
+			$msg .= "Erreur lors de l'enregistrement de cahier_texte_acces_public !";
+		}
+	}
+	
+	//ajout Eric visa CDT
+	if (isset($_POST['visa_cdt_inter_modif_notices_visees'])) {
+		if ($_POST['visa_cdt_inter_modif_notices_visees'] == "yes") {
+			$temp = "yes";
+		} else {
+			$temp = "no";
+			}
+		if (!saveSetting("visa_cdt_inter_modif_notices_visees", $temp)) {
+			$msg .= "Erreur lors de l'enregistrement de visa_cdt_inter_modif_notices_visees !";
+		}
+	}
+	//Fin ajout Eric
+	
+	if (isset($_POST['delai_devoirs'])) {
+		if (!saveSetting("delai_devoirs", $_POST['delai_devoirs']))
+				$msg .= "Erreur lors de l'enregistrement du délai de visualisation des devoirs";
+	}
+	
+	if (isset($_POST['is_posted']) && ($msg=="") ){
+	$msg = "Les modifications ont été enregistrées !";
+	$post_reussi=TRUE;
+	}
+	
+	if (isset($_POST['cdt_autoriser_modif_multiprof'])) {
+		if ($_POST['cdt_autoriser_modif_multiprof'] == "yes") {
+			$temp = "yes";
+		} else {
+			$temp = "no";
+		}
+		if (!saveSetting("cdt_autoriser_modif_multiprof", $temp)) {
+			$msg .= "Erreur lors de l'enregistrement de cdt_autoriser_modif_multiprof !";
+		}
 	}
 }
 

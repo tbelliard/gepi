@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -42,17 +42,17 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 // Check access
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 /******************************************************************
@@ -61,12 +61,13 @@ die();
 $msg = '';
 $post_reussi=FALSE;
 
-if (isset($_POST['activer'])) {
-    if (!saveSetting("active_carnets_notes", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-}
+if(isset($_POST['is_posted'])) {
+	check_token();
 
+	if (isset($_POST['activer'])) {
+		if (!saveSetting("active_carnets_notes", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	}
 
-if(isset($_POST['is_posted'])){
 	if (isset($_POST['export_cn_ods'])) {
 		//if (!saveSetting("export_cn_ods", $_POST['export_cn_ods'])) {
 		if (!saveSetting("export_cn_ods", 'y')) {
@@ -91,19 +92,20 @@ if(isset($_POST['is_posted'])){
 		}
 	}
 	*/
-}
-if (isset($_POST['referentiel_note'])) {
-	if (!saveSetting("referentiel_note", $_POST['referentiel_note'])) {
-		$msg .= "Erreur lors de l'enregistrement du referentiel de note !";
-	}
-}
 
-if (isset($_POST['note_autre_que_sur_referentiel'])) {
-	if (!saveSetting("note_autre_que_sur_referentiel", $_POST['note_autre_que_sur_referentiel'])) {
-		$msg .= "Erreur lors de l'enregistrement de note_autre_que_sur_referentiel !";
+	if (isset($_POST['referentiel_note'])) {
+		if (!saveSetting("referentiel_note", $_POST['referentiel_note'])) {
+			$msg .= "Erreur lors de l'enregistrement du referentiel de note !";
+		}
 	}
+	
+	if (isset($_POST['note_autre_que_sur_referentiel'])) {
+		if (!saveSetting("note_autre_que_sur_referentiel", $_POST['note_autre_que_sur_referentiel'])) {
+			$msg .= "Erreur lors de l'enregistrement de note_autre_que_sur_referentiel !";
+		}
+	}
+	
 }
-
 
 if (isset($_POST['is_posted']) and ($msg=='')){
   $msg = "Les modifications ont été enregistrées !";

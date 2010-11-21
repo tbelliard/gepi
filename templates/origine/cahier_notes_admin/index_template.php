@@ -92,7 +92,9 @@
   <div id='container'>
 
   <form action="index.php" id="form1" method="post">
-
+<?php
+	echo add_token_field();
+?>
 	<p class="center">
 	  <input type="hidden" name="is_posted" value="1" />
 	  <input type="submit" value="Enregistrer" />
