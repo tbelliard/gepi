@@ -22,6 +22,8 @@ header("Location: ../logout.php?auto=1");
 die();
 }
 
+// Page bourrinée... la gestion du token n'est pas faite... et ne sera faite que si quelqu'un utilise encore ce mode d'initialisation et le manifeste sur la liste de diffusion gepi-users
+check_token();
 
 //================================================
 // Fonction de génération de mot de passe récupérée sur TotallyPHP
