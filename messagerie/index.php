@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -43,7 +43,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 include("../fckeditor/fckeditor.php") ;
 
 if (!checkAccess()) {
@@ -75,6 +75,7 @@ function formate_date_decompte($date_decompte) {
 // Suppression d'un message
 //
 if ((isset($action)) and ($action == 'sup_entry')) {
+	check_token();
    $res = sql_query("delete from messages where id = '".$_GET['id_del']."'");
    if ($res) $msg = "Suppression réussie";
 }
@@ -91,6 +92,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['cancel']))) {
 // Insertion ou modification d'un message
 //
 if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) and isset($_POST['ok'])) {
+	check_token();
     $record = 'yes';
     $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['message']));
     $destinataires = '_';
@@ -194,6 +196,7 @@ $message_suppression = "Confirmation de suppression";
 $titre_page = "Gestion des messages";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
+//debug_var();
 echo "<script type=\"text/javascript\" language=\"JavaScript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>\n";
 //-----------------------------------------------------------------------------------
 echo "<p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
@@ -280,7 +283,7 @@ while ($ind < $nb_messages) {
 	echo $chaine_destinataires;
 
    echo "<br /><a href='index.php?id_mess=$id_message'>modifier</a>
-   - <a href='index.php?id_del=$id_message&action=sup_entry' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer ce message ?', '".$message_suppression."')\">supprimer</a>
+   - <a href='index.php?id_del=$id_message&action=sup_entry".add_token_in_url()."' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer ce message ?', '".$message_suppression."')\">supprimer</a>
    <table border=1 width = '100%' cellpadding='5'><tr><td>".$content."</td></tr></table><br />\n";
   $ind++;
 }
@@ -332,6 +335,7 @@ if (isset($id_mess)) {
 }
 echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\"><tr><td>\n";
 echo "<form action=\"./index.php\" method=\"post\" style=\"width: 100%;\" name=\"formulaire\">\n";
+echo add_token_field();
 if (isset($id_mess)) echo "<input type=\"hidden\" name=\"id_mess\" value=\"$id_mess\" />\n";
 echo "<input type=\"hidden\" name=\"action\" value=\"message\" />\n";
 

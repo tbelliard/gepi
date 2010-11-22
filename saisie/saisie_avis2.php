@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -73,6 +73,8 @@ include "../lib/periodes.inc.php";
 //*******************************************************************************************************
 $msg = '';
 if (isset($_POST['is_posted'])) {
+	check_token();
+
     if (($periode_num < $nb_periode) and ($periode_num > 0) and ($ver_periode[$periode_num] != "O"))  {
         $reg = 'yes';
         // si l'utilisateur n'a pas le statut scolarité, on vérifie qu'il est prof principal de l'élève
@@ -495,6 +497,7 @@ if (isset($fiche)) {
 	$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$periode_num')");
 	$current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_avis2.php\" method=\"post\">\n";
+	echo add_token_field();
 	echo "<table border='0' summary=\"Elève $current_eleve_login\">\n";
 	echo "<tr>\n";
 	echo "<td>\n";

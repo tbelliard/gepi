@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 
@@ -96,6 +96,7 @@ $nom_classe = $current_group["classlist_string"];
 
 // enregistrement des données
 if (isset($_POST['ok'])) {
+	check_token();
     $reg_ok = "yes";
     $new='no';
     if (isset($_POST['new_conteneur']) and $_POST['new_conteneur'] == 'yes') {
@@ -264,7 +265,7 @@ if ($id_conteneur)  {
         // on s'intéresse à tous les conteneurs fils, petit-fils, ...
         sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'all');
     } else {
-        // On s'intéresse uniquement au conteneurs fils
+        // On s'intéresse uniquement au conteneur fils
         sous_conteneurs($id_conteneur,$nb_sous_cont,$nom_sous_cont,$coef_sous_cont,$id_sous_cont,$display_bulletin_sous_cont,'');
     }
     $appel_nom_racine = mysql_query("SELECT * FROM cn_conteneurs WHERE id ='$id_racine'");
@@ -315,6 +316,7 @@ echo "\$parent=$parent<br />\n";
 */
 
 echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"add_modif_conteneur.php\" method='post'>\n";
+echo add_token_field();
 //if ($mode_navig == 'retour_saisie') {
 if(($mode_navig == 'retour_saisie')&&(isset($id_retour))) {
     echo "<div class='norme'><p class=bold><a href='./saisie_notes.php?id_conteneur=$id_retour'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";

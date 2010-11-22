@@ -3,7 +3,7 @@
 /*
  * @version: $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -143,6 +143,7 @@ if (!isset($is_posted)) {
 	echo "<p>Pour importer des devoirs dans le carnet de notes, vous devez fournir un fichier correctement formaté...</p>";
 	echo "<p>Veuillez préciser le nom complet du fichier <b>CSV</b> à importer.";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method=post>\n";
+	echo add_token_field();
 	echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=\"hidden\" name=\"id_racine\" value=\"$id_racine\" />\n";
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
@@ -177,7 +178,8 @@ GEPI_LOGIN_ELEVE;ZETOFRE_M_L;ZETOFREY;Melanie;3 A2;;10,5;14,5;19,0
 <p>Il est plus simple de créer une évaluation et d'Exporter ensuite le carnet de notes (<i>même vide</i>) pour disposer d'un CSV correctement formaté.</p>\n";
 
 }
-else{
+else {
+	check_token(false);
 	if(!isset($_POST['valide_insertion_devoirs'])) {
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
@@ -414,6 +416,7 @@ else{
 
 				echo "<div align='center'>\n";
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+				echo add_token_field();
 				echo "<input type='hidden' name='is_posted' value='y' />\n";
 				echo "<input type='hidden' name='valide_insertion_devoirs' value='y' />\n";
 				echo "<input type='hidden' name=\"id_racine\" value=\"$id_racine\" />\n";

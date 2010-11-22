@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 //include("../fckeditor/fckeditor.php") ;
 
 // Check access
@@ -81,7 +81,7 @@ function get_classe_from_id($id){
 
 ?>
 
-<p class=bold>|<a href="../accueil.php">Retour</a>
+<p class="bold">|<a href="../accueil.php">Retour</a>
 |<a href="commentaires_types.php">Saisir des commentaires</a>
 |<a href="commentaires_types.php?recopie=oui">Recopier des commentaires</a>
 |</p>
@@ -108,6 +108,8 @@ else{
 <form name="formulaire" action="commentaires_types.php" method="post">
 
 <?php
+	echo add_token_field();
+
 	//echo "\$_GET['recopie']=".$_GET['recopie']."<br />";
 	$recopie=isset($_GET['recopie']) ? $_GET['recopie'] : (isset($_POST['recopie']) ? $_POST['recopie'] : "");
 
@@ -316,7 +318,8 @@ else{
 				echo "</p>\n";
 				echo "<center><input type='submit' name='ok' value='Valider' /></center>\n";
 			}
-			else{
+			else {
+				check_token(false);
 
 				// ==============================================================
 				// Saisie, modification, suppression, validation des commentaires
@@ -799,7 +802,8 @@ function tout_decocher(){
 					echo "<input type='button' name='toutdecocher' value='Tout décocher' onClick='tout_decocher();' />\n";
 					echo "<center><input type='submit' name='ok' value='Valider' /></center>\n";
 				}
-				else{
+				else {
+					check_token(false);
 
 					// =======================
 					// Recopie proprement dite

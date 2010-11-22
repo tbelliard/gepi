@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -93,7 +93,9 @@ if((isset($id_classe))&&(isset($num_periode))) {
 	//$synthese="";
 
 	//if(isset($_POST['no_anti_inject_synthese'])) {
-	if (isset($NON_PROTECT["synthese"])){
+	if (isset($NON_PROTECT["synthese"])) {
+		check_token();
+
 		// On enregistre la synthese
 		$synthese=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["synthese"]));
 
@@ -332,6 +334,7 @@ if((isset($id_classe))&&(isset($num_periode))) {
 
 	// Formulaire de saisie
 	echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+	echo add_token_field();
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 	echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
 	echo "<input type='hidden' name='periode1' value='$periode1' />\n";
