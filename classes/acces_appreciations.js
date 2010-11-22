@@ -25,21 +25,24 @@ function f_manuel(id_div,classe_periode,statut) {
 */
 
 function g_manuel(id_div,id_classe,periode,accessible,statut) {
-	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=manuel&accessible='+accessible+'&statut='+statut,{method: 'get'});
+	csrf_alea=document.getElementById('csrf_alea').value;
+	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=manuel&accessible='+accessible+'&statut='+statut+'&csrf_alea='+csrf_alea,{method: 'get'});
 }
 
 function g_date() {
+	csrf_alea=document.getElementById('csrf_alea').value;
 	id_div=$('choix_date_id_div').value;
 	id_classe=$('choix_date_id_classe').value;
 	periode=$('choix_date_periode').value;
 	statut=$('choix_date_statut').value;
 	choix_date=$('choix_date').value;
-	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=date&choix_date='+choix_date+'&statut='+statut,{method: 'get'});
+	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=date&choix_date='+choix_date+'&statut='+statut+'&csrf_alea='+csrf_alea,{method: 'get'});
 	$('infobulle_choix_date').style.display='none';
 }
 
 function g_periode_close(id_div,id_classe,periode,statut) {
-	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=d&statut='+statut,{method: 'get'});
+	csrf_alea=document.getElementById('csrf_alea').value;
+	new Ajax.Updater($(id_div),'acces_appreciations_ajax.php?id_div='+id_div+'&id_classe='+id_classe+'&periode='+periode+'&mode=d&statut='+statut+'&csrf_alea='+csrf_alea,{method: 'get'});
 }
 
 /*

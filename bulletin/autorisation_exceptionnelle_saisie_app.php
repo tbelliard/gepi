@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -54,6 +54,7 @@ $display_heure_limite=isset($_POST['display_heure_limite']) ? $_POST['display_he
 $msg="";
 
 if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($periode))&&(isset($display_date_limite))&&(isset($display_heure_limite))) {
+	check_token();
 	if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_limite'])) {
 		$annee = substr($_POST['display_date_limite'],6,4);
 		$mois = substr($_POST['display_date_limite'],3,2);
@@ -275,6 +276,7 @@ else {
 
 	//if(!isset($is_posted)) {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+		echo add_token_field();
 		$group=get_group($id_groupe);
 		echo "<p>Vous souhaitez autoriser exceptionnellement un enseignant à proposer des saisies/corrections d'apprécations pour l'enseignement ".$group['name']." (<span style='font-size:x-small;'>".$group['description']." en ".$group['classlist_string']."</span>) en période $periode.</p>\n";
 
@@ -333,7 +335,7 @@ else {
 		echo "<input type='hidden' name='periode' value='$periode' />\n";
 		echo "<input type='text' name = 'display_date_limite' size='8' value = \"".$display_date_limite."\" />\n";
 		echo "<a href=\"#\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
-		echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" />\n";
+		echo " à <input type='text' name='display_heure_limite' id='display_heure_limite' size='8' value = \"".$display_heure_limite."\" onKeyDown=\"clavier_heure(this.id,event);\" autocomplete=\"off\" />\n";
 		echo "<input type='submit' name='Valider' value='Valider' />\n";
 		echo "</p>\n";
 	

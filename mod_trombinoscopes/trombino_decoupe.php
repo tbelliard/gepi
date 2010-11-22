@@ -1,7 +1,7 @@
 <?php
 /* $Id */
 /*
-* Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -107,6 +107,7 @@ $create_table=mysql_query($sql);
 
 //=================================================
 if(isset($parametrer_pdf)) {
+	check_token();
 	$trombino_pdf_nb_lig=isset($_POST['trombino_pdf_nb_lig']) ? $_POST['trombino_pdf_nb_lig'] : 0;
 	$trombino_pdf_nb_lig=my_ereg_replace("[^0-9]","",$trombino_pdf_nb_lig);
 	$trombino_pdf_nb_col=isset($_POST['trombino_pdf_nb_col']) ? $_POST['trombino_pdf_nb_col'] : 0;
@@ -125,6 +126,7 @@ if(isset($parametrer_pdf)) {
 }
 //=================================================
 if(isset($_POST['suppr_grille'])) {
+	check_token();
 	$suppr_grille=$_POST['suppr_grille'];
 	for($i=0;$i<count($suppr_grille);$i++) {
 		$sql="DELETE FROM trombino_decoupe WHERE id_grille='$suppr_grille[$i]';";
@@ -194,6 +196,7 @@ $larg_cadre=Floor($largeur_page-$MargeDroite-$MargeGauche-($trombino_pdf_nb_col-
 
 //=================================================
 if(isset($_POST['upload_scan'])) {
+	check_token();
 	if((isset($_POST['correctif_vertical']))&&($_POST['correctif_vertical']!='')) {
 		// A FAIRE: FILTRER...
 		$test=my_ereg_replace("[^0-9.]","",$_POST['correctif_vertical']);
@@ -355,6 +358,7 @@ if(isset($_POST['upload_scan'])) {
 
 //=================================================
 if(isset($generer_pdf)) {
+	check_token();
 	if(!isset($id_classe)) {
 		$msg="ERREUR&nbsp;: Aucune classe n'a été sélectionnée.<br />\n";
 		unset($mode);
@@ -614,6 +618,7 @@ elseif($mode=='parametrer') {
 	if($trombino_pdf_nb_lig=="") {$trombino_pdf_nb_lig=5;}
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 	echo "<fieldset>\n";
 	echo "<p>Paramétrage&nbsp;:</p>\n";
 	echo "<table style='margin-left:2em;' class='boireaus' summary='Paramètres du trombinoscope'>\n";
@@ -678,6 +683,7 @@ elseif($mode=='generer_grille') {
 	}
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' target='_blank'>\n";
+	echo add_token_field();
 	echo "<fieldset>\n";
 	echo "<p>Générer les grilles PDF pour&nbsp;:</p>\n";
 
@@ -778,7 +784,7 @@ elseif($mode=='uploader') {
 			echo "<ul>\n";
 			while($lig=mysql_fetch_object($test)) {
 				echo "<li>\n";
-				echo "<a href='".$_SERVER['PHP_SELF']."?mode=uploader&amp;id_grille=$lig->id_grille'>Grille n°$lig->id_grille</a>\n";
+				echo "<a href='".$_SERVER['PHP_SELF']."?mode=uploader&amp;id_grille=$lig->id_grille".add_token_in_url()."'>Grille n°$lig->id_grille</a>\n";
 
 				$sql="SELECT DISTINCT classe FROM trombino_decoupe WHERE id_grille='$lig->id_grille' ORDER BY classe;";
 				//echo "$sql<br />";
@@ -816,6 +822,7 @@ elseif($mode=='uploader') {
 	else {
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo add_token_field();
 		echo "<fieldset>\n";
 		echo "<input type='hidden' name='id_grille' value='$id_grille' />\n";
 		echo "<input type='hidden' name='upload_scan' value='yes' />\n";
@@ -884,6 +891,7 @@ elseif($mode=='suppr_grille') {
 	}
 	else {
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo add_token_field();
 		echo "<fieldset>\n";
 		echo "<p>Quelles grilles souhaitez-vous supprimer?</p>\n";
 		while($lig=mysql_fetch_object($test)) {

@@ -41,6 +41,10 @@
 		}
 	}
 
+	//debug_var();
+
+	check_token();
+
 	$id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;     // entier
 	if(strlen(preg_replace('/[0-9]/','',$id_classe))!=0) {$id_classe=NULL;}
 	if($id_classe=='') {$id_classe=NULL;}

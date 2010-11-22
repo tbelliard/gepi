@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -33,11 +33,11 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 include("../fckeditor/fckeditor.php") ;
 
@@ -50,619 +50,623 @@ $reg_ok = 'yes';
 $msg = '';
 $bgcolor = "#DEDEDE";
 
-if (isset($_POST['textsize'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['textsize'])) || $_POST['textsize'] < 1) {
-        $_POST['textsize'] = 10;
-    }
-    if (!saveSetting("textsize", $_POST['textsize'])) {
-        $msg .= "Erreur lors de l'enregistrement de textsize !";
-        $reg_ok = 'no';
-    }
-}
-
-//==================================
-// AJOUT: boireaus
-if (isset($_POST['p_bulletin_margin'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['p_bulletin_margin'])) || $_POST['p_bulletin_margin'] < 1) {
-        $_POST['p_bulletin_margin'] = 5;
-    }
-    if (!saveSetting("p_bulletin_margin", $_POST['p_bulletin_margin'])) {
-        $msg .= "Erreur lors de l'enregistrement de p_bulletin_margin !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['bull_body_marginleft'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_body_marginleft']))) {
-        $_POST['bull_body_marginleft'] = 1;
-    }
-    if (!saveSetting("bull_body_marginleft", $_POST['bull_body_marginleft'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_body_marginleft !";
-        $reg_ok = 'no';
-    }
-}
-
-
-//==================================
-
-
-if (isset($_POST['titlesize'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['titlesize'])) || $_POST['titlesize'] < 1) {
-        $_POST['titlesize'] = 16;
-    }
-    if (!saveSetting("titlesize", $_POST['titlesize'])) {
-        $msg .= "Erreur lors de l'enregistrement de titlesize !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['cellpadding'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['cellpadding'])) || $_POST['cellpadding'] < 0) {
-        $_POST['cellpadding'] = 5;
-    }
-    if (!saveSetting("cellpadding", $_POST['cellpadding'])) {
-        $msg .= "Erreur lors de l'enregistrement de cellpadding !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['cellspacing'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['cellspacing'])) || $_POST['cellspacing'] < 0) {
-        $_POST['cellspacing'] = 2;
-    }
-    if (!saveSetting("cellspacing", $_POST['cellspacing'])) {
-        $msg .= "Erreur lors de l'enregistrement de cellspacing !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['largeurtableau'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['largeurtableau'])) || $_POST['largeurtableau'] < 1) {
-        $_POST['largeurtableau'] = 1440;
-    }
-    if (!saveSetting("largeurtableau", $_POST['largeurtableau'])) {
-        $msg .= "Erreur lors de l'enregistrement de largeurtableau !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['col_matiere_largeur'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_matiere_largeur'])) || $_POST['col_matiere_largeur'] < 1) {
-        $_POST['col_matiere_largeur'] = 300;
-    }
-    if (!saveSetting("col_matiere_largeur", $_POST['col_matiere_largeur'])) {
-        $msg .= "Erreur lors de l'enregistrement de col_matiere_largeur !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['col_note_largeur'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_note_largeur'])) || $_POST['col_note_largeur'] < 1) {
-        $_POST['col_note_largeur'] = 50;
-    }
-    if (!saveSetting("col_note_largeur", $_POST['col_note_largeur'])) {
-        $msg .= "Erreur lors de l'enregistrement de col_note_largeur !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['col_boite_largeur'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_boite_largeur'])) || $_POST['col_boite_largeur'] < 1) {
-        $_POST['col_boite_largeur'] = 120;
-    }
-    if (!saveSetting("col_boite_largeur", $_POST['col_boite_largeur'])) {
-        $msg .= "Erreur lors de l'enregistrement de col_boite_largeur !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['col_hauteur'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_hauteur'])) || $_POST['col_hauteur'] < 1) {
-        $_POST['col_hauteur'] = 0;
-    }
-    if (!saveSetting("col_hauteur", $_POST['col_hauteur'])) {
-        $msg .= "Erreur lors de l'enregistrement de col_hauteur !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['bull_ecart_entete'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_ecart_entete']))) {
-        $_POST['bull_ecart_entete'] = 0;
-    }
-    if (!saveSetting("bull_ecart_entete", $_POST['bull_ecart_entete'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_ecart_entete !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['bull_espace_avis'])) {
-
-    if ((!(my_ereg ("^[0-9]{1,}$", $_POST['bull_espace_avis']))) or ($_POST['bull_espace_avis'] <= 0)) {
-        $_POST['bull_espace_avis'] = 1;
-    }
-    if (!saveSetting("bull_espace_avis", $_POST['bull_espace_avis'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_espace_avis !";
-        $reg_ok = 'no';
-    }
-}
-
-
-if (isset($_POST['addressblock_padding_right'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_right']))) {
-        $_POST['addressblock_padding_right'] = 0;
-    }
-    if (!saveSetting("addressblock_padding_right", $_POST['addressblock_padding_right'])) {
-        $msg .= "Erreur lors de l'enregistrement de addressblock_padding_right !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['addressblock_padding_top'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_top']))) {
-        $_POST['addressblock_padding_top'] = 0;
-    }
-    if (!saveSetting("addressblock_padding_top", $_POST['addressblock_padding_top'])) {
-        $msg .= "Erreur lors de l'enregistrement de addressblock_padding_top !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['addressblock_padding_text'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_text']))) {
-        $_POST['addressblock_padding_text'] = 0;
-    }
-    if (!saveSetting("addressblock_padding_text", $_POST['addressblock_padding_text'])) {
-        $msg .= "Erreur lors de l'enregistrement de addressblock_padding_text !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['addressblock_length'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_length']))) {
-        $_POST['addressblock_length'] = 0;
-    }
-    if (!saveSetting("addressblock_length", $_POST['addressblock_length'])) {
-        $msg .= "Erreur lors de l'enregistrement de addressblock_length !";
-        $reg_ok = 'no';
-    }
-}
-
-
-//==================================
-// Ajout: boireaus
-if (isset($_POST['addressblock_font_size'])) {
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_font_size']))) {
-        $_POST['addressblock_font_size'] = 12;
-    }
-    if (!saveSetting("addressblock_font_size", $_POST['addressblock_font_size'])) {
-        $msg .= "Erreur lors de l'enregistrement de addressblock_font_size !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['addressblock_logo_etab_prop'])) {
-	if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_logo_etab_prop']))) {
-			$addressblock_logo_etab_prop=50;
-	}
-	else{
-			$addressblock_logo_etab_prop=$_POST['addressblock_logo_etab_prop'];
-	}
-}
-else{
-	if(getSettingValue("addressblock_logo_etab_prop")){
-		$addressblock_logo_etab_prop=getSettingValue("addressblock_logo_etab_prop");
-	}
-	else{
-		$addressblock_logo_etab_prop=50;
-	}
-}
-
-if (isset($_POST['addressblock_classe_annee'])) {
-	if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_classe_annee']))) {
-			$addressblock_classe_annee=35;
-	}
-	else{
-			$addressblock_classe_annee=$_POST['addressblock_classe_annee'];
-	}
-}
-else{
-	if(getSettingValue("addressblock_classe_annee")){
-		$addressblock_classe_annee=getSettingValue("addressblock_classe_annee");
-	}
-	else{
-		$addressblock_classe_annee=30;
-	}
-}
-
-if((isset($_POST['addressblock_classe_annee']))&&(isset($_POST['addressblock_logo_etab_prop']))){
-	$valtest=$addressblock_logo_etab_prop+$addressblock_classe_annee;
-	if($valtest>100){
-		$msg.="Erreur! La somme addressblock_logo_etab_prop+addressblock_classe_annee dépasse 100% de la largeur de la page !";
-		$reg_ok = 'no';
-	}
-	else{
-		if (!saveSetting("addressblock_logo_etab_prop", $addressblock_logo_etab_prop)) {
-			$msg .= "Erreur lors de l'enregistrement de addressblock_logo_etab_prop !";
-			$reg_ok = 'no';
-		}
-
-		if (!saveSetting("addressblock_classe_annee", $addressblock_classe_annee)) {
-			$msg .= "Erreur lors de l'enregistrement de addressblock_classe_annee !";
-			$reg_ok = 'no';
-		}
-	}
-}
-
-
-if (isset($_POST['bull_ecart_bloc_nom'])) {
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_ecart_bloc_nom']))) {
-        $_POST['bull_ecart_bloc_nom'] = 0;
-    }
-    if (!saveSetting("bull_ecart_bloc_nom", $_POST['bull_ecart_bloc_nom'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_ecart_bloc_nom !";
-        $reg_ok = 'no';
-    }
-}
-
-
-if (isset($_POST['addressblock_debug'])) {
-    if (($_POST['addressblock_debug']!="y")&&($_POST['addressblock_debug']!="n")) {
-        $_POST['addressblock_debug'] = "n";
-    }
-    if (!saveSetting("addressblock_debug", $_POST['addressblock_debug'])) {
-        $msg .= "Erreur lors de l'enregistrement de addressblock_debug !";
-        $reg_ok = 'no';
-    }
-}
-//==================================
-
-
-if (isset($_POST['page_garde_padding_top'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_top']))) {
-        $_POST['page_garde_padding_top'] = 0;
-    }
-    if (!saveSetting("page_garde_padding_top", $_POST['page_garde_padding_top'])) {
-        $msg .= "Erreur lors de l'enregistrement de page_garde_padding_top !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['page_garde_padding_left'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_left']))) {
-        $_POST['page_garde_padding_left'] = 0;
-    }
-    if (!saveSetting("page_garde_padding_left", $_POST['page_garde_padding_left'])) {
-        $msg .= "Erreur lors de l'enregistrement de page_garde_padding_left !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['page_garde_padding_text'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_text']))) {
-        $_POST['page_garde_padding_text'] = 0;
-    }
-    if (!saveSetting("page_garde_padding_text", $_POST['page_garde_padding_text'])) {
-        $msg .= "Erreur lors de l'enregistrement de page_garde_padding_text !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['ok'])) {
-
-    if (isset($_POST['page_garde_imprime'])) {
-        $temp = 'yes';
-    } else {
-        $temp = 'no';
-    }
-    if (!saveSetting("page_garde_imprime", $temp)) {
-        $msg .= "Erreur lors de l'enregistrement de page_garde_imprime !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($NON_PROTECT['page_garde_texte'])) {
-    $imp = traitement_magic_quotes($NON_PROTECT['page_garde_texte']);
-    if (!saveSetting("page_garde_texte", $imp)) {
-        $msg .= "Erreur lors de l'enregistrement de page_garde_texte !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($NON_PROTECT['bull_formule_bas'])) {
-    $imp = traitement_magic_quotes($NON_PROTECT['bull_formule_bas']);
-    if (!saveSetting("bull_formule_bas", $imp)) {
-        $msg .= "Erreur lors de l'enregistrement de bull_formule_bas !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['bull_mention_nom_court'])) {
-
-    if (!saveSetting("bull_mention_nom_court", $_POST['bull_mention_nom_court'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_mention_nom_court !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['bull_mention_doublant'])) {
-
-    if (!saveSetting("bull_mention_doublant", $_POST['bull_mention_doublant'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_mention_doublant !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['bull_affiche_eleve_une_ligne'])) {
-
-    if (!saveSetting("bull_affiche_eleve_une_ligne", $_POST['bull_affiche_eleve_une_ligne'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_mention_nom_court !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['bull_affiche_graphiques'])) {
-
-    if (!saveSetting("bull_affiche_graphiques", $_POST['bull_affiche_graphiques'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_graphiques !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['bull_affiche_appreciations'])) {
-
-    if (!saveSetting("bull_affiche_appreciations", $_POST['bull_affiche_appreciations'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_appreciations !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['bull_affiche_absences'])) {
-
-    if (!saveSetting("bull_affiche_absences", $_POST['bull_affiche_absences'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_absences !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['bull_affiche_avis'])) {
-
-    if (!saveSetting("bull_affiche_avis", $_POST['bull_affiche_avis'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_avis !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['bull_affiche_aid'])) {
-
-    if (!saveSetting("bull_affiche_aid", $_POST['bull_affiche_aid'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_aid !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['bull_affiche_formule'])) {
-
-    if (!saveSetting("bull_affiche_formule", $_POST['bull_affiche_formule'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_formule !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['bull_affiche_signature'])) {
-
-    if (!saveSetting("bull_affiche_signature", $_POST['bull_affiche_signature'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_signature !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['bull_affiche_numero'])) {
-
-    if (!saveSetting("bull_affiche_numero", $_POST['bull_affiche_numero'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_numero !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['bull_affiche_etab'])) {
-    if (!saveSetting("bull_affiche_etab", $_POST['bull_affiche_etab'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_etab !";
-        $reg_ok = 'no';
-    }
-}
-
-
-if(isset($_POST['bull_bordure_classique'])) {
-    if (!saveSetting("bull_bordure_classique", $_POST['bull_bordure_classique'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_bordure_classique !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['choix_bulletin'])) {
-
-    if (!saveSetting("choix_bulletin", $_POST['choix_bulletin'])) {
-        $msg .= "Erreur lors de l'enregistrement de choix_bulletin";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['min_max_moyclas'])) {
-
-    if (!saveSetting("min_max_moyclas", $_POST['min_max_moyclas'])) {
-        $msg .= "Erreur lors de l'enregistrement de min_max_moyclas !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['activer_photo_bulletin'])) {
-    if (!saveSetting("activer_photo_bulletin", $_POST['activer_photo_bulletin'])) {
-        $msg .= "Erreur lors de l'enregistrement de activer_photo_bulletin !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['bull_photo_hauteur_max'])) {
-    if (!saveSetting("bull_photo_hauteur_max", $_POST['bull_photo_hauteur_max'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_photo_hauteur_max !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['bull_photo_largeur_max'])) {
-    if (!saveSetting("bull_photo_largeur_max", $_POST['bull_photo_largeur_max'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_photo_largeur_max !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['bull_categ_font_size'])) {
-	if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_categ_font_size']))) {
-		$_POST['bull_categ_font_size'] = 10;
-	}
-	if (!saveSetting("bull_categ_font_size", $_POST['bull_categ_font_size'])) {
-		$msg .= "Erreur lors de l'enregistrement de bull_categ_font_size !";
-		$reg_ok = 'no';
-	}
-}
-
-
-if(isset($_POST['bull_intitule_app'])) {
-    if (!saveSetting("bull_intitule_app", $_POST['bull_intitule_app'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_intitule_app !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['bull_affiche_INE_eleve'])) {
-    if (!saveSetting("bull_affiche_INE_eleve", $_POST['bull_affiche_INE_eleve'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_INE_eleve !";
-        $reg_ok = 'no';
-    }
-}
-
-
-if(isset($_POST['bull_affiche_tel'])) {
-    if (!saveSetting("bull_affiche_tel", $_POST['bull_affiche_tel'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_tel !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['bull_affiche_fax'])) {
-    if (!saveSetting("bull_affiche_fax", $_POST['bull_affiche_fax'])) {
-        $msg .= "Erreur lors de l'enregistrement de bull_affiche_fax !";
-        $reg_ok = 'no';
-    }
-}
 
 
 // Tableau des couleurs HTML:
 $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
 
-if (isset($_POST['bull_categ_bgcolor'])) {
-	if((!in_array($_POST['bull_categ_bgcolor'],$tabcouleur))&&($_POST['bull_categ_bgcolor']!='')){
-		$msg .= "Erreur lors de l'enregistrement de bull_categ_bgcolor ! (couleur invalide)";
-		$reg_ok = 'no';
+
+if (isset($_POST['is_posted'])) {
+	check_token();
+	if (isset($_POST['textsize'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['textsize'])) || $_POST['textsize'] < 1) {
+			$_POST['textsize'] = 10;
+		}
+		if (!saveSetting("textsize", $_POST['textsize'])) {
+			$msg .= "Erreur lors de l'enregistrement de textsize !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	//==================================
+	// AJOUT: boireaus
+	if (isset($_POST['p_bulletin_margin'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['p_bulletin_margin'])) || $_POST['p_bulletin_margin'] < 1) {
+			$_POST['p_bulletin_margin'] = 5;
+		}
+		if (!saveSetting("p_bulletin_margin", $_POST['p_bulletin_margin'])) {
+			$msg .= "Erreur lors de l'enregistrement de p_bulletin_margin !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_body_marginleft'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_body_marginleft']))) {
+			$_POST['bull_body_marginleft'] = 1;
+		}
+		if (!saveSetting("bull_body_marginleft", $_POST['bull_body_marginleft'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_body_marginleft !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	//==================================
+	
+	
+	if (isset($_POST['titlesize'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['titlesize'])) || $_POST['titlesize'] < 1) {
+			$_POST['titlesize'] = 16;
+		}
+		if (!saveSetting("titlesize", $_POST['titlesize'])) {
+			$msg .= "Erreur lors de l'enregistrement de titlesize !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['cellpadding'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['cellpadding'])) || $_POST['cellpadding'] < 0) {
+			$_POST['cellpadding'] = 5;
+		}
+		if (!saveSetting("cellpadding", $_POST['cellpadding'])) {
+			$msg .= "Erreur lors de l'enregistrement de cellpadding !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['cellspacing'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['cellspacing'])) || $_POST['cellspacing'] < 0) {
+			$_POST['cellspacing'] = 2;
+		}
+		if (!saveSetting("cellspacing", $_POST['cellspacing'])) {
+			$msg .= "Erreur lors de l'enregistrement de cellspacing !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['largeurtableau'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['largeurtableau'])) || $_POST['largeurtableau'] < 1) {
+			$_POST['largeurtableau'] = 1440;
+		}
+		if (!saveSetting("largeurtableau", $_POST['largeurtableau'])) {
+			$msg .= "Erreur lors de l'enregistrement de largeurtableau !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['col_matiere_largeur'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_matiere_largeur'])) || $_POST['col_matiere_largeur'] < 1) {
+			$_POST['col_matiere_largeur'] = 300;
+		}
+		if (!saveSetting("col_matiere_largeur", $_POST['col_matiere_largeur'])) {
+			$msg .= "Erreur lors de l'enregistrement de col_matiere_largeur !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['col_note_largeur'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_note_largeur'])) || $_POST['col_note_largeur'] < 1) {
+			$_POST['col_note_largeur'] = 50;
+		}
+		if (!saveSetting("col_note_largeur", $_POST['col_note_largeur'])) {
+			$msg .= "Erreur lors de l'enregistrement de col_note_largeur !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['col_boite_largeur'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_boite_largeur'])) || $_POST['col_boite_largeur'] < 1) {
+			$_POST['col_boite_largeur'] = 120;
+		}
+		if (!saveSetting("col_boite_largeur", $_POST['col_boite_largeur'])) {
+			$msg .= "Erreur lors de l'enregistrement de col_boite_largeur !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['col_hauteur'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['col_hauteur'])) || $_POST['col_hauteur'] < 1) {
+			$_POST['col_hauteur'] = 0;
+		}
+		if (!saveSetting("col_hauteur", $_POST['col_hauteur'])) {
+			$msg .= "Erreur lors de l'enregistrement de col_hauteur !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['bull_ecart_entete'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_ecart_entete']))) {
+			$_POST['bull_ecart_entete'] = 0;
+		}
+		if (!saveSetting("bull_ecart_entete", $_POST['bull_ecart_entete'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_ecart_entete !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_espace_avis'])) {
+	
+		if ((!(my_ereg ("^[0-9]{1,}$", $_POST['bull_espace_avis']))) or ($_POST['bull_espace_avis'] <= 0)) {
+			$_POST['bull_espace_avis'] = 1;
+		}
+		if (!saveSetting("bull_espace_avis", $_POST['bull_espace_avis'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_espace_avis !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	if (isset($_POST['addressblock_padding_right'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_right']))) {
+			$_POST['addressblock_padding_right'] = 0;
+		}
+		if (!saveSetting("addressblock_padding_right", $_POST['addressblock_padding_right'])) {
+			$msg .= "Erreur lors de l'enregistrement de addressblock_padding_right !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['addressblock_padding_top'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_top']))) {
+			$_POST['addressblock_padding_top'] = 0;
+		}
+		if (!saveSetting("addressblock_padding_top", $_POST['addressblock_padding_top'])) {
+			$msg .= "Erreur lors de l'enregistrement de addressblock_padding_top !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['addressblock_padding_text'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_padding_text']))) {
+			$_POST['addressblock_padding_text'] = 0;
+		}
+		if (!saveSetting("addressblock_padding_text", $_POST['addressblock_padding_text'])) {
+			$msg .= "Erreur lors de l'enregistrement de addressblock_padding_text !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['addressblock_length'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_length']))) {
+			$_POST['addressblock_length'] = 0;
+		}
+		if (!saveSetting("addressblock_length", $_POST['addressblock_length'])) {
+			$msg .= "Erreur lors de l'enregistrement de addressblock_length !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	//==================================
+	// Ajout: boireaus
+	if (isset($_POST['addressblock_font_size'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_font_size']))) {
+			$_POST['addressblock_font_size'] = 12;
+		}
+		if (!saveSetting("addressblock_font_size", $_POST['addressblock_font_size'])) {
+			$msg .= "Erreur lors de l'enregistrement de addressblock_font_size !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['addressblock_logo_etab_prop'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_logo_etab_prop']))) {
+				$addressblock_logo_etab_prop=50;
+		}
+		else{
+				$addressblock_logo_etab_prop=$_POST['addressblock_logo_etab_prop'];
+		}
 	}
 	else{
-		if (!saveSetting("bull_categ_bgcolor", $_POST['bull_categ_bgcolor'])) {
-			$msg .= "Erreur lors de l'enregistrement de bull_categ_bgcolor !";
+		if(getSettingValue("addressblock_logo_etab_prop")){
+			$addressblock_logo_etab_prop=getSettingValue("addressblock_logo_etab_prop");
+		}
+		else{
+			$addressblock_logo_etab_prop=50;
+		}
+	}
+	
+	if (isset($_POST['addressblock_classe_annee'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['addressblock_classe_annee']))) {
+				$addressblock_classe_annee=35;
+		}
+		else{
+				$addressblock_classe_annee=$_POST['addressblock_classe_annee'];
+		}
+	}
+	else{
+		if(getSettingValue("addressblock_classe_annee")){
+			$addressblock_classe_annee=getSettingValue("addressblock_classe_annee");
+		}
+		else{
+			$addressblock_classe_annee=30;
+		}
+	}
+	
+	if((isset($_POST['addressblock_classe_annee']))&&(isset($_POST['addressblock_logo_etab_prop']))){
+		$valtest=$addressblock_logo_etab_prop+$addressblock_classe_annee;
+		if($valtest>100){
+			$msg.="Erreur! La somme addressblock_logo_etab_prop+addressblock_classe_annee dépasse 100% de la largeur de la page !";
+			$reg_ok = 'no';
+		}
+		else{
+			if (!saveSetting("addressblock_logo_etab_prop", $addressblock_logo_etab_prop)) {
+				$msg .= "Erreur lors de l'enregistrement de addressblock_logo_etab_prop !";
+				$reg_ok = 'no';
+			}
+	
+			if (!saveSetting("addressblock_classe_annee", $addressblock_classe_annee)) {
+				$msg .= "Erreur lors de l'enregistrement de addressblock_classe_annee !";
+				$reg_ok = 'no';
+			}
+		}
+	}
+	
+	
+	if (isset($_POST['bull_ecart_bloc_nom'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_ecart_bloc_nom']))) {
+			$_POST['bull_ecart_bloc_nom'] = 0;
+		}
+		if (!saveSetting("bull_ecart_bloc_nom", $_POST['bull_ecart_bloc_nom'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_ecart_bloc_nom !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	if (isset($_POST['addressblock_debug'])) {
+		if (($_POST['addressblock_debug']!="y")&&($_POST['addressblock_debug']!="n")) {
+			$_POST['addressblock_debug'] = "n";
+		}
+		if (!saveSetting("addressblock_debug", $_POST['addressblock_debug'])) {
+			$msg .= "Erreur lors de l'enregistrement de addressblock_debug !";
+			$reg_ok = 'no';
+		}
+	}
+	//==================================
+	
+	
+	if (isset($_POST['page_garde_padding_top'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_top']))) {
+			$_POST['page_garde_padding_top'] = 0;
+		}
+		if (!saveSetting("page_garde_padding_top", $_POST['page_garde_padding_top'])) {
+			$msg .= "Erreur lors de l'enregistrement de page_garde_padding_top !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['page_garde_padding_left'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_left']))) {
+			$_POST['page_garde_padding_left'] = 0;
+		}
+		if (!saveSetting("page_garde_padding_left", $_POST['page_garde_padding_left'])) {
+			$msg .= "Erreur lors de l'enregistrement de page_garde_padding_left !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['page_garde_padding_text'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['page_garde_padding_text']))) {
+			$_POST['page_garde_padding_text'] = 0;
+		}
+		if (!saveSetting("page_garde_padding_text", $_POST['page_garde_padding_text'])) {
+			$msg .= "Erreur lors de l'enregistrement de page_garde_padding_text !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['ok'])) {
+	
+		if (isset($_POST['page_garde_imprime'])) {
+			$temp = 'yes';
+		} else {
+			$temp = 'no';
+		}
+		if (!saveSetting("page_garde_imprime", $temp)) {
+			$msg .= "Erreur lors de l'enregistrement de page_garde_imprime !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($NON_PROTECT['page_garde_texte'])) {
+		$imp = traitement_magic_quotes($NON_PROTECT['page_garde_texte']);
+		if (!saveSetting("page_garde_texte", $imp)) {
+			$msg .= "Erreur lors de l'enregistrement de page_garde_texte !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($NON_PROTECT['bull_formule_bas'])) {
+		$imp = traitement_magic_quotes($NON_PROTECT['bull_formule_bas']);
+		if (!saveSetting("bull_formule_bas", $imp)) {
+			$msg .= "Erreur lors de l'enregistrement de bull_formule_bas !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_mention_nom_court'])) {
+	
+		if (!saveSetting("bull_mention_nom_court", $_POST['bull_mention_nom_court'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_mention_nom_court !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_mention_doublant'])) {
+	
+		if (!saveSetting("bull_mention_doublant", $_POST['bull_mention_doublant'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_mention_doublant !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_affiche_eleve_une_ligne'])) {
+	
+		if (!saveSetting("bull_affiche_eleve_une_ligne", $_POST['bull_affiche_eleve_une_ligne'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_mention_nom_court !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_affiche_graphiques'])) {
+	
+		if (!saveSetting("bull_affiche_graphiques", $_POST['bull_affiche_graphiques'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_graphiques !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_affiche_appreciations'])) {
+	
+		if (!saveSetting("bull_affiche_appreciations", $_POST['bull_affiche_appreciations'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_appreciations !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_affiche_absences'])) {
+	
+		if (!saveSetting("bull_affiche_absences", $_POST['bull_affiche_absences'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_absences !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['bull_affiche_avis'])) {
+	
+		if (!saveSetting("bull_affiche_avis", $_POST['bull_affiche_avis'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_avis !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['bull_affiche_aid'])) {
+	
+		if (!saveSetting("bull_affiche_aid", $_POST['bull_affiche_aid'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_aid !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['bull_affiche_formule'])) {
+	
+		if (!saveSetting("bull_affiche_formule", $_POST['bull_affiche_formule'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_formule !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['bull_affiche_signature'])) {
+	
+		if (!saveSetting("bull_affiche_signature", $_POST['bull_affiche_signature'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_signature !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['bull_affiche_numero'])) {
+	
+		if (!saveSetting("bull_affiche_numero", $_POST['bull_affiche_numero'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_numero !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_affiche_etab'])) {
+		if (!saveSetting("bull_affiche_etab", $_POST['bull_affiche_etab'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_etab !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	if(isset($_POST['bull_bordure_classique'])) {
+		if (!saveSetting("bull_bordure_classique", $_POST['bull_bordure_classique'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_bordure_classique !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['choix_bulletin'])) {
+	
+		if (!saveSetting("choix_bulletin", $_POST['choix_bulletin'])) {
+			$msg .= "Erreur lors de l'enregistrement de choix_bulletin";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['min_max_moyclas'])) {
+	
+		if (!saveSetting("min_max_moyclas", $_POST['min_max_moyclas'])) {
+			$msg .= "Erreur lors de l'enregistrement de min_max_moyclas !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['activer_photo_bulletin'])) {
+		if (!saveSetting("activer_photo_bulletin", $_POST['activer_photo_bulletin'])) {
+			$msg .= "Erreur lors de l'enregistrement de activer_photo_bulletin !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['bull_photo_hauteur_max'])) {
+		if (!saveSetting("bull_photo_hauteur_max", $_POST['bull_photo_hauteur_max'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_photo_hauteur_max !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['bull_photo_largeur_max'])) {
+		if (!saveSetting("bull_photo_largeur_max", $_POST['bull_photo_largeur_max'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_photo_largeur_max !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['bull_categ_font_size'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_categ_font_size']))) {
+			$_POST['bull_categ_font_size'] = 10;
+		}
+		if (!saveSetting("bull_categ_font_size", $_POST['bull_categ_font_size'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_categ_font_size !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	if(isset($_POST['bull_intitule_app'])) {
+		if (!saveSetting("bull_intitule_app", $_POST['bull_intitule_app'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_intitule_app !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['bull_affiche_INE_eleve'])) {
+		if (!saveSetting("bull_affiche_INE_eleve", $_POST['bull_affiche_INE_eleve'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_INE_eleve !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	if(isset($_POST['bull_affiche_tel'])) {
+		if (!saveSetting("bull_affiche_tel", $_POST['bull_affiche_tel'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_tel !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['bull_affiche_fax'])) {
+		if (!saveSetting("bull_affiche_fax", $_POST['bull_affiche_fax'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affiche_fax !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_categ_bgcolor'])) {
+		if((!in_array($_POST['bull_categ_bgcolor'],$tabcouleur))&&($_POST['bull_categ_bgcolor']!='')){
+			$msg .= "Erreur lors de l'enregistrement de bull_categ_bgcolor ! (couleur invalide)";
+			$reg_ok = 'no';
+		}
+		else{
+			if (!saveSetting("bull_categ_bgcolor", $_POST['bull_categ_bgcolor'])) {
+				$msg .= "Erreur lors de l'enregistrement de bull_categ_bgcolor !";
+				$reg_ok = 'no';
+			}
+		}
+	}
+	
+	// tableau des polices pour avis du CC de classe
+	$tab_polices_avis=Array("Arial","Helvetica","Serif","Times","Times New Roman","Verdana",);
+	if (isset($_POST['bull_police_avis'])) {
+		if((!in_array($_POST['bull_police_avis'],$tab_polices_avis))&&($_POST['bull_police_avis']!='')){
+			$msg .= "Erreur lors de l'enregistrement de bull_police_avis ! (police invalide)";
+			$reg_ok = 'no';
+		}
+		else{
+			if (!saveSetting("bull_police_avis", $_POST['bull_police_avis'])) {
+				$msg .= "Erreur lors de l'enregistrement de bull_police_avis !";
+				$reg_ok = 'no';
+			}
+		}
+	}
+	
+	//Style des caractères avis
+	// tableau des styles de polices pour avis du CC de classe
+	$tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");
+	if (isset($_POST['bull_font_style_avis'])) {
+		if((!in_array($_POST['bull_font_style_avis'],$tab_styles_avis))&&($_POST['bull_font_style_avis']!='')){
+			$msg .= "Erreur lors de l'enregistrement de bull_font_style_avis ! (police invalide)";
+			$reg_ok = 'no';
+		}
+		else{
+			if (!saveSetting("bull_font_style_avis", $_POST['bull_font_style_avis'])) {
+				$msg .= "Erreur lors de l'enregistrement de bull_font_style_avis !";
+				$reg_ok = 'no';
+			}
+		}
+	}
+	
+	//taille de la police avis
+	if(isset($_POST['bull_categ_font_size_avis'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_categ_font_size_avis']))) {
+			$_POST['bull_categ_font_size_avis'] = 10;
+		}
+		if (!saveSetting("bull_categ_font_size_avis", $_POST['bull_categ_font_size_avis'])) {
+			$msg .= "Erreur lors de l'enregistrement de bull_categ_font_size_avis !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	if (isset($_POST['genre_periode'])) {
+		if (!saveSetting("genre_periode", $_POST['genre_periode'])) {
+			$msg .= "Erreur lors de l'enregistrement de genre_periode !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	
+	if (isset($_POST['bull_affich_nom_etab'])) {
+		if($_POST['bull_affich_nom_etab']=="n") {
+			$bull_affich_nom_etab="n";
+		}
+		else{
+			$bull_affich_nom_etab="y";
+		}
+		if (!saveSetting("bull_affich_nom_etab", $bull_affich_nom_etab)) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affich_nom_etab !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['bull_affich_adr_etab'])) {
+		if($_POST['bull_affich_adr_etab']=="n") {
+			$bull_affich_adr_etab="n";
+		}
+		else{
+			$bull_affich_adr_etab="y";
+		}
+		if (!saveSetting("bull_affich_adr_etab", $bull_affich_adr_etab)) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affich_adr_etab !";
 			$reg_ok = 'no';
 		}
 	}
 }
-
-// tableau des polices pour avis du CC de classe
-$tab_polices_avis=Array("Arial","Helvetica","Serif","Times","Times New Roman","Verdana",);
-if (isset($_POST['bull_police_avis'])) {
-	if((!in_array($_POST['bull_police_avis'],$tab_polices_avis))&&($_POST['bull_police_avis']!='')){
-		$msg .= "Erreur lors de l'enregistrement de bull_police_avis ! (police invalide)";
-		$reg_ok = 'no';
-	}
-	else{
-		if (!saveSetting("bull_police_avis", $_POST['bull_police_avis'])) {
-			$msg .= "Erreur lors de l'enregistrement de bull_police_avis !";
-			$reg_ok = 'no';
-		}
-	}
-}
-
-//Style des caractères avis
-// tableau des styles de polices pour avis du CC de classe
-$tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");
-if (isset($_POST['bull_font_style_avis'])) {
-	if((!in_array($_POST['bull_font_style_avis'],$tab_styles_avis))&&($_POST['bull_font_style_avis']!='')){
-		$msg .= "Erreur lors de l'enregistrement de bull_font_style_avis ! (police invalide)";
-		$reg_ok = 'no';
-	}
-	else{
-		if (!saveSetting("bull_font_style_avis", $_POST['bull_font_style_avis'])) {
-			$msg .= "Erreur lors de l'enregistrement de bull_font_style_avis !";
-			$reg_ok = 'no';
-		}
-	}
-}
-
-//taille de la police avis
-if(isset($_POST['bull_categ_font_size_avis'])) {
-	if (!(my_ereg ("^[0-9]{1,}$", $_POST['bull_categ_font_size_avis']))) {
-		$_POST['bull_categ_font_size_avis'] = 10;
-	}
-	if (!saveSetting("bull_categ_font_size_avis", $_POST['bull_categ_font_size_avis'])) {
-		$msg .= "Erreur lors de l'enregistrement de bull_categ_font_size_avis !";
-		$reg_ok = 'no';
-	}
-}
-
-
-if (isset($_POST['genre_periode'])) {
-	if (!saveSetting("genre_periode", $_POST['genre_periode'])) {
-		$msg .= "Erreur lors de l'enregistrement de genre_periode !";
-		$reg_ok = 'no';
-	}
-}
-
-
-
-if (isset($_POST['bull_affich_nom_etab'])) {
-	if($_POST['bull_affich_nom_etab']=="n") {
-		$bull_affich_nom_etab="n";
-	}
-	else{
-		$bull_affich_nom_etab="y";
-	}
-	if (!saveSetting("bull_affich_nom_etab", $bull_affich_nom_etab)) {
-		$msg .= "Erreur lors de l'enregistrement de bull_affich_nom_etab !";
-		$reg_ok = 'no';
-	}
-}
-
-if (isset($_POST['bull_affich_adr_etab'])) {
-	if($_POST['bull_affich_adr_etab']=="n") {
-		$bull_affich_adr_etab="n";
-	}
-	else{
-		$bull_affich_adr_etab="y";
-	}
-	if (!saveSetting("bull_affich_adr_etab", $bull_affich_adr_etab)) {
-		$msg .= "Erreur lors de l'enregistrement de bull_affich_adr_etab !";
-		$reg_ok = 'no';
-	}
-}
-
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
-   $msg = "Enregistrement réussi !";
+$msg = "Enregistrement réussi !";
 }
 
 
@@ -729,6 +733,10 @@ if ((($_SESSION['statut']=='professeur') AND ((getSettingValue("GepiProfImprBul"
 
 
 <form name="formulaire" action="param_bull.php" method="post" style="width: 100%;">
+<?php
+echo add_token_field();
+?>
+<input type='hidden' name='is_posted' value='y' />
 <H3>Mise en page du bulletin scolaire</H3>
 <table cellpadding="8" cellspacing="0" width="100%" border="0" summary='Mise en page'>
 

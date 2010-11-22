@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -210,6 +210,8 @@ if(mysql_num_rows($res_classe)==0) {
 }
 
 if(isset($_POST['choix_date_valider2'])) {
+	check_token(false);
+
 	$periode2=isset($_POST['periode2']) ? $_POST['periode2'] : NULL;
 	$choix_date2=isset($_POST['choix_date2']) ? $_POST['choix_date2'] : NULL;
 
@@ -252,6 +254,8 @@ if(isset($_POST['choix_date_valider2'])) {
 	$res_classe=mysql_query($sql);
 }
 elseif(isset($_POST['modif_manuelle_periode'])) {
+	check_token(false);
+
 	$periode=isset($_POST['periode']) ? $_POST['periode'] : NULL;
 	if(strlen(preg_replace('/[0-9]/','',$periode))!=0) {$periode=NULL;}
 	if($periode=='') {$periode=NULL;}
@@ -339,6 +343,8 @@ $titre="Choix de la date";
 //$texte="<input type='text' name='choix_date' id='choix_date' size='10' value='$display_date'";
 $texte="<form name='form' action='".$_SERVER['PHP_SELF']."' method='get'>\n";
 $texte.="<p align='center'>\n";
+//$texte.=add_token_field();
+$texte.="<input type='hidden' id='csrf_alea' name='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
 $texte.="<input type='hidden' name='id_div' id='choix_date_id_div' value='' />\n";
 $texte.="<input type='hidden' name='statut' id='choix_date_statut' value='' />\n";
 $texte.="<input type='hidden' name='id_classe' id='choix_date_id_classe' value='' />\n";
@@ -363,6 +369,8 @@ $texte.="<p align='center'>\n";
 //$texte.="<input type='hidden' name='id_div' id='choix_date_id_div' value='' />\n";
 //$texte.="<input type='hidden' name='statut' id='choix_date_statut' value='' />\n";
 //$texte.="<input type='hidden' name='id_classe' id='choix_date_id_classe' value='' />\n";
+//$texte.=add_token_field();
+$texte.="<input type='hidden' id='csrf_alea' name='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
 $texte.="<input type='hidden' name='periode2' id='choix_date_periode2' value='' />\n";
 $texte.="<input type='text' name='choix_date2' id='choix_date2' size='10' value='' />\n";
 $texte.="<a href='#calend' onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' border='0' /></a>\n";
@@ -383,6 +391,8 @@ if($acces_app_ele_resp=='manuel') {
 
 	echo "<form method='post' action='".$_SERVER['PHP_SELF']."' name='form_manuel'>\n";
 	//echo "<p align='center'><input type='submit' name='submit' value='Valider' /></p>\n";
+	//echo add_token_field();
+	echo "<input type='hidden' id='csrf_alea' name='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
 
 	echo "<table class='boireaus' width='100%'>\n";
 	echo "<tr>\n";
@@ -1138,7 +1148,7 @@ elseif($acces_app_ele_resp=='periode_close') {
 	
 							if($display_date!='00/00/0000') {
 								//echo "&nbsp;: ";
-								echo "depuis le ";
+								echo " depuis le ";
 								echo $display_date;
 								if($delais_apres_cloture>0) {echo " + ".$delais_apres_cloture."j";}
 							}
