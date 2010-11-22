@@ -176,7 +176,7 @@ if (!$id_classe) {
         } else {
             $Classe = ClassePeer::retrieveByPK($id_classe);
 
-            echo '<h3>Classe de '.$Classe->getClasse().'</h3>';
+            echo '<h3>Classe de '.$Classe->getNom().'</h3>';
 
             // On propose de générer les documents pour toutes la classe, ou bien pour un seul élève
             echo "<div>\n";

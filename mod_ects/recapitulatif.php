@@ -362,7 +362,7 @@ require_once("../lib/header.inc");
   
   <?php
   
-  echo "<h1 style='margin-top: 0px; margin-bottom: 0px;margin-left: 30px;'>Crédits ECTS acquis - Classe de ".$Classe->getClasse()."</h1>";
+  echo "<h1 style='margin-top: 0px; margin-bottom: 0px;margin-left: 30px;'>Crédits ECTS acquis - Classe de ".$Classe->getNom()."</h1>";
   
   echo "<p style='margin-left: 30px;'>Afficher/masquer par année : ";
   
@@ -419,7 +419,7 @@ require_once("../lib/header.inc");
   echo "<td class='lone_cell'>";
   echo "Classe :<br/><br/>";
   echo "<span style='font-weight: bold;'>";
-  echo $Classe->getClasse();
+  echo $Classe->getNom();
   echo "</span>";
   echo "</td>\n";
   $a = 1;
