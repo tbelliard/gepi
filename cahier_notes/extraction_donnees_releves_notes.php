@@ -500,8 +500,8 @@
 								$k++;
 							}
 
-							$current_matiere_nom_complet_query = mysql_query("SELECT nom_complet FROM matieres WHERE matiere='$current_matiere'");
-							$current_matiere_nom_complet = mysql_result($current_matiere_nom_complet_query, 0, "nom_complet");
+							$current_matiere_nom_complet = sql_query1("SELECT name FROM groupes WHERE id='$current_groupe'");
+
 							$tab_ele['groupe'][$j]['matiere_nom_complet']=$current_matiere_nom_complet;
 
 							//if($avec_coef_devoir=="oui"){
@@ -680,7 +680,7 @@
 									//echo "\$tabdate[0]=$tabdate[0]<br />";
 									//echo "\$tabdate[1]=$tabdate[1]<br />";
 									//echo "\$tabdate[2]=$tabdate[2]<br />";
-	
+
 									$timestamp_limite=mktime(0,0,0,$tabdate[1],$tabdate[2],$tabdate[0]);
 									if($timestamp_courant<$timestamp_limite) {
 										$visible="n";
@@ -703,7 +703,7 @@
 									$date_note = @mysql_result($query_notes,$mm,'d.date');
 									$note_sur = @mysql_result($query_notes,$mm,'d.note_sur');
 									$coef_devoir = @mysql_result($query_notes,$mm,'d.coef');
-	
+
 									$tab_ele['groupe'][$j]['devoir'][$m]['display_app']=$eleve_display_app;
 									$tab_ele['groupe'][$j]['devoir'][$m]['app']=$eleve_app;
 									$tab_ele['groupe'][$j]['devoir'][$m]['note']=$eleve_note;
