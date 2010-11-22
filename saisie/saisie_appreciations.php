@@ -1637,7 +1637,7 @@ if (($insert_mass_appreciation_type=="y")&&($droit_insert_mass_appreciation_type
 	echo "<script type='text/javascript'>
 	function ajoute_a_textarea_vide() {
 		champs_textarea=document.getElementsByTagName('textarea');
-		alert('champs_textarea.length='+champs_textarea.length);
+		//alert('champs_textarea.length='+champs_textarea.length);
 		for(i=0;i<champs_textarea.length;i++){
 			if(champs_textarea[i].value=='') {
 				champs_textarea[i].value=document.getElementById('ajout_a_textarea_vide').value;
