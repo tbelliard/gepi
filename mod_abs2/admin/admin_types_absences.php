@@ -3,7 +3,7 @@
  *
  * $Id$
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2010-2011 Josselin Jacquard
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
     die();
-};
+}
 
 // Check access
 if (!checkAccess()) {
@@ -72,62 +72,70 @@ if (empty($_GET['ajout_statut_type_saisie']) and empty($_POST['ajout_statut_type
 //$type = new AbsenceEleveType();
 $type = AbsenceEleveTypeQuery::create()->findPk($id);
 if ($action == 'supprimer') {
+	check_token();
     if ($type != null) {
 	$type->delete();
     }
 } elseif ($action == "monter") {
+	check_token();
     if ($type != null) {
 	$type->moveUp();
     }
 } elseif ($action == 'descendre') {
+	check_token();
     if ($type != null) {
 	$type->moveDown();
     }
 } elseif ($action == 'ajouterdefaut') {
+	check_token();
     include("function.php");
     ajoutTypesParDefaut();
 } elseif ($action == 'supprimer_statut') {
+	check_token();
 	$type_statut = AbsenceEleveTypeStatutAutoriseQuery::create()->findPk($statut_id);
 	if ($type_statut != null) {
 	    $type_statut->delete();
 	}
 } else {
     if ($nom != '') {
-	$type = AbsenceEleveTypeQuery::create()->findPk($id);
-	if ($type == null) {
-	    $type = new AbsenceEleveType();
-	}
-	$type->setNom(stripslashes($nom));
-	$type->setCommentaire(stripslashes($commentaire));
-	$type->setJustificationExigible($justification_exigible);
-	$type->setSousResponsabiliteEtablissement($sous_responsabilite_etablissement);
-	$type->setManquementObligationPresence($manquement_obligation_presence);
-	$type->setRetardBulletin($retard_bulletin);
-	$type->setTypeSaisie($type_saisie);
-	$type->getAbsenceEleveTypeStatutAutorises(); //corrige un bug de propel sur la lecture de la base
-	if ($ajout_statut_type_saisie != '') {
-	    //test si le statut est deja autorisé
-	    if (AbsenceEleveTypeStatutAutoriseQuery::create()->
-		    filterByStatut($ajout_statut_type_saisie)->
-		    filterByIdAType($type->getId())->
-		    find()->isEmpty()) {
-			//on creer un nouveau statut autorisé
-		$statut_ajout = new AbsenceEleveTypeStatutAutorise();
-		$statut_ajout->setStatut($ajout_statut_type_saisie);
-		$type->addAbsenceEleveTypeStatutAutorise($statut_ajout);
-		$statut_ajout->save();
-	    }
-	    $action = "modifier";
-	}
-	$type->save();
+		check_token();
+		$type = AbsenceEleveTypeQuery::create()->findPk($id);
+		if ($type == null) {
+			$type = new AbsenceEleveType();
+		}
+		$type->setNom(stripslashes($nom));
+		$type->setCommentaire(stripslashes($commentaire));
+		$type->setJustificationExigible($justification_exigible);
+		$type->setSousResponsabiliteEtablissement($sous_responsabilite_etablissement);
+		$type->setManquementObligationPresence($manquement_obligation_presence);
+		$type->setRetardBulletin($retard_bulletin);
+		$type->setTypeSaisie($type_saisie);
+		$type->getAbsenceEleveTypeStatutAutorises(); //corrige un bug de propel sur la lecture de la base
+		if ($ajout_statut_type_saisie != '') {
+			//test si le statut est deja autorisé
+			if (AbsenceEleveTypeStatutAutoriseQuery::create()->
+				filterByStatut($ajout_statut_type_saisie)->
+				filterByIdAType($type->getId())->
+				find()->isEmpty()) {
+				//on creer un nouveau statut autorisé
+			$statut_ajout = new AbsenceEleveTypeStatutAutorise();
+			$statut_ajout->setStatut($ajout_statut_type_saisie);
+			$type->addAbsenceEleveTypeStatutAutorise($statut_ajout);
+			$statut_ajout->save();
+			}
+			$action = "modifier";
+		}
+		$type->save();
     }
 }
 
+//==========================================
 // header
 $titre_page = "Gestion des types d'absence";
 require_once("../../lib/header.inc");
+//==========================================
 
-echo "<p class=bold>";
+echo "<p class='bold'>";
 echo "<a href=\"index.php\">";
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
@@ -146,6 +154,9 @@ echo "</p>";
 	?>
 
     <form action="admin_types_absences.php" method="post" name="form2" id="form2">
+<?php
+echo add_token_field();
+?>
      <fieldset class="fieldset_efface">
       <table cellpadding="2" cellspacing="2" class="menu">
         <tr>
@@ -206,7 +217,7 @@ echo "</p>";
 				echo "<tr><td>";
 				echo $statut_saisie->getStatut();
 				echo "</td>";
-		  		echo '<td><a href="admin_types_absences.php?action=supprimer_statut&amp;id='. $type->getId(). '&amp;statut_id='. $statut_saisie->getId() .'"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>';
+		  		echo '<td><a href="admin_types_absences.php?action=supprimer_statut&amp;id='. $type->getId(). '&amp;statut_id='. $statut_saisie->getId() .add_token_in_url().'"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>';
 				echo "</tr>";
 			}
 		}
@@ -235,7 +246,7 @@ echo "</p>";
 } ?>
 	<a href="admin_types_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un nouveau type</a>
 	<br/><br/>
-	<a href="admin_types_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les types par défaut</a>
+	<a href="admin_types_absences.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les types par défaut</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu" style="width:80%">
       <tr>
@@ -287,10 +298,10 @@ echo "</p>";
 			echo " ";
 		}
 	  ?></td>
-          <td><a href="admin_types_absences.php?action=modifier&amp;id=<?php echo $type->getId(); ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
-          <td><a href="admin_types_absences.php?action=supprimer&amp;id=<?php echo $type->getId(); ?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce type ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
-          <td><a href="admin_types_absences.php?action=monter&amp;id=<?php echo $type->getId(); ?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
-          <td><a href="admin_types_absences.php?action=descendre&amp;id=<?php echo $type->getId(); ?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
+          <td><a href="admin_types_absences.php?action=modifier&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
+          <td><a href="admin_types_absences.php?action=supprimer&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce type ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+          <td><a href="admin_types_absences.php?action=monter&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
+          <td><a href="admin_types_absences.php?action=descendre&amp;id=<?php echo $type->getId(); echo add_token_in_url();?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
         </tr>
      <?php } ?>
     </table>

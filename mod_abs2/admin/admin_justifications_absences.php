@@ -3,7 +3,7 @@
  *
  * $Id$
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2010-2011 Josselin Jacquard
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
     die();
-};
+}
 
 // Check access
 if (!checkAccess()) {
@@ -60,29 +60,34 @@ if (empty($_GET['commentaire']) and empty($_POST['commentaire'])) { $commentaire
 //$justification = new AbsenceElevejustification();
 $justification = AbsenceEleveJustificationQuery::create()->findPk($id);
 if ($action == 'supprimer') {
+	check_token();
     if ($justification != null) {
 	$justification->delete();
     }
 } elseif ($action == "monter") {
+	check_token();
     if ($justification != null) {
 	$justification->moveUp();
     }
 } elseif ($action == 'descendre') {
+	check_token();
     if ($justification != null) {
 	$justification->moveDown();
     }
 } elseif ($action == 'ajouterdefaut') {
+	check_token();
     include("function.php");
     ajoutJustificationsParDefaut();
 } else {
     if ($nom != '') {
-	$justification = AbsenceEleveJustificationQuery::create()->findPk($id);
-	if ($justification == null) {
-	    $justification = new AbsenceEleveJustification();
-	}
-	$justification->setNom(stripslashes($nom));
-	$justification->setCommentaire(stripslashes($commentaire));
-	$justification->save();
+		check_token();
+		$justification = AbsenceEleveJustificationQuery::create()->findPk($id);
+		if ($justification == null) {
+			$justification = new AbsenceEleveJustification();
+		}
+		$justification->setNom(stripslashes($nom));
+		$justification->setCommentaire(stripslashes($commentaire));
+		$justification->save();
     }
 }
 
@@ -109,6 +114,9 @@ echo "</p>";
 	?>
 
     <form action="admin_justifications_absences.php" method="post" name="form2" id="form2">
+<?php
+echo add_token_field();
+?>
       <table cellpadding="2" cellspacing="2" class="menu">
         <tr>
           <td>Nom (obligatoire)</td>
@@ -135,7 +143,7 @@ echo "</p>";
 } ?>
 	<a href="admin_justifications_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter une nouvelle justification</a>
 	<br/><br/>
-	<a href="admin_justifications_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les justifications par défaut</a>
+	<a href="admin_justifications_absences.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les justifications par défaut</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu">
       <tr>
@@ -155,10 +163,10 @@ echo "</p>";
         <tr>
 	  <td><?php echo $justification->getNom(); ?></td>
 	  <td><?php echo $justification->getCommentaire(); ?></td>
-          <td><a href="admin_justifications_absences.php?action=modifier&amp;id=<?php echo $justification->getId(); ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
-          <td><a href="admin_justifications_absences.php?action=supprimer&amp;id=<?php echo $justification->getId(); ?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce justification ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
-          <td><a href="admin_justifications_absences.php?action=monter&amp;id=<?php echo $justification->getId(); ?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
-          <td><a href="admin_justifications_absences.php?action=descendre&amp;id=<?php echo $justification->getId(); ?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
+          <td><a href="admin_justifications_absences.php?action=modifier&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
+          <td><a href="admin_justifications_absences.php?action=supprimer&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce justification ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+          <td><a href="admin_justifications_absences.php?action=monter&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
+          <td><a href="admin_justifications_absences.php?action=descendre&amp;id=<?php echo $justification->getId(); echo add_token_in_url();?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
         </tr>
      <?php } ?>
     </table>

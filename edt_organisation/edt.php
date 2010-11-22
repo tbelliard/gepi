@@ -3,7 +3,7 @@
 /**
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -79,24 +79,28 @@ $message = "";
 
 	// Modification du setting autorise_edt_tous
 	if (isset($autorise_acces_tous)) {
+		check_token();
 		$requete = "UPDATE setting SET value = '".$autorise_acces_tous."' WHERE name = 'autorise_edt_tous'";
 		$modif_setting = "ok";
 	}
 
 	// Modification du setting autorise_edt_admin
 	if (isset($autorise_acces_admin)) {
+		check_token();
 		$requete = "UPDATE setting SET value = '".$autorise_acces_admin."' WHERE name = 'autorise_edt_admin'";
 		$modif_setting = "ok";
 	}
 
 	// Modification du setting autorise_edt_eleve
 	if (isset($autorise_acces_eleve)) {
+		check_token();
 		$requete = "UPDATE setting SET value = '".$autorise_acces_eleve."' WHERE name = 'autorise_edt_eleve'";
 		$modif_setting = "ok";
 	}
 
 	// On effectue la requête
 	if ($modif_setting == "ok") {
+		check_token();
 		$modif = mysql_query($requete) OR DIE('La modification n\'a pas été enregistrée : '.mysql_error());
 		//$message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";
 		$msg .= "La modification a bien été enregistrée !";
@@ -105,6 +109,7 @@ $message = "";
 
   // L'autorisation pour les professeurs de saisir leur edt
   if (isset ($autorise_saisir_prof)){
+	check_token();
     if (saveSetting("edt_remplir_prof", $autorise_saisir_prof)){
       $message .= "<p class=\"red\">La modification a bien été enregistrée !</p>";;
 	  $msg .= " La modification a bien été enregistrée !";

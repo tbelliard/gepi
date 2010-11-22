@@ -3,7 +3,7 @@
  *
  *$Id$
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2010-2011 Josselin Jacquard
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -39,7 +39,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
     die();
-};
+}
 
 // Check access
 if (!checkAccess()) {
@@ -51,58 +51,60 @@ $retour=$_SESSION['retour'];
 $_SESSION['retour']=$_SERVER['PHP_SELF'] ;
 
 $msg = '';
-if (isset($_POST['activer'])) {
-    if (!saveSetting("active_module_absence", $_POST['activer'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-	}
-}
-if (isset($_POST['activer_prof'])) {
-    if (!saveSetting("active_module_absence_professeur", $_POST['activer_prof'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie par les professeurs !";
-	}
-}
-if (isset($_POST['activer_resp'])) {
-	if (!saveSetting("active_absences_parents", $_POST['activer_resp'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la consultation par les responsables élèves !";
-	}
-}
-if (isset($_POST['gepiAbsenceEmail'])) {
-	if (!saveSetting("gepiAbsenceEmail", $_POST['gepiAbsenceEmail'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre gestion absence email !";
-	}
-}
-if (isset($_POST['abs2_sms_prestataire'])) {
-	if (!saveSetting("abs2_sms_prestataire", $_POST['abs2_sms_prestataire'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre prestataire sms !";
-	}
-}
-if (isset($_POST['abs2_sms_username'])) {
-	if (!saveSetting("abs2_sms_username", $_POST['abs2_sms_username'])) {
-		$msg = "Erreur lors de l'enregistrement du nom d'utilisateur prestataire sms !";
-	}
-}
-if (isset($_POST['abs2_sms_password'])) {
-	if (!saveSetting("abs2_sms_password", $_POST['abs2_sms_password'])) {
-		$msg = "Erreur lors de l'enregistrement du mot de passe prestataire sms !";
-	}
-}
-if (isset($_POST['abs2_retard_critere_duree'])) {
-	if (!saveSetting("abs2_retard_critere_duree", $_POST['abs2_retard_critere_duree'])) {
-		$msg = "Erreur lors de l'enregistrement de abs2_retard_critere_duree !";
-	}
-}
-if (isset($_POST['abs2_heure_demi_journee'])) {
-	try {
-	    $heure = new DateTime($_POST['abs2_heure_demi_journee']);
-	    if (!saveSetting("abs2_heure_demi_journee", $heure->format('H:i'))) {
-		    $msg = "Erreur lors de l'enregistrement de abs2_heure_demi_journee !";
-	    }
-	} catch (Exception $x) {
-	    $message_enregistrement .= "Mauvais format d'heure.<br/>";
-	}
-}
+
 if (isset($_POST['is_posted'])) {
 	if ($_POST['is_posted']=='1') {
+
+		if (isset($_POST['activer'])) {
+			if (!saveSetting("active_module_absence", $_POST['activer'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+			}
+		}
+		if (isset($_POST['activer_prof'])) {
+			if (!saveSetting("active_module_absence_professeur", $_POST['activer_prof'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la saisie par les professeurs !";
+			}
+		}
+		if (isset($_POST['activer_resp'])) {
+			if (!saveSetting("active_absences_parents", $_POST['activer_resp'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation de la consultation par les responsables élèves !";
+			}
+		}
+		if (isset($_POST['gepiAbsenceEmail'])) {
+			if (!saveSetting("gepiAbsenceEmail", $_POST['gepiAbsenceEmail'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre gestion absence email !";
+			}
+		}
+		if (isset($_POST['abs2_sms_prestataire'])) {
+			if (!saveSetting("abs2_sms_prestataire", $_POST['abs2_sms_prestataire'])) {
+				$msg = "Erreur lors de l'enregistrement du paramètre prestataire sms !";
+			}
+		}
+		if (isset($_POST['abs2_sms_username'])) {
+			if (!saveSetting("abs2_sms_username", $_POST['abs2_sms_username'])) {
+				$msg = "Erreur lors de l'enregistrement du nom d'utilisateur prestataire sms !";
+			}
+		}
+		if (isset($_POST['abs2_sms_password'])) {
+			if (!saveSetting("abs2_sms_password", $_POST['abs2_sms_password'])) {
+				$msg = "Erreur lors de l'enregistrement du mot de passe prestataire sms !";
+			}
+		}
+		if (isset($_POST['abs2_retard_critere_duree'])) {
+			if (!saveSetting("abs2_retard_critere_duree", $_POST['abs2_retard_critere_duree'])) {
+				$msg = "Erreur lors de l'enregistrement de abs2_retard_critere_duree !";
+			}
+		}
+		if (isset($_POST['abs2_heure_demi_journee'])) {
+			try {
+				$heure = new DateTime($_POST['abs2_heure_demi_journee']);
+				if (!saveSetting("abs2_heure_demi_journee", $heure->format('H:i'))) {
+					$msg = "Erreur lors de l'enregistrement de abs2_heure_demi_journee !";
+				}
+			} catch (Exception $x) {
+				$message_enregistrement .= "Mauvais format d'heure.<br/>";
+			}
+		}
 
 		if (isset($_POST['abs2_alleger_abs_du_jour'])) {
 			if (!saveSetting("abs2_alleger_abs_du_jour", $_POST['abs2_alleger_abs_du_jour'])) {
@@ -271,7 +273,7 @@ $titre_page = "Gestion du module absence";
 require_once("../../lib/header.inc");
 
 
-echo "<p class=bold><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<p class='bold'><a href=\"../../accueil_modules.php\"><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>";
     if (isset ($result)) {
 	    echo "<center><table width=\"80%\" border=\"1\" cellpadding=\"5\" cellspacing=\"1\" summary='Résultat de mise à jour'><tr><td><h2 align=\"center\">Résultat de la mise à jour</h2>";
@@ -284,6 +286,9 @@ echo "</p>";
 suppression des données. Lorsque le module est désactivé, les CPE n'ont pas accès au module.</p>
 
 <form action="index.php" name="form1" method="post">
+<?php
+echo add_token_field();
+?>
 <p>
 	<input type="radio" id="activerY" name="activer" value="y"
 	<?php if (getSettingValue("active_module_absence")=='y') echo ' checked="checked"'; ?> />

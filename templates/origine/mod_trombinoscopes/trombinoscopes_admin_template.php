@@ -2,7 +2,7 @@
 <?php
 /**
  * $Id$
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -99,6 +99,9 @@
 	  </em>
 	</p>
 	<form action="trombinoscopes_admin.php" id="form1" method="post" title="Configuration générale">
+<?php
+echo add_token_field();
+?>
 	  <fieldset>
 		<legend class="bold">Élèves :</legend>
 		<input type="radio"
@@ -467,6 +470,9 @@ if (!isset($aid_trouve)) {
 	<hr/>
 	
 	<form method="post" action="trombinoscopes_admin.php" id="formEnvoi" enctype="multipart/form-data">
+<?php
+echo add_token_field();
+?>
 	  <fieldset>
 		<legend class="bold">
 		  Restaurer les photos à partir d'un fichier Zip

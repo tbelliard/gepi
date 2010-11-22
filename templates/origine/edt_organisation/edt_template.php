@@ -3,7 +3,7 @@
 /*
  * $Id$
  * *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -101,6 +101,9 @@
 	<hr />
 	
 	<form action="edt.php" method="post" id="autorise_edt">
+<?php
+echo add_token_field();
+?>
 		<fieldset class="no_bordure">
 		  <legend class="invisible">Activation de l'EDT</legend>
 		  <em>
@@ -144,6 +147,9 @@
 	</script>
 
 	<form action="edt.php" method="post" id="autorise_prof">
+<?php
+echo add_token_field();
+?>
 		<fieldset class="no_bordure grandEspaceHaut">
 		  <legend class="invisible">Activation pour les enseignants</legend>
 		  <input type="radio"
@@ -180,6 +186,9 @@
 	</script>
 	
 	<form action="edt.php" method="post" id="autorise_admin">
+<?php
+echo add_token_field();
+?>
 		<fieldset class="no_bordure grandEspaceHaut">
 		  <legend class="invisible">Activation pour les administrateurs</legend>
 		  <em>Les comptes </em>administrateur<em> ont accès aux emplois du temps si celui-ci est activé pour eux.
@@ -225,6 +234,9 @@
 	<h2>Gestion de l'accès pour les élèves et leurs responsables</h2>
 
 	<form action="edt.php" method="post" id="autorise_ele">
+<?php
+echo add_token_field();
+?>
 	  <p>
 		<em>
 		  Si vous souhaitez rendre accessible leur emploi du temps aux élèves et à leurs responsables,

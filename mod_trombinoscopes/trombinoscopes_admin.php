@@ -2,7 +2,7 @@
 /*
 *$Id$
 *
- * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -64,119 +64,123 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 // Check access
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 /******************************************************************
  *    Enregistrement des variables passées en $_POST si besoin
  ******************************************************************/
 $msg = '';
-if (isset($_POST['num_aid_trombinoscopes'])) {
-    if ($_POST['num_aid_trombinoscopes']!='') {
-        if (!saveSetting("num_aid_trombinoscopes", $_POST['num_aid_trombinoscopes']))
-				$msg = "Erreur lors de l'enregistrement du paramètre num_aid_trombinoscopes !";
-    } else {
-        $del_num_aid_trombinoscopes = mysql_query("delete from setting where NAME='num_aid_trombinoscopes'");
-        $gepiSettings['num_aid_trombinoscopes']="";
-    }
-}
-if (isset($_POST['activer'])) {
-    if (!saveSetting("active_module_trombinoscopes", $_POST['activer']))
-			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-	if (!cree_repertoire_multisite())
-	  $msg = "Erreur lors de la création du répertoire photos de l'établissement !";
-}
+if(isset($_POST['is_posted'])) {
+	check_token();
 
-if (isset($_POST['activer_personnels'])) {
-    if (!saveSetting("active_module_trombino_pers", $_POST['activer_personnels']))
-			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation du trombinoscope des personnels !";
-}
-
-if (isset($_POST['activer_redimensionne'])) {
-    if (!saveSetting("active_module_trombinoscopes_rd", $_POST['activer_redimensionne']))
-			$msg = "Erreur lors de l'enregistrement du paramètre de redimenssionement des photos !";
-}
-if (isset($_POST['activer_rotation'])) {
-    if (!saveSetting("active_module_trombinoscopes_rt", $_POST['activer_rotation']))
-			$msg = "Erreur lors de l'enregistrement du paramètre rotation des photos !";
-}
-if (isset($_POST['l_max_aff_trombinoscopes'])) {
-    if (!saveSetting("l_max_aff_trombinoscopes", $_POST['l_max_aff_trombinoscopes']))
-			$msg = "Erreur lors de l'enregistrement du paramètre largeur maximum !";
-}
-if (isset($_POST['h_max_aff_trombinoscopes'])) {
-    if (!saveSetting("h_max_aff_trombinoscopes", $_POST['h_max_aff_trombinoscopes']))
-			$msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
-}
-if (isset($_POST['l_max_imp_trombinoscopes'])) {
-    if (!saveSetting("l_max_imp_trombinoscopes", $_POST['l_max_imp_trombinoscopes']))
-			$msg = "Erreur lors de l'enregistrement du paramètre largeur maximum !";
-}
-if (isset($_POST['h_max_imp_trombinoscopes'])) {
-    if (!saveSetting("h_max_imp_trombinoscopes", $_POST['h_max_imp_trombinoscopes']))
-			$msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
-}
-
-if (isset($_POST['nb_col_imp_trombinoscopes'])) {
-    if (!saveSetting("nb_col_imp_trombinoscopes", $_POST['nb_col_imp_trombinoscopes']))
-			$msg = "Erreur lors de l'enregistrement du nombre de colonnes sur les trombinos imprimés !";
-}
-
-if (isset($_POST['l_resize_trombinoscopes'])) {
-    if (!saveSetting("l_resize_trombinoscopes", $_POST['l_resize_trombinoscopes']))
-			$msg = "Erreur lors de l'enregistrement du paramètre l_resize_trombinoscopes !";
-}
-if (isset($_POST['h_resize_trombinoscopes'])) {
-    if (!saveSetting("h_resize_trombinoscopes", $_POST['h_resize_trombinoscopes']))
-			$msg = "Erreur lors de l'enregistrement du paramètre h_resize_trombinoscopes !";
-}
-
-if (isset($_POST['sousrub'])) {
-  // suppression
-  if (isset ($_POST['supprime']) && $_POST['supprime']="yes"){
-	if($_POST['sousrub']=="dp"){
-	  // suppression des photos du personnel
-	  $msg = efface_photos("personnels");
-	  if ($msg == FALSE)
-		$msg = "Erreur lors de la suppression des photos du personnel";
-	} else if ($_POST['sousrub']=="de"){
-	  // suppression des photos des élèves
-	  $msg = efface_photos("eleves");
-	  if ($msg == FALSE)
-	  $msg = "Erreur lors de la suppression des photos des élèves";
+	if (isset($_POST['num_aid_trombinoscopes'])) {
+		if ($_POST['num_aid_trombinoscopes']!='') {
+			if (!saveSetting("num_aid_trombinoscopes", $_POST['num_aid_trombinoscopes']))
+					$msg = "Erreur lors de l'enregistrement du paramètre num_aid_trombinoscopes !";
+		} else {
+			$del_num_aid_trombinoscopes = mysql_query("delete from setting where NAME='num_aid_trombinoscopes'");
+			$gepiSettings['num_aid_trombinoscopes']="";
+		}
 	}
-  }
-}
+	if (isset($_POST['activer'])) {
+		if (!saveSetting("active_module_trombinoscopes", $_POST['activer']))
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		if (!cree_repertoire_multisite())
+		$msg = "Erreur lors de la création du répertoire photos de l'établissement !";
+	}
+	
+	if (isset($_POST['activer_personnels'])) {
+		if (!saveSetting("active_module_trombino_pers", $_POST['activer_personnels']))
+				$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation du trombinoscope des personnels !";
+	}
+	
+	if (isset($_POST['activer_redimensionne'])) {
+		if (!saveSetting("active_module_trombinoscopes_rd", $_POST['activer_redimensionne']))
+				$msg = "Erreur lors de l'enregistrement du paramètre de redimenssionement des photos !";
+	}
+	if (isset($_POST['activer_rotation'])) {
+		if (!saveSetting("active_module_trombinoscopes_rt", $_POST['activer_rotation']))
+				$msg = "Erreur lors de l'enregistrement du paramètre rotation des photos !";
+	}
+	if (isset($_POST['l_max_aff_trombinoscopes'])) {
+		if (!saveSetting("l_max_aff_trombinoscopes", $_POST['l_max_aff_trombinoscopes']))
+				$msg = "Erreur lors de l'enregistrement du paramètre largeur maximum !";
+	}
+	if (isset($_POST['h_max_aff_trombinoscopes'])) {
+		if (!saveSetting("h_max_aff_trombinoscopes", $_POST['h_max_aff_trombinoscopes']))
+				$msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
+	}
+	if (isset($_POST['l_max_imp_trombinoscopes'])) {
+		if (!saveSetting("l_max_imp_trombinoscopes", $_POST['l_max_imp_trombinoscopes']))
+				$msg = "Erreur lors de l'enregistrement du paramètre largeur maximum !";
+	}
+	if (isset($_POST['h_max_imp_trombinoscopes'])) {
+		if (!saveSetting("h_max_imp_trombinoscopes", $_POST['h_max_imp_trombinoscopes']))
+				$msg = "Erreur lors de l'enregistrement du paramètre hauteur maximum !";
+	}
+	
+	if (isset($_POST['nb_col_imp_trombinoscopes'])) {
+		if (!saveSetting("nb_col_imp_trombinoscopes", $_POST['nb_col_imp_trombinoscopes']))
+				$msg = "Erreur lors de l'enregistrement du nombre de colonnes sur les trombinos imprimés !";
+	}
+	
+	if (isset($_POST['l_resize_trombinoscopes'])) {
+		if (!saveSetting("l_resize_trombinoscopes", $_POST['l_resize_trombinoscopes']))
+				$msg = "Erreur lors de l'enregistrement du paramètre l_resize_trombinoscopes !";
+	}
+	if (isset($_POST['h_resize_trombinoscopes'])) {
+		if (!saveSetting("h_resize_trombinoscopes", $_POST['h_resize_trombinoscopes']))
+				$msg = "Erreur lors de l'enregistrement du paramètre h_resize_trombinoscopes !";
+	}
 
-if(isset ($_POST['voirPerso']) && $_POST['voirPerso']=="yes"){
-	// Affichage du personnel sans photo
-	if (!recherche_personnel_sans_photo()){
-	  $msg = "Erreur lors de la sélection du personnel sans photo";
+	if (isset($_POST['sousrub'])) {
+		// suppression
+		if (isset ($_POST['supprime']) && $_POST['supprime']="yes"){
+			if($_POST['sousrub']=="dp"){
+			// suppression des photos du personnel
+			$msg = efface_photos("personnels");
+			if ($msg == FALSE)
+				$msg = "Erreur lors de la suppression des photos du personnel";
+			} else if ($_POST['sousrub']=="de"){
+			// suppression des photos des élèves
+			$msg = efface_photos("eleves");
+			if ($msg == FALSE)
+			$msg = "Erreur lors de la suppression des photos des élèves";
+			}
+		}
+	}
+
+	if(isset ($_POST['voirPerso']) && $_POST['voirPerso']=="yes"){
+		// Affichage du personnel sans photo
+		if (!recherche_personnel_sans_photo()){
+		$msg = "Erreur lors de la sélection du personnel sans photo";
+		}else{
+		$personnel_sans_photo=recherche_personnel_sans_photo();
+		$msg.="liste des personnels sans photo en bas de page <br/>";
+		}
+	}
+	
+	if (isset ($_POST['voirEleve']) && $_POST['voirEleve']=="yes"){
+	// Affichage des élèves sans photo
+	if (!recherche_eleves_sans_photo()){
+		$msg = "Erreur lors de la sélection des élèves sans photo";
 	}else{
-	$personnel_sans_photo=recherche_personnel_sans_photo();
-	$msg.="liste des personnels sans photo en bas de page <br/>";
+	$eleves_sans_photo=recherche_eleves_sans_photo();
+	$msg.="liste des élèves sans photo en bas de page";
 	}
-  }
-  
-if (isset ($_POST['voirEleve']) && $_POST['voirEleve']=="yes"){
-  // Affichage des élèves sans photo
-  if (!recherche_eleves_sans_photo()){
-	$msg = "Erreur lors de la sélection des élèves sans photo";
-  }else{
-  $eleves_sans_photo=recherche_eleves_sans_photo();
-  $msg.="liste des élèves sans photo en bas de page";
-  }
-}
+	}
 
+}
 
 if (isset($_POST['is_posted']) and ($msg=='')) {
   $msg = "Les modifications ont été enregistrées !";
@@ -189,6 +193,7 @@ if (isset($_POST['is_posted']) and ($msg=='')) {
 
 
 if (isset($_POST['action']) and ($_POST['action'] == 'upload'))  {
+	check_token();
   // Le téléchargement s'est-il bien passé ?
   $sav_file = isset($_FILES["nom_du_fichier"]) ? $_FILES["nom_du_fichier"] : NULL;
   if ($sav_file){

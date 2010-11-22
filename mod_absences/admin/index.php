@@ -3,7 +3,7 @@
  *
  *$Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -42,7 +42,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
     die();
-};
+}
 
 // Check access
 if (!checkAccess()) {
@@ -50,35 +50,38 @@ if (!checkAccess()) {
     die();
 }
 
-// $msg = '';
-if (isset($_POST['activer'])) {
-  // on n'enregistre pas la désactivation du module si mod_abs2 est actif
-  if (!((getSettingValue("active_module_absence")!='y')&& $_POST['activer']=="n")) {
-    if (!saveSetting("active_module_absence", $_POST['activer'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-	}
-  }
-}
-if (isset($_POST['activer_prof'])) {
-    if (!saveSetting("active_module_absence_professeur", $_POST['activer_prof'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-	}
-}
-if (isset($_POST['activer_resp'])) {
-	if (!saveSetting("active_absences_parents", $_POST['activer_resp'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-	}
-}
-
-if (isset($_POST['classement'])) {
-	if (!saveSetting("absence_classement_top", $_POST['classement'])) {
-		$msg = "Erreur lors de l'enregistrement du paramètre de classementdes absences (TOP 10) !";
-	}
-}
-
 if (isset($_POST['is_posted']) and ($msg=='')) {
-  $msg = "Les modifications ont été enregistrées !";
-	$post_reussi=TRUE;
+	check_token();
+	// $msg = '';
+	if (isset($_POST['activer'])) {
+	// on n'enregistre pas la désactivation du module si mod_abs2 est actif
+	if (!((getSettingValue("active_module_absence")!='y')&& $_POST['activer']=="n")) {
+		if (!saveSetting("active_module_absence", $_POST['activer'])) {
+			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		}
+	}
+	}
+	if (isset($_POST['activer_prof'])) {
+		if (!saveSetting("active_module_absence_professeur", $_POST['activer_prof'])) {
+			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		}
+	}
+	if (isset($_POST['activer_resp'])) {
+		if (!saveSetting("active_absences_parents", $_POST['activer_resp'])) {
+			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+		}
+	}
+	
+	if (isset($_POST['classement'])) {
+		if (!saveSetting("absence_classement_top", $_POST['classement'])) {
+			$msg = "Erreur lors de l'enregistrement du paramètre de classementdes absences (TOP 10) !";
+		}
+	}
+	
+	if (isset($_POST['is_posted']) and ($msg=='')) {
+	$msg = "Les modifications ont été enregistrées !";
+		$post_reussi=TRUE;
+	}
 }
 
 // A propos du TOP 10 : récupération du setting pour le select en bas de page

@@ -3,7 +3,7 @@
  *
  * $Id$
  *
- * Copyright 2010 Josselin Jacquard
+ * Copyright 2010-2011 Josselin Jacquard
  *
  * This file and the mod_abs2 module is distributed under GPL version 3, or
  * (at your option) any later version.
@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
     die();
-};
+}
 
 // Check access
 if (!checkAccess()) {
@@ -57,29 +57,34 @@ if (empty($_GET['com_motif']) and empty($_POST['com_motif'])) { $com_motif="";}
 
 $motif = AbsenceEleveMotifQuery::create()->findPk($id_motif);
 if ($action == 'supprimer') {
+	check_token();
     if ($motif != null) {
 	$motif->delete();
     }
 } elseif ($action == "monter") {
+	check_token();
     if ($motif != null) {
 	$motif->moveUp();
     }
 } elseif ($action == 'descendre') {
+	check_token();
     if ($motif != null) {
 	$motif->moveDown();
     }
 } elseif ($action == 'ajouterdefaut') {
+	check_token();
     include("function.php");
     ajoutMotifsParDefaut();
 } else {
     if ($nom_motif != '') {
-	$motif = AbsenceEleveMotifQuery::create()->findPk($id_motif);
-	if ($motif == null) {
-	    $motif = new AbsenceEleveMotif();
-	}
-	$motif->setNom(stripslashes($nom_motif));
-	$motif->setCommentaire(stripslashes($com_motif));
-	$motif->save();
+		check_token();
+		$motif = AbsenceEleveMotifQuery::create()->findPk($id_motif);
+		if ($motif == null) {
+			$motif = new AbsenceEleveMotif();
+		}
+		$motif->setNom(stripslashes($nom_motif));
+		$motif->setCommentaire(stripslashes($com_motif));
+		$motif->save();
     }
 }
 
@@ -106,6 +111,9 @@ echo "</p>";
 	?>
 
     <form action="admin_motifs_absences.php" method="post" name="form2" id="form2">
+<?php
+echo add_token_field();
+?>
      <fieldset>
       <table cellpadding="2" cellspacing="2" class="menu">
         <tr>
@@ -136,7 +144,7 @@ echo "</p>";
 
 	<a href="admin_motifs_absences.php?action=ajouter"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter un motif</a>
 	<br/><br/>
-	<a href="admin_motifs_absences.php?action=ajouterdefaut"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les motifs par défaut</a>
+	<a href="admin_motifs_absences.php?action=ajouterdefaut<?php echo add_token_in_url();?>"><img src='../../images/icons/add.png' alt='' class='back_link' /> Ajouter les motifs par défaut</a>
 	<br/><br/>
     <table cellpadding="0" cellspacing="1" class="menu">
       <tr>
@@ -154,10 +162,10 @@ echo "</p>";
         <tr>
 	  <td><?php echo $motif->getNom(); ?></td>
 	  <td><?php echo $motif->getCommentaire(); ?></td>
-          <td><a href="admin_motifs_absences.php?action=modifier&amp;id_motif=<?php echo $motif->getId(); ?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
-          <td><a href="admin_motifs_absences.php?action=supprimer&amp;id_motif=<?php echo $motif->getId(); ?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce motif ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
-          <td><a href="admin_motifs_absences.php?action=monter&amp;id_motif=<?php echo $motif->getId(); ?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
-          <td><a href="admin_motifs_absences.php?action=descendre&amp;id_motif=<?php echo $motif->getId(); ?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
+          <td><a href="admin_motifs_absences.php?action=modifier&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>"><img src="../../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
+          <td><a href="admin_motifs_absences.php?action=supprimer&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce motif ?')"><img src="../../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+          <td><a href="admin_motifs_absences.php?action=monter&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>"><img src="../../images/up.png" width="22" height="22" title="monter" border="0" alt="" /></a></td>
+          <td><a href="admin_motifs_absences.php?action=descendre&amp;id_motif=<?php echo $motif->getId(); echo add_token_in_url();?>"><img src="../../images/down.png" width="22" height="22" title="descendre" border="0" alt="" /></a></td>
         </tr>
      <?php } ?>
     </table>
