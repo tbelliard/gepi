@@ -4,7 +4,7 @@
  *
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -68,7 +68,7 @@ $a=0;
 
 // ======================== Traitement des données ======================== //
 if ($action == "modifier") {
-
+	check_token();
 	$save = saveSetting("rss_cdt_eleve", $rss_cdt_ele);
 	if (!$save) {
 		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>'."\n";
@@ -76,6 +76,7 @@ if ($action == "modifier") {
 
 }
 if (isset($rss_acces_ele)) {
+	check_token();
 	$save_d = saveSetting("rss_acces_ele", $rss_acces_ele);
 	if (!$save_d) {
 		$msg .= '<p class="red">La modification n\'a pas été enregistrée.</p>';
@@ -86,6 +87,7 @@ if (isset($rss_acces_ele)) {
   $test_table = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'rss_users'"));
 
 if (getSettingValue("rss_cdt_eleve") == "y" AND $genereflux == "y") {
+	check_token();
 	$suivant = "non";
 	// on teste si la table existe déjà et on la crée le cas échéant
 	$result .= '<p>Gepi vérifie si la table nécessaire est bien dans la base.</p>';

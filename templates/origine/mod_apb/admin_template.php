@@ -2,7 +2,7 @@
 <?php
 /*
  * $Id: $
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -98,6 +98,9 @@
   </p>
   
   <form action="admin.php" id="form1" method="post">
+<?php
+echo add_token_field();
+?>
 	<fieldset class="no_bordure">
 	  <legend class="invisible">Activation</legend>
 	  <input type="radio" 
@@ -128,6 +131,9 @@
 	Seuls les élèves des classes sélectionnées ici seront intégrés à l'export vers le système APB.
   </p>
   <form action="admin.php" id="form2" method="post">
+<?php
+echo add_token_field();
+?>
 	<p class="center">
 	  <input type="hidden"
 			 name="posted_selection"

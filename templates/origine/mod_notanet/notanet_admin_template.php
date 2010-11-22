@@ -95,7 +95,9 @@
 	<h2>Activation du module Notanet/Fiches Brevet</h2>
 	
 	<form action="notanet_admin.php" id="form1" method="post">
-	  
+<?php
+echo add_token_field();
+?>
 	  <fieldset class="no_bordure">
 		<legend>Le module Notanet/Fiches Brevet concerne les collèges.</legend>
 		<br />

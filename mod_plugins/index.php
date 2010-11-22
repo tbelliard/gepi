@@ -2,7 +2,7 @@
 /**
  * @version : $Id$
  *
- * Copyright 2001, 2009 Thomas Belliard, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -68,7 +68,8 @@ function aff_debug($tab){
 }
 
 # On traite d'un plugin qui n'est pas installé
-if (isset($nom_plugin)){
+if (isset($nom_plugin)) {
+  check_token();
   if ($action == "installer"){
     // On ouvre le répertoire et on scanne le contenu, il faut y trouver un fichier xml et un fichier index.php au minimum
     $plugin = scandir($nom_plugin);
@@ -113,7 +114,8 @@ if (isset($nom_plugin)){
 
   }
 # On traite des plugin déjà installés
-}elseif(isset($plugin_id)){
+}elseif(isset($plugin_id)) {
+  check_token();
   // On s'attache à faire les actions demandées sur ce plugin déjà installé
   $pluginAmodifier = PlugInPeer::retrieveByPK($plugin_id);
   switch ($action) {
@@ -139,7 +141,7 @@ if (isset($nom_plugin)){
 $liste_plugins  = array();
 $open_dir       = scandir("./");
 
-foreach ($open_dir as $dir){
+foreach ($open_dir as $dir) {
 
   // On vérifie la présence d'un point dans le nom retourné
   $test = explode(".", $dir);
@@ -203,7 +205,7 @@ foreach($liste_plugins as $plugin){
       <td>-</td>
       <td>-</td>
       <td>-</td>
-      <td><a href="index.php?nom_plugin='.$plugin.'&amp;action=installer" title="Voulez-vous l\'installer ?">NON</a></td>
+      <td><a href="index.php?nom_plugin='.$plugin.'&amp;action=installer'.add_token_in_url().'" title="Voulez-vous l\'installer ?">NON</a></td>
       <td>NON</td>
     </tr>';
   }else{
@@ -211,9 +213,9 @@ foreach($liste_plugins as $plugin){
     $xml = simplexml_load_file($plugin->getNom() . "/plugin.xml");
     // On teste s'il est ouvert
     if ($plugin->getOuvert() == 'y'){
-      $aff_ouvert = '<a href="index.php?plugin_id='.$plugin->getId().'&amp;action=fermer" title="Voulez-vous le fermer ?">OUI</a>';
+      $aff_ouvert = '<a href="index.php?plugin_id='.$plugin->getId().'&amp;action=fermer'.add_token_in_url().'" title="Voulez-vous le fermer ?">OUI</a>';
     }else{
-      $aff_ouvert = '<a href="index.php?plugin_id='.$plugin->getId().'&amp;action=ouvrir" title="Voulez-vous l\'ouvrir ?">NON</a>';
+      $aff_ouvert = '<a href="index.php?plugin_id='.$plugin->getId().'&amp;action=ouvrir'.add_token_in_url().'" title="Voulez-vous l\'ouvrir ?">NON</a>';
     }
     echo '
     <tr>
@@ -221,7 +223,7 @@ foreach($liste_plugins as $plugin){
       <td>'.iconv("utf-8","iso-8859-1",$xml->description).'</td>
       <td>'.iconv("utf-8","iso-8859-1",$xml->auteur).'</td>
       <td>'.iconv("utf-8","iso-8859-1",$xml->version).'</td>
-      <td><a href="index.php?plugin_id='.$plugin->getId().'&amp;action=desinstaller" title="Voulez-vous le d&eacute;sinstaller ?" onclick="return confirm('."'La desinstallation d\'un plugin entraîne la suppression des tables éventuellement associées et des données qu\'elles contiennent. Etes-vous sûr de vouloir désinstaller ce plugin ?'".');">OUI</a></td>
+      <td><a href="index.php?plugin_id='.$plugin->getId().'&amp;action=desinstaller'.add_token_in_url().'" title="Voulez-vous le d&eacute;sinstaller ?" onclick="return confirm('."'La desinstallation d\'un plugin entraîne la suppression des tables éventuellement associées et des données qu\'elles contiennent. Etes-vous sûr de vouloir désinstaller ce plugin ?'".');">OUI</a></td>
       <td>'.$aff_ouvert.'</td>
     </tr>';
   }

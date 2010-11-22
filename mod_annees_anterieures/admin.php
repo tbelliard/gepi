@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -40,7 +40,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 // Check access
 if (!checkAccess()) {
@@ -50,6 +50,7 @@ if (!checkAccess()) {
 
 //$msg = '';
 if (isset($_POST['activer'])) {
+	check_token();
     if (!saveSetting("active_annees_anterieures", $_POST['activer']))
 			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 }

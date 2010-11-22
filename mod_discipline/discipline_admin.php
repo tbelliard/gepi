@@ -60,10 +60,15 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 
 //$msg = '';
 if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
-    if (!saveSetting("active_mod_discipline", $_POST['activer']))
-			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-    if (!saveSetting("autorise_commentaires_mod_disc", $_POST['autorise_commentaires_mod_disc']))
-			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation \"autorise_commentaires_mod_disc\" !";
+	check_token();
+    if (!saveSetting("active_mod_discipline", $_POST['activer'])) {
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	}
+
+	$autorise_commentaires_mod_disc=isset($_POST['autorise_commentaires_mod_disc']) ? $_POST['autorise_commentaires_mod_disc'] : "no";
+	if (!saveSetting("autorise_commentaires_mod_disc", $autorise_commentaires_mod_disc)) {
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation \"autorise_commentaires_mod_disc\" !";
+	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) {

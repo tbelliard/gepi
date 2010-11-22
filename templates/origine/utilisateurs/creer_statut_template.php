@@ -2,7 +2,8 @@
 <?php
 /*
  * $Id$
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ *
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -99,6 +100,9 @@
 	</p>
 
 	<form id="auth_statuts_perso" action="creer_statut_admin.php" method="post">
+<?php
+echo add_token_field();
+?>
 	  <p>
 		<input type="hidden" name="action" value="valide" />
 		<input type="checkbox" 

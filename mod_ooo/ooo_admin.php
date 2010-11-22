@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -52,6 +52,7 @@ if (!checkAccess()) {
 
 //$msg = '';
 if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
+	check_token();
     if (!saveSetting("active_mod_ooo", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 }
 

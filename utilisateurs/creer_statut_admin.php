@@ -4,7 +4,7 @@
  *
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -41,7 +41,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
    header("Location: ../logout.php?auto=1");
    die();
-};
+}
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
 die();
@@ -54,6 +54,7 @@ $aff_msg = NULL;
 
 // ============== Le code métier ========================
 if ($action == 'valide') {
+	check_token();
 	// On change le setting en question ou on le crée avec la fonction ...... qui gère tout
   /*
 	$test = saveSetting('statuts_prives', $autorise);

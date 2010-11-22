@@ -2,7 +2,7 @@
 <?php
 /*
  * $Id: $
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -94,6 +94,9 @@
 	<h2>Activation du module</h2>
 
 	<form method="post" action="<?php echo $_SERVER['PHP_SELF'];?>" id='form1'>
+<?php
+echo add_token_field();
+?>
 	  <p>
       En activant le module, l'administrateur peut définir :
       <ul>

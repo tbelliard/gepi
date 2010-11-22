@@ -2,7 +2,7 @@
 /*
  * @version: $Id: discipline_admin.php 2554 2008-10-12 14:49:29Z crob $
  *
- * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -48,8 +48,10 @@ if (!checkAccess()) {
 
 $msg = '';
 if ((isset($_POST['is_posted']))&&(isset($_POST['activer']))) {
-    if (!saveSetting("active_mod_ects", $_POST['activer']))
-			$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	check_token();
+    if (!saveSetting("active_mod_ects", $_POST['activer'])) {
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) {

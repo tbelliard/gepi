@@ -1,7 +1,7 @@
 <?php
 /* $Id: admin.php 3746 2009-11-20 08:58:25Z crob $ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -54,13 +54,14 @@ if (!checkAccess()) {
 
 $msg = '';
 if (isset($_POST['activer'])) {
-  if (!saveSetting("active_mod_gest_aid", $_POST['activer'])) {
-	  $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-  }
-  else {
-	$msg = "Enregistrement effectué.";
-	$post_reussi=TRUE;
-  }
+	check_token();
+	if (!saveSetting("active_mod_gest_aid", $_POST['activer'])) {
+		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	}
+	else {
+		$msg = "Enregistrement effectué.";
+		$post_reussi=TRUE;
+	}
 }
 
 //**************** EN-TETE *****************

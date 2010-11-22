@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2010 Thomas Belliard
+ * Copyright 2001, 2011 Thomas Belliard
  *
  * This file is part of GEPI.
  *
@@ -35,11 +35,12 @@ $resultat_session = $session_gepi->security_check();
 
 // Check access
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 $msg = '';
 if (isset($_POST['activer'])) {
+	check_token();
     if (!saveSetting("active_mod_apb", $_POST['activer'])) {
       $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
     } else {
@@ -48,22 +49,23 @@ if (isset($_POST['activer'])) {
 }
 
 if (isset($_POST['posted_selection'])) {
-  $errors = false;
-  $req_classes = mysql_query('SELECT id,classe,nom_complet,apb_niveau FROM classes ORDER BY classe');
-  while ($classe = mysql_fetch_object($req_classes)) {
-    $new_value = (isset($_POST['classe_'.$classe->id]) && $_POST['classe_'.$classe->id] == '1') ? 'terminale' : '';
-    if ($classe->apb_niveau != $new_value) {
-      $rec_classe = mysql_query("UPDATE classes SET apb_niveau = '".$new_value."' WHERE id = '".$classe->id."'");
-      if (!$rec_classe) {
-        $errors = true;
-        $msg .= "Erreur lors de l'enregistrement de la nouvelle valeur pour la classe ".$classe->classe.".";
-      }
-    }
-  }
-  if (!$errors) {
-	$msg .= "Les données ont été enregistrées avec succès.";
-	$post_reussi=TRUE;
-  }
+	check_token();
+	$errors = false;
+	$req_classes = mysql_query('SELECT id,classe,nom_complet,apb_niveau FROM classes ORDER BY classe');
+	while ($classe = mysql_fetch_object($req_classes)) {
+		$new_value = (isset($_POST['classe_'.$classe->id]) && $_POST['classe_'.$classe->id] == '1') ? 'terminale' : '';
+		if ($classe->apb_niveau != $new_value) {
+			$rec_classe = mysql_query("UPDATE classes SET apb_niveau = '".$new_value."' WHERE id = '".$classe->id."'");
+			if (!$rec_classe) {
+				$errors = true;
+				$msg .= "Erreur lors de l'enregistrement de la nouvelle valeur pour la classe ".$classe->classe.".";
+			}
+		}
+	}
+	if (!$errors) {
+		$msg .= "Les données ont été enregistrées avec succès.";
+		$post_reussi=TRUE;
+	}
 }
 
 $req_classes = mysql_query('SELECT id,classe,nom_complet,apb_niveau
