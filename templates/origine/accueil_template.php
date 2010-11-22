@@ -270,6 +270,9 @@
 	<div class="div_tableau cellule_1">
 		<form enctype="multipart/form-data" action="gestion/accueil_sauve.php" method="post" id="formulaire" >
 			<p>
+				<?php
+					echo add_token_field();
+				?>
 				<input type='hidden' name='action' value='system_dump' />
 				<input type="submit" value="Lancer une sauvegarde de la base de données" />
 			</p>
