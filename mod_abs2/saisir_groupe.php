@@ -626,13 +626,17 @@ foreach($eleve_col as $eleve) {
 					    //on affiche pas les informations apres le creneau en cours pour ne pas influencer la saisie
 					    $absences_du_creneau = $eleve->getAbsenceEleveSaisiesDuCreneau($edt_creneau, $dt_date_absence_eleve);
 					}
-					
+
+					$style = '';
 					if (!$absences_du_creneau->isEmpty()) {
-					    $style = 'style="background-color : red"';
+                                            foreach ($absences_du_creneau as $abs_saisie) {
+                                                if ($abs_saisie->getManquementObligationPresence()) {
+                                                    $style = 'style="background-color : red"';
+                                                    break;
+                                                }
+                                            }
 					} else if ($deja_saisie && $nb_creneau_a_saisir > 0) {
 					    $style = 'style="background-color : green"';
-					} else {
-					    $style = '';
 					}
 					if ($nb_creneau_a_saisir>1){
 					  echo '<td '.$style.' colspan="'.$nb_creneau_a_saisir.'">';
