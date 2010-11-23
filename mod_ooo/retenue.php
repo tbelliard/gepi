@@ -276,6 +276,12 @@ if ($mode=='formulaire_retenue') { //les donnée provenant du formulaire
 	$duree ='';
 	$h_deb ='';
 	$num_incident = '';
+    $ad_nom_resp= '';
+	$adr1_resp= '';
+	$adr2_resp= '';
+	$adr3_resp= '';
+	$cp_resp= '';
+	$commune_resp= '';
 
 } // formulaire_retenue
 
