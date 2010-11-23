@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 //include("../fckeditor/fckeditor.php") ;
 
 // Check access
@@ -96,6 +96,7 @@ if(isset($import_cmnt)) {
 	echo "<p>Le fichier doit contenir un commentaire-type par ligne.</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 	echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 	echo "<p><input type='submit' name='valide_import_cmnt' value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -105,6 +106,7 @@ if(isset($import_cmnt)) {
 	die();
 }
 elseif(isset($valide_import_cmnt)) {
+	check_token(false);
 
 	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
 
@@ -171,13 +173,14 @@ elseif(isset($valide_import_cmnt)) {
 }
 
 echo "<form name='formulaire' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+echo add_token_field();
 
 $suppr=isset($_POST['suppr']) ? $_POST['suppr'] : "";
 
 $compteur_nb_commentaires=isset($_POST['compteur_nb_commentaires']) ? $_POST['compteur_nb_commentaires'] : NULL;
 
-if(isset($compteur_nb_commentaires)){
-
+if(isset($compteur_nb_commentaires)) {
+	check_token(false);
 	// Nettoyage des commentaires déjà saisis pour cette classe et ces périodes:
 	$sql="DELETE FROM commentaires_types_profs WHERE login='".$_SESSION['login']."';";
 	//echo "sql=$sql<br />";

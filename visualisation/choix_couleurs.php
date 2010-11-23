@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // INSERT INTO droits VALUES ('/visualisation/choix_couleurs.php', 'V', 'F', 'F', 'V', 'F', 'F', 'Choix des couleurs des graphiques des résultats scolaires', '');
 if (!checkAccess()) {
@@ -49,7 +49,9 @@ $tab=array('Fond','Bande_1','Bande_2','Axes','Eleve_1','Eleve_2','Moyenne_classe
 $comp=array('R','V','B');
 
 
-if(isset($ok)){
+if(isset($ok)) {
+	check_token();
+
 	$msg="";
 
 	$err_no=0;
@@ -220,6 +222,7 @@ $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige"
 
 
 	echo "<form name='tab' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 	echo "<table border='0'>\n";
 
 	echo "<tr>\n";

@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -153,6 +153,7 @@ if (isset($id_classe)) {
 	}
 
 	echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes.php\">\n";
+	echo add_token_field();
 	echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\" summary=\"Choix de la période\"><tr>";
 	echo "<td valign=\"top\"><strong>Choisissez&nbsp;la&nbsp;période&nbsp;:&nbsp;</strong><br />\n";
 	include "../lib/periodes.inc.php";

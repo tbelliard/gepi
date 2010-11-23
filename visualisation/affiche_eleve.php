@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -116,8 +116,9 @@ temoin_image_escalier
 tronquer_nom_court
 */
 
-	if(isset($_POST['save_params'])){
-		if($_POST['save_params']=="y"){
+	if(isset($_POST['save_params'])) {
+		check_token();
+		if($_POST['save_params']=="y") {
 
 			function save_params_graphe($nom,$valeur){
 				global $msg;
@@ -175,6 +176,8 @@ if(
 		(($_SESSION['statut']=='scolarite')&&(getSettingValue('GepiRubConseilScol')=="yes"))
 	)&&(isset($_POST['enregistrer_avis']))&&($_POST['enregistrer_avis']=="y")
 ) {
+	check_token();
+
 	$eleve_saisie_avis = isset($_POST['eleve_saisie_avis']) ? $_POST['eleve_saisie_avis'] : NULL;
 	// Contrôler les caractères utilisés...
 
@@ -1086,6 +1089,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<h2>Paramétrage de l'affichage du graphique</h2>\n";
 
 			echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form_parametrage_affichage' method='post'>\n";
+			echo add_token_field();
 			echo "<p align='center'><input type='submit' name='Valider' value='Valider' /></p>\n";
 
 			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
@@ -1315,6 +1319,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "<td class='noprint' align='center'>\n";
 	//echo "<form action='$_PHP_SELF#graph' name='form_choix_eleves' method='post'>\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form_choix_eleves' method='post'>\n";
+	echo add_token_field();
 	//echo "<form action='$_PHP_SELF' name='form_choix_eleves' method='POST'>\n";
 	echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 
@@ -1830,6 +1835,7 @@ function eleve_suivant(){
 	
 							//$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+							$texte.=add_token_field();
 							$texte.="<div style='text-align:center;'>\n";
 							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
 							//$texte.="\n";
@@ -1858,6 +1864,7 @@ function eleve_suivant(){
 							$texte_saisie_avis_fixe="<div style='border:1px solid black;'>\n";
 							$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil</p>\n";
 							$texte_saisie_avis_fixe.="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
 							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
 							//$texte_saisie_avis_fixe.="\n";
@@ -1941,6 +1948,7 @@ function eleve_suivant(){
 	
 							//$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
 							$texte="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+							$texte.=add_token_field();
 							$texte.="<div style='text-align:center;'>\n";
 							$texte.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
 							//$texte.="\n";
@@ -1969,6 +1977,7 @@ function eleve_suivant(){
 							$texte_saisie_avis_fixe="<div style='border:1px solid black;'>\n";
 							$texte_saisie_avis_fixe.="<p class='bold' style='text-align:center;'>Saisie de l'avis du conseil: $lig_per->nom_periode</p>\n";
 							$texte_saisie_avis_fixe.="<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."#graph' method='post'>\n";
+							$texte_saisie_avis_fixe.=add_token_field();
 							$texte_saisie_avis_fixe.="<div style='text-align:center;'>\n";
 							$texte_saisie_avis_fixe.="<textarea name='no_anti_inject_current_eleve_login_ap2' id='no_anti_inject_current_eleve_login_ap2' rows='5' cols='60' wrap='virtual' onchange=\"changement()\">";
 							//$texte_saisie_avis_fixe.="\n";

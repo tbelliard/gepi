@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -42,6 +42,7 @@ if (!checkAccess()) {
     die();
 }
 
+check_token();
 
 //Initialisation
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] :  NULL;
@@ -1378,6 +1379,7 @@ require_once("../lib/header.inc");
 
 //=================================================
 if($vtn_coloriser_resultats=='y') {
+	//check_token();
 	$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_%';";
 	$del=mysql_query($sql);
 
@@ -1546,7 +1548,7 @@ echo "</div>\n";
 // Pour permettre de trier autrement...
 echo "\n<!-- Formulaire pour l'affichage avec tri sur la colonne cliquée -->\n";
 echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" name=\"formulaire_tri\">\n";
-
+echo add_token_field();
 echo "<input type='hidden' name='col_tri' id='col_tri' value='' />\n";
 echo "<input type='hidden' name='sens_tri' id='sens_tri' value='' />\n";
 

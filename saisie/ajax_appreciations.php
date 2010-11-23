@@ -32,6 +32,8 @@ if (!checkAccess()) {
     die();
 }
 
+check_token();
+
 // Initialisation des variables
 $var1 = isset($_POST["var1"]) ? $_POST["var1"] : (isset($_GET["var1"]) ? $_GET["var1"] : NULL);
 $var2 = isset($_POST["var2"]) ? $_POST["var2"] : (isset($_GET["var2"]) ? $_GET["var2"] : NULL);

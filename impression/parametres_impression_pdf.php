@@ -133,6 +133,8 @@ $tab_val=array('10', '10', '10', '10', '1', '1', '1', '1', ' ', '1', '1', '8', '
 $temoin_erreur="n";
 
 if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
+	check_token();
+
 	//echo "1<br />";
 	// Enregistrer...
 	if(isset($id_modele)) {
@@ -214,6 +216,8 @@ if((isset($_POST['enregistrer_parametres']))&&(isset($nom_modele))) {
 	*/
 }
 elseif(isset($choix_action_modele)) {
+	check_token();
+
 	//echo "2<br />";
 	if(isset($id_modele)) {
 		//echo "3<br />";
@@ -296,6 +300,7 @@ if(!isset($enregistrer_parametres)) {
 		}
 	
 		echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"form_nouveau_modele\">\n";
+		echo add_token_field();
 		echo "<p>Créer un nouveau modèle sous le nom&nbsp;: ";
 		echo "<input type='text' name='nom_modele' value='Modele_".strftime('%Y%m%d_%H%M%S')."' />\n";
 		echo "<input type='hidden' name='choix_action_modele' value='nouveau_modele' />\n";
@@ -305,6 +310,7 @@ if(!isset($enregistrer_parametres)) {
 	
 		if($nb_modeles>0) {
 			echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"form_modele_par_defaut\">\n";
+			echo add_token_field();
 			echo "<p>Modèle&nbsp;: \n";
 			echo "<select name='id_modele'>\n";
 			for($loop=0;$loop<count($tab_modele);$loop++) {
@@ -317,6 +323,7 @@ if(!isset($enregistrer_parametres)) {
 			echo "</form>\n";
 		
 			echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"form_modifier_modele\">\n";
+			echo add_token_field();
 			echo "<p>Modifier le modèle&nbsp;: \n";
 			echo "<select name='id_modele'>\n";
 			for($loop=0;$loop<count($tab_modele);$loop++) {
@@ -329,6 +336,7 @@ if(!isset($enregistrer_parametres)) {
 			echo "</form>\n";
 		
 			echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"form_supprimer_modele\">\n";
+			echo add_token_field();
 			echo "<p>Supprimer le modèle&nbsp;: \n";
 			echo "<select name='id_modele'>\n";
 			for($loop=0;$loop<count($tab_modele);$loop++) {
@@ -406,6 +414,7 @@ echo "<div>\n
 		//echo "<div style='float:right; '></div>";
 
 		echo "<form method=\"post\" action=\"parametres_impression_pdf.php\" name=\"choix_parametres\">\n";
+		echo add_token_field();
 		echo "<input value=\"Valider les paramètres\" name=\"Valider\" type=\"submit\" /><br />\n";
 		echo "<br />\n";
 

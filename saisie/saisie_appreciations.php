@@ -637,7 +637,9 @@ echo "</form>\n";
 ?>
 <form enctype="multipart/form-data" action="saisie_appreciations.php" method="post">
 <?php
-echo add_token_field();
+//echo add_token_field();
+//echo "<input type='hidden' name='csrf_alea' id='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
+echo add_token_field(true);
 
 //=========================
 // AJOUT: boireaus 20090126

@@ -26,6 +26,7 @@ if (!checkAccess()) {
     die();
 }
 
+check_token();
 
 // Initialisation des variables
 $destinataire=isset($_GET["destinataire"]) ? $_GET["destinataire"] : NULL;

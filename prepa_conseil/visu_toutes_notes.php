@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -1655,8 +1655,8 @@ function affiche_tableau_csv2($nombre_lignes, $nb_col, $ligne1, $col) {
 }
 
 
-if(isset($_GET['mode'])){
-	if($_GET['mode']=="csv"){
+if(isset($_GET['mode'])) {
+	if($_GET['mode']=="csv") {
 		$classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
 
 		if ($referent == "une_periode") {
@@ -1698,6 +1698,7 @@ require_once("../lib/header.inc");
 //debug_var();
 
 if($vtn_coloriser_resultats=='y') {
+	check_token(false);
 	$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name LIKE 'vtn_%';";
 	$del=mysql_query($sql);
 
@@ -1852,6 +1853,7 @@ echo "<p><br /></p>\n";
 // Pour permettre de trier autrement...
 echo "\n<!-- Formulaire pour l'affichage avec tri sur la colonne cliquée -->\n";
 echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\" name=\"formulaire_tri\">\n";
+echo add_token_field();
 
 echo "<input type='hidden' name='col_tri' id='col_tri' value='' />\n";
 echo "<input type='hidden' name='sens_tri' id='sens_tri' value='' />\n";

@@ -2,7 +2,7 @@
 /*
 * @version: $Id$
 *
-* Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -48,6 +48,7 @@ $action_apres=isset($_GET['action']) ? $_GET['action'] : NULL;
 
 
 if (isset($_POST['deverouillage_auto_periode_suivante'])) {
+	check_token();
 	if (!saveSetting("deverouillage_auto_periode_suivante", $_POST['deverouillage_auto_periode_suivante'])) {
 		$msg .= "Erreur lors de l'enregistrement de deverouillage_auto_periode_suivante !";
 		$reg_ok = 'no';
@@ -55,6 +56,7 @@ if (isset($_POST['deverouillage_auto_periode_suivante'])) {
 }
 
 if (isset($_POST['ok'])) {
+	check_token();
 
 	$pb_reg_ver = 'no';
 	//$calldata = sql_query("SELECT DISTINCT c.id, c.classe FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
@@ -210,7 +212,7 @@ echo "<br /><br />\n";
 if (($classe != 0) AND ($periode !=0)) {
 
 	echo "<form action=\"verrouillage.php?classe=$classe&periode=$periode&action=$action_apres\" name=\"formulaire\" method=\"post\">\n";
-
+	echo add_token_field();
 	echo "<table class='boireaus' cellpadding='3' cellspacing='0' border='1' align='center'>\n";
 	//echo "<tr class='fond_sombre'>\n<td>&nbsp;</td>\n";
 	echo "<tr>\n";
@@ -298,7 +300,8 @@ if (($classe != 0) AND ($periode !=0)) {
 } else {
 	if ($nombreligne != 0) {
 		echo "<form action=\"verrouillage.php\" name=\"formulaire\" method=\"post\">";
-	
+		echo add_token_field();
+
 		echo "<p align='center'><input type=\"submit\" name=\"ok\" value=\"Enregistrer\" /></p>\n";
 		//echo "<table cellpadding='3' cellspacing='0' border='1' align='center'>";
 		echo "<table class='boireaus' summary='Verrouillage des périodes' cellpadding='3' cellspacing='0' align='center'>\n";

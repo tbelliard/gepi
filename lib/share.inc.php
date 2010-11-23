@@ -13,8 +13,13 @@ function generate_token() {
 	//$_SESSION["token"] = $r;
 }
 
-function add_token_field() {
-	return "<input type='hidden' name='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
+function add_token_field($avec_id=false) {
+	if($avec_id) {
+		return "<input type='hidden' name='csrf_alea' id='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
+	}
+	else {
+		return "<input type='hidden' name='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
+	}
 }
 
 function add_token_in_url($html_chars = true) {
@@ -738,9 +743,9 @@ function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racin
     //à partir de $id_conteneur, mais on évite ainsi trop de calculs !
 
     foreach ($_current_group["eleves"][$periode_num]["list"] as $_eleve_login) {
-    if($_eleve_login!=""){
-            calcule_moyenne($_eleve_login, $id_racine, $id_conteneur);
-    }
+		if($_eleve_login!=""){
+			calcule_moyenne($_eleve_login, $id_racine, $id_conteneur);
+		}
     }
 
     if ($arret != 'yes') {

@@ -166,6 +166,7 @@ if (isset($id_classe)) {
 	}
 
 	echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes2.php\">\n";
+	echo add_token_field();
 	//echo "<form target=\"_blank\" name=\"visu_toutes_notes\" method=\"post\" action=\"visu_toutes_notes2.php\">\n";
 	echo "<table border=\"1\" cellspacing=\"1\" cellpadding=\"10\" summary='Choix de la période'><tr>";
 	echo "<td valign=\"top\"><b>Choisissez&nbsp;la&nbsp;période&nbsp;:&nbsp;</b><br />\n";

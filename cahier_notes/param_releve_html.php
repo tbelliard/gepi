@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -33,12 +33,12 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 include("../fckeditor/fckeditor.php") ;
 
 
@@ -59,438 +59,437 @@ $msg = '';
 $bgcolor = "#DEDEDE";
 
 
-
-
-
-
-
-
-if (isset($_POST['releve_textsize'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_textsize'])) || $_POST['releve_textsize'] < 1) {
-        $_POST['releve_textsize'] = 10;
-    }
-    if (!saveSetting("releve_textsize", $_POST['releve_textsize'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_textsize !";
-        $reg_ok = 'no';
-    }
-}
-
-//==================================
-// AJOUT: boireaus
-if (isset($_POST['p_releve_margin'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['p_releve_margin'])) || $_POST['p_releve_margin'] < 1) {
-        $_POST['p_releve_margin'] = 5;
-    }
-    if (!saveSetting("p_releve_margin", $_POST['p_releve_margin'])) {
-        $msg .= "Erreur lors de l'enregistrement de p_releve_margin !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_body_marginleft'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_body_marginleft']))) {
-        $_POST['releve_body_marginleft'] = 1;
-    }
-    if (!saveSetting("releve_body_marginleft", $_POST['releve_body_marginleft'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_body_marginleft !";
-        $reg_ok = 'no';
-    }
-}
-
-
-//==================================
-
-
-if (isset($_POST['releve_titlesize'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_titlesize'])) || $_POST['releve_titlesize'] < 1) {
-        $_POST['releve_titlesize'] = 16;
-    }
-    if (!saveSetting("releve_titlesize", $_POST['releve_titlesize'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_titlesize !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_cellpadding'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_cellpadding'])) || $_POST['releve_cellpadding'] < 0) {
-        $_POST['releve_cellpadding'] = 5;
-    }
-    if (!saveSetting("releve_cellpadding", $_POST['releve_cellpadding'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_cellpadding !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_cellspacing'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_cellspacing'])) || $_POST['releve_cellspacing'] < 0) {
-        $_POST['releve_cellspacing'] = 2;
-    }
-    if (!saveSetting("releve_cellspacing", $_POST['releve_cellspacing'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_cellspacing !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_largeurtableau'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_largeurtableau'])) || $_POST['releve_largeurtableau'] < 1) {
-        $_POST['largeurtableau'] = 800;
-    }
-    if (!saveSetting("releve_largeurtableau", $_POST['releve_largeurtableau'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_largeurtableau !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_col_matiere_largeur'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_col_matiere_largeur'])) || $_POST['releve_col_matiere_largeur'] < 1) {
-        $_POST['releve_col_matiere_largeur'] = 150;
-    }
-    if (!saveSetting("releve_col_matiere_largeur", $_POST['releve_col_matiere_largeur'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_col_matiere_largeur !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_ecart_entete'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_ecart_entete']))) {
-        $_POST['releve_ecart_entete'] = 0;
-    }
-    if (!saveSetting("releve_ecart_entete", $_POST['releve_ecart_entete'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_ecart_entete !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_addressblock_padding_right'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_right']))) {
-        $_POST['releve_addressblock_padding_right'] = 0;
-    }
-    if (!saveSetting("releve_addressblock_padding_right", $_POST['releve_addressblock_padding_right'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_addressblock_padding_right !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_addressblock_padding_top'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_top']))) {
-        $_POST['releve_addressblock_padding_top'] = 0;
-    }
-    if (!saveSetting("releve_addressblock_padding_top", $_POST['releve_addressblock_padding_top'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_addressblock_padding_top !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_addressblock_padding_text'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_text']))) {
-        $_POST['releve_addressblock_padding_text'] = 0;
-    }
-    if (!saveSetting("releve_addressblock_padding_text", $_POST['releve_addressblock_padding_text'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_addressblock_padding_text !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_addressblock_length'])) {
-
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_length']))) {
-        $_POST['releve_addressblock_length'] = 60;
-    }
-    if (!saveSetting("releve_addressblock_length", $_POST['releve_addressblock_length'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_addressblock_length !";
-        $reg_ok = 'no';
-    }
-}
-
-
-//==================================
-// Ajout: boireaus
-if (isset($_POST['releve_addressblock_font_size'])) {
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_font_size']))) {
-        $_POST['releve_addressblock_font_size'] = 12;
-    }
-    if (!saveSetting("releve_addressblock_font_size", $_POST['releve_addressblock_font_size'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_addressblock_font_size !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['releve_addressblock_logo_etab_prop'])) {
-	if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_logo_etab_prop']))) {
-			$releve_addressblock_logo_etab_prop=50;
-	}
-	else{
-			$releve_addressblock_logo_etab_prop=$_POST['releve_addressblock_logo_etab_prop'];
-	}
-}
-else{
-	if(getSettingValue("releve_addressblock_logo_etab_prop")){
-		$releve_addressblock_logo_etab_prop=getSettingValue("releve_addressblock_logo_etab_prop");
-	}
-	else{
-		$releve_addressblock_logo_etab_prop=50;
-	}
-}
-
-if (isset($_POST['releve_addressblock_classe_annee'])) {
-	if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_classe_annee']))) {
-			$releve_addressblock_classe_annee=35;
-	}
-	else{
-			$releve_addressblock_classe_annee=$_POST['releve_addressblock_classe_annee'];
-	}
-}
-else{
-	if(getSettingValue("releve_addressblock_classe_annee")){
-		$releve_addressblock_classe_annee=getSettingValue("releve_addressblock_classe_annee");
-	}
-	else{
-		$releve_addressblock_classe_annee=30;
-	}
-}
-
-if((isset($_POST['releve_addressblock_classe_annee']))&&(isset($_POST['releve_addressblock_logo_etab_prop']))){
-	$valtest=$releve_addressblock_logo_etab_prop+$releve_addressblock_classe_annee;
-	if($valtest>100){
-		$msg.="Erreur! La somme releve_addressblock_logo_etab_prop+releve_addressblock_classe_annee dépasse 100% de la largeur de la page !";
-		$reg_ok = 'no';
-	}
-	else{
-		if (!saveSetting("releve_addressblock_logo_etab_prop", $releve_addressblock_logo_etab_prop)) {
-			$msg .= "Erreur lors de l'enregistrement de releve_addressblock_logo_etab_prop !";
-			$reg_ok = 'no';
-		}
-
-		if (!saveSetting("releve_addressblock_classe_annee", $releve_addressblock_classe_annee)) {
-			$msg .= "Erreur lors de l'enregistrement de releve_addressblock_classe_annee !";
-			$reg_ok = 'no';
-		}
-	}
-}
-
-
-if (isset($_POST['releve_ecart_bloc_nom'])) {
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_ecart_bloc_nom']))) {
-        $_POST['releve_ecart_bloc_nom'] = 0;
-    }
-    if (!saveSetting("releve_ecart_bloc_nom", $_POST['releve_ecart_bloc_nom'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_ecart_bloc_nom !";
-        $reg_ok = 'no';
-    }
-}
-
-
-if (isset($_POST['releve_addressblock_debug'])) {
-    if (($_POST['releve_addressblock_debug']!="y")&&($_POST['releve_addressblock_debug']!="n")) {
-        $_POST['releve_addressblock_debug'] = "n";
-    }
-    if (!saveSetting("releve_addressblock_debug", $_POST['releve_addressblock_debug'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_addressblock_debug !";
-        $reg_ok = 'no';
-    }
-}
-//==================================
-
-/*
-if (isset($NON_PROTECT['releve_formule_bas'])) {
-    $imp = traitement_magic_quotes($NON_PROTECT['releve_formule_bas']);
-    if (!saveSetting("releve_formule_bas", $imp)) {
-        $msg .= "Erreur lors de l'enregistrement de releve_formule_bas !";
-        $reg_ok = 'no';
-    }
-}
-*/
-if (isset($_POST['releve_mention_nom_court'])) {
-
-    if (!saveSetting("releve_mention_nom_court", $_POST['releve_mention_nom_court'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_mention_nom_court !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_mention_doublant'])) {
-
-    if (!saveSetting("releve_mention_doublant", $_POST['releve_mention_doublant'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_mention_doublant !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_affiche_eleve_une_ligne'])) {
-
-    if (!saveSetting("releve_affiche_eleve_une_ligne", $_POST['releve_affiche_eleve_une_ligne'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_affiche_eleve_une_ligne !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_affiche_formule'])) {
-
-    if (!saveSetting("releve_affiche_formule", $_POST['releve_affiche_formule'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_affiche_formule !";
-        $reg_ok = 'no';
-    }
-}
-if (isset($_POST['releve_affiche_signature'])) {
-
-    if (!saveSetting("releve_affiche_signature", $_POST['releve_affiche_signature'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_affiche_signature !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_affiche_numero'])) {
-
-    if (!saveSetting("releve_affiche_numero", $_POST['releve_affiche_numero'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_affiche_numero !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_affiche_etab'])) {
-    if (!saveSetting("releve_affiche_etab", $_POST['releve_affiche_etab'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_affiche_etab !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['releve_bordure_classique'])) {
-    if (!saveSetting("releve_bordure_classique", $_POST['releve_bordure_classique'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_bordure_classique !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['activer_photo_releve'])) {
-    if (!saveSetting("activer_photo_releve", $_POST['activer_photo_releve'])) {
-        $msg .= "Erreur lors de l'enregistrement de activer_photo_releve !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['releve_photo_hauteur_max'])) {
-    if (!saveSetting("releve_photo_hauteur_max", $_POST['releve_photo_hauteur_max'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_photo_hauteur_max !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['releve_photo_largeur_max'])) {
-    if (!saveSetting("releve_photo_largeur_max", $_POST['releve_photo_largeur_max'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_photo_largeur_max !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['releve_categ_font_size'])) {
-	if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_categ_font_size']))) {
-		$_POST['releve_categ_font_size'] = 10;
-	}
-	if (!saveSetting("releve_categ_font_size", $_POST['releve_categ_font_size'])) {
-		$msg .= "Erreur lors de l'enregistrement de releve_categ_font_size !";
-		$reg_ok = 'no';
-	}
-}
-
-if(isset($_POST['releve_affiche_INE_eleve'])) {
-    if (!saveSetting("releve_affiche_INE_eleve", $_POST['releve_affiche_INE_eleve'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_affiche_INE_eleve !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['releve_affiche_tel'])) {
-    if (!saveSetting("releve_affiche_tel", $_POST['releve_affiche_tel'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_affiche_tel !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['releve_affiche_fax'])) {
-    if (!saveSetting("releve_affiche_fax", $_POST['releve_affiche_fax'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_affiche_fax !";
-        $reg_ok = 'no';
-    }
-}
-
-if(isset($_POST['releve_affiche_mail'])) {
-    if (!saveSetting("releve_affiche_mail", $_POST['releve_affiche_mail'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_affiche_mail !";
-        $reg_ok = 'no';
-    }
-}
-
-
-if (isset($NON_PROTECT['releve_formule_bas'])) {
-    $imp = traitement_magic_quotes($NON_PROTECT['releve_formule_bas']);
-    if (!saveSetting("releve_formule_bas", $imp)) {
-        $msg .= "Erreur lors de l'enregistrement de releve_formule_bas !";
-        $reg_ok = 'no';
-    }
-}
-
-if (isset($_POST['releve_affiche_formule'])) {
-
-    if (!saveSetting("releve_affiche_formule", $_POST['releve_affiche_formule'])) {
-        $msg .= "Erreur lors de l'enregistrement de releve_affiche_formule !";
-        $reg_ok = 'no';
-    }
-}
-
 // Tableau des couleurs HTML:
 $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
 
-if (isset($_POST['releve_categ_bgcolor'])) {
-	if((!in_array($_POST['releve_categ_bgcolor'],$tabcouleur))&&($_POST['releve_categ_bgcolor']!='')){
-		$msg .= "Erreur lors de l'enregistrement de releve_categ_bgcolor ! (couleur invalide)";
-		$reg_ok = 'no';
+
+if (isset($_POST['ok'])) {
+	check_token();
+
+	if (isset($_POST['releve_textsize'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_textsize'])) || $_POST['releve_textsize'] < 1) {
+			$_POST['releve_textsize'] = 10;
+		}
+		if (!saveSetting("releve_textsize", $_POST['releve_textsize'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_textsize !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	//==================================
+	// AJOUT: boireaus
+	if (isset($_POST['p_releve_margin'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['p_releve_margin'])) || $_POST['p_releve_margin'] < 1) {
+			$_POST['p_releve_margin'] = 5;
+		}
+		if (!saveSetting("p_releve_margin", $_POST['p_releve_margin'])) {
+			$msg .= "Erreur lors de l'enregistrement de p_releve_margin !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_body_marginleft'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_body_marginleft']))) {
+			$_POST['releve_body_marginleft'] = 1;
+		}
+		if (!saveSetting("releve_body_marginleft", $_POST['releve_body_marginleft'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_body_marginleft !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	//==================================
+	
+	
+	if (isset($_POST['releve_titlesize'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_titlesize'])) || $_POST['releve_titlesize'] < 1) {
+			$_POST['releve_titlesize'] = 16;
+		}
+		if (!saveSetting("releve_titlesize", $_POST['releve_titlesize'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_titlesize !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_cellpadding'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_cellpadding'])) || $_POST['releve_cellpadding'] < 0) {
+			$_POST['releve_cellpadding'] = 5;
+		}
+		if (!saveSetting("releve_cellpadding", $_POST['releve_cellpadding'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_cellpadding !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_cellspacing'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_cellspacing'])) || $_POST['releve_cellspacing'] < 0) {
+			$_POST['releve_cellspacing'] = 2;
+		}
+		if (!saveSetting("releve_cellspacing", $_POST['releve_cellspacing'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_cellspacing !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_largeurtableau'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_largeurtableau'])) || $_POST['releve_largeurtableau'] < 1) {
+			$_POST['largeurtableau'] = 800;
+		}
+		if (!saveSetting("releve_largeurtableau", $_POST['releve_largeurtableau'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_largeurtableau !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_col_matiere_largeur'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_col_matiere_largeur'])) || $_POST['releve_col_matiere_largeur'] < 1) {
+			$_POST['releve_col_matiere_largeur'] = 150;
+		}
+		if (!saveSetting("releve_col_matiere_largeur", $_POST['releve_col_matiere_largeur'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_col_matiere_largeur !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_ecart_entete'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_ecart_entete']))) {
+			$_POST['releve_ecart_entete'] = 0;
+		}
+		if (!saveSetting("releve_ecart_entete", $_POST['releve_ecart_entete'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_ecart_entete !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_addressblock_padding_right'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_right']))) {
+			$_POST['releve_addressblock_padding_right'] = 0;
+		}
+		if (!saveSetting("releve_addressblock_padding_right", $_POST['releve_addressblock_padding_right'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_addressblock_padding_right !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_addressblock_padding_top'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_top']))) {
+			$_POST['releve_addressblock_padding_top'] = 0;
+		}
+		if (!saveSetting("releve_addressblock_padding_top", $_POST['releve_addressblock_padding_top'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_addressblock_padding_top !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_addressblock_padding_text'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_padding_text']))) {
+			$_POST['releve_addressblock_padding_text'] = 0;
+		}
+		if (!saveSetting("releve_addressblock_padding_text", $_POST['releve_addressblock_padding_text'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_addressblock_padding_text !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_addressblock_length'])) {
+	
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_length']))) {
+			$_POST['releve_addressblock_length'] = 60;
+		}
+		if (!saveSetting("releve_addressblock_length", $_POST['releve_addressblock_length'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_addressblock_length !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	//==================================
+	// Ajout: boireaus
+	if (isset($_POST['releve_addressblock_font_size'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_font_size']))) {
+			$_POST['releve_addressblock_font_size'] = 12;
+		}
+		if (!saveSetting("releve_addressblock_font_size", $_POST['releve_addressblock_font_size'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_addressblock_font_size !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['releve_addressblock_logo_etab_prop'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_logo_etab_prop']))) {
+				$releve_addressblock_logo_etab_prop=50;
+		}
+		else{
+				$releve_addressblock_logo_etab_prop=$_POST['releve_addressblock_logo_etab_prop'];
+		}
 	}
 	else{
-		if (!saveSetting("releve_categ_bgcolor", $_POST['releve_categ_bgcolor'])) {
-			$msg .= "Erreur lors de l'enregistrement de releve_categ_bgcolor !";
+		if(getSettingValue("releve_addressblock_logo_etab_prop")){
+			$releve_addressblock_logo_etab_prop=getSettingValue("releve_addressblock_logo_etab_prop");
+		}
+		else{
+			$releve_addressblock_logo_etab_prop=50;
+		}
+	}
+	
+	if (isset($_POST['releve_addressblock_classe_annee'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_addressblock_classe_annee']))) {
+				$releve_addressblock_classe_annee=35;
+		}
+		else{
+				$releve_addressblock_classe_annee=$_POST['releve_addressblock_classe_annee'];
+		}
+	}
+	else{
+		if(getSettingValue("releve_addressblock_classe_annee")){
+			$releve_addressblock_classe_annee=getSettingValue("releve_addressblock_classe_annee");
+		}
+		else{
+			$releve_addressblock_classe_annee=30;
+		}
+	}
+	
+	if((isset($_POST['releve_addressblock_classe_annee']))&&(isset($_POST['releve_addressblock_logo_etab_prop']))){
+		$valtest=$releve_addressblock_logo_etab_prop+$releve_addressblock_classe_annee;
+		if($valtest>100){
+			$msg.="Erreur! La somme releve_addressblock_logo_etab_prop+releve_addressblock_classe_annee dépasse 100% de la largeur de la page !";
+			$reg_ok = 'no';
+		}
+		else{
+			if (!saveSetting("releve_addressblock_logo_etab_prop", $releve_addressblock_logo_etab_prop)) {
+				$msg .= "Erreur lors de l'enregistrement de releve_addressblock_logo_etab_prop !";
+				$reg_ok = 'no';
+			}
+	
+			if (!saveSetting("releve_addressblock_classe_annee", $releve_addressblock_classe_annee)) {
+				$msg .= "Erreur lors de l'enregistrement de releve_addressblock_classe_annee !";
+				$reg_ok = 'no';
+			}
+		}
+	}
+	
+	
+	if (isset($_POST['releve_ecart_bloc_nom'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_ecart_bloc_nom']))) {
+			$_POST['releve_ecart_bloc_nom'] = 0;
+		}
+		if (!saveSetting("releve_ecart_bloc_nom", $_POST['releve_ecart_bloc_nom'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_ecart_bloc_nom !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	if (isset($_POST['releve_addressblock_debug'])) {
+		if (($_POST['releve_addressblock_debug']!="y")&&($_POST['releve_addressblock_debug']!="n")) {
+			$_POST['releve_addressblock_debug'] = "n";
+		}
+		if (!saveSetting("releve_addressblock_debug", $_POST['releve_addressblock_debug'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_addressblock_debug !";
+			$reg_ok = 'no';
+		}
+	}
+	//==================================
+	
+	/*
+	if (isset($NON_PROTECT['releve_formule_bas'])) {
+		$imp = traitement_magic_quotes($NON_PROTECT['releve_formule_bas']);
+		if (!saveSetting("releve_formule_bas", $imp)) {
+			$msg .= "Erreur lors de l'enregistrement de releve_formule_bas !";
+			$reg_ok = 'no';
+		}
+	}
+	*/
+	if (isset($_POST['releve_mention_nom_court'])) {
+	
+		if (!saveSetting("releve_mention_nom_court", $_POST['releve_mention_nom_court'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_mention_nom_court !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_mention_doublant'])) {
+	
+		if (!saveSetting("releve_mention_doublant", $_POST['releve_mention_doublant'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_mention_doublant !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_affiche_eleve_une_ligne'])) {
+	
+		if (!saveSetting("releve_affiche_eleve_une_ligne", $_POST['releve_affiche_eleve_une_ligne'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affiche_eleve_une_ligne !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_affiche_formule'])) {
+	
+		if (!saveSetting("releve_affiche_formule", $_POST['releve_affiche_formule'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affiche_formule !";
+			$reg_ok = 'no';
+		}
+	}
+	if (isset($_POST['releve_affiche_signature'])) {
+	
+		if (!saveSetting("releve_affiche_signature", $_POST['releve_affiche_signature'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affiche_signature !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_affiche_numero'])) {
+	
+		if (!saveSetting("releve_affiche_numero", $_POST['releve_affiche_numero'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affiche_numero !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_affiche_etab'])) {
+		if (!saveSetting("releve_affiche_etab", $_POST['releve_affiche_etab'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affiche_etab !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['releve_bordure_classique'])) {
+		if (!saveSetting("releve_bordure_classique", $_POST['releve_bordure_classique'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_bordure_classique !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['activer_photo_releve'])) {
+		if (!saveSetting("activer_photo_releve", $_POST['activer_photo_releve'])) {
+			$msg .= "Erreur lors de l'enregistrement de activer_photo_releve !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['releve_photo_hauteur_max'])) {
+		if (!saveSetting("releve_photo_hauteur_max", $_POST['releve_photo_hauteur_max'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_photo_hauteur_max !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['releve_photo_largeur_max'])) {
+		if (!saveSetting("releve_photo_largeur_max", $_POST['releve_photo_largeur_max'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_photo_largeur_max !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['releve_categ_font_size'])) {
+		if (!(my_ereg ("^[0-9]{1,}$", $_POST['releve_categ_font_size']))) {
+			$_POST['releve_categ_font_size'] = 10;
+		}
+		if (!saveSetting("releve_categ_font_size", $_POST['releve_categ_font_size'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_categ_font_size !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['releve_affiche_INE_eleve'])) {
+		if (!saveSetting("releve_affiche_INE_eleve", $_POST['releve_affiche_INE_eleve'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affiche_INE_eleve !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['releve_affiche_tel'])) {
+		if (!saveSetting("releve_affiche_tel", $_POST['releve_affiche_tel'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affiche_tel !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['releve_affiche_fax'])) {
+		if (!saveSetting("releve_affiche_fax", $_POST['releve_affiche_fax'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affiche_fax !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if(isset($_POST['releve_affiche_mail'])) {
+		if (!saveSetting("releve_affiche_mail", $_POST['releve_affiche_mail'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affiche_mail !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	
+	if (isset($NON_PROTECT['releve_formule_bas'])) {
+		$imp = traitement_magic_quotes($NON_PROTECT['releve_formule_bas']);
+		if (!saveSetting("releve_formule_bas", $imp)) {
+			$msg .= "Erreur lors de l'enregistrement de releve_formule_bas !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_affiche_formule'])) {
+	
+		if (!saveSetting("releve_affiche_formule", $_POST['releve_affiche_formule'])) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affiche_formule !";
+			$reg_ok = 'no';
+		}
+	}
+
+
+	if (isset($_POST['releve_categ_bgcolor'])) {
+		if((!in_array($_POST['releve_categ_bgcolor'],$tabcouleur))&&($_POST['releve_categ_bgcolor']!='')){
+			$msg .= "Erreur lors de l'enregistrement de releve_categ_bgcolor ! (couleur invalide)";
+			$reg_ok = 'no';
+		}
+		else{
+			if (!saveSetting("releve_categ_bgcolor", $_POST['releve_categ_bgcolor'])) {
+				$msg .= "Erreur lors de l'enregistrement de releve_categ_bgcolor !";
+				$reg_ok = 'no';
+			}
+		}
+	}
+	
+	if (isset($_POST['releve_affich_nom_etab'])) {
+		if($_POST['releve_affich_nom_etab']=="n") {
+			$releve_affich_nom_etab="n";
+		}
+		else{
+			$releve_affich_nom_etab="y";
+		}
+		if (!saveSetting("releve_affich_nom_etab", $releve_affich_nom_etab)) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affich_nom_etab !";
+			$reg_ok = 'no';
+		}
+	}
+	
+	if (isset($_POST['releve_affich_adr_etab'])) {
+		if($_POST['releve_affich_adr_etab']=="n") {
+			$releve_affich_adr_etab="n";
+		}
+		else{
+			$releve_affich_adr_etab="y";
+		}
+		if (!saveSetting("releve_affich_adr_etab", $releve_affich_adr_etab)) {
+			$msg .= "Erreur lors de l'enregistrement de releve_affich_adr_etab !";
 			$reg_ok = 'no';
 		}
 	}
 }
-
-if (isset($_POST['releve_affich_nom_etab'])) {
-	if($_POST['releve_affich_nom_etab']=="n") {
-		$releve_affich_nom_etab="n";
-	}
-	else{
-		$releve_affich_nom_etab="y";
-	}
-	if (!saveSetting("releve_affich_nom_etab", $releve_affich_nom_etab)) {
-		$msg .= "Erreur lors de l'enregistrement de releve_affich_nom_etab !";
-		$reg_ok = 'no';
-	}
-}
-
-if (isset($_POST['releve_affich_adr_etab'])) {
-	if($_POST['releve_affich_adr_etab']=="n") {
-		$releve_affich_adr_etab="n";
-	}
-	else{
-		$releve_affich_adr_etab="y";
-	}
-	if (!saveSetting("releve_affich_adr_etab", $releve_affich_adr_etab)) {
-		$msg .= "Erreur lors de l'enregistrement de releve_affich_adr_etab !";
-		$reg_ok = 'no';
-	}
-}
-
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
    $msg = "Enregistrement réussi !";
@@ -529,6 +528,9 @@ $tabdiv_infobulle[]=creer_div_infobulle('parametres_communs_html_et_pdf',$titre_
 
 
 <form name="formulaire" action="param_releve_html.php" method="post" style="width: 100%;">
+<?php
+echo add_token_field();
+?>
 <H3>Mise en page du relevé de notes HTML</H3>
 <table cellpadding="8" cellspacing="0" width="100%" border="0" summary="Tableau des paramètres">
 

@@ -4,7 +4,7 @@
 *
 * Modification... Stephane Boireau
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 // Ajouter une gestion des droits par la suite
@@ -57,7 +57,9 @@ $dimensions=getimagesize($image);
 $largeur=$dimensions[0];
 $hauteur=$dimensions[1];
 
-if(isset($_POST['validation'])){
+if(isset($_POST['validation'])) {
+	check_token();
+
 	$msg="";
 
 	// On insère la saisie...
@@ -285,6 +287,9 @@ function show_message_deconnexion(){
 
 <div style="position:absolute;top:<?php $pos=$dimensions[1]+10;echo "$pos";?>px;left:0">
 	<form name="form1" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
+<?php
+echo add_token_field();
+?>
 	<input type="hidden" name="x" />
 	<input type="hidden" name="y" />
 	<input type="hidden" name="objet" value="<?=$objet;?>" />
