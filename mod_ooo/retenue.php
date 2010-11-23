@@ -122,7 +122,7 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 		    $classe = '';
 		}
 
-		$sql="SELECT * FROM resp_pers rp, resp_adr ra, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND e.login='$ele_login' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
+		$sql="SELECT rp.civilite,rp.nom,rp.prenom,ra.adr1,ra.adr2,ra.adr3,ra.cp,ra.commune FROM resp_pers rp, resp_adr ra, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND e.login='$ele_login' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
 		$res_resp=mysql_query($sql);
 		if(mysql_num_rows($res_resp)==0) {
 			$ad_nom_resp="";
