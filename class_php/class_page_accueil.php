@@ -115,11 +115,11 @@ class class_page_accueil {
 	$this->chargeAutreNom('bloc_administration');
 
 /***** Outils de gestion des absences vie scolaire *****/
-	$this->verif_exist_ordre_menu('bloc_absences_vie_scol');
-	//$this->verif_exist_ordre_menu('bloc_absences_professeur');
+	//$this->verif_exist_ordre_menu('bloc_absences_vie_scol');
+	$this->verif_exist_ordre_menu('bloc_absences_professeur');
 	if ($this->absences_vie_scol())
-	//$this->chargeAutreNom('bloc_absences_professeur');
-	$this->chargeAutreNom('bloc_absences_vie_scol');
+	$this->chargeAutreNom('bloc_absences_professeur');
+	//$this->chargeAutreNom('bloc_absences_vie_scol');
 
 /***** Outils de gestion des absences par les professeurs *****/
 	$this->verif_exist_ordre_menu('bloc_absences_professeur');
