@@ -24,7 +24,9 @@
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-
+if(getSettingValue("active_module_absence")==='2'){
+    require_once("../lib/initialisationsPropel.inc.php");
+}
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -101,6 +103,31 @@ $cal_2 = new Calendrier("form_absences", "au");
 		} 
 		$_SESSION['import_absences_au']=$au;
 	}
+ if (getSettingValue("active_module_absence") === '2') {
+    $date_absence_eleve_debut = isset($_POST["du"]) ? $_POST["du"] : (isset($_GET["du"]) ? $_GET["du"] : NULL);
+    $date_absence_eleve_fin = isset($_POST["au"]) ? $_POST["au"] : (isset($_GET["au"]) ? $_GET["au"] : NULL);
+    if ($date_absence_eleve_debut != null) {
+        if (isset($_SESSION['import_absences_du'])) {
+            $date_absence_eleve_debut = new DateTime(str_replace("/", ".",$_SESSION['import_absences_du']));
+        } else {
+            $date_absence_eleve_debut = new DateTime(str_replace("/", ".", $date_absence_eleve_debut));
+        }
+    } else {
+        $date_absence_eleve_debut = new DateTime('now');
+        $date_absence_eleve_debut->setDate($date_absence_eleve_debut->format('Y'), $date_absence_eleve_debut->format('m') - 1, $date_absence_eleve_debut->format('d'));
+    }
+    if ($date_absence_eleve_fin != null) {
+        if (isset($_SESSION['import_absences_au'])) {
+            $date_absence_eleve_fin = new DateTime(str_replace("/", ".",$_SESSION['import_absences_au']));
+        } else {
+        $date_absence_eleve_fin = new DateTime(str_replace("/", ".", $date_absence_eleve_fin));
+        }
+    } else {
+        $date_absence_eleve_fin = new DateTime('now');
+    }
+    $date_absence_eleve_debut->setTime(0, 0, 0);
+    $date_absence_eleve_fin->setTime(23, 59, 59);
+}
 
 // fonction de sécurité
 // uid de pour ne pas refaire renvoyer plusieurs fois le même formulaire
@@ -247,13 +274,27 @@ if ( $etape === '1' ) {
 	$num_id=10;
 	while($i < $nombre_lignes) {
 	    $current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
+        if(getSettingValue("active_module_absence")==='2'){
+            $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login);
+        }
 	    $current_eleve_absences_query = mysql_query("SELECT * FROM  absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
-
+        if(getSettingValue("active_module_absence")==='2'){
+            $current_eleve_nb_absences = strval($eleve->getDemiJourneesAbsence($date_absence_eleve_debut, $date_absence_eleve_fin)->count());
+        }else{
 	    $current_eleve_nb_absences = nb_total_demijournee_absence($current_eleve_login, $du, $au, $id_classe);
+        }
 	    if ( $current_eleve_nb_absences == '0' ) { $current_eleve_nb_absences = ''; }
+        if(getSettingValue("active_module_absence")==='2'){
+            $current_eleve_nb_nj=strval($eleve->getDemiJourneesNonJustifieesAbsence($date_absence_eleve_debut, $date_absence_eleve_fin)->count());
+        }else{
 	    $current_eleve_nb_nj = nb_absences_nj($current_eleve_login, $du, $au, $id_classe);
+        }
 	    if ( $current_eleve_nb_nj == '0' ) { $current_eleve_nb_nj = ''; }
+        if(getSettingValue("active_module_absence")==='2'){
+            $current_eleve_nb_retards=strval($eleve->getRetards($date_absence_eleve_debut, $date_absence_eleve_fin)->count());
+        }else{
 	    $current_eleve_nb_retards = nb_retard($current_eleve_login, $du, $au, $id_classe);
+        }
 	    if ( $current_eleve_nb_retards == '0' ) { $current_eleve_nb_retards = ''; }
 
 	    $current_eleve_ap_absences = @mysql_result($current_eleve_absences_query, 0, "appreciation");
