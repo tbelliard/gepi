@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -62,7 +62,7 @@ $cal_2 = new Calendrier("form_absences", "au");
    else { if (isset($_GET['periode_num'])) { $periode_num = $_GET['periode_num']; } if (isset($_POST['periode_num'])) { $periode_num = $_POST['periode_num']; } }
 
 // gestion des dates
-	if (empty($_GET['du']) and empty($_POST['du'])) { 
+	if (empty($_GET['du']) and empty($_POST['du'])) {
 		if(isset($_SESSION['import_absences_du'])) {
 			$du = $_SESSION['import_absences_du'];
 		}
@@ -201,6 +201,7 @@ if ( $etape === '0' ) {
 
 <div style="text-align: center;">
    <form method="post" action="import_absences_gepi.php" name="form_absences">
+		echo add_token_field();
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
          <legend style="font: normal 10pt Arial;">&nbsp;Sélection&nbsp;</legend>
             <div style="color: #E8F1F4; text-align: left; font: normal 12pt verdana, sans-serif; font-weight: bold; background-image: url(../mod_absences/images/haut_tab.png); border: 0px solid #F8F8F8;">Importation des absences</div>
@@ -235,8 +236,9 @@ if ( $etape === '1' ) {
 ?>
 
 	<form enctype="multipart/form-data" action="saisie_absences.php" method=post>
-
 	<?php
+		echo add_token_field();
+
 		$call_classe = mysql_query("SELECT classe FROM classes WHERE id = '".$id_classe."'");
 		$classe = mysql_result($call_classe, "0", "classe");
 	?>

@@ -87,7 +87,7 @@ function get_nom_class_from_id($id){
 
 			include "../lib/periodes.inc.php";
 
-			if(!isset($num_periode)){
+			if(!isset($num_periode)) {
 
 				$sql="SELECT MAX(num_periode) AS max_per, id_classe FROM periodes GROUP BY id_classe ORDER BY max_per;";
 				$res1=mysql_query($sql);
@@ -182,11 +182,11 @@ function get_nom_class_from_id($id){
 					echo "<p><i>NOTE:</i> Il n'est pas possible d'importer simultanément des absences de classes dont le nombre de périodes diffère.</p>\n";
 				}
 			}
-			else{
+			else {
 
 				// =======================================================================
 
-				if(!isset($id_classe)){
+				if(!isset($id_classe)) {
 					echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre période</a>\n";
 					echo "</p>\n";
 
@@ -301,110 +301,16 @@ function get_nom_class_from_id($id){
 
 					}
 				}
-				else{
-					/*
-					echo " | <a href='".$_SERVER['PHP_SELF']."'>Importer plusieurs classes</a>";
-					echo "</p>\n";
+				else {
 
-					// VERIFIER SI TOUTES LES CLASSES ONT LE MÊME NOMBRE DE PERIODES
-					$temoin_pb_periodes='n';
-					//unset($tab_max_per);
-					//$tab_max_per=array();
-					if(is_array($id_classe)){
-						$max_per_precedent="";
-						for($i=0;$i<count($id_classe);$i++){
-							$sql="SELECT MAX(num_periode) as max_num FROM periodes WHERE id_classe='$id_classe[$i]'";
-							$test=mysql_query($sql);
-
-							if(mysql_num_rows($test)==0){
-								$temoin_pb_periodes='o';
-								echo "<p><span class='color:red;'>ERREUR:</span> Aucune période ne semble définie pour la classe ";
-								$tmp_classe=get_nom_class_from_id($id_classe[$i]);
-								if($tmp_classe){
-									echo $tmp_classe;
-								}
-								else{
-									echo "<span class='color:red;'>pas de nom???</span>";
-								}
-								echo "(<i>$id_classe[$i]</i>).</p>\n";
-
-								require("../lib/footer.inc.php");
-								exit();
-							}
-							else{
-								$lig_tmp=mysql_fetch_object($test);
-								if($max_per_precedent!=""){
-									if($lig_tmp->max_num!=$max_per_precedent){
-										echo "<p><span class='color:red;'>ERREUR:</span> Toutes les classes choisies n'ont pas le même nombre de périodes.</p>\n";
-
-										require("../lib/footer.inc.php");
-										exit();
-									}
-								}
-								$max_per_precedent=$lig_tmp->max_num;
-							}
-						}
-					}
-
-
-
-					if(!isset($num_periode)){
-						echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
-
-						echo "<p>Choisissez la période à importer ";
-
-						if(is_array($id_classe)){
-							echo "pour la(es) classe(s) de ";
-
-							for($i=0;$i<count($id_classe);$i++){
-								$tmp_classe=get_nom_class_from_id($id_classe[$i]);
-								if($tmp_classe){
-									if($i>0){echo ", ";}
-									echo "$tmp_classe";
-
-									echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
-								}
-							}
-
-							$sql="SELECT DISTINCT num_periode, nom_periode FROM periodes WHERE id_classe='$id_classe[0]' ORDER BY num_periode;";
-						}
-						else{
-							echo "pour la classe de ";
-
-							$tmp_classe=get_nom_class_from_id($id_classe);
-							if($tmp_classe){
-								echo "$tmp_classe";
-
-								echo "<input type='hidden' name='id_classe[]' value='$id_classe' />\n";
-							}
-							else{
-								echo "<span class='color:red;'>ERREUR:</span> La classe $id_classe n'aurait pas de nom?";
-							}
-
-							$sql="SELECT DISTINCT num_periode, nom_periode FROM periodes WHERE id_classe='$id_classe' ORDER BY num_periode;";
-						}
-
-						echo ".</p>\n";
-
-						$res_per=mysql_query($sql);
-						while($lig_tmp=mysql_fetch_object($res_per)){
-							// Il ne faudrait proposer que les périodes ouvertes en saisie, non?
-							echo "<input type='radio' name='num_periode' value='$lig_tmp->num_periode' /> $lig_tmp->nom_periode<br />\n";
-						}
-
-						echo "<p><input type='submit' value='Valider' /></p>\n";
-						echo "</form>\n";
-					}
-					else{
-					*/
-
-						if(!isset($_POST['is_posted'])){
+						if(!isset($_POST['is_posted'])) {
 							$etape=1;
 
 							//echo "<p>Cette page permet de remplir des tableaux PHP avec les informations élèves, responsables,...<br />\n";
 							echo "<p>Cette page permet de remplir des tables temporaires avec les informations extraites du XML.<br />\n";
 							echo "</p>\n";
 							echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+							echo add_token_field();
 
 							echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
 
@@ -436,14 +342,16 @@ function get_nom_class_from_id($id){
 							echo "Puis cliquer sur le bouton 'Exporter les périodes sélectionnées'.</p>\n";
 							echo "</ul>\n";
 						}
-						else{
+						else {
+							check_token();
+
 							$post_max_size=ini_get('post_max_size');
 							$upload_max_filesize=ini_get('upload_max_filesize');
 							$max_execution_time=ini_get('max_execution_time');
 							$memory_limit=ini_get('memory_limit');
 
 
-							if($etape==1){
+							if($etape==1) {
 								$xml_file = isset($_FILES["absences_xml_file"]) ? $_FILES["absences_xml_file"] : NULL;
 								$fp=fopen($xml_file['tmp_name'],"r");
 								if($fp){
@@ -765,6 +673,7 @@ function get_nom_class_from_id($id){
 										}
 									}
 									echo "</table>\n";
+									echo add_token_field();
 									echo "<input type='hidden' name='nb_eleves' value='$i' />\n";
 									echo "<input type='hidden' name='is_posted' value='y' />\n";
 									echo "<input type='hidden' name='etape' value='2' />\n";
@@ -782,7 +691,7 @@ function get_nom_class_from_id($id){
 									// PB $fp
 								}
 							}
-							if($etape==2){
+							if($etape==2) {
 								$log_eleve=isset($_POST['log_eleve']) ? $_POST['log_eleve'] : NULL;
 								$nbabs_eleve=isset($_POST['nbabs_eleve']) ? $_POST['nbabs_eleve'] : NULL;
 								$nbnj_eleve=isset($_POST['nbnj_eleve']) ? $_POST['nbnj_eleve'] : NULL;

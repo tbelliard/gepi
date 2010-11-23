@@ -3,7 +3,7 @@
 /*
 * @version: $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -110,7 +110,7 @@ $titre_page = "Outil d'importation des absences à partir du fichier F_EABS.DBF d
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 ?>
-<p class=bold>| <a href="../accueil.php">Accueil</a> | <a href="index.php?id_classe=<?php echo $id_classe; ?>">Retour</a> |</p>
+<p class="bold">| <a href="../accueil.php">Accueil</a> | <a href="index.php?id_classe=<?php echo $id_classe; ?>">Retour</a> |</p>
 
 <?php
 $call_classe = mysql_query("SELECT classe FROM classes WHERE id = '$id_classe'");
@@ -155,6 +155,7 @@ if ($step == 0) {
 } else if ($step==1) {
 	// On demande le fichier F_NOMA.DBF
 	echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
+	echo add_token_field();
 	echo "<p class='bold'>Phase d'importation des séquences liées à la matinée et des séquences liées à l'après-midi</p>
 	<p>Veuillez préciser le nom complet du fichier <b>F_NOMA.DBF</b> :";
 	echo "<input type='file' size='80' name='dbf_file' /></p>\n";
@@ -169,6 +170,7 @@ if ($step == 0) {
 	$test_abs_gep = mysql_query("select id_seq from absences_gep");
 	if (mysql_num_rows($test_abs_gep) != 0) {
 		echo "<hr /><form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
+		echo add_token_field();
 		echo "<p align=\"center\"><input type=submit value=\"Continuer sans procéder à l'importation\" /></p>\n";
 		echo "<input type=hidden name='step' value='3' />\n";
 		echo "<input type=hidden name='id_classe' value='".$id_classe."' />\n";
@@ -177,6 +179,7 @@ if ($step == 0) {
 	}
 
 } else if ($step==2) {
+	check_token(false);
 	// On enregistre les données du fichier F_NOMA.DBF dans la table absences_gep
 
 	$dbf_file = isset($_FILES["dbf_file"]) ? $_FILES["dbf_file"] : NULL;
@@ -240,6 +243,7 @@ if ($step == 0) {
 					echo "Les données du fichiers F_NOMA.DBF ont été enregistrées.
 					<br /><b><a href=\"javascript:centrerpopup('seq_gep_absences.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')\">Visualiser les correspondances entre séquences et types de demi-journées</a></b>\n";
 					echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
+					echo add_token_field();
 					echo "<p align=\"center\"><input type=submit value=\"Continuer l'importation\" /></p>\n";
 					echo "<input type=hidden name='step' value='3' />\n";
 					echo "<input type=hidden name='id_classe' value='".$id_classe."' />\n";
@@ -259,7 +263,10 @@ if ($step == 0) {
 	}
 
 } else if ($step==3) {
+	check_token(false);
+
 	echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
+	echo add_token_field();
 	echo "<p><b>ATTENTION !</b> VEUILLEZ LIRE CE QUI SUIT</p>\n";
 	echo "<p>L'importation des données relatives aux absences depuis GEP est une manipulation délicate. En effet, les fichiers de GEP sont au format DBF, mais GEP ne respecte pas ce standard à la lettre.";
 	echo "<p>Mise en garde : vous DEVEZ suivre à la lettre la procédure décrite ci-dessous afin d'obtenir une importation fiable.</p>\n";
@@ -343,6 +350,7 @@ if ($step == 0) {
 
 
 } else if ($step==4) {
+	check_token(false);
 
 	//=========================
 	// AJOUT: boireaus 20071118
@@ -705,6 +713,7 @@ if ($step == 0) {
 			echo "<p>Tableau récapitulatif des absences pour la période du <b>".$jourd."/".$moisd."/".$anneed."</b> au <b>".$jourf."/".$moisf."/".$anneef."</b></p>\n";
 			echo "<p><b>Attention </b>: les données ne sont pas encore enregistrées dans la base GEPI.</p>\n";
 			echo "<form enctype=\"multipart/form-data\" action=\"import_absences_gep.php\" method=\"post\" name=\"form_absences\">\n";
+			echo add_token_field();
 			echo "<p align=\"center\"><input type=submit value=\"Enregistrer les données dans la base GEPI\" /></p>\n";
 			echo "<input type=hidden name='step' value='5' />\n";
 			echo "<input type=hidden name='id_classe' value='".$id_classe."' />\n";
@@ -736,6 +745,8 @@ if ($step == 0) {
 		echo "<a href='import_absences_gep.php?id_classe=$id_classe&amp;periode_num=$periode_num&amp;step=3'>Cliquer ici </a> pour recommencer !</center></p>\n";
 	}
 } else if ($step = 5) {
+	check_token(false);
+
 	$tab=unserialize($_SESSION['tab_session']);
 	$retard=unserialize($_SESSION['retard_session']);
 	$abs=unserialize($_SESSION['abs_session']);
