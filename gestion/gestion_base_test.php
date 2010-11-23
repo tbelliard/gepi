@@ -734,14 +734,15 @@ if ($n > 0) {
 
 <H3>Créer un fichier de sauvegarde/restauration de la base de test <?php echo $dbDb; ?></H3>
 
-<form enctype="multipart/form-data" action="gestion_base_test.php" method=post name=formulaire>
+<!--form enctype="multipart/form-data" action="gestion_base_test.php" method=post name=formulaire>
 <center><input type="submit" value="Sauvegarder" />
 <input type="hidden" name='action' value="dump"/>
 </center>
 <?php
 echo add_token_field();
 ?>
-</form>
+</form-->
+Pour activer la sauvegarde des données de tests, merci de décommenter les lignes 725 à 729 du fichier gestion/gestion_base_test.php
 
 <?php
 echo "<h3>Documentation de la base de test : </h3>\n";
