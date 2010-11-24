@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -76,6 +76,8 @@ $create_table=mysql_query($sql);
 
 // Enregistrement des valeurs
 if((isset($mode))&&($mode=='parametrer')) {
+	check_token();
+
 	$tab_param=array('MargeHaut',
 'MargeDroite',
 'MargeGauche',
@@ -152,6 +154,8 @@ $no_footer="n";
 
 
 if((isset($mode))&&($mode=='imprime')) {
+	check_token();
+
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
@@ -442,17 +446,18 @@ if((!isset($mode))||($mode!='parametrer')) {
 
 	echo "<p class='bold'>Etiquettes&nbsp;:</p>\n";
 	echo "<ul>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=parametrer'>Paramétrer</a> les étiquettes</li>\n";
-	echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=imprime'>Imprimer</a> les étiquettes</li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=parametrer".add_token_in_url()."'>Paramétrer</a> les étiquettes</li>\n";
+	echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=imprime".add_token_in_url()."'>Imprimer</a> les étiquettes</li>\n";
 	echo "</ul>\n";
 }
 else {
 	// Paramétrage des étiquettes
 	echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve'>Etiquettes</a>";
-	echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=imprime'>Imprimer</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=imprime".add_token_in_url()."'>Imprimer</a>";
 	echo "</p>\n";
 
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+	echo add_token_field();
 
 	echo "<p>L'impression est prévue au format A4 avec deux colonnes d'étiquettes.<br />Vous pouvez ajuster quelques paramètres concernant les étiquettes.</p>\n";
 

@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -97,6 +97,8 @@ function recherche_enfant($id_parent_tmp) {
 $id_epreuve=isset($_POST['id_epreuve']) ? $_POST['id_epreuve'] : (isset($_GET['id_epreuve']) ? $_GET['id_epreuve'] : NULL);
 
 if(isset($_GET['creer_cn'])) {
+	check_token();
+
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -162,6 +164,8 @@ if(isset($_GET['creer_cn'])) {
 }
 
 if(isset($_POST['transfert_cn'])) {
+	check_token();
+
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -433,6 +437,7 @@ while($lig=mysql_fetch_object($res_grp)) {
 }
 
 echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+echo add_token_field();
 
 echo "<p>Sélectionnez les carnets de notes sur lesquels créer un devoir correspondant à l'épreuve.</p>\n";
 
@@ -483,7 +488,7 @@ for($j=0;$j<$cpt;$j++) {
 			echo "</td>\n";
 		}
 		elseif(isset($tab_grp[$j]['ver_periode'][$i])) {
-			echo "<td><img src='../images/icons/flag.png' width='17' height='18' title='Cahier de note non initialisé pour cette période' alt='Cahier de note non initialisé pour cette période' /> <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=".$tab_grp[$j]['id']."&amp;periode=$i&amp;creer_cn=y'><img src='../images/icons/wizard.png' width='16' height='16' title='Créer le cahier de note' alt='Créer le cahier de note' /></a></td>\n";
+			echo "<td><img src='../images/icons/flag.png' width='17' height='18' title='Cahier de note non initialisé pour cette période' alt='Cahier de note non initialisé pour cette période' /> <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=".$tab_grp[$j]['id']."&amp;periode=$i&amp;creer_cn=y".add_token_in_url()."'><img src='../images/icons/wizard.png' width='16' height='16' title='Créer le cahier de note' alt='Créer le cahier de note' /></a></td>\n";
 		}
 		else {
 			echo "<td>-</td>\n";

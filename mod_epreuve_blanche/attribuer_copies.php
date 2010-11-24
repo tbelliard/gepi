@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -70,6 +70,8 @@ $definition_salles=isset($_POST['definition_salles']) ? $_POST['definition_salle
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
 if(isset($_POST['valide_affect_eleves'])) {
+	check_token();
+
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -196,6 +198,7 @@ echo "</ul>\n";
 
 if($etat!='clos') {
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n";
+	echo add_token_field();
 }
 
 //echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves1' value='Valider' /></p>\n";

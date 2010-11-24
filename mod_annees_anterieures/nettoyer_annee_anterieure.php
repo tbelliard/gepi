@@ -2,7 +2,7 @@
 /*
  * $Id : $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -31,7 +31,8 @@ if ($resultat_session == 'c') {
     die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
-    die();};
+    die();
+}
 
 // INSERT INTO droits VALUES ('/mod_annees_anterieures/nettoyer_annee_anterieure.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Suppression de données antérieures', '');
 if (!checkAccess()) {
@@ -57,7 +58,9 @@ $confirmer=isset($_POST['confirmer']) ? $_POST['confirmer'] : NULL;
 $suppr=isset($_POST['suppr']) ? $_POST['suppr'] : NULL;
 
 $msg="";
-if(isset($confirmer)){
+if(isset($confirmer)) {
+	check_token();
+
 	$nb_suppr=0;
 	$nb_err=0;
 	for($i=0;$i<count($suppr);$i++){
@@ -132,6 +135,7 @@ else{
 	Vous pouvez également choisir de <a href='corriger_ine.php'>corriger des INE non renseignés ou mal renseignés</a></p>\n";
 
 	echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+	echo add_token_field();
 
 	echo "<table align='center' class='table_annee_anterieure' summary='Tableau des élèves'>\n";
 	echo "<tr style='background-color:white;'>\n";
@@ -145,7 +149,7 @@ else{
 	echo "</tr>\n";
 	$cpt=0;
 	while($lig_ele=mysql_fetch_object($res1)){
-		echo "<tr style='text-align:center;' id='tr_$cpt'>\n";
+		echo "<tr class='white_hover' style='text-align:center;' id='tr_$cpt'>\n";
 		echo "<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='$lig_ele->ine' onchange=\"modif_une_coche('$cpt');\" /></td>\n";
 		echo "<td>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</td>\n";
 		echo "<td>".formate_date($lig_ele->naissance)."</td>\n";

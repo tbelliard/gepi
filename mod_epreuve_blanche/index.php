@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -165,6 +165,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 	//if(isset($_POST['creer_epreuve'])) {
 	if((isset($_POST['creer_epreuve']))||(isset($_POST['modif_epreuve']))) {
+		check_token();
+
 		// Correction, modification des paramètres d'une épreuve
 
 		$intitule=isset($_POST['intitule']) ? $_POST['intitule'] : "Epreuve blanche";
@@ -273,6 +275,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$mode="modif_epreuve";
 	}
 	elseif((isset($id_epreuve))&&($mode=='suppr_epreuve')) {
+		check_token();
+
 		// Suppression d'une épreuve
 		//echo "gloups";
 		//$tab_tables=array('eb_profs', 'eb_salles', 'eb_groupes', 'eb_copies', 'eb_epreuves');
@@ -303,6 +307,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		unset($mode);
 	}
 	elseif((isset($id_epreuve))&&($mode=='ajout_groupes')) {
+		check_token();
+
 		// Ajout de groupes pour l'épreuve sélectionnée
 		$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : array());
 
@@ -390,6 +396,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$mode='modif_epreuve';
 	}
 	elseif((isset($id_epreuve))&&($mode=='suppr_groupe')) {
+		check_token();
+
 		// Ajout de groupes pour l'épreuve sélectionnée
 		$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 
@@ -449,6 +457,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$mode='modif_epreuve';
 	}
 	elseif((isset($id_epreuve))&&($mode=='ajout_profs')) {
+		check_token();
+
 		// Ajout de groupes pour l'épreuve sélectionnée
 		$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : (isset($_GET['login_prof']) ? $_GET['login_prof'] : array());
 
@@ -499,6 +509,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$mode='modif_epreuve';
 	}
 	elseif((isset($id_epreuve))&&($mode=='clore')) {
+		check_token();
+
 		// Cloture d'une épreuve
 		$sql="UPDATE eb_epreuves SET etat='clos' WHERE id='$id_epreuve';";
 		$cloture=mysql_query($sql);
@@ -513,6 +525,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		unset($mode);
 	}
 	elseif((isset($id_epreuve))&&($mode=='declore')) {
+		check_token();
+
 		// Réouverture d'une épreuve
 		$sql="UPDATE eb_epreuves SET etat='' WHERE id='$id_epreuve';";
 		$cloture=mysql_query($sql);
@@ -528,6 +542,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		}
 	}
 	elseif((isset($id_epreuve))&&($mode=='copier_choix')&&(isset($_POST['copier_les_parametres']))) {
+		check_token();
 
 /*
     $_POST['id_groupe']=	Array (*)
@@ -778,7 +793,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 					}
 					echo ">$lig->intitule</a> (<i>".formate_date($lig->date)."</i>)";
-					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=suppr_epreuve' onclick=\"return confirm('Etes vous sûr de vouloir supprimer l épreuve?')\">Supprimer</a><br />\n";
+					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=suppr_epreuve".add_token_in_url()."' onclick=\"return confirm('Etes vous sûr de vouloir supprimer l épreuve?')\">Supprimer</a><br />\n";
 				}
 				echo "</li>\n";
 			}
@@ -800,7 +815,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=modif_epreuve'>Consulter</a>\n";
 
-					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=declore' onclick=\"return confirm('Etes vous sûr de vouloir rouvrir l épreuve?')\">Rouvrir</a><br />\n";
+					echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$lig->id&amp;mode=declore".add_token_in_url()."' onclick=\"return confirm('Etes vous sûr de vouloir rouvrir l épreuve?')\">Rouvrir</a><br />\n";
 				}
 
 				//echo "<p style='color:red'>Permettre par la suite de rouvrir une épreuve close (pour correction).</p>\n";
@@ -820,6 +835,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			echo "<blockquote>\n";
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+			echo add_token_field();
 
 			echo "<table summary='Paramètres'>\n";
 			echo "<tr>\n";
@@ -890,7 +906,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$sql="SELECT 1=1 FROM eb_epreuves;";
 			$test=mysql_query($sql);
 			if(mysql_num_rows($test)>0) {
-				echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix'";
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix".add_token_in_url()."'";
 				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 				echo ">Copier des paramétrages depuis une autre épreuve blanche</a>\n";
 			}
@@ -983,9 +999,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				}
 
 				echo "<li>\n";
-				echo "<a href='.php?id_epreuve=$id_epreuve'";
-				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-				echo ">&nbsp;</a>Passer l'épreuve en phase starting_block<br />\n";
+				// A FAIRE
+				//echo "<a href='.php?id_epreuve=$id_epreuve'";
+				//echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				//echo ">&nbsp;</a>";
+				echo "Passer l'épreuve en phase starting_block<br />\n";
 				echo "</li>\n";
 
 				echo "<li>\n";
@@ -1016,7 +1034,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						echo "</li>\n";
 
 						echo "<li>\n";
-						echo "<a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=clore'";
+						echo "<a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=clore".add_token_in_url()."'";
 						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 						echo ">Clore l'épreuve</a><br />\n";
 						echo "</li>\n";
@@ -1046,7 +1064,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 			echo "<blockquote>\n";
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
-	
+			echo add_token_field();
+
 			echo "<table summary='Paramètres'>\n";
 			echo "<tr>\n";
 			echo "<td style='font-weight:bold;'>Intitule&nbsp;:</td>\n";
@@ -1138,7 +1157,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "</tr>\n";
 	
 			echo "<tr>\n";
-			echo "<td colspan='2' align='center'><input type='submit' name='modif_epreuve' value='Valider' /></td>\n";
+			echo "<td colspan='2' align='center'>";
+			if($etat!='clos') {echo "<input type='submit' name='modif_epreuve' value='Valider' />";} else {echo "&nbsp;";}
+			echo "</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
 
@@ -1183,7 +1204,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					//echo "<b>".$current_group['classlist_string']."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)";
 					echo "<b>".$classlist_string."</b> ".htmlentities($lig->name)." (<i>".htmlentities($lig->description)."</i>)";
 					if($etat!='clos') {
-						echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=$lig->id&amp;mode=suppr_groupe' onclick=\"return confirm('Etes vous sûr de vouloir supprimer le groupe de l épreuve?')\">Supprimer</a>\n";
+						echo " - <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;id_groupe=$lig->id&amp;mode=suppr_groupe".add_token_in_url()."' onclick=\"return confirm('Etes vous sûr de vouloir supprimer le groupe de l épreuve?')\">Supprimer</a>\n";
 					}
 					echo "<br />\n";
 					// Afficher les élèves inscrits/non inscrits en infobulle
@@ -1333,7 +1354,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 				// Choix des classes dont il faudra lister les groupes
 				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
-	
+				echo add_token_field();
+
 				$nb_class_par_colonne=round($nb/3);
 				echo "<table width='100%' summary='Choix des classes'>\n";
 				echo "<tr valign='top' align='center'>\n";
@@ -1440,6 +1462,7 @@ function checkbox_change(cpt) {
 			}
 
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+			echo add_token_field();
 
 			echo "<p class='bold'>Choix des groupes pour l'épreuve $id_epreuve&nbsp;:</p>\n";
 
@@ -1565,6 +1588,7 @@ function checkbox_change(cpt) {
 
 
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+			echo add_token_field();
 
 			$tab_profs_deja_punis=array();
 			$sql="SELECT u.login FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login ORDER BY u.nom,u.prenom;";
@@ -1712,7 +1736,7 @@ eb_salles
 			else {
 				echo "<ul>\n";
 				while($lig=mysql_fetch_object($res)) {
-					echo "<li><p><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix&amp;id_epreuve_modele=$lig->id'>Epreuve n°$lig->id</a>&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p></li>\n";
+					echo "<li><p><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=copier_choix&amp;id_epreuve_modele=$lig->id".add_token_in_url()."'>Epreuve n°$lig->id</a>&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p></li>\n";
 				}
 				echo "</ul>\n";
 			}
@@ -1733,6 +1757,7 @@ eb_salles
 
 
 				echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form_copie_param_modele'>\n";
+				echo add_token_field();
 
 				//echo "<p>Modèle&nbsp;: Epreuve n°$lig->id&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</p>";
 				//echo "<div style='width:11em; font-weight:bold; display:inline; border:1px solid black;'>Modèle&nbsp;:</div><div style='display:block; border:1px solid black; width:30em'>Epreuve n°$lig->id&nbsp;: $lig->intitule<br />".nl2br($lig->description)."</div>";

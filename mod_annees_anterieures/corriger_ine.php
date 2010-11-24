@@ -2,7 +2,7 @@
 /*
  * $Id : $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -31,7 +31,8 @@ if ($resultat_session == 'c') {
     die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
-    die();};
+    die();
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -62,9 +63,11 @@ $recherche1_nom=isset($_POST['recherche1_nom']) ? $_POST['recherche1_nom'] : NUL
 $recherche1_prenom=isset($_POST['recherche1_prenom']) ? $_POST['recherche1_prenom'] : NULL;
 
 $msg="";
-if(isset($confirmer)){
+if(isset($confirmer)) {
+	check_token();
+
 	$cpt=0;
-	if((isset($ine))&&(isset($ine_corrige))){
+	if((isset($ine))&&(isset($ine_corrige))) {
 		for($i=0;$i<count($ine);$i++){
 			if($ine_corrige[$i]!=''){
 				$sql="UPDATE archivage_eleves SET ine='$ine_corrige[$i]' WHERE ine='$ine[$i]'";
@@ -177,6 +180,7 @@ elseif($mode=="ine_login"){
 
 		echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 		echo "<input type='hidden' name='mode' value=\"ine_login\" />\n";
+		echo add_token_field();
 
 		echo "<table class='table_annee_anterieure' summary='Tableau des élèves'>\n";
 		echo "<tr style='background-color: white;'>\n";

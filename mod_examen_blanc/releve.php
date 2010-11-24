@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -392,6 +392,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					}
 
 					if($mode=='csv') {
+						check_token();
+
 						$csv="CLASSE;LOGIN_ELEVE;NOM_PRENOM_ELEVE;";
 						for($j=0;$j<$nb_matieres;$j++) {$csv.=$tab_matiere[$j].";";}
 						$csv.="MOYENNE;\r\n";
@@ -672,7 +674,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	}
 
 	echo "<div style='float:right; width: 5em; text-align:center; border: 1px solid black;'>\n";
-	echo "<a href='releve.php?id_exam=$id_exam&amp;mode=csv'";
+	echo "<a href='releve.php?id_exam=$id_exam&amp;mode=csv".add_token_in_url()."'";
 	echo ">CSV</a>\n";
 	echo "</div>\n";
 

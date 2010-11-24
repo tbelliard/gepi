@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -77,30 +77,32 @@ if(isset($enregistrer)){
 
 // Suppression des données archivées pour une année donnée.
 if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
-        $sql="DELETE FROM archivage_disciplines WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr1=mysql_query($sql);
+	check_token();
 
-		// Maintenant, on regarde si l'année est encore utilisée dans archivage_types_aid
-		// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
-		$test = sql_query1("select count(annee) from archivage_types_aid where annee='".$_GET['annee_supp']."'");
-		if ($test == 0) {
-            $sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
-            $res_suppr2=mysql_query($sql);
-		} else {
-            $res_suppr2 = 1;
-        }
+	$sql="DELETE FROM archivage_disciplines WHERE annee='".$_GET["annee_supp"]."';";
+	$res_suppr1=mysql_query($sql);
 
-        $sql="DELETE FROM archivage_ects WHERE annee='".$_GET["annee_supp"]."';";
-		$res_suppr3=mysql_query($sql);
+	// Maintenant, on regarde si l'année est encore utilisée dans archivage_types_aid
+	// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
+	$test = sql_query1("select count(annee) from archivage_types_aid where annee='".$_GET['annee_supp']."'");
+	if ($test == 0) {
+		$sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
+		$res_suppr2=mysql_query($sql);
+	} else {
+		$res_suppr2 = 1;
+	}
 
-    // Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
-    suppression_donnees_eleves_inutiles();
+	$sql="DELETE FROM archivage_ects WHERE annee='".$_GET["annee_supp"]."';";
+	$res_suppr3=mysql_query($sql);
 
-		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3)) {
-			$msg = "La suppression des données a été correctement effectuée.";
-		} else {
-			$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
-		}
+	// Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
+	suppression_donnees_eleves_inutiles();
+
+	if (($res_suppr1) and ($res_suppr2) and ($res_suppr3)) {
+		$msg = "La suppression des données a été correctement effectuée.";
+	} else {
+		$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
+	}
 
 }
 
@@ -128,7 +130,7 @@ if(!isset($annee_scolaire)){
 		echo "<ul>\n";
 		while($lig_annee=mysql_fetch_object($res_annee)){
 			$annee_scolaire=$lig_annee->annee;
-			echo "<li><b>Année $annee_scolaire (<a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toute les données archivées pour cette année</a>) :<br /></b> ";
+			echo "<li><b>Année $annee_scolaire (<a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire.add_token_in_url()."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les données archivées pour cette année</a>) :<br /></b> ";
 			$sql="SELECT DISTINCT classe FROM archivage_disciplines WHERE annee='$annee_scolaire' ORDER BY classe;";
 			$res_classes=mysql_query($sql);
 			if(mysql_num_rows($res_classes)==0){
@@ -160,7 +162,7 @@ if(!isset($annee_scolaire)){
 		$default_annee=$annee."-".$annee2;
 	}
 
-	echo "<p>Année: <input type='text' name='annee_scolaire' value='$default_annee' /></p>\n";
+	echo "<p>Année&nbsp;: <input type='text' name='annee_scolaire' value='$default_annee' /></p>\n";
 
 	echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
 
@@ -198,7 +200,7 @@ else{
 		}
 	}
 
-	if(!isset($id_classe)){
+	if(!isset($id_classe)) {
 		echo "</p></div>\n";
 
 		echo "<h2>Choix des classes</h2>\n";
@@ -259,12 +261,14 @@ else{
 			}
 		</script>\n";
 
+		echo add_token_field();
+
 		echo "<input type='hidden' name='annee_scolaire' value='$annee_scolaire' />\n";
 		echo "<input type='hidden' name='confirmer' value='ok' />\n";
 		echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
 
 	}
-	else{
+	else {
 		echo "<a href='".$_SERVER['PHP_SELF']."'>Choisir d'autres classes</a> | ";
 		echo "</div>\n";
 
@@ -274,6 +278,8 @@ else{
 			require("../lib/footer.inc.php");
 			die();
 		}
+
+		check_token(false);
 
 		/*
 		echo "<p>Mise à jour du calcul du rang des élèves dans les matières...</p>\n";
@@ -382,9 +388,10 @@ else{
 						$tab_eleve[$cpt]['ine']="LOGIN_".$tab_eleve[$cpt]['login_eleve'];
 						$tab_eleve[$cpt]['ine'] = cree_substitut_INE_unique($tab_eleve[$cpt]['ine']);
 					}
-          // On vérifie que l'élève est enregistré dans archive_eleves. Sinon, on l'enregistre
 
-          $error_enregistre_eleve[$tab_eleve[$cpt]['login_eleve']] = insert_eleve($tab_eleve[$cpt]['login_eleve'],$tab_eleve[$cpt]['ine'],$annee_scolaire,'y');
+					// On vérifie que l'élève est enregistré dans archive_eleves. Sinon, on l'enregistre
+			
+					$error_enregistre_eleve[$tab_eleve[$cpt]['login_eleve']] = insert_eleve($tab_eleve[$cpt]['login_eleve'],$tab_eleve[$cpt]['ine'],$annee_scolaire,'y');
 
 					// Statut de redoublant ou non:
 					$sql="SELECT * FROM j_eleves_regime WHERE login='".$tab_eleve[$cpt]['login_eleve']."'";
@@ -540,11 +547,11 @@ else{
 						$login_eleve=$tab_eleve[$j]['login_eleve'];
 						$doublant=$tab_eleve[$j]['doublant'];
 						$cpe=$tab_eleve[$j]['cpe'];
-						if ($error_enregistre_eleve[$login_eleve] != '')
-            echo "<script type='text/javascript'>
+						if ($error_enregistre_eleve[$login_eleve] != '') {
+							echo "<script type='text/javascript'>
   	document.getElementById('td_0_".$j."').style.backgroundColor='red';
 </script>\n";
-
+						}
 
 
 

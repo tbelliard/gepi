@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -68,6 +68,8 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mo
 include('lib_eb.php');
 
 if(isset($imprime)) {
+	check_token();
+
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
@@ -514,15 +516,15 @@ if(!isset($imprime)) {
 	echo "<ul>\n";
 	echo "<li><b>CSV</b>&nbsp;:\n";
 	 	echo "<ul>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=csv'>Avec les colonnes 'NOM;PRENOM;SIGNATURE'</a></li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=csv'>Avec les colonnes 'NOM;PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=tout&amp;mode=csv'>Avec les colonnes 'NOM;PRENOM;CLASSE;DATE_DE_NAISSANCE;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=csv".add_token_in_url()."'>Avec les colonnes 'NOM;PRENOM;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=csv".add_token_in_url()."'>Avec les colonnes 'NOM;PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=tout&amp;mode=csv".add_token_in_url()."'>Avec les colonnes 'NOM;PRENOM;CLASSE;DATE_DE_NAISSANCE;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
 		echo "</ul>\n";
 	echo "</li>\n";
 	echo "<li><b>PDF</b>&nbsp;:\n";
 	 	echo "<ul>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=pdf'>Avec les colonnes 'NOM_PRENOM;SIGNATURE'</a></li>\n";
-		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=pdf'>Avec les colonnes 'NOM_PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=sans_num_anonymat&amp;mode=pdf".add_token_in_url()."'>Avec les colonnes 'NOM_PRENOM;SIGNATURE'</a></li>\n";
+		echo "<li><a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;imprime=avec_num_anonymat&amp;mode=pdf".add_token_in_url()."'>Avec les colonnes 'NOM_PRENOM;NUM_ANONYMAT;SIGNATURE'</a></li>\n";
 		echo "</ul>\n";
 	echo "</li>\n";
 	echo "</ul>\n";

@@ -2,7 +2,7 @@
 /*
  * $Id : $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,8 @@ if ($resultat_session == 'c') {
     die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
-    die();};
+    die();
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -60,6 +61,8 @@ $msg="";
 $style_specifique="mod_annees_anterieures/annees_anterieures";
 // Suppression des données archivées pour une année donnée.
 if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
+	check_token();
+
   	// Suppression des liens élèves/aid
     $sql="SELECT id FROM archivage_aids WHERE annee='".$_GET['annee_supp']."'";
     $res=sql_query($sql);
@@ -84,26 +87,28 @@ if (isset($_GET['action']) and ($_GET['action']=="supp_annee")) {
   		mysql_query($sql);
     }
 
-		// Maintenant, on regarde si l'année est encore utilisée dans archivage_disciplines
-		// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
-		$test = sql_query1("select count(annee) from archivage_disciplines where annee='".$_GET['annee_supp']."'");
-		if ($test == 0) {
-      $sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
-	  	$res_suppr4=mysql_query($sql);
-		} else $res_suppr4 = 1;
+	// Maintenant, on regarde si l'année est encore utilisée dans archivage_disciplines
+	// Sinon, on supprime les entrées correspondantes à l'année dans archivage_eleves2 car elles ne servent plus à rien.
+	$test = sql_query1("select count(annee) from archivage_disciplines where annee='".$_GET['annee_supp']."'");
+	if ($test == 0) {
+		$sql="DELETE FROM archivage_eleves2 WHERE annee='".$_GET["annee_supp"]."';";
+		$res_suppr4=mysql_query($sql);
+	} else $res_suppr4 = 1;
 
-    // Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
-    suppression_donnees_eleves_inutiles();
+	// Maintenant, il faut supprimer les données élèves qui ne servent plus à rien
+	suppression_donnees_eleves_inutiles();
 
-		if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)) {
-			$msg = "La suppression des données a été correctement effectuée.";
-		} else {
-			$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
-		}
+	if (($res_suppr1) and ($res_suppr2) and ($res_suppr3) and ($res_suppr4)) {
+		$msg = "La suppression des données a été correctement effectuée.";
+	} else {
+		$msg = "Un ou plusieurs problèmes ont été rencontrés lors de la suppression.";
+	}
 
 }
 // Suppression des données archivées pour une année donnée.
 if (isset($_GET['action']) and ($_GET['action']=="supp_AID")) {
+	check_token();
+
   	// Suppression des liens élèves/aid
     $sql="SELECT id FROM archivage_aids WHERE annee='".$_GET['annee_supp']."' and id_type_aid='".$_GET['type_aid_supp']."'";
     $res=sql_query($sql);
@@ -159,7 +164,7 @@ if(!isset($annee_scolaire)){
 		echo "<ul>\n";
 		while($lig_annee=mysql_fetch_object($res_annee)){
 			$annee_scolaire=$lig_annee->annee;
-			echo "<li><b>Année $annee_scolaire</b> - <a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les données AIDs archivées pour cette année</a></li>\n";
+			echo "<li><b>Année $annee_scolaire</b> - <a href='".$_SERVER['PHP_SELF']."?action=supp_annee&amp;annee_supp=".$annee_scolaire.add_token_in_url()."'   onclick=\"return confirm_abandon (this, 'yes', '$themessage')\">Supprimer toutes les données AIDs archivées pour cette année</a></li>\n";
 		}
 		echo "</ul>\n";
 		echo "<p><br /></p>\n";
@@ -177,7 +182,7 @@ if(!isset($annee_scolaire)){
 		$default_annee=$annee."-".$annee2;
 	}
 
-	echo "<p>Année: <input type='text' name='annee_scolaire' value='$default_annee' /></p>\n";
+	echo "<p>Année&nbsp;: <input type='text' name='annee_scolaire' value='$default_annee' /></p>\n";
 
 	echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
 } else {
@@ -259,7 +264,7 @@ if(!isset($annee_scolaire)){
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "<p><input type = \"checkbox\" name=\"log_error\" value=\"y\" ";
-		if ($log_error == 'y') echo " cheched ";
+		if ($log_error == 'y') {echo " cheched ";}
     echo "/>Les résultats de l'archivage sont en général très longs. Cochez la case ci-contre si vous souhaitez n'afficher que les erreurs d'archivage.";
     echo "<p class='small'>(*) Types d'AID pour lesquels les outils complémentaire liés aux fiches projets ont été activés.</p>";
 
@@ -274,6 +279,8 @@ if(!isset($annee_scolaire)){
 			}
 		</script>\n";
 
+		echo add_token_field();
+
 		echo "<input type='hidden' name='annee_scolaire' value='$annee_scolaire' />\n";
 		echo "<input type='hidden' name='confirmer' value='ok' />\n";
 		echo "<center><input type=\"submit\" name='ok' value=\"Valider\" style=\"font-variant: small-caps;\" /></center>\n";
@@ -287,6 +294,8 @@ if(!isset($annee_scolaire)){
 			require("../lib/footer.inc.php");
 			die();
 		}
+
+		check_token(false);
 
     // Déput du traitement !!!!!
     $sql_aid = "select * from aid_config where indice_aid = '".$id_type[0]."'";

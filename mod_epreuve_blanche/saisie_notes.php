@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -67,6 +67,8 @@ $id_epreuve=isset($_POST['id_epreuve']) ? $_POST['id_epreuve'] : (isset($_GET['i
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
 if(isset($_POST['saisie_notes'])) {
+	check_token();
+
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -141,6 +143,7 @@ if(isset($_POST['saisie_notes'])) {
 	}
 }
 elseif((isset($mode))&&($mode=='export_csv')) {
+	check_token();
 
 	$export="y";
 
@@ -239,7 +242,7 @@ require_once("../lib/header.inc");
 if(isset($id_epreuve)) {
 	echo "<p class='bold'><a href='index.php?id_epreuve=$id_epreuve&amp;mode=modif_epreuve'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-	echo ">Menu Epreuve blanche</a>";
+	echo ">Epreuve blanche n°$id_epreuve</a>";
 }
 else {
 	echo "<p class='bold'><a href='index.php'";
@@ -306,7 +309,7 @@ echo " | <a href='".$_SERVER['PHP_SELF']."'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Choix de l'épreuve</a>";
 
-echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=export_csv'";
+echo " | <a href='".$_SERVER['PHP_SELF']."?id_epreuve=$id_epreuve&amp;mode=export_csv".add_token_in_url()."'";
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 echo ">Exporter au format CSV</a>";
 
@@ -427,6 +430,7 @@ $couleur_moy_cn = '#96C8F0';
 
 if($etat!='clos') {
 	echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+	echo add_token_field();
 }
 
 echo "<table border='1' cellspacing='2' cellpadding='1' class='boireaus' summary='Saisie'>\n";

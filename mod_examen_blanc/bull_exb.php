@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -547,6 +547,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 
 					if($mode=='imprimer') {
+						// Le check_token() est ici surtout destiné à éviter de bouffer inutilement des ressources
+						check_token();
 
 						//=====================================================
 
@@ -1116,6 +1118,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		echo "/>\n";
 		echo "<label for='id_classe_$i'> <span id='texte_id_classe_$i'>$tab_classe[$i]</span></label><br />\n";
 	}
+	echo add_token_field();
 	echo "<input type='submit' name='Imprimer' value='Imprimer' />\n";
 	echo "<input type='hidden' name='id_exam' value='$id_exam' />\n";
 	echo "<input type='hidden' name='mode' value='imprimer' />\n";
