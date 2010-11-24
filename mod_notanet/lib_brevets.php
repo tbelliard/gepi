@@ -1824,11 +1824,11 @@ function tab_extract_moy($tab_ele,$id_clas) {
 			// Un élève a des notes dans deux options d'un même choix NOTANET (par exemple AGL1 et ALL1)
 			if($info_erreur==""){
 				//$info_erreur="Plusieurs options d'une même matière.";
-				$info_erreur="Plusieurs options d'une même matière: <b>$liste_matieres_gepi</b><br />(<span style='font-size:x-small'><i>il faudra vider le champ de formulaire correspondant à la matière à abandonner</i></span>)";
+				$info_erreur="Plusieurs options d'une même matière: <b>$liste_matieres_gepi</b><br />(<span style='font-size:x-small'><i>il faudra vider le champ de formulaire correspondant à la matière à abandonner</i></span>)<br />";
 			}
 			else{
 				//$info_erreur=$info_erreur." - Plusieurs options d'une même matière.";
-				$info_erreur=$info_erreur."Plusieurs options d'une même matière: <b>$liste_matieres_gepi</b><br />(<span style='font-size:x-small'><i>il faudra vider le champ de formulaire correspondant à la matière à abandonner</i></span>)";
+				$info_erreur=$info_erreur."Plusieurs options d'une même matière: <b>$liste_matieres_gepi</b><br />(<span style='font-size:x-small'><i>il faudra vider le champ de formulaire correspondant à la matière à abandonner</i></span>)<br />";
 			}
 		}
 	}

@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger, Stephane Boireau
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Laurent Viénot-Hauger, Stephane Boireau
 *
 * This file is part of GEPI.
 *
@@ -70,6 +70,8 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 $msg="";
 
 if((isset($_POST['is_posted']))&&(isset($mode))) {
+	check_token();
+
 	$pb_record="no";
 
 	if($mode=='set_lvr') {
@@ -258,6 +260,7 @@ else {
 
 		//$cpt=0;
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+		echo add_token_field();
 		$sql="SELECT * FROM notanet_lvr ORDER BY intitule;";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
@@ -371,6 +374,7 @@ else {
 				echo "<p class='bold'>Classe de ".get_class_from_id($id_classe).".</p>\n";
 
 				echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+				echo add_token_field();
 
 				echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 				echo "<input type='hidden' name='mode' value='select_eleves' />\n";
@@ -459,6 +463,7 @@ else {
 		}
 		else {
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+			echo add_token_field();
 
 			echo "<input type='hidden' name='mode' value='saisie' />\n";
 			echo "<input type='hidden' name='is_posted' value='1' />\n";

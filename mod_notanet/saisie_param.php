@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -42,6 +42,7 @@ if (!checkAccess()) {
 }
 
 if (isset($_POST['enregistrer_param'])) {
+	check_token();
 	/*
 	if(!isset($msg)){
 		$msg="";
@@ -99,6 +100,7 @@ echo "</div>\n";
 echo "<h2>Paramètres des Fiches Brevet</h2>\n";
 
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form_param' method='post'>\n";
+echo add_token_field();
 echo "<table border='0' summary='Paramètres'>\n";
 
 $alt=1;

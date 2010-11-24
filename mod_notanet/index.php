@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -295,6 +295,7 @@ $create_table=mysql_query($sql);
 if($_SESSION['statut']=="administrateur") {
 	$truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
 	if($truncate_tables=='y') {
+		check_token();
 		echo "<p>Nettoyage des tables Notanet</p>\n";
 		$sql="TRUNCATE TABLE notanet;";
 		$del=mysql_query($sql);
@@ -353,7 +354,7 @@ if($_SESSION['statut']=="administrateur") {
 	//echo "<li><a href=''></a></li>\n";
 	echo "</ol>\n";
 
-	echo "<p>Au changement d'année: <a href='".$_SERVER['PHP_SELF']."?truncate_tables=y'>Vider les saisies Notanet antérieures</a>.</p>\n";
+	echo "<p>Au changement d'année: <a href='".$_SERVER['PHP_SELF']."?truncate_tables=y".add_token_in_url()."'>Vider les saisies Notanet antérieures</a>.</p>\n";
 
 	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, il faut parcourir les points ci-dessus dans l'ordre.</p>\n";
 }

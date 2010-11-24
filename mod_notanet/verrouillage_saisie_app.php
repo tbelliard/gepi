@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 
@@ -50,6 +50,8 @@ if (!checkAccess()) {
 
 
 if (isset($_POST['is_posted'])) {
+	check_token();
+
 	$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 	//if((strlen(my_ereg_replace("[0-9a-zA-Z_ ]","",$id_classe))!=0)||($id_classe=="")){$id_classe=NULL;}
 
@@ -162,6 +164,7 @@ if($nb_type_brevet==0) {
 }
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+echo add_token_field();
 
 echo "<p class='bold'>Tableau des verrouillages:</p>\n";
 

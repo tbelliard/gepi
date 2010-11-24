@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 
@@ -78,6 +78,7 @@ $coche_ele_login=isset($_POST['coche_ele_login']) ? $_POST['coche_ele_login'] : 
 if(!isset($msg)) {$msg="";}
 
 if((isset($type_brevet))&&(isset($choix_eleves))&&(isset($ele_login))) {
+	check_token();
 
 	$sql="CREATE TABLE IF NOT EXISTS notanet_ele_type (
 login VARCHAR( 50 ) NOT NULL ,
@@ -235,6 +236,7 @@ else {
 		echo "<h3>Choix des classes pour le brevet $tab_type_brevet[$type_brevet]</h3>\n";
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
+
 		//echo "<input type='hidden' name='choix1' value='export' />\n";
 		echo "<input type='hidden' name='type_brevet' value='$type_brevet' />\n";
 		echo "<p>Sélectionnez les classes : </p>\n";
@@ -314,6 +316,7 @@ else {
 		}
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_classe' method='post'>\n";
+		echo add_token_field();
 		echo "<input type='hidden' name='type_brevet' value='$type_brevet' />\n";
 
 		$cpt=0;

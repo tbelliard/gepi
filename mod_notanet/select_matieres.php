@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -83,6 +83,7 @@ $is_posted=isset($_POST['is_posted']) ? $_POST['is_posted'] : NULL;
 
 //if((isset($choix_matieres))&&(isset($type_brevet))) {
 if((isset($is_posted))&&(isset($type_brevet))) {
+	check_token();
 
 	//echo "\$choix_matieres=$choix_matieres<br />";
 	//echo "\$type_brevet=$type_brevet<br />";
@@ -261,6 +262,7 @@ else {
 		echo ".</p>\n";
 
 		echo "<form action='".$_SERVER['PHP_SELF']."' name='form_choix_matieres' method='post'>\n";
+		echo add_token_field();
 		//echo "<input type='hidden' name='choix1' value='export' />\n";
 		echo "<input type='hidden' name='type_brevet' value='$type_brevet' />\n";
 

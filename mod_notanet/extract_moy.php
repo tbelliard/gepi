@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -315,6 +315,7 @@ else {
 
 
 			echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post' target='_blank'>\n";
+			echo add_token_field();
 
 			// Boucle élèves:
 			$num_eleve=0;
@@ -387,8 +388,10 @@ else {
 		echo "</ul>\n";
 	}
 	else {
+		check_token(false);
 
 		echo "<form action='generer_csv.php' name='form_generer_csv' method='post' target='_blank'>\n";
+		echo add_token_field();
 
 		$INE=$_POST['INE'];
 		$nom_eleve=$_POST['nom_eleve'];

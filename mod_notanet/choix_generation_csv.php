@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 //======================================================================================
@@ -96,11 +96,11 @@ echo "<p>Voulez-vous: ";
 echo "</p>\n";
 echo "<ul>\n";
 if($nb_type_brevet>1) {
-	echo "<li><a href='generer_csv.php?extract_mode=tous'>Générer le CSV Notanet pour tous les élèves associés à un type de brevet.</a></li>\n";
+	echo "<li><a href='generer_csv.php?extract_mode=tous".add_token_in_url()."'>Générer le CSV Notanet pour tous les élèves associés à un type de brevet.</a></li>\n";
 }
 //echo "<li><a href='".$_SERVER['PHP_SELF']."?extract_mode=select'></a>Extraire une sélection d'élèves</li>\n";
 while($lig=mysql_fetch_object($res)) {
-	echo "<li><a href='generer_csv.php?extract_mode=".$lig->type_brevet."'>Générer le CSV Notanet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
+	echo "<li><a href='generer_csv.php?extract_mode=".$lig->type_brevet.add_token_in_url()."'>Générer le CSV Notanet pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 }
 echo "</ul>\n";
 
