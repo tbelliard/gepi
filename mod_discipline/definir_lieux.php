@@ -59,6 +59,8 @@ $lieu=isset($_POST['lieu']) ? $_POST['lieu'] : NULL;
 $cpt=isset($_POST['cpt']) ? $_POST['cpt'] : 0;
 
 if(isset($suppr_lieu)) {
+	check_token();
+
 	for($i=0;$i<$cpt;$i++) {
 		if(isset($suppr_lieu[$i])) {
 			$sql="DELETE FROM s_lieux_incidents WHERE id='$suppr_lieu[$i]';";
@@ -89,6 +91,8 @@ if((isset($lieu))&&($lieu!='')) {
 	}
 
 	if($a_enregistrer=='y') {
+		check_token();
+
 		//$lieu=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($lieu))));
 		$lieu=my_ereg_replace('(\\\r\\\n)+',"\r\n",$lieu);
 
@@ -116,6 +120,7 @@ echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this
 echo "</p>\n";
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+echo add_token_field();
 
 //echo "<p class='bold'>Saisie des qualités dans un incident&nbsp;:</p>\n";
 echo "<p class='bold'>Saisie les lieux des incidents&nbsp;:</p>\n";

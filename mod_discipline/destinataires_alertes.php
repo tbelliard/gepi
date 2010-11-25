@@ -49,6 +49,8 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 }
 
 if (isset($_POST['action']) and ($_POST['action'] == "reg_dest")) {
+	check_token();
+
 	$msg = '';
 	$notok = false;
 
@@ -120,7 +122,8 @@ echo "</p>\n";
 <?php
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
-	
+	echo add_token_field();
+
 	//Ajout Eric
 	$contenu_adresse = "";
 

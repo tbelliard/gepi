@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -120,6 +120,8 @@ if(!isset($is_posted)) {
 	echo "<div style='border:1px solid black; padding: 1em;'>\n";
 	echo "<p class='bold'>Totaux&nbsp;:</p>\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+
+	echo add_token_field();
 
 	//=======================
 	//Configuration du calendrier
@@ -248,6 +250,8 @@ if(!isset($is_posted)) {
 	echo "<p class='bold'>Top ten&nbsp;:</p>\n";
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 
+	echo add_token_field();
+
 	//=======================
 	//Configuration du calendrier
 	//include("../lib/calendrier/calendrier.class.php");
@@ -290,6 +294,8 @@ if(!isset($is_posted)) {
 elseif($mode=='totaux') {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Statistiques</a>";
 	echo "</p>\n";
+
+	check_token(false);
 
 	echo "<p><b>Dates&nbsp;:</b> ";
 	if($date_debut_disc!="") {
@@ -574,6 +580,8 @@ elseif($mode=='totaux') {
 elseif($mode=='topten') {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Statistiques</a>";
 	echo "</p>\n";
+
+	check_token(false);
 
 	echo "<p><b>Dates&nbsp;:</b> ";
 	if($date_debut_disc!="") {

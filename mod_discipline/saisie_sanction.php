@@ -61,6 +61,8 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mo
 $id_sanction=isset($_POST['id_sanction']) ? $_POST['id_sanction'] : (isset($_GET['id_sanction']) ? $_GET['id_sanction'] : NULL);
 
 if(isset($_POST['enregistrer_sanction'])) {
+	check_token();
+
 	if($_POST['traitement']=='retenue') {
 
 		$date_retenue=isset($_POST['date_retenue']) ? $_POST['date_retenue'] : NULL;
@@ -434,6 +436,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 }
 
 if(($mode=="suppr_sanction")&&(isset($id_sanction))) {
+	check_token();
+
 	$sql="DELETE FROM s_travail WHERE id_sanction='$id_sanction';";
 	$res=mysql_query($sql);
 	$sql="DELETE FROM s_exclusions WHERE id_sanction='$id_sanction';";
@@ -648,14 +652,14 @@ if((!isset($mode))||($mode=="suppr_sanction")) {
 //Eric
 						echo "<td>";
 						if ($gepiSettings['active_mod_ooo'] == 'y') { //impression avec mod_ooo
-							echo "<a href='../mod_ooo/retenue.php?mode=module_retenue&amp;id_incident=$id_incident&amp;id_sanction=$lig_sanction->id_sanction&amp;ele_login=$lig->login' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
+							echo "<a href='../mod_ooo/retenue.php?mode=module_retenue&amp;id_incident=$id_incident&amp;id_sanction=$lig_sanction->id_sanction&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
 						}
 						else {
 							echo "-";
 						}
 						echo "</td>\n";
 //
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
@@ -697,7 +701,7 @@ if((!isset($mode))||($mode=="suppr_sanction")) {
 						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
 						echo "</td>\n";
 
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
@@ -730,7 +734,7 @@ if((!isset($mode))||($mode=="suppr_sanction")) {
 						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
 						echo "</td>\n";
 
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
@@ -762,7 +766,7 @@ if((!isset($mode))||($mode=="suppr_sanction")) {
 						echo " <a href='#' onmouseover=\"delais_afficher_div('div_autre_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
 						echo "</td>\n";
 
-						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
+						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
 						echo "</tr>\n";
 					}
 					echo "</table>\n";
@@ -811,6 +815,8 @@ elseif($mode=='ajout') {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	//echo "<input type='hidden' name='step' value='$step' />\n";
+
+	echo add_token_field();
 
 	echo "<p class='bold'>Ajout d'une sanction pour ".p_nom($ele_login);
 	echo infobulle_photo($ele_login);
@@ -882,6 +888,7 @@ elseif($mode=='ajout') {
 
 
 	echo "<script type='text/javascript'>
+	// Avec cette fonction, on ne fait qu'ajouter des champs dans le formulaire (aucun enregistrement avant validation du formulaire)
 	function maj_traitement() {
 		valeur=$('traitement').value;
 		new Ajax.Updater($('div_details_sanction'),'ajout_sanction.php?cpt=0&valeur='+valeur,{method: 'get'});
@@ -924,6 +931,8 @@ elseif($mode=='modif') {
 </script>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+
+	echo add_token_field();
 
 	echo "<p class='bold'>Sanction (<em>$traitement</em>) n°$id_sanction concernant ".p_nom($ele_login);
 	echo infobulle_photo($ele_login);

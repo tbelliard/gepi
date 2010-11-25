@@ -60,6 +60,8 @@ $nature=isset($_POST['nature']) ? $_POST['nature'] : NULL;
 $cpt=isset($_POST['cpt']) ? $_POST['cpt'] : 0;
 
 if(isset($suppr_nature)) {
+	check_token();
+
 	for($i=0;$i<$cpt;$i++) {
 		if(isset($suppr_nature[$i])) {
 			$sql="SELECT 1=1 FROM s_autres_sanctions WHERE id_nature='$suppr_nature[$i]';";
@@ -84,6 +86,8 @@ if(isset($suppr_nature)) {
 //if((isset($nature))&&($nature!='')&&(isset($type))&&(($type=='prise')||($type=='demandee'))) {
 if(isset($nature)) {
 	$a_enregistrer='y';
+
+	check_token();
 
 	$sql="SELECT * FROM s_types_sanctions ORDER BY nature;";
 	$res=mysql_query($sql);
@@ -133,6 +137,7 @@ echo "<p>Les types de sanctions prédéfinis sont: Retenue, Exclusion, Travail.<br
 La présente page est destinée à ajouter d'autres types de sanctions (<i>'mise au pilori', 'flagellation avec des orties', 'regarder Questions pour un champion',... selon les goûts de l'établissement en matière de supplices divers;o</i>).</p>\n";
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+echo add_token_field();
 
 echo "<p class='bold'>Saisie de types de sanctions&nbsp;:</p>\n";
 echo "<blockquote>\n";

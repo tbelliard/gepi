@@ -58,6 +58,8 @@ $details=isset($_POST['details']) ? $_POST['details'] : (isset($_GET['details'])
 $form_id_sanction=isset($_POST['form_id_sanction']) ? $_POST['form_id_sanction'] : NULL;
 $sanction_effectuee=isset($_POST['sanction_effectuee']) ? $_POST['sanction_effectuee'] : array();
 if(isset($form_id_sanction)) {
+	check_token();
+
 	for($i=0;$i<count($form_id_sanction);$i++) {
 		if(isset($sanction_effectuee[$form_id_sanction[$i]])) {
 			$sql="UPDATE s_sanctions SET effectuee='O' WHERE id_sanction='".$form_id_sanction[$i]."';";
@@ -141,6 +143,9 @@ echo "</form>\n";
 
 // Formulaire de saisie du statut "effectuée" d'une retenue ou d'un travail
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire2'>\n";
+
+echo add_token_field();
+
 echo "<input type='hidden' name='jour_sanction' value='$jour_sanction' />\n";
 
 $cpt_sanctions=0;

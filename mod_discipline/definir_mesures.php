@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -62,6 +62,8 @@ $cpt=isset($_POST['cpt']) ? $_POST['cpt'] : 0;
 $msg="";
 
 if(isset($suppr_mesure)) {
+	check_token();
+
 	for($i=0;$i<$cpt;$i++) {
 		if(isset($suppr_mesure[$i])) {
 			$sql="SELECT 1=1 FROM s_traitement_incident sti WHERE sti.id_mesure='".$suppr_mesure[$i]."';";
@@ -85,6 +87,8 @@ if(isset($suppr_mesure)) {
 //if((isset($mesure))&&($mesure!='')&&(isset($type))&&(($type=='prise')||($type=='demandee'))) {
 if(isset($mesure)) {
 	$a_enregistrer='y';
+
+	check_token();
 
 	$tab_mesure=array();
 	$sql="SELECT * FROM s_mesures ORDER BY mesure;";
@@ -157,6 +161,7 @@ echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this
 echo "</p>\n";
 
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+echo add_token_field();
 
 echo "<p class='bold'>Saisie des mesures prises ou demandées suite à un incident&nbsp;:</p>\n";
 echo "<blockquote>\n";

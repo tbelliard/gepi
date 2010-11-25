@@ -58,8 +58,13 @@ $nature=isset($_POST['nature']) ? $_POST['nature'] : NULL;
 $chaine_rech=$nature;
 
 if(isset($chaine_rech)) {
+	//check_token();
+
 	// Pour debug:
 	// echo "Eléments transmis: $chaine_rech<br />";
+
+	// Filtrage des caractères
+	$chaine_rech=my_ereg_replace("[^A-Za-z0-9ÀàÂâÄäÉéÈèÊêËëÎîÏïÔôÖöÙùÛûÜü ._-]","%",$chaine_rech);
 
 	//$chaine_mysql="(";
 	$chaine_mysql=" 1 AND (";

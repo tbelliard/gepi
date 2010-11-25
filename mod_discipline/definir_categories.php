@@ -63,6 +63,8 @@ $sigle = isset($_POST['sigle']) ? $_POST['sigle'] : NULL;
 $cpt = isset($_POST['cpt']) ? $_POST['cpt'] : 0;
 
 if (isset($suppr_categorie)) {
+	check_token();
+
     for ($i = 0; $i < $cpt; $i++) {
         if (isset($suppr_categorie[$i])) {
             $sql = "DELETE FROM s_categories WHERE id='$suppr_categorie[$i]';";
@@ -85,6 +87,8 @@ if (isset($suppr_categorie)) {
 }
 
 if ((isset($categorie)) && ($categorie != '')) {
+	check_token();
+
     $a_enregistrer = 'y';
 
     $sql = "SELECT categorie FROM s_categories ORDER BY categorie;";
@@ -126,6 +130,7 @@ echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this
 echo "</p>\n";
 
 echo "<form enctype='multipart/form-data' action='" . $_SERVER['PHP_SELF'] . "' method='post' name='formulaire'>\n";
+echo add_token_field();
 
 //echo "<p class='bold'>Saisie des qualités dans un incident&nbsp;:</p>\n";
 echo "<p class='bold'>Saisie des catégories des incidents&nbsp;:</p>\n";

@@ -232,6 +232,8 @@ $mesure_ele_login=isset($_POST['mesure_ele_login']) ? $_POST['mesure_ele_login']
 
 $clore_incident=isset($_POST['clore_incident']) ? $_POST['clore_incident'] : NULL;
 
+//debug_var();
+
 $etat_incident="";
 if(isset($id_incident)) {
 	$sql="SELECT 1=1 FROM s_incidents WHERE id_incident='$id_incident' AND etat='clos';";
@@ -257,8 +259,11 @@ if(isset($id_incident)) {
 $msg="";
 
 if($etat_incident!='clos') {
-	//echo "BLIP";
+	//echo "etat_incident=$etat_incident<br />";
 	if((isset($_POST['suppr_ele_incident']))&&(isset($id_incident))) {
+		//echo "suppr_ele_incident $id_incident<br />";
+
+		check_token();
 		$suppr_ele_incident=$_POST['suppr_ele_incident'];
 		for($i=0;$i<count($suppr_ele_incident);$i++) {
 			$sql="SELECT 1=1 FROM s_sanctions WHERE login='$suppr_ele_incident[$i]' AND id_incident='$id_incident';";
@@ -285,6 +290,10 @@ if($etat_incident!='clos') {
 		}
 	}
 	elseif(isset($_POST['enregistrer_qualite'])) {
+		//echo "enregistrer_qualite<br />";
+
+		check_token();
+
 		$nb_protagonistes=isset($_POST['nb_protagonistes']) ? $_POST['nb_protagonistes'] : NULL;
 		if(isset($nb_protagonistes)) {
 			//for($i=0;$i<count($ele_login);$i++) {
@@ -359,8 +368,16 @@ if($etat_incident!='clos') {
 		}
 	}
 	elseif(isset($is_posted)) {
-		if(!isset($_POST['recherche_eleve'])) {
+		//echo "is_posted<br />";
+
+		//if(!isset($_POST['recherche_eleve'])) {
+		if((!isset($_POST['recherche_eleve']))&&(!isset($_POST['recherche_utilisateur']))) {
+			//echo "Ce n'est pas une recherche_eleve ni recherche_utilisateur<br />";
+
 			if(!isset($id_incident)) {
+				//echo "Nouvel incident, \$id_incident n'est pas encore affecté<br />";
+				check_token();
+
 				if(!isset($display_date)) {
 					$annee = strftime("%Y");
 					$mois = strftime("%m");
@@ -368,11 +385,11 @@ if($etat_incident!='clos') {
 					//$display_date = $jour."/".$mois."/".$annee;
 				}
 				else {
-					/*
-					$annee = substr($display_date,0,4);
-					$mois =  substr($display_date,5,2);
-					$jour =  substr($display_date,8,2);
-					*/
+					
+					//$annee = substr($display_date,0,4);
+					//$mois =  substr($display_date,5,2);
+					//$jour =  substr($display_date,8,2);
+					
 					$jour =  substr($display_date,0,2);
 					$mois =  substr($display_date,3,2);
 					$annee = substr($display_date,6,4);
@@ -452,7 +469,10 @@ if($etat_incident!='clos') {
 				$texte_mail.="Nature: $nature\nDescription: $description\n";
 			}
 			else {
-	
+				//echo "Incident n°$id_incident<br />";
+
+				//check_token();
+
 				$temoin_modif="n";
 				$sql="UPDATE s_incidents SET ";
 				if(isset($display_date)) {
@@ -535,21 +555,20 @@ if($etat_incident!='clos') {
 				}
 	
 	
-				/*
 				// Recuperation du message_id pour les fils de discussion dans les mails
-				$sql_mi="SELECT message_id FROM s_incidents WHERE id_incident='$id_incident';";
-				$res_mi=mysql_query($sql_mi);
-				$lig_mi=mysql_fetch_object($res_mi);
-				if($lig_mi->message_id=="") {
-					$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
-					$temoin_modif="y";
-					$sql.=" message_id='$message_id', ";
-				}
-				else {
-					$references_mail=$lig_mi->message_id;
-				}
-				*/
-	
+			//	$sql_mi="SELECT message_id FROM s_incidents WHERE id_incident='$id_incident';";
+			//	$res_mi=mysql_query($sql_mi);
+			//	$lig_mi=mysql_fetch_object($res_mi);
+			//	if($lig_mi->message_id=="") {
+			//		$message_id=$id_incident.".".strftime("%Y%m%d%H%M%S",time()).".".substr(md5(microtime()),0,6);
+			//		$temoin_modif="y";
+			//		$sql.=" message_id='$message_id', ";
+			//	}
+			//	else {
+			//		$references_mail=$lig_mi->message_id;
+			//	}
+
+
 	
 				// Pour faire sauter le ", " en fin de $sql:
 				$sql=substr($sql,0,strlen($sql)-2);
@@ -557,6 +576,8 @@ if($etat_incident!='clos') {
 				$sql.=" WHERE id_incident='$id_incident';";
 	
 				if($temoin_modif=="y") {
+					check_token();
+
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(!$res) {
@@ -587,11 +608,14 @@ if($etat_incident!='clos') {
 			//echo "count(\$ele_login)=".count($ele_login)."<br />";
 	
 			if(isset($id_incident)) {
+				//echo "Ce n'est pas une recherche_eleve ni recherche_utilisateur avec $id_incident (2)<br />";
+
 				for($i=0;$i<count($ele_login);$i++) {
 					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."';";
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
+						check_token();
 						//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='$qualite[$i]';";
 						//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."', avertie='avertie='".$avertie[$i]."';";
 						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve';";
@@ -601,24 +625,26 @@ if($etat_incident!='clos') {
 							$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
 						}
 					}
-					/*
-					else {
-						$sql="UPDATE s_protagonistes SET qualite='$qualite[$i]' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
-						echo "$sql<br />\n";
-						$res=mysql_query($sql);
-						if(!$res) {
-							$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
-						}
-					}
-					*/
+
+				//	else {
+				//		$sql="UPDATE s_protagonistes SET qualite='$qualite[$i]' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
+				//		echo "$sql<br />\n";
+				//		$res=mysql_query($sql);
+				//		if(!$res) {
+				//			$msg.="ERREUR lors de l'enregistrement de ".$ele_login[$i]."<br />\n";
+				//		}
+				//	}
 				}
 	
-	
+				//echo "count(\$u_login)=".count($u_login)."<br />";
+
 				for($i=0;$i<count($u_login);$i++) {
 					$sql="SELECT 1=1 FROM s_protagonistes WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
+						check_token();
+
 						$tmp_statut="";
 						$sql="SELECT statut FROM utilisateurs WHERE login='".$u_login[$i]."'";
 						$res_statut=mysql_query($sql);
@@ -641,6 +667,9 @@ if($etat_incident!='clos') {
 	
 	
 				if(isset($mesure_ele_login)) {
+					//echo "\$mesure_ele_login=$mesure_ele_login<br />";
+					check_token();
+
 					// Recherche des mesures déjà enregistrées:
 					for($i=0;$i<count($mesure_ele_login);$i++) {
 	
@@ -711,6 +740,9 @@ if($etat_incident!='clos') {
 				}
 	
 				if(isset($clore_incident)) {
+					//echo "\$clore_incident=$clore_incident<br />";
+					check_token();
+
 					$sql="UPDATE s_incidents SET etat='clos' WHERE id_incident='$id_incident';";
 					$update=mysql_query($sql);
 					if(!$update) {
@@ -727,7 +759,11 @@ if($etat_incident!='clos') {
 				}
 	
 				if($envoi_mail_actif=='y') {
-	
+					//echo "\$envoi_mail_actif=$envoi_mail_actif<br />";
+
+					//echo "plip";
+					check_token();
+
 					$temoin_envoyer_mail="y";
 					//echo "nature=$nature<br />";
 					if((!isset($nature))||($nature=='')) {
@@ -765,9 +801,14 @@ if($etat_incident!='clos') {
 							$texte_mail.="\n";
 							$texte_mail.="Protagonistes de l'incident: \n";
 							while($lig_prot=mysql_fetch_object($res_prot)) {
-							    $classe_elv = get_noms_classes_from_ele_login($lig_prot->login);
-								if ($classe_elv[0] != "") {$classe_elv[0]="[".$classe_elv[0]."]";};
-								$texte_mail.=get_nom_prenom_eleve($lig_prot->login)." $classe_elv[0] ($lig_prot->qualite)\n";
+								if($lig_prot->statut=='eleve') {
+									$classe_elv = get_noms_classes_from_ele_login($lig_prot->login);
+									if ($classe_elv[0] != "") {$classe_elv[0]="[".$classe_elv[0]."]";};
+									$texte_mail.=get_nom_prenom_eleve($lig_prot->login)." $classe_elv[0] ($lig_prot->qualite)\n";
+								}
+								else {
+									$texte_mail.=civ_nom_prenom($lig_prot->login)." ($lig_prot->statut) ($lig_prot->qualite)\n";
+								}
 	
 								if(strtolower($lig_prot->qualite)=='responsable') {
 									$sql="SELECT DISTINCT c.classe FROM classes c,j_eleves_classes jec WHERE jec.id_classe=c.id AND jec.login='$lig_prot->login' ORDER BY jec.periode DESC limit 1;";
@@ -927,7 +968,7 @@ elseif (($_SESSION['statut']=='professeur')||
 
 // ERIC a décommenter pour la gestion des modele ooo des rapport d'incident.
 if ($step==2) {   //Eric Ajout génération du modèle Ooo pour imprimer le rapport d'incident.
-    echo " | <a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=$id_incident' onclick=\"return confirm_abandon (this, change, '$themessage')\">Imprimer le rapport d'incident</a>\n";
+    echo " | <a href='../mod_ooo/rapport_incident.php?mode=module_discipline&amp;id_incident=$id_incident".add_token_in_url()."' onclick=\"return confirm_abandon (this, change, '$themessage')\">Imprimer le rapport d'incident</a>\n";
 }
 
 echo "</p>\n";
@@ -1168,7 +1209,7 @@ if(isset($id_incident)) {
 			if ($gepiSettings['active_mod_ooo'] == 'y') {
 			    echo "<td id='td_retenue_$cpt'>";
 				if ($lig->qualite=='Responsable') { //un retenue seulement pour un responsable !
-		            echo "<a href='../mod_ooo/retenue.php?mode=module_discipline&amp;id_incident=$id_incident&amp;ele_login=$lig->login' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
+		            echo "<a href='../mod_ooo/retenue.php?mode=module_discipline&amp;id_incident=$id_incident&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
 				}
                 echo "</td>";
 		    }
@@ -1265,6 +1306,8 @@ if(isset($id_incident)) {
 			echo "<input type='hidden' name='nb_protagonistes' value='$cpt' />\n";
 			echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";
 			echo "<p><input type='submit' name='enregistrer_qualite' value='Enregistrer' /></p>\n";
+
+			echo add_token_field(true);
 		}
 
 		if($step!=2) {
@@ -1285,21 +1328,28 @@ if(isset($id_incident)) {
 		echo "<script type='text/javascript'>
 	// <![CDATA[
 	function sauve_role(id_incident,login,cpt) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+
 		//qualite=document.getElementById('qualite_'+cpt).selectedIndex;
 		qualite=document.getElementById('qualite_'+cpt).options[document.getElementById('qualite_'+cpt).selectedIndex].value;
 		//alert('qualite='+qualite);
-		new Ajax.Updater($('div_svg_qualite'),'sauve_role.php?id_incident='+id_incident+'&login='+login+'&qualite='+qualite,{method: 'get'});
+		new Ajax.Updater($('div_svg_qualite'),'sauve_role.php?id_incident='+id_incident+'&login='+login+'&qualite='+qualite+'&csrf_alea='+csrf_alea,{method: 'get'});
 	}
 
 	function update_colonne_retenue(id_incident,login,cpt) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+
 		//qualite=document.getElementById('qualite_'+cpt).selectedIndex;
 		qualite=document.getElementById('qualite_'+cpt).options[document.getElementById('qualite_'+cpt).selectedIndex].value;
 		//alert('qualite='+qualite);
-		new Ajax.Updater($('td_retenue_'+cpt),'update_colonne_retenue.php?id_incident='+id_incident+'&login='+login+'&qualite='+qualite,{method: 'get'});
+		new Ajax.Updater($('td_retenue_'+cpt),'update_colonne_retenue.php?id_incident='+id_incident+'&login='+login+'&qualite='+qualite+'&csrf_alea='+csrf_alea,{method: 'get'});
 	}
 
 	function sauve_avertie(id_incident,login,avertie) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+
 		//avertie=document.getElementById('avertie_'+cpt).value;
+		//+'&csrf_alea='+csrf_alea // inutile... dans sauve_famille_avertie.php, on propose un formulaire avant de générer/enregistrer quoi que ce soit
 		new Ajax.Updater($('div_svg_avertie'),'sauve_famille_avertie.php?id_incident='+id_incident+'&login='+login+'&avertie='+avertie,{method: 'get'});
 	}
 	//]]>
@@ -1333,7 +1383,7 @@ if($step==0) {
 	<input type='hidden' name='page' value='$page' />
 	<input type='hidden' name='step' value='$step' />
 	<input type='hidden' name='is_posted' value='y' />
-	<input type='submit' name='recherche_eleve' value='Rechercher'";
+	<input type='submit' name='' value='Rechercher'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo " />
 	</p>\n";
@@ -1341,6 +1391,7 @@ if($step==0) {
 	echo "</form>\n";
 
 	echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire2'>\n";
+	echo add_token_field();
 
 	if(isset($_POST['recherche_eleve'])) {
 		//echo " | <a href='saisie_incident.php'>Choisir un autre élève</a>\n";
@@ -1493,6 +1544,8 @@ elseif($step==1) {
 
 	if(isset($_POST['recherche_utilisateur'])) {
         echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire2'>\n";
+		echo add_token_field();
+
         echo "<input type='hidden' name='page' value='$page' />\n";
         echo "<input type='hidden' name='step' value='$step' />\n";
 
@@ -1515,6 +1568,8 @@ elseif($step==1) {
 		}
 
 		echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire'>\n";
+		echo add_token_field();
+
 		echo "<input type='hidden' name='step' value='$step' />\n";
 		echo "<input type='hidden' name='is_posted' value='y' />\n";
 		if(isset($id_incident)) {echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";}
@@ -1611,6 +1666,7 @@ elseif($step==2) {
 	if($etat_incident!='clos') {
 		//echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire' onsubmit='verif_details_incident();'>\n";
 		echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire'>\n";
+		echo add_token_field();
 	}
 
 	//echo "count(\$ele_login)=".count($ele_login)."<br />";
