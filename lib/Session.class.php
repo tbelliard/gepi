@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard
+ * Copyright 2001, 2011 Thomas Belliard
  *
  * This file is part of GEPI.
  *
@@ -528,6 +528,18 @@ class Session {
 	    if ($this->start) {
 	      $sql = "UPDATE log SET AUTOCLOSE = '" . $_auto . "', END = now() where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
               $res = sql_query($sql);
+
+			if((getSettingValue('csrf_log')=='y')&&(isset($_SESSION['login']))) {
+				$csrf_log_chemin=getSettingValue('csrf_log_chemin');
+				if($csrf_log_chemin=='') {$csrf_log_chemin="/home/root/csrf";}
+				//$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
+				$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
+				fwrite($f,"Fin de session ".strftime("%a %d/%m/%Y %H:%M:%S")." avec\n");
+				if(isset($_SESSION['gepi_alea'])) {fwrite($f,"\$_SESSION['gepi_alea']=".$_SESSION['gepi_alea']."\n");}
+				fwrite($f,"$sql\n");
+				fwrite($f,"-----------------\n");
+				fclose($f);
+			}
 	   }
 
 	   // Détruit toutes les variables de session
