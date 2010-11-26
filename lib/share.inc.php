@@ -11,9 +11,23 @@ function generate_token() {
 	// Virer le gepi_alea par la suite
 	$_SESSION["gepi_alea"] = $r;
 	//$_SESSION["token"] = $r;
+
+	if(getSettingValue('csrf_log')=='y') {
+		$csrf_log_chemin=getSettingValue('csrf_log_chemin');
+		if($csrf_log_chemin=='') {$csrf_log_chemin="/home/root/csrf";}
+		if(isset($_SESSION['login'])) {
+			$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
+			//$f=fopen("$csrf_log_chemin/csrf_".$login.".log","a+");
+			fwrite($f,"Initialisation de la session ".strftime("%a %d/%m/%Y %H:%M:%S")." avec\n\$_SESSION['gepi_alea']=".$_SESSION['gepi_alea']."\n");
+			fclose($f);
+		}
+	}
 }
 
 function add_token_field($avec_id=false) {
+	// Dans une page, il ne devrait y avoir qu'un seul appel à add_token_field(true), les autres... dans les autres formulaires étant avec add_token_field()
+	// A VOIR... on pourrait utiliser une variable globale pour... si l'id csrf_alea est déjà défini ne plus l'ajouter...
+
 	if($avec_id) {
 		return "<input type='hidden' name='csrf_alea' id='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
 	}
@@ -62,16 +76,29 @@ function check_token($redirection=true) {
 		$pref_arbo="..";
 	}
 
-	if($csrf_alea!=$_SESSION['gepi_alea']) {
-		action_alea_invalide();
-		if($redirection) {
-			header("Location: $pref_arbo/accueil.php?msg=Opération non autorisée");
+	if(getSettingValue('csrf_mode')=='strict') {
+		if($csrf_alea!=$_SESSION['gepi_alea']) {
+			action_alea_invalide();
+			if($redirection) {
+				header("Location: $pref_arbo/accueil.php?msg=Opération non autorisée");
+			}
+			else {
+				echo "<p style='color:red'>Opération non autorisée</p>\n";
+				require("$pref_arbo/lib/footer.inc.php");
+			}
+			die();
 		}
-		else {
-			echo "<p style='color:red'>Opération non autorisée</p>\n";
-			require("$pref_arbo/lib/footer.inc.php");
+	}
+	elseif(getSettingValue('csrf_mode')=='mail_seul') {
+		if($csrf_alea!=$_SESSION['gepi_alea']) {
+			action_alea_invalide();
 		}
-		die();
+	}
+	else {
+		if($csrf_alea!=$_SESSION['gepi_alea']) {
+			// Sans mail
+			action_alea_invalide(false);
+		}
 	}
 }
 
@@ -118,6 +145,17 @@ function action_alea_invalide() {
 			$message.=$details;
 			envoi_mail($sujet, $message,$destinataire);
 		}
+	}
+
+	if(getSettingValue('csrf_log')=='y') {
+		$csrf_log_chemin=getSettingValue('csrf_log_chemin');
+		if($csrf_log_chemin=='') {$csrf_log_chemin="/home/root/csrf";}
+		$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
+		fwrite($f,"Alerte CSRF ".strftime("%a %d/%m/%Y %H:%M:%S")." avec\n");
+		fwrite($f,"\$_SESSION['gepi_alea']=".$_SESSION['gepi_alea']."\n");
+		fwrite($f,$details."\n");
+		fwrite($f,"================================================\n");
+		fclose($f);
 	}
 }
 
@@ -1103,6 +1141,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 	global $eff_groupe;
 	if((isset($id_groupe))&&(!isset($eff_groupe))) {
 		$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
+		//echo "$sql<br />";
 		$res_ele_grp=mysql_query($sql);
 		$eff_groupe=mysql_num_rows($res_ele_grp);
 	}
@@ -1160,6 +1199,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					//$sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='$id_dev' AND statut!='-' AND statut!='v';";
 					//$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='-' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
 					$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
+					//echo "$sql<br />";
 					$res_eff_dev=mysql_query($sql);
 					$eff_dev=mysql_num_rows($res_eff_dev);
 					echo " <span title=\"Effectif des notes saisies/effectif total de l'enseignement\" style='font-size:small;";
@@ -1167,6 +1207,10 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					echo "'>($eff_dev";
 					if(isset($eff_groupe)) {echo "/$eff_groupe";}
 					echo ")</span>";
+
+					// Pour détecter une anomalie:
+					// $sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$id_groupe' and periode='$periode_num');";
+					//echo "$sql<br />"; // Décommenter et exécuter dans une console mysql ou dans phpMyAdmin
 
 					//echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
@@ -1241,6 +1285,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 
 							//$sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='$id_dev' AND statut!='-' AND statut!='v';";
 							$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='-' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
+							//echo "$sql<br />";
 							$res_eff_dev=mysql_query($sql);
 							$eff_dev=mysql_num_rows($res_eff_dev);
 							echo " <span title=\"Effectif des notes saisies/effectif total de l'enseignement\" style='font-size:small;";
