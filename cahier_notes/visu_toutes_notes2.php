@@ -23,9 +23,6 @@
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
-if (getSettingValue("active_module_absence")=='2'){
-    require_once("../lib/initialisationsPropel.inc.php");
-}
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -340,47 +337,22 @@ while($j < $nb_lignes_tableau) {
 		$ind++;
 	}
 	// Colonne absence
-    if ($aff_abs) {
-        if (getSettingValue("active_module_absence") != '2' || getSettingValue("abs2_import_manuel_bulletin") == 'y') {
-            $abs_eleve = "NR";
-            if ($referent == "une_periode")
-                $abs_eleve = sql_query1("SELECT nb_absences FROM absences WHERE
+	if ($aff_abs) {
+		$abs_eleve = "NR";
+		if ($referent=="une_periode")
+			$abs_eleve = sql_query1("SELECT nb_absences FROM absences WHERE
 			login = '$current_eleve_login[$j]' and
-			periode = '" . $num_periode . "'
+			periode = '".$num_periode."'
 			");
-            else {
-                $abs_eleve = sql_query1("SELECT sum(nb_absences) FROM absences WHERE
+		else {
+			$abs_eleve = sql_query1("SELECT sum(nb_absences) FROM absences WHERE
 			login = '$current_eleve_login[$j]'");
-            }
+		}
 
-            if ($abs_eleve == '-1')
-                $abs_eleve = "NR";
-            $col[$ind][$j + $ligne_supl] = $abs_eleve;
-            $ind++;
-        }else {
-            $eleve = EleveQuery::create()->findOneByLogin($current_eleve_login[$j]);
-            if ($eleve != null) {
-                if ($referent == "une_periode") {
-                    $abs_eleve = strval($eleve->getDemiJourneesAbsenceParPeriode($num_periode)->count());
-                } else {
-                    $date_jour = new DateTime('now');
-                    $month = $date_jour->format('m');
-                    if ($month > 7) {
-                        $date_debut = new DateTime($date_jour->format('y') . '-09-01');
-                        $date_fin = new DateTime($date_jour->format('y')+1 . '-08-31');
-                    } else {
-                        $date_debut = new DateTime($date_jour->format('y')-1 . '-09-01');
-                        $date_fin = new DateTime($date_jour->format('y') . '-08-31');
-                    }
-                    $abs_eleve = strval($eleve->getDemiJourneesAbsence($date_debut,$date_fin)->count());
-                }
-            } else {
-                $abs_eleve = "NR";
-            }
-            $col[$ind][$j + $ligne_supl] = $abs_eleve;
-            $ind++;
-        }
-    }
+		if ($abs_eleve == '-1') $abs_eleve = "NR";
+		$col[$ind][$j+$ligne_supl] = $abs_eleve;
+		$ind++;
+	}
 
 	// Colonne rang
 	if (($aff_rang) and ($referent=="une_periode")) {
@@ -935,8 +907,8 @@ while($i < $lignes_groupes){
 					$tmp_col=$col[1][$loop+$ligne_supl];
 					//echo "\$current_eleve_login[$loop]=$current_eleve_login[$loop]<br />";
 					$col[1][$loop+$ligne_supl]="<a href='../visualisation/draw_graphe.php?".
-					"temp1=".$chaine_moy_eleve1[$loop+$ligne_supl].
-					"&amp;temp2=".$chaine_moy_classe[$loop+$ligne_supl].
+					"temp1=".strtr($chaine_moy_eleve1[$loop+$ligne_supl],',','.').
+					"&amp;temp2=".strtr($chaine_moy_classe[$loop+$ligne_supl],',','.').
 					"&amp;etiquette=".$chaine_matieres[$loop+$ligne_supl].
 					"&amp;titre=$graph_title".
 					"&amp;v_legend1=".$current_eleve_login[$loop].
