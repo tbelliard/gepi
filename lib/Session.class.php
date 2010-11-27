@@ -140,6 +140,11 @@ class Session {
 		  die();
 	    }
 
+            if ($_login != $this->login) {
+                //on a une connexion sous un nouveau login, on purge la session
+                $this->reset("4");
+            }
+
 		if($debug_test_mdp=="y") {
 			$f_tmp=fopen($debug_test_mdp_file,"a+");
 			fwrite($f_tmp,strftime("%a %d/%m/%Y - %H%M%S").": \$_login=$_login et \$_password=$_password\n");
@@ -523,6 +528,7 @@ class Session {
 		# 0 : logout normal
 		# 2 : logout renvoyé par la fonction checkAccess (problème gepiPath ou accès interdit)
 		# 3 : logout lié à un timeout
+                # 4 : logout lié à une nouvelle connexion sous un nouveau profil
 
 	    # On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
 	    if ($this->start) {
@@ -552,6 +558,10 @@ class Session {
 
 	    // détruit la session sur le serveur
 	    session_destroy();
+
+            //on redémarre une nouvelle session
+            session_start();
+            session_regenerate_id();
 	}
 
 	private function load_session_data() {
