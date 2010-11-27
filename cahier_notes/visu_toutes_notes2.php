@@ -376,6 +376,7 @@ while($j < $nb_lignes_tableau) {
 	$j++;
 }
 
+$num_debut_colonnes_matieres=$ind;
 
 /*
 // Colonne rang
@@ -618,10 +619,10 @@ while($i < $lignes_groupes){
 				//echo "$sql";
 				$res_moy=mysql_query($sql);
 
-				if(mysql_num_rows($res_moy)>0){
+				if(mysql_num_rows($res_moy)>0) {
 					$lig_moy=mysql_fetch_object($res_moy);
-					if($lig_moy->statut=='y'){
-						if($lig_moy->note!=""){
+					if($lig_moy->statut=='y') {
+						if($lig_moy->note!="") {
 							$col[$k][$j+$ligne_supl] = number_format($lig_moy->note,1, ',', ' ');
 							$temp=$lig_moy->note;
 							if ($current_coef > 0) {
@@ -667,7 +668,7 @@ while($i < $lignes_groupes){
 						$col[$k][$j+$ligne_supl] = '-';
 					}
 				}
-				else{
+				else {
 					$col[$k][$j+$ligne_supl] = '-';
 				}
 
@@ -760,6 +761,10 @@ while($i < $lignes_groupes){
 				}
 				$p++;
 			}
+
+
+			$moy_eleve_grp_courant_annee="-";
+
 			if ($non_suivi == (pow(2,$nb_periode))) {
 				// L'élève n'a suivi la matière sur aucune période
 				$col[$k][$j+$ligne_supl] = "/";
@@ -769,6 +774,9 @@ while($i < $lignes_groupes){
 				$moy_min = min($moy_min,$moy);
 				$moy_max = max($moy_max,$moy);
 				$col[$k][$j+$ligne_supl] = number_format($moy,1, ',', ' ');
+
+				$moy_eleve_grp_courant_annee=$col[$k][$j+$ligne_supl];
+
 				if ($current_coef > 0) {
 					if($affiche_categories){
 						if (!in_array($prev_cat_id, $displayed_categories)) $displayed_categories[] = $prev_cat_id;
@@ -805,22 +813,25 @@ while($i < $lignes_groupes){
 
 			$sql="SELECT * FROM j_eleves_groupes WHERE id_groupe='".$current_group["id"]."'";
 			$test_eleve_grp=mysql_query($sql);
-			if(mysql_num_rows($test_eleve_grp)>0){
+			if(mysql_num_rows($test_eleve_grp)>0) {
 				//if($chaine_matieres[$j+$ligne_supl]==""){
 				if(!isset($chaine_matieres[$j+$ligne_supl])){
 					$chaine_matieres[$j+$ligne_supl]=$current_group["matiere"]["matiere"];
-					$chaine_moy_eleve1[$j+$ligne_supl]=$lig_moy->note;
+					//$chaine_moy_eleve1[$j+$ligne_supl]=$lig_moy->note;
+					$chaine_moy_eleve1[$j+$ligne_supl]=$moy_eleve_grp_courant_annee;
 					$chaine_moy_classe[$j+$ligne_supl]=$moy_classe_tmp;
 				}
 				else{
 					if($chaine_matieres[$j+$ligne_supl]==""){
 						$chaine_matieres[$j+$ligne_supl]=$current_group["matiere"]["matiere"];
-						$chaine_moy_eleve1[$j+$ligne_supl]=$lig_moy->note;
+						//$chaine_moy_eleve1[$j+$ligne_supl]=$lig_moy->note;
+						$chaine_moy_eleve1[$j+$ligne_supl]=$moy_eleve_grp_courant_annee;
 						$chaine_moy_classe[$j+$ligne_supl]=$moy_classe_tmp;
 					}
 					else{
 						$chaine_matieres[$j+$ligne_supl].="|".$current_group["matiere"]["matiere"];
-						$chaine_moy_eleve1[$j+$ligne_supl].="|".$lig_moy->note;
+						//$chaine_moy_eleve1[$j+$ligne_supl].="|".$lig_moy->note;
+						$chaine_moy_eleve1[$j+$ligne_supl].="|".$moy_eleve_grp_courant_annee;
 						$chaine_moy_classe[$j+$ligne_supl].="|".$moy_classe_tmp;
 					}
 				}
