@@ -2666,8 +2666,10 @@ function eleve_suivant(){
 						echo "&amp;compteur=$compteur";
 						echo "&amp;nb_series=$nb_series";
 						echo "&amp;id_classe=$id_classe";
-						echo "&amp;mgen1=$mgen[1]";
-						echo "&amp;mgen2=$mgen[2]";
+						if($affiche_mgen=='oui'){
+							echo "&amp;mgen1=$mgen[1]";
+							echo "&amp;mgen2=$mgen[2]";
+						}
 						//echo "&amp;periode=$periode";
 						echo "&amp;periode=".rawurlencode($periode);
 						echo "&amp;largeur_graphe=$largeur_graphe";
@@ -2768,8 +2770,10 @@ function eleve_suivant(){
 						echo "&amp;compteur=$compteur";
 						echo "&amp;nb_series=$nb_series";
 						echo "&amp;id_classe=$id_classe";
-						echo "&amp;mgen1=$mgen[1]";
-						echo "&amp;mgen2=$mgen[2]";
+						if($affiche_mgen=='oui'){
+							echo "&amp;mgen1=$mgen[1]";
+							echo "&amp;mgen2=$mgen[2]";
+						}
 						//echo "&amp;periode=$periode";
 						echo "&amp;periode=".rawurlencode($periode);
 						echo "&amp;largeur_graphe=$largeur_graphe";
@@ -2819,8 +2823,10 @@ function eleve_suivant(){
 					echo "&amp;compteur=$compteur";
 					echo "&amp;nb_series=$nb_series";
 					echo "&amp;id_classe=$id_classe";
-					echo "&amp;mgen1=$mgen[1]";
-					echo "&amp;mgen2=$mgen[2]";
+					if($affiche_mgen=='oui'){
+						echo "&amp;mgen1=$mgen[1]";
+						echo "&amp;mgen2=$mgen[2]";
+					}
 					//echo "&amp;periode=$periode";
 					echo "&amp;periode=".rawurlencode($periode);
 					echo "&amp;largeur_graphe=$largeur_graphe";
@@ -3395,7 +3401,8 @@ function eleve_suivant(){
 					$liste_temp.="&amp;mgen$loop=".$mgen[$loop];
 				}
 			}
-
+			//echo "\$affiche_mgen=$affiche_mgen<br />";
+			//echo "\$liste_temp=$liste_temp<br />";
 
 
 
