@@ -715,12 +715,12 @@ function extractMySqlDump($dumpFile,$duree) {
 			}
 			if(isset($fich)) {
 				if($nom_table=='log') {
-					if(($ne_pas_restaurer_log!='y')||(!eregi("^INSERT INTO ",$buffer))) {
+					if(($ne_pas_restaurer_log!='y')||(!my_eregi("^INSERT INTO ",$buffer))) {
 						fwrite($fich,$buffer);
 					}
 				}
 				elseif($nom_table=='tentatives_intrusion') {
-					if(($ne_pas_restaurer_tentatives_intrusion!='y')||(!eregi("^INSERT INTO ",$buffer)))  {
+					if(($ne_pas_restaurer_tentatives_intrusion!='y')||(!my_eregi("^INSERT INTO ",$buffer)))  {
 						fwrite($fich,$buffer);
 					}
 				}
