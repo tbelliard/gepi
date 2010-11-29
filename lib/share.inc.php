@@ -108,7 +108,7 @@ function check_token($redirection=true) {
  * Action en cas d'attaque CSRF
  *
  */
-function action_alea_invalide() {
+function action_alea_invalide($envoi_mail=true) {
 	//debug_var();
 	/*
 	$_SERVER['REQUEST_URI']=	/steph/gepi-trunk/lib/confirm_query.php
@@ -137,15 +137,17 @@ function action_alea_invalide() {
 		$details.="   \$_GET[$key]=$value\n";
 	}
 
-	// Envoyer un mail à l'admin
-	$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-	if($envoi_mail_actif!="n") {
-		$destinataire=getSettingValue('gepiAdminAdress');
-		if($destinataire!='') {
-			$sujet="Attaque CSRF";
-			$message="La variable csrf_alea ne coincide pas avec le gepi_alea en SESSION.\n";
-			$message.=$details;
-			envoi_mail($sujet, $message,$destinataire);
+	if($envoi_mail) {
+		// Envoyer un mail à l'admin
+		$envoi_mail_actif=getSettingValue('envoi_mail_actif');
+		if($envoi_mail_actif!="n") {
+			$destinataire=getSettingValue('gepiAdminAdress');
+			if($destinataire!='') {
+				$sujet="Attaque CSRF";
+				$message="La variable csrf_alea ne coincide pas avec le gepi_alea en SESSION.\n";
+				$message.=$details;
+				envoi_mail($sujet, $message,$destinataire);
+			}
 		}
 	}
 
