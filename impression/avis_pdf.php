@@ -28,6 +28,7 @@
 //Le problème peut être résolu en ajoutant la ligne suivante :
 Header('Pragma: public');
 
+header('Content-Type: application/pdf');
 //=============================
 // REMONTé:
 // Initialisations files
