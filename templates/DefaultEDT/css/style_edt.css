@@ -2331,28 +2331,62 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 }
 
 .WeekCellYellow {
-    font-size:80%;
+    font-size:100%;
     display:inline-block;
-    width:15px;
-    height:15px;
-    background-color:yellow;
-    border:1px solid black;
-    padding:2px;
+    width:32px;
+    height:32px;
+    /* background-color:yellow; */
+    border:0px solid black;
+    padding-top:5px;
     text-align:center;
-    margin:1px;
-
+    margin:2px;
+	background-image : url(../images/vignette_orange.png);
+	background-position: top left ;
+	background-repeat: no-repeat;
 
 }
+.WeekCellYellow  a{
+	color:white;
+    width:32px;
+    height:32px;	
+	display:block;
+}
 .WeekCellWhite {
-    font-size:80%;
+    font-size:100%;
     display:inline-block;
-    width:15px;
-    height:15px;
-    background-color:white;
-    border:1px solid black;
-    padding:2px;
-    text-align:center;
-    margin:1px;
+    width:32px;
+    height:32px;
+	color:white;	
+    /* background-color:white; */
+    border:0px solid black;
 
+    text-align:center;
+    margin:1px;	
+	background-image : url(../images/vignette_bleue.png);
+	background-position: top left ;
+	background-repeat: no-repeat;	
+}
+
+.WeekCellWhite  a{
+    padding-top:5px;
+
+	color:white;
+    width:32px;
+    height:32px;
+		display:block;
+		border:0px solid black;
+
+}
+.WeekCellWhite  a:hover{
+    padding-top:5px;
+
+	color:white;
+    width:32px;
+    height:32px;
+		display:block;
+		margin:0px;
+	background-image : url(../images/vignette_marron.png);
+	background-position: top left ;
+	background-repeat: no-repeat;
 
 }

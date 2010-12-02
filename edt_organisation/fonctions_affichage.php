@@ -583,6 +583,7 @@ function AfficheBarCommutateurSemaines($login_edt, $visioedt, $type_edt_2, $week
 
     echo ("<div id=\"ButtonBarArrows\">");
     echo "<ul style=\"float:left;margin:5px;list-style-type:none;border:0px solid black;\">";
+    $tab = RecupereLundisVendredis();	
     for ($i = $week_min; $i < $week_max ; $i++) {
         if ($i > NumLastWeek()) {
             $j = $i - NumLastWeek();
@@ -594,7 +595,7 @@ function AfficheBarCommutateurSemaines($login_edt, $visioedt, $type_edt_2, $week
             echo ("<li class=\"WeekCellYellow\"><a href=\"./index_edt.php?week_selected=".$j."&amp;visioedt=".$visioedt."&amp;login_edt=".$login_edt."&amp;type_edt_2=".$type_edt_2."\">".$j."</a></li>");        
         }
         else {
-            echo ("<li class=\"WeekCellWhite\"><a href=\"./index_edt.php?week_selected=".$j."&amp;visioedt=".$visioedt."&amp;login_edt=".$login_edt."&amp;type_edt_2=".$type_edt_2."\">".$j."</a></li>");        
+            echo ("<li class=\"WeekCellWhite\"><a href=\"./index_edt.php?week_selected=".$j."&amp;visioedt=".$visioedt."&amp;login_edt=".$login_edt."&amp;type_edt_2=".$type_edt_2."\" >".$j."</a></li>");        
         }
     }
     echo "</ul>";
@@ -604,7 +605,6 @@ function AfficheBarCommutateurSemaines($login_edt, $visioedt, $type_edt_2, $week
 
     echo "<div style=\"float:left;width:100%;\";>";
     echo "<p>Semaine sélectionnée : ";
-    $tab = RecupereLundisVendredis();
     echo $tab[$week_selected-1]["lundis"]." - ";      
     echo $tab[$week_selected-1]["vendredis"];
     echo "</p>";
