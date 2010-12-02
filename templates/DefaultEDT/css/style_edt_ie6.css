@@ -461,14 +461,14 @@ position: absolute; background-color: yellow; border: 1px solid silver;
 	height : 30px;
 	font-family: Verdana,Arial,Helvetica,sans-serif;
 	font-size: 100%;
-	color: brown;
+	color: white;
 	text-align: center;
 	border-right: 1px solid #004A7A;
 	border-bottom: 1px solid #004A7A;
-	/*background-image : url(../images/entete.png);*/
-	/*background-position: top left ;*/
-	/*background-repeat: no-repeat;*/
-	background-color: orange ; 
+	background-image : url(../images/entete.jpg);
+	background-position: top left ;
+	background-repeat: x-repeat;
+	/* background-color: orange ; */
 
 }
 .fenetre .contenu .tableau .entete_creneaux{
