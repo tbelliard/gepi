@@ -80,11 +80,11 @@ if (isset($_POST['is_posted'])) {
 	
 		if ((trim($mdp)=='') and (trim($user_ct) !='')) {
 			$_POST['cahiers_texte_login_pub'] = '';
-		$msg .= "Vous devez choisir un identifiant.";
+			$msg .= "Vous devez choisir un mot de passe.";
 		}
 		if ((trim($mdp) !='')and (trim($user_ct) == '')) {
-		$_POST['cahiers_texte_passwd_pub'] = '';
-			$msg .= "Vous devez choisir un mot de passe.";
+			$_POST['cahiers_texte_passwd_pub'] = '';
+			$msg .= "Vous devez choisir un identifiant.";
 		}
 	
 		if (!saveSetting("cahiers_texte_passwd_pub", $_POST['cahiers_texte_passwd_pub']))
