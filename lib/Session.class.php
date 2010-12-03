@@ -606,9 +606,13 @@ class Session {
 	# de données. Elle renvoie true ou false.
 	private function use_uppercase_login($_login) {
 		// On détermine si l'utilisateur a un login en majuscule ou minuscule
-		$test_uppercase = "SELECT login FROM utilisateurs WHERE (login = '" . strtoupper($_login) . "')";
-		if (sql_count(sql_query($test_uppercase)) == "1") {
-			return true;
+		$test_uppercase = mysql_query("SELECT login FROM utilisateurs WHERE (login = '" . strtoupper($_login) . "')");
+		if (sql_count($test_uppercase) == 1) {
+                    if (mysql_result($test_uppercase, 0, "login") == strtoupper($_login)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
 		} else {
 			# On a false soit si l'utilisateur n'est pas présent dans la base, soit s'il est
 			# en minuscule.
