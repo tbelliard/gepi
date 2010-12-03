@@ -140,7 +140,7 @@ class Session {
 		  die();
 	    }
 
-            if ($_login != $this->login && strtoupper($_login) != $this->login) {
+            if (strtoupper($_login) != strtoupper($this->login)) {
                 //on a une connexion sous un nouveau login, on purge la session
                 $this->reset("4");
             }
@@ -602,38 +602,17 @@ class Session {
 		}
 	}
 
-	# Cette fonction permet de tester sous quelle forme le login est stocké dans la base
-	# de données. Elle renvoie true ou false.
-	private function use_uppercase_login($_login) {
-		// On détermine si l'utilisateur a un login en majuscule ou minuscule
-		$test_uppercase = mysql_query("SELECT login FROM utilisateurs WHERE (login = '" . strtoupper($_login) . "')");
-		if (sql_count($test_uppercase) == 1) {
-                    if (mysql_result($test_uppercase, 0, "login") == strtoupper($_login)) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-		} else {
-			# On a false soit si l'utilisateur n'est pas présent dans la base, soit s'il est
-			# en minuscule.
-			return false;
-		}
-	}
-
+        
 	private function authenticate_gepi($_login,$_password) {
 		global $debug_test_mdp, $debug_test_mdp_file;
 
-		if ($this->use_uppercase_login($_login)) {
-			# On passe le login en majuscule pour toute la session.
-			$_login = strtoupper($_login);
-		}
 		$sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
 		$query = mysql_query($sql);
 		if (mysql_num_rows($query) == "1") {
 			# Un compte existe avec ce login
 			if (mysql_result($query, 0, "password") == md5($_password)) {
 				# Le mot de passe correspond. C'est bon !
-				$this->login = $_login;
+				$this->login = mysql_result($query, 0, "login");
 				$this->current_auth_mode = "gepi";
 
 				if($debug_test_mdp=="y") {
@@ -653,7 +632,7 @@ class Session {
 						//if (mysql_result($query, 0, "password") == md5(unhtmlentities($_password))) {
 						if (mysql_result($query, 0, "password") == md5($_password_unhtmlentities)) {
 							# Le mot de passe correspond. C'est bon !
-							$this->login = $_login;
+							$this->login = mysql_result($query, 0, "login");
 							$this->current_auth_mode = "gepi";
 	
 							if($debug_test_mdp=="y") {
@@ -675,7 +654,7 @@ class Session {
 					else {
 						if (mysql_result($query, 0, "password") == md5(htmlentities($_password))) {
 							# Le mot de passe correspond. C'est bon !
-							$this->login = $_login;
+							$this->login = mysql_result($query, 0, "login");
 							$this->current_auth_mode = "gepi";
 	
 							if($debug_test_mdp=="y") {
@@ -874,12 +853,6 @@ class Session {
 			$ldap = new LDAPServer;
 			$user = $ldap->get_user_profile($this->login);
 			$this->rne = $user["rne"][0];
-		}
-
-		# On regarde si on doit utiliser un login en majuscule. Si c'est le cas, il faut impérativement
-		# le faire *après* un éventuel import externe.
-		if ($this->use_uppercase_login($this->login)) {
-			$this->login = strtoupper($this->login);
 		}
 
 		# On interroge la base de données
