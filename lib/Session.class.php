@@ -140,7 +140,7 @@ class Session {
 		  die();
 	    }
 
-            if ($_login != $this->login) {
+            if ($_login != $this->login && strtoupper($_login) != $this->login) {
                 //on a une connexion sous un nouveau login, on purge la session
                 $this->reset("4");
             }
