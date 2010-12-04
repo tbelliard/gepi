@@ -1129,12 +1129,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				// Le deuxième responsable existe et est renseigné
 				if (($tab_bull['eleve'][$i]['resp'][0]['adr_id']==$tab_bull['eleve'][$i]['resp'][1]['adr_id']) OR
 					(
-						($tab_bull['eleve'][$i]['resp'][0]['adr1']==$tab_bull['eleve'][$i]['resp'][1]['adr1'])&&
-						($tab_bull['eleve'][$i]['resp'][0]['adr2']==$tab_bull['eleve'][$i]['resp'][1]['adr2'])&&
-						($tab_bull['eleve'][$i]['resp'][0]['adr3']==$tab_bull['eleve'][$i]['resp'][1]['adr3'])&&
-						($tab_bull['eleve'][$i]['resp'][0]['adr4']==$tab_bull['eleve'][$i]['resp'][1]['adr4'])&&
+						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr1'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr1']))&&
+						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr2'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr2']))&&
+						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr3'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr3']))&&
+						(strtolower($tab_bull['eleve'][$i]['resp'][0]['adr4'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['adr4']))&&
 						($tab_bull['eleve'][$i]['resp'][0]['cp']==$tab_bull['eleve'][$i]['resp'][1]['cp'])&&
-						($tab_bull['eleve'][$i]['resp'][0]['commune']==$tab_bull['eleve'][$i]['resp'][1]['commune'])
+						(strtolower($tab_bull['eleve'][$i]['resp'][0]['commune'])==strtolower($tab_bull['eleve'][$i]['resp'][1]['commune']))
 					)
 				) {
 					// Les adresses sont identiques
