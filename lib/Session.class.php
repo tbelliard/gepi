@@ -138,12 +138,12 @@ class Session {
 		  tentative_intrusion(1, "Tentative de connexion depuis une IP sur liste noire (login utilisé : ".$_login.")");
 	      return "3";
 		  die();
-	    }
+		}
 
-            if (strtoupper($_login) != strtoupper($this->login)) {
-                //on a une connexion sous un nouveau login, on purge la session
-                $this->reset("4");
-            }
+		if (strtoupper($_login) != strtoupper($this->login)) {
+			//on a une connexion sous un nouveau login, on purge la session
+			$this->reset("4");
+		}
 
 		if($debug_test_mdp=="y") {
 			$f_tmp=fopen($debug_test_mdp_file,"a+");
@@ -528,7 +528,7 @@ class Session {
 		# 0 : logout normal
 		# 2 : logout renvoyé par la fonction checkAccess (problème gepiPath ou accès interdit)
 		# 3 : logout lié à un timeout
-                # 4 : logout lié à une nouvelle connexion sous un nouveau profil
+		# 4 : logout lié à une nouvelle connexion sous un nouveau profil
 
 	    # On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
 	    if ($this->start) {
@@ -559,9 +559,9 @@ class Session {
 	    // détruit la session sur le serveur
 	    session_destroy();
 
-            //on redémarre une nouvelle session
-            session_start();
-            session_regenerate_id();
+		//on redémarre une nouvelle session
+		session_start();
+		session_regenerate_id();
 	}
 
 	private function load_session_data() {
@@ -602,16 +602,41 @@ class Session {
 		}
 	}
 
-        
+	/*
+	// Supprimé en trunk (après la 1.5.3.1)
+
+	# Cette fonction permet de tester sous quelle forme le login est stocké dans la base
+	# de données. Elle renvoie true ou false.
+	private function use_uppercase_login($_login) {
+		// On détermine si l'utilisateur a un login en majuscule ou minuscule
+		$test_uppercase = "SELECT login FROM utilisateurs WHERE (login = '" . strtoupper($_login) . "')";
+		if (sql_count(sql_query($test_uppercase)) == "1") {
+			return true;
+		} else {
+			# On a false soit si l'utilisateur n'est pas présent dans la base, soit s'il est
+			# en minuscule.
+			return false;
+		}
+	}
+	*/
+
 	private function authenticate_gepi($_login,$_password) {
 		global $debug_test_mdp, $debug_test_mdp_file;
 
+		/*
+		if ($this->use_uppercase_login($_login)) {
+			# On passe le login en majuscule pour toute la session.
+			$_login = strtoupper($_login);
+		}
+		*/
 		$sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
 		$query = mysql_query($sql);
 		if (mysql_num_rows($query) == "1") {
 			# Un compte existe avec ce login
 			if (mysql_result($query, 0, "password") == md5($_password)) {
 				# Le mot de passe correspond. C'est bon !
+				//$this->login = $_login;
+				// On ne prend plus le login fourni dans le formulaire, mais celui dans la base pour avoir la même casse que dans la base (après la 1.5.3.1)
 				$this->login = mysql_result($query, 0, "login");
 				$this->current_auth_mode = "gepi";
 
@@ -632,6 +657,8 @@ class Session {
 						//if (mysql_result($query, 0, "password") == md5(unhtmlentities($_password))) {
 						if (mysql_result($query, 0, "password") == md5($_password_unhtmlentities)) {
 							# Le mot de passe correspond. C'est bon !
+							//$this->login = $_login;
+							// On ne prend plus le login fourni dans le formulaire, mais celui dans la base pour avoir la même casse que dans la base (après la 1.5.3.1)
 							$this->login = mysql_result($query, 0, "login");
 							$this->current_auth_mode = "gepi";
 	
@@ -654,6 +681,8 @@ class Session {
 					else {
 						if (mysql_result($query, 0, "password") == md5(htmlentities($_password))) {
 							# Le mot de passe correspond. C'est bon !
+							//$this->login = $_login;
+							// On ne prend plus le login fourni dans le formulaire, mais celui dans la base pour avoir la même casse que dans la base (après la 1.5.3.1)
 							$this->login = mysql_result($query, 0, "login");
 							$this->current_auth_mode = "gepi";
 	
@@ -855,6 +884,15 @@ class Session {
 			$this->rne = $user["rne"][0];
 		}
 
+		/*
+		// Supprimé en trunk (après la 1.5.3.1)
+		# On regarde si on doit utiliser un login en majuscule. Si c'est le cas, il faut impérativement
+		# le faire *après* un éventuel import externe.
+		if ($this->use_uppercase_login($this->login)) {
+			$this->login = strtoupper($this->login);
+		}
+		*/
+
 		# On interroge la base de données
 		$query = mysql_query("SELECT nom, prenom, statut, etat, now() start, change_mdp, auth_mode FROM utilisateurs WHERE (login = '".$this->login."')");
 
@@ -902,6 +940,7 @@ class Session {
 		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 		$_SESSION["gepi_alea"] = $r;
 		*/
+		//generate_token($_SESSION['login']);
 		generate_token();
 
 	    # On charge les données dans l'instance de Session.

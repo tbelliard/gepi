@@ -7,22 +7,23 @@
 
 function generate_token() {
     if (!isset($_SESSION["gepi_alea"])) {
-	$length = rand(35, 45);
-	for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-	// Virer le gepi_alea par la suite
-	$_SESSION["gepi_alea"] = $r;
-	//$_SESSION["token"] = $r;
-
-	if(getSettingValue('csrf_log')=='y') {
-		$csrf_log_chemin=getSettingValue('csrf_log_chemin');
-		if($csrf_log_chemin=='') {$csrf_log_chemin="/home/root/csrf";}
-		if(isset($_SESSION['login'])) {
-			$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
-			//$f=fopen("$csrf_log_chemin/csrf_".$login.".log","a+");
-			fwrite($f,"Initialisation de la session ".strftime("%a %d/%m/%Y %H:%M:%S")." avec\n\$_SESSION['gepi_alea']=".$_SESSION['gepi_alea']."\n");
-			fclose($f);
+		$length = rand(35, 45);
+		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
+		// Virer le gepi_alea par la suite
+		$_SESSION["gepi_alea"] = $r;
+		//$_SESSION["token"] = $r;
+	
+		if(getSettingValue('csrf_log')=='y') {
+			$csrf_log_chemin=getSettingValue('csrf_log_chemin');
+			if($csrf_log_chemin=='') {$csrf_log_chemin="/home/root/csrf";}
+			if(isset($_SESSION['login'])) {
+				$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
+				//$f=fopen("$csrf_log_chemin/csrf_".$login.".log","a+");
+				fwrite($f,"Initialisation de la session ".strftime("%a %d/%m/%Y %H:%M:%S")." avec\n\$_SESSION['gepi_alea']=".$_SESSION['gepi_alea']."\n");
+				fwrite($f,"session_id()=".session_id()."\n");
+				fclose($f);
+			}
 		}
-	}
     }
 }
 
@@ -108,7 +109,7 @@ function check_token($redirection=true) {
  * Action en cas d'attaque CSRF
  *
  */
-function action_alea_invalide($envoi_mail=true) {
+function action_alea_invalide($envoyer_mail=true) {
 	//debug_var();
 	/*
 	$_SERVER['REQUEST_URI']=	/steph/gepi-trunk/lib/confirm_query.php
@@ -137,7 +138,7 @@ function action_alea_invalide($envoi_mail=true) {
 		$details.="   \$_GET[$key]=$value\n";
 	}
 
-	if($envoi_mail) {
+	if($envoyer_mail) {
 		// Envoyer un mail à l'admin
 		$envoi_mail_actif=getSettingValue('envoi_mail_actif');
 		if($envoi_mail_actif!="n") {
