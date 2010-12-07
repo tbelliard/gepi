@@ -2119,21 +2119,20 @@ Patientez pendant l'extraction des données... merci.
 				    echo "<td>".$periode_note->getNomPeriode();
 				    echo " du ".$periode_note->getDateDebut('d/m/Y');
 				    echo " au ";
-				    if ($periode_note->getDateFin() == null) {
-					$now = new DateTime('now');
-					echo $now->format('d/m/Y');
+                                    if ($periode_note->getDateFin() == null) {
+					echo '(non précisé)';
 				    } else {
 					echo $periode_note->getDateFin('d/m/Y');
 				    }
 				    echo "</td>\n";
 				    echo "<td>";
-				    echo $eleve->getDemiJourneesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+				    echo $eleve->getDemiJourneesAbsenceParPeriode($periode_note)->count();
 				    echo "</td>\n";
 				    echo "<td>";
-				    echo $eleve->getDemiJourneesNonJustifieesAbsence($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+				    echo $eleve->getDemiJourneesNonJustifieesAbsenceParPeriode($periode_note)->count();
 				    echo "</td>\n";
 				    echo "<td>";
-				    echo $eleve->getRetards($periode_note->getDateDebut(null), $periode_note->getDateFin(null))->count();
+				    echo $eleve->getRetardsParPeriode($periode_note)->count();
 				    echo "</td>\n";
 				    echo "<td>"."</td>\n";
 				    echo "</tr>\n";
