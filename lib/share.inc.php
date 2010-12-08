@@ -852,7 +852,9 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     $somme_coef = 0;
     $exist_dev_fac = '';
     // On efface les moyennes de la table
-    $delete = mysql_query("DELETE FROM cn_notes_conteneurs WHERE (login='$login' and id_conteneur='$id_conteneur')");
+    $sql="DELETE FROM cn_notes_conteneurs WHERE (login='$login' and id_conteneur='$id_conteneur');";
+	fdebug("$sql\n");
+    $delete = mysql_query($sql);
 
     // Appel des paramètres du conteneur
     $appel_conteneur = mysql_query("SELECT * FROM cn_conteneurs WHERE id ='$id_conteneur'");
@@ -1105,33 +1107,62 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 			}
         }
 
+		fdebug("Moyenne avant arrondi: $moyenne\n");
 
+/*
+if(($login=='RUQUIER_S')&&($id_racine=='2916')&&($id_conteneur=='2917')) {
+	echo "<div style='color:red;'><b> ($login, $id_racine, $id_conteneur)</b>
+Moyenne avant arrondi: $moyenne<br />
+   \$moyenne=$moyenne<br />
+   10*\$moyenne=".(10*$moyenne)."<br />
+   ceil(10*\$moyenne)=".ceil(10*$moyenne)."<br />
+   ceil(10*\$moyenne)/10=".(ceil(10*$moyenne)/10)."<br />
+   number_format(ceil(10*\$moyenne)/10,1,'.','')=".number_format(ceil(10*$moyenne)/10,1,'.','')."<br />
+   number_format(ceil(100*\$moyenne)/100,1,'.','')=".number_format(ceil(100*$moyenne)/100,1,'.','')."<br />
+   printf('%.40f', (10*\$moyenne))=".printf('%.40f', (10*$moyenne))."<br />
+   ceil(strval((10*\$moyenne))=".ceil(strval((10*$moyenne)))."
+<div>\n";
+}
+*/
         //
         // Calcul des arrondis
         //
         if ($arrondir == 's1') {
             // s1 : arrondir au dixième de point supérieur
-            $moyenne = number_format(ceil(10*$moyenne)/10,1,'.','');
+			fdebug("Mode s1:
+   \$moyenne=$moyenne
+   10*\$moyenne=".(10*$moyenne)."
+   ceil(10*\$moyenne)=".ceil(10*$moyenne)."
+   ceil(10*\$moyenne)/10=".(ceil(10*$moyenne)/10)."
+   number_format(ceil(10*\$moyenne)/10,1,'.','')=".number_format(ceil(10*$moyenne)/10,1,'.','')."
+   number_format(ceil(100*\$moyenne)/100,1,'.','')=".number_format(ceil(100*$moyenne)/100,1,'.','')."\n");
+            //$moyenne = number_format(ceil(10*$moyenne)/10,1,'.','');
+			$moyenne = number_format(ceil(strval(10*$moyenne))/10,1,'.','');
         } else if ($arrondir == 's5') {
             // s5 : arrondir au demi-point supérieur
-            $moyenne = number_format(ceil(2*$moyenne)/2,1,'.','');
+            $moyenne = number_format(ceil(strval(2*$moyenne))/2,1,'.','');
         } else if ($arrondir == 'se') {
             // se : arrondir au point entier supérieur
-            $moyenne = number_format(ceil($moyenne),1,'.','');
+            $moyenne = number_format(ceil(strval($moyenne)),1,'.','');
         } else if ($arrondir == 'p1') {
             // s1 : arrondir au dixième le plus proche
-            $moyenne = number_format(round(10*$moyenne)/10,1,'.','');
+            $moyenne = number_format(round(strval(10*$moyenne))/10,1,'.','');
         } else if ($arrondir == 'p5') {
             // s5 : arrondir au demi-point le plus proche
-            $moyenne = number_format(round(2*$moyenne)/2,1,'.','');
+            $moyenne = number_format(round(strval(2*$moyenne))/2,1,'.','');
         } else if ($arrondir == 'pe') {
             // se : arrondir au point entier le plus proche
-            $moyenne = number_format(round($moyenne),1,'.','');
+            $moyenne = number_format(round(strval($moyenne)),1,'.','');
         }
-        $register = mysql_query("INSERT INTO cn_notes_conteneurs SET login='$login', id_conteneur='$id_conteneur',note='$moyenne',statut='y',comment=''");
+
+        $sql="INSERT INTO cn_notes_conteneurs SET login='$login', id_conteneur='$id_conteneur',note='$moyenne',statut='y',comment='';";
+		fdebug("$sql\n");
+        $register = mysql_query($sql);
 
     } else {
-        $register = mysql_query("INSERT INTO cn_notes_conteneurs SET login='$login', id_conteneur='$id_conteneur',note='0',statut='',comment=''");
+        $sql="INSERT INTO cn_notes_conteneurs SET login='$login', id_conteneur='$id_conteneur',note='0',statut='',comment='';";
+		fdebug("$sql\n");
+        $register = mysql_query($sql);
 
     }
 
