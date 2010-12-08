@@ -7,6 +7,8 @@
 	//Le problème peut être résolu en ajoutant la ligne suivante :
 	Header('Pragma: public');
 
+	header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+
 	require('../fpdf/fpdf.php');
 	require('../fpdf/ex_fpdf.php');
 	require_once("../fpdf/class.multicelltag.php");
