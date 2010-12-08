@@ -201,7 +201,9 @@ if ( $etape === '0' ) {
 
 <div style="text-align: center;">
    <form method="post" action="import_absences_gepi.php" name="form_absences">
+<?php
 		echo add_token_field();
+?>
       <fieldset style="width: 450px; margin: auto;" class="couleur_ligne_3">
          <legend style="font: normal 10pt Arial;">&nbsp;Sélection&nbsp;</legend>
             <div style="color: #E8F1F4; text-align: left; font: normal 12pt verdana, sans-serif; font-weight: bold; background-image: url(../mod_absences/images/haut_tab.png); border: 0px solid #F8F8F8;">Importation des absences</div>
