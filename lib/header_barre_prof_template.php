@@ -108,6 +108,23 @@ if (!$_SESSION["login"]) {
 		$tbs_menu_prof[]=array("lien"=> '/mod_notanet/index.php' , "texte"=>"Brevet");
 	}else{ $barre_notanet = '';}
 
+	function acces($id,$statut) {
+		$tab_id = explode("?",$id);
+		$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
+		$droit = @mysql_result($query_droits, 0, $statut);
+		if ($droit == "V") {
+			return "1";
+		} else {
+			return "0";
+		}
+	}
+
+	if (acces('/eleves/visu_eleve.php',$_SESSION['statut'])==1) {
+		//$barre_consult_eleve = '<li><a href="'.$gepiPath.'/eleves/visu_eleve.php">Consult.élève</a></li>';
+		$tbs_menu_prof[]=array("lien"=> '/eleves/visu_eleve.php' , "texte"=>"Consult.élève");
+	}
+	else{ $barre_consult_eleve = '';}
+
 /*
 	echo '
 	<ol id="essaiMenu">
