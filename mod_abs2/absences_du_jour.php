@@ -75,8 +75,8 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_
 $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? $_GET["id_aid"] : NULL);
 $type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(isset($_GET["type_selection"]) ? $_GET["type_selection"] : NULL);
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :(isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] :(isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
-$choix_regime = isset($_POST["choix_regime"]) ? $_POST["choix_regime"] :(isset($_GET["choix_regime"]) ? $_GET["choix_regime"] : NULL);
 //if ($date_absence_eleve != null) {$_SESSION["date_absence_eleve"] = $date_absence_eleve;}
+include('include_requetes_filtre_de_recherche.php');
 
 include('include_pagination.php');
 
@@ -251,25 +251,36 @@ echo '</td>';
 echo "<td style='border : 1px solid; padding : 10 px;'>";
 echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>\n";
-        echo '<input type="hidden" name="type_selection" value="choix_regime"/>';
-echo ("Régime : <select name=\"choix_regime\" onchange='submit()' class=\"small\">");
+    echo ("Régime : <select name=\"filter_regime\" onchange='submit()' class=\"small\">");
     echo "<option value='-1'>choisissez un régime</option>\n";
     	    echo "<option value='d/p'";
-	    if ($choix_regime == 'd/p') echo " SELECTED ";
+	    if (getFiltreRechercheParam('filter_regime') == 'd/p') echo " SELECTED ";
 	    echo ">";
 	    echo 'd/p';
             echo "<option value='ext.'";
-	    if ($choix_regime == 'ext.') echo " SELECTED ";
+	    if (getFiltreRechercheParam('filter_regime') == 'ext.') echo " SELECTED ";
 	    echo ">";
 	    echo 'ext.';
             echo "<option value='int.'";
-	    if ($choix_regime == 'int.') echo " SELECTED ";
+	    if (getFiltreRechercheParam('filter_regime') == 'int.') echo " SELECTED ";
 	    echo ">";
 	    echo 'int.';
 	    echo "</option>\n";
-    echo "</select>&nbsp;";
+    echo "</select>";
+    echo "</p>\n";
+    echo "<p>\n";
+    echo ("Afficher : <select name=\"filter_manqement_obligation\" onchange='submit()' class=\"small\">");
+    echo "<option value='y'>uniquement les manquements à l'obligation de présence</option>";
+    	    echo "<option value='n'";
+	    if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') echo " SELECTED ";
+	    echo ">";
+	    echo 'toutes les saisies';
+	    echo "</option>";
+    echo "</select>";
+    echo "</p>\n";
+
     echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button type="submit">Filtrer sur le régime</button>';
+    echo '<button type="submit">Filtrer</button>';
 echo '</form>';
 echo '</td>';
 
@@ -291,7 +302,12 @@ $dt_debut->setTime(0,0,0);
 $dt_fin = clone $dt_date_absence_eleve;
 $dt_fin->setTime(23,59,59);
 //on récupere les saisies car avant puis on va filtrer avec les ids car filterManquementObligationPresence bug un peu avec les requetes imbriquées
-$saisie_col = AbsenceEleveSaisieQuery::create()->select('Id')->filterByPlageTemps($dt_debut, $dt_fin)->filterByManquementObligationPresence()->setFormatter(ModelCriteria::FORMAT_ARRAY)->find();
+$saisie_query = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut, $dt_fin)->setFormatter(ModelCriteria::FORMAT_ARRAY);
+if (!isFiltreRechercheParam('filter_manqement_obligation') || getFiltreRechercheParam('filter_manqement_obligation') != 'n') {
+    //par défaut on filtre les manquement à l'obligation de présence
+    $saisie_query->filterByManquementObligationPresence();
+}
+$saisie_col = $saisie_query->find();
 $query = EleveQuery::create()->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', Criteria::ASC)
 	->useAbsenceEleveSaisieQuery()
 	->filterById($saisie_col->toKeyValue('Id', 'Id'))
@@ -304,8 +320,6 @@ if ($type_selection == 'id_eleve') {
     $eleve_col->append($query->findPk($id_eleve));
 } else if ($type_selection == 'nom_eleve') {    
     $query->filterByNomOrPrenomLike($nom_eleve);
-}else if ($type_selection == 'choix_regime' && $choix_regime!=-1) {   
-    $query->filterByRegime($choix_regime);
 } elseif ($current_groupe != null) {   
     $query->useJEleveGroupeQuery()->filterByIdGroupe($current_groupe->getId())->enduse();    
 } elseif ($current_aid != null) {    
@@ -314,6 +328,12 @@ if ($type_selection == 'id_eleve') {
     $query->useJEleveClasseQuery()->filterByIdClasse($current_classe->getId())->enduse();    
 } else {
     //rien à faire
+}
+if ($type_selection != 'id_eleve' && $type_selection != 'nom_eleve') {
+    //on filtre
+    if (isFiltreRechercheParam('filter_regime') != null && getFiltreRechercheParam('filter_regime')!=-1) {
+        $query->filterByRegime($choix_regime);
+    }
 }
 $eleve_col = $query->distinct()->paginate($page_number, $item_per_page);
 
@@ -489,10 +509,14 @@ $eleve_col = $query->distinct()->paginate($page_number, $item_per_page);
 					} else {
 					    $dt_green = clone $dt_date_absence_eleve;
 					    $dt_green->setTime($edt_creneau->getHeuredebutDefiniePeriode('H'), $edt_creneau->getHeuredebutDefiniePeriode('i'), 0);
-					    if (getSettingValue("abs2_alleger_abs_du_jour")!='y' && $eleve->getPresent($dt_green)) {
+					    if (getSettingValue("abs2_alleger_abs_du_jour")!='y' && $eleve->getSousResponsabiliteEtablissement($dt_green)) {
 						$style = 'style="background-color : green"';
 					    } else {
-						$style = '';
+						if (!$absences_du_creneau->isEmpty()) {
+                                                    $style = 'style="background-color : yellow"';
+                                                } else {
+                                                    $style = '';
+                                                }
 					    }
 					}
 					echo '<td '.$style.'>';
@@ -571,13 +595,14 @@ $eleve_col = $query->distinct()->paginate($page_number, $item_per_page);
     echo " </tbody>";
     echo "</table>";
     if (getSettingValue("abs2_alleger_abs_du_jour")!='y') {
-	echo '<table><tr>';
-	echo '<td>Légende : </td>';
-	echo '<td style="border : 1px solid; background-color : red;">absent</td>';
-	echo '<td style="border : 1px solid; background-color : green;">présent</td>';
-	echo '<td style="border : 1px solid; background-color : purple;">Saisies conflictuelles</td>';
-	echo '<td style="border : 1px solid;">Sans couleur : pas de saisie</td>';
-	echo '</tr></table>';
+	echo '<table><tr><td>Légende : </td></tr></table>';
+	echo '<table><tr><td style="border : 1px solid; background-color : red;">Manquement à l\'obligation de présence</td></tr></table>';
+	echo '<table><tr><td style="border : 1px solid; background-color : green;">Sous la responsabilité de l\'établissement</td></tr></table>';
+	echo '<table><tr><td style="border : 1px solid; background-color : purple;">Saisies conflictuelles</td></tr></table>';
+	echo '<table><tr><td style="border : 1px solid;">Sans couleur : pas de saisie</td></tr></table>';
+        if (isFiltreRechercheParam('filter_manqement_obligation') && getFiltreRechercheParam('filter_manqement_obligation') == 'n') {
+            echo '<table><tr><td style="border : 1px solid; background-color : yellow;"">Saisie sans précisions</td></tr></table>';
+        }
     }
     ?>
     <div dojoType="dijit.form.DropDownButton" style="display: inline">

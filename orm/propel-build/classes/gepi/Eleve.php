@@ -1401,7 +1401,7 @@ class Eleve extends BaseEleve {
 	 * @return     Boolean
 	 *
 	 */
-	public function getPresent($v = 'now') {
+	public function getSousResponsabiliteEtablissement($v = 'now') {
 	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
 	    // -- which is unexpected, to say the least.
 	    //$dt = new DateTime();
@@ -1430,7 +1430,7 @@ class Eleve extends BaseEleve {
 	    //premierement on verifie que l'eleve n'a pas ete saisie absent a cette date
 	    $resp_etab = true;
 	    foreach ($this->getAbsenceEleveSaisiesFilterByDate($dt,$dt) as $saisie) {
-		if ($saisie->getSousResponsabiliteEtablissement() || !$saisie->getManquementObligationPresence()) {
+		if ($saisie->getSousResponsabiliteEtablissement()) {
 		    return true;
 		} else {
 		    $resp_etab = false;
@@ -1443,14 +1443,14 @@ class Eleve extends BaseEleve {
 
 	    //on recupere toute les saisies a cette heure
 	    //optimisation : utiliser la requete pour stocker ca
-	    if (isset($_REQUEST['query_AbsenceEleveSaisieQuery_getPresent_'.$dt->format('U')])
-		    && $_REQUEST['query_AbsenceEleveSaisieQuery_getPresent_'.$dt->format('U')] != null) {
-		$saisie_col = $_REQUEST['query_AbsenceEleveSaisieQuery_getPresent_'.$dt->format('U')];
+	    if (isset($_REQUEST['query_AbsenceEleveSaisieQuery_getSousResponsabiliteEtablissement_'.$dt->format('U')])
+		    && $_REQUEST['query_AbsenceEleveSaisieQuery_getSousResponsabiliteEtablissement_'.$dt->format('U')] != null) {
+		$saisie_col = $_REQUEST['query_AbsenceEleveSaisieQuery_getSousResponsabiliteEtablissement_'.$dt->format('U')];
 	    } else {
 		$saisie_col = AbsenceEleveSaisieQuery::create()
 		    ->filterByPlageTemps($dt, $dt)
 		    ->find();
-		$_REQUEST['query_AbsenceEleveSaisieQuery_getPresent_'.$dt->format('U')] = $saisie_col;
+		$_REQUEST['query_AbsenceEleveSaisieQuery_getSousResponsabiliteEtablissement_'.$dt->format('U')] = $saisie_col;
 	    }
 
 	    if ($saisie_col->isEmpty()) {
