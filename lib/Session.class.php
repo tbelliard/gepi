@@ -56,7 +56,8 @@ class Session {
 
 	private $etat = false; 	# actif/inactif. Utilisé simplement en interne pour vérifier que
 							# l'utilisateur authentifié de source externe est bien actif dans Gepi.
-  private $cas_extra_attributes = []; # D'éventuels attributs chargés depuis la réponse CAS
+							
+  private $cas_extra_attributes = false; # D'éventuels attributs chargés depuis la réponse CAS
 
 	public function __construct() {
 
@@ -768,7 +769,8 @@ class Session {
 		$this->current_auth_mode = "sso";
     
     // Extractions des attributs supplémentaires, le cas échéant
-    foreach(['prenom','nom','email'] as $attribut) {
+    $attributs = array('prenom','nom','email');
+    foreach($attributs as $attribut) {
       $code_attribut = getSettingValue('cas_attribut_'.$attribut);
       // Si un attribut a été spécifié, on va le chercher
       if (!empty($code_attribut)) {
@@ -776,6 +778,7 @@ class Session {
         if (!empty($valeur)){
           // L'attribut trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
           $this->cas_extra_attributes[$attribut] = trim(mysql_real_escape_string($valeur));
+        }
       }
     }
 
@@ -1354,7 +1357,7 @@ class Session {
 
       if ($need_update) $res = mysql_query($query); // On exécute la mise à jour, si nécessaire
       return $res;
-    }  
+    }
   }
 
 
