@@ -76,11 +76,13 @@
    				&& !empty($dateParts['minute']) 
    				&& !empty($dateParts['second']))
 		    {
-  				return strftime('%a, %d %b %Y %H:%M:%S %z', mktime(intval($dateParts['hour']), intval($dateParts['minute']), intval($dateParts['second']), intval($dateParts['month']), intval($dateParts['day']), intval($dateParts['year'])));
+  				//return strftime('%a, %d %b %Y %H:%M:%S %z', mktime(intval($dateParts['hour']), intval($dateParts['minute']), intval($dateParts['second']), intval($dateParts['month']), intval($dateParts['day']), intval($dateParts['year'])));
+                                return date("r", mktime(intval($dateParts['hour']), intval($dateParts['minute']), intval($dateParts['second']), intval($dateParts['month']), intval($dateParts['day']), intval($dateParts['year'])));
 		    }
 		    else
 		    {
-				return strftime('%a, %d %b %Y 00:00:00 %z', mktime(intval($dateParts['hour']), intval($dateParts['minute']), intval($dateParts['second']), intval($dateParts['month']), intval($dateParts['day']), intval($dateParts['year'])));
+				//return strftime('%a, %d %b %Y 00:00:00 %z', mktime(intval($dateParts['hour']), intval($dateParts['minute']), intval($dateParts['second']), intval($dateParts['month']), intval($dateParts['day']), intval($dateParts['year'])));
+                                return date("r", mktime(intval($dateParts['hour']), intval($dateParts['minute']), intval($dateParts['second']), intval($dateParts['month']), intval($dateParts['day']), intval($dateParts['year'])));
 		    }
 		}
 		else
