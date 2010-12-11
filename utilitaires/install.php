@@ -191,7 +191,7 @@ if ($etape == 4) {
 			$conn .= "#\n";
 			$conn .= "# Authentification par CAS ?\n";
 			$conn .= "# Si vous souhaitez intégrer Gepi dans un environnement SSO avec CAS,\n";
-			$conn .= "# vous devrez renseigner le fichier /lib/CAS/cas.sso.php avec les\n";
+			$conn .= "# vous devrez renseigner le fichier /secure/config_cas.inc.php avec les\n";
 			$conn .= "# informations nécessaires à l'identification du serveur CAS\n";
 			$conn .= "\$use_cas = false; // false|true\n";
 			$conn .= "?".">";
