@@ -467,8 +467,8 @@ echo "</form><hr class=\"header\" style=\"margin-top: 32px; margin-bottom: 24px;
 
 echo "<h3 class='gepi'>Mode d'authentification</h3>";
 echo "<p><b>ATTENTION :</b> Dans le cas d'une authentification en Single Sign-On avec CAS, LemonLDAP ou LCS, seuls les utilisateurs pour lesquels aucun mot de passe n'est présent dans la base de données pourront se connecter. Toutefois, il est recommandé de conserver un compte administrateur avec un mot de passe afin de pouvoir vous connecter en bloquant le SSO par le biais de la variable 'block_sso' du fichier /lib/global.inc.</p>";
-echo "<p>Si vous utilisez CAS, vous devez entrer les coordonnées du serveur CAS dans le fichier /lib/CAS/cas.sso.php.</p>";
-echo "<p>Si vous utilisez l'authentification sur serveur LDAP, vous devez renseigner le fichier /lib/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur.</p>";
+echo "<p>Si vous utilisez CAS, vous devez entrer les coordonnées du serveur CAS dans le fichier /secure/config_cas.inc.php.</p>";
+echo "<p>Si vous utilisez l'authentification sur serveur LDAP, vous devez renseigner le fichier /secure/config_ldap.inc.php avec les informations nécessaires pour se connecter au serveur.</p>";
 echo "<form action=\"gestion_connect.php\" name=\"form_auth\" method=\"post\">";
 
 echo "<input type='radio' name='use_sso' value='no' id='label_1'";
