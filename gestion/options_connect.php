@@ -153,6 +153,15 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 		saveSetting("login_sso_url", $_POST['login_sso_url']);
 	}
 
+  if (isset($_POST['cas_attribut_prenom'])) {
+	    saveSetting("cas_attribut_prenom", $_POST['cas_attribut_prenom']);
+	}
+  if (isset($_POST['cas_attribut_nom'])) {
+	    saveSetting("cas_attribut_nom", $_POST['cas_attribut_nom']);
+	}
+  if (isset($_POST['cas_attribut_email'])) {
+	    saveSetting("cas_attribut_email", $_POST['cas_attribut_email']);
+	}
 }
 
 
@@ -372,6 +381,21 @@ echo "<p><input type='checkbox' name='sso_hide_logout' value='yes' id='label_sso
 if ($gepiSettings['sso_hide_logout'] == 'yes') echo " checked='checked' ";
 echo " /> <label for='label_sso_hide_logout' style='cursor: pointer;'>Sessions SSO uniquement : masquer le lien de déconnexion (soyez sûr que l'utilisateur dispose alors d'un moyen alternatif de se déconnecter).";
 echo "</label>\n";
+echo "</p>\n";
+
+echo "<p>SSO CAS uniquement : import automatique d'attributs supplémentaires</p>";
+echo "<p>Si les champs ci-dessous sont renseignés, Gepi essaiera systématiquement de mettre à jour les informations de l'utilisateur à partir des attributs transmis par le serveur CAS.</p>";
+
+echo "<label for='cas_attribut_prenom' style='cursor: pointer;'>Attribut 'prénom'</label>\n";
+echo "<p><input type='text' size='20' name='cas_attribut_prenom' value='".getSettingValue('cas_attribut_prenom')."' id='cas_attribut_prenom'/>";
+echo "</p>\n";
+
+echo "<label for='cas_attribut_nom' style='cursor: pointer;'>Attribut 'nom'</label>\n";
+echo "<p><input type='text' size='20' name='cas_attribut_nom' value='".getSettingValue('cas_attribut_nom')."' id='cas_attribut_nom'/>";
+echo "</p>\n";
+
+echo "<label for='cas_attribut_email' style='cursor: pointer;'>Attribut 'email'</label>\n";
+echo "<p><input type='text' size='20' name='cas_attribut_email' value='".getSettingValue('cas_attribut_email')."' id='cas_attribut_email'/>";
 echo "</p>\n";
 
 echo "<br/>\n";

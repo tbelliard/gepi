@@ -43,4 +43,47 @@ $result .= "<br /><br /><b>Mise à jour vers la version 1.5.4" . $rc . $beta . " 
 //}
 //===================================================
 
+
+// Ajout de paramètres pour l'import d'attributs depuis CAS
+// Paramètre d'activation de la synchro à la volée Scribe NG
+
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'cas_attribut_prenom'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('cas_attribut_prenom', '');");
+  if ($result_inter == '') {
+    $result.="<font color=\"green\">Définition du paramètre cas_attribut_prenom : Ok !</font><br />";
+  } else {
+    $result.="<font color=\"red\">Définition du paramètre cas_attribut_prenom : Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">Le paramètre cas_attribut_prenom existe déjà dans la table setting.</font><br />";
+}
+
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'cas_attribut_nom'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('cas_attribut_nom', '');");
+  if ($result_inter == '') {
+    $result.="<font color=\"green\">Définition du paramètre cas_attribut_nom : Ok !</font><br />";
+  } else {
+    $result.="<font color=\"red\">Définition du paramètre cas_attribut_nom : Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">Le paramètre cas_attribut_nom existe déjà dans la table setting.</font><br />";
+}
+
+$req_test=mysql_query("SELECT value FROM setting WHERE name = 'cas_attribut_email'");
+$res_test=mysql_num_rows($req_test);
+if ($res_test==0){
+  $result_inter = traite_requete("INSERT INTO setting VALUES ('cas_attribut_email', '');");
+  if ($result_inter == '') {
+    $result.="<font color=\"green\">Définition du paramètre cas_attribut_email : Ok !</font><br />";
+  } else {
+    $result.="<font color=\"red\">Définition du paramètre cas_attribut_email : Erreur !</font><br />";
+  }
+} else {
+  $result .= "<font color=\"blue\">Le paramètre cas_attribut_email existe déjà dans la table setting.</font><br />";
+}
+
 ?>

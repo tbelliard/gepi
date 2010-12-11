@@ -56,6 +56,7 @@ class Session {
 
 	private $etat = false; 	# actif/inactif. Utilisé simplement en interne pour vérifier que
 							# l'utilisateur authentifié de source externe est bien actif dans Gepi.
+  private $cas_extra_attributes = []; # D'éventuels attributs chargés depuis la réponse CAS
 
 	public function __construct() {
 
@@ -342,6 +343,12 @@ class Session {
 		    	return "5";
 		    	exit;
 		    }
+
+      # Si on est en mode CAS, on met à jour à la volée les attributs de
+      # l'utilisateur (le cas échéant)
+      if ($this->auth_sso == 'cas') {
+        $this->update_user_with_cas_attributes();
+      }
 
 			# Tout est bon. On valide définitivement la session.
 			$this->start = mysql_result(mysql_query("SELECT now();"),0);
@@ -733,7 +740,7 @@ class Session {
 		include_once('CAS.php');
 		if ($GLOBALS['mode_debug']) {
 		    phpCAS::setDebug($GLOBALS['debug_log_file']);
-                }
+    }
 		// config_cas.inc.php est le fichier d'informations de connexions au serveur cas
 		$path = dirname(__FILE__)."/../secure/config_cas.inc.php";
 		include($path);
@@ -753,13 +760,24 @@ class Session {
 		phpCAS::forceAuthentication();
 
 		$this->login = phpCAS::getUser();
-
 		// On réinitialise la session
 		session_name("GEPI");
 		session_start();
 		$_SESSION['login'] = $this->login;
 
 		$this->current_auth_mode = "sso";
+    
+    // Extractions des attributs supplémentaires, le cas échéant
+    foreach(['prenom','nom','email'] as $attribut) {
+      $code_attribut = getSettingValue('cas_attribut_'.$attribut);
+      // Si un attribut a été spécifié, on va le chercher
+      if (!empty($code_attribut)) {
+        $valeur = phpCAS::getAttribute($code_attribut);
+        if (!empty($valeur)){
+          // L'attribut trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
+          $this->cas_extra_attributes[$attribut] = trim(mysql_real_escape_string($valeur));
+      }
+    }
 
 		return true;
 	}
@@ -894,7 +912,7 @@ class Session {
 		*/
 
 		# On interroge la base de données
-		$query = mysql_query("SELECT nom, prenom, statut, etat, now() start, change_mdp, auth_mode FROM utilisateurs WHERE (login = '".$this->login."')");
+		$query = mysql_query("SELECT nom, prenom, email, statut, etat, now() start, change_mdp, auth_mode FROM utilisateurs WHERE (login = '".$this->login."')");
 
 		# Est-ce qu'on a bien une entrée ?
 		if (mysql_num_rows($query) != "1") {
@@ -910,6 +928,7 @@ class Session {
 	    $_SESSION['login'] = $this->login;
 	    $_SESSION['prenom'] = $row->prenom;
 	    $_SESSION['nom'] = $row->nom;
+      $_SESSION['email'] = $row->email;
 	    $_SESSION['statut'] = $row->statut;
 	    $_SESSION['start'] = $row->start;
 	    $_SESSION['matiere'] = $matiere_principale;
@@ -1314,7 +1333,29 @@ class Session {
 		}
 	}
 
+  # Mise à jour de quelques attributs de l'utilisateur à partir des attributs transmis
+  # par CAS directement.
+  private function update_user_with_cas_attributes(){
+    $need_update = false;
+    if (!empty($this->cas_extra_attributes)) {
+      $query = 'UPDATE utilisateurs SET ';
+      $first = true;
+      foreach($this->cas_extra_attributes as $attribute => $value) {
+        if ($_SESSION[$attribute] != $value){
+          $need_update = true;
+          if (!$first) {
+            $query .= ", ";
+          }
+          $query .= "$attribute = '$value'";
+          $first = false;
+        }
+      }
+      $query .= " WHERE login = '$this->login'";
 
+      if ($need_update) $res = mysql_query($query); // On exécute la mise à jour, si nécessaire
+      return $res;
+    }  
+  }
 
 
 
