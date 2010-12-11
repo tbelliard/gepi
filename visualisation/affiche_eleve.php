@@ -54,9 +54,9 @@ if (!checkAccess()) {
 //$debug=1;
 $debug=0;
 
-function affiche_debug($texte){
+function affiche_debug($texte) {
 	global $debug;
-	if($debug==1){
+	if($debug==1) {
 		echo "$texte\n";
 	}
 }
@@ -96,12 +96,12 @@ $hauteur_rect_delais_afficher_div=20;
 $click_plutot_que_survol_aff_app="n";
 //===================================
 
-if(!isset($msg)){
+if(!isset($msg)) {
 	$msg="";
 }
 
 // On permet au compte scolarité d'enregistrer les paramètres d'affichage du graphe
-if($_SESSION['statut']=='scolarite'){
+if($_SESSION['statut']=='scolarite') {
 /*
 affiche_photo
 largeur_imposee_photo
@@ -120,42 +120,41 @@ tronquer_nom_court
 		check_token();
 		if($_POST['save_params']=="y") {
 
-			function save_params_graphe($nom,$valeur){
+			function save_params_graphe($nom,$valeur) {
 				global $msg;
-				if(!saveSetting("$nom", $valeur)){
+				if(!saveSetting("$nom", $valeur)) {
 					$msg.="Erreur lors de l'enregistrement du paramètre $nom<br />";
 				}
 			}
 
 			//$erreur_save_params="";
-			if(isset($_POST['affiche_photo'])){save_params_graphe('graphe_affiche_photo',$_POST['affiche_photo']);}
+			if(isset($_POST['affiche_photo'])) {save_params_graphe('graphe_affiche_photo',$_POST['affiche_photo']);}
 			else{save_params_graphe('graphe_affiche_photo','non');}
-			if(isset($_POST['largeur_imposee_photo'])){save_params_graphe('graphe_largeur_imposee_photo',$_POST['largeur_imposee_photo']);}
-			if(isset($_POST['affiche_mgen'])){save_params_graphe('graphe_affiche_mgen',$_POST['affiche_mgen']);}
+			if(isset($_POST['largeur_imposee_photo'])) {save_params_graphe('graphe_largeur_imposee_photo',$_POST['largeur_imposee_photo']);}
+			if(isset($_POST['affiche_mgen'])) {save_params_graphe('graphe_affiche_mgen',$_POST['affiche_mgen']);}
 			else{save_params_graphe('graphe_affiche_mgen','non');}
-			if(isset($_POST['affiche_minmax'])){save_params_graphe('graphe_affiche_minmax',$_POST['affiche_minmax']);}
+			if(isset($_POST['affiche_minmax'])) {save_params_graphe('graphe_affiche_minmax',$_POST['affiche_minmax']);}
 			else{save_params_graphe('graphe_affiche_minmax','non');}
-			if(isset($_POST['affiche_moy_annuelle'])){save_params_graphe('graphe_affiche_moy_annuelle',$_POST['affiche_moy_annuelle']);}
+			if(isset($_POST['affiche_moy_annuelle'])) {save_params_graphe('graphe_affiche_moy_annuelle',$_POST['affiche_moy_annuelle']);}
 			else{save_params_graphe('graphe_affiche_moy_annuelle','non');}
 
-			if(isset($_POST['type_graphe'])){save_params_graphe('graphe_type_graphe',$_POST['type_graphe']);}
+			if(isset($_POST['type_graphe'])) {save_params_graphe('graphe_type_graphe',$_POST['type_graphe']);}
 
-			if(isset($_POST['mode_graphe'])){save_params_graphe('graphe_mode_graphe',$_POST['mode_graphe']);}
+			if(isset($_POST['mode_graphe'])) {save_params_graphe('graphe_mode_graphe',$_POST['mode_graphe']);}
 
-			if(isset($_POST['largeur_graphe'])){save_params_graphe('graphe_largeur_graphe',$_POST['largeur_graphe']);}
-			if(isset($_POST['hauteur_graphe'])){save_params_graphe('graphe_hauteur_graphe',$_POST['hauteur_graphe']);}
-			if(isset($_POST['taille_police'])){save_params_graphe('graphe_taille_police',$_POST['taille_police']);}
-			if(isset($_POST['epaisseur_traits'])){save_params_graphe('graphe_epaisseur_traits',$_POST['epaisseur_traits']);}
-			if(isset($_POST['temoin_image_escalier'])){save_params_graphe('graphe_temoin_image_escalier',$_POST['temoin_image_escalier']);}
+			if(isset($_POST['largeur_graphe'])) {save_params_graphe('graphe_largeur_graphe',$_POST['largeur_graphe']);}
+			if(isset($_POST['hauteur_graphe'])) {save_params_graphe('graphe_hauteur_graphe',$_POST['hauteur_graphe']);}
+			if(isset($_POST['taille_police'])) {save_params_graphe('graphe_taille_police',$_POST['taille_police']);}
+			if(isset($_POST['epaisseur_traits'])) {save_params_graphe('graphe_epaisseur_traits',$_POST['epaisseur_traits']);}
+			if(isset($_POST['temoin_image_escalier'])) {save_params_graphe('graphe_temoin_image_escalier',$_POST['temoin_image_escalier']);}
 			else{save_params_graphe('graphe_temoin_image_escalier','non');}
-			if(isset($_POST['tronquer_nom_court'])){save_params_graphe('graphe_tronquer_nom_court',$_POST['tronquer_nom_court']);}
+			if(isset($_POST['tronquer_nom_court'])) {save_params_graphe('graphe_tronquer_nom_court',$_POST['tronquer_nom_court']);}
 
-			//========================
-			// AJOUT boireaus 20090115
-			if(isset($_POST['graphe_champ_saisie_avis_fixe'])){save_params_graphe('graphe_champ_saisie_avis_fixe',$_POST['graphe_champ_saisie_avis_fixe']);}
-			//========================
+			if(isset($_POST['graphe_champ_saisie_avis_fixe'])) {save_params_graphe('graphe_champ_saisie_avis_fixe',$_POST['graphe_champ_saisie_avis_fixe']);}
 
-			if($msg==''){
+			if(isset($_POST['click_plutot_que_survol_aff_app'])) {save_params_graphe('graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
+
+			if($msg=='') {
 				$msg="Paramètres enregistrés.";
 			}
 		}
@@ -166,7 +165,7 @@ tronquer_nom_court
 unset($id_classe);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 // Vérifier s'il peut y avoir des accents dans un id_classe.
-if(!is_numeric($id_classe)){$id_classe=NULL;}
+if(!is_numeric($id_classe)) {$id_classe=NULL;}
 
 //===============================================
 // Enregistrement de l'avis du conseil de classe:
@@ -183,8 +182,8 @@ if(
 
 	$num_periode_saisie = isset($_POST['num_periode_saisie']) ? $_POST['num_periode_saisie'] : NULL;
 
-	//if(!is_numeric($num_periode_saisie)){
-	if(strlen(my_ereg_replace("[0-9]","",$num_periode_saisie))==0){
+	//if(!is_numeric($num_periode_saisie)) {
+	if(strlen(my_ereg_replace("[0-9]","",$num_periode_saisie))==0) {
 		$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$num_periode_saisie' AND login='$eleve_saisie_avis';";
 		//echo "$sql<br />";
 		$verif=mysql_query($sql);
@@ -310,7 +309,7 @@ $v_eleve = isset($_POST['v_eleve']) ? $_POST['v_eleve'] : (isset($_GET['v_eleve'
 unset($id_classe);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 // Vérifier s'il peut y avoir des accents dans un id_classe.
-if(!is_numeric($id_classe)){$id_classe=NULL;}
+if(!is_numeric($id_classe)) {$id_classe=NULL;}
 */
 
 unset($login_eleve);
@@ -388,15 +387,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	echo "<p>Sélectionnez la classe : </p>\n";
 	echo "<blockquote>\n";
 	//$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
-	if($_SESSION['statut']=='scolarite'){
+	if($_SESSION['statut']=='scolarite') {
 		//$call_data = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe");
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 	}
-	elseif($_SESSION['statut']=='professeur'){
+	elseif($_SESSION['statut']=='professeur') {
 		//$call_data=mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe");
 		$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 	}
-	elseif($_SESSION['statut']=='cpe'){
+	elseif($_SESSION['statut']=='cpe') {
 		/*
 		$call_data=mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
 			p.id_classe = c.id AND
@@ -436,7 +435,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	unset($lien_classe);
 	unset($txt_classe);
 	$i = 0;
-	while ($i < $nombre_lignes){
+	while ($i < $nombre_lignes) {
 		$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe;
 		//$lien_classe[]=$_SERVER['PHP_SELF']."?id_classe=".mysql_result($call_data, $i, "id").$chaine_type_graphe.$chaine_mode_graphe;
 		$txt_classe[]=ucfirst(mysql_result($call_data, $i, "classe"));
@@ -448,7 +447,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	/*
 	echo "<select name='id_classe' size='".min($nombre_lignes,10)."'>\n";
 	$i = 0;
-	while ($i < $nombre_lignes){
+	while ($i < $nombre_lignes) {
 		$classe = mysql_result($call_data, $i, "classe");
 		$ide_classe = mysql_result($call_data, $i, "id");
 		//echo "<a href='eleve_classe.php?id_classe=$ide_classe'>$classe</a><br />\n";
@@ -514,7 +513,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 						$timestamp_courant=time();
 						//echo "$timestamp_courant<br />";
 
-						if($timestamp_courant>$timestamp_limite){
+						if($timestamp_courant>$timestamp_limite) {
 							$tab_acces_app[$i]="y";
 						}
 						else {
@@ -538,7 +537,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 								//echo "\$timestamp_limite=$timestamp_limite<br />";
 								//echo "\$timestamp_courant=$timestamp_courant<br />";
 
-								if($timestamp_courant>$timestamp_limite){
+								if($timestamp_courant>$timestamp_limite) {
 									$tab_acces_app[$i]="y";
 								}
 								else {
@@ -576,22 +575,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 
-	if(isset($_POST['type_graphe'])){
+	if(isset($_POST['type_graphe'])) {
 
 		//echo "\$_POST['type_graphe']=".$_POST['type_graphe']."<br />\n";
 
-		if($_POST['type_graphe']=='etoile'){
+		if($_POST['type_graphe']=='etoile') {
 			$type_graphe='etoile';
 		}
 		else{
 			$type_graphe='courbe';
 		}
 	}
-	elseif(isset($_GET['type_graphe'])){
+	elseif(isset($_GET['type_graphe'])) {
 
 		//echo "\$_GET['type_graphe']=".$_GET['type_graphe']."<br />\n";
 
-		if($_GET['type_graphe']=='etoile'){
+		if($_GET['type_graphe']=='etoile') {
 			$type_graphe='etoile';
 		}
 		else{
@@ -599,7 +598,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 	else{
-		if(getSettingValue('graphe_type_graphe')){
+		if(getSettingValue('graphe_type_graphe')) {
 			$type_graphe=getSettingValue('graphe_type_graphe');
 		}
 		else{
@@ -611,18 +610,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	// PNG ou SVG
 
-	if(isset($_POST['mode_graphe'])){
+	if(isset($_POST['mode_graphe'])) {
 		//echo "\$_POST['mode_graphe']=".$_POST['mode_graphe']."<br />\n";
-		if($_POST['mode_graphe']=='svg'){
+		if($_POST['mode_graphe']=='svg') {
 			$mode_graphe='svg';
 		}
 		else{
 			$mode_graphe='png';
 		}
 	}
-	elseif(isset($_GET['mode_graphe'])){
+	elseif(isset($_GET['mode_graphe'])) {
 		//echo "\$_GET['mode_graphe']=".$_GET['mode_graphe']."<br />\n";
-		if($_GET['mode_graphe']=='svg'){
+		if($_GET['mode_graphe']=='svg') {
 			$mode_graphe='svg';
 		}
 		else{
@@ -630,7 +629,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 	else{
-		if(getSettingValue('graphe_mode_graphe')){
+		if(getSettingValue('graphe_mode_graphe')) {
 			$mode_graphe=getSettingValue('graphe_mode_graphe');
 		}
 		else{
@@ -647,7 +646,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 		/*
-		foreach($_POST as $post => $val){
+		foreach($_POST as $post => $val) {
 			echo $post.' : '.$val."<br />\n";
 		}
 		*/
@@ -674,13 +673,13 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		// AJOUT: boireaus
 		// Pour proposer de passer à la classe suivante ou à la précédente
 		//$sql="SELECT id, classe FROM classes ORDER BY classe";
-		if($_SESSION['statut']=='scolarite'){
+		if($_SESSION['statut']=='scolarite') {
 			$sql = "SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_scol_classes jsc WHERE p.id_classe = c.id  AND jsc.id_classe=c.id AND jsc.login='".$_SESSION['login']."' ORDER BY classe";
 		}
-		elseif($_SESSION['statut']=='professeur'){
+		elseif($_SESSION['statut']=='professeur') {
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 		}
-		elseif($_SESSION['statut']=='cpe'){
+		elseif($_SESSION['statut']=='cpe') {
 			$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_eleves_classes jec, j_eleves_cpe jecpe WHERE
 				p.id_classe = c.id AND
 				jec.id_classe=c.id AND
@@ -693,15 +692,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$chaine_options_classes="";
 
 		$res_class_tmp=mysql_query($sql);
-		if(mysql_num_rows($res_class_tmp)>0){
+		if(mysql_num_rows($res_class_tmp)>0) {
 			$id_class_prec=0;
 			$id_class_suiv=0;
 			$temoin_tmp=0;
-			while($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
-				if($lig_class_tmp->id==$id_classe){
+			while($lig_class_tmp=mysql_fetch_object($res_class_tmp)) {
+				if($lig_class_tmp->id==$id_classe) {
 					$chaine_options_classes.="<option value='$lig_class_tmp->id' selected='true'>$lig_class_tmp->classe</option>\n";
 					$temoin_tmp=1;
-					if($lig_class_tmp=mysql_fetch_object($res_class_tmp)){
+					if($lig_class_tmp=mysql_fetch_object($res_class_tmp)) {
 						$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 						$id_class_suiv=$lig_class_tmp->id;
 					}
@@ -712,15 +711,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				else {
 					$chaine_options_classes.="<option value='$lig_class_tmp->id'>$lig_class_tmp->classe</option>\n";
 				}
-				if($temoin_tmp==0){
+				if($temoin_tmp==0) {
 					$id_class_prec=$lig_class_tmp->id;
 				}
 			}
 		}
 		// =================================
 
-		if(isset($id_class_prec)){
-			if($id_class_prec!=0){
+		if(isset($id_class_prec)) {
+			if($id_class_prec!=0) {
 				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec";
 				echo "&amp;type_graphe=$type_graphe";
 				echo "&amp;mode_graphe=$mode_graphe";
@@ -737,8 +736,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "</select> | \n";
 		}
 
-		if(isset($id_class_suiv)){
-			if($id_class_suiv!=0){
+		if(isset($id_class_suiv)) {
+			if($id_class_suiv!=0) {
 				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_suiv";
 				echo "&amp;type_graphe=$type_graphe";
 				echo "&amp;mode_graphe=$mode_graphe";
@@ -760,7 +759,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	$eleve1=isset($_POST['eleve1']) ? $_POST['eleve1'] : NULL;
 	// Login d'un élève réclamé par Précédent/Suivant:
 	$eleve1b=isset($_POST['eleve1b']) ? $_POST['eleve1b'] : NULL;
-	if($eleve1b!=''){
+	if($eleve1b!='') {
 		$eleve1=$eleve1b;
 	}
 	/*
@@ -808,8 +807,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : NULL;
 	//$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : "toutes_periodes";
 	$choix_periode=isset($_POST['choix_periode']) ? $_POST['choix_periode'] : "periode";
-	//if($choix_periode!='toutes_periodes'){
-	if(($choix_periode!='toutes_periodes')&&(isset($_POST['periode']))){
+	//if($choix_periode!='toutes_periodes') {
+	if(($choix_periode!='toutes_periodes')&&(isset($_POST['periode']))) {
 		$periode=$_POST['periode'];
 	}
 	else{
@@ -825,11 +824,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	// On récupère de $_POST les paramètres d'affichage s'ils ont été transmis, sinon, on les récupère dans la base MySQL.
 
 	//$affiche_photo=isset($_POST['affiche_photo']) ? $_POST['affiche_photo'] : '';
-	if(isset($_POST['affiche_photo'])){
+	if(isset($_POST['affiche_photo'])) {
 		$affiche_photo=$_POST['affiche_photo'];
 	}
 	else{
-		if(getSettingValue('graphe_affiche_photo')){
+		if(getSettingValue('graphe_affiche_photo')) {
 			$affiche_photo=getSettingValue('graphe_affiche_photo');
 		}
 		else{
@@ -837,11 +836,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
-	if(isset($_POST['largeur_imposee_photo'])){
+	if(isset($_POST['largeur_imposee_photo'])) {
 		$largeur_imposee_photo=$_POST['largeur_imposee_photo'];
 	}
 	else{
-		if(getSettingValue('graphe_largeur_imposee_photo')){
+		if(getSettingValue('graphe_largeur_imposee_photo')) {
 			$largeur_imposee_photo=getSettingValue('graphe_largeur_imposee_photo');
 		}
 		else{
@@ -849,14 +848,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 	// On s'assure que la largeur est valide:
-	if((strlen(my_ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")){$largeur_imposee_photo=100;}
+	if((strlen(my_ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")) {$largeur_imposee_photo=100;}
 
 
-	if(isset($_POST['affiche_mgen'])){
+	if(isset($_POST['affiche_mgen'])) {
 		$affiche_mgen=$_POST['affiche_mgen'];
 	}
 	else{
-		if(getSettingValue('graphe_affiche_mgen')){
+		if(getSettingValue('graphe_affiche_mgen')) {
 			$affiche_mgen=getSettingValue('graphe_affiche_mgen');
 		}
 		else{
@@ -864,11 +863,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
-	if(isset($_POST['affiche_minmax'])){
+	if(isset($_POST['affiche_minmax'])) {
 		$affiche_minmax=$_POST['affiche_minmax'];
 	}
 	else{
-		if(getSettingValue('graphe_affiche_minmax')){
+		if(getSettingValue('graphe_affiche_minmax')) {
 			$affiche_minmax=getSettingValue('graphe_affiche_minmax');
 		}
 		else{
@@ -876,11 +875,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
-	if(isset($_POST['affiche_moy_annuelle'])){
+	if(isset($_POST['affiche_moy_annuelle'])) {
 		$affiche_moy_annuelle=$_POST['affiche_moy_annuelle'];
 	}
 	else{
-		if(getSettingValue('graphe_affiche_moy_annuelle')){
+		if(getSettingValue('graphe_affiche_moy_annuelle')) {
 			$affiche_moy_annuelle=getSettingValue('graphe_affiche_moy_annuelle');
 		}
 		else{
@@ -890,22 +889,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 	/*
-	if(isset($_POST['type_graphe'])){
+	if(isset($_POST['type_graphe'])) {
 
 		//echo "\$_POST['type_graphe']=".$_POST['type_graphe']."<br />\n";
 
-		if($_POST['type_graphe']=='etoile'){
+		if($_POST['type_graphe']=='etoile') {
 			$type_graphe='etoile';
 		}
 		else{
 			$type_graphe='courbe';
 		}
 	}
-	elseif(isset($_GET['type_graphe'])){
+	elseif(isset($_GET['type_graphe'])) {
 
 		//echo "\$_GET['type_graphe']=".$_GET['type_graphe']."<br />\n";
 
-		if($_GET['type_graphe']=='etoile'){
+		if($_GET['type_graphe']=='etoile') {
 			$type_graphe='etoile';
 		}
 		else{
@@ -913,7 +912,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 	else{
-		if(getSettingValue('graphe_type_graphe')){
+		if(getSettingValue('graphe_type_graphe')) {
 			$type_graphe=getSettingValue('graphe_type_graphe');
 		}
 		else{
@@ -924,78 +923,78 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//echo "\$type_graphe=".$type_graphe."<br />\n";
 	*/
 
-	if(isset($_POST['largeur_graphe'])){
+	if(isset($_POST['largeur_graphe'])) {
 		$largeur_graphe=$_POST['largeur_graphe'];
 	}
 	else{
-		if(getSettingValue('graphe_largeur_graphe')){
+		if(getSettingValue('graphe_largeur_graphe')) {
 			$largeur_graphe=getSettingValue('graphe_largeur_graphe');
 		}
 		else{
 			$largeur_graphe=600;
 		}
 	}
-	if((strlen(my_ereg_replace("[0-9]","",$largeur_graphe))!=0)||($largeur_graphe=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$largeur_graphe))!=0)||($largeur_graphe=="")) {
 		$largeur_graphe=600;
 	}
 
 
-	if(isset($_POST['hauteur_graphe'])){
+	if(isset($_POST['hauteur_graphe'])) {
 		$hauteur_graphe=$_POST['hauteur_graphe'];
 		//echo "\$hauteur_graphe=$hauteur_graphe<br />";
 	}
 	else{
-		if(getSettingValue('graphe_hauteur_graphe')){
+		if(getSettingValue('graphe_hauteur_graphe')) {
 			$hauteur_graphe=getSettingValue('graphe_hauteur_graphe');
 		}
 		else{
 			$hauteur_graphe=400;
 		}
 	}
-	if((strlen(my_ereg_replace("[0-9]","",$hauteur_graphe))!=0)||($hauteur_graphe=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$hauteur_graphe))!=0)||($hauteur_graphe=="")) {
 		$hauteur_graphe=400;
 	}
 
 
-	if(isset($_POST['taille_police'])){
+	if(isset($_POST['taille_police'])) {
 		$taille_police=$_POST['taille_police'];
 	}
 	else{
-		if(getSettingValue('graphe_taille_police')){
+		if(getSettingValue('graphe_taille_police')) {
 			$taille_police=getSettingValue('graphe_taille_police');
 		}
 		else{
 			$taille_police=2;
 		}
 	}
-	if((strlen(my_ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
 		$taille_police=2;
 	}
 
 
 
-	if(isset($_POST['epaisseur_traits'])){
+	if(isset($_POST['epaisseur_traits'])) {
 		$epaisseur_traits=$_POST['epaisseur_traits'];
 	}
 	else{
-		if(getSettingValue('graphe_epaisseur_traits')){
+		if(getSettingValue('graphe_epaisseur_traits')) {
 			$epaisseur_traits=getSettingValue('graphe_epaisseur_traits');
 		}
 		else{
 			$epaisseur_traits=2;
 		}
 	}
-	if((strlen(my_ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")) {
 		$epaisseur_traits=2;
 	}
 
 
 	// Pour présenter ou non, les noms longs en entier en travers sous le graphe.
-	if(isset($_POST['temoin_image_escalier'])){
+	if(isset($_POST['temoin_image_escalier'])) {
 		$temoin_image_escalier=$_POST['temoin_image_escalier'];
 	}
 	else{
-		if(getSettingValue('graphe_temoin_image_escalier')){
+		if(getSettingValue('graphe_temoin_image_escalier')) {
 			$temoin_image_escalier=getSettingValue('graphe_temoin_image_escalier');
 		}
 		else{
@@ -1005,11 +1004,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 
 	// A zéro caractères, on ne tronque pas
-	if(isset($_POST['tronquer_nom_court'])){
+	if(isset($_POST['tronquer_nom_court'])) {
 		$tronquer_nom_court=$_POST['tronquer_nom_court'];
 	}
 	else{
-		if(getSettingValue('graphe_tronquer_nom_court')){
+		if(getSettingValue('graphe_tronquer_nom_court')) {
 			$tronquer_nom_court=getSettingValue('graphe_tronquer_nom_court');
 		}
 		else{
@@ -1017,11 +1016,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 
+	if(isset($_POST['click_plutot_que_survol_aff_app'])) {
+		$click_plutot_que_survol_aff_app=$_POST['click_plutot_que_survol_aff_app'];
+	}
+	else{
+		if(getSettingValue('graphe_click_plutot_que_survol_aff_app')) {
+			$click_plutot_que_survol_aff_app=getSettingValue('graphe_click_plutot_que_survol_aff_app');
+		}
+		else{
+			$click_plutot_que_survol_aff_app="n";
+		}
+	}
 
 /*	$affiche_photo=isset($_POST['affiche_photo']) ? $_POST['affiche_photo'] : 'non';
 	$largeur_imposee_photo=isset($_POST['largeur_imposee_photo']) ? $_POST['largeur_imposee_photo'] : '100';
 	// On s'assure que la largeur est valide:
-	if((strlen(my_ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")){$largeur_imposee_photo=100;}
+	if((strlen(my_ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")) {$largeur_imposee_photo=100;}
 
 	//$affiche_mgen=isset($_POST['affiche_mgen']) ? $_POST['affiche_mgen'] : '';
 	//$affiche_minmax=isset($_POST['affiche_minmax']) ? $_POST['affiche_minmax'] : '';
@@ -1030,21 +1040,21 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	$affiche_moy_annuelle=isset($_POST['affiche_moy_annuelle']) ? $_POST['affiche_moy_annuelle'] : 'non';
 
 	$largeur_graphe=isset($_POST['largeur_graphe']) ? $_POST['largeur_graphe'] : '600';
-	if((strlen(my_ereg_replace("[0-9]","",$largeur_graphe))!=0)||($largeur_graphe=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$largeur_graphe))!=0)||($largeur_graphe=="")) {
 		$largeur_graphe=600;
 	}
 	$hauteur_graphe=isset($_POST['hauteur_graphe']) ? $_POST['hauteur_graphe'] : '400';
-	if((strlen(my_ereg_replace("[0-9]","",$hauteur_graphe))!=0)||($hauteur_graphe=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$hauteur_graphe))!=0)||($hauteur_graphe=="")) {
 		$hauteur_graphe=400;
 	}
 
 	$taille_police=isset($_POST['taille_police']) ? $_POST['taille_police'] : '3';
-	if((strlen(my_ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
 		$taille_police=3;
 	}
 
 	$epaisseur_traits=isset($_POST['epaisseur_traits']) ? $_POST['epaisseur_traits'] : '2';
-	if((strlen(my_ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
+	if((strlen(my_ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")) {
 		$epaisseur_traits=2;
 	}
 
@@ -1059,11 +1069,11 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	//========================
 	// AJOUT boireaus 20090115
-	if(isset($_POST['graphe_champ_saisie_avis_fixe'])){
+	if(isset($_POST['graphe_champ_saisie_avis_fixe'])) {
 		$graphe_champ_saisie_avis_fixe=$_POST['graphe_champ_saisie_avis_fixe'];
 	}
 	else{
-		if(getSettingValue('graphe_champ_saisie_avis_fixe')){
+		if(getSettingValue('graphe_champ_saisie_avis_fixe')) {
 			//insert into setting set name='graphe_champ_saisie_avis_fixe',value='y';
 			$graphe_champ_saisie_avis_fixe=getSettingValue('graphe_champ_saisie_avis_fixe');
 		}
@@ -1081,7 +1091,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	if(isset($_POST['parametrer_affichage'])) {
 		if($_POST['parametrer_affichage']=='y') {
 			/*
-			foreach($_POST as $post => $val){
+			foreach($_POST as $post => $val) {
 				echo $post.' : '.$val."<br />\n";
 			}
 			*/
@@ -1179,7 +1189,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			// - modèle de couleurs
 
-			//if($temoin_imageps=='oui'){$checked=" checked='yes'";}else{$checked="";}
+			//if($temoin_imageps=='oui') {$checked=" checked='yes'";}else{$checked="";}
 			//if($temoin_image_escalier=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			//echo "Utiliser ImagePs: <input type='checkbox' name='temoin_imageps' value='oui'$checked /><br />\n";
 			//echo "<tr><td><label for='temoin_image_escalier' style='cursor: pointer;'>Afficher les noms longs de matières:<br />(<i>en légende sous le graphe</i>)</label></td><td><input type='checkbox' name='temoin_image_escalier' id='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
@@ -1192,12 +1202,24 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			//echo "<tr><td>Tronquer le nom court<br />de matière à <a href='javascript:alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
 			echo "<tr><td><label for='tronquer_nom_court' style='cursor: pointer;'>Tronquer le nom court de la matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\");return false;'>X</a> caractères:<br />(<i>pour éviter des collisions de légendes en haut du graphe</i>)</label></td><td><select name='tronquer_nom_court' id='tronquer_nom_court'>\n";
-			for($i=0;$i<=10;$i++){
+			for($i=0;$i<=10;$i++) {
 				if($tronquer_nom_court==$i) {$selected=" selected='yes'";} else {$selected="";}
 				echo "<option value='$i'$selected>$i</option>\n";
 			}
 			echo "</select></td></tr>\n";
 
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<label for='click_plutot_que_survol_aff_app' style='cursor: pointer;'>Afficher les appréciations en infobulles lors du&nbsp;:</label>\n";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			if($click_plutot_que_survol_aff_app=='y') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<input type='radio' name='click_plutot_que_survol_aff_app' id='click_plutot_que_survol_aff_app_y' value='y'$checked /><label for='click_plutot_que_survol_aff_app_y' style='cursor: pointer;'> clic</label>/";
+			if($click_plutot_que_survol_aff_app!='y') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='click_plutot_que_survol_aff_app_n' style='cursor: pointer;'> survol</label><input type='radio' name='click_plutot_que_survol_aff_app' id='click_plutot_que_survol_aff_app_n' value='n'$checked />";
+			echo "</td>\n";
+			echo "</tr>\n";
 
 			//========================
 			// AJOUT boireaus 20090115
@@ -1288,9 +1310,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 	/*
 	if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
-		if(!isset($eleve1)){
+		if(!isset($eleve1)) {
 			$call_eleve = mysql_query("SELECT DISTINCT e.login FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' and e.login = c.login) ORDER BY nom,prenom LIMIT 1");
-			if(mysql_num_rows($call_eleve)!=0){
+			if(mysql_num_rows($call_eleve)!=0) {
 				$ligtmp=mysql_fetch_object($call_eleve);
 				$eleve1=$ligtmp->login;
 				$eleve2='moyclasse';
@@ -1330,18 +1352,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	//echo "\$eleve1=$eleve1 et \$affiche_photo=$affiche_photo<br />";
 
 	// Affichage de la photo si elle existe:
-	if((isset($eleve1))&&($affiche_photo!="non")){
+	if((isset($eleve1))&&($affiche_photo!="non")) {
 		//$chemin_photos='/var/wwws/gepi/photos';
 
 		$sql="SELECT elenoet FROM eleves WHERE login='$eleve1'";
 		$res_elenoet=mysql_query($sql);
-		if(mysql_num_rows($res_elenoet)==1){
+		if(mysql_num_rows($res_elenoet)==1) {
 			$lig_elenoet=mysql_fetch_object($res_elenoet);
 			$elenoet1=$lig_elenoet->elenoet;
 
 			/*
-			//if(file_exists("$chemin_photos/$eleve1.jpg")){
-			if(file_exists("../photos/eleves/$elenoet1.jpg")){
+			//if(file_exists("$chemin_photos/$eleve1.jpg")) {
+			if(file_exists("../photos/eleves/$elenoet1.jpg")) {
 				// Récupérer les dimensions de la photo...
 				//$dimimg=getimagesize("../photos/$eleve1.jpg");
 				$dimimg=getimagesize("../photos/eleves/$elenoet1.jpg");
@@ -1353,7 +1375,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 				//echo "<img src='../photos/$eleve1.jpg' width='$largimg' height='$hautimg'>\n";
 				echo "<img src='../photos/eleves/$elenoet1.jpg' width='$largimg' height='$hautimg' alt='Photo de $eleve1' />\n";
 			}
-			elseif(file_exists("../photos/eleves/0$elenoet1.jpg")){
+			elseif(file_exists("../photos/eleves/0$elenoet1.jpg")) {
 				// Récupérer les dimensions de la photo...
 				//$dimimg=getimagesize("../photos/$eleve1.jpg");
 				$dimimg=getimagesize("../photos/eleves/0$elenoet1.jpg");
@@ -1367,9 +1389,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 			*/
 			$photo=nom_photo($elenoet1);
-			//if("$photo"!=""){
-			  if ($photo){
-				//if(file_exists("../photos/eleves/$photo")){
+			//if("$photo"!="") {
+			  if ($photo) {
+				//if(file_exists("../photos/eleves/$photo")) {
 					//$dimimg=getimagesize("../photos/eleves/$photo");
 					$dimimg=getimagesize($photo);
 
@@ -1400,14 +1422,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		echo "<select name='eleve1' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 		$cpt=1;
 		$numeleve1=0;
-		while($ligne=mysql_fetch_object($call_eleve)){
+		while($ligne=mysql_fetch_object($call_eleve)) {
 			// Le login est la clé liant les tables eleves et j_eleves_classes
 			$tab_login_eleve[$cpt]="$ligne->login";
 			$tab_nomprenom_eleve[$cpt]="$ligne->nom $ligne->prenom";
 
 			$tab_nom_prenom_eleve["$ligne->login"]=$tab_nomprenom_eleve[$cpt];
 
-			if($tab_login_eleve[$cpt]==$eleve1){
+			if($tab_login_eleve[$cpt]==$eleve1) {
 				$selected=" selected='yes'";
 				$numeleve1=$cpt;
 			}
@@ -1424,8 +1446,8 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		echo "et comparer avec:<br />\n";
 		echo "<select name='eleve2' onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
-		for($cpt=1;$cpt<=$nombreligne;$cpt++){
-			if($tab_login_eleve[$cpt]==$eleve2){
+		for($cpt=1;$cpt<=$nombreligne;$cpt++) {
+			if($tab_login_eleve[$cpt]==$eleve2) {
 				$selected=" selected='yes'";
 				$numeleve2=$cpt;
 			}
@@ -1434,12 +1456,12 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 			echo "<option value='$tab_login_eleve[$cpt]'$selected>$tab_nomprenom_eleve[$cpt]</option>\n";
 		}
-		if($eleve2=='moyclasse'){$selected=" selected='yes'";}else{$selected="";}
-		if(!isset($eleve2)){$selected=" selected='yes'";}
+		if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
+		if(!isset($eleve2)) {$selected=" selected='yes'";}
 		echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
-		if($eleve2=='moymax'){$selected=" selected='yes'";}else{$selected="";}
+		if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
 		echo "<option value='moymax'$selected>Moyenne max.</option>\n";
-		if($eleve2=='moymin'){$selected=" selected='yes'";}else{$selected="";}
+		if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
 		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
 		echo "</select>\n";
 		echo "<br />\n";
@@ -1451,10 +1473,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$suivant=$numeleve1+1;
 		echo "precedent=$precedent\n";
 		echo "suivant=$suivant\n";
-		echo "function eleve_precedent(){
-	if(document.getElementById('numeleve1').value>1){";
+		echo "function eleve_precedent() {
+	if(document.getElementById('numeleve1').value>1) {";
 	    // On effectue un test pour éviter de tenter de chercher $tab_login_eleve[$precedent] si $precedent=0
-	    if($precedent>0){
+	    if($precedent>0) {
 	        echo "		document.getElementById('eleve1b').value='$tab_login_eleve[$precedent]';
 		document.forms['form_choix_eleves'].submit();";
 	    }
@@ -1466,9 +1488,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 }
 
-function eleve_suivant(){
-	if(document.getElementById('numeleve1').value<$nombreligne){";
-	    if($suivant<$nombreligne+1){
+function eleve_suivant() {
+	if(document.getElementById('numeleve1').value<$nombreligne) {";
+	    if($suivant<$nombreligne+1) {
 	        echo "		document.getElementById('eleve1b').value='$tab_login_eleve[$suivant]';
 		document.forms['form_choix_eleves'].submit();";
 	    }
@@ -1487,7 +1509,7 @@ function eleve_suivant(){
 	 	// Cette valeur l'emporte sur le contenu de 'eleve1'
 		echo "<input type='hidden' name='eleve1b' id='eleve1b' value='' />\n";
 
-	    if($precedent>0){
+	    if($precedent>0) {
 			//echo "<input type='button' name='precedent' value='<<' onClick='eleve_precedent();' />\n";
 			echo "<a href='javascript:eleve_precedent();'>Élève précédent</a><br />\n";
 		}
@@ -1495,7 +1517,7 @@ function eleve_suivant(){
 		//echo "<input type='submit' name='choix_eleves' value='Afficher' />\n";
 		echo "<a href=\"javascript:document.forms['form_choix_eleves'].submit();\">Actualiser</a>\n";
 
-	    if($suivant<$nombreligne+1){
+	    if($suivant<$nombreligne+1) {
 			echo "<br />\n";
 			//echo "<input type='button' name='suivant' value='>>' onClick='eleve_suivant();' />\n";
 			echo "<a href='javascript:eleve_suivant();'>Élève suivant</a>";
@@ -1512,12 +1534,12 @@ function eleve_suivant(){
 		echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
 		echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";
 		echo "et <select name='eleve2'>\n";
-		if($eleve2=='moyclasse'){$selected=" selected='yes'";}else{$selected="";}
-		if(!isset($eleve2)){$selected=" selected='yes'";}
+		if($eleve2=='moyclasse') {$selected=" selected='yes'";}else{$selected="";}
+		if(!isset($eleve2)) {$selected=" selected='yes'";}
 		echo "<option value='moyclasse'$selected>Moyenne classe</option>\n";
-		if($eleve2=='moymax'){$selected=" selected='yes'";}else{$selected="";}
+		if($eleve2=='moymax') {$selected=" selected='yes'";}else{$selected="";}
 		echo "<option value='moymax'$selected>Moyenne max.</option>\n";
-		if($eleve2=='moymin'){$selected=" selected='yes'";}else{$selected="";}
+		if($eleve2=='moymin') {$selected=" selected='yes'";}else{$selected="";}
 		echo "<option value='moymin'$selected>Moyenne min.</option>\n";
 		echo "</select>\n";
 		echo "<br />\n";
@@ -1526,18 +1548,18 @@ function eleve_suivant(){
 
 	// Choix de la période
 	echo "Choisir la période:<br />\n";
-	if($choix_periode=='periode'){$checked=" checked='yes'";}else{$checked="";}
+	if($choix_periode=='periode') {$checked=" checked='yes'";}else{$checked="";}
 	//echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' checked='true'$checked />\n";
 	echo "<input type='radio' name='choix_periode' id='choix_periode' value='periode' $checked onchange=\"document.forms['form_choix_eleves'].submit();\" />\n";
 	echo "<select name='periode' onfocus=\"document.getElementById('choix_periode').checked='true'\" onchange=\"document.forms['form_choix_eleves'].submit();\">\n";
 	$num_periode_choisie=1;
-	for($i=1;$i<$nb_periode;$i++){
-		if($periode==$nom_periode[$i]){$selected=" selected='yes'";$num_periode_choisie=$i;}else{$selected="";}
+	for($i=1;$i<$nb_periode;$i++) {
+		if($periode==$nom_periode[$i]) {$selected=" selected='yes'";$num_periode_choisie=$i;}else{$selected="";}
 		echo "<option value='$nom_periode[$i]'$selected>$nom_periode[$i]</option>\n";
 	}
 	echo "</select>\n";
 	echo "<br />\n";
-	if($choix_periode=='toutes_periodes'){$checked=" checked='yes'";}else{$checked="";}
+	if($choix_periode=='toutes_periodes') {$checked=" checked='yes'";}else{$checked="";}
 	echo "<label for='choix_toutes_periodes' style='cursor: pointer;'><input type='radio' name='choix_periode' id='choix_toutes_periodes' value='toutes_periodes'$checked onchange=\"document.forms['form_choix_eleves'].submit();\" /> Toutes les périodes</label>\n";
 
 	echo "<hr width='150' />\n";
@@ -1569,11 +1591,11 @@ function eleve_suivant(){
 
 /*
 	echo "<script type='text/javascript'>
-	function display_div(){
-		if(document.getElementById('id_params').checked==true){
+	function display_div() {
+		if(document.getElementById('id_params').checked==true) {
 			document.getElementById('div_params').style.display='block';
-			for(i=1;i<=4;i++){
-				if(document.getElementById('div_categorie_params'+i).checked==true){
+			for(i=1;i<=4;i++) {
+				if(document.getElementById('div_categorie_params'+i).checked==true) {
 					document.getElementById('div_params_'+i).style.display='block';
 				}
 				else{
@@ -1599,7 +1621,7 @@ function eleve_suivant(){
 	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params2' value='2' onchange='display_div()' /> </td><td>Dimensions</td></tr>\n";
 	echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params3' value='3' onchange='display_div()' /> </td><td>Photo</td></tr>\n";
 
-	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 		echo "<tr><td><input type='radio' name='div_categorie_params' id='div_categorie_params4' value='4' onchange='display_div()' /> </td><td>Couleurs</td></tr>\n";
 	}
 
@@ -1610,15 +1632,15 @@ function eleve_suivant(){
 	echo "<div id='div_params_1' style='display:block; border: 1px solid black;'>";
 	echo "<b>Moyennes et périodes</b><br />";
 
-	if($affiche_mgen=='oui'){$checked=" checked='yes'";}else{$checked="";}
+	if($affiche_mgen=='oui') {$checked=" checked='yes'";}else{$checked="";}
 	echo "<table border='0'>\n";
 	echo "<tr valign='top'><td>Afficher la moyenne générale:</td><td><input type='checkbox' name='affiche_mgen' value='oui'$checked /></td></tr>\n";
 
-	if($affiche_minmax=='oui'){$checked=" checked='yes'";}else{$checked="";}
+	if($affiche_minmax=='oui') {$checked=" checked='yes'";}else{$checked="";}
 	echo "<tr valign='top'><td>Afficher les bandes Min/max:<br />(<i>pas en mode 'Toutes_les_periodes'</i>)</td><td><input type='checkbox' name='affiche_minmax' value='oui'$checked /></td></tr>\n";
 
 	//$affiche_moy_annuelle
-	if($affiche_moy_annuelle=='oui'){$checked=" checked='yes'";}else{$checked="";}
+	if($affiche_moy_annuelle=='oui') {$checked=" checked='yes'";}else{$checked="";}
 	echo "<tr valign='top'><td>Moyennes annuelles:<br />(<i>en mode 'Toutes_les_periodes' uniquement</i>)</td><td><input type='checkbox' name='affiche_moy_annuelle' value='oui'$checked /></td></tr>\n";
 
 	echo "</table>\n";
@@ -1637,31 +1659,31 @@ function eleve_suivant(){
 
 	// - taille des polices
 	echo "<tr><td>Taille des polices:</td><td><select name='taille_police'>\n";
-	for($i=1;$i<=6;$i++){
-		if($taille_police==$i){$selected=" selected='yes'";}else{$selected="";}
+	for($i=1;$i<=6;$i++) {
+		if($taille_police==$i) {$selected=" selected='yes'";}else{$selected="";}
 		echo "<option value='$i'$selected>$i</option>\n";
 	}
 	echo "</select></td></tr>\n";
 
 	// - epaisseur des traits
 	echo "<tr><td>Epaisseur des courbes:</td><td><select name='epaisseur_traits'>\n";
-	for($i=1;$i<=6;$i++){
-		if($epaisseur_traits==$i){$selected=" selected='yes'";}else{$selected="";}
+	for($i=1;$i<=6;$i++) {
+		if($epaisseur_traits==$i) {$selected=" selected='yes'";}else{$selected="";}
 		echo "<option value='$i'$selected>$i</option>\n";
 	}
 	echo "</select></td></tr>\n";
 
 	// - modèle de couleurs
 
-	//if($temoin_imageps=='oui'){$checked=" checked='yes'";}else{$checked="";}
-	if($temoin_image_escalier=='oui'){$checked=" checked='yes'";}else{$checked="";}
+	//if($temoin_imageps=='oui') {$checked=" checked='yes'";}else{$checked="";}
+	if($temoin_image_escalier=='oui') {$checked=" checked='yes'";}else{$checked="";}
 	//echo "Utiliser ImagePs: <input type='checkbox' name='temoin_imageps' value='oui'$checked /><br />\n";
 	echo "<tr><td>Afficher les noms<br />longs de matières:</td><td><input type='checkbox' name='temoin_image_escalier' value='oui'$checked /></td></tr>\n";
 
 	//echo "<tr><td>Tronquer le nom court<br />de matière à <a href='javascript:alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
 	echo "<tr><td>Tronquer le nom court<br />de matière à <a href='#' onclick='alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
-	for($i=0;$i<=10;$i++){
-		if($tronquer_nom_court==$i){$selected=" selected='yes'";}else{$selected="";}
+	for($i=0;$i<=10;$i++) {
+		if($tronquer_nom_court==$i) {$selected=" selected='yes'";}else{$selected="";}
 		echo "<option value='$i'$selected>$i</option>\n";
 	}
 	echo "</select></td></tr>\n";
@@ -1676,9 +1698,9 @@ function eleve_suivant(){
 	// - Affichage de la photo
 	echo "<div id='div_params_3' style='display:block; border: 1px solid black;'>";
 	echo "<b>Paramètres des photos</b><br />\n";
-	if(($affiche_photo=='')||($affiche_photo=='oui')){$checked=" checked='yes'";}else{$checked="";}
+	if(($affiche_photo=='')||($affiche_photo=='oui')) {$checked=" checked='yes'";}else{$checked="";}
 	echo "Afficher: <input type='radio' name='affiche_photo' value='oui'$checked />O / \n";
-	if($affiche_photo=='non'){$checked=" checked='yes'";}else{$checked="";}
+	if($affiche_photo=='non') {$checked=" checked='yes'";}else{$checked="";}
 	echo "N<input type='radio' name='affiche_photo' value='non'$checked /><br />\n";
 
 	// - Largeur imposée pour la photo
@@ -1691,7 +1713,7 @@ function eleve_suivant(){
 
 	//echo "<b>Paramètres des photos</b><br />";
 	echo "<div id='div_params_4' style='display:block; border: 1px solid black;'>";
-	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 		echo "<b>Couleurs</b><br />\n";
 		//echo "<hr width='150' />\n";
 		//echo "<p>\n";
@@ -1700,7 +1722,7 @@ function eleve_suivant(){
 	}
 	echo "</div>\n";
 
-	if($_SESSION['statut']=='scolarite'){
+	if($_SESSION['statut']=='scolarite') {
 		//echo "<input type='checkbox' name='save_params' value='y' /> <b>Enregistrer les paramètres</b>\n";
 		echo "<input type='hidden' name='save_params' value='' />\n";
 		echo "<input type='button' onClick=\"document.forms['form_choix_eleves'].save_params.value='y';document.forms['form_choix_eleves'].submit();\" name='Enregistrer' value='Enregistrer les paramètres' />\n";
@@ -1725,9 +1747,9 @@ function eleve_suivant(){
 	echo "<hr width='150' />\n";
 
 	echo "<script type='text/javascript'>
-	function fct_desactivation_infobulle(){
-		if(document.getElementById('desactivation_infobulle')){
-			if(document.getElementById('desactivation_infobulle').checked==true){
+	function fct_desactivation_infobulle() {
+		if(document.getElementById('desactivation_infobulle')) {
+			if(document.getElementById('desactivation_infobulle').checked==true) {
 				desactivation_infobulle='y';
 			}
 			else{
@@ -1738,9 +1760,9 @@ function eleve_suivant(){
 </script>\n";
 
 	echo "<label for='desactivation_infobulle' style='cursor: pointer;'><input type='checkbox' name='desactivation_infobulle' id='desactivation_infobulle' value='y' onchange='fct_desactivation_infobulle();' ";
-	if($desactivation_infobulle=="y"){echo "checked ";}
+	if($desactivation_infobulle=="y") {echo "checked ";}
 	echo "/> Désactiver l'affichage des appréciations</label>\n";
-	if($desactivation_infobulle=="y"){
+	if($desactivation_infobulle=="y") {
 		echo "<script type='text/javascript'>desactivation_infobulle='y';</script>\n";
 	}
 	else{
@@ -1845,7 +1867,7 @@ function eleve_suivant(){
 	
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1){
+							if($suivant<$nombreligne+1) {
 								$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 	
@@ -1874,7 +1896,7 @@ function eleve_suivant(){
 	
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1){
+							if($suivant<$nombreligne+1) {
 								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 	
@@ -1958,7 +1980,7 @@ function eleve_suivant(){
 	
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1){
+							if($suivant<$nombreligne+1) {
 								$texte.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 	
@@ -1987,7 +2009,7 @@ function eleve_suivant(){
 	
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
-							if($suivant<$nombreligne+1){
+							if($suivant<$nombreligne+1) {
 								$texte_saisie_avis_fixe.=" <input type='button' NAME='ok1' value='Enregistrer et passer au suivant' onClick=\"save_avis('suivant');\" />\n";
 							}
 	
@@ -2024,15 +2046,15 @@ function eleve_suivant(){
 	// Et calcul de l'age (si le serveur est à l'heure;o).
 	/*
 	if((isset($eleve1) AND $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
-		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $periode != "")){
+		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $periode != "")) {
 	*/
 	if((isset($eleve1) AND $_SESSION['statut'] != "responsable" AND $_SESSION['statut'] != "eleve")
 		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $periode != "")
-		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $choix_periode == "toutes_periodes")){
+		OR (($_SESSION['statut'] == "responsable" OR $_SESSION['statut'] == "eleve") AND $choix_periode == "toutes_periodes")) {
 		// Informations sur l'élève $eleve1:
 		$sql="SELECT * FROM eleves WHERE login='$eleve1'";
 		$result_infos_eleve=mysql_query($sql);
-		if(mysql_num_rows($result_infos_eleve)==1){
+		if(mysql_num_rows($result_infos_eleve)==1) {
 			$ligne=mysql_fetch_object($result_infos_eleve);
 			$sexe1=$ligne->sexe;
 			$nom1=$ligne->nom;
@@ -2053,19 +2075,19 @@ function eleve_suivant(){
 		$jour = $aujourdhui['mday'];
 		$annee = $aujourdhui['year'];
 
-		if($mois>$moisdatenais1){
+		if($mois>$moisdatenais1) {
 			$age1=$annee-$anneedatenais1;
 			$precision1=$mois-$moisdatenais1;
 			$precision1="ans et $precision1 mois";
 		}
 		else{
-			if($mois<$moisdatenais1){
+			if($mois<$moisdatenais1) {
 				$age1=$annee-$anneedatenais1-1;
 				$precision1=12-($moisdatenais1-$mois);
 				$precision1="ans et $precision1 mois";
 			}
 			else{
-				if($jour>=$jourdatenais1){
+				if($jour>=$jourdatenais1) {
 					$age1=$annee-$anneedatenais1;
 					$precision1="ans ce mois-ci";
 				}
@@ -2079,11 +2101,11 @@ function eleve_suivant(){
 		$sql="SELECT * FROM j_eleves_regime WHERE login='$eleve1'";
 		$result_infos_eleve=mysql_query($sql);
 
-		if(mysql_num_rows($result_infos_eleve)==1){
+		if(mysql_num_rows($result_infos_eleve)==1) {
 			$ligne=mysql_fetch_object($result_infos_eleve);
 			$doublant1=$ligne->doublant;
-			if("$doublant1"=="R"){
-				if($sexe1=="M"){$doublant1="Redoublant";}else{$doublant1="Redoublante";}
+			if("$doublant1"=="R") {
+				if($sexe1=="M") {$doublant1="Redoublant";}else{$doublant1="Redoublante";}
 			}
 		}
 	//}
@@ -2094,17 +2116,17 @@ function eleve_suivant(){
 		$matiere_nom=array();
 
 		// Séries:
-		if($choix_periode=="periode"){
+		if($choix_periode=="periode") {
 			$nb_series=2;
 			$serie=array();
-			for($i=1;$i<=$nb_series;$i++){$serie[$i]="";}
+			for($i=1;$i<=$nb_series;$i++) {$serie[$i]="";}
 
 			//echo "Elève: $eleve1<br />periode=$periode<br />";
 
 			//$num_periode
 			$sql="SELECT num_periode FROM periodes WHERE id_classe='$id_classe' AND nom_periode='".$periode."'";
 			$resultat=mysql_query($sql);
-			if(mysql_num_rows($resultat)==0){
+			if(mysql_num_rows($resultat)==0) {
 				//??? Toutes les périodes ?
 				echo "<p>PB periode... $periode</p>";
 			}
@@ -2283,7 +2305,7 @@ function eleve_suivant(){
 						affiche_debug("$sql<br />");
 						$app_eleve_query=mysql_query($sql);
 
-						if(mysql_num_rows($app_eleve_query)>0){
+						if(mysql_num_rows($app_eleve_query)>0) {
 							$ligtmp=mysql_fetch_object($app_eleve_query);
 
 							$titre_bulle=htmlentities($matiere_nom[$cpt])." (<i>$periode</i>)";
@@ -2292,7 +2314,7 @@ function eleve_suivant(){
 							$texte_bulle.="</div>\n";
 							//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
 
-							if($type_graphe=='etoile'){
+							if($type_graphe=='etoile') {
 								$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'y','y','n','n');
 							}
 							else{
@@ -2326,7 +2348,7 @@ function eleve_suivant(){
 			if($tab_acces_app[$num_periode]=="y") {
 				$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode' ORDER BY periode";
 				$res_avis=mysql_query($sql);
-				if(mysql_num_rows($res_avis)>0){
+				if(mysql_num_rows($res_avis)>0) {
 					$lig_avis=mysql_fetch_object($res_avis);
 					if($lig_avis->avis!="") {
 						$titre_bulle="Avis du Conseil de classe";
@@ -2365,7 +2387,7 @@ function eleve_suivant(){
 			// $nbMat=count($matiere);
 			// $largeurMat=round($largeur/$nbMat);
 
-			if(count($tab_imagemap)>0){
+			if(count($tab_imagemap)>0) {
 				$largeurGrad=50;
 				$largeurBandeDroite=80;
 				$largeur_utile=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
@@ -2373,12 +2395,12 @@ function eleve_suivant(){
 				$largeurMat=round($largeur_utile/$nbMat);
 
 				echo "<map name='imagemap'>\n";
-				for($i=0;$i<count($tab_imagemap);$i++){
+				for($i=0;$i<count($tab_imagemap);$i++) {
 					$x0=$largeurGrad+$i*$largeurMat;
 					$x1=$x0+$largeurMat;
 					//echo "<area href=\"javascript:return false;\" onMouseover=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display=''\" onMouseout=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display='none'\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
-					if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)){
+					if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)) {
 						//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">\n";
 
 						if($click_plutot_que_survol_aff_app=="y") {
@@ -2395,7 +2417,7 @@ function eleve_suivant(){
 				$x0=$largeurGrad+$i*$largeurMat;
 				$x1=$largeur_graphe;
 				//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
-				if($temoin_avis_present=="y"){
+				if($temoin_avis_present=="y") {
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_avis_1','y',-10,20);\" onMouseout=\"cacher_div('div_avis_1');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 
 					if($click_plutot_que_survol_aff_app=="y") {
@@ -2421,7 +2443,7 @@ function eleve_suivant(){
 				$hauteurTotale=$hauteur_graphe;
 				$legendy[2]=$choix_periode;
 				$x0=round($largeurTotale/2);
-				if($legendy[2]=='Toutes_les_périodes'){
+				if($legendy[2]=='Toutes_les_périodes') {
 					$L=round(($hauteurTotale-6*(ImageFontHeight($taille_police)+5))/2);
 					//$y0=round(3*(ImageFontHeight($taille_police))+5)+$L;
 					$y0=round(4*(ImageFontHeight($taille_police))+5)+$L;
@@ -2451,7 +2473,7 @@ function eleve_suivant(){
 				// Polygone 20/20
 				unset($tab20);
 				$tab20=array();
-				for($i=0;$i<$nbMat;$i++){
+				for($i=0;$i<$nbMat;$i++) {
 					$angle=round($i*360/$nbMat);
 					$tab=coordcirc(20,$angle);
 
@@ -2463,7 +2485,7 @@ function eleve_suivant(){
 
 				//=================================
 				// Légendes Matières: -> Coordonnées des textes de matières
-				for($i=0;$i<count($tab20)/2;$i++){
+				for($i=0;$i<count($tab20)/2;$i++) {
 					$angle=round($i*360/$nbMat);
 
 					//$texte=$matiere[$i+1];
@@ -2472,19 +2494,19 @@ function eleve_suivant(){
 
 					$tmp_taille_police=$taille_police;
 
-					if($angle==0){
+					if($angle==0) {
 						$x=$tab20[2*$i]+5;
 
 						$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
 
-						if($x_verif>$largeurTotale){
-							for($j=$taille_police;$j>1;$j--){
+						if($x_verif>$largeurTotale) {
+							for($j=$taille_police;$j>1;$j--) {
 								$x_verif=$x+strlen($texte)*ImageFontWidth($j);
-								if($x_verif<=$largeurTotale){
+								if($x_verif<=$largeurTotale) {
 									break;
 								}
 							}
-							if($x_verif>$largeurTotale){
+							if($x_verif>$largeurTotale) {
 								$j=1;
 							}
 							$tmp_taille_police=$j;
@@ -2492,18 +2514,18 @@ function eleve_suivant(){
 
 						$y=round($tab20[2*$i+1]+$angle*(ImageFontHeight($taille_police)+2)/90);
 					}
-					elseif(($angle>0)&&($angle<90)){
+					elseif(($angle>0)&&($angle<90)) {
 						$x=$tab20[2*$i]+5;
 						$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
 
-						if($x_verif>$largeurTotale){
-							for($j=$taille_police;$j>1;$j--){
+						if($x_verif>$largeurTotale) {
+							for($j=$taille_police;$j>1;$j--) {
 								$x_verif=$x+strlen($texte)*ImageFontWidth($j);
-								if($x_verif<=$largeurTotale){
+								if($x_verif<=$largeurTotale) {
 									break;
 								}
 							}
-							if($x_verif>$largeurTotale){
+							if($x_verif>$largeurTotale) {
 								$j=1;
 							}
 							$tmp_taille_police=$j;
@@ -2511,21 +2533,21 @@ function eleve_suivant(){
 
 						$y=round($tab20[2*$i+1]+$angle*(ImageFontHeight($taille_police)+2)/90);
 					}
-					elseif($angle==90){
+					elseif($angle==90) {
 						$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
 						$y=$tab20[2*$i+1]+ImageFontHeight($taille_police)+2;
 					}
-					elseif(($angle>90)&&($angle<180)){
+					elseif(($angle>90)&&($angle<180)) {
 						$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
 
-						if($x<0){
-							for($j=$taille_police;$j>1;$j--){
+						if($x<0) {
+							for($j=$taille_police;$j>1;$j--) {
 								$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
-								if($x>=0){
+								if($x>=0) {
 									break;
 								}
 							}
-							if($x<0){
+							if($x<0) {
 								$x=1;
 								$j=1;
 							}
@@ -2534,17 +2556,17 @@ function eleve_suivant(){
 
 						$y=round($tab20[2*$i+1]+($angle-90)*(ImageFontHeight($taille_police)-2)/90);
 					}
-					elseif($angle==180){
+					elseif($angle==180) {
 						$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)-5;
 
-						if($x<0){
-							for($j=$taille_police;$j>1;$j--){
+						if($x<0) {
+							for($j=$taille_police;$j>1;$j--) {
 								$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($j)-5;
-								if($x>=0){
+								if($x>=0) {
 									break;
 								}
 							}
-							if($x<0){
+							if($x<0) {
 								$x=1;
 								$j=1;
 							}
@@ -2553,17 +2575,17 @@ function eleve_suivant(){
 
 						$y=round($tab20[2*$i+1]-ImageFontHeight($taille_police)/2);
 					}
-					elseif(($angle>180)&&($angle<270)){
+					elseif(($angle>180)&&($angle<270)) {
 						$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
 
-						if($x<0){
-							for($j=$taille_police;$j>1;$j--){
+						if($x<0) {
+							for($j=$taille_police;$j>1;$j--) {
 								$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
-								if($x>=0){
+								if($x>=0) {
 									break;
 								}
 							}
-							if($x<0){
+							if($x<0) {
 								$x=1;
 								$j=1;
 							}
@@ -2572,7 +2594,7 @@ function eleve_suivant(){
 
 						$y=round($tab20[2*$i+1]-($angle-180)*(ImageFontHeight($taille_police)-2)/90);
 					}
-					elseif($angle==270){
+					elseif($angle==270) {
 						$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
 						//$y=$tab20[2*$i+1]-ImageFontHeight($taille_police)-2;
 						$y=$tab20[2*$i+1]-2*ImageFontHeight($taille_police)-2;
@@ -2581,14 +2603,14 @@ function eleve_suivant(){
 						$x=$tab20[2*$i]+5;
 						$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
 
-						if($x_verif>$largeurTotale){
-							for($j=$taille_police;$j>1;$j--){
+						if($x_verif>$largeurTotale) {
+							for($j=$taille_police;$j>1;$j--) {
 								$x_verif=$x+strlen($texte)*ImageFontWidth($j);
-								if($x_verif<=$largeurTotale){
+								if($x_verif<=$largeurTotale) {
 									break;
 								}
 							}
-							if($x_verif>$largeurTotale){
+							if($x_verif>$largeurTotale) {
 								$j=1;
 							}
 							$tmp_taille_police=$j;
@@ -2606,7 +2628,7 @@ function eleve_suivant(){
 					$y2=$y+20;
 
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
-					if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)){
+					if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)) {
 						//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
 
 						if($click_plutot_que_survol_aff_app=="y") {
@@ -2652,8 +2674,8 @@ function eleve_suivant(){
 
 			//echo "\$type_graphe=".$type_graphe."<br />\n";
 
-			if($type_graphe=='courbe'){
-				if(count($matiere)>0){
+			if($type_graphe=='courbe') {
+				if(count($matiere)>0) {
 
 					if($mode_graphe=='png') {
 						echo "<img src='draw_graphe.php?";
@@ -2667,7 +2689,7 @@ function eleve_suivant(){
 						echo "&amp;compteur=$compteur";
 						echo "&amp;nb_series=$nb_series";
 						echo "&amp;id_classe=$id_classe";
-						if($affiche_mgen=='oui'){
+						if($affiche_mgen=='oui') {
 							echo "&amp;mgen1=$mgen[1]";
 							echo "&amp;mgen2=$mgen[2]";
 						}
@@ -2677,7 +2699,7 @@ function eleve_suivant(){
 						echo "&amp;hauteur_graphe=$hauteur_graphe";
 						echo "&amp;taille_police=$taille_police";
 						echo "&amp;epaisseur_traits=$epaisseur_traits";
-						if($affiche_minmax=="oui"){
+						if($affiche_minmax=="oui") {
 							echo "&amp;seriemin=$seriemin";
 							echo "&amp;seriemax=$seriemax";
 						}
@@ -2710,7 +2732,7 @@ function eleve_suivant(){
 						// $nbMat=count($matiere);
 						// $largeurMat=round($largeur/$nbMat);
 
-						if(count($tab_imagemap)>0){
+						if(count($tab_imagemap)>0) {
 							$largeurGrad=50;
 							$largeurBandeDroite=80;
 							$largeur_utile=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
@@ -2718,12 +2740,12 @@ function eleve_suivant(){
 							$largeurMat=round($largeur_utile/$nbMat);
 
 							//echo "<map name='imagemap'>\n";
-							for($i=0;$i<count($tab_imagemap);$i++){
+							for($i=0;$i<count($tab_imagemap);$i++) {
 								$x0=$largeurGrad+$i*$largeurMat;
 								$x1=$x0+$largeurMat;
 								//echo "<area href=\"javascript:return false;\" onMouseover=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display=''\" onMouseout=\"document.getElementById('div_matiere_".$tab_imagemap[$i]."').style.display='none'\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 								//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
-								if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)){
+								if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)) {
 
 									if($click_plutot_que_survol_aff_app=="y") {
 										echo "<div onclick=\"delais_afficher_div('div_app_".$tab_imagemap[$i]."','y',-10,20,1,$largeurMat,$hauteur_rect_delais_afficher_div);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;";
@@ -2742,7 +2764,7 @@ function eleve_suivant(){
 							$x0=$largeurGrad+$i*$largeurMat;
 							$x1=$largeur_graphe;
 							//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
-							if($temoin_avis_present=="y"){
+							if($temoin_avis_present=="y") {
 								if($click_plutot_que_survol_aff_app=="y") {
 									echo "<div onclick=\"delais_afficher_div('div_avis_1','y',-10,20,1,$largeurMat,$hauteur_rect_delais_afficher_div);\" onMouseout=\"cacher_div('div_avis_1');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;";
 									//echo " border: 1px dashed green;";
@@ -2771,7 +2793,7 @@ function eleve_suivant(){
 						echo "&amp;compteur=$compteur";
 						echo "&amp;nb_series=$nb_series";
 						echo "&amp;id_classe=$id_classe";
-						if($affiche_mgen=='oui'){
+						if($affiche_mgen=='oui') {
 							echo "&amp;mgen1=$mgen[1]";
 							echo "&amp;mgen2=$mgen[2]";
 						}
@@ -2781,7 +2803,7 @@ function eleve_suivant(){
 						echo "&amp;hauteur_graphe=$hauteur_graphe";
 						echo "&amp;taille_police=$taille_police";
 						echo "&amp;epaisseur_traits=$epaisseur_traits";
-						if($affiche_minmax=="oui"){
+						if($affiche_minmax=="oui") {
 							echo "&amp;seriemin=$seriemin";
 							echo "&amp;seriemax=$seriemax";
 						}
@@ -2812,7 +2834,7 @@ function eleve_suivant(){
 				}
 			}
 			else{
-				if(count($matiere)>0){
+				if(count($matiere)>0) {
 					echo "<img src='draw_graphe_star.php?";
 					//echo "&amp;temp1=$serie[1]";
 					echo "temp1=$serie[1]";
@@ -2824,7 +2846,7 @@ function eleve_suivant(){
 					echo "&amp;compteur=$compteur";
 					echo "&amp;nb_series=$nb_series";
 					echo "&amp;id_classe=$id_classe";
-					if($affiche_mgen=='oui'){
+					if($affiche_mgen=='oui') {
 						echo "&amp;mgen1=$mgen[1]";
 						echo "&amp;mgen2=$mgen[2]";
 					}
@@ -2834,7 +2856,7 @@ function eleve_suivant(){
 					echo "&amp;hauteur_graphe=$hauteur_graphe";
 					echo "&amp;taille_police=$taille_police";
 					echo "&amp;epaisseur_traits=$epaisseur_traits";
-					if($affiche_minmax=="oui"){
+					if($affiche_minmax=="oui") {
 						echo "&amp;seriemin=$seriemin";
 						echo "&amp;seriemax=$seriemax";
 					}
@@ -2854,8 +2876,8 @@ function eleve_suivant(){
 
 
 			/*
-			if(isset($_SESSION['graphe_largeurMat'])){echo "\$_SESSION['graphe_largeurMat']=".$_SESSION['graphe_largeurMat']."<br />";}
-			if(isset($_SESSION['graphe_x0'])){echo "\$_SESSION['graphe_x0']=".$_SESSION['graphe_x0']."<br />";}
+			if(isset($_SESSION['graphe_largeurMat'])) {echo "\$_SESSION['graphe_largeurMat']=".$_SESSION['graphe_largeurMat']."<br />";}
+			if(isset($_SESSION['graphe_x0'])) {echo "\$_SESSION['graphe_x0']=".$_SESSION['graphe_x0']."<br />";}
 			*/
 
 			// $largeurGrad -> 50
@@ -2899,19 +2921,19 @@ function eleve_suivant(){
 			$cpt=0;
 			// Boucle sur l'ordre des matières:
 			// On ne va retenir que les matières du premier élève.
-			while($ligne=mysql_fetch_object($call_classe_infos)){
+			while($ligne=mysql_fetch_object($call_classe_infos)) {
 
 				$sql="SELECT * FROM j_eleves_groupes jeg WHERE (jeg.login='$eleve1' AND jeg.id_groupe='$ligne->id_groupe');";
 				//echo "$sql<br />";
 				affiche_debug("$sql<br />");
 				$eleve_option_query=mysql_query($sql);
-				//if(mysql_num_rows($eleve_option_query)==0){
-				if(mysql_num_rows($eleve_option_query)!=0){
+				//if(mysql_num_rows($eleve_option_query)==0) {
+				if(mysql_num_rows($eleve_option_query)!=0) {
 					$id_groupe[$cpt]=$ligne->id_groupe;
 					$matiere[$cpt]=$ligne->matiere;
 					$matiere_nom[$cpt]=$ligne->nom_complet;
 
-					if($liste_matieres==""){
+					if($liste_matieres=="") {
 						$liste_matieres="$matiere[$cpt]";
 					}
 					else{
@@ -2931,7 +2953,7 @@ function eleve_suivant(){
 
 			// Initialisation des séries:
 			$nb_series=$nb_periode;
-			for($i=1;$i<=$nb_series;$i++){$serie[$i]="";}
+			for($i=1;$i<=$nb_series;$i++) {$serie[$i]="";}
 
 
 			unset($tab_imagemap);
@@ -2941,7 +2963,7 @@ function eleve_suivant(){
 			// $liste_temp va contenir les séries à envoyer au graphe et éventuellement les moyennes générales sur les différentes périodes.
 			$liste_temp="";
 			$cpt=1;
-			while($lign_periode=mysql_fetch_object($result_periode)){
+			while($lign_periode=mysql_fetch_object($result_periode)) {
 				// DEBUG
 				//echo "<p>Période $cpt<br />";
 
@@ -3057,13 +3079,13 @@ function eleve_suivant(){
 
 			for($i=0;$i<count($id_groupe);$i++) {
 
-				if(isset($info_imagemap[$i])){
+				if(isset($info_imagemap[$i])) {
 					$titre_bulle=htmlentities($matiere_nom[$i]);
 
 					$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Imagemap'>\n";
 					$alt=1;
-					for($j=1;$j<=count($num_periode);$j++){
-						//if($tab_imagemap[$j][$i]!=""){
+					for($j=1;$j<=count($num_periode);$j++) {
+						//if($tab_imagemap[$j][$i]!="") {
 						if((isset($tab_imagemap[$j][$i]))&&($tab_imagemap[$j][$i]!="")) {
 							$alt=$alt*(-1);
 							$texte_bulle.="<tr class='lig$alt'><td style='font-weight:bold;'>$j</td><td style='text-align:center;'>".$tab_imagemap[$j][$i]."</td></tr>\n";
@@ -3073,7 +3095,7 @@ function eleve_suivant(){
 
 					//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
 
-					if($type_graphe=='etoile'){
+					if($type_graphe=='etoile') {
 						//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$i,$titre_bulle,"",$texte_bulle,"",20,0,'y','n','y','n');
 						$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$i,$titre_bulle,"",$texte_bulle,"",20,0,'y','y','n','n');
 					}
@@ -3090,11 +3112,11 @@ function eleve_suivant(){
 			$res_avis=mysql_query($sql);
 
 			$temoin_avis_present="n";
-			if(mysql_num_rows($res_avis)>0){
+			if(mysql_num_rows($res_avis)>0) {
 				$titre_bulle="Avis du Conseil de classe";
 
 				$texte_bulle="<table class='boireaus' style='margin:2px;' width='99%' summary='Avis'>\n";
-				while($lig_avis=mysql_fetch_object($res_avis)){
+				while($lig_avis=mysql_fetch_object($res_avis)) {
 					//==========================================================
 					// AJOUT: boireaus 20080218
 					//        Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
@@ -3120,7 +3142,7 @@ function eleve_suivant(){
 				//==========================================================
 			}
 
-			//if(count($tab_imagemap)>0){
+			//if(count($tab_imagemap)>0) {
 				$largeurGrad=50;
 				$largeurBandeDroite=80;
 				$largeur_utile=$largeur_graphe-$largeurGrad-$largeurBandeDroite;
@@ -3134,14 +3156,14 @@ function eleve_suivant(){
 				}
 
 				echo "<map name='imagemap'>\n";
-				//for($i=0;$i<count($tab_imagemap);$i++){
-				//for($i=1;$i<=count($matiere);$i++){
-				for($i=0;$i<count($matiere);$i++){
+				//for($i=0;$i<count($tab_imagemap);$i++) {
+				//for($i=1;$i<=count($matiere);$i++) {
+				for($i=0;$i<count($matiere);$i++) {
 					//$x0=$largeurGrad+($i-1)*$largeurMat;
 					$x0=$largeurGrad+$i*$largeurMat;
 					$x1=$x0+$largeurMat;
 
-					if(isset($info_imagemap[$i])){
+					if(isset($info_imagemap[$i])) {
 						//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$i,'affiche');\" onMouseout=\"div_info('div_matiere_',$i,'cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
 
 						if($click_plutot_que_survol_aff_app=="y") {
@@ -3156,7 +3178,7 @@ function eleve_suivant(){
 				$x0=$largeurGrad+($i-1)*$largeurMat;
 				$x1=$largeur_graphe;
 				//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_avis_','1','affiche');\" onMouseout=\"div_info('div_avis_','1','cache');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\">";
-				if($temoin_avis_present=="y"){
+				if($temoin_avis_present=="y") {
 					if($click_plutot_que_survol_aff_app=="y") {
 						echo "<area href=\"#\" onClick=\"delais_afficher_div('div_avis_1','y',-10,20,1,$largeurMat,$hauteur_rect_delais_afficher_div);return false;\" onMouseout=\"cacher_div('div_avis_1');\" shape=\"rect\" coords=\"$x0,0,$x1,$hauteur_graphe\" alt=\"\">";
 					}
@@ -3179,7 +3201,7 @@ function eleve_suivant(){
 			$hauteurTotale=$hauteur_graphe;
 			$legendy[2]=$choix_periode;
 			$x0=round($largeurTotale/2);
-			if($legendy[2]=='Toutes_les_périodes'){
+			if($legendy[2]=='Toutes_les_périodes') {
 				$L=round(($hauteurTotale-6*(ImageFontHeight($taille_police)+5))/2);
 				//$y0=round(3*(ImageFontHeight($taille_police))+5)+$L;
 				$y0=round(4*(ImageFontHeight($taille_police))+5)+$L;
@@ -3209,7 +3231,7 @@ function eleve_suivant(){
 			// Polygone 20/20
 			unset($tab20);
 			$tab20=array();
-			for($i=0;$i<$nbMat;$i++){
+			for($i=0;$i<$nbMat;$i++) {
 				$angle=round($i*360/$nbMat);
 				$tab=coordcirc(20,$angle);
 
@@ -3221,7 +3243,7 @@ function eleve_suivant(){
 
 			//=================================
 			// Légendes Matières: -> Coordonnées des textes de matières
-			for($i=0;$i<count($tab20)/2;$i++){
+			for($i=0;$i<count($tab20)/2;$i++) {
 				$angle=round($i*360/$nbMat);
 
 				//$texte=$matiere[$i+1];
@@ -3234,19 +3256,19 @@ function eleve_suivant(){
 
 				$tmp_taille_police=$taille_police;
 
-				if($angle==0){
+				if($angle==0) {
 					$x=$tab20[2*$i]+5;
 
 					$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
 
-					if($x_verif>$largeurTotale){
-						for($j=$taille_police;$j>1;$j--){
+					if($x_verif>$largeurTotale) {
+						for($j=$taille_police;$j>1;$j--) {
 							$x_verif=$x+strlen($texte)*ImageFontWidth($j);
-							if($x_verif<=$largeurTotale){
+							if($x_verif<=$largeurTotale) {
 								break;
 							}
 						}
-						if($x_verif>$largeurTotale){
+						if($x_verif>$largeurTotale) {
 							$j=1;
 						}
 						$tmp_taille_police=$j;
@@ -3254,18 +3276,18 @@ function eleve_suivant(){
 
 					$y=round($tab20[2*$i+1]+$angle*(ImageFontHeight($taille_police)+2)/90);
 				}
-				elseif(($angle>0)&&($angle<90)){
+				elseif(($angle>0)&&($angle<90)) {
 					$x=$tab20[2*$i]+5;
 					$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
 
-					if($x_verif>$largeurTotale){
-						for($j=$taille_police;$j>1;$j--){
+					if($x_verif>$largeurTotale) {
+						for($j=$taille_police;$j>1;$j--) {
 							$x_verif=$x+strlen($texte)*ImageFontWidth($j);
-							if($x_verif<=$largeurTotale){
+							if($x_verif<=$largeurTotale) {
 								break;
 							}
 						}
-						if($x_verif>$largeurTotale){
+						if($x_verif>$largeurTotale) {
 							$j=1;
 						}
 						$tmp_taille_police=$j;
@@ -3273,21 +3295,21 @@ function eleve_suivant(){
 
 					$y=round($tab20[2*$i+1]+$angle*(ImageFontHeight($taille_police)+2)/90);
 				}
-				elseif($angle==90){
+				elseif($angle==90) {
 					$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
 					$y=$tab20[2*$i+1]+ImageFontHeight($taille_police)+2;
 				}
-				elseif(($angle>90)&&($angle<180)){
+				elseif(($angle>90)&&($angle<180)) {
 					$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
 
-					if($x<0){
-						for($j=$taille_police;$j>1;$j--){
+					if($x<0) {
+						for($j=$taille_police;$j>1;$j--) {
 							$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
-							if($x>=0){
+							if($x>=0) {
 								break;
 							}
 						}
-						if($x<0){
+						if($x<0) {
 							$x=1;
 							$j=1;
 						}
@@ -3296,17 +3318,17 @@ function eleve_suivant(){
 
 					$y=round($tab20[2*$i+1]+($angle-90)*(ImageFontHeight($taille_police)-2)/90);
 				}
-				elseif($angle==180){
+				elseif($angle==180) {
 					$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)-5;
 
-					if($x<0){
-						for($j=$taille_police;$j>1;$j--){
+					if($x<0) {
+						for($j=$taille_police;$j>1;$j--) {
 							$x=$tab20[2*$i]-strlen($texte)*ImageFontWidth($j)-5;
-							if($x>=0){
+							if($x>=0) {
 								break;
 							}
 						}
-						if($x<0){
+						if($x<0) {
 							$x=1;
 							$j=1;
 						}
@@ -3315,17 +3337,17 @@ function eleve_suivant(){
 
 					$y=round($tab20[2*$i+1]-ImageFontHeight($taille_police)/2);
 				}
-				elseif(($angle>180)&&($angle<270)){
+				elseif(($angle>180)&&($angle<270)) {
 					$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($taille_police)+5);
 
-					if($x<0){
-						for($j=$taille_police;$j>1;$j--){
+					if($x<0) {
+						for($j=$taille_police;$j>1;$j--) {
 							$x=$tab20[2*$i]-(strlen($texte)*ImageFontWidth($j)+5);
-							if($x>=0){
+							if($x>=0) {
 								break;
 							}
 						}
-						if($x<0){
+						if($x<0) {
 							$x=1;
 							$j=1;
 						}
@@ -3334,7 +3356,7 @@ function eleve_suivant(){
 
 					$y=round($tab20[2*$i+1]-($angle-180)*(ImageFontHeight($taille_police)-2)/90);
 				}
-				elseif($angle==270){
+				elseif($angle==270) {
 					$x=round($tab20[2*$i]-strlen($texte)*ImageFontWidth($taille_police)/2);
 					//$y=$tab20[2*$i+1]-ImageFontHeight($taille_police)-2;
 					$y=$tab20[2*$i+1]-2*ImageFontHeight($taille_police)-2;
@@ -3343,14 +3365,14 @@ function eleve_suivant(){
 					$x=$tab20[2*$i]+5;
 					$x_verif=$x+strlen($texte)*ImageFontWidth($taille_police);
 
-					if($x_verif>$largeurTotale){
-						for($j=$taille_police;$j>1;$j--){
+					if($x_verif>$largeurTotale) {
+						for($j=$taille_police;$j>1;$j--) {
 							$x_verif=$x+strlen($texte)*ImageFontWidth($j);
-							if($x_verif<=$largeurTotale){
+							if($x_verif<=$largeurTotale) {
 								break;
 							}
 						}
-						if($x_verif>$largeurTotale){
+						if($x_verif>$largeurTotale) {
 							$j=1;
 						}
 						$tmp_taille_police=$j;
@@ -3368,9 +3390,9 @@ function eleve_suivant(){
 				$y2=$y+20;
 
 				//echo "<area href=\"#\" onClick='return false;' onMouseover=\"div_info('div_matiere_',$tab_imagemap[$i],'affiche');\" onMouseout=\"div_info('div_matiere_',$tab_imagemap[$i],'cache');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
-				//if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)){
-				//if(isset($info_imagemap[$i])){
-				if(isset($info_imagemap[$k])){
+				//if(in_array($tab_imagemap[$i],$tab_imagemap_commentaire_present)) {
+				//if(isset($info_imagemap[$i])) {
+				if(isset($info_imagemap[$k])) {
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$tab_imagemap[$i]."','y',-100,20);\" onMouseout=\"cacher_div('div_app_".$tab_imagemap[$i]."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$i."','y',-100,20);\" onMouseout=\"cacher_div('div_app_".$i."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
 					//echo "<area href=\"#\" onClick='return false;' onMouseover=\"afficher_div('div_app_".$k."','y',-100,20);\" onMouseout=\"cacher_div('div_app_".$k."');\" shape=\"rect\" coords=\"$x,$y,$x2,$y2\">\n";
@@ -3398,7 +3420,7 @@ function eleve_suivant(){
 			for($loop=1;$loop<=count($serie);$loop++) {
 				if($liste_temp!="") {$liste_temp.="&amp;";}
 				$liste_temp.="temp$loop=".$serie[$loop];
-				if($affiche_mgen=='oui'){
+				if($affiche_mgen=='oui') {
 					$liste_temp.="&amp;mgen$loop=".$mgen[$loop];
 				}
 			}
@@ -3411,9 +3433,9 @@ function eleve_suivant(){
 
 			echo "<a name='graph'></a>\n";
 
-			if($type_graphe=='courbe'){
+			if($type_graphe=='courbe') {
 
-				if($mode_graphe=='png'){
+				if($mode_graphe=='png') {
 					//echo "<img src='draw_artichow_fig7.php?temp1=$temp1&temp2=$temp2&etiquette=$etiq&titre=$graph_title&v_legend1=$v_legend1&v_legend2=$v_legend2&compteur=$compteur&nb_data=3'>";
 					//echo "<img src='draw_artichow_fig7.php?temp1=$serie[1]&temp2=$serie[2]&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_data=$nbp'>";
 					//echo "<img src='draw_artichow_fig7.php?$liste_temp&etiquette=$liste_matieres&titre=$graph_title&v_legend1=$eleve1&v_legend2=Toutes_les_périodes&compteur=$compteur&nb_data=$nbp'>";
@@ -3433,7 +3455,7 @@ function eleve_suivant(){
 					echo "&amp;hauteur_graphe=$hauteur_graphe";
 					echo "&amp;taille_police=$taille_police";
 					echo "&amp;epaisseur_traits=$epaisseur_traits";
-					if($affiche_moy_annuelle=="oui"){
+					if($affiche_moy_annuelle=="oui") {
 						echo "&amp;affiche_moy_annuelle=$affiche_moy_annuelle";
 					}
 					echo "&amp;tronquer_nom_court=$tronquer_nom_court";
@@ -3464,11 +3486,11 @@ function eleve_suivant(){
 					$nbMat=count($matiere);
 					$largeurMat=round($largeur_utile/$nbMat);
 
-					for($i=1;$i<=count($matiere);$i++){
+					for($i=1;$i<=count($matiere);$i++) {
 						$x0=$largeurGrad+($i-1)*$largeurMat;
 						$x1=$x0+$largeurMat;
 
-						if(isset($info_imagemap[$i])){
+						if(isset($info_imagemap[$i])) {
 							if($click_plutot_que_survol_aff_app=="y") {
 								echo "<div onclick=\"delais_afficher_div('div_app_".$i."','y',-10,20,500,$largeurMat,10,1,$largeurMat,$hauteur_rect_delais_afficher_div);\" onMouseout=\"cacher_div('div_app_".$i."');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;'>&nbsp;</div>\n";
 							}
@@ -3480,7 +3502,7 @@ function eleve_suivant(){
 
 					$x0=$largeurGrad+($i-1)*$largeurMat;
 					$x1=$largeur_graphe;
-					if($temoin_avis_present=="y"){
+					if($temoin_avis_present=="y") {
 						if($click_plutot_que_survol_aff_app=="y") {
 							echo "<div onclick=\"delais_afficher_div('div_avis_1','y',-10,20,1,$largeurMat,$hauteur_rect_delais_afficher_div);\" onMouseout=\"cacher_div('div_avis_1');\" style='position: absolute; left: ".$x0."px; top: 0px; width: ".$largeurMat."px; height: ".$hauteur_graphe."px;'>&nbsp;</div>\n";
 						}
@@ -3506,7 +3528,7 @@ function eleve_suivant(){
 					echo "&amp;hauteur_graphe=$hauteur_graphe";
 					echo "&amp;taille_police=$taille_police";
 					echo "&amp;epaisseur_traits=$epaisseur_traits";
-					if($affiche_moy_annuelle=="oui"){
+					if($affiche_moy_annuelle=="oui") {
 						echo "&amp;affiche_moy_annuelle=$affiche_moy_annuelle";
 					}
 					echo "&amp;tronquer_nom_court=$tronquer_nom_court";
@@ -3542,7 +3564,7 @@ function eleve_suivant(){
 				echo "&amp;hauteur_graphe=$hauteur_graphe";
 				echo "&amp;taille_police=$taille_police";
 				echo "&amp;epaisseur_traits=$epaisseur_traits";
-				if($affiche_moy_annuelle=="oui"){
+				if($affiche_moy_annuelle=="oui") {
 					echo "&amp;affiche_moy_annuelle=$affiche_moy_annuelle";
 				}
 				echo "&amp;tronquer_nom_court=$tronquer_nom_court";
@@ -3563,7 +3585,7 @@ function eleve_suivant(){
 	/*
 		echo "<p>\n";
 		echo "\$liste_matieres=$liste_matieres<br />\n";
-		for($i=1;$i<=count($serie);$i++){
+		for($i=1;$i<=count($serie);$i++) {
 			echo "\$serie[$i]=$serie[$i]<br />\n";
 		}
 		echo "</p>\n";
@@ -3577,22 +3599,22 @@ function eleve_suivant(){
 
 		$cpt=1;
 		// Boucle sur l'ordre des matières:
-		while($ligne=mysql_fetch_object($call_classe_infos)){
+		while($ligne=mysql_fetch_object($call_classe_infos)) {
 			// Nom court/long de la matière:
 			$matiere[$cpt]=$ligne->matiere;
 			$matiere_nom[$cpt]=$ligne->nom_complet;
 			$cpt++;
 		}
 
-		for(){
+		for() {
 	*/
 
-		if(isset($prenom1)){
+		if(isset($prenom1)) {
 			echo "<p align='center'>$prenom1 $nom1";
-			//if($doublant1!="-"){echo " (<i>$doublant1</i>)";}
-			if(($doublant1!="-")&&($doublant1!="")){echo " (<i>$doublant1</i>)";}
+			//if($doublant1!="-") {echo " (<i>$doublant1</i>)";}
+			if(($doublant1!="-")&&($doublant1!="")) {echo " (<i>$doublant1</i>)";}
 			echo " né";
-			if($sexe1=="F"){echo "e";}
+			if($sexe1=="F") {echo "e";}
 			echo " le $naissance1[2]/$naissance1[1]/$naissance1[0] (<i>soit $age1 $precision1</i>).</p>";
 
 
@@ -3714,7 +3736,7 @@ function eleve_suivant(){
 							$info_absence.="Aucune demi-journée d'absence.";
 						} else {
 							$info_absence.="Nombre de demi-journées d'absence ";
-							if ($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0'){
+							if ($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0') {
 								$info_absence = $info_absence."justifiées ";
 							}
 							$info_absence = $info_absence.": ".$tab_ele['absences'][$num_periode_choisie-1]['nb_absences']."</b>";
@@ -3837,7 +3859,7 @@ function eleve_suivant(){
 	echo "</tr>\n";
 	echo "</table>\n";
 
-	if(!isset($_POST['is_posted'])){
+	if(!isset($_POST['is_posted'])) {
 		// Pour la première validation lors de l'accès à la page de graphe et ainsi obtenir directement le premier affichage:
 		echo "<script type='text/javascript'>
 	document.forms['form_choix_eleves'].submit();
@@ -3862,8 +3884,8 @@ function div_cmnt_type() {
 	$sql="show tables;";
 	$res_tables=mysql_query($sql);
 	$temoin_commentaires_types="";
-	while($lig_table=mysql_fetch_array($res_tables)){
-		if($lig_table[0]=='commentaires_types'){
+	while($lig_table=mysql_fetch_array($res_tables)) {
+		if($lig_table[0]=='commentaires_types') {
 			$temoin_commentaires_types="oui";
 		}
 	}
@@ -3897,14 +3919,14 @@ function div_cmnt_type() {
 			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
 				$retour_lignes_cmnt_type.="<div style='border: 1px solid black; margin: 1px; padding: 1px;'";
 
-				if(my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+				if(my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])) {
 					$retour_lignes_cmnt_type.=" onClick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value+document.getElementById('commentaire_type_'+$cpt).value;changement();document.getElementById('commentaire_type').style.display='none'; document.getElementById('no_anti_inject_current_eleve_login_ap2').focus();\"";
 				}
 				$retour_lignes_cmnt_type.=">\n";
 
 				$retour_lignes_cmnt_type.="<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
 
-				if(!my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+				if(!my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])) {
 					// Avec konqueror, pour document.getElementById('textarea_courant').value, on obtient [Object INPUT]
 					// En sortant, la commande du onClick et en la mettant dans une fonction javascript externe, ca passe.
 					//$retour_lignes_cmnt_type.="<a href='#' onClick=\"complete_textarea_courant($cpt); return false;\" style='text-decoration:none; color:black;'>";
@@ -3912,7 +3934,7 @@ function div_cmnt_type() {
 				}
 
 				// Pour conserver le code HTML saisi dans les commentaires-type...
-				if((my_ereg("<",$ligne_commentaire->commentaire))&&(my_ereg(">",$ligne_commentaire->commentaire))){
+				if((my_ereg("<",$ligne_commentaire->commentaire))&&(my_ereg(">",$ligne_commentaire->commentaire))) {
 					/* Si le commentaire contient du code HTML, on ne remplace pas les retours à la ligne par des <br> pour éviter des doubles retours à la ligne pour un code comme celui-ci:
 						<p>Blabla<br>
 						Blibli</p>
@@ -3924,7 +3946,7 @@ function div_cmnt_type() {
 					$retour_lignes_cmnt_type.=htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
 				}
 
-				if(!my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+				if(!my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])) {
 					$retour_lignes_cmnt_type.="</a>";
 				}
 
@@ -3941,7 +3963,7 @@ function div_cmnt_type() {
 
 $retour_lignes_cmnt_type.="<script type='text/javascript'>
 function ajuste_pos(id_div) {
-	if(browser.isIE){
+	if(browser.isIE) {
 		document.getElementById(id_div).style.left=0;
 		document.getElementById(id_div).style.top=0;
 	}
@@ -3952,7 +3974,7 @@ function ajuste_pos(id_div) {
 }
 
 // Pour konqueror...
-function complete_textarea_avis(num){
+function complete_textarea_avis(num) {
 	// Récupération de l'identifiant du TEXTAREA à remplir
 	id_textarea_courant='no_anti_inject_current_eleve_login_ap2'
 	//alert('id_textarea_courant='+id_textarea_courant);
