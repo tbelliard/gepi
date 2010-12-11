@@ -1446,6 +1446,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 		// Pour passer à l'élève précédent ou au suivant:
 		echo "<script type='text/javascript' language='JavaScript'>\n";
+
 		$precedent=$numeleve1-1;
 		$suivant=$numeleve1+1;
 		echo "precedent=$precedent\n";
@@ -3641,30 +3642,47 @@ function eleve_suivant(){
 				$acces_bull_simp="y";
 			}
 
+			$acces_aa="n";
+			if(isset($eleve1)) {
+				require('../mod_annees_anterieures/fonctions_annees_anterieures.inc.php');
+				$acces_aa=check_acces_aa($eleve1);
+			}
 
 			if($acces_bull_simp=="y") {
+				echo "<p align='center'>";
 				if($choix_periode=='toutes_periodes') {
-					//echo "<p align='center'><a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" target=\"_blank\">Voir le bulletin simplifié</a></p>";
-
-					echo "<p align='center'>";
 					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=1&periode2=$nb_periode\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','1','$nb_periode');return false;\" target=\"_blank\">";
 					echo "Voir le bulletin simplifié";
 					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 					echo "</a>";
-					echo "</p>\n";
-
 				}
 				else {
-					//echo "<p align='center'><a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" target=\"_blank\">Voir le bulletin simplifié</a></p>";
-
-					echo "<p align='center'>";
 					echo "<a href=\"../prepa_conseil/edit_limite.php?choix_edit=2&login_eleve=".$eleve1."&id_classe=$id_classe&periode1=$num_periode_choisie&periode2=$num_periode_choisie\" onclick=\"afficher_div('div_bull_simp','y',-100,-200); affiche_bull_simp('$eleve1','$id_classe','$num_periode_choisie','$num_periode_choisie');return false;\" target=\"_blank\">";
 					echo "Voir le bulletin simplifié";
 					//echo "<img src='../images/icons/bulletin_simp.png' width='17' height='17' alt='Bulletin simple toutes périodes en infobulle' title='Bulletin simple toutes périodes en infobulle' />";
 					echo "</a>";
-					echo "</p>\n";
-
 				}
+
+				echo " | ";
+
+				echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\">";
+				echo "Consultation";
+				echo "</a>";
+
+
+				if((getSettingValue('active_annees_anterieures')=='y')&&($acces_aa=='y')) {
+					echo " | ";
+
+					// A FAIRE:
+					// IL FAUT RECUPERER L'annee_scolaire et num_periode SI JAVASCRIPT N'EST PAS ACTIF
+					echo "<a href=\"../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$eleve1&annee_scolaire=2008/2009&num_periode=3&mode=bull_simp\" onclick=\"afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1','$id_classe');return false;\" target=\"_blank\">";
+					//echo "<a href=\"javascript:afficher_div('div_annees_anterieures','y',-100,-200); affiche_annees_anterieures('$eleve1', '$id_classe'); return false;\" target=\"_blank\">";
+					echo "Années antérieures";
+					echo "</a>";
+				}
+
+				echo "</p>\n";
+
 			}
 
 			// A FAIRE:
@@ -3681,7 +3699,9 @@ function eleve_suivant(){
 			//La variable 	$num_periode_choisie 	  contient le numéro de la période en cours 
 				
 			if($afficher_absences=="y") {
-				if(getSettingValue("active_module_absence")=='y' || getSettingValue("abs2_import_manuel_bulletin")=='y') {
+				if((getSettingValue("active_module_absence")=='y')||
+					(getSettingValue("abs2_import_manuel_bulletin")=='y')||
+					((count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y')&&(getSettingValue("abs2_import_manuel_bulletin")!='y'))) {
 				   
 				   // Affichage ligne
 				   $info_absence="<center>";
@@ -3994,6 +4014,20 @@ echo "<script type='text/javascript'>
 	}
 	//]]>
 </script>\n";
+
+
+if(getSettingValue('active_annees_anterieures')=='y') {
+
+	//require("../mod_annees_anterieures/fonctions_annees_anterieures.inc.php");
+	//require("../mod_annees_anterieures/check_acces_et_liste_periodes.php");
+	//require('../mod_annees_anterieures/fonctions_annees_anterieures.inc.php');
+
+	if(isset($eleve1)) {
+		$tab_periodes_aa=check_acces_et_liste_periodes($eleve1,$id_classe);
+		affiche_onglets_aa($eleve1, $id_classe, $tab_periodes_aa, 0);
+
+	}
+}
 //===========================================================
 
 require("../lib/footer.inc.php");

@@ -727,4 +727,603 @@ function suppression_donnees_eleves_inutiles(){
     }
 
 }
+
+function check_acces_aa($logineleve) {
+
+	$acces="n";
+
+	if(getSettingValue('active_annees_anterieures')=="y") {
+		if($_SESSION['statut']=="administrateur") {
+			$acces="y";
+		}
+		elseif($_SESSION['statut']=="professeur") {
+			// $AAProfTout
+			// $AAProfPrinc
+			// $AAProfClasses
+			// $AAProfGroupes
+		
+			$AAProfTout=getSettingValue('AAProfTout');
+			$AAProfPrinc=getSettingValue('AAProfPrinc');
+			$AAProfClasses=getSettingValue('AAProfClasses');
+			$AAProfGroupes=getSettingValue('AAProfGroupes');
+		
+			//echo "\$AAProfTout=$AAProfTout<br />";
+			//echo "\$AAProfPrinc=$AAProfPrinc<br />";
+			//echo "\$AAProfClasses=$AAProfClasses<br />";
+			//echo "\$AAProfGroupes=$AAProfGroupes<br />";
+		
+			if($AAProfTout=="yes") {
+				// Le professeur a accès aux données antérieures de tous les élèves
+				$acces="y";
+			}
+			elseif($AAProfClasses=="yes") {
+				// Le professeur a accès aux données antérieures des élèves des classes pour lesquelles il fournit un enseignement (sans nécessairement avoir tous les élèves de la classe)
+				/*
+				$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_classes jgc, j_groupes_professeurs jgp
+								WHERE jeg.login='$logineleve' AND
+										jeg.id_groupe=jgc.id_groupe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				*/
+				$sql="SELECT 1=1 FROM j_eleves_classes jec, j_groupes_classes jgc, j_groupes_professeurs jgp
+								WHERE jec.login='$logineleve' AND
+										jec.id_classe=jgc.id_classe AND
+										jgc.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0) {
+					$acces="y";
+				}
+			}
+			elseif($AAProfGroupes=="yes") {
+				// Le professeur a accès aux données antérieures des élèves des groupes auxquels il enseigne
+				$sql="SELECT 1=1 FROM j_eleves_groupes jeg, j_groupes_professeurs jgp
+								WHERE jeg.login='$logineleve' AND
+										jeg.id_groupe=jgp.id_groupe AND
+										jgp.login='".$_SESSION['login']."';";
+				//echo "$sql<br />";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0) {
+					$acces="y";
+				}
+			}
+			elseif($AAProfPrinc=="yes") {
+				// Le professeur a accès aux données antérieures des élèves dont il est Professeur Principal
+				$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE professeur='".$_SESSION['login']."' AND
+																login='$logineleve';";
+				//echo "$sql<br />";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0) {
+					$acces="y";
+				}
+			}
+		}
+		elseif($_SESSION['statut']=="cpe") {
+			// $AACpeTout
+			// $AACpeResp
+		
+			$AACpeTout=getSettingValue('AACpeTout');
+			$AACpeResp=getSettingValue('AACpeResp');
+		
+			if($AACpeTout=="yes") {
+				// Le CPE a accès aux données antérieures de tous les élèves
+				$acces="y";
+			}
+			elseif($AACpeResp=="yes") {
+				$sql="SELECT 1=1 FROM j_eleves_cpe WHERE cpe_login='".$_SESSION['login']."' AND
+															e_login='$logineleve'";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0) {
+					$acces="y";
+				}
+			}
+		}
+		elseif($_SESSION['statut']=="scolarite") {
+			// $AAScolTout
+			// $AAScolResp
+		
+			$AAScolTout=getSettingValue('AAScolTout');
+			$AAScolResp=getSettingValue('AAScolResp');
+		
+			if($AAScolTout=="yes") {
+				// Les comptes Scolarité ont accès aux données antérieures de tous les élèves
+				$acces="y";
+			}
+			elseif($AAScolResp=="yes") {
+				$sql="SELECT 1=1 FROM j_eleves_classes jec, j_scol_classes jsc
+								WHERE jec.login='$logineleve' AND
+										jec.id_classe=jsc.id_classe AND
+										jsc.login='".$_SESSION['login']."';";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0) {
+					$acces="y";
+				}
+			}
+		}
+		elseif($_SESSION['statut']=="responsable") {
+			$AAResponsable=getSettingValue('AAResponsable');
+		
+			if($AAResponsable=="yes") {
+				// Est-ce que le $logineleve est bien celui d'un élève dont le responsable est responsable?
+				$sql="SELECT 1=1 FROM resp_pers rp, responsables2 r, eleves e WHERE rp.login='".$_SESSION['login']."' AND
+																					rp.pers_id=r.pers_id AND
+																					r.ele_id=e.ele_id AND
+																					e.login='$logineleve'";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)==1) {
+					$acces="y";
+				}
+			}
+		}
+		elseif($_SESSION['statut']=="eleve") {
+			$AAEleve=getSettingValue('AAEleve');
+		
+			if($AAEleve=="yes") {
+				$logineleve=$_SESSION['login'];
+				$acces="y";
+			}
+		}
+		elseif($_SESSION['statut']=="autre") {
+			//$sql="SELECT 1=1 FROM droits_speciaux ds, droits_utilisateurs du, droits_statut dst WHERE dst.id=ds.id_statut AND du.id_statut=dst.id AND du.login_user='".$_SESSION['login']."' AND ds.nom_fichier='/voir_anna' AND ds.autorisation='V';";
+			//$sql="SELECT 1=1 FROM droits_speciaux ds WHERE ds.id_statut='".$_SESSION['statut_special_id']."' AND ds.nom_fichier='/voir_anna' AND ds.autorisation='V';";
+		
+			$sql="SELECT 1=1 FROM droits_speciaux ds WHERE ds.id_statut='".$_SESSION['statut_special_id']."' AND ds.nom_fichier='/mod_annees_anterieures/ajax_bulletins.php' AND ds.autorisation='V';";
+			$res_acces=mysql_query($sql);
+		
+			if(mysql_num_rows($res_acces)>0) {
+				$acces="y";
+			}
+		}
+	}
+
+	return $acces;
+}
+
+//$tab_periodes=array();
+// On va retourner par la fonction un $tab_periodes vide ou non selon que l'accès est autorisé ou non et qu'il y a des données archivées
+function check_acces_et_liste_periodes($logineleve,$id_classe) {
+	$tab_periodes=array();
+
+	if(getSettingValue('active_annees_anterieures')=="y") {
+
+		$acces=check_acces_aa($logineleve);
+
+		if($acces=="y") {
+
+			$tab_annee=array();
+			$tab_periodes=array();
+		
+			$sql="SELECT * FROM eleves WHERE login='$logineleve';";
+			$res_ele=mysql_query($sql);
+		
+			if(mysql_num_rows($res_ele)==0) {
+				// On ne devrait pas arriver là.
+				echo "<p>L'élève dont le login serait '$logineleve' n'est pas dans la table 'eleves'.</p>\n";
+			}
+			else {
+				$lig_ele=mysql_fetch_object($res_ele);
+		
+				// Infos élève
+				//$ine: INE de l'élève (identifiant commun aux tables 'eleves' et 'archivage_disciplines')
+				$ine=$lig_ele->no_gep;
+				//$ele_nom=$lig_ele->nom;
+				//$ele_prenom=$lig_ele->prenom;
+				//$naissance=$lig_ele->naissance;
+				//$naissance2=formate_date($lig_ele->naissance);
+
+				// Classe actuelle:
+				$classe=get_nom_classe($id_classe);
+		
+				// Liste des années conservées pour l'élève choisi:
+				$sql="SELECT DISTINCT annee FROM archivage_disciplines WHERE ine='$ine' ORDER BY annee";
+				//echo "$sql<br />";
+				$res_annees=mysql_query($sql);
+				$annee_precedente="";
+				$annee_suivante="";
+				$derniere_periode_annee_precedente=1;
+				if(mysql_num_rows($res_annees)>0) {
+					$cpt=0;
+					while($lig_annee=mysql_fetch_object($res_annees)) {
+						$tab_annee[$cpt]['annee']=$lig_annee->annee;
+		
+						$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$lig_annee->annee' ORDER BY num_periode";
+						//echo "$sql<br />";
+						$res_periodes=mysql_query($sql);
+		
+						if(mysql_num_rows($res_periodes)==0) {
+							// ANOMALIE
+						}
+						else {
+							while($lig_per=mysql_fetch_object($res_periodes)) {
+								$tab_annee[$cpt]['annee']['max_per']=$lig_per->num_periode;
+								$tab_periodes[]=$lig_annee->annee."|".$lig_per->num_periode;
+							}
+						}
+		
+						if(!isset($annee_scolaire)) {
+							// A FAIRE: VOIR si $annee_scolaire est en SESSION... pour qu'en passant à un autre élève, on récupère les mêmes années,...
+							$annee_scolaire=$lig_annee->annee;
+						}
+		
+						if($lig_annee->annee!=$annee_scolaire) {
+							$annee_precedente=$lig_annee->annee;
+							$sql="SELECT DISTINCT num_periode FROM archivage_disciplines WHERE ine='$ine' AND annee='$annee_precedente' ORDER BY num_periode DESC";
+							$res_per_prec=mysql_query($sql);
+							if(mysql_num_rows($res_per_prec)>0) {
+								$lig_per_prec=mysql_fetch_object($res_per_prec);
+								$derniere_periode_annee_precedente=$lig_per_prec->num_periode;
+							}
+						}
+						$cpt++;
+					}
+				}
+			}
+		}
+	}
+	return $tab_periodes;
+}
+
+function get_indice_annee_precedente($annee_scolaire,$tab_periodes) {
+
+	$annee_precedente="";
+	$tab_annee=array();
+	$tab_indice_annee=array();
+	for($i=0;$i<count($tab_periodes);$i++) {
+		$tmp_tab=explode("|",$tab_periodes[$i]);
+		$annee_courante=$tmp_tab[0];
+	
+		if($annee_courante!=$annee_precedente) {
+			$tab_annee[]=$annee_courante;
+			$tab_indice_annee[]=$i;
+	
+			$annee_precedente=$annee_courante;
+		}
+	}
+
+	for($i=0;$i<count($tab_annee);$i++) {
+		if($tab_annee[$i]==$annee_scolaire) {
+			if(isset($tab_indice_annee[$i-1])) {
+				return $tab_indice_annee[$i-1];
+			}
+			else {
+				return "";
+			}
+		}
+	}
+}
+
+function get_indice_annee_suivante($annee_scolaire,$tab_periodes) {
+
+	$annee_precedente="";
+	$tab_annee=array();
+	$tab_indice_annee=array();
+	for($i=0;$i<count($tab_periodes);$i++) {
+		$tmp_tab=explode("|",$tab_periodes[$i]);
+		$annee_courante=$tmp_tab[0];
+	
+		if($annee_courante!=$annee_precedente) {
+			$tab_annee[]=$annee_courante;
+			$tab_indice_annee[]=$i;
+
+			//echo "\$tab_annee[]=$annee_courante;<br />
+			//\$tab_indice_annee[]=$i;<br />";
+
+			$annee_precedente=$annee_courante;
+		}
+	}
+
+	for($i=0;$i<count($tab_annee);$i++) {
+		if($tab_annee[$i]==$annee_scolaire) {
+			if(isset($tab_indice_annee[$i+1])) {
+				return $tab_indice_annee[$i+1];
+			}
+			else {
+				return "";
+			}
+			break;
+		}
+	}
+}
+
+function get_annee_suivante($annee_scolaire,$tab_periodes) {
+
+	$annee_precedente="";
+	$tab_annee=array();
+	$tab_indice_annee=array();
+	for($i=0;$i<count($tab_periodes);$i++) {
+		$tmp_tab=explode("|",$tab_periodes[$i]);
+		$annee_courante=$tmp_tab[0];
+	
+		if($annee_courante!=$annee_precedente) {
+			$tab_annee[]=$annee_courante;
+			$tab_indice_annee[]=$i;
+
+			//echo "\$tab_annee[]=$annee_courante;<br />
+			//\$tab_indice_annee[]=$i;<br />";
+
+			$annee_precedente=$annee_courante;
+		}
+	}
+
+	for($i=0;$i<count($tab_annee);$i++) {
+		if($tab_annee[$i]==$annee_scolaire) {
+			if(isset($tab_annee[$i+1])) {
+				return $tab_annee[$i+1];
+			}
+			else {
+				return "";
+			}
+			break;
+		}
+	}
+}
+
+function get_annee_precedente($annee_scolaire,$tab_periodes) {
+
+	$annee_precedente="";
+	$tab_annee=array();
+	$tab_indice_annee=array();
+	for($i=0;$i<count($tab_periodes);$i++) {
+		$tmp_tab=explode("|",$tab_periodes[$i]);
+		$annee_courante=$tmp_tab[0];
+	
+		if($annee_courante!=$annee_precedente) {
+			$tab_annee[]=$annee_courante;
+			$tab_indice_annee[]=$i;
+
+			//echo "\$tab_annee[]=$annee_courante;<br />
+			//\$tab_indice_annee[]=$i;<br />";
+
+			$annee_precedente=$annee_courante;
+		}
+	}
+
+	for($i=0;$i<count($tab_annee);$i++) {
+		if($tab_annee[$i]==$annee_scolaire) {
+			if(isset($tab_annee[$i-1])) {
+				return $tab_annee[$i-1];
+			}
+			else {
+				return "";
+			}
+			break;
+		}
+	}
+}
+
+function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_onglet=0) {
+	$max_per=0;
+
+	echo "<style type='text/css'>
+.conteneur_t_onglet {
+	float:left;
+	/*border: 1px dashed red;*/
+}
+
+.t_onglet {
+	float:left;
+	margin-bottom:-1px;
+
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+
+	border-radius: 6px 20px;
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 20px;
+
+	padding: 0.2em 0.2em 0 0.2em;
+	margin: 0.2em 0.2em 0 0.2em;
+	z-index:100;
+}
+
+.t_onglet a {
+	text-decoration: none;
+	/*
+	On ne force pas le fond... il est modifié par javascript pour faire ressortir l'onglet actif
+	background-color: white;
+	*/
+	color: black;
+}
+
+.t_onglet_annee {
+	float:left;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom:-1px;
+	border-top: 1px solid black;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+
+	color: black;
+	background-color: white;
+
+	padding: 0.2em 0.2em 0 0.2em;
+	margin: 0.2em 0 0 2px;
+	z-index:100;
+}
+
+.onglet {
+/*
+	border: 1px solid black;
+	border-top: 0px;
+	border-right: 0px;
+	margin-left: 4px;
+*/
+	/*padding: 3px;*/
+}
+</style>\n";
+
+	echo "<div id='div_annees_anterieures' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+	
+		echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_annees_anterieures')\">\n";
+			echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+			echo "<a href='#' onClick=\"cacher_div('div_annees_anterieures');return false;\">\n";
+			echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+			echo "</a>\n";
+			echo "</div>\n";
+	
+			echo "<div id='titre_entete_annees_anterieures'>AAA</div>\n";
+		echo "</div>\n";
+		
+		echo "<div id='corps_annees_anterieures' class='infobulle_corps' style='color: #ffffff; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+
+			if(count($tab_periodes)==0) {
+				echo "<p>Aucune donnée archivée pour ".get_nom_prenom_eleve($logineleve).".</p>\n";
+			}
+			else {
+				$t_annee_prec="";
+				for($i=0;$i<count($tab_periodes);$i++) {
+					$tmp_tab=explode("|",$tab_periodes[$i]);
+					$annee_courante=$tmp_tab[0];
+					$periode_courante=$tmp_tab[1];
+		
+					if($i==$indice_onglet) {
+						$annee_choisie=$annee_courante;
+						$periode_choisie=$periode_courante;
+					}
+
+					$annee_precedente=get_annee_precedente($annee_courante,$tab_periodes);
+					$indice_annee_precedente=get_indice_annee_precedente($annee_courante,$tab_periodes);
+
+					$annee_suivante=get_annee_suivante($annee_courante,$tab_periodes);
+					$indice_annee_suivante=get_indice_annee_suivante($annee_courante,$tab_periodes);
+
+					if($periode_courante>$max_per) {$max_per=$periode_courante;}
+
+					//echo "\$annee_courante=$annee_courante<br />";
+			
+					if($annee_courante!=$t_annee_prec) {
+						// On crée un nouvel onglet d'année
+						if($t_annee_prec!="") {echo "</div>\n";}
+			
+						$t_annee_prec=$annee_courante;
+
+						echo "\n\n<!-- Nouvelle annee anterieure -->\n";
+
+						echo "<div id='conteneur_t_annee_$i' class='conteneur_t_onglet'";
+						if($i!=$indice_onglet) {
+							echo " style='display:none;'";
+						}
+						echo ">\n";
+			
+						echo "<div id='t_annee_$i' class='t_onglet_annee'>\n";
+						// AJOUTER Lien ANNEE PRECEDENTE
+						if($annee_precedente!="") {
+							//echo "<a id='lien_annee_precedente' href='../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$logineleve&annee_scolaire=$annee_precedente&num_periode=1&mode=bull_simp' onclick=\"document.getElementById('span_annee_courante').innerHTML='$annee_precedente'; affiche_onglet_aa('$logineleve','$id_classe','".$annee_precedente."','1','".$indice_annee_precedente."');return false;\"><img src='../images/icons/back.png' width='16' height='16' alt='Année suivante' /> </a>\n";
+							echo "<a id='lien_annee_precedente' href='../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$logineleve&annee_scolaire=$annee_precedente&num_periode=1&mode=bull_simp' onclick=\"affiche_onglet_aa('$logineleve','$id_classe','".$annee_precedente."','1','".$indice_annee_precedente."');return false;\"><img src='../images/icons/back.png' width='16' height='16' alt='Année suivante' /> </a>\n";
+						}
+						//echo "<span id='span_annee_courante'>".$annee_courante."</span>";
+						echo $annee_courante;
+
+						// AJOUTER Lien ANNEE SUIVANTE
+						if($annee_suivante!="") {
+							//echo "<a id='lien_annee_suivante' href='../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$logineleve&annee_scolaire=$annee_suivante&num_periode=1&mode=bull_simp' onclick=\"document.getElementById('span_annee_courante').innerHTML='$annee_suivante'; affiche_onglet_aa('$logineleve','$id_classe','".$annee_suivante."','1','".$indice_annee_suivante."');return false;\"> <img src='../images/icons/forward.png' width='16' height='16' alt='Année suivante' /></a>\n";
+							echo "<a id='lien_annee_suivante' href='../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$logineleve&annee_scolaire=$annee_suivante&num_periode=1&mode=bull_simp' onclick=\"affiche_onglet_aa('$logineleve','$id_classe','".$annee_suivante."','1','".$indice_annee_suivante."');return false;\"> <img src='../images/icons/forward.png' width='16' height='16' alt='Année suivante' /></a>\n";
+						}
+						echo "</div>\n\n";
+					}
+			
+					// Ajout de l'onglet de période
+					echo "<div id='t_periode_$i' class='t_onglet'";
+					if($i!=$indice_onglet) {
+						echo " style='border-bottom-color: black;'";
+					}
+					echo ">\n";
+		
+					//echo "<a href='".$_SERVER['PHP_SELF']."?ele_login=$logineleve&amp;onglet=$i' onclick=\"affiche_onglet('$i');return false;\">P$periode_courante</a>\n";
+					echo "<a href='../mod_annees_anterieures/popup_annee_anterieure.php?id_classe=$id_classe&logineleve=$logineleve&annee_scolaire=$annee_courante&num_periode=$periode_courante&mode=bull_simp' onclick=\"affiche_onglet_aa('$logineleve','$id_classe','$annee_courante','$periode_courante','$i');return false;\">P$periode_courante</a>\n";
+		
+					echo "</div>\n";
+			
+				}
+				echo "</div>\n\n";
+			
+				echo "<div style='clear:both;'></div>\n";
+		
+				echo "<div id='contenu_onglet' class='onglet' style='";
+				echo "margin-left: 1px; margin-right: 1px; ";
+				//echo "border: 1px dashed green;";
+				echo "'>\n";
+				echo "<h2>$annee_choisie - $periode_choisie</h2>\n";
+
+				echo "<p>Onglet n°$indice_onglet</p>\n";
+
+				// Récupérer/afficher les données de l'année/période pour cet élève
+				// Non... on le fait via ajax_bulletins.php
+
+				echo "</div>\n";
+
+			}
+
+		echo "</div>\n";
+
+	echo "</div>\n";
+
+	echo "<script type='text/javascript'>
+	// <![CDATA[
+	function affiche_annees_anterieures(login_eleve,id_classe) {
+		document.getElementById('titre_entete_annees_anterieures').innerHTML='Années antérieures de '+login_eleve;
+
+		if(document.getElementById('conteneur_t_annee_0')) {
+			for(i=0;i<=".count($tab_periodes).";i++) {
+				if(document.getElementById('conteneur_t_annee_'+i)) {
+					document.getElementById('conteneur_t_annee_'+i).style.display='none';
+				}
+			}
+
+			document.getElementById('conteneur_t_annee_0').style.display='';
+		}
+
+		for(i=0;i<=".count($tab_periodes).";i++) {
+			if(document.getElementById('t_periode_'+i)) {
+				document.getElementById('t_periode_'+i).style.backgroundColor='grey';
+			}
+		}
+
+		if(document.getElementById('t_periode_0')) {
+			document.getElementById('t_periode_0').style.backgroundColor='white';
+		}
+
+		new Ajax.Updater($('contenu_onglet'),'../mod_annees_anterieures/ajax_bulletins.php?logineleve='+login_eleve+'&id_classe='+id_classe,{method: 'get'});
+	}
+
+	function affiche_onglet_aa(logineleve,id_classe,annee_scolaire,num_periode,indice_onglet) {
+		if(annee_scolaire!='') {
+
+			if(document.getElementById('conteneur_t_annee_'+indice_onglet)) {
+				for(i=0;i<=".count($tab_periodes).";i++) {
+					if(document.getElementById('conteneur_t_annee_'+i)) {
+						document.getElementById('conteneur_t_annee_'+i).style.display='none';
+					}
+				}
+
+				document.getElementById('conteneur_t_annee_'+indice_onglet).style.display='';
+			}
+
+			for(i=0;i<=".count($tab_periodes).";i++) {
+				if(document.getElementById('t_periode_'+i)) {
+					document.getElementById('t_periode_'+i).style.borderBottom='1 px solid black';
+					document.getElementById('t_periode_'+i).style.backgroundColor='grey';
+				}
+			}
+	
+			if(document.getElementById('t_periode_'+indice_onglet)) {
+				document.getElementById('t_periode_'+indice_onglet).style.borderBottom='0 px solid black';
+					document.getElementById('t_periode_'+indice_onglet).style.backgroundColor='white';
+			}
+	
+			if(document.getElementById('t_annee_'+indice_onglet)) {
+				document.getElementById('t_annee_'+indice_onglet).style.borderBottom='0 px solid black';
+			}
+	
+			new Ajax.Updater($('contenu_onglet'),'../mod_annees_anterieures/ajax_bulletins.php?logineleve='+logineleve+'&id_classe='+id_classe+'&annee_scolaire='+annee_scolaire+'&num_periode='+num_periode,{method: 'get'});
+		}
+	}
+
+	//]]>
+</script>\n";
+
+}
 ?>

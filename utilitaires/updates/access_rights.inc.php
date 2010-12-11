@@ -695,6 +695,8 @@ $tab_req[] = "INSERT INTO droits SET id='/statistiques/index.php',administrateur
 
 $tab_req[] = "INSERT INTO droits SET id='/statistiques/classes_effectifs.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Statistiques: classe, effectifs',statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/mod_annees_anterieures/ajax_bulletins.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Statistiques: classe, effectifs',statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {
