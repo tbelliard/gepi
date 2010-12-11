@@ -1686,7 +1686,20 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 			$texte_1_responsable = '';
 			if ( $tab_modele_pdf["cadre_adresse"][$classe_id] != 0 ) {
-				$pdf->Rect($tab_modele_pdf["X_parent"][$classe_id], $tab_modele_pdf["Y_parent"][$classe_id], $longeur_cadre_adresse, $hauteur_cadre_adresse, 'D');
+				if($hauteur_cadre_adresse=='1') {
+					// Patch tout pourri... pour faire un encadrement à peu près correct, même si la hauteur du cadre adresse parent n'a pas été saisie dans le modèle
+					$h_tmp=$pdf->GetY()-$tab_modele_pdf["Y_parent"][$classe_id]-2;
+
+					$pdf->Rect($tab_modele_pdf["X_parent"][$classe_id], $tab_modele_pdf["Y_parent"][$classe_id], $longeur_cadre_adresse, $h_tmp, 'D');
+				}
+				else {
+					$pdf->Rect($tab_modele_pdf["X_parent"][$classe_id], $tab_modele_pdf["Y_parent"][$classe_id], $longeur_cadre_adresse, $hauteur_cadre_adresse, 'D');
+				}
+
+				// Remarque: L'encadrement réalisé ne tient pas compte du texte saisi.
+				//           Si on met des valeurs trop réduites, ça ne diminue pas la taille du texte de l'adresse
+				//           On ne fait ici que mettre une déco qui ne va pas nécessairement coïncider
+				//           A REVOIR...
 			}
 		}
 
