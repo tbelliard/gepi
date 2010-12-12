@@ -1371,7 +1371,10 @@ echo "
 <input type='hidden' name='signalement_id_groupe' id='signalement_id_groupe' value='' />
 <input type='hidden' name='signalement_id_eleve' id='signalement_id_eleve' value='' />
 <input type='hidden' name='signalement_num_periode' id='signalement_num_periode' value='' />
-<textarea name='signalement_message' id='signalement_message' cols='50' rows='12'></textarea>
+
+<div id='div_signalement_message'></div>
+<!--textarea name='signalement_message' id='signalement_message' cols='50' rows='12'></textarea-->
+
 <input type='button' onclick='valider_signalement_faute()' name='Envoyer' value='Envoyer' />
 </form>
 ";
@@ -1415,6 +1418,11 @@ echo "
 		//alert('document.getElementById(\'appreciation_'+id_eleve+'_'+id_groupe+'_'+num_periode+').innerHTML');
 		message=message+'\\n================================\\n\\nCordialement\\n-- \\n".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."'
 
+
+		//alert('message='+message);
+
+		document.getElementById('div_signalement_message').innerHTML='<textarea name=\'signalement_message\' id=\'signalement_message\' cols=\'50\' rows=\'12\'></textarea>';
+
 		document.getElementById('signalement_message').innerHTML=message;
 
 		afficher_div('div_signaler_faute','y',100,100);
@@ -1432,6 +1440,8 @@ echo "
 		new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?signalement_login_eleve='+signalement_login_eleve+'&signalement_id_groupe='+signalement_id_groupe+'&signalement_message='+signalement_message,{method: 'get'});
 
 		cacher_div('div_signaler_faute');
+		//document.getElementById('signalement_message').innerHTML='';
+
 	}
 	//]]>
 </script>\n";
