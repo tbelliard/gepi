@@ -1588,6 +1588,17 @@ function eleve_suivant() {
 		echo "<input type='submit' name='choix_eleves' value='Afficher' style='margin-bottom: 3px;'/><br />\n";
 	}
 
+	if ($graphe_affiche_deroulant_appreciations=='oui') {
+		echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
+		//echo "<div style='border:1px solid black; background-color:white; width: 320px;' style='height:$graphe_hauteur_affichage_deroulant'>";
+		echo "<b><i><center>Appréciations - $periode</center></i></b>";
+		echo "<div id='appreciations_deroulantes'>";
+		echo "<span id='appreciations_defile'>";
+		//echo $txt_appreciations_deroulantes;
+		echo "</span></div></div>";
+		echo "<hr width='150' />\n";
+	}
+
 	// Choix de la période
 	echo "Choisir la période:<br />\n";
 	if($choix_periode=='periode') {$checked=" checked='yes'";}else{$checked="";}
@@ -2392,8 +2403,8 @@ function eleve_suivant() {
 			//=========================================================
 			//=========================================================
 			//=========================================================
-    
-	
+
+
 	// Ajout Eric 11/12/2010 Boite déroulante pour les appréciations.
 	if ($graphe_affiche_deroulant_appreciations=='oui') {
 	    $graphe_hauteur_affichage_deroulant=$graphe_hauteur_affichage_deroulant."px";
@@ -2402,28 +2413,33 @@ function eleve_suivant() {
 			var pas=1;
 			var h_fen='$graphe_hauteur_affichage_deroulant';
 			function scrollmrq(){
-			if (parseInt(mrq.style.top) > -h_mrq ) 
-			mrq.style.top = parseInt(mrq.style.top)-pas+'px'
-			else mrq.style.top=parseInt(h_fen)+'px'
+				if (parseInt(mrq.style.top) > -h_mrq ) 
+				mrq.style.top = parseInt(mrq.style.top)-pas+'px'
+				else mrq.style.top=parseInt(h_fen)+'px'
 			}
 			function init_mrq(){
-			mrq=document.getElementById('appreciations_defile');
-			fen=document.getElementById('appreciations_deroulantes');
-			fen.onmouseover=function(){stoc=pas;pas=0};
-			fen.onmouseout=function(){pas=stoc};fen.style.height=h_fen;
-			h_mrq=mrq.offsetHeight;
-			with(mrq.style){position='absolute';top=h_fen;}
-			setInterval('scrollmrq()',50);
-			}	
+				mrq=document.getElementById('appreciations_defile');
+				fen=document.getElementById('appreciations_deroulantes');
+				fen.onmouseover=function(){stoc=pas;pas=0};
+				fen.onmouseout=function(){pas=stoc};fen.style.height=h_fen;
+				h_mrq=mrq.offsetHeight;
+				with(mrq.style){position='absolute';top=h_fen;}
+				setInterval('scrollmrq()',50);
+			}
+
+			document.getElementById('appreciations_defile').innerHTML='".addslashes($txt_appreciations_deroulantes)."';
+
 			window.onload =init_mrq;
 		//]]>
 	    </script>\n";
-		echo "<div class='appreciations_deroulantes_graphe'; STYLE='height:$graphe_hauteur_affichage_deroulant'>";
+		/*
+		echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
 		echo "<b><i><center>Appréciations - $periode</center></i></b>";
 		echo "<div id='appreciations_deroulantes'>";
 		echo "<span id='appreciations_defile'>";
 		echo $txt_appreciations_deroulantes;
 		echo "</span></div></div>";
+		*/
 	}
 	// Fin ajout Eric
 	
