@@ -62,6 +62,7 @@ $signalement_message=isset($_GET['signalement_message']) ? $_GET['signalement_me
 
 //$signalement_message=my_ereg_replace("\\\\n","<br />",$signalement_message);
 $signalement_message=my_ereg_replace("\\\\n","\n",$signalement_message);
+$signalement_message=stripslashes($signalement_message);
 
 if(($signalement_login_eleve=='')||($signalement_id_groupe=='')||($signalement_message=='')) {
 	echo "<span style='color:red'> KO</span>";
