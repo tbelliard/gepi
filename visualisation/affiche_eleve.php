@@ -152,6 +152,9 @@ tronquer_nom_court
 
 			if(isset($_POST['graphe_champ_saisie_avis_fixe'])) {save_params_graphe('graphe_champ_saisie_avis_fixe',$_POST['graphe_champ_saisie_avis_fixe']);}
 
+			// Ajout Eric 11/12/10			
+			if(isset($_POST['graphe_affiche_deroulant_appreciations'])){save_params_graphe('graphe_affiche_deroulant_appreciations',$_POST['graphe_affiche_deroulant_appreciations']);}
+
 			if(isset($_POST['click_plutot_que_survol_aff_app'])) {save_params_graphe('graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
 			if($msg=='') {
@@ -1083,6 +1086,19 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 	//========================
 
+	// AJOUT Eric 11/12/10
+	if(isset($_POST['graphe_affiche_deroulant_appreciations'])){
+		$graphe_affiche_deroulant_appreciations=$_POST['graphe_affiche_deroulant_appreciations'];
+	}
+	else{
+		if(getSettingValue('graphe_affiche_deroulant_appreciations')){
+			//insert into setting set name='graphe_champ_saisie_avis_fixe',value='y';
+			$graphe_affiche_deroulant_appreciations=getSettingValue('graphe_affiche_deroulant_appreciations');
+		}
+		else{
+			$graphe_affiche_deroulant_appreciations="non";
+		}
+	}
 
 	//======================================================================
 	//======================================================================
@@ -1246,12 +1262,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			if($mode_graphe=='svg') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='mode_graphe_svg' style='cursor: pointer;'><input type='radio' name='mode_graphe' id='mode_graphe_svg' value='svg'$checked /> SVG</label>\n";
 			echo "</td></tr>\n";
-
-
 			echo "</table>\n";
+			
+			echo "<table border='0' summary='affiche_deroulant_appreciations'>\n";
+			if(($graphe_affiche_deroulant_appreciations=='')||($graphe_affiche_deroulant_appreciations=='oui')) {$checked=" checked='yes'";} else {$checked="";}
+			echo "<tr><td>Afficher une fenêtre déroulante contenant les appréciations:</td><td><label for='affiche_deroulant_appreciations_oui' style='cursor: pointer;'><input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_oui' value='oui'$checked />Oui</label> / \n";
+			if($graphe_affiche_deroulant_appreciations=='non') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='affiche_deroulant_appreciations_non' style='cursor: pointer;'>Non<input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_non' value='non'$checked /></label></td></tr>\n";
+			echo "</table>\n";
+			
 			echo "</blockquote>\n";
 
-
+			
 
 			// - Affichage de la photo
 			echo "<p><b>Paramètres des photos</b></p>\n";
@@ -1585,7 +1607,9 @@ function eleve_suivant() {
 	echo "<input type='hidden' name='tronquer_nom_court' value='$tronquer_nom_court' />\n";
 	echo "<input type='hidden' name='affiche_photo' value='$affiche_photo' />\n";
 	echo "<input type='hidden' name='largeur_imposee_photo' value='$largeur_imposee_photo' />\n";
-
+	
+	echo "<input type='hidden' name='graphe_affiche_deroulant_appreciations' value='$graphe_affiche_deroulant_appreciations' />\n";
+	
 	echo "<input type='hidden' name='parametrer_affichage' value='' />\n";
 	echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.<br />\n";
 
@@ -1769,6 +1793,7 @@ function eleve_suivant() {
 		echo "<script type='text/javascript'>desactivation_infobulle='n';</script>\n";
 	}
 
+	
 	//echo "<input type='text' id='id_truc' name='truc' value='' />";
 	//echo "</form>\n";
 
@@ -2114,6 +2139,7 @@ function eleve_suivant() {
 		$liste_matieres="";
 		$matiere=array();
 		$matiere_nom=array();
+		$txt_appreciations_deroulantes="";
 
 		// Séries:
 		if($choix_periode=="periode") {
@@ -2307,14 +2333,18 @@ function eleve_suivant() {
 
 						if(mysql_num_rows($app_eleve_query)>0) {
 							$ligtmp=mysql_fetch_object($app_eleve_query);
-
+							
 							$titre_bulle=htmlentities($matiere_nom[$cpt])." (<i>$periode</i>)";
 							$texte_bulle="<div align='center'>\n";
 							$texte_bulle.=htmlentities($ligtmp->appreciation)."\n";
 							$texte_bulle.="</div>\n";
 							//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
 
-							if($type_graphe=='etoile') {
+							//Ajout Eric pour le déroulant des appréciations
+							$txt_appreciations_deroulantes.="<li><b>".htmlentities($matiere_nom[$cpt])." : </b></br>".htmlentities($ligtmp->appreciation)."</br></li>";
+							
+							if($type_graphe=='etoile'){
+
 								$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",20,0,'y','y','n','n');
 							}
 							else{
@@ -2340,8 +2370,40 @@ function eleve_suivant() {
 			//=========================================================
 			//=========================================================
 			//=========================================================
-
-
+    
+	
+	// Ajout Eric 11/12/2010 Boite déroulante pour les appréciations.
+	if ($graphe_affiche_deroulant_appreciations=='oui') {
+		echo "<script type='text/javascript'>
+		// <![CDATA[
+			var pas=1;
+			var h_fen='200px';
+			function scrollmrq(){
+			if (parseInt(mrq.style.top) > -h_mrq ) 
+			mrq.style.top = parseInt(mrq.style.top)-pas+'px'
+			else mrq.style.top=parseInt(h_fen)+'px'
+			}
+			function init_mrq(){
+			mrq=document.getElementById('appreciations_defile');
+			fen=document.getElementById('appreciations_deroulantes');
+			fen.onmouseover=function(){stoc=pas;pas=0};
+			fen.onmouseout=function(){pas=stoc};fen.style.height=h_fen;
+			h_mrq=mrq.offsetHeight;
+			with(mrq.style){position='absolute';top=h_fen;}
+			setInterval('scrollmrq()',50);
+			}	
+			window.onload =init_mrq;
+		//]]>
+	    </script>\n";
+		echo "<div class='appreciations_deroulantes_graphe';>";
+		echo "<b><i><center>Appréciations - $periode</center></i></b>";
+		echo "<div id='appreciations_deroulantes'>";
+		echo "<span id='appreciations_defile'>";
+		echo $txt_appreciations_deroulantes;
+		echo "</span></div></div>";
+	}
+	// Fin ajout Eric
+	
 			// Avis du conseil de classe
 			$temoin_avis_present="n";
 			// Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
