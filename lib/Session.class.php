@@ -1373,7 +1373,7 @@ class Session {
         }
       }
       $query .= " WHERE login = '$this->login'";
-			error_log("Détail requête : ".$query;
+			error_log("Détail requête : ".$query);
       if ($need_update) $res = mysql_query($query); // On exécute la mise à jour, si nécessaire
       return $res;
     }
