@@ -746,8 +746,20 @@ class Session {
 		$path = dirname(__FILE__)."/../secure/config_cas.inc.php";
 		include($path);
 
+		# On défini l'URL de base, pour que phpCAS ne se trompe pas dans la génération
+		# de l'adresse de retour vers le service (attention, requiert patchage manuel
+		# de phpCAS !!)
+		if (isset($GLOBALS['gepiBaseUrl'])) {
+			$url_base = $GLOBALS['gepiBaseUrl'];
+		} else {
+			$url_base = $this->https_request() ? 'https' : 'http';
+			$url_base .= '://';
+			$url_base .= $_SERVER['SERVER_NAME'];
+		}
+
 		// Le premier argument est la version du protocole CAS
-		phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, false);
+		// Le dernier argument a été ajouté par patch manuel de phpCAS.
+		phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_root, false, $url_base);
 		phpCAS::setLang('french');
 
 		// redirige vers le serveur d'authentification si aucun utilisateur authentifié n'a
@@ -1388,6 +1400,17 @@ class Session {
 		$test = mysql_query("SET time_zone = '".$mysql_offset."'");
 	    }
 	    return $update_timezone;
-        }
+    }
+    
+  # Renvoie 'true' si l'accès à Gepi se fait en https
+  private function https_request() {
+  	if (!isset($_SERVER['HTTPS'])
+    			OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
+    			OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https")) {
+    	return false;
+    } else {
+      return true;
+    }
+  }
 }
 ?>
