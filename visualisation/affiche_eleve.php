@@ -3747,12 +3747,13 @@ function eleve_suivant() {
 					echo "</a>";
 				}
 
-				echo " | ";
-
-				echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\">";
-				echo "Consultation";
-				echo "</a>";
-
+				if(check_droit_acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
+					echo " | ";
+	
+					echo "<a href=\"../eleves/visu_eleve.php?ele_login=".$eleve1."&id_classe=".$id_classe."\" target=\"_blank\">";
+					echo "Consultation";
+					echo "</a>";
+				}
 
 				if((getSettingValue('active_annees_anterieures')=='y')&&($acces_aa=='y')) {
 					echo " | ";
@@ -4085,7 +4086,7 @@ echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px
 		echo "<div id='titre_entete_bull_simp'></div>\n";
 	echo "</div>\n";
 	
-	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
 	echo "</div>\n";
 
 echo "</div>\n";

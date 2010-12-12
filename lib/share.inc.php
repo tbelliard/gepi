@@ -168,15 +168,17 @@ function action_alea_invalide($envoyer_mail=true) {
  * Envoi de mail
  *
  */
-function envoi_mail($sujet, $message, $destinataire) {
+function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
+
+	if($ajout_headers!='') {$ajout_headers="\r\n".$ajout_headers;}
 
 	// On envoie le mail
 	$envoi = mail($destinataire,
 		$gepiPrefixeSujetMail."GEPI : $sujet",
 		$message,
-	"From: Mail automatique Gepi\r\n"."X-Mailer: PHP/" . phpversion());
+	"From: Mail automatique Gepi\r\n"."X-Mailer: PHP/" . phpversion().$ajout_headers);
 }
 
 /**
@@ -5966,4 +5968,14 @@ if ($archive->extract(PCLZIP_OPT_PATH, $repertoire) == 0) {
  *                              Fin Manipulation de fichiers
  **********************************************************************************************/
 
+function check_droit_acces($id,$statut) {
+    $tab_id = explode("?",$id);
+    $query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
+    $droit = @mysql_result($query_droits, 0, $statut);
+    if ($droit == "V") {
+        return "1";
+    } else {
+        return "0";
+    }
+}
 ?>
