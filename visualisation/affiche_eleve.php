@@ -154,6 +154,7 @@ tronquer_nom_court
 
 			// Ajout Eric 11/12/10			
 			if(isset($_POST['graphe_affiche_deroulant_appreciations'])){save_params_graphe('graphe_affiche_deroulant_appreciations',$_POST['graphe_affiche_deroulant_appreciations']);}
+			if(isset($_POST['graphe_hauteur_affichage_deroulant'])) {save_params_graphe('graphe_hauteur_affichage_deroulant',$_POST['graphe_hauteur_affichage_deroulant']);}
 
 			if(isset($_POST['click_plutot_que_survol_aff_app'])) {save_params_graphe('graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
 
@@ -1099,6 +1100,22 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			$graphe_affiche_deroulant_appreciations="non";
 		}
 	}
+	
+	if(isset($_POST['graphe_hauteur_affichage_deroulant'])) {
+		$graphe_hauteur_affichage_deroulant=$_POST['graphe_hauteur_affichage_deroulant'];
+	}
+	else{
+		if(getSettingValue('graphe_hauteur_affichage_deroulant')) {
+			$graphe_hauteur_affichage_deroulant=getSettingValue('graphe_hauteur_affichage_deroulant');
+		}
+		else{
+			$graphe_hauteur_affichage_deroulant=200;
+		}
+	}
+	if((strlen(my_ereg_replace("[0-9]","",$graphe_hauteur_affichage_deroulant))!=0)||($graphe_hauteur_affichage_deroulant=="")) {
+		$graphe_hauteur_affichage_deroulant=200;
+	}
+
 
 	//======================================================================
 	//======================================================================
@@ -1264,11 +1281,14 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "</td></tr>\n";
 			echo "</table>\n";
 			
+			//Ajout Eric 11/12/10
 			echo "<table border='0' summary='affiche_deroulant_appreciations'>\n";
 			if(($graphe_affiche_deroulant_appreciations=='')||($graphe_affiche_deroulant_appreciations=='oui')) {$checked=" checked='yes'";} else {$checked="";}
 			echo "<tr><td>Afficher une fenêtre déroulante contenant les appréciations:</td><td><label for='affiche_deroulant_appreciations_oui' style='cursor: pointer;'><input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_oui' value='oui'$checked />Oui</label> / \n";
 			if($graphe_affiche_deroulant_appreciations=='non') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='affiche_deroulant_appreciations_non' style='cursor: pointer;'>Non<input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_non' value='non'$checked /></label></td></tr>\n";
+			echo "<tr><td><label for='graphe_hauteur_affichage_deroulant' style='cursor: pointer;'>Hauteur de la zone déroulante (<i>en pixels</i>):</label></td><td><input type='text' name='graphe_hauteur_affichage_deroulant' id='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' size='3' /></td></tr>\n";
+
 			echo "</table>\n";
 			
 			echo "</blockquote>\n";
@@ -1608,7 +1628,9 @@ function eleve_suivant() {
 	echo "<input type='hidden' name='affiche_photo' value='$affiche_photo' />\n";
 	echo "<input type='hidden' name='largeur_imposee_photo' value='$largeur_imposee_photo' />\n";
 	
+	//Ajout Eric 11/12/10
 	echo "<input type='hidden' name='graphe_affiche_deroulant_appreciations' value='$graphe_affiche_deroulant_appreciations' />\n";
+	echo "<input type='hidden' name='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' />\n";
 	
 	echo "<input type='hidden' name='parametrer_affichage' value='' />\n";
 	echo "<a href='".$_SERVER['PHP_SELF']."' onClick='document.forms[\"form_choix_eleves\"].parametrer_affichage.value=\"y\";document.forms[\"form_choix_eleves\"].submit();return false;'>Paramétrer l'affichage</a>.<br />\n";
@@ -2374,10 +2396,11 @@ function eleve_suivant() {
 	
 	// Ajout Eric 11/12/2010 Boite déroulante pour les appréciations.
 	if ($graphe_affiche_deroulant_appreciations=='oui') {
+	    $graphe_hauteur_affichage_deroulant=$graphe_hauteur_affichage_deroulant."px";
 		echo "<script type='text/javascript'>
 		// <![CDATA[
 			var pas=1;
-			var h_fen='200px';
+			var h_fen='$graphe_hauteur_affichage_deroulant';
 			function scrollmrq(){
 			if (parseInt(mrq.style.top) > -h_mrq ) 
 			mrq.style.top = parseInt(mrq.style.top)-pas+'px'
@@ -2395,7 +2418,7 @@ function eleve_suivant() {
 			window.onload =init_mrq;
 		//]]>
 	    </script>\n";
-		echo "<div class='appreciations_deroulantes_graphe';>";
+		echo "<div class='appreciations_deroulantes_graphe'; STYLE='height:$graphe_hauteur_affichage_deroulant'>";
 		echo "<b><i><center>Appréciations - $periode</center></i></b>";
 		echo "<div id='appreciations_deroulantes'>";
 		echo "<span id='appreciations_defile'>";

@@ -1013,8 +1013,7 @@ left : 5px;/*idem*/
 font-family: Tahoma, Arial, Helvetica, Sans-Serif;
 font-size: 16px;/*0.95em;*/
 border: 1px solid #FFFFFF;
-width : 320px; /*taille de la boite*/
-height: 200px; /*hauteur de la fenêtre défilante à reporter dans le script...*/
+width : 320px; /*largeur de la boite*/
 padding : 2px;
 background: white;
 text-align:left;
