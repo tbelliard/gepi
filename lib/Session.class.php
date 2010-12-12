@@ -781,15 +781,18 @@ class Session {
 		$this->current_auth_mode = "sso";
     
     // Extractions des attributs supplémentaires, le cas échéant
+    $tab = phpCAS::getAttributes();
     $attributs = array('prenom','nom','email');
     foreach($attributs as $attribut) {
       $code_attribut = getSettingValue('cas_attribut_'.$attribut);
       // Si un attribut a été spécifié, on va le chercher
       if (!empty($code_attribut)) {
-        $valeur = phpCAS::getAttribute($code_attribut);
-        if (!empty($valeur)){
-          // L'attribut trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
-          $this->cas_extra_attributes[$attribut] = trim(mysql_real_escape_string($valeur));
+      	if (isset($tab[$code_attribut])) {
+        	$valeur = $tab[$code_attribut];
+					if (!empty($valeur)){
+						// L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
+						$this->cas_extra_attributes[$attribut] = trim(mysql_real_escape_string($valeur));
+					}
         }
       }
     }
