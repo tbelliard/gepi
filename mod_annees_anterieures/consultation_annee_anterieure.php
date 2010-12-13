@@ -786,7 +786,13 @@ else{
 		if($_SESSION['statut']!='eleve'){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir un autre ".$gepiSettings['denomination_eleve']."</a>\n";
 
-			$lignes_options_select_eleve=lignes_options_select_eleve($id_classe,$logineleve);
+			if(isset($sql_ele)) {
+				$lignes_options_select_eleve=lignes_options_select_eleve($id_classe,$logineleve,$sql_ele);
+			}
+			else {
+				$lignes_options_select_eleve=lignes_options_select_eleve($id_classe,$logineleve);
+			}
+
 			echo "<select name='logineleve' onchange=\"document.forms['form_change_eleve'].submit();\">\n";
 			echo $lignes_options_select_eleve;
 			echo "</select>\n";
