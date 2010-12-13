@@ -2743,6 +2743,21 @@ function vider_dir($dir){
 	return $statut;
 }
 
+
+/*
+ * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien
+ * retournée en ISO-8859-1.
+ */
+function ensure_iso8859_1($str) {
+	$encoding = mb_detect_encoding($str);
+	if ($encoding == 'ISO-8859-1') {
+		return $str;
+	} else {
+		return mb_convert_encoding($str, 'ISO-8859-1');
+	}
+}
+
+
 function caract_ooo($chaine){
 	if(function_exists('utf8_encode')){
 		$retour=utf8_encode($chaine);

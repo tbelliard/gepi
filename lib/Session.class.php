@@ -789,8 +789,10 @@ class Session {
       if (!empty($code_attribut)) {
       	if (isset($tab[$code_attribut])) {
         	$valeur = $tab[$code_attribut];
-					if (!empty($valeur)){
-						// L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
+					if (!empty($valeur)){						// L'attribut est trouvé et non vide, on l'assigne pour mettre à jour l'utilisateur
+						// On s'assure que la chaîne est bien enregistrée en iso-8859-1.
+						// Il est en effet probable que la chaîne d'origine soit en UTF-8.
+						$valeur = ensure_iso8859_1($valeur);
 						$this->cas_extra_attributes[$attribut] = trim(mysql_real_escape_string($valeur));
 					}
         }
@@ -1362,12 +1364,15 @@ class Session {
     if (!empty($this->cas_extra_attributes)) {
       $query = 'UPDATE utilisateurs SET ';
       $first = true;
-      foreach($this->cas_extra_attributes as $attribute => $value) {
+      foreach($this->cas_extra_attributes as $attribute => $value) {				
+				// On compare la valeur envoyée avec la valeur présente dans Gepi
         if ($_SESSION[$attribute] != $value){
+          $_SESSION[$attribute] = $value;
           $need_update = true;
           if (!$first) {
             $query .= ", ";
           }
+
           $query .= "$attribute = '$value'";
           $first = false;
         }
