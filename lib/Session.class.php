@@ -1355,10 +1355,10 @@ class Session {
   # par CAS directement.
   private function update_user_with_cas_attributes(){
     $need_update = false;
-    error_log("Mise à jour de l'utilisateur à partir des attributs CAS.");
-    error_log("Attribut email :".$this->cas_extra_attributes['email']);
-    error_log("Attribut prenom :".$this->cas_extra_attributes['prenom']);
-    error_log("Attribut nom :".$this->cas_extra_attributes['nom']);
+    error_log("Mise à jour de l'utilisateur à partir des attributs CAS.", $GLOBALS['debug_log_file']);
+    error_log("Attribut email :".$this->cas_extra_attributes['email'], $GLOBALS['debug_log_file']);
+    error_log("Attribut prenom :".$this->cas_extra_attributes['prenom'], $GLOBALS['debug_log_file']);
+    error_log("Attribut nom :".$this->cas_extra_attributes['nom'], $GLOBALS['debug_log_file']);
     if (!empty($this->cas_extra_attributes)) {
       $query = 'UPDATE utilisateurs SET ';
       $first = true;
@@ -1373,7 +1373,7 @@ class Session {
         }
       }
       $query .= " WHERE login = '$this->login'";
-			error_log("Détail requête : ".$query);
+			error_log("Détail requête : ".$query, $GLOBALS['debug_log_file']);
       if ($need_update) $res = mysql_query($query); // On exécute la mise à jour, si nécessaire
       return $res;
     }
