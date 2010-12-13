@@ -1,5 +1,9 @@
 <?php
 
+/*
+$Id$
+*/
+
 function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_periode){
 	/*
 		$logineleve:      login actuel de l'élève
@@ -543,8 +547,9 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 
 			//echo "<p>Bulletins simplifiés:</p>\n";
 			//echo "<table border='0'>\n";
-			echo "<table class='table_annee_anterieure' summary='Bulletins'>\n";
-			echo "<tr>\n";
+			$alt=1;
+			echo "<table class='boireaus table_annee_anterieure' summary='Bulletins'>\n";
+			echo "<tr class='lig$alt'>\n";
 			echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiés:</th>";
 			$cpt=0;
 			while($lig_ant=mysql_fetch_object($res_ant)){
@@ -552,7 +557,8 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 				$tab_annees[]=$lig_ant->annee;
 
 				if($cpt>0){
-					echo "<tr>\n";
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
 				}
 				echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
 
@@ -580,13 +586,15 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 
 			//echo "<p>Avis des conseils de classes:<br />\n";
 			//echo "<table border='0'>\n";
-			echo "<table class='table_annee_anterieure' summary='Avis des conseils'>\n";
-			echo "<tr>\n";
+			$alt=1;
+			echo "<table class='boireaus table_annee_anterieure' summary='Avis des conseils'>\n";
+			echo "<tr class='lig$alt'>\n";
 			echo "<th rowspan='".$nb_annees."' valign='top'>Avis des conseils de classes:</th>";
 			$cpt=0;
 			for($i=0;$i<count($tab_annees);$i++){
 				if($cpt>0){
-					echo "<tr>\n";
+					$alt=$alt*(-1);
+					echo "<tr class='lig$alt'>\n";
 				}
 				//echo "<td style='font-weight:bold;'>\n";
 				echo "<td>\n";

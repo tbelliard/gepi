@@ -2,7 +2,7 @@
 /*
  * $Id : $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -492,7 +492,9 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
-echo "<div class='norme'><p class=bold><a href='";
+echo "<div class='norme'>\n";
+echo "<form action='".$_SERVER['PHP_SELF']."' name='form_change_eleve' method='get'>\n";
+echo "<p class='bold'><a href='";
 if($_SESSION['statut']=="administrateur"){
 	echo "index.php";
 }
@@ -502,6 +504,7 @@ else{
 echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 if(!isset($id_classe)){
+	echo "</form>\n";
 	echo "</div>\n";
 
 	echo "<h2>Choix de la classe</h2>\n";
@@ -566,6 +569,7 @@ else{
 
 	//if(!isset($logineleve)){
 	if((!isset($logineleve))&&(!isset($aff_classe))) {
+		echo "</form>\n";
 		echo "</div>\n";
 
 		//$sql="SELECT DISTINCT e.nom,e.prenom,e.login FROM eleves e,j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=e.login ORDER BY e.nom,e.prenom";
@@ -684,8 +688,9 @@ else{
 
 				$nb_annees=mysql_num_rows($res_ant);
 
-				echo "<table class='table_annee_anterieure' summary='Bulletins'>\n";
-				echo "<tr>\n";
+				$alt=1;
+				echo "<table class='boireaus table_annee_anterieure' summary='Bulletins'>\n";
+				echo "<tr class='lig$alt'>\n";
 				echo "<th rowspan='".$nb_annees."' valign='top'>Bulletins simplifiés:</th>";
 				$cpt=0;
 				while($lig_ant=mysql_fetch_object($res_ant)){
@@ -693,7 +698,8 @@ else{
 					$tab_annees[]=$lig_ant->annee;
 
 					if($cpt>0){
-						echo "<tr>\n";
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
 					}
 					echo "<td style='font-weight:bold;'>$lig_ant->annee : </td>\n";
 
@@ -719,13 +725,15 @@ else{
 
 				echo "<br />\n";
 
-				echo "<table class='table_annee_anterieure' summary='Avis des conseils'>\n";
-				echo "<tr>\n";
+				$alt=1;
+				echo "<table class='boireaus table_annee_anterieure' summary='Avis des conseils'>\n";
+				echo "<tr class='lig$alt'>\n";
 				echo "<th rowspan='".$nb_annees."' valign='top'>Avis des conseils de classes:</th>";
 				$cpt=0;
 				for($i=0;$i<count($tab_annees);$i++){
 					if($cpt>0){
-						echo "<tr>\n";
+						$alt=$alt*(-1);
+						echo "<tr class='lig$alt'>\n";
 					}
 					echo "<td>\n";
 
@@ -755,6 +763,8 @@ else{
 	)) {
 		//if($_SESSION['statut']!='eleve'){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir une autre période ou ".$gepiSettings['denomination_eleve']."</a>\n";
+			echo "</form>\n";
+			echo "</div>\n";
 		//}
 
 		$res_liste_ele=mysql_query($sql_ele);
@@ -775,6 +785,22 @@ else{
 	else{
 		if($_SESSION['statut']!='eleve'){
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe'>Choisir un autre ".$gepiSettings['denomination_eleve']."</a>\n";
+
+			$lignes_options_select_eleve=lignes_options_select_eleve($id_classe,$logineleve);
+			echo "<select name='logineleve' onchange=\"document.forms['form_change_eleve'].submit();\">\n";
+			echo $lignes_options_select_eleve;
+			echo "</select>\n";
+			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+
+			if(isset($annee_scolaire)) {
+				echo "<input type='hidden' name='annee_scolaire' value='$annee_scolaire' />\n";
+			}
+			if(isset($num_periode)) {
+				echo "<input type='hidden' name='num_periode' value='$num_periode' />\n";
+			}
+			if(isset($mode)) {
+				echo "<input type='hidden' name='mode' value='$mode' />\n";
+			}
 		}
 
 		require("fonctions_annees_anterieures.inc.php");
@@ -791,6 +817,7 @@ else{
 
 		//if(!isset($logineleve)){
 		if((!isset($logineleve))||(($mode!='bull_simp')&&($mode!='avis_conseil'))) {
+			echo "</form>\n";
 			echo "</div>\n";
 			echo "<h2 align='center'>Choix des informations antérieures</h2>\n";
 			//tab_choix_anterieure($logineleve);
@@ -798,6 +825,7 @@ else{
 		}
 		else{
 			echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve'>Choix des informations</a>\n";
+			echo "</form>\n";
 			echo "</div>\n";
 			//echo "<div style='float:right; width:3em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve'>Retour</a></div>\n";
 			//echo "<div style='float:left; width:5em; text-align:center;'><a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve'><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></div>\n";

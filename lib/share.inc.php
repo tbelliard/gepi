@@ -5993,4 +5993,49 @@ function check_droit_acces($id,$statut) {
         return "0";
     }
 }
+
+
+function lignes_options_select_eleve($id_classe,$login_eleve_courant) {
+	$sql="SELECT DISTINCT jec.login,e.nom,e.prenom FROM j_eleves_classes jec, eleves e
+							WHERE jec.login=e.login AND
+								jec.id_classe='$id_classe'
+							ORDER BY e.nom,e.prenom";
+	//echo "$sql<br />";
+	//echo "\$login_eleve=$login_eleve<br />";
+	$res_ele_tmp=mysql_query($sql);
+	$chaine_options_login_eleves="";
+	$cpt_eleve=0;
+	$num_eleve=-1;
+	if(mysql_num_rows($res_ele_tmp)>0){
+		$login_eleve_prec=0;
+		$login_eleve_suiv=0;
+		$temoin_tmp=0;
+		while($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
+			if($lig_ele_tmp->login==$login_eleve_courant){
+				$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login' selected='true'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+	
+				$num_eleve=$cpt_eleve;
+	
+				$temoin_tmp=1;
+				if($lig_ele_tmp=mysql_fetch_object($res_ele_tmp)){
+					$login_eleve_suiv=$lig_ele_tmp->login;
+					$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+				}
+				else{
+					$login_eleve_suiv=0;
+				}
+			}
+			else{
+				$chaine_options_login_eleves.="<option value='$lig_ele_tmp->login'>$lig_ele_tmp->nom $lig_ele_tmp->prenom</option>\n";
+			}
+	
+			if($temoin_tmp==0){
+				$login_eleve_prec=$lig_ele_tmp->login;
+			}
+			$cpt_eleve++;
+		}
+	}
+
+	return $chaine_options_login_eleves;
+}
 ?>
