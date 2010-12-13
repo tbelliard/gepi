@@ -582,6 +582,21 @@ else {
 
 }
 
+// Sur certaines bases il est arrivé pour une raison inconnue que le champ type_creneaux soit manquant
+$result .= "&nbsp;->Ajout si nécessaire d'un champ 'type_creneaux' à la table 'edt_creneaux'<br />";
+$test_type_creneaux=mysql_num_rows(mysql_query("SHOW COLUMNS FROM edt_creneaux LIKE 'type_creneaux';"));
+if ($test_type_creneaux>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE edt_creneaux ADD type_creneaux VARCHAR( 15 ) NOT NULL AFTER suivi_definie_periode;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
 // ============= Insertion d'un champ pour EDT2
 
 $sql = "SELECT id_aid FROM edt_cours LIMIT 1";
