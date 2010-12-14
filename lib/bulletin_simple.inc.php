@@ -1369,7 +1369,7 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 
 $necessaire_signalement_fautes_insere="n";
 function lib_signalement_fautes() {
-	global $necessaire_signalement_fautes_insere;
+	global $necessaire_signalement_fautes_insere, $id_classe;
 
 	if($necessaire_signalement_fautes_insere=="n") {
 
@@ -1394,6 +1394,7 @@ echo "
 <input type='hidden' name='signalement_id_groupe' id='signalement_id_groupe' value='' />
 <input type='hidden' name='signalement_id_eleve' id='signalement_id_eleve' value='' />
 <input type='hidden' name='signalement_num_periode' id='signalement_num_periode' value='' />
+<input type='hidden' name='signalement_id_classe' id='signalement_id_classe' value='$id_classe' />
 
 <div id='div_signalement_message'></div>
 <!--textarea name='signalement_message' id='signalement_message' cols='50' rows='12'></textarea-->
@@ -1444,7 +1445,7 @@ echo "
 
 		//alert('message='+message);
 
-		document.getElementById('div_signalement_message').innerHTML='<textarea name=\'signalement_message\' id=\'signalement_message\' cols=\'50\' rows=\'12\'></textarea>';
+		document.getElementById('div_signalement_message').innerHTML='<textarea name=\'signalement_message\' id=\'signalement_message\' cols=\'50\' rows=\'11\'></textarea>';
 
 		document.getElementById('signalement_message').innerHTML=message;
 
@@ -1459,8 +1460,9 @@ echo "
 
 		signalement_id_eleve=document.getElementById('signalement_id_eleve').value;
 		signalement_num_periode=document.getElementById('signalement_num_periode').value;
+		signalement_id_classe=document.getElementById('signalement_id_classe').value;
 
-		new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?signalement_login_eleve='+signalement_login_eleve+'&signalement_id_groupe='+signalement_id_groupe+'&signalement_message='+signalement_message,{method: 'get'});
+		new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?signalement_login_eleve='+signalement_login_eleve+'&signalement_id_groupe='+signalement_id_groupe+'&signalement_id_classe='+signalement_id_classe+'&signalement_num_periode='+signalement_num_periode+'&signalement_message='+signalement_message,{method: 'get'});
 
 		cacher_div('div_signaler_faute');
 		//document.getElementById('signalement_message').innerHTML='';

@@ -51,6 +51,10 @@ $is_posted=isset($_POST['is_posted']) ? $_POST['is_posted'] : (isset($_GET['is_p
 $display_date_limite=isset($_POST['display_date_limite']) ? $_POST['display_date_limite'] : (isset($_GET['display_date_limite']) ? $_GET['display_date_limite'] : NULL);
 $display_heure_limite=isset($_POST['display_heure_limite']) ? $_POST['display_heure_limite'] : (isset($_GET['display_heure_limite']) ? $_GET['display_heure_limite'] : NULL);
 
+// Pour refermer la page plutôt que proposer un lien retour dans certains cas
+$refermer_page=isset($_POST['refermer_page']) ? $_POST['refermer_page'] : (isset($_GET['refermer_page']) ? $_GET['refermer_page'] : NULL);
+
+
 $msg="";
 
 if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($periode))&&(isset($display_date_limite))&&(isset($display_heure_limite))) {
@@ -158,7 +162,13 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
 echo "<p class='bold'>\n";
-echo "<a href=\"../accueil.php\" ><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>\n";
+
+if($refermer_page=='y') {
+	echo "<a href='../accueil.php' onClick='self.close();return false;'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer la page </a>\n";
+}
+else {
+	echo "<a href=\"../accueil.php\" ><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>\n";
+}
 
 if(!isset($id_classe)) {
 	echo "</p>\n";
@@ -328,7 +338,9 @@ else {
 		include("../lib/calendrier/calendrier.class.php");
 		$cal = new Calendrier("formulaire", "display_date_limite");
 
-	
+		if(isset($refermer_page)) {
+			echo "<input type='hidden' name='refermer_page' value='y' />\n";
+		}
 		echo "<input type='hidden' name='is_posted' value='y' />\n";
 		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 		echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";

@@ -56,6 +56,10 @@ $signalement_message=isset($_POST['signalement_message']) ? $_POST['signalement_
 
 $signalement_login_eleve=isset($_GET['signalement_login_eleve']) ? $_GET['signalement_login_eleve'] : "";
 $signalement_id_groupe=isset($_GET['signalement_id_groupe']) ? $_GET['signalement_id_groupe'] : "";
+
+$signalement_id_classe=isset($_GET['signalement_id_classe']) ? $_GET['signalement_id_classe'] : "";
+$signalement_num_periode=isset($_GET['signalement_num_periode']) ? $_GET['signalement_num_periode'] : "";
+
 $signalement_message=isset($_GET['signalement_message']) ? $_GET['signalement_message'] : "";
 
 //echo "<pre>$signalement_message</pre>";
@@ -75,6 +79,12 @@ if(!preg_match('/^[0-9]*$/',$signalement_id_groupe)) {
 	return false;
 	die();
 }
+
+// Contrôler que la personne est autorisée à faire le signalement
+
+
+
+
 
 $envoi_mail_actif=getSettingValue('envoi_mail_actif');
 
@@ -107,6 +117,13 @@ if($envoi_mail_actif!='n') {
 	}
 
 	echo "<span style='color:green'> OK</span>";
+
+	$tab_champs=array('periodes');
+	$current_group=get_group($signalement_id_groupe,$tab_champs);
+	if($current_group["classe"]["ver_periode"][$signalement_id_classe][$signalement_num_periode]=='P') {
+		echo " <a href='../bulletin/autorisation_exceptionnelle_saisie_app.php?id_classe=$signalement_id_classe&periode=$signalement_num_periode&id_groupe=$signalement_id_groupe&refermer_page=y' target='_blank' alt='Autorisation exceptionnelle de correction' title='Autorisation exceptionnelle de correction'><img src='../images/icons/wizard.png' width='16' height='16' alt='Autorisation exceptionnelle de correction' title='Autorisation exceptionnelle de correction' /></a>";
+	}
+
 	return $temoin;
 }
 else {
