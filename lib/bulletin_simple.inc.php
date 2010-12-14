@@ -114,7 +114,19 @@ $alt=1;
 $tab_statuts_signalement_faute_autorise=array('administrateur', 'professeur', 'cpe', 'scolarite');
 $afficher_signalement_faute="n";
 if(in_array($_SESSION['statut'],$tab_statuts_signalement_faute_autorise)) {
-	$afficher_signalement_faute="y";
+	if(($_SESSION['statut']=='professeur')&&(substr(getSettingValue('autoriser_signalement_faute_app_prof'),0,1)=='y')) {
+		$afficher_signalement_faute="y";
+	}
+	elseif(($_SESSION['statut']=='professeur')&&(substr(getSettingValue('autoriser_signalement_faute_app_pp'),0,1)=='y')) {
+		// Tester si le prof est pp de la classe
+		if(is_pp($_SESSION['login'],$id_classe)) {$afficher_signalement_faute="y";}
+	}
+	elseif(($_SESSION['statut']=='scolarite')&&(substr(getSettingValue('autoriser_signalement_faute_app_scol'),0,1)=='y')) {
+		$afficher_signalement_faute="y";
+	}
+	elseif(($_SESSION['statut']=='cpe')&&(substr(getSettingValue('autoriser_signalement_faute_app_cpe'),0,1)=='y')) {
+		$afficher_signalement_faute="y";
+	}
 }
 
 if($afficher_signalement_faute=='y') {
@@ -788,19 +800,30 @@ if ($on_continue == 'yes') {
 				echo "</td>\n";
 
 
+/*
+$current_group["classe"]["ver_periode"][$id_classe][$nb]
+*/
+
+
 				if($afficher_signalement_faute=='y') {
 					// A N'INSERER QUE POUR LES COMPTES DE PERSONNELS... de façon à éviter de donner les mails des profs à des élèves
 					echo "<td class='bull_simpl noprint'>";
-					// Tester si l'adresse mail du/des profs de l'enseignement est renseignée et si l'envoi de mail est actif.
-					// Sinon, on pourrait enregistrer le signalement dans une table actions_signalements pour affichage comme le Panneau d'affichage
 
-					echo "<a href=\"mailto:$liste_email_profs_du_groupe?Subject=[Gepi]: Signaler un problème/faute&body=Bonjour,Je pense que vous avez commis une faute de frappe pour $current_eleve_login dans l enseignement n°".$current_group['id'].".Cordialement.-- ".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."\"";
-					if($envoi_mail_actif!='n') {
-						echo " onclick=\"signaler_une_faute('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb') ;return false;\"";
+					if($current_group["classe"]["ver_periode"][$id_classe][$nb]=='O') {
+						echo "-";
 					}
-					echo "><img src='../images/icons/mail.png' width='16' height='16' alt='Signaler un problème/faute par mail' /></a>";
-				
-					echo "<span id='signalement_effectue_".$current_id_eleve."_".$current_group['id']."_$nb'></span>";
+					else {
+						// Tester si l'adresse mail du/des profs de l'enseignement est renseignée et si l'envoi de mail est actif.
+						// Sinon, on pourrait enregistrer le signalement dans une table actions_signalements pour affichage comme le Panneau d'affichage
+	
+						echo "<a href=\"mailto:$liste_email_profs_du_groupe?Subject=[Gepi]: Signaler un problème/faute&body=Bonjour,Je pense que vous avez commis une faute de frappe pour $current_eleve_login dans l enseignement n°".$current_group['id'].".Cordialement.-- ".casse_mot($_SESSION['prenom'],'majf2')." ".$_SESSION['nom']."\"";
+						if($envoi_mail_actif!='n') {
+							echo " onclick=\"signaler_une_faute('$current_eleve_login', '$current_id_eleve', '".$current_group['id']."', '$liste_profs_du_groupe', '$nb') ;return false;\"";
+						}
+						echo "><img src='../images/icons/mail.png' width='16' height='16' alt='Signaler un problème/faute par mail' /></a>";
+					
+						echo "<span id='signalement_effectue_".$current_id_eleve."_".$current_group['id']."_$nb'></span>";
+					}
 					echo "</td>\n";
 				}
 

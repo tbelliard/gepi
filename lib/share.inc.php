@@ -5995,11 +5995,16 @@ function check_droit_acces($id,$statut) {
 }
 
 
-function lignes_options_select_eleve($id_classe,$login_eleve_courant) {
-	$sql="SELECT DISTINCT jec.login,e.nom,e.prenom FROM j_eleves_classes jec, eleves e
+function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele="") {
+	if($sql_ele!="") {
+		$sql=$sql_ele;
+	}
+	else {
+		$sql="SELECT DISTINCT jec.login,e.nom,e.prenom FROM j_eleves_classes jec, eleves e
 							WHERE jec.login=e.login AND
 								jec.id_classe='$id_classe'
 							ORDER BY e.nom,e.prenom";
+	}
 	//echo "$sql<br />";
 	//echo "\$login_eleve=$login_eleve<br />";
 	$res_ele_tmp=mysql_query($sql);
@@ -6037,5 +6042,19 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant) {
 	}
 
 	return $chaine_options_login_eleves;
+}
+
+function is_pp($login_prof,$id_classe,$login_eleve="") {
+	$retour=false;
+	if($login_eleve=='') {
+		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$login_prof';";
+	}
+	else {
+		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$login_prof' AND login='$login_eleve';";
+	}
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {$retour=true;}
+
+	return $retour;
 }
 ?>
