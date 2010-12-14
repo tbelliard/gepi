@@ -139,7 +139,9 @@ if (isset($is_posted) and ($is_posted == '2')) {
 	}
 }
 
-if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+// Le statut scolarite ne devrait pas être proposé ici.
+// La page confirm_query.php n'est accessible qu'en administrateur
+if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 	if (isset($is_posted) and ($is_posted == '1')) {
 
 		check_token();
@@ -1359,8 +1361,12 @@ if(isset($quelles_classes)) {
 //    echo "<td><p>Classe</p></td>";
 	echo "<td><p>".ucfirst(getSettingValue("gepi_prof_suivi"))."</p></td>\n";
 
-	if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+	//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+	if($_SESSION['statut']=="administrateur") {
 		echo "<td><p><input type='submit' value='Supprimer' onclick=\"return confirmlink(this, 'La suppression d\'un élève est irréversible et entraîne l\'effacement complet de toutes ses données (notes, appréciations, ...). Etes-vous sûr de vouloir continuer ?', 'Confirmation de la suppression')\" /></p></td>\n";
+	}
+	elseif($_SESSION['statut']=="scolarite") {
+		echo "<td><p><span title=\"La suppression n'est possible qu'avec un compte administrateur\">Supprimer</span></p></td>\n";
 	}
 
 	if (getSettingValue("active_module_trombinoscopes")=='y') {
@@ -1432,10 +1438,14 @@ if(isset($quelles_classes)) {
 		echo "<td><p>$eleve_classe</p></td>\n";
 		echo "<td><p>$eleve_profsuivi_nom $eleve_profsuivi_prenom</p></td>\n";
 
-		if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+		//if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+		if($_SESSION['statut']=="administrateur") {
 			//echo "<td><p><center><INPUT TYPE=CHECKBOX NAME='$delete_login' VALUE='yes' /></center></p></td></tr>\n";
 			//echo "<td><p align='center'><input type='checkbox' name='$delete_login' value='yes' /></p></td>\n";
 			echo "<td><p align='center'><input type='checkbox' name='delete_eleve[]' value='$eleve_login' /></p></td>\n";
+		}
+		elseif($_SESSION['statut']=="scolarite") {
+			echo "<td><p align='center'><span title=\"La suppression n'est possible qu'avec un compte administrateur\">-</span></p></td>\n";
 		}
 
 		if ((getSettingValue("active_module_trombinoscopes")=='y')&&
