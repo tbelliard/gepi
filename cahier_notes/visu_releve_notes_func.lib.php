@@ -573,12 +573,20 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
 					// Le deuxième responsable existe et est renseigné
 					if (($tab_rel['eleve'][$i]['resp'][0]['adr_id']==$tab_rel['eleve'][$i]['resp'][1]['adr_id']) OR
 						(
+							/*
 							($tab_rel['eleve'][$i]['resp'][0]['adr1']==$tab_rel['eleve'][$i]['resp'][1]['adr1'])&&
 							($tab_rel['eleve'][$i]['resp'][0]['adr2']==$tab_rel['eleve'][$i]['resp'][1]['adr2'])&&
 							($tab_rel['eleve'][$i]['resp'][0]['adr3']==$tab_rel['eleve'][$i]['resp'][1]['adr3'])&&
 							($tab_rel['eleve'][$i]['resp'][0]['adr4']==$tab_rel['eleve'][$i]['resp'][1]['adr4'])&&
 							($tab_rel['eleve'][$i]['resp'][0]['cp']==$tab_rel['eleve'][$i]['resp'][1]['cp'])&&
 							($tab_rel['eleve'][$i]['resp'][0]['commune']==$tab_rel['eleve'][$i]['resp'][1]['commune'])
+							*/
+							(strtolower($tab_rel['eleve'][$i]['resp'][0]['adr1'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['adr1']))&&
+							(strtolower($tab_rel['eleve'][$i]['resp'][0]['adr2'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['adr2']))&&
+							(strtolower($tab_rel['eleve'][$i]['resp'][0]['adr3'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['adr3']))&&
+							(strtolower($tab_rel['eleve'][$i]['resp'][0]['adr4'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['adr4']))&&
+							($tab_rel['eleve'][$i]['resp'][0]['cp']==$tab_rel['eleve'][$i]['resp'][1]['cp'])&&
+							(strtolower($tab_rel['eleve'][$i]['resp'][0]['commune'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['commune']))
 						)
 					) {
 						// Les adresses sont identiques
@@ -1815,12 +1823,12 @@ function releve_pdf($tab_rel,$i) {
 				// Le deuxième responsable existe et est renseigné
 				if (($tab_rel['eleve'][$i]['resp'][0]['adr_id']==$tab_rel['eleve'][$i]['resp'][1]['adr_id']) OR
 					(
-						($tab_rel['eleve'][$i]['resp'][0]['adr1']==$tab_rel['eleve'][$i]['resp'][1]['adr1'])&&
-						($tab_rel['eleve'][$i]['resp'][0]['adr2']==$tab_rel['eleve'][$i]['resp'][1]['adr2'])&&
-						($tab_rel['eleve'][$i]['resp'][0]['adr3']==$tab_rel['eleve'][$i]['resp'][1]['adr3'])&&
-						($tab_rel['eleve'][$i]['resp'][0]['adr4']==$tab_rel['eleve'][$i]['resp'][1]['adr4'])&&
+						(strtolower($tab_rel['eleve'][$i]['resp'][0]['adr1'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['adr1']))&&
+						(strtolower($tab_rel['eleve'][$i]['resp'][0]['adr2'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['adr2']))&&
+						(strtolower($tab_rel['eleve'][$i]['resp'][0]['adr3'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['adr3']))&&
+						(strtolower($tab_rel['eleve'][$i]['resp'][0]['adr4'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['adr4']))&&
 						($tab_rel['eleve'][$i]['resp'][0]['cp']==$tab_rel['eleve'][$i]['resp'][1]['cp'])&&
-						($tab_rel['eleve'][$i]['resp'][0]['commune']==$tab_rel['eleve'][$i]['resp'][1]['commune'])
+						(strtolower($tab_rel['eleve'][$i]['resp'][0]['commune'])==strtolower($tab_rel['eleve'][$i]['resp'][1]['commune']))
 					)
 				) {
 					// Les adresses sont identiques
