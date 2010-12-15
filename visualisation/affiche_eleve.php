@@ -3829,34 +3829,37 @@ function eleve_suivant() {
 				   
 				   // Affichage ligne
 				   $info_absence="<center>";
-					if(count($tab_ele['absences'])==0) {
-					    $info_absence.="Aucun bilan d'absences n'est enregistré.";
-				    }
-				    else {
-						if($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0')
-						{
-							$info_absence.="Aucune demi-journée d'absence.";
-						} else {
-							$info_absence.="Nombre de demi-journées d'absence ";
-							if ($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0') {
-								$info_absence = $info_absence."justifiées ";
-							}
-							$info_absence = $info_absence.": ".$tab_ele['absences'][$num_periode_choisie-1]['nb_absences']."</b>";
-							if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '0')
+				   if (isset($tab_ele['absences'][$num_periode_choisie-1])) {
+	
+						if((count($tab_ele['absences'])==0)) {
+						    $info_absence.="Aucun bilan d'absences n'est enregistré.";
+					    }
+					    else {
+							if($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0')
 							{
-								$info_absence = $info_absence." (dont <b>".$tab_ele['absences'][$num_periode_choisie-1]['non_justifie']."</b> non justifiée";
-								if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '1') { $info_absence = $info_absence."s"; }
-								$info_absence = $info_absence.")";
+								$info_absence.="Aucune demi-journée d'absence.";
+							} else {
+								$info_absence.="Nombre de demi-journées d'absence ";
+								if ($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0') {
+									$info_absence = $info_absence."justifiées ";
+								}
+								$info_absence = $info_absence.": ".$tab_ele['absences'][$num_periode_choisie-1]['nb_absences']."</b>";
+								if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '0')
+								{
+									$info_absence = $info_absence." (dont <b>".$tab_ele['absences'][$num_periode_choisie-1]['non_justifie']."</b> non justifiée";
+									if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '1') { $info_absence = $info_absence."s"; }
+									$info_absence = $info_absence.")";
+								}
+								$info_absence = $info_absence.".";
 							}
-							$info_absence = $info_absence.".";
-						}
-				
-						if($tab_ele['absences'][$num_periode_choisie-1]['nb_retards'] != '0')
-						{
-							$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_ele['absences'][$num_periode_choisie-1]['nb_retards']."</b>";
-						}
-				    }
-				    echo $info_absence."</center>";
+					
+							if($tab_ele['absences'][$num_periode_choisie-1]['nb_retards'] != '0')
+							{
+								$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_ele['absences'][$num_periode_choisie-1]['nb_retards']."</b>";
+							}
+					    }
+					    echo $info_absence."</center>";
+					}
 /*  A supprimer				   
 				    //Affichage tableau
 				    if(count($tab_ele['absences'])==0) {
