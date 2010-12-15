@@ -3,7 +3,7 @@
 *
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Stéphane Boireau, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -64,6 +64,8 @@ if(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')) {
 }
 */
 
+$releve_pdf_debug=isset($_POST['releve_pdf_debug']) ? $_POST['releve_pdf_debug'] : "n";
+
 //====================================================
 //=============== ENTETE STANDARD ====================
 //if (!isset($_POST['valide_select_eleves'])) {
@@ -86,6 +88,14 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='html')) {
 elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
 	$mode_utf8_pdf=getSettingValue("mode_utf8_bulletins_pdf");
 	if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
+
+	if($releve_pdf_debug=='y') {
+		echo "<p style='color:red'>DEBUG:<br />
+La génération du PDF va échouer parce qu'on affiche ces informations de debuggage,<br />
+mais il se peut que vous ayez ainsi des précisions sur ce qui pose problème.<br />
+</p>\n";
+	}
+
 	include("../bulletin/header_bulletin_pdf.php");
 	include("../bulletin/header_releve_pdf.php");
 }
@@ -810,7 +820,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	echo "<div id='div_param_pdf'>\n";
 		//echo "<br />\n";
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for='use_cell_ajustee' style='cursor: pointer;'><input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' /> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' /><label for='use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
 
 		$titre_infobulle="Fonction cell_ajustee()\n";
 		$texte_infobulle="Pour les appréciations sur les bulletins, relevés,... on utilisait auparavant la fonction DraxTextBox() de FPDF.<br />Cette fonction avait parfois un comportement curieux avec des textes tronqués ou beaucoup plus petits dans la cellule que ce qui semblait pouvoir tenir dans la case.<br />La fonction cell_ajustee() est une fonction que mise au point pour tenter de faire mieux que DraxTextBox().<br />Comme elle n'a pas été expérimentée par suffisamment de monde sur trunk, nous avons mis une case à cocher qui permet d'utiliser l'ancienne fonction DrawTextBox() si cell_ajustee() ne se révélait pas aussi bien fichue que nous l'espèrons;o).<br />\n";
@@ -820,6 +830,19 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('a_propos_cell_ajustee','y',100,100);\"  onmouseout=\"cacher_div('a_propos_cell_ajustee');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
 
 		echo "<br />\n";
+
+		// Debug
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='releve_pdf_debug' id='releve_pdf_debug' value='y' />&nbsp;<label for='releve_pdf_debug' style='cursor: pointer;'>Activer le debug pour afficher les erreurs perturbant la génération de PDF.</label>\n";
+
+		$titre_infobulle="Debug\n";
+		$texte_infobulle="Il arrive que la génération de PDF échoue.<br />Les raisons peuvent être variables (<em>manque de ressources serveur, bug,...</em>).<br />Dans ce cas, la présence d'un plugin lecteur PDF peut empêcher de voir quelles erreurs provoquent l'échec.<br />En cochant la case DEBUG, vous obtiendrez l'affichage des erreurs et ainsi vous pourrez obtenir de l'aide plus facilement sur la liste 'gepi-users'<br />\n";
+		//$texte_infobulle.="\n";
+		$tabdiv_infobulle[]=creer_div_infobulle('div_bull_debug_pdf',$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+		echo "<a href=\"#\" onclick='return false;' onmouseover=\"afficher_div('div_bull_debug_pdf','y',100,100);\"  onmouseout=\"cacher_div('div_bull_debug_pdf');\"><img src='../images/icons/ico_ampoule.png' width='15' height='25' /></a>";
+
+		echo "<br />\n";
+
 	echo "</div>\n";
 
 	echo "<script type='text/javascript'>
