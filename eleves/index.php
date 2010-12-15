@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -983,6 +983,7 @@ if(isset($quelles_classes)) {
 	*/
 
 	if($_SESSION['statut'] == 'professeur') {
+		/*
 		$calldata = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_professeurs jep
 		WHERE (
 		jep.login=e.login AND
@@ -990,11 +991,22 @@ if(isset($quelles_classes)) {
 		jep.id_classe='$quelles_classes'
 		)
 		ORDER BY $order_type");
+		*/
+		$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_professeurs jep, j_eleves_regime jer
+		WHERE (
+		jep.login=e.login AND
+		jer.login=e.login AND
+		jep.professeur='".$_SESSION['login']."' AND
+		jep.id_classe='$quelles_classes'
+		)
+		ORDER BY $order_type;";
+		$calldata = mysql_query($sql);
 
 		echo "<p align='center'>Liste des élèves de la classe choisie.</p>\n";
 	}
 	else{
 		if ($quelles_classes == 'certaines') {
+			/*
 			$calldata = mysql_query("SELECT DISTINCT e.* FROM eleves e, tempo t, j_eleves_classes j, classes cl
 			WHERE (t.num = '".SESSION_ID()."' AND
 				t.id_classe = j.id_classe and
@@ -1003,29 +1015,104 @@ if(isset($quelles_classes)) {
 				j.periode=t.max_periode
 				)
 			ORDER BY $order_type");
+			*/
+			$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, tempo t, j_eleves_classes j, classes cl, j_eleves_regime jer
+			WHERE (t.num = '".SESSION_ID()."' AND
+				t.id_classe = j.id_classe and
+				j.login = e.login AND
+				jer.login = e.login AND
+				cl.id=t.id_classe and
+				j.periode=t.max_periode
+				)
+			ORDER BY $order_type;";
+			$calldata = mysql_query($sql);
 
 			echo "<p align='center'>Liste des élèves de la ou des classes choisies.</p>\n";
 
 		} else if ($quelles_classes == 'toutes') {
 			if ($order_type == "classe,nom,prenom") {
+				/*
 				$calldata = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes j, classes cl
 				WHERE (
 				j.login = e.login AND
 				j.id_classe =cl.id
 				)
-			ORDER BY $order_type");
+				ORDER BY $order_type");
+				*/
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes j, classes cl, j_eleves_regime jer
+				WHERE (
+				j.login = e.login AND
+				jer.login = e.login AND
+				j.id_classe =cl.id
+				)
+				ORDER BY $order_type;";
+				$calldata = mysql_query($sql);
+
 			} else {
-				$calldata = mysql_query("SELECT * FROM eleves ORDER BY $order_type");
+				//$calldata = mysql_query("SELECT * FROM eleves ORDER BY $order_type");
+				$calldata = mysql_query("SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE jer.login=e.login ORDER BY $order_type");
 			}
 
 			echo "<p align='center'>Liste de tous les élèves.</p>\n";
 
 		} else if ($quelles_classes == 'na') {
+			/*
 			$calldata = mysql_query("select e.* from eleves e
 			LEFT JOIN j_eleves_classes c ON c.login=e.login
 			where c.login is NULL
 			ORDER BY $order_type
 			");
+			*/
+			/*
+			if(substr($order_type,0,6)=='regime') {
+				$tmp_order_type=my_ereg_replace('^regime,','',$order_type);
+			}
+			else {
+				$tmp_order_type=$order_type;
+			}
+
+			$sql="select e.* FROM eleves e
+			LEFT JOIN j_eleves_classes c ON c.login=e.login
+			where c.login is NULL
+			ORDER BY $tmp_order_type;";
+			$calldata = mysql_query($sql);
+
+			if(mysql_num_rows($calldata)!=0){
+				$tab_eleve=array();
+				$i=0;
+				while($lig_tmp=mysql_fetch_object($calldata)) {
+					$tab_eleve[$i]=array();
+					$tab_eleve[$i]['login']=$lig_tmp->login;
+					$tab_eleve[$i]['nom']=$lig_tmp->nom;
+					$tab_eleve[$i]['prenom']=$lig_tmp->prenom;
+					$tab_eleve[$i]['sexe']=$lig_tmp->sexe;
+					$tab_eleve[$i]['naissance']=$lig_tmp->naissance;
+					$tab_eleve[$i]['elenoet']=$lig_tmp->elenoet;
+
+					$sql="SELECT * FROM j_eleves_regime WHERE login='$lig_tmp->login';";
+					$res_regime=mysql_query($sql);
+					if(mysql_num_rows($res_regime)==0) {
+						$tab_eleve[$i]['regime']='-';
+						$tab_eleve[$i]['doublant']='N';
+					}
+					else {
+						$lig_reg=mysql_fetch_object($res_regime);
+						$tab_eleve[$i]['regime']=$lig_reg->regime;
+						$tab_eleve[$i]['doublant']=$lig_reg->doublant;
+					}
+					$i++;
+				}
+			}
+			*/
+			// TRI A FAIRE SI ON A CHOISI regime
+
+
+			$sql="select e.*,jer.* FROM j_eleves_regime jer, eleves e
+			LEFT JOIN j_eleves_classes c ON c.login=e.login
+			WHERE c.login is NULL AND jer.login=e.login
+			ORDER BY $order_type;";
+			//echo "$sql<br />";
+			$calldata = mysql_query($sql);
 
 			echo "<p align='center'>Liste des élèves non affectés dans une classe.</p>\n";
 
@@ -1036,15 +1123,17 @@ if(isset($quelles_classes)) {
 			");
 			*/
 			if(my_ereg('classe',$order_type)){
-				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
+				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
 					WHERE (e.elenoet='' OR e.no_gep='') AND
+							jer.login=e.login AND
 							jec.login=e.login AND
 							c.id=jec.id_classe
-					ORDER BY $order_type";
+					ORDER BY $order_type;";
 			}
 			else{
-				$sql="SELECT e.* FROM eleves e WHERE elenoet='' OR no_gep=''
-												ORDER BY $order_type";
+				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE (elenoet='' OR no_gep='') AND
+							jer.login=e.login
+						ORDER BY $order_type;";
 			}
 			//echo "$sql<br />\n";
 			$calldata = mysql_query($sql);
@@ -1054,10 +1143,10 @@ if(isset($quelles_classes)) {
 		} else if ($quelles_classes == 'photo') {
 			//$sql="SELECT elenoet FROM eleves WHERE elenoet!='';";
 			if(isset($order_type)) {
-				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, classes c WHERE e.elenoet!='' AND e.login=jec.login AND jec.id_classe=c.id ORDER BY $order_type;";
+				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer WHERE e.elenoet!='' AND e.login=jec.login AND e.login=jer.login AND jec.id_classe=c.id ORDER BY $order_type;";
 			}
 			else {
-				$sql="SELECT * FROM eleves WHERE elenoet!='';";
+				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE e.elenoet!='' AND e.login=jer.login;";
 			}
 			//echo "$sql<br />";
 			$test_elenoet_ok=mysql_query($sql);
@@ -1078,6 +1167,8 @@ if(isset($quelles_classes)) {
 						$tab_eleve[$i]['sexe']=$lig_tmp->sexe;
 						$tab_eleve[$i]['naissance']=$lig_tmp->naissance;
 						$tab_eleve[$i]['elenoet']=$lig_tmp->elenoet;
+						$tab_eleve[$i]['regime']=$lig_tmp->regime;
+						$tab_eleve[$i]['doublant']=$lig_tmp->doublant;
 						$i++;
 					}
 				}
@@ -1092,72 +1183,17 @@ if(isset($quelles_classes)) {
 
 		} else if ($quelles_classes == 'no_cpe') {
 			if(my_ereg('classe',$order_type)){
-				/*
-				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
-					WHERE jec.id_classe=c.id AND
-							jec.login=e.login
-					ORDER BY $order_type;";
-				//	ORDER BY c.classe, e.nom, e.prenom;";
-				//echo "DEBUG: $sql<br />";
-				$calldata = mysql_query($sql);
-
-				if(mysql_num_rows($calldata)!=0){
-					$tab_eleve=array();
-					$i=0;
-					while($lig_tmp=mysql_fetch_object($calldata)) {
-						$sql="SELECT 1=1 FROM j_eleves_cpe
-									WHERE e_login='$lig_tmp->login';";
-						$test_eleve_cpe=mysql_query($sql);
-						if(mysql_num_rows($test_eleve_cpe)==0){
-							$tab_eleve[$i]=array();
-							$tab_eleve[$i]['login']=$lig_tmp->login;
-							$tab_eleve[$i]['nom']=$lig_tmp->nom;
-							$tab_eleve[$i]['prenom']=$lig_tmp->prenom;
-							$tab_eleve[$i]['sexe']=$lig_tmp->sexe;
-							$tab_eleve[$i]['naissance']=$lig_tmp->naissance;
-							$tab_eleve[$i]['elenoet']=$lig_tmp->elenoet;
-							//$tab_eleve[$i]['classe']=$lig_tmp->classe;
-							$i++;
-						}
-					}
-				}
-				*/
-				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, classes c
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer
 						WHERE e.login=jec.login AND
+							e.login=jer.login AND
 							jec.id_classe=c.id AND
 							e.login NOT IN (SELECT e_login FROM j_eleves_cpe) ORDER BY $order_type;";
 				$calldata=mysql_query($sql);
 			}
 			else{
-				/*
-				$sql="SELECT e.* FROM eleves e
-					LEFT JOIN j_eleves_cpe jec ON jec.e_login=e.login
-					WHERE jec.e_login is NULL
-					ORDER BY $order_type;";
-				$calldata=mysql_query($sql);
-
-				if(mysql_num_rows($calldata)!=0){
-					$tab_eleve=array();
-					$i=0;
-					while($lig_tmp=mysql_fetch_object($calldata)) {
-						$sql="SELECT 1=1 FROM j_eleves_classes
-									WHERE login='$lig_tmp->login';";
-						$test_eleve_classe=mysql_query($sql);
-						if(mysql_num_rows($test_eleve_classe)>0){
-							$tab_eleve[$i]=array();
-							$tab_eleve[$i]['login']=$lig_tmp->login;
-							$tab_eleve[$i]['nom']=$lig_tmp->nom;
-							$tab_eleve[$i]['prenom']=$lig_tmp->prenom;
-							$tab_eleve[$i]['sexe']=$lig_tmp->sexe;
-							$tab_eleve[$i]['naissance']=$lig_tmp->naissance;
-							$tab_eleve[$i]['elenoet']=$lig_tmp->elenoet;
-							$i++;
-						}
-					}
-				}
-				*/
-				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, j_eleves_regime jer
 						WHERE e.login=jec.login AND
+							e.login=jer.login AND
 							e.login NOT IN (SELECT e_login FROM j_eleves_cpe) ORDER BY $order_type;";
 				$calldata=mysql_query($sql);
 			}
@@ -1166,80 +1202,18 @@ if(isset($quelles_classes)) {
 
 		} else if ($quelles_classes == 'no_pp') {
 			if(my_ereg('classe',$order_type)){
-				//echo "DEBUG: 1<br />";
-				/*
-				//$sql="SELECT e.*,c.classe FROM eleves e, classes c, j_eleves_classes jec
-				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
-					WHERE jec.id_classe=c.id AND
-							jec.login=e.login
-					ORDER BY $order_type;";
-				//	ORDER BY c.classe, e.nom, e.prenom;";
-				//echo "DEBUG: $sql<br />";
-				$calldata = mysql_query($sql);
-
-				if(mysql_num_rows($calldata)!=0){
-					$tab_eleve=array();
-					$i=0;
-					while($lig_tmp=mysql_fetch_object($calldata)) {
-						$sql="SELECT 1=1 FROM j_eleves_professeurs
-									WHERE login='$lig_tmp->login';";
-						$test_eleve_pp=mysql_query($sql);
-						if(mysql_num_rows($test_eleve_pp)==0){
-							$tab_eleve[$i]=array();
-							$tab_eleve[$i]['login']=$lig_tmp->login;
-							$tab_eleve[$i]['nom']=$lig_tmp->nom;
-							$tab_eleve[$i]['prenom']=$lig_tmp->prenom;
-							$tab_eleve[$i]['sexe']=$lig_tmp->sexe;
-							$tab_eleve[$i]['naissance']=$lig_tmp->naissance;
-							$tab_eleve[$i]['elenoet']=$lig_tmp->elenoet;
-							//$tab_eleve[$i]['classe']=$lig_tmp->classe;
-							$i++;
-						}
-					}
-				}
-				*/
-
-				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, classes c
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer
 						WHERE e.login=jec.login AND
+							e.login=jer.login AND
 							jec.id_classe=c.id AND
 							e.login NOT IN (SELECT login FROM j_eleves_professeurs) ORDER BY $order_type;";
 				$calldata=mysql_query($sql);
 
 			}
 			else{
-				/*
-				//echo "DEBUG: 2<br />";
-				$sql="SELECT e.* FROM eleves e
-					LEFT JOIN j_eleves_professeurs jep ON jep.login=e.login
-					WHERE jep.login is NULL
-					ORDER BY $order_type;";
-				//echo "DEBUG: $sql<br />";
-				$calldata = mysql_query($sql);
-
-				if(mysql_num_rows($calldata)!=0){
-					$tab_eleve=array();
-					$i=0;
-					while($lig_tmp=mysql_fetch_object($calldata)) {
-						$sql="SELECT 1=1 FROM j_eleves_classes
-									WHERE login='$lig_tmp->login';";
-						$test_eleve_classe=mysql_query($sql);
-						if(mysql_num_rows($test_eleve_classe)>0){
-							$tab_eleve[$i]=array();
-							$tab_eleve[$i]['login']=$lig_tmp->login;
-							$tab_eleve[$i]['nom']=$lig_tmp->nom;
-							$tab_eleve[$i]['prenom']=$lig_tmp->prenom;
-							$tab_eleve[$i]['sexe']=$lig_tmp->sexe;
-							$tab_eleve[$i]['naissance']=$lig_tmp->naissance;
-							$tab_eleve[$i]['elenoet']=$lig_tmp->elenoet;
-							//$tab_eleve[$i]['classe']=$lig_tmp->classe;
-							$i++;
-						}
-					}
-				}
-				*/
-
-				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, j_eleves_regime jer
 						WHERE e.login=jec.login AND
+							e.login=jer.login AND
 							e.login NOT IN (SELECT login FROM j_eleves_professeurs) ORDER BY $order_type;";
 				$calldata=mysql_query($sql);
 
@@ -1250,8 +1224,9 @@ if(isset($quelles_classes)) {
 		} else if ($quelles_classes == 'no_resp') {
 			if(my_ereg('classe',$order_type)){
 
-				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec, classes c
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer
 						WHERE e.login=jec.login AND
+							e.login=jer.login AND
 							jec.id_classe=c.id AND
 							e.ele_id NOT IN (SELECT ele_id FROM responsables2) ORDER BY $order_type;";
 				//echo "$sql<br />\n";
@@ -1260,8 +1235,9 @@ if(isset($quelles_classes)) {
 			}
 			else{
 
-				$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, j_eleves_regime jer
 						WHERE e.login=jec.login AND
+							e.login=jer.login AND
 							e.ele_id NOT IN (SELECT ele_id FROM responsables2) ORDER BY $order_type;";
 				//echo "$sql<br />\n";
 				$calldata=mysql_query($sql);
@@ -1269,7 +1245,9 @@ if(isset($quelles_classes)) {
 			}
 
 		} else if ($quelles_classes == 'rech_prenom') {
-			$motif_rech=$motif_rech_p;
+			if(isset($motif_rech_p)) {
+				$motif_rech=$motif_rech_p;
+			}
 
 			/*
 			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
@@ -1277,15 +1255,17 @@ if(isset($quelles_classes)) {
 			");
 			*/
 			if(my_ereg('classe',$order_type)){
-				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
+				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
 					WHERE prenom like '".$motif_rech."%' AND
+							e.login=jer.login AND
 							jec.login=e.login AND
 							c.id=jec.id_classe
 					ORDER BY $order_type";
 			}
 			else{
-				$sql="SELECT e.* FROM eleves e WHERE prenom like '".$motif_rech."%'
-												ORDER BY $order_type";
+				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE prenom like '".$motif_rech."%' AND
+									e.login=jer.login
+								ORDER BY $order_type";
 			}
 			//echo "$sql<br />\n";
 			$calldata = mysql_query($sql);
@@ -1299,15 +1279,17 @@ if(isset($quelles_classes)) {
 			");
 			*/
 			if(my_ereg('classe',$order_type)){
-				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
+				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
 					WHERE nom like '".$motif_rech."%' AND
+							e.login=jer.login AND
 							jec.login=e.login AND
 							c.id=jec.id_classe
 					ORDER BY $order_type";
 			}
 			else{
-				$sql="SELECT e.* FROM eleves e WHERE nom like '".$motif_rech."%'
-												ORDER BY $order_type";
+				$sql="SELECT e.*,jer.* FROM eleves e, j_eleves_regime jer WHERE nom like '".$motif_rech."%' AND
+							e.login=jer.login
+					ORDER BY $order_type";
 			}
 			//echo "$sql<br />\n";
 			$calldata = mysql_query($sql);
@@ -1316,14 +1298,20 @@ if(isset($quelles_classes)) {
 		}
 		elseif ($quelles_classes == 'no_etab') {
 			if(my_ereg('classe',$order_type)){
-				$sql="SELECT distinct e.*,c.classe FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
+				//$sql="SELECT distinct e.*,c.classe FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
+				$sql="SELECT distinct e.*,c.classe,jer.* FROM j_eleves_classes jec, classes c, j_eleves_regime jer, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and jer.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
 				//echo "$sql<br />\n";
 				$calldata=mysql_query($sql);
 			}
 			else{
+				/*
 				$sql="SELECT e.* FROM eleves e
 					LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet
 					where jee.id_eleve is NULL ORDER BY $order_type;";
+				*/
+				$sql="SELECT e.*, jer.* FROM j_eleves_regime jer, eleves e
+					LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet
+					where jee.id_eleve is NULL AND jer.login=e.login ORDER BY $order_type;";
 				//echo "$sql<br />\n";
 				$calldata=mysql_query($sql);
 			}
@@ -1344,6 +1332,11 @@ if(isset($quelles_classes)) {
 	echo "<td><p><a href='index.php?order_type=naissance,nom,prenom&amp;quelles_classes=$quelles_classes";
 	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
 	echo "'>Date de naissance</a></p></td>\n";
+
+	echo "<td><p><a href='index.php?order_type=regime,nom,prenom&amp;quelles_classes=$quelles_classes";
+	if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
+	echo "'>Régime</a></p></td>\n";
+
 	if ($quelles_classes == 'na') {
 		echo "<td><p>Classe</p></td>\n";
 	} else {
@@ -1402,6 +1395,8 @@ if(isset($quelles_classes)) {
 			$eleve_sexe = mysql_result($calldata, $i, "sexe");
 			$eleve_naissance = mysql_result($calldata, $i, "naissance");
 			$elenoet =  mysql_result($calldata, $i, "elenoet");
+			$eleve_regime =  mysql_result($calldata, $i, "regime");
+			$eleve_doublant =  mysql_result($calldata, $i, "doublant");
 		}
 		else{
 			$eleve_login = $tab_eleve[$i]["login"];
@@ -1410,6 +1405,8 @@ if(isset($quelles_classes)) {
 			$eleve_sexe = $tab_eleve[$i]["sexe"];
 			$eleve_naissance = $tab_eleve[$i]["naissance"];
 			$elenoet =  $tab_eleve[$i]["elenoet"];
+			$eleve_regime =  $tab_eleve[$i]["regime"];
+			$eleve_doublant =  $tab_eleve[$i]["doublant"];
 		}
 
 		$call_classe = mysql_query("SELECT n.classe, n.id FROM j_eleves_classes c, classes n WHERE (c.login ='$eleve_login' and c.id_classe = n.id) order by c.periode DESC");
@@ -1435,6 +1432,7 @@ if(isset($quelles_classes)) {
 		echo "'>$eleve_nom $eleve_prenom</a></p></td>\n";
 		echo "<td><p>$eleve_sexe</p></td>\n";
 		echo "<td><p>".affiche_date_naissance($eleve_naissance)."</p></td>\n";
+		echo "<td><p>$eleve_regime</p></td>\n";
 		echo "<td><p>$eleve_classe</p></td>\n";
 		echo "<td><p>$eleve_profsuivi_nom $eleve_profsuivi_prenom</p></td>\n";
 
