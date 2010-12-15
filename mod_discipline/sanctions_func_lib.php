@@ -714,12 +714,15 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							$alt=$alt*(-1);
 							$retour.="<tr class='lig$alt'>\n";
 							$retour.="<td>$lig_suivi->mesure</td>\n";
+							
 							if($lig_suivi->type=='prise') {
 								$retour.="<td>prise par ".u_p_nom($lig_suivi->login_u)."</td>\n";
 
 								if($temoin_eleve_responsable_de_l_incident=='y') {
 									if(isset($tab_mesure[addslashes($lig_suivi->mesure)])) {
-										$tab_mesure[addslashes($lig_suivi->mesure)]++;
+										if ($lig_suivi->login_ele==$ele_login) {  //Ajout ERIC test pour ne compter que pour l'élève demandé
+										   $tab_mesure[addslashes($lig_suivi->mesure)]++;
+										}
 									}
 									else {
 										$tab_mesure[addslashes($lig_suivi->mesure)]=1;
@@ -729,8 +732,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 							else {
 								$retour.="<td>demandée par ".u_p_nom($lig_suivi->login_u)."</td>\n";
 							}
-							$retour.="</tr>\n";
-	
+							$retour.="</tr>\n";	
 						}	
 						$retour.="</table>\n";
 					}		
@@ -751,7 +753,8 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 						$retour.="<th>Description</th>\n";
 						$retour.="<th>Effectuée</th>\n";
 						$retour.="</tr>\n";
-
+				
+						
 						while($lig_suivi=mysql_fetch_object($res_suivi)) {
 							$alt=$alt*(-1);
 							$retour.="<tr class='lig$alt'>\n";
@@ -760,7 +763,9 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 
 							if($temoin_eleve_responsable_de_l_incident=='y') {
 								if(isset($tab_sanction[addslashes($lig_suivi->nature)])) {
-									$tab_sanction[addslashes($lig_suivi->nature)]++;
+									if ($lig_suivi->login==$ele_login) { //Ajout ERIC test pour ne compter que pour l'élève demandé
+									   $tab_sanction[addslashes($lig_suivi->nature)]++;
+									}
 								}
 								else {
 									$tab_sanction[addslashes($lig_suivi->nature)]=1;
