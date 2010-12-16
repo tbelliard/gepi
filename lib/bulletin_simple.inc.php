@@ -1408,9 +1408,9 @@ echo "
 <div id='div_signalement_message'></div>
 <!--textarea name='signalement_message' id='signalement_message' cols='50' rows='12'></textarea-->
 
-<input type='button' onclick='valider_signalement_faute()' name='Envoyer' value='Envoyer' />
-</form>
-";
+<input type='button' onclick='valider_signalement_faute()' name='Envoyer' value='Envoyer' />\n";
+echo add_token_field();
+echo "</form>\n";
 
 			echo "</div>\n";
 		
@@ -1471,7 +1471,7 @@ echo "
 		signalement_num_periode=document.getElementById('signalement_num_periode').value;
 		signalement_id_classe=document.getElementById('signalement_id_classe').value;
 
-		new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?signalement_login_eleve='+signalement_login_eleve+'&signalement_id_groupe='+signalement_id_groupe+'&signalement_id_classe='+signalement_id_classe+'&signalement_num_periode='+signalement_num_periode+'&signalement_message='+signalement_message,{method: 'get'});
+		new Ajax.Updater($('signalement_effectue_'+signalement_id_eleve+'_'+signalement_id_groupe+'_'+signalement_num_periode),'../lib/ajax_signaler_faute.php?signalement_login_eleve='+signalement_login_eleve+'&signalement_id_groupe='+signalement_id_groupe+'&signalement_id_classe='+signalement_id_classe+'&signalement_num_periode='+signalement_num_periode+'&signalement_message='+signalement_message+'".add_token_in_url(false)."',{method: 'get'});
 
 		cacher_div('div_signaler_faute');
 		//document.getElementById('signalement_message').innerHTML='';

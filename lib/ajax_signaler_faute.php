@@ -46,6 +46,8 @@ if (!checkAccess()) {
     die();
 }
 
+check_token();
+
 header('Content-Type: text/html; charset=ISO-8859-15');
 
 /*
