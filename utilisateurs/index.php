@@ -395,7 +395,12 @@ else {
 }
 ?>
 
- <td><p><input type='submit' value='Valider' /></p></td>
+ <td>
+	<p><input type='submit' id='bouton_valider' value='Valider' /></p>
+	<script type='text/javascript'>
+		document.getElementById('bouton_valider').style.display='none';
+	</script>
+</td>
  </tr>
  </table>
 
