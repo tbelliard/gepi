@@ -721,6 +721,40 @@ if (!isset($quelles_classes)) {
 
 
 		// =====================================================
+		$sql="SELECT DISTINCT jec.login FROM j_eleves_classes jec
+			LEFT JOIN j_eleves_regime jer ON jec.login=jer.login
+			WHERE jer.login is null;";
+		//echo "$sql<br />";
+		$test_no_regime=mysql_query($sql);
+		$test_no_regime_effectif=mysql_num_rows($test_no_regime);
+		if($test_no_regime_effectif==0){
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "&nbsp;\n";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='no_regime' onclick='verif2()' /></span>\n";
+
+			echo "<span class='norme'>Tous les élèves (<i>affectés dans des classes</i>) ont le régime renseigné.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		else{
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='radio' name='quelles_classes' id='quelles_classes_no_regime' value='no_regime' onclick='verif2()' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='quelles_classes_no_regime' style='cursor: pointer;'>\n";
+			echo "<span class='norme'>Les élèves (<i>affectés dans des classes</i>) dont le régime est renseigné (<i>".$test_no_regime_effectif."</i>).</span><br />\n";
+			echo "</label>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+
+
+		// =====================================================
 		$sql="SELECT 1=1 FROM eleves e
 			LEFT JOIN j_eleves_professeurs jep ON jep.login=e.login
 			where jep.login is NULL;";
@@ -1200,6 +1234,24 @@ if(isset($quelles_classes)) {
 
 			echo "<p align='center'>Liste des élèves sans CPE.</p>\n";
 
+		} else if ($quelles_classes == 'no_regime') {
+
+			if(my_ereg('classe',$order_type)){
+				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
+					LEFT JOIN j_eleves_regime jer ON jec.login=jer.login
+					WHERE jer.login is null AND e.login=jec.login AND c.id=jec.id_classe ORDER BY $order_type;";
+			}
+			else{
+				$sql="SELECT DISTINCT e.* FROM eleves e
+					LEFT JOIN j_eleves_regime jer ON e.login=jer.login
+					WHERE jer.login is null ORDER BY $order_type;";
+			}
+			//echo "$sql<br />";
+			$calldata=mysql_query($sql);
+
+			echo "<p align='center'>Liste des élèves dont le régime n'est pas renseigné.</p>\n";
+
+
 		} else if ($quelles_classes == 'no_pp') {
 			if(my_ereg('classe',$order_type)){
 				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer
@@ -1395,8 +1447,14 @@ if(isset($quelles_classes)) {
 			$eleve_sexe = mysql_result($calldata, $i, "sexe");
 			$eleve_naissance = mysql_result($calldata, $i, "naissance");
 			$elenoet =  mysql_result($calldata, $i, "elenoet");
-			$eleve_regime =  mysql_result($calldata, $i, "regime");
-			$eleve_doublant =  mysql_result($calldata, $i, "doublant");
+			if($quelles_classes=='no_regime') {
+				$eleve_regime = "-";
+				$eleve_doublant =  "-";
+			}
+			else {
+				$eleve_regime =  mysql_result($calldata, $i, "regime");
+				$eleve_doublant =  mysql_result($calldata, $i, "doublant");
+			}
 		}
 		else{
 			$eleve_login = $tab_eleve[$i]["login"];
