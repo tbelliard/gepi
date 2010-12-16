@@ -473,6 +473,14 @@ if (isset($_POST['is_posted'])) {
 		}
 
 
+		if (isset($_POST['bul_rel_nom_matieres'])) {
+			$bul_rel_nom_matieres=$_POST['bul_rel_nom_matieres'];
+			if (!saveSetting("bul_rel_nom_matieres", $bul_rel_nom_matieres)) {
+				$msg .= "Erreur lors de l'enregistrement du paramètre bul_rel_nom_matieres !";
+			}
+		}
+
+
 
 		if (isset($_POST['delais_apres_cloture'])) {
 			$delais_apres_cloture=$_POST['delais_apres_cloture'];
@@ -963,6 +971,40 @@ En mettant une valeur négative, vous désactivez le désarchivage</i>)</td>\n";
 			?>
 		</td>
 	</tr-->
+
+
+
+	<tr>
+		<td style="font-variant: small-caps; vertical-align:top;">
+		<a name='bul_rel_nom_matieres'></a>
+		Pour la colonne matière/enseignement dans les bulletins et relevés de notes, utiliser&nbsp;:
+		</td>
+		<td valign='top'>
+
+			<?php
+			$bul_rel_nom_matieres=getSettingValue("bul_rel_nom_matieres");
+			if($bul_rel_nom_matieres=="") {$bul_rel_nom_matieres="nom_complet_matiere";}
+
+			echo "<input type='radio' name='bul_rel_nom_matieres' id='bul_rel_nom_matieres_nom_complet_matiere' value='nom_complet_matiere'";
+			if($bul_rel_nom_matieres=='nom_complet_matiere') {echo " checked";}
+			echo " onchange='changement()' />\n";
+			echo "<label for='bul_rel_nom_matieres_nom_complet_matiere' style='cursor: pointer'> le nom complet de matière</label>\n";
+			echo "<br />\n";
+
+			echo "<input type='radio' name='bul_rel_nom_matieres' id='bul_rel_nom_matieres_nom_groupe' value='nom_groupe'";
+			if($bul_rel_nom_matieres=='nom_groupe') {echo " checked";}
+			echo " onchange='changement()' />";
+			echo "<label for='bul_rel_nom_matieres_nom_groupe' style='cursor: pointer'> le nom (court) du groupe</label>\n";
+			echo "<br />\n";
+
+			echo "<input type='radio' name='bul_rel_nom_matieres' id='bul_rel_nom_matieres_description_groupe' value='description_groupe'";
+			if($bul_rel_nom_matieres=='description_groupe') {echo " checked";}
+			echo " onchange='changement()' />";
+			echo "<label for='bul_rel_nom_matieres_description_groupe' style='cursor: pointer'> la description du groupe</label>\n";
+			?>
+		</td>
+	</tr>
+
 
 
 	<tr>

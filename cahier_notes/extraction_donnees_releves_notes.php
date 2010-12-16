@@ -475,7 +475,6 @@
 							$sql.=") " .
 							"ORDER BY jgc.priorite,jgm.id_matiere";
 						}
-//echo "$sql<br />";
 						$appel_liste_groupes = mysql_query($sql);
 						$nombre_groupes = mysql_num_rows($appel_liste_groupes);
 
@@ -500,7 +499,16 @@
 								$k++;
 							}
 
-							$current_matiere_nom_complet = sql_query1("SELECT name FROM groupes WHERE id='$current_groupe'");
+							if(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
+								$current_matiere_nom_complet = sql_query1("SELECT name FROM groupes WHERE id='$current_groupe'");
+							}
+							elseif(getSettingValue('bul_rel_nom_matieres')=='description_groupe') {
+								$current_matiere_nom_complet = sql_query1("SELECT description FROM groupes WHERE id='$current_groupe'");
+							}
+							else {
+								$current_matiere_nom_complet_query = mysql_query("SELECT nom_complet FROM matieres WHERE matiere='$current_matiere'");
+								$current_matiere_nom_complet = mysql_result($current_matiere_nom_complet_query, 0, "nom_complet");
+							}
 
 							$tab_ele['groupe'][$j]['matiere_nom_complet']=$current_matiere_nom_complet;
 
@@ -596,8 +604,7 @@
 										cnc.id_conteneur=cc.id AND
 										cc.id='$lig_cnt->id'
 										);";
-										// DEBUG:
-										//if($current_groupe==760) {echo "$sql<br />\n";}
+										//if($current_groupe==1136) {echo "$sql<br />";}
 										$res_note_conteneur=mysql_query($sql);
 										if(mysql_num_rows($res_note_conteneur)==0) {
 											$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']="-";
@@ -611,8 +618,6 @@
 												$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']="-";
 											}
 										}
-										// DEBUG:
-										//if($current_groupe==760) {echo "\$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']=".$tab_ele['groupe'][$j]['id_cn'][$lig_grp_id_cn->id_cahier_notes]['conteneurs'][$cpt]['moy']."<br />\n";}
 
 										$cpt++;
 									}
@@ -680,7 +685,7 @@
 									//echo "\$tabdate[0]=$tabdate[0]<br />";
 									//echo "\$tabdate[1]=$tabdate[1]<br />";
 									//echo "\$tabdate[2]=$tabdate[2]<br />";
-
+	
 									$timestamp_limite=mktime(0,0,0,$tabdate[1],$tabdate[2],$tabdate[0]);
 									if($timestamp_courant<$timestamp_limite) {
 										$visible="n";
@@ -703,7 +708,7 @@
 									$date_note = @mysql_result($query_notes,$mm,'d.date');
 									$note_sur = @mysql_result($query_notes,$mm,'d.note_sur');
 									$coef_devoir = @mysql_result($query_notes,$mm,'d.coef');
-
+	
 									$tab_ele['groupe'][$j]['devoir'][$m]['display_app']=$eleve_display_app;
 									$tab_ele['groupe'][$j]['devoir'][$m]['app']=$eleve_app;
 									$tab_ele['groupe'][$j]['devoir'][$m]['note']=$eleve_note;

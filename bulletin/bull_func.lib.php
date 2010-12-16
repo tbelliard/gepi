@@ -3282,13 +3282,25 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					}
 					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',$hauteur_caractere_matiere);
 
-					// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
-					if(isset($tab_bull['groupe'][$m]['matiere']['nom_complet'])) {
-						$info_nom_matiere=$tab_bull['groupe'][$m]['matiere']['nom_complet'];
+
+
+					if(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
+						$info_nom_matiere=$tab_bull['groupe'][$m]['name'];
+					}
+					elseif(getSettingValue('bul_rel_nom_matieres')=='description_groupe') {
+						$info_nom_matiere=$tab_bull['groupe'][$m]['description'];
 					}
 					else {
-						$info_nom_matiere=$tab_bull['groupe'][$m]['name']." (".$tab_bull['groupe'][$m]['id'].")";
+						// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
+						if(isset($tab_bull['groupe'][$m]['matiere']['nom_complet'])) {
+							$info_nom_matiere=$tab_bull['groupe'][$m]['matiere']['nom_complet'];
+						}
+						else {
+							$info_nom_matiere=$tab_bull['groupe'][$m]['name']." (".$tab_bull['groupe'][$m]['id'].")";
+						}
 					}
+
+
 
 					$val = $pdf->GetStringWidth($info_nom_matiere);
 					$taille_texte = $tab_modele_pdf["largeur_matiere"][$classe_id] - 2;

@@ -310,7 +310,24 @@ for($j=0;$j<count($tab_bull['groupe']);$j++) {
 		}
 
 		echo "<tr>\n";
-		echo "<td$chaine_rowspan style='text-align: left;'><span class='bulletin'>".htmlentities($tab_bull['groupe'][$j]['matiere']['nom_complet'])."</span>";
+		echo "<td$chaine_rowspan style='text-align: left;'>";
+		if(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
+			$info_nom_matiere=$tab_bull['groupe'][$j]['name'];
+		}
+		elseif(getSettingValue('bul_rel_nom_matieres')=='description_groupe') {
+			$info_nom_matiere=$tab_bull['groupe'][$j]['description'];
+		}
+		else {
+			// Pour parer au bug sur la suppression de matière alors que des groupes sont conservés:
+			if(isset($tab_bull['groupe'][$j]['matiere']['nom_complet'])) {
+				$info_nom_matiere=$tab_bull['groupe'][$j]['matiere']['nom_complet'];
+			}
+			else {
+				$info_nom_matiere=$tab_bull['groupe'][$j]['name']." (".$tab_bull['groupe'][$j]['id'].")";
+			}
+		}
+		echo "<span class='bulletin'>".htmlentities($info_nom_matiere)."</span>";
+
 		echo "<br />\n";
 		echo "<span class='bulletin'>";
 		$cpt=0;
