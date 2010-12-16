@@ -256,7 +256,18 @@ for($j=0;$j<$nombre_groupes;$j++) {
 
 	$current_matiere_professeur_login = $current_group["profs"]["list"];
 
-	$current_matiere_nom_complet = $current_group["matiere"]["nom_complet"];
+	//$current_matiere_nom_complet = $current_group["matiere"]["nom_complet"];
+	if(getSettingValue('bul_rel_nom_matieres')=='nom_groupe') {
+		$current_matiere_nom_complet = $current_group["name"];
+	}
+	elseif(getSettingValue('bul_rel_nom_matieres')=='description_groupe') {
+		$current_matiere_nom_complet = $current_group["description"];
+	}
+	else {
+		$current_matiere_nom_complet = $current_group["matiere"]["nom_complet"];
+	}
+
+
 	//echo "\$current_matiere_nom_complet=$current_matiere_nom_complet<br />\n";
 	$nb=$periode1;
 	while ($nb < $periode2+1) {
