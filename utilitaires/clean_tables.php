@@ -747,7 +747,7 @@ if (getSettingValue("active_mod_gest_aid")=="y") {
     flush();
     if ($offset>=0){
         if (etape7()) {
-            echo "<br />Redirection automatique sinon cliquez <a href=\"clean_tables.php?maj=7&duree=$duree&offset=$offset&cpt=$cpt&nb_lignes=$nb_lignes\">ici</a>\n";
+            echo "<br />Redirection automatique sinon cliquez <a href=\"clean_tables.php?maj=7&duree=$duree&offset=$offset&cpt=$cpt&nb_lignes=$nb_lignes".add_token_in_url()."\">ici</a>\n";
             echo "<script>window.location=\"clean_tables.php?maj=7&duree=$duree&offset=$offset&cpt=$cpt&nb_lignes=$nb_lignes".add_token_in_url(false)."\";</script>\n";
             flush();
             exit;
@@ -1993,7 +1993,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 	echo "<p><b>Contrôler des catégories de matières&nbsp;:</b> \n";
 	echo "</p>\n";
 
-	$sql="SELECT id FROM classes ORDER BY classe;";
+	$sql="SELECT id, classe FROM classes ORDER BY classe;";
 	//echo "$sql<br />\n";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
@@ -2013,7 +2013,7 @@ elseif ((isset($_POST['maj']) and (($_POST['maj'])=="11")) or (isset($_GET['maj'
 					$sql="SELECT id, nom_court, nom_complet, priority FROM matieres_categories WHERE id='$lig2->categorie_id'";
 					$res_cat=mysql_query($sql);
 					if(mysql_num_rows($res_cat)==0) {
-						echo "<span style='color:red'>La catégorie n°$lig2->categorie_id n'existe pas dans la table 'matieres_categories'.</span><br />";
+						echo "<span style='color:red'>La catégorie n°$lig2->categorie_id associée à la classe n°$lig->id ($lig->classe) n'existe pas dans la table 'matieres_categories'.</span><br />Vous devriez revoir le paramétrage des catégories.<br />Une solution consiste à forcer le même paramétrage pour toutes les classes depuis la page de <a href='../matieres/index.php'>Gestion des matières</a><br />";
 						$nb_erreurs++;
 					}
 					else {
