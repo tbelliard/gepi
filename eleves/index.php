@@ -965,6 +965,8 @@ if (!isset($quelles_classes)) {
 
 		echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 		echo "</form>\n";
+
+
 	}
 //} else {
 }
@@ -981,6 +983,7 @@ if(isset($quelles_classes)) {
 		echo " Pour permettre aux élèves de se connecter à Gepi, vous devez vous connecter en 'administrateur' et leur créer des comptes d'accès, en passant par la page Gestion des bases -> Gestion des comptes d'accès utilisateurs -> Elèves.";
 	}
 	echo "</p>\n";
+
 
 	echo "<form enctype=\"multipart/form-data\" action=\"index.php\" method=\"post\">\n";
 	if (!isset($order_type)) { $order_type='nom,prenom';}
@@ -1372,6 +1375,10 @@ if(isset($quelles_classes)) {
 	}
 
 
+
+
+
+
 	echo "<table border='1' cellpadding='2' class='boireaus'  summary='Tableau des élèves de la classe'>\n";
 	echo "<tr>\n";
 	echo "<td><p>Identifiant</p></td>\n";
@@ -1490,7 +1497,20 @@ if(isset($quelles_classes)) {
 		echo "'>$eleve_nom $eleve_prenom</a></p></td>\n";
 		echo "<td><p>$eleve_sexe</p></td>\n";
 		echo "<td><p>".affiche_date_naissance($eleve_naissance)."</p></td>\n";
-		echo "<td><p>$eleve_regime</p></td>\n";
+
+		echo "<td><p>";
+		if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+			echo "<a href='#' onclick=\"afficher_changement_regime('$eleve_login', '$eleve_regime') ;return false;\">";
+			echo "<span id='regime_$eleve_login'>";
+			echo $eleve_regime;
+			echo "</span>";
+			echo "</a>";
+		}
+		else {
+			echo $eleve_regime;
+		}
+		echo "</p></td>\n";
+
 		echo "<td><p>$eleve_classe</p></td>\n";
 		echo "<td><p>$eleve_profsuivi_nom $eleve_profsuivi_prenom</p></td>\n";
 
@@ -1633,6 +1653,89 @@ if(isset($quelles_classes)) {
 	if($temoin_notes_bas_de_page=="y") {
 		echo "</ul>\n";
 	}
+
+
+
+
+
+
+	//========================================================
+	echo "<div id='div_changer_regime' style='position: absolute; top: 220px; right: 20px; width: 200px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+	
+		echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 200px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_changer_regime')\">\n";
+			echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
+			echo "<a href='#' onClick=\"cacher_div('div_changer_regime');return false;\">\n";
+			echo "<img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />\n";
+			echo "</a>\n";
+			echo "</div>\n";
+
+			echo "<div id='titre_entete_changer_regime'>AA</div>\n";
+		echo "</div>\n";
+		
+		echo "<div id='corps_changer_regime' class='infobulle_corps' style='color: #000000; cursor: auto; padding: 0px; height: 7em; width: 200px; overflow: auto;'>";
+
+
+		$tab_regime=array('d/p', 'ext.', 'int.','i-e');
+		echo "<form name='form_changer_regime' id='form_changer_regime' action ='ajax_modif_eleve.php' method='post' target='_blank'>\n";
+		echo "<input type='hidden' name='regime_login_eleve' id='regime_login_eleve' value='' />\n";
+		for($loop=0;$loop<count($tab_regime);$loop++) {
+			echo "<input type='radio' name='regime_regime_eleve' id='regime_regime_eleve_$loop' value='".$tab_regime[$loop]."' ";
+			//if($eleve_regime==$tab_regime[$loop]) {}
+			echo "/><label for='regime_regime_eleve_$loop'> $tab_regime[$loop]</label><br />\n";
+		}
+		echo add_token_field();
+		echo "<input type='button' onclick='valider_changement_regime()' name='Valider' value='Valider' />\n";
+		echo "</form>\n";
+
+		echo "</div>\n";
+	
+	echo "</div>\n";
+
+
+	echo "<script type='text/javascript'>
+
+	function afficher_changement_regime(login_eleve, regime_eleve) {
+		// regime_eleve est le régime actuel de l'élève
+		document.getElementById('titre_entete_changer_regime').innerHTML='Régime de '+login_eleve;
+		document.getElementById('regime_login_eleve').value=login_eleve;
+
+		//alert('regime_eleve='+regime_eleve);
+		for(i=0;i<".count($tab_regime).";i++) {
+			//alert('regime_eleve='+regime_eleve);
+			if(regime_eleve==document.getElementById('regime_regime_eleve_'+i).value) {
+				document.getElementById('regime_regime_eleve_'+i).checked=true;
+			}
+		}
+
+		afficher_div('div_changer_regime','y',-20,20);
+	}
+
+
+	function valider_changement_regime() {
+		if(document.getElementById('regime_login_eleve')) {
+			login_eleve=document.getElementById('regime_login_eleve').value;
+
+			for (var i=0; i<document.forms['form_changer_regime'].regime_regime_eleve.length;i++) {
+				if (document.forms['form_changer_regime'].regime_regime_eleve[i].checked) {
+					regime_eleve=document.forms['form_changer_regime'].regime_regime_eleve[i].value;
+				}
+			}
+
+			//alert(regime_eleve);
+
+			new Ajax.Updater($('regime_'+login_eleve),'ajax_modif_eleve.php?login_eleve='+login_eleve+'&regime_eleve='+regime_eleve+'&mode=changer_regime".add_token_in_url(false)."',{method: 'get'});
+		}
+		else {
+			alert('document.getElementById(\'regime_login_eleve\') n est pas affecté.')
+		}
+
+		cacher_div('div_changer_regime');
+
+	}
+</script>\n";
+	//========================================================
+
+
 }
 require("../lib/footer.inc.php");
 ?>
