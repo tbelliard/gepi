@@ -1316,7 +1316,8 @@ if ($id_devoir==0) {
 		if ($_SESSION['affiche_tous'] == 'yes') {
 			$m = 0;
 			while ($m < $nb_dev_s_cont[$i]) {
-				echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=".$id_sous_cont[$i][$m]."&amp;id_devoir=".$id_s_dev[$i][$m]."\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a></center></td>\n";
+				//echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=".$id_sous_cont[$i][$m]."&amp;id_devoir=".$id_s_dev[$i][$m]."\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a></center></td>\n";
+				echo "<td class=cn valign='top'><center><a href=\"saisie_notes.php?id_conteneur=".$id_sous_cont[$i]."&amp;id_devoir=".$id_s_dev[$i][$m]."\" onclick=\"return confirm_abandon (this, change,'$themessage')\">saisir</a></center></td>\n";
 				$m++;
 			}
 		}
@@ -1390,7 +1391,8 @@ if ($id_devoir==0) {
 				echo "<td class='cn' valign='top'>";
 				if(getSettingValue("note_autre_que_sur_referentiel")=="V" || $note_sur_s_dev[$i][$m]!=getSettingValue("referentiel_note")) {
 					$data_pdf[0][] = "/".$note_sur_s_dev[$i][$m]." (".number_format($coef_s_dev[$i][$m],1, ',', ' ').")";
-					if ($ramener_sur_referentiel[$i] != 'V') {
+					//if ($ramener_sur_referentiel[$i] != 'V') {
+					if ($ramener_sur_referentiel_s_dev[$i][$m] != 'V') {
 						echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m]."<br />";
 					} else {
 						$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'y','y','n','n');
