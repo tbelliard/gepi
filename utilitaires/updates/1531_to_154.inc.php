@@ -102,10 +102,10 @@ if ($test == -1) {
 		$result .= "<font color=\"green\">SUCCES !</font><br />";
 	}
 	else {
-		$result .= $result_inter."<br />";
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
 	}
 } else {
-		$result .= "<font color=\"blue\">ECHEC !</font><br />";
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
 $result .= "<br /><br /><b>Ajout d'une table modeles_grilles_pdf_valeurs :</b><br />";
@@ -121,10 +121,10 @@ if ($test == -1) {
 		$result .= "<font color=\"green\">SUCCES !</font><br />";
 	}
 	else {
-		$result .= $result_inter."<br />";
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
 	}
 } else {
-		$result .= "<font color=\"blue\">ECHEC !</font><br />";
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
 ?>
