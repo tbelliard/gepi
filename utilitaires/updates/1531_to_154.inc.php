@@ -86,4 +86,45 @@ if ($res_test==0){
   $result .= "<font color=\"blue\">Le paramètre cas_attribut_email existe déjà dans la table setting.</font><br />";
 }
 
+
+//===================================================
+$result .= "<br /><br /><b>Ajout d'une table modeles_grilles_pdf :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'modeles_grilles_pdf'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS modeles_grilles_pdf (
+		id_modele INT(11) NOT NULL auto_increment,
+		login varchar(50) NOT NULL default '',
+		nom_modele varchar(255) NOT NULL,
+		par_defaut ENUM('y','n') DEFAULT 'n',
+		PRIMARY KEY (id_modele)
+		);");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= $result_inter."<br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">ECHEC !</font><br />";
+}
+
+$result .= "<br /><br /><b>Ajout d'une table modeles_grilles_pdf_valeurs :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'modeles_grilles_pdf_valeurs'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS modeles_grilles_pdf_valeurs (
+		id_modele INT(11) NOT NULL,
+		nom varchar(255) NOT NULL default '',
+		valeur varchar(255) NOT NULL,
+		INDEX id_modele_champ (id_modele, nom)
+		);");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= $result_inter."<br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">ECHEC !</font><br />";
+}
+
 ?>
