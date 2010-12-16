@@ -2372,7 +2372,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			// calcul de la hauteur totale que peut prendre le cadre matière dans sa globalité
 			if ( $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne_general"][$classe_id] === '1' )
 			{
-				// si les moyennes et la moyenne général sont activé alors on les ajoute à ceux qui vaudras soustraire au cadre global matiere
+				// si les moyennes et la moyenne générale sont activées alors on les ajoute à ce qu'il faudra soustraire au cadre global matiere
 				$hauteur_toute_entete = $hauteur_entete + $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id];
 
 				if($affiche_deux_moy_gen==1) {
@@ -4268,7 +4268,14 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					//$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "",1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 
 					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
-					$info_tot_et_coef=$tab_bull['tot_points_eleve'][$i]."/".$tab_bull['total_coef_eleve'][$i];
+
+					if($tab_modele_pdf["affiche_totalpoints_sur_totalcoefs"][$classe_id]=='1') {
+						$info_tot_et_coef=$tab_bull['tot_points_eleve'][$i]."/".$tab_bull['total_coef_eleve'][$i];
+					}
+					else {
+						$info_tot_et_coef='-';
+					}
+
 					$val = $pdf->GetStringWidth($info_tot_et_coef);
 					$taille_texte = $tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 					$grandeur_texte='test';

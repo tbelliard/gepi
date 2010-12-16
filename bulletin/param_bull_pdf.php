@@ -399,8 +399,17 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['ajout_cadre_blanc_photo'])) { $ajout_cadre_blanc_photo = $_GET['ajout_cadre_blanc_photo']; } if (isset($_POST['ajout_cadre_blanc_photo'])) { $ajout_cadre_blanc_photo = $_POST['ajout_cadre_blanc_photo']; } }
 	if (empty($_GET['affiche_moyenne_mini_general']) and empty($_POST['affiche_moyenne_mini_general'])) { $affiche_moyenne_mini_general = ''; }
 	else { if (isset($_GET['affiche_moyenne_mini_general'])) { $affiche_moyenne_mini_general = $_GET['affiche_moyenne_mini_general']; } if (isset($_POST['affiche_moyenne_mini_general'])) { $affiche_moyenne_mini_general = $_POST['affiche_moyenne_mini_general']; } }
+
 	if (empty($_GET['affiche_moyenne_maxi_general']) and empty($_POST['affiche_moyenne_maxi_general'])) { $affiche_moyenne_maxi_general = ''; }
 	else { if (isset($_GET['affiche_moyenne_maxi_general'])) { $affiche_moyenne_maxi_general = $_GET['affiche_moyenne_maxi_general']; } if (isset($_POST['affiche_moyenne_maxi_general'])) { $affiche_moyenne_maxi_general = $_POST['affiche_moyenne_maxi_general']; } }
+
+	if (empty($_GET['affiche_totalpoints_sur_totalcoefs']) and empty($_POST['affiche_totalpoints_sur_totalcoefs'])) { $affiche_totalpoints_sur_totalcoefs=0; }
+	else {
+		if (isset($_GET['affiche_totalpoints_sur_totalcoefs'])) { $affiche_totalpoints_sur_totalcoefs=$_GET['affiche_totalpoints_sur_totalcoefs']; }
+		if (isset($_POST['affiche_totalpoints_sur_totalcoefs'])) { $affiche_totalpoints_sur_totalcoefs=$_POST['affiche_totalpoints_sur_totalcoefs']; }
+	}
+	//echo "\$affiche_totalpoints_sur_totalcoefs=$affiche_totalpoints_sur_totalcoefs<br />";
+
 	if (empty($_GET['affiche_date_edition']) and empty($_POST['affiche_date_edition'])) { $affiche_date_edition = ''; }
 	else { if (isset($_GET['affiche_date_edition'])) { $affiche_date_edition = $_GET['affiche_date_edition']; } if (isset($_POST['affiche_date_edition'])) { $affiche_date_edition = $_POST['affiche_date_edition']; } }
 	if (empty($_GET['affiche_ine']) and empty($_POST['affiche_ine'])) { $affiche_ine = ''; }
@@ -1271,6 +1280,15 @@ function DecocheCheckbox() {
 			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_general) and $active_moyenne_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;Ligne des moyennes générales<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_mini_general" id="affiche_moyenne_mini_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_mini_general) and $affiche_moyenne_mini_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_mini_general" style="cursor: pointer;">moyenne générale la plus basse</label><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_maxi_general" id="affiche_moyenne_maxi_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_maxi_general) and $affiche_moyenne_maxi_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_maxi_general" style="cursor: pointer;">moyenne générale la plus haute</label><br />
+
+			<?php
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name='affiche_totalpoints_sur_totalcoefs' id='affiche_totalpoints_sur_totalcoefs' style='border: 1px solid #74748F;' type='checkbox' value='1' ";
+				//if((empty($affiche_totalpoints_sur_totalcoefs))||(!empty($affiche_totalpoints_sur_totalcoefs) and $affiche_totalpoints_sur_totalcoefs=='1')) {
+				if(!empty($affiche_totalpoints_sur_totalcoefs) and $affiche_totalpoints_sur_totalcoefs=='1') {
+					echo "checked='checked' ";
+				}
+				echo "/>&nbsp;<label for='affiche_totalpoints_sur_totalcoefs' style='cursor: pointer;'>afficher le total des points sur le total des coefficients dans la case coefficients de la ligne moyenne générale<br />\n";
+			?>
 
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_general_coef_1" id="affiche_moyenne_general_coef_1" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_general_coef_1) and $affiche_moyenne_general_coef_1 === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_general_coef_1" style="cursor: pointer;">moyenne générale avec coefficients à 1 en plus de la moyenne générale<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;avec les coefficients définis dans Gestion des classes/&lt;Classes&gt; Enseignements</label><br />

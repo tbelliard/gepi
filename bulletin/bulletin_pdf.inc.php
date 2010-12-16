@@ -147,6 +147,9 @@
 	$champ_bull_pdf[]="ajout_cadre_blanc_photo";
 	$champ_bull_pdf[]="affiche_moyenne_mini_general";
 	$champ_bull_pdf[]="affiche_moyenne_maxi_general";
+
+	$champ_bull_pdf[]="affiche_totalpoints_sur_totalcoefs";
+
 	$champ_bull_pdf[]="affiche_date_edition";
 	$champ_bull_pdf[]="affiche_ine";
 
@@ -322,6 +325,9 @@
 	$val_defaut_champ_bull_pdf["ajout_cadre_blanc_photo"]=0;
 	$val_defaut_champ_bull_pdf["affiche_moyenne_mini_general"]=1;
 	$val_defaut_champ_bull_pdf["affiche_moyenne_maxi_general"]=1;
+
+	$val_defaut_champ_bull_pdf["affiche_totalpoints_sur_totalcoefs"]=0;
+
 	$val_defaut_champ_bull_pdf["affiche_date_edition"]=1;
 	$val_defaut_champ_bull_pdf["affiche_ine"]=0;
 
