@@ -815,6 +815,10 @@ function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racin
 // Liste des sous-conteneur d'un conteneur
 //
 function sous_conteneurs($id_conteneur,&$nb_sous_cont,&$nom_sous_cont,&$coef_sous_cont,&$id_sous_cont,&$display_bulletin_sous_cont,$type) {
+	fdebug("===================================\n");
+	fdebug("LANCEMENT DE sous_conteneurs() SUR\n");
+	fdebug("id_conteneur=$id_conteneur avec type=$type\n");
+
     $query_sous_cont = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent ='$id_conteneur' and id!='$id_conteneur') order by nom_court");
     $nb = mysql_num_rows($query_sous_cont);
     $i=0;
@@ -830,7 +834,6 @@ function sous_conteneurs($id_conteneur,&$nb_sous_cont,&$nom_sous_cont,&$coef_sou
         }
         $i++;
     }
-
 }
 
 function fdebug($texte){
@@ -848,7 +851,8 @@ function fdebug($texte){
 //
 function calcule_moyenne($login, $id_racine, $id_conteneur) {
 	fdebug("===================================\n");
-	fdebug("$login: $id_racine - $id_conteneur\n");
+	fdebug("LANCEMENT DE calcule_moyenne SUR\n");
+	fdebug("login=$login: id_racine=$id_racine - id_conteneur=$id_conteneur\n");
 
     $total_point = 0;
     $somme_coef = 0;
@@ -864,6 +868,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     $mode =  mysql_result($appel_conteneur, 0, 'mode');
     $ponderation = mysql_result($appel_conteneur, 0, 'ponderation');
 
+	fdebug("Conteneur n°$id_conteneur\n");
 	fdebug("\$arrondir=$arrondir\n");
 	fdebug("\$mode=$mode\n");
 	fdebug("\$ponderation=$ponderation\n");
@@ -905,22 +910,30 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     }
 
 
+
     //
     // Prise en compte de la pondération
     // Calcul de l'indice du coefficient à pondérer
     //
     if ($ponderation != 0) {
-        $appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_conteneur' ORDER BY date,id");
+        $sql="SELECT * FROM cn_devoirs WHERE id_conteneur='$id_conteneur' ORDER BY date,id";
+		fdebug("$sql\n");
+        $appel_dev = mysql_query($sql);
         $nb_dev  = mysql_num_rows($appel_dev);
+		fdebug("\$nb_dev=$nb_dev\n");
         $max = 0;
         $indice_pond = 0;
         $k = 0;
         while ($k < $nb_dev) {
             $id_dev = mysql_result($appel_dev, $k, 'id');
             $coef[$k] = mysql_result($appel_dev, $k, 'coef');
-            $note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$login' AND id_devoir='$id_dev')");
+			fdebug("\$id_dev=$id_dev : \$coef[$k]=$coef[$k]\n");
+            $sql="SELECT * FROM cn_notes_devoirs WHERE (login='$login' AND id_devoir='$id_dev')";
+			fdebug("$sql\n");
+            $note_query = mysql_query($sql);
             $statut = @mysql_result($note_query, 0, "statut");
             $note = @mysql_result($note_query, 0, "note");
+			fdebug("\$nb_dev=$nb_dev\n");
             if (($statut == '') and ($note!='')) {
                 if (($note > $max) or (($note == $max) and ($coef[$k] > $coef[$indice_pond]))) {
                     $max = $note;
@@ -949,7 +962,9 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 		//=========================
 		// MODIF: boireaus 20080202
         //$appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_cont[$j]'");
-        $appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_cont[$j]' ORDER BY date,id");
+        $sql="SELECT * FROM cn_devoirs WHERE id_conteneur='$id_cont[$j]' ORDER BY date,id";
+		fdebug("$sql\n");
+        $appel_dev = mysql_query($sql);
 		//=========================
         $nb_dev  = mysql_num_rows($appel_dev);
         $k = 0;
@@ -996,8 +1011,13 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 
                 if ($facultatif[$k] == 'O') {
                     // le devoir n'est pas facultatif (Obligatoire) et entre systématiquement dans le calcul de la moyenne si le coef est différent de zéro
+					fdebug("\$total_point = $total_point + $coef[$k] * $note = ");
                     $total_point = $total_point + $coef[$k]*$note;
+					fdebug("$total_point\n");
+
+					fdebug("\$somme_coef = $somme_coef + $coef[$k] = ");
                     $somme_coef = $somme_coef + $coef[$k];
+					fdebug("$somme_coef\n");
                 } else if ($facultatif[$k] == 'B') {
                     //le devoir est facultatif comme un bonus : seuls les points supérieurs à 10 sont pris en compte dans le calcul de la moyenne.
                     if ($note > ($note_sur[$k]/2)) {
@@ -1043,16 +1063,32 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     // Prise en comptes des sous-conteneurs si mode=2
     //
     if ($mode == 2) {
+		fdebug("\$mode=$mode\n");
         $j=0;
         while ($j < $nb_sous_cont) {
-            $appel_cont = mysql_query("SELECT coef FROM cn_conteneurs WHERE id='$id_sous_cont[$j]'");
+            $sql="SELECT coef FROM cn_conteneurs WHERE id='$id_sous_cont[$j]'";
+			fdebug("$sql\n");
+            $appel_cont = mysql_query($sql);
             $coefficient = mysql_result($appel_cont, 0, 'coef');
-            $moyenne_query = mysql_query("SELECT * FROM cn_notes_conteneurs WHERE (login='$login' AND id_conteneur='$id_sous_cont[$j]')");
+			fdebug("\$coefficient=$coefficient\n");
+
+            $sql="SELECT * FROM cn_notes_conteneurs WHERE (login='$login' AND id_conteneur='$id_sous_cont[$j]')";
+			fdebug("$sql\n");
+            $moyenne_query = mysql_query($sql);
             $statut_moy = @mysql_result($moyenne_query, 0, "statut");
+			fdebug("\$statut_moy=$statut_moy\n");
+
             if ($statut_moy == 'y') {
                 $moy = @mysql_result($moyenne_query, 0, "note");
+				fdebug("\$moy=$moy\n");
+
+				fdebug("\$somme_coef = $somme_coef + $coefficient = ");
                 $somme_coef = $somme_coef + $coefficient;
+				fdebug("$somme_coef\n");
+
+				fdebug("\$total_point = $total_point + $coefficient * $moy = ");
                 $total_point = $total_point + $coefficient*$moy;
+				fdebug("$total_point\n");
             }
             $j++;
         }
@@ -1067,8 +1103,9 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 	// Il faudrait considérer le cas vicieux: présence de note à bonus et pas d'autre note...
     if ($somme_coef != 0) {
 	//=========================
+		fdebug("\$moyenne= = $total_point / $somme_coef = ");
         $moyenne = $total_point/$somme_coef;
-		fdebug("\$moyenne=".$moyenne."\n");
+		fdebug($moyenne."\n");
         //
         // si un des devoirs a l'option "N", on prend la meilleure moyenne :
         //
