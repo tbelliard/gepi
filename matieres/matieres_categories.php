@@ -125,11 +125,30 @@ if (isset($_POST['action'])) {
             } else {
 
                 // On teste l'utilisation de cette catégorie
-                $test = mysql_result(mysql_query("SELECT count(matiere) FROM matieres WHERE categorie_id = '" . $_POST['categorie_id'] ."'"), 0);
-                if ($test > "0") {
+                $res = mysql_query("SELECT matiere FROM matieres WHERE categorie_id = '" . $_POST['categorie_id'] ."'");
+                $test = mysql_num_rows($res);
+
+                $res2 = mysql_query("SELECT DISTINCT id_groupe, c.id, c.classe FROM j_groupes_classes jgc, classes c WHERE c.id=jgc.id_classe AND categorie_id='".$_POST['categorie_id']."'");
+                $test2 = mysql_num_rows($res2);
+
+                if ($test>0) {
                     // On a des entrées... la catégorie a déjà été associée à des matières, donc on ne la supprime pas.
-                    $msg .= "La catégorie n'a pas pu être supprimée, car elle a déjà été associée à des matières.<br/>";
-                } else {
+					$liste_matieres_associees="";
+					while($lig=mysql_fetch_object($res)) {
+						if($liste_matieres_associees!='') {$liste_matieres_associees.=", ";}
+						$liste_matieres_associees.="<a href='index.php' target='_blank'>".$lig->matiere."</a>";
+					}
+                    $msg .= "La catégorie n'a pas pu être supprimée, car elle a déjà été associée à des matières (<i>$liste_matieres_associees</i>).<br/>";
+				}
+                elseif ($test2>0) {
+					$liste_classes_associees="";
+					while($lig=mysql_fetch_object($res2)) {
+						if($liste_classes_associees!='') {$liste_classes_associees.=", ";}
+						$liste_classes_associees.="<a href='../groupes/edit_class.php?id_classe=$lig->id_classe' target='_blank'>".get_class_from_id($lig->id_classe)."</a>";
+					}
+                    $msg .= "La catégorie n'a pas pu être supprimée, car elle a déjà été associée à des enseignements pour des classes (<i>$liste_classes_associees</i>).<br/>";
+                }
+				else {
                     $res = mysql_query("DELETE FROM matieres_categories WHERE id = '" . $_POST['categorie_id']."'");
                     if (!$res) {
                         $msg .= "Erreur lors de la suppression de la catégorie.<br/>";
