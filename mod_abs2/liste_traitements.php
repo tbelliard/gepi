@@ -177,14 +177,6 @@ if (getFiltreRechercheParam('order') == "asc_id") {
     $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useClasseQuery()->orderBy('NomComplet', Criteria::ASC)->endUse()->endUse()->endUse();
 } else if (getFiltreRechercheParam('order') == "des_classe") {
     $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useClasseQuery()->orderBy('NomComplet', Criteria::DESC)->endUse()->endUse()->endUse();
-} else if (getFiltreRechercheParam('order') == "asc_groupe") {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useGroupeQuery()->orderBy('Name', Criteria::ASC)->endUse()->endUse()->endUse();
-} else if (getFiltreRechercheParam('order') == "des_groupe") {
-    $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveSaisieQuery()->useGroupeQuery()->orderBy('Name', Criteria::DESC)->endUse()->endUse()->endUse();
-} else if (getFiltreRechercheParam('order') == "asc_aid") {
-    $query->useAidDetailsQuery()->orderBy('Nom', Criteria::ASC)->endUse();
-} else if (getFiltreRechercheParam('order') == "des_aid") {
-    $query->useAidDetailsQuery()->orderBy('Nom', Criteria::DESC)->endUse();
 } else if (getFiltreRechercheParam('order') == "asc_type") {
     $query->orderBy('ATypeId', Criteria::ASC);
 } else if (getFiltreRechercheParam('order') == "des_type") {
@@ -197,18 +189,6 @@ if (getFiltreRechercheParam('order') == "asc_id") {
     $query->orderBy('AJustificationId', Criteria::ASC);
 } else if (getFiltreRechercheParam('order') == "des_justification") {
     $query->orderBy('AJustificationId', Criteria::DESC);
-} else if (getFiltreRechercheParam('order') == "asc_date_debut") {
-    $query->orderBy('DebutAbs', Criteria::ASC);
-} else if (getFiltreRechercheParam('order') == "des_date_debut") {
-    $query->orderBy('DebutAbs', Criteria::DESC);
-} else if (getFiltreRechercheParam('order') == "asc_date_fin") {
-    $query->orderBy('FinAbs', Criteria::ASC);
-} else if (getFiltreRechercheParam('order') == "des_date_fin") {
-    $query->orderBy('FinAbs', Criteria::DESC);
-} else if (getFiltreRechercheParam('order') == "asc_creneau") {
-    $query->useEdtCreneauQuery()->orderBy('HeuredebutDefiniePeriode', Criteria::ASC)->endUse();
-} else if (getFiltreRechercheParam('order') == "des_creneau") {
-    $query->useEdtCreneauQuery()->orderBy('HeuredebutDefiniePeriode', Criteria::DESC)->endUse();
 } else if (getFiltreRechercheParam('order') == "asc_date_creation") {
     $query->orderBy('CreatedAt', Criteria::ASC);
 } else if (getFiltreRechercheParam('order') == "des_date_creation") {
