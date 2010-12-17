@@ -712,15 +712,22 @@ for($i=0;$i<10;$i++){
         echo "<option value='0'";
         if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == "0") {echo " SELECTED";}
         echo ">Aucune</option>";
+		$tab_categorie_id=array();
         foreach ($mat_categories as $cat) {
+			$tab_categorie_id[]=$cat->id;
             echo "<option value='".$cat->id . "'";
             if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == $cat->id) {
                echo " SELECTED";
             }
             echo ">".html_entity_decode_all_version($cat->nom_court)."</option>";
         }
-
         echo "</select>";
+
+		if(($current_group["classes"]["classes"][$id_classe]["categorie_id"]!=0)&&(!in_array($current_group["classes"]["classes"][$id_classe]["categorie_id"],$tab_categorie_id))) {
+			$temoin_anomalie_categorie="y";
+			echo "<a href='#' onclick=\"afficher_div('association_anormale_enseignement_categorie','y',-100,20);return false;\"'><img src='../images/icons/flag2.gif' width='17' height='18' /></a>";
+		}
+
         if(($display_mat_cat=='y')&&($current_group["classes"]["classes"][$id_classe]["categorie_id"]=="0")) {
             //echo "<br />\n";
             $message_categorie_aucune="La matière n apparaitra pas sur les bulletins et relevés de notes. Voir http://www.sylogix.org/wiki/gepi/Enseignement_invisible";
@@ -811,6 +818,13 @@ for($i=0;$i<10;$i++){
 
         $cpt_grp++;
     }
+
+
+if(isset($temoin_anomalie_categorie)&&($temoin_anomalie_categorie=='y')) {
+	$titre="Anomalie d'association enseignement/catégorie";
+	$texte="<p>Cet enseignement est associé à une catégorie qui n'existe pas ou plus.<br />Veuillez contrôler les paramètres et cliquer sur <b>Enregistrer</b> pour corriger.";
+	$tabdiv_infobulle[]=creer_div_infobulle('association_anormale_enseignement_categorie',$titre,"",$texte,"",30,0,'y','y','n','n');
+}
 
 echo "<input type='hidden' name='is_posted' value='1' />";
 echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />";
