@@ -68,6 +68,9 @@
 	$tab_rn_moy_min_max_classe=isset($_POST['rn_moy_min_max_classe']) ? $_POST['rn_moy_min_max_classe'] : array();
 	$tab_rn_moy_classe=isset($_POST['rn_moy_classe']) ? $_POST['rn_moy_classe'] : array();
 
+	$tab_rn_retour_ligne=isset($_POST['rn_retour_ligne']) ? $_POST['rn_retour_ligne'] : array();
+	$tab_rn_rapport_standard_min_font=isset($_POST['rn_rapport_standard_min_font']) ? $_POST['rn_rapport_standard_min_font'] : array();
+
 	//+++++++++++++++++++++++++++++++++++
 	// A FAIRE
 	// Contrôler les paramètres reçus en fonction de
@@ -219,6 +222,9 @@
 			// 20100526
 			$tab_releve[$id_classe][$periode_num]['rn_moy_min_max_classe']=isset($tab_rn_moy_min_max_classe[$loop_classe]) ? "y" : "n";
 			$tab_releve[$id_classe][$periode_num]['rn_moy_classe']=isset($tab_rn_moy_classe[$loop_classe]) ? "y" : "n";
+
+			$tab_releve[$id_classe][$periode_num]['rn_retour_ligne']=isset($tab_rn_retour_ligne[$loop_classe]) ? "y" : "n";
+			$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font']=((isset($tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]!='')&&(preg_match("/^[0-9.]*$/",$tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]>0)) ? $tab_rn_rapport_standard_min_font[$loop_classe] : 3;
 
 			//echo "\$tab_releve[$id_classe][$periode_num]['affiche_adresse']=".$tab_releve[$id_classe][$periode_num]['affiche_adresse']."<br />";
 

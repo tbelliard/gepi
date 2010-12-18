@@ -526,6 +526,9 @@ function releve_html($tab_rel,$i,$num_releve_specifie) {
     $retour_a_la_ligne="y";
     // Passer à "n" pour désactiver le retour à la ligne.
 
+	if((isset($tab_rel['rn_retour_ligne']))&&(($tab_rel['rn_retour_ligne']=='y')||($tab_rel['rn_retour_ligne']=='n'))) {
+		$retour_a_la_ligne=$tab_rel['rn_retour_ligne'];
+	}
 
 	/*
 	$affiche_categories
@@ -1782,6 +1785,15 @@ function releve_pdf($tab_rel,$i) {
 		// Pour retourner à la ligne entre les devoirs dans le cas où le nom ou l'appréciation du devoir est demandée:
 		$retour_a_la_ligne="y";
 
+		if((isset($tab_rel['rn_retour_ligne']))&&(($tab_rel['rn_retour_ligne']=='y')||($tab_rel['rn_retour_ligne']=='n'))) {
+			$retour_a_la_ligne=$tab_rel['rn_retour_ligne'];
+		}
+
+		// Rapport de la taille minimale de police: taille_standard/taille_min_police
+		$rn_rapport_standard_min_font=3;
+		if((isset($tab_rel['rn_rapport_standard_min_font']))&&($tab_rel['rn_rapport_standard_min_font']!='')&&(preg_match("/^[0-9.]*$/",$tab_rel['rn_rapport_standard_min_font']))&&($tab_rel['rn_rapport_standard_min_font']>0)) {
+			$rn_rapport_standard_min_font=$tab_rel['rn_rapport_standard_min_font'];
+		}
 
 	$id_classe=$tab_rel['id_classe'];
 	$classe_id=$id_classe;
@@ -3020,7 +3032,7 @@ echo "<p>
 						else {
 							$texte=$chaine_notes;
 							$taille_max_police=$hauteur_caractere_notes;
-							$taille_min_police=ceil($taille_max_police/3);
+							$taille_min_police=ceil($taille_max_police/$rn_rapport_standard_min_font);
 		
 							$largeur_dispo=$largeur_cadre_note;
 							$h_cell=$hauteur_cadre_matiere;
