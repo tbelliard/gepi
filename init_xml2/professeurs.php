@@ -943,9 +943,11 @@ else {
 
 		echo '<p style="text-align: center; font-weight: bold;"><a href="../mod_ent/gestion_ent_profs.php">Vérifier les logins avant de poursuivre</a></p>'."\n";
 
-	}else{
+	} else {
 
 		echo '<p style="text-align: center; font-weight: bold;"><a href="prof_disc_classe_csv.php?a=a'.add_token_in_url().'">Procéder à la cinquième phase d\'initialisation</a></p>'."\n";
+
+		echo "<p style='text-align: center; font-weight: bold;'>Si la remontée vers STS n'a pas encore été effectuée, vous pouvez effectuer l'initialisation des enseignements à partir d'un export CSV de UnDeuxTemps&nbsp;: <a href='traite_csv_udt.php?a=a".add_token_in_url()."'>Procéder à la cinquième phase d\'initialisation</a><br />(<i>procédure encore expérimentale... il se peut que vous ayez des groupes en trop</i>)</p>\n";
 
 	}
 
