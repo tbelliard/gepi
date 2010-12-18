@@ -638,6 +638,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
 			echo "<tr><td valign='top'><input type='checkbox' name='forcer_recalcul_moy_conteneurs' id='forcer_recalcul_moy_conteneurs' value='y' /></td><td><label for='forcer_recalcul_moy_conteneurs' style='cursor: pointer;'>Forcer le recalcul des moyennes de conteneurs.</label></td></tr>\n";
+
+			echo "<tr><td valign='top'><input type='checkbox' name='forcer_recalcul_rang' id='forcer_recalcul_rang' value='y' /></td><td><label for='forcer_recalcul_rang' style='cursor: pointer;'>Forcer le recalcul des rangs.</label></td></tr>\n";
 		}
 	//}
 	echo "</table>\n";
@@ -1140,6 +1142,26 @@ else {
 
 	// Boucle sur les classes
 	for($loop_classe=0;$loop_classe<count($tab_id_classe);$loop_classe++) {
+
+
+		if((isset($_POST['forcer_recalcul_rang']))&&($_POST['forcer_recalcul_rang']=='y')) {
+			$sql="SELECT num_periode FROM periodes WHERE id_classe='".$tab_id_classe[$loop_classe]."' ORDER BY num_periode DESC LIMIT 1;";
+			$res_per=mysql_query($sql);
+			if(mysql_num_rows($res_per)>0) {
+				$lig_per=mysql_fetch_object($res_per);
+				$recalcul_rang="";
+				for($i=0;$i<$lig_per->num_periode;$i++) {$recalcul_rang.="y";}
+				$sql="UPDATE groupes SET recalcul_rang='$recalcul_rang' WHERE id in (SELECT id_groupe FROM j_groupes_classes WHERE id_classe='".$tab_id_classe[$loop_classe]."');";
+				//echo "$sql<br />";
+				$res=mysql_query($sql);
+				if(!$res) {
+					$msg.="<br />Erreur lors de la programmation du recalcul des rangs pour la classe ".get_nom_classe($tab_id_classe[$loop_classe]).".";
+				}
+			}
+			// Les rangs seront recalculés lors de l'appel à calcul_rang.inc.php
+		}
+
+
 
 		//==============================
 		if($mode_bulletin=="html") {
