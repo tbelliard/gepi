@@ -699,6 +699,9 @@ echo "</div>\n";
 //===========================================================
 
 echo "<h2 class='gepi'>Bulletin scolaire - Saisie des appréciations</h2>\n";
+
+echo "<p>Vous pouvez faire apparaître dans votre appréciation la liste des notes de l'élève pour la période en insérant la chaine de caractères <b>@@Notes</b><br />(<i>les notes apparaîtront alors lors de la visualisation/impression du bulletin</i>)</p>\n";
+
 //echo "<p><b>Groupe : " . $current_group["description"] ." | Matière : $matiere_nom</b></p>\n";
 echo "<p><b>Groupe : " . htmlentities($current_group["description"]) ." (".$current_group["classlist_string"].")</b></p>\n";
 
@@ -1470,6 +1473,12 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 	// Dispositif spécifique: décommenter la ligne pour l'activer
 	if(getSettingValue('appreciations_types_profs')=='y' || getSettingValue('appreciations_types_profs')=='yes') {include('ctp.php');}
 	//============================================
+
+
+	echo "<a href='#' onClick=\"insere_notes();return false;\">";
+	echo "<img src='../images/icons/wizard.png' width='16' height='16' alt='Insérer les notes des devoirs' title='Insérer les notes des devoirs' />";
+	echo "</a>\n";
+
 ?>
 
 <!-- Champ destiné à recevoir la valeur du champ suivant celui qui a le focus pour redonner le focus à ce champ après une validation -->
@@ -1498,6 +1507,19 @@ echo "<script type='text/javascript'>
 		new Ajax.Updater($('corps_bull_simp'),'ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
 	}
 	//]]>
+
+	function insere_notes() {
+		id_focus_courant=document.getElementById('focus_courant').value;
+	
+		if(document.getElementById('n'+id_focus_courant)) {
+			app0=document.getElementById('n'+id_focus_courant).value;
+
+			app1=app0+'@@Notes';
+			document.getElementById('n'+id_focus_courant).value=app1;
+			document.getElementById('n'+id_focus_courant).focus();
+		}
+	}
+
 </script>\n";
 
 
