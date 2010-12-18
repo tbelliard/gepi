@@ -226,6 +226,8 @@
 			$tab_releve[$id_classe][$periode_num]['rn_retour_ligne']=isset($tab_rn_retour_ligne[$loop_classe]) ? "y" : "n";
 			$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font']=((isset($tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]!='')&&(preg_match("/^[0-9.]*$/",$tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]>0)) ? $tab_rn_rapport_standard_min_font[$loop_classe] : 3;
 
+			$_SESSION['pref_rn_rapport_standard_min_font']=$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font'];
+
 			//echo "\$tab_releve[$id_classe][$periode_num]['affiche_adresse']=".$tab_releve[$id_classe][$periode_num]['affiche_adresse']."<br />";
 
 			// Informations sur la période

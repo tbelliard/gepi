@@ -1,4 +1,8 @@
 <?php
+	/*
+	$Id$
+	*/
+
 	echo "<table class='boireaus' border='1' summary='Tableau des items'>\n";
 	echo "<tr>\n";
 	//echo "<th width='30%'>Item</th>\n";
@@ -175,13 +179,21 @@
 	echo "</td>\n";
 	echo "</tr>\n";
 
+	if(isset($_SESSION['pref_rn_rapport_standard_min_font'])) {
+		$rn_rapport_standard_min_font_defaut=$_SESSION['pref_rn_rapport_standard_min_font'];
+	}
+	else {
+		$rn_rapport_standard_min_font_defaut=getSettingValue('rn_rapport_standard_min_font_defaut');
+		$rn_rapport_standard_min_font_defaut=(($rn_rapport_standard_min_font_defaut!='')&&(preg_match("/^[0-9.]*$/",$rn_rapport_standard_min_font_defaut))&&($rn_rapport_standard_min_font_defaut>0)) ? $rn_rapport_standard_min_font_defaut : 3;
+	}
+
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td style='text-align:left;'>Rapport taille_standard / taille_minimale_de_police (<i>relevé PDF avec cell_ajustee()</i>)<br />(<i>Si pour que les notes tiennent dans la cellule, il faut réduire davantage la police, on supprime les retours à la ligne.</i>)\n";
 	echo "</td>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<td>\n";
-		echo "<input type='text' name='rn_rapport_standard_min_font[$i]' id='rn_rapport_standard_min_font_".$i."' size='2' value='3' />\n";
+		echo "<input type='text' name='rn_rapport_standard_min_font[$i]' id='rn_rapport_standard_min_font_".$i."' size='2' value='".$rn_rapport_standard_min_font_defaut."' />\n";
 		echo "</td>\n";
 	}
 	echo "<td>\n";
