@@ -2282,6 +2282,11 @@ else {
 
     echo "<hr />\n";
 
+    echo "<p>Vérification de l'Emploi du temps.</p>\n";
+	echo "Pour vérifier votre emploi du temps en cas d'anomalies, suivez ce lien&nbsp;: <a href='../edt_organisation/verifier_edt.php?a=a".add_token_in_url()."'>Vérification de l'Emploi du temps</a></p>\n";
+
+    echo "<hr />\n";
+
     echo "<p>Au changement d'année, il est recommandé de vider les entrées des tables 'edt_classes', 'edt_cours', 'edt_calendrier' du module emploi du temps de Gepi.</p>\n";
     echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 	echo add_token_field();
