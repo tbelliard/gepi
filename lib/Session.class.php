@@ -1357,10 +1357,12 @@ class Session {
   # par CAS directement.
   private function update_user_with_cas_attributes(){
     $need_update = false;
+    if (isset($GLOBALS['debug_log_file'])){
     error_log("Mise à jour de l'utilisateur à partir des attributs CAS.", $GLOBALS['debug_log_file']);
     error_log("Attribut email :".$this->cas_extra_attributes['email'], $GLOBALS['debug_log_file']);
     error_log("Attribut prenom :".$this->cas_extra_attributes['prenom'], $GLOBALS['debug_log_file']);
     error_log("Attribut nom :".$this->cas_extra_attributes['nom'], $GLOBALS['debug_log_file']);
+    }
     if (!empty($this->cas_extra_attributes)) {
       $query = 'UPDATE utilisateurs SET ';
       $first = true;
