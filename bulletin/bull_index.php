@@ -60,6 +60,29 @@ $nb_releve_par_page=1;
 
 $bull_pdf_debug=isset($_POST['bull_pdf_debug']) ? $_POST['bull_pdf_debug'] : "n";
 
+
+// Fonction de recherche des conteneurs derniers enfants (sans enfants (non parents, en somme))
+// avec recalcul des moyennes lancé...
+function recherche_enfant($id_parent_tmp){
+	global $current_group, $periode_num, $id_racine;
+	$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
+	//echo "<!-- $sql -->\n";
+	$res_enfant=mysql_query($sql);
+	if(mysql_num_rows($res_enfant)>0){
+		while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
+			recherche_enfant($lig_conteneur_enfant->id);
+		}
+	}
+	else{
+		$arret = 'no';
+		$id_conteneur_enfant=$id_parent_tmp;
+		// Mise_a_jour_moyennes_conteneurs pour un enfant non parent...
+		mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret);
+		//echo "<!-- ========================================== -->\n";
+	}
+}
+
+
 //====================================================
 //=============== ENTETE STANDARD ====================
 if (!isset($_POST['valide_select_eleves'])) {
@@ -612,6 +635,10 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		echo "<tr><td valign='top'><input type='checkbox' name='moyennes_periodes_precedentes' id='moyennes_periodes_precedentes' value='y'  /></td><td><label for='moyennes_periodes_precedentes' style='cursor: pointer;'>Afficher les moyennes de l'élève pour les périodes précédentes (<i>incompatible avec l'affichage des moyennes min/max/classe dans la même cellule que la moyenne de l'élève</i>).</label></td></tr>\n";
 
 		echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' /></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les bulletins par établissement d'origine.</label></td></tr>\n";
+
+		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
+			echo "<tr><td valign='top'><input type='checkbox' name='forcer_recalcul_moy_conteneurs' id='forcer_recalcul_moy_conteneurs' value='y' /></td><td><label for='forcer_recalcul_moy_conteneurs' style='cursor: pointer;'>Forcer le recalcul des moyennes de conteneurs.</label></td></tr>\n";
+		}
 	//}
 	echo "</table>\n";
 
@@ -1431,6 +1458,31 @@ else {
 
 		// Boucle sur les périodes
 		for($loop_periode_num=0;$loop_periode_num<count($tab_periode_num);$loop_periode_num++) {
+
+
+			if((isset($_POST['forcer_recalcul_moy_conteneurs']))&&($_POST['forcer_recalcul_moy_conteneurs']=='y')) {
+					$sql="SELECT DISTINCT ccn.id_cahier_notes,ccn.id_groupe FROM cn_cahier_notes ccn,groupes g,j_groupes_classes jgc,classes c WHERE
+						ccn.id_groupe=g.id AND
+						jgc.id_groupe=g.id AND
+						c.id=jgc.id_classe AND
+						ccn.periode='".$tab_periode_num[$loop_periode_num]."' AND
+						c.id='".$id_classe."'
+						ORDER BY c.classe,g.description";
+					//echo "$sql";
+					$res_recalcul_moy_conteneurs=mysql_query($sql);
+					if(mysql_num_rows($res_recalcul_moy_conteneurs)>0){
+						while($lig_recalcul_moy_conteneurs=mysql_fetch_object($res_recalcul_moy_conteneurs)) {
+							$current_group=get_group($lig_recalcul_moy_conteneurs->id_groupe);
+							$periode_num=$tab_periode_num[$loop_periode_num];
+							$id_racine=$lig_recalcul_moy_conteneurs->id_cahier_notes;
+							recherche_enfant($lig_recalcul_moy_conteneurs->id_cahier_notes);
+						}
+						unset($current_group);
+						unset($periode_num);
+						unset($id_racine);
+					}
+			}
+	
 
 			//$periode_num=1;
 			$periode_num=$tab_periode_num[$loop_periode_num];
