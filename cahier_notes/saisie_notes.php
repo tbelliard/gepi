@@ -964,7 +964,7 @@ foreach ($liste_eleves as $eleve) {
 
 			// ========================
 			// AJOUT: boireaus 20071010
-			$mess_note[$i][$k].="<input type='hidden' name='log_eleve[$i]' value='$eleve_login[$i]' />\n";
+			$mess_note[$i][$k].="<input type='hidden' name='log_eleve[$i]' id='log_eleve_$i' value='$eleve_login[$i]' />\n";
 			// ========================
 
 			if ($current_group["classe"]["ver_periode"][$eleve_id_classe[$i]][$periode_num] == "N") {
@@ -1940,6 +1940,67 @@ if((!isset($id_devoir))||($id_devoir=='')||($id_devoir=='0')) {
 //===================================
 
 if ($id_devoir) {
+
+	$chaine_indices="";
+	for($i=0;$i<$nombre_lignes;$i++) {
+		if(isset($indice_ele_saisie[$i])) {
+			if($chaine_indices!="") {$chaine_indices.=",";}
+			$chaine_indices.=$indice_ele_saisie[$i];
+		}
+	}
+
+	echo "<p id='p_tri'></p>\n";
+	echo "<script type='text/javascript'>
+	function affiche_lien_tri() {
+		var tab_indices=new Array($chaine_indices);
+
+		chaine1='';
+		chaine2='';
+		for(i=0;i<$nombre_lignes;i++) {
+			//num=eval(10+i);
+			num=tab_indices[i];
+
+			if(document.getElementById('n'+num)) {
+				if(chaine1!='') {chaine1=chaine1+'|';}
+				if(chaine2!='') {chaine2=chaine2+'|';}
+
+				chaine1=chaine1+document.getElementById('log_eleve_'+i).value;
+				chaine2=chaine2+document.getElementById('n'+num).value;
+			}
+		}
+		//alert(chaine1);
+		//alert(chaine2);
+		document.getElementById('p_tri').innerHTML='<a href=\'affiche_tri.php?titre=Notes&chaine1='+chaine1+'&chaine2='+chaine2+'\' onclick=\"effectuer_tri(); afficher_div(\'div_tri\',\'y\',-150,20); return false;\" target=\'_blank\'>Afficher les notes triées</a>';
+	}
+
+	function effectuer_tri() {
+		var tab_indices=new Array($chaine_indices);
+
+		chaine1='';
+		chaine2='';
+		for(i=0;i<$nombre_lignes;i++) {
+			//num=eval(10+i);
+			num=tab_indices[i];
+
+			if(document.getElementById('n'+num)) {
+				if(chaine1!='') {chaine1=chaine1+'|';}
+				if(chaine2!='') {chaine2=chaine2+'|';}
+
+				chaine1=chaine1+document.getElementById('log_eleve_'+i).value;
+				chaine2=chaine2+document.getElementById('n'+num).value;
+			}
+		}
+
+		new Ajax.Updater($('notes_triees'),'affiche_tri.php?titre=Notes&chaine1='+chaine1+'&chaine2='+chaine2+'".add_token_in_url(false)."',{method: 'get'});
+	}
+
+	affiche_lien_tri();
+</script>\n";
+	$titre_infobulle="Notes triées";
+	$texte_infobulle="<div id='notes_triees'></div>";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_tri',$titre_infobulle,"",$texte_infobulle,"",30,0,'y','y','n','n');
+
+
 	echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: 8px; margin-right: 100px;\">\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"saisie_notes.php\" method=post>\n";
 	echo add_token_field();
