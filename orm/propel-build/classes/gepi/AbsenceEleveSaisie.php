@@ -110,7 +110,31 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    }
 	    return $result;
 	}
-	
+
+    /**
+	 *
+	 * Renvoi une liste des types associes ou non traitée sinon
+	 *
+	 * @return     String description
+	 *
+	 */
+	public function getTypesTraitements() {
+        $traitement_col = $this->getAbsenceEleveTraitements();
+        $result = '';
+        $besoin_echo_virgule = false;
+        foreach ($traitement_col as $bou_traitement) {
+            if ($bou_traitement->getAbsenceEleveType() != null) {
+                if ($besoin_echo_virgule) {
+                    $result .= ', ';
+                    $besoin_echo_virgule = false;
+                }
+                $result .= $bou_traitement->getAbsenceEleveType()->getNom();
+                $besoin_echo_virgule = true;
+            }
+        }
+        if ($result == '') $result = 'Non traitée';
+        return $result;
+    }
 	/**
 	 *
 	 * Renvoi true ou false en fonction des types associé
@@ -341,6 +365,54 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		return 'non';
 	    }
 	}
+
+  /**
+	 *
+	 * Renvoi le motif s'il existe ou Null sinon
+	 *
+	 * @return     string
+	 *
+	 */
+    public function getMotif() {
+        $motif = Null;
+        $besoin_echo_virgule = false;
+        if ($this->getTraitee()) {
+            foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+                if ($traitement->getAbsenceEleveMotif() != null) {
+                    if ($besoin_echo_virgule) {
+                        $motif.= ', ';                        
+                    }                   
+                    $motif.=$traitement->getAbsenceEleveMotif()->getNom();
+                    $besoin_echo_virgule = true;
+                }
+            }
+        }
+        return ($motif);
+    }
+
+    /**
+     *
+     * Renvoi la justification si elle existe ou Null sinon
+     *
+     * @return     string
+     *
+     */
+    public function getJustification() {
+        $justification = Null;
+        $besoin_echo_virgule = false;
+        if ($this->getJustifiee()) {
+            foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+                if ($traitement->getAbsenceEleveJustification() != null) {
+                    if ($besoin_echo_virgule) {
+                        $justification.= ', ';
+                    }
+                    $justification.=$traitement->getAbsenceEleveJustification()->getNom();
+                    $besoin_echo_virgule = true;
+                }
+            }
+        }
+        return ($justification);
+    }
 
 	/**
 	 *
