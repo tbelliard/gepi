@@ -820,7 +820,9 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 	echo "<div id='div_param_pdf'>\n";
 		//echo "<br />\n";
-		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' /><label for='use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
+		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='use_cell_ajustee' id='use_cell_ajustee' value='n' ";
+		if((isset($_SESSION['pref_use_cell_ajustee']))&&($_SESSION['pref_use_cell_ajustee']=='n')) {echo "checked ";}
+		echo "/><label for='use_cell_ajustee' style='cursor: pointer;'> Ne pas utiliser la nouvelle fonction use_cell_ajustee() pour l'écriture des appréciations.</label>";
 
 		$titre_infobulle="Fonction cell_ajustee()\n";
 		$texte_infobulle="Pour les appréciations sur les bulletins, relevés,... on utilisait auparavant la fonction DraxTextBox() de FPDF.<br />Cette fonction avait parfois un comportement curieux avec des textes tronqués ou beaucoup plus petits dans la cellule que ce qui semblait pouvoir tenir dans la case.<br />La fonction cell_ajustee() est une fonction que mise au point pour tenter de faire mieux que DraxTextBox().<br />Comme elle n'a pas été expérimentée par suffisamment de monde sur trunk, nous avons mis une case à cocher qui permet d'utiliser l'ancienne fonction DrawTextBox() si cell_ajustee() ne se révélait pas aussi bien fichue que nous l'espèrons;o).<br />\n";
@@ -887,11 +889,17 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 		if (($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable')) {
 			echo "<table border='0' summary='Tableau de paramètres'>\n";
-			echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' /></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de relevé de notes pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
+			echo "<tr><td valign='top'><input type='checkbox' name='un_seul_bull_par_famille' id='un_seul_bull_par_famille' value='oui' ";
+			if((isset($_SESSION['pref_un_seul_bull_par_famille']))&&($_SESSION['pref_un_seul_bull_par_famille']=='oui')) {echo "checked ";}
+			echo "/></td><td><label for='un_seul_bull_par_famille' style='cursor: pointer;'>Ne pas imprimer de relevé de notes pour le deuxième parent<br />(<i>même dans le cas de parents séparés</i>).</label></td></tr>\n";
 
-			echo "<tr><td valign='top'><input type='checkbox' name='deux_releves_par_page' id='deux_releves_par_page' value='oui' /></td><td><label for='deux_releves_par_page' style='cursor: pointer;'>Produire deux relevés par page (<i>PDF</i>).</label></td></tr>\n";
+			echo "<tr><td valign='top'><input type='checkbox' name='deux_releves_par_page' id='deux_releves_par_page' value='oui' ";
+			if((isset($_SESSION['pref_deux_releves_par_page']))&&($_SESSION['pref_deux_releves_par_page']=='oui')) {echo "checked ";}
+			echo "/></td><td><label for='deux_releves_par_page' style='cursor: pointer;'>Produire deux relevés par page (<i>PDF</i>).</label></td></tr>\n";
 
-			echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' /></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les relevés par établissement d'origine.</label></td></tr>\n";
+			echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' ";
+			if((isset($_SESSION['pref_tri_par_etab_orig']))&&($_SESSION['pref_tri_par_etab_orig']=='y')) {echo "checked ";}
+			echo "/></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les relevés par établissement d'origine.</label></td></tr>\n";
 
 			echo "</table>\n";
 		}
@@ -1665,6 +1673,16 @@ else {
 	if($deux_releves_par_page=="oui") {
 		$nb_releve_par_page=2;
 	}
+
+
+	$use_cell_ajustee=isset($_POST['use_cell_ajustee']) ? $_POST['use_cell_ajustee'] : "y";
+
+	// Pour mémoriser le temps de la session ces paramètres
+	$_SESSION['pref_use_cell_ajustee']=$use_cell_ajustee;
+	$_SESSION['pref_un_seul_bull_par_famille']=$un_seul_bull_par_famille;
+	$_SESSION['pref_deux_releves_par_page']=$deux_releves_par_page;
+	$_SESSION['pref_tri_par_etab_orig']=$tri_par_etab_orig;
+
 
 	// Prof principal
 	$gepi_prof_suivi=getSettingValue("gepi_prof_suivi");
