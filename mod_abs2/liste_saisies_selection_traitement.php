@@ -89,10 +89,16 @@ echo "<div class='css-panes' style='background-color:#cae7cb;' id='containDiv' s
 
 
 $query = AbsenceEleveSaisieQuery::create();
+if(isset($_GET['saisies'])){
+    $saisies=unserialize($_GET['saisies']);
+    //on reinitialise les filtres au besoin
+    $_SESSION['filtre_recherche'] = Array();
+    $_SESSION['filtre_recherche']['order'] = 'des_id';
+    $query->filterById($saisies);
+}
 //$query->leftJoin('AbsenceEleveSaisie.JTraitementSaisieEleve')->leftJoin('JTraitementSaisieEleve.AbsenceEleveTraitement')->with('AbsenceEleveTraitement');
 if (isFiltreRechercheParam('filter_saisie_id')) {
-    $query->filterById(getFiltreRechercheParam('filter_saisie_id'));
-    echo 'filter_id_oui : '.getFiltreRechercheParam('filter_saisie_id');
+    $query->filterById(getFiltreRechercheParam('filter_saisie_id'));    
 }
 if (isFiltreRechercheParam('filter_utilisateur')) {
     $query->useUtilisateurProfessionnelQuery()->filterByNom('%'.getFiltreRechercheParam('filter_utilisateur').'%', Criteria::LIKE)->endUse();

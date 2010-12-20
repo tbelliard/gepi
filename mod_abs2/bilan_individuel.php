@@ -95,6 +95,25 @@ if ($date_absence_eleve_fin != null) {
 $dt_date_absence_eleve_debut->setTime(0, 0, 0);
 $dt_date_absence_eleve_fin->setTime(23, 59, 59);
 
+function getDateDescription($date_debut,$date_fin) {
+	    $message = '';
+	    if (strftime("%a %d/%m/%Y", $date_debut)==strftime("%a %d/%m/%Y", $date_fin)) {
+		$message .= 'le ';
+		$message .= (strftime("%a %d/%m/%Y", $date_debut));
+		$message .= ' entre  ';
+		$message .= (strftime("%H:%M", $date_debut));
+		$message .= ' et ';
+		$message .= (strftime("%H:%M", $date_fin));
+
+	    } else {
+		$message .= ' entre le ';
+		$message .= (strftime("%a %d/%m/%Y %H:%M", $date_debut));
+		$message .= ' et ';
+		$message .= (strftime("%a %d/%m/%Y %H:%M", $date_fin));
+	    }
+	    return $message;
+	}
+
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
@@ -111,20 +130,6 @@ if ($affichage != 'ods') {// on affiche pas de html
 
     include('menu_abs2.inc.php');
     include('menu_bilans.inc.php');
-
-    //nombre de lignes a afficher
-function get_nbre_lignes($saisie_col, $eleve_id,$type_extrait) {
-    $nbre_ligne = 0;
-    foreach ($saisie_col as $saisie) {
-        if ($saisie->getEleveId() === $eleve_id) {
-            if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
-                continue;
-            }
-            $nbre_ligne++;
-        }
-    }
-    return $nbre_ligne;
-}
 ?>
     <div id="contain_div" class="css-panes">
         <form name="choix_extraction" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
@@ -227,78 +232,160 @@ if ($affichage != null && $affichage != '') {
     $saisie_col = $saisie_query->find();
     //var_dump($saisie_col);
 }
-
 if ($affichage == 'html') {
-    echo '<table border="1" cellspacing="0" align="center">';
-    echo '<tr >';
-    echo '<td >';
-    echo 'Informations sur l\'élève';
-    echo '</td>';
-    echo '<td >';
-    echo 'Date des saisies';
-    echo '</td>';
-    echo '<td >';
-    echo 'Décompte J';
-    echo '</td>';
-    echo '<td >';
-    echo 'Décompte NJ';
-    echo '</td>';
-    echo '<td >';
-    echo 'Type';
-    echo '</td>';
-    echo '<td >';
-    echo 'Motif';
-    echo '</td>';
-    echo '<td >';
-    echo 'Justification';
-    echo '</td>';
-    echo '<td >';
-    echo 'Commentaire';
-    echo '</td>';
-    echo '</tr>';
-    $precedent_eleve_id =Null;
+    $eleve_id = Null;
+    $donnees = Array();
     foreach ($saisie_col as $saisie) {
-
-	if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
-	    continue;
-	}
-    echo'<tr>';
-    if ($precedent_eleve_id != $saisie->getEleveId()) {
-        echo '<td rowspan=' . get_nbre_lignes($saisie_col, $saisie->getEleveId(), $type_extrait) . '>';
-        echo $saisie->getEleve()->getNom() . ' ' . $saisie->getEleve()->getPrenom() . ' - ' . $saisie->getEleve()->getClasseNom() . '<br/><br/>';
-        echo '<u>Absences :</u> <br /><br />';
-        echo $saisie->getEleve()->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count() . ' demi-journées dont ';
-        echo $saisie->getEleve()->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count() . ' non justifiées <br /><br/>';
-        echo '<u>Retards :</u><br /><br />' . $saisie->getEleve()->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count(). ' retards';
-        echo '</td>';
+        if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
+            continue;
+        }
+        $eleve_id = $saisie->getEleveId();
+        if (!isset($donnees[$eleve_id]['infos_ind'])) {
+            $donnees[$eleve_id]['infos_ind']['nom'] = $saisie->getEleve()->getNom();
+            $donnees[$eleve_id]['infos_ind']['prenom'] = $saisie->getEleve()->getPrenom();
+            $donnees[$eleve_id]['infos_ind']['classe'] = $saisie->getEleve()->getClasseNom();
+            $donnees[$eleve_id]['infos_ind']['demi_journees'] = $saisie->getEleve()->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
+            $donnees[$eleve_id]['infos_ind']['non_justifiees'] = $saisie->getEleve()->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
+            $donnees[$eleve_id]['infos_ind']['retards'] = $saisie->getEleve()->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
+            $donnees[$eleve_id]['infos_ind']['nbre_lignes'] = 0;
+        }
+        if ($saisie->getTraitee()) {
+            foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+                if (!isset($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]))
+                    $donnees[$eleve_id]['infos_ind']['nbre_lignes']++;
+                $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['saisies'][] = $saisie->getId();
+                if (isset($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates'])) {
+                    if ($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['debut'] > $saisie->getDebutAbs('U')) {
+                        $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['debut'] = $saisie->getDebutAbs('U');
+                    }
+                    if ($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['fin'] < $saisie->getFinAbs('U')) {
+                        $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['fin'] = $saisie->getFinAbs('U');
+                    }
+                } else {
+                    $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates'] = Array('debut' => $saisie->getDebutAbs('U'), 'fin' => $saisie->getFinAbs('U'));
+                }
+                if ($traitement->getAbsenceEleveType() != Null) {
+                    $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type'] = $traitement->getAbsenceEleveType()->getNom();
+                } else {
+                    $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type'] = 'Non défini';
+                }
+                if ($traitement->getAbsenceEleveMotif() != Null) {
+                    $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['motif'] = $traitement->getAbsenceEleveMotif()->getNom();
+                } else {
+                    $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['motif'] = '-';
+                }
+                if ($traitement->getAbsenceEleveJustification() != Null) {
+                    $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['justification'] = $traitement->getAbsenceEleveJustification()->getNom();
+                } else {
+                    $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['justification'] = '-';
+                }
+                if ($saisie->getCommentaire() !== '') {
+                    $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires'][] = $saisie->getCommentaire();
+                }
+            }
+        } else {
+            if (!isset($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']))
+                $donnees[$eleve_id]['infos_ind']['nbre_lignes']++;
+            $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['saisies'][] = $saisie->getId();
+            $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type'] = 'Non traitée(s)';
+            $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['motif'] = '-';
+            $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['justification'] = '-';
+            if (isset($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates'])) {
+                if ($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['debut'] > $saisie->getDebutAbs('U')) {
+                    $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['debut'] = $saisie->getDebutAbs('U');
+                }
+                if ($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['fin'] < $saisie->getFinAbs('U')) {
+                    $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates']['fin'] = $saisie->getFinAbs('U');
+                }
+            } else {
+                $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['dates'] = Array('debut' => $saisie->getDebutAbs('U'), 'fin' => $saisie->getFinAbs('U'));
+            }
+            if ($saisie->getCommentaire() !== '') {
+                $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['commentaires'][] = $saisie->getCommentaire();
+            }
+        }
     }
-    echo '<td>';
-	echo $saisie->getDateDescription();
-	echo '</td>';
-    echo '<td>';
+echo '<table border="1" cellspacing="0" align="center">';
+echo '<tr >';
+echo '<td >';
+echo 'Informations sur l\'élève';
+echo '</td>';
+echo '<td >';
+echo 'Saisies ';
+echo '</td>';
+echo '<td >';
+echo 'Décompte J';
+echo '</td>';
+echo '<td >';
+echo 'Décompte NJ';
+echo '</td>';
+echo '<td >';
+echo 'Type';
+echo '</td>';
+echo '<td >';
+echo 'Motif';
+echo '</td>';
+echo '<td >';
+echo 'Justification';
+echo '</td>';
+echo '<td >';
+echo 'Commentaire';
+echo '</td>';
+echo '</tr>';
+$precedent_eleve_id = Null;
+foreach ($donnees as $id => $eleve) {
+    foreach ($eleve['infos_saisies'] as $journee) {
+        foreach ($journee as $key => $value) {
+            echo'<tr>';
+            if ($precedent_eleve_id != $id) {
+                echo '<td rowspan=' . $eleve['infos_ind']['nbre_lignes'] . '>';
+                echo $eleve['infos_ind']['nom'] . ' ' . $eleve['infos_ind']['prenom'] . ' - ' . $eleve['infos_ind']['classe'] . '<br/><br/>';
+                echo '<u>Absences :</u> <br /><br />';
+                echo $eleve['infos_ind']['demi_journees'] . ' demi-journées dont ';
+                echo $eleve['infos_ind']['non_justifiees'] . ' non justifiées <br /><br/>';
+                echo '<u>Retards :</u><br /><br />' . $eleve['infos_ind']['retards'] . ' retards';
+                echo '</td>';
+            }
+            echo '<td>';
+            echo '<a href="./liste_saisies_selection_traitement.php?saisies='.serialize($value['saisies']).'" target="_blank">'.getDateDescription($value['dates']['debut'], $value['dates']['fin']).'<a>';
+            echo '</td>';
+            echo '<td>';
 
-	echo '</td>';
-    echo '<td>';
-	
-	echo '</td>';
-	echo '<td>';
-	echo $saisie->getTypesTraitements();
-	echo '</td>';
-    echo '<td>';
-	echo $saisie->getMotif();
-	echo '</td>';
-    echo '<td>';
-	echo $saisie->getJustification();
-	echo '</td>';
-    echo '<td>';
-	echo $saisie->getCommentaire();
-	echo '</td>';
-	echo '</tr>';
-    $precedent_eleve_id = $saisie->getEleveId();
+            echo '</td>';
+            echo '<td>';
+
+            echo '</td>';
+            echo '<td>';
+            if($value['type']!=='Non traitée(s)'){
+                echo'<a href="./visu_traitement.php?id_traitement='.$key.'" target="_blank">'.$value['type'].'</a>';
+            }else{
+             echo $value['type'];
+            }
+            echo '</td>';
+            echo '<td>';
+            echo $value['motif'];
+            echo '</td>';
+            echo '<td>';
+            echo $value['justification'];
+            echo '</td>';
+            echo '<td>';
+            if(isset($value['commentaires'])){
+                $besoin_echo_virgule = false;
+                foreach($value['commentaires'] as $commentaire){
+                    if ($besoin_echo_virgule) {
+                    echo ', ';
+                    }
+                    echo $commentaire;
+                    $besoin_echo_virgule = true;
+                }
+            }
+            echo '</td>';
+            echo '</tr>';
+            $precedent_eleve_id = $id;
+        }
     }
-    echo '</table>';
-    echo '<h5>Extraction faite le '.date("d/m/Y - h:i").'</h5>';
-
+}
+echo '<h5>Extraction faite le '.date("d/m/Y - h:i").'</h5>';
 } else if ($affichage == 'ods') {
     // load the TinyButStrong libraries
     if (version_compare(PHP_VERSION,'5')<0) {
