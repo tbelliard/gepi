@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
     die();
 };
 $sql = "INSERT INTO `droits` ( `id` , `administrateur` , `professeur` , `cpe` , `scolarite` , `eleve` , `responsable` , `secours` , `autre` , `description` , `statut` )
-  VALUES ('/mod_abs2/bilan_individuel.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Bilan individuel des absences eleve', '')
+  VALUES ('/mod_abs2/bilan_individuel.php', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'Bilan individuel des absences eleve', '')
   ON DUPLICATE KEY UPDATE `CPE` = 'V'";
 
 $result = mysql_query($sql);
