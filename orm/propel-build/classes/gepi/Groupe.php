@@ -249,7 +249,7 @@ class Groupe extends BaseGroupe {
 		$criteria = new Criteria();
 		$criteria->add(JGroupesProfesseursPeer::ID_GROUPE,$this->getId());
 		foreach($this->getJGroupesProfesseurssJoinUtilisateurProfessionnel($criteria) as $ref) {
-		    if ($ref != null) {
+		    if ($ref != null && $ref->getUtilisateurProfessionnel() != null) {
 			$profs->append($ref->getUtilisateurProfessionnel());
 		    }
 		}
