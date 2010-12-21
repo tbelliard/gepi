@@ -1010,7 +1010,7 @@ class Eleve extends BaseEleve {
 	 */
 	public function getDemiJourneesAbsence($date_debut, $date_fin = null) {
 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
-            return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col));
+            return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
         }
 
 	/**
@@ -1024,7 +1024,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection DateTime[]
 	 */
-	public function getDemiJourneesAbsenceParCollection($abs_saisie_col) {
+	public function getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut=null, $date_fin=null) {
 	    if ($abs_saisie_col->isEmpty()) {
 		return new PropelCollection();
 	    }
@@ -1127,6 +1127,20 @@ class Eleve extends BaseEleve {
 	 */
 	public function getDemiJourneesNonJustifieesAbsence($date_debut, $date_fin = null) {
 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
+	    return ($this->getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
+	}
+/**
+	 *
+	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence non justifiees
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
+	 *
+	 * @param      DateTime $date_debut
+	 * @param      DateTime $date_fin
+	 *
+	 * @return PropelCollection DateTime[]
+	 */
+	public function getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut=null,$date_fin=null) {
 	    if ($abs_saisie_col->isEmpty()) {
 		return new PropelCollection();
 	    }
