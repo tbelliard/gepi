@@ -132,6 +132,11 @@ if ($affichage != 'ods') {// on affiche pas de html
     include('menu_bilans.inc.php');
 ?>
     <div id="contain_div" class="css-panes">
+        <p>
+            Cette page permet de regrouper jour par jour les saises du même type (non traitées ou ayant le même traitement) et les informations du traitement.<br />
+            Pour des saisies ayant des traitements multiples , le décompte des demi-journées correspondantes peut donc apparaitre plusieurs fois. 
+            Le total réel des demi-journées calculé par le module s'affiche sous le nom de l'élève.
+        </p>
         <form name="choix_extraction" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
             <h2>Bilan individuel du
                 <input size="8" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y') ?>" />
@@ -340,20 +345,33 @@ foreach ($donnees as $id => $eleve) {
             if ($precedent_eleve_id != $id) {
                 echo '<td rowspan=' . $eleve['infos_ind']['nbre_lignes'] . '>';
                 echo $eleve['infos_ind']['nom'] . ' ' . $eleve['infos_ind']['prenom'] . ' - ' . $eleve['infos_ind']['classe'] . '<br/><br/>';
-                echo '<u>Absences :</u> <br /><br />';
-                echo $eleve['infos_ind']['demi_journees'] . ' demi-journées dont ';
-                echo $eleve['infos_ind']['non_justifiees'] . ' non justifiées <br /><br/>';
-                echo '<u>Retards :</u><br /><br />' . $eleve['infos_ind']['retards'] . ' retards';
+                echo '<u>Absences :</u> <br />';
+                echo $eleve['infos_ind']['demi_journees'] . ' demi-journée';
+                if(strval($eleve['infos_ind']['demi_journees'])>1) echo's';
+                echo' <br /> ';
+                echo '-'.strval($eleve['infos_ind']['demi_journees']-$eleve['infos_ind']['non_justifiees']) . ' justifiée';
+                if(strval($eleve['infos_ind']['demi_journees']-$eleve['infos_ind']['non_justifiees'])>1) echo's';
+                echo'<br />';
+                echo '-'.$eleve['infos_ind']['non_justifiees'] . ' non justifiée';
+                if(strval($eleve['infos_ind']['non_justifiees'])>1) echo's';
+                echo'<br /><br />';
+                echo '<u>Retards :</u><br />' . $eleve['infos_ind']['retards'] . ' retard';
+                if(strval($eleve['infos_ind']['retards'])>1) echo's';
                 echo '</td>';
             }
             echo '<td>';
             echo '<a href="./liste_saisies_selection_traitement.php?saisies='.serialize($value['saisies']).'" target="_blank">'.getDateDescription($value['dates']['debut'], $value['dates']['fin']).'<a>';
             echo '</td>';
+            $eleve_current=EleveQuery::create()->filterByIdEleve($id)->findOne();
+            $abs_col=AbsenceEleveSaisieQuery::create()->filterById($value['saisies'])->orderByDebutAbs()->find();
+            $demi_journees=$eleve_current->getDemiJourneesAbsenceParCollection($abs_col)->count();
+            $demi_journees_non_justifiees=$eleve_current->getDemiJourneesNonJustifieesAbsenceParCollection($abs_col)->count();
+            $demi_journees_justifiees=$demi_journees-$demi_journees_non_justifiees;
             echo '<td>';
-
+            if(!0==$demi_journees_justifiees) echo '<font class="ok">'.$demi_journees_justifiees.'</font>';
             echo '</td>';
             echo '<td>';
-
+            if(!0==$demi_journees_non_justifiees)  echo '<font class="no">'.$demi_journees_non_justifiees.'</font>';
             echo '</td>';
             echo '<td>';
             if($value['type']!=='Non traitée(s)'){
