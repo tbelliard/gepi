@@ -139,12 +139,15 @@ class Groupe extends BaseGroupe {
 			return $this->nameAvecClasses;
 		} else {
 			$str = $this->getName();
-			$str .= "&nbsp;-&nbsp;(";
+			$str .= " - (";
 			foreach ($this->getClasses() as $classe) {
-				$str .= $classe->getNom() . ",&nbsp;";
+				$str .= $classe->getNom();
+                                if ($this->getClasses()->isLast()) {
+                                    $str .= ")";
+                                } else {
+                                    $str .= ", ";
+                                }
 			}
-			$str = substr($str, 0, -7);
-			$str.= ")";
 			$this->nameAvecClasses = $str;
 			return $str;
 		}
