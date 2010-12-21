@@ -1009,7 +1009,22 @@ class Eleve extends BaseEleve {
 	 * @return PropelCollection DateTime[]
 	 */
 	public function getDemiJourneesAbsence($date_debut, $date_fin = null) {
-	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin); 
+	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
+            return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col));
+        }
+
+	/**
+	 *
+	 * Retourne une collection contenant sous forme de DateTime les demi journees d'absence
+	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
+	 * Pour l'apres midi la date est 23/05/2010 à 12:30
+         * Il faut en entré une collection de saisies ordonnée par date de debut
+	 *
+	 * @param      PropelObjectCollection $abs_saisie_col collection de saisies d'absence ordonne par date de début
+	 *
+	 * @return PropelCollection DateTime[]
+	 */
+	public function getDemiJourneesAbsenceParCollection($abs_saisie_col) {
 	    if ($abs_saisie_col->isEmpty()) {
 		return new PropelCollection();
 	    }
