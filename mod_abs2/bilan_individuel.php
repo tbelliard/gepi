@@ -312,28 +312,28 @@ if ($affichage != null && $affichage != '') {
 if ($affichage == 'html') {
 echo '<table border="1" cellspacing="0" align="center">';
 echo '<tr >';
-echo '<td >';
+echo '<td align="center">';
 echo 'Informations sur l\'élève';
 echo '</td>';
-echo '<td >';
+echo '<td align="center">';
 echo 'Saisies ';
 echo '</td>';
-echo '<td >';
+echo '<td align="center">';
 echo 'Décompte J';
 echo '</td>';
-echo '<td >';
+echo '<td align="center">';
 echo 'Décompte NJ';
 echo '</td>';
-echo '<td >';
+echo '<td align="center">';
 echo 'Type';
 echo '</td>';
-echo '<td >';
+echo '<td align="center">';
 echo 'Motif';
 echo '</td>';
-echo '<td >';
+echo '<td align="center">';
 echo 'Justification';
 echo '</td>';
-echo '<td >';
+echo '<td align="center">';
 echo 'Commentaire';
 echo '</td>';
 echo '</tr>';
@@ -344,20 +344,35 @@ foreach ($donnees as $id => $eleve) {
             echo'<tr>';
             if ($precedent_eleve_id != $id) {
                 echo '<td rowspan=' . $eleve['infos_ind']['nbre_lignes'] . '>';
-                echo $eleve['infos_ind']['nom'] . ' ' . $eleve['infos_ind']['prenom'] . ' - ' . $eleve['infos_ind']['classe'] . '<br/><br/>';
-                echo '<u>Absences :</u> <br />';
-                echo $eleve['infos_ind']['demi_journees'] . ' demi-journée';
-                if(strval($eleve['infos_ind']['demi_journees'])>1) echo's';
-                echo' <br /> ';
-                echo '-'.strval($eleve['infos_ind']['demi_journees']-$eleve['infos_ind']['non_justifiees']) . ' justifiée';
-                if(strval($eleve['infos_ind']['demi_journees']-$eleve['infos_ind']['non_justifiees'])>1) echo's';
-                echo'<br />';
-                echo '-'.$eleve['infos_ind']['non_justifiees'] . ' non justifiée';
-                if(strval($eleve['infos_ind']['non_justifiees'])>1) echo's';
+                echo '<b>'.$eleve['infos_ind']['nom'] . ' ' . $eleve['infos_ind']['prenom'] . '</b><br/> (' . $eleve['infos_ind']['classe'] . ')<br/><br/>';
+                echo '<u><i>Absences :</i></u> <br />';
+                if (strval($eleve['infos_ind']['demi_journees'])==0) {
+ 				    echo 'Aucune demi-journée';
+				} else {
+ 				    echo '<b>'.$eleve['infos_ind']['demi_journees'] . '</b> demi-journée';
+                    if(strval($eleve['infos_ind']['demi_journees'])>1) echo's';
+					
+					if (strval($eleve['infos_ind']['demi_journees']-$eleve['infos_ind']['non_justifiees'])!=0) {
+	                   echo' <br /> ';
+					   echo 'dont '.strval($eleve['infos_ind']['demi_journees']-$eleve['infos_ind']['non_justifiees']) . ' justifiée';
+	                   if(strval($eleve['infos_ind']['demi_journees']-$eleve['infos_ind']['non_justifiees'])>1) echo's';
+					}
+					
+					if (strval($eleve['infos_ind']['non_justifiees'])!=0) {
+						echo'<br />';
+						echo 'dont <b>'.$eleve['infos_ind']['non_justifiees'] . ' non justifiée</b>';
+						if(strval($eleve['infos_ind']['non_justifiees'])>1) echo's';
+	                }
+				}
                 echo'<br /><br />';
-                echo '<u>Retards :</u><br />' . $eleve['infos_ind']['retards'] . ' retard';
-                if(strval($eleve['infos_ind']['retards'])>1) echo's';
-                echo '</td>';
+				echo '<u><i>Retards :</i></u><br />'; 
+				if (strval($eleve['infos_ind']['retards'])==0) {
+ 				    echo 'Aucun retard';
+				} else {
+				    echo $eleve['infos_ind']['retards'] . ' retard';
+				    if(strval($eleve['infos_ind']['retards'])>1) echo's';
+				}
+            echo '</td>';
             }
             echo '<td>';
             echo '<a href="./liste_saisies_selection_traitement.php?saisies='.serialize($value['saisies']).'" target="_blank">'.getDateDescription($value['dates']['debut'], $value['dates']['fin']).'<a>';
