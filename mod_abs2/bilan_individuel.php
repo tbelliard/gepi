@@ -367,10 +367,10 @@ foreach ($donnees as $id => $eleve) {
             $demi_journees=$eleve_current->getDemiJourneesAbsenceParCollection($abs_col)->count();
             $demi_journees_non_justifiees=$eleve_current->getDemiJourneesNonJustifieesAbsenceParCollection($abs_col)->count();
             $demi_journees_justifiees=$demi_journees-$demi_journees_non_justifiees;
-            echo '<td>';
+            echo '<td align="center">';
             if(!0==$demi_journees_justifiees) echo '<font class="ok">'.$demi_journees_justifiees.'</font>';
             echo '</td>';
-            echo '<td>';
+            echo '<td align="center">';
             if(!0==$demi_journees_non_justifiees)  echo '<font class="no">'.$demi_journees_non_justifiees.'</font>';
             echo '</td>';
             echo '<td>';
