@@ -204,7 +204,7 @@ if ($affichage != 'ods') {// on affiche pas de html
             </select>
 
             <button type="submit" name="affichage" value="html">Afficher</button>
-           <!-- <button type="submit" name="affichage" value="ods">Enregistrer au format ods</button> -->
+           <button type="submit" name="affichage" value="ods">Enregistrer au format ods</button> 
         </p>
     </form>
 
@@ -236,8 +236,6 @@ if ($affichage != null && $affichage != '') {
     $saisie_query->orderByDebutAbs();
     $saisie_col = $saisie_query->find();
     //var_dump($saisie_col);
-}
-if ($affichage == 'html') {
     $eleve_id = Null;
     $donnees = Array();
     foreach ($saisie_col as $saisie) {
@@ -310,6 +308,8 @@ if ($affichage == 'html') {
             }
         }
     }
+}
+if ($affichage == 'html') {
 echo '<table border="1" cellspacing="0" align="center">';
 echo '<tr >';
 echo '<td >';
@@ -405,43 +405,89 @@ foreach ($donnees as $id => $eleve) {
 }
 echo '<h5>Extraction faite le '.date("d/m/Y - h:i").'</h5>';
 } else if ($affichage == 'ods') {
-    // load the TinyButStrong libraries
-    if (version_compare(PHP_VERSION,'5')<0) {
-	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine for PHP 4
-    } else {
-	include_once('../tbs/tbs_class_php5.php'); // TinyButStrong template engine
+// load the TinyButStrong libraries
+if (version_compare(PHP_VERSION, '5') < 0) {
+    include_once('../tbs/tbs_class.php'); // TinyButStrong template engine for PHP 4
+} else {
+    include_once('../tbs/tbs_class_php5.php'); // TinyButStrong template engine
+}
+//include_once('../tbs/plugins/tbsdb_php.php');
+$TBS = new clsTinyButStrong; // new instance of TBS
+include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
+//creation donnees par ligne
+$export=array();
+foreach ($donnees as $id => $eleve) {
+    foreach ($eleve['infos_saisies'] as $journee) {
+        foreach ($journee as $key => $value) {
+            $nom = $eleve['infos_ind']['nom'];
+            $prenom = $eleve['infos_ind']['prenom'];
+            $classe = $eleve['infos_ind']['classe'];
+            $total_demi_journees = strval($eleve['infos_ind']['demi_journees']);
+            $total_demi_journees_justifiees = strval($eleve['infos_ind']['demi_journees'] - $eleve['infos_ind']['non_justifiees']);
+            $total_demi_journees_non_justifiees = strval($eleve['infos_ind']['non_justifiees']);
+            $retards = $eleve['infos_ind']['retards'];
+            $dates=getDateDescription($value['dates']['debut'], $value['dates']['fin']);
+            $eleve_current = EleveQuery::create()->filterByIdEleve($id)->findOne();
+            $abs_col = AbsenceEleveSaisieQuery::create()->filterById($value['saisies'])->orderByDebutAbs()->find();
+            $ligne_demi_journees = $eleve_current->getDemiJourneesAbsenceParCollection($abs_col)->count();
+            $ligne_demi_journees_non_justifiees = $eleve_current->getDemiJourneesNonJustifieesAbsenceParCollection($abs_col)->count();
+            $ligne_demi_journees_justifiees = strval($ligne_demi_journees - $ligne_demi_journees_non_justifiees);
+            $type = $value['type'];
+            $motif = $value['motif'];
+            $justification = $value['justification'];
+            $export_commentaire='';
+            if (isset($value['commentaires'])) {
+                $besoin_echo_virgule = false;
+                foreach ($value['commentaires'] as $commentaire) {
+                    if ($besoin_echo_virgule) {
+                        $export_commentaire.= ', ';
+                    }
+                    $export_commentaire.=$commentaire;
+                    $besoin_echo_virgule = true;
+                }
+            }
+            $export[]=Array('nom'=>$nom,'prenom'=>$prenom,'classe'=>$classe,
+                'total_demi_journees'=>$total_demi_journees,
+                'total_demi_journees_justifiees'=>$total_demi_journees_justifiees,
+                'total_demi_journees_non_justifiees'=>$total_demi_journees_non_justifiees,
+                'retards'=>$retards,
+                'dates'=>$dates,
+                'ligne_demi_journees_non_justifiees'=>$ligne_demi_journees_non_justifiees,
+                'ligne_demi_journees_justifiees'=>$ligne_demi_journees_justifiees,
+                'type'=>$type,
+                'motif'=>$motif,
+                'justification'=>$justification,
+                'export_commentaire'=>$export_commentaire);
+        }       
     }
-    //include_once('../tbs/plugins/tbsdb_php.php');
-    $TBS = new clsTinyButStrong; // new instance of TBS
-    include_once('../tbs/plugins/tbs_plugin_opentbs.php');
-    $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
+}
+// Load the template
+$extraction_bilans = repertoire_modeles('absence_extraction_bilan.ods');
+$TBS->LoadTemplate($extraction_bilans);
 
-    // Load the template
-	$extraction_saisies=repertoire_modeles('absence_extraction_saisies.ods');
-    $TBS->LoadTemplate($extraction_saisies);
-
-    $titre = 'Extrait des absences du '.$dt_date_absence_eleve_debut->format('d/m/Y').' au '.$dt_date_absence_eleve_fin->format('d/m/Y');
-    $classe = null;
-    if ($id_classe != null && $id_classe != '') {
-	$classe = ClasseQuery::create()->findOneById($id_classe);
-	if ($classe != null) {
-	    $titre .= ' pour la classe '.$classe->getNom();
-	}
-    }
-    if ($nom_eleve != null && $nom_eleve != '' ) {
-	$titre .= ' pour les élèves dont le nom ou le prénom contient '.$nom_eleve;
-    }
-    $TBS->MergeField('titre', $titre);
-
-    $TBS->MergeBlock('saisie_col',$saisie_col);
-
-    // Output as a download file (some automatic fields are merged here)
-    $nom_fichier = 'extrait_saisies_';
+$titre = 'Bilan individuel du ' . $dt_date_absence_eleve_debut->format('d/m/Y') . ' au ' . $dt_date_absence_eleve_fin->format('d/m/Y');
+$classe = null;
+if ($id_classe != null && $id_classe != '') {
+    $classe = ClasseQuery::create()->findOneById($id_classe);
     if ($classe != null) {
-	$nom_fichier .= $classe->getNom().'_';
+        $titre .= ' pour la classe ' . $classe->getNom();
     }
-    $nom_fichier .=  $dt_date_absence_eleve_fin->format("d_m_Y").'.ods';
-    $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, $nom_fichier);
+}
+if ($nom_eleve != null && $nom_eleve != '') {
+    $titre .= ' pour les élèves dont le nom ou le prénom contient ' . $nom_eleve;
+}
+$TBS->MergeField('titre', $titre);
+
+$TBS->MergeBlock('export', $export);
+
+// Output as a download file (some automatic fields are merged here)
+$nom_fichier = 'extrait_bilan_';
+if ($classe != null) {
+    $nom_fichier .= $classe->getNom() . '_';
+}
+$nom_fichier .= $dt_date_absence_eleve_fin->format("d_m_Y") . '.ods';
+$TBS->Show(OPENTBS_DOWNLOAD + TBS_EXIT, $nom_fichier);
 }
 ?>
 	</div>

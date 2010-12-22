@@ -74,6 +74,10 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $fich[]="absence_extraction_traitements.ods";
     $utilisation[]="ABS2 : Tableau des traitements d'absences";
 
+    $entete_section[]="";
+    $fich[]="absence_extraction_bilan.ods";
+    $utilisation[]="ABS2 : Tableau bilan par jour par élève";
+
 	$entete_section[]="";
     $fich[]="absence_modele_lettre_parents.odt";
     $utilisation[]="ABS2 : Modèle de lettre aux parents";
