@@ -69,6 +69,7 @@ include_once 'lib/function.php';
 //récupération des paramètres de la requète
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] : (isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] : (isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id_classe"]) ? $_GET["id_classe"] : (isset($_SESSION["id_classe_abs"]) ? $_SESSION["id_classe_abs"] : NULL));
+$id_eleve = isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : NULL;
 $date_absence_eleve_debut = isset($_POST["date_absence_eleve_debut"]) ? $_POST["date_absence_eleve_debut"] : (isset($_GET["date_absence_eleve_debut"]) ? $_GET["date_absence_eleve_debut"] : (isset($_SESSION["date_absence_eleve_debut"]) ? $_SESSION["date_absence_eleve_debut"] : NULL));
 $date_absence_eleve_fin = isset($_POST["date_absence_eleve_fin"]) ? $_POST["date_absence_eleve_fin"] : (isset($_GET["date_absence_eleve_fin"]) ? $_GET["date_absence_eleve_fin"] : (isset($_SESSION["date_absence_eleve_fin"]) ? $_SESSION["date_absence_eleve_fin"] : NULL));
 $type_extrait = isset($_POST["type_extrait"]) ? $_POST["type_extrait"] : (isset($_GET["type_extrait"]) ? $_GET["type_extrait"] : NULL);
@@ -137,7 +138,7 @@ if ($affichage != 'ods') {// on affiche pas de html
             Pour des saisies ayant des traitements multiples , le décompte des demi-journées correspondantes peut donc apparaitre plusieurs fois. 
             Le total réel des demi-journées calculé par le module s'affiche sous le nom de l'élève.
         </p>
-        <form name="choix_extraction" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
+        <form name="choix_extraction" action="bilan_individuel.php" method="post">
             <h2>Bilan individuel du
                 <input size="8" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y') ?>" />
                 <script type="text/javascript">
@@ -221,6 +222,9 @@ if ($affichage != null && $affichage != '') {
     }
     if ($nom_eleve !== null && $nom_eleve != '') {
 	$eleve_query->filterByNomOrPrenomLike($nom_eleve);
+    }
+    if ($id_eleve !== null && $id_eleve != '') {
+	$eleve_query->filterByIdEleve($id_eleve);
     }
     $eleve_col = $eleve_query->distinct()->find();
 
@@ -344,7 +348,8 @@ foreach ($donnees as $id => $eleve) {
             echo'<tr>';
             if ($precedent_eleve_id != $id) {
                 echo '<td rowspan=' . $eleve['infos_ind']['nbre_lignes'] . '>';
-                echo '<b>'.$eleve['infos_ind']['nom'] . ' ' . $eleve['infos_ind']['prenom'] . '</b><br/> (' . $eleve['infos_ind']['classe'] . ')<br/><br/>';
+                echo '<a href="bilan_individuel.php?id_eleve='.$id.'&affichage=html">';
+                echo '<b>'.$eleve['infos_ind']['nom'] . ' ' . $eleve['infos_ind']['prenom'] . '</b></a><br/> (' . $eleve['infos_ind']['classe'] . ')<a href="bilan_individuel.php?id_eleve='.$id.'&affichage=ods"><img src="../images/icons/ods.png" title="export ods"></a><br/><br/>';
                 echo '<u><i>Absences :</i></u> <br />';
                 if (strval($eleve['infos_ind']['demi_journees'])==0) {
  				    echo 'Aucune demi-journée';
@@ -496,7 +501,7 @@ $TBS->LoadTemplate($extraction_bilans);
 
 $titre = 'Bilan individuel du ' . $dt_date_absence_eleve_debut->format('d/m/Y') . ' au ' . $dt_date_absence_eleve_fin->format('d/m/Y');
 $classe = null;
-if ($id_classe != null && $id_classe != '') {
+if ($id_classe != null && $id_classe != '' && $id_eleve==null) {
     $classe = ClasseQuery::create()->findOneById($id_classe);
     if ($classe != null) {
         $titre .= ' pour la classe ' . $classe->getNom();
@@ -504,6 +509,9 @@ if ($id_classe != null && $id_classe != '') {
 }
 if ($nom_eleve != null && $nom_eleve != '') {
     $titre .= ' pour les élèves dont le nom ou le prénom contient ' . $nom_eleve;
+}
+if ($id_eleve != null && $id_eleve != '') {
+    $titre .= ' pour ' . $eleve_current->getPrenom().' '.$eleve_current->getNom() ;
 }
 $TBS->MergeField('titre', $titre);
 
