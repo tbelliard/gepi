@@ -417,16 +417,29 @@ include_once('../tbs/plugins/tbs_plugin_opentbs.php');
 $TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
 //creation donnees par ligne
 $export=array();
+
 foreach ($donnees as $id => $eleve) {
+    $indice=TRUE;
     foreach ($eleve['infos_saisies'] as $journee) {
         foreach ($journee as $key => $value) {
-            $nom = $eleve['infos_ind']['nom'];
-            $prenom = $eleve['infos_ind']['prenom'];
-            $classe = $eleve['infos_ind']['classe'];
-            $total_demi_journees = strval($eleve['infos_ind']['demi_journees']);
-            $total_demi_journees_justifiees = strval($eleve['infos_ind']['demi_journees'] - $eleve['infos_ind']['non_justifiees']);
-            $total_demi_journees_non_justifiees = strval($eleve['infos_ind']['non_justifiees']);
-            $retards = $eleve['infos_ind']['retards'];
+            if ($indice) {
+			   $nom = $eleve['infos_ind']['nom'];
+               $prenom = $eleve['infos_ind']['prenom'];
+               $classe = $eleve['infos_ind']['classe'];
+			   $total_demi_journees = strval($eleve['infos_ind']['demi_journees']);
+			   $total_demi_journees_justifiees = strval($eleve['infos_ind']['demi_journees'] - $eleve['infos_ind']['non_justifiees']);
+			   $total_demi_journees_non_justifiees = strval($eleve['infos_ind']['non_justifiees']);
+               $retards = $eleve['infos_ind']['retards'];
+			} else {
+			   $nom = '';
+               $prenom = ''; 
+               $classe = '';
+			   $total_demi_journees = '';
+			   $total_demi_journees_justifiees =  '';
+			   $total_demi_journees_non_justifiees ='';
+               $retards = '';
+			}
+            $indice=FALSE;
             $dates=getDateDescription($value['dates']['debut'], $value['dates']['fin']);
             $eleve_current = EleveQuery::create()->filterByIdEleve($id)->findOne();
             $abs_col = AbsenceEleveSaisieQuery::create()->filterById($value['saisies'])->orderByDebutAbs()->find();
