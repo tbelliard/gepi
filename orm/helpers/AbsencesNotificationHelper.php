@@ -27,8 +27,8 @@
  * Classe de helpers sur les types, motifs, justifications et actions des absences
  */
 class AbsencesNotificationHelper {
-
-  /**
+  
+   /**
    * Merge une notification avec son modele
    *
    * @param AbsenceEleveNotification $notification
@@ -36,32 +36,9 @@ class AbsencesNotificationHelper {
    * @return clsTinyButStrong $TBS deroulante des types d'absences
    */
   public static function MergeNotification($notification, $modele){
-    // load the TinyButStrong libraries
-    if (version_compare(PHP_VERSION,'5')<0) {
-	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine for PHP 4
-    } else {
-	include_once('../tbs/tbs_class_php5.php'); // TinyButStrong template engine
-    }
-    include_once('../tbs/plugins/tbsdb_php.php');
-
-    $TBS = new clsTinyButStrong; // new instance of TBS
-    if (substr($modele, -3) == "odt") {
-	include_once('../tbs/plugins/tbs_plugin_opentbs.php');
-	$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
-    }
-    $TBS->LoadTemplate($modele);
-
-    //merge des champs commun
-    $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
-    $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));
-    $TBS->MergeField('fax_etab',getSettingValue("gepiSchoolFax"));
-    $email_abs_etab = getSettingValue("gepiAbsenceEmail");
-    if ($email_abs_etab == null || $email_abs_etab == '') {
-	$email_abs_etab = getSettingValue("gepiSchoolEmail");
-    }
-    $TBS->MergeField('mail_etab', $email_abs_etab);
+    //on charge le modele et on merge les données de l'établissement
+    $TBS=self::MergeInfosEtab($modele);
     $TBS->MergeField('notif_id',$notification->getId());
-    
     //on récupère la liste des noms d'eleves
     $eleve_col = new PropelCollection();
     if ($notification->getAbsenceEleveTraitement() != null) {
@@ -153,15 +130,7 @@ class AbsencesNotificationHelper {
 	if ($adr == null) {
 	    $adr = new ResponsableEleveAdresse();
 	}
-	$TBS->MergeField('adr',$adr);
-
-
-	$adr_etablissement = new ResponsableEleveAdresse();
-	$adr_etablissement->setAdr1(getSettingValue("gepiSchoolAdress1"));
-	$adr_etablissement->setAdr2(getSettingValue("gepiSchoolAdress2"));
-	$adr_etablissement->setCp(getSettingValue("gepiSchoolZipCode"));
-	$adr_etablissement->setCommune(getSettingValue("gepiSchoolCity"));
-	$TBS->MergeField('adr_etab',$adr_etablissement);
+	$TBS->MergeField('adr',$adr);	
 
     } else if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL) {
 	$destinataire = '';
@@ -180,6 +149,45 @@ class AbsencesNotificationHelper {
     $TBS->Show(TBS_NOTHING);
     return $TBS;
   }
+
+  /**
+   * Charge le modele TBS et Merge les données établissement  *
+   *
+   * @param String $modele chemin du modele tbs   *
+   */
+  public static function MergeInfosEtab($modele){
+        // load the TinyButStrong libraries
+    if (version_compare(PHP_VERSION,'5')<0) {
+	include_once('../tbs/tbs_class.php'); // TinyButStrong template engine for PHP 4
+    } else {
+	include_once('../tbs/tbs_class_php5.php'); // TinyButStrong template engine
+    }
+    include_once('../tbs/plugins/tbsdb_php.php');
+
+    $TBS = new clsTinyButStrong; // new instance of TBS
+    if (substr($modele, -3) == "odt" ||substr($modele, -3) == "ods") {
+	include_once('../tbs/plugins/tbs_plugin_opentbs.php');
+	$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
+    }
+    $TBS->LoadTemplate($modele);
+    //merge des champs commun
+    $TBS->MergeField('nom_etab',getSettingValue("gepiSchoolName"));
+    $TBS->MergeField('tel_etab',getSettingValue("gepiSchoolTel"));
+    $TBS->MergeField('fax_etab',getSettingValue("gepiSchoolFax"));
+    $email_abs_etab = getSettingValue("gepiAbsenceEmail");
+    if ($email_abs_etab == null || $email_abs_etab == '') {
+	$email_abs_etab = getSettingValue("gepiSchoolEmail");
+    }
+    $TBS->MergeField('mail_etab', $email_abs_etab);
+    $adr_etablissement = new ResponsableEleveAdresse();
+	$adr_etablissement->setAdr1(getSettingValue("gepiSchoolAdress1"));
+	$adr_etablissement->setAdr2(getSettingValue("gepiSchoolAdress2"));
+	$adr_etablissement->setCp(getSettingValue("gepiSchoolZipCode"));
+	$adr_etablissement->setCommune(getSettingValue("gepiSchoolCity"));
+	$TBS->MergeField('adr_etab',$adr_etablissement);
+    return($TBS);
+    }
+
 
 /**
    * Envoi une notification (email ou sms uniquement)

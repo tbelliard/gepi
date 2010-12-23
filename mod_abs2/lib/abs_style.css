@@ -77,6 +77,12 @@ color: green;
 .no{
 color: red;
 }
+.orange{
+ color: orangered;
+}
+.purple{
+    color:purple;
+}
 #presentations{
 padding: 10px 5px 10px 5px; width: 200px;
 }

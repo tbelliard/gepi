@@ -72,7 +72,7 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id
 $id_eleve = isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : NULL;
 $date_absence_eleve_debut = isset($_POST["date_absence_eleve_debut"]) ? $_POST["date_absence_eleve_debut"] : (isset($_GET["date_absence_eleve_debut"]) ? $_GET["date_absence_eleve_debut"] : (isset($_SESSION["date_absence_eleve_debut"]) ? $_SESSION["date_absence_eleve_debut"] : NULL));
 $date_absence_eleve_fin = isset($_POST["date_absence_eleve_fin"]) ? $_POST["date_absence_eleve_fin"] : (isset($_GET["date_absence_eleve_fin"]) ? $_GET["date_absence_eleve_fin"] : (isset($_SESSION["date_absence_eleve_fin"]) ? $_SESSION["date_absence_eleve_fin"] : NULL));
-$type_extrait = isset($_POST["type_extrait"]) ? $_POST["type_extrait"] : (isset($_GET["type_extrait"]) ? $_GET["type_extrait"] : NULL);
+$type_extrait = isset($_POST["type_extrait"]) ? $_POST["type_extrait"] : (isset($_GET["type_extrait"]) ? $_GET["type_extrait"] :(isset($_SESSION["type_extrait"]) ? $_SESSION["type_extrait"] : NULL));
 $affichage = isset($_POST["affichage"]) ? $_POST["affichage"] : (isset($_GET["affichage"]) ? $_GET["affichage"] : NULL);
 
 if (isset($id_classe) && $id_classe != null)
@@ -81,6 +81,8 @@ if (isset($date_absence_eleve_debut) && $date_absence_eleve_debut != null)
     $_SESSION['date_absence_eleve_debut'] = $date_absence_eleve_debut;
 if (isset($date_absence_eleve_fin) && $date_absence_eleve_fin != null)
     $_SESSION['date_absence_eleve_fin'] = $date_absence_eleve_fin;
+if (isset($type_extrait) && $type_extrait != null)
+    $_SESSION['type_extrait'] = $type_extrait;
 
 if ($date_absence_eleve_debut != null) {
     $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", $date_absence_eleve_debut));
@@ -126,7 +128,7 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
-if ($affichage != 'ods') {// on affiche pas de html
+if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pour ods et odt
     require_once("../lib/header.inc");
 
     include('menu_abs2.inc.php');
@@ -203,9 +205,9 @@ if ($affichage != 'ods') {// on affiche pas de html
                         }
             ?>>Liste de toutes les données</option>
             </select>
-
             <button type="submit" name="affichage" value="html">Afficher</button>
-           <button type="submit" name="affichage" value="ods">Enregistrer au format ods</button> 
+            <button type="submit" name="affichage" value="ods">Enregistrer au format ods</button>
+            <button type="submit" name="affichage" value="odt">Enregistrer au format odt</button>
         </p>
     </form>
 
@@ -238,8 +240,7 @@ if ($affichage != null && $affichage != '') {
 
     $saisie_query->useEleveQuery()->orderByNom()->orderByPrenom()->endUse();
     $saisie_query->orderByDebutAbs();
-    $saisie_col = $saisie_query->find();
-    //var_dump($saisie_col);
+    $saisie_col = $saisie_query->find();    
     $eleve_id = Null;
     $donnees = Array();
     foreach ($saisie_col as $saisie) {
@@ -247,19 +248,20 @@ if ($affichage != null && $affichage != '') {
             continue;
         }
         $eleve_id = $saisie->getEleveId();
-        if (!isset($donnees[$eleve_id]['infos_ind'])) {
-            $donnees[$eleve_id]['infos_ind']['nom'] = $saisie->getEleve()->getNom();
-            $donnees[$eleve_id]['infos_ind']['prenom'] = $saisie->getEleve()->getPrenom();
-            $donnees[$eleve_id]['infos_ind']['classe'] = $saisie->getEleve()->getClasseNom();
-            $donnees[$eleve_id]['infos_ind']['demi_journees'] = $saisie->getEleve()->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
-            $donnees[$eleve_id]['infos_ind']['non_justifiees'] = $saisie->getEleve()->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
-            $donnees[$eleve_id]['infos_ind']['retards'] = $saisie->getEleve()->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
-            $donnees[$eleve_id]['infos_ind']['nbre_lignes'] = 0;
+        if (!isset($donnees[$eleve_id])) {
+            $donnees[$eleve_id]['nom'] = $saisie->getEleve()->getNom();
+            $donnees[$eleve_id]['prenom'] = $saisie->getEleve()->getPrenom();
+            $donnees[$eleve_id]['classe'] = $saisie->getEleve()->getClasseNom();
+            $donnees[$eleve_id]['demi_journees'] = $saisie->getEleve()->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
+            $donnees[$eleve_id]['non_justifiees'] = $saisie->getEleve()->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
+            $donnees[$eleve_id]['retards'] = $saisie->getEleve()->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
+            $donnees[$eleve_id]['nbre_lignes'] = 0;
         }
         if ($saisie->getTraitee()) {
             foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-                if (!isset($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]))
-                    $donnees[$eleve_id]['infos_ind']['nbre_lignes']++;
+                if (!isset($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()])){
+                    $donnees[$eleve_id]['nbre_lignes']++;
+                }
                 $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['saisies'][] = $saisie->getId();
                 if (isset($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates'])) {
                     if ($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates']['debut'] > $saisie->getDebutAbs('U')) {
@@ -291,8 +293,9 @@ if ($affichage != null && $affichage != '') {
                 }
             }
         } else {
-            if (!isset($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']))
-                $donnees[$eleve_id]['infos_ind']['nbre_lignes']++;
+            if (!isset($donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees'])){
+                $donnees[$eleve_id]['nbre_lignes']++;
+            }
             $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['saisies'][] = $saisie->getId();
             $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type'] = 'Non traitée(s)';
             $donnees[$eleve_id]['infos_saisies'][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['motif'] = '-';
@@ -313,7 +316,7 @@ if ($affichage != null && $affichage != '') {
         }
     }
 }
-if ($affichage == 'html') {
+if ($affichage == 'html') {    
 echo '<table border="1" cellspacing="0" align="center">';
 echo '<tr >';
 echo '<td align="center">';
@@ -338,7 +341,7 @@ echo '<td align="center">';
 echo 'Justification';
 echo '</td>';
 echo '<td align="center">';
-echo 'Commentaire';
+echo 'Commentaire(s)';
 echo '</td>';
 echo '</tr>';
 $precedent_eleve_id = Null;
@@ -347,35 +350,37 @@ foreach ($donnees as $id => $eleve) {
         foreach ($journee as $key => $value) {
             echo'<tr>';
             if ($precedent_eleve_id != $id) {
-                echo '<td rowspan=' . $eleve['infos_ind']['nbre_lignes'] . '>';
+                echo '<td rowspan=' . $eleve['nbre_lignes'] . '>';
                 echo '<a href="bilan_individuel.php?id_eleve='.$id.'&affichage=html">';
-                echo '<b>'.$eleve['infos_ind']['nom'] . ' ' . $eleve['infos_ind']['prenom'] . '</b></a><br/> (' . $eleve['infos_ind']['classe'] . ')<a href="bilan_individuel.php?id_eleve='.$id.'&affichage=ods"><img src="../images/icons/ods.png" title="export ods"></a><br/><br/>';
+                echo '<b>'.$eleve['nom'] . ' ' . $eleve['prenom'] . '</b></a><br/> (' . $eleve['classe'] . ')
+                      <a href="bilan_individuel.php?id_eleve='.$id.'&affichage=ods"><img src="../images/icons/ods.png" title="export ods"></a>
+                      <a href="bilan_individuel.php?id_eleve='.$id.'&affichage=odt"><img src="../images/icons/odt.png" title="export odt"></a><br/><br/>';
                 echo '<u><i>Absences :</i></u> <br />';
-                if (strval($eleve['infos_ind']['demi_journees'])==0) {
+                if (strval($eleve['demi_journees'])==0) {
  				    echo 'Aucune demi-journée';
 				} else {
- 				    echo '<b>'.$eleve['infos_ind']['demi_journees'] . '</b> demi-journée';
-                    if(strval($eleve['infos_ind']['demi_journees'])>1) echo's';
+ 				    echo '<b>'.$eleve['demi_journees'] . '</b> demi-journée';
+                    if(strval($eleve['demi_journees'])>1) echo's';
 					
-					if (strval($eleve['infos_ind']['demi_journees']-$eleve['infos_ind']['non_justifiees'])!=0) {
+					if (strval($eleve['demi_journees']-$eleve['non_justifiees'])!=0) {
 	                   echo' <br /> ';
-					   echo 'dont '.strval($eleve['infos_ind']['demi_journees']-$eleve['infos_ind']['non_justifiees']) . ' justifiée';
-	                   if(strval($eleve['infos_ind']['demi_journees']-$eleve['infos_ind']['non_justifiees'])>1) echo's';
+					   echo 'dont '.strval($eleve['demi_journees']-$eleve['non_justifiees']) . ' justifiée';
+	                   if(strval($eleve['demi_journees']-$eleve['non_justifiees'])>1) echo's';
 					}
 					
-					if (strval($eleve['infos_ind']['non_justifiees'])!=0) {
+					if (strval($eleve['non_justifiees'])!=0) {
 						echo'<br />';
-						echo 'dont <b>'.$eleve['infos_ind']['non_justifiees'] . ' non justifiée</b>';
-						if(strval($eleve['infos_ind']['non_justifiees'])>1) echo's';
+						echo 'dont <b>'.$eleve['non_justifiees'] . ' non justifiée</b>';
+						if(strval($eleve['non_justifiees'])>1) echo's';
 	                }
 				}
                 echo'<br /><br />';
 				echo '<u><i>Retards :</i></u><br />'; 
-				if (strval($eleve['infos_ind']['retards'])==0) {
+				if (strval($eleve['retards'])==0) {
  				    echo 'Aucun retard';
 				} else {
-				    echo $eleve['infos_ind']['retards'] . ' retard';
-				    if(strval($eleve['infos_ind']['retards'])>1) echo's';
+				    echo $eleve['retards'] . ' retard';
+				    if(strval($eleve['retards'])>1) echo's';
 				}
             echo '</td>';
             }
@@ -395,9 +400,13 @@ foreach ($donnees as $id => $eleve) {
             echo '</td>';
             echo '<td>';
             if($value['type']!=='Non traitée(s)'){
-                echo'<a href="./visu_traitement.php?id_traitement='.$key.'" target="_blank">'.$value['type'].'</a>';
+                $class='';
+                if($value['type']=='Non défini'){
+                $class='orange';
+                }
+                echo'<a class='.$class.' href="./visu_traitement.php?id_traitement='.$key.'" target="_blank">'.$value['type'].'</a>';
             }else{
-             echo $value['type'];
+             echo '<font class="orange">'.$value['type'].'</font>';
             }
             echo '</td>';
             echo '<td>';
@@ -424,84 +433,113 @@ foreach ($donnees as $id => $eleve) {
     }
 }
 echo '<h5>Extraction faite le '.date("d/m/Y - h:i").'</h5>';
-} else if ($affichage == 'ods') {
-// load the TinyButStrong libraries
-if (version_compare(PHP_VERSION, '5') < 0) {
-    include_once('../tbs/tbs_class.php'); // TinyButStrong template engine for PHP 4
-} else {
-    include_once('../tbs/tbs_class_php5.php'); // TinyButStrong template engine
-}
-//include_once('../tbs/plugins/tbsdb_php.php');
-$TBS = new clsTinyButStrong; // new instance of TBS
-include_once('../tbs/plugins/tbs_plugin_opentbs.php');
-$TBS->Plugin(TBS_INSTALL, OPENTBS_PLUGIN); // load OpenTBS plugin
-//creation donnees par ligne
-$export=array();
-
-foreach ($donnees as $id => $eleve) {
-    $indice=TRUE;
-    foreach ($eleve['infos_saisies'] as $journee) {
-        foreach ($journee as $key => $value) {
-            if ($indice) {
-			   $nom = $eleve['infos_ind']['nom'];
-               $prenom = $eleve['infos_ind']['prenom'];
-               $classe = $eleve['infos_ind']['classe'];
-			   $total_demi_journees = strval($eleve['infos_ind']['demi_journees']);
-			   $total_demi_journees_justifiees = strval($eleve['infos_ind']['demi_journees'] - $eleve['infos_ind']['non_justifiees']);
-			   $total_demi_journees_non_justifiees = strval($eleve['infos_ind']['non_justifiees']);
-               $retards = $eleve['infos_ind']['retards'];
-			} else {
-			   $nom = '';
-               $prenom = ''; 
-               $classe = '';
-			   $total_demi_journees = '';
-			   $total_demi_journees_justifiees =  '';
-			   $total_demi_journees_non_justifiees ='';
-               $retards = '';
-			}
-            $indice=FALSE;
-            $dates=getDateDescription($value['dates']['debut'], $value['dates']['fin']);
-            $eleve_current = EleveQuery::create()->filterByIdEleve($id)->findOne();
-            $abs_col = AbsenceEleveSaisieQuery::create()->filterById($value['saisies'])->orderByDebutAbs()->find();
-            $ligne_demi_journees = $eleve_current->getDemiJourneesAbsenceParCollection($abs_col)->count();
-            $ligne_demi_journees_non_justifiees = $eleve_current->getDemiJourneesNonJustifieesAbsenceParCollection($abs_col)->count();
-            $ligne_demi_journees_justifiees = strval($ligne_demi_journees - $ligne_demi_journees_non_justifiees);
-            $type = $value['type'];
-            $motif = $value['motif'];
-            $justification = $value['justification'];
-            $export_commentaire='';
-            if (isset($value['commentaires'])) {
-                $besoin_echo_virgule = false;
-                foreach ($value['commentaires'] as $commentaire) {
-                    if ($besoin_echo_virgule) {
-                        $export_commentaire.= ', ';
+} else if ($affichage == 'ods' || $affichage == 'odt') {
+include_once '../orm/helpers/AbsencesNotificationHelper.php';
+if ($affichage == 'ods') {
+    $extension='ods';
+    $export = array();
+    foreach ($donnees as $id => $eleve) {
+        $indice = TRUE;
+        foreach ($eleve['infos_saisies'] as $journee) {
+            foreach ($journee as $key => $value) {
+                $nom = $eleve['nom'];
+                $prenom = $eleve['prenom'];
+                $classe = $eleve['classe'];
+                $total_demi_journees = strval($eleve['demi_journees']);
+                $total_demi_journees_justifiees = strval($eleve['demi_journees'] - $eleve['non_justifiees']);
+                $total_demi_journees_non_justifiees = strval($eleve['non_justifiees']);
+                $retards = $eleve['retards'];
+                $dates = getDateDescription($value['dates']['debut'], $value['dates']['fin']);
+                $eleve_current = EleveQuery::create()->filterByIdEleve($id)->findOne();
+                $abs_col = AbsenceEleveSaisieQuery::create()->filterById($value['saisies'])->orderByDebutAbs()->find();
+                $ligne_demi_journees = $eleve_current->getDemiJourneesAbsenceParCollection($abs_col)->count();
+                $ligne_demi_journees_non_justifiees = $eleve_current->getDemiJourneesNonJustifieesAbsenceParCollection($abs_col)->count();
+                $ligne_demi_journees_justifiees = strval($ligne_demi_journees - $ligne_demi_journees_non_justifiees);
+                $type = $value['type'];
+                $motif = $value['motif'];
+                $justification = $value['justification'];
+                $export_commentaire = '';
+                if (isset($value['commentaires'])) {
+                    $besoin_echo_virgule = false;
+                    foreach ($value['commentaires'] as $commentaire) {
+                        if ($besoin_echo_virgule) {
+                            $export_commentaire.= ', ';
+                        }
+                        $export_commentaire.=$commentaire;
+                        $besoin_echo_virgule = true;
                     }
-                    $export_commentaire.=$commentaire;
-                    $besoin_echo_virgule = true;
                 }
+                $export[] = Array('nom' => $nom, 'prenom' => $prenom, 'classe' => $classe,
+                    'total_demi_journees' => $total_demi_journees,
+                    'total_demi_journees_justifiees' => $total_demi_journees_justifiees,
+                    'total_demi_journees_non_justifiees' => $total_demi_journees_non_justifiees,
+                    'retards' => $retards,
+                    'dates' => $dates,
+                    'ligne_demi_journees_non_justifiees' => $ligne_demi_journees_non_justifiees,
+                    'ligne_demi_journees_justifiees' => $ligne_demi_journees_justifiees,
+                    'type' => $type,
+                    'motif' => $motif,
+                    'justification' => $justification,
+                    'export_commentaire' => $export_commentaire);
             }
-            $export[]=Array('nom'=>$nom,'prenom'=>$prenom,'classe'=>$classe,
-                'total_demi_journees'=>$total_demi_journees,
-                'total_demi_journees_justifiees'=>$total_demi_journees_justifiees,
-                'total_demi_journees_non_justifiees'=>$total_demi_journees_non_justifiees,
-                'retards'=>$retards,
-                'dates'=>$dates,
-                'ligne_demi_journees_non_justifiees'=>$ligne_demi_journees_non_justifiees,
-                'ligne_demi_journees_justifiees'=>$ligne_demi_journees_justifiees,
-                'type'=>$type,
-                'motif'=>$motif,
-                'justification'=>$justification,
-                'export_commentaire'=>$export_commentaire);
-        }       
+        }
+    }
+} else {
+    $extension='odt';
+    $export = array();
+    foreach ($donnees as $id => $eleve) {
+        foreach ($eleve['infos_saisies'] as $journee) {
+            foreach ($journee as $key => $value) {
+                $nom = $eleve['nom'];
+                $prenom = $eleve['prenom'];
+                $classe = $eleve['classe'];
+                $total_demi_journees = strval($eleve['demi_journees']);
+                $total_demi_journees_justifiees = strval($eleve['demi_journees'] - $eleve['non_justifiees']);
+                $total_demi_journees_non_justifiees = strval($eleve['non_justifiees']);
+                $retards = $eleve['retards'];
+                $dates = getDateDescription($value['dates']['debut'], $value['dates']['fin']);
+                $eleve_current = EleveQuery::create()->filterByIdEleve($id)->findOne();
+                $abs_col = AbsenceEleveSaisieQuery::create()->filterById($value['saisies'])->orderByDebutAbs()->find();
+                $ligne_demi_journees = $eleve_current->getDemiJourneesAbsenceParCollection($abs_col)->count();
+                $ligne_demi_journees_non_justifiees = $eleve_current->getDemiJourneesNonJustifieesAbsenceParCollection($abs_col)->count();
+                $ligne_demi_journees_justifiees = strval($ligne_demi_journees - $ligne_demi_journees_non_justifiees);
+                $type = $value['type'];
+                $motif = $value['motif'];
+                $justification = $value['justification'];
+                $export_commentaire = '';
+                if (isset($value['commentaires'])) {
+                    $besoin_echo_virgule = false;
+                    foreach ($value['commentaires'] as $commentaire) {
+                        if ($besoin_echo_virgule) {
+                            $export_commentaire.= ', ';
+                        }
+                        $export_commentaire.=$commentaire;
+                        $besoin_echo_virgule = true;
+                    }
+                }
+                if (!isset($export[$id])) {
+                    $export[$id] = Array('nom' => $nom, 'prenom' => $prenom, 'classe' => $classe,
+                        'total_demi_journees' => $total_demi_journees,
+                        'total_demi_journees_justifiees' => $total_demi_journees_justifiees,
+                        'total_demi_journees_non_justifiees' => $total_demi_journees_non_justifiees,
+                        'retards' => $retards);
+                }
+                $export[$id]['lignes'][] = Array('dates' => $dates,
+                    'ligne_demi_journees_non_justifiees' => $ligne_demi_journees_non_justifiees,
+                    'ligne_demi_journees_justifiees' => $ligne_demi_journees_justifiees,
+                    'type' => $type,
+                    'motif' => $motif,
+                    'justification' => $justification,
+                    'export_commentaire' => $export_commentaire);
+            }
+        }
     }
 }
-// Load the template
-$extraction_bilans = repertoire_modeles('absence_extraction_bilan.ods');
-$TBS->LoadTemplate($extraction_bilans);
-
+$extraction_bilans = repertoire_modeles('absence_extraction_bilan.'.$extension);
+$TBS = AbsencesNotificationHelper::MergeInfosEtab($extraction_bilans);
 $titre = 'Bilan individuel du ' . $dt_date_absence_eleve_debut->format('d/m/Y') . ' au ' . $dt_date_absence_eleve_fin->format('d/m/Y');
 $classe = null;
-if ($id_classe != null && $id_classe != '' && $id_eleve==null) {
+if ($id_classe != null && $id_classe != '' && $id_eleve == null) {
     $classe = ClasseQuery::create()->findOneById($id_classe);
     if ($classe != null) {
         $titre .= ' pour la classe ' . $classe->getNom();
@@ -511,18 +549,18 @@ if ($nom_eleve != null && $nom_eleve != '') {
     $titre .= ' pour les élèves dont le nom ou le prénom contient ' . $nom_eleve;
 }
 if ($id_eleve != null && $id_eleve != '') {
-    $titre .= ' pour ' . $eleve_current->getPrenom().' '.$eleve_current->getNom() ;
+    $titre .= ' pour ' . $eleve_current->getPrenom() . ' ' . $eleve_current->getNom();
 }
 $TBS->MergeField('titre', $titre);
-
+$TBS->MergeField('date_debut', $dt_date_absence_eleve_debut->format("d_m_Y"));
+$TBS->MergeField('date_fin', $dt_date_absence_eleve_fin->format("d_m_Y"));
 $TBS->MergeBlock('export', $export);
-
 // Output as a download file (some automatic fields are merged here)
 $nom_fichier = 'extrait_bilan_';
 if ($classe != null) {
     $nom_fichier .= $classe->getNom() . '_';
 }
-$nom_fichier .= $dt_date_absence_eleve_fin->format("d_m_Y") . '.ods';
+$nom_fichier .= $dt_date_absence_eleve_fin->format("d_m_Y") . '.'.$extension ;
 $TBS->Show(OPENTBS_DOWNLOAD + TBS_EXIT, $nom_fichier);
 }
 ?>
