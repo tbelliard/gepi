@@ -148,7 +148,9 @@
                                   if (isset($sanctions[$incident->id_incident][$protagoniste->login])) { ?>
                     <p><strong>Sanctions :</strong></p>
                     <table class="boireaus" width="100%">
-                      <tr><th><font class='titre'>Nature</font></th><th><font class='titre'>Effectuée</font></th><th><font class='titre'>Date</font></th><th><font class='titre'>Durée</font></th></tr>
+                      <tr><th><font class='titre'>Nature</font></th><th><font class='titre'>Effectuée</font></th><th><font class='titre'>Date</font></th>
+                          <th><font class='titre'>Durée</font></th>
+                      </tr>
                                       <?php
                                       $alt_b=1;
                                       foreach ($sanctions[$incident->id_incident][$protagoniste->login] as $sanction) {
@@ -156,15 +158,20 @@
                       <tr class="lig<?php echo $alt_b;?>"><td><?php echo $sanction->nature; ?></td>
                         <td><?php echo $sanction->effectuee; ?></td>
                         <td><?php if($sanction->nature=='retenue')echo $sanction->ret_date;
-                                            if($sanction->nature=='exclusion')echo 'Du '.$sanction->exc_date_debut.' au '.$sanction->exc_date_fin;?></td>
+                                  if($sanction->nature=='exclusion')echo 'Du '.$sanction->exc_date_debut.' au '.$sanction->exc_date_fin;
+                                  if($sanction->nature=='travail')echo 'Pour le '.$sanction->trv_date_retour;?>
+                        </td>
                         <td><?php if($sanction->nature=='retenue') {
                                               echo $sanction->ret_duree.' heure';
                                               if ($sanction->ret_duree >1) echo 's';
-                                            }
-                                            if($sanction->nature=='exclusion') {
+                                            }else if($sanction->nature=='exclusion') {
                                               echo $sanction->exc_duree.' jour';
                                               if ($sanction->exc_duree >1) echo 's';
-                                            }?></td>
+                                            }else{
+                                                echo'-';
+                                            }
+                                                ?>
+                        </td>
                       </tr>
                                         <?php } ?>
                     </table>

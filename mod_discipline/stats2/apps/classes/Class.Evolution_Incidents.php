@@ -23,6 +23,7 @@
 
 require_once("Class.Date.php");
 require_once("Modele.Incidents.php");
+require_once("Modele.Select.php");
 require_once("Class.Incidents.php");
 require_once("Class.Filter.php");
 require_once("Class.Individu.php");
@@ -152,7 +153,7 @@ class ClassEvolution_Incidents extends ClassIncidents {
       $this->objet_incident=new ClassIncidents();
       $this->data_months=Gepi_Date::get_begin_end_month($key);
       $this->objet_incident->traite_incidents_criteres(Gepi_Date::format_date_fr_iso($this->data_months['du']),Gepi_Date::format_date_fr_iso( $this->data_months['au']), $filtres_categories,$filtres_mesures,$filtres_sanctions,$filtres_roles);
-      $this->incidents_mois=$this->objet_incident->get_incidents();
+      $this->incidents_mois=$this->objet_incident->get_incidents();      
       $this->mesures_mois=$this->objet_incident->get_mesures();
 
       foreach( $this->incidents_mois as $selection=>$incidents) {
@@ -168,7 +169,19 @@ class ClassEvolution_Incidents extends ClassIncidents {
           if(!$titre['error']) {
             if (isset($this->mesures_mois[$incident->id_incident])) {
               foreach($this->mesures_mois[$incident->id_incident] as $protagoniste) {
+                  //var_dump($_SESSION['stats_classes_selected']);
                 foreach($protagoniste as $id_mesure) {
+                  if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels') {
+                     //on a une classe ou un eleve
+                    if($this->is_classe($selection)){
+                       if(!$this->is_in_classe($id_mesure->login_ele, $selection)){
+                         break;  //la mesure ne correspond pas à un eleve de la classe
+                       }
+                    }else{
+                        //on a un eleve on verifie si la mesure est à lui
+                        if($id_mesure->login_ele!=$selection)break;
+                    }
+                  }
                   if($id_mesure->type=='prise') {
                     //si le type n'est pas initialisée on le fait
                     if(!in_array($id_mesure->mesure,$this->liste_type)) {
@@ -240,6 +253,17 @@ class ClassEvolution_Incidents extends ClassIncidents {
             if (isset($this->sanctions_mois[$incident->id_incident])) {
               foreach($this->sanctions_mois[$incident->id_incident] as $protagoniste) {
                 foreach($protagoniste as $id_sanction) {
+                   if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels') {
+                     //on a une classe ou un eleve
+                    if($this->is_classe($selection)){
+                       if(!$this->is_in_classe($id_sanction->login, $selection)){
+                         break;  //la mesure ne correspond pas à un eleve de la classe
+                       }
+                    }else{
+                        //on a un eleve on verifie si la mesure est à lui
+                        if($id_sanction->login!=$selection)break;
+                    }
+                  }
                   //si le type n'est pas initialisée on le fait
                   if(!in_array($id_sanction->nature,$this->liste_type)) {
                     foreach($this->months as $key2=>$month2) {
@@ -307,6 +331,17 @@ class ClassEvolution_Incidents extends ClassIncidents {
                   $this->totaux_par_type[$selection][$protagoniste->qualite]=0;
                   $this->liste_type[]=$protagoniste->qualite;
                 }
+                if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels') {
+                     //on a une classe ou un eleve
+                    if($this->is_classe($selection)){
+                       if(!$this->is_in_classe($protagoniste->login, $selection)){
+                         break;  //la mesure ne correspond pas à un eleve de la classe
+                       }
+                    }else{
+                        //on a un eleve on verifie si la mesure est à lui
+                        if($protagoniste->login!=$selection)break;
+                    }
+                  }
                 $this->evolution[$selection][$protagoniste->qualite][$key]+=1;
                 $this->totaux_par_type[$selection][$protagoniste->qualite]+=1;
                 $this->totaux_par_mois[$selection][$key]+=1;
@@ -318,6 +353,30 @@ class ClassEvolution_Incidents extends ClassIncidents {
       }
     }
     $this->infos_individus=$this->objet_incident->get_infos_individus();
+  }
+
+  private function is_classe($selection){
+   $test=false;
+   $modele_select=new modele_select();
+   foreach($_SESSION['stats_classes_selected'] as $id_classe){
+       $infos_classe=$modele_select->get_infos_classe($id_classe);
+       if($infos_classe[0]['classe']==$selection){
+           $test=true;
+           break;
+       }
+   }
+   return $test;
+  }
+
+  private function is_in_classe($login_ele,$classe){
+   $test=false;
+   $modele_select=new modele_select();
+   $id_classe=$modele_select->get_id_from_classe($classe);
+   $login_eleves=$modele_select->get_eleves_classe($id_classe);
+   if(in_array($login_ele,$login_eleves)){
+       $test=true;
+   }
+   return($test);
   }
 }
 ?>

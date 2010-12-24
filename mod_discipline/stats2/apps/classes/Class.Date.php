@@ -90,5 +90,12 @@ Class Gepi_Date {
     $date2=$date_fin.' '.$heure_fin;
     return($nbjours = ceil((strtotime($date2) - strtotime($date1))/(60*60*24)));
   }
+
+  public static function compare_nb_heures($ele1, $ele2){
+   if ($ele1->nb == $ele2->nb) {
+        return 0;
+    }
+    return ($ele2->nb < $ele1->nb) ? -1 : 1;
+}
 }
 ?>

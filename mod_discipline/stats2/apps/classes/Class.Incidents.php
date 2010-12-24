@@ -575,6 +575,7 @@ class ClassIncidents {
                 $value->prenom = $this->infos_eleves['prenom'];
                 $value->classe = $this->infos_eleves['classe'];
             }
+            $this->top_retenues=array_slice($this->top_retenues,0,10);
         }
         return($this->top_retenues);
     }

@@ -25,7 +25,7 @@ class Modele {
     private $row=Null;
     private $variable=Null;
     private $liste=Null;
-    protected  function set_array($type,$res) {
+    protected  function set_array($type,$res) {        
         unset($this->variable);
         if(mysql_num_rows($res)==0) {
             $this->variable['error']='pas de résultats';

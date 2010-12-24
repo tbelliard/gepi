@@ -75,8 +75,7 @@ Class modele_select extends Modele {
   }
   public function get_infos_classe($id) {
     $this->sql = 'SELECT id, classe, nom_complet FROM classes where id='.$id;
-    $this->res = mysql_query($this->sql);
-
+    $this->res = mysql_query($this->sql);    
     return ($this->noms_classe=parent::set_array('array',$this->res));
   }
 
@@ -107,6 +106,13 @@ Class modele_select extends Modele {
         }
     }
     return($this->individu_identite) ;
+  }
+
+  public function get_id_from_classe($classe){
+    $this->sql = "SELECT id FROM classes where classe ='".$classe."'";
+    $this->res = mysql_query($this->sql);
+    $id=parent::set_array('array',$this->res);
+    return($id[0]['id']);
   }
 }
 ?>

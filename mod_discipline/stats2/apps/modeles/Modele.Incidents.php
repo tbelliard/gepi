@@ -170,9 +170,16 @@ Class Modele_Incidents extends Modele {
   private function get_infos_incidents($choix,$titre,$du,$au,$critere=Null,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
     $this->sql='SELECT DISTINCT sin.id_incident,sin.declarant,sin.date,sin.heure,
                        sin.nature,sin.id_categorie,sin.description,sin.etat
-                      FROM s_incidents sin LEFT JOIN s_protagonistes spr ON sin.id_incident=spr.id_incident';
-    if($filtre_san)$this->sql.=' LEFT JOIN s_sanctions ssan ON sin.id_incident=ssan.id_incident';
-    if($filtre_mes)$this->sql.=' LEFT JOIN s_traitement_incident str ON sin.id_incident=str.id_incident INNER JOIN s_mesures smes ON str.id_mesure=smes.id ';
+                      FROM s_incidents sin ';
+    if(!$filtre_san && !$filtre_mes &&!$filtre_role){
+        //on garde les incidents sans protagonistes si pas de filtres
+        $this->sql.="LEFT JOIN s_protagonistes spr ON sin.id_incident=spr.id_incident ";
+    } else{
+        //on supprime les incidents sans protagonistes
+       $this->sql.="INNER JOIN s_protagonistes spr ON sin.id_incident=spr.id_incident ";
+    }
+    if($filtre_san)$this->sql.=' INNER JOIN s_sanctions ssan ON sin.id_incident=ssan.id_incident';
+    if($filtre_mes)$this->sql.=' INNER JOIN s_traitement_incident str ON sin.id_incident=str.id_incident INNER JOIN s_mesures smes ON str.id_mesure=smes.id ';
     $this->sql.=' WHERE date BETWEEN \''.$du.
             '\' AND \''.$au.'\' ';
     if($filtre_role)  $this->sql.=" AND (spr.qualite IN ('".parent::make_list_for_request_in($filtre_role)."') OR spr.qualite IS NULL)";
@@ -230,9 +237,10 @@ Class Modele_Incidents extends Modele {
   private function get_mesures_incident($liste_incidents) {
 
     $this->sql="SELECT str.id_incident,str.id_mesure,str.login_ele,str.login_u,smes.type,smes.mesure,smes.commentaire
-                    FROM s_traitement_incident str,s_mesures smes
+                    FROM s_traitement_incident str,s_mesures smes,s_protagonistes spr 
                     WHERE str.id_mesure=smes.id
-                    AND id_incident IN ('".$liste_incidents."')";
+                    AND (str.id_incident=spr.id_incident AND spr.login=str.login_ele) 
+                    AND str.id_incident IN ('".$liste_incidents."')";
     $this->sql.=' GROUP BY str.id';
     $this->res=mysql_query($this->sql);
     if($this->res) {
@@ -253,7 +261,8 @@ Class Modele_Incidents extends Modele {
                     LEFT JOIN s_exclusions sexc ON san.id_sanction=sexc.id_sanction
                     LEFT JOIN s_travail str ON san.id_sanction=str.id_sanction
                     LEFT JOIN s_autres_sanctions saut ON san.id_sanction=saut.id_sanction
-                    LEFT JOIN s_types_sanctions sts ON sts.id_nature=saut.id_nature 
+                    LEFT JOIN s_types_sanctions sts ON sts.id_nature=saut.id_nature
+                    INNER JOIN s_protagonistes spr ON (spr.id_incident=san.id_incident AND spr.login=san.login)
                     WHERE  san.id_incident IN ('".$liste_incidents."')";
     $this->sql.=' GROUP BY san.id_sanction';
     $this->res=mysql_query($this->sql);
@@ -271,7 +280,8 @@ Class Modele_Incidents extends Modele {
   private function get_db_nbre_total_mesures($liste=Null,$type=Null) {
 
     $this->sql="SELECT COUNT(str.id) from s_traitement_incident str
-          LEFT JOIN s_incidents sin  ON str.id_incident=sin.id_incident ";
+          INNER JOIN s_incidents sin  ON str.id_incident=sin.id_incident
+          INNER JOIN s_protagonistes spr ON (spr.login=str.login_ele AND spr.id_incident=str.id_incident) ";
     if ($type)$this->sql.="INNER JOIN s_mesures smes ON str.id_mesure=smes.id ";
     $this->sql.=' WHERE sin.date BETWEEN \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['du']).
             '\' AND \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['au']).'\'  ';
@@ -282,7 +292,10 @@ Class Modele_Incidents extends Modele {
   }
   private function get_db_nbre_total_sanctions($liste=Null) {
 
-    $this->sql='SELECT COUNT(san.id_sanction) from s_sanctions san LEFT JOIN s_incidents sin  ON  san.id_incident=sin.id_incident  WHERE sin.date BETWEEN \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['du']).
+    $this->sql='SELECT COUNT(san.id_sanction) from s_sanctions san 
+        INNER JOIN s_incidents sin  ON  san.id_incident=sin.id_incident
+        INNER JOIN s_protagonistes spr ON (spr.id_incident=san.id_incident AND spr.login=san.login)
+        WHERE sin.date BETWEEN \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['du']).
             '\' AND \''.Gepi_Date::format_date_fr_iso($_SESSION['stats_periodes']['au']).'\'  ';
     if($liste)$this->sql.=" AND sin.id_incident IN ('".parent::make_list_for_request_in($liste)."')";
     //$this->sql.=" OR sin.id_incident is null"; (je pense que les sanctions ne sont pas supprimées)
@@ -300,9 +313,10 @@ Class Modele_Incidents extends Modele {
   }
 
   private function get_db_top_incidents($du,$au,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
-    $this->sql="SELECT sp.login, count(sp.login) AS nb FROM s_protagonistes sp INNER JOIN s_incidents sin ON sp.id_incident=sin.id_incident ";
-    if($filtre_san)$this->sql.=' LEFT JOIN s_sanctions ssan ON sp.id_incident=ssan.id_incident';
-    if($filtre_mes)$this->sql.=' LEFT JOIN s_traitement_incident str ON sp.id_incident=str.id_incident INNER JOIN s_mesures smes ON str.id_mesure=smes.id ';
+    $this->sql="SELECT sp.login, count(DISTINCT sin.id_incident) AS nb FROM s_protagonistes sp INNER JOIN s_incidents sin ON sp.id_incident=sin.id_incident ";
+    if($filtre_san)$this->sql.=' INNER JOIN s_sanctions ssan ON sp.id_incident=ssan.id_incident';
+    if($filtre_mes)$this->sql.=' INNER JOIN s_traitement_incident str ON (sp.id_incident=str.id_incident AND sp.login=str.login_ele)
+                                 INNER JOIN s_mesures smes ON str.id_mesure=smes.id ';
     $this->sql.=' WHERE date BETWEEN \''.$du.
             '\' AND \''.$au.'\' ';
     $this->sql.=" AND sp.statut='eleve'";
@@ -320,21 +334,25 @@ Class Modele_Incidents extends Modele {
       if (in_array('Null',$filtre_cat)) $this->sql.="OR sin.id_categorie is null)";
       else $this->sql.=")";
     }
-    $this->sql.='GROUP BY sp.login ';
-    $this->sql.='ORDER BY count(sp.login) DESC LIMIT 10 ';
+    $this->sql.='GROUP BY sp.login ';    
+    $this->sql.='ORDER BY nb DESC LIMIT 10 ';
     $this->res=mysql_query($this->sql);
     if($this->res) {
       while($this->row=mysql_fetch_object($this->res)) {
-        $this->top_incidents[]=$this->row;
+        $this->top_incidents[]=$this->row;        
       }
     }
     return($this->top_incidents);
+
   }
 
   private function get_db_top_sanctions($du,$au,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
-    $this->sql="SELECT ssan.login, count(ssan.login) AS nb FROM s_sanctions ssan INNER JOIN s_incidents sin ON ssan.id_incident=sin.id_incident ";
-    if($filtre_role)$this->sql.=' LEFT JOIN s_protagonistes sp ON ssan.id_incident=sp.id_incident ';
-    if($filtre_mes)$this->sql.=' LEFT JOIN s_traitement_incident str ON ssan.id_incident=str.id_incident INNER JOIN s_mesures smes ON str.id_mesure=smes.id ';
+    $this->sql="SELECT ssan.login, count(DISTINCT ssan.id_sanction) AS nb FROM s_sanctions ssan
+        INNER JOIN s_incidents sin ON ssan.id_incident=sin.id_incident
+        INNER JOIN s_protagonistes sp ON (sp.id_incident=ssan.id_incident AND sp.login=ssan.login)";
+   // if($filtre_role)$this->sql.=' LEFT JOIN s_protagonistes sp ON ssan.id_incident=sp.id_incident ';
+    if($filtre_mes)$this->sql.=' INNER JOIN s_traitement_incident str ON (ssan.id_incident=str.id_incident AND ssan.login=str.login_ele)
+                                 INNER JOIN s_mesures smes ON str.id_mesure=smes.id ';
     $this->sql.=' WHERE date BETWEEN \''.$du.
             '\' AND \''.$au.'\' ';
     if($filtre_role)  $this->sql.=" AND (sp.qualite IN ('".parent::make_list_for_request_in($filtre_role)."') OR sp.qualite IS NULL) AND ssan.login=sp.login ";
@@ -362,13 +380,16 @@ Class Modele_Incidents extends Modele {
     return($this->top_sanctions);
   }
   private function get_db_top_retenues($du,$au,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
-    $this->sql="SELECT ssan.login, sum(sret.duree) AS nb FROM s_retenues sret INNER JOIN s_sanctions ssan ON sret.id_sanction=ssan.id_sanction
-       INNER JOIN s_incidents sin ON ssan.id_incident=sin.id_incident ";
-    if($filtre_role)$this->sql.=' LEFT JOIN s_protagonistes sp ON ssan.id_incident=sp.id_incident';
-    if($filtre_mes)$this->sql.=' LEFT JOIN s_traitement_incident str ON ssan.id_incident=str.id_incident INNER JOIN s_mesures smes ON str.id_mesure=smes.id ';
+    $this->sql="SELECT ssan.login, sret.duree AS nb FROM s_retenues sret
+       INNER JOIN s_sanctions ssan ON sret.id_sanction=ssan.id_sanction
+       INNER JOIN s_incidents sin ON ssan.id_incident=sin.id_incident
+       INNER JOIN s_protagonistes sp ON (sp.id_incident=ssan.id_incident AND sp.login=ssan.login)";
+    //if($filtre_role)$this->sql.=' LEFT JOIN s_protagonistes sp ON ssan.id_incident=sp.id_incident';
+    if($filtre_mes)$this->sql.=' INNER JOIN s_traitement_incident str ON (ssan.id_incident=str.id_incident AND str.login_ele=ssan.login)
+                                 INNER JOIN s_mesures smes ON str.id_mesure=smes.id ';
     $this->sql.=' WHERE sin.date BETWEEN \''.$du.
             '\' AND \''.$au.'\' ';
-    if($filtre_role)  $this->sql.=" AND (sp.qualite IN ('".parent::make_list_for_request_in($filtre_role)."') OR sp.qualite IS NULL) AND ssan.login=sp.login";
+    if($filtre_role)  $this->sql.=" AND (sp.qualite IN ('".parent::make_list_for_request_in($filtre_role)."') OR sp.qualite IS NULL) ";
 
     if($filtre_san) {     
       $this->sql.=" AND (ssan.nature IN ('".parent::make_list_for_request_in($filtre_san)."'))";
@@ -382,21 +403,30 @@ Class Modele_Incidents extends Modele {
       if (in_array('Null',$filtre_cat)) $this->sql.="OR sin.id_categorie is null)";
       else $this->sql.=")";
     }
-    $this->sql.=' GROUP BY ssan.login ';
-    $this->sql.=' ORDER BY sum(sret.duree) DESC LIMIT 10 ';
+    $this->sql.=' GROUP BY ssan.id_sanction ';
+   // $this->sql.=' ORDER BY sum(sret.duree) DESC LIMIT 10 ';
     $this->res=mysql_query($this->sql);
     if($this->res) {
-      while($this->row=mysql_fetch_object($this->res)) {
-        $this->top_retenues[]=$this->row;
+      while($this->row=mysql_fetch_object($this->res)) {          
+        if(!isset($this->top_retenues[$this->row->login])){
+            $this->top_retenues[$this->row->login]=$this->row;
+            $this->top_retenues[$this->row->login]->nb=$this->top_retenues[$this->row->login]->nb+0;
+        }else{
+            $this->top_retenues[$this->row->login]->nb=$this->top_retenues[$this->row->login]->nb+$this->row->nb;
+        }
       }
-    }
+      if(is_array($this->top_retenues))usort($this->top_retenues,array("Gepi_Date", "compare_nb_heures"));
+    }    
     return($this->top_retenues);
   }
   private function get_db_top_exclusions($du,$au,$filtre_cat=Null,$filtre_mes=Null,$filtre_san=Null,$filtre_role=Null) {
-    $this->sql="SELECT ssan.login, count(se.id_exclusion) AS nb FROM s_exclusions se INNER JOIN s_sanctions ssan ON se.id_sanction=ssan.id_sanction
-       INNER JOIN s_incidents sin ON ssan.id_incident=sin.id_incident";
-    if($filtre_role)$this->sql.=' LEFT JOIN s_protagonistes sp ON ssan.id_incident=sp.id_incident';
-    if($filtre_mes)$this->sql.=' LEFT JOIN s_traitement_incident str ON ssan.id_incident=str.id_incident INNER JOIN s_mesures smes ON str.id_mesure=smes.id ';
+    $this->sql="SELECT ssan.login, count(se.id_exclusion) AS nb FROM s_exclusions se
+       INNER JOIN s_sanctions ssan ON se.id_sanction=ssan.id_sanction
+       INNER JOIN s_incidents sin ON ssan.id_incident=sin.id_incident
+       INNER JOIN s_protagonistes sp ON (sp.id_incident=ssan.id_incident AND sp.login=ssan.login) ";
+    //if($filtre_role)$this->sql.=' LEFT JOIN s_protagonistes sp ON ssan.id_incident=sp.id_incident';
+    if($filtre_mes)$this->sql.=' INNER JOIN s_traitement_incident str (ON ssan.id_incident=str.id_incident AND ssan.login=str.login_ele)
+                                 INNER JOIN s_mesures smes ON str.id_mesure=smes.id ';
     $this->sql.=' WHERE sin.date BETWEEN \''.$du.
             '\' AND \''.$au.'\' ';
     if($filtre_role)  $this->sql.=" AND (sp.qualite IN ('".parent::make_list_for_request_in($filtre_role)."') OR sp.qualite IS NULL) AND ssan.login=sp.login";
@@ -423,5 +453,6 @@ Class Modele_Incidents extends Modele {
     }
     return($this->top_exclusions);
   }
+  
 }
 ?>
