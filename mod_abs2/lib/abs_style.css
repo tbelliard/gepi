@@ -118,3 +118,9 @@ background-color:silver;
 .lig2{
 background-color:white;
 }
+td.couleur_autre{
+  background-color:#FFBACD;
+}
+td.couleur_retard{
+  background-color:#CCE3FF;
+}

@@ -61,6 +61,10 @@ if(($_SESSION['statut']=='cpe')||
     echo "<li><a href='bilan_individuel.php' ";
     if($onglet_abs=='bilan_individuel.php') {echo "class='current' ";}
     echo "title='Bilan individuel'>Bilan individuel</a></li>\n";
+
+    echo "<li><a href='top_dix.php' ";
+    if($onglet_abs=='top_dix.php') {echo "class='current' ";}
+    echo "title='Top 10'>Top 10</a></li>\n";
     echo "</ul>\n";
 
 }
