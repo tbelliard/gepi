@@ -46,21 +46,21 @@ class AbsencesNotificationHelper {
 	    $eleve_col->add($saisie->getEleve());
 	}
     }
-
+    //merge des saisies pour modèles du type 1.5.3
     $TBS->MergeBlock('el_col',$eleve_col);
 
-//    if ($notification->getAbsenceEleveTraitement() != null) {
-//	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
-//	    ->useJTraitementSaisieEleveQuery()
-//	    ->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
-//		->orderBy("DebutAbs", Criteria::ASC)
-//		->find()';
-//    } else {
-//	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
-//	    ->where(0 <> 0)->find()';
-//    }
-//
-//    $TBS->MergeBlock('saisies', 'php', $query_string);
+    if ($notification->getAbsenceEleveTraitement() != null) {
+	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
+	    ->useJTraitementSaisieEleveQuery()
+	    ->filterByATraitementId('.$notification->getAbsenceEleveTraitement()->getId().')->endUse()
+		->orderBy("DebutAbs", Criteria::ASC)
+		->find()';
+    } else {
+	$query_string = 'AbsenceEleveSaisieQuery::create()->filterByEleveId(%p1%)
+	    ->where(0 <> 0)->find()';
+    }
+
+    $TBS->MergeBlock('saisies', 'php', $query_string);
 
 
     $heure_demi_journee = 11;
