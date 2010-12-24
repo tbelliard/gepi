@@ -64,7 +64,7 @@ class CategoriesCtrl extends Controleur {
     return $liste_nat;
   }
   function save() {
-
+    check_token(false);
     $this->natures_selected=isset($_REQUEST['natures_incidents'])?$_REQUEST['natures_incidents']:Null;
     if(is_null($this->natures_selected)) {
       echo"<script type='text/javascript'>alert('Selectionnez des natures d\'incidents et une catégorie')</script>";
@@ -77,6 +77,7 @@ class CategoriesCtrl extends Controleur {
   }
 
   function delete() {
+    check_token(false);
     $this->nature_selected=isset($_REQUEST['nature'])?$_REQUEST['nature']:Null;
     $this->nature[]=html_entity_decode($this->nature_selected,ENT_QUOTES);
     $this->categorie=isset($_REQUEST['categorie_id'])?$_REQUEST['categorie_id']:Null;

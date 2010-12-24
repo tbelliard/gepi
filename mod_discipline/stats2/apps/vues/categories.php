@@ -26,6 +26,7 @@
     <div id='wrap'>
     <div id='natures'>
         <form action='index.php?ctrl=categories&action=save' method='post' name='save' id='save'>
+            <?php echo add_token_field();?>
             <fieldset>
                 <legend class='legend'>Affectation : </legend>
                 <h3>1. Sélectionner les incidents</h3>
@@ -57,13 +58,13 @@
                 $fin=ceil($total/2);
                 for ($i=0;$i<$fin;$i++) {?>
                 <div id='group<?php echo $i+2;?>' class='bloc'>
-                    <h3><a href="index.php?ctrl=categories&action=delete&categorie_id=<?php echo $liste_categories[$i]->id; ?>" class="supp" title="cliquez pour vider"><?php echo $liste_categories[$i]->categorie; ?></a></h3>
+                    <h3><a href="index.php?ctrl=categories&action=delete&categorie_id=<?php echo $liste_categories[$i]->id.add_token_in_url() ?>" class="supp" title="cliquez pour vider"><?php echo $liste_categories[$i]->categorie; ?></a></h3>
                         <?php
                         
                         foreach($liste_natures as $nature) { ?>
                     <ul class='selected_titre'>
                                 <?php if ($nature->categorie==$liste_categories[$i]->categorie) { ?>
-                        <li id='selected'><a href="index.php?ctrl=categories&action=delete&nature=<?php echo htmlspecialchars($nature->nature,ENT_QUOTES) ?>" class="supp" title="cliquez pour supprimer"><?php if  (!$nature->nature) echo ' Pas de nature renseignée'; else echo $nature->nature;?></a></li>
+                        <li id='selected'><a href="index.php?ctrl=categories&action=delete&nature=<?php echo htmlspecialchars($nature->nature,ENT_QUOTES).add_token_in_url() ?>" class="supp" title="cliquez pour supprimer"><?php if  (!$nature->nature) echo ' Pas de nature renseignée'; else echo $nature->nature;?></a></li>
                                     <?php }?>
                     </ul>
                             <?php }?>
@@ -74,12 +75,12 @@
                 <?php
                 for ($i=$fin;$i<$total;$i++) {?>
                 <div id='group<?php echo $i+2;?>' class='bloc'>
-                    <h3><a href="index.php?ctrl=categories&action=delete&categorie_id=<?php echo $liste_categories[$i]->id; ?>" class="supp" title="cliquez pour vider"><?php echo $liste_categories[$i]->categorie;?></a></h3>
+                    <h3><a href="index.php?ctrl=categories&action=delete&categorie_id=<?php echo $liste_categories[$i]->id.add_token_in_url() ; ?>" class="supp" title="cliquez pour vider"><?php echo $liste_categories[$i]->categorie;?></a></h3>
                         <?php
                         foreach($liste_natures as $nature) {?>
                     <ul class='selected_titre'>
                                 <?php if ($nature->categorie==$liste_categories[$i]->categorie) { ?>
-                        <li id='selected'><a href="index.php?ctrl=categories&action=delete&nature=<?php echo htmlspecialchars($nature->nature,ENT_QUOTES) ?>" class="supp" title="cliquez pour supprimer"><?php if  (!$nature->nature) echo ' Pas de nature renseignée'; else echo $nature->nature;?></a></li>
+                        <li id='selected'><a href="index.php?ctrl=categories&action=delete&nature=<?php echo htmlspecialchars($nature->nature,ENT_QUOTES).add_token_in_url()  ?>" class="supp" title="cliquez pour supprimer"><?php if  (!$nature->nature) echo ' Pas de nature renseignée'; else echo $nature->nature;?></a></li>
                                     <?php }?>
                     </ul>
                             <?php }?>
