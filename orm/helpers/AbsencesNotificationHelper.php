@@ -179,6 +179,7 @@ class AbsencesNotificationHelper {
 	$email_abs_etab = getSettingValue("gepiSchoolEmail");
     }
     $TBS->MergeField('mail_etab', $email_abs_etab);
+    $TBS->MergeField('annee_scolaire', getSettingValue("gepiYear"));
     $adr_etablissement = new ResponsableEleveAdresse();
 	$adr_etablissement->setAdr1(getSettingValue("gepiSchoolAdress1"));
 	$adr_etablissement->setAdr2(getSettingValue("gepiSchoolAdress2"));
