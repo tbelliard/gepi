@@ -69,11 +69,12 @@ include_once 'lib/function.php';
 //récupération des paramètres de la requète
 $nom_eleve = isset($_POST["nom_eleve"]) ? $_POST["nom_eleve"] : (isset($_GET["nom_eleve"]) ? $_GET["nom_eleve"] : (isset($_SESSION["nom_eleve"]) ? $_SESSION["nom_eleve"] : NULL));
 $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] : (isset($_GET["id_classe"]) ? $_GET["id_classe"] : (isset($_SESSION["id_classe_abs"]) ? $_SESSION["id_classe_abs"] : NULL));
-$id_eleve = isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : NULL;
+$id_eleve = isset($_POST["id_eleve"]) ? $_POST["id_eleve"] : (isset($_GET["id_eleve"]) ? $_GET["id_eleve"] : NULL);
 $date_absence_eleve_debut = isset($_POST["date_absence_eleve_debut"]) ? $_POST["date_absence_eleve_debut"] : (isset($_GET["date_absence_eleve_debut"]) ? $_GET["date_absence_eleve_debut"] : (isset($_SESSION["date_absence_eleve_debut"]) ? $_SESSION["date_absence_eleve_debut"] : NULL));
 $date_absence_eleve_fin = isset($_POST["date_absence_eleve_fin"]) ? $_POST["date_absence_eleve_fin"] : (isset($_GET["date_absence_eleve_fin"]) ? $_GET["date_absence_eleve_fin"] : (isset($_SESSION["date_absence_eleve_fin"]) ? $_SESSION["date_absence_eleve_fin"] : NULL));
 $type_extrait = isset($_POST["type_extrait"]) ? $_POST["type_extrait"] : (isset($_GET["type_extrait"]) ? $_GET["type_extrait"] :(isset($_SESSION["type_extrait"]) ? $_SESSION["type_extrait"] : NULL));
 $affichage = isset($_POST["affichage"]) ? $_POST["affichage"] : (isset($_GET["affichage"]) ? $_GET["affichage"] : NULL);
+$tri = isset($_POST["tri"]) ? $_POST["tri"] : (isset($_GET["tri"]) ? $_GET["tri"] : NULL);
 
 if (isset($id_classe) && $id_classe != null)
     $_SESSION['id_classe_abs'] = $id_classe;
@@ -83,6 +84,8 @@ if (isset($date_absence_eleve_fin) && $date_absence_eleve_fin != null)
     $_SESSION['date_absence_eleve_fin'] = $date_absence_eleve_fin;
 if (isset($type_extrait) && $type_extrait != null)
     $_SESSION['type_extrait'] = $type_extrait;
+if (isset($tri) && $tri != null)
+    $_SESSION['tri'] = $tri;
 
 if ($date_absence_eleve_debut != null) {
     $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", $date_absence_eleve_debut));
@@ -140,7 +143,7 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
             Pour des saisies ayant des traitements multiples , le décompte des demi-journées correspondantes peut donc apparaitre plusieurs fois. 
             Le total réel des demi-journées calculé par le module s'affiche sous le nom de l'élève.
         </p>
-        <form name="choix_extraction" action="bilan_individuel.php" method="post">
+        <form name="bilan_individuel" action="bilan_individuel.php" method="post">
             <h2>Bilan individuel du
                 <input size="8" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y') ?>" />
                 <script type="text/javascript">
@@ -164,9 +167,15 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
                 });
             </script>
         </h2>
-        <p>
-            Nom (facultatif) : <input type="text" name="nom_eleve" size="10" value="<?php echo $nom_eleve ?>"/>
-
+        <p> <?php
+            if ($id_eleve!==null && $id_eleve!=''){
+                $eleve=EleveQuery::create()->filterByIdEleve($id_eleve)->findOne();
+                $nom_eleve=$eleve->getNom();
+            }
+            ?>
+            Nom (facultatif) : <input type="text" name="nom_eleve" size="10" value="<?php echo $nom_eleve ?>" onChange="document.bilan_individuel.id_eleve.value='';"/>
+            <input type="hidden" name="id_eleve" size="10" value="<?php echo $id_eleve ?>"/>
+           
             <?php
             //on affiche une boite de selection avec les classe
             if (getSettingValue("GepiAccesAbsTouteClasseCpe") == 'yes' && $utilisateur->getStatut() == "cpe") {
@@ -175,7 +184,7 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
                 $classe_col = $utilisateur->getClasses();
             }
             if (!$classe_col->isEmpty()) {
-                echo ("Classe : <select name=\"id_classe\">");
+                echo ("Classe : <select name=\"id_classe\" onChange='document.bilan_individuel.id_eleve.value=\"\"';>");
                 echo "<option value='-1'>Toutes les classes</option>\n";
                 foreach ($classe_col as $classe) {
                     echo "<option value='" . $classe->getId() . "'";
@@ -204,13 +213,18 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
                             echo 'selected';
                         }
             ?>>Liste de toutes les données</option>
-            </select>
+            </select><br />
+            Tri des données par type : <br /> (Manquement aux obligation de présence,retard) :
+            <input type="checkbox" name="tri" value="tri" <?php
+            if($tri=='tri') {
+                echo'checked';
+            }
+            ?>/><br />
             <button type="submit" name="affichage" value="html">Afficher</button>
             <button type="submit" name="affichage" value="ods">Exporter dans un tableur(ods)</button>
             <button type="submit" name="affichage" value="odt">Exporter dans un traitement de texte(odt)</button>
         </p>
     </form>
-
     <?php
 }
 if ($affichage != null && $affichage != '') {
@@ -228,7 +242,10 @@ if ($id_eleve !== null && $id_eleve != '') {
     $eleve_query->filterByIdEleve($id_eleve);
 }
 $eleve_col = $eleve_query->distinct()->find();
-
+if($eleve_col->isEmpty()){
+    echo"<h2 class='no'>Aucun élève avec les paramètres sélectionnés n'a été trouvé.</h2>";
+    die();
+}
 $saisie_query = AbsenceEleveSaisieQuery::create()
                 ->filterByPlageTemps($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
                 ->filterByEleveId($eleve_col->toKeyValue('IdEleve', 'IdEleve'));
@@ -254,18 +271,35 @@ foreach ($saisie_col as $saisie) {
         $donnees[$eleve_id]['demi_journees'] = $saisie->getEleve()->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
         $donnees[$eleve_id]['non_justifiees'] = $saisie->getEleve()->getDemiJourneesNonJustifieesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
         $donnees[$eleve_id]['retards'] = $saisie->getEleve()->getRetards($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count();
-        $donnees[$eleve_id]['nbre_lignes_autre'] = 0;
-        $donnees[$eleve_id]['nbre_lignes_retard'] = 0;
+        $donnees[$eleve_id]['nbre_lignes_total'] = 0;
+    }
+    
+    if ($saisie->getRetard()) {
+        if($tri!=null && $tri!=''){
+            $type_tab = 'retard';
+        }else{
+            $type_tab='sans';
+        }
+        $type_css = 'couleur_retard';
+    } elseif ($saisie->getManquementObligationPresence()) {
+        if($tri!=null && $tri!=''){
+            $type_tab = 'manquement';
+        }else{
+            $type_tab = 'sans';
+        }
+        $type_css = 'couleur_manquement';
+    } else {
+        if($tri!=null && $tri!=''){
+            $type_tab = 'sans_manquement';
+        }else{
+            $type_tab = 'sans';
+        }
+        $type_css = '';
     }
     if ($saisie->getTraitee()) {
-        foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
-            if ($traitement->getAbsenceEleveType() && $traitement->getAbsenceEleveType()->getRetardBulletin() == 'VRAI') {
-                $type_tab = 'retard';
-            } else {
-                $type_tab = 'autre';
-            }
+        foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {            
             if (!isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()])) {
-                $donnees[$eleve_id]['nbre_lignes_' . $type_tab]++;
+                $donnees[$eleve_id]['nbre_lignes_total']++;
             }
             $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['saisies'][] = $saisie->getId();
             if (isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['dates'])) {
@@ -296,11 +330,11 @@ foreach ($saisie_col as $saisie) {
             if ($saisie->getCommentaire() !== '') {
                 $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['commentaires'][] = $saisie->getCommentaire();
             }
+            $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')][$traitement->getId()]['type_css']=$type_css;            
         }
     } else {
-        $type_tab = 'autre';
-        if (!isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees'])) {
-            $donnees[$eleve_id]['nbre_lignes_' . $type_tab]++;
+        if (!isset($donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees'])) {            
+            $donnees[$eleve_id]['nbre_lignes_total']++;
         }
         $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['saisies'][] = $saisie->getId();
         $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type'] = 'Non traitée(s)';
@@ -319,55 +353,54 @@ foreach ($saisie_col as $saisie) {
         if ($saisie->getCommentaire() !== '') {
             $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['commentaires'][] = $saisie->getCommentaire();
         }
-    }
+        $donnees[$eleve_id]['infos_saisies'][$type_tab][$saisie->getDebutAbs('d/m/Y')]['non_traitees']['type_css']=$type_css;            
+    }    
 }
 }
 if ($affichage == 'html') {    
 echo '<table border="1" cellspacing="0" align="center">';
 echo '<tr >';
-echo '<td class="couleur_autre" align="center">';
+echo '<td align="center">';
 echo 'Informations sur l\'élève';
 echo '</td>';
-echo '<td class="couleur_autre" align="center">';
+echo '<td align="center">';
 echo 'Saisies ';
 echo '</td>';
-echo '<td class="couleur_autre" align="center">';
+echo '<td align="center">';
 echo 'Décompte J';
 echo '</td>';
-echo '<td class="couleur_autre" align="center">';
+echo '<td align="center">';
 echo 'Décompte NJ';
 echo '</td>';
-echo '<td class="couleur_autre" align="center">';
+echo '<td align="center">';
 echo 'Type';
 echo '</td>';
-echo '<td class="couleur_autre" align="center">';
+echo '<td align="center">';
 echo 'Motif';
 echo '</td>';
-echo '<td class="couleur_autre" align="center">';
+echo '<td align="center">';
 echo 'Justification';
 echo '</td>';
-echo '<td class="couleur_autre"  align="center">';
+echo '<td align="center">';
 echo 'Commentaire(s)';
 echo '</td>';
 echo '</tr>';
 $precedent_eleve_id = Null;
 foreach ($donnees as $id => $eleve) {
-    ksort($eleve['infos_saisies']);
-    foreach ($eleve['infos_saisies'] as $type_tab=>$value) {
-        if($type_tab=='autre'){
-            $style ='couleur_autre';
-        }else{
-            $style ='couleur_retard';
-        }        
+    if($tri!==null && $tri!='') {
+        ksort($eleve['infos_saisies']);
+    }
+    foreach ($eleve['infos_saisies'] as $type_tab=>$value) {       
         foreach ($value as $journee) {
-            foreach ($journee as $key => $value) {
+            foreach ($journee as $key => $value) {                
+                $style=$value['type_css'];
                 echo'<tr>';
-                if ($precedent_eleve_id != $id) {
-                    echo '<td class="couleur_autre" rowspan=' . strval($eleve['nbre_lignes_autre'] + $eleve['nbre_lignes_retard']) . '>';
-                    echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html">';
+                if ($precedent_eleve_id != $id) {                    
+                    echo '<td rowspan=' . $eleve['nbre_lignes_total'] . '>';
+                    echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html&tri='.$tri.'">';
                     echo '<b>' . $eleve['nom'] . ' ' . $eleve['prenom'] . '</b></a><br/> (' . $eleve['classe'] . ')
-                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=ods"><img src="../images/icons/ods.png" title="export ods"></a>
-                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt"><img src="../images/icons/odt.png" title="export odt"></a><br/><br/>';
+                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=ods&tri='.$tri.'"><img src="../images/icons/ods.png" title="export ods"></a>
+                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt&tri='.$tri.'"><img src="../images/icons/odt.png" title="export odt"></a><br/><br/>';
                     echo '<u><i>Absences :</i></u> <br />';
                     if (strval($eleve['demi_journees']) == 0) {
                         echo 'Aucune demi-journée';
@@ -459,7 +492,9 @@ if ($affichage == 'ods') {
     $extension='ods';
     $export = array();
     foreach ($donnees as $id => $eleve) {
-        ksort($eleve['infos_saisies']);
+        if($tri!==null && $tri!='') {
+            ksort($eleve['infos_saisies']);
+        }
         foreach ($eleve['infos_saisies'] as $type_tab) {
             foreach ($type_tab as $journee) {
                 foreach ($journee as $key => $value) {
@@ -510,7 +545,9 @@ if ($affichage == 'ods') {
     $extension = 'odt';
     $export = array();
     foreach ($donnees as $id => $eleve) {
-        ksort($eleve['infos_saisies']);
+        if($tri!==null && $tri!='') {
+            ksort($eleve['infos_saisies']);
+        }
         foreach ($eleve['infos_saisies'] as $type_tab) {
             foreach ($type_tab as $journee) {
                 foreach ($journee as $key => $value) {
@@ -527,7 +564,13 @@ if ($affichage == 'ods') {
                     $ligne_demi_journees = $eleve_current->getDemiJourneesAbsenceParCollection($abs_col)->count();
                     if($ligne_demi_journees >0){
                         $ligne_demi_journees_non_justifiees = $eleve_current->getDemiJourneesNonJustifieesAbsenceParCollection($abs_col)->count();
+                        if($ligne_demi_journees_non_justifiees==0){
+                            $ligne_demi_journees_non_justifiees='';
+                        }
                         $ligne_demi_journees_justifiees = strval($ligne_demi_journees - $ligne_demi_journees_non_justifiees);
+                        if($ligne_demi_journees_justifiees==0){
+                            $ligne_demi_journees_justifiees='';
+                        }
                     }else{
                         $ligne_demi_journees_non_justifiees = '-';
                         $ligne_demi_journees_justifiees = '-';
