@@ -75,6 +75,8 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_
 $id_aid = isset($_POST["id_aid"]) ? $_POST["id_aid"] :(isset($_GET["id_aid"]) ? $_GET["id_aid"] : NULL);
 $type_selection = isset($_POST["type_selection"]) ? $_POST["type_selection"] :(isset($_GET["type_selection"]) ? $_GET["type_selection"] : NULL);
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :(isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] :(isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
+$filter_regime = isset($_POST["filter_regime"]) ? $_POST["filter_regime"] :(isset($_GET["filter_regime"]) ? $_GET["choix_regime"] : NULL);
+
 //if ($date_absence_eleve != null) {$_SESSION["date_absence_eleve"] = $date_absence_eleve;}
 include('include_requetes_filtre_de_recherche.php');
 
@@ -332,7 +334,7 @@ if ($type_selection == 'id_eleve') {
 if ($type_selection != 'id_eleve' && $type_selection != 'nom_eleve') {
     //on filtre
     if (isFiltreRechercheParam('filter_regime') != null && getFiltreRechercheParam('filter_regime')!=-1) {
-        $query->filterByRegime($choix_regime);
+        $query->filterByRegime($filter_regime);
     }
 }
 $eleve_col = $query->distinct()->paginate($page_number, $item_per_page);
@@ -348,7 +350,7 @@ $eleve_col = $query->distinct()->paginate($page_number, $item_per_page);
 				<input type="hidden" name="id_groupe" value="<?php echo $id_groupe?>"/>
 				<input type="hidden" name="id_classe" value="<?php echo $id_classe?>"/>
 				<input type="hidden" name="id_aid" value="<?php echo $id_aid?>"/>
-                                <input type="hidden" name="choix_regime" value="<?php echo $choix_regime?>"/>
+                                <input type="hidden" name="filter_regime" value="<?php echo $filter_regime?>"/>
                                 <input type="hidden" name="date_absence_eleve" value="<?php echo $date_absence_eleve?>"/>
                                 <input type="hidden" name="reinit_filtre" value="n"/>
 				    <input onchange="document.absences_du_jour.submit()" style="width : 7em" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
@@ -359,7 +361,7 @@ $eleve_col = $query->distinct()->paginate($page_number, $item_per_page);
 					document.absences_du_jour.id_groupe.value='';
 					document.absences_du_jour.id_classe.value='';
 					document.absences_du_jour.id_aid.value='';
-                                        document.absences_du_jour.choix_regime.value='';
+                                        document.absences_du_jour.filter_regime.value='';
 					document.absences_du_jour.date_absence_eleve.value='';
 					document.absences_du_jour.reinit_filtre.value='y';
 					return true;">Réinitialiser les filtres</button>
