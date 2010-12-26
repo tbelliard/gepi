@@ -154,7 +154,7 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
         <?php endif; ?>
         <form name="bilan_individuel" action="bilan_individuel.php" method="post">
             <fieldset>
-              <legend>Paramétrage de l'export(dates,classes,tri...)</legend>
+              <legend>Paramétrage de l'export (dates, classes, tri...)</legend>
             <h3>Bilan individuel du
                 <input size="10" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y') ?>" />
                 <script type="text/javascript">
@@ -217,31 +217,36 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
             if ($type_extrait == '1') {
                 echo 'selected';
             }
-            ?>>Données occasionnant  un manquement aux obligations de présence</option>
+            ?>
+			>Données occasionnant un manquement aux obligations de présence</option>
                 <option value='2' <?php
                         if ($type_extrait == '2') {
                             echo 'selected';
                         }
             ?>>Liste de toutes les données</option>
             </select><br />            
-            Tri des données par type :  (Manquement aux obligation de présence,retard) :
+            
             <input type="checkbox" name="tri" value="tri" onChange="document.bilan_individuel.submit();" <?php
             if($tri=='tri') {
                 echo'checked';
             }            
-            ?>/><br />
-            Ne pas afficher les commentaires dans l'export ods et odt :
+            ?>
+			> Tri des données par type (Manquement aux obligations de présence, retard)
+			<br />
+           
             <input type="checkbox" name="sans_commentaire" value="no" onChange="document.bilan_individuel.submit();" <?php
             if($sans_commentaire) {
                 echo'checked';
-            }
-            ?>/><br />             
-             </fieldset>
+            } ?> 
+			> Ne pas afficher les commentaires dans l'export ods et odt
+            <br />             
+        </fieldset>
+		<br />
         <fieldset style="width:600px;">
             <legend>Validation des modifications et choix du mode de sortie des données</legend>
             <button type="submit" name="affichage" value="html">Afficher à l'écran</button>
-            <button type="submit" name="affichage" value="ods">Exporter dans un tableur(ods)</button>
-            <button type="submit" name="affichage" value="odt">Exporter dans un traitement de texte(odt)</button>
+            <button type="submit" name="affichage" value="ods">Exporter dans un tableur (ods)</button>
+            <button type="submit" name="affichage" value="odt">Exporter dans un traitement de texte (odt)</button>
         </fieldset>
     </form>
     <?php
