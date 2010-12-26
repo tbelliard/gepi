@@ -76,7 +76,11 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
 
     $entete_section[]="";
     $fich[]="absence_extraction_bilan.ods";
-    $utilisation[]="ABS2 : Tableau bilan par jour par élève";
+    $utilisation[]="ABS2 : Tableau bilan par jour par élève au format tableur";
+
+    $entete_section[]="";
+    $fich[]="absence_extraction_bilan.odt";
+    $utilisation[]="ABS2 : Tableau bilan par jour par élève au format traitement de textes";
 
 	$entete_section[]="";
     $fich[]="absence_modele_lettre_parents.odt";
