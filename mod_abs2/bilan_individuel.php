@@ -75,6 +75,7 @@ $date_absence_eleve_fin = isset($_POST["date_absence_eleve_fin"]) ? $_POST["date
 $type_extrait = isset($_POST["type_extrait"]) ? $_POST["type_extrait"] : (isset($_GET["type_extrait"]) ? $_GET["type_extrait"] :(isset($_SESSION["type_extrait"]) ? $_SESSION["type_extrait"] : NULL));
 $affichage = isset($_POST["affichage"]) ? $_POST["affichage"] : (isset($_GET["affichage"]) ? $_GET["affichage"] : NULL);
 $tri = isset($_POST["tri"]) ? $_POST["tri"] : (isset($_GET["tri"]) ? $_GET["tri"] : NULL);
+$sans_commentaire = isset($_POST["sans_commentaire"]) ? $_POST["sans_commentaire"] : (isset($_GET["sans_commentaire"]) ? $_GET["sans_commentaire"] : Null);
 
 if (isset($id_classe) && $id_classe != null)
     $_SESSION['id_classe_abs'] = $id_classe;
@@ -84,8 +85,6 @@ if (isset($date_absence_eleve_fin) && $date_absence_eleve_fin != null)
     $_SESSION['date_absence_eleve_fin'] = $date_absence_eleve_fin;
 if (isset($type_extrait) && $type_extrait != null)
     $_SESSION['type_extrait'] = $type_extrait;
-if (isset($tri) && $tri != null)
-    $_SESSION['tri'] = $tri;
 
 if ($date_absence_eleve_debut != null) {
     $dt_date_absence_eleve_debut = new DateTime(str_replace("/", ".", $date_absence_eleve_debut));
@@ -100,6 +99,13 @@ if ($date_absence_eleve_fin != null) {
 }
 $dt_date_absence_eleve_debut->setTime(0, 0, 0);
 $dt_date_absence_eleve_fin->setTime(23, 59, 59);
+$inverse_date=false;
+if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format("U")){
+    $date2=clone $dt_date_absence_eleve_fin;
+    $dt_date_absence_eleve_fin= $dt_date_absence_eleve_debut;
+    $dt_date_absence_eleve_debut= $date2;
+    $inverse_date=true;
+}
 
 function getDateDescription($date_debut,$date_fin) {
 	    $message = '';
@@ -143,9 +149,14 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
             Pour des saisies ayant des traitements multiples , le décompte des demi-journées correspondantes peut donc apparaitre plusieurs fois. 
             Le total réel des demi-journées calculé par le module s'affiche sous le nom de l'élève.
         </p>
+        <?php if ($inverse_date) :?>
+        <h3 class="no">Les dates de début et de fin ont été inversés.</h3>
+        <?php endif; ?>
         <form name="bilan_individuel" action="bilan_individuel.php" method="post">
-            <h2>Bilan individuel du
-                <input size="8" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y') ?>" />
+            <fieldset>
+              <legend>Paramétrage de l'export(dates,classes,tri...)</legend>
+            <h3>Bilan individuel du
+                <input size="10" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y') ?>" />
                 <script type="text/javascript">
                     Calendar.setup({
                         inputField     :    "date_absence_eleve_1",     // id of the input field
@@ -156,7 +167,7 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
                     });
                 </script>
                                         	au
-                <input size="8" id="date_absence_eleve_2" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('d/m/Y') ?>" />
+                <input size="10" id="date_absence_eleve_2" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('d/m/Y') ?>" />
             <script type="text/javascript">
                 Calendar.setup({
                     inputField     :    "date_absence_eleve_2",     // id of the input field
@@ -166,15 +177,16 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
                     singleClick    :    true
                 });
             </script>
-        </h2>
-        <p> <?php
+        </h3>
+          <?php
             if ($id_eleve!==null && $id_eleve!=''){
                 $eleve=EleveQuery::create()->filterByIdEleve($id_eleve)->findOne();
                 $nom_eleve=$eleve->getNom();
             }
             ?>
             Nom (facultatif) : <input type="text" name="nom_eleve" size="10" value="<?php echo $nom_eleve ?>" onChange="document.bilan_individuel.id_eleve.value='';"/>
-            <input type="hidden" name="id_eleve" size="10" value="<?php echo $id_eleve ?>"/>
+            <input type="hidden" name="id_eleve" value="<?php echo $id_eleve ?>"/>
+            <input type="hidden" name="affichage" value="<?php echo $affichage ?>"/>
            
             <?php
             //on affiche une boite de selection avec les classe
@@ -184,7 +196,7 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
                 $classe_col = $utilisateur->getClasses();
             }
             if (!$classe_col->isEmpty()) {
-                echo ("Classe : <select name=\"id_classe\" onChange='document.bilan_individuel.id_eleve.value=\"\"';>");
+                echo ("Classe : <select name=\"id_classe\" onChange='document.bilan_individuel.id_eleve.value=\"\";'>");
                 echo "<option value='-1'>Toutes les classes</option>\n";
                 foreach ($classe_col as $classe) {
                     echo "<option value='" . $classe->getId() . "'";
@@ -199,8 +211,6 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
                 echo 'Aucune classe avec élève affecté n\'a été trouvée';
             }
             ?>
-        </p>
-        <p>
             Type :
             <select style="width:200px" name="type_extrait">
                 <option value='1' <?php
@@ -213,17 +223,26 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
                             echo 'selected';
                         }
             ?>>Liste de toutes les données</option>
-            </select><br />
-            Tri des données par type : <br /> (Manquement aux obligation de présence,retard) :
-            <input type="checkbox" name="tri" value="tri" <?php
+            </select><br />            
+            Tri des données par type :  (Manquement aux obligation de présence,retard) :
+            <input type="checkbox" name="tri" value="tri" onChange="document.bilan_individuel.submit();" <?php
             if($tri=='tri') {
                 echo'checked';
-            }
+            }            
             ?>/><br />
-            <button type="submit" name="affichage" value="html">Afficher</button>
+            Ne pas afficher les commentaires dans l'export ods et odt :
+            <input type="checkbox" name="sans_commentaire" value="no" onChange="document.bilan_individuel.submit();" <?php
+            if($sans_commentaire) {
+                echo'checked';
+            }
+            ?>/><br />             
+             </fieldset>
+        <fieldset style="width:600px;">
+            <legend>Validation des modifications et choix du mode de sortie des données</legend>
+            <button type="submit" name="affichage" value="html">Afficher à l'écran</button>
             <button type="submit" name="affichage" value="ods">Exporter dans un tableur(ods)</button>
             <button type="submit" name="affichage" value="odt">Exporter dans un traitement de texte(odt)</button>
-        </p>
+        </fieldset>
     </form>
     <?php
 }
@@ -237,7 +256,7 @@ if ($id_classe !== null && $id_classe != -1) {
     $eleve_query->useJEleveClasseQuery()->filterByIdClasse($id_classe)->endUse();
 }
 if ($nom_eleve !== null && $nom_eleve != '') {
-    $eleve_query->filterByNomOrPrenomLike($nom_eleve);
+    $eleve_query->filterByNom('%'.$nom_eleve.'%');
 }
 if ($id_eleve !== null && $id_eleve != '') {
     $eleve_query->filterByIdEleve($id_eleve);
@@ -398,10 +417,10 @@ foreach ($donnees as $id => $eleve) {
                 echo'<tr>';
                 if ($precedent_eleve_id != $id) {                    
                     echo '<td rowspan=' . $eleve['nbre_lignes_total'] . '>';
-                    echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html&tri='.$tri.'">';
+                    echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'">';
                     echo '<b>' . $eleve['nom'] . ' ' . $eleve['prenom'] . '</b></a><br/> (' . $eleve['classe'] . ')
-                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=ods&tri='.$tri.'"><img src="../images/icons/ods.png" title="export ods"></a>
-                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt&tri='.$tri.'"><img src="../images/icons/odt.png" title="export odt"></a><br/><br/>';
+                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=ods&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'"><img src="../images/icons/ods.png" title="export ods"></a>
+                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'"><img src="../images/icons/odt.png" title="export odt"></a><br/><br/>';
                     echo '<u><i>Absences :</i></u> <br />';
                     if (strval($eleve['demi_journees']) == 0) {
                         echo 'Aucune demi-journée';
@@ -486,7 +505,7 @@ foreach ($donnees as $id => $eleve) {
         }
     }
 }
-echo '<h5>Extraction faite le '.date("d/m/Y - h:i").'</h5>';
+echo '<h5>Extraction faite le '.date("d/m/Y - H:i").'</h5>';
 } else if ($affichage == 'ods' || $affichage == 'odt') {
 include_once '../orm/helpers/AbsencesNotificationHelper.php';
 if ($affichage == 'ods') {
@@ -516,7 +535,7 @@ if ($affichage == 'ods') {
                     $motif = $value['motif'];
                     $justification = $value['justification'];
                     $export_commentaire = '';
-                    if (isset($value['commentaires'])) {
+                    if (isset($value['commentaires']) && is_null($sans_commentaire)) {
                         $besoin_echo_virgule = false;
                         foreach ($value['commentaires'] as $commentaire) {
                             if ($besoin_echo_virgule) {
@@ -580,7 +599,7 @@ if ($affichage == 'ods') {
                     $motif = $value['motif'];
                     $justification = $value['justification'];
                     $export_commentaire = '';
-                    if (isset($value['commentaires'])) {
+                    if (isset($value['commentaires']) && is_null($sans_commentaire)) {
                         $besoin_echo_virgule = false;
                         foreach ($value['commentaires'] as $commentaire) {
                             if ($besoin_echo_virgule) {
