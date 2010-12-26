@@ -229,9 +229,10 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
 }
 if ($affichage != null && $affichage != '') {
 $eleve_query = EleveQuery::create();
-if (getSettingValue("GepiAccesAbsTouteClasseCpe") == 'yes' && $utilisateur->getStatut() == "cpe") {
-    $eleve_query->filterByUtilisateurProfessionnel($utilisateur);
-}
+if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
+    } else {
+	$eleve_query->filterByUtilisateurProfessionnel($utilisateur);
+    }
 if ($id_classe !== null && $id_classe != -1) {
     $eleve_query->useJEleveClasseQuery()->filterByIdClasse($id_classe)->endUse();
 }
