@@ -152,7 +152,22 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    }
 	    return false;
 	}
-
+    /**
+	 *
+	 * Renvoi true ou false si un type est defini ou non
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function hasTypeSaisie() {
+	    $traitements = $this->getAbsenceEleveTraitements();
+	    foreach ($traitements as $traitement) {
+		if ($traitement->getAbsenceEleveType() != null ) {
+		    return true;
+		}
+	    }
+	    return false;
+	}
 	/**
 	 *
 	 * Renvoi une chaine de caractere compréhensible concernant les dates de debut et de fin

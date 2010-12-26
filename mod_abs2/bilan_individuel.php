@@ -76,6 +76,8 @@ $type_extrait = isset($_POST["type_extrait"]) ? $_POST["type_extrait"] : (isset(
 $affichage = isset($_POST["affichage"]) ? $_POST["affichage"] : (isset($_GET["affichage"]) ? $_GET["affichage"] : NULL);
 $tri = isset($_POST["tri"]) ? $_POST["tri"] : (isset($_GET["tri"]) ? $_GET["tri"] : NULL);
 $sans_commentaire = isset($_POST["sans_commentaire"]) ? $_POST["sans_commentaire"] : (isset($_GET["sans_commentaire"]) ? $_GET["sans_commentaire"] : Null);
+$non_traitees = isset($_POST["non_traitees"]) ? $_POST["non_traitees"] : (isset($_GET["non_traitees"]) ? $_GET["non_traitees"] : Null);
+$ods2 = isset($_POST["ods2"]) ? $_POST["ods2"] : (isset($_GET["ods2"]) ? $_GET["ods2"] : Null);
 
 if (isset($id_classe) && $id_classe != null)
     $_SESSION['id_classe_abs'] = $id_classe;
@@ -232,14 +234,25 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
             }            
             ?>
 			> Tri des données par type (Manquement aux obligations de présence, retard)
-			<br />
-           
+			<br />           
+            <input type="checkbox" name="ods2" value="ods2" onChange="document.bilan_individuel.submit();" <?php
+            if($ods2) {
+                echo'checked';
+            } ?> 
+			> Ne pas répéter les informations globales de l'élève par ligne dans l'export tableur (pour totaux par colonne)
+            <br />
             <input type="checkbox" name="sans_commentaire" value="no" onChange="document.bilan_individuel.submit();" <?php
             if($sans_commentaire) {
                 echo'checked';
-            } ?> 
+            } ?>
 			> Ne pas afficher les commentaires dans l'export ods et odt
-            <br />             
+            <br />
+            <input type="checkbox" name="non_traitees" value="non_traitees" onChange="document.bilan_individuel.submit();" <?php
+            if($non_traitees) {
+                echo'checked';
+            } ?>
+			> N'afficher que les saisies non traitées ou sans type défini
+            <br />
         </fieldset>
 		<br />
         <fieldset style="width:600px;">
@@ -286,6 +299,9 @@ $eleve_id = Null;
 $donnees = Array();
 foreach ($saisie_col as $saisie) {
     if ($type_extrait == '1' && !$saisie->getManquementObligationPresence()) {
+        continue;
+    }
+    if (!is_null($non_traitees) && $saisie->getTraitee() && $saisie->hasTypeSaisie()){
         continue;
     }
     $eleve_id = $saisie->getEleveId();
@@ -517,19 +533,33 @@ if ($affichage == 'ods') {
     $extension='ods';
     $export = array();
     foreach ($donnees as $id => $eleve) {
+        $indice=TRUE;
         if($tri!==null && $tri!='') {
             ksort($eleve['infos_saisies']);
         }
         foreach ($eleve['infos_saisies'] as $type_tab) {
             foreach ($type_tab as $journee) {
                 foreach ($journee as $key => $value) {
-                    $nom = $eleve['nom'];
-                    $prenom = $eleve['prenom'];
-                    $classe = $eleve['classe'];
-                    $total_demi_journees = strval($eleve['demi_journees']);
-                    $total_demi_journees_justifiees = strval($eleve['demi_journees'] - $eleve['non_justifiees']);
-                    $total_demi_journees_non_justifiees = strval($eleve['non_justifiees']);
-                    $retards = $eleve['retards'];
+                    if($indice){
+                        $nom = $eleve['nom'];
+                        $prenom = $eleve['prenom'];
+                        $classe = $eleve['classe'];
+                        $total_demi_journees = strval($eleve['demi_journees']);
+                        $total_demi_journees_justifiees = strval($eleve['demi_journees'] - $eleve['non_justifiees']);
+                        $total_demi_journees_non_justifiees = strval($eleve['non_justifiees']);
+                        $retards = $eleve['retards'];                       
+                    }else{
+                        $nom = '';
+                        $prenom = '';
+                        $classe = '';
+                        $total_demi_journees = '';
+                        $total_demi_journees_justifiees = '';
+                        $total_demi_journees_non_justifiees = '';
+                        $retards = '';
+                    }
+                    if(!is_null($ods2)){                        
+                        $indice=FALSE;
+                    }
                     $dates = getDateDescription($value['dates']['debut'], $value['dates']['fin']);
                     $eleve_current = EleveQuery::create()->filterByIdEleve($id)->findOne();
                     $abs_col = AbsenceEleveSaisieQuery::create()->filterById($value['saisies'])->orderByDebutAbs()->find();
