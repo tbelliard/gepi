@@ -4,7 +4,7 @@
  *
  *
  * @version $Id$
- * @copyright 2008
+ * @copyright 2008-2011
  * Fichier d'inclusion à la gestion des statuts 'autre'
  *
  */
@@ -51,7 +51,7 @@ $autorise[15]= array('/voir_abs');
 //$autorise[16]= array('/voir_anna');
 //$autorise[16]= array('/mod_annees_anterieures/popup_annee_anterieure.php');
 $autorise[16]= array('/mod_annees_anterieures/consultation_annee_anterieure.php', '/mod_annees_anterieures/popup_annee_anterieure.php');
-$autorise[17]= array('/mod_trombinoscopes/trombinoscopes.php', '/mod_trombinoscopes/trombi_impr.php');
+$autorise[17]= array('/mod_trombinoscopes/trombinoscopes.php', '/mod_trombinoscopes/trombi_impr.php', '/mod_trombinoscopes/trombino_pdf.php');
 $autorise[18]= array('/mod_discipline/index.php',
 					 '/mod_discipline/saisie_incident.php',
 					 '/mod_discipline/check_nature_incident.php',
@@ -90,7 +90,7 @@ $menu_accueil[13] = array('Fiches : ', 'Fiches : voir les relevés de notes', 'vn
 $menu_accueil[14] = array('Fiches : ', 'Fiches : voir les bulletins simplifiés', 'vbe');
 $menu_accueil[15] = array('Fiches : ', 'Fiches : voir les absences', 'vae');
 $menu_accueil[16] = array('Fiches : ', 'Fiches : voir année antérieure', 'anna');
-$menu_accueil[17] = array('Trombinoscope', 'Trombinoscope des élèves', 'tr');
+$menu_accueil[17] = array('Trombinoscope', 'Trombinoscope des élèves et personnels', 'tr');
 $menu_accueil[18] = array('Discipline', 'Accéder au module Discipline : Déclarer et gérer ses incidents', 'dsi');
 $menu_accueil[19] = array('Absence', 'Accéder au module absence.', 'abs');
 
