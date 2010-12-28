@@ -164,6 +164,7 @@
 			echo "<li>Si l'export généré est au format TXT (<i>séparateur tabulation</i>), se rendre dans le menu Outils/Préférences pour choisir CSV plutôt que TXT pour l'export.</li>\n";
 			echo "<li>Les champs du CSV sont&nbsp;:<br />Jour;Heure;Div;Matière;Professeur;Salle;Groupe;Regroup;Eff;Mo;Freq;Aire;</li>\n";
 			//echo "<li><span style='color:red'>A FAIRE:</span> Quand un prof n'est pas identifié, trouver les matières associées dans le CSV.</li>\n";
+			echo "<li>Si vous disposez d'un export <b>STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;</b> après remontée de l'emploi du temps vers STS, il vaut mieux effectuer l'<a href='prof_disc_classe_csv.php?a=a".add_token_in_url()."'>initialisation des enseignements</a> à partir de ce fichier.</li>\n";
 			echo "</ul>\n";
 		}
 		else {
