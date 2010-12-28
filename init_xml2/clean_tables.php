@@ -74,13 +74,16 @@ require_once("../lib/header.inc");
 <?php
 echo "<center><h3 class='gepi'>Septième phase d'initialisation<br />Nettoyage des tables</h3></center>\n";
 if (!isset($is_posted)) {
-echo "<p><b>ATTENTION ...</b> : vous ne devez procéder à cette opération uniquement si toutes les données (élèves, classes, professeurs, disciplines, options) ont été définies !</p>\n";
-echo "<p>Les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p>\n";
-echo "<form enctype='multipart/form-data' action='clean_tables.php' method='post'>\n";
-echo add_token_field();
-echo "<input type=hidden name='is_posted' value='yes' />\n";
-echo "<p><input type=submit value='Procéder au nettoyage' /></p>\n";
-echo "</form>\n";
+	echo "<p><b>ATTENTION ...</b> : vous ne devez procéder à cette opération uniquement si toutes les données (élèves, classes, professeurs, disciplines, options) ont été définies !</p>\n";
+	echo "<p>Les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p>\n";
+
+	echo "<form enctype='multipart/form-data' action='clean_tables.php' method='post'>\n";
+	echo add_token_field();
+	echo "<input type=hidden name='is_posted' value='yes' />\n";
+	echo "<p>";
+	echo "<input type='checkbox' name='simulation' id='simulation' value='y' /><label for='simulation'> Simulation (<i>ne rien supprimer<i>)</label><br />\n";
+	echo "<input type=submit value='Procéder au nettoyage' /></p>\n";
+	echo "</form>\n";
 } else {
 	$j=0;
 	$flag=0;
@@ -96,6 +99,12 @@ echo "</form>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
+
+	$simulation=isset($_POST['simulation']) ? $_POST['simulation'] : "n";
+	if($simulation=="n") {
+		echo "<p><b>Mode simulation&nbsp;:</b> Aucune donnée ne sera effectivement supprimée.</p>\n";
+	}
+
 	//Suppression des données inutiles dans la tables utilisateurs
 	echo "<h3 class='gepi'>Vérification des données concernant les professeurs</h3>\n";
 	$req = mysql_query("select login from utilisateurs where (statut = 'professeur' and etat='actif')");
@@ -106,22 +115,38 @@ echo "</form>\n";
 		$login_prof = mysql_result($req, $i, 'login');
 		$test = mysql_query("select id_professeur from j_professeurs_matieres where id_professeur = '$login_prof'");
 		if (mysql_num_rows($test)==0) {
-			$del = @mysql_query("delete from utilisateurs where login = '$login_prof'");
-			echo "Le professeur $login_prof a été supprimé de la base.<br />\n";
+			if($simulation=="n") {
+				$del = @mysql_query("delete from utilisateurs where login = '$login_prof'");
+				echo "Le professeur $login_prof a été supprimé de la base.<br />\n";
+			}
+			else {
+				echo "Le professeur <a href='../utilisateurs/modify_user.php?user_login=$login_prof' target='_blank'>$login_prof</a> (<i>associé à aucune matière</i>) serait supprimé de la base.<br />\n";
+			}
 			$sup = 'yes';
 		} else {
 			$test = mysql_query("select login from j_groupes_professeurs where login = '$login_prof'");
 			if (mysql_num_rows($test)==0) {
-				$del = @mysql_query("delete from utilisateurs where login = '$login_prof'");
-				echo "Le professeur $login_prof a été supprimé de la base.<br />\n";
+				if($simulation=="n") {
+					$del = @mysql_query("delete from utilisateurs where login = '$login_prof'");
+					echo "Le professeur $login_prof a été supprimé de la base.<br />\n";
+				}
+				else {
+					echo "Le professeur <a href='../utilisateurs/modify_user.php?user_login=$login_prof' target='_blank'>$login_prof</a> (<i>associé à aucun enseignement/groupe</i>) serait supprimé de la base.<br />\n";
+				}
 				$sup = 'yes';
 			}
 		}
 		$i++;
 	}
 	if ($sup == 'no') {
-		echo "<p>Aucun professeur n'a été supprimé !</p>\n";
+		if($simulation=="n") {
+			echo "<p>Aucun professeur n'a été supprimé !</p>\n";
+		}
+		else {
+			echo "<p>Aucun professeur ne serait supprimé !</p>\n";
+		}
 	}
+
 	//Suppression des données inutiles dans la tables des matières
 	echo "<h3 class='gepi'>Vérification des données concernant les matières</h3>\n";
 	$req = mysql_query("select matiere from matieres");
@@ -134,16 +159,27 @@ echo "</form>\n";
 		if (mysql_num_rows($test1)==0) {
 			$test2 = mysql_query("select id_matiere from j_groupes_matieres where id_matiere = '$mat'");
 			if (mysql_num_rows($test2)==0) {
-				$del = @mysql_query("delete from matieres where matiere = '$mat'");
-				echo "La matière $mat a été supprimée de la base.<br />\n";
+				if($simulation=="n") {
+					$del = @mysql_query("delete from matieres where matiere = '$mat'");
+					echo "La matière $mat a été supprimée de la base.<br />\n";
+				}
+				else {
+					echo "La matière $mat serait supprimée de la base (<i><a href='../utilisateurs/index.php?mode=personnels&amp;order_by=nom,prenom&amp;display=tous&amp;afficher_statut=professeur' target='_blank'>associer à un professeur</a></i>).<br />\n";
+				}
 				$sup = 'yes';
 			}
 		}
 		$i++;
 	}
 	if ($sup == 'no') {
-		echo "<p>Aucune matière n'a été supprimée !</p>\n";
+		if($simulation=="n") {
+			echo "<p>Aucune matière n'a été supprimée !</p>\n";
+		}
+		else {
+			echo "<p>Aucune matière ne serait supprimée !</p>\n";
+		}
 	}
+
 	//Suppression des données inutiles dans la tables des responsables
 	echo "<h3 class='gepi'>Vérification des données concernant les responsables des élèves</h3>\n";
 	//$req = mysql_query("select ereno, nom1, prenom1 from responsables");
@@ -184,28 +220,37 @@ echo "</form>\n";
 		$test1 = mysql_query("select r.ele_id from responsables2 r, eleves e where r.pers_id='$pers_id' AND e.ele_id=r.ele_id");
 		//$test1 = mysql_query("select ele_id from eleves where ele_id='$ele_id'");
 		if (mysql_num_rows($test1)==0) {
-			$del=@mysql_query("delete from responsables2 where pers_id='$pers_id'");
-			$del=@mysql_query("delete from resp_pers where pers_id='$pers_id'");
-			echo "Le responsable ".$prenom_resp." ".$nom_resp." a été supprimé de la base.<br />\n";
-
-			// L'adresse héberge-t-elle encore un représentant d'élève de l'établissement?
-			$sql="SELECT * FROM resp_adr ra, eleves e, responsables2 r, resp_pers rp WHERE
-					ra.adr_id=rp.adr_id AND
-					r.pers_id=rp.pers_id AND
-					r.ele_id=e.ele_id AND
-					adr_id='$adr_id'";
-			$test2=mysql_query($sql);
-			if (mysql_num_rows($test1)==0) {
-				$sql="delete from resp_adr where adr_id='$adr_id'";
-				$del=mysql_query($sql);
+			if($simulation=="n") {
+				$del=@mysql_query("delete from responsables2 where pers_id='$pers_id'");
+				$del=@mysql_query("delete from resp_pers where pers_id='$pers_id'");
+				echo "Le responsable ".$prenom_resp." ".$nom_resp." a été supprimé de la base.<br />\n";
+	
+				// L'adresse héberge-t-elle encore un représentant d'élève de l'établissement?
+				$sql="SELECT * FROM resp_adr ra, eleves e, responsables2 r, resp_pers rp WHERE
+						ra.adr_id=rp.adr_id AND
+						r.pers_id=rp.pers_id AND
+						r.ele_id=e.ele_id AND
+						adr_id='$adr_id'";
+				$test2=mysql_query($sql);
+				if (mysql_num_rows($test1)==0) {
+					$sql="delete from resp_adr where adr_id='$adr_id'";
+					$del=mysql_query($sql);
+				}
 			}
-
+			else {
+				echo "Le responsable ".$prenom_resp." ".$nom_resp." serait supprimé de la base.<br />\n";
+			}
 			$sup = 'yes';
 		}
 		$i++;
 	}
 	if ($sup == 'no') {
-		echo "<p>Aucun responsable n'a été supprimé !</p>\n";
+		if($simulation=="n") {
+			echo "<p>Aucun responsable n'a été supprimé !</p>\n";
+		}
+		else {
+			echo "<p>Aucun responsable ne serait supprimé !</p>\n";
+		}
 	}
 
 	//Suppression des données inutiles dans la table j_eleves_etablissements
@@ -218,26 +263,62 @@ echo "</form>\n";
 			WHERE e.elenoet IS NULL;";
 	$res_jee=mysql_query($sql);
 	if(mysql_num_rows($res_jee)==0) {
-		echo "<p>Aucune association élève/établissement n'a été supprimée.</p>\n";
+		if($simulation=="n") {
+			echo "<p>Aucune association élève/établissement n'a été supprimée.</p>\n";
+		}
+		else {
+			echo "<p>Aucune association élève/établissement ne serait supprimée.</p>\n";
+		}
 	}
 	else {
 		$cpt_suppr_jee=0;
 		while($lig_jee=mysql_fetch_object($res_jee)) {
-			$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='".$lig_jee->id_eleve."' AND id_etablissement='".$lig_jee->id_etablissement."';";
-			$suppr=mysql_query($sql);
-			if($suppr) {
+			if($simulation=="n") {
+				$sql="DELETE FROM j_eleves_etablissements WHERE id_eleve='".$lig_jee->id_eleve."' AND id_etablissement='".$lig_jee->id_etablissement."';";
+				$suppr=mysql_query($sql);
+				if($suppr) {
+					$cpt_suppr_jee++;
+				}
+			}
+			else {
 				$cpt_suppr_jee++;
 			}
 		}
-		echo "<p>$cpt_suppr_jee association(s) élève/établissement a(ont) été supprimée(s).<br />(<i>pour des élèves qui ne sont plus dans l'établissement</i>).</p>\n";
+
+		if($simulation=="n") {
+			echo "<p>$cpt_suppr_jee association(s) élève/établissement a(ont) été supprimée(s).<br />(<i>pour des élèves qui ne sont plus dans l'établissement</i>).</p>\n";
+		}
+		else {
+			echo "<p>$cpt_suppr_jee association(s) élève/établissement serai(en)t supprimée(s).<br />(<i>pour des élèves qui ne sont plus dans l'établissement</i>).</p>\n";
+		}
 	}
 
 
 	echo "<p><br /></p>\n";
 	//echo "<p>Fin de la procédure !</p>";
-	echo "<p>Fin de la procédure d'importation!</p>\n";
 
-	echo "<p><a href='clean_temp.php?a=a".add_token_in_url()."'>Supprimer les XML et CSV pouvant subsister dans votre dossier temporaire.</a></p>\n";
+	if($simulation=="n") {
+		echo "<p>Fin de la procédure d'importation!</p>\n";
+
+		echo "<p><a href='clean_temp.php?a=a".add_token_in_url()."'>Supprimer les XML et CSV pouvant subsister dans votre dossier temporaire.</a></p>\n";
+	}
+	else {
+		echo "<p>Fin de la simulation de nettoyage!</p>\n";
+
+		echo "<p class'bold'>Voulez-vous relancer la procédure sans simulation?</p>\n";
+
+		echo "<p>Les données inutiles importées à partir des fichiers GEP lors des différentes phases d'initialisation seront effacées !</p>\n";
+	
+		echo "<form enctype='multipart/form-data' action='clean_tables.php' method='post'>\n";
+		echo add_token_field();
+		echo "<input type=hidden name='is_posted' value='yes' />\n";
+		echo "<p>";
+		echo "<input type='checkbox' name='simulation' id='simulation' value='y' /><label for='simulation'> Simulation (<i>ne rien supprimer<i>)</label><br />\n";
+		echo "<input type=submit value='Procéder au nettoyage' /></p>\n";
+		echo "</form>\n";
+
+	}
+
 	echo "<p><br /></p>\n";
 
 	//echo "<p><b>Etape ajoutée:</b> Si vous disposez du F_DIV.CSV, vous pouvez <a href='init_pp.php'>initialiser les professeurs principaux</a>.</p>";
