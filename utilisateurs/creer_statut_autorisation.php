@@ -66,7 +66,8 @@ $autorise[19]= array('/mod_abs2/saisir_eleve.php',
 					 '/mod_abs2/visu_saisie.php',
 					 '/mod_abs2/enregistrement_modif_saisie.php',
 					 '/mod_abs2/liste_saisies.php',
-					 '/mod_abs2/enregistrement_saisie_eleve.php');
+					 '/mod_abs2/enregistrement_saisie_eleve.php',
+                     '/mod_abs2/bilan_individuel.php' );
 
 
 $iter = count($autorise);

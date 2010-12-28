@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
     die();
 };
 $sql = "INSERT INTO `droits` ( `id` , `administrateur` , `professeur` , `cpe` , `scolarite` , `eleve` , `responsable` , `secours` , `autre` , `description` , `statut` )
-  VALUES ('/mod_abs2/bilan_individuel.php', 'F', 'F', 'V', 'V', 'F', 'F', 'F', 'F', 'Bilan individuel des absences eleve', '')
+  VALUES ('/mod_abs2/bilan_individuel.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Bilan individuel des absences eleve', '')
   ON DUPLICATE KEY UPDATE `CPE` = 'V'";
 
 $result = mysql_query($sql);
@@ -46,7 +46,6 @@ if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
-
 //recherche de l'utilisateur avec propel
 $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
 if ($utilisateur == null) {
@@ -59,7 +58,10 @@ if (getSettingValue("active_module_absence") != '2') {
     die("Le module n'est pas activé.");
 }
 
-if ($utilisateur->getStatut() != "cpe" && $utilisateur->getStatut() != "scolarite") {
+if ($utilisateur->getStatut() != "cpe" && $utilisateur->getStatut() != "scolarite" && $utilisateur->getStatut() != "professeur" && $utilisateur->getStatut() != "autre" ) {
+    die("acces interdit");
+}
+if($utilisateur->getStatut() == "professeur" && $utilisateur->getClasses()->isEmpty()){
     die("acces interdit");
 }
 
@@ -128,6 +130,17 @@ function getDateDescription($date_debut,$date_fin) {
 	    return $message;
 	}
 
+$affichage_liens=true;
+$affichage_commentaires_html=true;
+if ($utilisateur->getStatut() == "professeur" || $utilisateur->getStatut() == "autre"){
+    $affichage_liens=false;
+    $affichage_commentaires_html=false;
+    if($affichage != null && $affichage != '' && $affichage != 'html' ){
+        $affichage == 'html'; //on empeche l'export odt et ods pour les autres statuts
+    }
+
+}
+
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
@@ -192,14 +205,16 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
            
             <?php
             //on affiche une boite de selection avec les classe
-            if (getSettingValue("GepiAccesAbsTouteClasseCpe") == 'yes' && $utilisateur->getStatut() == "cpe") {
+            if ((getSettingValue("GepiAccesAbsTouteClasseCpe") == 'yes' && $utilisateur->getStatut() == "cpe") || $utilisateur->getStatut() == "autre" ) {
                 $classe_col = ClasseQuery::create()->orderByNom()->orderByNomComplet()->find();
             } else {
                 $classe_col = $utilisateur->getClasses();
             }
             if (!$classe_col->isEmpty()) {
                 echo ("Classe : <select name=\"id_classe\" onChange='document.bilan_individuel.id_eleve.value=\"\";'>");
-                echo "<option value='-1'>Toutes les classes</option>\n";
+                if($utilisateur->getStatut() != "autre" && $utilisateur->getStatut() != "professeur" ){
+                    echo "<option value='-1'>Toutes les classes</option>\n";
+                }
                 foreach ($classe_col as $classe) {
                     echo "<option value='" . $classe->getId() . "'";
                     if ($id_classe == $classe->getId())
@@ -234,7 +249,8 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
             }            
             ?>
 			> Tri des données par type (Manquement aux obligations de présence, retard)
-			<br />           
+			<br />
+            <?php if($utilisateur->getStatut() == "cpe" || $utilisateur->getStatut() == "scolarite"):?>
             <input type="checkbox" name="ods2" value="ods2" onChange="document.bilan_individuel.submit();" <?php
             if($ods2) {
                 echo'checked';
@@ -246,6 +262,8 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
                 echo'checked';
             } ?>
 			> Ne pas afficher les commentaires dans l'export ods et odt
+            <?php endif; ?>
+            <?php if($utilisateur->getStatut() == "cpe"):?>
             <br />
             <input type="checkbox" name="non_traitees" value="non_traitees" onChange="document.bilan_individuel.submit();" <?php
             if($non_traitees) {
@@ -253,13 +271,16 @@ if ($affichage != 'ods' && $affichage != 'odt') {// on n'affiche pas de html pou
             } ?>
 			> N'afficher que les saisies non traitées ou sans type défini
             <br />
+            <?php endif; ?>
         </fieldset>
 		<br />
         <fieldset style="width:600px;">
             <legend>Validation des modifications et choix du mode de sortie des données</legend>
             <button type="submit" name="affichage" value="html">Afficher à l'écran</button>
+            <?php if($affichage_liens):?>
             <button type="submit" name="affichage" value="ods">Exporter dans un tableur (ods)</button>
             <button type="submit" name="affichage" value="odt">Exporter dans un traitement de texte (odt)</button>
+            <?php endif; ?>
         </fieldset>
     </form>
     <?php
@@ -422,9 +443,11 @@ echo '</td>';
 echo '<td align="center">';
 echo 'Justification';
 echo '</td>';
-echo '<td align="center">';
-echo 'Commentaire(s)';
-echo '</td>';
+if($affichage_commentaires_html){
+   echo '<td align="center">';
+   echo 'Commentaire(s)';
+   echo '</td>';
+}
 echo '</tr>';
 $precedent_eleve_id = Null;
 foreach ($donnees as $id => $eleve) {
@@ -439,9 +462,13 @@ foreach ($donnees as $id => $eleve) {
                 if ($precedent_eleve_id != $id) {                    
                     echo '<td rowspan=' . $eleve['nbre_lignes_total'] . '>';
                     echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'">';
-                    echo '<b>' . $eleve['nom'] . ' ' . $eleve['prenom'] . '</b></a><br/> (' . $eleve['classe'] . ')
-                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=ods&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'"><img src="../images/icons/ods.png" title="export ods"></a>
+                    echo '<b>' . $eleve['nom'] . ' ' . $eleve['prenom'] . '</b></a><br/> (' . $eleve['classe'] . ')';
+                    if($affichage_liens){
+                      echo'<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=ods&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'"><img src="../images/icons/ods.png" title="export ods"></a>
                       <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'"><img src="../images/icons/odt.png" title="export odt"></a><br/><br/>';
+                    }else{
+                        echo'<br />';
+                    }
                     echo '<u><i>Absences :</i></u> <br />';
                     if (strval($eleve['demi_journees']) == 0) {
                         echo 'Aucune demi-journée';
@@ -475,8 +502,12 @@ foreach ($donnees as $id => $eleve) {
                     }
                     echo '</td>';
                 }
-                echo '<td class="'.$style.'">';                
-                echo '<a href="./liste_saisies_selection_traitement.php?saisies=' . serialize($value['saisies']) . '" target="_blank">' . getDateDescription($value['dates']['debut'], $value['dates']['fin']) . '<a>';
+                echo '<td class="'.$style.'">';
+                if($affichage_liens){
+                    echo '<a href="./liste_saisies_selection_traitement.php?saisies=' . serialize($value['saisies']) . '" target="_blank">' . getDateDescription($value['dates']['debut'], $value['dates']['fin']) . '<a>';
+                }else{
+                    echo getDateDescription($value['dates']['debut'], $value['dates']['fin']) ;
+                }
                 echo '</td>';
                 $eleve_current = EleveQuery::create()->filterByIdEleve($id)->findOne();
                 $abs_col = AbsenceEleveSaisieQuery::create()->filterById($value['saisies'])->orderByDebutAbs()->find();
@@ -497,7 +528,11 @@ foreach ($donnees as $id => $eleve) {
                     if ($value['type'] == 'Non défini') {
                         $class = 'orange';
                     }
-                    echo'<a class="' . $class . '" href="./visu_traitement.php?id_traitement=' . $key . '" target="_blank">' . $value['type'] . '</a>';
+                    if($affichage_liens){
+                        echo'<a class="' . $class . '" href="./visu_traitement.php?id_traitement=' . $key . '" target="_blank">' . $value['type'] . '</a>';
+                    }else{
+                        echo'<font class="' . $class . '">' . $value['type'] . '</font>';
+                    }
                 } else {
                     echo '<font class="orange">' . $value['type'] . '</font>';
                 }
@@ -508,18 +543,20 @@ foreach ($donnees as $id => $eleve) {
                 echo '<td class="'.$style.'">';
                 echo $value['justification'];
                 echo '</td>';
-                echo '<td class="'.$style.'">';
-                if (isset($value['commentaires'])) {
-                    $besoin_echo_virgule = false;
-                    foreach ($value['commentaires'] as $commentaire) {
-                        if ($besoin_echo_virgule) {
-                            echo ', ';
-                        }
-                        echo $commentaire;
-                        $besoin_echo_virgule = true;
-                    }
+                if($affichage_commentaires_html){
+                    echo '<td class="'.$style.'">';
+                    if (isset($value['commentaires'])) {
+                        $besoin_echo_virgule = false;
+                        foreach ($value['commentaires'] as $commentaire) {
+                            if ($besoin_echo_virgule) {
+                                echo ', ';
+                            }
+                            echo $commentaire;
+                            $besoin_echo_virgule = true;
+                            }
+                      }
+                      echo '</td>';
                 }
-                echo '</td>';
                 echo '</tr>';
                 $precedent_eleve_id = $id;
             }
