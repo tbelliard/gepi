@@ -37,11 +37,6 @@ if ($resultat_session == 'c') {
     header("Location: ../logout.php?auto=1");
     die();
 };
-$sql = "INSERT INTO `droits` ( `id` , `administrateur` , `professeur` , `cpe` , `scolarite` , `eleve` , `responsable` , `secours` , `autre` , `description` , `statut` )
-  VALUES ('/mod_abs2/bilan_individuel.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Bilan individuel des absences eleve', '')
-  ON DUPLICATE KEY UPDATE `CPE` = 'V'";
-
-$result = mysql_query($sql);
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
