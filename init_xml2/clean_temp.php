@@ -62,7 +62,7 @@ if(!$tempdir){
 
 if (!isset($is_posted)) {
 	$temoin=0;
-	$tab=array('eleves.xml','nomenclature.xml','sts.xml','f_div.csv','f_gpd.csv','f_men.csv');
+	$tab=array('eleves.xml','nomenclature.xml','sts.xml','f_div.csv','f_gpd.csv','f_men.csv','matiere_principale.csv');
 	for($i=0;$i<count($tab);$i++){
 		if(file_exists("../temp/$tempdir/$tab[$i]")){
 			$temoin++;
@@ -71,6 +71,9 @@ if (!isset($is_posted)) {
 
 	if($temoin==0){
 		echo "<p>Aucun des fichiers d'initialisation n'est encore présent dans votre dossier temporaire.</p>\n";
+
+		echo "<p><i>Remarque&nbsp;:</i> Il est recommandé de <a href='../responsables/dedoublonnage_adresses.php'>dédoublonner les adresses des responsables</a> en fin d'initialisation (<i>Sconet a tendance à compter deux enregistrements même pour des responsables vivant sous le même toit</i>)</p>\n";
+
 		require("../lib/footer.inc.php");
 		die();
 	}
@@ -92,7 +95,7 @@ if (!isset($is_posted)) {
 else {
 
 	$dest_file="../temp/".$tempdir."/sts.xml";
-	$tab=array('eleves.xml','nomenclature.xml','responsables.xml','sts.xml','f_div.csv','f_gpd.csv','f_men.csv');
+	$tab=array('eleves.xml','nomenclature.xml','responsables.xml','sts.xml','f_div.csv','f_gpd.csv','f_men.csv','matiere_principale.csv');
 	for($i=0;$i<count($tab);$i++){
 		if(file_exists("../temp/$tempdir/$tab[$i]")){
 			echo "<p>Suppression de $tab[$i] ... ";
@@ -104,6 +107,9 @@ else {
 			}
 		}
 	}
+
+	echo "<p><i>Remarque&nbsp;:</i> Il est recommandé de <a href='../responsables/dedoublonnage_adresses.php'>dédoublonner les adresses des responsables</a> en fin d'initialisation (<i>Sconet a tendance à compter deux enregistrements même pour des responsables vivant sous le même toit</i>)</p>\n";
+
 }
 
 require("../lib/footer.inc.php");
