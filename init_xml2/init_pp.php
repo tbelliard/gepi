@@ -60,9 +60,115 @@ require_once("../lib/header.inc");
 
 //debug_var();
 
-echo "<center><h3 class='gepi'>Sixième phase<br />Importation des professeurs principaux</h3></center>\n";
-
 if (!isset($step1)) {
+
+	$dirname=get_user_temp_directory();
+	if(@file_exists("../temp/".$dirname."/matiere_principale.csv")) {
+		/*
+		$fich_mp=fopen("../temp/".$dirname."/matiere_principale.csv","r");
+		while(!feof($fich_mp)) {
+			$ligne=trim(fgets($fich_mp, 4096));
+			echo "\$ligne=$ligne<br />\n";
+		}
+		fclose($fich_mp);
+		*/
+
+		$fich_mp=fopen("../temp/".$dirname."/matiere_principale.csv","r");
+		if($fich_mp) {
+			echo "<p class='bold'>Rétablissement de la matière principale de chaque professeur d'après les enregistrements de l'année précédente.</p>\n";
+
+			$temoin_erreur=0;
+
+			$temoin_debut_mp=0;
+			while(!feof($fich_mp)) {
+				$ligne=trim(fgets($fich_mp, 4096));
+
+				$tab=explode(";",$ligne);
+				if(($tab[0]!="")&&($tab[1]!="")) {
+					$login_prof=$tab[0];
+					$matiere_prof=$tab[1];
+	
+					unset($tab_matiere_prof);
+					unset($tab_matiere_prof_reordonne);
+					$tab_matiere_prof=array();
+					$tab_matiere_prof_reordonne=array();
+					$sql="SELECT * FROM j_professeurs_matieres WHERE id_professeur='$login_prof' ORDER BY ordre_matieres;";
+					//echo "$sql<br />\n";
+					$res=mysql_query($sql);
+					if(mysql_num_rows($res)>0) {
+						while($lig_mp=mysql_fetch_object($res)) {
+							$tab_matiere_prof[]=$lig_mp->id_matiere;
+						}
+					}
+	
+					if(in_array($matiere_prof,$tab_matiere_prof)) {
+						// On va contrôler si la matière est bien au premier rang
+						if($tab_matiere_prof[0]!=$matiere_prof) {
+							// Il faut réordonner
+							$tab_matiere_prof_reordonne[]=$matiere_prof;
+							for($loop=0;$loop<count($tab_matiere_prof);$loop++) {
+								if($tab_matiere_prof[$loop]!=$matiere_prof) {
+									$tab_matiere_prof_reordonne[]=$tab_matiere_prof[$loop];
+								}
+							}
+	
+							if($temoin_debut_mp==0) {
+								echo "<p>Correction de la matière principale pour ";
+							}
+							else {
+								echo ", ";
+							}
+	
+							echo "<a href='../utilisateurs/modify_user.php?user_login=$login_prof' target='_blank'>$login_prof</a>";
+	
+							$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='$login_prof';";
+							//echo "$sql<br />\n";
+							$del=mysql_query($sql);
+							if(!$del) {
+								echo " (<span style='color:red'>ERREUR</span>)";
+								$temoin_erreur++;
+							}
+							else {
+								for($loop=0;$loop<count($tab_matiere_prof_reordonne);$loop++) {
+									$k=$loop+1;
+									$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$login_prof', id_matiere='".$tab_matiere_prof_reordonne[$loop]."', ordre_matieres='$k';";
+									//echo "$sql<br />\n";
+									$insert=mysql_query($sql);
+									if($insert) {
+										echo " (<span style='color:green";
+										if($loop==0) {echo "; font-weight: bold";}
+										echo "'>".$tab_matiere_prof_reordonne[$loop]."</span>)";
+									}
+									else {
+										echo " (<span style='color:red'>".$tab_matiere_prof_reordonne[$loop]."</span>)";
+										$temoin_erreur++;
+									}
+								}
+							}
+							$temoin_debut_mp++;
+						}
+						//else {
+						//	echo "$login_prof a déjà la bonne matière principale&nbsp;: $matiere_prof<br />";
+						//}
+					}
+				}
+			}
+			fclose($fich_mp);
+
+			if($temoin_erreur==0) {
+				unlink("../temp/".$dirname."/matiere_principale.csv");
+			}
+
+			if($temoin_debut_mp>0) {
+				echo ".</p>\n";
+	
+				echo "<p><i>Remarque&nbsp;:</i> Les professeurs pour lesquels la matière principale est déjà la bonne n'apparaissent pas dans les corrections ci-dessus.</p>\n";
+			}
+		}
+	}
+
+	echo "<center><h3 class='gepi'>Sixième phase<br />Importation des professeurs principaux</h3></center>\n";
+
 	$j=0;
 	$flag=0;
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
@@ -87,6 +193,9 @@ if (!isset($step1)) {
 		require("../lib/footer.inc.php");
 		die();
 	}
+}
+else {
+	echo "<center><h3 class='gepi'>Sixième phase<br />Importation des professeurs principaux</h3></center>\n";
 }
 
 $tempdir=get_user_temp_directory();
