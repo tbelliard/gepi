@@ -144,7 +144,7 @@ if (!isset($step1)) {
 	$chaine_tables="";
 	while (($j < count($liste_tables_del)) and ($flag==0)) {
 		$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE '$liste_tables_del[$j]'"));
-		if($test==1){
+		if($test==1) {
 			if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
 				$flag=1;
 			}
@@ -185,6 +185,24 @@ if (!isset($step1)) {
 
 if (!isset($is_posted)) {
 	if(isset($step1)) {
+		$dirname=get_user_temp_directory();
+
+		$sql="SELECT * FROM j_professeurs_matieres WHERE ordre_matieres='1';";
+		$res_matiere_principale=mysql_query($sql);
+		if(mysql_num_rows($res_matiere_principale)>0) {
+			$fich_mp=fopen("../temp/".$dirname."/matiere_principale.csv","w+");
+			if($fich_mp) {
+				echo "<p>Création d'un fichier de sauvegarde de la matière principale de chaque professeur.</p>\n";
+				while($lig_mp=mysql_fetch_object($res_matiere_principale)) {
+					fwrite($fich_mp,"$lig_mp->id_professeur;$lig_mp->id_matiere\n");
+				}
+				fclose($fich_mp);
+			}
+			else {
+				echo "<p style='color:red'>Echec de la création d'un fichier de sauvegarde de la matière principale de chaque professeur.</p>\n";
+			}
+		}
+
 		check_token(false);
 		$j=0;
 		while ($j < count($liste_tables_del)) {
@@ -210,21 +228,76 @@ if (!isset($is_posted)) {
 	//echo "<p><input type='file' size='80' name='dbf_file' />";
 	echo "<br /><br /><p>Quelle formule appliquer pour la génération du login ?</p>\n";
 
-	echo "<input type='radio' name='login_gen_type' id='login_gen_type_name' value='name' checked /> <label for='login_gen_type_name'  style='cursor: pointer;'>nom</label>\n";
-	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_name8' value='name8' /> <label for='login_gen_type_name8'  style='cursor: pointer;'>nom (tronqué à 8 caractères)</label>\n";
-	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_fname8' value='fname8' /> <label for='login_gen_type_fname8'  style='cursor: pointer;'>pnom (tronqué à 8 caractères)</label>\n";
-	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_fname19' value='fname19' /> <label for='login_gen_type_fname19'  style='cursor: pointer;'>pnom (tronqué à 19 caractères)</label>\n";
-	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_firstdotname' value='firstdotname' /> <label for='login_gen_type_firstdotname'  style='cursor: pointer;'>prenom.nom</label>\n";
-	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_firstdotname19' value='firstdotname19' /> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (tronqué à 19 caractères)</label>\n";
-	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_namef8' value='namef8' /> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (tronqué à 8 caractères)</label>\n";
-	echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_lcs' value='lcs' /> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (façon LCS)</label>\n";
-	if (getSettingValue("use_ent") == "y") {
-		echo "<br /><input type='radio' name='login_gen_type' id='login_gen_type_ent' value='ent' checked=\"checked\" />
-			<label for='login_gen_type_ent'  style='cursor: pointer;'>
-			Les logins sont produits par un ENT (<span title=\"Vous devez adapter le code du fichier ci-dessus vers la ligne 710.\">Attention !</span>)</label>\n";
-
+	if(getSettingValue("use_ent")!='y') {
+		$default_login_gen_type=getSettingValue('login_gen_type');
+		if($default_login_gen_type=='') {$default_login_gen_type='name';}
 	}
+	else {
+		$default_login_gen_type="";
+	}
+
+	echo "<input type='radio' name='login_gen_type' id='login_gen_type_name' value='name' ";
+	if($default_login_gen_type=='name') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_name'  style='cursor: pointer;'>nom</label>\n";
 	echo "<br />\n";
+
+	echo "<input type='radio' name='login_gen_type' id='login_gen_type_name8' value='name8' ";
+	if($default_login_gen_type=='name8') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_name8'  style='cursor: pointer;'>nom (tronqué à 8 caractères)</label>\n";
+	echo "<br />";
+
+	echo "<input type='radio' name='login_gen_type' id='login_gen_type_fname8' value='fname8' ";
+	if($default_login_gen_type=='fname8') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_fname8'  style='cursor: pointer;'>pnom (tronqué à 8 caractères)</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_gen_type' id='login_gen_type_fname19' value='fname19' ";
+	if($default_login_gen_type=='fname19') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_fname19'  style='cursor: pointer;'>pnom (tronqué à 19 caractères)</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_gen_type' id='login_gen_type_firstdotname' value='firstdotname' ";
+	if($default_login_gen_type=='firstdotname') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_firstdotname'  style='cursor: pointer;'>prenom.nom</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_gen_type' id='login_gen_type_firstdotname19' value='firstdotname19' ";
+	if($default_login_gen_type=='firstdotname19') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_firstdotname19'  style='cursor: pointer;'>prenom.nom (tronqué à 19 caractères)</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_gen_type' id='login_gen_type_namef8' value='namef8' ";
+	if($default_login_gen_type=='namef8') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_namef8'  style='cursor: pointer;'>nomp (tronqué à 8 caractères)</label>\n";
+	echo "<br />\n";
+
+	echo "<input type='radio' name='login_gen_type' id='login_gen_type_lcs' value='lcs' ";
+	if($default_login_gen_type=='lcs') {
+		echo "checked ";
+	}
+	echo "/> <label for='login_gen_type_lcs'  style='cursor: pointer;'>pnom (façon LCS)</label>\n";
+	echo "<br />\n";
+
+	if (getSettingValue("use_ent") == "y") {
+		echo "<input type='radio' name='login_gen_type' id='login_gen_type_ent' value='ent' checked=\"checked\" />\n";
+		echo "<label for='login_gen_type_ent'  style='cursor: pointer;'>
+			Les logins sont produits par un ENT (<span title=\"Vous devez adapter le code du fichier ci-dessus vers la ligne 710.\">Attention !</span>)</label>\n";
+		echo "<br />\n";
+	}
 	echo "<br />\n";
 
 	// Modifications jjocal dans le cas où c'est un serveur CAS qui s'occupe de tout
@@ -255,6 +328,10 @@ if (!isset($is_posted)) {
 }
 else {
 	check_token();
+
+	if(isset($_POST['login_gen_type'])) {
+		saveSetting('login_gen_type',$_POST['login_gen_type']);
+	}
 
 	$tempdir=get_user_temp_directory();
 	if(!$tempdir){
@@ -947,7 +1024,7 @@ else {
 
 		echo '<p style="text-align: center; font-weight: bold;"><a href="prof_disc_classe_csv.php?a=a'.add_token_in_url().'">Procéder à la cinquième phase d\'initialisation</a></p>'."\n";
 
-		echo "<p style='text-align: center; font-weight: bold;'>Si la remontée vers STS n'a pas encore été effectuée, vous pouvez effectuer l'initialisation des enseignements à partir d'un export CSV de UnDeuxTemps&nbsp;: <a href='traite_csv_udt.php?a=a".add_token_in_url()."'>Procéder à la cinquième phase d\'initialisation</a><br />(<i>procédure encore expérimentale... il se peut que vous ayez des groupes en trop</i>)</p>\n";
+		echo "<p style='text-align: center; font-weight: bold;'>Si la remontée vers STS n'a pas encore été effectuée, vous pouvez effectuer l'initialisation des enseignements à partir d'un export CSV de UnDeuxTemps&nbsp;: <a href='traite_csv_udt.php?a=a".add_token_in_url()."'>Procéder à la cinquième phase d'initialisation</a><br />(<i>procédure encore expérimentale... il se peut que vous ayez des groupes en trop</i>)</p>\n";
 
 	}
 
