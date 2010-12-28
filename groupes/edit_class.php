@@ -327,7 +327,7 @@ if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['c
 		}
 	}
 	else {
-		echo "<p style='color:red;'>Des données existantes bloquent la suppression du groupe.<br />Aucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.</p>";
+		echo "<p style='color:red;'>Des données existantes bloquent la suppression du groupe.<br />Aucune note ni appréciation du bulletin ne doit avoir été saisie pour les élèves de ce groupe pour permettre la suppression du groupe.</p>\n";
 	}
 	echo "</div>\n";
 }
@@ -357,9 +357,9 @@ else {
 }
 
 echo "<table border='0' summary='Menu'><tr>\n";
-echo "<td width='40%' align='left'>";
+echo "<td width='40%' align='left'>\n";
 echo "<form action='".$_SERVER['PHP_SELF']."' name='form1' method='post'>\n";
-echo "<p class='bold'>";
+echo "<p class='bold'>\n";
 echo "<a href='../classes/index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 //if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe précédente</a>";}
 if($id_class_prec!=0){echo " | <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_class_prec' onclick=\"return confirm_abandon (this, change, '$themessage')\">Classe préc.</a>";}
@@ -439,24 +439,24 @@ echo "</form>\n";
 
 echo "<h3>Gestion des enseignements pour la classe :" . $classe["classe"]."</h3>\n";
 
-echo "</td>";
-echo "<td width='60%' align='center'>";
-echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group' method='get'>";
+echo "</td>\n";
+echo "<td width='60%' align='center'>\n";
+echo "<form enctype='multipart/form-data' action='add_group.php' name='new_group' method='get'>\n";
 //==============================
 // MODIF: boireaus
 //echo "<p>Ajouter un enseignement : ";
 //$query = mysql_query("SELECT matiere, nom_complet FROM matieres");
-echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
-echo "<table border='0' summary='Ajout d enseignement'><tr valign='top'><td>";
+echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
+echo "<table border='0' summary='Ajout d enseignement'>\n<tr valign='top'>\n<td>\n";
 echo "Ajouter un enseignement : ";
-echo "</td>";
+echo "</td>\n";
 $query = mysql_query("SELECT matiere, nom_complet FROM matieres ORDER BY matiere");
 //==============================
 $nb_mat = mysql_num_rows($query);
 
-echo "<td>";
-echo "<select name='matiere' size='1'>";
-echo "<option value='null'>-- Sélectionner matière --</option>";
+echo "<td>\n";
+echo "<select name='matiere' size='1'>\n";
+echo "<option value='null'>-- Sélectionner matière --</option>\n";
 for ($i=0;$i<$nb_mat;$i++) {
     $matiere = mysql_result($query, $i, "matiere");
     $nom_matiere = mysql_result($query, $i, "nom_complet");
@@ -464,11 +464,11 @@ for ($i=0;$i<$nb_mat;$i++) {
     echo "<option value='" . $matiere . "'";
     echo ">" . htmlentities($nom_matiere) . "</option>\n";
 }
-echo "</select>";
-echo "</td>";
-echo "<td>";
+echo "</select>\n";
+echo "</td>\n";
+echo "<td>\n";
 echo "&nbsp;dans&nbsp;";
-echo "</td>";
+echo "</td>\n";
 //==============================
 // MODIF: boireaus
 /*
@@ -478,18 +478,18 @@ echo "<option value='groupe' selected>cette classe seulement (" . $classe["class
 echo "<option value='regroupement'>plusieurs classes</option>";
 echo "</select>";
 */
-echo "<td>";
+echo "<td>\n";
 echo "<input type='radio' name='mode' id='mode_groupe' value='groupe' checked /><label for='mode_groupe' style='cursor: pointer;'> cette classe seulement (" . $classe["classe"] .")</label><br />\n";
 echo "<input type='radio' name='mode' id='mode_regroupement' value='regroupement' /><label for='mode_regroupement' style='cursor: pointer;'> plusieurs classes</label>\n";
-echo "</td>";
-echo "</tr></table>\n";
+echo "</td>\n";
+echo "</tr>\n</table>\n";
 //==============================
 
-echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />";
-echo "<input type='submit' value='Créer' />";
-echo "</fieldset>";
-echo "</form>";
-echo "</td></tr></table>\n";
+echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
+echo "<input type='submit' value='Créer' />\n";
+echo "</fieldset>\n";
+echo "</form>\n";
+echo "</td>\n</tr>\n</table>\n";
 
 $groups = get_groups_for_class($id_classe);
 if(count($groups)==0){
@@ -580,9 +580,9 @@ for($i=0;$i<10;$i++){
     // si le module ECTS est activé, on calcul la valeur total d'ECTS attribués aux groupes
     if ($gepiSettings['active_mod_ects'] == "y") {
         $total_ects = mysql_result(mysql_query("SELECT sum(valeur_ects) FROM j_groupes_classes WHERE (id_classe = '".$id_classe."' and saisie_ects = TRUE)"), 0);
-        echo "<p style='margin-top: 10px;'>Nombre total d'ECTS actuellement attribués pour cette classe : ".intval($total_ects)."</p>";
+        echo "<p style='margin-top: 10px;'>Nombre total d'ECTS actuellement attribués pour cette classe : ".intval($total_ects)."</p>\n";
         if ($total_ects < 30) {
-            echo "<p style='color: red;'>Attention, le total d'ECTS pour un semestre devrait être au moins égal à 30.</p>";
+            echo "<p style='color: red;'>Attention, le total d'ECTS pour un semestre devrait être au moins égal à 30.</p>\n";
         }
     }
 
@@ -596,9 +596,9 @@ for($i=0;$i<10;$i++){
 
         $current_group = get_group($group["id"]);
         $total = count($group["classes"]);
-        echo "<br/>";
-        echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
-        echo "<table border = '0' width='100%' summary='Suppression'><tr><td width='25%'>";
+        echo "<br/>\n";
+        echo "<fieldset style=\"padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
+        echo "<table border = '0' width='100%' summary='Suppression'><tr><td width='25%'>\n";
         //echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe' onclick=\"return confirmlink(this, 'ATTENTION !!! LISEZ CET AVERTISSEMENT : La suppression d\'un enseignement est irréversible. Une telle suppression ne devrait pas avoir lieu en cours d\'année. Si c\'est le cas, cela peut entraîner la présence de données orphelines dans la base. Si des données officielles (notes et appréciations du bulletin) sont présentes, la suppression sera bloquée. Dans le cas contraire, toutes les données liées au groupe seront supprimées, incluant les notes saisies par les professeurs dans le carnet de notes ainsi que les données présentes dans le cahier de texte. Etes-vous *VRAIMENT SÛR* de vouloir continuer ?', 'Confirmation de la suppression')\"><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
         echo "<a href='edit_class.php?id_groupe=". $group["id"] . "&amp;action=delete_group&amp;id_classe=$id_classe".add_token_in_url()."'><img src='../images/icons/delete.png' alt='Supprimer' style='width:13px; heigth: 13px;' /></a>";
         echo " -- <span class=\"norme\">";
@@ -666,7 +666,7 @@ for($i=0;$i<10;$i++){
             echo ")";
         }
 
-        echo "</td>";
+        echo "</td>\n";
 
         $inscrits = null;
     //echo "=======================================<br />\n";
@@ -680,13 +680,13 @@ for($i=0;$i<10;$i++){
         $inscrits = substr($inscrits, 0, -1);
 
         echo "<td><b><a href='edit_eleves.php?id_groupe=". $group["id"] . "&amp;id_classe=" . $id_classe . "' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/edit_user.png' alt=''/> Elèves inscrits (" . $inscrits . ")</a>";
-        echo "</b></td>";
+        echo "</b></td>\n";
         echo "<td width='20%'>Priorité d'affichage";
         //=================================
         // MODIF: boireaus
         //echo "<select size=1 name='" . "priorite_" . $current_group["id"] . "'>";
         // Attention à ne pas confondre l'Id et le Name qui ne coïncident pas.
-        echo "<select onchange=\"changement()\" size=1 id='priorite_".$cpt_grp."' name='priorite_" . $current_group["id"] . "'>";
+        echo "<select onchange=\"changement()\" size=1 id='priorite_".$cpt_grp."' name='priorite_" . $current_group["id"] . "'>\n";
         //=================================
         echo "<option value=0";
         if  ($current_group["classes"]["classes"][$id_classe]["priorite"] == '0') echo " SELECTED";
@@ -697,21 +697,23 @@ for($i=0;$i<10;$i++){
 
         $k=11;
         $j = 1;
-        while ($k < 51){
-            echo "<option value=$k"; if ($current_group["classes"]["classes"][$id_classe]["priorite"] == $k) {echo " SELECTED";} echo ">".$j;
-            if ($priority_defaut == $k) echo " (valeur par défaut)";
+        while ($k < 61) {
+            echo "<option value=$k";
+			if ($current_group["classes"]["classes"][$id_classe]["priorite"] == $k) {echo " SELECTED";}
+			echo ">".$j;
+            if ($priority_defaut == $k) {echo " (valeur par défaut)";}
             echo "</option>\n";
             $k++;
             $j = $k - 10;
         }
         echo "</select>\n";
-        echo "</td>";
+        echo "</td>\n";
         // Catégories de matières
         echo "<td>Catégorie : ";
-        echo "<select onchange=\"changement()\" size=1 id='categorie_".$cpt_grp."' name='categorie_" .$current_group["id"]. "'>";
+        echo "<select onchange=\"changement()\" size=1 id='categorie_".$cpt_grp."' name='categorie_" .$current_group["id"]. "'>\n";
         echo "<option value='0'";
         if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == "0") {echo " SELECTED";}
-        echo ">Aucune</option>";
+        echo ">Aucune</option>\n";
 		$tab_categorie_id=array();
         foreach ($mat_categories as $cat) {
 			$tab_categorie_id[]=$cat->id;
@@ -719,9 +721,9 @@ for($i=0;$i<10;$i++){
             if ($current_group["classes"]["classes"][$id_classe]["categorie_id"] == $cat->id) {
                echo " SELECTED";
             }
-            echo ">".html_entity_decode_all_version($cat->nom_court)."</option>";
+            echo ">".html_entity_decode_all_version($cat->nom_court)."</option>\n";
         }
-        echo "</select>";
+        echo "</select>\n";
 
 		if(($current_group["classes"]["classes"][$id_classe]["categorie_id"]!=0)&&(!in_array($current_group["classes"]["classes"][$id_classe]["categorie_id"],$tab_categorie_id))) {
 			$temoin_anomalie_categorie="y";
@@ -739,11 +741,11 @@ for($i=0;$i<10;$i++){
             echo "</a>";
 
         }
-        echo "</td>";
+        echo "</td>\n";
 
         // Coefficient
         //echo "<td>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" /></td></tr>";
-        echo "<td align='center'>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" />";
+        echo "<td align='center'>Coefficient : <input type=\"text\" onchange=\"changement()\" id='coef_".$cpt_grp."' name='". "coef_" . $current_group["id"] . "' value='" . $current_group["classes"]["classes"][$id_classe]["coef"] . "' size=\"5\" />\n";
         echo "<br />\n";
 
 		/*
@@ -780,8 +782,8 @@ for($i=0;$i<10;$i++){
         echo "</td>\n";
         echo "</tr>\n";
 
-        echo "<tr>";
-        echo "<td colspan=4>";
+        echo "<tr>\n";
+        echo "<td colspan=4>\n";
         $first = true;
         foreach($current_group["profs"]["list"] as $prof) {
             if (!$first) echo ", ";
@@ -790,31 +792,31 @@ for($i=0;$i<10;$i++){
             echo $current_group["profs"]["users"][$prof]["nom"];
             $first = false;
         }
-        echo "</td>";
-        echo "</tr>";
+        echo "</td>\n";
+        echo "</tr>\n";
         if ($gepiSettings['active_mod_ects'] == "y") {
-            echo "<tr><td>&nbsp;</td>";
+            echo "<tr><td>&nbsp;</td>\n";
             echo "<td><label for='saisie_ects_".$cpt_grp."'>Activer la saisie ECTS</label>&nbsp;<input id='saisie_ects_".$cpt_grp."' type='checkbox' name='saisie_ects_".$current_group["id"]."' value='1'";
             if($current_group["classes"]["classes"][$id_classe]["saisie_ects"]) {
                 echo " checked";
             }
-            echo "/>";
-            echo "<input id='no_saisie_ects_".$cpt_grp."' type='hidden' name='no_saisie_ects_".$current_group["id"]."' value='0' />";
-            echo "</td>";
-            echo "<td>";
+            echo "/>\n";
+            echo "<input id='no_saisie_ects_".$cpt_grp."' type='hidden' name='no_saisie_ects_".$current_group["id"]."' value='0' />\n";
+            echo "</td>\n";
+            echo "<td>\n";
             echo "Nombre d'ECTS par défaut pour une période : ";
-            echo "<select onchange=\"changement()\" id='valeur_ects_".$cpt_grp."' name='". "valeur_ects_" . $current_group["id"] . "'>";
+            echo "<select onchange=\"changement()\" id='valeur_ects_".$cpt_grp."' name='". "valeur_ects_" . $current_group["id"] . "'>\n";
             for($c=0;$c<31;$c++) {
                 echo "<option value='$c'";
                 if (intval($current_group["classes"]["classes"][$id_classe]["valeur_ects"]) == $c) echo " SELECTED ";
-                echo ">$c</option>";
+                echo ">$c</option>\n";
             }
-            echo "</select>";
-            echo "</td>";
-            echo "</tr>";
+            echo "</select>\n";
+            echo "</td>\n";
+            echo "</tr>\n";
         }
-        echo "</table>";
-        echo "</fieldset>";
+        echo "</table>\n";
+        echo "</fieldset>\n";
 
         $cpt_grp++;
     }
@@ -826,10 +828,10 @@ if(isset($temoin_anomalie_categorie)&&($temoin_anomalie_categorie=='y')) {
 	$tabdiv_infobulle[]=creer_div_infobulle('association_anormale_enseignement_categorie',$titre,"",$texte,"",30,0,'y','y','n','n');
 }
 
-echo "<input type='hidden' name='is_posted' value='1' />";
-echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />";
-echo "<p align='center'><input type='submit' value='Enregistrer' /></p>";
-echo "</form>";
+echo "<input type='hidden' name='is_posted' value='1' />\n";
+echo "<input type='hidden' name='id_classe' value='" . $id_classe . "' />\n";
+echo "<p align='center'><input type='submit' value='Enregistrer' /></p>\n";
+echo "</form>\n";
 
 //================================================
 // AJOUT:boireaus
