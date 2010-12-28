@@ -122,7 +122,7 @@
 		Votre établissement n'est pas référencé parmi les utilisateurs de Gepi.
 		<span>
 			<br />
-			<a href=\"javascript:ouvre_popup_reference('$value[lien]')\" title='$value[titre]'>
+			<a href="javascript:ouvre_popup_reference('$value[lien]')" title='$value[titre]'>
 				<?php echo $value[titre]; ?>
 			</a>
 		</span>
