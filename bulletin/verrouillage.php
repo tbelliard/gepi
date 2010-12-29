@@ -416,9 +416,14 @@ if (($classe != 0) AND ($periode !=0)) {
 			}
 		}
 	</script>\n";
-	
-	} else {
-		echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !</p>\n";
+
+		echo "<br />\n";
+
+		echo "<p><i>Remarque&nbsp;:</i><br /><span style='margin-left: 3em;'>Si vous ne voyez pas toutes les classes, il se peut que certaines classes ne vous soient pas associées.</span><br /><span style='margin-left: 3em;'>Demandez alors à un compte administrateur de vous associer des classes dans <b>Gestion des bases/Gestion des classes/Paramétrage scolarité</b></span></p>\n";
+
+	}
+	else {
+		echo "<p class='grand'>Attention : aucune classe n'a été définie dans la base GEPI !<br />Ou alors aucune classe ne vous est associée (<i>demandez alors à un compte administrateur de vous associer des classes dans <b>Gestion des bases/Gestion des classes/Paramétrage scolarité</b></i>)</p>\n";
 	}
 } //else
 echo "<p><br /></p>\n";
