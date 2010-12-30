@@ -107,12 +107,6 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='saisir_groupe.php' || $onglet_abs=='enregistrement_saisie_groupe.php') {echo "class='current' ";}
     echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
 
-    if(!$utilisateur->getClasses()->isEmpty()){
-    echo "<li><a href='bilan_individuel.php' ";
-    if($onglet_abs=='bilan_individuel.php') {echo "class='current' ";}
-    echo "title='Bilans'>Bilan individuel</a></li>\n";
-    }
-
     echo "<li><a href='visu_saisie.php' ";
     if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
@@ -122,6 +116,12 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='liste_saisies.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";    
+
+    if(!$utilisateur->getClasses()->isEmpty()){
+    echo "<li><a href='bilan_individuel.php' ";
+    if($onglet_abs=='bilan_individuel.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
+    echo "title='Bilans'>Bilan individuel</a></li>\n";
+    }
 
     echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Fond_de_salle">wiki</a></div>';
 
@@ -135,10 +135,6 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='saisir_eleve.php') {echo "class='current' ";}
     echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";
 
-    echo "<li><a href='bilan_individuel.php' ";
-    if($onglet_abs=='bilan_individuel.php') {echo "class='current' ";}
-    echo "title='Bilans'>Bilan individuel</a></li>\n";
-
     echo "<li><a href='visu_saisie.php' ";
     if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
@@ -148,6 +144,10 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='liste_saisies.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
+
+    echo "<li><a href='bilan_individuel.php' ";
+    if($onglet_abs=='bilan_individuel.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
+    echo "title='Bilans'>Bilan individuel</a></li>\n";
 
     echo "</ul>\n";
 }
