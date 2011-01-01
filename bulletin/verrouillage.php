@@ -315,7 +315,9 @@ if (($classe != 0) AND ($periode !=0)) {
 			echo "<th><img src=\"../lib/create_im_mat.php?texte=".$texte_deverrouiller."&amp;width=22\" width=\"22\" border=0 alt=\"Déverrouiller\" /></th>\n";
 			echo "<th><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_part."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller partiellement\" /></th>\n";
 			echo "<th><img src=\"../lib/create_im_mat.php?texte=".$texte_verrouiller_tot."&amp;width=22\" width=\"22\" border=0 alt=\"Verrouiller totalement\" /></th>\n";
-			echo "<th>Date Fin</th>\n";
+            if(getSettingValue("active_module_absence")=="2"){
+                echo "<th>Date Fin</th>\n";
+            }
 		}
 		echo "</tr>\n";
 		//$flag = 0;
@@ -366,17 +368,19 @@ if (($classe != 0) AND ($periode !=0)) {
 						echo "<td><input type=\"radio\" name=\"".$nom_classe."\" value=\"O\" onchange=\"changement();actualise_cell_($id_classe,$i);\" ";
 						if ($row_per[1] == "O") {echo "checked";}
 						echo " /></td>\n";
-						echo "<td>";
-						echo "<input type=\"text\" size=\"8\" name=\"date_fin_".$nom_classe."\" value=\"";
-						if ($row_per[2] != 0) {
-						    echo date("d/m/Y", strtotime($row_per[2]));
-						}
-						echo "\"/>";
-						echo "</td>\n";
+                        if(getSettingValue("active_module_absence")=="2"){
+                            echo "<td>";
+                            echo "<input type=\"text\" size=\"8\" name=\"date_fin_".$nom_classe."\" value=\"";
+                            if ($row_per[2] != 0) {
+                                echo date("d/m/Y", strtotime($row_per[2]));
+                            }
+                            echo "\"/>";
+                            echo "</td>\n";
+                        }
 						$j++;
 					}
 				}
-				for ($i = $j; $i < $max_per; $i++) echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>\n";
+				for ($i = $j; $i < $max_per; $i++) echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>\n";
 		
 				echo "</tr>\n";
 			}
