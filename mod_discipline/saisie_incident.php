@@ -906,6 +906,8 @@ $titre_page = "Discipline: Signaler un incident";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+//debug_var();
+
 echo "<div id='div_svg_qualite' style='margin:auto; color:red; text-align:center;'></div>\n";
 echo "<div id='div_svg_avertie' style='margin:auto; color:red; text-align:center;'></div>\n";
 //debug_var();
@@ -1383,7 +1385,7 @@ if($step==0) {
 	<input type='hidden' name='page' value='$page' />
 	<input type='hidden' name='step' value='$step' />
 	<input type='hidden' name='is_posted' value='y' />
-	<input type='submit' name='' value='Rechercher'";
+	<input type='submit' name='recherche_eleve' value='Rechercher'";
 	echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 	echo " />
 	</p>\n";
