@@ -525,19 +525,52 @@ else {
 							echo "<span style='color:green'>SUCCES</span>";
 							echo "<br />\n";
 
-							// Nettoyer periodes
-							//echo "Suppression de la période $suppr_periode[$j] pour la classe $classe_courante&nbsp;: ";
-							//$sql="DELETE FROM periodes WHERE id_classe='$id_classe_courant' AND num_periode='$suppr_periode[$j]';";
-							echo "Suppression de la période $j pour la classe $classe_courante&nbsp;: ";
-							$sql="DELETE FROM periodes WHERE id_classe='$id_classe_courant' AND num_periode='$j';";
-							$del=mysql_query($sql);
-							if(!$del) {
-								echo "<span style='color:red'>ECHEC</span>";
-								echo "<br />\n";
+							// Nettoyer edt_calendrier
+							$poursuivre="y";
+							$sql="SELECT * FROM edt_calendrier WHERE numero_periode='$j' AND (classe_concerne_calendrier LIKE '$id_classe_courant;%' OR classe_concerne_calendrier LIKE '%;$id_classe_courant;%');";
+							$res_edt_calendrier=mysql_query($sql);
+							if(mysql_num_rows($res_edt_calendrier)>0) {
+								echo "Nettoyage de edt_calendrier pour la classe $classe_courante sur la période $j&nbsp;: ";
+								// Normalement, on ne fait qu'un tour dans la boucle
+								while($lig_edt_cal=mysql_fetch_object($res_edt_calendrier)) {
+									$tab_edt=explode(";",$lig_edt_cal->classe_concerne_calendrier);
+									$chaine_classe="";
+									for($k=0;$k<count($tab_edt);$k++) {
+										if($tab_edt[$k]!=$id_classe_courant) {
+											$chaine_classe.=";".$tab_edt[$k];
+										}
+									}
+									$chaine_classe=preg_replace("/^;/","",$chaine_classe);
+
+									$sql="UPDATE edt_calendrier SET classe_concerne_calendrier='$chaine_classe' WHERE id_calendrier='$lig_edt_cal->id_calendrier';";
+									$update=mysql_query($sql);
+									if(!$del) {
+										echo "<span style='color:red'>ECHEC</span>";
+										echo "<br />\n";
+										$poursuivre="n";
+									}
+									else {
+										echo "<span style='color:green'>SUCCES</span>";
+										echo "<br />\n";
+									}
+								}
 							}
-							else {
-								echo "<span style='color:green'>SUCCES</span>";
-								echo "<br />\n";
+
+							if($poursuivre=='y') {
+								// Nettoyer periodes
+								//echo "Suppression de la période $suppr_periode[$j] pour la classe $classe_courante&nbsp;: ";
+								//$sql="DELETE FROM periodes WHERE id_classe='$id_classe_courant' AND num_periode='$suppr_periode[$j]';";
+								echo "Suppression de la période $j pour la classe $classe_courante&nbsp;: ";
+								$sql="DELETE FROM periodes WHERE id_classe='$id_classe_courant' AND num_periode='$j';";
+								$del=mysql_query($sql);
+								if(!$del) {
+									echo "<span style='color:red'>ECHEC</span>";
+									echo "<br />\n";
+								}
+								else {
+									echo "<span style='color:green'>SUCCES</span>";
+									echo "<br />\n";
+								}
 							}
 						}
 					}
