@@ -87,7 +87,7 @@ function RecupereTimestampJour ($jour) {
     //setlocale (LC_TIME, 'fr_FR','fra');
     if ((1<=$_SESSION['week_selected']) AND ($_SESSION['week_selected'] <= 28)) {
     //if ((1<=date("n")) AND (date("n") <=8)) {
-	    $annee = date("Y")+1;
+	    $annee = date("Y");
     }
     else {
 	    $annee = date("Y");
