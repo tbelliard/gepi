@@ -1390,6 +1390,7 @@ if($step==0) {
 	echo " />
 	</p>\n";
 	if(isset($id_incident)) {echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";}
+	echo add_token_field();
 	echo "</form>\n";
 
 	echo "<form enctype='multipart/form-data' action='saisie_incident.php' method='post' name='formulaire2'>\n";
