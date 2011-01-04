@@ -1382,6 +1382,15 @@ class Session {
       $query .= " WHERE login = '$this->login'";
 			error_log("Détail requête : ".$query, $GLOBALS['debug_log_file']);
       if ($need_update) $res = mysql_query($query); // On exécute la mise à jour, si nécessaire
+      if ($need_update && $this->statut == 'eleve') {
+        # On a eu une mise à jour qui concerne un élève, il faut synchroniser l'info dans la table eleves
+        mysql_query("UPDATE eleves, utilisateurs
+                      SET eleves.nom = utilisateurs.nom,
+                          eleves.prenom = utilisateurs.prenom,
+                          eleves.email = utilisateurs.email
+                      WHERE eleves.login = utilisateurs.login
+                        AND utilisateurs.login = '".$this->login."'");
+      }
       return $res;
     }
   }
