@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -45,13 +45,14 @@ if (!checkAccess()) {
 }
 
 //On vérifie si le module est activé
-if (getSettingValue("active_module_absence")!='y') {
+if (substr(getSettingValue("active_module_absence"),0,1)!='y') {
 	header("Location: ../accueil.php");
     die("Le module n'est pas activé.");
-}elseif (getSettingValue("active_absences_parents") != 'y'){
-		// On vérifie aussi que l'accès parents est bien autorisé
-		header("Location: ../accueil.php");
-    	die("Le module n'est pas activé.");
+}
+elseif (substr(getSettingValue("active_absences_parents"),0,1)!='y'){
+	// On vérifie aussi que l'accès parents est bien autorisé
+	header("Location: ../accueil.php");
+	die("Le module n'est pas activé.");
 }
 
 // =============================== fin initialisation de base ===================
