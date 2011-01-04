@@ -87,9 +87,14 @@
 ?>
 	  <p>
 		Nombre de personnes actuellement connectées :
-		<a href='<?php echo $afficheAccueil->nb_connect_lien; ?>' onmouseover="delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);">
-		  <?php echo $afficheAccueil->nb_connect; ?>
-		</a>
+		<?php
+			if($afficheAccueil->nb_connect>1) {
+				echo "<a style='font-weight:bold;' href='$afficheAccueil->nb_connect_lien' onmouseover=\"delais_afficher_div('personnes_connectees','y',-10,20,500,20,20);\">$afficheAccueil->nb_connect</a>";
+			}
+			else {
+				echo "<b>".$afficheAccueil->nb_connect."</b>";
+			}
+		?>
 		(
 		<a href = 'gestion/gestion_connect.php?mode_navig=accueil'>
 		  Gestion des connexions
@@ -105,7 +110,7 @@
 	if ($afficheAccueil->alert_sums>0) {
 ?>
 	  <p>
-		Alertes sécurité (niveaux cumulés) : <?php echo $afficheAccueil->alert_sums; ?> (
+		Alertes sécurité (niveaux cumulés) : <?php echo "<b>".$afficheAccueil->alert_sums."</b>"; ?> (
 		<a href='gestion/security_panel.php'>Panneau de contrôle</a>)
 	  </p>
 <?php
@@ -402,7 +407,7 @@
 ?>
 						<tr  class='<?php echo $newentree['style']; ?>'>
 							<td>
-                               <a href='mailto:<?php echo $newentree[courriel]; ?>'>
+                               <a href='mailto:<?php echo $newentree['courriel']; ?>'>
 									<?php echo $newentree['texte']; ?>
 								</a>
 							</td>
