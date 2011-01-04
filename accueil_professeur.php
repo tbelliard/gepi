@@ -82,7 +82,7 @@ else{
 
 // End standard header
 require_once("./lib/header.inc");
-
+/*
 function acces($id,$statut) {
 	$tab_id = explode("?",$id);
 	$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
@@ -93,7 +93,7 @@ function acces($id,$statut) {
 		return "0";
 	}
 }
-
+*/
 
 function affiche_ligne($chemin_, $titre_, $expli_, $statut_) {
 	if (acces($chemin_,$statut_)==1)  {

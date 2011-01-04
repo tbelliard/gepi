@@ -1,8 +1,8 @@
 <?php
 /*
-*$Id$
+* $Id$
 *
-* Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue,Eric Lebrun, Christian Chapel
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue,Eric Lebrun, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -241,7 +241,7 @@ function reactiver(mavar) {
 	if($_SESSION['statut']=='administrateur') {
 		echo " | <a href='trombino_decoupe.php'>Découpe trombinoscope</a>";
 	}
-
+	/*
 	function acces($id,$statut) {
 		$tab_id = explode("?",$id);
 		$query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
@@ -252,11 +252,12 @@ function reactiver(mavar) {
 			return "0";
 		}
 	}
-
+	*/
 	if( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $equipepeda != 'toutes' and $discipline != 'toutes' and ( $classe != '' or $groupe != '' or $equipepeda != '' or $discipline != '' or $statusgepi != '' ) ) {
 		//echo " | <a href='trombinoscopes.php'>Retour à la sélection</a>";
 
-		if(acces('/mod_trombinoscopes/trombi_impr.php',$_SESSION['statut'])) {
+		//if(acces('/mod_trombinoscopes/trombi_impr.php',$_SESSION['statut'])) {
+		if(($_SESSION['statut']=='autre')||(acces('/mod_trombinoscopes/trombi_impr.php',$_SESSION['statut']))) {
 			echo " | <a href='trombi_impr.php?classe=$classe&amp;groupe=$groupe&amp;equipepeda=$equipepeda&amp;discipline=$discipline&amp;statusgepi=$statusgepi&amp;affdiscipline=$affdiscipline";
 
 			if((isset($_POST['order_by']))&&($_POST['order_by']=='classe')) {
@@ -577,6 +578,10 @@ function reactiver(mavar) {
 				($_SESSION['statut']=='cpe')||
 				($_SESSION['statut']=='administrateur')
 			) {
+				$equipepeda = 'toutes';
+			}
+
+			if($_SESSION['statut']=='autre') {
 				$equipepeda = 'toutes';
 			}
 

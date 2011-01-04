@@ -68,7 +68,7 @@ $tab[2] = "cpe";
 $tab[3] = "scolarite";
 $tab[4] = "eleve";
 $tab[5] = "secours";
-
+/*
 function acces($id,$statut) {
     $tab_id = explode("?",$id);
     $query_droits = @mysql_query("SELECT * FROM droits WHERE id='$tab_id[0]'");
@@ -79,7 +79,7 @@ function acces($id,$statut) {
         return "0";
     }
 }
-
+*/
 // function affiche_ligne($chemin_,$titre_,$expli_,$tab,$statut_) {
 function affiche_ligne($chemin_,$statut_) {
 
