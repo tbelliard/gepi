@@ -657,6 +657,9 @@ if ($affichage == 'ods') {
     $extension='ods';
     $export = array();
     foreach ($donnees as $id => $eleve) {
+        if(!isset($eleve['infos_saisies'])){
+        continue;
+        }
         if($id_eleve!=null && $id_eleve !='' && $id!=$id_eleve ){
             continue;
         }
@@ -728,7 +731,10 @@ if ($affichage == 'ods') {
 } else {
     $extension = 'odt';
     $export = array();
-    foreach ($donnees as $id => $eleve) {        
+    foreach ($donnees as $id => $eleve) {
+        if(!isset($eleve['infos_saisies'])){
+        continue;
+        }
         if($id_eleve!=null && $id_eleve !='' && $id!=$id_eleve ){
             continue;
         }
