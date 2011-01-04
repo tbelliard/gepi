@@ -161,7 +161,7 @@ if(is_null($cpt_classe)) $cpt_classe=0;
 $limite_temps=true;
 $boucle=false;
 $fin_boucle=false;
-if(($id_classe=='-1' && $affichage=='html') && (is_null($id_eleve) || $id_eleve=='')  &&  $cpt_classe<=count( $_SESSION['classes_bilan'])){
+if(($id_classe=='-1' && $affichage=='html') && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2) &&  $cpt_classe<=count( $_SESSION['classes_bilan'])){
     if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>(7*24*3600) ){
         $message=' L\'intervalle de temps choisi pour toutes les classes doit être inférieur à 7 jours ';
         $affichage='';
@@ -190,7 +190,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
           echo'<h2 class="no">'.$message.'</h2>';
         }?>
          <p>
-             <strong>La recherche sur toutes les classes n'est permise que pour une durée de 7 jours maximum.</strong>
+             <strong>La recherche sur toutes les classes n'est permise que pour une durée de 7 jours maximum si aucun nom n'est rentré.</strong>
 
         <p>
             Cette page permet de regrouper jour par jour les saises du même type (non traitées ou ayant le même traitement) et les informations du traitement.<br />
@@ -287,8 +287,16 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
                 echo'checked';
             }            
             ?>
-			> Tri des données par type (Manquement aux obligations de présence, retard)
-			<br />
+			> Tri des données par manquement aux obligations de présence, retard puis non manquement.
+            <br />
+            <?php if($utilisateur->getStatut() == "cpe"):?>            
+            <input type="checkbox" name="non_traitees" value="non_traitees"  <?php
+            if($non_traitees) {
+                echo'checked';
+            } ?>
+			> N'afficher que les saisies non traitées ou sans type (non défini et non couverte par un autre traitement)
+            <br />
+            <?php endif; ?>
             <?php if($utilisateur->getStatut() == "cpe" || $utilisateur->getStatut() == "scolarite"):?>
             <input type="checkbox" name="ods2" value="ods2"  <?php
             if($ods2) {
@@ -301,16 +309,8 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
                 echo'checked';
             } ?>
 			> Ne pas afficher les commentaires dans l'export ods et odt
-            <?php endif; ?>
-            <?php if($utilisateur->getStatut() == "cpe"):?>
             <br />
-            <input type="checkbox" name="non_traitees" value="non_traitees"  <?php
-            if($non_traitees) {
-                echo'checked';
-            } ?>
-			> N'afficher que les saisies non traitées ou sans type (non défini et non couverte par un autre traitement)
-            <br />            
-            <?php endif; ?>
+            <?php endif; ?>            
             <button type="submit" name="affichage" value="html">Valider les modifications et afficher à l'écran</button>
         </fieldset>
 		<br />
@@ -687,7 +687,7 @@ if ($affichage == 'ods') {
                         $total_demi_journees_non_justifiees = '';
                         $retards = '';
                     }
-                    if(!is_null($ods2)){                        
+                    if(!is_null($ods2)&& $ods2!=''){
                         $indice=FALSE;
                     }
                     $dates = getDateDescription($value['dates']['debut'], $value['dates']['fin']);                    
