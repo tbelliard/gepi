@@ -159,10 +159,20 @@ if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='ht
 // - si on est dans un affichage html seulement
 if(is_null($cpt_classe)) $cpt_classe=0;
 $limite_temps=true;
+if(getSettingValue('Abs2DebrideBilanIndividuelLogins')){
+    $logins_authorises=explode(',',getSettingValue('Abs2DebrideBilanIndividuelLogins'));
+    foreach($logins_authorises as $login){
+        if ($utilisateur->getLogin()==$login){
+            $limite_temps=false;
+            break;
+        }
+    }
+}
+$limite_jours=7;
 $boucle=false;
 $fin_boucle=false;
 if(($id_classe=='-1' && $affichage=='html') && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2) &&  $cpt_classe<=count( $_SESSION['classes_bilan'])){
-    if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>(7*24*3600) ){
+    if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>($limite_jours*24*3600) ){
         $message=' L\'intervalle de temps choisi pour toutes les classes doit être inférieur à 7 jours ';
         $affichage='';
     }else{
@@ -189,10 +199,12 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
         <?php if (isset($message)){
           echo'<h2 class="no">'.$message.'</h2>';
         }?>
+        <?php if($limite_temps) :?>
          <p>
-             <strong>La recherche sur toutes les classes n'est permise que pour une durée de 7 jours maximum si aucun nom n'est rentré.</strong>
+             <strong>La recherche sur toutes les classes n'est permise que pour une durée de <?php echo $limite_jours; ?> jours maximum si aucun nom n'est rentré.</strong>
 
         <p>
+        <?php endif ;?>
             Cette page permet de regrouper jour par jour les saises du même type (non traitées ou ayant le même traitement) et les informations du traitement.<br />
             Pour des saisies ayant des traitements multiples , le décompte des demi-journées correspondantes peut donc apparaitre plusieurs fois. 
             Le total réel des demi-journées calculé par le module s'affiche sous le nom de l'élève.
@@ -551,6 +563,12 @@ foreach ($donnees as $id => $eleve) {
                     echo '<td rowspan=' . $eleve['nbre_lignes_total'] . '>';
                     echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'">';
                     echo '<b>' . $eleve['nom'] . ' ' . $eleve['prenom'] . '</b></a><br/> (' . $eleve['classe'] . ')';
+                    $propel_eleve=EleveQuery::create()->filterByIdEleve($id)->findOne();
+                    if ($utilisateur->getAccesFicheEleve($propel_eleve)) {
+                        echo "<a href='../eleves/visu_eleve.php?ele_login=".$propel_eleve->getLogin()."' target='_blank'>";
+                        echo ' (voir fiche)';
+                        echo "</a>";
+                    }
                     if($affichage_liens){
                       echo'<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=ods&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&ods2='.$ods2.'"><img src="../images/icons/ods.png" title="export ods"></a>
                       <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'"><img src="../images/icons/odt.png" title="export odt"></a><br/><br/>';
