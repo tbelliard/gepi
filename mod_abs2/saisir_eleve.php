@@ -517,7 +517,7 @@ if (!$cours_col->isEmpty()) {
     echo '<p>';
 	    //on va commencer la liste à la semaine 31 (milieu des vacances d'ete)
 	    for ($i = 0; $i < 10; $i++) {
-		$pos = ($i + date('W') - 5) % $col->count();
+		$pos = ($i + date('W') + 2*$col->count() - 5) % $col->count();
 		$semaine = $col[$pos];
 		//$semaine = new EdtSemaine();
 		    echo "<input type='checkbox' name='semaine_".$semaine->getPrimaryKey()."'/>";
