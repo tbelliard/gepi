@@ -169,26 +169,32 @@ global $prefix_base ;
     $nombre_eleves = $cpt_i; // parametre de la fonction
 
 	/*
-	echo "<pre>";
+	echo "<pre>\$donnees_eleves\n";
 	print_r($donnees_eleves);
 	echo "</pre>";
 	*/
-
 	//echo "tri=$tri<br />";
     if ($tri=='classes') {
 		foreach($donnees_eleves as $sortarray)
 		{
-			$column[] = $sortarray['id_classe'];
-			@array_multisort($column, SORT_ASC, $donnees_eleves);
+			//$column[] = $sortarray['id_classe'];
+			//@array_multisort($column, SORT_ASC, $donnees_eleves);
+			$column[] = $sortarray['nom_complet'];
+			$column1[] = $sortarray['nom_court'];
+			$column2[] = $sortarray['nom'];
+			@array_multisort($column, SORT_ASC, $column1, SORT_ASC, $column2, SORT_ASC, $donnees_eleves);
 		}
+		/*
+		echo "<pre>\$column\n";
+		print_r($column);
+		echo "</pre>";
+		*/
 	}
-
 	/*
-	echo "<pre>";
+	echo "<pre>\$donnees_eleves\n";
 	print_r($donnees_eleves);
 	echo "</pre>";
 	*/
-
 	if(isset($donnees_eleves)) {
 	    return $donnees_eleves;
 	}
