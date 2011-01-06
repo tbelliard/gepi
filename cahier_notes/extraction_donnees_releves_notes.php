@@ -224,6 +224,8 @@
 			$tab_releve[$id_classe][$periode_num]['rn_moy_classe']=isset($tab_rn_moy_classe[$loop_classe]) ? "y" : "n";
 
 			$tab_releve[$id_classe][$periode_num]['rn_retour_ligne']=isset($tab_rn_retour_ligne[$loop_classe]) ? "y" : "n";
+			$_SESSION['pref_rn_retour_ligne']=$tab_releve[$id_classe][$periode_num]['rn_retour_ligne'];
+
 			$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font']=((isset($tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]!='')&&(preg_match("/^[0-9.]*$/",$tab_rn_rapport_standard_min_font[$loop_classe]))&&($tab_rn_rapport_standard_min_font[$loop_classe]>0)) ? $tab_rn_rapport_standard_min_font[$loop_classe] : 3;
 
 			$_SESSION['pref_rn_rapport_standard_min_font']=$tab_releve[$id_classe][$periode_num]['rn_rapport_standard_min_font'];
@@ -804,6 +806,7 @@
 
 						//$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$current_eleve_login[$i]."' AND e.id = j.id_etablissement);";
 						$sql="SELECT e.* FROM etablissements e, j_eleves_etablissements j WHERE (j.id_eleve ='".$tab_ele['elenoet']."' AND e.id = j.id_etablissement);";
+						//echo "$sql<br />";
 						$data_etab = mysql_query($sql);
 						if(mysql_num_rows($data_etab)>0) {
 							$tab_ele['etab_id'] = @mysql_result($data_etab, 0, "id");
@@ -822,7 +825,8 @@
 								if ($tab_ele['etab_cp']==0) {
 									$tab_ele['etab_cp']='';
 								}
-								if ($tab_ele['etab_type']=='aucun') {
+								//if ($tab_ele['etab_type']=='aucun') {
+								if (($tab_ele['etab_type']=='aucun')||($tab_ele['etab_type']=='')) {
 									$tab_ele['etab_type']='';
 								}
 								else {

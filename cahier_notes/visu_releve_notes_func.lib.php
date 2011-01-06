@@ -2787,128 +2787,129 @@ function releve_pdf($tab_rel,$i) {
 								$k=0;
 								$kk=0;
 								$tiret = "no";
-								while($k<count($tab_rel['eleve'][$i]['groupe'][$m]['devoir'])) {
-/*
-if($tab_rel['eleve'][$i]['groupe'][$m]['id_groupe']==290) {
-echo "<p>
-\$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']=".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']."<br />
-\$tmp_id_cn=$tmp_id_cn<br />
-\$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_conteneur']=".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_conteneur']."<br />
-\$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']=".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']."<br />\n";
-}
-									// On ne traite que les devoirs du cahier de notes courant (cf commentaire boucle foreach donnant $tab_id_cn)
-									if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']==$tmp_id_cn) {
-*/
-
-									if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']==$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_conteneur']) {
-
-										/*
-										$temoin_devoir_a_la_racine="y";
-										// On parcourt les conteneurs associés au groupe pour la période courante ($tmp_id_cn => $tab_id_cn)
-										for($kkk=0;$kkk<count($tab_id_cn['conteneurs']);$kkk++) {
-											if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_conteneur']==$tab_id_cn['conteneurs'][$kkk]['id_racine']) {
-												$temoin_devoir_a_la_racine="n";
-												break;
-											}
-											//$k++;
-										}
-		
-										if($temoin_devoir_a_la_racine=="y") {
-										*/
-
-											if($kk>0) {
-												if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
-													$chaine_notes.=" -\n";
-												}
-												else {
-													$chaine_notes.=" - ";
-												}
-											}
-			
-											if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='v') {
-												if($use_cell_ajustee!="n") {$chaine_notes.="<b>";}
-												if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='') {
-													$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut'];
-												}
-												else {
-													$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['note'];
-												}
-												if($use_cell_ajustee!="n") {$chaine_notes.="</b>";}
-					
-												if($tab_rel['rn_nomdev']=='y') {
-													$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
-												}
-						
-												if($tab_rel['rn_datedev']=='y') {
-													$chaine_notes.=" (".formate_date($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['date']).")";
-												}
-						
-												if($tab_rel['rn_coefdev_si_diff']=='y') {
-													if($tab_rel['eleve'][$i]['groupe'][$m]['differents_coef']=='y') {
-														$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
-													}
-												}
-												else {
-													if($tab_rel['rn_toutcoefdev']=='y') {
-														$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
-													}
-												}
-					
-												//$chaine_notes.=" rn_app=".$tab_rel['rn_app'];
-												//$chaine_notes.=" display_app=".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app'];
-					
-												if(($tab_rel['rn_app']=='y')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app']=='1')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']!='')) {
-													$chaine_notes.=" ".str_replace("&#039;", "'", unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']));
-												}
-						
-												// 20100626
-												if($tab_rel['rn_moy_min_max_classe']=='y') {
-													$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['min']."|".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['max'].")";
-												}
-												elseif($tab_rel['rn_moy_classe']=='y') {
-													$chaine_notes.=" (classe:".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['moy_classe'].")";
-												}
-			
-												$kk++;
-											}
-											elseif(($tab_rel['rn_app']=='y')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app']=='1')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']!='')) {
-					
-												if($tab_rel['rn_nomdev']=='y') {
-													$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
-												}
-						
-												if($tab_rel['rn_datedev']=='y') {
-													$chaine_notes.=" (".formate_date($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['date']).")";
-												}
-						
-												if($tab_rel['rn_coefdev_si_diff']=='y') {
-													if($tab_rel['eleve'][$i]['groupe'][$m]['differents_coef']=='y') {
-														$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
-													}
-												}
-												else {
-													if($tab_rel['rn_toutcoefdev']=='y') {
-														$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
-													}
-												}
-					
-												$chaine_notes.=" ".str_replace("&#039;", "'", unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']));
-			
-												if($tab_rel['rn_moy_min_max_classe']=='y') {
-													$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['min']."|".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['max'].")";
-												}
-												elseif($tab_rel['rn_moy_classe']=='y') {
-													$chaine_notes.=" (classe:".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['moy_classe'].")";
-												}
-			
-												$kk++;
-											}
-
-										//}
-									}
-									$k++;
-								}
+								if(isset($tab_rel['eleve'][$i]['groupe'][$m]['devoir'])) {
+									while($k<count($tab_rel['eleve'][$i]['groupe'][$m]['devoir'])) {
+	/*
+	if($tab_rel['eleve'][$i]['groupe'][$m]['id_groupe']==290) {
+	echo "<p>
+	\$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']=".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']."<br />
+	\$tmp_id_cn=$tmp_id_cn<br />
+	\$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_conteneur']=".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_conteneur']."<br />
+	\$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']=".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']."<br />\n";
+	}
+										// On ne traite que les devoirs du cahier de notes courant (cf commentaire boucle foreach donnant $tab_id_cn)
+										if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']==$tmp_id_cn) {
+	*/
 	
+										if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_cahier_notes']==$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_conteneur']) {
+	
+											/*
+											$temoin_devoir_a_la_racine="y";
+											// On parcourt les conteneurs associés au groupe pour la période courante ($tmp_id_cn => $tab_id_cn)
+											for($kkk=0;$kkk<count($tab_id_cn['conteneurs']);$kkk++) {
+												if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['id_conteneur']==$tab_id_cn['conteneurs'][$kkk]['id_racine']) {
+													$temoin_devoir_a_la_racine="n";
+													break;
+												}
+												//$k++;
+											}
+			
+											if($temoin_devoir_a_la_racine=="y") {
+											*/
+	
+												if($kk>0) {
+													if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
+														$chaine_notes.=" -\n";
+													}
+													else {
+														$chaine_notes.=" - ";
+													}
+												}
+				
+												if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='v') {
+													if($use_cell_ajustee!="n") {$chaine_notes.="<b>";}
+													if($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut']!='') {
+														$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['statut'];
+													}
+													else {
+														$chaine_notes.=$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['note'];
+													}
+													if($use_cell_ajustee!="n") {$chaine_notes.="</b>";}
+						
+													if($tab_rel['rn_nomdev']=='y') {
+														$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
+													}
+							
+													if($tab_rel['rn_datedev']=='y') {
+														$chaine_notes.=" (".formate_date($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['date']).")";
+													}
+							
+													if($tab_rel['rn_coefdev_si_diff']=='y') {
+														if($tab_rel['eleve'][$i]['groupe'][$m]['differents_coef']=='y') {
+															$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
+														}
+													}
+													else {
+														if($tab_rel['rn_toutcoefdev']=='y') {
+															$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
+														}
+													}
+						
+													//$chaine_notes.=" rn_app=".$tab_rel['rn_app'];
+													//$chaine_notes.=" display_app=".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app'];
+						
+													if(($tab_rel['rn_app']=='y')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app']=='1')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']!='')) {
+														$chaine_notes.=" ".str_replace("&#039;", "'", unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']));
+													}
+							
+													// 20100626
+													if($tab_rel['rn_moy_min_max_classe']=='y') {
+														$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['min']."|".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['max'].")";
+													}
+													elseif($tab_rel['rn_moy_classe']=='y') {
+														$chaine_notes.=" (classe:".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['moy_classe'].")";
+													}
+				
+													$kk++;
+												}
+												elseif(($tab_rel['rn_app']=='y')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['display_app']=='1')&&($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']!='')) {
+						
+													if($tab_rel['rn_nomdev']=='y') {
+														$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['nom_court'].")";
+													}
+							
+													if($tab_rel['rn_datedev']=='y') {
+														$chaine_notes.=" (".formate_date($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['date']).")";
+													}
+							
+													if($tab_rel['rn_coefdev_si_diff']=='y') {
+														if($tab_rel['eleve'][$i]['groupe'][$m]['differents_coef']=='y') {
+															$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
+														}
+													}
+													else {
+														if($tab_rel['rn_toutcoefdev']=='y') {
+															$chaine_notes.=" (coef ".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['coef'].")";
+														}
+													}
+						
+													$chaine_notes.=" ".str_replace("&#039;", "'", unhtmlentities($tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['app']));
+				
+													if($tab_rel['rn_moy_min_max_classe']=='y') {
+														$chaine_notes.=" (".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['min']."|".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['max'].")";
+													}
+													elseif($tab_rel['rn_moy_classe']=='y') {
+														$chaine_notes.=" (classe:".$tab_rel['eleve'][$i]['groupe'][$m]['devoir'][$k]['moy_classe'].")";
+													}
+				
+													$kk++;
+												}
+	
+											//}
+										}
+										$k++;
+									}
+								}
 							}
 						}
 						else {
