@@ -823,7 +823,7 @@ while (true) {
         $html_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
         $html_balise .=(" ");
         $html_balise .=(
-            "<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=" . $current_group["id"] . "\" onclick=\"return confirmlink(this,'suppression de la notice du " . strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
+            "<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."\" onclick=\"return confirmlink(this,'suppression de la notice du " . strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
         );
 		    // cas d'un visa, on n'affiche rien
             if ($not_dev->visa == 'y') {
@@ -846,7 +846,7 @@ while (true) {
         $html_balise .=("<a href=\"index.php?id_ct=$not_dev->id_ct&amp;id_groupe=" . $current_group["id"] . "&amp;edit_devoir=yes\"><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
         $html_balise .=(" ");
         $html_balise .=(
-            "<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_devoirs&amp;uid_post=$uid&amp;id_groupe=" . $current_group["id"] . "\" onclick=\"return confirmlink(this,'suppression du devoir du " . strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
+            "<a href=\"index.php?id_ct_del=$not_dev->id_ct&amp;edit_devoir=$edit_devoir&amp;action=sup_devoirs&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."\" onclick=\"return confirmlink(this,'suppression du devoir du " . strftime("%a %d %b %y", $not_dev->date_ct) . " ?','" . $message_suppression . "')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n"
 			 );
 			if ($not_dev->vise == 'y') {
 			   $html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
@@ -889,7 +889,7 @@ include "../lib/transform.php";
 echo "<b>Informations Générales</b>\n";
 if ($id_ctexte == $id_ct) {echo "<b><font color=\"red\"> - en&nbsp;modification</font></b>";}
 
-$html_balise = "<div style=\"margin: 0px; float: left;\"><a href='index.php?info=yes&amp;id_groupe=" . $current_group["id"] . "'><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a> <a href='index.php?info=yes&amp;id_ct_del=$id_ctexte&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=" . $current_group["id"] . "' onclick=\"return confirmlink(this,'suppression de la notice Informations générales ?','".$message_suppression."')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a></div>\n";
+$html_balise = "<div style=\"margin: 0px; float: left;\"><a href='index.php?info=yes&amp;id_groupe=" . $current_group["id"] . "'><img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a> <a href='index.php?info=yes&amp;id_ct_del=$id_ctexte&amp;action=sup_entry&amp;uid_post=$uid&amp;id_groupe=".$current_group["id"].add_token_in_url()."' onclick=\"return confirmlink(this,'suppression de la notice Informations générales ?','".$message_suppression."')\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a></div>\n";
 
 echo "<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$color_fond_notices["i"] ."; padding: 2px; margin: 2px;\" width=\"100%\" cellpadding=\"2\" summary=\"Tableau de...\">\n<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: ".$couleur_cellule["i"]."; padding: 0px; margin: 0px;\">\n<td>\n".$html_balise.$html."</td>\n</tr>\n</table>\n<br />";
 
@@ -1066,7 +1066,7 @@ if (isset($id_ct)) {
             $titre_[$i] = $row[1];
             $taille = round($row[2]/1024,1);
             $emplacement = $row[3];
-            echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_cellule_;\"><td><a href='".$emplacement."' target=\"_blank\">".$titre_[$i]."</a></td><td style=\"text-align: center;\">".$taille."</td><td style=\"text-align: center;\"><a href='index.php?action=del&amp;uid_post=$uid&amp;id_del=".$id_document[$i]."&amp;edit_devoir=".$edit_devoir."&amp;id_ct=$id_ct&amp;id_groupe=" . $current_group["id"] . $infoyes . "' onclick=\"return confirmlink(this,'suppression du document joint ".basename($row[3])." ?','".$message_suppression."');document.mef.submit();\">Supprimer</a></td></tr>\n";
+            echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: $couleur_cellule_;\"><td><a href='".$emplacement."' target=\"_blank\">".$titre_[$i]."</a></td><td style=\"text-align: center;\">".$taille."</td><td style=\"text-align: center;\"><a href='index.php?action=del&amp;uid_post=$uid&amp;id_del=".$id_document[$i]."&amp;edit_devoir=".$edit_devoir."&amp;id_ct=$id_ct&amp;id_groupe=".$current_group["id"].$infoyes.add_token_in_url()."' onclick=\"return confirmlink(this,'suppression du document joint ".basename($row[3])." ?','".$message_suppression."');document.mef.submit();\">Supprimer</a></td></tr>\n";
             $nb_doc++;
         }
         echo "</table>\n";
