@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -25,7 +25,7 @@ $doc_name = isset($_POST["doc_name"]) ? $_POST["doc_name"] :(isset($_GET["doc_na
 $doc_name_modif = isset($_POST["doc_name_modif"]) ? $_POST["doc_name_modif"] :(isset($_GET["doc_name_modif"]) ? $_GET["doc_name_modif"] :NULL);
 $id_document = isset($_POST["id_document"]) ? $_POST["id_document"] :(isset($_GET["id_document"]) ? $_GET["id_document"] :NULL);
 $edit_devoir = isset($_POST["edit_devoir"]) ? $_POST["edit_devoir"] :(isset($_GET["edit_devoir"]) ? $_GET["edit_devoir"] :NULL);
-if ($edit_devoir  == '') $edit_devoir =NULL;
+if ($edit_devoir  == '') {$edit_devoir = NULL;}
 if (empty($_FILES['doc_file'])) { $doc_file=''; } else { $doc_file=$_FILES['doc_file'];}
 
 
@@ -60,6 +60,12 @@ function creer_repertoire($base, $subdir) {
         @fputs($f, '<'.'?php $ok = true; ?'.'>');
         @fclose($f);
         include("$path/.test");
+        if($ok) {
+          if ($f = @fopen("$path/index.html", "w")) {
+            @fputs($f, '<script type="text/javascript">document.location.replace("../../login.php")</script>');
+            @fclose($f);
+          }
+        }
     }
     return $ok;
 }
