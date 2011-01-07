@@ -91,7 +91,11 @@
 
   <div id='container'>
 
-
+<?php
+	if(isset($_GET['ajout_index_documents'])) {
+		echo ajout_index_sous_dossiers("../documents");
+	}
+?>
 
 	<form action="index.php" id="form1" method="post">
 <?php
@@ -341,6 +345,7 @@ echo add_token_field();
 	  <li><a href='modify_type_doc.php'>Types de fichiers autorisés en téléchargement</a></li>
 	  <li><a href='admin_ct.php'>Administration des cahiers de textes</a> (recherche des incohérences, modifications, suppressions)</li>
 	  <li><a href='visa_ct.php'>Viser les cahiers de textes</a> (Signer les cahiers de textes)</li>
+	  <li><a href='index.php?ajout_index_documents=y'>Protéger les sous-dossiers de 'documents/' contre des accès anormaux</a></li>
 	</ul>
 	
 	<hr />

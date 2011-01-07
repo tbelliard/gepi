@@ -2828,21 +2828,29 @@ function caract_ooo($chaine){
 	return $retour;
 }
 
+//================================================
+// Correspondances de caractères accentués/désaccentués
+$liste_caracteres_accentues   ="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõø¨ûüùúıÿ¸";
+$liste_caracteres_desaccentues="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaaceeeeiiiinooooooosuuuuyyz";
+//================================================
+
 function remplace_accents($chaine,$mode){
-	//$retour=strtr(my_ereg_replace("Æ","AE",ereg_replace("æ","ae",ereg_replace("¼","OE",ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+	global $liste_caracteres_accentues, $liste_caracteres_desaccentues;
+
 	if($mode == 'all'){
 		// On remplace espaces et apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		$retour=strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine"))))," 'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸","__AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		$retour=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe","$chaine"))))," '$liste_caracteres_accentues","__$liste_caracteres_desaccentues");
 	}
 	elseif($mode == 'all_nospace'){
 		// On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
 		$retour1 = strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine")))),"'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸"," AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		$retour1=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe","$chaine")))),"'$liste_caracteres_accentues"," $liste_caracteres_desaccentues");
 		// On enlève aussi les guillemets
-		$retour = my_ereg_replace('"', '', $retour1);
+		$retour = preg_replace('/"/', '', $retour1);
 	}
 	else{
 		// On remplace les caractères accentués par leurs équivalents non accentués.
-		$retour=strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",my_ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine")))),"ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸","AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		$retour=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe","$chaine")))),"$liste_caracteres_accentues","$liste_caracteres_desaccentues");
 	}
 	return $retour;
 }
@@ -6136,5 +6144,71 @@ function acces($id,$statut)
 			}
 		}
 	}
+}
+
+function ajout_index_sous_dossiers($dossier) {
+	global $niveau_arbo;
+
+	$nb_creation=0;
+	$nb_erreur=0;
+	$nb_fich_existant=0;
+
+	$retour="";
+
+	//$dossier="../documents";
+	$dir= opendir($dossier);
+	if(!$dir) {
+		$retour.="<p style='color:red'>Erreur lors de l'accès au dossier '$dossier'.</p>\n";
+	}
+	else {
+		$retour.="<p style='color:green'>Succès de l'accès au dossier '$dossier'.</p>\n";
+		while($entree=@readdir($dir)) {
+			//$retour.="$dossier/$entree<br />\n";
+			if(is_dir($dossier.'/'.$entree)&&($entree!='.')&&($entree!='..')) {
+				if(!file_exists($dossier."/".$entree."/index.html")) {
+					if ($f = @fopen($dossier.'/'.$entree."/index.html", "w")) {
+						if((!isset($niveau_arbo))||($niveau_arbo==1)) {
+							@fputs($f, '<script type="text/javascript">document.location.replace("../login.php")</script>');
+						}
+						elseif($niveau_arbo==0) {
+							@fputs($f, '<script type="text/javascript">document.location.replace("./login.php")</script>');
+						}
+						elseif($niveau_arbo==2) {
+							@fputs($f, '<script type="text/javascript">document.location.replace("../../login.php")</script>');
+						}
+						else {
+							@fputs($f, '<script type="text/javascript">document.location.replace("../../../login.php")</script>');
+						}
+						@fclose($f);
+						$nb_creation++;
+					}
+					else {
+						$retour.="<span style='color:red'>Erreur lors de la création de '$dir/$entree/index.html'.</span><br />\n";
+						$nb_erreur++;
+					}
+				}
+				else {
+					$nb_fich_existant++;
+				}
+			}
+		}
+
+		if($nb_erreur>0) {
+			$retour.="<p style='color:red'>$nb_erreur erreur(s) lors du traitement.</p>\n";
+		}
+		else {
+			$retour.="<p style='color:green'>Aucune erreur lors de la création des fichiers index.html</p>\n";
+		}
+	
+		if($nb_creation>0) {
+			$retour.="<p style='color:green'>Création de $nb_creation fichier(s) index.html</p>\n";
+		}
+		else {
+			$retour.="<p style='color:green'>Aucune création de fichiers index.html n'a été effectuée.</p>\n";
+		}
+		$retour.="<p style='color:blue'>Il existait avant l'opération $nb_fich_existant fichier(s) index.html</p>\n";
+	}
+
+	return $retour;
 }
 ?>
