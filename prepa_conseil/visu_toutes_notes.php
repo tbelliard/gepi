@@ -619,12 +619,25 @@ while($j < $nb_lignes_tableau) {
 
 
 //if((($utiliser_coef_perso=='y')&&(isset($note_sup_10)))||($temoin_note_sup10=='y')) {
-if($temoin_note_sup10=='y') {
+//if($temoin_note_sup10=='y') {
+if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
 	//$col[1][1]="Note&gt;10";
 	//$col[1][1]="Note sup 10";
 	$col[1][1]="Mode moy";
 	//$col_csv[1][1]="Note sup 10";
 	for($t=2;$t<=$nb_col+$lignes_groupes;$t++) {$col[$t][1]='-';}
+
+	if ($affiche_categories) {
+		foreach ($categories as $cat_id) {
+			$col[$t][1]='-';
+			$t++;
+		}
+	}
+
+	// Pour la colonne moyenne générale
+	if ($ligne_supl >= 1) {
+		$col[$t][1]='-';
+	}
 }
 
 //
@@ -1489,7 +1502,9 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 		//$corr=1;
 		$corr++;
 	}
-	if($temoin_note_sup10=='y') {
+	// Ajout d'une ligne de décalage si il y a une ligne mode_moy
+	//if($temoin_note_sup10=='y') {
+	if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
 		$corr++;
 	}
 	/*
