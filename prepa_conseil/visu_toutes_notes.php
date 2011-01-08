@@ -252,6 +252,12 @@ if ($affiche_categories == "y") {
 // Si le rang des élèves est demandé, on met à jour le champ rang de la table matieres_notes
 if (($aff_rang) and ($referent=="une_periode")) {
 	$periode_num=$num_periode;
+
+	// La variable $test_coef est réclamée par calcul_rang.inc.php
+	if(!isset($test_coef)) {
+		$test_coef=$nb_coef_non_nuls;
+	}
+
 	include "../lib/calcul_rang.inc.php";
 }
 
