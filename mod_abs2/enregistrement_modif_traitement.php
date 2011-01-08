@@ -74,14 +74,8 @@ if ($traitement == null) {
     die();
 }
 
-if ($modif == 'type') {
-    if (!$traitement->getModifiable()) {
-	$message_enregistrement .= 'Modification impossible.';
-	include("visu_traitement.php");
-	die();
-    } else {
-	$traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->findPk($_POST["id_type"]));
-    }
+if ($modif == 'type') {    
+	$traitement->setAbsenceEleveType(AbsenceEleveTypeQuery::create()->findPk($_POST["id_type"]));   
 } elseif ($modif == 'commentaire') {
     $traitement->setCommentaire($_POST["commentaire"]);
 } elseif ($modif == 'justification') {
