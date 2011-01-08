@@ -217,6 +217,8 @@ if ($recherche_saisie_a_rattacher == 'oui' && $traitement != null) {
 	$id_eleve_array[] = $saisie->getEleveId();
 	$id_saisie_array[] = $saisie->getId();
     }
+    date_date_set($date_debut, $date_debut->format('Y'), $date_debut->format('m'), $date_debut->format('d') - 1);
+    date_date_set($date_fin, $date_fin->format('Y'), $date_fin->format('m'), $date_fin->format('d') + 1);
     $query->filterByPlageTemps($date_debut, $date_fin)->filterByEleveId($id_eleve_array)->filterById($id_saisie_array, Criteria::NOT_IN);
 }
 
