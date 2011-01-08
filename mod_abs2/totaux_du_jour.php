@@ -56,6 +56,7 @@ if (getSettingValue("active_module_absence")!='2') {
 }
 //initialisation des variables
 $date_absence_eleve = isset($_POST["date_absence_eleve"]) ? $_POST["date_absence_eleve"] :(isset($_GET["date_absence_eleve"]) ? $_GET["date_absence_eleve"] :(isset($_SESSION["date_absence_eleve"]) ? $_SESSION["date_absence_eleve"] : NULL));
+$nav_date=isset($_POST["nav_date"]) ? $_POST["nav_date"] :(isset($_GET["nav_date"]) ? $_GET["nav_date"] :Null);
 
 if ($date_absence_eleve != null) {$_SESSION["date_absence_eleve"] = $date_absence_eleve;}
 if ($date_absence_eleve != null) {
@@ -70,6 +71,12 @@ if ($date_absence_eleve != null) {
     }
 } else {
     $dt_date_absence_eleve = new DateTime('now');
+}
+if($nav_date=="precedent"){
+    date_date_set($dt_date_absence_eleve, $dt_date_absence_eleve->format('Y'), $dt_date_absence_eleve->format('m'), $dt_date_absence_eleve->format('d') - 1);
+}
+if($nav_date=="suivant"){
+    date_date_set($dt_date_absence_eleve, $dt_date_absence_eleve->format('Y'), $dt_date_absence_eleve->format('m'), $dt_date_absence_eleve->format('d') + 1);
 }
 
 //==============================================
@@ -110,12 +117,14 @@ $eleve_col = $query->distinct()->find();
         Les saisies renseignées en retard ne sont pas comptabilisées.<br />
     </p>
     <form action="./totaux_du_jour.php" name="totaux_du_jour" id="totaux_du_jour" method="post" style="width: 100%;">
-        <fieldset style="width:300px;">
+        <fieldset style="width:380px;">
             <legend>Choix de la date</legend>
             <p class="expli_page choix_fin">
                 <input type="hidden" name="date_absence_eleve" value="<?php echo $date_absence_eleve?>"/>
+                <button dojoType="dijit.form.Button"  name="nav_date" type="submit"  value="precedent">Jour précédent</button>
                 <input onchange="document.totaux_du_jour.submit()" style="width : 7em" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
-           </p>
+                <button dojoType="dijit.form.Button"  name="nav_date" type="submit"  value="suivant">Jour suivant</button>
+            </p>
         </fieldset>
     </form
     <?php
@@ -139,7 +148,7 @@ $eleve_col = $query->distinct()->find();
         $nb_ext =0;
         foreach($eleve_col as $eleve){
             $regime=$eleve->getEleveRegimeDoublant()->getRegime();
-            $saisies_du_creneau=$eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $date_absence_eleve);
+            $saisies_du_creneau=$eleve->getAbsenceEleveSaisiesManquementObligationPresenceDuCreneau($creneau, $dt_date_absence_eleve);
             $retard=false;
             foreach($saisies_du_creneau as $saisie){
                 if ($saisie->getRetard()) {
