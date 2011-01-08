@@ -50,6 +50,10 @@ if(($_SESSION['statut']=='cpe')||
     if($onglet_abs=='bilan_du_jour.php') {echo "class='current' ";}
     echo "title='Bilan du jour'>Bilan du jour</a></li>\n";
 
+    echo "<li><a href='totaux_du_jour.php' ";
+    if($onglet_abs=='totaux_du_jour.php') {echo "class='current' ";}
+    echo "title='Totaux du jour'>Totaux du jour</a></li>\n";
+
     echo "<li><a href='extraction_saisies.php' ";
     if($onglet_abs=='extraction_saisies.php') {echo "class='current' ";}
     echo "title='Extraction des saisies'>Extraction des saisies</a></li>\n";

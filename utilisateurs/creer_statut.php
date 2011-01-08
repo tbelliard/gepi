@@ -180,6 +180,9 @@ if ($action == 'modifier') {
 		$test[$a][17] = isset($_POST["tr|".$b]) ? $_POST["tr|".$b] : NULL;
 		$test[$a][18] = isset($_POST["dsi|".$b]) ? $_POST["dsi|".$b] : NULL;
 		$test[$a][19] = isset($_POST["abs|".$b]) ? $_POST["abs|".$b] : NULL;
+        $test[$a][20] = isset($_POST["abs_saisie|".$b]) ? $_POST["abs_saisie|".$b] : NULL;
+        $test[$a][21] = isset($_POST["abs_bilan|".$b]) ? $_POST["abs_bilan|".$b] : NULL;
+        $test[$a][22] = isset($_POST["abs_totaux|".$b]) ? $_POST["abs_totaux|".$b] : NULL;
 
 		// On assure les différents traitements
 		if ($test[$a][0] == 'on') {

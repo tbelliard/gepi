@@ -131,23 +131,31 @@ if(($_SESSION['statut']=='cpe')||
 
 	echo "<ul class='css-tabs' id='menutabs'>\n";
 
-    echo "<li><a href='saisir_eleve.php' ";
-    if($onglet_abs=='saisir_eleve.php') {echo "class='current' ";}
-    echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";
+    if(acces('/mod_abs2/saisir_eleve.php','autre')) {
+        echo "<li><a href='saisir_eleve.php' ";
+        if($onglet_abs=='saisir_eleve.php') {echo "class='current' ";}
+        echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";        
+    
+        echo "<li><a href='visu_saisie.php' ";
+        if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
+        else {echo "style='background-color:#e6f8e7;' ";}
+        echo "title='Visualiser une saisie'>Saisie</a></li>\n";
 
-    echo "<li><a href='visu_saisie.php' ";
-    if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
-    else {echo "style='background-color:#e6f8e7;' ";}
-    echo "title='Visualiser une saisie'>Saisie</a></li>\n";
-
-    echo "<li><a href='liste_saisies.php' ";
-    if($onglet_abs=='liste_saisies.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
-    else {echo "style='background-color:#e6f8e7;' ";}
-    echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
-
-    echo "<li><a href='bilan_individuel.php' ";
-    if($onglet_abs=='bilan_individuel.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
-    echo "title='Bilans'>Bilan individuel</a></li>\n";
+        echo "<li><a href='liste_saisies.php' ";
+        if($onglet_abs=='liste_saisies.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
+        else {echo "style='background-color:#e6f8e7;' ";}
+        echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
+    }
+    if(acces('/mod_abs2/bilan_individuel.php','autre')) {
+        echo "<li><a href='bilan_individuel.php' ";
+        if($onglet_abs=='bilan_individuel.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
+        echo "title='Bilan individuel'>Bilan individuel</a></li>\n";
+    }
+    if(acces('/mod_abs2/totaux_du_jour.php','autre')) {
+        echo "<li><a href='totaux_du_jour.php' ";
+        if($onglet_abs=='totaux_du_jour.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
+        echo "title='Totaux du jour'>Totaux du jour</a></li>\n";
+    }
 
     echo "</ul>\n";
 }

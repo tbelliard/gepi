@@ -61,13 +61,14 @@ $autorise[18]= array('/mod_discipline/index.php',
 					 '/mod_discipline/traiter_incident.php',
 					 '/mod_ooo/retenue.php',
 					 '/mod_ooo/rapport_incident.php');
-$autorise[19]= array('/mod_abs2/saisir_eleve.php',
-					 '/mod_abs2/index.php',
+$autorise[19]= array('/mod_abs2/index.php');
+$autorise[20]= array('/mod_abs2/saisir_eleve.php',
 					 '/mod_abs2/visu_saisie.php',
 					 '/mod_abs2/enregistrement_modif_saisie.php',
 					 '/mod_abs2/liste_saisies.php',
-					 '/mod_abs2/enregistrement_saisie_eleve.php',
-                     '/mod_abs2/bilan_individuel.php' );
+					 '/mod_abs2/enregistrement_saisie_eleve.php');
+$autorise[21]= array('/mod_abs2/bilan_individuel.php' );
+$autorise[22]= array('/mod_abs2/totaux_du_jour.php' );
 
 
 $iter = count($autorise);
@@ -92,7 +93,10 @@ $menu_accueil[15] = array('Fiches : ', 'Fiches : voir les absences', 'vae');
 $menu_accueil[16] = array('Fiches : ', 'Fiches : voir année antérieure', 'anna');
 $menu_accueil[17] = array('Trombinoscope', 'Trombinoscope des élèves et personnels', 'tr');
 $menu_accueil[18] = array('Discipline', 'Accéder au module Discipline : Déclarer et gérer ses incidents', 'dsi');
-$menu_accueil[19] = array('Absence', 'Accéder au module absence.', 'abs');
+$menu_accueil[19] = array('Absence2', 'Absence2 : accéder au module.', 'abs');
+$menu_accueil[20] = array('Absence2', 'Absence2 : saisir les absences.', 'abs_saisie');
+$menu_accueil[21] = array('Absence2', 'Absence2 : accéder à la page bilan individuel.', 'abs_bilan');
+$menu_accueil[22] = array('Absence2', 'Absence2 : accéder à la page totaux du jour.', 'abs_totaux');
 
 
 ?>
