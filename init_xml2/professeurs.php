@@ -130,6 +130,8 @@ $titre_page = "Outil d'initialisation de l'année : Importation des professeurs";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
+require_once("init_xml_lib.php");
+
 // On vérifie si l'extension d_base est active
 //verif_active_dbase();
 
@@ -341,259 +343,127 @@ else {
 	}
 
 	$dest_file="../temp/".$tempdir."/sts.xml";
+	/*
 	$fp=fopen($dest_file,"r");
 	if(!$fp){
 		echo "<p>Le XML STS Emploi du temps n'a pas l'air présent dans le dossier temporaire.<br />Auriez-vous sauté une étape???</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
-
-	/*
-	echo "<p>Lecture du fichier STS Emploi du temps...<br />\n";
-	while(!feof($fp)){
-		$ligne[]=fgets($fp,4096);
-	}
-	fclose($fp);
 	*/
-	flush();
+
+	$sts_xml=simplexml_load_file($dest_file);
+	if(!$sts_xml) {
+		echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$nom_racine=$sts_xml->getName();
+	if(strtoupper($nom_racine)!='STS_EDT') {
+		echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML STS_EMP_&lt;RNE&gt;_&lt;ANNEE&gt;.<br />Sa racine devrait être 'STS_EDT'.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
 
 	echo "<p>";
 	echo "Analyse du fichier pour extraire les informations de la section INDIVIDUS...<br />\n";
 
-	$cpt=0;
-	$temoin_professeurs=0;
-	$temoin_profs_princ=-1;
-	$temoin_prof_princ=-1;
-	$temoin_disciplines=-1;
-	$temoin_disc=-1;
 	$prof=array();
 	$i=0;
-	$temoin_prof=0;
-	//while($cpt<count($ligne)){
-	while(!feof($fp)){
-		$ligne=fgets($fp,4096);
-		//echo htmlentities($ligne[$cpt])."<br />\n";
-		//if(strstr($ligne[$cpt],"<INDIVIDUS>")){
-		if(strstr($ligne,"<INDIVIDUS>")){
-			echo "Début de la section INDIVIDUS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-			flush();
-			$temoin_professeurs++;
+
+	$tab_champs_personnels=array("NOM_USAGE",
+	"NOM_PATRONYMIQUE",
+	"PRENOM",
+	"SEXE",
+	"CIVILITE",
+	"DATE_NAISSANCE",
+	"GRADE",
+	"FONCTION");
+
+	$prof=array();
+	$i=0;
+
+	foreach($sts_xml->DONNEES->INDIVIDUS->children() as $individu) {
+		$prof[$i]=array();
+
+		//echo "<span style='color:orange'>\$individu->NOM_USAGE=".$individu->NOM_USAGE."</span><br />";
+
+		foreach($individu->attributes() as $key => $value) {
+			// <INDIVIDU ID="4189" TYPE="epp">
+			$prof[$i][strtolower($key)]=trim(traite_utf8($value));
 		}
-		//if(strstr($ligne[$cpt],"</INDIVIDUS>")){
-		if(strstr($ligne,"</INDIVIDUS>")){
-			echo "Fin de la section INDIVIDUS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-			flush();
-			$temoin_professeurs++;
-		}
-		if($temoin_professeurs==1){
-			//if(strstr($ligne[$cpt],"<INDIVIDU ")){
-			if(strstr($ligne,"<INDIVIDU ")){
-				$prof[$i]=array();
-				unset($tabtmp);
-				//$tabtmp=explode('"',strstr($ligne[$cpt]," ID="));
-				$tabtmp=explode('"',strstr($ligne," ID="));
-				$prof[$i]["id"]=trim($tabtmp[1]);
-				//$tabtmp=explode('"',strstr($ligne[$cpt]," TYPE="));
-				$tabtmp=explode('"',strstr($ligne," TYPE="));
-				$prof[$i]["type"]=trim($tabtmp[1]);
-				$temoin_prof=1;
-			}
-			//if(strstr($ligne[$cpt],"</INDIVIDU>")){
-			if(strstr($ligne,"</INDIVIDU>")){
-				$temoin_prof=0;
-				$i++;
-			}
-			if($temoin_prof==1){
-				//if(strstr($ligne[$cpt],"<SEXE>")){
-				if(strstr($ligne,"<SEXE>")){
-					unset($tabtmp);
-					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-					//$prof[$i]["sexe"]=$tabtmp[2];
-					$prof[$i]["sexe"]=trim(my_ereg_replace("[^1-2]","",$tabtmp[2]));
+
+		// Champs de l'individu
+		foreach($individu->children() as $key => $value) {
+			if(in_array(strtoupper($key),$tab_champs_personnels)) {
+				if(strtoupper($key)=='SEXE') {
+					$prof[$i]["sexe"]=trim(preg_replace("/[^1-2]/","",$value));
 				}
-				//if(strstr($ligne[$cpt],"<CIVILITE>")){
-				if(strstr($ligne,"<CIVILITE>")){
-					unset($tabtmp);
-					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-					//$prof[$i]["civilite"]=$tabtmp[2];
-					$prof[$i]["civilite"]=trim(my_ereg_replace("[^1-3]","",$tabtmp[2]));
+				elseif(strtoupper($key)=='CIVILITE') {
+					$prof[$i]["civilite"]=trim(preg_replace("/[^1-3]/","",$value));
 				}
-				//if(strstr($ligne[$cpt],"<NOM_USAGE>")){
-				if(strstr($ligne,"<NOM_USAGE>")){
-					unset($tabtmp);
-					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-					//$prof[$i]["nom_usage"]=$tabtmp[2];
-					$prof[$i]["nom_usage"]=trim(my_ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
+				elseif((strtoupper($key)=='NOM_USAGE')||
+				(strtoupper($key)=='NOM_PATRONYMIQUE')||
+				(strtoupper($key)=='NOM_USAGE')) {
+					$prof[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-z -]/","",traite_utf8($value)));
 				}
-				//if(strstr($ligne[$cpt],"<NOM_PATRONYMIQUE>")){
-				if(strstr($ligne,"<NOM_PATRONYMIQUE>")){
-					unset($tabtmp);
-					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-					//$prof[$i]["nom_patronymique"]=$tabtmp[2];
-					$prof[$i]["nom_patronymique"]=trim(my_ereg_replace("[^a-zA-Z -]","",$tabtmp[2]));
+				elseif(strtoupper($key)=='PRENOM') {
+					$prof[$i][strtolower($key)]=trim(preg_replace("/[^A-Za-zÆæ¼½".$liste_caracteres_accentues." -]/","",traite_utf8($value)));
 				}
-				//if(strstr($ligne[$cpt],"<PRENOM>")){
-				if(strstr($ligne,"<PRENOM>")){
-					unset($tabtmp);
-					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-					//$prof[$i]["prenom"]=$tabtmp[2];
-					$prof[$i]["prenom"]=trim(my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. -]","",$tabtmp[2]));
+				elseif(strtoupper($key)=='DATE_NAISSANCE') {
+					$prof[$i][strtolower($key)]=trim(preg_replace("/[^0-9-]/","",traite_utf8($value)));
 				}
-				//if(strstr($ligne[$cpt],"<DATE_NAISSANCE>")){
-				if(strstr($ligne,"<DATE_NAISSANCE>")){
-					unset($tabtmp);
-					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-					//$prof[$i]["date_naissance"]=$tabtmp[2];
-					$prof[$i]["date_naissance"]=trim(my_ereg_replace("[^0-9-]","",$tabtmp[2]));
+				elseif((strtoupper($key)=='GRADE')||
+					(strtoupper($key)=='FONCTION')) {
+					$prof[$i][strtolower($key)]=trim(preg_replace('/"/','',traite_utf8($value)));
 				}
-				//if(strstr($ligne[$cpt],"<GRADE>")){
-				if(strstr($ligne,"<GRADE>")){
-					unset($tabtmp);
-					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-
-					// Suppression des guillemets éventuels
-					//$prof[$i]["grade"]=trim($tabtmp[2]);
-					$prof[$i]["grade"]=my_ereg_replace('"','',trim($tabtmp[2]));
+				else {
+					$prof[$i][strtolower($key)]=trim(traite_utf8($value));
 				}
-				//if(strstr($ligne[$cpt],"<FONCTION>")){
-				if(strstr($ligne,"<FONCTION>")){
-					unset($tabtmp);
-					//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-					$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-
-					// Suppression des guillemets éventuels
-					//$prof[$i]["fonction"]=trim($tabtmp[2]);
-					$prof[$i]["fonction"]=my_ereg_replace('"','',trim($tabtmp[2]));
-				}
-
-
-
-				//if(strstr($ligne[$cpt],"<PROFS_PRINC>")){
-				if(strstr($ligne,"<PROFS_PRINC>")){
-					$temoin_profs_princ=1;
-					//$prof[$i]["prof_princs"]=array();
-					$j=0;
-				}
-				//if(strstr($ligne[$cpt],"</PROFS_PRINC>")){
-				if(strstr($ligne,"</PROFS_PRINC>")){
-					$temoin_profs_princ=0;
-				}
-
-				if($temoin_profs_princ==1){
-
-					//if(strstr($ligne[$cpt],"<PROF_PRINC>")){
-					if(strstr($ligne,"<PROF_PRINC>")){
-						$temoin_prof_princ=1;
-						$prof[$i]["prof_princ"]=array();
-					}
-					//if(strstr($ligne[$cpt],"</PROF_PRINC>")){
-					if(strstr($ligne,"</PROF_PRINC>")){
-						$temoin_prof_princ=0;
-						$j++;
-					}
-
-					if($temoin_prof_princ==1){
-						//if(strstr($ligne[$cpt],"<CODE_STRUCTURE>")){
-						if(strstr($ligne,"<CODE_STRUCTURE>")){
-							unset($tabtmp);
-							//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-							$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-
-							// Suppression des guillemets éventuels
-							//$prof[$i]["prof_princ"][$j]["code_structure"]=trim($tabtmp[2]);
-							$prof[$i]["prof_princ"][$j]["code_structure"]=my_ereg_replace('"','',trim($tabtmp[2]));
-
-							$temoin_au_moins_un_prof_princ="oui";
-						}
-
-						//if(strstr($ligne[$cpt],"<DATE_DEBUT>")){
-						if(strstr($ligne,"<DATE_DEBUT>")){
-							unset($tabtmp);
-							//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-							$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-							$prof[$i]["prof_princ"][$j]["date_debut"]=trim($tabtmp[2]);
-						}
-						//if(strstr($ligne[$cpt],"<DATE_FIN>")){
-						if(strstr($ligne,"<DATE_FIN>")){
-							unset($tabtmp);
-							//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-							$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-							$prof[$i]["prof_princ"][$j]["date_fin"]=trim($tabtmp[2]);
-						}
-					}
-				}
-
-
-
-
-				//if(strstr($ligne[$cpt],"<DISCIPLINES>")){
-				if(strstr($ligne,"<DISCIPLINES>")){
-					$temoin_disciplines=1;
-					$prof[$i]["disciplines"]=array();
-					$j=0;
-				}
-				//if(strstr($ligne[$cpt],"</DISCIPLINES>")){
-				if(strstr($ligne,"</DISCIPLINES>")){
-					$temoin_disciplines=0;
-				}
-
-
-
-				if($temoin_disciplines==1){
-					//if(strstr($ligne[$cpt],"<DISCIPLINE ")){
-					if(strstr($ligne,"<DISCIPLINE ")){
-						$temoin_disc=1;
-						unset($tabtmp);
-						//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE="));
-						$tabtmp=explode('"',strstr($ligne," CODE="));
-
-						// Suppression des guillemets éventuels
-						//$prof[$i]["disciplines"][$j]["code"]=trim($tabtmp[1]);
-						$prof[$i]["disciplines"][$j]["code"]=my_ereg_replace('"','',trim($tabtmp[1]));
-					}
-					//if(strstr($ligne[$cpt],"</DISCIPLINE>")){
-					if(strstr($ligne,"</DISCIPLINE>")){
-						$temoin_disc=0;
-						$j++;
-					}
-
-					if($temoin_disc==1){
-						//if(strstr($ligne[$cpt],"<LIBELLE_COURT>")){
-						if(strstr($ligne,"<LIBELLE_COURT>")){
-							unset($tabtmp);
-							//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-							$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-
-							// Suppression des guillemets éventuels
-							//$prof[$i]["disciplines"][$j]["libelle_court"]=trim($tabtmp[2]);
-							$prof[$i]["disciplines"][$j]["libelle_court"]=my_ereg_replace('"','',trim($tabtmp[2]));
-						}
-						//if(strstr($ligne[$cpt],"<NB_HEURES>")){
-						if(strstr($ligne,"<NB_HEURES>")){
-							unset($tabtmp);
-							//$tabtmp=explode(">",my_ereg_replace("<",">",$ligne[$cpt]));
-							$tabtmp=explode(">",my_ereg_replace("<",">",$ligne));
-
-							// Suppression des guillemets éventuels
-							//$prof[$i]["disciplines"][$j]["nb_heures"]=trim($tabtmp[2]);
-							$prof[$i]["disciplines"][$j]["nb_heures"]=my_ereg_replace('"','',trim($tabtmp[2]));
-						}
-					}
-				}
-
-
+				//echo "\$prof[$i][".strtolower($key)."]=".$prof[$i][strtolower($key)]."<br />";
 			}
 		}
-		$cpt++;
+
+		if(isset($individu->PROFS_PRINC)) {
+		//if($temoin_prof_princ>0) {
+			$j=0;
+			foreach($individu->PROFS_PRINC->children() as $prof_princ) {
+				//$prof[$i]["prof_princ"]=array();
+				foreach($prof_princ->children() as $key => $value) {
+					$prof[$i]["prof_princ"][$j][strtolower($key)]=trim(traite_utf8(preg_replace('/"/',"",$value)));
+					$temoin_au_moins_un_prof_princ="oui";
+				}
+				$j++;
+			}
+		}
+
+		//if($temoin_discipline>0) {
+		if(isset($individu->DISCIPLINES)) {
+			$j=0;
+			foreach($individu->DISCIPLINES->children() as $discipline) {
+				foreach($discipline->attributes() as $key => $value) {
+					if(strtoupper($key)=='CODE') {
+						$prof[$i]["disciplines"][$j]["code"]=trim(traite_utf8(preg_replace('/"/',"",$value)));
+						break;
+					}
+				}
+
+				foreach($discipline->children() as $key => $value) {
+					$prof[$i]["disciplines"][$j][strtolower($key)]=trim(traite_utf8(preg_replace('/"/',"",$value)));
+				}
+				$j++;
+			}
+		}
+
+		if($debug_import=='y') {
+			echo "<pre style='color:green;'><b>Tableau \$prof[$i]&nbsp;:</b>";
+			print_r($prof[$i]);
+			echo "</pre>";
+		}
+
+		$i++;
 	}
-	fclose($fp);
 
 	// Les $prof[$i]["disciplines"] ne sont pas utilisées sauf à titre informatif à l'affichage...
 	// Les $prof[$i]["prof_princ"][$j]["code_structure"] peuvent être exploitées à ce niveau pour désigner les profs principaux.
@@ -614,24 +484,6 @@ else {
 	srand();
 
 	$nb_reg_no = 0;
-
-	/*
-	//=========================
-	$fp=fopen($dbf_file['tmp_name'],"r");
-	// On lit une ligne pour passer la ligne d'entête:
-	$ligne = fgets($fp, 4096);
-	//=========================
-	for($k = 1; ($k < $nblignes+1); $k++){
-		//$ligne = dbase_get_record($fp,$k);
-		if(!feof($fp)){
-			$ligne = fgets($fp, 4096);
-			if(trim($ligne)!=""){
-				$tabligne=explode(";",$ligne);
-				for($i = 0; $i < count($tabchamps); $i++) {
-					//$affiche[$i] = dbase_filter(trim($ligne[$tabindice[$i]]));
-					$affiche[$i] = dbase_filter(trim($tabligne[$tabindice[$i]]));
-				}
-	*/
 
 	$tab_nouveaux_profs=array();
 
@@ -881,7 +733,7 @@ else {
 						$pwd = md5(rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9).rand (1,9));
 						$mess_mdp = $pwd;
 						//echo "<tr><td colspan='4'>Choix 2: $pwd</td></tr>";
-			//                       $mess_mdp = "Inconnu (compte bloqué)";
+						// $mess_mdp = "Inconnu (compte bloqué)";
 					} elseif ($_POST['sso'] == "yes") {
 						$pwd = '';
 						$mess_mdp = "aucun (sso)";
@@ -907,7 +759,7 @@ else {
 					echo "<tr class='lig$alt'>\n";
 					echo "<td><p><font color='red'>".$login_prof."</font></p></td><td><p>".$prof[$k]["nom_usage"]."</p></td><td><p>".$premier_prenom."</p></td><td>".$mess_mdp."</td></tr>\n";
 				} else {
-// 					//$res = mysql_query("UPDATE utilisateurs set etat='actif' where login = '".$login_prof_gepi."'");
+					//$res = mysql_query("UPDATE utilisateurs set etat='actif' where login = '".$login_prof_gepi."'");
 					// On corrige aussi les nom/prénom/civilité et numind parce que la reconnaissance a aussi pu se faire sur le nom/prénom
 					$res = mysql_query("UPDATE utilisateurs set etat='actif', nom='".$prof[$k]["nom_usage"]."', prenom='$premier_prenom', civilite='$civilite', numind='P".$prof[$k]["id"]."' where login = '".$login_prof_gepi."'");
 					if(!$res) $nb_reg_no++;
@@ -920,8 +772,6 @@ else {
 			}
 		}
 	}
-	//dbase_close($fp);
-	//fclose($fp);
 	echo "</table>\n";
 
 
@@ -976,23 +826,6 @@ else {
 		fwrite($fich,html_entity_decode_all_version($chaine)."\n");
 	}
 	affiche_debug($chaine."<br />\n");
-	/*
-	for($i=0;$i<count($divisions);$i++){
-		$numind_pp="";
-		for($m=0;$m<count($prof);$m++){
-			for($n=0;$n<count($prof[$m]["prof_princ"]);$n++){
-				if($prof[$m]["prof_princ"][$n]["code_structure"]==$divisions[$i]["code"]){
-					$numind_pp="P".$prof[$m]["id"];
-				}
-			}
-		}
-		$chaine=$divisions[$i]["code"].";".$numind_pp;
-		if($fich){
-			fwrite($fich,html_entity_decode_all_version($chaine)."\n");
-		}
-		affiche_debug($chaine."<br />\n");
-	}
-	*/
 
 	$tabchaine=array();
 	for($m=0;$m<count($prof);$m++){

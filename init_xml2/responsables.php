@@ -26,6 +26,8 @@
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
+	require_once("init_xml_lib.php");
+
 	function extr_valeur($lig){
 		unset($tabtmp);
 		$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
@@ -189,8 +191,7 @@
 		echo "</p>\n";
 		//echo "</div>\n";
 
-//debug_var();
-
+		//debug_var();
 
 		//if(!isset($_POST['is_posted'])){
 		if(!isset($step)) {
@@ -229,30 +230,18 @@
 			//echo "<p>Cette page permet de remplir des tables temporaires avec les informations responsables.<br />\n";
 			//echo "</p>\n";
 
-
-
 			// Sauvegarde temporaire:
-/*
 			$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
-(id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-login VARCHAR( 50 ) NOT NULL ,
-password CHAR(32) NOT NULL,
-user_id VARCHAR( 10 ) NOT NULL ,
-statut VARCHAR( 20 ) NOT NULL ,
-temoin VARCHAR( 50 ) NOT NULL
-);"
-*/
-			$sql="CREATE TABLE IF NOT EXISTS tempo_utilisateurs_resp
-(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
-password CHAR(32) NOT NULL,
-pers_id VARCHAR( 10 ) NOT NULL ,
-statut VARCHAR( 20 ) NOT NULL ,
-auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
-temoin VARCHAR( 50 ) NOT NULL
-);";
-//auth_mode ENUM('gepi','ldap','sso') NOT NULL ,
-//auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
-//auth_mode VARCHAR( 4 ) NOT NULL ,
+			(login VARCHAR( 50 ) NOT NULL PRIMARY KEY,
+			password CHAR(32) NOT NULL,
+			pers_id VARCHAR( 10 ) NOT NULL ,
+			statut VARCHAR( 20 ) NOT NULL ,
+			auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+			temoin VARCHAR( 50 ) NOT NULL
+			);";
+			//auth_mode ENUM('gepi','ldap','sso') NOT NULL ,
+			//auth_mode ENUM('gepi','ldap','sso') NOT NULL default 'gepi',
+			//auth_mode VARCHAR( 4 ) NOT NULL ,
 			if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
 			$creation_table=mysql_query($sql);
 
@@ -445,11 +434,23 @@ temoin VARCHAR( 50 ) NOT NULL
 						*/
 						flush();
 
+						$resp_xml=simplexml_load_file($dest_file);
+						if(!$resp_xml) {
+							echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+
+						$nom_racine=$resp_xml->getName();
+						if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
+							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
+
 						echo "<p>Analyse du fichier pour extraire les informations de la section PERSONNES...<br />\n";
 
 						$personnes=array();
-						$temoin_personnes=0;
-						$temoin_pers=0;
 
 						$tab_champs_personne=array("NOM",
 						"PRENOM",
@@ -467,307 +468,68 @@ temoin VARCHAR( 50 ) NOT NULL
 						// PARTIE <PERSONNES>
 						// Compteur personnes:
 						$i=-1;
-						// Compteur de lignes du fichier:
-						$cpt=0;
-						//while($cpt<count($ligne)){
-						$fp=fopen($dest_file,"r");
-						if($fp){
-							while(!feof($fp)){
-								$ligne=fgets($fp,4096);
 
-								//echo htmlentities($ligne[$cpt])."<br />\n";
+						$objet_personnes=($resp_xml->DONNEES->PERSONNES);
+						foreach ($objet_personnes->children() as $personne) {
+							//echo("<p><b>Personne</b><br />");
 
-								//if(strstr($ligne[$cpt],"<PERSONNES>")){
-								if(strstr($ligne,"<PERSONNES>")){
-									echo "Début de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-									flush();
-									$temoin_personnes++;
-								}
-								//if(strstr($ligne[$cpt],"</PERSONNES>")){
-								if(strstr($ligne,"</PERSONNES>")){
-									echo "Fin de la section PERSONNES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-									flush();
-									$temoin_personnes++;
-									break;
-								}
-								if($temoin_personnes==1){
-									//if(strstr($ligne[$cpt],"<PERSONNE ")){
-									if(strstr($ligne,"<PERSONNE ")){
-										$i++;
-										$personnes[$i]=array();
+							$i++;
+							$personnes[$i]=array();
 
-										//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
-										unset($tabtmp);
-										//$tabtmp=explode('"',strstr($ligne[$cpt]," PERSONNE_ID="));
-										$tabtmp=explode('"',strstr($ligne," PERSONNE_ID="));
-										//$personnes[$i]["personne_id"]=trim($tabtmp[1]);
-										$personnes[$i]["personne_id"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[1])));
-										affiche_debug("\$personnes[$i][\"personne_id\"]=".$personnes[$i]["personne_id"]."<br />\n");
-										$temoin_pers=1;
-									}
-									//if(strstr($ligne[$cpt],"</PERSONNE>")){
-									if(strstr($ligne,"</PERSONNE>")){
-										$temoin_pers=0;
-									}
-									if($temoin_pers==1){
-										for($loop=0;$loop<count($tab_champs_personne);$loop++){
-											//if(strstr($ligne[$cpt],"<".$tab_champs_personne[$loop].">")){
-											if(strstr($ligne,"<".$tab_champs_personne[$loop].">")){
-												$tmpmin=strtolower($tab_champs_personne[$loop]);
-												//$personnes[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-												//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
-
-												// Suppression des guillemets éventuels
-												//$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
-												$personnes[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(my_ereg_replace('"','',extr_valeur($ligne))));
-
-												affiche_debug("\$personnes[$i][\"$tmpmin\"]=".$personnes[$i]["$tmpmin"]."<br />\n");
-												break;
-											}
-										}
-									}
-								}
-								$cpt++;
-							}
-							fclose($fp);
-
-							//traitement_magic_quotes(corriger_caracteres())
-							$nb_err=0;
-							$stat=0;
-							$i=0;
-							while($i<count($personnes)){
-								//$sql="INSERT INTO temp_resp_pers_import SET ";
-								$sql="INSERT INTO resp_pers SET ";
-								$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";
-								$sql.="nom='".$personnes[$i]["nom"]."', ";
-								$sql.="prenom='".$personnes[$i]["prenom"]."', ";
-								if(isset($personnes[$i]["lc_civilite"])){
-									$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
-								}
-								if(isset($personnes[$i]["tel_personnel"])){
-									$sql.="tel_pers='".$personnes[$i]["tel_personnel"]."', ";
-								}
-								if(isset($personnes[$i]["tel_portable"])){
-									$sql.="tel_port='".$personnes[$i]["tel_portable"]."', ";
-								}
-								if(isset($personnes[$i]["tel_professionnel"])){
-									$sql.="tel_prof='".$personnes[$i]["tel_professionnel"]."', ";
-								}
-								if(isset($personnes[$i]["mel"])){
-									$sql.="mel='".$personnes[$i]["mel"]."', ";
-								}
-								if(isset($personnes[$i]["adresse_id"])){
-									$sql.="adr_id='".$personnes[$i]["adresse_id"]."';";
-								}
-								else{
-									$sql.="adr_id='';";
-									// IL FAUDRAIT PEUT-ETRE REMPLIR UN TABLEAU
-									// POUR SIGNALER QUE CE RESPONSABLE RISQUE DE POSER PB...
-									// ... CEPENDANT, CEUX QUE J'AI REPéRéS ETAIENT resp_legal=0
-									// ILS NE DEVRAIENT PAS ETRE DESTINATAIRES DE BULLETINS,...
-								}
-								affiche_debug("$sql<br />\n");
-								$res_insert=mysql_query($sql);
-								if(!$res_insert){
-									echo "Erreur lors de la requête $sql<br />\n";
-									flush();
-									$nb_err++;
-								}
-								else{
-
-									$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$personnes[$i]["personne_id"]."';";
-									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-									$res_tmp_u=mysql_query($sql);
-									if(mysql_num_rows($res_tmp_u)>0) {
-										$lig_tmp_u=mysql_fetch_object($res_tmp_u);
-
-										$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$personnes[$i]["nom"]."', prenom='".$personnes[$i]["prenom"]."', ";
-										if(isset($personnes[$i]["lc_civilite"])){
-											$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
-										}
-										$sql.="password='".$lig_tmp_u->password."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
-										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-										$insert_u=mysql_query($sql);
-										if(!$insert_u) {
-											echo "Erreur lors de la création du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"].".<br />";
-										}
-										else {
-											$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
-											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-											$update_rp=mysql_query($sql);
-
-											$sql="UPDATE tempo_utilisateurs_resp SET temoin='recree' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
-											if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
-											$update_tmp_u=mysql_query($sql);
-										}
-									}
-
-									$stat++;
-								}
-
-								$i++;
+							foreach($personne->attributes() as $key => $value) {
+								// <PERSONNE PERSONNE_ID="294435">
+								$personnes[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(trim($value)));
 							}
 
-							/*
-							if($nb_err==0) {
-								echo "<p>La première phase s'est passée sans erreur.</p>\n";
+							foreach($personne->children() as $key => $value) {
+								if(in_array(strtoupper($key),$tab_champs_personne)) {
+									$personnes[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+									//echo "\$structure->$key=".$value."<br />";
+								}
 							}
-							elseif($nb_err==1) {
-								echo "<p>$nb_err erreur.</p>\n";
+
+							if($debug_import=='y') {
+								echo "<pre style='color:green;'><b>Tableau \$personnes[$i]&nbsp;:</b>";
+								print_r($personnes[$i]);
+								echo "</pre>";
+							}
+						}
+
+						//traitement_magic_quotes(corriger_caracteres())
+						$nb_err=0;
+						$stat=0;
+						$i=0;
+						while($i<count($personnes)){
+							//$sql="INSERT INTO temp_resp_pers_import SET ";
+							$sql="INSERT INTO resp_pers SET ";
+							$sql.="pers_id='".$personnes[$i]["personne_id"]."', ";
+							$sql.="nom='".$personnes[$i]["nom"]."', ";
+							$sql.="prenom='".$personnes[$i]["prenom"]."', ";
+							if(isset($personnes[$i]["lc_civilite"])){
+								$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
+							}
+							if(isset($personnes[$i]["tel_personnel"])){
+								$sql.="tel_pers='".$personnes[$i]["tel_personnel"]."', ";
+							}
+							if(isset($personnes[$i]["tel_portable"])){
+								$sql.="tel_port='".$personnes[$i]["tel_portable"]."', ";
+							}
+							if(isset($personnes[$i]["tel_professionnel"])){
+								$sql.="tel_prof='".$personnes[$i]["tel_professionnel"]."', ";
+							}
+							if(isset($personnes[$i]["mel"])){
+								$sql.="mel='".$personnes[$i]["mel"]."', ";
+							}
+							if(isset($personnes[$i]["adresse_id"])){
+								$sql.="adr_id='".$personnes[$i]["adresse_id"]."';";
 							}
 							else{
-								echo "<p>$nb_err erreurs</p>\n";
+								$sql.="adr_id='';";
+								// IL FAUDRAIT PEUT-ETRE REMPLIR UN TABLEAU
+								// POUR SIGNALER QUE CE RESPONSABLE RISQUE DE POSER PB...
+								// ... CEPENDANT, CEUX QUE J'AI REPéRéS ETAIENT resp_legal=0
+								// ILS NE DEVRAIENT PAS ETRE DESTINATAIRES DE BULLETINS,...
 							}
-							*/
-
-							if ($nb_err != 0) {
-								echo "<p>Lors de l'enregistrement des données PERSONNES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
-							} else {
-								echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
-							}
-
-							//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
-							//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
-
-							echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
-
-							require("../lib/footer.inc.php");
-							die();
-						}
-						else{
-							echo "<p>ERREUR: Il n'a pas été possible d'ouvrir le fichier en lecture.</p>\n";
-
-							require("../lib/footer.inc.php");
-							die();
-						}
-					}
-				}
-			} // Fin du $step=0
-			elseif($step==1) {
-				check_token(false);
-
-				$dest_file="../temp/".$tempdir."/responsables.xml";
-				$fp=fopen($dest_file,"r");
-				if(!$fp){
-					echo "<p>Le XML responsables n'a pas l'air présent dans le dossier temporaire.<br />Auriez-vous sauté une étape???</p>\n";
-					require("../lib/footer.inc.php");
-					die();
-				}
-				else{
-
-					//$sql="CREATE TABLE IF NOT EXISTS temp_responsables2_import (
-					$sql="CREATE TABLE IF NOT EXISTS responsables2 (
-							`ele_id` varchar(10) NOT NULL,
-							`pers_id` varchar(10) NOT NULL,
-							`resp_legal` varchar(1) NOT NULL,
-							`pers_contact` varchar(1) NOT NULL
-							);";
-					$create_table = mysql_query($sql);
-
-					//$sql="TRUNCATE TABLE temp_responsables2_import;";
-					$sql="TRUNCATE TABLE responsables2;";
-					$vide_table = mysql_query($sql);
-
-					/*
-					echo "<p>Lecture du fichier Responsables...<br />\n";
-					while(!feof($fp)){
-						$ligne[]=fgets($fp,4096);
-					}
-					fclose($fp);
-					*/
-					flush();
-
-					echo "<p>";
-					echo "Analyse du fichier pour extraire les informations de la section RESPONSABLES...<br />\n";
-
-					$responsables=array();
-					$temoin_responsables=0;
-					$temoin_resp=0;
-
-					$tab_champs_responsable=array("ELEVE_ID",
-					"PERSONNE_ID",
-					"RESP_LEGAL",
-					"CODE_PARENTE",
-					"RESP_FINANCIER",
-					"PERS_PAIMENT",
-					"PERS_CONTACT"
-					);
-
-					// PARTIE <RESPONSABLES>
-					// Compteur responsables:
-					$i=-1;
-					// Compteur de lignes du fichier:
-					$cpt=0;
-					//while($cpt<count($ligne)){
-					while(!feof($fp)){
-						$ligne=fgets($fp,4096);
-						//echo htmlentities($ligne[$cpt])."<br />\n";
-
-						//if(strstr($ligne[$cpt],"<RESPONSABLES>")){
-						if(strstr($ligne,"<RESPONSABLES>")){
-							echo "Début de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-							flush();
-							$temoin_responsables++;
-						}
-						//if(strstr($ligne[$cpt],"</RESPONSABLES>")){
-						if(strstr($ligne,"</RESPONSABLES>")){
-							echo "Fin de la section RESPONSABLES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-							flush();
-							$temoin_responsables++;
-							break;
-						}
-						if($temoin_responsables==1){
-							//if(strstr($ligne[$cpt],"<RESPONSABLE_ELEVE>")){
-							if(strstr($ligne,"<RESPONSABLE_ELEVE>")){
-								$i++;
-								$responsables[$i]=array();
-								$temoin_resp=1;
-							}
-							//if(strstr($ligne[$cpt],"</RESPONSABLE_ELEVE>")){
-							if(strstr($ligne,"</RESPONSABLE_ELEVE>")){
-								$temoin_resp=0;
-							}
-							if($temoin_resp==1){
-								for($loop=0;$loop<count($tab_champs_responsable);$loop++){
-									//if(strstr($ligne[$cpt],"<".$tab_champs_responsable[$loop].">")){
-									if(strstr($ligne,"<".$tab_champs_responsable[$loop].">")){
-										$tmpmin=strtolower($tab_champs_responsable[$loop]);
-										//$responsables[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-										//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
-
-										// Suppression des guillemets éventuels (il ne devrait pas y en avoir là)
-										//$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
-										$responsables[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(my_ereg_replace('"','',extr_valeur($ligne))));
-
-										affiche_debug("\$responsables[$i][\"$tmpmin\"]=".$responsables[$i]["$tmpmin"]."<br />\n");
-										break;
-									}
-								}
-							}
-						}
-						$cpt++;
-					}
-					fclose($fp);
-
-
-					$nb_err=0;
-					$stat=0;
-					$i=0;
-					while($i<count($responsables)){
-						// VERIFICATION: Il arrive que Sconet contienne des anomalies
-						$sql="SELECT 1=1 FROM responsables2 WHERE ";
-						$sql.="ele_id='".$responsables[$i]["eleve_id"]."' AND ";
-						$sql.="resp_legal='".$responsables[$i]["resp_legal"]."' AND ";
-						$sql.="(resp_legal='1' OR resp_legal='2');";
-						affiche_debug("$sql<br />\n");
-						$res_test=mysql_query($sql);
-						if(mysql_num_rows($res_test)==0){
-							//$sql="INSERT INTO temp_responsables2_import SET ";
-							$sql="INSERT INTO responsables2 SET ";
-							$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
-							$sql.="pers_id='".$responsables[$i]["personne_id"]."', ";
-							$sql.="resp_legal='".$responsables[$i]["resp_legal"]."', ";
-							$sql.="pers_contact='".$responsables[$i]["pers_contact"]."';";
 							affiche_debug("$sql<br />\n");
 							$res_insert=mysql_query($sql);
 							if(!$res_insert){
@@ -776,252 +538,154 @@ temoin VARCHAR( 50 ) NOT NULL
 								$nb_err++;
 							}
 							else{
-								$stat++;
-							}
-						}
-						else {
-							$sql="SELECT nom, prenom FROM eleves WHERE ele_id='".$responsables[$i]["eleve_id"]."';";
-							affiche_debug("$sql<br />\n");
-							$res_ele_anomalie=mysql_query($sql);
-							if(mysql_num_rows($res_ele_anomalie)>0){
-								$lig_ele_anomalie=mysql_fetch_object($res_ele_anomalie);
-								echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->prenom." ".$lig_ele_anomalie->nom."<br />Seule la première responsabilité a été enregistrée.<br />Vous devriez faire le ménage dans Sconet et faire une mise à jour par la suite.</p>\n";
 
-								$nb_err++;
-							}
-							else {
+								$sql="SELECT * FROM tempo_utilisateurs_resp WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+								if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+								$res_tmp_u=mysql_query($sql);
+								if(mysql_num_rows($res_tmp_u)>0) {
+									$lig_tmp_u=mysql_fetch_object($res_tmp_u);
 
-								$sql="SELECT ELENOM, ELEPRE, DIVCOD FROM temp_gep_import2 WHERE ELE_ID='".$responsables[$i]["eleve_id"]."';";
-								affiche_debug("$sql<br />\n");
-								$res_ele_anomalie=mysql_query($sql);
-								if(mysql_num_rows($res_ele_anomalie)>0){
-									// Si l'élève associé n'est ni dans 'eleves', ni dans 'temp_gep_import2', on ne s'en occupe pas.
-
-									$sql="SELECT civilite,nom,prenom FROM temp_resp_pers_import WHERE pers_id='".$responsables[$i]["personne_id"]."';";
-									$res_resp_anomalie=mysql_query($sql);
-									if(mysql_num_rows($res_resp_anomalie)>0){
-										$lig_resp_anomalie=mysql_fetch_object($res_resp_anomalie);
-
-										echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>).<br />L'un d'eux est: ".$lig_resp_anomalie->civilite." ".$lig_resp_anomalie->nom." ".$lig_resp_anomalie->prenom."</p>\n";
+									$sql="INSERT INTO utilisateurs SET login='".$lig_tmp_u->login."', nom='".$personnes[$i]["nom"]."', prenom='".$personnes[$i]["prenom"]."', ";
+									if(isset($personnes[$i]["lc_civilite"])){
+										$sql.="civilite='".ucfirst(strtolower($personnes[$i]["lc_civilite"]))."', ";
+									}
+									$sql.="password='".$lig_tmp_u->password."', statut='responsable', etat='inactif', change_mdp='n', auth_mode='".$lig_tmp_u->auth_mode."';";
+									if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+									$insert_u=mysql_query($sql);
+									if(!$insert_u) {
+										echo "Erreur lors de la création du compte utilisateur pour ".$personnes[$i]["nom"]." ".$personnes[$i]["prenom"].".<br />";
 									}
 									else {
-										echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>)<br />L'élève n'a semble-t-il pas été ajouté à la table 'eleves'.<br />Par ailleurs, la personne responsable semble inexistante, mais l'association avec l'identifiant de responsable n°".$responsables[$i]["personne_id"]." existe dans le XML fourni???<br />L'anomalie n'est pas grave pour Gepi; par contre il serait bon de corriger dans Sconet.</p>\n";
+										$sql="UPDATE resp_pers SET login='".$lig_tmp_u->login."' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+										$update_rp=mysql_query($sql);
+
+										$sql="UPDATE tempo_utilisateurs_resp SET temoin='recree' WHERE pers_id='".$personnes[$i]["personne_id"]."';";
+										if($debug_resp=='y') {echo "<span style='color:green;'>$sql</span><br />";}
+										$update_tmp_u=mysql_query($sql);
 									}
-
-									$nb_err++;
 								}
+
+								$stat++;
 							}
-							//$nb_err++;
+
+							$i++;
 						}
 
-						$i++;
-					}
-
-					/*
-					if($nb_err==0) {
-						echo "<p>La deuxième phase s'est passée sans erreur.</p>\n";
-					}
-					elseif($nb_err==1) {
-						echo "<p>$nb_err erreur.</p>\n";
-					}
-					else{
-						echo "<p>$nb_err erreurs</p>\n";
-					}
-					*/
-
-
-
-					$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
-					$test=mysql_query($sql);
-					if(mysql_num_rows($test)>0){
-						echo "<p>Suppression de responsabilités sans élève.\n";
-						flush();
-						$cpt_nett=0;
-						while($lig_nett=mysql_fetch_object($test)){
-							//if($cpt_nett>0){echo ", ";}
-							//echo "<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>".$lig_nett->pers_id."</a>";
-							$sql="DELETE FROM responsables2 WHERE pers_id='$lig_nett->pers_id' AND ele_id='$lig_nett->ele_id';";
-							$nettoyage=mysql_query($sql);
-							//flush();
-							$cpt_nett++;
+						if ($nb_err != 0) {
+							echo "<p>Lors de l'enregistrement des données PERSONNES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+						} else {
+							echo "<p>L'importation des personnes (responsables) dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
 						}
-						//echo ".</p>\n";
-						echo "<br />$cpt_nett associations aberrantes supprimées.</p>\n";
+
+						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_resp_pers_import'.</p>\n";
+						//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'resp_pers'.</p>\n";
+
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
+
+						require("../lib/footer.inc.php");
+						die();
 					}
-
-
-
-
-					if ($nb_err!=0) {
-						echo "<p>Lors de l'enregistrement des données de RESPONSABLES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
-					}
-					else {
-						echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
-					}
-
-					//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_responsables2_import'.</p>\n";
-
-					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2".add_token_in_url()."'>Suite</a></p>\n";
-
-					require("../lib/footer.inc.php");
-					die();
 				}
-			} // Fin du $step=1
-			elseif($step==2){
+			} // Fin du $step=0
+			elseif($step==1) {
 				check_token(false);
+
 				$dest_file="../temp/".$tempdir."/responsables.xml";
-				$fp=fopen($dest_file,"r");
-				if(!$fp){
-					echo "<p>Le XML responsables n'a pas l'air présent dans le dossier temporaire.<br />Auriez-vous sauté une étape???</p>\n";
+
+				$resp_xml=simplexml_load_file($dest_file);
+				if(!$resp_xml) {
+					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
-				else{
 
-					//$sql="CREATE TABLE IF NOT EXISTS temp_resp_adr_import (
-					$sql="CREATE TABLE IF NOT EXISTS resp_adr (
-							`adr_id` varchar(10) NOT NULL,
-							`adr1` varchar(100) NOT NULL,
-							`adr2` varchar(100) NOT NULL,
-							`adr3` varchar(100) NOT NULL,
-							`adr4` varchar(100) NOT NULL,
-							`cp` varchar(6) NOT NULL,
-							`pays` varchar(50) NOT NULL,
-							`commune` varchar(50) NOT NULL,
-						PRIMARY KEY  (`adr_id`));";
-					$create_table = mysql_query($sql);
+				$nom_racine=$resp_xml->getName();
+				if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
+					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
+					require("../lib/footer.inc.php");
+					die();
+				}
 
-					//$sql="TRUNCATE TABLE temp_resp_adr_import;";
-					$sql="TRUNCATE TABLE resp_adr;";
-					$vide_table = mysql_query($sql);
+				//$sql="CREATE TABLE IF NOT EXISTS temp_responsables2_import (
+				$sql="CREATE TABLE IF NOT EXISTS responsables2 (
+						`ele_id` varchar(10) NOT NULL,
+						`pers_id` varchar(10) NOT NULL,
+						`resp_legal` varchar(1) NOT NULL,
+						`pers_contact` varchar(1) NOT NULL
+						);";
+				$create_table = mysql_query($sql);
 
-					/*
-					echo "<p>Lecture du fichier Responsables...<br />\n";
-					while(!feof($fp)){
-						$ligne[]=fgets($fp,4096);
+				//$sql="TRUNCATE TABLE temp_responsables2_import;";
+				$sql="TRUNCATE TABLE responsables2;";
+				$vide_table = mysql_query($sql);
+
+				/*
+				echo "<p>Lecture du fichier Responsables...<br />\n";
+				while(!feof($fp)){
+					$ligne[]=fgets($fp,4096);
+				}
+				fclose($fp);
+				*/
+				flush();
+
+				echo "<p>";
+				echo "Analyse du fichier pour extraire les informations de la section RESPONSABLES...<br />\n";
+
+				$responsables=array();
+
+				$tab_champs_responsable=array("ELEVE_ID",
+				"PERSONNE_ID",
+				"RESP_LEGAL",
+				"CODE_PARENTE",
+				"RESP_FINANCIER",
+				"PERS_PAIMENT",
+				"PERS_CONTACT"
+				);
+
+				// PARTIE <RESPONSABLES>
+				// Compteur responsables:
+				$i=-1;
+
+				$objet_resp=($resp_xml->DONNEES->RESPONSABLES);
+				foreach ($objet_resp->children() as $responsable_eleve) {
+					//echo("<p><b>Personne</b><br />");
+
+					$i++;
+					$responsables[$i]=array();
+
+					foreach($responsable_eleve->children() as $key => $value) {
+						if(in_array(strtoupper($key),$tab_champs_responsable)) {
+							$responsables[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+							//echo "\$structure->$key=".$value."<br />";
+						}
 					}
-					fclose($fp);
-					*/
-					flush();
 
-
-					echo "Analyse du fichier pour extraire les informations de la section ADRESSES...<br />\n";
-
-					$adresses=array();
-					$temoin_adresses=0;
-					$temoin_addr=-1;
-
-					$tab_champs_adresse=array("LIGNE1_ADRESSE",
-					"LIGNE2_ADRESSE",
-					"LIGNE3_ADRESSE",
-					"LIGNE4_ADRESSE",
-					"CODE_POSTAL",
-					"LL_PAYS",
-					"CODE_DEPARTEMENT",
-					"LIBELLE_POSTAL",
-					"COMMUNE_ETRANGERE"
-					);
-
-
-					// PARTIE <ADRESSES>
-					// Compteur adresses:
-					$i=-1;
-					$temoin_adr=-1;
-					// Compteur de lignes du fichier:
-					$cpt=0;
-					//while($cpt<count($ligne)){
-					while(!feof($fp)){
-						$ligne=fgets($fp,4096);
-						//echo htmlentities($ligne[$cpt])."<br />\n";
-
-						//if(strstr($ligne[$cpt],"<ADRESSES>")){
-						if(strstr($ligne,"<ADRESSES>")){
-							echo "Début de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-							flush();
-							$temoin_adresses++;
-						}
-						//if(strstr($ligne[$cpt],"</ADRESSES>")){
-						if(strstr($ligne,"</ADRESSES>")){
-							echo "Fin de la section ADRESSES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-							flush();
-							$temoin_adresses++;
-							break;
-						}
-						if($temoin_adresses==1){
-							//if(strstr($ligne[$cpt],"<ADRESSE ")){
-							if(strstr($ligne,"<ADRESSE ")){
-								$i++;
-								$adresses[$i]=array();
-
-								//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
-								unset($tabtmp);
-								//$tabtmp=explode('"',strstr($ligne[$cpt]," ADRESSE_ID="));
-								$tabtmp=explode('"',strstr($ligne," ADRESSE_ID="));
-								//$adresses[$i]["adresse_id"]=trim($tabtmp[1]);
-								$adresses[$i]["adresse_id"]=traitement_magic_quotes(corriger_caracteres(trim($tabtmp[1])));
-								$temoin_adr=1;
-							}
-							//if(strstr($ligne[$cpt],"</ADRESSE>")){
-							if(strstr($ligne,"</ADRESSE>")){
-								$temoin_adr=0;
-							}
-
-							if($temoin_adr==1){
-								for($loop=0;$loop<count($tab_champs_adresse);$loop++){
-									//if(strstr($ligne[$cpt],"<".$tab_champs_adresse[$loop].">")){
-									if(strstr($ligne,"<".$tab_champs_adresse[$loop].">")){
-										$tmpmin=strtolower($tab_champs_adresse[$loop]);
-										//$adresses[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-										//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne[$cpt])));
-
-										// Suppression des guillemets éventuels
-										//$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(extr_valeur($ligne)));
-										$adresses[$i]["$tmpmin"]=traitement_magic_quotes(corriger_caracteres(my_ereg_replace('"','',extr_valeur($ligne))));
-
-										//echo "\$adresses[$i][\"$tmpmin\"]=".$adresses[$i]["$tmpmin"]."<br />\n";
-										break;
-									}
-								}
-							}
-						}
-						$cpt++;
+					if($debug_import=='y') {
+						echo "<pre style='color:green;'><b>Tableau \$responsables[$i]&nbsp;:</b>";
+						print_r($responsables[$i]);
+						echo "</pre>";
 					}
-					fclose($fp);
+				}
 
-
-
-					$nb_err=0;
-					$stat=0;
-					$i=0;
-					while($i<count($adresses)){
-						//$sql="INSERT INTO temp_resp_adr_import SET ";
-						$sql="INSERT INTO resp_adr SET ";
-						$sql.="adr_id='".$adresses[$i]["adresse_id"]."', ";
-						if(isset($adresses[$i]["ligne1_adresse"])){
-							$sql.="adr1='".$adresses[$i]["ligne1_adresse"]."', ";
-						}
-						if(isset($adresses[$i]["ligne2_adresse"])){
-							$sql.="adr2='".$adresses[$i]["ligne2_adresse"]."', ";
-						}
-						if(isset($adresses[$i]["ligne3_adresse"])){
-							$sql.="adr3='".$adresses[$i]["ligne3_adresse"]."', ";
-						}
-						if(isset($adresses[$i]["ligne4_adresse"])){
-							$sql.="adr4='".$adresses[$i]["ligne4_adresse"]."', ";
-						}
-						if(isset($adresses[$i]["code_postal"])){
-							$sql.="cp='".$adresses[$i]["code_postal"]."', ";
-						}
-						if(isset($adresses[$i]["ll_pays"])){
-							$sql.="pays='".$adresses[$i]["ll_pays"]."', ";
-						}
-						if(isset($adresses[$i]["libelle_postal"])){
-							$sql.="commune='".$adresses[$i]["libelle_postal"]."', ";
-						} elseif(isset($adresses[$i]["commune_etrangere"])) {
-							$sql.="commune='".$adresses[$i]["commune_etrangere"]."', ";
-						}
-						$sql=substr($sql,0,strlen($sql)-2);
-						$sql.=";";
+				$nb_err=0;
+				$stat=0;
+				$i=0;
+				while($i<count($responsables)){
+					// VERIFICATION: Il arrive que Sconet contienne des anomalies
+					$sql="SELECT 1=1 FROM responsables2 WHERE ";
+					$sql.="ele_id='".$responsables[$i]["eleve_id"]."' AND ";
+					$sql.="resp_legal='".$responsables[$i]["resp_legal"]."' AND ";
+					$sql.="(resp_legal='1' OR resp_legal='2');";
+					affiche_debug("$sql<br />\n");
+					$res_test=mysql_query($sql);
+					if(mysql_num_rows($res_test)==0){
+						//$sql="INSERT INTO temp_responsables2_import SET ";
+						$sql="INSERT INTO responsables2 SET ";
+						$sql.="ele_id='".$responsables[$i]["eleve_id"]."', ";
+						$sql.="pers_id='".$responsables[$i]["personne_id"]."', ";
+						$sql.="resp_legal='".$responsables[$i]["resp_legal"]."', ";
+						$sql.="pers_contact='".$responsables[$i]["pers_contact"]."';";
 						affiche_debug("$sql<br />\n");
 						$res_insert=mysql_query($sql);
 						if(!$res_insert){
@@ -1032,34 +696,224 @@ temoin VARCHAR( 50 ) NOT NULL
 						else{
 							$stat++;
 						}
+					}
+					else {
+						$sql="SELECT nom, prenom FROM eleves WHERE ele_id='".$responsables[$i]["eleve_id"]."';";
+						affiche_debug("$sql<br />\n");
+						$res_ele_anomalie=mysql_query($sql);
+						if(mysql_num_rows($res_ele_anomalie)>0){
+							$lig_ele_anomalie=mysql_fetch_object($res_ele_anomalie);
+							echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->prenom." ".$lig_ele_anomalie->nom."<br />Seule la première responsabilité a été enregistrée.<br />Vous devriez faire le ménage dans Sconet et faire une mise à jour par la suite.</p>\n";
 
-						$i++;
+							$nb_err++;
+						}
+						else {
+
+							$sql="SELECT ELENOM, ELEPRE, DIVCOD FROM temp_gep_import2 WHERE ELE_ID='".$responsables[$i]["eleve_id"]."';";
+							affiche_debug("$sql<br />\n");
+							$res_ele_anomalie=mysql_query($sql);
+							if(mysql_num_rows($res_ele_anomalie)>0){
+								// Si l'élève associé n'est ni dans 'eleves', ni dans 'temp_gep_import2', on ne s'en occupe pas.
+
+								$sql="SELECT civilite,nom,prenom FROM temp_resp_pers_import WHERE pers_id='".$responsables[$i]["personne_id"]."';";
+								$res_resp_anomalie=mysql_query($sql);
+								if(mysql_num_rows($res_resp_anomalie)>0){
+									$lig_resp_anomalie=mysql_fetch_object($res_resp_anomalie);
+
+									echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>).<br />L'un d'eux est: ".$lig_resp_anomalie->civilite." ".$lig_resp_anomalie->nom." ".$lig_resp_anomalie->prenom."</p>\n";
+								}
+								else {
+									echo "<p><b style='color:red;'>Anomalie sconet:</b> Plusieurs responsables légaux n°<b>".$responsables[$i]["resp_legal"]."</b> sont déclarés pour l'élève ".$lig_ele_anomalie->ELEPRE." ".$lig_ele_anomalie->ELENOM." (<em>".$lig_ele_anomalie->DIVCOD."</em>)<br />L'élève n'a semble-t-il pas été ajouté à la table 'eleves'.<br />Par ailleurs, la personne responsable semble inexistante, mais l'association avec l'identifiant de responsable n°".$responsables[$i]["personne_id"]." existe dans le XML fourni???<br />L'anomalie n'est pas grave pour Gepi; par contre il serait bon de corriger dans Sconet.</p>\n";
+								}
+
+								$nb_err++;
+							}
+						}
+						//$nb_err++;
 					}
 
-					/*
-					if($nb_err==0) {
-						echo "<p>La troisième phase s'est passée sans erreur.</p>\n";
-					}
-					elseif($nb_err==1) {
-						echo "<p>$nb_err erreur.</p>\n";
-					}
-					else{
-						echo "<p>$nb_err erreurs</p>\n";
-					}
-					*/
+					$i++;
+				}
 
-					if ($nb_err != 0) {
-						echo "<p>Lors de l'enregistrement des données ADRESSES des responsables, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
-					} else {
-						echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+				$sql="SELECT r.pers_id,r.ele_id FROM responsables2 r LEFT JOIN eleves e ON e.ele_id=r.ele_id WHERE e.ele_id is NULL;";
+				$test=mysql_query($sql);
+				if(mysql_num_rows($test)>0){
+					echo "<p>Suppression de responsabilités sans élève.\n";
+					flush();
+					$cpt_nett=0;
+					while($lig_nett=mysql_fetch_object($test)){
+						//if($cpt_nett>0){echo ", ";}
+						//echo "<a href='modify_resp.php?pers_id=$lig_nett->pers_id' target='_blank'>".$lig_nett->pers_id."</a>";
+						$sql="DELETE FROM responsables2 WHERE pers_id='$lig_nett->pers_id' AND ele_id='$lig_nett->ele_id';";
+						$nettoyage=mysql_query($sql);
+						//flush();
+						$cpt_nett++;
 					}
-					//echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_resp_adr_import'.</p>\n";
+					//echo ".</p>\n";
+					echo "<br />$cpt_nett associations aberrantes supprimées.</p>\n";
+				}
 
-					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>Suite</a></p>\n";
+				if ($nb_err!=0) {
+					echo "<p>Lors de l'enregistrement des données de RESPONSABLES, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+				}
+				else {
+					echo "<p>L'importation des relations eleves/responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+				}
 
+				//echo "<p>$stat enregistrement(s) ont été inséré(s) dans la table 'temp_responsables2_import'.</p>\n";
+
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2".add_token_in_url()."'>Suite</a></p>\n";
+
+				require("../lib/footer.inc.php");
+				die();
+			} // Fin du $step=1
+			elseif($step==2){
+				check_token(false);
+				$dest_file="../temp/".$tempdir."/responsables.xml";
+
+				$resp_xml=simplexml_load_file($dest_file);
+				if(!$resp_xml) {
+					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
+
+				$nom_racine=$resp_xml->getName();
+				if(strtoupper($nom_racine)!='BEE_RESPONSABLES') {
+					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Responsables.<br />Sa racine devrait être 'BEE_RESPONSABLES'.</p>\n";
+					require("../lib/footer.inc.php");
+					die();
+				}
+
+				//$sql="CREATE TABLE IF NOT EXISTS temp_resp_adr_import (
+				$sql="CREATE TABLE IF NOT EXISTS resp_adr (
+						`adr_id` varchar(10) NOT NULL,
+						`adr1` varchar(100) NOT NULL,
+						`adr2` varchar(100) NOT NULL,
+						`adr3` varchar(100) NOT NULL,
+						`adr4` varchar(100) NOT NULL,
+						`cp` varchar(6) NOT NULL,
+						`pays` varchar(50) NOT NULL,
+						`commune` varchar(50) NOT NULL,
+					PRIMARY KEY  (`adr_id`));";
+				$create_table = mysql_query($sql);
+
+				//$sql="TRUNCATE TABLE temp_resp_adr_import;";
+				$sql="TRUNCATE TABLE resp_adr;";
+				$vide_table = mysql_query($sql);
+
+				/*
+				echo "<p>Lecture du fichier Responsables...<br />\n";
+				while(!feof($fp)){
+					$ligne[]=fgets($fp,4096);
+				}
+				fclose($fp);
+				*/
+				flush();
+
+
+				echo "Analyse du fichier pour extraire les informations de la section ADRESSES...<br />\n";
+
+				$adresses=array();
+
+				$tab_champs_adresse=array("LIGNE1_ADRESSE",
+				"LIGNE2_ADRESSE",
+				"LIGNE3_ADRESSE",
+				"LIGNE4_ADRESSE",
+				"CODE_POSTAL",
+				"LL_PAYS",
+				"CODE_DEPARTEMENT",
+				"LIBELLE_POSTAL",
+				"COMMUNE_ETRANGERE"
+				);
+
+				// PARTIE <ADRESSES>
+				// Compteur adresses:
+				$i=-1;
+
+				$objet_adresses=($resp_xml->DONNEES->ADRESSES);
+				foreach ($objet_adresses->children() as $adresse) {
+					//echo("<p><b>Adresse</b><br />");
+
+					$i++;
+					$adresses[$i]=array();
+
+					foreach($adresse->attributes() as $key => $value) {
+						// <ADRESSE ADRESSE_ID="228114">
+						$adresses[$i][strtolower($key)]=$value;
+					}
+
+					foreach($adresse->children() as $key => $value) {
+						if(in_array(strtoupper($key),$tab_champs_adresse)) {
+							$adresses[$i][strtolower($key)]=traitement_magic_quotes(corriger_caracteres(preg_replace('/"/','',trim(traite_utf8($value)))));
+							//echo "\$structure->$key=".$value."<br />";
+						}
+					}
+
+					if($debug_import=='y') {
+						echo "<pre style='color:green;'><b>Tableau \$adresses[$i]&nbsp;:</b>";
+						print_r($adresses[$i]);
+						echo "</pre>";
+					}
+				}
+
+				$nb_err=0;
+				$stat=0;
+				$i=0;
+				while($i<count($adresses)){
+					//$sql="INSERT INTO temp_resp_adr_import SET ";
+					$sql="INSERT INTO resp_adr SET ";
+					$sql.="adr_id='".$adresses[$i]["adresse_id"]."', ";
+					if(isset($adresses[$i]["ligne1_adresse"])){
+						$sql.="adr1='".$adresses[$i]["ligne1_adresse"]."', ";
+					}
+					if(isset($adresses[$i]["ligne2_adresse"])){
+						$sql.="adr2='".$adresses[$i]["ligne2_adresse"]."', ";
+					}
+					if(isset($adresses[$i]["ligne3_adresse"])){
+						$sql.="adr3='".$adresses[$i]["ligne3_adresse"]."', ";
+					}
+					if(isset($adresses[$i]["ligne4_adresse"])){
+						$sql.="adr4='".$adresses[$i]["ligne4_adresse"]."', ";
+					}
+					if(isset($adresses[$i]["code_postal"])){
+						$sql.="cp='".$adresses[$i]["code_postal"]."', ";
+					}
+					if(isset($adresses[$i]["ll_pays"])){
+						$sql.="pays='".$adresses[$i]["ll_pays"]."', ";
+					}
+					if(isset($adresses[$i]["libelle_postal"])){
+						$sql.="commune='".$adresses[$i]["libelle_postal"]."', ";
+					} elseif(isset($adresses[$i]["commune_etrangere"])) {
+						$sql.="commune='".$adresses[$i]["commune_etrangere"]."', ";
+					}
+					$sql=substr($sql,0,strlen($sql)-2);
+					$sql.=";";
+					affiche_debug("$sql<br />\n");
+					$res_insert=mysql_query($sql);
+					if(!$res_insert){
+						echo "Erreur lors de la requête $sql<br />\n";
+						flush();
+						$nb_err++;
+					}
+					else{
+						$stat++;
+					}
+
+					$i++;
+				}
+
+				if ($nb_err != 0) {
+					echo "<p>Lors de l'enregistrement des données ADRESSES des responsables, il y a eu $nb_err erreurs. Essayez de trouvez la cause de l'erreur et recommencez la procédure avant de passer à l'étape suivante.</p>\n";
+				} else {
+					echo "<p>L'importation des adresses de responsables dans la base GEPI a été effectuée avec succès (".$stat." enregistrements au total).</p>\n";
+				}
+				//echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_resp_adr_import'.</p>\n";
+
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>Suite</a></p>\n";
+
+				require("../lib/footer.inc.php");
+				die();
 			}
 			else{
 				check_token(false);

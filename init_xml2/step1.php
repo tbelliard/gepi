@@ -26,6 +26,8 @@
 	require_once("../lib/header.inc");
 	//**************** FIN EN-TETE *****************
 
+	require_once("init_xml_lib.php");
+
 	function extr_valeur($lig){
 		unset($tabtmp);
 		$tabtmp=explode(">",my_ereg_replace("<",">",$lig));
@@ -287,35 +289,6 @@
 					}
 					else{
 						echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
-						/*
-						$sql="CREATE TABLE IF NOT EXISTS `temp_gep_import2` (
-						`ID_TEMPO` varchar(40) NOT NULL default '',
-						`LOGIN` varchar(40) NOT NULL default '',
-						`ELENOM` varchar(40) NOT NULL default '',
-						`ELEPRE` varchar(40) NOT NULL default '',
-						`ELESEXE` varchar(40) NOT NULL default '',
-						`ELEDATNAIS` varchar(40) NOT NULL default '',
-						`ELENOET` varchar(40) NOT NULL default '',
-						`ELE_ID` varchar(40) NOT NULL default '',
-						`ELEDOUBL` varchar(40) NOT NULL default '',
-						`ELENONAT` varchar(40) NOT NULL default '',
-						`ELEREG` varchar(40) NOT NULL default '',
-						`DIVCOD` varchar(40) NOT NULL default '',
-						`ETOCOD_EP` varchar(40) NOT NULL default '',
-						`ELEOPT1` varchar(40) NOT NULL default '',
-						`ELEOPT2` varchar(40) NOT NULL default '',
-						`ELEOPT3` varchar(40) NOT NULL default '',
-						`ELEOPT4` varchar(40) NOT NULL default '',
-						`ELEOPT5` varchar(40) NOT NULL default '',
-						`ELEOPT6` varchar(40) NOT NULL default '',
-						`ELEOPT7` varchar(40) NOT NULL default '',
-						`ELEOPT8` varchar(40) NOT NULL default '',
-						`ELEOPT9` varchar(40) NOT NULL default '',
-						`ELEOPT10` varchar(40) NOT NULL default '',
-						`ELEOPT11` varchar(40) NOT NULL default '',
-						`ELEOPT12` varchar(40) NOT NULL default ''
-						);";
-						*/
 
 						$sql="DROP TABLE IF EXISTS temp_gep_import2;";
 						$suppr_table = mysql_query($sql);
@@ -355,655 +328,502 @@
 						$vide_table = mysql_query($sql);
 
 						// On va lire plusieurs fois le fichier pour remplir des tables temporaires.
-						/*
-						$fp=fopen($dest_file,"r");
-						if($fp){
-							echo "<p>Lecture du fichier Elèves...<br />\n";
-							//echo "<blockquote>\n";
-							while(!feof($fp)){
-								$ligne[]=fgets($fp,4096);
-							}
-							fclose($fp);
-							//echo "<p>Terminé.</p>\n";
+
+						$ele_xml=simplexml_load_file($dest_file);
+						if(!$ele_xml) {
+							echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
 						}
-						*/
 
-						$fp=fopen($dest_file,"r");
-						if($fp){
-							// On commence par la section STRUCTURES pour ne récupérer que les ELE_ID d'élèves qui sont dans une classe.
-							echo "<p>\n";
-							echo "Analyse du fichier pour extraire les informations de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
+						$nom_racine=$ele_xml->getName();
+						if(strtoupper($nom_racine)!='BEE_ELEVES') {
+							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
+						}
 
-							// PARTIE <STRUCTURES>
-							$cpt=0;
-							$eleves=array();
-							$temoin_structures=0;
-							$temoin_struct_ele=-1;
-							$temoin_struct=-1;
-							$i=-1;
-							//while($cpt<count($ligne)){
-							while(!feof($fp)){
-								$ligne=fgets($fp,4096);
+						echo "<p>\n";
+						echo "Analyse du fichier pour extraire les informations de la section STRUCTURES pour ne conserver que les identifiants d'élèves affectés dans une classe...<br />\n";
 
-								//if(strstr($ligne[$cpt],"<STRUCTURES>")){
-								if(strstr($ligne,"<STRUCTURES>")){
-									echo "Début de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-									$temoin_structures++;
-								}
-								//if(strstr($ligne[$cpt],"</STRUCTURES>")){
-								if(strstr($ligne,"</STRUCTURES>")){
-									echo "Fin de la section STRUCTURES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-									$temoin_structures++;
-									break;
-								}
-								if($temoin_structures==1){
-									//if(strstr($ligne[$cpt],"<STRUCTURES_ELEVE ")){
-									if(strstr($ligne,"<STRUCTURES_ELEVE ")){
+						$tab_champs_struct=array("CODE_STRUCTURE","TYPE_STRUCTURE");
+						$tab_ele_id=array();
+
+						$i=-1;
+						$objet_structures=($ele_xml->DONNEES->STRUCTURES);
+						foreach ($objet_structures->children() as $structures_eleve) {
+							//echo("<p><b>Structure</b><br />");
+					
+							$chaine_structures_eleve="STRUCTURES_ELEVE";
+							foreach($structures_eleve->attributes() as $key => $value) {
+								//echo("$key=".$value."<br />");
+
+								if(strtoupper($key)=='ELEVE_ID') {
+									// On teste si l'ELEVE_ID existe déjà: ça ne devrait pas arriver
+									if(in_array($value,$tab_ele_id)) {
+										echo "<b style='color:red;'>ANOMALIE&nbsp;:</b> Il semble qu'il y a plusieurs sections STRUCTURES_ELEVE pour l'ELEVE_ID '$value'.<br />";
+									}
+									else {
 										$i++;
 										$eleves[$i]=array();
 
-										//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
-										unset($tabtmp);
-										//$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
-										$tabtmp=explode('"',strstr($ligne," ELEVE_ID="));
-										//$tmp_eleve_id=trim($tabtmp[1]);
-										$eleves[$i]['eleve_id']=trim($tabtmp[1]);
+										$eleves[$i]['eleve_id']=$value;
 
-										/*
-										// Recherche du $i de $eleves[$i] correspondant:
-										$temoin_ident="non";
-										for($i=0;$i<count($eleves);$i++){
-											if($eleves[$i]["eleve_id"]==$tmp_eleve_id){
-												$temoin_ident="oui";
-												break;
-											}
-										}
-										if($temoin_ident!="oui"){
-											unset($tabtmp);
-											$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
-											$tmp_elenoet=trim($tabtmp[1]);
-
-											for($i=0;$i<count($eleves);$i++){
-												if($eleves[$i]["elenoet"]==$tmp_elenoet){
-													$temoin_ident="oui";
-													break;
-												}
-											}
-										}
-										if($temoin_ident=="oui"){
-										*/
-											$eleves[$i]["structures"]=array();
-											$j=0;
-											$temoin_struct_ele=1;
-										//}
-									}
-									//if(strstr($ligne[$cpt],"</STRUCTURES_ELEVE>")){
-									if(strstr($ligne,"</STRUCTURES_ELEVE>")){
-										$temoin_struct_ele=0;
-									}
-									if($temoin_struct_ele==1){
-										//if(strstr($ligne[$cpt],"<STRUCTURE>")){
-										if(strstr($ligne,"<STRUCTURE>")){
+										$eleves[$i]["structures"]=array();
+										$j=0;
+										//foreach($objet_structures->STRUCTURES_ELEVE->children() as $structure) {
+										foreach($structures_eleve->children() as $structure) {
 											$eleves[$i]["structures"][$j]=array();
-											$temoin_struct=1;
-										}
-										//if(strstr($ligne[$cpt],"</STRUCTURE>")){
-										if(strstr($ligne,"</STRUCTURE>")){
-											$j++;
-											$temoin_struct=0;
-										}
-
-										$tab_champs_struct=array("CODE_STRUCTURE","TYPE_STRUCTURE");
-										if($temoin_struct==1){
-											for($loop=0;$loop<count($tab_champs_struct);$loop++){
-												//if(strstr($ligne[$cpt],"<".$tab_champs_struct[$loop].">")){
-												if(strstr($ligne,"<".$tab_champs_struct[$loop].">")){
-													$tmpmin=strtolower($tab_champs_struct[$loop]);
-													//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-
-													// Suppression des guillemets éventuels
-													//$eleves[$i]["structures"][$j]["$tmpmin"]=extr_valeur($ligne);
-													$eleves[$i]["structures"][$j]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
-
-													//echo "\$eleves[$i]["structures"][$j][\"$tmpmin\"]=".$eleves[$i]["structures"][$j]["$tmpmin"]."<br />\n";
-													break;
+											foreach($structure->children() as $key => $value) {
+												if(in_array(strtoupper($key),$tab_champs_struct)) {
+													$eleves[$i]["structures"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+													//echo("\$structure->$key=".$value."<br />)";
 												}
 											}
+											$j++;
+										}
+			
+										if($debug_import=='y') {
+											echo "<pre style='color:green;'><b>Tableau \$eleves[$i]&nbsp;:</b>";
+											print_r($eleves[$i]);
+											echo "</pre>";
 										}
 									}
 								}
-								$cpt++;
 							}
-							fclose($fp);
+						}
 
-							$nb_err=0;
-							// $cpt: Identifiant id_tempo
-							$id_tempo=1;
-							for($i=0;$i<count($eleves);$i++){
+						$nb_err=0;
+						// $cpt: Identifiant id_tempo
+						$id_tempo=1;
+						for($i=0;$i<count($eleves);$i++){
 
-								$temoin_div_trouvee="";
-								if(isset($eleves[$i]["structures"])){
-									if(count($eleves[$i]["structures"])>0){
-										for($j=0;$j<count($eleves[$i]["structures"]);$j++){
-											if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
-												$temoin_div_trouvee="oui";
-												break;
-											}
-										}
-										if($temoin_div_trouvee!=""){
-											$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
+							$temoin_div_trouvee="";
+							if(isset($eleves[$i]["structures"])){
+								if(count($eleves[$i]["structures"])>0){
+									for($j=0;$j<count($eleves[$i]["structures"]);$j++){
+										if($eleves[$i]["structures"][$j]["type_structure"]=="D"){
+											$temoin_div_trouvee="oui";
+											break;
 										}
 									}
-								}
-
-								if($temoin_div_trouvee=='oui'){
-									$sql="INSERT INTO temp_gep_import2 SET id_tempo='$id_tempo', ";
-									$sql.="ele_id='".$eleves[$i]['eleve_id']."', ";
-									$sql.="divcod='".$eleves[$i]['classe']."';";
-									//echo "$sql<br />\n";
-									$res_insert=mysql_query($sql);
-									if(!$res_insert){
-										echo "Erreur lors de la requête $sql<br />\n";
-										$nb_err++;
+									if($temoin_div_trouvee!=""){
+										$eleves[$i]["classe"]=$eleves[$i]["structures"][$j]["code_structure"];
 									}
-									$id_tempo++;
 								}
 							}
-							if($nb_err==0) {
-								echo "<p>La première phase s'est passée sans erreur.</p>\n";
-							}
-							elseif($nb_err==1) {
-								echo "<p>$nb_err erreur.</p>\n";
-							}
-							else{
-								echo "<p>$nb_err erreurs</p>\n";
-							}
 
-							$stat=$id_tempo-1-$nb_err;
-							echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
-
-							//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
-							echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
-
-							require("../lib/footer.inc.php");
-							die();
+							if($temoin_div_trouvee=='oui'){
+								$sql="INSERT INTO temp_gep_import2 SET id_tempo='$id_tempo', ";
+								$sql.="ele_id='".$eleves[$i]['eleve_id']."', ";
+								$sql.="divcod='".$eleves[$i]['classe']."';";
+								//echo "$sql<br />\n";
+								$res_insert=mysql_query($sql);
+								if(!$res_insert){
+									echo "Erreur lors de la requête $sql<br />\n";
+									$nb_err++;
+								}
+								$id_tempo++;
+							}
+						}
+						if($nb_err==0) {
+							echo "<p>La première phase s'est passée sans erreur.</p>\n";
+						}
+						elseif($nb_err==1) {
+							echo "<p>$nb_err erreur.</p>\n";
 						}
 						else{
-							echo "<p>ERREUR: Il n'a pas été possible d'ouvrir le fichier en lecture...</p>\n";
-
-							require("../lib/footer.inc.php");
-							die();
+							echo "<p>$nb_err erreurs</p>\n";
 						}
+
+						$stat=$id_tempo-1-$nb_err;
+						echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
+
+						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1".add_token_in_url()."'>Suite</a></p>\n";
+
+						require("../lib/footer.inc.php");
+						die();
 					}
 				}
 			} // Fin du $step=0
 			elseif($step==1){
 				$dest_file="../temp/".$tempdir."/eleves.xml";
-				$fp=fopen($dest_file,"r");
-				if(!$fp){
-					echo "<p>Le XML élève n'a pas l'air présent dans le dossier temporaire.<br />Auriez-vous sauté une étape???</p>\n";
+
+				$sql="CREATE TABLE IF NOT EXISTS `temp_etab_import` (
+												`id` char(8) NOT NULL default '',
+												`nom` char(50) NOT NULL default '',
+												`niveau` char(50) NOT NULL default '',
+												`type` char(50) NOT NULL default '',
+												`cp` int(10) NOT NULL default '0',
+												`ville` char(50) NOT NULL default '',
+												PRIMARY KEY  (`id`)
+												);";
+				$create_table = mysql_query($sql);
+
+				$sql="TRUNCATE TABLE temp_etab_import;";
+				$vide_table = mysql_query($sql);
+
+
+
+
+				// On récupère les ele_id des élèves qui sont affectés dans une classe
+				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
+				$res_ele_id=mysql_query($sql);
+				affiche_debug("count(\$res_ele_id)=".count($res_ele_id)."<br />");
+
+				unset($tab_ele_id);
+				$tab_ele_id=array();
+				$cpt=0;
+				// Pourquoi est-ce que cela ne fonctionne pas en mysql_fetch_object()???
+				// TROUVé: C'EST SENSIBLE à LA CASSE: IL FAUDRAIT $lig->ELE_ID
+				//while($lig=mysql_fetch_object($res_ele_id)){
+				while($lig=mysql_fetch_array($res_ele_id)){
+					//$tab_ele_id[$cpt]="$lig->ele_id";
+					$tab_ele_id[$cpt]=$lig[0];
+					affiche_debug("\$tab_ele_id[$cpt]=$tab_ele_id[$cpt]<br />");
+					$cpt++;
+				}
+
+				echo "<p>Analyse du fichier pour extraire les informations de la section ELEVES...<br />\n";
+				//echo "<blockquote>\n";
+
+				$cpt=0;
+				$eleves=array();
+
+				//Compteur élève:
+				$i=-1;
+
+				$tab_champs_eleve=array("ID_NATIONAL",
+				"ELENOET",
+				"NOM",
+				"PRENOM",
+				"DATE_NAISS",
+				"DOUBLEMENT",
+				"DATE_SORTIE",
+				"CODE_REGIME",
+				"DATE_ENTREE",
+				"CODE_MOTIF_SORTIE",
+				"CODE_SEXE",
+				"CODE_COMMUNE_INSEE_NAISS"
+				);
+
+				$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
+				"CODE_RNE",
+				"SIGLE",
+				"DENOM_PRINC",
+				"DENOM_COMPL",
+				"LIGNE1_ADRESSE",
+				"LIGNE2_ADRESSE",
+				"LIGNE3_ADRESSE",
+				"LIGNE4_ADRESSE",
+				"BOITE_POSTALE",
+				"MEL",
+				"TELEPHONE",
+				"CODE_COMMUNE_INSEE",
+				"LL_COMMUNE_INSEE"
+				);
+
+				$avec_scolarite_an_dernier="y";
+
+				$ele_xml=simplexml_load_file($dest_file);
+				if(!$ele_xml) {
+					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
 				}
-				else{
 
+				$nom_racine=$ele_xml->getName();
+				if(strtoupper($nom_racine)!='BEE_ELEVES') {
+					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
+					require("../lib/footer.inc.php");
+					die();
+				}
 
+				//$indice_from_eleve_id=array();
 
-					$sql="CREATE TABLE IF NOT EXISTS `temp_etab_import` (
-													`id` char(8) NOT NULL default '',
-													`nom` char(50) NOT NULL default '',
-													`niveau` char(50) NOT NULL default '',
-													`type` char(50) NOT NULL default '',
-													`cp` int(10) NOT NULL default '0',
-													`ville` char(50) NOT NULL default '',
-													PRIMARY KEY  (`id`)
-													);";
-					$create_table = mysql_query($sql);
-
-					$sql="TRUNCATE TABLE temp_etab_import;";
-					$vide_table = mysql_query($sql);
-
-
-
-
-					// On récupère les ele_id des élèves qui sont affectés dans une classe
-					$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
-					$res_ele_id=mysql_query($sql);
-					affiche_debug("count(\$res_ele_id)=".count($res_ele_id)."<br />");
-
-					unset($tab_ele_id);
-					$tab_ele_id=array();
-					$cpt=0;
-					// Pourquoi est-ce que cela ne fonctionne pas en mysql_fetch_object()???
-					// TROUVé: C'EST SENSIBLE à LA CASSE: IL FAUDRAIT $lig->ELE_ID
-					//while($lig=mysql_fetch_object($res_ele_id)){
-					while($lig=mysql_fetch_array($res_ele_id)){
-						//$tab_ele_id[$cpt]="$lig->ele_id";
-						$tab_ele_id[$cpt]=$lig[0];
-						affiche_debug("\$tab_ele_id[$cpt]=$tab_ele_id[$cpt]<br />");
-						$cpt++;
+				$objet_eleves=($ele_xml->DONNEES->ELEVES);
+				foreach ($objet_eleves->children() as $eleve) {
+					$i++;
+					//echo "<p><b>Elève $i</b><br />";
+			
+					$eleves[$i]=array();
+			
+					foreach($eleve->attributes() as $key => $value) {
+						//echo "$key=".$value."<br />";
+			
+						$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
+						/*
+						if(strtoupper($key)=='ELEVE_ID') {
+							$indice_from_eleve_id["$value"]=$i;
+						}
+						elseif(strtoupper($key)=='ELENOET') {
+							$indice_from_elenoet["$value"]=$i;
+						}
+						*/
 					}
 
-					/*
-					echo "<p>Lecture du fichier Elèves...<br />\n";
-					//echo "<blockquote>\n";
-					while(!feof($fp)){
-						$ligne[]=fgets($fp,4096);
+					foreach($eleve->children() as $key => $value) {
+						if(in_array(strtoupper($key),$tab_champs_eleve)) {
+							$eleves[$i][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+							//echo "\$eleve->$key=".$value."<br />";
+						}
+
+						if(($avec_scolarite_an_dernier=='y')&&(strtoupper($key)=='SCOLARITE_AN_DERNIER')) {
+							$eleves[$i]["scolarite_an_dernier"]=array();
+			
+							foreach($eleve->SCOLARITE_AN_DERNIER->children() as $key2 => $value2) {
+								//echo "\$eleve->SCOLARITE_AN_DERNIER->$key2=$value2<br />";
+								if(in_array(strtoupper($key2),$tab_champs_scol_an_dernier)) {
+									$eleves[$i]["scolarite_an_dernier"][strtolower($key2)]=preg_replace('/"/','',trim(traite_utf8($value2)));
+								}
+							}
+						}
 					}
-					fclose($fp);
-					//echo "<p>Terminé.</p>\n";
-					*/
 
-					echo "<p>Analyse du fichier pour extraire les informations de la section ELEVES...<br />\n";
-					//echo "<blockquote>\n";
-
-					$cpt=0;
-					$eleves=array();
-					$temoin_eleves=0;
-					$temoin_ele=0;
-					$temoin_options=0;
-					$temoin_scol=0;
-					//Compteur élève:
-					$i=-1;
-
-					/*
-					$tab_champs_eleve=array("ID_NATIONAL",
-					"ELENOET",
-					"NOM",
-					"PRENOM",
-					"DATE_NAISS",
-					"DOUBLEMENT",
-					"DATE_SORTIE",
-					"CODE_REGIME",
-					"DATE_ENTREE",
-					"CODE_MOTIF_SORTIE",
-					"CODE_SEXE",
-					);
-					*/
-					$tab_champs_eleve=array("ID_NATIONAL",
-					"ELENOET",
-					"NOM",
-					"PRENOM",
-					"DATE_NAISS",
-					"DOUBLEMENT",
-					"DATE_SORTIE",
-					"CODE_REGIME",
-					"DATE_ENTREE",
-					"CODE_MOTIF_SORTIE",
-					"CODE_SEXE",
-					"CODE_COMMUNE_INSEE_NAISS"
-					);
-
-					$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
-					"CODE_RNE",
-					"SIGLE",
-					"DENOM_PRINC",
-					"DENOM_COMPL",
-					"LIGNE1_ADRESSE",
-					"LIGNE2_ADRESSE",
-					"LIGNE3_ADRESSE",
-					"LIGNE4_ADRESSE",
-					"BOITE_POSTALE",
-					"MEL",
-					"TELEPHONE",
-					"CODE_COMMUNE_INSEE",
-					"LL_COMMUNE_INSEE"
-					);
-
-					// PARTIE <ELEVES>
-					//while($cpt<count($ligne)){
-					while(!feof($fp)){
-						$ligne=fgets($fp,4096);
-						//echo "<p>".htmlentities($ligne[$cpt])."<br />\n";
-						//if(strstr($ligne[$cpt],"<ELEVES>")){
-						if(strstr($ligne,"<ELEVES>")){
-							echo "Début de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-							flush();
-							$temoin_eleves++;
+					if(isset($eleves[$i]["date_naiss"])){
+						//echo $eleves[$i]["date_naiss"]."<br />\n";
+						unset($naissance);
+						$naissance=explode("/",$eleves[$i]["date_naiss"]);
+						//$eleve_naissance_annee=$naissance[2];
+						//$eleve_naissance_mois=$naissance[1];
+						//$eleve_naissance_jour=$naissance[0];
+						if(isset($naissance[2])){
+							$eleve_naissance_annee=$naissance[2];
 						}
-						//if(strstr($ligne[$cpt],"</ELEVES>")){
-						if(strstr($ligne,"</ELEVES>")){
-							echo "Fin de la section ELEVES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-							flush();
-							$temoin_eleves++;
-							break;
+						else{
+							$eleve_naissance_annee="";
 						}
-						if($temoin_eleves==1){
-							//if(strstr($ligne[$cpt],"<ELEVE ")){
-							if(strstr($ligne,"<ELEVE ")){
-								$i++;
-								$eleves[$i]=array();
-								$eleves[$i]["scolarite_an_dernier"]=array();
-
-								//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
-								unset($tabtmp);
-								//$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
-								$tabtmp=explode('"',strstr($ligne," ELEVE_ID="));
-								$eleves[$i]["eleve_id"]=trim($tabtmp[1]);
-								affiche_debug("\$eleves[$i][\"eleve_id\"]=".$eleves[$i]["eleve_id"]."<br />\n");
-
-								unset($tabtmp);
-								//$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
-								$tabtmp=explode('"',strstr($ligne," ELENOET="));
-								$eleves[$i]["elenoet"]=trim($tabtmp[1]);
-								//echo "\$eleves[$i][\"elenoet\"]=".$eleves[$i]["elenoet"]."<br />\n";
-								$temoin_ele=1;
-							}
-							//if(strstr($ligne[$cpt],"</ELEVE>")){
-							if(strstr($ligne,"</ELEVE>")){
-								$temoin_ele=0;
-							}
-							if($temoin_ele==1){
-								//if(strstr($ligne[$cpt],"<SCOLARITE_AN_DERNIER>")){
-								if(strstr($ligne,"<SCOLARITE_AN_DERNIER>")){
-									$temoin_scol=1;
-								}
-								//if(strstr($ligne[$cpt],"</SCOLARITE_AN_DERNIER>")){
-								if(strstr($ligne,"</SCOLARITE_AN_DERNIER>")){
-									$temoin_scol=0;
-								}
-
-								if($temoin_scol==0){
-									for($loop=0;$loop<count($tab_champs_eleve);$loop++){
-										//if(strstr($ligne[$cpt],"<".$tab_champs_eleve[$loop].">")){
-										if(strstr($ligne,"<".$tab_champs_eleve[$loop].">")){
-											$tmpmin=strtolower($tab_champs_eleve[$loop]);
-											//$eleves[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-
-											// Suppression des guillemets éventuels
-											//$eleves[$i]["$tmpmin"]=extr_valeur($ligne);
-											$eleves[$i]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
-
-											affiche_debug("\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n");
-											break;
-										}
-									}
-									if(isset($eleves[$i]["date_naiss"])){
-										// A AMELIORER:
-										// On passe plusieurs fois dans la boucle (autant de fois qu'il y a de lignes pour l'élève en cours après le repérage de la date...)
-										//echo $eleves[$i]["date_naiss"]."<br />\n";
-										unset($naissance);
-										$naissance=explode("/",$eleves[$i]["date_naiss"]);
-										//$eleve_naissance_annee=$naissance[2];
-										//$eleve_naissance_mois=$naissance[1];
-										//$eleve_naissance_jour=$naissance[0];
-										if(isset($naissance[2])){
-											$eleve_naissance_annee=$naissance[2];
-										}
-										else{
-											$eleve_naissance_annee="";
-										}
-										if(isset($naissance[1])){
-											$eleve_naissance_mois=$naissance[1];
-										}
-										else{
-											$eleve_naissance_mois="";
-										}
-										if(isset($naissance[0])){
-											$eleve_naissance_jour=$naissance[0];
-										}
-										else{
-											$eleve_naissance_jour="";
-										}
-
-										$eleves[$i]["date_naiss"]=$eleve_naissance_annee.$eleve_naissance_mois.$eleve_naissance_jour;
-									}
-								}
-								else{
-									//echo "$i - ";
-									//$eleves[$i]["scolarite_an_dernier"]=array();
-									for($loop=0;$loop<count($tab_champs_scol_an_dernier);$loop++){
-										//if(strstr($ligne[$cpt],"<".$tab_champs_scol_an_dernier[$loop].">")){
-										if(strstr($ligne,"<".$tab_champs_scol_an_dernier[$loop].">")){
-											//echo "$i - ";
-											$tmpmin=strtolower($tab_champs_scol_an_dernier[$loop]);
-											//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-
-											// Suppression des guillemets éventuels
-											//$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=extr_valeur($ligne);
-											$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
-
-											affiche_debug( "\$eleves[$i][\"scolarite_an_dernier\"][\"$tmpmin\"]=".$eleves[$i]["scolarite_an_dernier"]["$tmpmin"]."<br />\n");
-											break;
-										}
-									}
-								}
-								/*
-								if(strstr($ligne[$cpt],"<ID_NATIONAL>")){
-									$eleves[$i]["id_national"]=extr_valeur($ligne[$cpt]);
-								}
-								if(strstr($ligne[$cpt],"<ELENOET>")){
-									$eleves[$i]["elenoet"]=extr_valeur($ligne[$cpt]);
-								}
-								*/
-							}
+						if(isset($naissance[1])){
+							$eleve_naissance_mois=$naissance[1];
 						}
-						$cpt++;
+						else{
+							$eleve_naissance_mois="";
+						}
+						if(isset($naissance[0])){
+							$eleve_naissance_jour=$naissance[0];
+						}
+						else{
+							$eleve_naissance_jour="";
+						}
+
+						$eleves[$i]["date_naiss"]=$eleve_naissance_annee.$eleve_naissance_mois.$eleve_naissance_jour;
 					}
-					fclose($fp);
-					echo "</p>\n";
-					flush();
 
-					affiche_debug("count(\$eleves)=".count($eleves)."<br />\n");
-					affiche_debug("count(\$tab_ele_id)=".count($tab_ele_id)."<br />\n");
-					$stat=0;
-					$nb_err=0;
-					$stat_etab=0;
-					$nb_err_etab=0;
-					unset($tab_list_etab);
-					$tab_list_etab=array();
-					$info_anomalie="";
-					for($i=0;$i<count($eleves);$i++){
-						// On ne traite que les élèves affectés dans une classe ($tab_ele_id)
-						if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
-							/*
-							if(!isset($eleves[$i]["code_sexe"])){
-								$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
-							}
-							*/
+					if($debug_import=='y') {
+						echo "<pre style='color:green;'><b>Tableau \$eleves[$i]&nbsp;:</b>";
+						print_r($eleves[$i]);
+						echo "</pre>";
+					}
+				}
 
+				affiche_debug("count(\$eleves)=".count($eleves)."<br />\n");
+				affiche_debug("count(\$tab_ele_id)=".count($tab_ele_id)."<br />\n");
+				$stat=0;
+				$nb_err=0;
+				$stat_etab=0;
+				$nb_err_etab=0;
+				unset($tab_list_etab);
+				$tab_list_etab=array();
+				$info_anomalie="";
+				for($i=0;$i<count($eleves);$i++){
+					// On ne traite que les élèves affectés dans une classe ($tab_ele_id)
+					if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
+						/*
+						if(!isset($eleves[$i]["code_sexe"])){
+							$remarques[]="Le sexe de l'élève <a href='#sexe_manquant_".$i."'>".$eleves[$i]["nom"]." ".$eleves[$i]["prenom"]."</a> n'est pas renseigné dans Sconet.";
+						}
+						*/
 
-							$temoin_date_sortie="n";
-							if(isset($eleves[$i]['date_sortie'])) {
-								echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." a quitté l'établissement le ".$eleves[$i]['date_sortie']."<br />\n";
+						$temoin_date_sortie="n";
+						if(isset($eleves[$i]['date_sortie'])) {
+							echo $eleves[$i]['prenom']." ".$eleves[$i]['nom']." a quitté l'établissement le ".$eleves[$i]['date_sortie']."<br />\n";
 
-								$tmp_tab_date=explode("/",$eleves[$i]['date_sortie']);
-								if(checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
-									$timestamp_sortie=mktime(0,0,0,$tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2]);
-									$timestamp_instant=time();
-									if($timestamp_instant>$timestamp_sortie){
-										$temoin_date_sortie="y";
-									}
+							$tmp_tab_date=explode("/",$eleves[$i]['date_sortie']);
+							if(checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
+								$timestamp_sortie=mktime(0,0,0,$tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2]);
+								$timestamp_instant=time();
+								if($timestamp_instant>$timestamp_sortie){
+									$temoin_date_sortie="y";
 								}
 							}
+						}
 
-							if($temoin_date_sortie=="y") {
-								$sql="DELETE FROM temp_gep_import2 WHERE ele_id='".$eleves[$i]['eleve_id']."';";
-								$nettoyage=mysql_query($sql);
+						if($temoin_date_sortie=="y") {
+							$sql="DELETE FROM temp_gep_import2 WHERE ele_id='".$eleves[$i]['eleve_id']."';";
+							$nettoyage=mysql_query($sql);
+						}
+						else {
+
+							$sql="UPDATE temp_gep_import2 SET ";
+							$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
+							if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
+							$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
+							$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
+							if(!isset($eleves[$i]["code_sexe"])) {
+								$eleves[$i]["code_sexe"]=1;
+								$info_anomalie.="Le sexe de ".$eleves[$i]['nom']." ".$eleves[$i]['prenom']." n'est pas renseigné dans le fichier XML.<br />\n";
 							}
-							else {
+							$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
+							$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
+							$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
+							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
+							if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
 
-								$sql="UPDATE temp_gep_import2 SET ";
-								$sql.="elenoet='".$eleves[$i]['elenoet']."', ";
-								if(isset($eleves[$i]['id_national'])) {$sql.="elenonat='".$eleves[$i]['id_national']."', ";}
-								$sql.="elenom='".addslashes($eleves[$i]['nom'])."', ";
-								$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
-								if(!isset($eleves[$i]["code_sexe"])) {
-									$eleves[$i]["code_sexe"]=1;
-									$info_anomalie.="Le sexe de ".$eleves[$i]['nom']." ".$eleves[$i]['prenom']." n'est pas renseigné dans le fichier XML.<br />\n";
-								}
-								$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
-								$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
-								$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
-								if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
-								if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
+							if(isset($eleves[$i]["code_commune_insee_naiss"])){$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";}
 
-								if(isset($eleves[$i]["code_commune_insee_naiss"])){$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";}
-
-								$sql=substr($sql,0,strlen($sql)-2);
-								$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
-								affiche_debug("$sql<br />\n");
-								$res_insert=mysql_query($sql);
-								if(!$res_insert){
-									echo "Erreur lors de la requête $sql<br />\n";
-									$nb_err++;
-									flush();
-								}
-								else{
-									$stat++;
-								}
+							$sql=substr($sql,0,strlen($sql)-2);
+							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
+							affiche_debug("$sql<br />\n");
+							$res_insert=mysql_query($sql);
+							if(!$res_insert){
+								echo "Erreur lors de la requête $sql<br />\n";
+								$nb_err++;
+								flush();
+							}
+							else{
+								$stat++;
+							}
 
 
-								// Insertion des informations de l'établissement précédent dans une table temporaire:
-								if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
-									$sql="INSERT INTO temp_etab_import SET ";
-									$cpt_debut_requete=0;
+							// Insertion des informations de l'établissement précédent dans une table temporaire:
+							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
+								$sql="INSERT INTO temp_etab_import SET ";
+								$cpt_debut_requete=0;
 
 
-									if($eleves[$i]["scolarite_an_dernier"]["code_rne"]!=""){
+								if($eleves[$i]["scolarite_an_dernier"]["code_rne"]!=""){
 
-										// Renseigner un tableau pour indiquer que c'est un RNE déjà traité... et tester le contenu du tableau
-										if(!in_array($eleves[$i]["scolarite_an_dernier"]["code_rne"],$tab_list_etab)){
-											$tab_list_etab[]=$eleves[$i]["scolarite_an_dernier"]["code_rne"];
+									// Renseigner un tableau pour indiquer que c'est un RNE déjà traité... et tester le contenu du tableau
+									if(!in_array($eleves[$i]["scolarite_an_dernier"]["code_rne"],$tab_list_etab)){
+										$tab_list_etab[]=$eleves[$i]["scolarite_an_dernier"]["code_rne"];
 
-											if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
-												$sql.="id='".addslashes($eleves[$i]["scolarite_an_dernier"]["code_rne"])."'";
-												$cpt_debut_requete++;
+										if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){
+											$sql.="id='".addslashes($eleves[$i]["scolarite_an_dernier"]["code_rne"])."'";
+											$cpt_debut_requete++;
+										}
+
+										// NIVEAU
+										$chaine="";
+										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											if(my_ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												$chaine="ecole";
 											}
-
-											/*
-											// NOM
-											if(isset($eleves[$i]["scolarite_an_dernier"]["denom_compl"])){
-												if($cpt_debut_requete>0){
-													$sql.=", ";
-												}
-												$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
-												$cpt_debut_requete++;
+											elseif(my_ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												$chaine="college";
 											}
-											*/
-
-											// NIVEAU
-											$chaine="";
-											if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-												if(my_ereg("ECOLE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-													$chaine="ecole";
-												}
-												elseif(my_ereg("COLLEGE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-													$chaine="college";
-												}
-												elseif(my_ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-													if(my_ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-														$chaine="lprof";
-													}
-													else{
-														$chaine="lycee";
-													}
+											elseif(my_ereg("LYCEE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												if(my_ereg("PROF",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+													$chaine="lprof";
 												}
 												else{
-													$chaine="";
+													$chaine="lycee";
 												}
-
-												if($cpt_debut_requete>0){
-													$sql.=", ";
-												}
-												$sql.="niveau='".$chaine."'";
-												$cpt_debut_requete++;
-											}
-
-
-											// NOM
-											if(isset($eleves[$i]["scolarite_an_dernier"]["denom_compl"])){
-												if($cpt_debut_requete>0){
-													$sql.=", ";
-												}
-												$nom_etab=trim(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]));
-												if($nom_etab=="") {
-													$nom_etab=ucfirst(strtolower($chaine));
-												}
-												//$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
-												$sql.="nom='".addslashes($nom_etab)."'";
-												$cpt_debut_requete++;
 											}
 											else{
+												$chaine="";
+											}
+
+											if($cpt_debut_requete>0){
 												$sql.=", ";
+											}
+											$sql.="niveau='".$chaine."'";
+											$cpt_debut_requete++;
+										}
+
+
+										// NOM
+										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_compl"])){
+											if($cpt_debut_requete>0){
+												$sql.=", ";
+											}
+											$nom_etab=trim(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]));
+											if($nom_etab=="") {
 												$nom_etab=ucfirst(strtolower($chaine));
-												$sql.="nom='".addslashes($nom_etab)."'";
-												$cpt_debut_requete++;
 											}
+											//$sql.="nom='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["denom_compl"]))."'";
+											$sql.="nom='".addslashes($nom_etab)."'";
+											$cpt_debut_requete++;
+										}
+										else{
+											$sql.=", ";
+											$nom_etab=ucfirst(strtolower($chaine));
+											$sql.="nom='".addslashes($nom_etab)."'";
+											$cpt_debut_requete++;
+										}
 
 
-											// TYPE
-											if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-												if(my_ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
-													$chaine="prive";
-												}
-												else{
-													$chaine="public";
-												}
-
-												if($cpt_debut_requete>0){
-													$sql.=", ";
-												}
-												$sql.="type='".$chaine."'";
-												$cpt_debut_requete++;
-											}
-
-											// CODE POSTAL: Non présent dans le fichier ElevesSansAdresses.xml
-											//              Ca y est, il a été ajouté.
-											// ***************************************
-											// ERREUR: code_commune_insee!=code_postal
-											// ***************************************
-											// Il faudrait le fichier Communes.xml ou quelque chose de ce genre.
-											if(isset($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])){
-												if($cpt_debut_requete>0){
-													$sql.=", ";
-												}
-												// *****************************************
-												// PROBLEME: code_commune_insee!=code_postal
-												// *****************************************
-												$sql.="cp='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"]))."'";
-												$cpt_debut_requete++;
-											}
-
-											// COMMUNE
-											if(isset($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"])){
-												if($cpt_debut_requete>0){
-													$sql.=", ";
-												}
-												$sql.="ville='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"]))."'";
-												$cpt_debut_requete++;
-											}
-
-											//echo "$sql<br />";
-
-											$res_insert_etab=mysql_query($sql);
-											if(!$res_insert_etab){
-												echo "Erreur lors de la requête $sql<br />\n";
-												$nb_err_etab++;
-												flush();
+										// TYPE
+										if(isset($eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+											if(my_ereg("PRIVE",$eleves[$i]["scolarite_an_dernier"]["denom_princ"])){
+												$chaine="prive";
 											}
 											else{
-												$stat_etab++;
+												$chaine="public";
 											}
+
+											if($cpt_debut_requete>0){
+												$sql.=", ";
+											}
+											$sql.="type='".$chaine."'";
+											$cpt_debut_requete++;
+										}
+
+										// CODE POSTAL: Non présent dans le fichier ElevesSansAdresses.xml
+										//              Ca y est, il a été ajouté.
+										// ***************************************
+										// ERREUR: code_commune_insee!=code_postal
+										// ***************************************
+										// Il faudrait le fichier Communes.xml ou quelque chose de ce genre.
+										if(isset($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"])){
+											if($cpt_debut_requete>0){
+												$sql.=", ";
+											}
+											// *****************************************
+											// PROBLEME: code_commune_insee!=code_postal
+											// *****************************************
+											$sql.="cp='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["code_commune_insee"]))."'";
+											$cpt_debut_requete++;
+										}
+
+										// COMMUNE
+										if(isset($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"])){
+											if($cpt_debut_requete>0){
+												$sql.=", ";
+											}
+											$sql.="ville='".addslashes(maj_min_comp($eleves[$i]["scolarite_an_dernier"]["ll_commune_insee"]))."'";
+											$cpt_debut_requete++;
+										}
+
+										//echo "$sql<br />";
+
+										$res_insert_etab=mysql_query($sql);
+										if(!$res_insert_etab){
+											echo "Erreur lors de la requête $sql<br />\n";
+											$nb_err_etab++;
+											flush();
+										}
+										else{
+											$stat_etab++;
 										}
 									}
 								}
 							}
 						}
 					}
-					if($nb_err==0) {
-						echo "<p>La deuxième phase s'est passée sans erreur.</p>\n";
-					}
-					elseif($nb_err==1) {
-						echo "<p>$nb_err erreur.</p>\n";
-					}
-					else{
-						echo "<p>$nb_err erreurs</p>\n";
-					}
+				}
+				if($nb_err==0) {
+					echo "<p>La deuxième phase s'est passée sans erreur.</p>\n";
+				}
+				elseif($nb_err==1) {
+					echo "<p>$nb_err erreur.</p>\n";
+				}
+				else{
+					echo "<p>$nb_err erreurs</p>\n";
+				}
 
-					if($info_anomalie!='') {
-						echo "<p style='color:red;'>$info_anomalie</p>\n";
-					}
+				if($info_anomalie!='') {
+					echo "<p style='color:red;'>$info_anomalie</p>\n";
 				}
 
 				echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_gep_import2'.</p>\n";
@@ -1016,193 +836,137 @@
 			} // Fin du $step=1
 			elseif($step==2){
 				$dest_file="../temp/".$tempdir."/eleves.xml";
-				$fp=fopen($dest_file,"r");
-				if(!$fp){
-					echo "<p>Le XML élève n'a pas l'air présent dans le dossier temporaire.<br />Auriez-vous sauté une étape???</p>\n";
+
+				// On récupère les ele_id des élèves qui sont affectés dans une classe
+				$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
+				$res_ele_id=mysql_query($sql);
+				//echo "count(\$res_ele_id)=".count($res_ele_id)."<br />";
+
+				unset($tab_ele_id);
+				$tab_ele_id=array();
+				$cpt=0;
+				// Pourquoi est-ce que cela ne fonctionne pas en mysql_fetch_object()???
+				// TROUVé: C'EST SENSIBLE à LA CASSE: IL FAUDRAIT $lig->ELE_ID
+				//while($lig=mysql_fetch_object($res_ele_id)){
+				while($lig=mysql_fetch_array($res_ele_id)){
+					//$tab_ele_id[$cpt]="$lig->ele_id";
+					$tab_ele_id[$cpt]=$lig[0];
+					affiche_debug("\$tab_ele_id[$cpt]=$tab_ele_id[$cpt]<br />");
+					$cpt++;
+				}
+
+				/*
+				echo "<p>Lecture du fichier Elèves...<br />\n";
+				//echo "<blockquote>\n";
+				while(!feof($fp)){
+					$ligne[]=fgets($fp,4096);
+				}
+				fclose($fp);
+				//echo "<p>Terminé.</p>\n";
+				*/
+				flush();
+
+				echo "<p>";
+				echo "Analyse du fichier pour extraire les informations de la section OPTIONS...<br />\n";
+				//echo "<blockquote>\n";
+
+				$ele_xml=simplexml_load_file($dest_file);
+				if(!$ele_xml) {
+					echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
 					require("../lib/footer.inc.php");
 					die();
+				}
+
+				$nom_racine=$ele_xml->getName();
+				if(strtoupper($nom_racine)!='BEE_ELEVES') {
+					echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Elèves.<br />Sa racine devrait être 'BEE_ELEVES'.</p>\n";
+					require("../lib/footer.inc.php");
+					die();
+				}
+
+				$tab_champs_opt=array("NUM_OPTION","CODE_MODALITE_ELECT","CODE_MATIERE");
+
+				$i=-1;
+
+				// PARTIE <OPTIONS>
+				$objet_options=($ele_xml->DONNEES->OPTIONS);
+				foreach ($objet_options->children() as $option) {
+					// $option est un <OPTION ELEVE_ID="145778" ELENOET="2643">
+					//echo "<p><b>Option</b><br />";
+
+					$i++;
+					//echo "<p><b>Elève $i</b><br />";
+			
+					$eleves[$i]=array();
+			
+					foreach($option->attributes() as $key => $value) {
+						//echo "$key=".$value."<br />";
+						$eleves[$i][strtolower($key)]=trim(traite_utf8($value));
+					}
+
+					$eleves[$i]["options"]=array();
+					$j=0;
+					// $option fait référence à un élève
+					// Les enfants sont des OPTIONS_ELEVE
+					foreach($option->children() as $options_eleve) {
+						foreach($options_eleve->children() as $key => $value) {
+							// Les enfants indiquent NUM_OPTION, CODE_MODALITE_ELECT, CODE_MATIERE
+							if(in_array(strtoupper($key),$tab_champs_opt)) {
+								$eleves[$i]["options"][$j][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+								//echo "\$eleve->$key=".$value."<br />";
+								//echo "\$eleves[$i][\"options\"][$j][".strtolower($key)."]=".$value."<br />";
+							}
+						}
+						$j++;
+					}
+		
+					if($debug_import=='y') {
+						echo "<pre style='color:green;'><b>Tableau \$eleves[$i]&nbsp;:</b>";
+						print_r($eleves[$i]);
+						echo "</pre>";
+					}
+				}
+
+				// Insertion des codes numériques d'options
+				$nb_err=0;
+				$stat=0;
+				for($i=0;$i<count($eleves);$i++){
+					if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
+						for($j=0;$j<count($eleves[$i]["options"]);$j++){
+							$k=$j+1;
+							$sql="UPDATE temp_gep_import2 SET ";
+							$sql.="eleopt$k='".$eleves[$i]["options"][$j]['code_matiere']."'";
+							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
+							affiche_debug("$sql<br />\n");
+							$res_update=mysql_query($sql);
+							if(!$res_update){
+								echo "Erreur lors de la requête $sql<br />\n";
+								flush();
+								$nb_err++;
+							}
+							else{
+								$stat++;
+							}
+						}
+					}
+				}
+				if($nb_err==0) {
+					echo "<p>La troisième phase s'est passée sans erreur.</p>\n";
+				}
+				elseif($nb_err==1) {
+					echo "<p>$nb_err erreur.</p>\n";
 				}
 				else{
-					// On récupère les ele_id des élèves qui sont affectés dans une classe
-					$sql="SELECT ele_id FROM temp_gep_import2 ORDER BY id_tempo";
-					$res_ele_id=mysql_query($sql);
-					//echo "count(\$res_ele_id)=".count($res_ele_id)."<br />";
-
-					unset($tab_ele_id);
-					$tab_ele_id=array();
-					$cpt=0;
-					// Pourquoi est-ce que cela ne fonctionne pas en mysql_fetch_object()???
-					// TROUVé: C'EST SENSIBLE à LA CASSE: IL FAUDRAIT $lig->ELE_ID
-					//while($lig=mysql_fetch_object($res_ele_id)){
-					while($lig=mysql_fetch_array($res_ele_id)){
-						//$tab_ele_id[$cpt]="$lig->ele_id";
-						$tab_ele_id[$cpt]=$lig[0];
-						affiche_debug("\$tab_ele_id[$cpt]=$tab_ele_id[$cpt]<br />");
-						$cpt++;
-					}
-
-					/*
-					echo "<p>Lecture du fichier Elèves...<br />\n";
-					//echo "<blockquote>\n";
-					while(!feof($fp)){
-						$ligne[]=fgets($fp,4096);
-					}
-					fclose($fp);
-					//echo "<p>Terminé.</p>\n";
-					*/
-					flush();
-
-					echo "<p>";
-					echo "Analyse du fichier pour extraire les informations de la section OPTIONS...<br />\n";
-					//echo "<blockquote>\n";
-
-					// PARTIE <OPTIONS>
-					$cpt=0;
-					$eleves=array();
-					$i=-1;
-					$temoin_options=0;
-					$temoin_opt="";
-					$temoin_opt_ele="";
-					$cpt=0;
-					//while($cpt<count($ligne)){
-					while(!feof($fp)){
-						$ligne=fgets($fp,4096);
-						//if(strstr($ligne[$cpt],"<OPTIONS>")){
-						if(strstr($ligne,"<OPTIONS>")){
-							echo "Début de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-							flush();
-							$temoin_options++;
-						}
-						//if(strstr($ligne[$cpt],"</OPTIONS>")){
-						if(strstr($ligne,"</OPTIONS>")){
-							echo "Fin de la section OPTIONS à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-							flush();
-							$temoin_options++;
-							break;
-						}
-						if($temoin_options==1){
-							//if(strstr($ligne[$cpt],"<OPTION ")){
-							if(strstr($ligne,"<OPTION ")){
-								$i++;
-								$eleves[$i]=array();
-
-								//echo "<p><b>".htmlentities($ligne[$cpt])."</b><br />\n";
-								unset($tabtmp);
-								//$tabtmp=explode('"',strstr($ligne[$cpt]," ELEVE_ID="));
-								$tabtmp=explode('"',strstr($ligne," ELEVE_ID="));
-								//$tmp_eleve_id=trim($tabtmp[1]);
-								$eleves[$i]['eleve_id']=trim($tabtmp[1]);
-
-								/*
-								// Recherche du $i de $eleves[$i] correspondant:
-								$temoin_ident="non";
-								for($i=0;$i<count($eleves);$i++){
-									if($eleves[$i]["eleve_id"]==$tmp_eleve_id){
-										$temoin_ident="oui";
-										break;
-									}
-								}
-								if($temoin_ident!="oui"){
-									unset($tabtmp);
-									$tabtmp=explode('"',strstr($ligne[$cpt]," ELENOET="));
-									$tmp_elenoet=trim($tabtmp[1]);
-
-									for($i=0;$i<count($eleves);$i++){
-										if($eleves[$i]["elenoet"]==$tmp_elenoet){
-											$temoin_ident="oui";
-											break;
-										}
-									}
-								}
-								if($temoin_ident=="oui"){
-								*/
-									$eleves[$i]["options"]=array();
-									$j=0;
-									$temoin_opt=1;
-								//}
-							}
-							//if(strstr($ligne[$cpt],"</OPTION>")){
-							if(strstr($ligne,"</OPTION>")){
-								$temoin_opt=0;
-							}
-							if($temoin_opt==1){
-							//if(($temoin_opt==1)&&($temoin_ident=="oui")){
-								//if(strstr($ligne[$cpt],"<OPTIONS_ELEVE>")){
-								if(strstr($ligne,"<OPTIONS_ELEVE>")){
-									$eleves[$i]["options"][$j]=array();
-									$temoin_opt_ele=1;
-								}
-								//if(strstr($ligne[$cpt],"</OPTIONS_ELEVE>")){
-								if(strstr($ligne,"</OPTIONS_ELEVE>")){
-									$j++;
-									$temoin_opt_ele=0;
-								}
-
-								$tab_champs_opt=array("NUM_OPTION","CODE_MODALITE_ELECT","CODE_MATIERE");
-								if($temoin_opt_ele==1){
-									for($loop=0;$loop<count($tab_champs_opt);$loop++){
-										//if(strstr($ligne[$cpt],"<".$tab_champs_opt[$loop].">")){
-										if(strstr($ligne,"<".$tab_champs_opt[$loop].">")){
-											$tmpmin=strtolower($tab_champs_opt[$loop]);
-											//$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-
-											// Suppression des guillemets éventuels
-											//$eleves[$i]["options"][$j]["$tmpmin"]=extr_valeur($ligne);
-											$eleves[$i]["options"][$j]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
-
-											//echo "\$eleves[$i][\"$tmpmin\"]=".$eleves[$i]["$tmpmin"]."<br />\n";
-											break;
-										}
-									}
-								}
-							}
-						}
-						$cpt++;
-					}
-					fclose($fp);
-
-
-					// Insertion des codes numériques d'options
-					$nb_err=0;
-					$stat=0;
-					for($i=0;$i<count($eleves);$i++){
-						if(in_array($eleves[$i]['eleve_id'],$tab_ele_id)){
-							for($j=0;$j<count($eleves[$i]["options"]);$j++){
-								$k=$j+1;
-								$sql="UPDATE temp_gep_import2 SET ";
-								$sql.="eleopt$k='".$eleves[$i]["options"][$j]['code_matiere']."'";
-								$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
-								affiche_debug("$sql<br />\n");
-								$res_update=mysql_query($sql);
-								if(!$res_update){
-									echo "Erreur lors de la requête $sql<br />\n";
-									flush();
-									$nb_err++;
-								}
-								else{
-									$stat++;
-								}
-							}
-						}
-					}
-					if($nb_err==0) {
-						echo "<p>La troisième phase s'est passée sans erreur.</p>\n";
-					}
-					elseif($nb_err==1) {
-						echo "<p>$nb_err erreur.</p>\n";
-					}
-					else{
-						echo "<p>$nb_err erreurs</p>\n";
-					}
-
-					echo "<p>$stat option(s) ont été mises à jour dans la table 'temp_gep_import2'.</p>\n";
-
-					//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=3'>Suite</a></p>\n";
-					echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>Suite</a></p>\n";
-
-					require("../lib/footer.inc.php");
-					die();
+					echo "<p>$nb_err erreurs</p>\n";
 				}
+
+				echo "<p>$stat option(s) ont été mises à jour dans la table 'temp_gep_import2'.</p>\n";
+
+				//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=3'>Suite</a></p>\n";
+				echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>Suite</a></p>\n";
+
+				require("../lib/footer.inc.php");
+				die();
 			}
 			elseif($step==3){
 
@@ -1340,30 +1104,20 @@
 						// Lecture du fichier Nomenclature... pour changer les codes numériques d'options dans 'temp_gep_import2' en leur code gestion
 
 						$dest_file="../temp/".$tempdir."/nomenclature.xml";
-						$fp=fopen($dest_file,"r");
-						if(!$fp){
-							echo "<p>Le XML élève n'a pas l'air présent dans le dossier temporaire.<br />Auriez-vous sauté une étape???</p>\n";
+
+						$nomenclature_xml=simplexml_load_file($dest_file);
+						if(!$nomenclature_xml) {
+							echo "<p style='color:red;'>ECHEC du chargement du fichier avec simpleXML.</p>\n";
 							require("../lib/footer.inc.php");
 							die();
 						}
-
-						/*
-						echo "<p>Lecture du fichier Nomenclature...<br />\n";
-						//echo "<blockquote>\n";
-						while(!feof($fp)){
-							$ligne[]=fgets($fp,4096);
+	
+						$nom_racine=$nomenclature_xml->getName();
+						if(strtoupper($nom_racine)!='BEE_NOMENCLATURES') {
+							echo "<p style='color:red;'>ERREUR: Le fichier XML fourni n'a pas l'air d'être un fichier XML Nomenclatures.<br />Sa racine devrait être 'BEE_NOMENCLATURES'.</p>\n";
+							require("../lib/footer.inc.php");
+							die();
 						}
-						fclose($fp);
-						//echo "<p>Terminé.</p>\n";
-						*/
-						flush();
-
-						echo "<p>";
-						echo "Analyse du fichier pour extraire les associations CODE_MATIERE/CODE_GESTION...<br />\n";
-
-						$matieres=array();
-						$temoin_matieres=0;
-						$temoin_mat=-1;
 
 						$tab_champs_matiere=array("CODE_GESTION",
 						"LIBELLE_COURT",
@@ -1372,72 +1126,32 @@
 						"MATIERE_ETP"
 						);
 
-						// PARTIE <MATIERES>
-						// Compteur matières:
+						echo "<p>";
+						echo "Analyse du fichier pour extraire les associations CODE_MATIERE/CODE_GESTION...<br />\n";
+	
+						$matieres=array();
 						$i=-1;
-						// Compteur de lignes du fichier:
-						$cpt=0;
-						$fp=fopen($dest_file,"r");
-						//while($cpt<count($ligne)){
-						while(!feof($fp)){
-							$ligne=fgets($fp,4096);
-							//echo htmlentities($ligne[$cpt])."<br />\n";
 
-							//if(strstr($ligne[$cpt],"<MATIERES>")){
-							if(strstr($ligne,"<MATIERES>")){
-								echo "Début de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-								flush();
-								$temoin_matieres++;
+						$objet_matieres=($nomenclature_xml->DONNEES->MATIERES);
+						foreach ($objet_matieres->children() as $matiere) {
+							$i++;
+							//echo "<p><b>Matière $i</b><br />";
+					
+							$matieres[$i]=array();
+					
+							foreach($matiere->attributes() as $key => $value) {
+								// <MATIERE CODE_MATIERE="001400">
+								//echo "$key=".$value."<br />";
+					
+								$matieres[$i][strtolower($key)]=trim(traite_utf8($value));
 							}
-							//if(strstr($ligne[$cpt],"</MATIERES>")){
-							if(strstr($ligne,"</MATIERES>")){
-								echo "Fin de la section MATIERES à la ligne <span style='color: blue;'>$cpt</span><br />\n";
-								flush();
-								$temoin_matieres++;
-								break;
-							}
-							if($temoin_matieres==1){
-								//if(strstr($ligne[$cpt],"<MATIERE ")){
-								if(strstr($ligne,"<MATIERE ")){
-									$i++;
-									$matieres[$i]=array();
-
-									//affiche_debug("<p><b>".htmlentities($ligne[$cpt])."</b><br />\n");
-									affiche_debug("<p><b>".htmlentities($ligne)."</b><br />\n");
-									unset($tabtmp);
-									//$tabtmp=explode('"',strstr($ligne[$cpt]," CODE_MATIERE="));
-									$tabtmp=explode('"',strstr($ligne," CODE_MATIERE="));
-
-									// Suppression des guillemets éventuels
-									//$matieres[$i]["code_matiere"]=trim($tabtmp[1]);
-									$matieres[$i]["code_matiere"]=my_ereg_replace('"','',trim($tabtmp[1]));
-
-									//affiche_debug("\$matieres[$i][\"matiere_id\"]=".$matieres[$i]["matiere_id"]."<br />\n");
-									affiche_debug("\$matieres[$i][\"code_matiere\"]=".$matieres[$i]["code_matiere"]."<br />\n");
-									$temoin_mat=1;
-								}
-								//if(strstr($ligne[$cpt],"</MATIERE>")){
-								if(strstr($ligne,"</MATIERE>")){
-									$temoin_mat=0;
-								}
-								if($temoin_mat==1){
-									for($loop=0;$loop<count($tab_champs_matiere);$loop++){
-										//if(strstr($ligne[$cpt],"<".$tab_champs_matiere[$loop].">")){
-										if(strstr($ligne,"<".$tab_champs_matiere[$loop].">")){
-											$tmpmin=strtolower($tab_champs_matiere[$loop]);
-											//$matieres[$i]["$tmpmin"]=extr_valeur($ligne[$cpt]);
-
-											// Suppression des guillemets éventuels
-											//$matieres[$i]["$tmpmin"]=extr_valeur($ligne);
-											$matieres[$i]["$tmpmin"]=my_ereg_replace('"','',extr_valeur($ligne));
-
-											affiche_debug("\$matieres[$i][\"$tmpmin\"]=".$matieres[$i]["$tmpmin"]."<br />\n");
-											break;
-										}
-									}
+	
+							foreach($matiere->children() as $key => $value) {
+								if(in_array(strtoupper($key),$tab_champs_matiere)) {
+									$matieres[$i][strtolower($key)]=preg_replace('/"/','',trim(traite_utf8($value)));
+									//echo "\$matiere->$key=".$value."<br />";
 								}
 							}
-							$cpt++;
 						}
 
 						$sql="SELECT * FROM temp_gep_import2";
@@ -1545,48 +1259,6 @@
 				else{
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 					echo add_token_field();
-					/*
-					// Transféré vers /style.css
-					echo "<style type='text/css'>
-
-					table.boireaus {
-						border-style: solid;
-						border-width: 1px;
-						border-color: black;
-						border-collapse: collapse;
-					}
-
-					.boireaus th {
-						border-style: solid;
-						border-width: 1px;
-						border-color: black;
-						background-color: #fafabe;
-						font-weight:bold;
-						text-align:center;
-					}
-
-					.boireaus td {
-						text-align:center;
-						border-style: solid;
-						border-width: 1px;
-						border-color: black;
-					}
-
-					.boireaus .lig-1 {
-						background-color: white;
-					}
-					.boireaus .lig1 {
-						background-color: silver;
-					}
-					.boireaus .nouveau {
-						background-color: #96c8f0;
-					}
-					.boireaus .modif {
-						background-color: #aae6aa;
-					}
-
-					</style>\n";
-					*/
 
 					echo "<table class='boireaus' summary='Tableau des établissements'>\n";
 					echo "<tr>\n";
