@@ -128,112 +128,118 @@ function liste_notes_html($tab_rel,$i,$j,$tab_id_conteneur=array()) {
 
 	$m=0;
 	$tiret = "no";
-	while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
-		if(in_array($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur'],$tab_id_conteneur)) {
-			// Note de l'élève sur le devoir:
-			$eleve_note=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note'];
-			// Statut de l'élève sur le devoir:
-			$eleve_statut=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut'];
-			// Appréciation de l'élève sur le devoir:
-			$eleve_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['app'];
-			// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
-			$eleve_display_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['display_app'];
-			// Nom court du devoir:
-			$eleve_nom_court=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['nom_court'];
-			// Date du devoir:
-			$eleve_date=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['date'];
-			// Coef du devoir:
-			$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
-
-
-			//==========================================
-			// On teste s'il y aura une "Note" à afficher
-			if (($eleve_statut != '') and ($eleve_statut != 'v')) {
-				$affiche_note = $eleve_statut;
-			}
-			elseif ($eleve_statut == 'v') {
-				$affiche_note = "";
-			}
-			elseif ($eleve_note != '') {
-				$affiche_note = $eleve_note;
-			}
-			else {
-				$affiche_note = "";
-			}
-			//==========================================
+	if(isset($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
+		while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
+			if(in_array($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur'],$tab_id_conteneur)) {
+				// Note de l'élève sur le devoir:
+				$eleve_note=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note'];
+				// Statut de l'élève sur le devoir:
+				$eleve_statut=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut'];
+				// Appréciation de l'élève sur le devoir:
+				$eleve_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['app'];
+				// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
+				$eleve_display_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['display_app'];
+				// Nom court du devoir:
+				$eleve_nom_court=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['nom_court'];
+				// Date du devoir:
+				$eleve_date=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['date'];
+				// Coef du devoir:
+				$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
 	
-			// Nom du devoir ou pas
-			if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-				if ($affiche_note=="") {
-					if ($tab_rel['rn_nomdev']!="y") {
-						$affiche_note = $eleve_nom_court;
-					}
-					else {
-						$affiche_note = "&nbsp;";
-					}
-				}
-			}
 	
-			// Si une "Note" doit être affichée
-			if ($affiche_note != '') {
-				if ($tiret == "yes") {
-					if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
-						$retour.="<br />";
-					}
-					else {
-						$retour.=" - ";
-					}
+				//==========================================
+				// On teste s'il y aura une "Note" à afficher
+				if (($eleve_statut != '') and ($eleve_statut != 'v')) {
+					$affiche_note = $eleve_statut;
 				}
-				if($tab_rel['rn_nomdev']=="y"){
-					$retour.="$eleve_nom_court: <b>".$affiche_note."</b>";
+				elseif ($eleve_statut == 'v') {
+					$affiche_note = "";
 				}
-				else{
-					$retour.="<b>".$affiche_note."</b>";
+				elseif ($eleve_note != '') {
+					$affiche_note = $eleve_note;
 				}
-	
-				// Coefficient (si on affiche tous les coef...
-				// ou si on ne les affiche que s'il y a plusieurs coef différents)
-				if(($tab_rel['rn_toutcoefdev']=="y")||
-					(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['eleve'][$i]['groupe'][$j]['differents_coef']=="y"))) {
-					$retour.=" (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
+				else {
+					$affiche_note = "";
 				}
-	
-				// Si on a demandé à afficher les appréciations
-				// et si le prof a coché l'autorisation d'accès à l'appréciations
+				//==========================================
+		
+				// Nom du devoir ou pas
 				if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-					$retour.=" - Appréciation : ";
-					if ($eleve_app!="") {
-						$retour.=$eleve_app;
-					}
-					else {
-						$retour.="-";
+					if ($affiche_note=="") {
+						if ($tab_rel['rn_nomdev']!="y") {
+							$affiche_note = $eleve_nom_court;
+						}
+						else {
+							$affiche_note = "&nbsp;";
+						}
 					}
 				}
+		
+				// Si une "Note" doit être affichée
+				if ($affiche_note != '') {
+					if ($tiret == "yes") {
+						if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
+							$retour.="<br />";
+						}
+						else {
+							$retour.=" - ";
+						}
+					}
+					if($tab_rel['rn_nomdev']=="y"){
+						$retour.="$eleve_nom_court: <b>".$affiche_note."</b>";
+					}
+					else{
+						$retour.="<b>".$affiche_note."</b>";
+					}
+		
+					// Coefficient (si on affiche tous les coef...
+					// ou si on ne les affiche que s'il y a plusieurs coef différents)
+					if(($tab_rel['rn_toutcoefdev']=="y")||
+						(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['eleve'][$i]['groupe'][$j]['differents_coef']=="y"))) {
+						$retour.=" (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
+					}
+		
+					// Si on a demandé à afficher les appréciations
+					// et si le prof a coché l'autorisation d'accès à l'appréciations
+					if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
+						$retour.=" - Appréciation : ";
+						if ($eleve_app!="") {
+							$retour.=$eleve_app;
+						}
+						else {
+							$retour.="-";
+						}
+					}
+		
+					if($tab_rel['rn_datedev']=="y"){
+						// Format: 2006-09-28 00:00:00
+						$tmpdate=explode(" ",$eleve_date);
+						$tmpdate=explode("-",$tmpdate[0]);
+						$retour.=" (<i><small>$tmpdate[2]/$tmpdate[1]/$tmpdate[0]</small></i>)";
+					}
 	
-				if($tab_rel['rn_datedev']=="y"){
-					// Format: 2006-09-28 00:00:00
-					$tmpdate=explode(" ",$eleve_date);
-					$tmpdate=explode("-",$tmpdate[0]);
-					$retour.=" (<i><small>$tmpdate[2]/$tmpdate[1]/$tmpdate[0]</small></i>)";
+					// 20100626
+					if($tab_rel['rn_moy_min_max_classe']=='y') {
+						$retour.=" (<i><small>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</small></i>)";
+					}
+					elseif($tab_rel['rn_moy_classe']=='y') {
+						$retour.=" (classe:".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe'].")";
+					}
+	
+					//====================================================================
+					// Après un tour avec affichage dans la boucle:
+					$tiret = "yes";
+	
+					// DEBUG:
+					//$retour.="(id_cn=".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_cahier_notes'].")";
+					//$retour.="(id_cont=".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur'].")";
+					//$retour.="(id_dev=".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_devoir'].")";
 				}
-
-				// 20100626
-				if($tab_rel['rn_moy_min_max_classe']=='y') {
-					$retour.=" (<i><small>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</small></i>)";
-				}
-				elseif($tab_rel['rn_moy_classe']=='y') {
-					$retour.=" (classe:".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe'].")";
-				}
-
-				//====================================================================
-				// Après un tour avec affichage dans la boucle:
-				$tiret = "yes";
 			}
+	
+			$m++;
 		}
-
-		$m++;
 	}
-
 	return $retour;
 }
 
@@ -1247,22 +1253,29 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 							//echo "Il y a des sous-conteneurs<br />";
 							$temoin_affichage_de_conteneur="n";
 							$temoin_conteneur=0;
+							// Parcours des carnets de notes (un seule si une période est choisie, mais peut-être plusieurs si on a un intervalle de dates)
 							foreach($tab_rel['eleve'][$i]['groupe'][$j]['id_cn'] as $tmp_id_cn => $tab_id_cn) {
-								// On ne récupère que les conteneurs de niveau 1, pas la racine... et si n a plusieurs périodes, on peut récupérer les boites d'une autre période... d'où des tests par la suite sur ce qu'il convient d'afficher.
+								// On ne récupère que les conteneurs de niveau 1, pas la racine... et si on a plusieurs périodes, on peut récupérer les boites d'une autre période... d'où des tests par la suite sur ce qu'il convient d'afficher.
 
 								//echo "<b>cn $tmp_id_cn</b> ";
 	
 								unset($tmp_tab);
 								$tmp_tab[]=$tmp_id_cn;
-								//echo "<u><b>Racine ($tmp_id_cn)&nbsp;:</b></u> \n";
+								if($temoin_conteneur>0) {echo "<br />\n";}
+								//echo "<br /><u><b>Racine ($tmp_id_cn)&nbsp;:</b></u> \n";
 								$retour_liste_notes_html=liste_notes_html($tab_rel,$i,$j,$tmp_tab);
 								if($retour_liste_notes_html!='') {
+									//echo "|A1:$tmp_id_cn|";
 									//echo "<u><b>Racine ($tmp_id_cn)&nbsp;:</b></u> \n";
 									echo $retour_liste_notes_html;
+									//echo "|A2:$tmp_id_cn|";
 									$temoin_affichage_de_conteneur="y";
 									$temoin_conteneur++;
 								}
-	
+								else {
+									$temoin_conteneur=0;
+								}
+
 								// Faire la boucle while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {} 
 								// avec un test sur $tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur']==$tmp_id_cn (soit la racine du cn à ce niveau)
 	
@@ -1296,7 +1309,10 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 											$temoin_affichage_de_conteneur="y";
 											$temoin_conteneur++;
 										}
-	
+										else {
+											$temoin_conteneur=0;
+										}
+
 										// Faire la boucle while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {} 
 										// avec un test sur $tab_ele['groupe'][$j]['devoir'][$m]['id_conteneur'] égal à $tab_id_cn['conteneurs'][$k]['id_racine'] ou dans $tab_id_cn['conteneurs'][$k]['conteneurs_enfants'][]
 									//}
@@ -1304,136 +1320,141 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 
 							}
 
-							// On va tester s'il y a des devoirs hors des boites
-							$m=0;
-							$tiret = "no";
-							while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
-								/*
-								$temoin_devoir_a_la_racine="y";
-								for($k=0;$k<count($tab_id_cn['conteneurs']);$k++) {
-									if($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur']==$tab_id_cn['conteneurs'][$k]['id_racine']) {
-										$temoin_devoir_a_la_racine="n";
-										break;
-									}
-									//$k++;
-								}
+							//DEBUG
+							//echo "<br />\$temoin_affichage_de_conteneur=$temoin_affichage_de_conteneur<br />";
 
-								if($temoin_devoir_a_la_racine=="y") {
-								*/
-								if($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_cahier_notes']==$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur']) {
-
-									//if(($m==0)&&($temoin_conteneur>0)) {
-									//if($m==0) {
-									if(($m==0)&&($temoin_affichage_de_conteneur=="y")) {
-										echo "<br />\n";
-									}
-
-									// Note de l'élève sur le devoir:
-									$eleve_note=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note'];
-									// Statut de l'élève sur le devoir:
-									$eleve_statut=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut'];
-									// Appréciation de l'élève sur le devoir:
-									$eleve_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['app'];
-									// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
-									$eleve_display_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['display_app'];
-									// Nom court du devoir:
-									$eleve_nom_court=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['nom_court'];
-									// Date du devoir:
-									$eleve_date=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['date'];
-									// Coef du devoir:
-									$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
-				
-									//==========================================
-									// On teste s'il y aura une "Note" à afficher
-									if (($eleve_statut != '') and ($eleve_statut != 'v')) {
-										$affiche_note = $eleve_statut;
-									}
-									elseif ($eleve_statut == 'v') {
-										$affiche_note = "";
-									}
-									elseif ($eleve_note != '') {
-										$affiche_note = $eleve_note;
-									}
-									else {
-										$affiche_note = "";
-									}
-									//==========================================
-				
-									// Nom du devoir ou pas
-									if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-										if ($affiche_note=="") {
-											if ($tab_rel['rn_nomdev']!="y") {
-												$affiche_note = $eleve_nom_court;
-											}
-											else {
-												$affiche_note = "&nbsp;";
-											}
+							if($temoin_affichage_de_conteneur!='y') {
+								//echo "|B:$tmp_id_cn|";
+								// On va tester s'il y a des devoirs hors des boites (qui se sont révélées vides?)
+								$m=0;
+								$tiret = "no";
+								while($m<count($tab_rel['eleve'][$i]['groupe'][$j]['devoir'])) {
+									/*
+									$temoin_devoir_a_la_racine="y";
+									for($k=0;$k<count($tab_id_cn['conteneurs']);$k++) {
+										if($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur']==$tab_id_cn['conteneurs'][$k]['id_racine']) {
+											$temoin_devoir_a_la_racine="n";
+											break;
 										}
+										//$k++;
 									}
-				
-									// Si une "Note" doit être affichée
-									if ($affiche_note != '') {
-										if ($tiret == "yes") {
-											if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
-												echo "<br />";
-											}
-											else {
-												echo " - ";
-											}
+	
+									if($temoin_devoir_a_la_racine=="y") {
+									*/
+									if($tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_cahier_notes']==$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['id_conteneur']) {
+	
+										//if(($m==0)&&($temoin_conteneur>0)) {
+										//if($m==0) {
+										if(($m==0)&&($temoin_affichage_de_conteneur=="y")) {
+											echo "<br />\n";
 										}
-										if($tab_rel['rn_nomdev']=="y"){
-											echo "$eleve_nom_court: <b>".$affiche_note."</b>";
+	
+										// Note de l'élève sur le devoir:
+										$eleve_note=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['note'];
+										// Statut de l'élève sur le devoir:
+										$eleve_statut=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['statut'];
+										// Appréciation de l'élève sur le devoir:
+										$eleve_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['app'];
+										// Le professeur a-t-il autorisé l'accès à l'appréciation lors de la saisie du devoir
+										$eleve_display_app=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['display_app'];
+										// Nom court du devoir:
+										$eleve_nom_court=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['nom_court'];
+										// Date du devoir:
+										$eleve_date=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['date'];
+										// Coef du devoir:
+										$eleve_coef=$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['coef'];
+					
+										//==========================================
+										// On teste s'il y aura une "Note" à afficher
+										if (($eleve_statut != '') and ($eleve_statut != 'v')) {
+											$affiche_note = $eleve_statut;
 										}
-										else{
-											echo "<b>".$affiche_note."</b>";
+										elseif ($eleve_statut == 'v') {
+											$affiche_note = "";
 										}
-				
-										// Coefficient (si on affiche tous les coef...
-										// ou si on ne les affiche que s'il y a plusieurs coef différents)
-										if(($tab_rel['rn_toutcoefdev']=="y")||
-											(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['eleve'][$i]['groupe'][$j]['differents_coef']=="y"))) {
-											echo " (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
+										elseif ($eleve_note != '') {
+											$affiche_note = $eleve_note;
 										}
-				
-										// Si on a demandé à afficher les appréciations
-										// et si le prof a coché l'autorisation d'accès à l'appréciations
+										else {
+											$affiche_note = "";
+										}
+										//==========================================
+					
+										// Nom du devoir ou pas
 										if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
-											echo " - Appréciation : ";
-											if ($eleve_app!="") {
-												echo $eleve_app;
+											if ($affiche_note=="") {
+												if ($tab_rel['rn_nomdev']!="y") {
+													$affiche_note = $eleve_nom_court;
+												}
+												else {
+													$affiche_note = "&nbsp;";
+												}
 											}
-											else {
-												echo "-";
+										}
+					
+										// Si une "Note" doit être affichée
+										if ($affiche_note != '') {
+											if ($tiret == "yes") {
+												if ((($tab_rel['rn_app']=="y") or ($tab_rel['rn_nomdev']=="y"))&&($retour_a_la_ligne=='y')) {
+													echo "<br />";
+												}
+												else {
+													echo " - ";
+												}
 											}
+											if($tab_rel['rn_nomdev']=="y"){
+												echo "$eleve_nom_court: <b>".$affiche_note."</b>";
+											}
+											else{
+												echo "<b>".$affiche_note."</b>";
+											}
+					
+											// Coefficient (si on affiche tous les coef...
+											// ou si on ne les affiche que s'il y a plusieurs coef différents)
+											if(($tab_rel['rn_toutcoefdev']=="y")||
+												(($tab_rel['rn_coefdev_si_diff']=="y")&&($tab_rel['eleve'][$i]['groupe'][$j]['differents_coef']=="y"))) {
+												echo " (<i><small>".$chaine_coef.$eleve_coef."</small></i>)";
+											}
+					
+											// Si on a demandé à afficher les appréciations
+											// et si le prof a coché l'autorisation d'accès à l'appréciations
+											if(($tab_rel['rn_app']=="y") and ($eleve_display_app=="1")) {
+												echo " - Appréciation : ";
+												if ($eleve_app!="") {
+													echo $eleve_app;
+												}
+												else {
+													echo "-";
+												}
+											}
+					
+											if($tab_rel['rn_datedev']=="y"){
+												// Format: 2006-09-28 00:00:00
+												$tmpdate=explode(" ",$eleve_date);
+												$tmpdate=explode("-",$tmpdate[0]);
+												echo " (<i><small>$tmpdate[2]/$tmpdate[1]/$tmpdate[0]</small></i>)";
+											}
+			
+											// 20100626
+											if($tab_rel['rn_moy_min_max_classe']=='y') {
+												echo " (<i><small>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</small></i>)";
+											}
+											elseif($tab_rel['rn_moy_classe']=='y') {
+												echo " (classe:".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe'].")";
+											}
+			
+			
+											//====================================================================
+											// Après un tour avec affichage dans la boucle:
+											$tiret = "yes";
 										}
-				
-										if($tab_rel['rn_datedev']=="y"){
-											// Format: 2006-09-28 00:00:00
-											$tmpdate=explode(" ",$eleve_date);
-											$tmpdate=explode("-",$tmpdate[0]);
-											echo " (<i><small>$tmpdate[2]/$tmpdate[1]/$tmpdate[0]</small></i>)";
-										}
-		
-										// 20100626
-										if($tab_rel['rn_moy_min_max_classe']=='y') {
-											echo " (<i><small>".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['min']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe']."|".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['max']."</small></i>)";
-										}
-										elseif($tab_rel['rn_moy_classe']=='y') {
-											echo " (classe:".$tab_rel['eleve'][$i]['groupe'][$j]['devoir'][$m]['moy_classe'].")";
-										}
-		
-		
-										//====================================================================
-										// Après un tour avec affichage dans la boucle:
-										$tiret = "yes";
+	
+	
 									}
-
-
+	
+									$m++;
 								}
-
-								$m++;
 							}
-
 						}
 						else {
 							$m=0;
@@ -2720,7 +2741,8 @@ function releve_pdf($tab_rel,$i) {
 	
 						if((isset($tab_rel['eleve'][$i]['groupe'][$m]['existence_sous_conteneurs']))&&($tab_rel['eleve'][$i]['groupe'][$m]['existence_sous_conteneurs']=='y')) {
 							$chaine_notes="";
-	
+
+							$temoin_affichage_de_conteneur="n";
 							$temoin_conteneur=0;
 							foreach($tab_rel['eleve'][$i]['groupe'][$m]['id_cn'] as $tmp_id_cn => $tab_id_cn) {
 								// On parcourt les cahier de notes associés au groupe (si on n'a choisi une seule période, on ne fait qu'un tour dans cette boucle pour le groupe $m)
@@ -2733,10 +2755,15 @@ function releve_pdf($tab_rel,$i) {
 								$tmp_tab[]=$tmp_id_cn;
 								//$chaine_notes.="<u><b>Racine ($tmp_id_cn)&nbsp;:</b></u> \n";
 								//echo "\$retour_liste_notes_pdf=liste_notes_pdf(\$tab_rel,$i,$m,\$tmp_tab);<br >\n";
+								if($temoin_conteneur>0) {$chaine_notes.="\n";}
 								$retour_liste_notes_pdf=liste_notes_pdf($tab_rel,$i,$m,$tmp_tab);
 								if($retour_liste_notes_pdf!='') {
+									//$chaine_notes.="|A1:$tmp_id_cn|";
 									//$chaine_notes.="<u><b>Racine ($tmp_id_cn)&nbsp;:</b></u> \n";
 									$chaine_notes.=$retour_liste_notes_pdf;
+									//$chaine_notes.="|A2:$tmp_id_cn|";
+									//."($tmp_id_cn)"
+									$temoin_affichage_de_conteneur="y";
 									$temoin_conteneur++;
 								}
 	
@@ -2774,6 +2801,7 @@ function releve_pdf($tab_rel,$i) {
 											$chaine_notes.=": ";
 											if($use_cell_ajustee!="n") {$chaine_notes.="</u>";}
 											$chaine_notes.=$retour_liste_notes_pdf;
+											$temoin_affichage_de_conteneur="y";
 											$temoin_conteneur++;
 										}
 	
@@ -2784,6 +2812,11 @@ function releve_pdf($tab_rel,$i) {
 
 
 
+							}
+
+
+							if($temoin_affichage_de_conteneur!="y") {
+								//$chaine_notes.="|B:$tmp_id_cn|";
 								$k=0;
 								$kk=0;
 								$tiret = "no";
@@ -2911,6 +2944,7 @@ function releve_pdf($tab_rel,$i) {
 									}
 								}
 							}
+
 						}
 						else {
 							$chaine_notes="";
