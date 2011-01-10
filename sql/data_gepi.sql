@@ -938,3 +938,4 @@ INSERT INTO droits SET id='/mod_annees_anterieures/ajax_signaler_faute.php',admi
 INSERT INTO droits SET id='/eleves/ajax_modif_eleve.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Enregistrement des modifications élève',statut='';
 INSERT INTO droits SET id='/classes/ajouter_periode.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Classes: Ajouter des périodes',statut='';
 INSERT INTO droits SET id='/classes/supprimer_periode.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Classes: Supprimer des périodes',statut='';
+INSERT INTO droits VALUES ('/groupes/visu_mes_listes.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Accès aux listes d élèves', '');

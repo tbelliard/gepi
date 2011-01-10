@@ -45,12 +45,30 @@ if (!checkAccess()) {
 
 $id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 $id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;
+$periode_num=isset($_GET['periode_num']) ? $_GET['periode_num'] : NULL;
+
 $msg="";
 
-//echo "<!--\$id_classe=$id_classe-->\n";
-if($id_classe==""){
-	unset($id_classe);
+$id_groupe=preg_replace('/[^0-9]/','',$id_groupe);
+if((isset($id_groupe))&&($id_groupe=='')) {
+	unset($id_groupe);
+	//$msg.="Identifiant de groupe invalide.<br />\n";
 }
+$id_classe=preg_replace('/[^0-9]/','',$id_classe);
+if((isset($id_classe))&&($id_classe=='')) {
+	unset($id_classe);
+	//$msg.="Identifiant de classe invalide.<br />\n";
+}
+$periode_num=preg_replace('/[^0-9]/','',$periode_num);
+if((isset($periode_num))&&($periode_num=='')) {
+	unset($periode_num);
+	//$msg.="Numéro de période invalide.<br />\n";
+}
+
+//echo "<!--\$id_classe=$id_classe-->\n";
+//if($id_classe==""){
+//	unset($id_classe);
+//}
 
 if(isset($id_groupe)){
 
@@ -136,7 +154,7 @@ if($gepi_prof_suivi==""){
 
 <?php
 	if($msg!=""){
-		echo "<p align='center'>".$msg."</p>\n";
+		echo "<p style='color:red; text-align:center;'>".$msg."</p>\n";
 	}
 
 	//echo "<h2>Elèves de l'enseignement $enseignement</h2>\n";
@@ -156,12 +174,14 @@ if($gepi_prof_suivi==""){
 	if($id_groupe=="VIE_SCOLAIRE"){
         // Liste des CPE:
         //$sql="SELECT DISTINCT u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
-        $sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.email,jec.cpe_login FROM utilisateurs u,j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
+        $sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.email, jec.cpe_login FROM utilisateurs u, j_eleves_cpe jec,j_eleves_classes jecl WHERE jec.e_login=jecl.login AND jecl.id_classe='$id_classe' AND u.login=jec.cpe_login ORDER BY jec.cpe_login";
         $result_cpe=mysql_query($sql);
         if(mysql_num_rows($result_cpe)>0){
-			echo "<table border='0'>\n";
+			echo "<table class='boireaus' border='1'>\n";
+			$alt=1;
             while($lig_cpe=mysql_fetch_object($result_cpe)){
-                echo "<tr valign='top'><td>CPE:</td>\n";
+				$alt=$alt*(-1);
+                echo "<tr valign='top' class='lig$alt white_hover'><th>CPE:</th>\n";
                 echo "<td>";
                 /*
 				if($lig_cpe->email!=""){
@@ -178,15 +198,24 @@ if($gepi_prof_suivi==""){
 			echo "</table>\n";
         }
 
-
-		$sql="SELECT DISTINCT e.nom,e.prenom,e.email FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
+		if(isset($periode_num)) {
+			$sql="SELECT DISTINCT e.nom,e.prenom,e.email FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND jec.periode='$periode_num' ORDER BY e.nom,e.prenom";
+		}
+		else {
+			$sql="SELECT DISTINCT e.nom,e.prenom,e.email FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
+		}
 		$res_eleves=mysql_query($sql);
 		$nb_eleves=mysql_num_rows($res_eleves);
 
 		echo "<p>Effectif de la classe: $nb_eleves</p>\n";
 		if($nb_eleves>0){
-			echo "<p>";
+			//echo "<p>";
+			echo "<table class='boireaus' border='1'>\n";
+			$alt=1;
 			while($lig_eleve=mysql_fetch_object($res_eleves)){
+				$alt=$alt*(-1);
+                echo "<tr valign='top' class='lig$alt white_hover'>\n";
+				echo "<td>\n";
 				if($lig_eleve->email!=""){
 					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=[GEPI]")."'>";
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
@@ -196,19 +225,22 @@ if($gepi_prof_suivi==""){
 				else{
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
 				}
+				echo "</td>\n";
+				echo "</tr>\n";
 			}
-			echo "</p>\n";
+			//echo "</p>\n";
+			echo "</table>\n";
 		}
 	}
 	elseif(isset($id_classe)){
-		echo "<table border='0'>\n";
+		echo "<table class='boireaus' border='1'>\n";
 		$sql="SELECT jgp.login,u.nom,u.prenom,u.email FROM j_groupes_professeurs jgp,utilisateurs u WHERE jgp.id_groupe='$id_groupe' AND u.login=jgp.login";
 		//echo "$sql<br />";
 		$result_prof=mysql_query($sql);
-		echo "<tr valign='top'><td>Professeur";
+		echo "<tr valign='top'><th>Professeur";
 		if(mysql_num_rows($result_prof)>1){echo "s";}
-		echo ":</td>\n";
-		echo "<td>";
+		echo ":</th>\n";
+		echo "<td class='lig-1'>";
 		while($lig_prof=mysql_fetch_object($result_prof)){
 			/*
 			if($lig_prof->email!=""){
@@ -237,19 +269,33 @@ if($gepi_prof_suivi==""){
 
 
 		//$sql="SELECT DISTINCT e.nom,e.prenom FROM j_eleves_groupes jeg,eleves e WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' ORDER BY e.nom,e.prenom";
-		$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
+		if(isset($periode_num)) {
+			$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' AND jeg.periode=jec.periode AND jec.periode='$periode_num' ORDER BY e.nom,e.prenom";
+		}
+		else {
+			$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
+		}
 		$res_eleves=mysql_query($sql);
 		$nb_eleves=mysql_num_rows($res_eleves);
 
-		$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login ORDER BY e.nom,e.prenom";
+		if(isset($periode_num)) {
+			$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND jeg.periode=jec.periode AND jec.periode='$periode_num' ORDER BY e.nom,e.prenom";
+		}
+		else {
+			$sql="SELECT DISTINCT e.nom,e.prenom,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login ORDER BY e.nom,e.prenom";
+		}
 		$res_tous_eleves=mysql_query($sql);
 		$nb_tous_eleves=mysql_num_rows($res_tous_eleves);
 
 		echo "<p>Effectif de l'enseignement: $nb_eleves/$nb_tous_eleves</p>\n";
 		if($nb_eleves>0){
-			echo "<p>";
+			//echo "<p>";
+			echo "<table class='boireaus' border='1'>\n";
+			$alt=1;
 			while($lig_eleve=mysql_fetch_object($res_eleves)){
-
+				$alt=$alt*(-1);
+                echo "<tr valign='top' class='lig$alt white_hover'>\n";
+				echo "<td>\n";
 				if($lig_eleve->email!=""){
 					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=[GEPI]")."'>";
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
@@ -259,13 +305,20 @@ if($gepi_prof_suivi==""){
 				else{
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
 				}
-
+				echo "</td>\n";
+				echo "</tr>\n";
 			}
-			echo "</p>\n";
+			//echo "</p>\n";
+			echo "</table>\n";
 		}
 	}
 	else {
-		$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login";
+		if(isset($periode_num)) {
+			$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND jeg.periode=jec.periode AND jec.periode='$periode_num'";
+		}
+		else {
+			$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login";
+		}
 		if(isset($_GET['orderby'])){
 			if($_GET['orderby']=='nom'){
 				$orderby=" ORDER BY e.nom,e.prenom";
@@ -282,10 +335,12 @@ if($gepi_prof_suivi==""){
 		$nb_eleves=mysql_num_rows($res_eleves);
 		echo "<p>Effectif: $nb_eleves</p>\n";
 		if($nb_eleves>0){
-			echo "<table border='0'>\n";
-			echo "<tr><td><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom'>Elève</a></td><td><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=classe'>Classe</a></td></tr>\n";
+			echo "<table class='boireaus' border='1'>\n";
+			echo "<tr><th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom'>Elève</a></th><th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=classe'>Classe</a></th></tr>\n";
+			$alt=1;
 			while($lig_eleve=mysql_fetch_object($res_eleves)){
-				echo "<tr><td>";
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'><td>";
 				if($lig_eleve->email!=""){
 					echo "<a href='mailto:$lig_eleve->email?".urlencode("subject=[GEPI]")."'>";
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";

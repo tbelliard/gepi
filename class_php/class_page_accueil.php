@@ -1145,6 +1145,14 @@ class class_page_accueil {
 			  "Ce menu permet de télécharger ses listes avec tous les ".$this->gepiSettings['denomination_eleves']." au format CSV avec les champs CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS.");
 	}
 
+	if(($this->statutUtilisateur=='scolarite')||
+			($this->statutUtilisateur=='professeur')||
+			($this->statutUtilisateur=='cpe')){
+	  $this->creeNouveauItem("/groupes/visu_mes_listes.php",
+			  "Visualiser mes listes",
+			  "Ce menu permet de visualiser ses listes d'".$this->gepiSettings['denomination_eleves'].".");
+	}
+
 	$this->creeNouveauItem("/visualisation/index.php",
 			"Outils graphiques de visualisation",
 			"Visualisation graphique des résultats des ".$this->gepiSettings['denomination_eleves']." ou des classes, en croisant les données de multiples manières.");
