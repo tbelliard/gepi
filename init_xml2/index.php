@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 }
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
+	header("Location: ../logout.php?auto=1");
 	die();
 }
 
@@ -129,17 +129,17 @@ require_once("../lib/header.inc");
 				Le fichier <b>sts_emp_RNE_ANNEE.xml</b> doit avoir été fourni à l'étape précédente pour pouvoir être à nouveau lu lors de cette étape.</p>
 			</li>
 			<li>
-				<p><a href='prof_disc_classe_csv.php'>Procéder à la cinquième phase</a> d'affectation des matières à chaque professeur, d'affectation des professeurs dans chaque classe  et de définition des options suivies par les élèves.<br />
+				<p><a href='prof_disc_classe_csv.php?a=a<?php echo add_token_in_url();?>'>Procéder à la cinquième phase</a> d'affectation des matières à chaque professeur, d'affectation des professeurs dans chaque classe  et de définition des options suivies par les élèves.<br />
 				Le fichier <b>sts_emp_RNE_ANNEE.xml</b> doit avoir été fourni deux étapes auparavant pour pouvoir être à nouveau lu lors de cette étape.</p>
 			</li>
 			<li>
 				<p><a href='init_pp.php'>Procéder à la sixième phase</a>: Initialisation des professeurs principaux.</p>
 			</li>
 			<li>
-				<p><a href='clean_tables.php'>Procéder à la septième phase</a> de nettoyage des données : les données inutiles importées à partir des fichiers XML lors des différentes phases d'initialisation seront effacées !</p>
+				<p><a href='clean_tables.php?a=a<?php echo add_token_in_url();?>'>Procéder à la septième phase</a> de nettoyage des données : les données inutiles importées à partir des fichiers XML lors des différentes phases d'initialisation seront effacées !</p>
 			</li>
 			<li>
-				<p><a href='clean_temp.php'>Procéder à la phase de nettoyage des fichiers</a>: Supprimer les fichiers XML et CSV qui n'auraient pas été supprimés auparavant.</p>
+				<p><a href='clean_temp.php?a=a<?php echo add_token_in_url();?>'>Procéder à la phase de nettoyage des fichiers</a>: Supprimer les fichiers XML et CSV qui n'auraient pas été supprimés auparavant.</p>
 			</li>
 		</ul>
 	</li>
