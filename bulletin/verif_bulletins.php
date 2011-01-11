@@ -1106,15 +1106,19 @@ if (!(isset($id_classe))) {
 		//echo "</div>";
 	}
 
+	//echo "<input type='hidden' name='csrf_alea' id='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
+	echo add_token_field(true);
+
 	echo "<script type='text/javascript'>
 	// <![CDATA[
 	function envoi_mail(num) {
+		csrf_alea=document.getElementById('csrf_alea').value;
 		destinataire=document.getElementById('mail_'+num).value;
 		sujet_mail=document.getElementById('sujet_'+num).value;
 		message=document.getElementById('message_'+num).value;
 		//alert(message);
 		//new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+message,{method: 'get'});
-		new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message),{method: 'get'});
+		new Ajax.Updater($('mail_envoye_'+num),'envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
 	}
 	//]]>
 </script>\n";
