@@ -164,6 +164,10 @@
 	//}
 	//=================================
 
+	$rn_retour_ligne_defaut="y";
+	if((isset($_SESSION['pref_rn_retour_ligne']))&&(($_SESSION['pref_rn_retour_ligne']=='y')||($_SESSION['pref_rn_retour_ligne']=='n'))) {
+		$rn_retour_ligne_defaut=$_SESSION['pref_rn_retour_ligne'];
+	}
 
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
@@ -171,7 +175,9 @@
 	echo "</td>\n";
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		echo "<td>\n";
-		echo "<input type='checkbox' name='rn_retour_ligne[$i]' id='rn_retour_ligne_".$i."' size='2' value='y' checked />\n";
+		echo "<input type='checkbox' name='rn_retour_ligne[$i]' id='rn_retour_ligne_".$i."' size='2' value='y' ";
+		if($rn_retour_ligne_defaut=='y') {echo "checked ";}
+		echo "/>\n";
 		echo "</td>\n";
 	}
 	echo "<td>\n";
