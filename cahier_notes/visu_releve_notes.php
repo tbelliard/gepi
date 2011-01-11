@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -503,7 +503,7 @@ function releve_notes($current_eleve_login,$nb_periode,$anneed,$moisd,$jourd,$an
 	$larg_tab = 680;
 	$larg_col1 = 120;
 	$larg_col2 = $larg_tab - $larg_col1;
-	echo "<table class='tab_releve_note' summary='relevé de notes. Colonne 1 : Matière et enseignants. Colonne 2 : Notes etautres informations'>\n";
+	echo "<table class='tab_releve_note' summary='relevé de notes. Colonne 1 : Matière et enseignants. Colonne 2 : Notes et autres informations'>\n";
 		echo "<caption class='invisible no_print'>relevé de notes</caption>\n";
 		echo "<tr>\n";
 			//=================================
