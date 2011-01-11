@@ -153,7 +153,7 @@ elseif($valeur=='retenue') {
 	choix_heure2('heure_debut',$heure_debut,'');
 	
 	//pour infobulle
-	$texte="- 2 choix possible pour inscrire l'heure de début de la retenue<br />Le premier grace à la liste déroulante. Vous choisissez un créneau. Dans ce cas, c'est l'heure début de créenaux HH:MM qui sera pris en compte pour l'impression de la retenue.<br/>Dans l'autre cas, vous saisisssez l'heure à la place de '00:00' sous ce format.";
+	$texte="- 2 choix possibles pour inscrire l'heure de début de la retenue<br />Le premier grace à la liste déroulante. Vous choisissez un créneau. Dans ce cas, c'est l'heure début de crénaux HH:MM qui sera pris en compte pour l'impression de la retenue.<br/>Dans l'autre cas, vous saisissez l'heure à la place de '00:00' sous ce format.";
 	
 	echo "</td>\n";
 	echo "</tr>\n";
