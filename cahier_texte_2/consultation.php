@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -279,6 +279,15 @@ echo "<div class=\"centre_table\">\n";
 echo "</div>\n";
 echo "<hr />\n";
 
+// TEST: Est-ce qu'une période au moins est ouverte en saisie dans le cas élève?
+if($selected_eleve) {
+	$sql="SELECT * FROM periodes p, j_eleves_classes jec WHERE jec.id_classe=p.id_classe AND jec.login=''";
+
+
+	// Pour les élèves qui ont changé de classe, on risque des infos erronées si on se base sur la dernière période ouverte en saisie (si leur classe actuelle est fermée pour toutes les périodes et que l'ancienne classe est ouverte sur une période... on va récupérer les devoirs de l'autre classe)
+
+}
+
 // Modification Regis : mise en page par CSS des devoirs à faire si la matière n'est pas sélectionnée
 
 $test_cahier_texte = mysql_query("SELECT contenu FROM ct_entry WHERE (id_groupe='$id_groupe')");
@@ -303,14 +312,14 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
 	            "ct.date_ct = '$jour');";
 
         } elseif ($selected_eleve) {
-	        //$sql="SELECT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
-//                "jec.periode = '1' and " .
+			// Le DISTINCT est quand même utile parce que si plusieurs périodes sont ouvertes en saisie, on a une multiplication des retours par le nombre de périodes ouvertes en saisie
 	        $sql="SELECT DISTINCT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
                 "jeg.login = '" . $selected_eleve->login . "' and " .
                 "jeg.periode = p.num_periode and " .
+                "jec.periode = p.num_periode and " .
                 "p.verouiller = 'N' and " .
                 "p.id_classe = jec.id_classe and " .
                 "jec.login = '" . $selected_eleve->login ."' and " .
@@ -447,14 +456,15 @@ echo "<div class=\"centre_cont_texte\">\n";
           $jour = mktime(0, 0, 0, date('m',$today), (date('d',$today) + $i), date('Y',$today) );
         // On regarde pour chaque jour, s'il y a des devoirs dans à faire
           if ($selected_eleve) {
-// On détermine la période active, pour ne pas avoir de duplication des entrées
-//                "jec.periode = '1' and " .
+			// On détermine la période active, pour ne pas avoir de duplication des entrées
+			// Le DISTINCT est quand même utile parce que si plusieurs périodes sont ouvertes en saisie, on a une multiplication des retours par le nombre de périodes ouvertes en saisie
 	         $sql="SELECT DISTINCT ct.id_sequence, ct.contenu, g.id, g.description, ct.date_ct, ct.id_ct " .
                 "FROM ct_devoirs_entry ct, groupes g, j_eleves_groupes jeg, j_eleves_classes jec, periodes p WHERE (" .
                 "ct.id_groupe = jeg.id_groupe and " .
                 "g.id = jeg.id_groupe and " .
                 "jeg.login = '" . $selected_eleve->login . "' and " .
                 "jeg.periode = p.num_periode and " .
+                "jeg.periode = jec.periode and " .
                 "p.verouiller = 'N' and " .
                 "p.id_classe = jec.id_classe and " .
                 "jec.login = '" . $selected_eleve->login ."' and " .
