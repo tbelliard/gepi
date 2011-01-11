@@ -49,28 +49,35 @@ $periode_num=isset($_GET['periode_num']) ? $_GET['periode_num'] : NULL;
 
 $msg="";
 
-$id_groupe=preg_replace('/[^0-9]/','',$id_groupe);
-if((isset($id_groupe))&&($id_groupe=='')) {
-	unset($id_groupe);
-	//$msg.="Identifiant de groupe invalide.<br />\n";
-}
-$id_classe=preg_replace('/[^0-9]/','',$id_classe);
-if((isset($id_classe))&&($id_classe=='')) {
-	unset($id_classe);
-	//$msg.="Identifiant de classe invalide.<br />\n";
-}
-$periode_num=preg_replace('/[^0-9]/','',$periode_num);
-if((isset($periode_num))&&($periode_num=='')) {
-	unset($periode_num);
-	//$msg.="Numéro de période invalide.<br />\n";
+if((isset($id_groupe))&&($id_groupe!='VIE_SCOLAIRE')) {
+	$id_groupe=preg_replace('/[^0-9]/','',$id_groupe);
+	if(isset($id_groupe)) {
+		unset($id_groupe);
+		//$msg.="Identifiant de groupe invalide.<br />\n";
+	}
 }
 
+if(isset($id_classe)) {
+	$id_classe=preg_replace('/[^0-9]/','',$id_classe);
+	if($id_classe=='') {
+		unset($id_classe);
+		//$msg.="Identifiant de classe invalide.<br />\n";
+	}
+}
+
+if(isset($periode_num)) {
+	$periode_num=preg_replace('/[^0-9]/','',$periode_num);
+	if($periode_num=='') {
+		unset($periode_num);
+		//$msg.="Numéro de période invalide.<br />\n";
+	}
+}
 //echo "<!--\$id_classe=$id_classe-->\n";
 //if($id_classe==""){
 //	unset($id_classe);
 //}
 
-if(isset($id_groupe)){
+if(isset($id_groupe)) {
 
 	// A FAIRE: TESTER LE CARACTERE NUMERIQUE DE $id_groupe
 	if($id_groupe=="VIE_SCOLAIRE"){
@@ -108,7 +115,7 @@ if(isset($id_groupe)){
 		}
 	}
 }
-else{
+else {
 	//header("Location: ../logout.php?auto=1");
 	header("Location: ../accueil.php?msg=Aucun_groupe_choisi");
 	die();
@@ -128,10 +135,10 @@ if($gepi_prof_suivi==""){
 	//$enseignement=urldecode($_GET['enseignement']);
 	//$enseignement=rawurldecode($_GET['enseignement']);
 
-	if(isset($id_classe)){
+	if(isset($id_classe)) {
 		echo "<title>Elèves de l'enseignement ".htmlentities($enseignement)." en ".htmlentities($classe)."</title>\n";
 	}
-	else{
+	else {
 		echo "<title>Elèves de l'enseignement ".htmlentities($enseignement)."</title>\n";
 	}
 ?>

@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -1150,7 +1150,7 @@ class class_page_accueil {
 			($this->statutUtilisateur=='cpe')){
 	  $this->creeNouveauItem("/groupes/visu_mes_listes.php",
 			  "Visualiser mes listes",
-			  "Ce menu permet de visualiser ses listes d'".$this->gepiSettings['denomination_eleves'].".");
+			  "Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
 	}
 
 	$this->creeNouveauItem("/visualisation/index.php",
