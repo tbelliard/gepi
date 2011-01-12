@@ -853,9 +853,10 @@ if($etat_incident!='clos') {
 	
 						if(count($tab_alerte_classe)>0) {
 							$destinataires=get_destinataires_mail_alerte_discipline($tab_alerte_classe);
-							if($destinataires=="") {
-								$destinataires=getSettingValue("gepiAdminAdress");
-							}
+							// La liste des destinataires, admin inclus doivent être définis dans "Définition des destinataires d'alertes"
+							//if($destinataires=="") {
+							//	$destinataires=getSettingValue("gepiAdminAdress");
+							//}
 	
 							if($destinataires!="") {
 								$texte_mail=$texte_mail."\n\n"."Message: $msg";
