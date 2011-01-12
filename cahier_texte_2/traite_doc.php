@@ -2,7 +2,7 @@
 /*
  * @version: $Id: traite_doc.php 1360 2008-01-13 20:03:09Z jjocal $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -51,6 +51,12 @@ function creer_repertoire($path) {
 		@fputs($f, '<'.'?php $ok = true; ?'.'>');
 		@fclose($f);
 		include("$path/.test");
+        if($ok) {
+          if ($f = @fopen("$path/index.html", "w")) {
+            @fputs($f, '<script type="text/javascript">document.location.replace("../../login.php")</script>');
+            @fclose($f);
+          }
+        }
 	}
 	return $ok;
 }
