@@ -3566,19 +3566,19 @@ function nom_photo($_elenoet_ou_login,$repertoire="eleves",$arbo=1) {
 			$_elenoet_ou_login = mysql_result($query, 0,'login');
 		  }
 
-		  if(file_exists($chemin."../photos/eleves/$_elenoet_ou_login.jpg")) {
-				$photo=$chemin."../photos/eleves/$_elenoet_ou_login.jpg";
+		  if(file_exists($chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg")) {
+				$photo=$chemin."../photos/".$repertoire2."eleves/$_elenoet_ou_login.jpg";
 			}
 			else {
-				if(file_exists($chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
-					$photo=$chemin."../photos/eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
+				if(file_exists($chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg")) {
+					$photo=$chemin."../photos/".$repertoire2."eleves/".sprintf("%05d",$_elenoet_ou_login).".jpg";
 				} else {
 					for($i=0;$i<5;$i++){
 						if(substr($_elenoet_ou_login,$i,1)=="0"){
 							$test_photo=substr($_elenoet_ou_login,$i+1);
 							//if(file_exists($chemin."../photos/eleves/".$test_photo.".jpg")){
-							if(($test_photo!='')&&(file_exists($chemin."../photos/eleves/".$test_photo.".jpg"))) {
-								$photo=$chemin."../photos/eleves/".$test_photo.".jpg";
+							if(($test_photo!='')&&(file_exists($chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg"))) {
+								$photo=$chemin."../photos/".$repertoire2."eleves/".$test_photo.".jpg";
 								break;
 							}
 						}

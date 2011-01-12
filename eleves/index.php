@@ -70,8 +70,28 @@ if(isset($_SESSION['retour_apres_maj_sconet'])) {
 // En multisite, on ajoute le répertoire RNE
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	  // On récupère le RNE de l'établissement
-  $rep_photos='../photos/'.getSettingValue("gepiSchoolRne").'/eleves/';
-}else{
+	$rep_photos='../photos/'.getSettingValue("gepiSchoolRne").'/eleves/';
+
+	//============================================
+	// Pour le multisite
+	if(!file_exists($rep_photos)) {
+		//@mkdir($rep_photos);
+		$tmp_tab=explode("/",$rep_photos);
+		$chemin="";
+		for($loop=0;$loop<count($tmp_tab);$loop++) {
+			if($loop>0) {
+				$chemin.="/";
+			}
+			$chemin.=$tmp_tab[$loop];
+			if($tmp_tab[$loop]!='..') {
+				@mkdir($chemin);
+			}
+		}
+	}
+	//============================================
+
+}
+else {
   $rep_photos='../photos/eleves/';
 }
 
@@ -295,6 +315,7 @@ if (isset($action) and ($action == 'depot_photo') and $total_photo != 0)  {
 			} else {
 				$dest = $rep_photos;
 				$n = 0;
+				//$msg.="\$rep_photos=$rep_photos<br />";
 				if (!deplacer_fichier_upload($sav_photo['tmp_name'][$cpt_photo], $rep_photos.$quiestce[$cpt_photo].".jpg")) {
 					$msg.="Problème de transfert : le fichier n°$cpt_photo n'a pas pu être transféré sur le répertoire photos/eleves/<br />";
 				} else {
