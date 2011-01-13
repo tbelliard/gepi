@@ -51,7 +51,7 @@ $msg="";
 
 if((isset($id_groupe))&&($id_groupe!='VIE_SCOLAIRE')) {
 	$id_groupe=preg_replace('/[^0-9]/','',$id_groupe);
-	if(isset($id_groupe)) {
+	if($id_groupe=='') {
 		unset($id_groupe);
 		//$msg.="Identifiant de groupe invalide.<br />\n";
 	}

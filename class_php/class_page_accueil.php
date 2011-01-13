@@ -1112,6 +1112,14 @@ class class_page_accueil {
 			"Visualisation des équipes pédagogiques",
 			"Ceci vous permet de connaître tous les ".$this->gepiSettings['denomination_professeurs']." des classes dans lesquelles vous intervenez, ainsi que les compositions des groupes concernés.");
 
+	if(($this->statutUtilisateur=='scolarite')||
+			($this->statutUtilisateur=='professeur')||
+			($this->statutUtilisateur=='cpe')){
+	  $this->creeNouveauItem("/groupes/visu_mes_listes.php",
+			  "Visualisation de mes élèves",
+			  "Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
+	}
+
 	$this->creeNouveauItem("/eleves/visu_eleve.php",
 			"Consultation d'un ".$this->gepiSettings['denomination_eleve'],
 			"Ce menu vous permet de consulter dans une même page les informations concernant un ".$this->gepiSettings['denomination_eleve']." (enseignements suivis, bulletins, relevés de notes, ".$this->gepiSettings['denomination_responsables'].",...). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.");
@@ -1143,14 +1151,6 @@ class class_page_accueil {
 	  $this->creeNouveauItem("/groupes/mes_listes.php",
 			  "Exporter mes listes",
 			  "Ce menu permet de télécharger ses listes avec tous les ".$this->gepiSettings['denomination_eleves']." au format CSV avec les champs CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS.");
-	}
-
-	if(($this->statutUtilisateur=='scolarite')||
-			($this->statutUtilisateur=='professeur')||
-			($this->statutUtilisateur=='cpe')){
-	  $this->creeNouveauItem("/groupes/visu_mes_listes.php",
-			  "Visualiser mes listes",
-			  "Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
 	}
 
 	$this->creeNouveauItem("/visualisation/index.php",
