@@ -3184,7 +3184,11 @@ function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hau
 
 
 	// Partie texte:
-	$div.="<div";
+	//$div.="<div";
+	//==================
+	// 20110113
+	$div.="<div id='".$id."_contenu_corps'";
+	//==================
 	if($survol_close=="y"){
 		// On referme le DIV lorsque la souris quitte la zone de texte.
 		$div.=" onmouseout=\"cacher_div('$id');\"";

@@ -47,6 +47,8 @@ $id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 $id_classe=isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL;
 $periode_num=isset($_GET['periode_num']) ? $_GET['periode_num'] : NULL;
 
+$avec_details=isset($_GET['avec_details']) ? $_GET['avec_details'] : "n";
+
 $msg="";
 
 if((isset($id_groupe))&&($id_groupe!='VIE_SCOLAIRE')) {
@@ -155,6 +157,26 @@ if($gepi_prof_suivi==""){
 			echo "<link rel='stylesheet' type='text/css' href='$gepiPath/style_screen_ajout.css' />\n";
 		}
 	}
+
+	$posDiv_infobulle=0;
+	// $posDiv_infobulle permet de fixer la position horizontale initiale du Div.
+
+	$tabdiv_infobulle=array();
+	$tabid_infobulle=array();
+
+	// Choix de l'unité pour les dimensions des DIV: em, px,...
+	$unite_div_infobulle="em";
+	// Pour l'overflow dans les DIV d'aide, il vaut mieux laisser 'em'.
+
+	// Variable passée à 'ok' en fin de page via le /lib/footer.inc.php
+	echo "<script type='text/javascript'>
+		var temporisation_chargement='n';
+	</script>\n";
+
+	echo "<script type='text/javascript' src='$gepiPath/lib/brainjar_drag.js'></script>\n";
+	echo "<script type='text/javascript' src='$gepiPath/lib/position.js'></script>\n";
+
+
 ?>
 </head>
 <body>
@@ -171,6 +193,20 @@ if($gepi_prof_suivi==""){
 	else{
 		echo "<h2>Elèves de l'enseignement ".htmlentities($enseignement)."</h2>\n";
 	}
+
+	echo "<div class='noprint' style='float:right; width: 20px; height: 20px'><a href='";
+	echo $_SERVER['PHP_SELF']."?";
+	if($avec_details=='y') {echo "avec_details=n";} else {echo "avec_details=y";}
+	if(isset($id_groupe)) {echo "&amp;id_groupe=$id_groupe";}
+	if(isset($id_classe)) {echo "&amp;id_classe=$id_classe";}
+	if(isset($periode_num)) {echo "&amp;periode_num=$periode_num";}
+	echo "'>";
+	if($avec_details=='y') {echo "<img src='../images/icons/remove.png' width='16' height='16' alt='Sans détails' />";} else {echo "<img src='../images/icons/add.png' width='16' height='16' alt='Avec détails' />";}
+	echo "</a></div>";
+
+	$titre="Photo";
+	$texte="";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_photo_eleve',$titre,"",$texte,"",10,0,'y','y','n','n');
 
 	//echo "<p>Effectif de l'enseignement: ".$_GET['effectif']."</p>\n";
 	//echo "<p>".urldecode($_GET['chaine'])."</p>\n";
@@ -206,10 +242,12 @@ if($gepi_prof_suivi==""){
         }
 
 		if(isset($periode_num)) {
-			$sql="SELECT DISTINCT e.nom,e.prenom,e.email FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND jec.periode='$periode_num' ORDER BY e.nom,e.prenom";
+			//$sql="SELECT DISTINCT e.nom,e.prenom,e.email FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND jec.periode='$periode_num' ORDER BY e.nom,e.prenom";
+			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' AND jec.periode='$periode_num' ORDER BY e.nom,e.prenom";
 		}
 		else {
-			$sql="SELECT DISTINCT e.nom,e.prenom,e.email FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
+			//$sql="SELECT DISTINCT e.nom,e.prenom,e.email FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
+			$sql="SELECT DISTINCT e.* FROM eleves e, j_eleves_classes jec WHERE jec.login=e.login AND jec.id_classe='$id_classe' ORDER BY e.nom,e.prenom";
 		}
 		$res_eleves=mysql_query($sql);
 		$nb_eleves=mysql_num_rows($res_eleves);
@@ -233,6 +271,29 @@ if($gepi_prof_suivi==""){
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
 				}
 				echo "</td>\n";
+
+				if($avec_details=='y') {
+					if(getSettingValue('active_module_trombinoscopes')=='y') {
+						echo "<td>\n";
+						$_photo_eleve = nom_photo($lig_eleve->elenoet);
+						if($_photo_eleve!='') {
+							echo "<a href='#' onclick=\"document.getElementById('div_photo_eleve_contenu_corps').innerHTML='<div align=\'center\'><img src=\'$_photo_eleve\' width=\'150\' /></div>';afficher_div('div_photo_eleve','y',-100,20); return false;\"><img src='../images/icons/buddy.png' alt=\"$lig_eleve->nom $lig_eleve->prenom\"></a>\n";
+						}
+						else {
+							echo "&nbsp;";
+						}
+						echo "</td>\n";
+					}
+					echo "<td>\n";
+					if(acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+					}
+					else {
+						echo affiche_date_naissance($lig_eleve->naissance);
+					}
+					echo "</td>\n";
+				}
+
 				echo "</tr>\n";
 			}
 			//echo "</p>\n";
@@ -277,10 +338,12 @@ if($gepi_prof_suivi==""){
 
 		//$sql="SELECT DISTINCT e.nom,e.prenom FROM j_eleves_groupes jeg,eleves e WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' ORDER BY e.nom,e.prenom";
 		if(isset($periode_num)) {
-			$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' AND jeg.periode=jec.periode AND jec.periode='$periode_num' ORDER BY e.nom,e.prenom";
+			//$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' AND jeg.periode=jec.periode AND jec.periode='$periode_num' ORDER BY e.nom,e.prenom";
+			$sql="SELECT DISTINCT e.*,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' AND jeg.periode=jec.periode AND jec.periode='$periode_num' ORDER BY e.nom,e.prenom";
 		}
 		else {
-			$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
+			//$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
+			$sql="SELECT DISTINCT e.*,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND c.id='$id_classe' ORDER BY e.nom,e.prenom";
 		}
 		$res_eleves=mysql_query($sql);
 		$nb_eleves=mysql_num_rows($res_eleves);
@@ -313,6 +376,29 @@ if($gepi_prof_suivi==""){
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
 				}
 				echo "</td>\n";
+
+				if($avec_details=='y') {
+					if(getSettingValue('active_module_trombinoscopes')=='y') {
+						echo "<td>\n";
+						$_photo_eleve = nom_photo($lig_eleve->elenoet);
+						if($_photo_eleve!='') {
+							echo "<a href='#' onclick=\"document.getElementById('div_photo_eleve_contenu_corps').innerHTML='<div align=\'center\'><img src=\'$_photo_eleve\' width=\'150\' /></div>';afficher_div('div_photo_eleve','y',-100,20); return false;\"><img src='../images/icons/buddy.png' alt=\"$lig_eleve->nom $lig_eleve->prenom\"></a>\n";
+						}
+						else {
+							echo "&nbsp;";
+						}
+						echo "</td>\n";
+					}
+					echo "<td>\n";
+					if(acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+					}
+					else {
+						echo affiche_date_naissance($lig_eleve->naissance);
+					}
+					echo "</td>\n";
+				}
+
 				echo "</tr>\n";
 			}
 			//echo "</p>\n";
@@ -321,10 +407,12 @@ if($gepi_prof_suivi==""){
 	}
 	else {
 		if(isset($periode_num)) {
-			$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND jeg.periode=jec.periode AND jec.periode='$periode_num'";
+			//$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND jeg.periode=jec.periode AND jec.periode='$periode_num'";
+			$sql="SELECT DISTINCT e.*, c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login AND jeg.periode=jec.periode AND jec.periode='$periode_num'";
 		}
 		else {
-			$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login";
+			//$sql="SELECT DISTINCT e.nom,e.prenom,e.email,c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login";
+			$sql="SELECT DISTINCT e.*, c.classe FROM j_eleves_groupes jeg, eleves e, j_eleves_classes jec, j_groupes_classes jgc, classes c WHERE jeg.login=e.login AND jeg.id_groupe='$id_groupe' AND jgc.id_classe=c.id AND jgc.id_groupe=jeg.id_groupe AND jec.id_classe=c.id AND jec.login=e.login";
 		}
 		if(isset($_GET['orderby'])){
 			if($_GET['orderby']=='nom'){
@@ -343,7 +431,14 @@ if($gepi_prof_suivi==""){
 		echo "<p>Effectif: $nb_eleves</p>\n";
 		if($nb_eleves>0){
 			echo "<table class='boireaus' border='1'>\n";
-			echo "<tr><th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom'>Elève</a></th><th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=classe'>Classe</a></th></tr>\n";
+			echo "<tr><th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=nom'>Elève</a></th>\n";
+			echo "<th><a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;orderby=classe'>Classe</a></th>\n";
+			if($avec_details=='y') {
+				// Ajouter un test sur le trombino actif ou non
+				if(getSettingValue('active_module_trombinoscopes')=='y') {echo "<th>Photo</th>\n";}
+				echo "<th>Naissance</th>\n";
+			}
+			echo "</tr>\n";
 			$alt=1;
 			while($lig_eleve=mysql_fetch_object($res_eleves)){
 				$alt=$alt*(-1);
@@ -357,7 +452,32 @@ if($gepi_prof_suivi==""){
 				else{
 					echo "$lig_eleve->nom $lig_eleve->prenom<br />\n";
 				}
-				echo "</td><td>$lig_eleve->classe</td></tr>\n";
+				echo "</td>\n";
+				echo "<td>$lig_eleve->classe</td>\n";
+
+				if($avec_details=='y') {
+					if(getSettingValue('active_module_trombinoscopes')=='y') {
+						echo "<td>\n";
+						$_photo_eleve = nom_photo($lig_eleve->elenoet);
+						if($_photo_eleve!='') {
+							echo "<a href='#' onclick=\"document.getElementById('div_photo_eleve_contenu_corps').innerHTML='<div align=\'center\'><img src=\'$_photo_eleve\' width=\'150\' /></div>';afficher_div('div_photo_eleve','y',-100,20); return false;\"><img src='../images/icons/buddy.png' alt=\"$lig_eleve->nom $lig_eleve->prenom\"></a>\n";
+						}
+						else {
+							echo "&nbsp;";
+						}
+						echo "</td>\n";
+					}
+					echo "<td>\n";
+					if(acces('/eleves/visu_eleve.php',$_SESSION['statut'])) {
+						echo "<a href='../eleves/visu_eleve.php?ele_login=$lig_eleve->login&amp;cacher_header=y'>".affiche_date_naissance($lig_eleve->naissance)."</a>";
+					}
+					else {
+						echo affiche_date_naissance($lig_eleve->naissance);
+					}
+					echo "</td>\n";
+				}
+
+				echo "</tr>\n";
 			}
 			echo "</table>\n";
 		}
@@ -383,5 +503,8 @@ if($gepi_prof_suivi==""){
 <script language="JavaScript" type="text/javascript">
 	window.focus();
 </script>
-</body>
-</html>
+<!--/body>
+</html-->
+<?php
+	require("../lib/footer.inc.php");
+?>
