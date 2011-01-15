@@ -2,70 +2,52 @@
 
 
 /**
- * Base static class for performing query and update operations on the 'a_types' table.
+ * Base static class for performing query and update operations on the 'a_lieux' table.
  *
- * Liste des types d'absences possibles dans l'etablissement
+ * Lieu pour les types d'absence ou les saisies
  *
  * @package    propel.generator.gepi.om
  */
-abstract class BaseAbsenceEleveTypePeer {
+abstract class BaseAbsenceEleveLieuPeer {
 
 	/** the default database name for this class */
 	const DATABASE_NAME = 'gepi';
 
 	/** the table name for this class */
-	const TABLE_NAME = 'a_types';
+	const TABLE_NAME = 'a_lieux';
 
 	/** the related Propel class for this table */
-	const OM_CLASS = 'AbsenceEleveType';
+	const OM_CLASS = 'AbsenceEleveLieu';
 
 	/** A class that can be returned by this peer. */
-	const CLASS_DEFAULT = 'gepi.AbsenceEleveType';
+	const CLASS_DEFAULT = 'gepi.AbsenceEleveLieu';
 
 	/** the related TableMap class for this table */
-	const TM_CLASS = 'AbsenceEleveTypeTableMap';
+	const TM_CLASS = 'AbsenceEleveLieuTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 10;
+	const NUM_COLUMNS = 4;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** the column name for the ID field */
-	const ID = 'a_types.ID';
+	const ID = 'a_lieux.ID';
 
 	/** the column name for the NOM field */
-	const NOM = 'a_types.NOM';
-
-	/** the column name for the JUSTIFICATION_EXIGIBLE field */
-	const JUSTIFICATION_EXIGIBLE = 'a_types.JUSTIFICATION_EXIGIBLE';
-
-	/** the column name for the SOUS_RESPONSABILITE_ETABLISSEMENT field */
-	const SOUS_RESPONSABILITE_ETABLISSEMENT = 'a_types.SOUS_RESPONSABILITE_ETABLISSEMENT';
-
-	/** the column name for the MANQUEMENT_OBLIGATION_PRESENCE field */
-	const MANQUEMENT_OBLIGATION_PRESENCE = 'a_types.MANQUEMENT_OBLIGATION_PRESENCE';
-
-	/** the column name for the RETARD_BULLETIN field */
-	const RETARD_BULLETIN = 'a_types.RETARD_BULLETIN';
-
-	/** the column name for the TYPE_SAISIE field */
-	const TYPE_SAISIE = 'a_types.TYPE_SAISIE';
+	const NOM = 'a_lieux.NOM';
 
 	/** the column name for the COMMENTAIRE field */
-	const COMMENTAIRE = 'a_types.COMMENTAIRE';
-
-	/** the column name for the ID_LIEU field */
-	const ID_LIEU = 'a_types.ID_LIEU';
+	const COMMENTAIRE = 'a_lieux.COMMENTAIRE';
 
 	/** the column name for the SORTABLE_RANK field */
-	const SORTABLE_RANK = 'a_types.SORTABLE_RANK';
+	const SORTABLE_RANK = 'a_lieux.SORTABLE_RANK';
 
 	/**
-	 * An identiy map to hold any loaded instances of AbsenceEleveType objects.
+	 * An identiy map to hold any loaded instances of AbsenceEleveLieu objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
 	 * queries.
-	 * @var        array AbsenceEleveType[]
+	 * @var        array AbsenceEleveLieu[]
 	 */
 	public static $instances = array();
 
@@ -75,7 +57,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	/**
 	 * rank column
 	 */
-	const RANK_COL = 'a_types.SORTABLE_RANK';
+	const RANK_COL = 'a_lieux.SORTABLE_RANK';
 
 	/**
 	 * holds an array of fieldnames
@@ -84,12 +66,12 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'JustificationExigible', 'SousResponsabiliteEtablissement', 'ManquementObligationPresence', 'RetardBulletin', 'TypeSaisie', 'Commentaire', 'IdLieu', 'SortableRank', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'justificationExigible', 'sousResponsabiliteEtablissement', 'manquementObligationPresence', 'retardBulletin', 'typeSaisie', 'commentaire', 'idLieu', 'sortableRank', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::JUSTIFICATION_EXIGIBLE, self::SOUS_RESPONSABILITE_ETABLISSEMENT, self::MANQUEMENT_OBLIGATION_PRESENCE, self::RETARD_BULLETIN, self::TYPE_SAISIE, self::COMMENTAIRE, self::ID_LIEU, self::SORTABLE_RANK, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'JUSTIFICATION_EXIGIBLE', 'SOUS_RESPONSABILITE_ETABLISSEMENT', 'MANQUEMENT_OBLIGATION_PRESENCE', 'RETARD_BULLETIN', 'TYPE_SAISIE', 'COMMENTAIRE', 'ID_LIEU', 'SORTABLE_RANK', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'justification_exigible', 'sous_responsabilite_etablissement', 'manquement_obligation_presence', 'retard_bulletin', 'type_saisie', 'commentaire', 'id_lieu', 'sortable_rank', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'Commentaire', 'SortableRank', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'commentaire', 'sortableRank', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::COMMENTAIRE, self::SORTABLE_RANK, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'COMMENTAIRE', 'SORTABLE_RANK', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'commentaire', 'sortable_rank', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
 	/**
@@ -99,12 +81,12 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'JustificationExigible' => 2, 'SousResponsabiliteEtablissement' => 3, 'ManquementObligationPresence' => 4, 'RetardBulletin' => 5, 'TypeSaisie' => 6, 'Commentaire' => 7, 'IdLieu' => 8, 'SortableRank' => 9, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'justificationExigible' => 2, 'sousResponsabiliteEtablissement' => 3, 'manquementObligationPresence' => 4, 'retardBulletin' => 5, 'typeSaisie' => 6, 'commentaire' => 7, 'idLieu' => 8, 'sortableRank' => 9, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::JUSTIFICATION_EXIGIBLE => 2, self::SOUS_RESPONSABILITE_ETABLISSEMENT => 3, self::MANQUEMENT_OBLIGATION_PRESENCE => 4, self::RETARD_BULLETIN => 5, self::TYPE_SAISIE => 6, self::COMMENTAIRE => 7, self::ID_LIEU => 8, self::SORTABLE_RANK => 9, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'JUSTIFICATION_EXIGIBLE' => 2, 'SOUS_RESPONSABILITE_ETABLISSEMENT' => 3, 'MANQUEMENT_OBLIGATION_PRESENCE' => 4, 'RETARD_BULLETIN' => 5, 'TYPE_SAISIE' => 6, 'COMMENTAIRE' => 7, 'ID_LIEU' => 8, 'SORTABLE_RANK' => 9, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'justification_exigible' => 2, 'sous_responsabilite_etablissement' => 3, 'manquement_obligation_presence' => 4, 'retard_bulletin' => 5, 'type_saisie' => 6, 'commentaire' => 7, 'id_lieu' => 8, 'sortable_rank' => 9, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'Commentaire' => 2, 'SortableRank' => 3, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'sortableRank' => 3, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::COMMENTAIRE => 2, self::SORTABLE_RANK => 3, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'COMMENTAIRE' => 2, 'SORTABLE_RANK' => 3, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'sortable_rank' => 3, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
 	);
 
 	/**
@@ -153,12 +135,12 @@ abstract class BaseAbsenceEleveTypePeer {
 	 *		$c->addJoin(TablePeer::alias("alias1", TablePeer::PRIMARY_KEY_COLUMN), TablePeer::PRIMARY_KEY_COLUMN);
 	 * </code>
 	 * @param      string $alias The alias for the current table.
-	 * @param      string $column The column name for current table. (i.e. AbsenceEleveTypePeer::COLUMN_NAME).
+	 * @param      string $column The column name for current table. (i.e. AbsenceEleveLieuPeer::COLUMN_NAME).
 	 * @return     string
 	 */
 	public static function alias($alias, $column)
 	{
-		return str_replace(AbsenceEleveTypePeer::TABLE_NAME.'.', $alias.'.', $column);
+		return str_replace(AbsenceEleveLieuPeer::TABLE_NAME.'.', $alias.'.', $column);
 	}
 
 	/**
@@ -176,26 +158,14 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static function addSelectColumns(Criteria $criteria, $alias = null)
 	{
 		if (null === $alias) {
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::ID);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::NOM);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::SOUS_RESPONSABILITE_ETABLISSEMENT);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::MANQUEMENT_OBLIGATION_PRESENCE);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::RETARD_BULLETIN);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::TYPE_SAISIE);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::COMMENTAIRE);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::ID_LIEU);
-			$criteria->addSelectColumn(AbsenceEleveTypePeer::SORTABLE_RANK);
+			$criteria->addSelectColumn(AbsenceEleveLieuPeer::ID);
+			$criteria->addSelectColumn(AbsenceEleveLieuPeer::NOM);
+			$criteria->addSelectColumn(AbsenceEleveLieuPeer::COMMENTAIRE);
+			$criteria->addSelectColumn(AbsenceEleveLieuPeer::SORTABLE_RANK);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.NOM');
-			$criteria->addSelectColumn($alias . '.JUSTIFICATION_EXIGIBLE');
-			$criteria->addSelectColumn($alias . '.SOUS_RESPONSABILITE_ETABLISSEMENT');
-			$criteria->addSelectColumn($alias . '.MANQUEMENT_OBLIGATION_PRESENCE');
-			$criteria->addSelectColumn($alias . '.RETARD_BULLETIN');
-			$criteria->addSelectColumn($alias . '.TYPE_SAISIE');
 			$criteria->addSelectColumn($alias . '.COMMENTAIRE');
-			$criteria->addSelectColumn($alias . '.ID_LIEU');
 			$criteria->addSelectColumn($alias . '.SORTABLE_RANK');
 		}
 	}
@@ -216,21 +186,21 @@ abstract class BaseAbsenceEleveTypePeer {
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(AbsenceEleveTypePeer::TABLE_NAME);
+		$criteria->setPrimaryTableName(AbsenceEleveLieuPeer::TABLE_NAME);
 
 		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
 			$criteria->setDistinct();
 		}
 
 		if (!$criteria->hasSelectClause()) {
-			AbsenceEleveTypePeer::addSelectColumns($criteria);
+			AbsenceEleveLieuPeer::addSelectColumns($criteria);
 		}
 
 		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
 		$criteria->setDbName(self::DATABASE_NAME); // Set the correct dbName
 
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -248,7 +218,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
-	 * @return     AbsenceEleveType
+	 * @return     AbsenceEleveLieu
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
@@ -256,7 +226,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	{
 		$critcopy = clone $criteria;
 		$critcopy->setLimit(1);
-		$objects = AbsenceEleveTypePeer::doSelect($critcopy, $con);
+		$objects = AbsenceEleveLieuPeer::doSelect($critcopy, $con);
 		if ($objects) {
 			return $objects[0];
 		}
@@ -273,7 +243,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	 */
 	public static function doSelect(Criteria $criteria, PropelPDO $con = null)
 	{
-		return AbsenceEleveTypePeer::populateObjects(AbsenceEleveTypePeer::doSelectStmt($criteria, $con));
+		return AbsenceEleveLieuPeer::populateObjects(AbsenceEleveLieuPeer::doSelectStmt($criteria, $con));
 	}
 	/**
 	 * Prepares the Criteria object and uses the parent doSelect() method to execute a PDOStatement.
@@ -291,12 +261,12 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static function doSelectStmt(Criteria $criteria, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		if (!$criteria->hasSelectClause()) {
 			$criteria = clone $criteria;
-			AbsenceEleveTypePeer::addSelectColumns($criteria);
+			AbsenceEleveLieuPeer::addSelectColumns($criteria);
 		}
 
 		// Set the correct dbName
@@ -314,10 +284,10 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * to the cache in order to ensure that the same objects are always returned by doSelect*()
 	 * and retrieveByPK*() calls.
 	 *
-	 * @param      AbsenceEleveType $value A AbsenceEleveType object.
+	 * @param      AbsenceEleveLieu $value A AbsenceEleveLieu object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(AbsenceEleveType $obj, $key = null)
+	public static function addInstanceToPool(AbsenceEleveLieu $obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -335,18 +305,18 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * methods in your stub classes -- you may need to explicitly remove objects
 	 * from the cache in order to prevent returning objects that no longer exist.
 	 *
-	 * @param      mixed $value A AbsenceEleveType object or a primary key value.
+	 * @param      mixed $value A AbsenceEleveLieu object or a primary key value.
 	 */
 	public static function removeInstanceFromPool($value)
 	{
 		if (Propel::isInstancePoolingEnabled() && $value !== null) {
-			if (is_object($value) && $value instanceof AbsenceEleveType) {
+			if (is_object($value) && $value instanceof AbsenceEleveLieu) {
 				$key = (string) $value->getId();
 			} elseif (is_scalar($value)) {
 				// assume we've been passed a primary key
 				$key = (string) $value;
 			} else {
-				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or AbsenceEleveType object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
+				$e = new PropelException("Invalid value passed to removeInstanceFromPool().  Expected primary key or AbsenceEleveLieu object; got " . (is_object($value) ? get_class($value) . ' object.' : var_export($value,true)));
 				throw $e;
 			}
 
@@ -361,7 +331,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * a multi-column primary key, a serialize()d version of the primary key will be returned.
 	 *
 	 * @param      string $key The key (@see getPrimaryKeyHash()) for this instance.
-	 * @return     AbsenceEleveType Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
+	 * @return     AbsenceEleveLieu Found object or NULL if 1) no instance exists for specified key or 2) instance pooling has been disabled.
 	 * @see        getPrimaryKeyHash()
 	 */
 	public static function getInstanceFromPool($key)
@@ -385,17 +355,17 @@ abstract class BaseAbsenceEleveTypePeer {
 	}
 	
 	/**
-	 * Method to invalidate the instance pool of all tables related to a_types
+	 * Method to invalidate the instance pool of all tables related to a_lieux
 	 * by a foreign key with ON DELETE CASCADE
 	 */
 	public static function clearRelatedInstancePool()
 	{
-		// Invalidate objects in AbsenceEleveTypeStatutAutorisePeer instance pool, 
+		// Invalidate objects in AbsenceEleveTypePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-		AbsenceEleveTypeStatutAutorisePeer::clearInstancePool();
-		// Invalidate objects in AbsenceEleveTraitementPeer instance pool, 
+		AbsenceEleveTypePeer::clearInstancePool();
+		// Invalidate objects in AbsenceEleveSaisiePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-		AbsenceEleveTraitementPeer::clearInstancePool();
+		AbsenceEleveSaisiePeer::clearInstancePool();
 	}
 
 	/**
@@ -443,11 +413,11 @@ abstract class BaseAbsenceEleveTypePeer {
 		$results = array();
 	
 		// set the class once to avoid overhead in the loop
-		$cls = AbsenceEleveTypePeer::getOMClass(false);
+		$cls = AbsenceEleveLieuPeer::getOMClass(false);
 		// populate the object(s)
 		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key = AbsenceEleveTypePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj = AbsenceEleveTypePeer::getInstanceFromPool($key))) {
+			$key = AbsenceEleveLieuPeer::getPrimaryKeyHashFromRow($row, 0);
+			if (null !== ($obj = AbsenceEleveLieuPeer::getInstanceFromPool($key))) {
 				// We no longer rehydrate the object, since this can cause data loss.
 				// See http://www.propelorm.org/ticket/509
 				// $obj->hydrate($row, 0, true); // rehydrate
@@ -456,7 +426,7 @@ abstract class BaseAbsenceEleveTypePeer {
 				$obj = new $cls();
 				$obj->hydrate($row);
 				$results[] = $obj;
-				AbsenceEleveTypePeer::addInstanceToPool($obj, $key);
+				AbsenceEleveLieuPeer::addInstanceToPool($obj, $key);
 			} // if key exists
 		}
 		$stmt->closeCursor();
@@ -469,258 +439,24 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * @param      int $startcol The 0-based offset for reading from the resultset row.
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
-	 * @return     array (AbsenceEleveType object, last column rank)
+	 * @return     array (AbsenceEleveLieu object, last column rank)
 	 */
 	public static function populateObject($row, $startcol = 0)
 	{
-		$key = AbsenceEleveTypePeer::getPrimaryKeyHashFromRow($row, $startcol);
-		if (null !== ($obj = AbsenceEleveTypePeer::getInstanceFromPool($key))) {
+		$key = AbsenceEleveLieuPeer::getPrimaryKeyHashFromRow($row, $startcol);
+		if (null !== ($obj = AbsenceEleveLieuPeer::getInstanceFromPool($key))) {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + AbsenceEleveTypePeer::NUM_COLUMNS;
+			$col = $startcol + AbsenceEleveLieuPeer::NUM_COLUMNS;
 		} else {
-			$cls = AbsenceEleveTypePeer::OM_CLASS;
+			$cls = AbsenceEleveLieuPeer::OM_CLASS;
 			$obj = new $cls();
 			$col = $obj->hydrate($row, $startcol);
-			AbsenceEleveTypePeer::addInstanceToPool($obj, $key);
+			AbsenceEleveLieuPeer::addInstanceToPool($obj, $key);
 		}
 		return array($obj, $col);
 	}
-
-	/**
-	 * Returns the number of rows matching criteria, joining the related AbsenceEleveLieu table
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     int Number of matching rows.
-	 */
-	public static function doCountJoinAbsenceEleveLieu(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		// we're going to modify criteria, so copy it first
-		$criteria = clone $criteria;
-
-		// We need to set the primary table name, since in the case that there are no WHERE columns
-		// it will be impossible for the BasePeer::createSelectSql() method to determine which
-		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(AbsenceEleveTypePeer::TABLE_NAME);
-
-		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->setDistinct();
-		}
-
-		if (!$criteria->hasSelectClause()) {
-			AbsenceEleveTypePeer::addSelectColumns($criteria);
-		}
-		
-		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
-		// Set the correct dbName
-		$criteria->setDbName(self::DATABASE_NAME);
-
-		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-
-		$criteria->addJoin(AbsenceEleveTypePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
-
-		$stmt = BasePeer::doCount($criteria, $con);
-
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$count = (int) $row[0];
-		} else {
-			$count = 0; // no rows returned; we infer that means 0 matches.
-		}
-		$stmt->closeCursor();
-		return $count;
-	}
-
-
-	/**
-	 * Selects a collection of AbsenceEleveType objects pre-filled with their AbsenceEleveLieu objects.
-	 * @param      Criteria  $criteria
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of AbsenceEleveType objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function doSelectJoinAbsenceEleveLieu(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$criteria = clone $criteria;
-
-		// Set the correct dbName if it has not been overridden
-		if ($criteria->getDbName() == Propel::getDefaultDB()) {
-			$criteria->setDbName(self::DATABASE_NAME);
-		}
-
-		AbsenceEleveTypePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
-		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-
-		$criteria->addJoin(AbsenceEleveTypePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
-
-		$stmt = BasePeer::doSelect($criteria, $con);
-		$results = array();
-
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = AbsenceEleveTypePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = AbsenceEleveTypePeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://www.propelorm.org/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
-
-				$cls = AbsenceEleveTypePeer::getOMClass(false);
-
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				AbsenceEleveTypePeer::addInstanceToPool($obj1, $key1);
-			} // if $obj1 already loaded
-
-			$key2 = AbsenceEleveLieuPeer::getPrimaryKeyHashFromRow($row, $startcol);
-			if ($key2 !== null) {
-				$obj2 = AbsenceEleveLieuPeer::getInstanceFromPool($key2);
-				if (!$obj2) {
-
-					$cls = AbsenceEleveLieuPeer::getOMClass(false);
-
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol);
-					AbsenceEleveLieuPeer::addInstanceToPool($obj2, $key2);
-				} // if obj2 already loaded
-
-				// Add the $obj1 (AbsenceEleveType) to $obj2 (AbsenceEleveLieu)
-				$obj2->addAbsenceEleveType($obj1);
-
-			} // if joined row was not null
-
-			$results[] = $obj1;
-		}
-		$stmt->closeCursor();
-		return $results;
-	}
-
-
-	/**
-	 * Returns the number of rows matching criteria, joining all related tables
-	 *
-	 * @param      Criteria $criteria
-	 * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     int Number of matching rows.
-	 */
-	public static function doCountJoinAll(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		// we're going to modify criteria, so copy it first
-		$criteria = clone $criteria;
-
-		// We need to set the primary table name, since in the case that there are no WHERE columns
-		// it will be impossible for the BasePeer::createSelectSql() method to determine which
-		// tables go into the FROM clause.
-		$criteria->setPrimaryTableName(AbsenceEleveTypePeer::TABLE_NAME);
-
-		if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
-			$criteria->setDistinct();
-		}
-
-		if (!$criteria->hasSelectClause()) {
-			AbsenceEleveTypePeer::addSelectColumns($criteria);
-		}
-		
-		$criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
-		
-		// Set the correct dbName
-		$criteria->setDbName(self::DATABASE_NAME);
-
-		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
-		}
-
-		$criteria->addJoin(AbsenceEleveTypePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
-
-		$stmt = BasePeer::doCount($criteria, $con);
-
-		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$count = (int) $row[0];
-		} else {
-			$count = 0; // no rows returned; we infer that means 0 matches.
-		}
-		$stmt->closeCursor();
-		return $count;
-	}
-
-	/**
-	 * Selects a collection of AbsenceEleveType objects pre-filled with all related objects.
-	 *
-	 * @param      Criteria  $criteria
-	 * @param      PropelPDO $con
-	 * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
-	 * @return     array Array of AbsenceEleveType objects.
-	 * @throws     PropelException Any exceptions caught during processing will be
-	 *		 rethrown wrapped into a PropelException.
-	 */
-	public static function doSelectJoinAll(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
-	{
-		$criteria = clone $criteria;
-
-		// Set the correct dbName if it has not been overridden
-		if ($criteria->getDbName() == Propel::getDefaultDB()) {
-			$criteria->setDbName(self::DATABASE_NAME);
-		}
-
-		AbsenceEleveTypePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
-
-		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
-
-		$criteria->addJoin(AbsenceEleveTypePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
-
-		$stmt = BasePeer::doSelect($criteria, $con);
-		$results = array();
-
-		while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
-			$key1 = AbsenceEleveTypePeer::getPrimaryKeyHashFromRow($row, 0);
-			if (null !== ($obj1 = AbsenceEleveTypePeer::getInstanceFromPool($key1))) {
-				// We no longer rehydrate the object, since this can cause data loss.
-				// See http://www.propelorm.org/ticket/509
-				// $obj1->hydrate($row, 0, true); // rehydrate
-			} else {
-				$cls = AbsenceEleveTypePeer::getOMClass(false);
-
-				$obj1 = new $cls();
-				$obj1->hydrate($row);
-				AbsenceEleveTypePeer::addInstanceToPool($obj1, $key1);
-			} // if obj1 already loaded
-
-			// Add objects for joined AbsenceEleveLieu rows
-
-			$key2 = AbsenceEleveLieuPeer::getPrimaryKeyHashFromRow($row, $startcol2);
-			if ($key2 !== null) {
-				$obj2 = AbsenceEleveLieuPeer::getInstanceFromPool($key2);
-				if (!$obj2) {
-
-					$cls = AbsenceEleveLieuPeer::getOMClass(false);
-
-					$obj2 = new $cls();
-					$obj2->hydrate($row, $startcol2);
-					AbsenceEleveLieuPeer::addInstanceToPool($obj2, $key2);
-				} // if obj2 loaded
-
-				// Add the $obj1 (AbsenceEleveType) to the collection in $obj2 (AbsenceEleveLieu)
-				$obj2->addAbsenceEleveType($obj1);
-			} // if joined row not null
-
-			$results[] = $obj1;
-		}
-		$stmt->closeCursor();
-		return $results;
-	}
-
 	/**
 	 * Returns the TableMap related to this peer.
 	 * This method is not needed for general use but a specific application could have a need.
@@ -738,10 +474,10 @@ abstract class BaseAbsenceEleveTypePeer {
 	 */
 	public static function buildTableMap()
 	{
-	  $dbMap = Propel::getDatabaseMap(BaseAbsenceEleveTypePeer::DATABASE_NAME);
-	  if (!$dbMap->hasTable(BaseAbsenceEleveTypePeer::TABLE_NAME))
+	  $dbMap = Propel::getDatabaseMap(BaseAbsenceEleveLieuPeer::DATABASE_NAME);
+	  if (!$dbMap->hasTable(BaseAbsenceEleveLieuPeer::TABLE_NAME))
 	  {
-	    $dbMap->addTableObject(new AbsenceEleveTypeTableMap());
+	    $dbMap->addTableObject(new AbsenceEleveLieuTableMap());
 	  }
 	}
 
@@ -758,13 +494,13 @@ abstract class BaseAbsenceEleveTypePeer {
 	 */
 	public static function getOMClass($withPrefix = true)
 	{
-		return $withPrefix ? AbsenceEleveTypePeer::CLASS_DEFAULT : AbsenceEleveTypePeer::OM_CLASS;
+		return $withPrefix ? AbsenceEleveLieuPeer::CLASS_DEFAULT : AbsenceEleveLieuPeer::OM_CLASS;
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a AbsenceEleveType or Criteria object.
+	 * Method perform an INSERT on the database, given a AbsenceEleveLieu or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or AbsenceEleveType object containing data that is used to create the INSERT statement.
+	 * @param      mixed $values Criteria or AbsenceEleveLieu object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
 	 * @return     mixed The new primary key.
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -773,17 +509,17 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static function doInsert($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 		} else {
-			$criteria = $values->buildCriteria(); // build Criteria from AbsenceEleveType object
+			$criteria = $values->buildCriteria(); // build Criteria from AbsenceEleveLieu object
 		}
 
-		if ($criteria->containsKey(AbsenceEleveTypePeer::ID) && $criteria->keyContainsValue(AbsenceEleveTypePeer::ID) ) {
-			throw new PropelException('Cannot insert a value for auto-increment primary key ('.AbsenceEleveTypePeer::ID.')');
+		if ($criteria->containsKey(AbsenceEleveLieuPeer::ID) && $criteria->keyContainsValue(AbsenceEleveLieuPeer::ID) ) {
+			throw new PropelException('Cannot insert a value for auto-increment primary key ('.AbsenceEleveLieuPeer::ID.')');
 		}
 
 
@@ -805,9 +541,9 @@ abstract class BaseAbsenceEleveTypePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a AbsenceEleveType or Criteria object.
+	 * Method perform an UPDATE on the database, given a AbsenceEleveLieu or Criteria object.
 	 *
-	 * @param      mixed $values Criteria or AbsenceEleveType object containing data that is used to create the UPDATE statement.
+	 * @param      mixed $values Criteria or AbsenceEleveLieu object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 * @throws     PropelException Any exceptions caught during processing will be
@@ -816,7 +552,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static function doUpdate($values, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		$selectCriteria = new Criteria(self::DATABASE_NAME);
@@ -824,15 +560,15 @@ abstract class BaseAbsenceEleveTypePeer {
 		if ($values instanceof Criteria) {
 			$criteria = clone $values; // rename for clarity
 
-			$comparison = $criteria->getComparison(AbsenceEleveTypePeer::ID);
-			$value = $criteria->remove(AbsenceEleveTypePeer::ID);
+			$comparison = $criteria->getComparison(AbsenceEleveLieuPeer::ID);
+			$value = $criteria->remove(AbsenceEleveLieuPeer::ID);
 			if ($value) {
-				$selectCriteria->add(AbsenceEleveTypePeer::ID, $value, $comparison);
+				$selectCriteria->add(AbsenceEleveLieuPeer::ID, $value, $comparison);
 			} else {
-				$selectCriteria->setPrimaryTableName(AbsenceEleveTypePeer::TABLE_NAME);
+				$selectCriteria->setPrimaryTableName(AbsenceEleveLieuPeer::TABLE_NAME);
 			}
 
-		} else { // $values is AbsenceEleveType object
+		} else { // $values is AbsenceEleveLieu object
 			$criteria = $values->buildCriteria(); // gets full criteria
 			$selectCriteria = $values->buildPkeyCriteria(); // gets criteria w/ primary key(s)
 		}
@@ -844,28 +580,27 @@ abstract class BaseAbsenceEleveTypePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the a_types table.
+	 * Method to DELETE all rows from the a_lieux table.
 	 *
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
 	public static function doDeleteAll($con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 		$affectedRows = 0; // initialize var to track total num of affected rows
 		try {
 			// use transaction because $criteria could contain info
 			// for more than one table or we could emulating ON DELETE CASCADE, etc.
 			$con->beginTransaction();
-			$affectedRows += AbsenceEleveTypePeer::doOnDeleteCascade(new Criteria(AbsenceEleveTypePeer::DATABASE_NAME), $con);
-			AbsenceEleveTypePeer::doOnDeleteSetNull(new Criteria(AbsenceEleveTypePeer::DATABASE_NAME), $con);
-			$affectedRows += BasePeer::doDeleteAll(AbsenceEleveTypePeer::TABLE_NAME, $con, AbsenceEleveTypePeer::DATABASE_NAME);
+			AbsenceEleveLieuPeer::doOnDeleteSetNull(new Criteria(AbsenceEleveLieuPeer::DATABASE_NAME), $con);
+			$affectedRows += BasePeer::doDeleteAll(AbsenceEleveLieuPeer::TABLE_NAME, $con, AbsenceEleveLieuPeer::DATABASE_NAME);
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
-			AbsenceEleveTypePeer::clearInstancePool();
-			AbsenceEleveTypePeer::clearRelatedInstancePool();
+			AbsenceEleveLieuPeer::clearInstancePool();
+			AbsenceEleveLieuPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
@@ -875,9 +610,9 @@ abstract class BaseAbsenceEleveTypePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a AbsenceEleveType or Criteria object OR a primary key value.
+	 * Method perform a DELETE on the database, given a AbsenceEleveLieu or Criteria object OR a primary key value.
 	 *
-	 * @param      mixed $values Criteria or AbsenceEleveType object or primary key or array of primary keys
+	 * @param      mixed $values Criteria or AbsenceEleveLieu object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int 	The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
@@ -888,18 +623,18 @@ abstract class BaseAbsenceEleveTypePeer {
 	 public static function doDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 
 		if ($values instanceof Criteria) {
 			// rename for clarity
 			$criteria = clone $values;
-		} elseif ($values instanceof AbsenceEleveType) { // it's a model object
+		} elseif ($values instanceof AbsenceEleveLieu) { // it's a model object
 			// create criteria based on pk values
 			$criteria = $values->buildPkeyCriteria();
 		} else { // it's a primary key, or an array of pks
 			$criteria = new Criteria(self::DATABASE_NAME);
-			$criteria->add(AbsenceEleveTypePeer::ID, (array) $values, Criteria::IN);
+			$criteria->add(AbsenceEleveLieuPeer::ID, (array) $values, Criteria::IN);
 		}
 
 		// Set the correct dbName
@@ -914,65 +649,29 @@ abstract class BaseAbsenceEleveTypePeer {
 			
 			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
 			$c = clone $criteria;
-			$affectedRows += AbsenceEleveTypePeer::doOnDeleteCascade($c, $con);
-			
-			// cloning the Criteria in case it's modified by doSelect() or doSelectStmt()
-			$c = clone $criteria;
-			AbsenceEleveTypePeer::doOnDeleteSetNull($c, $con);
+			AbsenceEleveLieuPeer::doOnDeleteSetNull($c, $con);
 			
 			// Because this db requires some delete cascade/set null emulation, we have to
 			// clear the cached instance *after* the emulation has happened (since
 			// instances get re-added by the select statement contained therein).
 			if ($values instanceof Criteria) {
-				AbsenceEleveTypePeer::clearInstancePool();
-			} elseif ($values instanceof AbsenceEleveType) { // it's a model object
-				AbsenceEleveTypePeer::removeInstanceFromPool($values);
+				AbsenceEleveLieuPeer::clearInstancePool();
+			} elseif ($values instanceof AbsenceEleveLieu) { // it's a model object
+				AbsenceEleveLieuPeer::removeInstanceFromPool($values);
 			} else { // it's a primary key, or an array of pks
 				foreach ((array) $values as $singleval) {
-					AbsenceEleveTypePeer::removeInstanceFromPool($singleval);
+					AbsenceEleveLieuPeer::removeInstanceFromPool($singleval);
 				}
 			}
 			
 			$affectedRows += BasePeer::doDelete($criteria, $con);
-			AbsenceEleveTypePeer::clearRelatedInstancePool();
+			AbsenceEleveLieuPeer::clearRelatedInstancePool();
 			$con->commit();
 			return $affectedRows;
 		} catch (PropelException $e) {
 			$con->rollBack();
 			throw $e;
 		}
-	}
-
-	/**
-	 * This is a method for emulating ON DELETE CASCADE for DBs that don't support this
-	 * feature (like MySQL or SQLite).
-	 *
-	 * This method is not very speedy because it must perform a query first to get
-	 * the implicated records and then perform the deletes by calling those Peer classes.
-	 *
-	 * This method should be used within a transaction if possible.
-	 *
-	 * @param      Criteria $criteria
-	 * @param      PropelPDO $con
-	 * @return     int The number of affected rows (if supported by underlying database driver).
-	 */
-	protected static function doOnDeleteCascade(Criteria $criteria, PropelPDO $con)
-	{
-		// initialize var to track total num of affected rows
-		$affectedRows = 0;
-
-		// first find the objects that are implicated by the $criteria
-		$objects = AbsenceEleveTypePeer::doSelect($criteria, $con);
-		foreach ($objects as $obj) {
-
-
-			// delete related AbsenceEleveTypeStatutAutorise objects
-			$criteria = new Criteria(AbsenceEleveTypeStatutAutorisePeer::DATABASE_NAME);
-			
-			$criteria->add(AbsenceEleveTypeStatutAutorisePeer::ID_A_TYPE, $obj->getId());
-			$affectedRows += AbsenceEleveTypeStatutAutorisePeer::doDelete($criteria, $con);
-		}
-		return $affectedRows;
 	}
 
 	/**
@@ -992,14 +691,22 @@ abstract class BaseAbsenceEleveTypePeer {
 	{
 
 		// first find the objects that are implicated by the $criteria
-		$objects = AbsenceEleveTypePeer::doSelect($criteria, $con);
+		$objects = AbsenceEleveLieuPeer::doSelect($criteria, $con);
 		foreach ($objects as $obj) {
 
-			// set fkey col in related AbsenceEleveTraitement rows to NULL
-			$selectCriteria = new Criteria(AbsenceEleveTypePeer::DATABASE_NAME);
-			$updateValues = new Criteria(AbsenceEleveTypePeer::DATABASE_NAME);
-			$selectCriteria->add(AbsenceEleveTraitementPeer::A_TYPE_ID, $obj->getId());
-			$updateValues->add(AbsenceEleveTraitementPeer::A_TYPE_ID, null);
+			// set fkey col in related AbsenceEleveType rows to NULL
+			$selectCriteria = new Criteria(AbsenceEleveLieuPeer::DATABASE_NAME);
+			$updateValues = new Criteria(AbsenceEleveLieuPeer::DATABASE_NAME);
+			$selectCriteria->add(AbsenceEleveTypePeer::ID_LIEU, $obj->getId());
+			$updateValues->add(AbsenceEleveTypePeer::ID_LIEU, null);
+
+			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
+
+			// set fkey col in related AbsenceEleveSaisie rows to NULL
+			$selectCriteria = new Criteria(AbsenceEleveLieuPeer::DATABASE_NAME);
+			$updateValues = new Criteria(AbsenceEleveLieuPeer::DATABASE_NAME);
+			$selectCriteria->add(AbsenceEleveSaisiePeer::ID_LIEU, $obj->getId());
+			$updateValues->add(AbsenceEleveSaisiePeer::ID_LIEU, null);
 
 			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 
@@ -1007,24 +714,24 @@ abstract class BaseAbsenceEleveTypePeer {
 	}
 
 	/**
-	 * Validates all modified columns of given AbsenceEleveType object.
+	 * Validates all modified columns of given AbsenceEleveLieu object.
 	 * If parameter $columns is either a single column name or an array of column names
 	 * than only those columns are validated.
 	 *
 	 * NOTICE: This does not apply to primary or foreign keys for now.
 	 *
-	 * @param      AbsenceEleveType $obj The object to validate.
+	 * @param      AbsenceEleveLieu $obj The object to validate.
 	 * @param      mixed $cols Column name or array of column names.
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(AbsenceEleveType $obj, $cols = null)
+	public static function doValidate(AbsenceEleveLieu $obj, $cols = null)
 	{
 		$columns = array();
 
 		if ($cols) {
-			$dbMap = Propel::getDatabaseMap(AbsenceEleveTypePeer::DATABASE_NAME);
-			$tableMap = $dbMap->getTable(AbsenceEleveTypePeer::TABLE_NAME);
+			$dbMap = Propel::getDatabaseMap(AbsenceEleveLieuPeer::DATABASE_NAME);
+			$tableMap = $dbMap->getTable(AbsenceEleveLieuPeer::TABLE_NAME);
 
 			if (! is_array($cols)) {
 				$cols = array($cols);
@@ -1040,7 +747,7 @@ abstract class BaseAbsenceEleveTypePeer {
 
 		}
 
-		return BasePeer::doValidate(AbsenceEleveTypePeer::DATABASE_NAME, AbsenceEleveTypePeer::TABLE_NAME, $columns);
+		return BasePeer::doValidate(AbsenceEleveLieuPeer::DATABASE_NAME, AbsenceEleveLieuPeer::TABLE_NAME, $columns);
 	}
 
 	/**
@@ -1048,23 +755,23 @@ abstract class BaseAbsenceEleveTypePeer {
 	 *
 	 * @param      int $pk the primary key.
 	 * @param      PropelPDO $con the connection to use
-	 * @return     AbsenceEleveType
+	 * @return     AbsenceEleveLieu
 	 */
 	public static function retrieveByPK($pk, PropelPDO $con = null)
 	{
 
-		if (null !== ($obj = AbsenceEleveTypePeer::getInstanceFromPool((string) $pk))) {
+		if (null !== ($obj = AbsenceEleveLieuPeer::getInstanceFromPool((string) $pk))) {
 			return $obj;
 		}
 
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria = new Criteria(AbsenceEleveTypePeer::DATABASE_NAME);
-		$criteria->add(AbsenceEleveTypePeer::ID, $pk);
+		$criteria = new Criteria(AbsenceEleveLieuPeer::DATABASE_NAME);
+		$criteria->add(AbsenceEleveLieuPeer::ID, $pk);
 
-		$v = AbsenceEleveTypePeer::doSelect($criteria, $con);
+		$v = AbsenceEleveLieuPeer::doSelect($criteria, $con);
 
 		return !empty($v) > 0 ? $v[0] : null;
 	}
@@ -1080,16 +787,16 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static function retrieveByPKs($pks, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
 		$objs = null;
 		if (empty($pks)) {
 			$objs = array();
 		} else {
-			$criteria = new Criteria(AbsenceEleveTypePeer::DATABASE_NAME);
-			$criteria->add(AbsenceEleveTypePeer::ID, $pks, Criteria::IN);
-			$objs = AbsenceEleveTypePeer::doSelect($criteria, $con);
+			$criteria = new Criteria(AbsenceEleveLieuPeer::DATABASE_NAME);
+			$criteria->add(AbsenceEleveLieuPeer::ID, $pks, Criteria::IN);
+			$objs = AbsenceEleveLieuPeer::doSelect($criteria, $con);
 		}
 		return $objs;
 	}
@@ -1106,12 +813,12 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static function getMaxRank(PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME);
 		}
 		// shift the objects with a position lower than the one of object
 		$c = new Criteria();
-		$c->addSelectColumn('MAX(' . AbsenceEleveTypePeer::RANK_COL . ')');
-		$stmt = AbsenceEleveTypePeer::doSelectStmt($c, $con);
+		$c->addSelectColumn('MAX(' . AbsenceEleveLieuPeer::RANK_COL . ')');
+		$stmt = AbsenceEleveLieuPeer::doSelectStmt($c, $con);
 		
 		return $stmt->fetchColumn();
 	}
@@ -1122,18 +829,18 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * @param     integer   $rank rank
 	 * @param     PropelPDO $con optional connection
 	 *
-	 * @return AbsenceEleveType
+	 * @return AbsenceEleveLieu
 	 */
 	public static function retrieveByRank($rank, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME);
 		}
 	
 		$c = new Criteria;
-		$c->add(AbsenceEleveTypePeer::RANK_COL, $rank);
+		$c->add(AbsenceEleveLieuPeer::RANK_COL, $rank);
 		
-		return AbsenceEleveTypePeer::doSelectOne($c, $con);
+		return AbsenceEleveLieuPeer::doSelectOne($c, $con);
 	}
 	
 	/**
@@ -1149,13 +856,13 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static function reorder(array $order, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME);
 		}
 		
 		$con->beginTransaction();
 		try {
 			$ids = array_keys($order);
-			$objects = AbsenceEleveTypePeer::retrieveByPKs($ids);
+			$objects = AbsenceEleveLieuPeer::retrieveByPKs($ids);
 			foreach ($objects as $object) {
 				$pk = $object->getPrimaryKey();
 				if ($object->getSortableRank() != $order[$pk]) {
@@ -1184,7 +891,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static function doSelectOrderByRank(Criteria $criteria = null, $order = Criteria::ASC, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME);
 		}
 	
 		if ($criteria === null) {
@@ -1196,12 +903,12 @@ abstract class BaseAbsenceEleveTypePeer {
 		$criteria->clearOrderByColumns();
 	
 		if ($order == Criteria::ASC) {
-			$criteria->addAscendingOrderByColumn(AbsenceEleveTypePeer::RANK_COL);
+			$criteria->addAscendingOrderByColumn(AbsenceEleveLieuPeer::RANK_COL);
 		} else {
-			$criteria->addDescendingOrderByColumn(AbsenceEleveTypePeer::RANK_COL);
+			$criteria->addDescendingOrderByColumn(AbsenceEleveLieuPeer::RANK_COL);
 		}
 	
-		return AbsenceEleveTypePeer::doSelect($criteria, $con);
+		return AbsenceEleveLieuPeer::doSelect($criteria, $con);
 	}
 	
 	/**
@@ -1216,26 +923,26 @@ abstract class BaseAbsenceEleveTypePeer {
 	public static function shiftRank($delta, $first, $last = null, PropelPDO $con = null)
 	{
 		if ($con === null) {
-			$con = Propel::getConnection(AbsenceEleveTypePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+			$con = Propel::getConnection(AbsenceEleveLieuPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
 		}
 	
-		$whereCriteria = new Criteria(AbsenceEleveTypePeer::DATABASE_NAME);
-		$criterion = $whereCriteria->getNewCriterion(AbsenceEleveTypePeer::RANK_COL, $first, Criteria::GREATER_EQUAL);
+		$whereCriteria = new Criteria(AbsenceEleveLieuPeer::DATABASE_NAME);
+		$criterion = $whereCriteria->getNewCriterion(AbsenceEleveLieuPeer::RANK_COL, $first, Criteria::GREATER_EQUAL);
 		if (null !== $last) {
-			$criterion->addAnd($whereCriteria->getNewCriterion(AbsenceEleveTypePeer::RANK_COL, $last, Criteria::LESS_EQUAL));
+			$criterion->addAnd($whereCriteria->getNewCriterion(AbsenceEleveLieuPeer::RANK_COL, $last, Criteria::LESS_EQUAL));
 		}
 		$whereCriteria->add($criterion);
 	
-		$valuesCriteria = new Criteria(AbsenceEleveTypePeer::DATABASE_NAME);
-		$valuesCriteria->add(AbsenceEleveTypePeer::RANK_COL, array('raw' => AbsenceEleveTypePeer::RANK_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
+		$valuesCriteria = new Criteria(AbsenceEleveLieuPeer::DATABASE_NAME);
+		$valuesCriteria->add(AbsenceEleveLieuPeer::RANK_COL, array('raw' => AbsenceEleveLieuPeer::RANK_COL . ' + ?', 'value' => $delta), Criteria::CUSTOM_EQUAL);
 	
 		BasePeer::doUpdate($whereCriteria, $valuesCriteria, $con);
-		AbsenceEleveTypePeer::clearInstancePool();
+		AbsenceEleveLieuPeer::clearInstancePool();
 	}
 
-} // BaseAbsenceEleveTypePeer
+} // BaseAbsenceEleveLieuPeer
 
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-BaseAbsenceEleveTypePeer::buildTableMap();
+BaseAbsenceEleveLieuPeer::buildTableMap();
 

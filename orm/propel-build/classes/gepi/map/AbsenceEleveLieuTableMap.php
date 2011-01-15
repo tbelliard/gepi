@@ -3,7 +3,7 @@
 
 
 /**
- * This class defines the structure of the 'a_types' table.
+ * This class defines the structure of the 'a_lieux' table.
  *
  *
  *
@@ -14,12 +14,12 @@
  *
  * @package    propel.generator.gepi.map
  */
-class AbsenceEleveTypeTableMap extends TableMap {
+class AbsenceEleveLieuTableMap extends TableMap {
 
 	/**
 	 * The (dot-path) name of this class
 	 */
-	const CLASS_NAME = 'gepi.map.AbsenceEleveTypeTableMap';
+	const CLASS_NAME = 'gepi.map.AbsenceEleveLieuTableMap';
 
 	/**
 	 * Initialize the table attributes, columns and validators
@@ -31,21 +31,15 @@ class AbsenceEleveTypeTableMap extends TableMap {
 	public function initialize()
 	{
 	  // attributes
-		$this->setName('a_types');
-		$this->setPhpName('AbsenceEleveType');
-		$this->setClassname('AbsenceEleveType');
+		$this->setName('a_lieux');
+		$this->setPhpName('AbsenceEleveLieu');
+		$this->setClassname('AbsenceEleveLieu');
 		$this->setPackage('gepi');
 		$this->setUseIdGenerator(true);
 		// columns
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
 		$this->addColumn('NOM', 'Nom', 'VARCHAR', true, 250, null);
-		$this->addColumn('JUSTIFICATION_EXIGIBLE', 'JustificationExigible', 'BOOLEAN', false, null, null);
-		$this->addColumn('SOUS_RESPONSABILITE_ETABLISSEMENT', 'SousResponsabiliteEtablissement', 'VARCHAR', false, 255, 'NON_PRECISE');
-		$this->addColumn('MANQUEMENT_OBLIGATION_PRESENCE', 'ManquementObligationPresence', 'VARCHAR', false, 50, 'NON_PRECISE');
-		$this->addColumn('RETARD_BULLETIN', 'RetardBulletin', 'VARCHAR', false, 50, 'NON_PRECISE');
-		$this->addColumn('TYPE_SAISIE', 'TypeSaisie', 'VARCHAR', false, 50, 'NON_PRECISE');
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
-		$this->addForeignKey('ID_LIEU', 'IdLieu', 'INTEGER', 'a_lieux', 'ID', false, 11, null);
 		$this->addColumn('SORTABLE_RANK', 'SortableRank', 'INTEGER', false, null, null);
 		// validators
 	} // initialize()
@@ -55,9 +49,8 @@ class AbsenceEleveTypeTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AbsenceEleveLieu', 'AbsenceEleveLieu', RelationMap::MANY_TO_ONE, array('id_lieu' => 'id', ), 'SET NULL', null);
-    $this->addRelation('AbsenceEleveTypeStatutAutorise', 'AbsenceEleveTypeStatutAutorise', RelationMap::ONE_TO_MANY, array('id' => 'id_a_type', ), 'CASCADE', null);
-    $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('id' => 'a_type_id', ), 'SET NULL', null);
+    $this->addRelation('AbsenceEleveType', 'AbsenceEleveType', RelationMap::ONE_TO_MANY, array('id' => 'id_lieu', ), 'SET NULL', null);
+    $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_lieu', ), 'SET NULL', null);
 	} // buildRelations()
 
 	/**
@@ -73,4 +66,4 @@ class AbsenceEleveTypeTableMap extends TableMap {
 		);
 	} // getBehaviors()
 
-} // AbsenceEleveTypeTableMap
+} // AbsenceEleveLieuTableMap

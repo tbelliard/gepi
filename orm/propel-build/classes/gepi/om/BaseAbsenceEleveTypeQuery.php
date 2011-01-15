@@ -14,6 +14,7 @@
  * @method     AbsenceEleveTypeQuery orderByRetardBulletin($order = Criteria::ASC) Order by the retard_bulletin column
  * @method     AbsenceEleveTypeQuery orderByTypeSaisie($order = Criteria::ASC) Order by the type_saisie column
  * @method     AbsenceEleveTypeQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
+ * @method     AbsenceEleveTypeQuery orderByIdLieu($order = Criteria::ASC) Order by the id_lieu column
  * @method     AbsenceEleveTypeQuery orderBySortableRank($order = Criteria::ASC) Order by the sortable_rank column
  *
  * @method     AbsenceEleveTypeQuery groupById() Group by the id column
@@ -24,11 +25,16 @@
  * @method     AbsenceEleveTypeQuery groupByRetardBulletin() Group by the retard_bulletin column
  * @method     AbsenceEleveTypeQuery groupByTypeSaisie() Group by the type_saisie column
  * @method     AbsenceEleveTypeQuery groupByCommentaire() Group by the commentaire column
+ * @method     AbsenceEleveTypeQuery groupByIdLieu() Group by the id_lieu column
  * @method     AbsenceEleveTypeQuery groupBySortableRank() Group by the sortable_rank column
  *
  * @method     AbsenceEleveTypeQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     AbsenceEleveTypeQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     AbsenceEleveTypeQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ *
+ * @method     AbsenceEleveTypeQuery leftJoinAbsenceEleveLieu($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveLieu relation
+ * @method     AbsenceEleveTypeQuery rightJoinAbsenceEleveLieu($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveLieu relation
+ * @method     AbsenceEleveTypeQuery innerJoinAbsenceEleveLieu($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveLieu relation
  *
  * @method     AbsenceEleveTypeQuery leftJoinAbsenceEleveTypeStatutAutorise($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveTypeStatutAutorise relation
  * @method     AbsenceEleveTypeQuery rightJoinAbsenceEleveTypeStatutAutorise($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveTypeStatutAutorise relation
@@ -49,6 +55,7 @@
  * @method     AbsenceEleveType findOneByRetardBulletin(string $retard_bulletin) Return the first AbsenceEleveType filtered by the retard_bulletin column
  * @method     AbsenceEleveType findOneByTypeSaisie(string $type_saisie) Return the first AbsenceEleveType filtered by the type_saisie column
  * @method     AbsenceEleveType findOneByCommentaire(string $commentaire) Return the first AbsenceEleveType filtered by the commentaire column
+ * @method     AbsenceEleveType findOneByIdLieu(int $id_lieu) Return the first AbsenceEleveType filtered by the id_lieu column
  * @method     AbsenceEleveType findOneBySortableRank(int $sortable_rank) Return the first AbsenceEleveType filtered by the sortable_rank column
  *
  * @method     array findById(int $id) Return AbsenceEleveType objects filtered by the id column
@@ -59,6 +66,7 @@
  * @method     array findByRetardBulletin(string $retard_bulletin) Return AbsenceEleveType objects filtered by the retard_bulletin column
  * @method     array findByTypeSaisie(string $type_saisie) Return AbsenceEleveType objects filtered by the type_saisie column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveType objects filtered by the commentaire column
+ * @method     array findByIdLieu(int $id_lieu) Return AbsenceEleveType objects filtered by the id_lieu column
  * @method     array findBySortableRank(int $sortable_rank) Return AbsenceEleveType objects filtered by the sortable_rank column
  *
  * @package    propel.generator.gepi.om
@@ -336,6 +344,37 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query on the id_lieu column
+	 * 
+	 * @param     int|array $idLieu The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
+	 */
+	public function filterByIdLieu($idLieu = null, $comparison = null)
+	{
+		if (is_array($idLieu)) {
+			$useMinMax = false;
+			if (isset($idLieu['min'])) {
+				$this->addUsingAlias(AbsenceEleveTypePeer::ID_LIEU, $idLieu['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($idLieu['max'])) {
+				$this->addUsingAlias(AbsenceEleveTypePeer::ID_LIEU, $idLieu['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveTypePeer::ID_LIEU, $idLieu, $comparison);
+	}
+
+	/**
 	 * Filter the query on the sortable_rank column
 	 * 
 	 * @param     int|array $sortableRank The value to use as filter.
@@ -364,6 +403,70 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(AbsenceEleveTypePeer::SORTABLE_RANK, $sortableRank, $comparison);
+	}
+
+	/**
+	 * Filter the query by a related AbsenceEleveLieu object
+	 *
+	 * @param     AbsenceEleveLieu $absenceEleveLieu  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
+	 */
+	public function filterByAbsenceEleveLieu($absenceEleveLieu, $comparison = null)
+	{
+		return $this
+			->addUsingAlias(AbsenceEleveTypePeer::ID_LIEU, $absenceEleveLieu->getId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the AbsenceEleveLieu relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
+	 */
+	public function joinAbsenceEleveLieu($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('AbsenceEleveLieu');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'AbsenceEleveLieu');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the AbsenceEleveLieu relation AbsenceEleveLieu object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveLieuQuery A secondary query class using the current class as primary query
+	 */
+	public function useAbsenceEleveLieuQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinAbsenceEleveLieu($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'AbsenceEleveLieu', 'AbsenceEleveLieuQuery');
 	}
 
 	/**

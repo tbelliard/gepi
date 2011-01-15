@@ -50,6 +50,7 @@ class AbsenceEleveSaisieTableMap extends TableMap {
 		$this->addForeignKey('ID_AID', 'IdAid', 'INTEGER', 'aid', 'ID', false, null, null);
 		$this->addColumn('ID_S_INCIDENTS', 'IdSIncidents', 'INTEGER', false, null, null);
 		$this->addForeignKey('MODIFIE_PAR_UTILISATEUR_ID', 'ModifieParUtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, null);
+		$this->addForeignKey('ID_LIEU', 'IdLieu', 'INTEGER', 'a_lieux', 'ID', false, 11, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		// validators
@@ -68,6 +69,7 @@ class AbsenceEleveSaisieTableMap extends TableMap {
     $this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'SET NULL', null);
     $this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'SET NULL', null);
     $this->addRelation('ModifieParUtilisateur', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('modifie_par_utilisateur_id' => 'login', ), null, null);
+    $this->addRelation('AbsenceEleveLieu', 'AbsenceEleveLieu', RelationMap::MANY_TO_ONE, array('id_lieu' => 'id', ), 'SET NULL', null);
     $this->addRelation('JTraitementSaisieEleve', 'JTraitementSaisieEleve', RelationMap::ONE_TO_MANY, array('id' => 'a_saisie_id', ), 'CASCADE', null);
     $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()

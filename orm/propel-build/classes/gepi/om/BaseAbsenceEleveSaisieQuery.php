@@ -19,6 +19,7 @@
  * @method     AbsenceEleveSaisieQuery orderByIdAid($order = Criteria::ASC) Order by the id_aid column
  * @method     AbsenceEleveSaisieQuery orderByIdSIncidents($order = Criteria::ASC) Order by the id_s_incidents column
  * @method     AbsenceEleveSaisieQuery orderByModifieParUtilisateurId($order = Criteria::ASC) Order by the modifie_par_utilisateur_id column
+ * @method     AbsenceEleveSaisieQuery orderByIdLieu($order = Criteria::ASC) Order by the id_lieu column
  * @method     AbsenceEleveSaisieQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     AbsenceEleveSaisieQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
@@ -35,6 +36,7 @@
  * @method     AbsenceEleveSaisieQuery groupByIdAid() Group by the id_aid column
  * @method     AbsenceEleveSaisieQuery groupByIdSIncidents() Group by the id_s_incidents column
  * @method     AbsenceEleveSaisieQuery groupByModifieParUtilisateurId() Group by the modifie_par_utilisateur_id column
+ * @method     AbsenceEleveSaisieQuery groupByIdLieu() Group by the id_lieu column
  * @method     AbsenceEleveSaisieQuery groupByCreatedAt() Group by the created_at column
  * @method     AbsenceEleveSaisieQuery groupByUpdatedAt() Group by the updated_at column
  *
@@ -74,6 +76,10 @@
  * @method     AbsenceEleveSaisieQuery rightJoinModifieParUtilisateur($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ModifieParUtilisateur relation
  * @method     AbsenceEleveSaisieQuery innerJoinModifieParUtilisateur($relationAlias = null) Adds a INNER JOIN clause to the query using the ModifieParUtilisateur relation
  *
+ * @method     AbsenceEleveSaisieQuery leftJoinAbsenceEleveLieu($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveLieu relation
+ * @method     AbsenceEleveSaisieQuery rightJoinAbsenceEleveLieu($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveLieu relation
+ * @method     AbsenceEleveSaisieQuery innerJoinAbsenceEleveLieu($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveLieu relation
+ *
  * @method     AbsenceEleveSaisieQuery leftJoinJTraitementSaisieEleve($relationAlias = null) Adds a LEFT JOIN clause to the query using the JTraitementSaisieEleve relation
  * @method     AbsenceEleveSaisieQuery rightJoinJTraitementSaisieEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JTraitementSaisieEleve relation
  * @method     AbsenceEleveSaisieQuery innerJoinJTraitementSaisieEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the JTraitementSaisieEleve relation
@@ -94,6 +100,7 @@
  * @method     AbsenceEleveSaisie findOneByIdAid(int $id_aid) Return the first AbsenceEleveSaisie filtered by the id_aid column
  * @method     AbsenceEleveSaisie findOneByIdSIncidents(int $id_s_incidents) Return the first AbsenceEleveSaisie filtered by the id_s_incidents column
  * @method     AbsenceEleveSaisie findOneByModifieParUtilisateurId(string $modifie_par_utilisateur_id) Return the first AbsenceEleveSaisie filtered by the modifie_par_utilisateur_id column
+ * @method     AbsenceEleveSaisie findOneByIdLieu(int $id_lieu) Return the first AbsenceEleveSaisie filtered by the id_lieu column
  * @method     AbsenceEleveSaisie findOneByCreatedAt(string $created_at) Return the first AbsenceEleveSaisie filtered by the created_at column
  * @method     AbsenceEleveSaisie findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveSaisie filtered by the updated_at column
  *
@@ -110,6 +117,7 @@
  * @method     array findByIdAid(int $id_aid) Return AbsenceEleveSaisie objects filtered by the id_aid column
  * @method     array findByIdSIncidents(int $id_s_incidents) Return AbsenceEleveSaisie objects filtered by the id_s_incidents column
  * @method     array findByModifieParUtilisateurId(string $modifie_par_utilisateur_id) Return AbsenceEleveSaisie objects filtered by the modifie_par_utilisateur_id column
+ * @method     array findByIdLieu(int $id_lieu) Return AbsenceEleveSaisie objects filtered by the id_lieu column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveSaisie objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveSaisie objects filtered by the updated_at column
  *
@@ -581,6 +589,37 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID, $modifieParUtilisateurId, $comparison);
+	}
+
+	/**
+	 * Filter the query on the id_lieu column
+	 * 
+	 * @param     int|array $idLieu The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function filterByIdLieu($idLieu = null, $comparison = null)
+	{
+		if (is_array($idLieu)) {
+			$useMinMax = false;
+			if (isset($idLieu['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_LIEU, $idLieu['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($idLieu['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::ID_LIEU, $idLieu['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_LIEU, $idLieu, $comparison);
 	}
 
 	/**
@@ -1155,6 +1194,70 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		return $this
 			->joinModifieParUtilisateur($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'ModifieParUtilisateur', 'UtilisateurProfessionnelQuery');
+	}
+
+	/**
+	 * Filter the query by a related AbsenceEleveLieu object
+	 *
+	 * @param     AbsenceEleveLieu $absenceEleveLieu  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function filterByAbsenceEleveLieu($absenceEleveLieu, $comparison = null)
+	{
+		return $this
+			->addUsingAlias(AbsenceEleveSaisiePeer::ID_LIEU, $absenceEleveLieu->getId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the AbsenceEleveLieu relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function joinAbsenceEleveLieu($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('AbsenceEleveLieu');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'AbsenceEleveLieu');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the AbsenceEleveLieu relation AbsenceEleveLieu object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveLieuQuery A secondary query class using the current class as primary query
+	 */
+	public function useAbsenceEleveLieuQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinAbsenceEleveLieu($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'AbsenceEleveLieu', 'AbsenceEleveLieuQuery');
 	}
 
 	/**
