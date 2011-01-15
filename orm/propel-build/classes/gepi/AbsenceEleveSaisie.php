@@ -907,4 +907,21 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    return parent::save($con);
 	}
 
+	/**
+	 *
+	 * Renvoi le lieu de l'absence ou le lieu de plus petit rang des types d'absence associé.
+	 *
+	 * @return     AbsenceEleveLieu
+	 *
+	 */
+	public function  getAbsenceEleveLieuEtendu(PropelPDO $con = null) {
+            $lieu = parent::getAbsenceEleveLieu($con);
+            if ($lieu != null) {
+                return $lieu;
+            } else {
+                //parcourir les types associés et retourner le lieu de plus petit rang
+                throw new PropelException("non implémenté");
+            }
+        }
+
 } // AbsenceEleveSaisie
