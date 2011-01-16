@@ -66,9 +66,13 @@ if (empty($_GET['retard_bulletin']) and empty($_POST['retard_bulletin'])) { $ret
     else { if (isset($_GET['retard_bulletin'])) {$retard_bulletin=$_GET['retard_bulletin'];} if (isset($_POST['retard_bulletin'])) {$retard_bulletin=$_POST['retard_bulletin'];} }
 if (empty($_GET['type_saisie']) and empty($_POST['type_saisie'])) { $type_saisie="";}
     else { if (isset($_GET['type_saisie'])) {$type_saisie=$_GET['type_saisie'];} if (isset($_POST['type_saisie'])) {$type_saisie=$_POST['type_saisie'];} }
+if (empty($_GET['id_lieu']) and empty($_POST['id_lieu'])) { $id_lieu=Null;}
+    else { if (isset($_GET['id_lieu'])) {$id_lieu=$_GET['id_lieu'];} if (isset($_POST['id_lieu'])) {$id_lieu=$_POST['id_lieu'];} }
 if (empty($_GET['ajout_statut_type_saisie']) and empty($_POST['ajout_statut_type_saisie'])) { $ajout_statut_type_saisie="";}
     else { if (isset($_GET['ajout_statut_type_saisie'])) {$type_saisie=$_GET['ajout_statut_type_saisie'];} if (isset($_POST['ajout_statut_type_saisie'])) {$ajout_statut_type_saisie=$_POST['ajout_statut_type_saisie'];} }
-
+if($id_lieu=='-1'){
+    $id_lieu=Null;
+}
 //$type = new AbsenceEleveType();
 $type = AbsenceEleveTypeQuery::create()->findPk($id);
 if ($action == 'supprimer') {
@@ -110,6 +114,7 @@ if ($action == 'supprimer') {
 		$type->setManquementObligationPresence($manquement_obligation_presence);
 		$type->setRetardBulletin($retard_bulletin);
 		$type->setTypeSaisie($type_saisie);
+        $type->setIdLieu($id_lieu);
 		$type->getAbsenceEleveTypeStatutAutorises(); //corrige un bug de propel sur la lecture de la base
 		if ($ajout_statut_type_saisie != '') {
 			//test si le statut est deja autorisé
@@ -167,6 +172,7 @@ echo add_token_field();
 	    <td>Manquement obligations (apparaît sur le bulletin)</td>
 	    <td>Comptabilisée comme retard sur le bulletin (apparaît sur le bulletin)</td>
 	    <td>Type de saisie</td>
+        <td>Lieu</td>
 	    <td>Statut(s) autorisé(s) à la saisie</td>
        </tr>
         <tr>
@@ -209,6 +215,16 @@ echo add_token_field();
 		<option value='COMMENTAIRE_EXIGE' <?php  if ($type != null && $type->getTypeSaisie() == 'COMMENTAIRE_EXIGE') {echo "selected";} ?>>Saisir un commentaire</option>
 		--><option value='DISCIPLINE' <?php  if ($type != null && $type->getTypeSaisie() == 'DISCIPLINE') {echo "selected";} ?>>Saisir un incident disciplinaire</option>
 	     </select>
+	   </td>
+        <td>
+	     <select name="id_lieu" id="id_lieu">
+             <option value='-1' <?php  if ($type != null && $type->getIdLieu()== null) {echo "selected";} ?>> </option>
+		<?php
+        $lieux=AbsenceEleveLieuQuery::create()->find();
+        foreach ($lieux as $lieu) :?>
+             <option value='<?php echo $lieu->getId();?>' <?php if ($type != null && $type->getIdLieu() == $lieu->getId()) {echo "selected";} ?>><?php echo $lieu->getNom();?></option>
+	    <?php endforeach; ?>
+         </select>
 	   </td>
            <td>
 		<table class="menu"><?php
@@ -257,6 +273,7 @@ echo add_token_field();
 	<td>Manquement obligations (apparaît sur le bulletin)</td>
 	<td>Retard</td>
         <td>Type de saisie</td>
+        <td>Lieu</td>
 	<td>Statut(s) autorisé(s) à la saisie</td>
         <td style="width: 25px;"></td>
         <td style="width: 25px;"></td>
@@ -265,7 +282,9 @@ echo add_token_field();
       </tr>
     <?php
     $type_collection = new PropelCollection();
-    $type_collection = AbsenceEleveTypeQuery::create()->findList();
+    $type_collection = AbsenceEleveTypeQuery::create()
+                       ->leftJoinWith('AbsenceEleveType.AbsenceEleveLieu')
+                       ->findList();
     $type = new AbsenceEleveType();
     $i = '1';
     foreach ($type_collection as $type) { ?>
@@ -292,6 +311,7 @@ echo add_token_field();
 	    ?>
 	  </td>
 	  <td><?php if ($type->getTypeSaisie() != AbsenceEleveType::$TYPE_SAISIE_NON_PRECISE) {echo $type->getTypeSaisieDescription();} ?></td>
+      <td><?php if (!is_null($type->getIdLieu())) {echo $type->getAbsenceEleveLieu()->getNom();} ?></td>
 	  <td><?php
 		foreach ($type->getAbsenceEleveTypeStatutAutorises() as $statut_saisie) {
 			echo $statut_saisie->getStatut();

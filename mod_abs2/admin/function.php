@@ -48,6 +48,15 @@ function ajoutMotifsParDefaut() {
     }
 }
 
+function ajoutLieuxParDefaut() {
+    $lieu = new AbsenceEleveLieu();
+    $lieu->setNom("Etablissement");
+    $lieu->setCommentaire("L'élève est dans les murs de l'établissement");
+    if (AbsenceEleveLieuQuery::create()->filterByNom($lieu->getNom())->find()->isEmpty()) {
+	$lieu->save();
+    }
+}
+
 function ajoutJustificationsParDefaut() {
     $justifications = new AbsenceEleveJustification();
     $justifications->setNom("Certificat médical");
