@@ -51,7 +51,7 @@ function ajoutMotifsParDefaut() {
 function ajoutLieuxParDefaut() {
     $lieu = new AbsenceEleveLieu();
     $lieu->setNom("Etablissement");
-    $lieu->setCommentaire("L'élève est dans les murs de l'établissement");
+    $lieu->setCommentaire("L'élève est dans l'enceinte de l'établissement");
     if (AbsenceEleveLieuQuery::create()->filterByNom($lieu->getNom())->find()->isEmpty()) {
 	$lieu->save();
     }
@@ -62,7 +62,7 @@ function initLieuEtab(){
     if(is_null($lieu_etab)){
        $lieu_etab= new AbsenceEleveLieu();
        $lieu_etab->setNom("Etablissement");
-       $lieu_etab->setCommentaire("L'élève est dans les murs de l'établissement");
+       $lieu_etab->setCommentaire("L'élève est dans l'enceinte de l'établissement");
        $lieu_etab->save();
     }
     return($lieu_etab->getId());
