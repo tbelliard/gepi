@@ -127,4 +127,62 @@ if ($test == -1) {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
+$result .= "<br /><br /><b>Ajout d'une table pour les lieux des absences :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'a_lieux'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS a_lieux (
+	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire auto-incrementee',
+	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du lieu',
+	commentaire TEXT   COMMENT 'commentaire saisi par l\'utilisateur',
+	sortable_rank INTEGER,
+	PRIMARY KEY (id)
+) ENGINE=MyISAM COMMENT='Lieu pour les types d\'absence ou les saisies';");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
+$result .= "&nbsp;->Ajout d'un champ id_lieu à la table 'a_types'<br />";
+$test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'id_lieu';"));
+if ($test_date_decompte>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE a_types ADD id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve' AFTER commentaire,
+       ADD INDEX a_types_FI_1 (id_lieu),
+       ADD CONSTRAINT a_types_FK_1
+		FOREIGN KEY (id_lieu)
+		REFERENCES a_lieux (id)
+		ON DELETE SET NULL ;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+$result .= "&nbsp;->Ajout d'un champ id_lieu à la table 'a_saisies'<br />";
+$test_date_decompte=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'id_lieu';"));
+if ($test_date_decompte>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE a_saisies ADD id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve' AFTER modifie_par_utilisateur_id,
+       ADD INDEX a_saisies_FI_9 (id_lieu),
+        ADD CONSTRAINT a_saisies_FK_9
+		FOREIGN KEY (id_lieu)
+		REFERENCES a_lieux (id)
+		ON DELETE SET NULL;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
 ?>
