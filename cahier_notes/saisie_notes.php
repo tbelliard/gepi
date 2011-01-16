@@ -366,7 +366,7 @@ if (isset($_POST['is_posted'])) {
                                                 $note_sur_verif = mysql_result($appel_note_sur,0 ,'note_sur');
 						if (($note < 0) or ($note > $note_sur_verif)) {
 							$note = '';
-							$elev_statut = '';
+							$elev_statut = 'v';
 						}
 					}
 					else {
