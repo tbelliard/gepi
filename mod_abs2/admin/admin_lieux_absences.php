@@ -100,6 +100,10 @@ echo "</p>";
 
 <div style="text-align:center">
     <h2>Définition des lieux d'absence</h2>
+    <h3>
+        Un lieu pourra être affecté à un type de saisie pour permettre de savoir ou se trouve l'élève saisie. <br />
+        Pour les types sans lieu défini on considèrera que l'élève n'est pas dans l'enceinte de l'établissement.<br />
+    </h3>
 <?php if ($action == "ajouter" OR $action == "modifier") { ?>
 <div style="text-align:center">
     <?php
