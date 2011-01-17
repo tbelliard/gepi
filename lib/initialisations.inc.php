@@ -254,7 +254,9 @@ if (!isset($mode_debug)) {
 }
 
 // Initialisaton de la session Gepi :
-$session_gepi = new Session();
+if (!isset($prevent_session_init)) {
+  $session_gepi = new Session();
+}
 
 if (!class_exists('Propel')
 	|| !strstr(get_include_path(), '/orm/propel-build/classes')) {

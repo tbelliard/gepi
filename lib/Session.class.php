@@ -59,14 +59,15 @@ class Session {
 							
   private $cas_extra_attributes = false; # D'éventuels attributs chargés depuis la réponse CAS
 
-	public function __construct() {
+	public function __construct($login_CAS_en_cours = false) {
 
-		# On initialise la session
-		session_name("GEPI");
-
-		set_error_handler("my_warning_handler", E_WARNING);
-		session_start();
-		restore_error_handler();
+    if (!$login_CAS_en_cours) {
+      # On initialise la session
+      session_name("GEPI");
+      set_error_handler("my_warning_handler", E_WARNING);
+      session_start();
+      restore_error_handler();
+    }
 
 		# Avant de faire quoi que ce soit, on initialise le fuseau horaire
 		if (isset($GLOBALS['timezone']) && $GLOBALS['timezone'] != '') {
@@ -84,30 +85,32 @@ class Session {
 		$this->auth_sso = in_array(getSettingValue("auth_sso"), array("lemon", "cas", "lcs")) ? getSettingValue("auth_sso") : false;
 		if (!$this->is_anonymous()) {
 		  # Il s'agit d'une session non anonyme qui existait déjà.
-		  # On regarde s'il n'y a pas de timeout
-		  if ($this->timeout()) {
-		  	# timeout : on remet à zéro.
-		  	$debut_session = $_SESSION['start'];
-		  	$this->reset(3);
-		  	if (isset($GLOBALS['niveau_arbo'])) {
-		  		if ($GLOBALS['niveau_arbo'] == "0") {
-		  			$logout_path = "./logout.php";
-		  		} elseif ($GLOBALS['niveau_arbo'] == "2") {
-		  			$logout_path = "../../logout.php";
-		  		} elseif ($GLOBALS['niveau_arbo'] == "3") {
-		  			$logout_path = "../../../logout.php";
-		  		} else {
-		  			$logout_path = "../logout.php";
-		  		}
-		  	} else {
-		  		$logout_path = "../logout.php";
-		  	}
-		  	header("Location:".$logout_path."?auto=3&debut_session=".$debut_session."&session_id=".session_id());
-		  	exit();
-		  } else {
-		  	# Pas de timeout : on met à jour le log
-		  	$this->update_log();
-		  }
+      if (!$login_CAS_en_cours) {
+        # On regarde s'il n'y a pas de timeout
+        if ($this->timeout()) {
+          # timeout : on remet à zéro.
+          $debut_session = $_SESSION['start'];
+          $this->reset(3);
+          if (isset($GLOBALS['niveau_arbo'])) {
+            if ($GLOBALS['niveau_arbo'] == "0") {
+              $logout_path = "./logout.php";
+            } elseif ($GLOBALS['niveau_arbo'] == "2") {
+              $logout_path = "../../logout.php";
+            } elseif ($GLOBALS['niveau_arbo'] == "3") {
+              $logout_path = "../../../logout.php";
+            } else {
+              $logout_path = "../logout.php";
+            }
+          } else {
+            $logout_path = "../logout.php";
+          }
+          header("Location:".$logout_path."?auto=3&debut_session=".$debut_session."&session_id=".session_id());
+          exit();
+        } else {
+          # Pas de timeout : on met à jour le log
+          $this->update_log();
+        }
+      }
 		}
 
 	}
@@ -738,6 +741,12 @@ class Session {
 	}
 
 	private function authenticate_cas() {
+/* *****
+ *  Toute la partie authentification en elle-même a été déplacée dans le
+ *  fichier login_sso.php, afin de permettre à phpCAS de gérer tout seul
+ *  la session PHP.
+ * *****
+ * 
 		include_once('CAS.php');
 		if ($GLOBALS['mode_debug']) {
 		    phpCAS::setDebug($GLOBALS['debug_log_file']);
@@ -771,11 +780,13 @@ class Session {
 		
 		// Authentification
 		phpCAS::forceAuthentication();
+*/
 
 		$this->login = phpCAS::getUser();
-		// On réinitialise la session
+/* La session est gérée par phpCAS directement, en amont. On n'y touche plus.
 		session_name("GEPI");
 		session_start();
+*/
 		$_SESSION['login'] = $this->login;
 
 		$this->current_auth_mode = "sso";
@@ -798,7 +809,6 @@ class Session {
         }
       }
     }
-
 		return true;
 	}
 
