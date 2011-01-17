@@ -85,6 +85,11 @@ if ($n > 0) {
 header('Content-Type: text/x-sql');
 header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header('Content-Disposition: attachment; filename="' . $filename . '"');
-header('Pragma: no-cache');
+if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false)) {
+  header('Pragma: private');
+  header('Cache-Control: private, must-revalidate');
+} else {
+  header('Pragma: no-cache');
+}
 readfile($filepath);
 ?>
