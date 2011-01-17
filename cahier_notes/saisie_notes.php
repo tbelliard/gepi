@@ -348,15 +348,15 @@ if (isset($_POST['is_posted'])) {
 					//==============================
 
 
-					if (($note == 'disp')) {
+					if (($note == 'disp')||($note == 'd')) {
 						$note = '0';
 						$elev_statut = 'disp';
 					}
-					else if (($note == 'abs')) {
+					else if (($note == 'abs')||($note == 'a')) {
 						$note = '0';
 						$elev_statut = 'abs';
 					}
-					else if (($note == '-')) {
+					else if (($note == '-')||($note == 'n')) {
 						$note = '0';
 						$elev_statut = '-';
 					}
