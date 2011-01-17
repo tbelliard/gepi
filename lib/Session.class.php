@@ -1436,7 +1436,7 @@ class Session {
     }
     
   # Renvoie 'true' si l'accès à Gepi se fait en https
-  private function https_request() {
+  static function https_request() {
   	if (!isset($_SERVER['HTTPS'])
     			OR (isset($_SERVER['HTTPS']) AND strtolower($_SERVER['HTTPS']) != "on")
     			OR (isset($_SERVER['X-Forwaded-Proto']) AND $_SERVER['X-Forwaded-Proto'] != "https")) {
