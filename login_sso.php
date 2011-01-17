@@ -38,8 +38,9 @@ if (isset($_POST) && array_key_exists('logoutRequest', $_POST)) {
 require_once("./lib/initialisations.inc.php");
 include("./lib/initialisationsPropel.inc.php");
 
+$auth_sso = in_array($gepiSettings['auth_sso'], array("lemon", "cas", "lcs"));
 
-if ($session_gepi->auth_sso && isset($logout_request)) {
+if ($auth_sso && isset($logout_request)) {
     $_POST['logoutRequest'] = $logout_request;
 }
 
@@ -47,7 +48,7 @@ if ($session_gepi->auth_sso && isset($logout_request)) {
 # Si l'authentification SSO n'est pas paramétrée, on renvoie tout de suite
 # vers la page de login classique.
 
-if (!$session_gepi->auth_sso) {
+if (!$auth_sso) {
 	session_write_close();
 	header("Location:login.php");
 	die();
