@@ -1018,9 +1018,9 @@ foreach ($results as $saisie) {
 
     echo '<td>';
     $saisies_conflit = $saisie->getSaisiesContradictoiresManquementObligation();
-    foreach ($saisies_conflit as $saisie) {
-	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style=''> ";
-	echo $saisie->getId();
+    foreach ($saisies_conflit as $saisie_conflit) {
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie_conflit->getPrimaryKey()."' style=''> ";
+	echo $saisie_conflit->getId();
 	echo "</a>";
 	if (!$saisies_conflit->isLast()) {
 	    echo ' - ';
