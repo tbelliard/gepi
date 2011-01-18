@@ -91,9 +91,14 @@ if ($gepiSettings['auth_sso'] == 'cas') {
 		// été trouvé par le client CAS.
 		phpCAS::setNoCasServerValidation();
 
-		// Gestion du single sign-out
-		phpCAS::handleLogoutRequests(false);
-		
+    // On a une demande de logout envoyée par le serveur CAS :
+    //   il faut initialiser la session tout de suite, pour pouvoir la détruire complètement
+    if (isset($logout_request)) {
+      $session_gepi = new Session();
+  		// Gestion du single sign-out
+      phpCAS::setSingleSignoutCallback(array($session_gepi, 'cas_logout_callback'));
+		  phpCAS::handleLogoutRequests(false);
+		}
 		// Authentification
 		phpCAS::forceAuthentication();
     

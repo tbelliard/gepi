@@ -533,17 +533,19 @@ class Session {
     	return sql_query1($sql);
 	}
 
-	// Remise à zéro de la session : on supprime toutes les informations présentes
-	private function reset($_auto = "0") {
-		# Codes utilisés pour $_auto :
-		# 0 : logout normal
-		# 2 : logout renvoyé par la fonction checkAccess (problème gepiPath ou accès interdit)
-		# 3 : logout lié à un timeout
-		# 4 : logout lié à une nouvelle connexion sous un nouveau profil
+  // Function appelée par phpCAS lors du logout (cf. login_sso.php), destinée
+  // à enregistrer proprement un logout initié par le serveur CAS lui-même
+  // dans le cas d'une déconnexion depuis une autre application.
+  function cas_logout_callback($ticket) {
+    // On enregistre la fin de la session dans le journal
+    $this->register_logout(0);
+    
+    // Rien d'autre à faire. C'est phpCAS qui va détruire la session totalement.
+  }
 
-	    # On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
-	    if ($this->start) {
-	      $sql = "UPDATE log SET AUTOCLOSE = '" . $_auto . "', END = now() where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
+  // Enregistrement de la fin de la session dans la base de données
+  private function register_logout($_auto) {
+      $sql = "UPDATE log SET AUTOCLOSE = '" . $_auto . "', END = now() where SESSION_ID = '" . session_id() . "' and START = '" . $this->start . "'";
               $res = sql_query($sql);
 
 			if((getSettingValue('csrf_log')=='y')&&(isset($_SESSION['login']))) {
@@ -557,7 +559,21 @@ class Session {
 				fwrite($f,"-----------------\n");
 				fclose($f);
 			}
-	   }
+  }
+
+
+	// Remise à zéro de la session : on supprime toutes les informations présentes
+	private function reset($_auto = "0") {
+		# Codes utilisés pour $_auto :
+		# 0 : logout normal
+		# 2 : logout renvoyé par la fonction checkAccess (problème gepiPath ou accès interdit)
+		# 3 : logout lié à un timeout
+		# 4 : logout lié à une nouvelle connexion sous un nouveau profil
+
+	    # On teste 'start' simplement pour simplement vérifier que la session n'a pas encore été fermée.
+	    if ($this->start) {
+        $this->register_logout($_auto);
+	    }
 
 	   // Détruit toutes les variables de session
 	    session_unset();
