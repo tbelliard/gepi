@@ -53,12 +53,8 @@ if (!checkAccess()) {
 //================================
 // AJOUT: boireaus 20080102
 if(!isset($_SESSION["bull_pdf_debug"])) {
-	header('Content-Type: application/pdf');
-
-	// Global configuration file
-	// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-	//Le problème peut être résolu en ajoutant la ligne suivante :
-	Header('Pragma: public');
+  // On envoie les en-têtes HTTP si on n'est pas en mode debug
+  send_file_download_headers('application/pdf', 'bulletin.pdf');
 }
 else{
 	echo "<p style='color:red'>DEBUG:<br />

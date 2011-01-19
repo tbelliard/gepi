@@ -6215,4 +6215,24 @@ function ajout_index_sous_dossiers($dossier) {
 
 	return $retour;
 }
+
+// Méthode pour envoyer les en-têtes HTTP nécessaires au téléchargement de fichier.
+// Le content-type est obligatoire, ainsi que le nom du fichier.
+function send_file_download_headers($content_type, $filename, $content_disposition = 'attachment') {
+
+  //header('Content-Encoding: utf-8');
+  header('Content-Type: '.$content_type);
+  header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+  header('Content-Disposition: '.$content_disposition.'; filename="' . $filename . '"');
+  
+  // Contournement d'un bug IE lors d'un téléchargement en HTTPS...
+  if (isset($_SERVER['HTTP_USER_AGENT']) && (strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') !== false)) {
+    header('Pragma: private');
+    header('Cache-Control: private, must-revalidate');
+  } else {
+    header('Pragma: no-cache');
+  }
+}
+
+
 ?>

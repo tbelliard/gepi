@@ -2881,7 +2881,7 @@ else {
 		/*****************************************
 		* début de la génération du fichier PDF  *
 		* ****************************************/
-		header('Content-type: application/pdf');
+		send_file_download_headers('application/pdf','bulletin.pdf');
 		//création du PDF en mode Portrait, unitée de mesure en mm, de taille A4
 		$pdf=new bul_PDF('p', 'mm', 'A4');
 		$nb_eleve_aff = 1;
