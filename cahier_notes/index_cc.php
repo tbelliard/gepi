@@ -212,7 +212,7 @@ else {
 		echo " | ";
 		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id&amp;action=suppr_dev".add_token_in_url()."'>Supprimer</a>";
 		echo " | ";
-		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id".add_token_in_url()."'>Transférer vers le carnet de notes</a>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$lig->id".add_token_in_url()."'></a>Transférer vers le carnet de notes (<span style='color:red'>A FAIRE</span>)";
 		echo "<br />\n";
 		$sql="SELECT * FROM cc_eval WHERE id_dev='$lig->id' ORDER BY date, nom_court;";
 		$res2=mysql_query($sql);
