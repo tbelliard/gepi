@@ -185,4 +185,70 @@ else {
 	}
 }
 
+//===================================
+$result .= "<br /><br /><b>Ajout d'une table pour les contrôles de cours :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'cc_dev'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE cc_dev (id int(11) NOT NULL auto_increment, 
+id_cn_dev int(11) NOT NULL default '0',
+id_groupe int(11) NOT NULL default '0',
+nom_court varchar(32) NOT NULL default '',
+nom_complet varchar(64) NOT NULL default '',
+description varchar(128) NOT NULL default '',
+arrondir char(2) NOT NULL default 's1',
+PRIMARY KEY  (id));");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
+
+$result .= "<br /><b>Ajout d'une table pour les évaluations des contrôles de cours :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'cc_eval'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE cc_eval (id int(11) NOT NULL auto_increment,
+id_dev int(11) NOT NULL default '0',
+nom_court varchar(32) NOT NULL default '',
+nom_complet varchar(64) NOT NULL default '',
+description varchar(128) NOT NULL default '',
+date datetime NOT NULL default '0000-00-00 00:00:00',
+note_sur int(11) default '5',
+PRIMARY KEY  (id),
+INDEX dev_date (id_dev, date));");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
+
+$result .= "<br /><b>Ajout d'une table pour les notes des évaluations des contrôles de cours :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'cc_notes_eval'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE cc_notes_eval ( login varchar(50) NOT NULL default '',
+id_eval int(11) NOT NULL default '0',
+note float(10,1) NOT NULL default '0.0',
+statut char(1) NOT NULL default '',
+comment text NOT NULL,
+PRIMARY KEY  (login,id_eval));");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+//===================================
+
 ?>

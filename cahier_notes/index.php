@@ -101,6 +101,9 @@ $fich=fopen("/tmp/test_img.txt","a+");
 fwrite($fich,"Juste avant Header\n");
 fclose($fich);
 */
+
+require('cc_lib.php');
+
 //**************** EN-TETE *****************
 $titre_page = "Carnet de notes";
 require_once("../lib/header.inc");
@@ -535,6 +538,9 @@ var tab_per_cn=new Array();\n";
 	// Le retour n'est pas parfait... il faudrait aussi periode_num dans chemin_retour
 	// ou alors stocker ici l'info en session pour la période...
 	echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemin_retour=../cahier_notes/index.php?id_groupe=$id_groupe\"> Signaler des erreurs d'affectation</a>";
+
+	echo " | ";
+	echo "<a href=\"index_cc.php?id_racine=$id_racine\"> ".ucfirst($nom_cc)."</a>";
 
     //echo "</b>\n";
     echo "</p>\n";
