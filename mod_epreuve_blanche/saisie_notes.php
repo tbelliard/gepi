@@ -77,6 +77,7 @@ if(isset($_POST['saisie_notes'])) {
 	else {
 		$lig=mysql_fetch_object($res);
 		$etat=$lig->etat;
+		$note_sur=$lig->note_sur;
 	
 		if($etat!='clos') {
 		
@@ -113,7 +114,7 @@ if(isset($_POST['saisie_notes'])) {
 					}
 					elseif(ereg("^[0-9\.\,]{1,}$",$note[$i])) {
 						$elev_note=str_replace(",", ".", "$note[$i]");
-						if(($elev_note<0)||($elev_note>20)){
+						if(($elev_note<0)||($elev_note>$note_sur)){
 							$elev_note='';
 							$elev_statut='';
 						}
@@ -505,7 +506,7 @@ function verifcol(num_id){
 		//if((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0))){
 		if(((note.search(/^[0-9.]+$/)!=-1)&&(note.lastIndexOf('.')==note.indexOf('.',0)))||
 	((note.search(/^[0-9,]+$/)!=-1)&&(note.lastIndexOf(',')==note.indexOf(',',0)))){
-			if((note>20)||(note<0)){
+			if((note>$note_sur)||(note<0)){
 				couleur='red';
 			}
 			else{
@@ -529,7 +530,7 @@ function verifcol(num_id){
 echo "<p><br /></p>\n";
 echo "<p style='color:red;'>A FAIRE:</p>\n";
 echo "<ul>\n";
-echo "<li><p style='color:red;'>Permettre de saisir des notes sur autre chose que 20.</p>\n";
+//echo "<li><p style='color:red;'>Permettre de saisir des notes sur autre chose que 20.</p>\n";
 //echo "<li><p style='color:red;'>Calculer la moyenne, médiane,...</p></li>\n";
 echo "<li><p style='color:red;'>Permettre d'importer/exporter ses saisies au format CSV</p></li>\n";
 echo "</ul>\n";

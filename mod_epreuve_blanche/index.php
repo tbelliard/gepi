@@ -79,6 +79,7 @@ description TEXT NOT NULL ,
 type_anonymat VARCHAR( 255 ) NOT NULL ,
 date DATE NOT NULL default '0000-00-00',
 etat VARCHAR( 255 ) NOT NULL ,
+note_sur int(11) unsigned not null default '20',
 PRIMARY KEY ( id )
 );";
 $create_table=mysql_query($sql);
@@ -166,6 +167,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	//if(isset($_POST['creer_epreuve'])) {
 	if((isset($_POST['creer_epreuve']))||(isset($_POST['modif_epreuve']))) {
 		check_token();
+		$msg="";
 
 		// Correction, modification des paramËtres d'une Èpreuve
 
@@ -173,6 +175,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$date=isset($_POST['date']) ? $_POST['date'] : "";
 		$description=isset($_POST['description']) ? $_POST['description'] : "";
 		$type_anonymat=isset($_POST['type_anonymat']) ? $_POST['type_anonymat'] : "ele_id";
+		$note_sur=isset($_POST['note_sur']) ? $_POST['note_sur'] : 20;
+		if(!preg_match('/^[0-9]*$/',$note_sur)) {
+			$note_sur=20;
+			$msg.="Valeur de note_sur invalide<br />";
+		}
 
 		if(strlen(my_ereg_replace("[A-Za-z0-9 _.-]","",remplace_accents($intitule,'all')))!=0) {$intitule=my_ereg_replace("[^A-Za-z¬ƒ¿¡√ƒ≈« À»…ŒœÃÕ—‘÷“”’¶€‹Ÿ⁄›æ¥·‡‚‰„ÂÁÈËÍÎÓÔÏÌÒÙˆÚÛı®˚¸˘˙˝ˇ∏0-9_.-]"," ",$intitule);}
 		if($intitule=="") {$intitule="Epreuve blanche";}
@@ -197,13 +204,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 		if(!isset($id_epreuve)) {
 			//$sql="INSERT INTO eb_epreuves SET intitule='$intitule', description='".addslashes($description)."', type_anonymat='$type_anonymat', date='', etat='';";
-			$sql="INSERT INTO eb_epreuves SET intitule='$intitule', description='$description', type_anonymat='$type_anonymat', date='$date', etat='';";
+			$sql="INSERT INTO eb_epreuves SET intitule='$intitule', description='$description', type_anonymat='$type_anonymat', date='$date', etat='', note_sur='$note_sur';";
 			if($insert=mysql_query($sql)) {
 				$id_epreuve=mysql_insert_id();
-				$msg="Epreuve n∞$id_epreuve : '$intitule' crÈÈe.<br />";
+				$msg.="Epreuve n∞$id_epreuve : '$intitule' crÈÈe.<br />";
 			}
 			else {
-				$msg="ERREUR lors de la crÈation de l'Èpreuve '$intitule'.<br />";
+				$msg.="ERREUR lors de la crÈation de l'Èpreuve '$intitule'.<br />";
 				//$msg.="<br />$sql";
 			}
 		}
@@ -217,9 +224,9 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$lig=mysql_fetch_object($res);
 			$old_type_anonymat=$lig->type_anonymat;
 
-			$sql="UPDATE eb_epreuves SET intitule='$intitule', description='$description', type_anonymat='$type_anonymat', date='$date' WHERE id='$id_epreuve';";
+			$sql="UPDATE eb_epreuves SET intitule='$intitule', description='$description', type_anonymat='$type_anonymat', date='$date', note_sur='$note_sur' WHERE id='$id_epreuve';";
 			if($update=mysql_query($sql)) {
-				$msg="Epreuve n∞$id_epreuve : '$intitule' mise ‡ jour.";
+				$msg.="Epreuve n∞$id_epreuve : '$intitule' mise ‡ jour.";
 
 				if($type_anonymat!=$old_type_anonymat) {
 					$tab_n_anonymat_affectes=array();
@@ -268,7 +275,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				}
 			}
 			else {
-				$msg="ERREUR lors de la modification de l'Èpreuve '$intitule'.";
+				$msg.="ERREUR lors de la modification de l'Èpreuve '$intitule'.";
 				//$msg.="<br />$sql";
 			}
 		}
@@ -850,6 +857,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$jour=strftime("%d");
 			$date_defaut=$jour."/".$mois."/".$annee;
 
+			$note_sur=20;
+
 			echo "<tr>\n";
 			echo "<td>Date de l'Èpreuve&nbsp;:</td>\n";
 			echo "<td>\n";
@@ -864,6 +873,13 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "<td>\n";
 			//echo "<input type='text' name='description' value='' />";
 			echo "<textarea class='wrap' name=\"no_anti_inject_description\" rows='4' cols='40'></textarea>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+
+			echo "<tr>\n";
+			echo "<td>Note sur&nbsp;:</td>\n";
+			echo "<td>\n";
+			echo "<input type='text' name='note_sur' id='note_sur' value='$note_sur' size='3' onchange='changement()' />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 
@@ -1100,6 +1116,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$jour=$tab[2];
 			$date_defaut=$jour."/".$mois."/".$annee;
 	
+			$note_sur=$lig->note_sur;
+
 			echo "<tr>\n";
 			echo "<td style='font-weight:bold;'>Date de l'Èpreuve&nbsp;:</td>\n";
 			echo "<td>\n";
@@ -1127,7 +1145,14 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			}
 			echo "</td>\n";
 			echo "</tr>\n";
-	
+
+			echo "<tr>\n";
+			echo "<td>Note sur&nbsp;:</td>\n";
+			echo "<td>\n";
+			echo "<input type='text' name='note_sur' id='note_sur' value='$note_sur' size='3' onchange='changement()' />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+
 			echo "<tr>\n";
 			echo "<td style='font-weight:bold;'>Mode anonymat&nbsp;:</td>\n";
 			echo "<td>\n";

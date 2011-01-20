@@ -259,4 +259,17 @@ if ($query) {
 }
 //===================================
 
+$result .= "<br />&nbsp;->Ajout d'un champ 'note_sur' à la table 'eb_epreuves' : ";
+$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eb_epreuves LIKE 'note_sur';"));
+if ($test_note_sur>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("alter table eb_epreuves add note_sur int(11) unsigned not null default '20';");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
 ?>

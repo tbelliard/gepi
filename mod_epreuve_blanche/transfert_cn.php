@@ -177,6 +177,7 @@ if(isset($_POST['transfert_cn'])) {
 		$date_epreuve=$lig_epreuve->date;
 		$description=$lig_epreuve->description;
 		$etat=$lig_epreuve->etat;
+		$note_sur=$lig_epreuve->note_sur;
 	
 		if($etat!='clos') {
 
@@ -208,7 +209,7 @@ if(isset($_POST['transfert_cn'])) {
 					$id_conteneur=$current_id_cn;
 
 					// Créer le devoir
-					$sql="INSERT INTO cn_devoirs SET id_racine='$id_racine', id_conteneur='$id_conteneur', nom_court='nouveau';";
+					$sql="INSERT INTO cn_devoirs SET id_racine='$id_racine', id_conteneur='$id_conteneur', nom_court='nouveau', ramener_sur_referentiel='F', note_sur='$note_sur';";
 					$reg=mysql_query($sql);
 					if(!$reg) {
 						$msg.="Erreur lors de la création du devoir pour l'enseignement associé au cahier de notes $current_id_cn.<br />";
