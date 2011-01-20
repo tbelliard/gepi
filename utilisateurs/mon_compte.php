@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -51,6 +51,8 @@ if (($_SESSION['statut'] == 'professeur') or ($_SESSION['statut'] == 'cpe') or (
 }
 
 if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
+	check_token();
+
 	$msg = '';
 	$no_modif = "yes";
 	$no_anti_inject_password_a = isset($_POST["no_anti_inject_password_a"]) ? $_POST["no_anti_inject_password_a"] : NULL;
@@ -502,6 +504,26 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 			}
 		}
 	}
+
+	if((($_SESSION['statut']=='professeur')||
+		($_SESSION['statut']=='scolarite')||
+		($_SESSION['statut']=='cpe'))&&(isset($_POST['reg_civilite']))) {
+		if($msg!="") {$msg.="<br />";}
+		if(($_POST['reg_civilite']!='M.')&&($_POST['reg_civilite']!='Mlle')&&($_POST['reg_civilite']!='Mme')) {
+			$msg.="La civilité choisie n'est pas valide.";
+		}
+		else {
+			$sql="UPDATE utilisateurs SET civilite='".$_POST['reg_civilite']."' WHERE login='".$_SESSION['login']."';";
+			$update=mysql_query($sql);
+			if(!$update) {
+				$msg.="Erreur lors de la mise à jour de la civilité.";
+			}
+			else {
+				$msg.="Civilité mise à jour.";
+				$no_modif="no";
+			}
+		}
+	}
 	//======================================
 
 	if ($no_modif == "yes") {
@@ -540,6 +562,7 @@ if ($session_gepi->current_auth_mode == "gepi" || $gepiSettings['ldap_write_acce
 
 echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>\n";
 echo "<form enctype=\"multipart/form-data\" action=\"mon_compte.php\" method=\"post\">\n";
+echo add_token_field();
 echo "<h2>Informations personnelles *</h2>\n";
 
 if ($session_gepi->current_auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == "yes") {
@@ -550,7 +573,34 @@ echo "<table summary='Mise en forme'>\n";
 echo "<tr><td>\n";
 	echo "<table summary='Infos'>\n";
 	echo "<tr><td>Identifiant GEPI : </td><td>" . $_SESSION['login']."</td></tr>\n";
-	echo "<tr><td>Civilité : </td><td>".$user_civilite."</td></tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>Civilité : </td>\n";
+	echo "<td>\n";
+	if(($_SESSION['statut']=='professeur')||
+		($_SESSION['statut']=='scolarite')||
+		($_SESSION['statut']=='cpe')) {
+
+		echo "<select name='reg_civilite' onchange='changement()'>\n";
+		echo "<option value='M.' ";
+		if ($user_civilite=='M.') {echo " selected ";}
+		echo ">M.</option>\n";
+
+		echo "<option value='Mme' ";
+		if ($user_civilite=='Mme') {echo " selected ";}
+		echo ">Mme</option>\n";
+
+		echo "<option value='Mlle' ";
+		if ($user_civilite=='Mlle') {echo " selected ";}
+		echo ">Mlle</option>\n";
+		echo "</select>\n";
+	}
+	else {
+		echo $user_civilite;
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+
 	echo "<tr><td>Nom : </td><td>".$user_nom."</td></tr>\n";
 	echo "<tr><td>Prénom : </td><td>".$user_prenom."</td></tr>\n";
 	if ($editable_user) {
