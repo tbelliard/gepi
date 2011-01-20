@@ -1018,9 +1018,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				echo "</li>\n";
 
 				if($etat!='clos') {
+					$info_affectation_salle="";
+					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND id_salle!='-1';";
+					$test_affectation_salle=mysql_query($sql);
+					if(mysql_num_rows($test_affectation_salle)==0) {
+						$info_affectation_salle="<span style='color:red'>Aucun élève n'est encore affecté dans une salle.</span><br />\n";
+					}
+
+					//$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND statut='v' AND id_salle!='-1';";
 					$sql="SELECT 1=1 FROM eb_copies WHERE id_epreuve='$id_epreuve' AND statut='v';";
 					$test=mysql_query($sql);
-					if(mysql_num_rows($test)==0) {
+					if(($info_affectation_salle=='')&&(mysql_num_rows($test)==0)) {
 						echo "<li>\n";
 						echo "<a href='transfert_cn.php?id_epreuve=$id_epreuve'";
 						echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -1041,6 +1049,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					}
 					else {
 						echo "<li>\n";
+						echo $info_affectation_salle;
 						echo mysql_num_rows($test)." note(s) non encore saisie(s).<br />\n";
 						echo "Les choix suivants ne sont donc pas encore accessibles&nbsp;:";
 						echo "<ul>\n";
