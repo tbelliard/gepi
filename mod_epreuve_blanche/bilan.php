@@ -117,9 +117,6 @@ if(isset($imprime)) {
 
 		if($mode=='pdf') {
 
-			header('Content-Type: application/pdf');
-			Header('Pragma: public');
-
 			require('../fpdf/fpdf.php');
 			require('../fpdf/ex_fpdf.php');
 			
@@ -451,7 +448,7 @@ if(isset($imprime)) {
 
 			$date=date("Ymd_Hi");
 			$nom_fich='Bilan_'.$id_epreuve.'_'.$date.'.pdf';
-			header('Content-Type: application/pdf');
+			send_file_download_headers('application/pdf',$nom_fic);
 			$pdf->Output($nom_fich,'I');
 			die();
 
@@ -622,19 +619,7 @@ if(isset($imprime)) {
 			$nom_fic="bilan_epreuve_$id_epreuve.csv";
 	
 			$now = gmdate('D, d M Y H:i:s') . ' GMT';
-			header('Content-Type: text/x-csv');
-			header('Expires: ' . $now);
-			// lem9 & loic1: IE need specific headers
-			if (ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-				header('Content-Disposition: inline; filename="' . $nom_fic . '"');
-				header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-				header('Pragma: public');
-			}
-			else {
-				header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
-				header('Pragma: no-cache');
-			}
-	
+			send_file_download_headers('text/x-csv',$nom_fic);	
 			echo $csv;
 			die();
 

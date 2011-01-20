@@ -174,9 +174,6 @@ if((isset($mode))&&($mode=='imprime')) {
 			$id_salle[]=$lig_salle->id;
 		}
 
-		header('Content-Type: application/pdf');
-		Header('Pragma: public');
-
 		require('../fpdf/fpdf.php');
 		require('../fpdf/ex_fpdf.php');
 		
@@ -350,7 +347,7 @@ if((isset($mode))&&($mode=='imprime')) {
 
 		$date=date("Ymd_Hi");
 		$nom_fich='Etiquettes_'.$id_epreuve.'_'.$date.'.pdf';
-		header('Content-Type: application/pdf');
+		send_file_download_headers('application/pdf',$nom_fich);	
 		$pdf->Output($nom_fich,'I');
 		die();
 
