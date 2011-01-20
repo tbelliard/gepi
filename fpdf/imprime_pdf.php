@@ -21,11 +21,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-// Global configuration file
-// Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
-//Le problème peut être résolu en ajoutant la ligne suivante :
-Header('Pragma: public');
-
 define('FPDF_FONTPATH','../fpdf/font/');
 define('TopMargin','15');
 define('RightMargin','15');
@@ -34,7 +29,6 @@ define('BottomMargin','15');
 define('LargeurPage','210');
 
 //=============================
-// REMONTé:
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
@@ -46,11 +40,6 @@ require('../fpdf/fpdf.php');
 $mode_utf8_pdf=getSettingValue("mode_utf8_visu_notes_pdf");
 if($mode_utf8_pdf=="") {$mode_utf8_pdf="n";}
 require('../fpdf/ex_fpdf.php');
-
-/*
-// Initialisations files
-require_once("../lib/initialisations.inc.php");
-*/
 
 // Lorsque qu'on utilise une session PHP, parfois, IE n'affiche pas le PDF
 // C'est un problème qui affecte certaines versions d'IE.
@@ -65,7 +54,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -168,13 +157,9 @@ $pdf->FancyTable($w1,$header1,$data1,"v");
 
 //debug_var();
 
-//===============================================
-// AJOUT d'après les indications de Jacques Marot
-header('Content-Type: application/pdf');
-//===============================================
-
 //if((!isset($_GET['id_groupe']))||(!isset($_GET['nom_pdf_en_detail']))){
 if(!isset($_GET['id_groupe'])) {
+	send_file_download_headers('application/pdf','document.pdf');
 	$pdf->Output();
 }
 elseif(!isset($_GET['nom_pdf_en_detail'])) {
@@ -183,6 +168,9 @@ elseif(!isset($_GET['nom_pdf_en_detail'])) {
 	$ident_plus .= date("Ymd");
 	$ident_plus = my_ereg_replace("[^A-Za-z0-9]","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
 	$ident_plus=str_replace(" ", "_", $ident_plus);
+
+	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
+
 	$pdf->Output($ident_plus.'.pdf','I');
 	$pdf->closeParsers();
 }
@@ -195,6 +183,9 @@ else{
 	$ident_plus .= date("Ymd");
 	$ident_plus = my_ereg_replace("[^A-Za-z0-9]","_",$current_group["classlist_string"].'_'.$current_group["description"].'_'.$ident_plus);
 	$ident_plus=str_replace(" ", "_", $ident_plus);
+
+	send_file_download_headers('application/pdf',$ident_plus.'.pdf');
+
 	$pdf->Output($ident_plus.'.pdf','I');
 	$pdf->closeParsers();
 }
