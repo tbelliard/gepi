@@ -617,7 +617,7 @@ if(!isset($id_incident)) {
 	echo " /><label for='incidents_clos' style='cursor:pointer;'> Afficher les incidents clos</label><br />\n";
 
 	echo "<input type='checkbox' name='declarant_incident' id='declarant_incident' value='".$_SESSION['login']."'";
-	if($declarant_incident!="") {echo " checked='checked'";}
+	if(($declarant_incident!="")&&($declarant_incident!="---")) {echo " checked='checked'";}
 	echo " /><label for='declarant_incident' style='cursor:pointer;'> Ne voir que mes déclarations d'incidents</label>\n";
 	echo "</p>\n";
 
