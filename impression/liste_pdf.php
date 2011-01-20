@@ -25,9 +25,8 @@
 
 // Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
 //Le problème peut être résolu en ajoutant la ligne suivante :
-Header('Pragma: public');
-
-header('Content-Type: application/pdf');
+//Header('Pragma: public');
+//header('Content-Type: application/pdf');
 
 //=============================
 // REMONTé:
@@ -277,7 +276,8 @@ if ($id_liste_groupes!=NULL) {
 
 			$nom_releve=date("Ymd_Hi");
 			$nom_releve = 'Liste_'.$nom_releve.'.pdf';
-			header('Content-Type: application/pdf');
+			//header('Content-Type: application/pdf');
+			send_file_download_headers('application/pdf',$nom_releve);
 			$pdf->Output($nom_releve,'I');
 			die();
 		}
@@ -593,6 +593,7 @@ if ($id_liste_groupes!=NULL) {
 	// sortie PDF sur écran
 	$nom_releve=date("Ymd_Hi");
 	$nom_releve = 'Liste_'.$nom_releve.'.pdf';
-	header('Content-Type: application/pdf');
+	//header('Content-Type: application/pdf');
+	send_file_download_headers('application/pdf',$nom_releve);
 	$pdf->Output($nom_releve,'I');
 ?>
