@@ -249,6 +249,14 @@ PRIMARY KEY  (login,id_eval));");
 } else {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
+
+$result .= "&nbsp;->Extension du champ statut de la table 'cc_notes_eval' à 4 caractères : ";
+$query = mysql_query("ALTER TABLE cc_notes_eval CHANGE statut statut VARCHAR( 4 ) NOT NULL;");
+if ($query) {
+        $result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+        $result .= "<font color=\"red\">Erreur</font><br />";
+}
 //===================================
 
 ?>
