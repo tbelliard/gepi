@@ -334,6 +334,7 @@ if(mysql_num_rows($res)==0) {
 
 $lig=mysql_fetch_object($res);
 $etat=$lig->etat;
+$note_sur=$lig->note_sur;
 
 echo "<blockquote>\n";
 echo "<p><b>".$lig->intitule."</b> (<i>".formate_date($lig->date)."</i>)<br />\n";
@@ -430,7 +431,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	echo "<th$title_col_sp>Nom Prénom</th>\n";
 }
 //echo "<th width='100px'>Note</th>\n";
-echo "<th style='width:5em;'>Note</th>\n";
+echo "<th style='width:5em;'>Note sur $note_sur</th>\n";
 echo "</tr>\n";
 
 $cpt=0;
