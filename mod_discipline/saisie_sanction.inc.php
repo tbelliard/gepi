@@ -241,6 +241,7 @@ elseif($valeur=='exclusion') {
 	$type_exclusion="";
 	$fct_autorite="";
 	$nom_autorite="";
+	$fct_delegation="";
 	
 	if(isset($id_sanction)) {
 		$sql="SELECT * FROM s_exclusions WHERE id_sanction='$id_sanction';";

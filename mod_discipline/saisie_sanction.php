@@ -602,7 +602,7 @@ $TBS = AbsencesNotificationHelper::MergeInfosEtab($extraction_bilans);
 
 $TBS->MergeBlock('export', $export);
 
-$nom_fichier .= 'exclusion_'. $nom_ele.'_'.$prenom_ele.'_'.$id_sanction. '.odt';
+$nom_fichier = 'exclusion_'. $nom_ele.'_'.$prenom_ele.'_'.$id_sanction. '.odt';
 $TBS->Show(OPENTBS_DOWNLOAD + TBS_EXIT, $nom_fichier);
 } //fin Ooo
 
