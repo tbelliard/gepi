@@ -1211,6 +1211,7 @@ Moyenne avant arrondi: $moyenne<br />
 // Affichage de la liste des conteneurs
 //
 function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_periode) {
+	global $tabdiv_infobulle;
 	global $gepiClosedPeriodLabel;
 	global $id_groupe;
 	global $eff_groupe;
@@ -1284,8 +1285,28 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					echo ")</span>";
 
 					// Pour détecter une anomalie:
-					// $sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$id_groupe' and periode='$periode_num');";
+					 $sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$id_groupe' and periode='$periode_num');";
 					//echo "$sql<br />"; // Décommenter et exécuter dans une console mysql ou dans phpMyAdmin
+					$test_anomalie=mysql_query($sql);
+					if(mysql_num_rows($test_anomalie)>0) {
+						$titre_infobulle="Note pour un fantôme";
+						$texte_infobulle="Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement&nbsp;:<br />";
+						$cpt_ele_anomalie=0;
+						while($lig_anomalie=mysql_fetch_object($test_anomalie)) {
+							if($cpt_ele_anomalie>0) {$texte_infobulle.=", ";}
+							$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i>";
+							if($lig_anomalie->statut=='') {$texte_infobulle.=$lig_anomalie->note;}
+							elseif($lig_anomalie->statut=='v') {$texte_infobulle.="_";}
+							else {$texte_infobulle.=$lig_anomalie->statut;}
+							$texte_infobulle.="</i>)";
+							$cpt_ele_anomalie++;
+						}
+						$texte_infobulle.="<br />";
+						$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
+						$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
+					}
 
 					//echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
@@ -1368,6 +1389,30 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							echo "'>($eff_dev";
 							if(isset($eff_groupe)) {echo "/$eff_groupe";}
 							echo ")</span>";
+
+							// Pour détecter une anomalie:
+							$sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$id_groupe' and periode='$periode_num');";
+							//echo "$sql<br />"; // Décommenter et exécuter dans une console mysql ou dans phpMyAdmin
+							$test_anomalie=mysql_query($sql);
+							if(mysql_num_rows($test_anomalie)>0) {
+								$titre_infobulle="Note pour un fantôme";
+								$texte_infobulle="Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement&nbsp;:<br />";
+								$cpt_ele_anomalie=0;
+								while($lig_anomalie=mysql_fetch_object($test_anomalie)) {
+									if($cpt_ele_anomalie>0) {$texte_infobulle.=", ";}
+									$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i>";
+									if($lig_anomalie->statut=='') {$texte_infobulle.=$lig_anomalie->note;}
+									elseif($lig_anomalie->statut=='v') {$texte_infobulle.="_";}
+									else {$texte_infobulle.=$lig_anomalie->statut;}
+									$texte_infobulle.="</i>)";
+									$cpt_ele_anomalie++;
+								}
+								$texte_infobulle.="<br />";
+								$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
+								$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+		
+								echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
+							}
 
 							//echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 							echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
