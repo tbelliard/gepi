@@ -124,5 +124,30 @@ class AbsenceEleveSaisieQuery extends BaseAbsenceEleveSaisieQuery {
 	    }
 	    return $this;
         }
-	
+
+        /**
+     * Filtre la requete sur les saisies en fonction du lieu de l'élève
+     *
+     * @param     integer $idLieu L'id du lieu
+     *
+     * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+     */
+    public function filterByIdLieu($idLieu= null) {
+
+        $this
+                ->join('AbsenceEleveSaisie.JTraitementSaisieEleve', Criteria::LEFT_JOIN)
+                ->join('JTraitementSaisieEleve.AbsenceEleveTraitement', Criteria::LEFT_JOIN)
+                ->join('AbsenceEleveTraitement.AbsenceEleveType', Criteria::LEFT_JOIN)
+                ->withColumn('AbsenceEleveType.IdLieu', 'idlieu')
+                ->groupById();
+        $criteria = new Criteria();
+        $c = $criteria->getNewCriterion('idlieu', $idLieu, Criteria::EQUAL);
+        if ($idLieu == Null) {
+            $c1 = $criteria->getNewCriterion('idlieu', null, Criteria::ISNULL);
+            $c->addOr($c1);
+        }
+        $this->addHaving($c);
+
+        return $this;
+    }
 } // AbsenceEleveSaisieQuery

@@ -718,6 +718,27 @@ class Eleve extends BaseEleve {
 
 	}
 
+    /**
+	 *
+	 * Retourne une liste d'absence pour le creneau et le jour donné.
+	 *
+	 * @param      EdtCreneau $edtcreneau
+     * @param      Id lieu $id_lieu
+     * @param      mixed $v string, integer (timestamp), or DateTime value.  
+	 *
+ 	 * @return PropelColection AbsenceEleveSaisie[]
+	 */
+    public function getAbsenceEleveSaisiesDuCreneauByLieu($edtcreneau = null, $id_lieu = null, $v = 'now') {
+        $result = new PropelObjectCollection();
+        $result->setModel('AbsenceEleveSaisie');
+        $saisie_col = $this->getAbsenceEleveSaisiesDuCreneau($edtcreneau, $v);
+        foreach ($saisie_col as $saisie) {
+            if ($saisie->hasLieuSaisie($id_lieu) && !$saisie->hasTypeLikeErreurSaisie()) {
+                $result->append($saisie);
+            }
+        }
+        return($result);
+    }
   	/**
 	 *
 	 * Retourne une liste d'absence pour le creneau et le jour donné.

@@ -168,6 +168,47 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    }
 	    return false;
 	}
+    /**
+	 *
+	 * Renvoi true ou false si le lieu est rattaché a cette saisie ou non
+	 * @param      $id_lieu id du lieu à tester
+	 * @return     boolean
+	 *
+	 */
+    public function hasLieuSaisie($id_lieu) {
+
+        if (!$this->getTraitee() && $id_lieu == null) {
+            return true;
+        }
+        $traitements = $this->getAbsenceEleveTraitements();
+        foreach ($traitements as $traitement) {
+            if ($traitement->getAbsenceEleveType() == null && $id_lieu == null) {
+                return true;
+            }
+            if ($traitement->getAbsenceEleveType() != null && $traitement->getAbsenceEleveType()->getIdLieu() == $id_lieu) {
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+	 *
+	 * Renvoi true ou false si le type  est du type erreur de saisie
+	 *
+	 * @return     boolean
+	 *
+	 */
+    public function hasTypeLikeErreurSaisie() {
+
+        $traitements = $this->getAbsenceEleveTraitements();
+        foreach ($traitements as $traitement) {
+            if ($traitement->getAbsenceEleveType() != null && $traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE
+                    && $traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE) {
+                return true;
+            }
+        }
+        return false;
+    }
 	/**
 	 *
 	 * Renvoi une chaine de caractere compréhensible concernant les dates de debut et de fin
