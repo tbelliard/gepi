@@ -272,4 +272,107 @@ else {
 			$result .= "<font color=\"red\">Erreur</font><br />";
 	}
 }
+
+// A1jout Eric Module discipline génération des exclusion Ooo
+$result .= "<br /><b>Ajout de tables pour la tables s_exclusions du module discipline :</b><br />";
+$result .= "<br />&nbsp;->Ajout d'un champ 'nombre_jours' à la table 's_exclusions' : ";
+$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'nombre_jours';"));
+if ($test_note_sur>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `nombre_jours` VARCHAR( 50 ) NOT NULL ;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+$result .= "<br />&nbsp;->Ajout d'un champ 'qualification_faits' à la table 's_exclusions' : ";
+$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'qualification_faits';"));
+if ($test_note_sur>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `qualification_faits` text NOT NULL ;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+$result .= "<br />&nbsp;->Ajout d'un champ 'num_courrier' à la table 's_exclusions' : ";
+$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'num_courrier';"));
+if ($test_note_sur>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `num_courrier` VARCHAR( 50 ) NOT NULL ;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+$result .= "<br />&nbsp;->Ajout d'un champ 'type_exclusion' à la table 's_exclusions' : ";
+$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'type_exclusion';"));
+if ($test_note_sur>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `type_exclusion` VARCHAR( 50 ) NOT NULL ;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+$result .= "<br />&nbsp;->Ajout d'un champ 'fct_delegation' à la table 's_exclusions' : ";
+$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'fct_delegation';"));
+if ($test_note_sur>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `fct_delegation` VARCHAR( 100 ) NOT NULL ;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+$result .= "<br />&nbsp;->Ajout d'un champ 'fct_autorite' à la table 's_exclusions' : ";
+$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'fct_autorite';"));
+if ($test_note_sur>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `fct_autorite` VARCHAR( 50 ) NOT NULL ;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+
+$result .= "<br />&nbsp;->Ajout d'un champ 'nom_autorite' à la table 's_exclusions' : ";
+$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'nom_autorite';"));
+if ($test_note_sur>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `nom_autorite` VARCHAR( 50 ) NOT NULL ;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+
 ?>

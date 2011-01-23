@@ -234,6 +234,14 @@ elseif($valeur=='exclusion') {
 
 	$lieu_exclusion="";
 	$travail="";
+	
+	$nombre_jours="";
+	$qualification_faits="";
+	$numero_courrier="";
+	$type_exclusion="";
+	$fct_autorite="";
+	$nom_autorite="";
+	
 	if(isset($id_sanction)) {
 		$sql="SELECT * FROM s_exclusions WHERE id_sanction='$id_sanction';";
 		$res_sanction=mysql_query($sql);
@@ -246,6 +254,13 @@ elseif($valeur=='exclusion') {
 			$lieu_exclusion=$lig_sanction->lieu;
 			$travail=$lig_sanction->travail;
 			$afficher_creneau_final='';
+			$nombre_jours=$lig_sanction->nombre_jours;
+			$qualification_faits=$lig_sanction->qualification_faits;
+			$numero_courrier=$lig_sanction->num_courrier;
+			$type_exclusion=$lig_sanction->type_exclusion;
+			$fct_delegation=$lig_sanction->fct_delegation;
+			$fct_autorite=$lig_sanction->fct_autorite;
+			$nom_autorite=$lig_sanction->nom_autorite;
 		} 
 	}
 	echo "<tr class='lig1'>\n";
@@ -313,7 +328,77 @@ elseif($valeur=='exclusion') {
 	echo "</td>\n";
 	echo "</tr>\n";
 
+// Ajout Eric génération Ooo de l'exclusion
+	echo "<tr>\n";
+	echo "<td colspan=2 style='text-align:center;'>\n";
+	echo "Données à renseigner pour l'impression Open Office de l'exclusion temporaire :</td>\n";
+	echo "</tr>\n";
+
 	echo "<tr class='lig1'>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Numero de courrier&nbsp;: </td>\n";
+	echo "<td style='text-align:left;'>\n";
+	echo "<input type='text' name='numero_courrier' id='numero_courrier' value=\"$numero_courrier\" onchange='changement();' />\n";
+	echo "<i>La référence du courrier dans le registre courrier départ. Ex : ADM/SD/012/11</i></td>\n";
+	echo "</tr>\n";
+	
+	echo "<tr class='lig-1'>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Type d'exclusion&nbsp;: </td>\n";
+	echo "<td style='text-align:left;'>\n";
+	echo "<input type='text' name='type_exclusion' id='type_exclusion' value=\"$type_exclusion\" onchange='changement();' />\n";
+	echo "<select name='type_exclusion' id='type_exclusion' onchange=\"maj_lieu('lieu_exclusion','choix_lieu','type_exclusion');changement();\">\n";
+	
+	if ($type_exclusion=='exclusion temporaire') {
+	    echo "<option value=\"exclusion temporaire\" selected>Exclusion temporaire</option>\n";
+	} else {
+	    echo "<option value=\"exclusion temporaire\">Exclusion temporaire</option>\n";
+	}
+	if ($type_exclusion=='exclusion-inclusion temporaire') {
+	    echo "<option value=\"exclusion-inclusion temporaire\" selected>Exclusion-inclusion temporaire</option>\n";
+	} else {
+	    echo "<option value=\"exclusion-inclusion temporaire\">Exclusion-inclusion temporaire</option>\n";
+	}
+	
+	
+	echo "</select>\n";
+	echo "<i>Choisir le type dans la liste.</i></td>\n";
+	echo "</tr>\n";	
+	
+	echo "<tr class='lig1'>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nombre de jours d'exclusion&nbsp;: </td>\n";
+	echo "<td style='text-align:left;'>\n";
+	echo "<input type='text' name='nombre_jours' id='nombre_jours' value=\"$nombre_jours\" onchange='changement();' />\n";
+	echo "<i>en toutes lettres</i></td>\n";
+	echo "</tr>\n";
+	
+	echo "<tr class='lig-1'>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Qualification des faits&nbsp;: </td>\n";
+	echo "<td style='text-align:left;'>\n";
+	echo "<textarea name='no_anti_inject_qualification_faits' cols='100' onchange='changement();'>$qualification_faits</textarea>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+	
+	echo "<tr class='lig1'>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Délégation du chef d'établissement&nbsp;: </td>\n";
+	echo "<td style='text-align:left;'>\n";
+	echo "<textarea name='no_anti_inject_fct_delegation' cols='50' onchange='changement();'>$fct_delegation</textarea>\n";
+	echo "<i>(facultatif) Ex : Pour le Chef d'établissement,\n\r et par délégation,</i></td>\n";
+	echo "</tr>\n";
+	
+	echo "<tr class='lig-1'>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Fonction de l'autorité&nbsp;: </td>\n";
+	echo "<td style='text-align:left;'>\n";
+	echo "<input type='text' name='fct_autorite' id='fct_autorite' value=\"$fct_autorite\" onchange='changement();' />\n";
+	echo "<i>Fonction du personnel de direction ou du délégataire</i></td>\n";
+	echo "</tr>\n";
+	
+	echo "<tr class='lig1'>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nom de l'autorité&nbsp;: </td>\n";
+	echo "<td style='text-align:left;'>\n";
+	echo "<input type='text' name='nom_autorite' id='nom_autorite' value=\"$nom_autorite\" onchange='changement();' />\n";
+	echo "<i>Nom du personnel de direction ou du délégataire</i></td>\n";
+	echo "</tr>\n";
+
+	echo "<tr class='lig-1'>\n";
 	echo "<td colspan='2'>\n";
 	echo "<input type='submit' name='enregistrer_sanction' value='Enregistrer' />\n";
 	echo "</td>\n";

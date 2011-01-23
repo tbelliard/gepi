@@ -59,7 +59,10 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
     $entete_section[]="";
 	$fich[]="rapport_incident.odt";
     $utilisation[]="Formulaire de rapport d'incident";
-	
+	//Exclusion temporaire
+    $entete_section[]="";
+	$fich[]="discipline_exclusion.odt";
+    $utilisation[]="Exclusion temporaire de l'établissement";
 
     //modèle ABS2
 	$entete_section[]="MODULE ABSENCE";
