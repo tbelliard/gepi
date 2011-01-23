@@ -23,7 +23,7 @@
 
 $nom_cc=getSettingValue('nom_cc');
 if($nom_cc=='') {
-	$nom_cc="contrôle de cours";
+	$nom_cc="evaluation-cumul";
 }
 
 function precision_arrondi($moyenne,$arrondir) {
