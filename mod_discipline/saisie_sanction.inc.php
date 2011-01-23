@@ -345,8 +345,7 @@ elseif($valeur=='exclusion') {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Type d'exclusion&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='type_exclusion' id='type_exclusion' value=\"$type_exclusion\" onchange='changement();' />\n";
-	echo "<select name='type_exclusion' id='type_exclusion' onchange=\"maj_lieu('lieu_exclusion','choix_lieu','type_exclusion');changement();\">\n";
-	
+	echo "<select name='type_exclusion' id='type_exclusion_select' onchange=\"maj_lieu('type_exclusion','type_exclusion_select','type_exclusion');changement();\">\n";
 	if ($type_exclusion=='exclusion temporaire') {
 	    echo "<option value=\"exclusion temporaire\" selected>Exclusion temporaire</option>\n";
 	} else {
@@ -380,19 +379,19 @@ elseif($valeur=='exclusion') {
 	echo "<tr class='lig1'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Délégation du chef d'établissement&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
-	echo "<textarea name='no_anti_inject_fct_delegation' cols='50' onchange='changement();'>$fct_delegation</textarea>\n";
+	echo "<textarea name='no_anti_inject_fct_delegation' cols='30' onchange='changement();'>$fct_delegation</textarea>\n";
 	echo "<i>(facultatif) Ex : Pour le Chef d'établissement,\n\r et par délégation,</i></td>\n";
 	echo "</tr>\n";
 	
 	echo "<tr class='lig-1'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Fonction de l'autorité&nbsp;: </td>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Fonction de l'autorité signataire&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='fct_autorite' id='fct_autorite' value=\"$fct_autorite\" onchange='changement();' />\n";
 	echo "<i>Fonction du personnel de direction ou du délégataire</i></td>\n";
 	echo "</tr>\n";
 	
 	echo "<tr class='lig1'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nom de l'autorité&nbsp;: </td>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nom de l'autorité signataire&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='nom_autorite' id='nom_autorite' value=\"$nom_autorite\" onchange='changement();' />\n";
 	echo "<i>Nom du personnel de direction ou du délégataire</i></td>\n";

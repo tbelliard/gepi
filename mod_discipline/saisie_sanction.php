@@ -552,12 +552,13 @@ $mois_fr = Array("", "janvier", "février", "mars", "avril", "mai", "juin", "juil
         "septembre", "octobre", "novembre", "décembre");
 // on extrait la date du jour pour la date de debut
 list($annee, $mois, $jour) = explode('-', $date_debut);
+$mois=intval($mois);
 $timestamp = mktime (0, 0, 0, $mois, $jour, $annee);
 // affichage du jour de la semaine
 $date_debut = $nom_jour_fr[date("w",$timestamp)].' '.$jour.' '.$mois_fr[$mois].' '.$annee; 
-
 // on extrait la date du jour pour la date de fin
 list($annee, $mois, $jour) = explode('-', $date_fin); 
+$mois=intval($mois);
 $timestamp = mktime (0, 0, 0, $mois, $jour, $annee);
 // affichage du jour de la semaine
 $date_fin = $nom_jour_fr[date("w",$timestamp)].' '.$jour.' '.$mois_fr[$mois].' '.$annee; 
@@ -589,7 +590,7 @@ $export[] = Array('nom' => $nom_ele, 'prenom' => $prenom_ele, 'classe' => $class
 				  );
 /*
 echo "<pre>";
-echo print_r($export);
+echo print_r($mois);
 echo "</pre>";
 */
 // génération Ooo
