@@ -165,7 +165,7 @@ switch ($_erreur) {
     $_msg = "<p class=\"red\">Il manque le fichier plugin.xml &agrave; ce plugin, impossible de l'installer !</p>";
     break;
   case "2":
-    $_msg = "<p class=\"red\">Le fichier plugin.xml ne respecte pas la struture demand&eacute;e ! voir <a href=\"https://www.sylogix.org/wiki/gepi/plugin\">la page sur TRAC</a></p>";
+    $_msg = "<p class=\"red\">Le fichier plugin.xml ne respecte pas la struture demand&eacute;e ! voyez <a href=\"https://www.sylogix.org/wiki/gepi/plugin\">la documentation collaborative (wiki)</a></p>";
     break;
 
 default:
@@ -184,7 +184,7 @@ echo "<p class='bold'><a href='../accueil_modules.php'><img src='../images/icons
 
 <h3 class="Gepi">Liste des plugins install&eacute;s</h3>
 <p>Pour plus d'informations concernant les plugins de Gepi, voyez
-  <a onclick="window.open(this.href, '_blank'); return false;" href="https://www.sylogix.org/wiki/gepi/plugin">la page sur TRAC</a>
+  <a onclick="window.open(this.href, '_blank'); return false;" href="https://www.sylogix.org/projects/gepi/wiki/GuideAdministrateur#Syst%C3%A8me-de-plugins">la documentation collaborative (wiki)</a>
 </p>
 <?php echo $_msg; ?>
  <table class="table">
