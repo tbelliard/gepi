@@ -48,8 +48,15 @@ if (!checkAccess()) {
 check_token();
 
 //Initialisation
-$id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] :  NULL;
-$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] :  NULL;
+
+// Modifié pour pouvoir récupérer ces variables en GET pour les CSV
+//$id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] :  NULL;
+$id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
+//$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] :  NULL;
+//$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
+$num_periode = isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : "1");
+
+
 if ($num_periode=="annee") {
     $referent="annee";
 } else {
@@ -90,19 +97,26 @@ function my_echo($texte) {
 
 $larg_tab = isset($_POST['larg_tab']) ? $_POST['larg_tab'] :  NULL;
 $bord = isset($_POST['bord']) ? $_POST['bord'] :  NULL;
-$aff_abs = isset($_POST['aff_abs']) ? $_POST['aff_abs'] :  NULL;
-$aff_reg = isset($_POST['aff_reg']) ? $_POST['aff_reg'] :  NULL;
-$aff_doub = isset($_POST['aff_doub']) ? $_POST['aff_doub'] :  NULL;
-$aff_rang = isset($_POST['aff_rang']) ? $_POST['aff_rang'] :  NULL;
 
 //============================
-$aff_date_naiss = isset($_POST['aff_date_naiss']) ? $_POST['aff_date_naiss'] :  NULL;
+//$aff_abs = isset($_POST['aff_abs']) ? $_POST['aff_abs'] :  NULL;
+//$aff_reg = isset($_POST['aff_reg']) ? $_POST['aff_reg'] :  NULL;
+//$aff_doub = isset($_POST['aff_doub']) ? $_POST['aff_doub'] :  NULL;
+//$aff_rang = isset($_POST['aff_rang']) ? $_POST['aff_rang'] :  NULL;
+//$aff_date_naiss = isset($_POST['aff_date_naiss']) ? $_POST['aff_date_naiss'] :  NULL;
+
+// Modifié pour pouvoir récupérer ces variables en GET pour les CSV
+$aff_abs = isset($_POST['aff_abs']) ? $_POST['aff_abs'] : (isset($_GET['aff_abs']) ? $_GET['aff_abs'] : NULL);
+$aff_reg = isset($_POST['aff_reg']) ? $_POST['aff_reg'] : (isset($_GET['aff_reg']) ? $_GET['aff_reg'] : NULL);
+$aff_doub = isset($_POST['aff_doub']) ? $_POST['aff_doub'] : (isset($_GET['aff_doub']) ? $_GET['aff_doub'] : NULL);
+$aff_rang = isset($_POST['aff_rang']) ? $_POST['aff_rang'] : (isset($_GET['aff_rang']) ? $_GET['aff_rang'] : NULL);
+$aff_date_naiss = isset($_POST['aff_date_naiss']) ? $_POST['aff_date_naiss'] : (isset($_GET['aff_date_naiss']) ? $_GET['aff_date_naiss'] : NULL);
 //============================
+
 
 $couleur_alterne = isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] :  NULL;
 
 //================================
-// MODIF: boireaus
 if(file_exists("../visualisation/draw_graphe.php")){
 	$temoin_graphe="oui";
 }
@@ -420,6 +434,7 @@ $ligne1[1] = "<a href='#' onclick=\"document.getElementById('col_tri').value='1'
 			" style='text-decoration:none; color:black;'>".
 			"Nom ".
 			"</a>";
+$ligne1_csv[1] = "Nom ";
 
 //if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Régime&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"régime\">";
 //if ($aff_doub) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Redoublant&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"doublant\">";
@@ -427,13 +442,18 @@ $ligne1[1] = "<a href='#' onclick=\"document.getElementById('col_tri').value='1'
 //if (($aff_rang) and ($referent=="une_periode")) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Rang de l'élève&width=22\" WIDTH=\"22\" BORDER=0 ALT=\"Rang de l'élève\">";
 //if ($aff_reg) $ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".htmlentities("Régime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";
 //=========================
-if ($aff_date_naiss){$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Date de naissance")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";}
+if ($aff_date_naiss){
+	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Date de naissance")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";
+	$ligne1_csv[] = "Date de naissance";
+}
 //=========================
 if ($aff_reg) {
 	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Régime")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"régime\" />";
+	$ligne1_csv[]="Régime";
 }
 if ($aff_doub) {
 	$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=Redoublant&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"doublant\" />";
+	$ligne1_csv[]="Redoublant";
 }
 if ($aff_abs) {
 	//$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journées d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journées d'absence\" />";
@@ -441,6 +461,7 @@ if ($aff_abs) {
 				"document.forms['formulaire_tri'].submit();\">".
 				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("1/2 journées d'absence")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"1/2 journées d'absence\" />".
 				"</a>";
+	$ligne1_csv[]="1/2 journées d'absence";
 }
 if (($aff_rang) and ($referent=="une_periode")) {
 	//$ligne1[] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'élève\" />";
@@ -449,6 +470,7 @@ if (($aff_rang) and ($referent=="une_periode")) {
 				"document.forms['formulaire_tri'].submit();\">".
 				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"Rang de l'élève\" />".
 				"</a>";
+	$ligne1_csv[]="Rang de l'élève";
 }
 
 // Etiquettes des quatre dernières lignes
@@ -942,6 +964,9 @@ while($i < $lignes_groupes){
 				//$col[1][$loop+$ligne_supl]="<a href='draw_graphe.php?".
 
 				if(isset($chaine_moy_eleve1[$loop+$ligne_supl])) {
+
+					$col_csv[1][$loop+$ligne_supl]=$col[1][$loop+$ligne_supl];
+
 					$tmp_col=$col[1][$loop+$ligne_supl];
 					//echo "\$current_eleve_login[$loop]=$current_eleve_login[$loop]<br />";
 					$col[1][$loop+$ligne_supl]="<a href='../visualisation/draw_graphe.php?".
@@ -971,6 +996,7 @@ while($i < $lignes_groupes){
 					"&amp;temoin_image_escalier=$temoin_image_escalier".
 					"' target='_blank'>".$tmp_col.
 					"</a>";
+
 				}
 			}
 			//echo "\$chaine_moy_classe=".$chaine_moy_classe."<br /><br />\n";
@@ -1026,12 +1052,18 @@ while($i < $lignes_groupes){
 
 	$nom_complet_matiere = $current_group["description"];
 	$nom_complet_coupe = (strlen($nom_complet_matiere) > 20)? urlencode(substr($nom_complet_matiere,0,20)."...") : urlencode($nom_complet_matiere);
+
+	$nom_complet_coupe_csv=(strlen($nom_complet_matiere) > 20) ? substr($nom_complet_matiere,0,20) : $nom_complet_matiere;
+	$nom_complet_coupe_csv=my_ereg_replace(";","",$nom_complet_coupe_csv);
+
 	//$ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=$nom_complet_coupe&width=22\" WIDTH=\"22\" BORDER=\"0\" />";
 	//$ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
 	$ligne1[$k]="<a href='#' onclick=\"document.getElementById('col_tri').value='$k';";
 	$ligne1[$k].="document.forms['formulaire_tri'].submit();\">";
 	$ligne1[$k] .= "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
 	$ligne1[$k].="</a>";
+
+	$ligne1_csv[$k] = "$nom_complet_coupe_csv";
 
 	$i++;
 }
@@ -1047,6 +1079,8 @@ if ($ligne_supl == 1) {
 				"document.forms['formulaire_tri'].submit();\">".
 				"<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne : " . $cat_names[$cat_id])."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" ALT=\"".$cat_names[$cat_id]."\" />".
 				"</a>";
+
+		$ligne1_csv[$nb_col] = "Moyenne : " . $cat_names[$cat_id];
 
 		$j = '0';
 		while($j < $nb_lignes_tableau) {
@@ -1098,6 +1132,7 @@ if ($ligne_supl == 1) {
     $ligne1[$nb_col].="<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
 	$ligne1[$nb_col].="</a>";
 
+	$ligne1_csv[$nb_col] = "Moyenne générale";
 
 	$j = '0';
 	while($j < $nb_lignes_tableau) {
@@ -1411,6 +1446,83 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 
 $nb_lignes_tableau = $nb_lignes_tableau + 3 + $ligne_supl;
 
+function affiche_tableau_csv2($nombre_lignes, $nb_col, $ligne1, $col, $col_csv) {
+	$chaine="";
+	$j = 1;
+	while($j < $nb_col+1) {
+		if($j>1){
+			//echo ";";
+			$chaine.=";";
+		}
+		//echo $ligne1[$j];
+		$chaine.=$ligne1[$j];
+		$j++;
+	}
+	//echo "<br />";
+	//echo "\n";
+	$chaine.="\n";
+
+	$i = "0";
+	while($i < $nombre_lignes) {
+		$j = 1;
+		while($j < $nb_col+1) {
+			if($j>1){
+				//echo ";";
+				$chaine.=";";
+			}
+			//echo $col[$j][$i];
+			if(isset($col_csv[$j][$i])) {
+				$chaine.=$col_csv[$j][$i];
+			}
+			else {
+				$chaine.=$col[$j][$i];
+			}
+			$j++;
+		}
+		//echo "<br />";
+		//echo "\n";
+		$chaine.="\n";
+		$i++;
+	}
+	return $chaine;
+}
+
+if(isset($_GET['mode'])) {
+	if($_GET['mode']=="csv") {
+		$classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
+
+		if ($referent == "une_periode") {
+			$chaine_titre="Classe_".$classe."_Resultats_".$nom_periode[$num_periode]."_Annee_scolaire_".getSettingValue("gepiYear");
+		} else {
+			$chaine_titre="Classe_".$classe."_Resultats_Moyennes_annuelles_Annee_scolaire_".getSettingValue("gepiYear");
+		}
+
+		$now = gmdate('D, d M Y H:i:s') . ' GMT';
+
+		$nom_fic=$chaine_titre."_".$now.".csv";
+
+		// Filtrer les caractères dans le nom de fichier:
+		$nom_fic=my_ereg_replace("[^a-zA-Z0-9_.-]","",remplace_accents($nom_fic,'all'));
+
+		header('Content-Type: text/x-csv');
+		header('Expires: ' . $now);
+		// lem9 & loic1: IE need specific headers
+		if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+			header('Content-Disposition: inline; filename="' . $nom_fic . '"');
+			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+			header('Pragma: public');
+		} else {
+			header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
+			header('Pragma: no-cache');
+		}
+
+		$fd="";
+		$fd.=affiche_tableau_csv2($nb_lignes_tableau, $nb_col, $ligne1_csv, $col, $col_csv);
+		echo $fd;
+		die();
+	}
+}
+
 //**************** EN-TETE *****************
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
@@ -1454,6 +1566,28 @@ $_SESSION['vtn_pref_coloriser_resultats']=$vtn_coloriser_resultats;
 //=================================================
 
 $classe = sql_query1("SELECT classe FROM classes WHERE id = '$id_classe'");
+
+// Lien pour générer un CSV
+echo "<div class='noprint' style='float: right; border: 1px solid black; background-color: white; width: 7em; height: 1em; text-align: center; padding-bottom:3px;'>
+<a href='".$_SERVER['PHP_SELF']."?mode=csv&amp;id_classe=$id_classe&amp;num_periode=$num_periode";
+
+if($aff_abs){
+	echo "&amp;aff_abs=$aff_abs";
+}
+if($aff_reg){
+	echo "&amp;aff_reg=$aff_reg";
+}
+if($aff_doub){
+	echo "&amp;aff_doub=$aff_doub";
+}
+if($aff_rang){
+	echo "&amp;aff_rang=$aff_rang";
+}
+if($aff_date_naiss){
+	echo "&amp;aff_date_naiss=$aff_date_naiss";
+}
+echo "'>Export CSV</a>
+</div>\n";
 
 $la_date=date("d/m/Y H:i");
 
