@@ -2,7 +2,7 @@
 /*
 *$Id$
 *
-* Copyright 2001, 2006 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
 *
 * This file is part of GEPI.
 *
@@ -258,6 +258,8 @@ function matiereprof($prof, $equipepeda) {
 	return ($prof_de);
 }
 
+//echo "$requete_trombi<br/>";
+
 		$execution_trombi = mysql_query($requete_trombi) or die('Erreur SQL !'.$requete_trombi.'<br />'.mysql_error());
 		$cpt_photo = 1;
 		while ($donnee_trombi = mysql_fetch_array($execution_trombi))
@@ -427,6 +429,10 @@ function matiereprof($prof, $equipepeda) {
 			echo $nom_prenom_aff;
 			if ( $matiere_prof[$i] != '' ) {
 				echo "<span style=' font: normal 10pt Arial, Helvetica, sans-serif;'>$matiere_prof[$i]</span>";
+			}
+			if (( $action_affiche === 'groupe' )&&(strstr($current_group['classlist_string'],","))) {
+				$tab_ele_classes=get_class_from_ele_login($login_trombinoscope[$i]);
+				echo "<br />".$tab_ele_classes['liste'];
 			}
 
 			//echo "</span>";
