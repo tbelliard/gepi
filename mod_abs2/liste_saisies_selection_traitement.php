@@ -828,14 +828,21 @@ echo '</thead>';
 
 echo '<tbody>';
 $results = $saisies_col->getResults();
+$hier='';
+$numero_couleur=1;
 foreach ($results as $saisie) {
-
-    if ($results->getPosition() %2 == '1') {
+    $aujourdhui=strftime("%d/%m/%Y", $saisie->getDebutAbs('U'));    
+    if (!isFiltreRechercheParam('filter_eleve')) {
+        $numero_couleur = $results->getPosition();
+    } else {
+        if ($aujourdhui !== $hier)
+            $numero_couleur++;
+    }
+    if ($numero_couleur %2 == '1') {
 	    $background_couleur="rgb(220, 220, 220);";
     } else {
 	    $background_couleur="rgb(210, 220, 230);";
     }
-
     echo "<tr style='background-color :$background_couleur'>\n";
 
     if ($saisie->getNotifiee()) {
@@ -1061,8 +1068,7 @@ foreach ($results as $saisie) {
     echo '</td>';
 
     echo '</tr>';
-
-
+    $hier=$aujourdhui;
 }
 
 echo '</tbody>';
