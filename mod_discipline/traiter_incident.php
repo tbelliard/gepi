@@ -275,6 +275,8 @@ $protagoniste_incident=isset($_POST['protagoniste_incident']) ? $_POST['protagon
 
 //$declarant_incident=isset($_POST['declarant_incident']) ? $_POST['declarant_incident'] : (isset($_GET['declarant_incident']) ? $_GET['declarant_incident'] : "");
 $declarant_incident=isset($_POST['declarant_incident']) ? $_POST['declarant_incident'] : (isset($_GET['declarant_incident']) ? $_GET['declarant_incident'] : "---");
+$declarant_incident2=isset($_POST['declarant_incident2']) ? $_POST['declarant_incident2'] : (isset($_GET['declarant_incident2']) ? $_GET['declarant_incident2'] : NULL);
+if(isset($declarant_incident2)) {$declarant_incident=$declarant_incident2;}
 
 $incidents_clos=isset($_POST['incidents_clos']) ? $_POST['incidents_clos'] : (isset($_GET['incidents_clos']) ? $_GET['incidents_clos'] : "n");
 
@@ -471,6 +473,8 @@ if(!isset($id_incident)) {
 	if($nature_incident!="---") {$ajout_sql.=" AND si.nature='$nature_incident'";$chaine_criteres.="&amp;nature_incident=$nature_incident";}
 	if($protagoniste_incident!="") {$ajout_sql.=" AND sp.login='$protagoniste_incident'";$chaine_criteres.="&amp;protagoniste_incident=$protagoniste_incident";}
 
+	//echo "\$declarant_incident=$declarant_incident<br />";
+
 	if($declarant_incident!="---") {$ajout_sql.=" AND si.declarant='$declarant_incident'";$chaine_criteres.="&amp;declarant_incident=$declarant_incident";}
 
 	if($id_classe_incident!="") {
@@ -551,6 +555,7 @@ if(!isset($id_incident)) {
 	$sql2.=" ORDER BY date DESC, heure DESC;";
 
 	//echo "$sql<br />";
+	//echo "$sql2<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)==0) {
 		echo " | <a href='".$_SERVER['PHP_SELF']."' onclick='history.go(-1);return false;'> Retour à la page précédente</a>\n";
@@ -616,9 +621,12 @@ if(!isset($id_incident)) {
 	if($incidents_clos=="y") {echo " checked='checked'";}
 	echo " /><label for='incidents_clos' style='cursor:pointer;'> Afficher les incidents clos</label><br />\n";
 
-	echo "<input type='checkbox' name='declarant_incident' id='declarant_incident' value='".$_SESSION['login']."'";
-	if(($declarant_incident!="")&&($declarant_incident!="---")) {echo " checked='checked'";}
-	echo " /><label for='declarant_incident' style='cursor:pointer;'> Ne voir que mes déclarations d'incidents</label>\n";
+	//echo "<input type='checkbox' name='declarant_incident' id='declarant_incident' value='".$_SESSION['login']."'";
+	echo "<input type='checkbox' name='declarant_incident2' id='declarant_incident2' value='".$_SESSION['login']."'";
+	//if(($declarant_incident!="")&&($declarant_incident!="---")) {echo " checked='checked'";}
+	if($declarant_incident==$_SESSION['login']) {echo " checked='checked'";}
+	//echo " /><label for='declarant_incident' style='cursor:pointer;'> Ne voir que mes déclarations d'incidents</label>\n";
+	echo " /><label for='declarant_incident2' style='cursor:pointer;'> Ne voir que mes déclarations d'incidents</label>\n";
 	echo "</p>\n";
 
 	echo "<div style='float: right; border: 1px solid black;'>";
@@ -682,7 +690,7 @@ if(!isset($id_incident)) {
 	if (!(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre'))) {
 		echo "<th>Déclarant\n";
 		echo "<br />\n";
-		echo "<select name='declarant_incident' onchange=\"document.formulaire.submit();\">\n";
+		echo "<select name='declarant_incident' onchange=\"document.getElementById('declarant_incident2').checked=false;document.formulaire.submit();\">\n";
 		//echo "<option value=''>---</option>\n";
 		echo "<option value='---'>---</option>\n";
 		if($_SESSION['statut']=='professeur') {
