@@ -921,7 +921,9 @@ else{
 				"DATE_ENTREE",
 				"CODE_MOTIF_SORTIE",
 				"CODE_SEXE",
-				"CODE_COMMUNE_INSEE_NAISS"
+				"CODE_COMMUNE_INSEE_NAISS",
+				"CODE_PAYS",
+				"VILLE_NAISS"
 				);
 
 				$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
