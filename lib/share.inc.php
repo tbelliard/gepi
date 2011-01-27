@@ -2536,10 +2536,13 @@ function tentative_intrusion($_niveau, $_description) {
 		$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
-    $headers = "From: Mail automatique Gepi\n";
-    $headers .= "X-Mailer: PHP/" . phpversion()."\n";
-    $headers = "MIME-Version: 1.0\n";
+    
+
+    
+    $headers = "X-Mailer: PHP/" . phpversion()."\n";
+    $headers .= "MIME-Version: 1.0\n";
     $headers .= "Content-type: text/plain; charset=iso-8859-1\n";
+    $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\n";
 
 		// On envoie le mail
 		$envoi = mail(getSettingValue("gepiAdminAdress"),
