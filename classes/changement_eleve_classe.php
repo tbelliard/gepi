@@ -295,6 +295,8 @@ else {
 
 		echo "<form enctype='multipart/form-data' name='form_assoc_grp' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 
+		echo add_token_field();
+
 		echo "<table class='boireaus' border='1' summary='Tableau des enseignements de la classe actuelle et de leurs correspondances dans la classe future'>\n";
 		echo "<tr>\n";
 		echo "<th width='50%'>Enseignements de $classe</th>\n";
@@ -442,6 +444,8 @@ Evitez les 'fantaisies';o).</p>
 </blockquote>\n";
 	}
 	else {
+		check_token(false);
+
 		$tab_per=array($periode_num);
 
 		if($chgt_periode_sup=="y") {
