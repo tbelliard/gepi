@@ -169,16 +169,27 @@ function action_alea_invalide($envoyer_mail=true) {
  *
  */
 function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
+
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
+
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
 	if($ajout_headers!='') {$ajout_headers="\r\n".$ajout_headers;}
 
+  $subject = $gepiPrefixeSujetMail."GEPI : $sujet";
+  $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+  
+  $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+  $headers .= "MIME-Version: 1.0\r\n";
+  $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+  $headers .= "From: Mail automatique Gepi <ne-pas-repondre@".$_SERVER['SERVER_NAME'].">\r\n";
+  $headers .= $ajout_headers;
+
 	// On envoie le mail
 	$envoi = mail($destinataire,
-		$gepiPrefixeSujetMail."GEPI : $sujet",
+		$subject,
 		$message,
-	"From: Mail automatique Gepi\r\n"."X-Mailer: PHP/" . phpversion().$ajout_headers);
+	  $headers);
 }
 
 /**
