@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -136,6 +136,8 @@ function recherche_enfant($id_parent_tmp, $current_group, $periode_num, $id_raci
 $titre_page = "Gestion des classes | Changement de classe";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
+
+//debug_var();
 
 echo "<p class='bold'>\n";
 echo "<a href='classes_const.php?id_classe=$id_classe' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>\n";
@@ -453,6 +455,10 @@ Evitez les 'fantaisies';o).</p>
 
 		}
 
+		affiche_debug("count(\$tab_per)=".count($tab_per)."<br />\n");
+		for($j=0;$j<count($tab_per);$j++) {
+			affiche_debug("\$tab_per[$j]=$tab_per[$j]<br />");
+		}
 
 		$gepi_denom_boite=getSettingValue("gepi_denom_boite");
 
@@ -692,8 +698,13 @@ Evitez les 'fantaisies';o).</p>
 			echo "</p>\n";
 		}
 
+		affiche_debug("count(\$tab_per)=".count($tab_per)."<br />\n");
 		for($j=0;$j<count($tab_per);$j++) {
-			$current_periode_num=$tab_per[$j];
+			affiche_debug("\$tab_per[$j]=$tab_per[$j]<br />");
+		}
+
+		for($jj=0;$jj<count($tab_per);$jj++) {
+			$current_periode_num=$tab_per[$jj];
 
 			// Inscription dans la nouvelle classe pour la période
 			$sql="INSERT INTO j_eleves_classes SET login='$login_eleve', id_classe='".$id_future_classe."', periode='$current_periode_num';";
