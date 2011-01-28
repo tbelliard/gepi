@@ -130,13 +130,26 @@ case "envoi":
 	//stripslashes($objet_msg);
 	//if($objet_msg=='') {$objet_msg="Demande d'aide dans GEPI";}
 
+  $subject = $gepiPrefixeSujetMail.$objet_msg;
+  $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+
+  $from = $email_reponse != "" ? "$nama <$email_reponse>" : $gepiAdminAdress;
+  
+  $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+  $headers .= "MIME-Version: 1.0\r\n";
+  $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+  $headers .= "From: $from\r\n";
+  if ($email_reponse != "") {
+    $headers .= "Reply-To: $from\r\n";
+    if (getSettingValue("gepiAdminAdressFormHidden")!="y") {
+      $headers .= "Cc: $nama <$email_reponse>\r\n";
+    }
+  }
+
 	$envoi = mail($gepiAdminAdress,
-		$gepiPrefixeSujetMail.$objet_msg,
+		$subject,
 		$message,
-	"From: ".($email_reponse != "" ? "$nama <$email_reponse>" : $gepiAdminAdress)."\r\n"
-	.($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\n" :"")
-	.(getSettingValue("gepiAdminAdressFormHidden")!="y" ? "Cc: $nama <$email_reponse>\r\n" : "")
-	."X-Mailer: PHP/" . phpversion());
+    $headers);
 
 	if ($envoi) {
 		echo "<br /><br /><br />\n";
