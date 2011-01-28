@@ -432,10 +432,7 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 									$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
 									$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_declarant;
 		
-									$envoi = mail($email_destinataires,
-										$gepiPrefixeSujetMail.$sujet_mail,
-										$texte_mail,
-										"From: Mail automatique Gepi\r\n".$ajout_header."X-Mailer: PHP/".phpversion());
+									$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
 								}
 							}	
 						}

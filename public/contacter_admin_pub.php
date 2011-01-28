@@ -102,12 +102,24 @@ case "envoi":
 		$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 		if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
+        $from = $email_reponse != "" ? "$nama <$email_reponse>" : getSettingValue("gepiAdminAdress");
+
+        $subject = $gepiPrefixeSujetMail."Demande d'aide dans GEPI";
+        $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
+
+        $headers = "X-Mailer: PHP/" . phpversion()."\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
+        $headers .= "From: $from\r\n";
+        if ($email_reponse != "") {
+          $headers .= "Reply-To: $from\r\n";
+        }
+
         $envoi = mail(getSettingValue("gepiAdminAdress"),
-            $gepiPrefixeSujetMail."Demande d'aide dans GEPI",
+            $subject,
             $message,
-           "From: ".($email_reponse != "" ? "$nama <$email_reponse>" : getSettingValue("gepiAdminAdress"))."\r\n"
-           .($email_reponse != "" ? "Reply-To: $nama <$email_reponse>\r\n" :"")
-           ."X-Mailer: PHP/" . phpversion());
+            $headers);
+
         if ($envoi) {
             echo "<br /><br /><br /><P style=\"text-align: center\">Votre message été envoyé,vous recevrez rapidement<br />une réponse dans votre ".($email_reponse =="" ? "casier" :"boîte aux lettres électronique").", veuillez ".($email_reponse =="" ? "le" :"la")." consulter régulièrement.<br /><br /><br /><a href=\"javascript:self.close();\">Fermer</a></p>";
         } else {

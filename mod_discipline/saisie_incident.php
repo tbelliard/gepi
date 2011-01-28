@@ -860,20 +860,15 @@ if($etat_incident!='clos') {
 	
 							if($destinataires!="") {
 								$texte_mail=$texte_mail."\n\n"."Message: $msg";
-								$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-								if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
-			
-								$header_mail="";
-								if(isset($message_id)) {$header_mail.="Message-id: $message_id\r\n";}
-								if(isset($references_mail)) {$header_mail.="References: $references_mail\r\n";}
-			
+						
+                $subject = "[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;                
+                $headers = "";
+								if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
+								if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
+      
 								// On envoie le mail
-								//$envoi = mail(getSettingValue("gepiAdminAdress"),
-								$envoi = mail($destinataires,
-									//$gepiPrefixeSujetMail."GEPI : Incident num $id_incident",
-									$gepiPrefixeSujetMail."[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables,
-									$texte_mail,
-									"From: Mail automatique Gepi\r\n".$header_mail."X-Mailer: PHP/" . phpversion());
+								$envoi = envoi_mail($subject, $texte_mail, $destinataires, $headers);
+
 							/*
 	$msg.="Envoi d'un mail:<br /><pre>mail($destinataires,
 								//$gepiPrefixeSujetMail.\"GEPI : Incident num $id_incident\",

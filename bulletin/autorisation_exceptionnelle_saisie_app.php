@@ -116,10 +116,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 								while($lig_u=mysql_fetch_object($req)) {$email_destinataires.=",".$lig_u->email;}
 
 								$sujet_mail="[GEPI] Autorisation exceptionnelle de saisie/correction d'appréciation";
-				
-								$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
-								if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
-					
+									
 								$ajout_header="";
 								if($email_personne_autorisant!="") {
 									$ajout_header.="Cc: $nom_personne_autorisant <".$email_personne_autorisant.">";
@@ -134,10 +131,10 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 								$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
 								$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_personne_autorisant;
 	
-								$envoi = mail($email_destinataires,
-									$gepiPrefixeSujetMail.$sujet_mail,
-									$texte_mail,
-									"From: Mail automatique Gepi\r\n".$ajout_header."X-Mailer: PHP/".phpversion());
+                $sujet_mail;
+  
+								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
+                  
 								if($envoi) {$msg.="Email expédié à ".htmlentities($email_destinataires)."<br />";}
 							}
 			

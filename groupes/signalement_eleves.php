@@ -200,11 +200,7 @@ if (isset($_POST['is_posted'])) {
 				$ajout_header="";
 				if($email_declarant!="") {$ajout_header.="Cc: $nom_declarant <".$email_declarant.">\r\n";}
 	
-				$envoi = mail(getSettingValue("gepiAdminAdress"),
-					$gepiPrefixeSujetMail.$sujet_mail,
-					$texte_mail,
-					"From: Mail automatique Gepi\r\n".$ajout_header."X-Mailer: PHP/".phpversion());
-	
+        $envoi = envoi_mail($sujet_mail, $texte_mail, getSettingValue("gepiAdminAdress"), $ajout_header);	
 			}
 		}
 
