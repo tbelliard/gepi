@@ -366,11 +366,19 @@ Normalement, ce module ne devrait être activé que si le module ci-dessus est lui
 	<?php if (getSettingValue("abs2_sms")=='y') echo " checked='checked'"; ?> />
 	<label for="abs2_sms">&nbsp;Activer l'envoi des sms</label>
 </p>
+<?php
+  $extensions = get_loaded_extensions();
+  if(!in_array('curl',$extensions)) {
+      echo "<p style='font-style: italic; color:red'>ATTENTION : Il semble que votre serveur ne soit pas configuré pour l'envoi de SMS. Cette fonctionnalité nécéssite l'extension PHP CURL.";
+      echo "</p>";
+  };
+ ?>
 <p>
-    	<label for="abs2_sms_prestataire">&nbsp;Choisissez un prestataire</label>
+    <label for="abs2_sms_prestataire">Choisissez un prestataire</label>
 	<select id="abs2_sms_prestataire" name="abs2_sms_prestataire">
 	<option value=''></option>
 	<option value='tm4b' <?php if (getSettingValue("abs2_sms_prestataire")=='tm4b') echo " selected "; ?> >www.tm4b.com</option>
+    <option value='pluriware' <?php if (getSettingValue("abs2_sms_prestataire")=='pluriware') echo " selected "; ?> >Pluriware (agréée EN)</option>
 	<option value='123-sms' <?php if (getSettingValue("abs2_sms_prestataire")=='123-sms') echo " selected "; ?> >www.123-sms.net</option>
 	</select><br/>
 	Nom d'utilisateur du service <input type="text" name="abs2_sms_username" size="20" value="<?php echo(getSettingValue("abs2_sms_username")); ?>"/><br/>
@@ -453,7 +461,6 @@ entr&eacute;es dans Gepi par le biais du module absences.</p>
 <blockquote>
 	<a href="admin_types_absences.php?action=visualiser">Définir les types d'absence</a><br />
 	<a href="admin_motifs_absences.php?action=visualiser">Définir les motifs des absences</a><br />
-    <a href="admin_lieux_absences.php?action=visualiser">Définir les lieux des absences</a><br />
 	<a href="admin_justifications_absences.php?action=visualiser">Définir les justifications</a><br />
 	<a href="../../mod_ooo/gerer_modeles_ooo.php">Gérer ses propres modèles de documents du module</a>
 </blockquote>
