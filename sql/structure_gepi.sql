@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS s_travail (id_travail INT( 11 ) NOT NULL AUTO_INCREME
 DROP TABLE IF EXISTS s_retenues;
 CREATE TABLE IF NOT EXISTS s_retenues (id_retenue INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_sanction INT( 11 ) NOT NULL ,date DATE NOT NULL ,heure_debut VARCHAR( 20 ) NOT NULL ,duree FLOAT NOT NULL ,travail TEXT NOT NULL ,lieu VARCHAR( 255 ) NOT NULL);
 DROP TABLE IF EXISTS s_exclusions;
-CREATE TABLE s_exclusions (id_exclusion int(11) NOT NULL AUTO_INCREMENT,  id_sanction int(11) NOT NULL DEFAULT '0',  date_debut date NOT NULL DEFAULT '0000-00-00',  heure_debut varchar(20) NOT NULL DEFAULT '',  date_fin date NOT NULL DEFAULT '0000-00-00',  heure_fin varchar(20) NOT NULL DEFAULT '',  travail text NOT NULL,  lieu varchar(255) NOT NULL DEFAULT '',  nombre_jours varchar(50) NOT NULL,  qualification_faits text NOT NULL,  num_courrier varchar(50) NOT NULL,  type_exclusion varchar(50) NOT NULL,  fct_delegation varchar(100) NOT NULL,  fct_autorite varchar(50) NOT NULL,  nom_autorite varchar(50) NOT NULL,  PRIMARY KEY (id_exclusion)
+CREATE TABLE s_exclusions (id_exclusion int(11) NOT NULL AUTO_INCREMENT,  id_sanction int(11) NOT NULL DEFAULT '0',  date_debut date NOT NULL DEFAULT '0000-00-00',  heure_debut varchar(20) NOT NULL DEFAULT '',  date_fin date NOT NULL DEFAULT '0000-00-00',  heure_fin varchar(20) NOT NULL DEFAULT '',  travail text NOT NULL,  lieu varchar(255) NOT NULL DEFAULT '',  nombre_jours varchar(50) NOT NULL,  qualification_faits text NOT NULL,  num_courrier varchar(50) NOT NULL,  type_exclusion varchar(50) NOT NULL, id_signataire INT NOT NULL,  PRIMARY KEY (id_exclusion)
 DROP TABLE IF EXISTS absences_repas;
 CREATE TABLE IF NOT EXISTS absences_repas (`id` int(5) NOT NULL AUTO_INCREMENT, `date_repas` date NOT NULL default '0000-00-00', `id_groupe` varchar(8) NOT NULL, `eleve_id` varchar(30) NOT NULL, `pers_id` varchar(30) NOT NULL, PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS gc_projets;
@@ -347,3 +347,5 @@ DROP TABLE IF EXISTS cc_eval;
 CREATE TABLE cc_eval (id int(11) NOT NULL auto_increment,id_dev int(11) NOT NULL default '0',nom_court varchar(32) NOT NULL default '',nom_complet varchar(64) NOT NULL default '',description varchar(128) NOT NULL default '',date datetime NOT NULL default '0000-00-00 00:00:00',note_sur int(11) default '5',PRIMARY KEY  (id),INDEX dev_date (id_dev, date));
 DROP TABLE IF EXISTS cc_notes_eval;
 CREATE TABLE cc_notes_eval ( login varchar(50) NOT NULL default '',id_eval int(11) NOT NULL default '0',note float(10,1) NOT NULL default '0.0',statut char(1) NOT NULL default '',comment text NOT NULL,PRIMARY KEY  (login,id_eval));
+DROP TABLE IF EXISTS s_delegation;
+CREATE TABLE s_delegation (`id_delegation` INT NOT NULL AUTO_INCREMENT ,`fct_delegation` VARCHAR( 100 ) NOT NULL ,`fct_autorite` VARCHAR( 50 ) NOT NULL ,`nom_autorite` VARCHAR( 50 ) NOT NULL ,PRIMARY KEY ( `id_delegation` ));

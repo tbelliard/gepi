@@ -259,9 +259,7 @@ elseif($valeur=='exclusion') {
 			$qualification_faits=$lig_sanction->qualification_faits;
 			$numero_courrier=$lig_sanction->num_courrier;
 			$type_exclusion=$lig_sanction->type_exclusion;
-			$fct_delegation=$lig_sanction->fct_delegation;
-			$fct_autorite=$lig_sanction->fct_autorite;
-			$nom_autorite=$lig_sanction->nom_autorite;
+			$signataire=$lig_sanction->id_signataire;
 		} 
 	}
 	echo "<tr class='lig1'>\n";
@@ -378,26 +376,28 @@ elseif($valeur=='exclusion') {
 	echo "</tr>\n";
 	
 	echo "<tr class='lig1'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Délégation du chef d'établissement&nbsp;: </td>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Choix du signataire de l'exclusion&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
-	echo "<textarea name='no_anti_inject_fct_delegation' cols='30' onchange='changement();'>$fct_delegation</textarea>\n";
-	echo "<i>(facultatif) Ex : Pour le Chef d'établissement,\n\r et par délégation,</i></td>\n";
+	// Sélectionner parmi les signataires déjà saisis?
+	$sql="SELECT * FROM s_delegation ORDER BY fct_autorite";
+	$res_signataire=mysql_query($sql);
+	if(mysql_num_rows($res_signataire)>0) {
+		echo "<select name='signataire' id='choix_signataire' onchange=\"changement();\">\n";
+		echo "<option value=''>---</option>\n";
+		while($lig_signataire=mysql_fetch_object($res_signataire)) {
+		    if ($signataire==$lig_signataire->id_delegation) {
+			echo "<option value=\"$lig_signataire->id_delegation\" selected >$lig_signataire->fct_autorite</option>\n";
+			} else {
+			echo "<option value=\"$lig_signataire->id_delegation\">$lig_signataire->fct_autorite</option>\n";
+			}
+		}
+		echo "</select>\n";
+	} else {
+	    echo "<i>Aucun signataire n'est saisi dans la base. Demandez à votre administrateur de saisir cette liste en admin du module</i>";
+	};
+	echo "</td>\n";
 	echo "</tr>\n";
 	
-	echo "<tr class='lig-1'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Fonction de l'autorité signataire&nbsp;: </td>\n";
-	echo "<td style='text-align:left;'>\n";
-	echo "<input type='text' name='fct_autorite' id='fct_autorite' value=\"$fct_autorite\" onchange='changement();' />\n";
-	echo "<i>Fonction du personnel de direction ou du délégataire</i></td>\n";
-	echo "</tr>\n";
-	
-	echo "<tr class='lig1'>\n";
-	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nom de l'autorité signataire&nbsp;: </td>\n";
-	echo "<td style='text-align:left;'>\n";
-	echo "<input type='text' name='nom_autorite' id='nom_autorite' value=\"$nom_autorite\" onchange='changement();' />\n";
-	echo "<i>Nom du personnel de direction ou du délégataire</i></td>\n";
-	echo "</tr>\n";
-
 	echo "<tr class='lig-1'>\n";
 	echo "<td colspan='2'>\n";
 	echo "<input type='submit' name='enregistrer_sanction' value='Enregistrer' />\n";

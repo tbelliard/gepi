@@ -274,7 +274,7 @@ else {
 }
 
 // A1jout Eric Module discipline génération des exclusion Ooo
-$result .= "<br /><b>Ajout de tables pour la tables s_exclusions du module discipline :</b><br />";
+$result .= "<br /><b>Ajout de champs pour la tables s_exclusions du module discipline :</b><br />";
 $result .= "<br />&nbsp;->Ajout d'un champ 'nombre_jours' à la table 's_exclusions' : ";
 $test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'nombre_jours';"));
 if ($test_note_sur>0) {
@@ -331,42 +331,57 @@ else {
 	}
 }
 
-$result .= "<br />&nbsp;->Ajout d'un champ 'fct_delegation' à la table 's_exclusions' : ";
+$result .= "<br />&nbsp;->Supression du champ 'fct_delegation' à la table 's_exclusions' : ";
 $test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'fct_delegation';"));
-if ($test_note_sur>0) {
-	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+if ($test_note_sur<0) {
+	$result .= "<font color=\"blue\">>Le champ n'existe plus.</font><br />";
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `fct_delegation` VARCHAR( 100 ) NOT NULL ;");
+	$query = mysql_query("ALTER TABLE `s_exclusions` DROP `fct_delegation` ;");
 	if ($query) {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= "<font color=\"blue\">Le champ n'existe plus.</font><br />";
 	} else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= "<font color=\"green\">Ok !</font><br />";
 	}
 }
 
-$result .= "<br />&nbsp;->Ajout d'un champ 'fct_autorite' à la table 's_exclusions' : ";
+
+$result .= "<br />&nbsp;->Supression du champ 'fct_autorite' à la table 's_exclusions' : ";
 $test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'fct_autorite';"));
-if ($test_note_sur>0) {
-	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+if ($test_note_sur<0) {
+	$result .= "<font color=\"blue\">>Le champ n'existe plus.</font><br />";
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `fct_autorite` VARCHAR( 50 ) NOT NULL ;");
+    $query = mysql_query("ALTER TABLE `s_exclusions` DROP `fct_autorite` ;");
 	if ($query) {
-			$result .= "<font color=\"green\">Ok !</font><br />";
+			$result .= "<font color=\"blue\">Le champ n'existe plus.</font><br />";
 	} else {
-			$result .= "<font color=\"red\">Erreur</font><br />";
+			$result .= "<font color=\"green\">Ok !</font><br />";
 	}
 }
 
 
-$result .= "<br />&nbsp;->Ajout d'un champ 'nom_autorite' à la table 's_exclusions' : ";
+$result .= "<br />&nbsp;->Supression du champ 'nom_autorite' à la table 's_exclusions' : ";
 $test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'nom_autorite';"));
+if ($test_note_sur<0) {
+	$result .= "<font color=\"blue\">>Le champ n'existe plus.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE `s_exclusions` DROP `nom_autorite` ;");
+	if ($query) {
+			$result .= "<font color=\"blue\">Le champ n'existe plus.</font><br />";
+	} else {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	}
+}
+
+$result .= "<br />&nbsp;->Ajout d'un champ 'id_signataire' à la table 's_exclusions' : ";
+$test_note_sur=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_exclusions LIKE 'id_signataire';"));
 if ($test_note_sur>0) {
 	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 }
 else {
-	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `nom_autorite` VARCHAR( 50 ) NOT NULL ;");
+	$query = mysql_query("ALTER TABLE `s_exclusions` ADD `id_signataire` INT NOT NULL ;");
 	if ($query) {
 			$result .= "<font color=\"green\">Ok !</font><br />";
 	} else {
@@ -374,5 +389,23 @@ else {
 	}
 }
 
-
+$result .= "<br /><b>Ajout d'une table Délégation pour le module discipline :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 's_delegation'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE `s_delegation` (
+`id_delegation` INT NOT NULL AUTO_INCREMENT ,
+`fct_delegation` VARCHAR( 100 ) NOT NULL ,
+`fct_autorite` VARCHAR( 50 ) NOT NULL ,
+`nom_autorite` VARCHAR( 50 ) NOT NULL ,
+PRIMARY KEY ( `id_delegation` )
+);");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
 ?>

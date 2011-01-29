@@ -177,9 +177,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 		$qualification_faits=isset($_POST['qualification_faits']) ? $_POST['qualification_faits'] : NULL;
 		$numero_courrier=isset($_POST['numero_courrier']) ? $_POST['numero_courrier'] : NULL;
 		$type_exclusion=isset($_POST['type_exclusion']) ? $_POST['type_exclusion'] : NULL;
-		$fct_delegation=isset($_POST['fct_delegation']) ? $_POST['fct_delegation'] : NULL;
-		$fct_autorite=isset($_POST['fct_autorite']) ? $_POST['fct_autorite'] : NULL;
-		$nom_autorite=isset($_POST['nom_autorite']) ? $_POST['nom_autorite'] : NULL;
+		$signataire=isset($_POST['signataire']) ? $_POST['signataire'] : NULL;
+		
 
 		if(!isset($date_debut)) {
 			$annee = strftime("%Y");
@@ -266,16 +265,6 @@ if(isset($_POST['enregistrer_sanction'])) {
 			$qualification_faits="";
 		}
 		
-		if (isset($NON_PROTECT["fct_delegation"])){
-			$fct_delegation=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["fct_delegation"]));
-			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$fct_delegation=my_ereg_replace('(\\\r\\\n)+',"\r\n",$fct_delegation);
-		}
-		else {
-			$fct_delegation="";
-		}
-
-
 		if(isset($id_sanction)) {
 			// Modification???
 			$sql="SELECT 1=1 FROM s_sanctions WHERE id_sanction='$id_sanction';";
@@ -292,7 +281,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 					$msg.="La sanction n°$id_sanction n'existe pas dans 's_exclusions'.<br />Elle ne peut pas être mise à jour.<br />";
 				}
 				else {
-					$sql="UPDATE s_exclusions SET date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', fct_delegation='$fct_delegation', fct_autorite='$fct_autorite', nom_autorite='$nom_autorite' WHERE id_sanction='$id_sanction';";
+					$sql="UPDATE s_exclusions SET date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', id_signataire='$signataire' WHERE id_sanction='$id_sanction';";
 					//echo "$sql<br />\n";
 					$update=mysql_query($sql);
 					if(!$update) {
@@ -311,7 +300,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 			else {
 				$id_sanction=mysql_insert_id();
 
-				$sql="INSERT INTO s_exclusions SET id_sanction='$id_sanction', date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', fct_delegation='$fct_delegation', fct_autorite='$fct_autorite', nom_autorite='$nom_autorite';";
+				$sql="INSERT INTO s_exclusions SET id_sanction='$id_sanction', date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', id_signataire='$signataire';";
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 			}
@@ -527,9 +516,7 @@ $res_sanction=mysql_query($sql);
 		$duree_exclusion="";
 		$date_debut="";
 		$date_fin="";
-		$fct_delegation="";
-		$fct_autorite="";
-		$nom_autorite="";
+		$signataire="";
 	}
 	else {
 		$lig_sanction=mysql_fetch_object($res_sanction);
@@ -539,9 +526,22 @@ $res_sanction=mysql_query($sql);
 		$duree_exclusion=$lig_sanction->nombre_jours;
 		$date_debut=$lig_sanction->date_debut;
 		$date_fin=$lig_sanction->date_fin;
-		$fct_delegation=$lig_sanction->fct_delegation;
-		$fct_autorite=$lig_sanction->fct_autorite;
-		$nom_autorite=$lig_sanction->nom_autorite;
+		$signataire=$lig_sanction->id_signataire;
+
+	}
+
+$sql="SELECT * FROM s_delegation WHERE id_delegation='$signataire';";
+$res_delegation=mysql_query($sql);
+	if(mysql_num_rows($res_delegation)==0) {
+		$fct_delegation="";
+		$fct_autorite="";
+		$nom_autorite="";
+	}
+	else {
+		$lig_delegation=mysql_fetch_object($res_delegation);
+		$fct_delegation=$lig_delegation->fct_delegation;
+		$fct_autorite=$lig_delegation->fct_autorite;
+		$nom_autorite=$lig_delegation->nom_autorite;
 
 	}
 }

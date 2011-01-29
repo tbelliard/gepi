@@ -735,7 +735,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/add_modif_cc_dev.php', '
 $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/add_modif_cc_eval.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');";
 $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/saisie_notes_cc.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');";
 $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/visu_cc.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');";
-
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/delegation.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les délégations pour exclusion temporaire', '');";
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
