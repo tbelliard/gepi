@@ -82,9 +82,9 @@ if (isset($suppr_delegation)) {
             if (!$suppr) {
                 $msg.="ERREUR lors de la suppression de la délégation n°" . $suppr_delegation[$i] . ".<br />\n";
             } else {
-                $msg.="Suppression de la delegation n°" . $suppr_delegation[$i] . ".<br />\n";
-                //$sql = "UPDATE s_incidents SET id_categorie=0 WHERE id_categorie=" . $suppr_delegation[$i] . ";";
-                // $res = mysql_query($sql);
+                  $msg.="Suppression de la delegation n°" . $suppr_delegation[$i] . ".<br />\n";
+                 $sql = "UPDATE s_exclusions SET id_signataire=0 WHERE id_signataire=" . $suppr_delegation[$i] . ";";
+                 $res = mysql_query($sql);
                 if (!$res) {
                     $msg.="ERREUR lors de la mise à jour la delegation aux exclusions prononcées ! <br />\n";
                 } else {
@@ -113,7 +113,7 @@ if ((isset($fct_autorite)) && ($fct_autorite != '')) {
             $a_enregistrer = 'n';
         }
     }
-echo "ici $a_enregistrer";
+	
     if ($a_enregistrer == 'y') {
         //$lieu=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($lieu))));
        // $categorie = my_ereg_replace('(\\\r\\\n)+', "\r\n", $categorie);
@@ -131,7 +131,7 @@ echo "ici $a_enregistrer";
 $themessage = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 //$titre_page = "Sanctions: Définition des qualités";
-$titre_page = "Discipline: Gestion des délégations d'exclusions temporaires";
+$titre_page = "Discipline: Gestion des délégations d'exclusion temporaire";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 //debug_var();
