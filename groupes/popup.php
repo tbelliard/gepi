@@ -483,21 +483,24 @@ if($gepi_prof_suivi==""){
 		}
 	}
 
-	$chaine_mail="";
-	if(count($tabmail)>0){
-		unset($tabmail2);
-		$tabmail2=array();
-		//$tabmail=array_unique($tabmail);
-		//sort($tabmail);
-		$chaine_mail=$tabmail[0];
-		for ($i=1;$i<count($tabmail);$i++) {
-			if((isset($tabmail[$i]))&&(!in_array($tabmail[$i],$tabmail2))) {
-				$chaine_mail.=",".$tabmail[$i];
-				$tabmail2[]=$tabmail[$i];
+
+	if(getSettingValue('envoi_mail_liste')=='y') {
+		$chaine_mail="";
+		if(count($tabmail)>0){
+			unset($tabmail2);
+			$tabmail2=array();
+			//$tabmail=array_unique($tabmail);
+			//sort($tabmail);
+			$chaine_mail=$tabmail[0];
+			for ($i=1;$i<count($tabmail);$i++) {
+				if((isset($tabmail[$i]))&&(!in_array($tabmail[$i],$tabmail2))) {
+					$chaine_mail.=",".$tabmail[$i];
+					$tabmail2[]=$tabmail[$i];
+				}
 			}
+			//echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves de l'enseignement</a>.</p>\n";
+			echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves</a>.</p>\n";
 		}
-		//echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves de l'enseignement</a>.</p>\n";
-		echo "<p>Envoyer un <a href='mailto:$chaine_mail?".rawurlencode("subject=[GEPI]")."'>mail à tous les élèves</a>.</p>\n";
 	}
 ?>
 <script language="JavaScript" type="text/javascript">

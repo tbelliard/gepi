@@ -233,8 +233,17 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement de 'contact_admin_mailto' !";
 			}
 		}
-		
 
+		if (isset($_POST['envoi_mail_liste'])) {
+			if (!saveSetting("envoi_mail_liste", 'y')) {
+				$msg .= "Erreur lors de l'enregistrement de 'envoi_mail_liste' !";
+			}
+		}
+		else {
+			if (!saveSetting("envoi_mail_liste", 'n')) {
+				$msg .= "Erreur lors de l'enregistrement de 'envoi_mail_liste' !";
+			}
+		}
 
 		if (isset($_POST['gepiAdminAdressFormHidden'])) {
 			if (!saveSetting("gepiAdminAdressFormHidden", 'n')) {
@@ -710,6 +719,20 @@ echo add_token_field();
 		<input type="checkbox" id='contact_admin_mailto' name="contact_admin_mailto" value="y"
 		<?php
 			if(getSettingValue("contact_admin_mailto")=='y'){echo " checked";}
+		?>
+		onchange='changement()' />
+		</td>
+	</tr>
+	<tr>
+		<td style="font-variant: small-caps;">
+		<label for='envoi_mail_liste' style='cursor: pointer;'>Permettre d'envoyer des mails à une liste d'élèves :<br />
+		<span style='font-size: small'>(<i>sous réserve que les mails soient remplis</i>)</span><br />
+		<span style='font-size: small'>Nous attirons votre attention sur le fait qu'envoyer un mail à une liste d'utilisateurs via un lien mailto permet à chaque élève de connaitre les email des autres élèves sans que l'autorisation de divulgation ou non paramétrée dans <b>Gérer mon compte</b> soit prise en compte.</span></label>
+		</td>
+		<td valign='top'>
+		<input type="checkbox" id='envoi_mail_liste' name="envoi_mail_liste" value="y"
+		<?php
+			if(getSettingValue("envoi_mail_liste")=='y'){echo " checked";}
 		?>
 		onchange='changement()' />
 		</td>
