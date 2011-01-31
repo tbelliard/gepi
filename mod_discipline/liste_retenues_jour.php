@@ -119,9 +119,9 @@ else {
 			}
 			echo "</table>\n";
 		}
-	}
-	else {
-		echo "<p>Aucune retenue n'est encore saisie<br />pour ce jour (<em>$date</em>).</p>\n";
+		else {
+			echo "<p>Aucune retenue n'est encore saisie<br />pour ce jour (<em>$date</em>).</p>\n";
+		}
 	}
 }
 ?>
