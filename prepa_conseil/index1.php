@@ -1579,7 +1579,7 @@ if (!$current_group) {
 		$j = 1;
 		while($j < $nb_col+1) {
 			echo "<th class='small'>";
-			if(!eregi("Appréciation",$ligne1[$j])) {
+			if(!my_eregi("Appréciation",$ligne1[$j])) {
 				echo "<a href='#' onclick=\"document.getElementById('col_tri').value='$j';";
 				if(my_eregi("Rang",$ligne1[$j])) {echo "document.getElementById('sens_tri').value='inverse';";}
 				if($ligne1[$j]=="Classe") {echo "if(document.getElementById('order_by')) {document.getElementById('order_by').value='classe';}";}
