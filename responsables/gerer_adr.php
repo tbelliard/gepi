@@ -91,6 +91,8 @@ $titre_page = "Gestion des adresses de responsables";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE ***************************
 
+//debug_var();
+
 if(!getSettingValue('conv_new_resp_table')){
 	$sql="SELECT 1=1 FROM responsables";
 	$test=mysql_query($sql);
@@ -204,9 +206,9 @@ if(!getSettingValue('conv_new_resp_table')){
 	echo " premières adresses ";
 	echo " à partir de l'enregistrement ";
 
-	echo "<input type='button' name='prec' value='<<' onclick=\"document.getElementById('num_premier_adr_rech').value=Math.max(0,document.getElementById('num_premier_adr_rech').value-document.getElementById('nb_adr').value);document.form_rech.submit();\" />\n";
+	echo "<input type='button' name='prec' value='<<' onclick=\"document.getElementById('num_premier_adr_rech').value=Math.max(0,eval(document.getElementById('num_premier_adr_rech').value)-eval(document.getElementById('nb_adr').value));document.form_rech.submit();\" />\n";
 	echo "<input type='text' name='num_premier_adr_rech' id='num_premier_adr_rech' value='$num_premier_adr_rech' size='4' />\n";
-	echo "<input type='button' name='prec' value='>>' onclick=\"document.getElementById('num_premier_adr_rech').value=Math.min($nb_tot_adr_id,document.getElementById('num_premier_adr_rech').value+document.getElementById('nb_adr').value);document.form_rech.submit();\" />\n";
+	echo "<input type='button' name='suiv' value='>>' onclick=\"document.getElementById('num_premier_adr_rech').value=Math.min($nb_tot_adr_id,eval(document.getElementById('num_premier_adr_rech').value)+eval(document.getElementById('nb_adr').value));document.form_rech.submit();\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -318,7 +320,13 @@ if(mysql_num_rows($res_adr)>0){
 	$ligne_titre.="<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>Commune</td>\n";
 	$ligne_titre.="<td style='text-align:center; font-weight:bold; background-color:#AAE6AA;'>Pays</td>\n";
 	$ligne_titre.="<td style='text-align:center; font-weight:bold; background-color:#96C8F0;'>Responsable associé</td>\n";
-	$ligne_titre.="<td style='text-align:center; font-weight:bold; background-color:red;'>Supprimer adresse(s)</td>\n";
+	$ligne_titre.="<td style='text-align:center; font-weight:bold; background-color:red;'>Supprimer adresse(s)<br />\n";
+	$ligne_titre.="<a href=\"javascript:modif_case(true)\">";
+	$ligne_titre.="<img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>";
+	$ligne_titre.=" / ";
+	$ligne_titre.="<a href=\"javascript:modif_case(false)\">";
+	$ligne_titre.="<img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+	$ligne_titre.="</td>\n";
 	$ligne_titre.="</tr>\n";
 
 	/*
@@ -437,6 +445,15 @@ if(mysql_num_rows($res_adr)>0){
 
 
 		echo "<script type='text/javascript'>
+
+	function modif_case(mode) {
+		for(i=0;i<$cpt;i++) {
+			if(document.getElementById('suppr_'+i)) {
+				document.getElementById('suppr_'+i).checked=mode;
+			}
+		}
+	}
+
 	tab_non_assoc=new Array();\n";
 
 		for($i=0;$i<count($tab_adr_id_non_assoc);$i++){
