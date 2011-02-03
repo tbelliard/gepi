@@ -384,8 +384,10 @@ require_once("../lib/header.inc");
 		$k = '0';
 		while ($k < $nb) {
 			$id_classe = mysql_result($classes_list, $k, 'id');
+
 			?>
 				document.formulaire.case_<?php echo $id_classe; ?>.checked = false;
+				change_style_classe(<?php echo $id_classe; ?>);
 			<?php
 		$k++;
 		}
@@ -558,7 +560,7 @@ if (!isset($quelles_classes)) {
 
 		}
 	}
-	else{
+	else {
 
 
 		echo "<form enctype='multipart/form-data' action='index.php' method='post' name='formulaire'>\n";
@@ -566,16 +568,35 @@ if (!isset($quelles_classes)) {
 
 		//echo add_token_field();
 
+		// =====================================================
+
 		echo "<tr>\n";
 		echo "<td>\n";
-		echo "<input type='radio' name='quelles_classes' id='quelles_classes_toutes' value='toutes' onclick='verif2()' checked />\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_recherche' value='recherche' onclick='verif2()' checked />\n";
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "<label for='quelles_classes_toutes' style='cursor: pointer;'>\n";
-		echo "<span class='norme'>Tous les élèves.</span><br />";
+		echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont le nom commence par: \n";
+		echo "<input type='text' name='motif_rech' id='motif_rech_nom' value='' onclick='verif3()' size='5' />\n";
+		echo "</span><br />\n";
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
+
+		echo "<tr>\n";
+		echo "<td>\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_prenom' value='rech_prenom' onclick='verif2()' />\n";
+		echo "</td>\n";
+		echo "<td>\n";
+		echo "<label for='' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Elève dont le prénom commence par: \n";
+		echo "<input type='text' name='motif_rech_p' value='' onclick='verif4()' size='5' />\n";
+		echo "</span><br />\n";
+		echo "</label>\n";
+		echo "</td>\n";
+		echo "</tr>\n";
+
+		// =====================================================
 
 		$sql="SELECT 1=1 FROM eleves e
 			LEFT JOIN j_eleves_classes c ON c.login=e.login
@@ -880,36 +901,16 @@ if (!isset($quelles_classes)) {
 			echo "</tr>\n";
 		}
 
-		// A FAIRE:
-		// Liste des élèves dont le nom commence par/contient...
-
 		echo "<tr>\n";
 		echo "<td>\n";
-		echo "<input type='radio' name='quelles_classes' id='quelles_classes_recherche' value='recherche' onclick='verif2()' />\n";
+		echo "<input type='radio' name='quelles_classes' id='quelles_classes_toutes' value='toutes' onclick='verif2()' />\n";
 		echo "</td>\n";
 		echo "<td>\n";
-		echo "<label for='' style='cursor: pointer;'>\n";
-		echo "<span class='norme'>Elève dont le nom commence par: \n";
-		echo "<input type='text' name='motif_rech' value='' onclick='verif3()' size='5' />\n";
-		echo "</span><br />\n";
+		echo "<label for='quelles_classes_toutes' style='cursor: pointer;'>\n";
+		echo "<span class='norme'>Tous les élèves.</span><br />";
 		echo "</label>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
-
-		echo "<tr>\n";
-		echo "<td>\n";
-		echo "<input type='radio' name='quelles_classes' id='quelles_classes_rech_prenom' value='rech_prenom' onclick='verif2()' />\n";
-		echo "</td>\n";
-		echo "<td>\n";
-		echo "<label for='' style='cursor: pointer;'>\n";
-		echo "<span class='norme'>Elève dont le prénom commence par: \n";
-		echo "<input type='text' name='motif_rech_p' value='' onclick='verif4()' size='5' />\n";
-		echo "</span><br />\n";
-		echo "</label>\n";
-		echo "</td>\n";
-		echo "</tr>\n";
-
-		// =====================================================
 
 		$classes_list = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
 		$nb = mysql_num_rows($classes_list);
@@ -948,12 +949,11 @@ if (!isset($quelles_classes)) {
 						echo "<td align='left'>\n";
 					}
 	
-					//echo "<span class = \"norme\"><input type='checkbox' name='$temp' value='yes' onclick=\"verif1()\" />";
-					//echo "Classe : $classe </span><br />\n";
-					//echo "<label for='$temp' style='cursor: pointer;'>";
-					//echo "<input type='checkbox' name='$temp' id='$temp' value='yes' onclick=\"verif1()\" />";
-					echo "<label id='label_tab_id_classe_$i' for='tab_id_classe_$i' style='cursor: pointer;'>";
-					echo "<input type='checkbox' name='$temp' id='tab_id_classe_$i' value='yes' onclick=\"verif1()\" onchange='change_style_classe($i)' />";
+					//echo "<label id='label_tab_id_classe_$i' for='tab_id_classe_$i' style='cursor: pointer;'>";
+					//echo "<input type='checkbox' name='$temp' id='tab_id_classe_$i' value='yes' onclick=\"verif1()\" onchange='change_style_classe($i)' />";
+
+					echo "<label id='label_tab_id_classe_$id_classe' for='tab_id_classe_$id_classe' style='cursor: pointer;'>";
+					echo "<input type='checkbox' name='$temp' id='tab_id_classe_$id_classe' value='yes' onclick=\"verif1()\" onchange='change_style_classe($id_classe)' />";
 					echo "Classe : $classe</label><br />\n";
 	
 					$i++;
@@ -978,6 +978,10 @@ if (!isset($quelles_classes)) {
 				document.getElementById('label_tab_id_classe_'+num).style.fontWeight='normal';
 			}
 		}
+	}
+
+	if(document.getElementById('motif_rech_nom')) {
+		document.getElementById('motif_rech_nom').focus();
 	}
 </script>\n";
 
