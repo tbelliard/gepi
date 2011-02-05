@@ -482,26 +482,17 @@ if ($id_classe_ele != null && $id_classe_ele != '') {
     }
 }
 
-// Adresse du Resp légal 1
-$sql="SELECT rp.civilite,rp.nom,rp.prenom,ra.adr1,ra.adr2,ra.adr3,ra.cp,ra.commune FROM resp_pers rp, resp_adr ra, responsables2 r, eleves e WHERE rp.pers_id=r.pers_id AND rp.adr_id=ra.adr_id AND r.ele_id=e.ele_id AND e.login='$ele_login' AND (r.resp_legal='1' OR r.resp_legal='2') ORDER BY r.resp_legal;";
-$res_resp=mysql_query($sql);
-if(mysql_num_rows($res_resp)==0) {
-	$ad_nom_resp="";
-	$adr1_resp="";
-	$adr2_resp="";
-	$adr3_resp="";
-	$cp_resp="";
-	$commune_resp="";
-}
-else {
-	$lig_resp=mysql_fetch_object($res_resp);
-	$ad_nom_resp=$lig_resp->civilite." ".$lig_resp->nom." ".$lig_resp->prenom;
-	$adr1_resp=$lig_resp->adr1;
-	$adr2_resp=$lig_resp->adr2;
-	$adr3_resp=$lig_resp->adr3;
-	$cp_resp=$lig_resp->cp;
-	$commune_resp=$lig_resp->commune;
-}
+require_once("./lib_tbs_courrier.php"); //fonction pour le traitement de l'adresse
+
+$tab_adresse=adresse_responsables($ele_login); 
+
+// Pour le moment on ne traite que pour le R1
+$ad_nom_resp=$tab_adresse[0]['civilite'];
+$adr1_resp=$tab_adresse[0]['adresse1'];
+$adr2_resp=$tab_adresse[0]['adresse2'];
+$adr3_resp=$tab_adresse[0]['adresse3'];
+$cp_ville_resp=$tab_adresse[0]['cp_ville'];
+$civilite_courrier=$tab_adresse[0]['civilite_courrier'];
 
 //Contenu du courrier
 if ($id_sanction != null && $id_sanction != '') {
@@ -525,7 +516,6 @@ $res_sanction=mysql_query($sql);
 		$date_debut=$lig_sanction->date_debut;
 		$date_fin=$lig_sanction->date_fin;
 		$signataire=$lig_sanction->id_signataire;
-
 	}
 
 $sql="SELECT * FROM s_delegation WHERE id_delegation='$signataire';";
@@ -540,7 +530,6 @@ $res_delegation=mysql_query($sql);
 		$fct_delegation=$lig_delegation->fct_delegation;
 		$fct_autorite=$lig_delegation->fct_autorite;
 		$nom_autorite=$lig_delegation->nom_autorite;
-
 	}
 }
 //conversion des dates
@@ -573,7 +562,8 @@ $export = array();
 $export[] = Array('nom' => $nom_ele, 'prenom' => $prenom_ele, 'classe' => $classe_ele,
 				  'ad_nom_resp' => $ad_nom_resp, 
 				  'adr1_resp' => $adr1_resp, 'adr2_resp' => $adr2_resp, 'adr3_resp' => $adr3_resp,
-				  'cp_resp' => $cp_resp, 'commune_resp' => $commune_resp,
+				  'cp_ville_resp' => $cp_ville_resp,
+				  'civilite_courrier' => $civilite_courrier,
 				  'num_courrier' => $num_courrier,
 				  'type_exclusion' => $type_exclusion,
 				  'qualif_faits' => $qualification_faits,

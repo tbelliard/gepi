@@ -1,7 +1,7 @@
 <?php
 
 /*
- * $Id: definir_categories.php 5989 2010-11-25 11:51:39Z crob $
+ * $Id$
  *
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
  *
