@@ -132,7 +132,7 @@ class AbsenceEleveSaisieQuery extends BaseAbsenceEleveSaisieQuery {
      *
      * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
      */
-    public function filterByIdLieu($idLieu= null) {
+    public function filterByIdLieu($idLieu= null, $comparison=null) {
 
         $this
                 ->join('AbsenceEleveSaisie.JTraitementSaisieEleve', Criteria::LEFT_JOIN)
