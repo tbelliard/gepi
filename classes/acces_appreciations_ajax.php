@@ -131,7 +131,7 @@
 			//echo "<script type='text/javascript'>alert('Veuillez saisir une date valide.');</script>\n";
 			echo "<span style='color:red'>Date saisie invalide</span>";
 		}
-		elseif(!ereg("[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}",$choix_date)) {
+		elseif(!my_ereg("[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}",$choix_date)) {
 			$poursuivre="n";
 			echo "<span style='color:red'>Date saisie invalide</span>";
 		}

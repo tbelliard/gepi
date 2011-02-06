@@ -221,7 +221,7 @@ if(isset($_POST['choix_date_valider2'])) {
 		//echo "<script type='text/javascript'>alert('Veuillez saisir une date valide.');</script>\n";
 		echo "<span style='color:red'>Date saisie invalide</span>";
 	}
-	elseif(!ereg("[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}",$choix_date2)) {
+	elseif(!my_ereg("[0-9]{1,2}/[0-9]{1,2}/[0-9]{4}",$choix_date2)) {
 		$poursuivre="n";
 		echo "<span style='color:red'>Date saisie invalide</span>";
 	}

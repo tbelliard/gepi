@@ -45,12 +45,12 @@ $msg = '';
 
 if (isset($new_name_defined)) {
 
-    if (!ereg("^[[:print:]]{1,10}$",trim($nom_court))) {
+    if (!my_ereg("^[[:print:]]{1,10}$",trim($nom_court))) {
     $msg .= "Le nom court doit être composé de caractères alphanumériques (de 1 à 10 caractères).<br />";
     unset($new_name_defined);
     }
 
-    if (!ereg("^([[:print:]]|[âäàéèêëüûöôîï]){1,50}$",trim($nom_complet))) {
+    if (!my_ereg("^([[:print:]]|[âäàéèêëüûöôîï]){1,50}$",trim($nom_complet))) {
         $msg .= "Le nom complet doit être composé de caractères alphanumériques (de 1 à 50 caractères).<br />";
     unset($new_name_defined);
     }

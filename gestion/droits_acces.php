@@ -1776,7 +1776,6 @@ if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 					$acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
 					if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';}
 					$delais_apres_cloture=getSettingValue('delais_apres_cloture');
-					// if(!ereg("^[0-9]*$",$delais_apres_cloture)) {$delais_apres_cloture=0;}
 					if(!my_ereg("^[0-9]*$",$delais_apres_cloture)) {$delais_apres_cloture=0;}
 
 					echo "<span style='font-size:x-small'>";
@@ -1806,7 +1805,6 @@ $texteItem="a accès à ses bulletins simplifiés<br />";
   $acces_app_ele_resp=getSettingValue('acces_app_ele_resp');
   if($acces_app_ele_resp=="") {$acces_app_ele_resp='manuel';}
   $delais_apres_cloture=getSettingValue('delais_apres_cloture');
-  // if(!ereg("^[0-9]*$",$delais_apres_cloture)) {$delais_apres_cloture=0;}
   if(!my_ereg("^[0-9]*$",$delais_apres_cloture)) {$delais_apres_cloture=0;}
   $texteItem.="<em>";
   if($acces_app_ele_resp=='manuel') {

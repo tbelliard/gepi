@@ -158,7 +158,7 @@ case "envoi":
 		if($email_reponse!="") {
 			echo ", vous recevrez rapidement<br />une réponse dans votre boîte aux lettres électronique, veuillez la consulter régulièrement.";
 
-			if(!ereg("[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}",$email_reponse)) {
+			if(!my_ereg("[a-zA-Z0-9_.-]+@[a-zA-Z0-9.-]{2,}[.][a-zA-Z]{2,3}",$email_reponse)) {
 				echo "</p>\n";
 				echo "<p style=\"text-align: center\">L'adresse <span style='color:red'>$email_reponse</span> ne semble pas correctement formatée.<br />Si l'adresse est correcte, ne tenez pas compte de cette remarque.<br />Sinon, vous ne pourrez pas obtenir de réponse par courriel/email.\n";
 			}
