@@ -22,7 +22,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//$variables_non_protegees = 'yes';
+$variables_non_protegees = 'yes';
 
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
@@ -56,6 +56,27 @@ $refermer_page=isset($_POST['refermer_page']) ? $_POST['refermer_page'] : (isset
 
 
 $msg="";
+
+if((isset($is_posted))&&(isset($_POST['no_anti_inject_message_autorisation_exceptionnelle']))&&($_SESSION['statut']=='administrateur')) {
+	check_token();
+	//echo "BLIP";
+	if (isset($NON_PROTECT["message_autorisation_exceptionnelle"])){
+		$message_autorisation_exceptionnelle= traitement_magic_quotes(corriger_caracteres($NON_PROTECT["message_autorisation_exceptionnelle"]));
+	}
+	else{
+		$message_autorisation_exceptionnelle="";
+	}
+
+	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+	$message_autorisation_exceptionnelle=my_ereg_replace('(\\\r\\\n)+',"\r\n",$message_autorisation_exceptionnelle);
+
+	if(!saveSetting('message_autorisation_exceptionnelle',$message_autorisation_exceptionnelle)) {
+		$msg="Erreur lors de l'enregistrement du message personnalisé.<br />";
+	}
+	else {
+		$msg="Enregistrement du message personnalisé effectué.<br />";
+	}
+}
 
 if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($periode))&&(isset($display_date_limite))&&(isset($display_heure_limite))) {
 	check_token();
@@ -185,7 +206,52 @@ else {
 	echo "<a href=\"../accueil.php\" ><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour à l'accueil</a>\n";
 }
 
+if(($_SESSION['statut']=='administrateur')&&(isset($_GET['definir_message']))) {
+	echo " | <a href=\"".$_SERVER['PHP_SELF']."\" > Autorisation exceptionnelle</a>";
+	echo "</p>\n";
+
+	echo "<p>Par défaut le message reçu par un professeur exceptionnellement autorisé à saisir en retard ou corriger ses notes/appréciations est le suivant&nbsp;:<br />\n";
+
+	$texte_mail="Bonjour/Bonsoir\n\nVous avez jusqu'au TELLE DATE TELLE HEURE\npour saisir/corriger une ou des appréciations pour l'enseignement XXXXXXXXXX\nen TELLE(S) CLASSE(S) en période NUMERO_PERIODE.\n\n";
+	$texte_mail.="<b>Cette autorisation est exceptionnelle.\nIl conviendra de veiller à effectuer les saisies dans les temps une prochaine fois.</b>\n";
+	$texte_mail.="\nCordialement.";
+
+	echo "<pre style='color:blue;'>".$texte_mail."</pre>\n";
+
+	echo "<p>Ce message peut être partiellement personnalisé.<br />Vous pouvez intervenir sur la partie en gras du message.</p>\n";
+
+	$message_autorisation_exceptionnelle=getSettingValue('message_autorisation_exceptionnelle');
+
+	if($message_autorisation_exceptionnelle!='') {
+		echo "<p>Votre message est actuellement personnalisé de la façon suivante&nbsp;:";
+		$texte_mail="Bonjour/Bonsoir\n\nVous avez jusqu'au TELLE DATE TELLE HEURE\npour saisir/corriger une ou des appréciations pour l'enseignement XXXXXXXXXX\nen TELLE(S) CLASSE(S) en période NUMERO_PERIODE.\n\n";
+		$texte_mail.="<b>$message_autorisation_exceptionnelle</b>\n";
+		$texte_mail.="\nCordialement.";
+	
+		echo "<pre style='color:green;'>".$texte_mail."</pre>\n";
+	}
+	else {
+		$texte_mail.=$message_autorisation_exceptionnelle."\n";
+	}
+
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+	echo "<p><b>Message personnalisé&nbsp;:</b><br />\n";
+	echo "<textarea name='no_anti_inject_message_autorisation_exceptionnelle' rows='2' cols='100'>$message_autorisation_exceptionnelle</textarea>\n";
+	echo "<br />\n";
+	echo add_token_field();
+	echo "<input type='hidden' name='is_posted' value='1' />\n";
+	echo "<input type='submit' name='Valider' value='Valider' />\n";
+	echo "</form>\n";
+
+	echo "<p><br /></p>\n";
+	require("../lib/footer.inc.php");
+	die();
+}
+
 if(!isset($id_classe)) {
+	if($_SESSION['statut']=='administrateur') {
+		echo " | <a href=\"".$_SERVER['PHP_SELF']."?definir_message=y\" > Définir le message</a>";
+	}
 	echo "</p>\n";
 
 	//echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
