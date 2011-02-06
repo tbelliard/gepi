@@ -184,7 +184,6 @@ if (isset($_POST['notes'])) {
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
 		$car = substr($temp, $i, 1);
 		//echo "<p>\$car='$car'<br />";
-		//if (ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
 		//if (my_ereg ("^[0-9\.\,\a-z\A-Z\-]{1}$", $car)) {
 		if (my_ereg('^[0-9.,a-zA-Z-]{1}$', $car)) {
 			if (($fin_note=='yes') or ($i == $longueur-1)) {
@@ -221,9 +220,7 @@ if (isset($_POST['appreciations'])) {
 	check_token();
 
 	$temp = $_POST['appreciations']." 1";
-	// $temp = ereg_replace("\\\\r","`",$temp);
 	$temp = my_ereg_replace("\\\\r","`",$temp);
-	// $temp = ereg_replace("\\\\n","",$temp);
 	$temp = my_ereg_replace("\\\\n","",$temp);
 	$temp = unslashes($temp);
  	$longueur = strlen($temp);
@@ -233,7 +230,6 @@ if (isset($_POST['appreciations'])) {
 	$tempo = "";
 	while (($i < $longueur) and ($indice < $_POST['fin_import'])) {
 		$car = substr($temp, $i, 1);
-		// if (!ereg ("^[`]{1}$", $car)) {
 		if (!my_ereg ("^[`]{1}$", $car)) {
 			if (($fin_app=='yes') or ($i == $longueur-1)) {
 				$fin_app = 'no';
@@ -299,6 +295,7 @@ if (isset($_POST['is_posted'])) {
 					}
 					//==============================
 
+					//echo "$reg_eleve_login : $note <br />";
 
 					if (($note == 'disp')||($note == 'd')) {
 						$note = '0';
