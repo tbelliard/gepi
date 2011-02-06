@@ -104,7 +104,7 @@
 
 				echo "<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
 
-				if(!eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+				if(!my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
 					// Avec konqueror, pour document.getElementById('textarea_courant').value, on obtient [Object INPUT]
 					// En sortant, la commande du onClick et en la mettant dans une fonction javascript externe, ca passe.
 					echo "<a href='#' onClick=\"complete_textarea_courant($cpt); return false;\" style='text-decoration:none; color:black;'>";
@@ -123,7 +123,7 @@
 					echo htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
 				}
 
-				if(!eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+				if(!my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
 					echo "</a>";
 				}
 
