@@ -45,7 +45,7 @@ if (!checkAccess()) {
 // rajout christian
 
 function verif_num($texte_ver) {
-	if(!ereg("^[0-9]+$",$texte_ver)){ $texte_ver = ""; } else { $texte_ver = $texte_ver; }
+	if(!my_ereg("^[0-9]+$",$texte_ver)){ $texte_ver = ""; } else { $texte_ver = $texte_ver; }
 	return $texte_ver;
  }
 
