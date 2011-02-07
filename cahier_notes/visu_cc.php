@@ -289,8 +289,8 @@ $nb_eval=$i;
 $liste_eleves = $current_group["eleves"][$periode_num]["users"];
 
 $i=0;
-$alt=1;
 foreach ($liste_eleves as $eleve) {
+	$alt=1;
 	$eleve_login[$i] = $eleve["login"];
 	$eleve_nom[$i] = $eleve["nom"];
 	$eleve_prenom[$i] = $eleve["prenom"];
@@ -300,16 +300,16 @@ foreach ($liste_eleves as $eleve) {
 	echo "<div style='float:left; width:30%; margin-left: 2em;; margin-bottom: 2em'>\n";
 	echo "<table class='boireaus table_no_split' summary=\"$nom_cc de $eleve_nom[$i] $eleve_prenom[$i]\">\n";
 	echo "<tr class='table_no_split'>\n";
-	echo "<th colspan='$nb_eval'><b>$nom_cc</b>&nbsp;: $nom_court_dev</th>\n";
+	echo "<th colspan='4'><b>$nom_cc</b>&nbsp;: $nom_court_dev</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr class='table_no_split'>\n";
-	echo "<th colspan='$nb_eval'><b>Classe</b>&nbsp;: $eleve_classe[$i]</th>\n";
+	echo "<th colspan='4'><b>Classe</b>&nbsp;: $eleve_classe[$i]</th>\n";
 	//echo "<th rowspan='2'><b>$nom_cc</b>&nbsp;: $nom_court_dev</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr class='table_no_split'>\n";
-	echo "<th colspan='$nb_eval'><b>Elève</b>&nbsp;: $eleve_nom[$i] $eleve_prenom[$i]</th>\n";
+	echo "<th colspan='4'><b>Elève</b>&nbsp;: $eleve_nom[$i] $eleve_prenom[$i]</th>\n";
 	echo "</tr>\n";
 
 	echo "<tr class='table_no_split'>\n";

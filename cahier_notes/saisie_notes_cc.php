@@ -456,11 +456,13 @@ echo "<script type='text/javascript'>
 
 echo "</form>\n";
 
+echo "<h2>".$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']."</h2>\n";
+
 //echo "<h2>$nom_cc n°$id_dev&nbsp;: $nom_court_dev (<i>$nom_complet_dev</i>)</h2>\n";
 //echo "<h3>Evaluation n°$id_eval&nbsp;: $nom_court (<i>$nom_complet</i>) sur $note_sur du ".formate_date($display_date)."</h3>\n";
 
-echo "<h2><b>$nom_cc</b>&nbsp;: $nom_court_dev (<i>$nom_complet_dev</i>)</h2>\n";
-echo "<h3><b>Evaluation</b>&nbsp;: $nom_court (<i>$nom_complet</i>) sur $note_sur du ".formate_date($display_date)."</h3>\n";
+echo "<h3><b>$nom_cc</b>&nbsp;: $nom_court_dev (<i>$nom_complet_dev</i>)</h3>\n";
+echo "<h4><b>Evaluation</b>&nbsp;: $nom_court (<i>$nom_complet</i>) sur $note_sur du ".formate_date($display_date)."</h4>\n";
 
 echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
@@ -489,6 +491,11 @@ echo "</b></p>\n";
 
 //=============================================================
 // MODIF: boireaus
+
+echo "<div id='div_q_p' style='position: fixed; top: 220px; right: 200px; text-align:center;'>\n";
+echo "<div id='div_photo_eleve' style='text-align:center; display:none;'></div>\n";
+echo "</div>\n";
+
 echo "
 <script type='text/javascript' language='JavaScript'>
 
@@ -524,6 +531,22 @@ function verifcol(num_id){
 	}
 	eval('document.getElementById(\'td_'+num_id+'\').style.background=couleur');
 }
+
+function affiche_div_photo() {
+	if(document.getElementById('div_photo_eleve').style.display=='none') {
+		document.getElementById('div_photo_eleve').style.display='';
+	}
+	else {
+		document.getElementById('div_photo_eleve').style.display='none';
+	}
+}
+
+function affiche_photo(photo,nom_prenom) {
+	document.getElementById('div_photo_eleve').innerHTML='<img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom;
+}
+
+affiche_div_photo();
+
 </script>
 ";
 //=============================================================
@@ -610,6 +633,14 @@ foreach ($liste_eleves as $eleve) {
 	$eleve_classe[$i] = $current_group["classes"]["classes"][$eleve["classe"]]["classe"];
 	$eleve_id_classe[$i] = $current_group["classes"]["classes"][$eleve["classe"]]["id"];
 
+	$elenoet="";
+	$sql="SELECT elenoet FROM eleves WHERE login='".$eleve_login[$i]."';";
+	$res_elenoet=mysql_query($sql);
+	if(mysql_num_rows($res_elenoet)>0) {
+		$tmp_lig=mysql_fetch_object($res_elenoet);
+		$elenoet=$tmp_lig->elenoet;
+	}
+
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>";
@@ -626,7 +657,9 @@ foreach ($liste_eleves as $eleve) {
 	if(isset($note_enr[$eleve_login[$i]])) {echo "\$note_enr[$eleve_login[$i]]=".$note_enr["$eleve_login[$i]"]."<br />";}
 	*/
 
-	echo "<input type='text' name='note_eleve[$i]' size='4' autocomplete='off' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()\" onchange=\"verifcol($num_id);changement();\" value='";
+	echo "<input type='text' name='note_eleve[$i]' size='4' autocomplete='off' id=\"n".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onfocus=\"javascript:this.select()";
+	if($elenoet!="") {echo ";affiche_photo('".nom_photo($elenoet)."','".addslashes(strtoupper($eleve_nom[$i])." ".ucfirst(strtolower($eleve_prenom[$i])))."')";}
+	echo "\" onchange=\"verifcol($num_id);changement();\" value='";
 	if ((isset($note_import[$current_displayed_line])) and  ($note_import[$current_displayed_line] != '')) {
 		echo $note_import[$current_displayed_line];
 	}

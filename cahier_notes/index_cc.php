@@ -178,25 +178,51 @@ $titre_page = "Carnet de notes - Ajout/modification d'un $nom_cc";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
-echo add_token_field();
+echo "<form enctype=\"multipart/form-data\" name= \"form0\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 
 echo "<div class='norme'>\n";
 echo "<p class='bold'>\n";
 echo "<a href='index.php?id_racine=$id_racine'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 echo " | <a href='add_modif_cc_dev.php?id_racine=$id_racine'>Ajouter un $nom_cc</a>";
+
+$sql="SELECT DISTINCT ccn.id_cahier_notes, g.*, c.classe FROM cn_cahier_notes ccn, groupes g, j_groupes_professeurs jgp, j_groupes_classes jgc, classes c WHERE (login='".$_SESSION['login']."'
+						AND jgp.id_groupe=ccn.id_groupe
+						AND jgp.id_groupe=g.id
+						AND ccn.periode='$periode_num'
+						AND c.id=jgc.id_classe
+						AND jgc.id_groupe=g.id
+						)
+						GROUP BY g.id
+						ORDER BY g.name, g.description, c.classe;";
+//echo "$sql<br/>";
+$res_grp=mysql_query($sql);
+echo " | <select name='id_racine' onchange=\"document.forms['form0'].submit();\">\n";
+while($lig=mysql_fetch_object($res_grp)) {
+	echo "<option value='$lig->id_cahier_notes'";
+	if($lig->id_cahier_notes==$id_racine) {echo " selected='true'";}
+	echo ">";
+	echo $lig->name." (<i>".$lig->description."</i>) en ".$lig->classe;
+	echo "</option>\n";
+}
+echo "</select>\n";
 echo "</p>\n";
 echo "</div>\n";
+echo "</form>\n";
+
+echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
+echo add_token_field();
+
+echo "<h2>".$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']." (<i>période $periode_num</i>)</h2>\n";
 
 $liste_eleves = $current_group["eleves"][$periode_num]["users"];
 $nb_eleves=count($current_group["eleves"][$periode_num]["users"]);
 
-echo "<p>Liste des $nom_cc non rattachés à un devoir du carnet de notes&nbsp;: <br />\n";
+echo "<p>Liste des $nom_cc non rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
 $sql="SELECT * FROM cc_dev WHERE id_groupe='$id_groupe' AND id_cn_dev NOT IN (SELECT id FROM cn_devoirs);";
 //echo "$sql<br />\n";
 $res=mysql_query($sql);
 if(mysql_num_rows($res)==0) {
-	echo "Aucun $nom_cc non rattaché n'est encore défini.</p>\n";
+	echo "Aucun $nom_cc non rattachée n'est encore définie.</p>\n";
 }
 else {
 	echo "<ul>\n";
@@ -239,7 +265,7 @@ else {
 	echo "</ul>\n";
 }
 
-echo "<p>Liste des $nom_cc rattachés à un devoir du carnet de notes&nbsp;: <br />\n";
+echo "<p>Liste des $nom_cc rattachées à un devoir du carnet de notes&nbsp;: <br />\n";
 echo "<span style='color:red'>A FAIRE</span>";
 /*
 $sql="SELECT * FROM cc_dev ccd, WHERE id_groupe='$id_groupe' AND id_cn_dev IN (SELECT id FROM cn_devoirs) ORDER BY ;";
