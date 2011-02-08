@@ -537,6 +537,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 	unset($nouveauItem);
 
 //Module "Admissions Post-Bac"
+/*
 	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_apb/admin.php';	
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
@@ -547,6 +548,7 @@ if (!suivi_ariane($_SERVER['PHP_SELF'],"Administration des modules"))
 		$menuPage[]=$nouveauItem;
 	}
 	unset($nouveauItem);
+*/
 
 //Module Gestionnaires d'AID
 	$nouveauItem = new itemGeneral();
