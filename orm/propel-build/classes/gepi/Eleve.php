@@ -590,8 +590,25 @@ class Eleve extends BaseEleve {
 		       $query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $periodeCalendrier->getIdCalendrier());
 		}
 	    }
-
 	    $edtCoursCol = $query->find();
+
+ 	    //si il n'y a aucune periode ouverte actuellement, on renvoi tous les groupe et donc tous les emplacements de cours
+	    $colAidId = $id_array = $this->getAidDetailss()->getPrimaryKeys();
+
+	    $query = EdtEmplacementCoursQuery::create()->filterByIdAid($colAidId)
+		    ->filterByIdCalendrier(0)
+		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
+
+	    if ($v instanceof EdtCalendrierPeriode) {
+		$query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $v->getIdCalendrier());
+	    } else {
+		$periodeCalendrier = EdtCalendrierPeriodePeer::retrieveEdtCalendrierPeriodeActuelle($v);
+		if ($periodeCalendrier != null) {
+		       $query->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, $periodeCalendrier->getIdCalendrier());
+		}
+	    }
+	    $edtCoursCol->addCollection($query->find());
+
 	    require_once("helpers/EdtEmplacementCoursHelper.php");
 	    EdtEmplacementCoursHelper::orderChronologically($edtCoursCol);
 
