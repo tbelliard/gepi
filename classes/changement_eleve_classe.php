@@ -607,6 +607,8 @@ Evitez les 'fantaisies';o).</p>
 												facultatif='$lig_cd->facultatif',
 												date='$lig_cd->date',
 												coef='$lig_cd->coef',
+												note_sur='$lig_cd->note_sur',
+												ramener_sur_referentiel='$lig_cd->ramener_sur_referentiel',
 												display_parents='$lig_cd->display_parents',
 												display_parents_app='$lig_cd->display_parents_app';";
 										affiche_debug("$sql<br />");
