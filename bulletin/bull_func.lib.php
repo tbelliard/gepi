@@ -119,6 +119,7 @@ function texte_html_ou_pas($texte){
 // $tab_bulletin[$id_classe][$periode_num]
 // $i indice élève
 function bulletin_html($tab_bull,$i,$tab_rel) {
+	//echo "DEBUG";
 	global
 		//============================================
 		// Paramètres généraux:
@@ -1007,6 +1008,7 @@ width:".$largeur1."%;\n";
 }
 
 function bulletin_pdf($tab_bull,$i,$tab_rel) {
+	//echo "DEBUG";
 	global
 		//==============
 		//Ajout J.Etheve
@@ -4246,9 +4248,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			//======================================================
 
 
+			//echo "\$tab_modele_pdf['active_moyenne'][$classe_id]=".$tab_modele_pdf["active_moyenne"][$classe_id]."<br />";
 
 			// Ligne moyenne générale
-			//bas du tableau des note et app si les affichage des moyennes ne sont pas affiché le bas du tableau ne seras pas affiché
+			// bas du tableau des notes et app si les moyennes générales ne sont pas affichées, le bas du tableau ne sera pas affiché
 			if ( $tab_modele_pdf["active_moyenne"][$classe_id] === '1' and $tab_modele_pdf["active_moyenne_general"][$classe_id] === '1' ) {
 				$X_note_moy_app = $tab_modele_pdf["X_note_app"][$classe_id];
 				$Y_note_moy_app = $tab_modele_pdf["Y_note_app"][$classe_id]+$tab_modele_pdf["hauteur_note_app"][$classe_id]-$tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id];
@@ -4273,6 +4276,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];
 
 				// coefficient matière
+				//echo "\$tab_modele_pdf['active_coef_moyenne'][$classe_id]=".$tab_modele_pdf["active_coef_moyenne"][$classe_id]."<br />";
 				if($tab_modele_pdf["active_coef_moyenne"][$classe_id]==='1') {
 					$pdf->SetXY($X_note_moy_app+$largeur_utilise, $Y_note_moy_app);
 					$pdf->SetFillColor($tab_modele_pdf["couleur_moy_general1"][$classe_id], $tab_modele_pdf["couleur_moy_general2"][$classe_id], $tab_modele_pdf["couleur_moy_general3"][$classe_id]);
@@ -4280,9 +4284,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 					//$pdf->Cell($tab_modele_pdf["largeur_coef_moyenne"][$classe_id], $tab_modele_pdf["hauteur_entete_moyenne_general"][$classe_id], "",1,0,'C', $tab_modele_pdf["couleur_moy_general"][$classe_id]);
 
 					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
-
+					//echo "\$tab_modele_pdf['affiche_totalpoints_sur_totalcoefs'][$classe_id]=".$tab_modele_pdf["affiche_totalpoints_sur_totalcoefs"][$classe_id]."<br />\n";
 					if($tab_modele_pdf["affiche_totalpoints_sur_totalcoefs"][$classe_id]=='1') {
 						$info_tot_et_coef=$tab_bull['tot_points_eleve'][$i]."/".$tab_bull['total_coef_eleve'][$i];
+					}
+					elseif($tab_modele_pdf["affiche_totalpoints_sur_totalcoefs"][$classe_id]=='2') {
+						$info_tot_et_coef=$tab_bull['total_coef_eleve'][$i];
 					}
 					else {
 						$info_tot_et_coef='-';

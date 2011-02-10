@@ -1282,12 +1282,38 @@ function DecocheCheckbox() {
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_maxi_general" id="affiche_moyenne_maxi_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_maxi_general) and $affiche_moyenne_maxi_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_maxi_general" style="cursor: pointer;">moyenne générale la plus haute</label><br />
 
 			<?php
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "Colonne coefficient de la ligne Moyenne générale&nbsp;:<br />\n";
+
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<input name='affiche_totalpoints_sur_totalcoefs' id='affiche_totalpoints_sur_totalcoefs_0' style='border: 1px solid #74748F;' type='radio' value='0' ";
+				if((empty($affiche_totalpoints_sur_totalcoefs))||($affiche_totalpoints_sur_totalcoefs=='0')) {
+					echo "checked='checked' ";
+				}
+				echo " />&nbsp;<label for='affiche_totalpoints_sur_totalcoefs_0' style='cursor: pointer;'>pas de total affiché</label><br />\n";
+
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<input name='affiche_totalpoints_sur_totalcoefs' id='affiche_totalpoints_sur_totalcoefs_1' style='border: 1px solid #74748F;' type='radio' value='1' ";
+				if($affiche_totalpoints_sur_totalcoefs=='1') {
+					echo "checked='checked' ";
+				}
+				echo " />&nbsp;<label for='affiche_totalpoints_sur_totalcoefs_1' style='cursor: pointer;'>afficher le total des points sur le total des coefficients dans la case coefficients de la ligne moyenne générale</label><br />\n";
+
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<input name='affiche_totalpoints_sur_totalcoefs' id='affiche_totalpoints_sur_totalcoefs_2' style='border: 1px solid #74748F;' type='radio' value='2' ";
+				if($affiche_totalpoints_sur_totalcoefs=='2') {
+					echo "checked='checked' ";
+				}
+				echo " />&nbsp;<label for='affiche_totalpoints_sur_totalcoefs_2' style='cursor: pointer;'>afficher le total des coefficients seulement<br />\n";
+
+				/*
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name='affiche_totalpoints_sur_totalcoefs' id='affiche_totalpoints_sur_totalcoefs' style='border: 1px solid #74748F;' type='checkbox' value='1' ";
 				//if((empty($affiche_totalpoints_sur_totalcoefs))||(!empty($affiche_totalpoints_sur_totalcoefs) and $affiche_totalpoints_sur_totalcoefs=='1')) {
 				if(!empty($affiche_totalpoints_sur_totalcoefs) and $affiche_totalpoints_sur_totalcoefs=='1') {
 					echo "checked='checked' ";
 				}
 				echo "/>&nbsp;<label for='affiche_totalpoints_sur_totalcoefs' style='cursor: pointer;'>afficher le total des points sur le total des coefficients dans la case coefficients de la ligne moyenne générale<br />\n";
+				*/
 			?>
 
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_general_coef_1" id="affiche_moyenne_general_coef_1" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_general_coef_1) and $affiche_moyenne_general_coef_1 === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_general_coef_1" style="cursor: pointer;">moyenne générale avec coefficients à 1 en plus de la moyenne générale<br />
