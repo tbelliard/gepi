@@ -142,7 +142,8 @@ $chemin = array(
 "/classes/index.php",
 //"/groupes/index.php",
 "/aid/index.php",
-"/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers"
+"/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers",
+"/mef/admin_mef.php"
 );
 
 $titre = array(
@@ -154,7 +155,8 @@ $titre = array(
 "Gestion des classes",
 //"Gestion des groupes",
 "Gestion des AID",
-"Gestion du trombinoscope"
+"Gestion du trombinoscope",
+"Gestion des mef (niveaux)"
 );
 
 $expli = array(
@@ -174,7 +176,8 @@ $expli = array(
 "Définir, modifier, supprimer des AID (Activités Inter-Disciplinaires).
 <br />Affecter les ".$gepiSettings['denomination_professeurs']." et les ".$gepiSettings['denomination_eleves'].".",
 "Repérer les personnels/".$gepiSettings['denomination_eleves']." n'ayant pas de photo.
-<br />Vider le dossier des photos,..."
+<br />Vider le dossier des photos,...",
+"Gestion des mef (niveaux)"
 );
 
 $nb_ligne = count($chemin);

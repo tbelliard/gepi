@@ -737,6 +737,10 @@ $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/saisie_notes_cc.php', 'F
 $tab_req[] = "INSERT INTO droits VALUES ('/cahier_notes/visu_cc.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/delegation.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les délégations pour exclusion temporaire', '');";
 
+$tab_req[] = "INSERT INTO droits VALUES ( '/mef/admin_mef.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mef : administration des niveau et formations', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mef/associer_eleve_mef.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mef : administration des niveau et formations', '');";
+$tab_req[] = "INSERT INTO droits VALUES ( '/mef/enregistrement_eleve_mef.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mef : administration des niveau et formations', '');";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {
