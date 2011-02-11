@@ -257,4 +257,22 @@ class Classe extends BaseClasse {
 	public function getProtectedCollPeriodeNote() {
 	    return $this->collPeriodeNotes;
 	}
+
+
+        	/**
+	 *
+	 * Renvoi une collection des mefs des eleves de ce groupe. Un seul mef de chaque type sera retourné.
+	 *
+	 * @periode integer numero de la periode
+	 * @return     PropelObjectCollection Eleves[]
+	 *
+	 */
+	public function getMefs($periode = null) {
+            $mef_collection = new PropelObjectCollection();
+            foreach($this->getEleves($periode) as $eleve) {
+                $mef_collection->add($eleve->getMef());
+            }
+            return $mef_collection;
+        }
+
 } // Classe
