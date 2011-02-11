@@ -384,7 +384,13 @@ if(!isset($step)) {
 
 	echo "<p><br /></p>\n";
 
-	echo "<p><i>NOTE:</i> Après une phase d'analyse des différences, les différences seront affichées et des cases à cocher seront proposées pour valider les modifications.</p>\n";
+	echo "<p><i>NOTES&nbsp;:</i></p>
+	<ul>
+		<li>Après une phase d'analyse des différences, les différences seront affichées et des cases à cocher seront proposées pour valider les modifications.</li>
+		<li>Pour procéder à la mise à jour trois fichiers seront requis&nbsp;:<br />
+		Les fichiers '<b>ElevesAvecAdresses.xml</b>', '<b>Nomenclature.xml</b>', '<b>ResponsablesAvecAdresses.xml</b>' doivent être récupérés depuis l'application web Sconet.<br />
+		Demandez gentiment à votre secrétaire de se rendre dans 'Sconet/Accès Base élèves mode normal/Exploitation/Exports standard/Exports XML génériques' pour récupérer les fichiers '<b>ElevesAvecAdresses.xml</b>', '<b>Nomenclature.xml</b>' et '<b>ResponsablesAvecAdresses.xml</b>'.</li>
+	</ul>\n";
 
 	// Pour afficher le lien vers le fichier de debug.
 	info_debug("",2);
