@@ -408,4 +408,48 @@ PRIMARY KEY ( `id_delegation` )
 } else {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
+
+$test = sql_query1("SHOW TABLES LIKE 'mef'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'mef'. ";
+	$sql="
+CREATE TABLE mef
+(
+	id INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire de la classe',
+	ext_id INTEGER   COMMENT 'Numero de la nomenclature officielle (numero MEF)',
+	libelle_court VARCHAR(50)  NOT NULL COMMENT 'libelle de la formation',
+	libelle_long VARCHAR(300)  NOT NULL COMMENT 'libelle de la formation',
+	libelle_edition VARCHAR(300)  NOT NULL COMMENT 'libelle de la formation pour presentation',
+	PRIMARY KEY (id)
+) ENGINE=MyISAM COMMENT='Module Ã©lÃ©mentaire de formation';
+";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'mef': ".$result_inter."<br />";
+	}
+}
+
+$sql = "SELECT id_mef FROM eleves LIMIT 1";
+$req_rank = mysql_query($sql);
+if (!$req_rank){
+    $sql_request = "ALTER TABLE `eleves` ADD `id_mef` INTEGER   COMMENT 'cle externe pour le jointure avec mef'";
+    $req_add_rank = traite_requete($sql_request);
+    $sql_request = "ALTER TABLE `eleves` ADD INDEX eleves_FI_1 (id_mef)";
+    $req_add_rank_2 = traite_requete($sql_request);
+    $sql_request = "ALTER TABLE `eleves` ADD CONSTRAINT eleves_FK_1
+		FOREIGN KEY (id_mef)
+		REFERENCES mef (id)
+		ON DELETE SET NULL";
+    $req_add_rank_3 = traite_requete($sql_request);
+    if ($req_add_rank == '' && $req_add_rank_2 == '' && $req_add_rank_3 == '') {
+        $result .= "<p style=\"color:green;\">Ajout du champ id_mef dans la table <strong>eleves</strong> : ok.</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Ajout du champ id_mef à la table <strong>eleves</strong> : Erreur. $req_add_rank $req_add_rank_2 $req_add_rank_3</p>";
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Ajout du champ id_mef à la table <strong>eleves</strong> : déjà réalisé.</p>";
+}
+
 ?>

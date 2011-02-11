@@ -396,11 +396,34 @@ CREATE TABLE eleves
 	ele_id VARCHAR(10) default '' NOT NULL COMMENT 'cle utilise par Sconet dans ses fichiers xml',
 	email VARCHAR(255) default '' NOT NULL COMMENT 'Courriel de l\'eleve',
 	id_eleve INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire autoincremente',
+	id_mef INTEGER   COMMENT 'cle externe pour le jointure avec mef',
 	PRIMARY KEY (id_eleve),
 	INDEX I_referenced_j_eleves_classes_FK_1_1 (login),
 	INDEX I_referenced_responsables2_FK_1_2 (ele_id),
-	INDEX I_referenced_archivage_ects_FK_1_3 (no_gep)
+	INDEX I_referenced_archivage_ects_FK_1_3 (no_gep),
+	INDEX eleves_FI_1 (id_mef),
+	CONSTRAINT eleves_FK_1
+		FOREIGN KEY (id_mef)
+		REFERENCES mef (id)
+		ON DELETE SET NULL
 ) ENGINE=MyISAM COMMENT='Liste des eleves de l\'etablissement';
+
+#-----------------------------------------------------------------------------
+#-- mef
+#-----------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS mef;
+
+
+CREATE TABLE mef
+(
+	id INTEGER  NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire de la classe',
+	ext_id INTEGER   COMMENT 'Numero de la nomenclature officielle (numero MEF)',
+	libelle_court VARCHAR(50)  NOT NULL COMMENT 'libelle de la formation',
+	libelle_long VARCHAR(300)  NOT NULL COMMENT 'libelle de la formation',
+	libelle_edition VARCHAR(300)  NOT NULL COMMENT 'libelle de la formation pour presentation',
+	PRIMARY KEY (id)
+) ENGINE=MyISAM COMMENT='Module élémentaire de formation';
 
 #-----------------------------------------------------------------------------
 #-- j_eleves_classes

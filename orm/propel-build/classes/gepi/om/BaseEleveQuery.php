@@ -18,6 +18,7 @@
  * @method     EleveQuery orderByEleId($order = Criteria::ASC) Order by the ele_id column
  * @method     EleveQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     EleveQuery orderByIdEleve($order = Criteria::ASC) Order by the id_eleve column
+ * @method     EleveQuery orderByIdMef($order = Criteria::ASC) Order by the id_mef column
  *
  * @method     EleveQuery groupByNoGep() Group by the no_gep column
  * @method     EleveQuery groupByLogin() Group by the login column
@@ -31,10 +32,15 @@
  * @method     EleveQuery groupByEleId() Group by the ele_id column
  * @method     EleveQuery groupByEmail() Group by the email column
  * @method     EleveQuery groupByIdEleve() Group by the id_eleve column
+ * @method     EleveQuery groupByIdMef() Group by the id_mef column
  *
  * @method     EleveQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     EleveQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
  * @method     EleveQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ *
+ * @method     EleveQuery leftJoinMef($relationAlias = null) Adds a LEFT JOIN clause to the query using the Mef relation
+ * @method     EleveQuery rightJoinMef($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Mef relation
+ * @method     EleveQuery innerJoinMef($relationAlias = null) Adds a INNER JOIN clause to the query using the Mef relation
  *
  * @method     EleveQuery leftJoinJEleveClasse($relationAlias = null) Adds a LEFT JOIN clause to the query using the JEleveClasse relation
  * @method     EleveQuery rightJoinJEleveClasse($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JEleveClasse relation
@@ -99,6 +105,7 @@
  * @method     Eleve findOneByEleId(string $ele_id) Return the first Eleve filtered by the ele_id column
  * @method     Eleve findOneByEmail(string $email) Return the first Eleve filtered by the email column
  * @method     Eleve findOneByIdEleve(int $id_eleve) Return the first Eleve filtered by the id_eleve column
+ * @method     Eleve findOneByIdMef(int $id_mef) Return the first Eleve filtered by the id_mef column
  *
  * @method     array findByNoGep(string $no_gep) Return Eleve objects filtered by the no_gep column
  * @method     array findByLogin(string $login) Return Eleve objects filtered by the login column
@@ -112,6 +119,7 @@
  * @method     array findByEleId(string $ele_id) Return Eleve objects filtered by the ele_id column
  * @method     array findByEmail(string $email) Return Eleve objects filtered by the email column
  * @method     array findByIdEleve(int $id_eleve) Return Eleve objects filtered by the id_eleve column
+ * @method     array findByIdMef(int $id_mef) Return Eleve objects filtered by the id_mef column
  *
  * @package    propel.generator.gepi.om
  */
@@ -487,6 +495,101 @@ abstract class BaseEleveQuery extends ModelCriteria
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(ElevePeer::ID_ELEVE, $idEleve, $comparison);
+	}
+
+	/**
+	 * Filter the query on the id_mef column
+	 * 
+	 * @param     int|array $idMef The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    EleveQuery The current query, for fluid interface
+	 */
+	public function filterByIdMef($idMef = null, $comparison = null)
+	{
+		if (is_array($idMef)) {
+			$useMinMax = false;
+			if (isset($idMef['min'])) {
+				$this->addUsingAlias(ElevePeer::ID_MEF, $idMef['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($idMef['max'])) {
+				$this->addUsingAlias(ElevePeer::ID_MEF, $idMef['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(ElevePeer::ID_MEF, $idMef, $comparison);
+	}
+
+	/**
+	 * Filter the query by a related Mef object
+	 *
+	 * @param     Mef $mef  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    EleveQuery The current query, for fluid interface
+	 */
+	public function filterByMef($mef, $comparison = null)
+	{
+		return $this
+			->addUsingAlias(ElevePeer::ID_MEF, $mef->getId(), $comparison);
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the Mef relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    EleveQuery The current query, for fluid interface
+	 */
+	public function joinMef($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('Mef');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'Mef');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the Mef relation Mef object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    MefQuery A secondary query class using the current class as primary query
+	 */
+	public function useMefQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+	{
+		return $this
+			->joinMef($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'Mef', 'MefQuery');
 	}
 
 	/**

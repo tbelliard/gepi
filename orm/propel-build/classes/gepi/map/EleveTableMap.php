@@ -49,6 +49,7 @@ class EleveTableMap extends TableMap {
 		$this->addColumn('ELE_ID', 'EleId', 'VARCHAR', true, 10, '');
 		$this->addColumn('EMAIL', 'Email', 'VARCHAR', true, 255, '');
 		$this->addPrimaryKey('ID_ELEVE', 'IdEleve', 'INTEGER', true, 11, null);
+		$this->addForeignKey('ID_MEF', 'IdMef', 'INTEGER', 'mef', 'ID', false, null, null);
 		// validators
 	} // initialize()
 
@@ -57,6 +58,7 @@ class EleveTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
+    $this->addRelation('Mef', 'Mef', RelationMap::MANY_TO_ONE, array('id_mef' => 'id', ), 'SET NULL', null);
     $this->addRelation('JEleveClasse', 'JEleveClasse', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
     $this->addRelation('JEleveCpe', 'JEleveCpe', RelationMap::ONE_TO_MANY, array('login' => 'e_login', ), 'CASCADE', null);
     $this->addRelation('JEleveGroupe', 'JEleveGroupe', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);

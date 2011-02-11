@@ -81,7 +81,7 @@
     <column name="ects_fonction_signataire_attestation" type="VARCHAR" size="255" />
 	</table>
 
-	<table name="periodes" phpName="PeriodeNote" description="Table regroupant les periodes de notes pour les classes">
+        <table name="periodes" phpName="PeriodeNote" description="Table regroupant les periodes de notes pour les classes">
 		<column name="nom_periode" type="VARCHAR" size="10" required="false" description="Nom de la periode de note" />
 		<column name="num_periode" type="INTEGER" size="10" required="true" primaryKey="true" description="identifiant numerique de la periode (1, 2 ou3)" />
 		<column name="verouiller" type="VARCHAR" size="1" required="true" default="O" description="Verrouillage de la periode : O pour verouillee, N pour non verrouillee, P pour partiel (pied de bulletin)" />
@@ -226,6 +226,16 @@
 		<column name="ele_id" required="true" type="VARCHAR" size="10" default="" description="cle utilise par Sconet dans ses fichiers xml"/>
 		<column name="email" required="true" type="VARCHAR" size="255" default="" description="Courriel de l'eleve"/>
 		<column name="id_eleve" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire autoincremente"/>
+		<column name="id_mef" required="false" type="INTEGER" description="cle externe pour le jointure avec mef"/>
+		<foreign-key foreignTable="mef" onDelete="setnull"><reference local="id_mef" foreign="id"/></foreign-key>
+	</table>
+
+	<table name="mef" description="Module élémentaire de formation">
+		<column name="id" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" description="Cle primaire de la classe" />
+		<column name="ext_id" required="false" type="INTEGER" description="Numero de la nomenclature officielle (numero MEF)" />
+                <column name="libelle_court" required="true" type="VARCHAR" size="50" description="libelle de la formation"/>
+                <column name="libelle_long" required="true" type="VARCHAR" size="300" description="libelle de la formation"/>
+                <column name="libelle_edition" required="true" type="VARCHAR" size="300" description="libelle de la formation pour presentation"/>
 	</table>
 
 	<table name="j_eleves_classes" phpName="JEleveClasse" description="Table de jointure entre les eleves et leur classe en fonction de la periode">

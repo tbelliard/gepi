@@ -100,6 +100,17 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	protected $id_eleve;
 
 	/**
+	 * The value for the id_mef field.
+	 * @var        int
+	 */
+	protected $id_mef;
+
+	/**
+	 * @var        Mef
+	 */
+	protected $aMef;
+
+	/**
 	 * @var        array JEleveClasse[] Collection to store aggregation of JEleveClasse objects.
 	 */
 	protected $collJEleveClasses;
@@ -352,6 +363,16 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getIdEleve()
 	{
 		return $this->id_eleve;
+	}
+
+	/**
+	 * Get the [id_mef] column value.
+	 * cle externe pour le jointure avec mef
+	 * @return     int
+	 */
+	public function getIdMef()
+	{
+		return $this->id_mef;
 	}
 
 	/**
@@ -624,6 +645,30 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	} // setIdEleve()
 
 	/**
+	 * Set the value of [id_mef] column.
+	 * cle externe pour le jointure avec mef
+	 * @param      int $v new value
+	 * @return     Eleve The current object (for fluent API support)
+	 */
+	public function setIdMef($v)
+	{
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->id_mef !== $v) {
+			$this->id_mef = $v;
+			$this->modifiedColumns[] = ElevePeer::ID_MEF;
+		}
+
+		if ($this->aMef !== null && $this->aMef->getId() !== $v) {
+			$this->aMef = null;
+		}
+
+		return $this;
+	} // setIdMef()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -679,6 +724,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->ele_id = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
 			$this->email = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
 			$this->id_eleve = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
+			$this->id_mef = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -687,7 +733,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 12; // 12 = ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 13; // 13 = ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Eleve object", $e);
@@ -710,6 +756,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
+		if ($this->aMef !== null && $this->id_mef !== $this->aMef->getId()) {
+			$this->aMef = null;
+		}
 	} // ensureConsistency
 
 	/**
@@ -748,18 +797,32 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
+			$this->aMef = null;
 			$this->collJEleveClasses = null;
+
 			$this->collJEleveCpes = null;
+
 			$this->collJEleveGroupes = null;
+
 			$this->collJEleveProfesseurPrincipals = null;
+
 			$this->singleEleveRegimeDoublant = null;
+
 			$this->collResponsableInformations = null;
+
 			$this->collJEleveAncienEtablissements = null;
+
 			$this->collJAidElevess = null;
+
 			$this->collAbsenceEleveSaisies = null;
+
 			$this->collCreditEctss = null;
+
 			$this->collCreditEctsGlobals = null;
+
 			$this->collArchiveEctss = null;
+
 			$this->collAncienEtablissements = null;
 			$this->collAidDetailss = null;
 		} // if (deep)
@@ -872,6 +935,18 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if (!$this->alreadyInSave) {
 			$this->alreadyInSave = true;
 
+			// We call the save method on the following object(s) if they
+			// were passed to this object by their coresponding set
+			// method.  This object relates to these object(s) by a
+			// foreign key reference.
+
+			if ($this->aMef !== null) {
+				if ($this->aMef->isModified() || $this->aMef->isNew()) {
+					$affectedRows += $this->aMef->save($con);
+				}
+				$this->setMef($this->aMef);
+			}
+
 			if ($this->isNew() ) {
 				$this->modifiedColumns[] = ElevePeer::ID_ELEVE;
 			}
@@ -885,11 +960,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 					}
 
 					$pk = BasePeer::doInsert($criteria, $con);
-					$affectedRows = 1;
+					$affectedRows += 1;
 					$this->setIdEleve($pk);  //[IMV] update autoincrement primary key
 					$this->setNew(false);
 				} else {
-					$affectedRows = ElevePeer::doUpdate($this, $con);
+					$affectedRows += ElevePeer::doUpdate($this, $con);
 				}
 
 				$this->resetModified(); // [HL] After being saved an object is no longer 'modified'
@@ -1053,6 +1128,18 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$retval = null;
 
 			$failureMap = array();
+
+
+			// We call the validate method on the following object(s) if they
+			// were passed to this object by their coresponding set
+			// method.  This object relates to these object(s) by a
+			// foreign key reference.
+
+			if ($this->aMef !== null) {
+				if (!$this->aMef->validate($columns)) {
+					$failureMap = array_merge($failureMap, $this->aMef->getValidationFailures());
+				}
+			}
 
 
 			if (($retval = ElevePeer::doValidate($this, $columns)) !== true) {
@@ -1223,6 +1310,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			case 11:
 				return $this->getIdEleve();
 				break;
+			case 12:
+				return $this->getIdMef();
+				break;
 			default:
 				return null;
 				break;
@@ -1239,10 +1329,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
 	{
 		$keys = ElevePeer::getFieldNames($keyType);
 		$result = array(
@@ -1258,7 +1349,13 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$keys[9] => $this->getEleId(),
 			$keys[10] => $this->getEmail(),
 			$keys[11] => $this->getIdEleve(),
+			$keys[12] => $this->getIdMef(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->aMef) {
+				$result['Mef'] = $this->aMef->toArray($keyType, $includeLazyLoadColumns, true);
+			}
+		}
 		return $result;
 	}
 
@@ -1325,6 +1422,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			case 11:
 				$this->setIdEleve($value);
 				break;
+			case 12:
+				$this->setIdMef($value);
+				break;
 		} // switch()
 	}
 
@@ -1361,6 +1461,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if (array_key_exists($keys[9], $arr)) $this->setEleId($arr[$keys[9]]);
 		if (array_key_exists($keys[10], $arr)) $this->setEmail($arr[$keys[10]]);
 		if (array_key_exists($keys[11], $arr)) $this->setIdEleve($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setIdMef($arr[$keys[12]]);
 	}
 
 	/**
@@ -1384,6 +1485,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if ($this->isColumnModified(ElevePeer::ELE_ID)) $criteria->add(ElevePeer::ELE_ID, $this->ele_id);
 		if ($this->isColumnModified(ElevePeer::EMAIL)) $criteria->add(ElevePeer::EMAIL, $this->email);
 		if ($this->isColumnModified(ElevePeer::ID_ELEVE)) $criteria->add(ElevePeer::ID_ELEVE, $this->id_eleve);
+		if ($this->isColumnModified(ElevePeer::ID_MEF)) $criteria->add(ElevePeer::ID_MEF, $this->id_mef);
 
 		return $criteria;
 	}
@@ -1456,6 +1558,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$copyObj->setEreno($this->ereno);
 		$copyObj->setEleId($this->ele_id);
 		$copyObj->setEmail($this->email);
+		$copyObj->setIdMef($this->id_mef);
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1576,6 +1679,55 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			self::$peer = new ElevePeer();
 		}
 		return self::$peer;
+	}
+
+	/**
+	 * Declares an association between this object and a Mef object.
+	 *
+	 * @param      Mef $v
+	 * @return     Eleve The current object (for fluent API support)
+	 * @throws     PropelException
+	 */
+	public function setMef(Mef $v = null)
+	{
+		if ($v === null) {
+			$this->setIdMef(NULL);
+		} else {
+			$this->setIdMef($v->getId());
+		}
+
+		$this->aMef = $v;
+
+		// Add binding for other direction of this n:n relationship.
+		// If this object has already been added to the Mef object, it will not be re-added.
+		if ($v !== null) {
+			$v->addEleve($this);
+		}
+
+		return $this;
+	}
+
+
+	/**
+	 * Get the associated Mef object
+	 *
+	 * @param      PropelPDO Optional Connection object.
+	 * @return     Mef The associated Mef object.
+	 * @throws     PropelException
+	 */
+	public function getMef(PropelPDO $con = null)
+	{
+		if ($this->aMef === null && ($this->id_mef !== null)) {
+			$this->aMef = MefQuery::create()->findPk($this->id_mef, $con);
+			/* The following can be used additionally to
+				 guarantee the related object contains a reference
+				 to this object.  This level of coupling may, however, be
+				 undesirable since it could result in an only partially populated collection
+				 in the referenced object.
+				 $this->aMef->addEleves($this);
+			 */
+		}
+		return $this->aMef;
 	}
 
 	/**
@@ -2861,6 +3013,31 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
 
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Eleve is new, it will return
+	 * an empty collection; or if this Eleve has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Eleve.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getAbsenceEleveSaisiesJoinAbsenceEleveLieu($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveLieu', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
 	/**
 	 * Clears out the collCreditEctss collection
 	 *
@@ -3456,6 +3633,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$this->ele_id = null;
 		$this->email = null;
 		$this->id_eleve = null;
+		$this->id_mef = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
@@ -3549,6 +3727,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$this->collCreditEctss = null;
 		$this->collCreditEctsGlobals = null;
 		$this->collArchiveEctss = null;
+		$this->aMef = null;
 	}
 
 	/**
