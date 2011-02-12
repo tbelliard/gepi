@@ -75,6 +75,15 @@ while($j< $nombre_lignes) {
 	$user_statut = mysql_result($appel_donnees, $j, "statut");
 	$fd.=$user_nom.";".$user_prenom.";".$user_login.";".$user_email;
 	if($export_statut=='personnels') {$fd.=";".$user_statut;}
+	elseif($export_statut=='responsable') {
+		$liste_enfants="";
+		$tmp_tab_enfants=get_enfants_from_resp_login($user_login,"avec_classe");
+		for($i=1;$i<count($tmp_tab_enfants);$i+=2) {
+			if($i>1) {$liste_enfants.=", ";}
+			$liste_enfants.=$tmp_tab_enfants[$i];
+		}
+		$fd.=";".$liste_enfants;
+	}
 	$fd.=";\n";
 	$j++;
 }

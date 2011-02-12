@@ -2983,7 +2983,7 @@ function get_noms_classes_from_ele_login($ele_login){
 	return $tab_classe;
 }
 
-function get_enfants_from_resp_login($resp_login){
+function get_enfants_from_resp_login($resp_login,$mode='simple'){
 	$sql="SELECT e.nom,e.prenom,e.login FROM eleves e,
 											responsables2 r,
 											resp_pers rp
@@ -2998,7 +2998,19 @@ function get_enfants_from_resp_login($resp_login){
 	if(mysql_num_rows($res_ele)>0){
 		while($lig_tmp=mysql_fetch_object($res_ele)){
 			$tab_ele[]=$lig_tmp->login;
-			$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom);
+			if($mode=='avec_classe') {
+				$tmp_chaine_classes="";
+
+				$tmp_tab_clas=get_class_from_ele_login($lig_tmp->login);
+				if(isset($tmp_tab_clas['liste'])) {
+					$tmp_chaine_classes=" (".$tmp_tab_clas['liste'].")";
+				}
+
+				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom).$tmp_chaine_classes;
+			}
+			else {
+				$tab_ele[]=ucfirst(strtolower($lig_tmp->prenom))." ".strtoupper($lig_tmp->nom);
+			}
 		}
 	}
 	return $tab_ele;
