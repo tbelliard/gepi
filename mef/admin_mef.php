@@ -50,7 +50,7 @@ if (empty($_GET['action']) and empty($_POST['action'])) { $action="";}
     else { if (isset($_GET['action'])) {$action=$_GET['action'];} if (isset($_POST['action'])) {$action=$_POST['action'];} }
 if (empty($_GET['id']) and empty($_POST['id'])) { $id="";}
     else { if (isset($_GET['id'])) {$id=$_GET['id'];} if (isset($_POST['id'])) {$id=$_POST['id'];} }
-if (empty($_GET['EXT_ID']) and empty($_POST[EXT_ID])) { $EXT_ID="";}
+if (empty($_GET['EXT_ID']) and empty($_POST['EXT_ID'])) { $EXT_ID="";}
     else { if (isset($_GET['EXT_ID'])) {$EXT_ID=$_GET['EXT_ID'];} if (isset($_POST['EXT_ID'])) {$EXT_ID=$_POST['EXT_ID'];} }
 if (empty($_GET['LIBELLE_COURT']) and empty($_POST['LIBELLE_COURT'])) { $LIBELLE_COURT="";}
     else { if (isset($_GET['LIBELLE_COURT'])) {$LIBELLE_COURT=$_GET['LIBELLE_COURT'];} if (isset($_POST['LIBELLE_COURT'])) {$LIBELLE_COURT=$_POST['LIBELLE_COURT'];} }
@@ -168,7 +168,7 @@ echo add_token_field();
 </div>
 
 
-<?php require("../../lib/footer.inc.php");
+<?php require("../lib/footer.inc.php");
 
 function ajoutMefParDefaut() {
     $mef = new Mef();

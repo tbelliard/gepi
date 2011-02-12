@@ -71,11 +71,6 @@ if (isset($type_selection) && $type_selection != null) $_SESSION['type_selection
 
 
 //initialisation des variables
-$current_eleve = null;
-if ($id_semaine == null || $id_semaine == -1) {
-    $id_semaine = date('W');
-}
-
 if ($type_selection == 'id_groupe') {
     $current_groupe = GroupeQuery::create()->findPk($id_groupe);
 } else if ($type_selection == 'id_aid') {
