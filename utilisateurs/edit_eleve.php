@@ -311,6 +311,9 @@ if(mysql_num_rows($quels_eleves)==0){
 	die;
 }
 echo " | <a href='impression_bienvenue.php?mode=eleve'>Fiches bienvenue</a>";
+
+echo " | <a href='import_prof_csv.php?export_statut=eleve'>Export CSV</a>";
+
 echo "</p>\n";
 
 //echo "<p><b>Actions par lot</b> :";

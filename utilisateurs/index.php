@@ -327,7 +327,8 @@ if (getSettingValue("statuts_prives") == "y") {
 }
 ?>
 </p>
-<p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p>
+<!--p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p-->
+<p class='small'>Télécharger au format csv (<i>nom - prénom - identifiant GEPI</i>) le fichier des <a href="import_prof_csv.php?export_statut=professeur">professeurs</a>, <a href="import_prof_csv.php?export_statut=scolarite">"scolarité"</a>, <a href="import_prof_csv.php?export_statut=cpe">cpe</a>, <a href="import_prof_csv.php?export_statut=secours">secours</a>, <a href="import_prof_csv.php?export_statut=administrateur">administrateurs</a>, <a href="import_prof_csv.php?export_statut=autre">autres</a></p>
 
 <form enctype="multipart/form-data" action="index.php" name="form1" method="post">
 <?php

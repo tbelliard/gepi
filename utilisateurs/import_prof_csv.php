@@ -35,33 +35,49 @@ if ($resultat_session == 'c') {
     die();
 }
 
-include "../lib/periodes.inc.php";
+//include "../lib/periodes.inc.php";
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
 
-$nom_fic = "base_professeurs_gepi.csv";
-header('Content-Type: application/octetstream');
-header('Content-Disposition: filename="' . $nom_fic . '"');
-header('Pragma: no-cache');
-header('Expires: 0');
+$export_statut=isset($_GET['export_statut']) ? $_GET['export_statut'] : "";
+
+$tab_statut=array('professeur', 'administrateur', 'scolarite', 'cpe', 'secours', 'autre', 'responsable', 'eleve', 'personnels');
+
+if(!in_array($export_statut, $tab_statut)) {
+	header("Location: index.php?mode=personnels&msg=".rawurlencode('Statut inconnu'));
+	die();
+}
+
+$nom_fic = "base_".$export_statut."_gepi.csv";
 
 $fd = '';
 
 //$appel_donnees = mysql_query("SELECT * FROM utilisateurs ORDER BY nom, prenom");
-$appel_donnees = mysql_query("SELECT * FROM utilisateurs WHERE statut='professeur' AND etat='actif' ORDER BY nom, prenom;");
+if($export_statut=='personnels') {
+	$sql="SELECT * FROM utilisateurs WHERE statut!='eleve' AND statut!='responsable' AND etat='actif' ORDER BY statut, nom, prenom;";
+}
+else {
+	$sql="SELECT * FROM utilisateurs WHERE statut='$export_statut' AND etat='actif' ORDER BY statut, nom, prenom;";
+}
+//echo "$sql<br />";
+$appel_donnees = mysql_query($sql);
 $nombre_lignes = mysql_num_rows($appel_donnees);
 
 $j= 0;
 while($j< $nombre_lignes) {
-    $prof_login = mysql_result($appel_donnees, $j, "login");
-    $prof_nom = mysql_result($appel_donnees, $j, "nom");
-    $prof_prenom = mysql_result($appel_donnees, $j, "prenom");
-    $fd.=$prof_nom.";".$prof_prenom.";".$prof_login."\n";
-    $j++;
+	$user_login = mysql_result($appel_donnees, $j, "login");
+	$user_nom = mysql_result($appel_donnees, $j, "nom");
+	$user_prenom = mysql_result($appel_donnees, $j, "prenom");
+	$user_email = mysql_result($appel_donnees, $j, "email");
+	$user_statut = mysql_result($appel_donnees, $j, "statut");
+	$fd.=$user_nom.";".$user_prenom.";".$user_login.";".$user_email;
+	if($export_statut=='personnels') {$fd.=";".$user_statut;}
+	$fd.=";\n";
+	$j++;
 }
+send_file_download_headers('text/x-csv',$nom_fic);
 echo $fd;
-
 ?>

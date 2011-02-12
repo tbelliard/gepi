@@ -299,6 +299,9 @@ aff_time();
 		die;
 	}
 	echo " | <a href='impression_bienvenue.php?mode=responsable'>Fiches bienvenue</a>";
+
+	echo " | <a href='import_prof_csv.php?export_statut=responsable'>Export CSV</a>";
+
 	echo "</p>\n";
 
 	aff_time();
