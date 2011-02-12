@@ -172,6 +172,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<th>Lieu</th>\n";
 	echo "<th>Elève</th>\n";
 	echo "<th>Travail</th>\n";
+	echo "<th>Donné par (Déclarant)</th>\n";
 	echo "<th>Effectuée</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
@@ -212,7 +213,11 @@ if(mysql_num_rows($res_sanction)>0) {
 			echo ">Details</a>";
 		}
 		echo "</td>\n";
-
+		
+		echo "<td>\n";
+		echo get_declarant_incident($lig_sanction->id_incident);
+        echo "</td>\n";
+		
 		echo "<td>\n";
 		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
 		if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
@@ -283,7 +288,6 @@ if(mysql_num_rows($res_sanction)>0) {
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
 			echo ">Details</a>";
 		}
-		echo "</td>\n";
 
         echo "<td>\n";
 		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
@@ -312,6 +316,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<tr>\n";
 	echo "<th>Elève</th>\n";
 	echo "<th>Travail</th>\n";
+	echo "<th>Donné par (Déclarant)</th>\n";
 	echo "<th>Effectué</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
@@ -350,7 +355,11 @@ if(mysql_num_rows($res_sanction)>0) {
 			echo ">Details</a>";
 		}
 		echo "</td>\n";
-
+		
+		echo "<td>\n";
+		echo get_declarant_incident($lig_sanction->id_incident);
+        echo "</td>\n";
+		
 		echo "<td>\n";
 		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
 		if($lig_sanction->effectuee=="O") {echo "checked='checked' ";}
@@ -393,6 +402,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<th>Lieu</th>\n";
 	echo "<th>Elève</th>\n";
 	echo "<th>Travail</th>\n";
+	echo "<th>Donné par (Déclarant)</th>\n";
 	echo "<th>Effectuée</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
@@ -430,6 +440,10 @@ if(mysql_num_rows($res_sanction)>0) {
 			echo ">Details</a>";
 		}
 		echo "</td>\n";
+		
+		echo "<td>\n";
+		echo get_declarant_incident($lig_sanction->id_incident);
+        echo "</td>\n";
 
 		echo "<td>\n";
 		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
@@ -459,6 +473,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<th>Elève</th>\n";
 	echo "<th>Date de retour</th>\n";
 	echo "<th>Travail</th>\n";
+	echo "<th>Donné par (Déclarant)</th>\n";
 	echo "<th>Effectué</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
@@ -496,6 +511,10 @@ if(mysql_num_rows($res_sanction)>0) {
 			echo ">Details</a>";
 		}
 		echo "</td>\n";
+
+		echo "<td>\n";
+		echo get_declarant_incident($lig_sanction->id_incident);
+        echo "</td>\n";
 
 		echo "<td>\n";
 		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
