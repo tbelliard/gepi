@@ -955,6 +955,7 @@ foreach ($liste_eleves as $eleve_login) {
 	$k=1;
 	$temoin_photo="";
 
+	$enseignement_suivi_sur_une_des_periodes_ouvertes='n';
 	while ($k < $nb_periode) {
 
 		if (in_array($eleve_login, $current_group["eleves"][$k]["list"])) {
@@ -1278,6 +1279,7 @@ foreach ($liste_eleves as $eleve_login) {
 
 				//=========================
 
+				$enseignement_suivi_sur_une_des_periodes_ouvertes='y';
 			}
 		}
 		else {
@@ -1289,6 +1291,7 @@ foreach ($liste_eleves as $eleve_login) {
 		}
 		$k++;
 	}
+
 	//
 	//Affichage de la ligne
 	//
@@ -1384,8 +1387,12 @@ foreach ($liste_eleves as $eleve_login) {
 		echo "</div></th>\n";
 		echo "</tr>\n";
 
+		// Pour permettre de sauter dans la liste un élève qui est parti en cours d'année
+		// Si plusieurs périodes sont ouvertes en saisie, cela peut ne pas fonctionner
+		if($enseignement_suivi_sur_une_des_periodes_ouvertes=='y') {
+			$num_id++;
+		}
 
-		$num_id++;
 		$k=1;
 		$alt=1;
 		while ($k < $nb_periode) {
