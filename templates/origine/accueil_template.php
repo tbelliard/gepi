@@ -172,6 +172,11 @@
 	}
 ?>
 
+<!-- Actions à effectuer -->
+<?php
+	affiche_infos_actions();
+?>
+
 <!-- messagerie -->
 <?php
 	if (count($afficheAccueil->message)) {

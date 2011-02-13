@@ -155,6 +155,19 @@ if ($_SESSION['statut']=="autre") {
   $afficheAccueil=new class_page_accueil($_SESSION['statut'], $gepiSettings, $niveau_arbo,$ordre_menus);
 }
 
+if(isset($_GET['del_id_info'])) {
+	check_token();
+
+	if(!isset($msg)) {$msg="";}
+
+	if(del_info_action($_GET['del_id_info'])) {
+		$msg.="Action n° ".$_GET['del_id_info']." supprimée.<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de l'action n° ".$_GET['del_id_info'].".<br />";
+	}
+}
+
 $post_reussi=FALSE;
 // ====== Inclusion des balises head et du bandeau =====
 include_once("./lib/header_template.inc");

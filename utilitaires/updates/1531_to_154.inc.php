@@ -452,4 +452,36 @@ else {
     $result .= "<p style=\"color:blue;\">Ajout du champ id_mef à la table <strong>eleves</strong> : déjà réalisé.</p>";
 }
 
+
+$test = sql_query1("SHOW TABLES LIKE 'infos_actions'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'infos_actions'.";
+	$sql="CREATE TABLE IF NOT EXISTS infos_actions (id int(11) NOT NULL auto_increment,
+titre varchar(255) NOT NULL default '',
+description text NOT NULL,
+date datetime,
+PRIMARY KEY (id),
+INDEX id_titre (id, titre));";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'infos_actions': ".$result_inter."<br />";
+	}
+}
+
+$test = sql_query1("SHOW TABLES LIKE 'infos_actions_destinataires'");
+if ($test == -1) {
+	$result .= "<br />Création de la table 'infos_actions_destinataires'.";
+	$sql="CREATE TABLE IF NOT EXISTS infos_actions_destinataires (id int(11) NOT NULL auto_increment,
+id_info int(11) NOT NULL,
+nature enum('statut', 'individu') default 'individu',
+valeur varchar(255) default '',
+PRIMARY KEY (id),
+INDEX id_info (id_info));";
+	$result_inter = traite_requete($sql);
+	if ($result_inter != '') {
+		$result .= "<br />Erreur sur la création de la table 'infos_actions_destinataires': ".$result_inter."<br />";
+	}
+}
+
+
 ?>

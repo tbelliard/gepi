@@ -6322,4 +6322,102 @@ function send_file_download_headers($content_type, $filename, $content_dispositi
 }
 
 
+function affiche_infos_actions() {
+	$sql="SELECT ia.* FROM infos_actions ia, infos_actions_destinataires iad WHERE
+	ia.id=iad.id_info AND
+	((iad.nature='individu' AND iad.valeur='".$_SESSION['login']."') OR
+	(iad.nature='statut' AND iad.valeur='".$_SESSION['statut']."'));";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		echo "<div id='div_infos_actions' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%;'>\n";
+		while($lig=mysql_fetch_object($res)) {
+			echo "<div id='info_action_$lig->id' style='border: 1px solid black; margin:2px;'>\n";
+				echo "<div id='info_action_titre_$lig->id' style='font-weight: bold;' class='infobulle_entete'>\n";
+					echo "<div id='info_action_pliage_$lig->id' style='float:right; width: 1em'>\n";
+					echo "<a href=\"javascript:div_alterne_affichage('$lig->id')\"><span id='img_pliage_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+					echo "</div>\n";
+					echo $lig->titre;
+				echo "</div>\n";
+
+				echo "<div id='info_action_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
+					echo "<div style='float:right; width: 9em; text-align: right;'>\n";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->description)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
+					echo "</div>\n";
+
+					echo nl2br($lig->description);
+				echo "</div>\n";
+			echo "</div>\n";
+		}
+		echo "</div>\n";
+
+		echo "<script type='text/javascript'>
+	function div_alterne_affichage(id) {
+		if(document.getElementById('info_action_corps_'+id)) {
+			if(document.getElementById('info_action_corps_'+id).style.display=='none') {
+				document.getElementById('info_action_corps_'+id).style.display='';
+				document.getElementById('img_pliage_'+id).innerHTML='<img src=\'images/icons/remove.png\' width=\'16\' height=\'16\' />'
+			}
+			else {
+				document.getElementById('info_action_corps_'+id).style.display='none';
+				document.getElementById('img_pliage_'+id).innerHTML='<img src=\'images/icons/add.png\' width=\'16\' height=\'16\' />'
+			}
+		}
+	}
+</script>\n";
+	}
+}
+
+function enregistre_infos_actions($titre,$texte,$destinataire,$mode) {
+	if(is_array($destinataire)) {
+		$tab_dest=$destinataire;
+	}
+	else {
+		$tab_dest=array($destinataire);
+	}
+
+	$sql="INSERT INTO infos_actions SET titre='".addslashes($titre)."', description='".addslashes($texte)."', date=NOW();";
+	$insert=mysql_query($sql);
+	if(!$insert) {
+		return false;
+	}
+	else {
+		$return=true;
+		$id_info=mysql_insert_id();
+		for($loop=0;$loop<count($tab_dest);$loop++) {
+			$sql="INSERT INTO infos_actions_destinataires SET id_info='$id_info', nature='$mode', valeur='$tab_dest[$loop]';";
+			$insert=mysql_query($sql);
+			if(!$insert) {
+				$return=false;
+			}
+		}
+
+		return $return;
+	}
+}
+
+function del_info_action($id_info) {
+	// Dans le cas des infos destinées à un statut... c'est le premier qui supprime qui vire pour tout le monde?
+	// S'il s'agit bien de loguer des actions à effectuer... elle ne doit être effectuée qu'une fois.
+	// Ou alors il faudrait ajouter des champs pour marquer les actions comme effectuées et n'afficher par défaut que les actions non effectuées
+
+	$sql="SELECT 1=1 FROM infos_actions_destinataires WHERE id_info='$id_info' AND ((nature='statut' AND valeur='".$_SESSION['statut']."') OR (nature='individu' AND valeur='".$_SESSION['login']."'));";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$id_info';";
+		$del=mysql_query($sql);
+		if(!$del) {
+			return false;
+		}
+		else {
+			$sql="DELETE FROM infos_actions WHERE id='$id_info';";
+			$del=mysql_query($sql);
+			if(!$del) {
+				return false;
+			}
+			else {
+				return true;
+			}
+		}
+	}
+}
 ?>

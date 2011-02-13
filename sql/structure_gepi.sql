@@ -349,3 +349,7 @@ DROP TABLE IF EXISTS cc_notes_eval;
 CREATE TABLE cc_notes_eval ( login varchar(50) NOT NULL default '',id_eval int(11) NOT NULL default '0',note float(10,1) NOT NULL default '0.0',statut char(1) NOT NULL default '',comment text NOT NULL,PRIMARY KEY  (login,id_eval));
 DROP TABLE IF EXISTS s_delegation;
 CREATE TABLE s_delegation (`id_delegation` INT NOT NULL AUTO_INCREMENT ,`fct_delegation` VARCHAR( 100 ) NOT NULL ,`fct_autorite` VARCHAR( 50 ) NOT NULL ,`nom_autorite` VARCHAR( 50 ) NOT NULL ,PRIMARY KEY ( `id_delegation` ));
+DROP TABLE IF EXISTS infos_actions;
+CREATE TABLE IF NOT EXISTS infos_actions (id int(11) NOT NULL auto_increment,titre varchar(255) NOT NULL default '',description text NOT NULL,date datetime,PRIMARY KEY (id),INDEX id_titre (id, titre));
+DROP TABLE IF EXISTS infos_actions_destinataires;
+CREATE TABLE IF NOT EXISTS infos_actions_destinataires (id int(11) NOT NULL auto_increment,id_info int(11) NOT NULL,nature enum('statut', 'individu') default 'individu',valeur varchar(255) default '',PRIMARY KEY (id),INDEX id_info (id_info));

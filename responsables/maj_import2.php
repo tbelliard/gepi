@@ -2914,7 +2914,15 @@ else{
 									echo "<a href='../classes/classes_const.php?id_classe=$lig_clas1->id&amp;msg=A_EFFECTUER_Changement_de_classe_vers_".remplace_accents(stripslashes($affiche[9]))."_pour_".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom),'all')."' target='_blank'>";
 									echo "$lig_clas1->classe -&gt; $affiche[9]";
 									echo "</a>";
+
 // RENSEIGNER UNE TABLE AVEC L'INDICATION QU'IL Y AURA UNE MODIF A FAIRE...
+
+									$info_action_titre="Changement de classe à effectuer pour ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom));
+									$info_action_texte="Effectuer le <a href='classes/classes_const.php?id_classe=$id_classe_actuelle&amp;msg=".rawurlencode("Le changement de classe de ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))." a été signalé lors de la mise à jour Sconet.")."'>changement de classe</a>";
+									$info_action_destinataire="administrateur";
+									$info_action_mode="statut";
+									enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+
 								}
 								else {
 									echo "'>";
