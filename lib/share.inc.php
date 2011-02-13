@@ -6367,6 +6367,20 @@ function affiche_infos_actions() {
 	}
 }
 
+/**
+ *
+ * Enregistrer une action à effectuer pour qu'elle soit par la suite affichée en page d'accueil pour tels ou tels utilisateurs
+ *
+ * @var string $titre titre de l'action/info
+ * @var string $description le détail de l'action à effectuer avec autant que possible un lien vers la page et paramètres utiles pour l'action
+ * @var string $destinataire le tableau des login ou statuts des utilisateurs pour lesquels l'affichage sera réalisé
+ * @var string $mode vaut 'individu' si $destinataire désigne des logins et 'statut' si ce sont des statuts
+ *
+ * @return bolean true si l'enregistrement s'est bien effectué
+ * false sinon
+ *
+ *
+ */
 function enregistre_infos_actions($titre,$texte,$destinataire,$mode) {
 	if(is_array($destinataire)) {
 		$tab_dest=$destinataire;
