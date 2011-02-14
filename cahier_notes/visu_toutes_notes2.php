@@ -45,8 +45,6 @@ if (!checkAccess()) {
     die();
 }
 
-check_token();
-
 //Initialisation
 
 // Modifié pour pouvoir récupérer ces variables en GET pour les CSV
@@ -86,6 +84,14 @@ if (isset($id_classe)) {
 	}
 }
 
+if((!isset($id_classe))||(!isset($num_periode))) {
+	header("Location: index2.php?msg=".rawurlencode('Choisissez une classe'));
+	die();
+}
+
+//debug_var();
+
+check_token();
 
 function my_echo($texte) {
 	$debug=0;
@@ -1586,6 +1592,7 @@ if($aff_rang){
 if($aff_date_naiss){
 	echo "&amp;aff_date_naiss=$aff_date_naiss";
 }
+echo add_token_in_url();
 echo "'>Export CSV</a>
 </div>\n";
 
