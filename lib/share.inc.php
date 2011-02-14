@@ -48,6 +48,10 @@ function add_token_in_url($html_chars = true) {
 	}
 }
 
+function add_token_in_js_func() {
+	return $_SESSION['gepi_alea'];
+}
+
 function check_token($redirection=true) {
 	// Avant le Header, on appelle check_token()
 	// Après le Header, on appelle check_token(false)
