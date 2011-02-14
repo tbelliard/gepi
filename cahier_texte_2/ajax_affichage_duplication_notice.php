@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2009-2011 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -67,6 +67,7 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 //	die();
 //}
 echo "<form enctype=\"multipart/form-data\" name=\"duplication_notice_form\" id=\"duplication_notice_form\" action=\"ajax_duplication_notice.php\" method=\"post\">\n";
+echo add_token_field();
 echo "<input type='hidden' id='id_ct' name='id_ct' value='".$id_ct."' />";
 echo "<input type='hidden' id='type' name='type' value='".$type."' />";
 echo "<input type='hidden' id='date_duplication' name='date_duplication'/>";

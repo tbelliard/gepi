@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2009-2011 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-} 
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -53,6 +53,8 @@ if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+check_token();
 
 //récupération de la notice
 $id_objet = isset($_POST["id_objet"]) ? $_POST["id_objet"] :(isset($_GET["id_objet"]) ? $_GET["id_objet"] :NULL);

@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright 2011 Josselin Jacquard
+ * Copyright 2009-2011 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -384,9 +384,9 @@ function initWysiwyg() {
 	}
 }
 
-function suppressionCompteRendu(message, id_ct_a_supprimer) {
+function suppressionCompteRendu(message, id_ct_a_supprimer, csrf_alea) {
 	if (confirmlink(this,'suppression de la notice du ' + message + ' ?','Confirmez vous ')) {
-    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteCompteRendu&id_objet='+id_ct_a_supprimer,
+    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteCompteRendu&id_objet='+id_ct_a_supprimer+'&csrf_alea='+csrf_alea,
     		{ onComplete:
     			function(transport) {
     				if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
@@ -404,9 +404,9 @@ function suppressionCompteRendu(message, id_ct_a_supprimer) {
 	}
 }
 
-function suppressionDevoir(message, id_devoir_a_supprimer, id_groupe) {
+function suppressionDevoir(message, id_devoir_a_supprimer, id_groupe, csrf_alea) {
 	if (confirmlink(this,'suppression du travail à faire pour le ' + message + ' ?','Confirmez vous ')) {
-    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteTravailAFaire&id_objet='+id_devoir_a_supprimer,
+    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteTravailAFaire&id_objet='+id_devoir_a_supprimer+'&csrf_alea='+csrf_alea,
     		{ onComplete:
     			function(transport) {
   					if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
@@ -424,9 +424,9 @@ function suppressionDevoir(message, id_devoir_a_supprimer, id_groupe) {
 	}
 }
 
-function suppressionNoticePrivee(message, id_notice_privee_a_supprimer, id_groupe) {
+function suppressionNoticePrivee(message, id_notice_privee_a_supprimer, id_groupe, csrf_alea) {
 	if (confirmlink(this,'suppression de la notice privee du ' + message + ' ?','Confirmez vous ')) {
-    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteNoticePrivee&id_objet='+id_notice_privee_a_supprimer,
+    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteNoticePrivee&id_objet='+id_notice_privee_a_supprimer+'&csrf_alea='+csrf_alea,
     		{ onComplete:
     			function(transport) {
   					if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
@@ -444,9 +444,9 @@ function suppressionNoticePrivee(message, id_notice_privee_a_supprimer, id_group
 	}
 }
 
-function suppressionDocument(message, id_document_a_supprimer, id_ct) {
+function suppressionDocument(message, id_document_a_supprimer, id_ct, csrf_alea) {
 	if (confirmlink(this,message,'Confirmez vous ')) {
-    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteCompteRenduFichierJoint&id_objet='+id_document_a_supprimer,
+    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteCompteRenduFichierJoint&id_objet='+id_document_a_supprimer+'&csrf_alea='+csrf_alea,
     		{ onComplete:
     			function(transport) {
 					if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {
@@ -462,9 +462,9 @@ function suppressionDocument(message, id_document_a_supprimer, id_ct) {
 	}
 }
 
-function suppressionDevoirDocument(message, id_document_a_supprimer, id_devoir, id_groupe) {
+function suppressionDevoirDocument(message, id_document_a_supprimer, id_devoir, id_groupe, csrf_alea) {
 	if (confirmlink(this,message,'Confirmez vous ')) {
-    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteTravailAFaireFichierJoint&id_objet='+id_document_a_supprimer,
+    	new Ajax.Request('./ajax_suppression_notice.php?type=CahierTexteTravailAFaireFichierJoint&id_objet='+id_document_a_supprimer+'&csrf_alea='+csrf_alea,
     		{ onComplete:
     			function(transport) {
 					if (transport.responseText.match('Erreur') || transport.responseText.match('error')) {

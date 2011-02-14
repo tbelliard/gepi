@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2009-2011 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -44,7 +44,7 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 		$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
 		$html_balise .=(" ");
 		$html_balise .=("<a href=\"#\" onclick=\"javascript:
-								suppressionDevoir('".strftime("%A %d %B %Y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$devoir->getIdGroupe()."');
+								suppressionDevoir('".strftime("%A %d %B %Y", $devoir->getDateCt())."','".$devoir->getIdCt()."', '".$devoir->getIdGroupe()."','".add_token_in_js_func()."');
 								new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 								return false;
 							\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
@@ -86,7 +86,7 @@ function affiche_notice_privee_vignette($notice_privee, $couleur_bord_tableau_no
 		$html_balise .=("<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" /></a>\n");
 		$html_balise .=(" ");
 		$html_balise .=("<a href=\"#\" onclick=\"javascript:
-								suppressionNoticePrivee('".strftime("%A %d %B %Y", $notice_privee->getDateCt())."','".$notice_privee->getIdCt()."', '".$notice_privee->getIdGroupe()."');
+								suppressionNoticePrivee('".strftime("%A %d %B %Y", $notice_privee->getDateCt())."','".$notice_privee->getIdCt()."', '".$notice_privee->getIdGroupe()."','".add_token_in_js_func()."');
 								new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 								return false;
 							\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
@@ -120,7 +120,7 @@ function affiche_compte_rendu_vignette($compte_rendu, $couleur_bord_tableau_noti
 
 			$html_balise .=(" ");
 			$html_balise .=("<a href=\"#\" onclick=\"javascript:
-							suppressionCompteRendu('".strftime("%A %d %B %Y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().");
+							suppressionCompteRendu('".strftime("%A %d %B %Y", $compte_rendu->getDateCt())."',".$compte_rendu->getIdCt().",'".add_token_in_js_func()."');
 							new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 							return false;
 						\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");

@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2009-2011 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -216,6 +216,7 @@ echo "<div id=\"dupplication_notice\" style='display: none;'></div>";
 echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
 
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu_form\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_devoir.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementDevoirCallback})\" style=\"width: 100%;\">\n";
+echo add_token_field();
 // uid de pour ne pas refaire renvoyer plusieurs fois le meme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid = md5(uniqid(microtime(), 1));
@@ -282,7 +283,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\"><td>
 						<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a></td>
 						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>
-						<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."', '".$ctTravailAFaire->getIdGroupe()."')\">Supprimer</a></td></tr>\n";
+						<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."', '".$ctTravailAFaire->getIdGroupe()."','".add_token_in_js_func()."')\">Supprimer</a></td></tr>\n";
 			}
 			echo "</table>\n";
 			//gestion de modification du nom d'un document

@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2009-2011 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -38,7 +38,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=3");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -269,7 +269,7 @@ foreach ($ctCompteRenduInfoGenerales as $ctCompteRenduInfoGenerale) {
 		  \">
 				<img style=\"border: 0px;\" src=\"../images/edit16.png\" alt=\"modifier\" title=\"modifier\" />
 		  </a>");
-	echo("<a href=\"#\" onclick=\"suppressionCompteRendu('Information générale',".$ctCompteRenduInfoGenerale->getIdCt()."); return false;\">
+	echo("<a href=\"#\" onclick=\"suppressionCompteRendu('Information générale',".$ctCompteRenduInfoGenerale->getIdCt().",'".add_token_in_js_func()."'); return false;\">
 			<img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" />
 		</a></div>\n");
 

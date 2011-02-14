@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2009-2011 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -37,6 +37,8 @@ if ($utilisateur == null) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+check_token();
 
 //récupération des paramètres de la requète
 $id_ct = isset($_POST["id_ct"]) ? $_POST["id_ct"] :(isset($_GET["id_ct"]) ? $_GET["id_ct"] :NULL);

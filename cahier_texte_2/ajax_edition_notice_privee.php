@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2009 Josselin Jacquard
+ * Copyright 2009-2011 Josselin Jacquard
  *
  * This file is part of GEPI.
  *
@@ -215,6 +215,7 @@ echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_notice_privee.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementNoticePriveeCallback})\" style=\"width: 100%;\">\n";
 // uid de pour ne pas refaire renvoyer plusieurs fois le meme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
+echo add_token_field();
 $uid = md5(uniqid(microtime(), 1));
 echo("<input type='hidden' name='uid_post' value='".$uid."' />");
 //hidden input utilise pour indiquer a la fenetre ListeNotice a quel endroit mettre un petit texte rouge "modification"
