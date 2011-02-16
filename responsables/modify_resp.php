@@ -710,6 +710,7 @@ if (isset($pers_id)) {
 			if($lig_email_utilisateur_resp->email!=$mel) {
 				$sql="UPDATE resp_pers SET mel='$lig_email_utilisateur_resp->email' WHERE login='$resp_login_tmp';";
 				$update_email=mysql_query($sql);
+				if($update_email) {echo "<span style='color:red;'>Adresse mail mise à jour d'après celle du compte d'utilisateur.</span><br />";}
 			}
 			$mel=$lig_email_utilisateur_resp->email;
 		}
