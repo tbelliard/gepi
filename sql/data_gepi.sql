@@ -944,3 +944,4 @@ INSERT INTO droits VALUES ('/cahier_notes/add_modif_cc_dev.php', 'F', 'V', 'F', 
 INSERT INTO droits VALUES ('/cahier_notes/add_modif_cc_eval.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');
 INSERT INTO droits VALUES ('/cahier_notes/saisie_notes_cc.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');
 INSERT INTO droits VALUES ('/cahier_notes/visu_cc.php', 'F', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Carnet de notes', '1');
+INSERT INTO droits SET id='/responsables/synchro_mail.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Synchronisation des mail responsables',statut='';

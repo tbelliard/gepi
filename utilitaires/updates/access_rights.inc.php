@@ -741,6 +741,8 @@ $tab_req[] = "INSERT INTO droits VALUES ( '/mef/admin_mef.php', 'V', 'F', 'F', '
 $tab_req[] = "INSERT INTO droits VALUES ( '/mef/associer_eleve_mef.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mef : administration des niveau et formations', '');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mef/enregistrement_eleve_mef.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mef : administration des niveau et formations', '');";
 
+$tab_req[] = "INSERT INTO droits SET id='/responsables/synchro_mail.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Synchronisation des mail responsables',statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

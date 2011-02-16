@@ -693,6 +693,7 @@ if (isset($pers_id)) {
 
 	$lig_pers=mysql_fetch_object($res_resp);
 
+	$resp_login_tmp=$lig_pers->login;
 	$resp_nom=$lig_pers->nom;
 	$resp_prenom=$lig_pers->prenom;
 	$civilite=$lig_pers->civilite;
@@ -700,6 +701,19 @@ if (isset($pers_id)) {
 	$tel_port=$lig_pers->tel_port;
 	$tel_prof=$lig_pers->tel_prof;
 	$mel=$lig_pers->mel;
+
+	if(getSettingValue('mode_email_resp')=='mon_compte') {
+		$sql="SELECT email FROM utilisateurs WHERE login='$resp_login_tmp';";
+		$res_email_utilisateur_resp=mysql_query($sql);
+		if(mysql_num_rows($res_email_utilisateur_resp)>0) {
+			$lig_email_utilisateur_resp=mysql_fetch_object($res_email_utilisateur_resp);
+			if($lig_email_utilisateur_resp->email!=$mel) {
+				$sql="UPDATE resp_pers SET mel='$lig_email_utilisateur_resp->email' WHERE login='$resp_login_tmp';";
+				$update_email=mysql_query($sql);
+			}
+			$mel=$lig_email_utilisateur_resp->email;
+		}
+	}
 
 	$sql="SELECT ra.* FROM resp_adr ra WHERE
 					ra.adr_id='$lig_pers->adr_id'";

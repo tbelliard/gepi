@@ -282,7 +282,13 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement du paramètre d'exclusion des caractères prêtant à confusion sur les mots de passe !";
 			}
 		}
-	
+
+		if (isset($_POST['mode_email_resp'])) {
+			if (!saveSetting("mode_email_resp", $_POST['mode_email_resp'])) {
+				$msg .= "Erreur lors de l'enregistrement du mode de mise à jour des email responsables !";
+			}
+		}
+
 		//===============================================================
 		// Traitement des problemes de points d'interrogation à la place des accents
 		if (isset($_POST['mode_utf8_bulletins_pdf'])) {
@@ -556,6 +562,9 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter
 $titre_page = "Paramètres généraux";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
+
 ?>
 <p class=bold><a href="index.php#param_gen"<?php
 echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
@@ -827,6 +836,21 @@ echo add_token_field();
 		</td>
 		</tr>
 		</table>
+	</td>
+	</tr>
+
+
+
+
+	<tr>
+	<td style="font-variant: small-caps;" valign='top'>
+		<!--Mode de mise à jour des emails responsables et élèves :<br />(<i style='font-size:small;'>Les élèves et responsables peuvent avoir un email dans deux tables s'ils disposent d'un compte utilisateur ('eleves' et 'utilisateurs' pour les premiers, 'resp_pers' et 'utilisateurs' pour les seconds)<br />Ces email peuvent donc se trouver non synchronisés entre les tables</i>)-->
+		Mode de mise à jour des emails responsables :<br />(<i style='font-size:small;'>Les responsables peuvent avoir un email dans deux tables s'ils disposent d'un compte utilisateur ('resp_pers' et 'utilisateurs')<br />Ces email peuvent donc se trouver non synchronisés entre les tables</i>)
+	</td>
+	<td valign='top'>
+		<input type="radio" name="mode_email_resp" id="mode_email_resp_sconet" value="sconet" <?php if((getSettingValue("mode_email_resp")=="sconet")||(getSettingValue("mode_email_resp")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_sconet' style='cursor: pointer;'>Mise à jour de l'email via Sconet uniquement</label><br />
+		<input type="radio" name="mode_email_resp" id="mode_email_resp_mon_compte" value="mon_compte" <?php if(getSettingValue("mode_email_resp")=="mon_compte"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_mon_compte' style='cursor: pointer;'>Mise à jour de l'email depuis Gérer mon compte uniquement (<i>modifications dans Sconet non prises en compte</i>)</label><br />
+		<input type="radio" name="mode_email_resp" id="mode_email_resp_sso" value="sso" <?php if(getSettingValue("mode_email_resp")=="sso"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_sso' style='cursor: pointer;'>Mise à jour de l'email via SSO (<i>???</i>)</label><br />
 	</td>
 	</tr>
 

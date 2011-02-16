@@ -596,6 +596,8 @@ else{
 					info_debug($sql);
 					$create_table = mysql_query($sql);
 
+					//`EMAIL` varchar(255) $chaine_mysql_collate NOT NULL default ''
+
 					$sql="TRUNCATE TABLE temp_gep_import2;";
 					info_debug($sql);
 					$vide_table = mysql_query($sql);
@@ -929,8 +931,10 @@ else{
 				"CODE_SEXE",
 				"CODE_COMMUNE_INSEE_NAISS",
 				"CODE_PAYS",
-				"VILLE_NAISS"
+				"VILLE_NAISS",
 				);
+				// Pas de champ MAIL pour les élèves dans les exports Eleves
+				//"EMAIL"
 
 				$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
 				"CODE_RNE",
@@ -1084,20 +1088,20 @@ else{
 							//$sql.="elepre='".addslashes($eleves[$i]['prenom'])."', ";
 							// On ne retient que le premier prénom:
 							$tab_prenom = explode(" ",$eleves[$i]['prenom']);
-							$sql.="elepre='".addslashes(maj_ini_prenom($tab_prenom[0]))."', ";
+							$sql.="elepre='".addslashes(maj_ini_prenom($tab_prenom[0]))."'";
 
 							//$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
 							if(isset($eleves[$i]["code_sexe"])) {
-								$sql.="elesexe='".sexeMF($eleves[$i]["code_sexe"])."', ";
+								$sql.=", elesexe='".sexeMF($eleves[$i]["code_sexe"])."'";
 							}
 							else {
 								echo "<span style='color:red'>Sexe non défini dans Sconet pour ".maj_ini_prenom($tab_prenom[0])." ".strtoupper($eleves[$i]['nom'])."</span><br />\n";
-								$sql.="elesexe='M', ";
+								$sql.=", elesexe='M'";
 							}
-							$sql.="eledatnais='".$eleves[$i]['date_naiss']."', ";
-							$sql.="eledoubl='".ouinon($eleves[$i]["doublement"])."', ";
-							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.="etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."', ";}
-							if(isset($eleves[$i]["code_regime"])){$sql.="elereg='".$eleves[$i]["code_regime"]."', ";}
+							$sql.=", eledatnais='".$eleves[$i]['date_naiss']."'";
+							$sql.=", eledoubl='".ouinon($eleves[$i]["doublement"])."'";
+							if(isset($eleves[$i]["scolarite_an_dernier"]["code_rne"])){$sql.=", etocod_ep='".$eleves[$i]["scolarite_an_dernier"]["code_rne"]."'";}
+							if(isset($eleves[$i]["code_regime"])){$sql.=", elereg='".$eleves[$i]["code_regime"]."'";}
 
 							//affiche_debug("eleve_id=".$eleves[$i]["eleve_id"]."<br />");
 							//affiche_debug("code_pays=".$eleves[$i]["code_pays"]."<br />");
@@ -1106,11 +1110,14 @@ else{
 
 							if((isset($eleves[$i]["code_pays"]))&&($eleves[$i]["code_pays"]!='')&&
 								(isset($eleves[$i]["ville_naiss"]))&&($eleves[$i]["ville_naiss"]!='')) {
-									$sql.="lieu_naissance='".$eleves[$i]["code_pays"]."@".addslashes($eleves[$i]["ville_naiss"])."', ";
+									$sql.=", lieu_naissance='".$eleves[$i]["code_pays"]."@".addslashes($eleves[$i]["ville_naiss"])."'";
 							}
 							elseif(isset($eleves[$i]["code_commune_insee_naiss"])) {
-								$sql.="lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."', ";
+								$sql.=", lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."'";
 							}
+
+							// Pas de champ MAIL pour les élèves dans les exports Eleves
+							//if(isset($eleves[$i]['email'])) {$sql.=", email='".$eleves[$i]['email']."'";}
 
 							$sql=substr($sql,0,strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
@@ -5450,9 +5457,11 @@ else{
 													rp.civilite!=t.civilite OR
 													rp.tel_pers!=t.tel_pers OR
 													rp.tel_port!=t.tel_port OR
-													rp.tel_prof!=t.tel_prof OR
-													rp.mel!=t.mel OR
-													rp.adr_id!=t.adr_id
+													rp.tel_prof!=t.tel_prof OR";
+						if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
+							$sql.="						rp.mel!=t.mel OR";
+						}
+						$sql.="						rp.adr_id!=t.adr_id
 												)
 												AND rp.pers_id='".$lig->pers_id."';";
 						//echo "$sql<br />\n";
@@ -6261,7 +6270,9 @@ else{
 			// ... et faire une première tranche de corrections?
 			// Ou alors on le fait séparemment...
 
-
+			$titre_infobulle="Adresse mail non mise à jour";
+			$texte_infobulle="L'adresse mail ne sera pas modifiée, parce que votre paramétrage des adresses responsables est&nbsp;: ".getSettingValue('mode_email_resp');
+			$tabdiv_infobulle[]=creer_div_infobulle('chgt_email_non_pris_en_compte',"",$titre_infobulle,$texte_infobulle,"",14,0,'y','y','n','n');
 
 			//$eff_tranche=20;
 
@@ -6374,6 +6385,7 @@ else{
 					if(mysql_num_rows($res_pers1)==0){
 						$nouveau=1;
 
+						$login_resp1="";
 						$nom1="";
 						$prenom1="";
 						$civilite1="";
@@ -6386,6 +6398,7 @@ else{
 					else{
 						$lig_pers1=mysql_fetch_object($res_pers1);
 
+						$login_resp1=$lig_pers1->login;
 						$nom1=$lig_pers1->nom;
 						$prenom1=$lig_pers1->prenom;
 						$civilite1=$lig_pers1->civilite;
@@ -6600,7 +6613,63 @@ else{
 						if($nouveau==0){
 							if($lig_pers2->mel!=$mel1) {
 								if(($lig_pers2->mel!='')||($mel1!='')){
-									$ligne_parent.=" class='modif'>";
+
+									if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')) {
+
+										if($login_resp1!='') {
+											$sql="SELECT email FROM utilisateurs WHERE login='$login_resp1';";
+											$res_email_resp=mysql_query($sql);
+											if(mysql_num_rows($res_email_resp)>0) {
+												$lig_email_resp=mysql_fetch_object($res_email_resp);
+
+												if($lig_email_resp->email=='') {
+													$ligne_parent.=" class='modif'>";
+
+													echo "<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
+
+													$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom));
+													$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' est vide contrairement à l'adresse enregistrée dans Sconet ($lig_pers2->mel).";
+													$info_action_destinataire=array("administrateur","scolarite");
+													$info_action_mode="statut";
+													enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+												}
+												else {
+													if($lig_email_resp->email!=$lig_pers2->mel) {
+														// L'email Sconet diffère de celui non vide déclaré dans Gérer mon compte
+														$ligne_parent.=" class='modif'>";
+
+														echo "<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
+
+														$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom));
+														$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).";
+														$info_action_destinataire=array("administrateur","scolarite");
+														$info_action_mode="statut";
+														enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+													}
+													else {
+														$ligne_parent.=" class='modif'>";
+														// Bizarre... si le responsable a mise à jour son adresse par Gérer mon compte en mode 'mon_compte', on devrait avoir la synchro... ou alors la mise à jour 'mode_email_resp' est intervenue entre temps
+														// ... faudrait-il aussi tester l'ancien resp_pers.mel et le utilisateurs.email?
+
+														$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom));
+														$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='responsables/modify_resp.php?pers_id=$lig_pers2->pers_id'>".remplace_accents(stripslashes($lig_pers2->nom)."_".stripslashes($lig_pers2->prenom))."</a><br />L'adresse email renseignée par la personne via 'Gérer mon compte' ($lig_email_resp->email) diffère de l'adresse enregistrée dans Sconet ($lig_pers2->mel).";
+														$info_action_destinataire=array("administrateur","scolarite");
+														$info_action_mode="statut";
+														enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+													}
+												}
+											}
+											else {
+												// Pas de compte utilisateur pour ce responsable
+												$ligne_parent.=" class='modif'>";
+												// Il faudrait prendre en compte la màj
+											}
+										}
+									}
+									else {
+										$ligne_parent.=" class='modif'>";
+									}
+
 									if($mel1!=''){
 										$ligne_parent.=$mel1." <font color='red'>-&gt;</font>\n";
 									}
@@ -7072,14 +7141,49 @@ else{
 													civilite='".ucfirst(strtolower($lig->civilite))."',
 													tel_pers='".addslashes($lig->tel_pers)."',
 													tel_port='".addslashes($lig->tel_port)."',
-													tel_prof='".addslashes($lig->tel_prof)."',
-													mel='".addslashes($lig->mel)."',
-													adr_id='".$lig->adr_id."'
+													tel_prof='".addslashes($lig->tel_prof)."',";
+							if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
+								$sql.="						mel='".addslashes($lig->mel)."',";
+							}
+							else {
+								// Plusieurs cas peuvent survenir
+								$sql="SELECT email FROM utilisateurs WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2');";
+								$res_email_resp=mysql_query($sql);
+								// Si le responsable a un compte
+								if(mysql_num_rows($res_email_resp)>0) {
+									$lig_email_resp=mysql_fetch_object($res_email_resp);
+
+									if($lig_email_resp->email=='') {
+										// L'email du compte d'utilisateur est vide... est-ce pour éviter de recevoir des messages ou parce que l'email n'existe plus (plus relevé, changement de FAI,...)
+
+										// Faut-il vider l'info?
+									}
+									else {
+										if($lig_email_resp->email!=$lig_pers2->mel) {
+											// Que faire?
+										}
+									}
+								}
+								// Si le responsable n'a pas de compte
+								else {
+									// Alors on fait la mise à jour
+									$sql.="						mel='".addslashes($lig->mel)."',";
+								}
+							}
+							$sql.="						adr_id='".$lig->adr_id."'
 												WHERE pers_id='$lig1->col2';";
+
+							unset($update_utilisateurs);
+
 							info_debug($sql);
 							$update=mysql_query($sql);
 							if($update){
 								echo "\n<span style='color:darkgreen;'>";
+
+								if(getSettingValue('mode_email_resp')=='sconet') {
+									$sql="UPDATE utilisateurs SET email='".addslashes($lig->mel)."' WHERE statut='responsable' AND login IN (SELECT login FROM resp_pers WHERE pers_id='$lig1->col2');";
+									$update_utilisateurs=mysql_query($sql);
+								}
 							}
 							else{
 								echo "\n<span style='color:red;'>";
@@ -7088,6 +7192,9 @@ else{
 							//echo "$sql<br />\n";
 							echo "$lig->prenom $lig->nom";
 							echo "</span>";
+
+							if((isset($update_utilisateurs))&&(!$update_utilisateurs)) {echo " <span style='color:red;'>Erreur lors de la mise à jour du mail du compte utilisateur.</span><br />\n";}
+
 						}
 
 						if($lig->adr_id!=""){
