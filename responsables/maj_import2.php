@@ -6665,6 +6665,9 @@ else{
 												// Il faudrait prendre en compte la màj
 											}
 										}
+										else {
+											$ligne_parent.=" class='modif'>";
+										}
 									}
 									else {
 										$ligne_parent.=" class='modif'>";
