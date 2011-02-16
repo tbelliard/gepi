@@ -484,4 +484,19 @@ INDEX id_info (id_info));";
 }
 
 
+$test = sql_query1("SELECT 1=1 FROM setting WHERE name='mode_email_resp' AND value!='';");
+if ($test == -1) {
+	$result .= "<br />Vous devez effectuer le paramétrage de la synchronisation des emails responsables et comptes responsables (table 'resp_pers' et 'utilisateurs').";
+
+	$sql="SELECT 1=1 FROM infos_actions WHERE titre='Paramétrage mode_email_resp requis';";
+	$test=sql_query1($sql);
+	if ($test == -1) {
+		$info_action_titre="Paramétrage mode_email_resp requis";
+		$info_action_texte="Vous devez effectuer un choix de paramétrage pour la synchronisation des email des responsables&nbsp;: <a href='gestion/param_gen.php#mode_email_resp'>Paramétrage</a>";
+		$info_action_destinataire="administrateur";
+		$info_action_mode="statut";
+		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+	}
+}
+
 ?>
