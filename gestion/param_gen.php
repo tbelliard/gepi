@@ -844,6 +844,7 @@ echo add_token_field();
 
 	<tr>
 	<td style="font-variant: small-caps;" valign='top'>
+		<a name='mode_email_resp'></a>
 		<!--Mode de mise à jour des emails responsables et élèves :<br />(<i style='font-size:small;'>Les élèves et responsables peuvent avoir un email dans deux tables s'ils disposent d'un compte utilisateur ('eleves' et 'utilisateurs' pour les premiers, 'resp_pers' et 'utilisateurs' pour les seconds)<br />Ces email peuvent donc se trouver non synchronisés entre les tables</i>)-->
 		Mode de mise à jour des emails responsables :<br />(<i style='font-size:small;'>Les responsables peuvent avoir un email dans deux tables s'ils disposent d'un compte utilisateur ('resp_pers' et 'utilisateurs')<br />Ces email peuvent donc se trouver non synchronisés entre les tables</i>)
 	</td>
