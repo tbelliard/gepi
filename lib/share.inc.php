@@ -6331,9 +6331,12 @@ function affiche_infos_actions() {
 	ia.id=iad.id_info AND
 	((iad.nature='individu' AND iad.valeur='".$_SESSION['login']."') OR
 	(iad.nature='statut' AND iad.valeur='".$_SESSION['statut']."'));";
+	//echo "$sql<br />";
 	$res=mysql_query($sql);
+	$chaine_id="";
 	if(mysql_num_rows($res)>0) {
 		echo "<div id='div_infos_actions' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%;'>\n";
+		$cpt_id=0;
 		while($lig=mysql_fetch_object($res)) {
 			echo "<div id='info_action_$lig->id' style='border: 1px solid black; margin:2px;'>\n";
 				echo "<div id='info_action_titre_$lig->id' style='font-weight: bold;' class='infobulle_entete'>\n";
@@ -6351,6 +6354,9 @@ function affiche_infos_actions() {
 					echo nl2br($lig->description);
 				echo "</div>\n";
 			echo "</div>\n";
+			if($cpt_id>0) {$chaine_id.=", ";}
+			$chaine_id.="'$lig->id'";
+			$cpt_id++;
 		}
 		echo "</div>\n";
 
@@ -6365,6 +6371,14 @@ function affiche_infos_actions() {
 				document.getElementById('info_action_corps_'+id).style.display='none';
 				document.getElementById('img_pliage_'+id).innerHTML='<img src=\'images/icons/add.png\' width=\'16\' height=\'16\' />'
 			}
+		}
+	}
+
+	chaine_id_action=new Array($chaine_id);
+	for(i=0;i<chaine_id_action.length;i++) {
+		id_a=chaine_id_action[i];
+		if(document.getElementById('info_action_corps_'+id_a)) {
+			div_alterne_affichage(id_a);
 		}
 	}
 </script>\n";

@@ -591,12 +591,11 @@ else{
 					`ELEOPT10` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`ELEOPT11` varchar(40) $chaine_mysql_collate NOT NULL default '',
 					`ELEOPT12` varchar(40) $chaine_mysql_collate NOT NULL default '',
-					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default ''
+					`LIEU_NAISSANCE` varchar(50) $chaine_mysql_collate NOT NULL default '',
+					`MEL` varchar(255) $chaine_mysql_collate NOT NULL default ''
 					);";
 					info_debug($sql);
 					$create_table = mysql_query($sql);
-
-					//`EMAIL` varchar(255) $chaine_mysql_collate NOT NULL default ''
 
 					$sql="TRUNCATE TABLE temp_gep_import2;";
 					info_debug($sql);
@@ -932,9 +931,8 @@ else{
 				"CODE_COMMUNE_INSEE_NAISS",
 				"CODE_PAYS",
 				"VILLE_NAISS",
+				"MEL"
 				);
-				// Pas de champ MAIL pour les élèves dans les exports Eleves
-				//"EMAIL"
 
 				$tab_champs_scol_an_dernier=array("CODE_STRUCTURE",
 				"CODE_RNE",
@@ -1116,10 +1114,9 @@ else{
 								$sql.=", lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."'";
 							}
 
-							// Pas de champ MAIL pour les élèves dans les exports Eleves
-							//if(isset($eleves[$i]['email'])) {$sql.=", email='".$eleves[$i]['email']."'";}
+							if(isset($eleves[$i]['mel'])) {$sql.=", email='".$eleves[$i]['mel']."'";}
 
-							$sql=substr($sql,0,strlen($sql)-2);
+							//$sql=substr($sql,0,strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
 							affiche_debug("$sql<br />\n");
 							info_debug($sql);
@@ -2010,8 +2007,11 @@ else{
 										e.sexe!=t.ELESEXE OR
 										e.naissance!=t2.col2 OR
 										e.lieu_naissance!=t.LIEU_NAISSANCE OR
-										e.no_gep!=t.ELENONAT
-									)
+										e.no_gep!=t.ELENONAT";
+					if((getSettingValue('mode_email_ele')=='')||(getSettingValue('mode_email_ele')=='sconet')) {
+						$sql.="						OR e.email!=t.mel";
+					}
+					$sql.="				)
 									AND e.ele_id='$tab_ele_id[$i]';";
 				}
 				else {
@@ -2023,8 +2023,11 @@ else{
 										e.prenom $chaine_collate!= t.ELEPRE OR
 										e.sexe!=t.ELESEXE OR
 										e.naissance!=t2.col2 OR
-										e.no_gep!=t.ELENONAT
-									)
+										e.no_gep!=t.ELENONAT";
+					if((getSettingValue('mode_email_ele')=='')||(getSettingValue('mode_email_ele')=='sconet')) {
+						$sql.="						OR e.email!=t.mel";
+					}
+					$sql.="									)
 									AND e.ele_id='$tab_ele_id[$i]';";
 				}
 				//if(($tab_ele_id[$i]==352022)||($tab_ele_id[$i]==374123)||($tab_ele_id[$i]==392276)) {echo "$sql<br />";}
@@ -2421,6 +2424,10 @@ else{
 				}
 
 
+				$titre_infobulle="Adresse mail non mise à jour";
+				$texte_infobulle="L'adresse mail ne sera pas modifiée, parce que votre paramétrage des adresses élèves est&nbsp;: <b>".getSettingValue('mode_email_resp')."</b>";
+				$tabdiv_infobulle[]=creer_div_infobulle('chgt_email_non_pris_en_compte',$titre_infobulle,"",$texte_infobulle,"",18,0,'y','y','n','n');
+
 
 				echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 				//echo "<p align='center'><input type=submit value='Enregistrer les modifications' /></p>\n";
@@ -2451,6 +2458,9 @@ else{
 				echo "<th>Doublement</th>\n";
 				echo "<th>N°NAT</th>\n";
 				echo "<th>Régime</th>\n";
+
+				echo "<th>Email</th>\n";
+
 				echo "<th>Classe</th>\n";
 				echo "<th>Etablissement d'origine</th>\n";
 				echo "</tr>\n";
@@ -2507,6 +2517,8 @@ else{
 							*/
 						}
 
+						$affiche[12]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($lig->MEL))));
+
 						//if(trim($ligne)!=""){
 							//$tabligne=explode(";",$ligne);
 							//$affiche=array();
@@ -2541,6 +2553,12 @@ else{
 								// $lig_ele->naissance!=$tabtmp[2]."-".$tabtmp[1]."-".$tabtmp[0])||
 
 
+								$test_diff_email="n";
+								if((getSettingValue('mode_email_ele')=='')||(getSettingValue('mode_email_ele')=='sconet')) {
+									$test_diff_email="y";
+								}
+
+
 								$new_date=substr($affiche[3],0,4)."-".substr($affiche[3],4,2)."-".substr($affiche[3],6,2);
 
 								// Des stripslashes() pour les apostrophes dans les noms
@@ -2551,7 +2569,9 @@ else{
 									($lig_ele->naissance!=$new_date)||
 									//($lig_ele->lieu_naissance!=$affiche[11])||
 									($lig_ele->lieu_naissance!=stripslashes($affiche[11]))||
-									($lig_ele->no_gep!=$affiche[7])){
+									($lig_ele->no_gep!=$affiche[7])||
+									(($test_diff_email=="y")&&($lig_ele->email!=$affiche[12]))
+									){
 										$temoin_modif='y';
 										$cpt_modif++;
 									}
@@ -2566,7 +2586,9 @@ else{
 									(stripslashes($lig_ele->prenom)!=stripslashes($affiche[1]))||
 									($lig_ele->sexe!=$affiche[2])||
 									($lig_ele->naissance!=$new_date)||
-									($lig_ele->no_gep!=$affiche[7])){
+									($lig_ele->no_gep!=$affiche[7])||
+									(($test_diff_email=="y")&&($lig_ele->email!=$affiche[12]))
+									){
 										$temoin_modif='y';
 										$cpt_modif++;
 									}
@@ -2725,6 +2747,17 @@ else{
 								}
 								echo ";'>\n";
 								*/
+
+								if(getSettingValue('mode_email_ele')=='mon_compte') {
+									unset($tmp_email_utilisateur_eleve);
+									$sql="SELECT email FROM utilisateurs WHERE login='$lig_ele->login' AND statut='eleve';";
+									$res_email_utilisateur_eleve=mysql_query($sql);
+									if(mysql_num_rows($res_email_utilisateur_eleve)>0) {
+										$lig_email_utilisateur_eleve=mysql_fetch_object($res_email_utilisateur_eleve);
+										$tmp_email_utilisateur_eleve=$lig_email_utilisateur_eleve->email;
+									}
+								}
+
 								echo "<tr class='lig$alt'>\n";
 
 								echo "<td style='text-align: center;'>";
@@ -2911,6 +2944,35 @@ else{
 								//echo " <span style='color:red'>DEBUG: ".$affiche[8]."</span> ";
 								echo "<input type='hidden' name='modif_".$cpt."_regime' value=\"$tmp_regime\" />\n";
 								echo "</td>\n";
+
+
+								echo "<td";
+								if(stripslashes($lig_ele->email)!=stripslashes($affiche[12])){
+									//echo " background-color:lightgreen;'>";
+									echo " class='modif'>";
+									if($lig_ele->email!=''){
+										echo stripslashes($lig_ele->email)." <font color='red'>-&gt;</font>\n";
+									}
+								}
+								else{
+									//echo "'>";
+									echo ">";
+								}
+								echo $affiche[12];
+								echo "<input type='hidden' name='modif_".$cpt."_email' value=\"$affiche[12]\" />\n";
+								if(isset($tmp_email_utilisateur_eleve)) {
+									if($tmp_email_utilisateur_eleve!=$affiche[12]) {
+										echo "<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
+
+										$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom));
+										$info_action_texte="Vous devriez mettre à jour Sconet pour <a href='eleves/modify_eleve.php?eleve_login=$lig_ele->login'>".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom))."</a><br />L'adresse email renseignée par l'élève via 'Gérer mon compte' est différente de l'adresse enregistrée dans Sconet (".$affiche[12].").";
+										$info_action_destinataire=array("administrateur","scolarite");
+										$info_action_mode="statut";
+										enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+									}
+								}
+								echo "</td>\n";
+
 
 								// Classe
 								//echo "<td style='text-align: center; background-color: white;'>";
@@ -3100,6 +3162,10 @@ else{
 								echo "</td>\n";
 
 								echo "<td style='text-align: center;'>";
+								echo "$affiche[12]";
+								echo "</td>\n";
+
+								echo "<td style='text-align: center;'>";
 								echo "$affiche[9]";
 								echo "</td>\n";
 
@@ -3254,6 +3320,10 @@ else{
 						$sql.=", lieu_naissance='".addslashes($lig->LIEU_NAISSANCE)."'";
 					}
 
+					if(getSettingValue('mode_email_ele')!="mon_compte") {
+						$sql.=", email='".addslashes($lig->MEL)."'";
+					}
+
 					// Je ne pense pas qu'on puisse corriger un ELENOET manquant...
 					// Si on fait des imports avec Sconet, l'ELENOET n'est pas vide.
 					// Et l'interface ne permet pas actuellement de saisir/corriger un ELE_ID
@@ -3277,6 +3347,12 @@ else{
 						$update=mysql_query($sql);
 						if($update){
 							echo "\n<span style='color:darkgreen;'>";
+
+							if(getSettingValue('mode_email_ele')!="mon_compte") {
+								$sql="UPDATE utilisateurs SET email='$lig->MEL' WHERE statut='eleve' AND login IN (SELECT login FROM eleves WHERE ele_id='$lig->ELE_ID');";
+								$update_email_utilisateur_eleve=mysql_query($sql);
+							}
+
 						}
 						else{
 							echo "\n<span style='color:red;'>";
@@ -3316,6 +3392,10 @@ else{
 							$old_ele_id=$lig_tmp->ele_id;
 							$sql.=", ele_id='".$lig->ELE_ID."'";
 
+							if(getSettingValue('mode_email_ele')!="mon_compte") {
+								$sql.=", email='".addslashes($lig->$MEL)."'";
+							}
+
 							$login_eleve=$lig_tmp->login;
 
 							$sql.=" WHERE elenoet='".$lig->ELENOET."';";
@@ -3325,6 +3405,11 @@ else{
 							$update=mysql_query($sql);
 							if($update){
 								echo "\n<span style='color:darkgreen;'>";
+
+								if(getSettingValue('mode_email_ele')!="mon_compte") {
+									$sql="UPDATE utilisateurs SET email='$lig->MEL' WHERE statut='eleve' AND login IN (SELECT login FROM eleves WHERE ele_id='$lig->ELE_ID');";
+									$update_email_utilisateur_eleve=mysql_query($sql);
+								}
 							}
 							else{
 								echo "\n<span style='color:red;'>";
@@ -3630,6 +3715,7 @@ else{
 								if($ele_lieu_naissance=="y") {
 									$sql.=", lieu_naissance='".$lig->LIEU_NAISSANCE."'";
 								}
+								$sql.=", email='".$lig->MEL."'";
 								$sql.=";";
 								info_debug($sql);
 								$insert=mysql_query($sql);
