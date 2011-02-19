@@ -499,4 +499,28 @@ if ($test == -1) {
 	}
 }
 
+$result .= "<br /><b>Ajout d'une table s_reports pour le module discipline :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 's_reports'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE s_reports (
+  id_report int(11) NOT NULL AUTO_INCREMENT,
+  id_sanction int(11) NOT NULL,
+  id_type_sanction int(11) NOT NULL,
+  nature_sanction varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  informations text NOT NULL,
+  motif_report varchar(255) NOT NULL,
+  PRIMARY KEY (id_report)
+) ENGINE=MyISAM;
+");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
 ?>

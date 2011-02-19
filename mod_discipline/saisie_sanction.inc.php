@@ -202,8 +202,30 @@ elseif($valeur=='retenue') {
 	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
-
+	
 	echo "<tr class='lig-1'>\n";
+	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Report&nbsp;: </td>\n";
+	echo "<td style='text-align:left;'>\n";
+	
+	echo "<b>Gestion d'un report :</b><br/>";
+	echo "1- Cocher cette case pour enregistrer le report : <input type='checkbox' name='report_demande' id='report_demande' value='OK' onchange='changement();' /><br/>\n";
+	echo "2- Saisir le motif du report : <select name='choix_motif_report' id='choix_motif_report' changement();\">\n";
+	echo "<option value=''>---</option>\n";
+	echo "<option value='absent'>Absent</option>\n";
+	echo "<option value='aucun_motif'>Aucun motif</option>\n";
+	echo "<option value='report_demande'>Report demandé</option>\n";
+	echo "<option value='autre'>Autre</option>\n";
+	echo "</select><br/>\n";
+	echo "3- Modifier les données (date, heure, ...) pour le report<br/>4- Enregistrer les modifications\n";
+	
+	if (isset($id_sanction)) {
+	echo "<br/><b>Liste des reports</b><br/>\n";
+	echo afficher_tableau_des_reports($id_sanction);
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+	
+	echo "<tr class='lig1'>\n";
 	echo "<td colspan='2'>\n";
 	echo "<input type='submit' name='enregistrer_sanction' value='Enregistrer' />\n";
 	echo "</td>\n";

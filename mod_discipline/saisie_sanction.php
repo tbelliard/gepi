@@ -59,6 +59,7 @@ $id_incident=isset($_POST['id_incident']) ? $_POST['id_incident'] : (isset($_GET
 $ele_login=isset($_POST['ele_login']) ? $_POST['ele_login'] : (isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL);
 $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 $id_sanction=isset($_POST['id_sanction']) ? $_POST['id_sanction'] : (isset($_GET['id_sanction']) ? $_GET['id_sanction'] : NULL);
+$id_report=isset($_POST['id_report']) ? $_POST['id_report'] : (isset($_GET['id_report']) ? $_GET['id_report'] : NULL);
 
 $odt = isset($_POST["odt"]) ? $_POST["odt"] : (isset($_GET["odt"]) ? $_GET["odt"] : Null);
 
@@ -72,6 +73,10 @@ if(isset($_POST['enregistrer_sanction'])) {
 		$heure_debut_main=isset($_POST['heure_debut_main']) ? $_POST['heure_debut_main'] : '00:00';
 		$duree_retenue=isset($_POST['duree_retenue']) ? $_POST['duree_retenue'] : 1;
 		$lieu_retenue=isset($_POST['lieu_retenue']) ? $_POST['lieu_retenue'] : NULL;
+		
+		$report_demande=isset($_POST['report_demande']) ? $_POST['report_demande'] : NULL;
+		$choix_motif_report=isset($_POST['choix_motif_report']) ? $_POST['choix_motif_report'] : NULL;
+		
 
 		//$duree_retenue=my_ereg_replace(",",".",my_ereg_replace("[^0-9.]","",$duree_retenue));
 		$duree_retenue=my_ereg_replace("[^0-9.]","",my_ereg_replace(",",".",$duree_retenue));
@@ -111,6 +116,33 @@ if(isset($_POST['enregistrer_sanction'])) {
 		}
 
 		if(isset($id_sanction)) {
+		
+		    // traitement du report de la retenue (seulement si elle existe déjà !)
+			if ($report_demande=="OK") { // c'est un report
+				// on récupère les informations précédente dans la table s_retenues pour les inscrire dans s_reports
+				$sql="SELECT * FROM s_retenues WHERE id_sanction='$id_sanction';";
+				//echo "$sql<br />\n";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)==0) {
+					$msg.="La retenue n°$id_sanction n'existe pas dans 's_retenues'.<br />Elle ne peut pas être reportée.<br />";
+				}
+				else {
+				    $lig=mysql_fetch_object($res);
+					$id_retenue=$lig->id_retenue;
+					$ancienne_date=$lig->date;
+					$ancienne_duree=$lig->duree;
+				}
+				// enregistrement des données du report dans la table s_report
+				$choix_motif_report = str_replace("_", " ", $choix_motif_report);
+
+				$sql="INSERT INTO s_reports SET id_sanction='$id_sanction', id_type_sanction='$id_retenue', nature_sanction='retenue', date='$ancienne_date', informations='Durée : ".$ancienne_duree."H', motif_report='$choix_motif_report';";
+				//echo "$sql<br />\n";
+				$res=mysql_query($sql);
+				if(!$res) {
+					$msg.="Erreur lors de l'insertion des informations de report dans 's_reports'.<br />";
+				}
+			}
+		
 			// Modification???
 			$sql="SELECT 1=1 FROM s_sanctions WHERE id_sanction='$id_sanction';";
 			//echo "$sql<br />\n";
@@ -462,6 +494,15 @@ if(($mode=="suppr_sanction")&&(isset($id_sanction))) {
 	$sql="DELETE FROM s_autres_sanctions WHERE id_sanction='$id_sanction';";
 	$res=mysql_query($sql);
 	$sql="DELETE FROM s_sanctions WHERE id_sanction='$id_sanction';";
+	$res=mysql_query($sql);
+	$sql="DELETE FROM s_reports WHERE id_sanction='$id_sanction';";
+	$res=mysql_query($sql);
+}
+
+if(($mode=="suppr_report")&&(isset($id_report))) {
+	check_token();
+
+	$sql="DELETE FROM s_reports WHERE id_report='$id_report';";
 	$res=mysql_query($sql);
 }
 

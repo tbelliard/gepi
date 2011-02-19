@@ -252,6 +252,8 @@ DROP TABLE IF EXISTS s_retenues;
 CREATE TABLE IF NOT EXISTS s_retenues (id_retenue INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_sanction INT( 11 ) NOT NULL ,date DATE NOT NULL ,heure_debut VARCHAR( 20 ) NOT NULL ,duree FLOAT NOT NULL ,travail TEXT NOT NULL ,lieu VARCHAR( 255 ) NOT NULL);
 DROP TABLE IF EXISTS s_exclusions;
 CREATE TABLE s_exclusions (id_exclusion int(11) NOT NULL AUTO_INCREMENT,  id_sanction int(11) NOT NULL DEFAULT '0',  date_debut date NOT NULL DEFAULT '0000-00-00',  heure_debut varchar(20) NOT NULL DEFAULT '',  date_fin date NOT NULL DEFAULT '0000-00-00',  heure_fin varchar(20) NOT NULL DEFAULT '',  travail text NOT NULL,  lieu varchar(255) NOT NULL DEFAULT '',  nombre_jours varchar(50) NOT NULL,  qualification_faits text NOT NULL,  num_courrier varchar(50) NOT NULL,  type_exclusion varchar(50) NOT NULL, id_signataire INT NOT NULL,  PRIMARY KEY (id_exclusion)
+DROP TABLE IF EXISTS s_reports;
+CREATE TABLE s_reports (id_report int(11) NOT NULL AUTO_INCREMENT,  id_sanction int(11) NOT NULL,  id_type_sanction int(11) NOT NULL,  nature_sanction varchar(255) NOT NULL,  `date` date NOT NULL,  informations text NOT NULL,  motif_report varchar(255) NOT NULL,  PRIMARY KEY (id_report)) ENGINE=MyISAM;
 DROP TABLE IF EXISTS absences_repas;
 CREATE TABLE IF NOT EXISTS absences_repas (`id` int(5) NOT NULL AUTO_INCREMENT, `date_repas` date NOT NULL default '0000-00-00', `id_groupe` varchar(8) NOT NULL, `eleve_id` varchar(30) NOT NULL, `pers_id` varchar(30) NOT NULL, PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS gc_projets;
