@@ -298,11 +298,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		if (!my_ereg ("^[0-9]{4}$", $birth_year)) {$birth_year = "1900";}
 		if (!my_ereg ("^[0-9]{2}$", $birth_month)) {$birth_month = "01";}
 		if (!my_ereg ("^[0-9]{2}$", $birth_day)) {$birth_day = "01";}
-		if ($format == '10'){
+		if ($format == '10') {
 			// YYYY-MM-DD
 			$reg_naissance = $birth_year."-".$birth_month."-".$birth_day." 00:00:00";
 		}
-		else{
+		else {
 			if ($format == '8') {
 				// YYYYMMDD
 				$reg_naissance = $birth_year.$birth_month.$birth_day;
@@ -545,11 +545,30 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		} else if ($continue == 'yes') {
 			// C'est une mise à jour pour un élève qui existait déjà dans la table 'eleves'.
 
+			$sql="UPDATE eleves SET no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."'";
+
+			$temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve="n";
+			if(getSettingValue('mode_email_ele')=='mon_compte') {
+				$sql_test="SELECT email FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
+				$res_email_utilisateur_ele=mysql_query($sql_test);
+				if(mysql_num_rows($res_email_utilisateur_ele)>0) {
+					// Faut-il insérer un email? si l'email utilisateur est vide?
+				}
+				else {
+					$sql.=",email='$reg_email'";
+					$temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve="y";
+				}
+			}
+			else {
+				$sql.=",email='$reg_email'";
+			}
+			$sql.=" WHERE login='".$eleve_login."'";
+
 			// On nettoie les windozeries
-			$reg_data = mysql_query("UPDATE eleves SET no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',email='$reg_email',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."' WHERE login='".$eleve_login."'");
+			$reg_data = mysql_query($sql);
 			if (!$reg_data) {
 				$msg = "Erreur lors de l'enregistrement des données";
-			} else {
+			} elseif((getSettingValue('mode_email_ele')!='mon_compte')||($temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve=="y")) {
 				// On met à jour la table utilisateurs si un compte existe pour cet élève
 				$test_login = mysql_result(mysql_query("SELECT count(login) FROM utilisateurs WHERE login = '".$eleve_login ."'"), 0);
 				if ($test_login > 0) {
@@ -934,6 +953,31 @@ if (isset($eleve_login)) {
     $eleve_nom = mysql_result($call_eleve_info, "0", "nom");
     $eleve_prenom = mysql_result($call_eleve_info, "0", "prenom");
     $eleve_email = mysql_result($call_eleve_info, "0", "email");
+
+	if(getSettingValue('mode_email_ele')=='mon_compte') {
+		$sql_test="SELECT email FROM utilisateurs WHERE login='$eleve_login' AND statut='eleve';";
+		$res_email_utilisateur_ele=mysql_query($sql_test);
+		if(mysql_num_rows($res_email_utilisateur_ele)>0) {
+			$tmp_lig_email=mysql_fetch_object($res_email_utilisateur_ele);
+
+			if($tmp_lig_email->email!="") {
+				if($tmp_lig_email->email!=$eleve_email) {
+					$sql="UPDATE eleves SET email='$tmp_lig_email->email' WHERE login='$eleve_login';";
+					$update=mysql_query($sql);
+					if(!$update) {
+						if(!isset($msg)) {$msg="";}
+						$msg.="Erreur lors de la mise à jour du mail de l'élève d'après son compte d'utilisateur<br />$eleve_email -&gt; $tmp_lig_email->email<br />";
+					}
+					else {
+						if(!isset($msg)) {$msg="";}
+						$msg.="Mise à jour de l'email de $eleve_login dans la table 'eleves' d'après l'email de son compte utilisateur<br />$eleve_email -&gt; $tmp_lig_email->email<br />";
+					}
+				}
+				$eleve_email = $tmp_lig_email->email;
+			}
+		}
+	}
+
     $eleve_sexe = mysql_result($call_eleve_info, "0", "sexe");
     $eleve_naissance = mysql_result($call_eleve_info, "0", "naissance");
     if (strlen($eleve_naissance) == 10) {
@@ -977,12 +1021,12 @@ if (isset($eleve_login)) {
 	$sql="SELECT * FROM j_eleves_regime WHERE login='$eleve_login';";
 	//echo "$sql<br />\n";
 	$res_regime=mysql_query($sql);
-	if(mysql_num_rows($res_regime)>0){
+	if(mysql_num_rows($res_regime)>0) {
 		$lig_tmp=mysql_fetch_object($res_regime);
 		$reg_regime=$lig_tmp->regime;
 		$reg_doublant=$lig_tmp->doublant;
 	}
-	else{
+	else {
 		$reg_regime="d/p";
 		$reg_doublant="-";
 	}
@@ -996,11 +1040,11 @@ if (isset($eleve_login)) {
 	$sql="SELECT pers_id FROM responsables2 WHERE ele_id='$ele_id' AND resp_legal='1'";
 	//echo "$sql<br />\n";
 	$res_resp1=mysql_query($sql);
-	if(mysql_num_rows($res_resp1)>0){
+	if(mysql_num_rows($res_resp1)>0) {
 		$lig_no_resp1=mysql_fetch_object($res_resp1);
 		$eleve_no_resp1=$lig_no_resp1->pers_id;
 	}
-	else{
+	else {
 		$eleve_no_resp1=0;
 	}
 	//echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
@@ -1012,21 +1056,21 @@ if (isset($eleve_login)) {
 		$lig_no_resp2=mysql_fetch_object($res_resp2);
 		$eleve_no_resp2=$lig_no_resp2->pers_id;
 	}
-	else{
+	else {
 		$eleve_no_resp2=0;
 	}
 
 
 } else {
-    if (isset($reg_nom)) $eleve_nom = $reg_nom;
-    if (isset($reg_prenom)) $eleve_prenom = $reg_prenom;
-    if (isset($reg_email)) $eleve_email = $reg_email;
-    if (isset($reg_sexe)) $eleve_sexe = $reg_sexe;
-    if (isset($reg_no_nat)) $reg_no_nat = $reg_no_nat;
-    if (isset($reg_no_gep)) $reg_no_gep = $reg_no_gep;
-    if (isset($birth_year)) $eleve_naissance_annee = $birth_year;
-    if (isset($birth_month)) $eleve_naissance_mois = $birth_month;
-    if (isset($birth_day)) $eleve_naissance_jour = $birth_day;
+    if (isset($reg_nom)) {$eleve_nom = $reg_nom;}
+    if (isset($reg_prenom)) {$eleve_prenom = $reg_prenom;}
+    if (isset($reg_email)) {$eleve_email = $reg_email;}
+    if (isset($reg_sexe)) {$eleve_sexe = $reg_sexe;}
+    if (isset($reg_no_nat)) {$reg_no_nat = $reg_no_nat;}
+    if (isset($reg_no_gep)) {$reg_no_gep = $reg_no_gep;}
+    if (isset($birth_year)) {$eleve_naissance_annee = $birth_year;}
+    if (isset($birth_month)) {$eleve_naissance_mois = $birth_month;}
+    if (isset($birth_day)) {$eleve_naissance_jour = $birth_day;}
 
     if (isset($reg_lieu_naissance)) {$eleve_lieu_naissance=$reg_lieu_naissance;}
 
@@ -1623,15 +1667,28 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	if (isset($eleve_prenom)) {
 		echo "value=\"".$eleve_prenom."\"";
 	}
-	echo " onchange='changement();' /></td>
-	</tr>
-	<tr>
-		<th style='text-align:left;'>Email : </th>
-		<td><input type=text name='reg_email' size=18 ";
-	if (isset($eleve_email)) {
-		echo "value=\"".$eleve_email."\"";
+	echo " onchange='changement();' /></td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "	<th style='text-align:left;'>Email : </th>\n";
+	echo "	<td>";
+
+	if((isset($compte_eleve_existe))&&($compte_eleve_existe=="y")&&(getSettingValue('mode_email_ele')=='mon_compte')) {
+		if (isset($eleve_email)) {
+			echo $eleve_email;
+		}
+		else {
+			echo "&nbsp;";
+		}
 	}
-	echo " onchange='changement();' />";
+	else {
+		echo "<input type=text name='reg_email' size=18 ";
+		if (isset($eleve_email)) {
+			echo "value=\"".$eleve_email."\"";
+		}
+		echo " onchange='changement();' />";
+	}
 	if($eleve_email!='') {
 		$tmp_date=getdate();
 		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
@@ -1640,10 +1697,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		echo "<img src='../images/imabulle/courrier.jpg' width='20' height='15' alt='Envoyer un courriel' border='0' />";
 		echo "</a>";
 	}
-	echo "</td>
-	</tr>
-	<tr>
-    <th style='text-align:left;'>Identifiant National : </th>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
+
+	echo "<tr>\n";
+	echo "<th style='text-align:left;'>Identifiant National : </th>\n";
     echo "<td><input type='text' name='reg_no_nat' size='20' ";
     if (isset($reg_no_nat)) echo "value=\"".$reg_no_nat."\"";
     echo " onchange='changement();' /></td>\n";

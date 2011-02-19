@@ -89,13 +89,19 @@ if (isset($is_posted) and ($is_posted == '1')) {
 		if(!isset($nouv_resp)){
 			//if(isset($pers_id)){
 			if((isset($pers_id))&&(isset($tab_nom_prenom_resp))) {
+				$compte_resp_existe="n";
+				$test1_login=mysql_query("SELECT login FROM resp_pers WHERE pers_id = '$pers_id'");
+				if(mysql_num_rows($test1_login)>0) {$compte_resp_existe="y";}
+
 				$sql="UPDATE resp_pers SET nom='$resp_nom',
 								prenom='$resp_prenom',
 								civilite='$civilite',
 								tel_pers='$tel_pers',
 								tel_port='$tel_port',
-								tel_prof='$tel_prof',
-								mel='$mel'";
+								tel_prof='$tel_prof'";
+				if((getSettingValue('mode_email_resp')!='mon_compte')&&($compte_resp_existe=='y')&&(isset($mel))) {
+					$sql.=",mel='$mel'";
+				}
 				/*
 				//if($adr_id_existant!=""){
 				if((isset($select_ad_existante))&&($adr_id_existant!="")){
@@ -103,12 +109,12 @@ if (isset($is_posted) and ($is_posted == '1')) {
 					$sql.=",adr_id='$adr_id'";
 				}
 				*/
-				$sql.="WHERE pers_id='$pers_id'";
+				$sql.=" WHERE pers_id='$pers_id'";
 				//echo "$sql<br />\n";
 				$res_update=mysql_query($sql);
 				if(!$res_update){
 					$msg.="Erreur lors de la mise à jour dans 'resp_pers'. ";
-				} else {
+				} elseif((getSettingValue('mode_email_resp')!='mon_compte')&&(isset($mel))) {
 					// On met également à jour la table utilisateurs si le responsable a un compte
 					$test1_login = mysql_result(mysql_query("SELECT login FROM resp_pers WHERE pers_id = '$pers_id'"), 0);
 					//echo "\$test1_login=$test1_login<br />\n";
@@ -675,6 +681,7 @@ if(isset($quitter_la_page)) {
 	echo "<input type='hidden' name='quitter_la_page' value='$quitter_la_page' />\n";
 }
 
+//$temoin_compte_utilisateur="n";
 $temoin_adr=0;
 //if (isset($ereno)) {
 if (isset($pers_id)) {
@@ -703,16 +710,17 @@ if (isset($pers_id)) {
 	$mel=$lig_pers->mel;
 
 	if(getSettingValue('mode_email_resp')=='mon_compte') {
-		$sql="SELECT email FROM utilisateurs WHERE login='$resp_login_tmp';";
+		$sql="SELECT email FROM utilisateurs WHERE login='$resp_login_tmp' and statut='responsable';";
 		$res_email_utilisateur_resp=mysql_query($sql);
 		if(mysql_num_rows($res_email_utilisateur_resp)>0) {
 			$lig_email_utilisateur_resp=mysql_fetch_object($res_email_utilisateur_resp);
 			if($lig_email_utilisateur_resp->email!=$mel) {
-				$sql="UPDATE resp_pers SET mel='$lig_email_utilisateur_resp->email' WHERE login='$resp_login_tmp';";
+				$sql="UPDATE resp_pers SET mel='$lig_email_utilisateur_resp->email' WHERE login='$resp_login_tmp' and statut='responsable';";
 				$update_email=mysql_query($sql);
 				if($update_email) {echo "<span style='color:red;'>Adresse mail mise à jour d'après celle du compte d'utilisateur.</span><br />";}
 			}
 			$mel=$lig_email_utilisateur_resp->email;
+			//$temoin_compte_utilisateur="y";
 		}
 	}
 
@@ -834,10 +842,20 @@ echo "<td valign='top'>\n";
 	echo "</table>\n";
 
 	echo "</td></tr>\n";
-	echo "<tr><td>Tel.perso : </td><td><input type=text size=15 name=tel_pers value = \"".$tel_pers."\" onchange='changement();' /></td></tr>\n";
-	echo "<tr><td>Tel.portable : </td><td><input type=text size=15 name=tel_port value = \"".$tel_port."\" onchange='changement();' /></td></tr>\n";
-	echo "<tr><td>Tel.professionnel : </td><td><input type=text size=15 name=tel_prof value = \"".$tel_prof."\" onchange='changement();' /></td></tr>\n";
-	echo "<tr><td>Mel : </td><td><input type=text size=46 name=mel value = \"".$mel."\" onchange='changement();' />";
+	echo "<tr><td>Tel.perso : </td><td><input type='text' size='15' name='tel_pers' value=\"".$tel_pers."\" onchange='changement();' /></td></tr>\n";
+	echo "<tr><td>Tel.portable : </td><td><input type='text' size='15' name='tel_port' value=\"".$tel_port."\" onchange='changement();' /></td></tr>\n";
+	echo "<tr><td>Tel.professionnel : </td><td><input type='text' size='15' name='tel_prof' value=\"".$tel_prof."\" onchange='changement();' /></td></tr>\n";
+
+	echo "<tr>\n";
+	echo "<td>Mel : </td><td>\n";
+	if(isset($compte_resp_existe)&&($compte_resp_existe=="y")&&(getSettingValue('mode_email_resp')=='mon_compte')) {
+		// Faudrait-il quand même permettre la saisie en mode mon_compte si le mail est vide?
+		// Pour permettre une récupération de mot de passe?
+		echo $mel;
+	}
+	else {
+		echo "<input type='text' size='46' name='mel' value=\"".$mel."\" onchange='changement();' />";
+	}
 	if($mel!='') {
 		$tmp_date=getdate();
 		echo " <a href='mailto:".$mel."?subject=GEPI&amp;body=";
