@@ -72,6 +72,7 @@ function liste_sanctions($id_incident,$ele_login) {
 		$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident=$id_incident AND s.login='".$ele_login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
 		//$retour.="$sql<br />\n";
 		$res_sanction=mysql_query($sql);
+		$res_sanction_tmp=mysql_query($sql);
 		if(mysql_num_rows($res_sanction)>0) {
 			$retour.="<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
 			$retour.="<tr>\n";
@@ -81,6 +82,13 @@ function liste_sanctions($id_incident,$ele_login) {
 			$retour.="<th>Durée</th>\n";
 			$retour.="<th>Lieu</th>\n";
 			$retour.="<th>Travail</th>\n";
+			
+			$lig_sanction_tmp=mysql_fetch_object($res_sanction_tmp);
+			$nombre_de_report=nombre_reports($lig_sanction_tmp->id_sanction,0);
+			if ($nombre_de_report <> 0) {
+			   $retour.="<th>Nbre report</th>\n";
+			}
+			
 			//if($etat_incident!='clos') {
 			if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
 				$retour.="<th>Suppr</th>\n";
@@ -102,6 +110,7 @@ function liste_sanctions($id_incident,$ele_login) {
 				$retour.="<td>$lig_sanction->duree</td>\n";
 				$retour.="<td>$lig_sanction->lieu</td>\n";
 				//$retour.="<td>".nl2br($lig_sanction->travail)."</td>\n";
+				
 				$retour.="<td>";
 
 				if($lig_sanction->travail=="") {
@@ -110,11 +119,18 @@ function liste_sanctions($id_incident,$ele_login) {
 				else {
 					$texte=nl2br($lig_sanction->travail);
 				}
+								
 				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
 				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
 				$retour.="</td>\n";
-
+				
+				if ($nombre_de_report <> 0) {
+					$retour.="<td>\n";
+					$retour.=$nombre_de_report;
+					$retour.="</td>";
+				}
+				
 				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
 					//$retour.="<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
 					$retour.="<td><a href='saisie_sanction.php?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";

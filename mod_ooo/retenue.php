@@ -49,7 +49,7 @@ include_once('./lib/tbsooo_class.php');
 define( 'PCLZIP_TEMPORARY_DIR', '../mod_ooo/tmp/' );
 include_once('../lib/pclzip.lib.php');
 
-include_once('../mod_discipline/sanctions_func_lib.php'); // la librairie de fonction du module discipline pour la fonction p_nom , u_p_nom
+include_once('../mod_discipline/sanctions_func_lib.php'); // la librairie de fonction du module discipline pour la fonction p_nom , u_p_nom, nombre_report
 
 //debug_var();
 
@@ -89,6 +89,8 @@ $lieu = '';
 $duree ='';
 $h_deb ='';
 $num_incident = '';
+$nb_report='';
+$texte_report='';
 
 //echo "\$mode=$mode<br />";
 //echo "\$id_incident=$id_incident<br />";
@@ -213,7 +215,16 @@ if (($mode=='module_discipline')||($mode=='module_retenue')) {
 			  
 			  // LE CRENEAU EST INCONNU on se retrouve dans le cas d'une heure saisie à la main.
 			  $h_deb = $lig_sanction->heure_debut;
-			}	
+			}
+
+			//Traitement d'un eventuel report
+			$nb_report=nombre_reports($lig_sanction->id_sanction,0);
+			if ($nb_report<>0) {
+			  $texte_report="REPORT N° ".$nb_report;
+			} else {
+			  $texte_report="";
+			}
+			
 	    } else {
 			return "LA RETENUE EST INCONNUE";
 		}     

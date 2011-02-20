@@ -1011,7 +1011,7 @@ function afficher_tableau_des_reports($id_sanction) {
 }
 
 //Fonction donnant le nombre de reports pour une sanction ($id_type_sanction)
-function nombre_reports($id_sanction) {
+function nombre_reports($id_sanction,$aucun) {
 	$sql="SELECT * FROM s_reports WHERE id_sanction=$id_sanction ORDER BY id_report";
 	//echo $sql;
 	$res=mysql_query($sql);
@@ -1021,7 +1021,7 @@ function nombre_reports($id_sanction) {
 		  $cpt++;
 		}
     } else {
-    $cpt = "Néant";
+    $cpt = $aucun;
     }	
 	return $cpt;
 }

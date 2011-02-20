@@ -220,7 +220,7 @@ if(mysql_num_rows($res_sanction)>0) {
         echo "</td>\n";
 		
 		echo "<td>\n";
-		echo nombre_reports($lig_sanction->id_sanction);
+		echo nombre_reports($lig_sanction->id_sanction,"Néant");
         echo "</td>\n";
 
 		echo "<td>\n";
@@ -452,7 +452,7 @@ if(mysql_num_rows($res_sanction)>0) {
         echo "</td>\n";
 		
 		echo "<td>\n";
-		echo nombre_reports($lig_sanction->id_sanction);
+		echo nombre_reports($lig_sanction->id_sanction,"Néant");
         echo "</td>\n";
 
 

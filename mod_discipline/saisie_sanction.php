@@ -703,7 +703,7 @@ echo " onclick='return confirm_abandon (this, change, \"$themessage\")'";
 echo ">Retour incident</a>\n";
 
 //if(!isset($mode)) {
-if((!isset($mode))||($mode=="suppr_sanction")) {
+if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 	//echo " | <a href='traiter_incident.php'>Liste des incidents</a>\n";
 	echo "</p>\n";
 
@@ -801,6 +801,7 @@ if((!isset($mode))||($mode=="suppr_sanction")) {
 				$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident=$id_incident AND s.login='".$lig->login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
 				//echo "$sql<br />\n";
 				$res_sanction=mysql_query($sql);
+				$res_sanction_tmp=mysql_query($sql);
 				if(mysql_num_rows($res_sanction)>0) {
 					echo "<table class='boireaus' border='1' summary='Retenues' style='margin:2px;'>\n";
 					echo "<tr>\n";
@@ -810,6 +811,12 @@ if((!isset($mode))||($mode=="suppr_sanction")) {
 					echo "<th>Durée</th>\n";
 					echo "<th>Lieu</th>\n";
 					echo "<th>Travail</th>\n";
+					
+					$lig_sanction_tmp=mysql_fetch_object($res_sanction_tmp);
+					$nombre_de_report=nombre_reports($lig_sanction_tmp->id_sanction,0);
+					if ($nombre_de_report <> 0) {
+					   echo "<th>Nbre report</th>\n";
+					}
 //Eric
 					echo "<th>Imprimer</th>\n";
 //
@@ -834,6 +841,12 @@ if((!isset($mode))||($mode=="suppr_sanction")) {
 						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
 						echo "</td>\n";
 //Eric
+						if ($nombre_de_report <> 0) {
+							echo "<td>\n";
+							echo $nombre_de_report;
+							echo "</td>";
+						}
+						
 						echo "<td>";
 						if ($gepiSettings['active_mod_ooo'] == 'y') { //impression avec mod_ooo
 							echo "<a href='../mod_ooo/retenue.php?mode=module_retenue&amp;id_incident=$id_incident&amp;id_sanction=$lig_sanction->id_sanction&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
