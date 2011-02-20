@@ -178,6 +178,7 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "<th>Effectuée</th>\n";
 	echo "</tr>\n";
 	$alt_b=1;
+	$num=0;
 	while($lig_sanction=mysql_fetch_object($res_sanction)) {
 		$alt_b=$alt_b*(-1);
 		if($lig_sanction->effectuee=="O") {
@@ -216,10 +217,46 @@ if(mysql_num_rows($res_sanction)>0) {
 		}
 		echo "</td>\n";
 		
-		echo "<td>\n";
 		$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
-		echo u_p_nom($login_declarant);
+		
+		//pour le mail
+		$mail_declarant = retourne_email($login_declarant);
+		echo add_token_field(true);
+		echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"[GEPI] Discipline : Demande de travail pour une retenue\" />\n";
+		echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$mail_declarant."\" />\n";
+		p_nom($lig_sanction->login);
+		$message = "La retenue (voir l'incident N°$lig_sanction->id_incident) de ";
+		$message.= p_nom($lig_sanction->login)." ";
+		$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+		if(isset($tmp_tab['liste_nbsp'])) {$message.= "(".$tmp_tab['liste_nbsp'].") ";}
+		$message.= "est planifiée le ".formate_date($lig_sanction->date)." à(en) ".$lig_sanction->heure_debut." Pour une durée de ".$lig_sanction->duree."H \r\n";
+		$message.= "Merci d'apporter le travail prévu à la vie scolaire.";
+		
+		//echo $message;
+		echo "<input type='hidden' name='message_$num' id='message_$num' value=\"$message\"/>\n";
+
+		echo "<td>\n";	
+		$ligne_nom_declarant=u_p_nom($login_declarant);
+		echo "$ligne_nom_declarant";
+		if($lig_sanction->effectuee!="O") {
+		   echo"<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\"><img src='../images/icons/icone_mail.png' width='25' height='25' alt='Envoyer un mail pour demander le travail au déclarant' title='Envoyer un mail pour demander le travail au déclarant' /></a></span>";
+		}
         echo "</td>\n";
+		
+		// portion de code issue de verif_bulletin.php ligne 1110
+		echo "<script type='text/javascript'>  
+	// <![CDATA[
+	function envoi_mail(num) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+		destinataire=document.getElementById('mail_'+num).value;
+		sujet_mail=document.getElementById('sujet_'+num).value;
+		message=document.getElementById('message_'+num).value;
+		//alert(message);
+		//new Ajax.Updater($('mail_envoye_'+num),'../bulletin/envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+message,{method: 'get'});
+		new Ajax.Updater($('mail_envoye_'+num),'../bulletin/envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
+	}
+	//]]>
+</script>\n";
 		
 		echo "<td>\n";
 		echo nombre_reports($lig_sanction->id_sanction,"Néant");
@@ -235,6 +272,7 @@ if(mysql_num_rows($res_sanction)>0) {
 		
 		echo "</tr>\n";
 		$cpt_sanctions++;
+		$num++;
 	}
 	echo "</table>\n";
 	echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
