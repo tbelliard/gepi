@@ -149,6 +149,7 @@ echo add_token_field();
 echo "<input type='hidden' name='jour_sanction' value='$jour_sanction' />\n";
 
 $cpt_sanctions=0;
+$login_declarant="";
 
 /*
 $jour =  substr($jour_sanction,0,2);
@@ -216,7 +217,8 @@ if(mysql_num_rows($res_sanction)>0) {
 		echo "</td>\n";
 		
 		echo "<td>\n";
-		echo get_declarant_incident($lig_sanction->id_incident);
+		$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
+		echo u_p_nom($login_declarant);
         echo "</td>\n";
 		
 		echo "<td>\n";
@@ -448,7 +450,8 @@ if(mysql_num_rows($res_sanction)>0) {
 		echo "</td>\n";
 		
 		echo "<td>\n";
-		echo get_declarant_incident($lig_sanction->id_incident);
+		$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
+		echo u_p_nom($login_declarant);
         echo "</td>\n";
 		
 		echo "<td>\n";
@@ -524,7 +527,8 @@ if(mysql_num_rows($res_sanction)>0) {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		echo get_declarant_incident($lig_sanction->id_incident);
+		$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
+		echo u_p_nom($login_declarant);
         echo "</td>\n";
 
 		echo "<td>\n";
@@ -559,9 +563,10 @@ if(isset($tabid_infobulle)){
 
 echo "<p><br /></p>\n";
 
-echo "<p><i>Remarque&nbsp;:</i></p>\n";
+echo "<p><i>Remarques&nbsp;:</i></p>\n";
 echo "<blockquote>\n";
-echo "<p>Lorsqu'une retenue, un travail doit être reprogrammé, l'information comme quoi l'élève n'a pas effectué la sanction à la date prévue n'est pas conservée.<br />A défaut, vous pouvez ajouter des détails sur l'incident ou en commentaire dans le Travail attribué pour la sanction.</p>\n";
+echo "<p><b>Lorsqu'une retenue doit être reprogrammé</b>, cliquer sur la date initiale de la retenue et renseigner la section Gestion d'un report<br />\n";
+echo "<p>Lorsqu'un travail doit être reprogrammé, l'information comme quoi l'élève ne l'a pas effectué à la date prévue n'est pas conservée.<br />A défaut, vous pouvez ajouter des détails sur l'incident ou en commentaire dans le Travail attribué</p>\n";
 echo "</blockquote>\n";
 
 echo "<p><br /></p>\n";

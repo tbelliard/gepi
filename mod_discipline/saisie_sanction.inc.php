@@ -208,7 +208,8 @@ elseif($valeur=='retenue') {
 	echo "<td style='text-align:left;'>\n";
 	
 	echo "<b>Gestion d'un report :</b><br/>";
-	echo "1- Cocher cette case pour traiter et enregistrer un report : <input type='checkbox' name='report_demande' id='report_demande' value='OK' onchange='changement();' /><br/>\n";
+	
+	echo "1- Cocher cette case pour traiter un report : <input type='checkbox' name='report_demande' id='report_demande' value='OK' onchange=\"changement();\" /><br/>\n";
 	echo "2- Saisir le motif du report : <select name='choix_motif_report' id='choix_motif_report' changement();\">\n";
 	echo "<option value=''>---</option>\n";
 	echo "<option value='absent'>Absent</option>\n";
@@ -216,10 +217,12 @@ elseif($valeur=='retenue') {
 	echo "<option value='report_demande'>Report demandé</option>\n";
 	echo "<option value='autre'>Autre</option>\n";
 	echo "</select><br/>\n";
-	echo "3- Modifier les données (date, heure, ...) pour le report<br/>4- Enregistrer les modifications<br/>5- Imprimer le document sur la page suivante\n";
+	echo "3- Modifier les données (date, heure, ...) pour le report<br/>";
+	echo "4- Enregistrer les modifications<br/>";
+	echo "5- Imprimer le document sur la page suivante<br/>\n";
 	
 	if (isset($id_sanction)) {
-	echo "<br/><b>Liste des reports</b><br/>\n";
+	echo "<b>Liste des reports</b><br/>\n";
 	echo afficher_tableau_des_reports($id_sanction);
 	}
 	echo "</td>\n";

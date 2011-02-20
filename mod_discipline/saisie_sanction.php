@@ -798,6 +798,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 			if($lig->statut=='eleve') {
 
 				// Retenues
+				$passage_report=false; //traiter les cas ou une sanction correspond à plusieurs retenues
 				$sql="SELECT * FROM s_sanctions s, s_retenues sr WHERE s.id_incident=$id_incident AND s.login='".$lig->login."' AND sr.id_sanction=s.id_sanction ORDER BY sr.date, sr.heure_debut;";
 				//echo "$sql<br />\n";
 				$res_sanction=mysql_query($sql);
@@ -816,6 +817,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 					$nombre_de_report=nombre_reports($lig_sanction_tmp->id_sanction,0);
 					if ($nombre_de_report <> 0) {
 					   echo "<th>Nbre report</th>\n";
+					   $passage_report = true;
 					}
 //Eric
 					echo "<th>Imprimer</th>\n";
@@ -841,10 +843,17 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
 						echo "</td>\n";
 //Eric
-						if ($nombre_de_report <> 0) {
-							echo "<td>\n";
-							echo $nombre_de_report;
-							echo "</td>";
+						If ($passage_report) {
+							$nombre_de_report=nombre_reports($lig_sanction->id_sanction,0);
+							if ($nombre_de_report <> 0) {
+								echo "<td>\n";
+								echo $nombre_de_report;
+								echo "</td>";
+							} else {
+							    echo "<td>\n";
+								echo "";
+								echo "</td>";
+							}
 						}
 						
 						echo "<td>";

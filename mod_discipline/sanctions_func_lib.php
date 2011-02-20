@@ -957,15 +957,15 @@ function get_destinataires_mail_alerte_discipline($tab_id_classe) {
 	return $retour;
 }
 
-// Retourne à partir de l'id d'un incident le nom du déclarant
-function get_declarant_incident($id_incident) {
+// Retourne à partir de l'id d'un incident le login du déclarant
+function get_login_declarant_incident($id_incident) {
 	$retour="";
     $sql_declarant="SELECT DISTINCT SI.id_incident, SI.declarant FROM s_incidents SI, s_sanctions SS WHERE SI.id_incident='$id_incident' AND SI.id_incident=SS.id_incident;";
 		//echo $sql_declarant;
 		$res_declarant=mysql_query($sql_declarant);
         if(mysql_num_rows($res_declarant)>0) {
 		$lig_declarant=mysql_fetch_object($res_declarant);
-		  $retour= u_p_nom($lig_declarant->declarant);	
+		  $retour= $lig_declarant->declarant;	
 		} else {
 		  $retour='Incident inconnu';
 		}
