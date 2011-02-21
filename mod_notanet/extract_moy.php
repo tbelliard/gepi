@@ -129,7 +129,7 @@ else {
 
 		$tab_mat[$lig1->type_brevet]=array();
 		/*
-		for($j=101;$j<=$indice_max_matieres;$j++) {
+		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++) {
 			$tab_mat[$lig1->type_brevet][$j]=$id_matiere[$j];
 		}
 		*/
@@ -281,7 +281,7 @@ else {
 
 			$tabmatieres=tabmatieres($extract_mode);
 			$cpt_non_assoc=0;
-			for($i=101;$i<=$indice_max_matieres;$i++) {
+			for($i=$indice_premiere_matiere;$i<=$indice_max_matieres;$i++) {
 				//echo "\$tabmatieres[$i][0]=".$tabmatieres[$i][0]."<br />";
 				if(($tabmatieres[$i][0]!="")&&($tabmatieres[$i]['socle']=='n')) {
 					$temoin_assoc="n";
@@ -480,7 +480,7 @@ else {
 
 						unset($tab_opt_matiere_eleve);
 						$tab_opt_matiere_eleve=array();
-						for($j=101;$j<=$indice_max_matieres;$j++){
+						for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 							//if($tabmatieres[$j][0]!=''){
 							if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')){
 								// Liste des valeurs spéciales autorisées pour la matière courante:
@@ -618,12 +618,12 @@ else {
 						if($erreur!="oui"){
 							// On génère l'export pour cet élève:
 							$TOT=0;
-							for($j=101;$j<=$indice_max_matieres;$j++){
+							for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 								//if(isset($tabmatieres[$j][0])){
 								//if(isset($statut_matiere[$j])){
 								if(isset($moy_NOTANET[$j])) {
 									if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')&&($moy_NOTANET[$j]!="")) {
-										$ligne_NOTANET=$INE[$m]."|$j";
+										$ligne_NOTANET=$INE[$m]."|".sprintf("%03d",$j);
 										//$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
 
 										$note_notanet="";

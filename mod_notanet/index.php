@@ -323,7 +323,7 @@ if($_SESSION['statut']=="administrateur") {
 
 	echo "<li><a href='select_matieres.php'>Effectuer les associations Type de brevet/Matières</a>  (<i>en précisant le statut: imposées et options</i>)</li>\n";
 
-	echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
+	//echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
 
 	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
 
@@ -338,16 +338,19 @@ if($_SESSION['statut']=="administrateur") {
 	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
 
 	echo "<li><p>Générer les fiches brevet selon le modèle de:</p>
-	<ul>
-		<li><a href='poitiers/fiches_brevet.php'>Poitiers</a></li>
+	<ul>\n";
+	/*
+	echo "		<li><a href='poitiers/fiches_brevet.php'>Poitiers</a></li>
 		<li><a href='rouen/fiches_brevet.php'>Rouen (<i>version HTML</i>)</a> - <a href='fb_rouen_pdf.php'>version PDF</a></li>
 		<li><a href='fb_montpellier_pdf.php'>Montpellier (<i>version PDF</i>)</a></li>
 		<li><a href='fb_creteil_pdf.php'>Creteil (<i>version PDF</i>)</a></li>
 		<li><a href='fb_lille_pdf.php'>Lille (<i>version PDF</i>)</a></li>\n";
+
 	$gepi_version=getSettingValue('version');
 	if(($gepi_version!='1.5.1')&&($gepi_version!='1.5.0')) {  
+	*/
 		echo "		<li><a href='OOo/imprime_ooo.php'>Modèle au format OpenOffice</a> <a href='https://www.sylogix.org/projects/gepi/wiki/GepiDoc_fbOooCalc'><img src='../images/icons/ico_question.png' alt='aide construction gabarit' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' title='Aide pour utiliser les gabarits .ods pour éditer les fiches brevets' /></a></li>\n";
-	}
+	//}
 	echo "	</ul>
 </li>\n";
 	//echo "<li><a href='#'>Vider les tables notanet</a></li>\n";
@@ -360,7 +363,10 @@ if($_SESSION['statut']=="administrateur") {
 }
 elseif($_SESSION['statut']=="scolarite") {
 	echo "<ul>\n";
-	echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
+	//echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
+
+	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
+
 	echo "<li><a href='saisie_avis.php'>Saisir l'avis du chef d'établissement</a>.</li>\n";
 	echo "</ul>\n";
 

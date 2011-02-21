@@ -355,7 +355,7 @@ $gepiSchoolCity=getSettingValue("gepiSchoolCity");
 
 
 $tabmatieres=array();
-for($j=101;$j<=122;$j++){
+for($j=$indice_premiere_matiere;$j<=130;$j++){
 	$tabmatieres[$j]=array();
 }
 
@@ -432,7 +432,7 @@ else {
 	
 	// tableau de correspondance Champs de $tabmatieres -> champs de publipostage OOo
 	$tab_champs_OOo=array();
-	for($j=101;$j<=122;$j++){
+	for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 		if($tabmatieres[$j][0]!=''){
 			$tab_champs_OOo[$j]=array();
 			$tab_champs_OOo[$j][0]=$j;												// code de la matière
@@ -496,7 +496,7 @@ else {
 
 		// Calcul des moyennes de classes... pb avec le statut...
 		$moy_classe=array();
-		for($j=101;$j<=122;$j++){
+		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			if($tabmatieres[$j][0]!=''){
 				$sql="SELECT ROUND(AVG(note),1) moyenne FROM notanet WHERE note!='DI' AND note!='AB' AND note!='NN' AND id_classe='$id_classe[$i]' AND notanet_mat='".$tabmatieres[$j][0]."'";
 				$res_moy=mysql_query($sql);
@@ -513,7 +513,7 @@ else {
 
 		// Récupération du statut des matières : ceux validés lors du traitement NOTANET
 		// pour repérer les matières non dispensées.
-		for($j=101;$j<=122;$j++){
+		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			if($tabmatieres[$j][0]!=''){
 				$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' LIMIT 1";
 				$res=mysql_query($sql);
@@ -580,7 +580,7 @@ else {
 					$TOTAL=0;
 					$TOTAL_COEF=0;
 					$TOTAL_POINTS=0;
-					for($j=101;$j<=122;$j++){
+					for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 					
 						if ($tab_champs_OOo[$j][0]!='') {
 						
@@ -737,7 +737,7 @@ else {
 	// Remplissage du fichier
 	// Première ligne avec le nom des champs	
 	echo '"academie";"departement";"session";"classe";"nom";"prenom";"fille";"date_nais";"lieu_nais";"doublant";"ecole";"adresse1";"adresse2";"codeposte";"commune"';
-	for($i=101;$i<=122;$i++){
+	for($i=$indice_premiere_matiere;$i<=$indice_max_matieres;$i++){
 		echo ';"note_20_'.$i.'"';
 		echo ';"moy_classe_'.$i.'"';
 		echo ';"points_'.$i.'"';
@@ -768,7 +768,7 @@ else {
 		echo $tab_eleves_OOo[$ne]['codeposte'].$fch;
 		echo $tab_eleves_OOo[$ne]['commune'].$fch;
 		
-		for($i=101;$i<=122;$i++){
+		for($i=$indice_premiere_matiere;$i<=$indice_max_matieres;$i++){
 			if($tabmatieres[$i][0]!=''){
 				echo str_replace (".",",",$tab_eleves_OOo[$ne][$i][0]).$fch;
 				echo str_replace (".",",",$tab_eleves_OOo[$ne][$i][3]).$fch;

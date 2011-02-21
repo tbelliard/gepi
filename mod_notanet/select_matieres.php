@@ -70,7 +70,8 @@ if(!isset($msg)) {$msg="";}
 include("lib_brevets.php");
 
 $id_matiere=array();
-for($j=101;$j<=$indice_max_matieres;$j++){
+//for($j=101;$j<=$indice_max_matieres;$j++){
+for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 	if(isset($_POST['id_matiere'.$j])){
 		$id_matiere[$j]=$_POST['id_matiere'.$j];
 
@@ -100,7 +101,7 @@ if((isset($is_posted))&&(isset($type_brevet))) {
 		$nb_err=0;
 		$cpt_enr=0;
 		// Enregistrement des choix de matières dans 'notanet_corresp'
-		for($j=101;$j<=$indice_max_matieres;$j++){
+		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			//if($tabmatieres[$j][0]!=''){
 			//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j]['socle']=='n')) {
 			if($tabmatieres[$j][0]!=''){
@@ -294,7 +295,7 @@ else {
 		echo "</tr>\n";
 
 		$alt=1;
-		for($j=101;$j<=$indice_max_matieres;$j++){
+		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			if($tabmatieres[$j][0]!=''){
 			//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j]['socle']=='n')) {
 				$alt=$alt*(-1);
@@ -446,7 +447,7 @@ else {
 		}
 
 		// Enregistrement des choix de matières dans 'notanet_corresp'
-		for($j=101;$j<=$indice_max_matieres;$j++){
+		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			if($tabmatieres[$j][0]!=''){
 				//$tabmatieres[$j][0]
 
