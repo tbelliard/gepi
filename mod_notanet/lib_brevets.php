@@ -822,8 +822,8 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[101][0]='FRANÇAIS';
 			$tabmatieres[102][0]='MATHÉMATIQUES';
-			//$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
-			$tabmatieres[103][0]='LANGUE VIVANTE 1';
+			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
+			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='';
 			$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
@@ -836,13 +836,13 @@ function tabmatieres($type_brevet){
 			$tabmatieres[112][0]='VIE SCOLAIRE';
 			$tabmatieres[113][0]='';
 
-			$tabmatieres[114][0]='SOCLE B2I';
+			//$tabmatieres[114][0]='SOCLE B2I';
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE';
-			$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; //20100425
+			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; //20100425
 
 			$tabmatieres[116][0]='';
 			$tabmatieres[117][0]='';
-			$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
+			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
 			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE EDUCATION CIVIQUE';
@@ -863,7 +863,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[121][-1]='NOTNONCA';
 			//$tabmatieres[122][-1]='NOTNONCA';
 
-			$tabmatieres[118][-1]='PTSUP';
+			//$tabmatieres[118][-1]='PTSUP';
 
 			// Coefficients:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -895,9 +895,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres[109][-3]='AB DI';
 			$tabmatieres[110][-3]='AB DI';
 
-			$tabmatieres[114][-3]='MS ME MN AB';
+			//$tabmatieres[114][-3]='MS ME MN AB';
 			//$tabmatieres[115][-3]='MS ME AB';
-			$tabmatieres[115][-3]='MS ME MN AB';
+			//$tabmatieres[115][-3]='MS ME MN AB';
 
 			$tabmatieres[130][-3]='AB VA NV'; // 20100425
 
@@ -958,8 +958,8 @@ function tabmatieres($type_brevet){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j]['socle']='n';
 			}
-			$tabmatieres[114]['socle']='y';
-			$tabmatieres[115]['socle']='y';
+			//$tabmatieres[114]['socle']='y';
+			//$tabmatieres[115]['socle']='y';
 
 			$tabmatieres[130]['socle']='y'; // 20100425
 
@@ -976,8 +976,8 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[101][0]='FRANÇAIS';
 			$tabmatieres[102][0]='MATHÉMATIQUES';
-			//$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
-			$tabmatieres[103][0]='LANGUE VIVANTE 1';
+			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
+			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='SCIENCES PHYSIQUES';
 			$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
@@ -989,13 +989,13 @@ function tabmatieres($type_brevet){
 			$tabmatieres[112][0]='VIE SCOLAIRE';
 			$tabmatieres[113][0]='';
 
-			$tabmatieres[114][0]='SOCLE B2I';
+			//$tabmatieres[114][0]='SOCLE B2I';
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE';
-			$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; //20100425
+			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; //20100425
 
 			$tabmatieres[116][0]='';
 			$tabmatieres[117][0]='';
-			$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
+			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
 
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
@@ -1015,7 +1015,7 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[121][-1]='NOTNONCA';
 
-			$tabmatieres[118][-1]='PTSUP'; //20100425
+			//$tabmatieres[118][-1]='PTSUP'; //20100425
 
 			// PROBLEME: TECHNOLOGIE POINTS /40
 			//           GEPI ne doit donner que des notes sur 20.
@@ -1048,9 +1048,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres[107][-3]='AB DI NN';
 			$tabmatieres[108][-3]='AB DI';
 
-			$tabmatieres[114][-3]='MS ME MN AB';
+			//$tabmatieres[114][-3]='MS ME MN AB';
 			//$tabmatieres[115][-3]='MS ME AB';
-			$tabmatieres[115][-3]='MS ME MN AB';
+			//$tabmatieres[115][-3]='MS ME MN AB';
 
 			$tabmatieres[130][-3]='AB VA NV'; // 20100425
 
@@ -1091,8 +1091,8 @@ function tabmatieres($type_brevet){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j]['socle']='n';
 			}
-			$tabmatieres[114]['socle']='y';
-			$tabmatieres[115]['socle']='y';
+			//$tabmatieres[114]['socle']='y';
+			//$tabmatieres[115]['socle']='y';
 
 			$tabmatieres[130]['socle']='y'; // 20100425
 
@@ -1109,8 +1109,8 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[101][0]='FRANÇAIS';
 			$tabmatieres[102][0]='MATHÉMATIQUES';
-			//$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
-			$tabmatieres[103][0]='LANGUE VIVANTE 1';
+			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
+			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='SCIENCES PHYSIQUES';
 			$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
@@ -1122,13 +1122,13 @@ function tabmatieres($type_brevet){
 			$tabmatieres[112][0]='VIE SCOLAIRE';
 			$tabmatieres[113][0]='';
 
-			$tabmatieres[114][0]='SOCLE B2I';
+			//$tabmatieres[114][0]='SOCLE B2I';
 			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE';
-			$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; // 20100425
+			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; // 20100425
 
 			$tabmatieres[116][0]='';
 			$tabmatieres[117][0]='';
-			$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100512
+			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100512
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
 			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE EDUCATION CIVIQUE';
@@ -1180,9 +1180,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres[108][-3]='AB DI';
 			$tabmatieres[110][-3]='AB DI';
 
-			$tabmatieres[114][-3]='MS ME MN AB';
+			//$tabmatieres[114][-3]='MS ME MN AB';
 			//$tabmatieres[115][-3]='MS ME AB';
-			$tabmatieres[115][-3]='MS ME MN AB';
+			//$tabmatieres[115][-3]='MS ME MN AB';
 
 			$tabmatieres[130][-3]='AB VA NV'; // 20100512
 
@@ -1223,8 +1223,8 @@ function tabmatieres($type_brevet){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j]['socle']='n';
 			}
-			$tabmatieres[114]['socle']='y';
-			$tabmatieres[115]['socle']='y';
+			//$tabmatieres[114]['socle']='y';
+			//$tabmatieres[115]['socle']='y';
 
 			$tabmatieres[130]['socle']='y'; // 20100425
 
@@ -1241,8 +1241,8 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[101][0]='FRANÇAIS';
 			$tabmatieres[102][0]='MATHÉMATIQUES';
-			//$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
-			$tabmatieres[103][0]='LANGUE VIVANTE 1';
+			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
+			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='SCIENCES PHYSIQUES';
 			$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
@@ -1254,12 +1254,12 @@ function tabmatieres($type_brevet){
 			$tabmatieres[112][0]='VIE SCOLAIRE';
 			$tabmatieres[113][0]='';
 
-			$tabmatieres[114][0]='SOCLE B2I';
-			$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; // 20100425
+			//$tabmatieres[114][0]='SOCLE B2I';
+			//$tabmatieres[115][0]='SOCLE NIVEAU A2 DE LANGUE ETRANGERE'; // 20100425
 
 			$tabmatieres[116][0]='';
 			$tabmatieres[117][0]='';
-			$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
+			//$tabmatieres[118][0]='HISTOIRE DES ARTS'; // 20100425
 			$tabmatieres[119][0]='';
 			$tabmatieres[120][0]='';
 			$tabmatieres[121][0]='HISTOIRE-GÉOGRAPHIE EDUCATION CIVIQUE';
@@ -1278,7 +1278,7 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[121][-1]='NOTNONCA';
 
-			$tabmatieres[118][-1]='PTSUP';
+			//$tabmatieres[118][-1]='PTSUP';
 
 			// Coefficients:
 			//for($j=$indice_premiere_matiere;$j<=122;$j++){
@@ -1307,9 +1307,9 @@ function tabmatieres($type_brevet){
 			$tabmatieres[108][-3]='AB DI';
 			$tabmatieres[109][-3]='AB DI';
 
-			$tabmatieres[114][-3]='MS ME MN AB';
+			//$tabmatieres[114][-3]='MS ME MN AB';
 			//$tabmatieres[115][-3]='MS ME AB';
-			$tabmatieres[115][-3]='MS ME MN AB';
+			//$tabmatieres[115][-3]='MS ME MN AB';
 
 			$tabmatieres[130][-3]='AB VA NV'; // 20100512
 
@@ -1339,8 +1339,8 @@ function tabmatieres($type_brevet){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j]['socle']='n';
 			}
-			$tabmatieres[114]['socle']='y';
-			$tabmatieres[115]['socle']='y';
+			//$tabmatieres[114]['socle']='y';
+			//$tabmatieres[115]['socle']='y';
 
 			$tabmatieres[130]['socle']='y';
 
