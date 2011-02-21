@@ -224,22 +224,39 @@ if(mysql_num_rows($res_sanction)>0) {
 		echo add_token_field(true);
 		echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"[GEPI] Discipline : Demande de travail pour une retenue\" />\n";
 		echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$mail_declarant."\" />\n";
-		p_nom($lig_sanction->login);
-		$message = "La retenue (voir l'incident N°$lig_sanction->id_incident) de ";
-		$message.= p_nom($lig_sanction->login)." ";
-		$tmp_tab=get_class_from_ele_login($lig_sanction->login);
-		if(isset($tmp_tab['liste_nbsp'])) {$message.= "(".$tmp_tab['liste_nbsp'].") ";}
-		$message.= "est planifiée le ".formate_date($lig_sanction->date)." à(en) ".$lig_sanction->heure_debut." Pour une durée de ".$lig_sanction->duree."H \r\n";
-		$message.= "Merci d'apporter le travail prévu à la vie scolaire.";
+
+		$trame_message="Bonjour, \n";
+		$trame_message.="La retenue (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée le %jour% en/à %heure% pour une durée de %duree%H \n";
+		$trame_message.="Merci d'apporter le travail prévu à la vie scolaire. \n\nLa vie scolaire";
 		
-		//echo $message;
-		echo "<input type='hidden' name='message_$num' id='message_$num' value=\"$message\"/>\n";
+		
+		$num_incident=$lig_sanction->id_incident;
+		$prenom_nom=p_nom($lig_sanction->login) ;
+		$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+		if(isset($tmp_tab['liste_nbsp'])) {$classe= $tmp_tab['liste_nbsp'];}
+		$date=formate_date($lig_sanction->date);
+		$heure=$lig_sanction->heure_debut;
+		$duree=$lig_sanction->duree;
+		
+		$trame_message=str_replace("%num_incident%",$num_incident,$trame_message);
+		$trame_message=str_replace("%prenom_nom%",$prenom_nom,$trame_message);
+		$trame_message=str_replace("%classe%",$classe,$trame_message);
+		$trame_message=str_replace("%jour%",$date,$trame_message);
+		$trame_message=str_replace("%heure%",$heure,$trame_message);
+		$trame_message=str_replace("%duree%",$duree,$trame_message);
+		
+		//echo $trame_message;
+		echo "<input type='hidden' name='message_$num' id='message_$num' value=\"$trame_message\"/>\n";
 
 		echo "<td>\n";	
 		$ligne_nom_declarant=u_p_nom($login_declarant);
 		echo "$ligne_nom_declarant";
-		if($lig_sanction->effectuee!="O") {
-		   echo"<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\"><img src='../images/icons/icone_mail.png' width='25' height='25' alt='Envoyer un mail pour demander le travail au déclarant' title='Envoyer un mail pour demander le travail au déclarant' /></a></span>";
+		
+		//on autorise l'envoi de mail que pour les statuts Admin / CPE / Scolarite
+		if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($_SESSION['statut']=='scolarite')) {
+			if($lig_sanction->effectuee!="O") {
+			   echo"<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\"><img src='../images/icons/icone_mail.png' width='25' height='25' alt='Envoyer un mail pour demander le travail au déclarant' title='Envoyer un mail pour demander le travail au déclarant' /></a></span>";
+			}
 		}
         echo "</td>\n";
 		
