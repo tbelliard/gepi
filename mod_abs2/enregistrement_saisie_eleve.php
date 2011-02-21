@@ -99,11 +99,11 @@ if ($type_absence != null && $type_absence != -1) {
     $type = AbsenceEleveTypeQuery::create()->findPk($type_absence);
     if ($type != null) {
 	if (!$type->isStatutAutorise($utilisateur->getStatut())) {
-	    $message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence_eleve'][$i]."<br/>";
+	    $message_enregistrement .= "Type d'absence non autorisé pour ce statut : ".$_POST['type_absence']."<br/>";
 	    $type = null;
 	}
     } else {
-	$message_enregistrement .= "Probleme avec l'id du type d'absence : ".$_POST['type_absence_eleve'][$i]."<br/>";
+	$message_enregistrement .= "Probleme avec l'id du type d'absence : ".$_POST['type_absence']."<br/>";
     }
 }
 
