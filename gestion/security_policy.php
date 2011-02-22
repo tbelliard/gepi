@@ -210,7 +210,22 @@ if (isset($_POST['filtrage_html'])) {
 			$msg = "Erreur lors de l'enregistrement de filtrage_html !";
 		}
 	}
+
+	if (isset($_POST['utiliser_no_php_in_img'])) {
+		if (!saveSetting(("utiliser_no_php_in_img"), 'y')) {
+			$msg = "Erreur lors de l'enregistrement de utiliser_no_php_in_img !";
+		}
+	}
+	else {
+		if (!saveSetting(("utiliser_no_php_in_img"), 'n')) {
+			$msg = "Erreur lors de l'enregistrement de utiliser_no_php_in_img !";
+		}
+	}
+
+	$utiliser_no_php_in_img=getSettingValue('utiliser_no_php_in_img');
 }
+
+
 // Fin : if isset($_POST)
 
 $htmlpurifier_autorise='y';
@@ -473,6 +488,9 @@ echo "<div style='margin-left:3em;'>\n";
 
 	echo "<p style='font-weight:bold; color:red;'>Il est très fortement déconseillé de désactiver le filtrage.</p>\n";
 
+	echo "<p><input type='checkbox' id='utiliser_no_php_in_img' name='utiliser_no_php_in_img' value='y' ";
+	if($utiliser_no_php_in_img=='y') {echo "checked ";}
+	echo "/><label for='utiliser_no_php_in_img'> Interdire d'insérer dans des appréciations, des notices de cahiers de textes des images générées par PHP</label>.</p>\n";
 echo "</div>\n";
 
 echo "<center><input type='submit' value='Enregistrer' /></center>\n";
