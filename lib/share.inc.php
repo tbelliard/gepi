@@ -6336,6 +6336,15 @@ function affiche_infos_actions() {
 	$chaine_id="";
 	if(mysql_num_rows($res)>0) {
 		echo "<div id='div_infos_actions' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%;'>\n";
+		echo "<div id='info_action_titre' style='font-weight: bold;' class='infobulle_entete'>\n";
+			echo "<div id='info_action_pliage' style='float:right; width: 1em'>\n";
+			echo "<a href=\"javascript:div_alterne_affichage('conteneur')\"><span id='img_pliage_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+			echo "</div>\n";
+			echo "Actions en attente";
+		echo "</div>\n";
+
+		echo "<div id='info_action_corps_conteneur'>\n";
+
 		$cpt_id=0;
 		while($lig=mysql_fetch_object($res)) {
 			echo "<div id='info_action_$lig->id' style='border: 1px solid black; margin:2px;'>\n";
@@ -6358,6 +6367,7 @@ function affiche_infos_actions() {
 			$chaine_id.="'$lig->id'";
 			$cpt_id++;
 		}
+		echo "</div>\n";
 		echo "</div>\n";
 
 		echo "<script type='text/javascript'>
