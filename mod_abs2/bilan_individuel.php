@@ -199,7 +199,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
         <?php if (isset($message)){
           echo'<h2 class="no">'.$message.'</h2>';
         }?>
-        <?php if($limite_temps) :?>
+        <?php if($limite_temps && $utilisateur->getStatut() != "autre" && $utilisateur->getStatut() != "professeur" ) :?>
          <p>
              <strong>La recherche sur toutes les classes n'est permise que pour une durée de <?php echo $limite_jours; ?> jours maximum si aucun nom n'est rentré.</strong>
 
