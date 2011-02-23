@@ -282,10 +282,10 @@ class AbsencesNotificationHelper {
 	    $param['cmd'] = 'sendsms';            
 	    $param['txt'] = $message; // message a envoyer
 		$tel = $notification->getTelephone();
-		str_replace(" ","",$tel);
-		str_replace(".","",$tel);
-		str_replace("-","",$tel);
-		str_replace("/","",$tel);
+		$tel = str_replace(" ","",$tel);
+		$tel = str_replace(".","",$tel);
+		$tel = str_replace("-","",$tel);
+		$tel = str_replace("/","",$tel);
 	    if (substr($tel, 0, 1) == '0') { //Ajout indicatif 33
 		$tel = '33'.substr($tel, 1, 9);
 	    }
@@ -300,6 +300,10 @@ class AbsencesNotificationHelper {
 	    $param['gepi_mail'] = getSettingValue("gepiSchoolEmail"); // remontée éventuelle des réponses par mail
 	    $param['gepi_rne'] = getSettingValue("gepiSchoolRne"); // identification supplémentaire
 	    $param['gepi_pays'] = getSettingValue("gepiSchoolPays"); // peux servir pour corriger ou insérer l'indicatif international du num tel
+		
+		//echo "<pre>";
+		//echo print_r($param);
+		//echo "</pre>";
 	}
 
 	$requete = '';
