@@ -49,6 +49,7 @@ class EleveTableMap extends TableMap {
 		$this->addColumn('ELE_ID', 'EleId', 'VARCHAR', true, 10, '');
 		$this->addColumn('EMAIL', 'Email', 'VARCHAR', true, 255, '');
 		$this->addPrimaryKey('ID_ELEVE', 'IdEleve', 'INTEGER', true, 11, null);
+		$this->addColumn('DATE_SORTIE', 'DateSortie', 'TIMESTAMP', false, null, null);
 		$this->addForeignKey('ID_MEF', 'IdMef', 'INTEGER', 'mef', 'ID', false, null, null);
 		// validators
 	} // initialize()

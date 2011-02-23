@@ -18,6 +18,7 @@
  * @method     EleveQuery orderByEleId($order = Criteria::ASC) Order by the ele_id column
  * @method     EleveQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     EleveQuery orderByIdEleve($order = Criteria::ASC) Order by the id_eleve column
+ * @method     EleveQuery orderByDateSortie($order = Criteria::ASC) Order by the date_sortie column
  * @method     EleveQuery orderByIdMef($order = Criteria::ASC) Order by the id_mef column
  *
  * @method     EleveQuery groupByNoGep() Group by the no_gep column
@@ -32,6 +33,7 @@
  * @method     EleveQuery groupByEleId() Group by the ele_id column
  * @method     EleveQuery groupByEmail() Group by the email column
  * @method     EleveQuery groupByIdEleve() Group by the id_eleve column
+ * @method     EleveQuery groupByDateSortie() Group by the date_sortie column
  * @method     EleveQuery groupByIdMef() Group by the id_mef column
  *
  * @method     EleveQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
@@ -105,6 +107,7 @@
  * @method     Eleve findOneByEleId(string $ele_id) Return the first Eleve filtered by the ele_id column
  * @method     Eleve findOneByEmail(string $email) Return the first Eleve filtered by the email column
  * @method     Eleve findOneByIdEleve(int $id_eleve) Return the first Eleve filtered by the id_eleve column
+ * @method     Eleve findOneByDateSortie(string $date_sortie) Return the first Eleve filtered by the date_sortie column
  * @method     Eleve findOneByIdMef(int $id_mef) Return the first Eleve filtered by the id_mef column
  *
  * @method     array findByNoGep(string $no_gep) Return Eleve objects filtered by the no_gep column
@@ -119,6 +122,7 @@
  * @method     array findByEleId(string $ele_id) Return Eleve objects filtered by the ele_id column
  * @method     array findByEmail(string $email) Return Eleve objects filtered by the email column
  * @method     array findByIdEleve(int $id_eleve) Return Eleve objects filtered by the id_eleve column
+ * @method     array findByDateSortie(string $date_sortie) Return Eleve objects filtered by the date_sortie column
  * @method     array findByIdMef(int $id_mef) Return Eleve objects filtered by the id_mef column
  *
  * @package    propel.generator.gepi.om
@@ -495,6 +499,37 @@ abstract class BaseEleveQuery extends ModelCriteria
 			$comparison = Criteria::IN;
 		}
 		return $this->addUsingAlias(ElevePeer::ID_ELEVE, $idEleve, $comparison);
+	}
+
+	/**
+	 * Filter the query on the date_sortie column
+	 * 
+	 * @param     string|array $dateSortie The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    EleveQuery The current query, for fluid interface
+	 */
+	public function filterByDateSortie($dateSortie = null, $comparison = null)
+	{
+		if (is_array($dateSortie)) {
+			$useMinMax = false;
+			if (isset($dateSortie['min'])) {
+				$this->addUsingAlias(ElevePeer::DATE_SORTIE, $dateSortie['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($dateSortie['max'])) {
+				$this->addUsingAlias(ElevePeer::DATE_SORTIE, $dateSortie['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(ElevePeer::DATE_SORTIE, $dateSortie, $comparison);
 	}
 
 	/**

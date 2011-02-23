@@ -100,6 +100,12 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	protected $id_eleve;
 
 	/**
+	 * The value for the date_sortie field.
+	 * @var        string
+	 */
+	protected $date_sortie;
+
+	/**
 	 * The value for the id_mef field.
 	 * @var        int
 	 */
@@ -363,6 +369,44 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function getIdEleve()
 	{
 		return $this->id_eleve;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [date_sortie] column value.
+	 * Timestamp de sortie de l'élève de l'établissement (fin d'inscription)
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getDateSortie($format = 'Y-m-d H:i:s')
+	{
+		if ($this->date_sortie === null) {
+			return null;
+		}
+
+
+		if ($this->date_sortie === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->date_sortie);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_sortie, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
 	}
 
 	/**
@@ -645,6 +689,55 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	} // setIdEleve()
 
 	/**
+	 * Sets the value of [date_sortie] column to a normalized version of the date/time value specified.
+	 * Timestamp de sortie de l'élève de l'établissement (fin d'inscription)
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     Eleve The current object (for fluent API support)
+	 */
+	public function setDateSortie($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->date_sortie !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->date_sortie !== null && $tmpDt = new DateTime($this->date_sortie)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->date_sortie = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+				$this->modifiedColumns[] = ElevePeer::DATE_SORTIE;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setDateSortie()
+
+	/**
 	 * Set the value of [id_mef] column.
 	 * cle externe pour le jointure avec mef
 	 * @param      int $v new value
@@ -724,7 +817,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->ele_id = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
 			$this->email = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
 			$this->id_eleve = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-			$this->id_mef = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
+			$this->date_sortie = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+			$this->id_mef = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -733,7 +827,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 13; // 13 = ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 14; // 14 = ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Eleve object", $e);
@@ -1311,6 +1405,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				return $this->getIdEleve();
 				break;
 			case 12:
+				return $this->getDateSortie();
+				break;
+			case 13:
 				return $this->getIdMef();
 				break;
 			default:
@@ -1349,7 +1446,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$keys[9] => $this->getEleId(),
 			$keys[10] => $this->getEmail(),
 			$keys[11] => $this->getIdEleve(),
-			$keys[12] => $this->getIdMef(),
+			$keys[12] => $this->getDateSortie(),
+			$keys[13] => $this->getIdMef(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aMef) {
@@ -1423,6 +1521,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				$this->setIdEleve($value);
 				break;
 			case 12:
+				$this->setDateSortie($value);
+				break;
+			case 13:
 				$this->setIdMef($value);
 				break;
 		} // switch()
@@ -1461,7 +1562,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if (array_key_exists($keys[9], $arr)) $this->setEleId($arr[$keys[9]]);
 		if (array_key_exists($keys[10], $arr)) $this->setEmail($arr[$keys[10]]);
 		if (array_key_exists($keys[11], $arr)) $this->setIdEleve($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setIdMef($arr[$keys[12]]);
+		if (array_key_exists($keys[12], $arr)) $this->setDateSortie($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setIdMef($arr[$keys[13]]);
 	}
 
 	/**
@@ -1485,6 +1587,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if ($this->isColumnModified(ElevePeer::ELE_ID)) $criteria->add(ElevePeer::ELE_ID, $this->ele_id);
 		if ($this->isColumnModified(ElevePeer::EMAIL)) $criteria->add(ElevePeer::EMAIL, $this->email);
 		if ($this->isColumnModified(ElevePeer::ID_ELEVE)) $criteria->add(ElevePeer::ID_ELEVE, $this->id_eleve);
+		if ($this->isColumnModified(ElevePeer::DATE_SORTIE)) $criteria->add(ElevePeer::DATE_SORTIE, $this->date_sortie);
 		if ($this->isColumnModified(ElevePeer::ID_MEF)) $criteria->add(ElevePeer::ID_MEF, $this->id_mef);
 
 		return $criteria;
@@ -1558,6 +1661,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$copyObj->setEreno($this->ereno);
 		$copyObj->setEleId($this->ele_id);
 		$copyObj->setEmail($this->email);
+		$copyObj->setDateSortie($this->date_sortie);
 		$copyObj->setIdMef($this->id_mef);
 
 		if ($deepCopy) {
@@ -3633,6 +3737,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$this->ele_id = null;
 		$this->email = null;
 		$this->id_eleve = null;
+		$this->date_sortie = null;
 		$this->id_mef = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;

@@ -396,6 +396,7 @@ CREATE TABLE eleves
 	ele_id VARCHAR(10) default '' NOT NULL COMMENT 'cle utilise par Sconet dans ses fichiers xml',
 	email VARCHAR(255) default '' NOT NULL COMMENT 'Courriel de l\'eleve',
 	id_eleve INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire autoincremente',
+	date_sortie DATETIME   COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)',
 	id_mef INTEGER   COMMENT 'cle externe pour le jointure avec mef',
 	PRIMARY KEY (id_eleve),
 	INDEX I_referenced_j_eleves_classes_FK_1_1 (login),

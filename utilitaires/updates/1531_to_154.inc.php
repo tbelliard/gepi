@@ -523,4 +523,21 @@ if ($test == -1) {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
+
+$sql = "SELECT date_sortie FROM eleves LIMIT 1";
+$req_rank = mysql_query($sql);
+if (!$req_rank){
+    $sql_request = "ALTER TABLE `eleves` ADD `date_sortie` TIMESTAMP   COMMENT 'Timestamp de sortie de l\'eleve de l\'etablissement (fin d\'inscription)'";
+    $req_add_rank = traite_requete($sql_request);
+    if ($req_add_rank == '') {
+        $result .= "<p style=\"color:green;\">Ajout du champ date_sortie dans la table <strong>eleves</strong> : ok.</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Ajout du champ date_sortie à la table <strong>eleves</strong> : Erreur. $req_add_rank</p>";
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Ajout du champ date_sortie à la table <strong>eleves</strong> : déjà réalisé.</p>";
+}
+
 ?>
