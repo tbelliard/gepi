@@ -319,7 +319,6 @@ DROP TABLE IF EXISTS s_alerte_mail;
 CREATE TABLE IF NOT EXISTS s_alerte_mail (id int(11) unsigned NOT NULL auto_increment, id_classe smallint(6) unsigned NOT NULL, destinataire varchar(50) NOT NULL default '', adresse varchar(250) DEFAULT NULL, PRIMARY KEY (id), INDEX (id_classe,destinataire));
 DROP TABLE IF EXISTS s_categories;
 CREATE TABLE IF NOT EXISTS s_categories ( id INT(11) NOT NULL auto_increment, categorie varchar(50) NOT NULL default '',sigle varchar(20) NOT NULL default '', PRIMARY KEY (id));
-DROP TABLE IF EXISTS s_categories;
 CREATE TABLE IF NOT EXISTS matieres_app_corrections (login varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', periode int(11) NOT NULL default '0', appreciation text NOT NULL, PRIMARY KEY (login,id_groupe,periode));
 DROP TABLE IF EXISTS a_motifs;
 CREATE TABLE IF NOT EXISTS a_motifs(	id INTEGER(11)  NOT NULL AUTO_INCREMENT COMMENT 'cle primaire auto-incrementee',	nom VARCHAR(250)  NOT NULL COMMENT 'Nom du motif',	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',	sortable_rank INTEGER,	PRIMARY KEY (id))Type=MyISAM COMMENT='Liste des motifs possibles pour une absence';
