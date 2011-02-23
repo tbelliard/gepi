@@ -93,8 +93,10 @@ if(($_SESSION['statut']=='cpe')||
 	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Saisie_cpe">wiki</a></div>';
     } else if($onglet_abs=='liste_notifications.php') {
 	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Suivi">wiki</a></div>';
+    } else if($onglet_abs=='tableau_des_appels.php'|| $onglet_abs=='absences_du_jour.php'||$onglet_abs=='bilan_du_jour.php'||$onglet_abs=='totaux_du_jour.php'||$onglet_abs=='extraction_saisies.php'||$onglet_abs=='extraction_demi-journees.php'||$onglet_abs=='bilan_individuel.php') {
+	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Bilans">wiki</a></div>';
     } else {
-	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Traitement_notification">wiki</a></div>';
+    echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Traitement_notification">wiki</a></div>';
     }
 
     echo "</ul>\n";
