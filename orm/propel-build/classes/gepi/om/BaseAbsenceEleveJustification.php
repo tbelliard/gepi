@@ -300,7 +300,9 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->collAbsenceEleveTraitements = null;
+
 		} // if (deep)
 	}
 

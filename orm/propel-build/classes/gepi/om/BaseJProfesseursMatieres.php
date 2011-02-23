@@ -300,6 +300,7 @@ abstract class BaseJProfesseursMatieres extends BaseObject  implements Persisten
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aMatiere = null;
 			$this->aProfesseur = null;
 		} // if (deep)

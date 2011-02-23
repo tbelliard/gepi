@@ -368,6 +368,7 @@ abstract class BaseCahierTexteCompteRenduFichierJoint extends BaseObject  implem
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aCahierTexteCompteRendu = null;
 		} // if (deep)
 	}

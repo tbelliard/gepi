@@ -237,6 +237,7 @@ abstract class BaseJScolClasses extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aUtilisateurProfessionnel = null;
 			$this->aClasse = null;
 		} // if (deep)

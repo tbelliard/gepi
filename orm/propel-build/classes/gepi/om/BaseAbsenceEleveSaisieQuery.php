@@ -1364,7 +1364,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of the latest update in days
 	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fuid interface
+	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function recentlyUpdated($nbDays = 7)
 	{
@@ -1376,7 +1376,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of in days
 	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fuid interface
+	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function recentlyCreated($nbDays = 7)
 	{
@@ -1386,7 +1386,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Order by update date desc
 	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fuid interface
+	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function lastUpdatedFirst()
 	{
@@ -1396,7 +1396,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Order by update date asc
 	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fuid interface
+	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function firstUpdatedFirst()
 	{
@@ -1406,7 +1406,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Order by create date desc
 	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fuid interface
+	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function lastCreatedFirst()
 	{
@@ -1416,7 +1416,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Order by create date asc
 	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fuid interface
+	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function firstCreatedFirst()
 	{

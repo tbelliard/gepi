@@ -237,6 +237,7 @@ abstract class BaseJGroupesProfesseurs extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aGroupe = null;
 			$this->aUtilisateurProfessionnel = null;
 		} // if (deep)

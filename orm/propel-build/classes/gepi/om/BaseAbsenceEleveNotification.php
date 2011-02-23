@@ -863,10 +863,12 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aUtilisateurProfessionnel = null;
 			$this->aAbsenceEleveTraitement = null;
 			$this->aResponsableEleveAdresse = null;
 			$this->collJNotificationResponsableEleves = null;
+
 			$this->collResponsableEleves = null;
 		} // if (deep)
 	}

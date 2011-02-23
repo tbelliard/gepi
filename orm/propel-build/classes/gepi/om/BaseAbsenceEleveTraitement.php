@@ -661,13 +661,16 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aUtilisateurProfessionnel = null;
 			$this->aAbsenceEleveType = null;
 			$this->aAbsenceEleveMotif = null;
 			$this->aAbsenceEleveJustification = null;
 			$this->aModifieParUtilisateur = null;
 			$this->collJTraitementSaisieEleves = null;
+
 			$this->collAbsenceEleveNotifications = null;
+
 			$this->collAbsenceEleveSaisies = null;
 		} // if (deep)
 	}

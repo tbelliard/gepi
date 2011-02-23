@@ -437,9 +437,12 @@ abstract class BaseMatiere extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aCategorieMatiere = null;
 			$this->collJGroupesMatieress = null;
+
 			$this->collJProfesseursMatieress = null;
+
 			$this->collGroupes = null;
 			$this->collProfesseurs = null;
 		} // if (deep)

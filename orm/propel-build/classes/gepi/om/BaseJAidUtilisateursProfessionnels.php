@@ -237,6 +237,7 @@ abstract class BaseJAidUtilisateursProfessionnels extends BaseObject  implements
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aAidDetails = null;
 			$this->aUtilisateurProfessionnel = null;
 		} // if (deep)

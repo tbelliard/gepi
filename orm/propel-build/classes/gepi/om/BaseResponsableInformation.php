@@ -311,6 +311,7 @@ abstract class BaseResponsableInformation extends BaseObject  implements Persist
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aEleve = null;
 			$this->aResponsableEleve = null;
 		} // if (deep)

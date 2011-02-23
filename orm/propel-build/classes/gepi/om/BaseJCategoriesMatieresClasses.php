@@ -337,6 +337,7 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aCategorieMatiere = null;
 			$this->aClasse = null;
 		} // if (deep)

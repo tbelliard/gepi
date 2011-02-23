@@ -824,7 +824,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of the latest update in days
 	 *
-	 * @return     AbsenceEleveNotificationQuery The current query, for fuid interface
+	 * @return     AbsenceEleveNotificationQuery The current query, for fluid interface
 	 */
 	public function recentlyUpdated($nbDays = 7)
 	{
@@ -836,7 +836,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	 *
 	 * @param      int $nbDays Maximum age of in days
 	 *
-	 * @return     AbsenceEleveNotificationQuery The current query, for fuid interface
+	 * @return     AbsenceEleveNotificationQuery The current query, for fluid interface
 	 */
 	public function recentlyCreated($nbDays = 7)
 	{
@@ -846,7 +846,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	/**
 	 * Order by update date desc
 	 *
-	 * @return     AbsenceEleveNotificationQuery The current query, for fuid interface
+	 * @return     AbsenceEleveNotificationQuery The current query, for fluid interface
 	 */
 	public function lastUpdatedFirst()
 	{
@@ -856,7 +856,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	/**
 	 * Order by update date asc
 	 *
-	 * @return     AbsenceEleveNotificationQuery The current query, for fuid interface
+	 * @return     AbsenceEleveNotificationQuery The current query, for fluid interface
 	 */
 	public function firstUpdatedFirst()
 	{
@@ -866,7 +866,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	/**
 	 * Order by create date desc
 	 *
-	 * @return     AbsenceEleveNotificationQuery The current query, for fuid interface
+	 * @return     AbsenceEleveNotificationQuery The current query, for fluid interface
 	 */
 	public function lastCreatedFirst()
 	{
@@ -876,7 +876,7 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	/**
 	 * Order by create date asc
 	 *
-	 * @return     AbsenceEleveNotificationQuery The current query, for fuid interface
+	 * @return     AbsenceEleveNotificationQuery The current query, for fluid interface
 	 */
 	public function firstCreatedFirst()
 	{

@@ -347,16 +347,27 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->collJGroupesProfesseurss = null;
+
 			$this->collJGroupesMatieress = null;
+
 			$this->collJGroupesClassess = null;
+
 			$this->collCahierTexteCompteRendus = null;
+
 			$this->collCahierTexteTravailAFaires = null;
+
 			$this->collCahierTexteNoticePrivees = null;
+
 			$this->collJEleveGroupes = null;
+
 			$this->collAbsenceEleveSaisies = null;
+
 			$this->collCreditEctss = null;
+
 			$this->collEdtEmplacementCourss = null;
+
 			$this->collUtilisateurProfessionnels = null;
 			$this->collMatieres = null;
 		} // if (deep)
@@ -2374,6 +2385,31 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
 		$query->joinWith('ModifieParUtilisateur', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this Groupe is new, it will return
+	 * an empty collection; or if this Groupe has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in Groupe.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getAbsenceEleveSaisiesJoinAbsenceEleveLieu($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveLieu', $join_behavior);
 
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}

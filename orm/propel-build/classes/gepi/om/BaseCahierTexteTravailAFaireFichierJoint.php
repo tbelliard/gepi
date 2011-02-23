@@ -368,6 +368,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJoint extends BaseObject  impl
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aCahierTexteTravailAFaire = null;
 		} // if (deep)
 	}

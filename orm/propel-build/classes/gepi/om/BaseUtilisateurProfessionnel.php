@@ -1071,22 +1071,39 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->collJGroupesProfesseurss = null;
+
 			$this->collJScolClassess = null;
+
 			$this->collCahierTexteCompteRendus = null;
+
 			$this->collCahierTexteTravailAFaires = null;
+
 			$this->collCahierTexteNoticePrivees = null;
+
 			$this->collJEleveCpes = null;
+
 			$this->collJEleveProfesseurPrincipals = null;
+
 			$this->collJAidUtilisateursProfessionnelss = null;
+
 			$this->collAbsenceEleveSaisies = null;
+
 			$this->collModifiedAbsenceEleveSaisies = null;
+
 			$this->collAbsenceEleveTraitements = null;
+
 			$this->collModifiedAbsenceEleveTraitements = null;
+
 			$this->collAbsenceEleveNotifications = null;
+
 			$this->collJProfesseursMatieress = null;
+
 			$this->collPreferenceUtilisateurProfessionnels = null;
+
 			$this->collEdtEmplacementCourss = null;
+
 			$this->collGroupes = null;
 			$this->collAidDetailss = null;
 			$this->collMatieres = null;
@@ -3482,6 +3499,31 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		return $this->getAbsenceEleveSaisies($query, $con);
 	}
 
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related AbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getAbsenceEleveSaisiesJoinAbsenceEleveLieu($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveLieu', $join_behavior);
+
+		return $this->getAbsenceEleveSaisies($query, $con);
+	}
+
 	/**
 	 * Clears out the collModifiedAbsenceEleveSaisies collection
 	 *
@@ -3737,6 +3779,31 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	{
 		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
 		$query->joinWith('AidDetails', $join_behavior);
+
+		return $this->getModifiedAbsenceEleveSaisies($query, $con);
+	}
+
+
+	/**
+	 * If this collection has already been initialized with
+	 * an identical criteria, it returns the collection.
+	 * Otherwise if this UtilisateurProfessionnel is new, it will return
+	 * an empty collection; or if this UtilisateurProfessionnel has previously
+	 * been saved, it will retrieve related ModifiedAbsenceEleveSaisies from storage.
+	 *
+	 * This method is protected by default in order to keep the public
+	 * api reasonable.  You can provide public methods for those you
+	 * actually need in UtilisateurProfessionnel.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @param      string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+	 * @return     PropelCollection|array AbsenceEleveSaisie[] List of AbsenceEleveSaisie objects
+	 */
+	public function getModifiedAbsenceEleveSaisiesJoinAbsenceEleveLieu($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+	{
+		$query = AbsenceEleveSaisieQuery::create(null, $criteria);
+		$query->joinWith('AbsenceEleveLieu', $join_behavior);
 
 		return $this->getModifiedAbsenceEleveSaisies($query, $con);
 	}

@@ -237,6 +237,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		$this->hydrate($row, 0, true); // rehydrate
 
 		if ($deep) {  // also de-associate any related objects?
+
 			$this->aAbsenceEleveNotification = null;
 			$this->aResponsableEleve = null;
 		} // if (deep)
