@@ -1063,7 +1063,7 @@ while($i < $lignes_groupes) {
 				}
 				$p++;
 			}
-
+            $moy_eleve_grp_courant_annee="-";
 			if ($non_suivi == (pow(2,$nb_periode))) {
 				// L'élève n'a suivi la matière sur aucune période
 				$col[$k][$j+$ligne_supl] = "/";
