@@ -46,7 +46,7 @@ if (!checkAccess()) {
 $titre_page = "Listes d'élèves";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
-
+//debug_var();
 echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 //echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un(e) autre classe/groupe</a>";
@@ -56,7 +56,7 @@ echo "<script type='text/javascript'>
 	var fen;
 	function ouvre_popup_visu_groupe(id_groupe,id_classe,periode_num) {
 		//alert('azerty');
-		eval(\"fen=window.open('popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"&periode_num=\"+periode_num+\"','','width=300,height=400,menubar=yes,scrollbars=yes')\");
+		eval(\"fen=window.open('popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"&periode_num=\"+periode_num+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
 		setTimeout('fen.focus()',500);
 	}
 </script>";

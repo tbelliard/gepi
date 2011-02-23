@@ -176,7 +176,7 @@ if(isset($id_classe)){
 		echo "<script type='text/javascript' language='JavaScript'>
 	var fen;
 	function ouvre_popup(id_groupe,id_classe){
-		eval(\"fen=window.open('popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=300,height=400,menubar=yes,scrollbars=yes')\");
+		eval(\"fen=window.open('popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
 		setTimeout('fen.focus()',500);
 	}
 </script>\n";

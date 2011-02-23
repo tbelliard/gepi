@@ -426,8 +426,8 @@ echo "<script type='text/javascript'>
 
 	var fen;
 	function ouvre_popup_visu_groupe(id_groupe,id_classe){
-		//eval(\"fen=window.open('../groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=300,height=400,menubar=yes,scrollbars=yes')\");
-		eval(\"fen=window.open('groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=300,height=400,menubar=yes,scrollbars=yes')\");
+		//eval(\"fen=window.open('../groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
+		eval(\"fen=window.open('groupes/popup.php?id_groupe=\"+id_groupe+\"&id_classe=\"+id_classe+\"','','width=400,height=400,menubar=yes,scrollbars=yes')\");
 		setTimeout('fen.focus()',500);
 	}
 
