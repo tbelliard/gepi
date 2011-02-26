@@ -1115,7 +1115,16 @@ Patientez pendant l'extraction des données... merci.
 		echo "background-color: ".$tab_couleur['eleve']."; ";
 		echo "'>";
 		echo "<h2>Informations sur l'".$gepiSettings['denomination_eleve']." ".$tab_ele['nom']." ".$tab_ele['prenom']."</h2>\n";
-
+		//affichage de la date de sortie de l'élève de l'établissement
+		if ($tab_ele['date_sortie']!=0) {
+		    $eleve_date_de_sortie_time=strtotime($tab_ele['date_sortie']);
+			//récupération du jour, du mois et de l'année
+		    $eleve_date_sortie_jour=date('j', $eleve_date_de_sortie_time); 
+		    $eleve_date_sortie_mois=date('m', $eleve_date_de_sortie_time);
+		    $eleve_date_sortie_annee=date('Y', $eleve_date_de_sortie_time); 
+		   echo "<span class=\"red\">Date de sortie de l'établissement : le ".$eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee."<br/><br/></span>";;
+		}
+		
 		echo "<table border='0' summary='Infos élève'>\n";
 		echo "<tr>\n";
 		echo "<td valign='top'>\n";

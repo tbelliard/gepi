@@ -630,6 +630,36 @@ if (!isset($quelles_classes)) {
 			echo "</tr>\n";
 		}
 
+// Eric Les élèves dont la date de sortie de l'établissement est renseignée      
+		$sql="SELECT 1=1 FROM eleves e where e.date_sortie<>0";
+		$test_dse=mysql_query($sql);
+		if(mysql_num_rows($test_dse)==0){
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "&nbsp;\n";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='dse' onclick='verif2()' /></span>\n";
+
+			echo "<span class='norme'>Aucun élève n'a une date de sortie de l'établissement renseignée.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		else{
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='radio' name='quelles_classes' id='quelles_classes_dse' value='dse' onclick='verif2()' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='quelles_classes_dse' style='cursor: pointer;'>\n";
+			echo "<span class='norme'>Les élève dont la date de sortie de l'établissement est renseignée (<i>".mysql_num_rows($test_dse)."</i>)</span><br />\n";
+			echo "</label>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		
+		
 		$sql="SELECT 1=1 FROM eleves WHERE elenoet='' OR no_gep='';";
 		$test_incomplet=mysql_query($sql);
 		if(mysql_num_rows($test_incomplet)==0){
@@ -1377,13 +1407,22 @@ if(isset($quelles_classes)) {
 
 			echo "<p align='center'>Liste des élèves dont le nom commence par <b>$motif_rech</b></p>\n";
 		}
+		else if ($quelles_classes == 'dse') { //Elève ayant une date de sortie renseignée.
+			$sql="SELECT e.*, jer.* FROM eleves e
+					LEFT JOIN j_eleves_regime jer ON e.login=jer.login
+					WHERE jer.login =e.login AND e.date_sortie<>0 ORDER BY $order_type;";
+			//echo "$sql<br />";
+			$calldata = mysql_query($sql);
+
+			echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée.</p>\n";
+			}
 		elseif ($quelles_classes == 'no_etab') {
 			if(my_ereg('classe',$order_type)){
 				//$sql="SELECT distinct e.*,c.classe FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
 				$sql="SELECT distinct e.*,c.classe,jer.* FROM j_eleves_classes jec, classes c, j_eleves_regime jer, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and jer.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
 				//echo "$sql<br />\n";
 				$calldata=mysql_query($sql);
-			}
+		}
 			else{
 				/*
 				$sql="SELECT e.* FROM eleves e

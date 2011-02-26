@@ -45,6 +45,14 @@ $birth_month = isset($_POST["birth_month"]) ? $_POST["birth_month"] : NULL;
 unset($birth_day);
 $birth_day = isset($_POST["birth_day"]) ? $_POST["birth_day"] : NULL;
 
+//Gestion de la date de sortie de l'établissement
+unset($date_sortie_jour);
+$date_sortie_jour = isset($_POST["date_sortie_jour"]) ? $_POST["date_sortie_jour"] : "00";
+unset($date_sortie_mois);
+$date_sortie_mois = isset($_POST["date_sortie_mois"]) ? $_POST["date_sortie_mois"] : "00";
+unset($date_sortie_annee);
+$date_sortie_annee = isset($_POST["date_sortie_annee"]) ? $_POST["date_sortie_annee"] : "0000";
+
 //=========================
 // AJOUT: boireaus 20071107
 unset($reg_regime);
@@ -312,7 +320,24 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 				$reg_naissance = $birth_year.$birth_month.$birth_day;
 			}
 		}
+		
+		//gestion de la date de sortie de l'élève
+		//echo "date_sortie_annee".$date_sortie_annee."<br/>";
+		//echo "date_sortie_mois".$date_sortie_mois."<br/>";
+		//echo "date_sortie_jour".$date_sortie_jour."<br/>";
+		
+		if (!my_ereg ("^[0-9]{4}$", $date_sortie_annee)) {$date_sortie_annee = "0000";}
+		if (!my_ereg ("^[0-9]{2}$", $date_sortie_mois)) {$date_sortie_mois = "00";}
+		if (!my_ereg ("^[0-9]{2}$", $date_sortie_jour)) {$date_sortie_jour = "00";}
+		
+		//echo "date_sortie_annee".$date_sortie_annee."<br/>";
+		//echo "date_sortie_mois".$date_sortie_mois."<br/>";
+		//echo "date_sortie_jour".$date_sortie_jour."<br/>";
 
+		//création de la chaine au format timestamp
+		$date_de_sortie_eleve = $date_sortie_annee."-".$date_sortie_mois."-".$date_sortie_jour." 00:00:00"; 
+		
+		
 		//===========================
 		//AJOUT:
 		if(!isset($msg)){$msg="";}
@@ -544,8 +569,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			}
 		} else if ($continue == 'yes') {
 			// C'est une mise à jour pour un élève qui existait déjà dans la table 'eleves'.
-
-			$sql="UPDATE eleves SET no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."'";
+			$sql="UPDATE eleves SET date_sortie = '$date_de_sortie_eleve', no_gep = '$reg_no_nat', nom='$reg_nom',prenom='$reg_prenom',sexe='$reg_sexe',naissance='".$reg_naissance."', ereno='".$reg_resp1."', elenoet = '".$reg_no_gep."'";
 
 			$temoin_mon_compte_mais_pas_de_compte_pour_cet_eleve="n";
 			if(getSettingValue('mode_email_ele')=='mon_compte') {
@@ -1004,6 +1028,25 @@ if (isset($eleve_login)) {
 
     $eleve_lieu_naissance = mysql_result($call_eleve_info, "0", "lieu_naissance");
 
+	//Date de sortie de l'élève (timestamps), à zéro par défaut
+	$eleve_date_de_sortie =mysql_result($call_eleve_info, "0", "date_sortie"); 
+	
+	//echo "Date de sortie de l'élève dans la base :  $eleve_date_de_sortie <br/>";
+    //conversion en seconde (timestamp)
+    $eleve_date_de_sortie_time=strtotime($eleve_date_de_sortie);
+
+	if ($eleve_date_de_sortie!=0) {
+	//récupération du jour, du mois et de l'année
+	    $eleve_date_sortie_jour=date('j', $eleve_date_de_sortie_time); 
+	    $eleve_date_sortie_mois=date('m', $eleve_date_de_sortie_time);
+	    $eleve_date_sortie_annee=date('Y', $eleve_date_de_sortie_time); 
+		//echo "La date n'est pas nulle J:$eleve_date_sortie_jour   M:$eleve_date_sortie_mois   A:$eleve_date_sortie_annee";
+	} else {
+	    $eleve_date_sortie_jour="00"; 
+	    $eleve_date_sortie_mois="00";
+	    $eleve_date_sortie_annee="0000"; 
+	}
+	
     //$eleve_no_resp = mysql_result($call_eleve_info, "0", "ereno");
     $reg_no_nat = mysql_result($call_eleve_info, "0", "no_gep");
     $reg_no_gep = mysql_result($call_eleve_info, "0", "elenoet");
@@ -1094,6 +1137,8 @@ $themessage  = 'Des informations ont été modifiées. Voulez-vous vraiment quitter
 $titre_page = "Gestion des élèves | Ajouter/Modifier une fiche élève";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
+
+//debug_var();
 
 echo "<div align='center'>
 	<div id='message_target_blank' style='color:red;'></div>
@@ -1713,6 +1758,16 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
     if (isset($reg_no_gep)) echo "value=\"".$reg_no_gep."\"";
     echo " onchange='changement();' /></td>\n";
 	echo "</tr>\n";
+	
+	//Date de sortie de l'établissement
+    echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/>(respecter format JJ/MM/AAAA)</th>";
+	echo "<td><div class='norme'>";	
+	echo "Jour  <input type='text' name='date_sortie_jour' size='2' onchange='changement();' value=\""; if (isset($eleve_date_sortie_jour) and ($eleve_date_sortie_jour!="00") ) echo $eleve_date_sortie_jour; echo "\"/>";
+	echo " Mois  <input type='text' name='date_sortie_mois' size='2' onchange='changement();' value=\""; if (isset($eleve_date_sortie_mois) and ($eleve_date_sortie_mois!="00")) echo $eleve_date_sortie_mois; echo "\"/>";
+	echo " Année <input type='text' name='date_sortie_annee' size='4' onchange='changement();' value=\""; if (isset($eleve_date_sortie_annee) and ($eleve_date_sortie_annee!="0000")) echo $eleve_date_sortie_annee; echo "\"/>";
+	echo "</td>\n";
+	echo "</tr>\n";
+
 }
 else {
 	echo "</tr>
@@ -1759,6 +1814,18 @@ else {
 	}
     echo "</td>\n";
 	echo "</tr>\n";
+	
+	if ($eleve_date_de_sortie!=0) {
+		//Date de sortie de l'établissement
+	    echo "<tr><th style='text-align:left;'>Date de sortie de l'établissement : <br/></th>";
+		echo "<td><div class='norme'>";	
+		
+		if ((isset($eleve_date_sortie_jour)) and ($eleve_date_sortie_jour!="00")) echo $eleve_date_sortie_jour."/";
+		if ((isset($eleve_date_sortie_mois)) and ($eleve_date_sortie_mois!="00")) echo $eleve_date_sortie_mois."/";
+		if ((isset($eleve_date_sortie_annee)) and ($eleve_date_sortie_annee!="00")) echo $eleve_date_sortie_annee; 
+		echo "</td>\n";
+		echo "</tr>\n";
+    }
 }
 echo "</table>\n";
 
