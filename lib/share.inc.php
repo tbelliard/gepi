@@ -6473,4 +6473,13 @@ function affiche_date_sortie($date_sortie) {
 	return $eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee;
 }
 
+function traite_date_sortie_to_timestamp($date_sortie) {
+	//Traite une chaine de caractères JJ/MM/AAAA vers un timestamp AAAA-MM-JJ 00:00:00
+	$date=explode("/", $date_sortie);
+	$jour = $date[0];
+	$mois = $date[1];
+	$annee = $date[2];
+
+	return $annee."-".$mois."-".$jour." 00:00:00"; 
+}
 ?>

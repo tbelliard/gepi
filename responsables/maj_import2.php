@@ -1075,6 +1075,12 @@ else{
 							$sql="INSERT INTO tempo2 SET col1='ele_id_eleve_parti', col2='".$eleves[$i]['eleve_id']."';";
 							info_debug($sql);
 							$insert=mysql_query($sql);
+//Eric	
+// Enregistrement de l'information de la date de sortie pour l'élève (à partir de son id)					
+							$sql="INSERT INTO tempo2 SET col1='".$eleves[$i]['eleve_id']."', col2='".$eleves[$i]['date_sortie']."';";
+							info_debug($sql);
+							$insert=mysql_query($sql);
+// Fin Eric
 						}
 						else {
 							$sql="UPDATE temp_gep_import2 SET ";
@@ -1425,6 +1431,7 @@ else{
 				echo "</form>\n";
 			}
 			else {
+			    echo "<p>La date de sortie de l'établissement notés dans Sconet est enregistrée dans GEPI.</p>\n";
 				echo "<p>Les élèves notés dans Sconet comme ayant quitté l'établissement peuvent être désinscrits des classes et enseignements sur les périodes futures. On recherche ci-dessous les périodes sur lesquelles les élèves n'ont pas de note ni quoi que ce soit sur le bulletin.</p>\n";
 	
 				echo "<p>Cochez les périodes pour lesquelles vous souhaitez désinscrire le ou les élèves qui ont quitté l'établissement et validez en bas de page pour passer à la suite.</p>\n";
@@ -1439,6 +1446,17 @@ else{
 				$cpt=0;
 				while($lig=mysql_fetch_object($res)) {
 					$ele_id=$lig->col2;
+//Eric traitement de la date de sortie
+// Recherche de la date de sortie pour l'élève
+					$sql_date_sortie="SELECT col2 FROM tempo2 WHERE col1='$ele_id';";
+					$res_date_sortie=mysql_query($sql_date_sortie);
+					if(mysql_num_rows($res_date_sortie)>0) {
+						$lig_date_sortie=mysql_fetch_object($res_date_sortie); 
+						// MAJ de la date de sortie pour l'élève $ele_id
+						$sql_maj="UPDATE eleves SET `date_sortie` ='".traite_date_sortie_to_timestamp($lig_date_sortie->col2)."' WHERE `ele_id`='$ele_id';";
+						$res_date_sortie=mysql_query($sql_maj);
+					}
+// Fin Eric					
 					$sql="SELECT * FROM eleves WHERE ele_id='$ele_id';";
 					info_debug($sql);
 					$res_ele=mysql_query($sql);
