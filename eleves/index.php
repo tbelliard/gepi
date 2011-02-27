@@ -1519,6 +1519,7 @@ if(isset($quelles_classes)) {
 			$eleve_sexe = mysql_result($calldata, $i, "sexe");
 			$eleve_naissance = mysql_result($calldata, $i, "naissance");
 			$elenoet =  mysql_result($calldata, $i, "elenoet");
+			$date_sortie_elv = mysql_result($calldata, $i, "date_sortie");
 			if($quelles_classes=='no_regime') {
 				$eleve_regime = "-";
 				$eleve_doublant =  "-";
@@ -1537,6 +1538,7 @@ if(isset($quelles_classes)) {
 			$elenoet =  $tab_eleve[$i]["elenoet"];
 			$eleve_regime =  $tab_eleve[$i]["regime"];
 			$eleve_doublant =  $tab_eleve[$i]["doublant"];
+			$date_sortie_elv = mysql_result($calldata, $i, "date_sortie");
 		}
 
 		$call_classe = mysql_query("SELECT n.classe, n.id FROM j_eleves_classes c, classes n WHERE (c.login ='$eleve_login' and c.id_classe = n.id) order by c.periode DESC");
@@ -1559,7 +1561,12 @@ if(isset($quelles_classes)) {
 		echo "<td><p>" . $eleve_login . "</p></td>\n";
 		echo "<td><p><a href='modify_eleve.php?eleve_login=$eleve_login&amp;quelles_classes=$quelles_classes&amp;order_type=$order_type";
 		if(isset($motif_rech)){echo "&amp;motif_rech=$motif_rech";}
-		echo "'>$eleve_nom $eleve_prenom</a></p></td>\n";
+		echo "'>$eleve_nom $eleve_prenom</a>";
+		if ($date_sortie_elv!=0) {
+		     echo "<br/>";
+		     echo "<span class=\"red\"><b>Sortie le ".affiche_date_sortie($date_sortie_elv)."</b></span>";;
+		}
+		echo "</p></td>\n";
 		echo "<td><p>$eleve_sexe</p></td>\n";
 		echo "<td><p>".affiche_date_naissance($eleve_naissance)."</p></td>\n";
 

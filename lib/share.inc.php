@@ -6462,4 +6462,15 @@ function del_info_action($id_info) {
 		}
 	}
 }
+
+function affiche_date_sortie($date_sortie) {
+	//affiche sous la forme JJ/MM/AAAA la date de sortie d'un élève présente dans la base comme un timestamp
+    $eleve_date_de_sortie_time=strtotime($date_sortie);
+	//récupération du jour, du mois et de l'année
+	$eleve_date_sortie_jour=date('j', $eleve_date_de_sortie_time); 
+	$eleve_date_sortie_mois=date('m', $eleve_date_de_sortie_time);
+	$eleve_date_sortie_annee=date('Y', $eleve_date_de_sortie_time); 
+	return $eleve_date_sortie_jour."/".$eleve_date_sortie_mois."/".$eleve_date_sortie_annee;
+}
+
 ?>
