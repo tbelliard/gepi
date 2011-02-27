@@ -228,7 +228,8 @@ if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
 						sexe='".$reg_sexe."',
 						naissance='".$reg_naissance."',
 						elenoet = '".$reg_no_gep."',
-						ele_id = '".$ele_id."'
+						ele_id = '".$ele_id."',
+						date_sortie = '0000-00-00 00:00:00'
 						");
 
 					if($reg_resp1!=""){
