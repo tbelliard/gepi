@@ -252,7 +252,8 @@ if ($type_selection == 'id_eleve') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
     $eleve = $query->filterByIdEleve($id_eleve)
-            ->where('Eleve.DateSortie<?','0')
+            ->where('Eleve.DateSortie=?','0')
+            ->orWhere('Eleve.DateSortie is NULL')
             ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))
             ->findOne();
     if ($eleve != null) {
@@ -264,7 +265,8 @@ if ($type_selection == 'id_eleve') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
     $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)
-            ->where('Eleve.DateSortie<?','0')
+            ->where('Eleve.DateSortie=?','0')
+            ->orWhere('Eleve.DateSortie is NULL')
             ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))
             ->limit(20)->find();
 } elseif (isset($current_groupe) && $current_groupe != null) {
@@ -272,7 +274,8 @@ if ($type_selection == 'id_eleve') {
     $eleve_col = $query->useJEleveGroupeQuery()
                         ->filterByIdGroupe($current_groupe->getId())
                         ->endUse()
-            ->where('Eleve.DateSortie<?','0')
+            ->where('Eleve.DateSortie=?','0')
+            ->orWhere('Eleve.DateSortie is NULL')
             ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))
             ->orderBy('Eleve.Nom','asc')
             ->orderBy('Eleve.Prenom','asc')
@@ -283,7 +286,8 @@ if ($type_selection == 'id_eleve') {
     $eleve_col = $query->useJAidElevesQuery()
                         ->filterByIdAid($current_aid->getId())
                         ->endUse()
-            ->where('Eleve.DateSortie<?','0')
+            ->where('Eleve.DateSortie=?','0')
+            ->orWhere('Eleve.DateSortie is NULL')
             ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))
             ->orderBy('Eleve.Nom','asc')
             ->orderBy('Eleve.Prenom','asc')
@@ -294,7 +298,8 @@ if ($type_selection == 'id_eleve') {
     $eleve_col = $query->useJEleveClasseQuery()
                         ->filterByIdClasse($current_classe->getId())
                         ->endUse()
-            ->where('Eleve.DateSortie<?','0')
+            ->where('Eleve.DateSortie=?','0')
+            ->orWhere('Eleve.DateSortie is NULL')
             ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))
             ->orderBy('Eleve.Nom','asc')
             ->orderBy('Eleve.Prenom','asc')
@@ -435,7 +440,7 @@ echo "</tr>";
 }
 ?>
         </tbody>
-    </table>";
+    </table>
 <?php
 echo "</td>";
 echo "<td style='width:10px;'>&nbsp;";
