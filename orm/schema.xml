@@ -226,7 +226,7 @@
 		<column name="ele_id" required="true" type="VARCHAR" size="10" default="" description="cle utilise par Sconet dans ses fichiers xml"/>
 		<column name="email" required="true" type="VARCHAR" size="255" default="" description="Courriel de l'eleve"/>
 		<column name="id_eleve" required="true" primaryKey="true" autoIncrement="true" type="INTEGER" size="11" description="cle primaire autoincremente"/>
-                <column name="date_sortie" required="false" type="TIMESTAMP" description="Timestamp de sortie de l'élève de l'établissement (fin d'inscription)"/>
+                <column name="date_sortie" required="false" type="TIMESTAMP" default="NULL" description="Timestamp de sortie de l'élève de l'établissement (fin d'inscription)"/>
 		<column name="id_mef" required="false" type="INTEGER" description="cle externe pour le jointure avec mef"/>
 		<foreign-key foreignTable="mef" onDelete="setnull"><reference local="id_mef" foreign="id"/></foreign-key>
 	</table>
