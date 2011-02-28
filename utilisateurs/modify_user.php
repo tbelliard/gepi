@@ -157,7 +157,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 		$temoin_ajout_ou_modif_ok="n";
 
-		if ((isset($_POST['new_login'])) and ($_POST['new_login']!='') and (ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$", $_POST['new_login'])) ) {
+		if ((isset($_POST['new_login'])) and ($_POST['new_login']!='') and (my_ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$", $_POST['new_login'])) ) {
 			// Modif Thomas : essayons d'accepter des logins sensibles à la casse, pour mieux s'adapter aux sources externes (LDAP).
 			//$_POST['new_login'] = strtoupper($_POST['new_login']);
 			$reg_password_c = md5($NON_PROTECT['password1']);
