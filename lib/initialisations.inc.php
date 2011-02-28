@@ -28,6 +28,16 @@ else if (isset($niveau_arbo) and ($niveau_arbo == "3")) {
 		$is_lcs_plugin="yes";
 	}
 }
+else if (isset($niveau_arbo) and ($niveau_arbo == "4")) {
+	if (file_exists("../../../../secure/config_lcs.inc.php")) {
+		$is_lcs_plugin="yes";
+	}
+}
+else if (isset($niveau_arbo) and ($niveau_arbo == "5")) {
+	if (file_exists("../../../../../secure/config_lcs.inc.php")) {
+		$is_lcs_plugin="yes";
+	}
+}
 else {
 	if (file_exists("../secure/config_lcs.inc.php")) {
 		$is_lcs_plugin="yes";
@@ -172,6 +182,80 @@ if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Session related functions
    require_once("../../../".$ldap_class);
    require_once("../../../".$session_class);
+
+
+
+
+} else if (isset($niveau_arbo) and ($niveau_arbo == "4")) {
+   // Database configuration file
+   require_once("../../../../secure/connect.inc.php");
+   // Database connection
+   require_once("../../../../lib/mysql.inc");
+   // Ajout pour utiliser ou pas les fonctions mb_*
+   require_once("../../../../lib/mb_ou_pas.php");
+   // Global configuration file
+   require_once("../../../../lib/global.inc");
+   // Traitement des données
+   require_once("../../../../lib/filtrage_html.inc.php");
+	if($filtrage_html=="htmlpurifier") {
+		require_once("../../../../lib/HTMLPurifier.standalone.php");
+	}
+	elseif($filtrage_html=="inputfilter") {
+		require_once("../../../../lib/class.inputfilter_clean.php");
+	}
+   require_once("../../../../lib/traitement_data.inc.php");
+   // Libraries
+   include "../../../../lib/share.inc.php";
+   // Fonctions relatives aux groupes
+   include "../../../../lib/groupes.inc.php";
+   // Fonctions relatives aux groupes
+   include "../../../../lib/classes.inc.php";
+   // Settings
+   require_once("../../../../lib/settings.inc");
+   // Load settings
+   if (!loadSettings()) {
+       die("Erreur chargement settings");
+   }
+   // Session related functions
+   require_once("../../../../".$ldap_class);
+   require_once("../../../../".$session_class);
+
+
+} else if (isset($niveau_arbo) and ($niveau_arbo == "5")) {
+   // Database configuration file
+   require_once("../../../../../secure/connect.inc.php");
+   // Database connection
+   require_once("../../../../../lib/mysql.inc");
+   // Ajout pour utiliser ou pas les fonctions mb_*
+   require_once("../../../../../lib/mb_ou_pas.php");
+   // Global configuration file
+   require_once("../../../../../lib/global.inc");
+   // Traitement des données
+   require_once("../../../../../lib/filtrage_html.inc.php");
+	if($filtrage_html=="htmlpurifier") {
+		require_once("../../../../../lib/HTMLPurifier.standalone.php");
+	}
+	elseif($filtrage_html=="inputfilter") {
+		require_once("../../../../../lib/class.inputfilter_clean.php");
+	}
+   require_once("../../../../../lib/traitement_data.inc.php");
+   // Libraries
+   include "../../../../../lib/share.inc.php";
+   // Fonctions relatives aux groupes
+   include "../../../../../lib/groupes.inc.php";
+   // Fonctions relatives aux groupes
+   include "../../../../../lib/classes.inc.php";
+   // Settings
+   require_once("../../../../../lib/settings.inc");
+   // Load settings
+   if (!loadSettings()) {
+       die("Erreur chargement settings");
+   }
+   // Session related functions
+   require_once("../../../../../".$ldap_class);
+   require_once("../../../../../".$session_class);
+
+
 
 // Pour les scripts situés dans le sous-répertoire "public"
 // Ces scripts font appel au fichier /public/secure/connect.inc et non pas /secure/connect.inc

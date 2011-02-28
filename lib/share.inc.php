@@ -3314,6 +3314,8 @@ function debug_var() {
 	$debug_var_count['POST']=0;
 	$debug_var_count['GET']=0;
 
+	$debug_var_count['COOKIE']=0;
+
 	// Fonction destinée à afficher les variables transmises d'une page à l'autre: GET, POST et SESSION
 	echo "<div style='border: 1px solid black; background-color: white; color: black;'>\n";
 
@@ -3523,6 +3525,37 @@ function debug_var() {
 	}
 	echo "</table>\n";
 
+	echo "</div>\n";
+	echo "</blockquote>\n";
+
+	echo "<p>Variables COOKIES: ";
+	if(count($_COOKIE)==0) {
+		echo "aucune";
+	}
+	else {
+		echo "(<a href='#' onclick=\"tab_etat_debug_var[$cpt_debug]=tab_etat_debug_var[$cpt_debug]*(-1);affiche_debug_var('container_debug_var_$cpt_debug',tab_etat_debug_var[$cpt_debug]);return false;\">*</a>)";
+	}
+	echo "</p>\n";
+	echo "<blockquote>\n";
+	echo "<div id='container_debug_var_$cpt_debug'>\n";
+	$cpt_debug++;
+	echo "<table summary=\"Tableau de debug sur COOKIE\">";
+	foreach($_COOKIE as $get => $val){
+
+		echo "<tr><td valign='top'>\$_COOKIE['".$get."']=</td><td>".$val;
+
+		if(is_array($_COOKIE[$get])) {
+			tab_debug_var('COOKIE',$_COOKIE[$get],'$_COOKIE['.$get.']',$cpt_debug);
+
+			$cpt_debug++;
+		}
+		else {
+			$debug_var_count['COOKIE']++;
+		}
+
+		echo "</td></tr>\n";
+	}
+	echo "</table>\n";
 	echo "</div>\n";
 	echo "</blockquote>\n";
 
@@ -5557,7 +5590,8 @@ function test_ecriture_dossier() {
 
 	//$tab_dossiers_rw=array("documents","images","secure","photos","backup","temp","mod_ooo/mes_modele","mod_ooo/tmp","mod_notanet/OOo/tmp","lib/standalone/HTMLPurifier/DefinitionCache/Serializer");
 	//$tab_dossiers_rw=array("documents","images","photos","backup","temp","mod_ooo/mes_modele","mod_ooo/tmp","mod_notanet/OOo/tmp","lib/standalone/HTMLPurifier/DefinitionCache/Serializer");
-	$tab_dossiers_rw=array("artichow/cache","backup","documents","images","images/background","lib/standalone/HTMLPurifier/DefinitionCache/Serializer","mod_ooo/mes_modeles","mod_ooo/tmp","photos","temp");
+
+	$tab_dossiers_rw=array("artichow/cache","backup","documents","documents/archives","images","images/background","lib/standalone/HTMLPurifier/DefinitionCache/Serializer","mod_ooo/mes_modeles","mod_ooo/tmp","photos","temp");
 
 	$nom_fichier_test='test_acces_rw';
 
@@ -5587,6 +5621,38 @@ function test_ecriture_dossier() {
 		}
 		echo "</td>\n";
 		echo "</tr>\n";
+
+		if($tab_dossiers_rw[$i]=="documents/archives") {
+			if(getSettingValue('multisite')=='y') {
+				$dossier_temp='documents/archives/'.$_COOKIE['RNE'];
+			}
+			else {
+				$dossier_temp='documents/archives/etablissement';
+			}
+
+			if(file_exists("../$dossier_temp")) {
+				$ok_rw="no";
+				if ($f = @fopen("../".$dossier_temp."/".$nom_fichier_test, "w")) {
+					@fputs($f, '<'.'?php $ok_rw = "yes"; ?'.'>');
+					@fclose($f);
+					include("../".$dossier_temp."/".$nom_fichier_test);
+					$del = @unlink("../".$dossier_temp."/".$nom_fichier_test);
+				}
+				$alt=$alt*(-1);
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td style='text-align:left;'>$gepiPath/$dossier_temp</td>\n";
+				echo "<td>";
+				if($ok_rw=='yes') {
+					echo "<img src='../images/enabled.png' height='20' width='20' alt=\"Le dossier est accessible en écriture.\" />";
+				}
+				else {
+					echo "<img src='../images/disabled.png' height='20' width='20' alt=\"Le dossier n'est pas accessible en écriture.\" />";
+				}
+				echo "</td>\n";
+				echo "</tr>\n";
+
+			}
+		}
 	}
 	echo "</table>\n";
 }

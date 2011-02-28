@@ -302,198 +302,7 @@ else {
 		die();
 
 		//+++++++++++++++++++++++++++++++++++++++++++++++++++
-/*
-		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
-	
-		echo "<ul style='list-style-type: none;'>\n";
-		echo "<li>\n";
-		echo "<input type='radio' name='choix_enseignements' id='choix_enseignements_tous' value='toutes' onchange='display_div_liste_enseignements()' checked /><label for='choix_enseignements_tous'> Tous les enseignements/matières</label>\n";
-		echo "</li>\n";
-		echo "<li>\n";
-		echo "<input type='radio' name='choix_enseignements' id='choix_enseignements_certains' onchange='display_div_liste_enseignements()' value='certains' /><label for='choix_enseignements_certains'> Certains enseignements/matières seulement</label>\n";
-	
-		echo "<div id='div_liste_enseignements' style='margin-left: 2em;'>\n";
-	
-		echo "<div id='div_coche_lot' style='float: right; width: 20em;'></div>\n";
-	
-		$tab_id_matiere=array();
-		$tab_liste_index_grp_matiere=array();
-		$cpt=0;
-		for($i=0;$i<count($id_classe);$i++) {
-			//$sql="SELECT DISTINCT g.id, g.name, g.description FROM groupes g, j_groupes_classes jgc WHERE (g.id=jgc.id_groupe and jgc.id_classe='".$id_classe[$i]."') ORDER BY jgc.priorite, g.name";
-			$sql="SELECT DISTINCT g.id, g.name, g.description, jgm.id_matiere FROM groupes g, j_groupes_classes jgc, j_groupes_matieres jgm WHERE (g.id=jgc.id_groupe AND jgm.id_groupe=jgc.id_groupe AND jgc.id_classe='".$id_classe[$i]."') ORDER BY jgc.priorite, g.name";
-			//echo "$sql<br />";
-			$call_group = mysql_query($sql);
-			$nombre_ligne = mysql_num_rows($call_group);
-			if($nombre_ligne==0) {
-				echo "<p style='color:red;'>Aucun enseignement n'est défini dans la classe de ".get_class_from_id($id_classe[$i]).".</p>\n";
-			}
-			else {
-	
-				echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
-	
-				$first_grp[$id_classe[$i]]=$cpt;
-				echo "<table class='boireaus' summary='Classe n°$id_classe[$i]'/>\n";
-				echo "<tr>\n";
-				echo "<th colspan='3'>\n";
-				echo "Classe de ".get_class_from_id($id_classe[$i])."\n";
-				echo "</th>\n";
-				echo "</tr>\n";
-	
-				echo "<tr>\n";
-				echo "<th>\n";
-				//echo "Cocher/décocher\n";
-				echo "<p><a href='#' onClick='ModifCase(".$id_classe[$i].",true);return false;'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href='#' onClick='ModifCase(".$id_classe[$i].",false);return false;'><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a></p>\n";
-				echo "</th>\n";
-				echo "<th>Enseignement</th>\n";
-				echo "<th>Professeur</th>\n";
-				echo "</tr>\n";
-	
-				$alt=1;
-				while($lig_grp=mysql_fetch_object($call_group)) {
-					$alt=$alt*(-1);
-					echo "<tr class='lig$alt white_hover'>\n";
-					echo "<td>\n";
-					echo "<input type='checkbox' name='id_groupe_".$id_classe[$i]."[]' id='id_groupe_$cpt' value='$lig_grp->id' onchange='change_style_groupe($cpt)' checked />\n";
-					echo "</td>\n";
-					echo "<td style='text-align:left; font-weight: bold;'><label for='id_groupe_$cpt' id='label_groupe_$cpt'>$lig_grp->name (<i>$lig_grp->description</i>)</label></td>\n";
-					echo "<td style='text-align:left;'>\n";
-					$sql="SELECT DISTINCT nom,prenom,civilite FROM utilisateurs u, j_groupes_professeurs jgp WHERE u.login=jgp.login AND jgp.id_groupe='$lig_grp->id' ORDER BY u.nom, u.prenom;";
-					$res_prof_grp=mysql_query($sql);
-					if(mysql_num_rows($res_prof_grp)>0) {
-						$lig_prof_grp=mysql_fetch_object($res_prof_grp);
-						echo $lig_prof_grp->civilite." ".strtoupper($lig_prof_grp->nom)." ".casse_mot($lig_prof_grp->prenom,"majf2");
-						while($lig_prof_grp=mysql_fetch_object($res_prof_grp)) {
-							echo ", ";
-							echo $lig_prof_grp->civilite." ".strtoupper($lig_prof_grp->nom)." ".casse_mot($lig_prof_grp->prenom,"majf2");
-						}
-					}
-					echo "</td>\n";
-					echo "</tr>\n";
-	
-					$tab_liste_index_grp_matiere[$lig_grp->id_matiere][]=$cpt;
-					if(!in_array($lig_grp->id_matiere, $tab_id_matiere)) {$tab_id_matiere[]=$lig_grp->id_matiere;}
-	
-					$cpt++;
-				}
-				echo "</table>\n";
-				$last_grp[$id_classe[$i]]=$cpt;
-			}
-			echo "<br />\n";
-		}
-	
-		echo "<p><a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>décocher</a> tous les enseignements</p>\n";
-	
-		echo "</div>\n";
-	
-		echo "</li>\n";
-	
-		echo "</ul>\n";
-	
-		echo "<p><input type='submit' value='Valider' /></p>\n";
-		echo "</form>\n";
-	
-		$chaine_div_coche_lot="Pour toutes les classes,<br />";
-	
-		for($j=0;$j<count($tab_id_matiere);$j++) {
-			$chaine_div_coche_lot.="<a href='javascript:coche_lot($j,true)'>Cocher</a> / <a href='javascript:coche_lot($j,false)'>décocher</a> $tab_id_matiere[$j]<br />";
-	
-			for($k=0;$k<count($tab_liste_index_grp_matiere[$tab_id_matiere[$j]]);$k++) {
-				if(!isset($chaine_array_index[$j])) {
-					//$chaine_array_index[$j]="tab_index_$j=new Array(";
-					$chaine_array_index[$j]="tab_index[$j]=new Array(";
-					$chaine_array_index[$j].=$tab_liste_index_grp_matiere[$tab_id_matiere[$j]][$k];
-				}
-				else {
-					$chaine_array_index[$j].=", ".$tab_liste_index_grp_matiere[$tab_id_matiere[$j]][$k];
-				}
-			}
-			if(isset($chaine_array_index[$j])) {
-				$chaine_array_index[$j].=");";
-			}
-		}
-		$chaine_div_coche_lot.="<a href='javascript:ModifToutesCases(true)'>Cocher</a> / <a href='javascript:ModifToutesCases(false)'>décocher</a>  tous les enseignements";
-	
-		echo "<script type='text/javascript'>
-		document.getElementById('div_liste_enseignements').style.display='none';
-	
-		function display_div_liste_enseignements() {
-			if(document.getElementById('choix_enseignements_certains').checked==true) {
-				document.getElementById('div_liste_enseignements').style.display='block';
-			}
-			else {
-				document.getElementById('div_liste_enseignements').style.display='none';
-			}
-		}
-	
-		if(document.getElementById('div_coche_lot')) {
-			document.getElementById('div_coche_lot').innerHTML=\"$chaine_div_coche_lot\";
-		}
-	
-		function coche_lot(num,mode) {
-			tab_index=new Array();
-	";
-	
-		for($j=0;$j<count($tab_id_matiere);$j++) {
-			echo "		".$chaine_array_index[$j];
-		}
-	
-		echo "
-			tab=tab_index[num];
-			for(k=0;k<tab.length;k++) {
-				//alert('id_groupe_'+tab[k]);
-				if(document.getElementById('id_groupe_'+tab[k])) {
-					document.getElementById('id_groupe_'+tab[k]).checked = mode;
-					change_style_groupe(tab[k]);
-				}
-			}
-		}
-	
-		function ModifToutesCases(mode) {
-	";
-		for($i=0;$i<count($id_classe);$i++) {
-			if($temoin_classe[$i]=='y') {
-				echo "		ModifCase(".$id_classe[$i].",mode);\n";
-			}
-		}
-	
-		echo "	}
-	
-		function ModifCase(id_classe,mode) {
-			var first_grp=new Array();
-			var last_grp=new Array();\n";
-	
-		for($i=0;$i<count($id_classe);$i++) {
-			if($temoin_classe[$i]=='y') {
-				echo "		first_grp[".$id_classe[$i]."]=".$first_grp[$id_classe[$i]].";
-			last_grp[".$id_classe[$i]."]=".$last_grp[$id_classe[$i]].";\n";
-			}
-		}
-	
-		echo "
-			for (var k=first_grp[id_classe];k<last_grp[id_classe];k++) {
-				if(document.getElementById('id_groupe_'+k)){
-					document.getElementById('id_groupe_'+k).checked = mode;
-					change_style_groupe(k);
-				}
-			}
-		}
-	
-		function change_style_groupe(num) {
-			//if(document.getElementById('id_groupe_'+num)) {
-			if((document.getElementById('id_groupe_'+num))&&(document.getElementById('label_groupe_'+num))) {
-				if(document.getElementById('id_groupe_'+num).checked) {
-					document.getElementById('label_groupe_'+num).style.fontWeight='bold';
-				}
-				else {
-					document.getElementById('label_groupe_'+num).style.fontWeight='normal';
-				}
-			}
-		}
-	
-	</script>\n";
-	
-*/
+
 	}
 }
 
@@ -503,92 +312,7 @@ if(isset($id_groupe)&&($_SESSION['statut']=='professeur')) {
 	$gepiSchoolName=getSettingValue('gepiSchoolName');
 	$gepiYear=getSettingValue('gepiYear');
 
-	function html_entete($titre='Cahier de textes',$niveau_arbo=1) {
-		$entete="";
-		// A FAIRE
-
-		$entete.='<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Cache-Control" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-<meta http-equiv="Content-Script-Type" content="text/javascript" />
-<meta http-equiv="Content-Style-Type" content="text/css" />';
-
-		if($niveau_arbo==0) {
-			$pref_arbo=".";
-		}
-		else {
-			$pref_arbo="..";
-		}
-
-		$entete.="<link rel='stylesheet' type='text/css' href='$pref_arbo/style.css' />
-<link rel='stylesheet' type='text/css' href='$pref_arbo/accessibilite.css' media='screen' />
-<link rel='stylesheet' type='text/css' href='$pref_arbo/accessibilite_print.css' media='print' />
-<link rel='stylesheet' type='text/css' href='$pref_arbo/portable.css' media='handheld' />
-<link title='bandeau' rel='stylesheet' type='text/css' href='$pref_arbo/css/bandeau_r01.css' media='screen' />
-<!--[if lte IE 7]>
-<link title='bandeau' rel='stylesheet' type='text/css' href='$pref_arbo/css/bandeau_r01_ie.css' media='screen' />
-<![endif]-->
-<!--[if lte IE 6]>
-<link title='bandeau' rel='stylesheet' type='text/css' href='$pref_arbo/css/bandeau_r01_ie6.css' media='screen' />
-<![endif]-->
-<!--[if IE 7]>
-<link title='bandeau' rel='stylesheet' type='text/css' href='$pref_arbo/css/bandeau_r01_ie7.css' media='screen' />
-<![endif]-->
-<link rel='stylesheet' type='text/css' href='$pref_arbo/style_screen_ajout.css' />\n";
-		$entete.="<title>$titre</title>\n";
-		$entete.="</head>\n";
-		$entete.="<body>\n";
-
-		return $entete;
-	}
-
-	function html_pied_de_page() {
-		$pied_de_page="";
-		// A FAIRE
-
-		$pied_de_page.="</body>\n";
-		$pied_de_page.="</html>\n";
-
-		return $pied_de_page;
-	}
-
-
-	function my_affiche_docs_joints($id_ct,$type_notice) {
-		global $tab_chemin_url;
-
-		// documents joints
-		$html = '';
-		$architecture="/documents/cl_dev";
-		if ($type_notice == "t") {
-			$sql = "SELECT titre, emplacement FROM ct_devoirs_documents WHERE id_ct_devoir='$id_ct' ORDER BY 'titre'";
-		} else if ($type_notice == "c") {
-			$sql = "SELECT titre, emplacement FROM ct_documents WHERE id_ct='$id_ct' ORDER BY 'titre'";
-		}
-		
-		$res = sql_query($sql);
-		if (($res) and (sql_count($res)!=0)) {
-			$html .= "<span class='petit'>Document(s) joint(s):</span>";
-			//$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
-			$html .= "<ul style=\"padding-left: 15px;\">";
-			for ($i=0; ($row = sql_row($res,$i)); $i++) {
-					$titre = $row[0];
-					$emplacement = $row[1];
-					//$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a href=\"$emplacement\" target=\"blank\">$titre</a></li>";
-					// Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
-					// alternative, utiliser un javascript
-					$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"$emplacement\">$titre</a></li>";
-
-					$tab_chemin_url[]=$emplacement;
-
-			}
-			$html .= "</ul>";
-		}
-		return $html;
-	}
+	require("cdt_lib.php");
 
 	$dirname=get_user_temp_directory();
 	if(!$dirname) {
@@ -669,6 +393,8 @@ if(isset($id_groupe)&&($_SESSION['statut']=='professeur')) {
 
 		$nom_fichier[$id_groupe[$i]]=$nom_page_html_groupe;
 		$nom_detaille_groupe[$id_groupe[$i]]=$current_group['name']." (<i>".$current_group['description']." en (".$current_group['classlist_string'].")</i>)";
+
+		$nom_detaille_groupe_non_html[$id_groupe[$i]]=$current_group['name']." (".$current_group['description']." en (".$current_group['classlist_string']."))";
 
 		$html.="<li><a href='cahier_texte/$nom_page_html_groupe'>".$current_group['name']." (<i>".$current_group['description']." en (".$current_group['classlist_string'].")</i>)</a></li>";
 	}
@@ -791,81 +517,20 @@ if(isset($id_groupe)&&($_SESSION['statut']=='professeur')) {
 			array_multisort ($tab_dates, SORT_ASC, SORT_NUMERIC, $tab_dates2, SORT_DESC, SORT_NUMERIC);
 		}
 
-/*
-		for($k=0;$k<count($tab_dates);$k++) {
-			//$html.="<div style='border:1px solid black; margin:3px; padding: 3px;'>\n";
-
-			$html.="<div class='infobulle_corps' style='float:left; width:12%; text-align: center; border:1px solid black; margin:3px; padding: 3px;'>\n";
-			$html.="<h3 class='see_all_h3'>$tab_dates[$k]</h3>\n";
-			$html.="</div>\n";
-
-			if((isset($tab_dev[$tab_dates[$k]]))||(isset($tab_notices[$tab_dates[$k]]))) {
-				//$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='float:left; width:40%; border:1px solid black; margin:3px; padding: 3px;'>\n";
-				if(isset($tab_dev[$tab_dates[$k]])) {
-					//$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin-left: 14%; width:40%; border:1px solid black; padding: 3px;'>\n";
-					$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='float: left; width:40%; border:1px solid black; padding: 3px;'>\n";
-					foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
-						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
-						$adj=affiche_docs_joints($value['id_ct'],"t");
-						if($adj!='') {
-							$html.="<div style='border: 1px dashed black'>\n";
-							$html.=$adj;
-							$html.="</div>\n";
-						}
-						$html.="</div>\n";
-					}
-					$html.="</div>\n";
-				}
-				else {
-					$html.="<div style='float: left; width:40%; padding: 3px;'>\n";
-					$html.="&nbsp;\n";
-					$html.="</div>\n";
-				}
-				//$html.="</div>\n";
-
-				//$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='float:left; width:40%; border:1px solid black; margin:3px; padding: 3px;'>\n";
-				if(isset($tab_notices[$tab_dates[$k]])) {
-					//$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin-left: 56%; width:40%; border:1px solid black; padding: 3px;'>\n";
-					$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='float:left; width:40%; border:1px solid black; margin:3px; padding: 3px;'>\n";
-					foreach($tab_notices[$tab_dates[$k]] as $key => $value) {
-						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
-						$adj=affiche_docs_joints($value['id_ct'],"c");
-						if($adj!='') {
-							$html.="<div style='border: 1px dashed black'>\n";
-							$html.=$adj;
-							$html.="</div>\n";
-						}
-						$html.="</div>\n";
-					}
-					$html.="</div>\n";
-				}
-				else {
-					$html.="<div style='float: left; width:40%; padding: 3px;'>\n";
-					$html.="&nbsp;\n";
-					$html.="</div>\n";
-				}
-
-				//$html.="</div>\n";
-				//$html.="</div>\n";
-
-				$html.="<div style='clear:both;'></div>\n";
-
-			}
-
-		}
-*/
-
-
+		/*
 		$html.="<table class='boireaus' style='margin:3px;' border='1' summary='CDT'>\n";
+		$alt=1;
 		for($k=0;$k<count($tab_dates);$k++) {
 			//$html.="<div style='border:1px solid black; margin:3px; padding: 3px;'>\n";
 
-			$html.="<tr>\n";
+			$alt=$alt*(-1);
+			$html.="<tr class='lig$alt'>\n";
 			$html.="<td style='width:12%; text-align: center; padding: 3px;'>\n";
 			$html.="<h3 class='see_all_h3'>$tab_dates[$k]</h3>\n";
 			$html.="</td>\n";
 
-			$html.="<td class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='width:40%; text-align:left; padding: 3px;'>\n";
+			//$html.="<td class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='width:40%; text-align:left; padding: 3px;'>\n";
+			$html.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
 			if(isset($tab_dev[$tab_dates[$k]])) {
 				foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
 					$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
@@ -883,7 +548,8 @@ if(isset($id_groupe)&&($_SESSION['statut']=='professeur')) {
 			}
 			$html.="</td>\n";
 
-			$html.="<td class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='width:40%; text-align:left; padding: 3px;'>\n";
+			//$html.="<td class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='width:40%; text-align:left; padding: 3px;'>\n";
+			$html.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
 			if(isset($tab_notices[$tab_dates[$k]])) {
 				foreach($tab_notices[$tab_dates[$k]] as $key => $value) {
 					$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
@@ -906,6 +572,11 @@ if(isset($id_groupe)&&($_SESSION['statut']=='professeur')) {
 
 		}
 		$html.="</table>\n";
+		*/
+
+
+		$html.=lignes_cdt($tab_dates, $tab_notices, $tab_dev);
+
 
 		echo "<div style='border: 1px solid black;'>\n";
 		echo $html;
@@ -917,7 +588,7 @@ if(isset($id_groupe)&&($_SESSION['statut']=='professeur')) {
 	}
 </script>\n";
 
-		$html=html_entete("CDT: ".$nom_detaille_groupe[$id_groupe[$i]],1).$html;
+		$html=html_entete("CDT: ".$nom_detaille_groupe_non_html[$id_groupe[$i]],1).$html;
 		$html.=html_pied_de_page();
 
 		$f=fopen($dossier_export."/cahier_texte/".$nom_fichier[$id_groupe[$i]],"w+");
@@ -986,6 +657,73 @@ if(document.getElementById('div_archive_zip')) {
 		rmdir($dossier_export."/css");
 		rmdir($dossier_export);
 	}
+
+/*
+require('../fpdf/fpdf.php');
+require('../fpdf/ex_fpdf.php');
+
+define('FPDF_FONTPATH','../fpdf/font/');
+define('LargeurPage','210');
+define('HauteurPage','297');
+
+require_once("../impression/class_pdf.php");
+require_once ("../impression/liste.inc.php");
+
+$marge_haut = 10 ;
+$marge_droite = 10 ;
+$marge_gauche = 10 ;
+$marge_bas = 10 ;
+$marge_reliure = 1 ;
+$avec_emplacement_trous = 1 ;
+
+if ($marge_reliure==1) {
+  if ($marge_gauche < 18) {$marge_gauche = 18;}
+}
+
+
+//Calcul de la Zone disponible
+$EspaceX = LargeurPage - $marge_droite - $marge_gauche ;
+$EspaceY = HauteurPage - $marge_haut - $marge_bas;
+
+$X_tableau = $marge_gauche;
+
+
+//entête classe et année scolaire
+$L_entete_classe = 65;
+$H_entete_classe = 14;
+$X_entete_classe = $EspaceX - $L_entete_classe + $marge_gauche;
+$Y_entete_classe = $marge_haut;
+
+$X_entete_matiere = $marge_gauche;
+$Y_entete_matiere = $marge_haut;
+$L_entete_discipline = 65;
+$H_entete_discipline = 14;
+
+$pdf=new rel_PDF("P","mm","A4");
+$pdf->SetTopMargin($marge_haut);
+$pdf->SetRightMargin($marge_droite);
+$pdf->SetLeftMargin($marge_gauche);
+$pdf->SetAutoPageBreak(true, $marge_bas);
+
+$pdf->AddPage("P"); //ajout d'une page au document
+$pdf->SetDrawColor(0,0,0);
+$pdf->SetFont('Arial');
+$pdf->SetXY(20,20);
+$pdf->SetFontSize(14);
+$pdf->Cell(90,7, "TEST",0,2,'');
+
+$pdf->SetXY(20,40);
+$pdf->SetFontSize(10);
+$pdf->Cell(150,7, "Blablabla.",0,2,'');
+
+$nom_releve=date("Ymd_Hi");
+$nom_releve = 'Test'.'.pdf';
+//send_file_download_headers('application/pdf',$nom_releve);
+$pdf->Output("../temp/".get_user_temp_directory()."/".$nom_releve,'F');
+
+echo "<p><a href='../temp/".get_user_temp_directory()."/".$nom_releve."'>$nom_releve</a></p>";
+//die();
+*/
 }
 else {
 	// A FAIRE pour les non profs

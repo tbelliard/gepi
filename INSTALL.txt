@@ -148,10 +148,11 @@ Fichier php.ini
 "secure") sur le serveur web. [recommandé mais pas indispensable depuis la version 1.4.2]
 
 -> Droits d'écriture suffisants sur les répertoires :
-* /documents         (pour l'utilisation des cahiers de texte)
-* /images            (changement du logo)
-* /images/background (pour le dégradé des couleurs personnalisées)
-* /secure            (dans le cas d'une installation automatisée)
+* /documents          (pour l'utilisation des cahiers de texte)
+* /documents/archives (pour l'archivage des cahiers de texte)
+* /images             (changement du logo)
+* /images/background  (pour le dégradé des couleurs personnalisées)
+* /secure             (dans le cas d'une installation automatisée)
 * /photos
 * /backup
 * /temp
