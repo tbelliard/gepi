@@ -1,6 +1,6 @@
 <?php
 /*
- * Last modification  : 29/11/2006
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -32,10 +32,11 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 //INSERT INTO droits VALUES ('/groupes/get_csv.php', 'F', 'V', 'V', 'V', 'F', 'V', 'Génération de CSV élèves', '');
+//INSERT INTO droits VALUES ('/groupes/get_csv.php', 'V', 'V', 'V', 'V', 'F', 'V', 'Génération de CSV élèves', '');
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
@@ -44,11 +45,28 @@ if (!checkAccess()) {
 $id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
+$mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
+
+$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_email','avec_statut','avec_ine','avec_elenoet','avec_ele_id','avec_prof');
+for($i=0;$i<count($tab);$i++) {
+	$champ=$tab[$i];
+	$$champ = isset($_POST[$champ]) ? $_POST[$champ] : (isset($_GET[$champ]) ? $_GET[$champ] : NULL);
+
+	if((isset($_POST[$champ]))||(isset($_GET[$champ]))) {
+		$_SESSION['mes_listes_'.$tab[$i]]="y";
+	}
+	else {
+		$_SESSION['mes_listes_'.$tab[$i]]="n";
+	}
+}
+
 //echo "1 - \$id_groupe=$id_groupe<br />";
 
-$periode_num = isset($_GET['periode_num']) ? $_GET['periode_num'] : 0;
+//$periode_num = isset($_GET['periode_num']) ? $_GET['periode_num'] : 0;
+$periode_num = isset($_POST['periode_num']) ? $_POST['periode_num'] : (isset($_GET['periode_num']) ? $_GET['periode_num'] : 1);
 
-if (!is_numeric($periode_num)) $periode_num = 0;
+//if (!is_numeric($periode_num)) {$periode_num = 0;}
+if (!is_numeric($periode_num)) {$periode_num = 1;}
 
 if (is_numeric($id_groupe) && $id_groupe > 0) {
 	$current_group = get_group($id_groupe);
@@ -64,11 +82,15 @@ if ($current_group) {
 	$nom_fic = $classe . ".csv";
 }
 
+//debug_var();
+
+send_file_download_headers('text/x-csv',$nom_fic);
+/*
 $now = gmdate('D, d M Y H:i:s') . ' GMT';
 header('Content-Type: text/x-csv');
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
-if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+if (preg_match('/MSIE/', $_SERVER['HTTP_USER_AGENT'])) {
     header('Content-Disposition: inline; filename="' . $nom_fic . '"');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
     header('Pragma: public');
@@ -76,13 +98,85 @@ if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
     header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
     header('Pragma: no-cache');
 }
+*/
 
 include "../lib/periodes.inc.php";
 $fd = '';
 
-$fd.="CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS\n";
+if(!isset($mode)) {
+	$fd.="CLASSE;LOGIN;NOM;PRENOM;SEXE;DATE_NAISS\n";
+	$avec_classe="y";
+	$avec_login="y";
+	$avec_nom="y";
+	$avec_prenom="y";
+	$avec_sexe="y";
+	$avec_naiss="y";
+}
+else {
+	if((isset($avec_classe))&&($avec_classe=='y')) {$fd.="CLASSE;";}
+	if((isset($avec_login))&&($avec_login=='y')) {$fd.="LOGIN;";}
+	if((isset($avec_nom))&&($avec_nom=='y')) {$fd.="NOM;";}
+	if((isset($avec_prenom))&&($avec_prenom=='y')) {$fd.="PRENOM;";}
+	if((isset($avec_sexe))&&($avec_sexe=='y')) {$fd.="SEXE;";}
+	if((isset($avec_naiss))&&($avec_naiss=='y')) {$fd.="DATE_NAISS;";}
+
+	if((isset($avec_email))&&($avec_email=='y')) {$fd.="EMAIL;";}
+	if((isset($avec_statut))&&($avec_statut=='y')) {$fd.="STATUT;";}
+	if($_SESSION['statut']!='professeur') {
+		if((isset($avec_ine))&&($avec_ine=='y')) {$fd.="INE;";}
+		if((isset($avec_elenoet))&&($avec_elenoet=='y')) {$fd.="ELENOET;";}
+		if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$fd.="ELE_ID;";}
+	}
+
+	// Suppression du ; en fin de ligne
+	$fd=preg_replace('/;$/','',$fd);
+	$fd.="\n";
+}
 
 if($current_group) {
+	//echo "\$current_group<br />\n";
+	//echo "\$avec_prof=$avec_prof<br />\n";
+	if($_SESSION['statut']!='professeur') {
+		if((isset($avec_prof))&&($avec_prof=='y')) {
+			$sql="SELECT u.login, u.nom, u.prenom, u.email, u.civilite, u.numind FROM utilisateurs u, j_groupes_professeurs jgp WHERE jgp.login=u.login AND jgp.id_groupe='$id_groupe';";
+			//echo "$sql<br />\n";
+			$res_prof=mysql_query($sql);
+			if(mysql_num_rows($res_prof)>0) {
+				while($lig=mysql_fetch_object($res_prof)) {
+					$ligne="";
+					if((isset($avec_classe))&&($avec_classe=='y')) {$ligne.=";";}
+					if((isset($avec_login))&&($avec_login=='y')) {$ligne.="$lig->login;";}
+					if((isset($avec_nom))&&($avec_nom=='y')) {$ligne.="$lig->nom;";}
+					if((isset($avec_prenom))&&($avec_prenom=='y')) {$ligne.="$lig->prenom;";}
+					if((isset($avec_sexe))&&($avec_sexe=='y')) {$ligne.="$lig->civilite;";}
+					if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.=";";}
+				
+					if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$lig->email;";}
+					if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="professeur;";}
+					if($_SESSION['statut']!='professeur') {
+						if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.=";";}
+						if((isset($avec_elenoet))&&($avec_elenoet=='y')) {$ligne.="$lig->numind;";}
+						if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$ligne.=";";}
+					}
+				
+					// Suppression du ; en fin de ligne
+					$ligne=preg_replace('/;$/','',$ligne);
+			
+					$fd.=$ligne."\n";
+				}
+			}
+		}
+	}
+
+	/*
+	echo "\$periode_num=$periode_num<br />\n";
+	foreach($current_group["eleves"][$periode_num]["users"] as $current_eleve) {
+		echo $current_eleve['login']."<br />\n";
+	}
+	echo "<br />\n";
+	echo "<br />\n";
+	*/
+
 	foreach($current_group["eleves"][$periode_num]["users"] as $current_eleve) {
 	//foreach($current_group["eleves"]["all"]["users"] as $current_eleve) {
 		$eleve_login = $current_eleve["login"];
@@ -102,7 +196,7 @@ if($current_group) {
 
 		// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance...
 		// ... pourrait-on l'ajouter?
-		$sql="SELECT sexe,naissance FROM eleves WHERE login='$eleve_login'";
+		$sql="SELECT sexe,naissance,email,no_gep,elenoet,ele_id FROM eleves WHERE login='$eleve_login'";
 		$res_tmp=mysql_query($sql);
 
 		if(mysql_num_rows($res_tmp)==0){
@@ -112,11 +206,37 @@ if($current_group) {
 			$lig_tmp=mysql_fetch_object($res_tmp);
 			$eleve_sexe=$lig_tmp->sexe;
 			$eleve_naissance=$lig_tmp->naissance;
+			$eleve_email=$lig_tmp->email;
+			$eleve_no_gep=$lig_tmp->no_gep;
+			$eleve_elenoet=$lig_tmp->elenoet;
+			$eleve_ele_id=$lig_tmp->ele_id;
 		}
 
-		$fd.="$eleve_classe;$eleve_login;$eleve_nom;$eleve_prenom;$eleve_sexe;$eleve_naissance\n";
+		//$fd.="$eleve_classe;$eleve_login;$eleve_nom;$eleve_prenom;$eleve_sexe;$eleve_naissance\n";
+
+		$ligne="";
+		if((isset($avec_classe))&&($avec_classe=='y')) {$ligne.="$eleve_classe;";}
+		if((isset($avec_login))&&($avec_login=='y')) {$ligne.="$eleve_login;";}
+		if((isset($avec_nom))&&($avec_nom=='y')) {$ligne.="$eleve_nom;";}
+		if((isset($avec_prenom))&&($avec_prenom=='y')) {$ligne.="$eleve_prenom;";}
+		if((isset($avec_sexe))&&($avec_sexe=='y')) {$ligne.="$eleve_sexe;";}
+		if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.="$eleve_naissance;";}
+	
+		if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
+		if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
+		if($_SESSION['statut']!='professeur') {
+			if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}
+			if((isset($avec_elenoet))&&($avec_elenoet=='y')) {$ligne.="$eleve_elenoet;";}
+			if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$ligne.="$eleve_ele_id;";}
+		}
+	
+		// Suppression du ; en fin de ligne
+		$ligne=preg_replace('/;$/','',$ligne);
+
+		$fd.=$ligne."\n";
 	}
 } else {
+
 	$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.*
 	    FROM eleves e, j_eleves_classes j
 	    WHERE (
@@ -124,14 +244,6 @@ if($current_group) {
 	    j.login = e.login AND
 	    periode='".$periode_num."'
 	    ) ORDER BY nom, prenom");
-/*
-	$appel_donnees_eleves = mysql_query("SELECT DISTINCT e.*
-		FROM eleves e, j_eleves_classes j
-		WHERE (
-		j.id_classe='".$id_classe."' AND
-		j.login = e.login
-		) ORDER BY nom, prenom");
-*/
 	$nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 	$i = 0;
 	while($i < $nombre_lignes) {
@@ -141,7 +253,33 @@ if($current_group) {
 		$eleve_sexe = mysql_result($appel_donnees_eleves, $i, "sexe");
 		$eleve_naissance = mysql_result($appel_donnees_eleves, $i, "naissance");
 
-		$fd.="$classe;$eleve_login;$eleve_nom;$eleve_prenom;$eleve_sexe;$eleve_naissance\n";
+		//$fd.="$classe;$eleve_login;$eleve_nom;$eleve_prenom;$eleve_sexe;$eleve_naissance\n";
+
+		$eleve_email=mysql_result($appel_donnees_eleves, $i, "email");
+		$eleve_no_gep=mysql_result($appel_donnees_eleves, $i, "no_gep");
+		$eleve_elenoet=mysql_result($appel_donnees_eleves, $i, "elenoet");
+		$eleve_ele_id=mysql_result($appel_donnees_eleves, $i, "ele_id");
+
+		$ligne="";
+		if((isset($avec_classe))&&($avec_classe=='y')) {$ligne.="$classe;";}
+		if((isset($avec_login))&&($avec_login=='y')) {$ligne.="$eleve_login;";}
+		if((isset($avec_nom))&&($avec_nom=='y')) {$ligne.="$eleve_nom;";}
+		if((isset($avec_prenom))&&($avec_prenom=='y')) {$ligne.="$eleve_prenom;";}
+		if((isset($avec_sexe))&&($avec_sexe=='y')) {$ligne.="$eleve_sexe;";}
+		if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.="$eleve_naissance;";}
+	
+		if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
+		if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
+		if($_SESSION['statut']!='professeur') {
+			if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}
+			if((isset($avec_elenoet))&&($avec_elenoet=='y')) {$ligne.="$eleve_elenoet;";}
+			if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$ligne.="$eleve_ele_id;";}
+		}
+	
+		// Suppression du ; en fin de ligne
+		$ligne=preg_replace('/;$/','',$ligne);
+
+		$fd.=$ligne."\n";
 
 		$i++;
 	}

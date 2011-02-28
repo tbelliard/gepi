@@ -52,6 +52,9 @@ echo "<p class='bold'>";
 echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo " | <a href='./impression.php'>Impression rapide à l'unité</a>";
 echo " | <a href='./parametres_impression_pdf.php'>Régler les paramètres du PDF</a>";
+if(check_droit_acces('/groupes/mes_listes.php',$_SESSION['statut'])) {
+	echo " | <a href='../groupes/mes_listes.php'>Listes CSV</a>";
+}
 echo "</p>\n";
 
 if ($id_choix_periode != 0) {

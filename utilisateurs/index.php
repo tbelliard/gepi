@@ -289,7 +289,7 @@ $_SESSION['chemin_retour'] = "../utilisateurs/index.php";
 
 if ($mode != "personnels") {
 ?>
-<p class=bold>
+<p class="bold">
 <a href="../accueil_admin.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 <br/><br/>
 <p>Sur cette page, vous pouvez gérer les comptes d'accès des utilisateurs ayant accès à Gepi grâce à un identifiant et un mot de passe.</p>
@@ -300,7 +300,7 @@ if ($mode != "personnels") {
 <?php
 } else {
 ?>
-<p class=bold>
+<p class="bold">
 <a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
  | <a href="modify_user.php">Ajouter un personnel</a>
 <?php
@@ -328,7 +328,7 @@ if (getSettingValue("statuts_prives") == "y") {
 ?>
 </p>
 <!--p class='small'><a href="import_prof_csv.php">Télécharger le fichier des professeurs au format csv</a>  (nom - prénom - identifiant GEPI)</p-->
-<p class='small'>Télécharger au format csv (<i>nom - prénom - identifiant GEPI</i>) le fichier des <a href="import_prof_csv.php?export_statut=professeur">professeurs</a>, <a href="import_prof_csv.php?export_statut=scolarite">"scolarité"</a>, <a href="import_prof_csv.php?export_statut=cpe">cpe</a>, <a href="import_prof_csv.php?export_statut=secours">secours</a>, <a href="import_prof_csv.php?export_statut=administrateur">administrateurs</a>, <a href="import_prof_csv.php?export_statut=autre">autres</a></p>
+<p class='small'>Télécharger au format csv (<i>nom - prénom - identifiant GEPI</i>) le fichier des <a href="import_prof_csv.php?export_statut=professeur">professeurs</a>, <a href="import_prof_csv.php?export_statut=scolarite">"scolarité"</a>, <a href="import_prof_csv.php?export_statut=cpe">cpe</a>, <a href="import_prof_csv.php?export_statut=secours">secours</a>, <a href="import_prof_csv.php?export_statut=administrateur">administrateurs</a>, <a href="import_prof_csv.php?export_statut=autre">autres</a>, <a href="import_prof_csv.php?export_statut=personnels">personnels</a></p>
 
 <form enctype="multipart/form-data" action="index.php" name="form1" method="post">
 <?php
@@ -582,7 +582,11 @@ while ($i < $nombreligne){
     // MODIF: boireaus
         //$col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&id_groupe=".$user_classe["group_id"] . "'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />";
         //$col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;retour=oui'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />";
-        $col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />\n";
+        $col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
+
+        $col[$i][5] .= "<a href='../groupes/mes_listes.php?id_groupe=".$user_classe["group_id"] . "' target='_blank'><img src='../images/icons/document.png' width='16' height='16' /></a>\n";
+
+        $col[$i][5] .= "<br />\n";
     //======================================
         $k++;
     }
