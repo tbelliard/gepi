@@ -120,7 +120,11 @@ $query = EleveQuery::create()->orderBy('Nom', Criteria::ASC)->orderBy('Prenom', 
 	->useAbsenceEleveSaisieQuery()
 	->filterById($saisie_col->toKeyValue('Id', 'Id'))
 	->endUse();
-$eleve_col = $query->distinct()->find();
+$eleve_col = $query
+                ->where('Eleve.DateSortie=?','0')
+                ->orWhere('Eleve.DateSortie is NULL')
+                ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve->format('U'))
+                ->distinct()->find();
 ?>
 <div class='css-panes' id='containDiv'>
     <p>

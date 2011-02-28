@@ -337,7 +337,11 @@ if ($type_selection != 'id_eleve' && $type_selection != 'nom_eleve') {
         $query->filterByRegime($filter_regime);
     }
 }
-$eleve_col = $query->distinct()->paginate($page_number, $item_per_page);
+$eleve_col = $query
+                ->where('Eleve.DateSortie=?','0')
+                ->orWhere('Eleve.DateSortie is NULL')
+                ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve->format('U'))
+                ->distinct()->paginate($page_number, $item_per_page);
 
 ?>
 	<div style="text-align: center">

@@ -965,4 +965,28 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
             }
         }
 
+     /**
+	 *
+	 * Renvoi true/false selon que l'élève est sorti ou non de l'établissement
+	 *
+	 * @return Boolean
+	 *
+	 */
+    public function isSaisieEleveSorti($date_debut_test) {
+
+        $eleve = $this->getEleve();
+        if (!is_null($eleve)) {
+            $date_sortie_eleve = $eleve->getDateSortie('U');            
+            if (is_null($date_sortie_eleve) || $date_sortie_eleve == 0) {
+                return false;
+            } else {
+                if ($date_debut_test->format('U') > $date_sortie_eleve) {
+                    return(true);
+                } else {
+                    return(false);
+                }
+            }
+        }
+    }
+
 } // AbsenceEleveSaisie
