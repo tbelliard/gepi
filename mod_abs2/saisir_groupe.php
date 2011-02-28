@@ -389,11 +389,38 @@ if (isset($message_enregistrement)) {
 //afichage des eleves. Il nous faut au moins un groupe ou une aid
 $eleve_col = new PropelCollection();
 if (isset($current_groupe) && $current_groupe != null) {
-    $eleve_col = $current_groupe->getEleves();
+    $query = EleveQuery::create();
+    $eleve_col = $query->useJEleveGroupeQuery()
+                        ->filterByIdGroupe($current_groupe->getId())
+                        ->endUse()
+            ->where('Eleve.DateSortie<?','0')
+            ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve->format('U'))
+            ->orderBy('Eleve.Nom','asc')
+            ->orderBy('Eleve.Prenom','asc')
+            ->distinct()
+            ->find();
 } else if (isset($current_aid) && $current_aid != null) {
-    $eleve_col = $current_aid->getEleves();
+    $query = EleveQuery::create();
+    $eleve_col = $query->useJAidElevesQuery()
+                        ->filterByIdAid($current_aid->getId())
+                        ->endUse()
+            ->where('Eleve.DateSortie<?','0')
+            ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve->format('U'))
+            ->orderBy('Eleve.Nom','asc')
+            ->orderBy('Eleve.Prenom','asc')
+            ->distinct()
+            ->find();
 } else if (isset($current_classe) && $current_classe != null) {
-    $eleve_col = $current_classe->getEleves();
+    $query = EleveQuery::create();
+    $eleve_col = $query->useJEleveClasseQuery()
+                        ->filterByIdClasse($current_classe->getId())
+                        ->endUse()
+            ->where('Eleve.DateSortie<?','0')
+            ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve->format('U'))
+            ->orderBy('Eleve.Nom','asc')
+            ->orderBy('Eleve.Prenom','asc')
+            ->distinct()
+            ->find();
 }
 
 //l'utilisateurs a-t-il deja saisie ce creneau ?
@@ -555,8 +582,9 @@ foreach($eleve_col as $eleve) {
 				} else {
 					$background_couleur="#C6DCE3";
 				}
-			        echo "<tr style='background-color :$background_couleur'>\n";
-
+                ?>
+			    <tr style='background-color :<?php echo $background_couleur;?>'>
+                <?php
 
 				$Yesterday = date("Y-m-d",mktime(0,0,0,$dt_date_absence_eleve->format("m") ,$dt_date_absence_eleve->format("d")-1,$dt_date_absence_eleve->format("Y")));
 				$compter_hier = $eleve->getAbsenceEleveSaisiesDuJour($Yesterday)->count();
@@ -724,9 +752,14 @@ foreach($eleve_col as $eleve) {
 				    echo '<input  style="font-size:88%;" name="commentaire_absence_eleve['.$eleve_col->getPosition().']" value="'.'" type="text" maxlength="150" size="13"/>';
 				    echo '</td>';
 				}
-    echo "</tr>";
+?>
+    </tr>
+<?php
 }
-echo "</tbody>\n</table>";
+?>
+</tbody>
+</table>
+<?php
 echo '
 <p class="choix_fin">
     <input value="Enregistrer" name="Valider" type="submit"  onclick="this.form.submit();this.disabled=true;this.value=\'En cours\'" />
@@ -738,7 +771,10 @@ if ($utilisateur->getStatut() == 'professeur' && getSettingValue("active_cahiers
 	    <input value="Enregistrer et passer au cahier de texte" name="cahier_texte" type="submit"/>
     </p>';
 }
-echo "</form>\n</div>\n";
+?>
+</form>
+</div>
+<?php
 }
 echo "</div>\n";
 require_once("../lib/footer.inc.php");

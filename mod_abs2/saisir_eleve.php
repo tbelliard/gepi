@@ -251,7 +251,10 @@ if ($type_selection == 'id_eleve') {
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
-    $eleve = $query->filterByIdEleve($id_eleve)->findOne();
+    $eleve = $query->filterByIdEleve($id_eleve)
+            ->where('Eleve.DateSortie<?','0')
+            ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))
+            ->findOne();
     if ($eleve != null) {
 	$eleve_col->append($eleve);
     }
@@ -260,13 +263,43 @@ if ($type_selection == 'id_eleve') {
     if ($utilisateur->getStatut() != "cpe" || getSettingValue("GepiAccesAbsTouteClasseCpe")!='yes') {
 	$query->filterByUtilisateurProfessionnel($utilisateur);
     }
-    $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)->limit(20)->find();
+    $eleve_col = $query->filterByNomOrPrenomLike($nom_eleve)
+            ->where('Eleve.DateSortie<?','0')
+            ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))
+            ->limit(20)->find();
 } elseif (isset($current_groupe) && $current_groupe != null) {
-    $eleve_col = $current_groupe->getEleves();
+    $query = EleveQuery::create();
+    $eleve_col = $query->useJEleveGroupeQuery()
+                        ->filterByIdGroupe($current_groupe->getId())
+                        ->endUse()
+            ->where('Eleve.DateSortie<?','0')
+            ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))
+            ->orderBy('Eleve.Nom','asc')
+            ->orderBy('Eleve.Prenom','asc')
+            ->distinct()
+            ->find();
 } elseif (isset($current_aid) && $current_aid != null) {
-    $eleve_col = $current_aid->getEleves();
+    $query = EleveQuery::create();
+    $eleve_col = $query->useJAidElevesQuery()
+                        ->filterByIdAid($current_aid->getId())
+                        ->endUse()
+            ->where('Eleve.DateSortie<?','0')
+            ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))
+            ->orderBy('Eleve.Nom','asc')
+            ->orderBy('Eleve.Prenom','asc')
+            ->distinct()
+            ->find();
 } elseif (isset($current_classe) && !$current_classe == null) {
-    $eleve_col = $current_classe->getEleves();
+    $query = EleveQuery::create();
+    $eleve_col = $query->useJEleveClasseQuery()
+                        ->filterByIdClasse($current_classe->getId())
+                        ->endUse()
+            ->where('Eleve.DateSortie<?','0')
+            ->orWhere('Eleve.DateSortie>?', $dt_date_absence_eleve_debut_saisir_eleve->format('U'))
+            ->orderBy('Eleve.Nom','asc')
+            ->orderBy('Eleve.Prenom','asc')
+            ->distinct()
+            ->find();
 }
 
 //afichage de la saisie des absences des eleves
@@ -344,14 +377,16 @@ foreach($eleve_col as $eleve) {
                             echo ' '.$eleve->getClasse()->getNom().'';
                         }
                         echo'</span>';
-                        echo '</a>';
+?>
+           </a>
+<?php
 			if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
 			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
 			}
 echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: static;"/>';
 			echo("</td>");
 
-			
+
 			echo '<td style="vertical-align: top;"><input style="font-size:88%;" name="active_absence_eleve[]" value="'.$eleve->getPrimaryKey().'" type="checkbox"';
 			if ($eleve_col->count() == 1) {
 			    echo "checked=\"true\" ";
@@ -373,7 +408,7 @@ echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: stati
 			    ?>
 		      <div style="float: left;"><img src="<?php echo $photos; ?>" style="width: <?php echo $valeur[0]; ?>px; height: <?php echo $valeur[1]; ?>px; border: 0px" alt="" title="" />
 		      </div>
-<?php			
+<?php
 			}
 			echo '<div style="float: left;">';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
@@ -398,8 +433,10 @@ echo '<div id="edt_'.$eleve->getLogin().'" style="display: none; position: stati
 			echo '</td>';
 echo "</tr>";
 }
-
-echo "</tbody></table>";
+?>
+        </tbody>
+    </table>";
+<?php
 echo "</td>";
 echo "<td style='width:10px;'>&nbsp;";
 echo "</td>";
@@ -435,7 +472,7 @@ echo 'Fin : <input size="8" id="date_absence_eleve_fin_saisir_eleve" name="date_
     });
 </script><br/>';
 echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
-	echo '<p>';
+echo '<p>';
 echo 'De <input name="heure_debut_absence_eleve" value="';
 echo $edt_creneau_col->getFirst()->getHeuredebutDefiniePeriode("H:i");
 echo '" type="text" maxlength="5" size="4"/> à ';
@@ -451,7 +488,7 @@ echo 'ou ';
 echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 2px; margin : 4px;">';
     echo '<p>';
     echo ("<select name=\"id_creneau\" class=\"small\">");
-    
+
 
     echo "<option value='-1'>choisissez un créneau</option>\n";
     foreach ($edt_creneau_col as $edt_creneau) {
@@ -533,13 +570,15 @@ if (!$cours_col->isEmpty()) {
     echo '</p>';
 	}
 	echo '</div>';
-    
+
 }
 
 echo "</td></tr>";
-echo "</table>";
-echo "</form>";
-echo "</div>\n";
+?>
+</table>
+</form>
+</div>
+<?php
 }
 echo "</div>\n";
 
