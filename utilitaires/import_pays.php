@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -78,6 +78,8 @@ if(!isset($is_posted)) {
 		echo "<p>Veuillez dézipper le fichier (<i>évitez de l'ouvrir/modifier/enregistrer avec un tableur</i>) et fournissez le fichier <b>pays.csv</b>&nbsp;:<br />\n";
 	}
 
+	echo add_token_field();
+
 	echo "<input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 	echo "<p><input type=submit value='Valider' /></p>\n";
 	echo "</form>\n";
@@ -91,6 +93,8 @@ if(!isset($is_posted)) {
 else {
 	echo " | <a href=\"".$_SERVER['PHP_SELF']."\">Import des pays</a>";
 	echo "</p>\n";
+
+	check_token(false);
 
 	if(!isset($_POST['valide_insertion_pays'])) {
 		$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
@@ -275,6 +279,8 @@ else {
 				echo "<input type='hidden' name='is_posted' value='y' />\n";
 				echo "<input type='hidden' name='valide_insertion_pays' value='y' />\n";
 				echo "<p align=\"center\"><input type=submit value=\"Importer\" /></p>\n";
+
+				echo add_token_field();
 
 				$tab_code_pays_connus=array();
 				$tab_nom_pays_connus=array();
