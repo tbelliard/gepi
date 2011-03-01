@@ -1067,6 +1067,7 @@ class Eleve extends BaseEleve {
 		return new PropelCollection();
 	    }
 	     //test sur sortie eleve de l'établissement
+        $test_sortie=false;
         $date_sortie=$this->getDateSortie('U');
         $day=date('d',$date_sortie);
         $month=date('m',$date_sortie);
@@ -1083,10 +1084,16 @@ class Eleve extends BaseEleve {
                 }
             }
             if ($date_sortie < $date_debut->format('U')) {
-                date_date_set($date_debut, $year, $month, $day);
-                date_date_set($date_fin, $year, $month, $day);
+                $test_sortie=true;
+                $new_date_debut=clone $date_debut;
+                $new_date_fin=clone $date_fin;
+                date_date_set($new_date_debut, $year, $month, $day);
+                date_date_set($new_date_fin, $year, $month, $day);
             } elseif ($date_sortie > $date_debut->format('U') && $date_sortie < $date_fin->format('U')) {
-                date_date_set($date_fin, $year, $month, $day);
+                $test_sortie=true;
+                $new_date_debut=clone $date_debut;
+                $new_date_fin=clone $date_fin;
+                date_date_set($new_date_fin, $year, $month, $day);
             }
         }
 	    //on filtre les saisie qu'on ne veut pas compter
@@ -1122,7 +1129,11 @@ class Eleve extends BaseEleve {
 		$date_fin_iteration->setTime(23,59);
 	    }
 	    require_once("helpers/AbsencesEleveSaisieHelper.php");
-	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
+        if($test_sortie){
+            return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $new_date_debut, $new_date_fin);
+        }else{
+            return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
+        }
 	}
 /**
 	 *
@@ -1214,6 +1225,7 @@ class Eleve extends BaseEleve {
 		return new PropelCollection();
 	    }
         //test sur sortie eleve de l'établissement
+        $test_sortie=false;
         $date_sortie=$this->getDateSortie('U');
         $day=date('d',$date_sortie);
         $month=date('m',$date_sortie);
@@ -1230,10 +1242,16 @@ class Eleve extends BaseEleve {
                 }
             }
             if ($date_sortie < $date_debut->format('U')) {
-                date_date_set($date_debut, $year, $month, $day);
-                date_date_set($date_fin, $year, $month, $day);
+                $test_sortie=true;
+                $new_date_debut=clone $date_debut;
+                $new_date_fin=clone $date_fin;
+                date_date_set($new_date_debut, $year, $month, $day);
+                date_date_set($new_date_fin, $year, $month, $day);
             } elseif ($date_sortie > $date_debut->format('U') && $date_sortie < $date_fin->format('U')) {
-                date_date_set($date_fin, $year, $month, $day);
+                $test_sortie=true;
+                $new_date_debut=clone $date_debut;
+                $new_date_fin=clone $date_fin;
+                date_date_set($new_date_fin, $year, $month, $day);
             }
         }
 	    //on filtre les saisie qu'on ne veut pas compter
@@ -1270,7 +1288,11 @@ class Eleve extends BaseEleve {
 	    }
 
 	    require_once("helpers/AbsencesEleveSaisieHelper.php");
-	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
+        if($test_sortie){
+            return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $new_date_debut, $new_date_fin);
+        }else{
+            return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
+        }
 	}
 
  	/**
