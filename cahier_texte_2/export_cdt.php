@@ -232,7 +232,9 @@ if($_SESSION['statut']=='professeur') {
 		echo "<label id='label_groupe_$cpt' for='id_groupe_$cpt'> ".$current_group['name']."</label>\n";
 		echo "</td>\n";
 		echo "<td>\n";
+		echo "<label for='id_groupe_$cpt'>";
 		echo $current_group['description'];
+		echo "</label>";
 		echo "</td>\n";
 		echo "<td>\n";
 		echo $current_group['classlist_string'];
@@ -442,6 +444,9 @@ if(isset($id_groupe)&&($_SESSION['statut']=='professeur')) {
 		$tab_dates=array();
 		$tab_dates2=array();
 		$tab_chemin_url=array();
+
+		$tab_notices=array();
+		$tab_dev=array();
 
 		$html="";
 		//$html.=html_entete();
