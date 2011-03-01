@@ -986,6 +986,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
                     return(false);
                 }
             }
+        }else{
+            return(false);
         }
     }
 
