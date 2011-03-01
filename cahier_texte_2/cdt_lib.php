@@ -418,9 +418,11 @@ require_once("'.$pref_arbo.'/entete.php");
 	}
 
 	function get_dossier_etab_cdt_archives() {
+		global $multisite;
+
 		$dossier="";
 
-		if(getSettingValue('multisite')=='y') {
+		if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
 			if(isset($_COOKIE['RNE'])) {
 				$dossier=$_COOKIE['RNE'];
 			}

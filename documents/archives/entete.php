@@ -45,7 +45,8 @@ if(isset($chaine_login_prof)) {
 
 // Contrôler en multisite que l'on a bien documents/archives/$_COOKIE['RNE']/ dans le chemin
 // et documents/archives/etablissement/ sinon
-if(getSettingValue('multisite')=='y') {
+//if(getSettingValue('multisite')=='y') {
+if(((isset($multisite))&&($multisite=='y'))||(getSettingValue('multisite')=='y')) {
 	if(!preg_match('|documents/archives/'.$_COOKIE['RNE'].'/|',$_SERVER['SCRIPT_FILENAME'])) {
 
 		// A REVOIR: LES $msg NE SONT PAS PRIS EN COMPTE DANS logout.php
