@@ -540,4 +540,19 @@ else {
     $result .= "<p style=\"color:blue;\">Ajout du champ date_sortie à la table <strong>eleves</strong> : déjà réalisé.</p>";
 }
 
+$sql="SELECT 1=1 FROM setting WHERE name='csrf_mode';";
+$res_csrf=mysql_query($sql);
+if(mysql_num_rows($res_csrf)==0) {
+	$sql="SELECT 1=1 FROM infos_actions WHERE titre='Paramétrage csrf_mode requis';";
+	$res_test=mysql_query($sql);
+	if(mysql_num_rows($res_test)==0) {
+		$result .= "<br /><p style=\"color:blue;\">Paramétrage csrf_mode requis.<br /></p>";
+	
+		$info_action_titre="Paramétrage csrf_mode requis";
+		$info_action_texte="Vous devez effectuer un choix de paramétrage pour la protection contre les attaques CSRF&nbsp;: <a href='gestion/security_policy.php#csrf_mode'>Paramétrage</a>";
+		$info_action_destinataire="administrateur";
+		$info_action_mode="statut";
+		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+	}
+}
 ?>

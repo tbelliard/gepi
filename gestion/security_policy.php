@@ -223,6 +223,14 @@ if (isset($_POST['filtrage_html'])) {
 	}
 
 	$utiliser_no_php_in_img=getSettingValue('utiliser_no_php_in_img');
+
+
+	if (isset($_POST['csrf_mode'])) {
+		if (!saveSetting(("csrf_mode"), $_POST['csrf_mode'])) {
+			$msg = "Erreur lors de l'enregistrement de csrf_mode !";
+		}
+	}
+
 }
 
 
@@ -488,9 +496,39 @@ echo "<div style='margin-left:3em;'>\n";
 
 	echo "<p style='font-weight:bold; color:red;'>Il est très fortement déconseillé de désactiver le filtrage.</p>\n";
 
+	echo "<br />";
+
 	echo "<p><input type='checkbox' id='utiliser_no_php_in_img' name='utiliser_no_php_in_img' value='y' ";
 	if($utiliser_no_php_in_img=='y') {echo "checked ";}
 	echo "/><label for='utiliser_no_php_in_img'> Interdire d'insérer dans des appréciations, des notices de cahiers de textes des images générées par PHP</label>.</p>\n";
+
+	echo "<br />";
+
+echo "</div>\n";
+
+echo "<h2><a name='csrf_mode'></a>CSRF</h2>";
+echo "<div style='margin-left:3em;'>\n";
+
+	echo "<p>";
+	echo "<input type='radio' id='csrf_mode_vide' name='csrf_mode' value='' ";
+	if(getSettingValue('csrf_mode')=='') {echo "checked ";}
+	echo "/><label for='csrf_mode_vide'> Laisser faire l'enregistrement sans même informer l'administrateur (<i>fortement déconseillé</i>)</label>.<br />";
+
+	echo "<input type='radio' id='csrf_mode_mail_seul' name='csrf_mode' value='mail_seul' ";
+	if(getSettingValue('csrf_mode')=='mail_seul') {echo "checked ";}
+	echo "/><label for='csrf_mode_mail_seul'> Envoyer un mail à l'administrateur, mais laisser faire l'enregistrement (<i>déconseillé, parce que certains dégats ne sont pas simples à réparer</i>)</label>.<br />";
+
+	echo "<input type='radio' id='csrf_mode_strict' name='csrf_mode' value='strict' ";
+	if(getSettingValue('csrf_mode')=='strict') {echo "checked ";}
+	echo "/><label for='csrf_mode_strict'> Refuser l'enregistrement et envoyer un mail à l'administrateur (<i>conseillé</i>)</label>.";
+
+	echo "</p>\n";
+
+	echo "<p>Il est recommandé de se prémunir d'éventuelles attaques CSRF dont les utilisateurs pourraient être victimes.<br />
+Vous devriez choisir le dernier mode ci-dessus.<br />
+Voir <a href='http://fr.wikipedia.org/wiki/CSRF'>http://fr.wikipedia.org/wiki/CSRF</a> pour plus de détails.</p>\n";
+
+
 echo "</div>\n";
 
 echo "<center><input type='submit' value='Enregistrer' /></center>\n";
