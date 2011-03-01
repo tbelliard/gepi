@@ -75,7 +75,10 @@ require_once("../../lib/header.inc");
 
 //debug_var();
 
-echo "<p class='bold'><a href='../../cahier_texte_2/index.php'><img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+echo "<p class='bold'>";
+if($_SESSION['statut']=='professeur') {echo "<a href='../../cahier_texte_2/index.php'>";}
+else {echo "<a href='../../../accueil.php'>";}
+echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 
 // Selon le statut, pointer vers la page annee/index.php ou vers annee/cdt_LOGIN.php
