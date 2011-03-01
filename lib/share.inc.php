@@ -4559,7 +4559,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 
 				//$tab2=preg_split("/[\s]+/",$tab[$i]); // Ca compterait les espaces, tabulations, \n et \r
-				$tab2=split(" ",$tab[$i]);
+				$tab2=explode(" ",$tab[$i]);
 				// Si on gère aussi les virgules et tirets, il y a une difficulté supplémentaire à gérer pour re-concaténer (normalement après une virgule, on doit avoir un espace)... donc on ne gère que les espaces
 
 				if($my_echo_debug==1) my_echo_debug("_____________________________________________\n");
@@ -4617,7 +4617,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 					if($supprimer_retours_a_la_ligne=="n") {
 						if($my_echo_debug==1) my_echo_debug("On découpe si nécessaire les retours à la ligne\n");
 						//$tab3=split("\n",$tab2[$j]);
-						$tab3=split("\n",$tab2[$j]);
+						$tab3=explode("\n",$tab2[$j]);
 						for($loop=0;$loop<count($tab3);$loop++) {if($my_echo_debug==1) my_echo_debug("   \$tab3[$loop]=\"$tab3[$loop]\"\n");}
 					}
 					else {
@@ -4985,14 +4985,14 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		unset($ligne);
 		$ligne=array();
 
-		$tab=split(" ",$texte);
+		$tab=explode(" ",$texte);
 		$cpt=0;
 		$i=0;
 		while(true) {
 			if(isset($ligne[$cpt])) {$ligne[$cpt].=" ";} else {$ligne[$cpt]="";}
 
 			if(my_ereg("\n",$tab[$i])) {
-				$tmp_tab=split("\n",$tab[$i]);
+				$tmp_tab=explode("\n",$tab[$i]);
 
 				for($k=0;$k<count($tmp_tab)-1;$k++) {
 					if(!isset($ligne[$cpt])) {$ligne[$cpt]="";}
@@ -5084,7 +5084,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			unset($ligne);
 			$ligne=array();
 
-			$tab=split(" ",trim(my_ereg_replace("\n"," ",$texte)));
+			$tab=explode(" ",trim(my_ereg_replace("\n"," ",$texte)));
 			$cpt=0;
 			$i=0;
 			while(true) {
@@ -5186,7 +5186,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			unset($ligne);
 			$ligne=array();
 
-			$tab=split(" ",trim(my_ereg_replace("\n"," ",$texte)));
+			$tab=explode(" ",trim(my_ereg_replace("\n"," ",$texte)));
 			$cpt=0;
 			$i=0;
 			while(true) {
@@ -5526,7 +5526,7 @@ function get_commune($code_commune_insee,$mode){
 
 	if(strstr($code_commune_insee,'@')) {
 		// On a affaire à une commune étrangère
-		$tmp_tab=split('@',$code_commune_insee);
+		$tmp_tab=explode('@',$code_commune_insee);
 		$sql="SELECT * FROM pays WHERE code_pays='$tmp_tab[0]';";
 		//echo "$sql<br />";
 		$res_pays=mysql_query($sql);
