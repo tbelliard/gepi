@@ -1066,29 +1066,7 @@ class Eleve extends BaseEleve {
 	    if ($abs_saisie_col->isEmpty()) {
 		return new PropelCollection();
 	    }
-	     //test sur sortie eleve de l'établissement
-        $date_sortie=$this->getDateSortie('U');
-        $day=date('d',$date_sortie);
-        $month=date('m',$date_sortie);
-        $year=date('Y',$date_sortie);
-        if (!is_null($date_sortie) && $date_sortie !== 0) {
-            if ($date_debut == null) {
-                $date_debut = $abs_saisie_col->getFirst()->getDebutAbs(null);
-            }
-            if ($date_fin == null) {
-                foreach ($abs_saisie_col as $saisie) {
-                    if ($date_fin == null || $saisie->getFinAbs('U') > $date_fin->format('U')) {
-                        $date_fin = $saisie->getFinAbs(null);
-                    }
-                }
-            }
-            if ($date_sortie < $date_debut->format('U')) {
-                date_date_set($date_debut, $year, $month, $day);
-                date_date_set($date_fin, $year, $month, $day);
-            } elseif ($date_sortie > $date_debut->format('U') && $date_sortie < $date_fin->format('U')) {
-                date_date_set($date_fin, $year, $month, $day);
-            }
-        }
+	    
 	    //on filtre les saisie qu'on ne veut pas compter
 	    $abs_saisie_col_filtre = new PropelCollection();
 	    $abs_saisie_col_2 = clone $abs_saisie_col;
@@ -1124,16 +1102,7 @@ class Eleve extends BaseEleve {
 	    require_once("helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
-/**
-	 *
-	 * Retourne une collection contenant les saisies des absences à prendre en compte dans les decomptes de demi-journées
-	 * entre deux dates
-	 *
-	 * @param      DateTime $date_debut
-	 * @param      DateTime $date_fin
-	 *
-	 * @return PropelCollection  AbsenceEleveSaisie[]
-	 */
+
  	private function getAbsColDecompteDemiJournee($date_debut, $date_fin) {
 	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
 	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
@@ -1213,29 +1182,7 @@ class Eleve extends BaseEleve {
 	    if ($abs_saisie_col->isEmpty()) {
 		return new PropelCollection();
 	    }
-        //test sur sortie eleve de l'établissement
-        $date_sortie=$this->getDateSortie('U');
-        $day=date('d',$date_sortie);
-        $month=date('m',$date_sortie);
-        $year=date('Y',$date_sortie);
-        if (!is_null($date_sortie) && $date_sortie !== 0) {
-            if ($date_debut == null) {
-                $date_debut = $abs_saisie_col->getFirst()->getDebutAbs(null);
-            }
-            if ($date_fin == null) {
-                foreach ($abs_saisie_col as $saisie) {
-                    if ($date_fin == null || $saisie->getFinAbs('U') > $date_fin->format('U')) {
-                        $date_fin = $saisie->getFinAbs(null);
-                    }
-                }
-            }
-            if ($date_sortie < $date_debut->format('U')) {
-                date_date_set($date_debut, $year, $month, $day);
-                date_date_set($date_fin, $year, $month, $day);
-            } elseif ($date_sortie > $date_debut->format('U') && $date_sortie < $date_fin->format('U')) {
-                date_date_set($date_fin, $year, $month, $day);
-            }
-        }
+
 	    //on filtre les saisie qu'on ne veut pas compter
 	    $abs_saisie_col_filtre = new PropelCollection();
 	    $abs_saisie_col_2 = clone $abs_saisie_col;
