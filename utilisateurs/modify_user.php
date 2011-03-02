@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -98,7 +98,7 @@ else {
 
 $uid = md5(uniqid(microtime(), 1));
 // on remplace les %20 par des espaces
-$uid_post = my_eregi_replace('%20',' ',$uid_post);
+$uid_post = preg_replace('/%20/',' ',$uid_post);
 if($uid_post===$_SESSION['uid_prime']) {
 	$valide_form = 'oui';
 }
@@ -111,7 +111,7 @@ $_SESSION['uid_prime'] = $uid;
 // fin pour module trombinoscope
 
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
-
+check_token();
 //------------------------------------------------------
 //--- Partie retirée par Thomas Belliard
 // Cas LCS : on teste s'il s'agit d'un utilisateur local ou non
@@ -157,7 +157,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 
 		$temoin_ajout_ou_modif_ok="n";
 
-		if ((isset($_POST['new_login'])) and ($_POST['new_login']!='') and (my_ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$", $_POST['new_login'])) ) {
+		if ((isset($_POST['new_login'])) and ($_POST['new_login']!='') and (preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_.]{0,".($longmax_login-1)."}$/", $_POST['new_login'])) ) {
 			// Modif Thomas : essayons d'accepter des logins sensibles à la casse, pour mieux s'adapter aux sources externes (LDAP).
 			//$_POST['new_login'] = strtoupper($_POST['new_login']);
 			$reg_password_c = md5($NON_PROTECT['password1']);
@@ -487,6 +487,8 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 	}
 }
 elseif(isset($_POST['suppression_assoc_user_groupes'])) {
+	check_token();
+
 	$user_group=isset($_POST["user_group"]) ? $_POST["user_group"] : array();
 
 	$call_classes = mysql_query("SELECT g.id group_id, g.name name, c.classe classe, c.id classe_id " .
@@ -644,7 +646,7 @@ echo "</p>\n";
 echo "</form>\n";
 
 $ldap_write_access = getSettingValue("ldap_write_access") == "yes" ? true : false;
-if (!LDAPServer::is_setup()) $ldap_write_access = false;
+if (!LDAPServer::is_setup()) {$ldap_write_access = false;}
 
 if ($ldap_write_access) {
 	echo "<p><strong><span style='color: red;'>Attention !</strong> Un accès LDAP en écriture a été défini.
@@ -657,6 +659,7 @@ if ($ldap_write_access) {
 <form enctype="multipart/form-data" action="modify_user.php" method="post">
 <fieldset>
 <?php
+echo add_token_field();
 if (isset($user_login)) {
 	echo "<div style='float:right; width:; height:;'><a href='".$_SERVER['PHP_SELF']."?user_login=$user_login&amp;journal_connexions=y#connexion' title='Journal des connexions'><img src='../images/icons/document.png' width='16' height='16' alt='Journal des connexions' /></a></div>\n";
 }
@@ -786,7 +789,7 @@ if(getSettingValue("active_module_trombinoscopes")=='y'){
 
 	<div id="div_upload_photo" style="display: none;">
 		<input type="file" name="filephoto" size="12" />
-		<input type="hidden" name="uid_post" value="<?php echo my_ereg_replace(' ','%20',$uid); ?>" />
+		<input type="hidden" name="uid_post" value="<?php echo preg_replace('/ /','%20',$uid); ?>" />
 	<?php
 	if ((isset($user_login))and($user_login!='')&&(isset($user_nom))and($user_nom!='')&&(isset($user_prenom))and($user_prenom!='')) {
 		if(file_exists($photo)){
@@ -928,6 +931,7 @@ echo "<input type=hidden name=max_mat value=$nb_mat />\n";
 			echo "<p>&nbsp;</p>\n";
 			echo "<form enctype='multipart/form-data' action='modify_user.php' method='post'>\n";
 			echo "<fieldset>\n";
+			echo add_token_field();
 			echo "<p>Le professeur est associé aux enseignements suivants.<br />Vous pouvez supprimer (<i>décocher</i>) l'association avec certains enseignements&nbsp;:</p>";
 			$k = 0;
 			while ($k < $nb_classes) {
