@@ -1046,7 +1046,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection DateTime[]
 	 */
-	public function getDemiJourneesAbsence($date_debut, $date_fin = null) {
+	public function getDemiJourneesAbsence($date_debut=null, $date_fin = null) {
 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
             return ($this->getDemiJourneesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
         }
@@ -1163,7 +1163,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection DateTime[]
 	 */
-	public function getDemiJourneesNonJustifieesAbsence($date_debut, $date_fin = null) {
+	public function getDemiJourneesNonJustifieesAbsence($date_debut=null, $date_fin = null) {
 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
 	    return ($this->getDemiJourneesNonJustifieesAbsenceParCollection($abs_saisie_col,$date_debut, $date_fin));
 	}
@@ -1253,7 +1253,7 @@ class Eleve extends BaseEleve {
 	 *
 	 * @return PropelCollection DateTime[]
 	 */
-	public function getRetards($date_debut, $date_fin = null) {
+	public function getRetards($date_debut=null, $date_fin = null) {
 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
 	    if ($abs_saisie_col->isEmpty()) {
 		return new PropelCollection();

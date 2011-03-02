@@ -496,15 +496,8 @@ foreach ($donnees as $id => &$eleve) {
         foreach ($value2 as &$journee) {
             foreach ($journee as $key => &$value) {
             $abs_col = AbsenceEleveSaisieQuery::create()->filterById($value['saisies'])->orderByDebutAbs()->find();
-            $debut = $abs_col->getFirst()->getDebutAbs(null);
-            $fin=null;
-            foreach ($abs_col as $saisie) {
-                    if ($fin == null || $saisie->getFinAbs('U') > $fin->format('U')) {
-                        $fin = $saisie->getFinAbs(null);
-                    }
-                }
-            $value['demi_journees'] = $propel_eleve->getDemiJourneesAbsenceParCollection($abs_col,$debut,$fin)->count();
-            $value['demi_journees_non_justifiees'] = $propel_eleve->getDemiJourneesNonJustifieesAbsenceParCollection($abs_col,$debut,$fin)->count();
+            $value['demi_journees'] = $propel_eleve->getDemiJourneesAbsenceParCollection($abs_col)->count();
+            $value['demi_journees_non_justifiees'] = $propel_eleve->getDemiJourneesNonJustifieesAbsenceParCollection($abs_col)->count();
             $value['demi_journees_justifiees'] = $value['demi_journees'] - $value['demi_journees_non_justifiees'];            
             }
         }
