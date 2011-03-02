@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // INSERT INTO `droits` VALUES ('/responsables/dedoublonnage_adresses.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Dédoublonnage des adresses responsables', '');
 
@@ -90,6 +90,8 @@ require_once("../lib/header.inc");
 
 
 if(isset($step)) {
+	check_token(false);
+
 	echo "<div style='float: right; border: 1px solid black; width: 4em;'>
 <form name='formstop' action='".$_SERVER['PHP_SELF']."' method='post'>
 <input type='checkbox' name='stop' id='stop' value='y' onchange='stop_change()' ";
@@ -132,10 +134,10 @@ function test_stop(num){
 	//document.getElementById('id_form_stop').value=stop;
 	if(stop=='n'){
 		//setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=1')\",2000);
-		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num";
+		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'".add_token_in_url(false)."'";
 
 	// AJOUT A FAIRE VALEUR STOP
-	echo "+'&amp;stop='+stop";
+	echo "+'&stop='+stop";
 
 	echo ");
 	}
@@ -169,9 +171,11 @@ function test_stop_suite(num){
 
 	document.location.replace('".$_SERVER['PHP_SELF']."?step='+num";
 	// AJOUT A FAIRE VALEUR STOP
-	echo "+'&amp;stop='+stop";
+	echo "+'&stop='+stop+'";
 
-	echo ");
+	echo add_token_in_url(false);
+
+	echo "');
 }
 
 </script>\n";
@@ -192,6 +196,8 @@ if(!isset($step)) {
 	echo "<p>Cette page est destinée à effectuer le dédoublonnage d'adresses considérées à tort par Sconet comme des adresses différentes alors qu'elles sont identiques.</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+	echo add_token_field();
 
 	//echo "<input type=hidden name='is_posted' value='yes' />\n";
 	echo "<input type=hidden name='step' value='0' />\n";
@@ -245,6 +251,7 @@ else{
 	flush();
 
 	echo "<form action='".$_SERVER['PHP_SELF']."' name='formulaire' method='post'>\n";
+	echo add_token_field();
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:
 	echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
