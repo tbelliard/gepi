@@ -1099,6 +1099,10 @@ class Eleve extends BaseEleve {
 		$date_fin_iteration = new DateTime('now');
 		$date_fin_iteration->setTime(23,59);
 	    }
+            if ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin_iteration->format('U')) {
+                $date_fin_iteration = $this->getDateSortie(null);
+            }
+
 	    require_once("helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
@@ -1226,6 +1230,9 @@ class Eleve extends BaseEleve {
 		$date_fin_iteration = new DateTime('now');
 		$date_fin_iteration->setTime(23,59);
 	    }
+            if ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin_iteration->format('U')) {
+                $date_fin_iteration = $this->getDateSortie(null);
+            }
 
 	    require_once("helpers/AbsencesEleveSaisieHelper.php");
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
@@ -1284,6 +1291,10 @@ class Eleve extends BaseEleve {
 		$date_fin_iteration = new DateTime('now');
 		$date_fin_iteration->setTime(23,59);
 	    }
+
+            if ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin_iteration->format('U')) {
+                $date_fin_iteration = $this->getDateSortie(null);
+            }
 
 	    require_once("helpers/AbsencesEleveSaisieHelper.php");
 	    $retards_result = AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
