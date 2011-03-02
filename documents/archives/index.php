@@ -77,7 +77,7 @@ require_once("../../lib/header.inc");
 
 echo "<p class='bold'>";
 if($_SESSION['statut']=='professeur') {echo "<a href='../../cahier_texte_2/index.php'>";}
-else {echo "<a href='../../../accueil.php'>";}
+else {echo "<a href='../../accueil.php'>";}
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 
