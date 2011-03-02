@@ -346,13 +346,26 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
 			periode = '".$rep['periode']."'";
 		$req_insertion = mysql_query($sql_request);
 	}
+    // --------- Rechercher les groupes d'enseignement qui ont des élèves en commun avec le groupe visé
+
+	$sql_request = "DELETE FROM j_eleves_groupes_delestage2";
+	$req = mysql_query($sql_request);
+
+	$sql_request = "SELECT id_groupe FROM j_eleves_groupes WHERE login IN (SELECT login FROM j_eleves_groupes_delestage)";
+	$req = mysql_query($sql_request);
 	
+	while ($rep = mysql_fetch_array($req)) {
+		$sql_request = "INSERT INTO j_eleves_groupes_delestage2 SET
+			login = '".$rep['login']."', 
+			id_groupe = '".$rep['id_groupe']."',
+			periode = '".$rep['periode']."'";
+		$req_insertion = mysql_query($sql_request);
+	}	
 	
     if ($type_semaine == "0") {
         if ($groupe_type == "ENS") {
             $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
-                                    id_groupe IN (SELECT id_groupe FROM j_eleves_groupes WHERE 
-                                        login IN (SELECT login FROM j_eleves_groupes_delestage)) AND
+                                    id_groupe IN (SELECT id_groupe FROM j_eleves_groupes_delestage2) AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
                                     heuredeb_dec = '".$current_heure."' AND

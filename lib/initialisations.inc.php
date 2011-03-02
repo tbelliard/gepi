@@ -9,6 +9,10 @@ if($utiliser_mb=="y") {
 */
 //======================================
 
+// Initialisation de variables utilisées si javascript activé
+$tabdiv_infobulle=array();
+$tabid_infobulle=array();
+	
 $is_lcs_plugin="no";
 // Pour les scripts situés à la racine de GEPI
 if (isset($niveau_arbo) and ($niveau_arbo == "0")) {

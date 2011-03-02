@@ -205,8 +205,7 @@ if (isset($utilisation_jsdivdrag) AND $utilisation_jsdivdrag == "non") {
 	$posDiv_infobulle=0;
 	// $posDiv_infobulle permet de fixer la position horizontale initiale du Div.
 
-	$tabdiv_infobulle=array();
-	$tabid_infobulle=array();
+
 
 	// Choix de l'unité pour les dimensions des DIV: em, px,...
 	$unite_div_infobulle="em";

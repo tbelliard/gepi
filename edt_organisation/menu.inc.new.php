@@ -4,7 +4,7 @@
  *
  * @version $Id: menu.inc.new.php $
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
  *
  * This file is part of GEPI.
  *
@@ -98,18 +98,19 @@ if (!strstr($ua, "MSIE 6.0")) {
     </ul>
 
     <ul>
-        <li><a href="#">Création<!--[if IE 7]><!--></a><!--<![endif]-->
+        <li><a href="#">Gestion<!--[if IE 7]><!--></a><!--<![endif]-->
             <ul>
 		    <!--[if lte IE 6]><table><tr><td><![endif]-->
+            <li><a href="./edt.php" >Gestion des accès</a></li>
+            <li><a href="./propagation_edt.php" >Gestion des propagations</a></li>
+            <li><a href="./transferer_edt.php" >Gestion des remplacements</a></li>
+            <li><a href="./ajouter_salle.php">Gestion des salles</a></li>
+            <li><a href="./edt_calendrier.php">Gestion du calendrier</a></li>
+            <li><a href="./admin_config_semaines.php?action=visualiser">Définir les types de semaines</a></li>
+            <li><a href="./admin_horaire_ouverture.php?action=visualiser">Définir les horaires d\'ouverture</a></li>
+            <li><a href="./admin_periodes_absences.php?action=visualiser">Définir la journée type</a></li>
             <li><a href="./edt_initialiser.php">Initialisation automatique</a></li>
             <li><a href="./index_edt.php?visioedt=prof1">Initialisation manuelle</a></li>
-            <li><a href="./transferer_edt.php" >Transférer/Supprimer un edt</a></li>
-            <li><a href="./ajouter_salle.php">Créer/éditer les salles</a></li>
-            <li><a href="./edt_calendrier.php">Créer/éditer les périodes</a></li>
-            <li><a href="./admin_config_semaines.php?action=visualiser">Créer/éditer les semaines</a></li>
-            <li><a href="./admin_horaire_ouverture.php?action=visualiser">Définir les horaires d\'ouverture</a></li>
-            <li><a href="./admin_periodes_absences.php?action=visualiser">Définir les créneaux</a></li>
-
 		    <!--[if lte IE 6]></td></tr></table></a><![endif]-->
             </ul>
         </li>
