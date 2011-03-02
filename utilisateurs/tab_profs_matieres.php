@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -51,6 +51,8 @@ $msg="";
 //$user_login = isset($_POST["user_login"]) ? $_POST["user_login"] : (isset($_GET["user_login"]) ? $_GET["user_login"] : NULL);
 
 if(isset($_POST['user_login'])){
+	check_token();
+
 	$user_login=$_POST['user_login'];
 	$tab_matiere=$_POST['tab_matiere'];
 
@@ -121,7 +123,7 @@ if($msg!=""){
 */
 ?>
 <p class=bold>
-<a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a>
+<a href="index.php?mode=personnels"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href='javascript:centrerpopup("help.php",600,480,"scrollbars=yes,statusbar=no,resizable=yes")'>Aide</a>
 </p>
 <form enctype="multipart/form-data" action="<?php echo $_SERVER['PHP_SELF'];?>" method="post">
 
@@ -129,6 +131,8 @@ if($msg!=""){
 <div class = "norme">
 
 <?php
+	echo add_token_field();
+
 	// Fonction destinée à afficher verticalement, lettre par lettre, une chaine:
 	function aff_vertical($texte){
 		$chaine="";
@@ -318,7 +322,7 @@ if($msg!=""){
 			}
 
 			//echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt);' onMouseOut='retablit_couleurs($cpt);'>\n";
-			echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt); survol_colore_matiere($j);survol_infobulle(\"<p align=center>".my_ereg_replace("'"," ",$user_nom)." ".substr($user_prenom,0,1).".<br />".$tab_matiere[$j]."</p>\")' onMouseOut='retablit_couleurs($cpt);cacher_div(\"div_infobulle\")'>\n";
+			echo "<td id='td_".$cpt."_".$j."' style='text-align:center;$couleur' onMouseOver='survol_colore($cpt); survol_colore_matiere($j);survol_infobulle(\"<p align=center>".preg_replace("/'/"," ",$user_nom)." ".substr($user_prenom,0,1).".<br />".$tab_matiere[$j]."</p>\")' onMouseOut='retablit_couleurs($cpt);cacher_div(\"div_infobulle\")'>\n";
 			echo "<div id='d_".$cpt."_".$j."'>\n";
 			echo "<input type='checkbox' id='c_".$cpt."_".$j."' name='c_".$cpt."_[".$j."]' value='oui' onchange='colore(\"td_".$cpt."_".$j."\",\"c_".$cpt."_".$j."\")' $checked_ou_pas />\n";
 			echo "</div>\n";
