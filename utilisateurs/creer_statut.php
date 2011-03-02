@@ -79,6 +79,7 @@ function verifChecked($id){
 }
 
 if ($action == 'ajouter') {
+	check_token();
 
 	// on fait quelques vérifications sur le nom du statut (si il existe déjà, longueur du nom, enlever les ' et les ",...)
 	// On ne garde que les 12 premières lettres
@@ -149,6 +150,8 @@ if ($action == 'ajouter') {
 } // if ($action == 'ajouter')
 
 if ($action == 'modifier') {
+	check_token();
+
 	// On initialise toutes les variables envoyées
 	$sql = "SELECT id, nom_statut FROM droits_statut ORDER BY nom_statut";
 	//echo "$sql<br />";
@@ -304,6 +307,8 @@ if ($query) {
 
 	// On traite les demandes de l'admin sur la définition des statuts des utilisateurs 'autre'
 	if ($action == "defStatut") {
+		check_token();
+
 		// On vérifie si cet utilisateur existe déjà
 		$query_v2 = mysql_query("SELECT id_statut FROM droits_utilisateurs WHERE login_user = '".$login_user."'")
 									OR trigger_error('Impossible de vérifier le statut privé de cet utilisateur.', E_USER_WARNING);
@@ -342,7 +347,11 @@ if ($query) {
 		<tr>
 			<td>'.$tab["nom"].' '.$tab["prenom"].'</td>
 			<td>
-		<form id="form'.$i.'" action="creer_statut.php" method="post">
+		<form id="form'.$i.'" action="creer_statut.php" method="post">'."\n";
+
+		$aff_users .= add_token_field();
+
+		$aff_users .= '
 			<p><input type="hidden" name="action" value="defStatut" />
 			<input type="hidden" name="userid" value="'.$tab["login"].'" />
 
@@ -390,7 +399,7 @@ include("../lib/header.inc");
 
 <p>Vous pouvez définir des statuts personnalisés, ayant une combinaison particulière de droits.
  Pour pouvoir ensuite attribuer (ci-dessous) un statut personnalisé à un utilisateur, il faut d'abord l'enregistrer avec un statut générique "autre"
- (<a href="./index.php?mode=personnels">CREER/MODIFIER un personnel</a>).</p>
+ (<a href="./modify_user.php">CREER un personnel</a> ou <a href="./index.php?mode=personnels">MODIFIER un personnel</a>).</p>
 
 <!-- Quel statut pour quelle personne ? -->
 <div style="width: 350px; -moz-border-radius: 20px; background-color: lightblue; padding: 5px; position: absolute; margin-left: 880px; margin-top: 10px;">
@@ -412,6 +421,9 @@ include("../lib/header.inc");
 <p style="color: grey; text-align: right; font-style: italic;">Gestion des droits des statuts personnalis&eacute;s&nbsp;&nbsp;</p>
 
 <form action="creer_statut.php" method="post">
+<?php
+echo add_token_field();
+?>
 	<p><input type="hidden" name="action" value="modifier" /></p>
 
 <table style="border: 1px solid white; background: #CCFFFF;">
@@ -440,6 +452,9 @@ include("../lib/header.inc");
 <div id="ajoutStatut" style="display: none;">
 
 	<form action="creer_statut.php" method="post">
+<?php
+echo add_token_field();
+?>
 		<p>
 		<label for="new">Nom du nouveau statut</label>
 		<input type="text" id="new" name="news" value="" />
