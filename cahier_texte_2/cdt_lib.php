@@ -346,22 +346,29 @@ require_once("'.$pref_arbo.'/entete.php");
 			//echo "\$transferer_doc=$transferer_doc<br />";
 
 			if($transferer_doc=="y") {
-				$res=copy($tab_documents_joints[$loop],"$dossier_documents/$dossier_courant/$fichier_courant");
-
-				//echo "\$res=copy($tab_documents_joints[$loop],\"$dossier_documents/$dossier_courant/$fichier_courant\")<br />";
-				//echo "\$res=$res<br />";
-
-				if(($res)&&($mode=='transfert')) {
-					if(!unlink($tab_documents_joints[$loop])) {
-						echo "<span style='color:red; margin-left: 3em;'>Erreur lors de la suppression de $tab_documents_joints[$loop]</span><br />\n";
+				if(file_exists($tab_documents_joints[$loop])) {
+					$res=copy($tab_documents_joints[$loop],"$dossier_documents/$dossier_courant/$fichier_courant");
+	
+					//echo "\$res=copy($tab_documents_joints[$loop],\"$dossier_documents/$dossier_courant/$fichier_courant\")<br />";
+					//echo "\$res=$res<br />";
+	
+					if(($res)&&($mode=='transfert')) {
+						if(!unlink($tab_documents_joints[$loop])) {
+							echo "<span style='color:red; margin-left: 3em;'>Erreur lors de la suppression de $tab_documents_joints[$loop]</span><br />\n";
+	
+							$temoin_erreur="y";
+						}
+						/*
+						else {
+							echo "<span style='color:green; margin-left: 3em;'>Suppression de $tab_documents_joints[$loop] effectuée</span><br />\n";
+						}
+						*/
+					}
+				}
+				else {
+						echo "<span style='color:red; margin-left: 3em;'>Il semble que le fichier $tab_documents_joints[$loop] n'existe pas.</span><br />\n";
 
 						$temoin_erreur="y";
-					}
-					/*
-					else {
-						echo "<span style='color:green; margin-left: 3em;'>Suppression de $tab_documents_joints[$loop] effectuée</span><br />\n";
-					}
-					*/
 				}
 			}
 
