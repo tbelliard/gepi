@@ -231,7 +231,7 @@ function test_stop(num,compteur,nblig) {
 	if(stop=='n') {
 		//setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=1')\",2000);
 		//document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&amp;stop='+stop);
-		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&compteur='+compteur+'&nblig='+nblig+'&amp;stop='+stop+'".add_token_in_url()."');
+		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'&compteur='+compteur+'&nblig='+nblig+'&stop='+stop+'".add_token_in_url(false)."');
 	}
 }
 
@@ -263,8 +263,8 @@ function test_stop_suite(num) {
 
 	document.location.replace('".$_SERVER['PHP_SELF']."?step='+num";
 // AJOUT A FAIRE VALEUR STOP
-echo "+'&amp;stop='+stop";
-echo "+'".add_token_in_url()."'";
+echo "+'&stop='+stop";
+echo "+'".add_token_in_url(false)."'";
 echo ");
 }
 
