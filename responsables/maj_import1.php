@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // INSERT INTO `droits` VALUES ('/responsables/maj_import1.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Mise à jour Sconet', '');
 if (!checkAccess()) {
@@ -63,6 +63,7 @@ if(!isset($step)) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
 	//echo "<input type=hidden name='is_posted' value='yes' />\n";
+	echo add_token_field();
 	echo "<input type=hidden name='step' value='1' />\n";
 	//echo "<input type=hidden name='mode' value='1' />\n";
 	echo "<p>Sélectionnez le fichier <b>ELEVES.CSV</b>:<br /><input type=\"file\" size=\"80\" name=\"ele_file\" /></p>\n";
@@ -76,9 +77,11 @@ if(!isset($step)) {
 	echo "</form>\n";
 
 	echo "<p>Il est recommandé d'importer les informations élèves et de ne passer qu'ensuite à l'import des informations responsables.<br />\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=3'>Passer néanmoins à la page d'importation des responsables</a></p>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=3".add_token_in_url()."'>Passer néanmoins à la page d'importation des responsables</a></p>";
 }
 else{
+	check_token();
+
 	//if(!isset($_POST['step'])){
 	switch($step){
 		case 1:
@@ -88,6 +91,9 @@ else{
 			echo "<p>Dans le tableau, les classes ne sont mentionnées qu'à titre informatif.<br />L'affectation dans les classes n'est pas (<i>encore</i>) assurée depuis cette page.</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+			echo add_token_field();
+
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "<input type='hidden' name='step' value='2' />\n";
 
@@ -846,15 +852,15 @@ else{
 
 			switch($erreur){
 				case 0:
-					echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=3'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+					echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 					break;
 
 				case 1:
-					echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=3'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+					echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 					break;
 
 				default:
-					echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=3'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
+					echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=3".add_token_in_url()."'>import/mise à jour des personnes (<i>responsables</i>) et adresses</a>.</p>\n";
 					break;
 			}
 
@@ -866,6 +872,9 @@ else{
 			echo "<p>Vous allez importer les fichiers <b>CSV</b> (<i><a href='../init_xml/lecture_xml_sconet.php?ad_retour=".$_SERVER['PHP_SELF']."'>générés</a> à partir des exports XML de Sconet</i>).<br />\nLes fichiers requis ici sont les deux fichiers PERSONNES.CSV et ADRESSES.CSV</p>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+			echo add_token_field();
+
 			//echo "<input type=hidden name='is_posted' value='yes' />\n";
 			echo "<input type=hidden name='step' value='4' />\n";
 			//echo "<input type=hidden name='mode' value='1' />\n";
@@ -878,13 +887,16 @@ else{
 			echo "</form>\n";
 
 			echo "<p>Il est recommandé d'importer les informations élèves et de ne passer qu'ensuite à l'import des associations responsables/élèves.<br />\n";
-			echo "<a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=6'>Passer néanmoins à la page d'importation des associations responsables/élèves</a></p>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?is_posted=y&amp;step=6".add_token_in_url()."'>Passer néanmoins à la page d'importation des associations responsables/élèves</a></p>";
 			break;
 		case 4:
 			// Affichage des informations
 			echo "<h2>Import/mise à jour des personnes (<i>responsables</i>) et adresses</h2>\n";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+			echo add_token_field();
+
 			//echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "<input type='hidden' name='step' value='5' />\n";
 
@@ -2113,15 +2125,15 @@ else{
 			//echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise à jour des responsables</a>.</p>\n";
 			switch($erreur){
 				case 0:
-					echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise à jour des responsables</a>.</p>\n";
+					echo "<p>Passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6".add_token_in_url()."'>import/mise à jour des responsables</a>.</p>\n";
 					break;
 
 				case 1:
-					echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise à jour des responsables</a>.</p>\n";
+					echo "<p><font color='red'>Une erreur s'est produite.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6".add_token_in_url()."'>import/mise à jour des responsables</a>.</p>\n";
 					break;
 
 				default:
-					echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6'>import/mise à jour des responsables</a>.</p>\n";
+					echo "<p><font color='red'>$erreur erreurs se sont produites.</font><br />\nVous devriez en chercher la cause avant de passer à l'étape d'<a href='".$_SERVER['PHP_SELF']."?step=6".add_token_in_url()."'>import/mise à jour des responsables</a>.</p>\n";
 					break;
 			}
 
@@ -2132,6 +2144,9 @@ else{
 
 			// Formulaire pour fournir le fichier RESPONSABLES.CSV
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+			echo add_token_field();
+
 			//echo "<input type=hidden name='is_posted' value='yes' />\n";
 			echo "<input type=hidden name='step' value='7' />\n";
 			//echo "<input type=hidden name='mode' value='1' />\n";
@@ -2158,6 +2173,9 @@ else{
 				else{
 
 					echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+
+					echo add_token_field();
+
 					//echo "<input type=hidden name='is_posted' value='yes' />\n";
 					echo "<input type=hidden name='step' value='8' />\n";
 
