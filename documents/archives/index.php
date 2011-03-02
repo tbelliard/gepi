@@ -104,6 +104,36 @@ if(!file_exists($dossier_etab)) {
 	die();
 }
 
+
+$suppr_arch_cdt=isset($_POST['suppr_arch_cdt']) ? $_POST['suppr_arch_cdt'] : (isset($_GET['suppr_arch_cdt']) ? $_GET['suppr_arch_cdt'] : NULL);
+$confirmer_suppression=isset($_POST['confirmer_suppression']) ? $_POST['confirmer_suppression'] : "n";
+if(isset($suppr_arch_cdt)) {
+	if($confirmer_suppression=='y') {
+		echo "<p>Suppression de l'archivage de CDT <b>".$suppr_arch_cdt."</b>&nbsp;: \n";
+		if(deltree($dossier_etab."/".$suppr_arch_cdt,true)) {
+			echo "<span style='color:green;'>SUCCES</span>";
+		}
+		else {
+			echo "<span style='color:red;'>ECHEC</span>";
+		}
+		echo "</p>\n";
+	}
+	else {
+		echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+		echo add_token_field();
+		echo "<p>Vous souhaitez supprimer l'archivage de CDT <b>".$suppr_arch_cdt."</b><br />\n";
+		echo "<input type='hidden' name='suppr_arch_cdt' value='$suppr_arch_cdt' />\n";
+		echo "<input type='hidden' name='confirmer_suppression' value='y' />\n";
+		echo "<input type='submit' value='Confirmer la suppression' />\n";
+		echo "</p>\n";
+		echo "</form>\n";
+	}
+
+	echo "<br />\n";
+}
+
+
+
 $handle=opendir($dossier_etab);
 $tab_file = array();
 $n=0;
@@ -133,6 +163,10 @@ for($i=0;$i<count($tab_file);$i++) {
 	}
 	else {
 		echo "<a href='$dossier_etab/".$tab_file[$i]."/cdt/cdt_".$_SESSION['login'].".".$extension."'>Mon CDT</a>";
+	}
+
+	if($_SESSION['statut']=='administrateur') {
+		echo " - <a href='".$_SERVER['PHP_SELF']."?suppr_arch_cdt=".$tab_file[$i].add_token_in_url()."'><img src='../../images/delete16.png' width='16' height='16' /> Supprimer</a>";
 	}
 	echo "<br />\n";
 }

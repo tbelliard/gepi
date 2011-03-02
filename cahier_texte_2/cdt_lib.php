@@ -434,4 +434,35 @@ require_once("'.$pref_arbo.'/entete.php");
 		return $dossier;
 	}
 
+	//=======================================================
+	// Fonction récupérée dans /mod_ooo/lib/lib_mod_ooo.php
+
+	//$repaussi==true ~> efface aussi $rep
+	//retourne true si tout s'est bien passé,
+	//false si un fichier est resté (problème de permission ou attribut lecture sous Win
+	//dans tous les cas, le maximum possible est supprimé.
+	function deltree($rep,$repaussi=true) {
+		static $niv=0;
+		$niv++;
+		if (!is_dir($rep)) {return false;}
+		$handle=opendir($rep);
+		if (!$handle) {return false;}
+		while ($entree=readdir($handle)) {
+			if (is_dir($rep.'/'.$entree)) {
+				if ($entree!='.' && $entree!='..') {
+					$ok=deltree($rep.'/'.$entree);
+				}
+				else {$ok=true;}
+			}
+			else {
+				$ok=@unlink($rep.'/'.$entree);
+			}
+		}
+		closedir($handle);
+		$niv--;
+		if ($niv || $repaussi) $ok &= @rmdir($rep);
+		return $ok;
+	}
+	//=======================================================
+
 ?>
