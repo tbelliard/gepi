@@ -122,13 +122,14 @@ if (!checkAccess()) {
 if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
 	  // On récupère le RNE de l'établissement
   $rep_photos="../photos/".getSettingValue("gepiSchoolRne")."/eleves/";
-}else{
+} else {
   $rep_photos="../photos/eleves/";
 }
 
-if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
+if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) {
 	// Le deuxième responsable prend l'adresse du premier
-	if((isset($modif_adr_pers_id))&&(isset($adr_id))){
+	if((isset($modif_adr_pers_id))&&(isset($adr_id))) {
+		check_token();
 		$sql="UPDATE resp_pers SET adr_id='$adr_id' WHERE pers_id='$modif_adr_pers_id';";
 		$update=mysql_query($sql);
 		if(!$update){
@@ -148,6 +149,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	*/
 	// Validation d'un choix de responsable
 	if((isset($eleve_login))&&(isset($definir_resp))&&(isset($_POST['valider_choix_resp']))) {
+		check_token();
+
 		if($definir_resp==1){
 			$pers_id=$reg_resp1;
 		}
@@ -227,6 +230,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 	// Validation d'un choix d'établissement d'origine
 	if((isset($eleve_login))&&(isset($definir_etab))&&(isset($_POST['valider_choix_etab']))) {
+		check_token();
 	//if((isset($eleve_login))&&(isset($reg_no_gep))&&($reg_no_gep!="")&&(isset($definir_etab))&&(isset($_POST['valider_choix_etab']))) {
 
 		$sql="SELECT elenoet FROM eleves WHERE login='$eleve_login';";
@@ -292,6 +296,8 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 	//================================================
 	// Validation de modifications dans le formulaire de nom, prénom,...
 	if (isset($_POST['is_posted']) and ($_POST['is_posted'] == "1")) {
+		check_token();
+
 		// Détermination du format de la date de naissance
 		$call_eleve_test = mysql_query("SELECT naissance FROM eleves WHERE 1");
 		$test_eleve_naissance = @mysql_result($call_eleve_test, "0", "naissance");
@@ -303,9 +309,9 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		$reg_prenom = trim($reg_prenom);
 		$reg_email = trim($reg_email);
 		if ($reg_resp1 == '(vide)') $reg_resp1 = '';
-		if (!my_ereg ("^[0-9]{4}$", $birth_year)) {$birth_year = "1900";}
-		if (!my_ereg ("^[0-9]{2}$", $birth_month)) {$birth_month = "01";}
-		if (!my_ereg ("^[0-9]{2}$", $birth_day)) {$birth_day = "01";}
+		if (!preg_match ("/^[0-9]{4}$/", $birth_year)) {$birth_year = "1900";}
+		if (!preg_match ("/^[0-9]{2}$/", $birth_month)) {$birth_month = "01";}
+		if (!preg_match ("/^[0-9]{2}$/", $birth_day)) {$birth_day = "01";}
 		if ($format == '10') {
 			// YYYY-MM-DD
 			$reg_naissance = $birth_year."-".$birth_month."-".$birth_day." 00:00:00";
@@ -326,9 +332,9 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		//echo "date_sortie_mois".$date_sortie_mois."<br/>";
 		//echo "date_sortie_jour".$date_sortie_jour."<br/>";
 		
-		if (!my_ereg ("^[0-9]{4}$", $date_sortie_annee)) {$date_sortie_annee = "0000";}
-		if (!my_ereg ("^[0-9]{2}$", $date_sortie_mois)) {$date_sortie_mois = "00";}
-		if (!my_ereg ("^[0-9]{2}$", $date_sortie_jour)) {$date_sortie_jour = "00";}
+		if (!preg_match ("/^[0-9]{4}$/", $date_sortie_annee)) {$date_sortie_annee = "0000";}
+		if (!preg_match ("/^[0-9]{2}$/", $date_sortie_mois)) {$date_sortie_mois = "00";}
+		if (!preg_match ("/^[0-9]{2}$/", $date_sortie_jour)) {$date_sortie_jour = "00";}
 		
 		//echo "date_sortie_annee".$date_sortie_annee."<br/>";
 		//echo "date_sortie_mois".$date_sortie_mois."<br/>";
@@ -362,7 +368,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 			$msg = '';
 			$ok = 'yes';
-			if (my_ereg ("^[a-zA-Z_]{1}[a-zA-Z0-9_]{0,11}$", $reg_login)) {
+			if (preg_match("/^[a-zA-Z_]{1}[a-zA-Z0-9_]{0,11}$/", $reg_login)) {
 				if ($reg_no_gep != '') {
 					$test1 = mysql_query("SELECT login FROM eleves WHERE elenoet='$reg_no_gep'");
 					$count1 = mysql_num_rows($test1);
@@ -665,7 +671,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			// Envoi de la photo
 			if(isset($reg_no_gep)){
 				if($reg_no_gep!=""){
-					if(strlen(my_ereg_replace("[0-9]","",$reg_no_gep))==0){
+					if(strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0){
 						if(isset($_POST['suppr_filephoto'])){
 							if($_POST['suppr_filephoto']=='y'){
 
@@ -897,10 +903,11 @@ elseif($_SESSION['statut']=="professeur"){
 		if(!isset($msg)){$msg="";}
 
 		// Envoi de la photo
-		if(isset($reg_no_gep)){
-			if($reg_no_gep!=""){
-				if(strlen(my_ereg_replace("[0-9]","",$reg_no_gep))==0){
-					if(isset($_POST['suppr_filephoto'])){
+		if(isset($reg_no_gep)) {
+			if($reg_no_gep!="") {
+				if(strlen(preg_replace("/[0-9]/","",$reg_no_gep))==0){
+					if(isset($_POST['suppr_filephoto'])) {
+						check_token();
 						if($_POST['suppr_filephoto']=='y'){
 
 							// Récupération du nom de la photo en tenant compte des histoires des zéro 02345.jpg ou 2345.jpg
@@ -930,6 +937,7 @@ elseif($_SESSION['statut']=="professeur"){
 					if($nb_elenoet==1){
 						// filephoto
 						if(isset($HTTP_POST_FILES['filephoto'])){
+							check_token();
 							$filephoto_tmp=$HTTP_POST_FILES['filephoto']['tmp_name'];
 							if($filephoto_tmp!=""){
 								$filephoto_name=$HTTP_POST_FILES['filephoto']['name'];
@@ -986,6 +994,7 @@ if (isset($eleve_login)) {
 
 			if($tmp_lig_email->email!="") {
 				if($tmp_lig_email->email!=$eleve_email) {
+					check_token();
 					$sql="UPDATE eleves SET email='$tmp_lig_email->email' WHERE login='$eleve_login';";
 					$update=mysql_query($sql);
 					if(!$update) {
@@ -1203,22 +1212,23 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 			$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
 			$afficher_tous_les_resp=isset($_POST['afficher_tous_les_resp']) ? $_POST['afficher_tous_les_resp'] : "n";
-			$critere_recherche=my_ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
+			$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]/", "", $critere_recherche);
 
 			if($critere_recherche==""){
 				$critere_recherche=substr($eleve_nom,0,3);
 			}
 
 			$nb_resp=isset($_POST['nb_resp']) ? $_POST['nb_resp'] : 20;
-			if(strlen(my_ereg_replace("[0-9]","",$nb_resp))!=0) {
+			if(strlen(preg_replace("/[0-9]/","",$nb_resp))!=0) {
 				$nb_resp=20;
 			}
 			$num_premier_resp_rech=isset($_POST['num_premier_resp_rech']) ? $_POST['num_premier_resp_rech'] : 0;
-			if(strlen(my_ereg_replace("[0-9]","",$num_premier_resp_rech))!=0) {
+			if(strlen(preg_replace("/[0-9]/","",$num_premier_resp_rech))!=0) {
 				$num_premier_resp_rech=0;
 			}
 
 			echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
+			echo add_token_field();
 
 			echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
 			echo "<input type='hidden' name='definir_resp' value='$definir_resp' />\n";
@@ -1242,6 +1252,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 
 			echo "<form enctype='multipart/form-data' action='modify_eleve.php' method='post'>\n";
+			echo add_token_field();
 
 			echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
 			echo "<input type='hidden' name='definir_resp' value='$definir_resp' />\n";
@@ -1362,7 +1373,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : (isset($_GET['critere_recherche']) ? $_GET['critere_recherche'] : "");
 			$afficher_tous_les_etab=isset($_POST['afficher_tous_les_etab']) ? $_POST['afficher_tous_les_etab'] : (isset($_GET['afficher_tous_les_etab']) ? $_GET['afficher_tous_les_etab'] : "n");
 			//$critere_recherche=my_ereg_replace("[^0-9a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ -]", "", $critere_recherche);
-			$critere_recherche=my_ereg_replace("[^0-9a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ %-]", "", my_ereg_replace(" ","%",$critere_recherche));
+			$critere_recherche=preg_replace("/[^0-9a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü_ %-]/", "", preg_replace("/ /","%",$critere_recherche));
 			// Saisir un espace ou % pour plusieurs portions du champ de recherche ou pour une apostrophe
 			$champ_rech=isset($_POST['champ_rech']) ? $_POST['champ_rech'] : (isset($_GET['champ_rech']) ? $_GET['champ_rech'] : "nom");
 			$tab_champs_recherche_autorises=array('nom','cp','ville','id');
@@ -1375,11 +1386,11 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			*/
 
 			$nb_etab=isset($_POST['nb_etab']) ? $_POST['nb_etab'] : (isset($_GET['nb_etab']) ? $_GET['nb_etab'] : 20);
-			if(strlen(my_ereg_replace("[0-9]","",$nb_etab))!=0) {
+			if(strlen(preg_replace("/[0-9]/","",$nb_etab))!=0) {
 				$nb_etab=20;
 			}
 			$num_premier_etab_rech=isset($_POST['num_premier_etab_rech']) ? $_POST['num_premier_etab_rech'] : (isset($_GET['num_premier_etab_rech']) ? $_GET['num_premier_etab_rech'] : 0);
-			if(strlen(my_ereg_replace("[0-9]","",$num_premier_etab_rech))!=0) {
+			if(strlen(preg_replace("/[0-9]/","",$num_premier_etab_rech))!=0) {
 				$num_premier_etab_rech=0;
 			}
 
@@ -1392,6 +1403,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 			echo "<div style='width:90%; border: 1px solid black;'>\n";
 			echo "<!-- Formulaire de recherche/filtrage parmi les établissements -->\n";
 			echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
+			echo add_token_field();
 
 			echo "<input type='hidden' name='eleve_login' value='$eleve_login' />\n";
 			echo "<input type='hidden' name='definir_etab' value='$definir_etab' />\n";
@@ -1453,6 +1465,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 
 			echo "<!-- Formulaire de choix de l'établissement -->\n";
 			echo "<form enctype='multipart/form-data' name='form_choix_etab' action='modify_eleve.php' method='post'>\n";
+			echo add_token_field();
 
 			echo "<p>Choix de l'établissement d'origine pour <b>".casse_prenom($eleve_prenom)." ".strtoupper($eleve_nom)."</b></p>\n";
 
@@ -1634,6 +1647,7 @@ echo "</p>\n";
 
 
 echo "<form enctype='multipart/form-data' name='form_rech' action='modify_eleve.php' method='post'>\n";
+echo add_token_field();
 
 //echo "\$eleve_no_resp1=$eleve_no_resp1<br />\n";
 
@@ -1734,7 +1748,7 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")){
 		}
 		echo " onchange='changement();' />";
 	}
-	if($eleve_email!='') {
+	if((isset($eleve_email))&&($eleve_email!='')) {
 		$tmp_date=getdate();
 		echo " <a href='mailto:".$eleve_email."?subject=GEPI&amp;body=";
 		if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
@@ -2038,7 +2052,10 @@ Année<input type=text name=birth_year size=4 onchange='changement();' value=<?ph
 <?php
 if(getSettingValue('ele_lieu_naissance')=='y') {
 	echo "<br />\n";
-	echo "<b>Lieu de naissance&nbsp;:</b> ".get_commune($eleve_lieu_naissance,1)."\n";
+	echo "<b>Lieu de naissance&nbsp;:</b> ";
+	if(isset($eleve_lieu_naissance)) {echo get_commune($eleve_lieu_naissance,1);}
+	else {echo "<span style='color:red'>Non défini</span>";}
+	echo "\n";
 }
 ?>
 </div></td>
@@ -2329,6 +2346,7 @@ if(isset($eleve_login)){
 								if (isset($quelles_classes)) {echo "&amp;quelles_classes=$quelles_classes";}
 								if (isset($motif_rech)) {echo "&amp;motif_rech=$motif_rech";}
 								//echo "'>Prendre l'adresse de l'autre responsable</a>";
+								echo add_token_in_url();
 								echo "' onclick=\"return confirm_abandon (this, change, '$themessage');\">Prendre l'adresse de l'autre responsable</a>";
 							}
 						}
