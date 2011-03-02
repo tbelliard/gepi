@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 03/12/2006
+ * $Id$
  *
- * Copyright 2001, 2002 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel
  *
  * This file is part of GEPI.
  *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../../logout.php?auto=1");
     die();
-};
+}
 
 // Check access
 if (!checkAccess()) {
@@ -42,20 +42,24 @@ if (!checkAccess()) {
 }
 
 $msg = '';
-if (isset($_POST['activer'])) {
-    if (!saveSetting("active_module_msj", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
-}
-if (isset($_POST['site_msj_gepi'])) {
-    if (!saveSetting("site_msj_gepi", $_POST['site_msj_gepi'])) $msg = "Erreur lors de l'enregistrement de l'adresse du site de mise à jour !";
-}
-if (isset($_POST['dossier_ftp_gepi'])) {
-    if (!saveSetting("dossier_ftp_gepi", $_POST['dossier_ftp_gepi'])) $msg = "Erreur lors de l'enregistrement du nom du dossier d'installation de gepi sur FTP !";
-}
-if (isset($_POST['activer_rc'])) {
-    if (!saveSetting("rc_module_msj", $_POST['activer_rc'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation des RCs!";
-}
-if (isset($_POST['activer_beta'])) {
-    if (!saveSetting("beta_module_msj", $_POST['activer_beta'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation des BETAs!";
+if (isset($_POST['is_posted'])) {
+	check_token();
+
+	if (isset($_POST['activer'])) {
+		if (!saveSetting("active_module_msj", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
+	}
+	if (isset($_POST['site_msj_gepi'])) {
+		if (!saveSetting("site_msj_gepi", $_POST['site_msj_gepi'])) $msg = "Erreur lors de l'enregistrement de l'adresse du site de mise à jour !";
+	}
+	if (isset($_POST['dossier_ftp_gepi'])) {
+		if (!saveSetting("dossier_ftp_gepi", $_POST['dossier_ftp_gepi'])) $msg = "Erreur lors de l'enregistrement du nom du dossier d'installation de gepi sur FTP !";
+	}
+	if (isset($_POST['activer_rc'])) {
+		if (!saveSetting("rc_module_msj", $_POST['activer_rc'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation des RCs!";
+	}
+	if (isset($_POST['activer_beta'])) {
+		if (!saveSetting("beta_module_msj", $_POST['activer_beta'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation des BETAs!";
+	}
 }
 
 if (isset($_POST['is_posted']) and ($msg=='')) $msg = "Les modifications ont été enregistrées !";
@@ -77,6 +81,10 @@ require_once("../../lib/header.inc");
 <p>Note : l'option 'allow_url_fopen' dans php.ini doit être à 'On' sur le serveur pour que ce module puisse fonctionner.</p>
 <br />
 <form action="index.php" name="form1" method="post">
+<fieldset>
+<?php
+echo add_token_field();
+?>
 	<p>
 	<input type="radio" id="activMaj" name="activer" value="y" <?php if (getSettingValue("active_module_msj")=='y') echo ' checked="checked"'; ?> />
 	<label for="activMaj">&nbsp;Activer le module de mise à jour de GEPI</label>
@@ -119,6 +127,7 @@ require_once("../../lib/header.inc");
 	<input type="hidden" name="is_posted" value="1" />
 	<input type="submit" value="Enregistrer" style="font-variant: small-caps;" />
 	</p>
+</fieldset>
 </form>
 
 <br />
