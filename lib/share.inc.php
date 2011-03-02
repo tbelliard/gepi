@@ -210,7 +210,7 @@ function verif_mot_de_passe($password,$flag) {
 	global $char_spec;
 	if ($flag == 1) {
 		//if(ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password)) {
-		if(my_ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password)) {
+		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
 			return false;
 		}
 		elseif(preg_match("/^[[:alnum:]\W]{".getSettingValue("longmin_pwd").",}$/", $password) and preg_match("/[\W]+/", $password) and preg_match("/[0-9]+/", $password)) {
@@ -222,7 +222,7 @@ function verif_mot_de_passe($password,$flag) {
 	}
 	else {
 		//if(ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password)) {
-		if(my_ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password)) {
+		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
 			return false;
 		}
 		elseif (strlen($password) < getSettingValue("longmin_pwd")) {
@@ -328,49 +328,48 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
     if ($_mode == "name") {
             $temp1 = $_nom;
             //$temp1 = strtoupper($temp1);
-            $temp1 = my_ereg_replace(" ","", $temp1);
-            $temp1 = my_ereg_replace("-","_", $temp1);
-            $temp1 = my_ereg_replace("'","", $temp1);
+            $temp1 = preg_replace("/ /","", $temp1);
+            $temp1 = preg_replace("/-/","_", $temp1);
+            $temp1 = preg_replace("/'/","", $temp1);
             //$temp1 = substr($temp1,0,8);
         } elseif ($_mode == "name8") {
             $temp1 = $_nom;
             //$temp1 = strtoupper($temp1);
-            $temp1 = my_ereg_replace(" ","", $temp1);
-            $temp1 = my_ereg_replace("-","_", $temp1);
-            $temp1 = my_ereg_replace("'","", $temp1);
+            $temp1 = preg_replace("/ /","", $temp1);
+            $temp1 = preg_replace("/-/","_", $temp1);
+            $temp1 = preg_replace("/'/","", $temp1);
             $temp1 = substr($temp1,0,8);
         } elseif ($_mode == "fname8") {
 			if($_prenom=='') {return false;}
             $temp1 = $_prenom{0} . $_nom;
             //$temp1 = strtoupper($temp1);
-            $temp1 = my_ereg_replace(" ","", $temp1);
-            $temp1 = my_ereg_replace("-","_", $temp1);
-            $temp1 = my_ereg_replace("'","", $temp1);
+            $temp1 = preg_replace("/ /","", $temp1);
+            $temp1 = preg_replace("/-/","_", $temp1);
+            $temp1 = preg_replace("/'/","", $temp1);
             $temp1 = substr($temp1,0,8);
         } elseif ($_mode == "fname19") {
 			if($_prenom=='') {return false;}
             $temp1 = $_prenom{0} . $_nom;
             //$temp1 = strtoupper($temp1);
-            $temp1 = my_ereg_replace(" ","", $temp1);
-            $temp1 = my_ereg_replace("-","_", $temp1);
-            $temp1 = my_ereg_replace("'","", $temp1);
+            $temp1 = preg_replace("/ /","", $temp1);
+            $temp1 = preg_replace("/-/","_", $temp1);
+            $temp1 = preg_replace("/'/","", $temp1);
             $temp1 = substr($temp1,0,19);
         } elseif ($_mode == "firstdotname") {
 			if($_prenom=='') {return false;}
             $temp1 = $_prenom . "." . $_nom;
             //$temp1 = strtoupper($temp1);
 
-            $temp1 = my_ereg_replace(" ","", $temp1);
-            $temp1 = my_ereg_replace("-","_", $temp1);
-            $temp1 = my_ereg_replace("'","", $temp1);
+            $temp1 = preg_replace("/ /","", $temp1);
+            $temp1 = preg_replace("/-/","_", $temp1);
+            $temp1 = preg_replace("/'/","", $temp1);
             //$temp1 = substr($temp1,0,19);
         } elseif ($_mode == "firstdotname19") {
 			if($_prenom=='') {return false;}
             $temp1 = $_prenom . "." . $_nom;
             //$temp1 = strtoupper($temp1);
-            $temp1 = my_ereg_replace(" ","", $temp1);
-            //$temp1 = my_ereg_replace("-","_", $temp1);
-            $temp1 = my_ereg_replace("'","", $temp1);
+            $temp1 = preg_replace("/ /","", $temp1);
+            $temp1 = preg_replace("/'/","", $temp1);
             $temp1 = substr($temp1,0,19);
         } elseif ($_mode == "namef8") {
 			if($_prenom=='') {return false;}
@@ -378,9 +377,9 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
 			//echo "\$_prenom=$_prenom<br />";
             $temp1 =  substr($_nom,0,7) . $_prenom{0};
             //$temp1 = strtoupper($temp1);
-            $temp1 = my_ereg_replace(" ","", $temp1);
-            $temp1 = my_ereg_replace("-","_", $temp1);
-            $temp1 = my_ereg_replace("'","", $temp1);
+            $temp1 = preg_replace("/ /","", $temp1);
+            $temp1 = preg_replace("/-/","_", $temp1);
+            $temp1 = preg_replace("/'/","", $temp1);
             //$temp1 = substr($temp1,0,8);
         } else {
         	return false;
@@ -1743,9 +1742,9 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 
 				echo "<td class='small' ".$bg_color;
 				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-					if(strlen(my_ereg_replace('[0-9.,]','',$col[$j][$i]))==0) {
+					if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
-							if(my_ereg_replace(',','.',$col[$j][$i])<=my_ereg_replace(',','.',$vtn_borne_couleur[$loop])) {
+							if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
 								echo " style='";
 								if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
 								if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
@@ -1760,9 +1759,9 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
             } else {
 				echo "<td align=\"center\" class='small' ".$bg_color;
 				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-					if(strlen(my_ereg_replace('[0-9.,]','',$col[$j][$i]))==0) {
+					if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
-							if(my_ereg_replace(',','.',$col[$j][$i])<=my_ereg_replace(',','.',$vtn_borne_couleur[$loop])) {
+							if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
 								echo " style='";
 								if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
 								if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
@@ -2753,7 +2752,7 @@ function get_user_temp_directory(){
 		$lig_temp_dir=mysql_fetch_object($res_temp_dir);
 		$dirname=$lig_temp_dir->temp_dir;
 
-		if(($dirname!="")&&(strlen(my_ereg_replace("[A-Za-z0-9_.]","",$dirname))==0)) {
+		if(($dirname!="")&&(strlen(preg_replace("/[A-Za-z0-9_.]/","",$dirname))==0)) {
 			if(file_exists("temp/".$dirname)){
 				return $dirname;
 			}
@@ -2803,7 +2802,7 @@ function volume_dir($dir){
 
 	$handle = @opendir($dir);
 	while ($file = @readdir ($handle)){
-		if (my_eregi("^\.{1,2}$",$file))
+		if (preg_match("/^\.{1,2}$/i",$file))
 			continue;
 		//if(is_dir($dir.$file)){
 		if(is_dir("$dir/$file")){
@@ -2825,7 +2824,7 @@ function vider_dir($dir){
 	$statut=true;
 	$handle = @opendir($dir);
 	while ($file = @readdir ($handle)){
-		if (my_eregi("^\.{1,2}$",$file)){
+		if (preg_match("/^\.{1,2}$/i",$file)){
 			continue;
 		}
 		//if(is_dir($dir.$file)){
@@ -2912,7 +2911,7 @@ function remplace_accents($chaine,$mode){
 	}
 	elseif($mode == 'all_nospace'){
 		// On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		$retour1 = strtr(my_ereg_replace("Æ","AE",my_ereg_replace("æ","ae",ereg_replace("¼","OE",my_ereg_replace("½","oe","$chaine")))),"'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸"," AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
+		//$retour1 = strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe","$chaine")))),"'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸"," AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
 		$retour1=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe","$chaine")))),"'$liste_caracteres_accentues"," $liste_caracteres_desaccentues");
 		// On enlève aussi les guillemets
 		$retour = preg_replace('/"/', '', $retour1);
@@ -2965,7 +2964,7 @@ function get_class_from_ele_login($ele_login){
 			$tab_classe['liste'].=$lig_tmp->classe;
 
 			if($a>0) {$tab_classe['liste_nbsp'].=", ";}
-			$tab_classe['liste_nbsp'].=my_ereg_replace(" ","&nbsp;",$lig_tmp->classe);
+			$tab_classe['liste_nbsp'].=preg_replace("/ /","&nbsp;",$lig_tmp->classe);
 
 			$tab_classe['id'.$a] = $lig_tmp->id_classe;
 			$a = $a++;
@@ -3026,7 +3025,7 @@ function liens_class_from_ele_login($ele_login){
 	if(isset($tab_classe)){
 		if(count($tab_classe)>0){
 			foreach ($tab_classe as $key => $value){
-				if(strlen(my_ereg_replace("[0-9]","",$key))==0) {
+				if(strlen(preg_replace("/[0-9]/","",$key))==0) {
 					if($_SESSION['statut']=='administrateur') {
 						$chaine.=", <a href='../classes/classes_const.php?id_classe=$key'>$value</a>";
 					}
@@ -4534,7 +4533,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 
 		if($supprimer_retours_a_la_ligne=="y") {
 			//$texte=str_replace('\n'," ",$texte);
-			$texte=trim(my_ereg_replace("\n"," ",$texte));
+			$texte=trim(preg_replace("/\n/"," ",$texte));
 		}
 
 		$chaine_longueur_ligne_courante="0";
@@ -4820,7 +4819,7 @@ function cell_ajustee1($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			$pdf->SetFont('',$style_courant);
 
 			// On va supprimer les retours à la ligne
-			$texte=trim(my_ereg_replace("\n"," ",$texte));
+			$texte=trim(preg_replace("/\n/"," ",$texte));
 			if($my_echo_debug==1) my_echo_debug("\$texte=$texte\n");
 
 			// On supprime les balises
@@ -4991,7 +4990,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 		while(true) {
 			if(isset($ligne[$cpt])) {$ligne[$cpt].=" ";} else {$ligne[$cpt]="";}
 
-			if(my_ereg("\n",$tab[$i])) {
+			if(preg_match("/\n/",$tab[$i])) {
 				$tmp_tab=explode("\n",$tab[$i]);
 
 				for($k=0;$k<count($tmp_tab)-1;$k++) {
@@ -5084,7 +5083,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			unset($ligne);
 			$ligne=array();
 
-			$tab=explode(" ",trim(my_ereg_replace("\n"," ",$texte)));
+			$tab=explode(" ",trim(preg_replace("/\n/"," ",$texte)));
 			$cpt=0;
 			$i=0;
 			while(true) {
@@ -5186,7 +5185,7 @@ function cell_ajustee0($texte,$x,$y,$largeur_dispo,$h_cell,$hauteur_max_font,$ha
 			unset($ligne);
 			$ligne=array();
 
-			$tab=explode(" ",trim(my_ereg_replace("\n"," ",$texte)));
+			$tab=explode(" ",trim(preg_replace("/\n/"," ",$texte)));
 			$cpt=0;
 			$i=0;
 			while(true) {
@@ -5433,8 +5432,8 @@ function calcule_moy_mediane_quartiles($tab) {
 	for($i=0;$i<count($tab);$i++) {
 		//echo "\$tab[$i]=".$tab[$i]."<br />\n";
 		if(($tab[$i]!='')&&($tab[$i]!='-')&&($tab[$i]!='&nbsp;')&&($tab[$i]!='abs')&&($tab[$i]!='disp')) {
-			$tab2[]=my_ereg_replace(',','.',$tab[$i]);
-			$total+=my_ereg_replace(',','.',$tab[$i]);
+			$tab2[]=preg_replace('/,/','.',$tab[$i]);
+			$total+=preg_replace('/,/','.',$tab[$i]);
 		}
 	}
 
@@ -6156,7 +6155,7 @@ function telecharge_fichier($sav_file,$dirname,$type,$ext){
   } else if ($sav_file['type']!=$type ){
 	return ("Erreur : seuls les fichiers de type '".$type."' sont autorisés.");
   } else {
-	$nom_corrige = my_ereg_replace("[^.a-zA-Z0-9_=-]+", "_", $sav_file['name']);
+	$nom_corrige = preg_replace("/[^.a-zA-Z0-9_=-]+/", "_", $sav_file['name']);
 	if (!deplacer_upload($sav_file['tmp_name'], $dirname."/".$nom_corrige)) {
 	  return ("Problème de transfert : le fichier n'a pas pu être transféré sur le répertoire ".$dirname);
 	} else {
