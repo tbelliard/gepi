@@ -203,6 +203,13 @@ else {
 
 			//echo "\$dest_file=$dest_file<br />";
 
+			/*
+			$handle = fopen ($dest_file, "r");
+			$contents = fread ($handle, filesize ($dest_file));
+			fclose ($handle);
+			echo "<pre>$contents</pre>";
+			*/
+
 			//$fp=fopen($csv_file['tmp_name'],"r");
 			$fp=fopen($dest_file,"r");
 
@@ -218,7 +225,7 @@ else {
 				$ligne=fgets($fp, 4096);
 				$temp=explode(";",$ligne);
 				for($i=0;$i<sizeof($temp);$i++){
-					$en_tete[$i]=my_ereg_replace('"','',$temp[$i]);
+					$en_tete[$i]=preg_replace('/"/','',$temp[$i]);
 				}
 				$nbchamps=sizeof($en_tete);
 				fclose($fp);
@@ -264,11 +271,15 @@ else {
 						$ligne=trim($ligne);
 						//echo "<p>ligne=$ligne<br />\n";
 	
-						$tabligne=explode(";",my_ereg_replace('"','',$ligne));
+						$tabligne=explode(";",preg_replace('/"/','',$ligne));
 	
-						$code_pays[]=my_ereg_replace("[^0-9]","",corriger_caracteres($tabligne[$tabindice[0]]));
-						$nom_pays[]=my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))));
-	
+						$code_pays[]=preg_replace("/[^0-9]/","",corriger_caracteres($tabligne[$tabindice[0]]));
+						//$nom_pays[]=my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))));
+						//echo $tabligne[$tabindice[1]]." -&gt; ".my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
+
+
+						$nom_pays[]=preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))));
+						//echo $tabligne[$tabindice[1]]." -&gt; ".preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
 					}
 				}
 				fclose($fp);
@@ -398,10 +409,10 @@ else {
 			for($i=0;$i<$nb_pays;$i++) {
 				if(isset($code_pays[$i])) {
 					if(in_array($code_pays[$i],$tab_code_pays_connus)) {
-						$sql="UPDATE pays SET nom_pays='".addslashes(my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$nom_pays[$i])))))."' WHERE code_pays='$code_pays[$i]';";
+						$sql="UPDATE pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$nom_pays[$i])))))."' WHERE code_pays='$code_pays[$i]';";
 					}
 					else {
-						$sql="INSERT INTO pays SET nom_pays='".addslashes(my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$nom_pays[$i])))))."', code_pays='$code_pays[$i]';";
+						$sql="INSERT INTO pays SET nom_pays='".addslashes(preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$nom_pays[$i])))))."', code_pays='$code_pays[$i]';";
 					}
 					//echo "$sql<br />";
 					$res=mysql_query($sql);
