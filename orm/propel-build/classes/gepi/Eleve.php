@@ -1103,7 +1103,17 @@ class Eleve extends BaseEleve {
 	    return AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	}
 
- 	private function getAbsColDecompteDemiJournee($date_debut, $date_fin) {
+        /**
+	 *
+	 * Retourne une collection contenant les saisies des absences à prendre en compte dans les decomptes de demi-journées
+	 * entre deux dates
+	 *
+	 * @param      DateTime $date_debut
+	 * @param      DateTime $date_fin
+	 *
+	 * @return PropelCollection  AbsenceEleveSaisie[]
+	 */
+	private function getAbsColDecompteDemiJournee($date_debut= null, $date_fin= null) {
 	    $request_query_hash = 'query_AbsenceEleveSaisieQuery_filterByEleve_'.$this->getIdEleve().'_filterByPlageTemps_deb_';
 	    if ($date_debut != null) { $request_query_hash .= $date_debut->format('U');}
 	    else {$request_query_hash .= 'null';}
@@ -1173,6 +1183,7 @@ class Eleve extends BaseEleve {
 	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
 	 * Pour l'apres midi la date est 23/05/2010 à 12:30
 	 *
+	 * @param      PropelObjectCollection $abs_saisie_col collection de saisies d'absence ordonne par date de début
 	 * @param      DateTime $date_debut
 	 * @param      DateTime $date_fin
 	 *
