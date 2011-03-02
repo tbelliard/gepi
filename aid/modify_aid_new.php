@@ -5,7 +5,7 @@
  *
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -39,7 +39,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -82,6 +82,8 @@ require_once("../lib/header.inc");
 
 	//================ TRAITEMENT des entrées ===================
 	if (isset($aff_liste_m) AND isset($id_aid) AND isset($id_eleve) AND isset($indice_aid)) {
+		check_token(false);
+
 		// Cas de la classe entière
 		if ($id_eleve == "tous") {
 			// On récupère tous les login de cette classe
@@ -114,6 +116,8 @@ require_once("../lib/header.inc");
 	//================= TRAITEMENT des sorties =======================
 	// Attention de penser à sortir les lignes des notes et appréciations si elles existent
 	if (isset($action) AND $action == "del_eleve_aid") {
+		check_token(false);
+
 		// On supprime l'élève de l'AID
 		$req_suppr1 = mysql_query("DELETE FROM j_aid_eleves WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
 		$req_suppr2 = mysql_query("DELETE FROM j_aid_eleves_resp WHERE login='".$eleve."' and id_aid = '".$id_aid."' and indice_aid='".$indice_aid."'");
@@ -127,7 +131,7 @@ require_once("../lib/header.inc");
 
 // Affichage du retour
 	// On récupère l'indice de l'aid en question
-	$aff_infos_g .= "<span class=\"aid_a\"><a href=\"modify_aid.php?flag=eleve&amp;aid_id=".$id_aid."&amp;indice_aid=".$indice_aid."\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></span>";
+	$aff_infos_g .= "<span class=\"aid_a\"><a href=\"modify_aid.php?flag=eleve&amp;aid_id=".$id_aid."&amp;indice_aid=".$indice_aid.add_token_in_url()."\"><img src='../images/icons/back.png' alt='Retour' class='back_link' /> Retour</a></span>";
 
 
 //Affichage du nom et des précisions sur l'AID en question
@@ -144,7 +148,7 @@ require_once("../lib/header.inc");
 		$liste_classe[$a]["id"] = mysql_result($req_liste_classe, $a, "id");
 		$liste_classe[$a]["classe"] = mysql_result($req_liste_classe, $a, "classe");
 
-		$aff_classes_g .= "<tr><td style=\"width: 196px;\"><a href=\"./modify_aid_new.php?id_aid=".$id_aid."&amp;classe=".$liste_classe[$a]["id"]."&amp;indice_aid=".$indice_aid."\">Elèves de la ".$liste_classe[$a]["classe"]."</a></td></tr>\n";
+		$aff_classes_g .= "<tr><td style=\"width: 196px;\"><a href=\"./modify_aid_new.php?id_aid=".$id_aid."&amp;classe=".$liste_classe[$a]["id"]."&amp;indice_aid=".$indice_aid.add_token_in_url()."\">Elèves de la ".$liste_classe[$a]["classe"]."</a></td></tr>\n";
 	}
 
 // Affichage de la liste des élèves de la classe choisie (au milieu) par $aff_classes_m
@@ -172,7 +176,7 @@ if (isset($aff_liste_m)) {
 		$aff_classes_m .= "
 		<tr class=\"".$aff_tr_css."\">
 			<td>
-				<a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=tous&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">
+				<a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=tous&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid.add_token_in_url()."\">
 				<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> Toute la classe
 				</a>
 			</td>
@@ -206,7 +210,7 @@ if (isset($aff_liste_m)) {
 				else {
 					$aff_classes_m .= "
 					<tr class=\"".$aff_tr_css."\">
-					<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=".$aff_ele_m[$b]["id_eleve"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."\">
+					<td><a href=\"modify_aid_new.php?classe=".$aff_liste_m."&amp;id_eleve=".$aff_ele_m[$b]["id_eleve"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid.add_token_in_url()."\">
 							<img src=\"../images/icons/add_user.png\" alt=\"Ajouter\" title=\"Ajouter\" /> ".$aff_ele_m[$b]["nom"]." ".$aff_ele_m[$b]["prenom"]."
 							</a></td></tr>
 					";
@@ -256,7 +260,7 @@ if (isset($aff_liste_m)) {
 		$rep_ele_aid[$d]["id_classe"] = mysql_result($req_ele_aid, $d, "id");
 
 		$aff_aid_d .= "<br />
-			<a href='./modify_aid_new.php?classe=".$rep_ele_aid[$d]["id_classe"]."&amp;eleve=".$rep_ele_aid[$d]["login"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."&amp;action=del_eleve_aid'>
+			<a href='./modify_aid_new.php?classe=".$rep_ele_aid[$d]["id_classe"]."&amp;eleve=".$rep_ele_aid[$d]["login"]."&amp;id_aid=".$id_aid."&amp;indice_aid=".$indice_aid."&amp;action=del_eleve_aid".add_token_in_url()."'>
 				<img src=\"../images/icons/delete.png\" title=\"Supprimer cet élève\" alt=\"Supprimer\" />
 			</a>".$rep_ele_aid[$d]["nom"]." ".$rep_ele_aid[$d]["prenom"]." ".$rep_ele_aid[$d]["classe"]."\n";
 	}
