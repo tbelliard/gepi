@@ -2,7 +2,7 @@
 /*
  *  $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -61,10 +61,12 @@ if (isset($_GET["retour"])) {
 // Par défaut, on revient à index_fiches.php.
 if (!isset($_SESSION['retour'])) $_SESSION['retour'] = "index_fiches.php?indice_aid=".$indice_aid."&amp;action=liste_projet";
  $action = isset($_POST["action"]) ? $_POST["action"] : (isset($_GET["action"]) ? $_GET["action"] : "visu");
-if ($annee=='')
+if ($annee=='') {
     $nom_projet = sql_query1("select nom from aid_config where indice_aid='".$indice_aid."'");
-else
+}
+else {
     $nom_projet = sql_query1("select nom from  archivage_types_aid where id='".$indice_aid."' and annee='".$annee."'");
+}
 $call_productions = mysql_query("select * from aid_productions");
 $nb_productions = mysql_num_rows($call_productions);
 $call_public = mysql_query("select * from aid_public order by ordre_affichage");
@@ -75,6 +77,8 @@ if (!VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'','',$annee))
 
 // Enregistrement des données
 if (isset($_POST["is_posted"])) {
+	check_token();
+
     // La personne connectée a-t-telle le droit d'enregistrer ?
     if (!VerifAccesFicheProjet($_SESSION['login'],$aid_id,$indice_aid,'','',$annee))
         die();
@@ -304,10 +308,12 @@ if (isset($_POST["is_posted"])) {
 
 }
 // Appel de toutes les infos sur le projet
-if ($annee=='')
+if ($annee=='') {
   $call_data_projet = mysql_query("select * from aid where (id = '$aid_id' and indice_aid='$indice_aid')");
-else
+}
+else {
   $call_data_projet = mysql_query("select * from archivage_aids where (id = '$aid_id' and id_type_aid='$indice_aid' and annee='".$annee."')");
+}
 
 $aid_nom = mysql_result($call_data_projet, 0, "nom");
 $reg_resume = @mysql_result($call_data_projet,0,"resume");
@@ -398,8 +404,10 @@ echo "</p>\n";
 echo "<p class='grand'>projet ".$nom_projet." : ".$aid_nom."</p>\n";
 
 // Début du formulaire
-If ($action != "visu")
+If ($action != "visu") {
     echo "<form action=\"modif_fiches.php\" name=\"form\" method=\"post\">\n";
+	echo add_token_field();
+}
 
 echo "<div class='bloc'>";
 

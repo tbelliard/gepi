@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,19 +34,21 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
     die();
 }
-// ========== Iniialisation des variables ==========
+// ========== Initialisation des variables ==========
 $is_posted = isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
 // ========== fin initialisation ===================
 
 $requete = "select * from matieres order by nom_complet";
 if (isset($is_posted) and ($is_posted == "1")) {
+    check_token();
+
     $msg = "";
     $pb = "no";
     $res = mysql_query($requete);
@@ -90,6 +92,8 @@ require_once("../lib/header.inc");
 |<a href="javascript:centrerpopup('help.php',600,480,'scrollbars=yes,statusbar=no,resizable=yes')">Aide</a>|
 <input type="submit" value="Enregistrer" /><br />
 <?php
+
+echo add_token_field();
 
 echo "<p>Parmi les champs des fiches projet figurent les deux champs \"discipline principale\" et \"discipline secondaire\".
 <br />Parmi toutes les matières actuellement présentes dans la base de GEPI, indiquez dans le tableau ci-dessous

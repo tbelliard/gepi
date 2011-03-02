@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -62,6 +62,7 @@ $is_posted = isset($_POST["is_posted"]) ? $_POST["is_posted"] : NULL;
 // ========== fin initialisation ===================
 
 if (isset($is_posted) and ($is_posted == "1")) {
+  check_token();
   $msg_inter = "";
   if ($autoriser_inscript_multiples != 'y') {
     $test = sql_query1("select count(login) c from j_aid_eleves where indice_aid='".$indice_aid."' group by login order by c desc limit 1");
@@ -245,6 +246,9 @@ if (isset($indice_aid)) {
 <!--form enctype="multipart/form-data" name= "formulaire" action="config_aid.php" method=post onsubmit="return (emptyFormElements('formulaire', 'reg_nom_complet') && (emptyFormElements('formulaire', 'reg_nom')) && checkFormElementInRange('formulaire', 'order_display2', 0, 100))"-->
 <form enctype="multipart/form-data" name="formulaire" action="config_aid.php" method="post" onsubmit="return (emptyFormElements('formulaire', 'reg_nom_complet') &amp;&amp; (emptyFormElements('formulaire', 'reg_nom')) &amp;&amp; checkFormElementInRange('formulaire', 'order_display2', 0, 100))">
 
+<?php
+echo add_token_field();
+?>
 <div class='norme'><p class="bold"><a href="index.php"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>
 
 <input type="submit" value="Enregistrer" /><br />

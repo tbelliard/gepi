@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -30,17 +30,17 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
-die();
-};
+	die();
+}
 
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
-die();
+	die();
 }
 
 // Vérification du niveau de gestion des AIDs
@@ -52,6 +52,8 @@ if (NiveauGestionAid($_SESSION["login"],$indice_aid) < 5) {
 if(!isset($mess)) {$mess="";}
 
 if (isset($is_posted) and ($is_posted =="1")) {
+	check_token();
+
     //  On regarde si une aid porte déjà le même nom
     $test = mysql_query("SELECT * FROM aid WHERE (nom='$reg_nom' and indice_aid='$indice_aid')");
     $count = mysql_num_rows($test);
@@ -97,6 +99,7 @@ if (isset($is_posted) and ($is_posted =="1")) {
     }
 }
 if (isset($is_posted) and ($is_posted =="2")) {
+	check_token();
 // On vérifie d'abord que le nom n'est pas déjà utilisé :
     $test = mysql_query("SELECT * FROM aid WHERE (nom='$reg_nom' and indice_aid='$indice_aid')");
     $count = mysql_num_rows($test);
@@ -179,6 +182,9 @@ require_once("../lib/header.inc");
 
     <form enctype="multipart/form-data" action="add_aid.php" method="post">
 
+	<?php
+		echo add_token_field();
+	?>
     <div class='norme'>
 
     <p><label for="aidRegNom">Nom : <input type="text" id="aidRegNom" name="reg_nom" size="100" <?php if (isset($reg_nom)) { echo "value=\"".$reg_nom."\"";}?> /></label></p>
@@ -206,12 +212,15 @@ if ($action == "modif_aid") { ?>
     <p>Entrez le nouveau nom à la place de l'ancien : </p>
 
     <form enctype="multipart/form-data" action="add_aid.php" method="post">
+	<?php
+		echo add_token_field();
 
-    <?php $calldata = mysql_query("SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
+		$calldata = mysql_query("SELECT * FROM aid where (id = '$aid_id' and indice_aid='$indice_aid')");
 
-    $aid_nom = mysql_result($calldata, 0, "nom");
-
-    $aid_num = mysql_result($calldata, 0, "numero"); ?>
+		$aid_nom = mysql_result($calldata, 0, "nom");
+		
+		$aid_num = mysql_result($calldata, 0, "numero");
+	?>
 
 
 

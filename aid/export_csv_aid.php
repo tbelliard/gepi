@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
 die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -52,8 +52,8 @@ require_once("../lib/header.inc");
 
 echo "<p class=bold><a href=\"index2.php?indice_aid=$indice_aid\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
 
-if (isset($is_posted) and ($is_posted=='avec_id_etape_4')) {echo "<a href=\"export_csv_aid.php?is_posted=avec_id_etape_1&indice_aid=$indice_aid\">Importer un autre fichier</a> |";}
-if (isset($is_posted) and ($is_posted=='sans_id_etape_4')) {echo "<a href=\"export_csv_aid.php?is_posted=sans_id_etape_1&indice_aid=$indice_aid\">Importer un autre fichier</a> |";}
+if (isset($is_posted) and ($is_posted=='avec_id_etape_4')) {echo "<a href=\"export_csv_aid.php?is_posted=avec_id_etape_1&indice_aid=$indice_aid".add_token_in_url()."\">Importer un autre fichier</a> |";}
+if (isset($is_posted) and ($is_posted=='sans_id_etape_4')) {echo "<a href=\"export_csv_aid.php?is_posted=sans_id_etape_1&indice_aid=$indice_aid".add_token_in_url()."\">Importer un autre fichier</a> |";}
 
 echo "</p>";
 
@@ -89,6 +89,8 @@ if (!isset($is_posted)) {
 
             echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
 
+            echo add_token_field();
+
             echo "<input type=hidden name=indice_aid value=$indice_aid />";
 
             echo "<INPUT TYPE=SUBMIT name='confirm' value = 'Effacer' />";
@@ -96,6 +98,8 @@ if (!isset($is_posted)) {
             echo "</FORM></td><td>";
 
             echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire2>";
+
+            echo add_token_field();
 
             echo "<INPUT TYPE=HIDDEN name=is_posted value = 'debut' /> ";
 
@@ -111,6 +115,8 @@ if (!isset($is_posted)) {
 
             echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
 
+            echo add_token_field();
+
             echo "<INPUT TYPE=HIDDEN name=is_posted value = 'debut' /> ";
 
             echo "<input type=hidden name=indice_aid value=$indice_aid />";
@@ -125,7 +131,11 @@ if (!isset($is_posted)) {
 }
 
 if (isset($is_posted) and ($is_posted == 'debut')) {
+    //check_token();
+
     if (isset($confirm) and ($confirm == 'Oui')) {
+        check_token(false);
+
         $del = mysql_query("DELETE FROM aid WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM j_aid_utilisateurs WHERE indice_aid='$indice_aid'");
         $del = mysql_query("DELETE FROM j_aid_eleves WHERE indice_aid='$indice_aid'");
@@ -134,12 +144,16 @@ if (isset($is_posted) and ($is_posted == 'debut')) {
     }
     echo "<p>Choisissez une des deux options suivantes :</p>";
     echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
+
+    echo add_token_field();
+
     echo "<p>--&gt; Vous avez <b>vous-même</b> défini un identifiant unique pour chaque $nom_generique_aid.";
     echo "<INPUT TYPE=SUBMIT value = 'Valider' /></p>";
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'avec_id_etape_1' /> ";
     echo "<input type=hidden name=indice_aid value=$indice_aid />";
     echo "</FORM>";
     echo "<form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire2>";
+    echo add_token_field();
     echo "<p>--&gt; Vous voulez laisser <b>GEPI</b> définir un identifiant unique pour chaque $nom_generique_aid .";
     echo "<INPUT TYPE=SUBMIT value = 'Valider' /></p>";
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'sans_id_etape_1' /> ";
@@ -152,10 +166,13 @@ if (isset($is_posted) and ($is_posted == 'debut')) {
 //*************************************************************************************************
 
 if (isset($is_posted) and ($is_posted == "sans_id_etape_1")) {
+    check_token(false);
+
     echo "<table border=0>";
     //    cas où on importe un fichier ELEVES-AID
     echo "<tr><td><p>Importer un fichier <b>\"ELEVES-$nom_generique_aid\"</b></p></td>";
     echo "<td><form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
+    echo add_token_field();
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'sans_id_etape_2' /> ";
     echo "<input type=hidden name=indice_aid value=$indice_aid />";
     echo "<INPUT TYPE=HIDDEN name=type_import value = 1 /> ";
@@ -164,6 +181,7 @@ if (isset($is_posted) and ($is_posted == "sans_id_etape_1")) {
     //    cas où on importe un fichier prof-AID
     echo "<tr><td><p>Importer un fichier <b>\"PROF-$nom_generique_aid\"</b></p></td>";
     echo "<td><form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire2>";
+    echo add_token_field();
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'sans_id_etape_2' /> ";
     echo "<input type=hidden name=indice_aid value=$indice_aid />";
     echo "<INPUT TYPE=HIDDEN name=type_import value=2 /> ";
@@ -174,9 +192,14 @@ if (isset($is_posted) and ($is_posted == "sans_id_etape_1")) {
 
 
 if (isset($is_posted) and ($is_posted == 'sans_id_etape_2')) {
+    check_token(false);
+
     ?>
     <form enctype="multipart/form-data" action="export_csv_aid.php" method=post name=formulaire>
-    <?php $csvfile=""; ?>
+    <?php
+    $csvfile="";
+    echo add_token_field();
+    ?>
     <p>Fichier CSV à Importer <a href='help_import.php'>Aide </a> : <input TYPE=FILE NAME="csvfile" /></p>
     <input TYPE=HIDDEN name=is_posted value = 'sans_id_etape_3' />
     <input type=hidden name=indice_aid value=<?php echo $indice_aid;?> />
@@ -199,6 +222,8 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_2')) {
 }
 
 if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
+    check_token(false);
+
 	$csvfile = isset($_FILES["csvfile"]) ? $_FILES["csvfile"] : NULL;
    //if($csvfile != "none") {
     if(isset($csvfile)) {
@@ -294,6 +319,8 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
                     // On affiche les aid détectées dans la table tempo2
 
                     echo "<form enctype='multipart/form-data' action='export_csv_aid.php' method=post >";
+
+                    echo add_token_field();
 
                     if ($type_import == 1) {
 
@@ -396,6 +423,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_3')) {
 
 
 if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
+    check_token(false);
 
     echo "<p class='bold'>Mise à jour de la liste des $nom_generique_aid</p>";
 
@@ -642,6 +670,7 @@ if (isset($is_posted) and ($is_posted == 'sans_id_etape_4')) {
 
 
 if (isset($is_posted) and ($is_posted == 'avec_id_etape_1')) {
+    check_token(false);
 
     echo "<table border=0>";
 
@@ -650,6 +679,8 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_1')) {
     echo "<tr><td><p>Importer un fichier <b>\"$nom_generique_aid - Identifiant $nom_generique_aid\"</b></p></td>";
 
     echo "<td><form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire>";
+
+    echo add_token_field();
 
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'avec_id_etape_2' /> ";
 
@@ -667,6 +698,8 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_1')) {
 
     echo "<td><form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire2>";
 
+    echo add_token_field();
+
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'avec_id_etape_2' /> ";
 
     echo "<input type=hidden name=indice_aid value=$indice_aid />";
@@ -682,6 +715,8 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_1')) {
     echo "<tr><td><p>Importer un fichier <b>\"PROF-Identifiant $nom_generique_aid\"</b></p></td>";
 
     echo "<td><form enctype=\"multipart/form-data\" action=\"export_csv_aid.php\" method=post name=formulaire3>";
+
+    echo add_token_field();
 
     echo "<INPUT TYPE=HIDDEN name=is_posted value = 'avec_id_etape_2' /> ";
 
@@ -704,12 +739,16 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_1')) {
 
 
 if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
+    check_token(false);
 
     ?>
 
     <form enctype="multipart/form-data" action="export_csv_aid.php" method=post name=formulaire>
 
-    <?php $csvfile=""; ?>
+    <?php
+    $csvfile="";
+    echo add_token_field();
+    ?>
 
     <p>Fichier CSV à importer <a href='help_import.php'>Aide </a> : <INPUT TYPE=FILE NAME="csvfile" /></p>
 
@@ -762,6 +801,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_2')) {
 
 
 if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
+    check_token(false);
 
 	$csvfile = isset($_FILES["csvfile"]) ? $_FILES["csvfile"] : NULL;
     //if($csvfile != "none") {
@@ -843,7 +883,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                     //
 
-                    if (!(my_ereg ("^[a-zA-Z0-9_]{1,10}$", $data[1]))) {
+                    if (!(preg_match("/^[a-zA-Z0-9_]{1,10}$/", $data[1]))) {
 
                         $erreur = 'yes';
 
@@ -968,6 +1008,8 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
                     echo "<form enctype='multipart/form-data' action='export_csv_aid.php' method=post >";
 
+                    echo add_token_field();
+
                     if ($type_import != 3) {
 
                         echo "<input type=submit value='Enregistrer' />";
@@ -1087,8 +1129,7 @@ if (isset($is_posted) and ($is_posted == 'avec_id_etape_3')) {
 
 
 if (isset($is_posted) and ($is_posted == 'avec_id_etape_4')) {
-
-
+    check_token(false);
 
     if ($type_import == 3) {
 
