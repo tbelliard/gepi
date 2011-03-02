@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -61,6 +61,8 @@ $compte_existant=isset($_POST["compte_existant"]) ? $_POST["compte_existant"] : 
 $id_groupe=isset($_POST["id_groupe"]) ? $_POST["id_groupe"] : "";
 
 if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
+	check_token();
+
     // Cas LCS : on teste s'il s'agit d'un utilisateur local ou non
     if (getSettingValue("use_sso") == "lcs") {
         if ($_POST['is_lcs'] == "y") {$is_pwd = 'n';} else {$is_pwd = 'y';}
@@ -474,6 +476,7 @@ if ($valid!='yes') {
 	//Affichage formulaire
 	echo "<form enctype=\"multipart/form-data\" action=\"creer_remplacant.php?login_prof_remplace=".$login_prof_remplace."\" method=post>";
 	echo "<fieldset>\n";
+	echo add_token_field();
 	echo "<div class = \"norme\">\n";
 	echo "<table>\n";
 	echo "<tr><td>Nom : </td><td><input type=text name=form_nom size=20 /></td></tr>\n";
@@ -529,6 +532,7 @@ if ($valid!='yes') {
 	echo "<p class='bold'>Ou sélectionnez un utilisateur existant&nbsp:</p>\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"creer_remplacant.php?login_prof_remplace=".$login_prof_remplace."\" method=post>";
 	echo "<fieldset>\n";
+	echo add_token_field();
 	echo "<div class = \"norme\">\n";
 	echo "Compte existant&nbsp;: <select name='compte_existant'>\n";
 	$sql="SELECT * FROM utilisateurs WHERE (statut='professeur'";
