@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // INSERT INTO `droits` VALUES ('/responsables/corrige_ele_id.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Correction des ELE_ID d apres Sconet', '');
 
@@ -148,10 +148,10 @@ function test_stop(num){
 	//document.getElementById('id_form_stop').value=stop;
 	if(stop=='n'){
 		//setTimeout(\"document.location.replace('".$_SERVER['PHP_SELF']."?step=1')\",2000);
-		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num";
+		document.location.replace('".$_SERVER['PHP_SELF']."?step='+num+'".add_token_in_url(false)."'";
 
 // AJOUT A FAIRE VALEUR STOP
-echo "+'&amp;stop='+stop";
+echo "+'&stop='+stop";
 
 echo ");
 	}
@@ -191,6 +191,7 @@ if(!isset($step)) {
 	echo "<p>Cette page est destinée à corriger les champs ELE_ID de la table 'eleves' et de la table 'responsables2' d'après le fichier ElevesSansAdresses.xml de Sconet.<br />La correction n'est possible que si les ELENOET sont corrects.</p>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 	echo "<input type=hidden name='step' value='0' />\n";
 	echo "<p>Sélectionnez le fichier <b>ElevesAvecAdresses.xml</b> (<i>ou ElevesSansAdresses.xml</i>):<br />\n";
 	echo "<input type=\"file\" size=\"80\" name=\"eleves_xml_file\" /><br />\n";
@@ -215,6 +216,7 @@ else{
 	*/
 	echo "</p>\n";
 
+	check_token();
 
 	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
 	$tempdir=get_user_temp_directory();
@@ -526,7 +528,7 @@ else{
 						echo "<p>$stat associations identifiant élève/classe ont été inséré(s) dans la table 'temp_gep_import2'.</p>\n";
 
 						//echo "<p><a href='".$_SERVER['PHP_SELF']."?etape=1&amp;step=1'>Suite</a></p>\n";
-						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1&amp;stop=y'>Suite</a></p>\n";
+						echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=1&amp;stop=y".add_token_in_url()."'>Suite</a></p>\n";
 
 						require("../lib/footer.inc.php");
 						die();
@@ -826,7 +828,7 @@ else{
 
 			echo "<p>$stat enregistrement(s) ont été mis à jour dans la table 'temp_gep_import2'.</p>\n";
 
-			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2&amp;stop=y'>Suite</a></p>\n";
+			echo "<p align='center'><a href='".$_SERVER['PHP_SELF']."?step=2&amp;stop=y".add_token_in_url()."'>Suite</a></p>\n";
 
 			require("../lib/footer.inc.php");
 			die();
@@ -890,6 +892,7 @@ else{
 			}
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo add_token_field();
 			echo "<input type='hidden' name='is_posted' value='yes' />\n";
 			echo "<input type='hidden' name='step' value='2' />\n";
 
