@@ -1299,7 +1299,7 @@ class Eleve extends BaseEleve {
 	    require_once("helpers/AbsencesEleveSaisieHelper.php");
 	    $retards_result = AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 
-	    //on recupere les demi-journees pendant lesquels l'eleve est absent
+	    //on recupere les demi-journees pendant lesquels l'eleve est absent, pour ne pas les compter comme retard
 	    require_once("helpers/AbsencesEleveSaisieHelper.php");
 	    $absences = AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
 	    $abs_saisie_col_filtre_abs = new PropelCollection();
