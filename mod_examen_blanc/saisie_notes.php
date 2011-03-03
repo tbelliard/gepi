@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -116,6 +116,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		}
 
 		if($reg_eleves=='y') {
+			check_token();
+
 			$login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : (isset($_GET['login_ele']) ? $_GET['login_ele'] : array());
 
 			//$sql="DELETE FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
@@ -149,6 +151,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			if($nb_ajout_ele>0) {$msg.="$nb_ajout_ele élève(s) ajouté(s).<br />";}
 		}
 		elseif($reg_notes=='y') {
+			check_token();
 
 			$login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : (isset($_GET['login_ele']) ? $_GET['login_ele'] : array());
 			$note=isset($_POST['note']) ? $_POST['note'] : (isset($_GET['note']) ? $_GET['note'] : array());
@@ -169,7 +172,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					$elev_note='0';
 					$elev_statut='-';
 				}
-				elseif(ereg("^[0-9\.\,]{1,}$",$note[$i])) {
+				elseif(preg_match("/^[0-9\.\,]{1,}$/",$note[$i])) {
 					$elev_note=str_replace(",", ".", "$note[$i]");
 					if(($elev_note<0)||($elev_note>20)){
 						$elev_note='';
@@ -241,19 +244,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				$nom_fic="Examen_".$id_exam."_Groupe_Hors_Enseignement_".$matiere.".csv";
 				$nom_fic=remplace_accents($nom_fic,'all');
 
-				$now=gmdate('D, d M Y H:i:s').' GMT';
-				header('Content-Type: text/x-csv');
-				header('Expires: ' . $now);
-				// lem9 & loic1: IE need specific headers
-				if(my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-					header('Content-Disposition: inline; filename="'.$nom_fic.'"');
-					header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-					header('Pragma: public');
-				}
-				else {
-					header('Content-Disposition: attachment; filename="'.$nom_fic.'"');
-					header('Pragma: no-cache');
-				}
+				send_file_download_headers('text/x-csv',$nom_fic);
 
 				echo $csv;
 				die();
@@ -263,6 +254,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 	}
 
 	if($import_csv=='y') {
+		check_token();
+
 		$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='0' AND matiere='$matiere' AND type='hors_enseignement';";
 		//echo "$sql<br />\n";
 		$res=mysql_query($sql);
@@ -325,7 +318,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						$ligne=fgets($fp, 4096);
 						$temp=explode(";",$ligne);
 						for($i=0;$i<sizeof($temp);$i++){
-							$en_tete[$i]=my_ereg_replace('"','',$temp[$i]);
+							$en_tete[$i]=preg_replace('/"/','',$temp[$i]);
 						}
 						$nbchamps=sizeof($en_tete);
 						fclose($fp);
@@ -368,7 +361,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 							if(trim($ligne)!=""){
 								$ligne=trim($ligne);
 								//echo "<p>ligne=$ligne<br />\n";
-								$tabligne=explode(";",my_ereg_replace('"','',$ligne));
+								$tabligne=explode(";",preg_replace('/"/','',$ligne));
 
 								$current_ele_login=$tabligne[$tabindice[0]];
 								if(!in_array($current_ele_login,$tab_ele_inscrits)) {
@@ -391,7 +384,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 										$elev_note='0';
 										$elev_statut='-';
 									}
-									elseif(ereg("^[0-9\.\,]{1,}$",$current_note)) {
+									elseif(preg_match("/^[0-9\.\,]{1,}$/",$current_note)) {
 										$elev_note=str_replace(",", ".", "$current_note");
 										if(($elev_note<0)||($elev_note>20)){
 											$elev_note='';
@@ -528,6 +521,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			echo "<p><a href='javascript:cocher_tous_eleves()'>Cocher</a> / <a href='javascript:decocher_tous_eleves()'>décocher</a> tous les élèves de toutes les classes associées à l'examen.</p>\n";
 
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
+			echo add_token_field();
 			echo "<p align='center'><input type='submit' name='valider0' value='Valider' /></p>\n";
 
 			$max_eff_classe=0;
@@ -664,7 +658,8 @@ function decocher_tous_eleves() {
 			}
 	
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
-	
+			echo add_token_field();
+
 			$sql="SELECT c.classe, ec.id_classe FROM classes c, ex_classes ec WHERE ec.id_exam='$id_exam' AND c.id=ec.id_classe ORDER BY c.classe;";
 			$res_classes=mysql_query($sql);
 			$nb_classes=mysql_num_rows($res_classes);
@@ -823,6 +818,7 @@ function verifcol(num_id){
 			echo "<p>Veuillez préciser le nom complet du fichier <b>CSV</b> à importer.";
 
 			echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+			echo add_token_field();
 
 			echo "<p><input type=\"file\" size=\"80\" name=\"csv_file\" /></p>\n";
 
