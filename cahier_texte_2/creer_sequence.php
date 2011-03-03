@@ -2,7 +2,7 @@
 /**
  * @version : $Id$
  *
- * Copyright 2001, 2009 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -66,8 +66,12 @@ $verif = 'ok'; // indicateur pour le suivi des erreurs
 
 // =================================================== Le code métier =======================================/
 
+//debug_var();
+
 # Un appel à enregistrer est lancé
 if ($enregistrer == "Enregistrer"){
+	check_token();
+
   // On pense à vérifier quelques trucs comme les entités html
   $sequence = new CahierTexteSequence();
   $sequence->setTitre(htmlentities($titresequence));
@@ -124,7 +128,7 @@ include '../lib/header.inc';
 <p><a href="index.php"><img src="../images/icons/back.png" alt="Retour" class="back_link" /> Retour</a></p>
 <form action="#" method="post">
   <p>
-    <label for="idSeq">Cr&eacute;er une s&eacute;quence pour le cahier de textes (pr&eacute;cisez le nombre de s&eacute;ances)</label>
+    <label for="idSeq">Cr&eacute;er une s&eacute;quence pour le cahier de textes (<i>pr&eacute;cisez le nombre de s&eacute;ances</i>)</label>
     <select id="idSeq" name="nbre_sequences">
       <option value="rien"> -- -- </option>
       <?php for($a = 1 ; $a < 7 ; $a++){
