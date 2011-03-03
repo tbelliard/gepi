@@ -64,6 +64,8 @@ if ($saisie == null) {
 $msg = "";
 
 if ($saisie->getIdSIncidents() == null || $saisie->getIdSIncidents() == -1) {
+	check_token();
+
     //l'incident n'est pas encore enregistré, on l'enregistre donc
     $sql="INSERT INTO s_incidents SET declarant='".$_SESSION['login']."',
 									    date='".$saisie->getDebutAbs('Y-m-d')."',

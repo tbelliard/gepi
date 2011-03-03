@@ -861,8 +861,9 @@ if($etat_incident!='clos') {
 							if($destinataires!="") {
 								$texte_mail=$texte_mail."\n\n"."Message: $msg";
 						
-                $subject = "[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;                
-                $headers = "";
+								$subject = "[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
+								$headers = "";
+
 								if(isset($message_id)) {$headers .= "Message-id: $message_id\r\n";}
 								if(isset($references_mail)) {$headers .= "References: $references_mail\r\n";}
       

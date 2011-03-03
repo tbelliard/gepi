@@ -56,6 +56,8 @@ $login=isset($_GET['login']) ? $_GET['login'] : NULL;
 $avertie=isset($_GET['avertie']) ? $_GET['avertie'] : NULL;
 
 if((isset($id_incident))&&(isset($login))&&(isset($avertie))) {
+	check_token();
+
 	/*
 	echo "\$id_incident=$id_incident<br />";
 	echo "\$login=$login<br />";

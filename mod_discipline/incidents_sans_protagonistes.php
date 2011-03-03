@@ -77,6 +77,8 @@ $msg="";
 			}
 
 			if($acces_modif_etat=="y") {
+				check_token();
+
 				if(isset($etat_incident[$form_id_incident[$i]])) {
 					$sql="UPDATE s_incidents SET etat='clos' WHERE id_incident='".$form_id_incident[$i]."';";
 				}
@@ -95,6 +97,8 @@ $msg="";
 
 //if(isset($_POST['suppr_incident'])) {
 if((isset($_POST['suppr_incident']))&&($_SESSION['statut']!='professeur')) {
+	check_token();
+
 	$suppr_incident=$_POST['suppr_incident'];
 	for($i=0;$i<count($suppr_incident);$i++) {
 		$temoin_erreur="n";
@@ -267,6 +271,9 @@ if(!isset($id_incident)) {
 	echo "<blockquote>\n";
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
+
+	echo add_token_field();
+
 	echo "<p align='left'><input type='checkbox' name='incidents_clos' id='incidents_clos' value='y'";
 	if($incidents_clos=="y") {echo " checked='checked'";}
 	echo " /><label for='incidents_clos' style='cursor:pointer;'> Afficher les incidents clos</label></p>\n";
