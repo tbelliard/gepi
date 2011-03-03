@@ -158,6 +158,17 @@ $liste_tables_del = array(
 "cn_notes_conteneurs",
 "cn_notes_devoirs",
 //"setting"
+"ex_classes",
+"ex_examens",
+"ex_groupes",
+"ex_matieres",
+"ex_notes",
+
+"eb_copies",
+"eb_epreuves",
+"eb_groupes",
+"eb_profs"
+//,"eb_salles"
 );
 
 if (!isset($step2)) {

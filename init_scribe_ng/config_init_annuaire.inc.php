@@ -61,8 +61,20 @@ $liste_tables_del = array(
 "j_groupes_classes",
     //"j_groupes_matieres",
     //"j_groupes_professeurs",
-"eleves_groupes_settings"
+"eleves_groupes_settings",
     //"setting"
+
+"ex_classes",
+"ex_examens",
+"ex_groupes",
+"ex_matieres",
+"ex_notes",
+
+"eb_copies",
+"eb_epreuves",
+"eb_groupes",
+"eb_profs"
+//,"eb_salles"
 );
 
 /*

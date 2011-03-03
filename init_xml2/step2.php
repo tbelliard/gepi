@@ -168,6 +168,17 @@ $liste_tables_del = array(
 "ct_private_entry"
 */
 //"setting"
+"ex_classes",
+"ex_examens",
+"ex_groupes",
+"ex_matieres",
+"ex_notes",
+
+"eb_copies",
+"eb_epreuves",
+"eb_groupes",
+"eb_profs"
+//,"eb_salles"
 );
 
 if (!isset($step2)) {
