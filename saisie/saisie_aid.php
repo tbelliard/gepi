@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -72,6 +72,7 @@ $couleur_moy_cn = '#96C8F0';
 $nom_table = "class_temp".SESSION_ID();
 
 if (isset($_POST['is_posted'])) {
+	check_token();
 
 	$indice_max_log_eleve=$_POST['indice_max_log_eleve'];
 	//echo "\$indice_max_log_eleve=$indice_max_log_eleve<br />";
@@ -173,7 +174,7 @@ if (isset($_POST['is_posted'])) {
 								else if (($note == 'abs')) {
 									$note = '0';
 									$elev_statut = 'abs';
-								} else if (my_ereg ("^[0-9\.\,]{1,}$", $note)) {
+								} else if (preg_match ("/^[0-9\.\,]{1,}$/", $note)) {
 									$note = str_replace(",", ".", "$note");
 									if (($note < 0) or ($note > $note_max)) {
 										$note = '';
@@ -472,6 +473,8 @@ if (!isset($aid_id)) {
 	<?php
 		//echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 		echo "<input type='hidden' name='indice_max_log_eleve' value='$indice_max_log_eleve' />\n";
+
+		echo add_token_field();
 	?>
 	<input type=hidden name=is_posted value="yes" />
 	<input type=hidden name=aid_id value="<?php echo "$aid_id";?>" />

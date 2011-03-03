@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -178,7 +178,10 @@ echo "<p class = 'bold'>Classe : $classe | Période : $nom_periode[$periode_num]<
 if (!isset($is_posted)) {
     ?>
     <form enctype="multipart/form-data" action="import_app_cons.php" method=post name=formulaire>
-    <?php $csv_file=""; ?>
+    <?php
+		$csv_file=""; 
+		echo add_token_field();
+	?>
     <p>Fichier CSV à importer : <input type='file' name="csv_file" />    <input type='submit' value='Ouvrir' /></p>
     <p>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre&nbsp;
     <input type='checkbox' name="en_tete" value="yes" checked /></p>
@@ -207,9 +210,12 @@ if (!isset($is_posted)) {
 
 }
 if (isset($is_posted ) and ($is_posted==1)) {
+	check_token(false);
+
     $non_def = 'no';
     $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
     echo "<form enctype='multipart/form-data' action='import_app_cons.php' method='post'>\n";
+	echo add_token_field();
     if($csv_file['tmp_name'] != "") {
         echo "<p><b>Attention</b>, les données ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton en bas de la page) !</p>\n";
 
@@ -392,6 +398,8 @@ if (isset($is_posted ) and ($is_posted==1)) {
 
 // On enregistre les données
 if (isset($is_posted ) and ($is_posted==2)) {
+	check_token(false);
+
     // on vérifie que la période n'est pas totalement verrouillée
     if ($ver_periode[$periode_num] == "O") {
         echo "<p class='grand'>La période sur laquelle vous voulez enregistrer est verrouillée.</p>\n";

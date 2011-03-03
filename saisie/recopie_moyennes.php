@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 // 1.4.4: INSERT INTO droits VALUES ('/saisie/recopie_moyennes.php', 'F', 'F', 'F', 'F', 'F', 'V', 'Recopie des moyennes', '');
@@ -50,7 +50,9 @@ if (getSettingValue("active_carnets_notes")!='y') {
 }
 
 
-if(isset($_POST['recopier'])){
+if(isset($_POST['recopier'])) {
+	check_token();
+
 	$num_periode=$_POST['num_periode'];
 	$id_classe=$_POST['id_classe'];
 
@@ -406,6 +408,8 @@ else{
 			}
 
 			echo "<form enctype=\"multipart/form-data\" name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method='post'>\n";
+
+			echo add_token_field();
 
 			//echo "<p align='center'><input type=\"submit\" name='recopier' value=\"Recopier\" /></p>\n";
 			echo "<p align='center'><input type=\"submit\" name='recopier' value=\"Valider la recopie\" /></p>\n";
