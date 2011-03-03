@@ -1153,7 +1153,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					echo ">Choix des groupes</a><br />\n";
 
 					//$sql="SELECT 1=1 FROM ex_groupes eg WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' LIMIT 1;";
-					$sql="SELECT 1=1 FROM ex_groupes eg WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND type!='hors_enseignement' LIMIT 1;";
+					//$sql="SELECT 1=1 FROM ex_groupes eg WHERE eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND type!='hors_enseignement' LIMIT 1;";
+					$sql="SELECT 1=1 FROM ex_groupes eg, groupes g WHERE g.id=eg.id_groupe AND eg.id_exam='$id_exam' AND eg.matiere='$tab_matiere[$j]' AND type!='hors_enseignement' LIMIT 1;";
 					//echo "$sql<br />";
 					$test=mysql_query($sql);
 					if(mysql_num_rows($test)>0) {
@@ -1858,16 +1859,33 @@ function cocher_decocher(mode) {
 			//$sql="SELECT DISTINCT ec.id_classe, c.classe FROM ex_classes ec, classes c WHERE c.id=ec.id_classe AND ec.id_exam='$id_exam' ORDER BY c.classe;";
 			$sql="SELECT DISTINCT ec.id_classe, c.classe FROM ex_classes ec, ex_groupes eg, classes c, j_groupes_classes jgc WHERE c.id=ec.id_classe AND ec.id_exam='$id_exam' AND eg.id_exam=ec.id_exam AND eg.matiere='$matiere' AND jgc.id_classe=ec.id_classe AND jgc.id_groupe=eg.id_groupe ORDER BY c.classe;";
 			$res=mysql_query($sql);
+			$id_classe=array();
+			$classe=array();
 			while($lig=mysql_fetch_object($res)) {
 				$classe[]=$lig->classe;
 				$id_classe[]=$lig->id_classe;
 			}
 			$nb_classes=count($id_classe);
 
+			if($nb_classes==0) {
+				echo "<p style='color:red'>Aucune classe n'a été choisie.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+
 			echo "<form method=\"post\" action=\"".$_SERVER['PHP_SELF']."\" name='form1'>\n";
 			echo add_token_field();
 
-			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe ".get_class_from_id($id_classe)." et matière $matiere</p>\n";
+			echo "<p class='bold'>Choix des groupes pour l'examen $id_exam&nbsp;: Classe";
+			if($nb_classes>1) {
+				echo "s";
+			}
+			echo " ";
+			for($loop=0;$loop<count($id_classe);$loop++) {
+				if($loop>0) {echo ", ";}
+				echo get_class_from_id($id_classe[$loop]);
+			}
+			echo " et matière $matiere</p>\n";
 
 			$tab_moy_bull_inscrits=array();
 			$tab_moy_pp_inscrits=array();
