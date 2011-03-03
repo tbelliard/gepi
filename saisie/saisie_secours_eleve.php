@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -30,8 +30,8 @@ require_once("../lib/initialisations.inc.php");
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
@@ -62,6 +62,9 @@ if((isset($_POST['is_posted']))&&
 (isset($ele_login))&&
 (isset($id_groupe))&&
 (isset($note_grp))) {
+
+	check_token();
+
 	$msg="";
 
 	// vérifier si l'élève est bien dans la classe et si la période est ouverte en saisie
@@ -98,7 +101,7 @@ if((isset($_POST['is_posted']))&&
 				$note = '0';
 				$elev_statut = '-';
 			}
-			else if (my_ereg ("^[0-9\.\,]{1,}$", $note)) {
+			else if (preg_match ("/^[0-9\.\,]{1,}$/", $note)) {
 				$note = str_replace(",", ".", "$note");
 				if (($note < 0) or ($note > 20)) {
 					$note = '';
@@ -447,6 +450,9 @@ else {
 		$cpt=0;
 
 		echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" name='form1' method=\"post\">\n";
+
+		echo add_token_field();
+
 		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 		echo "<input type='hidden' name='periode_num' value='$periode_num' />\n";
 		echo "<input type='hidden' name='ele_login' value=\"$ele_login\" />\n";
