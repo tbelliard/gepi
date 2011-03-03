@@ -251,7 +251,7 @@ for($i=0; $i<$total_eleves; $i++) {
 	    $message_enregistrement .= "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."'>Saisie enregistrée pour l'eleve : ".$eleve->getNom()."</a>";
 	    if (isset($saisie_discipline) && $saisie_discipline == true) {
 		$message_enregistrement .= " &nbsp;<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
-		    $saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire pour l'élève : ".$eleve->getNom()."</a>";
+		    $saisie->getId()."&return_url=no_return".add_token_in_url()."'>Saisir un incident disciplinaire pour l'élève : ".$eleve->getNom()."</a>";
 	    }
 	    $message_enregistrement .= "<br/>";
 	} else {
