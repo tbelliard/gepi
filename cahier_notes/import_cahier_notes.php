@@ -210,7 +210,7 @@ else {
 				$ligne=fgets($fp, 4096);
 				$temp=explode(";",$ligne);
 				for($i=0;$i<sizeof($temp);$i++){
-					$en_tete[$i]=my_ereg_replace('"','',$temp[$i]);
+					$en_tete[$i]=preg_replace('/"/','',$temp[$i]);
 				}
 				$nbchamps=sizeof($en_tete);
 				fclose($fp);
@@ -248,7 +248,7 @@ else {
 					if(trim($ligne)!=""){
 						$ligne=trim($ligne);
 						//echo "<p>ligne=$ligne<br />\n";
-						$tabligne=explode(";",my_ereg_replace('"','',$ligne));
+						$tabligne=explode(";",preg_replace('/"/','',$ligne));
 
 						switch($tabligne[$tabindice[0]]){
 							case "GEPI_DEV_NOM_COURT":
@@ -262,7 +262,7 @@ else {
 									// Si: il faut que les nomc_dev, coef_dev et date_dev aient le même nombre de colonnes...
 									// ... le test est fait plus loin pour ne pas créer de devoir avec un nom vide.
 									//if(trim($tabligne[$i])!=""){
-										$nomc_dev[]=my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. - ]","",corriger_caracteres($tabligne[$i]));
+										$nomc_dev[]=preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_\. - ]/","",corriger_caracteres($tabligne[$i]));
 									//}
 									/*
 									if($mode=="remplacer"){
@@ -276,7 +276,7 @@ else {
 								$coef_dev=array();
 								for($i=$tabindice[2];$i<sizeof($tabligne);$i++){
 									// Reformater le coef...
-									if(my_ereg("^[0-9\.\,]{1,}$",$tabligne[$i])){
+									if(preg_match("/^[0-9\.\,]{1,}$/",$tabligne[$i])){
 										$coef_dev[]=strtr($tabligne[$i],",",".");
 									}
 									else{
@@ -289,7 +289,7 @@ else {
 								$note_sur_dev=array();
 								for($i=$tabindice[2];$i<sizeof($tabligne);$i++){
 									// Reformater le coef...
-									if(my_ereg("^[0-9\.\,]{1,}$",$tabligne[$i])){
+									if(preg_match("/^[0-9\.\,]{1,}$/",$tabligne[$i])){
 										$note_sur_dev[]=strtr($tabligne[$i],",",".");
 									} else{
 										$note_sur_dev[]="20";
@@ -308,7 +308,7 @@ else {
 									// Dans le cas d'un import de CSV réalisé depuis l'enregistrement ODS->CSV, on a 46 colonnes de devoirs
 									// Le tabeau $date_dev[] est rempli jusqu'à l'indice 45.
 									// Par contre, pour les devoirs, ne sont créés que ceux dont le nomc_dev[] est non vide
-									if((strlen(my_ereg_replace("[0-9/]","",$tabligne[$i]))!=0)||($tabligne[$i]=="")){
+									if((strlen(preg_replace("#[0-9/]#","",$tabligne[$i]))!=0)||($tabligne[$i]=="")){
 										$tabligne[$i]="$jour/$mois/$annee";
 									}
 									//echo "\$tabligne[$i]=$tabligne[$i]<br />\n";
@@ -335,7 +335,7 @@ else {
 									$tab_dev[$cpt_ele]['login']=$tabligne[$tabindice[1]];
 									// Il faudrait tester qu'il n'y a pas de caractères invalides dans le login...
 
-									if(strlen(my_ereg_replace("[A-Z0-9_]","",$tabligne[$tabindice[1]]))==0){
+									if(strlen(preg_replace("/[A-Z0-9_]/","",$tabligne[$tabindice[1]]))==0){
 										// L'élève fait-il partie du groupe?
 										$sql="SELECT 1=1 FROM j_eleves_groupes WHERE (login='".$tab_dev[$cpt_ele]['login']."' AND id_groupe='$id_groupe' AND periode='$periode_num')";
 										$test=mysql_query($sql);
@@ -360,7 +360,7 @@ else {
 													$note='0';
 													$elev_statut='-';
 												}
-												elseif(my_ereg("^[0-9\.\,]{1,}$",$note)){
+												elseif(preg_match("/^[0-9\.\,]{1,}$/",$note)){
 													$note=str_replace(",",".","$note");
 													if(($note<0)or($note > 20)){
 														$note='';
@@ -708,7 +708,7 @@ else {
 									$note=0;
 									$elev_statut="-";
 								}
-								elseif(my_ereg("^[0-9\.\,]{1,}$",$tab_dev_note[$i][$j])){
+								elseif(preg_match("/^[0-9\.\,]{1,}$/",$tab_dev_note[$i][$j])){
 									$note=str_replace(",",".",$tab_dev_note[$i][$j]);
 									$elev_statut='';
 									if(($note<0)or($note > 20)){

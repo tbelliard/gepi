@@ -278,7 +278,7 @@ else {
 						//echo $tabligne[$tabindice[1]]." -&gt; ".my_ereg_replace("[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
 
 
-						$nom_pays[]=preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))));
+						$nom_pays[]=preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(preg_replace("/&#039;/","'",$tabligne[$tabindice[1]]))));
 						//echo $tabligne[$tabindice[1]]." -&gt; ".preg_replace("/[^a-zA-Z0-9ÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü_. ()'-]/","",corriger_caracteres(html_entity_decode_all_version(my_ereg_replace("&#039;","'",$tabligne[$tabindice[1]]))))."</p>";
 					}
 				}

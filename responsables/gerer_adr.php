@@ -136,18 +136,18 @@ if(!getSettingValue('conv_new_resp_table')){
 	*/
 
 	$critere_recherche=isset($_POST['critere_recherche']) ? $_POST['critere_recherche'] : "";
-	$critere_recherche=my_ereg_replace("[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü0-9_ -]", "", $critere_recherche);
+	$critere_recherche=preg_replace("/[^a-zA-ZÀÄÂÉÈÊËÎÏÔÖÙÛÜ½¼Ççàäâéèêëîïôöùûü0-9_ -]/", "", $critere_recherche);
 	$afficher_toutes_les_adr=isset($_POST['afficher_toutes_les_adr']) ? $_POST['afficher_toutes_les_adr'] : "n";
 
 	$champ_rech=isset($_POST['champ_rech']) ? $_POST['champ_rech'] : "commune";
 	if(($champ_rech!='commune')&&($champ_rech!='cp')&&($champ_rech!='adrX')&&($champ_rech!='non_assoc')) {$champ_rech="commune";}
 
 	$nb_adr=isset($_POST['nb_adr']) ? $_POST['nb_adr'] : 20;
-	if(strlen(my_ereg_replace("[0-9]","",$nb_adr))!=0) {
+	if(strlen(preg_replace("/[0-9]/","",$nb_adr))!=0) {
 		$nb_adr=20;
 	}
 	$num_premier_adr_rech=isset($_POST['num_premier_adr_rech']) ? $_POST['num_premier_adr_rech'] : 0;
-	if((strlen(my_ereg_replace("[0-9]","",$num_premier_adr_rech))!=0)||($num_premier_adr_rech=="")) {
+	if((strlen(preg_replace("/[0-9]/","",$num_premier_adr_rech))!=0)||($num_premier_adr_rech=="")) {
 		$num_premier_adr_rech=0;
 	}
 
