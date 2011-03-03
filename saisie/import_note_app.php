@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -30,16 +30,16 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 
@@ -129,7 +129,10 @@ echo "</p>\n";
 if (!isset($is_posted)) {
     ?>
     <form enctype="multipart/form-data" action="import_note_app.php" method=post name=formulaire>
-    <?php $csv_file=""; ?>
+    <?php
+		$csv_file="";
+		echo add_token_field();
+	?>
     <p>Fichier CSV à importer : <input type='file' name="csv_file" />    <input type='submit' value='Ouvrir' /></p>
     <p>Si le fichier à importer comporte une première ligne d'en-tête (non vide) à ignorer, <br />cocher la case ci-contre&nbsp;
     <input type='checkbox' name="en_tete" value="yes" checked /></p>
@@ -154,9 +157,12 @@ if (!isset($is_posted)) {
 
 }
 if (isset($is_posted )) {
+	check_token();
+
     $non_def = 'no';
     $csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
     echo "<form enctype='multipart/form-data' action='traitement_csv.php' method=post >";
+	echo add_token_field();
     if($csv_file['tmp_name'] != "") {
         echo "<p><b>Attention</b>, les données ne sont pas encore enregistrées dans la base GEPI. Vous devez confirmer l'importation (bouton en bas de la page) !</p>";
 
@@ -229,7 +235,7 @@ if (isset($is_posted )) {
                             break;
                         case 1:
                             // Note
-                            if (my_ereg ("^[0-9\.\,]{1,}$", $data[$c])) {
+                            if (preg_match ("/^[0-9\.\,]{1,}$/", $data[$c])) {
                                 $data[$c] = str_replace(",", ".", "$data[$c]");
                                 $test_num = settype($data[$c],"double");
                                 if ($test_num) {

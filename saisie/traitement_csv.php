@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -30,18 +30,19 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
-
-if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
+if (!checkAccess()) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
+check_token();
 
 $id_groupe = isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
 if (is_numeric($id_groupe) && $id_groupe > 0) {
@@ -167,7 +168,7 @@ for ($row=1; $row<$nb_row; $row++) {
 			if (($current_group["classe"]["ver_periode"][$eleve_id_classe][$periode_num]=="N")||
 			(($current_group["classe"]["ver_periode"][$eleve_id_classe][$periode_num]!="O")&&($_SESSION['statut']=='secours'))) {
 				$reg_note_min = strtolower($reg_note);
-				if (my_ereg ("^[0-9\.\,]{1,}$", $reg_note)) {
+				if (preg_match ("/^[0-9\.\,]{1,}$/", $reg_note)) {
 					$reg_note = str_replace(",", ".", "$reg_note");
 					//$test_num = settype($reg_note,"double");
 					if (($reg_note >= 0) and ($reg_note <= 20)) {

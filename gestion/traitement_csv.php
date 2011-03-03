@@ -2,11 +2,11 @@
 
 /*
 
- * Last modification  : 14/03/2005
+ * $Id$
 
  *
 
- * Copyright 2001-2004 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 
  *
 
@@ -66,7 +66,7 @@ die();
 
 die();
 
-};
+}
 
 
 
@@ -75,11 +75,11 @@ if (!checkAccess()) {
 
     header("Location: ../logout.php?auto=1");
 
-die();
+    die();
 
 }
 
-
+check_token();
 
 //**************** EN-TETE *****************
 $titre_page = "Outil de gestion | Traitement Importation";
