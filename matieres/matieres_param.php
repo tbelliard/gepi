@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -53,6 +53,8 @@ $nb_matieres = mysql_num_rows($matieres_list);
 
 
 if (isset($_POST['is_posted'])) {
+	check_token();
+
     $msg = '';
     $reg_ok = '';
     $nbc = 0;
@@ -133,6 +135,7 @@ if ($max_periode <= 0) {
 }
 
 echo "<form method=\"post\" action=\"matieres_param.php\">\n";
+echo add_token_field();
 echo "<p class=bold><a href=\"index.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <input type='submit' value='Enregistrer' /></p>\n";
 echo "<p>Sur cette page, vous pouvez modifier les coefficients et les priorités d'affichage d'une ou plusieurs matières
 par lots de classes cochées ci-dessous.</p>\n";
