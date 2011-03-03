@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -57,6 +57,7 @@ if (isset($new_name_defined)) {
 }
 
 if (isset($eleves_selected)) {
+	check_token();
 
     // On fait l'enregistrement de la nouvelle classe
     $get_settings = mysql_query("SELECT * FROM classes WHERE id='$id_classe'");
@@ -135,6 +136,9 @@ if (!isset($new_name_defined)) {
     echo "<p>Vous vous apprêtez à scinder une classe.<br />Selon le cas de figure, vous serez amené à recommencer cette opération plusieurs fois.<br /><br />Notez que les paramètres de période de la nouvelle classe seront identiques à ceux de la classe d'origine. Il en est de même des professeurs et matières déjà assignés. De même les élèves gardent le même professeur principal. Ces informations peuvent être modifiées par la suite, une fois l'opération terminée.</p>";
 
     echo "<form action='duplicate_class.php' method=post>";
+
+	echo add_token_field();
+
     echo "<p>Veuillez sélectionner la classe que vous souhaitez scinder :<br />";
     $call_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
     $nombreligne = mysql_num_rows($call_classes);
@@ -168,6 +172,9 @@ if (isset($new_name_defined) && !isset($eleves_selected)) {
     $nb = mysql_num_rows($call_eleves);
 
     echo "<form action='duplicate_class.php' method=post>";
+
+	echo add_token_field();
+
     echo "<table cellpadding=5>";
 
     for ($k=0;$k<$nb;$k++) {
