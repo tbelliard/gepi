@@ -30,11 +30,11 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 
 //INSERT INTO `droits` ( `id` , `administrateur` , `professeur` , `cpe` , `scolarite` , `eleve` , `secours` , `description` , `statut` ) VALUES ('/matieres/matieres_csv.php', 'V', 'F', 'F', 'F', 'F', 'F', 'Importation des matières depuis un fichier CSV', '');
@@ -101,7 +101,7 @@ else {
 					$ligne=explode(";",$tmp_lig);
 
 					$affiche[0]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[0]))));
-					if((strlen(my_ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[0],"-","_")))!=0)&&($affiche[0]!="")){
+					if((strlen(preg_replace("/[A-Za-z0-9_ &]/","",strtr($affiche[0],"-","_")))!=0)&&($affiche[0]!="")){
 					//if((strlen(my_ereg_replace("[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
 						$temoin_erreur="oui";
 						//echo "<!--  -->\n";
@@ -111,7 +111,9 @@ else {
 
 					$affiche[1]=traitement_magic_quotes(corriger_caracteres(dbase_filter(trim($ligne[1]))));
 					//if((strlen(my_ereg_replace("[A-Za-z0-9_ &]","",strtr($affiche[$i],"-","_")))!=0)&&($affiche[$i]!="")){
-					if((strlen(my_ereg_replace("[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]","",strtr($affiche[1],"-","_")))!=0)&&($affiche[1]!="")){
+					//echo "\$affiche[1]=$affiche[1]<br />";
+					//echo "my_ereg_replace(\"[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]\",\"\",$affiche[1])=".my_ereg_replace("[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]","",$affiche[1])."<br />";
+					if((strlen(preg_replace("/[A-Za-zÀÄÂÉÈÊËÎÏÔÖÙÛÜÇçàäâéèêëîïôöùûü0-9_ &]/","",strtr($affiche[1],"-","_")))!=0)&&($affiche[1]!="")){
 						$temoin_erreur="oui";
 						//echo "<!--  -->\n";
 						$msg.="Le nom <font color='red'>$affiche[1]</font> ne convient pas.<br />\n";
