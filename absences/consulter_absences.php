@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -39,7 +39,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 
 if (!checkAccess()) {
@@ -49,82 +49,6 @@ if (!checkAccess()) {
 
 
 include "../lib/periodes.inc.php";
-
-/*
-if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
-	if ($_SESSION['statut'] == "cpe") {
-		$quels_eleves = mysql_query("SELECT e.login FROM eleves e, j_eleves_classes c, j_eleves_cpe j WHERE (c.id_classe='$id_classe' AND j.e_login = c.login AND e.login = j.e_login AND j.cpe_login = '".$_SESSION['login'] . "' AND c.periode = '$periode_num')");
-	} else {
-		$quels_eleves = mysql_query("SELECT e.login FROM eleves e, j_eleves_classes c WHERE ( c.id_classe='$id_classe' AND c.login = e.login AND c.periode='$periode_num')");
-	}
-
-	//=========================
-	// AJOUT: boireaus 20071010
-	$log_eleve=$_POST['log_eleve'];
-	$nb_abs_ele=$_POST['nb_abs_ele'];
-	$nb_nj_ele=$_POST['nb_nj_ele'];
-	$nb_retard_ele=$_POST['nb_retard_ele'];
-	$app_ele=$_POST['app_ele'];
-	//=========================
-
-	$quels_eleves = mysql_query("SELECT e.login FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND e.login = c.login AND c.periode='$periode_num')");
-	$lignes = mysql_num_rows($quels_eleves);
-	$j = '0';
-	while($j < $lignes) {
-		$reg_eleve_login = mysql_result($quels_eleves, $j, "login");
-
-		//=========================
-		// AJOUT: boireaus 20071007
-		// Récupération du numéro de l'élève dans les saisies:
-		$num_eleve=-1;
-		for($i=0;$i<count($log_eleve);$i++){
-			if($reg_eleve_login==$log_eleve[$i]){
-				$num_eleve=$i;
-				break;
-			}
-		}
-		if($num_eleve!=-1){
-			//=========================
-
-
-			$nb_absences=$nb_abs_ele[$num_eleve];
-			$nb_nj=$nb_nj_ele[$num_eleve];
-			$nb_retard=$nb_retard_ele[$num_eleve];
-			$ap=$app_ele[$num_eleve];
-
-			$ap = traitement_magic_quotes(corriger_caracteres(html_entity_decode_all_version($ap)));
-			//=========================
-
-			if (!(ereg ("^[0-9]{1,}$", $nb_absences))) {
-					$nb_absences = '';
-				}
-				if (!(ereg ("^[0-9]{1,}$", $nb_nj))) {
-					$nb_nj = '';
-				}
-				if (!(ereg ("^[0-9]{1,}$", $nb_retard))) {
-					$nb_retard = '';
-				}
-
-				$test_eleve_nb_absences_query = mysql_query("SELECT * FROM absences WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
-				$test_nb = mysql_num_rows($test_eleve_nb_absences_query);
-				if ($test_nb != "0") {
-					$register = mysql_query("UPDATE absences SET nb_absences='$nb_absences', non_justifie='$nb_nj', nb_retards='$nb_retard', appreciation='$ap' WHERE (login='$reg_eleve_login' AND periode='$periode_num')");
-				} else {
-					$register = mysql_query("INSERT INTO absences SET login='$reg_eleve_login', periode='$periode_num',nb_absences='$nb_absences',non_justifie='$nb_nj', nb_retards='$nb_retard',appreciation='$ap'");
-				}
-			if (!$register) {
-					$msg = "Erreur lors de l'enregistrement des données";
-			}
-		}
-		$j++;
-	}
-	//$affiche_message = 'yes';
-	if(!isset($msg)){$msg='Les modifications ont été enregistrées !';}
-}
-$themessage  = 'Des champs ont été modifiés. Voulez-vous vraiment quitter sans enregistrer ?';
-//$message_enregistrement = 'Les modifications ont été enregistrées !';
-
-*/
 
 //**************** EN-TETE *****************
 $titre_page = "Consultation des absences";

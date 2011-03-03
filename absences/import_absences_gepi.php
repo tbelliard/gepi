@@ -138,7 +138,7 @@ $cal_2 = new Calendrier("form_absences", "au");
 	$uid = md5(uniqid(microtime(), 1));
 	$valide_form='';
 	   // on remplace les %20 par des espaces
-	    $uid_post = my_eregi_replace('%20',' ',$uid_post);
+	    $uid_post = preg_replace('/%20/',' ',$uid_post);
 	if($uid_post===$_SESSION['uid_prime']) { $valide_form = 'yes'; } else { $valide_form = 'no'; }
 	$_SESSION['uid_prime'] = $uid;
 // fin de la fonction de sécurité
@@ -230,6 +230,8 @@ if ( $etape === '0' ) {
 }
 
 if ( $etape === '1' ) {
+	check_token(false);
+
  // affiché le résultats
 
 	 // si la date au et vide ou alors erroné alors on prend du
