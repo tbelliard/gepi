@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 10/03/2005
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -31,20 +31,22 @@ extract($_POST, EXTR_OVERWRITE);
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
-header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
-die();
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
 } else if ($resultat_session == '0') {
-    header("Location: ../logout.php?auto=1");
-die();
-};
+	header("Location: ../logout.php?auto=1");
+	die();
+}
 
 if (!checkAccess()) {
-    header("Location: ../logout.php?auto=1");
-die();
+	header("Location: ../logout.php?auto=1");
+	die();
 }
 include "../lib/periodes.inc.php";
 
 if (isset($is_posted) and ($is_posted == 'yes')) {
+	check_token();
+
     $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' and c.login = e.login)");
     $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
     $i = "0";
@@ -108,7 +110,7 @@ if (isset($is_posted) and ($is_posted == 'yes')) {
     }
     $affiche_message = 'yes';
     header("Location: ./modify_class.php?id_classe=$id_classe&affiche_message=yes");
-
+	die();
 }
 
 
@@ -122,6 +124,8 @@ require_once("../lib/header.inc");
 <p class=bold><a href="modify_class.php?id_classe=<?echo $id_classe?>"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a></p>
 
 <?php
+
+echo add_token_field();
 
 // Test d'existence de données concernant les options et affichage le cas échéant d'un message d'avertissement
 $test = mysql_query("SELECT * FROM j_eleves_matieres m, j_eleves_classes j, classes c WHERE (m.login=j.login and j.id_classe = c.id and c.id = '$id_classe')");

@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -43,7 +43,7 @@ if (!checkAccess()) {
 }
 
 // Seuls les comptes Administrateur et Scolarité ont accès
-if($_SESSION['statut']=="scolarite"){
+if($_SESSION['statut']=="scolarite") {
 	// Tester si le compte scolarité a accès à cette classe...
 	// Si ce n'est pas le cas -> intrusion...
 
@@ -60,8 +60,9 @@ if($_SESSION['statut']=="scolarite"){
 include "../lib/periodes.inc.php";
 
 
-if($_SESSION['statut']=="administrateur"){
+if($_SESSION['statut']=="administrateur") {
 	if (isset($is_posted)) {
+		check_token();
 		$msg = '';
 		$j = 1;
 		while ($j < $nb_periode) {
@@ -182,7 +183,7 @@ require_once("../lib/header.inc");
 // MODIF: boireaus
 //echo "<p class=bold>|<a href=\"classes_const.php?id_classe=".$id_classe."\">Retour</a>|";
 
-if(!isset($quitter_la_page)){
+if(!isset($quitter_la_page)) {
 	echo "<form action='eleve_options.php' name='form1' method='post'>\n";
 
 	echo "<p class=bold><a href=\"classes_const.php?id_classe=".$id_classe."\"";
@@ -288,6 +289,8 @@ else{
 
 if($_SESSION['statut']=="administrateur"){
 	echo "<form action='eleve_options.php' name='form2' method=post>\n";
+
+	echo add_token_field();
 
 	if(isset($quitter_la_page)){
 		// Cette page a été ouverte en target='blank' depuis une autre page (par exemple /eleves/modify_eleve.php)

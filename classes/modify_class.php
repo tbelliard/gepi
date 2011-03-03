@@ -4,7 +4,7 @@
  */
 
 /*
- * Last modification  : 07/12/2005
+ * $Id$
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -39,7 +39,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -50,6 +50,8 @@ include "../lib/periodes.inc.php";
 
 $message_enregistrement = "Les modifications ont été enregistrées !";
 if (isset($is_posted)) {
+	check_token();
+
     $affiche_message = 'yes';
 
     $mess_avertissement = 'no';
@@ -273,6 +275,7 @@ $nombre_eleves = mysql_num_rows($appel_donnees_eleves);
 ?>
 <form action="modify_class.php" name='form2' method=post>
 <?php
+echo add_token_field();
 echo "<p class=bold>|<a href=\"index.php\" onclick=\"return confirm_abandon(this, change, '".$themessage."')\">Retour</a>";
 echo "|<a href='javascript:centrerpopup(\"help_modify_class.html\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>Aide</a>";
 

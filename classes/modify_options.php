@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 04/04/2005
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -44,6 +44,7 @@ if (!checkAccess()) {
 include "../lib/periodes.inc.php";
 
 if (isset($is_posted) and ($is_posted == 'yes')) {
+	check_token();
     $msg = "";
     $appel_donnees_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' and c.login = e.login)");
     $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
@@ -164,6 +165,7 @@ $classe = mysql_result($call_nom_class, 0, 'classe');
 <b><a href="javascript:CocheCase(true)">Tout cocher</a> - <a href="javascript:CocheCase(false)">Tout décocher</a></b>
 
 <?php
+echo add_token_field();
 echo "<p class='grand'>Classe : $classe | Matière : $current_matiere</p>";
 ?>
 

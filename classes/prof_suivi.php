@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -46,6 +46,8 @@ if (!checkAccess()) {
 include "../lib/periodes.inc.php";
 
 if (isset($is_posted) and ($is_posted == '1')) {
+	check_token();
+
 	$call_eleves = mysql_query("SELECT DISTINCT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe = '$id_classe' AND e.login = c.login)");
 	$nombreligne = mysql_num_rows($call_eleves);
 	//=========================
@@ -112,7 +114,10 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 	$nb_prof = mysql_num_rows($call_profsuivi);
 ?>
 
-	<p><?php echo getSettingValue("gepi_prof_suivi"); ?> : précisez le nombre dans la classe :</p>
+	<p>
+	<?php
+		echo getSettingValue("gepi_prof_suivi");
+	?> : précisez le nombre dans la classe :</p>
 	<form enctype="multipart/form-data" action="prof_suivi.php" method="post">
 	<select size = '1' name='nb_prof'>
 	<?php for ($i=1;$i<6;$i++) {
@@ -122,8 +127,8 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 		echo ">$i</option>\n";
 	}
 	?>
-	</SELECT>
-	<input type='submit' value='Enregistrer' /><br />
+	</select>
+	<input type='submit' value='Valider' /><br />
 	<input type='hidden' name='id_classe' value='<?php echo $id_classe;?>' />
 	</form>
 	<?php
@@ -280,6 +285,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 			echo "<input type='hidden' name='etape3' value='yes' />\n";
 			echo "<input type='hidden' name='nb_prof_suivi' value='$nb_prof_suivi' />\n";
 			echo "<input type='hidden' name='is_posted' value='1' />\n";
+			echo add_token_field();
 			echo "</form>\n";
 
 
