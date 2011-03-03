@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -35,7 +35,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
@@ -56,6 +56,9 @@ if (!isset($is_posted)) {
 	echo "<hr />\n";
 	echo "<p>Choisir un fichier csv parmi ceux disponibles actuellement dans la distribution GEPI : <br />\n";
 	echo "<form enctype=\"multipart/form-data\" action=\"import_etab_csv.php\" method=post name=\"formulaire\">\n";
+
+	echo add_token_field();
+
 	$handle=opendir('./bases');
 	echo "<select name=\"csv_file\" size=\"1\">\n";
 	$file_tab = array();
@@ -107,6 +110,8 @@ if (!isset($is_posted)) {
 	echo "--> <B>La ville.</B>\n";
 
 } else if (isset($is_posted ) and ($is_posted==1 )) {
+	check_token(false);
+
 	echo "<p><span class = 'grand'>Deuxième phase d'importation des établissements </span></p>\n";
 	$table_etab=array();
 	if ($_POST['choix'] == 'gepi') {
@@ -224,7 +229,7 @@ if (!isset($is_posted)) {
 						break;
 					case 4:
 						// Code postal
-						if (my_ereg ("^[0-9]{1,5}$", $data[$c])) {
+						if (preg_match ("/^[0-9]{1,5}$/", $data[$c])) {
 							echo "<td><p>$data[$c]</p></td>\n";
 							$reg_cp=$data[$c];
 						} else {
@@ -284,7 +289,10 @@ if (!isset($is_posted)) {
 			} else {
 				echo "<center><p><b>Il n'y a aucun établissement à entrer dans la base.</p></center>\n";
 			}
-			echo "</FORM>\n";
+
+			echo add_token_field();
+
+			echo "</form>\n";
 		} else {
 			echo "<p>L'importation a échoué !</p>\n";
 		}
@@ -295,6 +303,8 @@ if (!isset($is_posted)) {
 		echo "<center><p class='grand'>Opération non conforme.</p></center></body></html>\n";
 		die();
 	}
+
+	check_token(false);
 
 	$table_etab=unserialize($_SESSION['table_etab']);
 	$pb = 'no';
