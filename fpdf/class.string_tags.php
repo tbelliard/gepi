@@ -6,7 +6,7 @@
 * Date:     2005/12/08                                                      *
 * Author:   Bintintan Andrei  -- klodoma@ar-sd.net                          *
 *                                                                           *
-* Last Modification: 2006/07/30                                             *
+* $Id$
 *                                                                           *
 *                                                                           *
 * License:  Free for non-commercial use	                                    *
@@ -44,7 +44,7 @@ var $iTagMaxElem;
         $aHREF = & $this->aHREF;
         $maxElem = & $this->iTagMaxElem;
       
-        if (!eregi("^<([a-zA-Z1-9]{1,$maxElem}) *(.*)>$", $p_tag, $reg)) return false;
+        if (!preg_match("/^<([a-zA-Z1-9]{1,$maxElem}) *(.*)>$/i", $p_tag, $reg)) return false;
 
         $p_tag = $reg[1];
 
@@ -52,7 +52,7 @@ var $iTagMaxElem;
         if (isset($reg[2])) {
             preg_match_all("|([^ ]*)=[\"'](.*)[\"']|U", $reg[2], $out, PREG_PATTERN_ORDER);
             for ($i=0; $i<count($out[0]); $i++){
-                $out[2][$i] = my_eregi_replace("(\"|')", "", $out[2][$i]);
+                $out[2][$i] = preg_replace("/(\"|')/i", "", $out[2][$i]);
                 array_push($sHREF, array($out[1][$i], $out[2][$i]));
             }           
         }
@@ -78,7 +78,7 @@ var $iTagMaxElem;
 	    $aHREF = & $this->aHREF;
 	    $maxElem = & $this->iTagMaxElem;
 
-	    if (!ereg("^</([a-zA-Z1-9]{1,$maxElem})>$", $p_tag, $reg)) return false;
+	    if (!preg_match("#^</([a-zA-Z1-9]{1,$maxElem})>$#", $p_tag, $reg)) return false;
 
 	    $p_tag = $reg[1];
 
