@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 11/03/2005
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -42,6 +42,7 @@ if (!checkAccess()) {
 
 
 if (isset($_GET['action'])) {
+	check_token();
 
 	if ($_GET['action'] == "delete_group") {
 		if (!is_numeric($_GET['id_groupe'])) $_GET['id_groupe'] = 0;
@@ -124,7 +125,7 @@ if ($nombre_lignes != 0) {
 					}
 					echo ") ";
 				}
-				echo "<a href='index.php?id_groupe=". $group["id"] . "&amp;action=delete_group'><img src='../images/delete16.png' alt='Supprimer' style='width:12px; heigth: 12px;' /></a>";
+				echo "<a href='index.php?id_groupe=". $group["id"] . "&amp;action=delete_group".add_token_in_url()."'><img src='../images/delete16.png' alt='Supprimer' style='width:12px; heigth: 12px;' /></a>";
 				echo "<br />\n";
 
 			}
