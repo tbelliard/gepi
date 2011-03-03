@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -41,7 +41,7 @@ if (!checkAccess()) {
 
 // Sécurité supplémentaire pour éviter d'aller voir ce fichier si on n'est pas dans un ent
 if (getSettingValue("use_ent") != 'y') {
-	DIE('Fichier interdit.');
+	die('Fichier interdit.');
 }
 
 // ======================= Initialisation des variables ==========================
@@ -53,6 +53,7 @@ $nbre_req = isset($_POST["nbre_req"]) ? $_POST["nbre_req"] : NULL;
 
 // ======================= Traitement des données ================================
 if ($action == "modifier") {
+	check_token();
 	// L'utilisateur vient d'envoyer la liste des login à modifier
 	echo $nbre_req;
 
@@ -70,7 +71,7 @@ if ($action == "modifier") {
 
 	}
 
-}else{
+} else {
 
 	// On récupère la liste de tous les professeurs de la table ldap_bx
 	$sql_bx = "SELECT * FROM ldap_bx WHERE statut_u = 'teacher' ORDER BY nom_u, prenom_u";
@@ -136,7 +137,11 @@ require_once("../lib/header.inc");
 		<input type="hidden" name="nbre_req" value="<?php echo $j; ?>" />
 
 
-	<?php echo $aff_erreurs; ?>
+	<?php
+		echo $aff_erreurs;
+
+		echo add_token_field();
+	?>
 
 		<input type="submit" name="enregistrer" value="Enregistrer" />
 

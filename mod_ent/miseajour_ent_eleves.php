@@ -5,7 +5,7 @@
  * Module d'intégration de Gepi dans un ENT réalisé au moment de l'intégration de Gepi dans ARGOS dans l'académie de Bordeaux
  * Fichier permettant de récupérer de nouveaux élèves dans le ldap de l'ENT
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -66,6 +66,7 @@ $_national	= isset($_POST['national']) ? $_POST['national'] : NULL;
 
 // Si c'est demandé, on traite les nouveaux logins
 if ($enregistrer == "Ajouter ces élèves") {
+	check_token();
 
 	/*
 	Pour info : d/p ext. int. pour demi-pensionnaire, externe et interne.
@@ -196,6 +197,9 @@ $increment = 0; // pour les name du formulaire ci-dessous
 <p>Vous devez inscrire le num&eacute;ro interne de l'&eacute;l&egrave;ve (elenoet) pr&eacute;sent dansSconet pour faire les mises &agrave; jour automatiques.</p>
 
 	<form method="post" action="miseajour_ent_eleves.php">
+<?php
+	echo add_token_field();
+?>
 <table>
 
 	<tr>

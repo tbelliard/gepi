@@ -6,7 +6,7 @@
  * Module d'intégration de Gepi dans un ENT réalisé au moment de l'intégration de Gepi dans ARGOS dans l'académie de Bordeaux
  * Fichier permettant de récupérer de nouveaux élèves dans le ldap de l'ENT
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -45,7 +45,7 @@ if (!checkAccess()) {
 
 // Sécurité supplémentaire pour éviter d'aller voir ce fichier si on n'est pas dans un ent
 if (getSettingValue("use_ent") != 'y') {
-	DIE('Fichier interdit.');
+	die('Fichier interdit.');
 }
 
 // ======================= Initialisation des variables ==========================
@@ -60,15 +60,16 @@ $etape = isset($_GET["etape"]) ? $_GET["etape"] : NULL;
 $RNE = getSettingValue("gepiSchoolRne");
 if ($RNE === '') {
 	$msg = "Attention, votre RNE n'est pas renseigné dans la page des <a href=\"gestion/param_gen.php\">paramètres généraux.</a>";
-}else{
+} else {
 
 	$msg = "<p>Votre RNE est ".$RNE.". S'il est exact, vous pouvez passer à l'étape suivante.
-				&nbsp;<a href=\"index.php?etape=2\">Enregistrer les utilisateurs</a>";
+				&nbsp;<a href=\"index.php?etape=2".add_token_in_url()."\">Enregistrer les utilisateurs</a>";
 
 }
 
 // On teste pour la table
 if ($etape == 2) {
+	check_token();
 
 	$msg = NULL;
 	// On crée la table si nécessaire

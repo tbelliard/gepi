@@ -3,7 +3,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Eric Lebrun, Stéphane boireau, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -53,6 +53,8 @@ $nbre_req = isset($_POST["nbre_req"]) ? $_POST["nbre_req"] : NULL;
 
 // ======================= Traitement des données ================================
 if ($action == "modifier") {
+	check_token();
+
 	// L'utilisateur vient d'envoyer la liste des login à modifier
 	for($i = 0; $i < $nbre_req ; $i++){
 
@@ -67,7 +69,7 @@ if ($action == "modifier") {
 
 	}
 
-}else{
+} else {
 	// On récupère les données 'élèves' de la table eleve
 	$sql = "SELECT ID_TEMPO,ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP
 									FROM temp_gep_import2
@@ -148,7 +150,12 @@ require_once("../lib/header.inc");
 	<fieldset id="affErreurs">
 		<legend>Liste des comptes &agrave; modifier</legend>
 
-	<?php echo $aff_erreurs; if ($action == "modifier") { echo $aff_logins_m;}?>
+	<?php
+		echo $aff_erreurs;
+		if ($action == "modifier") { echo $aff_logins_m;}
+
+		echo add_token_field();
+	?>
 
 	</fieldset>
 
@@ -174,7 +181,9 @@ if ($action == "modifier") {
 
 		<form enctype="multipart/form-data" action="../init_xml2/step3.php" method="post">
 			<input type="hidden" name="is_posted" value="yes" />
-
+';
+	echo add_token_field();
+	echo '
 			<input type="submit" name="rien" value="Continuer l\'initialisation" />
 		</form>';
 }
