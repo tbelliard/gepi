@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -39,7 +39,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
    header("Location: ../logout.php?auto=1");
    die();
-};
+}
 
 // Check access
 if (!checkAccess()) {
@@ -64,6 +64,8 @@ if (isset($_GET['action']) and ($_GET['action'] == "supprimer")) {
 
 
 if (isset($_POST['is_posted_notes'])) {
+  check_token();
+
   $msg = "";
   if (!saveSetting("active_inscription_utilisateurs", $_POST['activer']))
 		$msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
@@ -76,6 +78,8 @@ if (isset($_POST['is_posted_notes'])) {
     $msg .= "Erreur lors de l'enregistrement de mod_inscription_titre !";
 }
 if (isset($_POST['is_posted'])) {
+    check_token();
+
     $msg = "";
     if ($_POST['is_posted'] == "ajout") {
         $req = mysql_query("insert into inscription_items set
@@ -111,6 +115,9 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
     echo "<p class=bold><a href=\"./inscription_config.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> | <a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a></p>\n";
 
     echo "<form name=\"formulaire\" method=\"post\" action=\"inscription_config.php\">";
+
+	echo add_token_field();
+
     if (isset($id_inter)) {
         $req = mysql_query("select * from inscription_items where id='".$id_inter."'");
         $date = htmlentities(@mysql_result($req, 0, "date"));
@@ -140,6 +147,7 @@ if (isset($_GET['action']) and ($_GET['action'] == "ajout")) {
 
 echo "<p class=bold><a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | <a href=\"./inscription_config.php?action=ajout\">Ajouter un item</a> | <a href=\"javascript:centrerpopup('help.php',800,500,'scrollbars=yes,statusbar=no,resizable=yes')\">Aide</a></p>\n";
 echo "<form name=\"formulaire\" method=\"post\"  action=\"inscription_config.php\">\n";
+echo add_token_field();
 echo "<H2>Activation  / Désactivation</H2>\n";
 $active_prof = getSettingValue("active_inscription_utilisateurs");
 if ($active_prof == "y") {

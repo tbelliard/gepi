@@ -1,8 +1,8 @@
 <?php
 /*
- * Last modification  : 04/01/2006
+ * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -48,6 +48,8 @@ $nombre_lignes = mysql_num_rows($call_data);
 
 
 if (isset($_POST['is_posted'])) {
+	check_token();
+
     $del = mysql_query("delete from inscription_j_login_items where login='".$_SESSION['login']."'");
     $i = 0;
     while ($i < $nombre_lignes){
@@ -78,6 +80,7 @@ require_once("../lib/header.inc");
 echo getSettingValue("mod_inscription_explication");
 
 echo "<form name=\"formulaire\" method=\"post\" action=\"inscription_index.php\">";
+echo add_token_field();
 echo "<table width=\"100%\" border=\"1\" cellspacing=\"1\" cellpadding=\"5\">\n";
 
 echo "<tr>\n";
