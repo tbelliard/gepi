@@ -5,8 +5,10 @@ Eric ABGRALL <eric.abgrall@free.fr>
 Thomas BELLIARD <thomas.belliard@free.fr>
 Didier BLANQUI <didier.blanqui@ac-toulouse.fr>
 Stephane BOIREAU <stephane.boireau@ac-rouen.fr>
+Regis BOUGUIN <regis.bouguin@laposte.net>
 Laurent DELINEAU <laurent.delineau@ac-poitiers.fr>
 Jerome ETHEVE <jerome.etheve@gmail.com>
+Pascal FAUTRERO <admin.paulbert@gmail.com>
 Josselin JACQUARD <josselin.jacquard@gmail.com>
 Julien JOCAL <collegerb@free.fr>
 Eric LEBRUN <eric.lebrun@ac-poitiers.fr>
