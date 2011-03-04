@@ -176,6 +176,11 @@ if (isset($id_classe)) {
 	echo "<label for='num_periode_annee' style='cursor:pointer;'>\n";
 	echo "Année entière";
 	echo "</label>\n";
+
+	echo "<p><input type='checkbox' name='avec_moy_gen_periodes_precedentes' id='avec_moy_gen_periodes_precedentes' value='y' ";
+	if((isset($_SESSION['vtn_pref_avec_moy_gen_periodes_precedentes']))&&($_SESSION['vtn_pref_avec_moy_gen_periodes_precedentes']=='y')) {echo "checked ";}
+	echo "/><label for='avec_moy_gen_periodes_precedentes'> Avec les moyennes de périodes précédentes</label></p>\n";
+
 	echo "</td>\n";
 
 	echo "<td valign=\"top\">\n";
