@@ -749,7 +749,11 @@ if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
 	//$col[1][1]="Note sup 10";
 	$col[1][1]="Mode moy";
 	//$col_csv[1][1]="Note sup 10";
-	for($t=2;$t<=$nb_col+$lignes_groupes;$t++) {$col[$t][1]='-';}
+    $col_sup=0;    
+    if(isset($avec_moy_gen_periodes_precedentes)){
+        $col_sup=$periode_num;
+    }
+	for($t=2;$t<=$nb_col+$lignes_groupes+$col_sup;$t++) {$col[$t][1]='-';}
 
 	if ($affiche_categories) {
 		foreach ($categories as $cat_id) {
@@ -757,7 +761,6 @@ if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
 			$t++;
 		}
 	}
-
 	// Pour la colonne moyenne générale
 	if ($ligne_supl >= 1) {
 		$col[$t][1]='-';
