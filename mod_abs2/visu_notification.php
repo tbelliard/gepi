@@ -260,7 +260,7 @@ if ($notification->getModifiable()) {
 		$responsable = $responsable_information->getResponsableEleve();
 		echo '<option value="'.$responsable->getPersId().'"';
 		echo ">".$responsable->getCivilite().' '.strtoupper($responsable->getNom()).' '.$responsable->getPrenom()
-			.' (resp '.$responsable_information->getRespLegal().")</option>\n";
+			.' (Resp '.$responsable_information->getRespLegal().")</option>\n";
 	    }
 	    echo "</select>";
 	    echo '<button type="submit">Ajouter</button>';
@@ -295,7 +295,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAI
 		    echo " selected='selected' ";
 		    $selected = true;
 		}
-		echo ">".$responsable->getMel().' ('.$responsable->getCivilite().' '.$responsable->getNom().'; resp '.$responsable_information->getRespLegal().")</option>\n";
+		echo ">".$responsable->getMel().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getRespLegal().")</option>\n";
 	    }
 	}
 	if (!$selected) {
@@ -337,7 +337,8 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="tel"/>';
-	echo ("<select style='width:200px;' name=\"tel\" onchange='submit()'>");
+	//echo ("<select style='width:200px;' name=\"tel\" onchange='submit()'>");
+	echo ("<select name=\"tel\" onchange='submit()'>");
 	$selected = false;
 	foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
 	    $responsable = $responsable_information->getResponsableEleve();
@@ -347,7 +348,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 		    echo " selected='selected' ";
 		    $selected = true;
 		}
-		echo ">".$responsable->getTelPort().' ('.$responsable->getCivilite().' '.$responsable->getNom().'; resp '.$responsable_information->getRespLegal()."; tel port)</option>\n";
+		echo ">".$responsable->getTelPort().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getRespLegal()." ; Tel portable)</option>\n";
 	    }
 
 	    if ($responsable->getTelPers() != null || $responsable->getTelPers() != '') {
@@ -356,7 +357,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 		    echo " selected='selected' ";
 		    $selected = true;
 		}
-		echo ">".$responsable->getTelPers().' ('.$responsable->getCivilite().' '.$responsable->getNom().'; resp '.$responsable_information->getRespLegal()."; tel pers)</option>\n";
+		echo ">".$responsable->getTelPers().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getRespLegal()." ; Tel personnel)</option>\n";
 	    }
 
 	    if ($responsable->getTelProf() != null || $responsable->getTelProf() != '') {
@@ -365,7 +366,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
 		    echo " selected='selected' ";
 		    $selected = true;
 		}
-		echo ">".$responsable->getTelProf().' ('.$responsable->getCivilite().' '.$responsable->getNom().'; resp '.$responsable_information->getRespLegal()."; tel prof)</option>\n";
+		echo ">".$responsable->getTelProf().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getRespLegal()." ; Tel professionnel)</option>\n";
 	    }
 	}
 	if (!$selected) {
@@ -400,6 +401,10 @@ if (($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COU
     echo '<tr><td>';
     echo 'Adresse : ';
     echo '</td><td>';
+	//pour information : Nom du ou des responsables sélectionnés
+	echo 'De : <i> ';
+	echo $notification->getResponsableEleveAdresse()->getDescriptionHabitant();
+	echo '</i><br/><br/>';
     if ($notification->getResponsableEleveAdresse() != null) {
 	//on ne modifie le statut si le type est courrier ou communication téléphonique
 	if ($notification->getResponsableEleveAdresse()->getAdr1() != null && $notification->getResponsableEleveAdresse()->getAdr1() != '') {
@@ -419,13 +424,10 @@ if (($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COU
 	    echo '<br/>';
 	}
 	echo $notification->getResponsableEleveAdresse()->getCp().' '.$notification->getResponsableEleveAdresse()->getCommune();
-	if ($notification->getResponsableEleveAdresse()->getPays() != null && $notification->getResponsableEleveAdresse()->getPays() != '') {
+	if ($notification->getResponsableEleveAdresse()->getPays() != null && $notification->getResponsableEleveAdresse()->getPays() != '' && $notification->getResponsableEleveAdresse()->getPays() != getsettingvalue('gepiSchoolPays')) {
 	    echo '<br/>';
 	    echo $notification->getResponsableEleveAdresse()->getPays();
-	}
-	echo '<br/>(';
-	echo $notification->getResponsableEleveAdresse()->getDescriptionHabitant();
-	echo ')';
+	}	
     }
 
     if ($notification->getModifiable()) {
@@ -468,7 +470,7 @@ if (($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COU
 		echo ' ';
 	    }
 	    echo $responsable_addresse->getCp().' '.$responsable_addresse->getCommune();
-	    if ($responsable_addresse->getPays() != null && $responsable_addresse->getPays() != '') {
+	    if ($responsable_addresse->getPays() != null && $responsable_addresse->getPays() != '' && $responsable_addresse->getPays() != getsettingvalue('gepiSchoolPays')) {
 		echo ' ';
 		echo $responsable_addresse->getPays();
 	    }
