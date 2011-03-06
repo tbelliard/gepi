@@ -394,7 +394,9 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS 
     echo '</td></tr>';
 }
 
-if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
+// 	Affichage des adresses pour l'envoi du SMS (permettre de savoir à quel responsable l'envoyer selon l'adresse)
+if (($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) ||
+    ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS))  {
     echo '<tr><td>';
     echo 'Adresse : ';
     echo '</td><td>';
