@@ -1718,7 +1718,7 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 	//echo "\$num_debut_colonnes_matieres=$num_debut_colonnes_matieres<br />";
 	//echo "\$coloriser_resultats=$coloriser_resultats<br />";
 
-    echo "<table border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\" summary=\"Tableau\">\n";
+    echo "<table border=\"$bord\" class='boireaus' cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\" summary=\"Tableau\">\n";
     echo "<tr>\n";
     $j = 1;
     while($j < $nb_col+1) {
@@ -1730,17 +1730,22 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
     $i = "0";
     $bg_color = "";
     $flag = "1";
+    $alt=1;
     while($i < $nombre_lignes) {
         if ($couleur_alterne) {
             if ($flag==1) {$bg_color = "bgcolor=\"#C0C0C0\"";} else {$bg_color = "     ";}
         }
 
-        echo "<tr>\n";
+	    $alt=$alt*(-1);
+        echo "<tr class='";
+		if($couleur_alterne) {echo "lig$alt ";}
+		echo "white_hover'>\n";
         $j = 1;
         while($j < $nb_col+1) {
             if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))) {
 
-				echo "<td class='small' ".$bg_color;
+				echo "<td class='small' ";
+				//echo $bg_color;
 				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
 					if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
@@ -1757,7 +1762,8 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 				echo ">{$col[$j][$i]}</td>\n";
 
             } else {
-				echo "<td align=\"center\" class='small' ".$bg_color;
+				echo "<td align=\"center\" class='small' ";
+				//echo $bg_color;
 				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
 					if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
