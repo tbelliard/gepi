@@ -1060,7 +1060,7 @@ while($i < $lignes_groupes){
 	$nom_complet_coupe = (strlen($nom_complet_matiere) > 20)? urlencode(substr($nom_complet_matiere,0,20)."...") : urlencode($nom_complet_matiere);
 
 	$nom_complet_coupe_csv=(strlen($nom_complet_matiere) > 20) ? substr($nom_complet_matiere,0,20) : $nom_complet_matiere;
-	$nom_complet_coupe_csv=my_ereg_replace(";","",$nom_complet_coupe_csv);
+	$nom_complet_coupe_csv=preg_replace("/;/","",$nom_complet_coupe_csv);
 
 	//$ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=$nom_complet_coupe&width=22\" WIDTH=\"22\" BORDER=\"0\" />";
 	//$ligne1[$k] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("$nom_complet_coupe")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"$nom_complet_coupe\" />";
@@ -1133,7 +1133,7 @@ if ($ligne_supl == 1) {
 	//$ligne1[$nb_col] = "<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
 
 	$ligne1[$nb_col]="<a href='#' onclick=\"document.getElementById('col_tri').value='$nb_col';";
-	if(my_eregi("^Rang",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
+	if(preg_match("/^Rang/i",$ligne1[$nb_col])) {$ligne1[$nb_col].="document.getElementById('sens_tri').value='inverse';";}
 	$ligne1[$nb_col].="document.forms['formulaire_tri'].submit();\">";
     $ligne1[$nb_col].="<IMG SRC=\"../lib/create_im_mat.php?texte=".rawurlencode("Moyenne générale")."&amp;width=22\" WIDTH=\"22\" BORDER=\"0\" alt=\"Moyenne générale\" />";
 	$ligne1[$nb_col].="</a>";
@@ -1234,7 +1234,7 @@ if ($ligne_supl == 1) {
 			$rg[$k]=$k;
 
 			if ($total_coef_eleve[$k+$ligne_supl] > 0) {
-				$tmp_tab[$k]=my_ereg_replace(",",".",$col[$nb_col][$k+1]);
+				$tmp_tab[$k]=preg_replace("/,/",".",$col[$nb_col][$k+1]);
 				my_echo("<tr>");
 				my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k]</td>");
 				my_echo("</tr>");
@@ -1337,7 +1337,7 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 	}
 
 	// Vérifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
-	if((strlen(my_ereg_replace("[0-9]","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
+	if((strlen(preg_replace("/[0-9]/","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
 		my_echo("<table>");
 		my_echo("<tr><td valign='top'>");
 		unset($tmp_tab);
@@ -1347,7 +1347,7 @@ if((isset($_POST['col_tri']))&&($_POST['col_tri']!='')) {
 			// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
 			//$tmp_tab[$loop]=my_ereg_replace(",",".",$col_csv[$col_tri][$loop]);
 			//$tmp_tab[$loop]=my_ereg_replace(",",".",$col[$col_tri][$loop]);
-			$tmp_tab[$loop]=my_ereg_replace(",",".",$col[$col_tri][$loop+$corr]);
+			$tmp_tab[$loop]=preg_replace("/,/",".",$col[$col_tri][$loop+$corr]);
 			//$tmp_tab[$loop]=my_ereg_replace(",",".",$col[$col_tri][$loop]);
 			my_echo("\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />");
 		}
@@ -1508,8 +1508,9 @@ if(isset($_GET['mode'])) {
 		$nom_fic=$chaine_titre."_".$now.".csv";
 
 		// Filtrer les caractères dans le nom de fichier:
-		$nom_fic=my_ereg_replace("[^a-zA-Z0-9_.-]","",remplace_accents($nom_fic,'all'));
+		$nom_fic=preg_replace("/[^a-zA-Z0-9_.-]/","",remplace_accents($nom_fic,'all'));
 
+		/*
 		header('Content-Type: text/x-csv');
 		header('Expires: ' . $now);
 		// lem9 & loic1: IE need specific headers
@@ -1521,6 +1522,8 @@ if(isset($_GET['mode'])) {
 			header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
 			header('Pragma: no-cache');
 		}
+		*/
+		send_file_download_headers('text/x-csv',$nom_fic);
 
 		$fd="";
 		$fd.=affiche_tableau_csv2($nb_lignes_tableau, $nb_col, $ligne1_csv, $col, $col_csv);
@@ -1648,7 +1651,7 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 	// $couleur_alterne --> les couleurs de fond des lignes sont alternés
 	global $num_debut_colonnes_matieres, $num_debut_lignes_eleves, $vtn_coloriser_resultats, $vtn_borne_couleur, $vtn_couleur_texte, $vtn_couleur_cellule;
 
-	echo "<table summary=\"Moyennes des carnets de notes\" border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\">\n";
+	echo "<table summary=\"Moyennes des carnets de notes\" class='boireaus' border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\">\n";
 	echo "<tr>\n";
 	$j = 1;
 	while($j < $nb_col+1) {
@@ -1660,20 +1663,25 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 	$i = "0";
 	$bg_color = "";
 	$flag = "1";
+	$alt=1;
 	while($i < $nombre_lignes) {
 		if ($couleur_alterne) {
 			if ($flag==1) $bg_color = "bgcolor=\"#C0C0C0\""; else $bg_color = "     " ;
 		}
 
-		echo "<tr>\n";
+	    $alt=$alt*(-1);
+        echo "<tr class='";
+		if($couleur_alterne) {echo "lig$alt ";}
+		echo "white_hover'>\n";
 		$j = 1;
 		while($j < $nb_col+1) {
 			if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))){
-				echo "<td class='small' ".$bg_color;
+				echo "<td class='small' ";
+				//echo $bg_color;
 				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-					if(strlen(my_ereg_replace('[0-9.,]','',$col[$j][$i]))==0) {
+					if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
-							if(my_ereg_replace(',','.',$col[$j][$i])<=my_ereg_replace(',','.',$vtn_borne_couleur[$loop])) {
+							if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
 								echo " style='";
 								if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
 								if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
@@ -1685,11 +1693,12 @@ function affiche_tableau2($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bo
 				}
 				echo ">{$col[$j][$i]}</td>\n";
 			} else {
-				echo "<td align=\"center\" class='small' ".$bg_color;
+				echo "<td align=\"center\" class='small' ";
+				//echo $bg_color;
 				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-					if(strlen(my_ereg_replace('[0-9.,]','',$col[$j][$i]))==0) {
+					if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
 						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
-							if(my_ereg_replace(',','.',$col[$j][$i])<=my_ereg_replace(',','.',$vtn_borne_couleur[$loop])) {
+							if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
 								echo " style='";
 								if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
 								if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
