@@ -269,7 +269,7 @@ while ($i < $nombreligne){
     }
     // colonne "Supprimer"
     if (NiveauGestionAid($_SESSION["login"],$indice_aid,$aid_id) >= 5)
-        echo "<td><p class='medium'><a href='../lib/confirm_query.php?liste_cible=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_aid'>supprimer</a></p></td></tr>\n";
+        echo "<td><p class='medium'><a href='../lib/confirm_query.php?liste_cible=$aid_id&amp;liste_cible3=$indice_aid&amp;action=del_aid".add_token_in_url()."'>supprimer</a></p></td></tr>\n";
 
 $i++;
 }
