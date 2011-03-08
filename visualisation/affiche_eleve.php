@@ -165,6 +165,46 @@ tronquer_nom_court
 	}
 }
 
+if(isset($_POST['parametrage_affichage'])) {
+	check_token();
+
+	// Enregistrer les préférences
+
+	if(isset($_POST['affiche_photo'])) {savePref($_SESSION['login'],'graphe_affiche_photo',$_POST['affiche_photo']);}
+	else{savePref($_SESSION['login'],'graphe_affiche_photo','non');}
+	if(isset($_POST['largeur_imposee_photo'])) {savePref($_SESSION['login'],'graphe_largeur_imposee_photo',$_POST['largeur_imposee_photo']);}
+	if(isset($_POST['affiche_mgen'])) {savePref($_SESSION['login'],'graphe_affiche_mgen',$_POST['affiche_mgen']);}
+	else{savePref($_SESSION['login'],'graphe_affiche_mgen','non');}
+	if(isset($_POST['affiche_minmax'])) {savePref($_SESSION['login'],'graphe_affiche_minmax',$_POST['affiche_minmax']);}
+	else{savePref($_SESSION['login'],'graphe_affiche_minmax','non');}
+	if(isset($_POST['affiche_moy_annuelle'])) {savePref($_SESSION['login'],'graphe_affiche_moy_annuelle',$_POST['affiche_moy_annuelle']);}
+	else{savePref($_SESSION['login'],'graphe_affiche_moy_annuelle','non');}
+
+	//if(isset($_POST['type_graphe'])) {savePref($_SESSION['login'],'graphe_type_graphe',$_POST['type_graphe']);}
+
+	if(isset($_POST['mode_graphe'])) {savePref($_SESSION['login'],'graphe_mode_graphe',$_POST['mode_graphe']);}
+
+	if(isset($_POST['largeur_graphe'])) {savePref($_SESSION['login'],'graphe_largeur_graphe',$_POST['largeur_graphe']);}
+	if(isset($_POST['hauteur_graphe'])) {savePref($_SESSION['login'],'graphe_hauteur_graphe',$_POST['hauteur_graphe']);}
+	if(isset($_POST['taille_police'])) {savePref($_SESSION['login'],'graphe_taille_police',$_POST['taille_police']);}
+	if(isset($_POST['epaisseur_traits'])) {savePref($_SESSION['login'],'graphe_epaisseur_traits',$_POST['epaisseur_traits']);}
+	if(isset($_POST['temoin_image_escalier'])) {savePref($_SESSION['login'],'graphe_temoin_image_escalier',$_POST['temoin_image_escalier']);}
+	else{savePref($_SESSION['login'],'graphe_temoin_image_escalier','non');}
+	if(isset($_POST['tronquer_nom_court'])) {savePref($_SESSION['login'],'graphe_tronquer_nom_court',$_POST['tronquer_nom_court']);}
+
+	if(isset($_POST['graphe_champ_saisie_avis_fixe'])) {savePref($_SESSION['login'],'graphe_champ_saisie_avis_fixe',$_POST['graphe_champ_saisie_avis_fixe']);}
+
+	// Ajout Eric 11/12/10
+	if(isset($_POST['graphe_affiche_deroulant_appreciations'])){savePref($_SESSION['login'],'graphe_affiche_deroulant_appreciations',$_POST['graphe_affiche_deroulant_appreciations']);}
+	if(isset($_POST['graphe_hauteur_affichage_deroulant'])) {savePref($_SESSION['login'],'graphe_hauteur_affichage_deroulant',$_POST['graphe_hauteur_affichage_deroulant']);}
+
+	if(isset($_POST['click_plutot_que_survol_aff_app'])) {savePref($_SESSION['login'],'graphe_click_plutot_que_survol_aff_app',$_POST['click_plutot_que_survol_aff_app']);}
+
+	if($msg=='') {
+		$msg.="Préférences personnelles enregistrées.";
+	}
+
+}
 
 unset($id_classe);
 $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
@@ -187,7 +227,7 @@ if(
 	$num_periode_saisie = isset($_POST['num_periode_saisie']) ? $_POST['num_periode_saisie'] : NULL;
 
 	//if(!is_numeric($num_periode_saisie)) {
-	if(strlen(my_ereg_replace("[0-9]","",$num_periode_saisie))==0) {
+	if(strlen(preg_replace("/[0-9]/","",$num_periode_saisie))==0) {
 		$sql="SELECT 1=1 FROM j_eleves_classes WHERE id_classe='$id_classe' AND periode='$num_periode_saisie' AND login='$eleve_saisie_avis';";
 		//echo "$sql<br />";
 		$verif=mysql_query($sql);
@@ -633,11 +673,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		}
 	}
 	else{
-		if(getSettingValue('graphe_mode_graphe')) {
-			$mode_graphe=getSettingValue('graphe_mode_graphe');
+		$pref_mode_graphe=getPref($_SESSION['login'],'graphe_mode_graphe','');
+		if(($pref_mode_graphe=='png')||($pref_mode_graphe=='svg')) {
+			$mode_graphe=$pref_mode_graphe;
 		}
-		else{
-			$mode_graphe='png';
+		else {
+			if(getSettingValue('graphe_mode_graphe')) {
+				$mode_graphe=getSettingValue('graphe_mode_graphe');
+			}
+			else{
+				$mode_graphe='png';
+			}
 		}
 	}
 
@@ -832,11 +878,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$affiche_photo=$_POST['affiche_photo'];
 	}
 	else{
-		if(getSettingValue('graphe_affiche_photo')) {
-			$affiche_photo=getSettingValue('graphe_affiche_photo');
+		$pref_affiche_photo=getPref($_SESSION['login'],'graphe_affiche_photo','');
+		if(($pref_affiche_photo=='oui')||($pref_affiche_photo=='non')) {
+			$affiche_photo=$pref_affiche_photo;
 		}
-		else{
-			$affiche_photo="non";
+		else {
+			if(getSettingValue('graphe_affiche_photo')) {
+				$affiche_photo=getSettingValue('graphe_affiche_photo');
+			}
+			else{
+				$affiche_photo="non";
+			}
 		}
 	}
 
@@ -844,26 +896,38 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$largeur_imposee_photo=$_POST['largeur_imposee_photo'];
 	}
 	else{
-		if(getSettingValue('graphe_largeur_imposee_photo')) {
-			$largeur_imposee_photo=getSettingValue('graphe_largeur_imposee_photo');
+		$pref_largeur_imposee_photo=getPref($_SESSION['login'],'graphe_largeur_imposee_photo','');
+		if(($pref_largeur_imposee_photo!='')&&(preg_replace('/[0-9]/','',$pref_largeur_imposee_photo)=='')) {
+			$largeur_imposee_photo=$pref_largeur_imposee_photo;
 		}
-		else{
-			$largeur_imposee_photo=100;
+		else {
+			if(getSettingValue('graphe_largeur_imposee_photo')) {
+				$largeur_imposee_photo=getSettingValue('graphe_largeur_imposee_photo');
+			}
+			else{
+				$largeur_imposee_photo=100;
+			}
 		}
 	}
 	// On s'assure que la largeur est valide:
-	if((strlen(my_ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")) {$largeur_imposee_photo=100;}
+	if((strlen(preg_replace("/[0-9]/","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")) {$largeur_imposee_photo=100;}
 
 
 	if(isset($_POST['affiche_mgen'])) {
 		$affiche_mgen=$_POST['affiche_mgen'];
 	}
 	else{
-		if(getSettingValue('graphe_affiche_mgen')) {
-			$affiche_mgen=getSettingValue('graphe_affiche_mgen');
+		$pref_affiche_mgen=getPref($_SESSION['login'],'graphe_affiche_mgen','');
+		if(($pref_affiche_mgen=='oui')||($pref_affiche_mgen=='non')) {
+			$affiche_mgen=$pref_affiche_mgen;
 		}
-		else{
-			$affiche_mgen="non";
+		else {
+			if(getSettingValue('graphe_affiche_mgen')) {
+				$affiche_mgen=getSettingValue('graphe_affiche_mgen');
+			}
+			else{
+				$affiche_mgen="non";
+			}
 		}
 	}
 
@@ -871,11 +935,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$affiche_minmax=$_POST['affiche_minmax'];
 	}
 	else{
-		if(getSettingValue('graphe_affiche_minmax')) {
-			$affiche_minmax=getSettingValue('graphe_affiche_minmax');
+		$pref_affiche_minmax=getPref($_SESSION['login'],'graphe_affiche_minmax','');
+		if(($pref_affiche_minmax=='oui')||($pref_affiche_minmax=='non')) {
+			$affiche_minmax=$pref_affiche_minmax;
 		}
-		else{
-			$affiche_minmax="non";
+		else {
+			if(getSettingValue('graphe_affiche_minmax')) {
+				$affiche_minmax=getSettingValue('graphe_affiche_minmax');
+			}
+			else{
+				$affiche_minmax="non";
+			}
 		}
 	}
 
@@ -883,11 +953,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$affiche_moy_annuelle=$_POST['affiche_moy_annuelle'];
 	}
 	else{
-		if(getSettingValue('graphe_affiche_moy_annuelle')) {
-			$affiche_moy_annuelle=getSettingValue('graphe_affiche_moy_annuelle');
+		$pref_affiche_moy_annuelle=getPref($_SESSION['login'],'graphe_affiche_moy_annuelle','');
+		if(($pref_affiche_moy_annuelle=='oui')||($pref_affiche_moy_annuelle=='non')) {
+			$affiche_moy_annuelle=$pref_affiche_moy_annuelle;
 		}
-		else{
-			$affiche_moy_annuelle="non";
+		else {
+			if(getSettingValue('graphe_affiche_moy_annuelle')) {
+				$affiche_moy_annuelle=getSettingValue('graphe_affiche_moy_annuelle');
+			}
+			else{
+				$affiche_moy_annuelle="non";
+			}
 		}
 	}
 
@@ -931,14 +1007,20 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$largeur_graphe=$_POST['largeur_graphe'];
 	}
 	else{
-		if(getSettingValue('graphe_largeur_graphe')) {
-			$largeur_graphe=getSettingValue('graphe_largeur_graphe');
+		$pref_largeur_graphe=getPref($_SESSION['login'],'graphe_largeur_graphe','');
+		if($pref_largeur_graphe!='') {
+			$largeur_graphe=$pref_largeur_graphe;
 		}
-		else{
-			$largeur_graphe=600;
+		else {
+			if(getSettingValue('graphe_largeur_graphe')) {
+				$largeur_graphe=getSettingValue('graphe_largeur_graphe');
+			}
+			else{
+				$largeur_graphe=600;
+			}
 		}
 	}
-	if((strlen(my_ereg_replace("[0-9]","",$largeur_graphe))!=0)||($largeur_graphe=="")) {
+	if((strlen(preg_replace("/[0-9]/","",$largeur_graphe))!=0)||($largeur_graphe=="")) {
 		$largeur_graphe=600;
 	}
 
@@ -948,14 +1030,20 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		//echo "\$hauteur_graphe=$hauteur_graphe<br />";
 	}
 	else{
-		if(getSettingValue('graphe_hauteur_graphe')) {
-			$hauteur_graphe=getSettingValue('graphe_hauteur_graphe');
+		$pref_hauteur_graphe=getPref($_SESSION['login'],'graphe_hauteur_graphe','');
+		if($pref_hauteur_graphe!='') {
+			$hauteur_graphe=$pref_hauteur_graphe;
 		}
-		else{
-			$hauteur_graphe=400;
+		else {
+			if(getSettingValue('graphe_hauteur_graphe')) {
+				$hauteur_graphe=getSettingValue('graphe_hauteur_graphe');
+			}
+			else{
+				$hauteur_graphe=400;
+			}
 		}
 	}
-	if((strlen(my_ereg_replace("[0-9]","",$hauteur_graphe))!=0)||($hauteur_graphe=="")) {
+	if((strlen(preg_replace("/[0-9]/","",$hauteur_graphe))!=0)||($hauteur_graphe=="")) {
 		$hauteur_graphe=400;
 	}
 
@@ -964,14 +1052,20 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$taille_police=$_POST['taille_police'];
 	}
 	else{
-		if(getSettingValue('graphe_taille_police')) {
-			$taille_police=getSettingValue('graphe_taille_police');
+		$pref_taille_police=getPref($_SESSION['login'],'graphe_taille_police','');
+		if($pref_taille_police!='') {
+			$taille_police=$pref_taille_police;
 		}
-		else{
-			$taille_police=2;
+		else {
+			if(getSettingValue('graphe_taille_police')) {
+				$taille_police=getSettingValue('graphe_taille_police');
+			}
+			else{
+				$taille_police=2;
+			}
 		}
 	}
-	if((strlen(my_ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
+	if((strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
 		$taille_police=2;
 	}
 
@@ -981,14 +1075,20 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$epaisseur_traits=$_POST['epaisseur_traits'];
 	}
 	else{
-		if(getSettingValue('graphe_epaisseur_traits')) {
-			$epaisseur_traits=getSettingValue('graphe_epaisseur_traits');
+		$pref_epaisseur_traits=getPref($_SESSION['login'],'graphe_epaisseur_traits','');
+		if($pref_epaisseur_traits!='') {
+			$epaisseur_traits=$pref_epaisseur_traits;
 		}
-		else{
-			$epaisseur_traits=2;
+		else {
+			if(getSettingValue('graphe_epaisseur_traits')) {
+				$epaisseur_traits=getSettingValue('graphe_epaisseur_traits');
+			}
+			else{
+				$epaisseur_traits=2;
+			}
 		}
 	}
-	if((strlen(my_ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")) {
+	if((strlen(preg_replace("/[0-9]/","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")) {
 		$epaisseur_traits=2;
 	}
 
@@ -998,11 +1098,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$temoin_image_escalier=$_POST['temoin_image_escalier'];
 	}
 	else{
-		if(getSettingValue('graphe_temoin_image_escalier')) {
-			$temoin_image_escalier=getSettingValue('graphe_temoin_image_escalier');
+		$pref_temoin_image_escalier=getPref($_SESSION['login'],'graphe_temoin_image_escalier','');
+		if(($pref_temoin_image_escalier=='oui')||($pref_temoin_image_escalier=='non')) {
+			$temoin_image_escalier=$pref_temoin_image_escalier;
 		}
-		else{
-			$temoin_image_escalier="non";
+		else {
+			if(getSettingValue('graphe_temoin_image_escalier')) {
+				$temoin_image_escalier=getSettingValue('graphe_temoin_image_escalier');
+			}
+			else{
+				$temoin_image_escalier="non";
+			}
 		}
 	}
 
@@ -1012,11 +1118,17 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$tronquer_nom_court=$_POST['tronquer_nom_court'];
 	}
 	else{
-		if(getSettingValue('graphe_tronquer_nom_court')) {
-			$tronquer_nom_court=getSettingValue('graphe_tronquer_nom_court');
+		$pref_tronquer_nom_court=getPref($_SESSION['login'],'graphe_tronquer_nom_court','');
+		if(($pref_tronquer_nom_court=='oui')||($pref_tronquer_nom_court=='non')) {
+			$tronquer_nom_court=$pref_tronquer_nom_court;
 		}
-		else{
-			$tronquer_nom_court=0;
+		else {
+			if(getSettingValue('graphe_tronquer_nom_court')) {
+				$tronquer_nom_court=getSettingValue('graphe_tronquer_nom_court');
+			}
+			else{
+				$tronquer_nom_court=0;
+			}
 		}
 	}
 
@@ -1024,18 +1136,24 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$click_plutot_que_survol_aff_app=$_POST['click_plutot_que_survol_aff_app'];
 	}
 	else{
-		if(getSettingValue('graphe_click_plutot_que_survol_aff_app')) {
-			$click_plutot_que_survol_aff_app=getSettingValue('graphe_click_plutot_que_survol_aff_app');
+		$pref_click_plutot_que_survol_aff_app=getPref($_SESSION['login'],'graphe_click_plutot_que_survol_aff_app','');
+		if(($pref_click_plutot_que_survol_aff_app=='y')||($pref_click_plutot_que_survol_aff_app=='n')) {
+			$click_plutot_que_survol_aff_app=$pref_click_plutot_que_survol_aff_app;
 		}
-		else{
-			$click_plutot_que_survol_aff_app="n";
+		else {
+			if(getSettingValue('graphe_click_plutot_que_survol_aff_app')) {
+				$click_plutot_que_survol_aff_app=getSettingValue('graphe_click_plutot_que_survol_aff_app');
+			}
+			else{
+				$click_plutot_que_survol_aff_app="n";
+			}
 		}
 	}
 
 /*	$affiche_photo=isset($_POST['affiche_photo']) ? $_POST['affiche_photo'] : 'non';
 	$largeur_imposee_photo=isset($_POST['largeur_imposee_photo']) ? $_POST['largeur_imposee_photo'] : '100';
 	// On s'assure que la largeur est valide:
-	if((strlen(my_ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")) {$largeur_imposee_photo=100;}
+	if((strlen(preg_replace("/[0-9]/","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")) {$largeur_imposee_photo=100;}
 
 	//$affiche_mgen=isset($_POST['affiche_mgen']) ? $_POST['affiche_mgen'] : '';
 	//$affiche_minmax=isset($_POST['affiche_minmax']) ? $_POST['affiche_minmax'] : '';
@@ -1044,21 +1162,21 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	$affiche_moy_annuelle=isset($_POST['affiche_moy_annuelle']) ? $_POST['affiche_moy_annuelle'] : 'non';
 
 	$largeur_graphe=isset($_POST['largeur_graphe']) ? $_POST['largeur_graphe'] : '600';
-	if((strlen(my_ereg_replace("[0-9]","",$largeur_graphe))!=0)||($largeur_graphe=="")) {
+	if((strlen(preg_replace("/[0-9]/","",$largeur_graphe))!=0)||($largeur_graphe=="")) {
 		$largeur_graphe=600;
 	}
 	$hauteur_graphe=isset($_POST['hauteur_graphe']) ? $_POST['hauteur_graphe'] : '400';
-	if((strlen(my_ereg_replace("[0-9]","",$hauteur_graphe))!=0)||($hauteur_graphe=="")) {
+	if((strlen(preg_replace("/[0-9]/","",$hauteur_graphe))!=0)||($hauteur_graphe=="")) {
 		$hauteur_graphe=400;
 	}
 
 	$taille_police=isset($_POST['taille_police']) ? $_POST['taille_police'] : '3';
-	if((strlen(my_ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
+	if((strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")) {
 		$taille_police=3;
 	}
 
 	$epaisseur_traits=isset($_POST['epaisseur_traits']) ? $_POST['epaisseur_traits'] : '2';
-	if((strlen(my_ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")) {
+	if((strlen(preg_replace("/[0-9]/","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")) {
 		$epaisseur_traits=2;
 	}
 
@@ -1077,12 +1195,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$graphe_champ_saisie_avis_fixe=$_POST['graphe_champ_saisie_avis_fixe'];
 	}
 	else{
-		if(getSettingValue('graphe_champ_saisie_avis_fixe')) {
-			//insert into setting set name='graphe_champ_saisie_avis_fixe',value='y';
-			$graphe_champ_saisie_avis_fixe=getSettingValue('graphe_champ_saisie_avis_fixe');
+		$pref_champ_saisie_avis_fixe=getPref($_SESSION['login'],'graphe_champ_saisie_avis_fixe','');
+		if(($pref_champ_saisie_avis_fixe=='y')||($pref_champ_saisie_avis_fixe=='n')) {
+			$champ_saisie_avis_fixe=$pref_champ_saisie_avis_fixe;
 		}
-		else{
-			$graphe_champ_saisie_avis_fixe="n";
+		else {
+			if(getSettingValue('graphe_champ_saisie_avis_fixe')) {
+				//insert into setting set name='graphe_champ_saisie_avis_fixe',value='y';
+				$graphe_champ_saisie_avis_fixe=getSettingValue('graphe_champ_saisie_avis_fixe');
+			}
+			else{
+				$graphe_champ_saisie_avis_fixe="n";
+			}
 		}
 	}
 	//========================
@@ -1092,12 +1216,18 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$graphe_affiche_deroulant_appreciations=$_POST['graphe_affiche_deroulant_appreciations'];
 	}
 	else{
-		if(getSettingValue('graphe_affiche_deroulant_appreciations')){
-			//insert into setting set name='graphe_champ_saisie_avis_fixe',value='y';
-			$graphe_affiche_deroulant_appreciations=getSettingValue('graphe_affiche_deroulant_appreciations');
+		$pref_affiche_deroulant_appreciations=getPref($_SESSION['login'],'graphe_affiche_deroulant_appreciations','');
+		if(($pref_affiche_deroulant_appreciations=='oui')||($pref_affiche_deroulant_appreciations=='non')) {
+			$affiche_deroulant_appreciations=$pref_affiche_deroulant_appreciations;
 		}
-		else{
-			$graphe_affiche_deroulant_appreciations="non";
+		else {
+			if(getSettingValue('graphe_affiche_deroulant_appreciations')){
+				//insert into setting set name='graphe_champ_saisie_avis_fixe',value='y';
+				$graphe_affiche_deroulant_appreciations=getSettingValue('graphe_affiche_deroulant_appreciations');
+			}
+			else{
+				$graphe_affiche_deroulant_appreciations="non";
+			}
 		}
 	}
 	
@@ -1105,14 +1235,20 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 		$graphe_hauteur_affichage_deroulant=$_POST['graphe_hauteur_affichage_deroulant'];
 	}
 	else{
-		if(getSettingValue('graphe_hauteur_affichage_deroulant')) {
-			$graphe_hauteur_affichage_deroulant=getSettingValue('graphe_hauteur_affichage_deroulant');
+		$pref_graphe_hauteur_affichage_deroulant=getPref($_SESSION['login'],'graphe_graphe_hauteur_affichage_deroulant','');
+		if($pref_graphe_hauteur_affichage_deroulant!='') {
+			$graphe_hauteur_affichage_deroulant=$pref_graphe_hauteur_affichage_deroulant;
 		}
-		else{
-			$graphe_hauteur_affichage_deroulant=200;
+		else {
+			if(getSettingValue('graphe_hauteur_affichage_deroulant')) {
+				$graphe_hauteur_affichage_deroulant=getSettingValue('graphe_hauteur_affichage_deroulant');
+			}
+			else{
+				$graphe_hauteur_affichage_deroulant=200;
+			}
 		}
 	}
-	if((strlen(my_ereg_replace("[0-9]","",$graphe_hauteur_affichage_deroulant))!=0)||($graphe_hauteur_affichage_deroulant=="")) {
+	if((strlen(preg_replace("/[0-9]/","",$graphe_hauteur_affichage_deroulant))!=0)||($graphe_hauteur_affichage_deroulant=="")) {
 		$graphe_hauteur_affichage_deroulant=200;
 	}
 
@@ -1137,6 +1273,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 
 			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 			echo "<input type='hidden' name='is_posted' value='y' />\n";
+
+			echo "<input type='hidden' name='parametrage_affichage' value='y' />\n";
+
 			if($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
 				echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
 				echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";
@@ -1200,9 +1339,9 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "</td></tr>\n";
 
 			// - dimensions de l'image
-			echo "<tr><td><label for='largeur_graphe' style='cursor: pointer;'>Largeur (<i>en pixels</i>):</label></td><td><input type='text' name='largeur_graphe' id='largeur_graphe' value='$largeur_graphe' size='3' /></td></tr>\n";
+			echo "<tr><td><label for='largeur_graphe' style='cursor: pointer;'>Largeur (<i>en pixels</i>):</label></td><td><input type='text' name='largeur_graphe' id='largeur_graphe' value='$largeur_graphe' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
 			//echo " - \n";
-			echo "<tr><td><label for='hauteur_graphe' style='cursor: pointer;'>Hauteur (<i>en pixels</i>):</label></td><td><input type='text' name='hauteur_graphe' id='hauteur_graphe' value='$hauteur_graphe' size='3' /></td></tr>\n";
+			echo "<tr><td><label for='hauteur_graphe' style='cursor: pointer;'>Hauteur (<i>en pixels</i>):</label></td><td><input type='text' name='hauteur_graphe' id='hauteur_graphe' value='$hauteur_graphe' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
 
 			// - taille des polices
 			echo "<tr><td><label for='taille_police' style='cursor: pointer;'>Taille des polices:</label></td><td><select name='taille_police' id='taille_police'>\n";
@@ -1287,7 +1426,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<tr><td>Afficher une fenêtre déroulante contenant les appréciations:</td><td><label for='affiche_deroulant_appreciations_oui' style='cursor: pointer;'><input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_oui' value='oui'$checked />Oui</label> / \n";
 			if($graphe_affiche_deroulant_appreciations=='non') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<label for='affiche_deroulant_appreciations_non' style='cursor: pointer;'>Non<input type='radio' name='graphe_affiche_deroulant_appreciations' id='affiche_deroulant_appreciations_non' value='non'$checked /></label></td></tr>\n";
-			echo "<tr><td><label for='graphe_hauteur_affichage_deroulant' style='cursor: pointer;'>Hauteur de la zone déroulante (<i>en pixels</i>):</label></td><td><input type='text' name='graphe_hauteur_affichage_deroulant' id='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' size='3' /></td></tr>\n";
+			echo "<tr><td><label for='graphe_hauteur_affichage_deroulant' style='cursor: pointer;'>Hauteur de la zone déroulante (<i>en pixels</i>):</label></td><td><input type='text' name='graphe_hauteur_affichage_deroulant' id='graphe_hauteur_affichage_deroulant' value='$graphe_hauteur_affichage_deroulant' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
 
 			echo "</table>\n";
 			
@@ -1305,7 +1444,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			echo "<label for='affiche_photo_non' style='cursor: pointer;'>Non<input type='radio' name='affiche_photo' id='affiche_photo_non' value='non'$checked /></label></td></tr>\n";
 
 			// - Largeur imposée pour la photo
-			echo "<tr><td><label for='largeur_imposee_photo' style='cursor: pointer;'>Largeur de la photo (<i>en pixels</i>):</label></td><td><input type='text' name='largeur_imposee_photo' id='largeur_imposee_photo' value='$largeur_imposee_photo' size='3' /></td></tr>\n";
+			echo "<tr><td><label for='largeur_imposee_photo' style='cursor: pointer;'>Largeur de la photo (<i>en pixels</i>):</label></td><td><input type='text' name='largeur_imposee_photo' id='largeur_imposee_photo' value='$largeur_imposee_photo' size='3' onkeydown=\"clavier_2(this.id,event,0,2000);\" /></td></tr>\n";
 			//echo "</p>\n";
 			echo "</table>\n";
 			echo "</blockquote>\n";
@@ -4024,14 +4163,14 @@ function div_cmnt_type() {
 			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
 				$retour_lignes_cmnt_type.="<div style='border: 1px solid black; margin: 1px; padding: 1px;'";
 
-				if(my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])) {
+				if(preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])) {
 					$retour_lignes_cmnt_type.=" onClick=\"document.getElementById('no_anti_inject_current_eleve_login_ap2').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value+document.getElementById('commentaire_type_'+$cpt).value;changement();document.getElementById('commentaire_type').style.display='none'; document.getElementById('no_anti_inject_current_eleve_login_ap2').focus();\"";
 				}
 				$retour_lignes_cmnt_type.=">\n";
 
 				$retour_lignes_cmnt_type.="<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
 
-				if(!my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])) {
+				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])) {
 					// Avec konqueror, pour document.getElementById('textarea_courant').value, on obtient [Object INPUT]
 					// En sortant, la commande du onClick et en la mettant dans une fonction javascript externe, ca passe.
 					//$retour_lignes_cmnt_type.="<a href='#' onClick=\"complete_textarea_courant($cpt); return false;\" style='text-decoration:none; color:black;'>";
@@ -4039,7 +4178,7 @@ function div_cmnt_type() {
 				}
 
 				// Pour conserver le code HTML saisi dans les commentaires-type...
-				if((my_ereg("<",$ligne_commentaire->commentaire))&&(my_ereg(">",$ligne_commentaire->commentaire))) {
+				if((preg_match("/</",$ligne_commentaire->commentaire))&&(preg_match("/>/",$ligne_commentaire->commentaire))) {
 					/* Si le commentaire contient du code HTML, on ne remplace pas les retours à la ligne par des <br> pour éviter des doubles retours à la ligne pour un code comme celui-ci:
 						<p>Blabla<br>
 						Blibli</p>
@@ -4051,7 +4190,7 @@ function div_cmnt_type() {
 					$retour_lignes_cmnt_type.=htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
 				}
 
-				if(!my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])) {
+				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])) {
 					$retour_lignes_cmnt_type.="</a>";
 				}
 

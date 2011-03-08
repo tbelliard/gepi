@@ -3167,6 +3167,20 @@ function getPref($login,$item,$default){
 	}
 }
 
+function savePref($login,$item,$valeur){
+	$sql="SELECT value FROM preferences WHERE login='$login' AND name='$item'";
+	$res_prefs=mysql_query($sql);
+
+	if(mysql_num_rows($res_prefs)>0){
+		$sql="UPDATE preferences SET value='$valeur' WHERE login='$login' AND name='$item';";
+	}
+	else{
+		$sql="INSERT INTO preferences SET login='$login', name='$item', value='$valeur';";
+	}
+	$res=mysql_query($sql);
+	if($res) {return true;} else {return false;}
+}
+
 function creer_div_infobulle($id,$titre,$bg_titre,$texte,$bg_texte,$largeur,$hauteur,$drag,$bouton_close,$survol_close,$overflow,$zindex_infobulle=1){
 	/*
 		$id:			Identifiant du DIV conteneur
