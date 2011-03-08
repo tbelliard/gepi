@@ -225,7 +225,6 @@ if(($_SESSION['statut']=="administrateur")||($_SESSION['statut']=="scolarite")) 
 		unset($definir_resp);
 	}
 
-
 	//debug_var();
 
 	// Validation d'un choix d'établissement d'origine
@@ -994,7 +993,7 @@ if (isset($eleve_login)) {
 
 			if($tmp_lig_email->email!="") {
 				if($tmp_lig_email->email!=$eleve_email) {
-					check_token();
+					//check_token();
 					$sql="UPDATE eleves SET email='$tmp_lig_email->email' WHERE login='$eleve_login';";
 					$update=mysql_query($sql);
 					if(!$update) {
