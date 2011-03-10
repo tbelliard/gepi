@@ -616,9 +616,14 @@ if ($test == -1) {
 						'baiser','baisser',
 						'courge','courage',
 						'camer','calmer',
+						'came','calme',
+						'camé','calmé',
 						'tu est','tu es',
 						'tu et','tu es',
-						'il et','il est'
+						'il et','il est',
+						'il es','il est',
+						'elle et','elle est',
+						'elle es','elle est'
 						);
 	for($i=0;$i<count($tab_vocab);$i+=2) {
 		$sql="insert into vocabulaire set terme='".$tab_vocab[$i]."', terme_corrige='".$tab_vocab[$i+1]."';";

@@ -90,10 +90,10 @@ if (mysql_num_rows($verif_eleve) !== 0 AND mysql_num_rows($verif_prof) !== 0) {
 					
 				}
 				*/
-				$appreciation_test=" ".preg_replace("/[;\.]/"," ",$appreciation)." ";
+				$appreciation_test=" ".preg_replace("/[',;\.]/"," ",casse_mot($appreciation,'min'))." ";
 				$chaine_retour="";
 				for($loop=0;$loop<count($tab_voc);$loop++) {
-					if(preg_match("/".$tab_voc[$loop]."/i",$appreciation_test)) {
+					if(preg_match("/ ".$tab_voc[$loop]." /i",$appreciation_test)) {
 						if($chaine_retour=="") {$chaine_retour.="<span style='font-weight:bold'>Suspicion de faute de frappe&nbsp;: </span>";}
 						$chaine_retour.=$tab_voc[$loop]." / ".$tab_voc_corrige[$loop]."<br />";
 					}

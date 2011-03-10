@@ -283,7 +283,7 @@ $tab_req[] = "INSERT INTO droits VALUES ('/utilitaires/verif_groupes.php', 'V', 
 $tab_req[] = "INSERT INTO droits VALUES ('/visualisation/affiche_eleve.php', 'F', 'V', 'V', 'V', 'V', 'V', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/visualisation/draw_graphe.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Visualisation graphique des résultats scolaires', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/groupes/mes_listes.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Accès aux CSV des listes d élèves', '');";
-$tab_req[] = "INSERT INTO droits VALUES ('/groupes/get_csv.php', 'F', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Génération de CSV élèves', '');";
+$tab_req[] = "INSERT INTO droits VALUES ('/groupes/get_csv.php', 'V', 'V', 'V', 'V', 'F', 'F', 'V', 'F', 'Génération de CSV élèves', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/visualisation/choix_couleurs.php', 'V', 'F', 'F', 'V', 'F', 'F', 'F', 'F', 'Choix des couleurs des graphiques des résultats scolaires', '');";
 $tab_req[] = "INSERT INTO droits VALUES ('/visualisation/couleur.php', 'F', 'V', 'V', 'V', 'F', 'F', 'F', 'F', 'Choix d une couleur pour le graphique des résultats scolaires', '');";
 //$tab_req[] = "INSERT INTO droits VALUES ('/gestion/config_prefs.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Définition des préférences d utilisateurs', '');";
@@ -743,6 +743,11 @@ $tab_req[] = "INSERT INTO droits VALUES ( '/mef/enregistrement_eleve_mef.php', '
 
 $tab_req[] = "INSERT INTO droits SET id='/responsables/synchro_mail.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Synchronisation des mail responsables',statut='';";
 $tab_req[] = "INSERT INTO droits SET id='/eleves/synchro_mail.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Synchronisation des mail élèves',statut='';";
+
+$tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/archivage_cdt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Archivage des CDT', '');";
+$tab_req[] = "INSERT INTO droits SET id='/documents/archives/index.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Archives des CDT',statut='';";
+
+$tab_req[] = "INSERT INTO droits SET id='/saisie/saisie_vocabulaire.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Saisie de vocabulaire',statut='';";
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
