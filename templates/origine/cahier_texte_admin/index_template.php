@@ -347,6 +347,7 @@ echo add_token_field();
 	  <li><a href='visa_ct.php'>Viser les cahiers de textes</a> (Signer les cahiers de textes)</li>
 	  <li><a href='index.php?ajout_index_documents=y'>Protéger les sous-dossiers de 'documents/' contre des accès anormaux</a></li>
 	  <li><a href='../cahier_texte_2/archivage_cdt.php'>Archivage des cahiers de textes en fin d'année scolaire</a></li>
+	  <li><a href='../cahier_texte_2/export_cdt.php'>Export de cahiers de textes et accès inspecteur (<i>sans authentification</i>)</a></li>
 	</ul>
 	
 	<hr />
