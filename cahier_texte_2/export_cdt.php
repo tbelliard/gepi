@@ -677,7 +677,6 @@ if($action=='acces') {
 
 	// Enregistrement dans la base de cet accès ouvert
 	// Il faut y stocker la liste des login profs concernés pour afficher en page d'accueil la présence d'un cdt ouvert en consultation
-	$chemin_acces="documents/".$dirname."/index.html";
 	$date1_acces="$annee-$mois-$jour $heure:$minute:00";
 	$date2_acces=isset($_POST['date2_acces']) ? $_POST['date2_acces'] : "";
 
@@ -690,12 +689,16 @@ if($action=='acces') {
 	}
 
 	$description_acces=isset($_POST['description_acces']) ? $_POST['description_acces'] : "Test";
+
+	/*
+	$chemin_acces="documents/".$dirname."/index.html";
 	$res=enregistrement_creation_acces_cdt($chemin_acces, $description_acces, $date1_acces, $date2_acces, $id_groupe);
 	if(!$res) {
 		echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accès.</p>\n";
 		require("../lib/footer.inc.php");
 		die();
 	}
+	*/
 }
 
 //echo "\$dirname=$dirname<br />";
@@ -712,6 +715,17 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 
 	// Préparation de l'arborescence
 	$nom_export="export_cdt_".$login_prof."_".strftime("%Y%m%d_%H%M%S");
+
+	if($action=='acces') {
+		$chemin_acces="documents/".$dirname."/".$nom_export."/index.html";
+		$res=enregistrement_creation_acces_cdt($chemin_acces, $description_acces, $date1_acces, $date2_acces, $id_groupe);
+		if(!$res) {
+			echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accès.</p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+	}
+
 	arbo_export_cdt($nom_export, $dirname);
 
 	$chaine_id_groupe="";
@@ -812,6 +826,17 @@ else {
 
 		// Préparation de l'arborescence
 		$nom_export="export_cdt_classes_".$chaine_info_classes."_".strftime("%Y%m%d_%H%M%S");
+
+		if($action=='acces') {
+			$chemin_acces="documents/".$dirname."/".$nom_export."/index.html";
+			$res=enregistrement_creation_acces_cdt($chemin_acces, $description_acces, $date1_acces, $date2_acces, $id_groupe);
+			if(!$res) {
+				echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accès.</p>\n";
+				require("../lib/footer.inc.php");
+				die();
+			}
+		}
+
 		arbo_export_cdt($nom_export, $dirname);
 
 		// Générer la page d'index
