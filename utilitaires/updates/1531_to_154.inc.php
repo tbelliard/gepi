@@ -592,5 +592,46 @@ if ($test == -1) {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
+$result .= "<br /><b>Ajout d'une table 'vocabulaire' :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'vocabulaire';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
+			terme VARCHAR(255) NOT NULL DEFAULT '',
+			terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
+			PRIMARY KEY (id)) ENGINE=MyISAM;");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+
+	// A titre d'exemple
+	$tab_vocab=array('il peu','il peut',
+						'elle peu','elle peut',
+						'un peut', 'un peu',
+						'trop peut','trop peu',
+						'baise','baisse',
+						'baisé','baissé',
+						'baiser','baisser',
+						'courge','courage',
+						'camer','calmer',
+						'tu est','tu es',
+						'tu et','tu es',
+						'il et','il est'
+						);
+	for($i=0;$i<count($tab_vocab);$i+=2) {
+		$sql="insert into vocabulaire set terme='".$tab_vocab[$i]."', terme_corrige='".$tab_vocab[$i+1]."';";
+		//$result .= "$sql<br />";
+		$result_inter = traite_requete($sql);
+		if ($result_inter != '') {
+			$result .= "<font color=\"red\">ECHEC : $sql</font><br />";
+		}
+	}
+
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
 
 ?>

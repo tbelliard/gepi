@@ -950,6 +950,8 @@ $i=0;
 // Pour permettre le remplacement de la chaine _PRENOM_ par le prénom de l'élève dans les commentaires types (ctp.php)
 $chaine_champs_input_prenom="";
 //=========================
+$chaine_test_vocabulaire="";
+//=========================
 foreach ($liste_eleves as $eleve_login) {
 
 	$k=1;
@@ -1237,7 +1239,10 @@ foreach ($liste_eleves as $eleve_login) {
 				//$mess[$k].="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
 				$chaine_champs_input_prenom.="<input type='hidden' name='prenom_eleve_".$k."[$i]' id='prenom_eleve_".$k.$num_id."' value=\"".$eleve_prenom."\" />\n";
 
-				$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\"";
+				$mess[$k].="<textarea id=\"n".$k.$num_id."\" class='wrap' onKeyDown=\"clavier(this.id,event);\" name=\"no_anti_inject_app_eleve_".$k."_".$i."\" rows='2' cols='100' onchange=\"changement()\" onBlur=\"ajaxAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
+				$mess[$k].="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');";
+				$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$eleve_login_t[$k]."', '".$id_groupe."', 'n".$k.$num_id."');\n";
+				$mess[$k].="\"";
 
 				//==================================
 				// Rétablissement: boireaus 20080219
@@ -1275,6 +1280,10 @@ foreach ($liste_eleves as $eleve_login) {
 				$mess[$k].=">".$eleve_app."</textarea>\n";
 				// on affiche si besoin l'appréciation temporaire (en sauvegarde)
 				$mess[$k].=$eleve_app_t;
+
+				// Espace pour afficher les éventuelles fautes de frappe
+				$mess[$k].="<div id='div_verif_n".$k.$num_id."' style='color:red;'></div>\n";
+
 				$mess[$k].= "</td>\n";
 
 				//=========================
@@ -1495,7 +1504,13 @@ echo "<input type='hidden' name='indice_max_log_eleve' value='$i' />\n";
 
 
 
-echo "<script type='text/javascript'>
+echo "<script type='text/javascript'>\n";
+
+if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
+	echo $chaine_test_vocabulaire;
+}
+
+echo "
 	/*
 	function get_div_size(id_div) {
 		if(document.getElementById(id_div)) {

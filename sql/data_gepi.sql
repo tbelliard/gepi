@@ -948,3 +948,15 @@ INSERT INTO droits SET id='/responsables/synchro_mail.php',administrateur='V',pr
 INSERT INTO droits SET id='/eleves/synchro_mail.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Synchronisation des mail élèves',statut='';
 INSERT INTO droits VALUES ('/cahier_texte_2/archivage_cdt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Archivage des CDT', '');
 INSERT INTO droits SET id='/documents/archives/index.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Archives des CDT',statut='';
+insert into vocabulaire set terme='il peu', terme_corrige='il peut';
+insert into vocabulaire set terme='elle peu', terme_corrige='elle peut';
+insert into vocabulaire set terme='un peut', terme_corrige='un peu';
+insert into vocabulaire set terme='trop peut', terme_corrige='trop peu';
+insert into vocabulaire set terme='baise', terme_corrige='baisse';
+insert into vocabulaire set terme='baisé', terme_corrige='baissé';
+insert into vocabulaire set terme='baiser', terme_corrige='baisser';
+insert into vocabulaire set terme='courge', terme_corrige='courage';
+insert into vocabulaire set terme='camer', terme_corrige='calmer';
+insert into vocabulaire set terme='tu est', terme_corrige='tu es';
+insert into vocabulaire set terme='tu et', terme_corrige='tu es';
+insert into vocabulaire set terme='il et', terme_corrige='il est';
