@@ -2,7 +2,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -36,7 +36,7 @@ if ($resultat_session == 'c') {
 	//header("Location: ../logout.php?auto=1");
 	header("Location: ./logout.php?auto=1");
 	die();
-};
+}
 
 
 
@@ -155,6 +155,9 @@ echo " | \n";
 echo "<a href='./gestion/config_prefs.php'> Paramétrer mes interfaces simplifiées </a>\n";
 echo "</p>\n";
 echo "</div>\n";
+
+// Liste des Accès ouverts en consultation à vos CDT
+affiche_acces_cdt();
 
 echo "<center>\n";
 

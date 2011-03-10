@@ -25,7 +25,7 @@ function renvoi_nom_image ($extension) {
 	}
 }
 
-
+/*
 //$repaussi==true ~> efface aussi $rep
 //retourne true si tout s'est bien passé,
 //false si un fichier est resté (problème de permission ou attribut lecture sous Win
@@ -52,7 +52,7 @@ $niv--;
 if ($niv || $repaussi) $ok &= @rmdir($rep);
 return $ok;
 }
-
+*/
 
 function creertousrep($fic) {
 //crée tous les répertoires intermédiaires s'il n'existent pas

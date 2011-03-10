@@ -555,4 +555,42 @@ if(mysql_num_rows($res_csrf)==0) {
 		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
 	}
 }
+
+$result .= "<br /><b>Ajout d'une table 'acces_cdt' :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'acces_cdt';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS acces_cdt (id INT(11) NOT NULL auto_increment,
+					description TEXT NOT NULL,
+					chemin VARCHAR(255) NOT NULL DEFAULT '',
+					date1 DATETIME NOT NULL default '0000-00-00 00:00:00',
+					date2 DATETIME NOT NULL default '0000-00-00 00:00:00',
+					PRIMARY KEY (id)) ENGINE=MyISAM;");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
+$result .= "<br /><b>Ajout d'une table 'acces_cdt_groupes' :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'acces_cdt_groupes';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS acces_cdt_groupes (id INT(11) NOT NULL auto_increment,
+					id_acces INT(11) NOT NULL,
+					id_groupe INT(11) NOT NULL,
+					PRIMARY KEY (id)) ENGINE=MyISAM;");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
+
 ?>

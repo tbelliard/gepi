@@ -6567,4 +6567,199 @@ function traite_date_sortie_to_timestamp($date_sortie) {
 
 	return $annee."-".$mois."-".$jour." 00:00:00"; 
 }
+
+function affiche_acces_cdt() {
+	$retour="";
+
+	$sql="SELECT a.* FROM acces_cdt a ORDER BY date2;";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	$chaine_id="";
+	if(mysql_num_rows($res)>0) {
+		$visible="y";
+		if($_SESSION['statut']=='professeur') {
+			$visible="n";
+			$sql="SELECT ag.id_acces FROM acces_cdt_groupes ag, j_groupes_professeurs jgp WHERE jgp.id_groupe=ag.id_groupe;";
+			$res2=mysql_query($sql);
+			if(mysql_num_rows($res2)>0) {
+				$visible="y";
+				$tab_id_acces=array();
+				while($lig2=mysql_fetch_object($res2)) {
+					$tab_id_acces[]=$lig2->id_acces;
+				}
+			}
+		}
+
+		if($visible=="y") {
+			$retour.="<div id='div_infos_acces_cdt' style='width: 60%; border: 2px solid red; padding:3px; margin-left: 20%; margin-top:3px;'>\n";
+			$retour.="<div id='info_acces_cdt_titre' style='font-weight: bold;' class='infobulle_entete'>\n";
+				$retour.="<div id='info_acces_cdt_pliage' style='float:right; width: 1em'>\n";
+				$retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('conteneur')\"><span id='img_pliage_acces_cdt_conteneur'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+				$retour.="</div>\n";
+				$retour.="Accès ouvert à des CDT";
+			$retour.="</div>\n";
+	
+			$retour.="<div id='info_acces_cdt_corps_conteneur'>\n";
+	
+			$cpt_id=0;
+			while($lig=mysql_fetch_object($res)) {
+				$visible="y";
+				if(($_SESSION['statut']=='professeur')&&(!in_array($lig->id,$tab_id_acces))) {
+					$visible="n";
+				}
+
+				if($visible=="y") {
+					$retour.="<div id='info_acces_cdt_$lig->id' style='border: 1px solid black; margin:2px;'>\n";
+						$retour.="<div id='info_acces_cdt_titre_$lig->id' style='font-weight: bold;' class='infobulle_entete'>\n";
+							$retour.="<div id='info_acces_cdt_pliage_$lig->id' style='float:right; width: 1em'>\n";
+							$retour.="<a href=\"javascript:div_alterne_affichage_acces_cdt('$lig->id')\"><span id='img_pliage_acces_cdt_$lig->id'><img src='images/icons/remove.png' width='16' height='16' /></span></a>";
+							$retour.="</div>\n";
+							$retour.="Accès CDT jusqu'au ".formate_date($lig->date2);
+						$retour.="</div>\n";
+		
+						$retour.="<div id='info_acces_cdt_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
+							if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+								$retour.="<div style='float:right; width: 9em; text-align: right;'>\n";
+								$retour.="<a href=\"".$_SERVER['PHP_SELF']."?del_id_acces_cdt=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->description)."', 'Etes-vous sûr de vouloir supprimer cet accès')\">Supprimer l'accès</span></a>";
+								$retour.="</div>\n";
+							}
+
+							$retour.="<p><b>L'accès a été ouvert pour le motif suivant&nbsp;:</b><br />";
+							$retour.=preg_replace("/\\\\r\\\\n/","<br />",$lig->description);
+							$retour.="</p>\n";
+
+							$chaine_enseignements="<ul>";
+							$sql="SELECT id_groupe FROM acces_cdt_groupes WHERE id_acces='$lig->id';";
+							$res3=mysql_query($sql);
+							if(mysql_num_rows($res3)>0) {
+								$tab_champs=array('classes', 'professeurs');
+								while($lig3=mysql_fetch_object($res3)) {
+									$current_group=get_group($lig3->id_groupe);
+
+									$chaine_profs="";
+									$cpt=0;
+									foreach($current_group['profs']['users'] as $login_prof => $current_prof) {
+										if($cpt>0) {$chaine_profs.=", ";}
+										$chaine_profs.=$current_prof['civilite']." ".$current_prof['nom']." ".$current_prof['prenom'];
+										$cpt++;
+									}
+
+									$chaine_enseignements.="<li>";
+									$chaine_enseignements.=$current_group['name']." (<i>".$current_group['description']."</i>) en ".$current_group['classlist_string']." (<i>".$chaine_profs."</i>)";
+									//$chaine_enseignements.="<br />\n";
+									$chaine_enseignements.="</li>\n";
+								}
+							}
+							$chaine_enseignements.="</ul>";
+							//$retour.="</p>\n";
+
+							$retour.="<p>Les CDT accessibles à l'adresse <a href='$lig->chemin' target='_blank'>$lig->chemin</a> sont&nbsp;:<br />".$chaine_enseignements."</p>";
+						$retour.="</div>\n";
+					$retour.="</div>\n";
+					if($cpt_id>0) {$chaine_id.=", ";}
+					$chaine_id.="'$lig->id'";
+					$cpt_id++;
+				}
+			}
+			$retour.="</div>\n";
+			$retour.="</div>\n";
+	
+			$retour.="<script type='text/javascript'>
+		function div_alterne_affichage_acces_cdt(id) {
+			if(document.getElementById('info_acces_cdt_corps_'+id)) {
+				if(document.getElementById('info_acces_cdt_corps_'+id).style.display=='none') {
+					document.getElementById('info_acces_cdt_corps_'+id).style.display='';
+					document.getElementById('img_pliage_acces_cdt_'+id).innerHTML='<img src=\'images/icons/remove.png\' width=\'16\' height=\'16\' />'
+				}
+				else {
+					document.getElementById('info_acces_cdt_corps_'+id).style.display='none';
+					document.getElementById('img_pliage_acces_cdt_'+id).innerHTML='<img src=\'images/icons/add.png\' width=\'16\' height=\'16\' />'
+				}
+			}
+		}
+	
+		chaine_id_acces_cdt=new Array($chaine_id);
+		for(i=0;i<chaine_id_acces_cdt.length;i++) {
+			id_a=chaine_id_acces_cdt[i];
+			if(document.getElementById('info_acces_cdt_corps_'+id_a)) {
+				div_alterne_affichage_acces_cdt(id_a);
+			}
+		}
+	</script>\n";
+		}
+	}
+	echo $retour;
+}
+
+function del_acces_cdt($id_acces) {
+
+	$sql="SELECT * FROM acces_cdt WHERE id='$id_acces';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+
+		$chemin=preg_replace("#/index.html#","",$lig->chemin);
+		if((!preg_match("#^documents/acces_cdt_#",$chemin))||(strstr($chemin,".."))) {
+			echo "<p><span style='color:red'>Chemin $chemin invalide</span></p>";
+			return false;
+		}
+		else {
+			$suppr=deltree($chemin,true);
+			if(!$suppr) {
+				echo "<p><span style='color:red'>Erreur lors de la suppression de $chemin</span></p>";
+				return false;
+			}
+			else {
+				$sql="DELETE FROM acces_cdt_groupes WHERE id_acces='$id_acces';";
+				$del=mysql_query($sql);
+				if(!$del) {
+					echo "<p><span style='color:red'>Erreur lors de la suppression des groupes associés à l'accès n°$id_acces</span></p>";
+					return false;
+				}
+				else {
+					$sql="DELETE FROM acces_cdt WHERE id='$id_acces';";
+					$del=mysql_query($sql);
+					if(!$del) {
+						echo "<p><span style='color:red'>Erreur lors de la suppression de l'accès n°$id_acces</span></p>";
+						return false;
+					}
+					else {
+						return true;
+					}
+				}
+			}
+		}
+	}
+}
+
+//=======================================================
+// Fonction récupérée dans /mod_ooo/lib/lib_mod_ooo.php
+
+//$repaussi==true ~> efface aussi $rep
+//retourne true si tout s'est bien passé,
+//false si un fichier est resté (problème de permission ou attribut lecture sous Win
+//dans tous les cas, le maximum possible est supprimé.
+function deltree($rep,$repaussi=true) {
+	static $niv=0;
+	$niv++;
+	if (!is_dir($rep)) {return false;}
+	$handle=opendir($rep);
+	if (!$handle) {return false;}
+	while ($entree=readdir($handle)) {
+		if (is_dir($rep.'/'.$entree)) {
+			if ($entree!='.' && $entree!='..') {
+				$ok=deltree($rep.'/'.$entree);
+			}
+			else {$ok=true;}
+		}
+		else {
+			$ok=@unlink($rep.'/'.$entree);
+		}
+	}
+	closedir($handle);
+	$niv--;
+	if ($niv || $repaussi) $ok &= @rmdir($rep);
+	return $ok;
+}
+//=======================================================
 ?>

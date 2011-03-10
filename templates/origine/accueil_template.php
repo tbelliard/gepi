@@ -183,6 +183,11 @@
 	affiche_infos_actions();
 ?>
 
+<!-- Accès CDT ouverts -->
+<?php
+	affiche_acces_cdt();
+?>
+
 <!-- messagerie -->
 <?php
 	if (count($afficheAccueil->message)) {

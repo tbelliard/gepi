@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -165,6 +165,19 @@ if(isset($_GET['del_id_info'])) {
 	}
 	else {
 		$msg.="Erreur lors de la suppression de l'action n° ".$_GET['del_id_info'].".<br />";
+	}
+}
+
+if((($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))&&(isset($_GET['del_id_acces_cdt']))) {
+	check_token();
+
+	if(!isset($msg)) {$msg="";}
+
+	if(del_acces_cdt($_GET['del_id_acces_cdt'])) {
+		$msg.="Accès CDT n° ".$_GET['del_id_acces_cdt']." supprimé.<br />";
+	}
+	else {
+		$msg.="Erreur lors de la suppression de l'accès CDT n° ".$_GET['del_id_acces_cdt'].".<br />";
 	}
 }
 

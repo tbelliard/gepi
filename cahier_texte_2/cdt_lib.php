@@ -152,7 +152,8 @@ require_once("'.$pref_arbo.'/entete.php");
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta http-equiv="Content-Style-Type" content="text/css" />';
 
-		if((isset($niveau_arbo))&&($niveau_arbo==0)) {
+		//if((isset($niveau_arbo))&&($niveau_arbo==0)) {
+		if((isset($n_arbo))&&($n_arbo==0)) {
 			$pref_arbo=".";
 		}
 		else {
@@ -265,6 +266,14 @@ require_once("'.$pref_arbo.'/entete.php");
 
 	function my_affiche_docs_joints($id_ct,$type_notice) {
 		global $tab_chemin_url;
+		global $action;
+
+		if((isset($action))&&($action=='acces')) {
+			$pref_documents="../../../";
+		}
+		else {
+			$pref_documents="";
+		}
 
 		// documents joints
 		$html = '';
@@ -282,7 +291,7 @@ require_once("'.$pref_arbo.'/entete.php");
 			$html .= "<ul style=\"padding-left: 15px;\">";
 			for ($i=0; ($row = sql_row($res,$i)); $i++) {
 					$titre = $row[0];
-					$emplacement = $row[1];
+					$emplacement = $pref_documents.$row[1];
 					//$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a href=\"$emplacement\" target=\"blank\">$titre</a></li>";
 					// Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
 					// alternative, utiliser un javascript
@@ -441,6 +450,7 @@ require_once("'.$pref_arbo.'/entete.php");
 		return $dossier;
 	}
 
+	/*
 	//=======================================================
 	// Fonction récupérée dans /mod_ooo/lib/lib_mod_ooo.php
 
@@ -471,5 +481,124 @@ require_once("'.$pref_arbo.'/entete.php");
 		return $ok;
 	}
 	//=======================================================
+	*/
+
+	function arbo_export_cdt($nom_export, $dirname) {
+		global $dossier_export; // Pour récupérer la valeur hors de la fonction
+		global $tab_fichiers_a_zipper; // Pour récupérer le tableau de valeurs hors de la fonction
+		global $action;
+
+		if((isset($action))&&($action=='acces')) {
+			$dossier_export="../documents/".$dirname."/".$nom_export;
+		}
+		else {
+			$dossier_export="../temp/".$dirname."/".$nom_export;
+		}
+
+		$creation=mkdir($dossier_export);
+		if(!$creation) {
+			echo "<p style='color:red;'>Erreur lors de la préparation de l'arborescence $dossier_export</p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+
+		$creation=mkdir($dossier_export."/cahier_texte");
+		if(!$creation) {
+			echo "<p style='color:red;'>Erreur lors de la préparation de l'arborescence ".$dossier_export."/cahier_texte.</p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+		
+		$creation=mkdir($dossier_export."/css");
+		if(!$creation) {
+			echo "<p style='color:red;'>Erreur lors de la préparation de l'arborescence ".$dossier_export."/css</p>\n";
+			require("../lib/footer.inc.php");
+			die();
+		}
+		
+		// Copie des feuilles de styles
+		$tab_styles=array("style.css", "style_old.css", "style_screen_ajout.css");
+		for($i=0;$i<count($tab_styles);$i++) {
+			if(file_exists("../".$tab_styles[$i])) {
+				copy("../".$tab_styles[$i],$dossier_export."/".$tab_styles[$i]);
+		
+				$tab_fichiers_a_zipper[]=$dossier_export."/".$tab_styles[$i];
+			}
+		}
+		
+		// Copie des feuilles de styles
+		$tab_styles=array('bandeau_r01.css',
+						'bandeau_r01_ie6.css',
+						'bandeau_r01_ie7.css',
+						'bandeau_r01_ie.css',
+						'style.css',
+						'style_ecran.css',
+						'style_ecran_login.css',
+						'style_ecran_login_IE.css',
+						'style_imprime.css',
+						'style_telephone.css',
+						'style_telephone_login.css');
+		for($i=0;$i<count($tab_styles);$i++) {
+			//echo "copy(\"../css/\".$tab_styles[$i],$dossier_export.\"/css/\".$tab_styles[$i])<br />";
+			copy("../css/".$tab_styles[$i],$dossier_export."/css/".$tab_styles[$i]);
+		
+			$tab_fichiers_a_zipper[]=$dossier_export."/css/".$tab_styles[$i];
+		}
+
+	}
+
+	function enregistrement_creation_acces_cdt($chemin, $description_acces, $date1_acces, $date2_acces, $id_groupe) {
+		if(count($id_groupe)==0) {
+			echo "<p style='color:red'>Aucun groupe n'a été sélectionné.</p>\n";
+			return false;
+		}
+		else {
+			$sql="CREATE TABLE IF NOT EXISTS acces_cdt (id INT(11) NOT NULL auto_increment,
+					description TEXT NOT NULL,
+					chemin VARCHAR(255) NOT NULL DEFAULT '',
+					date1 DATETIME NOT NULL default '0000-00-00 00:00:00',
+					date2 DATETIME NOT NULL default '0000-00-00 00:00:00',
+					PRIMARY KEY (id));";
+			$create_table=mysql_query($sql);
+			if(!$create_table) {
+				echo "<p style='color:red'>Erreur lors de la création de la table 'acces_cdt':<br />$sql</p>\n";
+				return false;
+			}
+			else {
+				$sql="CREATE TABLE IF NOT EXISTS acces_cdt_groupes (id INT(11) NOT NULL auto_increment,
+						id_acces INT(11) NOT NULL,
+						id_groupe INT(11) NOT NULL,
+						PRIMARY KEY (id));";
+				$create_table=mysql_query($sql);
+				if(!$create_table) {
+					echo "<p style='color:red'>Erreur lors de la création de la table 'acces_cdt_groupes':<br />$sql</p>\n";
+					return false;
+				}
+				else {
+					$sql="INSERT INTO acces_cdt SET description='".addslashes($description_acces)."', chemin='$chemin', date1='$date1_acces', date2='$date2_acces';";
+					$insert=mysql_query($sql);
+					if(!$insert) {
+						echo "<p style='color:red'>Erreur lors de la création de l'enregistrement dans la table 'acces_cdt':<br />$sql</p>\n";
+						return false;
+					}
+					else {
+						$id_acces=mysql_insert_id();
+	
+						$retour=true;
+						for($loop=0;$loop<count($id_groupe);$loop++) {
+							$sql="INSERT INTO acces_cdt_groupes SET id_acces='$id_acces', id_groupe='$id_groupe[$loop]';";
+							$insert=mysql_query($sql);
+							if(!$insert) {
+								echo "<p style='color:red'>Erreur lors de la création de l'enregistrement dans la table 'acces_cdt_groupes'&nbsp;:<br />$sql</p>\n";
+								$retour=false;
+							}
+						}
+
+						return $retour;
+					}
+				}
+			}
+		}
+	}
 
 ?>
