@@ -2325,14 +2325,14 @@ else {
 
     echo "<hr />\n";
 
-    echo "<p>Au changement d'année, il faut archiver le Cahier de Textes, puis le vider.</p>\n";
+    echo "<p>Au changement d'année, il faut <a href='../cahier_texte_2/archivage_cdt.php'>archiver les Cahiers de Textes</a>, puis le vider.</p>\n";
     echo "<form action=\"clean_tables.php\" method=\"post\">\n";
 	echo add_token_field();
     echo "<center>\n";
 	echo "<input type=submit value=\"Vider les tables du module Cahier de Textes\" />\n";
 	echo "</center>\n";
     echo "<input type='hidden' name='action' value='clean_cdt' />\n";
-	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a> et un <a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
+	echo "<p><i>NOTE&nbsp;:</i> Prenez soin de faire une <a href='../gestion/accueil_sauve.php'>sauvegarde de la base</a>, l'<a href='../cahier_texte_2/archivage_cdt.php'>archivage des Cahiers de Textes</a> et l'<a href='../mod_annees_anterieures/index.php'>archivage des données antérieures</a> avant le changement d'année.</p>\n";
     echo "</form>\n";
 
     echo "<hr />\n";
