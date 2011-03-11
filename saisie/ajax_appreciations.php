@@ -15,7 +15,6 @@ $niveau_arbo = 1;
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 
-
 // Resume session
 $resultat_session = $session_gepi->security_check();
 if ($resultat_session == 'c') {
@@ -26,13 +25,19 @@ if ($resultat_session == 'c') {
     die();
 }
 
+//echo "A";
+
 // Sécurité
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=2");
     die();
 }
 
+//echo "B";
+
 check_token();
+
+//echo "C";
 
 header('Content-Type: text/html; charset=ISO-8859-1');
 
@@ -55,28 +60,39 @@ $verif_eleve = mysql_query("SELECT login FROM j_eleves_groupes
 		AND id_groupe = '".$var2."'
 		AND periode = '".$verif_var1[1]."'")
 		or die('Erreur de verif_var1 : '.mysql_error());
+$temoin_eleve=mysql_num_rows($verif_eleve);
 
 // On vérifie que le prof logué peut saisir ces appréciations
 //$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."'");
-$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
-if (mysql_num_rows($verif_prof) >= 1) {
-	// On ne fait rien
-} else {
-	die('Vous ne pouvez pas saisir d\'appr&eacute;ciations pour cet &eacute;l&eagrave;ve');
+if($_SESSION['statut']=='professeur') {
+	if($mode!="verif") {
+		$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
+		if (mysql_num_rows($verif_prof) >= 1) {
+			// On ne fait rien
+			$temoin_prof=mysql_num_rows($verif_prof);
+		} else {
+			die('Vous ne pouvez pas saisir d\'appr&eacute;ciations pour cet &eacute;l&egrave;ve');
+		}
+	}
+	else {
+		$temoin_prof=1;
+	}
 }
 
-if (mysql_num_rows($verif_eleve) !== 0 AND mysql_num_rows($verif_prof) !== 0) {
+if (($_SESSION['statut']=='scolarite') || (($temoin_eleve !== 0 AND $temoin_prof !== 0))) {
 	if($mode=='verif') {
 		$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
 			terme VARCHAR(255) NOT NULL DEFAULT '',
 			terme_corrige VARCHAR(255) NOT NULL DEFAULT '',
 			PRIMARY KEY (id)) ENGINE=MyISAM;";
+		//echo "$sql<br />";
 		$create_table=mysql_query($sql);
 		if(!$create_table) {
 			echo "<span style='color:red'>Erreur lors de la création de la table 'vocabulaire'.</span>";
 		}
 		else {
 			$sql="SELECT * FROM vocabulaire;";
+			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
 				while($lig_voc=mysql_fetch_object($res)) {
@@ -104,7 +120,7 @@ if (mysql_num_rows($verif_eleve) !== 0 AND mysql_num_rows($verif_prof) !== 0) {
 			}
 		}
 	}
-	else {
+	elseif($_SESSION['statut']=='professeur') {
 		$insertion_ou_maj_tempo="y";
 		$sql="SELECT appreciation FROM matieres_appreciations WHERE login = '".$verif_var1[0]."' AND id_groupe = '".$var2."' AND periode = '".$verif_var1[1]."';";
 		$test_app_enregistree=mysql_query($sql);
