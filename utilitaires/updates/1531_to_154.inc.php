@@ -638,5 +638,20 @@ if ($test == -1) {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
+$sql="SELECT 1=1 FROM setting WHERE name='verif_cdt_documents_index';";
+$res_cdt=mysql_query($sql);
+if(mysql_num_rows($res_cdt)==0) {
+	$sql="SELECT 1=1 FROM infos_actions WHERE titre='Contrôle des index dans les documents des CDT requis';";
+	$res_test=mysql_query($sql);
+	if(mysql_num_rows($res_test)==0) {
+		$result .= "<br /><p style=\"color:blue;\">Contrôle des index dans les documents des CDT requis.<br /></p>";
+	
+		$info_action_titre="Contrôle des index dans les documents des CDT requis";
+		$info_action_texte="Il a existé un bug dans la création des fichiers index.html protégeant d'accès anormaux les documents joints aux cahiers de textes.<br />Il est recommandé de lancer une vérification de présence des index&nbsp;: <a href='cahier_texte_admin/index.php?ajout_index_documents=y'>Contrôler</a>";
+		$info_action_destinataire="administrateur";
+		$info_action_mode="statut";
+		enregistre_infos_actions($info_action_titre,$info_action_texte,$info_action_destinataire,$info_action_mode);
+	}
+}
 
 ?>
