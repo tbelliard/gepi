@@ -10,14 +10,18 @@ function traite_donnees_classe($id_classe,$id_periode,&$nombre_eleves)
 {
 global $prefix_base ;
 
-$prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
-    $requete='SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id  AND '.$prefix_base.'periode='.$id_periode. ' AND ' .$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'j_eleves_regime.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'; 		//on compte les élèves sélectionné
+$cpt_i = 0;
+for ($i=0; $i<sizeof($id_periode) ; $i++) {
+
+    $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
+    $requete='SELECT * FROM '.$prefix_base.'eleves, '.$prefix_base.'j_eleves_classes, '.$prefix_base.'classes, '.$prefix_base.'j_eleves_regime WHERE '.$prefix_base.'j_eleves_classes.id_classe = '.$prefix_base.'classes.id  AND '.$prefix_base.'periode='.$id_periode[$i]. ' AND ' .$prefix_base.'eleves.login = '.$prefix_base.'j_eleves_classes.login AND '.$prefix_base.'j_eleves_classes.login = '.$prefix_base.'j_eleves_regime.login AND ('.$prepa_requete.') GROUP BY '.$prefix_base.'eleves.login ORDER BY '.$prefix_base.'j_eleves_classes.id_classe ASC, '.$prefix_base.'eleves.nom ASC, '.$prefix_base.'eleves.prenom ASC'; 		//on compte les élèves sélectionné
 	//echo $requete;
-	//echo "$requete<br />";
+	//echo sizeof($id_periode)." : $i : ==>$requete <br />";
 	$call_eleve = mysql_query($requete);	
 	$nb_eleves = @mysql_num_rows($call_eleve);
 	
-	$nombre_eleves = $nb_eleves; // parametre de la fonction
+	//en réalité, le nombre de ligne
+	$nombre_eleves = $nb_eleves*sizeof($id_periode); // parametre de la fonction
 
 	/*
 	echo "<table class='boireaus'>";
@@ -34,8 +38,8 @@ $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
 	echo "<th>id_classe</th>";
 	echo "</tr>";
 	*/
-	$cpt_i = 0;
-	while ( $donner = @mysql_fetch_array( $call_eleve ))
+	
+	while ($donner = @mysql_fetch_array( $call_eleve ))
 	{
 	    $donnees_eleves[$cpt_i]['login'] = $donner['login']; 
 		$donnees_eleves[$cpt_i]['ereno'] = $donner['ereno']; 
@@ -43,9 +47,12 @@ $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
 		$donnees_eleves[$cpt_i]['prenom'] = $donner['prenom'];
 		$donnees_eleves[$cpt_i]['naissance'] = $donner['naissance'];
 		$donnees_eleves[$cpt_i]['nom_complet'] =  $donner['nom_complet'];
+		$donnees_eleves[$cpt_i]['nom_court'] =  $donner['classe'];
 		$donnees_eleves[$cpt_i]['doublant'] = $donner['doublant'];
 		$donnees_eleves[$cpt_i]['regime'] = $donner['regime'];
 		$donnees_eleves[$cpt_i]['id_classe'] = $donner['id']; // ID de la classe
+		$donnees_eleves[$cpt_i]['id_periode'] = $id_periode[$i]; // ID de la période traitée
+		
 		 
 		$ident_eleve_sel1=$donner['login'];
 		/*
@@ -57,7 +64,7 @@ $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
 		echo "</tr>";
 		*/
 		$cpt_i++;
-	
+
 	/*if($ereno[$cpt_i]!='') 
 		{
 		 $call_resp = @mysql_query('SELECT * FROM responsables WHERE ereno = "'.$ereno[$cpt_i].'"');
@@ -91,6 +98,7 @@ $prepa_requete = $prefix_base.'j_eleves_classes.id_classe = "'.$id_classe.'"';
 			}
 			*/
 	}
+} //for
 	//echo "</table>";
     return $donnees_eleves;
 }
@@ -161,6 +169,7 @@ global $prefix_base ;
 		$donnees_eleves[$cpt_i]['doublant'] = $eleve_doublant;
 		$donnees_eleves[$cpt_i]['regime'] = $eleve_regime;
 		$donnees_eleves[$cpt_i]['id_classe'] = $eleve_id_classe; 
+		$donnees_eleves[$cpt_i]['id_periode'] = $id_periode; // ID de la période traitée
 				
 		$ident_eleve_sel1=$donnees_eleves[$cpt_i]['login'];
 		

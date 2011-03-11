@@ -26,15 +26,17 @@
 // Global configuration file
 // Quand on est en SSL, IE n'arrive pas à ouvrir le PDF.
 //Le problème peut être résolu en ajoutant la ligne suivante :
+/*
 Header('Pragma: public');
 
 header('Content-Type: application/pdf');
+*/
 //=============================
 // REMONTé:
 // Initialisations files
 require_once("../lib/initialisations.inc.php");
 //=============================
-
+//debug_var();
 require('../fpdf/fpdf.php');
 require('../fpdf/ex_fpdf.php');
 
@@ -70,6 +72,8 @@ if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
 }
+
+
 
 // LES OPTIONS DEBUT
 if (!isset($_SESSION['marge_haut'])) { $MargeHaut = 10 ; } else {$MargeHaut =  $_SESSION['marge_haut'];}
@@ -110,6 +114,7 @@ $ligne_texte = "Avis du conseil de classe." ;
 $texte = '';
 
 // Définition de la page
+
 $pdf=new rel_PDF("P","mm","A4");
 $pdf->SetTopMargin($MargeHaut);
 $pdf->SetRightMargin($MargeDroite);
@@ -129,9 +134,13 @@ $id_periode=isset($_GET['periode_num']) ? $_GET["periode_num"] : NULL;
 // les tableaux contienent la liste des id.
 $id_liste_classes=isset($_POST['id_liste_classes']) ? $_POST["id_liste_classes"] : NULL;
 $id_liste_groupes=isset($_POST['id_liste_groupes']) ? $_POST["id_liste_groupes"] : NULL;
-if ($id_periode==NULL){$id_periode=isset($_POST['id_periode']) ? $_POST["id_periode"] : NULL;} 
+//$id_liste_periodes=isset($_POST['id_liste_periodes']) ? $_POST["id_liste_periodes"] : NULL;
+
+
+//if ($id_periode==NULL){$id_periode=isset($_POST['id_periode']) ? $_POST["id_periode"] : NULL;} 
 if (!(is_numeric($id_periode))) {
 	$id_periode=1;
+	$nb_periodes=1;
 }
 
 $nb_pages = 0;
@@ -159,29 +168,87 @@ if ($id_liste_groupes!=NULL) {
 //echo $nb_pages;
 }
 
-	// Cette boucle crée les différentes pages du PDF
+//IMPRESSION A LA CHAINE
+if (!isset($_GET['periode_num'])) {
+
+	//On récupère dans la session
+	if ($_SESSION['id_liste_periodes']!=NULL) {
+		$id_liste_periodes=$_SESSION['id_liste_periodes'];
+	//unset($_SESSION['id_liste_periodes']);
+		$id_periode=$id_liste_periodes[0];
+		//debug_var();
+	}
+
+	if ($id_liste_periodes!=NULL) {
+		//print_r($id_liste_periodes);
+	    $nb_periodes = sizeof($id_liste_periodes);
+		//echo $nb_periodes;		
+	} 
+} else {
+   $nb_periodes=1;
+}
+
+//echo " ".$nb_pages;
+//$nb_pages=$nb_pages*$nb_periodes;
+		
+	// Cette boucle crée les différentes pages du PDF (page = un entête et des lignes par élèves.
 	for ($i_pdf=0; $i_pdf<$nb_pages ; $i_pdf++) {
+	
+	    $nb_eleves=0;
 		// Impressions RAPIDES
 		if ($id_groupe!=NULL) { // C'est un groupe
-			$donnees_eleves = traite_donnees_groupe($id_groupe,$id_periode,$nb_eleves);
-			//$id_classe=$donnees_eleves['id_classe'][0];
+		    $id_liste_periodes[0]=$id_periode;
+			$donnees_eleves = traite_donnees_groupe($id_groupe,$id_liste_periodes,$nb_eleves);
 			$id_classe=$donnees_eleves[0]['id_classe'];
 		} elseif ($id_classe!=NULL) { // C'est une classe
-			$donnees_eleves = traite_donnees_classe($id_classe,$id_periode,$nb_eleves);
+		    $id_liste_periodes[0]=$id_periode;
+			$donnees_eleves = traite_donnees_classe($id_classe,$id_liste_periodes,$nb_eleves);
 		} //fin c'est une classe
 			
 		//IMPRESSION A LA CHAINE
-		if ($id_liste_groupes!=NULL) {
-			$donnees_eleves = traite_donnees_groupe($id_liste_groupes[$i_pdf],$id_periode,$nb_eleves);
+		if ($id_liste_groupes!=NULL) {	     
+			$donnees_eleves = traite_donnees_groupe($id_liste_groupes[$i_pdf],$id_liste_periodes,$nb_eleves);
 			$id_groupe=$id_liste_groupes[$i_pdf];
-			//$id_classe=$donnees_eleves['id_classe'][0];
-			$id_classe=$donnees_eleves[0]['id_classe'];
+			//$id_classe=$donnees_eleves[0]['id_classe'];		
 		}
 
 		if ($id_liste_classes!=NULL) {
-			$donnees_eleves = traite_donnees_classe($id_liste_classes[$i_pdf],$id_periode,$nb_eleves);
+			$donnees_eleves = traite_donnees_classe($id_liste_classes[$i_pdf],$id_liste_periodes,$nb_eleves);
 			$id_classe=$id_liste_classes[$i_pdf];
+			//$id_classe=$donnees_eleves[0]['id_classe'];
 		}
+
+		
+//Info pour le debug.	
+$affiche='n';
+if ($affiche=='y') {
+echo "<pre>";
+print_r($donnees_eleves);
+echo "</pre>";
+}	
+
+//Si plusieures périodes, on trie les données par nom et période.
+if ($nb_periodes>1) {
+	foreach($donnees_eleves as $sortarray)
+	{
+		//$column[] = $sortarray['id_classe'];
+		//@array_multisort($column, SORT_ASC, $donnees_eleves);
+		$column[] = $sortarray['nom'];
+		$column1[] = $sortarray['prenom'];
+		$column2[] = $sortarray['id_periode'];
+		@array_multisort($column, SORT_ASC, $column1, SORT_ASC, $column2, SORT_ASC, $donnees_eleves);
+	}
+	unset($column);
+	unset($column1);
+	unset($column2);
+    $option_tout_une_page = 0 ;
+}
+
+if ($affiche=='y') {
+echo "<pre>";
+print_r($donnees_eleves);
+echo "</pre>";
+}
 
 		// CALCUL de VARIABLES
 		//Calcul de la hauteur de la ligne dans le cas de l'option tout sur une ligne
@@ -206,7 +273,7 @@ if ($id_liste_groupes!=NULL) {
 		// on appelle une nouvelle page pdf
 		$nb_eleves_i = 0;
 
-		//Entête du PDF
+//Entête du PDF
 			$pdf->SetLineWidth(0.7);
 			$pdf->SetFont($caractere_utilise,'B',14);
 			$pdf->Setxy($X_entete_classe,$Y_entete_classe);
@@ -257,19 +324,24 @@ if ($id_liste_groupes!=NULL) {
 				$pdf->SetFont($caractere_utilise,'I',11);
 				$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'LRB',2,'C');
 			} else {
-			// On demande une classe ==> on ajoute la période.
+			    // On demande une classe ==> on ajoute la période.
 				$pdf->SetFont($caractere_utilise,'I',11);
-
-				$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode=$id_periode ORDER BY num_periode";
-				$res_per=mysql_query($sql);
-				if(mysql_num_rows($res_per)==0){
-					die("Problème avec les infos de la classe $id_classe</body></html>");
-				}
-				else{
-					$lig_tmp=mysql_fetch_object($res_per);
-					$periode=$lig_tmp->nom_periode;
-					$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'TLR',2,'C');
-					$pdf->CellFitScale($L_entete_discipline,$H_entete_classe / 2 ,$periode,'LBR',2,'C');
+				
+				
+				if ($nb_periodes==1) {				
+					$sql="SELECT num_periode,nom_periode FROM periodes WHERE id_classe='$id_classe' AND num_periode='".$donnees_eleves[0]['id_periode']."' ORDER BY num_periode";
+					$res_per=mysql_query($sql);
+					if(mysql_num_rows($res_per)==0){
+						die("Problème avec les infos de la classe $id_classe</body></html>");
+					}
+					else{
+						$lig_tmp=mysql_fetch_object($res_per);
+						$periode=$lig_tmp->nom_periode;			
+						$pdf->Cell($L_entete_classe,$H_entete_classe / 2,'Année scolaire '.getSettingValue('gepiYear'),'TLR',2,'C');
+						$pdf->CellFitScale($L_entete_discipline,$H_entete_classe / 2 ,$periode,'LBR',2,'C');
+					}
+				} else {
+				    $pdf->Cell($L_entete_classe,$H_entete_classe ,'Année scolaire '.getSettingValue('gepiYear'),'LTRB',2,'C');
 				}
 			}
 
@@ -281,7 +353,6 @@ if ($id_liste_groupes!=NULL) {
 				$Y_courant=$pdf->GetY()+2.5;
 			
 // requete à faire pour récupérer les Avis pour la classe / la période !!!
-
 		//debut tableau;
 			$pdf->SetLineWidth(0.3);
 			$pdf->SetFont($caractere_utilise,'',9);
@@ -291,7 +362,7 @@ if ($id_liste_groupes!=NULL) {
 			while($nb_eleves_i < $nb_eleves) {	
 			    //$login_elv = $donnees_eleves['login'][$nb_eleves_i];
 			    $login_elv = $donnees_eleves[$nb_eleves_i]['login'];
-                $sql_current_eleve_avis = "SELECT avis FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='$id_periode')";
+                $sql_current_eleve_avis = "SELECT avis FROM avis_conseil_classe WHERE (login='$login_elv' AND periode='".$donnees_eleves[$nb_eleves_i]['id_periode']."')";
 				//echo "$sql_current_eleve_avis<br />\n";
          	    $current_eleve_avis_query = mysql_query($sql_current_eleve_avis);
                 $current_eleve_avis = @mysql_result($current_eleve_avis_query, 0, "avis");
@@ -300,7 +371,9 @@ if ($id_liste_groupes!=NULL) {
 				$pdf->Setxy($X_tableau,$y_tmp);
 				$pdf->SetFont($caractere_utilise,'B',9);
 				//$texte = strtoupper($donnees_eleves['nom'][$nb_eleves_i])." ".ucfirst($donnees_eleves['prenom'][$nb_eleves_i]);
+				
 				$texte = strtoupper($donnees_eleves[$nb_eleves_i]['nom'])." ".ucfirst($donnees_eleves[$nb_eleves_i]['prenom']);
+				
 				$pdf->CellFitScale($l_cell_nom,$h_cell,$texte,1,0,'L',0); //$l_cell_nom.' - '.$h_cell.' / '.$X_tableau.' - '.$y_tmp
 			
 				$y_tmp = $pdf->GetY();
@@ -308,11 +381,23 @@ if ($id_liste_groupes!=NULL) {
 				
 				$l_cell_avis=$EspaceX - $l_cell_nom;
 				
-				if ($current_eleve_avis != '') {
-				  $avis =	$current_eleve_avis;
-				} else {
-				  $avis =' ';
+				if ($nb_periodes==1) {
+					if ($current_eleve_avis != '') {
+					  $avis = $current_eleve_avis;
+					} else {
+					  $avis =' ';
+					}   				
+				} else { // Si plusieurs périodes, on indique la période concernée entre parenthèse à côté du nom.
+					$texte = "P".$donnees_eleves[$nb_eleves_i]['id_periode']." : ";
+					if ($current_eleve_avis != '') {
+					  $avis = $texte." ".$current_eleve_avis;
+					} else {
+					  $avis =$texte." ";
+					}
+				   				
 				}
+				
+				
 				//$avis = $sql_current_eleve_avis;
 				
 				$pdf->SetFont($caractere_utilise,'',7.5);
@@ -340,10 +425,11 @@ if ($id_liste_groupes!=NULL) {
 				$pdf->SetFont($caractere_utilise,'',7.5);
 
 				$pdf->Setxy($X_tableau+$l_cell_nom,$y_tmp+$h_cell);
+				
 				$nb_eleves_i = $nb_eleves_i + 1;
 			}
 			$y_tmp = $pdf->GetY();
-		} // FOR
+	} // FOR
 		
 	// sortie PDF sur écran
 	$nom_releve=date("Ymd_Hi");
