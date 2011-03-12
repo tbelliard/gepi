@@ -44,18 +44,27 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 	echo "<noscript>
 	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
 		<p>
-		Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>nom</b> contient: <input type='text' name='rech_nom' value='' />
+		Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>nom</b> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' value='' />
 		<input type='hidden' name='page' value='$page' />
 		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
 		</p>
 	</form>
+
+	<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire1'>
+		<p>
+		Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prénom</b> contient&nbsp;: <input type='text' name='rech_prenom' value='' />
+		<input type='hidden' name='page' value='$page' />
+		<input type='submit' name='Recherche_sans_js' value='Rechercher' />
+		</p>
+	</form>
+
 </noscript>\n";
 	//=============================================
 
 	// Portion d'AJAX:
 	echo "<script type='text/javascript'>
-	function cherche_eleves() {
-		rech_nom=document.getElementById('rech_nom').value;
+	function cherche_eleves(type) {
+		rech_nom_ou_prenom=document.getElementById('rech_'+type).value;
 
 		//var url = 'liste_eleves.php';
 		var url = '../eleves/liste_eleves.php';
@@ -63,9 +72,10 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 			url,
 			{
 				method: 'post',
-				postBody: 'rech_nom='+rech_nom+'&page=$page',
+				postBody: 'rech_'+type+'='+rech_nom_ou_prenom+'&page=$page',
 				onComplete: affiche_eleves
 			});
+
 	}
 
 	function affiche_eleves(xhr) {
@@ -83,9 +93,17 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit='cherche_eleves();return false;' method='post' name='formulaire'>";
 	echo "<p>\n";
-	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>nom</b> contient: <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>nom</b> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
-	echo "<input type='button' name='Recherche' value='Rechercher' onclick='cherche_eleves()' />\n";
+	echo "<input type='button' name='Recherche' value='Rechercher' onclick=\"cherche_eleves('nom')\" />\n";
+	echo "</p>\n";
+	echo "</form>\n";
+
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit='cherche_eleves();return false;' method='post' name='formulaire'>";
+	echo "<p>\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prénom</b> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' />\n";
+	echo "<input type='hidden' name='page' value='$page' />\n";
+	echo "<input type='button' name='Recherche' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
 	echo "</p>\n";
 	echo "</form>\n";
 
