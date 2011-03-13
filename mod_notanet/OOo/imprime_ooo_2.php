@@ -134,6 +134,7 @@ $OOo->SaveXmlToDoc(); //traitement du fichier extrait
 $now = gmdate('d_M_Y_H:i:s');
 $nom_fichier_modele = explode('.',$nom_fichier_modele_ooo);
 $nom_fic = $nom_fichier_modele[0]."_".$now.".".$nom_fichier_modele[1];
+/*
 header('Expires: ' . $now);
 if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 	header('Content-Disposition: inline; filename="' . $nom_fic . '"');
@@ -145,7 +146,9 @@ else {
 	header('Pragma: no-cache');
 }
 // display
-header('Content-type: '.$OOo->GetMimetypeDoc());
+*/
+send_file_download_headers($OOo->GetMimetypeDoc(), $nom_fic, 'attachment');
+//header('Content-type: '.$OOo->GetMimetypeDoc());
 //header('Content-type: '.$OOo->getMimetype());
 header('Content-Length: '.filesize($OOo->GetPathnameDoc()));
 //header('Content-Length: '.filesize($OOo->GetPathname()));
