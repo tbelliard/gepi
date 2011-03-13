@@ -239,6 +239,8 @@ if (($groupe != "") OR ($id_aid != "")) {
     $j = 0;
     $elapse_time = 0;
 
+	getGroupsContainingSameStudents($groupe);
+	
     while (isset($tab_id_creneaux[$j])) {
         $current_heure = "0";
 	    if ($elapse_time%2 == 1) {
@@ -250,41 +252,114 @@ if (($groupe != "") OR ($id_aid != "")) {
 	    if ($nb_rows >=1) {
             $k = 0;
            
+			$LoginTable = array();
+			$req = mysql_query("SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$groupe."' GROUP BY login");
+			while ($rep = mysql_fetch_array($req)) {
+				$LoginTable[] = $rep['login'];
+			}		   
+
+			$LoginTableAID = array();
+			$req = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$groupe."' GROUP BY login");
+			while ($rep = mysql_fetch_array($req)) {
+				$LoginTableAID[] = $rep['login'];
+			}	
+			
             while (($tab_enseignement['id_groupe'][$k] != "") OR ($tab_enseignement['id_aid'][$k] != "")) {
                 $elapse_time_end = $elapse_time + $tab_enseignement['duree'][$k];
                 if ((($elapse_time<=$start_lesson) AND ($start_lesson<$elapse_time_end)) OR (($elapse_time>=$start_lesson) AND ($elapse_time<$end_lesson))){
+					$count = 0;
                     if ($tab_enseignement['aid'][$k] == 0) {
                         if ($groupe_type == "ENS") {
-                            $req_nombre_eleves = mysql_query("SELECT DISTINCT login FROM j_eleves_groupes WHERE login IN 
-							    (SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_groupe'][$k]."') AND
-							    id_groupe = '".$groupe."'  ");
+						
+							$MyTable = array();
+							$req = mysql_query("SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_groupe'][$k]."'");
+							while ($rep = mysql_fetch_array($req)) {
+								$MyTable[] = $rep['login'];
+							}
+							$count = 0;
+							foreach ($LoginTable as $login) 
+							{
+								if (in_array($login, $MyTable)) {
+									$count++;
+								}
+							}
+							
+                            //$req_nombre_eleves = mysql_query("SELECT DISTINCT login FROM j_eleves_groupes WHERE login IN 
+							//    (SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_groupe'][$k]."') AND
+							//    id_groupe = '".$groupe."'  ");
                         }
                         else {
-                            $req_nombre_eleves = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE login IN 
-							    (SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_aid'][$k]."') AND
-							    id_aid = '".$groupe."'  ");
+
+							$MyTable = array();
+							$req = mysql_query("SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_aid'][$k]."'");
+							while ($rep = mysql_fetch_array($req)) {
+								$MyTable[] = $rep['login'];
+							}
+							$count = 0;
+							foreach ($LoginTableAID as $login) 
+							{
+								if (in_array($login, $MyTable)) {
+									$count++;
+								}
+							}
+
+						
+                            //$req_nombre_eleves = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE login IN 
+							//    (SELECT login FROM j_eleves_groupes WHERE id_groupe = '".$tab_enseignement['id_aid'][$k]."') AND
+							//    id_aid = '".$groupe."'  ");
 
                         }
                     }
                     else {
                         if ($groupe_type == "ENS") {
-                            $req_nombre_eleves = mysql_query("SELECT DISTINCT login FROM j_eleves_groupes WHERE login IN 
-							    (SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_groupe'][$k]."') AND
-							    id_groupe = '".$groupe."'  ");
+
+							$MyTable = array();
+							$req = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_groupe'][$k]."'");
+							while ($rep = mysql_fetch_array($req)) {
+								$MyTable[] = $rep['login'];
+							}
+							$count = 0;
+							foreach ($LoginTable as $login) 
+							{
+								if (in_array($login, $MyTable)) {
+									$count++;
+								}
+							}
+						
+                            //$req_nombre_eleves = mysql_query("SELECT DISTINCT login FROM j_eleves_groupes WHERE login IN 
+							//    (SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_groupe'][$k]."') AND
+							//    id_groupe = '".$groupe."'  ");
                         }
                         else {
-                            $req_nombre_eleves = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE login IN 
-							    (SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_aid'][$k]."') AND
-							    id_aid = '".$groupe."'  ");
+						
+							$MyTable = array();
+							$req = mysql_query("SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_groupe'][$k]."'");
+							while ($rep = mysql_fetch_array($req)) {
+								$MyTable[] = $rep['login'];
+							}
+							$count = 0;
+							foreach ($LoginTableAID as $login) 
+							{
+								if (in_array($login, $MyTable)) {
+									$count++;
+								}
+							}						
+						
+						
+                            //$req_nombre_eleves = mysql_query("SELECT DISTINCT login FROM j_aid_eleves WHERE login IN 
+							//   (SELECT login FROM j_aid_eleves WHERE id_aid = '".$tab_enseignement['id_aid'][$k]."') AND
+							//    id_aid = '".$groupe."'  ");
 
                         }
                     }
                     $req_nom_prof = mysql_query("SELECT nom FROM utilisateurs WHERE login = '".$tab_enseignement['login'][$k]."' ");
 		            $rep_nom_prof = mysql_fetch_array($req_nom_prof);
                     
-                    $enseignants .= $rep_nom_prof['nom']." (".mysql_num_rows($req_nombre_eleves)." élèves) ";
+                    //$enseignants .= $rep_nom_prof['nom']." (".mysql_num_rows($req_nombre_eleves)." élèves) ";
+					$enseignants .= $rep_nom_prof['nom']." (".$count." élèves) ";
                     // ---- Si nb élèves < 5, ce sont sans doute des élèves affectés provisoirement dans un autre cours (CLA) : on accepte la création
-                    if (mysql_num_rows($req_nombre_eleves) >= 5) {
+                    //if (mysql_num_rows($req_nombre_eleves) >= 5) {
+					if ($count >=5) {
                         $groupe_libre = false;
                     }
                 }
@@ -313,6 +388,61 @@ $InformationMessage = $enseignants;
 return $groupe_libre;
 
 } // verifGroupe()
+// ======================================================================================
+//
+//
+//
+// ======================================================================================
+
+function getGroupsContainingSameStudents($groupe)
+{
+
+    // --------- Rechercher les groupes d'enseignement qui ont des élèves en commun avec le groupe visé
+	$LoginTable = array();
+	$CompleteTable = array();	
+	$GroupsTable = array();
+
+	
+	$sql_request = "SELECT login, id_groupe, periode FROM j_eleves_groupes  WHERE id_groupe = '".$groupe."' GROUP BY login";
+	$req2 = mysql_query($sql_request);
+	while ($rep = mysql_fetch_array($req2)) {
+		$LoginTable[] =$rep['login'];
+	}
+
+	$sql_request = "SELECT DISTINCT login, id_groupe FROM j_eleves_groupes ORDER BY id_groupe ASC";
+	$req = mysql_query($sql_request);
+	if ($req) {
+		while($rep = mysql_fetch_array($req))
+		{
+			$CompleteTable['login'][] = $rep['login'];
+			$CompleteTable['id_groupe'][] = $rep['id_groupe'];
+		}
+	}
+	
+
+	$i = 0;$count = 0;$id_groupe = 0;
+	while (isset($CompleteTable['login'][$i])) 
+	{
+		if (in_array($CompleteTable['login'][$i], $LoginTable)) {
+			$count++;
+			if ($id_groupe < $CompleteTable['id_groupe'][$i]) {
+				$GroupsTable[] = $CompleteTable['id_groupe'][$i];
+				$id_groupe = $CompleteTable['id_groupe'][$i];
+			}
+		}
+		$i++;
+	}
+	
+	$sql_request = "DELETE FROM j_eleves_groupes_delestage";
+	$req = mysql_query($sql_request);
+	
+	foreach ($GroupsTable as $group) {
+		$sql_request = "INSERT INTO j_eleves_groupes_delestage SET
+			id_groupe = '".$group."'";
+		$req_insertion = mysql_query($sql_request);
+	}		
+}
+
 
 // =============================================================================
 //
@@ -331,41 +461,12 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
     else {
         $calendrier = "1=1";
     }
-    // --------- Rechercher les groupes d'enseignement qui ont des élèves en commun avec le groupe visé
 
-	$sql_request = "DELETE FROM j_eleves_groupes_delestage";
-	$req = mysql_query($sql_request);
-
-	$sql_request = "SELECT login, id_groupe, periode FROM j_eleves_groupes  WHERE id_groupe = '".$groupe."'";
-	$req = mysql_query($sql_request);
-	
-	while ($rep = mysql_fetch_array($req)) {
-		$sql_request = "INSERT INTO j_eleves_groupes_delestage SET
-			login = '".$rep['login']."', 
-			id_groupe = '".$rep['id_groupe']."',
-			periode = '".$rep['periode']."'";
-		$req_insertion = mysql_query($sql_request);
-	}
-    // --------- Rechercher les groupes d'enseignement qui ont des élèves en commun avec le groupe visé
-
-	$sql_request = "DELETE FROM j_eleves_groupes_delestage2";
-	$req = mysql_query($sql_request);
-
-	$sql_request = "SELECT id_groupe FROM j_eleves_groupes WHERE login IN (SELECT login FROM j_eleves_groupes_delestage)";
-	$req = mysql_query($sql_request);
-	
-	while ($rep = mysql_fetch_array($req)) {
-		$sql_request = "INSERT INTO j_eleves_groupes_delestage2 SET
-			login = '".$rep['login']."', 
-			id_groupe = '".$rep['id_groupe']."',
-			periode = '".$rep['periode']."'";
-		$req_insertion = mysql_query($sql_request);
-	}	
 	
     if ($type_semaine == "0") {
         if ($groupe_type == "ENS") {
             $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
-                                    id_groupe IN (SELECT id_groupe FROM j_eleves_groupes_delestage2) AND
+                                    id_groupe IN (SELECT id_groupe FROM j_eleves_groupes_delestage) AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
                                     heuredeb_dec = '".$current_heure."' AND
@@ -389,8 +490,7 @@ function RecupCoursElevesCommuns($creneau_courant, $jour, $groupe, $id_aid, $gro
     else {      
         if ($groupe_type == "ENS") {
             $req_creneau = mysql_query("SELECT duree , login_prof , id_groupe FROM edt_cours WHERE 
-                                    id_groupe IN (SELECT id_groupe FROM j_eleves_groupes WHERE 
-                                        login IN (SELECT login FROM j_eleves_groupes_delestage)) AND
+                                    id_groupe IN (SELECT id_groupe FROM j_eleves_groupes_delestage) AND
                                     jour_semaine = '".$jour."' AND
                                     id_definie_periode = '".$tab_id_creneaux[$creneau_courant]."' AND
                                     heuredeb_dec = '".$current_heure."' AND
