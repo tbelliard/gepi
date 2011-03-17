@@ -498,7 +498,7 @@ if (isset($titre_page)) {
 	$tbs_premier_menu[]=array("lien"=>$gepiPath."/accueil.php" , "confirme"=>"insert_confirm_abandon()" , "image"=>$gepiPath."/images/icons/home.png" , "alt"=>"Accueil" , "title"=>"Accueil" , "texte"=>"Accueil");
 	$tbs_premier_menu[]=array("lien"=>$gepiPath."/utilisateurs/mon_compte.php" , "confirme"=>"insert_confirm_abandon()" , "image"=>$gepiPath."/images/icons/buddy.png" , "alt"=>"Mon compte" , "title"=>"Mon compte" ,  "texte"=>"Gérer mon compte");
 	if ($session_gepi->current_auth_mode == "sso" && $gepiSettings['sso_display_portail'] == 'yes') {
-	$tbs_premier_menu[]=array("lien"=>$gepiSettings["sso_url_portail"] , "confirme"=>"" , "image"=>$gepiPath."/images/icons/home.png" , "alt"=>"Portail" , "title"=>"Retour portail" , "texte"=>"Retour portail");
+	$tbs_premier_menu[]=array("lien"=>$gepiSettings["sso_url_portail"] , "confirme"=>"" , "image"=>$gepiPath."/images/icons/retour_sso.png" , "alt"=>"Portail" , "title"=>"Retour portail" , "texte"=>"Retour portail");
 	}
 	if ($session_gepi->current_auth_mode != "sso" || $gepiSettings["sso_hide_logout"] != 'yes') {
 		$tbs_premier_menu[]=array("lien"=> $gepiPath."/logout.php?auto=0" , "confirme"=>"insert_confirm_abandon()", "image"=>$gepiPath."/images/icons/quit_16.png" , "alt"=>"Se déconnecter" , "title"=>"Se déconnecter" , "texte"=>"Déconnexion");
