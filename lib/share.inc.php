@@ -1732,13 +1732,13 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
     $flag = "1";
     $alt=1;
     while($i < $nombre_lignes) {
-        if ($couleur_alterne) {
+        if ($couleur_alterne=='y') {
             if ($flag==1) {$bg_color = "bgcolor=\"#C0C0C0\"";} else {$bg_color = "     ";}
         }
 
 	    $alt=$alt*(-1);
         echo "<tr class='";
-		if($couleur_alterne) {echo "lig$alt ";}
+		if($couleur_alterne=='y') {echo "lig$alt ";}
 		echo "white_hover'>\n";
         $j = 1;
         while($j < $nb_col+1) {
