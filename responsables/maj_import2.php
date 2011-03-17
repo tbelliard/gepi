@@ -1120,7 +1120,7 @@ else{
 								$sql.=", lieu_naissance='".$eleves[$i]["code_commune_insee_naiss"]."'";
 							}
 
-							if(isset($eleves[$i]['mel'])) {$sql.=", email='".$eleves[$i]['mel']."'";}
+							if(isset($eleves[$i]['mel'])) {$sql.=", mel='".$eleves[$i]['mel']."'";}
 
 							//$sql=substr($sql,0,strlen($sql)-2);
 							$sql.=" WHERE ele_id='".$eleves[$i]['eleve_id']."';";
