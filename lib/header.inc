@@ -548,7 +548,7 @@ if (isset($titre_page)) {
 					if ($session_gepi->current_auth_mode == "sso" && $gepiSettings['sso_display_portail'] == 'yes') {
 					echo "<li class='ligne_premier_menu'>\n";
 						echo " <a href='".$gepiSettings['sso_url_portail']."'>";
-							echo "<img src='$gepiPath/images/icons/home.png' alt='Portail' title='Retour portail' />";
+							echo "<img src='$gepiPath/images/icons/retour_sso.png' width='16' height='16' alt='Portail' title='Retour portail' />";
 							echo "<span class='menu_bandeau'>";
 								echo "&nbsp;Retour portail";
 							echo "</span>";
