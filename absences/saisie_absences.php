@@ -141,16 +141,17 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 			//echo "\$ap=$ap<br />";
 
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$ap=my_ereg_replace('(\\\r\\\n)+',"\r\n",$ap);
+			//$ap=my_ereg_replace('(\\\r\\\n)+',"\r\n",$ap);
+			$ap=preg_replace('/(\\\r\\\n)+/',"\r\n",$ap);
 			//=========================
 
-			if (!(my_ereg ("^[0-9]{1,}$", $nb_absences))) {
+			if (!(preg_match ("/^[0-9]{1,}$/", $nb_absences))) {
 					$nb_absences = '';
 				}
-				if (!(my_ereg ("^[0-9]{1,}$", $nb_nj))) {
+				if (!(preg_match ("/^[0-9]{1,}$/", $nb_nj))) {
 					$nb_nj = '';
 				}
-				if (!(my_ereg ("^[0-9]{1,}$", $nb_retard))) {
+				if (!(preg_match ("/^[0-9]{1,}$/", $nb_retard))) {
 					$nb_retard = '';
 				}
 
@@ -173,6 +174,7 @@ if (isset($_POST['is_posted']) and $_POST['is_posted'] == "yes") {
 $themessage  = 'Des champs ont été modifiés. Voulez-vous vraiment quitter sans enregistrer ?';
 //$message_enregistrement = 'Les modifications ont été enregistrées !';
 
+$javascript_specifique = "saisie/scripts/js_saisie";
 //**************** EN-TETE *****************
 $titre_page = "Saisie des absences";
 require_once("../lib/header.inc");
@@ -184,7 +186,7 @@ change = 'no';
 
 <form enctype="multipart/form-data" action="saisie_absences.php" method="post">
 <?php
-echo add_token_field();
+echo add_token_field(true);
 ?>
 <p class="bold">
 <a href="index.php?id_classe=<?php echo $id_classe; ?>" onclick="return confirm_abandon (this, change, '<?php echo $themessage; ?>')"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Choisir une autre période</a> |
@@ -217,6 +219,7 @@ $nombre_lignes = mysql_num_rows($appel_donnees_eleves);
 $i = '0';
 $num_id=10;
 $alt=1;
+$chaine_test_vocabulaire="";
 while($i < $nombre_lignes) {
 	$current_eleve_login = mysql_result($appel_donnees_eleves, $i, "login");
 	$current_eleve_absences_query = mysql_query("SELECT * FROM  absences WHERE (login='$current_eleve_login' AND periode='$periode_num')");
@@ -247,7 +250,19 @@ while($i < $nombre_lignes) {
 	echo "<td align='center'><input id=\"n1".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_nj_ele[$i]' value=\"".$current_eleve_nb_nj."\" onchange=\"changement()\" /></td>\n";
 	echo "<td align='center'><input id=\"n2".$num_id."\" onKeyDown=\"clavier(this.id,event);\" type='text' size='4' name='nb_retard_ele[$i]' value=\"".$current_eleve_nb_retards."\" onchange=\"changement()\" /></td>\n";
 	//echo "<td><textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='app_ele[$i]' rows='2' cols='50'  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
-	echo "<td><textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='no_anti_inject_app_eleve_$i' rows='2' cols='50'  wrap=\"virtual\">$current_eleve_ap_absences</textarea></td></tr>\n";
+	echo "<td>\n";
+	echo "<textarea id=\"n3".$num_id."\" onKeyDown=\"clavier(this.id,event);\" onchange=\"changement()\" name='no_anti_inject_app_eleve_$i' rows='2' cols='50'  wrap=\"virtual\" ";
+
+	echo "onblur=\"ajaxVerifAppreciations('".$current_eleve_login."', '".$id_classe."', 'n3".$num_id."');\"";
+	$chaine_test_vocabulaire.="ajaxVerifAppreciations('".$current_eleve_login."', '".$id_classe."', 'n3".$num_id."');\n";
+
+	echo ">$current_eleve_ap_absences</textarea>\n";
+
+	// Espace pour afficher les éventuelles fautes de frappe
+	echo "<div id='div_verif_n3".$num_id."' style='color:red;'></div>\n";
+
+	echo "</td>\n";
+	echo "</tr>\n";
 	//=========================
 	$i++;
 	$num_id++;
@@ -269,7 +284,13 @@ Si vous n'avez rempli que les champs non nuls, vous pouvez compléter d'un coup c
 echo "<a href='javascript:complete_a_zero_champs_vides()'>Compléter les champs vides par des zéros</a>";
 echo "</p>\n";
 
-echo "<script type='text/javascript'>
+echo "<script type='text/javascript'>\n";
+
+if((isset($chaine_test_vocabulaire))&&($chaine_test_vocabulaire!="")) {
+	echo $chaine_test_vocabulaire;
+}
+
+echo "
 function complete_a_zero_champs_vides() {
 	for(i=10;i<$num_id;i++) {
 		if(document.getElementById('n'+i)) {

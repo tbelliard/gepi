@@ -55,16 +55,17 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : "";
 $verif_var1 = explode("_t", $var1);
 
 // On vérifie que le login de l'élève soit valable et qu'il corresponde à l'enseignement envoyé par var2
-$verif_eleve = mysql_query("SELECT login FROM j_eleves_groupes
-		WHERE login = '".$verif_var1[0]."'
-		AND id_groupe = '".$var2."'
-		AND periode = '".$verif_var1[1]."'")
-		or die('Erreur de verif_var1 : '.mysql_error());
-$temoin_eleve=mysql_num_rows($verif_eleve);
-
-// On vérifie que le prof logué peut saisir ces appréciations
-//$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."'");
+$temoin_eleve=0;
 if($_SESSION['statut']=='professeur') {
+	$verif_eleve = mysql_query("SELECT login FROM j_eleves_groupes
+			WHERE login = '".$verif_var1[0]."'
+			AND id_groupe = '".$var2."'
+			AND periode = '".$verif_var1[1]."'")
+			or die('Erreur de verif_var1 : '.mysql_error());
+	$temoin_eleve=mysql_num_rows($verif_eleve);
+
+	// On vérifie que le prof logué peut saisir ces appréciations
+	//$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."'");
 	if($mode!="verif") {
 		$verif_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE id_groupe = '".$var2."' AND login='".$_SESSION['login']."'");
 		if (mysql_num_rows($verif_prof) >= 1) {
@@ -79,7 +80,7 @@ if($_SESSION['statut']=='professeur') {
 	}
 }
 
-if (($_SESSION['statut']=='scolarite') || (($temoin_eleve !== 0 AND $temoin_prof !== 0))) {
+if (($_SESSION['statut']=='scolarite') || ($_SESSION['statut']=='cpe') || (($temoin_eleve !== 0 AND $temoin_prof !== 0))) {
 	if($mode=='verif') {
 		$sql="CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,
 			terme VARCHAR(255) NOT NULL DEFAULT '',
