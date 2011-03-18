@@ -2513,7 +2513,12 @@ function eleve_suivant() {
 							//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
 
 							//Ajout Eric pour le déroulant des appréciations
-							$txt_appreciations_deroulantes.="<li><b>".htmlentities($matiere_nom[$cpt])." : </b></br>".htmlentities($ligtmp->appreciation)."</br></li>";
+							$app_tmp = $ligtmp->appreciation;
+							$app_tmp = str_replace("\n", "", $app_tmp);
+							$app_tmp = str_replace("\r\n", "", $app_tmp);
+							$app_tmp = str_replace("\r", "", $app_tmp); 
+							
+							$txt_appreciations_deroulantes.="<li><b>".htmlentities($matiere_nom[$cpt])." : </b></br>".$app_tmp."</br></li>";
 							
 							if($type_graphe=='etoile'){
 
