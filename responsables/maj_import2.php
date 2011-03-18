@@ -2443,7 +2443,7 @@ else{
 
 
 				$titre_infobulle="Adresse mail non mise à jour";
-				$texte_infobulle="L'adresse mail ne sera pas modifiée, parce que votre paramétrage des adresses élèves est&nbsp;: <b>".getSettingValue('mode_email_resp')."</b>";
+				$texte_infobulle="L'adresse mail ne sera pas modifiée, parce que votre paramétrage des adresses élèves est&nbsp;: <b>".getSettingValue('mode_email_ele')."</b>";
 				$tabdiv_infobulle[]=creer_div_infobulle('chgt_email_non_pris_en_compte',$titre_infobulle,"",$texte_infobulle,"",18,0,'y','y','n','n');
 
 
