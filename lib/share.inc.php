@@ -2908,7 +2908,7 @@ $liste_caracteres_accentues   ="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôö
 $liste_caracteres_desaccentues="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaaceeeeiiiinooooooosuuuuyyz";
 //================================================
 
-function remplace_accents($chaine,$mode){
+function remplace_accents($chaine,$mode=''){
 	global $liste_caracteres_accentues, $liste_caracteres_desaccentues;
 
 	if($mode == 'all'){
@@ -2922,7 +2922,7 @@ function remplace_accents($chaine,$mode){
 		// On enlève aussi les guillemets
 		$retour = preg_replace('/"/', '', $retour1);
 	}
-	else{
+	else {
 		// On remplace les caractères accentués par leurs équivalents non accentués.
 		$retour=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe","$chaine")))),"$liste_caracteres_accentues","$liste_caracteres_desaccentues");
 	}
