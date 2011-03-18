@@ -6762,4 +6762,20 @@ function deltree($rep,$repaussi=true) {
 	return $ok;
 }
 //=======================================================
+
+function check_mail($email,$mode='simple') {
+	if(!preg_match("/^([a-zA-Z0-9])+([a-zA-Z0-9\._-])*@([a-zA-Z0-9_-])+([a-zA-Z0-9\._-]+)+$/" , $email)) {
+		return false;
+	}
+	else {
+		if(($mode=='simple')||(!function_exists('checkdnsrr'))) {
+			return true;
+		}
+		else {
+			$tab=explode('@', $email);
+			if(checkdnsrr($tab[1], 'MX')) {return true;}
+			elseif(checkdnsrr($tab[1], 'A')) {return true;}
+		}
+	}
+}
 ?>
