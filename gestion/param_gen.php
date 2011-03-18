@@ -856,7 +856,7 @@ echo add_token_field();
 	</td>
 	<td valign='top'>
 		<input type="radio" name="mode_email_resp" id="mode_email_resp_sconet" value="sconet" <?php if((getSettingValue("mode_email_resp")=="sconet")||(getSettingValue("mode_email_resp")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_sconet' style='cursor: pointer;'>Mise à jour de l'email via Sconet uniquement</label><br />
-		<input type="radio" name="mode_email_resp" id="mode_email_resp_mon_compte" value="mon_compte" <?php if(getSettingValue("mode_email_resp")=="mon_compte"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_mon_compte' style='cursor: pointer;'>Mise à jour de l'email depuis Gérer mon compte uniquement<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>modifications dans Sconet non prises en compte</i>)</label><br />
+		<input type="radio" name="mode_email_resp" id="mode_email_resp_mon_compte" value="mon_compte" <?php if(getSettingValue("mode_email_resp")=="mon_compte"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_mon_compte' style='cursor: pointer;'>Mise à jour de l'email depuis Gérer mon compte uniquement<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>modifications dans Sconet non prises en compte</i>)<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>sauf sso, voir dans ce cas [<a href='options_connect.php#cas_attribut_email'>Options de connexion</a>]</i>)</label><br />
 		<!--
 		<input type="radio" name="mode_email_resp" id="mode_email_resp_sso" value="sso" <?php if(getSettingValue("mode_email_resp")=="sso"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_resp_sso' style='cursor: pointer;'>Mise à jour de l'email via SSO (<i>???</i>)</label><br />
 		-->
@@ -871,7 +871,7 @@ echo add_token_field();
 	</td>
 	<td valign='top'>
 		<input type="radio" name="mode_email_ele" id="mode_email_ele_sconet" value="sconet" <?php if((getSettingValue("mode_email_ele")=="sconet")||(getSettingValue("mode_email_ele")=="")) {echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_ele_sconet' style='cursor: pointer;'>Mise à jour de l'email via Sconet uniquement</label><br />
-		<input type="radio" name="mode_email_ele" id="mode_email_ele_mon_compte" value="mon_compte" <?php if(getSettingValue("mode_email_ele")=="mon_compte"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_ele_mon_compte' style='cursor: pointer;'>Mise à jour de l'email depuis Gérer mon compte uniquement<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>modifications dans Sconet non prises en compte</i>)</label><br />
+		<input type="radio" name="mode_email_ele" id="mode_email_ele_mon_compte" value="mon_compte" <?php if(getSettingValue("mode_email_ele")=="mon_compte"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_ele_mon_compte' style='cursor: pointer;'>Mise à jour de l'email depuis Gérer mon compte uniquement<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>modifications dans Sconet non prises en compte</i>)<br />&nbsp;&nbsp;&nbsp;&nbsp;(<i>sauf sso, voir dans ce cas [<a href='options_connect.php#cas_attribut_email'>Options de connexion</a>]</i>)</label><br />
 		<!--
 		<input type="radio" name="mode_email_ele" id="mode_email_ele_sso" value="sso" <?php if(getSettingValue("mode_email_ele")=="sso"){echo 'checked';} ?> onchange='changement()' /> <label for='mode_email_ele_sso' style='cursor: pointer;'>Mise à jour de l'email via SSO (<i>???</i>)</label><br />
 		-->
