@@ -122,7 +122,7 @@
 						echo "
 	<li class='ligne_premier_menu'>
 		<a href='$value[lien]'>
-			<img src='$value[image]' alt='$value[alt]' title='$value[title]' />
+			<img src='$value[image]' alt='$value[alt]' title='$value[title]' height='16' width='16' />
 			<span class='menu_bandeau'>
 				&nbsp;$value[texte]
 			</span>
