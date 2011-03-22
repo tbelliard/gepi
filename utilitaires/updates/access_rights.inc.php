@@ -741,8 +741,8 @@ $tab_req[] = "INSERT INTO droits VALUES ( '/mef/admin_mef.php', 'V', 'F', 'F', '
 $tab_req[] = "INSERT INTO droits VALUES ( '/mef/associer_eleve_mef.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mef : administration des niveau et formations', '');";
 $tab_req[] = "INSERT INTO droits VALUES ( '/mef/enregistrement_eleve_mef.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Mef : administration des niveau et formations', '');";
 
-$tab_req[] = "INSERT INTO droits SET id='/responsables/synchro_mail.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Synchronisation des mail responsables',statut='';";
-$tab_req[] = "INSERT INTO droits SET id='/eleves/synchro_mail.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Synchronisation des mail élèves',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/responsables/synchro_mail.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Synchronisation des mail responsables',statut='';";
+$tab_req[] = "INSERT INTO droits SET id='/eleves/synchro_mail.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Synchronisation des mail élèves',statut='';";
 
 $tab_req[] = "INSERT INTO droits VALUES ('/cahier_texte_2/archivage_cdt.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Archivage des CDT', '');";
 $tab_req[] = "INSERT INTO droits SET id='/documents/archives/index.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Archives des CDT',statut='';";
