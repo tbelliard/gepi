@@ -18,7 +18,8 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 
 	//$rech_nom=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕŠÛÜÙÚÝŸŽáàâäãåçéèêëîïìíñôöðòóõšûüùúýÿž]","",$rech_nom);
 
-	$page=$_POST['page'];
+	$page=isset($_POST['page']) ? $_POST['page'] : "";
+
 	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php.php")) {
 	//if(($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {
 	if(($page!="fiche_eleve.php")&&($page!="visu_eleve.php")&&($page!="export_bull_eleve.php")&&($page!="import_bull_eleve.php")) {

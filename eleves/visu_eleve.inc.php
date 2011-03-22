@@ -63,6 +63,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 
 	// Portion d'AJAX:
 	echo "<script type='text/javascript'>
+
 	function cherche_eleves(type) {
 		rech_nom_ou_prenom=document.getElementById('rech_'+type).value;
 
@@ -86,31 +87,54 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 			document.getElementById('liste_eleves').innerHTML = xhr.status;
 		}
 	}
+
+	function affichage_et_action(type) {
+		if(document.getElementById('rech_'+type).value=='') {
+			document.getElementById('Recherche_'+type).style.display='none';
+		}
+		else {
+			document.getElementById('Recherche_'+type).style.display='';
+			cherche_eleves(type);
+		}
+	}
+
+	/*
+	function cherche_eleves(type) {
+		rech_nom_ou_prenom=document.getElementById('rech_'+type).value;
+
+		new Ajax.Updater($('liste_eleves'),'../eleves/liste_eleves.php?rech_'+type+'='+rech_nom_ou_prenom+'&page=$page',{method: 'get'});
+	}
+	*/
 </script>\n";
+
 
 	// DIV avec formulaire pour navigateur AVEC Javascript:
 	echo "<div id='recherche_avec_js' style='display:none;'>\n";
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit='cherche_eleves();return false;' method='post' name='formulaire'>";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('nom');return false;\" method='post' name='formulaire'>";
 	echo "<p>\n";
-	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>nom</b> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' />\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>nom</b> contient&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type='text' name='rech_nom' id='rech_nom' value='' onchange=\"affichage_et_action('nom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
-	echo "<input type='button' name='Recherche' value='Rechercher' onclick=\"cherche_eleves('nom')\" />\n";
+	echo "<input type='button' name='Recherche' id='Recherche_nom' value='Rechercher' onclick=\"cherche_eleves('nom')\" />\n";
 	echo "</p>\n";
 	echo "</form>\n";
 
-	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit='cherche_eleves();return false;' method='post' name='formulaire'>";
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('prenom');return false;\" method='post' name='formulaire'>";
 	echo "<p>\n";
 	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prénom</b> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
-	echo "<input type='button' name='Recherche' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
+	echo "<input type='button' name='Recherche' id='Recherche_prenom' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
 	echo "</p>\n";
 	echo "</form>\n";
 
 	echo "<div id='liste_eleves'></div>\n";
 
 	echo "</div>\n";
-	echo "<script type='text/javascript'>document.getElementById('recherche_avec_js').style.display='';</script>\n";
+	echo "<script type='text/javascript'>
+document.getElementById('recherche_avec_js').style.display='';
+affichage_et_action('nom');
+affichage_et_action('prenom');
+</script>\n";
 
 
 	if(isset($id_classe)) {
