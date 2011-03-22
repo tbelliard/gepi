@@ -122,7 +122,8 @@ if($envoi_mail_actif!='n') {
 
 	$tab_champs=array('periodes');
 	$current_group=get_group($signalement_id_groupe,$tab_champs);
-	if($current_group["classe"]["ver_periode"][$signalement_id_classe][$signalement_num_periode]=='P') {
+	if(($current_group["classe"]["ver_periode"][$signalement_id_classe][$signalement_num_periode]=='P')&&
+	(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite'))) {
 		echo " <a href='../bulletin/autorisation_exceptionnelle_saisie_app.php?id_classe=$signalement_id_classe&periode=$signalement_num_periode&id_groupe=$signalement_id_groupe&refermer_page=y' target='_blank' alt='Autorisation exceptionnelle de correction' title='Autorisation exceptionnelle de correction'><img src='../images/icons/wizard.png' width='16' height='16' alt='Autorisation exceptionnelle de correction' title='Autorisation exceptionnelle de correction' /></a>";
 	}
 
