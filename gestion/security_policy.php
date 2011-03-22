@@ -229,6 +229,20 @@ if (isset($_POST['filtrage_html'])) {
 		if (!saveSetting(("csrf_mode"), $_POST['csrf_mode'])) {
 			$msg = "Erreur lors de l'enregistrement de csrf_mode !";
 		}
+		else {
+			$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage csrf_mode requis';";
+			$res_test=mysql_query($sql);
+			if(mysql_num_rows($res_test)>0) {
+				while($lig_ia=mysql_fetch_object($res_test)) {
+					$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$lig_ia->id';";
+					$del=mysql_query($sql);
+					if($del) {
+						$sql="DELETE FROM infos_actions WHERE id='$lig_ia->id';";
+						$del=mysql_query($sql);
+					}
+				}
+			}
+		}
 	}
 
 }

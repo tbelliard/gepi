@@ -287,11 +287,40 @@ if (isset($_POST['is_posted'])) {
 			if (!saveSetting("mode_email_resp", $_POST['mode_email_resp'])) {
 				$msg .= "Erreur lors de l'enregistrement du mode de mise à jour des email responsables !";
 			}
+			else {
+				$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage mode_email_resp requis';";
+				$res_test=mysql_query($sql);
+				if(mysql_num_rows($res_test)>0) {
+					while($lig_ia=mysql_fetch_object($res_test)) {
+						$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$lig_ia->id';";
+						$del=mysql_query($sql);
+						if($del) {
+							$sql="DELETE FROM infos_actions WHERE id='$lig_ia->id';";
+							$del=mysql_query($sql);
+						}
+					}
+				}
+
+			}
 		}
 
 		if (isset($_POST['mode_email_ele'])) {
 			if (!saveSetting("mode_email_ele", $_POST['mode_email_ele'])) {
 				$msg .= "Erreur lors de l'enregistrement du mode de mise à jour des email élèves !";
+			}
+			else {
+				$sql="SELECT * FROM infos_actions WHERE titre='Paramétrage mode_email_ele requis';";
+				$res_test=mysql_query($sql);
+				if(mysql_num_rows($res_test)>0) {
+					while($lig_ia=mysql_fetch_object($res_test)) {
+						$sql="DELETE FROM infos_actions_destinataires WHERE id_info='$lig_ia->id';";
+						$del=mysql_query($sql);
+						if($del) {
+							$sql="DELETE FROM infos_actions WHERE id='$lig_ia->id';";
+							$del=mysql_query($sql);
+						}
+					}
+				}
 			}
 		}
 
