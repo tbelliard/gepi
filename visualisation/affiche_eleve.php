@@ -100,6 +100,29 @@ if(!isset($msg)) {
 	$msg="";
 }
 
+if(isset($_POST['valider_raz_param'])) {
+	$champ_aff=array('graphe_affiche_deroulant_appreciations',
+'graphe_affiche_mgen',
+'graphe_affiche_minmax',
+'graphe_affiche_moy_annuelle',
+'graphe_affiche_photo',
+'graphe_champ_saisie_avis_fixe',
+'graphe_click_plutot_que_survol_aff_app',
+'graphe_epaisseur_traits',
+'graphe_hauteur_affichage_deroulant',
+'graphe_hauteur_graphe',
+'graphe_largeur_graphe',
+'graphe_largeur_imposee_photo',
+'graphe_mode_graphe',
+'graphe_taille_police',
+'graphe_temoin_image_escalier',
+'graphe_tronquer_nom_court');
+	for($loop=0;$loop<count($champ_aff);$loop++) {
+		$sql="DELETE FROM preferences WHERE login='".$_SESSION['login']."' AND name='$champ_aff[$loop]';";
+		$del=mysql_query($sql);
+	}
+}
+
 // On permet au compte scolarité d'enregistrer les paramètres d'affichage du graphe
 if($_SESSION['statut']=='scolarite') {
 /*
@@ -809,7 +832,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	$eleve1=isset($_POST['eleve1']) ? $_POST['eleve1'] : NULL;
 	// Login d'un élève réclamé par Précédent/Suivant:
 	$eleve1b=isset($_POST['eleve1b']) ? $_POST['eleve1b'] : NULL;
-	if($eleve1b!='') {
+	if((isset($eleve1b))&&($eleve1b!='')) {
 		$eleve1=$eleve1b;
 	}
 	/*
@@ -1193,22 +1216,27 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	// AJOUT boireaus 20090115
 	if(isset($_POST['graphe_champ_saisie_avis_fixe'])) {
 		$graphe_champ_saisie_avis_fixe=$_POST['graphe_champ_saisie_avis_fixe'];
+		//echo "On prend la valeur POSTée: ";
 	}
 	else{
 		$pref_champ_saisie_avis_fixe=getPref($_SESSION['login'],'graphe_champ_saisie_avis_fixe','');
 		if(($pref_champ_saisie_avis_fixe=='y')||($pref_champ_saisie_avis_fixe=='n')) {
-			$champ_saisie_avis_fixe=$pref_champ_saisie_avis_fixe;
+			$graphe_champ_saisie_avis_fixe=$pref_champ_saisie_avis_fixe;
+			//echo "On prend la préférence de ".$_SESSION['login'].": ";
 		}
 		else {
 			if(getSettingValue('graphe_champ_saisie_avis_fixe')) {
 				//insert into setting set name='graphe_champ_saisie_avis_fixe',value='y';
 				$graphe_champ_saisie_avis_fixe=getSettingValue('graphe_champ_saisie_avis_fixe');
+				//echo "On prend la valeur définie globalement pour l'établissement: ";
 			}
 			else{
 				$graphe_champ_saisie_avis_fixe="n";
+				//echo "On prend la valeur par défaut: ";
 			}
 		}
 	}
+	//echo "\$graphe_champ_saisie_avis_fixe=$graphe_champ_saisie_avis_fixe<br />";
 	//========================
 
 	// AJOUT Eric 11/12/10
@@ -1218,11 +1246,10 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	else{
 		$pref_affiche_deroulant_appreciations=getPref($_SESSION['login'],'graphe_affiche_deroulant_appreciations','');
 		if(($pref_affiche_deroulant_appreciations=='oui')||($pref_affiche_deroulant_appreciations=='non')) {
-			$affiche_deroulant_appreciations=$pref_affiche_deroulant_appreciations;
+			$graphe_affiche_deroulant_appreciations=$pref_affiche_deroulant_appreciations;
 		}
 		else {
 			if(getSettingValue('graphe_affiche_deroulant_appreciations')){
-				//insert into setting set name='graphe_champ_saisie_avis_fixe',value='y';
 				$graphe_affiche_deroulant_appreciations=getSettingValue('graphe_affiche_deroulant_appreciations');
 			}
 			else{
@@ -1471,6 +1498,35 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 
 			echo "<input type='submit' name='Valider' value='Valider' /></p>\n";
+
+			echo "</form>\n";
+
+
+			echo "<hr />\n";
+
+			echo "<form action='".$_SERVER['PHP_SELF']."#graph' name='form_raz_parametrage_affichage' method='post'>\n";
+			echo add_token_field();
+
+			echo "<p align='center'>Si, après des essais, vous souhaitez abandonner vos paramètres personnels et revenir aux paramètres enregistrés dans la base, validez ci-dessous&nbsp;:<br />";
+			echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
+			echo "<input type='hidden' name='is_posted' value='y' />\n";
+
+			echo "<input type='hidden' name='parametrage_affichage' value='y' />\n";
+
+			if($_SESSION['statut'] == "eleve" OR $_SESSION['statut'] == "responsable") {
+				echo "<input type='hidden' name='eleve1' value='".$login_eleve."'/>\n";
+				echo "<input type='hidden' name='login_eleve' value='".$login_eleve."'/>\n";
+			}
+			else {
+				echo "<input type='hidden' name='eleve1' value='".$eleve1."'/>\n";
+				echo "<input type='hidden' name='numeleve1' value='".$_POST['numeleve1']."'/>\n";
+			}
+			echo "<input type='hidden' name='eleve2' value='".$eleve2."'/>\n";
+			echo "<input type='hidden' name='choix_periode' value='".$choix_periode."'/>\n";
+			//echo "<input type='hidden' name='periode' value='".$periode."'/>\n";
+			echo "<input type='hidden' name='periode' value=\"".$periode."\"/>\n";
+
+			echo "<input type='submit' name=\"valider_raz_param\" value=\"Prendre les paramètres par défaut de l'établissement\" /></p>\n";
 
 			echo "</form>\n";
 
