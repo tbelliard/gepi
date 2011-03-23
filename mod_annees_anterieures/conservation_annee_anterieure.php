@@ -659,32 +659,56 @@ else{
 														WHERE login='$login_eleve' AND
 																periode='$num_periode'";
 						*/
+						/*
 						$sql="SELECT mn.*,m.nom_complet FROM j_groupes_matieres jgm,matieres m,matieres_notes mn
 														WHERE mn.login='$login_eleve' AND
 																mn.periode='$num_periode' AND
 																jgm.id_groupe=mn.id_groupe AND
-																jgm.id_matiere=m.matiere";
+																jgm.id_matiere=m.matiere;";
+						*/
+						$sql="SELECT jeg.id_groupe, m.nom_complet FROM j_groupes_matieres jgm,matieres m,j_eleves_groupes jeg
+														WHERE jeg.login='$login_eleve' AND
+																jeg.periode='$num_periode' AND
+																jgm.id_groupe=jeg.id_groupe AND
+																jgm.id_matiere=m.matiere;";
+
 						echo "<!-- $sql -->\n";
 						$res_grp=mysql_query($sql);
 
 						if(mysql_num_rows($res_grp)==0){
 							// Que faire? Est-il possible qu'il y ait quelque chose dans matieres_appreciations dans ce cas?
 							// Ca ne devrait pas...
-							echo "<!-- Aucune note sur le bulletin de période $num_periode pour l'élève $login_eleve -->\n";
+							// Si... on peut avoir un professeur qui n'a pas saisi de note ni même un tiret (malheureusement), mais mis une appréciation
+							//echo "<!-- Aucune note sur le bulletin de période $num_periode pour l'élève $login_eleve -->\n";
+
+							echo "<!-- En période $num_periode, l'élève $login_eleve n'est associé à aucun enseignement -->\n";
 						}
 						else{
 							while($lig_grp=mysql_fetch_object($res_grp)){
 
 								$id_groupe=$lig_grp->id_groupe;
 								$matiere=$lig_grp->nom_complet;
-								if($lig_grp->statut!=''){
-									$note=$lig_grp->statut;
-								}
-								else{
-									$note=$lig_grp->note;
-								}
-								$rang=$lig_grp->rang;
 
+								$sql="SELECT mn.* FROM matieres_notes mn
+														WHERE mn.login='$login_eleve' AND
+																mn.periode='$num_periode' AND
+																mn.id_groupe='$id_groupe';";
+								$res_note=mysql_query($sql);
+								if(mysql_num_rows($res_note)==0) {
+									$note='';
+									$rang=-1;
+								}
+								else {
+									$lig_note=mysql_fetch_object($res_note);
+
+									if($lig_note->statut!=''){
+										$note=$lig_note->statut;
+									}
+									else{
+										$note=$lig_note->note;
+									}
+									$rang=$lig_note->rang;
+								}
 
 								// Récupération de l'appréciation
 								$sql="SELECT appreciation FROM matieres_appreciations
@@ -702,57 +726,58 @@ else{
 									$appreciation=$lig_app->appreciation;
 								}
 
-								// Récupération des professeurs associés
-								$sql="SELECT login FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' ORDER BY login";
-								echo "<!-- $sql -->\n";
-								$res_prof=mysql_query($sql);
-
-								if(mysql_num_rows($res_prof)==0){
-									$prof="";
-								}
-								else{
-									$lig_prof=mysql_fetch_object($res_prof);
-									$prof=affiche_utilisateur($lig_prof->login,$id_classe[0]);
-									while($lig_prof=mysql_fetch_object($res_prof)){
-										$prof.=", ".affiche_utilisateur($lig_prof->login,$id_classe[0]);
+								if(($note!='')||($appreciation!='-')) {
+									// Récupération des professeurs associés
+									$sql="SELECT login FROM j_groupes_professeurs WHERE id_groupe='$id_groupe' ORDER BY login";
+									echo "<!-- $sql -->\n";
+									$res_prof=mysql_query($sql);
+	
+									if(mysql_num_rows($res_prof)==0){
+										$prof="";
 									}
-								}
-
-								// Insertion de la note, l'appréciation,... dans la matière,...
-								if (!isset($moymin[$id_groupe])) $moymin[$id_groupe]="-";
-								if (!isset($moymax[$id_groupe])) $moymax[$id_groupe]="-";
-								if (!isset($moyclasse[$id_groupe])) $moyclasse[$id_groupe]="-";
-
-								$sql="INSERT INTO archivage_disciplines SET
-													annee='$annee_scolaire',
-													ine='$ine',
-													classe='".addslashes($classe)."',
-													num_periode='$num_periode',
-													nom_periode='".addslashes($nom_periode)."',
-													matiere='".addslashes($matiere)."',
-													special='',
-													prof='".addslashes($prof)."',
-													note='$note',
-													moymin='".$moymin[$id_groupe]."',
-													moymax='".$moymax[$id_groupe]."',
-													moyclasse='".$moyclasse[$id_groupe]."',
-													rang='".$rang."',
-													appreciation='".addslashes($appreciation)."',
-													nb_absences='',
-													non_justifie='',
-													nb_retards=''
-													";
-								echo "<!-- $sql -->\n";
-								$res_insert=mysql_query($sql);
-
-								if(!$res_insert){
-									$erreur++;
-
-									echo "<script type='text/javascript'>
+									else{
+										$lig_prof=mysql_fetch_object($res_prof);
+										$prof=affiche_utilisateur($lig_prof->login,$id_classe[0]);
+										while($lig_prof=mysql_fetch_object($res_prof)){
+											$prof.=", ".affiche_utilisateur($lig_prof->login,$id_classe[0]);
+										}
+									}
+	
+									// Insertion de la note, l'appréciation,... dans la matière,...
+									if (!isset($moymin[$id_groupe])) $moymin[$id_groupe]="-";
+									if (!isset($moymax[$id_groupe])) $moymax[$id_groupe]="-";
+									if (!isset($moyclasse[$id_groupe])) $moyclasse[$id_groupe]="-";
+	
+									$sql="INSERT INTO archivage_disciplines SET
+														annee='$annee_scolaire',
+														ine='$ine',
+														classe='".addslashes($classe)."',
+														num_periode='$num_periode',
+														nom_periode='".addslashes($nom_periode)."',
+														matiere='".addslashes($matiere)."',
+														special='',
+														prof='".addslashes($prof)."',
+														note='$note',
+														moymin='".$moymin[$id_groupe]."',
+														moymax='".$moymax[$id_groupe]."',
+														moyclasse='".$moyclasse[$id_groupe]."',
+														rang='".$rang."',
+														appreciation='".addslashes($appreciation)."',
+														nb_absences='',
+														non_justifie='',
+														nb_retards=''
+														";
+									echo "<!-- $sql -->\n";
+									$res_insert=mysql_query($sql);
+	
+									if(!$res_insert){
+										$erreur++;
+	
+										echo "<script type='text/javascript'>
 	document.getElementById('td_".$i."_".$j."').style.backgroundColor='red';
 </script>\n";
+									}
 								}
-
 
 							} // Fin de la boucle matières
 
