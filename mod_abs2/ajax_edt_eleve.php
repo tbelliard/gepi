@@ -51,24 +51,19 @@ if (getSettingValue("active_module_absence")!='2') {
 }
 
 $eleve_login = isset($_POST["eleve_login"]) ? $_POST["eleve_login"] :(isset($_GET["eleve_login"]) ? $_GET["eleve_login"] : NULL);
-$periode_note = isset($_POST["periode_note"]) ? $_POST["periode_note"] :(isset($_GET["periode_note"]) ? $_GET["periode_note"] :NULL);
 
 if ($eleve_login == null) {
     echo 'Erreur : eleve_login est null';
     die;
 }
-if ($periode_note == null) {
-    $periode_note = 0;
-}
-
 
 require_once("../edt_organisation/fonctions_edt.php");            // --- fonctions de base communes à tous les emplois du temps
 require_once("../edt_organisation/fonctions_edt_eleve.php");      // --- edt eleve
 require_once("../edt_organisation/fonctions_affichage.php");
 require_once("../edt_organisation/req_database.php");
-$tab_data = ConstruireEDTEleve($eleve_login , $periode_note);
+$tab_data = ConstruireEDTEleve($eleve_login , 0);
 $entetes = ConstruireEnteteEDT();
 $creneaux = ConstruireCreneauxEDT();
-AfficherEDT($tab_data, $entetes, $creneaux, "eleve", $eleve_login , $periode_note);
+AfficherEDT($tab_data, $entetes, $creneaux, "eleve", $eleve_login , 0);
 
 ?>
