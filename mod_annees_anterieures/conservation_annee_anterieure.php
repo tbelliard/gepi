@@ -392,6 +392,7 @@ else{
 					// On vérifie que l'élève est enregistré dans archive_eleves. Sinon, on l'enregistre
 			
 					$error_enregistre_eleve[$tab_eleve[$cpt]['login_eleve']] = insert_eleve($tab_eleve[$cpt]['login_eleve'],$tab_eleve[$cpt]['ine'],$annee_scolaire,'y');
+					//echo "insert_eleve(\$tab_eleve[$cpt]['login_eleve'],\$tab_eleve[$cpt]['ine'],$annee_scolaire,'y') soit insert_eleve(".$tab_eleve[$cpt]['login_eleve'].",".$tab_eleve[$cpt]['ine'].",$annee_scolaire,'y')<br />";
 
 					// Statut de redoublant ou non:
 					$sql="SELECT * FROM j_eleves_regime WHERE login='".$tab_eleve[$cpt]['login_eleve']."'";
@@ -490,18 +491,23 @@ else{
 
 
 					// Calculer les moyennes de classe, rechercher min et max pour tous les groupes associés à la classe sur la période.
-					$sql="SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_classe='".$id_classe[0]."'";
+					//$sql="SELECT DISTINCT id_groupe FROM j_groupes_classes WHERE id_classe='".$id_classe[0]."'";
+					$sql="SELECT DISTINCT id_groupe, priorite FROM j_groupes_classes WHERE id_classe='".$id_classe[0]."'";
 					$res_groupes=mysql_query($sql);
 
 					$moymin=array();
 					$moymax=array();
 					$moyclasse=array();
+					$ordre_matiere=array();
+
 					if(mysql_num_rows($res_groupes)==0){
 						// Dans ce cas, il ne doit pas y avoir de note,... pour les élèves
 					}
 					else{
 						while($lig_groupes=mysql_fetch_object($res_groupes)){
 							$id_groupe=$lig_groupes->id_groupe;
+
+							$ordre_matiere[$id_groupe]=$lig_groupes->priorite;
 
 							$sql="SELECT AVG(note) moyenne FROM matieres_notes WHERE id_groupe='$id_groupe' AND statut='' AND periode='$i'";
 							//echo "$sql<br />\n";
@@ -592,12 +598,13 @@ else{
 											non_justifie='$non_justifie',
 											nb_retards='$nb_retards'
 											";
-						//echo "$sql<br />";
 						echo "<!-- $sql -->\n";
 						$res_insert=mysql_query($sql);
 
 						if(!$res_insert){
 							$erreur++;
+
+							//echo "<span style='color:red'>$sql</span><br />";
 
 							echo "<script type='text/javascript'>
 	document.getElementById('td_".$i."_".$j."').style.backgroundColor='red';
@@ -644,6 +651,8 @@ else{
 
 						if(!$res_insert){
 							$erreur++;
+
+							//echo "<span style='color:red'>$sql</span><br />";
 
 							echo "<script type='text/javascript'>
 	document.getElementById('td_".$i."_".$j."').style.backgroundColor='red';
@@ -765,14 +774,17 @@ else{
 														appreciation='".addslashes($appreciation)."',
 														nb_absences='',
 														non_justifie='',
-														nb_retards=''
+														nb_retards='',
+														ordre_matiere='".$ordre_matiere[$id_groupe]."'
 														";
 									echo "<!-- $sql -->\n";
 									$res_insert=mysql_query($sql);
 	
 									if(!$res_insert){
 										$erreur++;
-	
+
+										//echo "<span style='color:red'>$sql</span><br />";
+
 										echo "<script type='text/javascript'>
 	document.getElementById('td_".$i."_".$j."').style.backgroundColor='red';
 </script>\n";
