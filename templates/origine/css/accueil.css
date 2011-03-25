@@ -189,3 +189,10 @@ background-color: #F00;
 .small {
 	font-size:smaller;
 }
+
+.fixeMilieuDroit {
+	position: fixed;
+	top: 50%;
+	right: 2em;
+	text-align:center;
+}

@@ -94,10 +94,10 @@
   <h2>Configuration générale</h2>
   
   <form method="post" action="admin.php" id='form1'>
+	<fieldset class="no_bordure">
 <?php
 echo add_token_field();
 ?>
-	<fieldset class="no_bordure">
 	  <legend class="invisible">Activation</legend>
 	  <input type='radio' 
 			 name='activer' 

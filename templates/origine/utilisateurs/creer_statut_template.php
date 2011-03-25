@@ -100,10 +100,10 @@
 	</p>
 
 	<form id="auth_statuts_perso" action="creer_statut_admin.php" method="post">
+	  <p>
 <?php
 echo add_token_field();
 ?>
-	  <p>
 		<input type="hidden" name="action" value="valide" />
 		<input type="checkbox" 
 			   id="idAutorise" 

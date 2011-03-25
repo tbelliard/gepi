@@ -100,10 +100,10 @@
 	</em>
   </p>
   <form action="ooo_admin.php" id="form1" method="post">
+	<fieldset class="no_bordure">
 <?php
 echo add_token_field();
 ?>
-	<fieldset class="no_bordure">
 	  <legend class="invisible">Activation</legend>
 	  <input type="radio" 
 			 name="activer" 

@@ -101,10 +101,10 @@
 	<hr />
 	
 	<form action="edt.php" method="post" id="autorise_edt">
+		<fieldset class="no_bordure">
 <?php
 echo add_token_field();
 ?>
-		<fieldset class="no_bordure">
 		  <legend class="invisible">Activation de l'EDT</legend>
 		  <em>
 			La désactivation des emplois du temps n'entraîne aucune suppression des données. Lorsque le module
@@ -147,10 +147,10 @@ echo add_token_field();
 	</script>
 
 	<form action="edt.php" method="post" id="autorise_prof">
+		<fieldset class="no_bordure grandEspaceHaut">
 <?php
 echo add_token_field();
 ?>
-		<fieldset class="no_bordure grandEspaceHaut">
 		  <legend class="invisible">Activation pour les enseignants</legend>
 		  <input type="radio"
 				 name="autorise_saisir_prof"
@@ -186,10 +186,10 @@ echo add_token_field();
 	</script>
 	
 	<form action="edt.php" method="post" id="autorise_admin">
+		<fieldset class="no_bordure grandEspaceHaut">
 <?php
 echo add_token_field();
 ?>
-		<fieldset class="no_bordure grandEspaceHaut">
 		  <legend class="invisible">Activation pour les administrateurs</legend>
 		  <em>Les comptes </em>administrateur<em> ont accès aux emplois du temps si celui-ci est activé pour eux.
 		  Si vous avez désactivé; l'accès pour tous, vous pouvez quand même autoriser les comptes
@@ -234,14 +234,14 @@ echo add_token_field();
 	<h2>Gestion de l'accès pour les élèves et leurs responsables</h2>
 
 	<form action="edt.php" method="post" id="autorise_ele">
+	  <p>
 <?php
 echo add_token_field();
 ?>
-	  <p>
-		<em>
-		  Si vous souhaitez rendre accessible leur emploi du temps aux élèves et à leurs responsables,
-		  il faut impérativement l'autoriser ici.
-		</em>
+			<em>
+				Si vous souhaitez rendre accessible leur emploi du temps aux élèves et à leurs responsables,
+				il faut impérativement l'autoriser ici.
+			</em>
 	  </p>
 
 		<fieldset class="no_bordure grandEspaceHaut">

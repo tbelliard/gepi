@@ -63,8 +63,10 @@
 
 <a name='haut_de_page'></a>
 
-<div style='position: fixed; top: 220px; right: 2em; text-align:center;'>
-<a href='#haut_de_page' alt='Remonter en haut de la page'><img src='images/up.png' width='18' height='18' alt='Remonter en haut de la page' /></a><br /><a href='#bas_de_page' alt='Descendre en bas de la page'><img src='images/down.png' width='18' height='18' alt='Descendre en bas de la page' /></a>
+<div class='fixeMilieuDroit'>
+	<a href='#haut_de_page'><img src='images/up.png' width='18' height='18' alt="haut de la page" title="Remonter en haut de la page" /></a>
+	<br />
+	<a href='#bas_de_page'><img src='images/down.png' width='18' height='18' alt="bas de la page" title="Descendre en bas de la page" /></a>
 </div>
 
 <!-- droits dossiers -->
@@ -456,6 +458,7 @@
 	</script>
 
 
+<a name='bas_de_page'></a>
 </div>
 
 		<?php
@@ -482,7 +485,6 @@
 		}
 ?>
 
-<a name='bas_de_page'></a>
 
 </body>
 </html>

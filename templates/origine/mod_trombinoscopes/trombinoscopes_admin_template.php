@@ -99,10 +99,10 @@
 	  </em>
 	</p>
 	<form action="trombinoscopes_admin.php" id="form1" method="post" title="Configuration générale">
+	  <fieldset>
 <?php
 echo add_token_field();
 ?>
-	  <fieldset>
 		<legend class="bold">Élèves :</legend>
 		<input type="radio"
 			   name="activer"
@@ -470,10 +470,10 @@ if (!isset($aid_trouve)) {
 	<hr/>
 	
 	<form method="post" action="trombinoscopes_admin.php" id="formEnvoi" enctype="multipart/form-data">
+	  <fieldset>
 <?php
 echo add_token_field();
 ?>
-	  <fieldset>
 		<legend class="bold">
 		  Restaurer les photos à partir d'un fichier Zip
 		</legend>
