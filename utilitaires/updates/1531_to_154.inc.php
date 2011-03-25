@@ -654,4 +654,20 @@ if(mysql_num_rows($res_cdt)==0) {
 	}
 }
 
+$sql = "SELECT ordre_matiere FROM archivage_disciplines LIMIT 1";
+$req_rank = mysql_query($sql);
+if (!$req_rank){
+    $sql_request = "ALTER TABLE archivage_disciplines ADD ordre_matiere SMALLINT( 6 ) NOT NULL;";
+    $req_add_rank = traite_requete($sql_request);
+    if ($req_add_rank == '') {
+        $result .= "<p style=\"color:green;\">Ajout du champ ordre_matiere dans la table <strong>archivage_disciplines</strong> : ok.</p>";
+    }
+    else {
+        $result .= "<p style=\"color:red;\">Ajout du champ ordre_matiere dans la table <strong>archivage_disciplines</strong> : Erreur. $req_add_rank</p>";
+    }
+}
+else {
+    $result .= "<p style=\"color:blue;\">Ajout du champ ordre_matiere à la table <strong>archivage_disciplines</strong> : déjà réalisé.</p>";
+}
+
 ?>
