@@ -112,10 +112,10 @@
 ?>
 
 	<form action="index.php" id="form1" method="post">
+	  <p class="center">
 <?php
 echo add_token_field();
 ?>
-	  <p class="center">
 		<input type="submit" value="Enregistrer" />
 	  </p>
 	<h2>Activation des cahiers de textes</h2>
