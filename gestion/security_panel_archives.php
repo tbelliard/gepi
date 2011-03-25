@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001-2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001-2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -104,7 +104,8 @@ echo "</select>\n";
 echo " <input type=\"submit\" name=\"Valider\" value=\"Valider\" /><br /><br />\n";
 echo "</form>\n";
 
-echo "<table class='menu' style='width: 90%;'>\n";
+//echo "<table class='menu' style='width: 90%;'>\n";
+echo "<table class='boireaus' style='width: 90%;'>\n";
 echo "<tr>\n";
 echo "<th colspan='5'>Historique des alertes</th>\n";
 echo "</tr>\n";
@@ -119,7 +120,7 @@ echo "<td style='width: 20%;'>Actions</td>\n";
 echo "</tr>\n";
 */
 echo "<tr>\n";
-echo "<td style='width: 20%;'>\n";
+echo "<th style='width: 20%;'>\n";
 echo "<a href='".$_SERVER['PHP_SELF']."?order_by=login";
 if(isset($duree2)){echo "&amp;duree2=$duree2";}
 echo "' style='display:inline;'>Utilisateur</a>\n";
@@ -127,20 +128,20 @@ echo "/";
 echo "<a href='".$_SERVER['PHP_SELF']."?order_by=ip";
 if(isset($duree2)){echo "&amp;duree2=$duree2";}
 echo "' style='display:inline;'>IP</a>\n";
-echo "</td>\n";
-echo "<td>\n";
+echo "</th>\n";
+echo "<th>\n";
 // Le tri par date est le mode standard... pas besoin de paramètre
 echo "<a href='".$_SERVER['PHP_SELF'];
 if(isset($duree2)){echo "?duree2=$duree2";}
 echo "' style='display:inline;'>Date</a>\n";
-echo "</td>\n";
-echo "<td>\n";
+echo "</th>\n";
+echo "<th>\n";
 echo "<a href='".$_SERVER['PHP_SELF']."?order_by=niveau";
 if(isset($duree2)){echo "&amp;duree2=$duree2";}
 echo "' style='display:inline;'>Niv</a>\n";
-echo "</td>\n";
-echo "<td>Description</td>\n";
-echo "<td style='width: 20%;'>Actions</td>\n";
+echo "</th>\n";
+echo "<th>Description</th>\n";
+echo "<th style='width: 20%;'>Actions</th>\n";
 echo "</tr>\n";
 
 $requete = '';
@@ -174,9 +175,11 @@ $sql.="t.date DESC ".$requete1;
 
 $req = mysql_query($sql);
 if (!$req) echo mysql_error();
+$alt=1;
 while ($row = mysql_fetch_object($req)) {
+	$alt=$alt*(-1);
 	$user = null;
-	echo "<tr>\n";
+	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>\n";
 	if ($row->login != "-") {
 		// On récupère des informations sur l'utilisateur :
@@ -208,16 +211,28 @@ while ($row = mysql_fetch_object($req)) {
 	if (!empty($user)) {
 		echo "<p>\n";
 		if ($user->etat == "actif") {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$user->login."'>Désactiver le compte</a>\n";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$user->login;
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Désactiver le compte</a>\n";
 		} else {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$user->login."'>Réactiver le compte</a>\n";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$user->login;
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Réactiver le compte</a>\n";
 		}
+		echo "<br />\n";
 		if ($user->observation_securite == 0) {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=observer&amp;user_login=".$user->login."'>Placer en observation</a>\n";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=observer&amp;user_login=".$user->login;
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Placer en observation</a>\n";
 		} else {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$user->login."'>Retirer l'observation</a>\n";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$user->login;
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Retirer l'observation</a>\n";
 		}
-		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login."'>Réinitialiser cumul</a>\n";
+		echo "<br />\n";
+		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login;
+		if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+		echo add_token_in_url()."'>Réinitialiser cumul</a>\n";
 		echo "</p>\n";
 	} else {
 		echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liée à un utilisateur du système)</p>\n";
