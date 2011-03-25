@@ -77,10 +77,10 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 }
 
 if ($current_group) {
-	$nom_fic = $current_group["name"] . "-" . $current_group["classlist_string"] . ".csv";
+	$nom_fic = $current_group["name"] . "-" . remplace_accents($current_group["classlist_string"],'all') . ".csv";
 } else {
 	$classe = mysql_result(mysql_query("SELECT classe FROM classes WHERE id = '" . $id_classe . "'"), 0);
-	$nom_fic = $classe . ".csv";
+	$nom_fic = remplace_accents($classe,"all") . ".csv";
 }
 
 //debug_var();

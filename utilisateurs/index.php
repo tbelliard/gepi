@@ -584,7 +584,8 @@ while ($i < $nombreligne){
         //$col[$i][5] = $col[$i][5]."<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;retour=oui'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a><br />";
         $col[$i][5] .= "<a href='../groupes/edit_group.php?id_classe=".$user_classe["classe_id"] . "&amp;id_groupe=".$user_classe["group_id"] . "&amp;chemin_retour=$chemin_retour&amp;ancre=$user_login'>" . $user_classe['classe_nom_court']." (".$user_classe['matiere_nom_court'].")</a>\n";
 
-        $col[$i][5] .= "<a href='../groupes/mes_listes.php?id_groupe=".$user_classe["group_id"] . "' target='_blank'><img src='../images/icons/document.png' width='16' height='16' /></a>\n";
+		// Génération d'un CSV du groupe
+        //$col[$i][5] .= "<a href='../groupes/mes_listes.php?id_groupe=".$user_classe["group_id"] . "' target='_blank'><img src='../images/icons/document.png' width='16' height='16' /></a>\n";
 
         $col[$i][5] .= "<br />\n";
     //======================================
