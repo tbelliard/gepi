@@ -230,9 +230,13 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 	
 	echo "<tr>\n";
 	echo "<th style='width: 20%;'>\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."?$nom_champ_user_login=$user_login&amp;afficher_les_alertes_d_un_compte=y&amp;order_by=login' style='display:inline;'>Utilisateur</a>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?$nom_champ_user_login=$user_login&amp;afficher_les_alertes_d_un_compte=y&amp;order_by=login";
+	if(isset($tri)) {echo "&amp;tri=$tri";}
+	echo "' style='display:inline;'>Utilisateur</a>";
 	echo " / ";
-	echo "<a href='".$_SERVER['PHP_SELF']."?$nom_champ_user_login=$user_login&amp;afficher_les_alertes_d_un_compte=y&amp;order_by=ip' style='display:inline;'>IP</a>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?$nom_champ_user_login=$user_login&amp;afficher_les_alertes_d_un_compte=y&amp;order_by=ip";
+	if(isset($tri)) {echo "&amp;tri=$tri";}
+	echo "' style='display:inline;'>IP</a>";
 
 	echo "</th>\n";
 /*
@@ -241,10 +245,14 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 */
 	echo "<th>\n";
 	// Le tri par date est le mode standard... pas besoin de paramètre
-	echo "<a href='".$_SERVER['PHP_SELF']."?$nom_champ_user_login=$user_login&amp;afficher_les_alertes_d_un_compte=y' style='display:inline;'>Date</a>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?$nom_champ_user_login=$user_login&amp;afficher_les_alertes_d_un_compte=y";
+	if(isset($tri)) {echo "&amp;tri=$tri";}
+	echo "' style='display:inline;'>Date</a>";
 	echo "</th>\n";
 	echo "<th>\n";
-	echo "<a href='".$_SERVER['PHP_SELF']."?$nom_champ_user_login=$user_login&amp;afficher_les_alertes_d_un_compte=y&amp;order_by=niveau' style='display:inline;'>Niv</a>";
+	echo "<a href='".$_SERVER['PHP_SELF']."?$nom_champ_user_login=$user_login&amp;afficher_les_alertes_d_un_compte=y&amp;order_by=niveau";
+	if(isset($tri)) {echo "&amp;tri=$tri";}
+	echo "' style='display:inline;'>Niv</a>";
 	echo "</th>\n";
 	echo "<th>Description</th>\n";
 	echo "<th style='width: 20%;'>Actions</th>\n";
@@ -317,25 +325,35 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 			if ($user['etat'] == "actif") {
 				echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$user_login;
 				if($user_login2!='') {echo "&amp;user_login2=$user_login2";}
+				if(isset($tri)) {echo "&amp;tri=$tri";}
+				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
 				echo add_token_in_url()."'>Désactiver le compte</a>";
 			} else {
 				echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$user_login;
 				if($user_login2!='') {echo "&amp;user_login2=$user_login2";}
+				if(isset($tri)) {echo "&amp;tri=$tri";}
+				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
 				echo add_token_in_url()."'>Réactiver le compte</a>";
 			}
 			echo "<br />\n";
 			if ($user['observation_securite'] == 0) {
 				echo "<a style='padding: 2px;' href='security_panel.php?action=observer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$user_login;
 				if($user_login2!='') {echo "&amp;user_login2=$user_login2";}
+				if(isset($tri)) {echo "&amp;tri=$tri";}
+				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
 				echo add_token_in_url()."'>Placer en observation</a>";
 			} else {
 				echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$user_login;
 				if($user_login2!='') {echo "&amp;user_login2=$user_login2";}
+				if(isset($tri)) {echo "&amp;tri=$tri";}
+				if(isset($order_by)) {echo "&amp;order_by=$order_by";}
 				echo add_token_in_url()."'>Retirer l'observation</a>";
 			}
 			echo "<br />\n";
 			echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$user_login;
 			if($user_login2!='') {echo "&amp;user_login2=$user_login2";}
+			if(isset($tri)) {echo "&amp;tri=$tri";}
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
 			echo add_token_in_url()."'>Réinitialiser cumul</a>";
 			echo "</p>\n";
 		} else {
@@ -354,26 +372,27 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 // Toutes les alertes:
 echo "<p>Les alertes 'récentes' (non archivées) sont celles dont le niveau est pris en compte sur la page d'accueil (information 'Niveaux cumulés'). Pour remettre à zéro le compteur de la page d'accueil, il vous suffit de cliquer sur 'Archiver'.</p>\n";
 
-echo "<table class='menu' style='width: 90%;'>\n";
+//echo "<table class='menu' style='width: 90%;'>\n";
+echo "<table class='boireaus' style='width: 90%;'>\n";
 echo "<tr>\n";
 echo "<th colspan='5'>Alertes récentes (<a href='security_panel.php?action=archiver".add_token_in_url()."'>archiver</a>)</th>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
-echo "<td style='width: 20%;'>\n";
+echo "<th style='width: 20%;'>\n";
 echo "<a href='".$_SERVER['PHP_SELF']."?order_by=login' style='display:inline;'>Utilisateur</a>";
 echo "/";
 echo "<a href='".$_SERVER['PHP_SELF']."?order_by=ip' style='display:inline;'>IP</a>";
-echo "</td>\n";
-echo "<td>\n";
+echo "</th>\n";
+echo "<th>\n";
 // Le tri par date est le mode standard... pas besoin de paramètre
 echo "<a href='".$_SERVER['PHP_SELF']."' style='display:inline;'>Date</a>";
-echo "</td>\n";
-echo "<td>\n";
+echo "</th>\n";
+echo "<th>\n";
 echo "<a href='".$_SERVER['PHP_SELF']."?order_by=niveau' style='display:inline;'>Niv</a>";
-echo "</td>\n";
-echo "<td>Description</td>\n";
-echo "<td style='width: 20%;'>Actions</td>\n";
+echo "</th>\n";
+echo "<th>Description</th>\n";
+echo "<th style='width: 20%;'>Actions</th>\n";
 echo "</tr>\n";
 
 //$req = mysql_query("SELECT t.* FROM tentatives_intrusion t WHERE (t.statut = 'new') ORDER BY t.date DESC");
@@ -396,8 +415,10 @@ if(isset($_GET['order_by'])) {
 $sql.="t.date DESC";
 $req = mysql_query($sql);
 if (!$req) echo mysql_error();
+$alt=1;
 while ($row = mysql_fetch_object($req)) {
-	echo "<tr>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>\n";
 	$user = null;
 	if ($row->login != "-") {
@@ -430,16 +451,33 @@ while ($row = mysql_fetch_object($req)) {
 	if (!empty($user)) {
 		echo "<p>\n";
 		if ($user->etat == "actif") {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$user->login.add_token_in_url()."'>Désactiver le compte</a>";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$user->login;
+			if(isset($tri)) {echo "&amp;tri=$tri";}
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Désactiver le compte</a>";
 		} else {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$user->login.add_token_in_url()."'>Réactiver le compte</a>";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$user->login;
+			if(isset($tri)) {echo "&amp;tri=$tri";}
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Réactiver le compte</a>";
 		}
+		echo "<br />\n";
 		if ($user->observation_securite == 0) {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=observer&amp;user_login=".$user->login.add_token_in_url()."'>Placer en observation</a>";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=observer&amp;user_login=".$user->login;
+			if(isset($tri)) {echo "&amp;tri=$tri";}
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Placer en observation</a>";
 		} else {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$user->login.add_token_in_url()."'>Retirer l'observation</a>";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$user->login;
+			if(isset($tri)) {echo "&amp;tri=$tri";}
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Retirer l'observation</a>";
 		}
-		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login.add_token_in_url()."'>Réinitialiser cumul</a>";
+		echo "<br />\n";
+		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$user->login;
+		if(isset($tri)) {echo "&amp;tri=$tri";}
+		if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+		echo add_token_in_url()."'>Réinitialiser cumul</a>";
 		echo "</p>\n";
 	} else {
 		echo "<p class='small'><i>Aucune action disponible</i><br />(l'alerte n'est pas liée à un utilisateur du système)</p>\n";
@@ -450,21 +488,24 @@ while ($row = mysql_fetch_object($req)) {
 echo "</table>\n";
 
 
-echo "<table class='menu'>\n";
+//echo "<table class='menu'>\n";
+echo "<table class='boireaus'>\n";
 echo "<tr>\n";
 echo "<th colspan='3'>Utilisateurs en observation</th>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
-echo "<td style='width: 200px;'>Utilisateur</td>\n";
-echo "<td style='width: 50px;'>Cumul actuel</td>\n";
-echo "<td style='width: auto;'>Actions</td>\n";
+echo "<th style='width: 200px;'>Utilisateur</th>\n";
+echo "<th style='width: 50px;'>Cumul actuel</th>\n";
+echo "<th style='width: auto;'>Actions</th>\n";
 echo "</tr>\n";
 
 $req = mysql_query("SELECT u.login, u.nom, u.prenom, u.statut, u.etat, u.niveau_alerte FROM utilisateurs u WHERE (u.observation_securite = '1') ORDER BY u.niveau_alerte DESC");
 if (!$req) echo mysql_error();
+$alt=1;
 while ($row = mysql_fetch_object($req)) {
-	echo "<tr>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt white_hover'>\n";
 	echo "<td>\n";
 	echo $row->login ." - ".$row->statut ."<br/>\n";
 	echo "<b>".$row->prenom . " " . $row->nom."</b>";
@@ -479,12 +520,25 @@ while ($row = mysql_fetch_object($req)) {
 	echo "<td>\n";
 		echo "<p>\n";
 		if ($row->etat == "actif") {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$row->login.add_token_in_url()."'>Désactiver le compte</a>";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=desactiver&amp;user_login=".$row->login;
+			if(isset($tri)) {echo "&amp;tri=$tri";}
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Désactiver le compte</a>";
 		} else {
-			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$row->login.add_token_in_url()."'>Réactiver le compte</a>";
+			echo "<a style='padding: 2px;' href='security_panel.php?action=activer&amp;user_login=".$row->login;
+			if(isset($tri)) {echo "&amp;tri=$tri";}
+			if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+			echo add_token_in_url()."'>Réactiver le compte</a>";
 		}
-		echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$row->login.add_token_in_url()."'>Retirer l'observation</a>";
-		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$row->login.add_token_in_url()."'>Réinitialiser cumul</a>";
+		echo "<a style='padding: 2px;' href='security_panel.php?action=stop_observation&amp;user_login=".$row->login;
+		if(isset($tri)) {echo "&amp;tri=$tri";}
+		if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+		echo add_token_in_url()."'>Retirer l'observation</a>";
+
+		echo "<a style='padding: 2px;' href='security_panel.php?action=reinit_cumul&amp;user_login=".$row->login;
+		if(isset($tri)) {echo "&amp;tri=$tri";}
+		if(isset($order_by)) {echo "&amp;order_by=$order_by";}
+		echo add_token_in_url()."'>Réinitialiser cumul</a>";
 		echo "</p>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
