@@ -950,6 +950,8 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			$res_groupes=mysql_query($sql);
 
 			$sql="SELECT u.* FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login ORDER BY u.nom,u.prenom;";
+			//$sql="SELECT u.* FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login AND u.etat='actif' ORDER BY u.nom,u.prenom;";
+			//echo "$sql<br />";
 			$res_profs=mysql_query($sql);
 
 			if(mysql_num_rows($res_groupes)>0) {
@@ -1626,6 +1628,7 @@ function checkbox_change(cpt) {
 
 			$tab_profs_deja_punis=array();
 			$sql="SELECT u.login FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login ORDER BY u.nom,u.prenom;";
+			//$sql="SELECT u.login FROM eb_profs ep, utilisateurs u WHERE ep.id_epreuve='$id_epreuve' AND ep.login_prof=u.login AND u.etat='actif' ORDER BY u.nom,u.prenom;";
 			$res_profs=mysql_query($sql);
 			if(mysql_num_rows($res_profs)>0) {
 				while($lig=mysql_fetch_object($res_profs)) {
@@ -1650,7 +1653,8 @@ function checkbox_change(cpt) {
 				}
 			}
 
-			$sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.civilite FROM utilisateurs u WHERE u.statut='professeur' ORDER BY u.nom,u.prenom;";
+			//$sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.civilite FROM utilisateurs u WHERE u.statut='professeur' ORDER BY u.nom,u.prenom;";
+			$sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.civilite FROM utilisateurs u WHERE u.statut='professeur' AND u.etat='actif' ORDER BY u.nom,u.prenom;";
 			$res_profs=mysql_query($sql);
 			if(mysql_num_rows($res_profs)>0) {
 				echo "<p>Sélectionner des professeurs sans préoccupation de groupes&nbsp;:</p>\n";
