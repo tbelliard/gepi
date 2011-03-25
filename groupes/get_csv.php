@@ -47,7 +47,8 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 
 $mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
-$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_email','avec_statut','avec_ine','avec_elenoet','avec_ele_id','avec_prof');
+//$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_email','avec_statut','avec_ine','avec_elenoet','avec_ele_id','avec_prof');
+$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_email','avec_statut','avec_elenoet','avec_ele_id','avec_no_gep','avec_prof');
 for($i=0;$i<count($tab);$i++) {
 	$champ=$tab[$i];
 	$$champ = isset($_POST[$champ]) ? $_POST[$champ] : (isset($_GET[$champ]) ? $_GET[$champ] : NULL);
@@ -123,9 +124,10 @@ else {
 	if((isset($avec_email))&&($avec_email=='y')) {$fd.="EMAIL;";}
 	if((isset($avec_statut))&&($avec_statut=='y')) {$fd.="STATUT;";}
 	if($_SESSION['statut']!='professeur') {
-		if((isset($avec_ine))&&($avec_ine=='y')) {$fd.="INE;";}
+		//if((isset($avec_ine))&&($avec_ine=='y')) {$fd.="INE;";}
 		if((isset($avec_elenoet))&&($avec_elenoet=='y')) {$fd.="ELENOET;";}
 		if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$fd.="ELE_ID;";}
+		if((isset($avec_no_gep))&&($avec_no_gep=='y')) {$fd.="INE;";}
 	}
 
 	// Suppression du ; en fin de ligne
@@ -154,9 +156,10 @@ if($current_group) {
 					if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$lig->email;";}
 					if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="professeur;";}
 					if($_SESSION['statut']!='professeur') {
-						if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.=";";}
+						//if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.=";";}
 						if((isset($avec_elenoet))&&($avec_elenoet=='y')) {$ligne.="$lig->numind;";}
 						if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$ligne.=";";}
+						if((isset($avec_no_gep))&&($avec_no_gep=='y')) {$ligne.=";";}
 					}
 				
 					// Suppression du ; en fin de ligne
@@ -225,9 +228,10 @@ if($current_group) {
 		if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
 		if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
 		if($_SESSION['statut']!='professeur') {
-			if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}
+			//if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}
 			if((isset($avec_elenoet))&&($avec_elenoet=='y')) {$ligne.="$eleve_elenoet;";}
 			if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$ligne.="$eleve_ele_id;";}
+			if((isset($avec_no_gep))&&($avec_no_gep=='y')) {$ligne.="$eleve_no_gep;";}
 		}
 	
 		// Suppression du ; en fin de ligne
@@ -271,9 +275,10 @@ if($current_group) {
 		if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
 		if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
 		if($_SESSION['statut']!='professeur') {
-			if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}
+			//if((isset($avec_ine))&&($avec_ine=='y')) {$ligne.="$eleve_no_gep;";}
 			if((isset($avec_elenoet))&&($avec_elenoet=='y')) {$ligne.="$eleve_elenoet;";}
 			if((isset($avec_ele_id))&&($avec_ele_id=='y')) {$ligne.="$eleve_ele_id;";}
+			if((isset($avec_no_gep))&&($avec_no_gep=='y')) {$ligne.="$eleve_no_gep;";}
 		}
 	
 		// Suppression du ; en fin de ligne
