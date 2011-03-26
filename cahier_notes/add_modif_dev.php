@@ -745,7 +745,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" />\n";
+		echo "<input type='text' name='display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 		echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"";
 		if($aff_date_ele_resp!='y'){
 			echo " onchange=\"document.getElementById('date_ele_resp').value=document.getElementById('display_date').value\"";
@@ -767,7 +767,7 @@ if($interface_simplifiee=="y"){
 		echo "<tr>\n";
 		echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date de visibilité<br />de la note pour les<br />élèves et responsables:</td>\n";
 		echo "<td>\n";
-		echo "<input type='text' name = 'date_ele_resp' size='10' value = \"".$date_ele_resp."\" />\n";
+		echo "<input type='text' name = 'date_ele_resp' id='date_ele_resp' size='10' value = \"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 		echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
@@ -923,13 +923,13 @@ else{
 
 	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de l'évaluation (format jj/mm/aaaa) : </h3>
 	<b>Remarque</b> : c'est cette date qui est prise en compte pour l'édition des relevés de notes à différentes périodes de l'année.
-	<input type='text' name = 'display_date' size='10' value = \"".$display_date."\" />";
+	<input type='text' name = 'display_date' id='display_date' size='10' value = \"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 	echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 
 
 	echo "<a name=\"calend\"></a><h3 class='gepi'>Date de visibilité de l'évaluation pour les élèves et responsables (format jj/mm/aaaa) : </h3>
 	<b>Remarque</b> : Cette date permet de ne rendre la note visible qu'une fois que le devoir est corrigé en classe.
-	<input type='text' name='date_ele_resp' size='10' value=\"".$date_ele_resp."\" />";
+	<input type='text' name='date_ele_resp' id='date_ele_resp' size='10' value=\"".$date_ele_resp."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 	echo "<a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 
 	//====================================
@@ -992,15 +992,19 @@ if ($new_devoir=='yes') {
 				echo "<td>\n";
 				if($tab_group[$i]["classe"]["ver_periode"]["all"][$periode_num]>=2) {
 					echo "<input type='checkbox' name='id_autre_groupe[]' id='case_$cpt' value='".$tab_group[$i]['id']."' />\n";
+					echo "</td>\n";
+					echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['name'])."</label></td>\n";
+					echo "<td><label for='case_$cpt'>".htmlentities($tab_group[$i]['description'])."</label></td>\n";
+					echo "<td><label for='case_$cpt'>".$tab_group[$i]['classlist_string']."</label></td>\n";
 					$cpt++;
 				}
 				else {
 					echo "<span style='color:red;'>Clos</span>";
+					echo "</td>\n";
+					echo "<td>".htmlentities($tab_group[$i]['name'])."</td>\n";
+					echo "<td>".htmlentities($tab_group[$i]['description'])."</td>\n";
+					echo "<td>".$tab_group[$i]['classlist_string']."</td>\n";
 				}
-				echo "</td>\n";
-				echo "<td>".htmlentities($tab_group[$i]['name'])."</td>\n";
-				echo "<td>".htmlentities($tab_group[$i]['description'])."</td>\n";
-				echo "<td>".$tab_group[$i]['classlist_string']."</td>\n";
 				//echo "<td>...</td>\n";
 				echo "</tr>\n";
 			}
