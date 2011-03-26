@@ -38,7 +38,7 @@
 <head>
 <!-- on inclut l'entête -->
 	<?php
-	  $tbs_bouton_taille = "..";
+		$tbs_bouton_taille=$gepiPath;
 	  include('../../templates/origine/header_template.php');
 	?>
 

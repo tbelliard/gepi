@@ -66,6 +66,8 @@ if (!checkAccess()) {
  ******************************************************************/
 $msg = "";
 if (isset($_POST['is_posted'])) {
+	check_token();
+	
 	if (isset($_POST['activer'])) {
 		if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 	}
