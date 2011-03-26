@@ -156,7 +156,7 @@ if ($type_selection == 'id_eleve') {
 if (!$eleve_col->isEmpty()) {
 ?>
     <div class="centre_tout_moyen" style="width : 940px;">
-		<form autocomplete = "off" method="post" action="enregistrement_eleve_mef.php" id="liste_mef_eleve">
+		<form method="post" action="enregistrement_eleve_mef.php" id="liste_mef_eleve">
 <p>
 		    <input type="hidden" name="total_eleves" value="<?php echo($eleve_col->count()); ?>"/>
 </p>
@@ -180,7 +180,7 @@ if (!$eleve_col->isEmpty()) {
 	    echo '</p> ';
 	?>
 <!-- Fin de la legende -->
-
+<p><input type="hidden" name="total_eleves" value="<?php echo $eleve_col->count()?>" /></p>
 <table><tr><td style="vertical-align : top;">
 	<table style="width:750px;" >
 		<tbody>
@@ -196,7 +196,7 @@ if (!$eleve_col->isEmpty()) {
 				<th></th-->
 			</tr>
 <?php
-echo '<input type="hidden" name="total_eleves" value="'.$eleve_col->count().'" />';
+//echo '<input type="hidden" name="total_eleves" value="'.$eleve_col->count().'" />';
 foreach($eleve_col as $eleve) {
 			if ($eleve_col->getPosition() %2 == '1') {
 				$background_couleur="#E8F1F4";
@@ -206,6 +206,7 @@ foreach($eleve_col as $eleve) {
 			echo "<tr style='background-color :$background_couleur'>\n";
 ?>
 			<td style="width:580px;" >
+			<p>
 				<input type="hidden" name="id_eleve_mef[<?php echo $eleve_col->getPosition(); ?>]" value="<?php echo $eleve->getIdEleve(); ?>" />
 <?php
 		  echo '<span>'.strtoupper($eleve->getNom()).' '.ucfirst($eleve->getPrenom()).' ('.$eleve->getCivilite().')';
@@ -213,22 +214,22 @@ foreach($eleve_col as $eleve) {
                             echo ' '.$eleve->getClasse()->getNom().'';
                         }
                         echo'</span>';
-                        echo '</a>';
+                        //echo '</a>';
 			if (isset($message_erreur_eleve[$eleve->getIdEleve()]) && $message_erreur_eleve[$eleve->getIdEleve()] != '') {
 			    echo "<br/>Erreur : ".$message_erreur_eleve[$eleve->getIdEleve()];
 			}
-			echo("</td>");
+			echo("</p></td>");
 
 
-			echo '<td style="vertical-align: top;">';
+			echo '<td style="vertical-align: top;"><p>';
 			if ($eleve->getMEF() != null) {
 			    echo $eleve->getMEF()->getLibelleEdition();
                         }
-			echo '</td> ';
+			echo '</p></td> ';
 
                         echo '<td style="vertical-align: top;"><input style="font-size:88%;" name="active_mef_eleve[]" value="'.$eleve->getPrimaryKey().'" type="checkbox"';
 			if ($eleve_col->count() == 1) {
-			    echo "checked=\"true\" ";
+			    echo "checked=\"checked\" ";
 			}
 			echo '/>';
 			echo '</td> ';
@@ -268,7 +269,7 @@ echo "</table>";
 echo "</form>";
 echo "</div>\n";
 }
-echo "</div>\n";
+//echo "</div>\n";
 
 require_once("../lib/footer.inc.php");
 

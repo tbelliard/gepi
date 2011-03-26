@@ -86,7 +86,7 @@ if ($action == 'supprimer') {
 $titre_page = "Gestion des mef (module élémentaire de formation)";
 require_once("../lib/header.inc");
 
-echo "<p class=bold>";
+echo "<p class='bold'>";
 echo "<a href=\"../accueil_admin.php\">";
 echo "<img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a> | ";
 echo "<a href=\"associer_eleve_mef.php\">associer les élèves au mef</a>";
@@ -105,10 +105,12 @@ echo "</p>";
 	}
 	?>
 
-    <form action="admin_mef.php" method="post" name="form2" id="form2">
+    <form action="admin_mef.php" method="post" id="form2">
+    	<p>
 <?php
 echo add_token_field();
 ?>
+    	</p>
       <table cellpadding="2" cellspacing="2" class="menu">
         <tr>
           <td>Id extérieur (nomenclature EN)</td>
@@ -117,17 +119,19 @@ echo add_token_field();
           <td>Libellé d'édition</td>
        </tr>
         <tr>
+              <td>
            <?php
 	   if ($mef != null) { ?>
 	      <input name="id" type="hidden" id="id" value="<?php echo $id ?>" />
 	   <?php } ?>
-              <td><input name="EXT_ID" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getExtId();} ?>" /></td>
+              	<input name="EXT_ID" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getExtId();} ?>" />
+              </td>
               <td><input name="LIBELLE_COURT" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getLibelleCourt();} ?>" /></td>
               <td><input name="LIBELLE_LONG" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getLibelleLong();} ?>" /></td>
               <td><input name="LIBELLE_EDITION" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getLibelleEdition();} ?>" /></td>
         </tr>
       </table>
-     <input type="submit" name="Submit" value="Enregistrer" />
+     <p><input type="submit" name="Submit" value="Enregistrer" /></p>
     </form>
 <br/><br/>
 <?php /* fin du div de centrage du tableau pour ie5 */ ?>
@@ -159,8 +163,8 @@ echo add_token_field();
           <td><?php echo $mef->getLibelleCourt(); ?></td>
           <td><?php echo $mef->getLibelleLong(); ?></td>
           <td><?php echo $mef->getLibelleEdition(); ?></td>
-          <td><a href="admin_mef.php?action=modifier&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>"><img src="../images/icons/configure.png" title="Modifier" border="0" alt="" /></a></td>
-          <td><a href="admin_mef.php?action=supprimer&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>" onClick="return confirm('Etes-vous sûr de vouloir supprimer ce mef ?')"><img src="../images/icons/delete.png" width="22" height="22" title="Supprimer" border="0" alt="" /></a></td>
+          <td><a href="admin_mef.php?action=modifier&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>"><img src="../images/icons/configure.png" title="Modifier" alt="" /></a></td>
+          <td><a href="admin_mef.php?action=supprimer&amp;id=<?php echo $mef->getId(); echo add_token_in_url();?>" onclick="return confirm('Etes-vous sûr de vouloir supprimer ce mef ?')"><img src="../images/icons/delete.png" width="22" height="22" title="Supprimer" alt="" /></a></td>
        </tr>
      <?php } ?>
     </table>
