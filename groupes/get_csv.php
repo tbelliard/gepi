@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -77,7 +77,7 @@ if (is_numeric($id_groupe) && $id_groupe > 0) {
 }
 
 if ($current_group) {
-	$nom_fic = $current_group["name"] . "-" . remplace_accents(preg_replace('/,/','~',$current_group["classlist_string"]),'all') . ".csv";
+	$nom_fic = $current_group["name"] . "-" . remplace_accents(preg_replace('/, /','~',$current_group["classlist_string"]),'all') . ".csv";
 } else {
 	$classe = mysql_result(mysql_query("SELECT classe FROM classes WHERE id = '" . $id_classe . "'"), 0);
 	$nom_fic = remplace_accents($classe,"all") . ".csv";
