@@ -200,7 +200,9 @@ if(!getSettingValue('conv_new_resp_table')){
 		echo "<p style='color:red'>Situation non encore gérée.</p>\n";
 	}
 
-	echo "<p>Ce paramétrage peut être modifié dans <a href='../gestion/param_gen.php#mode_email_resp'>Configuration générale</a></p>\n";
+	if($_SESSION['statut']=='administrateur') {
+		echo "<p>Ce paramétrage peut être modifié dans <a href='../gestion/param_gen.php#mode_email_resp'>Configuration générale</a></p>\n";
+	}
 
 	echo "<p><br /></p>\n";
 	require("../lib/footer.inc.php");
