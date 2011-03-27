@@ -134,6 +134,8 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 document.getElementById('recherche_avec_js').style.display='';
 affichage_et_action('nom');
 affichage_et_action('prenom');
+
+if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').focus();}
 </script>\n";
 
 
