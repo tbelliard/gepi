@@ -54,13 +54,18 @@ $id_classe=isset($_GET['id_classe']) ? $_GET["id_classe"] : NULL;
 $id_groupe=isset($_GET['id_groupe']) ? $_GET["id_groupe"] : NULL;
 $ok=isset($_GET['ok']) ? $_GET["ok"] : NULL;
 
+$refermer_onglet=isset($_POST['refermer_onglet']) ? $_POST['refermer_onglet'] : (isset($_GET['refermer_onglet']) ? $_GET['refermer_onglet'] : 'n');
+//$chemin_retour=isset($_POST['chemin_retour']) ? $_POST['chemin_retour'] : (isset($_GET['chemin_retour']) ? $_GET['chemin_retour'] : '../accueil.php');
+$chemin_retour=isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : "../accueil.php";
+
 echo "<p class='bold'>";
 
-if((isset($id_groupe))||(isset($classe))) {
+//if((isset($id_groupe))||(isset($classe))) {
+if(((isset($id_groupe))||(isset($classe)))&&($refermer_onglet=='y')) {
 	echo "<a href='javascript:self.close();'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Refermer</a>";
 }
 else {
-	echo "<a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo "<a href='$chemin_retour'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 }
 if(check_droit_acces('/impression/impression_serie.php',$_SESSION['statut'])) {
 	echo " | <a href='../impression/impression_serie.php'>Listes PDF</a>";
