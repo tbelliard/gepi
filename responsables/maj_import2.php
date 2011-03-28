@@ -182,6 +182,11 @@ $liste_assoc=isset($_POST['liste_assoc']) ? $_POST['liste_assoc'] : NULL;
 
 $ne_pas_proposer_resp_sans_eleve=isset($_POST['ne_pas_proposer_resp_sans_eleve']) ? $_POST['ne_pas_proposer_resp_sans_eleve'] : (isset($_GET['ne_pas_proposer_resp_sans_eleve']) ? $_GET['ne_pas_proposer_resp_sans_eleve'] : (isset($_SESSION['ne_pas_proposer_resp_sans_eleve']) ? $_SESSION['ne_pas_proposer_resp_sans_eleve'] : "si"));
 
+$alert_diff_mail_resp=isset($_POST['alert_diff_mail_resp']) ? $_POST['alert_diff_mail_resp'] : (isset($_GET['alert_diff_mail_resp']) ? $_GET['alert_diff_mail_resp'] : (isset($_SESSION['alert_diff_mail_resp']) ? $_SESSION['alert_diff_mail_resp'] : "n"));
+
+$alert_diff_mail_ele=isset($_POST['alert_diff_mail_ele']) ? $_POST['alert_diff_mail_ele'] : (isset($_GET['alert_diff_mail_ele']) ? $_GET['alert_diff_mail_ele'] : (isset($_SESSION['alert_diff_mail_ele']) ? $_SESSION['alert_diff_mail_ele'] : "n"));
+
+
 $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
 
 //$style_specifique="responsables/maj_import2";
@@ -370,6 +375,15 @@ if(!isset($step)) {
 	if ($gepiSettings['unzipped_max_filesize']>=0) {
 		echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesAvecAdresses.zip)</p>";
 	}
+
+	echo "Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
+	echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' checked />\n";
+	echo "<label for='alert_diff_mail_ele_y' style='cursor: pointer;'> signaler";
+	echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
+	echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_n' value='n' />\n";
+	echo "<label for='alert_diff_mail_ele_n' style='cursor: pointer;'> ne pas signaler";
+	echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
+
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:
 	//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
@@ -443,6 +457,8 @@ else{
 			echo "<h2>Import/mise à jour des élèves</h2>\n";
 
 			check_token(false);
+
+			$_SESSION['alert_diff_mail_ele']=$alert_diff_mail_ele;
 
 			$xml_file = isset($_FILES["eleves_xml_file"]) ? $_FILES["eleves_xml_file"] : NULL;
 
@@ -2979,7 +2995,8 @@ else{
 								echo $affiche[12];
 								echo "<input type='hidden' name='modif_".$cpt."_email' value=\"$affiche[12]\" />\n";
 								if(isset($tmp_email_utilisateur_eleve)) {
-									if($tmp_email_utilisateur_eleve!=$affiche[12]) {
+									//if($tmp_email_utilisateur_eleve!=$affiche[12]) {
+									if(($tmp_email_utilisateur_eleve!=$affiche[12])&&($alert_diff_mail_ele=='y')) {
 										echo "<a href='#' onmouseover=\"afficher_div('chgt_email_non_pris_en_compte','y',-20,20);\"><img src=\"../images/info.png\" alt=\"Information\" title=\"Information\" height=\"29\" width=\"29\" align=\"middle\" border=\"0\" /></a>";
 
 										$info_action_titre="Adresse mail non synchro pour ".remplace_accents(stripslashes($lig_ele->nom)."_".stripslashes($lig_ele->prenom));
@@ -4638,6 +4655,14 @@ else{
 			//$ne_pas_proposer_resp_sans_eleve
 			echo "<label for='ne_pas_proposer_resp_sans_eleve' style='cursor: pointer;'> Ne pas proposer d'ajouter les responsables non associés à des élèves.</label><br />(<i>de telles entrées peuvent subsister en très grand nombre dans Sconet</i>)<br />\n";
 
+			echo "Pour les responsables qui disposent d'un compte d'utilisateur, <br />\n";
+			echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_y' value='y' checked />\n";
+			echo "<label for='alert_diff_mail_resp_y' style='cursor: pointer;'> signaler";
+			echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
+			echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_n' value='n' />\n";
+			echo "<label for='alert_diff_mail_resp_n' style='cursor: pointer;'> ne pas signaler";
+			echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
+
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
 			//echo "<input type='hidden' name='stop' id='id_form_stop' value='$stop' />\n";
@@ -4672,6 +4697,7 @@ else{
 			check_token(false);
 
 			$_SESSION['ne_pas_proposer_resp_sans_eleve']=$ne_pas_proposer_resp_sans_eleve;
+			$_SESSION['alert_diff_mail_resp']=$alert_diff_mail_resp;
 
 			$post_max_size=ini_get('post_max_size');
 			$upload_max_filesize=ini_get('upload_max_filesize');
@@ -5562,6 +5588,7 @@ else{
 													rp.tel_pers!=t.tel_pers OR
 													rp.tel_port!=t.tel_port OR
 													rp.tel_prof!=t.tel_prof OR";
+						//if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
 						if((getSettingValue('mode_email_resp')=='')||(getSettingValue('mode_email_resp')=='sconet')) {
 							$sql.="						rp.mel!=t.mel OR";
 						}
@@ -6282,7 +6309,7 @@ else{
 			info_debug("=============== Phase step $step =================");
 
 			$eff_tranche=isset($_POST['eff_tranche']) ? $_POST['eff_tranche'] : 20;
-			if(my_ereg("[^0-9]",$eff_tranche)) {$eff_tranche=20;}
+			if(preg_match("/[^0-9]/",$eff_tranche)) {$eff_tranche=20;}
 
 			$ne_pas_proposer_redoublonnage_adresse=isset($_POST['ne_pas_proposer_redoublonnage_adresse']) ? $_POST['ne_pas_proposer_redoublonnage_adresse'] : "n";
 
@@ -6718,7 +6745,8 @@ else{
 							if($lig_pers2->mel!=$mel1) {
 								if(($lig_pers2->mel!='')||($mel1!='')){
 
-									if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')) {
+									//if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')) {
+									if((getSettingValue('mode_email_resp')!='')&&(getSettingValue('mode_email_resp')!='sconet')&&($alert_diff_mail_resp=='y')) {
 
 										if($login_resp1!='') {
 											$sql="SELECT email FROM utilisateurs WHERE login='$login_resp1';";
