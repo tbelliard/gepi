@@ -999,6 +999,17 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					$test_affect_salle=mysql_query($sql);
 					if(mysql_num_rows($test_affect_salle)>0) {echo "<span style='color:red'>".mysql_num_rows($test_affect_salle)." élève(s) non affecté(s) dans une salle.</span>";}
 					echo "</li>\n";
+
+					echo "<li>\n";
+					echo "<a href='genere_liste_affichage.php?id_epreuve=$id_epreuve'";
+					echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+					echo ">Générer les listes d'affichage</a><br />\n";
+					// Proposer d'enregistrer des paramètres
+					// Choisir les champs supplémentaires à afficher (date et lieu de naissance, INE, classe,...)
+					// Permettre d'organiser les élèves en salles
+					// Générer CSV, PDF
+					echo "</li>\n";
+
 				}
 
 				if($etat!='clos') {
