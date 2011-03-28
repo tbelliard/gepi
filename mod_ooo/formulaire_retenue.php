@@ -2,7 +2,7 @@
 /*
  * $Id: index.php 2554 2008-10-12 14:49:29Z crob $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -102,7 +102,7 @@ $alt=1;
 	include("../lib/calendrier/calendrier.class.php");
 	$cal = new Calendrier("formulaire", "date");
 
-	echo "<input type='text' name='date' size='10' value=\"".$display_date."\" />\n";
+	echo "<input type='text' name='date' id='date' size='10' value=\"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 	echo "</td>\n";
 	echo "<td width='1%' style='text-align:right;'>\n";

@@ -350,7 +350,7 @@ $texte.="<input type='hidden' name='id_div' id='choix_date_id_div' value='' />\n
 $texte.="<input type='hidden' name='statut' id='choix_date_statut' value='' />\n";
 $texte.="<input type='hidden' name='id_classe' id='choix_date_id_classe' value='' />\n";
 $texte.="<input type='hidden' name='periode' id='choix_date_periode' value='' />\n";
-$texte.="<input type='text' name='choix_date' id='choix_date' size='10' value='' />\n";
+$texte.="<input type='text' name='choix_date' id='choix_date' size='10' value='' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 $texte.="<a href='#calend' onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";document.getElementById('choix_date').checked='true';\"><img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' border='0' /></a>\n";
 $texte.="<br />\n";
 $texte.="<input type='button' name='choix_date_valider' value='Valider' onclick=\"g_date()\" />\n";
@@ -374,7 +374,7 @@ $texte.="<p align='center'>\n";
 //$texte.="<input type='hidden' id='csrf_alea' name='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
 $texte.=add_token_field(true);
 $texte.="<input type='hidden' name='periode2' id='choix_date_periode2' value='' />\n";
-$texte.="<input type='text' name='choix_date2' id='choix_date2' size='10' value='' />\n";
+$texte.="<input type='text' name='choix_date2' id='choix_date2' size='10' value='' onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 $texte.="<a href='#calend' onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170).";\"><img src='../lib/calendrier/petit_calendrier.gif' alt='Calendrier' border='0' /></a>\n";
 $texte.="<br />\n";
 //$texte.="<input type='button' name='choix_date_valider2' value='Valider' onclick=\"g_date()\" />\n";
