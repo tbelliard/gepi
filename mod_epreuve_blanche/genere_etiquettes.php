@@ -245,7 +245,7 @@ if((isset($mode))&&($mode=='imprime')) {
 		for($i=0;$i<count($id_salle);$i++) {
 			$decompte_page=$num_page;
 
-			$sql="SELECT e.nom, e.prenom, e.naissance, e.login, ec.n_anonymat FROM eb_copies ec, eleves e WHERE e.login=ec.login_ele AND ec.id_salle='$id_salle[$i]' AND ec.id_epreuve='$id_epreuve';";
+			$sql="SELECT e.nom, e.prenom, e.naissance, e.login, ec.n_anonymat FROM eb_copies ec, eleves e WHERE e.login=ec.login_ele AND ec.id_salle='$id_salle[$i]' AND ec.id_epreuve='$id_epreuve' ORDER BY e.nom, e.prenom;";
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
