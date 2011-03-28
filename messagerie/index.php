@@ -353,19 +353,19 @@ echo "</td></tr>\n";
 //Dates
 echo "<tr><td colspan=\"4\">\n";
 echo "<p><i>Le message sera affiché :</i><br />de la date : ";
-echo "<input type='text' name = 'display_date_debut' size='8' value = \"".$display_date_debut."\" />\n";
+echo "<input type='text' name = 'display_date_debut' id= 'display_date_debut' size='8' value = \"".$display_date_debut."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
 echo "&nbsp;à la date : ";
-echo "<input type='text' name = 'display_date_fin' size='8' value = \"".$display_date_fin."\" />\n";
+echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size='8' value = \"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
 echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)</p></td></tr>\n";
 
 //Date pour décompte
 echo "<tr><td colspan=\"4\">\n";
 echo "<p><i>Décompte des jours jusqu'au :</i> ";
-echo "<input type='text' name = 'display_date_decompte' size='8' value = \"".$display_date_decompte."\" />\n";
+echo "<input type='text' name = 'display_date_decompte' id= 'display_date_decompte' size='8' value = \"".$display_date_decompte."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 echo "<a href=\"#\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Calendrier\" /></a>\n";
-echo " à <input type='text' name = 'display_heure_decompte' size='8' value = \"".$display_heure_decompte."\" />\n";
+echo " à <input type='text' name = 'display_heure_decompte' id= 'display_heure_decompte' size='8' value = \"".$display_heure_decompte."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />\n";
 echo "<br />(<span style='font-size:small'>Respectez le format jj/mm/aaaa</span>)<br />Saisir une chaine <b>_DECOMPTE_</b> dans le corps du message pour que cette date soit prise en compte.\n";
 
 $titre_infobulle="DECOMPTE\n";
