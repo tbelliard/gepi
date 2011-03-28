@@ -296,7 +296,7 @@ if($aff_date=='y'){
 	echo "<tr>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
 	echo "<td>\n";
-	echo "<input type='text' name='display_date' id='display_date' size='10' value=\"".$display_date."\" />\n";
+	echo "<input type='text' name='display_date' id='display_date' size='10' value=\"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	echo "<a href=\"#calend\" onClick=\"".$cal->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"";
 	echo "><img src=\"../lib/calendrier/petit_calendrier.gif\" border=\"0\" alt=\"Petit calendrier\" /></a>\n";
 	echo "</td>\n";
@@ -306,7 +306,7 @@ else{
 	echo "<tr style='display:none;'>\n";
 	echo "<td style='background-color: #aae6aa; font-weight: bold;'>Date:</td>\n";
 	echo "<td>\n";
-	echo "<input type='hidden' name='display_date' size='10' autocomplete='off' onfocus=\"javascript:this.select()\" value=\"".$display_date."\" />\n";
+	echo "<input type='hidden' name='display_date' size='10' autocomplete='off' onfocus=\"javascript:this.select()\" value=\"".$display_date."\" onKeyDown=\"clavier_date(this.id,event);\" />\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 }

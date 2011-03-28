@@ -2227,12 +2227,12 @@ Patientez pendant l'extraction des données... merci.
 				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_date_disc' method='post' />\n";
 				echo "<p>Extraire les incidents entre le ";
 				//echo "<input type='text' name='date_debut_disc' value='' />\n";
-				echo "<input type='text' name = 'date_debut_disc' size='10' value = \"".$date_debut_disc."\" />\n";
+				echo "<input type='text' name = 'date_debut_disc' id= 'date_debut_disc' size='10' value = \"".$date_debut_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 				echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
 				echo "et le ";
 				//echo "<input type='text' name='date_fin_disc' value='' />\n";
-				echo "<input type='text' name = 'date_fin_disc' size='10' value = \"".$date_fin_disc."\" />\n";
+				echo "<input type='text' name = 'date_fin_disc' id= 'date_fin_disc' size='10' value = \"".$date_fin_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 				echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
 				echo "<input type='submit' name='restreindre_intervalle_dates' value='Valider' />\n";
