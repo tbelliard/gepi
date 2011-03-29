@@ -6,7 +6,7 @@
  * @version     $Id$
  * @package		GEPI
  * @subpackage	EmploisDuTemps
- * @copyright	Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
+ * @copyright	Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Pascal Fautrero
  * @license		GNU/GPL, see COPYING.txt
  * 
  * This file is part of GEPI.
@@ -76,8 +76,16 @@ function RetrieveColumnWeek($tab_data, $index_box, $jour, $week) {
 	$NotFound = TRUE;
 	$ReturnValue = "";
 	while (($tab_data[$jour]['type'][$index_box] != "fin_conteneur") AND ($NotFound)){
-		$pos1 = strpos($tab_data[$jour]['contenu'][$index_box], $week[0]);
-		$pos2 = strpos($tab_data[$jour]['contenu'][$index_box], $week[1]);
+		$pos1=FALSE;
+		$pos2=FALSE;
+		if($tab_data[$jour]['contenu'][$index_box]!='') {
+			if((isset($week[0]))&&($week[0]!='')) {
+				$pos1 = strpos($tab_data[$jour]['contenu'][$index_box], $week[0]);
+			}
+			if((isset($week[1]))&&($week[1]!='')) {
+				$pos2 = strpos($tab_data[$jour]['contenu'][$index_box], $week[1]);
+			}
+		}
 		if ($pos1 !== FALSE) {
 			$NotFound = FALSE;
 			$ReturnValue = $week[0];
