@@ -57,8 +57,11 @@ if (isset($_POST['is_posted'])) {
 				// On enregistre la synthese
 				$synthese=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["synthese_".$i]));
 		
-				$synthese=my_ereg_replace('(\\\r\\\n)+',"\r\n",$synthese);
-		
+				//$synthese=my_ereg_replace('(\\\r\\\n)+',"\r\n",$synthese);
+				$synthese=preg_replace('/(\\\r\\\n)+/',"\r\n",$synthese);
+				$synthese=preg_replace('/(\\\r)+/',"\r",$synthese);
+				$synthese=preg_replace('/(\\\n)+/',"\n",$synthese);
+
 				$sql="SELECT 1=1 FROM synthese_app_classe WHERE id_classe='$id_classe' AND periode='$i';";
 				$test=mysql_query($sql);
 				if(mysql_num_rows($test)==0) {

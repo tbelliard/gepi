@@ -416,7 +416,11 @@ if($etat_incident!='clos') {
 					$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
 	
 					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-					$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+					//$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+					$description=preg_replace('/(\\\r\\\n)+/',"\r\n",$description);
+					$description=preg_replace('/(\\\r)+/',"\r",$description);
+					$description=preg_replace('/(\\\n)+/',"\n",$description);
+
 				}
 				else {
 					$description="";
@@ -427,7 +431,10 @@ if($etat_incident!='clos') {
 					$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
 	
 					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-					$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
+					//$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
+					$commentaire=preg_replace('/(\\\r\\\n)+/',"\r\n",$commentaire);
+					$commentaire=preg_replace('/(\\\r)+/',"\r",$commentaire);
+					$commentaire=preg_replace('/(\\\n)+/',"\n",$commentaire);
 	
 				} else {
 				    $commentaire="";
@@ -532,8 +539,11 @@ if($etat_incident!='clos') {
 	
 					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 					//$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+					//$description=preg_replace('/(\\\r\\\n)+/',"\r\n",$description);
 					$description=preg_replace('/(\\\r\\\n)+/',"\r\n",$description);
-	
+					$description=preg_replace('/(\\\r)+/',"\r",$description);
+					$description=preg_replace('/(\\\n)+/',"\n",$description);
+
 					$sql.="description='".$description."' ,";
 					$temoin_modif="y";
 				}
@@ -545,10 +555,12 @@ if($etat_incident!='clos') {
 					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
 					//$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
 					$commentaire=preg_replace('/(\\\r\\\n)+/',"\r\n",$commentaire);
+					$commentaire=preg_replace('/(\\\r)+/',"\r",$commentaire);
+					$commentaire=preg_replace('/(\\\n)+/',"\n",$commentaire);
 
 					$sql.="commentaire='".$commentaire."' ,";
 					$temoin_modif="y";
-				};
+				}
 				// Fin ajout Eric
 				
 				if(isset($id_lieu)) {

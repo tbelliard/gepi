@@ -138,7 +138,10 @@ if((isset($_POST['is_posted']))&&
 			}
 			//echo "$k: $app<br />";
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+			//$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+			$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
+			$app=preg_replace('/(\\\r)+/',"\r",$app);
+			$app=preg_replace('/(\\\n)+/',"\n",$app);
 
 			$test_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (id_groupe='" . $id_groupe[$k]."' AND periode='$periode_num' AND login='$ele_login')");
 			$test = mysql_num_rows($test_app_query);

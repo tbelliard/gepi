@@ -72,9 +72,9 @@ else {
 	}
 	*/
 
-	if((!my_ereg("^[0-9]*$",$annee))||
-	(!my_ereg("^[0-9]*$",$mois))||
-	(!my_ereg("^[0-9]*$",$jour))) {
+	if((!preg_match("/^[0-9]*$/",$annee))||
+	(!preg_match("/^[0-9]*$/",$mois))||
+	(!preg_match("/^[0-9]*$/",$jour))) {
 		echo "<p style='color:red;'>La date '$date' est invalide.</p>\n";
 	}
 	else {
@@ -111,7 +111,7 @@ else {
 				echo " (<em>";
 				$tmp_tab=get_class_from_ele_login($current_eleve_login);
 				//if(isset($tmp_tab['liste_nbsp'])) {echo htmlentities($tmp_tab['liste_nbsp']);}
-				if(isset($tmp_tab['liste'])) {echo my_ereg_replace(" ","&nbsp;",htmlentities($tmp_tab['liste']));}
+				if(isset($tmp_tab['liste'])) {echo preg_replace("/ /","&nbsp;",htmlentities($tmp_tab['liste']));}
 				echo "</em>)";
 	
 				echo "</td>\n";

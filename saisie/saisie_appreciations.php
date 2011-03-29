@@ -107,9 +107,12 @@ if (isset($_POST['is_posted'])) {
 				else{
 					$app = "";
 				}
-				//echo "$k: $app<br />";
+				//echo "<pre>$k: $app</pre>";
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+				//$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+				$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
+				$app=preg_replace('/(\\\r)+/',"\r",$app);
+				$app=preg_replace('/(\\\n)+/',"\n",$app);
 
 				$test_grp_app_query = mysql_query("SELECT * FROM matieres_appreciations_grp WHERE (id_groupe='" . $current_group["id"]."' AND periode='$k')");
 				$test = mysql_num_rows($test_grp_app_query);
@@ -165,9 +168,18 @@ if (isset($_POST['is_posted'])) {
 							}
 
 							//echo "\$app=$app<br />";
+							//echo "<pre style='color: red'>$reg_eleve_login: $app</pre>\n";
 
 							// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+							/*
 							$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+							$app=my_ereg_replace('(\\\r)+',"\r",$app);
+							$app=my_ereg_replace('(\\\n)+',"\n",$app);
+							*/
+							$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
+							$app=preg_replace('/(\\\r)+/',"\r",$app);
+							$app=preg_replace('/(\\\n)+/',"\n",$app);
+							//echo "<pre style='color: green'>$reg_eleve_login: $app</pre>\n";
 
 
 							//=========================

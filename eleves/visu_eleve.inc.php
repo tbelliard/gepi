@@ -1502,7 +1502,7 @@ Patientez pendant l'extraction des données... merci.
 					//echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI&amp;body=";
 					echo "<p>Ecrire un email à <a href='mailto:".$tab_ele['equipe_liste_email']."?subject=GEPI - [".remplace_accents($tab_ele['nom'],'all')." ".remplace_accents($tab_ele['prenom'],'all')."]&amp;body=";
 					if($tmp_date['hours']>=18) {echo "Bonsoir";} else {echo "Bonjour";}
-					if(my_ereg(",",$tab_ele['equipe_liste_email'])) {echo " à tou(te)s";}
+					if(preg_match("/,/",$tab_ele['equipe_liste_email'])) {echo " à tou(te)s";}
 					echo ",%0d%0aCordialement.'>tous les enseignants et au CPE de l'élève</a>.</p>\n";
 				}
 			}
@@ -2268,7 +2268,7 @@ Patientez pendant l'extraction des données... merci.
 			require("../mod_annees_anterieures/fonctions_annees_anterieures.inc.php");
 
 			//echo $_SERVER['HTTP_USER_AGENT']."<br />\n";
-			if(my_eregi("gecko",$_SERVER['HTTP_USER_AGENT'])){
+			if(preg_match("/gecko/i",$_SERVER['HTTP_USER_AGENT'])){
 				//echo "gecko=true<br />";
 				$gecko=true;
 			}

@@ -79,7 +79,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 		
 
 		//$duree_retenue=my_ereg_replace(",",".",my_ereg_replace("[^0-9.]","",$duree_retenue));
-		$duree_retenue=my_ereg_replace("[^0-9.]","",my_ereg_replace(",",".",$duree_retenue));
+		$duree_retenue=preg_replace("/[^0-9.]/","",preg_replace("/,/",".",$duree_retenue));
 		if($duree_retenue=="") {
 			$duree_retenue=1;
 			$msg.="La durée de retenue saisie n'était pas correcte. Elle a été remplacée par '1'.<r />";
@@ -109,7 +109,10 @@ if(isset($_POST['enregistrer_sanction'])) {
 		if (isset($NON_PROTECT["travail"])){
 			$travail=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["travail"]));
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+			//$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+			$travail=preg_replace('/(\\\r\\\n)+/',"\r\n",$travail);
+			$travail=preg_replace('/(\\\r)+/',"\r",$travail);
+			$travail=preg_replace('/(\\\n)+/',"\n",$travail);
 		}
 		else {
 			$travail="";
@@ -282,7 +285,10 @@ if(isset($_POST['enregistrer_sanction'])) {
 		if (isset($NON_PROTECT["travail"])){
 			$travail=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["travail"]));
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+			//$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+			$travail=preg_replace('/(\\\r\\\n)+/',"\r\n",$travail);
+			$travail=preg_replace('/(\\\r)+/',"\r",$travail);
+			$travail=preg_replace('/(\\\n)+/',"\n",$travail);
 		}
 		else {
 			$travail="";
@@ -291,7 +297,10 @@ if(isset($_POST['enregistrer_sanction'])) {
 		if (isset($NON_PROTECT["qualification_faits"])){
 			$qualification_faits=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["qualification_faits"]));
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$qualification_faits=my_ereg_replace('(\\\r\\\n)+',"\r\n",$qualification_faits);
+			//$qualification_faits=my_ereg_replace('(\\\r\\\n)+',"\r\n",$qualification_faits);
+			$qualification_faits=preg_replace('/(\\\r\\\n)+/',"\r\n",$qualification_faits);
+			$qualification_faits=preg_replace('/(\\\r)+/',"\r",$qualification_faits);
+			$qualification_faits=preg_replace('/(\\\n)+/',"\n",$qualification_faits);
 		}
 		else {
 			$qualification_faits="";
@@ -368,7 +377,10 @@ if(isset($_POST['enregistrer_sanction'])) {
 		if (isset($NON_PROTECT["travail"])){
 			$travail=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["travail"]));
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+			//$travail=my_ereg_replace('(\\\r\\\n)+',"\r\n",$travail);
+			$travail=preg_replace('/(\\\r\\\n)+/',"\r\n",$travail);
+			$travail=preg_replace('/(\\\r)+/',"\r",$travail);
+			$travail=preg_replace('/(\\\n)+/',"\n",$travail);
 		}
 		else {
 			$travail="";
@@ -429,7 +441,10 @@ if(isset($_POST['enregistrer_sanction'])) {
 			if (isset($NON_PROTECT["description"])){
 				$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+				//$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+				$description=preg_replace('/(\\\r\\\n)+/',"\r\n",$description);
+				$description=preg_replace('/(\\\r)+/',"\r",$description);
+				$description=preg_replace('/(\\\n)+/',"\n",$description);
 			}
 			else {
 				$description="";

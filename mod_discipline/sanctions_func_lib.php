@@ -553,7 +553,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 	if($date_debut!="") {
 		// Tester la validité de la date
 		// Si elle n'est pas valide... la vider
-		if(my_ereg("/",$date_debut)) {
+		if(preg_match("#/#",$date_debut)) {
 			$tmp_tab_date=explode("/",$date_debut);
 
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
@@ -563,7 +563,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 				$date_debut=$tmp_tab_date[2]."-".$tmp_tab_date[1]."-".$tmp_tab_date[0];
 			}
 		}
-		elseif(my_ereg("-",$date_debut)) {
+		elseif(preg_match("/-/",$date_debut)) {
 			$tmp_tab_date=explode("-",$date_debut);
 	
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[2],$tmp_tab_date[0])) {
@@ -580,7 +580,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 		// Si elle n'est pas valide... la vider
 		// Tester la validité de la date
 		// Si elle n'est pas valide... la vider
-		if(my_ereg("/",$date_fin)) {
+		if(preg_match("#/#",$date_fin)) {
 			$tmp_tab_date=explode("/",$date_fin);
 
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
@@ -590,7 +590,7 @@ function tab_mod_discipline($ele_login,$mode,$date_debut,$date_fin) {
 				$date_fin=$tmp_tab_date[2]."-".$tmp_tab_date[1]."-".$tmp_tab_date[0];
 			}
 		}
-		elseif(my_ereg("-",$date_fin)) {
+		elseif(preg_match("/-/",$date_fin)) {
 			$tmp_tab_date=explode("-",$date_fin);
 	
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[2],$tmp_tab_date[0])) {

@@ -1136,7 +1136,7 @@ for($i=0;$i<count($id_groupe);$i++) {
 if(isset($_SERVER['HTTP_REFERER'])) {
 	$tmp=explode("?",$_SERVER['HTTP_REFERER']);
 	//$chemin_site=my_ereg_replace("/cahier_texte_2/export_cdt.php$","",$tmp[0]);
-	$chemin_site=my_ereg_replace("/cahier_texte_2","",dirname($tmp[0]));
+	$chemin_site=preg_replace("#/cahier_texte_2#","",dirname($tmp[0]));
 
 	$fichier_url_site=$dossier_export."/url_site.txt";
 	$f=fopen($fichier_url_site,"a+");

@@ -68,7 +68,10 @@ if((isset($is_posted))&&(isset($_POST['no_anti_inject_message_autorisation_excep
 	}
 
 	// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-	$message_autorisation_exceptionnelle=my_ereg_replace('(\\\r\\\n)+',"\r\n",$message_autorisation_exceptionnelle);
+	//$message_autorisation_exceptionnelle=my_ereg_replace('(\\\r\\\n)+',"\r\n",$message_autorisation_exceptionnelle);
+	$message_autorisation_exceptionnelle=preg_replace('/(\\\r\\\n)+/',"\r\n",$message_autorisation_exceptionnelle);
+	$message_autorisation_exceptionnelle=preg_replace('/(\\\r)+/',"\r",$message_autorisation_exceptionnelle);
+	$message_autorisation_exceptionnelle=preg_replace('/(\\\n)+/',"\n",$message_autorisation_exceptionnelle);
 
 	if(!saveSetting('message_autorisation_exceptionnelle',$message_autorisation_exceptionnelle)) {
 		$msg="Erreur lors de l'enregistrement du message personnalisé.<br />";
@@ -80,7 +83,7 @@ if((isset($is_posted))&&(isset($_POST['no_anti_inject_message_autorisation_excep
 
 if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($periode))&&(isset($display_date_limite))&&(isset($display_heure_limite))) {
 	check_token();
-	if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_limite'])) {
+	if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date_limite'])) {
 		$annee = substr($_POST['display_date_limite'],6,4);
 		$mois = substr($_POST['display_date_limite'],3,2);
 		$jour = substr($_POST['display_date_limite'],0,2);
@@ -90,7 +93,7 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 			$msg.="ERREUR : La date $jour/$mois/$annee n'est pas valide.<br />";
 		}
 		else {
-			if (my_ereg("([0-9]{1,2}):([0-9]{0,2})", str_ireplace('h',':',$display_heure_limite))) {
+			if (preg_match("/([0-9]{1,2}):([0-9]{0,2})/", str_ireplace('h',':',$display_heure_limite))) {
 				$heure = substr($_POST['display_heure_limite'],0,2);
 				$minute = substr($_POST['display_heure_limite'],3,2);
 

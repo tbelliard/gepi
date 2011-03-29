@@ -101,7 +101,10 @@ if(isset($mesure)) {
 			//echo "Id_mesure: $lig->id<br />";
 			if(isset($NON_PROTECT["commentaire_".$lig->id])) {
 				$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire_".$lig->id]));
-				$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
+				//$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
+				$commentaire=preg_replace('/(\\\r\\\n)+/',"\r\n",$commentaire);
+				$commentaire=preg_replace('/(\\\r)+/',"\r",$commentaire);
+				$commentaire=preg_replace('/(\\\n)+/',"\n",$commentaire);
 
 				$sql="UPDATE s_mesures SET commentaire='$commentaire' WHERE id='".$lig->id."';";
 				//echo "$sql<br />\n";
@@ -125,7 +128,10 @@ if(isset($mesure)) {
 
 		if($a_enregistrer=='y') {
 			//$mesure=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($mesure))));
-			$mesure=my_ereg_replace('(\\\r\\\n)+',"\r\n",$mesure);
+			//$mesure=my_ereg_replace('(\\\r\\\n)+',"\r\n",$mesure);
+			$mesure=preg_replace('/(\\\r\\\n)+/',"\r\n",$mesure);
+			$mesure=preg_replace('/(\\\r)+/',"\r",$mesure);
+			$mesure=preg_replace('/(\\\n)+/',"\n",$mesure);
 
 			if(isset($NON_PROTECT["commentaire"])) {
 				$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
@@ -133,7 +139,10 @@ if(isset($mesure)) {
 			else {
 				$commentaire="";
 			}
-			$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
+			//$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
+			$commentaire=preg_replace('/(\\\r\\\n)+/',"\r\n",$commentaire);
+			$commentaire=preg_replace('/(\\\r)+/',"\r",$commentaire);
+			$commentaire=preg_replace('/(\\\n)+/',"\n",$commentaire);
 
 			$sql="INSERT INTO s_mesures SET mesure='".$mesure."', commentaire='$commentaire', type='".$type."';";
 			//echo "$sql<br />\n";
@@ -204,7 +213,7 @@ else {
 		echo "</td>\n";
 
 		echo "<td>\n";
-		echo my_ereg_replace("demandee","demandée",$lig->type);
+		echo preg_replace("/demandee/","demandée",$lig->type);
 		echo "</td>\n";
 
 		//echo "<td><input type='checkbox' name='suppr_mesure[]' id='suppr_mesure_$cpt' value=\"$lig->mesure\" onchange='changement();' /></td>\n";

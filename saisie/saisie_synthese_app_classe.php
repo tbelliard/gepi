@@ -40,8 +40,8 @@ $periode2=isset($_POST['periode2']) ? $_POST['periode2'] : NULL;
 $num_periode=isset($_POST['num_periode']) ? $_POST['num_periode'] : (isset($_GET['num_periode']) ? $_GET['num_periode'] : NULL);
 
 $url_retour=isset($_POST['url_retour']) ? $_POST['url_retour'] : NULL;
-if(my_ereg("/saisie/saisie_avis1.php",$_SERVER['HTTP_REFERER'])) {$url_retour="../saisie/saisie_avis1.php?id_classe=$id_classe&amp;periode_num=$num_periode";}
-if(my_ereg("/saisie/saisie_avis2.php",$_SERVER['HTTP_REFERER'])) {$url_retour="../saisie/saisie_avis2.php?id_classe=$id_classe&amp;periode_num=$num_periode";}
+if(preg_match("#/saisie/saisie_avis1.php#",$_SERVER['HTTP_REFERER'])) {$url_retour="../saisie/saisie_avis1.php?id_classe=$id_classe&amp;periode_num=$num_periode";}
+if(preg_match("#/saisie/saisie_avis2.php#",$_SERVER['HTTP_REFERER'])) {$url_retour="../saisie/saisie_avis2.php?id_classe=$id_classe&amp;periode_num=$num_periode";}
 
 // Resume session
 $resultat_session = $session_gepi->security_check();
@@ -99,7 +99,10 @@ if((isset($id_classe))&&(isset($num_periode))) {
 		// On enregistre la synthese
 		$synthese=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["synthese"]));
 
-		$synthese=my_ereg_replace('(\\\r\\\n)+',"\r\n",$synthese);
+		//$synthese=my_ereg_replace('(\\\r\\\n)+',"\r\n",$synthese);
+		$synthese=preg_replace('/(\\\r\\\n)+/',"\r\n",$synthese);
+		$synthese=preg_replace('/(\\\r)+/',"\r",$synthese);
+		$synthese=preg_replace('/(\\\n)+/',"\n",$synthese);
 
 		$sql="SELECT 1=1 FROM synthese_app_classe WHERE id_classe='$id_classe' AND periode='$num_periode';";
 		$test=mysql_query($sql);

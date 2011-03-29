@@ -302,7 +302,7 @@ elseif($mode=='totaux') {
 
 		// Tester la validité de la date
 		// Si elle n'est pas valide... la vider
-		if(my_ereg("/",$date_debut_disc)) {
+		if(preg_match("#/#",$date_debut_disc)) {
 			$tmp_tab_date=explode("/",$date_debut_disc);
 
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
@@ -312,7 +312,7 @@ elseif($mode=='totaux') {
 				$date_debut_disc=$tmp_tab_date[2]."-".$tmp_tab_date[1]."-".$tmp_tab_date[0];
 			}
 		}
-		elseif(my_ereg("-",$date_debut_disc)) {
+		elseif(preg_match("/-/",$date_debut_disc)) {
 			$tmp_tab_date=explode("-",$date_debut_disc);
 	
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[2],$tmp_tab_date[0])) {
@@ -338,7 +338,7 @@ elseif($mode=='totaux') {
 		// Si elle n'est pas valide... la vider
 		// Tester la validité de la date
 		// Si elle n'est pas valide... la vider
-		if(my_ereg("/",$date_fin_disc)) {
+		if(preg_match("#/#",$date_fin_disc)) {
 			$tmp_tab_date=explode("/",$date_fin_disc);
 
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
@@ -348,7 +348,7 @@ elseif($mode=='totaux') {
 				$date_fin_disc=$tmp_tab_date[2]."-".$tmp_tab_date[1]."-".$tmp_tab_date[0];
 			}
 		}
-		elseif(my_ereg("-",$date_fin_disc)) {
+		elseif(preg_match("/-/",$date_fin_disc)) {
 			$tmp_tab_date=explode("-",$date_fin_disc);
 	
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[2],$tmp_tab_date[0])) {
@@ -588,7 +588,7 @@ elseif($mode=='topten') {
 
 		// Tester la validité de la date
 		// Si elle n'est pas valide... la vider
-		if(my_ereg("/",$date_debut_disc)) {
+		if(preg_match("#/#",$date_debut_disc)) {
 			$tmp_tab_date=explode("/",$date_debut_disc);
 
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
@@ -598,7 +598,7 @@ elseif($mode=='topten') {
 				$date_debut_disc=$tmp_tab_date[2]."-".$tmp_tab_date[1]."-".$tmp_tab_date[0];
 			}
 		}
-		elseif(my_ereg("-",$date_debut_disc)) {
+		elseif(preg_match("/-/",$date_debut_disc)) {
 			$tmp_tab_date=explode("-",$date_debut_disc);
 	
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[2],$tmp_tab_date[0])) {
@@ -624,7 +624,7 @@ elseif($mode=='topten') {
 		// Si elle n'est pas valide... la vider
 		// Tester la validité de la date
 		// Si elle n'est pas valide... la vider
-		if(my_ereg("/",$date_fin_disc)) {
+		if(preg_match("#/#",$date_fin_disc)) {
 			$tmp_tab_date=explode("/",$date_fin_disc);
 
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[0],$tmp_tab_date[2])) {
@@ -634,7 +634,7 @@ elseif($mode=='topten') {
 				$date_fin_disc=$tmp_tab_date[2]."-".$tmp_tab_date[1]."-".$tmp_tab_date[0];
 			}
 		}
-		elseif(my_ereg("-",$date_fin_disc)) {
+		elseif(preg_match("#-#",$date_fin_disc)) {
 			$tmp_tab_date=explode("-",$date_fin_disc);
 	
 			if(!checkdate($tmp_tab_date[1],$tmp_tab_date[2],$tmp_tab_date[0])) {

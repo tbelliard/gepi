@@ -98,21 +98,21 @@
 			while($ligne_commentaire=mysql_fetch_object($resultat_commentaire)) {
 				echo "<div style='border: 1px solid black; margin: 1px; padding: 1px;'";
 
-				if(my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+				if(preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])){
 					echo " onClick=\"textarea_courant=document.getElementById('textarea_courant').value;document.getElementById(textarea_courant).value=document.getElementById(textarea_courant).value+document.getElementById('commentaire_type_'+$cpt).value;changement();document.getElementById('commentaire_type').style.display='none'; document.getElementById(textarea_courant).focus();\"";
 				}
 				echo ">\n";
 
 				echo "<input type='hidden' name='commentaire_type_$cpt' id='commentaire_type_$cpt' value=\" ".htmlentities(stripslashes(trim($ligne_commentaire->commentaire)))."\" />\n";
 
-				if(!my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])){
 					// Avec konqueror, pour document.getElementById('textarea_courant').value, on obtient [Object INPUT]
 					// En sortant, la commande du onClick et en la mettant dans une fonction javascript externe, ca passe.
 					echo "<a href='#' onClick=\"complete_textarea_courant($cpt); return false;\" style='text-decoration:none; color:black;'>";
 				}
 
 				// Pour conserver le code HTML saisi dans les commentaires-type...
-				if((my_ereg("<",$ligne_commentaire->commentaire))&&(my_ereg(">",$ligne_commentaire->commentaire))){
+				if((preg_match("/</",$ligne_commentaire->commentaire))&&(preg_match("/>/",$ligne_commentaire->commentaire))){
 					/* Si le commentaire contient du code HTML, on ne remplace pas les retours à la ligne par des <br> pour éviter des doubles retours à la ligne pour un code comme celui-ci:
 						<p>Blabla<br>
 						Blibli</p>
@@ -124,7 +124,7 @@
 					echo htmlentities(stripslashes(nl2br(trim($ligne_commentaire->commentaire))));
 				}
 
-				if(!my_eregi("firefox",$_SERVER['HTTP_USER_AGENT'])){
+				if(!preg_match("/firefox/i",$_SERVER['HTTP_USER_AGENT'])){
 					echo "</a>";
 				}
 

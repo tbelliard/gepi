@@ -579,6 +579,14 @@ if (isset($fiche)) {
 		//alert('1')
 		setTimeout(\"document.getElementById('no_anti_inject_current_eleve_login_ap').focus()\",500);
 	}
+
+	// onclick='verif_termes()'
+
+	function verif_termes() {
+		alert('plop');
+		return false;
+	}
+
 </script>\n";
 
 }

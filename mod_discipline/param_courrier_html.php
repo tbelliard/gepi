@@ -64,7 +64,7 @@ $bgcolor = "#DEDEDE";
 //==================================
 if (isset($_POST['disc_textsize'])) {
 
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['disc_textsize'])) || $_POST['disc_textsize'] < 1) {
+    if (!(preg_match("/^[0-9]{1,}$/", $_POST['disc_textsize'])) || $_POST['disc_textsize'] < 1) {
         $_POST['disc_textsize'] = 10;
     }
     if (!saveSetting("disc_textsize", $_POST['disc_textsize'])) {
@@ -75,7 +75,7 @@ if (isset($_POST['disc_textsize'])) {
 
 if (isset($_POST['disc_p_html_margin'])) {
 
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['disc_p_html_margin'])) || $_POST['disc_p_html_margin'] < 1) {
+    if (!(preg_match("/^[0-9]{1,}$/", $_POST['disc_p_html_margin'])) || $_POST['disc_p_html_margin'] < 1) {
         $_POST['disc_p_html_margin'] = 5;
     }
     if (!saveSetting("disc_p_html_margin", $_POST['disc_p_html_margin'])) {
@@ -86,7 +86,7 @@ if (isset($_POST['disc_p_html_margin'])) {
 
 if (isset($_POST['disc_body_marginleft'])) {
 
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['disc_body_marginleft']))) {
+    if (!(preg_match("/^[0-9]{1,}$/", $_POST['disc_body_marginleft']))) {
         $_POST['disc_body_marginleft'] = 1;
     }
     if (!saveSetting("disc_body_marginleft", $_POST['disc_body_marginleft'])) {
@@ -118,7 +118,7 @@ if(isset($_POST['disc_affiche_fax'])) {
 
 if (isset($_POST['disc_addressblock_padding_right'])) {
 
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['disc_addressblock_padding_right']))) {
+    if (!(preg_match("/^[0-9]{1,}$/", $_POST['disc_addressblock_padding_right']))) {
         $_POST['disc_addressblock_padding_right'] = 0;
     }
     if (!saveSetting("disc_addressblock_padding_right", $_POST['disc_addressblock_padding_right'])) {
@@ -129,7 +129,7 @@ if (isset($_POST['disc_addressblock_padding_right'])) {
 
 if (isset($_POST['disc_addressblock_padding_top'])) {
 
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['disc_addressblock_padding_top']))) {
+    if (!(preg_match("/^[0-9]{1,}$/", $_POST['disc_addressblock_padding_top']))) {
         $_POST['disc_addressblock_padding_top'] = 0;
     }
     if (!saveSetting("disc_addressblock_padding_top", $_POST['disc_addressblock_padding_top'])) {
@@ -140,7 +140,7 @@ if (isset($_POST['disc_addressblock_padding_top'])) {
 
 if (isset($_POST['disc_addressblock_padding_text'])) {
 
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['disc_addressblock_padding_text']))) {
+    if (!(preg_match("/^[0-9]{1,}$/", $_POST['disc_addressblock_padding_text']))) {
         $_POST['disc_addressblock_padding_text'] = 0;
     }
     if (!saveSetting("disc_addressblock_padding_text", $_POST['disc_addressblock_padding_text'])) {
@@ -151,7 +151,7 @@ if (isset($_POST['disc_addressblock_padding_text'])) {
 
 if (isset($_POST['disc_addressblock_length'])) {
 
-    if (!(my_ereg ("^[0-9]{1,}$", $_POST['disc_addressblock_length']))) {
+    if (!(preg_match("/^[0-9]{1,}$/", $_POST['disc_addressblock_length']))) {
         $_POST['disc_addressblock_length'] = 0;
     }
     if (!saveSetting("disc_addressblock_length", $_POST['disc_addressblock_length'])) {

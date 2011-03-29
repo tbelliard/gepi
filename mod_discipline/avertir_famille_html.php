@@ -97,7 +97,11 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 		$courrier=$NON_PROTECT["courrier"];
 
 		// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-		$courrier=my_ereg_replace('(\\\r\\\n)+',"\r\n",$courrier);
+		//$courrier=my_ereg_replace('(\\\r\\\n)+',"\r\n",$courrier);
+		$courrier=preg_replace('/(\\\r\\\n)+/',"\r\n",$courrier);
+		$courrier=preg_replace('/(\\\r)+/',"\r",$courrier);
+		$courrier=preg_replace('/(\\\n)+/',"\n",$courrier);
+
 	}
 	else {
 		$courrier="";

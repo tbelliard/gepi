@@ -66,7 +66,10 @@ $nom_autorite=isset($_POST['nom_autorite']) ? $_POST['nom_autorite'] : NULL;
 if (isset($NON_PROTECT["fct_delegation"])){
 			$fct_delegation=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["fct_delegation"]));
 			// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-			$fct_delegation=my_ereg_replace('(\\\r\\\n)+',"\r\n",$fct_delegation);
+			//$fct_delegation=my_ereg_replace('(\\\r\\\n)+',"\r\n",$fct_delegation);
+			$fct_delegation=preg_replace('/(\\\r\\\n)+/',"\r\n",$fct_delegation);
+			$fct_delegation=preg_replace('/(\\\r)+/',"\r",$fct_delegation);
+			$fct_delegation=preg_replace('/(\\\n)+/',"\n",$fct_delegation);
 		}
 		else {
 			$fct_delegation="";
