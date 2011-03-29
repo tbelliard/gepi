@@ -89,7 +89,7 @@ function choix_heure($champ_heure,$div_choix_heure) {
 }
 
 function recherche_ele($rech_nom,$page) {
-	$rech_nom=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]","",$rech_nom);
+	$rech_nom=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]/","",$rech_nom);
 
 	$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%';";
 	$res_ele=mysql_query($sql);
@@ -154,7 +154,7 @@ function recherche_ele($rech_nom,$page) {
 }
 
 function recherche_utilisateur($rech_nom,$page) {
-	$rech_nom=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]","",$rech_nom);
+	$rech_nom=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸]/","",$rech_nom);
 
 	$sql="SELECT * FROM utilisateurs WHERE (nom LIKE '%$rech_nom%' AND statut!='responsable');";
 	$res_utilisateur=mysql_query($sql);
@@ -303,7 +303,7 @@ if($etat_incident!='clos') {
 					//echo "$sql<br />\n";
 					$res=mysql_query($sql);
 					if(mysql_num_rows($res)==0) {
-						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
+						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
@@ -312,7 +312,7 @@ if($etat_incident!='clos') {
 					}
 					else {
 						//$sql="UPDATE s_protagonistes SET qualite='$qualite[$i]' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
-						$sql="UPDATE s_protagonistes SET qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
+						$sql="UPDATE s_protagonistes SET qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
 						//$sql="UPDATE s_protagonistes SET qualite='".$qualite[$i]."' WHERE id_incident='$id_incident' AND login='".$ele_login[$i]."' AND statut='eleve';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
@@ -347,7 +347,7 @@ if($etat_incident!='clos') {
 							$tmp_statut=$lig_statut->statut;
 						}
 
-						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
+						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
@@ -356,7 +356,7 @@ if($etat_incident!='clos') {
 					}
 					else {
 						//$sql="UPDATE s_protagonistes SET qualite='$qualite[$i]' WHERE id_incident='$id_incident' AND login='".$u_login[$i]."' AND statut='uve';";
-						$sql="UPDATE s_protagonistes SET qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
+						$sql="UPDATE s_protagonistes SET qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."' WHERE id_incident='$id_incident' AND login='".$u_login[$i]."';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
 						if(!$res) {
@@ -531,7 +531,8 @@ if($etat_incident!='clos') {
 					$description=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["description"]));
 	
 					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-					$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+					//$description=my_ereg_replace('(\\\r\\\n)+',"\r\n",$description);
+					$description=preg_replace('/(\\\r\\\n)+/',"\r\n",$description);
 	
 					$sql.="description='".$description."' ,";
 					$temoin_modif="y";
@@ -542,8 +543,9 @@ if($etat_incident!='clos') {
 					$commentaire=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["commentaire"]));
 	
 					// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-					$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
-	
+					//$commentaire=my_ereg_replace('(\\\r\\\n)+',"\r\n",$commentaire);
+					$commentaire=preg_replace('/(\\\r\\\n)+/',"\r\n",$commentaire);
+
 					$sql.="commentaire='".$commentaire."' ,";
 					$temoin_modif="y";
 				};
@@ -617,7 +619,7 @@ if($etat_incident!='clos') {
 					if(mysql_num_rows($res)==0) {
 						check_token();
 						//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='$qualite[$i]';";
-						//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."', avertie='avertie='".$avertie[$i]."';";
+						//$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve', qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."', avertie='avertie='".$avertie[$i]."';";
 						$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$ele_login[$i]."', statut='eleve';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
@@ -652,7 +654,7 @@ if($etat_incident!='clos') {
 							$lig_statut=mysql_fetch_object($res_statut);
 							$tmp_statut=$lig_statut->statut;
 	
-							$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(my_ereg_replace("&#039;","'",html_entity_decode($qualite[$i])))."';";
+							$sql="INSERT INTO s_protagonistes SET id_incident='$id_incident', login='".$u_login[$i]."', statut='$tmp_statut', qualite='".addslashes(preg_replace("/&#039;/","'",html_entity_decode($qualite[$i])))."';";
 							//echo "$sql<br />\n";
 							$res=mysql_query($sql);
 							if(!$res) {
@@ -869,6 +871,13 @@ if($etat_incident!='clos') {
       
 								// On envoie le mail
 								$envoi = envoi_mail($subject, $texte_mail, $destinataires, $headers);
+
+echo "<pre>
+envoi_mail($subject, 
+$texte_mail, 
+$destinataires, 
+$headers);
+</pre>";
 
 							/*
 	$msg.="Envoi d'un mail:<br /><pre>mail($destinataires,
@@ -1345,11 +1354,11 @@ if(isset($id_incident)) {
 	}
 
 	function sauve_avertie(id_incident,login,avertie) {
-		csrf_alea=document.getElementById('csrf_alea').value;
+		//csrf_alea=document.getElementById('csrf_alea').value;
 
 		//avertie=document.getElementById('avertie_'+cpt).value;
 		//+'&csrf_alea='+csrf_alea // inutile... dans sauve_famille_avertie.php, on propose un formulaire avant de générer/enregistrer quoi que ce soit
-		new Ajax.Updater($('div_svg_avertie'),'sauve_famille_avertie.php?id_incident='+id_incident+'&login='+login+'&avertie='+avertie,{method: 'get'});
+		new Ajax.Updater($('div_svg_avertie'),'sauve_famille_avertie.php?id_incident='+id_incident+'&login='+login+'&avertie='+avertie+'".add_token_in_url(false)."',{method: 'get'});
 	}
 	//]]>
 </script>\n";
@@ -1766,7 +1775,7 @@ elseif($step==2) {
 		echo "<a href='#' onmouseover=\"delais_afficher_div('div_infobulle_avertissement_heure','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_infobulle_avertissement_heure');\" onclick=\"return false;\" title='Attention heure'><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Attention heure' /></a>";
 		echo "</div>\n";
 
-		echo "<input type='text' name='display_heure' id='display_heure' size='6' value=\"".$display_heure."\" />\n";
+		echo "<input type='text' name='display_heure' id='display_heure' size='6' value=\"".$display_heure."\" onKeyDown=\"clavier_heure(this.id,event);\" AutoComplete=\"off\" />\n";
 
 		choix_heure('display_heure','div_choix_heure');
 	}

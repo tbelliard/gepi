@@ -316,11 +316,11 @@ if(!isset($id_groupe)) {
 				echo "<p>";
 				echo "<label for='choix_periode_dates' style='cursor: pointer;'> \nExporter le(s) cahier(s) de textes de la date : </label>";
 			
-				echo "<input type='text' name = 'display_date_debut' size='10' value = \"".$display_date_debut."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" />";
+				echo "<input type='text' name = 'display_date_debut' id = 'display_date_debut' size='10' value = \"".$display_date_debut."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 				echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 			
 				echo "&nbsp;à la date : </label>";
-				echo "<input type='text' name = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" />";
+				echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 				echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 				echo "<br />\n";
 				echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)</label>\n";
@@ -338,7 +338,7 @@ if(!isset($id_groupe)) {
 				echo "<textarea name='description_acces' cols='50' rows='4'></textarea>";
 				echo "</p>";
 				echo "<p>Date à laquelle vous souhaitez supprimer l'accès&nbsp;: ";
-				echo "<input type='text' name='date2_acces' size='10' value=\"".$display_date_fin."\" />";
+				echo "<input type='text' name='date2_acces' id='date2_acces' size='10' value=\"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 				echo "<a href=\"#calend\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 				echo "<br />\n";
 				echo "(<i>la suppression n'est pas automatique à la date indiquée, mais fixer une date peut aider à savoir si l'accès doit être conservé ou non</i>)</p>\n";
@@ -445,11 +445,11 @@ if(!isset($id_groupe)) {
 				echo "<p>";
 				echo "<label for='choix_periode_dates' style='cursor: pointer;'> \nExporter le(s) cahier(s) de textes de la date : </label>";
 			
-				echo "<input type='text' name = 'display_date_debut' size='10' value = \"".$display_date_debut."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" />";
+				echo "<input type='text' name = 'display_date_debut' id = 'display_date_debut2' size='10' value = \"".$display_date_debut."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 				echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 			
 				echo "&nbsp;à la date : </label>";
-				echo "<input type='text' name = 'display_date_fin' size='10' value = \"".$display_date_fin."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" />";
+				echo "<input type='text' name = 'display_date_fin' id = 'display_date_fin2' size='10' value = \"".$display_date_fin."\" onfocus=\"document.getElementById('choix_periode_dates').checked=true;\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 				echo "<label for='choix_periode_dates' style='cursor: pointer;'><a href=\"#calend\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 				echo "<br />\n";
 				echo " (<i>Veillez à respecter le format jj/mm/aaaa</i>)</label>\n";
@@ -467,7 +467,7 @@ if(!isset($id_groupe)) {
 				echo "<textarea name='description_acces' cols='50' rows='4'></textarea>";
 				echo "</p>";
 				echo "<p>Date à laquelle vous souhaitez supprimer l'accès&nbsp;: ";
-				echo "<input type='text' name='date2_acces' size='10' value=\"".$display_date_fin."\" />";
+				echo "<input type='text' name='date2_acces' size='10' value=\"".$display_date_fin."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />";
 				echo "<a href=\"#calend\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 				echo "<br />\n";
 				echo "(<i>la suppression n'est pas automatique à la date indiquée, mais fixer une date peut aider à savoir si l'accès doit être conservé ou non</i>)</p>\n";

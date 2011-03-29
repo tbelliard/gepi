@@ -132,12 +132,12 @@ if(!isset($is_posted)) {
 
 	echo "<p>Intervalle de dates&nbsp;: du ";
 	//echo "<input type='text' name='date_debut_disc' value='' />\n";
-	echo "<input type='text' name = 'date_debut_disc' size='10' value = \"".$date_debut_disc."\" />\n";
+	echo "<input type='text' name = 'date_debut_disc1' id='date_debut_disc' size='10' value = \"".$date_debut_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	echo "<a href=\"#\" onClick=\"".$cal1->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
 	echo " au ";
 	//echo "<input type='text' name='date_fin_disc' value='' />\n";
-	echo "<input type='text' name = 'date_fin_disc' size='10' value = \"".$date_fin_disc."\" />\n";
+	echo "<input type='text' name = 'date_fin_disc1' id='date_fin_disc' size='10' value = \"".$date_fin_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	echo "<a href=\"#\" onClick=\"".$cal2->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 	echo "</p>\n";
 
@@ -261,12 +261,12 @@ if(!isset($is_posted)) {
 
 	echo "<p>Intervalle de dates&nbsp;: du ";
 	//echo "<input type='text' name='date_debut_disc' value='' />\n";
-	echo "<input type='text' name = 'date_debut_disc' size='10' value = \"".$date_debut_disc."\" />\n";
+	echo "<input type='text' name = 'date_debut_disc' id = 'date_debut_disc2' size='10' value = \"".$date_debut_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	echo "<a href=\"#\" onClick=\"".$cal3->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 
 	echo " au ";
 	//echo "<input type='text' name='date_fin_disc' value='' />\n";
-	echo "<input type='text' name = 'date_fin_disc' size='10' value = \"".$date_fin_disc."\" />\n";
+	echo "<input type='text' name = 'date_fin_disc' id = 'date_fin_disc2' size='10' value = \"".$date_fin_disc."\" onKeyDown=\"clavier_date(this.id,event);\" AutoComplete=\"off\" />\n";
 	echo "<a href=\"#\" onClick=\"".$cal4->get_strPopup('../lib/calendrier/pop.calendrier.php', 350, 170)."\"><img src=\"../lib/calendrier/petit_calendrier.gif\" alt=\"Calendrier\" border=\"0\" /></a>\n";
 	echo "</p>\n";
 
