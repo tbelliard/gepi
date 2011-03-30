@@ -71,7 +71,10 @@ if (isset($_POST['is_posted'])) {
 		else{
 			$app = "";
 		}
-		$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+		//$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+		$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
+		$app=preg_replace('/(\\\r)+/',"\r",$app);
+		$app=preg_replace('/(\\\n)+/',"\n",$app);
 
 
 

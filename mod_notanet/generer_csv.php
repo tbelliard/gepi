@@ -43,13 +43,13 @@ if (!checkAccess()) {
 
 check_token();
 
-$nom_fic = "notanet_".date('Y.m.d_H.i.s_').my_ereg_replace(" ","_",microtime()).".csv";
+$nom_fic = "notanet_".date('Y.m.d_H.i.s_').preg_replace("/ /","_",microtime()).".csv";
 
 $now = gmdate('D, d M Y H:i:s') . ' GMT';
 header('Content-Type: text/x-csv');
 header('Expires: ' . $now);
 // lem9 & loic1: IE need specific headers
-if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+if (preg_match('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 	header('Content-Disposition: inline; filename="' . $nom_fic . '"');
 	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 	header('Pragma: public');
@@ -170,7 +170,7 @@ else {
 							while($lig2=mysql_fetch_object($res2)) {
 								$ine=$lig2->ine;
 								$note=$lig2->note_notanet;
-								if (my_ereg ("([0-9]{2}).([0-9]{1})", $lig2->note_notanet)) {
+								if (preg_match("/([0-9]{2})\.([0-9]{1})/", $lig2->note_notanet)) {
 									if($tabmatieres[$lig2->id_mat][-1]!="NOTNONCA") {
 										$TOT+=$lig2->note_notanet;
 									}
@@ -188,7 +188,7 @@ else {
 			}
 		}
 	}
-	elseif((my_ereg("[0-9]",$extract_mode))&&(strlen(my_ereg_replace("[0-9]","",$extract_mode))==0)) {
+	elseif((preg_match("/[0-9]/",$extract_mode))&&(strlen(preg_replace("/[0-9]/","",$extract_mode))==0)) {
 		$type_brevet=$extract_mode;
 
 		/*
@@ -229,7 +229,7 @@ else {
 					while($lig2=mysql_fetch_object($res2)) {
 						$ine=$lig2->ine;
 						$note=$lig2->note_notanet;
-						if (my_ereg ("([0-9]{2}).([0-9]{1})", $lig2->note_notanet)) {
+						if (preg_match("/([0-9]{2})\.([0-9]{1})/", $lig2->note_notanet)) {
 							if($tabmatieres[$lig2->id_mat][-1]!="NOTNONCA") {
 								$TOT+=$lig2->note_notanet;
 							}
