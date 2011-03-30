@@ -60,6 +60,7 @@ $nb_releve_par_page=1;
 
 $bull_pdf_debug=isset($_POST['bull_pdf_debug']) ? $_POST['bull_pdf_debug'] : "n";
 
+//debug_var();
 
 // Fonction de recherche des conteneurs derniers enfants (sans enfants (non parents, en somme))
 // avec recalcul des moyennes lancé...
@@ -116,6 +117,7 @@ elseif ((isset($_POST['mode_bulletin']))&&($_POST['mode_bulletin']=='pdf')) {
 
 	// DEBUG Décommenter la ligne ci-dessous pour débugger
 	//echo "<p style='color:red;'>Insertion d'une ligne avant le Header pour provoquer l'affichage dans le navigateur et ainsi repérer des erreurs.</p>";
+	//echo "\$bull_pdf_debug=$bull_pdf_debug<br />";
 	if($bull_pdf_debug=='y') {
 		echo "<p style='color:red'>DEBUG:<br />
 La génération du PDF va échouer parce qu'on affiche ces informations de debuggage,<br />
@@ -354,7 +356,7 @@ elseif((!isset($choix_periode_num))||(!isset($tab_periode_num))) {
 	$max_per=0;
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		// Est-ce bien un entier?
-		if((strlen(my_ereg_replace("[0-9]","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
+		if((strlen(preg_replace("/[0-9]/","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
 			echo "<p>Identifiant de classe erroné: <span style='color:red'>".$tab_id_classe[$i]."</span></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -774,7 +776,7 @@ function ToutDeCocher() {
 	$max_eff_classe=0;
 	for($i=0;$i<count($tab_id_classe);$i++) {
 		// Est-ce bien un entier?
-		if((strlen(my_ereg_replace("[0-9]","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
+		if((strlen(preg_replace("/[0-9]/","",$tab_id_classe[$i])))||($tab_id_classe[$i]=="")) {
 			echo "<p>Identifiant de classe erroné: <span style='color:red'>".$tab_id_classe[$i]."</span></p></form>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -789,7 +791,7 @@ function ToutDeCocher() {
 		echo "<th>Elèves</th>\n";
 		for($j=0;$j<count($tab_periode_num);$j++) {
 			// Est-ce bien un entier?
-			if((strlen(my_ereg_replace("[0-9]","",$tab_periode_num[$j])))||($tab_periode_num[$j]=="")) {
+			if((strlen(preg_replace("/[0-9]/","",$tab_periode_num[$j])))||($tab_periode_num[$j]=="")) {
 				echo "<td>Identifiant de période erroné: <span style='color:red'>".$tab_periode_num[$j]."</span></td></tr></table></form>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -1401,7 +1403,7 @@ else {
 		//$id_classe=2;
 		$id_classe=$tab_id_classe[$loop_classe];
 		// Est-ce bien un entier?
-		if((strlen(my_ereg_replace("[0-9]","",$id_classe)))||($id_classe=="")) {
+		if((strlen(preg_replace("/[0-9]/","",$id_classe)))||($id_classe=="")) {
 			echo "<p>Identifiant de classe erroné: <span style='color:red'>$id_classe</span></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -1510,7 +1512,7 @@ else {
 			$periode_num=$tab_periode_num[$loop_periode_num];
 
 			// Est-ce bien un entier?
-			if((strlen(my_ereg_replace("[0-9]","",$periode_num)))||($periode_num=="")) {
+			if((strlen(preg_replace("/[0-9]/","",$periode_num)))||($periode_num=="")) {
 				echo "<p>Identifiant de période erroné: <span style='color:red'>".$periode_num."</span></p>\n";
 				require("../lib/footer.inc.php");
 				die();
@@ -1582,7 +1584,7 @@ else {
 			$lig_per=mysql_fetch_object($res_per);
 			$tab_bulletin[$id_classe][$periode_num]['num_periode']=$lig_per->num_periode;
 			//$tab_bulletin[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
-			$tab_bulletin[$id_classe][$periode_num]['nom_periode']=my_ereg_replace("&#039;","'",$lig_per->nom_periode);
+			$tab_bulletin[$id_classe][$periode_num]['nom_periode']=preg_replace("/&#039;/","'",$lig_per->nom_periode);
 			$tab_bulletin[$id_classe][$periode_num]['verouiller']=$lig_per->verouiller;
 
 
