@@ -392,8 +392,8 @@ if (!isset($id_classe)) {
 				$alt=$alt*(-1);
                 echo "<tr class='lig$alt'><td><p>" . htmlentities($current_group["description"]) . "</p></td><td><p>$note_eleve";
                 echo "</p></td><td><p>$moyenne_classe</p></td><td><p>$difference</p></td></tr>";
-                (my_ereg ("^[0-9\.\,]{1,}$", $note_eleve)) ? array_push($datay1,"$note_eleve") : array_push($datay1,"0");
-                (my_ereg ("^[0-9\.\,]{1,}$", $moyenne_classe)) ? array_push($datay2,"$moyenne_classe") : array_push($datay2,"0");
+                (preg_match("/^[0-9\.\,]{1,}$/", $note_eleve)) ? array_push($datay1,"$note_eleve") : array_push($datay1,"0");
+                (preg_match("/^[0-9\.\,]{1,}$/", $moyenne_classe)) ? array_push($datay2,"$moyenne_classe") : array_push($datay2,"0");
                 //array_push($etiquette,$current_group["matiere"]["nom_complet"]);
                 array_push($etiquette,rawurlencode($current_group["matiere"]["nom_complet"]));
                 $compteur++;

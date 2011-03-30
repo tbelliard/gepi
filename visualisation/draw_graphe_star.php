@@ -15,13 +15,13 @@
 	// Récupération des valeurs:
 	//$nb_data = $_GET['nb_data'];
 	$nb_series= $_GET['nb_series'];
-	if((strlen(my_ereg_replace("[0-9]","",$nb_series))!=0)||($nb_series=="")){
+	if((strlen(preg_replace("/[0-9]/","",$nb_series))!=0)||($nb_series=="")){
 		exit;
 	}
 
 	//$eleves= $_GET['eleves'];
 	$id_classe=$_GET['id_classe'];
-	if((strlen(my_ereg_replace("[0-9]","",$id_classe))!=0)||($id_classe=="")){
+	if((strlen(preg_replace("/[0-9]/","",$id_classe))!=0)||($id_classe=="")){
 		exit;
 	}
 
@@ -85,11 +85,11 @@
 	//$hauteurTotale=600;
 
 	$largeurTotale=isset($_GET['largeur_graphe']) ? $_GET['largeur_graphe'] : '700';
-	if((strlen(my_ereg_replace("[0-9]","",$largeurTotale))!=0)||($largeurTotale=="")){
+	if((strlen(preg_replace("/[0-9]/","",$largeurTotale))!=0)||($largeurTotale=="")){
 		$largeurTotale=700;
 	}
 	$hauteurTotale=isset($_GET['hauteur_graphe']) ? $_GET['hauteur_graphe'] : '600';
-	if((strlen(my_ereg_replace("[0-9]","",$hauteurTotale))!=0)||($hauteurTotale=="")){
+	if((strlen(preg_replace("/[0-9]/","",$hauteurTotale))!=0)||($hauteurTotale=="")){
 		$hauteurTotale=600;
 	}
 
@@ -106,7 +106,7 @@
 	// $taille_police de 1 à 6
 	//$taille_police=3;
 	$taille_police=isset($_GET['taille_police']) ? $_GET['taille_police'] : '3';
-	if((strlen(my_ereg_replace("[0-9]","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
+	if((strlen(preg_replace("/[0-9]/","",$taille_police))!=0)||($taille_police<1)||($taille_police>6)||($taille_police=="")){
 		$taille_police=3;
 	}
 
@@ -119,7 +119,7 @@
 
 	//$epaisseur_traits=2;
 	$epaisseur_traits=isset($_GET['epaisseur_traits']) ? $_GET['epaisseur_traits'] : '2';
-	if((strlen(my_ereg_replace("[0-9]","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
+	if((strlen(preg_replace("/[0-9]/","",$epaisseur_traits))!=0)||($epaisseur_traits<1)||($epaisseur_traits>6)||($epaisseur_traits=="")){
 		$epaisseur_traits=2;
 	}
 	writinfo('/tmp/infos_graphe.txt','a+',"\$epaisseur_traits=$epaisseur_traits\n");
@@ -208,14 +208,14 @@
 				$total_tmp[$i]=0;
 				// Boucle sur les périodes...
 				for($k=1;$k<=$nb_periode;$k++){
-					//if((strlen(my_ereg_replace("[0-9]","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")){$largeur_imposee_photo=100;}
+					//if((strlen(preg_replace("/[0-9]/","",$largeur_imposee_photo))!=0)||($largeur_imposee_photo=="")){$largeur_imposee_photo=100;}
 
 
 
-					writinfo('/tmp/infos_graphe.txt','a+',"strlen(my_ereg_replace(\"[0-9.]\",\"\",\$moyenne[".$k."][".$i."]))=strlen(my_ereg_replace(\"[0-9.]\",\"\",".$moyenne[$k][$i]."))=".strlen(my_ereg_replace("[0-9.]","",$moyenne[$k][$i]))."\n");
+					writinfo('/tmp/infos_graphe.txt','a+',"strlen(preg_replace(\"/[0-9.]/\",\"\",\$moyenne[".$k."][".$i."]))=strlen(preg_replace(\"/[0-9.]/\",\"\",".$moyenne[$k][$i]."))=".strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))."\n");
 
-					//if((strlen(my_ereg_replace("[0-9]","",$moyenne[$k][$i]))!=0)&&($moyenne[$k][$i]!="")){
-					if(($moyenne[$k][$i]!='-')&&(strlen(my_ereg_replace("[0-9.]","",$moyenne[$k][$i]))==0)&&($moyenne[$k][$i]!="")){
+					//if((strlen(preg_replace("/[0-9]/","",$moyenne[$k][$i]))!=0)&&($moyenne[$k][$i]!="")){
+					if(($moyenne[$k][$i]!='-')&&(strlen(preg_replace("/[0-9\.]/","",$moyenne[$k][$i]))==0)&&($moyenne[$k][$i]!="")){
 						$total_tmp[$i]=$total_tmp[$i]+$moyenne[$k][$i];
 						$cpt++;
 					}
