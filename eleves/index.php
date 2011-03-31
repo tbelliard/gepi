@@ -934,6 +934,38 @@ if (!isset($quelles_classes)) {
 			echo "</tr>\n";
 		}
 
+
+		$sql="SELECT 1=1 FROM eleves WHERE email='';";
+		$test_incomplet=mysql_query($sql);
+		if(mysql_num_rows($test_incomplet)==0){
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "&nbsp;\n";
+			echo "</td>\n";
+			echo "<td>\n";
+
+			echo "<span style='display:none;'><input type='radio' name='quelles_classes' value='email_vide' onclick='verif2()' /></span>\n";
+
+			echo "<span class='norme'>Tous les élèves ont leur email renseigné dans la table 'eleves'.</span><br />\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+		else{
+			echo "<tr>\n";
+			echo "<td>\n";
+			echo "<input type='radio' name='quelles_classes' id='quelles_classes_email_vide' value='email_vide' onclick='verif2()' />\n";
+			echo "</td>\n";
+			echo "<td>\n";
+			echo "<label for='quelles_classes_email_vide' style='cursor: pointer;'>\n";
+			echo "<span class='norme'>Les élèves dont l'email n'est pas renseigné dans la table 'eleves' (<i>".mysql_num_rows($test_incomplet)."</i>).</span><br />\n";
+			echo "</label>\n";
+			echo "</td>\n";
+			echo "</tr>\n";
+
+			// Tester ceux qui ont un compte
+		}
+
+
 		echo "<tr>\n";
 		echo "<td>\n";
 		echo "<input type='radio' name='quelles_classes' id='quelles_classes_toutes' value='toutes' onclick='verif2()' />\n";
@@ -1217,7 +1249,7 @@ if(isset($quelles_classes)) {
 			ORDER BY $order_type
 			");
 			*/
-			if(my_ereg('classe',$order_type)){
+			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
 					WHERE (e.elenoet='' OR e.no_gep='') AND
 							jer.login=e.login AND
@@ -1234,6 +1266,32 @@ if(isset($quelles_classes)) {
 			$calldata = mysql_query($sql);
 
 			echo "<p align='center'>Liste des élèves dont l'Elenoet ou le Numéro national (INE) n'est pas renseigné.</p>\n";
+
+
+		} else if ($quelles_classes == 'email_vide') {
+			/*
+			$calldata = mysql_query("SELECT e.* FROM eleves e WHERE elenoet='' OR no_gep=''
+			ORDER BY $order_type
+			");
+			*/
+			if(preg_match('/classe/',$order_type)){
+				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
+					WHERE e.email='' AND
+							jer.login=e.login AND
+							jec.login=e.login AND
+							c.id=jec.id_classe
+					ORDER BY $order_type;";
+			}
+			else{
+				$sql="SELECT e.*, jer.* FROM eleves e, j_eleves_regime jer WHERE e.email='' AND
+							jer.login=e.login
+						ORDER BY $order_type;";
+			}
+			//echo "$sql<br />\n";
+			$calldata = mysql_query($sql);
+
+			echo "<p align='center'>Liste des élèves dont l'email n'est pas renseigné.</p>\n";
+
 
 		} else if ($quelles_classes == 'photo') {
 			//$sql="SELECT elenoet FROM eleves WHERE elenoet!='';";
@@ -1277,7 +1335,7 @@ if(isset($quelles_classes)) {
 			echo "<p align='center'>Liste des élèves sans photo.</p>\n";
 
 		} else if ($quelles_classes == 'no_cpe') {
-			if(my_ereg('classe',$order_type)){
+			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer
 						WHERE e.login=jec.login AND
 							e.login=jer.login AND
@@ -1297,7 +1355,7 @@ if(isset($quelles_classes)) {
 
 		} else if ($quelles_classes == 'no_regime') {
 
-			if(my_ereg('classe',$order_type)){
+			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.* FROM eleves e, classes c, j_eleves_classes jec
 					LEFT JOIN j_eleves_regime jer ON jec.login=jer.login
 					WHERE jer.login is null AND e.login=jec.login AND c.id=jec.id_classe ORDER BY $order_type;";
@@ -1314,7 +1372,7 @@ if(isset($quelles_classes)) {
 
 
 		} else if ($quelles_classes == 'no_pp') {
-			if(my_ereg('classe',$order_type)){
+			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer
 						WHERE e.login=jec.login AND
 							e.login=jer.login AND
@@ -1335,7 +1393,7 @@ if(isset($quelles_classes)) {
 			echo "<p align='center'>Liste des élèves sans ".getSettingValue('gepi_prof_suivi')."</p>\n";
 
 		} else if ($quelles_classes == 'no_resp') {
-			if(my_ereg('classe',$order_type)){
+			if(preg_match('/classe/',$order_type)){
 
 				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, j_eleves_classes jec, classes c, j_eleves_regime jer
 						WHERE e.login=jec.login AND
@@ -1367,7 +1425,7 @@ if(isset($quelles_classes)) {
 			ORDER BY $order_type
 			");
 			*/
-			if(my_ereg('classe',$order_type)){
+			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*, jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
 					WHERE prenom like '".$motif_rech."%' AND
 							e.login=jer.login AND
@@ -1391,7 +1449,7 @@ if(isset($quelles_classes)) {
 			ORDER BY $order_type
 			");
 			*/
-			if(my_ereg('classe',$order_type)){
+			if(preg_match('/classe/',$order_type)){
 				$sql="SELECT DISTINCT e.*,jer.* FROM eleves e, classes c, j_eleves_classes jec, j_eleves_regime jer
 					WHERE nom like '".$motif_rech."%' AND
 							e.login=jer.login AND
@@ -1419,7 +1477,7 @@ if(isset($quelles_classes)) {
 			echo "<p align='center'>Liste des élèves ayant une date de sortie renseignée.</p>\n";
 			}
 		elseif ($quelles_classes == 'no_etab') {
-			if(my_ereg('classe',$order_type)){
+			if(preg_match('/classe/',$order_type)){
 				//$sql="SELECT distinct e.*,c.classe FROM j_eleves_classes jec, classes c, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
 				$sql="SELECT distinct e.*,c.classe,jer.* FROM j_eleves_classes jec, classes c, j_eleves_regime jer, eleves e LEFT JOIN j_eleves_etablissements jee ON jee.id_eleve=e.elenoet where jee.id_eleve is NULL and jec.login=e.login and jer.login=e.login and c.id=jec.id_classe ORDER BY $order_type;";
 				//echo "$sql<br />\n";
@@ -1708,7 +1766,7 @@ if(isset($quelles_classes)) {
 	echo "<br />\n";
 	$temoin_notes_bas_de_page="n";
 	$max_file_uploads=ini_get('max_file_uploads');
-	if(($max_file_uploads!="")&&(strlen(my_ereg_replace("[^0-9]","",$max_file_uploads))==strlen($max_file_uploads))&&($max_file_uploads>0)) {
+	if(($max_file_uploads!="")&&(strlen(preg_replace("/[^0-9]/","",$max_file_uploads))==strlen($max_file_uploads))&&($max_file_uploads>0)) {
 		echo "<p><i>Notes</i>&nbsp;:</p>\n";
 		echo "<ul>\n";
 		echo "<li><p>L'upload des photos est limité à $max_file_uploads fichier(s) simultanément.</p></li>\n";
