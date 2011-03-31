@@ -651,7 +651,9 @@ if (!(isset($id_classe))) {
 							//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=".strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]))."<br />";
 
 							if($email!="") {
-								echo "<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
+								$sujet_mail="[Gepi]: Appreciation non remplie: ".$id_eleve[$j];
+								$message_mail="Bonjour,\r\n\r\nCordialement";
+								echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
 							}
 							else{
 								echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
@@ -732,7 +734,9 @@ if (!(isset($id_classe))) {
 							//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][]=".strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]))."<br />";
 
 							if($email!="") {
-								echo "<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
+								$sujet_mail="[Gepi]: Moyenne manquante: ".$eleve_nom[$j];
+								$message_mail="Bonjour,\r\n\r\nCordialement";
+								echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
 							}
 							else{
 								echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
@@ -780,7 +784,9 @@ if (!(isset($id_classe))) {
 					$prenom_prof = mysql_result($call_prof, 0, 'prenom');
 					//echo " (<a href='mailto:$email'>$prenom_prof $nom_prof</a>)";
 					if($email!="") {
-						echo "(<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>)";
+						$sujet_mail="[Gepi]: Avis du conseil manquant: ".$id_eleve[$j];
+						$message_mail="Bonjour,\r\n\r\nCordialement";
+						echo "(<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>)";
 					}
 					else{
 						echo "(".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof).")";
@@ -843,7 +849,9 @@ if (!(isset($id_classe))) {
 								$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
 								//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
 								if($email!="") {
-									echo "<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
+									$sujet_mail="[Gepi]: Appreciation AID manquante: ".$eleve_nom[$j];
+									$message_mail="Bonjour,\r\n\r\nCordialement";
+									echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
 								}
 								else{
 									echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
@@ -888,7 +896,9 @@ if (!(isset($id_classe))) {
 									$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
 									//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
 									if($email!="") {
-										echo "<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
+										$sujet_mail="[Gepi]: Moyenne AID manquante: ".$eleve_nom[$j];
+										$message_mail="Bonjour,\r\n\r\nCordialement";
+										echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
 									}
 									else{
 										echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
@@ -939,7 +949,9 @@ if (!(isset($id_classe))) {
 					$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
 					//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
 					if($email!="") {
-						echo "<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
+						$sujet_mail="[Gepi]: Absences non remplies: ".$id_eleve[$j];
+						$message_mail="Bonjour,\r\n\r\nCordialement";
+						echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
 					}
 					else{
 						echo ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof);
@@ -986,7 +998,9 @@ if (!(isset($id_classe))) {
                             $prenom_prof = mysql_result($call_prof, 0, 'prenom');
                             //echo " (<a href='mailto:$email'>$prenom_prof $nom_prof</a>)";
                             if($email!="") {
-                                echo " (<a href='mailto:$email'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>)";
+								$sujet_mail="[Gepi]: ECTS non remplis: ".$eleve_nom[$j];
+								$message_mail="Bonjour,\r\n\r\nCordialement";
+                                echo " (<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>)";
                             }
                             else{
                                 echo " (".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof).")";
@@ -1087,7 +1101,7 @@ if (!(isset($id_classe))) {
 						break;
 					}
 				}
-				echo "<a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>Autoriser exceptionnellement la proposition de saisie bien la période soit partiellement close.</a>";
+				echo "<a href='autorisation_exceptionnelle_saisie_app.php?id_classe=$id_classe".$ajout."' target='_blank'>Autoriser exceptionnellement la proposition de saisie bien que la période soit partiellement close.</a>";
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
