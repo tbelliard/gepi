@@ -84,6 +84,7 @@ $droitRepertoire =array();
 include_once ("./lib/chemin.inc.php");
 // test d'écriture dans le dossier mes_modeles
 $dossier_test = "./".$nom_dossier_modeles_ooo_mes_modeles."dossier_test";
+@rmdir($dossier_test);
 $resultat_mkdir = @mkdir($dossier_test);
 if (!($resultat_mkdir)) {
   $droitRepertoire[]="ATTENTION : Les droits d'écriture sur le dossier
@@ -95,6 +96,7 @@ else {
 }
 
 $dossier_test = "./tmp/dossier_test";
+@rmdir($dossier_test);
 $resultat_mkdir = @mkdir($dossier_test);
 if (!($resultat_mkdir)) {
   $droitRepertoire[]="ATTENTION : Les droits d'écriture sur le dossier /mod_ooo/tmp/ sont incorrects.
