@@ -83,7 +83,7 @@ if(!isset($id_dev)) {
 
 $sql="SELECT * FROM cc_dev WHERE id='$id_dev' AND id_groupe='$id_groupe';";
 $query=mysql_query($sql);
-if($query) {
+if(mysql_num_rows($query)>0) {
 	$id_cn_dev=mysql_result($query, 0, 'id_cn_dev');
 	$nom_court_dev=mysql_result($query, 0, 'nom_court');
 	$nom_complet_dev=mysql_result($query, 0, 'nom_complet');
