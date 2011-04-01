@@ -186,6 +186,7 @@ $alert_diff_mail_resp=isset($_POST['alert_diff_mail_resp']) ? $_POST['alert_diff
 
 $alert_diff_mail_ele=isset($_POST['alert_diff_mail_ele']) ? $_POST['alert_diff_mail_ele'] : (isset($_GET['alert_diff_mail_ele']) ? $_GET['alert_diff_mail_ele'] : (isset($_SESSION['alert_diff_mail_ele']) ? $_SESSION['alert_diff_mail_ele'] : "n"));
 
+$alert_diff_etab_origine=isset($_POST['alert_diff_etab_origine']) ? $_POST['alert_diff_etab_origine'] : (isset($_GET['alert_diff_etab_origine']) ? $_GET['alert_diff_etab_origine'] : (isset($_SESSION['alert_diff_etab_origine']) ? $_SESSION['alert_diff_etab_origine'] : "n"));
 
 $stop=isset($_POST['stop']) ? $_POST['stop'] : (isset($_GET['stop']) ? $_GET['stop'] :'n');
 
@@ -376,13 +377,21 @@ if(!isset($step)) {
 		echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesAvecAdresses.zip)</p>";
 	}
 
-	echo "Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
+	echo "<p>Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
 	echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' checked />\n";
 	echo "<label for='alert_diff_mail_ele_y' style='cursor: pointer;'> signaler";
 	echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
 	echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_n' value='n' />\n";
 	echo "<label for='alert_diff_mail_ele_n' style='cursor: pointer;'> ne pas signaler";
-	echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
+	echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label></p>\n";
+
+	echo "<p>\n";
+	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_y' value='y' checked />\n";
+	echo "<label for='alert_diff_etab_origine_y' style='cursor: pointer;'> signaler";
+	echo " les modifications d'établissement d'origine.</label><br />\n";
+	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_n' value='n' />\n";
+	echo "<label for='alert_diff_etab_origine_n' style='cursor: pointer;'> ne pas signaler";
+	echo " les modifications d'établissement d'origine.</label></p>\n";
 
 	//==============================
 	// AJOUT pour tenir compte de l'automatisation ou non:
@@ -459,6 +468,7 @@ else{
 			check_token(false);
 
 			$_SESSION['alert_diff_mail_ele']=$alert_diff_mail_ele;
+			$_SESSION['alert_diff_etab_origine']=$alert_diff_etab_origine;
 
 			$xml_file = isset($_FILES["eleves_xml_file"]) ? $_FILES["eleves_xml_file"] : NULL;
 
@@ -2072,7 +2082,8 @@ else{
 				$test=mysql_query($sql);
 
 				$temoin_chgt_ancien_etab="n";
-				if ($gepiSchoolRne!="") {
+				//if ($gepiSchoolRne!="") {
+				if (($gepiSchoolRne!="")&&($alert_diff_etab_origine=='y')) {
 					// Ancien établissement précédemment enregistré
 					$sql="SELECT id_etablissement FROM j_eleves_etablissements jee, eleves e WHERE jee.id_eleve=e.elenoet AND e.elenoet!='' AND e.ele_id='".$tab_ele_id[$i]."';";
 					info_debug($sql);
@@ -2747,7 +2758,8 @@ else{
 									$rne_etab_prec="";
 								}
 
-								if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
+								//if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
+								if((strtolower($affiche[10])!=strtolower($gepiSchoolRne))&&($alert_diff_etab_origine=='y')) {
 									if(strtolower($affiche[10])!=strtolower($rne_etab_prec)) {
 										$temoin_modif='y';
 										$cpt_modif++;
@@ -3048,7 +3060,8 @@ else{
 									$rne_ancien_etab="";
 								}
 
-								if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
+								//if(strtolower($affiche[10])!=strtolower($gepiSchoolRne)) {
+								if((strtolower($affiche[10])!=strtolower($gepiSchoolRne))&&($alert_diff_etab_origine=='y')) {
 									echo "<td";
 									if($rne_ancien_etab!=$affiche[10]){
 										echo " class='modif'>";
@@ -3067,7 +3080,8 @@ else{
 									echo "<td>";
 									//echo "$affiche[10]";
 									//echo "<input type='hidden' name='modif_".$cpt."_id_etab' value='$affiche[10]' />\n";
-									echo "&nbsp;";
+									//echo "&nbsp;";
+									echo $rne_ancien_etab;
 									//echo "<input type='hidden' name='modif_".$cpt."_id_etab' value='' />\n";
 									echo "</td>\n";
 								}
@@ -3489,7 +3503,8 @@ else{
 						$sql="SELECT 1=1 FROM j_eleves_etablissements WHERE id_eleve='$lig->ELENOET';";
 						info_debug($sql);
 						$test_ee=mysql_query($sql);
-						if(mysql_num_rows($test_ee)>0) {
+						//if(mysql_num_rows($test_ee)>0) {
+						if((mysql_num_rows($test_ee)>0)&&($alert_diff_etab_origine=='y')) {
 							if($lig->ETOCOD_EP!="") {
 								$sql="UPDATE j_eleves_etablissements SET id_etablissement='$lig->ETOCOD_EP' WHERE id_eleve='$lig->ELENOET';";
 								info_debug($sql);
