@@ -1322,6 +1322,7 @@ if(isset($quelles_classes)) {
 						$tab_eleve[$i]['elenoet']=$lig_tmp->elenoet;
 						$tab_eleve[$i]['regime']=$lig_tmp->regime;
 						$tab_eleve[$i]['doublant']=$lig_tmp->doublant;
+						$tab_eleve[$i]['date_sortie']=$lig_tmp->date_sortie;
 						$i++;
 					}
 				}
@@ -1598,7 +1599,8 @@ if(isset($quelles_classes)) {
 			$elenoet =  $tab_eleve[$i]["elenoet"];
 			$eleve_regime =  $tab_eleve[$i]["regime"];
 			$eleve_doublant =  $tab_eleve[$i]["doublant"];
-			$date_sortie_elv = mysql_result($calldata, $i, "date_sortie");
+			//$date_sortie_elv = mysql_result($calldata, $i, "date_sortie");
+			$date_sortie_elv = $tab_eleve[$i]["date_sortie"];
 		}
 
 		$call_classe = mysql_query("SELECT n.classe, n.id FROM j_eleves_classes c, classes n WHERE (c.login ='$eleve_login' and c.id_classe = n.id) order by c.periode DESC");
