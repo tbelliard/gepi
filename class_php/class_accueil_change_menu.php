@@ -54,18 +54,19 @@ class class_accueil_change_menu {
   }
   
   private function chargeNouvelOrdre($ordreDemande){
-	while(next($ordreDemande))
-	  {
-		switch (current($ordreDemande)){
-		  case "menu":
-			$this->ordreFuturMenu[]=array('bloc'=>next($ordreDemande), 'statut'=>next($ordreDemande),'ancienNum'=>next($ordreDemande),'nouveauNum'=>next($ordreDemande),'nouveauNom'=>next($ordreDemande));
-			// $this->ordreFuturMenu[]=array('statut'=>next($ordreDemande),'ancienNum'=>next($ordreDemande),'nouveauNum'=>next($ordreDemande));
-			break;
-		  default:
-			break;
+ 		$nbItem= count($ordreDemande) ;
+ 		$i=0;
+		while ($i<$nbItem) {
+			switch (current($ordreDemande)){
+				case "menu":
+				$this->ordreFuturMenu[]=array('bloc'=>next($ordreDemande), 'statut'=>next($ordreDemande),'ancienNum'=>next($ordreDemande),'nouveauNum'=>next($ordreDemande),'nouveauNom'=>next($ordreDemande));
+				$i+=5;
+				default:
+			}
+ 		next($ordreDemande);
+ 		$i++;
 		}
-	  }
-	return true;
+		return true;
   }
 
   private function chargeAncienOrdre(){
