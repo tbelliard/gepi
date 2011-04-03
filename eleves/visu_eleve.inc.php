@@ -121,7 +121,7 @@ if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' onsubmit=\"cherche_eleves('prenom');return false;\" method='post' name='formulaire'>";
 	echo "<p>\n";
-	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prénom</b> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' />\n";
+	echo "Afficher les ".$gepiSettings['denomination_eleves']." dont le <b>prénom</b> contient&nbsp;: <input type='text' name='rech_prenom' id='rech_prenom' value='' onchange=\"affichage_et_action('prenom')\" />\n";
 	echo "<input type='hidden' name='page' value='$page' />\n";
 	echo "<input type='button' name='Recherche' id='Recherche_prenom' value='Rechercher' onclick=\"cherche_eleves('prenom')\" />\n";
 	echo "</p>\n";
