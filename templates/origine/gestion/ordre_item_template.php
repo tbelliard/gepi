@@ -181,9 +181,11 @@
 		  <div class='div_tableau'>
 			<h4 class="colonne ie_gauche">
 				menu : <?php echo $newentree->indexMenu ?> - item : <?php echo $newentree->indexItem ?>
-				<a href="" title="menu <?php echo $menuAfficheAdministrateur->statutUtilisateur ?> <?php echo $newentree->titre ?>">
+				<p class='bold'>
+				<!-- <a href="" title="menu <?php echo $menuAfficheAdministrateur->statutUtilisateur ?> <?php echo $newentree->titre ?>"> -->
 					<?php echo $newentree->titre ?>
-				</a>
+				<!-- </a> -->
+				</p>
 			</h4>
 			<p class="colonne ie_droite">
 				<?php echo $newentree->expli ?>
