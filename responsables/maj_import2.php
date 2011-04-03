@@ -410,9 +410,9 @@ if(!isset($step)) {
 	echo "<p><i>NOTES&nbsp;:</i></p>
 	<ul>
 		<li>Après une phase d'analyse des différences, les différences seront affichées et des cases à cocher seront proposées pour valider les modifications.</li>
-		<li>Pour procéder à la mise à jour trois fichiers seront requis&nbsp;:<br />
-		Les fichiers '<b>ElevesAvecAdresses.xml</b>', '<b>Nomenclature.xml</b>', '<b>ResponsablesAvecAdresses.xml</b>' doivent être récupérés depuis l'application web Sconet.<br />
-		Demandez gentiment à votre secrétaire de se rendre dans 'Sconet/Accès Base élèves mode normal/Exploitation/Exports standard/Exports XML génériques' pour récupérer les fichiers '<b>ElevesAvecAdresses.xml</b>', '<b>Nomenclature.xml</b>' et '<b>ResponsablesAvecAdresses.xml</b>'.</li>
+		<li>Pour procéder à la mise à jour deux fichiers seront requis&nbsp;:<br />
+		Les fichiers '<b>ElevesSansAdresses.xml</b>' et '<b>ResponsablesAvecAdresses.xml</b>' doivent être récupérés depuis l'application web Sconet.<br />
+		Demandez gentiment à votre secrétaire de se rendre dans 'Sconet/Accès Base élèves mode normal/Exploitation/Exports standard/Exports XML génériques' pour récupérer les fichiers '<b>ElevesSansAdresses.xml</b>' et '<b>ResponsablesAvecAdresses.xml</b>'.</li>
 	</ul>\n";
 
 	// Pour afficher le lien vers le fichier de debug.
