@@ -684,7 +684,7 @@ else {
 				}
 				else {
 					if($nb_eleves_a_traiter==1) {
-						echo "<p>Un lieu de naissance n'a pas été trouvé et le fichier communes.csv a été entièrement parcouru (???)&nbsp;: \n";
+						echo "<p>Un lieu de naissance n'a pas été trouvé et le fichier communes.csv a été entièrement parcouru&nbsp;: \n";
 					}
 					else {
 						echo "<p>Le lieu de naissance n'a pas été trouvé pour $nb_eleves_a_traiter élèves et le fichier communes.csv a été entièrement parcouru (???)&nbsp;: ";
