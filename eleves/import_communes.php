@@ -696,15 +696,28 @@ else {
 					$cpt=0;
 					if(mysql_num_rows($res)==0) {
 						echo "Aucun élève trouvé";
+						echo ".</p>\n";
 					}
 					else {
+						echo "<table class='boireaus' summary=\"Tableau des élèves pour lequel le lieu de naissance n'est pas dans le CSV.\">\n";
+						echo "<tr>\n";
+						echo "<th>Élève</th>\n";
+						echo "<th>Lieu</th>\n";
+						echo "</tr>\n";
+						$alt=1;
 						while($lig=mysql_fetch_object($res)) {
-							if($cpt>0) {echo ", ";}
-							echo casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2')." (<i>$lig->col2</i>)";
-							$cpt++;
+							$alt=$alt*(-1);
+							echo "<tr class='lig$alt white_hover'>\n";
+							echo "<td>".casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2')."</td>\n";
+							echo "<td>$lig->col2</td>\n";
+							echo "</tr>\n";
+							//if($cpt>0) {echo ", ";}
+							//echo casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2')." (<i>$lig->col2</i>)";
+							//$cpt++;
 						}
+						echo "</table>\n";
 					}
-					echo ".</p>\n";
+					//echo ".</p>\n";
 
 					echo "<p><b>NOTE</b>&nbsp;: Les élèves nés dans une commune étrangère peuvent apparaître comme non trouvés dans le fichier de communes.<br />Si les informations entre parenthèses sont correctes, il n'y a pas lieu de s'alarmer.</p>\n";
 				}
