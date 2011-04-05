@@ -208,12 +208,24 @@ if($_SESSION['statut']=='professeur'){
 			if(((isset($_SESSION['mes_listes_avec_sexe']))&&($_SESSION['mes_listes_avec_sexe']=='y'))||
 				(!isset($_SESSION['mes_listes_avec_sexe']))) {echo "checked ";}
 			echo "/><label for='avec_sexe'> le sexe des élèves</label><br />\n";
-		
+
 			echo "<input type='checkbox' id='avec_naiss' name='avec_naiss' value='y' ";
 			if(((isset($_SESSION['mes_listes_avec_naiss']))&&($_SESSION['mes_listes_avec_naiss']=='y'))||
 				(!isset($_SESSION['mes_listes_avec_naiss']))) {echo "checked ";}
-			echo "/><label for='avec_naiss'> la date de naissance</label><br />\n";
-		
+			echo "/><label for='avec_naiss'> la date de naissance</label>";
+
+			echo " au format ";
+			echo "<input type='radio' id='format_naiss_aaaammjj' name='format_naiss' value='aaaammjj' ";
+			if(((isset($_SESSION['mes_listes_format_naiss']))&&($_SESSION['mes_listes_format_naiss']=='aaaammjj'))||
+				(!isset($_SESSION['mes_listes_format_naiss']))) {echo "checked ";}
+			//echo " onchange=\"document.getElementById('avec_naiss').checked='true'\" ";
+			echo "/><label for='format_naiss_aaaammjj'>&nbsp;aaaa-mm-jj</label>";
+			echo " ou ";
+			echo "<input type='radio' id='format_naiss_jjmmaaaa' name='format_naiss' value='jjmmaaaa' ";
+			if((isset($_SESSION['mes_listes_format_naiss']))&&($_SESSION['mes_listes_format_naiss']=='jjmmaaaa')) {echo "checked ";}
+			echo "/><label for='format_naiss_jjmmaaaa'>&nbsp;jj/mm/aaaa</label>";
+			echo "<br />\n";
+
 			echo "<input type='checkbox' id='avec_email' name='avec_email' value='y' ";
 			if((isset($_SESSION['mes_listes_avec_email']))&&($_SESSION['mes_listes_avec_email']=='y')) {echo "checked ";}
 			echo "/><label for='avec_email'> l'email</label><br />\n";
@@ -399,7 +411,25 @@ echo "/><label for='avec_sexe'> le sexe des élèves</label><br />\n";
 echo "<input type='checkbox' id='avec_naiss' name='avec_naiss' value='y' ";
 if(((isset($_SESSION['mes_listes_avec_naiss']))&&($_SESSION['mes_listes_avec_naiss']=='y'))||
 	(!isset($_SESSION['mes_listes_avec_naiss']))) {echo "checked ";}
-echo "/><label for='avec_naiss'> la date de naissance</label><br />\n";
+echo "/><label for='avec_naiss'> la date de naissance</label>\n";
+
+echo " au format ";
+echo "<input type='radio' id='format_naiss_aaaammjj' name='format_naiss' value='aaaammjj' ";
+if(((isset($_SESSION['mes_listes_format_naiss']))&&($_SESSION['mes_listes_format_naiss']=='aaaammjj'))||
+	(!isset($_SESSION['mes_listes_format_naiss']))) {echo "checked ";}
+//echo " onchange=\"document.getElementById('avec_naiss').checked='true'\" ";
+echo "/><label for='format_naiss_aaaammjj'>&nbsp;aaaa-mm-jj</label>";
+echo " ou ";
+echo "<input type='radio' id='format_naiss_jjmmaaaa' name='format_naiss' value='jjmmaaaa' ";
+if((isset($_SESSION['mes_listes_format_naiss']))&&($_SESSION['mes_listes_format_naiss']=='jjmmaaaa')) {echo "checked ";}
+echo "/><label for='format_naiss_jjmmaaaa'>&nbsp;jj/mm/aaaa</label>";
+echo "<br />\n";
+
+if(getSettingValue('ele_lieu_naissance')=='y') {
+	echo "<input type='checkbox' id='avec_lieu_naiss' name='avec_lieu_naiss' value='y' ";
+	if((isset($_SESSION['mes_listes_avec_lieu_naiss']))&&($_SESSION['mes_listes_avec_lieu_naiss']=='y')) {echo "checked ";}
+	echo "/><label for='avec_lieu_naiss'> le lieu de naissance</label><br />\n";
+}
 
 echo "<input type='checkbox' id='avec_email' name='avec_email' value='y' ";
 if((isset($_SESSION['mes_listes_avec_email']))&&($_SESSION['mes_listes_avec_email']=='y')) {echo "checked ";}

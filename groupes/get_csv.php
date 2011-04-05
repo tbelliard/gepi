@@ -48,7 +48,7 @@ $id_classe = isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id
 $mode = isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mode'] : NULL);
 
 //$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_email','avec_statut','avec_ine','avec_elenoet','avec_ele_id','avec_prof');
-$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_email','avec_statut','avec_elenoet','avec_ele_id','avec_no_gep','avec_prof');
+$tab=array('avec_classe','avec_login','avec_nom','avec_prenom','avec_sexe','avec_naiss','avec_lieu_naiss','avec_email','avec_statut','avec_elenoet','avec_ele_id','avec_no_gep','avec_prof');
 for($i=0;$i<count($tab);$i++) {
 	$champ=$tab[$i];
 	$$champ = isset($_POST[$champ]) ? $_POST[$champ] : (isset($_GET[$champ]) ? $_GET[$champ] : NULL);
@@ -59,6 +59,11 @@ for($i=0;$i<count($tab);$i++) {
 	else {
 		$_SESSION['mes_listes_'.$tab[$i]]="n";
 	}
+}
+
+if((isset($avec_naiss))&&($avec_naiss=='y')) {
+	$format_naiss=isset($_POST['format_naiss']) ? $_POST['format_naiss'] : 'aaaammjj';
+	$_SESSION['mes_listes_format_naiss']=$format_naiss;
 }
 
 //echo "1 - \$id_groupe=$id_groupe<br />";
@@ -120,6 +125,7 @@ else {
 	if((isset($avec_prenom))&&($avec_prenom=='y')) {$fd.="PRENOM;";}
 	if((isset($avec_sexe))&&($avec_sexe=='y')) {$fd.="SEXE;";}
 	if((isset($avec_naiss))&&($avec_naiss=='y')) {$fd.="DATE_NAISS;";}
+	if((isset($avec_lieu_naiss))&&($avec_lieu_naiss=='y')) {$fd.="LIEU_NAISS;";}
 
 	if((isset($avec_email))&&($avec_email=='y')) {$fd.="EMAIL;";}
 	if((isset($avec_statut))&&($avec_statut=='y')) {$fd.="STATUT;";}
@@ -152,6 +158,7 @@ if($current_group) {
 					if((isset($avec_prenom))&&($avec_prenom=='y')) {$ligne.="$lig->prenom;";}
 					if((isset($avec_sexe))&&($avec_sexe=='y')) {$ligne.="$lig->civilite;";}
 					if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.=";";}
+					if((isset($avec_lieu_naiss))&&($avec_lieu_naiss=='y')) {$ligne.=";";}
 				
 					if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$lig->email;";}
 					if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="professeur;";}
@@ -199,7 +206,7 @@ if($current_group) {
 
 		// La fonction get_group() dans /lib/groupes.inc.php ne récupère pas le sexe et la date de naissance...
 		// ... pourrait-on l'ajouter?
-		$sql="SELECT sexe,naissance,email,no_gep,elenoet,ele_id FROM eleves WHERE login='$eleve_login'";
+		$sql="SELECT sexe,naissance,lieu_naissance,email,no_gep,elenoet,ele_id FROM eleves WHERE login='$eleve_login'";
 		$res_tmp=mysql_query($sql);
 
 		if(mysql_num_rows($res_tmp)==0){
@@ -208,11 +215,20 @@ if($current_group) {
 		else{
 			$lig_tmp=mysql_fetch_object($res_tmp);
 			$eleve_sexe=$lig_tmp->sexe;
-			$eleve_naissance=$lig_tmp->naissance;
+			if((isset($format_naiss))&&($format_naiss=='jjmmaaaa')) {
+				$eleve_naissance=formate_date($lig_tmp->naissance);
+			}
+			else {
+				$eleve_naissance=$lig_tmp->naissance;
+			}
 			$eleve_email=$lig_tmp->email;
 			$eleve_no_gep=$lig_tmp->no_gep;
 			$eleve_elenoet=$lig_tmp->elenoet;
 			$eleve_ele_id=$lig_tmp->ele_id;
+
+			if($avec_lieu_naiss=='y') {
+				$eleve_lieu_naissance=get_commune($lig_tmp->lieu_naissance,'2');
+			}
 		}
 
 		//$fd.="$eleve_classe;$eleve_login;$eleve_nom;$eleve_prenom;$eleve_sexe;$eleve_naissance\n";
@@ -224,7 +240,8 @@ if($current_group) {
 		if((isset($avec_prenom))&&($avec_prenom=='y')) {$ligne.="$eleve_prenom;";}
 		if((isset($avec_sexe))&&($avec_sexe=='y')) {$ligne.="$eleve_sexe;";}
 		if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.="$eleve_naissance;";}
-	
+		if($avec_lieu_naiss=='y') {$ligne.="$eleve_lieu_naissance;";}
+
 		if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
 		if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
 		if($_SESSION['statut']!='professeur') {
@@ -256,6 +273,12 @@ if($current_group) {
 		$eleve_prenom = mysql_result($appel_donnees_eleves, $i, "prenom");
 		$eleve_sexe = mysql_result($appel_donnees_eleves, $i, "sexe");
 		$eleve_naissance = mysql_result($appel_donnees_eleves, $i, "naissance");
+		if((isset($format_naiss))&&($format_naiss=='jjmmaaaa')) {
+			$eleve_naissance=formate_date($eleve_naissance);
+		}
+		if($avec_lieu_naiss=='y') {
+			$eleve_lieu_naissance=get_commune(mysql_result($appel_donnees_eleves, $i, "lieu_naissance"),'2');
+		}
 
 		//$fd.="$classe;$eleve_login;$eleve_nom;$eleve_prenom;$eleve_sexe;$eleve_naissance\n";
 
@@ -271,7 +294,8 @@ if($current_group) {
 		if((isset($avec_prenom))&&($avec_prenom=='y')) {$ligne.="$eleve_prenom;";}
 		if((isset($avec_sexe))&&($avec_sexe=='y')) {$ligne.="$eleve_sexe;";}
 		if((isset($avec_naiss))&&($avec_naiss=='y')) {$ligne.="$eleve_naissance;";}
-	
+		if((isset($avec_lieu_naiss))&&($avec_lieu_naiss=='y')) {$ligne.="$eleve_lieu_naissance;";}
+
 		if((isset($avec_email))&&($avec_email=='y')) {$ligne.="$eleve_email;";}
 		if((isset($avec_statut))&&($avec_statut=='y')) {$ligne.="eleve;";}
 		if($_SESSION['statut']!='professeur') {
