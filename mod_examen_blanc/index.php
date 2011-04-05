@@ -2007,6 +2007,35 @@ function cocher_decocher(mode) {
 							echo "Aucun devoir.<br />";
 						}
 
+
+
+						$sql="SELECT DISTINCT mn.periode, p.nom_periode, p.verouiller FROM matieres_notes mn, periodes p WHERE mn.id_groupe='$lig->id' AND p.id_classe='$id_classe[$i]' AND p.num_periode=mn.periode ORDER BY periode;";
+						//echo "$sql<br />\n";
+						$res2=mysql_query($sql);
+						if(mysql_num_rows($res2)>0) {
+							while($lig2=mysql_fetch_object($res2)) {
+								if((!isset($tab_periodes[$cpt_grp]))||(!in_array($lig2->periode, $tab_periodes[$cpt_grp]))) {
+									echo "<label for='id_dev_".$cpt_grp."_$cpt' style='cursor: pointer;' alt='Moyenne du bulletin pour la période' title='Moyenne du bulletin pour la période'>";
+									echo "<span class='bold'>".htmlentities($lig2->nom_periode)."</span>\n";
+									$tab_periodes[$cpt_grp][]=$lig2->periode;
+									echo "</label>\n";
+									echo "&nbsp;<input type='radio' name='id_dev_".$cpt_grp."' id='id_dev_".$cpt_grp."_$cpt' value='P$lig2->periode' ";
+									echo "onchange=\"radio_change($cpt_grp,$cpt);changement();\" ";
+									if((isset($tab_moy_bull_inscrits[$lig->id]))&&($tab_moy_bull_inscrits[$lig->id]==$lig2->periode)) {
+										echo "checked ";
+									}
+									echo "/>";
+
+									if($lig2->verouiller=='N') {echo "<img src='../images/icons/flag.png' width='17' height='18' alt='ATTENTION: Période non close' title='ATTENTION: Période non close' />\n";}
+									echo "<br />\n";
+
+									$cpt++;
+								}
+							}
+						}
+
+
+
 						// Et proposer de saisir des notes hors devoir
 
 
