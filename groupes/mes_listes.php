@@ -167,7 +167,15 @@ if($_SESSION['statut']=='professeur'){
 			echo "<div id='div_champs_periodes'>\n";
 			for($i=1;$i<$first_group['nb_periode'];$i++) {
 				echo "<input type='radio' id='periode_num_$i' name='periode_num' value='".$i."' ";
-				if($i==1) {echo "checked ";}
+				//if($i==1) {echo "checked ";}
+				if((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$first_group['nb_periode'])) {
+					if($_SESSION['mes_listes_periode_num']==$i) {
+						echo "checked ";
+					}
+				}
+				else {
+					if($i==1) {echo "checked ";}
+				}
 				echo "/><label for='periode_num_$i'> Période $i</label><br />\n";
 			}
 			echo "</div>\n";
@@ -366,7 +374,15 @@ else {
 	echo "<div id='div_champs_periodes'>\n";
 	for($i=1;$i<=$nb_per;$i++) {
 		echo "<input type='radio' id='periode_num_$i' name='periode_num' value='".$i."' ";
-		if($i==1) {echo "checked ";}
+		//if($i==1) {echo "checked ";}
+		if((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$nb_per)) {
+			if($_SESSION['mes_listes_periode_num']==$i) {
+				echo "checked ";
+			}
+		}
+		else {
+			if($i==1) {echo "checked ";}
+		}
 		echo "/><label for='periode_num_$i'> Période $i</label><br />\n";
 	}
 	echo "</div>\n";

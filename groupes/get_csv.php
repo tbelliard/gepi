@@ -74,6 +74,8 @@ $periode_num = isset($_POST['periode_num']) ? $_POST['periode_num'] : (isset($_G
 //if (!is_numeric($periode_num)) {$periode_num = 0;}
 if (!is_numeric($periode_num)) {$periode_num = 1;}
 
+$_SESSION['mes_listes_periode_num']=$periode_num;
+
 if (is_numeric($id_groupe) && $id_groupe > 0) {
 	$current_group = get_group($id_groupe);
 	//echo "2<br />";

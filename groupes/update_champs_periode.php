@@ -63,7 +63,14 @@ if((isset($id_groupe))&&(is_numeric($id_groupe))&&($id_groupe!=0)) {
 
 		for($i=1;$i<=$lig->maxper;$i++) {
 			echo "<input type='radio' id='periode_num_$i' name='periode_num' value='".$i."' ";
-			if($i==1) {echo "checked ";}
+			if((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$lig->maxper)) {
+				if($_SESSION['mes_listes_periode_num']==$i) {
+					echo "checked ";
+				}
+			}
+			else {
+				if($i==1) {echo "checked ";}
+			}
 			echo "/><label for='periode_num_$i'> Période $i</label><br />\n";
 		}
 	}
@@ -78,7 +85,14 @@ elseif((isset($id_classe))&&(is_numeric($id_classe))&&($id_classe!=0)) {
 
 		for($i=1;$i<=$lig->maxper;$i++) {
 			echo "<input type='radio' id='periode_num_$i' name='periode_num' value='".$i."' ";
-			if($i==1) {echo "checked ";}
+			if((isset($_SESSION['mes_listes_periode_num']))&&($_SESSION['mes_listes_periode_num']<=$lig->maxper)) {
+				if($_SESSION['mes_listes_periode_num']==$i) {
+					echo "checked ";
+				}
+			}
+			else {
+				if($i==1) {echo "checked ";}
+			}
 			echo "/><label for='periode_num_$i'> Période $i</label><br />\n";
 		}
 	}
