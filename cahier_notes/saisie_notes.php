@@ -1683,12 +1683,15 @@ while($i < $nombre_lignes) {
 			$statut_moy = @mysql_result($moyenne_query, 0, "statut");
 			if ($statut_moy == 'y') {
 				$moy = @mysql_result($moyenne_query, 0, "note");
+				//echo "$eleve_login[$i] : $moy -&gt; ";
 				$moy = number_format($moy,1, ',', ' ');
+				//echo "$moy -&gt; ";
 				$data_pdf[$pointer][] = $moy;
 
 				//=========================
 				// AJOUT: boireaus 20080607
-				$tab_graph_moy[]=number_format($moy,1, '.', ' ');
+				$tab_graph_moy[]=number_format(strtr($moy,",","."),1, '.', ' ');
+				//echo number_format(strtr($moy,",","."),1, '.', ' ')."<br />";
 				//=========================
 
 			} else {
