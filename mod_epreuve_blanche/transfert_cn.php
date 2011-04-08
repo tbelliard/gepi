@@ -178,7 +178,12 @@ if(isset($_POST['transfert_cn'])) {
 		$description=$lig_epreuve->description;
 		$etat=$lig_epreuve->etat;
 		$note_sur=$lig_epreuve->note_sur;
-	
+		$ramener_sur_20="n";
+		if(getSettingValue("note_autre_que_sur_referentiel")=="F") {
+			$note_sur=20;
+			$ramener_sur_20="y";
+		}
+
 		if($etat!='clos') {
 
 			$id_cn=isset($_POST['id_cn']) ? $_POST['id_cn'] : (isset($_GET['id_cn']) ? $_GET['id_cn'] : array());
@@ -210,6 +215,7 @@ if(isset($_POST['transfert_cn'])) {
 
 					// Créer le devoir
 					$sql="INSERT INTO cn_devoirs SET id_racine='$id_racine', id_conteneur='$id_conteneur', nom_court='nouveau', ramener_sur_referentiel='F', note_sur='$note_sur';";
+					//echo "$sql<br />";
 					$reg=mysql_query($sql);
 					if(!$reg) {
 						$msg.="Erreur lors de la création du devoir pour l'enseignement associé au cahier de notes $current_id_cn.<br />";
@@ -260,7 +266,19 @@ if(isset($_POST['transfert_cn'])) {
 						//echo "$sql<br />";
 						$res_ele=mysql_query($sql);
 						while($lig_ele=mysql_fetch_object($res_ele)) {
-							$sql="INSERT INTO cn_notes_devoirs SET login='$lig_ele->login_ele', id_devoir='$id_devoir', note='$lig_ele->note', statut='$lig_ele->statut';";
+							if(getSettingValue("note_autre_que_sur_referentiel")=="F") {
+								if($lig_ele->statut=='') {
+									$note_courante=round(10*20*$lig_ele->note/$lig_epreuve->note_sur)/10;
+									$sql="INSERT INTO cn_notes_devoirs SET login='$lig_ele->login_ele', id_devoir='$id_devoir', note='$note_courante', statut='$lig_ele->statut';";
+								}
+								else {
+									$sql="INSERT INTO cn_notes_devoirs SET login='$lig_ele->login_ele', id_devoir='$id_devoir', note='$lig_ele->note', statut='$lig_ele->statut';";
+								}
+
+							}
+							else {
+								$sql="INSERT INTO cn_notes_devoirs SET login='$lig_ele->login_ele', id_devoir='$id_devoir', note='$lig_ele->note', statut='$lig_ele->statut';";
+							}
 							//echo "$sql<br />";
 							$insert=mysql_query($sql);
 							if(!$insert) {
@@ -499,6 +517,11 @@ for($j=0;$j<$cpt;$j++) {
 }
 
 echo "</table>\n";
+
+if(getSettingValue("note_autre_que_sur_referentiel")=="F") {
+	echo "<p><span style='font-weight:bold; color:red;'>ATTENTION</span>&nbsp;: Les notes dans les carnets de notes ne sont autorisées que sur 20.<br />Si vous n'autorisez pas les professeurs à saisir des notes sur un autre référentiel que 20, les notes seront ramenées sur 20 lors du transfert dans le carnet de notes.<br />En revanche, si vous souhaitez autoriser les notes sur d'autres référentiels, <a href='../cahier_notes_admin/index.php'>suivez ce lien</a>.</p>\n";
+}
+
 
 echo "<script type='text/javascript'>
 function alert_transfert(id) {
