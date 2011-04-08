@@ -112,7 +112,7 @@ if(isset($_POST['saisie_notes'])) {
 						$elev_note='0';
 						$elev_statut='-';
 					}
-					elseif(ereg("^[0-9\.\,]{1,}$",$note[$i])) {
+					elseif(preg_match("/^[0-9\.\,]{1,}$/",$note[$i])) {
 						$elev_note=str_replace(",", ".", "$note[$i]");
 						if(($elev_note<0)||($elev_note>$note_sur)){
 							$elev_note='';

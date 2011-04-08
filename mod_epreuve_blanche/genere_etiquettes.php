@@ -93,7 +93,7 @@ if((isset($mode))&&($mode=='parametrer')) {
 
 		//echo "$nom -&gt; ".$$nom;
 		//if(ereg("^[0-9]*$",$$nom)) {
-		if((isset($$nom))&&(ereg("^[0-9]*$",$$nom))) {
+		if((isset($$nom))&&(preg_match("/^[0-9]*$/",$$nom))) {
 			//echo " valide";
 			//echo "<br />";
 			$sql="DELETE FROM eb_param WHERE type='etiquette' AND nom='$nom';";
