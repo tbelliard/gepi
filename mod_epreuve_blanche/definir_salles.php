@@ -186,7 +186,10 @@ if(isset($definition_salles)) {
 						// La salle existe
 
 						$lig=mysql_fetch_object($res);
-						if((!in_array($lig->salle,$salle))&&(!in_array($lig->salle,$tab_salles))) {
+						//if((!in_array($lig->salle,$salle))&&(!in_array($lig->salle,$tab_salles))) {
+						if(((!in_array($lig->salle,$tab_salles))&&(!is_array($salle)))||
+						((is_array($salle))&&(!in_array($lig->salle,$salle))&&(!in_array($lig->salle,$tab_salles))))
+						 {
 							$sql="INSERT INTO eb_salles SET salle='".$lig->salle."', id_epreuve='$id_epreuve';";
 							$insert=mysql_query($sql);
 							if(!$insert) {$msg.="Erreur lors de l'ajout de la salle '$lig->salle'<br />";}
