@@ -360,11 +360,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 					if(($type_anonymat=='alea') ||($type_anonymat=='chrono')) {
 						//$sql="SELECT DISTINCT login FROM j_eleves_groupes WHERE id_groupe='$id_groupe[$i]';";
 						$sql="SELECT DISTINCT j.login, e.date_sortie FROM j_eleves_groupes j, eleves e WHERE j.id_groupe='$id_groupe[$i]' AND j.login=e.login AND (e.date_sortie='0000-00-00 00:00:00' OR e.date_sortie IS NULL);";
-						//echo $sql;
+						//echo "$sql<br />\n";
 					}
 					else {
+						//$sql="SELECT DISTINCT j.login,e.$type_anonymat FROM j_eleves_groupes j, eleves e WHERE j.id_groupe='$id_groupe[$i]' AND j.login=e.login;";
 						$sql="SELECT DISTINCT j.login,e.$type_anonymat, e.date_sortie FROM j_eleves_groupes j, eleves e WHERE j.id_groupe='$id_groupe[$i]' AND j.login=e.login AND (e.date_sortie='0000-00-00 00:00:00' OR e.date_sortie IS NULL);";
-						//echo $sql;
+						//echo "$sql<br />\n";
 					}
 					// Il faudra voir comment gérer le cas d'élèves partis en cours d'année... faire choisir la période?
 					// Eric le 9-4-11 ==> utilisation de la date de sortie pour l'élève. Elève présent ==> date_sortie=0 ou null
@@ -1030,6 +1031,12 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 						echo "</li>\n";
 					}
 				}
+
+				echo "<li>\n";
+				echo "<a href='genere_bordereaux.php?id_epreuve=$id_epreuve'";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo ">Générer les bordereaux professeurs</a><br />\n";
+				echo "</li>\n";
 
 				echo "<li>\n";
 				// A FAIRE
