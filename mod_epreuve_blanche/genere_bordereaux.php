@@ -73,14 +73,22 @@ if(isset($imprime)) {
 	check_token();
 
 	$avec_num_anonymat=isset($_POST['avec_num_anonymat']) ? $_POST['avec_num_anonymat'] : "n";
-	$avec_colonne_vide=isset($_POST['avec_colonne_vide']) ? $_POST['avec_colonne_vide'] : "n";
-	$titre_colonne_vide=isset($_POST['titre_colonne_vide']) ? $_POST['titre_colonne_vide'] : "";
+
+	$avec_colonne_vide_1=isset($_POST['avec_colonne_vide_1']) ? $_POST['avec_colonne_vide_1'] : "n";
+	$titre_colonne_vide_1=isset($_POST['titre_colonne_vide_1']) ? $_POST['titre_colonne_vide_1'] : "";
+	$avec_colonne_vide_2=isset($_POST['avec_colonne_vide_2']) ? $_POST['avec_colonne_vide_2'] : "n";
+	$titre_colonne_vide_2=isset($_POST['titre_colonne_vide_2']) ? $_POST['titre_colonne_vide_2'] : "";
+	$avec_colonne_vide_3=isset($_POST['avec_colonne_vide_3']) ? $_POST['avec_colonne_vide_3'] : "n";
+	$titre_colonne_vide_3=isset($_POST['titre_colonne_vide_3']) ? $_POST['titre_colonne_vide_3'] : "";
+
 	$avec_nom_prenom=isset($_POST['avec_nom_prenom']) ? $_POST['avec_nom_prenom'] : "n";
 	$avec_naissance=isset($_POST['avec_naissance']) ? $_POST['avec_naissance'] : "n";
 	$avec_classe=isset($_POST['avec_classe']) ? $_POST['avec_classe'] : "n";
 	$avec_salle=isset($_POST['avec_salle']) ? $_POST['avec_salle'] : "n";
 
-	$titre_colonne_vide=preg_replace('/;/','_',$titre_colonne_vide);
+	$titre_colonne_vide_1=preg_replace('/;/','_',$titre_colonne_vide_1);
+	$titre_colonne_vide_2=preg_replace('/;/','_',$titre_colonne_vide_2);
+	$titre_colonne_vide_3=preg_replace('/;/','_',$titre_colonne_vide_3);
 
 	$sql="SELECT * FROM eb_epreuves WHERE id='$id_epreuve';";
 	//echo "$sql<br />\n";
@@ -101,10 +109,15 @@ if(isset($imprime)) {
 		}
 
 		$profs=array();
+		$cpt=0;
+		$profs[$cpt]['login']="";
+		$profs[$cpt]['civ_n_p']="Copie(s) non attribuée(s)";
+		$cpt++;
+
 		$sql="SELECT u.login, u.nom, u.prenom, u.civilite FROM eb_profs ep, utilisateurs u WHERE u.login=ep.login_prof AND ep.id_epreuve='$id_epreuve' ORDER BY u.nom, u.prenom;";
 		//echo "$sql<br />\n";
 		$res_prof=mysql_query($sql);
-		$cpt=0;
+		
 		while($lig=mysql_fetch_object($res_prof)) {
 			$profs[$cpt]['login']=$lig->login;
 			$profs[$cpt]['civ_n_p']=$lig->civilite." ".casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
@@ -137,22 +150,30 @@ if(isset($imprime)) {
 					$csv.="Date:;$date_epreuve;\n";
 					$csv.="Bordereau de ".$profs[$i]['civ_n_p'].";\n";
 
+					$csv.="NUM_COPIE;";
 					if($avec_num_anonymat=='y') {$csv.="NUM_ANONYMAT;";}
-					if($avec_colonne_vide=='y') {$csv.="$titre_colonne_vide;";}
+					if($avec_colonne_vide_1=='y') {$csv.="$titre_colonne_vide_1;";}
+					if($avec_colonne_vide_2=='y') {$csv.="$titre_colonne_vide_2;";}
+					if($avec_colonne_vide_3=='y') {$csv.="$titre_colonne_vide_3;";}
 					if($avec_nom_prenom=='y') {$csv.="NOM_PRENOM;";}
 					if($avec_naissance=='y') {$csv.="NAISSANCE;";}
 					if($avec_classe=='y') {$csv.="CLASSE;";}
 					if($avec_salle=='y') {$csv.="SALLE;";}
 					$csv.="\n";
 
+					$cpt=0;
 					while($lig=mysql_fetch_object($res)) {
+						$csv.="$cpt;";
 						if($avec_num_anonymat=='y') {$csv.="$lig->n_anonymat;";}
-						if($avec_colonne_vide=='y') {$csv.=";";}
+						if($avec_colonne_vide_1=='y') {$csv.=";";}
+						if($avec_colonne_vide_2=='y') {$csv.=";";}
+						if($avec_colonne_vide_3=='y') {$csv.=";";}
 						if($avec_nom_prenom=='y') {$csv.=casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2').";";}
 						if($avec_naissance=='y') {$csv.=formate_date($lig->naissance).";";}
 						if($avec_classe=='y') {$csv.="$lig->classe;";}
 						if($avec_salle=='y') {if(isset($salle[$lig->id])) {$csv.=$salle[$lig->id].";";} else {$csv.="???;";}}
 						$csv.="\n";
+						$cpt++;
 					}
 				}
 			}
@@ -308,19 +329,8 @@ if(isset($imprime)) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
-					//$nb_colonnes=3;
 
 					$cpt_col=0;
-
-					/*
-					if($avec_num_anonymat=='y') {$cpt_col++;}
-					if($avec_colonne_vide=='y') {$cpt_col++;}
-					if($avec_nom_prenom=='y') {$cpt_col++;}
-					if($avec_naissance=='y') {$cpt_col++;}
-					if($avec_classe=='y') {$cpt_col++;}
-					if($avec_salle=='y') {$cpt_col++;}
-					if($cpt_col>2) {$nb_colonnes=1;}
-					*/
 
 					$x1=10;
 					$y1=30;
@@ -351,49 +361,80 @@ if(isset($imprime)) {
 
 					$pdf->SetXY($x1,$y2);
 
-					$larg_col[0]=0;
+					$larg_col[$cpt_col]=0;
+					$texte='Num.';
+					$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+					$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+					$cpt_col++;
+
+					$larg_col[$cpt_col]=0;
 					if($avec_num_anonymat=='y') {
-						$texte='Numéro';
-						$larg_col[0]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[0],10,$texte,'LRBT',0,'C');
+						$texte='Numéro copie';
+						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
+					$cpt_col++;
 
-					$larg_col[1]=0;
-					if($avec_colonne_vide=='y') {
-						$texte=$titre_colonne_vide;
-						$larg_col[1]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[1],10,$texte,'LRBT',0,'C');
+					$larg_col[$cpt_col]=0;
+					if($avec_colonne_vide_1=='y') {
+						$texte=$titre_colonne_vide_1;
+						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
+					$cpt_col++;
 
-					$larg_col[2]=0;
+					$larg_col[$cpt_col]=0;
+					if($avec_colonne_vide_2=='y') {
+						$texte=$titre_colonne_vide_2;
+						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+					}
+					$cpt_col++;
+
+					$larg_col[$cpt_col]=0;
+					if($avec_colonne_vide_3=='y') {
+						$texte=$titre_colonne_vide_3;
+						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+					}
+					$cpt_col++;
+
+					$larg_col[$cpt_col]=0;
 					if($avec_nom_prenom=='y') {
 						$texte='Nom prénom';
-						$larg_col[2]=$larg_max+4;
-						$pdf->Cell($larg_col[2],10,$texte,'LRBT',0,'C');
+						$larg_col[$cpt_col]=$larg_max+4;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
+					$cpt_col++;
 
-					$larg_col[3]=0;
+					$larg_col[$cpt_col]=0;
 					if($avec_naissance=='y') {
 						$texte='Naissance';
-						$larg_col[3]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[3],10,$texte,'LRBT',0,'C');
+						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
+					$cpt_col++;
 
-					$larg_col[4]=0;
+					$larg_col[$cpt_col]=0;
 					if($avec_classe=='y') {
 						$texte='Classe';
-						$larg_col[4]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[4],10,$texte,'LRBT',0,'C');
+						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
+					$cpt_col++;
 
-					$larg_col[5]=0;
+					$larg_col[$cpt_col]=0;
 					if($avec_salle=='y') {
 						$texte='Salle';
-						$larg_col[5]=$pdf->GetStringWidth($texte)+4;
-						$pdf->Cell($larg_col[5],10,$texte,'LRBT',0,'C');
+						$larg_col[$cpt_col]=$pdf->GetStringWidth($texte)+4;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 					}
+					$cpt_col++;
 
-					$largeur_totale=$larg_col[0]+$larg_col[1]+$larg_col[2]+$larg_col[3]+$larg_col[4]+$larg_col[5];
+					$largeur_totale=0;
+					for($loop=0;$loop<count($larg_col);$loop++) {
+						$largeur_totale+=$larg_col[$loop];
+					}
 					$nb_colonnes=floor(($largeur_page-$MargeDroite-$MargeGauche-5)/$largeur_totale);
 
 					$x=$pdf->GetX();
@@ -419,35 +460,60 @@ if(isset($imprime)) {
 								$pdf->SetXY($x1,$y2);
 							}
 
+							$pdf->SetFont($fonte,'B',10);
+
+							$cpt_col=0;
+							$texte='Num.';
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							$cpt_col++;
+
 							if($avec_num_anonymat=='y') {
-								$texte='Numéro';
-								$pdf->Cell($larg_col[0],10,$texte,'LRBT',0,'C');
+								$texte='Numéro copie';
+								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 							}
-		
-							if($avec_colonne_vide=='y') {
-								$texte=$titre_colonne_vide;
-								$pdf->Cell($larg_col[1],10,$texte,'LRBT',0,'C');
+							$cpt_col++;
+
+							if($avec_colonne_vide_1=='y') {
+								$texte=$titre_colonne_vide_1;
+								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 							}
+							$cpt_col++;
+
+							if($avec_colonne_vide_2=='y') {
+								$texte=$titre_colonne_vide_2;
+								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							}
+							$cpt_col++;
+
+							if($avec_colonne_vide_3=='y') {
+								$texte=$titre_colonne_vide_3;
+								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+							}
+							$cpt_col++;
 		
 							if($avec_nom_prenom=='y') {
 								$texte='Nom prénom';
-								$pdf->Cell($larg_col[2],10,$texte,'LRBT',0,'C');
+								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 							}
+							$cpt_col++;
 		
 							if($avec_naissance=='y') {
 								$texte='Naissance';
-								$pdf->Cell($larg_col[3],10,$texte,'LRBT',0,'C');
+								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 							}
+							$cpt_col++;
 		
 							if($avec_classe=='y') {
 								$texte='Classe';
-								$pdf->Cell($larg_col[4],10,$texte,'LRBT',0,'C');
+								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 							}
+							$cpt_col++;
 		
 							if($avec_salle=='y') {
 								$texte='Salle';
-								$pdf->Cell($larg_col[5],10,$texte,'LRBT',0,'C');
+								$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 							}
+							$cpt_col++;
 
 							$x=$pdf->GetX();
 							$y=$pdf->GetY();
@@ -456,7 +522,8 @@ if(isset($imprime)) {
 
 						$pdf->SetFont($fonte,'B',10);
 
-						$largeur_dispo=$larg_col[2];
+						//$largeur_dispo=$larg_col[2];
+						$largeur_dispo=$larg_max+4;
 						$h_cell=10;
 						$hauteur_max_font=10;
 						$hauteur_min_font=4;
@@ -468,16 +535,35 @@ if(isset($imprime)) {
 						$x=$pdf->GetX();
 						$y=$pdf->GetY();
 
+						$cpt_col=0;
+						$texte=$j+1;
+						$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						$cpt_col++;
+
 						if($avec_num_anonymat=='y') {
 							$texte=$tab_n_anonymat[$j];
-							$pdf->Cell($larg_col[0],10,$texte,'LRBT',0,'C');
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 						}
-	
-						if($avec_colonne_vide=='y') {
+						$cpt_col++;
+
+						if($avec_colonne_vide_1=='y') {
 							$texte='';
-							$pdf->Cell($larg_col[1],10,$texte,'LRBT',0,'C');
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 						}
-	
+						$cpt_col++;
+
+						if($avec_colonne_vide_2=='y') {
+							$texte='';
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						}
+						$cpt_col++;
+
+						if($avec_colonne_vide_3=='y') {
+							$texte='';
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
+						}
+						$cpt_col++;
+
 						if($avec_nom_prenom=='y') {
 							$x=$pdf->GetX();
 							$y=$pdf->GetY();
@@ -486,21 +572,25 @@ if(isset($imprime)) {
 							//$pdf->Cell($largeur_dispo,10,$texte,'LRBT',0,'C');
 							$pdf->SetXY($x+$largeur_dispo,$y);
 						}
+						$cpt_col++;
 	
 						if($avec_naissance=='y') {
 							$texte=$tab_naissance[$j];
-							$pdf->Cell($larg_col[3],10,$texte,'LRBT',0,'C');
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 						}
+						$cpt_col++;
 	
 						if($avec_classe=='y') {
 							$texte=$tab_classe[$j];
-							$pdf->Cell($larg_col[4],10,$texte,'LRBT',0,'C');
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 						}
+						$cpt_col++;
 	
 						if($avec_salle=='y') {
 							$texte=$tab_salle[$j];
-							$pdf->Cell($larg_col[5],10,$texte,'LRBT',0,'C');
+							$pdf->Cell($larg_col[$cpt_col],10,$texte,'LRBT',0,'C');
 						}
+						$cpt_col++;
 
 						$x=$pdf->GetX();
 						$y=$pdf->GetY();
@@ -620,10 +710,13 @@ if(!isset($imprime)) {
 
 	echo "<p>Choisissez le type de bordereaux à imprimer&nbsp;:<br />\n";
 	echo "<input type='radio' name='mode' id='mode_csv' value='csv' /><label for='mode_csv'>CSV</label><br />";
-	echo "<input type='radio' name='mode' id='mode_pdf' value='pdf' checked/><label for='mode_pdf'>PDF</label><br />";
+	echo "<input type='radio' name='mode' id='mode_pdf' value='pdf' checked /><label for='mode_pdf'>PDF</label><br />";
 	echo "<p>Informations à inclure&nbsp;:<br />";
-	echo "<input type='checkbox' name='avec_num_anonymat' id='avec_num_anonymat' value='y' checked/><label for='avec_num_anonymat'>Avec le numéro anonymat</label><br />";
-	echo "<input type='checkbox' name='avec_colonne_vide' id='avec_colonne_vide' value='y' checked/><label for='avec_colonne_vide'>Avec une colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide' value='Note sur $note_sur' /><br />";
+	echo "<input type='checkbox' name='avec_num_anonymat' id='avec_num_anonymat' value='y' checked /><label for='avec_num_anonymat'>Avec le numéro anonymat</label><br />";
+	//echo "<input type='checkbox' name='avec_colonne_vide' id='avec_colonne_vide' value='y' checked/><label for='avec_colonne_vide'>Avec une colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide' value='Note sur $note_sur' /><br />";
+	echo "<input type='checkbox' name='avec_colonne_vide_1' id='avec_colonne_vide_1' value='y' checked /><label for='avec_colonne_vide_1'> Avec une colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_1' value='Note sur $note_sur' /><br />";
+	echo "<input type='checkbox' name='avec_colonne_vide_2' id='avec_colonne_vide_2' value='y' /><label for='avec_colonne_vide_2'> Avec une deuxième colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_2' value='Pointage départ' /><br />";
+	echo "<input type='checkbox' name='avec_colonne_vide_3' id='avec_colonne_vide_3' value='y' /><label for='avec_colonne_vide_3'> Avec une troisième colonne vide dont l'intitulé soit </label><input type='text' name='titre_colonne_vide_3' value='Pointage retour' /><br />";
 	echo "Normalement, les champs suivants ne devraient pas apparaitre sur des bordereaux professeurs, mais vous imaginerez peut-être des usages auxquels les développeurs n'avaient pas pensé.<br />";
 	echo "<input type='checkbox' name='avec_nom_prenom' id='avec_nom_prenom' value='y' /><label for='avec_nom_prenom'>Avec les nom/prénom des élèves</label><br />";
 	echo "<input type='checkbox' name='avec_naissance' id='avec_naissance' value='y' /><label for='avec_naissance'>Avec la date de naissance de l'élève</label><br />";
