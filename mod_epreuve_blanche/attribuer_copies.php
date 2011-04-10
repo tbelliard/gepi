@@ -203,19 +203,6 @@ if($etat!='clos') {
 
 //echo "<p align='center'><input type='submit' name='bouton_valide_affect_eleves1' value='Valider' /></p>\n";
 
-// Eric Impression des bordereau
-// 
-echo "<b><br/>&nbsp;Impression du bordereau de répartition des copies.</b><br/>";
-$sql="SELECT DISTINCT login_prof FROM eb_copies WHERE id_epreuve='$id_epreuve' AND login_prof<>'' ORDER BY login_prof;";
-$res=mysql_query($sql);
-if(mysql_num_rows($res)==0) {
-	echo "<p>&nbsp;Aucune copie n'est encore associée aux correcteurs. L'impression du bordereau est impossible.</p><br/>\n";
-} else { // des copies sont attribuées on affiche le lien
-	echo "<ul>\n";
-	echo "<li><a href='genere_bordereau_attribution_copies.php?id_epreuve=$id_epreuve'> Imprimer les bordereaux de l'épreuve n°$id_epreuve</a></li>\n";
-	echo "</ul>\n";
-}
-
 if($tri=='groupe') {
 	$sql="SELECT DISTINCT g.* FROM eb_groupes eg, groupes g WHERE id_epreuve='$id_epreuve' AND eg.id_groupe=g.id ORDER BY g.name, g.description;";
 	$res=mysql_query($sql);

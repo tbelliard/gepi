@@ -967,4 +967,3 @@ insert into vocabulaire set terme='elle et', terme_corrige='elle est';
 insert into vocabulaire set terme='elle es', terme_corrige='elle est';
 INSERT INTO droits SET id='/saisie/saisie_vocabulaire.php',administrateur='V',professeur='F',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Saisie de vocabulaire',statut='';
 INSERT INTO droits SET id='/mod_epreuve_blanche/genere_liste_affichage.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Epreuve blanche: Génération liste affichage',statut='';
-INSERT INTO droits SET id='/mod_epreuve_blanche/genere_bordereau_attribution_copies.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Epreuve blanche: Génération des bordereaux d''atribution des copies aux correcteurs',statut='';
