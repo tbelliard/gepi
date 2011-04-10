@@ -630,6 +630,8 @@ if(!isset($imprime)) {
 	echo "<input type='checkbox' name='avec_classe' id='avec_classe' value='y' /><label for='avec_classe'>Avec la classe de l'élève</label><br />";
 	echo "<input type='checkbox' name='avec_salle' id='avec_salle' value='y' /><label for='avec_salle'>Avec le nom de salle dans laquelle l'élève a passé l'épreuve</label><br />";
 
+	echo add_token_field();
+
 	echo "<input type='hidden' name='id_epreuve' value='$id_epreuve' />";
 	echo "<input type='hidden' name='imprime' value='y' />";
 	echo "<input type='submit' name='valider' value='Valider' /><br />";
