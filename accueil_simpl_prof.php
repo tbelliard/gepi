@@ -176,7 +176,8 @@ $texte_messages = '';
 $affiche_messages = 'no';
 while ($ind < $nb_messages) {
 	$destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
-	if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
+	//if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
+	if (($_SESSION['login']==$destinataires1) || (($_SESSION['login']!=$destinataires1) && (strpos($destinataires1, substr($_SESSION['statut'], 0, 1)))&&(substr($destinataires1,0,1)=="_"))) {
 		if ($affiche_messages == 'yes') $texte_messages .= "<hr />";
 		$affiche_messages = 'yes';
 		$content = mysql_result($appel_messages, $ind, 'texte');
@@ -211,7 +212,7 @@ while ($ind < $nb_messages) {
 			if($decompte_m==1) {$decompte_remplace.=$decompte_m." minute";}
 			elseif($decompte_m>1) {$decompte_remplace.=$decompte_m." minutes";}
 
-			$content=my_ereg_replace("_DECOMPTE_",$decompte_remplace,$content);
+			$content=preg_replace("/_DECOMPTE_/",$decompte_remplace,$content);
 		}
 		$texte_messages .= $content;
 	}
@@ -764,7 +765,7 @@ for($i=0;$i<count($groups);$i++){
 
 		if($pref_accueil_infobulles=="y"){
 			//echo "<div id='info_popup_".$i."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 300px;' onmouseout=\"cacher_div('info_popup_".$i."_".$cpt."');\">Cet outil vous permet de visualiser la composition du groupe ".htmlentities($groups[$i]['description'])."(<i>".$classe['classe']."</i>).</div>\n";
-			echo "<div id='info_popup_".$i."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_popup_".$i."_".$cpt."');\">Liste des élèves de ".htmlentities($groups[$i]['description'])." (<i>".my_ereg_replace(" ","&nbsp;",$classe['classe'])."</i>).</div>\n";
+			echo "<div id='info_popup_".$i."_".$cpt."' class='infobulle_corps' style='border: 1px solid #000000; color: #000000; padding: 0px; position: absolute; width: 18em;' onmouseout=\"cacher_div('info_popup_".$i."_".$cpt."');\">Liste des élèves de ".htmlentities($groups[$i]['description'])." (<i>".preg_replace("/ /","&nbsp;",$classe['classe'])."</i>).</div>\n";
 
 			$tab_liste_infobulles[]='info_popup_'.$i.'_'.$cpt;
 		}
@@ -778,7 +779,7 @@ for($i=0;$i<count($groups);$i++){
 	echo "</td>\n";
 
 	//$liste_classes_du_groupe=trim($liste_classes_du_groupe);
-	$liste_classes_du_groupe=my_ereg_replace(" ","&nbsp;",trim($liste_classes_du_groupe));
+	$liste_classes_du_groupe=preg_replace("/ /","&nbsp;",trim($liste_classes_du_groupe));
 
 
 	//if($active_cahiers_texte=="y"){

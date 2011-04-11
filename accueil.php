@@ -496,7 +496,8 @@ $appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_deco
     date_debut <= '".$today."' and
     date_fin >= '".$today."'
     )
-    order by id DESC");
+    order by date_debut DESC;");
+//    order by id DESC");
 
 $nb_messages = mysql_num_rows($appel_messages);
 //echo "\$nb_messages=$nb_messages<br />";
@@ -506,9 +507,10 @@ $affiche_messages = 'no';
 $autre_message = "";
 while ($ind < $nb_messages) {
 	$destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
-$autre_message = "";
+	$autre_message = "";
 
-	if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
+	//if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
+	if (($_SESSION['login']==$destinataires1) || (($_SESSION['login']!=$destinataires1) && (strpos($destinataires1, substr($_SESSION['statut'], 0, 1)))&&(substr($destinataires1,0,1)=="_"))) {
 		if ($affiche_messages == 'yes') {
 			$autre_message = "hr";
 		}
@@ -543,7 +545,7 @@ $autre_message = "";
 			if($decompte_m==1) {$decompte_remplace.=$decompte_m." minute";}
 			elseif($decompte_m>1) {$decompte_remplace.=$decompte_m." minutes";}
 
-			$content=my_ereg_replace("_DECOMPTE_",$decompte_remplace,$content);
+			$content=preg_replace("/_DECOMPTE_/",$decompte_remplace,$content);
 		}
 
 		// fin _DECOMPTE_
