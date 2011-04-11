@@ -873,7 +873,7 @@ if($etat_incident!='clos') {
 							//}
 	
 							if($destinataires!="") {
-								$texte_mail=$texte_mail."\n\n"."Message: $msg";
+								$texte_mail=$texte_mail."\n\n"."Message: ".preg_replace('#<br />#',"\n",$msg);
 						
 								$subject = "[GEPI][Incident n°$id_incident]".$info_classe_prot.$liste_protagonistes_responsables;
 								$headers = "";
