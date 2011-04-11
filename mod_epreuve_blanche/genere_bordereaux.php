@@ -121,6 +121,7 @@ if(isset($imprime)) {
 		while($lig=mysql_fetch_object($res_prof)) {
 			$profs[$cpt]['login']=$lig->login;
 			$profs[$cpt]['civ_n_p']=$lig->civilite." ".casse_mot($lig->nom)." ".casse_mot($lig->prenom,'majf2');
+			//echo "\$profs[$cpt]['civ_n_p']=".$profs[$cpt]['civ_n_p']."<br />\n";
 			$cpt++;
 		}
 
@@ -212,6 +213,7 @@ if(isset($imprime)) {
 					global $professeur_courant;
 					//global $num_page;
 					//global $decompte_page;
+					//echo "Footer: $professeur_courant<br />\n";
 
 					$this->SetXY(5,287);
 					$this->SetFont('arial','',7.5);
@@ -308,8 +310,8 @@ if(isset($imprime)) {
 				$y1="";
 				$y2="";
 
-				$professeur_courant=$profs[$i]['civ_n_p'];
-
+				//$professeur_courant=$profs[$i]['civ_n_p'];
+				//echo "Prof $i : $professeur_courant<br />\n";
 				//$pdf->EnteteListe();
 
 				$sql="SELECT DISTINCT e.nom, e.prenom, e.login, e.naissance, c.classe, ec.n_anonymat, es.id 
@@ -329,8 +331,12 @@ if(isset($imprime)) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
+					//echo "Retour non vide<br />\n",
+
 					$num_page++;
 					$pdf->AddPage("P");
+					$professeur_courant=$profs[$i]['civ_n_p'];
+					//echo "Prof $i : $professeur_courant<br />\n";
 					$pdf->EnteteListe();
 
 					$cpt_col=0;
