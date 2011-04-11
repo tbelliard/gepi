@@ -300,8 +300,8 @@ if(isset($imprime)) {
 			$compteur=0;
 
 			for($i=0;$i<count($profs);$i++) {
-				$num_page++;
-				$pdf->AddPage("P");
+				//$num_page++;
+				//$pdf->AddPage("P");
 
 				// Initialisation:
 				$x1="";
@@ -310,7 +310,7 @@ if(isset($imprime)) {
 
 				$professeur_courant=$profs[$i]['civ_n_p'];
 
-				$pdf->EnteteListe();
+				//$pdf->EnteteListe();
 
 				$sql="SELECT DISTINCT e.nom, e.prenom, e.login, e.naissance, c.classe, ec.n_anonymat, es.id 
 						FROM j_eleves_classes jec, 
@@ -329,6 +329,9 @@ if(isset($imprime)) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 				if(mysql_num_rows($res)>0) {
+					$num_page++;
+					$pdf->AddPage("P");
+					$pdf->EnteteListe();
 
 					$cpt_col=0;
 
