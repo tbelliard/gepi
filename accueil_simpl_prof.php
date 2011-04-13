@@ -177,7 +177,7 @@ $affiche_messages = 'no';
 while ($ind < $nb_messages) {
 	$destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
 	//if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
-	if (($_SESSION['login']==$destinataires1) || (($_SESSION['login']!=$destinataires1) && (strpos($destinataires1, substr($_SESSION['statut'], 0, 1)))&&(substr($destinataires1,0,1)=="_"))) {
+	if ((strtolower($_SESSION['login'])==strtolower($destinataires1)) || ((strpos(strtolower($destinataires1), substr(strtolower($_SESSION['statut']), 0, 1)))&&(substr($destinataires1,0,1)=="_"))) {
 		if ($affiche_messages == 'yes') $texte_messages .= "<hr />";
 		$affiche_messages = 'yes';
 		$content = mysql_result($appel_messages, $ind, 'texte');
