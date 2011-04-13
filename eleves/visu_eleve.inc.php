@@ -565,6 +565,34 @@ Patientez pendant l'extraction des données... merci.
 			$eleve_classe_prof="n";
 			$eleve_groupe_prof="n";
 
+			//=====================================
+			$sql="SELECT 1=1 FROM j_eleves_classes jec,
+								j_groupes_classes jgc,
+								j_groupes_professeurs jgp
+							WHERE jec.login='".$ele_login."' AND
+									jec.id_classe=jgc.id_classe AND
+									jgc.id_groupe=jgp.id_groupe AND
+									jgp.login='".$_SESSION['login']."';";
+			//echo "$sql<br />";
+			$test_eleve_classe_prof=mysql_query($sql);
+
+			if(mysql_num_rows($test_eleve_classe_prof)>0) {
+				$eleve_classe_prof="y";
+			}
+			//=====================================
+			$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
+								j_groupes_professeurs jgp
+							WHERE jeg.login='".$ele_login."' AND
+									jeg.id_groupe=jgp.id_groupe AND
+									jgp.login='".$_SESSION['login']."';";
+			//echo "$sql<br />";
+			$test_eleve_groupe_prof=mysql_query($sql);
+
+			if(mysql_num_rows($test_eleve_groupe_prof)>0) {
+				$eleve_groupe_prof="y";
+			}
+			//=====================================
+
 			if($acces_releves=='n') {
 				$GepiAccesReleveProfToutesClasses=getSettingValue('GepiAccesReleveProfToutesClasses');
 				if($GepiAccesReleveProfToutesClasses=='yes') {
@@ -574,6 +602,7 @@ Patientez pendant l'extraction des données... merci.
 					$GepiAccesReleveProfTousEleves=getSettingValue('GepiAccesReleveProfTousEleves');
 					//echo "\$GepiAccesReleveProfTousEleves=$GepiAccesReleveProfTousEleves<br />";
 					if($GepiAccesReleveProfTousEleves=='yes') {
+						/*
 						$sql="SELECT 1=1 FROM j_eleves_classes jec,
 											j_groupes_classes jgc,
 											j_groupes_professeurs jgp
@@ -582,12 +611,14 @@ Patientez pendant l'extraction des données... merci.
 												jgc.id_groupe=jgp.id_groupe AND
 												jgp.login='".$_SESSION['login']."';";
 						//echo "$sql<br />";
-						$test=mysql_query($sql);
+						$test_eleve_classe_prof=mysql_query($sql);
 
-						if(mysql_num_rows($test)>0) {
+						if(mysql_num_rows($test_eleve_classe_prof)>0) {
+						*/
+
+						if($eleve_classe_prof=='y') {
 							$acces_releves="y";
-
-							$eleve_classe_prof="y";
+							//$eleve_classe_prof="y";
 						}
 					}
 
@@ -595,18 +626,21 @@ Patientez pendant l'extraction des données... merci.
 						//echo "\$GepiAccesReleveProf=$GepiAccesReleveProf<br />";
 						$GepiAccesReleveProf=getSettingValue('GepiAccesReleveProf');
 						if($GepiAccesReleveProf=='yes') {
+							/*
 							$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
 												j_groupes_professeurs jgp
 											WHERE jeg.login='".$ele_login."' AND
 													jeg.id_groupe=jgp.id_groupe AND
 													jgp.login='".$_SESSION['login']."';";
 							//echo "$sql<br />";
-							$test=mysql_query($sql);
+							$test_eleve_groupe_prof=mysql_query($sql);
 
-							if(mysql_num_rows($test)>0) {
+							if(mysql_num_rows($test_eleve_groupe_prof)>0) {
+							*/
+
+							if($eleve_groupe_prof=='y') {
 								$acces_releves="y";
-
-								$eleve_groupe_prof="y";
+								//$eleve_groupe_prof="y";
 							}
 						}
 					}
@@ -621,6 +655,7 @@ Patientez pendant l'extraction des données... merci.
 				(($eleve_groupe_prof=="y")&&(substr(getSettingValue('visuDiscProfGroupes'),0,1)=='y'))) {
 				$acces_discipline="y";
 			}
+
 
 			//echo "\$acces_releves=$acces_releves<br />";
 
@@ -642,6 +677,7 @@ Patientez pendant l'extraction des données... merci.
 							$acces_bulletins="y";
 						}
 						else {
+							/*
 							$sql="SELECT 1=1 FROM j_eleves_classes jec,
 												j_groupes_classes jgc,
 												j_groupes_professeurs jgp
@@ -653,6 +689,8 @@ Patientez pendant l'extraction des données... merci.
 							$test=mysql_query($sql);
 
 							if(mysql_num_rows($test)>0) {
+							*/
+							if($eleve_classe_prof=='y') {
 								$acces_bulletins="y";
 							}
 						}
@@ -665,6 +703,7 @@ Patientez pendant l'extraction des données... merci.
 								$acces_bulletins="y";
 							}
 							else {
+								/*
 								$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
 													j_groupes_professeurs jgp
 												WHERE jeg.login='".$ele_login."' AND
@@ -674,6 +713,8 @@ Patientez pendant l'extraction des données... merci.
 								$test=mysql_query($sql);
 
 								if(mysql_num_rows($test)>0) {
+								*/
+								if($eleve_groupe_prof=='y') {
 									$acces_bulletins="y";
 								}
 							}
@@ -695,6 +736,7 @@ Patientez pendant l'extraction des données... merci.
 							$acces_anna="y";
 						}
 						else {
+							/*
 							$sql="SELECT 1=1 FROM j_eleves_classes jec,
 												j_groupes_classes jgc,
 												j_groupes_professeurs jgp
@@ -706,6 +748,8 @@ Patientez pendant l'extraction des données... merci.
 							$test=mysql_query($sql);
 
 							if(mysql_num_rows($test)>0) {
+							*/
+							if($eleve_classe_prof=='y') {
 								$acces_anna="y";
 							}
 						}
@@ -717,6 +761,7 @@ Patientez pendant l'extraction des données... merci.
 								$acces_anna="y";
 							}
 							else {
+								/*
 								$sql="SELECT 1=1 FROM j_eleves_groupes jeg,
 													j_groupes_professeurs jgp
 												WHERE jeg.login='".$ele_login."' AND
@@ -726,6 +771,8 @@ Patientez pendant l'extraction des données... merci.
 								$test=mysql_query($sql);
 
 								if(mysql_num_rows($test)>0) {
+								*/
+								if($eleve_groupe_prof=='y') {
 									$acces_anna="y";
 								}
 							}
