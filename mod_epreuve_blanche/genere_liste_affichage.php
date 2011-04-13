@@ -232,6 +232,9 @@ if(isset($imprime)) {
 			$pdf->SetDrawColor(0,0,0);
 			$pdf->SetLineWidth(0.2);
 
+			// hauteur de chaque ligne d'information
+			$hauteur_ligne = 10;
+			
 			$fonte='arial';
 			$sc_interligne=1.3;
 
@@ -367,26 +370,26 @@ if(isset($imprime)) {
 
 							if($imprime=='avec_num_anonymat') {
 								$texte='Numéro';
-								$pdf->Cell($larg_col2,10,$texte,'LRBT',0,'C');
+								$pdf->Cell($larg_col2,$hauteur_ligne,$texte,'LRBT',0,'C');
 							}
 		
 							$texte='Nom prénom';
-							$pdf->Cell($larg_col1,10,$texte,'LRBT',0,'C');
+							$pdf->Cell($larg_col1,$hauteur_ligne,$texte,'LRBT',0,'C');
 		
 							$texte='Naissance';
-							$pdf->Cell($larg_col3,10,$texte,'LRBT',0,'C');
+							$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
 		
 							$texte='Classe';
-							$pdf->Cell($larg_col3,10,$texte,'LRBT',0,'C');
+							$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
 		
 							$texte='Salle';
-							$pdf->Cell($larg_col3,10,$texte,'LRBT',1,'C');
+							$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',1,'C');
 						}
 
 						$pdf->SetFont($fonte,'B',10);
 
 						$largeur_dispo=$larg_col1;
-						$h_cell=10;
+						$h_cell=$hauteur_ligne;
 						$hauteur_max_font=10;
 						$hauteur_min_font=4;
 						$bordure='LRBT';
@@ -399,7 +402,7 @@ if(isset($imprime)) {
 
 						if($imprime=='avec_num_anonymat') {
 							$texte=$tab_n_anonymat[$j];
-							$pdf->Cell($larg_col2,10,$texte,'LRBT',0,'C');
+							$pdf->Cell($larg_col2,$hauteur_ligne,$texte,'LRBT',0,'C');
 						}
 
 						$x=$pdf->GetX();
@@ -413,21 +416,21 @@ if(isset($imprime)) {
 						$y=$pdf->GetY();
 						$texte=$tab_naissance[$j];
 						//cell_ajustee($texte,$x,$y,$larg_col3,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,'C');
-						$pdf->Cell($larg_col3,10,$texte,'LRBT',0,'C');
+						$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
 						$pdf->SetXY($x+$larg_col3,$y);
 
 						$x=$pdf->GetX();
 						$y=$pdf->GetY();
 						$texte=$tab_classe[$j];
 						//cell_ajustee($texte,$x,$y,$larg_col3,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,'C');
-						$pdf->Cell($larg_col3,10,$texte,'LRBT',0,'C');
+						$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
 						$pdf->SetXY($x+$larg_col3,$y);
 
 						$x=$pdf->GetX();
 						$y=$pdf->GetY();
 						$texte=$salle_courante;
 						//cell_ajustee($texte,$x,$y,$larg_col3,$h_cell,$hauteur_max_font,$hauteur_min_font,$bordure,$v_align,'C');
-						$pdf->Cell($larg_col3,10,$texte,'LRBT',0,'C');
+						$pdf->Cell($larg_col3,$hauteur_ligne,$texte,'LRBT',0,'C');
 
 						$pdf->SetXY($x1,$y+$h_cell);
 					}
