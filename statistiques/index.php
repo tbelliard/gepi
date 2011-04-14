@@ -39,7 +39,7 @@ if ($resultat_session == "c") {
     die();
 }
 
-$sql="SELECT 1=1 FROM droits WHERE id='/eleves/index.php';";
+$sql="SELECT 1=1 FROM droits WHERE id='/statistiques/index.php';";
 $test=mysql_query($sql);
 if(mysql_num_rows($test)==0) {
 $sql="INSERT INTO droits SET id='/statistiques/index.php',
@@ -51,7 +51,7 @@ eleve='F',
 responsable='F',
 secours='F',
 autre='F',
-description='Export de données des bulletins',
+description='Statistiques',
 statut='';";
 $insert=mysql_query($sql);
 }
