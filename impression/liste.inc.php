@@ -184,6 +184,9 @@ global $prefix_base ;
 	*/
 	//echo "tri=$tri<br />";
     if ($tri=='classes') {
+		$column=array();
+		$column1=array();
+		$column2=array();
 		foreach($donnees_eleves as $sortarray)
 		{
 			//$column[] = $sortarray['id_classe'];
@@ -191,8 +194,8 @@ global $prefix_base ;
 			$column[] = $sortarray['nom_complet'];
 			$column1[] = $sortarray['nom_court'];
 			$column2[] = $sortarray['nom'];
-			@array_multisort($column, SORT_ASC, $column1, SORT_ASC, $column2, SORT_ASC, $donnees_eleves);
 		}
+		@array_multisort($column, SORT_ASC, $column1, SORT_ASC, $column2, SORT_ASC, $donnees_eleves);
 		/*
 		echo "<pre>\$column\n";
 		print_r($column);
