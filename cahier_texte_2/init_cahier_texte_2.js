@@ -346,7 +346,7 @@ function initWysiwyg() {
                         removePlugins : 'elementspath',
 			toolbar :
 			[
-			    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
+			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
 			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
 			    ['NumberedList','BulletedList'],
@@ -367,7 +367,7 @@ function initWysiwyg() {
                         removePlugins : 'elementspath',
 			toolbar :
 			[
-			    ['Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
+			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
 			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
 			    ['NumberedList','BulletedList'],
