@@ -346,7 +346,7 @@ function initWysiwyg() {
                         removePlugins : 'elementspath',
 			toolbar :
 			[
-			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
+			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
 			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
 			    ['NumberedList','BulletedList'],
@@ -355,7 +355,7 @@ function initWysiwyg() {
 			    ['Link','Unlink','Table','HorizontalRule','SpecialChar'],
 			    ['Styles','Format','Font','FontSize'],
 			    ['TextColor','BGColor'],
-			    ['Maximize', 'About']
+			    ['Maximize', 'About','-','Print']
 			]
 		    } );
 		} else {
@@ -367,7 +367,7 @@ function initWysiwyg() {
                         removePlugins : 'elementspath',
 			toolbar :
 			[
-			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord','-','Print'],
+			    ['Source','Cut','Copy','Paste','PasteText','PasteFromWord'],
 			    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
 			    ['Bold','Italic','Underline','Strike','-','Subscript','Superscript'],
 			    ['NumberedList','BulletedList'],
@@ -377,7 +377,8 @@ function initWysiwyg() {
 			    ['Link','Unlink','Table','HorizontalRule','SpecialChar'],
 			    ['Styles','Format','Font','FontSize'],
 			    ['TextColor','BGColor'],
-			    ['Maximize', 'About']
+			    ['Maximize', 'About','-','Print']
+
 			]
 		    } );
 		}
