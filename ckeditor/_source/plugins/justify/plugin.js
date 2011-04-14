@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -82,6 +82,59 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 		}
 	}
 
+	function onDirChanged( e )
+	{
+		var editor = e.editor;
+
+		var range = new CKEDITOR.dom.range( editor.document );
+		range.setStartBefore( e.data.node );
+		range.setEndAfter( e.data.node );
+
+		var walker = new CKEDITOR.dom.walker( range ),
+			node;
+
+		while ( ( node = walker.next() ) )
+		{
+			if ( node.type == CKEDITOR.NODE_ELEMENT )
+			{
+				// A child with the defined dir is to be ignored.
+				if ( !node.equals( e.data.node ) && node.getDirection() )
+				{
+					range.setStartAfter( node );
+					walker = new CKEDITOR.dom.walker( range );
+					continue;
+				}
+
+				// Switch the alignment.
+				var classes = editor.config.justifyClasses;
+				if ( classes )
+				{
+					// The left align class.
+					if ( node.hasClass( classes[ 0 ] ) )
+					{
+						node.removeClass( classes[ 0 ] );
+						node.addClass( classes[ 2 ] );
+					}
+					// The right align class.
+					else if ( node.hasClass( classes[ 2 ] ) )
+					{
+						node.removeClass( classes[ 2 ] );
+						node.addClass( classes[ 0 ] );
+					}
+				}
+
+				// Always switch CSS margins.
+				var style = 'text-align';
+				var align = node.getStyle( style );
+
+				if ( align == 'left' )
+					node.setStyle( style, 'right' );
+				else if ( align == 'right' )
+					node.setStyle( style, 'left' );
+			}
+		}
+	}
+
 	justifyCommand.prototype = {
 		exec : function( editor )
 		{
@@ -106,7 +159,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 				iterator = ranges[ i ].createIterator();
 				iterator.enlargeBr = enterMode != CKEDITOR.ENTER_BR;
 
-				while ( ( block = iterator.getNextParagraph() ) )
+				while ( ( block = iterator.getNextParagraph( enterMode == CKEDITOR.ENTER_P ? 'p' : 'div' ) ) )
 				{
 					block.removeAttribute( 'align' );
 					block.removeStyle( 'text-align' );
@@ -178,13 +231,9 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 			editor.on( 'selectionChange', CKEDITOR.tools.bind( onSelectionChange, right ) );
 			editor.on( 'selectionChange', CKEDITOR.tools.bind( onSelectionChange, center ) );
 			editor.on( 'selectionChange', CKEDITOR.tools.bind( onSelectionChange, justify ) );
+			editor.on( 'dirChanged', onDirChanged );
 		},
 
 		requires : [ 'domiterator' ]
 	});
 })();
-
-CKEDITOR.tools.extend( CKEDITOR.config,
-	{
-		justifyClasses : null
-	} );

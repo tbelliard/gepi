@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -10,10 +10,11 @@ CKEDITOR.dialog.add( 'paste', function( editor )
 
 	function onPasteFrameLoad( win )
 	{
-		var doc =  new CKEDITOR.dom.document( win.document ),
+		var doc = new CKEDITOR.dom.document( win.document ),
 			docElement = doc.$;
 
-		doc.getById( "cke_actscrpt" ).remove();
+		var script = doc.getById( 'cke_actscrpt' );
+		script && script.remove();
 
 		CKEDITOR.env.ie ?
 			docElement.body.contentEditable = "true" :
@@ -74,18 +75,24 @@ CKEDITOR.dialog.add( 'paste', function( editor )
 					'</script></body>' +
 				'</html>';
 
+			var src =
+				CKEDITOR.env.air ?
+					'javascript:void(0)' :
+				isCustomDomain ?
+					'javascript:void((function(){' +
+						'document.open();' +
+						'document.domain=\'' + document.domain + '\';' +
+						'document.close();' +
+						'})())"'
+				:
+					'';
+
 			var iframe = CKEDITOR.dom.element.createFromHtml(
 						'<iframe' +
 						' class="cke_pasteframe"' +
 						' frameborder="0" ' +
 						' allowTransparency="true"' +
-						// Support for custom document.domain in IE.
-						( isCustomDomain ?
-							' src="javascript:void((function(){' +
-								'document.open();' +
-								'document.domain=\'' + document.domain + '\';' +
-								'document.close();' +
-							'})())"' : '' ) +
+						' src="' + src + '"' +
 						' role="region"' +
 						' aria-label="' + lang.pasteArea + '"' +
 						' aria-describedby="' + this.getContentElement( 'general', 'pasteMsg' ).domId + '"' +
@@ -93,16 +100,16 @@ CKEDITOR.dialog.add( 'paste', function( editor )
 						'></iframe>' );
 
 			iframe.on( 'load', function( e )
-			{
-				e.removeListener();
-				var doc = iframe.getFrameDocument().$;
-				// Custom domain handling is needed after each document.open().
-				doc.open();
-				if ( isCustomDomain )
-					doc.domain = document.domain;
-				doc.write( htmlToLoad );
-				doc.close();
-			}, this );
+				{
+					e.removeListener();
+
+					var doc = iframe.getFrameDocument();
+					doc.write( htmlToLoad );
+
+					if ( CKEDITOR.env.air )
+						onPasteFrameLoad.call( this, doc.getWindow().$ );
+				},
+				this );
 
 			iframe.setCustomData( 'dialog', this );
 
@@ -157,7 +164,12 @@ CKEDITOR.dialog.add( 'paste', function( editor )
 			var container = this.getContentElement( 'general', 'editing_area' ).getElement(),
 				iframe = container.getElementsByTag( 'iframe' ).getItem( 0 ),
 				editor = this.getParentEditor(),
-				html = iframe.$.contentWindow.document.body.innerHTML;
+				body = iframe.getFrameDocument().getBody(),
+				bogus = body.getBogus(),
+				html;
+			bogus && bogus.remove();
+			// Saving the contents in variable so changes until paste is complete will not take place (#7500)
+			html = body.getHtml();
 
 			setTimeout( function(){
 				editor.fire( 'paste', { 'html' : html } );

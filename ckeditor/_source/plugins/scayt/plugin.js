@@ -1,5 +1,5 @@
 ﻿/*
-Copyright (c) 2003-2010, CKSource - Frederico Knabben. All rights reserved.
+Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
@@ -10,18 +10,19 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 (function()
 {
-	var commandName 	= 'scaytcheck',
-		openPage		= '';
+	var commandName  = 'scaytcheck',
+		openPage = '';
 
 	// Checks if a value exists in an array
-	function in_array(needle, haystack)
+	function in_array( needle, haystack )
 	{
-		var found = false, key;
-		for (key in haystack)
+		var found = 0,
+			key;
+		for ( key in haystack )
 		{
-			if ((haystack[key] === needle) || ( haystack[key] == needle))
+			if ( haystack[ key ] == needle )
 			{
-				found = true;
+				found = 1;
 				break;
 			}
 		}
@@ -34,16 +35,17 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 		var createInstance = function()	// Create new instance every time Document is created.
 		{
+			var config = editor.config;
 			// Initialise Scayt instance.
 			var oParams = {};
 			// Get the iframe.
 			oParams.srcNodeRef = editor.document.getWindow().$.frameElement;
 			// syntax : AppName.AppVersion@AppRevision
 			oParams.assocApp  = 'CKEDITOR.' + CKEDITOR.version + '@' + CKEDITOR.revision;
-			oParams.customerid = editor.config.scayt_customerid  || '1:WvF0D4-UtPqN1-43nkD4-NKvUm2-daQqk3-LmNiI-z7Ysb4-mwry24-T8YrS3-Q2tpq2';
-			oParams.customDictionaryIds = editor.config.scayt_customDictionaryIds || '';
-			oParams.userDictionaryName = editor.config.scayt_userDictionaryName || '';
-			oParams.sLang = editor.config.scayt_sLang || 'en_US';
+			oParams.customerid = config.scayt_customerid  || '1:WvF0D4-UtPqN1-43nkD4-NKvUm2-daQqk3-LmNiI-z7Ysb4-mwry24-T8YrS3-Q2tpq2';
+			oParams.customDictionaryIds = config.scayt_customDictionaryIds || '';
+			oParams.userDictionaryName = config.scayt_userDictionaryName || '';
+			oParams.sLang = config.scayt_sLang || 'en_US';
 
 			// Introduce SCAYT onLoad callback. (#5632)
 			oParams.onLoad = function()
@@ -66,16 +68,14 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 			};
 
 			var scayt_custom_params = window.scayt_custom_params;
-			if ( typeof scayt_custom_params == 'object')
+			if ( typeof scayt_custom_params == 'object' )
 			{
 				for ( var k in scayt_custom_params )
-				{
 					oParams[ k ] = scayt_custom_params[ k ];
-				}
 			}
 			// needs for restoring a specific scayt control settings
-			if ( plugin.getControlId(editor) )
-				oParams.id = plugin.getControlId(editor);
+			if ( plugin.getControlId( editor ) )
+				oParams.id = plugin.getControlId( editor );
 
 			var scayt_control = new window.scayt( oParams );
 
@@ -85,7 +85,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 			} );
 
 			// Copy config.
-			var	lastInstance = plugin.instances[ editor.name ];
+			var lastInstance = plugin.instances[ editor.name ];
 			if ( lastInstance )
 			{
 				scayt_control.sLang = lastInstance.sLang;
@@ -95,15 +95,6 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 			plugin.instances[ editor.name ] = scayt_control;
 
-			//window.scayt.uiTags
-			var menuGroup = 'scaytButton';
-			var uiTabs = window.scayt.uiTags;
-			var fTabs  = [];
-
-			for (var i = 0,l=4; i<l; i++)
-			    fTabs.push( uiTabs[i] && plugin.uiTabs[i] );
-
-			plugin.uiTabs = fTabs;
 			try {
 				scayt_control.setDisabled( plugin.isPaused( editor ) === false );
 			} catch (e) {}
@@ -132,7 +123,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 		editor.on( 'beforeCommandExec', function( ev )		// Disable SCAYT before Source command execution.
 			{
-				if ( (ev.data.name == 'source' ||  ev.data.name == 'newpage') && editor.mode == 'wysiwyg' )
+				if ( ( ev.data.name == 'source' || ev.data.name == 'newpage' ) && editor.mode == 'wysiwyg' )
 				{
 					var scayt_instance = plugin.getScayt( editor );
 					if ( scayt_instance )
@@ -244,7 +235,8 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 					{
 						span : function( element )
 						{
-							if ( element.attributes.scayt_word && element.attributes.scaytid )
+							if ( element.attributes[ 'data-scayt_word' ]
+									&& element.attributes[ 'data-scaytid' ] )
 							{
 								delete element.name;	// Write children, but don't write this node.
 								return element;
@@ -257,7 +249,7 @@ For licensing, see LICENSE.html or http://ckeditor.com/license
 
 		// Override Image.equals method avoid CK snapshot module to add SCAYT markup to snapshots. (#5546)
 		var undoImagePrototype = CKEDITOR.plugins.undo.Image.prototype;
-		undoImagePrototype.equals =	 CKEDITOR.tools.override( undoImagePrototype.equals, function( org )
+		undoImagePrototype.equals = CKEDITOR.tools.override( undoImagePrototype.equals, function( org )
 		{
 			return function( otherImage )
 			{
@@ -298,7 +290,7 @@ CKEDITOR.plugins.scayt =
 			for ( var infoOpt in o )
 				this.controlInfo[ editor.name ][ infoOpt ] = o[ infoOpt ];
 		},
-		isControlRestored : function ( editor )
+		isControlRestored : function( editor )
 		{
 			if ( editor &&
 					editor.name &&
@@ -308,15 +300,15 @@ CKEDITOR.plugins.scayt =
 			}
 			return false;
 		},
-		markControlRestore : function ( editor )
+		markControlRestore : function( editor )
 		{
-			this.setControlInfo( editor,{ restored:true } );
+			this.setControlInfo( editor, { restored:true } );
 		},
-		setControlId: function (editor, id)
+		setControlId: function( editor, id )
 		{
-			this.setControlInfo( editor,{ id:id } );
+			this.setControlInfo( editor, { id:id } );
 		},
-		getControlId: function (editor)
+		getControlId: function( editor )
 		{
 			if ( editor &&
 					editor.name &&
@@ -327,17 +319,17 @@ CKEDITOR.plugins.scayt =
 			}
 			return null;
 		},
-		setPaused: function ( editor , bool )
+		setPaused: function( editor , bool )
 		{
-			this.setControlInfo( editor,{ paused:bool } );
+			this.setControlInfo( editor, { paused:bool } );
 		},
-		isPaused: function (editor)
+		isPaused: function( editor )
 		{
 			if ( editor &&
 					editor.name &&
 					this.controlInfo[editor.name] )
 			{
-				return this.controlInfo[editor.name].paused ;
+				return this.controlInfo[editor.name].paused;
 			}
 			return undefined;
 		},
@@ -355,10 +347,30 @@ CKEDITOR.plugins.scayt =
 			var scayt_instance = this.getScayt( editor );
 			return ( scayt_instance ) ? scayt_instance.disabled === false : false;
 		},
+		getUiTabs : function( editor )
+		{
+			var uiTabs = [];
+
+			// read UI tabs value from config
+			var configUiTabs = editor.config.scayt_uiTabs || "1,1,1";
+
+			// convert string to array
+			configUiTabs = configUiTabs.split( ',' );
+
+			// "About us" should be always shown for standard config
+			configUiTabs[3] = "1";
+
+			for ( var i = 0; i < 4; i++ ) {
+				uiTabs[i] = (typeof window.scayt != "undefined" && typeof window.scayt.uiTags != "undefined")
+								? (parseInt(configUiTabs[i],10) && window.scayt.uiTags[i])
+								: parseInt(configUiTabs[i],10);
+			}
+			return uiTabs;
+		},
 		loadEngine : function( editor )
 		{
-			// SCAYT doesn't work with Firefox2, Opera.
-			if ( CKEDITOR.env.gecko && CKEDITOR.env.version < 10900 || CKEDITOR.env.opera )
+			// SCAYT doesn't work with Firefox2, Opera and AIR.
+			if ( CKEDITOR.env.gecko && CKEDITOR.env.version < 10900 || CKEDITOR.env.opera || CKEDITOR.env.air )
 				return editor.fire( 'showScaytState' );
 
 			if ( this.engineLoaded === true )
@@ -382,7 +394,7 @@ CKEDITOR.plugins.scayt =
 			var protocol = document.location.protocol;
 			// Default to 'http' for unknown.
 			protocol = protocol.search( /https?:/) != -1? protocol : 'http:';
-			var baseUrl  = 'svc.spellchecker.net/scayt25/loader__base.js';
+			var baseUrl  = 'svc.spellchecker.net/scayt26/loader__base.js';
 
 			var scaytUrl  =  editor.config.scayt_srcUrl || ( protocol + '//' + baseUrl );
 			var scaytConfigBaseUrl =  plugin.parseUrl( scaytUrl ).path +  '/';
@@ -450,6 +462,7 @@ CKEDITOR.plugins.scayt =
 	{
 		preserveState : true,
 		editorFocus : false,
+		canUndo : false,
 
 		exec: function( editor )
 		{
@@ -466,7 +479,7 @@ CKEDITOR.plugins.scayt =
 				//   scayt_control.focus();
 				//
 				// now focus is set certainly
-				scayt_control.focus( );
+				scayt_control.focus();
 				scayt_control.setDisabled( isEnabled );
 			}
 			else if ( !editor.config.scayt_autoStartup && plugin.engineLoaded >= 0 )	// Load first time
@@ -492,7 +505,7 @@ CKEDITOR.plugins.scayt =
 
 			if ( items_order && items_order.length )
 			{
-				for ( var pos in items_order )
+				for ( var pos = 0 ; pos < items_order.length ; pos++ )
 					items_order_str += 'scayt_' + items_order[ pos ] + ( items_order.length != parseInt( pos, 10 ) + 1 ? ',' : '' );
 			}
 
@@ -502,43 +515,52 @@ CKEDITOR.plugins.scayt =
 
 		init : function( editor )
 		{
-			var moreSuggestions = {};
-			var mainSuggestions = {};
+			// Delete span[data-scaytid] when text pasting in editor (#6921)
+			var dataFilter = editor.dataProcessor && editor.dataProcessor.dataFilter;
+			var dataFilterRules =
+			{
+					elements :
+					{
+							span : function( element )
+							{
+									var attrs = element.attributes;
+									if ( attrs && attrs[ 'data-scaytid' ] )
+											delete element.name;
+							}
+					}
+			};
+			dataFilter && dataFilter.addRules( dataFilterRules );
+
+			var moreSuggestions = {},
+				mainSuggestions = {};
 
 			// Scayt command.
 			var command = editor.addCommand( commandName, commandDefinition );
 
 			// Add Options dialog.
 			CKEDITOR.dialog.add( commandName, CKEDITOR.getUrl( this.path + 'dialogs/options.js' ) );
-			// read ui tags
-			var confuiTabs = editor.config.scayt_uiTabs || '1,1,1';
-			var uiTabs =[];
-			// string to array convert
-			confuiTabs = confuiTabs.split( ',' );
-			// check array length ! always must be 3 filled with 1 or 0
-			for (var i=0,l=3; i<l; i++)
-			{
-				var flag = parseInt(confuiTabs[i] || '1' ,10);
-				uiTabs.push( flag );
-			}
+
+			var uiTabs = plugin.getUiTabs( editor );
 
 			var menuGroup = 'scaytButton';
 			editor.addMenuGroup( menuGroup );
 			// combine menu items to render
-			var uiMuneItems = {};
+			var uiMenuItems = {};
+
+			var lang = editor.lang.scayt;
 
 			// always added
-			uiMuneItems.scaytToggle =
+			uiMenuItems.scaytToggle =
 				{
-					label : editor.lang.scayt.enable,
+					label : lang.enable,
 					command : commandName,
 					group : menuGroup
 				};
 
-			if (uiTabs[0] == 1)
-				uiMuneItems.scaytOptions =
+			if ( uiTabs[0] == 1 )
+				uiMenuItems.scaytOptions =
 				{
-					label : editor.lang.scayt.options,
+					label : lang.options,
 					group : menuGroup,
 					onClick : function()
 					{
@@ -547,10 +569,10 @@ CKEDITOR.plugins.scayt =
 					}
 				};
 
-			if (uiTabs[1] == 1)
-				uiMuneItems.scaytLangs =
+			if ( uiTabs[1] == 1 )
+				uiMenuItems.scaytLangs =
 				{
-					label : editor.lang.scayt.langs,
+					label : lang.langs,
 					group : menuGroup,
 					onClick : function()
 					{
@@ -558,10 +580,10 @@ CKEDITOR.plugins.scayt =
 						editor.openDialog( commandName );
 					}
 				};
-			if (uiTabs[2] == 1)
-				uiMuneItems.scaytDict =
+			if ( uiTabs[2] == 1 )
+				uiMenuItems.scaytDict =
 				{
-					label : editor.lang.scayt.dictionariesTab,
+					label : lang.dictionariesTab,
 					group : menuGroup,
 					onClick : function()
 					{
@@ -570,7 +592,7 @@ CKEDITOR.plugins.scayt =
 					}
 				};
 			// always added
-			uiMuneItems.scaytAbout =
+			uiMenuItems.scaytAbout =
 				{
 					label : editor.lang.scayt.about,
 					group : menuGroup,
@@ -579,19 +601,16 @@ CKEDITOR.plugins.scayt =
 						openPage = 'about';
 						editor.openDialog( commandName );
 					}
-				}
-			;
+				};
 
-			uiTabs[3] = 1; // about us tab is always on
-			plugin.uiTabs = uiTabs;
-
-			editor.addMenuItems( uiMuneItems );
+			editor.addMenuItems( uiMenuItems );
 
 				editor.ui.add( 'Scayt', CKEDITOR.UI_MENUBUTTON,
 					{
-						label : editor.lang.scayt.title,
-						title : CKEDITOR.env.opera ? editor.lang.scayt.opera_title : editor.lang.scayt.title,
+						label : lang.title,
+						title : CKEDITOR.env.opera ? lang.opera_title : lang.title,
 						className : 'cke_button_scayt',
+						modes : { wysiwyg : 1 },
 						onRender: function()
 						{
 							command.on( 'state', function()
@@ -604,14 +623,16 @@ CKEDITOR.plugins.scayt =
 						{
 							var isEnabled = plugin.isScaytEnabled( editor );
 
-							editor.getMenuItem( 'scaytToggle' ).label = editor.lang.scayt[ isEnabled ? 'disable' : 'enable' ];
+							editor.getMenuItem( 'scaytToggle' ).label = lang[ isEnabled ? 'disable' : 'enable' ];
+
+							var uiTabs = plugin.getUiTabs( editor );
 
 							return {
 								scaytToggle  : CKEDITOR.TRISTATE_OFF,
-								scaytOptions : isEnabled && plugin.uiTabs[0] ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
-								scaytLangs   : isEnabled && plugin.uiTabs[1] ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
-								scaytDict    : isEnabled && plugin.uiTabs[2] ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
-								scaytAbout   : isEnabled && plugin.uiTabs[3] ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED
+								scaytOptions : isEnabled && uiTabs[0] ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
+								scaytLangs   : isEnabled && uiTabs[1] ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
+								scaytDict    : isEnabled && uiTabs[2] ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
+								scaytAbout   : isEnabled && uiTabs[3] ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED
 							};
 						}
 					});
@@ -622,7 +643,7 @@ CKEDITOR.plugins.scayt =
 				editor.contextMenu.addListener( function( element, selection )
 					{
 						if ( !plugin.isScaytEnabled( editor )
-								|| selection.getCommonAncestor().isReadOnly() )
+								|| selection.getRanges()[ 0 ].checkReadOnly() )
 							return null;
 
 						var scayt_control = plugin.getScayt( editor ),
@@ -673,7 +694,7 @@ CKEDITOR.plugins.scayt =
 									return {
 										exec: function()
 										{
-											scayt_control.replace(el, s);
+											scayt_control.replace( el, s );
 										}
 									};
 								})( node, items_suggestion[i] );
@@ -699,7 +720,7 @@ CKEDITOR.plugins.scayt =
 							// Register the More suggestions group;
 							editor.addMenuItem( 'scayt_moresuggest',
 							{
-								label : editor.lang.scayt.moreSuggestions,
+								label : lang.moreSuggestions,
 								group : 'scayt_moresuggest',
 								order : 10,
 								getItems : function()
@@ -717,7 +738,7 @@ CKEDITOR.plugins.scayt =
 									scayt_control.ignore( node );
 								}
 							};
-							addButtonCommand( editor, 'ignore', editor.lang.scayt.ignore, 'scayt_ignore', ignore_command, 'scayt_control', 1 );
+							addButtonCommand( editor, 'ignore', lang.ignore, 'scayt_ignore', ignore_command, 'scayt_control', 1 );
 							mainSuggestions[ 'scayt_ignore' ] = CKEDITOR.TRISTATE_OFF;
 						}
 
@@ -728,7 +749,7 @@ CKEDITOR.plugins.scayt =
 									scayt_control.ignoreAll( node );
 								}
 							};
-							addButtonCommand(editor, 'ignore_all', editor.lang.scayt.ignoreAll, 'scayt_ignore_all', ignore_all_command, 'scayt_control', 2);
+							addButtonCommand(editor, 'ignore_all', lang.ignoreAll, 'scayt_ignore_all', ignore_all_command, 'scayt_control', 2);
 							mainSuggestions['scayt_ignore_all'] = CKEDITOR.TRISTATE_OFF;
 						}
 
@@ -739,7 +760,7 @@ CKEDITOR.plugins.scayt =
 									window.scayt.addWordToUserDictionary( node );
 								}
 							};
-							addButtonCommand(editor, 'add_word', editor.lang.scayt.addWord, 'scayt_add_word', addword_command, 'scayt_control', 3);
+							addButtonCommand(editor, 'add_word', lang.addWord, 'scayt_add_word', addword_command, 'scayt_control', 3);
 							mainSuggestions['scayt_add_word'] = CKEDITOR.TRISTATE_OFF;
 						}
 
@@ -754,7 +775,7 @@ CKEDITOR.plugins.scayt =
 				{
 					editor.removeListener( 'showScaytState', showInitialState );
 
-					if ( !CKEDITOR.env.opera )
+					if ( !CKEDITOR.env.opera && !CKEDITOR.env.air )
 						command.setState( plugin.isScaytEnabled( editor ) ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF );
 					else
 						command.setState( CKEDITOR.TRISTATE_DISABLED );
@@ -762,7 +783,7 @@ CKEDITOR.plugins.scayt =
 
 			editor.on( 'showScaytState', showInitialState );
 
-			if ( CKEDITOR.env.opera )
+			if ( CKEDITOR.env.opera || CKEDITOR.env.air )
 			{
 				editor.on( 'instanceReady', function()
 				{
@@ -786,7 +807,7 @@ CKEDITOR.plugins.scayt =
 			var elementsPathFilters,
 					scaytFilter = function( element )
 					{
-						if ( element.hasAttribute( 'scaytid' ) )
+						if ( element.hasAttribute( 'data-scaytid' ) )
 							return false;
 					};
 
