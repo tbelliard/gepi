@@ -169,16 +169,17 @@ $appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_deco
 	date_debut <= '".$today."' and
 	date_fin >= '".$today."'
 	)
-	order by id DESC");
+    order by date_debut DESC, id DESC;");
+//	order by id DESC");
 $nb_messages = mysql_num_rows($appel_messages);
 $ind = 0;
 $texte_messages = '';
 $affiche_messages = 'no';
 while ($ind < $nb_messages) {
 	$destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
-	//if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
-	if ((strtolower($_SESSION['login'])==strtolower($destinataires1)) || ((strpos(strtolower($destinataires1), substr(strtolower($_SESSION['statut']), 0, 1)))&&(substr($destinataires1,0,1)=="_"))) {
-		if ($affiche_messages == 'yes') $texte_messages .= "<hr />";
+	if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
+	//if ((strtolower($_SESSION['login'])==strtolower($destinataires1)) || ((strpos(strtolower($destinataires1), substr(strtolower($_SESSION['statut']), 0, 1)))&&(substr($destinataires1,0,1)=="_"))) {
+		if ($affiche_messages == 'yes') {$texte_messages .= "<hr />";}
 		$affiche_messages = 'yes';
 		$content = mysql_result($appel_messages, $ind, 'texte');
 		// Mise en forme du texte
