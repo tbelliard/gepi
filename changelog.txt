@@ -8,17 +8,19 @@
 Gepi-1.5.4 (17/04/2011)
 ===========================
 - Améliorations du modules ABS2:
-   . Prise en compte de la date de sortie établissement d'un élève
-   . Ajout de la page bilan individuel
-   . Ajout d'un champs lieu pour les types d'absence
-   . Export ods des traitements
-   . Extension du délai de modification des saisies par les cpe à 72h
+   . Prise en compte de la date de sortie de l'établissement d'un élève en cours d'année.
+   . Ajout de la page bilan individuel d'un élève avec export Ods et Odt pour l'impression d'un bilan complet de l'assiduité (avec modèles Open Office modifiables).
+   . Ajout d'un champs lieu pour les types d'absence et d'une page Totaux du jour. elle affiche par créneau le nombre d'élèves ayant une saisie correspondant au filtre défini.
+   . Export ods des traitements.
+   . Extension du délai de modification des saisies par les cpe à 72h.
+   . Ajout d'un nouveau prestataire pour l'envoi de SMS dans le module (Société PLURIWARE, agréée EN)
 - ckeditor:
    . Passage à la version 3.5.3
    . Ajout du bouton source au menu ckeditor
 - Module Epreuves blanches:
    . Possibilité de saisir des notes sur un autre référentiel que 20.
-   . Possibilité de générer 
+   . Possibilité de générer des listes pour affichage.
+   . Ajout d'une page qui permet de générer un bordereau de répartition des copies par correcteur.
 - Diverses modifications de styles.
 - Tableau des moyennes d'une classe: Possibilité d'afficher les moyennes des périodes précédentes.
 - Possibilité de définir la façon dont les email élèves et responsables (disposant d'un compte d'utilisateur) sont mis à jour (d'après Gérer mon compte ou lors de la mise à jour Sconet)
@@ -35,7 +37,9 @@ Gepi-1.5.4 (17/04/2011)
 - Dispositif pour détecter des fautes de frappe malheureuses (lapsus).
 - Impression PDF des avis du conseil de classe:
   Possibilité de choisir plusieurs périodes et dans ce cas d'avoir pour une classe, pour chaque élève, les 3 avis à se suivre.
-- Graphes: Mémorisation des préférences de chaque utilisateur.
+- Graphes : 
+   . Mémorisation des préférences de chaque utilisateur.
+   . Ajout pour les graphes courbe et étoile d'une option permettant l'affichage déroulant des appréciations de chaque matière à côté du graphe.
 - Ajout de paramètres pour les tailles de police et retours à la ligne dans les Relevés de notes.
 - Possibilité de créer des micro-évaluations.
 - Possibilité d'export CSV des comptes personnels, élèves et responsables.
@@ -45,12 +49,16 @@ Gepi-1.5.4 (17/04/2011)
    . Possibilité de générer une grille dans laquelle coller des photos à la main... et par la suite scanner et découper automatiquement les grilles pour alimenter Gepi en photos.
    . Modification de l'upload de photos pour contourner une éventuelle limitation du nombre d'uploads par suhosin.
    . Accès au trombinoscope des personnels pour le statut autre.
-- Mod_discipline:
+- Module discipline:
    . Ajouts et modifications divers concernant l'envoi de mail.
    . Statistiques:
       - Export CSV
-      - Gestion des catégories
+      - Gestion des catégories d'incident
    . Ajout d'un dispositif pour gérer les reports des retenues dans le module discipline et en garder l'historique.
+   . Ajout sur la page "Liste des sanctions du jour" de la possibilité d'envoyer un courriel pour demander le travail à fournir pour la retenue.
+   . Ajout de la génération d'un document Open Office texte pour les sanctions d'exclusion et d'exclusion-inclusion.
+   . Gestion des délagataires et de la formule adéquate pour la signature des sanctions d'exclusion et d'exclusion-inclusion.
+   . Gestion du modèle Open Office du courrier de sanction d'exclusion et d'exclusion-inclusion.
 - Ajout d'une page destinée à effectuer des exports CSV des bulletins éventuellement anonymés.
 - Mémorisation de la matière principale d'un enseignant d'une année sur l'autre
 - Ajout de nettoyages de tables en fin d'année: Gestion générale/Nettoyage de la base
@@ -60,8 +68,7 @@ Gepi-1.5.4 (17/04/2011)
 - Mise à jour Sconet:
    . Possibilité de ne pas tester les modifications d'établissement d'origine.
    . Possibilité de ne pas tester les modifications d'email élèves/responsables.
-- Module épreuve blanche :
-  Ajout d'une page qui permet de générer un bordereau de répartition des copies par correcteur.
+   . Prise en compte de l'information date de sortie d'un élève de l'établissement lors de la mise à jour
 - Passage à FPDF 1.6
 - Mise en place d'un fil d'Ariane
 - Mise à jour du .htaccess
@@ -70,6 +77,7 @@ Gepi-1.5.4 (17/04/2011)
 - Passage de HTMLPurifier en version 4.2.0
 - Possibilité d'interdire l'insertion dans des notices d'images générées par PHP.
 - Diverses corrections d'accessibilité (WAI AAA2).
+- Mise à jour de NOTANET pour la session 2011 du DNB.
 
 Gepi-1.5.3.1 (XX/XX/2010)
 ===========================
