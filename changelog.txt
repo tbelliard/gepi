@@ -5,10 +5,86 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-1.5.4 (17/04/2011)
+===========================
+- Améliorations du modules ABS2:
+   . XXX
+   . XXX
+   . XXX
+- ckeditor:
+   . Passage à la version 3.5.3
+   . Réorganisation de ckeditor.
+   . Ajout du bouton source au menu ckeditor
+- Module Epreuves blanches:
+   . Possibilité de saisir des notes sur un autre référentiel que 20.
+   . Possibilité de générer 
+- Diverses modifications de styles.
+- Tableau des moyennes d'une classe: Possibilité d'afficher les moyennes des périodes précédentes.
+- Possibilité de définir la façon dont les email élèves et responsables (disposant d'un compte d'utilisateur) sont mis à jour (d'après Gérer mon compte ou lors de la mise à jour Sconet)
+- Ajout d'un test pour s'assurer que les .htaccess interdisant les accès non autorisés aux documents joints sont bien présents. Possibilité le cas échéant de les recréer (dans Gestion des modules/Cahiers de textes).
+- Correctifs divers pour améliorer la compatibilité avec PHP 5.3
+- Cahier de textes:
+   . Possibilité de faire des exports HTML de ses cahiers de textes.
+   . Possibilité de mettre en place un export pour donner l'accès à un cahier de textes pour un Inspecteur.
+   . Archivage des cahiers de textes en fin d'année.
+- Cahier de notes: Affichage du coef et du caractère visible/invisible des devoirs et boites.
+- Bulletins: Possibilité d'afficher les moyennes des périodes précédentes.
+- Possibilité d'interdire les balises HTML dans les appréciations des profs via un enregistrement 'suppr_balises_app_prof' dans 'setting'.
+- Possibilité (sous réserve d'un droit) de proposer en tant que prof une correction de ses appréciations après la cloture partielle d'une période. Et un compte secours peut valider ces modifs. Ajout de la possibilité pour le compte secours d'imprimer les bulletins (utile dans la foulée de la validation de corrections).
+- Dispositif pour détecter des fautes de frappe malheureuses (lapsus).
+- Impression PDF des avis du conseil de classe:
+  Possibilité de choisir plusieurs périodes et dans ce cas d'avoir pour une classe, pour chaque élève, les 3 avis à se suivre.
+- Graphes: Mémorisation des préférences de chaque utilisateur.
+- Ajout de paramètres pour les tailles de police et retours à la ligne dans les Relevés de notes.
+- Possibilité de créer des micro-évaluations.
+- Possibilité d'export CSV des comptes personnels, élèves et responsables.
+- Grilles PDF: Possibilité pour chaque utilisateur de conserver ses préférences et de définir des modèles.
+- Trombinoscopes:
+   . Possibilité de générer un trombinoscope en PDF.
+   . Possibilité de générer une grille dans laquelle coller des photos à la main... et par la suite scanner et découper automatiquement les grilles pour alimenter Gepi en photos.
+   . Modification de l'upload de photos pour contourner une éventuelle limitation du nombre d'uploads par suhosin.
+   . Accès au trombinoscope des personnels pour le statut autre.
+- Mod_discipline:
+   . Ajouts et modifications divers concernant l'envoi de mail.
+   . Statistiques:
+      - Export CSV
+      - Gestion des catégories
+   . Ajout d'un dispositif pour gérer les reports des retenues dans le module discipline et en garder l'historique.
+- Ajout d'une page destinée à effectuer des exports CSV des bulletins éventuellement anonymés.
+- Mémorisation de la matière principale d'un enseignant d'une année sur l'autre
+- Ajout de nettoyages de tables en fin d'année: Gestion générale/Nettoyage de la base
+- Initialisation XML: Possibilité d'initialiser l'année à l'aide d'un export CSV de UnDeuxTemps au lieu de l'export sts_emp_RNE_ANNEE.xml
+- Utilisation de simpleXML pour lire les XML dans l'initialisation XML et la Mise à jour d'après Sconet.
+- Prise en compte de la date de sortie de l'établissement pour un élève (champ de l'export XML Sconet).
+- Mise à jour Sconet:
+   . Possibilité de ne pas tester les modifications d'établissement d'origine.
+   . Possibilité de ne pas tester les modifications d'email élèves/responsables.
+- Module épreuve blanche :
+  Ajout d'une page qui permet de générer un bordereau de répartition des copies par correcteur.
+- Passage à FPDF 1.6
+- Mise en place d'un fil d'Ariane
+- Mise à jour du .htaccess
+- Ajout d'un token dans les formulaires provoquant un enregistrement dans la base ou une modif importante.
+  Paramétrage des modes de fonctionnement dans Gestion générale/Politique de sécurité.
+- Passage de HTMLPurifier en version 4.2.0
+- Possibilité d'interdire l'insertion dans des notices d'images générées par PHP.
+- Diverses corrections d'accessibilité (WAI AAA2).
+
+Gepi-1.5.3.1 (XX/XX/2010)
+===========================
+- Mise à jour du changelog oubliée.
+
+Gepi-1.5.3 (XX/XX/2010)
+===========================
+- Mise à jour du changelog oubliée.
+
+Gepi-1.5.2 (XX/XX/20XX)
+===========================
+- Mise à jour du changelog oubliée.
+
 Gepi-1.5.1-rc2 (XX/XX/2008)
 ===========================
 - Ajout d'un disposotif afin de permettre la signature des cahiers de textes par l'administration
-
 
 Gepi-1.5.1-rc1 (13/03/2008)
 ===========================
