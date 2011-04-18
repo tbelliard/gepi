@@ -213,7 +213,7 @@ if(isset($_GET['export_csv'])) {
 		// lem9 & loic1: IE need specific headers
 		//nom du fichier à telecharger
 	
-		if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
+		if (preg_match('/MSIE/', $_SERVER['HTTP_USER_AGENT'])) {
 			header('Content-Disposition: inline; filename="cc_dev_'.$id_dev.'_'.date("dmY").'.csv"');
 			header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 			header('Pragma: public');
@@ -222,6 +222,335 @@ if(isset($_GET['export_csv'])) {
 			header('Pragma: no-cache');
 		}
 		echo $csv;
+		die();
+	}
+}
+//debug_var();
+if(isset($_GET['export_pdf'])) {
+
+	$sql="SELECT * FROM cc_eval WHERE id_dev='$id_dev' ORDER BY date, nom_court, nom_complet;";
+	//echo "$sql<br />";
+	$res_eval=mysql_query($sql);
+	if(mysql_num_rows($res_eval)==0) {
+		$msg="Aucune évaluation n'est associée au $nom_cc n°$id_dev<br />";
+	}
+	else {
+
+		//===============================
+		// Extraction des infos
+
+		$cpt=0;
+		$tab_eval=array();
+		$tab_ele=array();
+
+		while($lig_eval=mysql_fetch_object($res_eval)) {
+			$tab_eval[$cpt]['nom_court']=$lig_eval->nom_court;
+			$tab_eval[$cpt]['nom_complet']=$lig_eval->nom_complet;
+			$tab_eval[$cpt]['date']=formate_date($lig_eval->date);
+			$tab_eval[$cpt]['id_eval']=$lig_eval->id;
+			$tab_eval[$cpt]['note_sur']=$lig_eval->note_sur;
+
+			$sql="SELECT cc.* FROM cc_notes_eval cc WHERE cc.id_eval='$lig_eval->id' ORDER BY cc.login;";
+			//echo "$sql<br />";
+			$res_en=mysql_query($sql);
+			if(mysql_num_rows($res_en)>0) {
+				while($lig_en=mysql_fetch_object($res_en)) {
+
+					//if(!in_array($lig_en->login,$tab_ele)) {
+					if(!isset($tab_ele[$lig_en->login])) {
+						$sql="SELECT c.classe, e.nom, e.prenom FROM classes c, eleves e, j_eleves_classes jec WHERE e.login=jec.login AND jec.id_classe=c.id AND jec.periode='$periode_num' AND e.login='$lig_en->login';";
+						//echo "$sql<br />";
+						$res_ele=mysql_query($sql);
+						if(mysql_num_rows($res_ele)>0) {
+							$lig_ele=mysql_fetch_object($res_ele);
+							$tab_ele[$lig_en->login]['classe']=$lig_ele->classe;
+							$tab_ele[$lig_en->login]['nom']=$lig_ele->nom;
+							$tab_ele[$lig_en->login]['prenom']=$lig_ele->prenom;
+						}
+						else {
+							$tab_ele[$lig_en->login]['classe']='Classe_inconnue';
+							$tab_ele[$lig_en->login]['nom']='Nom_inconnu';
+							$tab_ele[$lig_en->login]['prenom']='Prenom_inconnu';
+						}
+					}
+
+					if($lig_en->statut=='v') {
+						$tab_ele[$lig_en->login]['eval'][$lig_eval->id]="";
+					}
+					elseif($lig_en->statut!='') {
+						$tab_ele[$lig_en->login]['eval'][$lig_eval->id]=$lig_en->statut;
+					}
+					else {
+						$tab_ele[$lig_en->login]['eval'][$lig_eval->id]=$lig_en->note;
+					}
+				}
+			}
+
+			$cpt++;
+		}
+
+		//===============================
+
+		$professeur_courant=casse_mot($_SESSION['nom'])." ".casse_mot($_SESSION['prenom'],'majf2');
+
+		require('../fpdf/fpdf.php');
+		require('../fpdf/ex_fpdf.php');
+		
+		define('FPDF_FONTPATH','../fpdf/font/');
+		define('LargeurPage','210');
+		define('HauteurPage','297');
+
+		$largeur_page=210;
+		$hauteur_page=297;
+
+		session_cache_limiter('private');
+
+		$MargeHaut=10;
+		$MargeDroite=10;
+		$MargeGauche=10;
+		$MargeBas=10;
+
+		class rel_PDF extends FPDF
+		{
+			function Footer()
+			{
+				global $nom_cc;
+				global $id_dev;
+				global $professeur_courant;
+
+				$this->SetXY(5,287);
+				$this->SetFont('arial','',7.5);
+
+				//$texte=getSettingValue("gepiSchoolName")."  ";
+				$texte=ucfirst($nom_cc)." n°$id_dev - ".$professeur_courant;
+				$lg_text=$this->GetStringWidth($texte);
+				$this->SetXY(10,287);
+				$this->Cell(0,5,$texte,0,0,'L');
+
+				$this->Cell(0,5,'Page '.$this->PageNo(),"0",1,'C');
+			}
+
+			function EnteteCC()
+			{
+				global $nom_cc;
+				global $id_dev;
+				global $professeur_courant;
+				global $fonte, $MargeDroite, $largeur_page, $MargeGauche, $sc_interligne, $salle, $i;
+				//global $num_page;
+				//global $decompte_page;
+
+				$this->SetFont($fonte,'B',14);
+				$this->SetXY(10,10);
+				$this->Cell($largeur_page-$MargeDroite-$MargeGauche,10,getSettingValue('gepiSchoolName').' - Année scolaire '.getSettingValue('gepiYear'),'LRBT',1,'C');
+
+				$x1=$this->GetX();
+				$y1=$this->GetY();
+
+				$this->SetFont($fonte,'B',12);
+				$texte=ucfirst($nom_cc)." n°".$id_dev;
+				$largeur_tmp=$this->GetStringWidth($texte)+4;
+				$this->Cell($largeur_tmp,$this->FontSize*$sc_interligne,$texte,'LRBT',0,'C');
+
+				//$x2=$this->GetX();
+				$y2=$this->GetY();
+
+				$this->SetFont($fonte,'B',12);
+				$texte=$professeur_courant;
+				$larg_tmp=$sc_interligne*($this->GetStringWidth($texte));
+				$this->SetXY($largeur_page-$larg_tmp-$MargeDroite,$y1+($y2-$y1)/4);
+				$this->Cell($larg_tmp,$this->FontSize*$sc_interligne,$texte,'LRBT',1,'C');
+
+				//$this->Cell($larg_tmp,$this->FontSize*$sc_interligne,$this->GetY(),'LRBT',1,'C');
+			}
+		}
+
+		// Définition de la page
+		$pdf=new rel_PDF("P","mm","A4");
+		//$pdf=new FPDF("P","mm","A4");
+		$pdf->SetTopMargin($MargeHaut);
+		$pdf->SetRightMargin($MargeDroite);
+		$pdf->SetLeftMargin($MargeGauche);
+		//$pdf->SetAutoPageBreak(true, $MargeBas);
+
+		// Couleur des traits
+		$pdf->SetDrawColor(0,0,0);
+		$pdf->SetLineWidth(0.2);
+
+		$fonte='arial';
+		$sc_interligne=1.3;
+
+		$h_cell=10;
+		$hauteur_max_font=10;
+		$hauteur_min_font=4;
+		$bordure='LRBT';
+		$v_align='C';
+		$align='L';
+
+		// Initialisation:
+		$x1=10;
+		//$y1=30;
+		$y1=25;
+		//$y2=41;
+		$y2=30;
+
+		$Espace_dx=5;
+		$Espace_dy=5;
+		$largeur_tab=floor(($largeur_page-$MargeDroite-$MargeGauche-1*$Espace_dx)/2);
+		$h_cell=8;
+
+		$hauteur_par_eleve=(6+count($tab_eval))*$h_cell;
+
+		$x2=$x1+$largeur_tab+$Espace_dx;
+
+		$num_page=0;
+
+		$compteur=0;
+
+		$num_page++;
+		$pdf->AddPage("P");
+		$pdf->EnteteCC();
+		$pdf->SetXY($x1,$y2);
+
+		foreach($tab_ele as $ele_login => $tmp_tab) {
+			$total=0;
+			$total_sur=0;
+
+			//if($pdf->GetY()+$h_cell+$hauteur_par_eleve>$hauteur_page-$MargeBas) {
+			if($pdf->GetY()+$h_cell+$hauteur_par_eleve+$Espace_dx>$hauteur_page-$MargeBas) {
+				$num_page++;
+				$pdf->AddPage("P");
+				$pdf->EnteteCC();
+				$pdf->SetXY($x1,$y2);
+			}
+
+			$y_reserve=$pdf->GetY();
+
+			if($compteur%2==0) {
+				$x_courant=$x1;
+			}
+			else {
+				$x_courant=$x2;
+			}
+
+			$pdf->SetFont($fonte,'B',10);
+			//$pdf->SetXY($x1,$y2);
+
+			$texte=ucfirst($nom_cc).' : '.$nom_court_dev;
+			$pdf->Cell($largeur_tab,$h_cell,$texte,'LRBT',0,'C');
+
+			//$x=$pdf->GetX();
+			$y=$pdf->GetY();
+			$pdf->SetXY($x_courant,$y+$h_cell);
+
+			$texte='Classe : '.$tmp_tab['classe'];
+			$pdf->Cell($largeur_tab,$h_cell,$texte,'LRBT',0,'C');
+
+			//$x=$pdf->GetX();
+			$y=$pdf->GetY();
+			$pdf->SetXY($x_courant,$y+$h_cell);
+
+			$texte='Élève : '.$tmp_tab['nom']." ".$tmp_tab['prenom'];
+			$pdf->Cell($largeur_tab,$h_cell,$texte,'LRBT',0,'C');
+
+			//$x=$pdf->GetX();
+			$y=$pdf->GetY();
+			$pdf->SetXY($x_courant,$y+$h_cell);
+
+
+			$texte='Nom';
+			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$texte='Date';
+			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$texte='Note';
+			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$texte='Sur';
+			$pdf->Cell($largeur_tab-3*floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+
+			//$x=$pdf->GetX();
+			$y=$pdf->GetY();
+			$pdf->SetXY($x_courant,$y+$h_cell);
+
+			$pdf->SetFont($fonte,'',10);
+			for($i=0;$i<count($tab_eval);$i++) {
+				$nom_ev_courant=$tab_eval[$i]['nom_court'];
+				$date_ev_courant=$tab_eval[$i]['date'];
+				$note_sur_ev_courant=$tab_eval[$i]['note_sur'];
+				if(isset($tmp_tab['eval'][$tab_eval[$i]['id_eval']])) {
+					if(($tmp_tab['eval'][$tab_eval[$i]['id_eval']]!='')&&(preg_match('/^[0-9.]*$/',$tmp_tab['eval'][$tab_eval[$i]['id_eval']]))) {
+						$total+=$tmp_tab['eval'][$tab_eval[$i]['id_eval']];
+						$total_sur+=$tab_eval[$i]['note_sur'];
+
+						$note_ev_courant=strtr($tmp_tab['eval'][$tab_eval[$i]['id_eval']],".",",");
+					}
+					else {
+						$note_ev_courant=$tmp_tab['eval'][$tab_eval[$i]['id_eval']];
+					}
+				}
+				else {
+					$note_ev_courant="-";
+				}
+
+				$texte=$nom_ev_courant;
+				$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+				$texte=$date_ev_courant;
+				$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+				$texte=$note_ev_courant;
+				$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+				$texte=$note_sur_ev_courant;
+				$pdf->Cell($largeur_tab-3*floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+	
+				//$x=$pdf->GetX();
+				$y=$pdf->GetY();
+				$pdf->SetXY($x_courant,$y+$h_cell);
+			}
+
+			$pdf->SetFont($fonte,'B',10);
+			$texte='Total';
+			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$texte='-';
+			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$texte=$total;
+			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$texte=$total_sur;
+			$pdf->Cell($largeur_tab-3*floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$y=$pdf->GetY();
+			$pdf->SetXY($x_courant,$y+$h_cell);
+
+			if($total_sur>0) {
+				$moy=strtr(precision_arrondi(20*$total/$total_sur,$precision),'.',',');
+			}
+			else {
+				$moy='-';
+			}
+
+			$texte='Moyenne';
+			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$texte='-';
+			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$texte=$moy;
+			$pdf->Cell(floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$texte='20';
+			$pdf->Cell($largeur_tab-3*floor($largeur_tab/4),$h_cell,$texte,'LRBT',0,'C');
+			$y=$pdf->GetY();
+			$pdf->SetXY($x_courant,$y+$h_cell);
+
+			if($compteur%2==0) {
+				$y=$y_reserve;
+				$pdf->SetXY($x2,$y);
+			}
+			else {
+				$y=$pdf->GetY();
+				$pdf->SetXY($x1,$y+$Espace_dy);
+			}
+
+			$compteur++;
+		}
+
+
+		$date=date("Ymd_Hi");
+		$nom_fich='evaluation_cumul_'.$id_dev.'_'.$date.'.pdf';
+		send_file_download_headers('application/pdf',$nom_fich);
+		$pdf->Output($nom_fich,'I');
 		die();
 	}
 }
@@ -245,6 +574,7 @@ chargement = false;
 echo "<p id='LiensSousBandeau' class='bold'>\n";
 echo "<a href=\"index_cc.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour </a>";
 echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;export_csv=y'>CSV</a>";
+echo " | Export <a href='".$_SERVER['PHP_SELF']."?id_racine=$id_racine&amp;id_dev=$id_dev&amp;export_pdf=y'>PDF</a>";
 //echo "|";
 echo "</p>\n";
 
