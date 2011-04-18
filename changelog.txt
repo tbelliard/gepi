@@ -8,12 +8,13 @@
 Gepi-1.5.4 (17/04/2011)
 ===========================
 - Améliorations du modules ABS2:
-   . XXX
-   . XXX
-   . XXX
+   . Prise en compte de la date de sortie établissement d'un élève
+   . Ajout de la page bilan individuel
+   . Ajout d'un champs lieu pour les types d'absence
+   . Export ods des traitements
+   . Extension du délai de modification des saisies par les cpe à 72h
 - ckeditor:
    . Passage à la version 3.5.3
-   . Réorganisation de ckeditor.
    . Ajout du bouton source au menu ckeditor
 - Module Epreuves blanches:
    . Possibilité de saisir des notes sur un autre référentiel que 20.
