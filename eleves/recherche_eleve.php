@@ -35,7 +35,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 	if(isset($rech_nom)) {
 		$rech_nom=preg_replace("/[^A-Za-z$string]/","",$rech_nom);
 
-		$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%';";
+		$sql="SELECT * FROM eleves WHERE nom LIKE '%$rech_nom%' ORDER BY nom, prenom;";
 		$res_ele=mysql_query($sql);
 	
 		$nb_ele=mysql_num_rows($res_ele);
@@ -50,7 +50,7 @@ if(function_exists("mb_detect_encoding")&&function_exists("mb_convert_encoding")
 		$rech_prenom=preg_replace("/[^A-Za-z$string]/","",$rech_prenom);
 		//echo "rech_prenom=$rech_prenom<br />";
 
-		$sql="SELECT * FROM eleves WHERE prenom LIKE '%$rech_prenom%';";
+		$sql="SELECT * FROM eleves WHERE prenom LIKE '%$rech_prenom%' ORDER BY nom, prenom;";
 		$res_ele=mysql_query($sql);
 	
 		$nb_ele=mysql_num_rows($res_ele);
