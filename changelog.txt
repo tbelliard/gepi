@@ -5,6 +5,10 @@
 |= CHANGELOG GEPI =|
 |==================|
 
+Gepi-trunk (20/04/2011)
+===========================
+- A compléter au fur et à mesure;)...
+
 Gepi-1.5.4 (17/04/2011)
 ===========================
 - Améliorations du modules ABS2:
