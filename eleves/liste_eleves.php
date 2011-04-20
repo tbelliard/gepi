@@ -2,10 +2,9 @@
 
 /*
  *
- *
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *

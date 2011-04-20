@@ -3,7 +3,7 @@
 /*
  * @version $Id$
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal, Stephane Boireau
  *
  * This file is part of GEPI.
  *
@@ -31,10 +31,14 @@ if(($_SERVER['SCRIPT_NAME']!="$gepiPath/eleves/visu_eleve.php")&&
 
 //debug_var();
 
+$Recherche_sans_js=isset($_POST['Recherche_sans_js']) ? $_POST['Recherche_sans_js'] : (isset($_GET['Recherche_sans_js']) ? $_GET['Recherche_sans_js'] : NULL);
+
 //echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
 //if(!isset($ele_login)) {
-if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
+
+//if((!isset($ele_login))&&(!isset($_POST['Recherche_sans_js']))) {
+if((!isset($ele_login))&&(!isset($Recherche_sans_js))) {
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 	echo "</p>\n";
 	echo "</div>\n";
@@ -210,7 +214,8 @@ if(document.getElementById('rech_nom')) {document.getElementById('rech_nom').foc
 	//=============================================
 
 }
-elseif(isset($_POST['Recherche_sans_js'])) {
+//elseif(isset($_POST['Recherche_sans_js'])) {
+elseif(isset($Recherche_sans_js)) {
 	// On ne passe ici que si JavaScript est désactivé
 	echo "<div class='norme'><p class='bold'><a href='../accueil.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre ".$gepiSettings['denomination_eleve']."</a>\n";
