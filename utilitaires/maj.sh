@@ -15,7 +15,7 @@ if ($argc != 2) {
     $script_error = true;
 } else {
     // Premier argument (obligatoire, pour éviter les accidents)
-    if (isset($argv[1]) && in_array($argv[1], array('1.4.4','1.5.0','1.5.1','1.5.2','1.5.3','1.5.3.1','defaut','forcer'))) {
+    if (isset($argv[1]) && in_array($argv[1], array('1.4.4','1.5.0','1.5.1','1.5.2','1.5.3','1.5.3.1','1.5.4','defaut','forcer'))) {
         if ($argv[1] == 'forcer') {
             $force = true;
         } elseif($argv[1] == 'defaut'){
@@ -131,6 +131,10 @@ Exemples d'utilisation :
 
     if ($force || $start_from == '1.5.3.1') {
         require './updates/1531_to_154.inc.php';
+    }
+
+    if ($force || $start_from == '1.5.4') {
+        require './updates/154_to_155.inc.php';
     }
 
 // Nettoyage pour envoyer le résultat dans la console
