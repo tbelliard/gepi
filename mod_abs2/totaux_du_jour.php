@@ -230,7 +230,7 @@ $eleve_col = $query
 			?>
 			    </div>
         </div>
-    </form
+    </form>
     <?php
     $col_creneaux = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
     echo'<table border="1" >';
