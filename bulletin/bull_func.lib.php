@@ -825,7 +825,7 @@ width:".$largeur1."%;\n";
         //=============================================
 
 		// Tableau des matières/notes/appréciations
-
+		$k=$i+1;
 		include ($fichier_bulletin);
 
         //=============================================
