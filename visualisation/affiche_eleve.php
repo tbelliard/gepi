@@ -2605,44 +2605,44 @@ function eleve_suivant() {
 			//=========================================================
 
 
-	// Ajout Eric 11/12/2010 Boite déroulante pour les appréciations.
-	if ($graphe_affiche_deroulant_appreciations=='oui') {
-	    $graphe_hauteur_affichage_deroulant=$graphe_hauteur_affichage_deroulant."px";
-		echo "<script type='text/javascript'>
-		// <![CDATA[
-			var pas=1;
-			var h_fen='$graphe_hauteur_affichage_deroulant';
-			function scrollmrq(){
-				if (parseInt(mrq.style.top) > -h_mrq ) 
-				mrq.style.top = parseInt(mrq.style.top)-pas+'px'
-				else mrq.style.top=parseInt(h_fen)+'px'
+			// Ajout Eric 11/12/2010 Boite déroulante pour les appréciations.
+			if ($graphe_affiche_deroulant_appreciations=='oui') {
+				$graphe_hauteur_affichage_deroulant=$graphe_hauteur_affichage_deroulant."px";
+				echo "<script type='text/javascript'>
+				// <![CDATA[
+					var pas=1;
+					var h_fen='$graphe_hauteur_affichage_deroulant';
+					function scrollmrq(){
+						if (parseInt(mrq.style.top) > -h_mrq ) 
+						mrq.style.top = parseInt(mrq.style.top)-pas+'px'
+						else mrq.style.top=parseInt(h_fen)+'px'
+					}
+					function init_mrq(){
+						mrq=document.getElementById('appreciations_defile');
+						fen=document.getElementById('appreciations_deroulantes');
+						fen.onmouseover=function(){stoc=pas;pas=0};
+						fen.onmouseout=function(){pas=stoc};fen.style.height=h_fen;
+						h_mrq=mrq.offsetHeight;
+						with(mrq.style){position='absolute';top=h_fen;}
+						setInterval('scrollmrq()',50);
+					}
+		
+					document.getElementById('appreciations_defile').innerHTML='".addslashes($txt_appreciations_deroulantes)."';
+		
+					window.onload =init_mrq;
+				//]]>
+				</script>\n";
+				/*
+				echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
+				echo "<b><i><center>Appréciations - $periode</center></i></b>";
+				echo "<div id='appreciations_deroulantes'>";
+				echo "<span id='appreciations_defile'>";
+				echo $txt_appreciations_deroulantes;
+				echo "</span></div></div>";
+				*/
 			}
-			function init_mrq(){
-				mrq=document.getElementById('appreciations_defile');
-				fen=document.getElementById('appreciations_deroulantes');
-				fen.onmouseover=function(){stoc=pas;pas=0};
-				fen.onmouseout=function(){pas=stoc};fen.style.height=h_fen;
-				h_mrq=mrq.offsetHeight;
-				with(mrq.style){position='absolute';top=h_fen;}
-				setInterval('scrollmrq()',50);
-			}
-
-			document.getElementById('appreciations_defile').innerHTML='".addslashes($txt_appreciations_deroulantes)."';
-
-			window.onload =init_mrq;
-		//]]>
-	    </script>\n";
-		/*
-		echo "<div class='appreciations_deroulantes_graphe' style='height:$graphe_hauteur_affichage_deroulant'>";
-		echo "<b><i><center>Appréciations - $periode</center></i></b>";
-		echo "<div id='appreciations_deroulantes'>";
-		echo "<span id='appreciations_defile'>";
-		echo $txt_appreciations_deroulantes;
-		echo "</span></div></div>";
-		*/
-	}
-	// Fin ajout Eric
-	
+			// Fin ajout Eric
+			
 			// Avis du conseil de classe
 			$temoin_avis_present="n";
 			// Dispositif de restriction des accès aux appréciations pour les comptes responsables/eleves
@@ -4316,7 +4316,7 @@ function complete_textarea_avis(num) {
 
 
 //===========================================================
-echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+echo "<div id='div_bull_simp' class='infobulle_corps' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
 
 	echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_bull_simp')\">\n";
 		echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";
@@ -4325,10 +4325,33 @@ echo "<div id='div_bull_simp' style='position: absolute; top: 220px; right: 20px
 		echo "</a>\n";
 		echo "</div>\n";
 
-		echo "<div id='titre_entete_bull_simp'></div>\n";
+		echo "<div id='titre_entete_bull_simp'>";
+		echo "Bulletin simplifié de $prenom1 $nom1 ";
+		if($choix_periode=='periode') {
+			echo "en période $num_periode_choisie";
+		}
+		else {
+			echo "de la période 1 à la $nb_periode";
+		}
+		echo "</div>\n";
 	echo "</div>\n";
 	
 	echo "<div id='corps_bull_simp' class='infobulle_corps' style='color: #ffffff; cursor: auto; font-weight: bold; padding: 0px; height: 15em; width: 700px; overflow: auto;'>";
+	if($acces_bull_simp=="y") {
+		if($choix_periode=='periode') {
+			$periode1=$num_periode_choisie;
+			$periode2=$num_periode_choisie;
+		}
+		else {
+			$periode1=1;
+			$periode2=$nb_periode;
+		}
+		$choix_edit=2;
+		$login_eleve=$eleve1;
+		$inclusion_depuis_graphes="y";
+		include "../lib/bulletin_simple.inc.php";
+		include("../saisie/edit_limite.inc.php");
+	}
 	echo "</div>\n";
 
 echo "</div>\n";
@@ -4336,8 +4359,9 @@ echo "</div>\n";
 echo "<script type='text/javascript'>
 	// <![CDATA[
 	function affiche_bull_simp(login_eleve,id_classe,num_per1,num_per2) {
-		document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
-		new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
+		//document.getElementById('titre_entete_bull_simp').innerHTML='Bulletin simplifié de '+login_eleve+' période '+num_per1+' à '+num_per2;
+
+		//new Ajax.Updater($('corps_bull_simp'),'../saisie/ajax_edit_limite.php?choix_edit=2&login_eleve='+login_eleve+'&id_classe='+id_classe+'&periode1='+num_per1+'&periode2='+num_per2,{method: 'get'});
 	}
 	//]]>
 </script>\n";

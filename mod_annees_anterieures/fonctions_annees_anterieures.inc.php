@@ -1169,7 +1169,7 @@ function affiche_onglets_aa($logineleve, $id_classe, $tab_periodes, $indice_ongl
 }
 </style>\n";
 
-	echo "<div id='div_annees_anterieures' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
+	echo "<div id='div_annees_anterieures' class='infobulle_corps' style='position: absolute; top: 220px; right: 20px; width: 700px; text-align:center; color: black; padding: 0px; border:1px solid black; display:none;'>\n";
 	
 		echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; width: 700px; font-weight: bold; padding: 0px;' onmousedown=\"dragStart(event, 'div_annees_anterieures')\">\n";
 			echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>\n";

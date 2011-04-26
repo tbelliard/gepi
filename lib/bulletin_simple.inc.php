@@ -1389,6 +1389,7 @@ $tab_acces_app = acces_appreciations($periode1, $periode2, $id_classe);
 $necessaire_signalement_fautes_insere="n";
 function lib_signalement_fautes() {
 	global $necessaire_signalement_fautes_insere, $id_classe;
+	global $inclusion_depuis_graphes;
 
 	if($necessaire_signalement_fautes_insere=="n") {
 
@@ -1467,8 +1468,16 @@ echo "</form>\n";
 		document.getElementById('div_signalement_message').innerHTML='<textarea name=\'signalement_message\' id=\'signalement_message\' cols=\'50\' rows=\'11\'></textarea>';
 
 		document.getElementById('signalement_message').innerHTML=message;
+";
 
-		afficher_div('div_signaler_faute','y',100,100);
+		if((isset($inclusion_depuis_graphes))&&($inclusion_depuis_graphes=='y')) {
+			echo "		afficher_div('div_signaler_faute','n',0,0);\n";
+		}
+		else {
+			echo "		afficher_div('div_signaler_faute','y',100,100);\n";
+		}
+
+echo "
 	}
 
 	function valider_signalement_faute() {
