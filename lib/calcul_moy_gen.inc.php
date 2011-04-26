@@ -94,7 +94,8 @@ if ($affiche_categories) {
 	"jgc.id_classe=jmcc.classe_id AND " .
 	"jgc.id_classe='".$id_classe."' AND " .
 	"jgm.id_groupe=jgc.id_groupe AND " .
-	"m.matiere = jgm.id_matiere" .
+	"m.matiere = jgm.id_matiere " .
+	"AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n')".
 	") " .
 	"ORDER BY jmcc.priority,mc.priority,jgc.priorite,m.nom_complet";
 	calc_moy_debug($sql."\n");
@@ -115,6 +116,7 @@ if ($affiche_categories) {
 	WHERE (
 	jgc.id_classe='".$id_classe."' AND
 	jgm.id_groupe=jgc.id_groupe
+	AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n')
 	)
 	ORDER BY jgc.priorite,jgm.id_matiere";
 	calc_moy_debug($sql."\n");

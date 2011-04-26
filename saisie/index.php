@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -387,12 +387,16 @@ if ($current_group) {
         //$groups = get_groups_for_prof($_SESSION["login"]);
 		$groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
         foreach ($groups as $group) {
-		//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> (" . $group["classlist_string"] . ")</p>\n";
-		//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
-		//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
-		echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
-		echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlentities($group["description"]) . "</a>";
-		echo "</span></p>\n";
+			$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='".$group["id"]."' AND domaine='bulletins' AND visible='n';";
+			$test_jgv=mysql_query($sql);
+			if(mysql_num_rows($test_jgv)==0) {
+				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . $group["description"] . "</a> (" . $group["classlist_string"] . ")</p>\n";
+				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
+				//echo "<p><a href='index.php?id_groupe=" . $group["id"] . "'>" . htmlentities($group["description"]) . "</a> (" . $group["classlist_string"] . ")</p>\n";
+				echo "<p><span class='norme'><b>" . $group["classlist_string"] . "</b> : ";
+				echo "<a href='index.php?id_groupe=" . $group["id"] ."'>" . htmlentities($group["description"]) . "</a>";
+				echo "</span></p>\n";
+			}
         }
     } elseif ($_SESSION["statut"] == "secours") {
         echo "<p>Saisir les moyennes ou appréciations par classe :</p>\n";

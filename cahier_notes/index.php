@@ -633,51 +633,54 @@ var tab_per_cn=new Array();\n";
     echo "</ul>\n";
     if ($empty == 'yes') echo "<p><b>Actuellement, aucune évaluation.</b> Vous devez créer au moins une évaluation.</p>\n";
     if ($empty != 'yes') {
-        if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
-            echo "<h3 class='gepi'>Saisie du bulletin ($nom_periode[$periode_num])</h3>\n";
-
-			$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
-			$res_ele_grp=mysql_query($sql);
-			$nb_ele_grp=mysql_num_rows($res_ele_grp);
-
-			$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND periode='$periode_num' AND statut!='-';";
-			$res_mn=mysql_query($sql);
-			$nb_mn=mysql_num_rows($res_mn);
-			if($nb_mn==0) {
-				$info_mn="<span style='color:red; font-size: small;'>(actuellement vide)</span>";
-			}
-			else {
-				if($nb_mn==$nb_ele_grp) {
-					$info_mn="<span style='color:green; font-size: small;'>($nb_mn/$nb_ele_grp)</span>";
+		$sql="SELECT 1=1 FROM j_groupes_visibilite WHERE id_groupe='$id_groupe' AND domaine='bulletins' AND visible='n';";
+		$test_jgv=mysql_query($sql);
+		if(mysql_num_rows($test_jgv)==0) {
+			if ($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2) {
+				echo "<h3 class='gepi'>Saisie du bulletin ($nom_periode[$periode_num])</h3>\n";
+	
+				$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
+				$res_ele_grp=mysql_query($sql);
+				$nb_ele_grp=mysql_num_rows($res_ele_grp);
+	
+				$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='$id_groupe' AND periode='$periode_num' AND statut!='-';";
+				$res_mn=mysql_query($sql);
+				$nb_mn=mysql_num_rows($res_mn);
+				if($nb_mn==0) {
+					$info_mn="<span style='color:red; font-size: small;'>(actuellement vide)</span>";
 				}
 				else {
-					$info_mn="<span style='color:red; font-size: small;'>($nb_mn/$nb_ele_grp)</span>";
+					if($nb_mn==$nb_ele_grp) {
+						$info_mn="<span style='color:green; font-size: small;'>($nb_mn/$nb_ele_grp)</span>";
+					}
+					else {
+						$info_mn="<span style='color:red; font-size: small;'>($nb_mn/$nb_ele_grp)</span>";
+					}
 				}
-			}
-
-			$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='$id_groupe' AND periode='$periode_num' AND appreciation!='';";
-			$res_ma=mysql_query($sql);
-			$nb_ma=mysql_num_rows($res_ma);
-			if($nb_ma==0) {
-				$info_ma="<span style='color:red; font-size: small;'>(actuellement vide)</span>";
-			}
-			else {
-				if($nb_ma==$nb_ele_grp) {
-					$info_ma="<span style='color:green; font-size: small;'>($nb_ma/$nb_ele_grp)</span>";
+	
+				$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='$id_groupe' AND periode='$periode_num' AND appreciation!='';";
+				$res_ma=mysql_query($sql);
+				$nb_ma=mysql_num_rows($res_ma);
+				if($nb_ma==0) {
+					$info_ma="<span style='color:red; font-size: small;'>(actuellement vide)</span>";
 				}
 				else {
-					$info_ma="<span style='color:red; font-size: small;'>($nb_ma/$nb_ele_grp)</span>";
+					if($nb_ma==$nb_ele_grp) {
+						$info_ma="<span style='color:green; font-size: small;'>($nb_ma/$nb_ele_grp)</span>";
+					}
+					else {
+						$info_ma="<span style='color:red; font-size: small;'>($nb_ma/$nb_ele_grp)</span>";
+					}
 				}
+	
+				echo "<ul><li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Saisie des moyennes</a> $info_mn</li>\n";
+				echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Saisie des appréciations</a> $info_ma</li></ul>\n";
+			} else {
+				echo "<h3 class='gepi'>Visualisation du bulletin ($nom_periode[$periode_num])</h3>\n";
+				echo "<ul><li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Visualisation des moyennes</a> (<b>".$gepiClosedPeriodLabel."</b>).</li>\n";
+				echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Visualisation des appréciations</a> (<b>".$gepiClosedPeriodLabel."</b>).</li></ul>\n";
 			}
-
-            echo "<ul><li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Saisie des moyennes</a> $info_mn</li>\n";
-            echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Saisie des appréciations</a> $info_ma</li></ul>\n";
-        } else {
-            echo "<h3 class='gepi'>Visualisation du bulletin ($nom_periode[$periode_num])</h3>\n";
-            echo "<ul><li><a href='../saisie/saisie_notes.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num&amp;retour_cn=yes'>Visualisation des moyennes</a> (<b>".$gepiClosedPeriodLabel."</b>).</li>\n";
-            echo "<li><a href='../saisie/saisie_appreciations.php?id_groupe=$id_groupe&amp;periode_cn=$periode_num'>Visualisation des appréciations</a> (<b>".$gepiClosedPeriodLabel."</b>).</li></ul>\n";
-        }
-
+		}
     }
 
 }

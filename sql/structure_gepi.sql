@@ -361,3 +361,5 @@ DROP TABLE IF EXISTS acces_cdt_groupes;
 CREATE TABLE IF NOT EXISTS acces_cdt_groupes (id INT(11) NOT NULL auto_increment,id_acces INT(11) NOT NULL,id_groupe INT(11) NOT NULL,PRIMARY KEY (id)) ENGINE=MyISAM;
 DROP TABLE IF EXISTS vocabulaire;
 CREATE TABLE IF NOT EXISTS vocabulaire (id INT(11) NOT NULL auto_increment,terme VARCHAR(255) NOT NULL DEFAULT '',terme_corrige VARCHAR(255) NOT NULL DEFAULT '',PRIMARY KEY (id)) ENGINE=MyISAM;
+DROP TABLE IF EXISTS j_groupes_visibilite;
+CREATE TABLE IF NOT EXISTS j_groupes_visibilite (id INT(11) NOT NULL auto_increment,id_groupe INT(11) NOT NULL,domaine varchar(255) NOT NULL default '',visible varchar(255) NOT NULL default '',PRIMARY KEY (id),INDEX id_groupe_domaine (id_groupe, domaine));

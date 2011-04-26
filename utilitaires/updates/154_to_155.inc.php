@@ -86,4 +86,25 @@ else {
 */
 //===================================================
 
+$result .= "<br /><br /><b>Ajout d'une table 'j_groupes_visibilite' :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'j_groupes_visibilite'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_groupes_visibilite (
+			id INT(11) NOT NULL auto_increment,
+			id_groupe INT(11) NOT NULL,
+			domaine varchar(255) NOT NULL default '',
+			visible varchar(255) NOT NULL default '',
+			PRIMARY KEY (id),
+			INDEX id_groupe_domaine (id_groupe, domaine)
+		);");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
 ?>

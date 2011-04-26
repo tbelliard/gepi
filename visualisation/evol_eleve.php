@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -277,6 +277,7 @@ if (!$id_classe) {
         "jgc.id_classe = '".$id_classe."' AND " .
         "jgm.id_groupe = jgc.id_groupe AND " .
         "m.matiere = jgm.id_matiere" .
+		" AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n')".
         ") " .
         "ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
     } else {
@@ -287,6 +288,7 @@ if (!$id_classe) {
         "jgc.id_groupe = jeg.id_groupe AND " .
         "jgc.id_classe = '".$id_classe."' AND " .
         "jgm.id_groupe = jgc.id_groupe" .
+		" AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n')".
         ") " .
         "ORDER BY jgc.priorite,jgm.id_matiere");
     }

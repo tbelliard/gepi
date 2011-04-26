@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -32,7 +32,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 if (!checkAccess()) {
     header("Location: ../logout.php?auto=1");
@@ -218,6 +218,7 @@ if (!isset($id_classe)) {
             "jgc.id_classe='".$id_classe."' AND " .
             "jgm.id_groupe=jgc.id_groupe AND " .
             "m.matiere = jgm.id_matiere" .
+			" AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n')".
             ") " .
             "ORDER BY jmcc.priority,jgc.priorite,m.nom_complet");
     } else {
@@ -226,6 +227,7 @@ if (!isset($id_classe)) {
         WHERE (
         jgc.id_classe='".$id_classe."' AND
         jgm.id_groupe=jgc.id_groupe
+		 AND jgc.id_groupe NOT IN (SELECT id_groupe FROM j_groupes_visibilite WHERE domaine='bulletins' AND visible='n')
         )
         ORDER BY jgc.priorite,jgm.id_matiere");
     }

@@ -40,6 +40,8 @@ if (!checkAccess()) {
     die();
 }
 
+$msg="";
+
 $id_classe = isset($_GET['id_classe']) ? $_GET['id_classe'] : (isset($_POST['id_classe']) ? $_POST["id_classe"] : NULL);
 if (!is_numeric($id_classe)) {$id_classe = 0;}
 $classe = get_classe($id_classe);
@@ -105,15 +107,37 @@ if(mysql_num_rows($res_class_tmp)>0){
 
 $priority_defaut = 5;
 
+//================================
+// Liste de domaines à déplacer par la suite dans global.inc ?
+$tab_domaines=array('bulletins', 'cahier_notes', 'absences', 'cahier_textes', 'edt');
+$tab_domaines_sigle=array('B', 'CN', 'Abs', 'CDT', 'EDT');
+$tab_domaines_texte=array('Bulletins', 'Cahiers de Notes', 'Absences', 'Cahiers De Textes', 'EDT');
+//================================
+$invisibilite_groupe=array();
+for($loop=0;$loop<count($tab_domaines);$loop++) {
+	$invisibilite_groupe[$tab_domaines[$loop]]=array();
+}
+$sql="SELECT jgv.* FROM j_groupes_classes jgc, j_groupes_visibilite jgv WHERE jgv.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe' AND jgv.visible='n';";
+$res_jgv=mysql_query($sql);
+if(mysql_num_rows($res_jgv)>0) {
+	while($lig_jgv=mysql_fetch_object($res_jgv)) {
+		$invisibilite_groupe[$lig_jgv->domaine][]=$lig_jgv->id_groupe;
+	}
+}
+//================================
+
 if (isset($_POST['is_posted'])) {
 	check_token();
 
     $error = false;
 
+	$tab_id_groupe=array();
+
     foreach ($_POST as $key => $value) {
         $pattern = "/^priorite\_/";
         if (preg_match($pattern, $key)) {
             $group_id = preg_replace($pattern, "", $key);
+			$tab_id_groupe[]=$group_id;
             $options[$group_id]["priorite"] = $value;
         }
     }
@@ -174,6 +198,56 @@ if (isset($_POST['is_posted'])) {
         $update = update_group_class_options($key, $id_classe, $value);
     }
 
+	for($loo=0;$loo<count($tab_domaines);$loo++) {
+		/*
+		echo "<p>\$tab_domaines[$loo]=$tab_domaines[$loo]<br />";
+		foreach($invisibilite_groupe[$tab_domaines[$loo]] as $key => $value) {
+			echo "\$invisibilite_groupe[$tab_domaines[$loo]][$key]=$value<br />";
+		}
+		*/
+		unset($visibilite_groupe_domaine_courant);
+		$visibilite_groupe_domaine_courant=isset($_POST['visibilite_groupe_'.$tab_domaines[$loo]]) ? $_POST['visibilite_groupe_'.$tab_domaines[$loo]] : array();
+		/*
+		foreach($visibilite_groupe_domaine_courant as $key => $value) {
+			echo "\$visibilite_groupe_domaine_courant[$key]=$value<br />";
+		}
+		*/
+		for($loop=0;$loop<count($tab_id_groupe);$loop++) {
+			//echo "\$tab_id_groupe[$loop]=$tab_id_groupe[$loop]<br />";
+			if(in_array($tab_id_groupe[$loop], $invisibilite_groupe[$tab_domaines[$loo]])) {
+				if(in_array($tab_id_groupe[$loop], $visibilite_groupe_domaine_courant)) {
+					$sql="DELETE FROM j_groupes_visibilite WHERE id_groupe='".$tab_id_groupe[$loop]."' AND domaine='".$tab_domaines[$loo]."';";
+					//echo "$sql<br />";
+					$suppr=mysql_query($sql);
+					if(!$suppr) {$msg.="Erreur lors de la suppression de l'invisibilité du groupe n°".$tab_id_groupe[$loop]." sur les ".$tab_domaines_texte[$loo].".<br />";}
+				}
+			}
+			else {
+				if(!in_array($tab_id_groupe[$loop], $visibilite_groupe_domaine_courant)) {
+					$sql="INSERT j_groupes_visibilite SET id_groupe='".$tab_id_groupe[$loop]."', domaine='".$tab_domaines[$loo]."', visible='n';";
+					//echo "$sql<br />";
+					$insert=mysql_query($sql);
+					if(!$insert) {$msg.="Erreur lors de l'enregistrement de l'invisibilité du groupe n°".$tab_id_groupe[$loop]." sur les ".$tab_domaines_texte[$loo].".<br />";}
+				}
+			}
+
+		}
+	}
+
+	//================================
+	$invisibilite_groupe=array();
+	for($loop=0;$loop<count($tab_domaines);$loop++) {
+		$invisibilite_groupe[$tab_domaines[$loop]]=array();
+	}
+	$sql="SELECT jgv.* FROM j_groupes_classes jgc, j_groupes_visibilite jgv WHERE jgv.id_groupe=jgc.id_groupe AND jgc.id_classe='$id_classe' AND jgv.visible='n';";
+	$res_jgv=mysql_query($sql);
+	if(mysql_num_rows($res_jgv)>0) {
+		while($lig_jgv=mysql_fetch_object($res_jgv)) {
+			$invisibilite_groupe[$lig_jgv->domaine][]=$lig_jgv->id_groupe;
+		}
+	}
+	//================================
+
 	$msg="Enregistrement effectué.";
 
 }
@@ -221,6 +295,7 @@ $titre_page = "Gestion des enseignements";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE **********************************
 
+//debug_var();
 
 if((isset($_GET['action']))&&($_GET['action']=="delete_group")&&(!isset($_GET['confirm_delete_group']))) {
 	check_token(false);
@@ -739,8 +814,29 @@ for($i=0;$i<10;$i++){
             echo ">";
             echo "<img src='../images/icons/ico_attention.png' width='22' height='19' alt='$message_categorie_aucune' title='$message_categorie_aucune' />\n";
             echo "</a>";
-
         }
+
+		//=========================================================
+		echo "<div style='clear: both; font-size: xx-small;'>&nbsp;</div>\n";
+
+		// Visibilité sur les bulletins, CN,...
+		for($loop=0;$loop<count($tab_domaines);$loop++) {
+			echo "<div style='float: left; width: ".max(2,strlen($tab_domaines_sigle[$loop]))."em; border: 1px solid black; margin: 2px; text-align:center; background-color: white; font-weight: bold;'>\n";
+			if(!in_array($current_group["id"],$invisibilite_groupe[$tab_domaines[$loop]])) {
+				echo "<span style='color: blue;' title='Enseignement visible sur les ".$tab_domaines_texte[$loop]."'>".$tab_domaines_sigle[$loop]."</span><br />\n";
+				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."'";
+				echo " checked";
+				echo " />\n";
+			}
+			else {
+				echo "<span style='color: lightgray;' title='Enseignement invisible sur les ".$tab_domaines_texte[$loop]."'>".$tab_domaines_sigle[$loop]."</span><br />\n";
+				echo "<input type='checkbox' name='visibilite_groupe_".$tab_domaines[$loop]."[]' value='".$current_group["id"]."'";
+				echo " />\n";
+			}
+			echo "</div>\n";
+		}
+		//=========================================================
+
         echo "</td>\n";
 
         // Coefficient
