@@ -190,9 +190,12 @@ while ($i < $nombre_lignes){
     echo "<td>\n";
     echo "<select size=1 name='" . strtolower($current_matiere)."_categorie' onchange='changement()'>\n";
 
+	echo "<option value='0'";
+	if ($current_matiere_categorie_id == '0') {echo " SELECTED";}
+	echo ">Aucune</option>\n";
     foreach ($categories as $row) {
         echo "<option value='".$row["id"]."'";
-        if ($current_matiere_categorie_id == $row["id"]) echo " SELECTED";
+        if ($current_matiere_categorie_id == $row["id"]) {echo " SELECTED";}
         echo ">".html_entity_decode_all_version($row["nom_court"])."</option>\n";
     }
     echo "</select>\n";
