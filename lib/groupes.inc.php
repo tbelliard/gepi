@@ -318,18 +318,20 @@ function create_group($_name, $_description, $_matiere, $_classes, $_categorie =
     if (!is_numeric($_categorie)) {
         $_categorie = 1;
     }
-    // On vérifie que la catégorie existe
-    $temptemp = null;
-    $temptemp = mysql_query("select count(id) from matieres_categories WHERE id = '" . $_categorie . "'");
-    if (!$temptemp) {
-	$test_cat = "0";
-    } else {
-	 $test_cat = mysql_result($temptemp, 0);
-    }
-    if ($test_cat == "0") {
-        // La catégorie n'existe pas : on met la catégorie par défaut
-        $_categorie = 1;
-    }
+	if($_categorie!='0') {
+		// On vérifie que la catégorie existe
+		$temptemp = null;
+		$temptemp = mysql_query("select count(id) from matieres_categories WHERE id = '" . $_categorie . "'");
+		if (!$temptemp) {
+			$test_cat = "0";
+		} else {
+			$test_cat = mysql_result($temptemp, 0);
+		}
+		if ($test_cat == "0") {
+			// La catégorie n'existe pas : on met la catégorie par défaut
+			$_categorie = 1;
+		}
+	}
     $_insert2 = mysql_query("insert into j_groupes_matieres set id_groupe = '" . $_group_id . "', id_matiere = '" . $_matiere . "'");
     //$_priorite = mysql_result(mysql_query("SELECT priority FROM matieres WHERE matiere = '" . $_matiere . "'"), 0);
     //echo "SELECT priority FROM matieres WHERE matiere = '" . $_matiere . "'";
@@ -342,18 +344,21 @@ function create_group($_name, $_description, $_matiere, $_classes, $_categorie =
         // On vérifie que les classes ont bien le même nombre de période
         //if (get_period_num($_id_classe) == $test_per) {
         if (get_period_number($_id_classe) == $test_per) {
-            $_res = mysql_query("insert into j_groupes_classes set id_groupe = '" . $_group_id . "', id_classe = '" . $_id_classe . "', priorite = '" . $_priorite . "'");
-	if (!$_res) {
-		echo "<span style='color:red;'>Bug:</span> "."insert into j_groupes_classes set id_groupe = '" . $_group_id . "', id_classe = '" . $_id_classe . "', priorite = '" . $_priorite . "', categorie_id = '" . $_categorie . "'<br />";
-		echo "<span style='color:red;'>".mysql_error()."</span>";
-		echo "<br />";
-	}
-	$res = mysql_query("update j_groupes_classes set categorie_id = '".$_categorie."'WHERE (id_groupe = '" . $_group_id . "' and id_classe = '" . $_id_classe . "')");
-	if (!$_res) {
-		echo "<span style='color:red;'>Bug:</span> "."update j_groupes_classes set categorie_id = '".$_categorie."'WHERE (id_groupe = '" . $_group_id . "' and id_classe = '" . $_id_classe . "'<br />";
-		echo "<span style='color:red;'>".mysql_error()."</span>";
-		echo "<br />";
-	}
+            $sql = "insert into j_groupes_classes set id_groupe = '" . $_group_id . "', id_classe = '" . $_id_classe . "', priorite = '" . $_priorite . "';";
+            $_res = mysql_query($sql);
+
+			if (!$_res) {
+				echo "<span style='color:red;'>Bug&nbsp;:</span> ".$sql."'<br />";
+				echo "<span style='color:red;'>".mysql_error()."</span>";
+				echo "<br />";
+			}
+			$sql="update j_groupes_classes set categorie_id = '".$_categorie."'WHERE (id_groupe = '" . $_group_id . "' and id_classe = '" . $_id_classe . "');";
+			$res = mysql_query($sql);
+			if (!$_res) {
+				echo "<span style='color:red;'>Bug&nbsp;:</span> ".$sql."'<br />";
+				echo "<span style='color:red;'>".mysql_error()."</span>";
+				echo "<br />";
+			}
 
         }
     }

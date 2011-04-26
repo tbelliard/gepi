@@ -75,6 +75,7 @@ if (isset($_POST['is_posted'])) {
     $reg_nom_complet = html_entity_decode_all_version($_POST['groupe_nom_complet']);
     $reg_matiere = $_POST['matiere'];
     $reg_categorie = $_POST['categorie'];
+	//echo "\$reg_categorie=$reg_categorie<br />";
 
     if (empty($reg_nom_groupe)) {
         $error = true;
@@ -113,6 +114,9 @@ if (isset($_POST['is_posted'])) {
     if (!is_numeric($reg_categorie)) {
         $reg_categorie = 1;
     }
+
+	//echo "\$reg_categorie=$reg_categorie<br />";
+	//$error=true;
 
     if (!$error) {
         // pas d'erreur : on continue avec la création du groupe
@@ -210,7 +214,7 @@ for ($i=0;$i<$nb_mat;$i++) {
     $matiere = mysql_result($query, $i, "matiere");
     $nom_matiere = mysql_result($query, $i, "nom_complet");
     echo "<option value='" . $matiere . "'";
-    if ($reg_matiere == $matiere) echo " SELECTED";
+    if ($reg_matiere == $matiere) {echo " SELECTED";}
     //echo ">" . $nom_matiere . "</option>\n";
     echo ">" . htmlentities($nom_matiere) . "</option>\n";
 }
@@ -229,7 +233,7 @@ if ($mode == "groupe") {
             $id_classe = mysql_result($call_data, $i, "id");
             $classe = mysql_result($call_data, $i, "classe");
                 echo "<option value='" . $id_classe . "'";
-                if ($reg_id_classe == $id_classe) echo " SELECTED";
+                if ($reg_id_classe == $id_classe) {echo " SELECTED";}
                 echo ">$classe</option>\n";
         $i++;
         }
@@ -321,13 +325,16 @@ if ($mode == "groupe") {
     }
 }
 echo "<p>Catégorie de matière à laquelle appartient l'enseignement : ";
-echo "<select size=1 name=categorie>\n";
+echo "<select size='1' name='categorie'>\n";
 $get_cat = mysql_query("SELECT id, nom_court FROM matieres_categories");
 $test = mysql_num_rows($get_cat);
 
+echo "<option value='0'";
+if ($matiere_categorie == 0) {echo " SELECTED";}
+echo ">Aucune</option>\n";
 while ($row = mysql_fetch_array($get_cat, MYSQL_ASSOC)) {
     echo "<option value='".$row["id"]."'";
-    if ($matiere_categorie == $row["id"]) echo " SELECTED";
+    if ($matiere_categorie == $row["id"]) {echo " SELECTED";}
     echo ">".html_entity_decode_all_version($row["nom_court"])."</option>\n";
 }
 echo "</select>\n";
