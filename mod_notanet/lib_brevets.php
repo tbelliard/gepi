@@ -825,7 +825,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='';
-			$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
+			$tabmatieres[105][0]='PREVENTION SANTE ENVIRONNEMENT';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
 			$tabmatieres[107][0]='EDUCATION SOCIO-CULTURELLE';
 			// CES TROIS Là DEVRAIENT ETRE SUR UNE MEME LIGNE POUR LES FICHES BREVET
@@ -979,7 +979,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='SCIENCES PHYSIQUES';
-			$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
+			$tabmatieres[105][0]='PREVENTION SANTE ENVIRONNEMENT';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
 			$tabmatieres[107][0]='EDUCATION ARTISTIQUE';
 			$tabmatieres[108][0]='TECHNOLOGIE';
@@ -1112,7 +1112,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='SCIENCES PHYSIQUES';
-			$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
+			$tabmatieres[105][0]='PREVENTION SANTE ENVIRONNEMENT';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
 			$tabmatieres[107][0]='EDUCATION ARTISTIQUE';
 			$tabmatieres[108][0]='TECHNOLOGIE';
@@ -1244,7 +1244,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[103][0]='PREMIERE LANGUE VIVANTE';
 			//$tabmatieres[103][0]='LANGUE VIVANTE 1';
 			$tabmatieres[104][0]='SCIENCES PHYSIQUES';
-			$tabmatieres[105][0]='ECONOMIE FAMILIALE ET SOCIALE';
+			$tabmatieres[105][0]='PREVENTION SANTE ENVIRONNEMENT';
 			$tabmatieres[106][0]='EDUCATION PHYSIQUE ET SPORTIVE';
 			$tabmatieres[107][0]='EDUCATION SOCIOCULTURELLE';
 			$tabmatieres[108][0]='SCIENCES BIOLOGIQUES';
