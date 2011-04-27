@@ -76,6 +76,15 @@ $sans_commentaire = isset($_POST["sans_commentaire"]) ? $_POST["sans_commentaire
 $non_traitees = isset($_POST["non_traitees"]) ? $_POST["non_traitees"] : (isset($_GET["non_traitees"]) ? $_GET["non_traitees"] : Null);
 $ods2 = isset($_POST["ods2"]) ? $_POST["ods2"] : (isset($_GET["ods2"]) ? $_GET["ods2"] : Null);
 $cpt_classe = isset($_POST["cpt_classe"]) ? $_POST["cpt_classe"] : (isset($_GET["cpt_classe"]) ? $_GET["cpt_classe"] : null);
+$ndj=isset($_POST["ndj"]) ? $_POST["ndj"] : (isset($_GET["ndj"]) ? $_GET["ndj"] : null);
+$ndjnj=isset($_POST["ndjnj"]) ? $_POST["ndjnj"] : (isset($_GET["ndjnj"]) ? $_GET["ndjnj"] : null);
+$nr=isset($_POST["nr"]) ? $_POST["nr"] : (isset($_GET["nr"]) ? $_GET["nr"] : null);
+$filtrage=isset($_POST["filtrage"]) ? $_POST["filtrage"] : (isset($_GET["filtrage"]) ? $_GET["filtrage"] : null);
+
+if($ndj=="") $ndj=Null;
+if($ndjnj=="") $ndjnj=Null;
+if($nr=="") $nr=Null;
+
 
 if (isset($id_classe) && $id_classe != null)
     $_SESSION['id_classe_abs'] = $id_classe;
@@ -147,9 +156,9 @@ $javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
-
-//suppression des données en session (sauf dans le cas d'un export html et odt)
-if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html'&& is_null($cpt_classe)))){
+$utilisation_validation="ok";
+//suppression des données en session (sauf dans le cas d'un export html et odt ou d'un filtrage)
+if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html'&& is_null($cpt_classe))) && $filtrage!="ok"){
     unset($_SESSION['donnees_bilan']);
 }
 
@@ -171,7 +180,7 @@ if(getSettingValue('Abs2DebrideBilanIndividuelLogins')){
 $limite_jours=7;
 $boucle=false;
 $fin_boucle=false;
-if(($id_classe=='-1' && $affichage=='html') && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2) &&  $cpt_classe<=count( $_SESSION['classes_bilan'])){
+if(($id_classe=='-1' && $affichage=='html' && $filtrage!="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2) &&  $cpt_classe<=count( $_SESSION['classes_bilan'])){
     if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>($limite_jours*24*3600) ){
         $message=' L\'intervalle de temps choisi pour toutes les classes doit être inférieur à 7 jours ';
         $affichage='';
@@ -339,9 +348,9 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
     <?php
 }
 // fin de l'affichage des options
-// début de la mise en session des données extraites
+// début de la mise en session des données extraites (sauf si on est dans un filtrage des données affichées)
 //if ($affichage != null && $affichage != '' && !$fin_boucle) {
-if ($affichage =='html' && !$fin_boucle) {
+if ($affichage =='html' && !$fin_boucle && $filtrage!=="ok") {
 $eleve_query = EleveQuery::create();
 if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
     } else {
@@ -512,10 +521,44 @@ if($boucle){
 }
 }
 // fin de la mise en session des données extraites
-
+// On fais une copie des données en session pour affichage
+if($affichage !="odt" && $affichage!="ods"){
+    $_SESSION['donnees_bilan_affichage']=$_SESSION['donnees_bilan'];
+}
+//Prise en compte du filtrage
+if($filtrage=="ok" && ($ndj!=null || $ndjnj != null || $nr !=null)){    
+if(isset($_SESSION['donnees_bilan_affichage'])) $donnees_filtrage=unserialize($_SESSION['donnees_bilan_affichage']);  
+foreach ($donnees_filtrage as $id => $eleve) {
+    if(($ndj!=null && $eleve['demi_journees']<$ndj) || ($ndjnj!=null && $eleve['non_justifiees']<$ndjnj) || ($nr!=null && $eleve['retards']<$nr) )
+            {         
+        unset($donnees_filtrage[$id]);
+    }    
+}
+$_SESSION['donnees_bilan_affichage']=serialize($donnees_filtrage);
+}
+//Fin prise en compte du filtrage
 // début des export
   //export html
-if ($affichage == 'html') {    
+if ($affichage == 'html') {
+    echo'<div id="sortie_ecran">'?>
+        <form id="filtrage" method="POST" action="bilan_individuel.php" >
+            <fieldset width="1024px">
+                <legend>Filtrage des données</legend>
+                <p>N'affiche que les élèves dont les nombres d'absences ou retards respectent les conditions ci-dessous:</p>
+                Nombre total de 1/2 journées &ge;: <INPUT type="text" <?php if($ndj!=Null)echo'value='.$ndj; else echo'value=""'; ?> name="ndj" size="3" maxlength="3" class="validate-number"/><br />
+                Nombre de 1/2 journées non justifiées &ge;: <INPUT type="text" <?php if($ndjnj!=Null)echo'value='.$ndjnj; else echo'value=""'; ?> name="ndjnj" size="3" maxlength="3" class="validate-number"><br />
+                Nombre de retards &ge;: <INPUT type="text" <?php if($nr!=Null)echo'value='.$nr; else echo'value=""'; ?> name="nr" size="3" maxlength="3" class="validate-number"><br />
+                <input type="hidden" name="filtrage" value="ok" />
+                <input type="hidden" name="affichage" value="html" />
+                <input type="hidden" name="tri" value="<?php echo $tri ?>" />
+                <input type="hidden" name="non_traitees" value="<?php echo $non_traitees ?>" />
+                <input type="hidden" name="ods2" value="<?php echo $ods2 ?>" />
+                <input type="hidden" name="sans_commentaire" value="<?php echo $sans_commentaire ?>" />
+                <input type="submit" value="Filtrer" />
+            </fieldset>
+            <div id="retour"></div>
+        </form>
+<?php 
 echo '<table border="1" cellspacing="0" align="center">';
 echo '<tr >';
 echo '<td align="center">';
@@ -546,7 +589,7 @@ if($affichage_commentaires_html){
 }
 echo '</tr>';
 $precedent_eleve_id = Null;
-if(isset($_SESSION['donnees_bilan'])) $donnees=unserialize($_SESSION['donnees_bilan']);
+if(isset($_SESSION['donnees_bilan_affichage'])) $donnees=unserialize($_SESSION['donnees_bilan_affichage']);
 foreach ($donnees as $id => $eleve) {
     if(!isset($eleve['infos_saisies'])){
         continue;
@@ -665,11 +708,12 @@ foreach ($donnees as $id => $eleve) {
     }
 }
 echo '<h5>Extraction réalisée le '.date("d/m/Y - H:i").'</h5>';
+echo'</div>';
 //fin export html; debut export odt et ods
 } else if ($affichage == 'ods' || $affichage == 'odt') {
 include_once '../orm/helpers/AbsencesNotificationHelper.php';
-if(isset($_SESSION['donnees_bilan'])){
-    $donnees=unserialize($_SESSION['donnees_bilan']);
+if(isset($_SESSION['donnees_bilan_affichage'])){
+    $donnees=unserialize($_SESSION['donnees_bilan_affichage']);
 }
 if ($affichage == 'ods') {
     $extension='ods';
@@ -848,6 +892,26 @@ $TBS->Show(OPENTBS_DOWNLOAD + TBS_EXIT, $nom_fichier);
 }
 ?>
 	</div>
+ 
+<script type="text/javascript">
+ 
+
+ 
+	function ValidateForm(result,form){
+		if(result){			
+			//new Ajax.Updater('sortie_ecran', 'bilan_individuel.inc.php', {onComplete:function(){ new Effect.Highlight('retour');},asynchronous:true});			
+		}
+	}
+ 
+	var valid = new Validation('filtrage', {immediate : true, onFormValidate : ValidateForm});
+        Validation.addAllThese([
+        ['validate-number', 'Utilisez un nombre supérieur à zéro seulement dans ce champ ou laissez vide pour ne pas filtrer sur ce champ', function(v) {
+       return Validation.get('IsEmpty').test(v) || !/[^1-9]/.test(v);
+     }]
+	]);    
+
+</script>
+
 <?php
 require("../lib/footer.inc.php");
 ?>
