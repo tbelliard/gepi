@@ -76,15 +76,16 @@ $sans_commentaire = isset($_POST["sans_commentaire"]) ? $_POST["sans_commentaire
 $non_traitees = isset($_POST["non_traitees"]) ? $_POST["non_traitees"] : (isset($_GET["non_traitees"]) ? $_GET["non_traitees"] : Null);
 $ods2 = isset($_POST["ods2"]) ? $_POST["ods2"] : (isset($_GET["ods2"]) ? $_GET["ods2"] : Null);
 $cpt_classe = isset($_POST["cpt_classe"]) ? $_POST["cpt_classe"] : (isset($_GET["cpt_classe"]) ? $_GET["cpt_classe"] : null);
-$ndj=isset($_POST["ndj"]) ? $_POST["ndj"] : (isset($_GET["ndj"]) ? $_GET["ndj"] : null);
-$ndjnj=isset($_POST["ndjnj"]) ? $_POST["ndjnj"] : (isset($_GET["ndjnj"]) ? $_GET["ndjnj"] : null);
+$ndj=isset($_POST["ndj"]) ? $_POST["ndj"] : (isset($_GET["ndj"]) ? $_GET["ndj"] :  null);
+$ndjnj=isset($_POST["ndjnj"]) ? $_POST["ndjnj"] : (isset($_GET["ndjnj"]) ? $_GET["ndjnj"] :  null);
 $nr=isset($_POST["nr"]) ? $_POST["nr"] : (isset($_GET["nr"]) ? $_GET["nr"] : null);
+$click_filtrage=isset($_POST["click_filtrage"]) ? $_POST["click_filtrage"] : (isset($_GET["click_filtrage"]) ? $_GET["click_filtrage"] : null);
 $filtrage=isset($_POST["filtrage"]) ? $_POST["filtrage"] : (isset($_GET["filtrage"]) ? $_GET["filtrage"] : null);
+$raz=isset($_POST["raz"]) ? $_POST["raz"] : (isset($_GET["raz"]) ? $_GET["raz"] : null);
 
-if($ndj=="") $ndj=Null;
-if($ndjnj=="") $ndjnj=Null;
-if($nr=="") $nr=Null;
-
+if($ndj=="" || $raz=="ok") $ndj=Null;
+if($ndjnj=="" || $raz=="ok") $ndjnj=Null;
+if($nr=="" || $raz=="ok") $nr=Null;
 
 if (isset($id_classe) && $id_classe != null)
     $_SESSION['id_classe_abs'] = $id_classe;
@@ -157,8 +158,8 @@ $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 $utilisation_validation="ok";
-//suppression des données en session (sauf dans le cas d'un export html et odt ou d'un filtrage)
-if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html'&& is_null($cpt_classe))) && $filtrage!="ok"){
+//suppression des données en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
+if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html'&& is_null($cpt_classe))) && $click_filtrage!="ok" && $raz!=="ok"){
     unset($_SESSION['donnees_bilan']);
 }
 
@@ -180,7 +181,7 @@ if(getSettingValue('Abs2DebrideBilanIndividuelLogins')){
 $limite_jours=7;
 $boucle=false;
 $fin_boucle=false;
-if(($id_classe=='-1' && $affichage=='html' && $filtrage!="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2) &&  $cpt_classe<=count( $_SESSION['classes_bilan'])){
+if(($id_classe=='-1' && $affichage=='html' && $click_filtrage!="ok" && $raz!=="ok") && (is_null($id_eleve) || $id_eleve=='') && (is_null($nom_eleve) || strlen($nom_eleve)<2) &&  $cpt_classe<=count( $_SESSION['classes_bilan'])){
     if($limite_temps && ($dt_date_absence_eleve_fin->format('U')-$dt_date_absence_eleve_debut->format('U'))>($limite_jours*24*3600) ){
         $message=' L\'intervalle de temps choisi pour toutes les classes doit être inférieur à 7 jours ';
         $affichage='';
@@ -260,7 +261,10 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             Nom (facultatif) : <input type="text" name="nom_eleve" size="10" value="<?php echo $nom_eleve ?>" onChange="document.bilan_individuel.id_eleve.value='';"/>
             <input type="hidden" name="id_eleve" value="<?php echo $id_eleve ?>"/>
             <input type="hidden" name="affichage" value="<?php echo $affichage ?>"/>
-           
+            <input type="hidden" name="filtrage" value="<?php echo $filtrage ?>"/>
+            <input type="hidden" name="ndj" value="<?php echo $ndj ?>" />
+            <input type="hidden" name="ndjnj" value="<?php echo $ndjnj ?>" />
+            <input type="hidden" name="nr" value="<?php echo $nr ?>" />
             <?php
             //on affiche une boite de selection avec les classe
             if ((getSettingValue("GepiAccesAbsTouteClasseCpe") == 'yes' && $utilisateur->getStatut() == "cpe") || $utilisateur->getStatut() == "autre" ) {
@@ -336,7 +340,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
         </fieldset>
 		<br />
         <?php if($affichage_liens):?>
-        <fieldset style="width:600px;">
+        <fieldset style="width:370px; float:left;">
             <legend>Choix du mode de sortie des données</legend>            
             <button type="submit" name="affichage" value="ods" <?php
                  if($affichage==Null || $affichage=='') echo'disabled';?>>Exporter dans un tableur (ods)</button>
@@ -346,11 +350,44 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
          <?php endif; ?>
     </form>
     <?php
+    if($affichage==Null || $affichage==''){
+        $color="grey";
+    }else{
+        $color="black";
+    }
+    ?>
+    <div id="param-filtre">
+     <form id="filtrage" method="POST" action="bilan_individuel.php" >
+        <fieldset style="width:490px;">
+            <legend>Filtrage des données</legend>
+            <p style="color:<?php echo $color;?>">N'afficher que les élèves dont les nombres d'absences ou retards respectent les conditions ci-dessous:<br />
+            Les conditions sont cumulatives (ET entre les conditions).<br />    
+            Nombre total de 1/2 journées &ge;: <INPUT type="text" <?php if($ndj!=Null)echo'value='.$ndj; else echo'value=""'; ?> name="ndj" size="3" maxlength="3" class="validate-number" <?php
+             if($affichage==Null || $affichage=='') echo'disabled';?>/><br />
+            (ET) Nombre de 1/2 journées non justifiées &ge;: <INPUT type="text" <?php if($ndjnj!=Null)echo'value='.$ndjnj; else echo'value=""'; ?> name="ndjnj" size="3" maxlength="3" class="validate-number" <?php
+             if($affichage==Null || $affichage=='') echo'disabled';?>><br />
+            (ET) Nombre de retards &ge;: <INPUT type="text" <?php if($nr!=Null)echo'value='.$nr; else echo'value=""'; ?> name="nr" size="3" maxlength="3" class="validate-number" <?php
+             if($affichage==Null || $affichage=='') echo'disabled';?>><br />
+            <input type="hidden" name="nom_eleve"  value="<?php echo $nom_eleve ?>" />
+            <input type="hidden" name="affichage" value="html" />
+            <input type="hidden" name="tri" value="<?php echo $tri ?>" />
+            <input type="hidden" name="non_traitees" value="<?php echo $non_traitees ?>" />
+            <input type="hidden" name="ods2" value="<?php echo $ods2 ?>" />
+            <input type="hidden" name="sans_commentaire" value="<?php echo $sans_commentaire ?>" />
+            <input type="hidden" name="filtrage" value="ok" />
+            <button type="submit" name="click_filtrage" value="ok" <?php
+             if($affichage==Null || $affichage=='') echo'disabled';?>>Filtrer</button> 
+            <button type="submit" name="raz" value="ok" <?php
+             if($affichage==Null || $affichage=='') echo'disabled';?>>Réinitialiser</button></p>
+        </fieldset> 
+    </form>
+    </div>  
+    <?php
 }
 // fin de l'affichage des options
 // début de la mise en session des données extraites (sauf si on est dans un filtrage des données affichées)
 //if ($affichage != null && $affichage != '' && !$fin_boucle) {
-if ($affichage =='html' && !$fin_boucle && $filtrage!=="ok") {
+if ($affichage =='html' && !$fin_boucle && $click_filtrage!=="ok" && $raz!=="ok") {
 $eleve_query = EleveQuery::create();
 if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
     } else {
@@ -372,7 +409,7 @@ $eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
 if ($eleve_col->isEmpty()) {
     if ($boucle) {
         $cpt_classe++;
-        echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve');</script>";
+        echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve','$filtrage','$ndj','$ndjnj','$nr');</script>";
         die();
     }
     echo"<h2 class='no'>Aucun élève avec les paramètres sélectionnés n'a été trouvé.</h2>";
@@ -517,49 +554,42 @@ $_SESSION['donnees_bilan']=serialize($donnees);
 //en cas de bouclage par classe on recharge la page pour passer à la classe suivante
 if($boucle){   
     $cpt_classe++;    
-    echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve');</script>";die();
+    echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve','$filtrage','$ndj','$ndjnj','$nr');</script>";die();
 }
 }
 // fin de la mise en session des données extraites
 // On fais une copie des données en session pour affichage
 if($affichage !="odt" && $affichage!="ods"){
-    $_SESSION['donnees_bilan_affichage']=$_SESSION['donnees_bilan'];
-}
-//Prise en compte du filtrage
-if($filtrage=="ok" && ($ndj!=null || $ndjnj != null || $nr !=null)){    
-if(isset($_SESSION['donnees_bilan_affichage'])) $donnees_filtrage=unserialize($_SESSION['donnees_bilan_affichage']);  
-foreach ($donnees_filtrage as $id => $eleve) {
-    if(!isset($eleve['demi_journees'])) continue;
-    if(($ndj!=null && $eleve['demi_journees']<$ndj) || ($ndjnj!=null && $eleve['non_justifiees']<$ndjnj) || ($nr!=null && $eleve['retards']<$nr) )
-            {         
-        unset($donnees_filtrage[$id]);
+    if(isset($_SESSION['donnees_bilan'])){
+        $_SESSION['donnees_bilan_affichage']=$_SESSION['donnees_bilan'];
     }    
 }
-$_SESSION['donnees_bilan_affichage']=serialize($donnees_filtrage);
+//Prise en compte du filtrage
+if ($filtrage == "ok" && ($ndj != "" || $ndjnj != "" || $nr != "")) {
+    if (isset($_SESSION['donnees_bilan_affichage']))
+        $donnees_filtrage = unserialize($_SESSION['donnees_bilan_affichage']);
+    $cpt_eleve = 0;
+    $cpt_eleve_filtre = 0;
+    foreach ($donnees_filtrage as $id => $eleve) {
+        if (!isset($eleve['demi_journees']))
+            continue;
+        $cpt_eleve++;
+        if (($ndj != null && $eleve['demi_journees'] < $ndj) || ($ndjnj != null && $eleve['non_justifiees'] < $ndjnj) || ($nr != null && $eleve['retards'] < $nr)) {
+            $cpt_eleve_filtre++;
+            unset($donnees_filtrage[$id]);
+        }
+    }
+    if($affichage !="odt" && $affichage!="ods"){
+        echo'<p class="red">Les données affichées ci-dessous ont été filtrées. ';
+        echo'Le nombre d\'élèves affiché est de '.($cpt_eleve-$cpt_eleve_filtre).' sur un total initial de '.$cpt_eleve.'</p>';
+    } 
+    $_SESSION['donnees_bilan_affichage'] = serialize($donnees_filtrage);
 }
 //Fin prise en compte du filtrage
 // début des export
   //export html
 if ($affichage == 'html') {
-    echo'<div id="sortie_ecran">'?>
-        <form id="filtrage" method="POST" action="bilan_individuel.php" >
-            <fieldset width="1024px">
-                <legend>Filtrage des données</legend>
-                <p>N'affiche que les élèves dont les nombres d'absences ou retards respectent les conditions ci-dessous:</p>
-                Nombre total de 1/2 journées &ge;: <INPUT type="text" <?php if($ndj!=Null)echo'value='.$ndj; else echo'value=""'; ?> name="ndj" size="3" maxlength="3" class="validate-number"/><br />
-                Nombre de 1/2 journées non justifiées &ge;: <INPUT type="text" <?php if($ndjnj!=Null)echo'value='.$ndjnj; else echo'value=""'; ?> name="ndjnj" size="3" maxlength="3" class="validate-number"><br />
-                Nombre de retards &ge;: <INPUT type="text" <?php if($nr!=Null)echo'value='.$nr; else echo'value=""'; ?> name="nr" size="3" maxlength="3" class="validate-number"><br />
-                <input type="hidden" name="filtrage" value="ok" />
-                <input type="hidden" name="affichage" value="html" />
-                <input type="hidden" name="tri" value="<?php echo $tri ?>" />
-                <input type="hidden" name="non_traitees" value="<?php echo $non_traitees ?>" />
-                <input type="hidden" name="ods2" value="<?php echo $ods2 ?>" />
-                <input type="hidden" name="sans_commentaire" value="<?php echo $sans_commentaire ?>" />
-                <input type="submit" value="Filtrer" />
-            </fieldset>
-            <div id="retour"></div>
-        </form>
-<?php 
+echo'<div id="sortie_ecran">';
 echo '<table border="1" cellspacing="0" align="center">';
 echo '<tr >';
 echo '<td align="center">';
@@ -605,7 +635,7 @@ foreach ($donnees as $id => $eleve) {
                 echo'<tr>';
                 if ($precedent_eleve_id != $id) {                    
                     echo '<td rowspan=' . $eleve['nbre_lignes_total'] . '>';
-                    echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'">';
+                    echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&filtrage='.$filtrage.'&ndj='.$ndj.'&ndjnj='.$ndjnj.'&nr='.$nr.'">';
                     echo '<b>' . $eleve['nom'] . ' ' . $eleve['prenom'] . '</b></a><br/> (' . $eleve['classe'] . ')';
                     $propel_eleve=EleveQuery::create()->filterByIdEleve($id)->findOne();
                     if ($utilisateur->getAccesFicheEleve($propel_eleve)) {
