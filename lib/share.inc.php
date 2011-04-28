@@ -6584,7 +6584,7 @@ function affiche_acces_cdt() {
 		$visible="y";
 		if($_SESSION['statut']=='professeur') {
 			$visible="n";
-			$sql="SELECT ag.id_acces FROM acces_cdt_groupes ag, j_groupes_professeurs jgp WHERE jgp.id_groupe=ag.id_groupe;";
+			$sql="SELECT ag.id_acces FROM acces_cdt_groupes ag, j_groupes_professeurs jgp WHERE jgp.id_groupe=ag.id_groupe AND jgp.login='".$_SESSION['login']."';";
 			$res2=mysql_query($sql);
 			if(mysql_num_rows($res2)>0) {
 				$visible="y";
