@@ -7,6 +7,8 @@
 
 Gepi-trunk (20/04/2011)
 ===========================
+- Possibilité de ne pas faire apparaître un enseignement sur les bulletins sans passer par les catégories de matières.
+- Possibilité de mettre en place un accès inspecteur dynamique (pour pouvoir accéder à des notices jusqu'à une date dans le futur). L'accès précédent était un export ne pouvant faire apparaître que ce qui était d'ores et déjà saisi.
 - A compléter au fur et à mesure;)...
 
 Gepi-1.5.4 (17/04/2011)
@@ -173,7 +175,7 @@ Gepi-1.5.0-rc3 (25/05/2007)
 
 Nouvelles fonctionalités
 ------------------------
-- possibilité de ne pas faire appaître le lien 'contacter administrateur' sur la page de login
+- possibilité de ne pas faire apparaître le lien 'contacter administrateur' sur la page de login
 - l'export CSV lors des mots de passe régénéré est également disponible pour la réinitialisation des mots de passe des profs
 - import/export au format ODS pour les carnets de notes et outils de saisie
 - nouveaux logos PHP-powered et MySQL-powered sur la page de login
