@@ -377,13 +377,20 @@ if(!isset($step)) {
 		echo "<p style=\"font-size:small; color: red;\"><i>REMARQUE&nbsp;:</i> Vous pouvez fournir à Gepi le fichier compressé issu directement de SCONET. (Ex : ElevesAvecAdresses.zip)</p>";
 	}
 
-	echo "<p>Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
-	echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' checked />\n";
-	echo "<label for='alert_diff_mail_ele_y' style='cursor: pointer;'> signaler";
-	echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
-	echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_n' value='n' />\n";
-	echo "<label for='alert_diff_mail_ele_n' style='cursor: pointer;'> ne pas signaler";
-	echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label></p>\n";
+	$sql_ele_tmp="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
+	$test_comptes_ele=mysql_query($sql_ele_tmp);
+	if(mysql_num_rows($test_comptes_ele)==0) {
+		echo "<input type='hidden' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' />\n";
+	}
+	else {
+		echo "<p>Pour les élèves qui disposent d'un compte d'utilisateur, <br />\n";
+		echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_y' value='y' checked />\n";
+		echo "<label for='alert_diff_mail_ele_y' style='cursor: pointer;'> signaler";
+		echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
+		echo "<input type='radio' name='alert_diff_mail_ele' id='alert_diff_mail_ele_n' value='n' />\n";
+		echo "<label for='alert_diff_mail_ele_n' style='cursor: pointer;'> ne pas signaler";
+		echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label></p>\n";
+	}
 
 	echo "<p>\n";
 	echo "<input type='radio' name='alert_diff_etab_origine' id='alert_diff_etab_origine_y' value='y' checked />\n";
@@ -4670,13 +4677,20 @@ else{
 			//$ne_pas_proposer_resp_sans_eleve
 			echo "<label for='ne_pas_proposer_resp_sans_eleve' style='cursor: pointer;'> Ne pas proposer d'ajouter les responsables non associés à des élèves.</label><br />(<i>de telles entrées peuvent subsister en très grand nombre dans Sconet</i>)<br />\n";
 
-			echo "Pour les responsables qui disposent d'un compte d'utilisateur, <br />\n";
-			echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_y' value='y' checked />\n";
-			echo "<label for='alert_diff_mail_resp_y' style='cursor: pointer;'> signaler";
-			echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
-			echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_n' value='n' />\n";
-			echo "<label for='alert_diff_mail_resp_n' style='cursor: pointer;'> ne pas signaler";
-			echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
+			$sql_resp_tmp="SELECT 1=1 FROM utilisateurs WHERE statut='eleve';";
+			$test_comptes_resp=mysql_query($sql_resp_tmp);
+			if(mysql_num_rows($test_comptes_resp)==0) {
+				echo "<input type='hidden' name='alert_diff_mail_resp' id='alert_diff_mail_ele_y' value='y' />\n";
+			}
+			else {
+				echo "Pour les responsables qui disposent d'un compte d'utilisateur, <br />\n";
+				echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_y' value='y' checked />\n";
+				echo "<label for='alert_diff_mail_resp_y' style='cursor: pointer;'> signaler";
+				echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
+				echo "<input type='radio' name='alert_diff_mail_resp' id='alert_diff_mail_resp_n' value='n' />\n";
+				echo "<label for='alert_diff_mail_resp_n' style='cursor: pointer;'> ne pas signaler";
+				echo " les différences d'adresse Mail entre Sconet et le compte d'utilisateur.</label><br />\n";
+			}
 
 			//==============================
 			// AJOUT pour tenir compte de l'automatisation ou non:
