@@ -81,12 +81,13 @@ $ndjnj=isset($_POST["ndjnj"]) ? $_POST["ndjnj"] : (isset($_GET["ndjnj"]) ? $_GET
 $nr=isset($_POST["nr"]) ? $_POST["nr"] : (isset($_GET["nr"]) ? $_GET["nr"] : null);
 $click_filtrage=isset($_POST["click_filtrage"]) ? $_POST["click_filtrage"] : (isset($_GET["click_filtrage"]) ? $_GET["click_filtrage"] : null);
 $filtrage=isset($_POST["filtrage"]) ? $_POST["filtrage"] : (isset($_GET["filtrage"]) ? $_GET["filtrage"] : null);
+$type_filtrage=isset($_POST["type_filtrage"]) ? $_POST["type_filtrage"] : (isset($_GET["type_filtrage"]) ? $_GET["type_filtrage"] : "OU" );
 $raz=isset($_POST["raz"]) ? $_POST["raz"] : (isset($_GET["raz"]) ? $_GET["raz"] : null);
 
 if($ndj=="" || $raz=="ok") $ndj=Null;
 if($ndjnj=="" || $raz=="ok") $ndjnj=Null;
 if($nr=="" || $raz=="ok") $nr=Null;
-
+if($type_filtrage=="" || $raz=="ok") $type_filtrage="OU";
 if (isset($id_classe) && $id_classe != null)
     $_SESSION['id_classe_abs'] = $id_classe;
 if (isset($date_absence_eleve_debut) && $date_absence_eleve_debut != null)
@@ -262,6 +263,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             <input type="hidden" name="id_eleve" value="<?php echo $id_eleve ?>"/>
             <input type="hidden" name="affichage" value="<?php echo $affichage ?>"/>
             <input type="hidden" name="filtrage" value="<?php echo $filtrage ?>"/>
+            <input type="hidden" name="type_filtrage" value="<?php echo $type_filtrage ?>"/>
             <input type="hidden" name="ndj" value="<?php echo $ndj ?>" />
             <input type="hidden" name="ndjnj" value="<?php echo $ndjnj ?>" />
             <input type="hidden" name="nr" value="<?php echo $nr ?>" />
@@ -340,7 +342,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
         </fieldset>
 		<br />
         <?php if($affichage_liens):?>
-        <fieldset style="width:370px; float:left;">
+        <fieldset style="width:320px; float:left;">
             <legend>Choix du mode de sortie des données</legend>            
             <button type="submit" name="affichage" value="ods" <?php
                  if($affichage==Null || $affichage=='') echo'disabled';?>>Exporter dans un tableur (ods)</button>
@@ -358,15 +360,20 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
     ?>
     <div id="param-filtre">
      <form id="filtrage" method="POST" action="bilan_individuel.php" >
-        <fieldset style="width:490px;">
+        <fieldset style="width:540px;">
             <legend>Filtrage des données</legend>
             <p style="color:<?php echo $color;?>">N'afficher que les élèves dont les nombres d'absences ou retards respectent les conditions ci-dessous:<br />
-            Les conditions sont cumulatives (ET entre les conditions).<br />    
+            Choix de la condition si plusieurs conditions sont saisies pour le filtrage : 
+            <select name="type_filtrage"  <?php if($affichage==Null || $affichage=='') echo'disabled';?>>
+                <option <?php if($type_filtrage=="OU") echo 'selected';?>>OU</option>
+                <option <?php if($type_filtrage=="ET") echo 'selected';?>>ET</option>
+            </select>
+            <br />    
             Nombre total de 1/2 journées &ge;: <INPUT type="text" <?php if($ndj!=Null)echo'value='.$ndj; else echo'value=""'; ?> name="ndj" size="3" maxlength="3" class="validate-number" <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>/><br />
-            (ET) Nombre de 1/2 journées non justifiées &ge;: <INPUT type="text" <?php if($ndjnj!=Null)echo'value='.$ndjnj; else echo'value=""'; ?> name="ndjnj" size="3" maxlength="3" class="validate-number" <?php
+            (OU/ET) Nombre de 1/2 journées non justifiées &ge;: <INPUT type="text" <?php if($ndjnj!=Null)echo'value='.$ndjnj; else echo'value=""'; ?> name="ndjnj" size="3" maxlength="3" class="validate-number" <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>><br />
-            (ET) Nombre de retards &ge;: <INPUT type="text" <?php if($nr!=Null)echo'value='.$nr; else echo'value=""'; ?> name="nr" size="3" maxlength="3" class="validate-number" <?php
+            (OU/ET) Nombre de retards &ge;: <INPUT type="text" <?php if($nr!=Null)echo'value='.$nr; else echo'value=""'; ?> name="nr" size="3" maxlength="3" class="validate-number" <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>><br />
             <input type="hidden" name="nom_eleve"  value="<?php echo $nom_eleve ?>" />
             <input type="hidden" name="affichage" value="html" />
@@ -409,7 +416,7 @@ $eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
 if ($eleve_col->isEmpty()) {
     if ($boucle) {
         $cpt_classe++;
-        echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve','$filtrage','$ndj','$ndjnj','$nr');</script>";
+        echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve','$filtrage','$type_filtrage',$ndj','$ndjnj','$nr');</script>";
         die();
     }
     echo"<h2 class='no'>Aucun élève avec les paramètres sélectionnés n'a été trouvé.</h2>";
@@ -554,7 +561,7 @@ $_SESSION['donnees_bilan']=serialize($donnees);
 //en cas de bouclage par classe on recharge la page pour passer à la classe suivante
 if($boucle){   
     $cpt_classe++;    
-    echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve','$filtrage','$ndj','$ndjnj','$nr');</script>";die();
+    echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve','$filtrage','$type_filtrage','$ndj','$ndjnj','$nr');</script>";die();
 }
 }
 // fin de la mise en session des données extraites
@@ -565,20 +572,44 @@ if($affichage !="odt" && $affichage!="ods"){
     }    
 }
 //Prise en compte du filtrage
-if ($filtrage == "ok" && ($ndj != "" || $ndjnj != "" || $nr != "")) {
+if ($filtrage == "ok" && ($ndj != null || $ndjnj != null || $nr != null)) {
     if (isset($_SESSION['donnees_bilan_affichage']))
         $donnees_filtrage = unserialize($_SESSION['donnees_bilan_affichage']);
     $cpt_eleve = 0;
     $cpt_eleve_filtre = 0;
-    foreach ($donnees_filtrage as $id => $eleve) {
-        if (!isset($eleve['demi_journees']))
-            continue;
-        $cpt_eleve++;
-        if (($ndj != null && $eleve['demi_journees'] < $ndj) || ($ndjnj != null && $eleve['non_justifiees'] < $ndjnj) || ($nr != null && $eleve['retards'] < $nr)) {
-            $cpt_eleve_filtre++;
-            unset($donnees_filtrage[$id]);
-        }
+    switch ($type_filtrage) {
+        case "OU":
+            foreach ($donnees_filtrage as $id => $eleve) {
+                if (!isset($eleve['demi_journees'])) {
+                    continue;                    
+                }
+                $cpt_eleve++;
+                if ($ndj != null && $eleve['demi_journees'] > ($ndj-1)){ 
+                    
+                    }elseif ($ndjnj != null && $eleve['non_justifiees'] > ($ndjnj-1)){ 
+                        
+                        }elseif ($nr != null && $eleve['retards'] > ($nr-1)){ 
+                            
+                            }else{
+                                $cpt_eleve_filtre++;
+                                unset($donnees_filtrage[$id]);
+                                }                    
+                }
+                break;
+        case "ET":
+            foreach ($donnees_filtrage as $id => $eleve) {
+                if (!isset($eleve['demi_journees'])) {
+                    continue;                    
+                }
+                $cpt_eleve++;
+                if (($ndj != null && $eleve['demi_journees'] < $ndj) || ($ndjnj != null && $eleve['non_justifiees'] < $ndjnj) || ($nr != null && $eleve['retards'] < $nr)) {
+                    $cpt_eleve_filtre++;
+                    unset($donnees_filtrage[$id]);
+                }
+            }
+            break;
     }
+
     if($affichage !="odt" && $affichage!="ods"){
         echo'<p class="red">Les données affichées ci-dessous ont été filtrées. ';
         echo'Le nombre d\'élèves affiché est de '.($cpt_eleve-$cpt_eleve_filtre).' sur un total initial de '.$cpt_eleve.'</p>';
