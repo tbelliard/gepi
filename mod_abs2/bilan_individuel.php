@@ -81,13 +81,13 @@ $ndjnj=isset($_POST["ndjnj"]) ? $_POST["ndjnj"] : (isset($_GET["ndjnj"]) ? $_GET
 $nr=isset($_POST["nr"]) ? $_POST["nr"] : (isset($_GET["nr"]) ? $_GET["nr"] : null);
 $click_filtrage=isset($_POST["click_filtrage"]) ? $_POST["click_filtrage"] : (isset($_GET["click_filtrage"]) ? $_GET["click_filtrage"] : null);
 $filtrage=isset($_POST["filtrage"]) ? $_POST["filtrage"] : (isset($_GET["filtrage"]) ? $_GET["filtrage"] : null);
-$type_filtrage=isset($_POST["type_filtrage"]) ? $_POST["type_filtrage"] : (isset($_GET["type_filtrage"]) ? $_GET["type_filtrage"] : "OU" );
+$type_filtrage=isset($_POST["type_filtrage"]) ? $_POST["type_filtrage"] : (isset($_GET["type_filtrage"]) ? $_GET["type_filtrage"] : "ET" );
 $raz=isset($_POST["raz"]) ? $_POST["raz"] : (isset($_GET["raz"]) ? $_GET["raz"] : null);
 
 if($ndj=="" || $raz=="ok") $ndj=Null;
 if($ndjnj=="" || $raz=="ok") $ndjnj=Null;
 if($nr=="" || $raz=="ok") $nr=Null;
-if($type_filtrage=="" || $raz=="ok") $type_filtrage="OU";
+if($type_filtrage=="" || $raz=="ok") $type_filtrage="ET";
 if (isset($id_classe) && $id_classe != null)
     $_SESSION['id_classe_abs'] = $id_classe;
 if (isset($date_absence_eleve_debut) && $date_absence_eleve_debut != null)
