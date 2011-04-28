@@ -529,6 +529,7 @@ if($affichage !="odt" && $affichage!="ods"){
 if($filtrage=="ok" && ($ndj!=null || $ndjnj != null || $nr !=null)){    
 if(isset($_SESSION['donnees_bilan_affichage'])) $donnees_filtrage=unserialize($_SESSION['donnees_bilan_affichage']);  
 foreach ($donnees_filtrage as $id => $eleve) {
+    if(!isset($eleve['demi_journees'])) continue;
     if(($ndj!=null && $eleve['demi_journees']<$ndj) || ($ndjnj!=null && $eleve['non_justifiees']<$ndjnj) || ($nr!=null && $eleve['retards']<$nr) )
             {         
         unset($donnees_filtrage[$id]);
@@ -906,7 +907,7 @@ $TBS->Show(OPENTBS_DOWNLOAD + TBS_EXIT, $nom_fichier);
 	var valid = new Validation('filtrage', {immediate : true, onFormValidate : ValidateForm});
         Validation.addAllThese([
         ['validate-number', 'Utilisez un nombre supérieur à zéro seulement dans ce champ ou laissez vide pour ne pas filtrer sur ce champ', function(v) {
-       return Validation.get('IsEmpty').test(v) || !/[^1-9]/.test(v);
+       return Validation.get('IsEmpty').test(v) || /^0*([1-9][0-9]?|[199][0-9][0-9])$/.test(v);
      }]
 	]);    
 
