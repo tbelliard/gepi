@@ -106,7 +106,7 @@ if ($etape == 4) {
 
 	if ($_POST['choix_db'] == "new_gepi") {
 		$sel_db = $_POST['table_new'];
-		$result=mysql_query("CREATE DATABASE $sel_db;");
+		$result=mysql_query("CREATE DATABASE `$sel_db`;");
 	}
 	else {
 		$sel_db = $_POST['choix_db'];
