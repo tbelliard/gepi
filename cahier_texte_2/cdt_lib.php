@@ -156,6 +156,9 @@ require_once("'.$pref_arbo.'/entete.php");
 		if((isset($n_arbo))&&($n_arbo==0)) {
 			$pref_arbo=".";
 		}
+		elseif((isset($n_arbo))&&($n_arbo==2)) {
+			$pref_arbo="../..";
+		}
 		else {
 			$pref_arbo="..";
 		}

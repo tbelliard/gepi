@@ -6703,7 +6703,7 @@ function del_acces_cdt($id_acces) {
 	if(mysql_num_rows($res)>0) {
 		$lig=mysql_fetch_object($res);
 
-		$chemin=preg_replace("#/index.html#","",$lig->chemin);
+		$chemin=preg_replace("#/index.(html|php)#","",$lig->chemin);
 		if((!preg_match("#^documents/acces_cdt_#",$chemin))||(strstr($chemin,".."))) {
 			echo "<p><span style='color:red'>Chemin $chemin invalide</span></p>";
 			return false;

@@ -328,7 +328,13 @@ if(!isset($id_groupe)) {
 
 				echo "<p><b>Action à réaliser&nbsp;:</b><br />\n";
 				echo "<input type='radio' name='action' id='action_export_zip' value='export_zip' checked onchange='modif_param_affichage()' /><label for='action_export_zip'> Générer un export de cahier(s) de textes et le zipper</label><br />\n";
-				echo "<input type='radio' name='action' id='action_acces' value='acces' onchange='modif_param_affichage()' /><label for='action_acces'> Mettre en place un accès sans authentification aux cahier(s) de textes choisis<br />(<i>pour par exemple, permettre à un inspecteur de consulter les cahiers de textes d'un professeur lors d'une inspection</i>)</label>";
+				echo "ou<br />\n";
+				echo "Mettre en place un accès sans authentification aux cahier(s) de textes choisis<br />(<i>pour par exemple, permettre à un inspecteur de consulter les cahiers de textes d'un professeur lors d'une inspection</i>)";
+				echo "<br />\n";
+				echo "<input type='radio' name='action' id='action_acces' value='acces' onchange='modif_param_affichage()' /><label for='action_acces'> Accès 'statique'&nbsp;: c'est-à-dire que seules les notices saisies à ce jour pourront être consultées.</label>";
+				echo "<br />\n";
+
+				echo "<input type='radio' name='action' id='action_acces2' value='acces2' onchange='modif_param_affichage()' /><label for='action_acces2'> Accès 'dynamique'&nbsp;: c'est-à-dire que les notices éventuellement saisies dans le futur pourront être consultées (<i>jusqu'à la date ci-dessus</i>).</label>";
 				echo "</p>\n";
 
 				echo "<div id='div_param_action_acces' style='margin-left: 3em;'>\n";
@@ -457,7 +463,11 @@ if(!isset($id_groupe)) {
 	
 				echo "<p><b>Action à réaliser&nbsp;:</b><br />\n";
 				echo "<input type='radio' name='action' id='action_export_zip' value='export_zip' checked onchange='modif_param_affichage()' /><label for='action_export_zip'> Générer un export de cahier(s) de textes et le zipper</label><br />\n";
-				echo "<input type='radio' name='action' id='action_acces' value='acces' onchange='modif_param_affichage()' /><label for='action_acces'> Mettre en place un accès sans authentification aux cahier(s) de textes choisis<br />(<i>pour par exemple, permettre à un inspecteur de consulter les cahiers de textes d'un professeur lors d'une inspection</i>)</label>";
+				echo "<input type='radio' name='action' id='action_acces' value='acces' onchange='modif_param_affichage()' /><label for='action_acces'> Mettre en place un accès sans authentification aux cahier(s) de textes choisis<br />(<i>pour par exemple, permettre à un inspecteur de consulter les cahiers de textes d'un professeur lors d'une inspection</i>)</label><br />L'accès mis en place est 'statique', c'est-à-dire que seules les notices saisies à ce jour pourront être consultées.";
+				/*
+				echo "<br />\n";
+				echo "<input type='radio' name='action' id='action_acces2' value='acces2' onchange='modif_param_affichage()' /><label for='action_acces2'> Mettre en place un accès sans authentification aux cahier(s) de textes choisis<br />(<i>pour par exemple, permettre à un inspecteur de consulter les cahiers de textes d'un professeur lors d'une inspection</i>)<br />L'accès mis en place est 'dynamique', c'est-à-dire que les notices éventuellement saisies dans le futur pourront être consultées (<i>jusqu'à la date ci-dessus</i>).</label>";
+				*/
 				echo "</p>\n";
 
 				echo "<div id='div_param_action_acces' style='margin-left: 3em;'>\n";
@@ -641,7 +651,9 @@ else {
 }
 
 echo "<div id='div_archive_zip'></div>\n";
-echo "<p class='bold'>Affichage des cahiers de textes extraits</p>\n";
+if($action!='acces2') {
+	echo "<p class='bold'>Affichage des cahiers de textes extraits</p>\n";
+}
 
 // Récupérer le max de getSettingValue("begin_bookings") et $display_date_debut
 $tmp_tab=explode("/",$display_date_debut);
@@ -664,7 +676,8 @@ $current_ordre='ASC';
 
 //echo "\$action=$action<br />";
 
-if($action=='acces') {
+//if($action=='acces') {
+if(($action=='acces')||($action=='acces2')) {
 	$length = rand(35, 45);
 	for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 	$dirname = "acces_cdt_".$r;
@@ -699,6 +712,102 @@ if($action=='acces') {
 		die();
 	}
 	*/
+}
+
+if($action=='acces2') {
+	$tmp_chaine_id_groupe="";
+	for($loop=0;$loop<count($id_groupe);$loop++) {
+		if($loop>0) {$tmp_chaine_id_groupe.=", ";}
+		$tmp_chaine_id_groupe.=$id_groupe[$loop];
+	}
+
+	$chemin_acces="documents/".$dirname."/index.php";
+	$res=enregistrement_creation_acces_cdt($chemin_acces, $description_acces, $date1_acces, $date2_acces, $id_groupe);
+	if(!$res) {
+		echo "<p style='color:red;'>Erreur lors de l'enregistrement de la mise en place de l'accès.</p>\n";
+		require("../lib/footer.inc.php");
+		die();
+	}
+
+	$f=fopen("../$chemin_acces","w+");
+	fwrite($f,'<?php
+/*
+* @version: $Id$
+*
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+// Initialisation des feuilles de style après modification pour améliorer l accessibilité
+$accessibilite="y";
+
+$niveau_arbo=2;
+$prefixe_arbo_acces_cdt="../..";
+
+// Initialisations files
+require_once($prefixe_arbo_acces_cdt."/lib/initialisations.inc.php");
+require_once($prefixe_arbo_acces_cdt."/lib/transform_functions.php");
+
+//=================================
+// Login du professeur
+$login_prof="'.$login_prof.'";
+//=================================
+// Dates
+/*
+$annee = strftime("%Y");
+$mois = strftime("%m");
+$jour = strftime("%d");
+$heure = strftime("%H");
+$minute = strftime("%M");
+
+if($mois>7) {$date_debut_tmp="01/09/$annee";} else {$date_debut_tmp="01/09/".($annee-1);}
+$display_date_debut=$date_debut_tmp;
+$display_date_fin=$jour."/".$mois."/".$annee;
+*/
+$display_date_debut="'.$display_date_debut.'";
+$display_date_fin="'.$display_date_fin.'";
+//=================================
+// Enseignements
+/*
+$groups=get_groups_for_prof($login_prof);
+$id_groupe=array();
+foreach($groups as $current_group) {
+$id_groupe[]=$current_group["id"];
+}
+*/
+$id_groupe=array('.$tmp_chaine_id_groupe.');
+//=================================
+
+// A VOIR: PEUT-ETRE BLOQUER AUTOMATIQUEMENT L ACCES A UNE DATE DONNEE?
+
+require($prefixe_arbo_acces_cdt."/cahier_texte_2/acces_cdt.inc.php");
+
+?>
+');
+	fclose($f);
+
+	$chaine_info_texte="<br /><p><b>Information&nbsp;:</b><br />Le(s) cahier(s) de textes extrait(s) est(sont) accessible(s) sans authentification à l'adresse suivante&nbsp;:<br /><a href='../$chemin_acces' target='_blank'>../$chemin_acces</a><br />Consultez la page, copiez l'adresse en barre d'adresse et transmettez la à qui vous souhaitez.<br />N'oubliez pas de supprimer cet accès lorsqu'il ne sera plus utile.<br />&nbsp;</p>";
+
+	echo $chaine_info_texte;
+
+
+	require("../lib/footer.inc.php");
+	die();
 }
 
 //echo "\$dirname=$dirname<br />";
@@ -784,7 +893,7 @@ if(($_SESSION['statut']=='professeur')||(isset($login_prof))) {
 		tab_id_groupe=new Array($chaine_id_groupe);
 		for(i=0;i<tab_id_groupe.length;i++) {
 			if(document.getElementById('lien_id_groupe_'+tab_id_groupe[i])) {
-				document.getElementById('lien_id_groupe_'+tab_id_groupe[i]).href='#lien_id_groupe_'+tab_id_groupe[i];
+				document.getElementById('lien_id_groupe_'+tab_id_groupe[i]).href='#cible_lien_id_groupe_'+tab_id_groupe[i];
 			}
 		}
 	</script>\n";
@@ -1017,6 +1126,8 @@ for($i=0;$i<count($id_groupe);$i++) {
 		// On a choisi un professeur
 		$html.="<div id='div_lien_retour_".$id_groupe[$i]."' class='noprint' style='float:right; width:6em'><a id='lien_retour_".$id_groupe[$i]."' href='../index.html'>Retour</a></div>\n";
 	}
+
+	$html.="<a name='cible_lien_id_groupe_".$id_groupe[$i]."'></a>\n";
 
 	$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 	$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin</p>\n";
