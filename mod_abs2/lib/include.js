@@ -79,7 +79,7 @@ function pop_it(the_form) {
    my_form.submit();
 }
 
-function refresh(compteur,affichage,tri,sans_commentaire,ods2,non_traitees,nom_eleve,filtrage,type_filtrage,ndj,ndjnj,nr) {
+function refresh(compteur,affichage,tri,sans_commentaire,ods2,non_traitees,nom_eleve,texte_conditionnel,filtrage,type_filtrage,ndj,ndjnj,nr) {
     window.location.href = './bilan_individuel.php?cpt_classe='+compteur+'&affichage='+affichage+'&tri='+tri+'&sans_commentaire='+sans_commentaire+'&ods2='+ods2+'&non_traitees='+non_traitees+'&nom_eleve='+nom_eleve
-    +'&filtrage='+filtrage+'&type_filtrage='+type_filtrage+'&ndj='+ndj+'&ndjnj='+ndjnj+'&nr='+nr;
+    +'&texte_conditionnel='+texte_conditionnel+'&filtrage='+filtrage+'&type_filtrage='+type_filtrage+'&ndj='+ndj+'&ndjnj='+ndjnj+'&nr='+nr;
 }

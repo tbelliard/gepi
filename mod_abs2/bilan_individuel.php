@@ -83,6 +83,7 @@ $click_filtrage=isset($_POST["click_filtrage"]) ? $_POST["click_filtrage"] : (is
 $filtrage=isset($_POST["filtrage"]) ? $_POST["filtrage"] : (isset($_GET["filtrage"]) ? $_GET["filtrage"] : null);
 $type_filtrage=isset($_POST["type_filtrage"]) ? $_POST["type_filtrage"] : (isset($_GET["type_filtrage"]) ? $_GET["type_filtrage"] : "ET" );
 $raz=isset($_POST["raz"]) ? $_POST["raz"] : (isset($_GET["raz"]) ? $_GET["raz"] : null);
+$texte_conditionnel=isset($_POST["texte_conditionnel"]) ? $_POST["texte_conditionnel"] : (isset($_GET["texte_conditionnel"]) ? $_GET["texte_conditionnel"] : null);
 
 if($ndj=="" || $raz=="ok") $ndj=Null;
 if($ndjnj=="" || $raz=="ok") $ndjnj=Null;
@@ -337,6 +338,12 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             } ?>
 			> Ne pas afficher les commentaires dans l'export ods et odt
             <br />
+            <input type="checkbox" name="texte_conditionnel" value="ok"  <?php
+            if($texte_conditionnel) {
+                echo'checked';
+            } ?>
+			> Afficher le texte optionnel en bas de l'export odt
+            <br />
             <?php endif; ?>            
             <button type="submit" name="affichage" value="html">Valider les modifications et afficher à l'écran</button>
         </fieldset>
@@ -380,6 +387,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             <input type="hidden" name="tri" value="<?php echo $tri ?>" />
             <input type="hidden" name="non_traitees" value="<?php echo $non_traitees ?>" />
             <input type="hidden" name="ods2" value="<?php echo $ods2 ?>" />
+            <input type="hidden" name="texte_conditionnel" value="<?php echo $texte_conditionnel ?>" />
             <input type="hidden" name="sans_commentaire" value="<?php echo $sans_commentaire ?>" />
             <input type="hidden" name="filtrage" value="ok" />
             <button type="submit" name="click_filtrage" value="ok" <?php
@@ -416,7 +424,7 @@ $eleve_col = $eleve_query->orderByNom()->orderByPrenom()->distinct()->find();
 if ($eleve_col->isEmpty()) {
     if ($boucle) {
         $cpt_classe++;
-        echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve','$filtrage','$type_filtrage',$ndj','$ndjnj','$nr');</script>";
+        echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve','$texte_conditionnel','$filtrage','$type_filtrage',$ndj','$ndjnj','$nr');</script>";
         die();
     }
     echo"<h2 class='no'>Aucun élève avec les paramètres sélectionnés n'a été trouvé.</h2>";
@@ -561,7 +569,7 @@ $_SESSION['donnees_bilan']=serialize($donnees);
 //en cas de bouclage par classe on recharge la page pour passer à la classe suivante
 if($boucle){   
     $cpt_classe++;    
-    echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve','$filtrage','$type_filtrage','$ndj','$ndjnj','$nr');</script>";die();
+    echo"<script type='text/javascript'>refresh('$cpt_classe','$affichage','$tri','$sans_commentaire','$ods2','$non_traitees','$nom_eleve','$texte_conditionnel','$filtrage','$type_filtrage','$ndj','$ndjnj','$nr');</script>";die();
 }
 }
 // fin de la mise en session des données extraites
@@ -666,7 +674,7 @@ foreach ($donnees as $id => $eleve) {
                 echo'<tr>';
                 if ($precedent_eleve_id != $id) {                    
                     echo '<td rowspan=' . $eleve['nbre_lignes_total'] . '>';
-                    echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&filtrage='.$filtrage.'&ndj='.$ndj.'&ndjnj='.$ndjnj.'&nr='.$nr.'">';
+                    echo '<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=html&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&texte_conditionnel='.$texte_conditionnel.'&filtrage='.$filtrage.'&ndj='.$ndj.'&ndjnj='.$ndjnj.'&nr='.$nr.'">';
                     echo '<b>' . $eleve['nom'] . ' ' . $eleve['prenom'] . '</b></a><br/> (' . $eleve['classe'] . ')';
                     $propel_eleve=EleveQuery::create()->filterByIdEleve($id)->findOne();
                     if ($utilisateur->getAccesFicheEleve($propel_eleve)) {
@@ -676,7 +684,7 @@ foreach ($donnees as $id => $eleve) {
                     }
                     if($affichage_liens){
                       echo'<a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=ods&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&ods2='.$ods2.'"><img src="../images/icons/ods.png" title="export ods"></a>
-                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'"><img src="../images/icons/odt.png" title="export odt"></a><br/><br/>';
+                      <a href="bilan_individuel.php?id_eleve=' . $id . '&affichage=odt&tri='.$tri.'&sans_commentaire='.$sans_commentaire.'&texte_conditionnel='.$texte_conditionnel.'"><img src="../images/icons/odt.png" title="export odt"></a><br/><br/>';
                     }else{
                         echo'<br />';
                     }
@@ -944,6 +952,7 @@ $TBS->MergeField('titre', $titre);
 $TBS->MergeField('date_debut', $dt_date_absence_eleve_debut->format("d/m/Y"));
 $TBS->MergeField('date_fin', $dt_date_absence_eleve_fin->format("d/m/Y"));
 $TBS->MergeBlock('export', $export);
+$TBS->MergeField('texte', $texte_conditionnel);
 // Output as a download file (some automatic fields are merged here)
 $nom_fichier = 'extrait_bilan_';
 if ($classe != null) {
