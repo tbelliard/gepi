@@ -241,9 +241,8 @@ echo "<br>";
 $criteria = new Criteria(CahierTexteCompteRenduPeer::DATABASE_NAME);
 $criteria->add(CahierTexteCompteRenduPeer::DATE_CT, '0', '=');
 $ctCompteRenduInfoGenerales = $current_group->getCahierTexteCompteRendus($criteria);
-$ctCompteRenduInfoGenerale = isset($ctCompteRenduInfoGenerales[0]) ? $ctCompteRenduInfoGenerales[0] : '';
-if (empty($ctCompteRenduInfoGenerales)) {
-	$ctCompteRenduInfoGenerales[0] = new CahierTexteCompteRendu();
+if ($ctCompteRenduInfoGenerales->isEmpty()) {
+	$ctCompteRenduInfoGenerales->append(new CahierTexteCompteRendu());
 }
 echo "<b>Informations Générales</b><br>\n";
 $i = 1;
