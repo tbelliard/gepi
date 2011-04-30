@@ -3,7 +3,7 @@
  *
  * $Id: admin_config_semaines.php 4001 2010-01-08 21:46:14Z regis $
  *
- * Copyright 2001, 2010 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Christian Chapel, Pascal Fautrero
  *
  * This file is part of GEPI.
  *
@@ -37,7 +37,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
     die();
-};
+}
 
 // Check access
 if (!checkAccess()) {
@@ -197,13 +197,19 @@ require_once("../lib/header.inc");
 					<input type="submit" name="submit" value="Enregistrer" />
 
 				<br /><br />			
-			
+
 				<table cellpadding="0" cellspacing="1" class="tab_table" summary="Semaines">
 				<tbody>
 					<tr>
 						<th class="tab_th" style="width: 100px;">Semaine n°<br /> (officiel)</th>
-						<th class="tab_th" style="width: 100px;">Num&eacute;ro<br />interne</th>
-						<th class="tab_th" style="width: 100px;">Type</th>
+						<th class="tab_th" style="width: 100px;">Num&eacute;ro<br />interne
+						<br />
+						<a href="javascript: numerotation_auto()" title="Numérotation automatique; Laisser vides les champs à ne pas traiter"><img src="../images/icons/wizard.png" width="16" height="16" alt="Numérotation automatique d'après le premier champ" /></a>
+						</th>
+						<th class="tab_th" style="width: 100px;">Type
+						<br />
+						<a href="javascript: alterne_auto_semaines_AB()" title="Alterner les semaines A et B; Laisser vides les champs à ne pas traiter"><img src="../images/icons/wizard.png" width="16" height="16" alt="Alterner les semaines A/B" /></a>
+						</th>
 						<th class="tab_th" style="width: 200px;">Du</th>
 						<th class="tab_th" style="width: 200px;">au</th>
 					</tr>
@@ -211,9 +217,11 @@ require_once("../lib/header.inc");
 					// On permet l'affichage en commençant par la 32ème semaine et en terminant par la 31 ème de l'année suivante
 					// attention, on part du lundi à 00:00:00, le samedi matin à la même heure est donc 86400*5 fois plus loin (et pas 6*86400 fois).
 					$i = '31';
+					$i_initial=$i;
 					$ic = '1';
 					$fin = NumLastWeek();
 					$fin_annee = $fin;
+					$j=0;
 					while ( $i < $fin ) {
 						if ($ic === '1') {
 							$ic = '2';
@@ -225,8 +233,8 @@ require_once("../lib/header.inc");
 					?>
 					<tr class="<?php echo $couleur_cellule; ?>">
 						<td><input type="hidden" name="num_semaine[<?php echo $i; ?>]" value="<?php echo $num_semaine[$i]; ?>" /><strong><?php echo $num_semaine[$i]; ?></strong></td>
-						<td><input type="text" name="num_interne[<?php echo $i; ?>]" size="3" value="<?php echo $num_interne[$i]; ?>" class="input_sans_bord" /></td>
-						<td><input name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
+						<td><input type="text" id="num_interne_<?php echo $j; ?>" name="num_interne[<?php echo $i; ?>]" size="3" value="<?php echo $num_interne[$i]; ?>" class="input_sans_bord" /></td>
+						<td><input type="text" id="type_semaine_<?php echo $j; ?>" name="type_semaine[<?php echo $i; ?>]" size="3" maxlength="10"  value="<?php if ( isset($type_semaine[$i]) and !empty($type_semaine[$i]) ) { echo $type_semaine[$i]; } ?>" class="input_sans_bord" /></td>
 						<td> lundi <?php echo date("d-m-Y", (int) trouverDates($i+1)); ?> </td>
 						<td> samedi <?php echo date("d-m-Y", (trouverDates($i+1) + 5*86400)); ?> </td>
 
@@ -239,6 +247,7 @@ require_once("../lib/header.inc");
 						} else {
 							$i = $i + 1;
 						}
+						$j++;
 					} // fin du while ( $i < '52'...
 					?>
 				</tbody>
@@ -248,6 +257,41 @@ require_once("../lib/header.inc");
 				<input type="submit" name="submit" value="Enregistrer" />
 			</form>
 			<br /><br />
+
+			<script type="text/javascript">
+				function numerotation_auto() {
+					if(document.getElementById('num_interne_0')) {
+						v=document.getElementById('num_interne_0').value;
+						if(v=='') {v=0;}
+						for(j=1;j<=51;j++) {
+							//if((document.getElementById('num_interne_'+j))&&(document.getElementById('num_interne_'+j).value!='')) {
+							//if(j==12) {}
+							if(document.getElementById('num_interne_'+j)) {
+								if(document.getElementById('num_interne_'+j).value!='') {
+									v=eval(v)+1;
+									document.getElementById('num_interne_'+j).value=v;
+								}
+							}
+						}
+					}
+				}
+
+				function alterne_auto_semaines_AB() {
+					if(document.getElementById('type_semaine_0')) {
+						v=document.getElementById('type_semaine_0').value;
+						for(j=1;j<=51;j++) {
+							if(document.getElementById('type_semaine_'+j)) {
+								// Test pour permettre de fixer les vacances avant et alterner ce qui reste
+								if((document.getElementById('type_semaine_'+j).value=="A")||(document.getElementById('type_semaine_'+j).value=="B")) {
+									if(v=='A') {v='B';} else {v='A';}
+									document.getElementById('type_semaine_'+j).value=v;
+								}
+							}
+						}
+					}
+				}
+			</script>
+
 		</div>
 	</div>
 
