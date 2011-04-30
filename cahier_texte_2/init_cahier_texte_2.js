@@ -801,6 +801,32 @@ function updateListeNoticesChaine() {
 		}
 	}
 }
+
+
+function getWinDevoirsDeLaClasse() {
+	if (typeof winDevoirsDeLaClasse=="undefined") {
+		winDevoirsDeLaClasse = new Window(
+				{id: 'win_dev_classe',
+				title: 'Devoirs &agrave; faire',
+				showEffect: Element.show,
+				hideEffect: Element.hide,
+				top:0, 
+				left:100,
+				width: 600,
+				height: GetHeight() - 220}
+			);
+		$('win_dev_classe_content').setStyle({	
+			backgroundColor: '#d0d0d0',
+			color: '#000000'
+		});
+		$('win_dev_classe_content').innerHTML = '<div id="dev_classe_container" onmouseover="winDevoirsDeLaClasse.toFront();">';
+	}
+	winDevoirsDeLaClasse.show();
+	winDevoirsDeLaClasse.toFront();
+	return winDevoirsDeLaClasse;
+}
+
+
 /**
 *
 *  Fin des fonctions ajax du cahier de texte

@@ -751,6 +751,7 @@ $tab_req[] = "INSERT INTO droits SET id='/saisie/saisie_vocabulaire.php',adminis
 
 $tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/genere_liste_affichage.php',administrateur='V',professeur='F',cpe='F',scolarite='V',eleve='F',responsable='F',secours='F',autre='F',description='Epreuve blanche: Génération listes affichage',statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/ajax_devoirs_classe.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Cahiers de textes : Devoirs d une classe pour tel jour',statut='';";
 
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {

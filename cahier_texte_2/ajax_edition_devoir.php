@@ -23,7 +23,7 @@
 
 header('Content-Type: text/html; charset=ISO-8859-1');
 // On désamorce une tentative de contournement du traitement anti-injection lorsque register_globals=on
-if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) $traite_anti_inject = "yes";
+if (isset($_GET['traite_anti_inject']) OR isset($_POST['traite_anti_inject'])) {$traite_anti_inject = "yes";}
 include("../lib/initialisationsPropel.inc.php");
 require_once("../lib/initialisations.inc.php");
 
@@ -131,6 +131,21 @@ $type_couleur = "t";
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
 echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" HEIGHT=\"16\" WIDTH=\"16\" style=\"border: 0px; vertical-align : middle\" src=\"../images/blank.gif\"  alt=\"Lier\" title=\"Lier la liste avec la liste des de notices\" /></div>&nbsp;";
+
+echo "<div style='float:right; width: 150px; text-align: center;'>\n";
+echo "Travaux pour ce jour en";
+$classes=$groupe->getClasses();
+foreach($classes as $classe){
+	$id_classe=$classe->getId();
+	$nomClasse=$classe->getNom();
+	$nomCompletClasse=$classe->getNomComplet();
+
+	echo " <button style='background-color:plum' onclick=\"javascript:
+							getWinDevoirsDeLaClasse().setAjaxContent('./ajax_devoirs_classe.php?id_classe=$id_classe&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
+						\">$nomClasse</button>";
+}
+echo "</div>\n";
+
 echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 			updateListeNoticesChaine();
 			id_groupe = (\$A($('id_groupe_colonne_droite').options).find(function(option) { return option.selected; }).value);
@@ -157,6 +172,7 @@ echo "<button style='background-color:".$color_fond_notices['p']."' onclick=\"ja
 						getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'notice_privee';
 					\">Editer les notices priv&eacute;es</button><br><br>\n";
+
 
 //fin affichage des groupes
 

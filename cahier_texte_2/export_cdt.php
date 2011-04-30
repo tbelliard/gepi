@@ -119,6 +119,7 @@ require_once("../lib/header.inc");
 echo "<p class='bold'>";
 if($_SESSION['statut']=='professeur') {
 	echo "<a href='index.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'>Export de mes CDT</a>";
 }
 else {
 	// Modifier par la suite le chemin de retour selon les statuts...
@@ -1132,7 +1133,7 @@ for($i=0;$i<count($id_groupe);$i++) {
 	$html.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 	$html.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin</p>\n";
 	$html.="<h2 style='text-align:center;'>Cahier de textes de ".$nom_detaille_groupe[$id_groupe[$i]]." (<i>$display_date_debut - $display_date_fin</i>)&nbsp;:</h2>\n";
-
+	/*
 	$sql="SELECT cte.* FROM ct_entry cte WHERE (contenu != ''
 		AND date_ct != ''
 		AND date_ct >= '".$timestamp_debut_export."'
@@ -1188,6 +1189,13 @@ for($i=0;$i<count($id_groupe);$i++) {
 	else {
 		array_multisort ($tab_dates, SORT_ASC, SORT_NUMERIC, $tab_dates2, SORT_DESC, SORT_NUMERIC);
 	}
+	*/
+	unset($tmp_tab);
+	$tmp_tab=get_dates_notices_et_dev($id_groupe[$i], "", "", $timestamp_debut_export, $timestamp_fin_export, "y", "y");
+	$tab_dates=$tmp_tab[0];
+	$tab_notices=$tmp_tab[1];
+	$tab_dev=$tmp_tab[2];
+	unset($tmp_tab);
 
 	$html.=lignes_cdt($tab_dates, $tab_notices, $tab_dev);
 

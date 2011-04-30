@@ -198,6 +198,7 @@ require_once("'.$pref_arbo.'/entete.php");
 
 	function lignes_cdt($tab_dates, $tab_notices, $tab_dev,$dossier_documents="",$mode="") {
 		global $temoin_erreur;
+		global $ne_pas_afficher_colonne_vide;
 
 		$html="<table class='boireaus' style='margin:3px;' border='1' summary='CDT'>\n";
 		$alt=1;
@@ -210,53 +211,57 @@ require_once("'.$pref_arbo.'/entete.php");
 			$html.="<h3 class='see_all_h3'>$tab_dates[$k]</h3>\n";
 			$html.="</td>\n";
 
-			//$html.="<td class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='width:40%; text-align:left; padding: 3px;'>\n";
-			$html.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
-			if(isset($tab_dev[$tab_dates[$k]])) {
-				foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
-					$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
-					$adj=my_affiche_docs_joints($value['id_ct'],"t");
-					if($adj!='') {
-						$html.="<div style='border: 1px dashed black'>\n";
-						$html.=$adj;
-						$html.="</div>\n";
-
-						if($dossier_documents!='') {
-							$tab_documents_joints=my_tab_docs_joints($value['id_ct'],"t");
-							my_transfert_docs_joints($tab_documents_joints,$dossier_documents,$mode);
+			if(($ne_pas_afficher_colonne_vide!='y')||(($ne_pas_afficher_colonne_vide=='y')&&(count($tab_dev)>0))) {
+				//$html.="<td class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='width:40%; text-align:left; padding: 3px;'>\n";
+				$html.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
+				if(isset($tab_dev[$tab_dates[$k]])) {
+					foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
+						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
+						$adj=my_affiche_docs_joints($value['id_ct'],"t");
+						if($adj!='') {
+							$html.="<div style='border: 1px dashed black'>\n";
+							$html.=$adj;
+							$html.="</div>\n";
+	
+							if($dossier_documents!='') {
+								$tab_documents_joints=my_tab_docs_joints($value['id_ct'],"t");
+								my_transfert_docs_joints($tab_documents_joints,$dossier_documents,$mode);
+							}
 						}
-					}
-					$html.="</div>\n";
-				}
-			}
-			else {
-				$html.="&nbsp;\n";
-			}
-			$html.="</td>\n";
-
-			//$html.="<td class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='width:40%; text-align:left; padding: 3px;'>\n";
-			$html.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
-			if(isset($tab_notices[$tab_dates[$k]])) {
-				foreach($tab_notices[$tab_dates[$k]] as $key => $value) {
-					$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
-					$adj=my_affiche_docs_joints($value['id_ct'],"c");
-					if($adj!='') {
-						$html.="<div style='border: 1px dashed black'>\n";
-						$html.=$adj;
 						$html.="</div>\n";
-
-						if($dossier_documents!='') {
-							$tab_documents_joints=my_tab_docs_joints($value['id_ct'],"c");
-							my_transfert_docs_joints($tab_documents_joints,$dossier_documents,$mode);
-						}
 					}
-					$html.="</div>\n";
 				}
+				else {
+					$html.="&nbsp;\n";
+				}
+				$html.="</td>\n";
 			}
-			else {
-				$html.="&nbsp;\n";
+
+			if(($ne_pas_afficher_colonne_vide!='y')||(($ne_pas_afficher_colonne_vide=='y')&&(count($tab_notices)>0))) {
+				//$html.="<td class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='width:40%; text-align:left; padding: 3px;'>\n";
+				$html.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
+				if(isset($tab_notices[$tab_dates[$k]])) {
+					foreach($tab_notices[$tab_dates[$k]] as $key => $value) {
+						$html.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_c' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
+						$adj=my_affiche_docs_joints($value['id_ct'],"c");
+						if($adj!='') {
+							$html.="<div style='border: 1px dashed black'>\n";
+							$html.=$adj;
+							$html.="</div>\n";
+	
+							if($dossier_documents!='') {
+								$tab_documents_joints=my_tab_docs_joints($value['id_ct'],"c");
+								my_transfert_docs_joints($tab_documents_joints,$dossier_documents,$mode);
+							}
+						}
+						$html.="</div>\n";
+					}
+				}
+				else {
+					$html.="&nbsp;\n";
+				}
+				$html.="</td>\n";
 			}
-			$html.="</td>\n";
 			$html.="</tr>\n";
 
 			//$html.="<div style='clear:both;'></div>\n";
@@ -604,4 +609,178 @@ require_once("'.$pref_arbo.'/entete.php");
 		}
 	}
 
+	function get_dates_notices_et_dev($id_groupe, $date_debut, $date_fin, $timestamp_debut, $timestamp_fin, $avec_notices="y", $avec_dev="y") {
+		// Passer en paramètres $date_debut et $date_fin (au format jj/mm/aaa) ou bien directement les $timestamp_debut et $timestamp_fin
+
+		global $current_ordre;
+
+		$tab_dates=array();
+		$tab_dates2=array();
+	
+		$tab_notices=array();
+		$tab_dev=array();
+
+		if($timestamp_debut=="") {
+			$tmp_tab=explode("/",$date_debut);
+			$jour=$tmp_tab[0];
+			$mois=$tmp_tab[1];
+			$annee=$tmp_tab[2];
+			$timestamp_debut=mktime(0,0,0,$mois,$jour,$annee);
+		}
+
+		if($timestamp_fin=="") {
+			$tmp_tab=explode("/",$date_fin);
+			$jour=$tmp_tab[0];
+			$mois=$tmp_tab[1];
+			$annee=$tmp_tab[2];
+			$timestamp_fin=mktime(0,0,0,$mois,$jour,$annee);
+		}
+
+		if($avec_notices=="y") {
+			$sql="SELECT cte.* FROM ct_entry cte WHERE (contenu != ''
+				AND date_ct != ''
+				AND date_ct >= '".$timestamp_debut."'
+				AND date_ct <= '".$timestamp_fin."'
+				AND id_groupe='".$id_groupe."'
+				) ORDER BY date_ct DESC, heure_entry DESC;";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			$cpt=0;
+			while($lig=mysql_fetch_object($res)) {
+		
+				//echo "$lig->date_ct<br />";
+				$date_notice=strftime("%a %d %b %y", $lig->date_ct);
+				if(!in_array($date_notice,$tab_dates)) {
+					$tab_dates[]=$date_notice;
+					$tab_dates2[]=$lig->date_ct;
+				}
+				$tab_notices[$date_notice][$cpt]['id_ct']=$lig->id_ct;
+				$tab_notices[$date_notice][$cpt]['id_login']=$lig->id_login;
+				$tab_notices[$date_notice][$cpt]['contenu']=$lig->contenu;
+				//echo " <span style='color:red'>\$tab_notices[$date_notice][$cpt]['contenu']=$lig->contenu</span><br />";
+				$cpt++;
+			}
+		}
+
+
+		if($avec_dev=="y") {
+			$sql="SELECT ctd.* FROM ct_devoirs_entry ctd WHERE (contenu != ''
+				AND date_ct != ''
+				AND date_ct >= '".$timestamp_debut."'
+				AND date_ct <= '".$timestamp_fin."'
+				AND id_groupe='".$id_groupe."'
+				) ORDER BY date_ct DESC;";
+			//echo "$sql<br />";
+			$res=mysql_query($sql);
+			$cpt=0;
+			while($lig=mysql_fetch_object($res)) {
+				//echo "$lig->date_ct<br />";
+				$date_dev=strftime("%a %d %b %y", $lig->date_ct);
+				if(!in_array($date_dev,$tab_dates)) {
+					$tab_dates[]=$date_dev;
+					$tab_dates2[]=$lig->date_ct;
+				}
+				$tab_dev[$date_dev][$cpt]['id_ct']=$lig->id_ct;
+				$tab_dev[$date_dev][$cpt]['id_login']=$lig->id_login;
+				$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu;
+				//echo " <span style='color:green'>\$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu</span><br />";
+				$cpt++;
+			}
+		}
+
+		//echo "\$current_ordre=$current_ordre<br />";
+		//sort($tab_dates);
+		if($current_ordre=='ASC') {
+			array_multisort ($tab_dates, SORT_DESC, SORT_NUMERIC, $tab_dates2, SORT_ASC, SORT_NUMERIC);
+		}
+		else {
+			array_multisort ($tab_dates, SORT_ASC, SORT_NUMERIC, $tab_dates2, SORT_DESC, SORT_NUMERIC);
+		}
+
+		return array($tab_dates, $tab_notices, $tab_dev);
+	}
+
+	function devoirs_tel_jour($id_classe, $date_jour, $afficher_enseignement_sans_devoir="y") {
+
+		$dossier_documents="";
+		$mode="";
+
+		$tmp_tab=explode("/",$date_jour);
+		$jour=$tmp_tab[0];
+		$mois=$tmp_tab[1];
+		$annee=$tmp_tab[2];
+		$timestamp_debut=mktime(0,0,0,$mois,$jour,$annee);
+		$timestamp_fin=$timestamp_debut+24*3600;
+
+		$retour="<p class='bold'>";
+		// Jour précédents... comment gérer les liens selon que c'est affiché en infobulle ou en page classique
+		$retour.=get_class_from_id($id_classe)."&nbsp;: Travaux à faire pour le $date_jour";
+		// Jour suivant
+		$retour.="</p>\n";
+		$retour.="<table class='boireaus' style='margin:3px;' border='1' summary='CDT'>\n";
+		// Boucle sur les groupes de la classe
+		//$groups=get_groups_for_clas($id_classe);
+
+		$sql="select g.id from groupes g, j_groupes_classes j where (g.id = j.id_groupe and j.id_classe = '" . $id_classe . "') ORDER BY j.priorite, g.name";
+		//echo "$sql<br />";
+		$query=mysql_query($sql);
+		$tab_champs=array('classes', 'profs');
+		$alt=1;
+		$cpt=0;
+		while($lig=mysql_fetch_object($query)) {
+			$current_group=get_group($lig->id, $tab_champs);
+			$id_groupe=$current_group['id'];
+
+			unset($tmp_tab);
+			unset($tab_dates);
+			unset($tab_notices);
+			unset($tab_dev);
+
+			$tmp_tab=get_dates_notices_et_dev($id_groupe, "", "", $timestamp_debut, $timestamp_fin, "y", "y");
+			$tab_dates=$tmp_tab[0];
+			$tab_notices=$tmp_tab[1];
+			$tab_dev=$tmp_tab[2];
+			unset($tmp_tab);
+
+			if(($afficher_enseignement_sans_devoir=="y")||(count($tab_dev)>0)) {
+				$retour.="";
+
+					$alt=$alt*(-1);
+					$retour.="<tr class='lig$alt'>\n";
+					$retour.="<td style='width:12%; text-align: center; padding: 3px;'>\n";
+					$retour.="<h3 class='see_all_h3'>".$current_group['name']."</h3>\n";
+					//$retour.="<br />\n";
+					$retour.="(<span style='font-size:small; font-variant:italic; '>".$current_group['description']."</span>)<br /><span style='font-size:small;'>".$current_group["profs"]["proflist_string"]."</span>\n";
+					$retour.="</td>\n";
+
+					$retour.="<td style='width:40%; text-align:left; padding: 3px;'>\n";
+					for($k=0;$k<count($tab_dates);$k++) {
+						if(isset($tab_dev[$tab_dates[$k]])) {
+							foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
+								$retour.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
+								$adj=my_affiche_docs_joints($value['id_ct'],"t");
+								if($adj!='') {
+									$retour.="<div style='border: 1px dashed black'>\n";
+									$retour.=$adj;
+									$retour.="</div>\n";
+								}
+								$retour.="</div>\n";
+							}
+							$cpt++;
+						}
+						else {
+							$retour.="&nbsp;\n";
+						}
+					}
+					$retour.="</td>\n";
+					$retour.="</tr>\n";
+			}
+		}
+		$retour.="</table>\n";
+
+		if($cpt==0) {$retour.="<p>Aucun travail n'est (<i>encore</i>) demandé pour cette date.</p>\n";}
+
+		return $retour;
+
+	}
 ?>
