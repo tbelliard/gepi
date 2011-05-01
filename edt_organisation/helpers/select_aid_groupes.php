@@ -2,7 +2,7 @@
 
 /**
  * @version $Id$
- * @copyright 2008
+ * @copyright 2008-2011
  *
  * Fichier qui renvoie un select des professeurs de l'établissement
  * pour l'intégrer dans un fomulaire
@@ -52,11 +52,12 @@ echo '
 	echo '
 			</optgroup>
 			<optgroup label="Les groupes">';
-	$query = mysql_query("SELECT id, description FROM groupes ORDER BY description");
+	$query = mysql_query("SELECT id, description, name FROM groupes ORDER BY description");
 	$nbre_groupes = mysql_num_rows($query);
 	for($a = 0; $a < $nbre_groupes; $a++){
 		$id_groupe[$a]["id"] = mysql_result($query, $a, "id");
 		$id_groupe[$a]["description"] = mysql_result($query, $a, "description");
+		$id_groupe[$a]["name"] = mysql_result($query, $a, "name");
 
 		// On récupère toutes les infos pour l'affichage
 		// On n'utilise pas getGroup() car elle est trop longue et récupère trop de choses dont on n'a pas besoin
@@ -71,8 +72,8 @@ echo '
 				$selected = '';
 			}
 
-		echo '
-		<option value="'.$id_groupe[$a]["id"].'"'.$selected.'>'.$id_groupe[$a]["description"].'('.$classe[0].')</option>';
+		//echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected.'>'.$id_groupe[$a]["description"].'('.$classe[0].')</option>';
+		echo '		<option value="'.$id_groupe[$a]["id"].'"'.$selected.'>'.$id_groupe[$a]["description"].'('.$classe[0].') ('.$id_groupe[$a]["name"].')</option>';
 	}
 echo '
 			</optgroup>
