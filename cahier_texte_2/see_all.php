@@ -2,7 +2,7 @@
 /*
 * @version: $Id$
 *
-* Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
 *
 * This file is part of GEPI.
 *
@@ -390,13 +390,15 @@ if(($id_groupe=='Toutes_matieres')&&
 	
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
-				echo "<td width='20%'>".$tab_grp[$tab_id_grp[$j]]['name']."<br />".$tab_grp[$tab_id_grp[$j]]['matiere']['nom_complet']."<br />";
+				echo "<td width='20%'><span style='font-size:x-small'>".$tab_grp[$tab_id_grp[$j]]['name']."</span><br /><span style='font-weight:bold'>".$tab_grp[$tab_id_grp[$j]]['matiere']['nom_complet']."</span><br />";
 				$str="";
 				foreach ($tab_grp[$tab_id_grp[$j]]['profs']['users'] as $tmp_prof) {
 					$str.=$tmp_prof["civilite"]." ".strtoupper($tmp_prof["nom"])." ".strtoupper(substr($tmp_prof["prenom"],0,1)).", ";
 				}
 				$str = substr($str, 0, -2);
+				echo "<span style='font-size:small'>";
 				echo $str;
+				echo "</span>";
 				//echo " <span style='color:red'>$tab_id_grp[$j]</span>";
 				echo "</td>\n";
 	
