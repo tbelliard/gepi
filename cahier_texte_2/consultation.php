@@ -228,7 +228,10 @@ echo "<div class=\"centre_table\">\n";
 			if ($_SESSION['statut'] == 'responsable') {
 				echo make_eleve_select_html('consultation.php', $_SESSION['login'], $selected_eleve, $year, $month, $day);
 			}
-			if ($selected_eleve_login != "") {echo make_matiere_select_html('consultation.php', $selected_eleve_login, $id_groupe, $year, $month, $day);}
+			if ($selected_eleve_login != "") {
+				echo make_matiere_select_html('consultation.php', $selected_eleve_login, $id_groupe, $year, $month, $day);
+				echo "<a href='see_all.php?&year=$year&amp;month=$month&amp;day=$day&amp;id_groupe=Toutes_matieres'>Voir l'ensemble du cahier de textes</a>";
+			}
 		echo "</div>\n";
 		//echo "<td align=\"right\">\n";
 		// Modification Régis : la colonne de droite doit être avant la colonne centrale
@@ -296,6 +299,10 @@ $delai = getSettingValue("delai_devoirs");
 //Affichage des devoirs globaux s'il n'y a pas de notices dans ct_entry à afficher
 
 if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0)) {
+
+	//echo "plop";
+	//echo "id_classe=$id_classe<br />";
+
     if ($delai == "") die("Erreur : Délai de visualisation du travail personnel non défini. Contactez l'administrateur de GEPI de votre établissement.");
     $nb_dev = 0;
     for ($i = 0; $i <= $delai; $i++) {
@@ -327,7 +334,7 @@ if (($nb_test == 0) and ($id_classe != null OR $selected_eleve) and ($delai != 0
                 "ct.date_ct = '$jour')";
         }
 		//echo strftime("%a %d/%m/%y",$jour)."<br />";
-		//echo "$sql<br /><br />";
+		//echo "$sql<br />";
 		$appel_devoirs_cahier_texte = mysql_query($sql);
         $nb_devoirs_cahier_texte = mysql_num_rows($appel_devoirs_cahier_texte);
         $ind = 0;
