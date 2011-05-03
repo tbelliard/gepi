@@ -4,7 +4,7 @@
  *
  * @version $Id$
  *
- * Copyright 2001, 2008 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Julien Jocal
  *
  * This file is part of GEPI.
  *
@@ -224,7 +224,7 @@ if (isset($data['new_periode']) AND isset($data['nom_periode'])) {
 			$data['heure_debut'] = $data['heure_debut'].":00";
 				$expdeb = explode(":", $data['heure_debut']);
 			$data['heure_fin'] = $data['heure_fin'].":00";
-				$expfin = explode(":", $heure_fin);
+				$expfin = explode(":", $data['heure_fin']);
 				// On insére ces dates en timestamp Unix GMT
 			$heuredeb_ts = gmmktime($expdeb[0], $expdeb[1], 0, $detail_jourdeb[1], $detail_jourdeb[0], $detail_jourdeb[2])
 								OR trigger_error('La date de début n\'est pas valide. ', E_USER_WARNING);
@@ -417,6 +417,7 @@ $utilisation_prototype = "ok";
 // =======================================================================
 
 require_once("../lib/header.inc");
+//debug_var();
 require_once("./views/edt_calendrier_view.html");
 require("../lib/footer.inc.php");
 ?>
