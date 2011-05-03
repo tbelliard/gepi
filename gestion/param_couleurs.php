@@ -119,12 +119,111 @@ function genere_degrade($couleur_haut,$couleur_bas,$hauteur,$chemin_img) {
 }
 
 
+$tab_items=array('utiliser_couleurs_perso', 'style_body_backgroundcolor', 'utiliser_degrade', 'degrade_haut', 'degrade_bas', 'utiliser_couleurs_perso_infobulles', 'couleur_infobulle_fond_entete', 'couleur_infobulle_fond_corps', 'utiliser_couleurs_perso_lig_tab_alt', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'utiliser_cahier_texte_perso', 'fond_notices_c', 'entete_fond_c', 'cellule_c', 'cellule_alt_c', 'fond_notices_t', 'entete_fond_t', 'cellule_t', 'cellule_alt_t', 'fond_notices_i', 'entete_fond_i', 'cellule_i', 'cellule_alt', 'fond_notices_f', 'cellule_f', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen');
+
+if((isset($_GET['export_couleurs']))&&($_GET['export_couleurs']=='y')) {
+
+	$csv="";
+	for($i=0;$i<count($tab_items);$i++) {
+		$nom=$tab_items[$i];
+		$valeur=getSettingValue($tab_items[$i]);
+		$csv.=$nom.";".$valeur."\n";
+	}
+
+	$nom_fic="gepi_modele_de_couleurs_".strftime("%Y%m%d_%H%M%S").".csv";
+	send_file_download_headers('text/x-csv',$nom_fic);
+	echo $csv;
+	die();
+}
+elseif(isset($_POST['valide_import_couleurs'])) {
+
+	check_token();
+
+	$post_max_size=ini_get('post_max_size');
+	$upload_max_filesize=ini_get('upload_max_filesize');
+	$max_execution_time=ini_get('max_execution_time');
+	$memory_limit=ini_get('memory_limit');
+
+	$csv_file = isset($_FILES["csv_file"]) ? $_FILES["csv_file"] : NULL;
+
+	if(!is_uploaded_file($csv_file['tmp_name'])) {
+		$msg="L'upload du fichier a échoué.<br />\n";
+
+		$msg.="<p>Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+		$msg.="post_max_size=$post_max_size<br />\n";
+		$msg.="upload_max_filesize=$upload_max_filesize<br />\n";
+	}
+	else {
+		if(!file_exists($csv_file['tmp_name'])){
+			$msg="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
+
+			$msg.="Les variables du php.ini peuvent peut-être expliquer le problème:<br />\n";
+			$msg.="post_max_size=$post_max_size<br />\n";
+			$msg.="upload_max_filesize=$upload_max_filesize<br />\n";
+			$msg.="et le volume de ".$csv_file['name']." serait<br />\n";
+			$msg.="\$csv_file['size']=".volume_human($csv_file['size'])."<br />\n";
+		}
+		else {
+			/*
+			$tempdir=get_user_temp_directory();
+
+			$source_file=$csv_file['tmp_name'];
+			$dest_file="../temp/".$tempdir."/gepi_modele_de_couleurs.csv";
+			$res_copy=copy("$source_file" , "$dest_file");
+
+			if(!$res_copy){
+				$msg="La copie du fichier vers le dossier temporaire a échoué.<br />Vérifiez que l'utilisateur ou le groupe apache ou www-data a accès au dossier temp/$tempdir<br />\n";
+			}
+			else{
+			*/
+
+				$dest_file=$csv_file['tmp_name'];
+
+				//echo "<p>La copie du fichier vers le dossier temporaire a réussi.</p>\n";
+
+				$fp=fopen($dest_file,"r");
+				if(!$fp) {
+					$msg="Erreur lors de l'ouverture du fichier $dest_file<br />\n";
+				}
+				else {
+					$msg="";
+					$cpt_reg=0;
+					while (!feof($fp)) {
+						$ligne=trim(fgets($fp, 4096));
+						if($ligne!="") {
+							$tmp_tab=explode(";", $ligne);
+							$nom=$tmp_tab[0];
+							$valeur=$tmp_tab[1];
+
+							if(!in_array($nom, $tab_items)) {
+								$msg.="Item '$nom' inconnu (non importé).<br />";
+							}
+							else {
+								if(!saveSetting($nom, $valeur)) {
+									$msg.="Erreur lors de l'enregistrement de l'item '$nom' avec la valeur '$valeur'.<br />";
+								}
+								else {
+									$cpt_reg++;
+								}
+							}
+						}
+					}
+					if($cpt_reg>0) {
+						$msg.="$cpt_reg items enregistrés.<br />";
+						$msg.="Validez le formulaire en bas de page pour regénérer le fichier de styles CSS.<br />";
+					}
+				}
+
+			//}
+		}
+	}
+}
+
 
 // Liste des couleurs,... paramétrables
 $tab=array();
 $tab[0]='style_body_backgroundcolor';
 // NOTE: Pour JavaScript, on n'a pas le droit au '-' dans un nom de variable
-
 
 
 //if(isset($_POST['ok'])) {
@@ -234,7 +333,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 			}
 
 			if(isset($_POST['degrade_haut'])) {
-				if((strlen(my_ereg_replace("[0-9A-F]","",strtoupper($_POST['degrade_haut'])))!=0)||(strlen($_POST['degrade_haut'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['degrade_haut'])))!=0)||(strlen($_POST['degrade_haut'])!=6)) {
 					$degrade_haut="020202";
 				}
 				else {
@@ -252,7 +351,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 			}
 
 			if(isset($_POST['degrade_bas'])) {
-				if((strlen(my_ereg_replace("[0-9A-F]","",strtoupper($_POST['degrade_bas'])))!=0)||(strlen($_POST['degrade_bas'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['degrade_bas'])))!=0)||(strlen($_POST['degrade_bas'])!=6)) {
 					$degrade_bas="4A4A59";
 				}
 				else {
@@ -357,7 +456,7 @@ fieldset#login_box div#header {
 			//couleur_infobulle_fond_entete
 
 			if(isset($_POST['couleur_infobulle_fond_entete'])) {
-				if((strlen(my_ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_infobulle_fond_entete'])))!=0)||(strlen($_POST['couleur_infobulle_fond_entete'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_infobulle_fond_entete'])))!=0)||(strlen($_POST['couleur_infobulle_fond_entete'])!=6)) {
 					$couleur_infobulle_fond_entete="4a4a59";
 				}
 				else {
@@ -375,7 +474,7 @@ fieldset#login_box div#header {
 			}
 
 			if(isset($_POST['couleur_infobulle_fond_corps'])) {
-				if((strlen(my_ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_infobulle_fond_corps'])))!=0)||(strlen($_POST['couleur_infobulle_fond_corps'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_infobulle_fond_corps'])))!=0)||(strlen($_POST['couleur_infobulle_fond_corps'])!=6)) {
 					$couleur_infobulle_fond_corps="EAEAEA";
 				}
 				else {
@@ -496,7 +595,7 @@ div.info_abs {
 			}
 
 			if(isset($_POST['couleur_lig_alt1'])) {
-				if((strlen(my_ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_lig_alt1'])))!=0)||(strlen($_POST['couleur_lig_alt1'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_lig_alt1'])))!=0)||(strlen($_POST['couleur_lig_alt1'])!=6)) {
 					$couleur_lig_alt1="ffefd5";
 				}
 				else {
@@ -514,7 +613,7 @@ div.info_abs {
 			}
 
 			if(isset($_POST['couleur_lig_alt_1'])) {
-				if((strlen(my_ereg_replace("[0-9A-F]","",strtoupper($_POST['couleur_lig_alt_1'])))!=0)||(strlen($_POST['couleur_lig_alt_1'])!=6)) {
+				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_lig_alt_1'])))!=0)||(strlen($_POST['couleur_lig_alt_1'])!=6)) {
 					$couleur_lig_alt_1="F0FFF0";
 				}
 				else {
@@ -596,7 +695,7 @@ div.info_abs {
 
 			for($i=0;$i<count($poste_notice_nom);$i++) {
 				if(isset($_POST[$poste_notice_nom[$i]])) {
-					if((strlen(my_ereg_replace("[0-9A-F]","",strtoupper($_POST[$poste_notice_nom[$i]])))!=0)||(strlen($_POST[$poste_notice_nom[$i]])!=6)) {
+					if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST[$poste_notice_nom[$i]])))!=0)||(strlen($_POST[$poste_notice_nom[$i]])!=6)) {
 						$couleur_poste=$poste_notice_couleur[$i];
 					}
 					else {
@@ -661,7 +760,6 @@ div.info_abs {
 	}
 }
 
-
 //**************** EN-TETE *****************
 $titre_page = "Choix des couleurs GEPI";
 require_once("../lib/header.inc");
@@ -672,22 +770,52 @@ include("../lib/couleurs_ccm.php");
 //echo "<div class='norme'><p class='bold'><a href='param_gen.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 echo "<div class='norme'>\n";
 	echo "<p class='bold'>\n";
+
+	if(!isset($_GET['import_couleurs'])) {
 		echo "<a href='index.php#param_couleurs'>\n";
 			echo "<img src='../images/icons/back.png' alt='' class='back_link'/>\n";
 			echo " Retour\n";
 		echo "</a>\n";
 
-	echo " | Choix modèle&nbsp;: <select name='choix_modele' id='choix_modele' onchange=\"valide_modele(document.getElementById('choix_modele').options[document.getElementById('choix_modele').selectedIndex].value)\">
+		echo " | Choix modèle&nbsp;: <select name='choix_modele' id='choix_modele' onchange=\"valide_modele(document.getElementById('choix_modele').options[document.getElementById('choix_modele').selectedIndex].value)\">
 	<option value=''>---</option>
 	<option value='rose'>Rose</option>
 	<option value='vert'>Vert</option>
 	<option value='bleu'>Bleu</option>
 	<option value='chocolat'>Chocolat</option>
 </select>\n";
+	}
+	else {
+		echo "<a href='param_couleurs.php'>\n";
+			echo "<img src='../images/icons/back.png' alt='' class='back_link'/>\n";
+			echo " Retour\n";
+		echo "</a>\n";
+	}
+
+	echo " | <a href='param_couleurs.php?export_couleurs=y'>\n";
+	echo "Exporter les couleurs de votre modèle\n";
+	echo "</a>\n";
+
+	echo " | <a href='param_couleurs.php?import_couleurs=y'>\n";
+	echo "Importer les couleurs depuis un CSV\n";
+	echo "</a>\n";
 
 	echo "</p>\n";
 echo "</div>\n";
 
+if((isset($_GET['import_couleurs']))&&($_GET['import_couleurs']=='y')) {
+
+	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
+	echo "<p>Veuillez fournir le fichier de CSV des correspondances de votre modèle de couleur&nbsp;:<br />\n";
+	echo "<input type=\"file\" size=\"65\" name=\"csv_file\" /><br />\n";
+	echo "<input type='hidden' name='valide_import_couleurs' value='yes' />\n";
+	echo "<p><input type='submit' value='Valider' /></p>\n";
+	echo "</form>\n";
+
+	require("../lib/footer.inc.php");
+	die();
+}
 
 /*
 foreach($_POST as $post => $val) {
