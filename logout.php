@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -81,8 +81,12 @@ if (isset($_COOKIE["RNE"])) {
         } else {
            $message .= "<h1 class='gepi'>Fermeture d'une fenêtre GEPI</h1>";
            $titre= "Fermeture d'une fenêtre GEPI";
-           $message .= "A l'heure ci-dessous, une fenêtre GEPI s'est automatiquement fermée par mesure de sécurité car
+           /*
+			$message .= "A l'heure ci-dessous, une fenêtre GEPI s'est automatiquement fermée par mesure de sécurité car
            le temps maximum d'inactivité (".getSettingValue("sessionMaxLength")." minutes) avait été atteint.<br /><br />
+           Heure et date de fermeture de la fenêtre : ".$date_fermeture;
+           */
+			$message .= "A l'heure ci-dessous, une fenêtre GEPI s'est automatiquement fermée par mesure de sécurité. Le temps maximum de ".getSettingValue("sessionMaxLength")." minutes sans échange avec le serveur a sans doute été atteint.<br /><br />
            Heure et date de fermeture de la fenêtre : ".$date_fermeture;
            //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
         }
