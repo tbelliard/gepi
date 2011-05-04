@@ -365,12 +365,21 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 				}
 			}
 			*/
-			echo "</td><td><a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'>&lt;&lt;</a></td>
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "<a href=\"javascript:
+						getWinCalendar().setLocation(0, GetWidth() - 245);
+				\"><img src=\"../images/icons/date.png\" width='16' height='16' alt='Calendrier' /></a>\n";
+			echo "</td>\n";
+
+			echo "<td>\n";
+			echo "<a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'>&lt;&lt;</a></td>
 			<td align=center>Aujourd'hui</td>
 			<td align=right><a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'>&gt;&gt;</a></td></tr>\n";	echo "\n";
 		}
 		echo "<tr>
-				<td colspan='5'>";
+				<td colspan='6'>";
 
 		echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctCompteRendu->getContenu()."</textarea>";
 
