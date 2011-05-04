@@ -70,17 +70,17 @@ if (isset($_POST['isposted'])) {
 				//echo "$sql<br />\n";
                 $register_matiere = mysql_query($sql);
                 if (!$register_matiere) {
-                    $msg = rawurlencode("Une erreur s'est produite lors de l'enregistrement de la nouvelle matière.");
+                    $msg = "Une erreur s'est produite lors de l'enregistrement de la nouvelle matière. <br />";
                     $ok = 'no';
                 } else {
-                    $msg = rawurlencode("La nouvelle matière a bien été enregistrée.");
+                    $msg = "La nouvelle matière a bien été enregistrée. <br />";
                 }
             } else {
-                $msg = rawurlencode("Cette matière existe déjà !!");
+                $msg = "Cette matière existe déjà !! <br />";
                 $ok = 'no';
             }
         } else {
-            $msg = "L'identifiant de matière doit être constitué uniquement de lettres et de chiffres avec un maximum de 19 caractères !";
+            $msg = "L'identifiant de matière doit être constitué uniquement de lettres et de chiffres avec un maximum de 19 caractères ! <br />";
             $ok = 'no';
         }
     } else {
@@ -100,10 +100,10 @@ if (isset($_POST['isposted'])) {
         $register_matiere = mysql_query($sql);
 
         if (!$register_matiere) {
-            $msg = rawurlencode("Une erreur s'est produite lors de la modification de la matière");
+            $msg = "Une erreur s'est produite lors de la modification de la matière <br />";
             $ok = 'no';
         } else {
-            $msg = rawurlencode("Les modifications ont été enregistrées ! ");
+            $msg = "Les modifications ont été enregistrées ! <br />";
         }
     }
     if ((isset($_POST['force_defaut'])) and ($ok == 'yes')) {
@@ -120,6 +120,82 @@ if (isset($_POST['isposted'])) {
         //$msg = rawurlencode($sql);
         $req = mysql_query($sql);
     }
+
+	$login_prof=isset($_POST['login_prof']) ? $_POST['login_prof'] : NULL;
+	if(isset($login_prof)) {
+		// Récupérer la liste des profs actuellement associés
+		$tab_profs_associes=array();
+		$sql="SELECT u.login FROM j_professeurs_matieres jpm, utilisateurs u WHERE jpm.id_professeur=u.login and id_matiere='$matiere_name' ORDER BY u.nom, u.prenom;";
+		$res_profs=mysql_query($sql);
+		if(mysql_num_rows($res_profs)>0) {
+			while($lig=mysql_fetch_object($res_profs)) {
+				$tab_profs_associes[]=$lig->login;
+			}
+		}
+
+		$nb_inser=0;
+		for($loop=0;$loop<count($login_prof);$loop++) {
+			if(!in_array($login_prof[$loop], $tab_profs_associes)) {
+				// Recherche de l'ordre matière le plus élevé pour ce prof
+				$sql="SELECT MAX(ordre_matieres) max_ordre FROM j_professeurs_matieres WHERE id_professeur='".$login_prof[$loop]."';";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)==0) {
+					$ordre_matieres=1;
+				}
+				else {
+					$ordre_matieres=mysql_result($res, 0, "max_ordre")+1;
+				}
+
+				// On ajoute le prof
+				$sql="INSERT INTO j_professeurs_matieres SET id_professeur='$login_prof[$loop]', id_matiere='$matiere_name', ordre_matieres='$ordre_matieres';";
+				$insert=mysql_query($sql);
+				if(!$insert) {
+					$msg.="Erreur lors de l'association de ".$login_prof[$loop]." avec la matière $matiere_name<br />";
+				}
+				else {
+					$nb_inser++;
+				}
+			}
+		}
+
+		if($nb_inser>0) {
+			$msg.="$nb_inser professeur(s) a(ont) été associé(s) avec la matière $matiere_name<br />";
+		}
+
+		$nb_suppr=0;
+		for($loop=0;$loop<count($tab_profs_associes);$loop++) {
+			if(!in_array($tab_profs_associes[$loop], $login_prof)) {
+				$sql="SELECT 1=1 FROM j_groupes_professeurs jgp, j_groupes_matieres jgm WHERE (jgp.login='".$tab_profs_associes[$loop]."' AND jgm.id_matiere='$matiere_name' AND jgm.id_groupe=jgp.id_groupe)";
+				//echo "$sql<br />";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)==0) {
+					/*
+					$sql="SELECT ordre_matieres FROM j_professeurs_matieres WHERE id_professeur='$login_prof' AND id_matiere='$matiere_name';";
+					$res=mysql_query($sql);
+					*/
+
+					$sql="DELETE FROM j_professeurs_matieres WHERE id_professeur='".$tab_profs_associes[$loop]."' AND id_matiere='$matiere_name';";
+					$suppr=mysql_query($sql);
+					if(!$suppr) {
+						$msg.="Erreur lors de la suppression de l'association de ".$tab_profs_associes[$loop]." avec la matière $matiere_name<br />";
+					}
+					else {
+						$nb_suppr++;
+					}
+				}
+				else {
+					$msg.="Dissociation impossible : Le professeur ".$tab_profs_associes[$loop]." enseigne la matière $matiere_name dans un ou des enseignements.<br />";
+				}
+			}
+		}
+
+		if($nb_suppr>0) {
+			$msg.="$nb_suppr professeur(s) a(ont) été dissocié(s) de la matière $matiere_name<br />";
+		}
+
+	}
+
+	//$msg = rawurlencode($msg);
     header("location: index.php?msg=$msg");
     die();
 
@@ -151,8 +227,73 @@ if (isset($_GET['current_matiere'])) {
 }
 ?>
 
+<div style='float:right; width: 40 em; border: 1px solid black; margin-left: 1em;'>
+<?php
+	$tab_profs_associes=array();
+	if($current_matiere!="") {
+		$sql="SELECT u.login FROM j_professeurs_matieres jpm, utilisateurs u WHERE jpm.id_professeur=u.login and id_matiere='$current_matiere' ORDER BY u.nom, u.prenom;";
+		$res_profs=mysql_query($sql);
+		if(mysql_num_rows($res_profs)>0) {
+			while($lig=mysql_fetch_object($res_profs)) {
+				$tab_profs_associes[]=$lig->login;
+			}
+		}
 
-<table><tr>
+		if(count($tab_profs_associes)>0) {
+			if(count($tab_profs_associes)>1) {
+				echo "<p class='bold'>Les professeurs associés sont&nbsp;<br />\n";
+			}
+			elseif(count($tab_profs_associes)==1) {
+				echo "<p class='bold'>Un professeur est associé&nbsp;<br />\n";
+			}
+			echo "<table class='boireaus' style='margin-left: 1em;'>\n";
+			$alt=1;
+			for($loop=0;$loop<count($tab_profs_associes);$loop++) {
+				$alt=$alt*(-1);
+				//echo civ_nom_prenom($tab_profs_associes[$loop],"ini")."<br />\n";
+				echo "<tr class='lig$alt white_hover'>\n";
+				echo "<td>\n";
+				echo civ_nom_prenom($tab_profs_associes[$loop],"ini");
+				echo "</td>\n";
+				echo "</tr>\n";
+			}
+			echo "</table>\n";
+		}
+	}
+
+	$cpt=0;
+	$sql="SELECT DISTINCT u.login,u.nom,u.prenom,u.civilite FROM utilisateurs u WHERE u.statut='professeur' AND u.etat='actif' ORDER BY u.nom, u.prenom;";
+	$res_profs=mysql_query($sql);
+	if(mysql_num_rows($res_profs)>0) {
+		echo "<p class='bold'>Associer des professeurs&nbsp;:</p>\n";
+		//$cpt=0;
+		while($lig=mysql_fetch_object($res_profs)) {
+			echo "<input type='checkbox' name='login_prof[]' id='login_prof_$cpt' value='$lig->login' ";
+			echo "onchange=\"checkbox_change($cpt)\" ";
+			if(in_array($lig->login,$tab_profs_associes)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+			echo "/><label for='login_prof_$cpt'><span id='texte_login_prof_$cpt'$temp_style>".$lig->civilite." ".$lig->nom." ".substr($lig->prenom,0,1).".</span></label><br />\n";
+			$cpt++;
+		}
+	}
+
+	echo "<script type='text/javascript'>
+function checkbox_change(cpt) {
+	if(document.getElementById('login_prof_'+cpt)) {
+		if(document.getElementById('login_prof_'+cpt).checked) {
+			document.getElementById('texte_login_prof_'+cpt).style.fontWeight='bold';
+		}
+		else {
+			document.getElementById('texte_login_prof_'+cpt).style.fontWeight='normal';
+		}
+	}
+}
+</script>\n";
+
+?>
+</div>
+
+<table>
+<tr>
 <td>Nom de matière : </td>
 <td>
 <?php
@@ -215,6 +356,7 @@ echo "</select>";
 </p>
 <input type="hidden" name="isposted" value="yes" />
 </form>
+<!-- ============================================================================ -->
 <hr />
 <p><b>Aide :</b></p>
 <ul>
