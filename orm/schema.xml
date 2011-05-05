@@ -152,6 +152,7 @@
 		<column name="titre" required="true" type="VARCHAR" size="255" description="Titre du document (fichier joint)" />
 		<column name="taille" required="true" default="0" type="INTEGER" description="Taille du document (fichier joint)" />
 		<column name="emplacement" required="true" type="VARCHAR" size="255" description="Chemin du systeme de fichier vers le document (fichier joint)" />
+		<column name="visible" required="true" type="CHAR" size="1" default="y" description="Visibilité élève/parent du document joint" />
 	</table>
 
 	<table name="ct_devoirs_entry" phpName="CahierTexteTravailAFaire" description="Travail Ã  faire (devoir) cahier de texte">
@@ -182,6 +183,7 @@
 		<column name="titre" required="true" type="VARCHAR" size="255" description="Titre du document (fichier joint)" />
 		<column name="taille" required="true" default="0" type="INTEGER" description="Taille du document (fichier joint)" />
 		<column name="emplacement" required="true" type="VARCHAR" size="255" description="Chemin du systeme de fichier vers le document (fichier joint)" />
+		<column name="visible" required="true" type="CHAR" size="1" default="y" description="Visibilité élève/parent du document joint" />
 	</table>
 
 	<table name="ct_private_entry" phpName="CahierTexteNoticePrivee" description="Notice privee du cahier de texte">
