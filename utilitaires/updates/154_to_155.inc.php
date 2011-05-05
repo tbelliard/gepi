@@ -107,4 +107,36 @@ if ($test == -1) {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
+//===================================================
+
+$result .= "&nbsp;->Ajout d'un champ visible à la table 'ct_documents'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_documents LIKE 'visible';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE ct_documents ADD visible CHAR(1) DEFAULT 'y' COMMENT 'Visibilité élève/parent du document joint' AFTER emplacement;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+$result .= "&nbsp;->Ajout d'un champ visible à la table 'ct_devoirs_documents'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM ct_devoirs_documents LIKE 'visible';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE ct_devoirs_documents ADD visible CHAR(1) DEFAULT 'y' COMMENT 'Visibilité élève/parent du document joint' AFTER emplacement;");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+//===================================================
+
 ?>

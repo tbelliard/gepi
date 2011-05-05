@@ -292,6 +292,19 @@ echo add_token_field();
 		jours
 	  </p>
 
+	  <h2>Visibilité des documents joints</h2>
+	  <p>
+		<input type="checkbox"
+			   name="cdt_possibilite_masquer_pj"
+			   id="cdt_possibilite_masquer_pj"
+			   onchange='changement();'
+			   title="Visibilité des documents joints"
+			   value="y"
+		       <?php if(getSettingValue("cdt_possibilite_masquer_pj")=="y") {echo " checked";} ?>
+			   />
+		<label for='cdt_possibilite_masquer_pj'> Possibilité pour les professeurs de cacher aux élèves et responsables les documents joints aux Cahiers de textes.</label>
+	  </p>
+
 	  <h2>Visa des cahiers de texte</h2>
 	  <fieldset class="no_bordure">
 		<legend class="invisible">Visa</legend>

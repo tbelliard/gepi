@@ -67,7 +67,7 @@ if (!checkAccess()) {
 $msg = "";
 if (isset($_POST['is_posted'])) {
 	check_token();
-	
+	//debug_var();
 	if (isset($_POST['activer'])) {
 		if (!saveSetting("active_cahiers_texte", $_POST['activer'])) $msg = "Erreur lors de l'enregistrement du paramètre activation/désactivation !";
 	}
@@ -136,10 +136,23 @@ if (isset($_POST['is_posted'])) {
 		if (!saveSetting("delai_devoirs", $_POST['delai_devoirs']))
 				$msg .= "Erreur lors de l'enregistrement du délai de visualisation des devoirs";
 	}
-	
-	if (isset($_POST['is_posted']) && ($msg=="") ){
-	$msg = "Les modifications ont été enregistrées !";
-	$post_reussi=TRUE;
+
+
+	if (isset($_POST['is_posted'])) {
+		if (isset($_POST['cdt_possibilite_masquer_pj'])) {
+			if (!saveSetting("cdt_possibilite_masquer_pj", "y")) {
+				$msg .= "Erreur lors de l'enregistrement de l'autorisation de masquer des documents joints.<br />";
+			}
+		}
+		elseif (!saveSetting("cdt_possibilite_masquer_pj", "n")) {
+			$msg .= "Erreur lors de l'enregistrement de l'interdiction de masquer des documents joints.<br />";
+		}
+	}
+
+
+	if (isset($_POST['is_posted']) && ($msg=="") ) {
+		$msg = "Les modifications ont été enregistrées !";
+		$post_reussi=TRUE;
 	}
 	
 	if (isset($_POST['cdt_autoriser_modif_multiprof'])) {
