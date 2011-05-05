@@ -196,7 +196,9 @@ echo "<div class='centre_table'>\n";
 			if ($_SESSION['statut'] != "responsable" and $_SESSION['statut'] != "eleve") {
 				echo make_classes_select_html('see_all.php', $id_classe, $year, $month, $day);
 				if ($id_classe != -1) {
-					if((isset($id_groupe))&&($id_groupe=='Toutes_matieres')) {
+					//if((isset($id_groupe))&&($id_groupe=='Toutes_matieres')) {
+					if((!isset($id_groupe))||($id_groupe=='Toutes_matieres')) {
+						$id_groupe="Toutes_matieres";
 						echo make_matiere_select_html('see_all.php', $id_classe, $id_groupe, $year, $month, $day,"Toutes_matieres");
 					}
 					else {
