@@ -315,8 +315,7 @@ echo add_token_field();
 			 onchange='changement();'
 			   <?php if (getSettingValue("visa_cdt_inter_modif_notices_visees") == "yes") echo " checked='checked'";?> />
 		<label for='visa_cdt_inter_modif_notices_visees_y' style='cursor: pointer;'>
-		  Activer l'interdiction pour les enseignants de modifier une notice après la signature des
-		  cahiers de textes
+		 Activer l'interdiction pour les enseignants de modifier une notice antérieure à la date fixée lors du visa de leur cahier de textes.
 		</label>
 	  <br />
 		  <input type='radio'
