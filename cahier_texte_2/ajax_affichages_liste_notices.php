@@ -281,12 +281,21 @@ foreach ($ctCompteRenduInfoGenerales as $ctCompteRenduInfoGenerale) {
 //
 // Export du cahier de texte au format csv ou ods
 //
-echo "<br />";
-echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">";
-echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\">Export</legend>";
+echo "<br />\n";
+echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto;\">\n";
+echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\">Export</legend>\n";
 echo "<table border='0' width='100%' summary=\"Tableau de...\">\n";
-echo "<tr><td>";
-echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format csv</a> Note : pour ouvrir ce fichier csv avec OpenOffice, garder les réglages par défaut lors de l'ouverture du fichier.";
-echo "</td></tr></table></fieldset>";
+echo "<tr>\n<td>\n";
+echo "<ul style=\"list-style-type:disk\">\n";
+echo "<p>\n";
+echo "<a href='./exportcsv.php?id_groupe=".$current_group->getId()."'>Export au format CSV</a>";
+echo "</p>\n";
+echo "<p style='margin-left:1em'>\n";
+echo "<em>Note&nbsp;:</em> pour ouvrir ce fichier CSV avec OpenOffice, garder les réglages par défaut lors de l'ouverture du fichier.";
+echo "</p>\n";
+echo "<p>\n";
+echo "<a href='./export_cdt.php?id_groupe=".$current_group->getId()."' target=\"_blank\">Export au format HTML</a>.\n";
+echo "</p>\n";
+echo "</td>\n</tr>\n</table>\n</fieldset>\n";
 // fin export
 ?>
