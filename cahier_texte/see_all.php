@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Gabriel Fischer
  *
  * This file is part of GEPI.
  *
@@ -135,6 +135,16 @@ if ($current_imprime == 'n') {
 $_retour = ($_SESSION["retour"] == 'admin_ct') ? $_SESSION["retour"] : 'visa_ct';
 $code_retour_admin = '<p><a href="../cahier_texte_admin/' . $_retour .'.php">RETOUR vers la signature des cahiers de textes</a></p>';
 $retour_admin = ($_SESSION["statut"] == 'administrateur') ? $code_retour_admin : '';
+
+if(isset($_GET['retour_cdt'])) {
+	$_SESSION['retour_cdt']=$_GET['retour_cdt'];
+}
+
+if((isset($_SESSION['retour_cdt']))&&($_SESSION['retour_cdt']='visa_ct')) {
+	$_retour='visa_ct';
+	$retour_admin='<p><a href="../cahier_texte_admin/' . $_retour .'.php#tableau_des_enseignants">RETOUR vers la signature des cahiers de textes</a></p>';
+}
+
 //**************** EN-TETE *****************
 if ($current_imprime=='n') $titre_page = "Cahier de textes - Vue d'ensemble";
 require_once("../lib/header.inc");

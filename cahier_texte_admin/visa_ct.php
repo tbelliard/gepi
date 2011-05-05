@@ -46,6 +46,8 @@ if (!checkAccess()) {
     die();
 }
 
+if(isset($_SESSION['retour_cdt'])) {unset($_SESSION['retour_cdt']);}
+
 include("../fckeditor/fckeditor.php") ;
 
 $texte_visa_cdt = getSettingValue("texte_visa_cdt");
@@ -193,6 +195,7 @@ echo "<br /><br />\n";
 echo "</div>\n";
 ?>
 
+  <a name='tableau_des_enseignants'></a>
   <form action="visa_ct.php" method="post">
 <?php
 	echo add_token_field();
@@ -271,7 +274,8 @@ echo "</div>\n";
       echo "<td>".$nb_ct_devoirs."</td>";
 	// Modif pour le statut 'autre'
 	if ($_SESSION["statut"] == 'autre' OR $_SESSION["statut"] == 'administrateur' OR $_SESSION["statut"] == 'scolarite') {
-		echo '<td><a href="../cahier_texte/see_all.php?id_groupe='.$id_groupe.'&amp;id_classe='.$id_classe.'">Voir</a></td>';
+		//echo '<td><a href="../cahier_texte/see_all.php?id_groupe='.$id_groupe.'&amp;id_classe='.$id_classe.'">Voir</a></td>';
+		echo '<td><a href="../cahier_texte/see_all.php?id_groupe='.$id_groupe.'&amp;id_classe='.$id_classe.'&amp;retour_cdt=visa_cdt">Voir</a></td>';
 	}else{
 		echo "<td><a href='../public/index.php?id_groupe=".$id_groupe."' target='_blank'>Voir</a></td>";
 	}
