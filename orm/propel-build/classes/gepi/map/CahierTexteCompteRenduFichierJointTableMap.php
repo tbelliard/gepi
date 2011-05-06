@@ -42,6 +42,7 @@ class CahierTexteCompteRenduFichierJointTableMap extends TableMap {
 		$this->addColumn('TITRE', 'Titre', 'VARCHAR', true, 255, null);
 		$this->addColumn('TAILLE', 'Taille', 'INTEGER', true, null, 0);
 		$this->addColumn('EMPLACEMENT', 'Emplacement', 'VARCHAR', true, 255, null);
+		$this->addColumn('VISIBLE_ELEVE_PARENT', 'VisibleEleveParent', 'BOOLEAN', false, null, true);
 		// validators
 	} // initialize()
 

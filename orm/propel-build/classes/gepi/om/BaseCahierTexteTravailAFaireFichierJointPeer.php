@@ -26,7 +26,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	const TM_CLASS = 'CahierTexteTravailAFaireFichierJointTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 5;
+	const NUM_COLUMNS = 6;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -46,6 +46,9 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	/** the column name for the EMPLACEMENT field */
 	const EMPLACEMENT = 'ct_devoirs_documents.EMPLACEMENT';
 
+	/** the column name for the VISIBLE_ELEVE_PARENT field */
+	const VISIBLE_ELEVE_PARENT = 'ct_devoirs_documents.VISIBLE_ELEVE_PARENT';
+
 	/**
 	 * An identiy map to hold any loaded instances of CahierTexteTravailAFaireFichierJoint objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -62,12 +65,12 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'IdCtDevoir', 'Titre', 'Taille', 'Emplacement', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'idCtDevoir', 'titre', 'taille', 'emplacement', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::ID_CT_DEVOIR, self::TITRE, self::TAILLE, self::EMPLACEMENT, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'ID_CT_DEVOIR', 'TITRE', 'TAILLE', 'EMPLACEMENT', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'id_ct_devoir', 'titre', 'taille', 'emplacement', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'IdCtDevoir', 'Titre', 'Taille', 'Emplacement', 'VisibleEleveParent', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'idCtDevoir', 'titre', 'taille', 'emplacement', 'visibleEleveParent', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::ID_CT_DEVOIR, self::TITRE, self::TAILLE, self::EMPLACEMENT, self::VISIBLE_ELEVE_PARENT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'ID_CT_DEVOIR', 'TITRE', 'TAILLE', 'EMPLACEMENT', 'VISIBLE_ELEVE_PARENT', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'id_ct_devoir', 'titre', 'taille', 'emplacement', 'visible_eleve_parent', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -77,12 +80,12 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IdCtDevoir' => 1, 'Titre' => 2, 'Taille' => 3, 'Emplacement' => 4, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'idCtDevoir' => 1, 'titre' => 2, 'taille' => 3, 'emplacement' => 4, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ID_CT_DEVOIR => 1, self::TITRE => 2, self::TAILLE => 3, self::EMPLACEMENT => 4, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'ID_CT_DEVOIR' => 1, 'TITRE' => 2, 'TAILLE' => 3, 'EMPLACEMENT' => 4, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'id_ct_devoir' => 1, 'titre' => 2, 'taille' => 3, 'emplacement' => 4, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IdCtDevoir' => 1, 'Titre' => 2, 'Taille' => 3, 'Emplacement' => 4, 'VisibleEleveParent' => 5, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'idCtDevoir' => 1, 'titre' => 2, 'taille' => 3, 'emplacement' => 4, 'visibleEleveParent' => 5, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ID_CT_DEVOIR => 1, self::TITRE => 2, self::TAILLE => 3, self::EMPLACEMENT => 4, self::VISIBLE_ELEVE_PARENT => 5, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'ID_CT_DEVOIR' => 1, 'TITRE' => 2, 'TAILLE' => 3, 'EMPLACEMENT' => 4, 'VISIBLE_ELEVE_PARENT' => 5, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'id_ct_devoir' => 1, 'titre' => 2, 'taille' => 3, 'emplacement' => 4, 'visible_eleve_parent' => 5, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -159,12 +162,14 @@ abstract class BaseCahierTexteTravailAFaireFichierJointPeer {
 			$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::TITRE);
 			$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::TAILLE);
 			$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::EMPLACEMENT);
+			$criteria->addSelectColumn(CahierTexteTravailAFaireFichierJointPeer::VISIBLE_ELEVE_PARENT);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.ID_CT_DEVOIR');
 			$criteria->addSelectColumn($alias . '.TITRE');
 			$criteria->addSelectColumn($alias . '.TAILLE');
 			$criteria->addSelectColumn($alias . '.EMPLACEMENT');
+			$criteria->addSelectColumn($alias . '.VISIBLE_ELEVE_PARENT');
 		}
 	}
 

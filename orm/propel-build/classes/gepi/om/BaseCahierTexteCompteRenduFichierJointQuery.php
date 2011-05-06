@@ -11,12 +11,14 @@
  * @method     CahierTexteCompteRenduFichierJointQuery orderByTitre($order = Criteria::ASC) Order by the titre column
  * @method     CahierTexteCompteRenduFichierJointQuery orderByTaille($order = Criteria::ASC) Order by the taille column
  * @method     CahierTexteCompteRenduFichierJointQuery orderByEmplacement($order = Criteria::ASC) Order by the emplacement column
+ * @method     CahierTexteCompteRenduFichierJointQuery orderByVisibleEleveParent($order = Criteria::ASC) Order by the visible_eleve_parent column
  *
  * @method     CahierTexteCompteRenduFichierJointQuery groupById() Group by the id column
  * @method     CahierTexteCompteRenduFichierJointQuery groupByIdCt() Group by the id_ct column
  * @method     CahierTexteCompteRenduFichierJointQuery groupByTitre() Group by the titre column
  * @method     CahierTexteCompteRenduFichierJointQuery groupByTaille() Group by the taille column
  * @method     CahierTexteCompteRenduFichierJointQuery groupByEmplacement() Group by the emplacement column
+ * @method     CahierTexteCompteRenduFichierJointQuery groupByVisibleEleveParent() Group by the visible_eleve_parent column
  *
  * @method     CahierTexteCompteRenduFichierJointQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     CahierTexteCompteRenduFichierJointQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -34,12 +36,14 @@
  * @method     CahierTexteCompteRenduFichierJoint findOneByTitre(string $titre) Return the first CahierTexteCompteRenduFichierJoint filtered by the titre column
  * @method     CahierTexteCompteRenduFichierJoint findOneByTaille(int $taille) Return the first CahierTexteCompteRenduFichierJoint filtered by the taille column
  * @method     CahierTexteCompteRenduFichierJoint findOneByEmplacement(string $emplacement) Return the first CahierTexteCompteRenduFichierJoint filtered by the emplacement column
+ * @method     CahierTexteCompteRenduFichierJoint findOneByVisibleEleveParent(boolean $visible_eleve_parent) Return the first CahierTexteCompteRenduFichierJoint filtered by the visible_eleve_parent column
  *
  * @method     array findById(int $id) Return CahierTexteCompteRenduFichierJoint objects filtered by the id column
  * @method     array findByIdCt(int $id_ct) Return CahierTexteCompteRenduFichierJoint objects filtered by the id_ct column
  * @method     array findByTitre(string $titre) Return CahierTexteCompteRenduFichierJoint objects filtered by the titre column
  * @method     array findByTaille(int $taille) Return CahierTexteCompteRenduFichierJoint objects filtered by the taille column
  * @method     array findByEmplacement(string $emplacement) Return CahierTexteCompteRenduFichierJoint objects filtered by the emplacement column
+ * @method     array findByVisibleEleveParent(boolean $visible_eleve_parent) Return CahierTexteCompteRenduFichierJoint objects filtered by the visible_eleve_parent column
  *
  * @package    propel.generator.gepi.om
  */
@@ -270,6 +274,23 @@ abstract class BaseCahierTexteCompteRenduFichierJointQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(CahierTexteCompteRenduFichierJointPeer::EMPLACEMENT, $emplacement, $comparison);
+	}
+
+	/**
+	 * Filter the query on the visible_eleve_parent column
+	 * 
+	 * @param     boolean|string $visibleEleveParent The value to use as filter.
+	 *            Accepts strings ('false', 'off', '-', 'no', 'n', and '0' are false, the rest is true)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    CahierTexteCompteRenduFichierJointQuery The current query, for fluid interface
+	 */
+	public function filterByVisibleEleveParent($visibleEleveParent = null, $comparison = null)
+	{
+		if (is_string($visibleEleveParent)) {
+			$visible_eleve_parent = in_array(strtolower($visibleEleveParent), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+		}
+		return $this->addUsingAlias(CahierTexteCompteRenduFichierJointPeer::VISIBLE_ELEVE_PARENT, $visibleEleveParent, $comparison);
 	}
 
 	/**

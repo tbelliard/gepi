@@ -11,12 +11,14 @@
  * @method     CahierTexteTravailAFaireFichierJointQuery orderByTitre($order = Criteria::ASC) Order by the titre column
  * @method     CahierTexteTravailAFaireFichierJointQuery orderByTaille($order = Criteria::ASC) Order by the taille column
  * @method     CahierTexteTravailAFaireFichierJointQuery orderByEmplacement($order = Criteria::ASC) Order by the emplacement column
+ * @method     CahierTexteTravailAFaireFichierJointQuery orderByVisibleEleveParent($order = Criteria::ASC) Order by the visible_eleve_parent column
  *
  * @method     CahierTexteTravailAFaireFichierJointQuery groupById() Group by the id column
  * @method     CahierTexteTravailAFaireFichierJointQuery groupByIdCtDevoir() Group by the id_ct_devoir column
  * @method     CahierTexteTravailAFaireFichierJointQuery groupByTitre() Group by the titre column
  * @method     CahierTexteTravailAFaireFichierJointQuery groupByTaille() Group by the taille column
  * @method     CahierTexteTravailAFaireFichierJointQuery groupByEmplacement() Group by the emplacement column
+ * @method     CahierTexteTravailAFaireFichierJointQuery groupByVisibleEleveParent() Group by the visible_eleve_parent column
  *
  * @method     CahierTexteTravailAFaireFichierJointQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     CahierTexteTravailAFaireFichierJointQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -34,12 +36,14 @@
  * @method     CahierTexteTravailAFaireFichierJoint findOneByTitre(string $titre) Return the first CahierTexteTravailAFaireFichierJoint filtered by the titre column
  * @method     CahierTexteTravailAFaireFichierJoint findOneByTaille(int $taille) Return the first CahierTexteTravailAFaireFichierJoint filtered by the taille column
  * @method     CahierTexteTravailAFaireFichierJoint findOneByEmplacement(string $emplacement) Return the first CahierTexteTravailAFaireFichierJoint filtered by the emplacement column
+ * @method     CahierTexteTravailAFaireFichierJoint findOneByVisibleEleveParent(boolean $visible_eleve_parent) Return the first CahierTexteTravailAFaireFichierJoint filtered by the visible_eleve_parent column
  *
  * @method     array findById(int $id) Return CahierTexteTravailAFaireFichierJoint objects filtered by the id column
  * @method     array findByIdCtDevoir(int $id_ct_devoir) Return CahierTexteTravailAFaireFichierJoint objects filtered by the id_ct_devoir column
  * @method     array findByTitre(string $titre) Return CahierTexteTravailAFaireFichierJoint objects filtered by the titre column
  * @method     array findByTaille(int $taille) Return CahierTexteTravailAFaireFichierJoint objects filtered by the taille column
  * @method     array findByEmplacement(string $emplacement) Return CahierTexteTravailAFaireFichierJoint objects filtered by the emplacement column
+ * @method     array findByVisibleEleveParent(boolean $visible_eleve_parent) Return CahierTexteTravailAFaireFichierJoint objects filtered by the visible_eleve_parent column
  *
  * @package    propel.generator.gepi.om
  */
@@ -270,6 +274,23 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 			}
 		}
 		return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::EMPLACEMENT, $emplacement, $comparison);
+	}
+
+	/**
+	 * Filter the query on the visible_eleve_parent column
+	 * 
+	 * @param     boolean|string $visibleEleveParent The value to use as filter.
+	 *            Accepts strings ('false', 'off', '-', 'no', 'n', and '0' are false, the rest is true)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    CahierTexteTravailAFaireFichierJointQuery The current query, for fluid interface
+	 */
+	public function filterByVisibleEleveParent($visibleEleveParent = null, $comparison = null)
+	{
+		if (is_string($visibleEleveParent)) {
+			$visible_eleve_parent = in_array(strtolower($visibleEleveParent), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+		}
+		return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::VISIBLE_ELEVE_PARENT, $visibleEleveParent, $comparison);
 	}
 
 	/**

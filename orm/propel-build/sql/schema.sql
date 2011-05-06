@@ -262,6 +262,7 @@ CREATE TABLE ct_documents
 	titre VARCHAR(255)  NOT NULL COMMENT 'Titre du document (fichier joint)',
 	taille INTEGER default 0 NOT NULL COMMENT 'Taille du document (fichier joint)',
 	emplacement VARCHAR(255)  NOT NULL COMMENT 'Chemin du systeme de fichier vers le document (fichier joint)',
+	visible_eleve_parent TINYINT default 1  COMMENT 'Visibilité élève/parent du document joint',
 	PRIMARY KEY (id),
 	INDEX ct_documents_FI_1 (id_ct),
 	CONSTRAINT ct_documents_FK_1
@@ -318,6 +319,7 @@ CREATE TABLE ct_devoirs_documents
 	titre VARCHAR(255)  NOT NULL COMMENT 'Titre du document (fichier joint)',
 	taille INTEGER default 0 NOT NULL COMMENT 'Taille du document (fichier joint)',
 	emplacement VARCHAR(255)  NOT NULL COMMENT 'Chemin du systeme de fichier vers le document (fichier joint)',
+	visible_eleve_parent TINYINT default 1  COMMENT 'Visibilité élève/parent du document joint',
 	PRIMARY KEY (id),
 	INDEX ct_devoirs_documents_FI_1 (id_ct_devoir),
 	CONSTRAINT ct_devoirs_documents_FK_1
