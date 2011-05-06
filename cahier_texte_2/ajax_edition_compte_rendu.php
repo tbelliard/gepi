@@ -412,7 +412,7 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 				//if ($ic=='1') { $ic='2'; $couleur_cellule_=$couleur_cellule[$type_couleur]; } else { $couleur_cellule_=$couleur_cellule_alt[$type_couleur]; $ic='1'; }
 				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\"><td>
 						<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a></td>
-						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>";
+						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>\n";
 				if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
 					echo "<td style=\"text-align: center;\">";
 					if($document->getVisibleEleveParent()) {
@@ -429,7 +429,7 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 			//gestion de modification du nom d'un documents
 
 			echo "Nouveau nom <input type=\"text\" name=\"doc_name_modif\" size=\"25\" /> pour\n";
-			echo "<select name=\"id_document\">";
+			echo "<select name=\"id_document\">\n";
 			echo "<option value='-1'>(choisissez)</option>\n";
 			foreach ($documents as $document) {
 				echo "<option value='".$document->getId()."'>".$document->getTitre()."</option>\n";

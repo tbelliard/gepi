@@ -314,8 +314,18 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 				//			$emplacement =  $document->getEmplacement();
 				echo "<tr style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice."; background-color: #FFFFFF;\"><td>
 						<a href='".$document->getEmplacement()."' target=\"_blank\">".$document->getTitre()."</a></td>
-						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>
-						<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."', '".$ctTravailAFaire->getIdGroupe()."','".add_token_in_js_func()."')\">Supprimer</a></td></tr>\n";
+						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>\n";
+						if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
+							echo "<td style=\"text-align: center;\">";
+							if($document->getVisibleEleveParent()) {
+								echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
+							}
+							else {
+								echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
+							}
+							echo "</td>\n";
+						}
+						echo "<td style=\"text-align: center;\"><a href='#' onclick=\"javascript:suppressionDevoirDocument('suppression du document joint ".$document->getTitre()." ?', '".$document->getId()."', '".$ctTravailAFaire->getIdCt()."', '".$ctTravailAFaire->getIdGroupe()."','".add_token_in_js_func()."')\">Supprimer</a></td></tr>\n";
 			}
 			echo "</table>\n";
 			//gestion de modification du nom d'un document
@@ -334,6 +344,15 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 				<td style="font-weight: bold; text-align: center; width: 20%">Titre
 				(facultatif)</td>
 				<td style="font-weight: bold; text-align: center; width: 60%">Emplacement</td>
+				<?php
+					if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
+						$nb_col_tableau_pj=3;
+						echo "<td style='font-weight: bold; text-align: center;'>Masquer</td>\n";
+					}
+					else {
+						$nb_col_tableau_pj=2;
+					}
+				?>
 			</tr>
 			<?php
 			$nb_doc_choisi='3';
@@ -344,6 +363,14 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 					size="20" /></td>
 				<td style="text-align: center;"><input type="file" name="doc_file[]"
 					size="20" /></td>
+				<?php
+					if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
+						echo "<td style='border-style: 1px solid $couleur_bord_tableau_notice; background-color: ".$couleur_cellule[$type_couleur]."; text-align: center;'>";
+						echo "<input type='checkbox' name='doc_masque[]' value='y' ";
+						echo "/>";
+						echo "</td>\n";
+					}
+				?>
 			</tr>
 			<?php $nb_doc_choisi_compte++;
 			}
@@ -351,7 +378,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 			?>
 
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice;?>; background-color: <?php echo $couleur_cellule[$type_couleur]; ?>;">
-				<td colspan="2" style="text-align: center;">
+				<td colspan="<?php echo $nb_col_tableau_pj;?>" style="text-align: center;">
 				<button type="submit" id="bouton_enregistrer_2" name="Enregistrer"
 					style='font-variant: small-caps;'><?php echo($label_enregistrer); ?></button>
 				<button type="submit" style='font-variant: small-caps;'
@@ -359,7 +386,7 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 				</td>
 			</tr>
 			<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice; ?>; background-color: <?php echo $couleur_entete_fond[$type_couleur]; ?>;">
-				<td colspan="2" style="text-align: center;"><?php  echo "Tous les documents ne sont pas acceptés, voir <a href='javascript:centrerpopup(\"limites_telechargement.php?id_groupe=" . $groupe->getId() . "\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>les limites et restrictions</a>\n"; ?>
+				<td colspan="<?php echo $nb_col_tableau_pj;?>" style="text-align: center;"><?php  echo "Tous les documents ne sont pas acceptés, voir <a href='javascript:centrerpopup(\"limites_telechargement.php?id_groupe=" . $groupe->getId() . "\",600,480,\"scrollbars=yes,statusbar=no,resizable=yes\")'>les limites et restrictions</a>\n"; ?>
 				</td>
 			</tr>
 		</table>

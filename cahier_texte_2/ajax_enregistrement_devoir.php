@@ -57,6 +57,7 @@ $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_
 //parametre d'enregistrement de fichiers joints
 if (empty($_FILES['doc_file'])) { $doc_file=''; } else { $doc_file=$_FILES['doc_file'];}
 $doc_name = isset($_POST["doc_name"]) ? $_POST["doc_name"] :(isset($_GET["doc_name"]) ? $_GET["doc_name"] :NULL);
+$doc_masque = isset($_POST["doc_masque"]) ? $_POST["doc_masque"] :(isset($_GET["doc_masque"]) ? $_GET["doc_masque"] :NULL);
 
 //parametre de changement de titre de fichier joint.
 $doc_name_modif = isset($_POST["doc_name_modif"]) ? $_POST["doc_name_modif"] :(isset($_GET["doc_name_modif"]) ? $_GET["doc_name_modif"] :NULL);
@@ -155,6 +156,12 @@ if (!empty($doc_file['name'][0])) {
 					$ctDocument->setTitre(corriger_caracteres($doc_name[$index_doc]));
 				} else {
 					$ctDocument->setTitre(basename($file_path));
+				}
+				if(isset($doc_masque[$index_doc])) {
+					$ctDocument->setVisibleEleveParent(false);
+				}
+				else {
+					$ctDocument->setVisibleEleveParent(true);
 				}
 				$ctDocument->save();
 				$ctTravailAFaire->addCahierTexteTravailAFaireFichierJoint($ctDocument);
