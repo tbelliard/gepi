@@ -826,6 +826,28 @@ function getWinDevoirsDeLaClasse() {
 	return winDevoirsDeLaClasse;
 }
 
+function getWinListeNoticesPrivees() {
+	if (typeof winListeNoticesPrivees=="undefined") {
+		winListeNoticesPrivees = new Window(
+				{id: 'win_liste_notices_privees',
+				title: 'Liste des Notices priv&eacute;es',
+				showEffect: Element.show,
+				hideEffect: Element.hide,
+				top:0, 
+				left:100,
+				width: 600,
+				height: GetHeight() - 220}
+			);
+		$('win_liste_notices_privees_content').setStyle({	
+			backgroundColor: '#fffdbc',
+			color: '#000000'
+		});
+		$('win_liste_notices_privees_content').innerHTML = '<div id="liste_notices_privees_container" onmouseover="winListeNoticesPrivees.toFront();">';
+	}
+	winListeNoticesPrivees.show();
+	winListeNoticesPrivees.toFront();
+	return winListeNoticesPrivees;
+}
 
 /**
 *

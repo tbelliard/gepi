@@ -753,6 +753,8 @@ $tab_req[] = "INSERT INTO droits SET id='/mod_epreuve_blanche/genere_liste_affic
 
 $tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/ajax_devoirs_classe.php',administrateur='V',professeur='V',cpe='V',scolarite='V',eleve='F',responsable='F',secours='F',autre='V',description='Cahiers de textes : Devoirs d une classe pour tel jour',statut='';";
 
+$tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/ajax_liste_notices_privees.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Cahiers de textes : Liste des notices privées',statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

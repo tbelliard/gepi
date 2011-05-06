@@ -114,7 +114,7 @@ $_SESSION['id_groupe_session'] = $cahierTexteNoticePrivee->getIdGroupe();
 // **********************************************
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
-echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" style=\"border: 0px; vertical-align : middle\" HEIGHT=\"16\" WIDTH=\"16\" src=\"../images/blank.gif\" alt=\"Lier\" title=\"Lier la liste avec la fenetre la liste des notices\" /></div>&nbsp;";
+echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" style=\"border: 0px; vertical-align : middle\" HEIGHT=\"16\" WIDTH=\"16\" src=\"../images/blank.gif\" alt=\"Lier\" title=\"Lier la liste avec la fenetre la liste des notices\" /></div>&nbsp;\n";
 echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 			updateListeNoticesChaine();
 			id_groupe = (\$A($('id_groupe_colonne_droite').options).find(function(option) { return option.selected; }).value);
@@ -122,7 +122,7 @@ echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
       			 { onComplete:function() {initWysiwyg();}}
       		);
 			compte_rendu_en_cours_de_modification('aucun');
-		\">");
+		\">\n");
 echo "<option value='-1'>choisissez un groupe</option>\n";
 $groups = $utilisateur->getGroupes();
 foreach ($groups as $group_iter) {
@@ -132,17 +132,22 @@ foreach ($groups as $group_iter) {
 	echo $group_iter->getDescriptionAvecClasses();
 	echo "</option>\n";
 }
-echo "</select>&nbsp;&nbsp;";
+echo "</select>\n&nbsp;&nbsp;\n";
 //fin affichage des groupes
 
 echo "<button style='background-color:".$color_fond_notices['c']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'compte_rendu';
-					\">Editer les comptes rendus</button>";
+					\">Editer les comptes rendus</button>\n";
 echo "<button style='background-color:".$color_fond_notices['t']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'devoir';
-					\">Editer les devoirs</button><br><br>\n";
+					\">Editer les devoirs</button>\n";
+
+echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
+						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
+					\">Voir NP</button>\n";
+
 // Nombre de notices pour ce jour :
 $num_notice = NULL;
 
@@ -159,7 +164,7 @@ if (!$cahierTexteNoticePrivee->isNew() || isset($info)) {
 				return false;
 			\">
 			Ajouter une notice
-			</a> - ";
+			</a> - \n";
 	echo "<a href=\"#\" onclick=\"javascript:
 				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteNoticePrivee&id_ct=".$cahierTexteNoticePrivee->getIdCt()."',
 					{ onComplete:
@@ -181,7 +186,7 @@ if (!$cahierTexteNoticePrivee->isNew() || isset($info)) {
 				);
 				return false;
 				\">
-		Dupliquer la notice</a> - ";
+		Dupliquer la notice</a> - \n";
 } else {
 	echo " - <b><font color=\"red\">Nouvelle notice</font></b> - \n";
 }
@@ -206,21 +211,21 @@ echo "
 			);
 			return false;
 			\">
-	Deplacer la notice</a>";
+	Deplacer la notice</a>\n";
 
 echo "</legend>\n";
 
-echo "<div id=\"dupplication_notice\" style='display: none;'>oulalala</div>";
-echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
+echo "<div id=\"dupplication_notice\" style='display: none;'>oulalala</div>\n";
+echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>\n";
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_notice_privee.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementNoticePriveeCallback})\" style=\"width: 100%;\">\n";
 // uid de pour ne pas refaire renvoyer plusieurs fois le meme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 echo add_token_field();
 $uid = md5(uniqid(microtime(), 1));
-echo("<input type='hidden' name='uid_post' value='".$uid."' />");
+echo("<input type='hidden' name='uid_post' value='".$uid."' />\n");
 //hidden input utilise pour indiquer a la fenetre ListeNotice a quel endroit mettre un petit texte rouge "modification"
-echo("<input type='hidden' id='div_id_ct' value='notice_privee_".$cahierTexteNoticePrivee->getIdCt()."' />");
-echo("<input type='hidden' name='id_groupe' id='id_groupe' value='".$groupe->getId()."' />");
+echo("<input type='hidden' id='div_id_ct' value='notice_privee_".$cahierTexteNoticePrivee->getIdCt()."' />\n");
+echo("<input type='hidden' name='id_groupe' id='id_groupe' value='".$groupe->getId()."' />\n");
 echo("<input type='hidden' name='heure_entry' value=\"");
 if ($cahierTexteNoticePrivee->getHeureEntry() == null) {
 	echo date('G:i');
@@ -266,7 +271,9 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 	echo "<tr>
 					<td colspan='5'>";
 
-	echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$cahierTexteNoticePrivee->getContenu()."</textarea>";
+	echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$cahierTexteNoticePrivee->getContenu()."</textarea>\n";
+	echo "</td>\n";
+	echo "</tr>\n";
 	?>
 	
 	<tr style="border-style:solid; border-width:1px; border-color: <?php echo $couleur_bord_tableau_notice;?>; background-color: <?php echo $couleur_cellule['p']; ?>;">

@@ -139,7 +139,7 @@ $_SESSION['id_groupe_session'] = $ctCompteRendu->getIdGroupe();
 // **********************************************
 // Affichage des différents groupes du professeur
 //\$A($('id_groupe_colonne_gauche').options).find(function(option) { return option.selected; }).value is a javascript trick to get selected value.
-echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" HEIGHT=\"16\" WIDTH=\"16\" style=\"border: 0px; vertical-align : middle\" src=\"../images/blank.gif\"  alt=\"Lier\" title=\"Lier la liste avec la liste des notices\" /></div>&nbsp;";
+echo "<div id=\"div_chaine_edition_notice\" style=\"display:inline;\"><img id=\"chaine_edition_notice\" onLoad=\"updateChaineIcones()\" HEIGHT=\"16\" WIDTH=\"16\" style=\"border: 0px; vertical-align : middle\" src=\"../images/blank.gif\"  alt=\"Lier\" title=\"Lier la liste avec la liste des notices\" /></div>&nbsp;\n";
 echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
 			updateListeNoticesChaine();
 			id_groupe = (\$A($('id_groupe_colonne_droite').options).find(function(option) { return option.selected; }).value);
@@ -147,7 +147,7 @@ echo ("<select id=\"id_groupe_colonne_droite\" onChange=\"javascript:
       			 { onComplete:function() {initWysiwyg();}}
       		);
 			compte_rendu_en_cours_de_modification('aucun');
-		\">");
+		\">\n");
 echo "<option value='-1'>choisissez un groupe</option>\n";
 $groups = $utilisateur->getGroupes();
 foreach ($groups as $group_iter) {
@@ -157,18 +157,24 @@ foreach ($groups as $group_iter) {
 	echo $group_iter->getDescriptionAvecClasses();
 	echo "</option>\n";
 }
-echo "</select>&nbsp;&nbsp;";
+echo "</select>&nbsp;&nbsp;\n";
 //fin affichage des groupes
 
 echo "<button style='background-color:".$color_fond_notices['t']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_devoir.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'devoir';
-					\">Editer les devoirs</button>";
+					\">Editer les devoirs</button>\n";
 
 echo "<button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'notice_privee';
-					\">Editer les notices priv&eacute;es</button><br><br>\n";
+					\">Editer les notices priv&eacute;es</button>\n";
+
+echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
+						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
+					\">Voir NP</button>\n";
+
+echo "<br><br>\n";
 
 // Nombre de notices pour ce jour :
 $num_notice = NULL;
@@ -193,7 +199,7 @@ if (!$ctCompteRendu->isNew() || isset($info)) {
 				return false;
 			\">
 			Ajouter une notice
-			</a> - ";
+			</a> - \n";
 	echo "<a href=\"#\" onclick=\"javascript:
 				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteCompteRendu&id_ct=".$ctCompteRendu->getIdCt()."',
 					{ onComplete:
@@ -215,7 +221,7 @@ if (!$ctCompteRendu->isNew() || isset($info)) {
 				);
 				return false;
 				\">
-		Dupliquer la notice</a> - ";
+		Dupliquer la notice</a> - \n";
 } else {
 	echo " - <b><font color=\"red\">Nouvelle notice</font></b> - \n";
 }
@@ -240,7 +246,7 @@ echo "
 			);
 			return false;
 			\">
-	Deplacer la notice</a>";
+	Deplacer la notice</a>\n";
 
 echo "</legend>\n";
 
@@ -409,11 +415,11 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 						<td style=\"text-align: center;\">".round($document->getTaille()/1024,1)."</td>";
 				if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
 					echo "<td style=\"text-align: center;\">";
-					if($document->getVisibilite()=='y') {
-						echo "<img src='../images/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
+					if($document->getVisibleEleveParent()) {
+						echo "<img src='../images/icons/visible.png' width='19' height='16' alt='Document visible des élèves et responsables' title='Document visible des élèves et responsables' />";
 					}
 					else {
-						echo "<img src='../images/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
+						echo "<img src='../images/icons/invisible.png' width='19' height='16' alt='Document invisible des élèves et responsables' title='Document invisible des élèves et responsables' />";
 					}
 					echo "</td>\n";
 				}
@@ -457,7 +463,7 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 					size="20" /></td>
 				<?php
 					if(getSettingValue('cdt_possibilite_masquer_pj')=='y') {
-						echo "<td style='border-style: 1px solid $couleur_bord_tableau_notice; background-color: ".$couleur_cellule[$type_couleur].";'>";
+						echo "<td style='border-style: 1px solid $couleur_bord_tableau_notice; background-color: ".$couleur_cellule[$type_couleur]."; text-align: center;'>";
 						echo "<input type='checkbox' name='doc_masque[]' value='y' ";
 						echo "/>";
 						echo "</td>\n";
@@ -490,4 +496,8 @@ if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
 </table>
 			<?php echo "</form>";
 			echo "</fieldset>";
+
+//echo "<a href=\"#\" onclick=\"javascript: document.getElementById('contenu').value=document.getElementById('contenu').value+'TRUC'; return false;\">CLIC</a>";
+//echo "<a href=\"#\" onclick=\"javascript: document.getElementById('contenu').value='TRUC'; return false;\">CLIC</a>";
+//echo "<a href=\"#\" onclick=\"javascript: alert(document.getElementById('contenu').value); return false;\">CLOC</a>";
 			?>

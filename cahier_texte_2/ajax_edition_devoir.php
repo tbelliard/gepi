@@ -167,20 +167,27 @@ echo "</select>&nbsp;&nbsp;";
 echo "<button style='background-color:".$color_fond_notices['c']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_compte_rendu.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'compte_rendu';
-					\">Editer les comptes rendus</button>";
+					\">Editer les comptes rendus</button>\n";
 echo "<button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
 						getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'notice_privee';
-					\">Editer les notices priv&eacute;es</button><br><br>\n";
+					\">Editer les notices priv&eacute;es</button>\n";
 
+echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
+						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
+					\">Voir NP</button>\n";
+
+echo "<br><br>\n";
+
+//==============================================
 
 //fin affichage des groupes
 
 echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; background: ".$color_fond_notices[$type_couleur].";\">\n";
-echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Travaux Personnels ";
+echo "<legend style=\"border: 1px solid grey; background: ".$color_fond_notices[$type_couleur]."; font-variant: small-caps;\"> Travaux Personnels \n";
 
 if (!$ctTravailAFaire->isNew()) {
-	echo " - <b><font color=\"red\">Modification de la notice</font></b>";
+	echo " - <b><font color=\"red\">Modification de la notice</font></b>\n";
 	echo " - <a href=\"#\" onclick=\"javascript:
 				$('dupplication_notice').show();
 				new Ajax.Updater($('dupplication_notice'), 'ajax_affichage_duplication_notice.php?id_groupe=".$groupe->getId()."&type=CahierTexteTravailAFaire&id_ct=".$ctTravailAFaire->getIdCt()."',
@@ -198,7 +205,7 @@ if (!$ctTravailAFaire->isNew()) {
 				);
 				return false;
 				\">
-		Dupliquer la notice</a> - ";
+		Dupliquer la notice</a> - \n";
 
 } else {
 	echo " - <b><font color=\"red\">Nouvelle notice</font></b> - \n";
@@ -224,23 +231,23 @@ echo "
 			);
 			return false;
 			\">
-	Deplacer la notice</a>";
+	Deplacer la notice</a>\n";
 
 echo "</legend>\n";
 
-echo "<div id=\"dupplication_notice\" style='display: none;'></div>";
-echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>";
+echo "<div id=\"dupplication_notice\" style='display: none;'></div>\n";
+echo "<div id=\"deplacement_notice\" style='display: none;'>oulalala</div>\n";
 
 echo "<form enctype=\"multipart/form-data\" name=\"modification_compte_rendu_form\" id=\"modification_compte_rendu_form\" action=\"ajax_enregistrement_devoir.php\" method=\"post\" onsubmit=\"return AIM.submit(this, {'onComplete' : completeEnregistrementDevoirCallback})\" style=\"width: 100%;\">\n";
 echo add_token_field();
 // uid de pour ne pas refaire renvoyer plusieurs fois le meme formulaire
 // autoriser la validation de formulaire $uid_post==$_SESSION['uid_prime']
 $uid = md5(uniqid(microtime(), 1));
-echo("<input type='hidden' name='uid_post' value='".$uid."' />");
-echo("<input type='hidden' id='id_groupe' name='id_groupe' value='".$groupe->getId()."' />");
+echo("<input type='hidden' name='uid_post' value='".$uid."' />\n");
+echo("<input type='hidden' id='id_groupe' name='id_groupe' value='".$groupe->getId()."' />\n");
 
 //hidden input utilise pour indiquer a la fenetre ListeNotice a quel endroit mettre un petit texte rouge "modification"
-echo("<input type='hidden' id='div_id_ct' value='devoir_".$ctTravailAFaire->getIdCt()."' />");
+echo("<input type='hidden' id='div_id_ct' value='devoir_".$ctTravailAFaire->getIdCt()."' />\n");
 
 //si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient Succès
 $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_modification"] :(isset($_GET["succes_modification"]) ? $_GET["succes_modification"] :NULL);
@@ -279,18 +286,19 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 
 			echo "<td><a title=\"Aller au jour précédent\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($hier);dateChanged(calendarInstanciation);'>&lt;&lt;</a></td>
 			<td align=center>Aujourd'hui</td>
-			<td align=right><a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'>&gt;&gt;</a></td></tr>\n";	echo "\n";
+			<td align=right><a title=\"Aller au jour suivant\" href=\"#\" onclick='javascript:updateCalendarWithUnixDate($demain);dateChanged(calendarInstanciation);'>&gt;&gt;</a></td></tr>\n";
+			echo "\n";
 		}
 		?>
 
 	<tr>
 		<td colspan="5"><?php
 
-		echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctTravailAFaire->getContenu()."</textarea>";
+		echo "<textarea name=\"contenu\" style=\"background-color: white;\" id=\"contenu\">".$ctTravailAFaire->getContenu()."</textarea>\n";
 
 		//// gestion des fichiers attaché
 		echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">';
-		echo "<b>Fichier(s) attaché(s) : </b><br />";
+		echo "<b>Fichier(s) attaché(s) : </b><br />\n";
 		echo '<div id="div_fichier">';
 		// Affichage des documents joints
 		$document = new CahierTexteTravailAFaireFichierJoint(); //for ide completion
@@ -313,12 +321,12 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 			//gestion de modification du nom d'un document
 
 			echo "Nouveau nom <input type=\"text\" name=\"doc_name_modif\" size=\"25\" /> pour\n";
-			echo "<select name=\"id_document\">";
+			echo "<select name=\"id_document\">\n";
 			echo "<option value='-1'>(choisissez)</option>\n";
 			foreach ($documents as $document) {
 				echo "<option value='".$document->getId()."'>".$document->getTitre()."</option>\n";
 			}
-			echo "</select>\n<br /><br />";
+			echo "</select>\n<br /><br />\n";
 		}
 		?>
 		<table style="border-style:solid; border-width:0px; border-color: <?php echo $couleur_bord_tableau_notice;?> ; background-color: #000000; width: 100%" cellspacing="1" summary="Tableau de...">
@@ -358,6 +366,6 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		</td>
 	</tr>
 </table>
-<?php echo "</form>";
-echo "</fieldset>";
+<?php echo "</form>\n";
+echo "</fieldset>\n";
 ?>

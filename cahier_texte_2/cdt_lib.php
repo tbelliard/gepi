@@ -783,4 +783,116 @@ require_once("'.$pref_arbo.'/entete.php");
 		return $retour;
 
 	}
+
+	function affiche_notice_privee_groupe_jour($id_groupe, $date_jour) {
+		$retour="";
+
+		$timestamp_debut=timestamp_from_date_jour($date_jour);
+		$timestamp_fin=$timestamp_debut+24*3600-1;
+
+		// Date de la notice précédente/suivante
+		$precedent="";
+		$suivant="";
+
+		$sql="SELECT * FROM ct_private_entry WHERE id_groupe='$id_groupe' AND contenu != ''
+				AND date_ct != ''
+				AND date_ct < '".$timestamp_debut."'
+				ORDER BY date_ct DESC;";
+		//echo "$sql<br />\n";
+		$res_prec=mysql_query($sql);
+		if(mysql_num_rows($res_prec)>0) {
+			$lig=mysql_fetch_object($res_prec);
+			$precedent=$lig->date_ct;
+		}
+		/*
+		echo "\$precedent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=$precedent&nbsp;&nbsp;";
+		if($precedent!="") {echo date_from_timestamp($precedent);}
+		echo "<br />";
+		*/
+
+		$sql="SELECT * FROM ct_private_entry WHERE id_groupe='$id_groupe' AND contenu != ''
+				AND date_ct != ''
+				AND date_ct > '".$timestamp_fin."'
+				ORDER BY date_ct ASC;";
+		//echo "$sql<br />\n";
+		$res_suiv=mysql_query($sql);
+		if(mysql_num_rows($res_suiv)>0) {
+			$lig=mysql_fetch_object($res_suiv);
+			$suivant=$lig->date_ct;
+		}
+		/*
+		echo "\$suivant&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=$suivant&nbsp;&nbsp;";
+		if($suivant!="") {echo date_from_timestamp($suivant);}
+		echo "<br />";
+		*/
+
+		if(($suivant!='')||($precedent!='')) {
+			$retour.="<div style='float: left; width: 20px; margin-top: 0.5em;'>\n";
+			if($precedent!='') {
+				$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$precedent',{ onComplete:function(transport) {initWysiwyg();}});\" title=\"Notice privée précédente\"><img src='../images/up.png' width='18' height='18' /></a>";
+				$retour.="<br />\n";
+			}
+
+			if($suivant!='') {
+				$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$suivant',{ onComplete:function(transport) {initWysiwyg();}});\" title=\"Notice privée suivante\"><img src='../images/down.png' width='18' height='18' /></a>";
+			}
+			$retour.="</div>\n";
+		}
+
+
+		$tab_champs=array('classes');
+		$current_group=get_group($id_groupe, $tab_champs);
+		$info_groupe=$current_group['name']." (<em>".$current_group['description']."</em>) en ".$current_group['classlist_string'];
+		$sql="SELECT * FROM ct_private_entry WHERE id_groupe='$id_groupe' AND contenu != ''
+				AND date_ct != ''
+				AND date_ct >= '".$timestamp_debut."'
+				AND date_ct <= '".$timestamp_fin."'
+				ORDER BY date_ct;";
+		//echo "$sql<br />\n";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+
+			while($lig=mysql_fetch_object($res)) {
+				//
+				//$retour.="<div style='border: 1px solid black; margin: 0.5em; background-color:".$couleur_cellule['p']."'>\n";
+				$retour.="<div style='border: 1px solid black; margin: 0.5em; margin-left:25px; background-color: #f6f3a8'>\n";
+				$retour.="<div style='float: right; width: 4em; margin-right: 1.5em;'>".date_from_timestamp($lig->date_ct)."</div>\n";
+				$retour.=$lig->contenu;
+				$retour.="</div>\n";
+			}
+		}
+		else {$retour.="Aucune Notice Privée pour cet enseignement (".$info_groupe.") le $date_jour.";}
+
+		return $retour;
+	}
+
+	function date_from_timestamp($timestamp) {
+		return strftime("%d/%m/%Y", $timestamp);
+	}
+
+	function timestamp_from_date_jour($date_jour) {
+		$tmp_tab=explode("/",$date_jour);
+		$jour=$tmp_tab[0];
+		$mois=$tmp_tab[1];
+		$annee=$tmp_tab[2];
+		$timestamp=mktime(0,0,0,$mois,$jour,$annee);
+		return $timestamp;
+	}
+
+	function get_liste_dates_np($id_groupe) {
+		$tab_dates=array();
+
+		$sql="SELECT * FROM ct_private_entry WHERE id_groupe='$id_groupe' AND contenu != ''
+				AND date_ct != ''
+				ORDER BY date_ct;";
+		echo "$sql<br />\n";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			while($lig=mysql_fetch_object($res)) {
+				$tab_dates[]=$lig->date_ct;
+			}
+		}
+
+		return $tab_dates;
+	}
 ?>
