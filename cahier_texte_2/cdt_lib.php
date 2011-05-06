@@ -272,7 +272,7 @@ require_once("'.$pref_arbo.'/entete.php");
 		return $html;
 	}
 
-	function my_affiche_docs_joints($id_ct,$type_notice) {
+	function my_affiche_docs_joints($id_ct, $type_notice) {
 		global $tab_chemin_url;
 		global $action;
 
@@ -287,28 +287,34 @@ require_once("'.$pref_arbo.'/entete.php");
 		$html = '';
 		//$architecture="/documents/cl_dev";
 		if ($type_notice == "t") {
-			$sql = "SELECT titre, emplacement FROM ct_devoirs_documents WHERE id_ct_devoir='$id_ct' ORDER BY 'titre'";
+			$sql = "SELECT titre, emplacement, visible_eleve_parent FROM ct_devoirs_documents WHERE id_ct_devoir='$id_ct' ORDER BY 'titre'";
 		} else if ($type_notice == "c") {
-			$sql = "SELECT titre, emplacement FROM ct_documents WHERE id_ct='$id_ct' ORDER BY 'titre'";
+			$sql = "SELECT titre, emplacement, visible_eleve_parent FROM ct_documents WHERE id_ct='$id_ct' ORDER BY 'titre'";
 		}
 		
 		$res = sql_query($sql);
 		if (($res) and (sql_count($res)!=0)) {
-			$html .= "<span class='petit'>Document(s) joint(s):</span>";
+			$html_tmp= "<span class='petit'>Document(s) joint(s):</span>";
 			//$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
-			$html .= "<ul style=\"padding-left: 15px;\">";
+			$html_tmp.= "<ul style=\"padding-left: 15px;\">";
 			for ($i=0; ($row = sql_row($res,$i)); $i++) {
+				if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+					((getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
+					((getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==true)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
+				) {
 					$titre = $row[0];
 					$emplacement = $pref_documents.$row[1];
 					//$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a href=\"$emplacement\" target=\"blank\">$titre</a></li>";
 					// Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
 					// alternative, utiliser un javascript
-					$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"$emplacement\">$titre</a></li>";
+					$html_tmp.= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return false;\" href=\"$emplacement\">$titre</a></li>";
 
 					$tab_chemin_url[]=$emplacement;
-
+				}
 			}
 			$html .= "</ul>";
+
+
 		}
 		return $html;
 	}
@@ -325,11 +331,10 @@ require_once("'.$pref_arbo.'/entete.php");
 		$res = sql_query($sql);
 		if (($res) and (sql_count($res)!=0)) {
 			for ($i=0; ($row = sql_row($res,$i)); $i++) {
-					$titre = $row[0];
-					$emplacement = $row[1];
+				$titre = $row[0];
+				$emplacement = $row[1];
 
-					$tab_documents_joints[]=$emplacement;
-
+				$tab_documents_joints[]=$emplacement;
 			}
 		}
 		return $tab_documents_joints;
