@@ -193,18 +193,21 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 		// Professeurs
 		$temp["profs"]["list"] = array();
 		$temp["profs"]["users"] = array();
+		$temp["profs"]["proflist_string"] = "";
 	
 		$get_profs = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_groupes_professeurs j WHERE (" .
 									"u.login = j.login and j.id_groupe = '" . $_id_groupe . "') ORDER BY u.nom, u.prenom");
 	
 		$nb = mysql_num_rows($get_profs);
 		for ($i=0;$i<$nb;$i++){
+			if($i>0) {$temp["profs"]["proflist_string"].=", ";}
 			$p_login = mysql_result($get_profs, $i, "login");
 			$p_nom = mysql_result($get_profs, $i, "nom");
 			$p_prenom = mysql_result($get_profs, $i, "prenom");
 			$civilite = mysql_result($get_profs, $i, "civilite");
 			$temp["profs"]["list"][] = $p_login;
 			$temp["profs"]["users"][$p_login] = array("login" => $p_login, "nom" => $p_nom, "prenom" => $p_prenom, "civilite" => $civilite);
+			$temp["profs"]["proflist_string"].=$civilite." ".$p_nom." ".strtoupper(substr($p_prenom,0,1));
 		}
 	}
 
@@ -404,13 +407,21 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
     $former_groupe = get_group($_id_groupe);
     $errors = false;
     if ($_name != $former_groupe["name"] OR $_description != $former_groupe["description"]) {
-        $update = mysql_query("update groupes set name = '" . $_name . "', description = '" . $_description . "' WHERE id = '" . $_id_groupe . "'");
-        if (!$update) $errors = true;
+        $sql="update groupes set name = '" . $_name . "', description = '" . $_description . "' WHERE id = '" . $_id_groupe . "';";
+        $update = mysql_query($sql);
+        if (!$update) {
+			$errors = true;
+			$msg.="ERREUR sur $sql<br />";
+		}
     }
 
     if ($_matiere != $former_groupe["matiere"]["matiere"]) {
-        $update2 = mysql_query("update j_groupes_matieres set id_matiere = '" . $_matiere . "' WHERE id_groupe = '" . $_id_groupe . "'");
-        if (!$update2) $errors = true;
+        $sql="update j_groupes_matieres set id_matiere = '" . $_matiere . "' WHERE id_groupe = '" . $_id_groupe . "';";
+        $update2=mysql_query($sql);
+        if (!$update2) {
+			$errors = true;
+			$msg.="ERREUR sur $sql<br />";
+		}
     }
 
     // Mise à jour des classes
@@ -424,18 +435,27 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
     foreach ($new_classes as $id_classe) {
         if (get_period_number($id_classe)!= $check_periods) {
             $per_error = true;
+			$msg.="ERREUR: get_period_number($id_classe)=".get_period_number($id_classe)." mais \$check_periods=$check_periods<br />";
         }
     }
     if (!$per_error) {
         $mat_priority = mysql_result(mysql_query("SELECT priority FROM matieres WHERE matiere = '".$_matiere ."'"), 0);
         foreach ($new_classes as $id_classe) {
-            $res = mysql_query("insert into j_groupes_classes set id_groupe = '" . $_id_groupe . "', id_classe = '" . $id_classe . "', priorite = '".$mat_priority."'");
-            if (!$res) $errors = true;
+            $sql="insert into j_groupes_classes set id_groupe = '" . $_id_groupe . "', id_classe = '" . $id_classe . "', priorite = '".$mat_priority."';";
+            $res = mysql_query($sql);
+            if (!$res) {
+				$errors = true;
+				$msg.="ERREUR sur $sql<br />";
+			}
         }
 
         foreach ($deleted_classes as $id_classe) {
-            $res = mysql_query("delete from j_groupes_classes where (id_groupe = '" . $_id_groupe . "' and id_classe = '" . $id_classe . "')");
-            if (!$res) $errors = true;
+            $sql="delete from j_groupes_classes where (id_groupe = '" . $_id_groupe . "' and id_classe = '" . $id_classe . "');";
+            $res = mysql_query($sql);
+            if (!$res) {
+				$errors = true;
+				$msg.="ERREUR sur $sql<br />";
+			}
         }
     } else {
         $errors = true;
@@ -447,13 +467,21 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
     $new_profs = array_diff((array)$_professeurs, (array)$former_groupe["profs"]["list"]);
 
     foreach ($new_profs as $p_login) {
-        $res = mysql_query("insert into j_groupes_professeurs set id_groupe = '" . $_id_groupe . "', login = '" . $p_login . "'");
-        if (!$res) $errors = true;
+        $sql="insert into j_groupes_professeurs set id_groupe = '" . $_id_groupe . "', login = '" . $p_login . "';";
+        $res=mysql_query($sql);
+		if (!$res) {
+			$errors = true;
+			$msg.="ERREUR sur $sql<br />";
+		}
     }
 
     foreach ($deleted_profs as $p_login) {
-        $res = mysql_query("delete from j_groupes_professeurs where (id_groupe = '" . $_id_groupe . "' and login = '" . $p_login . "')");
-        if (!$res) $errors = true;
+        $sql="delete from j_groupes_professeurs where (id_groupe = '" . $_id_groupe . "' and login = '" . $p_login . "');";
+        $res = mysql_query($sql);
+		if (!$res) {
+			$errors = true;
+			$msg.="ERREUR sur $sql<br />";
+		}
     }
 
 
@@ -467,14 +495,22 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
             $new_eleves = array_diff((array)$_eleves[$period["num_periode"]], (array)$former_groupe["eleves"][$period["num_periode"]]["list"]);
 
             foreach ($new_eleves as $e_login) {
-                $res = mysql_query("insert into j_eleves_groupes set id_groupe = '" . $_id_groupe . "', login = '" . $e_login . "', periode = '" . $period["num_periode"] . "'");
-                if (!$res) $errors = true;
+                $sql="insert into j_eleves_groupes set id_groupe = '" . $_id_groupe . "', login = '" . $e_login . "', periode = '" . $period["num_periode"] . "';";
+                $res = mysql_query($sql);
+				if (!$res) {
+					$errors = true;
+					$msg.="ERREUR sur $sql<br />";
+				}
             }
 
             foreach ($deleted_eleves as $e_login) {
                 if (test_before_eleve_removal($e_login, $_id_groupe, $period["num_periode"])) {
-                    $res = mysql_query("delete from j_eleves_groupes where (id_groupe = '" . $_id_groupe . "' and login = '" . $e_login . "' and periode = '" . $period["num_periode"] . "')");
-                    if (!$res) $errors = true;
+                    $sql="delete from j_eleves_groupes where (id_groupe = '" . $_id_groupe . "' and login = '" . $e_login . "' and periode = '" . $period["num_periode"] . "');";
+                    $res = mysql_query($sql);
+					if (!$res) {
+						$errors = true;
+						$msg.="ERREUR sur $sql<br />";
+					}
                 } else {
                     $msg .= "Erreur lors de la suppression de l'élève ayant le login '" . $e_login . "', pour la période '" . $period["num_periode"] . " (des notes ou appréciations existent).<br/>";
                 }
