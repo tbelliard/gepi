@@ -139,9 +139,13 @@ foreach($classes as $classe){
 	$id_classe=$classe->getId();
 	$nomClasse=$classe->getNom();
 	$nomCompletClasse=$classe->getNomComplet();
-
+	/*
 	echo " <button style='background-color:plum' onclick=\"javascript:
 							getWinDevoirsDeLaClasse().setAjaxContent('./ajax_devoirs_classe.php?id_classe=$id_classe&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
+						\">$nomClasse</button>";
+	*/
+	echo " <button style='background-color:plum' onclick=\"javascript:
+							getWinDevoirsDeLaClasse().setAjaxContent('./ajax_devoirs_classe.php?id_classe=$id_classe&today='+getCalendarUnixDate());
 						\">$nomClasse</button>";
 }
 echo "</div>\n";
@@ -172,9 +176,13 @@ echo "<button style='background-color:".$color_fond_notices['p']."' onclick=\"ja
 						getWinEditionNotice().setAjaxContent('./ajax_edition_notice_privee.php?id_groupe='+ ".$groupe->getId()." + '&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
 						object_en_cours_edition = 'notice_privee';
 					\">Editer les notices priv&eacute;es</button>\n";
-
+/*
 echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
+					\">Voir NP</button>\n";
+*/
+echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
+						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate());
 					\">Voir NP</button>\n";
 
 echo "<br><br>\n";

@@ -144,8 +144,13 @@ echo "<button style='background-color:".$color_fond_notices['t']."' onclick=\"ja
 						object_en_cours_edition = 'devoir';
 					\">Editer les devoirs</button>\n";
 
+/*
 echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
 						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate(),{ onComplete:function(transport) {initWysiwyg();}});
+					\">Voir NP</button>\n";
+*/
+echo " <button style='background-color:".$color_fond_notices['p']."' onclick=\"javascript:
+						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$groupe->getId()."&today='+getCalendarUnixDate());
 					\">Voir NP</button>\n";
 
 // Nombre de notices pour ce jour :
