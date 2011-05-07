@@ -119,7 +119,7 @@ function genere_degrade($couleur_haut,$couleur_bas,$hauteur,$chemin_img) {
 }
 
 
-$tab_items=array('utiliser_couleurs_perso', 'style_body_backgroundcolor', 'utiliser_degrade', 'degrade_haut', 'degrade_bas', 'utiliser_couleurs_perso_infobulles', 'couleur_infobulle_fond_entete', 'couleur_infobulle_fond_corps', 'utiliser_couleurs_perso_lig_tab_alt', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'utiliser_cahier_texte_perso', 'fond_notices_c', 'entete_fond_c', 'cellule_c', 'cellule_alt_c', 'fond_notices_t', 'entete_fond_t', 'cellule_t', 'cellule_alt_t', 'fond_notices_i', 'entete_fond_i', 'cellule_i', 'cellule_alt', 'fond_notices_f', 'cellule_f', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen');
+$tab_items=array('utiliser_couleurs_perso', 'style_body_backgroundcolor', 'utiliser_degrade', 'degrade_haut', 'degrade_bas', 'utiliser_couleurs_perso_infobulles', 'couleur_infobulle_fond_entete', 'couleur_infobulle_fond_corps', 'utiliser_couleurs_perso_lig_tab_alt', 'couleur_lig_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'utiliser_cahier_texte_perso', 'fond_notices_c', 'entete_fond_c', 'cellule_c', 'cellule_alt_c', 'fond_notices_t', 'entete_fond_t', 'cellule_t', 'cellule_alt_t', 'fond_notices_i', 'entete_fond_i', 'cellule_i', 'cellule_alt', 'fond_notices_f', 'cellule_f', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen');
 
 if((isset($_GET['export_couleurs']))&&($_GET['export_couleurs']=='y')) {
 
@@ -594,6 +594,24 @@ div.info_abs {
 				$nb_err++;
 			}
 
+			if(isset($_POST['couleur_lig_entete'])) {
+				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_lig_entete'])))!=0)||(strlen($_POST['couleur_lig_entete'])!=6)) {
+					$couleur_lig_entete="fff5b1";
+				}
+				else {
+					$couleur_lig_entete=$_POST['couleur_lig_entete'];
+				}
+
+				if(saveSetting('couleur_lig_entete',$couleur_lig_entete)) {
+					//$msg.="Enregistrement effectué. ";
+					$temoin_modif++;
+				}
+				else {
+					$msg.="Erreur lors de la sauvegarde de 'couleur_lig_entete'. ";
+					$nb_err++;
+				}
+			}
+
 			if(isset($_POST['couleur_lig_alt1'])) {
 				if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_lig_alt1'])))!=0)||(strlen($_POST['couleur_lig_alt1'])!=6)) {
 					$couleur_lig_alt1="ffefd5";
@@ -637,6 +655,9 @@ div.info_abs {
 					$fich=fopen("../style_screen_ajout.css","a+");
 				}
 				fwrite($fich,"
+.gestion_temp_dir th {
+	background-color: #$couleur_lig_entete;
+}
 .gestion_temp_dir .lig-1 {
 	background-color: #$couleur_lig_alt_1;
 }
@@ -644,6 +665,9 @@ div.info_abs {
 	background-color: #$couleur_lig_alt1;
 }
 
+.boireaus th {
+	background-color: #$couleur_lig_entete;
+}
 .boireaus .lig-1 {
 	background-color: #$couleur_lig_alt_1;
 }
@@ -783,6 +807,7 @@ echo "<div class='norme'>\n";
 	<option value='vert'>Vert</option>
 	<option value='bleu'>Bleu</option>
 	<option value='chocolat'>Chocolat</option>
+	<option value='ngb'>Noir_Gris_Blanc</option>
 </select>\n";
 	}
 	else {
@@ -897,7 +922,7 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 
 	//var liste=new Array('style_body_backgroundcolor');
 	// var liste=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1');
-	var liste=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen', 'fond_notices_c', 'fond_notices_t', 'fond_notices_i', 'fond_notices_f', 'entete_fond_c', 'entete_fond_t', 'entete_fond_i', 'cellule_c', 'cellule_t', 'cellule_i', 'cellule_f', 'cellule_alt_c', 'cellule_alt_t', 'cellule_alt_i');
+	var liste=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen', 'fond_notices_c', 'fond_notices_t', 'fond_notices_i', 'fond_notices_f', 'entete_fond_c', 'entete_fond_t', 'entete_fond_i', 'cellule_c', 'cellule_t', 'cellule_i', 'cellule_f', 'cellule_alt_c', 'cellule_alt_t', 'cellule_alt_i');
 
 	function init() {
 		for(i=0;i<liste.length;i++) {
@@ -936,6 +961,11 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 	tabmotif['degrade_bas_R']="74";
 	tabmotif['degrade_bas_V']="74";
 	tabmotif['degrade_bas_B']="89";
+
+	// #fff5b1
+	tabmotif['couleur_lig_entete_R']=255;
+	tabmotif['couleur_lig_entete_V']=245;
+	tabmotif['couleur_lig_entete_B']=177;
 
 	// papayawhip #FFEFD5
 	tabmotif['couleur_lig_alt1_R']=255;
@@ -1469,6 +1499,18 @@ echo add_token_field();
 
 		//=========================================
 
+		$tabcouleurs['couleur_lig_entete']=array();
+		$couleur_lig_entete=getSettingValue('couleur_lig_entete');
+		if($couleur_lig_entete!="") {
+			$tabcouleurs['couleur_lig_entete']=tab_rvb($couleur_lig_entete);
+		}
+		else {
+			// #fff5b1
+			$tabcouleurs['couleur_lig_entete']['R']=255;
+			$tabcouleurs['couleur_lig_entete']['V']=245;
+			$tabcouleurs['couleur_lig_entete']['B']=177;
+		}
+
 		$tabcouleurs['couleur_lig_alt1']=array();
 		$couleur_lig_alt1=getSettingValue('couleur_lig_alt1');
 		if($couleur_lig_alt1!="") {
@@ -1494,26 +1536,14 @@ echo add_token_field();
 		}
 
 	echo "<h2><strong>Couleurs des lignes alternées dans les tableaux:</strong></h2>\n";
-	// echo "<blockquote>\n";
-		// echo "<table border='0'>\n";
 		echo "<div class='tableau_param_couleur'>\n";
-				// echo "<td>\n";
 					echo "<input type='checkbox' name='utiliser_couleurs_perso_lig_tab_alt' id='utiliser_couleurs_perso_lig_tab_alt' value='y' ";
 					if(getSettingValue('utiliser_couleurs_perso_lig_tab_alt')=='y') {
 						echo "checked='checked' ";
 					}
 					echo "/> ";
-				// echo "</td>\n";
-				// echo "<td>\n";
 					echo "<label for='utiliser_couleurs_perso_lig_tab_alt' style='cursor: pointer;'>couleurs des tableaux.</label>\n";
-				// echo "</td>\n";
-			// echo "</tr>\n";
 
-			// echo "<tr>\n";
-				// echo "<td>\n";
-			// 	echo "&nbsp;";
-				// echo "</td>\n";
-				// echo "<td>\n";
 					echo "<table class='tableau_change_couleur' summary=\"tableau changement de couleur : ligne 2 lignes impaires, ligne 3 lignes paires, colonne 2 rouge, colonne 3 vert, colonne 4 bleu, colonne 6 validation\">\n";
 
 						echo "<tr class='fond_blanc'>\n";
@@ -1527,24 +1557,39 @@ echo add_token_field();
 						echo "</tr>\n";
 
 						echo "<tr>\n";
+							echo "<td>Couleur ligne d'entête";
+							echo "</td>\n";
+							for($j=0;$j<count($comp);$j++) {
+								echo "<td>\n";
+									echo "<label for='id_couleur_lig_entete_".$comp[$j]."' class='invisible'>".$comp[$j]." P lignes paires ".$comp[$j]."</label>\n";
+									echo "<input type='text' name='couleur_lig_entete_".$comp[$j]."' id='id_couleur_lig_entete_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_entete'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_entete\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+								echo "</td>\n";
+							}
+							echo "<td id='couleur_lig_entete'";
+
+							echo " onclick=\"document.getElementById('id_couleur_r').value='id_couleur_lig_entete_R';";
+							echo "document.getElementById('id_couleur_v').value='id_couleur_lig_entete_V';";
+							echo "document.getElementById('id_couleur_b').value='id_couleur_lig_entete_B';";
+							echo "document.getElementById('id_couleur_motif').value='couleur_lig_entete';";
+							echo "afficher_div('div_choix_couleur','y',10,-200)\">";
+
+							// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+								echo "<input type='hidden' name='couleur_lig_entete' value='couleur_lig_entete' />\n";
+							echo "&nbsp;&nbsp;&nbsp;</td>\n";
+							echo "<td>\n";
+								echo "<a href='#' onclick='reinit_couleurs(\"couleur_lig_entete\");return false;'>Réinitialiser</a>\n";
+							echo "</td>\n";
+						echo "</tr>\n";
+
+						echo "<tr>\n";
 							echo "<td>Couleur de ligne 1";
 							echo "</td>\n";
 							for($j=0;$j<count($comp);$j++) {
-								/*
-								$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
-								$res_couleur=mysql_query($sql);
-								if(mysql_num_rows($res_couleur)>0) {
-									$tmp=mysql_fetch_object($res_couleur);
-									$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
-								}
-								*/
-
 								echo "<td>\n";
 									echo "<label for='id_couleur_lig_alt1_".$comp[$j]."' class='invisible'>".$comp[$j]." P lignes paires ".$comp[$j]."</label>\n";
 									echo "<input type='text' name='couleur_lig_alt1_".$comp[$j]."' id='id_couleur_lig_alt1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt1'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_alt1\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
 								echo "</td>\n";
 							}
-							//echo "<td id='couleur_lig_alt1'>\n";
 							echo "<td id='couleur_lig_alt1'";
 
 							echo " onclick=\"document.getElementById('id_couleur_r').value='id_couleur_lig_alt1_R';";
@@ -1565,21 +1610,11 @@ echo add_token_field();
 							echo "<td>Couleur de ligne -1";
 							echo "</td>\n";
 							for($j=0;$j<count($comp);$j++) {
-								/*
-								$sql="SELECT value FROM setting WHERE name='".$tab[$i]."_".$comp[$j]."'";
-								$res_couleur=mysql_query($sql);
-								if(mysql_num_rows($res_couleur)>0) {
-									$tmp=mysql_fetch_object($res_couleur);
-									$tabcouleurs[$tab[$i]][$comp[$j]]=$tmp->value;
-								}
-								*/
-
 								echo "<td>\n";
-							echo "<label for='id_couleur_lig_alt_1_".$comp[$j]."' class='invisible'>".$comp[$j]." I lignes impaires ".$comp[$j]."</label>\n";
+									echo "<label for='id_couleur_lig_alt_1_".$comp[$j]."' class='invisible'>".$comp[$j]." I lignes impaires ".$comp[$j]."</label>\n";
 									echo "<input type='text' name='couleur_lig_alt_1_".$comp[$j]."' id='id_couleur_lig_alt_1_".$comp[$j]."' value='".$tabcouleurs['couleur_lig_alt_1'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_lig_alt_1\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
 								echo "</td>\n";
 							}
-							//echo "<td id='couleur_lig_alt_1'>\n";
 							echo "<td id='couleur_lig_alt_1'";
 
 							echo " onclick=\"document.getElementById('id_couleur_r').value='id_couleur_lig_alt_1_R';";
@@ -1597,10 +1632,7 @@ echo add_token_field();
 						echo "</tr>\n";
 
 					echo "</table>\n";
-				// echo "</td>\n";
-			// echo "</tr>\n";
 		echo "</div>\n";
-	// echo "</blockquote>\n";
 
 
 
@@ -1832,7 +1864,7 @@ echo add_token_field();
 
 
 // Liste simplifiée
-var liste_style=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete');
+var liste_style=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1');
 
 function valide_modele(choix) {
 	var choix_valide='n';
@@ -1864,6 +1896,19 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_corps_R=250
 		var id_couleur_infobulle_fond_corps_V=180
 		var id_couleur_infobulle_fond_corps_B=180
+
+		// Couleur des lignes alternées
+		var id_couleur_entete_R=255
+		var id_couleur_entete_V=239
+		var id_couleur_entete_B=213
+
+		var id_couleur_lig1_R=255
+		var id_couleur_lig1_V=239
+		var id_couleur_lig1_B=213
+
+		var id_couleur_lig_1_R=240
+		var id_couleur_lig_1_V=255
+		var id_couleur_lig_1_B=240
 	}
 	//=============================================================
 	// Vert
@@ -1893,6 +1938,19 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_corps_R=200
 		var id_couleur_infobulle_fond_corps_V=250
 		var id_couleur_infobulle_fond_corps_B=200
+
+		// Couleur des lignes alternées
+		var id_couleur_entete_R=255
+		var id_couleur_entete_V=239
+		var id_couleur_entete_B=213
+
+		var id_couleur_lig1_R=255
+		var id_couleur_lig1_V=239
+		var id_couleur_lig1_B=213
+
+		var id_couleur_lig_1_R=240
+		var id_couleur_lig_1_V=255
+		var id_couleur_lig_1_B=240
 	}	
 	//=============================================================
 	// Bleu
@@ -1922,6 +1980,19 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_corps_R=200
 		var id_couleur_infobulle_fond_corps_V=200
 		var id_couleur_infobulle_fond_corps_B=250
+
+		// Couleur des lignes alternées
+		var id_couleur_entete_R=255
+		var id_couleur_entete_V=239
+		var id_couleur_entete_B=213
+
+		var id_couleur_lig1_R=255
+		var id_couleur_lig1_V=239
+		var id_couleur_lig1_B=213
+
+		var id_couleur_lig_1_R=240
+		var id_couleur_lig_1_V=255
+		var id_couleur_lig_1_B=240
 	}
 	//=============================================================
 	// Chocolat
@@ -1951,7 +2022,62 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_corps_R=216
 		var id_couleur_infobulle_fond_corps_V=180
 		var id_couleur_infobulle_fond_corps_B=160
+
+		// Couleur des lignes alternées
+		var id_couleur_entete_R=255
+		var id_couleur_entete_V=239
+		var id_couleur_entete_B=213
+
+		var id_couleur_lig1_R=255
+		var id_couleur_lig1_V=239
+		var id_couleur_lig1_B=213
+
+		var id_couleur_lig_1_R=240
+		var id_couleur_lig_1_V=255
+		var id_couleur_lig_1_B=240
 	}
+	//=============================================================
+	if(choix=='ngb') {
+		choix_valide='y';
+
+		var id_style_body_backgroundcolor_R=254
+		var id_style_body_backgroundcolor_V=254
+		var id_style_body_backgroundcolor_B=254
+		
+		// Haut du dégradé
+		var id_degrade_haut_R=29
+		var id_degrade_haut_V=29
+		var id_degrade_haut_B=29
+		
+		// Bas du dégradé
+		var id_degrade_bas_R=90
+		var id_degrade_bas_V=90
+		var id_degrade_bas_B=90
+		
+		// Couleur de fond de l'entête des infobulles
+		var id_couleur_infobulle_fond_entete_R=230
+		var id_couleur_infobulle_fond_entete_V=230
+		var id_couleur_infobulle_fond_entete_B=230
+		
+		// Couleur de fond du corps des infobulles
+		var id_couleur_infobulle_fond_corps_R=90
+		var id_couleur_infobulle_fond_corps_V=90
+		var id_couleur_infobulle_fond_corps_B=90
+
+		// Couleur des lignes alternées
+		var id_couleur_entete_R=90
+		var id_couleur_entete_V=90
+		var id_couleur_entete_B=90
+
+		var id_couleur_lig1_R=120
+		var id_couleur_lig1_V=120
+		var id_couleur_lig1_B=120
+
+		var id_couleur_lig_1_R=230
+		var id_couleur_lig_1_V=230
+		var id_couleur_lig_1_B=230
+	}
+	//=============================================================
 
 	if(choix_valide=='y') {
 		for(i=0;i<liste_style.length;i++) {
