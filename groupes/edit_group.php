@@ -57,6 +57,12 @@ $reg_id_classe = $current_group["classes"]["list"][0];
 $reg_clazz = $current_group["classes"]["list"];
 $reg_professeurs = (array)$current_group["profs"]["list"];
 
+/*
+foreach($reg_clazz as $key => $value) {
+echo "\$reg_clazz[$key]=$value<br />";
+}
+*/
+
 $mode = isset($_GET['mode']) ? $_GET['mode'] : (isset($_POST['mode']) ? $_POST["mode"] : null);
 if ($mode == null and $id_classe == null) {
 	$mode = "groupe";
@@ -103,6 +109,9 @@ if (isset($_POST['is_posted'])) {
 	// Classes
 
 	if ($_POST['mode'] == "groupe") {
+		// Ajout sécurité:
+		if((!isset($id_classe))||($id_classe=='')) {$id_classe=$current_group['classes']['list'][0];}
+
 		$clazz[] = $id_classe;
 		$reg_id_classe = $id_classe;
 		$mode = "groupe";
@@ -227,6 +236,13 @@ if (isset($_POST['is_posted'])) {
 	}
 
 	$reg_clazz = $clazz;
+
+	/*
+	echo "Apres modif:<br />";
+	foreach($reg_clazz as $key => $value) {
+		echo "\$reg_clazz[$key]=$value<br />";
+	}
+	*/
 
 	if (empty($reg_clazz)) {
 		$error = true;
@@ -364,6 +380,7 @@ if ($mode == "groupe") {
 		echo "<br />\n";
 	}
 	else {
+		echo "<input type='hidden' name='id_classe' value='$id_classe' />\n";
 		if(isset($current_group)) {
 			echo "Enseignement en <b>".$current_group['classlist_string']."</b>.";
 			echo "<br />\n";
