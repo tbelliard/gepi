@@ -39,10 +39,14 @@ if ($resultat_session == 'c') {
 
 // INSERT INTO droits SET id='/cahier_texte_2/ajax_liste_notices_privees.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Cahiers de textes : Liste des notices privées',statut='';
 
+//echo "plop<br />";
+
 if (!checkAccess()) {
 	//header("Location: ../logout.php?auto=1");
 	die();
 }
+
+//echo "plip<br />";
 
 //On vérifie si le module est activé
 if (getSettingValue("active_cahiers_texte")!='y') {
@@ -93,7 +97,8 @@ else {
 		//echo "getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe='+id_groupe+'&today=$today',{ onComplete:function(transport) {initWysiwyg();}});";
 
 		echo "<select name='id_groupe' id='id_groupe' onchange=\"";
-		echo "getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe='+document.getElementById('id_groupe').options[document.getElementById('id_groupe').selectedIndex].value+'&today=$today',{ onComplete:function(transport) {initWysiwyg();}});";
+		//echo "getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe='+document.getElementById('id_groupe').options[document.getElementById('id_groupe').selectedIndex].value+'&today=$today',{ onComplete:function(transport) {initWysiwyg();}});";
+		echo "getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe='+document.getElementById('id_groupe').options[document.getElementById('id_groupe').selectedIndex].value+'&today=$today');";
 
 		echo "\">\n";
 		foreach($groups as $current_group) {

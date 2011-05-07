@@ -834,12 +834,14 @@ require_once("'.$pref_arbo.'/entete.php");
 		if(($suivant!='')||($precedent!='')) {
 			$retour.="<div style='float: left; width: 20px; margin-top: 0.5em;'>\n";
 			if($precedent!='') {
-				$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$precedent',{ onComplete:function(transport) {initWysiwyg();}});\" title=\"Notice privée précédente\"><img src='../images/up.png' width='18' height='18' /></a>";
+				//$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$precedent',{ onComplete:function(transport) {initWysiwyg();}});\" title=\"Notice privée précédente\"><img src='../images/up.png' width='18' height='18' /></a>";
+				$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$precedent');\" title=\"Notice privée précédente\"><img src='../images/up.png' width='18' height='18' /></a>";
 				$retour.="<br />\n";
 			}
 
 			if($suivant!='') {
-				$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$suivant',{ onComplete:function(transport) {initWysiwyg();}});\" title=\"Notice privée suivante\"><img src='../images/down.png' width='18' height='18' /></a>";
+				//$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$suivant',{ onComplete:function(transport) {initWysiwyg();}});\" title=\"Notice privée suivante\"><img src='../images/down.png' width='18' height='18' /></a>";
+				$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$suivant');\" title=\"Notice privée suivante\"><img src='../images/down.png' width='18' height='18' /></a>";
 			}
 			$retour.="</div>\n";
 		}
