@@ -116,6 +116,18 @@ function getWinEditionNotice() {
 			color: '#000000'
 		});
 	}
+	/*
+	// On ne recupere pas les variables id_groupe et today
+	else {
+		if(winEditionNotice!='compte_rendu') {
+			getWinDevoirsDeLaClasse();
+		}
+	}
+	*/
+	if (typeof winDevoirsDeLaClasse!="undefined") {
+		winDevoirsDeLaClasse.hide();
+	}
+
 	winEditionNotice.show();
 	winEditionNotice.toFront();
 	return winEditionNotice;
@@ -811,12 +823,14 @@ function getWinDevoirsDeLaClasse() {
 				showEffect: Element.show,
 				hideEffect: Element.hide,
 				top:0, 
-				left:100,
+				left:304,
 				width: 600,
-				height: GetHeight() - 220}
+				height: 120}
 			);
 		$('win_dev_classe_content').setStyle({	
-			backgroundColor: '#d0d0d0',
+			/*backgroundColor: '#d0d0d0',*/
+			/*backgroundColor: 'plum',*/
+			backgroundColor: '#dda0dd',
 			color: '#000000'
 		});
 		$('win_dev_classe_content').innerHTML = '<div id="dev_classe_container" onmouseover="winDevoirsDeLaClasse.toFront();">';

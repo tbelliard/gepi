@@ -68,7 +68,9 @@ $today=isset($_POST["today"]) ? $_POST["today"] : (isset($_GET["today"]) ? $_GET
 // Contrôler que le prof est associé à cette classe?
 
 $id_groupe=preg_replace("/[^0-9]/","",$id_groupe);
-$today=preg_replace("/[^0-9]/","",$today);
+if($today!="all") {
+	$today=preg_replace("/[^0-9]/","",$today);
+}
 
 if($id_groupe=="") {
 	echo "<p style='color:red;'>L'identifiant de groupe est incorrect.</p>";
@@ -78,7 +80,21 @@ elseif($today=="") {
 }
 else {
 	require("cdt_lib.php");
-	
+
+	echo "<div style='float:right; width: 10em; text-align: right;'>\n";
+	if($today!='all') {
+		// Voir toutes les notices privées du groupe
+		echo " <a href=\"javascript:
+						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$id_groupe."&today=all');
+						\">Toutes les NP</a>\n";
+	}
+	else {
+		echo " <a href=\"javascript:
+						getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=".$id_groupe."&today='+getCalendarUnixDate());
+						\">NP du jour</a>\n";
+	}
+	echo "</div>\n";
+
 	$groups=get_groups_for_prof($_SESSION['login']);
 	if(count($groups)==1) {
 		$current_group=$groups[0];
@@ -86,7 +102,6 @@ else {
 	}
 	else {
 		echo "<form enctype=\"multipart/form-data\" name=\"form_choix_jour_np\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
-
 		//echo "<select name='id_groupe' onchange=\"document.forms['form_choix_jour_np'].submit()\">\n";
 		//echo "<select name='id_groupe' id='id_groupe' onchange=\"id_groupe=(\$A($('id_groupe').options).find(function(option) { return option.selected; }).value);";
 		//echo "<select name='id_groupe' id='id_groupe' onchange=\"id_groupe=document.getElementById('id_groupe').options[document.getElementById('id_groupe').selectedIndex].value;";
@@ -113,8 +128,12 @@ else {
 		echo "</form>\n";
 	}
 
-	echo affiche_notice_privee_groupe_jour($id_groupe, strftime("%d/%m/%Y", $today));
-
+	if($today=="all") {
+		echo affiche_toutes_notices_privees_groupe($id_groupe);
+	}
+	else {
+		echo affiche_notice_privee_groupe_jour($id_groupe, strftime("%d/%m/%Y", $today));
+	}
 }
 
 ?>

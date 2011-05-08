@@ -403,4 +403,8 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 </table>
 <?php echo "</form>\n";
 echo "</fieldset>\n";
+
+echo "<script type='text/javascript'>
+	getWinDevoirsDeLaClasse().setAjaxContent('./ajax_devoirs_classe.php?id_classe=$id_classe&today='+getCalendarUnixDate());
+</script>\n";
 ?>

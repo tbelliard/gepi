@@ -706,6 +706,7 @@ require_once("'.$pref_arbo.'/entete.php");
 	}
 
 	function devoirs_tel_jour($id_classe, $date_jour, $afficher_enseignement_sans_devoir="y") {
+		global $color_fond_notices;
 
 		$dossier_documents="";
 		$mode="";
@@ -715,9 +716,16 @@ require_once("'.$pref_arbo.'/entete.php");
 		$mois=$tmp_tab[1];
 		$annee=$tmp_tab[2];
 		$timestamp_debut=mktime(0,0,0,$mois,$jour,$annee);
-		$timestamp_fin=$timestamp_debut+24*3600;
+		$timestamp_fin=$timestamp_debut+24*3600-1;
 
-		$retour="<p class='bold'>";
+		$hier=$timestamp_debut-24*3600;
+		$demain=$timestamp_debut+24*3600;
+		$retour="<div style='float:right; width: 35px;'>\n";
+		$retour.="<a href=\"javascript: getWinDevoirsDeLaClasse().setAjaxContent('./ajax_devoirs_classe.php?id_classe=$id_classe&today='+$hier)\" title=\"Jour précédent\"><img src='../images/icons/back.png' width='16' height='16' alt='Jour précédent' /></a>\n";
+		$retour.="<a href=\"javascript: getWinDevoirsDeLaClasse().setAjaxContent('./ajax_devoirs_classe.php?id_classe=$id_classe&today='+$demain)\" title=\"Jour suivant\"><img src='../images/icons/forward.png' width='16' height='16' alt='Jour suivant' /></a>\n";
+		$retour.="</div>\n";
+
+		$retour.="<p class='bold'>";
 		// Jour précédents... comment gérer les liens selon que c'est affiché en infobulle ou en page classique
 		$retour.=get_class_from_id($id_classe)."&nbsp;: Travaux à faire pour le $date_jour";
 		// Jour suivant
@@ -762,7 +770,7 @@ require_once("'.$pref_arbo.'/entete.php");
 					for($k=0;$k<count($tab_dates);$k++) {
 						if(isset($tab_dev[$tab_dates[$k]])) {
 							foreach($tab_dev[$tab_dates[$k]] as $key => $value) {
-								$retour.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
+								$retour.="<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%; background-color:".$color_fond_notices['t']."'>".$value['contenu'];
 								$adj=my_affiche_docs_joints($value['id_ct'],"t");
 								if($adj!='') {
 									$retour.="<div style='border: 1px dashed black'>\n";
@@ -838,6 +846,9 @@ require_once("'.$pref_arbo.'/entete.php");
 				$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$precedent');\" title=\"Notice privée précédente\"><img src='../images/up.png' width='18' height='18' /></a>";
 				$retour.="<br />\n";
 			}
+			else {
+				$retour.="<div style='width: 18px; height: 18px;'>&nbsp;</div>\n";
+			}
 
 			if($suivant!='') {
 				//$retour.="<a href=\"javascript: getWinListeNoticesPrivees().setAjaxContent('./ajax_liste_notices_privees.php?id_groupe=$id_groupe&today=$suivant',{ onComplete:function(transport) {initWysiwyg();}});\" title=\"Notice privée suivante\"><img src='../images/down.png' width='18' height='18' /></a>";
@@ -869,6 +880,33 @@ require_once("'.$pref_arbo.'/entete.php");
 			}
 		}
 		else {$retour.="Aucune Notice Privée pour cet enseignement (".$info_groupe.") le $date_jour.";}
+
+		return $retour;
+	}
+
+	function affiche_toutes_notices_privees_groupe($id_groupe) {
+		$retour="";
+
+		$tab_champs=array('classes');
+		$current_group=get_group($id_groupe, $tab_champs);
+		$info_groupe=$current_group['name']." (<em>".$current_group['description']."</em>) en ".$current_group['classlist_string'];
+		$sql="SELECT * FROM ct_private_entry WHERE id_groupe='$id_groupe' AND contenu != ''
+				AND date_ct != ''
+				ORDER BY date_ct;";
+		//echo "$sql<br />\n";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+
+			while($lig=mysql_fetch_object($res)) {
+				//
+				//$retour.="<div style='border: 1px solid black; margin: 0.5em; background-color:".$couleur_cellule['p']."'>\n";
+				$retour.="<div style='border: 1px solid black; margin: 0.5em; margin-left:25px; background-color: #f6f3a8'>\n";
+				$retour.="<div style='float: right; width: 4em; margin-right: 1.5em;'>".date_from_timestamp($lig->date_ct)."</div>\n";
+				$retour.=$lig->contenu;
+				$retour.="</div>\n";
+			}
+		}
+		else {$retour.="Aucune Notice Privée pour cet enseignement (".$info_groupe.").";}
 
 		return $retour;
 	}
