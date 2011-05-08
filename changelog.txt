@@ -10,6 +10,7 @@ Gepi-trunk (20/04/2011)
 - Possibilité de ne pas faire apparaître un enseignement sur les bulletins sans passer par les catégories de matières.
 - Possibilité de mettre en place un accès inspecteur dynamique (pour pouvoir accéder à des notices jusqu'à une date dans le futur). L'accès précédent était un export ne pouvant faire apparaître que ce qui était d'ores et déjà saisi.
 - Possibilité d'exporter/importer son modèle de couleurs de l'interface Gepi.
+- Ajout d'un filtrage sur la page bilan indviduel du module abs2 et ajout d'un texte optionnel sur l'export odt de cette page
 - A compléter au fur et à mesure;)...
 
 Gepi-1.5.4 (17/04/2011)
