@@ -176,7 +176,7 @@ function tabmatieres($type_brevet){
 
 
 			// Colonnes pour les fiches brevet:
-			for($j=$indice_premiere_matiere;$j<=122;$j++){
+			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 				$tabmatieres[$j]['fb_col'][1]=20;
 				$tabmatieres[$j]['fb_col'][2]=20;
 			}
@@ -275,7 +275,7 @@ function tabmatieres($type_brevet){
 			$tabmatieres[130][0]='NIVEAU A2 DE LANGUE REGIONALE'; // 20100425
 
 			// Mode de calcul:
-			for($j=$indice_premiere_matiere;$j<=122;$j++){
+			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 				$tabmatieres[$j][-1]='POINTS';
 			}
 
@@ -2381,4 +2381,14 @@ function fs_pt2mm($fs) {
 	return $fs*26/100;
 }
 
+/*
+// Liste de codes du module OOo
+	[eleves.101.0]  ->      note de l'élève non coefficientée
+	[eleves.101.1]  ->      note de l'élève coefficientée
+	[eleves.101.2]  ->      Nom de matière Gepi
+	[eleves.101.3]  ->      moyenne de la classe
+	[eleves.101.4]  ->      appréciation
+	où 101 est le numéro de matière
+	...
+*/
 ?>
