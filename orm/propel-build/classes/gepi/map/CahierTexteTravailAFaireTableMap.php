@@ -44,6 +44,7 @@ class CahierTexteTravailAFaireTableMap extends TableMap {
 		$this->addForeignKey('ID_GROUPE', 'IdGroupe', 'INTEGER', 'groupes', 'ID', true, null, null);
 		$this->addForeignKey('ID_LOGIN', 'IdLogin', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 32, null);
 		$this->addForeignKey('ID_SEQUENCE', 'IdSequence', 'INTEGER', 'ct_sequences', 'ID', false, 5, 0);
+		$this->addColumn('DATE_VISIBILITE_ELEVE', 'DateVisibiliteEleve', 'TIMESTAMP', true, null, 'now()');
 		// validators
 	} // initialize()
 

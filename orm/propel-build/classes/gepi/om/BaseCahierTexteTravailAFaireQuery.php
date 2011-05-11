@@ -13,6 +13,7 @@
  * @method     CahierTexteTravailAFaireQuery orderByIdGroupe($order = Criteria::ASC) Order by the id_groupe column
  * @method     CahierTexteTravailAFaireQuery orderByIdLogin($order = Criteria::ASC) Order by the id_login column
  * @method     CahierTexteTravailAFaireQuery orderByIdSequence($order = Criteria::ASC) Order by the id_sequence column
+ * @method     CahierTexteTravailAFaireQuery orderByDateVisibiliteEleve($order = Criteria::ASC) Order by the date_visibilite_eleve column
  *
  * @method     CahierTexteTravailAFaireQuery groupByIdCt() Group by the id_ct column
  * @method     CahierTexteTravailAFaireQuery groupByDateCt() Group by the date_ct column
@@ -21,6 +22,7 @@
  * @method     CahierTexteTravailAFaireQuery groupByIdGroupe() Group by the id_groupe column
  * @method     CahierTexteTravailAFaireQuery groupByIdLogin() Group by the id_login column
  * @method     CahierTexteTravailAFaireQuery groupByIdSequence() Group by the id_sequence column
+ * @method     CahierTexteTravailAFaireQuery groupByDateVisibiliteEleve() Group by the date_visibilite_eleve column
  *
  * @method     CahierTexteTravailAFaireQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     CahierTexteTravailAFaireQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -52,6 +54,7 @@
  * @method     CahierTexteTravailAFaire findOneByIdGroupe(int $id_groupe) Return the first CahierTexteTravailAFaire filtered by the id_groupe column
  * @method     CahierTexteTravailAFaire findOneByIdLogin(string $id_login) Return the first CahierTexteTravailAFaire filtered by the id_login column
  * @method     CahierTexteTravailAFaire findOneByIdSequence(int $id_sequence) Return the first CahierTexteTravailAFaire filtered by the id_sequence column
+ * @method     CahierTexteTravailAFaire findOneByDateVisibiliteEleve(string $date_visibilite_eleve) Return the first CahierTexteTravailAFaire filtered by the date_visibilite_eleve column
  *
  * @method     array findByIdCt(int $id_ct) Return CahierTexteTravailAFaire objects filtered by the id_ct column
  * @method     array findByDateCt(int $date_ct) Return CahierTexteTravailAFaire objects filtered by the date_ct column
@@ -60,6 +63,7 @@
  * @method     array findByIdGroupe(int $id_groupe) Return CahierTexteTravailAFaire objects filtered by the id_groupe column
  * @method     array findByIdLogin(string $id_login) Return CahierTexteTravailAFaire objects filtered by the id_login column
  * @method     array findByIdSequence(int $id_sequence) Return CahierTexteTravailAFaire objects filtered by the id_sequence column
+ * @method     array findByDateVisibiliteEleve(string $date_visibilite_eleve) Return CahierTexteTravailAFaire objects filtered by the date_visibilite_eleve column
  *
  * @package    propel.generator.gepi.om
  */
@@ -343,6 +347,37 @@ abstract class BaseCahierTexteTravailAFaireQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(CahierTexteTravailAFairePeer::ID_SEQUENCE, $idSequence, $comparison);
+	}
+
+	/**
+	 * Filter the query on the date_visibilite_eleve column
+	 * 
+	 * @param     string|array $dateVisibiliteEleve The value to use as filter.
+	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    CahierTexteTravailAFaireQuery The current query, for fluid interface
+	 */
+	public function filterByDateVisibiliteEleve($dateVisibiliteEleve = null, $comparison = null)
+	{
+		if (is_array($dateVisibiliteEleve)) {
+			$useMinMax = false;
+			if (isset($dateVisibiliteEleve['min'])) {
+				$this->addUsingAlias(CahierTexteTravailAFairePeer::DATE_VISIBILITE_ELEVE, $dateVisibiliteEleve['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($dateVisibiliteEleve['max'])) {
+				$this->addUsingAlias(CahierTexteTravailAFairePeer::DATE_VISIBILITE_ELEVE, $dateVisibiliteEleve['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(CahierTexteTravailAFairePeer::DATE_VISIBILITE_ELEVE, $dateVisibiliteEleve, $comparison);
 	}
 
 	/**

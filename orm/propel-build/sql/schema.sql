@@ -287,6 +287,7 @@ CREATE TABLE ct_devoirs_entry
 	id_groupe INTEGER  NOT NULL COMMENT 'Cle etrangere du groupe auquel appartient ce travail a faire',
 	id_login VARCHAR(32)   COMMENT 'Cle etrangere du l\'utilisateur auquel appartient ce travail a faire',
 	id_sequence INTEGER(5) default 0  COMMENT 'Cle etrangere de la sequence auquel appartient le devoir a faire',
+	date_visibilite_eleve TIMESTAMP NOT NULL default now() COMMENT 'Timestamp précisant quand les devoirs sont portés à la conaissance des élèves',
 	PRIMARY KEY (id_ct),
 	INDEX ct_devoirs_entry_FI_1 (id_groupe),
 	CONSTRAINT ct_devoirs_entry_FK_1

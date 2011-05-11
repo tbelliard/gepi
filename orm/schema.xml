@@ -172,6 +172,7 @@
 		<foreign-key foreignTable="ct_sequences" onDelete="setnull">
 			<reference local="id_sequence" foreign="id" />
 		</foreign-key>
+                <column name="date_visibilite_eleve" required="true" type="TIMESTAMP" defaultExpr="now()" description="Timestamp précisant quand les devoirs sont portés à la conaissance des élèves"/>
 	</table>
 
 	<table name="ct_devoirs_documents" phpName="CahierTexteTravailAFaireFichierJoint" description="Document (fichier joint) appartenant a un travail Ã  faire du cahier de texte">

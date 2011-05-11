@@ -26,7 +26,7 @@ abstract class BaseCahierTexteTravailAFairePeer {
 	const TM_CLASS = 'CahierTexteTravailAFaireTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 7;
+	const NUM_COLUMNS = 8;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -52,6 +52,9 @@ abstract class BaseCahierTexteTravailAFairePeer {
 	/** the column name for the ID_SEQUENCE field */
 	const ID_SEQUENCE = 'ct_devoirs_entry.ID_SEQUENCE';
 
+	/** the column name for the DATE_VISIBILITE_ELEVE field */
+	const DATE_VISIBILITE_ELEVE = 'ct_devoirs_entry.DATE_VISIBILITE_ELEVE';
+
 	/**
 	 * An identiy map to hold any loaded instances of CahierTexteTravailAFaire objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -68,12 +71,12 @@ abstract class BaseCahierTexteTravailAFairePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('IdCt', 'DateCt', 'Contenu', 'Vise', 'IdGroupe', 'IdLogin', 'IdSequence', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt', 'dateCt', 'contenu', 'vise', 'idGroupe', 'idLogin', 'idSequence', ),
-		BasePeer::TYPE_COLNAME => array (self::ID_CT, self::DATE_CT, self::CONTENU, self::VISE, self::ID_GROUPE, self::ID_LOGIN, self::ID_SEQUENCE, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID_CT', 'DATE_CT', 'CONTENU', 'VISE', 'ID_GROUPE', 'ID_LOGIN', 'ID_SEQUENCE', ),
-		BasePeer::TYPE_FIELDNAME => array ('id_ct', 'date_ct', 'contenu', 'vise', 'id_groupe', 'id_login', 'id_sequence', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+		BasePeer::TYPE_PHPNAME => array ('IdCt', 'DateCt', 'Contenu', 'Vise', 'IdGroupe', 'IdLogin', 'IdSequence', 'DateVisibiliteEleve', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt', 'dateCt', 'contenu', 'vise', 'idGroupe', 'idLogin', 'idSequence', 'dateVisibiliteEleve', ),
+		BasePeer::TYPE_COLNAME => array (self::ID_CT, self::DATE_CT, self::CONTENU, self::VISE, self::ID_GROUPE, self::ID_LOGIN, self::ID_SEQUENCE, self::DATE_VISIBILITE_ELEVE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_CT', 'DATE_CT', 'CONTENU', 'VISE', 'ID_GROUPE', 'ID_LOGIN', 'ID_SEQUENCE', 'DATE_VISIBILITE_ELEVE', ),
+		BasePeer::TYPE_FIELDNAME => array ('id_ct', 'date_ct', 'contenu', 'vise', 'id_groupe', 'id_login', 'id_sequence', 'date_visibilite_eleve', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
 	);
 
 	/**
@@ -83,12 +86,12 @@ abstract class BaseCahierTexteTravailAFairePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('IdCt' => 0, 'DateCt' => 1, 'Contenu' => 2, 'Vise' => 3, 'IdGroupe' => 4, 'IdLogin' => 5, 'IdSequence' => 6, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt' => 0, 'dateCt' => 1, 'contenu' => 2, 'vise' => 3, 'idGroupe' => 4, 'idLogin' => 5, 'idSequence' => 6, ),
-		BasePeer::TYPE_COLNAME => array (self::ID_CT => 0, self::DATE_CT => 1, self::CONTENU => 2, self::VISE => 3, self::ID_GROUPE => 4, self::ID_LOGIN => 5, self::ID_SEQUENCE => 6, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID_CT' => 0, 'DATE_CT' => 1, 'CONTENU' => 2, 'VISE' => 3, 'ID_GROUPE' => 4, 'ID_LOGIN' => 5, 'ID_SEQUENCE' => 6, ),
-		BasePeer::TYPE_FIELDNAME => array ('id_ct' => 0, 'date_ct' => 1, 'contenu' => 2, 'vise' => 3, 'id_groupe' => 4, 'id_login' => 5, 'id_sequence' => 6, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, )
+		BasePeer::TYPE_PHPNAME => array ('IdCt' => 0, 'DateCt' => 1, 'Contenu' => 2, 'Vise' => 3, 'IdGroupe' => 4, 'IdLogin' => 5, 'IdSequence' => 6, 'DateVisibiliteEleve' => 7, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt' => 0, 'dateCt' => 1, 'contenu' => 2, 'vise' => 3, 'idGroupe' => 4, 'idLogin' => 5, 'idSequence' => 6, 'dateVisibiliteEleve' => 7, ),
+		BasePeer::TYPE_COLNAME => array (self::ID_CT => 0, self::DATE_CT => 1, self::CONTENU => 2, self::VISE => 3, self::ID_GROUPE => 4, self::ID_LOGIN => 5, self::ID_SEQUENCE => 6, self::DATE_VISIBILITE_ELEVE => 7, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID_CT' => 0, 'DATE_CT' => 1, 'CONTENU' => 2, 'VISE' => 3, 'ID_GROUPE' => 4, 'ID_LOGIN' => 5, 'ID_SEQUENCE' => 6, 'DATE_VISIBILITE_ELEVE' => 7, ),
+		BasePeer::TYPE_FIELDNAME => array ('id_ct' => 0, 'date_ct' => 1, 'contenu' => 2, 'vise' => 3, 'id_groupe' => 4, 'id_login' => 5, 'id_sequence' => 6, 'date_visibilite_eleve' => 7, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
 	);
 
 	/**
@@ -167,6 +170,7 @@ abstract class BaseCahierTexteTravailAFairePeer {
 			$criteria->addSelectColumn(CahierTexteTravailAFairePeer::ID_GROUPE);
 			$criteria->addSelectColumn(CahierTexteTravailAFairePeer::ID_LOGIN);
 			$criteria->addSelectColumn(CahierTexteTravailAFairePeer::ID_SEQUENCE);
+			$criteria->addSelectColumn(CahierTexteTravailAFairePeer::DATE_VISIBILITE_ELEVE);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID_CT');
 			$criteria->addSelectColumn($alias . '.DATE_CT');
@@ -175,6 +179,7 @@ abstract class BaseCahierTexteTravailAFairePeer {
 			$criteria->addSelectColumn($alias . '.ID_GROUPE');
 			$criteria->addSelectColumn($alias . '.ID_LOGIN');
 			$criteria->addSelectColumn($alias . '.ID_SEQUENCE');
+			$criteria->addSelectColumn($alias . '.DATE_VISIBILITE_ELEVE');
 		}
 	}
 

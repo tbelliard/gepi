@@ -70,6 +70,13 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 	protected $id_sequence;
 
 	/**
+	 * The value for the date_visibilite_eleve field.
+	 * Note: this column has a database default value of: (expression) now()
+	 * @var        string
+	 */
+	protected $date_visibilite_eleve;
+
+	/**
 	 * @var        Groupe
 	 */
 	protected $aGroupe;
@@ -194,6 +201,44 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 	public function getIdSequence()
 	{
 		return $this->id_sequence;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [date_visibilite_eleve] column value.
+	 * Timestamp précisant quand les devoirs sont portés à la conaissance des élèves
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getDateVisibiliteEleve($format = 'Y-m-d H:i:s')
+	{
+		if ($this->date_visibilite_eleve === null) {
+			return null;
+		}
+
+
+		if ($this->date_visibilite_eleve === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->date_visibilite_eleve);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date_visibilite_eleve, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
 	}
 
 	/**
@@ -349,6 +394,55 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 	} // setIdSequence()
 
 	/**
+	 * Sets the value of [date_visibilite_eleve] column to a normalized version of the date/time value specified.
+	 * Timestamp précisant quand les devoirs sont portés à la conaissance des élèves
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
+	 *						be treated as NULL for temporal objects.
+	 * @return     CahierTexteTravailAFaire The current object (for fluent API support)
+	 */
+	public function setDateVisibiliteEleve($v)
+	{
+		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
+		// -- which is unexpected, to say the least.
+		if ($v === null || $v === '') {
+			$dt = null;
+		} elseif ($v instanceof DateTime) {
+			$dt = $v;
+		} else {
+			// some string/numeric value passed; we normalize that so that we can
+			// validate it.
+			try {
+				if (is_numeric($v)) { // if it's a unix timestamp
+					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
+					// We have to explicitly specify and then change the time zone because of a
+					// DateTime bug: http://bugs.php.net/bug.php?id=43003
+					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
+				} else {
+					$dt = new DateTime($v);
+				}
+			} catch (Exception $x) {
+				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
+			}
+		}
+
+		if ( $this->date_visibilite_eleve !== null || $dt !== null ) {
+			// (nested ifs are a little easier to read in this case)
+
+			$currNorm = ($this->date_visibilite_eleve !== null && $tmpDt = new DateTime($this->date_visibilite_eleve)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
+
+			if ( ($currNorm !== $newNorm) // normalized values don't match 
+					)
+			{
+				$this->date_visibilite_eleve = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+				$this->modifiedColumns[] = CahierTexteTravailAFairePeer::DATE_VISIBILITE_ELEVE;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setDateVisibiliteEleve()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -399,6 +493,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 			$this->id_groupe = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
 			$this->id_login = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->id_sequence = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+			$this->date_visibilite_eleve = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -407,7 +502,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 7; // 7 = CahierTexteTravailAFairePeer::NUM_COLUMNS - CahierTexteTravailAFairePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 8; // 8 = CahierTexteTravailAFairePeer::NUM_COLUMNS - CahierTexteTravailAFairePeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating CahierTexteTravailAFaire object", $e);
@@ -807,6 +902,9 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 			case 6:
 				return $this->getIdSequence();
 				break;
+			case 7:
+				return $this->getDateVisibiliteEleve();
+				break;
 			default:
 				return null;
 				break;
@@ -838,6 +936,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 			$keys[4] => $this->getIdGroupe(),
 			$keys[5] => $this->getIdLogin(),
 			$keys[6] => $this->getIdSequence(),
+			$keys[7] => $this->getDateVisibiliteEleve(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aGroupe) {
@@ -901,6 +1000,9 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 			case 6:
 				$this->setIdSequence($value);
 				break;
+			case 7:
+				$this->setDateVisibiliteEleve($value);
+				break;
 		} // switch()
 	}
 
@@ -932,6 +1034,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 		if (array_key_exists($keys[4], $arr)) $this->setIdGroupe($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setIdLogin($arr[$keys[5]]);
 		if (array_key_exists($keys[6], $arr)) $this->setIdSequence($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setDateVisibiliteEleve($arr[$keys[7]]);
 	}
 
 	/**
@@ -950,6 +1053,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 		if ($this->isColumnModified(CahierTexteTravailAFairePeer::ID_GROUPE)) $criteria->add(CahierTexteTravailAFairePeer::ID_GROUPE, $this->id_groupe);
 		if ($this->isColumnModified(CahierTexteTravailAFairePeer::ID_LOGIN)) $criteria->add(CahierTexteTravailAFairePeer::ID_LOGIN, $this->id_login);
 		if ($this->isColumnModified(CahierTexteTravailAFairePeer::ID_SEQUENCE)) $criteria->add(CahierTexteTravailAFairePeer::ID_SEQUENCE, $this->id_sequence);
+		if ($this->isColumnModified(CahierTexteTravailAFairePeer::DATE_VISIBILITE_ELEVE)) $criteria->add(CahierTexteTravailAFairePeer::DATE_VISIBILITE_ELEVE, $this->date_visibilite_eleve);
 
 		return $criteria;
 	}
@@ -1017,6 +1121,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 		$copyObj->setIdGroupe($this->id_groupe);
 		$copyObj->setIdLogin($this->id_login);
 		$copyObj->setIdSequence($this->id_sequence);
+		$copyObj->setDateVisibiliteEleve($this->date_visibilite_eleve);
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1342,6 +1447,7 @@ abstract class BaseCahierTexteTravailAFaire extends BaseObject  implements Persi
 		$this->id_groupe = null;
 		$this->id_login = null;
 		$this->id_sequence = null;
+		$this->date_visibilite_eleve = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
