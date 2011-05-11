@@ -33,7 +33,7 @@ include('UnitTestEleve.php');
 include('UnitTestAbsenceSaisie.php');
 Propel::init('../propel-build/conf/gepi-conf_debug.php');
 $logger = new StackLogger();
-//Propel::setLogger($logger);
+Propel::setLogger($logger);
 
 
 // On met le header en petit par défaut

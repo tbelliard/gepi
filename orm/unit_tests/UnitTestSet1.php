@@ -36,7 +36,7 @@ include('UnitTestClasse.php');
 include('UnitTestResponsableEleve.php');
 //include("../propel/logger/STACKLogger.php");
 $logger = new StackLogger();
-//Propel::setLogger($logger);
+Propel::setLogger($logger);
 
 
 // On met le header en petit par défaut

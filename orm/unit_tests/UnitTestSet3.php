@@ -30,7 +30,7 @@ include("../../lib/initialisationsPropel.inc.php");
 require_once("../../lib/initialisations.inc.php");
 Propel::init('../propel-build/conf/gepi-conf_debug.php');
 $logger = new StackLogger();
-//Propel::setLogger($logger);
+Propel::setLogger($logger);
 
 include('UnitTestUtilisateurProfessionnel.php');
 include('UnitTestEleve.php');
