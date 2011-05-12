@@ -283,10 +283,52 @@ else {
 		passer aux comptes rendus</button>
 
 		<?php
+/*
+echo "<script type='text/javascript'>
+	function verif_date_visibilite() {
+		date_v=document.getElementById('jour_visibilite').value;
+		tab=date_v.split('/');
+		jour_v=tab[0];
+		mois_v=tab[1];
+		annee_v=tab[2];
+		if(!checkdate(mois_v, jour_v, annee_v)) {
+			alert(\"La date de visibilité saisie n'est pas valide.\");
+		}
+	}
+</script>\n";
+*/
 			echo "<br />\n";
 			echo "<span title='Vous pouvez modifier les dates et heure de visibilité avec les flèches Haut/Bas, PageUp/PageDown du clavier.'>Visibilité</span>&nbsp;:\n";
-			echo " <input type='text' name='jour_visibilite' id='jour_visibilite' value='$jour_courant' size='7' onkeydown='clavier_date(this.id,event)' />\n";
-			echo " à <input type='text' name='heure_visibilite' id='heure_visibilite' value='$heure_courante' size='3' onkeydown='clavier_heure(this.id,event)' />\n";
+			echo " <input type='text' name='jour_visibilite' id='jour_visibilite' value='$jour_courant' size='7' onkeydown='clavier_date(this.id,event)' 
+			onblur=\"date_v=document.getElementById('jour_visibilite').value;
+				tab=date_v.split('/');
+				jour_v=tab[0];
+				mois_v=tab[1];
+				annee_v=tab[2];
+				if(!checkdate(mois_v, jour_v, annee_v)) {
+					alert('La date de visibilité saisie n est pas valide.');
+				}
+			\" />\n";
+		// onblur='verif_date_visibilite()' />\n";
+			echo " à <input type='text' name='heure_visibilite' id='heure_visibilite' value='$heure_courante' size='3' onkeydown='clavier_heure(this.id,event)' 
+			onblur=\"instant_v=document.getElementById('heure_visibilite').value;
+				var exp=new RegExp('^[0-9]{1,2}:[0-9]{0,2}$','g');
+				erreur='n';
+				if (exp.test(instant_v)) {
+					tab=instant_v.split(':');
+					heure_v=eval(tab[0]);
+					min_v=eval(tab[1]);
+
+					if((heure_v<0)||(heure_v>=24)||(min_v<0)||(min_v>=60)) {erreur='y';}
+				}
+				else {
+					erreur='y';
+				}
+
+				if(erreur=='y') {
+					alert('L heure de visibilité saisie n est pas valide.');
+				}
+			\" />\n";
 		?>
 		<input type='hidden' id='passer_a' name='passer_a'
 			value='passer_devoir' /> <input type="hidden" name="date_devoir"
