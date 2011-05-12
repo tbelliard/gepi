@@ -46,6 +46,8 @@ if ($utilisateur == null) {
 
 check_token();
 
+//debug_var();
+
 //récupération des paramètres de la requète
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] :(isset($_GET["id_devoir"]) ? $_GET["id_devoir"] :NULL);
 $date_devoir = isset($_POST["date_devoir"]) ? $_POST["date_devoir"] :(isset($_GET["date_devoir"]) ? $_GET["date_devoir"] :NULL);
@@ -53,6 +55,9 @@ $contenu = isset($_POST["contenu"]) ? $_POST["contenu"] :NULL;
 $heure_entry = isset($_POST["heure_entry"]) ? $_POST["heure_entry"] :(isset($_GET["heure_entry"]) ? $_GET["heure_entry"] :NULL);
 $uid_post = isset($_POST["uid_post"]) ? $_POST["uid_post"] :(isset($_GET["uid_post"]) ? $_GET["uid_post"] :0);
 $id_groupe = isset($_POST["id_groupe"]) ? $_POST["id_groupe"] :(isset($_GET["id_groupe"]) ? $_GET["id_groupe"] :NULL);
+
+$jour_visibilite=isset($_POST["jour_visibilite"]) ? $_POST["jour_visibilite"] :(isset($_GET["jour_visibilite"]) ? $_GET["jour_visibilite"] :NULL);
+$heure_visibilite=isset($_POST["heure_visibilite"]) ? $_POST["heure_visibilite"] :(isset($_GET["heure_visibilite"]) ? $_GET["heure_visibilite"] :NULL);
 
 //parametre d'enregistrement de fichiers joints
 if (empty($_FILES['doc_file'])) { $doc_file=''; } else { $doc_file=$_FILES['doc_file'];}
@@ -131,6 +136,37 @@ $ctTravailAFaire->setContenu($contenu_cor);
 $ctTravailAFaire->setDateCt($date_devoir);
 $ctTravailAFaire->setGroupe($groupe);
 //$ctTravailAFaire->setHeureEntry($heure_entry);
+
+//echo "$heure_visibilite<br />\n";
+if(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/",$heure_visibilite)) {
+	$heure_courante=strftime("%H:%M");
+
+	echo "Heure de visibilité mal formatée : $heure_visibilite";
+	die();
+
+	//echo "Heure de visibilité mal formatée : $heure_visibilite.<br />L'heure courante sera utilisée : $heure_courante";
+	$heure_visibilite=$heure_courante;
+}
+$tab_tmp=explode(":",$heure_visibilite);
+$heure_v=$tab_tmp[0];
+$min_v=$tab_tmp[1];
+
+//if(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}$#",$jour_visibilite)) {
+if(!preg_match( '`^\d{1,2}/\d{1,2}/\d{4}$`', $jour_visibilite)) {
+	$jour_courant=strftime("%d/%m/%Y");
+	echo "Le jour de visibilité est mal formaté : $jour_visibilite";
+	die();
+	//echo "Le jour de visibilité est mal formaté : $jour_visibilite. Le jour courant sera utilisé : $jour_courant";
+	//echo "alert('Le jour de visibilité est mal formaté : $jour_visibilite. Le jour courant sera utilisé : $jour_courant')";
+	$jour_visibilite=$jour_courant;
+}
+$tab_tmp=explode("/",$jour_visibilite);
+$jour_v=$tab_tmp[0];
+$mois_v=$tab_tmp[1];
+$annee_v=$tab_tmp[2];
+
+$date_visibilite_eleve=mktime($heure_v,$min_v,0,$mois_v,$jour_v,$annee_v);
+$ctTravailAFaire->setDateVisibiliteEleve($date_visibilite_eleve);
 
 //enregistrement de l'objet
 $ctTravailAFaire->save();

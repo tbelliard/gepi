@@ -678,18 +678,22 @@ require_once("'.$pref_arbo.'/entete.php");
 			//echo "$sql<br />";
 			$res=mysql_query($sql);
 			$cpt=0;
+			$timestamp_courant=time();
 			while($lig=mysql_fetch_object($res)) {
-				//echo "$lig->date_ct<br />";
-				$date_dev=strftime("%a %d %b %y", $lig->date_ct);
-				if(!in_array($date_dev,$tab_dates)) {
-					$tab_dates[]=$date_dev;
-					$tab_dates2[]=$lig->date_ct;
+				if((mysql_date_to_unix_timestamp($lig->date_visibilite_eleve)<=$timestamp_courant)||
+				(verif_groupe_appartient_prof($lig->id_groupe)==1)) {
+					//echo "$lig->date_ct<br />";
+					$date_dev=strftime("%a %d %b %y", $lig->date_ct);
+					if(!in_array($date_dev,$tab_dates)) {
+						$tab_dates[]=$date_dev;
+						$tab_dates2[]=$lig->date_ct;
+					}
+					$tab_dev[$date_dev][$cpt]['id_ct']=$lig->id_ct;
+					$tab_dev[$date_dev][$cpt]['id_login']=$lig->id_login;
+					$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu;
+					//echo " <span style='color:green'>\$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu</span><br />";
+					$cpt++;
 				}
-				$tab_dev[$date_dev][$cpt]['id_ct']=$lig->id_ct;
-				$tab_dev[$date_dev][$cpt]['id_login']=$lig->id_login;
-				$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu;
-				//echo " <span style='color:green'>\$tab_dev[$date_dev][$cpt]['contenu']=$lig->contenu</span><br />";
-				$cpt++;
 			}
 		}
 

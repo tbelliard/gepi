@@ -74,6 +74,8 @@ include('../ckeditor/ckeditor.js');
 include('../edt_effets/javascripts/window.js');
 include('../temp/info_jours.js');
 
+include('../lib/functions.js');
+
 function getWinListeNotices() {
 	if (typeof winListeNotices=="undefined") {
 		winListeNotices = new Window(

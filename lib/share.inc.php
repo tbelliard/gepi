@@ -524,11 +524,13 @@ function verif_active_dbase() {
  * Verifie si un groupe appartient bien à la personne connectée
  *
  * @deprecated Cette fonction ne peut plus fonctionner car la requête SQL n'est plus valide
+ *             Requete modifiee... elle devrait etre valide
  * @param integer $id_groupe identifiant du groupe
  * @return boolean 0/1
  */
 function verif_groupe_appartient_prof($id_groupe) {
-    $test = mysql_query("select id from groupes where (id='$id_groupe' and login_user = '".$_SESSION['login']."')");
+    //$test = mysql_query("select id from groupes where (id='$id_groupe' and login_user = '".$_SESSION['login']."')");
+    $test = mysql_query("select 1=1 from j_groupes_professeurs where (id_groupe='$id_groupe' and login= '".$_SESSION['login']."');");
     if (mysql_num_rows($test) == 0) {
         return 0;
     } else {
@@ -6790,4 +6792,36 @@ function check_mail($email,$mode='simple') {
 		}
 	}
 }
+
+// Fonction destinée à prendre une date mysql aaaa-mm-jj HH:MM:SS et à retourner une date au format jj/mm/aaaa
+function get_date_slash_from_mysql_date($mysql_date) {
+	$tmp_tab=explode(" ",$mysql_date);
+	$tmp_tab2=explode("-",$tmp_tab[0]);
+	return $tmp_tab2[2]."/".$tmp_tab2[1]."/".$tmp_tab2[0];
+}
+
+// Fonction destinée à prendre une date mysql aaaa-mm-jj HH:MM:SS et à retourner une heure au format HH:MM
+function get_heure_2pt_minute_from_mysql_date($mysql_date) {
+	$tmp_tab=explode(" ",$mysql_date);
+	$tmp_tab2=explode(":",$tmp_tab[1]);
+	return $tmp_tab2[0].":".$tmp_tab2[1];
+}
+
+function mysql_date_to_unix_timestamp($mysql_date) {
+	$tmp_tab=explode(" ",$mysql_date);
+	$tmp_tab2=explode("-",$tmp_tab[0]);
+	$tmp_tab3=explode(":",$tmp_tab[1]);
+
+	$jour=$tmp_tab2[2];
+	$mois=$tmp_tab2[1];
+	$annee=$tmp_tab2[0];
+
+	$heure=$tmp_tab3[0];
+	$min=$tmp_tab3[1];
+	$sec=$tmp_tab3[2];
+
+	//echo "mktime($heure,$min,$sec,$mois,$jour,$annee)<br />\n";
+	return mktime($heure,$min,$sec,$mois,$jour,$annee);
+}
+
 ?>

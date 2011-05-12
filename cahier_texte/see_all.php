@@ -274,7 +274,7 @@ $res_notices = mysql_query($req_notices);
 $notice = mysql_fetch_object($res_notices);
 
 $req_devoirs =
-	 "select 't' type, contenu, date_ct, id_ct
+	 "select 't' type, contenu, date_ct, id_ct, date_visibilite_eleve
 	 from ct_devoirs_entry
 	 where (contenu != ''
 	 and id_groupe = '".$id_groupe."'
@@ -285,6 +285,7 @@ $req_devoirs =
 $res_devoirs = mysql_query($req_devoirs);
 $devoir = mysql_fetch_object($res_devoirs);
 
+$timestamp_courant=time();
 // Boucle d'affichage des notices dans la colonne de gauche
 $date_ct_old = -1;
 while (true) {
@@ -294,10 +295,14 @@ while (true) {
 			// Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
 			$not_dev = $notice;
 			$notice = mysql_fetch_object($res_notices);
+
+			$type_notice="notice";
 		} elseif($devoir) {
 			// Plus de notices et toujours un devoir, ou devoir plus récent
 			$not_dev = $devoir;
 			$devoir = mysql_fetch_object($res_devoirs);
+
+			$type_notice="devoir";
 		} else {
 			// Plus rien à afficher, on sort de la boucle
 			break;
@@ -308,55 +313,66 @@ while (true) {
 			// Il y a encore une notice et elle est plus récente que le prochain devoir, où il n'y a plus de devoirs
 			$not_dev = $notice;
 			$notice = mysql_fetch_object($res_notices);
+
+			$type_notice="notice";
 		} elseif($devoir) {
 			// Plus de notices et toujours un devoir, ou devoir plus récent
 			$not_dev = $devoir;
 			$devoir = mysql_fetch_object($res_devoirs);
+
+			$type_notice="devoir";
 		} else {
 			// Plus rien à afficher, on sort de la boucle
 			break;
 		}
 	}
-	// Passage en HTML
-	//$content = &$not_dev->contenu;
-	// INSERT INTO setting SET name='depolluer_MSOffice', value='y';
-	if(getSettingValue('depolluer_MSOffice')=='y') {
-		$content = &my_ereg_replace('.*<\!\[endif\]-->',"",$not_dev->contenu);
-	}
-	else {
-		$content = &$not_dev->contenu;
-	}
-	include ("../lib/transform.php");
-	$html .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
-	echo "<h3 class='see_all_h3'>\n<strong>\n";
-		if ($not_dev->type == "t") {
-			echo("A faire pour le : ");
+
+	if(($type_notice!="devoir")||
+		(mysql_date_to_unix_timestamp($not_dev->date_visibilite_eleve)<=$timestamp_courant)||
+		(verif_groupe_appartient_prof($id_groupe)==1)) {
+		// Passage en HTML
+		//$content = &$not_dev->contenu;
+		// INSERT INTO setting SET name='depolluer_MSOffice', value='y';
+		if(getSettingValue('depolluer_MSOffice')=='y') {
+			//$content = &my_ereg_replace('.*<\!\[endif\]-->',"",$not_dev->contenu);
+			$content = &preg_replace('#.*<\!\[endif\]-->#',"",$not_dev->contenu);
 		}
-		echo(strftime("%a %d %b %y", $not_dev->date_ct));
-	echo "</strong>\n</h3>\n";
-	// Numérotation des notices si plusieurs notices sur la même journée
-	if ($not_dev->type == "c") {
-		if ($date_ct_old == $not_dev->date_ct) {
-			$num_notice++;
-			echo " <strong><em>(notice N° ".$num_notice.")</em></strong>";
+		else {
+			$content = &$not_dev->contenu;
+		}
+		include ("../lib/transform.php");
+
+		$html .= affiche_docs_joints($not_dev->id_ct,$not_dev->type);
+		echo "<h3 class='see_all_h3'>\n<strong>\n";
+			if ($not_dev->type == "t") {
+				echo("A faire pour le : ");
+			}
+			echo(strftime("%a %d %b %y", $not_dev->date_ct));
+		echo "</strong>\n</h3>\n";
+		// Numérotation des notices si plusieurs notices sur la même journée
+		if ($not_dev->type == "c") {
+			if ($date_ct_old == $not_dev->date_ct) {
+				$num_notice++;
+				echo " <strong><em>(notice N° ".$num_notice.")</em></strong>";
+			} else {
+				// on afffiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
+				$nb_notices = sql_query1("SELECT count(id_ct) FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='".$not_dev->date_ct."')");
+				if ($nb_notices > 1)
+					echo " <strong><em>(notice N° 1)</em></strong>";
+				// On réinitialise le compteur
+				$num_notice = 1;
+			}
+		}
+		// echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\">\n<tr>\n<td>\n$html</td>\n</tr>\n</table>\n<br/>\n");
+		echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_".$not_dev->type."'>";
+		/* if ($not_dev->type == "t") {
+			echo "see_all_a_faire'>\n";
 		} else {
-			// on afffiche "(notice N° 1)" uniquement s'il y a plusieurs notices dans la même journée
-			$nb_notices = sql_query1("SELECT count(id_ct) FROM ct_entry WHERE (id_groupe='" . $current_group["id"] ."' and date_ct='".$not_dev->date_ct."')");
-			if ($nb_notices > 1)
-				echo " <strong><em>(notice N° 1)</em></strong>";
-			// On réinitialise le compteur
-			$num_notice = 1;
-		}
+			echo "see_all_compte_rendu'>\n";
+		}*/
+		echo "$html\n</div>\n";
+		if ($not_dev->type == "c") $date_ct_old = $not_dev->date_ct;
 	}
-	// echo("<table style=\"border-style:solid; border-width:1px; border-color: ".$couleur_bord_tableau_notice.";\" width=\"100%\" cellpadding=\"1\" bgcolor=\"".$color_fond_notices[$not_dev->type]."\">\n<tr>\n<td>\n$html</td>\n</tr>\n</table>\n<br/>\n");
-	echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_".$not_dev->type."'>";
-	/* if ($not_dev->type == "t") {
-		echo "see_all_a_faire'>\n";
-	} else {
-		echo "see_all_compte_rendu'>\n";
-	}*/
-	echo "$html\n</div>\n";
-	if ($not_dev->type == "c") $date_ct_old = $not_dev->date_ct;
 }
 
 //if ($current_imprime=='n') echo "</td></tr></table>";

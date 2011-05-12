@@ -260,7 +260,18 @@ echo("<input type='hidden' id='div_id_ct' value='devoir_".$ctTravailAFaire->getI
 //si on vient d'efftuer un enregistrement, le label du bonton enregistrer devient Succès
 $succes_modification = isset($_POST["succes_modification"]) ? $_POST["succes_modification"] :(isset($_GET["succes_modification"]) ? $_GET["succes_modification"] :NULL);
 $label_enregistrer = "Enregistrer";
-if ($succes_modification == 'oui') $label_enregistrer='Succès';
+if ($succes_modification == 'oui') {$label_enregistrer='Succès';}
+
+//echo $ctTravailAFaire->getDateVisibiliteEleve();
+if($ctTravailAFaire->getDateVisibiliteEleve()=='') {
+	$heure_courante=strftime("%H:%M");
+	$jour_courant=strftime("%d/%m/%Y");
+}
+else {
+	$heure_courante=get_heure_2pt_minute_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve());
+	$jour_courant=get_date_slash_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve());
+}
+
 ?>
 <table border="0" width="99%" summary="Tableau de saisie de notice">
 	<tr>
@@ -270,6 +281,13 @@ if ($succes_modification == 'oui') $label_enregistrer='Succès';
 		<button type="submit" style='font-variant: small-caps;'
 			onClick="javascript:$('passer_a').value = 'passer_compte_rendu';">Enr. et
 		passer aux comptes rendus</button>
+
+		<?php
+			echo "<br />\n";
+			echo "<span title='Vous pouvez modifier les dates et heure de visibilité avec les flèches Haut/Bas, PageUp/PageDown du clavier.'>Visibilité</span>&nbsp;:\n";
+			echo " <input type='text' name='jour_visibilite' id='jour_visibilite' value='$jour_courant' size='7' onkeydown='clavier_date(this.id,event)' />\n";
+			echo " à <input type='text' name='heure_visibilite' id='heure_visibilite' value='$heure_courante' size='3' onkeydown='clavier_heure(this.id,event)' />\n";
+		?>
 		<input type='hidden' id='passer_a' name='passer_a'
 			value='passer_devoir' /> <input type="hidden" name="date_devoir"
 			value="<?php echo $ctTravailAFaire->getDateCt(); ?>" /> <input
