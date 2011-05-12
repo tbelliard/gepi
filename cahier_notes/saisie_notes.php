@@ -735,7 +735,7 @@ if ($id_devoir == 0) {
 	if ($nb_dev_sous_cont != 0) {
 		//echo "<tr><td>Afficher les évaluations des \"sous-boîtes\" : </td><td><input type=\"checkbox\" name=\"affiche_tous\"  ";
 		echo "<tr><td>Afficher les évaluations des \"sous-".htmlentities(strtolower(getSettingValue("gepi_denom_boite")))."s\" : </td><td><input type=\"checkbox\" name=\"affiche_tous\"  ";
-		if ($_SESSION['affiche_tous'] == 'yes') echo "checked";
+		if ($_SESSION['affiche_tous'] == 'yes') {echo "checked";}
 		echo " /></td><td></td></tr>\n";
 	}
 	echo "</table></fieldset>\n";
@@ -1356,8 +1356,12 @@ while ($i < $nb_dev) {
 			if ($ramener_sur_referentiel[$i] != 'V') {
 				echo "<font size=-2>Note sur ".$note_sur[$i]."<br />";
 			} else {
-				$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'y','y','n','n');
-				echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_$i','y',-150,20	);\" >";
+				//$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'y','y','n','n');
+				$tabdiv_infobulle[]=creer_div_infobulle('ramenersurReferentiel_'.$i,"","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'n','n','n','n');
+				echo "<a href='#' onmouseover=\"delais_afficher_div('ramenersurReferentiel_$i','y',-150,20,1500,10,10);\"";
+				echo " onmouseout=\"cacher_div('ramenersurReferentiel_".$i."');\"";
+				echo ">";
+
 				echo "<font size=-2>Note sur ".$note_sur[$i];
 				echo "</a><br />";
 			}
@@ -1394,8 +1398,11 @@ if ($id_devoir==0) {
 					if ($ramener_sur_referentiel_s_dev[$i][$m] != 'V') {
 						echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m]."<br />";
 					} else {
-						$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'y','y','n','n');
-						echo "<a href='#' onmouseover=\"afficher_div('ramenersurReferentiel_s_dev_".$i."_".$m."','y',-150,20	);\" >";
+						//$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"Ramener sur referentiel","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'y','y','n','n');
+						$tabdiv_infobulle[]=creer_div_infobulle("ramenersurReferentiel_s_dev_".$i."_".$m,"","","La note est ramenée sur ".getSettingValue("referentiel_note")." pour le calcul de la moyenne","",15,0,'n','n','n','n');
+						echo "<a href='#' onmouseover=\"delais_afficher_div('ramenersurReferentiel_s_dev_".$i."_".$m."','y',-150,20,1500,10,10);\"";
+						echo " onmouseout=\"cacher_div('ramenersurReferentiel_s_dev_".$i."_".$m."');\"";
+						echo ">";
 						echo "<font size=-2>Note sur ".$note_sur_s_dev[$i][$m];
 						echo "</a><br />";
 					}
@@ -1503,7 +1510,7 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 			$tabdiv_infobulle[]=creer_div_infobulle('repartition_notes_'.$k,$titre,"",$texte,"",14,0,'y','y','n','n');
 
 			//echo " <a href='#' onmouseover=\"afficher_div('repartition_notes_$k','y',-100,20);\"";
-			echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_$k','y',-100,20,1000,10,10);\"";
+			echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_$k','y',-100,20,1500,10,10);\"";
 			echo ">";
 			echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
 			echo "</a>";
@@ -1520,7 +1527,7 @@ if(($id_devoir>0)||($nb_sous_cont==0)) {
 		// Colonne Moyenne de l'élève
 		echo "<td>";
 		//echo "&nbsp;";
-		echo " <a href='#' onmouseover=\"afficher_div('repartition_notes_moyenne','y',-100,20);\"";
+		echo " <a href='#' onmouseover=\"delais_afficher_div('repartition_notes_moyenne','y',-100,20,1500,10,10);\"";
 		echo ">";
 		echo "<img src='../images/icons/histogramme.png' alt='Répartition des notes' />";
 		echo "</a>";
