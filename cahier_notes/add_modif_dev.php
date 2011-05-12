@@ -98,6 +98,8 @@ $nom_classe = $current_group["classlist_string"];
 isset($id_devoir);
 $id_devoir = isset($_POST["id_devoir"]) ? $_POST["id_devoir"] : (isset($_GET["id_devoir"]) ? $_GET["id_devoir"] : NULL);
 
+//debug_var();
+
 // enregistrement des données
 if (isset($_POST['ok'])) {
 	check_token();
@@ -321,10 +323,8 @@ if (isset($_POST['ok'])) {
 		$reg=mysql_query($sql);
 	}
 
-    if (isset($_POST['ramener_sur_referentiel'])) {
-        if ($_POST['ramener_sur_referentiel']) {
-            $ramener_sur_referentiel='V';
-        }
+    if ((isset($_POST['ramener_sur_referentiel']))&&($_POST['ramener_sur_referentiel']=="V")) {
+        $ramener_sur_referentiel='V';
     } else {
         $ramener_sur_referentiel='F';
     }
@@ -723,10 +723,10 @@ if($interface_simplifiee=="y"){
 			echo "</tr>\n";
 			echo "<tr>\n";
 			echo "<td style='background-color: #aae6aa; font-weight: bold; vertical-align: top;'>Ramener la note sur ".getSettingValue("referentiel_note")."<br />lors du calcul de la moyenne : </td>\n";
-    		echo "<td><input type='checkbox' name='ramener_sur_referentiel'"; if ($ramener_sur_referentiel == 'V') echo " checked"; echo " /><br />";
-			echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />";
-			echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />";
-			echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><br /><br />";
+    		echo "<td><input type='checkbox' name='ramener_sur_referentiel' value='V' "; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />\n";
+			echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />\n";
+			echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />\n";
+			echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><br /><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -734,8 +734,8 @@ if($interface_simplifiee=="y"){
 		echo "<tr style='display:none;'>\n";
 		echo "<td>Note sur :</td>\n";
 		echo "<td>\n";
-           	echo("<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."'/>");
-            	echo("<input type='hidden' name = 'ramener_sur_referentiel' value = 'F'/>");
+		echo "<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."' />\n";
+		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = 'F' />\n";
  		echo "</td>\n";
 		echo "</tr>\n";
 	}
@@ -891,12 +891,12 @@ else{
 		echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />";
 		echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><br /><br />";
 		echo "</td>";
-		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel'"; if ($ramener_sur_referentiel == 'V') echo " checked"; echo " /><br />";
+		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V'"; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
 		echo "</td></tr>\n";
-		} else {
-            echo("<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."'/>");
-            echo("<input type='hidden' name = 'ramener_sur_referentiel' value = 'F'/>");
-        }
+	} else {
+		echo "<input type='hidden' name = 'note_sur' value = '".getSettingValue("referentiel_note")."'/>\n";
+		echo "<input type='hidden' name = 'ramener_sur_referentiel' value = 'F' />\n";
+	}
 
 	//====================================
 	// Statut
