@@ -63,13 +63,25 @@ $utilisation_jsbase = "";
 $edt_aff_matiere=isset($_POST['edt_aff_matiere']) ? $_POST['edt_aff_matiere'] : NULL;
 $edt_aff_creneaux=isset($_POST['edt_aff_creneaux']) ? $_POST['edt_aff_creneaux'] : NULL;
 $edt_aff_couleur=isset($_POST['edt_aff_couleur']) ? $_POST['edt_aff_couleur'] : NULL;
+$edt_aff_couleur_prof=isset($_POST['edt_aff_couleur_prof']) ? $_POST['edt_aff_couleur_prof'] : NULL;
+$edt_aff_couleur_salle=isset($_POST['edt_aff_couleur_salle']) ? $_POST['edt_aff_couleur_salle'] : NULL;
 $edt_aff_salle=isset($_POST['edt_aff_salle']) ? $_POST['edt_aff_salle'] : NULL;
 $aff_cherche_salle = isset($_POST["aff_cherche_salle"]) ? $_POST["aff_cherche_salle"] : NULL;
 $parametrer=isset($_POST['parametrer']) ? $_POST['parametrer'] : NULL;
 $parametrer_ok=isset($_POST['parametrer1']) ? $_POST['parametrer1'] : NULL;
 $param_menu_edt = isset($_POST["param_menu_edt"]) ? $_POST["param_menu_edt"] : NULL;
-
-
+	$req = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_salle'");
+	$test = mysql_fetch_array($req);
+	if (!$test) {
+		mysql_query("INSERT INTO edt_setting SET valeur = 'nb', 
+												 reglage = 'edt_aff_couleur_salle'");		
+	}
+	$req = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_prof'");
+	$test = mysql_fetch_array($req);
+	if (!$test) {
+		mysql_query("INSERT INTO edt_setting SET 	valeur = 'nb' ,
+													reglage = 'edt_aff_couleur_prof'");		
+	}
 // Récupérer les paramètres tels qu'ils sont déjà définis
 if (isset($parametrer_ok)) {
 	$aff_message = "";
@@ -107,6 +119,29 @@ if (isset($parametrer_ok)) {
 	else {
 		$modif_aff_coul = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_couleur' WHERE reglage = 'edt_aff_couleur'");
 		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée</p>\n";
+	}
+	// Le réglage de l'affichage des couleurs profs
+	$req_reg_coul = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_prof'");
+	$tab_reg_coul = mysql_fetch_array($req_reg_coul);
+
+	if ($edt_aff_couleur_prof === $tab_reg_coul['valeur']) {
+		$aff_message .= "<p class=\"accept\">Aucune modification des couleurs</p>\n";
+	}
+	else {
+		$modif_aff_coul = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_couleur_prof' WHERE reglage = 'edt_aff_couleur_prof'");
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée (prof)</p>\n";
+	}
+	
+	// Le réglage de l'affichage des couleurs salles
+	$req_reg_coul = mysql_query("SELECT valeur FROM edt_setting WHERE reglage = 'edt_aff_couleur_salle'");
+	$tab_reg_coul = mysql_fetch_array($req_reg_coul);
+
+	if ($edt_aff_couleur_salle === $tab_reg_coul['valeur']) {
+		$aff_message .= "<p class=\"accept\">Aucune modification des couleurs</p>\n";
+	}
+	else {
+		$modif_aff_coul = mysql_query("UPDATE edt_setting SET valeur = '$edt_aff_couleur_salle' WHERE reglage = 'edt_aff_couleur_salle'");
+		$aff_message .= "<p class=\"refus\"> Modification de l'affichage des couleurs enregistrée (salle)</p>\n";
 	}
 
 	//Le réglage de l'affichage des salles
@@ -201,13 +236,37 @@ if (isset($aff_message)) {
 <table cellpadding="5" cellspacing="0" border="0" style="height: 150px; width: 100%;">
 <tr><td>
 <fieldset id="couleurs">
-	<legend>Affichage général en couleur</legend>
+	<legend>Couleur (emplois du temps classes et élèves)</legend>
 		<p>
 			<input type="radio" id="edtAffCouleur" name="edt_aff_couleur" value="coul" <?php echo (aff_checked("edt_aff_couleur", "coul")); ?>/>
-			<label for="edtAffCouleur">Couleurs</label>
+			<label for="edtAffCouleur">Afficher avec des couleurs</label>
 <br />
 			<input type="radio" id="edtAffNb" name="edt_aff_couleur" value="nb" <?php echo (aff_checked("edt_aff_couleur", "nb")); ?>/>
-			<label for="edtAffNb">Sans couleur</label>
+			<label for="edtAffNb">Afficher sans couleur</label>
+		</p>
+</fieldset>
+
+</td><td>
+<fieldset id="couleurs_prof">
+	<legend>Couleur (emplois du temps professeurs)</legend>
+		<p>
+			<input type="radio" id="edtAffCouleurProf" name="edt_aff_couleur_prof" value="coul" <?php echo (aff_checked("edt_aff_couleur_prof", "coul")); ?>/>
+			<label for="edtAffCouleurProf">Afficher avec des couleurs</label>
+<br />
+			<input type="radio" id="edtAffNbProf" name="edt_aff_couleur_prof" value="nb" <?php echo (aff_checked("edt_aff_couleur_prof", "nb")); ?>/>
+			<label for="edtAffNbProf">Afficher sans couleur</label>
+		</p>
+</fieldset>
+
+</td><td>
+<fieldset id="couleurs_salle">
+	<legend>Couleur (emplois du temps salles)</legend>
+		<p>
+			<input type="radio" id="edtAffCouleurSalle" name="edt_aff_couleur_salle" value="coul" <?php echo (aff_checked("edt_aff_couleur_salle", "coul")); ?>/>
+			<label for="edtAffCouleurSalle">Afficher avec des couleurs</label>
+<br />
+			<input type="radio" id="edtAffNbSalle" name="edt_aff_couleur_salle" value="nb" <?php echo (aff_checked("edt_aff_couleur_salle", "nb")); ?>/>
+			<label for="edtAffNbSalle">Afficher sans couleur</label>
 		</p>
 </fieldset>
 

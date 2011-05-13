@@ -226,7 +226,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
                     $k = (int)($elapse_time1 / 2);
                 }
                 $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'],$id_semaine, $period);
-                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                 $elapse_time1 += $duree1;
                 $k = (int)($elapse_time1 / 2);
             }
@@ -288,7 +288,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
                     if (($heuredeb_dec_1 != 0) AND ($id_semaine_1 == $rep_creneau['id_semaine'])) {
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'], $id_semaine_1, $period);
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree1_aux, "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree1_aux, GetColor($rep_creneau['id_groupe']), $contenu);
                         $duree1 += (int)$duree1_aux;
                         $elapse_time1 += (int)$duree1_aux;
                         $k = (int)($elapse_time1 / 2);
@@ -296,7 +296,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
                     else if (($heuredeb_dec_2 != 0) AND ($id_semaine_2 == $rep_creneau['id_semaine'])) {
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'], $id_semaine_2, $period);
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree2_aux, "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree2_aux, GetColor($rep_creneau['id_groupe']), $contenu);
                         $duree1 += (int)$duree2_aux;
                         $elapse_time1 += (int)$duree2_aux;
                         $k = (int)($elapse_time1 / 2);
@@ -304,7 +304,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
                     if (($heuredeb_dec_3 != 0) AND ($id_semaine_3 == $rep_creneau['id_semaine'])) {
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem,$type_edt, $rep_creneau['id_groupe'], $rep_creneau['id_aid'], $id_semaine_3, $period);
-                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree3_aux, "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree3_aux, GetColor($rep_creneau['id_groupe']), $contenu);
                         $duree1 += (int)$duree3_aux;
                         $elapse_time1 += (int)$duree3_aux;
                         $k = (int)($elapse_time1 / 2);
@@ -375,7 +375,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
                        }
                     }
                     $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $rep_demicreneau['id_groupe'],$rep_demicreneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
 
                     $duree1 += (int)$rep_demicreneau['duree'];
                     $elapse_time1 += (int)$rep_demicreneau['duree'];
@@ -394,7 +394,7 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
  
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$k],$jour_sem,$type_edt, $rep_demicreneau['id_groupe'],$rep_demicreneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$k], $rep_demicreneau['id_groupe'], $rep_demicreneau['id_cours'], "cellule".$rep_demicreneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                     $duree1 += (int)$rep_demicreneau['duree'];
                     $elapse_time1 += (int)$rep_demicreneau['duree'];
 
@@ -429,8 +429,25 @@ function ConstruireColonne($elapse_time, $req_creneau, $duree_max, $jour_sem, $j
             RemplirBox($elapse_time1,$tab_data[$jour], $index_box, "fin_conteneur", "", "", "", "", "", "");
 
 }
+// =============================================================================
+//
+//
+// =============================================================================
+function GetColor($id_groupe) {
 
-
+	if (GetSettingEdt("edt_aff_couleur_prof") == "coul") {
+		$req_matiere = mysql_query("SELECT id_matiere from j_groupes_matieres WHERE id_groupe ='".$id_groupe."'");
+		$rep_matiere = mysql_fetch_array($req_matiere);
+		$matiere = $rep_matiere['id_matiere'];
+		$recher_couleur = "M_".$matiere;
+		$color = GetSettingEdt($recher_couleur);
+		$ReturnColor = "cadreCouleur".$color;
+	}
+	else {
+		$ReturnColor = "cadreCouleur";
+	}	
+		return $ReturnColor;
+}
 // =============================================================================
 //
 //          Permet de construire l'emploi du temps du prof choisi
@@ -480,7 +497,9 @@ if ($type_edt=="prof") {
     $elapse_time = 0;
     while (isset($tab_id_creneaux[$j])) {
         $req_creneau = LessonsFromDayTeacherSlotPeriod($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux[$j], $period);
-        $rep_creneau = mysql_fetch_array($req_creneau);
+ 
+		$rep_creneau = mysql_fetch_array($req_creneau);
+		//print_r($rep_creneau);
         $nb_rows = mysql_num_rows($req_creneau);
 
 
@@ -526,7 +545,7 @@ if ($type_edt=="prof") {
 
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], $rep_creneau['id_semaine'], $period);
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree_max, "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree_max, GetColor($rep_creneau['id_groupe']), $contenu);
 
                         $elapse_time+=$duree_max;
                         if (($duree_max == 1) AND ($rep_creneau['heuredeb_dec'] == 0)) {
@@ -575,7 +594,7 @@ if ($type_edt=="prof") {
                 // ======== étude du cas n°4
                 else {           
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                     $elapse_time+=(int)$rep_creneau['duree'];
                 }
             }
@@ -619,7 +638,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
 
                     if ($id_semaine1 != '0') {
                         RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
@@ -641,7 +660,7 @@ if ($type_edt=="prof") {
 
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                         $elapse_time+=(int)$rep_creneau['duree'];
                     }
                 }
@@ -654,7 +673,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
 
                     if ($id_semaine2 != '0') {
                         RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
@@ -678,7 +697,7 @@ if ($type_edt=="prof") {
                     else {
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                         $elapse_time+=(int)$rep_creneau['duree'];
                     }
                 }
@@ -718,7 +737,7 @@ if ($type_edt=="prof") {
                         $rep_creneau = mysql_fetch_array($req_creneau);
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
 
                         if ($id_semaine1 != '0') {
                             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
@@ -742,7 +761,7 @@ if ($type_edt=="prof") {
                         else {
 
                             $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                            RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                            RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                             $elapse_time+=(int)$rep_creneau['duree'];
                         }
                     }
@@ -756,7 +775,7 @@ if ($type_edt=="prof") {
                         $rep_creneau = mysql_fetch_array($req_creneau);
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
 
                         if ($id_semaine2 != '0') {
                             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
@@ -780,7 +799,7 @@ if ($type_edt=="prof") {
                         }
                         else {
                             $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                            RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                            RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                             $elapse_time+=(int)$rep_creneau['duree'];
                         }
                     }
@@ -813,7 +832,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     $elapse_time+=(int)$rep_creneau['duree'];
 
                     $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 2,3 , $period);
@@ -830,7 +849,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     $elapse_time+=(int)$rep_creneau['duree'];
 
                     $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 1,3 , $period);
@@ -848,7 +867,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                     $elapse_time+=(int)$rep_creneau['duree'];
 
                     $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 1,2 , $period);
@@ -865,20 +884,20 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $elapse_time+=(int)$rep_creneau['duree'];
 
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
 
                     $elapse_time+=(int)$rep_creneau['duree'];
 
@@ -890,14 +909,14 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $elapse_time+=(int)$rep_creneau['duree'];
@@ -906,7 +925,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
 
                     $elapse_time+=(int)$rep_creneau['duree'];
 
@@ -918,13 +937,13 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $elapse_time+=(int)$rep_creneau['duree'];
@@ -932,7 +951,7 @@ if ($type_edt=="prof") {
                     mysql_data_seek($req_creneau,0);
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
 
 
                     $elapse_time+=(int)$rep_creneau['duree'];
@@ -1292,7 +1311,7 @@ if ($type_edt=="prof") {
 
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], $rep_creneau['id_semaine'], $period);
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree_max, "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$duree_max, GetColor($rep_creneau['id_groupe']), $contenu);
 
                         $elapse_time+=$duree_max;
                         if (($duree_max == 1) AND ($rep_creneau['heuredeb_dec'] == 0)) {
@@ -1341,7 +1360,7 @@ if ($type_edt=="prof") {
                 // ======== étude du cas n°4
                 else {           
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                     $elapse_time+=(int)$rep_creneau['duree'];
                 }
             }
@@ -1385,7 +1404,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
 
                     if ($id_semaine1 != '0') {
                         RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
@@ -1407,7 +1426,7 @@ if ($type_edt=="prof") {
 
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                         $elapse_time+=(int)$rep_creneau['duree'];
                     }
                 }
@@ -1420,7 +1439,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
 
                     if ($id_semaine2 != '0') {
                         RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
@@ -1444,7 +1463,7 @@ if ($type_edt=="prof") {
                     else {
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                         $elapse_time+=(int)$rep_creneau['duree'];
                     }
                 }
@@ -1484,7 +1503,7 @@ if ($type_edt=="prof") {
                         $rep_creneau = mysql_fetch_array($req_creneau);
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
 
                         if ($id_semaine1 != '0') {
                             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
@@ -1508,7 +1527,7 @@ if ($type_edt=="prof") {
                         else {
 
                             $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                            RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                            RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                             $elapse_time+=(int)$rep_creneau['duree'];
                         }
                     }
@@ -1522,7 +1541,7 @@ if ($type_edt=="prof") {
                         $rep_creneau = mysql_fetch_array($req_creneau);
 
                         $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                        RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
 
                         if ($id_semaine2 != '0') {
                             RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
@@ -1546,7 +1565,7 @@ if ($type_edt=="prof") {
                         }
                         else {
                             $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                            RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                            RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                             $elapse_time+=(int)$rep_creneau['duree'];
                         }
                     }
@@ -1579,7 +1598,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     $elapse_time+=(int)$rep_creneau['duree'];
 
                     $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 2,3 , $period);
@@ -1596,7 +1615,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     $elapse_time+=(int)$rep_creneau['duree'];
 
                     $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 1,3 , $period);
@@ -1614,7 +1633,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
 
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
                     $elapse_time+=(int)$rep_creneau['duree'];
 
                     $duree_max = DureeMax2Colonnes($jour_sem_tab[$jour], $login_edt, $tab_id_creneaux, $elapse_time,$req_creneau, $j, 1,2 , $period);
@@ -1631,20 +1650,20 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $elapse_time+=(int)$rep_creneau['duree'];
 
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
 
                     $elapse_time+=(int)$rep_creneau['duree'];
 
@@ -1656,14 +1675,14 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $elapse_time+=(int)$rep_creneau['duree'];
@@ -1672,7 +1691,7 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
 
                     $elapse_time+=(int)$rep_creneau['duree'];
 
@@ -1684,13 +1703,13 @@ if ($type_edt=="prof") {
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "conteneur", $tab_id_creneaux[$j], "", "", "demicellule".$rep_creneau['duree'], "", "");
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule1", GetColor($rep_creneau['id_groupe']), $contenu);
                     RemplirBox($elapse_time,$tab_data[$jour], $index_box, "fin_conteneur", $tab_id_creneaux[$j], "", "", "", "", "");
 
                     $elapse_time+=(int)$rep_creneau['duree'];
@@ -1698,7 +1717,7 @@ if ($type_edt=="prof") {
                     mysql_data_seek($req_creneau,0);
                     $rep_creneau = mysql_fetch_array($req_creneau);
                     $contenu = ContenuCreneau($tab_id_creneaux[$j],$jour_sem_tab[$jour],$type_edt, $rep_creneau['id_groupe'],$rep_creneau['id_aid'], "", $period);
-                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], "cadreCouleur", $contenu);
+                    RemplirBox($elapse_time,$tab_data[$jour], $index_box, "cours", $tab_id_creneaux[$j], $rep_creneau['id_groupe'], $rep_creneau['id_cours'], "cellule".$rep_creneau['duree'], GetColor($rep_creneau['id_groupe']), $contenu);
 
 
                     $elapse_time+=(int)$rep_creneau['duree'];
