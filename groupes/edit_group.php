@@ -557,8 +557,23 @@ echo "</select>\n";
 echo "</p>\n";
 //=================================================
 
-echo "<p>Cochez les professeurs qui participent à cet enseignement : </p>\n";
+// Mettre un témoin pour repérer le prof principal
 
+$tab_prof_suivi=array();
+$nb_prof_suivi=0;
+if(isset($id_classe)) {
+	$tab_prof_suivi=get_tab_prof_suivi($id_classe);
+	$nb_prof_suivi=count($tab_prof_suivi);
+	if($nb_prof_suivi>1) {
+		$liste_prof_suivi="";
+		for($loop=0;$loop<count($tab_prof_suivi);$loop++) {
+			if($loop>0) {$liste_prof_suivi.=", ";}
+			$liste_prof_suivi.=civ_nom_prenom($tab_prof_suivi[$loop]);
+		}
+	}
+}
+
+echo "<p>Cochez les professeurs qui participent à cet enseignement : </p>\n";
 
 //$calldata = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.login");
 $sql="SELECT u.login, u.nom, u.prenom, u.civilite, u.statut FROM utilisateurs u, j_professeurs_matieres j WHERE (j.id_matiere = '$reg_matiere' and j.id_professeur = u.login and u.etat!='inactif') ORDER BY u.nom;";
@@ -591,36 +606,45 @@ if (count($prof_list["list"]) == "0") {
 	$temoin_nettoyage_requis='n';
 	foreach($total_profs as $prof_login) {
 		$alt=$alt*(-1);
-		if($prof_list["users"][$prof_login]["statut"]=='professeur') {
+		if((isset($prof_list["users"][$prof_login]["statut"]))&&($prof_list["users"][$prof_login]["statut"]=='professeur')) {
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
 			echo "<input type='hidden' name='proflogin_".$p."' value='".$prof_login."' />\n";
 			echo "<input type='checkbox' name='prof_".$p."' id='prof_".$p."' ";
-			echo "onchange='changement();'";
+			echo "onchange='checkbox_change($p);changement();'";
 			if (in_array($prof_login, $reg_professeurs)) {
 				if (array_key_exists($prof_login, $current_group["profs"]["users"])){
 					echo " checked />\n";
 					echo "</td>\n";
 					echo "<td style='text-align:left;'>\n";
-					echo "<label for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
+					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $current_group["profs"]["users"][$prof_login]["civilite"] . " " .
 						$current_group["profs"]["users"][$prof_login]["prenom"] . " " .
-						$current_group["profs"]["users"][$prof_login]["nom"] . "</label><br />\n";
+						$current_group["profs"]["users"][$prof_login]["nom"] . "</label>\n";
 				} else {
 					echo " checked />\n";
 					echo "</td>\n";
 					echo "<td style='text-align:left;'>\n";
-					echo "<label for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
+					echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
 						$prof_list["users"][$prof_login]["prenom"] . " " .
-						$prof_list["users"][$prof_login]["nom"] . "</label><br />\n";
+						$prof_list["users"][$prof_login]["nom"] . "</label>\n";
 				}
 			} else {
 				echo " />\n";
 				echo "</td>\n";
 				echo "<td style='text-align:left;'>\n";
-				echo "<label for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
+				echo "<label id='civ_nom_prenom_prof_$p' for='prof_".$p."' style='cursor: pointer;'>". $prof_list["users"][$prof_login]["civilite"] . " " .
 						$prof_list["users"][$prof_login]["prenom"] . " " .
-						$prof_list["users"][$prof_login]["nom"] . "</label><br />\n";
+						$prof_list["users"][$prof_login]["nom"] . "</label>";
 			}
+
+			if(in_array($prof_login,$tab_prof_suivi)) {
+				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
+				if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
+				echo "\" />\n";
+			}
+
+			echo "<br />\n";
+
 			echo "</td>\n";
 			echo "</tr>\n";
 			$p++;
@@ -632,8 +656,11 @@ if (count($prof_list["list"]) == "0") {
 			echo "</td>\n";
 			echo "<td style='text-align:left;'>\n";
 			echo "<b>ANOMALIE</b>&nbsp;:";
-			echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
-			echo " (<i style='color:red'>compte ".$prof_list["users"][$prof_login]["statut"]."</i>)";
+			//echo " " . $prof_list["users"][$prof_login]["nom"] . " " . $prof_list["users"][$prof_login]["prenom"];
+			echo " <a href='../utilisateurs/modify_user.php?user_login=$prof_login'  onclick=\"return confirm_abandon (this, change, '$themessage')\">".civ_nom_prenom($prof_login)."</a>";
+			if(isset($prof_list["users"][$prof_login]["statut"])) {
+				echo " (<i style='color:red'>compte ".$prof_list["users"][$prof_login]["statut"]."</i>)";
+			}
 			echo "<br />\n";
 			$temoin_nettoyage_requis='y';
 			//echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
@@ -645,6 +672,24 @@ if (count($prof_list["list"]) == "0") {
 	if($temoin_nettoyage_requis!='n') {
 		echo "Un <a href='../utilitaires/clean_tables.php'>nettoyage des tables</a> s'impose.";
 	}
+
+	echo "<script type='text/javascript'>
+function checkbox_change(cpt) {
+	if(document.getElementById('prof_'+cpt)) {
+		if(document.getElementById('prof_'+cpt).checked) {
+			document.getElementById('civ_nom_prenom_prof_'+cpt).style.fontWeight='bold';
+		}
+		else {
+			document.getElementById('civ_nom_prenom_prof_'+cpt).style.fontWeight='normal';
+		}
+	}
+}
+
+for(i=0;i<$p;i++) {
+	checkbox_change(i);
+}
+</script>\n";
+
 }
 
 echo "</div>\n";

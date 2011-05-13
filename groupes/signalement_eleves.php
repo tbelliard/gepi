@@ -200,7 +200,7 @@ if (isset($_POST['is_posted'])) {
 				$ajout_header="";
 				if($email_declarant!="") {$ajout_header.="Cc: $nom_declarant <".$email_declarant.">\r\n";}
 	
-        $envoi = envoi_mail($sujet_mail, $texte_mail, getSettingValue("gepiAdminAdress"), $ajout_header);	
+				$envoi = envoi_mail($sujet_mail, $texte_mail, getSettingValue("gepiAdminAdress"), $ajout_header);	
 			}
 		}
 

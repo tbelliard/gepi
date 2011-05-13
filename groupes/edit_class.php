@@ -661,6 +661,17 @@ for($i=0;$i<10;$i++){
         }
     }
 
+	// Mettre un témoin pour repérer le prof principal
+	$tab_prof_suivi=get_tab_prof_suivi($id_classe);
+	$nb_prof_suivi=count($tab_prof_suivi);
+	if($nb_prof_suivi>1) {
+		$liste_prof_suivi="";
+		for($loop=0;$loop<count($tab_prof_suivi);$loop++) {
+			if($loop>0) {$liste_prof_suivi.=", ";}
+			$liste_prof_suivi.=civ_nom_prenom($tab_prof_suivi[$loop]);
+		}
+	}
+
     $cpt_grp=0;
     $res = mysql_query("SELECT id, nom_court, nom_complet, priority FROM matieres_categories");
     $mat_categories = array();
@@ -879,13 +890,19 @@ for($i=0;$i<10;$i++){
         echo "</tr>\n";
 
         echo "<tr>\n";
-        echo "<td colspan=4>\n";
+        echo "<td colspan='5'>\n";
         $first = true;
         foreach($current_group["profs"]["list"] as $prof) {
-            if (!$first) echo ", ";
+            if (!$first) {echo ", ";}
             echo $current_group["profs"]["users"][$prof]["prenom"];
             echo " ";
             echo $current_group["profs"]["users"][$prof]["nom"];
+
+			if(in_array($current_group["profs"]["users"][$prof]["login"],$tab_prof_suivi)) {
+				echo " <img src='../images/bulle_verte.png' width='9' height='9' title=\"Professeur principal d'au moins un élève de la classe sur une des périodes.";
+				if($nb_prof_suivi>1) {echo " La liste des ".getSettingValue('prof_suivi')." est ".$liste_prof_suivi.".";}
+				echo "\" />\n";
+			}
             $first = false;
         }
         echo "</td>\n";
