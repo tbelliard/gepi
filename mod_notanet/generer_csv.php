@@ -44,7 +44,7 @@ if (!checkAccess()) {
 check_token();
 
 $nom_fic = "notanet_".date('Y.m.d_H.i.s_').preg_replace("/ /","_",microtime()).".csv";
-
+/*
 $now = gmdate('D, d M Y H:i:s') . ' GMT';
 header('Content-Type: text/x-csv');
 header('Expires: ' . $now);
@@ -57,6 +57,8 @@ if (preg_match('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
 	header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
 	header('Pragma: no-cache');
 }
+*/
+send_file_download_headers('text/x-csv',$nom_fic);
 
 
 //header('Content-Type: application/octetstream');
