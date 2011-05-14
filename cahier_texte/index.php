@@ -304,7 +304,7 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
 		//==========================================================
 		$date_visibilite_mal_formatee="n";
 		if((isset($jour_visibilite))&&(isset($heure_visibilite))) {
-			echo "$heure_visibilite<br />\n";
+			//echo "$heure_visibilite<br />\n";
 			if(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/",$heure_visibilite)) {
 				$heure_courante=strftime("%H:%M");
 				//echo "Heure de visibilité mal formatée : $heure_visibilite<br />";
@@ -370,14 +370,14 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
             $sql="UPDATE ct_devoirs_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."', date_ct='$date_travail_a_faire'";
 			if((isset($date_visibilite_eleve))&&($date_visibilite_mal_formatee=="n")) {$sql.=", date_visibilite_eleve='$date_visibilite_eleve'";}
 			$sql.=" WHERE id_ct='$id_ct';";
-			echo "$sql<br />";
+			//echo "$sql<br />";
             $req = mysql_query($sql);
           } else {
             // On insère la notice dans ct_devoirs_entry
             $sql="INSERT INTO ct_devoirs_entry SET id_ct='0', contenu = '$contenu_cor', id_login='".$_SESSION['login']."', id_groupe='".$id_groupe."', date_ct='$date_travail_a_faire'";
 			if(isset($date_visibilite_eleve)) {$sql.=", date_visibilite_eleve='$date_visibilite_eleve'";}
 			$sql.=";";
-			echo "$sql<br />";
+			//echo "$sql<br />";
             $req = mysql_query($sql);
             $id_ct = mysql_insert_id();
           }
