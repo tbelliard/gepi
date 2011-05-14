@@ -647,35 +647,82 @@ class Session {
 	}
 	*/
 
-	private function authenticate_gepi($_login,$_password) {
+	function authenticate_gepi($_login,$_password) {
 		global $debug_test_mdp, $debug_test_mdp_file;
 
-		$sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
+                $sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
 		$query = mysql_query($sql);
                 $db_password = mysql_result($query, 0, "password");
+		$sql = "SELECT salt FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
+		$query_salt = mysql_query($sql);
+                if ($query_salt !== false) {
+                    $db_salt = mysql_result($query_salt, 0, "salt");
+                } else {
+                    $db_salt = '';
+                }
 		if (mysql_num_rows($query) == "1") {
 			# Un compte existe avec ce login
-			if ($db_password == md5($_password)) {
-                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification OK sans modification\n');
-			} else {
-                                if(getSettingValue('filtrage_html')=='htmlpurifier') {
-                                        $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
-                                        $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
-                                        if ($db_password == md5($_password_unhtmlentities)) {
-                                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification OK avec unhtmlentities()\n');
-                                        } else {
-                                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification en echec avec et sans modification unhtmlentities\n');
-                                                return false;
-                                        }
+                        if ($db_salt == '') {
+                            //on va tester avec le md5
+                            if ($db_password == md5($_password)) {
+                            } else {
+                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {
+                                            $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
+                                            $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
+                                            if ($db_password == md5($_password_unhtmlentities)) {
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec unhtmlentities()\n');
+                                            } else {
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification unhtmlentities\n');
+                                                    return false;
+                                            }
+                                    } else {
+                                            if ($db_password == md5(htmlentities($_password))) {
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK avec htmlentities()\n');
+                                            } else {
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 en echec avec et sans modification htmlentities\n');
+                                                    return false;
+                                            }
+                                    }
+                            }
+                            
+                            //l'authentification est réussie sinon on serait déjà sorti de la fonction
+                            $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification md5 OK\n');
+                            if (mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"))>0) {
+                                //on va passer le hash en hmac scha256
+                                $salt = md5(uniqid(rand(), 1));
+                                $hmac_password = hash_hmac('sha256', $_password, $salt);
+                                $update_query = mysql_query("UPDATE utilisateurs SET password = '".$hmac_password."', salt = '".$salt."' WHERE login = '".$_login."'");
+                                if ($update_query) {
+                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Password ameliore en hmac\n');
                                 } else {
-                                        if ($db_password == md5(htmlentities($_password))) {
-                                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification OK avec htmlentities()\n');
-                                        } else {
-                                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification en echec avec et sans modification htmlentities\n');
-                                                return false;
-                                        }
+                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Echec password ameliore en hmac\n');
                                 }
-			}
+                            }
+                        } else {
+                            //login deja en hmac sha256
+                            if ($db_password == hash_hmac('sha256', $_password, $db_salt)) {
+                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK sans modification\n');
+                            } else {
+                                    if(getSettingValue('filtrage_html')=='htmlpurifier') {
+                                            $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
+                                            $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
+                                            if ($db_password == hash_hmac('sha256', $_password_unhtmlentities, $db_salt)) {
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec unhtmlentities()\n');
+                                            } else {
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification unhtmlentities\n');
+                                                   return false;
+                                            }
+                                    } else {
+                                            if ($db_password == hash_hmac('sha256', htmlentities($_password), $db_salt)) {
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac OK avec htmlentities()\n');
+                                            } else {
+                                                    $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification hmac en echec avec et sans modification htmlentities\n');
+                                                    return false;
+                                            }
+                                    }
+                            }
+                        }
+                        //si le login fait échec, la fonction a déjà retourné avec false
                         $this->login = mysql_result($query, 0, "login");
                         $this->current_auth_mode = "gepi";
                         return true;
@@ -684,6 +731,13 @@ class Session {
 			return false;
 		}
 	}
+
+        static function change_password_gepi($user_login,$password) {
+                $salt = md5(uniqid(rand(), 1));
+                $hmac_password = hash_hmac('sha256', $password, $salt);
+                $result = mysql_query("UPDATE utilisateurs SET password='$hmac_password', salt = '$salt', change_mdp = 'y' WHERE login='" . $user_login . "'");
+                return $result;
+        }
 
 	private function authenticate_ldap($_login,$_password) {
 		if ($_login == null || $_password == null) {
