@@ -26,7 +26,7 @@
  	if (mysql_num_rows($test) > 0) {
  		$record = mysql_query("UPDATE utilisateurs SET nom = '" . $_nom . "', prenom = '" . $_prenom . "', civilite = '" . $_civilite . "', statut = '" . $_statut . "', email = '" . $_email . "', auth_mode = '".$auth_mode."', etat = 'actif' WHERE login = '" . $_login . "'");
  	} else {
-		$query = "INSERT into utilisateurs SET login= '" . $_login . "', nom = '" . $_nom . "', prenom = '" . $_prenom . "', password = '', civilite = '" . $_civilite . "', statut = '" . $_statut . "', email = '" . $_email . "', auth_mode = '".$auth_mode."', etat ='actif', change_mdp = 'n'";
+		$query = "INSERT into utilisateurs SET login= '" . $_login . "', nom = '" . $_nom . "', prenom = '" . $_prenom . "', password = '', salt = '', civilite = '" . $_civilite . "', statut = '" . $_statut . "', email = '" . $_email . "', auth_mode = '".$auth_mode."', etat ='actif', change_mdp = 'n'";
 		$record = mysql_query($query);
  	}
 

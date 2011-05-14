@@ -272,7 +272,7 @@ check_token();
 			if ($old_auth_mode == "gepi" && ($_POST['reg_auth_mode'] == "ldap" || $_POST['reg_auth_mode'] == "sso")) {
 				// On passe du mode Gepi à un mode externe : il faut supprimer le mot de passe
 				$oldmd5password = mysql_result(mysql_query("SELECT password FROM utilisateurs WHERE login = '".$user_login."'"), 0);
-				mysql_query("UPDATE utilisateurs SET password = '' WHERE login = '".$user_login."'");
+				mysql_query("UPDATE utilisateurs SET password = '', salt = '' WHERE login = '".$user_login."'");
 				$msg = "Passage à un mode d'authentification externe : ";
 				// Et si on a un accès en écriture au LDAP, il faut créer l'utilisateur !
 				if ($gepiSettings['ldap_write_access'] == "yes") {
