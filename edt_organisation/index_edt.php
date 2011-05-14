@@ -68,10 +68,10 @@ if (param_edt($_SESSION["statut"]) != "yes") {
 $javascript_specifique = "edt_organisation/script/fonctions_edt";
 $ua = getenv("HTTP_USER_AGENT");
 if (strstr($ua, "MSIE 6.0")) {
-	$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt_ie6";
+	$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt_ie6";
 }
 else {
-	$style_specifique = "templates/".NameTemplateEDT()."/css/style_edt";
+	$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_edt";
 }
 
 //ob_start( 'ob_gzhandler' );

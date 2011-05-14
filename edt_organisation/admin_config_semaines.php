@@ -154,7 +154,7 @@ if ( $action === 'visualiser' )
         while ( $donnee = mysql_fetch_array ($resultat))
 	{
 		$num_semaine[$i] = $donnee['num_edt_semaine'];
-		$num_interne[$i] = $donnee['num_semaines_etab'];
+		$num_interne[$i] = $donnee['id_edt_semaine'];
 		$type_semaine[$i] = $donnee['type_edt_semaine'];
 		$i = $i + 1;
         }
