@@ -207,7 +207,16 @@ if ( $action === 'visualiser' )
 // ===================================================================
 // header
 $titre_page = "Horaires d'ouverture de l'établissement";
-$style_specifique = "templates/".NameTemplateEdt()."/css/style_edt";
+$style_specifique[] = "templates/".NameTemplateEdt()."/css/style_edt";
+$ua = getenv("HTTP_USER_AGENT");
+if (strstr($ua, "MSIE 6.0")) {
+	$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_ie6_param";
+}
+else if (strstr($ua, "MSIE 7")) {
+	$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_ie7_param";
+}
+$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_param";
+
 require_once("../lib/header.inc");
 
 require_once("./menu.inc.php");
@@ -220,19 +229,62 @@ require_once("./menu.inc.new.php");
 
 <?php if ($action === "visualiser") { ?>
 <?php /* div de centrage du tableau pour ie5 */ ?>
+
+	<div id="art-main">
+        <div class="art-sheet">
+            <div class="art-sheet-tl"></div>
+            <div class="art-sheet-tr"></div>
+            <div class="art-sheet-bl"></div>
+            <div class="art-sheet-br"></div>
+            <div class="art-sheet-tc"></div>
+            <div class="art-sheet-bc"></div>
+            <div class="art-sheet-cl"></div>
+            <div class="art-sheet-cr"></div>
+            <div class="art-sheet-cc"></div>
+            <div class="art-sheet-body">
+                <div class="art-nav">
+                	<div class="l"></div>
+                	<div class="r"></div>
+                </div>
+                        <div class="art-layout-cell art-sidebar1">
+                        </div>
+                        <div class="art-layout-cell art-content">
+						
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+                            <div class="art-post">
+                                <div class="art-post-tl"></div>
+                                <div class="art-post-tr"></div>
+                                <div class="art-post-bl"></div>
+                                <div class="art-post-br"></div>
+                                <div class="art-post-tc"></div>
+                                <div class="art-post-bc"></div>
+                                <div class="art-post-cl"></div>
+                                <div class="art-post-cr"></div>
+                                <div class="art-post-cc"></div>
+                                <div class="art-post-body">
+									<div class="art-post-inner art-article">
+										<div class="art-postmetadataheader">
+											<h2 class="art-postheader">
+												Définition des horaires d'ouverture de l'établissement
+											</h2>
+										</div>
+										<div class="art-postcontent">
+											<!-- article-content -->
 <div style="text-align: center;">
 
 <?php /* gestion des horaire d'ouverture */ ?>
-<h2>Définition des horaires d'ouverture de l'établissement</h2>
+
   <form method="post" action="admin_horaire_ouverture.php?action=<?php echo $action; ?>" name="form1">
 	<table cellpadding="0" cellspacing="1" class="tab_table" summary="Horaires d'ouverture">
 	  <tbody>
 	    <tr>
 	      <th style="width: 60px;"></th>
-	      <?php $i = '0';
-		while ( $i < '7' ) { ?>
+	      <?php $i = 0;
+		while ( $i < 7 ) { ?>
 		      <th class="tab_th" style="width: 70px;"><?php echo $tab_sem[$i]; $i = $i + 1; ?></th>
-		<?php } ?>
+		<?php } 
+
+		?>
 
 	    </tr>
 	    <tr class="couleur_ligne_1">
@@ -240,7 +292,9 @@ require_once("./menu.inc.new.php");
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
 		      <td><input name="ouvert[<?php echo $i; ?>]" value="1" type="checkbox" <?php if ( isset($ouvert[$i]) and $ouvert[$i] === '1' ) { ?>checked="checked"<?php } ?> /><?php $i = $i + 1; ?></td>
-		<?php } ?>
+		<?php } 
+
+		?>
 	    </tr>
 	    <tr class="couleur_ligne_2">
 	      <td class="tab_td_donnee_cote">Ouverture &agrave;</td>
@@ -268,7 +322,10 @@ require_once("./menu.inc.new.php");
 	      <?php $i = '0';
 		while ( $i < '7' ) { ?>
 		      <td><?php if ( isset($temps_total_ouverture[$i]) and !empty($temps_total_ouverture[$i]) ) { echo $temps_total_ouverture[$i]; } $i = $i + 1; ?></td>
-		<?php } ?>
+		<?php } 
+
+		
+		?>
 	    </tr>
 	  </tbody>
 	</table>
@@ -276,12 +333,29 @@ require_once("./menu.inc.new.php");
 	<br/>
 	<center><input type="submit" name="submit" value="Enregistrer" /></center>
   </form>
-<?php /* fin de gestion des horaire d'ouverture */ ?>
+<?php /* fin de gestion des horaire d'ouverture */ 	?>
 
 <?php /* fin du div de centrage du tableau pour ie5 */ ?>
 </div>
-</div>
-<?php mysql_close(); }
+											
+											<div class="cleared"></div>
+											<!-- /article-content -->
+										</div>
+										<div class="cleared"></div>
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+			</div>
+		</div>
+	</div>
+
+
+<?php //mysql_close(); 
+
+}
 
 require("../lib/footer.inc.php");
 
