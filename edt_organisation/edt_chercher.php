@@ -58,9 +58,17 @@ if ($salle_libre == "ok") {
 }
 
 // On insère l'entête de Gepi
+$ua = getenv("HTTP_USER_AGENT");
+if (strstr($ua, "MSIE 6.0")) {
+	$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_ie6_param";
+}
+else if (strstr($ua, "MSIE 7")) {
+	$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_ie7_param";
+}
+$style_specifique[] = "templates/".NameTemplateEDT()."/css/style_param";
 require_once("../lib/header.inc");
 
-$ua = getenv("HTTP_USER_AGENT");
+
 if (strstr($ua, "MSIE 6.0")) {
 	echo "<div class=\"cadreInformation\">Votre navigateur (Internet Explorer 6) est obsolète et se comporte mal vis à vis de l'affichage des emplois du temps. Faites absolument une mise à jour vers les versions 7 ou 8 ou changez de navigateur (FireFox, Chrome, Opera, Safari)</div>";
 }
@@ -88,13 +96,13 @@ if ($cherch_salle == "ok") {
 		$auto_aff_21 = 1;
 	}
 	else
-		echo ("<font color = \"red\">Vous devez choisir un créneau !</font>\n<br />\n");
+		echo ("<div class=\"cadreInformation\">Vous devez choisir un créneau !</div>");
 
 	if ($ch_jour_semaine != "rien") {
 		$auto_aff_22 = 1;
 	}
 	else
-		echo ("<font color=\"red\">Vous devez choisir un jour de la semaine !</font>\n<br />\n");
+		echo ("<div class=\"cadreInformation\">Vous devez choisir un jour de la semaine !</div>");
 
 	if (($auto_aff_21 == 1) AND ($auto_aff_22 == 1)) {
 		$auto_aff_2 = 1;
@@ -103,20 +111,51 @@ if ($cherch_salle == "ok") {
 
 ?>
 
-Cette page sert &agrave; trouver les salles de cours occup&eacute;es et libres &agrave; un horaire de la semaine.
+	<div id="art-main">
+        <div class="art-sheet">
+            <div class="art-sheet-tl"></div>
+            <div class="art-sheet-tr"></div>
+            <div class="art-sheet-bl"></div>
+            <div class="art-sheet-br"></div>
+            <div class="art-sheet-tc"></div>
+            <div class="art-sheet-bc"></div>
+            <div class="art-sheet-cl"></div>
+            <div class="art-sheet-cr"></div>
+            <div class="art-sheet-cc"></div>
+            <div class="art-sheet-body">
+                <div class="art-nav">
+                	<div class="l"></div>
+                	<div class="r"></div>
+                </div>
+                        <div class="art-layout-cell art-sidebar1">
+                        </div>
+                        <div class="art-layout-cell art-content">
 
-Pour cela, veuillez choisir un cr&eacute;neau et un jour de la semaine :
-<br />
-<br />
-
+<!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+                           <div class="art-post">
+                                <div class="art-post-tl"></div>
+                                <div class="art-post-tr"></div>
+                                <div class="art-post-bl"></div>
+                                <div class="art-post-br"></div>
+                                <div class="art-post-tc"></div>
+                                <div class="art-post-bc"></div>
+                                <div class="art-post-cl"></div>
+                                <div class="art-post-cr"></div>
+                                <div class="art-post-cc"></div>
+                                <div class="art-post-body">
+									<div class="art-post-inner art-article">
+										<div class="art-postmetadataheader">
+											<h2 class="art-postheader">
+												Rechercher une salle libre
+											</h2>
+										</div>
+										<div class="art-postcontent">
+											<!-- article-content -->
 <?php
 
 if ($auto_aff_1 === 1) {
 
 echo '
-	<fieldset id="cherchersalle">
-		<legend>Chercher une salle libre</legend>
-
 		<form action="index_edt.php" name="chercher" id="chercher" method="post">
 	';
 
@@ -206,7 +245,7 @@ echo "<option value='rien'>Semaine</option>\n";
 	}
 echo "</select>\n<br />\n<em><font size=\"2\"> * champs obligatoires  </font></em>\n";
 echo "<input type=\"submit\" name=\"Valider\" value=\"Valider\" />\n<br />\n";
-echo "</form>\n</fieldset>\n";
+echo "</form>\n";
 
 }
 
@@ -230,6 +269,26 @@ if ($auto_aff_2 === 1) {
 	echo "</fieldset>\n";
 }
     echo '</div>';
+	
+?>
+											
+											<div class="cleared"></div>
+											<!-- /article-content -->
+										</div>
+										<div class="cleared"></div>
+									</div>
+								</div>
+							</div>	
+<br />
+<br />
+
+
+
+						</div>
+			</div>
+		</div>
+	</div>
+<?php
 // inclusion du footer
 require("../lib/footer.inc.php");
 ?>
