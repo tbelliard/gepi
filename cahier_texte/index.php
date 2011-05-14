@@ -122,6 +122,11 @@ if (!isset($_SESSION['type_display_notices'])) {$_SESSION['type_display_notices'
 if (isset($_GET["type_display_notices"])) {$_SESSION['type_display_notices'] = $_GET["type_display_notices"];}
 if (empty($_FILES['doc_file'])) { $doc_file=''; } else { $doc_file=$_FILES['doc_file'];}
 
+$heure_visibilite=isset($_POST['heure_visibilite']) ? $_POST['heure_visibilite'] : NULL;
+$jour_visibilite=isset($_POST['jour_visibilite']) ? $_POST['jour_visibilite'] : NULL;
+
+//debug_var();
+
 // Initialisation de la valeur delai
 $delai = getSettingValue("delai_devoirs");
 
@@ -294,37 +299,99 @@ if (isset($_POST['notes']) and $valide_form=='yes') {
    check_token();
 
     // Cas des devoirs
-    if (isset($edit_devoir)) {
+	if (isset($edit_devoir)) {
+		$msg="";
+		//==========================================================
+		$date_visibilite_mal_formatee="n";
+		if((isset($jour_visibilite))&&(isset($heure_visibilite))) {
+			echo "$heure_visibilite<br />\n";
+			if(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/",$heure_visibilite)) {
+				$heure_courante=strftime("%H:%M");
+				//echo "Heure de visibilité mal formatée : $heure_visibilite<br />";
+				//die();
+				if (isset($id_ct))  {
+					$msg.="Heure de visibilité mal formatée : $heure_visibilite.<br />L'heure de visibilité ne sera pas modifiée.<br />";
+				}
+				else {
+					$msg.="Heure de visibilité mal formatée : $heure_visibilite.<br />L'heure courante sera utilisée : $heure_courante<br />";
+				}
+				$heure_visibilite=$heure_courante;
+
+				$date_visibilite_mal_formatee="y";
+			}
+			$tab_tmp=explode(":",$heure_visibilite);
+			$heure_v=$tab_tmp[0];
+			$min_v=$tab_tmp[1];
+			
+			//if(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}$#",$jour_visibilite)) {
+			if(!preg_match( '`^\d{1,2}/\d{1,2}/\d{4}$`', $jour_visibilite)) {
+				$jour_courant=strftime("%d/%m/%Y");
+				//echo "Le jour de visibilité est mal formaté : $jour_visibilite<br />";
+				//die();
+				if (isset($id_ct))  {
+					$msg.="Le jour de visibilité est mal formaté : $jour_visibilite.<br />Le jour de visibilité ne sera pas modifié.<br />";
+				}
+				else {
+					$msg.="Le jour de visibilité est mal formaté : $jour_visibilite.<br />Le jour courant sera utilisé : $jour_courant<br />";
+				}
+				//echo "alert('Le jour de visibilité est mal formaté : $jour_visibilite. Le jour courant sera utilisé : $jour_courant')";
+				$jour_visibilite=$jour_courant;
+
+				$date_visibilite_mal_formatee="y";
+			}
+			$tab_tmp=explode("/",$jour_visibilite);
+			$jour_v=$tab_tmp[0];
+			$mois_v=$tab_tmp[1];
+			$annee_v=$tab_tmp[2];
+
+			//$date_visibilite_eleve=mktime($heure_v,$min_v,0,$mois_v,$jour_v,$annee_v);
+			//echo "\$date_visibilite_eleve=mktime($heure_v,$min_v,0,$mois_v,$jour_v,$annee_v)=$date_visibilite_eleve<br />";
+
+			$date_visibilite_eleve="$annee_v-$mois_v-$jour_v $heure_v:$min_v";
+			//echo "\$date_visibilite_eleve=$date_visibilite_eleve<br />";
+		}
+		//==========================================================
+
         // Il s'agit d'un devoir à faire : on récupère la date à l'aide de $_POST['display_date']
-        if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date'])) {
+        if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date'])) {
             $_year = substr($_POST['display_date'],6,4);
             $_month = substr($_POST['display_date'],3,2);
             $_day = substr($_POST['display_date'],0,2);
             $date_travail_a_faire=mktime(0,0,0,$_month,$_day,$_year);
-        } else
+        } else {
             $msg_error_date = "La date choisie pour le travail à faire n'est pas conforme";
+		}
         $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
-        if ($contenu_cor == '') $contenu_cor="...";
+        if ($contenu_cor == '') {$contenu_cor="...";}
 
         if (!isset($msg_error_date)) {
           if (isset($id_ct))  {
             // Modification d'un devoir
-            $req = mysql_query("UPDATE ct_devoirs_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."', date_ct='$date_travail_a_faire' where id_ct='$id_ct' ");
+            $sql="UPDATE ct_devoirs_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."', date_ct='$date_travail_a_faire'";
+			if((isset($date_visibilite_eleve))&&($date_visibilite_mal_formatee=="n")) {$sql.=", date_visibilite_eleve='$date_visibilite_eleve'";}
+			$sql.=" WHERE id_ct='$id_ct';";
+			echo "$sql<br />";
+            $req = mysql_query($sql);
           } else {
             // On insère la notice dans ct_devoirs_entry
-            $req = mysql_query("INSERT INTO ct_devoirs_entry SET id_ct='0', contenu = '$contenu_cor', id_login='".$_SESSION['login']."', id_groupe='".$id_groupe."', date_ct='$date_travail_a_faire'");
+            $sql="INSERT INTO ct_devoirs_entry SET id_ct='0', contenu = '$contenu_cor', id_login='".$_SESSION['login']."', id_groupe='".$id_groupe."', date_ct='$date_travail_a_faire'";
+			if(isset($date_visibilite_eleve)) {$sql.=", date_visibilite_eleve='$date_visibilite_eleve'";}
+			$sql.=";";
+			echo "$sql<br />";
+            $req = mysql_query($sql);
             $id_ct = mysql_insert_id();
           }
-          if ($req) $msg = "Enregistrement réussi."; else $msg = "Problème lors de l'enregistrement !";
-        } else
+          if ($req) {$msg.= "Enregistrement réussi.";} else {$msg .= "Problème lors de l'enregistrement !";}
+        } else {
           $msg = $msg_error_date;
+		}
     } else {
         // Cas d'une notice
         isset($_POST['info']) ? $temp = '' : $temp = $today;
         $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['notes']),'');
         if ($contenu_cor == '') $contenu_cor="...";
         if (isset($id_ct)) {
-            $req = mysql_query("UPDATE ct_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."' WHERE id_ct=$id_ct AND id_groupe='".$current_group["id"]."'");
+            $req = mysql_query("UPDATE ct_entry SET contenu = '$contenu_cor', id_login='".$_SESSION['login']."' WHERE id_ct='$id_ct' AND id_groupe='".$current_group["id"]."'");
         } else {
             $req = mysql_query("INSERT INTO ct_entry SET id_ct='0', contenu = '$contenu_cor', heure_entry='$heure_entry', id_login='".$_SESSION['login']."', id_groupe='".$id_groupe."', date_ct='$temp'");
             $id_ct = mysql_insert_id();
@@ -399,6 +466,8 @@ $_SESSION['cacher_header'] = "y";
 $titre_page = "Cahier de textes";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *************
+
+//debug_var();
 
 echo "<script type=\"text/javascript\" SRC=\"../lib/clock_fr.js\"></SCRIPT>";
 //-----------------------------------------------------------------------------------
@@ -1022,11 +1091,68 @@ $i= mktime(0,0,0,$month,$day+1,$year);
 $ty = date("Y",$i);
 $tm = date("m",$i);
 $td = date("d",$i);
+
+//echo "id_ct=$id_ct<br />";
+
+// Si c'est une notice de devoir
 if (isset($edit_devoir)) {
-    echo "</td><td><a title=\"Aller au jour précédent\" href=\"index.php?edit_devoir=yes&amp;year=$yy&amp;month=$ym&amp;day=$yd&amp;id_groupe=" . $current_group["id"] . "\">&lt;&lt;</a></td><td align=center><a href=\"index.php?edit_devoir=yes&amp;id_groupe=" . $current_group["id"] ."&amp;id_matiere=$id_matiere\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?edit_devoir=yes&amp;year=$ty&amp;month=$tm&amp;day=$td&amp;id_groupe=" . $current_group["id"]."&amp;id_matiere=$id_matiere\">&gt;&gt;</a></td></tr>\n";
-} else {
-    echo "</td><td><a title=\"Aller au jour précédent\" href=\"index.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_groupe=" . $current_group["id"] . "\">&lt;&lt;</a></td><td align=center><a href=\"index.php?id_groupe=" . $current_group["id"] . "\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_groupe=" . $current_group["id"]."&amp;id_matiere=$id_matiere\">&gt;&gt;</a></td></tr>\n";
+	// Date de visibilité
+	$heure_courante=strftime("%H:%M");
+	$jour_courant=strftime("%d/%m/%Y");
+	if($id_ct!='') {
+		$sql="SELECT date_visibilite_eleve FROM ct_devoirs_entry WHERE id_ct='$id_ct';";
+		$res_visibilite=mysql_query($sql);
+		if(mysql_num_rows($res_visibilite)>0) {
+			$lig_visibilite=mysql_fetch_object($res_visibilite);
+			$heure_courante=get_heure_2pt_minute_from_mysql_date($lig_visibilite->date_visibilite_eleve);
+			$jour_courant=get_date_slash_from_mysql_date($lig_visibilite->date_visibilite_eleve);
+		}
+	}
+
+	echo "<br />\n";
+	echo "<span title='Vous pouvez modifier les dates et heure de visibilité avec les flèches Haut/Bas, PageUp/PageDown du clavier.' style='font-weight: bold;'>Date de visibilité</span>&nbsp;:\n";
+	echo " <input type='text' name='jour_visibilite' id='jour_visibilite' value='$jour_courant' size='7' onkeydown='clavier_date(this.id,event)' 
+	onblur=\"date_v=document.getElementById('jour_visibilite').value;
+		tab=date_v.split('/');
+		jour_v=tab[0];
+		mois_v=tab[1];
+		annee_v=tab[2];
+		if(!checkdate(mois_v, jour_v, annee_v)) {
+			alert('La date de visibilité saisie n est pas valide.');
+		}
+	\" />\n";
+// onblur='verif_date_visibilite()' />\n";
+	echo " à <input type='text' name='heure_visibilite' id='heure_visibilite' value='$heure_courante' size='3' onkeydown='clavier_heure(this.id,event)' 
+	onblur=\"instant_v=document.getElementById('heure_visibilite').value;
+		var exp=new RegExp('^[0-9]{1,2}:[0-9]{0,2}$','g');
+		erreur='n';
+		if (exp.test(instant_v)) {
+			tab=instant_v.split(':');
+			heure_v=eval(tab[0]);
+			min_v=eval(tab[1]);
+
+			if((heure_v<0)||(heure_v>=24)||(min_v<0)||(min_v>=60)) {erreur='y';}
+		}
+		else {
+			erreur='y';
+		}
+
+		if(erreur=='y') {
+			alert('L heure de visibilité saisie n est pas valide.');
+		}
+	\" />\n";
 }
+
+
+echo "</td>\n";
+echo "<td>\n";
+if (isset($edit_devoir)) {
+	echo "<a title=\"Aller au jour précédent\" href=\"index.php?edit_devoir=yes&amp;year=$yy&amp;month=$ym&amp;day=$yd&amp;id_groupe=" . $current_group["id"] . "\">&lt;&lt;</a></td><td align=center><a href=\"index.php?edit_devoir=yes&amp;id_groupe=" . $current_group["id"] ."&amp;id_matiere=$id_matiere\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?edit_devoir=yes&amp;year=$ty&amp;month=$tm&amp;day=$td&amp;id_groupe=" . $current_group["id"]."&amp;id_matiere=$id_matiere\">&gt;&gt;</a>\n";
+} else {
+	echo "<a title=\"Aller au jour précédent\" href=\"index.php?year=$yy&amp;month=$ym&amp;day=$yd&amp;id_groupe=" . $current_group["id"] . "\">&lt;&lt;</a></td><td align=center><a href=\"index.php?id_groupe=" . $current_group["id"] . "\">Aujourd'hui</a></td><td align=right><a title=\"Aller au jour suivant\" href=\"index.php?year=$ty&amp;month=$tm&amp;day=$td&amp;id_groupe=" . $current_group["id"]."&amp;id_matiere=$id_matiere\">&gt;&gt;</a>\n";
+}
+echo "</td>\n";
+echo "</tr>\n";
 echo "\n";
 ?>
 <tr><td colspan="4">
@@ -1038,6 +1164,9 @@ $oFCKeditor->Config['DefaultLanguage']  = 'fr' ;
 $oFCKeditor->ToolbarSet = 'Basic' ;
 $oFCKeditor->Value = $contenu ;
 $oFCKeditor->Create() ;
+
+//echo "<a href=\"#\" onclick=\"javascript: document.getElementById('notes').value='TRUC'; return false;\">CLIC</a>";
+//echo "<a href=\"#\" onclick=\"javascript: alert(document.getElementById('notes').value); return false;\">CLOC</a>";
 
 // gestion des fichiers attachés
 echo '<div style="border-style:solid; border-width:1px; border-color: '.$couleur_bord_tableau_notice.'; background-color: '.$couleur_cellule[$type_couleur].';  padding: 2px; margin: 2px;">
