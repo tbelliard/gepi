@@ -150,10 +150,10 @@ $date_visibilite_mal_formatee="n";
 if(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/",$heure_visibilite)) {
 	$heure_courante=strftime("%H:%M");
 	if((!isset($id_devoir))||($id_devoir=="")) {
-		echo "Heure de visibilité mal formatée : $heure_visibilite.<br />L'heure courante sera utilisée : $heure_courante";
+		echo "Erreur: Heure de visibilité mal formatée : $heure_visibilite.\nL'heure courante sera utilisée : $heure_courante";
 	}
 	else {
-		echo "Heure de visibilité mal formatée : $heure_visibilite.<br />La date de visibilité ne sera pas modifiée (maintenue à ".get_date_heure_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve()).").";
+		echo "Erreur: Heure de visibilité mal formatée : $heure_visibilite.\nLa date de visibilité ne sera pas modifiée (maintenue à ".get_date_heure_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve()).").";
 	}
 
 	$heure_visibilite=$heure_courante;
@@ -174,10 +174,10 @@ if(!preg_match( '`^\d{1,2}/\d{1,2}/\d{4}$`', $jour_visibilite)) {
 	*/
 
 	if((!isset($id_devoir))||($id_devoir=="")) {
-		echo "Le jour de visibilité est mal formaté : $jour_visibilite.<br />Le jour courant sera utilisé : $jour_courant";
+		echo "Erreur: Le jour de visibilité est mal formaté : $jour_visibilite.\nLe jour courant sera utilisé : $jour_courant";
 	}
 	else {
-		echo "Le jour de visibilité mal formaté : $jour_visibilite.<br />La date de visibilité ne sera pas modifiée (maintenue à ".get_date_heure_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve()).").\n";
+		echo "Erreur: Le jour de visibilité est mal formaté : $jour_visibilite.\nLa date de visibilité ne sera pas modifiée (maintenue à ".get_date_heure_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve()).").\n";
 	}
 
 	$jour_visibilite=$jour_courant;
