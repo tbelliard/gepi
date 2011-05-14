@@ -65,7 +65,6 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 	}
 
 	if(($mdp_INE=='y')&&($user_statut=='eleve')&&($ine_password!="")) {
-		$reg_password_c = md5($ine_password);
 		$auth_mode = mysql_result(mysql_query("SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
 		if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == 'yes') {
 			// On est en mode d'écriture LDAP
@@ -73,7 +72,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 			$reg_data = $ldap_server->update_user($user_login, '', '', '', '', $ine_password,'');
 		} else {
 			// On est en mode base de données
-			$reg_data = mysql_query("UPDATE utilisateurs SET password = '$reg_password_c' WHERE login='".$user_login."'");
+			$reg_data = Session::change_password_gepi($user_login,$ine_password);
 		}
 
 		//ajout Eric En cas de réinitialisation par l'admin, il faut forcer à la première connexion la changement du mot de passe
@@ -93,7 +92,6 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 		} else if (!(verif_mot_de_passe($NON_PROTECT['password'],$flag))) {
 			$msg = "Erreur lors de la saisie du mot de passe (voir les recommandations), veuillez recommencer !";
 		} else {
-			$reg_password_c = md5($NON_PROTECT['password']);
 			$auth_mode = mysql_result(mysql_query("SELECT auth_mode FROM utilisateurs WHERE login = '".$user_login."'"), 0);
 			if ($auth_mode != "gepi" && $gepiSettings['ldap_write_access'] == 'yes') {
 				// On est en mode d'écriture LDAP
@@ -101,8 +99,7 @@ if (isset($_POST['valid']) and ($_POST['valid'] == "yes")) {
 				$reg_data = $ldap_server->update_user($user_login, '', '', '', '', $NON_PROTECT['password'],'');
 			} else {
 				// On est en mode base de données
-				$reg_data = mysql_query("UPDATE utilisateurs SET password = '$reg_password_c' WHERE login='".$user_login."'");
-
+                                $reg_data = Session::change_password_gepi($user_login,$NON_PROTECT['password']);
 			}
 
 			//ajout Eric En cas de réinitialisation par l'admin, il faut forcer à la première connexion la changement du mot de passe

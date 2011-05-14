@@ -111,18 +111,15 @@ if ((isset($_POST['valid'])) and ($_POST['valid'] == "yes"))  {
 				}
 
 				// On fait la mise à jour sur la base de données
-				$reg_password_a_c = md5($NON_PROTECT['password_a']);
-				$old_password = mysql_result(mysql_query("SELECT password FROM utilisateurs WHERE (login = '".$session_gepi->login."')"), 0);
-				//if ($old_password == $reg_password_a_c) {
-				if (($old_password == $reg_password_a_c)||($old_password == md5(htmlentities($NON_PROTECT['password_a'])))||($old_password == md5(unhtmlentities($NON_PROTECT['password_a'])))) {
+				if ($session_gepi->authenticate_gepi($session_gepi->login,$NON_PROTECT['password_a'])) {
 					if  ($no_anti_inject_password_a == $no_anti_inject_password1) {
 						$msg = "ERREUR : Vous devez choisir un nouveau mot de passe différent de l'ancien.";
 					} else if (!(verif_mot_de_passe($NON_PROTECT['password1'],$flag))) {
 						$msg = "Erreur lors de la saisie du mot de passe (voir les recommandations), veuillez recommencer !";
 					} else {
-						$reg_password1 = md5($NON_PROTECT['password1']);
-						$reg = mysql_query("UPDATE utilisateurs SET password = '$reg_password1', change_mdp='n' WHERE login = '" . $_SESSION['login'] . "'");
+                        			$reg = Session::change_password_gepi($session_gepi->login,$NON_PROTECT['password1']);
 						if ($reg) {
+                                                        mysql_query("UPDATE utilisateurs SET change_mdp='n' WHERE login = '$session_gepi->login'");
 							$msg = "Le mot de passe a ete modifié !";
 							$no_modif = "no";
 							if (isset($_POST['retour'])) {

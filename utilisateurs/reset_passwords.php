@@ -516,7 +516,10 @@ while ($p < $nb_users) {
 
 				$tab_password[$user_login]=$new_password;
 
-				$save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
+                                $save_new_pass = Session::change_password_gepi($user_login,$new_password);
+                                if ($save_new_pass) {
+                                    mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
+                                }
 			}
 		}
 	}
@@ -565,7 +568,10 @@ while ($p < $nb_users) {
 					$new_password = '';
 				}
 			} else {
-					$save_new_pass = mysql_query("UPDATE utilisateurs SET password='" . md5($new_password) . "', change_mdp = 'y' WHERE login='" . $user_login . "'");
+                                $save_new_pass = Session::change_password_gepi($user_login,$new_password);
+                                if ($save_new_pass) {
+                                    mysql_query("UPDATE utilisateurs SET change_mdp = 'y' WHERE login='$user_login'");
+                                }
 			}
 		}
 	}

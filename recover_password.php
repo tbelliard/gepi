@@ -129,7 +129,7 @@ if (isset($_POST['no_anti_inject_password'])) {
 	// que le mot de passe répond aux critères de sécurité requis
 	$message = false;
 	// On récupère le statut de l'utilisateur associé au ticket, et l'heure d'expiration :
-	$req = mysql_query("SELECT statut, UNIX_TIMESTAMP(ticket_expiration) expiration FROM utilisateurs WHERE password_ticket = '" . $_GET['ticket'] . "'");
+	$req = mysql_query("SELECT statut, UNIX_TIMESTAMP(ticket_expiration) expiration, login FROM utilisateurs WHERE password_ticket = '" . $_GET['ticket'] . "'");
 	if (mysql_num_rows($req) != 1) {
 		$message = "Erreur : le lien n'est pas valide ! <a href='recover_password.php'>Cliquez ici</a> pour formuler une nouvelle demande de changement de mot de passe.";
 	} else {
@@ -153,9 +153,10 @@ if (isset($_POST['no_anti_inject_password'])) {
 			}
 			if (!$message) {
 				// Si aucune erreur n 'a été renvoyée, on enregistre le mot de passe
-				$reg_password = md5($NON_PROTECT["password"]);
-				$res = mysql_query("UPDATE utilisateurs SET password_ticket = '', password = '" . $reg_password . "' WHERE password_ticket = '" . $_GET['ticket'] . "'");
+                                $user_login = mysql_result($req, 0, "login");
+                                $res = Session::change_password_gepi($user_login,$NON_PROTECT["password"]);
 				if ($res) {
+                                        $res = mysql_query("UPDATE utilisateurs SET password_ticket = '' WHERE password_ticket = '" . $_GET['ticket'] . "'");
 					$update_successful = true;
 				} else {
 					$message = "Erreur lors de la mise à jour de votre mot de passe.";
