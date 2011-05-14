@@ -55,6 +55,12 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	protected $password;
 
 	/**
+	 * The value for the salt field.
+	 * @var        string
+	 */
+	protected $salt;
+
+	/**
 	 * The value for the email field.
 	 * @var        string
 	 */
@@ -321,6 +327,16 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 	public function getPassword()
 	{
 		return $this->password;
+	}
+
+	/**
+	 * Get the [salt] column value.
+	 * sel pour le hmac du mot de passe
+	 * @return     string
+	 */
+	public function getSalt()
+	{
+		return $this->salt;
 	}
 
 	/**
@@ -608,6 +624,26 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 
 		return $this;
 	} // setPassword()
+
+	/**
+	 * Set the value of [salt] column.
+	 * sel pour le hmac du mot de passe
+	 * @param      string $v new value
+	 * @return     UtilisateurProfessionnel The current object (for fluent API support)
+	 */
+	public function setSalt($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->salt !== $v) {
+			$this->salt = $v;
+			$this->modifiedColumns[] = UtilisateurProfessionnelPeer::SALT;
+		}
+
+		return $this;
+	} // setSalt()
 
 	/**
 	 * Set the value of [email] column.
@@ -989,19 +1025,20 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$this->prenom = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
 			$this->civilite = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
 			$this->password = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-			$this->email = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-			$this->show_email = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-			$this->statut = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-			$this->etat = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
-			$this->change_mdp = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-			$this->date_verrouillage = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-			$this->password_ticket = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-			$this->ticket_expiration = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->niveau_alerte = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-			$this->observation_securite = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-			$this->temp_dir = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-			$this->numind = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
-			$this->auth_mode = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
+			$this->salt = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+			$this->email = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+			$this->show_email = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+			$this->statut = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
+			$this->etat = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+			$this->change_mdp = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+			$this->date_verrouillage = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+			$this->password_ticket = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+			$this->ticket_expiration = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+			$this->niveau_alerte = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+			$this->observation_securite = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+			$this->temp_dir = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+			$this->numind = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
+			$this->auth_mode = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -1010,7 +1047,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 18; // 18 = UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 19; // 19 = UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS).
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating UtilisateurProfessionnel object", $e);
@@ -1608,42 +1645,45 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				return $this->getPassword();
 				break;
 			case 5:
-				return $this->getEmail();
+				return $this->getSalt();
 				break;
 			case 6:
-				return $this->getShowEmail();
+				return $this->getEmail();
 				break;
 			case 7:
-				return $this->getStatut();
+				return $this->getShowEmail();
 				break;
 			case 8:
-				return $this->getEtat();
+				return $this->getStatut();
 				break;
 			case 9:
-				return $this->getChangeMdp();
+				return $this->getEtat();
 				break;
 			case 10:
-				return $this->getDateVerrouillage();
+				return $this->getChangeMdp();
 				break;
 			case 11:
-				return $this->getPasswordTicket();
+				return $this->getDateVerrouillage();
 				break;
 			case 12:
-				return $this->getTicketExpiration();
+				return $this->getPasswordTicket();
 				break;
 			case 13:
-				return $this->getNiveauAlerte();
+				return $this->getTicketExpiration();
 				break;
 			case 14:
-				return $this->getObservationSecurite();
+				return $this->getNiveauAlerte();
 				break;
 			case 15:
-				return $this->getTempDir();
+				return $this->getObservationSecurite();
 				break;
 			case 16:
-				return $this->getNumind();
+				return $this->getTempDir();
 				break;
 			case 17:
+				return $this->getNumind();
+				break;
+			case 18:
 				return $this->getAuthMode();
 				break;
 			default:
@@ -1674,19 +1714,20 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 			$keys[2] => $this->getPrenom(),
 			$keys[3] => $this->getCivilite(),
 			$keys[4] => $this->getPassword(),
-			$keys[5] => $this->getEmail(),
-			$keys[6] => $this->getShowEmail(),
-			$keys[7] => $this->getStatut(),
-			$keys[8] => $this->getEtat(),
-			$keys[9] => $this->getChangeMdp(),
-			$keys[10] => $this->getDateVerrouillage(),
-			$keys[11] => $this->getPasswordTicket(),
-			$keys[12] => $this->getTicketExpiration(),
-			$keys[13] => $this->getNiveauAlerte(),
-			$keys[14] => $this->getObservationSecurite(),
-			$keys[15] => $this->getTempDir(),
-			$keys[16] => $this->getNumind(),
-			$keys[17] => $this->getAuthMode(),
+			$keys[5] => $this->getSalt(),
+			$keys[6] => $this->getEmail(),
+			$keys[7] => $this->getShowEmail(),
+			$keys[8] => $this->getStatut(),
+			$keys[9] => $this->getEtat(),
+			$keys[10] => $this->getChangeMdp(),
+			$keys[11] => $this->getDateVerrouillage(),
+			$keys[12] => $this->getPasswordTicket(),
+			$keys[13] => $this->getTicketExpiration(),
+			$keys[14] => $this->getNiveauAlerte(),
+			$keys[15] => $this->getObservationSecurite(),
+			$keys[16] => $this->getTempDir(),
+			$keys[17] => $this->getNumind(),
+			$keys[18] => $this->getAuthMode(),
 		);
 		return $result;
 	}
@@ -1734,42 +1775,45 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 				$this->setPassword($value);
 				break;
 			case 5:
-				$this->setEmail($value);
+				$this->setSalt($value);
 				break;
 			case 6:
-				$this->setShowEmail($value);
+				$this->setEmail($value);
 				break;
 			case 7:
-				$this->setStatut($value);
+				$this->setShowEmail($value);
 				break;
 			case 8:
-				$this->setEtat($value);
+				$this->setStatut($value);
 				break;
 			case 9:
-				$this->setChangeMdp($value);
+				$this->setEtat($value);
 				break;
 			case 10:
-				$this->setDateVerrouillage($value);
+				$this->setChangeMdp($value);
 				break;
 			case 11:
-				$this->setPasswordTicket($value);
+				$this->setDateVerrouillage($value);
 				break;
 			case 12:
-				$this->setTicketExpiration($value);
+				$this->setPasswordTicket($value);
 				break;
 			case 13:
-				$this->setNiveauAlerte($value);
+				$this->setTicketExpiration($value);
 				break;
 			case 14:
-				$this->setObservationSecurite($value);
+				$this->setNiveauAlerte($value);
 				break;
 			case 15:
-				$this->setTempDir($value);
+				$this->setObservationSecurite($value);
 				break;
 			case 16:
-				$this->setNumind($value);
+				$this->setTempDir($value);
 				break;
 			case 17:
+				$this->setNumind($value);
+				break;
+			case 18:
 				$this->setAuthMode($value);
 				break;
 		} // switch()
@@ -1801,19 +1845,20 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		if (array_key_exists($keys[2], $arr)) $this->setPrenom($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setCivilite($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setPassword($arr[$keys[4]]);
-		if (array_key_exists($keys[5], $arr)) $this->setEmail($arr[$keys[5]]);
-		if (array_key_exists($keys[6], $arr)) $this->setShowEmail($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setStatut($arr[$keys[7]]);
-		if (array_key_exists($keys[8], $arr)) $this->setEtat($arr[$keys[8]]);
-		if (array_key_exists($keys[9], $arr)) $this->setChangeMdp($arr[$keys[9]]);
-		if (array_key_exists($keys[10], $arr)) $this->setDateVerrouillage($arr[$keys[10]]);
-		if (array_key_exists($keys[11], $arr)) $this->setPasswordTicket($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setTicketExpiration($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setNiveauAlerte($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setObservationSecurite($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setTempDir($arr[$keys[15]]);
-		if (array_key_exists($keys[16], $arr)) $this->setNumind($arr[$keys[16]]);
-		if (array_key_exists($keys[17], $arr)) $this->setAuthMode($arr[$keys[17]]);
+		if (array_key_exists($keys[5], $arr)) $this->setSalt($arr[$keys[5]]);
+		if (array_key_exists($keys[6], $arr)) $this->setEmail($arr[$keys[6]]);
+		if (array_key_exists($keys[7], $arr)) $this->setShowEmail($arr[$keys[7]]);
+		if (array_key_exists($keys[8], $arr)) $this->setStatut($arr[$keys[8]]);
+		if (array_key_exists($keys[9], $arr)) $this->setEtat($arr[$keys[9]]);
+		if (array_key_exists($keys[10], $arr)) $this->setChangeMdp($arr[$keys[10]]);
+		if (array_key_exists($keys[11], $arr)) $this->setDateVerrouillage($arr[$keys[11]]);
+		if (array_key_exists($keys[12], $arr)) $this->setPasswordTicket($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setTicketExpiration($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setNiveauAlerte($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setObservationSecurite($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setTempDir($arr[$keys[16]]);
+		if (array_key_exists($keys[17], $arr)) $this->setNumind($arr[$keys[17]]);
+		if (array_key_exists($keys[18], $arr)) $this->setAuthMode($arr[$keys[18]]);
 	}
 
 	/**
@@ -1830,6 +1875,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		if ($this->isColumnModified(UtilisateurProfessionnelPeer::PRENOM)) $criteria->add(UtilisateurProfessionnelPeer::PRENOM, $this->prenom);
 		if ($this->isColumnModified(UtilisateurProfessionnelPeer::CIVILITE)) $criteria->add(UtilisateurProfessionnelPeer::CIVILITE, $this->civilite);
 		if ($this->isColumnModified(UtilisateurProfessionnelPeer::PASSWORD)) $criteria->add(UtilisateurProfessionnelPeer::PASSWORD, $this->password);
+		if ($this->isColumnModified(UtilisateurProfessionnelPeer::SALT)) $criteria->add(UtilisateurProfessionnelPeer::SALT, $this->salt);
 		if ($this->isColumnModified(UtilisateurProfessionnelPeer::EMAIL)) $criteria->add(UtilisateurProfessionnelPeer::EMAIL, $this->email);
 		if ($this->isColumnModified(UtilisateurProfessionnelPeer::SHOW_EMAIL)) $criteria->add(UtilisateurProfessionnelPeer::SHOW_EMAIL, $this->show_email);
 		if ($this->isColumnModified(UtilisateurProfessionnelPeer::STATUT)) $criteria->add(UtilisateurProfessionnelPeer::STATUT, $this->statut);
@@ -1909,6 +1955,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$copyObj->setPrenom($this->prenom);
 		$copyObj->setCivilite($this->civilite);
 		$copyObj->setPassword($this->password);
+		$copyObj->setSalt($this->salt);
 		$copyObj->setEmail($this->email);
 		$copyObj->setShowEmail($this->show_email);
 		$copyObj->setStatut($this->statut);
@@ -5161,6 +5208,7 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		$this->prenom = null;
 		$this->civilite = null;
 		$this->password = null;
+		$this->salt = null;
 		$this->email = null;
 		$this->show_email = null;
 		$this->statut = null;

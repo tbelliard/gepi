@@ -6,7 +6,8 @@
 		<column name="nom" type="VARCHAR" required="true" size="50" description="Nom de l'utilisateur" />
 		<column name="prenom" required="true" type="VARCHAR" size="50" description="Prenom de l'utilisateur" />
 		<column name="civilite" required="true" type="VARCHAR" size="5" description="Civilite" />
-		<column name="password" required="true" type="CHAR" size="32" description="Mot de passe" />
+		<column name="password" required="true" type="CHAR" size="128" description="Mot de passe" />
+		<column name="salt" required="false" type="CHAR" size="128" description="sel pour le hmac du mot de passe" />
 		<column name="email" required="true" type="VARCHAR" size="50" description="Email de l'utilisateur" />
 		<column name="show_email" required="true" type="VARCHAR" size="50" default="no" description="L'email de l'utilisateur est-il public (yes/no)" />
 		<column name="statut" required="true" type="VARCHAR" size="20" description="Statut de l'utilisateur" />

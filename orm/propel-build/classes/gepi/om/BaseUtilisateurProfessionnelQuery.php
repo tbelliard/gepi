@@ -11,6 +11,7 @@
  * @method     UtilisateurProfessionnelQuery orderByPrenom($order = Criteria::ASC) Order by the prenom column
  * @method     UtilisateurProfessionnelQuery orderByCivilite($order = Criteria::ASC) Order by the civilite column
  * @method     UtilisateurProfessionnelQuery orderByPassword($order = Criteria::ASC) Order by the password column
+ * @method     UtilisateurProfessionnelQuery orderBySalt($order = Criteria::ASC) Order by the salt column
  * @method     UtilisateurProfessionnelQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     UtilisateurProfessionnelQuery orderByShowEmail($order = Criteria::ASC) Order by the show_email column
  * @method     UtilisateurProfessionnelQuery orderByStatut($order = Criteria::ASC) Order by the statut column
@@ -30,6 +31,7 @@
  * @method     UtilisateurProfessionnelQuery groupByPrenom() Group by the prenom column
  * @method     UtilisateurProfessionnelQuery groupByCivilite() Group by the civilite column
  * @method     UtilisateurProfessionnelQuery groupByPassword() Group by the password column
+ * @method     UtilisateurProfessionnelQuery groupBySalt() Group by the salt column
  * @method     UtilisateurProfessionnelQuery groupByEmail() Group by the email column
  * @method     UtilisateurProfessionnelQuery groupByShowEmail() Group by the show_email column
  * @method     UtilisateurProfessionnelQuery groupByStatut() Group by the statut column
@@ -120,6 +122,7 @@
  * @method     UtilisateurProfessionnel findOneByPrenom(string $prenom) Return the first UtilisateurProfessionnel filtered by the prenom column
  * @method     UtilisateurProfessionnel findOneByCivilite(string $civilite) Return the first UtilisateurProfessionnel filtered by the civilite column
  * @method     UtilisateurProfessionnel findOneByPassword(string $password) Return the first UtilisateurProfessionnel filtered by the password column
+ * @method     UtilisateurProfessionnel findOneBySalt(string $salt) Return the first UtilisateurProfessionnel filtered by the salt column
  * @method     UtilisateurProfessionnel findOneByEmail(string $email) Return the first UtilisateurProfessionnel filtered by the email column
  * @method     UtilisateurProfessionnel findOneByShowEmail(string $show_email) Return the first UtilisateurProfessionnel filtered by the show_email column
  * @method     UtilisateurProfessionnel findOneByStatut(string $statut) Return the first UtilisateurProfessionnel filtered by the statut column
@@ -139,6 +142,7 @@
  * @method     array findByPrenom(string $prenom) Return UtilisateurProfessionnel objects filtered by the prenom column
  * @method     array findByCivilite(string $civilite) Return UtilisateurProfessionnel objects filtered by the civilite column
  * @method     array findByPassword(string $password) Return UtilisateurProfessionnel objects filtered by the password column
+ * @method     array findBySalt(string $salt) Return UtilisateurProfessionnel objects filtered by the salt column
  * @method     array findByEmail(string $email) Return UtilisateurProfessionnel objects filtered by the email column
  * @method     array findByShowEmail(string $show_email) Return UtilisateurProfessionnel objects filtered by the show_email column
  * @method     array findByStatut(string $statut) Return UtilisateurProfessionnel objects filtered by the statut column
@@ -369,6 +373,28 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(UtilisateurProfessionnelPeer::PASSWORD, $password, $comparison);
+	}
+
+	/**
+	 * Filter the query on the salt column
+	 * 
+	 * @param     string $salt The value to use as filter.
+	 *            Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
+	 */
+	public function filterBySalt($salt = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($salt)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $salt)) {
+				$salt = str_replace('*', '%', $salt);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(UtilisateurProfessionnelPeer::SALT, $salt, $comparison);
 	}
 
 	/**

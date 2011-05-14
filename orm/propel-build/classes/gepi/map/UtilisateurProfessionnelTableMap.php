@@ -41,7 +41,8 @@ class UtilisateurProfessionnelTableMap extends TableMap {
 		$this->addColumn('NOM', 'Nom', 'VARCHAR', true, 50, null);
 		$this->addColumn('PRENOM', 'Prenom', 'VARCHAR', true, 50, null);
 		$this->addColumn('CIVILITE', 'Civilite', 'VARCHAR', true, 5, null);
-		$this->addColumn('PASSWORD', 'Password', 'CHAR', true, 32, null);
+		$this->addColumn('PASSWORD', 'Password', 'CHAR', true, 128, null);
+		$this->addColumn('SALT', 'Salt', 'CHAR', false, 128, null);
 		$this->addColumn('EMAIL', 'Email', 'VARCHAR', true, 50, null);
 		$this->addColumn('SHOW_EMAIL', 'ShowEmail', 'VARCHAR', true, 50, 'no');
 		$this->addColumn('STATUT', 'Statut', 'VARCHAR', true, 20, null);

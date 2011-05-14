@@ -26,7 +26,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	const TM_CLASS = 'UtilisateurProfessionnelTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 18;
+	const NUM_COLUMNS = 19;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
@@ -45,6 +45,9 @@ abstract class BaseUtilisateurProfessionnelPeer {
 
 	/** the column name for the PASSWORD field */
 	const PASSWORD = 'utilisateurs.PASSWORD';
+
+	/** the column name for the SALT field */
+	const SALT = 'utilisateurs.SALT';
 
 	/** the column name for the EMAIL field */
 	const EMAIL = 'utilisateurs.EMAIL';
@@ -101,12 +104,12 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	private static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Login', 'Nom', 'Prenom', 'Civilite', 'Password', 'Email', 'ShowEmail', 'Statut', 'Etat', 'ChangeMdp', 'DateVerrouillage', 'PasswordTicket', 'TicketExpiration', 'NiveauAlerte', 'ObservationSecurite', 'TempDir', 'Numind', 'AuthMode', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('login', 'nom', 'prenom', 'civilite', 'password', 'email', 'showEmail', 'statut', 'etat', 'changeMdp', 'dateVerrouillage', 'passwordTicket', 'ticketExpiration', 'niveauAlerte', 'observationSecurite', 'tempDir', 'numind', 'authMode', ),
-		BasePeer::TYPE_COLNAME => array (self::LOGIN, self::NOM, self::PRENOM, self::CIVILITE, self::PASSWORD, self::EMAIL, self::SHOW_EMAIL, self::STATUT, self::ETAT, self::CHANGE_MDP, self::DATE_VERROUILLAGE, self::PASSWORD_TICKET, self::TICKET_EXPIRATION, self::NIVEAU_ALERTE, self::OBSERVATION_SECURITE, self::TEMP_DIR, self::NUMIND, self::AUTH_MODE, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('LOGIN', 'NOM', 'PRENOM', 'CIVILITE', 'PASSWORD', 'EMAIL', 'SHOW_EMAIL', 'STATUT', 'ETAT', 'CHANGE_MDP', 'DATE_VERROUILLAGE', 'PASSWORD_TICKET', 'TICKET_EXPIRATION', 'NIVEAU_ALERTE', 'OBSERVATION_SECURITE', 'TEMP_DIR', 'NUMIND', 'AUTH_MODE', ),
-		BasePeer::TYPE_FIELDNAME => array ('login', 'nom', 'prenom', 'civilite', 'password', 'email', 'show_email', 'statut', 'etat', 'change_mdp', 'date_verrouillage', 'password_ticket', 'ticket_expiration', 'niveau_alerte', 'observation_securite', 'temp_dir', 'numind', 'auth_mode', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
+		BasePeer::TYPE_PHPNAME => array ('Login', 'Nom', 'Prenom', 'Civilite', 'Password', 'Salt', 'Email', 'ShowEmail', 'Statut', 'Etat', 'ChangeMdp', 'DateVerrouillage', 'PasswordTicket', 'TicketExpiration', 'NiveauAlerte', 'ObservationSecurite', 'TempDir', 'Numind', 'AuthMode', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('login', 'nom', 'prenom', 'civilite', 'password', 'salt', 'email', 'showEmail', 'statut', 'etat', 'changeMdp', 'dateVerrouillage', 'passwordTicket', 'ticketExpiration', 'niveauAlerte', 'observationSecurite', 'tempDir', 'numind', 'authMode', ),
+		BasePeer::TYPE_COLNAME => array (self::LOGIN, self::NOM, self::PRENOM, self::CIVILITE, self::PASSWORD, self::SALT, self::EMAIL, self::SHOW_EMAIL, self::STATUT, self::ETAT, self::CHANGE_MDP, self::DATE_VERROUILLAGE, self::PASSWORD_TICKET, self::TICKET_EXPIRATION, self::NIVEAU_ALERTE, self::OBSERVATION_SECURITE, self::TEMP_DIR, self::NUMIND, self::AUTH_MODE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('LOGIN', 'NOM', 'PRENOM', 'CIVILITE', 'PASSWORD', 'SALT', 'EMAIL', 'SHOW_EMAIL', 'STATUT', 'ETAT', 'CHANGE_MDP', 'DATE_VERROUILLAGE', 'PASSWORD_TICKET', 'TICKET_EXPIRATION', 'NIVEAU_ALERTE', 'OBSERVATION_SECURITE', 'TEMP_DIR', 'NUMIND', 'AUTH_MODE', ),
+		BasePeer::TYPE_FIELDNAME => array ('login', 'nom', 'prenom', 'civilite', 'password', 'salt', 'email', 'show_email', 'statut', 'etat', 'change_mdp', 'date_verrouillage', 'password_ticket', 'ticket_expiration', 'niveau_alerte', 'observation_securite', 'temp_dir', 'numind', 'auth_mode', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
 	);
 
 	/**
@@ -116,12 +119,12 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	private static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Login' => 0, 'Nom' => 1, 'Prenom' => 2, 'Civilite' => 3, 'Password' => 4, 'Email' => 5, 'ShowEmail' => 6, 'Statut' => 7, 'Etat' => 8, 'ChangeMdp' => 9, 'DateVerrouillage' => 10, 'PasswordTicket' => 11, 'TicketExpiration' => 12, 'NiveauAlerte' => 13, 'ObservationSecurite' => 14, 'TempDir' => 15, 'Numind' => 16, 'AuthMode' => 17, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('login' => 0, 'nom' => 1, 'prenom' => 2, 'civilite' => 3, 'password' => 4, 'email' => 5, 'showEmail' => 6, 'statut' => 7, 'etat' => 8, 'changeMdp' => 9, 'dateVerrouillage' => 10, 'passwordTicket' => 11, 'ticketExpiration' => 12, 'niveauAlerte' => 13, 'observationSecurite' => 14, 'tempDir' => 15, 'numind' => 16, 'authMode' => 17, ),
-		BasePeer::TYPE_COLNAME => array (self::LOGIN => 0, self::NOM => 1, self::PRENOM => 2, self::CIVILITE => 3, self::PASSWORD => 4, self::EMAIL => 5, self::SHOW_EMAIL => 6, self::STATUT => 7, self::ETAT => 8, self::CHANGE_MDP => 9, self::DATE_VERROUILLAGE => 10, self::PASSWORD_TICKET => 11, self::TICKET_EXPIRATION => 12, self::NIVEAU_ALERTE => 13, self::OBSERVATION_SECURITE => 14, self::TEMP_DIR => 15, self::NUMIND => 16, self::AUTH_MODE => 17, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('LOGIN' => 0, 'NOM' => 1, 'PRENOM' => 2, 'CIVILITE' => 3, 'PASSWORD' => 4, 'EMAIL' => 5, 'SHOW_EMAIL' => 6, 'STATUT' => 7, 'ETAT' => 8, 'CHANGE_MDP' => 9, 'DATE_VERROUILLAGE' => 10, 'PASSWORD_TICKET' => 11, 'TICKET_EXPIRATION' => 12, 'NIVEAU_ALERTE' => 13, 'OBSERVATION_SECURITE' => 14, 'TEMP_DIR' => 15, 'NUMIND' => 16, 'AUTH_MODE' => 17, ),
-		BasePeer::TYPE_FIELDNAME => array ('login' => 0, 'nom' => 1, 'prenom' => 2, 'civilite' => 3, 'password' => 4, 'email' => 5, 'show_email' => 6, 'statut' => 7, 'etat' => 8, 'change_mdp' => 9, 'date_verrouillage' => 10, 'password_ticket' => 11, 'ticket_expiration' => 12, 'niveau_alerte' => 13, 'observation_securite' => 14, 'temp_dir' => 15, 'numind' => 16, 'auth_mode' => 17, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
+		BasePeer::TYPE_PHPNAME => array ('Login' => 0, 'Nom' => 1, 'Prenom' => 2, 'Civilite' => 3, 'Password' => 4, 'Salt' => 5, 'Email' => 6, 'ShowEmail' => 7, 'Statut' => 8, 'Etat' => 9, 'ChangeMdp' => 10, 'DateVerrouillage' => 11, 'PasswordTicket' => 12, 'TicketExpiration' => 13, 'NiveauAlerte' => 14, 'ObservationSecurite' => 15, 'TempDir' => 16, 'Numind' => 17, 'AuthMode' => 18, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('login' => 0, 'nom' => 1, 'prenom' => 2, 'civilite' => 3, 'password' => 4, 'salt' => 5, 'email' => 6, 'showEmail' => 7, 'statut' => 8, 'etat' => 9, 'changeMdp' => 10, 'dateVerrouillage' => 11, 'passwordTicket' => 12, 'ticketExpiration' => 13, 'niveauAlerte' => 14, 'observationSecurite' => 15, 'tempDir' => 16, 'numind' => 17, 'authMode' => 18, ),
+		BasePeer::TYPE_COLNAME => array (self::LOGIN => 0, self::NOM => 1, self::PRENOM => 2, self::CIVILITE => 3, self::PASSWORD => 4, self::SALT => 5, self::EMAIL => 6, self::SHOW_EMAIL => 7, self::STATUT => 8, self::ETAT => 9, self::CHANGE_MDP => 10, self::DATE_VERROUILLAGE => 11, self::PASSWORD_TICKET => 12, self::TICKET_EXPIRATION => 13, self::NIVEAU_ALERTE => 14, self::OBSERVATION_SECURITE => 15, self::TEMP_DIR => 16, self::NUMIND => 17, self::AUTH_MODE => 18, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('LOGIN' => 0, 'NOM' => 1, 'PRENOM' => 2, 'CIVILITE' => 3, 'PASSWORD' => 4, 'SALT' => 5, 'EMAIL' => 6, 'SHOW_EMAIL' => 7, 'STATUT' => 8, 'ETAT' => 9, 'CHANGE_MDP' => 10, 'DATE_VERROUILLAGE' => 11, 'PASSWORD_TICKET' => 12, 'TICKET_EXPIRATION' => 13, 'NIVEAU_ALERTE' => 14, 'OBSERVATION_SECURITE' => 15, 'TEMP_DIR' => 16, 'NUMIND' => 17, 'AUTH_MODE' => 18, ),
+		BasePeer::TYPE_FIELDNAME => array ('login' => 0, 'nom' => 1, 'prenom' => 2, 'civilite' => 3, 'password' => 4, 'salt' => 5, 'email' => 6, 'show_email' => 7, 'statut' => 8, 'etat' => 9, 'change_mdp' => 10, 'date_verrouillage' => 11, 'password_ticket' => 12, 'ticket_expiration' => 13, 'niveau_alerte' => 14, 'observation_securite' => 15, 'temp_dir' => 16, 'numind' => 17, 'auth_mode' => 18, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
 	);
 
 	/**
@@ -198,6 +201,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::PRENOM);
 			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::CIVILITE);
 			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::PASSWORD);
+			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::SALT);
 			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::EMAIL);
 			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::SHOW_EMAIL);
 			$criteria->addSelectColumn(UtilisateurProfessionnelPeer::STATUT);
@@ -217,6 +221,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			$criteria->addSelectColumn($alias . '.PRENOM');
 			$criteria->addSelectColumn($alias . '.CIVILITE');
 			$criteria->addSelectColumn($alias . '.PASSWORD');
+			$criteria->addSelectColumn($alias . '.SALT');
 			$criteria->addSelectColumn($alias . '.EMAIL');
 			$criteria->addSelectColumn($alias . '.SHOW_EMAIL');
 			$criteria->addSelectColumn($alias . '.STATUT');
