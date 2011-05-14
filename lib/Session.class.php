@@ -736,10 +736,10 @@ class Session {
                 if (mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"))>0) {
                     $salt = md5(uniqid(rand(), 1));
                     $hmac_password = hash_hmac('sha256', $password, $salt);
-                    $result = mysql_query("UPDATE utilisateurs SET password='$hmac_password', salt = '$salt', change_mdp = 'y' WHERE login='" . $user_login . "'");
+                    $result = mysql_query("UPDATE utilisateurs SET password='$hmac_password', salt = '$salt' WHERE login='" . $user_login . "'");
                     return $result;
                 } else {
-                    $result = mysql_query("UPDATE utilisateurs SET password='".md5($password)."', change_mdp = 'y' WHERE login='" . $user_login . "'");
+                    $result = mysql_query("UPDATE utilisateurs SET password='".md5($password)."' WHERE login='" . $user_login . "'");
                     return $result;
                 }
 
