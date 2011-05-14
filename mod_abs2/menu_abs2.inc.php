@@ -25,13 +25,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-//echo "<ul class='css-tabs' id='menutabs'>\n";
-
-// $onglet_abs = reset(explode("?", basename($_SERVER["REQUEST_URI"])));
+//fichier qui affiche un menu sous forme d'onglets
+//à chaque onglets <li> on teste si c'est l'onglet courant pour le mettre en surimpression
+//et on mets dans la session l'url pour revenir sur le même onglet à la prochaine visite d'absence 2 (par défault l'url courante
 $basename_serveur=explode("?", basename($_SERVER["REQUEST_URI"]));
-$onglet_abs = reset($basename_serveur);
-
-$_SESSION['abs2_onglet'] = $onglet_abs;
+$url_end = reset($basename_serveur);
+$_SESSION['abs2_onglet'] = $url_end;
 // Tests à remplacer par des tests sur les droits attribués aux statuts
 if(($_SESSION['statut']=='cpe')||
     ($_SESSION['statut']=='scolarite')) {
@@ -39,61 +38,74 @@ if(($_SESSION['statut']=='cpe')||
     echo "<ul class='css-tabs' id='menutabs' style='font-size:85%'>\n";
 
     echo "<li><a href='tableau_des_appels.php' ";
-    if($onglet_abs=='absences_du_jour.php'
-	    || $onglet_abs=='tableau_des_appels.php'
-	    || $onglet_abs=='bilan_du_jour.php'
-	    || $onglet_abs=='extraction_saisies.php'
-        || $onglet_abs=='bilan_individuel.php') {echo "class='current' ";}
+    if($url_end=='absences_du_jour.php'
+	    || $url_end=='tableau_des_appels.php'
+	    || $url_end=='bilan_du_jour.php'
+	    || $url_end=='extraction_saisies.php'
+        || $url_end=='bilan_individuel.php') {echo "class='current' ";}
     echo "title='Bilans'>Bilans</a></li>\n";
 
     echo "<li><a href='saisir_groupe.php' ";
-    if($onglet_abs=='saisir_groupe.php' || $onglet_abs=='enregistrement_saisie_groupe.php') {echo "class='current' ";}
+    if($url_end=='saisir_groupe.php' || $url_end=='enregistrement_saisie_groupe.php') {
+        echo "class='current' ";
+        $_SESSION['abs2_onglet'] = 'saisir_groupe.php';
+    }
     echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
 
     echo "<li><a href='saisir_eleve.php' ";
-    if($onglet_abs=='saisir_eleve.php' || $onglet_abs=='enregistrement_saisie_eleve.php') {echo "class='current' ";}
+    if($url_end=='saisir_eleve.php' || $url_end=='enregistrement_saisie_eleve.php') {
+        echo "class='current' ";
+        $_SESSION['abs2_onglet'] = 'saisir_eleve.php';
+    }
     echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";
 
     echo "<li><a href='liste_saisies_selection_traitement.php' ";
-    if($onglet_abs=='liste_saisies_selection_traitement.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
+    if($url_end=='liste_saisies_selection_traitement.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
 
     echo "<li><a href='visu_saisie.php' ";
-    if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
-    else {echo "style='background-color:#e6f8e7;' ";}
+    if($url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
+    else {
+        echo "style='background-color:#e6f8e7;' ";
+        $_SESSION['abs2_onglet'] = 'visu_saisie.php';
+    }
     echo "title='Visualiser une saisie'>Saisie</a></li>\n";
 
     echo "<li><a href='liste_traitements.php' ";
-    if($onglet_abs=='liste_traitements.php') {echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";}
+    if($url_end=='liste_traitements.php') {echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";}
     else {echo "style='background-color:#f9f9de;' ";}
     echo "title='Traitement'>Liste des traitements</a></li>\n";
 
     echo "<li><a href='visu_traitement.php' ";
-    if($onglet_abs=='visu_traitement.php' || $onglet_abs=='enregistrement_modif_traitement.php') {echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";}
-    else {echo "style='background-color:#f9f9de;' ";}
+    if($url_end=='visu_traitement.php' || $url_end=='enregistrement_modif_traitement.php') {
+        echo "class='current' style='background-color:#ebedb5; border-bottom:2px solid #ebedb5;' ";
+        $_SESSION['abs2_onglet'] = 'visu_traitement.php';
+    } else {echo "style='background-color:#f9f9de;' ";}
     echo "title='Traitement'>Traitement</a></li>\n";
 
     echo "<li><a href='liste_notifications.php' ";
-    if($onglet_abs=='liste_notifications.php') {echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";}
+    if($url_end=='liste_notifications.php') {echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";}
     else {echo "style='background-color:#ecf6f8;' ";}
     echo "title='Notifications'>Liste des notifications</a></li>\n";
 
     echo "<li><a href='visu_notification.php' ";
-    if($onglet_abs=='visu_notification.php' || $onglet_abs=='enregistrement_modif_notification.php' || $onglet_abs=='generer_notification.php') {echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";}
-    else {echo "style='background-color:#ecf6f8;' ";}
+    if($url_end=='visu_notification.php' || $url_end=='enregistrement_modif_notification.php' || $url_end=='generer_notification.php') {
+        echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";
+        $_SESSION['abs2_onglet'] = 'visu_notification.php';
+    } else {echo "style='background-color:#ecf6f8;' ";}
     echo "title='Notification'>Notification</a></li>\n";
 
     echo "<li><a href='generer_notifications_par_lot.php' ";
-    if($onglet_abs=='generer_notifications_par_lot.php') {echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";}
+    if($url_end=='generer_notifications_par_lot.php') {echo "class='current' style='background-color:#c7e3ec; border-bottom:2px solid #c7e3ec;' ";}
     else {echo "style='background-color:#ecf6f8;' ";}
     echo "title='Envoi par lot'>Envoi par lot</a></li>\n";
 
-    if($onglet_abs=='saisir_eleve.php' || $onglet_abs=='enregistrement_saisie_eleve.php' || $onglet_abs=='saisir_groupe.php' || $onglet_abs=='enregistrement_saisie_groupe.php') {
+    if($url_end=='saisir_eleve.php' || $url_end=='enregistrement_saisie_eleve.php' || $url_end=='saisir_groupe.php' || $url_end=='enregistrement_saisie_groupe.php') {
 	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Saisie_cpe">wiki</a></div>';
-    } else if($onglet_abs=='liste_notifications.php') {
+    } else if($url_end=='liste_notifications.php') {
 	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Suivi">wiki</a></div>';
-    } else if($onglet_abs=='tableau_des_appels.php'|| $onglet_abs=='absences_du_jour.php'||$onglet_abs=='bilan_du_jour.php'||$onglet_abs=='totaux_du_jour.php'||$onglet_abs=='extraction_saisies.php'||$onglet_abs=='extraction_demi-journees.php'||$onglet_abs=='bilan_individuel.php') {
+    } else if($url_end=='tableau_des_appels.php'|| $url_end=='absences_du_jour.php'||$url_end=='bilan_du_jour.php'||$url_end=='totaux_du_jour.php'||$url_end=='extraction_saisies.php'||$url_end=='extraction_demi-journees.php'||$url_end=='bilan_individuel.php') {
 	echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Bilans">wiki</a></div>';
     } else {
     echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Traitement_notification">wiki</a></div>';
@@ -106,23 +118,28 @@ if(($_SESSION['statut']=='cpe')||
     echo "<ul class='css-tabs' id='menutabs'>\n";
 
     echo "<li><a href='saisir_groupe.php' ";
-    if($onglet_abs=='saisir_groupe.php' || $onglet_abs=='enregistrement_saisie_groupe.php') {echo "class='current' ";}
+    if($url_end=='saisir_groupe.php' || $url_end=='enregistrement_saisie_groupe.php') {
+        echo "class='current' ";
+        $_SESSION['abs2_onglet'] = 'saisir_groupe.php';
+    }
     echo "title='Saisir des absences et des retards pour un groupe'>Saisir un groupe</a></li>\n";
 
     echo "<li><a href='visu_saisie.php' ";
-    if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
-    else {echo "style='background-color:#e6f8e7;' ";}
+    if($url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {
+        echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";
+        $_SESSION['abs2_onglet'] = 'visu_saisie.php';
+    } else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Visualiser une saisie'>Saisie</a></li>\n";
 
     echo "<li><a href='liste_saisies.php' ";
-    if($onglet_abs=='liste_saisies.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
+    if($url_end=='liste_saisies.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
     else {echo "style='background-color:#e6f8e7;' ";}
     echo "title='Liste des saisies'>Liste des saisies</a></li>\n";    
 
     if(!$utilisateur->getClasses()->isEmpty()){
-    echo "<li><a href='bilan_individuel.php' ";
-    if($onglet_abs=='bilan_individuel.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
-    echo "title='Bilans'>Bilan individuel</a></li>\n";
+        echo "<li><a href='bilan_individuel.php' ";
+        if($url_end=='bilan_individuel.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
+        echo "title='Bilans'>Bilan individuel</a></li>\n";
     }
 
     echo '<div style="float :right"><a href="http://www.sylogix.org/projects/gepi/wiki/Fond_de_salle">wiki</a></div>';
@@ -135,27 +152,29 @@ if(($_SESSION['statut']=='cpe')||
 
     if(acces('/mod_abs2/saisir_eleve.php','autre')) {
         echo "<li><a href='saisir_eleve.php' ";
-        if($onglet_abs=='saisir_eleve.php') {echo "class='current' ";}
+        if($url_end=='saisir_eleve.php') {echo "class='current' ";}
         echo "title='Saisir pour un eleve'>Saisir un élève</a></li>\n";        
     
         echo "<li><a href='visu_saisie.php' ";
-        if($onglet_abs=='visu_saisie.php' || $onglet_abs=='enregistrement_modif_saisie.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
-        else {echo "style='background-color:#e6f8e7;' ";}
+        if($url_end=='visu_saisie.php' || $url_end=='enregistrement_modif_saisie.php') {
+            echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";
+            $_SESSION['abs2_onglet'] = 'visu_saisie.php';
+        } else {echo "style='background-color:#e6f8e7;' ";}
         echo "title='Visualiser une saisie'>Saisie</a></li>\n";
 
         echo "<li><a href='liste_saisies.php' ";
-        if($onglet_abs=='liste_saisies.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
+        if($url_end=='liste_saisies.php') {echo "class='current' style='background-color:#cae7cb; border-bottom:2px solid #cae7cb;' ";}
         else {echo "style='background-color:#e6f8e7;' ";}
         echo "title='Liste des saisies'>Liste des saisies</a></li>\n";
     }
     if(acces('/mod_abs2/bilan_individuel.php','autre')) {
         echo "<li><a href='bilan_individuel.php' ";
-        if($onglet_abs=='bilan_individuel.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
+        if($url_end=='bilan_individuel.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
         echo "title='Bilan individuel'>Bilan individuel</a></li>\n";
     }
     if(acces('/mod_abs2/totaux_du_jour.php','autre')) {
         echo "<li><a href='totaux_du_jour.php' ";
-        if($onglet_abs=='totaux_du_jour.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
+        if($url_end=='totaux_du_jour.php') {echo "class='current' border-bottom:2px solid #cae7cb;' ";}
         echo "title='Totaux du jour'>Totaux du jour</a></li>\n";
     }
 
