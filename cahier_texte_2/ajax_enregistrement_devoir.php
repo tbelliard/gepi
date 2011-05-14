@@ -137,15 +137,27 @@ $ctTravailAFaire->setDateCt($date_devoir);
 $ctTravailAFaire->setGroupe($groupe);
 //$ctTravailAFaire->setHeureEntry($heure_entry);
 
+/*
+if(isset($id_devoir)) {
+	$f=fopen("/tmp/gepi_test.txt","a+");
+	fwrite($f, strftime("%d/%m/%Y %H:%M:%S").": id_devoir=$id_devoir\n");
+	fclose($f);
+}
+*/
+
+$date_visibilite_mal_formatee="n";
 //echo "$heure_visibilite<br />\n";
 if(!preg_match("/^[0-9]{1,2}:[0-9]{1,2}$/",$heure_visibilite)) {
 	$heure_courante=strftime("%H:%M");
+	if((!isset($id_devoir))||($id_devoir=="")) {
+		echo "Heure de visibilité mal formatée : $heure_visibilite.<br />L'heure courante sera utilisée : $heure_courante";
+	}
+	else {
+		echo "Heure de visibilité mal formatée : $heure_visibilite.<br />La date de visibilité ne sera pas modifiée (maintenue à ".get_date_heure_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve()).").";
+	}
 
-	echo "Heure de visibilité mal formatée : $heure_visibilite";
-	die();
-
-	//echo "Heure de visibilité mal formatée : $heure_visibilite.<br />L'heure courante sera utilisée : $heure_courante";
 	$heure_visibilite=$heure_courante;
+	$date_visibilite_mal_formatee="y";
 }
 $tab_tmp=explode(":",$heure_visibilite);
 $heure_v=$tab_tmp[0];
@@ -154,18 +166,34 @@ $min_v=$tab_tmp[1];
 //if(!preg_match("#^[0-9]{1,2}/[0-9]{1,2}/[0-9]{2,4}$#",$jour_visibilite)) {
 if(!preg_match( '`^\d{1,2}/\d{1,2}/\d{4}$`', $jour_visibilite)) {
 	$jour_courant=strftime("%d/%m/%Y");
-	echo "Le jour de visibilité est mal formaté : $jour_visibilite";
-	die();
-	//echo "Le jour de visibilité est mal formaté : $jour_visibilite. Le jour courant sera utilisé : $jour_courant";
-	//echo "alert('Le jour de visibilité est mal formaté : $jour_visibilite. Le jour courant sera utilisé : $jour_courant')";
+
+	/*
+	$f=fopen("/tmp/gepi_test.txt","a+");
+	fwrite($f, "Date mal formatee: $jour_visibilite\n");
+	fclose($f);
+	*/
+
+	if((!isset($id_devoir))||($id_devoir=="")) {
+		echo "Le jour de visibilité est mal formaté : $jour_visibilite.<br />Le jour courant sera utilisé : $jour_courant";
+	}
+	else {
+		echo "Le jour de visibilité mal formaté : $jour_visibilite.<br />La date de visibilité ne sera pas modifiée (maintenue à ".get_date_heure_from_mysql_date($ctTravailAFaire->getDateVisibiliteEleve()).").\n";
+	}
+
 	$jour_visibilite=$jour_courant;
+	$date_visibilite_mal_formatee="y";
 }
 $tab_tmp=explode("/",$jour_visibilite);
 $jour_v=$tab_tmp[0];
 $mois_v=$tab_tmp[1];
 $annee_v=$tab_tmp[2];
 
-$date_visibilite_eleve=mktime($heure_v,$min_v,0,$mois_v,$jour_v,$annee_v);
+if((!isset($id_devoir))||($id_devoir=="")||($date_visibilite_mal_formatee=="n")) {
+	$date_visibilite_eleve=mktime($heure_v,$min_v,0,$mois_v,$jour_v,$annee_v);
+}
+else {
+	$date_visibilite_eleve=$ctTravailAFaire->getDateVisibiliteEleve();
+}
 $ctTravailAFaire->setDateVisibiliteEleve($date_visibilite_eleve);
 
 //enregistrement de l'objet
