@@ -650,91 +650,35 @@ class Session {
 	private function authenticate_gepi($_login,$_password) {
 		global $debug_test_mdp, $debug_test_mdp_file;
 
-		/*
-		if ($this->use_uppercase_login($_login)) {
-			# On passe le login en majuscule pour toute la session.
-			$_login = strtoupper($_login);
-		}
-		*/
 		$sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
 		$query = mysql_query($sql);
+                $db_password = mysql_result($query, 0, "password");
 		if (mysql_num_rows($query) == "1") {
 			# Un compte existe avec ce login
-			if (mysql_result($query, 0, "password") == md5($_password)) {
-				# Le mot de passe correspond. C'est bon !
-				//$this->login = $_login;
-				// On ne prend plus le login fourni dans le formulaire, mais celui dans la base pour avoir la même casse que dans la base (après la 1.5.3.1)
-				$this->login = mysql_result($query, 0, "login");
-				$this->current_auth_mode = "gepi";
-
-				if($debug_test_mdp=="y") {
-					$f_tmp=fopen($debug_test_mdp_file,"a+");
-					fwrite($f_tmp,"Authentification OK sans modification\n");
-					fclose($f_tmp);
-				}
-				return true;
+			if ($db_password == md5($_password)) {
+                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification OK sans modification\n');
 			} else {
-				//if(getSettingValue('auth_tout_terrain')=="y") {
-					if(getSettingValue('filtrage_html')=='htmlpurifier') {
-
-						$tmp_mdp = get_html_translation_table(HTML_ENTITIES);
-						$tmp_mdp = array_flip ($tmp_mdp);
-						$_password_unhtmlentities = strtr ($_password, $tmp_mdp);
-
-						//if (mysql_result($query, 0, "password") == md5(unhtmlentities($_password))) {
-						if (mysql_result($query, 0, "password") == md5($_password_unhtmlentities)) {
-							# Le mot de passe correspond. C'est bon !
-							//$this->login = $_login;
-							// On ne prend plus le login fourni dans le formulaire, mais celui dans la base pour avoir la même casse que dans la base (après la 1.5.3.1)
-							$this->login = mysql_result($query, 0, "login");
-							$this->current_auth_mode = "gepi";
-	
-							if($debug_test_mdp=="y") {
-								$f_tmp=fopen($debug_test_mdp_file,"a+");
-								fwrite($f_tmp,"Authentification OK avec unhtmlentities()\n");
-								fclose($f_tmp);
-							}
-							return true;
-						} else {
-	
-							if($debug_test_mdp=="y") {
-								$f_tmp=fopen($debug_test_mdp_file,"a+");
-								fwrite($f_tmp,"Authentification en echec avec et sans modification unhtmlentities\n");
-								fclose($f_tmp);
-							}
-							return false;
-						}
-					}
-					else {
-						if (mysql_result($query, 0, "password") == md5(htmlentities($_password))) {
-							# Le mot de passe correspond. C'est bon !
-							//$this->login = $_login;
-							// On ne prend plus le login fourni dans le formulaire, mais celui dans la base pour avoir la même casse que dans la base (après la 1.5.3.1)
-							$this->login = mysql_result($query, 0, "login");
-							$this->current_auth_mode = "gepi";
-	
-							if($debug_test_mdp=="y") {
-								$f_tmp=fopen($debug_test_mdp_file,"a+");
-								fwrite($f_tmp,"Authentification OK avec htmlentities()\n");
-								fclose($f_tmp);
-							}
-							return true;
-						} else {
-							if($debug_test_mdp=="y") {
-								$f_tmp=fopen($debug_test_mdp_file,"a+");
-								fwrite($f_tmp,"Authentification en echec avec et sans modification htmlentities\n");
-								fclose($f_tmp);
-							}
-							return false;
-						}
-					}
-				/*
-				}
-				else {
-					return false;
-				}
-				*/
+                                if(getSettingValue('filtrage_html')=='htmlpurifier') {
+                                        $tmp_mdp = array_flip (get_html_translation_table(HTML_ENTITIES));
+                                        $_password_unhtmlentities = strtr ($_password, $tmp_mdp);
+                                        if ($db_password == md5($_password_unhtmlentities)) {
+                                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification OK avec unhtmlentities()\n');
+                                        } else {
+                                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification en echec avec et sans modification unhtmlentities\n');
+                                                return false;
+                                        }
+                                } else {
+                                        if ($db_password == md5(htmlentities($_password))) {
+                                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification OK avec htmlentities()\n');
+                                        } else {
+                                                $this->debug_login_mdp($debug_test_mdp, $debug_test_mdp_file, 'Authentification en echec avec et sans modification htmlentities\n');
+                                                return false;
+                                        }
+                                }
 			}
+                        $this->login = mysql_result($query, 0, "login");
+                        $this->current_auth_mode = "gepi";
+                        return true;
 		} else {
 			# Le login est erroné (n'existe pas dans la base)
 			return false;
@@ -1461,5 +1405,15 @@ class Session {
       return true;
     }
   }
+
+  # écrit dans un fichier un message de debug
+  static private function debug_login_mdp($debug_test_mdp,$debug_test_mdp_file,$debug_test_mdp_message) {
+    if($debug_test_mdp=="y") {
+            $f_tmp=fopen($debug_test_mdp_file,"a+");
+            fwrite($f_tmp,$debug_test_mdp_message);
+            fclose($f_tmp);
+    } 
+  }
 }
+
 ?>
