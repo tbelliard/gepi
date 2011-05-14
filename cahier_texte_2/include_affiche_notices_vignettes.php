@@ -48,6 +48,10 @@ function affiche_devoir_vignette($devoir, $couleur_bord_tableau_notice, $color_f
 								new Ajax.Updater('affichage_derniere_notice', 'ajax_affichage_dernieres_notices.php', {onComplete : function () {updateDivModification();}});
 								return false;
 							\"><img style=\"border: 0px;\" src=\"../images/delete16.png\" alt=\"supprimer\" title=\"supprimer\" /></a>\n");
+
+		if(mysql_date_to_unix_timestamp($devoir->getDateVisibiliteEleve())>time()) {
+			$html_balise .=("<img src=\"../images/icons/visible.png\" width=\"19\" height=\"16\" alt=\"Date de visibilité de la notice pour les élèves\" title=\"Date de visibilité de la notice pour les élèves\" /><span style='font-size: xx-small; color:red;'>&nbsp;".get_date_heure_from_mysql_date($devoir->getDateVisibiliteEleve())."</span>\n");
+		}
 	} else {
 		$html_balise .= "<i><span  class=\"red\">Notice signée</span></i>";
 	}
