@@ -178,7 +178,8 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
 
-	if($ajout_headers!='') {$ajout_headers="\r\n".$ajout_headers;}
+	// Si on ajoute un retour à la ligne de plus, l'ajout_headers est mis dans le corps du message
+	//if($ajout_headers!='') {$ajout_headers="\r\n".$ajout_headers;}
 
   $subject = $gepiPrefixeSujetMail."GEPI : $sujet";
   $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
@@ -6807,6 +6808,10 @@ function get_heure_2pt_minute_from_mysql_date($mysql_date) {
 	return $tmp_tab2[0].":".$tmp_tab2[1];
 }
 
+function get_date_heure_from_mysql_date($mysql_date) {
+	return get_date_slash_from_mysql_date($mysql_date)." ".get_heure_2pt_minute_from_mysql_date($mysql_date);
+}
+
 function mysql_date_to_unix_timestamp($mysql_date) {
 	$tmp_tab=explode(" ",$mysql_date);
 	$tmp_tab2=explode("-",$tmp_tab[0]);
@@ -6824,4 +6829,17 @@ function mysql_date_to_unix_timestamp($mysql_date) {
 	return mktime($heure,$min,$sec,$mois,$jour,$annee);
 }
 
+function get_tab_prof_suivi($id_classe) {
+	$tab=array();
+
+	$sql="SELECT DISTINCT jep.professeur FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.id_classe='$id_classe' AND jec.login=jep.login ORDER BY professeur;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab[]=$lig->professeur;
+		}
+	}
+
+	return $tab;
+}
 ?>
