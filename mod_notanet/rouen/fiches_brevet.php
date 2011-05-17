@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -34,7 +34,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../../logout.php?auto=1");
 	die();
-};
+}
 
 
 
@@ -664,7 +664,7 @@ function get_classe_from_id($id){
 */
 
 $tabmatieres=array();
-for($j=101;$j<=122;$j++){
+for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 	$tabmatieres[$j]=array();
 }
 
@@ -1234,7 +1234,7 @@ else {
 
 		// Calcul des moyennes de classes... pb avec le statut...
 		$moy_classe=array();
-		for($j=101;$j<=122;$j++){
+		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			if($tabmatieres[$j][0]!=''){
 				//$somme=0;
 				// Dans la table 'notanet', matiere='PREMIERE LANGUE VIVANTE'
@@ -1266,7 +1266,7 @@ else {
 
 		// Récupération du statut des matières: ceux validés lors du traitement NOTANET
 		// pour repérer les matières non dispensées.
-		for($j=101;$j<=122;$j++){
+		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			if($tabmatieres[$j][0]!=''){
 				//$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' LIMIT 1";
 				$sql="SELECT * FROM notanet_corresp WHERE notanet_mat='".$tabmatieres[$j][0]."' AND type_brevet='$type_brevet' LIMIT 1";
@@ -1463,7 +1463,7 @@ else {
 					$SUR_TOTAL[1]=0;
 					$SUR_TOTAL[2]=0;
 					$temoin_NOTNONCA=0;
-					for($j=101;$j<=122;$j++){
+					for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 						$temoin_note_non_numerique="n";
 						//if($tabmatieres[$j][0]!=''){
 						if($tabmatieres[$j][0]!=''){
@@ -1997,7 +1997,7 @@ else {
 
 						$num_lig=0;
 						// On repasse en revue toutes les matières en ne retenant que celles qui sont NOTNONCA
-						for($j=101;$j<=122;$j++){
+						for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 							//if($tabmatieres[$j][0]!=''){
 							//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-1]=='NOTNONCA')){
 							if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-1]=='NOTNONCA')&&($tabmatieres[$j]['socle']=='n')){
@@ -2366,7 +2366,7 @@ else {
 
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 					// FRANCAIS ET MATHS
-					//for($j=101;$j<=122;$j++){
+					//for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 					for($j=101;$j<=102;$j++){
 						$temoin_note_non_numerique="n";
 						//if($tabmatieres[$j][0]!=''){
@@ -3061,7 +3061,7 @@ else {
 					//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 					// TOUTES LES AUTRES MATIERES
 
-					//for($j=101;$j<=122;$j++){
+					//for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 					for($j=105;$j<=122;$j++){
 						$temoin_note_non_numerique="n";
 						//if($tabmatieres[$j][0]!=''){
@@ -3578,7 +3578,7 @@ else {
 
 						$num_lig=0;
 						// On repasse en revue toutes les matières en ne retenant que celles qui sont NOTNONCA
-						for($j=101;$j<=122;$j++){
+						for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 							//if($tabmatieres[$j][0]!=''){
 							if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-1]=='NOTNONCA')){
 								if($tabmatieres[$j][-4]!='non dispensee dans l etablissement'){
@@ -3901,7 +3901,7 @@ else {
 					$SUR_TOTAL[1]=0;
 					$SUR_TOTAL[2]=0;
 					$temoin_NOTNONCA=0;
-					for($j=101;$j<=122;$j++){
+					for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 						$temoin_note_non_numerique="n";
 						//if($tabmatieres[$j][0]!=''){
 						if($tabmatieres[$j][0]!=''){
@@ -4273,7 +4273,7 @@ else {
 
 						$num_lig=0;
 						// On repasse en revue toutes les matières en ne retenant que celles qui sont NOTNONCA
-						for($j=101;$j<=122;$j++){
+						for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 							//if($tabmatieres[$j][0]!=''){
 							if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-1]=='NOTNONCA')){
 								if($tabmatieres[$j][-4]!='non dispensee dans l etablissement'){

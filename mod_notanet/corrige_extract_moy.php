@@ -128,7 +128,7 @@ else {
 
 		$tab_mat[$lig1->type_brevet]=array();
 		/*
-		for($j=101;$j<=$indice_max_matieres;$j++) {
+		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++) {
 			$tab_mat[$lig1->type_brevet][$j]=$id_matiere[$j];
 		}
 		*/
@@ -504,7 +504,7 @@ else {
 
 						unset($tab_opt_matiere_eleve);
 						$tab_opt_matiere_eleve=array();
-						for($j=101;$j<=$indice_max_matieres;$j++){
+						for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 							//if($tabmatieres[$j][0]!=''){
 							if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')){
 								// Liste des valeurs spéciales autorisées pour la matière courante:
@@ -549,7 +549,8 @@ else {
 												}
 												else{
 													// Le test ci-dessous convient parce que la première matière n'est pas optionnelle...
-													if(($j!=101)||($k!=0)){
+													//if(($j!=101)||($k!=0)){
+													if(($j!=$indice_premiere_matiere)||($k!=0)){
 														echo " - ";
 													}
 													// On affiche la correspondance AGL1=12.0,...
@@ -559,7 +560,8 @@ else {
 											}
 											else{
 												// Le test ci-dessous convient parce que la première matière n'est pas optionnelle...
-												if(($j!=101)||($k!=0)){
+												//if(($j!=101)||($k!=0)){
+												if(($j!=$indice_premiere_matiere)||($k!=0)){
 													echo " - ";
 												}
 												echo "<span style='color:purple;'>".$id_matiere[$j][$k]."=".$moy[$j][$k][$m]."</span>";
@@ -615,7 +617,8 @@ else {
 											}
 											else{
 												// Le test ci-dessous convient parce que la première matière n'est pas optionnelle...
-												if(($j!=101)||($k!=0)){
+												//if(($j!=101)||($k!=0)){
+												if(($j!=$indice_premiere_matiere)||($k!=0)){
 													echo " - ";
 												}
 												// On affiche la correspondance AGL1=12.0,...
@@ -625,7 +628,8 @@ else {
 										}
 										else{
 											// Le test ci-dessous convient parce que la première matière n'est pas optionnelle...
-											if(($j!=101)||($k!=0)){
+											//if(($j!=101)||($k!=0)){
+											if(($j!=$indice_premiere_matiere)||($k!=0)){
 												echo " - ";
 											}
 											echo "<span style='color:purple;'>".$tabmatieres[$j][0]."=".$moy[$j][$k][$m]."</span>";
@@ -642,12 +646,12 @@ else {
 						if($erreur!="oui"){
 							// On génère l'export pour cet élève:
 							$TOT=0;
-							for($j=101;$j<=$indice_max_matieres;$j++){
+							for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 								//if(isset($tabmatieres[$j][0])){
 								//if(isset($statut_matiere[$j])){
 								if(isset($moy_NOTANET[$j])) {
 									if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')&&($moy_NOTANET[$j]!="")) {
-										$ligne_NOTANET=$INE[$m]."|$j";
+										$ligne_NOTANET=$INE[$m]."|".sprintf("%03d",$j);
 										//$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
 
 										$note_notanet="";

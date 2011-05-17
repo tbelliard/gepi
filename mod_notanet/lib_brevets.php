@@ -127,7 +127,6 @@ function tabmatieres($type_brevet){
 			$tabmatieres[130][0]='NIVEAU A2 DE LANGUE REGIONALE'; // 20100425
 
 			// Mode de calcul:
-			//for($j=101;$j<=122;$j++){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][-1]='POINTS';
 			}
@@ -555,7 +554,6 @@ function tabmatieres($type_brevet){
 
 			$tabmatieres[130][0]='NIVEAU A2 DE LANGUE REGIONALE'; // 20100425
 
-			//for($j=101;$j<=122;$j++){
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][-1]='POINTS';
 			}
@@ -2389,6 +2387,8 @@ function fs_pt2mm($fs) {
 	[eleves.101.3]  ->      moyenne de la classe
 	[eleves.101.4]  ->      appréciation
 	où 101 est le numéro de matière
+	[eleves.totalpoints] /[eleves.totalcoef]
+	[eleves.appreciation]	->	Avis du chef d'etablissement
 	...
 */
 ?>

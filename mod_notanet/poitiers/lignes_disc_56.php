@@ -62,7 +62,7 @@
 	$SUR_TOTAL[1]=0;
 	$SUR_TOTAL[2]=0;
 	$temoin_NOTNONCA=0;
-	for($j=101;$j<=122;$j++){
+	for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 		$temoin_note_non_numerique="n";
 		//if($tabmatieres[$j][0]!=''){
 		//if($tabmatieres[$j][0]!=''){
@@ -609,7 +609,7 @@
 
 		$num_lig=0;
 		// On repasse en revue toutes les matières en ne retenant que celles qui sont NOTNONCA
-		for($j=101;$j<=122;$j++){
+		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
 			//if($tabmatieres[$j][0]!=''){
 			//if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-1]=='NOTNONCA')){
 			if(($tabmatieres[$j][0]!='')&&($tabmatieres[$j][-1]=='NOTNONCA')&&($tabmatieres[$j]['socle']=='n')){
