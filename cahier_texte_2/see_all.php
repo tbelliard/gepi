@@ -364,6 +364,7 @@ if(($id_groupe=='Toutes_matieres')&&
 			$tab_dev[$date_dev][$lig->id_groupe][$cpt]['id_ct']=$lig->id_ct;
 			$tab_dev[$date_dev][$lig->id_groupe][$cpt]['id_login']=$lig->id_login;
 			$tab_dev[$date_dev][$lig->id_groupe][$cpt]['contenu']=$lig->contenu;
+			$tab_dev[$date_dev][$lig->id_groupe][$cpt]['date_visibilite_eleve']=$lig->date_visibilite_eleve;
 			//echo " <span style='color:green'>\$tab_dev[$date_notice][$lig->id_groupe][$cpt]['contenu']=$lig->contenu</span><br />";
 			$cpt++;
 		}
@@ -413,7 +414,13 @@ if(($id_groupe=='Toutes_matieres')&&
 					//for($k=0;$k<count($tab_dev[$tab_dates[$i]][$tab_id_grp[$j]]);$k++) {
 						//echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black;'>".$tab_dev[$tab_dates[$i]][$tab_id_grp[$j]][$k]['contenu']."</div>\n";
 					foreach($tab_dev[$tab_dates[$i]][$tab_id_grp[$j]] as $key => $value) {
-						echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>".$value['contenu'];
+						echo "<div class='see_all_notice couleur_bord_tableau_notice color_fond_notices_t' style='margin: 1px; padding: 1px; border: 1px solid black; width: 99%;'>";
+
+						if($value['date_visibilite_eleve']!='0000-00-00 00:00:00') {
+							echo "<div style='float:right; width: 6em; border: 1px solid black; margin: 2px; font-size: xx-small; text-align: center;'>Donné le ".formate_date($value['date_visibilite_eleve'])."</div>\n";
+						}
+
+						echo $value['contenu'];
 						$adj=affiche_docs_joints($value['id_ct'],"t");
 						if($adj!='') {
 							echo "<div style='border: 1px dashed black'>\n";
@@ -621,6 +628,11 @@ while (true) {
 		} else {
 			echo "see_all_compte_rendu'>\n";
 		}*/
+
+		if(($type_notice=='devoir')&&($not_dev->date_visibilite_eleve!='0000-00-00 00:00:00')) {
+			echo "<div style='float:right; width: 6em; border: 1px solid black; margin: 2px; font-size: xx-small; text-align: center;'>Donné le ".formate_date($not_dev->date_visibilite_eleve)."</div>\n";
+		}
+
 		echo "$html\n</div>\n";
 		if ($not_dev->type == "c") {$date_ct_old = $not_dev->date_ct;}
 	}

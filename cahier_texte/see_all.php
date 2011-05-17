@@ -370,6 +370,11 @@ while (true) {
 		} else {
 			echo "see_all_compte_rendu'>\n";
 		}*/
+
+		if(($type_notice=='devoir')&&($not_dev->date_visibilite_eleve!='0000-00-00 00:00:00')) {
+			echo "<div style='float:right; width: 6em; border: 1px solid black; margin: 2px; font-size: xx-small; text-align: center;'>Donné le ".formate_date($not_dev->date_visibilite_eleve)."</div>\n";
+		}
+
 		echo "$html\n</div>\n";
 		if ($not_dev->type == "c") $date_ct_old = $not_dev->date_ct;
 	}
