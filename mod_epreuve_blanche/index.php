@@ -1866,32 +1866,43 @@ eb_salles
 						$cpt=0;
 						while($lig=mysql_fetch_object($res_ele_salle)) {
 
-							if($lig->id_salle!=$current_id_salle) {
-								//if($current_id_salle!="";) {echo "</table>\n";}
-								if($current_id_salle!="") {
-									echo "</span>\n";
-									echo "</span>\n";
-									echo "</p>\n";
+							if($lig->id_salle!='-1') {
+
+								if($lig->id_salle!=$current_id_salle) {
+									//if($current_id_salle!="";) {echo "</table>\n";}
+									if($current_id_salle!="") {
+										echo "</span>\n";
+										echo "</span>\n";
+										echo "</p>\n";
+									}
+	
+									$current_id_salle=$lig->id_salle;
+									echo "<p style='margin-left: 6em;'>";
+									echo "<span class='conteneur_infobulle_css'>\n";
+									echo "<input type='checkbox' name='copie_affect_ele_salle[]' id='copie_affect_ele_salle_".$lig->id_salle."' value='".$lig->id_salle."' checked  />";
+									echo "<label for='copie_affect_ele_salle_".$lig->id_salle."'>";
+									//if($lig->id_salle!='-1') {
+										echo "Copier les affectations d'élèves en ".$tab_salle[$lig->id_salle]."</label>";
+									/*
+									}
+									else {
+										echo "Copier la liste des élèves affectés dans aucune salle</label>";
+									}
+									*/
+									//echo "<table class='boireaus' summary=\"Liste des élèves affectés en Salle $tab_salle[$lig->id]\">\n";
+									echo "<br />\n";
+									echo "<span class='infobulle_css'>\n";
+									$cpt=0;
 								}
-
-								$current_id_salle=$lig->id_salle;
-								echo "<p style='margin-left: 6em;'>";
-								echo "<span class='conteneur_infobulle_css'>\n";
-								echo "<input type='checkbox' name='copie_affect_ele_salle[]' id='copie_affect_ele_salle_".$lig->id_salle."' value='".$lig->id_salle."' checked  />";
-								echo "<label for='copie_affect_ele_salle_".$lig->id_salle."'>Copier les affectations d'élèves en ".$tab_salle[$lig->id_salle]."</label>";
-								//echo "<table class='boireaus' summary=\"Liste des élèves affectés en Salle $tab_salle[$lig->id]\">\n";
-								echo "<br />\n";
-								echo "<span class='infobulle_css'>\n";
-								$cpt=0;
+	
+								//echo "<input type='checkbox' name='' value='' />";
+								if($cpt>0) {
+									echo ", ";
+									if($cpt%5==0) {echo "<br />";}
+								}
+								echo get_nom_prenom_eleve($lig->login_ele,'avec_classe');
+								$cpt++;
 							}
-
-							//echo "<input type='checkbox' name='' value='' />";
-							if($cpt>0) {
-								echo ", ";
-								if($cpt%5==0) {echo "<br />";}
-							}
-							echo get_nom_prenom_eleve($lig->login_ele,'avec_classe');
-							$cpt++;
 						}
 						//echo "</table>\n";
 						echo "</span>\n";
