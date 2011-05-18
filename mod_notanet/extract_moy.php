@@ -525,7 +525,8 @@ else {
 												}
 												else{
 													// Le test ci-dessous convient parce que la première matière n'est pas optionnelle...
-													if(($j!=101)||($k!=0)){
+													//if(($j!=101)||($k!=0)){
+													if(($j!=$indice_premiere_matiere)||($k!=0)){
 														echo " - ";
 													}
 													// On affiche la correspondance AGL1=12.0,...
@@ -535,7 +536,8 @@ else {
 											}
 											else{
 												// Le test ci-dessous convient parce que la première matière n'est pas optionnelle...
-												if(($j!=101)||($k!=0)){
+												//if(($j!=101)||($k!=0)){
+												if(($j!=$indice_premiere_matiere)||($k!=0)){
 													echo " - ";
 												}
 												echo "<span style='color:purple;'>".$id_matiere[$j][$k]."=".$moy[$j][$k][$m]."</span>";
@@ -591,7 +593,8 @@ else {
 											}
 											else{
 												// Le test ci-dessous convient parce que la première matière n'est pas optionnelle...
-												if(($j!=101)||($k!=0)){
+												//if(($j!=101)||($k!=0)){
+												if(($j!=$indice_premiere_matiere)||($k!=0)){
 													echo " - ";
 												}
 												// On affiche la correspondance AGL1=12.0,...
@@ -601,7 +604,8 @@ else {
 										}
 										else{
 											// Le test ci-dessous convient parce que la première matière n'est pas optionnelle...
-											if(($j!=101)||($k!=0)){
+											//if(($j!=101)||($k!=0)){
+											if(($j!=$indice_premiere_matiere)||($k!=0)){
 												echo " - ";
 											}
 											echo "<span style='color:purple;'>".$tabmatieres[$j][0]."=".$moy[$j][$k][$m]."</span>";
