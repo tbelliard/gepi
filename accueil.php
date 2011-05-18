@@ -490,7 +490,11 @@ if($_SESSION['statut']=="professeur"){
 
 // ----- Affichage des messages -----
 $today=mktime(0,0,0,date("m"),date("d"),date("Y"));
-$appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_decompte, auteur, destinataires FROM messages
+
+// on fait le ménage
+$menage=@mysql_query("DELETE FROM `messages` WHERE ((`date_fin`+86400 >= ".$today.") && (`statuts_destinataires`='_') && (UPPER(`login_destinataire`)='".$_SESSION['login']."'))");
+
+$appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_destinataires, login_destinataire FROM messages
     WHERE (
     texte != '' and
     date_debut <= '".$today."' and
@@ -506,11 +510,12 @@ $texte_messages = '';
 $affiche_messages = 'no';
 $autre_message = "";
 while ($ind < $nb_messages) {
-	$destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
+	$statuts_destinataires1 = mysql_result($appel_messages, $ind, 'statuts_destinataires');
+	$login_destinataire1 = mysql_result($appel_messages, $ind, 'login_destinataire');
 	$autre_message = "";
 
-	if (strpos($destinataires1, substr($_SESSION['statut'], 0, 1))) {
-	//if ((strtolower($_SESSION['login'])==strtolower($destinataires1)) || ((strpos(strtolower($destinataires1), substr(strtolower($_SESSION['statut']), 0, 1)))&&(substr($destinataires1,0,1)=="_"))) {
+	if ((strpos($statuts_destinataires1, substr($_SESSION['statut'], 0, 1))) || (strtoupper($_SESSION['login'])==strtoupper($login_destinataire1))) {
+	//if ((strtolower($_SESSION['login'])==strtolower($statuts_destinataires1)) || ((strpos(strtolower($statuts_destinataires1), substr(strtolower($_SESSION['statut']), 0, 1)))&&(substr($statuts_destinataires1,0,1)=="_"))) {
 		if ($affiche_messages == 'yes') {
 			$autre_message = "hr";
 		}

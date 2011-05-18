@@ -95,13 +95,13 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	check_token();
     $record = 'yes';
     $contenu_cor = traitement_magic_quotes(corriger_caracteres($_POST['message']));
-    $destinataires = '_';
-    if (isset($_POST['desti_s'])) $destinataires .= 's';
-    if (isset($_POST['desti_p'])) $destinataires .= 'p';
-    if (isset($_POST['desti_c'])) $destinataires .= 'c';
-    if (isset($_POST['desti_a'])) $destinataires .= 'a';
-    if (isset($_POST['desti_r'])) $destinataires .= 'r';
-    if (isset($_POST['desti_e'])) $destinataires .= 'e';
+    $statuts_destinataires = '_';
+    if (isset($_POST['desti_s'])) $statuts_destinataires .= 's';
+    if (isset($_POST['desti_p'])) $statuts_destinataires .= 'p';
+    if (isset($_POST['desti_c'])) $statuts_destinataires .= 'c';
+    if (isset($_POST['desti_a'])) $statuts_destinataires .= 'a';
+    if (isset($_POST['desti_r'])) $statuts_destinataires .= 'r';
+    if (isset($_POST['desti_e'])) $statuts_destinataires .= 'e';
     if ($contenu_cor == '') {
         $msg = "ATTENTION : Le message est vide.<br />L'enregistrement ne peut avoir lieu.";
         $record = 'no';
@@ -155,6 +155,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			$msg = "ATTENTION : La date de décompte n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
 			$record = 'no';
 		}
+	$login_destinataire=$_POST['login_destinataire'];
 	}
 
     if ($record == 'yes') {
@@ -165,7 +166,8 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
           date_fin = '".$date_fin."',
           date_decompte = '".$date_decompte."',
           auteur='".$_SESSION['login']."',
-          destinataires = '".$destinataires."'
+          statuts_destinataires = '".$statuts_destinataires."',
+		  login_destinataire='".$login_destinataire."'
           WHERE (id ='".$_POST['id_mess']."')");
       } else {
           $req = mysql_query("INSERT INTO messages
@@ -174,7 +176,8 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
           date_fin = '".$date_fin."',
           date_decompte = '".$date_decompte."',
           auteur='".$_SESSION['login']."',
-          destinataires = '".$destinataires."'
+          statuts_destinataires = '".$statuts_destinataires."',
+		  login_destinataire='".$login_destinataire."'
           ");
       }
       if ($req) {
@@ -184,7 +187,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
           unset($_POST['display_date_fin']);
           unset($_POST['display_date_decompte']);
           unset($id_mess);
-          unset($destinataires);
+          unset($statuts_destinataires);
       } else {
           $msg = "Problème lors de l'enregistrement du message.";
       }
@@ -224,7 +227,7 @@ echo "<span class='small'>Classer par : ";
 echo "<a href='index.php?order_by=date_debut'>date début</a> | <a href='index.php?order_by=date_fin'>date fin</a> | <a href='index.php?order_by=id'>date création</a>\n";
 echo "</span><br /><br />\n";
 
-$appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_decompte, auteur, destinataires FROM messages
+$appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_destinataires, login_destinataire FROM messages
 WHERE (texte != '') order by ".$order_by." DESC");
 
 $nb_messages = mysql_num_rows($appel_messages);
@@ -236,7 +239,8 @@ while ($ind < $nb_messages) {
   $date_fin1 = mysql_result($appel_messages, $ind, 'date_fin');
   $date_decompte1 = mysql_result($appel_messages, $ind, 'date_decompte');
   $auteur1 = mysql_result($appel_messages, $ind, 'auteur');
-  $destinataires1 = mysql_result($appel_messages, $ind, 'destinataires');
+  $statuts_destinataires1 = mysql_result($appel_messages, $ind, 'statuts_destinataires');
+  $login_destinataire1=mysql_result($appel_messages, $ind, 'login_destinataire');
 //  $nom_auteur = sql_query1("SELECT nom from utilisateurs where login = '".$auteur1."'");
 //  $prenom_auteur = sql_query1("SELECT prenom from utilisateurs where login = '".$auteur1."'");
 
@@ -248,40 +252,40 @@ while ($ind < $nb_messages) {
       //echo "<br />Avec décompte des jours jusqu'au ".formate_date_decompte($date_decompte1);
       echo "<br />Avec décompte des jours jusqu'au ".strftime("%d/%m/%Y à %H:%M",$date_decompte1);
    }
-   echo "<br /><b><i>Destinataire(s) </i></b> : ";
+   echo "<br /><b><i>Statuts destinataire(s) </i></b> : ";
 	/*
-	if (strpos($destinataires1, "p")) echo "professeurs - ";
-	if (strpos($destinataires1, "c")) echo "c.p.e. - ";
-	if (strpos($destinataires1, "s")) echo "scolarité - ";
-	if (strpos($destinataires1, "a")) echo "administrateurs - ";
-	if (strpos($destinataires1, "e")) echo "élèves - ";
+	if (strpos($statuts_destinataires1, "p")) echo "professeurs - ";
+	if (strpos($statuts_destinataires1, "c")) echo "c.p.e. - ";
+	if (strpos($statuts_destinataires1, "s")) echo "scolarité - ";
+	if (strpos($statuts_destinataires1, "a")) echo "administrateurs - ";
+	if (strpos($statuts_destinataires1, "e")) echo "élèves - ";
 	*/
-	$chaine_destinataires="";
-	if (strpos($destinataires1, "p")) {
-		$chaine_destinataires.="professeurs";
+	$chaine_statuts_destinataires="";
+	if (strpos($statuts_destinataires1, "p")) {
+		$chaine_statuts_destinataires.="professeurs";
 	}
-	if (strpos($destinataires1, "c")){
-		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
-		$chaine_destinataires.="c.p.e.";
+	if (strpos($statuts_destinataires1, "c")){
+		if($chaine_statuts_destinataires!="") {$chaine_statuts_destinataires.=" - ";}
+		$chaine_statuts_destinataires.="c.p.e.";
 	}
-	if (strpos($destinataires1, "s")) {
-		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
-		$chaine_destinataires.="scolarité";
+	if (strpos($statuts_destinataires1, "s")) {
+		if($chaine_statuts_destinataires!="") {$chaine_statuts_destinataires.=" - ";}
+		$chaine_statuts_destinataires.="scolarité";
 	}
-	if (strpos($destinataires1, "a")) {
-		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
-		$chaine_destinataires.="administrateurs";
+	if (strpos($statuts_destinataires1, "a")) {
+		if($chaine_statuts_destinataires!="") {$chaine_statuts_destinataires.=" - ";}
+		$chaine_statuts_destinataires.="administrateurs";
 	}
-	if (strpos($destinataires1, "e")) {
-		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
-		$chaine_destinataires.="élèves";
+	if (strpos($statuts_destinataires1, "e")) {
+		if($chaine_statuts_destinataires!="") {$chaine_statuts_destinataires.=" - ";}
+		$chaine_statuts_destinataires.="élèves";
 	}
-	if (strpos($destinataires1, "r")) {
-		if($chaine_destinataires!="") {$chaine_destinataires.=" - ";}
-		$chaine_destinataires.="responsables";
+	if (strpos($statuts_destinataires1, "r")) {
+		if($chaine_statuts_destinataires!="") {$chaine_statuts_destinataires.=" - ";}
+		$chaine_statuts_destinataires.="responsables";
 	}
-	echo $chaine_destinataires;
-
+	echo $chaine_statuts_destinataires;
+	echo "<br /><b><i>Login du destinataire </i></b> : ".$login_destinataire1;
    echo "<br /><a href='index.php?id_mess=$id_message'>modifier</a>
    - <a href='index.php?id_del=$id_message&action=sup_entry".add_token_in_url()."' onclick=\"return confirmlink(this, 'Etes-vous sûr de vouloir supprimer ce message ?', '".$message_suppression."')\">supprimer</a>
    <table border=1 width = '100%' cellpadding='5'><tr><td>".$content."</td></tr></table><br />\n";
@@ -297,13 +301,14 @@ echo "<td valign=\"top\">\n";
 //
 if (isset($id_mess)) {
     $titre_mess = "Modification d'un message";
-    $appel_message = mysql_query("SELECT  id, texte, date_debut, date_fin, date_decompte, auteur, destinataires  FROM messages
+    $appel_message = mysql_query("SELECT  id, texte, date_debut, date_fin, date_decompte, auteur, statuts_destinataires, login_destinataire  FROM messages
     WHERE (id = '".$id_mess."')");
     $contenu = mysql_result($appel_message, 0, 'texte');
     $date_debut = mysql_result($appel_message, 0, 'date_debut');
     $date_fin = mysql_result($appel_message, 0, 'date_fin');
     $date_decompte = mysql_result($appel_message, 0, 'date_decompte');
-    $destinataires = mysql_result($appel_message, 0, 'destinataires');
+    $statuts_destinataires = mysql_result($appel_message, 0, 'statuts_destinataires');
+	$login_destinataire=mysql_result($appel_message, 0, 'login_destinataire');
     $display_date_debut = strftime("%d", $date_debut)."/".strftime("%m", $date_debut)."/".strftime("%Y", $date_debut);
     $display_date_fin = strftime("%d", $date_fin)."/".strftime("%m", $date_fin)."/".strftime("%Y", $date_fin);
     $display_date_decompte = strftime("%d", $date_decompte)."/".strftime("%m", $date_decompte)."/".strftime("%Y", $date_decompte);
@@ -330,7 +335,7 @@ if (isset($id_mess)) {
         $display_date_decompte = $display_date_fin;
     }
 	$display_heure_decompte=isset($_POST['display_heure_decompte']) ? $_POST['display_heure_decompte'] : "08:00";
-    if (!isset($destinataires)) $destinataires = '_p';
+    if (!isset($statuts_destinataires)) $statuts_destinataires = '_';
 
 }
 echo "<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\"><tr><td>\n";
@@ -380,35 +385,72 @@ echo "</p>";
 echo "</td></tr>\n";
 
 //Destinataires
-echo "<tr><td  colspan=\"4\"><i>Destinataires du message :</i></td></tr>\n";
+echo "<tr><td  colspan=\"4\"><i>Statuts destinataires du message :</i></td></tr>\n";
 echo "<tr>\n";
 echo "<td><input type=\"checkbox\" id=\"desti_p\" name=\"desti_p\" value=\"desti_p\"";
-if (strpos($destinataires, "p")) echo "checked";
+if (strpos($statuts_destinataires, "p")) echo "checked";
 echo " /><label for='desti_p' style='cursor: pointer;'>Professeurs</label></td>\n";
 
 echo "<td><input type=\"checkbox\" id=\"desti_c\" name=\"desti_c\" value=\"desti_c\"";
-if (strpos($destinataires, "c")) echo "checked";
+if (strpos($statuts_destinataires, "c")) echo "checked";
 echo " /><label for='desti_c' style='cursor: pointer;'>C.P.E.</label></td>\n";
 
 echo "<td><input type=\"checkbox\" id=\"desti_s\" name=\"desti_s\" value=\"desti_s\"";
-if (strpos($destinataires, "s")) echo "checked";
+if (strpos($statuts_destinataires, "s")) echo "checked";
 echo " /><label for='desti_s' style='cursor: pointer;'>Scolarité</label></td>\n";
 echo "</tr>\n";
 
 echo "<tr>\n";
 echo "<td><input type=\"checkbox\" id=\"desti_a\" name=\"desti_a\" value=\"desti_a\"";
-if (strpos($destinataires, "a")) echo "checked";
+if (strpos($statuts_destinataires, "a")) echo "checked";
 echo " /><label for='desti_a' style='cursor: pointer;'>Administrateur</label></td>\n";
 
 echo "<td><input type=\"checkbox\" id=\"desti_r\" name=\"desti_r\" value=\"desti_r\"";
-if (strpos($destinataires, "r")) echo "checked";
+if (strpos($statuts_destinataires, "r")) echo "checked";
 echo " /><label for='desti_r' style='cursor: pointer;'>Responsables</label></td>\n";
 
 echo "<td><input type=\"checkbox\" id=\"desti_e\" name=\"desti_e\" value=\"desti_e\"";
-if (strpos($destinataires, "e")) echo "checked";
+if (strpos($statuts_destinataires, "e")) echo "checked";
 echo " /><label for='desti_e' style='cursor: pointer;'>Elèves</label></td>\n";
 
 echo "</tr>\n";
+
+
+echo "<tr><td  colspan=\"4\" >\n";
+?>
+<br>
+<i>Login du destinataire du message :&nbsp;</i>
+	<select name="login_destinataire" style="margin-left: 20px; max-width: 500px; width: 300px;">
+		<optgroup>
+		<option></option>
+	<?php
+	$r_sql="SELECT login,nom,prenom FROM `utilisateurs` WHERE `statut` IN ('administrateur','professeur','cpe','scolarite','secours','autre') ORDER BY login";
+	$R_utilisateurs=mysql_query($r_sql);
+	$initiale_courante=0;
+	while($utilisateur=mysql_fetch_array($R_utilisateurs))
+		{
+		$nom=strtoupper($utilisateur['nom'])." ".$utilisateur['prenom'];
+		$initiale=ord(strtoupper($utilisateur['login']));
+		if ($initiale!=$initiale_courante)
+			{
+			$initiale_courante=$initiale;
+			echo "\t</optgroup><optgroup label=\"".chr($initiale)."\">";
+			}
+		?>
+		<option value="<?php echo $utilisateur['login']; ?>" <?php if (isset($id_mess)) if ($utilisateur['login']==$login_destinataire) echo "selected"; ?>><?php echo $utilisateur['login']." (".$nom.")"; ?></option>
+		<?php
+		}
+	?>
+		</optgroup>
+	</select>
+
+<br><br>
+<?php
+
+
+
+echo "</tr>\n";
+
 // Message
 echo "<tr><td  colspan=\"4\">\n";
 
