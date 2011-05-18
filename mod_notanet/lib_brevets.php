@@ -663,12 +663,12 @@ function tabmatieres($type_brevet){
 		case 3:
 			// PROFESSIONNELLE, option de série DP6
 
-			$tabmatieres[5][0]='HISTOIRE DES ARTS';
-
 			// Initialisation
 			for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){ // 20100425
 				$tabmatieres[$j][0]='';
 			}
+
+			$tabmatieres[5][0]='HISTOIRE DES ARTS';
 
 			$tabmatieres[101][0]='FRANÇAIS';
 			$tabmatieres[102][0]='MATHÉMATIQUES';
