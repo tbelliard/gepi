@@ -2060,9 +2060,9 @@ function valide_modele(choix) {
 		var id_couleur_infobulle_fond_entete_B=230
 		
 		// Couleur de fond du corps des infobulles
-		var id_couleur_infobulle_fond_corps_R=90
-		var id_couleur_infobulle_fond_corps_V=90
-		var id_couleur_infobulle_fond_corps_B=90
+		var id_couleur_infobulle_fond_corps_R=180
+		var id_couleur_infobulle_fond_corps_V=180
+		var id_couleur_infobulle_fond_corps_B=180
 
 		// Couleur des lignes alternées
 		var id_couleur_entete_R=90
