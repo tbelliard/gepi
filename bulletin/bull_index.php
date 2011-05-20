@@ -2201,7 +2201,14 @@ else {
 								$tab_ele['etab_type']='';
 							}
 							else {
-								$tab_ele['etab_type']= $type_etablissement2[remplace_accents($tab_ele['etab_type'],'')][remplace_accents($tab_ele['etab_niveau'],'')];
+								//$tab_ele['etab_type']= $type_etablissement2[remplace_accents($tab_ele['etab_type'],'')][remplace_accents($tab_ele['etab_niveau'],'')];
+								if(strtoupper($tab_ele['etab_niveau'])=='EREA') {
+									$tmp_etab_niveau='EREA';
+								}
+								else {
+									$tmp_etab_niveau=strtolower(remplace_accents($tab_ele['etab_niveau'],''));
+								}
+								$tab_ele['etab_type']= $type_etablissement2[strtolower(remplace_accents($tab_ele['etab_type'],''))][$tmp_etab_niveau];
 								//echo "\$type_etablissement2[".$tab_ele['etab_type']."][".$tab_ele['etab_niveau']."]=".$type_etablissement2[remplace_accents($tab_ele['etab_type'],'')][remplace_accents($tab_ele['etab_niveau'],'')]."<br />\n";
 							}
 						}
