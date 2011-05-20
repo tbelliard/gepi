@@ -165,15 +165,17 @@ echo "<center>\n";
 $today=mktime(0,0,0,date("m"),date("d"),date("Y"));
 
 // on fait le ménage
-$menage=@mysql_query("DELETE FROM `messages` WHERE ((`date_fin`+86400 >= ".$today.") && (`statuts_destinataires`='_') && (UPPER(`login_destinataire`)='".$_SESSION['login']."'))");
+$sql="DELETE FROM `messages` WHERE ((`date_fin`+86400 <= ".$today.") && (`statuts_destinataires`='_') && (UPPER(`login_destinataire`)='".$_SESSION['login']."'));";
+$menage=@mysql_query($sql);
 
-$appel_messages = mysql_query("SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_destinataires, login_destinataire FROM messages
+$sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_destinataires, login_destinataire FROM messages
 	WHERE (
 	texte != '' and
 	date_debut <= '".$today."' and
 	date_fin >= '".$today."'
 	)
-    order by date_debut DESC, id DESC;");
+    order by date_debut DESC, id DESC;";
+$appel_messages = mysql_query($sql);
 //	order by id DESC");
 $nb_messages = mysql_num_rows($appel_messages);
 $ind = 0;
