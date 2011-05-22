@@ -661,7 +661,8 @@ else {
 												case "POINTS":
 													if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
 														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j]*$tabmatieres[$j][-2])."|";
-														$TOT=$TOT+round($moy_NOTANET[$j]*2)/2;
+														//$TOT=$TOT+round($moy_NOTANET[$j]*2)/2;
+														$TOT=$TOT+round($moy_NOTANET[$j]*$tabmatieres[$j][-2]*2)/2;
 														$note_notanet=formate_note_notanet($moy_NOTANET[$j]*$tabmatieres[$j][-2]);
 													}
 													else{
@@ -674,8 +675,10 @@ else {
 													if($ptsup>0){
 														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($ptsup)."|";
 														//$TOT=$TOT+$ptsup;
-														$TOT=$TOT+round($ptsup*2)/2;
-														$note_notanet=formate_note_notanet($ptsup);
+														//$TOT=$TOT+round($ptsup*2)/2;
+														//$note_notanet=formate_note_notanet($ptsup);
+														$TOT=$TOT+round($ptsup*$tabmatieres[$j][-2]*2)/2;
+														$note_notanet=formate_note_notanet($ptsup*$tabmatieres[$j][-2]);
 													}
 													else{
 														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet(0)."|";
