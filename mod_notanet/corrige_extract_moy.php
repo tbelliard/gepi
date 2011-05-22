@@ -738,6 +738,24 @@ else {
 									}
 								}
 							}
+
+							// Dans le cas brevet PRO, il ne faut retenir qu'une seule des deux matières 103 et 104
+							if(($lig_type_brevet_eleve->type_brevet==2)||($lig_type_brevet_eleve->type_brevet==3)) {
+								$num_matiere_LV1=103;
+								$num_matiere_ScPhy=104;
+								if(($moy_NOTANET[$num_matiere_LV1]!="AB")&&($moy_NOTANET[$num_matiere_LV1]!="DI")&&($moy_NOTANET[$num_matiere_LV1]!="NN")){
+									if(($moy_NOTANET[$num_matiere_ScPhy]!="AB")&&($moy_NOTANET[$num_matiere_ScPhy]!="DI")&&($moy_NOTANET[$num_matiere_ScPhy]!="NN")) {
+										// Il ne faut retenir qu'une seule des deux notes
+										if($moy_NOTANET[$num_matiere_ScPhy]>$moy_NOTANET[$num_matiere_LV1]) {
+											$TOT-=round($moy_NOTANET[$num_matiere_LV1]*$tabmatieres[$num_matiere_LV1][-2]*2)/2;
+										}
+										else {
+											$TOT-=round($moy_NOTANET[$num_matiere_ScPhy]*$tabmatieres[$num_matiere_ScPhy][-2]*2)/2;
+										}
+									}
+								}
+							}
+
 							echo colore_ligne_notanet($INE[$m]."|TOT|".sprintf("%02.2f",$TOT)."|")."<br />\n";
 							$tabnotanet[]=$INE[$m]."|TOT|".sprintf("%02.2f",$TOT)."|";
 

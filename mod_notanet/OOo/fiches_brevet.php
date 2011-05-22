@@ -844,7 +844,16 @@ for($i=0;$i<count($id_classe);$i++){
 				if((isset($tab_eleves_OOo[$nb_eleve][103][0]))&&(preg_match("/^[0-9\.]*$/",$tab_eleves_OOo[$nb_eleve][103][0]))) {
 
 					if((isset($tab_eleves_OOo[$nb_eleve][104][0]))&&(preg_match("/^[0-9\.]*$/",$tab_eleves_OOo[$nb_eleve][104][0]))) {
-						if($tab_eleves_OOo[$nb_eleve][103][0]>$tab_eleves_OOo[$nb_eleve][104][0]) {$num_lv_ou_sc=103;} else {$num_lv_ou_sc=104;}
+						if($tab_eleves_OOo[$nb_eleve][103][0]>$tab_eleves_OOo[$nb_eleve][104][0]) {
+							$num_lv_ou_sc=103;
+
+							$num_matiere_a_decompter=104;
+						}
+						else {
+							$num_lv_ou_sc=104;
+
+							$num_matiere_a_decompter=103;
+						}
 
 						for($loop=0;$loop<$max_indice;$loop++) {
 							if(isset($tab_eleves_OOo[$nb_eleve][$num_lv_ou_sc][$loop])) {
@@ -852,6 +861,14 @@ for($i=0;$i<count($id_classe);$i++){
 								//echo "1 \$tab_eleves_OOo[$nb_eleve]['LV_SC'][$loop]=\$tab_eleves_OOo[$nb_eleve][$num_lv_ou_sc][$loop]=".$tab_eleves_OOo[$nb_eleve][$num_lv_ou_sc][$loop]."<br />\n";
 							}
 						}
+
+						$tab_eleves_OOo[$nb_eleve]['totalpoints']-=$tab_eleves_OOo[$nb_eleve][$num_matiere_a_decompter][1];
+						$tab_eleves_OOo[$nb_eleve]['totalcoef']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
+						$tab_eleves_OOo[$nb_eleve]['totalpoints_bis']-=$tab_eleves_OOo[$nb_eleve][$num_matiere_a_decompter][1];
+						$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
+						$tab_eleves_OOo[$nb_eleve]['totalSansHistoireArts']-=$tab_eleves_OOo[$nb_eleve][$num_matiere_a_decompter][1];
+						$tab_eleves_OOo[$nb_eleve]['totalcoefSansHistoireArts']-=$tab_champs_OOo[$num_matiere_a_decompter][3]*20;
+
 					}
 					else {
 						$num_lv_ou_sc=103;

@@ -1939,10 +1939,6 @@ function tab_extract_moy($tab_ele,$id_clas) {
 		$TOT=0;
 
 
-
-
-
-
 		echo "<p>\n";
 		echo "Portion de fichier générée:<br />";
 		for($j=$indice_premiere_matiere;$j<=$indice_max_matieres;$j++){
@@ -1999,6 +1995,24 @@ function tab_extract_moy($tab_ele,$id_clas) {
 				}
 			}
 		}
+
+		// Dans le cas brevet PRO, il ne faut retenir qu'une seule des deux matières 103 et 104
+		if(($tab_ele['type_brevet']==2)||($tab_ele['type_brevet']==3)) {
+			$num_matiere_LV1=103;
+			$num_matiere_ScPhy=104;
+			if(($moy_NOTANET[$num_matiere_LV1]!="AB")&&($moy_NOTANET[$num_matiere_LV1]!="DI")&&($moy_NOTANET[$num_matiere_LV1]!="NN")){
+				if(($moy_NOTANET[$num_matiere_ScPhy]!="AB")&&($moy_NOTANET[$num_matiere_ScPhy]!="DI")&&($moy_NOTANET[$num_matiere_ScPhy]!="NN")) {
+					// Il ne faut retenir qu'une seule des deux notes
+					if($moy_NOTANET[$num_matiere_ScPhy]>$moy_NOTANET[$num_matiere_LV1]) {
+						$TOT-=round($moy_NOTANET[$num_matiere_LV1]*$tabmatieres[$num_matiere_LV1][-2]*2)/2;
+					}
+					else {
+						$TOT-=round($moy_NOTANET[$num_matiere_ScPhy]*$tabmatieres[$num_matiere_ScPhy][-2]*2)/2;
+					}
+				}
+			}
+		}
+
 		//echo "$INE|TOT|$TOT|<br />\n";
 		echo colore_ligne_notanet("$INE|TOT|".sprintf("%02.2f",$TOT)."|")."<br />\n";
 		$tabnotanet[]="$INE|TOT|".sprintf("%02.2f",$TOT)."|";
