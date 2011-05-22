@@ -8,10 +8,22 @@
 	var NbSelectedDays = 0;
 	var cleardiv = function() {
 		var i = 1;
-		while ($('div'+i)) {
-			$('div'+i).setStyle({backgroundColor: 'transparent'});	
-			i++;
-		}
+		$$('div.calendar_cell_08').invoke("setStyle", {backgroundColor: '#eeeeee'});
+		$$('div.calendar_cell_09').invoke("setStyle", {backgroundColor: '#ffffff'});
+		$$('div.calendar_cell_10').invoke("setStyle", {backgroundColor: '#eeeeee'});
+		$$('div.calendar_cell_11').invoke("setStyle", {backgroundColor: '#ffffff'});
+		$$('div.calendar_cell_12').invoke("setStyle", {backgroundColor: '#eeeeee'});
+		$$('div.calendar_cell_01').invoke("setStyle", {backgroundColor: '#ffffff'});
+		$$('div.calendar_cell_02').invoke("setStyle", {backgroundColor: '#eeeeee'});
+		$$('div.calendar_cell_03').invoke("setStyle", {backgroundColor: '#ffffff'});
+		$$('div.calendar_cell_04').invoke("setStyle", {backgroundColor: '#eeeeee'});
+		$$('div.calendar_cell_05').invoke("setStyle", {backgroundColor: '#ffffff'});
+		$$('div.calendar_cell_06').invoke("setStyle", {backgroundColor: '#eeeeee'});
+		$$('div.calendar_cell_07').invoke("setStyle", {backgroundColor: '#ffffff'});
+		//while ($('div'+i)) {
+		//	$('div'+i).setStyle({backgroundColor: 'transparent'});	
+		//	i++;
+		//}
 	}
 	var mylistener = function(div) {
 		$(div).observe('mouseover', function(event) {
@@ -94,7 +106,9 @@
 	.calendar_header{
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-image:url('lib/template/images/entete.jpg');
+		background-repeat:repeat-x;
+		width:80px;
 		height:30px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -102,11 +116,13 @@
 		text-align:center;
 		font-family: arial;
 		font-weight:bold;
+		color:black;
 	}
 	.calendar_cell_01 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#ffffff;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -118,7 +134,8 @@
 	.calendar_cell_02 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#eeeeee;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -130,7 +147,8 @@
 	.calendar_cell_03 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#ffffff;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -142,7 +160,8 @@
 	.calendar_cell_04 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#eeeeee;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -154,7 +173,8 @@
 	.calendar_cell_05 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#ffffff;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -166,7 +186,8 @@
 	.calendar_cell_06 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#eeeeee;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -178,7 +199,8 @@
 	.calendar_cell_07 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#ffffff;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -190,7 +212,8 @@
 	.calendar_cell_08 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#eeeeee;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -202,7 +225,8 @@
 	.calendar_cell_09 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#ffffff;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -214,7 +238,8 @@
 	.calendar_cell_10 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#eeeeee;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -226,7 +251,8 @@
 	.calendar_cell_11 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#ffffff;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -238,7 +264,8 @@
 	.calendar_cell_12 {
 		float:left;
 		border:1px solid #cccccc;
-		width:60px;
+		background-color:#eeeeee;
+		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
@@ -248,7 +275,7 @@
 		font-size:12px;
 	}
 	.calendar_container {
-		width:400px;
+		width:490px;
 		margin:30px auto;
 	}
 </style>
