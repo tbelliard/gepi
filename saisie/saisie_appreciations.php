@@ -109,7 +109,6 @@ if (isset($_POST['is_posted'])) {
 				}
 				//echo "<pre>$k: $app</pre>";
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				//$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
 				$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
 				$app=preg_replace('/(\\\r)+/',"\r",$app);
 				$app=preg_replace('/(\\\n)+/',"\n",$app);
@@ -144,7 +143,7 @@ if (isset($_POST['is_posted'])) {
 				//echo "\$log_eleve[$i]=$log_eleve[$i]<br />\n";
 				if(isset($log_eleve[$i])) {
 					// On supprime le suffixe indiquant la période:
-					$reg_eleve_login=my_ereg_replace("_t".$k."$","",$log_eleve[$i]);
+					$reg_eleve_login=preg_replace("/_t".$k."$/","",$log_eleve[$i]);
 
 					//echo "\$i=$i<br />";
 					//echo "\$reg_eleve_login=$reg_eleve_login<br />";
@@ -171,11 +170,6 @@ if (isset($_POST['is_posted'])) {
 							//echo "<pre style='color: red'>$reg_eleve_login: $app</pre>\n";
 
 							// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-							/*
-							$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
-							$app=my_ereg_replace('(\\\r)+',"\r",$app);
-							$app=my_ereg_replace('(\\\n)+',"\n",$app);
-							*/
 							$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
 							$app=preg_replace('/(\\\r)+/',"\r",$app);
 							$app=preg_replace('/(\\\n)+/',"\n",$app);
@@ -236,7 +230,7 @@ if (isset($_POST['is_posted'])) {
 						$app = "";
 
 						// Contrôle des saisies pour supprimer les sauts de lignes surnuméraire.
-						$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
+						$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
 
 
 						$test_eleve_app_query = mysql_query("SELECT * FROM matieres_appreciations WHERE (login='$reg_eleve_login' AND id_groupe='" . $current_group["id"]."' AND periode='$k')");
@@ -329,14 +323,16 @@ elseif((isset($_POST['correction_login_eleve']))&&(isset($_POST['correction_peri
 			if (isset($NON_PROTECT["correction_app_eleve"])) {
 				$app = traitement_magic_quotes(corriger_caracteres($NON_PROTECT["correction_app_eleve"]));
 				// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
-				$app=my_ereg_replace('(\\\r\\\n)+',"\r\n",$app);
-		
+				$app=preg_replace('/(\\\r\\\n)+/',"\r\n",$app);
+				$app=preg_replace('/(\\\r)+/',"\r",$app);
+				$app=preg_replace('/(\\\n)+/',"\n",$app);
+
 				$texte_mail="";
 		
 				$correction_nom_prenom_eleve=get_nom_prenom_eleve($correction_login_eleve);
 		
-				if((strlen(my_ereg_replace('[A-Za-z0-9._-]','',$correction_login_eleve))!=0)||
-				(strlen(my_ereg_replace('[0-9]','',$correction_periode))!=0)) {
+				if((strlen(preg_replace('/[A-Za-z0-9._-]/','',$correction_login_eleve))!=0)||
+				(strlen(preg_replace('/[0-9]/','',$correction_periode))!=0)) {
 					$msg.="Des caractères invalides sont proposés pour le login élève $correction_nom_prenom_eleve ou pour la période $correction_periode.<br />";
 				}
 				else {
@@ -521,18 +517,24 @@ else
 if(($_SESSION['statut']=='professeur')||($_SESSION['statut']=='secours')) {
 	//$sql="SELECT DISTINCT c.id,c.classe FROM classes c, periodes p, j_groupes_classes jgc, j_groupes_professeurs jgp WHERE p.id_classe = c.id AND jgc.id_classe=c.id AND jgp.id_groupe=jgc.id_groupe AND jgp.login='".$_SESSION['login']."' ORDER BY c.classe";
 
+	$login_prof_groupe_courant="";
+	$tab_groups=array();
 	if($_SESSION['statut']=='professeur') {
 		$login_prof_groupe_courant=$_SESSION["login"];
 	}
 	else {
 		$tmp_current_group=get_group($id_groupe);
 
-		$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
+		if(isset($tmp_current_group["profs"]["list"][0])) {
+			$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
+		}
 	}
 
-	//$tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
-	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
-	//$tab_groups = get_groups_for_prof($_SESSION["login"]);
+	if($login_prof_groupe_courant!='') {
+		//$tab_groups = get_groups_for_prof($_SESSION["login"],"classe puis matière");
+		$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+		//$tab_groups = get_groups_for_prof($_SESSION["login"]);
+	}
 
 	if(!empty($tab_groups)) {
 
