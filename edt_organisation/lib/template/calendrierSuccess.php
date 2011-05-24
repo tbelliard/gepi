@@ -109,7 +109,7 @@
 				else if (typeof(document.documentElement.scrollTop) == 'number') {
 					y=document.documentElement.scrollTop;
 				}
-				$('login_fond').setStyle({width: width+"px"});
+				$('login_fond').setStyle({width: "100%"});
 				$('login_fond').setStyle({height: height+"px"});
 				$('login_fond').setStyle({top: y+"px"});
 				$('login_fond').setStyle({display: 'block'});
@@ -140,10 +140,14 @@
 					else if (event.keyCode=='27'){  
 						$('login').setStyle({display: 'none'});	
 						$('login_fond').setStyle({display: 'none'}); 
-						document.body.scroll = "yes";
-						document.body.style.overflow = 'scroll';
-						document.documentElement.scroll = "yes";
-						document.documentElement.style.overflow = 'scroll';
+						if (Prototype.Browser.IE) {
+							document.documentElement.scroll = "yes";
+							document.documentElement.style.overflow = 'scroll';
+						}
+						else {
+							document.body.scroll = "yes";
+							document.body.style.overflow = 'scroll';				
+						}
 						NbSelectedDays = 0;
 						FirstDiv='';
 						cleardiv();
