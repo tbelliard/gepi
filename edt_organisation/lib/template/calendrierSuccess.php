@@ -6,6 +6,7 @@
 	var CurrentDiv='';
 	var IndiceCurrentDiv=0;
 	var NbSelectedDays = 0;
+
 	var cleardiv = function() {
 		var i = 1;
 		$$('div.calendar_cell_08').invoke("setStyle", {backgroundColor: '#eeeeee'});
@@ -27,6 +28,7 @@
 	}
 	var mylistener = function(div) {
 		$(div).observe('mouseover', function(event) {
+		event.preventDefault();
 			if (MouseDown == 1) {
 				if (FirstDiv=='') {
 					FirstDiv=div;
@@ -52,6 +54,7 @@
 		});	
 		$(div).observe('mousedown', function(event) {
 			MouseDown=1;
+			event.preventDefault();
 				if (FirstDiv =='') {
 					FirstDiv=div;
 					NbSelectedDays++;
@@ -80,13 +83,72 @@
 
 		$(document).observe('mousedown', function(event) {
 			MouseDown=1;
-			event.preventDefault();	//	empêche la propagation des events
+
 		});
 		$(document).observe('mouseup', function(event) {
 			MouseDown=0;
 			if (NbSelectedDays == 1) {
 				cleardiv();
 				$(FirstDiv).setStyle({backgroundColor: '#95a1ff'});
+			}
+			else if (NbSelectedDays > 1){
+
+				if (Prototype.Browser.IE) {
+					document.documentElement.scroll = "no";
+					document.documentElement.style.overflow = 'hidden';
+				}
+				else {
+					document.body.scroll = "no";
+					document.body.style.overflow = 'hidden';				
+				}
+				var viewport = document.viewport.getDimensions(); // Gets the viewport as an object literal
+				var width = viewport.width; // Usable window width
+				var height = viewport.height; // Usable window height
+				if( typeof( window.pageYOffset ) == 'number' ) 
+					{y = window.pageYOffset;}
+				else if (typeof(document.documentElement.scrollTop) == 'number') {
+					y=document.documentElement.scrollTop;
+				}
+				$('login_fond').setStyle({width: width+"px"});
+				$('login_fond').setStyle({height: height+"px"});
+				$('login_fond').setStyle({top: y+"px"});
+				$('login_fond').setStyle({display: 'block'});
+				$('login_fond').setOpacity(0.6);
+				$('login').setStyle({top: y+Math.abs((height-100)/2)+"px"});
+				$('login').setStyle({left: Math.abs((width-300)/2)+"px"});
+				$('login').setStyle({display: 'block'});
+				$('login_input_field').value='';
+				$('login_input_field').focus();
+						
+
+				$('login_input_field').observe('keyup', function(event) {
+					if (event.keyCode=='13'){  
+						$('login').setStyle({display: 'none'});	
+						$('login_fond').setStyle({display: 'none'}); 
+						if (Prototype.Browser.IE) {
+							document.documentElement.scroll = "yes";
+							document.documentElement.style.overflow = 'scroll';
+						}
+						else {
+							document.body.scroll = "yes";
+							document.body.style.overflow = 'scroll';				
+						}
+						NbSelectedDays = 0;
+						FirstDiv='';
+						cleardiv();
+  					}
+					else if (event.keyCode=='27'){  
+						$('login').setStyle({display: 'none'});	
+						$('login_fond').setStyle({display: 'none'}); 
+						document.body.scroll = "yes";
+						document.body.style.overflow = 'scroll';
+						document.documentElement.scroll = "yes";
+						document.documentElement.style.overflow = 'scroll';
+						NbSelectedDays = 0;
+						FirstDiv='';
+						cleardiv();
+  					}
+				});
 			}
 			else {
 				NbSelectedDays = 0;
@@ -281,6 +343,7 @@
 </style>
 <?php include("./lib/template/mini_calendrier.php"); ?>
 
+
 <div id="lecorps">
 
 	<?php include("./lib/template/menu_edt.php"); ?>
@@ -363,4 +426,12 @@
                 </div>
 		<?php include("footer.php"); ?>
     </div>
+</div>
+<div id="login_fond" style="display:none;position:absolute;top:0px;left:0px;background-color:#000000;width:200px;height:200px;"> &nbsp;
+</div>
+<div id="login" style="width:330px;height:156px;display:none;position:absolute;
+		background-image:url('lib/template/images/popup.png');
+		background-repeat:none;"> 
+	<p id="login_message" style="padding-left:40px;padding-top:50px;text-align:left;">Entrez le nom de la nouvelle période</p>
+	<p style="padding:10px;padding-left:50px;"><input id="login_input_field" style="width:200px;" type="text"/></p> 
 </div>

@@ -65,6 +65,8 @@ $style_specifique[] = "edt_organisation/lib/template/css/barre_style";
 $style_specifique[] = "templates/DefaultEDT/css/style_edt";
 
 $javascript_specifique[] = "edt_organisation/lib/template/js/script";
+$utilisation_scriptaculous = 'ok';
+$scriptaculous_effet="effects,dragdrop";
 require_once("../lib/header.inc");
 
 // ===============================================================
