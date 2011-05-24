@@ -1247,9 +1247,12 @@ width:".$releve_addressblock_logo_etab_prop."%;\n";
 					//echo $tab_rel['eleve'][$i]['groupe'][$j]['id_groupe'];
 	
 					$k = 0;
-					While ($k < count($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'])) {
-						echo "<br /><i>".affiche_utilisateur(htmlentities($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'][$k]),$id_classe)."</i>";
-						$k++;
+					// Il peut y avoir une matière sans prof, avec une note saisie en compte secours
+					if(isset($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'])) {
+						While ($k < count($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'])) {
+							echo "<br /><i>".affiche_utilisateur(htmlentities($tab_rel['eleve'][$i]['groupe'][$j]['prof_login'][$k]),$id_classe)."</i>";
+							$k++;
+						}
 					}
 					echo "</td>\n";
 		
