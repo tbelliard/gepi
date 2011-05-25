@@ -51,30 +51,34 @@ if ($resultat_session == 'c') {
 //                 Préparer les scripts, css, entête
 //
 // ===============================================================
+$action = isset($_GET["action"]) ? $_GET["action"] : NULL;
+if ($action != "ajaxrequest") {
+	$ua = getenv("HTTP_USER_AGENT");
+	if (strstr($ua, "MSIE 6.0")) {
+		$style_specifique[] = "edt_organisation/lib/template/css/style_ie6";
+		$style_specifique[] = "templates/DefaultEDT/css/style_edt_ie6";
+	}
+	else if (strstr($ua, "MSIE 7")) {
+		$style_specifique[] = "edt_organisation/lib/template/css/style_ie7";
+	}
+	$style_specifique[] = "edt_organisation/lib/template/css/style";
+	$style_specifique[] = "templates/DefaultEDT/css/style_edt";
 
-$ua = getenv("HTTP_USER_AGENT");
-if (strstr($ua, "MSIE 6.0")) {
-	$style_specifique[] = "edt_organisation/lib/template/css/style_ie6";
-	$style_specifique[] = "templates/DefaultEDT/css/style_edt_ie6";
+	$javascript_specifique[] = "edt_organisation/lib/template/js/script";
+	$utilisation_scriptaculous = 'ok';
+	$scriptaculous_effet="effects,dragdrop";
+	require_once("../lib/header.inc");
+	// ===============================================================
+	//
+	//                       DEMARRER LE CONTROLLEUR
+	//
+	// ===============================================================
+	$front = frontController::getInstance()->dispatch();
+	require("../lib/footer.inc.php");
 }
-else if (strstr($ua, "MSIE 7")) {
-	$style_specifique[] = "edt_organisation/lib/template/css/style_ie7";
+else {
+	$front = frontController::getInstance()->dispatch();
 }
-$style_specifique[] = "edt_organisation/lib/template/css/style";
-$style_specifique[] = "edt_organisation/lib/template/css/barre_style";
-$style_specifique[] = "templates/DefaultEDT/css/style_edt";
 
-$javascript_specifique[] = "edt_organisation/lib/template/js/script";
-$utilisation_scriptaculous = 'ok';
-$scriptaculous_effet="effects,dragdrop";
-require_once("../lib/header.inc");
-
-// ===============================================================
-//
-//                       DEMARRER LE CONTROLLEUR
-//
-// ===============================================================
-$front = frontController::getInstance()->dispatch();
-require("../lib/footer.inc.php");
 
 ?>

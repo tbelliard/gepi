@@ -59,7 +59,6 @@
 					FirstDiv=div;
 					NbSelectedDays++;
 					IndiceFirstDiv=parseInt(FirstDiv.substring(3,FirstDiv.length), 10);
-					//$('info').update('TEST : '+IndiceFirstDiv);
 				}
 				IndiceCurrentDiv=parseInt(div.substring(3,div.length), 10);
 				cleardiv();
@@ -132,6 +131,23 @@
 						else {
 							document.body.scroll = "yes";
 							document.body.style.overflow = 'scroll';				
+						}
+						if ($('login_input_field').value != "") {
+
+							new Ajax.Request('./index.php',
+							  {
+								method:'get',
+								parameters: {action: "ajaxrequest", asker: "calendrier", periodname: $('login_input_field').value, firstday: IndiceFirstDiv, lastday: IndiceCurrentDiv},
+								onSuccess: function(transport){
+									var response = transport.responseText || "Le serveur ne répond pas";
+									if (response == "error_name") {
+										response = "Veuillez saisir un nom de période calendaire valide";
+									}
+									alert(response);
+								},
+								onFailure: function(){ alert('Impossible de transmettre votre requête') }
+							  });
+							  $('login_input_field').value = "";
 						}
 						NbSelectedDays = 0;
 						FirstDiv='';
@@ -390,32 +406,56 @@
                                             </div>
                                             <div class="art-postcontent">
                                                 <!-- article-content -->
-<div style="font-size:12px;color:white;width:60%;text-align:center;margin:10px auto;padding:10px;background-color:#9571dd;">[En cours de développement] : Permet de créer les périodes calendaires. Principe : On sélectionne avec la souris la plage que l'on souhaite, une popup apparait pour demander le nom de la période calendaire. Tout se fait avac prototype + ajax.</div> 
-<div class="calendar_container">
-	<div class="calendar_header">
-	<div style="margin:3px;">Lun</div>
-	</div>
-	<div class="calendar_header">
-	<div style="margin:3px;">Mar</div>
-	</div>
-	<div class="calendar_header">
-	<div style="margin:3px;">Mer</div>
-	</div>
-	<div class="calendar_header">
-	<div style="margin:3px;">Jeu</div>
-	</div>
-	<div class="calendar_header">
-	<div style="margin:3px;">Ven</div>
-	</div>
-	<div class="calendar_header">
-	<div style="margin:3px;">Sam</div>
-	</div>
-	<div style="clear:both;"></div>
-	<?php echo $Calendrier; ?>		
-</div>									
+												<div style="font-size:12px;color:white;width:60%;text-align:center;margin:10px auto;padding:10px;background-color:#9571dd;">[En cours de développement] : Permet de créer les périodes calendaires. Principe : On sélectionne avec la souris la plage que l'on souhaite, une popup apparait pour demander le nom de la période calendaire. Tout se fait avac prototype + ajax.</div> 
+                                                <div class="cleared"></div>
+                                                <!-- /article-content -->
+                                            </div>
+                                            <div class="cleared"></div>
+									</div>
+								</div>
+							</div>
+							<div class="art-post">
+                                <div class="art-post-tl"></div>
+                                <div class="art-post-tr"></div>
+                                <div class="art-post-bl"></div>
+                                <div class="art-post-br"></div>
+                                <div class="art-post-tc"></div>
+                                <div class="art-post-bc"></div>
+                                <div class="art-post-cl"></div>
+                                <div class="art-post-cr"></div>
+                                <div class="art-post-cc"></div>
+                                <div class="art-post-body">
+									<div class="art-post-inner art-article">
+                                            <div class="art-postmetadataheader">
+                                                <h2 class="art-postheader">
+                                                    Calendrier 1
+                                                </h2>
+                                            </div>
+                                            <div class="art-postcontent">
+                                                <!-- article-content -->
+												<div class="calendar_container">
+													<div class="calendar_header">
+													<div style="margin:3px;">Lun</div>
+													</div>
+													<div class="calendar_header">
+													<div style="margin:3px;">Mar</div>
+													</div>
+													<div class="calendar_header">
+													<div style="margin:3px;">Mer</div>
+													</div>
+													<div class="calendar_header">
+													<div style="margin:3px;">Jeu</div>
+													</div>
+													<div class="calendar_header">
+													<div style="margin:3px;">Ven</div>
+													</div>
+													<div class="calendar_header">
+													<div style="margin:3px;">Sam</div>
+													</div>
+													<div style="clear:both;"></div>
+													<?php echo $Calendrier; ?>		
+												</div>									
 
-
-<div id="info" style="position:absolute;top:300px; left:5px;width:60px;height:60px;"></div>
 
                                                 <div class="cleared"></div>
                                                 <!-- /article-content -->
@@ -424,7 +464,7 @@
 									</div>
 								</div>
 							</div>
-							
+														
 						</div>						
                     </div>
                 </div>

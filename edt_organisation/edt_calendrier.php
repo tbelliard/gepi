@@ -102,7 +102,7 @@ $data['date_jour'] = date("d/m/Y"); //jour/mois/année
 if (isset($data['calendrier']) AND isset($data['supprimer'])) {
 
 	$req_supp = mysql_query("DELETE FROM edt_calendrier WHERE id_calendrier = '".$data['supprimer']."'") or Die ('Suppression impossible !');
-    if ($supprimer != 0) {
+    if ($data['supprimer'] != 0) {
         $req_supp_cours = mysql_query("DELETE FROM edt_cours WHERE id_calendrier = '".$data['supprimer']."'") or Die ('Suppression impossible !');
     }
 
