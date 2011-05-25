@@ -373,9 +373,12 @@ if (isset($_POST['is_posted'])) {
 					$test_eleve_note_query = mysql_query("SELECT * FROM cn_notes_devoirs WHERE (login='$reg_eleve_login' AND id_devoir = '$id_devoir')");
 					$test = mysql_num_rows($test_eleve_note_query);
 					if ($test != "0") {
-						$register = mysql_query("UPDATE cn_notes_devoirs SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_devoir='".$id_devoir."')");
+						$sql="UPDATE cn_notes_devoirs SET comment='".$comment."', note='$note',statut='$elev_statut' WHERE (login='".$reg_eleve_login."' AND id_devoir='".$id_devoir."');";
+						//echo "$sql<br />";
+						$register = mysql_query($sql);
 					} else {
-						$register = mysql_query("INSERT INTO cn_notes_devoirs SET login='".$reg_eleve_login."', id_devoir='".$id_devoir."',note='".$note."',statut='".$elev_statut."',comment='".$comment."'");
+						$sql="INSERT INTO cn_notes_devoirs SET login='".$reg_eleve_login."', id_devoir='".$id_devoir."',note='".$note."',statut='".$elev_statut."',comment='".$comment."';";
+						$register = mysql_query($sql);
 					}
 
 				}
@@ -432,6 +435,33 @@ if (isset($_POST['is_posted'])) {
     //==========================================================
 
 	$affiche_message = 'yes';
+}
+
+if((isset($_GET['recalculer']))&&(isset($id_conteneur))&&(isset($periode_num))&&(isset($current_group))) {
+	check_token();
+
+	if((isset($id_conteneur))&&($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)) {
+		function recherche_enfant($id_parent_tmp){
+			global $current_group, $periode_num, $id_racine;
+			$sql="SELECT * FROM cn_conteneurs WHERE parent='$id_parent_tmp'";
+			//echo "<!-- $sql -->\n";
+			$res_enfant=mysql_query($sql);
+			if(mysql_num_rows($res_enfant)>0){
+				while($lig_conteneur_enfant=mysql_fetch_object($res_enfant)){
+					recherche_enfant($lig_conteneur_enfant->id);
+				}
+			}
+			else{
+				$arret = 'no';
+				$id_conteneur_enfant=$id_parent_tmp;
+				// Mise_a_jour_moyennes_conteneurs pour un enfant non parent...
+				mise_a_jour_moyennes_conteneurs($current_group, $periode_num,$id_racine,$id_conteneur_enfant,$arret);
+				//echo "<!-- ========================================== -->\n";
+			}
+		}
+
+		recherche_enfant($id_conteneur);
+	}
 }
 
 $message_enregistrement = "Les modifications ont été enregistrées !";
@@ -1277,7 +1307,11 @@ if ($id_devoir==0) {
 }
 // En mode saisie, on n'affiche que le devoir à saisir
 if ($id_devoir==0) {
-	echo "<td class=cn valign='top'><center><b>Moyenne</b></center></td>\n";
+	echo "<td class=cn valign='top'><center><b>Moyenne</b>\n";
+	if((isset($id_conteneur))&&($current_group["classe"]["ver_periode"]["all"][$periode_num] >= 2)) {
+		echo "<br /><a href='".$_SERVER['PHP_SELF']."?id_conteneur=$id_conteneur&amp;recalculer=y".add_token_in_url()."'>Recalculer</a>";
+	}
+	echo "</center></td>\n";
 	$header_pdf[] = "Moyenne";
 	$w_pdf[] = $w2;
 }
