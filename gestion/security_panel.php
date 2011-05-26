@@ -88,8 +88,9 @@ $test_arch=mysql_query($sql);
 if(mysql_num_rows($test_arch)>0) {
 	echo "<a href='security_panel_archives.php'>Historique des alertes sécurité</a>";
 }
-else {
-	echo "Historique des alertes sécurité";
+
+//else {
+//	echo "Historique des alertes sécurité";
 
 	if($tri=='nom') {
 		$sql="SELECT DISTINCT u.login, u.nom, u.prenom, u.statut, count(t.login) AS nb FROM utilisateurs u, tentatives_intrusion t WHERE t.login=u.login GROUP BY u.login ORDER BY u.nom, u.prenom;";
@@ -123,7 +124,8 @@ else {
 
 	//$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n''est significative qu''en cas de répétition. (login :%' GROUP BY description ORDER BY description;";
 
-	$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n''est significative qu''en cas de répétition. (login :%' GROUP BY description ORDER BY nb DESC;";
+	//$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect. Ce peut être simplement une faute de frappe. Cette alerte n''est significative qu''en cas de répétition. (login :%' GROUP BY description ORDER BY nb DESC;";
+	$sql="SELECT DISTINCT description, count(description) AS nb FROM tentatives_intrusion WHERE description LIKE 'Tentative de connexion avec un mot de passe incorrect.%(login :%' GROUP BY description ORDER BY nb DESC;";
 	$res_erreur_mdp=mysql_query($sql);
 	// Récupérer les logins
 	if(mysql_num_rows($res_erreur_mdp)>0) {
@@ -150,7 +152,7 @@ else {
 SELECT DISTINCT adresse_ip, count(adresse_ip) as nb FROM tentatives_intrusion GROUP BY adresse_ip ORDER BY nb DESC;
 
 */
-}
+//}
 echo "</p>\n";
 
 echo "<script type='text/javascript'>
