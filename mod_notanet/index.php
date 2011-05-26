@@ -174,6 +174,25 @@ statut='';";
 $insert=mysql_query($sql);
 }
 
+/* Ajout des droits pour saisie_socle_commun.php dans la table droits */
+$sql="SELECT 1=1 FROM droits WHERE id='/mod_notanet/saisie_socle_commun.php';";
+$test=mysql_query($sql);
+if(mysql_num_rows($test)==0) {
+$sql="INSERT INTO droits SET id='/mod_notanet/saisie_socle_commun.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Notanet: Saisie socle commun',
+statut='';";
+$insert=mysql_query($sql);
+}
+
+
 
 if(!isset($msg)) {$msg="";}
 //===========================================================
@@ -292,6 +311,16 @@ PRIMARY KEY ( id )
 );";
 $create_table=mysql_query($sql);
 
+$sql="CREATE TABLE IF NOT EXISTS notanet_socle_commun (
+id INT(11) NOT NULL auto_increment,
+login VARCHAR( 50 ) NOT NULL ,
+champ VARCHAR( 10 ) NOT NULL ,
+valeur ENUM( 'MS', 'ME', 'MN', 'AB', '' ) NOT NULL ,
+PRIMARY KEY ( id )
+);";
+$create_table=mysql_query($sql);
+
+
 if($_SESSION['statut']=="administrateur") {
 	$truncate_tables=isset($_GET['truncate_tables']) ? $_GET['truncate_tables'] : NULL;
 	if($truncate_tables=='y') {
@@ -326,6 +355,8 @@ if($_SESSION['statut']=="administrateur") {
 	//echo "<li><a href='saisie_b2i_a2.php'>Saisir les 'notes' B2i et niveau A2 de langue</a> (<i>nécessaire pour réaliser ensuite l'extraction des moyennes</i>)</li>\n";
 
 	echo "<li><a href='saisie_lvr.php'>Saisir les 'notes' de Langue Vivante Régionale</a> (<i>si un tel enseignement est évalué dans l'établissement</i>)</li>\n";
+
+	echo "<li><a href='saisie_socle_commun.php'>Saisir ou importer les résultats du Socle commun.</li>\n";
 
 	echo "<li><a href='extract_moy.php'>Effectuer une extraction des moyennes, affichage et traitement des cas particuliers</a></li>\n";
 

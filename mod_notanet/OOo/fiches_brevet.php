@@ -895,6 +895,20 @@ for($i=0;$i<count($id_classe);$i++){
 
 			}
 
+			// Socle commun
+			// Initialisation
+			$tab_indices_socle=array('116', '116A', '116B', '116C', '116D', '116E', '116F', '116G');
+			for($loop=0;$loop<count($tab_indices_socle);$loop++) {
+				$tab_eleves_OOo[$nb_eleve]['sc']["$loop"]="";
+			}
+
+			$sql="SELECT * FROM notanet_socle_commun WHERE login='$lig1->login';";
+			$res_socle=mysql_query($sql);
+			if(mysql_num_rows($res_socle)>0) {
+				while($lig_socle=mysql_fetch_object($res_socle)) {
+					$tab_eleves_OOo[$nb_eleve]['sc']["$lig_socle->champ"]=$lig_socle->valeur;
+				}
+			}
 
 			$nb_eleve=$nb_eleve+1;
 		}
