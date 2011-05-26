@@ -23,6 +23,18 @@ include("./lib/actions/action.class.php");
 include("./lib/model/calendar.php");
 class calendrierAction extends Action {
 
+
+
+    public function launch(Request $request, Response $response)
+    {
+		$response->addVar('NomPeriode', calendar::getPeriodName(time()));
+		$response->addVar('TypeSemaineCourante', calendar::getTypeCurrentWeek());
+		$response->addVar('SemaineCourante', calendar::getCurrentWeek());
+		$response->addVar('Calendrier', $this->GenerateCalendar());
+        $this->render("./lib/template/calendrierSuccess.php");
+        $this->printOut();
+    }
+	
 	public function GenerateCalendar()
 	{
 		$result = '';
@@ -70,17 +82,6 @@ class calendrierAction extends Action {
 		}
 		return $result;
 	}
-
-    public function launch(Request $request, Response $response)
-    {
-		$this->GenerateCalendar();
-		$response->addVar('NomPeriode', calendar::getPeriodName(time()));
-		$response->addVar('TypeSemaineCourante', calendar::getTypeCurrentWeek());
-		$response->addVar('SemaineCourante', calendar::getCurrentWeek());
-		$response->addVar('Calendrier', $this->GenerateCalendar());
-        $this->render("./lib/template/calendrierSuccess.php");
-        $this->printOut();
-    }
 }
 
 ?>

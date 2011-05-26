@@ -21,6 +21,7 @@
  */
 include("./lib/actions/action.class.php");
 include("./lib/model/edt_calendrier.php");
+include("./lib/model/calendar.php");
 class ajaxrequestAction extends Action {
 
 
@@ -33,8 +34,26 @@ class ajaxrequestAction extends Action {
 					$content .= "nom de la periode :".$request->getParam('periodname');
 					if ($request->getParam('firstday')) {
 						if ($request->getParam('lastday')) {
+							if ($request->getParam('lastday') > $request->getParam('firstday')) {
+								$lastday = $request->getParam('lastday');
+								$firstday = $request->getParam('firstday');
+							}
+							else {
+								$lastday = $request->getParam('firstday');
+								$firstday = $request->getParam('lastday');							
+							}
 							$PeriodeCalendaire = new PeriodeCalendaire();
 							$PeriodeCalendaire->nom = $request->getParam('periodname');
+							
+							$result = calendar::getDayNumber($firstday);
+							$PeriodeCalendaire->debut_ts = $result['timestamp'];
+							$PeriodeCalendaire->jourdebut = $result['day'];		
+							$PeriodeCalendaire->heuredebut = "00:00:00";	
+							
+							$result = calendar::getDayNumber($lastday);
+							$PeriodeCalendaire->fin_ts = $result['timestamp'];
+							$PeriodeCalendaire->jourfin = $result['day'];		
+							$PeriodeCalendaire->heurefin = "23:59:00";								
 							if (!$PeriodeCalendaire->save()) {
 								$content = "error";
 							}

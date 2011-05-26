@@ -29,6 +29,7 @@ class PeriodeCalendaire {
 	public $jourdebut;
 	public $heuredebut;
 	public $jourfin;
+	public $heurefin;
 	public $periode_note;
 	public $etabferme;
 	public $etabvacances;
@@ -55,6 +56,7 @@ class PeriodeCalendaire {
 				jourdebut_calendrier = '".$this->jourdebut."',
 				heuredebut_calendrier = '".$this->heuredebut."',
 				jourfin_calendrier = '".$this->jourfin."',
+				heurefin_calendrier = '".$this->heurefin."',
 				numero_periode = '".$this->periode_note."',
 				etabferme_calendrier = '".$this->etabferme."',
 				etabvacances_calendrier = '".$this->etabvacances."' ";

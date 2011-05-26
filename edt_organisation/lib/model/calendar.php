@@ -23,6 +23,45 @@ class calendar {
 
 /*******************************************************************
  *
+ *
+ *******************************************************************/
+	public static function getDayNumber($num_jour) {
+		$result = array();
+		setlocale (LC_TIME, 'fr_FR','fra');
+		
+		if ((1<=date("n")) AND (date("n") <=8)) {
+			$annee = date("Y");
+		}
+		else {
+			$annee = date("Y")+1;
+		}
+		$ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+		while (date("D", $ts) != "Mon") {
+			$ts-=86400;
+		}
+
+		$semaine = calendar::getNumLastWeek();
+		$ts_ref = $ts;
+		while ($semaine >=33) {
+			$ts-=86400*7;
+			$semaine--;
+		}
+		$i = 1;
+		while ($i < $num_jour) {
+			$i++;
+			$ts+=86400;
+			if ($i%7 == 0) {
+				$ts+=86400;			
+			}
+		}
+		$i = 0;
+		$result['timestamp'] = $ts;
+		$result['day'] = strftime("%Y-%m-%d", $ts); 
+		return $result;
+	}
+	
+/*******************************************************************
+ *
  *		echo $calendar::getCurrentWeek();
  *		result = string
  *		renvoie les dates du lundi et du samedi de la semaine courante
