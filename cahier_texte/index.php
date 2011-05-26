@@ -966,6 +966,19 @@ echo "<table style=\"border-style:solid; border-width:1px; border-color: ".$coul
 
 echo "Export au <a href='../cahier_texte_2/exportcsv.php?id_groupe=".$current_group["id"]."'>format csv</a> / <a href='../cahier_texte_2/export_cdt.php?id_groupe=".$current_group["id"]."'>format html</a><br/>";
 
+//===============================
+// B.O.
+echo "<fieldset style=\"border: 1px solid grey; padding-top: 8px; padding-bottom: 8px;  margin-left: auto; margin-right: auto; margin-top: 3px;\">\n";
+echo "<legend style=\"border: 1px solid grey; font-variant: small-caps;\">B.O.</legend>\n";
+echo "<div style='height: 10em; overflow: auto;'>\n";
+
+require("../lib/textes.inc.php");
+echo $cdt_texte_bo;
+
+echo "</div>\n";
+echo "</fieldset>\n";
+//===============================
+
 // Fin de la colonne de gauche
 echo "</td>\n";
 
