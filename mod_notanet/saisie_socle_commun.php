@@ -572,6 +572,7 @@ function DecocheColonne(nom_col,num_classe) {
 }
 
 echo "<p><br /></p>\n";
+echo "<p><i>NOTES</i>&nbsp;: Voir <a href='https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet' target='_blank'>https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet</a></p>\n";
 require("../lib/footer.inc.php");
 die();
 ?>

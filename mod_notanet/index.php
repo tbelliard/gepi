@@ -390,7 +390,8 @@ if($_SESSION['statut']=="administrateur") {
 
 	echo "<p>Au changement d'année: <a href='".$_SERVER['PHP_SELF']."?truncate_tables=y".add_token_in_url()."'>Vider les saisies Notanet antérieures</a>.</p>\n";
 
-	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, il faut parcourir les points ci-dessus dans l'ordre.</p>\n";
+	echo "<p><b>NOTES:</b> Pour un bon fonctionnement du dispositif, il faut parcourir les points ci-dessus dans l'ordre.<br />
+	Voir <a href='https://www.sylogix.org/projects/gepi/wiki/Module_notanet' target='_blank'>https://www.sylogix.org/projects/gepi/wiki/Module_notanet</a></p>\n";
 }
 elseif($_SESSION['statut']=="scolarite") {
 	echo "<ul>\n";
