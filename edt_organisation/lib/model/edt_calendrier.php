@@ -68,6 +68,36 @@ class PeriodeCalendaire {
 			return false;
 		}				
 	}
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+ 
+	public static function getPeriods() {
+		$result = array();
+		$sql="SELECT debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";
+		$req = mysql_query($sql);
+		if ($req) {
+			if (mysql_num_rows($req) != 0) {
+				while ($rep = mysql_fetch_array($req)) {
+					$result['debut'][] = $rep['debut_calendrier_ts'];
+					$result['fin'][] = $rep['fin_calendrier_ts'];
+				}
+
+			} 
+			else {
+				$result['debut'][] = null;
+				$result['fin'][] = null;			
+			}
+			return $result;
+		}
+		else {
+			$result['debut'][] = null;
+			$result['fin'][] = null;	
+			return $result;
+		}				
+	}
 	
-}
+}	
+
 ?>

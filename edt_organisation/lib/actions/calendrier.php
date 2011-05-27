@@ -30,58 +30,12 @@ class calendrierAction extends Action {
 		$response->addVar('NomPeriode', calendar::getPeriodName(time()));
 		$response->addVar('TypeSemaineCourante', calendar::getTypeCurrentWeek());
 		$response->addVar('SemaineCourante', calendar::getCurrentWeek());
-		$response->addVar('Calendrier', $this->GenerateCalendar());
+		$response->addVar('Calendrier', calendar::GenerateCalendar());
         $this->render("./lib/template/calendrierSuccess.php");
         $this->printOut();
     }
 	
-	public function GenerateCalendar()
-	{
-		$result = '';
-		$TableSemaines = calendar::getDaysTable();
-		$i = 1;
-		foreach ($TableSemaines as $semaine) {
-			$result.= "
-				<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['lundi-mois']."\">
-					<div style=\"margin:3px;\">".$semaine['lundi']."</div>
-				</div>
-			";
-			$i++;
-			$result.= "
-				<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['mardi-mois']."\">
-					<div style=\"margin:3px;\">".$semaine['mardi']."</div>
-				</div>
-			";
-			$i++;
-			$result.= "
-				<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['mercredi-mois']."\">
-					<div style=\"margin:3px;\">".$semaine['mercredi']."</div>
-				</div>
-			";
-			$i++;
-			$result.= "
-				<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['jeudi-mois']."\">
-					<div style=\"margin:3px;\">".$semaine['jeudi']."</div>
-				</div>
-			";
-			$i++;
-			$result.= "
-				<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['vendredi-mois']."\">
-					<div style=\"margin:3px;\">".$semaine['vendredi']."</div>
-				</div>
-			";
-			$i++;
-			$result.= "
-				<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['samedi-mois']."\">
-					<div style=\"margin:3px;\">".$semaine['samedi']."</div>
-				</div>
-			";
-			$result.="	<div style=\"clear:both;\"></div>";
-			$i++;
-			
-		}
-		return $result;
-	}
+
 }
 
 ?>

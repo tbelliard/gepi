@@ -6,9 +6,9 @@
 	var CurrentDiv='';
 	var IndiceCurrentDiv=0;
 	var NbSelectedDays = 0;
-
+	var TableDaysPeriod = new Array();
 	var cleardiv = function() {
-		var i = 1;
+		var i = 0;
 		$$('div.calendar_cell_08').invoke("setStyle", {backgroundColor: '#eeeeee'});
 		$$('div.calendar_cell_09').invoke("setStyle", {backgroundColor: '#ffffff'});
 		$$('div.calendar_cell_10').invoke("setStyle", {backgroundColor: '#eeeeee'});
@@ -21,10 +21,10 @@
 		$$('div.calendar_cell_05').invoke("setStyle", {backgroundColor: '#ffffff'});
 		$$('div.calendar_cell_06').invoke("setStyle", {backgroundColor: '#eeeeee'});
 		$$('div.calendar_cell_07').invoke("setStyle", {backgroundColor: '#ffffff'});
-		//while ($('div'+i)) {
-		//	$('div'+i).setStyle({backgroundColor: 'transparent'});	
-		//	i++;
-		//}
+		while (typeof(TableDaysPeriod[i]) != "undefined") {
+			$('div'+TableDaysPeriod[i]).setStyle({backgroundColor: '#95a1ff'});
+			i++;
+		}
 	}
 	var mylistener = function(div) {
 		$(div).observe('mouseover', function(event) {
@@ -80,6 +80,8 @@
 		}
 	window.onload = function() {
 
+
+		
 		$(document).observe('mousedown', function(event) {
 			MouseDown=1;
 
@@ -133,20 +135,37 @@
 							document.body.style.overflow = 'scroll';				
 						}
 						if ($('login_input_field').value != "") {
-
-							new Ajax.Request('./index.php',
+							new Ajax.Request(
+								'./index.php',
 							  {
 								method:'get',
 								parameters: {action: "ajaxrequest", asker: "calendrier", periodname: $('login_input_field').value, firstday: IndiceFirstDiv, lastday: IndiceCurrentDiv},
 								onSuccess: function(transport){
 									var response = transport.responseText || "Le serveur ne répond pas";
-									if (response == "error_name") {
-										response = "Veuillez saisir un nom de période calendaire valide";
+									var message = response.substring(0,5);
+									if (message == "error") {
+										message = response.substring(5,response.length);
+										$('message').setStyle({display: "block"});
+										$('message').update(message);
 									}
-									alert(response);
+									else {
+										if (IndiceFirstDiv < IndiceCurrentDiv) {
+											firstday = IndiceFirstDiv;
+											lastday = IndiceCurrentDiv;
+										}
+										else {
+											lastday = IndiceFirstDiv;
+											firstday = IndiceCurrentDiv;										
+										}
+										for (i=firstday;i<=lastday;i++) {
+											$('div'+i).setStyle({backgroundColor: '#95a1ff'});	
+											TableDaysPeriod.push(i);
+										}										
+									}
 								},
 								onFailure: function(){ alert('Impossible de transmettre votre requête') }
 							  });
+
 							  $('login_input_field').value = "";
 						}
 						NbSelectedDays = 0;
@@ -356,6 +375,162 @@
 		background-repeat:none;
 		font-size:12px;
 	}
+	.calendar_cell_period_01 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/janvier.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_02 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/fevrier.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_03 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/mars.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_04 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/avril.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_05 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/mai.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_06 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/juin.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_07 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/juillet.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_08 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/aout.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_09 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/septembre.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_10 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/octobre.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_11 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/novembre.png');
+		background-repeat:none;
+		font-size:12px;
+	}
+	.calendar_cell_period_12 {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		background-image:url('lib/template/images/decembre.png');
+		background-repeat:none;
+		font-size:12px;
+	}
 	.calendar_container {
 		width:490px;
 		margin:30px auto;
@@ -367,6 +542,7 @@
 <div id="lecorps">
 
 	<?php include("./lib/template/menu_edt.php"); ?>
+	<div id="message" style="display:none;width:60%;background-color:#dddddd;"></div>
 	<div id="art-main">
         <div class="art-sheet">
             <div class="art-sheet-tl"></div>
@@ -453,7 +629,7 @@
 													<div style="margin:3px;">Sam</div>
 													</div>
 													<div style="clear:both;"></div>
-													<?php echo $Calendrier; ?>		
+													<div id="complete_calendar"><?php echo $Calendrier; ?></div>		
 												</div>									
 
 

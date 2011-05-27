@@ -55,13 +55,16 @@ class ajaxrequestAction extends Action {
 							$PeriodeCalendaire->jourfin = $result['day'];		
 							$PeriodeCalendaire->heurefin = "23:59:00";								
 							if (!$PeriodeCalendaire->save()) {
-								$content = "error";
+								$content = "error Impossible d'enregistrer la période";
+							}
+							else {
+								$content = "success";
 							}
 						}
 					}
 				}
 				else {
-					$content = "error_name";
+					$content = "error Veuillez entrer un nom de période";
 				}
 
 			}
