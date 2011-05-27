@@ -138,6 +138,7 @@ else {
 	//=========================================================
 
 	if(!isset($_POST['enregistrer_extract_moy'])) {
+		$compteur_champs_notes=0;
 
 		if($extract_mode=="tous") {
 
@@ -671,23 +672,35 @@ else {
 													}
 													break;
 												case "PTSUP":
-													$ptsup=$moy_NOTANET[$j]-10;
-													if($ptsup>0){
-														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($ptsup)."|";
-														//$TOT=$TOT+$ptsup;
-														//$TOT=$TOT+round($ptsup*2)/2;
-														//$note_notanet=formate_note_notanet($ptsup);
-														$TOT=$TOT+round($ptsup*$tabmatieres[$j][-2]*2)/2;
-														$note_notanet=formate_note_notanet($ptsup*$tabmatieres[$j][-2]);
+													if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+														$ptsup=$moy_NOTANET[$j]-10;
+														if($ptsup>0){
+															$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($ptsup)."|";
+															//$TOT=$TOT+$ptsup;
+															//$TOT=$TOT+round($ptsup*2)/2;
+															//$note_notanet=formate_note_notanet($ptsup);
+															$TOT=$TOT+round($ptsup*$tabmatieres[$j][-2]*2)/2;
+															$note_notanet=formate_note_notanet($ptsup*$tabmatieres[$j][-2]);
+														}
+														else{
+															$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet(0)."|";
+															$note_notanet=formate_note_notanet(0);
+														}
 													}
-													else{
-														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet(0)."|";
-														$note_notanet=formate_note_notanet(0);
+													else {
+														$ligne_NOTANET=$ligne_NOTANET."|".$moy_NOTANET[$j]."|";
+														$note_notanet=$moy_NOTANET[$j];
 													}
 													break;
 												case "NOTNONCA":
-													$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
-													$note_notanet=formate_note_notanet($moy_NOTANET[$j]);
+													if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
+														$note_notanet=formate_note_notanet($moy_NOTANET[$j]);
+													}
+													else {
+														$ligne_NOTANET=$ligne_NOTANET."|".$moy_NOTANET[$j]."|";
+														$note_notanet=$moy_NOTANET[$j];
+													}
 													break;
 											}
 										}
