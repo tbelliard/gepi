@@ -30,49 +30,69 @@ class ajaxrequestAction extends Action {
 		$content = "";
 		if ($request->getParam('asker')) {
 			if ($request->getParam('asker') == "calendrier") {
-				if ($request->getParam('periodname')) {
-					$content .= "nom de la periode :".$request->getParam('periodname');
-					if ($request->getParam('firstday')) {
-						if ($request->getParam('lastday')) {
-							if ($request->getParam('lastday') > $request->getParam('firstday')) {
-								$lastday = $request->getParam('lastday');
-								$firstday = $request->getParam('firstday');
-							}
-							else {
-								$lastday = $request->getParam('firstday');
-								$firstday = $request->getParam('lastday');							
-							}
-							$PeriodeCalendaire = new PeriodeCalendaire();
-							$PeriodeCalendaire->nom = $request->getParam('periodname');
-							
-							$result = calendar::getDayNumber($firstday);
-							$PeriodeCalendaire->debut_ts = $result['timestamp'];
-							$PeriodeCalendaire->jourdebut = $result['day'];		
-							$PeriodeCalendaire->heuredebut = "00:00:00";	
-							
-							$result = calendar::getDayNumber($lastday);
-							$PeriodeCalendaire->fin_ts = $result['timestamp'];
-							$PeriodeCalendaire->jourfin = $result['day'];		
-							$PeriodeCalendaire->heurefin = "23:59:00";								
-							if (!$PeriodeCalendaire->save()) {
-								$content = "error Impossible d'enregistrer la période";
-							}
-							else {
-								$content = "success";
-							}
-						}
-					}
-				}
-				else {
-					$content = "error Veuillez entrer un nom de période";
-				}
-
+				$this->insertPeriod($content, $request);
 			}
 		}
 		$response->addVar('content', $content);
         $this->render("./lib/template/ajaxrequestSuccess.php");
         $this->printOut();
     }
+	
+/*******************************************************************
+ *
+ *			Insertion d'une période
+ *
+ *******************************************************************/		
+	
+	public function insertPeriod(&$content, Request $request) {
+	
+		if ($request->getParam('periodname')) {
+			$content .= "nom de la periode :".$request->getParam('periodname');
+			if ($request->getParam('firstday')) {
+				if ($request->getParam('lastday')) {
+					if ($request->getParam('lastday') > $request->getParam('firstday')) {
+						$lastday = $request->getParam('lastday');
+						$firstday = $request->getParam('firstday');
+					}
+					else {
+						$lastday = $request->getParam('firstday');
+						$firstday = $request->getParam('lastday');							
+					}
+					$PeriodeCalendaire = new PeriodeCalendaire();
+					$PeriodeCalendaire->nom = $request->getParam('periodname');
+					
+					$result = calendar::getDayNumber($firstday);
+					$PeriodeCalendaire->debut_ts = $result['timestamp'];
+					$PeriodeCalendaire->jourdebut = $result['day'];		
+					$PeriodeCalendaire->heuredebut = "00:00:00";	
+					
+					$result = calendar::getDayNumber($lastday);
+					$PeriodeCalendaire->fin_ts = $result['timestamp'];
+					$PeriodeCalendaire->jourfin = $result['day'];		
+					$PeriodeCalendaire->heurefin = "23:59:00";
+
+					$PeriodeCalendaire->etabferme = 1
+					;
+					if ($PeriodeCalendaire->insertable()) {
+						if (!$PeriodeCalendaire->save()) {
+							$content = "error Impossible d'enregistrer la période";
+						}
+						else {
+							$content = "success";
+						}
+					}
+					else {
+						$content = "error Les p&eacute;riodes ne peuvent pas se chevaucher";					
+					}
+				}
+			}
+		}
+		else {
+			$content = "error Veuillez entrer un nom de période";
+		}	
+	
+	
+	}
 }
 
 ?>

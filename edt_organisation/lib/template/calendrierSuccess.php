@@ -21,6 +21,19 @@
 		$$('div.calendar_cell_05').invoke("setStyle", {backgroundColor: '#ffffff'});
 		$$('div.calendar_cell_06').invoke("setStyle", {backgroundColor: '#eeeeee'});
 		$$('div.calendar_cell_07').invoke("setStyle", {backgroundColor: '#ffffff'});
+
+		$$('div.calendar_cell_period_08').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_09').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_10').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_11').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_12').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_01').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_02').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_03').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_04').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_05').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_06').invoke("setStyle", {backgroundColor: '#95a1ff'});
+		$$('div.calendar_cell_period_07').invoke("setStyle", {backgroundColor: '#95a1ff'});
 		while (typeof(TableDaysPeriod[i]) != "undefined") {
 			$('div'+TableDaysPeriod[i]).setStyle({backgroundColor: '#95a1ff'});
 			i++;
@@ -40,12 +53,12 @@
 				cleardiv();
 				if (IndiceFirstDiv < IndiceCurrentDiv) {
 					for (i=IndiceFirstDiv; i<=IndiceCurrentDiv;i++) {
-						$('div'+i).setStyle({backgroundColor: '#95a1ff'});
+						$('div'+i).setStyle({backgroundColor: '#95c1ff'});
 					}
 				}
 				else {
 					for (i=IndiceFirstDiv; i>=IndiceCurrentDiv;i--) {
-						$('div'+i).setStyle({backgroundColor: '#95a1ff'});
+						$('div'+i).setStyle({backgroundColor: '#95c1ff'});
 					}				
 				
 				}
@@ -66,13 +79,13 @@
 				if (IndiceFirstDiv < IndiceCurrentDiv) {
 					for (i=IndiceFirstDiv; i<=IndiceCurrentDiv;i++) {
 						NbSelectedDays++;
-						$('div'+i).setStyle({backgroundColor: '#95a1ff'});
+						$('div'+i).setStyle({backgroundColor: '#95c1ff'});
 					}
 				}
 				else {
 					for (i=IndiceFirstDiv; i>=IndiceCurrentDiv;i--) {
 						NbSelectedDays++;
-						$('div'+i).setStyle({backgroundColor: '#95a1ff'});
+						$('div'+i).setStyle({backgroundColor: '#95c1ff'});
 					}				
 				
 				}
@@ -145,10 +158,13 @@
 									var message = response.substring(0,5);
 									if (message == "error") {
 										message = response.substring(5,response.length);
-										$('message').setStyle({display: "block"});
 										$('message').update(message);
+										Effect.ScrollTo($('bandeau'),{ duration:'0.2'});
+										Effect.Appear($('message'));
+										Effect.Shake($('message'),{ distance: 30, duration:'1.5'});
 									}
 									else {
+										$('message').setStyle({display: "none"});
 										if (IndiceFirstDiv < IndiceCurrentDiv) {
 											firstday = IndiceFirstDiv;
 											lastday = IndiceCurrentDiv;
@@ -542,7 +558,7 @@
 <div id="lecorps">
 
 	<?php include("./lib/template/menu_edt.php"); ?>
-	<div id="message" style="display:none;width:60%;background-color:#dddddd;"></div>
+	<div id="message" style="color:white;text-align:center;display:none;width:60%;margin:20px auto;padding:5px;background-color:#95a1ff;"></div>
 	<div id="art-main">
         <div class="art-sheet">
             <div class="art-sheet-tl"></div>

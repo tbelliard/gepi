@@ -97,7 +97,49 @@ class PeriodeCalendaire {
 			return $result;
 		}				
 	}
-	
+
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+ 
+	public function insertable() {
+		$result = array();
+		$insertable = true;
+		$sql="SELECT debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";
+		$req = mysql_query($sql);
+		if ($req) {
+			if (mysql_num_rows($req) != 0) {
+				while ($rep = mysql_fetch_array($req)) {
+					$result['debut'][] = $rep['debut_calendrier_ts'];
+					$result['fin'][] = $rep['fin_calendrier_ts'];
+				}
+
+			} 
+			else {
+				$result['debut'][] = null;
+				$result['fin'][] = null;			
+			}
+		}
+		else {
+			$result['debut'][] = null;
+			$result['fin'][] = null;	
+		}				
+		$i = 0;
+		while ((isset($result['debut'][$i])) && ($insertable)) {
+			if (($result['debut'][$i] <= $this->debut_ts) && ($this->debut_ts <= $result['fin'][$i])) {
+				$insertable = false;
+			}
+			else if (($result['debut'][$i] <= $this->fin_ts) && ($this->fin_ts <= $result['fin'][$i])) {
+				$insertable = false;			
+			}
+			else if (($result['debut'][$i] >= $this->debut_ts) && ($this->fin_ts >= $result['fin'][$i])) {
+				$insertable = false;			
+			}
+			$i++;
+		}
+		return $insertable;
+	}	
 }	
 
 ?>
