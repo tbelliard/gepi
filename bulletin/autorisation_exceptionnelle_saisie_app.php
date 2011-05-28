@@ -169,12 +169,6 @@ if((isset($is_posted))&&(isset($id_classe))&&(isset($id_groupe))&&(isset($period
 								$salutation=(date("H")>=18 OR date("H")<=5) ? "Bonsoir" : "Bonjour";
 								$texte_mail=$salutation.",\n\n".$texte_mail."\nCordialement.\n-- \n".$nom_personne_autorisant;
 
-								/*
-								$envoi = mail($email_destinataires,
-									$gepiPrefixeSujetMail.$sujet_mail,
-									$texte_mail,
-									"From: Mail automatique Gepi\r\n".$ajout_header."X-Mailer: PHP/".phpversion());
-								*/
 								$envoi = envoi_mail($sujet_mail, $texte_mail, $email_destinataires, $ajout_header);
 
 								if($envoi) {$msg.="Email expédié à ".htmlentities($email_destinataires)."<br />";}
