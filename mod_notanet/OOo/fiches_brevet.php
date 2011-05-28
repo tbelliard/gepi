@@ -726,7 +726,8 @@ for($i=0;$i<count($id_classe);$i++){
 									}
 
 									// On calcul la note coefficientée
-									if($tab_eleves_OOo[$nb_eleve][$j][0]!="DI" && $tab_eleves_OOo[$nb_eleve][$j][0]!="NN" && $tab_eleves_OOo[$nb_eleve][$j][0]!="ABS") {
+									if($tab_eleves_OOo[$nb_eleve][$j][0]!="DI" && $tab_eleves_OOo[$nb_eleve][$j][0]!="NN" && $tab_eleves_OOo[$nb_eleve][$j][0]!="ABS" && $tab_eleves_OOo[$nb_eleve][$j][0]!="AB") {
+										// ABS ne doit pas arriver... c'est AB
 										$tab_eleves_OOo[$nb_eleve][$j][1]=($lig_note->note)*$tab_champs_OOo[$j][3];
 										$TOTAL_POINTS =$TOTAL_POINTS+$tab_eleves_OOo[$nb_eleve][$j][1];
 										$TOTAL_COEF= $TOTAL_COEF+$tab_champs_OOo[$j][3];
