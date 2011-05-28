@@ -6,7 +6,13 @@
 	var CurrentDiv='';
 	var IndiceCurrentDiv=0;
 	var NbSelectedDays = 0;
+	var CellNotFree = false;
 	var TableDaysPeriod = new Array();
+	// ========================================================================================
+	//
+	//					Nettoyage de toutes les cellules du calendrier
+	//
+	// ========================================================================================
 	var cleardiv = function() {
 		var i = 0;
 		$$('div.calendar_cell_08').invoke("setStyle", {backgroundColor: '#eeeeee'});
@@ -39,6 +45,11 @@
 			i++;
 		}
 	}
+	// ========================================================================================
+	//
+	//					Création des observers mouseover, mousedown, sur chaque cellule
+	//
+	// ========================================================================================
 	var mylistener = function(div) {
 		$(div).observe('mouseover', function(event) {
 		event.preventDefault();
@@ -69,6 +80,9 @@
 			MouseDown=1;
 			event.preventDefault();
 				if (FirstDiv =='') {
+					if ($(div).getStyle('backgroundColor') == 'rgb(149, 161, 255)') {
+						CellNotFree = true;
+					}
 					FirstDiv=div;
 					NbSelectedDays++;
 					IndiceFirstDiv=parseInt(FirstDiv.substring(3,FirstDiv.length), 10);
@@ -89,11 +103,17 @@
 					}				
 				
 				}
+
+				
+
 		});
 		}
+	// ========================================================================================
+	//
+	//					Création des observers généraux mousedown, mouseup
+	//
+	// ========================================================================================
 	window.onload = function() {
-
-
 		
 		$(document).observe('mousedown', function(event) {
 			MouseDown=1;
@@ -103,7 +123,65 @@
 			MouseDown=0;
 			if (NbSelectedDays == 1) {
 				cleardiv();
-				$(FirstDiv).setStyle({backgroundColor: '#95a1ff'});
+				$(FirstDiv).setStyle({backgroundColor: '#95c1ff'});
+				if (CellNotFree) {
+					var DaySelected = parseInt(FirstDiv.substring(3,FirstDiv.length), 10);	
+					//alert (DaySelected);
+					CellNotFree = false;
+					NbSelectedDays = 0;
+					FirstDiv='';
+					cleardiv();	
+				
+					new Ajax.Request(
+						'./index.php',
+						{
+						method:'get',
+						parameters: {action: "ajaxrequest", asker: "edit_period", day: DaySelected},
+						onSuccess: function(transport){
+							var period = transport.responseText.evalJSON();
+							if (period)
+							{
+								$('name_period').value = period[0].name;
+								$('start_period').value = period[0].start_date;
+								$('end_period').value = period[0].end_date;
+								$('periode_notes').value = period[0].periode_notes;
+								$('ouvert').value = period[0].ouvert;
+								$('type').value = period[0].type;				
+							}
+							else {
+								alert('gloups');								
+							}
+						},
+						onFailure: function(){ alert('Impossible de transmettre votre requête') }
+					  });
+					if (Prototype.Browser.IE) {
+						document.documentElement.scroll = "no";
+						document.documentElement.style.overflow = 'hidden';
+					}
+					else {
+						document.body.scroll = "no";
+						document.body.style.overflow = 'hidden';				
+					}
+					var viewport = document.viewport.getDimensions(); // Gets the viewport as an object literal
+					var width = viewport.width; // Usable window width
+					var height = viewport.height; // Usable window height
+					if( typeof( window.pageYOffset ) == 'number' ) 
+						{y = window.pageYOffset;}
+					else if (typeof(document.documentElement.scrollTop) == 'number') {
+						y=document.documentElement.scrollTop;
+					}
+					$('cache_modal').setStyle({width: "100%"});
+					$('cache_modal').setStyle({height: height+"px"});
+					$('cache_modal').setStyle({top: y+"px"});
+					$('cache_modal').setStyle({display: 'block'});
+					$('cache_modal').setOpacity(0.6);
+					$('edit_period').setStyle({top: y+Math.abs((height-100)/2)+"px"});
+					$('edit_period').setStyle({left: Math.abs((width-300)/2)+"px"});
+					$('edit_period').setStyle({display: 'block'});				
+				
+				
+				}
+
 			}
 			else if (NbSelectedDays > 1){
 
@@ -123,22 +201,22 @@
 				else if (typeof(document.documentElement.scrollTop) == 'number') {
 					y=document.documentElement.scrollTop;
 				}
-				$('login_fond').setStyle({width: "100%"});
-				$('login_fond').setStyle({height: height+"px"});
-				$('login_fond').setStyle({top: y+"px"});
-				$('login_fond').setStyle({display: 'block'});
-				$('login_fond').setOpacity(0.6);
-				$('login').setStyle({top: y+Math.abs((height-100)/2)+"px"});
-				$('login').setStyle({left: Math.abs((width-300)/2)+"px"});
-				$('login').setStyle({display: 'block'});
-				$('login_input_field').value='';
-				$('login_input_field').focus();
+				$('cache_modal').setStyle({width: "100%"});
+				$('cache_modal').setStyle({height: height+"px"});
+				$('cache_modal').setStyle({top: y+"px"});
+				$('cache_modal').setStyle({display: 'block'});
+				$('cache_modal').setOpacity(0.6);
+				$('new_period').setStyle({top: y+Math.abs((height-100)/2)+"px"});
+				$('new_period').setStyle({left: Math.abs((width-300)/2)+"px"});
+				$('new_period').setStyle({display: 'block'});
+				$('period_input_field').value='';
+				$('period_input_field').focus();
 						
 
-				$('login_input_field').observe('keyup', function(event) {
+				$('period_input_field').observe('keyup', function(event) {
 					if (event.keyCode=='13'){  
-						$('login').setStyle({display: 'none'});	
-						$('login_fond').setStyle({display: 'none'}); 
+						$('new_period').setStyle({display: 'none'});	
+						$('cache_modal').setStyle({display: 'none'}); 
 						if (Prototype.Browser.IE) {
 							document.documentElement.scroll = "yes";
 							document.documentElement.style.overflow = 'scroll';
@@ -147,12 +225,12 @@
 							document.body.scroll = "yes";
 							document.body.style.overflow = 'scroll';				
 						}
-						if ($('login_input_field').value != "") {
+						if ($('period_input_field').value != "") {
 							new Ajax.Request(
 								'./index.php',
 							  {
 								method:'get',
-								parameters: {action: "ajaxrequest", asker: "calendrier", periodname: $('login_input_field').value, firstday: IndiceFirstDiv, lastday: IndiceCurrentDiv},
+								parameters: {action: "ajaxrequest", asker: "calendrier", periodname: $('period_input_field').value, firstday: IndiceFirstDiv, lastday: IndiceCurrentDiv},
 								onSuccess: function(transport){
 									var response = transport.responseText || "Le serveur ne répond pas";
 									var message = response.substring(0,5);
@@ -182,15 +260,15 @@
 								onFailure: function(){ alert('Impossible de transmettre votre requête') }
 							  });
 
-							  $('login_input_field').value = "";
+							  $('period_input_field').value = "";
 						}
 						NbSelectedDays = 0;
 						FirstDiv='';
 						cleardiv();
   					}
 					else if (event.keyCode=='27'){  
-						$('login').setStyle({display: 'none'});	
-						$('login_fond').setStyle({display: 'none'}); 
+						$('new_period').setStyle({display: 'none'});	
+						$('cache_modal').setStyle({display: 'none'}); 
 						if (Prototype.Browser.IE) {
 							document.documentElement.scroll = "yes";
 							document.documentElement.style.overflow = 'scroll';
@@ -663,11 +741,18 @@
 		<?php include("footer.php"); ?>
     </div>
 </div>
-<div id="login_fond" style="display:none;position:absolute;top:0px;left:0px;background-color:#000000;width:200px;height:200px;"> &nbsp;
-</div>
-<div id="login" style="width:330px;height:156px;display:none;position:absolute;
+<div id="cache_modal" style="display:none;position:absolute;top:0px;left:0px;background-color:#000000;width:200px;height:200px;"> &nbsp;</div>
+<div id="new_period" style="width:330px;height:156px;display:none;position:absolute;
 		background-image:url('lib/template/images/popup.png');
 		background-repeat:none;"> 
-	<p id="login_message" style="padding-left:40px;padding-top:50px;text-align:left;">Entrez le nom de la nouvelle période</p>
-	<p style="padding:10px;padding-left:50px;"><input id="login_input_field" style="width:200px;" type="text"/></p> 
+	<p id="label_period" style="padding-left:40px;padding-top:50px;text-align:left;">Entrez le nom de la nouvelle période</p>
+	<p style="padding:10px;padding-left:50px;"><input id="period_input_field" style="width:200px;" type="text"/></p> 
+</div>
+<div id="edit_period" style="width:400px;display:none;position:absolute;padding:10px;background-color:white;border:1px solid black;"> 
+	<p><span>Nom période :</span><span> <input id="name_period" style="width:200px;" type="text"/></span></p>
+	<p><span>Début période :</span><span> <input id="start_period" style="width:200px;" type="text"/></span></p> 
+	<p><span>Fin période :</span><span> <input id="end_period" style="width:200px;" type="text"/></span></p> 
+	<p><span>Périodes de notes associées :</span><span> <input id="periode_notes" style="width:200px;" type="text"/></span></p> 
+	<p><span>Etablissement ouvert ?</span><span> <input id="ouvert" style="width:200px;" type="text"/></span></p> 	
+	<p><span>Type de période : </span><span> <input id="type" style="width:200px;" type="text"/></span></p> 
 </div>

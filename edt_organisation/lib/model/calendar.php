@@ -157,11 +157,11 @@ class calendar {
 		while ($i < $num_jour) {
 			$i++;
 			$ts+=86400;
-			if ($i%7 == 0) {
+			if (($i-1)%6 == 0) {
 				$ts+=86400;			
 			}
 		}
-		$i = 0;
+
 		$result['timestamp'] = $ts;
 		$result['day'] = strftime("%Y-%m-%d", $ts); 
 		return $result;
@@ -223,6 +223,32 @@ class calendar {
 			if (($rep_periode['debut_calendrier_ts'] <= $date_ts) AND ($rep_periode['fin_calendrier_ts'] >= $date_ts)) { 
 				$result.= "<p>".$rep_periode['nom_calendrier']."</p>";
 				//$endprocess = true;
+			}
+		}	
+		return $result;
+	}
+/*******************************************************************
+ *
+ *		echo $calendar::getSinglePeriodName($date_ts, $calendar_id);
+ *		result = string
+ *		renvoie le nom des périodes contenant le timestamp spécifié (si définies dans les edt)
+ *
+ *******************************************************************/
+
+ 	public static function getSinglePeriod($date_ts, $calendar_id)
+	{
+		$req_periode = mysql_query("SELECT * FROM edt_calendrier");
+		$endprocess = false;
+		$result = array();
+		while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
+			if (($rep_periode['debut_calendrier_ts'] <= $date_ts) AND ($rep_periode['fin_calendrier_ts'] >= $date_ts)) { 
+				$result['nom'] = $rep_periode['nom_calendrier'];
+				$result['debut'] = $rep_periode['debut_calendrier_ts'];				
+				$result['fin'] = $rep_periode['fin_calendrier_ts'];
+				$result['periode_notes'] = $rep_periode['numero_periode'];
+				$result['ouvert'] = $rep_periode['etabferme_calendrier'];
+				$result['type'] = $rep_periode['etabvacances_calendrier'];
+				$endprocess = true;
 			}
 		}	
 		return $result;
@@ -356,7 +382,47 @@ class calendar {
 
     return $tab_select_semaine;
 }	
-	
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+
+	public static function getTimestampFromDay ($day) {
+
+		setlocale (LC_TIME, 'fr_FR','fra');
+		if ((1<=date("n")) AND (date("n") <=8)) {
+			$annee = date("Y");
+		}
+		else {
+			$annee = date("Y")+1;
+		}
+		$ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+		while (date("D", $ts) != "Mon") {
+			$ts-=86400;
+		}
+		$semaine = calendar::getNumLastWeek();
+		while ($semaine >=33) {
+			$ts-=86400*7;
+			$semaine--;
+		}
+		$i = 1;
+		while ($i != $day) {
+			$ts+=86400;
+			$i++;
+			if (($i-1)%6==0) $ts+=86400;
+		}
+		return $ts;
+	}	
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+
+	public static function getPeriodFromDay ($num_day, $calendar) {
+		$ts = calendar::getTimestampFromDay($num_day);
+		$period = calendar::getSinglePeriod($ts, $calendar);
+		return $period;
+	}
 /*******************************************************************
  *
  *
@@ -395,7 +461,7 @@ class calendar {
 				$tab_period[] = $i;
 				$ts+=86400;
 				$i++;
-				if ($i%7 == 0) {
+				if (($i-1)%6 == 0) {
 					$ts+=86400;						
 				}
 				while ($period['fin'][$j] >= $ts) {
@@ -403,7 +469,7 @@ class calendar {
 					$tab_period[] = $i;
 					$ts+=86400;
 					$i++;	
-					if ($i%7 == 0) {
+					if (($i-1)%6 == 0) {
 						$ts+=86400;						
 					}
 				}
@@ -416,7 +482,7 @@ class calendar {
 			else {
 				$ts+=86400;
 				$i++;
-				if ($i%7 == 0) {
+				if (($i-1)%6 == 0) {
 					$ts+=86400;						
 				}
 			}

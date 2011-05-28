@@ -32,12 +32,37 @@ class ajaxrequestAction extends Action {
 			if ($request->getParam('asker') == "calendrier") {
 				$this->insertPeriod($content, $request);
 			}
+			else if ($request->getParam('asker') == "edit_period") {
+				$this->editPeriod($content, $request);
+			}
 		}
 		$response->addVar('content', $content);
         $this->render("./lib/template/ajaxrequestSuccess.php");
         $this->printOut();
     }
 	
+/*******************************************************************
+ *
+ *			Edition d'une période
+ *
+ *******************************************************************/		
+	
+	public function editPeriod(&$content, Request $request) {
+		if ($request->getParam('day')) {
+			$day  = $request->getParam('day');
+			$period = calendar::getPeriodFromDay($day, null);
+			header('Content-type: application/x-json');
+			$content = '[{
+					"name": "'.$period['nom'].'", 
+					"start_date": "'.strftime("%d/%m/%Y", $period['debut']).'",
+					"end_date": "'.strftime("%d/%m/%Y", $period['fin']).'",
+					"periode_notes": "'.$period['periode_notes'].'",
+					"ouvert": "'.$period['ouvert'].'",
+					"type": "'.$period['type'].'"
+					}]';
+
+		}
+	}
 /*******************************************************************
  *
  *			Insertion d'une période
