@@ -62,6 +62,7 @@ if (count($current_group["classes"]["list"]) > 1) {
     $order_by = "nom";
 }
 
+$couleur_alterne=isset($_POST['couleur_alterne']) ? $_POST['couleur_alterne'] : "n";
 
 if((isset($_POST['col_tri']))&&($_POST['col_tri']==1)) {
 	$order_by = "nom";
@@ -75,25 +76,15 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 	$chaine_titre="export";
 	if(isset($current_group)) {
 		//$chaine_titre=$current_group['name']."_".$current_group['description'];
-		$chaine_titre=$current_group['name']."_".my_ereg_replace(",","_",$current_group['classlist_string']);
+		$chaine_titre=$current_group['name']."_".preg_replace("/,/","_",$current_group['classlist_string']);
 	}
 
 	$nom_fic=$chaine_titre."_".$now.".csv";
 
 	// Filtrer les caractères dans le nom de fichier:
-	$nom_fic=my_ereg_replace("[^a-zA-Z0-9_.-]","",remplace_accents($nom_fic,'all'));
+	$nom_fic=preg_replace("/[^a-zA-Z0-9_\.-]/","",remplace_accents($nom_fic,'all'));
 
-	header('Content-Type: text/x-csv');
-	header('Expires: ' . $now);
-	// lem9 & loic1: IE need specific headers
-	if (my_ereg('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-		header('Content-Disposition: inline; filename="' . $nom_fic . '"');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Pragma: public');
-	} else {
-		header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
-		header('Pragma: no-cache');
-	}
+	send_file_download_headers('text/x-csv',$nom_fic);
 
 	$fd="";
 	//$fd.=affiche_tableau_csv2($nb_lignes_tableau, $nb_col, $ligne1_csv, $col);
@@ -102,14 +93,14 @@ if ((isset($_POST['mode']))&&($_POST['mode']=='csv')) {
 	//$col_csv=$_POST['col_csv'];
 	$lignes_csv=$_POST['lignes_csv'];
 
-	$fd.=my_ereg_replace(";",",",my_ereg_replace("&#039;","'",html_entity_decode($ligne1_csv[1])));
+	$fd.=preg_replace("/;/",",",preg_replace("/&#039;/","'",html_entity_decode($ligne1_csv[1])));
 	for($i=2;$i<=count($ligne1_csv);$i++) {
-		$fd.=";".my_ereg_replace(";",",",my_ereg_replace("&#039;","'",html_entity_decode($ligne1_csv[$i])));
+		$fd.=";".preg_replace("/;/",",",preg_replace("/&#039;/","'",html_entity_decode($ligne1_csv[$i])));
 	}
 	$fd.="\n";
 
 	for($j=0;$j<count($lignes_csv);$j++) {
-		$fd.=my_ereg_replace("&#039;","'",html_entity_decode($lignes_csv[$j])."\n");
+		$fd.=preg_replace("/&#039;/","'",html_entity_decode($lignes_csv[$j])."\n");
 	}
 
 	echo $fd;
@@ -421,15 +412,19 @@ if (!$current_group) {
     echo "<p>Choisissez les données à imprimer (vous pouvez cocher plusieurs cases) : </p>\n";
     $i="1";
     while ($i < $nb_periode) {
-        $name = "visu_note_".$i;
-        echo "<p><input type='checkbox' name='$name' id='$name' value='yes' /><label for='$name' style='cursor: pointer;'>".ucfirst($nom_periode[$i])." - Extraire les moyennes</label></p>\n";
-    $i++;
+		$name = "visu_note_".$i;
+		echo "<p><input type='checkbox' name='$name' id='$name' value='yes' ";
+		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked ";}
+		echo "/><label for='$name' style='cursor: pointer;'>".ucfirst($nom_periode[$i])." - Extraire les moyennes</label></p>\n";
+		$i++;
     }
     $i="1";
     while ($i < $nb_periode) {
-            $name = "visu_app_".$i;
-            echo "<p><input type='checkbox' name='$name' id='$name' value='yes' /><label for='$name' style='cursor: pointer;'>".ucfirst($nom_periode[$i])." - Extraire les appréciations</label></p>\n";
-    $i++;
+		$name = "visu_app_".$i;
+		echo "<p><input type='checkbox' name='$name' id='$name' value='yes' ";
+		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked ";}
+		echo "/><label for='$name' style='cursor: pointer;'>".ucfirst($nom_periode[$i])." - Extraire les appréciations</label></p>\n";
+	    $i++;
     }
 
 	//==========================================
@@ -463,15 +458,25 @@ if (!$current_group) {
 	}
 	*/
 	if($aff_rang=="y") {
-	    echo "<p><input type='checkbox' name='afficher_rang' id='afficher_rang' value='yes' /><label for='afficher_rang' style='cursor: pointer;'>Afficher le rang des élèves.</label></p>\n";
+		$name="vmm_afficher_rang";
+	    echo "<p><input type='checkbox' name='afficher_rang' id='afficher_rang' value='yes' ";
+		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked ";}
+		echo "/><label for='afficher_rang' style='cursor: pointer;'>Afficher le rang des élèves.</label></p>\n";
 	}
 	//==========================================
 
-    echo "<p><input type='checkbox' name='stat' id='stat' value='yes' /><label for='stat' style='cursor: pointer;'>Afficher les statistiques sur les moyennes extraites (moyenne générale, pourcentages, ...)</label></p>\n";
+	$name="vmm_stat";
+    echo "<p><input type='checkbox' name='stat' id='stat' value='yes' ";
+	if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked ";}
+	echo "/><label for='stat' style='cursor: pointer;'>Afficher les statistiques sur les moyennes extraites (moyenne générale, pourcentages, ...)</label></p>\n";
     if ($multiclasses) {
         echo "<p><input type='radio' name='order_by' id='order_by_nom' value='nom' checked /><label for='order_by_nom' style='cursor: pointer;'> Classer les élèves par ordre alphabétique </label>";
         echo "<br/><input type='radio' name='order_by' id='order_by_classe' value='classe' /><label for='order_by_classe' style='cursor: pointer;'> Classer les élèves par classe</label></p>";
     }
+	$name="vmm_couleur_alterne";
+    echo "<p><input type='checkbox' name='couleur_alterne' id='couleur_alterne' value='y' ";
+	if((isset($_SESSION[$name]))&&($_SESSION[$name]=='y')) {echo "checked ";}
+	echo "/><label for='couleur_alterne' style='cursor: pointer;'>Colorer les lignes (<i>alterner les couleurs de fond</i>).</label></p>\n";
     echo "<input type='submit' value='Valider' />\n";
     echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";
@@ -871,7 +876,7 @@ if (!$current_group) {
 		for($loop=0;$loop<count($col[$nb_col]);$loop++) {
 			//$tmp_tab[$loop]=$col[$nb_col][$loop];
 			//$tmp_tab[$loop]=$col_csv[$nb_col][$loop];
-			$tmp_tab[$loop]=my_ereg_replace(",",".",$col_csv[$nb_col][$loop]);
+			$tmp_tab[$loop]=preg_replace("/,/",".",$col_csv[$nb_col][$loop]);
 			//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
 
 			$rg[$loop]=$loop;
@@ -929,14 +934,14 @@ if (!$current_group) {
 		}
 
 		// Vérifier si $col_tri est bien un entier compris entre 0 et $nb_col ou $nb_col+1
-		if((strlen(my_ereg_replace("[0-9]","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
+		if((strlen(preg_replace("/[0-9]/","",$col_tri))==0)&&($col_tri>0)&&($col_tri<=$nb_colonnes)) {
 			//echo "<table>";
 			//echo "<tr><td valign='top'>";
 			unset($tmp_tab);
 			//for($loop=0;$loop<count($col[$col_tri]);$loop++) {
 			for($loop=0;$loop<count($col_csv[1]);$loop++) {
 				// Il faut le POINT au lieu de la VIRGULE pour obtenir un tri correct sur les notes
-				$tmp_tab[$loop]=my_ereg_replace(",",".",$col_csv[$col_tri][$loop]);
+				$tmp_tab[$loop]=preg_replace("/,/",".",$col_csv[$col_tri][$loop]);
 				//echo "\$tmp_tab[$loop]=".$tmp_tab[$loop]."<br />";
 			}
 			/*
@@ -1374,6 +1379,7 @@ if (!$current_group) {
 		echo "\n<!-- Formulaire pour l'affichage sans entête -->\n";
 		echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire1\"  target=\"_blank\">\n";
 		echo "<p><input type=\"submit\" value=\"Visualiser sans l'en-tête\" /></p>\n";
+		echo "<input type='hidden' name='couleur_alterne' value='$couleur_alterne' />\n";
 	}
 	else {
 		// On ne place ici cette annonce de formulaire que pour avoir du code HTML valide:
@@ -1485,6 +1491,7 @@ if (!$current_group) {
 		echo "<p><input type='hidden' name='order_by' id='order_by' value='$order_by' />\n";
 	}
 
+    echo "<input type='hidden' name='couleur_alterne' value='$couleur_alterne' />\n";
     echo "</form>\n";
 	//=======================================================
 
@@ -1492,65 +1499,78 @@ if (!$current_group) {
 
 	//=======================================================
 	echo "\n<!-- Formulaire pour l'export CSV -->\n";
-    echo "<div style='width:10em;float:right;'>\n";
-    echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"form_csv\" target='_blank'>\n";
-
-	for($i=1;$i<=count($ligne1_csv);$i++) {
-		echo "<input type='hidden' name='ligne1_csv[$i]' value=\"$ligne1_csv[$i]\" />\n";
-	}
-	echo "<br />\n";
-
-	$lignes_csv=array();
-	for($i=1;$i<=count($col_csv);$i++) {
-		for($j=0;$j<count($col_csv[$i]);$j++) {
-			if(!isset($lignes_csv[$j])) {
-				$lignes_csv[$j]=$col_csv[$i][$j];
-			}
-			else {
-				$lignes_csv[$j].=";".my_ereg_replace('"',"'",my_ereg_replace(";",",",my_ereg_replace("&#039;","'",html_entity_decode($col_csv[$i][$j]))));
-			}
-
-			//echo "<input type='hidden' name='col_csv_".$i."[$j]' value='".$col_csv[$i][$j]."' />\n";
+	if((isset($col_csv))&&(count($col_csv)>0)) {
+		echo "<div style='width:10em;float:right;'>\n";
+		echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"form_csv\" target='_blank'>\n";
+	
+		for($i=1;$i<=count($ligne1_csv);$i++) {
+			echo "<input type='hidden' name='ligne1_csv[$i]' value=\"$ligne1_csv[$i]\" />\n";
 		}
-		//echo "<br />\n";
+		echo "<br />\n";
+	
+		$lignes_csv=array();
+		for($i=1;$i<=count($col_csv);$i++) {
+			for($j=0;$j<count($col_csv[$i]);$j++) {
+				if(!isset($lignes_csv[$j])) {
+					$lignes_csv[$j]=$col_csv[$i][$j];
+				}
+				else {
+					$lignes_csv[$j].=";".preg_replace('/"/',"'",preg_replace("/;/",",",preg_replace("/&#039;/","'",html_entity_decode($col_csv[$i][$j]))));
+				}
+	
+				//echo "<input type='hidden' name='col_csv_".$i."[$j]' value='".$col_csv[$i][$j]."' />\n";
+			}
+			//echo "<br />\n";
+		}
+	
+		for($j=0;$j<count($col_csv[1]);$j++) {
+			echo "<input type='hidden' name='lignes_csv[$j]' value=\"".$lignes_csv[$j]."\" />\n";
+			//echo "<br />\n";
+		}
+	
+		echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
+		echo "<input type='hidden' name='mode' value='csv' />\n";
+		// On ne met le bouton que pour l'affichage avec entête
+		if ($en_tete == "yes") {echo "<input type='submit' value='Générer un CSV' />\n";}
+		echo "</form>\n";
+		echo "</div>\n";
 	}
-
-	for($j=0;$j<count($col_csv[1]);$j++) {
-		echo "<input type='hidden' name='lignes_csv[$j]' value=\"".$lignes_csv[$j]."\" />\n";
-		//echo "<br />\n";
-	}
-
-	echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
-	echo "<input type='hidden' name='mode' value='csv' />\n";
-	// On ne met le bouton que pour l'affichage avec entête
-	if ($en_tete == "yes") {echo "<input type='submit' value='Générer un CSV' />\n";}
-    echo "</form>\n";
-    echo "</div>\n";
 	//=======================================================
 
 
 	echo "\n<!-- Formulaire pour ... -->\n";
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire2\">\n";
-    if ($en_tete == "yes")
+    if ($en_tete == "yes") {
         parametres_tableau($larg_tab, $bord);
+	}
 //    else echo "<p class=small><a href=\"index1.php?id_classe=$id_classe&choix_matiere=$choix_matiere\">Retour</a>";
     echo "<p class='bold'>" . $_SESSION['nom'] . " " . $_SESSION['prenom'] . " | Année : ".getSettingValue("gepiYear")." | Groupe : " . htmlentities($current_group["description"]) . " (" . $current_group["classlist_string"] . ") | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]);
     echo "</p>\n";
     echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";
-    if ($stat == "yes") echo "<input type='hidden' name='stat' value='yes' />\n";
+    if ($stat == "yes") {
+		echo "<input type='hidden' name='stat' value='yes' />\n";
+		$_SESSION['vmm_stat']="yes";
+	}
+	elseif(isset($_SESSION['vmm_stat'])) {unset($_SESSION['vmm_stat']);}
     $i="1";
     while ($i < $nb_periode) {
         $name1 = "visu_note_".$i;
         if ((isset($_POST[$name1]))||(isset($_GET[$name1]))) {
             $temp1 = isset($_POST[$name1]) ? $_POST[$name1] : $_GET[$name1];
             echo "<input type='hidden' name='$name1' value='$temp1' />\n";
+            $_SESSION['visu_note_'.$i]=$temp1;
         }
+		elseif(isset($_SESSION['visu_note_'.$i])) {unset($_SESSION['visu_note_'.$i]);}
+
         $name2 = "visu_app_".$i;
         if ((isset($_POST[$name2]))||(isset($_GET[$name2]))) {
             $temp2 = isset($_POST[$name2]) ? $_POST[$name2] : $_GET[$name2];
             echo "<input type='hidden' name='$name2' value='$temp2' />\n";
+            $_SESSION[$name2]=$temp2;
+            $_SESSION['visu_app_'.$i]=$temp2;
         }
+		elseif(isset($_SESSION['visu_app_'.$i])) {unset($_SESSION['visu_app_'.$i]);}
         $i++;
     }
 
@@ -1558,7 +1578,12 @@ if (!$current_group) {
 
 	if((isset($_POST['afficher_rang']))&&($_POST['afficher_rang']=="yes")) {
 		echo "<input type='hidden' name='afficher_rang' value='yes' />\n";
+		$_SESSION['vmm_afficher_rang']="yes";
 	}
+	elseif(isset($_SESSION['vmm_afficher_rang'])) {unset($_SESSION['vmm_afficher_rang']);}
+
+    echo "<input type='hidden' name='couleur_alterne' value='$couleur_alterne' />\n";
+	if($couleur_alterne=="y") {$_SESSION['vmm_couleur_alterne']="y";} else {unset($_SESSION['vmm_couleur_alterne']);}
 
     echo "</form>\n";
 //    $appel_donnees_eleves = mysql_query("SELECT e.* FROM eleves e, j_eleves_classes c WHERE (c.id_classe='$id_classe' AND c.login = e.login) ORDER BY e.nom, e.prenom");
@@ -1571,17 +1596,17 @@ if (!$current_group) {
 	//function affiche_tableau_index1($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord, $col1_centre, $col_centre, $couleur_alterne) {
 
     if (isset($col)) {
-		$couleur_alterne="";
+		//$couleur_alterne="y";
 		$col1_centre=0;
 		$col_centre=0;
-		echo "<table border=\"$bord\" cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\" summary=''>\n";
+		echo "<table border=\"$bord\" class='boireaus' cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\" summary=''>\n";
 		echo "<tr>\n";
 		$j = 1;
 		while($j < $nb_col+1) {
 			echo "<th class='small'>";
-			if(!my_eregi("Appréciation",$ligne1[$j])) {
+			if(!preg_match("/Appréciation/i",$ligne1[$j])) {
 				echo "<a href='#' onclick=\"document.getElementById('col_tri').value='$j';";
-				if(my_eregi("Rang",$ligne1[$j])) {echo "document.getElementById('sens_tri').value='inverse';";}
+				if(preg_match("/Rang/i",$ligne1[$j])) {echo "document.getElementById('sens_tri').value='inverse';";}
 				if($ligne1[$j]=="Classe") {echo "if(document.getElementById('order_by')) {document.getElementById('order_by').value='classe';}";}
 				if($ligne1[$j]=="Nom Prénom") {echo "if(document.getElementById('order_by')) {document.getElementById('order_by').value='nom';}";}
 				echo "document.forms['formulaire_tri'].submit();\">";
@@ -1597,36 +1622,53 @@ if (!$current_group) {
 		echo "</tr>\n";
 		$i = "0";
 		$bg_color = "";
-		$flag = "1";
+		//$flag = "1";
+		$alt=1;
 		while($i < $nb_lignes) {
-			if ($couleur_alterne) {
-				if ($flag==1) $bg_color = "bgcolor=\"#C0C0C0\""; else $bg_color = "     " ;
+			if ($couleur_alterne=="y") {
+				//if ($flag==1) $bg_color = "bgcolor=\"#C0C0C0\""; else $bg_color = "     " ;
+				echo "<tr class='lig$alt white_hover'>\n";
+			}
+			else {
+				echo "<tr>\n";
 			}
 
-			echo "<tr>\n";
 			$j = 1;
 			while($j < $nb_col+1) {
 				if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))){
-					echo "<td class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+					//echo "<td class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+					echo "<td class='small'>{$col[$j][$i]}</td>\n";
 				} else {
-					echo "<td align=\"center\" class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+					//echo "<td align=\"center\" class='small' ".$bg_color.">{$col[$j][$i]}</td>\n";
+					echo "<td align=\"center\" class='small'>{$col[$j][$i]}</td>\n";
 				}
 				$j++;
 			}
 			echo "</tr>\n";
-			if ($flag == "1") $flag = "0"; else $flag = "1";
+			//if ($flag == "1") $flag = "0"; else $flag = "1";
+			$alt=$alt*(-1);
 			$i++;
 		}
 		echo "</table>\n";
 	}
 
     if ($test == 1 and  $stat == "yes") {
-        echo "<br /><table border=\"$bord\" cellpadding=\"5\" cellspacing=\"1\" width=\"$larg_tab\" summary=''><tr><td>
-        <b>Moyenne générale de la classe : ".$moy_gen."</b>
-        <br /><br /><b>Pourcentage des élèves ayant une moyenne générale : </b><ul>\n";
-        echo "<li>inférieure strictement à 8 : <b>".$pourcent_i8."</b></li>\n";
-        echo "<li>entre 8 et 12 : <b>".$pourcent_se8_ie12."</b></li>\n";
-        echo "<li>supérieure ou égale à 12 : <b>".$pourcent_se12."</b></li></ul></td></tr></table>\n";
+        echo "<br />\n";
+		echo "<div style=\"border: ".$bord."px solid black; width: ".$larg_tab."px; margin-bottom: 5px;\">
+        <p><b>Moyenne générale de la classe : ".$moy_gen."</b>
+        <br /><br /><b>Pourcentage des élèves ayant une moyenne générale : </b>\n";
+		echo "<table style='margin-left: 3em;' border='0'>\n";
+		echo "<tr>\n";
+        echo "<td>inférieure strictement à 8 : </td><td class='bold'>".$pourcent_i8."</td>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+        echo "<td>entre 8 et 12 : </td><td class='bold'>".$pourcent_se8_ie12."</td>\n";
+		echo "</tr>\n";
+		echo "<tr>\n";
+        echo "<td>supérieure ou égale à 12 : </td><td class='bold'>".$pourcent_se12."</td>\n";
+		echo "</tr>\n";
+		echo "</table>\n";
+		echo "</div>\n";
     }
 
 }
