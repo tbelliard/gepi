@@ -709,7 +709,30 @@ if(mysql_num_rows($res_cn)>1) {
 
 }
 
-echo "<a href=\"index.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes évaluations </a>|";
+echo "<a href=\"index.php?id_racine=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Mes évaluations</a> |";
+
+// On dé-cache le champ si javascript est actif
+echo "<span id='span_chgt_dev' style='display: none;'>\n";
+$sql="select * from cn_devoirs where id_conteneur='$id_conteneur' order by date;";
+$res_devoirs=mysql_query($sql);
+if(mysql_num_rows($res_devoirs)>1) {
+
+	$chaine_options_devoirs="";
+	$num_devoir=0;
+	$cpt_dev=0;
+	while($lig_dev=mysql_fetch_object($res_devoirs)) {
+		$chaine_options_devoirs.="<option value='$lig_dev->id'";
+		if($lig_dev->id==$id_devoir) {$chaine_options_devoirs.=" selected='true'"; $num_devoir=$cpt_dev;}
+		$chaine_options_devoirs.=">$lig_dev->nom_court (".formate_date($lig_dev->date).")</option>\n";
+		$cpt_dev++;
+	}
+	// Seulement avec javascript... parce qu'on a plusieurs submit dans ce formulaire là...
+	echo "<select name='select_id_devoir' id='select_id_devoir' onchange=\"confirm_changement_devoir(change, '$themessage');\">\n";
+	echo $chaine_options_devoirs;
+	echo "</select>";
+	echo " | \n";
+}
+echo "</span>\n";
 
 if((isset($id_devoir))&&($id_devoir!=0)) {echo "<a href=\"saisie_notes.php?id_conteneur=$id_racine\" onclick=\"return confirm_abandon (this, change, '$themessage')\"> Visualisation du CN </a>|";}
 
@@ -732,6 +755,26 @@ echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemi
 echo "</p>\n";
 echo "</form>\n";
 
+echo "<script type='text/javascript' language='JavaScript'>
+	if(document.getElementById('span_chgt_dev')) {document.getElementById('span_chgt_dev').style.display='';}
+
+	function confirm_changement_devoir(thechange, themessage) {
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.location.href=\"".$_SERVER['PHP_SELF']."?id_conteneur=$id_conteneur&id_devoir=\"+document.getElementById('select_id_devoir').options[document.getElementById('select_id_devoir').selectedIndex].value;
+		}
+		else {
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed) {
+				document.location.href=\"".$_SERVER['PHP_SELF']."?id_conteneur=$id_conteneur&id_devoir=\"+document.getElementById('select_id_devoir').options[document.getElementById('select_id_devoir').selectedIndex].value;
+			}
+			else {
+				document.getElementById('select_id_devoir').selectedIndex=$num_devoir;
+			}
+		}
+	}
+
+</script>\n";
 
 // Affichage ou non les colonnes "commentaires"
 // Affichage ou non de tous les devoirs
