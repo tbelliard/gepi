@@ -409,22 +409,27 @@ if (!$current_group) {
 
     echo "<form enctype=\"multipart/form-data\" action=\"index1.php\" method=\"post\" name=\"formulaire\">";
     echo "<p class='bold'>Groupe : " . htmlentities($current_group["description"]) ." " . htmlentities($current_group["classlist_string"]) . " | Matière : " . htmlentities($current_group["matiere"]["nom_complet"]) . "&nbsp;&nbsp;<input type='submit' value='Valider' /></p>\n";
-    echo "<p>Choisissez les données à imprimer (vous pouvez cocher plusieurs cases) : </p>\n";
+    echo "<p>Choisissez les données à imprimer (<i>vous pouvez cocher plusieurs cases</i>) : </p>\n";
     $i="1";
+	$cpt=0;
     while ($i < $nb_periode) {
 		$name = "visu_note_".$i;
 		echo "<p><input type='checkbox' name='$name' id='$name' value='yes' ";
-		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked ";}
-		echo "/><label for='$name' style='cursor: pointer;'>".ucfirst($nom_periode[$i])." - Extraire les moyennes</label></p>\n";
+		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+		echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
+		echo "/><label for='$name' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>".ucfirst($nom_periode[$i])." - Extraire les moyennes</span></label></p>\n";
 		$i++;
+		$cpt++;
     }
     $i="1";
     while ($i < $nb_periode) {
 		$name = "visu_app_".$i;
 		echo "<p><input type='checkbox' name='$name' id='$name' value='yes' ";
-		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked ";}
-		echo "/><label for='$name' style='cursor: pointer;'>".ucfirst($nom_periode[$i])." - Extraire les appréciations</label></p>\n";
+		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+		echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
+		echo "/><label for='$name' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>".ucfirst($nom_periode[$i])." - Extraire les appréciations</span></label></p>\n";
 	    $i++;
+		$cpt++;
     }
 
 	//==========================================
@@ -460,27 +465,51 @@ if (!$current_group) {
 	if($aff_rang=="y") {
 		$name="vmm_afficher_rang";
 	    echo "<p><input type='checkbox' name='afficher_rang' id='afficher_rang' value='yes' ";
-		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked ";}
-		echo "/><label for='afficher_rang' style='cursor: pointer;'>Afficher le rang des élèves.</label></p>\n";
+		if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+		echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
+		echo "/><label for='afficher_rang' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher le rang des élèves.</span></label></p>\n";
+		$cpt++;
 	}
 	//==========================================
 
 	$name="vmm_stat";
     echo "<p><input type='checkbox' name='stat' id='stat' value='yes' ";
-	if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked ";}
-	echo "/><label for='stat' style='cursor: pointer;'>Afficher les statistiques sur les moyennes extraites (moyenne générale, pourcentages, ...)</label></p>\n";
+	if((isset($_SESSION[$name]))&&($_SESSION[$name]=='yes')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+	echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
+	echo "/><label for='stat' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Afficher les statistiques sur les moyennes extraites (<i>moyenne générale, pourcentages,...</i>)</span></label></p>\n";
+	$cpt++;
+
     if ($multiclasses) {
         echo "<p><input type='radio' name='order_by' id='order_by_nom' value='nom' checked /><label for='order_by_nom' style='cursor: pointer;'> Classer les élèves par ordre alphabétique </label>";
         echo "<br/><input type='radio' name='order_by' id='order_by_classe' value='classe' /><label for='order_by_classe' style='cursor: pointer;'> Classer les élèves par classe</label></p>";
     }
+
 	$name="vmm_couleur_alterne";
     echo "<p><input type='checkbox' name='couleur_alterne' id='couleur_alterne' value='y' ";
-	if((isset($_SESSION[$name]))&&($_SESSION[$name]=='y')) {echo "checked ";}
-	echo "/><label for='couleur_alterne' style='cursor: pointer;'>Colorer les lignes (<i>alterner les couleurs de fond</i>).</label></p>\n";
+	if((isset($_SESSION[$name]))&&($_SESSION[$name]=='y')) {echo "checked "; $temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+	echo "onchange=\"checkbox_change(this.id, $cpt)\" ";
+	echo "/><label for='couleur_alterne' style='cursor: pointer;'><span id='champ_numero_$cpt'$temp_style>Colorer les lignes (<i>alterner les couleurs de fond</i>).</span></label></p>\n";
+	$cpt++;
+
     echo "<input type='submit' value='Valider' />\n";
     echo "<input type='hidden' name='id_groupe' value='$id_groupe' />\n";
     echo "<input type='hidden' name='choix_visu' value='yes' />\n";
     echo "</form>\n";
+
+	echo "<script type='text/javascript'>
+function checkbox_change(champ, cpt) {
+	if(document.getElementById(champ)) {
+		if(document.getElementById(champ).checked) {
+			document.getElementById('champ_numero_'+cpt).style.fontWeight='bold';
+		}
+		else {
+			document.getElementById('champ_numero_'+cpt).style.fontWeight='normal';
+		}
+	}
+}
+</script>\n";
+
+
 } else {
 
 
