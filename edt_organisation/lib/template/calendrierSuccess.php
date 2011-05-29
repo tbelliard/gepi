@@ -8,6 +8,7 @@
 	var NbSelectedDays = 0;
 	var CellNotFree = false;
 	var TableDaysPeriod = new Array();
+	var TableFirstDaysPeriod = new Array();
 	// ========================================================================================
 	//
 	//					Nettoyage de toutes les cellules du calendrier
@@ -40,8 +41,26 @@
 		$$('div.calendar_cell_period_05').invoke("setStyle", {backgroundColor: '#95a1ff'});
 		$$('div.calendar_cell_period_06').invoke("setStyle", {backgroundColor: '#95a1ff'});
 		$$('div.calendar_cell_period_07').invoke("setStyle", {backgroundColor: '#95a1ff'});
+
+		$$('div.calendar_first_cell_period_08').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_09').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_10').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_11').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_12').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_01').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_02').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_03').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_04').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_05').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_06').invoke("setStyle", {backgroundColor: '#75a1ff'});
+		$$('div.calendar_first_cell_period_07').invoke("setStyle", {backgroundColor: '#75a1ff'});
 		while (typeof(TableDaysPeriod[i]) != "undefined") {
 			$('div'+TableDaysPeriod[i]).setStyle({backgroundColor: '#95a1ff'});
+			i++;
+		}
+		i=0;
+		while (typeof(TableFirstDaysPeriod[i]) != "undefined") {
+			$('div'+TableFirstDaysPeriod[i]).setStyle({backgroundColor: '#75a1ff'});
 			i++;
 		}
 	}
@@ -81,6 +100,9 @@
 			event.preventDefault();
 				if (FirstDiv =='') {
 					if ($(div).getStyle('backgroundColor') == 'rgb(149, 161, 255)') {
+						CellNotFree = true;
+					}
+					else if ($(div).getStyle('backgroundColor') == 'rgb(117, 161, 255)') {
 						CellNotFree = true;
 					}
 					FirstDiv=div;
@@ -126,7 +148,6 @@
 				$(FirstDiv).setStyle({backgroundColor: '#95c1ff'});
 				if (CellNotFree) {
 					var DaySelected = parseInt(FirstDiv.substring(3,FirstDiv.length), 10);	
-					//alert (DaySelected);
 					CellNotFree = false;
 					NbSelectedDays = 0;
 					FirstDiv='';
@@ -251,7 +272,10 @@
 											lastday = IndiceFirstDiv;
 											firstday = IndiceCurrentDiv;										
 										}
-										for (i=firstday;i<=lastday;i++) {
+										$('div'+firstday).setStyle({backgroundColor: '#75a1ff'});
+										TableFirstDaysPeriod.push(firstday);
+										TableDaysPeriod.push(firstday);
+										for (i=firstday+1;i<=lastday;i++) {
 											$('div'+i).setStyle({backgroundColor: '#95a1ff'});	
 											TableDaysPeriod.push(i);
 										}										
@@ -294,342 +318,22 @@
 			mylistener('div'+i);	
 			i++;
 		}
+		$('bouton_annuler').observe('mouseup', function(event) {
+			$('edit_period').setStyle({display: 'none'});	
+			$('cache_modal').setStyle({display: 'none'}); 
+			if (Prototype.Browser.IE) {
+				document.documentElement.scroll = "yes";
+				document.documentElement.style.overflow = 'scroll';
+			}
+			else {
+				document.body.scroll = "yes";
+				document.body.style.overflow = 'scroll';				
+			}
+		});
+		
 	}
 </script>
 
-<style type="text/css">
-	.calendar_header{
-		float:left;
-		border:1px solid #cccccc;
-		background-image:url('lib/template/images/entete.jpg');
-		background-repeat:repeat-x;
-		width:80px;
-		height:30px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		text-align:center;
-		font-family: arial;
-		font-weight:bold;
-		color:black;
-	}
-	.calendar_cell_01 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/janvier.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_02 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/fevrier.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_03 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/mars.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_04 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/avril.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_05 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/mai.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_06 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/juin.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_07 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/juillet.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_08 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/aout.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_09 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/septembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_10 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/octobre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_11 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/novembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_12 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/decembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_01 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/janvier.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_02 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/fevrier.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_03 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/mars.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_04 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/avril.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_05 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/mai.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_06 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/juin.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_07 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/juillet.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_08 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/aout.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_09 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/septembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_10 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/octobre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_11 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/novembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_12 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('lib/template/images/decembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_container {
-		width:490px;
-		margin:30px auto;
-	}
-</style>
 <?php include("./lib/template/mini_calendrier.php"); ?>
 
 
@@ -744,15 +448,18 @@
 <div id="cache_modal" style="display:none;position:absolute;top:0px;left:0px;background-color:#000000;width:200px;height:200px;"> &nbsp;</div>
 <div id="new_period" style="width:330px;height:156px;display:none;position:absolute;
 		background-image:url('lib/template/images/popup.png');
-		background-repeat:none;"> 
+		background-repeat:no-repeat;"> 
 	<p id="label_period" style="padding-left:40px;padding-top:50px;text-align:left;">Entrez le nom de la nouvelle période</p>
 	<p style="padding:10px;padding-left:50px;"><input id="period_input_field" style="width:200px;" type="text"/></p> 
 </div>
-<div id="edit_period" style="width:400px;display:none;position:absolute;padding:10px;background-color:white;border:1px solid black;"> 
+<div id="edit_period" style="width:481px;height:332px;display:none;position:absolute;padding-top:50px;padding-left:10px;
+		background-image:url('lib/template/images/popup2.png');
+		background-repeat:no-repeat;"> 
 	<p><span>Nom période :</span><span> <input id="name_period" style="width:200px;" type="text"/></span></p>
 	<p><span>Début période :</span><span> <input id="start_period" style="width:200px;" type="text"/></span></p> 
 	<p><span>Fin période :</span><span> <input id="end_period" style="width:200px;" type="text"/></span></p> 
-	<p><span>Périodes de notes associées :</span><span> <input id="periode_notes" style="width:200px;" type="text"/></span></p> 
+	<p><span>Période de note associée :</span><span> <input id="periode_notes" style="width:200px;" type="text"/></span></p> 
 	<p><span>Etablissement ouvert ?</span><span> <input id="ouvert" style="width:200px;" type="text"/></span></p> 	
 	<p><span>Type de période : </span><span> <input id="type" style="width:200px;" type="text"/></span></p> 
+	<p style="padding-top:40px;"><span><img id="bouton_supprimer" alt="supprimer" src="lib/template/images/bouton_supprimer.png" /></span><span><img id="bouton_valider" alt="valider" src="lib/template/images/bouton_valider.png" /></span><span><img id="bouton_annuler" alt="annuler" src="lib/template/images/bouton_annuler.png" /></span></p>
 </div>

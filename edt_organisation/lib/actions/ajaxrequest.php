@@ -24,7 +24,11 @@ include("./lib/model/edt_calendrier.php");
 include("./lib/model/calendar.php");
 class ajaxrequestAction extends Action {
 
-
+/*******************************************************************
+ *
+ *							Dispatcher
+ *
+ *******************************************************************/
     public function launch(Request $request, Response $response)
     {
 		$content = "";
@@ -43,7 +47,7 @@ class ajaxrequestAction extends Action {
 	
 /*******************************************************************
  *
- *			Edition d'une période
+ *			Edition d'une période - renvoie au format JSON
  *
  *******************************************************************/		
 	
@@ -115,8 +119,6 @@ class ajaxrequestAction extends Action {
 		else {
 			$content = "error Veuillez entrer un nom de période";
 		}	
-	
-	
 	}
 }
 
