@@ -211,6 +211,12 @@ else {
 
 	echo "<p class='bold'>".$current_group['description']." (<i>".$current_group["classlist_string"]."</i>)</p>\n";
 
+	//echo "<div id='div_photo_eleve' class='infobulle_corps' style='position: fixed; top: 220px; right: 20px; text-align:center; border:1px solid black; display:none;'></div>\n";
+	$titre="Photo";
+	$texte="Photo";
+	$tabdiv_infobulle[]=creer_div_infobulle('div_photo_eleve',$titre,"",$texte,"",14,0,'y','y','n','n');
+
+
 	echo "<form enctype=\"multipart/form-data\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 	echo add_token_field();
 	//echo "<table class='boireaus' width='100%'>\n";
@@ -220,7 +226,8 @@ else {
 	if(count($current_group["classes"]["list"])>1) {
 		echo "<th>Classe</th>\n";
 	}
-	echo "<th>Moy.</th>\n";
+	echo "<th>Moy.<br />périodes</th>\n";
+	echo "<th>Moy.<br />année</th>\n";
 	echo "<th>Appréciation</th>\n";
 	echo "</tr>\n";
 
@@ -256,43 +263,12 @@ else {
 
 			// Photo...
 			$photo=nom_photo($eleve_elenoet);
-			//$temoin_photo="";
-			//if("$photo"!=""){
+			$temoin_photo="";
 			if($photo){
-				$titre="$eleve_nom $eleve_prenom";
-
-				$texte="<div align='center'>\n";
-				//$texte.="<img src='../photos/eleves/".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
-				$texte.="<img src='".$photo."' width='150' alt=\"$eleve_nom $eleve_prenom\" />";
-				$texte.="<br />\n";
-				$texte.="</div>\n";
-
 				$temoin_photo="y";
-
-				$tabdiv_infobulle[]=creer_div_infobulle('photo_'.$eleve_login,$titre,"",$texte,"",14,0,'y','y','n','n');
 			}
 			//========================
 
-
-			/*
-			$sql="SELECT * FROM notanet_app na,
-								notanet n
-							WHERE (
-									na.login='$eleve_login' AND
-									na.id_mat=n.id_mat AND
-									n.id_mat='$matiere'
-								);";
-			*/
-			/*
-			$sql="SELECT * FROM notanet_app na,
-								notanet n
-							WHERE (
-									na.login='$eleve_login' AND
-									n.mat='$matiere' AND
-									na.login=n.login AND
-									na.matiere=n.mat
-								);";
-			*/
 			$sql="SELECT na.appreciation FROM notanet_app na,
 								notanet n
 							WHERE (
@@ -323,6 +299,23 @@ else {
 				$eleve_note="";
 			}
 
+			// Notes des périodes
+			$sql="SELECT * FROM matieres_notes WHERE (login='$eleve_login' AND id_groupe='$id_groupe') ORDER BY periode;";
+			$res_note_trim=mysql_query($sql);
+
+			$eleve_notes_trim="";
+			if(mysql_num_rows($res_note_trim)>0) {
+				while($lig_note_trim=mysql_fetch_object($res_note_trim)) {
+					if($lig_note_trim->statut!='') {
+						$eleve_notes_trim.="P.$lig_note_trim->periode&nbsp;: <b>".$lig_note_trim->statut."</b><br />\n";
+					}
+					else {
+						$eleve_notes_trim.="P.$lig_note_trim->periode&nbsp;: <b>".$lig_note_trim->note."</b><br />\n";
+					}
+				}
+			}
+
+
 			$alt=$alt*(-1);
 			echo "<tr class='lig$alt'>\n";
 
@@ -330,17 +323,24 @@ else {
 				echo "<td colspan='2'>$eleve_nom $eleve_prenom";
 			}
 			else {
-				echo "<td>$eleve_nom $eleve_prenom</td>";
-				echo "<td><a href='#' onmouseover=\"afficher_div('photo_$eleve_login','y',-100,20);\"";
-				echo ">";
-				echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
-				echo "</a>";
+				echo "<td>$eleve_nom $eleve_prenom</td>\n";
+				echo "<td>\n";
+
+				if(file_exists($photo)) {
+					echo "<a href='#' onclick=\"afficher_div('div_photo_eleve','y',-100,20); affiche_photo('".$photo."','".addslashes(strtoupper($eleve_nom)." ".ucfirst(strtolower($eleve_prenom)))."')\">";
+					echo "<img src='../images/icons/buddy.png' alt='$eleve_nom $eleve_prenom' />";
+					echo "</a>";
+				}
 			}
 			echo "</td>\n";
 
 			if(count($current_group["classes"]["list"])>1) {
 				echo "<td>$eleve_classe</td>\n";
 			}
+
+			echo "<td style='font-size: small;'>\n";
+			echo $eleve_notes_trim;
+			echo "</td>\n";
 
 			echo "<td>".$eleve_note."</td>\n";
 
@@ -461,6 +461,10 @@ else {
 		document.getElementById('info_focus').value=temoin;
 	}
 
+	function affiche_photo(photo,nom_prenom) {
+		document.getElementById('div_photo_eleve_contenu_corps').innerHTML='<div style=\'text-align: center\'><img src=\"'+photo+'\" width=\"150\" alt=\"Photo\" /><br />'+nom_prenom+'</div>';
+	}
+
 	";
 
 	// Après validation, on donne le focus au champ qui suivait celui qui vient d'être rempli
@@ -475,3 +479,4 @@ else {
 
 require("../lib/footer.inc.php");
 die();
+?>
