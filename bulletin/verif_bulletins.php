@@ -650,7 +650,8 @@ if (!(isset($id_classe))) {
 							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]));
 							//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['app_manquante'][]=".strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]))."<br />";
 
-							if($email!="") {
+							//if($email!="") {
+							if(($email!="")&&(check_mail($email))) {
 								$sujet_mail="[Gepi]: Appreciation non remplie: ".$id_eleve[$j];
 								$message_mail="Bonjour,\r\n\r\nCordialement";
 								echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
@@ -733,7 +734,8 @@ if (!(isset($id_classe))) {
 							$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][]=strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]));
 							//echo "\$tab_alerte_prof[$login_prof]['groupe'][$group_id]['moy_manquante'][]=".strtoupper($eleve_nom[$j])." ".ucfirst(strtolower($eleve_prenom[$j]))."<br />";
 
-							if($email!="") {
+							//if($email!="") {
+							if(($email!="")&&(check_mail($email))) {
 								$sujet_mail="[Gepi]: Moyenne manquante: ".$eleve_nom[$j];
 								$message_mail="Bonjour,\r\n\r\nCordialement";
 								echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
@@ -783,7 +785,8 @@ if (!(isset($id_classe))) {
 					$nom_prof = mysql_result($call_prof, 0, 'nom');
 					$prenom_prof = mysql_result($call_prof, 0, 'prenom');
 					//echo " (<a href='mailto:$email'>$prenom_prof $nom_prof</a>)";
-					if($email!="") {
+					//if($email!="") {
+					if(($email!="")&&(check_mail($email))) {
 						$sujet_mail="[Gepi]: Avis du conseil manquant: ".$id_eleve[$j];
 						$message_mail="Bonjour,\r\n\r\nCordialement";
 						echo "(<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>)";
@@ -848,7 +851,8 @@ if (!(isset($id_classe))) {
 								$nom_prof = @mysql_result($query_resp, $m, 'nom');
 								$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
 								//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
-								if($email!="") {
+								//if($email!="") {
+								if(($email!="")&&(check_mail($email))) {
 									$sujet_mail="[Gepi]: Appreciation AID manquante: ".$eleve_nom[$j];
 									$message_mail="Bonjour,\r\n\r\nCordialement";
 									echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
@@ -895,7 +899,8 @@ if (!(isset($id_classe))) {
 									$nom_prof = @mysql_result($query_resp, $m, 'nom');
 									$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
 									//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
-									if($email!="") {
+									//if($email!="") {
+									if(($email!="")&&(check_mail($email))) {
 										$sujet_mail="[Gepi]: Moyenne AID manquante: ".$eleve_nom[$j];
 										$message_mail="Bonjour,\r\n\r\nCordialement";
 										echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
@@ -948,7 +953,8 @@ if (!(isset($id_classe))) {
 					$nom_prof = @mysql_result($query_resp, $m, 'nom');
 					$prenom_prof = @mysql_result($query_resp, $m, 'prenom');
 					//echo "<a href='mailto:$email'>$prenom_prof $nom_prof</a>";
-					if($email!="") {
+					//if($email!="") {
+					if(($email!="")&&(check_mail($email))) {
 						$sujet_mail="[Gepi]: Absences non remplies: ".$id_eleve[$j];
 						$message_mail="Bonjour,\r\n\r\nCordialement";
 						echo "<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>";
@@ -997,10 +1003,11 @@ if (!(isset($id_classe))) {
                             $nom_prof = mysql_result($call_prof, 0, 'nom');
                             $prenom_prof = mysql_result($call_prof, 0, 'prenom');
                             //echo " (<a href='mailto:$email'>$prenom_prof $nom_prof</a>)";
-                            if($email!="") {
+                            //if($email!="") {
+                            if(($email!="")&&(check_mail($email))) {
 								$sujet_mail="[Gepi]: ECTS non remplis: ".$eleve_nom[$j];
 								$message_mail="Bonjour,\r\n\r\nCordialement";
-                                echo " (<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>)";
+								echo " (<a href='mailto:$email?subject=$sujet_mail&amp;body=".rawurlencode($message_mail)."'>".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof)."</a>)";
                             }
                             else{
                                 echo " (".ucfirst(strtolower($prenom_prof))." ".strtoupper($nom_prof).")";
@@ -1076,11 +1083,13 @@ if (!(isset($id_classe))) {
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
 			if($tab_alerte_prof[$login_prof]['email']!="") {
-				$sujet_mail="[Gepi]: Appreciations et/ou moyennes manquantes";
-				echo "<a href='mailto:".$tab_alerte_prof[$login_prof]['email']."?subject=$sujet_mail&amp;body=".rawurlencode($message)."'>".$info_prof."</a>";
-				echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"$sujet_mail\" />\n";
-				echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$tab_alerte_prof[$login_prof]['email']."\" />\n";
-				$tab_num_mail[]=$num;
+				if(check_mail($tab_alerte_prof[$login_prof]['email'])) {
+					$tab_num_mail[]=$num;
+					$sujet_mail="[Gepi]: Appreciations et/ou moyennes manquantes";
+					echo "<a href='mailto:".$tab_alerte_prof[$login_prof]['email']."?subject=$sujet_mail&amp;body=".rawurlencode($message)."'>".$info_prof."</a>";
+					echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"$sujet_mail\" />\n";
+					echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$tab_alerte_prof[$login_prof]['email']."\" />\n";
+				}
 			}
 			else {
 				echo $info_prof;
