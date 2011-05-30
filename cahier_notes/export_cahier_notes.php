@@ -2,7 +2,7 @@
 /*
  * @version: $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -54,11 +54,17 @@ $type_export=isset($_POST["type_export"]) ? $_POST["type_export"] : NULL;
 
 $nettoyage=isset($_GET["nettoyage"]) ? $_GET["nettoyage"] : NULL;
 
+/*
+if(!isset($id_racine)) {
+	if((isset($id_groupe))&&(isset($periode_num))) {
+	}
+}
+*/
 
 if($_SESSION['user_temp_directory']!='y') {
 	$type_export="CSV";
 }
-else{
+else {
 	if(getSettingValue("export_cn_ods")=='y') {
 		$user_tmp=get_user_temp_directory();
 		if(!$user_tmp) {
@@ -79,18 +85,20 @@ else{
 		$chemin_modele_ods="export_cn_modele_ods";
 
 		if(isset($nettoyage)) {
+			check_token();
+
 			$id_groupe=isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL;
 			$periode_num=isset($_GET['periode_num']) ? $_GET['periode_num'] : NULL;
 
-			if(!my_ereg(".ods$",$nettoyage)) {
+			if(!preg_match("/.ods$/i",$nettoyage)) {
 				$msg="Le fichier n'est pas d'extension ODS.";
 			}
-			elseif(!my_ereg("^".$_SESSION['login'],$nettoyage)) {
+			elseif(!preg_match("/^".$_SESSION['login']."/",$nettoyage)) {
 				$msg="Vous tentez de supprimer des fichiers qui ne vous appartiennent pas.";
 			}
 			else {
-				if(strlen(my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_")))!=0) {
-					$msg="Le fichier proposé n'est pas valide: '".my_ereg_replace("[a-zA-Z0-9_.]","",strtr($nettoyage,"-","_"))."'";
+				if(strlen(preg_replace("/[a-zA-Z0-9_\.]/","",strtr($nettoyage,"-","_")))!=0) {
+					$msg="Le fichier proposé n'est pas valide: '".preg_replace("/[a-zA-Z0-9_\.]/","",strtr($nettoyage,"-","_"))."'";
 				}
 				else{
 					if(!file_exists("$chemin_temp/$nettoyage")) {
@@ -179,14 +187,133 @@ if(!isset($type_export)) {
 	$titre.=" - EXPORT";
 
 	// Mettre la ligne de liens de retour,...
-    echo "<div class='norme'><p class='bold'>\n";
-    echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|\n";
-    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
+    echo "<div class='norme'>\n";
+	echo "<form enctype=\"multipart/form-data\" name= \"form1\" action=\"".$_SERVER['PHP_SELF']."\" method=\"get\">\n";
+    echo "<p class='bold'>\n";
+
+	//echo "<a href=\"../accueil.php\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour accueil </a>|\n";
+    //echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'> ".htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
+
+    echo "<a href='index.php?id_groupe=".$current_group["id"]."&amp;periode_num=$periode_num'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour ".htmlentities($current_group['name'])." ".$current_group["classlist_string"]." (".$nom_periode.")"." </a>|\n";
+
+
+	if($_SESSION['statut']=='professeur') {
+		$login_prof_groupe_courant=$_SESSION["login"];
+	}
+	else {
+		//$tmp_current_group=get_group($id_groupe);
+		//$login_prof_groupe_courant=$tmp_current_group["profs"]["list"][0];
+		$login_prof_groupe_courant=$current_group["profs"]["list"][0];
+	}
+
+	$tab_groups = get_groups_for_prof($login_prof_groupe_courant,"classe puis matière");
+
+	if(!empty($tab_groups)) {
+
+		$chaine_options_enseignements="";
+
+		$num_groupe=-1;
+		$nb_groupes_suivies=count($tab_groups);
+
+		//echo "count(\$tab_groups)=".count($tab_groups)."<br />";
+
+		$id_grp_prec=0;
+		$id_grp_suiv=0;
+		$temoin_tmp=0;
+		//foreach($tab_groups as $tmp_group) {
+		for($loop=0;$loop<count($tab_groups);$loop++) {
+			// On ne retient que les groupes qui ont un nombre de périodes au moins égal à la période sélectionnée
+			if($tab_groups[$loop]["nb_periode"]>=$periode_num) {
+				if($tab_groups[$loop]['id']==$id_groupe){
+					$num_groupe=$loop;
+
+					//$chaine_options_enseignements.="<option value='".$tab_groups[$loop]['id']."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					$chaine_options_enseignements.="<option value='".$id_racine."' selected='true'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+
+					$temoin_tmp=1;
+					if(isset($tab_groups[$loop+1])){
+						$id_grp_suiv=$tab_groups[$loop+1]['id'];
+
+						//$chaine_options_enseignements.="<option value='".$tab_groups[$loop+1]['id']."'>".$tab_groups[$loop+1]['name']." (".$tab_groups[$loop+1]['classlist_string'].")</option>\n";
+					}
+					else{
+						$id_grp_suiv=0;
+					}
+				}
+				else {
+					$tmp_id_cahier_notes=get_cn_from_id_groupe_periode_num($tab_groups[$loop]['id'], $periode_num);
+					if($tmp_id_cahier_notes!='') {
+						//$chaine_options_enseignements.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+						$chaine_options_enseignements.="<option value='".$tmp_id_cahier_notes."'>".$tab_groups[$loop]['description']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+					}
+				}
+
+				if($temoin_tmp==0){
+					$id_grp_prec=$tab_groups[$loop]['id'];
+
+					//$chaine_options_enseignements.="<option value='".$tab_groups[$loop]['id']."'>".$tab_groups[$loop]['name']." (".$tab_groups[$loop]['classlist_string'].")</option>\n";
+				}
+			}
+		}
+		// =================================
+
+		/*
+		if(isset($id_grp_prec)){
+			if($id_grp_prec!=0){
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_prec&amp;periode_num=$periode_num";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement précédent</a>";
+			}
+		}
+		*/
+
+		if(($chaine_options_enseignements!="")&&($nb_groupes_suivies>1)) {
+
+			echo "<script type='text/javascript'>
+	// Initialisation
+	change='no';
+
+	function confirm_changement_enseignement(thechange, themessage)
+	{
+		if (!(thechange)) thechange='no';
+		if (thechange != 'yes') {
+			document.form1.submit();
+		}
+		else{
+			var is_confirmed = confirm(themessage);
+			if(is_confirmed){
+				document.form1.submit();
+			}
+			else{
+				document.getElementById('id_racine').selectedIndex=$num_groupe;
+			}
+		}
+	}
+</script>\n";
+
+			echo "<input type='hidden' name='periode_num' id='periode_num' value='$periode_num' />\n";
+			//echo " | <select name='id_classe' onchange=\"document.forms['form1'].submit();\">\n";
+			echo "Export en période $periode_num: <select name='id_racine' id='id_racine' onchange=\"confirm_changement_enseignement(change, '$themessage');\">\n";
+			echo $chaine_options_enseignements;
+			echo "</select> | \n";
+		}
+
+		/*
+		if(isset($id_grp_suiv)){
+			if($id_grp_suiv!=0){
+				echo " | <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_grp_suiv&amp;periode_num=$periode_num";
+				echo "' onclick=\"return confirm_abandon (this, change, '$themessage')\">Enseignement suivant</a>";
+				}
+		}
+		*/
+
+	}
+	echo "</form>\n";
 	echo "</div>";
 
 
 	echo "<h2>$titre</h2>\n";
 	echo "<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+	echo add_token_field();
 	echo "<p>Vous pouvez effectuer un export:<br />\n";
 	echo "<input type='hidden' name='id_racine' value='$id_racine' />\n";
 	//echo "<input type='hidden' name='is_posted' value='yes' />\n";
@@ -204,12 +331,13 @@ if(!isset($type_export)) {
 	die();
 }
 
+check_token(false);
 
 $nom_fic=$_SESSION['login'];
 $nom_fic.="_cn";
-$nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group['description'],'all'));
-$nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($current_group["classlist_string"],'all'));
-$nom_fic.="_".my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($nom_periode,'all'));
+$nom_fic.="_".preg_replace("/[^a-zA-Z0-9_\. - ]/","",remplace_accents($current_group['description'],'all'));
+$nom_fic.="_".preg_replace("/[^a-zA-Z0-9_\. - ]/","",remplace_accents($current_group["classlist_string"],'all'));
+$nom_fic.="_".preg_replace("/[^a-zA-Z0-9_\. - ]/","",remplace_accents($nom_periode,'all'));
 
 if($type_export=="CSV") {
 
@@ -411,7 +539,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 
 		$id_dev[$cpt]=$lig_dev->id;
 		// Certains caractères comme le '°' que l'on met par exemple dans 'Devoir n°2' posent pb...
-		$nomc_dev[$cpt]=my_ereg_replace("[^a-zA-Z0-9_. - ]","",remplace_accents($lig_dev->nom_court,'all'));
+		$nomc_dev[$cpt]=preg_replace("/[^a-zA-Z0-9_\. - ]/","",remplace_accents($lig_dev->nom_court,'all'));
 
 		// Problème avec les 17.5 qui sont convertis en dates
 		//$coef_dev[$cpt]=$lig_dev->coef;
@@ -856,7 +984,7 @@ elseif(($type_export=="ODS")&&(getSettingValue("export_cn_ods")=='y')) {
 	// AJOUTER UN LIEN POUR FAIRE LE MENAGE... et permettre à l'admin de faire le ménage.
 	echo "<p>Pour ne pas encombrer inutilement le serveur et par soucis de confidentialité, il est recommandé de supprimer le fichier du serveur après récupération du fichier ci-dessus.<br />\n";
 	//echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=$nom_fic'>Supprimer le fichier</a>.";
-	echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=$nom_fic&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num'>Supprimer le fichier</a>.";
+	echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=$nom_fic&amp;id_groupe=$id_groupe&amp;periode_num=$periode_num".add_token_in_url()."'>Supprimer le fichier</a>.";
 	//echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=".$nom_fic."_truc'>Supprimer le fichier 2</a>.";
 	//echo "<a href='".$_SERVER['PHP_SELF']."?nettoyage=_truc".$nom_fic."'>Supprimer le fichier 3</a>.";
 	echo "</p>\n";
