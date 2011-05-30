@@ -1029,6 +1029,7 @@ if (!(isset($id_classe))) {
 	echo "</tr>\n";
 	echo "</table>\n";
 
+	$tab_num_mail=array();
 	if(count($tab_alerte_prof)>0) {
 		$num=0;
 
@@ -1079,6 +1080,7 @@ if (!(isset($id_classe))) {
 				echo "<a href='mailto:".$tab_alerte_prof[$login_prof]['email']."?subject=$sujet_mail&amp;body=".rawurlencode($message)."'>".$info_prof."</a>";
 				echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"$sujet_mail\" />\n";
 				echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$tab_alerte_prof[$login_prof]['email']."\" />\n";
+				$tab_num_mail[]=$num;
 			}
 			else {
 				echo $info_prof;
@@ -1108,7 +1110,12 @@ if (!(isset($id_classe))) {
 
 			echo "<tr class='lig$alt'>\n";
 			echo "<td>\n";
-			echo "<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\">Envoyer</a></span>";
+			if(!in_array($num, $tab_num_mail)) {
+				echo "<span style='color: red;'>Pas de mail</span>";
+			}
+			else {
+				echo "<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\">Envoyer</a></span>";
+			}
 			echo "</td>\n";
 			echo "</tr>\n";
 
