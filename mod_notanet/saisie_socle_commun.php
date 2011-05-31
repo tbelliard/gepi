@@ -121,6 +121,7 @@ elseif((isset($_POST['action']))&&($_POST['action']=='upload_file')) {
 				$tab=explode("|",trim($ligne));
 				if((isset($tab[0]))&&($tab[0]!='')&&(isset($tab[1]))&&($tab[1]!='')&&(isset($tab[2]))&&($tab[2]!='')) {
 					$sql="SELECT DISTINCT login FROM notanet WHERE ine='$tab[0]';";
+					//echo "$sql<br />\n";
 					$res_login=mysql_query($sql);
 					if(mysql_num_rows($res_login)==1) {
 						$lig=mysql_fetch_object($res_login);
@@ -134,7 +135,15 @@ elseif((isset($_POST['action']))&&($_POST['action']=='upload_file')) {
 						if($insert) {$nb_reg++;} else {$msg.="Erreur sur la requête $sql<br />";}
 					}
 					else {
-						$msg.="Ligne non identifiée : $ligne<br />";
+						$info_supplementaire="";
+						$sql="SELECT DISTINCT nom, prenom, classe FROM eleves e, j_eleves_classes jec, classes c WHERE e.login=jec.login AND jec.id_classe=c.id AND e.no_gep='$tab[0]';";
+						$res_ele_clas=mysql_query($sql);
+						if(mysql_num_rows($res_ele_clas)==1) {
+							$lig_ele_clas=mysql_fetch_object($res_ele_clas);
+							$info_supplementaire=" (<em>$lig_ele_clas->nom $lig_ele_clas->prenom ($lig_ele_clas->classe)</em>)";
+						}
+						$msg.="Ligne non identifiée : ".$ligne.$info_supplementaire."<br />";
+						//$msg.="$sql<br />\n";
 					}
 				}
 			}
