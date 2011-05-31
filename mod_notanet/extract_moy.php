@@ -627,7 +627,8 @@ else {
 								//if(isset($tabmatieres[$j][0])){
 								//if(isset($statut_matiere[$j])){
 								if(isset($moy_NOTANET[$j])) {
-									if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')&&($moy_NOTANET[$j]!="")) {
+									//if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')&&($moy_NOTANET[$j]!="")) {
+									if(($tabmatieres[$j][0]!='')&&($statut_matiere[$j]!='non dispensee dans l etablissement')&&("$moy_NOTANET[$j]"!="")) {
 										$ligne_NOTANET=$INE[$m]."|".sprintf("%03d",$j);
 										//$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
 
@@ -636,7 +637,8 @@ else {
 										if($tabmatieres[$j]['socle']=='n') {
 											switch($tabmatieres[$j][-1]){
 												case "POINTS":
-													if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+													//if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+													if(("$moy_NOTANET[$j]"!="AB")&&("$moy_NOTANET[$j]"!="DI")&&("$moy_NOTANET[$j]"!="NN")){
 														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j]*$tabmatieres[$j][-2])."|";
 														//$TOT=$TOT+round($moy_NOTANET[$j]*2)/2;
 														$TOT=$TOT+round($moy_NOTANET[$j]*$tabmatieres[$j][-2]*2)/2;
@@ -648,7 +650,8 @@ else {
 													}
 													break;
 												case "PTSUP":
-													if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+													//if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+													if(("$moy_NOTANET[$j]"!="AB")&&("$moy_NOTANET[$j]"!="DI")&&("$moy_NOTANET[$j]"!="NN")){
 														$ptsup=$moy_NOTANET[$j]-10;
 														if($ptsup>0){
 															//$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($ptsup)."|";
@@ -670,7 +673,8 @@ else {
 													}
 													break;
 												case "NOTNONCA":
-													if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+													//if(($moy_NOTANET[$j]!="AB")&&($moy_NOTANET[$j]!="DI")&&($moy_NOTANET[$j]!="NN")){
+													if(("$moy_NOTANET[$j]"!="AB")&&("$moy_NOTANET[$j]"!="DI")&&("$moy_NOTANET[$j]"!="NN")){
 														$ligne_NOTANET=$ligne_NOTANET."|".formate_note_notanet($moy_NOTANET[$j])."|";
 														$note_notanet=formate_note_notanet($moy_NOTANET[$j]);
 													}
@@ -733,8 +737,8 @@ else {
 							if(($extract_mode==2)||($extract_mode==3)) {
 								$num_matiere_LV1=103;
 								$num_matiere_ScPhy=104;
-								if(($moy_NOTANET[$num_matiere_LV1]!="AB")&&($moy_NOTANET[$num_matiere_LV1]!="DI")&&($moy_NOTANET[$num_matiere_LV1]!="NN")){
-									if(($moy_NOTANET[$num_matiere_ScPhy]!="AB")&&($moy_NOTANET[$num_matiere_ScPhy]!="DI")&&($moy_NOTANET[$num_matiere_ScPhy]!="NN")) {
+								if(("$moy_NOTANET[$num_matiere_LV1]"!="AB")&&("$moy_NOTANET[$num_matiere_LV1]"!="DI")&&("$moy_NOTANET[$num_matiere_LV1]"!="NN")){
+									if(("$moy_NOTANET[$num_matiere_ScPhy]"!="AB")&&("$moy_NOTANET[$num_matiere_ScPhy]"!="DI")&&("$moy_NOTANET[$num_matiere_ScPhy]"!="NN")) {
 										// Il ne faut retenir qu'une seule des deux notes
 										if($moy_NOTANET[$num_matiere_ScPhy]>$moy_NOTANET[$num_matiere_LV1]) {
 											$TOT-=round($moy_NOTANET[$num_matiere_LV1]*$tabmatieres[$num_matiere_LV1][-2]*2)/2;
