@@ -4026,39 +4026,69 @@ function eleve_suivant() {
 				if((getSettingValue("active_module_absence")=='y')||
 					(getSettingValue("abs2_import_manuel_bulletin")=='y')||
 					((count($tab_ele['absences'])!=0)&&(getSettingValue("active_module_absence")!='y')&&(getSettingValue("abs2_import_manuel_bulletin")!='y'))) {
-				   
+
+					/*
+					$tmp_p=$num_periode_choisie-1;
+					foreach($tab_ele['absences'][$num_periode_choisie-1] as $key => $value) {
+						echo "\$tab_ele['absences'][".$tmp_p."][$key]=$value<br />";
+					}
+					*/
+
 				   // Affichage ligne
-				   $info_absence="<center>";
-				   if (isset($tab_ele['absences'][$num_periode_choisie-1])) {
-	
-						if((count($tab_ele['absences'])==0)) {
-						    $info_absence.="Aucun bilan d'absences n'est enregistré.";
-					    }
-					    else {
-							if($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0')
-							{
-								$info_absence.="Aucune demi-journée d'absence.";
-							} else {
-								$info_absence.="Nombre de demi-journées d'absence ";
-								if ($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0') {
-									$info_absence = $info_absence."justifiées ";
-								}
-								$info_absence = $info_absence.": ".$tab_ele['absences'][$num_periode_choisie-1]['nb_absences']."</b>";
-								if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '0')
+					if (isset($tab_ele['absences'][$num_periode_choisie-1])) {
+						if($choix_periode!="toutes_periodes") {
+
+							$info_absence="<center>";
+
+							if((count($tab_ele['absences'])==0)) {
+								$info_absence.="Aucun bilan d'absences n'est enregistré.";
+							}
+							else {
+								if($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0')
 								{
-									$info_absence = $info_absence." (dont <b>".$tab_ele['absences'][$num_periode_choisie-1]['non_justifie']."</b> non justifiée";
-									if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '1') { $info_absence = $info_absence."s"; }
-									$info_absence = $info_absence.")";
+									$info_absence.="Aucune demi-journée d'absence.";
+								} else {
+									$info_absence.="Nombre de demi-journées d'absence ";
+									if ($tab_ele['absences'][$num_periode_choisie-1]['nb_absences'] == '0') {
+										$info_absence = $info_absence."justifiées ";
+									}
+									$info_absence = $info_absence.": ".$tab_ele['absences'][$num_periode_choisie-1]['nb_absences']."</b>";
+									if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '0')
+									{
+										$info_absence = $info_absence." (<em>dont <b>".$tab_ele['absences'][$num_periode_choisie-1]['non_justifie']."</b> non justifiée";
+										if ($tab_ele['absences'][$num_periode_choisie-1]['non_justifie'] != '1') { $info_absence = $info_absence."s"; }
+										$info_absence = $info_absence."</em>)";
+									}
+									$info_absence = $info_absence.".";
 								}
-								$info_absence = $info_absence.".";
+						
+								if($tab_ele['absences'][$num_periode_choisie-1]['nb_retards'] != '0')
+								{
+									$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_ele['absences'][$num_periode_choisie-1]['nb_retards']."</b>";
+								}
 							}
-					
-							if($tab_ele['absences'][$num_periode_choisie-1]['nb_retards'] != '0')
-							{
-								$info_absence = $info_absence."<i> Nombre de retards : </i><b>".$tab_ele['absences'][$num_periode_choisie-1]['nb_retards']."</b>";
+							echo $info_absence."</center>";
+						}
+						else {
+							echo "<div align='center'>\n";
+							echo "<table class='boireaus' summary='Bilan des absences'>\n";
+							echo "<tr>\n";
+							echo "<th>Nombre 1/2 journées d'absence sur la période</th>\n";
+							echo "<th>dont non justifiées</th>\n";
+							echo "<th>Nombre de retards</th>\n";
+							echo "</tr>\n";
+							$alt=-1;
+							for($loop_per=0;$loop_per<$nb_periode;$loop_per++) {
+								$alt=$alt*(-1);
+								echo "<tr class='lig$alt'>\n";
+								echo "<td>".$tab_ele['absences'][$loop_per]['nb_absences']."</td>\n";
+								echo "<td>".$tab_ele['absences'][$loop_per]['non_justifie']."</td>\n";
+								echo "<td>".$tab_ele['absences'][$loop_per]['nb_retards']."</td>\n";
+								echo "</tr>\n";
 							}
-					    }
-					    echo $info_absence."</center>";
+							echo "</table>\n";
+							echo "</div>\n";
+						}
 					}
 /*  A supprimer				   
 				    //Affichage tableau
