@@ -567,7 +567,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 						else {
 							$tmp_id_sanction=mysql_insert_id();
 		
-							$sql="INSERT INTO s_autres_sanctions SET id_sanction='$id_sanction', id_nature='$id_nature', description='$description';";
+							$sql="INSERT INTO s_autres_sanctions SET id_sanction='$tmp_id_sanction', id_nature='$id_nature', description='$description';";
 							//echo "$sql<br />\n";
 							$res=mysql_query($sql);
 							if(!$res) {
