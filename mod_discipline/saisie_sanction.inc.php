@@ -38,6 +38,31 @@ if(!isset($valeur)) {
 	die();
 }
 
+require_once('sanctions_func_lib.php');
+//echo "\$ele_login=$ele_login<br />";
+//echo "\$id_incident=$id_incident<br />";
+$meme_sanction_pour_autres_protagonistes="";
+if(isset($ele_login)) {
+	//echo "plop";
+	$texte_protagoniste_1="Sanction pour <b>".get_nom_prenom_eleve($ele_login)."</b><br />\n";
+	if((isset($id_incident))&&(!isset($id_sanction))) {
+		$tab_protagonistes=get_protagonistes($id_incident,array('Responsable'),array('eleve'));
+		if(count($tab_protagonistes)>1) {
+			//echo "plup";
+			$meme_sanction_pour_autres_protagonistes.="Même sanction pour&nbsp;:<br />\n";
+			for($loop=0;$loop<count($tab_protagonistes);$loop++) {
+				if($tab_protagonistes[$loop]!=$ele_login) {
+					$meme_sanction_pour_autres_protagonistes.="<input type='checkbox' name='autre_protagoniste_meme_sanction[]' id='autre_protagoniste_meme_sanction_$loop' value=\"$tab_protagonistes[$loop]\" /><label for='autre_protagoniste_meme_sanction_$loop'>".get_nom_prenom_eleve($tab_protagonistes[$loop])."</label><br />\n";
+				}
+			}
+
+			$meme_sanction_pour_autres_protagonistes=$texte_protagoniste_1.$meme_sanction_pour_autres_protagonistes;
+		}
+	}
+	//elseif(isset($id_sanction)) {
+	//}
+}
+
 if($valeur=='travail') {
 	echo "<table class='boireaus' border='1'>\n";
 
@@ -61,7 +86,8 @@ if($valeur=='travail') {
 		}
 	}
 
-	echo "<tr class='lig1'>\n";
+	$alt=1;
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de retour&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='date_retour' id='date_retour' size='10' value=\"".$date_retour."\" onchange='changement();' />\n";
@@ -72,20 +98,33 @@ if($valeur=='travail') {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig-1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de retour&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	choix_heure2('heure_retour',$heure_retour,'');
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'><textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig-1'>\n";
+	if($meme_sanction_pour_autres_protagonistes!="") {
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+		echo "<td style='text-align:left;'>\n";
+		echo $meme_sanction_pour_autres_protagonistes;
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td colspan='2'>\n";
 	echo "<input type='submit' name='enregistrer_sanction' value='Enregistrer' />\n";
 	echo "</td>\n";
@@ -126,7 +165,8 @@ elseif($valeur=='retenue') {
 	echo "</div>\n";
 
 	echo "<table class='boireaus' border='1' summary='Retenue'>\n";
-	echo "<tr class='lig1'>\n";
+	$alt=1;
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='date_retenue' id='date_retenue' value='$date_retenue' size='10' onchange='maj_div_liste_retenues_jour();changement();' onblur='maj_div_liste_retenues_jour();' />\n";
@@ -145,7 +185,8 @@ elseif($valeur=='retenue') {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig-1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de début&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='heure_debut' value='' />\n";
@@ -158,14 +199,16 @@ elseif($valeur=='retenue') {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Durée&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='duree_retenue' id='duree_retenue' size='2' value='$duree_retenue' onchange='changement();' /> en heures\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig-1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='lieu_retenue' id='lieu_retenue' value='$lieu_retenue' onchange='changement();' />\n";
@@ -196,39 +239,54 @@ elseif($valeur=='retenue') {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	
-	echo "<tr class='lig-1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Report&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	
-	echo "<b>Gestion d'un report :</b><br/>";
+	echo "<b>Gestion d'un report :</b><br/>\n";
 	
-	echo "1- Cocher cette case pour traiter un report : <input type='checkbox' name='report_demande' id='report_demande' value='OK' onchange=\"changement();\" /><br/>\n";
-	echo "2- Saisir le motif du report : <select name='choix_motif_report' id='choix_motif_report' changement();\">\n";
+	echo "<ol>\n";
+	echo "<li>Cocher cette case pour traiter un report : <input type='checkbox' name='report_demande' id='report_demande' value='OK' onchange=\"changement();\" /></li>\n";
+	echo "<li>Saisir le motif du report : <select name='choix_motif_report' id='choix_motif_report' changement();\">\n";
 	echo "<option value=''>---</option>\n";
 	echo "<option value='absent'>Absent</option>\n";
 	echo "<option value='aucun_motif'>Aucun motif</option>\n";
 	echo "<option value='report_demande'>Report demandé</option>\n";
 	echo "<option value='autre'>Autre</option>\n";
-	echo "</select><br/>\n";
-	echo "3- Modifier les données (date, heure, ...) pour le report<br/>";
-	echo "4- Enregistrer les modifications<br/>";
-	echo "5- Imprimer le document sur la page suivante<br/>\n";
+	echo "</select></li>\n";
+	echo "<li>Modifier les données (date, heure, ...) pour le report</li>\n";
+	echo "<li>Enregistrer les modifications</li>\n";
+	echo "<li>Imprimer le document sur la page suivante</li>\n";
+	echo "</ol>\n";
 	
 	if (isset($id_sanction)) {
-	echo "<b>Liste des reports</b><br/>\n";
-	echo afficher_tableau_des_reports($id_sanction);
+		echo "<b>Liste des reports</b><br/>\n";
+		echo afficher_tableau_des_reports($id_sanction);
 	}
 	echo "</td>\n";
 	echo "</tr>\n";
-	
-	echo "<tr class='lig1'>\n";
+
+	if($meme_sanction_pour_autres_protagonistes!="") {
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+		echo "<td style='text-align:left;'>\n";
+		echo $meme_sanction_pour_autres_protagonistes;
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td colspan='2'>\n";
 	echo "<input type='submit' name='enregistrer_sanction' value='Enregistrer' />\n";
 	echo "</td>\n";
@@ -287,7 +345,8 @@ elseif($valeur=='exclusion') {
 			$signataire=$lig_sanction->id_signataire;
 		} 
 	}
-	echo "<tr class='lig1'>\n";
+	$alt=1;
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de début&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='date_debut' id='date_debut' value='$date_debut' size='10' onchange='changement();' />\n";
@@ -298,7 +357,8 @@ elseif($valeur=='exclusion') {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig-1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de début&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='heure_debut' value='' />\n";
@@ -308,7 +368,8 @@ elseif($valeur=='exclusion') {
 
 	$cal2 = new Calendrier("formulaire", "date_fin");
 
-	echo "<tr class='lig1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de fin&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='date_fin' id='date_fin' value='$date_fin' size='10' onchange='changement();' />\n";
@@ -319,7 +380,8 @@ elseif($valeur=='exclusion') {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig-1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Heure de fin&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	//echo "<input type='text' name='heure_debut' value='' />\n";
@@ -327,7 +389,8 @@ elseif($valeur=='exclusion') {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Lieu&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='lieu_exclusion' id='lieu_exclusion' value=\"$lieu_exclusion\" onchange='changement();' />\n";
@@ -345,7 +408,8 @@ elseif($valeur=='exclusion') {
 	echo "</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig-1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
@@ -353,19 +417,22 @@ elseif($valeur=='exclusion') {
 	echo "</tr>\n";
 
 // Ajout Eric génération Ooo de l'exclusion
+	$alt=$alt*(-1);
 	echo "<tr>\n";
 	echo "<td colspan=2 style='text-align:center;'>\n";
 	echo "Données à renseigner pour l'impression Open Office de l'exclusion temporaire :</td>\n";
 	echo "</tr>\n";
 
-	echo "<tr class='lig1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Numero de courrier&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='numero_courrier' id='numero_courrier' value=\"$numero_courrier\" onchange='changement();' />\n";
 	echo "<i>La référence du courrier dans le registre courrier départ. Ex : ADM/SD/012/11</i></td>\n";
 	echo "</tr>\n";
 	
-	echo "<tr class='lig-1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Type d'exclusion&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='type_exclusion' id='type_exclusion' value=\"$type_exclusion\" onchange='changement();' />\n";
@@ -386,21 +453,24 @@ elseif($valeur=='exclusion') {
 	echo "<i>Choisir le type dans la liste.</i></td>\n";
 	echo "</tr>\n";	
 	
-	echo "<tr class='lig1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nombre de jours d'exclusion&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<input type='text' name='nombre_jours' id='nombre_jours' value=\"$nombre_jours\" onchange='changement();' />\n";
 	echo "<i>en toutes lettres</i></td>\n";
 	echo "</tr>\n";
 	
-	echo "<tr class='lig-1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Qualification des faits&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<textarea name='no_anti_inject_qualification_faits' cols='100' onchange='changement();'>$qualification_faits</textarea>\n";
 	echo "</td>\n";
 	echo "</tr>\n";
 	
-	echo "<tr class='lig1'>\n";
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Choix du signataire de l'exclusion&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	// Sélectionner parmi les signataires déjà saisis?
@@ -422,8 +492,19 @@ elseif($valeur=='exclusion') {
 	};
 	echo "</td>\n";
 	echo "</tr>\n";
-	
-	echo "<tr class='lig-1'>\n";
+
+	if($meme_sanction_pour_autres_protagonistes!="") {
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
+		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+		echo "<td style='text-align:left;'>\n";
+		echo $meme_sanction_pour_autres_protagonistes;
+		echo "</td>\n";
+		echo "</tr>\n";
+	}
+
+	$alt=$alt*(-1);
+	echo "<tr class='lig$alt'>\n";
 	echo "<td colspan='2'>\n";
 	echo "<input type='submit' name='enregistrer_sanction' value='Enregistrer' />\n";
 	echo "</td>\n";
@@ -454,14 +535,26 @@ else {
 		echo "<th colspan='2'>$lig->nature</th>\n";
 		echo "</tr>\n";
 
-		echo "<tr class='lig-1'>\n";
+		$alt=1;
+		echo "<tr class='lig$alt'>\n";
 		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Description&nbsp;: </td>\n";
 		echo "<td style='text-align:left;'>\n";
 		echo "<textarea name='no_anti_inject_description' cols='30' onchange='changement();'>$description</textarea>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 
-		echo "<tr class='lig1'>\n";
+		if($meme_sanction_pour_autres_protagonistes!="") {
+			$alt=$alt*(-1);
+			echo "<tr class='lig$alt'>\n";
+			echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Même sanction&nbsp;: </td>\n";
+			echo "<td style='text-align:left;'>\n";
+			echo $meme_sanction_pour_autres_protagonistes;
+			echo "</td>\n";
+			echo "</tr>\n";
+		}
+
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt'>\n";
 		echo "<td colspan='2'>\n";
 		echo "<input type='submit' name='enregistrer_sanction' value='Enregistrer' />\n";
 		echo "</td>\n";

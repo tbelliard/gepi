@@ -1026,5 +1026,39 @@ function nombre_reports($id_sanction,$aucun) {
 	return $cpt;
 }
 
+// Retourne à partir de l'id d'un incident le login du déclarant
+function get_protagonistes($id_incident,$roles=array(),$statuts=array()) {
+	$retour=array();
+
+	$chaine_roles="";
+	if(count($roles)>0) {
+		$chaine_roles=" AND (";
+		for($loop=0;$loop<count($roles);$loop++) {
+			if($loop>0) {$chaine_roles.=" OR ";}
+			$chaine_roles.="qualite='$roles[$loop]'";
+		}
+		$chaine_roles.=")";
+	}
+
+	$chaine_statuts="";
+	if(count($statuts)>0) {
+		$chaine_statuts=" AND (";
+		for($loop=0;$loop<count($statuts);$loop++) {
+			if($loop>0) {$chaine_statuts.=" OR ";}
+			$chaine_statuts.="statut='$statuts[$loop]'";
+		}
+		$chaine_statuts.=")";
+	}
+
+	$sql="SELECT * FROM s_protagonistes WHERE id_incident='$id_incident' $chaine_roles $chaine_statuts ORDER BY qualite, login;";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+		  $retour[]=$lig->login;
+		}
+	}
+	return $retour;
+}
 
 ?>

@@ -66,6 +66,8 @@ $odt = isset($_POST["odt"]) ? $_POST["odt"] : (isset($_GET["odt"]) ? $_GET["odt"
 if(isset($_POST['enregistrer_sanction'])) {
 	check_token();
 
+	$autre_protagoniste_meme_sanction=isset($_POST['autre_protagoniste_meme_sanction']) ? $_POST['autre_protagoniste_meme_sanction'] : array();
+
 	if($_POST['traitement']=='retenue') {
 
 		$date_retenue=isset($_POST['date_retenue']) ? $_POST['date_retenue'] : NULL;
@@ -197,6 +199,30 @@ if(isset($_POST['enregistrer_sanction'])) {
 				$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue';";
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
+			}
+
+			if(count($autre_protagoniste_meme_sanction)>0) {
+				for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
+					$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', nature='retenue', id_incident='$id_incident';";
+					//echo "$sql<br />\n";
+					$res=mysql_query($sql);
+					if(!$res) {
+						$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop].<br />";
+					}
+					else {
+						$tmp_id_sanction=mysql_insert_id();
+						//Eric
+						//choix de l'heure de retenue à conserver (champs sasie manuellement ou par la liste déroulante
+						//par defaut la liste déroulante
+						if ($heure_debut_main !='00:00') {
+							$heure_debut=$heure_debut_main;
+						}
+						//$sql="INSERT INTO s_retenues SET id_sanction='$id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue', effectuee='N';";
+						$sql="INSERT INTO s_retenues SET id_sanction='$tmp_id_sanction', date='$date_retenue', heure_debut='$heure_debut', duree='$duree_retenue', travail='$travail', lieu='$lieu_retenue';";
+						//echo "$sql<br />\n";
+						$res=mysql_query($sql);
+					}
+				}
 			}
 		}
 
@@ -345,6 +371,24 @@ if(isset($_POST['enregistrer_sanction'])) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 			}
+
+			if(count($autre_protagoniste_meme_sanction)>0) {
+				for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
+					$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', nature='exclusion', id_incident='$id_incident';";
+					//echo "$sql<br />\n";
+					$res=mysql_query($sql);
+					if(!$res) {
+						$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop].<br />";
+					}
+					else {
+						$tmp_id_sanction=mysql_insert_id();
+		
+						$sql="INSERT INTO s_exclusions SET id_sanction='$tmp_id_sanction', date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', id_signataire='$signataire';";
+						//echo "$sql<br />\n";
+						$res=mysql_query($sql);
+					}
+				}
+			}
 		}
 
 	}
@@ -427,6 +471,25 @@ if(isset($_POST['enregistrer_sanction'])) {
 				//echo "$sql<br />\n";
 				$res=mysql_query($sql);
 			}
+
+			if(count($autre_protagoniste_meme_sanction)>0) {
+				for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
+					$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', nature='travail', id_incident='$id_incident';";
+					//echo "$sql<br />\n";
+					$res=mysql_query($sql);
+					if(!$res) {
+						$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop]<br />";
+					}
+					else {
+						$tmp_id_sanction=mysql_insert_id();
+		
+						//$sql="INSERT INTO s_travail SET id_sanction='$id_sanction', date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail', effectuee='N';";
+						$sql="INSERT INTO s_travail SET id_sanction='$tmp_id_sanction', date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail';";
+						//echo "$sql<br />\n";
+						$res=mysql_query($sql);
+					}
+				}
+			}
 		}
 	}
 	else {
@@ -490,6 +553,27 @@ if(isset($_POST['enregistrer_sanction'])) {
 					$res=mysql_query($sql);
 					if(!$res) {
 						$msg.="Erreur lors de l'enregistrement de la sanction '$type_sanction' n°$id_sanction.<br />";
+					}
+				}
+
+				if(count($autre_protagoniste_meme_sanction)>0) {
+					for($loop=0;$loop<count($autre_protagoniste_meme_sanction);$loop++) {
+						$sql="INSERT INTO s_sanctions SET login='$autre_protagoniste_meme_sanction[$loop]', nature='autre', id_incident='$id_incident';";
+						//echo "$sql<br />\n";
+						$res=mysql_query($sql);
+						if(!$res) {
+							$msg.="Erreur lors de l'insertion de la sanction dans 's_sanctions' pour $autre_protagoniste_meme_sanction[$loop]<br />";
+						}
+						else {
+							$tmp_id_sanction=mysql_insert_id();
+		
+							$sql="INSERT INTO s_autres_sanctions SET id_sanction='$id_sanction', id_nature='$id_nature', description='$description';";
+							//echo "$sql<br />\n";
+							$res=mysql_query($sql);
+							if(!$res) {
+								$msg.="Erreur lors de l'enregistrement de la sanction '$type_sanction' n°$tmp_id_sanction.<br />";
+							}
+						}
 					}
 				}
 			}
@@ -1122,7 +1206,8 @@ elseif($mode=='ajout') {
 	// Avec cette fonction, on ne fait qu'ajouter des champs dans le formulaire (aucun enregistrement avant validation du formulaire)
 	function maj_traitement() {
 		valeur=$('traitement').value;
-		new Ajax.Updater($('div_details_sanction'),'ajout_sanction.php?cpt=0&valeur='+valeur,{method: 'get'});
+		//new Ajax.Updater($('div_details_sanction'),'ajout_sanction.php?cpt=0&valeur='+valeur,{method: 'get'});
+		new Ajax.Updater($('div_details_sanction'),'ajout_sanction.php?cpt=0&valeur='+valeur+'&ele_login=$ele_login&id_incident=$id_incident',{method: 'get'});
 	}
 </script>\n";
 
