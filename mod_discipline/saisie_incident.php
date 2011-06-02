@@ -66,20 +66,24 @@ function choix_heure($champ_heure,$div_choix_heure) {
 		$texte="<table class='boireaus' style='margin: auto;' border='1' summary=\"Choix d'une heure\">\n";
 		while($lig_ac=mysql_fetch_object($res_abs_cren)) {
 			$td_style="";
+			$tmp_bgcolor="";
 			if($lig_ac->type_creneaux=='cours') {
 				$td_style=" style='background-color: lightgreen;'";
+				$tmp_bgcolor="lightgreen";
 			}
 			elseif($lig_ac->type_creneaux=='pause') {
 				$td_style=" style='background-color: lightgrey;'";
+				$tmp_bgcolor="lightgrey";
 			}
 			elseif($lig_ac->type_creneaux=='repas') {
 				$td_style=" style='background-color: lightgrey;'";
+				$tmp_bgcolor="lightgrey";
 			}
 
-			$texte.="<tr$td_style>\n";
+			$texte.="<tr class='white_hover'$td_style onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor='$tmp_bgcolor'\">\n";
 			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');return false;\">".$lig_ac->nom_definie_periode."</a></td>\n";
-			$texte.="<td>".$lig_ac->heuredebut_definie_periode."</td>\n";
-			$texte.="<td>".$lig_ac->heurefin_definie_periode."</td>\n";
+			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heuredebut_definie_periode."</a></td>\n";
+			$texte.="<td><a href='#' onclick=\"document.getElementById('$champ_heure').value='$lig_ac->nom_definie_periode';cacher_div('$div_choix_heure');return false;\" style='text-decoration: none; color: black;'>".$lig_ac->heurefin_definie_periode."</a></td>\n";
 			$texte.="</tr>\n";
 		}
 		$texte.="</table>\n";
@@ -1889,8 +1893,8 @@ new Ajax.Autocompleter (
 			$alt2=1;
 			while($lig_nat=mysql_fetch_object($res_nat)) {
 				$alt2=$alt2*(-1);
-				$texte.="<tr class='lig$alt2'>\n";
-				$texte.="<td><a href='#' onclick=\"document.getElementById('nature').value='$lig_nat->nature';cacher_div('div_choix_nature');return false;\">".$lig_nat->nature."</a></td>\n";
+				$texte.="<tr class='lig$alt2' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
+				$texte.="<td ><a href='#' onclick=\"document.getElementById('nature').value='$lig_nat->nature';cacher_div('div_choix_nature');return false;\">".$lig_nat->nature."</a></td>\n";
 				$texte.="</tr>\n";
 			}
 			$texte.="</table>\n";
