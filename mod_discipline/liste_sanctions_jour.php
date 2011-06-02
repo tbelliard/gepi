@@ -419,7 +419,7 @@ if(mysql_num_rows($res_sanction)>0) {
 		echo "</td>\n";
 		
 		echo "<td>\n";
-		echo get_declarant_incident($lig_sanction->id_incident);
+		echo civ_nom_prenom(get_login_declarant_incident($lig_sanction->id_incident));
         echo "</td>\n";
 		
 		echo "<td>\n";
