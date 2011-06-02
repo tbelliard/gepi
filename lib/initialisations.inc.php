@@ -350,7 +350,7 @@ if (!class_exists('Propel')
 	|| !strstr(get_include_path(), '/orm/propel-build/classes')) {
     //on retire les objets propel de la session car propel n'a pas ete initialise,
     //donc les objets ne seront pas correctement deserialiser
-    unset($_SESSION['objets_propel']);
+    if (isset($_SESSION['objets_propel'])) unset($_SESSION['objets_propel']);
 }
 
 
