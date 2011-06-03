@@ -147,8 +147,14 @@ include_once('./lib/chemin.inc.php'); // le chemin des dossiers contenant les  m
 $PHP_SELF=basename($_SERVER['PHP_SELF']);
 creertousrep($nom_dossier_modeles_ooo_mes_modeles.$rne);
 
-$retour=$_SESSION['retour'];
-$_SESSION['retour']=$_SERVER['PHP_SELF'] ;
+$retour_apres_upload=isset($_POST['retour_apres_upload']) ? $_POST['retour_apres_upload'] : (isset($_GET['retour_apres_upload']) ? $_GET['retour_apres_upload'] : NULL);
+if(!isset($retour_apres_upload)) {
+	$retour=$_SESSION['retour'];
+	$_SESSION['retour']=$_SERVER['PHP_SELF'] ;
+}
+else {
+	$retour="../accueil.php";
+}
 
 //**************** EN-TETE *****************
 $titre_page = "Modèle Open Office - gérer ses modèles";
@@ -157,17 +163,19 @@ require_once("../lib/header.inc");
 echo "<SCRIPT LANGUAGE=\"Javascript\" SRC=\"./lib/mod_ooo.js\"> </SCRIPT>";
 //debug_var();
 
-echo "<p class='bold'><a href='".$retour."'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if (isset($_GET['op'])) { $op=$_GET["op"]; }
+if (isset($_GET['fic'])) { $fic=$_GET["fic"]; }
+if (isset($_POST['btn'])) { $btn=$_POST["btn"]; }
+if (isset($_POST['fich_cible'])) { $fich_cible=$_POST["fich_cible"]; }
+
+echo "<p class='bold'><a href='".$retour;
+if(isset($btn)) {echo "?retour_apres_upload=y";}
+echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
 echo "</p>\n";
 echo "<br />\n";
 echo "<p>Ce module est destiné à gérer les modèles Open Office de Gepi.</p>\n";
 echo "</p>\n";
 echo "<br />\n";
-
-if (isset($_GET['op'])) { $op=$_GET["op"]; }
-if (isset($_GET['fic'])) { $fic=$_GET["fic"]; }
-if (isset($_POST['btn'])) { $btn=$_POST["btn"]; }
-if (isset($_POST['fich_cible'])) { $fich_cible=$_POST["fich_cible"]; }
 
 if ((isset($op)) && ($op=="supp")) { //Supprimer un fichier perso
      // alert("EFFACER $fic");
@@ -289,6 +297,7 @@ else { // passage 2 : le nom du fichier a été choisi
             echo "<p align='center'>";
             unset($monfichiername);
             echo "<form name='retour' method='POST' action='$PHP_SELF'>\n";
+            echo "<input type='hidden' name='retour_apres_upload' value='y' />\n";
             echo "<input type='submit' name='ret' Align='middle' value='Retour' />\n";
             echo "</form>\n";
 
