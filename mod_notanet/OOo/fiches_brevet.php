@@ -911,12 +911,18 @@ for($i=0;$i<count($id_classe);$i++){
 			for($loop=0;$loop<count($tab_indices_socle);$loop++) {
 				$tab_eleves_OOo[$nb_eleve]['sc']["$loop"]="";
 			}
+			$tab_eleves_OOo[$nb_eleve]['sc']['nbItemValide']=0;
 
 			$sql="SELECT * FROM notanet_socle_commun WHERE login='$lig1->login';";
 			$res_socle=mysql_query($sql);
 			if(mysql_num_rows($res_socle)>0) {
+				$ligne=0;
 				while($lig_socle=mysql_fetch_object($res_socle)) {
 					$tab_eleves_OOo[$nb_eleve]['sc']["$lig_socle->champ"]=$lig_socle->valeur;
+					if (($lig_socle->valeur =="MS")&&($ligne!=0)){
+						$tab_eleves_OOo[$nb_eleve]['sc']['nbItemValide']++;
+					}
+					$ligne++;
 				}
 			}
 
