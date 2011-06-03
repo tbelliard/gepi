@@ -211,6 +211,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 					}
 					else {
 						$tmp_id_sanction=mysql_insert_id();
+						$tab_tmp_id_sanction[]=$tmp_id_sanction;
 						//Eric
 						//choix de l'heure de retenue à conserver (champs sasie manuellement ou par la liste déroulante
 						//par defaut la liste déroulante
@@ -382,7 +383,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 					}
 					else {
 						$tmp_id_sanction=mysql_insert_id();
-		
+						$tab_tmp_id_sanction[]=$tmp_id_sanction;
+
 						$sql="INSERT INTO s_exclusions SET id_sanction='$tmp_id_sanction', date_debut='$date_debut', heure_debut='$heure_debut', date_fin='$date_fin', heure_fin='$heure_fin', travail='$travail', lieu='$lieu_exclusion', nombre_jours='$nombre_jours', qualification_faits='$qualification_faits', num_courrier='$numero_courrier', type_exclusion='$type_exclusion', id_signataire='$signataire';";
 						//echo "$sql<br />\n";
 						$res=mysql_query($sql);
@@ -482,7 +484,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 					}
 					else {
 						$tmp_id_sanction=mysql_insert_id();
-		
+						$tab_tmp_id_sanction[]=$tmp_id_sanction;
+
 						//$sql="INSERT INTO s_travail SET id_sanction='$id_sanction', date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail', effectuee='N';";
 						$sql="INSERT INTO s_travail SET id_sanction='$tmp_id_sanction', date_retour='$date_retour', heure_retour='$heure_retour', travail='$travail';";
 						//echo "$sql<br />\n";
@@ -566,7 +569,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 						}
 						else {
 							$tmp_id_sanction=mysql_insert_id();
-		
+							$tab_tmp_id_sanction[]=$tmp_id_sanction;
+
 							$sql="INSERT INTO s_autres_sanctions SET id_sanction='$tmp_id_sanction', id_nature='$id_nature', description='$description';";
 							//echo "$sql<br />\n";
 							$res=mysql_query($sql);
@@ -579,6 +583,89 @@ if(isset($_POST['enregistrer_sanction'])) {
 			}
 		}
 	}
+
+
+
+
+	if(isset($id_sanction)) {
+		unset($suppr_doc_joint);
+		$suppr_doc_joint=isset($_POST['suppr_doc_joint']) ? $_POST['suppr_doc_joint'] : array();
+		for($loop=0;$loop<count($suppr_doc_joint);$loop++) {
+			if((preg_match("/\.\./",$suppr_doc_joint[$loop]))||(preg_match("#/#",$suppr_doc_joint[$loop]))) {
+				$msg.="Nom de fichier ".$suppr_doc_joint[$loop]." invalide<br />";
+			}
+			else {
+				$fichier_courant="../documents/discipline/incident_".$id_incident."/sanction_".$id_sanction."/".$suppr_doc_joint[$loop];
+				if(!unlink($fichier_courant)) {
+					$msg.="Erreur lors de la suppression de $fichier_courant<br />";
+				}
+			}
+		}
+
+		$ajouter_doc_joint=isset($_POST['ajouter_doc_joint']) ? $_POST['ajouter_doc_joint'] : array();
+		for($loop=0;$loop<count($ajouter_doc_joint);$loop++) {
+			if((preg_match("/\.\./",$ajouter_doc_joint[$loop]))||(preg_match("#/#",$ajouter_doc_joint[$loop]))) {
+				$msg.="Nom de fichier ".$ajouter_doc_joint[$loop]." invalide<br />";
+			}
+			else {
+				$chemin_src="../documents/discipline/incident_".$id_incident."/mesures/".$ele_login;
+				$chemin_dest="../documents/discipline/incident_".$id_incident."/sanction_".$id_sanction;
+
+				$fichier_src=$chemin_src."/".$ajouter_doc_joint[$loop];
+				$fichier_dest=$chemin_dest."/".$ajouter_doc_joint[$loop];
+				if(file_exists($fichier_src)) {
+					@mkdir($chemin_dest,0770,true);
+					copy($fichier_src, $fichier_dest);
+
+					/*
+					if(!unlink($fichier_src)) {
+						$msg.="Erreur lors de la suppression de $fichier_src<br />";
+					}
+					*/
+				}
+
+				if((isset($tab_tmp_id_sanction))&&(count($tab_tmp_id_sanction)>0)) {
+					for($loop2=0;$loop2<count($tab_tmp_id_sanction);$loop2++) {
+						$chemin_dest="../documents/discipline/incident_".$id_incident."/sanction_".$tab_tmp_id_sanction[$loop2];
+						$fichier_dest=$chemin_dest."/".$ajouter_doc_joint[$loop];
+						if(file_exists($fichier_src)) {
+							@mkdir($chemin_dest,0770,true);
+							copy($fichier_src, $fichier_dest);
+						}
+					}
+				}
+			}
+		}
+
+		unset($document_joint);
+		$document_joint=isset($_FILES["document_joint"]) ? $_FILES["document_joint"] : NULL;
+		if((isset($document_joint['tmp_name']))&&($document_joint['tmp_name']!="")) {
+			//$msg.="\$document_joint['tmp_name']=".$document_joint['tmp_name']."<br />";
+			if(!is_uploaded_file($document_joint['tmp_name'])) {
+				$msg.="L'upload du fichier a échoué.<br />\n";
+			}
+			else{
+				if(!file_exists($document_joint['tmp_name'])){
+					$msg.="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
+				}
+				else {
+					//echo "<p>Le fichier a été uploadé.</p>\n";
+
+					$source_file=$document_joint['tmp_name'];
+					$dossier_courant="../documents/discipline/incident_".$id_incident."/sanction_".$id_sanction;
+					if(!file_exists($dossier_courant)) {
+						mkdir($dossier_courant, 0770, true);
+					}
+					$dest_file=$dossier_courant."/".remplace_accents($document_joint['name'], "all");
+					$res_copy=copy("$source_file" , "$dest_file");
+					if(!$res_copy) {$msg.="Echec de la mise en place du fichier ".$document_joint['name']."<br />";}
+				}
+			}
+		}
+	}
+
+
+
 }
 
 if(($mode=="suppr_sanction")&&(isset($id_sanction))) {

@@ -201,20 +201,52 @@ if(mysql_num_rows($res_sanction)>0) {
 		echo "</td>\n";
 		echo "<td style='text-align:left;'>";
 		$travail=$lig_sanction->travail;
+
+		$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+		if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+			$texte="Aucun travail";
+		}
+		else {
+			$texte=nl2br($lig_sanction->travail);
+			if($tmp_doc_joints!="") {
+				if($texte!="") {$texte.="<br />";}
+				$texte.=$tmp_doc_joints;
+			}
+
+			if($details=="y") {
+				echo $texte;
+			}
+			else {
+				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+	
+				echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
+				//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo ">Détails</a>";
+			}
+		}
+		/*
 		if($travail=="") {$travail="Aucun travail.";}
 		if($details=="y") {
 			echo nl2br($travail);
 		}
 		else {
 			$texte=nl2br($travail);
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if($tmp_doc_joints!="") {
+				$texte.="<br />";
+				$texte.=$tmp_doc_joints;
+			}
 			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
 			echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
 			//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 			echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Details</a>";
+			echo ">Détails</a>";
 		}
+		*/
 		echo "</td>\n";
 		
 		$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
@@ -336,20 +368,52 @@ if(mysql_num_rows($res_sanction)>0) {
 		//echo "<td>".nl2br($lig_sanction->travail)."</td>\n";
 		echo "<td style='text-align:left;'>";
 		$travail=$lig_sanction->travail;
+
+		$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+		if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+			$texte="Aucun travail";
+		}
+		else {
+			$texte=nl2br($lig_sanction->travail);
+			if($tmp_doc_joints!="") {
+				if($texte!="") {$texte.="<br />";}
+				$texte.=$tmp_doc_joints;
+			}
+
+			if($details=="y") {
+				echo $texte;
+			}
+			else {
+				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+	
+				echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
+				//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo ">Détails</a>";
+			}
+		}
+		/*
 		if($travail=="") {$travail="Aucun travail.";}
 		if($details=="y") {
 			echo nl2br($travail);
 		}
 		else {
 			$texte=nl2br($travail);
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if($tmp_doc_joints!="") {
+				$texte.="<br />";
+				$texte.=$tmp_doc_joints;
+			}
 			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
 			echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
 			//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 			echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Details</a>";
+			echo ">Détails</a>";
 		}
+		*/
 
         echo "<td>\n";
 		echo "<input type='checkbox' name='sanction_effectuee[$lig_sanction->id_sanction]' value='effectuee' ";
@@ -402,20 +466,52 @@ if(mysql_num_rows($res_sanction)>0) {
 
 		echo "<td style='text-align:left;'>\n";
 		$travail=$lig_sanction->travail;
+
+		$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+		if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+			$texte="Aucun travail";
+		}
+		else {
+			$texte=nl2br($lig_sanction->travail);
+			if($tmp_doc_joints!="") {
+				if($texte!="") {$texte.="<br />";}
+				$texte.=$tmp_doc_joints;
+			}
+
+			if($details=="y") {
+				echo $texte;
+			}
+			else {
+				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+	
+				echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
+				//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo ">Détails</a>";
+			}
+		}
+		/*
 		if($travail=="") {$travail="Aucun travail.";}
 		if($details=="y") {
 			echo nl2br($travail);
 		}
 		else {
 			$texte=nl2br($travail);
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if($tmp_doc_joints!="") {
+				$texte.="<br />";
+				$texte.=$tmp_doc_joints;
+			}
 			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
 			echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
 			//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 			echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Details</a>";
+			echo ">Détails</a>";
 		}
+		*/
 		echo "</td>\n";
 		
 		echo "<td>\n";
@@ -488,20 +584,52 @@ if(mysql_num_rows($res_sanction)>0) {
 		echo "</td>\n";
 		echo "<td style='text-align:left;'>";
 		$travail=$lig_sanction->travail;
+
+		$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+		if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+			$texte="Aucun travail";
+		}
+		else {
+			$texte=nl2br($lig_sanction->travail);
+			if($tmp_doc_joints!="") {
+				if($texte!="") {$texte.="<br />";}
+				$texte.=$tmp_doc_joints;
+			}
+
+			if($details=="y") {
+				echo $texte;
+			}
+			else {
+				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+	
+				echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
+				//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo ">Détails</a>";
+			}
+		}
+		/*
 		if($travail=="") {$travail="Aucun travail.";}
 		if($details=="y") {
 			echo nl2br($travail);
 		}
 		else {
 			$texte=nl2br($travail);
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if($tmp_doc_joints!="") {
+				$texte.="<br />";
+				$texte.=$tmp_doc_joints;
+			}
 			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
 			echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
 			//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 			echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Details</a>";
+			echo ">Détails</a>";
 		}
+		*/
 		echo "</td>\n";
 		
 		echo "<td>\n";
@@ -565,20 +693,52 @@ if(mysql_num_rows($res_sanction)>0) {
 
 		echo "<td style='text-align:left;'>\n";
 		$travail=$lig_sanction->travail;
+
+		$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+		if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
+			$texte="Aucun travail";
+		}
+		else {
+			$texte=nl2br($lig_sanction->travail);
+			if($tmp_doc_joints!="") {
+				if($texte!="") {$texte.="<br />";}
+				$texte.=$tmp_doc_joints;
+			}
+
+			if($details=="y") {
+				echo $texte;
+			}
+			else {
+				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
+	
+				echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
+				//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
+				echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+				echo ">Détails</a>";
+			}
+		}
+		/*
 		if($travail=="") {$travail="Aucun travail.";}
 		if($details=="y") {
 			echo nl2br($travail);
 		}
 		else {
 			$texte=nl2br($travail);
+			$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+			if($tmp_doc_joints!="") {
+				$texte.="<br />";
+				$texte.=$tmp_doc_joints;
+			}
 			$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
 			echo " <a href=\"".$_SERVER['PHP_SELF']."?jour_sanction=$jour_sanction&amp;details=y\"";
 			//echo " onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 			echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',20,20);\"";
 			echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
-			echo ">Details</a>";
+			echo ">Détails</a>";
 		}
+		*/
 		echo "</td>\n";
 
 		echo "<td>\n";
@@ -620,7 +780,7 @@ echo "<p><br /></p>\n";
 
 echo "<p><i>Remarques&nbsp;:</i></p>\n";
 echo "<blockquote>\n";
-echo "<p><b>Lorsqu'une retenue doit être reprogrammé</b>, cliquer sur la date initiale de la retenue et renseigner la section Gestion d'un report<br />\n";
+echo "<p><b>Lorsqu'une retenue doit être reprogrammée</b>, cliquer sur la date initiale de la retenue et renseigner la section Gestion d'un report<br />\n";
 echo "<p>Lorsqu'un travail doit être reprogrammé, l'information comme quoi l'élève ne l'a pas effectué à la date prévue n'est pas conservée.<br />A défaut, vous pouvez ajouter des détails sur l'incident ou en commentaire dans le Travail attribué</p>\n";
 echo "</blockquote>\n";
 

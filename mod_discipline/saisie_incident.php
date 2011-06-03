@@ -690,7 +690,9 @@ if($etat_incident!='clos') {
 
 					// Recherche des mesures déjà enregistrées:
 					for($i=0;$i<count($mesure_ele_login);$i++) {
-	
+
+						//$msg.="\$mesure_ele_login[$i]=$mesure_ele_login[$i]<br />";
+
 						$tab_mes_enregistree=array();
 						//$sql="SELECT mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
 						$sql="SELECT id_mesure FROM s_traitement_incident WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
@@ -709,7 +711,63 @@ if($etat_incident!='clos') {
 	
 						//for($i=0;$i<count($mesure_demandee);$i++) {
 						//}
-	
+
+						unset($suppr_doc_joint);
+						$suppr_doc_joint=isset($_POST['suppr_doc_joint_'.$i]) ? $_POST['suppr_doc_joint_'.$i] : array();
+						for($loop=0;$loop<count($suppr_doc_joint);$loop++) {
+							if((preg_match("/\.\./",$suppr_doc_joint[$loop]))||(preg_match("#/#",$suppr_doc_joint[$loop]))) {
+								$msg.="Nom de fichier ".$suppr_doc_joint[$loop]." invalide<br />";
+							}
+							else {
+								$fichier_courant="../documents/discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i]."/".$suppr_doc_joint[$loop];
+								if(!unlink($fichier_courant)) {
+									$msg.="Erreur lors de la suppression de $fichier_courant<br />";
+								}
+							}
+						}
+
+						unset($document_joint);
+						$document_joint=isset($_FILES["document_joint_".$i]) ? $_FILES["document_joint_".$i] : NULL;
+						if((isset($document_joint['tmp_name']))&&($document_joint['tmp_name']!="")) {
+							//$msg.="\$document_joint['tmp_name']=".$document_joint['tmp_name']."<br />";
+							if(!is_uploaded_file($document_joint['tmp_name'])) {
+								$msg.="L'upload du fichier a échoué.<br />\n";
+							}
+							else{
+								if(!file_exists($document_joint['tmp_name'])){
+									$msg.="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
+								}
+								else {
+									//echo "<p>Le fichier a été uploadé.</p>\n";
+				
+									$source_file=$document_joint['tmp_name'];
+									$dossier_courant="../documents/discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i];
+									if(!file_exists($dossier_courant)) {
+										mkdir($dossier_courant, 0770, true);
+									}
+									$dest_file=$dossier_courant."/".remplace_accents($document_joint['name'], "all");
+									$res_copy=copy("$source_file" , "$dest_file");
+									if(!$res_copy) {$msg.="Echec de la mise en place du fichier ".$document_joint['name']."<br />";}
+								}
+							}
+						}
+
+						/*
+						// Mis en commentaire pour ne pas supprimer trop hativement des fichiers
+						if(count($mesure_demandee)==0) {
+							// Supprimer d'éventuels fichiers associés? s'il ne reste plus aucune mesure, oui
+							$tab_documents_joints=get_documents_joints($id_incident, "mesure", $mesure_ele_login[$i]);
+							if(count($tab_documents_joints)>0) {
+								for($loop=0;$loop<count($tab_documents_joints);$loop++) {
+									$fichier_courant="../documents/discipline/incident_".$id_incident."/mesures/".$mesure_ele_login[$i]."/".$tab_documents_joints[$loop];
+									if(!unlink($fichier_courant)) {
+										$msg.="Erreur lors de la suppression de $fichier_courant<br />";
+									}
+								}
+							}
+						}
+						*/
+
 						//$tab_mesure_possible=array();
 						//$sql="SELECT mesure FROM s_mesures;";
 						$sql="SELECT * FROM s_mesures;";
@@ -2079,6 +2137,10 @@ echo "<script type='text/javascript'>
 					echo "Demandées";
 					echo "</a>\n";
 					echo "</th>\n";
+
+					echo "<th>\n";
+					echo "Document joint à une mesure demandée";
+					echo "</th>\n";
 				}
 				echo "</tr>\n";
 
@@ -2162,6 +2224,33 @@ echo "<script type='text/javascript'>
 						}
 						echo "</td>\n";
 					}
+
+					echo "<td>\n";
+					// Liste des fichiers déjà joints
+					$tab_file=get_documents_joints($id_incident, "mesure", $ele_login[$i]);
+					if(count($tab_file)>0) {
+						echo "<table class='boireaus' width='100%'>\n";
+						echo "<tr>\n";
+						echo "<th>Fichier</th>\n";
+						echo "<th>Supprimer</th>\n";
+						echo "</tr>\n";
+						$alt3=1;
+						for($loop=0;$loop<count($tab_file);$loop++) {
+							$alt3=$alt3*(-1);
+							echo "<tr class='lig$alt3 white_hover'>\n";
+							echo "<td>$tab_file[$loop]</td>\n";
+							echo "<td><input type='checkbox' name='suppr_doc_joint_".$i."[]' value=\"$tab_file[$loop]\" /></td>\n";
+							// PB: Est-ce qu'on ne risque pas de permettre d'aller supprimer des fichiers d'un autre incident?
+							//     Tester le nom de fichier et l'id_incident
+							//     Fichier en ../documents/discipline/incident_<$id_incident>/mesures/<LOGIN_ELE>
+							echo "</tr>\n";
+						}
+						echo "</table>\n";
+					}
+
+					echo "<input type=\"file\" size=\"15\" name=\"document_joint_".$i."\" id=\"document_joint_".$i."\" /><br />\n";
+					echo "</td>\n";
+
 					echo "</tr>\n";
 				}
 
@@ -2176,90 +2265,8 @@ echo "<script type='text/javascript'>
 		else {
 			echo "<td style='text-align:left;'";
 			echo ">\n";
-
-			// MESURES A AFFICHER
-			//echo "A FAIRE...";
-			/*
-			$texte="";
-
-			$sql="SELECT * FROM s_traitement_incident sti, s_mesures s WHERE sti.id_incident='$id_incident' AND sti.id_mesure=s.id AND s.type='prise' ORDER BY login_ele";
-			//$texte.="<br />$sql";
-			$res_t_incident=mysql_query($sql);
-
-			$sql="SELECT * FROM s_traitement_incident sti, s_mesures s WHERE sti.id_incident='$id_incident' AND sti.id_mesure=s.id AND s.type='demandee' ORDER BY login_ele";
-			//$texte.="<br />$sql";
-			$res_t_incident2=mysql_query($sql);
-
-			if((mysql_num_rows($res_t_incident)>0)||
-				(mysql_num_rows($res_t_incident2)>0)) {
-				$texte.="<br /><table class='boireaus' summary='Mesures' style='margin:1px;'>";
-			}
-
-			if(mysql_num_rows($res_t_incident)>0) {
-				$texte.="<tr class='lig-1'>";
-				$texte.="<td style='font-size:x-small; vertical-align:top;' rowspan='".mysql_num_rows($res_t_incident)."'>";
-				if(mysql_num_rows($res_t_incident)==1) {
-					$texte.="Mesure prise&nbsp;:";
-				}
-				else {
-					$texte.="Mesures prises&nbsp;:";
-				}
-				$texte.="</td>";
-				//$texte.="<td>";
-				$cpt_tmp=0;
-				while($lig_t_incident=mysql_fetch_object($res_t_incident)) {
-					if($cpt_tmp>0) {$texte.="<tr class='lig-1'>\n";}
-					$texte.="<td>";
-					$texte.=p_nom($lig_t_incident->login_ele);
-					$texte.="</td>\n";
-					$texte.="<td>";
-					$texte.="$lig_t_incident->mesure";
-					$texte.="</td>\n";
-					$texte.="</tr>\n";
-					$cpt_tmp++;
-				}
-				//$texte.="</td>\n";
-				//$texte.="</tr>\n";
-			}
-
-			//$possibilite_prof_clore_incident='y';
-			if(mysql_num_rows($res_t_incident2)>0) {
-				if($_SESSION['statut']=='professeur') {$possibilite_prof_clore_incident='n';}
-				$texte.="<tr class='lig1'>";
-				//$texte.="<td style='font-size:x-small; vertical-align:top;'>";
-				$texte.="<td style='font-size:x-small; vertical-align:top;' rowspan='".mysql_num_rows($res_t_incident)."'>";
-				if(mysql_num_rows($res_t_incident2)==1) {
-					$texte.="Mesure demandée&nbsp;:";
-				}
-				else {
-					$texte.="Mesures demandées&nbsp;:";
-				}
-				$texte.="</td>";
-				//$texte.="<td>";
-				$cpt_tmp=0;
-				while($lig_t_incident=mysql_fetch_object($res_t_incident2)) {
-					if($cpt_tmp>0) {$texte.="<tr class='lig1'>\n";}
-					$texte.="<td>";
-					$texte.=p_nom($lig_t_incident->login_ele);
-					$texte.="</td>\n";
-					$texte.="<td>";
-					$texte.="$lig_t_incident->mesure";
-					$texte.="</td>\n";
-					$texte.="</tr>\n";
-					$cpt_tmp++;
-				}
-				//$texte.="</td>\n";
-				//$texte.="</tr>\n";
-			}
-
-			if((mysql_num_rows($res_t_incident)>0)||
-				(mysql_num_rows($res_t_incident2)>0)) {
-				$texte.="</table>";
-			}
-			*/
 			$texte=affiche_mesures_incident($id_incident);
 			echo $texte;
-
 			echo "</td>\n";
 		}
 

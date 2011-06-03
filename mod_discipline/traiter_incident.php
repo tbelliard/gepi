@@ -113,16 +113,21 @@ function liste_sanctions($id_incident,$ele_login) {
 				
 				$retour.="<td>";
 
-				if($lig_sanction->travail=="") {
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 					$texte="Aucun travail";
 				}
 				else {
 					$texte=nl2br($lig_sanction->travail);
+					if($tmp_doc_joints!="") {
+						if($texte!="") {$texte.="<br />";}
+						$texte.=$tmp_doc_joints;
+					}
 				}
-								
+
 				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
-				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
+				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
 				
 				if ($nombre_de_report <> 0) {
@@ -177,15 +182,20 @@ function liste_sanctions($id_incident,$ele_login) {
 				//$retour.="<td>".nl2br($lig_sanction->travail)."</td>\n";
 				$retour.="<td>";
 
-				if($lig_sanction->travail=="") {
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 					$texte="Aucun travail";
 				}
 				else {
 					$texte=nl2br($lig_sanction->travail);
+					if($tmp_doc_joints!="") {
+						if($texte!="") {$texte.="<br />";}
+						$texte.=$tmp_doc_joints;
+					}
 				}
 				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
-				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
+				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
 
 				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
@@ -224,15 +234,21 @@ function liste_sanctions($id_incident,$ele_login) {
 				$retour.="<td>".formate_date($lig_sanction->date_retour)."</td>\n";
 				$retour.="<td>";
 
-				if($lig_sanction->travail=="") {
+
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+				if(($lig_sanction->travail=="")&&($tmp_doc_joints=="")) {
 					$texte="Aucun travail";
 				}
 				else {
 					$texte=nl2br($lig_sanction->travail);
+					if($tmp_doc_joints!="") {
+						if($texte!="") {$texte.="<br />";}
+						$texte.=$tmp_doc_joints;
+					}
 				}
 				$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n',2);
 
-				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
+				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_travail_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
 
 				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {
@@ -263,9 +279,14 @@ function liste_sanctions($id_incident,$ele_login) {
 
 				$retour.="<td>\n";
 				$texte=nl2br($lig_sanction->description);
+				$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+				if($tmp_doc_joints!="") {
+					$texte.="<br />";
+					$texte.=$tmp_doc_joints;
+				}
 				$tabdiv_infobulle[]=creer_div_infobulle("div_autre_sanction_$lig_sanction->id_sanction","$lig_sanction->nature (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n');
 
-				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_autre_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_autre_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
+				$retour.=" <a href='#' onmouseover=\"document.getElementById('div_autre_sanction_$lig_sanction->id_sanction').style.zIndex=document.getElementById('sanctions_incident_$id_incident').style.zIndex+1;delais_afficher_div('div_autre_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 				$retour.="</td>\n";
 
 				if(($etat_incident!='clos')&&($_SESSION['statut']!='professeur')) {

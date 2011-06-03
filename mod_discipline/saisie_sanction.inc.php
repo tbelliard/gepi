@@ -110,6 +110,14 @@ if($valeur=='travail') {
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'><textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
+
+	//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
+	//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
+
+	if((isset($ele_login))&&(isset($id_incident))) {
+		sanction_documents_joints($id_incident, $ele_login);
+	}
+
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -244,6 +252,14 @@ elseif($valeur=='retenue') {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
+
+	//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
+	//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
+
+	if((isset($ele_login))&&(isset($id_incident))) {
+		sanction_documents_joints($id_incident, $ele_login);
+	}
+
 	echo "</td>\n";
 	echo "</tr>\n";
 	
@@ -413,6 +429,14 @@ elseif($valeur=='exclusion') {
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
 	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
+
+	//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
+	//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
+
+	if((isset($ele_login))&&(isset($id_incident))) {
+		sanction_documents_joints($id_incident, $ele_login);
+	}
+
 	echo "</td>\n";
 	echo "</tr>\n";
 
@@ -540,6 +564,11 @@ else {
 		echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Description&nbsp;: </td>\n";
 		echo "<td style='text-align:left;'>\n";
 		echo "<textarea name='no_anti_inject_description' cols='30' onchange='changement();'>$description</textarea>\n";
+
+		if((isset($ele_login))&&(isset($id_incident))) {
+			sanction_documents_joints($id_incident, $ele_login);
+		}
+
 		echo "</td>\n";
 		echo "</tr>\n";
 
