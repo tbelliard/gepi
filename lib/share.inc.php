@@ -6828,4 +6828,16 @@ function get_tab_prof_suivi($id_classe) {
 
 	return $tab;
 }
+
+function get_cn_from_id_groupe_periode_num($id_groupe, $periode_num) {
+	$id_cahier_notes="";
+
+	$sql="SELECT id_cahier_notes FROM cn_cahier_notes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		$id_cahier_notes=$lig->id_cahier_notes;
+	}
+	return $id_cahier_notes;
+}
 ?>
