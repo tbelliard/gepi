@@ -681,6 +681,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 if(($mode=="suppr_sanction")&&(isset($id_sanction))) {
 	check_token();
 
+	$msg.=suppr_doc_joints_sanction($id_sanction);
+
 	$sql="DELETE FROM s_travail WHERE id_sanction='$id_sanction';";
 	$res=mysql_query($sql);
 	$sql="DELETE FROM s_exclusions WHERE id_sanction='$id_sanction';";
@@ -1034,9 +1036,16 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						echo "<td>";
 
 						$texte=nl2br($lig_sanction->travail);
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						if($tmp_doc_joints!="") {
+							if($texte!="") {$texte.="<br />";}
+							$texte.="<b>Documents joints</b>&nbsp;:<br />";
+							$texte.=$tmp_doc_joints;
+						}
+
 						$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n');
 
-						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
+						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 						echo "</td>\n";
 //Eric
 						If ($passage_report) {
@@ -1099,9 +1108,15 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						echo "<td>";
 
 						$texte=nl2br($lig_sanction->travail);
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						if($tmp_doc_joints!="") {
+							if($texte!="") {$texte.="<br />";}
+							$texte.="<b>Documents joints</b>&nbsp;:<br />";
+							$texte.=$tmp_doc_joints;
+						}
 						$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n');
 
-						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
+						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 						echo "</td>\n";
 //Eric						
 						echo "<td>";
@@ -1141,9 +1156,15 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						echo "<td>";
 
 						$texte=nl2br($lig_sanction->travail);
+						$tmp_doc_joints=liste_doc_joints_sanction($lig_sanction->id_sanction);
+						if($tmp_doc_joints!="") {
+							if($texte!="") {$texte.="<br />";}
+							$texte.="<b>Documents joints</b>&nbsp;:<br />";
+							$texte.=$tmp_doc_joints;
+						}
 						$tabdiv_infobulle[]=creer_div_infobulle("div_travail_sanction_$lig_sanction->id_sanction","Travail (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n');
 
-						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
+						echo " <a href='#' onmouseover=\"delais_afficher_div('div_travail_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 						echo "</td>\n";
 
 						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
@@ -1175,7 +1196,7 @@ if((!isset($mode))||($mode=="suppr_sanction")||($mode=="suppr_report")) {
 						$texte=nl2br($lig_sanction->description);
 						$tabdiv_infobulle[]=creer_div_infobulle("div_autre_sanction_$lig_sanction->id_sanction","$lig_sanction->nature (sanction n°$lig_sanction->id_sanction)","",$texte,"",20,0,'y','y','n','n');
 
-						echo " <a href='#' onmouseover=\"delais_afficher_div('div_autre_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Details</a>";
+						echo " <a href='#' onmouseover=\"delais_afficher_div('div_autre_sanction_$lig_sanction->id_sanction','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onclick=\"return false;\">Détails</a>";
 						echo "</td>\n";
 
 						echo "<td><a href='".$_SERVER['PHP_SELF']."?mode=suppr_sanction&amp;id_sanction=$lig_sanction->id_sanction&amp;id_incident=$id_incident".add_token_in_url()."' title='Supprimer la sanction n°$lig_sanction->id_sanction'><img src='../images/icons/delete.png' width='16' height='16' alt='Supprimer la sanction n°$lig_sanction->id_sanction' /></a></td>\n";
