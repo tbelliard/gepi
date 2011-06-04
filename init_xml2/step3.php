@@ -201,6 +201,14 @@ else {
     // on vide la table tempo2 qui va nous servir ‡ stocker les login temporaires des ÈlËves
     $del = @mysql_query("DELETE FROM tempo2");
 
+	//if(getSettingValue('use_sso')=="lcs") {
+	if(getSettingValue('auth_sso')=="lcs") {
+		// On va rÈcupÈrer les logins du LCS
+		require_once("../lib/lcs.inc.php");
+		$ds = connect_ldap($lcs_ldap_host,$lcs_ldap_port,"","");
+	}
+
+
     //$call_data = mysql_query("SELECT ELENOM,ELEPRE,ELENOET,ERENO,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import ORDER BY DIVCOD,ELENOM,ELEPRE");
     $call_data = mysql_query("SELECT ELENOM,ELEPRE,ELENOET,ELE_ID,ELESEXE,ELEDATNAIS,ELEDOUBL,ELENONAT,ELEREG,DIVCOD,ETOCOD_EP FROM temp_gep_import2 ORDER BY DIVCOD,ELENOM,ELEPRE");
     $nb = mysql_num_rows($call_data);
@@ -216,6 +224,8 @@ else {
 	$alt=1;
     $max_lignes_pb = 0;
     while ($i < $nb) {
+		$lcs_eleve_en_erreur="n";
+
 		$alt=$alt*(-1);
         $ligne_pb = 'no';
         $no_gep = mysql_result($call_data, $i, "ELENONAT");
@@ -238,6 +248,14 @@ else {
             $no_gep_aff = "<font color = 'red'>ND</font>";
             $ligne_pb = 'yes';
         }
+
+		/*
+		echo "<tr>\n";
+		echo "<td colspan='10'>\n";
+		
+		echo "\$i=$i<br />\n";
+		echo "\$reg_nom=$reg_nom<br />\n";
+		*/
 
         // On teste pour savoir s'il faut crÈer un login
         $nouv_login='no';
@@ -279,7 +297,8 @@ else {
         }
         // S'il s'agit d'un ÈlËve ne figurant pas dÈj‡ dans une des bases ÈlËve des annÈes passÈes,
         // on crÈe un login !
-
+		//echo "no_gep=$no_gep<br />\n";
+		//echo "nouv_login=$nouv_login<br />\n";
         if (($no_gep == '') or ($nouv_login=='yes')) {
             $reg_nom = strtr($reg_nom,"‡‚‰ÈËÍÎÓÔÙˆ˘˚¸Á¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
             $reg_prenom = strtr($reg_prenom,"‡‚‰ÈËÍÎÓÔÙˆ˘˚¸Á¿ƒ¬…» ÀŒœ‘÷Ÿ€‹«","aaaeeeeiioouuucAAAEEEEIIOOUUUC");
@@ -309,20 +328,47 @@ else {
 					$login_eleve = "erreur_".$i;
 				}
 			}
-
-            // On teste l'unicitÈ du login que l'on vient de crÈer
-            $k = 2;
-            $test_unicite = 'no';
-            $temp = $login_eleve;
-            while ($test_unicite != 'yes') {
-                $test_unicite = test_unique_e_login($login_eleve,$i);
-                if ($test_unicite != 'yes') {
-                    $login_eleve = $temp.$k;
-                    $k++;
-                }
-            }
+			//echo "Avant auth_sso<br />";
+			//if(getSettingValue('use_sso')=="lcs") {
+			if(getSettingValue('auth_sso')=="lcs") {
+				$lcs_eleve_en_erreur="y";
+				if($reg_elenoet!='') {
+					$login_eleve=get_lcs_login($reg_elenoet, 'eleve');
+					//echo "get_lcs_login($reg_elenoet, 'eleve')=".$login_eleve."<br />";
+					if($login_eleve!='') {
+						$test_tempo2 = mysql_num_rows(mysql_query("SELECT col2 FROM tempo2 WHERE (col2='$login_eleve' or col2='".strtoupper($login_eleve)."')"));
+						if ($test_tempo2 != "0") {
+							$ligne_pb = 'yes';
+						} else {
+							$reg = mysql_query("INSERT INTO tempo2 VALUES ('$i', '$login_eleve')");
+							//return 'yes';
+							$lcs_eleve_en_erreur="n";
+						}
+					}
+					else {
+						$ligne_pb = 'yes';
+					}
+				}
+				else {
+					$ligne_pb = 'yes';
+				}
+			}
+			else {
+				// On teste l'unicitÈ du login que l'on vient de crÈer
+				$k = 2;
+				$test_unicite = 'no';
+				$temp = $login_eleve;
+				while ($test_unicite != 'yes') {
+					// test_unique_e_login() contrÙle l'existence du login dans la table 'utilisateurs' et renseigne la table 'tempo2'
+					$test_unicite = test_unique_e_login($login_eleve,$i);
+					if ($test_unicite != 'yes') {
+						$login_eleve = $temp.$k;
+						$k++;
+					}
+				}
+			}
         }
-
+		//echo "plip<br />";
         if ($reg_nom != '') {
             $reg_nom_aff = $reg_nom;
         } else {
@@ -414,12 +460,25 @@ else {
             $reg_etab_aff = "<font color = 'red'>ND</font>";
             $ligne_pb = 'yes';
         }
+
+
+		//echo "</td>\n";
+		//echo "</tr>\n";
+
+
         if (!isset($affiche)) $affiche = 'tout';
         // On affiche la ligne du tableau
         if (($affiche != 'partiel') or (($affiche == 'partiel') and ($ligne_pb == 'yes'))) {
 			echo "<tr class='lig$alt'>\n";
             echo "<td><p class=\"small\">$no_gep_aff</p></td>\n";
-            echo "<td><p class=\"small\">$login_eleve</p></td>\n";
+            echo "<td><p class=\"small\">";
+			if($lcs_eleve_en_erreur=='y') {
+				echo "<span style='color:red'>Non trouvÈ dans l'annuaire LDAP</span>";
+			}
+			else {
+				echo $login_eleve;
+			}
+			echo "</p></td>\n";
             echo "<td><p class=\"small\">$reg_nom_aff</p></td>\n";
             echo "<td><p class=\"small\">$reg_prenom_aff</p></td>\n";
             echo "<td><p class=\"small\">$reg_sexe_aff</p></td>\n";
@@ -436,7 +495,7 @@ else {
             $max_lignes_pb++;
         }
         $i++;
-
+		//echo "<tr><td colspan='10'>\$i=$i et \$nb=$nb</td></tr>";
     }
     echo "</table>\n";
     echo "<p><b>Nombre total de lignes : $nb</b><br />\n";
