@@ -1496,7 +1496,6 @@ function suppr_doc_joints_sanction($id_sanction) {
 			}
 			rmdir($chemin);
 		}
-		rmdir("../documents/discipline/incident_".$id_incident);
 	}
 
 	return $retour;
