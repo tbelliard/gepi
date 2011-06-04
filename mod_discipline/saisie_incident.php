@@ -2139,7 +2139,7 @@ echo "<script type='text/javascript'>
 					echo "</th>\n";
 
 					echo "<th>\n";
-					echo "Document joint à une mesure demandée";
+					echo "Document(s) joint(s) à une mesure demandée";
 					echo "</th>\n";
 				}
 				echo "</tr>\n";
@@ -2202,7 +2202,7 @@ echo "<script type='text/javascript'>
 						for($loop=0;$loop<count($tab_mes_demandee);$loop++) {
 							//echo "<input type='checkbox' name='mesure_demandee_".$i."[]' id='mesure_demandee_".$i."_$loop' value=\"".$tab_mes_demandee[$loop]."\" onchange='changement();' ";
 							//if(in_array($tab_mes_demandee[$loop],$tab_mes_eleve)) {echo "checked='checked' ";}
-							echo "<input type='checkbox' name='mesure_demandee_".$i."[]' id='mesure_demandee_".$i."_$loop' value=\"".$tab_id_mes_demandee[$loop]."\" onchange='changement();' ";
+							echo "<input type='checkbox' name='mesure_demandee_".$i."[]' id='mesure_demandee_".$i."_$loop' value=\"".$tab_id_mes_demandee[$loop]."\" onchange='changement(); check_coche_mes_demandee($i);' ";
 							if(in_array($tab_id_mes_demandee[$loop],$tab_mes_eleve)) {echo "checked='checked' ";}
 							echo "/>\n";
 
@@ -2314,6 +2314,32 @@ echo "<script type='text/javascript'>
 			}
 		}
 	}
+
+	function check_coche_mes_demandee(num) {
+		if(document.getElementById('document_joint_'+num)) {
+			temoin_check='n';
+			for(i=0;i<".count($tab_mes_demandee).";i++) {
+				if(document.getElementById('mesure_demandee_'+num+'_'+i)) {
+					if(document.getElementById('mesure_demandee_'+num+'_'+i).checked==true) {
+						temoin_check='y';
+					}
+					//alert('mesure_demandee_'+num+'_'+i+':'+temoin_check);
+				}
+			}
+			if(temoin_check=='n') {
+				document.getElementById('document_joint_'+num).style.display='none';
+			}
+			else {
+				document.getElementById('document_joint_'+num).style.display='';
+			}
+		}
+	}
+";
+		for($loop=0;$loop<count($ele_login);$loop++) {
+			echo "check_coche_mes_demandee($loop);\n";
+		}
+
+		echo "
 </script>\n";
 
 		echo "</form>\n";

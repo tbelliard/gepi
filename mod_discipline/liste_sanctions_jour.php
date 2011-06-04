@@ -210,6 +210,7 @@ if(mysql_num_rows($res_sanction)>0) {
 			$texte=nl2br($lig_sanction->travail);
 			if($tmp_doc_joints!="") {
 				if($texte!="") {$texte.="<br />";}
+				$texte.="<b>Documents joints</b>&nbsp;:<br />".;
 				$texte.=$tmp_doc_joints;
 			}
 
@@ -377,6 +378,7 @@ if(mysql_num_rows($res_sanction)>0) {
 			$texte=nl2br($lig_sanction->travail);
 			if($tmp_doc_joints!="") {
 				if($texte!="") {$texte.="<br />";}
+				$texte.="<b>Documents joints</b>&nbsp;:<br />".;
 				$texte.=$tmp_doc_joints;
 			}
 
@@ -475,6 +477,7 @@ if(mysql_num_rows($res_sanction)>0) {
 			$texte=nl2br($lig_sanction->travail);
 			if($tmp_doc_joints!="") {
 				if($texte!="") {$texte.="<br />";}
+				$texte.="<b>Documents joints</b>&nbsp;:<br />".;
 				$texte.=$tmp_doc_joints;
 			}
 
@@ -593,6 +596,7 @@ if(mysql_num_rows($res_sanction)>0) {
 			$texte=nl2br($lig_sanction->travail);
 			if($tmp_doc_joints!="") {
 				if($texte!="") {$texte.="<br />";}
+				$texte.="<b>Documents joints</b>&nbsp;:<br />".;
 				$texte.=$tmp_doc_joints;
 			}
 
@@ -702,6 +706,7 @@ if(mysql_num_rows($res_sanction)>0) {
 			$texte=nl2br($lig_sanction->travail);
 			if($tmp_doc_joints!="") {
 				if($texte!="") {$texte.="<br />";}
+				$texte.="<b>Documents joints</b>&nbsp;:<br />".;
 				$texte.=$tmp_doc_joints;
 			}
 

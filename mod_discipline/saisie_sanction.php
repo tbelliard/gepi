@@ -588,6 +588,8 @@ if(isset($_POST['enregistrer_sanction'])) {
 
 
 	if(isset($id_sanction)) {
+		$temoin_modif_fichier=0;
+
 		unset($suppr_doc_joint);
 		$suppr_doc_joint=isset($_POST['suppr_doc_joint']) ? $_POST['suppr_doc_joint'] : array();
 		for($loop=0;$loop<count($suppr_doc_joint);$loop++) {
@@ -601,6 +603,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				}
 			}
 		}
+		$temoin_modif_fichier+=count($suppr_doc_joint);
 
 		$ajouter_doc_joint=isset($_POST['ajouter_doc_joint']) ? $_POST['ajouter_doc_joint'] : array();
 		for($loop=0;$loop<count($ajouter_doc_joint);$loop++) {
@@ -636,6 +639,7 @@ if(isset($_POST['enregistrer_sanction'])) {
 				}
 			}
 		}
+		$temoin_modif_fichier+=count($ajouter_doc_joint);
 
 		unset($document_joint);
 		$document_joint=isset($_FILES["document_joint"]) ? $_FILES["document_joint"] : NULL;
@@ -661,6 +665,12 @@ if(isset($_POST['enregistrer_sanction'])) {
 					if(!$res_copy) {$msg.="Echec de la mise en place du fichier ".$document_joint['name']."<br />";}
 				}
 			}
+			$temoin_modif_fichier++;
+		}
+
+		if($temoin_modif_fichier>0) {
+			$mode="modif";
+			$valeur=$_POST['traitement'];
 		}
 	}
 
@@ -1320,7 +1330,10 @@ elseif($mode=='modif') {
 	//echo " | <a href='traiter_incident.php'>Liste des incidents</a>\n";
 	echo "</p>\n";
 
-	$valeur=isset($_GET['valeur']) ? $_GET['valeur'] : NULL;
+	if(!isset($temoin_modif_fichier)) {
+		$valeur=isset($_GET['valeur']) ? $_GET['valeur'] : NULL;
+	}
+	//$valeur=isset($_POST['traitement']) ? $_POST['traitement'] : (isset($_GET['valeur']) ? $_GET['valeur'] : NULL);
 	$traitement=$valeur;
 
 	echo "<script type='text/javascript'>

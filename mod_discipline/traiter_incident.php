@@ -49,7 +49,6 @@ if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
 	die();
 }
 
-
 require('sanctions_func_lib.php');
 
 function liste_sanctions($id_incident,$ele_login) {
@@ -365,12 +364,21 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 	for($i=0;$i<count($suppr_incident);$i++) {
 		$temoin_erreur="n";
 
-		$sql="DELETE FROM s_protagonistes WHERE id_incident='$suppr_incident[$i]';";
-		//echo "$sql<br />\n";
-		$res=mysql_query($sql);
-		if(!$res) {
-			$msg.="ERREUR lors de la suppression des protagonistes de l'incident ".$suppr_incident[$i].".<br />\n";
+		// Nettoyage fichiers incident
+		$suppr_doc_joints_incident=suppr_doc_joints_incident($suppr_incident[$i]);
+		if($suppr_doc_joints_incident!="") {
+			$msg.=$suppr_doc_joints_incident;
 			$temoin_erreur="y";
+		}
+
+		if($temoin_erreur=="n") {
+			$sql="DELETE FROM s_protagonistes WHERE id_incident='$suppr_incident[$i]';";
+			//echo "$sql<br />\n";
+			$res=mysql_query($sql);
+			if(!$res) {
+				$msg.="ERREUR lors de la suppression des protagonistes de l'incident ".$suppr_incident[$i].".<br />\n";
+				$temoin_erreur="y";
+			}
 		}
 
 		if($temoin_erreur=="n") {
@@ -425,7 +433,7 @@ if((isset($_POST['suppr_incident']))&&(($_SESSION['statut']!='professeur')||($_S
 					$msg.="ERREUR lors de la suppression des traitements d'incident (mesures) de l'incident ".$suppr_incident[$i].".<br />\n";
 					$temoin_erreur="y";
 				}
-	
+
 				if($temoin_erreur=="n") {
 					$sql="DELETE FROM s_incidents WHERE id_incident='$suppr_incident[$i]';";
 					//echo "$sql<br />\n";
@@ -1215,7 +1223,8 @@ if(!isset($id_incident)) {
 			if(($lig->etat=='clos')||(($_SESSION['statut']=='professeur')&&($lig->declarant!=$_SESSION['login']))||(($_SESSION['statut']=='autre')&&($lig->declarant!=$_SESSION['login']))) {
 				echo "<a href='#'";
 				//echo " onmouseover=\"delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('incident_".$lig->id_incident."','y',20,20);\"";
+				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('incident_".$lig->id_incident."','y',20,20);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				echo " onclick='return false;'";
 				echo ">Détails</a>";
 			}
@@ -1223,7 +1232,8 @@ if(!isset($id_incident)) {
 				echo "<a href='";
 				echo "saisie_incident.php?id_incident=$lig->id_incident&amp;step=2";
 				//echo "' onmouseover=\"delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				echo "' onmouseover=\"cacher_toutes_les_infobulles();afficher_div('incident_".$lig->id_incident."','y',20,20);\"";
+				//echo "' onmouseover=\"cacher_toutes_les_infobulles(); afficher_div('incident_".$lig->id_incident."','y',20,20);\"";
+				echo "' onmouseover=\"cacher_toutes_les_infobulles(); delais_afficher_div('incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				//echo ">Détails</a>";
 				echo ">Modifier</a>";
 				//echo " (*)";
@@ -1271,14 +1281,16 @@ if(!isset($id_incident)) {
 			if(($lig->etat=='clos')||($_SESSION['statut']=='professeur')||($_SESSION['statut']=='autre')) {
 				echo "<a href='#'";
 				//echo " onmouseover=\"delais_afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20);\"";
+				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				echo " onclick='return false;'";
 				echo ">Sanctions</a>";
 			}
 			else {
 				echo "<a href='saisie_sanction.php?id_incident=$lig->id_incident'";
 				//echo " onmouseover=\"delais_afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
-				echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20);\"";
+				//echo " onmouseover=\"cacher_toutes_les_infobulles();afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20);\"";
+				echo " onmouseover=\"cacher_toutes_les_infobulles();delais_afficher_div('sanctions_incident_".$lig->id_incident."','y',20,20,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\"";
 				//echo ">Saisir</a>";
 				echo ">$txt_lien</a>";
 			}

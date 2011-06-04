@@ -1379,26 +1379,46 @@ function sanction_documents_joints($id_incident, $ele_login) {
 	echo "<p>Joindre un fichier&nbsp;: <input type=\"file\" size=\"15\" name=\"document_joint\" id=\"document_joint\" /><br />\n";
 
 
-	$tab_doc_joints=get_documents_joints($id_incident, "mesure", $ele_login);
-	if(count($tab_doc_joints)>0) {
-		//echo "Joindre&nbsp;:<br />\n";
-		$chemin="../documents/discipline/incident_".$id_incident."/mesures/".$ele_login;
-
-		echo "<b>Fichiers proposés lors de la saisie des mesures demandées&nbsp;:</b>";
-		echo "<table class='boireaus' width='100%'>\n";
-		echo "<tr>\n";
-		echo "<th>Joindre</th>\n";
-		echo "<th>Fichier</th>\n";
-		echo "</tr>\n";
-		$alt3=1;
-		for($loop=0;$loop<count($tab_doc_joints);$loop++) {
-			$alt3=$alt3*(-1);
-			echo "<tr class='lig$alt3 white_hover'>\n";
-			echo "<td><input type='checkbox' name='ajouter_doc_joint[]' value=\"$tab_doc_joints[$loop]\" /></td>\n";
-			echo "<td><a href='$chemin/$tab_doc_joints[$loop]' target='_blank'>$tab_doc_joints[$loop]</a></td>\n";
-			echo "</tr>\n";
+	$tab_doc_joints2=get_documents_joints($id_incident, "mesure", $ele_login);
+	if(count($tab_doc_joints2)>0) {
+		$temoin_deja_tous_joints="n";
+		if(isset($tab_doc_joints)) {
+			$temoin_deja_tous_joints="y";
+			for($loop=0;$loop<count($tab_doc_joints2);$loop++) {
+				if(!in_array($tab_doc_joints2[$loop], $tab_doc_joints)) {
+					$temoin_deja_tous_joints="n";
+					break;
+				}
+			}
 		}
-		echo "</table>\n";
+
+		if($temoin_deja_tous_joints=="n") {
+			//echo "Joindre&nbsp;:<br />\n";
+			$chemin="../documents/discipline/incident_".$id_incident."/mesures/".$ele_login;
+	
+			echo "<b>Fichiers proposés lors de la saisie des mesures demandées&nbsp;:</b>";
+			echo "<table class='boireaus' width='100%'>\n";
+			echo "<tr>\n";
+			echo "<th>Joindre</th>\n";
+			echo "<th>Fichier</th>\n";
+			echo "</tr>\n";
+			$alt3=1;
+			for($loop=0;$loop<count($tab_doc_joints2);$loop++) {
+				if((!isset($tab_doc_joints))||(!in_array($tab_doc_joints2[$loop],$tab_doc_joints))) {
+					$alt3=$alt3*(-1);
+					echo "<tr class='lig$alt3 white_hover'>\n";
+					echo "<td><input type='checkbox' name='ajouter_doc_joint[]' value=\"$tab_doc_joints2[$loop]\" ";
+					//if((!isset($tab_doc_joints))||(!in_array($tab_doc_joints2[$loop],$tab_doc_joints))) {
+						echo "checked ";
+					//}
+					echo "/>\n";
+					echo "</td>\n";
+					echo "<td><a href='$chemin/$tab_doc_joints2[$loop]' target='_blank'>$tab_doc_joints2[$loop]</a></td>\n";
+					echo "</tr>\n";
+				}
+			}
+			echo "</table>\n";
+		}
 	}
 }
 
@@ -1419,6 +1439,64 @@ function liste_doc_joints_sanction($id_sanction) {
 				$retour.="<a href='$chemin/$tab_doc_joints[$loop]' target='_blank'>$tab_doc_joints[$loop]</a><br />\n";
 			}
 		}
+	}
+
+	return $retour;
+}
+
+function suppr_doc_joints_incident($id_incident) {
+	$retour="";
+
+	$sql="SELECT login FROM s_protagonistes WHERE id_incident='$id_incident';";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			//echo "\$lig->login=$lig->login<br />";
+			$tab_doc_joints=get_documents_joints($id_incident, "mesure", $lig->login);
+			//echo "count(\$tab_doc_joints)=".count($tab_doc_joints)."<br />";
+			if(count($tab_doc_joints)>0) {
+				$chemin="../documents/discipline/incident_".$id_incident."/mesures/".$lig->login;
+				//echo "$chemin<br />";
+				$temoin_erreur="n";
+				for($loop=0;$loop<count($tab_doc_joints);$loop++) {
+					if(!unlink($chemin."/".$tab_doc_joints[$loop])) {
+						$retour.="Erreur lors de la suppression de $chemin/$tab_doc_joints[$loop]<br />";
+						$temoin_erreur="y";
+					}
+				}
+				if($temoin_erreur=="n") {
+					rmdir($chemin);
+				}
+			}
+		}
+		rmdir("../documents/discipline/incident_".$id_incident."/mesures");
+		rmdir("../documents/discipline/incident_".$id_incident);
+	}
+
+	return $retour;
+}
+
+function suppr_doc_joints_sanction($id_sanction) {
+	$retour="";
+
+	$sql="SELECT id_incident FROM s_sanctions WHERE id_sanction='$id_sanction';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		$id_incident=$lig->id_incident;
+
+		$tab_doc_joints=get_documents_joints($id_sanction, "sanction");
+		if(count($tab_doc_joints)>0) {
+			$chemin="../documents/discipline/incident_".$id_incident."/sanction_".$id_sanction;
+			for($loop=0;$loop<count($tab_doc_joints);$loop++) {
+				if(!unlink($chemin."/".$tab_doc_joints[$loop])) {
+					$retour.="Erreur lors de la suppression de $chemin/$tab_doc_joints[$loop]<br />";
+				}
+			}
+			rmdir($chemin);
+		}
+		rmdir("../documents/discipline/incident_".$id_incident);
 	}
 
 	return $retour;
