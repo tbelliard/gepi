@@ -365,3 +365,6 @@ DROP TABLE IF EXISTS j_groupes_visibilite;
 CREATE TABLE IF NOT EXISTS j_groupes_visibilite (id INT(11) NOT NULL auto_increment,id_groupe INT(11) NOT NULL,domaine varchar(255) NOT NULL default '',visible varchar(255) NOT NULL default '',PRIMARY KEY (id),INDEX id_groupe_domaine (id_groupe, domaine));
 DROP TABLE IF EXISTS ct_sequences;
 CREATE TABLE IF NOT EXISTS ct_sequences (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,titre VARCHAR( 255 ) NOT NULL , description TEXT NOT NULL);
+DROP TABLE IF EXISTS s_travail_mesure;
+CREATE TABLE IF NOT EXISTS s_travail_mesure (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_incident INT( 11 ) NOT NULL ,login_ele VARCHAR( 50 ) NOT NULL , travail TEXT NOT NULL);
+

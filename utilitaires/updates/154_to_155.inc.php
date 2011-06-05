@@ -249,6 +249,20 @@ if ($req_res == 0) {
 	$result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
 }
 
+$result .= "<br /><br /><b>Ajout d'une table 's_travail_mesure' :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 's_travail_mesure'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS s_travail_mesure (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_incident INT( 11 ) NOT NULL ,login_ele VARCHAR( 50 ) NOT NULL , travail TEXT NOT NULL);");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
 //$result .= "<br /><br /><b>XXX :</b><br />";
 
 ?>

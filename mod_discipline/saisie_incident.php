@@ -752,6 +752,33 @@ if($etat_incident!='clos') {
 							}
 						}
 
+						if(count($mesure_demandee)>0) {
+							if (isset($NON_PROTECT["travail_pour_mesure_demandee_".$i])){
+								$texte_travail=traitement_magic_quotes(corriger_caracteres($NON_PROTECT["travail_pour_mesure_demandee_".$i]));
+				
+								// Contrôle des saisies pour supprimer les sauts de lignes surnuméraires.
+								$texte_travail=preg_replace('/(\\\r\\\n)+/',"\r\n",$texte_travail);
+								$texte_travail=preg_replace('/(\\\r)+/',"\r",$texte_travail);
+								$texte_travail=preg_replace('/(\\\n)+/',"\n",$texte_travail);
+	
+								if($texte_travail=="") {
+									$sql="DELETE FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
+									$res_del=mysql_query($sql);
+								}
+								else {
+									$sql="SELECT * FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
+									$res_mes=mysql_query($sql);
+									if(mysql_num_rows($res_mes)>0) {
+										$sql="UPDATE s_travail_mesure SET travail='".$texte_travail."' WHERE id_incident='$id_incident' AND login_ele='".$mesure_ele_login[$i]."';";
+										$update=mysql_query($sql);
+									}
+									else {
+										$sql="INSERT INTO s_travail_mesure SET travail='".$texte_travail."', id_incident='$id_incident', login_ele='".$mesure_ele_login[$i]."';";
+										$insert=mysql_query($sql);
+									}
+								}
+							}
+						}
 						/*
 						// Mis en commentaire pour ne pas supprimer trop hativement des fichiers
 						if(count($mesure_demandee)==0) {
@@ -2139,7 +2166,8 @@ echo "<script type='text/javascript'>
 					echo "</th>\n";
 
 					echo "<th>\n";
-					echo "Document(s) joint(s) à une mesure demandée";
+					//echo "Document(s) joint(s) à une mesure demandée";
+					echo "Travail et/ou document(s) joint(s) à une mesure demandée";
 					echo "</th>\n";
 				}
 				echo "</tr>\n";
@@ -2226,6 +2254,18 @@ echo "<script type='text/javascript'>
 					}
 
 					echo "<td>\n";
+					//echo "Travail&nbsp;: <textarea name='travail_pour_mesure_demandee_".$i."' id='travail_pour_mesure_demandee_".$i."' cols='30'>Nature du travail pour la mesure demandée</textarea>\n";
+
+					$texte_travail="Travail: ";
+					$sql="SELECT * FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$ele_login[$i]."';";
+					$res_travail_mesure_demandee=mysql_query($sql);
+					if(mysql_num_rows($res_travail_mesure_demandee)>0) {
+						$lig_travail_mesure_demandee=mysql_fetch_object($res_travail_mesure_demandee);
+						$texte_travail=$lig_travail_mesure_demandee->travail;
+					}
+
+					echo "<textarea name='no_anti_inject_travail_pour_mesure_demandee_".$i."' id='travail_pour_mesure_demandee_".$i."' cols='30'>$texte_travail</textarea>\n";
+
 					// Liste des fichiers déjà joints
 					$tab_file=get_documents_joints($id_incident, "mesure", $ele_login[$i]);
 					if(count($tab_file)>0) {
@@ -2328,9 +2368,11 @@ echo "<script type='text/javascript'>
 			}
 			if(temoin_check=='n') {
 				document.getElementById('document_joint_'+num).style.display='none';
+				document.getElementById('travail_pour_mesure_demandee_'+num).style.display='none';
 			}
 			else {
 				document.getElementById('document_joint_'+num).style.display='';
+				document.getElementById('travail_pour_mesure_demandee_'+num).style.display='';
 			}
 		}
 	}

@@ -86,6 +86,15 @@ if($valeur=='travail') {
 		}
 	}
 
+	if(($travail=="")&&(isset($id_incident))&&(isset($ele_login))) {
+		$sql="SELECT * FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$ele_login."';";
+		$res_travail_mesure_demandee=mysql_query($sql);
+		if(mysql_num_rows($res_travail_mesure_demandee)>0) {
+			$lig_travail_mesure_demandee=mysql_fetch_object($res_travail_mesure_demandee);
+			$travail=$lig_travail_mesure_demandee->travail;
+		}
+	}
+
 	$alt=1;
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de retour&nbsp;: </td>\n";
@@ -176,6 +185,15 @@ elseif($valeur=='retenue') {
 			$duree_retenue=$lig_sanction->duree;
 			$lieu_retenue=$lig_sanction->lieu;
 			$travail=$lig_sanction->travail;
+		}
+	}
+
+	if(($travail=="")&&(isset($id_incident))&&(isset($ele_login))) {
+		$sql="SELECT * FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$ele_login."';";
+		$res_travail_mesure_demandee=mysql_query($sql);
+		if(mysql_num_rows($res_travail_mesure_demandee)>0) {
+			$lig_travail_mesure_demandee=mysql_fetch_object($res_travail_mesure_demandee);
+			$travail=$lig_travail_mesure_demandee->travail;
 		}
 	}
 
@@ -384,6 +402,16 @@ elseif($valeur=='exclusion') {
 			$signataire=$lig_sanction->id_signataire;
 		} 
 	}
+
+	if(($travail=="")&&(isset($id_incident))&&(isset($ele_login))) {
+		$sql="SELECT * FROM s_travail_mesure WHERE id_incident='$id_incident' AND login_ele='".$ele_login."';";
+		$res_travail_mesure_demandee=mysql_query($sql);
+		if(mysql_num_rows($res_travail_mesure_demandee)>0) {
+			$lig_travail_mesure_demandee=mysql_fetch_object($res_travail_mesure_demandee);
+			$travail=$lig_travail_mesure_demandee->travail;
+		}
+	}
+
 	$alt=1;
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Date de début&nbsp;: </td>\n";
