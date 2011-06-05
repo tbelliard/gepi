@@ -249,7 +249,9 @@ else{
 		echo "<option value='auth_ldap'>Authentification LDAP</option>";
 	}
 	if ($session_gepi->auth_sso) {
-		echo "<option value='auth_sso'>Authentification unique (SSO)</option>";
+		echo "<option value='auth_sso'";
+		if(getSettingValue('auth_sso')=='lcs') {echo " selected='true'";}
+		echo ">Authentification unique (SSO)</option>";
 	}
 	echo "</select>";
 
