@@ -2413,5 +2413,16 @@ else {
 }
 //=======================================================
 
+echo "<div class='noprint'>\n";
+//===========================================================
+echo "<p><em>NOTE&nbsp;:</em></p>\n";
+require("../lib/textes.inc.php");
+echo "<p style='margin-left: 3em;'>$explication_bulletin_ou_graphe_vide";
+echo "<br />\n";
+echo "Vous pouvez aussi consulter les moyennes des carnets de notes à un instant T avant la fin de période via <a href='../cahier_notes/index2.php?id_classe=$id_classe'>Visualisation des moyennes des carnets de notes</a> tout en sachant qu'avant la fin de période, toutes les notes ne sont pas encore nécessairement saisies... et que par conséquent les informations obtenues peuvent être remises en cause par les résultats saisis par la suite.";
+echo "</p>\n";
+//===========================================================
+echo "</div>\n";
+
 require("../lib/footer.inc.php");
 ?>
