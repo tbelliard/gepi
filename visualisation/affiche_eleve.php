@@ -4439,5 +4439,11 @@ if(getSettingValue('active_annees_anterieures')=='y') {
 }
 //===========================================================
 
+//===========================================================
+echo "<p><em>NOTE&nbsp;:</em></p>\n";
+require("../lib/textes.inc.php");
+echo "<p style='margin-left: 3em;'>$explication_bulletin_ou_graphe_vide</p>\n";
+//===========================================================
+
 require("../lib/footer.inc.php");
 ?>

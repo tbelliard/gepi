@@ -499,5 +499,12 @@ if (!$id_classe) {
     echo "etiquette=$etiq&amp;titre=$graph_title&amp;compteur=$compteur&amp;nb_data=$nb_periode' alt='Evolution de $prenom_el $nom_el' />\n";
     echo "<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />";
 }
+
+//===========================================================
+echo "<p><em>NOTE&nbsp;:</em></p>\n";
+require("../lib/textes.inc.php");
+echo "<p style='margin-left: 3em;'>$explication_bulletin_ou_graphe_vide</p>\n";
+//===========================================================
+
 require("../lib/footer.inc.php");
 ?>

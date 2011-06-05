@@ -16,5 +16,9 @@ Les textes des devoirs et des contrôles figureront au cahier de textes, sous for
 En ce qui concerne les travaux effectués dans le cadre de groupes, ou de sous-groupes d'élèves de différents niveaux de compétences, et en vue de favoriser un accompagnement plus personnalisé, le contenu de ces activités spécifiques sera également mentionné dans le cahier de textes.</em>\"<br />
 (<i>réf. : <a href='http://www.education.gouv.fr/cid53060/mene1020076c.html'>B.O. n°32 du 09/09/2010</a></i>)</p>";
 	//=============================================
-
+	// Bulletins, graphes,...
+	$explication_bulletin_ou_graphe_vide="Les moyennes et appréciations des bulletins ne sont remplies qu'en fin de période.<br />
+Si aucune moyenne n'apparait sur le graphique, c'est probablement parce que les professeurs n'ont pas encore rempli les bulletins.<br />
+Avant la fin de la période, il se peut que seules les notes des devoirs soient saisies.<br />
+Elles seront consultables dans le Relevé de notes si vous y avez accès.";
 ?>
