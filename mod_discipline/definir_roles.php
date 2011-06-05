@@ -97,8 +97,9 @@ if((isset($qualite))&&($qualite!='')) {
 	if($a_enregistrer=='y') {
 		check_token();
 
-		//$qualite=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($qualite))));
-		$qualite=my_ereg_replace('(\\\r\\\n)+',"\r\n",$qualite);
+		$qualite=preg_replace('/(\\\r\\\n)+/',"\r\n",$qualite);
+		$qualite=preg_replace('/(\\\r)+/',"\r",$qualite);
+		$qualite=preg_replace('/(\\\n)+/',"\n",$qualite);
 
 		$sql="INSERT INTO s_qualites SET qualite='".$qualite."';";
 		$res=mysql_query($sql);

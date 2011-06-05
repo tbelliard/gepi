@@ -1444,7 +1444,7 @@ function liste_doc_joints_sanction($id_sanction) {
 	return $retour;
 }
 
-function suppr_doc_joints_incident($id_incident) {
+function suppr_doc_joints_incident($id_incident, $suppr_doc_sanction='n') {
 	$retour="";
 
 	$sql="SELECT login FROM s_protagonistes WHERE id_incident='$id_incident';";
@@ -1474,8 +1474,18 @@ function suppr_doc_joints_incident($id_incident) {
 		}
 
 		if($temoin_erreur=="n") {
-			if(rmdir("../documents/discipline/incident_".$id_incident."/mesures")) {
-				rmdir("../documents/discipline/incident_".$id_incident);
+			if($suppr_doc_sanction=='y') {
+				$sql="SELECT id_sanction FROM s_sanctions WHERE id_incident='$id_incident';";
+				$res=mysql_query($sql);
+				if(mysql_num_rows($res)>0) {
+					while($lig=mysql_fetch_object($res)) {
+						$retour.=suppr_doc_joints_sanction($lig->id_sanction);
+					}
+				}
+			}
+
+			if((file_exists("../documents/discipline/incident_".$id_incident."/mesures"))&&(rmdir("../documents/discipline/incident_".$id_incident."/mesures"))) {
+				if(file_exists("../documents/discipline/incident_".$id_incident)) {rmdir("../documents/discipline/incident_".$id_incident);}
 			}
 		}
 	}

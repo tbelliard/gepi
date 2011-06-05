@@ -93,8 +93,10 @@ if((isset($lieu))&&($lieu!='')) {
 	if($a_enregistrer=='y') {
 		check_token();
 
-		//$lieu=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($lieu))));
-		$lieu=my_ereg_replace('(\\\r\\\n)+',"\r\n",$lieu);
+		//$lieu=addslashes(preg_replace('/(\\\r\\\n)+/',"\r\n",preg_replace("/&#039;/","'",html_entity_decode($lieu))));
+		$lieu=preg_replace('/(\\\r\\\n)+/',"\r\n",$lieu);
+		$lieu=preg_replace('/(\\\r)+/',"\r",$lieu);
+		$lieu=preg_replace('/(\\\n)+/',"\n",$lieu);
 
 		$sql="INSERT INTO s_lieux_incidents SET lieu='".$lieu."';";
 		$res=mysql_query($sql);

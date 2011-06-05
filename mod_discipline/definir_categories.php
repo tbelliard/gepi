@@ -105,8 +105,9 @@ if ((isset($categorie)) && ($categorie != '')) {
     }
 
     if ($a_enregistrer == 'y') {
-        //$lieu=addslashes(my_ereg_replace('(\\\r\\\n)+',"\r\n",my_ereg_replace("&#039;","'",html_entity_decode($lieu))));
-        $categorie = my_ereg_replace('(\\\r\\\n)+', "\r\n", $categorie);
+		$categorie=preg_replace('/(\\\r\\\n)+/',"\r\n",$categorie);
+		$categorie=preg_replace('/(\\\r)+/',"\r",$categorie);
+		$categorie=preg_replace('/(\\\n)+/',"\n",$categorie);
 
         $sql = "INSERT INTO s_categories SET categorie='" . $categorie . "', sigle='" . $sigle . "';";
         $res = mysql_query($sql);

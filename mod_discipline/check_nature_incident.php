@@ -64,12 +64,12 @@ if(isset($chaine_rech)) {
 	// echo "Eléments transmis: $chaine_rech<br />";
 
 	// Filtrage des caractères
-	$chaine_rech=my_ereg_replace("[^A-Za-z0-9ÀàÂâÄäÉéÈèÊêËëÎîÏïÔôÖöÙùÛûÜü ._-]","%",$chaine_rech);
+	$chaine_rech=preg_replace("/[^A-Za-z0-9ÀàÂâÄäÉéÈèÊêËëÎîÏïÔôÖöÙùÛûÜü \._-]/","%",$chaine_rech);
 
 	//$chaine_mysql="(";
 	$chaine_mysql=" 1 AND (";
 	//$tab=explode("_",substr($chaine_rech,1)); // On vire le _ de début de chaine
-	//$tab=explode("_",my_ereg_replace("^_","",$chaine_rech)); // On vire le _ de début de chaine
+	//$tab=explode("_",preg_replace("/^_/","",$chaine_rech)); // On vire le _ de début de chaine
 	$tab=explode(" ",$chaine_rech); // On vire le _ de début de chaine
 	for($i=0;$i<count($tab);$i++) {
 		if($tab[$i]!='') {
