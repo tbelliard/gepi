@@ -106,7 +106,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
         $msg = "ATTENTION : Le message est vide.<br />L'enregistrement ne peut avoir lieu.";
         $record = 'no';
     }
-    if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_debut'])) {
+    if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date_debut'])) {
         $anneed = substr($_POST['display_date_debut'],6,4);
         $moisd = substr($_POST['display_date_debut'],3,2);
         $jourd = substr($_POST['display_date_debut'],0,2);
@@ -117,7 +117,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
         $record = 'no';
 
     }
-    if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_fin'])) {
+    if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date_fin'])) {
         $anneef = substr($_POST['display_date_fin'],6,4);
         $moisf = substr($_POST['display_date_fin'],3,2);
         $jourf = substr($_POST['display_date_fin'],0,2);
@@ -129,7 +129,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
     }
 
     if ($record == 'yes') {
-		if (my_ereg("([0-9]{2})/([0-9]{2})/([0-9]{4})", $_POST['display_date_decompte'])) {
+		if (preg_match("#([0-9]{2})/([0-9]{2})/([0-9]{4})#", $_POST['display_date_decompte'])) {
 			$anneed = substr($_POST['display_date_decompte'],6,4);
 			$moisd = substr($_POST['display_date_decompte'],3,2);
 			$jourd = substr($_POST['display_date_decompte'],0,2);
@@ -141,7 +141,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 			$date_decompte=mktime(0,0,0,$moisd,$jourd,$anneed);
 			//echo strftime("%d/%m/%Y à %H:%M",$date_decompte)."<br />";
 
-			if (my_ereg("([0-9]{1,2}):([0-9]{0,2})", str_ireplace('h',':',$_POST['display_heure_decompte']))) {
+			if (preg_match("/([0-9]{1,2}):([0-9]{0,2})/", str_ireplace('h',':',$_POST['display_heure_decompte']))) {
 				$heured = substr($_POST['display_heure_decompte'],0,2);
 				$minuted = substr($_POST['display_heure_decompte'],3,2);
 				$date_decompte=$date_decompte+$heured*3600+$minuted*60;
@@ -167,7 +167,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
           date_decompte = '".$date_decompte."',
           auteur='".$_SESSION['login']."',
           statuts_destinataires = '".$statuts_destinataires."',
-		  login_destinataire='".$login_destinataire."'
+          login_destinataire='".$login_destinataire."'
           WHERE (id ='".$_POST['id_mess']."')");
       } else {
           $req = mysql_query("INSERT INTO messages
@@ -177,7 +177,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
           date_decompte = '".$date_decompte."',
           auteur='".$_SESSION['login']."',
           statuts_destinataires = '".$statuts_destinataires."',
-		  login_destinataire='".$login_destinataire."'
+          login_destinataire='".$login_destinataire."'
           ");
       }
       if ($req) {
@@ -308,7 +308,7 @@ if (isset($id_mess)) {
     $date_fin = mysql_result($appel_message, 0, 'date_fin');
     $date_decompte = mysql_result($appel_message, 0, 'date_decompte');
     $statuts_destinataires = mysql_result($appel_message, 0, 'statuts_destinataires');
-	$login_destinataire=mysql_result($appel_message, 0, 'login_destinataire');
+    $login_destinataire=mysql_result($appel_message, 0, 'login_destinataire');
     $display_date_debut = strftime("%d", $date_debut)."/".strftime("%m", $date_debut)."/".strftime("%Y", $date_debut);
     $display_date_fin = strftime("%d", $date_fin)."/".strftime("%m", $date_fin)."/".strftime("%Y", $date_fin);
     $display_date_decompte = strftime("%d", $date_decompte)."/".strftime("%m", $date_decompte)."/".strftime("%Y", $date_decompte);

@@ -177,6 +177,7 @@ else {
 
 //===================================================
 
+$result .= "<br /><br /><b>Mots de passe :</b><br />";
 $result .= "&nbsp;->Ajout d'un champ 'salt' à la table 'utilisateur' et allongement du champs password<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM utilisateurs LIKE 'salt';"));
 if ($test_champ>0) {
@@ -199,6 +200,7 @@ else {
 
 //===================================================
 
+$result .= "<br /><br /><b>Messagerie :</b><br />";
 $result .= "&nbsp;->Modification du champ 'destinataires' de la table 'messages' en 'statuts_destinataires'<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM messages LIKE 'statuts_destinataires';"));
 if ($test_champ>0) {
@@ -219,12 +221,34 @@ if ($test_champ>0) {
 	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 }
 else {
-	$query = mysql_query("ALTER TABLE messages ADD login_destinataire VARCHAR( 50 ) NOT NULL default '' AFTER statuts_destinataires;");
+	$query = mysql_query("ALTER TABLE messages ADD login_destinataire VARCHAR( 50 ) NOT NULL default '' AFTER statuts_destinataires, ADD INDEX ( login_destinataire ) ;");
 	if ($query) {
 			$result .= "<font color=\"green\">Ok !</font><br />";
 	} else {
 			$result .= "<font color=\"red\">Erreur</font><br />";
 	}
 }
+
+// Ajout d'index
+$result .= "&nbsp;->Ajout de l'index 'login_destinataire' à la table 'messages'<br />";
+$req_res=0;
+$req_test = mysql_query("SHOW INDEX FROM messages ");
+if (mysql_num_rows($req_test)!=0) {
+	while ($enrg = mysql_fetch_object($req_test)) {
+		if ($enrg-> Key_name == 'login_destinataire') {$req_res++;}
+	}
+}
+if ($req_res == 0) {
+	$query = mysql_query("ALTER TABLE messages ADD INDEX login_destinataire ( login_destinataire )");
+	if ($query) {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+		$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+} else {
+	$result .= "<font color=\"blue\">L'index existe déjà.</font><br />";
+}
+
+//$result .= "<br /><br /><b>XXX :</b><br />";
 
 ?>

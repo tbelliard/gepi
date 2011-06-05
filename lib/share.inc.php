@@ -6840,4 +6840,51 @@ function get_cn_from_id_groupe_periode_num($id_groupe, $periode_num) {
 	}
 	return $id_cahier_notes;
 }
+
+
+function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$date_fin=0,$date_decompte=0)
+{
+	// Afficher un message sur la page d'accueil du destinataire (ML 5/2011)
+	
+	// Les paramètres :
+	//	$login_destinataire : login du destinataire (obligatoire)
+	//	$texte : texte du message contenant éventuellement des balises HTML et codé en iso-8859-1  (obligatoire)
+	//	$date_debut : date à partir de laquelle est affiché le message (timestamp, optionnel)
+	//	$date_fin : date à laquelle le message n'est plus affiché (timestamp, optionnel)
+	//	$date_decompte : date butoir du décompte, la chaîne _DECOMPTE_ dans $texte est remplacée par un décompte (timestamp, optionnel)
+	
+	// Retour :
+	// true ou false selon que le massage a été enregistré ou pas
+	
+	// Les appels possibles
+	//	message_accueil_utilisateur("UNTEL","Bonjour Untel") : affiche le message "Bonjour Untel" sur la page d'accueil du destinataire de login "UNTEL" dès l'appel de la fonction, pour une durée de 7 jours, avec décompte sur le 7ième jour
+	//	message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, pour une durée de 7 jours, avec décompte sur le 7ième jour	
+	//	message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130684567
+	//	message_accueil_utilisateur("UNTEL","Bonjour Untel",130674844,130684567,130690844) : affiche le message "Bonjour Untel" sur la page du destinataire de login "UNTEL" à partir de la date 130674844, jusqu'à la date 130684567, avec décompte sur la date 130690844
+
+	// On arrondit le timestamp d'appel à l'heure (pas néceassaire mais pour l'esthétique)
+	$t_appel=time()-(time()%3600);
+	// suivant le nombre de paramètres passés :
+	switch (func_num_args())
+		{
+		case 3:
+			$date_fin=$date_debut + 3600*24*7;
+			$date_decompte=$date_fin;
+			break;
+		case 4:
+			$date_decompte=$date_fin;
+			break;
+		case 5:
+			break;
+		default :
+			// valeurs par défaut
+			$date_debut=$t_appel;
+			$date_fin=$t_appel + 3600*24*7;
+			$date_decompte=$date_fin;		
+		}
+	$r_sql="INSERT INTO `messages` values('','".addslashes($texte)."','".$date_debut."','".$date_fin."','".$_SESSION['login']."','_','".$login_destinataire."','".$date_decompte."')";
+	return mysql_query($r_sql);
+}
+
+
 ?>

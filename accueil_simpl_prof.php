@@ -162,75 +162,7 @@ affiche_acces_cdt();
 echo "<center>\n";
 
 //Affichage des messages
-$today=mktime(0,0,0,date("m"),date("d"),date("Y"));
-
-// on fait le ménage
-$sql="DELETE FROM `messages` WHERE ((`date_fin`+86400 <= ".$today.") && (`statuts_destinataires`='_') && (UPPER(`login_destinataire`)='".$_SESSION['login']."'));";
-$menage=@mysql_query($sql);
-
-$sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_destinataires, login_destinataire FROM messages
-	WHERE (
-	texte != '' and
-	date_debut <= '".$today."' and
-	date_fin >= '".$today."'
-	)
-    order by date_debut DESC, id DESC;";
-$appel_messages = mysql_query($sql);
-//	order by id DESC");
-$nb_messages = mysql_num_rows($appel_messages);
-$ind = 0;
-$texte_messages = '';
-$affiche_messages = 'no';
-while ($ind < $nb_messages) {
-	$statuts_destinataires1 = mysql_result($appel_messages, $ind, 'statuts_destinataires');
-	$login_destinataire1 = mysql_result($appel_messages, $ind, 'login_destinataire');
-	if ((strpos($statuts_destinataires1, substr($_SESSION['statut'], 0, 1))) || (strtoupper($_SESSION['login'])==strtoupper($login_destinataire1))) {
-	//if ((strtolower($_SESSION['login'])==strtolower($destinataires1)) || ((strpos(strtolower($destinataires1), substr(strtolower($_SESSION['statut']), 0, 1)))&&(substr($destinataires1,0,1)=="_"))) {
-		if ($affiche_messages == 'yes') {$texte_messages .= "<hr />";}
-		$affiche_messages = 'yes';
-		$content = mysql_result($appel_messages, $ind, 'texte');
-		// Mise en forme du texte
-//        $auteur1 = mysql_result($appel_messages, $ind, 'auteur');
-//        $nom_auteur = sql_query1("SELECT nom from utilisateurs where login = '".$auteur1."'");
-//        $prenom_auteur = sql_query1("SELECT prenom from utilisateurs where login = '".$auteur1."'");
-//        $texte_messages .= "<span class='small'>Message de </span>: ".$prenom_auteur." ".$nom_auteur;
-		if(strstr($content, '_DECOMPTE_')) {
-			$nb_sec=mysql_result($appel_messages, $ind, 'date_decompte')-mktime();
-			if($nb_sec>0) {
-				$decompte_remplace="";
-			}
-			elseif($nb_sec==0) {
-				$decompte_remplace=" <span style='color:red'>Vous êtes à l'instant T</span> ";
-			}
-			else {
-				$nb_sec=$nb_sec*(-1);
-				$decompte_remplace=" <span style='color:red'>date dépassée de</span> ";
-			}
-
-			$decompte_j=floor($nb_sec/(24*3600));
-			$decompte_h=floor(($nb_sec-$decompte_j*24*3600)/3600);
-			$decompte_m=floor(($nb_sec-$decompte_j*24*3600-$decompte_h*3600)/60);
-
-			if($decompte_j==1) {$decompte_remplace.=$decompte_j." jour ";}
-			elseif($decompte_j>1) {$decompte_remplace.=$decompte_j." jours ";}
-
-			if($decompte_h==1) {$decompte_remplace.=$decompte_h." heure ";}
-			elseif($decompte_h>1) {$decompte_remplace.=$decompte_h." heures ";}
-
-			if($decompte_m==1) {$decompte_remplace.=$decompte_m." minute";}
-			elseif($decompte_m>1) {$decompte_remplace.=$decompte_m." minutes";}
-
-			$content=preg_replace("/_DECOMPTE_/",$decompte_remplace,$content);
-		}
-		$texte_messages .= $content;
-	}
-	$ind++;
-}
-if ($affiche_messages == 'yes') {
-	echo "<table id='messagerie' summary=\"Ce tableau contient les informations sur lesquelles on souhaite attirer l'attention\">\n";
-	echo "<tr><td>".$texte_messages;
-	echo "</td></tr></table>\n";
-}
+include("affichage_des_messages.inc.php");
 
 //================================
 $invisibilite_groupe=array();

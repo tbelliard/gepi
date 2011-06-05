@@ -184,6 +184,7 @@ Mise en page pour validation et accessibilité
        Accueil.php
 ***********************/
 
+/*
 #messagerie {
 	width: 70%;
 	padding: 5px 5px 5px 10px;
@@ -195,6 +196,25 @@ Mise en page pour validation et accessibilité
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
+*/
+#messagerie {
+  width: 70%;
+  padding-top: 5px;
+  padding-right: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  border: 4px double #0000AA;
+  background-repeat: no-repeat;
+  background-position: 0% 0%;
+  margin-top: 10px;
+  margin-right: auto;
+  margin-bottom: 10px;
+  margin-left: auto;
+  -webkit-border-radius: 10px 10px 10px 10px;
+  -moz-border-radius: 10px 10px 10px 10px;
+  border-radius: 10px 10px 10px 10px;
+}
+
 /* menu */
 .accueil {
 	width: 68%;
