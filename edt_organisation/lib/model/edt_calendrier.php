@@ -21,7 +21,7 @@
  */
 class PeriodeCalendaire {
 
-
+	public $id;
 	public $classe_concernees;
 	public $nom;
 	public $debut_ts;
@@ -41,7 +41,48 @@ class PeriodeCalendaire {
     function __construct() {
         
     }	
-	
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+ 
+	public function update() {
+		$sql="UPDATE edt_calendrier SET
+				classe_concerne_calendrier = '".$this->classe_concernees."',
+				nom_calendrier = '".$this->nom."',
+				debut_calendrier_ts = '".$this->debut_ts."',
+				fin_calendrier_ts = '".$this->fin_ts."',
+				jourdebut_calendrier = '".$this->jourdebut."',
+				heuredebut_calendrier = '".$this->heuredebut."',
+				jourfin_calendrier = '".$this->jourfin."',
+				heurefin_calendrier = '".$this->heurefin."',
+				numero_periode = '".$this->periode_note."',
+				etabferme_calendrier = '".$this->etabferme."',
+				etabvacances_calendrier = '".$this->etabvacances."' 		
+				WHERE id_calendrier = '".$this->id."' ";
+		$req = mysql_query($sql);
+		if ($req) {
+			return true;
+		}
+		else {
+			return false;
+		}				
+	}	
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+ 
+	public function delete() {
+		$sql="DELETE FROM edt_calendrier WHERE id_calendrier = '".$this->id."' ";
+		$req = mysql_query($sql);
+		if ($req) {
+			return true;
+		}
+		else {
+			return false;
+		}				
+	}
 /*******************************************************************
  *
  *
@@ -75,23 +116,26 @@ class PeriodeCalendaire {
  
 	public static function getPeriods() {
 		$result = array();
-		$sql="SELECT debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";
+		$sql="SELECT id_calendrier, debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";
 		$req = mysql_query($sql);
 		if ($req) {
 			if (mysql_num_rows($req) != 0) {
 				while ($rep = mysql_fetch_array($req)) {
+					$result['id'][] = $rep['id_calendrier'];
 					$result['debut'][] = $rep['debut_calendrier_ts'];
 					$result['fin'][] = $rep['fin_calendrier_ts'];
 				}
 
 			} 
 			else {
+				$result['id'][] = null;
 				$result['debut'][] = null;
 				$result['fin'][] = null;			
 			}
 			return $result;
 		}
 		else {
+			$result['id'][] = null;
 			$result['debut'][] = null;
 			$result['fin'][] = null;	
 			return $result;
@@ -106,7 +150,13 @@ class PeriodeCalendaire {
 	public function insertable() {
 		$result = array();
 		$insertable = true;
-		$sql="SELECT debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";
+		if ($this->id != null) {
+			$sql="SELECT debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier WHERE id_calendrier != '".$this->id."' ORDER BY debut_calendrier_ts ASC";		
+		}
+		else {
+			$sql="SELECT debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";		
+		}
+
 		$req = mysql_query($sql);
 		if ($req) {
 			if (mysql_num_rows($req) != 0) {

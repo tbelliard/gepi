@@ -18,6 +18,24 @@
  * You should have received a copy of the GNU General Public License
  * along with GEPi; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ * GenerateCalendar
+ * getDayNumber
+ * getCurrentWeek
+ * getTypeCurrentWeek
+ * getPeriodName
+ * getSinglePeriod
+ * getNumLastWeek
+ * getDaysTable
+ * getTimestampFromDay
+ * getPeriodFromDay
+ * getDaysFromPeriods
+ * getFrontiersPeriods
+ *
+ *
+ *
+ *
+ *
  */
 include_once("./lib/model/edt_calendrier.php");
 class calendar {
@@ -36,132 +54,168 @@ class calendar {
 		foreach ($TableSemaines as $semaine) {
 			if (in_array($i, $debut)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_first_cell_period_".$semaine['lundi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['lundi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_first_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['lundi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['lundi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else if (in_array($i, $TableDaysInPeriods)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_period_".$semaine['lundi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['lundi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['lundi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['lundi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['lundi-mois']."\">
-						<div style=\"margin:3px;\">".$semaine['lundi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['lundi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['lundi']."</div>
+						</div>
 					</div>
 				";
 			}
 			$i++;
 			if (in_array($i, $debut)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_first_cell_period_".$semaine['mardi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['mardi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_first_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['mardi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['mardi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else if (in_array($i, $TableDaysInPeriods)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_period_".$semaine['mardi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['mardi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['mardi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['mardi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['mardi-mois']."\">
-						<div style=\"margin:3px;\">".$semaine['mardi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['mardi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['mardi']."</div>
+						</div>
 					</div>
 				";
 			}
 			$i++;
 			if (in_array($i, $debut)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_first_cell_period_".$semaine['mercredi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['mercredi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_first_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['mercredi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['mercredi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else if (in_array($i, $TableDaysInPeriods)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_period_".$semaine['mercredi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['mercredi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['mercredi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['mercredi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['mercredi-mois']."\">
-						<div style=\"margin:3px;\">".$semaine['mercredi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['mercredi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['mercredi']."</div>
+						</div>
 					</div>
 				";
 			}
 			$i++;
 			if (in_array($i, $debut)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_first_cell_period_".$semaine['jeudi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['jeudi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_first_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['jeudi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['jeudi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else if (in_array($i, $TableDaysInPeriods)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_period_".$semaine['jeudi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['jeudi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['jeudi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['jeudi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['jeudi-mois']."\">
-						<div style=\"margin:3px;\">".$semaine['jeudi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['jeudi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['jeudi']."</div>
+						</div>
 					</div>
 				";
 			}
 			$i++;
 			if (in_array($i, $debut)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_first_cell_period_".$semaine['vendredi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['vendredi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_first_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['vendredi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['vendredi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else if (in_array($i, $TableDaysInPeriods)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_period_".$semaine['vendredi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['vendredi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['vendredi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['vendredi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['vendredi-mois']."\">
-						<div style=\"margin:3px;\">".$semaine['vendredi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['vendredi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['vendredi']."</div>
+						</div>
 					</div>
 				";
 			}
 			$i++;
 			if (in_array($i, $debut)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_first_cell_period_".$semaine['samedi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['samedi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_first_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['samedi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['samedi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else if (in_array($i, $TableDaysInPeriods)) {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_period_".$semaine['samedi-mois']."\" >
-						<div style=\"margin:3px;\">".$semaine['samedi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell_period\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['samedi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['samedi']."</div>
+						</div>
 					</div>
 				";			
 			}
 			else {
 				$result.= "
-					<div id=\"div".$i."\" class=\"calendar_cell_".$semaine['samedi-mois']."\">
-						<div style=\"margin:3px;\">".$semaine['samedi']."</div>
+					<div id=\"div".$i."\" class=\"calendar_cell\">
+						<div id=\"div_".$i."\" class=\"month_".$semaine['samedi-mois']."\" >
+							<div style=\"margin:3px;\">".$semaine['samedi']."</div>
+						</div>
 					</div>
 				";
 			}
@@ -171,6 +225,7 @@ class calendar {
 		}
 		return $result;
 	}
+
 /*******************************************************************
  *
  *
@@ -285,6 +340,7 @@ class calendar {
 		$result = array();
 		while (($rep_periode = mysql_fetch_array($req_periode)) AND (!$endprocess)) {
 			if (($rep_periode['debut_calendrier_ts'] <= $date_ts) AND ($rep_periode['fin_calendrier_ts'] >= $date_ts)) { 
+				$result['id'] = $rep_periode['id_calendrier'];
 				$result['nom'] = $rep_periode['nom_calendrier'];
 				$result['debut'] = $rep_periode['debut_calendrier_ts'];				
 				$result['fin'] = $rep_periode['fin_calendrier_ts'];
@@ -572,12 +628,68 @@ class calendar {
 						$ts+=86400;						
 					}
 				}
-				$fin[] = $i-1;
+				$fin[] = $i;
 				$j++;
 				if (!isset($period['debut'][$j])) {
 					$stop = true;
 				}
 			
+			}
+			else {
+				$ts+=86400;
+				$i++;
+				if (($i-1)%6 == 0) {
+					$ts+=86400;						
+				}
+			}
+		}
+	}
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+
+	public static function getFrontiersPeriodID (&$debut, &$fin, $id) {
+
+		$period = PeriodeCalendaire::getPeriods();
+		setlocale (LC_TIME, 'fr_FR','fra');
+		if ((1<=date("n")) AND (date("n") <=8)) {
+			$annee = date("Y");
+		}
+		else {
+			$annee = date("Y")+1;
+		}
+		$ts = mktime(0,0,0,1,4,$annee); // définition ISO de la semaine 01 : semaine du 4 janvier.
+		while (date("D", $ts) != "Mon") {
+			$ts-=86400;
+		}
+		$ts_max = $ts + 86400*7*36;
+		$semaine = calendar::getNumLastWeek();
+		$ts_ref = $ts;
+		while ($semaine >=33) {
+			$ts-=86400*7;
+			$semaine--;
+		}
+		// =====================================================
+		$i = 1;$j = 0;$stop = false;
+		while ($period['id'][$j] != $id) {
+			$j++;
+		}
+		while (($ts <= $ts_max) && (!$stop)) {
+
+			$ts_sup = $ts + 86400 - 1;
+
+			if ($ts == $period['debut'][$j]) {
+				$debut[] = $i;
+				while ($period['fin'][$j] > $ts) {
+					$ts+=86400;
+					$i++;	
+					if (($i-1)%6 == 0) {
+						$ts+=86400;						
+					}
+				}
+				$fin[] = $i;
+				$stop = true;
 			}
 			else {
 				$ts+=86400;

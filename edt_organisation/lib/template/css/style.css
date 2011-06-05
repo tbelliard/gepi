@@ -1854,319 +1854,101 @@ img.image
 		font-weight:bold;
 		color:black;
 	}
-	.calendar_cell_01 {
+	.calendar_cell {
 		float:left;
 		border:1px solid #cccccc;
-		background-color:#ffffff;
+		background-color:#eeeeee;
 		width:80px;
 		height:40px;
 		margin-left:-1px;
 		margin-top:-1px;
 		padding:0px;
+		font-size:12px;
+	}
+	.calendar_cell_period {
+		float:left;
+		border:1px solid #cccccc;
+		background-color:#95a1ff;
+		width:80px;
+		height:40px;
+		margin-left:-1px;
+		margin-top:-1px;
+		padding:0px;
+		font-size:12px;
+	}
+	.month_01 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/janvier.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_02 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_02 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/fevrier.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_03 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_03 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/mars.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_04 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_04 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/avril.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_05 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_05 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/mai.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_06 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_06 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/juin.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_07 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_07 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/juillet.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_08 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_08 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/aout.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_09 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_09 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/septembre.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_10 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_10 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/octobre.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_11 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#ffffff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_11 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/novembre.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_12 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#eeeeee;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
+	.month_12 {
+		width:100%;
+		height:100%;
 		background-image:url('../images/decembre.png');
-		background-repeat:none;
-		font-size:12px;
+		background-repeat:no-repeat;
 	}
-	.calendar_cell_period_01 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/janvier.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_02 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/fevrier.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_03 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/mars.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_04 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/avril.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_05 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/mai.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_06 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/juin.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_07 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/juillet.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_08 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/aout.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_09 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/septembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_10 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/octobre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_11 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/novembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_cell_period_12 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#95a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/decembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_01 {
+	.calendar_first_cell_period {
 		float:left;
 		border:1px solid #cccccc;
 		background-color:#75a1ff;
@@ -2175,151 +1957,6 @@ img.image
 		margin-left:-1px;
 		margin-top:-1px;
 		padding:0px;
-		background-image:url('../images/janvier.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_02 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/fevrier.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_03 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/mars.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_04 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/avril.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_05 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/mai.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_06 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/juin.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_07 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/juillet.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_08 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/aout.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_09 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/septembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_10 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/octobre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_11 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/novembre.png');
-		background-repeat:none;
-		font-size:12px;
-	}
-	.calendar_first_cell_period_12 {
-		float:left;
-		border:1px solid #cccccc;
-		background-color:#75a1ff;
-		width:80px;
-		height:40px;
-		margin-left:-1px;
-		margin-top:-1px;
-		padding:0px;
-		background-image:url('../images/decembre.png');
-		background-repeat:none;
 		font-size:12px;
 	}
 	.calendar_container {
