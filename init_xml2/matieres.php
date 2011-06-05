@@ -193,8 +193,14 @@
 				$flag=0;
 				$chaine_tables="";
 				while (($j < count($liste_tables_del)) and ($flag==0)) {
-					if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
-						$flag=1;
+					//if (mysql_result(mysql_query("SELECT count(*) FROM $liste_tables_del[$j]"),0)!=0) {
+					$sql="SELECT 1=1 FROM $liste_tables_del[$j];";
+					//echo "$sql<br />";
+					$test_del=mysql_query($sql);
+					if(mysql_num_rows($test_del)>0) {
+						if (mysql_result($test_del,0)!=0) {
+							$flag=1;
+						}
 					}
 					$j++;
 				}
