@@ -109,7 +109,19 @@ if($valeur=='travail') {
 	$alt=$alt*(-1);
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
-	echo "<td style='text-align:left;'><textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
+	echo "<td style='text-align:left;'>\n";
+
+	echo "<div style='float:right;'>";
+	if(isset($id_sanction)) {
+		echo lien_envoi_mail_rappel($id_sanction, 0);
+	}
+	elseif(isset($id_incident)) {
+		echo lien_envoi_mail_rappel($id_sanction, 0, $id_incident);
+	}
+	//echo envoi_mail_rappel_js();
+	echo "</div>\n";
+
+	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
 
 	//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
 	//echo "<span style='color: red;'>Pouvoir aussi choisir un des fichiers joints lors de la déclaration de l'incident.</span><br />\n";
@@ -251,6 +263,17 @@ elseif($valeur=='retenue') {
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
+
+	echo "<div style='float:right;'>";
+	if(isset($id_sanction)) {
+		echo lien_envoi_mail_rappel($id_sanction, 0);
+	}
+	elseif(isset($id_incident)) {
+		echo lien_envoi_mail_rappel($id_sanction, 0, $id_incident);
+	}
+	//echo envoi_mail_rappel_js();
+	echo "</div>\n";
+
 	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
 
 	//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";
@@ -428,6 +451,17 @@ elseif($valeur=='exclusion') {
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
+
+	echo "<div style='float:right;'>";
+	if(isset($id_sanction)) {
+		echo lien_envoi_mail_rappel($id_sanction, 0);
+	}
+	elseif(isset($id_incident)) {
+		echo lien_envoi_mail_rappel($id_sanction, 0, $id_incident);
+	}
+	//echo envoi_mail_rappel_js();
+	echo "</div>\n";
+
 	echo "<textarea name='no_anti_inject_travail' cols='30' onchange='changement();'>$travail</textarea>\n";
 
 	//echo "<span style='color: red;'>Mettre un champ d'ajout de fichier.</span><br />\n";

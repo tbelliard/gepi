@@ -1249,7 +1249,7 @@ elseif($mode=='ajout') {
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 	//echo "<input type='hidden' name='step' value='$step' />\n";
 
-	echo add_token_field();
+	echo add_token_field(true);
 
 	echo "<p class='bold'>Ajout d'une sanction pour ".p_nom($ele_login);
 	echo infobulle_photo($ele_login);
@@ -1341,6 +1341,8 @@ echo "<script type='text/javascript'>
 
 	//echo "<div style='clear:both;'></div>\n";
 
+	echo envoi_mail_rappel_js();
+
 	rappel_incident($id_incident);
 
 }
@@ -1369,12 +1371,13 @@ elseif($mode=='modif') {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire'>\n";
 
-	echo add_token_field();
+	echo add_token_field(true);
 
 	echo "<p class='bold'>Sanction (<em>$traitement</em>) n°$id_sanction concernant ".p_nom($ele_login);
 	echo infobulle_photo($ele_login);
 	echo "&nbsp;:</p>\n";
 	echo "<blockquote>\n";
+
 	echo "<input type='hidden' name='ele_login' id='ele_login' value='$ele_login' />\n";
 	include('saisie_sanction.inc.php');
 	echo "</blockquote>\n";
@@ -1383,6 +1386,8 @@ elseif($mode=='modif') {
 	echo "<input type='hidden' name='id_sanction' value='$id_sanction' />\n";
 	echo "<input type='hidden' name='id_incident' value='$id_incident' />\n";
 	echo "</form>\n";
+
+	echo envoi_mail_rappel_js();
 
 	rappel_incident($id_incident);
 

@@ -1451,6 +1451,8 @@ function suppr_doc_joints_incident($id_incident) {
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {
+		$temoin_erreur="n";
+
 		while($lig=mysql_fetch_object($res)) {
 			//echo "\$lig->login=$lig->login<br />";
 			$tab_doc_joints=get_documents_joints($id_incident, "mesure", $lig->login);
@@ -1470,8 +1472,12 @@ function suppr_doc_joints_incident($id_incident) {
 				}
 			}
 		}
-		rmdir("../documents/discipline/incident_".$id_incident."/mesures");
-		rmdir("../documents/discipline/incident_".$id_incident);
+
+		if($temoin_erreur=="n") {
+			if(rmdir("../documents/discipline/incident_".$id_incident."/mesures")) {
+				rmdir("../documents/discipline/incident_".$id_incident);
+			}
+		}
 	}
 
 	return $retour;
@@ -1500,4 +1506,145 @@ function suppr_doc_joints_sanction($id_sanction) {
 
 	return $retour;
 }
+
+function lien_envoi_mail_rappel($id_sanction, $num, $id_incident="") {
+	$retour="";
+
+	if(($id_sanction!="")||($id_incident!="")) {
+		$trame_message="Bonjour, \n";
+
+		if($id_sanction=="") {
+			$login_declarant=get_login_declarant_incident($id_incident);
+
+			//pour le mail
+			$mail_declarant = retourne_email($login_declarant);
+			//echo add_token_field(true);
+			$retour.="<input type='hidden' name='sujet_mail_rappel_$num' id='sujet_mail_rappel_$num' value=\"[GEPI] Discipline : Demande de travail pour une sanction\" />\n";
+			$retour.="<input type='hidden' name='destinataire_mail_rappel_$num' id='destinataire_mail_rappel_$num' value=\"".$mail_declarant."\" />\n";
+
+			$num_incident=$id_incident;
+
+			$chaine_protagonistes="";
+			$tab_protagonistes=get_protagonistes($id_incident, array('Responsable'), array('eleve'));
+			for($loop=0;$loop<count($tab_protagonistes);$loop++) {
+				if($loop>0) {$chaine_protagonistes.=", ";}
+				$chaine_protagonistes.=get_nom_prenom_eleve($tab_protagonistes[$loop],'avec_classe');
+			}
+
+			//$trame_message.="La sanction (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée.\n";
+			$trame_message.="La sanction (voir l'incident N°$num_incident) de $chaine_protagonistes est planifiée.\n";
+		}
+		else {
+			$sql="SELECT * FROM s_sanctions WHERE id_sanction='$id_sanction';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$lig_sanction=mysql_fetch_object($res);
+	
+				$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
+			
+				//pour le mail
+				$mail_declarant = retourne_email($login_declarant);
+				//echo add_token_field(true);
+				$retour.="<input type='hidden' name='sujet_mail_rappel_$num' id='sujet_mail_rappel_$num' value=\"[GEPI] Discipline : Demande de travail pour une $lig_sanction->nature\" />\n";
+				$retour.="<input type='hidden' name='destinataire_mail_rappel_$num' id='destinataire_mail_rappel_$num' value=\"".$mail_declarant."\" />\n";
+
+				$num_incident=$lig_sanction->id_incident;
+				$prenom_nom=p_nom($lig_sanction->login) ;
+				$tmp_tab=get_class_from_ele_login($lig_sanction->login);
+				if(isset($tmp_tab['liste_nbsp'])) {$classe= $tmp_tab['liste_nbsp'];}
+		
+				if($lig_sanction->nature="retenue") {
+					//$trame_message.="La $lig_sanction->nature (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée le %jour% en/à %heure% pour une durée de %duree%H \n";
+					$trame_message.="La retenue (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée le %jour% en/à %heure% pour une durée de %duree%H \n";
+		
+					$sql="SELECT * FROM s_retenues WHERE id_sanction='$lig_sanction->id_sanction';";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)>0) {
+						$lig_retenue=mysql_fetch_object($res2);
+					
+						$date=formate_date($lig_retenue->date);
+						$heure=$lig_retenue->heure_debut;
+						$duree=$lig_retenue->duree;
+		
+						$trame_message=str_replace("%jour%",$date,$trame_message);
+						$trame_message=str_replace("%heure%",$heure,$trame_message);
+						$trame_message=str_replace("%duree%",$duree,$trame_message);
+					}
+				}
+				elseif($lig_sanction->nature="exclusion") {
+					$trame_message.="L'exclusion (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée du %jour_debut% au %jour_fin% \n";
+		
+					$sql="SELECT * FROM s_exclusions WHERE id_sanction='$lig_sanction->id_sanction';";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)>0) {
+						$lig_exclusion=mysql_fetch_object($res2);
+					
+						$date_debut=formate_date($lig_exclusion->date_debut);
+						$date_fin=formate_date($lig_exclusion->date_fin);
+		
+						$trame_message=str_replace("%jour_debut%",$date_debut,$trame_message);
+						$trame_message=str_replace("%jour_fin%",$date_fin,$trame_message);
+					}
+				}
+				elseif($lig_sanction->nature="travail") {
+					$trame_message.="Le travail (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifié pour une date de retour au %jour_retour% à %heure_retour% \n";
+		
+					$sql="SELECT * FROM s_travail WHERE id_sanction='$lig_sanction->id_sanction';";
+					$res2=mysql_query($sql);
+					if(mysql_num_rows($res2)>0) {
+						$lig_travail=mysql_fetch_object($res2);
+					
+						$date_retour=formate_date($lig_travail->date_retour);
+						$heure_retour=formate_date($lig_travail->heure_retour);
+		
+						$trame_message=str_replace("%jour_retour%",$date_retour,$trame_message);
+						$trame_message=str_replace("%heure_retour%",$heure_retour,$trame_message);
+					}
+				}
+				else {
+					$trame_message.="La sanction '$lig_sanction->nature' (voir l'incident N°%num_incident%) de %prenom_nom% (%classe%) est planifiée.\n";
+				}
+			}
+
+			$trame_message=str_replace("%num_incident%",$num_incident,$trame_message);
+			$trame_message=str_replace("%prenom_nom%",$prenom_nom,$trame_message);
+			$trame_message=str_replace("%classe%",$classe,$trame_message);
+
+		}
+	
+		//echo "<td>\n";	
+		$ligne_nom_declarant=u_p_nom($login_declarant);
+		$retour.="$ligne_nom_declarant";
+
+		$trame_message.="Merci d'apporter le travail prévu à la vie scolaire.\n\n-- \nLa vie scolaire";
+
+		//echo $trame_message;
+		$retour.="<input type='hidden' name='message_mail_rappel_$num' id='message_mail_rappel_$num' value=\"$trame_message\"/>\n";
+
+		//on autorise l'envoi de mail que pour les statuts Admin / CPE / Scolarite
+		if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($_SESSION['statut']=='scolarite')) {
+			//if($lig_sanction->effectuee!="O") {
+			if((!isset($lig_sanction))||($lig_sanction->effectuee!="O")) {
+				$retour.="<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail_rappel_sanction($num);return false;\"><img src='../images/icons/icone_mail.png' width='25' height='25' alt='Envoyer un mail pour demander le travail au déclarant' title='Envoyer un mail pour demander le travail au déclarant' /></a></span>";
+			}
+		}
+	}
+	return $retour;
+}
+
+function envoi_mail_rappel_js() {
+	$retour="<script type='text/javascript'>
+	// <![CDATA[
+	function envoi_mail_rappel_sanction(num) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+		destinataire=document.getElementById('destinataire_mail_rappel_'+num).value;
+		sujet_mail=document.getElementById('sujet_mail_rappel_'+num).value;
+		message=document.getElementById('message_mail_rappel_'+num).value;
+		new Ajax.Updater($('mail_envoye_'+num),'../bulletin/envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
+	}
+	//]]>
+</script>\n";
+	return $retour;
+}
+
 ?>

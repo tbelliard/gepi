@@ -144,7 +144,8 @@ echo "</form>\n";
 // Formulaire de saisie du statut "effectuée" d'une retenue ou d'un travail
 echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post' name='formulaire2'>\n";
 
-echo add_token_field();
+//echo add_token_field();
+echo add_token_field(true);
 
 echo "<input type='hidden' name='jour_sanction' value='$jour_sanction' />\n";
 
@@ -250,12 +251,15 @@ if(mysql_num_rows($res_sanction)>0) {
 		}
 		*/
 		echo "</td>\n";
-		
+
+		echo "<td>\n";
+		echo lien_envoi_mail_rappel($lig_sanction->id_sanction, $num);
+		/*
 		$login_declarant=get_login_declarant_incident($lig_sanction->id_incident);
-		
+
 		//pour le mail
 		$mail_declarant = retourne_email($login_declarant);
-		echo add_token_field(true);
+		//echo add_token_field(true);
 		echo "<input type='hidden' name='sujet_$num' id='sujet_$num' value=\"[GEPI] Discipline : Demande de travail pour une retenue\" />\n";
 		echo "<input type='hidden' name='mail_$num' id='mail_$num' value=\"".$mail_declarant."\" />\n";
 
@@ -282,18 +286,20 @@ if(mysql_num_rows($res_sanction)>0) {
 		//echo $trame_message;
 		echo "<input type='hidden' name='message_$num' id='message_$num' value=\"$trame_message\"/>\n";
 
-		echo "<td>\n";	
+		//echo "<td>\n";	
 		$ligne_nom_declarant=u_p_nom($login_declarant);
 		echo "$ligne_nom_declarant";
 		
 		//on autorise l'envoi de mail que pour les statuts Admin / CPE / Scolarite
 		if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($_SESSION['statut']=='scolarite')) {
 			if($lig_sanction->effectuee!="O") {
-			   echo"<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\"><img src='../images/icons/icone_mail.png' width='25' height='25' alt='Envoyer un mail pour demander le travail au déclarant' title='Envoyer un mail pour demander le travail au déclarant' /></a></span>";
+			   echo "<span id='mail_envoye_$num'><a href='#' onclick=\"envoi_mail($num);return false;\"><img src='../images/icons/icone_mail.png' width='25' height='25' alt='Envoyer un mail pour demander le travail au déclarant' title='Envoyer un mail pour demander le travail au déclarant' /></a></span>";
 			}
 		}
-        echo "</td>\n";
-		
+		*/
+        //echo "</td>\n";
+
+		/*
 		// portion de code issue de verif_bulletin.php ligne 1110
 		echo "<script type='text/javascript'>  
 	// <![CDATA[
@@ -302,13 +308,13 @@ if(mysql_num_rows($res_sanction)>0) {
 		destinataire=document.getElementById('mail_'+num).value;
 		sujet_mail=document.getElementById('sujet_'+num).value;
 		message=document.getElementById('message_'+num).value;
-		//alert(message);
-		//new Ajax.Updater($('mail_envoye_'+num),'../bulletin/envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+message,{method: 'get'});
 		new Ajax.Updater($('mail_envoye_'+num),'../bulletin/envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
 	}
 	//]]>
 </script>\n";
-		
+		*/
+        echo "</td>\n";
+
 		echo "<td>\n";
 		echo nombre_reports($lig_sanction->id_sanction,"Néant");
         echo "</td>\n";
@@ -328,6 +334,22 @@ if(mysql_num_rows($res_sanction)>0) {
 	echo "</table>\n";
 	echo "<p align='center'><input type='submit' value=\"Valider\" /></p>\n";
 	echo "</blockquote>\n";
+
+/*
+	// portion de code issue de verif_bulletin.php ligne 1110
+	echo "<script type='text/javascript'>
+	// <![CDATA[
+	function envoi_mail(num) {
+		csrf_alea=document.getElementById('csrf_alea').value;
+		destinataire=document.getElementById('mail_'+num).value;
+		sujet_mail=document.getElementById('sujet_'+num).value;
+		message=document.getElementById('message_'+num).value;
+		new Ajax.Updater($('mail_envoye_'+num),'../bulletin/envoi_mail.php?destinataire='+destinataire+'&sujet_mail='+sujet_mail+'&message='+escape(message)+'&csrf_alea='+csrf_alea,{method: 'get'});
+	}
+	//]]>
+</script>\n";
+*/
+	echo envoi_mail_rappel_js();
 }
 
 // Exclusions
