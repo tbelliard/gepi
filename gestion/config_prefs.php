@@ -885,7 +885,7 @@ else{
 		echo "<p>\n";
 		echo "<input type='checkbox' name='aff_photo_saisie_app' id='aff_photo_saisie_app' value='y' ";
 		if($aff_photo_saisie_app=='y') {echo 'checked';}
-		echo "/><label for='aff_photo_saisie_app'> Afficher par défaut les phtos des élèves lors de la saisie des appréciations sur les bulletins.</label>\n";
+		echo "/><label for='aff_photo_saisie_app'> Afficher par défaut les photos des élèves lors de la saisie des appréciations sur les bulletins.</label>\n";
 		echo "</p>\n";
 	}
 
