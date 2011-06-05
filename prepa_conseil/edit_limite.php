@@ -451,5 +451,14 @@ if ($choix_edit != '2') {
     }
 
 }
+
+echo "<div class='noprint'>\n";
+//===========================================================
+echo "<p><em>NOTE&nbsp;:</em></p>\n";
+require("../lib/textes.inc.php");
+echo "<p style='margin-left: 3em;'>$explication_bulletin_ou_graphe_vide</p>\n";
+//===========================================================
+echo "</div>\n";
+
 require("../lib/footer.inc.php");
 ?>
