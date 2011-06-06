@@ -281,13 +281,15 @@ elseif($valeur=='retenue') {
 	echo "<tr class='lig$alt'>\n";
 	echo "<td style='font-weight:bold;vertical-align:top;text-align:left;'>Nature du travail&nbsp;: </td>\n";
 	echo "<td style='text-align:left;'>\n";
-
+	//echo "plop";
 	echo "<div style='float:right;'>";
 	if(isset($id_sanction)) {
+		//echo "\$id_sanction=$id_sanction";
 		echo lien_envoi_mail_rappel($id_sanction, 0);
 	}
 	elseif(isset($id_incident)) {
-		echo lien_envoi_mail_rappel($id_sanction, 0, $id_incident);
+		//echo "\$id_incident=$id_incident";
+		echo lien_envoi_mail_rappel("", 0, $id_incident);
 	}
 	//echo envoi_mail_rappel_js();
 	echo "</div>\n";
