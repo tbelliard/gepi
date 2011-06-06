@@ -6886,5 +6886,21 @@ function message_accueil_utilisateur($login_destinataire,$texte,$date_debut=0,$d
 	return mysql_query($r_sql);
 }
 
+function array_to_chaine($tableau) {
+	$chaine="";
+	$cpt=0;
+	foreach($tableau as $key => $value) {
+		if($cpt>0) {$chaine.=", ";}
+		$chaine.="'$value'";
+		$cpt++;
+	}
+	return $chaine;
+}
 
+function suppression_sauts_de_lignes_surnumeraires($chaine) {
+	$retour=preg_replace('/(\\\r\\\n)+/',"\r\n",$chaine);
+	$retour=preg_replace('/(\\\r)+/',"\r",$retour);
+	$retour=preg_replace('/(\\\n)+/',"\n",$retour);
+	return $retour;
+}
 ?>

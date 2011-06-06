@@ -724,13 +724,38 @@ if($etat_incident!='clos') {
 						unset($document_joint);
 						$document_joint=isset($_FILES["document_joint_".$i]) ? $_FILES["document_joint_".$i] : NULL;
 						if((isset($document_joint['tmp_name']))&&($document_joint['tmp_name']!="")) {
+							/*
+							foreach($document_joint as $key => $value) {
+								echo "\$document_joint[$key]=$value<br />";
+							}
+							// Image PNM
+							$document_joint[name]=
+							$document_joint[type]=image/x-portable-anymap
+							$document_joint[tmp_name]=/tmp/php0zquJ4
+							$document_joint[error]=0
+							$document_joint[size]=69472
+							*/
+
 							//$msg.="\$document_joint['tmp_name']=".$document_joint['tmp_name']."<br />";
 							if(!is_uploaded_file($document_joint['tmp_name'])) {
 								$msg.="L'upload du fichier a échoué.<br />\n";
 							}
 							else{
-								if(!file_exists($document_joint['tmp_name'])){
-									$msg.="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
+								if(!file_exists($document_joint['tmp_name'])) {
+									if($document_joint['name']!="") {
+										$extension_tmp=substr(strrchr($document_joint['name'],'.'),1);
+										if(!in_array($extension, $AllowedFilesExtensions)) {
+											$msg.="Vous avez proposé : ".$document_joint['name']."<br />L'extension $extension n'est pas autorisée.<br />\n";
+										}
+										else {
+											$msg.="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
+										}
+									}
+									else {
+										$msg.="Le fichier aurait été uploadé... mais ne serait pas présent/conservé.<br />\n";
+										$msg.="Il se peut que l'extension du fichier proposé ne soit pas autorisée.<br />\n";
+										$msg.="Les types autorisés sont ".array_to_chaine($AllowedFilesExtensions)."<br />";
+									}
 								}
 								else {
 									//echo "<p>Le fichier a été uploadé.</p>\n";
@@ -2396,14 +2421,6 @@ echo "<script type='text/javascript'>
 	}
 
 }
-
-/*
-}
-else {
-	echo "<p>Vous avez choisi $ele_login</p>\n";
-}
-*/
-
 echo "<p><br /></p>\n";
 
 require("../lib/footer.inc.php");
