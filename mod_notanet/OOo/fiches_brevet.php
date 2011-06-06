@@ -623,6 +623,7 @@ for($i=0;$i<count($id_classe);$i++){
 			$tab_eleves_OOo[$nb_eleve]=array();
 			$tab_eleves_OOo[$nb_eleve]['nom']=$lig1->nom;
 			$tab_eleves_OOo[$nb_eleve]['prenom']=$lig1->prenom;
+			$tab_eleves_OOo[$nb_eleve]['ine']=$lig1->no_gep;
 			$tab_eleves_OOo[$nb_eleve]['fille']="";										// on initialise les champs pour ne pas avoir d'erreurs
 			if($lig1->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
 			$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig1->naissance);
