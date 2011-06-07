@@ -804,26 +804,28 @@ function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racin
     //remarque : les variables $periode_num et id_racine auraient pus être récupérées
     //à partir de $id_conteneur, mais on évite ainsi trop de calculs !
 
-    foreach ($_current_group["eleves"][$periode_num]["list"] as $_eleve_login) {
-		if($_eleve_login!=""){
-			calcule_moyenne($_eleve_login, $id_racine, $id_conteneur);
+	if(isset($_current_group["eleves"][$periode_num])) {
+		foreach ($_current_group["eleves"][$periode_num]["list"] as $_eleve_login) {
+			if($_eleve_login!=""){
+				calcule_moyenne($_eleve_login, $id_racine, $id_conteneur);
+			}
 		}
-    }
-
-    if ($arret != 'yes') {
-        //
-        // Détermination du conteneur parent
-        $query_id_parent = mysql_query("SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
-        $id_parent = mysql_result($query_id_parent, 0, 'parent');
-        if ($id_parent != 0) {
-            $arret = 'no';
-            mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racine,$id_parent,$arret);
-        } else {
-            $arret = 'yes';
-            mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racine,$id_racine,$arret);
-        }
-
-    }
+	
+		if ($arret != 'yes') {
+			//
+			// Détermination du conteneur parent
+			$query_id_parent = mysql_query("SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
+			$id_parent = mysql_result($query_id_parent, 0, 'parent');
+			if ($id_parent != 0) {
+				$arret = 'no';
+				mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racine,$id_parent,$arret);
+			} else {
+				$arret = 'yes';
+				mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racine,$id_racine,$arret);
+			}
+	
+		}
+	}
 }
 
 
