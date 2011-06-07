@@ -800,12 +800,18 @@ function ToutDeCocher() {
 			//echo "<th>Période $j</th>\n";
 			$sql="SELECT nom_periode FROM periodes WHERE id_classe='".$tab_id_classe[$i]."' AND num_periode='".$tab_periode_num[$j]."';";
 			$res_per=mysql_query($sql);
-			$lig_per=mysql_fetch_object($res_per);
 			echo "<th>\n";
+			$lig_per=mysql_fetch_object($res_per);
 
 			echo "<input type='hidden' name='tab_periode_num[$j]' value='".$tab_periode_num[$j]."' />\n";
 
-			echo $lig_per->nom_periode;
+			// En imprimant deux classes l'une à semestres, l'autre à trimestres, on peut choisir la période 3 et provoquer des erreurs sur les semestres...
+			if(isset($lig_per->nom_periode)) {
+				echo $lig_per->nom_periode;
+			}
+			else {
+				echo "<span style='color:red'>X</span>";
+			}
 
 			echo "<br />\n";
 
@@ -1581,12 +1587,13 @@ else {
 			// Informations sur la période
 			$sql="SELECT * FROM periodes WHERE id_classe='$id_classe' AND num_periode='$periode_num';";
 			$res_per=mysql_query($sql);
-			$lig_per=mysql_fetch_object($res_per);
-			$tab_bulletin[$id_classe][$periode_num]['num_periode']=$lig_per->num_periode;
-			//$tab_bulletin[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
-			$tab_bulletin[$id_classe][$periode_num]['nom_periode']=preg_replace("/&#039;/","'",$lig_per->nom_periode);
-			$tab_bulletin[$id_classe][$periode_num]['verouiller']=$lig_per->verouiller;
-
+			if(mysql_num_rows($res_per)>0) {
+				$lig_per=mysql_fetch_object($res_per);
+				$tab_bulletin[$id_classe][$periode_num]['num_periode']=$lig_per->num_periode;
+				//$tab_bulletin[$id_classe][$periode_num]['nom_periode']=$lig_per->nom_periode;
+				$tab_bulletin[$id_classe][$periode_num]['nom_periode']=preg_replace("/&#039;/","'",$lig_per->nom_periode);
+				$tab_bulletin[$id_classe][$periode_num]['verouiller']=$lig_per->verouiller;
+			}
 
 			// Liste des élèves à éditer/afficher/imprimer (sélection):
 			// tab_ele_".$i."_".$j.
@@ -2758,7 +2765,7 @@ else {
 							unset($cn_id);
 
 							// On teste si des notes de une ou plusieurs boites du carnet de notes doivent être affichée
-							$test_cn = mysql_query("select distinct c.nom_court, c.id, nc.note from cn_cahier_notes cn, cn_conteneurs c, cn_notes_conteneurs nc
+							$sql="select distinct c.nom_court, c.id, nc.note from cn_cahier_notes cn, cn_conteneurs c, cn_notes_conteneurs nc
 							where (
 							cn.periode = '".$periode_num."' and
 							cn.id_groupe='".$current_group[$j]["id"]."' and
@@ -2768,7 +2775,9 @@ else {
 							nc.statut ='y' and
 							nc.login='".$current_eleve_login[$i]."' and
 							c.display_bulletin = 1
-							) ");
+							) ";
+							//echo "$sql<br />";
+							$test_cn = mysql_query($sql);
 							$nb_ligne_cn = mysql_num_rows($test_cn);
 							$n = 0;
 							while ($n < $nb_ligne_cn) {
