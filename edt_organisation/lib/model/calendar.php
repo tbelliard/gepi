@@ -19,6 +19,7 @@
  * along with GEPi; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
+ * updateTables
  * GenerateCalendar
  * getDayNumber
  * getCurrentWeek
@@ -39,6 +40,59 @@
  */
 include_once("./lib/model/edt_calendrier.php");
 class calendar {
+
+
+/*******************************************************************
+ *
+ *
+ *******************************************************************/	
+    public static function updateTables() {	
+	
+		// ===============================================================
+		$sql = "CREATE TABLE IF NOT EXISTS edt_calendrier_manager (
+					id INT AUTO_INCREMENT,
+					nom_calendrier TEXT,
+					PRIMARY KEY (id))";
+		$req_creation = mysql_query($sql);
+		$sql = "SELECT id FROM edt_calendrier_manager";
+		$req_calendar = mysql_query($sql);
+		$id_primary = 0;
+		if ($req_calendar) {
+			if (mysql_num_rows($req_calendar) == 0) {
+				$sql = "INSERT INTO edt_calendrier_manager SET
+					nom_calendrier = 'calendrier 1' ";
+				$req = mysql_query($sql);
+				if ($req) {
+					$sql = "SELECT id FROM edt_calendrier_manager";
+					$req = mysql_query($sql);
+					if ($req) {
+						$rep = mysql_fetch_array($req);
+						$id_primary = $rep['id'];
+					}
+				
+				}
+			}
+		}
+
+		
+
+		// ===============================================================
+		$sql = "SHOW COLUMNS FROM edt_calendrier ";
+        $req_colonne = mysql_query($sql);
+		$nomsChamps = array();
+		if ($req_colonne) {
+			while ($rep = mysql_fetch_array($req_colonne)) {
+				$nomsChamps[] = $rep[0];
+			}
+			if (!in_array("id_calendar",$nomsChamps)) {
+				$sql = "ALTER TABLE edt_calendrier ADD id_calendar INT";
+				$add_column = mysql_query($sql);
+				$sql = "UPDATE edt_calendrier SET id_calendar = '".$id_primary."' ";
+				$req = mysql_query($sql);
+			}
+		}
+		
+	}
 
 /*******************************************************************
  *

@@ -26,6 +26,10 @@ class indexAction extends Action {
 
     public function launch(Request $request, Response $response)
     {
+		if ($_SESSION['statut'] == "administrateur") {
+			calendar::updateTables();
+			echo "yop";
+		}
 		$response->addVar('NomPeriode', calendar::getPeriodName(time()));
 		$response->addVar('TypeSemaineCourante', calendar::getTypeCurrentWeek());
 		$response->addVar('SemaineCourante', calendar::getCurrentWeek());
