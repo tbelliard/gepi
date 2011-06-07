@@ -80,7 +80,8 @@ if (isset($_POST['is_posted'])) {
 
 		//if((isset($fav[$i]))||(isset($b2i[$i]))||(isset($b2i[$i]))) {
 		if(isset($favorable[$i])) {
-			if(($favorable[$i]=='O')||($favorable[$i]=='N')) {
+			//if(($favorable[$i]=='O')||($favorable[$i]=='N')) {
+			if(($favorable[$i]=='O')||($favorable[$i]=='N')||($favorable[$i]=='')) {
 				$sql="SELECT 1=1 FROM notanet_avis WHERE login='".$ele_login[$i]."';";
 				$res_ele=mysql_query($sql);
 				if(mysql_num_rows($res_ele)==0) {
@@ -253,6 +254,7 @@ else {
 			echo "<tr>\n";
 			echo "<th rowspan='3' colspan='2'>Elève</th>\n";
 			echo "<th colspan='2'>Avis favorable</th>\n";
+			echo "<th rowspan='2'>Avis mitigé<br />ou<br />non saisi</th>\n";
 			//echo "<th rowspan='3'>Motivation d'un avis défavorable</th>\n";
 			echo "<th rowspan='3'>Motivation de l'avis</th>\n";
 			echo "</tr>\n";
@@ -277,6 +279,10 @@ else {
 
 			echo "<th>";
 			echo "<a href=\"javascript:CocheColonne('fav_N_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('fav_N_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
+			echo "</th>\n";
+
+			echo "<th>";
+			echo "<a href=\"javascript:CocheColonne('fav_X_',$i)\"><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a> / <a href=\"javascript:DecocheColonne('fav_X_',$i)\"><img src='../images/disabled.png' width='15' height='15' alt='Tout décocher' /></a>";
 			echo "</th>\n";
 
 			echo "</tr>\n";
@@ -353,6 +359,10 @@ else {
 
 				echo "<td><input type='radio' name='favorable[$cpt]' id='fav_N_".$cpt."_".$i."' value='N' onchange='changement();' ";
 				if($def_fav=='N') {echo "checked ";}
+				echo "/></td>\n";
+
+				echo "<td><input type='radio' name='favorable[$cpt]' id='fav_X_".$cpt."_".$i."' value='' onchange='changement();' ";
+				if($def_fav=='') {echo "checked ";}
 				echo "/></td>\n";
 
 				echo "<td>\n";
