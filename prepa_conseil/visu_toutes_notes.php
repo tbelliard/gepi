@@ -1749,6 +1749,13 @@ if ($ligne_supl >= 1) {
 		$ligne1[$nb_col].="</a>";
 		$ligne1_csv[$nb_col] = "Moyenne générale";
 		$j = '0';
+
+
+
+		for($y=0;$y<$nb_lignes_tableau+$ligne_supl;$y++) {
+			my_echo("\$col[1][$y]=".$col[1][$y]."<br />");
+		}
+
 		while($j < $nb_lignes_tableau) {
 
 			//echo "\$total_coef_eleve[$j+$ligne_supl]=".$total_coef_eleve[$j+$ligne_supl]."<br />";
@@ -1758,6 +1765,7 @@ if ($ligne_supl >= 1) {
 
 				$col[$nb_col][$j+$ligne_supl] = number_format($total_points_eleve[$j+$ligne_supl]/$total_coef_eleve[$j+$ligne_supl],1, ',', ' ');
 
+				my_echo("\$col[$nb_col][$j+$ligne_supl]=".$col[$nb_col][$j+$ligne_supl]."<br />");
 
 				if($current_eleve_login[$j]==$ele_login_debug) {
 					$lignes_debug.="<b>Moyenne de l'élève=</b>".$total_points_eleve[$j+$ligne_supl]."/".$total_coef_eleve[$j+$ligne_supl]."=".$col[$nb_col][$j+$ligne_supl]."<br />";
@@ -1795,6 +1803,14 @@ if ($ligne_supl >= 1) {
 		//echo "\$moy_classe_min=$moy_classe_min<br />";
 
 		$col[$nb_col][0] = "-";
+
+		if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
+			$col[$nb_col][1] = "-";
+		}
+		my_echo("\$col[$nb_col][0]=".$col[$nb_col][0]."<br />");
+		my_echo("\$col[$nb_col][1]=".$col[$nb_col][1]."<br />");
+
+
 		if ($moy_classe_point == 0) {
 			$col[$nb_col][$nb_lignes_tableau+$ligne_supl] = "-";
 			$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = "-";
@@ -1805,14 +1821,35 @@ if ($ligne_supl >= 1) {
 			$col[$nb_col][$nb_lignes_tableau+1+$ligne_supl] = number_format($moy_classe_min,1, ',', ' ');
 			$col[$nb_col][$nb_lignes_tableau+2+$ligne_supl] = number_format($moy_classe_max,1, ',', ' ');
 		}
-	
+
+
+
+
+
+		$corr=0;
+		// Ajout d'une ligne de décalage si il y a une ligne de coeff
+		if($col[1][0]=="Coefficient") {
+			//$b_inf=1;
+			//$b_sup=$nb_lignes_tableau+1;
+			//$corr=1;
+			$corr++;
+		}
+		// Ajout d'une ligne de décalage si il y a une ligne mode_moy
+		//if($temoin_note_sup10=='y') {
+		if(($temoin_note_sup10=='y')||($temoin_note_bonus=='y')) {
+			$corr++;
+		}
+
+
+
+
 		// Colonne rang (en fin de tableau (dernière colonne) dans le cas Année entière)
 		if (($aff_rang) and ($referent!="une_periode")) {
 			// Calculer le rang dans le cas année entière
 			//$nb_col++;
 
 			// Préparatifs
-	
+
 			// Initialisation d'un tableau pour les rangs et affectation des valeurs réindexées dans un tableau temporaire
 			my_echo("<table>");
 			my_echo("<tr>");
@@ -1825,14 +1862,17 @@ if ($ligne_supl >= 1) {
 				$rg[$k]=$k;
 	
 				if ($total_coef_eleve[$k+$ligne_supl] > 0) {
-					$tmp_tab[$k]=preg_replace("/,/",".",$col[$nb_col][$k+1]);
+					//$tmp_tab[$k]=preg_replace("/,/",".",$col[$nb_col][$k+1]);
+					$tmp_tab[$k]=preg_replace("/,/",".",$col[$nb_col][$k+$corr]);
 					my_echo("<tr>");
-					my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k]</td>");
+					//my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k]</td>");
+					my_echo("<td>".($k+$corr)."</td><td>".$col[1][$k+$corr]."</td><td>".$col[$nb_col][$k+$corr]."</td><td>$tmp_tab[$k]</td>");
 					my_echo("</tr>");
 				}
 				else {
 					my_echo("<tr>");
-					my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k] --</td>");
+					//my_echo("<td>".($k+1)."</td><td>".$col[1][$k+1]."</td><td>".$col[$nb_col][$k+1]."</td><td>$tmp_tab[$k] --</td>");
+					my_echo("<td>".($k+$corr)."</td><td>".$col[1][$k+$corr]."</td><td>".$col[$nb_col][$k+$corr]."</td><td>$tmp_tab[$k] --</td>");
 					my_echo("</tr>");
 					$tmp_tab[$k]="?";
 				}
@@ -1840,6 +1880,7 @@ if ($ligne_supl >= 1) {
 				$k++;
 			}
 				my_echo("</table>");
+			//my_echo("PLOP");
 			my_echo("</td>");
 	
 			array_multisort ($tmp_tab, SORT_DESC, SORT_NUMERIC, $rg, SORT_ASC, SORT_NUMERIC);
@@ -1849,7 +1890,8 @@ if ($ligne_supl >= 1) {
 			$k=0;
 			while($k < $nb_lignes_tableau) {
 				if(isset($rg[$k])) {
-					my_echo("<tr><td>\$rg[$k]+1=".($rg[$k]+1)."</td><td>".$col[1][$rg[$k]+1]."</td></tr>");
+					//my_echo("<tr><td>\$rg[$k]+1=".($rg[$k]+1)."</td><td>".$col[1][$rg[$k]+1]."</td></tr>");
+					my_echo("<tr><td>\$rg[$k]+$corr=".($rg[$k]+$corr)."</td><td>".$col[1][$rg[$k]+$corr]."</td></tr>");
 	
 				}
 				$k++;
@@ -1868,16 +1910,27 @@ if ($ligne_supl >= 1) {
 				$col[$nb_col][$j]="-";
 				$j++;
 			}
-	
+
 			// Affectation des rangs dans la colonne ajoutée
 			$k=0;
 			while($k < $nb_lignes_tableau) {
 				if(isset($rg[$k])) {
-					$col[$nb_col][$rg[$k]+1]=$k+1;
+					//$col[$nb_col][$rg[$k]+1]=$k+1;
+					//$col[$nb_col][$rg[$k]+1]=$k+$corr;
+					$col[$nb_col][$rg[$k]+$corr]=$k+1;
+					//$col[$nb_col][$rg[$k]+$corr]=$k+1;
 				}
 				$k++;
 			}
-	
+
+			/*
+			echo "\$ligne_supl=$ligne_supl<br />";
+			echo "\$col[$nb_col]<br />";
+			echo "<pre>";
+			print_r($col[$nb_col]);
+			echo "</pre>";
+			*/
+
 			// Remplissage de la ligne de titre
 			//$ligne1[$nb_col] = "<img src=\"../lib/create_im_mat.php?texte=".rawurlencode("Rang de l'élève")."&amp;width=22\" width=\"22\" border=\"0\" alt=\"Rang de l'élève\" />";
 	
