@@ -910,7 +910,8 @@ for($i=0;$i<count($id_classe);$i++){
 			// Initialisation
 			$tab_indices_socle=array('116', '116A', '116B', '116C', '116D', '116E', '116F', '116G');
 			for($loop=0;$loop<count($tab_indices_socle);$loop++) {
-				$tab_eleves_OOo[$nb_eleve]['sc']["$loop"]="";
+				$tab_eleves_OOo[$nb_eleve]['sc'][$tab_indices_socle[$loop]]="";
+				//echo "\$tab_eleves_OOo[$nb_eleve]['sc']['$loop']=".$tab_eleves_OOo[$nb_eleve]['sc']["$loop"]."<br />\n";
 			}
 			$tab_eleves_OOo[$nb_eleve]['sc']['nbItemValide']=0;
 
@@ -920,6 +921,7 @@ for($i=0;$i<count($id_classe);$i++){
 				$ligne=0;
 				while($lig_socle=mysql_fetch_object($res_socle)) {
 					$tab_eleves_OOo[$nb_eleve]['sc']["$lig_socle->champ"]=$lig_socle->valeur;
+					//echo "\$tab_eleves_OOo[$nb_eleve]['sc']['$lig_socle->champ']=".$tab_eleves_OOo[$nb_eleve]['sc']["$lig_socle->champ"]."<br />\n";
 					if (($lig_socle->valeur =="MS")&&($ligne!=0)){
 						$tab_eleves_OOo[$nb_eleve]['sc']['nbItemValide']++;
 					}
@@ -934,7 +936,11 @@ for($i=0;$i<count($id_classe);$i++){
 
 	// FIN DE LA BOUCLE SUR LA LISTE DES CLASSES
 }
-
+/*
+echo "<pre>";
+print_r($tab_eleves_OOo);
+echo "</pre>";
+*/
 //================================
 // === Fin construction du tableau fiche brevet===
 //================================
