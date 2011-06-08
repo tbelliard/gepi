@@ -416,6 +416,23 @@ fieldset#login_box div#header {
 .degrade1 {
 	background-color:#$degrade_bas;
 }
+
+#menu_barre {
+	background-color: #$degrade_bas;
+}
+
+/* ul ul pour ne masquer par défaut que les sous-menus */
+#menu_barre ul ul {
+	background-color: #$degrade_bas;
+}
+
+#menu_barre li:hover {
+	background-color: #$degrade_haut;
+}
+#menu_barre li.sfhover {
+	background-color: #$degrade_haut;
+}
+
 ");
 
 /*

@@ -1090,3 +1090,131 @@ input.validation-passed, textarea.validation-passed {
 	color : #FFF;
 	font-weight: bold;
 }
+
+/*================================================*/
+
+#menu_barre {
+	font-weight: bold;
+	font-size: 90%;
+	/*font-family: trebuchet ms,arial,tahoma,verdana,sans-serif;*/
+	z-index: 1000;
+	color: white;
+	background-color: #4a4a59;
+	margin-top: -3px;
+}
+
+/* ul ul pour ne masquer par défaut que les sous-menus */
+#menu_barre ul ul {
+	border-right: #b0b0b0 1px solid; 
+	padding-right: 0px; 
+	border-top: #b0b0b0 1px solid; 
+	display: none; 
+	padding-left: 0px; 
+	left: 0px; 
+	padding-bottom: 0px; 
+	/*margin: 0px; */
+	margin-left: 0px; 
+	margin-right: 0px; 
+	margin-bottom: 0px;
+	margin-top: -3px;
+	border-left: #b0b0b0 1px solid; 
+	padding-top: 0px; 
+	border-bottom: #b0b0b0 1px solid; 
+	position: absolute;
+	top: -1px;
+
+	color: white;
+	background-color: #4a4a59;
+}
+
+
+#menu_barre ul a, #menu_barre ul a:hover, #menu_barre ul a:visited {
+	color: white;
+}
+
+/*
+#menu_barre ul a:hover {
+	color: #4a4a59;
+}
+*/
+
+#menu_barre li {
+	padding-right: 2px; 
+	padding-left: 2px;
+	padding-bottom: 2px;
+	padding-top: 2px; 
+	margin: 0px; 
+	width: 160px; 
+	list-style-type: none; 
+	position: relative; 
+	/*background-color: #e0e0e0;*/
+}
+
+/* Pour éviter de déborder hors du DIV sur les LI horizontaux (niveau1) */
+#menu_barre .niveau1 li {
+	padding-bottom: 0px;
+}
+
+#menu_barre li:hover {
+	background-color: black;
+	/*color: #4a4a59;*/
+}
+/*
+	#menu_barre li:hover a {
+		color: #4a4a59;
+	}
+*/
+#menu_barre li.sfhover {
+	background-color: black;
+	/*color: #4a4a59;*/
+}
+#menu_barre li a {
+	text-decoration: none
+}
+
+#menu_barre ul.niveau1 {
+	display: inline;
+}
+
+#menu_barre li:hover ul.niveau2 {
+	display: block;
+	left: 0px;
+	top: 22px;
+}
+#menu_barre li li:hover ul.niveau3 {
+	display: block;
+	left: 164px;
+	top: 0px;
+}
+#menu_barre .niveau3 li:hover ul.niveau4 {
+	display: block;
+	left: 164px;
+	top: 0px;
+}
+#menu_barre li.sfhover ul.niveau2 {
+	display: block;
+	left: 0px;
+	top: 22px;
+}
+#menu_barre li li.sfhover ul.niveau3 {
+	display: block;
+	left: 164px;
+	top: 0px;
+}
+#menu_barre li li.sfhover ul.niveau4 {
+	display: block;
+	left: 164px;
+	top: 0px;
+}
+#menu_barre li.plus {
+	background-image: url("./images/icons/forward.png");
+	background-position: right 50%;
+	border-bottom: #b0b0b0 1px solid; 
+	background-repeat: no-repeat;
+}
+
+#menu_barre .li_inline {
+	display: inline;
+}
+
+/*================================================*/

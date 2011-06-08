@@ -1751,15 +1751,17 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 
 				echo "<td class='small' ";
 				//echo $bg_color;
-				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-					if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
-						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
-							if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
-								echo " style='";
-								if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
-								if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
-								echo "'";
-								break;
+				if(!preg_match("/Rang de l/",$ligne1[$j])) {
+					if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
+						if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
+							for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
+								if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
+									echo " style='";
+									if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
+									if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
+									echo "'";
+									break;
+								}
 							}
 						}
 					}
@@ -1769,15 +1771,17 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
             } else {
 				echo "<td align=\"center\" class='small' ";
 				//echo $bg_color;
-				if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
-					if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
-						for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
-							if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
-								echo " style='";
-								if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
-								if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
-								echo "'";
-								break;
+				if(!preg_match("/Rang de l/",$ligne1[$j])) {
+					if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
+						if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
+							for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
+								if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
+									echo " style='";
+									if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
+									if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
+									echo "'";
+									break;
+								}
 							}
 						}
 					}
@@ -6903,6 +6907,41 @@ function suppression_sauts_de_lignes_surnumeraires($chaine) {
 	$retour=preg_replace('/(\\\r\\\n)+/',"\r\n",$chaine);
 	$retour=preg_replace('/(\\\r)+/',"\r",$retour);
 	$retour=preg_replace('/(\\\n)+/',"\n",$retour);
+	return $retour;
+}
+
+function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
+	$retour="";
+
+	if($type=="notes") {
+		$sql="SELECT 1=1 FROM matieres_notes WHERE id_groupe='".$id_groupe."' AND periode='".$periode_num."';";
+	}
+	else {
+		$sql="SELECT 1=1 FROM matieres_appreciations WHERE id_groupe='".$id_groupe."' AND periode='".$periode_num."';";
+	}
+	$test=mysql_query($sql);
+	$nb_saisies_bulletin=mysql_num_rows($test);
+
+	$tab_champs=array('eleves');
+	$current_group=get_group($id_groupe, $tab_champs);
+	$effectif_groupe=count($current_group["eleves"][$periode_num]["users"]);
+
+	if($mode=="couleur") {
+		if($nb_saisies_bulletin==$effectif_groupe){
+			$retour="<span style='font-size: x-small;' title='Saisies complètes'>";
+			$retour.="($nb_saisies_bulletin/$effectif_groupe)";
+			$retour.="</span>";
+		}
+		else {
+			$retour="<span style='font-size: x-small; background-color: orangered;' title='Saisies incomplètes ou non encore effectuées'>";
+			$retour.="($nb_saisies_bulletin/$effectif_groupe)";
+			$retour.="</span>";
+		}
+	}
+	else {
+		$retour="($nb_saisies_bulletin/$effectif_groupe)";
+	}
+
 	return $retour;
 }
 ?>
