@@ -6789,15 +6789,35 @@ function check_mail($email,$mode='simple') {
 // Fonction destinée à prendre une date mysql aaaa-mm-jj HH:MM:SS et à retourner une date au format jj/mm/aaaa
 function get_date_slash_from_mysql_date($mysql_date) {
 	$tmp_tab=explode(" ",$mysql_date);
-	$tmp_tab2=explode("-",$tmp_tab[0]);
-	return $tmp_tab2[2]."/".$tmp_tab2[1]."/".$tmp_tab2[0];
+	if(isset($tmp_tab[0])) {
+		$tmp_tab2=explode("-",$tmp_tab[0]);
+		if(isset($tmp_tab2[2])) {
+			return $tmp_tab2[2]."/".$tmp_tab2[1]."/".$tmp_tab2[0];
+		}
+		else {
+			return $tmp_tab[0]." date mal formatée?";
+		}
+	}
+	else {
+		return "$mysql_date mal formatée?";
+	}
 }
 
 // Fonction destinée à prendre une date mysql aaaa-mm-jj HH:MM:SS et à retourner une heure au format HH:MM
 function get_heure_2pt_minute_from_mysql_date($mysql_date) {
 	$tmp_tab=explode(" ",$mysql_date);
-	$tmp_tab2=explode(":",$tmp_tab[1]);
-	return $tmp_tab2[0].":".$tmp_tab2[1];
+	if(isset($tmp_tab[1])) {
+		$tmp_tab2=explode(":",$tmp_tab[1]);
+		if(isset($tmp_tab2[1])) {
+			return $tmp_tab2[0].":".$tmp_tab2[1];
+		}
+		else {
+			return $tmp_tab[1]." heure mal formatée?";
+		}
+	}
+	else {
+		return "$mysql_date mal formatée?";
+	}
 }
 
 function get_date_heure_from_mysql_date($mysql_date) {
