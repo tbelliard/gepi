@@ -880,6 +880,8 @@ div.info_abs {
 
 	color: white;
 	background-color: #4a4a59;
+
+	z-index:1000;
 }
 
 

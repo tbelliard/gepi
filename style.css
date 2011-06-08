@@ -1125,6 +1125,8 @@ input.validation-passed, textarea.validation-passed {
 
 	color: white;
 	background-color: #4a4a59;
+
+	z-index:1000;
 }
 
 
