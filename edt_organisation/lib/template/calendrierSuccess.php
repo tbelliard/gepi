@@ -164,7 +164,7 @@
 				if (info)
 				{
 					var i = 0;
-					for (i = $('num_jour_initial').value;i <= $('num_jour_final').value;i++) {
+					for (i = parseInt($('num_jour_initial').value,10);i < parseInt($('num_jour_final').value,10);i++) {
 						$('div'+i).className = "calendar_cell";
 					}
 					repaint_cells();
