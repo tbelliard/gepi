@@ -74,25 +74,25 @@ echo '<!--[if lt IE 7]>
 	// module absence
 	if (getSettingValue("active_module_absence_professeur")=='y') {
 	    if (getSettingValue("active_module_absence")=='2') {
-		$barre_absence = '<li class="li_inline"><a href="'.$gepiPath.'/mod_abs2/index.php'.$groupe_abs.'">Absences</a></li>';
+		$barre_absence = '<li class="li_inline"><a href="'.$gepiPath.'/mod_abs2/index.php'.$groupe_abs.'"'.insert_confirm_abandon().'>Absences</a></li>';
 	    } else {
-		$barre_absence = '<li class="li_inline"><a href="'.$gepiPath.'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs.'">Absences</a></li>';
+		$barre_absence = '<li class="li_inline"><a href="'.$gepiPath.'/mod_absences/professeurs/prof_ajout_abs.php'.$groupe_abs.'"'.insert_confirm_abandon().'>Absences</a></li>';
 	    }
 	}else{$barre_absence = '';}
 
 	// Module Cahier de textes
 	if (getSettingValue("active_cahiers_texte") == 'y') {
 		$barre_textes = '<li class="li_inline">
-	<a href="'.$gepiPath.'/cahier_texte/index.php'.$groupe_text.'">C. de Textes</a>'."\n";
+	<a href="'.$gepiPath.'/cahier_texte/index.php'.$groupe_text.'"'.insert_confirm_abandon().'>C. de Textes</a>'."\n";
 		$barre_textes .= '	<ul class="niveau2">'."\n";
 			foreach($mes_groupes as $tmp_group) {
-				$barre_textes .= '		<li><a href="'.$gepiPath.'/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir=">'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a></li>'."\n";
+				$barre_textes .= '		<li><a href="'.$gepiPath.'/cahier_texte/index.php?id_groupe='.$tmp_group['id'].'&amp;year='.strftime("%Y").'&amp;month='.strftime("%m").'&amp;day='.strftime("%d").'&amp;edit_devoir="'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a></li>'."\n";
 			}
 			if(getSettingValue('GepiCahierTexteVersion')==2) {
-				$barre_textes.= '		<li><a href="'.$gepiPath.'/cahier_texte_2/see_all.php">Consultation des cahiers de textes</a></li>'."\n";
+				$barre_textes.= '		<li><a href="'.$gepiPath.'/cahier_texte_2/see_all.php"'.insert_confirm_abandon().'>Consultation des cahiers de textes</a></li>'."\n";
 			}
 			else {
-				$barre_textes.= '		<li><a href="'.$gepiPath.'/cahier_texte/see_all.php">Consultation des cahiers de textes</a></li>'."\n";
+				$barre_textes.= '		<li><a href="'.$gepiPath.'/cahier_texte/see_all.php"'.insert_confirm_abandon().'>Consultation des cahiers de textes</a></li>'."\n";
 			}
 		$barre_textes .= '	</ul>'."\n";
 		$barre_textes .= '</li>'."\n";
@@ -101,15 +101,15 @@ echo '<!--[if lt IE 7]>
 	// Module carnet de notes
 	if(getSettingValue("active_carnets_notes") == 'y'){
 		// Cahiers de notes
-		$barre_note = '<li class="li_inline"><a href="'.$gepiPath.'/cahier_notes/index.php">Notes</a>'."\n";
+		$barre_note = '<li class="li_inline"><a href="'.$gepiPath.'/cahier_notes/index.php"'.insert_confirm_abandon().'>Notes</a>'."\n";
 			$barre_note .= '	<ul class="niveau2">'."\n";
 				foreach($mes_groupes as $tmp_group) {
 					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'">'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
+					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
 		
 					$barre_note.= '			<ul class="niveau3">'."\n";
 					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
-						$barre_note.= '				<li><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop.'">'.$tmp_group["periodes"][$loop]["nom_periode"];
+						$barre_note.= '				<li><a href="'.$gepiPath.'/cahier_notes/index.php?id_groupe='.$tmp_group['id'].'&amp;periode_num='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
 						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
 							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
 						}
@@ -126,17 +126,17 @@ echo '<!--[if lt IE 7]>
 				if((getSettingValue("GepiAccesReleveProf") == "yes") OR
 				(getSettingValue("GepiAccesReleveProfTousEleves") == "yes") OR
 				(getSettingValue("GepiAccesReleveProfToutesClasses") == "yes")) {
-					$barre_note.= '		<li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_bis.php">Relevés de notes</a></li>'."\n";
+					$barre_note.= '		<li><a href="'.$gepiPath.'/cahier_notes/visu_releve_notes_bis.php"'.insert_confirm_abandon().'>Relevés de notes</a></li>'."\n";
 				}
 
 				if((getSettingValue("GepiAccesMoyennesProf") == "yes") OR
 				(getSettingValue("GepiAccesMoyennesProfTousEleves") == "yes") OR
 				(getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes")) {
 
-					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/cahier_notes/index2.php">Moyennes des carnets de notes</a>'."\n";
+					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/cahier_notes/index2.php"'.insert_confirm_abandon().'>Moyennes des carnets de notes</a>'."\n";
 						$barre_note .= '		<ul class="niveau3">'."\n";
 						foreach($tmp_mes_classes as $key => $value) {
-							$barre_note.= '		<li><a href="'.$gepiPath.'/cahier_notes/index2.php?id_classe='.$key.'">'.$value.'</a>'."\n";
+							$barre_note.= '		<li><a href="'.$gepiPath.'/cahier_notes/index2.php?id_classe='.$key.'"'.insert_confirm_abandon().'>'.$value.'</a>'."\n";
 						}
 						$barre_note.= '			</ul>'."\n";
 					$barre_note.= '</li>'."\n";
@@ -146,18 +146,18 @@ echo '<!--[if lt IE 7]>
 		$barre_note.= '</li>'."\n";
 
 		// Bulletins
-		$barre_note.='<li class="li_inline"><a href="'.$gepiPath.'/saisie/index.php">Bulletins</a>'."\n";
+		$barre_note.='<li class="li_inline"><a href="'.$gepiPath.'/saisie/index.php"'.insert_confirm_abandon().'>Bulletins</a>'."\n";
 		$barre_note .= '	<ul class="niveau2">'."\n";
-			$barre_note .= '	<li class="plus"><a href="'.$gepiPath.'/saisie/index.php">Notes</a>'."\n";
+			$barre_note .= '	<li class="plus"><a href="'.$gepiPath.'/saisie/index.php"'.insert_confirm_abandon().'>Notes</a>'."\n";
 				$barre_note .= '		<ul class="niveau3">'."\n";
 	
 				foreach($mes_groupes as $tmp_group) {
 					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'">'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
+					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
 		
 					$barre_note.= '			<ul class="niveau4">'."\n";
 					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
-						$barre_note.= '				<li><a href="'.$gepiPath.'/saisie/saisie_notes.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop.'">'.$tmp_group["periodes"][$loop]["nom_periode"];
+						$barre_note.= '				<li><a href="'.$gepiPath.'/saisie/saisie_notes.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
 						$barre_note.=' '.nb_saisies_bulletin("notes", $tmp_group["id"], $loop, "couleur");
 						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
 							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
@@ -175,16 +175,16 @@ echo '<!--[if lt IE 7]>
 			$barre_note.= '	</li>'."\n";
 
 
-			$barre_note .= '	<li class="plus"><a href="'.$gepiPath.'/saisie/index.php">Appréciations</a>'."\n";
+			$barre_note .= '	<li class="plus"><a href="'.$gepiPath.'/saisie/index.php"'.insert_confirm_abandon().'>Appréciations</a>'."\n";
 				$barre_note .= '		<ul class="niveau3">'."\n";
 	
 				foreach($mes_groupes as $tmp_group) {
 					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'">'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
+					$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/saisie/index.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
 		
 					$barre_note.= '			<ul class="niveau4">'."\n";
 					for($loop=1;$loop<=count($tmp_group["periodes"]);$loop++) {
-						$barre_note.= '				<li><a href="'.$gepiPath.'/saisie/saisie_appreciations.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop.'">'.$tmp_group["periodes"][$loop]["nom_periode"];
+						$barre_note.= '				<li><a href="'.$gepiPath.'/saisie/saisie_appreciations.php?id_groupe='.$tmp_group['id'].'&amp;periode_cn='.$loop.'"'.insert_confirm_abandon().'>'.$tmp_group["periodes"][$loop]["nom_periode"];
 						$barre_note.=' '.nb_saisies_bulletin("appreciations", $tmp_group["id"], $loop, "couleur");
 						if($tmp_group["classe"]["ver_periode"]["all"][$loop]>=2) {
 							$barre_note.=' <img src="'.$gepiPath.'/images/edit16.png" width="16" height="16" alt="Période non verrouillée: Saisie possible" title="Période non verrouillée: Saisie possible" />';
@@ -202,11 +202,11 @@ echo '<!--[if lt IE 7]>
 			$barre_note.= '	</li>'."\n";
 
 
-			$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index1.php">Mes moyennes et appréciations</a>';
+			$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index1.php"'.insert_confirm_abandon().'>Mes moyennes et appréciations</a>';
 				$barre_note .= '		<ul class="niveau3">'."\n";
 				foreach($mes_groupes as $tmp_group) {
 					//https://127.0.0.1/steph/gepi-trunk/cahier_notes/index.php?id_groupe=1498&periode_num=3
-					$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index1.php?id_groupe='.$tmp_group['id'].'">'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
+					$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index1.php?id_groupe='.$tmp_group['id'].'"'.insert_confirm_abandon().'>'.$tmp_group['name'].' (<i>'.$tmp_group['classlist_string'].'</i>)'.'</a>'."\n";
 				}
 				$barre_note.= '			</ul>'."\n";
 			$barre_note.= '		</li>'."\n";
@@ -215,10 +215,10 @@ echo '<!--[if lt IE 7]>
 			if((getSettingValue("GepiAccesMoyennesProf") == "yes") OR
 			(getSettingValue("GepiAccesMoyennesProfTousEleves") == "yes") OR
 			(getSettingValue("GepiAccesMoyennesProfToutesClasses") == "yes")) {
-				$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index2.php">Visualiser toutes les moyennes d\'une classe</a>'."\n";
+				$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index2.php"'.insert_confirm_abandon().'>Visualiser toutes les moyennes d\'une classe</a>'."\n";
 					$barre_note .= '		<ul class="niveau3">'."\n";
 					foreach($tmp_mes_classes as $key => $value) {
-						$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index2.php?id_classe='.$key.'">'.$value.'</a>'."\n";
+						$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index2.php?id_classe='.$key.'"'.insert_confirm_abandon().'>'.$value.'</a>'."\n";
 					}
 					$barre_note.= '			</ul>'."\n";
 				$barre_note.= '		</li>'."\n";
@@ -242,20 +242,20 @@ echo '<!--[if lt IE 7]>
 			}
 
 			if($affiche_li_bull_simp=="y") {
-				$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index3.php">Bulletins simplifiés</a>'."\n";
+				$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/prepa_conseil/index3.php"'.insert_confirm_abandon().'>Bulletins simplifiés</a>'."\n";
 					$barre_note .= '		<ul class="niveau3">'."\n";
 					foreach($tmp_mes_classes as $key => $value) {
-						$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index3.php?id_classe='.$key.'">'.$value.'</a>'."\n";
+						$barre_note.= '		<li><a href="'.$gepiPath.'/prepa_conseil/index3.php?id_classe='.$key.'"'.insert_confirm_abandon().'>'.$value.'</a>'."\n";
 					}
 					$barre_note.= '			</ul>'."\n";
 				$barre_note.= '		</li>'."\n";
 			}
 
 
-			$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/visualisation/affiche_eleve.php">Graphes</a>'."\n";
+			$barre_note.= '		<li class="plus"><a href="'.$gepiPath.'/visualisation/affiche_eleve.php"'.insert_confirm_abandon().'>Graphes</a>'."\n";
 				$barre_note .= '		<ul class="niveau3">'."\n";
 				foreach($tmp_mes_classes as $key => $value) {
-					$barre_note.= '		<li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php?id_classe='.$key.'">'.$value.'</a>'."\n";
+					$barre_note.= '		<li><a href="'.$gepiPath.'/visualisation/affiche_eleve.php?id_classe='.$key.'"'.insert_confirm_abandon().'>'.$value.'</a>'."\n";
 				}
 				$barre_note.= '			</ul>'."\n";
 			$barre_note.= '		</li>'."\n";
@@ -271,7 +271,7 @@ echo '<!--[if lt IE 7]>
 
 	// Module emploi du temps
 	if (getSettingValue("autorise_edt_tous") == "y") {
-		$barre_edt = '<li class="li_inline"><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof">Emploi du tps</a></li>';
+		$barre_edt = '<li class="li_inline"><a href="'.$gepiPath.'/edt_organisation/index_edt.php?visioedt=prof1&amp;login_edt='.$_SESSION["login"].'&amp;type_edt_2=prof"'.insert_confirm_abandon().'>Emploi du tps</a></li>'."\n";
 
 // edt_organisation/index_edt.php?visioedt=prof1&login_edt=BOIREAUS&type_edt_2=prof
 // Proposer aussi les emplois du temps de ses classes
@@ -280,12 +280,12 @@ echo '<!--[if lt IE 7]>
 
 	// Module discipline
 	if (getSettingValue("active_mod_discipline")=='y') {
-	    $barre_discipline = "<li class='li_inline'><a href='".$gepiPath."/mod_discipline/index.php'>Discipline</a></li>";
+	    $barre_discipline = '<li class="li_inline"><a href="'.$gepiPath.'/mod_discipline/index.php"'.insert_confirm_abandon().'>Discipline</a></li>'."\n";
 	} else {$barre_discipline = '';}
 
 	// Module notanet
 	if (getSettingValue("active_notanet") == "y") {
-		$barre_notanet = '<li class="li_inline"><a href="'.$gepiPath.'/mod_notanet/index.php">Brevet</a></li>';
+		$barre_notanet = '<li class="li_inline"><a href="'.$gepiPath.'/mod_notanet/index.php"'.insert_confirm_abandon().'>Brevet</a></li>'."\n";
 	}else{ $barre_notanet = '';}
 
 	/*
@@ -301,7 +301,7 @@ echo '<!--[if lt IE 7]>
 	}
 	*/
 	if (acces('/eleves/visu_eleve.php',$_SESSION['statut'])==1) {
-		$barre_consult_eleve = '<li class="li_inline"><a href="'.$gepiPath.'/eleves/visu_eleve.php">Consult.élève</a></li>';
+		$barre_consult_eleve = '<li class="li_inline"><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consult.élève</a></li>'."\n";
 	}
 	else{ $barre_consult_eleve = '';}
 
