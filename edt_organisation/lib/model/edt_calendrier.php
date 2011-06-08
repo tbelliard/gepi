@@ -33,6 +33,7 @@ class PeriodeCalendaire {
 	public $periode_note;
 	public $etabferme;
 	public $etabvacances;
+	public $id_calendar;	
 	
 /*******************************************************************
  *
@@ -60,7 +61,8 @@ class PeriodeCalendaire {
 				heurefin_calendrier = '".$this->heurefin."',
 				numero_periode = '".$this->periode_note."',
 				etabferme_calendrier = '".$this->etabferme."',
-				etabvacances_calendrier = '".$this->etabvacances."' 		
+				etabvacances_calendrier = '".$this->etabvacances."',
+				id_calendar = '".$this->id_calendar."'
 				WHERE id_calendrier = '".$this->id."' ";
 		$req = mysql_query($sql);
 		if ($req) {
@@ -102,7 +104,8 @@ class PeriodeCalendaire {
 				heurefin_calendrier = '".$this->heurefin."',
 				numero_periode = '".$this->periode_note."',
 				etabferme_calendrier = '".$this->etabferme."',
-				etabvacances_calendrier = '".$this->etabvacances."' ";
+				etabvacances_calendrier = '".$this->etabvacances."',
+				id_calendar = '".$this->id_calendar."'	";
 		$req = mysql_query($sql);
 		if ($req) {
 			return true;

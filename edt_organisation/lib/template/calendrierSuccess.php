@@ -111,6 +111,22 @@
 					$('type').value = period[0].type;				
 					$('num_jour_initial').value = period[0].num_jour_initial;
 					$('num_jour_final').value = period[0].num_jour_final;
+					if ($('ouvert').value == 1) {
+						$('checkbox_open').setAttribute("src", "./lib/template/images/checked.gif");
+						$('checkbox_close').setAttribute("src", "./lib/template/images/unchecked.gif");
+					}
+					else {
+						$('checkbox_open').setAttribute("src", "./lib/template/images/unchecked.gif");
+						$('checkbox_close').setAttribute("src", "./lib/template/images/checked.gif");					
+					}
+					if ($('type').value == 0) {
+						$('checkbox_cours').setAttribute("src", "./lib/template/images/checked.gif");
+						$('checkbox_vacances').setAttribute("src", "./lib/template/images/unchecked.gif");
+					}
+					else {
+						$('checkbox_cours').setAttribute("src", "./lib/template/images/unchecked.gif");
+						$('checkbox_vacances').setAttribute("src", "./lib/template/images/checked.gif");					
+					}
 				}
 				else {
 					alert('gloups');								
@@ -438,6 +454,26 @@
 		$('bouton_valider').observe('mouseup', function(event) {
 			validate_period();
 		});		
+		$('checkbox_open').observe('click', function(event) {
+			$('ouvert').value = "1";
+			$('checkbox_open').setAttribute("src", "./lib/template/images/checked.gif");
+			$('checkbox_close').setAttribute("src", "./lib/template/images/unchecked.gif");
+		});
+		$('checkbox_close').observe('click', function(event) {
+			$('ouvert').value = "2";
+			$('checkbox_open').setAttribute("src", "./lib/template/images/unchecked.gif");
+			$('checkbox_close').setAttribute("src", "./lib/template/images/checked.gif");
+		});
+		$('checkbox_cours').observe('click', function(event) {
+			$('type').value = "0";
+			$('checkbox_cours').setAttribute("src", "./lib/template/images/checked.gif");
+			$('checkbox_vacances').setAttribute("src", "./lib/template/images/unchecked.gif");
+		});
+		$('checkbox_vacances').observe('click', function(event) {
+			$('type').value = "1";
+			$('checkbox_cours').setAttribute("src", "./lib/template/images/unchecked.gif");
+			$('checkbox_vacances').setAttribute("src", "./lib/template/images/checked.gif");
+		});
 	}
 </script>
 
@@ -569,8 +605,17 @@
 	<p><span>Début de la période :</span><span> <input id="start_period" style="width:200px;" type="text"/></span></p> 
 	<p><span>Fin de la période :</span><span> <input id="end_period" style="width:200px;" type="text"/></span></p> 
 	<p><span>Période de note associée :</span><span> <input id="periode_notes" style="width:200px;" type="text"/></span></p> 
-	<p><span>Etablissement ouvert ?</span><span> <input id="ouvert" style="width:200px;" type="text"/></span></p> 	
-	<p><span>Type de période : </span><span> <input id="type" style="width:200px;" type="text"/></span></p> 
+	<p>	<span>Etablissement ouvert ?</span>
+		<span> <input id="ouvert"  type="hidden"/></span>
+		<span style="padding-left:30px;"> <img id="checkbox_open" src="./lib/template/images/checked.gif" /></span><span style="padding-left:5px;"> oui </span>
+		<span style="padding-left:30px;"> <img id="checkbox_close" src="./lib/template/images/unchecked.gif" /></span><span style="padding-left:5px;"> non </span>
+	</p> 	
+	<p>	<span>Type de période : </span>
+		<span> <input id="type" type="hidden"/></span>
+		<span style="padding-left:30px;"> <img id="checkbox_cours" src="./lib/template/images/checked.gif" /></span><span style="padding-left:5px;"> cours </span>
+		<span style="padding-left:30px;"> <img id="checkbox_vacances" src="./lib/template/images/unchecked.gif" /></span><span style="padding-left:5px;"> vacances </span>
+	</p> 
+	</p> 
 	<p style="padding-top:40px;">
 		<span><img id="bouton_supprimer" alt="supprimer" src="lib/template/images/bouton_supprimer.png" /></span>
 		<span><img id="bouton_valider" alt="valider" src="lib/template/images/bouton_valider.png" /></span>
