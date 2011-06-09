@@ -808,7 +808,9 @@ for($i=0;$i<count($id_classe);$i++){
 			// L'Histoire des arts ne doit pas être dans le total sur les fiches brevet... alors qu'elle y est pour Notanet
 			$tab_eleves_OOo[$nb_eleve]['totalpoints_bis']=$TOTAL_POINTS;
 			$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']=$TOTAL_COEF*20;
-			if($tab_eleves_OOo[$nb_eleve][5][0]!='AB') {
+			// La note AB compte comme un zéro... donc pour le total sans Histoire_des_Arts, il faut décompter les points et coef d'Histoire_des_Arts même si la note est AB
+			//if($tab_eleves_OOo[$nb_eleve][5][0]!='AB') {
+			if($tab_eleves_OOo[$nb_eleve][5][0]!='DI') {
 				$tab_eleves_OOo[$nb_eleve]['totalpoints_bis']-=$tab_eleves_OOo[$nb_eleve][5][1];
 				//$tab_eleves_OOo[$nb_eleve]['totalcoef_bis']-=$tab_eleves_OOo[$nb_eleve][5][-2]*20;
 				// L'Histoire des arts est sur 40... à extraire de là par la suite
