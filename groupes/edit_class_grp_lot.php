@@ -511,7 +511,8 @@ echo "<p><input type='submit' value='Valider' /></p>\n";
 echo "</form>\n";
 
 /*
-$groups = get_groups_for_class($id_classe);
+//$groups = get_groups_for_class($id_classe);
+$groups = get_groups_for_class($id_classe,"","n");
 foreach ($groups as $group) {
 	//$group["description"]
 	$current_group = get_group($group["id"]);

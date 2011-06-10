@@ -730,7 +730,7 @@ $debutCdt = getSettingValue("begin_bookings");
 foreach ($current_group["classes"]["list"] as $_id_classe) {
     $total[$_id_classe] = null;
     $date[$_id_classe] = null;
-    $groups = get_groups_for_class($_id_classe);
+    $groups = get_groups_for_class($_id_classe,"","n");
     foreach ($groups as $group) {
        $req_total =
             "select count(id_ct) total, max(date_ct) date

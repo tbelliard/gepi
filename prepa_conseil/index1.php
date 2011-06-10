@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -190,7 +190,7 @@ if (!$current_group) {
 
 			$id_classe = mysql_result($appel_donnees, $i, "id");
 			$aff_class = 'no';
-			$groups = get_groups_for_class($id_classe);
+			$groups = get_groups_for_class($id_classe,"","n");
 			//echo "\$id_classe=$id_classe et count(\$groups)=".count($groups)."<br />";
 
 			foreach($groups as $group) {

@@ -97,7 +97,8 @@ if ($nombre_lignes != 0) {
 	        echo "</td>\n";
 	        echo "<td><a href='add_group.php?id_classe=" . $id_classe . "&amp;mode=groupe'>Ajouter groupe</a></td>\n";
 
-			$groups = get_groups_for_class($id_classe);
+			//$groups = get_groups_for_class($id_classe);
+			$groups = get_groups_for_class($id_classe,"","n");
 			echo "<td>\n";
 			foreach ($groups as $group) {
 				$total = count($group["classes"]);

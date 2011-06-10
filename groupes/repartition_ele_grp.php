@@ -427,7 +427,7 @@ if(!isset($id_groupe)) {
 		$alt=$alt*(-1);
 
 		echo "<td class='lig$alt' style='text-align:left; vertical-align:top;'>\n";
-		$groups = get_groups_for_class($id_classe[$i]);
+		$groups = get_groups_for_class($id_classe[$i],"","n");
 		if(count($groups)==0){
 			echo "<p>Aucun enseignement n'a encore été créé dans cette classe.</p>\n";
 		}

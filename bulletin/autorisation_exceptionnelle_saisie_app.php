@@ -294,7 +294,7 @@ elseif((!isset($id_groupe))||(!isset($periode))) {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir une autre classe</a>\n";
 	echo "</p>\n";
 	echo "<p>Pour quel enseignement souhaitez-vous autoriser un enseignant à proposer des saisies/corrections d'appréciations?</p>\n";
-	$groups=get_groups_for_class($id_classe);
+	$groups=get_groups_for_class($id_classe,"","n");
 
 	include("../lib/periodes.inc.php");
 

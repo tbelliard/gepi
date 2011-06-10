@@ -70,7 +70,7 @@ if((isset($id_classe))&&(isset($num_periode))&&(isset($_GET['confirmation_menage
 		$sql="SELECT 1=1 FROM periodes WHERE id_classe='$id_classe' AND num_periode='$num_periode';";
 		$test=mysql_query($sql);
 		if(mysql_num_rows($test)==1) {
-			//$groups=get_groups_for_class($id_classe);
+			//$groups=get_groups_for_class($id_classe,"","n");
 			//foreach($groups as $current_group) {
 			$sql="select g.id from groupes g, j_groupes_classes j where (g.id = j.id_groupe and j.id_classe='".$id_classe."') ORDER BY j.priorite, g.name";
 			$query=mysql_query($sql);
@@ -285,10 +285,19 @@ else {
 	echo "<br />\n";
 	echo "En <span style='color: green'>vert</span> la liste des élèves à <span style='color: green'>conserver</span> dans l'enseignement et en <span style='color: red'>rouge</span> ceux qui seront <span style='color: red'>désinscrits</span> de l'enseignement si vous validez.</p>\n";
 }
-//$groups=get_groups_for_class($id_classe);
+//$groups=get_groups_for_class($id_classe,"","n");
 //foreach($groups as $current_group) {
 
-$sql="select g.id from groupes g, j_groupes_classes j where (g.id = j.id_groupe and j.id_classe='".$id_classe."') ORDER BY j.priorite, g.name";
+//$sql="select g.id from groupes g, j_groupes_classes j where (g.id = j.id_groupe and j.id_classe='".$id_classe."') ORDER BY j.priorite, g.name";
+$sql="select g.id FROM groupes g, 
+		j_groupes_classes jgc, 
+		j_groupes_matieres jgm
+	WHERE (
+		jgc.id_classe='".$id_classe."' AND
+		jgm.id_groupe=jgc.id_groupe
+		AND jgc.id_groupe=g.id
+		)
+	ORDER BY jgc.priorite,jgm.id_matiere, g.name;";
 $query=mysql_query($sql);
 while($lig_group=mysql_fetch_object($query)) {
 	$current_group=get_group($lig_group->id);

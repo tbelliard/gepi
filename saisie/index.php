@@ -408,7 +408,7 @@ if ($current_group) {
             $nom_classe = mysql_result($appel_donnees, $i, "classe");
             echo "<p><span class='norme'><b>$nom_classe</b> : ";
 			echo "<a href='recopie_moyennes.php?id_classe=$id_classe&amp;retour=saisie_index'><b>Recopie des moyennes</b></a> - ";
-            $groups = get_groups_for_class($id_classe);
+            $groups = get_groups_for_class($id_classe,"","n");
             foreach ($groups as $group) {
 
 		$sql="SELECT u.nom,u.prenom FROM j_groupes_professeurs jgp, utilisateurs u WHERE

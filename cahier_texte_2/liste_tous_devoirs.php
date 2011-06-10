@@ -64,7 +64,7 @@ if (!isset($_GET['debut']) || !isset($_GET['classe']) || !intval($_GET['debut'])
     die("<p><em>Paramètres invalides !</em></p>\n</body>\n</html>");
 }
 
-$groups = get_groups_for_class($_GET['classe']);
+$groups = get_groups_for_class($_GET['classe'],"","n");
 ?>
         <div style="width: 240px; margin: auto;">
 

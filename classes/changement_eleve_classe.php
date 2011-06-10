@@ -245,6 +245,7 @@ else {
 	//$sql="SELECT * FROM j_groupes_classes WHERE id_classe='$id_classe';";
 
 	//$groupes=get_groups_for_class($id_classe);
+	//$groupes=get_groups_for_class($id_classe, "", "n");
 	//for($i=0;$i<count($groupes);$i++) {
 
 	// Groupes de la classe future:

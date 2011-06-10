@@ -408,7 +408,7 @@ if(!isset($id_groupe)) {
 	
 					echo "<input type='hidden' name='id_classe[]' value='$id_classe[$i]' />\n";
 	
-					$groups=get_groups_for_class($id_classe[$i]);
+					$groups=get_groups_for_class($id_classe[$i],"","n");
 					echo "<table class='boireaus' summary=\"Choix des enseignements de $classe\">\n";
 					echo "<tr>\n";
 					echo "<th>\n";
@@ -1000,7 +1000,7 @@ else {
 
 		echo "<hr width='200px' />\n";
 
-		$groups=get_groups_for_class($id_classe[$j]);
+		$groups=get_groups_for_class($id_classe[$j],"","n");
 
 		$chaine_id_groupe="";
 		$chaine_lien_id_groupe="";
