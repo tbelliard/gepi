@@ -66,7 +66,8 @@ function get_groups_for_prof($_login,$mode=NULL) {
     return $groups;
 }
 
-function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="auto") {
+//function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="auto") {
+function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 	// ATTENTION: Avec les catégories, les groupes dans aucune catégorie n'apparaissent pas.
 
 	if (!is_numeric($_id_classe)) {$_id_classe = "0";}
