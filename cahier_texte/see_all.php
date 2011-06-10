@@ -328,7 +328,8 @@ while (true) {
 	}
 
 	if(($type_notice!="devoir")||
-		(mysql_date_to_unix_timestamp($not_dev->date_visibilite_eleve)<=$timestamp_courant)||
+		($not_dev->date_visibilite_eleve=="")||
+		(($not_dev->date_visibilite_eleve!="")&&(mysql_date_to_unix_timestamp($not_dev->date_visibilite_eleve)<=$timestamp_courant))||
 		(verif_groupe_appartient_prof($id_groupe)==1)) {
 		// Passage en HTML
 		//$content = &$not_dev->contenu;

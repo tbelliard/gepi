@@ -6795,11 +6795,11 @@ function get_date_slash_from_mysql_date($mysql_date) {
 			return $tmp_tab2[2]."/".$tmp_tab2[1]."/".$tmp_tab2[0];
 		}
 		else {
-			return $tmp_tab[0]." date mal formatée?";
+			return "Date '".$tmp_tab[0]."' mal formatée?";
 		}
 	}
 	else {
-		return "$mysql_date mal formatée?";
+		return "Date '$mysql_date' mal formatée?";
 	}
 }
 
@@ -6812,11 +6812,11 @@ function get_heure_2pt_minute_from_mysql_date($mysql_date) {
 			return $tmp_tab2[0].":".$tmp_tab2[1];
 		}
 		else {
-			return $tmp_tab[1]." heure mal formatée?";
+			return "Heure '".$tmp_tab[1]."' mal formatée?";
 		}
 	}
 	else {
-		return "$mysql_date mal formatée?";
+		return "Date '$mysql_date' mal formatée?";
 	}
 }
 
@@ -6825,20 +6825,33 @@ function get_date_heure_from_mysql_date($mysql_date) {
 }
 
 function mysql_date_to_unix_timestamp($mysql_date) {
+	//echo "\$mysql_date=$mysql_date<br />";
 	$tmp_tab=explode(" ",$mysql_date);
 	$tmp_tab2=explode("-",$tmp_tab[0]);
-	$tmp_tab3=explode(":",$tmp_tab[1]);
+	if((!isset($tmp_tab[1]))||(!isset($tmp_tab2[2]))) {
+		// Ces retours ne sont pas adaptés... on fait généralement une comparaison sur le retour de cette fonction
+		return "Date '$mysql_date' mal formatée?";
+	}
+	else {
+		$tmp_tab3=explode(":",$tmp_tab[1]);
 
-	$jour=$tmp_tab2[2];
-	$mois=$tmp_tab2[1];
-	$annee=$tmp_tab2[0];
-
-	$heure=$tmp_tab3[0];
-	$min=$tmp_tab3[1];
-	$sec=$tmp_tab3[2];
-
-	//echo "mktime($heure,$min,$sec,$mois,$jour,$annee)<br />\n";
-	return mktime($heure,$min,$sec,$mois,$jour,$annee);
+		if(!isset($tmp_tab3[2])) {
+			// Ces retours ne sont pas adaptés... on fait généralement une comparaison sur le retour de cette fonction
+			return "Date '$mysql_date' mal formatée?";
+		}
+		else {
+			$jour=$tmp_tab2[2];
+			$mois=$tmp_tab2[1];
+			$annee=$tmp_tab2[0];
+		
+			$heure=$tmp_tab3[0];
+			$min=$tmp_tab3[1];
+			$sec=$tmp_tab3[2];
+		
+			//echo "mktime($heure,$min,$sec,$mois,$jour,$annee)<br />\n";
+			return mktime($heure,$min,$sec,$mois,$jour,$annee);
+		}
+	}
 }
 
 function get_tab_prof_suivi($id_classe) {
