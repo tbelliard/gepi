@@ -23,8 +23,8 @@ class Request
 {
     public function getParam($key)
     {
-        return filter_var($this->getTaintedParam($key), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-		//return $this->getTaintedParam($key);
+        //return filter_var($this->getTaintedParam($key), FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		return $this->getTaintedParam($key);
     }
 	
     public function getTaintedParam($key)

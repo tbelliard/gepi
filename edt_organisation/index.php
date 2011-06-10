@@ -73,6 +73,7 @@ if ($action != "ajaxrequest") {
 	//                       DEMARRER LE CONTROLLEUR
 	//
 	// ===============================================================
+
 	$front = frontController::getInstance()->dispatch();
 	require("../lib/footer.inc.php");
 }

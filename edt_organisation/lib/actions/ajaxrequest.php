@@ -207,7 +207,7 @@ class ajaxrequestAction extends Action {
 			$fin = array();
 			$day  = $request->getParam('day');
 			$period = calendar::getPeriodFromDay($day, null);
-			calendar::getFrontiersPeriods($debut, $fin);
+			calendar::getFrontiersPeriods($debut, $fin, null);
 			$success = false;$debut_periode = 0;$fin_periode = 0;$stop = false;$i=0;
 			while ((!$success) && (!$stop)) {
 				if (($day >= $debut[$i]) && ($day <=$fin[$i])) {
@@ -270,6 +270,7 @@ class ajaxrequestAction extends Action {
 					$PeriodeCalendaire->heurefin = "23:59:00";
 
 					$PeriodeCalendaire->etabferme = 1;
+					$PeriodeCalendaire->id_calendar = $request->getParam('id_calendar');
 					if ($PeriodeCalendaire->insertable()) {
 						if (!$PeriodeCalendaire->save()) {
 							$content = "error Impossible d'enregistrer la période";

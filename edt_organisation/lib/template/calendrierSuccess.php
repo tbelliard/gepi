@@ -361,7 +361,7 @@
 								'./index.php',
 							  {
 								method:'get',
-								parameters: {action: "ajaxrequest", asker: "calendrier", periodname: $('period_input_field').value, firstday: IndiceFirstDiv, lastday: IndiceCurrentDiv},
+								parameters: {action: "ajaxrequest", asker: "calendrier", periodname: $('period_input_field').value, firstday: IndiceFirstDiv, lastday: IndiceCurrentDiv, id_calendar: $('id_calendar').value},
 								onSuccess: function(transport){
 									var response = transport.responseText || "Le serveur ne répond pas";
 									var message = response.substring(0,5);
@@ -504,7 +504,7 @@
                 <div class="art-content-layout">
                     <div class="art-content-layout-row">
                         <div class="art-layout-cell art-content">
-                            <div class="art-post">
+ 							<div class="art-post">
                                 <div class="art-post-tl"></div>
                                 <div class="art-post-tr"></div>
                                 <div class="art-post-bl"></div>
@@ -518,34 +518,7 @@
 									<div class="art-post-inner art-article">
                                             <div class="art-postmetadataheader">
                                                 <h2 class="art-postheader">
-                                                    Gestion des calendriers
-                                                </h2>
-                                            </div>
-                                            <div class="art-postcontent">
-                                                <!-- article-content -->
-												<div style="font-size:12px;color:white;width:60%;text-align:center;margin:10px auto;padding:10px;background-color:#9571dd;">[En cours de développement] : Permet de créer les périodes calendaires. Principe : On sélectionne avec la souris la plage que l'on souhaite, une popup apparait pour demander le nom de la période calendaire. Tout se fait avac prototype + ajax.</div> 
-                                                <div class="cleared"></div>
-                                                <!-- /article-content -->
-                                            </div>
-                                            <div class="cleared"></div>
-									</div>
-								</div>
-							</div>
-							<div class="art-post">
-                                <div class="art-post-tl"></div>
-                                <div class="art-post-tr"></div>
-                                <div class="art-post-bl"></div>
-                                <div class="art-post-br"></div>
-                                <div class="art-post-tc"></div>
-                                <div class="art-post-bc"></div>
-                                <div class="art-post-cl"></div>
-                                <div class="art-post-cr"></div>
-                                <div class="art-post-cc"></div>
-                                <div class="art-post-body">
-									<div class="art-post-inner art-article">
-                                            <div class="art-postmetadataheader">
-                                                <h2 class="art-postheader">
-                                                    Calendrier 1
+                                                    <?php echo $nom_calendrier; ?>
                                                 </h2>
                                             </div>
                                             <div class="art-postcontent">

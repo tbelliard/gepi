@@ -119,9 +119,14 @@ class PeriodeCalendaire {
  *
  *******************************************************************/
  
-	public static function getPeriods() {
+	public static function getPeriods($id_calendar) {
 		$result = array();
-		$sql="SELECT id_calendrier, debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";
+		if ($id_calendar) {
+			$sql="SELECT id_calendrier, debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier WHERE id_calendar='".$id_calendar."' ORDER BY debut_calendrier_ts ASC";
+		}
+		else {
+			$sql="SELECT id_calendrier, debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";		
+		}
 		$req = mysql_query($sql);
 		if ($req) {
 			if (mysql_num_rows($req) != 0) {
@@ -156,10 +161,14 @@ class PeriodeCalendaire {
 		$result = array();
 		$insertable = true;
 		if ($this->id != null) {
-			$sql="SELECT debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier WHERE id_calendrier != '".$this->id."' ORDER BY debut_calendrier_ts ASC";		
+			$sql="SELECT debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier 
+					WHERE 	id_calendrier != '".$this->id."' AND
+							id_calendar = '".$this->id_calendar."' 
+					ORDER BY debut_calendrier_ts ASC";		
 		}
 		else {
-			$sql="SELECT debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier ORDER BY debut_calendrier_ts ASC";		
+			$sql="SELECT debut_calendrier_ts, fin_calendrier_ts FROM edt_calendrier WHERE
+							id_calendar = '".$this->id_calendar."' ORDER BY debut_calendrier_ts ASC";		
 		}
 
 		$req = mysql_query($sql);

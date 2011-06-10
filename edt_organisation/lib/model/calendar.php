@@ -39,6 +39,7 @@
  *
  */
 include_once("./lib/model/edt_calendrier.php");
+include_once("./lib/model/edt_calendrier_manager.php");
 class calendar {
 
 
@@ -98,13 +99,14 @@ class calendar {
  *
  *
  *******************************************************************/
-	public function GenerateCalendar()
+	public function GenerateCalendar($id_calendrier)
 	{
 		$result = '';$debut = array();$fin = array();
 		$TableSemaines = calendar::getDaysTable();
-		$TableDaysInPeriods = calendar::getDaysFromPeriods();
-		calendar::getFrontiersPeriods($debut, $fin);
+		$TableDaysInPeriods = calendar::getDaysFromPeriods($id_calendrier);
+		calendar::getFrontiersPeriods($debut, $fin, $id_calendrier);
 		$i = 1;
+		$result.="<div><input id=\"id_calendar\" type=\"hidden\" value=\"".$id_calendrier."\"></div>";
 		foreach ($TableSemaines as $semaine) {
 			if (in_array($i, $debut)) {
 				$result.= "
@@ -279,7 +281,35 @@ class calendar {
 		}
 		return $result;
 	}
-
+/*******************************************************************
+ *
+ *			Générer la liste des calendriers existants
+ *
+ *******************************************************************/
+	public static function GenerateCalendarList()
+	{
+		$result = '';
+		$calendriers = Calendrier::getCalendriers();
+		
+		if ($calendriers) {
+			$i = 0;
+			while (isset($calendriers['id'][$i])) {
+				$result.="<div id=\"calendrier_".$calendriers['id'][$i]."\" class=\"cadre_calendrier\">";
+				$result.= "<a href=\"index.php?action=calendrier&id_calendrier=".$calendriers['id'][$i]."\" title=\"voir les périodes calendaires\">".$calendriers['nom'][$i]."</a>";
+				$result.="<div class=\"bouton_supprimer\">
+							<a href=\"index.php?action=calendriermanager&operation=delete&id_calendrier=".$calendriers['id'][$i]."\">
+							<img src=\"./lib/template/images/erase.png\" alt=\"supprimer\" title=\"supprimer le calendrier\"/>
+							</a>
+							</div>";
+				$result.="<div class=\"bouton_modifier\"><img src=\"./lib/template/images/modif.png\" alt=\"modifier le nom\" title=\"modifier le nom du calendrier\"/></div>";				
+				
+				
+				$result .= "</div>";
+				$i++;
+			}
+		}
+		return $result;
+	}
 /*******************************************************************
  *
  *
@@ -581,9 +611,9 @@ class calendar {
  *
  *******************************************************************/
 
-	public static function getDaysFromPeriods () {
+	public static function getDaysFromPeriods ($id_calendar) {
 
-		$period = PeriodeCalendaire::getPeriods();
+		$period = PeriodeCalendaire::getPeriods($id_calendar);
 		$tab_period = array();
 		
 		setlocale (LC_TIME, 'fr_FR','fra');
@@ -647,9 +677,9 @@ class calendar {
  *
  *******************************************************************/
 
-	public static function getFrontiersPeriods (&$debut, &$fin) {
+	public static function getFrontiersPeriods (&$debut, &$fin, $id_calendar) {
 
-		$period = PeriodeCalendaire::getPeriods();
+		$period = PeriodeCalendaire::getPeriods($id_calendar);
 		setlocale (LC_TIME, 'fr_FR','fra');
 		if ((1<=date("n")) AND (date("n") <=8)) {
 			$annee = date("Y");
@@ -705,7 +735,7 @@ class calendar {
 
 	public static function getFrontiersPeriodID (&$debut, &$fin, $id) {
 
-		$period = PeriodeCalendaire::getPeriods();
+		$period = PeriodeCalendaire::getPeriods(null);
 		setlocale (LC_TIME, 'fr_FR','fra');
 		if ((1<=date("n")) AND (date("n") <=8)) {
 			$annee = date("Y");

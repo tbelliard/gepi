@@ -1964,3 +1964,49 @@ img.image
 		margin:30px auto;
 	}
 
+	.bouton_supprimer {
+		position:absolute;
+		top:0px;
+		right:15px;
+		width:22px;
+		height:22px;
+		font-size:0.6em;
+		padding:0px;
+
+
+	}
+	.bouton_supprimer img{
+		border : 0px ;
+
+	}
+	.bouton_modifier {
+		position:absolute;
+		top:0px;
+		right:42px;
+		float:right;
+		width:22px;
+		height:22px;
+		font-size:0.6em;
+		padding:0px;
+
+	}
+	.bouton_modifier img{
+		border : 0px ;
+	}
+	
+	.cadre_calendrier {
+		width:80%;
+		margin:10px auto 10px auto;
+		position:relative;
+		border:1px solid black;
+		padding:5px;
+		background-color:#dddddd;
+	}
+	.cadre_calendrier a {
+		color:black;
+		text-decoration:none;
+	}	
+	.cadre_calendrier a:hover {
+		color:white;
+		text-decoration:none;
+	}	
