@@ -478,7 +478,8 @@ $conditions .= ") and c.id = j.id_classe";
 // Définition de l'ordre de la liste
 if ($order_by == "classe") {
 	// Classement par classe puis nom puis prénom
-	$order_conditions = "j.id_classe, e.nom, e.prenom";
+	//$order_conditions = "j.id_classe, e.nom, e.prenom";
+	$order_conditions = "c.classe, j.id_classe, e.nom, e.prenom";
 } elseif ($order_by == "nom") {
 	$order_conditions = "e.nom, e.prenom";
 }
