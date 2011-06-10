@@ -66,38 +66,84 @@ function get_groups_for_prof($_login,$mode=NULL) {
     return $groups;
 }
 
-function get_groups_for_class($_id_classe) {
+function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="auto") {
 
-    if (!is_numeric($_id_classe)) $_id_classe = "0";
+	if (!is_numeric($_id_classe)) {$_id_classe = "0";}
 
-    $query = mysql_query("select g.name, g.id, g.description ".
-                            "from groupes g, j_groupes_classes j ".
-                            "where (" .
-                            "g.id = j.id_groupe " .
-                            " and j.id_classe = '" . $_id_classe . "'".
-                            ") ORDER BY j.priorite, g.name");
+	if($d_apres_categories=="auto") {
+		$d_apres_categories="n";
 
-    $nb = mysql_num_rows($query);
-    $temp = array();
-    for ($i=0;$i<$nb;$i++) {
-        $temp[$i]["name"] = mysql_result($query, $i, "name");
-        $temp[$i]["description"] = mysql_result($query, $i, "description");
-        $temp[$i]["id"] = mysql_result($query, $i, "id");
-        $get_classes = mysql_query("SELECT c.id, c.classe, c.nom_complet FROM classes c, j_groupes_classes j WHERE (" .
-                                        "c.id = j.id_classe and j.id_groupe = '" . $temp[$i]["id"]."')");
-        $nb_classes = mysql_num_rows($get_classes);
-        for ($k=0;$k<$nb_classes;$k++) {
-            $c_id = mysql_result($get_classes, $k, "id");
-            $c_classe = mysql_result($get_classes, $k, "classe");
-            $c_nom_complet = mysql_result($get_classes, $k, "nom_complet");
+		//$d_apres_categories=sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$_id_classe."';");
+		$sql="SELECT display_mat_cat FROM classes WHERE id='".$_id_classe."';";
+		//echo "$sql<br />";
+		$res=mysql_query($sql);
+		if(mysql_num_rows($res)>0) {
+			$d_apres_categories=mysql_result($res,0,"display_mat_cat");
+		}
+	}
 
-            $temp[$i]["classes"][] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet);
+	if($d_apres_categories=='y') {
+		$sql="SELECT DISTINCT g.name, g.id, g.description
+				FROM j_groupes_classes jgc, 
+					j_groupes_matieres jgm, 
+					j_matieres_categories_classes jmcc, 
+					matieres m, 
+					matieres_categories mc,
+					groupes g
+				WHERE ( mc.id=jmcc.categorie_id AND 
+					jgc.categorie_id = jmcc.categorie_id AND 
+					jgc.id_classe=jmcc.classe_id AND 
+					jgc.id_classe='".$_id_classe."' AND 
+					jgm.id_groupe=jgc.id_groupe AND 
+					m.matiere = jgm.id_matiere AND
+					g.id=jgc.id_groupe)
+				ORDER BY jmcc.priority,mc.priority,jgc.priorite,m.nom_complet, g.name;";
+	}
+	else {
+		if($ordre=="old_way") {
+			// Ce que l'on avait auparavant.
+			$sql="select g.name, g.id, g.description ".
+								"from groupes g, j_groupes_classes j ".
+								"where (" .
+								"g.id = j.id_groupe " .
+								" and j.id_classe = '" . $_id_classe . "'".
+								") ORDER BY j.priorite, g.name";
+		}
+		else {
+			$sql="select g.name, g.id, g.description FROM groupes g, 
+					j_groupes_classes jgc, 
+					j_groupes_matieres jgm
+				WHERE (
+					jgc.id_classe='".$_id_classe."' AND
+					jgm.id_groupe=jgc.id_groupe
+					AND jgc.id_groupe=g.id
+				ORDER BY jgc.priorite,jgm.id_matiere, g.name;";
+		}
+	}
+	//echo "$sql<br />";
+	$query = mysql_query($sql);
+
+	$nb = mysql_num_rows($query);
+	$temp = array();
+	for ($i=0;$i<$nb;$i++) {
+		$temp[$i]["name"] = mysql_result($query, $i, "name");
+		$temp[$i]["description"] = mysql_result($query, $i, "description");
+		$temp[$i]["id"] = mysql_result($query, $i, "id");
+		$get_classes = mysql_query("SELECT c.id, c.classe, c.nom_complet FROM classes c, j_groupes_classes j WHERE (" .
+										"c.id = j.id_classe and j.id_groupe = '" . $temp[$i]["id"]."')");
+		$nb_classes = mysql_num_rows($get_classes);
+		for ($k=0;$k<$nb_classes;$k++) {
+			$c_id = mysql_result($get_classes, $k, "id");
+			$c_classe = mysql_result($get_classes, $k, "classe");
+			$c_nom_complet = mysql_result($get_classes, $k, "nom_complet");
+
+			$temp[$i]["classes"][] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet);
 			if($k==0) {$temp[$i]["classlist_string"]="";} else {$temp[$i]["classlist_string"].=", ";}
 			$temp[$i]["classlist_string"].=$c_classe;
-        }
-    }
+		}
+	}
 
-    return $temp;
+	return $temp;
 }
 
 /**
