@@ -420,7 +420,15 @@ echo "<p align='center'><input type='submit' value='Valider' /></p>\n";
 echo "</div>\n";
 echo "</div>\n";
 
-
+echo "<div style='clear:both;'>&nbsp;</div>
+<p><i>NOTES</i>&nbsp;:</p>
+<ul>
+<li><p>Si vous associez un ou des professeurs à l'enseignement, tous les élèves de la classe seront inscrit dans l'enseignement.<br />
+Vous pourrez par la suite décocher certains élèves si nécessaire.</p></li>
+<li><p>Si vous n'associez aucun professeur à l'enseignement, les élèves ne seront pas affectés automatiquement dans l'enseignement.<br />
+Vous devrez affecter les élèves dans l'enseignement par la suite.</p></li>
+<li><p>Si vous n'associez aucun professeur à un enseignement, vous pouvez néanmoins saisir des moyennes et appréciations sur les bulletins avec un compte disposant du statut 'secours'.</p></li>
+</ul>\n";
 
 ?>
 </form>
