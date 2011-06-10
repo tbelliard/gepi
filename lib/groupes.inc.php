@@ -67,6 +67,7 @@ function get_groups_for_prof($_login,$mode=NULL) {
 }
 
 function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="auto") {
+	// ATTENTION: Avec les catégories, les groupes dans aucune catégorie n'apparaissent pas.
 
 	if (!is_numeric($_id_classe)) {$_id_classe = "0";}
 
@@ -117,6 +118,7 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="auto"
 					jgc.id_classe='".$_id_classe."' AND
 					jgm.id_groupe=jgc.id_groupe
 					AND jgc.id_groupe=g.id
+					)
 				ORDER BY jgc.priorite,jgm.id_matiere, g.name;";
 		}
 	}
