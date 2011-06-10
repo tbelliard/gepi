@@ -1415,12 +1415,12 @@ function tab_extract_moy($tab_ele,$id_clas) {
 		echo "<b style='color:red;'>ERREUR:</b> Numéro INE non attribué: ".$tab_ele['nom']." ".$tab_ele['prenom']."<br />";
 		$temoin_notanet_eleve="ERREUR";
 		$info_erreur="Pas de numéro INE";
-		echo "INE: <input type='text' name='INE[$num_eleve]' value='' />\n";
+		echo "INE: <input type='text' name='INE[$num_eleve]' value='' onchange='changement()' />\n";
 	}
 	else{
 		echo "<b>".$tab_ele['nom']." ".$tab_ele['prenom']."</b> ".$tab_ele['no_gep']."<br />\n";
 		$INE=$tab_ele['no_gep'];
-		echo "INE: <input type='text' name='INE[$num_eleve]' value='$INE' />\n";
+		echo "INE: <input type='text' name='INE[$num_eleve]' value='$INE' onchange='changement()' />\n";
 	}
 	// Guillemets sur la valeur à cause des apostrophes dans des noms...
 	echo "<input type='hidden' name='nom_eleve[$num_eleve]' value=\"".$tab_ele['nom']." ".$tab_ele['prenom']." ($classe)\" />\n";
@@ -1666,7 +1666,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						$moyenne_arrondie=ceil($moyenne*2)/2;
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='".$moyenne_arrondie."' size='6' /></td>\n";
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='".$moyenne_arrondie."' size='6' />";
-						echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='".$moyenne_arrondie."' size='6' onKeyDown=\"clavier(this.id,event);\" autocomplete=\"off\" onfocus=\"javascript:this.select()\" />";
+						echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='".$moyenne_arrondie."' size='6' onKeyDown=\"clavier(this.id,event);\" onchange='changement()' autocomplete=\"off\" onfocus=\"javascript:this.select()\" />";
 						$compteur_champs_notes++;
 						//echo "<input type='hidden' name='matiere_".$j."_[$num_eleve]' value='".$id_matiere[$j][$k]."' size='6' />";
 						echo "</td>\n";
@@ -1693,7 +1693,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						//echo "<td><input type='text' name='moy.$j.$k[$num_eleve]' value='' size='6'></td>\n";
 						//echo "<td><input type='text' name='moy_$j"."_"."$k[$num_eleve]' value='' size='6'></td>\n";
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='' size='6' /></td>\n";
-						echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='' size='6' onKeyDown=\"clavier(this.id,event);\" autocomplete=\"off\" onfocus=\"javascript:this.select()\" /></td>\n";
+						echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='' size='6' onKeyDown=\"clavier(this.id,event);\" onchange='changement()' autocomplete=\"off\" onfocus=\"javascript:this.select()\" /></td>\n";
 						$compteur_champs_notes++;
 						//echo "<td></td>\n";
 					}
@@ -1796,7 +1796,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						echo "<td style='font-weight:bold; background-color:red;'>&nbsp;</td>\n";
 						$temoin_notanet_eleve="ERREUR";
 					}
-					echo "<td><input type='text' name='moy_$j"."_0[$num_eleve]' value='$note_b2i' size='6' /></td>\n";
+					echo "<td><input type='text' name='moy_$j"."_0[$num_eleve]' value='$note_b2i' size='6' onchange='changement()' /></td>\n";
 
 
 					if($affiche_enregistrements_precedents=="y") {
@@ -1840,7 +1840,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						echo "<td style='font-weight:bold; background-color:red;'>&nbsp;</td>\n";
 						$temoin_notanet_eleve="ERREUR";
 					}
-					echo "<td><input type='text' name='moy_$j"."_0[$num_eleve]' value='$note_a2' size='6' /></td>\n";
+					echo "<td><input type='text' name='moy_$j"."_0[$num_eleve]' value='$note_a2' size='6' onchange='changement()' /></td>\n";
 
 					if($affiche_enregistrements_precedents=="y") {
 						echo "<td>\n";
@@ -1891,7 +1891,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 							echo "<td style='font-weight:bold; background-color:red;'>&nbsp;</td>\n";
 							$temoin_notanet_eleve="ERREUR";
 						}
-						echo "<td><input type='text' name='moy_$j"."_0[$num_eleve]' value='$note_lvr' size='6' /></td>\n";
+						echo "<td><input type='text' name='moy_$j"."_0[$num_eleve]' value='$note_lvr' size='6' onchange='changement()' /></td>\n";
 	
 	
 						if($affiche_enregistrements_precedents=="y") {

@@ -50,6 +50,7 @@ if (!checkAccess()) {
 $extract_mode=isset($_POST['extract_mode']) ? $_POST['extract_mode'] : (isset($_GET['extract_mode']) ? $_GET['extract_mode'] : NULL);
 $nb_tot_eleves=isset($_POST['nb_tot_eleves']) ? $_POST['nb_tot_eleves'] : (isset($_GET['nb_tot_eleves']) ? $_GET['nb_tot_eleves'] : NULL);
 
+$themessage = "Des changements ont eu lieu sur cette page et n\'ont pas été enregistrés. Si vous cliquez sur OK les changements seront perdus.";
 
 //**************** EN-TETE *****************
 $titre_page = "Notanet: Extraction des moyennes";
@@ -62,7 +63,7 @@ require_once("../lib/header.inc");
 include("lib_brevets.php");
 
 echo "<div class='noprint'>\n";
-echo "<p class='bold'><a href='../accueil.php'>Accueil</a> | <a href='index.php'>Retour à l'accueil Notanet</a>";
+echo "<p class='bold'><a href='../accueil.php'".insert_confirm_abandon().">Accueil</a> | <a href='index.php'".insert_confirm_abandon().">Retour à l'accueil Notanet</a>";
 
 $sql="SELECT DISTINCT type_brevet FROM notanet_ele_type ORDER BY type_brevet";
 $res=mysql_query($sql);
@@ -104,7 +105,7 @@ if(!isset($extract_mode)) {
 	echo "</ul>\n";
 }
 else {
-	echo " | <a href='".$_SERVER['PHP_SELF']."'>Choisir un autre mode d'extraction</a>";
+	echo " | <a href='".$_SERVER['PHP_SELF']."'".insert_confirm_abandon().">Choisir un autre mode d'extraction</a>";
 	echo "</p>\n";
 	echo "</div>\n";
 
@@ -240,7 +241,7 @@ else {
 					else {
 						echo "<p><b>".strtoupper($ligne->nom)." ".ucfirst(strtolower($ligne->prenom))."</b>: <span style='color:red;'>Pas d'associations de matières effectuées pour <b>".$tab_type_brevet[$ligne->type_brevet]."</b></span></p>\n";
 
-						echo "INE: <input type='hidden' name='INE[$num_eleve]' value='$ligne->no_gep' />\n";
+						echo "INE: <input type='hidden' name='INE[$num_eleve]' value='$ligne->no_gep' onchange='changement()' />\n";
 						echo "<input type='hidden' name='nom_eleve[$num_eleve]' value=\"".$tab_ele['nom']." ".$tab_ele['prenom']." ($classe)\" />\n";
 					}
 					$num_eleve++;
@@ -310,7 +311,7 @@ else {
 				}
 			}
 			if($cpt_non_assoc>0) {
-				echo "<span style='color:red;'>Avez-vous correctement effectué l'<a href='select_matieres.php?type_brevet=$extract_mode'>étape 2</a>&nbsp;?</span><br />\n";
+				echo "<span style='color:red;'>Avez-vous correctement effectué l'<a href='select_matieres.php?type_brevet=$extract_mode'".insert_confirm_abandon().">étape 2</a>&nbsp;?</span><br />\n";
 			}
 			unset($tabmatieres);
 
@@ -366,7 +367,7 @@ else {
 					else {
 						echo "<p><b>".strtoupper($ligne->nom)." ".ucfirst(strtolower($ligne->prenom))."</b>: <span style='color:red;'>Pas d'associations de matières effectuées pour <b>".$tab_type_brevet[$ligne->type_brevet]."</b></span></p>\n";
 
-						echo "INE: <input type='hidden' name='INE[$num_eleve]' value='$ligne->no_gep' />\n";
+						echo "INE: <input type='hidden' name='INE[$num_eleve]' value='$ligne->no_gep' onchange='changement()' />\n";
 						echo "<input type='hidden' name='nom_eleve[$num_eleve]' value=\"".$tab_ele['nom']." ".$tab_ele['prenom']." ($classe)\" />\n";
 					}
 					$num_eleve++;
