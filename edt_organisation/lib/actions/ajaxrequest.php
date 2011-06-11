@@ -85,6 +85,7 @@ class ajaxrequestAction extends Action {
 					
 					$PeriodeCalendaire = new PeriodeCalendaire();
 					$PeriodeCalendaire->id = $request->getParam('id_period');
+					$PeriodeCalendaire->id_calendar = $PeriodeCalendaire->getCalendarID();
 					$PeriodeCalendaire->nom = $request->getParam('name_period');
 					$PeriodeCalendaire->debut_ts = $debut_ts;
 					$PeriodeCalendaire->jourdebut = $jourdebut;		

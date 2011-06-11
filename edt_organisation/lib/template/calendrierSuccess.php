@@ -36,7 +36,7 @@
 						ouvert:$('ouvert').value,
 						type:$('type').value,
 						num_jour_initial:$('num_jour_initial').value,
-						num_jour_final:$('num_jour_final').value,
+						num_jour_final:$('num_jour_final').value
 						},
 			onSuccess: function(transport){
 				var period = transport.responseText.evalJSON();

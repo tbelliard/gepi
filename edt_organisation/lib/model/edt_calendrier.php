@@ -107,6 +107,22 @@ class PeriodeCalendaire {
  *
  *******************************************************************/
  
+	public function getCalendarID() {
+		$result = null;
+		$sql="SELECT id_calendar FROM edt_calendrier WHERE id_calendrier='".$this->id."' ";
+		$req = mysql_query($sql);
+		if ($req) {
+			while ($rep = mysql_fetch_array($req)) {
+				$result = $rep['id_calendar'];
+			}
+		}
+		return $result;
+	}
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+ 
 	public function save() {
 		$sql="INSERT INTO edt_calendrier SET 
 				classe_concerne_calendrier = '".$this->classe_concernees."',
