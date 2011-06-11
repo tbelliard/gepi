@@ -281,16 +281,23 @@ else {
 		//echo "<table border='1'>\n";
 		echo "<table class='boireaus' summary='Tableau des associations matière notanet/matière gepi'>\n";
 		echo "<tr style='font-weight:bold; text-align:center'>\n";
-		echo "<th>&nbsp;</th>\n";
+
+		echo "<th colspan='2'>NOTANET</th>\n";
+
 		echo "<th colspan='3'>Matière</th>\n";
-		echo "<th>&nbsp;</th>\n";
+
+		//echo "<th>&nbsp;</th>\n";
+		echo "<th rowspan='2'>Matière GEPI</th>\n";
 
 		echo "<tr style='font-weight:bold; text-align:center'>\n";
-		echo "<th>Intitulé</th>\n";
+
+		echo "<th>Numéro</th>\n";
+		echo "<th>Intitulé de la matière NOTANET</th>\n";
+
 		echo "<th>Imposée</th>\n";
 		echo "<th>Optionnelle</th>\n";
 		echo "<th>Non dispensée dans l'établissement</th>\n";
-		echo "<th>Matière GEPI</th>\n";
+		//echo "<th>Matière GEPI</th>\n";
 
 		echo "</tr>\n";
 
@@ -301,6 +308,9 @@ else {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
 				//echo "<td>".strtoupper($tabmatieres[$j][0])."</td>\n";
+				echo "<td>";
+				echo sprintf("%03d", $j);
+				echo "</td>";
 				echo "<td>";
 				//echo "<a name='ancre_$j'></a>";
 				echo strtoupper($tabmatieres[$j][0])."</td>\n";
