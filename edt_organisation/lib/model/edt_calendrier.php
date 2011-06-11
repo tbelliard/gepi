@@ -92,6 +92,21 @@ class PeriodeCalendaire {
  *
  *******************************************************************/
  
+	public function deleteCalendar() {
+		$sql="DELETE FROM edt_calendrier WHERE id_calendar = '".$this->id_calendar."' ";
+		$req = mysql_query($sql);
+		if ($req) {
+			return true;
+		}
+		else {
+			return false;
+		}				
+	}
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+ 
 	public function save() {
 		$sql="INSERT INTO edt_calendrier SET 
 				classe_concerne_calendrier = '".$this->classe_concernees."',

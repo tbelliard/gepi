@@ -28,15 +28,29 @@ class calendriermanagerAction extends Action {
 
 		$message = null;
 		$new_name = null;
+		$delete_confirmation = null;
 		if ($_SESSION['statut'] == "administrateur") {
 			if ($request->getParam('operation')) {
 				if ($request->getParam('operation') == "delete") {
-					if ($request->getParam('id_calendrier')) {
-						$calendrier = new Calendrier;
-						$calendrier->id = $request->getParam('id_calendrier');
-						if (!$calendrier->delete()) {
-							$message = "Impossible de supprimer le calendrier";
+					if ($request->getParam('confirm_delete')) {
+						if ($request->getParam('id_calendrier')) {
+							$calendrier = new Calendrier;
+							$calendrier->id = $request->getParam('id_calendrier');
+							if (!$calendrier->delete()) {
+								$message = "Impossible de supprimer le calendrier";
+							}
 						}
+					}
+					else {
+						if ($request->getParam('id_calendrier')) {
+							$delete_confirmation = "<form action=\"index.php?action=calendriermanager\" method=\"post\">
+											<input name=\"operation\" type=\"hidden\" value=\"delete\">
+											<input name=\"id_calendrier\" type=\"hidden\" value=\"".$request->getParam('id_calendrier')."\">
+											<p>La suppression d'un calendrier entraîne la suppression de toutes les périodes calendaires qui en dépendent !</p>
+											<input name=\"confirm_delete\" type=\"submit\" style=\"width:200px;\" value=\"Confirmer la suppression\">
+										</form>";
+						}					
+					
 					}
 				}
 				else if ($request->getParam('operation') == "new") {
@@ -72,6 +86,7 @@ class calendriermanagerAction extends Action {
 
 			calendar::updateTables();
 		}
+		$response->addVar('delete_confirmation', $delete_confirmation);
 		$response->addVar('new_name', $new_name);
 		$response->addVar('message', $message);
 		$response->addVar('NomPeriode', calendar::getPeriodName(time()));

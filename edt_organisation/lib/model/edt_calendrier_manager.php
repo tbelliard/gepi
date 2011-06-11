@@ -19,6 +19,7 @@
  * along with GEPi; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+include_once("./lib/model/edt_calendrier.php"); 
 class Calendrier {
 
 	public $id;
@@ -60,7 +61,14 @@ class Calendrier {
 		$sql="DELETE FROM edt_calendrier_manager WHERE id = '".$this->id."' ";
 		$req = mysql_query($sql);
 		if ($req) {
-			return true;
+			$PeriodesCalendaires = new PeriodeCalendaire;
+			$PeriodesCalendaires->id_calendar = $this->id;
+			if ($PeriodesCalendaires->deleteCalendar()) {
+				return true;
+			}
+			else {
+				return false;
+			}
 		}
 		else {
 			return false;

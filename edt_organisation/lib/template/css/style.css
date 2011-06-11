@@ -1998,6 +1998,7 @@ img.image
 		width:80%;
 		margin:10px auto 10px auto;
 		position:relative;
+		height:30px;
 		border:1px solid black;
 		padding:5px;
 		background-color:#dddddd;

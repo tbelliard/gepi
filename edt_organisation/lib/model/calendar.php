@@ -295,7 +295,8 @@ class calendar {
 			$i = 0;
 			while (isset($calendriers['id'][$i])) {
 				$result.="<div id=\"calendrier_".$calendriers['id'][$i]."\" class=\"cadre_calendrier\">";
-				$result.= "<a href=\"index.php?action=calendrier&id_calendrier=".$calendriers['id'][$i]."\" title=\"voir les périodes calendaires\">".$calendriers['nom'][$i]."</a>";
+				$result.="<div style=\"float:left;width:30px;\"><img style=\"border:0px;padding:0px;margin:0;\" src=\"./lib/template/images/calendar.png\" alt=\"\" \></div>";
+				$result.= "<div style=\"padding-top:3px;float:left;width:60%;top:0px;padding-left:10px;\"><a href=\"index.php?action=calendrier&id_calendrier=".$calendriers['id'][$i]."\" title=\"voir les périodes calendaires\">".$calendriers['nom'][$i]."</a></div>";
 				$result.="<div class=\"bouton_supprimer\">
 							<a href=\"index.php?action=calendriermanager&operation=delete&id_calendrier=".$calendriers['id'][$i]."\">
 							<img src=\"./lib/template/images/erase.png\" alt=\"supprimer\" title=\"supprimer le calendrier\"/>

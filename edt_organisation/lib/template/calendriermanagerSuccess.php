@@ -5,6 +5,17 @@
 <div id="lecorps">
 
 	<?php include("./lib/template/menu_edt.php"); ?>
+	<?php if ($delete_confirmation) { ?>
+	<div style="margin:0px;width:100%;position:relative;">
+	<div style="position:relative;padding-top:35px;padding-left:40px;margin:0 auto;width:330px;height:126px;
+		background-image:url('lib/template/images/popup_question.png'); 
+		background-repeat:no-repeat;">
+		<div style="width:200px;">
+	<?php echo $delete_confirmation; ?>
+	</div>
+	</div>
+	</div>
+	<?php } ?>
 	<?php if ($new_name) { ?>
 	<div style="margin:0px;width:100%;position:relative;">
 	<div style="position:relative;padding-top:60px;padding-left:20px;margin:0 auto;width:330px;height:106px;
