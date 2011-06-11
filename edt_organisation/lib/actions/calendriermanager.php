@@ -27,29 +27,52 @@ class calendriermanagerAction extends Action {
     {
 
 		$message = null;
-		if ($request->getParam('operation')) {
-			if ($request->getParam('operation') == "delete") {
-				if ($request->getParam('id_calendrier')) {
-					$calendrier = new Calendrier;
-					$calendrier->id = $request->getParam('id_calendrier');
-					if (!$calendrier->delete()) {
-						$message = "Impossible de supprimer le calendrier";
-					}
-				}
-			}
-			else if ($request->getParam('operation') == "new") {
-				if ($request->getParam('nom_calendrier')) {
-					$calendrier = new Calendrier;
-					$calendrier->nom = $request->getParam('nom_calendrier');
-					if (!$calendrier->save()) {
-						$message = "Impossible de créer le calendrier";
-					}
-				}
-			}
-		}
+		$new_name = null;
 		if ($_SESSION['statut'] == "administrateur") {
+			if ($request->getParam('operation')) {
+				if ($request->getParam('operation') == "delete") {
+					if ($request->getParam('id_calendrier')) {
+						$calendrier = new Calendrier;
+						$calendrier->id = $request->getParam('id_calendrier');
+						if (!$calendrier->delete()) {
+							$message = "Impossible de supprimer le calendrier";
+						}
+					}
+				}
+				else if ($request->getParam('operation') == "new") {
+					if ($request->getParam('nom_calendrier')) {
+						$calendrier = new Calendrier;
+						$calendrier->nom = $request->getParam('nom_calendrier');
+						if (!$calendrier->save()) {
+							$message = "Impossible de créer le calendrier";
+						}
+					}
+				}
+				else if ($request->getParam('operation') == "modify_name") {
+					if ($request->getParam('new_name')) {
+						$calendrier = new Calendrier;
+						$calendrier->nom = $request->getParam('new_name');
+						$calendrier->id = $request->getParam('id_calendrier');
+						if (!$calendrier->update()) {
+							$message = "Impossible de modifier le nom du calendrier";
+						}
+					}
+					else {
+						if ($request->getParam('id_calendrier')) {
+							$new_name = "<form action=\"index.php?action=calendriermanager\" method=\"post\">
+											<input name=\"operation\" type=\"hidden\" value=\"modify_name\">
+											<input name=\"id_calendrier\" type=\"hidden\" value=\"".$request->getParam('id_calendrier')."\">
+											<input name=\"new_name\" type=\"text\" style=\"width:200px;\" value=\"".Calendrier::getNom($request->getParam('id_calendrier'))."\">
+											<input name=\"bouton_valider_new_name\" type=\"submit\" style=\"width:200px;\" value=\"Modifier le nom du calendrier\">
+										</form>";
+						}
+					}
+				}
+			}
+
 			calendar::updateTables();
 		}
+		$response->addVar('new_name', $new_name);
 		$response->addVar('message', $message);
 		$response->addVar('NomPeriode', calendar::getPeriodName(time()));
 		$response->addVar('TypeSemaineCourante', calendar::getTypeCurrentWeek());

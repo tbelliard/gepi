@@ -5,6 +5,15 @@
 <div id="lecorps">
 
 	<?php include("./lib/template/menu_edt.php"); ?>
+	<?php if ($new_name) { ?>
+	<div style="margin:0px;width:100%;position:relative;">
+	<div style="position:relative;padding-top:60px;padding-left:20px;margin:0 auto;width:330px;height:106px;
+		background-image:url('lib/template/images/popup.png'); 
+		background-repeat:no-repeat;">
+	<?php echo $new_name; ?>
+	</div>
+	</div>
+	<?php } ?>
 	<?php if ($message) { ?>	
 	<div id="message" style="color:white;text-align:center;display:none;width:60%;margin:20px auto;padding:5px;background-color:#95a1ff;"><?php echo $message; ?>
 

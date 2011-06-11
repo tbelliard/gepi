@@ -301,7 +301,11 @@ class calendar {
 							<img src=\"./lib/template/images/erase.png\" alt=\"supprimer\" title=\"supprimer le calendrier\"/>
 							</a>
 							</div>";
-				$result.="<div class=\"bouton_modifier\"><img src=\"./lib/template/images/modif.png\" alt=\"modifier le nom\" title=\"modifier le nom du calendrier\"/></div>";				
+				$result.="<div class=\"bouton_modifier\">
+							<a href=\"index.php?action=calendriermanager&operation=modify_name&id_calendrier=".$calendriers['id'][$i]."\">
+							<img src=\"./lib/template/images/modif.png\" alt=\"modifier le nom\" title=\"modifier le nom du calendrier\"/>
+							</a>
+							</div>";				
 				
 				
 				$result .= "</div>";
