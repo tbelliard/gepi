@@ -18,7 +18,7 @@
 	<?php } ?>
 	<?php if ($new_name) { ?>
 	<div style="margin:0px;width:100%;position:relative;">
-	<div style="position:relative;padding-top:60px;padding-left:20px;margin:0 auto;width:330px;height:106px;
+	<div style="position:relative;padding-top:60px;padding-left:40px;margin:0 auto;width:330px;height:106px;
 		background-image:url('lib/template/images/popup.png'); 
 		background-repeat:no-repeat;">
 	<?php echo $new_name; ?>
@@ -63,14 +63,9 @@
                                 <div class="art-post-cc"></div>
                                 <div class="art-post-body">
 									<div class="art-post-inner art-article">
-                                            <div class="art-postmetadataheader">
-                                                <h2 class="art-postheader">
-                                                    Gestion des calendriers
-                                                </h2>
-                                            </div>
                                             <div class="art-postcontent">
                                                 <!-- article-content -->
-												<div style="font-size:12px;color:white;width:60%;text-align:center;margin:10px auto;padding:10px;background-color:#9571dd;">[Gestionnaire de calendriers] : Définissez ici vos différents calendriers auxquels vous associez les classes concernées.</div> 
+												<div style="font-size:12px;color:white;width:80%;text-align:center;margin:10px auto;padding:10px;background-color:#9571dd;">[Gestionnaire de calendriers] : Définissez ici vos différents calendriers auxquels vous associez les classes concernées.</div> 
                                                 <div class="cleared"></div>
                                                 <!-- /article-content -->
                                             </div>

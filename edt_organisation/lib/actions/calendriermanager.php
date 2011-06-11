@@ -83,7 +83,6 @@ class calendriermanagerAction extends Action {
 					}
 				}
 			}
-
 			calendar::updateTables();
 		}
 		$response->addVar('delete_confirmation', $delete_confirmation);

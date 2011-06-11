@@ -99,7 +99,7 @@ class Calendrier {
  
 	public static function getCalendriers() {
 		$result = array();
-		$sql="SELECT id, nom_calendrier FROM edt_calendrier_manager ";
+		$sql="SELECT id, nom_calendrier FROM edt_calendrier_manager ORDER BY id ASC ";
 		$req = mysql_query($sql);
 		if ($req) {
 			while ($rep = mysql_fetch_array($req)) {

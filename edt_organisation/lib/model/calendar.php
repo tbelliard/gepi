@@ -38,6 +38,7 @@
  *
  *
  */
+include_once("./lib/model/classes.php");
 include_once("./lib/model/edt_calendrier.php");
 include_once("./lib/model/edt_calendrier_manager.php");
 class calendar {
@@ -50,6 +51,10 @@ class calendar {
     public static function updateTables() {	
 	
 		// ===============================================================
+		$sql = "CREATE TABLE IF NOT EXISTS edt_j_calendar_classes (
+					id_calendar INT,
+					id_classe INT)";
+		$req_creation = mysql_query($sql);
 		$sql = "CREATE TABLE IF NOT EXISTS edt_calendrier_manager (
 					id INT AUTO_INCREMENT,
 					nom_calendrier TEXT,
@@ -290,7 +295,7 @@ class calendar {
 	{
 		$result = '';
 		$calendriers = Calendrier::getCalendriers();
-		
+		$classes = Classe::getClasses();
 		if ($calendriers) {
 			$i = 0;
 			while (isset($calendriers['id'][$i])) {
@@ -307,9 +312,25 @@ class calendar {
 							<img src=\"./lib/template/images/modif.png\" alt=\"modifier le nom\" title=\"modifier le nom du calendrier\"/>
 							</a>
 							</div>";				
-				
-				
 				$result .= "</div>";
+
+				$result .= "<div style=\"background-color:white;
+										width:73%;
+										margin:0 auto;
+										border-top:3px solid black;
+										border-right:1px solid black;
+										border-left:1px solid black;
+										border-bottom:1px solid black;
+										position:relative;
+										padding:20px;\">";
+				$j = 0;
+				while (isset($classes['id'][$j])) {	
+					$result.="	<p STYLE=\"width:70px;font-size:12px;float:left;\">
+								<input type=\"checkbox\" name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
+								</p>";
+					$j++;
+				}
+				$result .= "<div style=\"clear:both;\"></div></div>";
 				$i++;
 			}
 		}

@@ -1996,7 +1996,7 @@ img.image
 	
 	.cadre_calendrier {
 		width:80%;
-		margin:10px auto 10px auto;
+		margin:10px auto 0px auto;
 		position:relative;
 		height:30px;
 		border:1px solid black;
