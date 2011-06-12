@@ -433,6 +433,13 @@ else {
 		echo "<li><p>Dans le cas du 'SOCLE B2I', il n'est pas nécessaire d'associer une matière.<br />L'affectation de la 'note' (<i>MS, ME, MN ou AB</i>) ne se fait pas par extraction des notes de l'année.</p>
 		<p>Pour le 'SOCLE NIVEAU A2 DE LANGUE', les matières ne sont pas exploitées pour le filtrage... seul le statut 'imposee' ou 'optionnelle' selon le type de brevet est utilisé.</p></li>\n";
 		echo "<li><p>Dans certains établissements, la matière Education Civique est considérée comme une sous-matière de Histoire-géographie et EDCIV ne fait alors pas l'objet d'une moyenne séparée de HIGEO.<br />Dans ce cas, il convient d'associer les deux matières notanet Histoire-Géo et Education civique à HIGEO.<br />Dans le cas contraire, l'export CSV sera refusé par l'application Notanet académique.</p></li>\n";
+
+		if(($type_brevet==2)||($type_brevet==3)||($type_brevet==4)||($type_brevet==5)||($type_brevet==6)) {
+				echo "<li><p>Dans certains établissements, on enseigne la LV1, mais pas les SCPHY pour les brevets PRO.<br />
+				Pourtant, l'application académique Notanet n'accepte pas que la matière 104 soit alors déclarée comme Non dispensée et donc n'apparaisse pas dans le fichier CSV généré par Gepi.<br />
+				Dans ce cas, il conviendra d'associer la même matière Gepi pour les deux matières Notanet LV1 (103) et SCPHY (104).<br />
+				De cette façon le fichier CSV généré sera conforme à ce qui est attendu par l'application Notanet académique.</p></li>\n";
+		}
 		echo "</ul>\n";
 
 		if($type_brevet==2){
