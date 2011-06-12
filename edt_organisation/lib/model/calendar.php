@@ -41,6 +41,7 @@
 include_once("./lib/model/classes.php");
 include_once("./lib/model/edt_calendrier.php");
 include_once("./lib/model/edt_calendrier_manager.php");
+include_once("./lib/model/edt_j_calendar_classes.php");
 class calendar {
 
 
@@ -298,6 +299,7 @@ class calendar {
 		$classes = Classe::getClasses();
 		if ($calendriers) {
 			$i = 0;
+			$jointure = new jointure_calendar_classes;
 			while (isset($calendriers['id'][$i])) {
 				$result.="<div id=\"calendrier_".$calendriers['id'][$i]."\" class=\"cadre_calendrier\">";
 				$result.="<div style=\"float:left;width:30px;\"><img style=\"border:0px;padding:0px;margin:0;\" src=\"./lib/template/images/calendar.png\" alt=\"\" \></div>";
@@ -323,14 +325,36 @@ class calendar {
 										border-bottom:1px solid black;
 										position:relative;
 										padding:20px;\">";
+				$result.="<form action=\"index.php?action=calendriermanager\" method=\"post\">";
+				$result.="<input name=\"operation\" type=\"hidden\" value=\"edit_classes\">";
+				$result.="<input name=\"id_calendrier\" type=\"hidden\" value=\"".$calendriers['id'][$i]."\">";
 				$j = 0;
+
+				$jointure->id_calendar = $calendriers['id'][$i];
 				while (isset($classes['id'][$j])) {	
-					$result.="	<p STYLE=\"width:70px;font-size:12px;float:left;\">
-								<input type=\"checkbox\" name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
-								</p>";
+					$jointure->id_classe = $classes['id'][$j];
+					if ($jointure->exists()) {
+						$result.="	<p style=\"width:70px;font-size:12px;float:left;\">
+									<input type=\"checkbox\" checked name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
+									</p>";
+					}
+					else if ($jointure->bad_calendar()) {
+						$result.="	<p style=\"width:70px;font-size:12px;float:left;\">
+									<input type=\"checkbox\" disabled name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
+									</p>";					
+					
+					}
+					else {
+						$result.="	<p style=\"width:70px;font-size:12px;float:left;\">
+									<input type=\"checkbox\" name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
+									</p>";					
+					}
 					$j++;
 				}
-				$result .= "<div style=\"clear:both;\"></div></div>";
+				$result .= "<div style=\"clear:both;\">";
+				$result .="<input type=\"submit\" value=\"Valider les classes\">";
+				$result .="</form>";
+				$result.="</div></div>";
 				$i++;
 			}
 		}

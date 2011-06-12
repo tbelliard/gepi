@@ -20,7 +20,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 include("./lib/actions/action.class.php");
-include("./lib/model/calendar.php");
+include_once("./lib/model/calendar.php");
+include_once("./lib/model/edt_j_calendar_classes.php");
 class calendriermanagerAction extends Action {
 
     public function launch(Request $request, Response $response)
@@ -82,6 +83,27 @@ class calendriermanagerAction extends Action {
 						}
 					}
 				}
+				else if ($request->getParam('operation') == "edit_classes") {
+					if ($request->getParam('id_calendrier')) {
+						$id_calendrier = $request->getParam('id_calendrier');
+						$jointure = new jointure_calendar_classes;
+						$jointure->id_calendar = $id_calendrier;
+						$jointure->delete_classes();
+						if ($request->getParam('classes_'.$id_calendrier)) {
+							foreach ($request->getParam('classes_'.$id_calendrier) as $id_classe) {
+								$jointure->id_classe = $id_classe;
+								$jointure->save_classe();
+							}
+							// TODO : Vérifier qu'une classe n'est pas affectée dans deux calendriers.
+							
+							// ================ Compatibilité pour les autres modules GEPi
+							// TODO
+							// Il faut mettre à jour le champ classes_concernées pour chaque période calendaire.
+							
+							
+						}
+					}
+				}				
 			}
 			calendar::updateTables();
 		}
