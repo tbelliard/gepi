@@ -170,35 +170,43 @@ if (!isset($_POST["action"])) {
 
 			if(($reg_id_int!='')&&($reg_classe!='')){
 				// Première étape : on s'assure que l'élève existe et on récupère son login... S'il n'existe pas, on laisse tomber.
-				$test = mysql_query("SELECT login FROM eleves WHERE elenoet = '" . $reg_id_int . "'");
+				$sql="SELECT login FROM eleves WHERE elenoet = '" . $reg_id_int . "'";
+				//echo "$sql<br />";
+				$test = mysql_query($sql);
 				if (mysql_num_rows($test) == 1) {
 					$login_eleve = mysql_result($test, 0, "login");
 
 					// Maintenant que tout est propre et que l'élève existe, on fait un test sur la table pour voir si la classe existe
 
-					$test = mysql_query("SELECT id FROM classes WHERE classe = '" . $reg_classe . "'");
+					$sql="SELECT id FROM classes WHERE classe = '" . $reg_classe . "'";
+					//echo "$sql<br />";
+					$test = mysql_query($sql);
 
 					if (mysql_num_rows($test) == 0) {
 						// Test négatif : aucune classe avec ce nom court... on créé !
 
-						$insert1 = mysql_query("INSERT INTO classes SET " .
-								"classe = '" . $reg_classe . "', " .
-								"nom_complet = '" . $reg_classe . "', " .
-								"format_nom = 'np', " .
-								"display_rang = 'n', " .
-								"display_address = 'n', " .
-								"display_coef = 'y'");
+						$sql="INSERT INTO classes SET " .
+							"classe = '" . $reg_classe . "', " .
+							"nom_complet = '" . $reg_classe . "', " .
+							"format_nom = 'np', " .
+							"display_rang = 'n', " .
+							"display_address = 'n', " .
+							"display_coef = 'y'";
+						//echo "$sql<br />";
+						$insert1 = mysql_query($sql);
 						// On récupère l'ID de la classe nouvelle créée, pour enregistrer les périodes
 						$classe_id = mysql_insert_id();
 
 						for ($p=1;$p<4;$p++) {
 							if ($p == 1) $v = "O";
 								else $v = "N";
-							$insert2 = mysql_query("INSERT INTO periodes SET " .
+							$sql="INSERT INTO periodes SET " .
 									"nom_periode = 'Période ".$p . "', " .
 									"num_periode = '" . $p . "', " .
 									"verouiller = '" . $v . "', " .
-									"id_classe = '" . $classe_id . "'");
+									"id_classe = '" . $classe_id . "'";
+							//echo "$sql<br />";
+							$insert2 = mysql_query($sql);
 						}
 						$num_periods = 3;
 
@@ -212,9 +220,11 @@ if (!isset($_POST["action"])) {
 					// Maintenant qu'on a l'ID de la classe et le nombre de périodes, on enregistre l'association
 
 					for ($p=1;$p<=$num_periods;$p++) {
-						$insert = mysql_query("INSERT INTO j_eleves_classes SET login = '" . $login_eleve . "', " .
+						$sql="INSERT INTO j_eleves_classes SET login = '" . $login_eleve . "', " .
 																	"id_classe = '" . $classe_id . "', " .
-																	"periode = '" . $p . "'");
+																	"periode = '" . $p . "'";
+						//echo "$sql<br />";
+						$insert = mysql_query($sql);
 					}
 
 					if (!$insert) {
