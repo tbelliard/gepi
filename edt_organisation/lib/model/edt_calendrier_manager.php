@@ -57,6 +57,26 @@ class Calendrier {
  *
  *******************************************************************/
  
+	public function exists() {
+		$sql="SELECT id FROM edt_calendrier_manager WHERE id = '".$this->id."' ";
+		$req = mysql_query($sql);
+		if ($req) {
+			if (mysql_num_rows($req) != 0) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			return false;
+		}				
+	}	
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+ 
 	public function delete() {
 		$sql="DELETE FROM edt_calendrier_manager WHERE id = '".$this->id."' ";
 		$req = mysql_query($sql);

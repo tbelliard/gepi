@@ -21,6 +21,7 @@
  */
 include("./lib/actions/action.class.php");
 include("./lib/model/calendar.php");
+include_once("./lib/model/edt_calendrier_manager.php");
 class calendrierAction extends Action {
 
 
@@ -35,21 +36,29 @@ class calendrierAction extends Action {
 		$response->addVar('TypeSemaineCourante', calendar::getTypeCurrentWeek());
 		$response->addVar('SemaineCourante', calendar::getCurrentWeek());
 		if ($request->getParam('id_calendrier')) {
-			$jointure = new jointure_calendar_classes;
-			$jointure->id_calendar = $request->getParam('id_calendrier');
-			if (!$jointure->PeriodsCompatible()) {
-				$PeriodesNotesAutorisees = false;
-				$message = "Certaines classes n'ont pas les mêmes périodes de notes ! Vous ne pourrez donc pas associer une période de notes à une période calendaire.";
+			$calendrier = new Calendrier;
+			$calendrier->id = $request->getParam('id_calendrier');
+			if ($calendrier->exists()) {
+				$jointure = new jointure_calendar_classes;
+				$jointure->id_calendar = $request->getParam('id_calendrier');
+				if (!$jointure->PeriodsCompatible()) {
+					$PeriodesNotesAutorisees = false;
+					$message = "Certaines classes n'ont pas les mêmes périodes de notes ! Vous ne pourrez donc pas associer une période de notes à une période calendaire.";
+				}
+				else {
+					$liste_periodes = $jointure->getPeriodesNotesFromCalendar();
+				}
+				$response->addVar('nom_calendrier', Calendrier::getNom($request->getParam('id_calendrier')));
+				$response->addVar('Calendrier', calendar::GenerateCalendar($request->getParam('id_calendrier')));
 			}
 			else {
-				$liste_periodes = $jointure->getPeriodesNotesFromCalendar();
+				$response->addVar('nom_calendrier', "Erreur - calendrier inexistant");
+				$response->addVar('Calendrier', "");			
 			}
-			$response->addVar('nom_calendrier', Calendrier::getNom($request->getParam('id_calendrier')));
-			$response->addVar('Calendrier', calendar::GenerateCalendar($request->getParam('id_calendrier')));
 		}
 		else {
-			$response->addVar('nom_calendrier', "");
-			$response->addVar('Calendrier', "aucun calendrier selectionné");
+			$response->addVar('nom_calendrier', "Erreur - aucun calendrier demandé");
+			$response->addVar('Calendrier', "");
 		}
 		$response->addVar('liste_periodes', $liste_periodes);
 		$response->addVar('periodes_notes_autorisees', $PeriodesNotesAutorisees);
