@@ -52,5 +52,21 @@ class Classe {
 		}
 		return $result;
 	}
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+ 
+	public function getShortName() {
+		$result = null;
+		$sql="SELECT classe FROM classes WHERE id = '".$this->id."' ";
+		$req = mysql_query($sql);
+		if ($req) {
+			$rep = mysql_fetch_array($req);
+			$result = $rep['classe'];
+		}
+		return $result;
+	}
+	
 }	
 ?>

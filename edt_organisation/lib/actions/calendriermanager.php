@@ -87,20 +87,25 @@ class calendriermanagerAction extends Action {
 					if ($request->getParam('id_calendrier')) {
 						$id_calendrier = $request->getParam('id_calendrier');
 						$jointure = new jointure_calendar_classes;
+						$periodes = new PeriodeCalendaire;
+						$classe = new Classe;
 						$jointure->id_calendar = $id_calendrier;
 						$jointure->delete_classes();
 						if ($request->getParam('classes_'.$id_calendrier)) {
+							$liste_classes = null;
 							foreach ($request->getParam('classes_'.$id_calendrier) as $id_classe) {
+								$classe->id = $id_classe;
+								$liste_classes.= $classe->getShortName().";";
 								$jointure->id_classe = $id_classe;
-								$jointure->save_classe();
+								if (!$jointure->save_classe()) {
+									$message .= "Une classe est déjà affectée dans un autre calendrier<br/>";
+								}
 							}
-							// TODO : Vérifier qu'une classe n'est pas affectée dans deux calendriers.
-							
 							// ================ Compatibilité pour les autres modules GEPi
-							// TODO
-							// Il faut mettre à jour le champ classes_concernées pour chaque période calendaire.
-							
-							
+							$periodes->id_calendar = $id_calendrier;
+							$periodes->classes_concernees = $liste_classes;
+							$periodes->update_classes();
+
 						}
 					}
 				}				

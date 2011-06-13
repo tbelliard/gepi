@@ -22,7 +22,7 @@
 class PeriodeCalendaire {
 
 	public $id;
-	public $classe_concernees;
+	public $classes_concernees;
 	public $nom;
 	public $debut_ts;
 	public $fin_ts;
@@ -51,7 +51,7 @@ class PeriodeCalendaire {
  
 	public function update() {
 		$sql="UPDATE edt_calendrier SET
-				classe_concerne_calendrier = '".$this->classe_concernees."',
+				classe_concerne_calendrier = '".$this->classes_concernees."',
 				nom_calendrier = '".$this->nom."',
 				debut_calendrier_ts = '".$this->debut_ts."',
 				fin_calendrier_ts = '".$this->fin_ts."',
@@ -64,6 +64,23 @@ class PeriodeCalendaire {
 				etabvacances_calendrier = '".$this->etabvacances."',
 				id_calendar = '".$this->id_calendar."'
 				WHERE id_calendrier = '".$this->id."' ";
+		$req = mysql_query($sql);
+		if ($req) {
+			return true;
+		}
+		else {
+			return false;
+		}				
+	}
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+ 
+	public function update_classes() {
+		$sql="UPDATE edt_calendrier SET
+				classe_concerne_calendrier = '".$this->classes_concernees."'
+				WHERE id_calendar = '".$this->id_calendar."' ";
 		$req = mysql_query($sql);
 		if ($req) {
 			return true;
@@ -125,7 +142,7 @@ class PeriodeCalendaire {
  
 	public function save() {
 		$sql="INSERT INTO edt_calendrier SET 
-				classe_concerne_calendrier = '".$this->classe_concernees."',
+				classe_concerne_calendrier = '".$this->classes_concernees."',
 				nom_calendrier = '".$this->nom."',
 				debut_calendrier_ts = '".$this->debut_ts."',
 				fin_calendrier_ts = '".$this->fin_ts."',

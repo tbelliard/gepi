@@ -93,7 +93,7 @@ class ajaxrequestAction extends Action {
 					$PeriodeCalendaire->fin_ts = $fin_ts;
 					$PeriodeCalendaire->jourfin = $jourfin;		
 					$PeriodeCalendaire->heurefin = $heurefin;
-					$PeriodeCalendaire->numero_periode = $request->getParam('periode_notes');
+					$PeriodeCalendaire->periode_note = $request->getParam('periode_notes');
 					$PeriodeCalendaire->etabvacances = $request->getParam('type');
 					$PeriodeCalendaire->etabferme = $request->getParam('ouvert');
 					if ($PeriodeCalendaire->insertable()) {
@@ -203,38 +203,41 @@ class ajaxrequestAction extends Action {
  *******************************************************************/		
 	
 	public function editPeriod(&$content, Request $request) {
-		if ($request->getParam('day')) {
-			$debut = array();
-			$fin = array();
-			$day  = $request->getParam('day');
-			$period = calendar::getPeriodFromDay($day, null);
-			calendar::getFrontiersPeriods($debut, $fin, null);
-			$success = false;$debut_periode = 0;$fin_periode = 0;$stop = false;$i=0;
-			while ((!$success) && (!$stop)) {
-				if (($day >= $debut[$i]) && ($day <=$fin[$i])) {
-					$success = true;
-					$debut_periode = $debut[$i];
-					$fin_periode = $fin[$i];
+		if ($request->getParam('id_calendar')) {
+			$id_calendar = $request->getParam('id_calendar');
+			if ($request->getParam('day')) {
+				$debut = array();
+				$fin = array();
+				$day  = $request->getParam('day');
+				$period = calendar::getPeriodFromDay($day, $id_calendar);
+				calendar::getFrontiersPeriods($debut, $fin, $id_calendar);
+				$success = false;$debut_periode = 0;$fin_periode = 0;$stop = false;$i=0;
+				while ((!$success) && (!$stop)) {
+					if (($day >= $debut[$i]) && ($day <=$fin[$i])) {
+						$success = true;
+						$debut_periode = $debut[$i];
+						$fin_periode = $fin[$i];
+					}
+					$i++;
+					if (!isset($debut[$i])) {
+						$stop = true;
+					}
 				}
-				$i++;
-				if (!isset($debut[$i])) {
-					$stop = true;
-				}
-			}
-			header('Content-type: text/html;charset=iso-8859-1;');
-			//header('Content-type: application/x-json');
-			$content = '[{
-					"id": "'.$period['id'].'",
-					"name": "'.$period['nom'].'", 
-					"start_date": "'.strftime("%d/%m/%Y", $period['debut']).'",
-					"end_date": "'.strftime("%d/%m/%Y", $period['fin']).'",
-					"periode_notes": "'.$period['periode_notes'].'",
-					"ouvert": "'.$period['ouvert'].'",
-					"type": "'.$period['type'].'",
-					"num_jour_initial" : "'.$debut_periode.'",
-					"num_jour_final" : "'.$fin_periode.'"
-					}]';
+				header('Content-type: text/html;charset=iso-8859-1;');
+				//header('Content-type: application/x-json');
+				$content = '[{
+						"id": "'.$period['id'].'",
+						"name": "'.$period['nom'].'", 
+						"start_date": "'.strftime("%d/%m/%Y", $period['debut']).'",
+						"end_date": "'.strftime("%d/%m/%Y", $period['fin']).'",
+						"periode_notes": "'.$period['periode_notes'].'",
+						"ouvert": "'.$period['ouvert'].'",
+						"type": "'.$period['type'].'",
+						"num_jour_initial" : "'.$debut_periode.'",
+						"num_jour_final" : "'.$fin_periode.'"
+						}]';
 
+			}
 		}
 	}
 /*******************************************************************

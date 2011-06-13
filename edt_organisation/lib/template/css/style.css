@@ -1993,13 +1993,40 @@ img.image
 	.bouton_modifier img{
 		border : 0px ;
 	}
-	
+	.bouton_loupe {
+		position:absolute;
+		top:0px;
+		right:72px;
+		float:right;
+		width:22px;
+		height:22px;
+		font-size:0.6em;
+		padding:0px;
+
+	}
+	.bouton_loupe  img{
+		border : 0px ;
+	}	
+	.fleche_gauche {
+		position:absolute;
+		top:28px;
+		left:20px;
+		float:left;
+		width:22px;
+		height:22px;
+		font-size:0.6em;
+		padding:0px;
+
+	}
+	.fleche_gauche  img{
+		border : 0px ;
+	}	
 	.cadre_calendrier {
 		width:80%;
 		margin:10px auto 0px auto;
 		position:relative;
 		height:30px;
-		border:1px solid black;
+		border:1px solid #bbbbbb;
 		padding:5px;
 		background-color:#dddddd;
 	}
@@ -2011,3 +2038,22 @@ img.image
 		color:white;
 		text-decoration:none;
 	}	
+	.new_period {
+		width:330px;
+		height:156px;
+		display:none;
+		position:absolute;
+		background-image:url('../images/popup.png');
+		background-repeat:no-repeat;	
+	}
+	.edit_period {
+		width:481px;
+		height:332px;
+		display:none;
+		position:absolute;
+		padding-top:50px;
+		padding-left:10px;
+		background-image:url('../images/popup2.png');
+		background-repeat:no-repeat;
+	
+	}

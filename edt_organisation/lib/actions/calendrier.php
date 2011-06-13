@@ -27,10 +27,23 @@ class calendrierAction extends Action {
 
     public function launch(Request $request, Response $response)
     {
+		
+		$message = null;
+		$PeriodesNotesAutorisees = true;
+		$liste_periodes = null;
 		$response->addVar('NomPeriode', calendar::getPeriodName(time()));
 		$response->addVar('TypeSemaineCourante', calendar::getTypeCurrentWeek());
 		$response->addVar('SemaineCourante', calendar::getCurrentWeek());
 		if ($request->getParam('id_calendrier')) {
+			$jointure = new jointure_calendar_classes;
+			$jointure->id_calendar = $request->getParam('id_calendrier');
+			if (!$jointure->PeriodsCompatible()) {
+				$PeriodesNotesAutorisees = false;
+				$message = "Certaines classes n'ont pas les mêmes périodes de notes ! Vous ne pourrez donc pas associer une période de notes à une période calendaire.";
+			}
+			else {
+				$liste_periodes = $jointure->getPeriodesNotesFromCalendar();
+			}
 			$response->addVar('nom_calendrier', Calendrier::getNom($request->getParam('id_calendrier')));
 			$response->addVar('Calendrier', calendar::GenerateCalendar($request->getParam('id_calendrier')));
 		}
@@ -38,6 +51,9 @@ class calendrierAction extends Action {
 			$response->addVar('nom_calendrier', "");
 			$response->addVar('Calendrier', "aucun calendrier selectionné");
 		}
+		$response->addVar('liste_periodes', $liste_periodes);
+		$response->addVar('periodes_notes_autorisees', $PeriodesNotesAutorisees);
+		$response->addVar('message', $message);
         $this->render("./lib/template/calendrierSuccess.php");
         $this->printOut();
     }

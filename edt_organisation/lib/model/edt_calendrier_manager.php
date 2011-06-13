@@ -61,10 +61,19 @@ class Calendrier {
 		$sql="DELETE FROM edt_calendrier_manager WHERE id = '".$this->id."' ";
 		$req = mysql_query($sql);
 		if ($req) {
+			// ======== Suppression des périodes calendaires
 			$PeriodesCalendaires = new PeriodeCalendaire;
 			$PeriodesCalendaires->id_calendar = $this->id;
 			if ($PeriodesCalendaires->deleteCalendar()) {
-				return true;
+				// ========= Suppression des liaisons classes <-> calendar
+				$jointure = new jointure_calendar_classes;
+				$jointure->id_calendar = $this->id;
+				if ($jointure->delete_classes()) {
+					return true;
+				}
+				else {
+					return false;
+				}
 			}
 			else {
 				return false;

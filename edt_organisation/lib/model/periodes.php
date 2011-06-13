@@ -28,6 +28,7 @@ class PeriodeNote {
 	public $id_classe;
 	public $date_verrouillage;
 	
+	
 /*******************************************************************
  *
  *
@@ -57,7 +58,23 @@ class PeriodeNote {
 		}				
 	}
 	
-
+/*******************************************************************
+ *
+ *
+ *******************************************************************/
+ 
+	public function getPeriods() {
+		$result = array();
+		$sql="SELECT nom FROM periodes WHERE 
+				id_classe = '".$this->id_classe."' ";
+		$req = mysql_query($sql);
+		if ($req) {
+			while ($rep=mysql_fetch_array($req)) {
+				$result[] = $rep['nom'];
+			}
+		}
+		return $result;
+	}
 
 
 
