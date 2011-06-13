@@ -273,7 +273,10 @@ class ajaxrequestAction extends Action {
 					$PeriodeCalendaire->jourfin = $result['day'];		
 					$PeriodeCalendaire->heurefin = "23:59:00";
 
-					$PeriodeCalendaire->etabferme = 1;
+					$PeriodeCalendaire->periode_note = $request->getParam('periode_notes');
+					$PeriodeCalendaire->etabvacances = $request->getParam('type');
+					$PeriodeCalendaire->etabferme = $request->getParam('ouvert');
+
 					$PeriodeCalendaire->id_calendar = $request->getParam('id_calendar');
 					if ($PeriodeCalendaire->insertable()) {
 						if (!$PeriodeCalendaire->save()) {

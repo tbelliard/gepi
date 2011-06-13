@@ -342,6 +342,8 @@
 				$('new_period').setStyle({top: y+Math.abs((height-100)/2)+"px"});
 				$('new_period').setStyle({left: Math.abs((width-300)/2)+"px"});
 				$('new_period').setStyle({display: 'block'});
+				$('params_new_period').setStyle({top: 170+y+Math.abs((height-100)/2)+"px"});
+				$('params_new_period').setStyle({left: Math.abs((width-300)/2)+"px"});
 				$('period_input_field').value='';
 				$('period_input_field').focus();
 						
@@ -350,6 +352,8 @@
 					if (event.keyCode=='13'){  
 						$('new_period').setStyle({display: 'none'});	
 						$('cache_modal').setStyle({display: 'none'}); 
+						$('params_new_period').setStyle({display: 'none'});
+
 						if (Prototype.Browser.IE) {
 							document.documentElement.scroll = "yes";
 							document.documentElement.style.overflow = 'scroll';
@@ -363,7 +367,15 @@
 								'./index.php',
 							  {
 								method:'get',
-								parameters: {action: "ajaxrequest", asker: "calendrier", periodname: $('period_input_field').value, firstday: IndiceFirstDiv, lastday: IndiceCurrentDiv, id_calendar: $('id_calendar').value},
+								parameters: {action: "ajaxrequest", 
+											asker: "calendrier", 
+											periodname: $('period_input_field').value, 
+											firstday: IndiceFirstDiv, 
+											lastday: IndiceCurrentDiv, 
+											id_calendar: $('id_calendar').value,
+											periode_notes:($$('select#params_periodes_notes option').find(function(ele){return ele.selected})).value,
+											ouvert:$('params_ouvert').value,
+											type:$('params_type').value},
 								onSuccess: function(transport){
 									var response = transport.responseText || "Le serveur ne répond pas";
 									var message = response.substring(0,5);
@@ -397,6 +409,15 @@
 
 							  $('period_input_field').value = "";
 						}
+						$$('select#params_periodes_notes option').each(function(o) {
+							o.selected = o.readAttribute('value') == "0";
+						});
+						$('params_ouvert').value = "1";
+						$('params_checkbox_open').setAttribute("src", "./lib/template/images/checked.gif");
+						$('params_checkbox_close').setAttribute("src", "./lib/template/images/unchecked.gif");
+						$('params_type').value = "0";
+						$('params_checkbox_cours').setAttribute("src", "./lib/template/images/checked.gif");
+						$('params_checkbox_vacances').setAttribute("src", "./lib/template/images/unchecked.gif");
 						NbSelectedDays = 0;
 						FirstDiv='';
 						repaint_cells();
@@ -404,6 +425,16 @@
 					else if (event.keyCode=='27'){  
 						$('new_period').setStyle({display: 'none'});	
 						$('cache_modal').setStyle({display: 'none'}); 
+						$('params_new_period').setStyle({display: 'none'});
+						$$('select#params_periodes_notes option').each(function(o) {
+							o.selected = o.readAttribute('value') == "0";
+						});
+						$('params_ouvert').value = "1";
+						$('params_checkbox_open').setAttribute("src", "./lib/template/images/checked.gif");
+						$('params_checkbox_close').setAttribute("src", "./lib/template/images/unchecked.gif");
+						$('params_type').value = "0";
+						$('params_checkbox_cours').setAttribute("src", "./lib/template/images/checked.gif");
+						$('params_checkbox_vacances').setAttribute("src", "./lib/template/images/unchecked.gif");
 						if (Prototype.Browser.IE) {
 							document.documentElement.scroll = "yes";
 							document.documentElement.style.overflow = 'scroll';
@@ -474,5 +505,45 @@
 			$('type').value = "1";
 			$('checkbox_cours').setAttribute("src", "./lib/template/images/unchecked.gif");
 			$('checkbox_vacances').setAttribute("src", "./lib/template/images/checked.gif");
+		});
+
+		
+		$('params_checkbox_open').observe('click', function(event) {
+			$('params_ouvert').value = "1";
+			$('params_checkbox_open').setAttribute("src", "./lib/template/images/checked.gif");
+			$('params_checkbox_close').setAttribute("src", "./lib/template/images/unchecked.gif");
+		});
+		$('params_checkbox_close').observe('click', function(event) {
+			$('params_ouvert').value = "2";
+			$('params_checkbox_open').setAttribute("src", "./lib/template/images/unchecked.gif");
+			$('params_checkbox_close').setAttribute("src", "./lib/template/images/checked.gif");
+		});
+		$('params_checkbox_cours').observe('click', function(event) {
+			$('params_type').value = "0";
+			$('params_checkbox_cours').setAttribute("src", "./lib/template/images/checked.gif");
+			$('params_checkbox_vacances').setAttribute("src", "./lib/template/images/unchecked.gif");
+		});
+		$('params_checkbox_vacances').observe('click', function(event) {
+			$('params_type').value = "1";
+			$('params_checkbox_cours').setAttribute("src", "./lib/template/images/unchecked.gif");
+			$('params_checkbox_vacances').setAttribute("src", "./lib/template/images/checked.gif");
+		});
+		$('bouton_params').observe('click', function(event) {
+			var viewport = document.viewport.getDimensions(); // Gets the viewport as an object literal
+			var width = viewport.width; // Usable window width
+			var height = viewport.height; // Usable window height
+			if( typeof( window.pageYOffset ) == 'number' ) 
+				{y = window.pageYOffset;}
+			else if (typeof(document.documentElement.scrollTop) == 'number') {
+				y=document.documentElement.scrollTop;
+			}
+			$('params_new_period').setStyle({top: 170+y+Math.abs((height-100)/2)+"px"});
+			$('params_new_period').setStyle({left: Math.abs((width-300)/2)+"px"});
+			if ($('params_new_period').getStyle('display') == 'none') {
+				$('params_new_period').appear();
+			}
+			else {
+				$('params_new_period').setStyle({display: 'none'});
+			}
 		});
 	}

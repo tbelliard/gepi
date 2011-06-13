@@ -118,8 +118,51 @@
 </div>
 <div id="cache_modal" style="display:none;position:absolute;top:0px;left:0px;background-color:#000000;width:200px;height:200px;"> &nbsp;</div>
 <div id="new_period" class="new_period"> 
-	<p id="label_period" style="padding-left:40px;padding-top:50px;text-align:left;">Entrez le nom de la nouvelle période</p>
-	<p style="padding:10px;padding-left:50px;"><input id="period_input_field" style="width:200px;" type="text"/></p> 
+	<p id="label_period" style="padding-left:40px;padding-top:40px;text-align:left;">Entrez le nom de la nouvelle période</p>
+	<p style="padding-top:10px;padding-left:50px;"><input id="period_input_field" style="width:200px;" type="text"/></p> 
+	<p style="padding-left:10px;padding-top:10px;"><img id="bouton_params" src="./lib/template/images/bouton_params.png" /></p>
+</div>
+<div id="params_new_period" style="padding:5px;
+									text-align:left;
+									position:absolute;
+									display:none;
+									background-color:white;
+									border:1px solid black;
+									width:290px;
+									background-image:url('./lib/template/images/degrade_noir.png');
+									background-repeat:repeat-x;
+									background-position:left bottom;">
+	<?php if ($periodes_notes_autorisees) { ?> 
+	<p>Période de notes associée :
+			<select id="params_periodes_notes" style="width:110px;" >
+			<?php echo $liste_periodes; ?>
+			</select>
+		</p>
+	
+	<?php } else { ?>
+	<p>Période de notes associée :
+		
+			<select disabled id="params_periodes_notes" style="width:130px;" >
+				<option value="0">aucune période</option>
+			</select>
+		</p>
+	 	
+	<?php } ?>
+	<p>	<span>Etablissement ouvert ?</span>
+		<span> <input id="params_ouvert"  type="hidden"/></span>
+		<span style="padding-left:30px;"> <img id="params_checkbox_open" src="./lib/template/images/checked.gif" /></span><span style="padding-left:5px;"> oui </span>
+		<span style="padding-left:30px;"> <img id="params_checkbox_close" src="./lib/template/images/unchecked.gif" /></span><span style="padding-left:5px;"> non </span>
+	</p> 	
+	<p style="padding-bottom:20px;">
+		<span>Type de période : </span>
+		<span> <input id="params_type" type="hidden"/></span>
+		<span style="padding-left:20px;"> <img id="params_checkbox_cours" src="./lib/template/images/checked.gif" /></span><span style="padding-left:5px;"> cours </span>
+		<span style="padding-left:20px;"> <img id="params_checkbox_vacances" src="./lib/template/images/unchecked.gif" /></span><span style="padding-left:5px;"> vacances </span>
+	</p> 
+	</p> 
+	<!-- <p style="padding-top:10px;">
+		<span><img id="params_bouton_valider" alt="valider" src="lib/template/images/params_bouton_valider.png" /></span>
+	</p> -->
 </div>
 <div id="edit_period" class="edit_period"> 
 	<input type="hidden" id="id_period" />
