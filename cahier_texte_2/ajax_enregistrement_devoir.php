@@ -115,8 +115,10 @@ if ($ctTravailAFaire == null) {
 
 // Vérification : est-ce que l'utilisateur a le droit de travailler sur ce devoir ?
 if ($ctTravailAFaire->getIdLogin() != $utilisateur->getLogin()) {
-	echo("Erreur enregistrement de devoir : vous n'avez pas le droit de modifier cette notice.");
-	die();
+	if(getSettingValue("cdt_autoriser_modif_multiprof")!="yes") {
+		echo("Erreur enregistrement de devoir : vous n'avez pas le droit de modifier cette notice.");
+		die();
+	}
 }
 
 
