@@ -375,8 +375,8 @@
 	$tabcouleurs['Periode_2']['B']=0;
 
 	$tabcouleurs['Periode_3']=array();
-	$tabcouleurs['Periode_3']['R']=255;
-	$tabcouleurs['Periode_3']['V']=0;
+	$tabcouleurs['Periode_3']['R']=0;
+	$tabcouleurs['Periode_3']['V']=200;
 	$tabcouleurs['Periode_3']['B']=0;
 
 	for($i=0;$i<count($tab);$i++){
@@ -557,8 +557,8 @@
 	// Préparation des abscisses et affichage des noms de matières et valeurs des moyennes:
 
 	//Epaisseur des traits:
-	imagesetthickness($img,$epaisseur_traits);
-
+	//imagesetthickness($img,$epaisseur_traits);
+	imagesetthickness($img,4);
 	//imageLine($img,100,100,200,300,$couleureleve1);
 	//imageLine($img,100,round($moyenne[2]*10),200,300,$couleureleve1);
 	//imageDashedLine($img,100,100,200,300,$noir);
@@ -784,6 +784,7 @@
 
 
 	//for($k=1;$k<=$nb_series;$k++){
+	$epaisseur = 3;
 	for($k=1;$k<=$nb_series_bis;$k++){
 		//Placement des points de la courbe:
 		for($i=1;$i<$nbMat+1;$i++){
@@ -802,6 +803,7 @@
 		}
 
 		//Tracé de la courbe:
+		imagesetthickness($img,$epaisseur);
 		for($i=1;$i<$nbMat;$i++){
 			$x1=$x[$i];
 			$x2=$x[$i+1];
@@ -809,6 +811,7 @@
 				imageLine($img,$x1,$ycourbe[$k][$i],$x2,$ycourbe[$k][$i+1],$couleureleve[$k]);
 			}
 		}
+		$epaisseur+=1;
 	}
 
 	//================================================================
