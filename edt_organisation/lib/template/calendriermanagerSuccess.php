@@ -118,6 +118,7 @@
 												<div style="text-align:center;">
 												<form id="add_calendar" action="index.php?action=calendriermanager" enctype="multipart/form-data" method="post">
 												<fieldset>
+													<?php echo add_token_field(false); ?>
 													<input name="operation" type="hidden" value="new">
 													<input name="nom_calendrier" style="width:200px;" type="text" title="Entrez le nom du nouveau calendrier">
 													<input name="bouton_submit" type="submit" value="Créer un nouveau calendrier">

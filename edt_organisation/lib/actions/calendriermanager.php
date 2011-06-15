@@ -32,6 +32,7 @@ class calendriermanagerAction extends Action {
 		$delete_confirmation = null;
 		if ($_SESSION['statut'] == "administrateur") {
 			if ($request->getParam('operation')) {
+				check_token(false);
 				if ($request->getParam('operation') == "delete") {
 					if ($request->getParam('confirm_delete')) {
 						if ($request->getParam('id_calendrier')) {

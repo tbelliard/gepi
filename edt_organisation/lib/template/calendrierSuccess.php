@@ -1,6 +1,6 @@
 
 <script type="text/javascript" src="./lib/template/js/calendrierSuccess.js"></script>
-
+<?php echo add_token_field(true); ?>
 <?php include("./lib/template/mini_calendrier.php"); ?>
 
 

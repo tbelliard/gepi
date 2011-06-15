@@ -35,7 +35,8 @@
 						ouvert:$('ouvert').value,
 						type:$('type').value,
 						num_jour_initial:$('num_jour_initial').value,
-						num_jour_final:$('num_jour_final').value
+						num_jour_final:$('num_jour_final').value,
+						csrf_alea:$('csrf_alea').value
 						},
 			onSuccess: function(transport){
 				var period = transport.responseText.evalJSON();
@@ -96,7 +97,11 @@
 			'./index.php',
 			{
 			method:'get',
-			parameters: {action: "ajaxrequest", asker: "edit_period", day: DaySelected, id_calendar:$('id_calendar').value},
+			parameters: {action: "ajaxrequest",
+						asker: "edit_period",
+						day: DaySelected,
+						id_calendar:$('id_calendar').value,
+						csrf_alea:$('csrf_alea').value},
 			onSuccess: function(transport){
 				var period = transport.responseText.evalJSON();
 				if (period)
@@ -175,7 +180,10 @@
 			'./index.php',
 		  {
 			method:'get',
-			parameters: {action: "ajaxrequest", asker: "delete_period", periodid: $('id_period').value},
+			parameters: {action: "ajaxrequest", 
+						asker: "delete_period", 
+						periodid: $('id_period').value,
+						csrf_alea:$('csrf_alea').value},
 			onSuccess: function(transport){
 			
 				var info = transport.responseText.evalJSON();
@@ -375,7 +383,8 @@
 											id_calendar: $('id_calendar').value,
 											periode_notes:($$('select#params_periodes_notes option').find(function(ele){return ele.selected})).value,
 											ouvert:$('params_ouvert').value,
-											type:$('params_type').value},
+											type:$('params_type').value,
+											csrf_alea:$('csrf_alea').value},
 								onSuccess: function(transport){
 									var response = transport.responseText || "Le serveur ne répond pas";
 									var message = response.substring(0,5);

@@ -33,6 +33,7 @@ class ajaxrequestAction extends Action {
     {
 		$content = "";
 		if ($request->getParam('asker')) {
+			check_token();
 			if ($request->getParam('asker') == "calendrier") {
 				$this->insertPeriod($content, $request);
 			}

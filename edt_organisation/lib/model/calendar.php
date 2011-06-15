@@ -331,6 +331,7 @@ class calendar {
 										position:relative;
 										padding:20px;\">";
 				$result.="<form action=\"index.php?action=calendriermanager\" method=\"post\">";
+				$result.= add_token_field();
 				$result.="<input name=\"operation\" type=\"hidden\" value=\"edit_classes\">";
 				$result.="<input name=\"id_calendrier\" type=\"hidden\" value=\"".$calendriers['id'][$i]."\">";
 				$j = 0;
