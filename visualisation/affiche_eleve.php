@@ -109,6 +109,7 @@ if(isset($_POST['valider_raz_param'])) {
 'graphe_champ_saisie_avis_fixe',
 'graphe_click_plutot_que_survol_aff_app',
 'graphe_epaisseur_traits',
+'graphe_epaisseur_croissante_traits_periodes',
 'graphe_hauteur_affichage_deroulant',
 'graphe_hauteur_graphe',
 'graphe_largeur_graphe',
@@ -169,6 +170,9 @@ tronquer_nom_court
 			if(isset($_POST['hauteur_graphe'])) {save_params_graphe('graphe_hauteur_graphe',$_POST['hauteur_graphe']);}
 			if(isset($_POST['taille_police'])) {save_params_graphe('graphe_taille_police',$_POST['taille_police']);}
 			if(isset($_POST['epaisseur_traits'])) {save_params_graphe('graphe_epaisseur_traits',$_POST['epaisseur_traits']);}
+
+			if(isset($_POST['epaisseur_croissante_traits_periodes'])) {save_params_graphe('graphe_epaisseur_croissante_traits_periodes',$_POST['epaisseur_croissante_traits_periodes']);}
+
 			if(isset($_POST['temoin_image_escalier'])) {save_params_graphe('graphe_temoin_image_escalier',$_POST['temoin_image_escalier']);}
 			else{save_params_graphe('graphe_temoin_image_escalier','non');}
 			if(isset($_POST['tronquer_nom_court'])) {save_params_graphe('graphe_tronquer_nom_court',$_POST['tronquer_nom_court']);}
@@ -211,6 +215,9 @@ if(isset($_POST['parametrage_affichage'])) {
 	if(isset($_POST['hauteur_graphe'])) {savePref($_SESSION['login'],'graphe_hauteur_graphe',$_POST['hauteur_graphe']);}
 	if(isset($_POST['taille_police'])) {savePref($_SESSION['login'],'graphe_taille_police',$_POST['taille_police']);}
 	if(isset($_POST['epaisseur_traits'])) {savePref($_SESSION['login'],'graphe_epaisseur_traits',$_POST['epaisseur_traits']);}
+
+	if(isset($_POST['epaisseur_croissante_traits_periodes'])) {savePref($_SESSION['login'],'graphe_epaisseur_croissante_traits_periodes',$_POST['epaisseur_croissante_traits_periodes']);}
+
 	if(isset($_POST['temoin_image_escalier'])) {savePref($_SESSION['login'],'graphe_temoin_image_escalier',$_POST['temoin_image_escalier']);}
 	else{savePref($_SESSION['login'],'graphe_temoin_image_escalier','non');}
 	if(isset($_POST['tronquer_nom_court'])) {savePref($_SESSION['login'],'graphe_tronquer_nom_court',$_POST['tronquer_nom_court']);}
@@ -1116,6 +1123,25 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 	}
 
 
+	if(isset($_POST['epaisseur_croissante_traits_periodes'])) {
+		$epaisseur_croissante_traits_periodes=$_POST['epaisseur_croissante_traits_periodes'];
+	}
+	else{
+		$pref_epaisseur_croissante_traits_periodes=getPref($_SESSION['login'],'graphe_epaisseur_croissante_traits_periodes','');
+		if(($pref_epaisseur_croissante_traits_periodes=='oui')||($pref_epaisseur_croissante_traits_periodes=='non')) {
+			$epaisseur_croissante_traits_periodes=$pref_epaisseur_croissante_traits_periodes;
+		}
+		else {
+			if(getSettingValue('graphe_epaisseur_croissante_traits_periodes')) {
+				$epaisseur_croissante_traits_periodes=getSettingValue('graphe_epaisseur_croissante_traits_periodes');
+			}
+			else{
+				$epaisseur_croissante_traits_periodes="non";
+			}
+		}
+	}
+
+
 	// Pour présenter ou non, les noms longs en entier en travers sous le graphe.
 	if(isset($_POST['temoin_image_escalier'])) {
 		$temoin_image_escalier=$_POST['temoin_image_escalier'];
@@ -1386,6 +1412,15 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			}
 			echo "</select></td></tr>\n";
 
+			// - epaisseur croissante des traits
+			echo "<tr><td>Epaisseur croissante des courbes de période en période:</td><td>\n";
+			if($epaisseur_croissante_traits_periodes=='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<input type='radio' name='epaisseur_croissante_traits_periodes' id='epaisseur_croissante_traits_periodes_oui' value='oui'$checked /><label for='epaisseur_croissante_traits_periodes_oui' style='cursor: pointer;'> Oui </label>/";
+			if($epaisseur_croissante_traits_periodes!='oui') {$checked=" checked='yes'";} else {$checked="";}
+			echo "<label for='epaisseur_croissante_traits_periodes_non' style='cursor: pointer;'> Non </label><input type='radio' name='epaisseur_croissante_traits_periodes' id='epaisseur_croissante_traits_periodes_non' value='non'$checked />";
+			echo "</td></tr>\n";
+
+
 			// - modèle de couleurs
 
 			//if($temoin_imageps=='oui') {$checked=" checked='yes'";}else{$checked="";}
@@ -1396,7 +1431,7 @@ if (!isset($id_classe) and $_SESSION['statut'] != "responsable" AND $_SESSION['s
 			if($temoin_image_escalier=='oui') {$checked=" checked='yes'";} else {$checked="";}
 			echo "<input type='radio' name='temoin_image_escalier' id='temoin_image_escalier_oui' value='oui'$checked /><label for='temoin_image_escalier_oui' style='cursor: pointer;'> Oui </label>/";
 			if($temoin_image_escalier!='oui') {$checked=" checked='yes'";} else {$checked="";}
-			echo "<label for='temoin_image_escalier_non' style='cursor: pointer;'> Non </label><input type='radio' name='temoin_image_escalier' id='temoin_image_escalier_non' value='oui'$checked />";
+			echo "<label for='temoin_image_escalier_non' style='cursor: pointer;'> Non </label><input type='radio' name='temoin_image_escalier' id='temoin_image_escalier_non' value='non'$checked />";
 			echo "</td></tr>\n";
 
 			//echo "<tr><td>Tronquer le nom court<br />de matière à <a href='javascript:alert(\"A zéro caractères, on ne tronque pas le nom court de matière affiché en haut du graphe.\")'>X</a> caractères:</td><td><select name='tronquer_nom_court'>\n";
@@ -1829,6 +1864,7 @@ function eleve_suivant() {
 	echo "<input type='hidden' name='hauteur_graphe' value='$hauteur_graphe' />\n";
 	echo "<input type='hidden' name='taille_police' value='$taille_police' />\n";
 	echo "<input type='hidden' name='epaisseur_traits' value='$epaisseur_traits' />\n";
+	echo "<input type='hidden' name='epaisseur_croissante_traits_periodes' value='$epaisseur_croissante_traits_periodes' />\n";
 	echo "<input type='hidden' name='temoin_image_escalier' value='$temoin_image_escalier' />\n";
 	echo "<input type='hidden' name='tronquer_nom_court' value='$tronquer_nom_court' />\n";
 	echo "<input type='hidden' name='affiche_photo' value='$affiche_photo' />\n";
@@ -3000,6 +3036,7 @@ function eleve_suivant() {
 						echo "&amp;hauteur_graphe=$hauteur_graphe";
 						echo "&amp;taille_police=$taille_police";
 						echo "&amp;epaisseur_traits=$epaisseur_traits";
+						echo "&amp;epaisseur_croissante_traits_periodes=$epaisseur_croissante_traits_periodes";
 						if($affiche_minmax=="oui") {
 							echo "&amp;seriemin=$seriemin";
 							echo "&amp;seriemax=$seriemax";
@@ -3104,6 +3141,7 @@ function eleve_suivant() {
 						echo "&amp;hauteur_graphe=$hauteur_graphe";
 						echo "&amp;taille_police=$taille_police";
 						echo "&amp;epaisseur_traits=$epaisseur_traits";
+						echo "&amp;epaisseur_croissante_traits_periodes=$epaisseur_croissante_traits_periodes";
 						if($affiche_minmax=="oui") {
 							echo "&amp;seriemin=$seriemin";
 							echo "&amp;seriemax=$seriemax";
@@ -3157,6 +3195,7 @@ function eleve_suivant() {
 					echo "&amp;hauteur_graphe=$hauteur_graphe";
 					echo "&amp;taille_police=$taille_police";
 					echo "&amp;epaisseur_traits=$epaisseur_traits";
+					echo "&amp;epaisseur_croissante_traits_periodes=$epaisseur_croissante_traits_periodes";
 					if($affiche_minmax=="oui") {
 						echo "&amp;seriemin=$seriemin";
 						echo "&amp;seriemax=$seriemax";
@@ -3779,6 +3818,7 @@ function eleve_suivant() {
 					echo "&amp;hauteur_graphe=$hauteur_graphe";
 					echo "&amp;taille_police=$taille_police";
 					echo "&amp;epaisseur_traits=$epaisseur_traits";
+					echo "&amp;epaisseur_croissante_traits_periodes=$epaisseur_croissante_traits_periodes";
 					if($affiche_moy_annuelle=="oui") {
 						echo "&amp;affiche_moy_annuelle=$affiche_moy_annuelle";
 					}
@@ -3852,6 +3892,7 @@ function eleve_suivant() {
 					echo "&amp;hauteur_graphe=$hauteur_graphe";
 					echo "&amp;taille_police=$taille_police";
 					echo "&amp;epaisseur_traits=$epaisseur_traits";
+					echo "&amp;epaisseur_croissante_traits_periodes=$epaisseur_croissante_traits_periodes";
 					if($affiche_moy_annuelle=="oui") {
 						echo "&amp;affiche_moy_annuelle=$affiche_moy_annuelle";
 					}
@@ -3888,6 +3929,7 @@ function eleve_suivant() {
 				echo "&amp;hauteur_graphe=$hauteur_graphe";
 				echo "&amp;taille_police=$taille_police";
 				echo "&amp;epaisseur_traits=$epaisseur_traits";
+				echo "&amp;epaisseur_croissante_traits_periodes=$epaisseur_croissante_traits_periodes";
 				if($affiche_moy_annuelle=="oui") {
 					echo "&amp;affiche_moy_annuelle=$affiche_moy_annuelle";
 				}

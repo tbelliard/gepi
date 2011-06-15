@@ -114,6 +114,9 @@
 		$epaisseur_traits=2;
 	}
 
+	$epaisseur_croissante_traits_periodes=isset($_GET['epaisseur_croissante_traits_periodes']) ? $_GET['epaisseur_croissante_traits_periodes'] : 'non';
+	if(($epaisseur_croissante_traits_periodes!='non')&&($epaisseur_croissante_traits_periodes!='oui')) {$epaisseur_croissante_traits_periodes="non";}
+
 	$epaisseur_axes=2;
 	$epaisseur_grad=1;
 
@@ -557,8 +560,8 @@
 	// Préparation des abscisses et affichage des noms de matières et valeurs des moyennes:
 
 	//Epaisseur des traits:
-	//imagesetthickness($img,$epaisseur_traits);
-	imagesetthickness($img,4);
+	imagesetthickness($img,$epaisseur_traits);
+
 	//imageLine($img,100,100,200,300,$couleureleve1);
 	//imageLine($img,100,round($moyenne[2]*10),200,300,$couleureleve1);
 	//imageDashedLine($img,100,100,200,300,$noir);
@@ -784,7 +787,7 @@
 
 
 	//for($k=1;$k<=$nb_series;$k++){
-	$epaisseur = 3;
+	$epaisseur = $epaisseur_traits;
 	for($k=1;$k<=$nb_series_bis;$k++){
 		//Placement des points de la courbe:
 		for($i=1;$i<$nbMat+1;$i++){
@@ -811,7 +814,9 @@
 				imageLine($img,$x1,$ycourbe[$k][$i],$x2,$ycourbe[$k][$i+1],$couleureleve[$k]);
 			}
 		}
-		$epaisseur+=1;
+		if($epaisseur_croissante_traits_periodes=='oui') {
+			$epaisseur+=1;
+		}
 	}
 
 	//================================================================
