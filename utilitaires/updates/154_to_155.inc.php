@@ -263,6 +263,79 @@ if ($test == -1) {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
-//$result .= "<br /><br /><b>XXX :</b><br />";
+$result .= "&nbsp;->Mise a jour des saisies d'absence avec les versions<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'version';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Les versions de saisies existent déjà.</font><br />";
+} else {
+	$query = mysql_query("ALTER TABLE a_saisies ADD version INTEGER DEFAULT 0;");
+	if ($query) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+                $query = mysql_query("ALTER TABLE a_saisies ADD version_created_by VARCHAR(100);");
+                if ($query) {
+                        $result .= "<font color=\"green\">Ok !</font><br />";
+                        $query = mysql_query("ALTER TABLE a_saisies CHANGE created_at version_created_at DATETIME;");
+                        if ($query) {
+                                $result .= "<font color=\"green\">Ok !</font><br />";
+                                $query = mysql_query("ALTER TABLE a_saisies DROP updated_at;");
+                                if ($query) {
+                                                $result .= "<font color=\"green\">Ok !</font><br />";
+                                } else {
+                                                $result .= "<font color=\"red\">Erreur</font><br />";
+                                }
+                        } else {
+                                        $result .= "<font color=\"red\">Erreur</font><br />";
+                        }
+                } else {
+                        $result .= "<font color=\"red\">Erreur</font><br />";
+                }
+	} else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
+$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'a_saisies_version'"));
+if ($test!=0) {
+	$result .= "<font color=\"blue\">La table des versions de saisies existent déjà.</font><br />";
+} else {
+	$query = mysql_query("CREATE TABLE a_saisies_version
+(
+	id INTEGER(11) NOT NULL,
+	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a saisi l\'absence',
+	eleve_id INTEGER(11) COMMENT 'id_eleve de l\'eleve objet de la saisie, egal à null si aucun eleve n\'est saisi',
+	commentaire TEXT COMMENT 'commentaire de l\'utilisateur',
+	debut_abs DATETIME COMMENT 'Debut de l\'absence en timestamp UNIX',
+	fin_abs DATETIME COMMENT 'Fin de l\'absence en timestamp UNIX',
+	id_edt_creneau INTEGER(12) COMMENT 'identifiant du creneaux de l\'emploi du temps',
+	id_edt_emplacement_cours INTEGER(12) COMMENT 'identifiant du cours de l\'emploi du temps',
+	id_groupe INTEGER COMMENT 'identifiant du groupe pour lequel la saisie a ete effectuee',
+	id_classe INTEGER COMMENT 'identifiant de la classe pour lequel la saisie a ete effectuee',
+	id_aid INTEGER COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
+	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
+	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
+	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
+	version INTEGER DEFAULT 0,
+	version_created_at DATETIME,
+	version_created_by VARCHAR(100),
+	PRIMARY KEY (id,version),
+	CONSTRAINT a_saisies_version_FK_1
+		FOREIGN KEY (id)
+		REFERENCES a_saisies (id)
+		ON DELETE CASCADE
+) ENGINE=MyISAM;");
+	if ($query) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+                $query = mysql_query("INSERT INTO a_saisies_version (id,utilisateur_id,eleve_id,commentaire,debut_abs,fin_abs,id_edt_creneau,id_edt_emplacement_cours,id_groupe,id_classe,id_aid,id_s_incidents,modifie_par_utilisateur_id,id_lieu,version,version_created_at,version_created_by)
+									SELECT id,utilisateur_id,eleve_id,commentaire,debut_abs,fin_abs,id_edt_creneau,id_edt_emplacement_cours,id_groupe,id_classe,id_aid,id_s_incidents,modifie_par_utilisateur_id,id_lieu,version,version_created_at,version_created_by FROM a_saisies;");
+				if ($query) {
+					$result .= "<font color=\"green\">Ok !</font><br />";
+				} else {
+	                $result .= "<font color=\"red\">Erreur</font><br />";
+				}
+		
+	} else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
 
 ?>
