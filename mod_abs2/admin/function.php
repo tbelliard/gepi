@@ -98,8 +98,8 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève n'est pas présent pour suivre sa scolarité.");
 	$type->setJustificationExigible(true);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_FAUX);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_FAUX);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("professeur");
@@ -129,8 +129,8 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est en retard lors de l'intercours");
 	$type->setJustificationExigible(false);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_VRAI);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_VRAI);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
     $type->setIdLieu($id_lieu_etab);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
@@ -161,9 +161,9 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est en retard lors de son arrivée dans l'établissement");
 	$type->setJustificationExigible(false);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_FAUX);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI);
-	$type->setRetardBulletin(AbsenceEleveType::$RETARD_BULLETIN_VRAI);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_FAUX);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI);
+	$type->setRetardBulletin(AbsenceEleveType::RETARD_BULLETIN_VRAI);
         
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
@@ -189,8 +189,8 @@ function ajoutTypesParDefaut() {
 	$type->setCommentaire("Il y a probablement une erreur de saisie sur cet enregistrement. Pour être non comptabilisée,
             une saisie de type 'Erreur de saisie' ne doit être associée avec aucun autre type, mais exclusivement avec le type erreur de saisie.");
 	$type->setJustificationExigible(false);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("professeur");
@@ -220,8 +220,8 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est à l'infirmerie.");
 	$type->setJustificationExigible(false);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_VRAI);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_VRAI);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
     $type->setIdLieu($id_lieu_etab);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
@@ -253,7 +253,7 @@ function ajoutTypesParDefaut() {
 	$type->setCommentaire("L'élève est en sortie scolaire.");
 	$type->setJustificationExigible(false);
 	$type->setSousResponsabiliteEtablissement(true);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("professeur");
@@ -278,8 +278,8 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est exclu de l'établissement.");
 	$type->setJustificationExigible(false);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_FAUX);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_FAUX);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
@@ -299,8 +299,8 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est exclu mais présent au sein de l'établissement.");
 	$type->setJustificationExigible(false);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_VRAI);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_VRAI);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
     $type->setIdLieu($id_lieu_etab);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
@@ -321,8 +321,8 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est exclu de cours.");
 	$type->setJustificationExigible(false);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_VRAI);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_VRAI);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
 	$type->setTypeSaisie(AbsenceEleveType::$TYPE_SAISIE_DISCIPLINE);
     $type->setIdLieu($id_lieu_etab);
 
@@ -349,8 +349,8 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est dispensé mais présent physiquement lors de la séance.");
 	$type->setJustificationExigible(true);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_VRAI);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_VRAI);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
     $type->setIdLieu($id_lieu_etab);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
@@ -371,8 +371,8 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est dispensé et non présent physiquement lors de la séance.");
 	$type->setJustificationExigible(true);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_FAUX);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_FAUX);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
@@ -392,8 +392,8 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est en stage a l'extérieur de l'établissement.");
 	$type->setJustificationExigible(false);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_FAUX);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_FAUX);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
 
 	$statut = new AbsenceEleveTypeStatutAutorise();
 	$statut->setStatut("cpe");
@@ -413,8 +413,8 @@ function ajoutTypesParDefaut() {
     if (AbsenceEleveTypeQuery::create()->filterByNom($type->getNom())->find()->isEmpty()) {
 	$type->setCommentaire("L'élève est présent.");
 	$type->setJustificationExigible(false);
-	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::$SOUS_RESP_ETAB_VRAI);
-	$type->setManquementObligationPresence(AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX);
+	$type->setSousResponsabiliteEtablissement(AbsenceEleveType::SOUS_RESP_ETAB_VRAI);
+	$type->setManquementObligationPresence(AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX);
     $type->setIdLieu($id_lieu_etab);
     
 	$statut = new AbsenceEleveTypeStatutAutorise();

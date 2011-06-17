@@ -813,7 +813,7 @@ function redimensionne_image_petit($photo)
 	    $edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 	    echo "<option value='-1'>choisissez un créneau</option>\n";
 	    foreach ($edt_creneau_col as $edt_creneau) {
-		    if ($edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_PAUSE
+		    if ($edt_creneau->getTypeCreneaux() == EdtCreneau::TYPE_PAUSE
 			    || $edt_creneau->getTypeCreneaux() == EdtCreneau::$TYPE_REPAS) {
 			continue;
 		    }

@@ -68,25 +68,25 @@ class AbsenceEleveSaisieQuery extends BaseAbsenceEleveSaisieQuery {
 	    if ($value === true) {
 		if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y' && getSettingValue("abs2_saisie_multi_type_sans_manquement")!='y') {
 		    $criteria = new Criteria();
-		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI.'%', Criteria::LIKE);
-		    //$c1 = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX.'%', Criteria::NOT_LIKE);
+		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI.'%', Criteria::LIKE);
+		    //$c1 = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX.'%', Criteria::NOT_LIKE);
 		    $c2 = $criteria->getNewCriterion('types_concat', null, Criteria::ISNULL);
 		    //$c->addOr($c1);
 		    $c->addOr($c2);
 		    $this->addHaving($c);
 		} else if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y' && getSettingValue("abs2_saisie_multi_type_sans_manquement")!='y') {
 		    $criteria = new Criteria();
-		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI.'%', Criteria::LIKE);
+		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI.'%', Criteria::LIKE);
 		    $this->addHaving($c);
 		} else if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y' && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
 		    $criteria = new Criteria();
-		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI.'%', Criteria::LIKE);
-		    $c1 = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX.'%', Criteria::NOT_LIKE);
+		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI.'%', Criteria::LIKE);
+		    $c1 = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX.'%', Criteria::NOT_LIKE);
 		    $c->addAnd($c1);
 		    $this->addHaving($c);
 		}else if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y' && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
 		    $criteria = new Criteria();
-		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX.'%', Criteria::NOT_LIKE);
+		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX.'%', Criteria::NOT_LIKE);
 		    $c1 = $criteria->getNewCriterion('types_concat', null, Criteria::ISNULL);
 		    $c->addOr($c1);
 		    $this->addHaving($c);
@@ -94,29 +94,29 @@ class AbsenceEleveSaisieQuery extends BaseAbsenceEleveSaisieQuery {
 	    } else {
 		if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y' && getSettingValue("abs2_saisie_multi_type_sans_manquement")!='y') {
 		    $criteria = new Criteria();
-		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI.'%', Criteria::NOT_LIKE);
-		    //$c1 = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX.'%', Criteria::LIKE);
+		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI.'%', Criteria::NOT_LIKE);
+		    //$c1 = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX.'%', Criteria::LIKE);
 		    $c2 = $criteria->getNewCriterion('types_concat', null, Criteria::ISNOTNULL);
 		    //$c->addAnd($c1);
 		    $c->addAnd($c2);
 		    $this->addHaving($c);
 		} else if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y' && getSettingValue("abs2_saisie_multi_type_sans_manquement")!='y') {
 		    $criteria = new Criteria();
-		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI.'%', Criteria::NOT_LIKE);
+		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI.'%', Criteria::NOT_LIKE);
 		    $c1 = $criteria->getNewCriterion('types_concat', null, Criteria::ISNULL);
 		    $c->addOr($c1);
 		    $this->addHaving($c);
 		} else if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y' && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
 		    $criteria = new Criteria();
-		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI.'%', Criteria::NOT_LIKE);
-		    $c1 = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX.'%', Criteria::LIKE);
+		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI.'%', Criteria::NOT_LIKE);
+		    $c1 = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX.'%', Criteria::LIKE);
 		    $c->addOr($c1);
 		    $c2 = $criteria->getNewCriterion('types_concat', null, Criteria::ISNULL);
 		    $c->addOr($c2);
 		    $this->addHaving($c);
 		}else if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y' && getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
 		    $criteria = new Criteria();
-		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX.'%', Criteria::LIKE);
+		    $c = $criteria->getNewCriterion('types_concat', '%'.AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX.'%', Criteria::LIKE);
 		    $c1 = $criteria->getNewCriterion('types_concat', null, Criteria::ISNOTNULL);
 		    $c->addAnd($c1);
 		    $this->addHaving($c);

@@ -18,41 +18,41 @@ class AbsenceEleveType extends BaseAbsenceEleveType {
 	/**
 	 * Les types de creneaux possibles
 	 */
-	public static $TYPE_SAISIE_DEBUT_ABS = 'DEBUT_ABS';
-	public static $TYPE_SAISIE_FIN_ABS = 'FIN_ABS';
-	public static $TYPE_SAISIE_DEBUT_ET_FIN_ABS = 'DEBUT_ET_FIN_ABS';
-	public static $TYPE_SAISIE_NON_PRECISE = 'NON_PRECISE';
-	public static $TYPE_SAISIE_COMMENTAIRE_EXIGE = 'COMMENTAIRE_EXIGE';
-	public static $TYPE_SAISIE_DISCIPLINE = 'DISCIPLINE';
+	const TYPE_SAISIE_DEBUT_ABS = 'DEBUT_ABS';
+	const TYPE_SAISIE_FIN_ABS = 'FIN_ABS';
+	const TYPE_SAISIE_DEBUT_ET_FIN_ABS = 'DEBUT_ET_FIN_ABS';
+	const TYPE_SAISIE_NON_PRECISE = 'NON_PRECISE';
+	const TYPE_SAISIE_COMMENTAIRE_EXIGE = 'COMMENTAIRE_EXIGE';
+	const TYPE_SAISIE_DISCIPLINE = 'DISCIPLINE';
 
 	public static $LISTE_LABEL_TYPE_SAISIE = array(
-	    'DEBUT_ABS' => 'Saisie de l\'heure du debut de l\'absence'
-	    , 'FIN_ABS' => 'Saisie de l\'heure de fin debut de l\'absence'
-	    , 'DEBUT_ET_FIN_ABS' => 'Saisie de l\'heure du debut et de fin de l\'absence'
-	    , 'NON_PRECISE' => 'Type de saisie non précisé'
-	    , 'COMMENTAIRE_EXIGE' => 'Saisie d\'un commentaire explicatif'
-	    , 'DISCIPLINE' => 'Saisie d\'un incident disciplinaire');
+	    AbsenceEleveType::TYPE_SAISIE_DEBUT_ABS => 'Saisie de l\'heure du debut de l\'absence'
+	    , AbsenceEleveType::TYPE_SAISIE_FIN_ABS => 'Saisie de l\'heure de fin debut de l\'absence'
+	    , AbsenceEleveType::TYPE_SAISIE_DEBUT_ET_FIN_ABS => 'Saisie de l\'heure du debut et de fin de l\'absence'
+	    , AbsenceEleveType::TYPE_SAISIE_NON_PRECISE => 'Type de saisie non précisé'
+	    , AbsenceEleveType::TYPE_SAISIE_COMMENTAIRE_EXIGE => 'Saisie d\'un commentaire explicatif'
+	    , AbsenceEleveType::TYPE_SAISIE_DISCIPLINE => 'Saisie d\'un incident disciplinaire');
 
 	/**
 	 * Les types de RESPONSABILITE_ETABLISSEMENT possibles
 	 */
-	public static $SOUS_RESP_ETAB_VRAI = 'VRAI';
-	public static $SOUS_RESP_ETAB_FAUX = 'FAUX';
-	public static $SOUS_RESP_ETAB_NON_PRECISE = 'NON_PRECISE';
+	const SOUS_RESP_ETAB_VRAI = 'VRAI';
+	const SOUS_RESP_ETAB_FAUX = 'FAUX';
+	const SOUS_RESP_ETAB_NON_PRECISE = 'NON_PRECISE';
 
 	/**
 	 * Les types de RESPONSABILITE_ETABLISSEMENT possibles
 	 */
-	public static $MANQU_OBLIG_PRESE_VRAI = 'VRAI';
-	public static $MANQU_OBLIG_PRESE_FAUX = 'FAUX';
-	public static $MANQU_OBLIG_PRESE_NON_PRECISE = 'NON_PRECISE';
+	const MANQU_OBLIG_PRESE_VRAI = 'VRAI';
+	const MANQU_OBLIG_PRESE_FAUX = 'FAUX';
+	const MANQU_OBLIG_PRESE_NON_PRECISE = 'NON_PRECISE';
 
 	/**
 	 * Les types de RETARD_BULLETIN possibles
 	 */
-	public static $RETARD_BULLETIN_VRAI = 'VRAI';
-	public static $RETARD_BULLETIN_FAUX = 'FAUX';
-	public static $RETARD_BULLETIN_PRECISE = 'NON_PRECISE';
+	const RETARD_BULLETIN_VRAI = 'VRAI';
+	const RETARD_BULLETIN_FAUX = 'FAUX';
+	const RETARD_BULLETIN_NON_PRECISE = 'NON_PRECISE';
 
 	/**
 	 *

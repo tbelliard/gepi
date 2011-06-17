@@ -26,21 +26,21 @@ class AbsenceEleveTraitementQuery extends BaseAbsenceEleveTraitementQuery {
 	    if ($value === true) {
 		if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y') {
 		    $this->useAbsenceEleveTypeQuery('', Criteria::LEFT_JOIN)
-			    ->filterByManquementObligationPresence(Array(null, AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI))
+			    ->filterByManquementObligationPresence(Array(null, AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI))
 			    ->endUse();
 		} else if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') {
 		    $this->useAbsenceEleveTypeQuery('', Criteria::LEFT_JOIN)
-			    ->filterByManquementObligationPresence(Array(AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI))
+			    ->filterByManquementObligationPresence(Array(AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI))
 			    ->endUse();
 		}
 	    } else {
 		if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")!='y') {
 		    $this->useAbsenceEleveTypeQuery('', Criteria::LEFT_JOIN)
-			    ->filterByManquementObligationPresence(Array(null, AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI), Criteria::NOT_IN)
+			    ->filterByManquementObligationPresence(Array(null, AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI), Criteria::NOT_IN)
 			    ->endUse();
 		} else if (getSettingValue("abs2_saisie_par_defaut_sans_manquement")=='y') {
 		    $this->useAbsenceEleveTypeQuery('', Criteria::LEFT_JOIN)
-			    ->filterByManquementObligationPresence(Array(AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI), Criteria::NOT_IN)
+			    ->filterByManquementObligationPresence(Array(AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI), Criteria::NOT_IN)
 			    ->endUse();
 		}
 	    }

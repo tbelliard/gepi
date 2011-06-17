@@ -202,8 +202,8 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 
         $traitements = $this->getAbsenceEleveTraitements();
         foreach ($traitements as $traitement) {
-            if ($traitement->getAbsenceEleveType() != null && $traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE
-                    && $traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE) {
+            if ($traitement->getAbsenceEleveType() != null && $traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE
+                    && $traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE) {
                 return true;
             }
         }
@@ -255,7 +255,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    //on va regarder si il y a un retard dans les types
 		    foreach ($this->getAbsenceEleveTraitements() as $traitement) {
 			if ($traitement->getAbsenceEleveType() != null) {
-			    if ($traitement->getAbsenceEleveType()->getRetardBulletin() == AbsenceEleveType::$RETARD_BULLETIN_VRAI) {
+			    if ($traitement->getAbsenceEleveType()->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) {
 				$retard = true;
 				break;
 			    }
@@ -283,11 +283,11 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$type_non_precise = false;
 		foreach ($this->getAbsenceEleveTraitements() as $traitement) {
 		    if ($traitement->getAbsenceEleveType() != null) {
-			if ($traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_VRAI) {
+			if ($traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_VRAI) {
 			    $type_avec = true;
-			} elseif ($traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_FAUX) {
+			} elseif ($traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_FAUX) {
 			    $type_sans = true;
-			} else if ($traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE) {
+			} else if ($traitement->getAbsenceEleveType()->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE) {
 			    $type_non_precise = true;
 			}
 		    }
@@ -304,7 +304,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    $sousResponsabiliteEtablissement = true;
 		} else {//c'est le dernier cas : ($type_avec == false && $type_sans == false && $type_non_precise == true)
 		    //si on a un type de responsabilite specifie a non_precise (comme le type 'erreur de saisie'),
-		    //on renvoi une resp etab (sinon l'utilisateur aurait specifier un type $MANQU_OBLIG_PRESE_VRAI)
+		    //on renvoi une resp etab (sinon l'utilisateur aurait specifier un type MANQU_OBLIG_PRESE_VRAI)
 		    $sousResponsabiliteEtablissement = true;
 		}
 		$this->sousResponsabiliteEtablissement = $sousResponsabiliteEtablissement;
@@ -330,11 +330,11 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$type_non_precise = false;
 		foreach ($this->getAbsenceEleveTraitements() as $traitement) {
 		    if ($traitement->getAbsenceEleveType() != null) {
-			if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) {
+			if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI) {
 			    $type_avec = true;
-			} else if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) {
+			} else if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX) {
 			    $type_sans = true;
-			} else if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE) {
+			} else if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE) {
 			    $type_non_precise = true;
 			}
 		    }
@@ -352,7 +352,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    $manquementObligationPresence = true;
 		} else {//c'est le dernier cas : ($type_avec == false && $type_sans == false && $type_non_precise == true)
 		    //si on a un type de manquement specifie a non_precise (comme le type 'erreur de saisie'),
-		    //on renvoi un non manquement (sinon l'utilisateur aurait specifier un type $MANQU_OBLIG_PRESE_VRAI)
+		    //on renvoi un non manquement (sinon l'utilisateur aurait specifier un type MANQU_OBLIG_PRESE_VRAI)
 		    $manquementObligationPresence = false;
 		}
 		$this->manquementObligationPresence = $manquementObligationPresence;
@@ -374,11 +374,11 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		$type_non_precise = false;
 		foreach ($this->getAbsenceEleveTraitements() as $traitement) {
 		    if ($traitement->getAbsenceEleveType() != null) {
-			if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI
-				|| $traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) {
+			if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI
+				|| $traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX) {
 			    $type_non_precise = false;
 			    break;
-			} else if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE) {
+			} else if ($traitement->getAbsenceEleveType()->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE) {
 			    $type_non_precise = true;
 			}
 		    }

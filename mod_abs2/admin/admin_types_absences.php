@@ -58,11 +58,11 @@ if (empty($_GET['commentaire']) and empty($_POST['commentaire'])) { $commentaire
     else { if (isset($_GET['commentaire'])) {$commentaire=$_GET['commentaire'];} if (isset($_POST['commentaire'])) {$commentaire=$_POST['commentaire'];} }
 if (empty($_GET['justification_exigible']) and empty($_POST['justification_exigible'])) { $justification_exigible="";}
     else { if (isset($_GET['justification_exigible'])) {$justification_exigible=$_GET['justification_exigible'];} if (isset($_POST['justification_exigible'])) {$justification_exigible=$_POST['justification_exigible'];} }
-if (empty($_GET['sous_responsabilite_etablissement']) and empty($_POST['sous_responsabilite_etablissement'])) { $sous_responsabilite_etablissement=AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE;}
+if (empty($_GET['sous_responsabilite_etablissement']) and empty($_POST['sous_responsabilite_etablissement'])) { $sous_responsabilite_etablissement=AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE;}
     else { if (isset($_GET['sous_responsabilite_etablissement'])) {$sous_responsabilite_etablissement=$_GET['sous_responsabilite_etablissement'];} if (isset($_POST['sous_responsabilite_etablissement'])) {$sous_responsabilite_etablissement=$_POST['sous_responsabilite_etablissement'];} }
-if (empty($_GET['manquement_obligation_presence']) and empty($_POST['manquement_obligation_presence'])) { $manquement_obligation_presence=AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE;}
+if (empty($_GET['manquement_obligation_presence']) and empty($_POST['manquement_obligation_presence'])) { $manquement_obligation_presence=AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE;}
     else { if (isset($_GET['manquement_obligation_presence'])) {$manquement_obligation_presence=$_GET['manquement_obligation_presence'];} if (isset($_POST['manquement_obligation_presence'])) {$manquement_obligation_presence=$_POST['manquement_obligation_presence'];} }
-if (empty($_GET['retard_bulletin']) and empty($_POST['retard_bulletin'])) { $retard_bulletin=AbsenceEleveType::$RETARD_BULLETIN_FAUX;}
+if (empty($_GET['retard_bulletin']) and empty($_POST['retard_bulletin'])) { $retard_bulletin=AbsenceEleveType::RETARD_BULLETIN_FAUX;}
     else { if (isset($_GET['retard_bulletin'])) {$retard_bulletin=$_GET['retard_bulletin'];} if (isset($_POST['retard_bulletin'])) {$retard_bulletin=$_POST['retard_bulletin'];} }
 if (empty($_GET['type_saisie']) and empty($_POST['type_saisie'])) { $type_saisie="";}
     else { if (isset($_GET['type_saisie'])) {$type_saisie=$_GET['type_saisie'];} if (isset($_POST['type_saisie'])) {$type_saisie=$_POST['type_saisie'];} }
@@ -188,22 +188,22 @@ echo add_token_field();
            <td><input name="justification_exigible" type="checkbox" id="justification_exigible" <?php  if ($type != null && $type->getJustificationExigible()) {echo "checked";} ?> /></td>
            <td>
 	     <select name="sous_responsabilite_etablissement" id="sous_responsabilite_etablissement">
-		<option value='<?php echo AbsenceEleveType::$SOUS_RESP_ETAB_VRAI?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_VRAI) {echo "selected";} ?>>oui</option>
-		<option value='<?php echo AbsenceEleveType::$SOUS_RESP_ETAB_FAUX?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_FAUX) {echo "selected";} ?>>non</option>
-		<option value='<?php echo AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_NON_PRECISE) {echo "selected";} ?>>non precisé</option>
+		<option value='<?php echo AbsenceEleveType::SOUS_RESP_ETAB_VRAI?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_VRAI) {echo "selected";} ?>>oui</option>
+		<option value='<?php echo AbsenceEleveType::SOUS_RESP_ETAB_FAUX?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_FAUX) {echo "selected";} ?>>non</option>
+		<option value='<?php echo AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE?>' <?php  if ($type != null && $type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_NON_PRECISE) {echo "selected";} ?>>non precisé</option>
 	     </select>
 	   </td>
            <td>
 	     <select name="manquement_obligation_presence" id="manquement_obligation_presence">
-		<option value='<?php echo AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) {echo "selected";} ?>>oui</option>
-		<option value='<?php echo AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) {echo "selected";} ?>>non</option>
-		<option value='<?php echo AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_NON_PRECISE) {echo "selected";} ?>>non precisé</option>
+		<option value='<?php echo AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI) {echo "selected";} ?>>oui</option>
+		<option value='<?php echo AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX) {echo "selected";} ?>>non</option>
+		<option value='<?php echo AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE?>' <?php  if ($type != null && $type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_NON_PRECISE) {echo "selected";} ?>>non precisé</option>
 	     </select>
 	   </td>
            <td>
 	     <select name="retard_bulletin" id="retard_bulletin">
-		<option value='<?php echo AbsenceEleveType::$RETARD_BULLETIN_FAUX?>' <?php  if ($type != null && $type->getRetardBulletin() == AbsenceEleveType::$RETARD_BULLETIN_FAUX) {echo "selected";} ?>>non</option>
-		<option value='<?php echo AbsenceEleveType::$RETARD_BULLETIN_VRAI?>' <?php  if ($type != null && $type->getRetardBulletin() == AbsenceEleveType::$RETARD_BULLETIN_VRAI) {echo "selected";} ?>>oui</option>
+		<option value='<?php echo AbsenceEleveType::RETARD_BULLETIN_FAUX?>' <?php  if ($type != null && $type->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_FAUX) {echo "selected";} ?>>non</option>
+		<option value='<?php echo AbsenceEleveType::RETARD_BULLETIN_VRAI?>' <?php  if ($type != null && $type->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) {echo "selected";} ?>>oui</option>
 	     </select>
 	   </td>
            <td>
@@ -293,24 +293,24 @@ echo add_token_field();
 	  <td><?php echo $type->getCommentaire(); ?></td>
 	  <td><?php if ($type->getJustificationExigible()) { ?><img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' /><?php } ?></td>
 	  <td>
-	    <?php if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
-		else if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::$SOUS_RESP_ETAB_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
+	    <?php if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
+		else if ($type->getSousResponsabiliteEtablissement() == AbsenceEleveType::SOUS_RESP_ETAB_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
 		//si le ManquementObligationPresence est non precisé on affiche rien
 	    ?>
 	  </td>
 	  <td>
-	    <?php if ($type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
-		else if ($type->getManquementObligationPresence() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
+	    <?php if ($type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
+		else if ($type->getManquementObligationPresence() == AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
 		//si le ManquementObligationPresence est non precisé on affiche rien
 	    ?>
 	  </td>
 	  <td>
-	    <?php if ($type->getRetardBulletin() == AbsenceEleveType::$RETARD_BULLETIN_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
-		//else if ($type->getRetardBulletin() == AbsenceEleveType::$MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
+	    <?php if ($type->getRetardBulletin() == AbsenceEleveType::RETARD_BULLETIN_VRAI) { echo "<img src='../../images/enabled.png' width='20' height='20' title='oui' alt='oui' />"; }
+		//else if ($type->getRetardBulletin() == AbsenceEleveType::MANQU_OBLIG_PRESE_FAUX) { echo "<img src='../../images/disabled.png' width='20' height='20' title='oui' alt='non' />"; }
 		else { echo "<img src='../../images/disabled.png' width='20' height='20' title='non' alt='non' />"; }
 	    ?>
 	  </td>
-	  <td><?php if ($type->getTypeSaisie() != AbsenceEleveType::$TYPE_SAISIE_NON_PRECISE) {echo $type->getTypeSaisieDescription();} ?></td>
+	  <td><?php if ($type->getTypeSaisie() != AbsenceEleveType::TYPE_SAISIE_NON_PRECISE) {echo $type->getTypeSaisieDescription();} ?></td>
       <td><?php if (!is_null($type->getIdLieu())) {echo $type->getAbsenceEleveLieu()->getNom();} ?></td>
 	  <td><?php
 		foreach ($type->getAbsenceEleveTypeStatutAutorises() as $statut_saisie) {
