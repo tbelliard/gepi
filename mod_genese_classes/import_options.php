@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //======================================================================================
 
@@ -258,7 +258,11 @@ else {
 	echo "<p><input type='submit' value='Valider' />\n";
 	echo "</form>\n";
 
-	echo "<p><i>NOTE&nbsp;:</i> Les options préalablement saisies pour ce projet seront perdues.</p>\n";
+	echo "<p><i>NOTES&nbsp;:</i></p>\n";
+	echo "<ul>\n";
+	echo "<li><p>Les options préalablement saisies pour ce projet seront perdues.<p></li>\n";
+	echo "<li><p>Le format du CSV pourra être par exemple&nbsp;:<br />NOM;PRENOM;NAISSANCE;ELENOET;CLASSE;AGL1;AGL2;ALL1;ALL2;ATHLE;DECP3;ESP2;LATIN;Redoublement;Depart<br />Dans cet exemple, ELENOET sera la clé pour identifier l'élève.<br />Les autres clés valides sont LOGIN, ELE_ID, INE.<br />Les noms des colonnes doivent coïncider avec les noms de matières dans Gepi.</p><p>Le plus simple pour obtenir ce fichier consiste à suivre les étapes dans l'ordre.<br />Lors de l'étape 2 'Lister les options actuelles des élèves', un fichier CSV au bon format est généré.</p></li>\n";
+	echo "</ul>\n";
 }
 
 
