@@ -500,14 +500,14 @@
     <foreign-key foreignTable="utilisateurs" onDelete="setnull"><reference local="utilisateur_id" foreign="login"/></foreign-key>
     <column name="a_traitement_id" default="null" required="true" type="INTEGER" size="12" description="cle etrangere du traitement qu'on notifie"/>
     <foreign-key foreignTable="a_traitements" onDelete="cascade"><reference local="a_traitement_id" foreign="id"/></foreign-key>
-    <column name="type_notification" required="false" type="INTEGER" size="5" default="null" description="type de notification (0 : email, 1 : courrier, 2 : sms)"/>
+    <column name="type_notification" required="false" type="ENUM" valueSet="email, courrier, sms, communication telephonique" default="null" description="type de notification (0 : email, 1 : courrier, 2 : sms, 3 : telephone"/>
     <column name="email" required="false" type="VARCHAR" size="100" description="email de destination (pour le type email)"/>
     <column name="telephone" required="false" type="VARCHAR" size="100" description="numero du telephone de destination (pour le type sms)"/>
     <column name="adr_id" required="false" type="VARCHAR" size="10" description="cle etrangere vers l'adresse de destination (pour le type courrier)"/>
     <foreign-key foreignTable="resp_adr" onDelete="setnull"><reference local="adr_id" foreign="adr_id"/></foreign-key>
     <!--foreign-key foreignTable="a_type_envois" onDelete="setnull"><reference local="id_type_envoi" foreign="id"/></foreign-key-->
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
-    <column name="statut_envoi" required="false" type="INTEGER" size="5" default="0" description="Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)"/>
+    <column name="statut_envoi" required="false" type="ENUM" valueSet="etat initial, en cours, echec, succes, succes avec accuse de reception, pret a envoyer" default="etat initial" description="Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)"/>
     <column name="date_envoi" required="false" type="TIMESTAMP" description="Date envoi"/>
     <column name="erreur_message_envoi" required="false" type="LONGVARCHAR" description="Message d'erreur retourné par le service d'envoi"/>
     <behavior name="timestampable" />

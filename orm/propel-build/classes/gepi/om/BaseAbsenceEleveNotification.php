@@ -44,7 +44,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 
 	/**
 	 * The value for the type_notification field.
-	 * @var        int
+	 * @var        string
 	 */
 	protected $type_notification;
 
@@ -75,7 +75,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	/**
 	 * The value for the statut_envoi field.
 	 * Note: this column has a database default value of: 0
-	 * @var        int
+	 * @var        string
 	 */
 	protected $statut_envoi;
 
@@ -195,12 +195,19 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 
 	/**
 	 * Get the [type_notification] column value.
-	 * type de notification (0 : email, 1 : courrier, 2 : sms)
-	 * @return     int
+	 * type de notification (0 : email, 1 : courrier, 2 : sms, 3 : telephone
+	 * @return     string
 	 */
 	public function getTypeNotification()
 	{
-		return $this->type_notification;
+		if (null === $this->type_notification) {
+			return null;
+		}
+		$valueSet = AbsenceEleveNotificationPeer::getValueSet(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION);
+		if (!isset($valueSet[$this->type_notification])) {
+			throw new PropelException('Unknown stored enum key: ' . $this->type_notification);
+		}
+		return $valueSet[$this->type_notification];
 	}
 
 	/**
@@ -246,11 +253,18 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	/**
 	 * Get the [statut_envoi] column value.
 	 * Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)
-	 * @return     int
+	 * @return     string
 	 */
 	public function getStatutEnvoi()
 	{
-		return $this->statut_envoi;
+		if (null === $this->statut_envoi) {
+			return null;
+		}
+		$valueSet = AbsenceEleveNotificationPeer::getValueSet(AbsenceEleveNotificationPeer::STATUT_ENVOI);
+		if (!isset($valueSet[$this->statut_envoi])) {
+			throw new PropelException('Unknown stored enum key: ' . $this->statut_envoi);
+		}
+		return $valueSet[$this->statut_envoi];
 	}
 
 	/**
@@ -447,14 +461,18 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 
 	/**
 	 * Set the value of [type_notification] column.
-	 * type de notification (0 : email, 1 : courrier, 2 : sms)
-	 * @param      int $v new value
+	 * type de notification (0 : email, 1 : courrier, 2 : sms, 3 : telephone
+	 * @param      string $v new value
 	 * @return     AbsenceEleveNotification The current object (for fluent API support)
 	 */
 	public function setTypeNotification($v)
 	{
 		if ($v !== null) {
-			$v = (int) $v;
+			$valueSet = AbsenceEleveNotificationPeer::getValueSet(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION);
+			if (!in_array($v, $valueSet)) {
+				throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
+			}
+			$v = array_search($v, $valueSet);
 		}
 
 		if ($this->type_notification !== $v) {
@@ -552,13 +570,17 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	/**
 	 * Set the value of [statut_envoi] column.
 	 * Statut de cet envoi (0 : etat initial, 1 : en cours, 2 : echec, 3 : succes, 4 : succes avec accuse de reception)
-	 * @param      int $v new value
+	 * @param      string $v new value
 	 * @return     AbsenceEleveNotification The current object (for fluent API support)
 	 */
 	public function setStatutEnvoi($v)
 	{
 		if ($v !== null) {
-			$v = (int) $v;
+			$valueSet = AbsenceEleveNotificationPeer::getValueSet(AbsenceEleveNotificationPeer::STATUT_ENVOI);
+			if (!in_array($v, $valueSet)) {
+				throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
+			}
+			$v = array_search($v, $valueSet);
 		}
 
 		if ($this->statut_envoi !== $v || $this->isNew()) {
@@ -694,12 +716,12 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
 			$this->utilisateur_id = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->a_traitement_id = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-			$this->type_notification = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+			$this->type_notification = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
 			$this->email = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
 			$this->telephone = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->adr_id = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
 			$this->commentaire = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-			$this->statut_envoi = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
+			$this->statut_envoi = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
 			$this->date_envoi = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
 			$this->erreur_message_envoi = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
 			$this->created_at = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;

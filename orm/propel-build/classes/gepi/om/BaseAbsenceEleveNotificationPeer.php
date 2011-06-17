@@ -73,6 +73,20 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	/** the column name for the UPDATED_AT field */
 	const UPDATED_AT = 'a_notifications.UPDATED_AT';
 
+	/** The enumerated values for the TYPE_NOTIFICATION field */
+	const TYPE_NOTIFICATION_EMAIL = 'email';
+	const TYPE_NOTIFICATION_COURRIER = 'courrier';
+	const TYPE_NOTIFICATION_SMS = 'sms';
+	const TYPE_NOTIFICATION_COMMUNICATION_TELEPHONIQUE = 'communication telephonique';
+
+	/** The enumerated values for the STATUT_ENVOI field */
+	const STATUT_ENVOI_ETAT_INITIAL = 'etat initial';
+	const STATUT_ENVOI_EN_COURS = 'en cours';
+	const STATUT_ENVOI_ECHEC = 'echec';
+	const STATUT_ENVOI_SUCCES = 'succes';
+	const STATUT_ENVOI_SUCCES_AVEC_ACCUSE_DE_RECEPTION = 'succes avec accuse de reception';
+	const STATUT_ENVOI_PRET_A_ENVOYER = 'pret a envoyer';
+
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
 	
@@ -115,6 +129,24 @@ abstract class BaseAbsenceEleveNotificationPeer {
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, )
 	);
 
+	/** The enumerated values for this table */
+	protected static $enumValueSets = array(
+		self::TYPE_NOTIFICATION => array(
+			AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL,
+			AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER,
+			AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS,
+			AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COMMUNICATION_TELEPHONIQUE,
+		),
+		self::STATUT_ENVOI => array(
+			AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL,
+			AbsenceEleveNotificationPeer::STATUT_ENVOI_EN_COURS,
+			AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC,
+			AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES,
+			AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES_AVEC_ACCUSE_DE_RECEPTION,
+			AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER,
+		),
+	);
+
 	/**
 	 * Translates a fieldname to another type
 	 *
@@ -150,6 +182,25 @@ abstract class BaseAbsenceEleveNotificationPeer {
 			throw new PropelException('Method getFieldNames() expects the parameter $type to be one of the class constants BasePeer::TYPE_PHPNAME, BasePeer::TYPE_STUDLYPHPNAME, BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM. ' . $type . ' was given.');
 		}
 		return self::$fieldNames[$type];
+	}
+
+	/**
+	 * Gets the list of values for all ENUM columns
+	 * @return array
+	 */
+	public static function getValueSets()
+	{
+	  return AbsenceEleveNotificationPeer::$enumValueSets;
+	}
+
+	/**
+	 * Gets the list of values for an ENUM column
+	 * @return array list of possible values for the column
+	 */
+	public static function getValueSet($colname)
+	{
+		$valueSets = self::getValueSets();
+		return $valueSets[$colname];
 	}
 
 	/**

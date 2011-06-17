@@ -60,12 +60,12 @@
  * @method     AbsenceEleveNotification findOneById(int $id) Return the first AbsenceEleveNotification filtered by the id column
  * @method     AbsenceEleveNotification findOneByUtilisateurId(string $utilisateur_id) Return the first AbsenceEleveNotification filtered by the utilisateur_id column
  * @method     AbsenceEleveNotification findOneByATraitementId(int $a_traitement_id) Return the first AbsenceEleveNotification filtered by the a_traitement_id column
- * @method     AbsenceEleveNotification findOneByTypeNotification(int $type_notification) Return the first AbsenceEleveNotification filtered by the type_notification column
+ * @method     AbsenceEleveNotification findOneByTypeNotification(string $type_notification) Return the first AbsenceEleveNotification filtered by the type_notification column
  * @method     AbsenceEleveNotification findOneByEmail(string $email) Return the first AbsenceEleveNotification filtered by the email column
  * @method     AbsenceEleveNotification findOneByTelephone(string $telephone) Return the first AbsenceEleveNotification filtered by the telephone column
  * @method     AbsenceEleveNotification findOneByAdrId(string $adr_id) Return the first AbsenceEleveNotification filtered by the adr_id column
  * @method     AbsenceEleveNotification findOneByCommentaire(string $commentaire) Return the first AbsenceEleveNotification filtered by the commentaire column
- * @method     AbsenceEleveNotification findOneByStatutEnvoi(int $statut_envoi) Return the first AbsenceEleveNotification filtered by the statut_envoi column
+ * @method     AbsenceEleveNotification findOneByStatutEnvoi(string $statut_envoi) Return the first AbsenceEleveNotification filtered by the statut_envoi column
  * @method     AbsenceEleveNotification findOneByDateEnvoi(string $date_envoi) Return the first AbsenceEleveNotification filtered by the date_envoi column
  * @method     AbsenceEleveNotification findOneByErreurMessageEnvoi(string $erreur_message_envoi) Return the first AbsenceEleveNotification filtered by the erreur_message_envoi column
  * @method     AbsenceEleveNotification findOneByCreatedAt(string $created_at) Return the first AbsenceEleveNotification filtered by the created_at column
@@ -74,12 +74,12 @@
  * @method     array findById(int $id) Return AbsenceEleveNotification objects filtered by the id column
  * @method     array findByUtilisateurId(string $utilisateur_id) Return AbsenceEleveNotification objects filtered by the utilisateur_id column
  * @method     array findByATraitementId(int $a_traitement_id) Return AbsenceEleveNotification objects filtered by the a_traitement_id column
- * @method     array findByTypeNotification(int $type_notification) Return AbsenceEleveNotification objects filtered by the type_notification column
+ * @method     array findByTypeNotification(string $type_notification) Return AbsenceEleveNotification objects filtered by the type_notification column
  * @method     array findByEmail(string $email) Return AbsenceEleveNotification objects filtered by the email column
  * @method     array findByTelephone(string $telephone) Return AbsenceEleveNotification objects filtered by the telephone column
  * @method     array findByAdrId(string $adr_id) Return AbsenceEleveNotification objects filtered by the adr_id column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveNotification objects filtered by the commentaire column
- * @method     array findByStatutEnvoi(int $statut_envoi) Return AbsenceEleveNotification objects filtered by the statut_envoi column
+ * @method     array findByStatutEnvoi(string $statut_envoi) Return AbsenceEleveNotification objects filtered by the statut_envoi column
  * @method     array findByDateEnvoi(string $date_envoi) Return AbsenceEleveNotification objects filtered by the date_envoi column
  * @method     array findByErreurMessageEnvoi(string $erreur_message_envoi) Return AbsenceEleveNotification objects filtered by the erreur_message_envoi column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveNotification objects filtered by the created_at column
@@ -292,39 +292,28 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the type_notification column
 	 * 
-	 * Example usage:
-	 * <code>
-	 * $query->filterByTypeNotification(1234); // WHERE type_notification = 1234
-	 * $query->filterByTypeNotification(array(12, 34)); // WHERE type_notification IN (12, 34)
-	 * $query->filterByTypeNotification(array('min' => 12)); // WHERE type_notification > 12
-	 * </code>
-	 *
-	 * @param     mixed $typeNotification The value to use as filter.
-	 *              Use scalar values for equality.
-	 *              Use array values for in_array() equivalent.
-	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     mixed $typeNotification The value to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveNotificationQuery The current query, for fluid interface
 	 */
 	public function filterByTypeNotification($typeNotification = null, $comparison = null)
 	{
-		if (is_array($typeNotification)) {
-			$useMinMax = false;
-			if (isset($typeNotification['min'])) {
-				$this->addUsingAlias(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION, $typeNotification['min'], Criteria::GREATER_EQUAL);
-				$useMinMax = true;
+		$valueSet = AbsenceEleveNotificationPeer::getValueSet(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION);
+		if (is_scalar($typeNotification)) {
+			if (!in_array($typeNotification, $valueSet)) {
+				throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $typeNotification));
 			}
-			if (isset($typeNotification['max'])) {
-				$this->addUsingAlias(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION, $typeNotification['max'], Criteria::LESS_EQUAL);
-				$useMinMax = true;
+			$typeNotification = array_search($typeNotification, $valueSet);
+		} elseif (is_array($typeNotification)) {
+			$convertedValues = array();
+			foreach ($typeNotification as $value) {
+				if (!in_array($value, $valueSet)) {
+					throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $value));
+				}
+				$convertedValues []= array_search($value, $valueSet);
 			}
-			if ($useMinMax) {
-				return $this;
-			}
-			if (null === $comparison) {
-				$comparison = Criteria::IN;
-			}
+			$typeNotification = $convertedValues;
 		}
 		return $this->addUsingAlias(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION, $typeNotification, $comparison);
 	}
@@ -444,39 +433,28 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the statut_envoi column
 	 * 
-	 * Example usage:
-	 * <code>
-	 * $query->filterByStatutEnvoi(1234); // WHERE statut_envoi = 1234
-	 * $query->filterByStatutEnvoi(array(12, 34)); // WHERE statut_envoi IN (12, 34)
-	 * $query->filterByStatutEnvoi(array('min' => 12)); // WHERE statut_envoi > 12
-	 * </code>
-	 *
-	 * @param     mixed $statutEnvoi The value to use as filter.
-	 *              Use scalar values for equality.
-	 *              Use array values for in_array() equivalent.
-	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     mixed $statutEnvoi The value to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveNotificationQuery The current query, for fluid interface
 	 */
 	public function filterByStatutEnvoi($statutEnvoi = null, $comparison = null)
 	{
-		if (is_array($statutEnvoi)) {
-			$useMinMax = false;
-			if (isset($statutEnvoi['min'])) {
-				$this->addUsingAlias(AbsenceEleveNotificationPeer::STATUT_ENVOI, $statutEnvoi['min'], Criteria::GREATER_EQUAL);
-				$useMinMax = true;
+		$valueSet = AbsenceEleveNotificationPeer::getValueSet(AbsenceEleveNotificationPeer::STATUT_ENVOI);
+		if (is_scalar($statutEnvoi)) {
+			if (!in_array($statutEnvoi, $valueSet)) {
+				throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $statutEnvoi));
 			}
-			if (isset($statutEnvoi['max'])) {
-				$this->addUsingAlias(AbsenceEleveNotificationPeer::STATUT_ENVOI, $statutEnvoi['max'], Criteria::LESS_EQUAL);
-				$useMinMax = true;
+			$statutEnvoi = array_search($statutEnvoi, $valueSet);
+		} elseif (is_array($statutEnvoi)) {
+			$convertedValues = array();
+			foreach ($statutEnvoi as $value) {
+				if (!in_array($value, $valueSet)) {
+					throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $value));
+				}
+				$convertedValues []= array_search($value, $valueSet);
 			}
-			if ($useMinMax) {
-				return $this;
-			}
-			if (null === $comparison) {
-				$comparison = Criteria::IN;
-			}
+			$statutEnvoi = $convertedValues;
 		}
 		return $this->addUsingAlias(AbsenceEleveNotificationPeer::STATUT_ENVOI, $statutEnvoi, $comparison);
 	}
