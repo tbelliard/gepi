@@ -78,7 +78,11 @@
                                             </div>
                                             <div class="art-postcontent">
                                                 <!-- article-content -->
+												<div style="padding:10px;margin:0px;position:relative;width:100%;">
+												<img style="display:block;padding:0px;margin:0 auto;border:0px;" src="./lib/template/images/bouton_vacances.png" alt="générer les périodes de vacances" />
+												</div>
 												<div class="calendar_container">
+
 													<div class="calendar_header">
 													<div style="margin:3px;">Lun</div>
 													</div>

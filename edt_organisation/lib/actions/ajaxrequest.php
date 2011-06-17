@@ -33,18 +33,20 @@ class ajaxrequestAction extends Action {
     {
 		$content = "";
 		if ($request->getParam('asker')) {
-			check_token();
-			if ($request->getParam('asker') == "calendrier") {
-				$this->insertPeriod($content, $request);
-			}
-			else if ($request->getParam('asker') == "edit_period") {
-				$this->editPeriod($content, $request);
-			}
-			else if ($request->getParam('asker') == "delete_period") {
-				$this->deletePeriod($content, $request);
-			}
-			else if ($request->getParam('asker') == "validate_period") {
-				$this->validatePeriod($content, $request);
+			if ($_SESSION['statut'] == "administrateur") {
+				check_token();
+				if ($request->getParam('asker') == "calendrier") {
+					$this->insertPeriod($content, $request);
+				}
+				else if ($request->getParam('asker') == "edit_period") {
+					$this->editPeriod($content, $request);
+				}
+				else if ($request->getParam('asker') == "delete_period") {
+					$this->deletePeriod($content, $request);
+				}
+				else if ($request->getParam('asker') == "validate_period") {
+					$this->validatePeriod($content, $request);
+				}
 			}
 		}
 		$response->addVar('content', $content);

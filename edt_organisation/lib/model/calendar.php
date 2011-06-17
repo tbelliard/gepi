@@ -315,7 +315,7 @@ class calendar {
 							</a>
 							</div>";
 				$result.="<div class=\"bouton_modifier\">
-							<a href=\"index.php?action=calendriermanager&operation=modify_name&id_calendrier=".$calendriers['id'][$i]."\">
+							<a href=\"index.php?action=calendriermanager&operation=modify_name&id_calendrier=".$calendriers['id'][$i].add_token_in_url()."\">
 							<img src=\"./lib/template/images/modif.png\" alt=\"modifier le nom\" title=\"modifier le nom du calendrier\"/>
 							</a>
 							</div>";				
