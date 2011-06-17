@@ -332,7 +332,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		    $j_groupes_classesJoin->setJoinType(Criteria::LEFT_JOIN);
 		    $j_groupes_classesRelation = $groupeTableMap->getRelation('JGroupesClasses');
 		    $j_groupes_classesJoin->setRelationMap($j_groupes_classesRelation);
-		    $width["JGroupesClasses"] = $j_groupes_classesJoin;
+		    $width["JGroupesClasses"] = new ModelWith($j_groupes_classesJoin);
 
 		    $classeJoin = new ModelJoin();
 		    $classeJoin->setJoinType(Criteria::LEFT_JOIN);
@@ -340,7 +340,7 @@ class UtilisateurProfessionnel extends BaseUtilisateurProfessionnel {
 		    $relationClasse = $jGroupesClassesTableMap->getRelation('Classe');
 		    $classeJoin->setRelationMap($relationClasse);
 		    $classeJoin->setPreviousJoin($j_groupes_classesJoin);
-		    $width["Classe"] = $classeJoin;
+		    $width["Classe"] = new ModelWith($classeJoin);
 
 		    $formatter->setWith($width);
 		    UtilisateurProfessionnel::$groupeFormatter = $formatter;

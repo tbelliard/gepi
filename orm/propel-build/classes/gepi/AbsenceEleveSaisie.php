@@ -663,19 +663,19 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		    $typeJoin->setJoinType(Criteria::LEFT_JOIN);
 		    $typeRelation = $typeTableMap->getRelation('AbsenceEleveType');
 		    $typeJoin->setRelationMap($typeRelation);
-		    $width["AbsenceEleveType"] = $typeJoin;
+		    $width["AbsenceEleveType"] = new ModelWith($typeJoin);
 
 		    $notificationJoin = new ModelJoin();
 		    $notificationJoin->setJoinType(Criteria::LEFT_JOIN);
 		    $notificationRelation = $typeTableMap->getRelation('AbsenceEleveNotification');
 		    $notificationJoin->setRelationMap($notificationRelation);
-		    $width["AbsenceEleveNotification"] = $notificationJoin;
+		    $width["AbsenceEleveNotification"] = new ModelWith($notificationJoin);
 
 		    $justificationJoin = new ModelJoin();
 		    $justificationJoin->setJoinType(Criteria::LEFT_JOIN);
 		    $justificationRelation = $typeTableMap->getRelation('AbsenceEleveJustification');
 		    $justificationJoin->setRelationMap($justificationRelation);
-		    $width["AbsenceEleveJustification"] = $justificationJoin;
+		    $width["AbsenceEleveJustification"] = new ModelWith($justificationJoin);
 
 		    $formatter->setWith($width);
 		    AbsenceEleveSaisie::$traitementFormatter = $formatter;
