@@ -99,7 +99,7 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
     $courrier_modele=repertoire_modeles('absence_modele_lettre_parents.odt');
     include_once '../orm/helpers/AbsencesNotificationHelper.php';
     foreach($notifications_col as $notif) {
-	if ($notif->getTypeNotification() != AbsenceEleveNotification::$TYPE_COURRIER) {
+	if ($notif->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
 	    continue;
 	}
 	$TBS = AbsencesNotificationHelper::MergeNotification($notif, $courrier_modele);
@@ -123,9 +123,9 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
 	$courrier_recap_col->append($recap);
 
 	//on met un code d'erreur au cas ou le generation se fait mal
-	if ($notif->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL
-		|| $notif->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_PRET_A_ENVOYER) {
-	    $notif->setStatutEnvoi(AbsenceEleveNotification::$STATUT_ECHEC);
+	if ($notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL
+		|| $notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER) {
+	    $notif->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC);
 	    $notif->setErreurMessageEnvoi('Echec de l\'impression par lot');
 	    $notif->save();
 	    $courrier_nouvellement_envoyés_col->append($notif);
@@ -158,7 +158,7 @@ if (isset($_GET['envoyer_courrier']) && $_GET['envoyer_courrier'] == 'true') {
     //on change le statut des notifications
     foreach($courrier_nouvellement_envoyés_col as $notif) {
 	$notif->setDateEnvoi('now');
-	$notif->setStatutEnvoi(AbsenceEleveNotification::$STATUT_EN_COURS);
+	$notif->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_EN_COURS);
 	$notif->setErreurMessageEnvoi('');
 	$notif->save();
     }
@@ -212,8 +212,8 @@ if (isset($_GET['envoyer_email']) && $_GET['envoyer_email'] == 'true') {
 $notif_mail_a_envoyer_col = new PropelCollection();
 $notif_mail_fini_col = new PropelCollection();
 foreach($notifications_col as $notif) {
-    if ($notif->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL) {
-	if ($notif->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL || $notif->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_PRET_A_ENVOYER) {
+    if ($notif->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL) {
+	if ($notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL || $notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER) {
 	    $notif_mail_a_envoyer_col->add($notif);
 	} else {
 	    $notif_mail_fini_col->add($notif);
@@ -237,8 +237,8 @@ if (!$notif_mail_fini_col->isEmpty()) {$notif = new AbsenceEleveNotification();
 	echo '<tr>';
 	echo '<td><a href="visu_notification.php?id_notification='.$notif->getId().'">'.$notif->getId().'</a></td>';
 	echo '<td>';
-	if ($notif->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES
-		|| $notif->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES_AR) {
+	if ($notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES
+		|| $notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES_AVEC_ACCUSE_DE_RECEPTION) {
 	    echo '<div style="color : green;">envoi réussi</div>';
 	} else {
 	    echo '<div style="color : red;">Erreur : '.$notif->getErreurMessageEnvoi().'</div>';
@@ -248,7 +248,7 @@ if (!$notif_mail_fini_col->isEmpty()) {$notif = new AbsenceEleveNotification();
 	echo ' <a href="generer_notifications_par_lot.php?retirer_id_notification='.$notif->getId().'">Retirer du lot</a>';
 	echo '</td>';
 	echo '<td>'.$notif->getEmail().'</td>';
-	echo '<td>Statut '.AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notif->getStatutEnvoi()].'</td>';
+	echo '<td>Statut '.$notif->getStatutEnvoi().'</td>';
 	echo '<td>'.$notif->getDateEnvoi('d/m/Y H:i').'</td>';
 	echo '<td>Traitement '.$notif->getAbsenceEleveTraitement()->getDescription().'</td>';
 	echo '</tr>';
@@ -272,7 +272,7 @@ if (!$notif_mail_a_envoyer_col->isEmpty()) {$notif = new AbsenceEleveNotificatio
 	    echo '<td><a href="visu_notification.php?id_notification='.$notif->getId().'">'.$notif->getId().'</a></td>';
 	    echo '<td><a href="generer_notifications_par_lot.php?retirer_id_notification='.$notif->getId().'">Retirer du lot</a></td>';
 	    echo '<td>'.$notif->getEmail().'</td>';
-	    echo '<td>Statut '.AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notif->getStatutEnvoi()].'</td>';
+	    echo '<td>Statut '.$notif->getStatutEnvoi().'</td>';
 	    echo '<td>Traitement '.$notif->getAbsenceEleveTraitement()->getDescription().'</td>';
 	echo '</tr>';
     }
@@ -287,8 +287,8 @@ if (!$notif_mail_a_envoyer_col->isEmpty()) {$notif = new AbsenceEleveNotificatio
 $notif_courrier_a_envoyer_col = new PropelCollection();
 $notif_courrier_fini = new PropelCollection();
 foreach($notifications_col as $notif) {
-    if ($notif->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
-	if ($notif->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_INITIAL || $notif->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_PRET_A_ENVOYER) {
+    if ($notif->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
+	if ($notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL || $notif->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER) {
 	    $notif_courrier_a_envoyer_col->add($notif);
 	} else {
 	    $notif_courrier_fini->add($notif);
@@ -313,7 +313,7 @@ if (!$notif_courrier_fini->isEmpty()) {$notif = new AbsenceEleveNotification();
 	echo '<tr>';
 	echo '<td><a href="visu_notification.php?id_notification='.$notif->getId().'">'.$notif->getId().'</a></td>';
 	echo '<td>';
-	if ($notif->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_ECHEC) {
+	if ($notif->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ECHEC) {
 	    echo '<div style="color : green;">Impression réussie</div>';
 	} else {
 	    echo '<div style="color : red;">Erreur</div>';
@@ -336,7 +336,7 @@ if (!$notif_courrier_fini->isEmpty()) {$notif = new AbsenceEleveNotification();
 	    echo $notif->getResponsableEleveAdresse()->getDescriptionSurUneLigne();
 	}
 	echo '</td>';
-	echo '<td>Statut '.AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notif->getStatutEnvoi()].'</td>';
+	echo '<td>Statut '.$notif->getStatutEnvoi().'</td>';
 	echo '<td>'.$notif->getDateEnvoi('d/m/Y H:i').'</td>';
 	echo '<td>';
 	if ($notif->getAbsenceEleveTraitement() != null) {
@@ -381,7 +381,7 @@ if (!$notif_courrier_a_envoyer_col->isEmpty()) {$notif = new AbsenceEleveNotific
 	    echo $notif->getResponsableEleveAdresse()->getDescriptionSurUneLigne();
 	}
 	echo '</td>';
-	echo '<td>Statut '.AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notif->getStatutEnvoi()].'</td>';
+	echo '<td>Statut '.$notif->getStatutEnvoi().'</td>';
 	echo '<td>'.$notif->getDateEnvoi('d/m/Y H:i').'</td>';
 	echo '<td>';
 	if ($notif->getAbsenceEleveTraitement() != null) {

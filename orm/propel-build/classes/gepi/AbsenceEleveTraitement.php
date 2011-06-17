@@ -58,8 +58,8 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 		}
 		$notif = false;
 		foreach ($this->getAbsenceEleveNotifications() as $notification) {
-		    if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES
-			    || $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES_AR) {
+		    if ($notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES
+			    || $notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES_AVEC_ACCUSE_DE_RECEPTION) {
 			$notif = true;
 			break;
 		    }
@@ -107,7 +107,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 
 	    //modifiable uniquement si aucune notifications n'a été envoyé
 	    foreach ($this->getAbsenceEleveNotifications() as $notification) {
-		if ($notification->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_INITIAL) {
+		if ($notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL) {
 		    return false;
 		}
 	    }

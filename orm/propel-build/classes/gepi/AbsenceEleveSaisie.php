@@ -554,7 +554,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	public function getNotifiee() {
 	    foreach ($this->getAbsenceEleveTraitements() as $traitement) {
 		foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
-		    if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES || $notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES_AR) {
+		    if ($notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES || $notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES_AVEC_ACCUSE_DE_RECEPTION) {
 			return true;
 		    }
 		}

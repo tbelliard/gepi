@@ -356,10 +356,10 @@ foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
     } else {
 	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getCreatedAt('U')));
     }
-    if (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()])) {
-	echo ', type : '.AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()];
+    if ($notification->getTypeNotification() != null) {
+	echo ', type : '.$notification->getTypeNotification();
     }
-    echo ', statut : '.AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()];
+    echo ', statut : '.$notification->getStatutEnvoi();
     echo "</a>";
     echo '</td></tr>';
 }

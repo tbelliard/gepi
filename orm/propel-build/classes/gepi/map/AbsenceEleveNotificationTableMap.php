@@ -40,12 +40,26 @@ class AbsenceEleveNotificationTableMap extends TableMap {
 		$this->addPrimaryKey('ID', 'Id', 'INTEGER', true, 11, null);
 		$this->addForeignKey('UTILISATEUR_ID', 'UtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, null);
 		$this->addForeignKey('A_TRAITEMENT_ID', 'ATraitementId', 'INTEGER', 'a_traitements', 'ID', true, 12, null);
-		$this->addColumn('TYPE_NOTIFICATION', 'TypeNotification', 'INTEGER', false, 5, null);
+		$this->addColumn('TYPE_NOTIFICATION', 'TypeNotification', 'ENUM', false, null, null);
+		$this->getColumn('TYPE_NOTIFICATION', false)->setValueSet(array (
+  0 => 'email',
+  1 => 'courrier',
+  2 => 'sms',
+  3 => 'communication telephonique',
+));
 		$this->addColumn('EMAIL', 'Email', 'VARCHAR', false, 100, null);
 		$this->addColumn('TELEPHONE', 'Telephone', 'VARCHAR', false, 100, null);
 		$this->addForeignKey('ADR_ID', 'AdrId', 'VARCHAR', 'resp_adr', 'ADR_ID', false, 10, null);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
-		$this->addColumn('STATUT_ENVOI', 'StatutEnvoi', 'INTEGER', false, 5, 0);
+		$this->addColumn('STATUT_ENVOI', 'StatutEnvoi', 'ENUM', false, null, 'etat initial');
+		$this->getColumn('STATUT_ENVOI', false)->setValueSet(array (
+  0 => 'etat initial',
+  1 => 'en cours',
+  2 => 'echec',
+  3 => 'succes',
+  4 => 'succes avec accuse de reception',
+  5 => 'pret a envoyer',
+));
 		$this->addColumn('DATE_ENVOI', 'DateEnvoi', 'TIMESTAMP', false, null, null);
 		$this->addColumn('ERREUR_MESSAGE_ENVOI', 'ErreurMessageEnvoi', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);

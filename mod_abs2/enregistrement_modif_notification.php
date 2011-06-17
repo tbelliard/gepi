@@ -116,18 +116,10 @@ if ( isset($_POST["creation_notification"])) {
 }
 
 if ( $modif == 'type') {
-    if (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$_POST["type"]])) {
-	$notification->setTypeNotification($_POST["type"]);
-    } else {
-	$notification->setTypeNotification(-1);
-    }
-    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_INITIAL);
+    $notification->setTypeNotification($_POST['type']);
+    $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL);
 } else if ( $modif == 'statut') {
-    if (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$_POST["statut"]])) {
-	$notification->setStatutEnvoi($_POST["statut"]);
-    } else {
-	$notification->setStatutEnvoi(0);
-    }
+    $notification->setStatutEnvoi($_POST["statut"]);
 } else if ( $modif == 'commentaire') {
     $notification->setCommentaire($_POST["commentaire"]);
 } elseif ($modif == 'enlever_responsable') {
@@ -158,7 +150,7 @@ if ( $modif == 'type') {
     $notification->copyInto($clone, true);// deep copy
     $clone->setId($id);
     $clone->setNew(false);
-    $clone->setStatutEnvoi(AbsenceEleveNotification::$STATUT_INITIAL);
+    $clone->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL);
     $clone->setDateEnvoi(null);
     $clone->setErreurMessageEnvoi(null);
     $clone->save();

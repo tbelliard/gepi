@@ -563,13 +563,12 @@ echo ">";
 echo 'SANS NOTIFICATION';
 echo "</option>\n";
 $i = 0;
-while (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i])) {
-    echo "<option value='$i'";
-    if (getFiltreRechercheParam('filter_statut_notification') === (string)$i) {
+foreach (AbsenceEleveNotificationPeer::getValueSet(AbsenceEleveNotificationPeer::STATUT_ENVOI) as $status) {
+    echo "<option value='$status'";
+    if (getFiltreRechercheParam('filter_statut_notification') === $status) {
 	echo 'selected';
     }
-    echo ">".AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i]."</option>\n";
-    $i = $i + 1;
+    echo ">".$status."</option>\n";
 }
 echo "</select>";
 echo '</th>';

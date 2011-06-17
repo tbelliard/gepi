@@ -318,14 +318,12 @@ echo 'type de notification';
 echo '<br />';
 echo ("<select name=\"filter_type_notification\" onchange='submit()'>");
 echo "<option value=''></option>\n";
-$i = 0;
-while (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i])) {
-    echo "<option value='$i'";
-    if (getFiltreRechercheParam('filter_type_notification') === (string)$i) {
+foreach (AbsenceEleveNotificationPeer::getValueSet(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION) as $type) {
+    echo "<option value='$type'";
+    if (getFiltreRechercheParam('filter_type_notification') === $type) {
 	echo 'selected';
     }
-    echo ">".AbsenceEleveNotification::$LISTE_LABEL_TYPE[$i]."</option>\n";
-    $i = $i + 1;
+    echo ">".$type."</option>\n";
 }
 echo "</select>";
 echo '</th>';
@@ -347,14 +345,12 @@ echo '</span>';
 echo '<br />';
 echo ("<select name=\"filter_statut_notification\" onchange='submit()'>");
 echo "<option value=''></option>\n";
-$i = 0;
-while (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i])) {
-    echo "<option value='$i'";
-    if (getFiltreRechercheParam('filter_statut_notification') === (string)$i) {
+foreach (AbsenceEleveNotificationPeer::getValueSet(AbsenceEleveNotificationPeer::STATUT_ENVOI) as $status) {
+    echo "<option value='$status'";
+    if (getFiltreRechercheParam('filter_statut_notification') === $status) {
 	echo 'selected';
     }
-    echo ">".AbsenceEleveNotification::$LISTE_LABEL_STATUT[$i]."</option>\n";
-    $i = $i + 1;
+    echo ">".$status."</option>\n";
 }
 echo "</select>";
 echo '</th>';
@@ -553,9 +549,7 @@ foreach ($results as $notification) {
 	echo '<span style="white-space: nowrap;"> ';
 //  echo '<td><nobr>';
     echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-    if (isset(AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()])){
-	echo AbsenceEleveNotification::$LISTE_LABEL_TYPE[$notification->getTypeNotification()];
-    }
+    echo $notification->getTypeNotification();
     echo "</a>";
     echo "</span>";
     echo '</td>';
@@ -566,8 +560,8 @@ foreach ($results as $notification) {
 	echo '<span style="white-space: nowrap;"> ';
 //  echo '<td><nobr>';
     echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
-    if (isset(AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()])){
-	echo AbsenceEleveNotification::$LISTE_LABEL_STATUT[$notification->getStatutEnvoi()];
+    if ($notification->getStatutEnvoi() != ''){
+	echo $notification->getStatutEnvoi();
     }
     echo "</a>";
 
@@ -646,7 +640,7 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
             onClick: function() {
 		var query_string = \'input[type=checkbox][name="select_notification[]"]\';
 		dojo.query(query_string).attr(\'checked\', false);
-		query_string = \'input[type=checkbox][notif_status="'.AbsenceEleveNotification::$STATUT_PRET_A_ENVOYER.'"][name="select_notification[]"]\';
+		query_string = \'input[type=checkbox][notif_status="'.AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER.'"][name="select_notification[]"]\';
 		dojo.query(query_string).attr(\'checked\', true);
 	    }
         });

@@ -77,27 +77,27 @@ if ($notification == null && !isset($_POST["creation_notification"])) {
     die();
 }
 
-if ($notification->getTypeNotification() != AbsenceEleveNotification::$TYPE_COURRIER && $notification->getStatutEnvoi() != AbsenceEleveNotification::$STATUT_INITIAL) {
+if ($notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER && $notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL) {
     $message_enregistrement .= 'Génération impossible : envoi déjà effectué. ';
     include("visu_notification.php");
     die();
 }
 
-if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COURRIER) {
+if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
     // Load the template
     $modele_lettre_parents=repertoire_modeles("absence_modele_lettre_parents.odt");
     include_once '../orm/helpers/AbsencesNotificationHelper.php';
     $TBS = AbsencesNotificationHelper::MergeNotification($notification, $modele_lettre_parents);
 
     $notification->setDateEnvoi('now');
-    $notification->setStatutEnvoi(AbsenceEleveNotification::$STATUT_EN_COURS);
+    $notification->setStatutEnvoi(AbsenceEleveNotificationPeer::STATUT_ENVOI_EN_COURS);
     $notification->save();
 
     // Output as a download file (some automatic fields are merged here)
     $TBS->Show(OPENTBS_DOWNLOAD+TBS_EXIT, 'abs_notif_'.$notification->getId().'.odt');
     die();
 
-} else if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_EMAIL) {
+} else if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL) {
     // Load the template
     $email=repertoire_modeles('absence_email.txt');
     include_once '../orm/helpers/AbsencesNotificationHelper.php';
@@ -106,7 +106,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 
     $retour_envoi = AbsencesNotificationHelper::EnvoiNotification($notification, $message);
 
-} else if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_SMS) {
+} else if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS) {
     // Load the template
     $sms=repertoire_modeles('absence_sms.txt');
     include_once '../orm/helpers/AbsencesNotificationHelper.php';
@@ -115,7 +115,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotification::$TYPE_COUR
 
     $retour_envoi = AbsencesNotificationHelper::EnvoiNotification($notification, $message);
 }
-if ($notification->getStatutEnvoi() == AbsenceEleveNotification::$STATUT_SUCCES) {
+if ($notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_SUCCES) {
     $message_enregistrement = 'Envoi réussi. '.$retour_envoi;
 } else {
     $message_enregistrement = 'Échec de l\'envoi. '.$retour_envoi;
