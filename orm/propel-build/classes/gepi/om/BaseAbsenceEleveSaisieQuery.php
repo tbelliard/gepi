@@ -20,8 +20,9 @@
  * @method     AbsenceEleveSaisieQuery orderByIdSIncidents($order = Criteria::ASC) Order by the id_s_incidents column
  * @method     AbsenceEleveSaisieQuery orderByModifieParUtilisateurId($order = Criteria::ASC) Order by the modifie_par_utilisateur_id column
  * @method     AbsenceEleveSaisieQuery orderByIdLieu($order = Criteria::ASC) Order by the id_lieu column
- * @method     AbsenceEleveSaisieQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
- * @method     AbsenceEleveSaisieQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
+ * @method     AbsenceEleveSaisieQuery orderByVersion($order = Criteria::ASC) Order by the version column
+ * @method     AbsenceEleveSaisieQuery orderByVersionCreatedAt($order = Criteria::ASC) Order by the version_created_at column
+ * @method     AbsenceEleveSaisieQuery orderByVersionCreatedBy($order = Criteria::ASC) Order by the version_created_by column
  *
  * @method     AbsenceEleveSaisieQuery groupById() Group by the id column
  * @method     AbsenceEleveSaisieQuery groupByUtilisateurId() Group by the utilisateur_id column
@@ -37,8 +38,9 @@
  * @method     AbsenceEleveSaisieQuery groupByIdSIncidents() Group by the id_s_incidents column
  * @method     AbsenceEleveSaisieQuery groupByModifieParUtilisateurId() Group by the modifie_par_utilisateur_id column
  * @method     AbsenceEleveSaisieQuery groupByIdLieu() Group by the id_lieu column
- * @method     AbsenceEleveSaisieQuery groupByCreatedAt() Group by the created_at column
- * @method     AbsenceEleveSaisieQuery groupByUpdatedAt() Group by the updated_at column
+ * @method     AbsenceEleveSaisieQuery groupByVersion() Group by the version column
+ * @method     AbsenceEleveSaisieQuery groupByVersionCreatedAt() Group by the version_created_at column
+ * @method     AbsenceEleveSaisieQuery groupByVersionCreatedBy() Group by the version_created_by column
  *
  * @method     AbsenceEleveSaisieQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     AbsenceEleveSaisieQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -84,6 +86,10 @@
  * @method     AbsenceEleveSaisieQuery rightJoinJTraitementSaisieEleve($relationAlias = null) Adds a RIGHT JOIN clause to the query using the JTraitementSaisieEleve relation
  * @method     AbsenceEleveSaisieQuery innerJoinJTraitementSaisieEleve($relationAlias = null) Adds a INNER JOIN clause to the query using the JTraitementSaisieEleve relation
  *
+ * @method     AbsenceEleveSaisieQuery leftJoinAbsenceEleveSaisieVersion($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveSaisieVersion relation
+ * @method     AbsenceEleveSaisieQuery rightJoinAbsenceEleveSaisieVersion($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveSaisieVersion relation
+ * @method     AbsenceEleveSaisieQuery innerJoinAbsenceEleveSaisieVersion($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveSaisieVersion relation
+ *
  * @method     AbsenceEleveSaisie findOne(PropelPDO $con = null) Return the first AbsenceEleveSaisie matching the query
  * @method     AbsenceEleveSaisie findOneOrCreate(PropelPDO $con = null) Return the first AbsenceEleveSaisie matching the query, or a new AbsenceEleveSaisie object populated from the query conditions when no match is found
  *
@@ -101,8 +107,9 @@
  * @method     AbsenceEleveSaisie findOneByIdSIncidents(int $id_s_incidents) Return the first AbsenceEleveSaisie filtered by the id_s_incidents column
  * @method     AbsenceEleveSaisie findOneByModifieParUtilisateurId(string $modifie_par_utilisateur_id) Return the first AbsenceEleveSaisie filtered by the modifie_par_utilisateur_id column
  * @method     AbsenceEleveSaisie findOneByIdLieu(int $id_lieu) Return the first AbsenceEleveSaisie filtered by the id_lieu column
- * @method     AbsenceEleveSaisie findOneByCreatedAt(string $created_at) Return the first AbsenceEleveSaisie filtered by the created_at column
- * @method     AbsenceEleveSaisie findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveSaisie filtered by the updated_at column
+ * @method     AbsenceEleveSaisie findOneByVersion(int $version) Return the first AbsenceEleveSaisie filtered by the version column
+ * @method     AbsenceEleveSaisie findOneByVersionCreatedAt(string $version_created_at) Return the first AbsenceEleveSaisie filtered by the version_created_at column
+ * @method     AbsenceEleveSaisie findOneByVersionCreatedBy(string $version_created_by) Return the first AbsenceEleveSaisie filtered by the version_created_by column
  *
  * @method     array findById(int $id) Return AbsenceEleveSaisie objects filtered by the id column
  * @method     array findByUtilisateurId(string $utilisateur_id) Return AbsenceEleveSaisie objects filtered by the utilisateur_id column
@@ -118,8 +125,9 @@
  * @method     array findByIdSIncidents(int $id_s_incidents) Return AbsenceEleveSaisie objects filtered by the id_s_incidents column
  * @method     array findByModifieParUtilisateurId(string $modifie_par_utilisateur_id) Return AbsenceEleveSaisie objects filtered by the modifie_par_utilisateur_id column
  * @method     array findByIdLieu(int $id_lieu) Return AbsenceEleveSaisie objects filtered by the id_lieu column
- * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveSaisie objects filtered by the created_at column
- * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveSaisie objects filtered by the updated_at column
+ * @method     array findByVersion(int $version) Return AbsenceEleveSaisie objects filtered by the version column
+ * @method     array findByVersionCreatedAt(string $version_created_at) Return AbsenceEleveSaisie objects filtered by the version_created_at column
+ * @method     array findByVersionCreatedBy(string $version_created_by) Return AbsenceEleveSaisie objects filtered by the version_created_by column
  *
  * @package    propel.generator.gepi.om
  */
@@ -758,18 +766,16 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the created_at column
+	 * Filter the query on the version column
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
-	 * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
-	 * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+	 * $query->filterByVersion(1234); // WHERE version = 1234
+	 * $query->filterByVersion(array(12, 34)); // WHERE version IN (12, 34)
+	 * $query->filterByVersion(array('min' => 12)); // WHERE version > 12
 	 * </code>
 	 *
-	 * @param     mixed $createdAt The value to use as filter.
-	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
-	 *              Empty strings are treated as NULL.
+	 * @param     mixed $version The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -777,16 +783,16 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByCreatedAt($createdAt = null, $comparison = null)
+	public function filterByVersion($version = null, $comparison = null)
 	{
-		if (is_array($createdAt)) {
+		if (is_array($version)) {
 			$useMinMax = false;
-			if (isset($createdAt['min'])) {
-				$this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+			if (isset($version['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::VERSION, $version['min'], Criteria::GREATER_EQUAL);
 				$useMinMax = true;
 			}
-			if (isset($createdAt['max'])) {
-				$this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+			if (isset($version['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::VERSION, $version['max'], Criteria::LESS_EQUAL);
 				$useMinMax = true;
 			}
 			if ($useMinMax) {
@@ -796,20 +802,20 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 				$comparison = Criteria::IN;
 			}
 		}
-		return $this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, $createdAt, $comparison);
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::VERSION, $version, $comparison);
 	}
 
 	/**
-	 * Filter the query on the updated_at column
+	 * Filter the query on the version_created_at column
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
-	 * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
-	 * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+	 * $query->filterByVersionCreatedAt('2011-03-14'); // WHERE version_created_at = '2011-03-14'
+	 * $query->filterByVersionCreatedAt('now'); // WHERE version_created_at = '2011-03-14'
+	 * $query->filterByVersionCreatedAt(array('max' => 'yesterday')); // WHERE version_created_at > '2011-03-13'
 	 * </code>
 	 *
-	 * @param     mixed $updatedAt The value to use as filter.
+	 * @param     mixed $versionCreatedAt The value to use as filter.
 	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
 	 *              Empty strings are treated as NULL.
 	 *              Use scalar values for equality.
@@ -819,16 +825,16 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
-	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+	public function filterByVersionCreatedAt($versionCreatedAt = null, $comparison = null)
 	{
-		if (is_array($updatedAt)) {
+		if (is_array($versionCreatedAt)) {
 			$useMinMax = false;
-			if (isset($updatedAt['min'])) {
-				$this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+			if (isset($versionCreatedAt['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::VERSION_CREATED_AT, $versionCreatedAt['min'], Criteria::GREATER_EQUAL);
 				$useMinMax = true;
 			}
-			if (isset($updatedAt['max'])) {
-				$this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+			if (isset($versionCreatedAt['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::VERSION_CREATED_AT, $versionCreatedAt['max'], Criteria::LESS_EQUAL);
 				$useMinMax = true;
 			}
 			if ($useMinMax) {
@@ -838,7 +844,35 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 				$comparison = Criteria::IN;
 			}
 		}
-		return $this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt, $comparison);
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::VERSION_CREATED_AT, $versionCreatedAt, $comparison);
+	}
+
+	/**
+	 * Filter the query on the version_created_by column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByVersionCreatedBy('fooValue');   // WHERE version_created_by = 'fooValue'
+	 * $query->filterByVersionCreatedBy('%fooValue%'); // WHERE version_created_by LIKE '%fooValue%'
+	 * </code>
+	 *
+	 * @param     string $versionCreatedBy The value to use as filter.
+	 *              Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function filterByVersionCreatedBy($versionCreatedBy = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($versionCreatedBy)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $versionCreatedBy)) {
+				$versionCreatedBy = str_replace('*', '%', $versionCreatedBy);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::VERSION_CREATED_BY, $versionCreatedBy, $comparison);
 	}
 
 	/**
@@ -1581,6 +1615,79 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query by a related AbsenceEleveSaisieVersion object
+	 *
+	 * @param     AbsenceEleveSaisieVersion $absenceEleveSaisieVersion  the related object to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function filterByAbsenceEleveSaisieVersion($absenceEleveSaisieVersion, $comparison = null)
+	{
+		if ($absenceEleveSaisieVersion instanceof AbsenceEleveSaisieVersion) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID, $absenceEleveSaisieVersion->getId(), $comparison);
+		} elseif ($absenceEleveSaisieVersion instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveSaisieVersionQuery()
+					->filterByPrimaryKeys($absenceEleveSaisieVersion->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveSaisieVersion() only accepts arguments of type AbsenceEleveSaisieVersion or PropelCollection');
+		}
+	}
+
+	/**
+	 * Adds a JOIN clause to the query using the AbsenceEleveSaisieVersion relation
+	 * 
+	 * @param     string $relationAlias optional alias for the relation
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function joinAbsenceEleveSaisieVersion($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+	{
+		$tableMap = $this->getTableMap();
+		$relationMap = $tableMap->getRelation('AbsenceEleveSaisieVersion');
+		
+		// create a ModelJoin object for this join
+		$join = new ModelJoin();
+		$join->setJoinType($joinType);
+		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+		if ($previousJoin = $this->getPreviousJoin()) {
+			$join->setPreviousJoin($previousJoin);
+		}
+		
+		// add the ModelJoin to the current object
+		if($relationAlias) {
+			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+			$this->addJoinObject($join, $relationAlias);
+		} else {
+			$this->addJoinObject($join, 'AbsenceEleveSaisieVersion');
+		}
+		
+		return $this;
+	}
+
+	/**
+	 * Use the AbsenceEleveSaisieVersion relation AbsenceEleveSaisieVersion object
+	 *
+	 * @see       useQuery()
+	 * 
+	 * @param     string $relationAlias optional alias for the relation,
+	 *                                   to be used as main alias in the secondary query
+	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+	 *
+	 * @return    AbsenceEleveSaisieVersionQuery A secondary query class using the current class as primary query
+	 */
+	public function useAbsenceEleveSaisieVersionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+	{
+		return $this
+			->joinAbsenceEleveSaisieVersion($relationAlias, $joinType)
+			->useQuery($relationAlias ? $relationAlias : 'AbsenceEleveSaisieVersion', 'AbsenceEleveSaisieVersionQuery');
+	}
+
+	/**
 	 * Filter the query by a related AbsenceEleveTraitement object
 	 * using the j_traitements_saisies table as cross reference
 	 *
@@ -1613,70 +1720,6 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		return $this;
 	}
 
-	// timestampable behavior
+	// versionable behavior
 	
-	/**
-	 * Filter by the latest updated
-	 *
-	 * @param      int $nbDays Maximum age of the latest update in days
-	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
-	 */
-	public function recentlyUpdated($nbDays = 7)
-	{
-		return $this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
-	}
-	
-	/**
-	 * Filter by the latest created
-	 *
-	 * @param      int $nbDays Maximum age of in days
-	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
-	 */
-	public function recentlyCreated($nbDays = 7)
-	{
-		return $this->addUsingAlias(AbsenceEleveSaisiePeer::CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
-	}
-	
-	/**
-	 * Order by update date desc
-	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
-	 */
-	public function lastUpdatedFirst()
-	{
-		return $this->addDescendingOrderByColumn(AbsenceEleveSaisiePeer::UPDATED_AT);
-	}
-	
-	/**
-	 * Order by update date asc
-	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
-	 */
-	public function firstUpdatedFirst()
-	{
-		return $this->addAscendingOrderByColumn(AbsenceEleveSaisiePeer::UPDATED_AT);
-	}
-	
-	/**
-	 * Order by create date desc
-	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
-	 */
-	public function lastCreatedFirst()
-	{
-		return $this->addDescendingOrderByColumn(AbsenceEleveSaisiePeer::CREATED_AT);
-	}
-	
-	/**
-	 * Order by create date asc
-	 *
-	 * @return     AbsenceEleveSaisieQuery The current query, for fluid interface
-	 */
-	public function firstCreatedFirst()
-	{
-		return $this->addAscendingOrderByColumn(AbsenceEleveSaisiePeer::CREATED_AT);
-	}
-
 } // BaseAbsenceEleveSaisieQuery

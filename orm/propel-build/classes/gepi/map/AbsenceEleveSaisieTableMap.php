@@ -51,8 +51,9 @@ class AbsenceEleveSaisieTableMap extends TableMap {
 		$this->addColumn('ID_S_INCIDENTS', 'IdSIncidents', 'INTEGER', false, null, null);
 		$this->addForeignKey('MODIFIE_PAR_UTILISATEUR_ID', 'ModifieParUtilisateurId', 'VARCHAR', 'utilisateurs', 'LOGIN', false, 100, null);
 		$this->addForeignKey('ID_LIEU', 'IdLieu', 'INTEGER', 'a_lieux', 'ID', false, 11, null);
-		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
-		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+		$this->addColumn('VERSION', 'Version', 'INTEGER', false, null, 0);
+		$this->addColumn('VERSION_CREATED_AT', 'VersionCreatedAt', 'TIMESTAMP', false, null, null);
+		$this->addColumn('VERSION_CREATED_BY', 'VersionCreatedBy', 'VARCHAR', false, 100, null);
 		// validators
 	} // initialize()
 
@@ -71,6 +72,7 @@ class AbsenceEleveSaisieTableMap extends TableMap {
     $this->addRelation('ModifieParUtilisateur', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('modifie_par_utilisateur_id' => 'login', ), null, null);
     $this->addRelation('AbsenceEleveLieu', 'AbsenceEleveLieu', RelationMap::MANY_TO_ONE, array('id_lieu' => 'id', ), 'SET NULL', null);
     $this->addRelation('JTraitementSaisieEleve', 'JTraitementSaisieEleve', RelationMap::ONE_TO_MANY, array('id' => 'a_saisie_id', ), 'CASCADE', null);
+    $this->addRelation('AbsenceEleveSaisieVersion', 'AbsenceEleveSaisieVersion', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null);
     $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
@@ -83,7 +85,7 @@ class AbsenceEleveSaisieTableMap extends TableMap {
 	public function getBehaviors()
 	{
 		return array(
-			'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
+			'versionable' => array('version_column' => 'version', 'version_table' => '', 'log_created_at' => 'true', 'log_created_by' => 'true', 'log_comment' => 'false', 'version_created_at_column' => 'version_created_at', 'version_created_by_column' => 'version_created_by', 'version_comment_column' => 'version_comment', ),
 		);
 	} // getBehaviors()
 

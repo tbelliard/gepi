@@ -859,8 +859,9 @@ CREATE TABLE a_saisies
 	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
 	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
-	created_at DATETIME,
-	updated_at DATETIME,
+	version INTEGER DEFAULT 0,
+	version_created_at DATETIME,
+	version_created_by VARCHAR(100),
 	PRIMARY KEY (id),
 	INDEX a_saisies_FI_1 (utilisateur_id),
 	INDEX a_saisies_FI_2 (eleve_id),
@@ -1406,6 +1407,38 @@ CREATE TABLE salle_cours
 	nom_salle VARCHAR(50) COMMENT 'nom de la salle defini par l\'utilisateur',
 	PRIMARY KEY (id_salle)
 ) ENGINE=MyISAM COMMENT='Liste des salles de classe';
+
+-- ---------------------------------------------------------------------
+-- a_saisies_version
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS a_saisies_version;
+
+CREATE TABLE a_saisies_version
+(
+	id INTEGER(11) NOT NULL,
+	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a saisi l\'absence',
+	eleve_id INTEGER(11) COMMENT 'id_eleve de l\'eleve objet de la saisie, egal à null si aucun eleve n\'est saisi',
+	commentaire TEXT COMMENT 'commentaire de l\'utilisateur',
+	debut_abs DATETIME COMMENT 'Debut de l\'absence en timestamp UNIX',
+	fin_abs DATETIME COMMENT 'Fin de l\'absence en timestamp UNIX',
+	id_edt_creneau INTEGER(12) COMMENT 'identifiant du creneaux de l\'emploi du temps',
+	id_edt_emplacement_cours INTEGER(12) COMMENT 'identifiant du cours de l\'emploi du temps',
+	id_groupe INTEGER COMMENT 'identifiant du groupe pour lequel la saisie a ete effectuee',
+	id_classe INTEGER COMMENT 'identifiant de la classe pour lequel la saisie a ete effectuee',
+	id_aid INTEGER COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
+	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
+	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
+	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
+	version INTEGER DEFAULT 0,
+	version_created_at DATETIME,
+	version_created_by VARCHAR(100),
+	PRIMARY KEY (id,version),
+	CONSTRAINT a_saisies_version_FK_1
+		FOREIGN KEY (id)
+		REFERENCES a_saisies (id)
+		ON DELETE CASCADE
+) ENGINE=MyISAM;
 
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;

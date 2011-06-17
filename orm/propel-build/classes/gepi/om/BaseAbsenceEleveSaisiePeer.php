@@ -26,13 +26,13 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	const TM_CLASS = 'AbsenceEleveSaisieTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 16;
+	const NUM_COLUMNS = 17;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-	const NUM_HYDRATE_COLUMNS = 16;
+	const NUM_HYDRATE_COLUMNS = 17;
 
 	/** the column name for the ID field */
 	const ID = 'a_saisies.ID';
@@ -76,11 +76,14 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	/** the column name for the ID_LIEU field */
 	const ID_LIEU = 'a_saisies.ID_LIEU';
 
-	/** the column name for the CREATED_AT field */
-	const CREATED_AT = 'a_saisies.CREATED_AT';
+	/** the column name for the VERSION field */
+	const VERSION = 'a_saisies.VERSION';
 
-	/** the column name for the UPDATED_AT field */
-	const UPDATED_AT = 'a_saisies.UPDATED_AT';
+	/** the column name for the VERSION_CREATED_AT field */
+	const VERSION_CREATED_AT = 'a_saisies.VERSION_CREATED_AT';
+
+	/** the column name for the VERSION_CREATED_BY field */
+	const VERSION_CREATED_BY = 'a_saisies.VERSION_CREATED_BY';
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
@@ -94,6 +97,13 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	public static $instances = array();
 
 
+	// versionable behavior
+	
+	/**
+	 * Whether the versioning is enabled
+	 */
+	static $isVersioningEnabled = true;
+
 	/**
 	 * holds an array of fieldnames
 	 *
@@ -101,12 +111,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'EleveId', 'Commentaire', 'DebutAbs', 'FinAbs', 'IdEdtCreneau', 'IdEdtEmplacementCours', 'IdGroupe', 'IdClasse', 'IdAid', 'IdSIncidents', 'ModifieParUtilisateurId', 'IdLieu', 'CreatedAt', 'UpdatedAt', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'eleveId', 'commentaire', 'debutAbs', 'finAbs', 'idEdtCreneau', 'idEdtEmplacementCours', 'idGroupe', 'idClasse', 'idAid', 'idSIncidents', 'modifieParUtilisateurId', 'idLieu', 'createdAt', 'updatedAt', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::ELEVE_ID, self::COMMENTAIRE, self::DEBUT_ABS, self::FIN_ABS, self::ID_EDT_CRENEAU, self::ID_EDT_EMPLACEMENT_COURS, self::ID_GROUPE, self::ID_CLASSE, self::ID_AID, self::ID_S_INCIDENTS, self::MODIFIE_PAR_UTILISATEUR_ID, self::ID_LIEU, self::CREATED_AT, self::UPDATED_AT, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'ELEVE_ID', 'COMMENTAIRE', 'DEBUT_ABS', 'FIN_ABS', 'ID_EDT_CRENEAU', 'ID_EDT_EMPLACEMENT_COURS', 'ID_GROUPE', 'ID_CLASSE', 'ID_AID', 'ID_S_INCIDENTS', 'MODIFIE_PAR_UTILISATEUR_ID', 'ID_LIEU', 'CREATED_AT', 'UPDATED_AT', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'eleve_id', 'commentaire', 'debut_abs', 'fin_abs', 'id_edt_creneau', 'id_edt_emplacement_cours', 'id_groupe', 'id_classe', 'id_aid', 'id_s_incidents', 'modifie_par_utilisateur_id', 'id_lieu', 'created_at', 'updated_at', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'EleveId', 'Commentaire', 'DebutAbs', 'FinAbs', 'IdEdtCreneau', 'IdEdtEmplacementCours', 'IdGroupe', 'IdClasse', 'IdAid', 'IdSIncidents', 'ModifieParUtilisateurId', 'IdLieu', 'Version', 'VersionCreatedAt', 'VersionCreatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'eleveId', 'commentaire', 'debutAbs', 'finAbs', 'idEdtCreneau', 'idEdtEmplacementCours', 'idGroupe', 'idClasse', 'idAid', 'idSIncidents', 'modifieParUtilisateurId', 'idLieu', 'version', 'versionCreatedAt', 'versionCreatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::ELEVE_ID, self::COMMENTAIRE, self::DEBUT_ABS, self::FIN_ABS, self::ID_EDT_CRENEAU, self::ID_EDT_EMPLACEMENT_COURS, self::ID_GROUPE, self::ID_CLASSE, self::ID_AID, self::ID_S_INCIDENTS, self::MODIFIE_PAR_UTILISATEUR_ID, self::ID_LIEU, self::VERSION, self::VERSION_CREATED_AT, self::VERSION_CREATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'ELEVE_ID', 'COMMENTAIRE', 'DEBUT_ABS', 'FIN_ABS', 'ID_EDT_CRENEAU', 'ID_EDT_EMPLACEMENT_COURS', 'ID_GROUPE', 'ID_CLASSE', 'ID_AID', 'ID_S_INCIDENTS', 'MODIFIE_PAR_UTILISATEUR_ID', 'ID_LIEU', 'VERSION', 'VERSION_CREATED_AT', 'VERSION_CREATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'eleve_id', 'commentaire', 'debut_abs', 'fin_abs', 'id_edt_creneau', 'id_edt_emplacement_cours', 'id_groupe', 'id_classe', 'id_aid', 'id_s_incidents', 'modifie_par_utilisateur_id', 'id_lieu', 'version', 'version_created_at', 'version_created_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
 	);
 
 	/**
@@ -116,12 +126,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'EleveId' => 2, 'Commentaire' => 3, 'DebutAbs' => 4, 'FinAbs' => 5, 'IdEdtCreneau' => 6, 'IdEdtEmplacementCours' => 7, 'IdGroupe' => 8, 'IdClasse' => 9, 'IdAid' => 10, 'IdSIncidents' => 11, 'ModifieParUtilisateurId' => 12, 'IdLieu' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'eleveId' => 2, 'commentaire' => 3, 'debutAbs' => 4, 'finAbs' => 5, 'idEdtCreneau' => 6, 'idEdtEmplacementCours' => 7, 'idGroupe' => 8, 'idClasse' => 9, 'idAid' => 10, 'idSIncidents' => 11, 'modifieParUtilisateurId' => 12, 'idLieu' => 13, 'createdAt' => 14, 'updatedAt' => 15, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::ELEVE_ID => 2, self::COMMENTAIRE => 3, self::DEBUT_ABS => 4, self::FIN_ABS => 5, self::ID_EDT_CRENEAU => 6, self::ID_EDT_EMPLACEMENT_COURS => 7, self::ID_GROUPE => 8, self::ID_CLASSE => 9, self::ID_AID => 10, self::ID_S_INCIDENTS => 11, self::MODIFIE_PAR_UTILISATEUR_ID => 12, self::ID_LIEU => 13, self::CREATED_AT => 14, self::UPDATED_AT => 15, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'ELEVE_ID' => 2, 'COMMENTAIRE' => 3, 'DEBUT_ABS' => 4, 'FIN_ABS' => 5, 'ID_EDT_CRENEAU' => 6, 'ID_EDT_EMPLACEMENT_COURS' => 7, 'ID_GROUPE' => 8, 'ID_CLASSE' => 9, 'ID_AID' => 10, 'ID_S_INCIDENTS' => 11, 'MODIFIE_PAR_UTILISATEUR_ID' => 12, 'ID_LIEU' => 13, 'CREATED_AT' => 14, 'UPDATED_AT' => 15, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'eleve_id' => 2, 'commentaire' => 3, 'debut_abs' => 4, 'fin_abs' => 5, 'id_edt_creneau' => 6, 'id_edt_emplacement_cours' => 7, 'id_groupe' => 8, 'id_classe' => 9, 'id_aid' => 10, 'id_s_incidents' => 11, 'modifie_par_utilisateur_id' => 12, 'id_lieu' => 13, 'created_at' => 14, 'updated_at' => 15, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'EleveId' => 2, 'Commentaire' => 3, 'DebutAbs' => 4, 'FinAbs' => 5, 'IdEdtCreneau' => 6, 'IdEdtEmplacementCours' => 7, 'IdGroupe' => 8, 'IdClasse' => 9, 'IdAid' => 10, 'IdSIncidents' => 11, 'ModifieParUtilisateurId' => 12, 'IdLieu' => 13, 'Version' => 14, 'VersionCreatedAt' => 15, 'VersionCreatedBy' => 16, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'eleveId' => 2, 'commentaire' => 3, 'debutAbs' => 4, 'finAbs' => 5, 'idEdtCreneau' => 6, 'idEdtEmplacementCours' => 7, 'idGroupe' => 8, 'idClasse' => 9, 'idAid' => 10, 'idSIncidents' => 11, 'modifieParUtilisateurId' => 12, 'idLieu' => 13, 'version' => 14, 'versionCreatedAt' => 15, 'versionCreatedBy' => 16, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::ELEVE_ID => 2, self::COMMENTAIRE => 3, self::DEBUT_ABS => 4, self::FIN_ABS => 5, self::ID_EDT_CRENEAU => 6, self::ID_EDT_EMPLACEMENT_COURS => 7, self::ID_GROUPE => 8, self::ID_CLASSE => 9, self::ID_AID => 10, self::ID_S_INCIDENTS => 11, self::MODIFIE_PAR_UTILISATEUR_ID => 12, self::ID_LIEU => 13, self::VERSION => 14, self::VERSION_CREATED_AT => 15, self::VERSION_CREATED_BY => 16, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'ELEVE_ID' => 2, 'COMMENTAIRE' => 3, 'DEBUT_ABS' => 4, 'FIN_ABS' => 5, 'ID_EDT_CRENEAU' => 6, 'ID_EDT_EMPLACEMENT_COURS' => 7, 'ID_GROUPE' => 8, 'ID_CLASSE' => 9, 'ID_AID' => 10, 'ID_S_INCIDENTS' => 11, 'MODIFIE_PAR_UTILISATEUR_ID' => 12, 'ID_LIEU' => 13, 'VERSION' => 14, 'VERSION_CREATED_AT' => 15, 'VERSION_CREATED_BY' => 16, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'eleve_id' => 2, 'commentaire' => 3, 'debut_abs' => 4, 'fin_abs' => 5, 'id_edt_creneau' => 6, 'id_edt_emplacement_cours' => 7, 'id_groupe' => 8, 'id_classe' => 9, 'id_aid' => 10, 'id_s_incidents' => 11, 'modifie_par_utilisateur_id' => 12, 'id_lieu' => 13, 'version' => 14, 'version_created_at' => 15, 'version_created_by' => 16, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
 	);
 
 	/**
@@ -207,8 +217,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::ID_S_INCIDENTS);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::ID_LIEU);
-			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::CREATED_AT);
-			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::UPDATED_AT);
+			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::VERSION);
+			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::VERSION_CREATED_AT);
+			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::VERSION_CREATED_BY);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.UTILISATEUR_ID');
@@ -224,8 +235,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			$criteria->addSelectColumn($alias . '.ID_S_INCIDENTS');
 			$criteria->addSelectColumn($alias . '.MODIFIE_PAR_UTILISATEUR_ID');
 			$criteria->addSelectColumn($alias . '.ID_LIEU');
-			$criteria->addSelectColumn($alias . '.CREATED_AT');
-			$criteria->addSelectColumn($alias . '.UPDATED_AT');
+			$criteria->addSelectColumn($alias . '.VERSION');
+			$criteria->addSelectColumn($alias . '.VERSION_CREATED_AT');
+			$criteria->addSelectColumn($alias . '.VERSION_CREATED_BY');
 		}
 	}
 
@@ -422,6 +434,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		// Invalidate objects in JTraitementSaisieElevePeer instance pool, 
 		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
 		JTraitementSaisieElevePeer::clearInstancePool();
+		// Invalidate objects in AbsenceEleveSaisieVersionPeer instance pool, 
+		// since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+		AbsenceEleveSaisieVersionPeer::clearInstancePool();
 	}
 
 	/**
@@ -4813,6 +4828,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			
 			$criteria->add(JTraitementSaisieElevePeer::A_SAISIE_ID, $obj->getId());
 			$affectedRows += JTraitementSaisieElevePeer::doDelete($criteria, $con);
+
+			// delete related AbsenceEleveSaisieVersion objects
+			$criteria = new Criteria(AbsenceEleveSaisieVersionPeer::DATABASE_NAME);
+			
+			$criteria->add(AbsenceEleveSaisieVersionPeer::ID, $obj->getId());
+			$affectedRows += AbsenceEleveSaisieVersionPeer::doDelete($criteria, $con);
 		}
 		return $affectedRows;
 	}
@@ -4903,6 +4924,34 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			$objs = AbsenceEleveSaisiePeer::doSelect($criteria, $con);
 		}
 		return $objs;
+	}
+
+	// versionable behavior
+	
+	/**
+	 * Checks whether versioning is enabled
+	 *
+	 * @return boolean
+	 */
+	public static function isVersioningEnabled()
+	{
+		return self::$isVersioningEnabled;
+	}
+	
+	/**
+	 * Enables versioning
+	 */
+	public static function enableVersioning()
+	{
+		self::$isVersioningEnabled = true;
+	}
+	
+	/**
+	 * Disables versioning
+	 */
+	public static function disableVersioning()
+	{
+		self::$isVersioningEnabled = false;
 	}
 
 } // BaseAbsenceEleveSaisiePeer

@@ -109,16 +109,23 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	protected $id_lieu;
 
 	/**
-	 * The value for the created_at field.
-	 * @var        string
+	 * The value for the version field.
+	 * Note: this column has a database default value of: 0
+	 * @var        int
 	 */
-	protected $created_at;
+	protected $version;
 
 	/**
-	 * The value for the updated_at field.
+	 * The value for the version_created_at field.
 	 * @var        string
 	 */
-	protected $updated_at;
+	protected $version_created_at;
+
+	/**
+	 * The value for the version_created_by field.
+	 * @var        string
+	 */
+	protected $version_created_by;
 
 	/**
 	 * @var        UtilisateurProfessionnel
@@ -171,6 +178,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	protected $collJTraitementSaisieEleves;
 
 	/**
+	 * @var        array AbsenceEleveSaisieVersion[] Collection to store aggregation of AbsenceEleveSaisieVersion objects.
+	 */
+	protected $collAbsenceEleveSaisieVersions;
+
+	/**
 	 * @var        array AbsenceEleveTraitement[] Collection to store aggregation of AbsenceEleveTraitement objects.
 	 */
 	protected $collAbsenceEleveTraitements;
@@ -188,6 +200,27 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 * @var        boolean
 	 */
 	protected $alreadyInValidation = false;
+
+	/**
+	 * Applies default values to this object.
+	 * This method should be called from the object's constructor (or
+	 * equivalent initialization method).
+	 * @see        __construct()
+	 */
+	public function applyDefaultValues()
+	{
+		$this->version = 0;
+	}
+
+	/**
+	 * Initializes internal state of BaseAbsenceEleveSaisie object.
+	 * @see        applyDefaults()
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		$this->applyDefaultValues();
+	}
 
 	/**
 	 * Get the [id] column value.
@@ -386,7 +419,17 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [optionally formatted] temporal [created_at] column value.
+	 * Get the [version] column value.
+	 * 
+	 * @return     int
+	 */
+	public function getVersion()
+	{
+		return $this->version;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [version_created_at] column value.
 	 * 
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
@@ -394,22 +437,22 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
 	 * @throws     PropelException - if unable to parse/validate the date/time value.
 	 */
-	public function getCreatedAt($format = 'Y-m-d H:i:s')
+	public function getVersionCreatedAt($format = 'Y-m-d H:i:s')
 	{
-		if ($this->created_at === null) {
+		if ($this->version_created_at === null) {
 			return null;
 		}
 
 
-		if ($this->created_at === '0000-00-00 00:00:00') {
+		if ($this->version_created_at === '0000-00-00 00:00:00') {
 			// while technically this is not a default value of NULL,
 			// this seems to be closest in meaning.
 			return null;
 		} else {
 			try {
-				$dt = new DateTime($this->created_at);
+				$dt = new DateTime($this->version_created_at);
 			} catch (Exception $x) {
-				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->version_created_at, true), $x);
 			}
 		}
 
@@ -424,41 +467,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [optionally formatted] temporal [updated_at] column value.
+	 * Get the [version_created_by] column value.
 	 * 
-	 *
-	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
-	 *							If format is NULL, then the raw DateTime object will be returned.
-	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 * @return     string
 	 */
-	public function getUpdatedAt($format = 'Y-m-d H:i:s')
+	public function getVersionCreatedBy()
 	{
-		if ($this->updated_at === null) {
-			return null;
-		}
-
-
-		if ($this->updated_at === '0000-00-00 00:00:00') {
-			// while technically this is not a default value of NULL,
-			// this seems to be closest in meaning.
-			return null;
-		} else {
-			try {
-				$dt = new DateTime($this->updated_at);
-			} catch (Exception $x) {
-				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
-			}
-		}
-
-		if ($format === null) {
-			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
-			return $dt;
-		} elseif (strpos($format, '%') !== false) {
-			return strftime($format, $dt->format('U'));
-		} else {
-			return $dt->format($format);
-		}
+		return $this->version_created_by;
 	}
 
 	/**
@@ -782,48 +797,66 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	} // setIdLieu()
 
 	/**
-	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+	 * Set the value of [version] column.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.
-	 *               Empty strings are treated as NULL.
+	 * @param      int $v new value
 	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
 	 */
-	public function setCreatedAt($v)
+	public function setVersion($v)
 	{
-		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
-		if ($this->created_at !== null || $dt !== null) {
-			$currentDateAsString = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
-			if ($currentDateAsString !== $newDateAsString) {
-				$this->created_at = $newDateAsString;
-				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::CREATED_AT;
-			}
-		} // if either are not null
+		if ($v !== null) {
+			$v = (int) $v;
+		}
+
+		if ($this->version !== $v || $this->isNew()) {
+			$this->version = $v;
+			$this->modifiedColumns[] = AbsenceEleveSaisiePeer::VERSION;
+		}
 
 		return $this;
-	} // setCreatedAt()
+	} // setVersion()
 
 	/**
-	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+	 * Sets the value of [version_created_at] column to a normalized version of the date/time value specified.
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.
 	 *               Empty strings are treated as NULL.
 	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
 	 */
-	public function setUpdatedAt($v)
+	public function setVersionCreatedAt($v)
 	{
 		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
-		if ($this->updated_at !== null || $dt !== null) {
-			$currentDateAsString = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+		if ($this->version_created_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->version_created_at !== null && $tmpDt = new DateTime($this->version_created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
 			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
 			if ($currentDateAsString !== $newDateAsString) {
-				$this->updated_at = $newDateAsString;
-				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::UPDATED_AT;
+				$this->version_created_at = $newDateAsString;
+				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::VERSION_CREATED_AT;
 			}
 		} // if either are not null
 
 		return $this;
-	} // setUpdatedAt()
+	} // setVersionCreatedAt()
+
+	/**
+	 * Set the value of [version_created_by] column.
+	 * 
+	 * @param      string $v new value
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function setVersionCreatedBy($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->version_created_by !== $v) {
+			$this->version_created_by = $v;
+			$this->modifiedColumns[] = AbsenceEleveSaisiePeer::VERSION_CREATED_BY;
+		}
+
+		return $this;
+	} // setVersionCreatedBy()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -835,6 +868,10 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->version !== 0) {
+				return false;
+			}
+
 		// otherwise, everything was equal, so return TRUE
 		return true;
 	} // hasOnlyDefaultValues()
@@ -871,8 +908,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->id_s_incidents = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
 			$this->modifie_par_utilisateur_id = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
 			$this->id_lieu = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-			$this->created_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
-			$this->updated_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+			$this->version = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+			$this->version_created_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+			$this->version_created_by = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -881,7 +919,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 16; // 16 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 17; // 17 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveSaisie object", $e);
@@ -981,6 +1019,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->aAbsenceEleveLieu = null;
 			$this->collJTraitementSaisieEleves = null;
 
+			$this->collAbsenceEleveSaisieVersions = null;
+
 			$this->collAbsenceEleveTraitements = null;
 		} // if (deep)
 	}
@@ -1012,6 +1052,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 					->filterByPrimaryKey($this->getPrimaryKey())
 					->delete($con);
 				$this->postDelete($con);
+				// versionable behavior
+				// emulate delete cascade
+				AbsenceEleveSaisieVersionQuery::create()
+					->filterByAbsenceEleveSaisie($this)
+					->delete($con);
 				$con->commit();
 				$this->setDeleted(true);
 			} else {
@@ -1050,21 +1095,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$isInsert = $this->isNew();
 		try {
 			$ret = $this->preSave($con);
+			// versionable behavior
+			if ($this->isVersioningNecessary()) {
+				$this->setVersion($this->isNew() ? 1 : $this->getLastVersionNumber($con) + 1);
+				if (!$this->isColumnModified(AbsenceEleveSaisiePeer::VERSION_CREATED_AT)) {
+					$this->setVersionCreatedAt(time());
+				}
+				$createVersion = true; // for postSave hook
+			}
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
-				// timestampable behavior
-				if (!$this->isColumnModified(AbsenceEleveSaisiePeer::CREATED_AT)) {
-					$this->setCreatedAt(time());
-				}
-				if (!$this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) {
-					$this->setUpdatedAt(time());
-				}
 			} else {
 				$ret = $ret && $this->preUpdate($con);
-				// timestampable behavior
-				if ($this->isModified() && !$this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) {
-					$this->setUpdatedAt(time());
-				}
 			}
 			if ($ret) {
 				$affectedRows = $this->doSave($con);
@@ -1074,6 +1116,10 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 					$this->postUpdate($con);
 				}
 				$this->postSave($con);
+				// versionable behavior
+				if (isset($createVersion)) {
+					$this->addVersion($con);
+				}
 				AbsenceEleveSaisiePeer::addInstanceToPool($this);
 			} else {
 				$affectedRows = 0;
@@ -1196,6 +1242,14 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 
 			if ($this->collJTraitementSaisieEleves !== null) {
 				foreach ($this->collJTraitementSaisieEleves as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
+			if ($this->collAbsenceEleveSaisieVersions !== null) {
+				foreach ($this->collAbsenceEleveSaisieVersions as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
 						$affectedRows += $referrerFK->save($con);
 					}
@@ -1341,6 +1395,14 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 					}
 				}
 
+				if ($this->collAbsenceEleveSaisieVersions !== null) {
+					foreach ($this->collAbsenceEleveSaisieVersions as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
 
 			$this->alreadyInValidation = false;
 		}
@@ -1417,10 +1479,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				return $this->getIdLieu();
 				break;
 			case 14:
-				return $this->getCreatedAt();
+				return $this->getVersion();
 				break;
 			case 15:
-				return $this->getUpdatedAt();
+				return $this->getVersionCreatedAt();
+				break;
+			case 16:
+				return $this->getVersionCreatedBy();
 				break;
 			default:
 				return null;
@@ -1465,8 +1530,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$keys[11] => $this->getIdSIncidents(),
 			$keys[12] => $this->getModifieParUtilisateurId(),
 			$keys[13] => $this->getIdLieu(),
-			$keys[14] => $this->getCreatedAt(),
-			$keys[15] => $this->getUpdatedAt(),
+			$keys[14] => $this->getVersion(),
+			$keys[15] => $this->getVersionCreatedAt(),
+			$keys[16] => $this->getVersionCreatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
@@ -1498,6 +1564,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			}
 			if (null !== $this->collJTraitementSaisieEleves) {
 				$result['JTraitementSaisieEleves'] = $this->collJTraitementSaisieEleves->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collAbsenceEleveSaisieVersions) {
+				$result['AbsenceEleveSaisieVersions'] = $this->collAbsenceEleveSaisieVersions->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1573,10 +1642,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->setIdLieu($value);
 				break;
 			case 14:
-				$this->setCreatedAt($value);
+				$this->setVersion($value);
 				break;
 			case 15:
-				$this->setUpdatedAt($value);
+				$this->setVersionCreatedAt($value);
+				break;
+			case 16:
+				$this->setVersionCreatedBy($value);
 				break;
 		} // switch()
 	}
@@ -1616,8 +1688,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if (array_key_exists($keys[11], $arr)) $this->setIdSIncidents($arr[$keys[11]]);
 		if (array_key_exists($keys[12], $arr)) $this->setModifieParUtilisateurId($arr[$keys[12]]);
 		if (array_key_exists($keys[13], $arr)) $this->setIdLieu($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setCreatedAt($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setUpdatedAt($arr[$keys[15]]);
+		if (array_key_exists($keys[14], $arr)) $this->setVersion($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setVersionCreatedAt($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setVersionCreatedBy($arr[$keys[16]]);
 	}
 
 	/**
@@ -1643,8 +1716,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_S_INCIDENTS)) $criteria->add(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $this->id_s_incidents);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID)) $criteria->add(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID, $this->modifie_par_utilisateur_id);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_LIEU)) $criteria->add(AbsenceEleveSaisiePeer::ID_LIEU, $this->id_lieu);
-		if ($this->isColumnModified(AbsenceEleveSaisiePeer::CREATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::CREATED_AT, $this->created_at);
-		if ($this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::UPDATED_AT, $this->updated_at);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::VERSION)) $criteria->add(AbsenceEleveSaisiePeer::VERSION, $this->version);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::VERSION_CREATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::VERSION_CREATED_AT, $this->version_created_at);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::VERSION_CREATED_BY)) $criteria->add(AbsenceEleveSaisiePeer::VERSION_CREATED_BY, $this->version_created_by);
 
 		return $criteria;
 	}
@@ -1720,8 +1794,9 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$copyObj->setIdSIncidents($this->getIdSIncidents());
 		$copyObj->setModifieParUtilisateurId($this->getModifieParUtilisateurId());
 		$copyObj->setIdLieu($this->getIdLieu());
-		$copyObj->setCreatedAt($this->getCreatedAt());
-		$copyObj->setUpdatedAt($this->getUpdatedAt());
+		$copyObj->setVersion($this->getVersion());
+		$copyObj->setVersionCreatedAt($this->getVersionCreatedAt());
+		$copyObj->setVersionCreatedBy($this->getVersionCreatedBy());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1731,6 +1806,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			foreach ($this->getJTraitementSaisieEleves() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addJTraitementSaisieEleve($relObj->copy($deepCopy));
+				}
+			}
+
+			foreach ($this->getAbsenceEleveSaisieVersions() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addAbsenceEleveSaisieVersion($relObj->copy($deepCopy));
 				}
 			}
 
@@ -2362,6 +2443,121 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collAbsenceEleveSaisieVersions collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addAbsenceEleveSaisieVersions()
+	 */
+	public function clearAbsenceEleveSaisieVersions()
+	{
+		$this->collAbsenceEleveSaisieVersions = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collAbsenceEleveSaisieVersions collection.
+	 *
+	 * By default this just sets the collAbsenceEleveSaisieVersions collection to an empty array (like clearcollAbsenceEleveSaisieVersions());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initAbsenceEleveSaisieVersions($overrideExisting = true)
+	{
+		if (null !== $this->collAbsenceEleveSaisieVersions && !$overrideExisting) {
+			return;
+		}
+		$this->collAbsenceEleveSaisieVersions = new PropelObjectCollection();
+		$this->collAbsenceEleveSaisieVersions->setModel('AbsenceEleveSaisieVersion');
+	}
+
+	/**
+	 * Gets an array of AbsenceEleveSaisieVersion objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this AbsenceEleveSaisie is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array AbsenceEleveSaisieVersion[] List of AbsenceEleveSaisieVersion objects
+	 * @throws     PropelException
+	 */
+	public function getAbsenceEleveSaisieVersions($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveSaisieVersions || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveSaisieVersions) {
+				// return empty collection
+				$this->initAbsenceEleveSaisieVersions();
+			} else {
+				$collAbsenceEleveSaisieVersions = AbsenceEleveSaisieVersionQuery::create(null, $criteria)
+					->filterByAbsenceEleveSaisie($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collAbsenceEleveSaisieVersions;
+				}
+				$this->collAbsenceEleveSaisieVersions = $collAbsenceEleveSaisieVersions;
+			}
+		}
+		return $this->collAbsenceEleveSaisieVersions;
+	}
+
+	/**
+	 * Returns the number of related AbsenceEleveSaisieVersion objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related AbsenceEleveSaisieVersion objects.
+	 * @throws     PropelException
+	 */
+	public function countAbsenceEleveSaisieVersions(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceEleveSaisieVersions || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceEleveSaisieVersions) {
+				return 0;
+			} else {
+				$query = AbsenceEleveSaisieVersionQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByAbsenceEleveSaisie($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collAbsenceEleveSaisieVersions);
+		}
+	}
+
+	/**
+	 * Method called to associate a AbsenceEleveSaisieVersion object to this object
+	 * through the AbsenceEleveSaisieVersion foreign key attribute.
+	 *
+	 * @param      AbsenceEleveSaisieVersion $l AbsenceEleveSaisieVersion
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addAbsenceEleveSaisieVersion(AbsenceEleveSaisieVersion $l)
+	{
+		if ($this->collAbsenceEleveSaisieVersions === null) {
+			$this->initAbsenceEleveSaisieVersions();
+		}
+		if (!$this->collAbsenceEleveSaisieVersions->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collAbsenceEleveSaisieVersions[]= $l;
+			$l->setAbsenceEleveSaisie($this);
+		}
+	}
+
+	/**
 	 * Clears out the collAbsenceEleveTraitements collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -2493,11 +2689,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->id_s_incidents = null;
 		$this->modifie_par_utilisateur_id = null;
 		$this->id_lieu = null;
-		$this->created_at = null;
-		$this->updated_at = null;
+		$this->version = null;
+		$this->version_created_at = null;
+		$this->version_created_by = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
+		$this->applyDefaultValues();
 		$this->resetModified();
 		$this->setNew(true);
 		$this->setDeleted(false);
@@ -2520,6 +2718,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collAbsenceEleveSaisieVersions) {
+				foreach ($this->collAbsenceEleveSaisieVersions as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collAbsenceEleveTraitements) {
 				foreach ($this->collAbsenceEleveTraitements as $o) {
 					$o->clearAllReferences($deep);
@@ -2531,6 +2734,10 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->collJTraitementSaisieEleves->clearIterator();
 		}
 		$this->collJTraitementSaisieEleves = null;
+		if ($this->collAbsenceEleveSaisieVersions instanceof PropelCollection) {
+			$this->collAbsenceEleveSaisieVersions->clearIterator();
+		}
+		$this->collAbsenceEleveSaisieVersions = null;
 		if ($this->collAbsenceEleveTraitements instanceof PropelCollection) {
 			$this->collAbsenceEleveTraitements->clearIterator();
 		}
@@ -2556,17 +2763,214 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		return (string) $this->exportTo(AbsenceEleveSaisiePeer::DEFAULT_STRING_FORMAT);
 	}
 
-	// timestampable behavior
+	// versionable behavior
 	
 	/**
-	 * Mark the current object so that the update date doesn't get updated during next save
+	 * Checks whether the current state must be recorded as a version
 	 *
-	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 * @return  boolean
 	 */
-	public function keepUpdateDateUnchanged()
+	public function isVersioningNecessary($con = null)
 	{
-		$this->modifiedColumns[] = AbsenceEleveSaisiePeer::UPDATED_AT;
+		if ($this->alreadyInSave) {
+			return false;
+		}
+		if (AbsenceEleveSaisiePeer::isVersioningEnabled() && ($this->isNew() || $this->isModified())) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Creates a version of the current object and saves it.
+	 *
+	 * @param   PropelPDO $con the connection to use
+	 *
+	 * @return  AbsenceEleveSaisieVersion A version object
+	 */
+	public function addVersion($con = null)
+	{
+		$version = new AbsenceEleveSaisieVersion();
+		$version->setId($this->id);
+		$version->setUtilisateurId($this->utilisateur_id);
+		$version->setEleveId($this->eleve_id);
+		$version->setCommentaire($this->commentaire);
+		$version->setDebutAbs($this->debut_abs);
+		$version->setFinAbs($this->fin_abs);
+		$version->setIdEdtCreneau($this->id_edt_creneau);
+		$version->setIdEdtEmplacementCours($this->id_edt_emplacement_cours);
+		$version->setIdGroupe($this->id_groupe);
+		$version->setIdClasse($this->id_classe);
+		$version->setIdAid($this->id_aid);
+		$version->setIdSIncidents($this->id_s_incidents);
+		$version->setModifieParUtilisateurId($this->modifie_par_utilisateur_id);
+		$version->setIdLieu($this->id_lieu);
+		$version->setVersion($this->version);
+		$version->setVersionCreatedAt($this->version_created_at);
+		$version->setVersionCreatedBy($this->version_created_by);
+		$version->setAbsenceEleveSaisie($this);
+		$version->save($con);
+		
+		return $version;
+	}
+	
+	/**
+	 * Sets the properties of the curent object to the value they had at a specific version
+	 *
+	 * @param   integer $versionNumber The version number to read
+	 * @param   PropelPDO $con the connection to use
+	 *
+	 * @return  AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function toVersion($versionNumber, $con = null)
+	{
+		$version = $this->getOneVersion($versionNumber, $con);
+		if (!$version) {
+			throw new PropelException(sprintf('No AbsenceEleveSaisie object found with version %d', $version));
+		}
+		$this->populateFromVersion($version, $con);
+		
 		return $this;
+	}
+	
+	/**
+	 * Sets the properties of the curent object to the value they had at a specific version
+	 *
+	 * @param   AbsenceEleveSaisieVersion $version The version object to use
+	 * @param   PropelPDO $con the connection to use
+	 *
+	 * @return  AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function populateFromVersion($version, $con = null)
+	{
+		$this->setId($version->getId());
+		$this->setUtilisateurId($version->getUtilisateurId());
+		$this->setEleveId($version->getEleveId());
+		$this->setCommentaire($version->getCommentaire());
+		$this->setDebutAbs($version->getDebutAbs());
+		$this->setFinAbs($version->getFinAbs());
+		$this->setIdEdtCreneau($version->getIdEdtCreneau());
+		$this->setIdEdtEmplacementCours($version->getIdEdtEmplacementCours());
+		$this->setIdGroupe($version->getIdGroupe());
+		$this->setIdClasse($version->getIdClasse());
+		$this->setIdAid($version->getIdAid());
+		$this->setIdSIncidents($version->getIdSIncidents());
+		$this->setModifieParUtilisateurId($version->getModifieParUtilisateurId());
+		$this->setIdLieu($version->getIdLieu());
+		$this->setVersion($version->getVersion());
+		$this->setVersionCreatedAt($version->getVersionCreatedAt());
+		$this->setVersionCreatedBy($version->getVersionCreatedBy());
+		return $this;
+	}
+	
+	/**
+	 * Gets the latest persisted version number for the current object
+	 *
+	 * @param   PropelPDO $con the connection to use
+	 *
+	 * @return  integer
+	 */
+	public function getLastVersionNumber($con = null)
+	{
+		$v = AbsenceEleveSaisieVersionQuery::create()
+			->filterByAbsenceEleveSaisie($this)
+			->orderByVersion('desc')
+			->findOne($con);
+		if (!$v) {
+			return 0;
+		}
+		return $v->getVersion();
+	}
+	
+	/**
+	 * Checks whether the current object is the latest one
+	 *
+	 * @param   PropelPDO $con the connection to use
+	 *
+	 * @return  Boolean
+	 */
+	public function isLastVersion($con = null)
+	{
+		return $this->getLastVersionNumber($con) == $this->getVersion();
+	}
+	
+	/**
+	 * Retrieves a version object for this entity and a version number
+	 *
+	 * @param   integer $versionNumber The version number to read
+	 * @param   PropelPDO $con the connection to use
+	 *
+	 * @return  AbsenceEleveSaisieVersion A version object
+	 */
+	public function getOneVersion($versionNumber, $con = null)
+	{
+		return AbsenceEleveSaisieVersionQuery::create()
+			->filterByAbsenceEleveSaisie($this)
+			->filterByVersion($versionNumber)
+			->findOne($con);
+	}
+	
+	/**
+	 * Gets all the versions of this object, in incremental order
+	 *
+	 * @param   PropelPDO $con the connection to use
+	 *
+	 * @return  PropelObjectCollection A list of AbsenceEleveSaisieVersion objects
+	 */
+	public function getAllVersions($con = null)
+	{
+		$criteria = new Criteria();
+		$criteria->addAscendingOrderByColumn(AbsenceEleveSaisieVersionPeer::VERSION);
+		return $this->getAbsenceEleveSaisieVersions($criteria, $con);
+	}
+	
+	/**
+	 * Gets all the versions of this object, in incremental order.
+	 * <code>
+	 * print_r($book->compare(1, 2));
+	 * => array(
+	 *   '1' => array('Title' => 'Book title at version 1'),
+	 *   '2' => array('Title' => 'Book title at version 2')
+	 * );
+	 * </code>
+	 *
+	 * @param   integer   $fromVersionNumber
+	 * @param   integer   $toVersionNumber
+	 * @param   string    $keys Main key used for the result diff (versions|columns)
+	 * @param   PropelPDO $con the connection to use
+	 *
+	 * @return  array A list of differences
+	 */
+	public function compareVersions($fromVersionNumber, $toVersionNumber, $keys = 'columns', $con = null)
+	{
+		$fromVersion = $this->getOneVersion($fromVersionNumber, $con)->toArray();
+		$toVersion = $this->getOneVersion($toVersionNumber, $con)->toArray();
+		$ignoredColumns = array(
+			'Version',
+			'VersionCreatedAt',
+			'VersionCreatedBy',
+		);
+		$diff = array();
+		foreach ($fromVersion as $key => $value) {
+			if (in_array($key, $ignoredColumns)) {
+				continue;
+			}
+			if ($toVersion[$key] != $value) {
+				switch ($keys) {
+					case 'versions':
+						$diff[$fromVersionNumber][$key] = $value;
+						$diff[$toVersionNumber][$key] = $toVersion[$key];
+						break;
+					default:
+						$diff[$key] = array(
+							$fromVersionNumber => $value,
+							$toVersionNumber => $toVersion[$key],
+						);
+						break;
+				}
+			}
+		}
+		return $diff;
 	}
 
 	/**
