@@ -348,6 +348,7 @@ if (isset($use_observeur) AND $use_observeur == 'ok') {
 <!-- ************************* -->
 <body onload="show_message_deconnexion();<?php echo $charger_observeur; ?>" <?php if (isset($dojo)) {echo 'class=" claro " style="font:11pt Verdana,sans-serif;"';}?> >
 
+
 <?php
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
 	$_SESSION['cacher_header']="y";
@@ -656,7 +657,9 @@ if (isset($titre_page)) {
 
 // ==========> On ajoute la barre de menu <========================= //
 if (!isset($nobar)) { $nobar = "non"; }
+
 if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
+
 	// On vérifie que l'utilisateur ne l'a pas enlevée
 	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
 		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?

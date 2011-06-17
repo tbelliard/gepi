@@ -171,7 +171,7 @@
 			if (count($tbs_menu_prof)) {
 				$menu_prof = array_values($tbs_menu_prof);
 				if ("$menu_prof[0][texte]"!="") {
-					echo "
+/*					echo "
 	<ol id='essaiMenu'>
 		<li>
 			<a href='$tbs_gepiPath/accueil.php'>&nbsp;Accueil</a>
@@ -192,10 +192,18 @@
 			<a href='$tbs_gepiPath/utilisateurs/mon_compte.php'>&nbsp;Mon compte</a>
 		</li>
 	</ol>	
-					";
-				}
-			}
-		?>
+					"; */ ?>
+	<div id="menu_barre">
+	<ul class="niveau1">
+		<li class="li_inline"><a href="'.$gepiPath.'/accueil.php">Accueil</a></li>
+		<?php foreach ($tbs_menu_prof as $value) { if ("$value[texte]"!="") { ?>
+		<li class="li_inline"><a href='<?php echo $tbs_gepiPath.$value['lien']; ?>'>&nbsp;<?php echo $value['texte']; ?></a></li>
+		<?php }} unset($value); ?>
+		<li class="li_inline"><a href="<?php echo $gepiPath.'/utilisateurs/mon_compte.php'; ?>">Mon compte</a></li>
+	</ul>
+</div>
+<?php } } ?>
+
 <!-- fil d'ariane -->
 <?php
   if (isset($messageEnregistrer) && $messageEnregistrer !="" ){
