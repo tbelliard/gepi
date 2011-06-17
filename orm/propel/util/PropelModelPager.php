@@ -33,13 +33,13 @@ class PropelModelPager implements IteratorAggregate, Countable
 		$results         = null,
 		$resultsCounter  = 0;
 
-	public function __construct(Criteria $query, $maxPerPage = 10)
+	public function __construct(ModelCriteria $query, $maxPerPage = 10)
 	{
 		$this->setQuery($query);
 		$this->setMaxPerPage($maxPerPage);
 	}
 	
-	public function setQuery(Criteria $query)
+	public function setQuery(ModelCriteria $query)
 	{
 		$this->query = $query;
 	}
@@ -106,31 +106,29 @@ class PropelModelPager implements IteratorAggregate, Countable
 	/**
 	 * Get the collection of results in the page
 	 *
-	 * @return PropelObjectCollection A collection of results
+	 * @return PropelCollection A collection of results
 	 */
 	public function getResults()
 	{
 		if (null === $this->results) {
-		    if (!$this->getQuery()->isWithOneToMany()) {
-			    $this->results = $this->getQuery()
-				    ->setFormatter(ModelCriteria::FORMAT_OBJECT)
+			if (!$this->getQuery()->isWithOneToMany()) {
+				$this->results = $this->getQuery()
 				    ->find();
-		    } else {
-			$result = $this->getQuery()
-				    ->setFormatter(ModelCriteria::FORMAT_OBJECT)
-				    ->find();
+			} else {
+				$result = $this->getQuery()
+					    ->find();
 
-			$offset = ($this->getPage() - 1) * $this->getMaxPerPage();
+				$offset = ($this->getPage() - 1) * $this->getMaxPerPage();
 
-			for($i = 0; $i < $offset && !$result->isEmpty(); $i = $i + 1) {
-			    $result->shift();
+				for($i = 0; $i < $offset && !$result->isEmpty(); $i = $i + 1) {
+					$result->shift();
+				}
+				$temp_count = $result->count();
+				for($i = 0; $i < $temp_count - $this->getMaxPerPage() && !$result->isEmpty(); $i = $i + 1) {
+					$result->pop();
+				}
+				$this->results = $result;
 			}
-			$temp_count = $result->count();
-			for($i = 0; $i < $temp_count - $this->getMaxPerPage() && !$result->isEmpty(); $i = $i + 1) {
-			    $result->pop();
-			}
-			$this->results = $result;
-		    }
 		}
 		return $this->results;
 	}
@@ -362,7 +360,62 @@ class PropelModelPager implements IteratorAggregate, Countable
 			}
 		}
 	}
+
+	/**
+	 * Check whether the internal pointer is at the beginning of the list
+	 * @see       PropelCollection
+	 *
+	 * @return    boolean
+	 */
+	public function isFirst()
+	{
+		return $this->getResults()->isFirst();
+	}
+
+	/**
+	 * Check whether the internal pointer is at the end of the list
+	 * @see       PropelCollection
+	 *
+	 * @return    boolean
+	 */
+	public function isLast()
+	{
+		return $this->getResults()->isLast();
+	}
+
+	/**
+	 * Check if the collection is empty
+	 * @see       PropelCollection
+	 *
+	 * @return    boolean
+	 */
+	public function isEmpty()
+	{
+		return $this->getResults()->isEmpty();
+	}
 	
+	/**
+	 * Check if the current index is an odd integer
+	 * @see       PropelCollection
+	 *
+	 * @return    boolean
+	 */
+	public function isOdd()
+	{
+		return $this->getResults()->isOdd();
+	}
+	
+	/**
+	 * Check if the current index is an even integer
+	 * @see       PropelCollection
+	 *
+	 * @return    boolean
+	 */
+	public function isEven()
+	{
+		return $this->getResults()->isEven();
+	}
+		
 	public function getIterator()
 	{
 		return $this->getResults()->getIterator();

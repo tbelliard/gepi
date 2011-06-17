@@ -196,6 +196,9 @@ abstract class DBAdapter
 
 	/**
 	 * Quotes a database table which could have space seperating it from an alias, both should be identified seperately
+	 * This doesn't take care of dots which separate schema names from table names. Adapters for RDBMs which support
+	 * schemas have to implement that in the platform-specific way.
+	 *
 	 * @param      string $table The table name to quo
 	 * @return     string The quoted table name
 	 **/
@@ -240,12 +243,39 @@ abstract class DBAdapter
 	}
 
 	/**
+	 * Formats a temporal value brefore binding, given a ColumnMap object
+	 * @param  mixed      $value The temporal value
+	 * @param  ColumnMap  $cMap
+	 *
+	 * @return string            The formatted temporal value
+	 */
+	protected function formatTemporalValue($value, ColumnMap $cMap)
+	{
+		if($dt = PropelDateTime::newInstance($value)) {
+		  switch($cMap->getType()) {
+		    case PropelColumnTypes::TIMESTAMP:
+		    case PropelColumnTypes::BU_TIMESTAMP:
+		      $value = $dt->format($this->getTimestampFormatter());
+		      break;
+		    case PropelColumnTypes::DATE:
+		    case PropelColumnTypes::BU_DATE:
+		      $value = $dt->format($this->getDateFormatter());
+		      break;
+		    case PropelColumnTypes::TIME:
+		      $value = $dt->format($this->getTimeFormatter());
+		      break;
+		  } 
+		}
+		return $value;
+	}
+	
+	/**
 	 * Returns timestamp formatter string for use in date() function.
 	 * @return     string
 	 */
 	public function getTimestampFormatter()
 	{
-		return "Y-m-d H:i:s";
+		return 'Y-m-d H:i:s';
 	}
 
 	/**
@@ -437,4 +467,68 @@ abstract class DBAdapter
 		return $criteria;
 	}
 
+	/**
+	 * Binds values in a prepared statement.
+	 *
+	 * This method is designed to work with the BasePeer::createSelectSql() method, which creates
+	 * both the SELECT SQL statement and populates a passed-in array of parameter
+	 * values that should be substituted.
+	 *
+	 * <code>
+	 * $db = Propel::getDB($criteria->getDbName());
+	 * $sql = BasePeer::createSelectSql($criteria, $params);
+	 * $stmt = $con->prepare($sql);
+	 * $params = array();
+	 * $db->populateStmtValues($stmt, $params, Propel::getDatabaseMap($critera->getDbName()));
+	 * $stmt->execute();
+	 * </code>
+	 *
+	 * @param      PDOStatement $stmt
+	 * @param      array $params array('column' => ..., 'table' => ..., 'value' => ...)
+	 * @param      DatabaseMap $dbMap
+	 */
+	public function bindValues(PDOStatement $stmt, array $params, DatabaseMap $dbMap)
+	{
+		$position = 1;
+		foreach ($params as $param) {
+			$parameter = ':p' . $position++;
+			$value = $param['value'];
+			if (null === $value) {
+				$stmt->bindValue($parameter, null, PDO::PARAM_NULL);
+				continue;
+			}
+			$tableName = $param['table'];
+			if (null === $tableName) {
+				$stmt->bindValue($parameter, $value);
+				continue;
+			}
+			$cMap = $dbMap->getTable($tableName)->getColumn($param['column']);
+			$this->bindValue($stmt, $parameter, $value, $cMap);
+		}
+	}
+	
+	/**
+	 * Binds a value to a positioned parameted in a statement,
+	 * given a ColumnMap object to infer the binding type.
+	 *
+	 * @param  PDOStatement $stmt      The statement to bind
+	 * @param  string       $parameter Parameter identifier
+	 * @param  mixed        $value     The value to bind
+	 * @param  ColumnMap    $cMap      The ColumnMap of the column to bind 
+	 *
+	 * @return Boolean                 TRUE on success or FALSE on failure.
+	 */
+	public function bindValue(PDOStatement $stmt, $parameter, $value, ColumnMap $cMap)
+	{
+		if ($cMap->isTemporal()) {
+			$value = $this->formatTemporalValue($value, $cMap);
+		} elseif (is_resource($value) && $cMap->isLob()) {
+			// we always need to make sure that the stream is rewound, otherwise nothing will
+			// get written to database.
+			rewind($value);
+		}
+
+		return $stmt->bindValue($parameter, $value, $cMap->getPdoType());
+	}
+	
 }

@@ -12,6 +12,15 @@
  * This class contains attributes and methods that are used by all
  * business objects within the system.
  *
+ * @method     BaseObject fromXML(string $data) Populate the object from an XML string
+ * @method     BaseObject fromYAML(string $data) Populate the object from a YAML string
+ * @method     BaseObject fromJSON(string $data) Populate the object from a JSON string
+ * @method     BaseObject fromCSV(string $data) Populate the object from a CSV string
+ * @method     string toXML() Export the object to an XML string
+ * @method     string toYAML() Export the object to a YAML string
+ * @method     string toJSON() Export the object to a JSON string
+ * @method     string toCSV() Export the object to a CSV string
+ *
  * @author     Hans Lellelid <hans@xmpl.org> (Propel)
  * @author     Frank Y. Kim <frank.kim@clearink.com> (Torque)
  * @author     John D. McNally <jmcnally@collab.net> (Torque)
@@ -307,6 +316,47 @@ abstract class BaseObject
 	}
 	
 	/**
+	 * Populate the current object from a string, using a given parser format
+	 * <code>
+	 * $book = new Book();
+	 * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
+	 * </code>
+	 *
+	 * @param mixed  $parser A PropelParser instance,
+	 *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+	 * @param string $data   The source data to import from
+	 *
+	 * @return BaseObject    The current object, for fluid interface
+	 */
+	public function importFrom($parser, $data)
+	{
+		if (!$parser instanceof PropelParser) {
+			$parser = PropelParser::getParser($parser);
+		}
+		return $this->fromArray($parser->toArray($data), BasePeer::TYPE_PHPNAME);
+	}
+
+	/**
+	 * Export the current object properties to a string, using a given parser format
+	 * <code>
+	 * $book = BookQuery::create()->findPk(9012);
+	 * echo $book->exportTo('JSON');
+	 *  => {"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
+	 * </code>
+	 *
+	 * @param  mixed  $parser A PropelParser instance,
+	 *                        or a format name ('XML', 'YAML', 'JSON', 'CSV')
+	 * @return string The exported data
+	 */
+	public function exportTo($parser)
+	{
+		if (!$parser instanceof PropelParser) {
+			$parser = PropelParser::getParser($parser);
+		}
+		return $parser->fromArray($this->toArray(BasePeer::TYPE_PHPNAME, true, array(), true));
+	}
+	
+	/**
 	 * Clean up internal collections prior to serializing
 	 * Avoids recursive loops that turn into segmentation faults when serializing
 	 */
@@ -317,11 +367,18 @@ abstract class BaseObject
 	}
 
 	/** 
-	 * Catches calls to undefined methods
+	 * Catches calls to undefined methods.
+	 * Provides magic import/export method support (fromXML()/toXML(), fromYAML()/toYAML(), etc.).
 	 * Allows to define default __call() behavior if you use a custom BaseObject
 	 */ 
-	public function __call($name, $params) 
-	{ 
-		throw new PropelException('Call to undefined method: ' . $name); 
+	public function __call($name, $params)
+	{
+		if (preg_match('/^from(\w+)$/', $name, $matches)) {
+			return $this->importFrom($matches[1], reset($params));
+		}
+		if (preg_match('/^to(\w+)$/', $name, $matches)) {
+			return $this->exportTo($matches[1]);
+		}
+		throw new PropelException('Call to undefined method: ' . $name);
 	} 
 }

@@ -15,7 +15,7 @@
  * @package    propel.runtime.collection
  */
 class PropelObjectCollection extends PropelCollection
-{	
+{
 	
 	/**
 	 * Save all the elements in the collection
@@ -94,23 +94,29 @@ class PropelObjectCollection extends PropelCollection
 	 * Get an array representation of the collection
 	 * Each object is turned into an array and the result is returned
 	 *
-	 * @param     string $keyColumn If null, the returned array uses an incremental index.
-	 *              Otherwise, the array is indexed using the specified column
+	 * @param     string  $keyColumn If null, the returned array uses an incremental index.
+	 *                    Otherwise, the array is indexed using the specified column
 	 * @param     boolean $usePrefix If true, the returned array prefixes keys 
-	 *              with the model class name ('Article_0', 'Article_1', etc).
+	 *                    with the model class name ('Article_0', 'Article_1', etc).
+	 * @param     string  $keyType (optional) One of the class type constants BasePeer::TYPE_PHPNAME, 
+	 *                    BasePeer::TYPE_STUDLYPHPNAME, BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME,
+	 *                    BasePeer::TYPE_NUM. Defaults to BasePeer::TYPE_PHPNAME.
+	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns.
+	 *                    Defaults to TRUE.
+	 * @param     array   $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 *
 	 * <code>
-	 * $bookCollection->toArray(); 
+	 * $bookCollection->toArray();
 	 * array(
 	 *  0 => array('Id' => 123, 'Title' => 'War And Peace'),
 	 *  1 => array('Id' => 456, 'Title' => 'Don Juan'),
 	 * )
-	 * $bookCollection->toArray('Id'); 
+	 * $bookCollection->toArray('Id');
 	 * array(
 	 *  123 => array('Id' => 123, 'Title' => 'War And Peace'),
 	 *  456 => array('Id' => 456, 'Title' => 'Don Juan'),
 	 * )
-	 * $bookCollection->toArray(null, true); 
+	 * $bookCollection->toArray(null, true);
 	 * array(
 	 *  'Book_0' => array('Id' => 123, 'Title' => 'War And Peace'),
 	 *  'Book_1' => array('Id' => 456, 'Title' => 'Don Juan'),
@@ -118,14 +124,14 @@ class PropelObjectCollection extends PropelCollection
 	 * </code>
 	 * @return    array
 	 */
-	public function toArray($keyColumn = null, $usePrefix = false)
+	public function toArray($keyColumn = null, $usePrefix = false, $keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
 	{
 		$ret = array();
 		$keyGetterMethod = 'get' . $keyColumn;
 		foreach ($this as $key => $obj) {
 			$key = null === $keyColumn ? $key : $obj->$keyGetterMethod();
 			$key = $usePrefix ? ($this->getModel() . '_' . $key) : $key;
-			$ret[$key] = $obj->toArray();
+			$ret[$key] = $obj->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
 		}
 		
 		return $ret;
@@ -140,17 +146,17 @@ class PropelObjectCollection extends PropelCollection
 	 *              with the model class name ('Article_0', 'Article_1', etc).
 	 *
 	 * <code>
-	 * $bookCollection->getArrayCopy(); 
+	 * $bookCollection->getArrayCopy();
 	 * array(
 	 *  0 => $book0,
 	 *  1 => $book1,
 	 * )
-	 * $bookCollection->getArrayCopy('Id'); 
+	 * $bookCollection->getArrayCopy('Id');
 	 * array(
 	 *  123 => $book0,
 	 *  456 => $book1,
 	 * )
-	 * $bookCollection->getArrayCopy(null, true); 
+	 * $bookCollection->getArrayCopy(null, true);
 	 * array(
 	 *  'Book_0' => $book0,
 	 *  'Book_1' => $book1,
@@ -220,20 +226,17 @@ class PropelObjectCollection extends PropelCollection
 		}
 		$symRelationMap = $relationMap->getSymmetricalRelation();
 		
-		// query the db for the related objects
-		$useMethod = 'use' . $symRelationMap->getName() . 'Query';
 		$query = PropelQuery::from($relationMap->getRightTable()->getPhpName());
 		if (null !== $criteria) {
 			$query->mergeWith($criteria);
 		}
+		// query the db for the related objects
+		$filterMethod = 'filterBy' . $symRelationMap->getName();
 		$relatedObjects = $query
-			->$useMethod()
-				->filterByPrimaryKeys($this->getPrimaryKeys())
-			->endUse()
+			->$filterMethod($this)
 			->find($con);
-			
-		// associate the related objects to the main objects
 		if ($relationMap->getType() == RelationMap::ONE_TO_MANY) {
+			// associate the related objects to the main objects
 			$getMethod = 'get' . $symRelationMap->getName();
 			$addMethod = 'add' . $relationMap->getName();
 			foreach ($relatedObjects as $object) {

@@ -48,7 +48,7 @@ class ModelCriteria extends Criteria
 	protected $with = array();
 	protected $isWithOneToMany = false;
 	protected $previousJoin = null; // this is introduced to prevent useQuery->join from going wrong
-	protected $isKeepQuery = false; // whether to clone the current object before termination methods
+	protected $isKeepQuery = true; // whether to clone the current object before termination methods
 	protected $select = null;  // this is for the select method
 
 	/**
@@ -277,7 +277,7 @@ class ModelCriteria extends Criteria
 			// where('Book.AuthorId = ?', 12)
 			$criterion = $this->getCriterionForClause($clause, $value);
 		}
-		$this->addAnd($criterion, null, null);
+		$this->addUsingOperator($criterion, null, null);
 
 		return $this;
 	}
@@ -295,6 +295,7 @@ class ModelCriteria extends Criteria
 	 * </code>
 	 *
 	 * @see Criteria::addOr()
+	 * @deprecated Use _or()->where() instead
 	 *
 	 * @param      string $clause The pseudo SQL clause, e.g. 'AuthorId = ?'
 	 * @param      mixed  $value A value for the condition
@@ -303,16 +304,9 @@ class ModelCriteria extends Criteria
 	 */
 	public function orWhere($clause, $value = null)
 	{
-		if (is_array($clause)) {
-			// orWhere(array('cond1', 'cond2'), Criteria::LOGICAL_OR)
-			$criterion = $this->getCriterionForConditions($clause, $value);
-		} else {
-			// orWhere('Book.AuthorId = ?', 12)
-			$criterion = $this->getCriterionForClause($clause, $value);
-		}
-		$this->addOr($criterion, null, null);
-
-		return $this;
+		return $this
+			->_or()
+			->where($clause, $value);
 	}
 
 	/**
@@ -433,10 +427,10 @@ class ModelCriteria extends Criteria
 				$this->addGroupByColumn($column->getFullyQualifiedName());
 			}
 		}
-
+		
 		return $this;
 	}
-
+	
 	/**
 	 * Adds a DISTINCT clause to the query
 	 * Alias for Criteria::setDistinct()
@@ -654,6 +648,68 @@ class ModelCriteria extends Criteria
 
 		return $this;
 	}
+	
+	/**
+	 * Add another condition to an already added join
+	 * @example
+	 * <code>
+	 * $query->join('Book.Author');
+	 * $query->addJoinCondition('Author', 'Book.Title LIKE ?', 'foo%');
+	 * </code>
+	 *
+	 * @param string $name The relation name or alias on which the join was created
+	 * @param string $clause SQL clause, may contain column and table phpNames
+	 * @param mixed  $value An optional value to bind to the clause
+	 * @param string $operator The operator to use to add the condition. Defaults to 'AND'
+	 *
+	 * @return ModelCriteria The current object, for fluid interface
+	 */
+	public function addJoinCondition($name, $clause, $value = null, $operator = null)
+	{
+		if (!isset($this->joins[$name])) {
+			throw new PropelException(sprintf('Adding a condition to a nonexistent join, %s. Try calling join() first.', $name));
+		}
+		$join = $this->joins[$name];
+		if (!$join->getJoinCondition() instanceof Criterion) {
+			$join->buildJoinCondition($this);
+		}
+		$criterion = $this->getCriterionForClause($clause, $value);
+		$method = $operator === Criteria::LOGICAL_OR ? 'addOr' : 'addAnd';
+		$join->getJoinCondition()->$method($criterion);
+		
+		return $this;
+	}
+	
+	/**
+	 * Replace the condition of an already added join
+	 * @example
+	 * <code>
+	 * $query->join('Book.Author');
+	 * $query->condition('cond1', 'Book.AuthorId = Author.Id')
+	 * $query->condition('cond2', 'Book.Title LIKE ?', 'War%')
+	 * $query->combine(array('cond1', 'cond2'), 'and', 'cond3')
+	 * $query->setJoinCondition('Author', 'cond3');
+	 * </code>
+	 *
+	 * @param string $name The relation name or alias on which the join was created
+	 * @param mixed $condition A Criterion object, or a condition name
+	 *
+	 * @return ModelCriteria The current object, for fluid interface
+	 */
+	public function setJoinCondition($name, $condition)
+	{
+		if (!isset($this->joins[$name])) {
+			throw new PropelException(sprintf('Setting a condition to a nonexistent join, %s. Try calling join() first.', $name));
+		}
+		if ($condition instanceof Criterion) {
+			$this->getJoin($name)->setJoinCondition($condition);
+		} elseif (isset($this->namedCriterions[$condition])) {
+			$this->getJoin($name)->setJoinCondition($this->namedCriterions[$condition]);
+		} else {
+			throw new PropelException(sprintf('Cannot add condition %s on join %s. setJoinCondition() expects either a Criterion, or a condition added by way of condition()', $condition, $name));
+		}
+		return $this;
+	}
 
 	/**
 	 * Add a join object to the Criteria
@@ -746,7 +802,7 @@ class ModelCriteria extends Criteria
 		$this->addRelationSelectColumns($relation);
 
 		// list the join for later hydration in the formatter
-		$this->with[$relation] = $join;
+		$this->with[$relation] = new ModelWith($join);
 
 		return $this;
 	}
@@ -853,7 +909,7 @@ class ModelCriteria extends Criteria
 	 *
 	 * @return    ModelCriteria The primary criteria object
 	 */
-	public function mergeWith(Criteria $criteria, $operator = Criteria::LOGICAL_AND)
+	public function mergeWith(Criteria $criteria, $operator = null)
 	{
 		parent::mergeWith($criteria, $operator);
 
@@ -902,7 +958,37 @@ class ModelCriteria extends Criteria
 	{
 		return $this->primaryCriteria;
 	}
-
+	
+	/**
+	 * Adds a Criteria as subQuery in the From Clause.
+	 * 
+	 * @see Criteria::addSelectQuery()
+	 *
+	 * @param     Criteria $subQueryCriteria Criteria to build the subquery from  
+	 * @param     string   $alias            alias for the subQuery
+	 * @param     boolean  $addAliasAndSelectColumns Set to false if you want to manually add the aliased select columns 
+	 *
+	 * @return ModelCriteria The current object, for fluid interface
+	 */
+	public function addSelectQuery(Criteria $subQueryCriteria, $alias = null, $addAliasAndSelectColumns = true)
+	{
+		if (!$subQueryCriteria->hasSelectClause()) {
+			$subQueryCriteria->addSelfSelectColumns();
+		}
+		parent::addSelectQuery($subQueryCriteria, $alias);
+		if ($addAliasAndSelectColumns) {
+			// give this query-model same alias as subquery
+			if (null === $alias) {
+				end($this->selectQueries);
+				$alias = key($this->selectQueries);
+			}
+			$this->setModelAlias($alias, true);
+			// so we can add selfSelectColumns
+			$this->addSelfSelectColumns();
+		}
+		return $this;
+	}
+	
 	/**
 	 * Adds the select columns for a the current table
 	 *
@@ -1151,7 +1237,7 @@ class ModelCriteria extends Criteria
 			$params = array();
 			$sql = BasePeer::createSelectSql($this, $params);
 			$stmt = $con->prepare($sql);
-			BasePeer::populateStmtValues($stmt, $params, $dbMap, $db);
+			$db->bindValues($stmt, $params, $dbMap);
 			$stmt->execute();
 		} catch (Exception $e) {
 			if (isset($stmt)) {
@@ -1324,7 +1410,7 @@ class ModelCriteria extends Criteria
 				$sql = BasePeer::createSelectSql($this, $params);
 			}
 			$stmt = $con->prepare($sql);
-			BasePeer::populateStmtValues($stmt, $params, $dbMap, $db);
+			$db->bindValues($stmt, $params, $dbMap);
 			$stmt->execute();
 		} catch (PropelException $e) {
 			if ($stmt) {
@@ -1602,14 +1688,14 @@ class ModelCriteria extends Criteria
 	 * Creates a Criterion object based on a list of existing condition names and a comparator
 	 *
 	 * @param      array $conditions The list of condition names, e.g. array('cond1', 'cond2')
-	 * @param      string  $comparator A comparator, Criteria::LOGICAL_AND (default) or Criteria::LOGICAL_OR
+	 * @param      string  $operator An operator, Criteria::LOGICAL_AND (default) or Criteria::LOGICAL_OR
 	 *
 	 * @return     Criterion a Criterion or ModelCriterion object
 	 */
-	protected function getCriterionForConditions($conditions, $comparator = null)
+	protected function getCriterionForConditions($conditions, $operator = null)
 	{
-		$comparator = (null === $comparator) ? Criteria::LOGICAL_AND : $comparator;
-		$this->combine($conditions, $comparator, 'propel_temp_name');
+		$operator = (null === $operator) ? Criteria::LOGICAL_AND : $operator;
+		$this->combine($conditions, $operator, 'propel_temp_name');
 		$criterion = $this->namedCriterions['propel_temp_name'];
 		unset($this->namedCriterions['propel_temp_name']);
 
@@ -1640,7 +1726,9 @@ class ModelCriteria extends Criteria
 			} else {
 				$operator = ModelCriteria::MODEL_CLAUSE;
 			}
-			$criterion = new ModelCriterion($this, $this->replacedColumns[0], $value, $operator, $clause);
+			$colMap = $this->replacedColumns[0];
+			$value = $this->convertValueForColumn($value, $colMap);
+			$criterion = new ModelCriterion($this, $colMap, $value, $operator, $clause);
 			if ($this->currentAlias != '') {
 				$criterion->setTable($this->currentAlias);
 			}
@@ -1653,13 +1741,41 @@ class ModelCriteria extends Criteria
 		}
 		return $criterion;
 	}
+	
+	/**
+	 * Converts value for some column types
+	 *
+	 * @param  mixed     $value  The value to convert
+	 * @param  ColumnMap $colMap The ColumnMap object
+	 * @return mixed             The converted value
+	 */
+	protected function convertValueForColumn($value, ColumnMap $colMap)
+	{
+		if ($colMap->getType() == 'OBJECT' && is_object($value)) {
+			if (is_array($value)) {
+				$value = array_map('serialize', $value);
+			} else {
+				$value = serialize($value);
+			}
+		} elseif ($colMap->getType() == 'ARRAY' && is_array($value)) {
+			$value = '| ' . implode(' | ', $value) . ' |';
+		} elseif ($colMap->getType() == 'ENUM') {
+			if (is_array($value)) {
+				$value = array_map(array($colMap, 'getValueSetKey'), $value);
+			} else {
+				$value = $colMap->getValueSetKey($value);
+			}
+		}
+		
+		return $value;
+	}
 
 	/**
 	 * Replaces complete column names (like Article.AuthorId) in an SQL clause
 	 * by their exact Propel column fully qualified name (e.g. article.AUTHOR_ID)
 	 * but ignores the column names inside quotes
-	 *
-	 * Note: if you know a way to do so in one step, and in an efficient way, I'm interested :)
+	 * e.g. 'CONCAT(Book.Title, "Book.Title") = ?'
+	 *   => 'CONCAT(book.TITLE, "Book.Title") = ?'
 	 *
 	 * @param string $clause SQL clause to inspect (modified by the method)
 	 *
@@ -1670,33 +1786,50 @@ class ModelCriteria extends Criteria
 		$this->replacedColumns = array();
 		$this->currentAlias = '';
 		$this->foundMatch = false;
-		$regexp = <<<EOT
-|
-	(["'][^"']*?["'])?  # string
-	([^"']+)?           # not string
-|x
-EOT;
-		$clause = preg_replace_callback($regexp, array($this, 'doReplaceName'), $clause);
-		return $this->foundMatch;
-	}
-
-	/**
-	 * Callback function to replace expressions containing column names with expressions using the real column names
-	 * Handles strings properly
-	 * e.g. 'CONCAT(Book.Title, "Book.Title") = ?'
-	 *   => 'CONCAT(book.TITLE, "Book.Title") = ?'
-	 *
-	 * @param array $matches Matches found by preg_replace_callback
-	 *
-	 * @return string the expression replacement
-	 */
-	protected function doReplaceName($matches)
-	{
-		if(!$matches[0]) {
-			return '';
+		$isAfterBackslash = false;
+		$isInString = false;
+		$stringQuotes = '';
+		$parsedString = '';
+		$stringToTransform = '';
+		$len = strlen($clause);
+		$pos = 0;
+		while ($pos < $len) {
+			$char = $clause[$pos];
+			// check flags for strings or escaper
+			switch ($char) {
+				case "\\":
+					$isAfterBackslash = true;
+					break;
+				case "'":
+				case "\"":
+					if ($isInString && $stringQuotes == $char) {
+						if (!$isAfterBackslash) {
+							$isInString = false;
+						}
+					} elseif (!$isInString) {
+						$parsedString .= preg_replace_callback('/\w+\.\w+/', array($this, 'doReplaceNameInExpression'), $stringToTransform);
+						$stringToTransform = '';
+						$stringQuotes = $char;
+						$isInString = true;
+					}
+					break;
+			}
+			if ($char !== "\\") {
+				$isAfterBackslash = false;
+			}
+			if ($isInString) {
+				$parsedString .= $char;
+			} else {
+				$stringToTransform .= $char;
+			}
+			$pos++;
 		}
-		// replace names only in expressions, not in strings delimited by quotes
-		return $matches[1] . preg_replace_callback('/\w+\.\w+/', array($this, 'doReplaceNameInExpression'), $matches[2]);
+		if ($stringToTransform) {
+			$parsedString .= preg_replace_callback('/\w+\.\w+/', array($this, 'doReplaceNameInExpression'), $stringToTransform);
+		}
+		
+		$clause = $parsedString;
+		return $this->foundMatch;
 	}
 
 	/**
@@ -1751,12 +1884,12 @@ EOT;
 		} elseif (isset($this->joins[$class])) {
 			// column of a relations's model
 			$tableMap = $this->joins[$class]->getTableMap();
+		} elseif ($this->hasSelectQuery($class)) {
+			return $this->getColumnFromSubQuery($class, $phpName, $failSilently);
+		} elseif ($failSilently) {
+			return array(null, null);
 		} else {
-			if ($failSilently) {
-				return array(null, null);
-			} else {
-				throw new PropelException('Unknown model or alias ' . $class);
-			}
+			throw new PropelException(sprintf('Unknown model or alias "%s"', $class));
 		}
 
 		if ($tableMap->hasColumnByPhpName($phpName)) {
@@ -1771,15 +1904,36 @@ EOT;
 		} elseif (isset($this->asColumns[$phpName])) {
 			// aliased column
 			return array(null, $phpName);
+		} elseif ($failSilently) {
+			return array(null, null);
 		} else {
-			if ($failSilently) {
-				return array(null, null);
-			} else {
-				throw new PropelException('Unknown column ' . $phpName . ' on model or alias ' . $class);
-			}
+			throw new PropelException(sprintf('Unknown column "%s" on model or alias "%s"', $phpName, $class));
 		}
 	}
 
+	/**
+	 * Special case for subquery columns
+	 *
+	 * @return     array List($columnMap, $realColumnName)
+	 */
+	protected function getColumnFromSubQuery($class, $phpName, $failSilently = true)
+	{
+		$subQueryCriteria = $this->getSelectQuery($class);
+		$tableMap = $subQueryCriteria->getTableMap();
+		if ($tableMap->hasColumnByPhpName($phpName)) {
+			$column = $tableMap->getColumnByPhpName($phpName);
+			$realColumnName = $class . '.' . $column->getName();
+			return array($column, $realColumnName);
+		} elseif (isset($subQueryCriteria->asColumns[$phpName])) {
+			// aliased column
+			return array(null, $class . '.' . $phpName);
+		} elseif ($failSilently) {
+			return array(null, null);
+		} else {
+			throw new PropelException(sprintf('Unknown column "%s" in the subQuery with alias "%s"', $phpName, $class));
+		}
+	}
+	
 	/**
 	 * Return a fully qualified column name corresponding to a simple column phpName
 	 * Uses model alias if it exists
@@ -1814,7 +1968,7 @@ EOT;
 	public function getAliasedColName($colName)
 	{
 		if ($this->useAliasInSQL) {
-			return $this->modelAlias . substr($colName, strpos($colName, '.'));
+			return $this->modelAlias . substr($colName, strrpos($colName, '.'));
 		} else {
 			return $colName;
 		}
@@ -1824,16 +1978,15 @@ EOT;
 	 * Overrides Criteria::add() to force the use of a true table alias if it exists
 	 *
 	 * @see        Criteria::add()
-	 * @param      string $column The colName of column to run the comparison on (e.g. BookPeer::ID)
+	 * @param      string $column The colName of column to run the condition on (e.g. BookPeer::ID)
 	 * @param      mixed $value
-	 * @param      string $comparison A String.
+	 * @param      string $operator A String, like Criteria::EQUAL.
 	 *
 	 * @return     ModelCriteria A modified Criteria object.
 	 */
-	public function addUsingAlias($p1, $value = null, $comparison = null)
+	public function addUsingAlias($p1, $value = null, $operator = null)
 	{
-		$key = $this->getAliasedColName($p1);
-		return $this->containsKey($key) ? $this->addAnd($key, $value, $comparison) : $this->add($key, $value, $comparison);
+		return $this->addUsingOperator($this->getAliasedColName($p1), $value, $operator);
 	}
 
 	/**
