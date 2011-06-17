@@ -27,7 +27,7 @@ class AbsenceEleveSaisiePeer extends BaseAbsenceEleveSaisiePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(AbsenceEleveSaisie $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 	    $failureMap = array();
 	    if (($retval = parent::doValidate($obj, $cols)) !== true) {
