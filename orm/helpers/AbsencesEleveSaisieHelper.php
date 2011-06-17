@@ -127,6 +127,7 @@ class AbsencesEleveSaisieHelper {
 			$date_compteur_suivante->modify("+35 minutes");
 		    }
 		    $date_compteur = $date_compteur_suivante;
+                    $saisie->clearAllReferences();
 		}
 	    }
 	    return $result;
