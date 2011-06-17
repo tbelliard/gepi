@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //======================================================================================
 
@@ -67,7 +67,7 @@ $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : NULL;
 $classe=isset($_POST['classe']) ? $_POST['classe'] : NULL;
 $classes_futures=isset($_POST['classes_futures']) ? $_POST['classes_futures'] : NULL;
-$classes_futures=my_ereg_replace("[^A-za-z0-9_,]","",$classes_futures);
+$classes_futures=preg_replace("/[^A-za-z0-9_,]/","",$classes_futures);
 if($classes_futures=="") {unset($classes_futures);}
 
 $choix_classes=isset($_POST['choix_classes']) ? $_POST['choix_classes'] : NULL;
@@ -178,8 +178,9 @@ while($lig_clas=mysql_fetch_object($res_classes)) {
 	}
 
 	echo "<input type='checkbox' name='id_classe[]' id='id_classe_$cpt_i' value='$lig_clas->id' ";
-	if(in_array($lig_clas->id,$tab_id_div)) {echo "checked ";}
-	echo "/><label for='id_classe_$cpt_i'>$lig_clas->classe</label>";
+	if(in_array($lig_clas->id,$tab_id_div)) {echo "checked ";$temp_style=" style='font-weight:bold;'";} else {$temp_style="";}
+	echo "onchange=\"checkbox_change($cpt_i)\" ";
+	echo "/><label for='id_classe_$cpt_i'><span id='texte_id_classe_$cpt_i'$temp_style>$lig_clas->classe</span></label>";
 	echo "<input type='hidden' name='classe[$lig_clas->id]' value='$lig_clas->classe' />";
 	echo "<br />\n";
 	$cpt_i++;
@@ -189,6 +190,19 @@ echo "</td>\n";
 echo "</tr>\n";
 echo "</table>\n";
 
+
+	echo "<script type='text/javascript'>
+function checkbox_change(cpt) {
+	if(document.getElementById('id_classe_'+cpt)) {
+		if(document.getElementById('id_classe_'+cpt).checked) {
+			document.getElementById('texte_id_classe_'+cpt).style.fontWeight='bold';
+		}
+		else {
+			document.getElementById('texte_id_classe_'+cpt).style.fontWeight='normal';
+		}
+	}
+}
+</script>\n";
 
 echo "<p>Ajouter une ou des classes futures&nbsp;:\n";
 echo " <input type='text' name='classes_futures' value='$classes_futures' /><br />\n";
