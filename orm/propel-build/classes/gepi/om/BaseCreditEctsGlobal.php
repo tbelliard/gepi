@@ -198,7 +198,7 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 3; // 3 = CreditEctsGlobalPeer::NUM_COLUMNS - CreditEctsGlobalPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 3; // 3 = CreditEctsGlobalPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating CreditEctsGlobal object", $e);
@@ -550,12 +550,17 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['CreditEctsGlobal'][serialize($this->getPrimaryKey())])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['CreditEctsGlobal'][serialize($this->getPrimaryKey())] = true;
 		$keys = CreditEctsGlobalPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -564,7 +569,7 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aEleve) {
-				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -711,15 +716,17 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of CreditEctsGlobal (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setIdEleve($this->id_eleve);
-		$copyObj->setMention($this->mention);
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		$copyObj->setIdEleve($this->getIdEleve());
+		$copyObj->setMention($this->getMention());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -799,11 +806,11 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 		if ($this->aEleve === null && ($this->id_eleve !== null)) {
 			$this->aEleve = EleveQuery::create()->findPk($this->id_eleve, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aEleve->addCreditEctsGlobals($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aEleve->addCreditEctsGlobals($this);
 			 */
 		}
 		return $this->aEleve;
@@ -826,13 +833,13 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
@@ -840,6 +847,16 @@ abstract class BaseCreditEctsGlobal extends BaseObject  implements Persistent
 		} // if ($deep)
 
 		$this->aEleve = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(CreditEctsGlobalPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

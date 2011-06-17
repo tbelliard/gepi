@@ -31,6 +31,9 @@ abstract class BaseJProfesseursMatieresPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 3;
+
 	/** the column name for the ID_MATIERE field */
 	const ID_MATIERE = 'j_professeurs_matieres.ID_MATIERE';
 
@@ -40,6 +43,9 @@ abstract class BaseJProfesseursMatieresPeer {
 	/** the column name for the ORDRE_MATIERES field */
 	const ORDRE_MATIERES = 'j_professeurs_matieres.ORDRE_MATIERES';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of JProfesseursMatieres objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -55,7 +61,7 @@ abstract class BaseJProfesseursMatieresPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('IdMatiere', 'IdProfesseur', 'OrdreMatieres', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idMatiere', 'idProfesseur', 'ordreMatieres', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_MATIERE, self::ID_PROFESSEUR, self::ORDRE_MATIERES, ),
@@ -70,7 +76,7 @@ abstract class BaseJProfesseursMatieresPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('IdMatiere' => 0, 'IdProfesseur' => 1, 'OrdreMatieres' => 2, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idMatiere' => 0, 'idProfesseur' => 1, 'ordreMatieres' => 2, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_MATIERE => 0, self::ID_PROFESSEUR => 1, self::ORDRE_MATIERES => 2, ),
@@ -275,7 +281,7 @@ abstract class BaseJProfesseursMatieresPeer {
 	 * @param      JProfesseursMatieres $value A JProfesseursMatieres object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(JProfesseursMatieres $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -430,7 +436,7 @@ abstract class BaseJProfesseursMatieresPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + JProfesseursMatieresPeer::NUM_COLUMNS;
+			$col = $startcol + JProfesseursMatieresPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = JProfesseursMatieresPeer::OM_CLASS;
 			$obj = new $cls();
@@ -559,7 +565,7 @@ abstract class BaseJProfesseursMatieresPeer {
 		}
 
 		JProfesseursMatieresPeer::addSelectColumns($criteria);
-		$startcol = (JProfesseursMatieresPeer::NUM_COLUMNS - JProfesseursMatieresPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JProfesseursMatieresPeer::NUM_HYDRATE_COLUMNS;
 		MatierePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JProfesseursMatieresPeer::ID_MATIERE, MatierePeer::MATIERE, $join_behavior);
@@ -625,7 +631,7 @@ abstract class BaseJProfesseursMatieresPeer {
 		}
 
 		JProfesseursMatieresPeer::addSelectColumns($criteria);
-		$startcol = (JProfesseursMatieresPeer::NUM_COLUMNS - JProfesseursMatieresPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JProfesseursMatieresPeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JProfesseursMatieresPeer::ID_PROFESSEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -743,13 +749,13 @@ abstract class BaseJProfesseursMatieresPeer {
 		}
 
 		JProfesseursMatieresPeer::addSelectColumns($criteria);
-		$startcol2 = (JProfesseursMatieresPeer::NUM_COLUMNS - JProfesseursMatieresPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JProfesseursMatieresPeer::NUM_HYDRATE_COLUMNS;
 
 		MatierePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (MatierePeer::NUM_COLUMNS - MatierePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + MatierePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JProfesseursMatieresPeer::ID_MATIERE, MatierePeer::MATIERE, $join_behavior);
 
@@ -937,10 +943,10 @@ abstract class BaseJProfesseursMatieresPeer {
 		}
 
 		JProfesseursMatieresPeer::addSelectColumns($criteria);
-		$startcol2 = (JProfesseursMatieresPeer::NUM_COLUMNS - JProfesseursMatieresPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JProfesseursMatieresPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JProfesseursMatieresPeer::ID_PROFESSEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1010,10 +1016,10 @@ abstract class BaseJProfesseursMatieresPeer {
 		}
 
 		JProfesseursMatieresPeer::addSelectColumns($criteria);
-		$startcol2 = (JProfesseursMatieresPeer::NUM_COLUMNS - JProfesseursMatieresPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JProfesseursMatieresPeer::NUM_HYDRATE_COLUMNS;
 
 		MatierePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (MatierePeer::NUM_COLUMNS - MatierePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + MatierePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JProfesseursMatieresPeer::ID_MATIERE, MatierePeer::MATIERE, $join_behavior);
 
@@ -1293,7 +1299,7 @@ abstract class BaseJProfesseursMatieresPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(JProfesseursMatieres $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

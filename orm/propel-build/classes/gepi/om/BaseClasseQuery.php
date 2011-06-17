@@ -230,7 +230,7 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -264,8 +264,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -281,8 +290,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the classe column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNom('fooValue');   // WHERE classe = 'fooValue'
+	 * $query->filterByNom('%fooValue%'); // WHERE classe LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -303,8 +318,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom_complet column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNomComplet('fooValue');   // WHERE nom_complet = 'fooValue'
+	 * $query->filterByNomComplet('%fooValue%'); // WHERE nom_complet LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nomComplet The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -325,8 +346,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the suivi_par column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterBySuiviPar('fooValue');   // WHERE suivi_par = 'fooValue'
+	 * $query->filterBySuiviPar('%fooValue%'); // WHERE suivi_par LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $suiviPar The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -347,8 +374,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the formule column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByFormule('fooValue');   // WHERE formule = 'fooValue'
+	 * $query->filterByFormule('%fooValue%'); // WHERE formule LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $formule The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -369,8 +402,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the format_nom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByFormatNom('fooValue');   // WHERE format_nom = 'fooValue'
+	 * $query->filterByFormatNom('%fooValue%'); // WHERE format_nom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $formatNom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -391,8 +430,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the display_rang column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDisplayRang('fooValue');   // WHERE display_rang = 'fooValue'
+	 * $query->filterByDisplayRang('%fooValue%'); // WHERE display_rang LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $displayRang The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -413,8 +458,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the display_address column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDisplayAddress('fooValue');   // WHERE display_address = 'fooValue'
+	 * $query->filterByDisplayAddress('%fooValue%'); // WHERE display_address LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $displayAddress The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -435,8 +486,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the display_coef column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDisplayCoef('fooValue');   // WHERE display_coef = 'fooValue'
+	 * $query->filterByDisplayCoef('%fooValue%'); // WHERE display_coef LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $displayCoef The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -457,8 +514,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the display_mat_cat column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDisplayMatCat('fooValue');   // WHERE display_mat_cat = 'fooValue'
+	 * $query->filterByDisplayMatCat('%fooValue%'); // WHERE display_mat_cat LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $displayMatCat The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -479,8 +542,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the display_nbdev column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDisplayNbdev('fooValue');   // WHERE display_nbdev = 'fooValue'
+	 * $query->filterByDisplayNbdev('%fooValue%'); // WHERE display_nbdev LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $displayNbdev The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -501,8 +570,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the display_moy_gen column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDisplayMoyGen('fooValue');   // WHERE display_moy_gen = 'fooValue'
+	 * $query->filterByDisplayMoyGen('%fooValue%'); // WHERE display_moy_gen LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $displayMoyGen The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -523,8 +598,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the modele_bulletin_pdf column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByModeleBulletinPdf('fooValue');   // WHERE modele_bulletin_pdf = 'fooValue'
+	 * $query->filterByModeleBulletinPdf('%fooValue%'); // WHERE modele_bulletin_pdf LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $modeleBulletinPdf The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -545,8 +626,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the rn_nomdev column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRnNomdev('fooValue');   // WHERE rn_nomdev = 'fooValue'
+	 * $query->filterByRnNomdev('%fooValue%'); // WHERE rn_nomdev LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $rnNomdev The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -567,8 +654,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the rn_toutcoefdev column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRnToutcoefdev('fooValue');   // WHERE rn_toutcoefdev = 'fooValue'
+	 * $query->filterByRnToutcoefdev('%fooValue%'); // WHERE rn_toutcoefdev LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $rnToutcoefdev The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -589,8 +682,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the rn_coefdev_si_diff column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRnCoefdevSiDiff('fooValue');   // WHERE rn_coefdev_si_diff = 'fooValue'
+	 * $query->filterByRnCoefdevSiDiff('%fooValue%'); // WHERE rn_coefdev_si_diff LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $rnCoefdevSiDiff The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -611,8 +710,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the rn_datedev column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRnDatedev('fooValue');   // WHERE rn_datedev = 'fooValue'
+	 * $query->filterByRnDatedev('%fooValue%'); // WHERE rn_datedev LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $rnDatedev The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -633,8 +738,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the rn_sign_chefetab column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRnSignChefetab('fooValue');   // WHERE rn_sign_chefetab = 'fooValue'
+	 * $query->filterByRnSignChefetab('%fooValue%'); // WHERE rn_sign_chefetab LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $rnSignChefetab The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -655,8 +766,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the rn_sign_pp column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRnSignPp('fooValue');   // WHERE rn_sign_pp = 'fooValue'
+	 * $query->filterByRnSignPp('%fooValue%'); // WHERE rn_sign_pp LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $rnSignPp The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -677,8 +794,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the rn_sign_resp column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRnSignResp('fooValue');   // WHERE rn_sign_resp = 'fooValue'
+	 * $query->filterByRnSignResp('%fooValue%'); // WHERE rn_sign_resp LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $rnSignResp The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -699,8 +822,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the rn_sign_nblig column
 	 * 
-	 * @param     int|array $rnSignNblig The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRnSignNblig(1234); // WHERE rn_sign_nblig = 1234
+	 * $query->filterByRnSignNblig(array(12, 34)); // WHERE rn_sign_nblig IN (12, 34)
+	 * $query->filterByRnSignNblig(array('min' => 12)); // WHERE rn_sign_nblig > 12
+	 * </code>
+	 *
+	 * @param     mixed $rnSignNblig The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -730,8 +862,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the rn_formule column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRnFormule('fooValue');   // WHERE rn_formule = 'fooValue'
+	 * $query->filterByRnFormule('%fooValue%'); // WHERE rn_formule LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $rnFormule The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -752,8 +890,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ects_type_formation column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEctsTypeFormation('fooValue');   // WHERE ects_type_formation = 'fooValue'
+	 * $query->filterByEctsTypeFormation('%fooValue%'); // WHERE ects_type_formation LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $ectsTypeFormation The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -774,8 +918,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ects_parcours column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEctsParcours('fooValue');   // WHERE ects_parcours = 'fooValue'
+	 * $query->filterByEctsParcours('%fooValue%'); // WHERE ects_parcours LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $ectsParcours The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -796,8 +946,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ects_code_parcours column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEctsCodeParcours('fooValue');   // WHERE ects_code_parcours = 'fooValue'
+	 * $query->filterByEctsCodeParcours('%fooValue%'); // WHERE ects_code_parcours LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $ectsCodeParcours The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -818,8 +974,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ects_domaines_etude column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEctsDomainesEtude('fooValue');   // WHERE ects_domaines_etude = 'fooValue'
+	 * $query->filterByEctsDomainesEtude('%fooValue%'); // WHERE ects_domaines_etude LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $ectsDomainesEtude The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -840,8 +1002,14 @@ abstract class BaseClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ects_fonction_signataire_attestation column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEctsFonctionSignataireAttestation('fooValue');   // WHERE ects_fonction_signataire_attestation = 'fooValue'
+	 * $query->filterByEctsFonctionSignataireAttestation('%fooValue%'); // WHERE ects_fonction_signataire_attestation LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $ectsFonctionSignataireAttestation The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ClasseQuery The current query, for fluid interface
@@ -869,8 +1037,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 */
 	public function filterByPeriodeNote($periodeNote, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ClassePeer::ID, $periodeNote->getIdClasse(), $comparison);
+		if ($periodeNote instanceof PeriodeNote) {
+			return $this
+				->addUsingAlias(ClassePeer::ID, $periodeNote->getIdClasse(), $comparison);
+		} elseif ($periodeNote instanceof PropelCollection) {
+			return $this
+				->usePeriodeNoteQuery()
+					->filterByPrimaryKeys($periodeNote->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByPeriodeNote() only accepts arguments of type PeriodeNote or PropelCollection');
+		}
 	}
 
 	/**
@@ -933,8 +1110,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 */
 	public function filterByJScolClasses($jScolClasses, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ClassePeer::ID, $jScolClasses->getIdClasse(), $comparison);
+		if ($jScolClasses instanceof JScolClasses) {
+			return $this
+				->addUsingAlias(ClassePeer::ID, $jScolClasses->getIdClasse(), $comparison);
+		} elseif ($jScolClasses instanceof PropelCollection) {
+			return $this
+				->useJScolClassesQuery()
+					->filterByPrimaryKeys($jScolClasses->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJScolClasses() only accepts arguments of type JScolClasses or PropelCollection');
+		}
 	}
 
 	/**
@@ -997,8 +1183,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 */
 	public function filterByJGroupesClasses($jGroupesClasses, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ClassePeer::ID, $jGroupesClasses->getIdClasse(), $comparison);
+		if ($jGroupesClasses instanceof JGroupesClasses) {
+			return $this
+				->addUsingAlias(ClassePeer::ID, $jGroupesClasses->getIdClasse(), $comparison);
+		} elseif ($jGroupesClasses instanceof PropelCollection) {
+			return $this
+				->useJGroupesClassesQuery()
+					->filterByPrimaryKeys($jGroupesClasses->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJGroupesClasses() only accepts arguments of type JGroupesClasses or PropelCollection');
+		}
 	}
 
 	/**
@@ -1061,8 +1256,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 */
 	public function filterByJEleveClasse($jEleveClasse, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ClassePeer::ID, $jEleveClasse->getIdClasse(), $comparison);
+		if ($jEleveClasse instanceof JEleveClasse) {
+			return $this
+				->addUsingAlias(ClassePeer::ID, $jEleveClasse->getIdClasse(), $comparison);
+		} elseif ($jEleveClasse instanceof PropelCollection) {
+			return $this
+				->useJEleveClasseQuery()
+					->filterByPrimaryKeys($jEleveClasse->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveClasse() only accepts arguments of type JEleveClasse or PropelCollection');
+		}
 	}
 
 	/**
@@ -1125,8 +1329,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 */
 	public function filterByJEleveProfesseurPrincipal($jEleveProfesseurPrincipal, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ClassePeer::ID, $jEleveProfesseurPrincipal->getIdClasse(), $comparison);
+		if ($jEleveProfesseurPrincipal instanceof JEleveProfesseurPrincipal) {
+			return $this
+				->addUsingAlias(ClassePeer::ID, $jEleveProfesseurPrincipal->getIdClasse(), $comparison);
+		} elseif ($jEleveProfesseurPrincipal instanceof PropelCollection) {
+			return $this
+				->useJEleveProfesseurPrincipalQuery()
+					->filterByPrimaryKeys($jEleveProfesseurPrincipal->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveProfesseurPrincipal() only accepts arguments of type JEleveProfesseurPrincipal or PropelCollection');
+		}
 	}
 
 	/**
@@ -1189,8 +1402,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ClassePeer::ID, $absenceEleveSaisie->getIdClasse(), $comparison);
+		if ($absenceEleveSaisie instanceof AbsenceEleveSaisie) {
+			return $this
+				->addUsingAlias(ClassePeer::ID, $absenceEleveSaisie->getIdClasse(), $comparison);
+		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveSaisieQuery()
+					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
+		}
 	}
 
 	/**
@@ -1253,8 +1475,17 @@ abstract class BaseClasseQuery extends ModelCriteria
 	 */
 	public function filterByJCategoriesMatieresClasses($jCategoriesMatieresClasses, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ClassePeer::ID, $jCategoriesMatieresClasses->getClasseId(), $comparison);
+		if ($jCategoriesMatieresClasses instanceof JCategoriesMatieresClasses) {
+			return $this
+				->addUsingAlias(ClassePeer::ID, $jCategoriesMatieresClasses->getClasseId(), $comparison);
+		} elseif ($jCategoriesMatieresClasses instanceof PropelCollection) {
+			return $this
+				->useJCategoriesMatieresClassesQuery()
+					->filterByPrimaryKeys($jCategoriesMatieresClasses->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJCategoriesMatieresClasses() only accepts arguments of type JCategoriesMatieresClasses or PropelCollection');
+		}
 	}
 
 	/**

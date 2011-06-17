@@ -109,7 +109,7 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,19 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the a_saisie_id column
 	 * 
-	 * @param     int|array $aSaisieId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByASaisieId(1234); // WHERE a_saisie_id = 1234
+	 * $query->filterByASaisieId(array(12, 34)); // WHERE a_saisie_id IN (12, 34)
+	 * $query->filterByASaisieId(array('min' => 12)); // WHERE a_saisie_id > 12
+	 * </code>
+	 *
+	 * @see       filterByAbsenceEleveSaisie()
+	 *
+	 * @param     mixed $aSaisieId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JTraitementSaisieEleveQuery The current query, for fluid interface
@@ -173,8 +184,19 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the a_traitement_id column
 	 * 
-	 * @param     int|array $aTraitementId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByATraitementId(1234); // WHERE a_traitement_id = 1234
+	 * $query->filterByATraitementId(array(12, 34)); // WHERE a_traitement_id IN (12, 34)
+	 * $query->filterByATraitementId(array('min' => 12)); // WHERE a_traitement_id > 12
+	 * </code>
+	 *
+	 * @see       filterByAbsenceEleveTraitement()
+	 *
+	 * @param     mixed $aTraitementId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JTraitementSaisieEleveQuery The current query, for fluid interface
@@ -190,15 +212,25 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AbsenceEleveSaisie object
 	 *
-	 * @param     AbsenceEleveSaisie $absenceEleveSaisie  the related object to use as filter
+	 * @param     AbsenceEleveSaisie|PropelCollection $absenceEleveSaisie The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JTraitementSaisieEleveQuery The current query, for fluid interface
 	 */
 	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JTraitementSaisieElevePeer::A_SAISIE_ID, $absenceEleveSaisie->getId(), $comparison);
+		if ($absenceEleveSaisie instanceof AbsenceEleveSaisie) {
+			return $this
+				->addUsingAlias(JTraitementSaisieElevePeer::A_SAISIE_ID, $absenceEleveSaisie->getId(), $comparison);
+		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JTraitementSaisieElevePeer::A_SAISIE_ID, $absenceEleveSaisie->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
+		}
 	}
 
 	/**
@@ -254,15 +286,25 @@ abstract class BaseJTraitementSaisieEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AbsenceEleveTraitement object
 	 *
-	 * @param     AbsenceEleveTraitement $absenceEleveTraitement  the related object to use as filter
+	 * @param     AbsenceEleveTraitement|PropelCollection $absenceEleveTraitement The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JTraitementSaisieEleveQuery The current query, for fluid interface
 	 */
 	public function filterByAbsenceEleveTraitement($absenceEleveTraitement, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JTraitementSaisieElevePeer::A_TRAITEMENT_ID, $absenceEleveTraitement->getId(), $comparison);
+		if ($absenceEleveTraitement instanceof AbsenceEleveTraitement) {
+			return $this
+				->addUsingAlias(JTraitementSaisieElevePeer::A_TRAITEMENT_ID, $absenceEleveTraitement->getId(), $comparison);
+		} elseif ($absenceEleveTraitement instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JTraitementSaisieElevePeer::A_TRAITEMENT_ID, $absenceEleveTraitement->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAbsenceEleveTraitement() only accepts arguments of type AbsenceEleveTraitement or PropelCollection');
+		}
 	}
 
 	/**

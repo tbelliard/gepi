@@ -31,6 +31,9 @@ abstract class BaseAbsenceEleveTypePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 10;
+
 	/** the column name for the ID field */
 	const ID = 'a_types.ID';
 
@@ -61,6 +64,9 @@ abstract class BaseAbsenceEleveTypePeer {
 	/** the column name for the SORTABLE_RANK field */
 	const SORTABLE_RANK = 'a_types.SORTABLE_RANK';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveType objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -83,7 +89,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'JustificationExigible', 'SousResponsabiliteEtablissement', 'ManquementObligationPresence', 'RetardBulletin', 'TypeSaisie', 'Commentaire', 'IdLieu', 'SortableRank', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'justificationExigible', 'sousResponsabiliteEtablissement', 'manquementObligationPresence', 'retardBulletin', 'typeSaisie', 'commentaire', 'idLieu', 'sortableRank', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::JUSTIFICATION_EXIGIBLE, self::SOUS_RESPONSABILITE_ETABLISSEMENT, self::MANQUEMENT_OBLIGATION_PRESENCE, self::RETARD_BULLETIN, self::TYPE_SAISIE, self::COMMENTAIRE, self::ID_LIEU, self::SORTABLE_RANK, ),
@@ -98,7 +104,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'JustificationExigible' => 2, 'SousResponsabiliteEtablissement' => 3, 'ManquementObligationPresence' => 4, 'RetardBulletin' => 5, 'TypeSaisie' => 6, 'Commentaire' => 7, 'IdLieu' => 8, 'SortableRank' => 9, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'justificationExigible' => 2, 'sousResponsabiliteEtablissement' => 3, 'manquementObligationPresence' => 4, 'retardBulletin' => 5, 'typeSaisie' => 6, 'commentaire' => 7, 'idLieu' => 8, 'sortableRank' => 9, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::JUSTIFICATION_EXIGIBLE => 2, self::SOUS_RESPONSABILITE_ETABLISSEMENT => 3, self::MANQUEMENT_OBLIGATION_PRESENCE => 4, self::RETARD_BULLETIN => 5, self::TYPE_SAISIE => 6, self::COMMENTAIRE => 7, self::ID_LIEU => 8, self::SORTABLE_RANK => 9, ),
@@ -317,7 +323,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	 * @param      AbsenceEleveType $value A AbsenceEleveType object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(AbsenceEleveType $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -478,7 +484,7 @@ abstract class BaseAbsenceEleveTypePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + AbsenceEleveTypePeer::NUM_COLUMNS;
+			$col = $startcol + AbsenceEleveTypePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = AbsenceEleveTypePeer::OM_CLASS;
 			$obj = new $cls();
@@ -557,7 +563,7 @@ abstract class BaseAbsenceEleveTypePeer {
 		}
 
 		AbsenceEleveTypePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveTypePeer::NUM_HYDRATE_COLUMNS;
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveTypePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
@@ -673,10 +679,10 @@ abstract class BaseAbsenceEleveTypePeer {
 		}
 
 		AbsenceEleveTypePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveTypePeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AbsenceEleveLieuPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveTypePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
@@ -1018,7 +1024,7 @@ abstract class BaseAbsenceEleveTypePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(AbsenceEleveType $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

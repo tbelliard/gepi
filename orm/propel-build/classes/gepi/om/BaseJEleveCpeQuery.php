@@ -109,7 +109,7 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,14 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the e_login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByELogin('fooValue');   // WHERE e_login = 'fooValue'
+	 * $query->filterByELogin('%fooValue%'); // WHERE e_login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $eLogin The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveCpeQuery The current query, for fluid interface
@@ -178,8 +184,14 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the cpe_login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCpeLogin('fooValue');   // WHERE cpe_login = 'fooValue'
+	 * $query->filterByCpeLogin('%fooValue%'); // WHERE cpe_login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $cpeLogin The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveCpeQuery The current query, for fluid interface
@@ -200,15 +212,25 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Eleve object
 	 *
-	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     Eleve|PropelCollection $eleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveCpeQuery The current query, for fluid interface
 	 */
 	public function filterByEleve($eleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveCpePeer::E_LOGIN, $eleve->getLogin(), $comparison);
+		if ($eleve instanceof Eleve) {
+			return $this
+				->addUsingAlias(JEleveCpePeer::E_LOGIN, $eleve->getLogin(), $comparison);
+		} elseif ($eleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveCpePeer::E_LOGIN, $eleve->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
+		}
 	}
 
 	/**
@@ -264,15 +286,25 @@ abstract class BaseJEleveCpeQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveCpeQuery The current query, for fluid interface
 	 */
 	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveCpePeer::CPE_LOGIN, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(JEleveCpePeer::CPE_LOGIN, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveCpePeer::CPE_LOGIN, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByUtilisateurProfessionnel() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**

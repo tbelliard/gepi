@@ -31,6 +31,9 @@ abstract class BaseJGroupesClassesPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 7;
+
 	/** the column name for the ID_GROUPE field */
 	const ID_GROUPE = 'j_groupes_classes.ID_GROUPE';
 
@@ -52,6 +55,9 @@ abstract class BaseJGroupesClassesPeer {
 	/** the column name for the VALEUR_ECTS field */
 	const VALEUR_ECTS = 'j_groupes_classes.VALEUR_ECTS';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of JGroupesClasses objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -67,7 +73,7 @@ abstract class BaseJGroupesClassesPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('IdGroupe', 'IdClasse', 'Priorite', 'Coef', 'CategorieId', 'SaisieEcts', 'ValeurEcts', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idGroupe', 'idClasse', 'priorite', 'coef', 'categorieId', 'saisieEcts', 'valeurEcts', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_GROUPE, self::ID_CLASSE, self::PRIORITE, self::COEF, self::CATEGORIE_ID, self::SAISIE_ECTS, self::VALEUR_ECTS, ),
@@ -82,7 +88,7 @@ abstract class BaseJGroupesClassesPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('IdGroupe' => 0, 'IdClasse' => 1, 'Priorite' => 2, 'Coef' => 3, 'CategorieId' => 4, 'SaisieEcts' => 5, 'ValeurEcts' => 6, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idGroupe' => 0, 'idClasse' => 1, 'priorite' => 2, 'coef' => 3, 'categorieId' => 4, 'saisieEcts' => 5, 'valeurEcts' => 6, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_GROUPE => 0, self::ID_CLASSE => 1, self::PRIORITE => 2, self::COEF => 3, self::CATEGORIE_ID => 4, self::SAISIE_ECTS => 5, self::VALEUR_ECTS => 6, ),
@@ -295,7 +301,7 @@ abstract class BaseJGroupesClassesPeer {
 	 * @param      JGroupesClasses $value A JGroupesClasses object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(JGroupesClasses $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -450,7 +456,7 @@ abstract class BaseJGroupesClassesPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + JGroupesClassesPeer::NUM_COLUMNS;
+			$col = $startcol + JGroupesClassesPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = JGroupesClassesPeer::OM_CLASS;
 			$obj = new $cls();
@@ -629,7 +635,7 @@ abstract class BaseJGroupesClassesPeer {
 		}
 
 		JGroupesClassesPeer::addSelectColumns($criteria);
-		$startcol = (JGroupesClassesPeer::NUM_COLUMNS - JGroupesClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JGroupesClassesPeer::NUM_HYDRATE_COLUMNS;
 		GroupePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JGroupesClassesPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
@@ -695,7 +701,7 @@ abstract class BaseJGroupesClassesPeer {
 		}
 
 		JGroupesClassesPeer::addSelectColumns($criteria);
-		$startcol = (JGroupesClassesPeer::NUM_COLUMNS - JGroupesClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JGroupesClassesPeer::NUM_HYDRATE_COLUMNS;
 		ClassePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JGroupesClassesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
@@ -761,7 +767,7 @@ abstract class BaseJGroupesClassesPeer {
 		}
 
 		JGroupesClassesPeer::addSelectColumns($criteria);
-		$startcol = (JGroupesClassesPeer::NUM_COLUMNS - JGroupesClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JGroupesClassesPeer::NUM_HYDRATE_COLUMNS;
 		CategorieMatierePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JGroupesClassesPeer::CATEGORIE_ID, CategorieMatierePeer::ID, $join_behavior);
@@ -881,16 +887,16 @@ abstract class BaseJGroupesClassesPeer {
 		}
 
 		JGroupesClassesPeer::addSelectColumns($criteria);
-		$startcol2 = (JGroupesClassesPeer::NUM_COLUMNS - JGroupesClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JGroupesClassesPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		CategorieMatierePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (CategorieMatierePeer::NUM_COLUMNS - CategorieMatierePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + CategorieMatierePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JGroupesClassesPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1154,13 +1160,13 @@ abstract class BaseJGroupesClassesPeer {
 		}
 
 		JGroupesClassesPeer::addSelectColumns($criteria);
-		$startcol2 = (JGroupesClassesPeer::NUM_COLUMNS - JGroupesClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JGroupesClassesPeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		CategorieMatierePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (CategorieMatierePeer::NUM_COLUMNS - CategorieMatierePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + CategorieMatierePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JGroupesClassesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
@@ -1251,13 +1257,13 @@ abstract class BaseJGroupesClassesPeer {
 		}
 
 		JGroupesClassesPeer::addSelectColumns($criteria);
-		$startcol2 = (JGroupesClassesPeer::NUM_COLUMNS - JGroupesClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JGroupesClassesPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		CategorieMatierePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (CategorieMatierePeer::NUM_COLUMNS - CategorieMatierePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + CategorieMatierePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JGroupesClassesPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1348,13 +1354,13 @@ abstract class BaseJGroupesClassesPeer {
 		}
 
 		JGroupesClassesPeer::addSelectColumns($criteria);
-		$startcol2 = (JGroupesClassesPeer::NUM_COLUMNS - JGroupesClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JGroupesClassesPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JGroupesClassesPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1655,7 +1661,7 @@ abstract class BaseJGroupesClassesPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(JGroupesClasses $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

@@ -109,7 +109,7 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,14 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_aid column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdAid('fooValue');   // WHERE id_aid = 'fooValue'
+	 * $query->filterByIdAid('%fooValue%'); // WHERE id_aid LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idAid The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JAidElevesQuery The current query, for fluid interface
@@ -178,8 +184,14 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	/**
 	 * Filter the query on the login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
+	 * $query->filterByLogin('%fooValue%'); // WHERE login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $login The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JAidElevesQuery The current query, for fluid interface
@@ -200,15 +212,25 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AidDetails object
 	 *
-	 * @param     AidDetails $aidDetails  the related object to use as filter
+	 * @param     AidDetails|PropelCollection $aidDetails The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JAidElevesQuery The current query, for fluid interface
 	 */
 	public function filterByAidDetails($aidDetails, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JAidElevesPeer::ID_AID, $aidDetails->getId(), $comparison);
+		if ($aidDetails instanceof AidDetails) {
+			return $this
+				->addUsingAlias(JAidElevesPeer::ID_AID, $aidDetails->getId(), $comparison);
+		} elseif ($aidDetails instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JAidElevesPeer::ID_AID, $aidDetails->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAidDetails() only accepts arguments of type AidDetails or PropelCollection');
+		}
 	}
 
 	/**
@@ -264,15 +286,25 @@ abstract class BaseJAidElevesQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Eleve object
 	 *
-	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     Eleve|PropelCollection $eleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JAidElevesQuery The current query, for fluid interface
 	 */
 	public function filterByEleve($eleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JAidElevesPeer::LOGIN, $eleve->getLogin(), $comparison);
+		if ($eleve instanceof Eleve) {
+			return $this
+				->addUsingAlias(JAidElevesPeer::LOGIN, $eleve->getLogin(), $comparison);
+		} elseif ($eleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JAidElevesPeer::LOGIN, $eleve->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
+		}
 	}
 
 	/**

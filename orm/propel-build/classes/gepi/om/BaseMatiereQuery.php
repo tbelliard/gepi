@@ -130,7 +130,7 @@ abstract class BaseMatiereQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -164,8 +164,14 @@ abstract class BaseMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query on the matiere column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByMatiere('fooValue');   // WHERE matiere = 'fooValue'
+	 * $query->filterByMatiere('%fooValue%'); // WHERE matiere LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $matiere The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    MatiereQuery The current query, for fluid interface
@@ -186,8 +192,14 @@ abstract class BaseMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom_complet column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNomComplet('fooValue');   // WHERE nom_complet = 'fooValue'
+	 * $query->filterByNomComplet('%fooValue%'); // WHERE nom_complet LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nomComplet The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    MatiereQuery The current query, for fluid interface
@@ -208,8 +220,17 @@ abstract class BaseMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query on the priority column
 	 * 
-	 * @param     int|array $priority The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPriority(1234); // WHERE priority = 1234
+	 * $query->filterByPriority(array(12, 34)); // WHERE priority IN (12, 34)
+	 * $query->filterByPriority(array('min' => 12)); // WHERE priority > 12
+	 * </code>
+	 *
+	 * @param     mixed $priority The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    MatiereQuery The current query, for fluid interface
@@ -239,8 +260,14 @@ abstract class BaseMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query on the matiere_aid column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByMatiereAid('fooValue');   // WHERE matiere_aid = 'fooValue'
+	 * $query->filterByMatiereAid('%fooValue%'); // WHERE matiere_aid LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $matiereAid The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    MatiereQuery The current query, for fluid interface
@@ -261,8 +288,14 @@ abstract class BaseMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query on the matiere_atelier column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByMatiereAtelier('fooValue');   // WHERE matiere_atelier = 'fooValue'
+	 * $query->filterByMatiereAtelier('%fooValue%'); // WHERE matiere_atelier LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $matiereAtelier The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    MatiereQuery The current query, for fluid interface
@@ -283,8 +316,19 @@ abstract class BaseMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query on the categorie_id column
 	 * 
-	 * @param     int|array $categorieId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCategorieId(1234); // WHERE categorie_id = 1234
+	 * $query->filterByCategorieId(array(12, 34)); // WHERE categorie_id IN (12, 34)
+	 * $query->filterByCategorieId(array('min' => 12)); // WHERE categorie_id > 12
+	 * </code>
+	 *
+	 * @see       filterByCategorieMatiere()
+	 *
+	 * @param     mixed $categorieId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    MatiereQuery The current query, for fluid interface
@@ -314,15 +358,25 @@ abstract class BaseMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related CategorieMatiere object
 	 *
-	 * @param     CategorieMatiere $categorieMatiere  the related object to use as filter
+	 * @param     CategorieMatiere|PropelCollection $categorieMatiere The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    MatiereQuery The current query, for fluid interface
 	 */
 	public function filterByCategorieMatiere($categorieMatiere, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(MatierePeer::CATEGORIE_ID, $categorieMatiere->getId(), $comparison);
+		if ($categorieMatiere instanceof CategorieMatiere) {
+			return $this
+				->addUsingAlias(MatierePeer::CATEGORIE_ID, $categorieMatiere->getId(), $comparison);
+		} elseif ($categorieMatiere instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(MatierePeer::CATEGORIE_ID, $categorieMatiere->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByCategorieMatiere() only accepts arguments of type CategorieMatiere or PropelCollection');
+		}
 	}
 
 	/**
@@ -385,8 +439,17 @@ abstract class BaseMatiereQuery extends ModelCriteria
 	 */
 	public function filterByJGroupesMatieres($jGroupesMatieres, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(MatierePeer::MATIERE, $jGroupesMatieres->getIdMatiere(), $comparison);
+		if ($jGroupesMatieres instanceof JGroupesMatieres) {
+			return $this
+				->addUsingAlias(MatierePeer::MATIERE, $jGroupesMatieres->getIdMatiere(), $comparison);
+		} elseif ($jGroupesMatieres instanceof PropelCollection) {
+			return $this
+				->useJGroupesMatieresQuery()
+					->filterByPrimaryKeys($jGroupesMatieres->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJGroupesMatieres() only accepts arguments of type JGroupesMatieres or PropelCollection');
+		}
 	}
 
 	/**
@@ -449,8 +512,17 @@ abstract class BaseMatiereQuery extends ModelCriteria
 	 */
 	public function filterByJProfesseursMatieres($jProfesseursMatieres, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(MatierePeer::MATIERE, $jProfesseursMatieres->getIdMatiere(), $comparison);
+		if ($jProfesseursMatieres instanceof JProfesseursMatieres) {
+			return $this
+				->addUsingAlias(MatierePeer::MATIERE, $jProfesseursMatieres->getIdMatiere(), $comparison);
+		} elseif ($jProfesseursMatieres instanceof PropelCollection) {
+			return $this
+				->useJProfesseursMatieresQuery()
+					->filterByPrimaryKeys($jProfesseursMatieres->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJProfesseursMatieres() only accepts arguments of type JProfesseursMatieres or PropelCollection');
+		}
 	}
 
 	/**

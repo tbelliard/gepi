@@ -31,12 +31,18 @@ abstract class BaseJEleveAncienEtablissementPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 2;
+
 	/** the column name for the ID_ELEVE field */
 	const ID_ELEVE = 'j_eleves_etablissements.ID_ELEVE';
 
 	/** the column name for the ID_ETABLISSEMENT field */
 	const ID_ETABLISSEMENT = 'j_eleves_etablissements.ID_ETABLISSEMENT';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of JEleveAncienEtablissement objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -52,7 +58,7 @@ abstract class BaseJEleveAncienEtablissementPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('IdEleve', 'IdEtablissement', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idEleve', 'idEtablissement', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_ELEVE, self::ID_ETABLISSEMENT, ),
@@ -67,7 +73,7 @@ abstract class BaseJEleveAncienEtablissementPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('IdEleve' => 0, 'IdEtablissement' => 1, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idEleve' => 0, 'idEtablissement' => 1, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_ELEVE => 0, self::ID_ETABLISSEMENT => 1, ),
@@ -270,7 +276,7 @@ abstract class BaseJEleveAncienEtablissementPeer {
 	 * @param      JEleveAncienEtablissement $value A JEleveAncienEtablissement object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(JEleveAncienEtablissement $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -425,7 +431,7 @@ abstract class BaseJEleveAncienEtablissementPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + JEleveAncienEtablissementPeer::NUM_COLUMNS;
+			$col = $startcol + JEleveAncienEtablissementPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = JEleveAncienEtablissementPeer::OM_CLASS;
 			$obj = new $cls();
@@ -554,7 +560,7 @@ abstract class BaseJEleveAncienEtablissementPeer {
 		}
 
 		JEleveAncienEtablissementPeer::addSelectColumns($criteria);
-		$startcol = (JEleveAncienEtablissementPeer::NUM_COLUMNS - JEleveAncienEtablissementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JEleveAncienEtablissementPeer::NUM_HYDRATE_COLUMNS;
 		ElevePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JEleveAncienEtablissementPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
@@ -620,7 +626,7 @@ abstract class BaseJEleveAncienEtablissementPeer {
 		}
 
 		JEleveAncienEtablissementPeer::addSelectColumns($criteria);
-		$startcol = (JEleveAncienEtablissementPeer::NUM_COLUMNS - JEleveAncienEtablissementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JEleveAncienEtablissementPeer::NUM_HYDRATE_COLUMNS;
 		AncienEtablissementPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, AncienEtablissementPeer::ID, $join_behavior);
@@ -738,13 +744,13 @@ abstract class BaseJEleveAncienEtablissementPeer {
 		}
 
 		JEleveAncienEtablissementPeer::addSelectColumns($criteria);
-		$startcol2 = (JEleveAncienEtablissementPeer::NUM_COLUMNS - JEleveAncienEtablissementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JEleveAncienEtablissementPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		AncienEtablissementPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AncienEtablissementPeer::NUM_COLUMNS - AncienEtablissementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AncienEtablissementPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JEleveAncienEtablissementPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
 
@@ -932,10 +938,10 @@ abstract class BaseJEleveAncienEtablissementPeer {
 		}
 
 		JEleveAncienEtablissementPeer::addSelectColumns($criteria);
-		$startcol2 = (JEleveAncienEtablissementPeer::NUM_COLUMNS - JEleveAncienEtablissementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JEleveAncienEtablissementPeer::NUM_HYDRATE_COLUMNS;
 
 		AncienEtablissementPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AncienEtablissementPeer::NUM_COLUMNS - AncienEtablissementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AncienEtablissementPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, AncienEtablissementPeer::ID, $join_behavior);
 
@@ -1005,10 +1011,10 @@ abstract class BaseJEleveAncienEtablissementPeer {
 		}
 
 		JEleveAncienEtablissementPeer::addSelectColumns($criteria);
-		$startcol2 = (JEleveAncienEtablissementPeer::NUM_COLUMNS - JEleveAncienEtablissementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JEleveAncienEtablissementPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JEleveAncienEtablissementPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
 
@@ -1288,7 +1294,7 @@ abstract class BaseJEleveAncienEtablissementPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(JEleveAncienEtablissement $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

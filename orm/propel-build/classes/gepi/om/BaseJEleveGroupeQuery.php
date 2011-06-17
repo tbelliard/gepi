@@ -113,7 +113,7 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -163,8 +163,14 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
+	 * $query->filterByLogin('%fooValue%'); // WHERE login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $login The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
@@ -185,8 +191,19 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_groupe column
 	 * 
-	 * @param     int|array $idGroupe The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdGroupe(1234); // WHERE id_groupe = 1234
+	 * $query->filterByIdGroupe(array(12, 34)); // WHERE id_groupe IN (12, 34)
+	 * $query->filterByIdGroupe(array('min' => 12)); // WHERE id_groupe > 12
+	 * </code>
+	 *
+	 * @see       filterByGroupe()
+	 *
+	 * @param     mixed $idGroupe The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
@@ -202,8 +219,17 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the periode column
 	 * 
-	 * @param     int|array $periode The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPeriode(1234); // WHERE periode = 1234
+	 * $query->filterByPeriode(array(12, 34)); // WHERE periode IN (12, 34)
+	 * $query->filterByPeriode(array('min' => 12)); // WHERE periode > 12
+	 * </code>
+	 *
+	 * @param     mixed $periode The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
@@ -219,15 +245,25 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Eleve object
 	 *
-	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     Eleve|PropelCollection $eleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
 	 */
 	public function filterByEleve($eleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveGroupePeer::LOGIN, $eleve->getLogin(), $comparison);
+		if ($eleve instanceof Eleve) {
+			return $this
+				->addUsingAlias(JEleveGroupePeer::LOGIN, $eleve->getLogin(), $comparison);
+		} elseif ($eleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveGroupePeer::LOGIN, $eleve->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
+		}
 	}
 
 	/**
@@ -283,15 +319,25 @@ abstract class BaseJEleveGroupeQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Groupe object
 	 *
-	 * @param     Groupe $groupe  the related object to use as filter
+	 * @param     Groupe|PropelCollection $groupe The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveGroupeQuery The current query, for fluid interface
 	 */
 	public function filterByGroupe($groupe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveGroupePeer::ID_GROUPE, $groupe->getId(), $comparison);
+		if ($groupe instanceof Groupe) {
+			return $this
+				->addUsingAlias(JEleveGroupePeer::ID_GROUPE, $groupe->getId(), $comparison);
+		} elseif ($groupe instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveGroupePeer::ID_GROUPE, $groupe->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByGroupe() only accepts arguments of type Groupe or PropelCollection');
+		}
 	}
 
 	/**

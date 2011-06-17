@@ -31,6 +31,9 @@ abstract class BaseAidConfigurationPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 15;
+
 	/** the column name for the NOM field */
 	const NOM = 'aid_config.NOM';
 
@@ -76,6 +79,9 @@ abstract class BaseAidConfigurationPeer {
 	/** the column name for the FEUILLE_PRESENCE field */
 	const FEUILLE_PRESENCE = 'aid_config.FEUILLE_PRESENCE';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of AidConfiguration objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -91,7 +97,7 @@ abstract class BaseAidConfigurationPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Nom', 'NomComplet', 'NoteMax', 'OrderDisplay1', 'OrderDisplay2', 'TypeNote', 'DisplayBegin', 'DisplayEnd', 'Message', 'DisplayNom', 'IndiceAid', 'DisplayBulletin', 'BullSimplifie', 'OutilsComplementaires', 'FeuillePresence', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('nom', 'nomComplet', 'noteMax', 'orderDisplay1', 'orderDisplay2', 'typeNote', 'displayBegin', 'displayEnd', 'message', 'displayNom', 'indiceAid', 'displayBulletin', 'bullSimplifie', 'outilsComplementaires', 'feuillePresence', ),
 		BasePeer::TYPE_COLNAME => array (self::NOM, self::NOM_COMPLET, self::NOTE_MAX, self::ORDER_DISPLAY1, self::ORDER_DISPLAY2, self::TYPE_NOTE, self::DISPLAY_BEGIN, self::DISPLAY_END, self::MESSAGE, self::DISPLAY_NOM, self::INDICE_AID, self::DISPLAY_BULLETIN, self::BULL_SIMPLIFIE, self::OUTILS_COMPLEMENTAIRES, self::FEUILLE_PRESENCE, ),
@@ -106,7 +112,7 @@ abstract class BaseAidConfigurationPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Nom' => 0, 'NomComplet' => 1, 'NoteMax' => 2, 'OrderDisplay1' => 3, 'OrderDisplay2' => 4, 'TypeNote' => 5, 'DisplayBegin' => 6, 'DisplayEnd' => 7, 'Message' => 8, 'DisplayNom' => 9, 'IndiceAid' => 10, 'DisplayBulletin' => 11, 'BullSimplifie' => 12, 'OutilsComplementaires' => 13, 'FeuillePresence' => 14, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('nom' => 0, 'nomComplet' => 1, 'noteMax' => 2, 'orderDisplay1' => 3, 'orderDisplay2' => 4, 'typeNote' => 5, 'displayBegin' => 6, 'displayEnd' => 7, 'message' => 8, 'displayNom' => 9, 'indiceAid' => 10, 'displayBulletin' => 11, 'bullSimplifie' => 12, 'outilsComplementaires' => 13, 'feuillePresence' => 14, ),
 		BasePeer::TYPE_COLNAME => array (self::NOM => 0, self::NOM_COMPLET => 1, self::NOTE_MAX => 2, self::ORDER_DISPLAY1 => 3, self::ORDER_DISPLAY2 => 4, self::TYPE_NOTE => 5, self::DISPLAY_BEGIN => 6, self::DISPLAY_END => 7, self::MESSAGE => 8, self::DISPLAY_NOM => 9, self::INDICE_AID => 10, self::DISPLAY_BULLETIN => 11, self::BULL_SIMPLIFIE => 12, self::OUTILS_COMPLEMENTAIRES => 13, self::FEUILLE_PRESENCE => 14, ),
@@ -335,7 +341,7 @@ abstract class BaseAidConfigurationPeer {
 	 * @param      AidConfiguration $value A AidConfiguration object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(AidConfiguration $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -493,7 +499,7 @@ abstract class BaseAidConfigurationPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + AidConfigurationPeer::NUM_COLUMNS;
+			$col = $startcol + AidConfigurationPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = AidConfigurationPeer::OM_CLASS;
 			$obj = new $cls();
@@ -759,7 +765,7 @@ abstract class BaseAidConfigurationPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(AidConfiguration $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

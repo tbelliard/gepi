@@ -31,6 +31,9 @@ abstract class BaseAbsenceEleveJustificationPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 4;
+
 	/** the column name for the ID field */
 	const ID = 'a_justifications.ID';
 
@@ -43,6 +46,9 @@ abstract class BaseAbsenceEleveJustificationPeer {
 	/** the column name for the SORTABLE_RANK field */
 	const SORTABLE_RANK = 'a_justifications.SORTABLE_RANK';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveJustification objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -65,7 +71,7 @@ abstract class BaseAbsenceEleveJustificationPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'Commentaire', 'SortableRank', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'commentaire', 'sortableRank', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::COMMENTAIRE, self::SORTABLE_RANK, ),
@@ -80,7 +86,7 @@ abstract class BaseAbsenceEleveJustificationPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'Commentaire' => 2, 'SortableRank' => 3, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'sortableRank' => 3, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::COMMENTAIRE => 2, self::SORTABLE_RANK => 3, ),
@@ -287,7 +293,7 @@ abstract class BaseAbsenceEleveJustificationPeer {
 	 * @param      AbsenceEleveJustification $value A AbsenceEleveJustification object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(AbsenceEleveJustification $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -445,7 +451,7 @@ abstract class BaseAbsenceEleveJustificationPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + AbsenceEleveJustificationPeer::NUM_COLUMNS;
+			$col = $startcol + AbsenceEleveJustificationPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = AbsenceEleveJustificationPeer::OM_CLASS;
 			$obj = new $cls();
@@ -714,7 +720,7 @@ abstract class BaseAbsenceEleveJustificationPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(AbsenceEleveJustification $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

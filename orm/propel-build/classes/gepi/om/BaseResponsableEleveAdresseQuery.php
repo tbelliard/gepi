@@ -134,7 +134,7 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -168,8 +168,14 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the adr_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAdrId('fooValue');   // WHERE adr_id = 'fooValue'
+	 * $query->filterByAdrId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $adrId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
@@ -190,8 +196,14 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the adr1 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAdr1('fooValue');   // WHERE adr1 = 'fooValue'
+	 * $query->filterByAdr1('%fooValue%'); // WHERE adr1 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $adr1 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
@@ -212,8 +224,14 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the adr2 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAdr2('fooValue');   // WHERE adr2 = 'fooValue'
+	 * $query->filterByAdr2('%fooValue%'); // WHERE adr2 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $adr2 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
@@ -234,8 +252,14 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the adr3 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAdr3('fooValue');   // WHERE adr3 = 'fooValue'
+	 * $query->filterByAdr3('%fooValue%'); // WHERE adr3 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $adr3 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
@@ -256,8 +280,14 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the adr4 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAdr4('fooValue');   // WHERE adr4 = 'fooValue'
+	 * $query->filterByAdr4('%fooValue%'); // WHERE adr4 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $adr4 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
@@ -278,8 +308,14 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the cp column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCp('fooValue');   // WHERE cp = 'fooValue'
+	 * $query->filterByCp('%fooValue%'); // WHERE cp LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $cp The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
@@ -300,8 +336,14 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the pays column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPays('fooValue');   // WHERE pays = 'fooValue'
+	 * $query->filterByPays('%fooValue%'); // WHERE pays LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $pays The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
@@ -322,8 +364,14 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the commune column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCommune('fooValue');   // WHERE commune = 'fooValue'
+	 * $query->filterByCommune('%fooValue%'); // WHERE commune LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $commune The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveAdresseQuery The current query, for fluid interface
@@ -351,8 +399,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 */
 	public function filterByResponsableEleve($responsableEleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleve->getAdrId(), $comparison);
+		if ($responsableEleve instanceof ResponsableEleve) {
+			return $this
+				->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $responsableEleve->getAdrId(), $comparison);
+		} elseif ($responsableEleve instanceof PropelCollection) {
+			return $this
+				->useResponsableEleveQuery()
+					->filterByPrimaryKeys($responsableEleve->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByResponsableEleve() only accepts arguments of type ResponsableEleve or PropelCollection');
+		}
 	}
 
 	/**
@@ -415,8 +472,17 @@ abstract class BaseResponsableEleveAdresseQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveNotification($absenceEleveNotification, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $absenceEleveNotification->getAdrId(), $comparison);
+		if ($absenceEleveNotification instanceof AbsenceEleveNotification) {
+			return $this
+				->addUsingAlias(ResponsableEleveAdressePeer::ADR_ID, $absenceEleveNotification->getAdrId(), $comparison);
+		} elseif ($absenceEleveNotification instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveNotificationQuery()
+					->filterByPrimaryKeys($absenceEleveNotification->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveNotification() only accepts arguments of type AbsenceEleveNotification or PropelCollection');
+		}
 	}
 
 	/**

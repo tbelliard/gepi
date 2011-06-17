@@ -572,45 +572,18 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	/**
 	 * Sets the value of [date_envoi] column to a normalized version of the date/time value specified.
 	 * Date envoi
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     AbsenceEleveNotification The current object (for fluent API support)
 	 */
 	public function setDateEnvoi($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->date_envoi !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->date_envoi !== null && $tmpDt = new DateTime($this->date_envoi)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->date_envoi = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->date_envoi !== null || $dt !== null) {
+			$currentDateAsString = ($this->date_envoi !== null && $tmpDt = new DateTime($this->date_envoi)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->date_envoi = $newDateAsString;
 				$this->modifiedColumns[] = AbsenceEleveNotificationPeer::DATE_ENVOI;
 			}
 		} // if either are not null
@@ -641,45 +614,18 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     AbsenceEleveNotification The current object (for fluent API support)
 	 */
 	public function setCreatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->created_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->created_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->created_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->created_at = $newDateAsString;
 				$this->modifiedColumns[] = AbsenceEleveNotificationPeer::CREATED_AT;
 			}
 		} // if either are not null
@@ -690,45 +636,18 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	/**
 	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     AbsenceEleveNotification The current object (for fluent API support)
 	 */
 	public function setUpdatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->updated_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->updated_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->updated_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->updated_at = $newDateAsString;
 				$this->modifiedColumns[] = AbsenceEleveNotificationPeer::UPDATED_AT;
 			}
 		} // if either are not null
@@ -793,7 +712,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 13; // 13 = AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 13; // 13 = AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveNotification object", $e);
@@ -1239,12 +1158,17 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['AbsenceEleveNotification'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['AbsenceEleveNotification'][$this->getPrimaryKey()] = true;
 		$keys = AbsenceEleveNotificationPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -1263,13 +1187,16 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
-				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aAbsenceEleveTraitement) {
-				$result['AbsenceEleveTraitement'] = $this->aAbsenceEleveTraitement->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['AbsenceEleveTraitement'] = $this->aAbsenceEleveTraitement->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aResponsableEleveAdresse) {
-				$result['ResponsableEleveAdresse'] = $this->aResponsableEleveAdresse->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['ResponsableEleveAdresse'] = $this->aResponsableEleveAdresse->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collJNotificationResponsableEleves) {
+				$result['JNotificationResponsableEleves'] = $this->collJNotificationResponsableEleves->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1459,22 +1386,23 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	 *
 	 * @param      object $copyObj An object of AbsenceEleveNotification (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setUtilisateurId($this->utilisateur_id);
-		$copyObj->setATraitementId($this->a_traitement_id);
-		$copyObj->setTypeNotification($this->type_notification);
-		$copyObj->setEmail($this->email);
-		$copyObj->setTelephone($this->telephone);
-		$copyObj->setAdrId($this->adr_id);
-		$copyObj->setCommentaire($this->commentaire);
-		$copyObj->setStatutEnvoi($this->statut_envoi);
-		$copyObj->setDateEnvoi($this->date_envoi);
-		$copyObj->setErreurMessageEnvoi($this->erreur_message_envoi);
-		$copyObj->setCreatedAt($this->created_at);
-		$copyObj->setUpdatedAt($this->updated_at);
+		$copyObj->setUtilisateurId($this->getUtilisateurId());
+		$copyObj->setATraitementId($this->getATraitementId());
+		$copyObj->setTypeNotification($this->getTypeNotification());
+		$copyObj->setEmail($this->getEmail());
+		$copyObj->setTelephone($this->getTelephone());
+		$copyObj->setAdrId($this->getAdrId());
+		$copyObj->setCommentaire($this->getCommentaire());
+		$copyObj->setStatutEnvoi($this->getStatutEnvoi());
+		$copyObj->setDateEnvoi($this->getDateEnvoi());
+		$copyObj->setErreurMessageEnvoi($this->getErreurMessageEnvoi());
+		$copyObj->setCreatedAt($this->getCreatedAt());
+		$copyObj->setUpdatedAt($this->getUpdatedAt());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1489,9 +1417,10 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -1571,11 +1500,11 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($this->aUtilisateurProfessionnel === null && (($this->utilisateur_id !== "" && $this->utilisateur_id !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->utilisateur_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUtilisateurProfessionnel->addAbsenceEleveNotifications($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUtilisateurProfessionnel->addAbsenceEleveNotifications($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -1620,11 +1549,11 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($this->aAbsenceEleveTraitement === null && ($this->a_traitement_id !== null)) {
 			$this->aAbsenceEleveTraitement = AbsenceEleveTraitementQuery::create()->findPk($this->a_traitement_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aAbsenceEleveTraitement->addAbsenceEleveNotifications($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aAbsenceEleveTraitement->addAbsenceEleveNotifications($this);
 			 */
 		}
 		return $this->aAbsenceEleveTraitement;
@@ -1669,11 +1598,11 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 		if ($this->aResponsableEleveAdresse === null && (($this->adr_id !== "" && $this->adr_id !== null))) {
 			$this->aResponsableEleveAdresse = ResponsableEleveAdresseQuery::create()->findPk($this->adr_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aResponsableEleveAdresse->addAbsenceEleveNotifications($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aResponsableEleveAdresse->addAbsenceEleveNotifications($this);
 			 */
 		}
 		return $this->aResponsableEleveAdresse;
@@ -1700,10 +1629,16 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJNotificationResponsableEleves()
+	public function initJNotificationResponsableEleves($overrideExisting = true)
 	{
+		if (null !== $this->collJNotificationResponsableEleves && !$overrideExisting) {
+			return;
+		}
 		$this->collJNotificationResponsableEleves = new PropelObjectCollection();
 		$this->collJNotificationResponsableEleves->setModel('JNotificationResponsableEleve');
 	}
@@ -1954,28 +1889,50 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collJNotificationResponsableEleves) {
-				foreach ((array) $this->collJNotificationResponsableEleves as $o) {
+				foreach ($this->collJNotificationResponsableEleves as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collResponsableEleves) {
+				foreach ($this->collResponsableEleves as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collJNotificationResponsableEleves instanceof PropelCollection) {
+			$this->collJNotificationResponsableEleves->clearIterator();
+		}
 		$this->collJNotificationResponsableEleves = null;
+		if ($this->collResponsableEleves instanceof PropelCollection) {
+			$this->collResponsableEleves->clearIterator();
+		}
+		$this->collResponsableEleves = null;
 		$this->aUtilisateurProfessionnel = null;
 		$this->aAbsenceEleveTraitement = null;
 		$this->aResponsableEleveAdresse = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(AbsenceEleveNotificationPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	// timestampable behavior

@@ -1079,7 +1079,7 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 24; // 24 = AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 24; // 24 = AidDetailsPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AidDetails object", $e);
@@ -1568,12 +1568,17 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['AidDetails'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['AidDetails'][$this->getPrimaryKey()] = true;
 		$keys = AidDetailsPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -1603,7 +1608,19 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aAidConfiguration) {
-				$result['AidConfiguration'] = $this->aAidConfiguration->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['AidConfiguration'] = $this->aAidConfiguration->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collJAidUtilisateursProfessionnelss) {
+				$result['JAidUtilisateursProfessionnelss'] = $this->collJAidUtilisateursProfessionnelss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJAidElevess) {
+				$result['JAidElevess'] = $this->collJAidElevess->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collAbsenceEleveSaisies) {
+				$result['AbsenceEleveSaisies'] = $this->collAbsenceEleveSaisies->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collEdtEmplacementCourss) {
+				$result['EdtEmplacementCourss'] = $this->collEdtEmplacementCourss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1848,33 +1865,34 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of AidDetails (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setNom($this->nom);
-		$copyObj->setNumero($this->numero);
-		$copyObj->setIndiceAid($this->indice_aid);
-		$copyObj->setPerso1($this->perso1);
-		$copyObj->setPerso2($this->perso2);
-		$copyObj->setPerso3($this->perso3);
-		$copyObj->setProductions($this->productions);
-		$copyObj->setResume($this->resume);
-		$copyObj->setFamille($this->famille);
-		$copyObj->setMotsCles($this->mots_cles);
-		$copyObj->setAdresse1($this->adresse1);
-		$copyObj->setAdresse2($this->adresse2);
-		$copyObj->setPublicDestinataire($this->public_destinataire);
-		$copyObj->setContacts($this->contacts);
-		$copyObj->setDivers($this->divers);
-		$copyObj->setMatiere1($this->matiere1);
-		$copyObj->setMatiere2($this->matiere2);
-		$copyObj->setElevePeutModifier($this->eleve_peut_modifier);
-		$copyObj->setProfPeutModifier($this->prof_peut_modifier);
-		$copyObj->setCpePeutModifier($this->cpe_peut_modifier);
-		$copyObj->setFichePublique($this->fiche_publique);
-		$copyObj->setAfficheAdresse1($this->affiche_adresse1);
-		$copyObj->setEnConstruction($this->en_construction);
+		$copyObj->setNom($this->getNom());
+		$copyObj->setNumero($this->getNumero());
+		$copyObj->setIndiceAid($this->getIndiceAid());
+		$copyObj->setPerso1($this->getPerso1());
+		$copyObj->setPerso2($this->getPerso2());
+		$copyObj->setPerso3($this->getPerso3());
+		$copyObj->setProductions($this->getProductions());
+		$copyObj->setResume($this->getResume());
+		$copyObj->setFamille($this->getFamille());
+		$copyObj->setMotsCles($this->getMotsCles());
+		$copyObj->setAdresse1($this->getAdresse1());
+		$copyObj->setAdresse2($this->getAdresse2());
+		$copyObj->setPublicDestinataire($this->getPublicDestinataire());
+		$copyObj->setContacts($this->getContacts());
+		$copyObj->setDivers($this->getDivers());
+		$copyObj->setMatiere1($this->getMatiere1());
+		$copyObj->setMatiere2($this->getMatiere2());
+		$copyObj->setElevePeutModifier($this->getElevePeutModifier());
+		$copyObj->setProfPeutModifier($this->getProfPeutModifier());
+		$copyObj->setCpePeutModifier($this->getCpePeutModifier());
+		$copyObj->setFichePublique($this->getFichePublique());
+		$copyObj->setAfficheAdresse1($this->getAfficheAdresse1());
+		$copyObj->setEnConstruction($this->getEnConstruction());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1907,9 +1925,10 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -1989,11 +2008,11 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 		if ($this->aAidConfiguration === null && ($this->indice_aid !== null)) {
 			$this->aAidConfiguration = AidConfigurationQuery::create()->findPk($this->indice_aid, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aAidConfiguration->addAidDetailss($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aAidConfiguration->addAidDetailss($this);
 			 */
 		}
 		return $this->aAidConfiguration;
@@ -2020,10 +2039,16 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJAidUtilisateursProfessionnelss()
+	public function initJAidUtilisateursProfessionnelss($overrideExisting = true)
 	{
+		if (null !== $this->collJAidUtilisateursProfessionnelss && !$overrideExisting) {
+			return;
+		}
 		$this->collJAidUtilisateursProfessionnelss = new PropelObjectCollection();
 		$this->collJAidUtilisateursProfessionnelss->setModel('JAidUtilisateursProfessionnels');
 	}
@@ -2154,10 +2179,16 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJAidElevess()
+	public function initJAidElevess($overrideExisting = true)
 	{
+		if (null !== $this->collJAidElevess && !$overrideExisting) {
+			return;
+		}
 		$this->collJAidElevess = new PropelObjectCollection();
 		$this->collJAidElevess->setModel('JAidEleves');
 	}
@@ -2288,10 +2319,16 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initAbsenceEleveSaisies()
+	public function initAbsenceEleveSaisies($overrideExisting = true)
 	{
+		if (null !== $this->collAbsenceEleveSaisies && !$overrideExisting) {
+			return;
+		}
 		$this->collAbsenceEleveSaisies = new PropelObjectCollection();
 		$this->collAbsenceEleveSaisies->setModel('AbsenceEleveSaisie');
 	}
@@ -2597,10 +2634,16 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initEdtEmplacementCourss()
+	public function initEdtEmplacementCourss($overrideExisting = true)
 	{
+		if (null !== $this->collEdtEmplacementCourss && !$overrideExisting) {
+			return;
+		}
 		$this->collEdtEmplacementCourss = new PropelObjectCollection();
 		$this->collEdtEmplacementCourss->setModel('EdtEmplacementCours');
 	}
@@ -3075,44 +3118,84 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collJAidUtilisateursProfessionnelss) {
-				foreach ((array) $this->collJAidUtilisateursProfessionnelss as $o) {
+				foreach ($this->collJAidUtilisateursProfessionnelss as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collJAidElevess) {
-				foreach ((array) $this->collJAidElevess as $o) {
+				foreach ($this->collJAidElevess as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collAbsenceEleveSaisies) {
-				foreach ((array) $this->collAbsenceEleveSaisies as $o) {
+				foreach ($this->collAbsenceEleveSaisies as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collEdtEmplacementCourss) {
-				foreach ((array) $this->collEdtEmplacementCourss as $o) {
+				foreach ($this->collEdtEmplacementCourss as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collUtilisateurProfessionnels) {
+				foreach ($this->collUtilisateurProfessionnels as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collEleves) {
+				foreach ($this->collEleves as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collJAidUtilisateursProfessionnelss instanceof PropelCollection) {
+			$this->collJAidUtilisateursProfessionnelss->clearIterator();
+		}
 		$this->collJAidUtilisateursProfessionnelss = null;
+		if ($this->collJAidElevess instanceof PropelCollection) {
+			$this->collJAidElevess->clearIterator();
+		}
 		$this->collJAidElevess = null;
+		if ($this->collAbsenceEleveSaisies instanceof PropelCollection) {
+			$this->collAbsenceEleveSaisies->clearIterator();
+		}
 		$this->collAbsenceEleveSaisies = null;
+		if ($this->collEdtEmplacementCourss instanceof PropelCollection) {
+			$this->collEdtEmplacementCourss->clearIterator();
+		}
 		$this->collEdtEmplacementCourss = null;
+		if ($this->collUtilisateurProfessionnels instanceof PropelCollection) {
+			$this->collUtilisateurProfessionnels->clearIterator();
+		}
+		$this->collUtilisateurProfessionnels = null;
+		if ($this->collEleves instanceof PropelCollection) {
+			$this->collEleves->clearIterator();
+		}
+		$this->collEleves = null;
 		$this->aAidConfiguration = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(AidDetailsPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

@@ -270,45 +270,18 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 	/**
 	 * Sets the value of [date_horaire_etablissement] column to a normalized version of the date/time value specified.
 	 * NULL (c'etait un 0 a l'origine...voir si pb) = horaires valables toute l'annee pour le jour specifie - date precise = horaires valables uniquement pour cette date
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     EdtHorairesEtablissement The current object (for fluent API support)
 	 */
 	public function setDateHoraireEtablissement($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->date_horaire_etablissement !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->date_horaire_etablissement !== null && $tmpDt = new DateTime($this->date_horaire_etablissement)) ? $tmpDt->format('Y-m-d') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->date_horaire_etablissement = ($dt ? $dt->format('Y-m-d') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->date_horaire_etablissement !== null || $dt !== null) {
+			$currentDateAsString = ($this->date_horaire_etablissement !== null && $tmpDt = new DateTime($this->date_horaire_etablissement)) ? $tmpDt->format('Y-m-d') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->date_horaire_etablissement = $newDateAsString;
 				$this->modifiedColumns[] = EdtHorairesEtablissementPeer::DATE_HORAIRE_ETABLISSEMENT;
 			}
 		} // if either are not null
@@ -339,45 +312,18 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 	/**
 	 * Sets the value of [ouverture_horaire_etablissement] column to a normalized version of the date/time value specified.
 	 * Heure d'ouverture de l'etablissement
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     EdtHorairesEtablissement The current object (for fluent API support)
 	 */
 	public function setOuvertureHoraireEtablissement($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->ouverture_horaire_etablissement !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->ouverture_horaire_etablissement !== null && $tmpDt = new DateTime($this->ouverture_horaire_etablissement)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->ouverture_horaire_etablissement = ($dt ? $dt->format('H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->ouverture_horaire_etablissement !== null || $dt !== null) {
+			$currentDateAsString = ($this->ouverture_horaire_etablissement !== null && $tmpDt = new DateTime($this->ouverture_horaire_etablissement)) ? $tmpDt->format('H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->ouverture_horaire_etablissement = $newDateAsString;
 				$this->modifiedColumns[] = EdtHorairesEtablissementPeer::OUVERTURE_HORAIRE_ETABLISSEMENT;
 			}
 		} // if either are not null
@@ -388,45 +334,18 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 	/**
 	 * Sets the value of [fermeture_horaire_etablissement] column to a normalized version of the date/time value specified.
 	 * Heure de fermeture de l'etablissement
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     EdtHorairesEtablissement The current object (for fluent API support)
 	 */
 	public function setFermetureHoraireEtablissement($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->fermeture_horaire_etablissement !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->fermeture_horaire_etablissement !== null && $tmpDt = new DateTime($this->fermeture_horaire_etablissement)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->fermeture_horaire_etablissement = ($dt ? $dt->format('H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->fermeture_horaire_etablissement !== null || $dt !== null) {
+			$currentDateAsString = ($this->fermeture_horaire_etablissement !== null && $tmpDt = new DateTime($this->fermeture_horaire_etablissement)) ? $tmpDt->format('H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->fermeture_horaire_etablissement = $newDateAsString;
 				$this->modifiedColumns[] = EdtHorairesEtablissementPeer::FERMETURE_HORAIRE_ETABLISSEMENT;
 			}
 		} // if either are not null
@@ -437,45 +356,18 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 	/**
 	 * Sets the value of [pause_horaire_etablissement] column to a normalized version of the date/time value specified.
 	 * champ non utilise
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     EdtHorairesEtablissement The current object (for fluent API support)
 	 */
 	public function setPauseHoraireEtablissement($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->pause_horaire_etablissement !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->pause_horaire_etablissement !== null && $tmpDt = new DateTime($this->pause_horaire_etablissement)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->pause_horaire_etablissement = ($dt ? $dt->format('H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->pause_horaire_etablissement !== null || $dt !== null) {
+			$currentDateAsString = ($this->pause_horaire_etablissement !== null && $tmpDt = new DateTime($this->pause_horaire_etablissement)) ? $tmpDt->format('H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->pause_horaire_etablissement = $newDateAsString;
 				$this->modifiedColumns[] = EdtHorairesEtablissementPeer::PAUSE_HORAIRE_ETABLISSEMENT;
 			}
 		} // if either are not null
@@ -484,15 +376,23 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 	} // setPauseHoraireEtablissement()
 
 	/**
-	 * Set the value of [ouvert_horaire_etablissement] column.
+	 * Sets the value of the [ouvert_horaire_etablissement] column. 
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * 1 = etablissement ouvert - 0 = etablissement ferme
-	 * @param      boolean $v new value
+	 * @param      boolean|integer|string $v The new value
 	 * @return     EdtHorairesEtablissement The current object (for fluent API support)
 	 */
 	public function setOuvertHoraireEtablissement($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
 		if ($this->ouvert_horaire_etablissement !== $v) {
@@ -550,7 +450,7 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 7; // 7 = EdtHorairesEtablissementPeer::NUM_COLUMNS - EdtHorairesEtablissementPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 7; // 7 = EdtHorairesEtablissementPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating EdtHorairesEtablissement object", $e);
@@ -886,11 +786,16 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array())
 	{
+		if (isset($alreadyDumpedObjects['EdtHorairesEtablissement'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['EdtHorairesEtablissement'][$this->getPrimaryKey()] = true;
 		$keys = EdtHorairesEtablissementPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getIdHoraireEtablissement(),
@@ -1058,19 +963,21 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 	 *
 	 * @param      object $copyObj An object of EdtHorairesEtablissement (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setDateHoraireEtablissement($this->date_horaire_etablissement);
-		$copyObj->setJourHoraireEtablissement($this->jour_horaire_etablissement);
-		$copyObj->setOuvertureHoraireEtablissement($this->ouverture_horaire_etablissement);
-		$copyObj->setFermetureHoraireEtablissement($this->fermeture_horaire_etablissement);
-		$copyObj->setPauseHoraireEtablissement($this->pause_horaire_etablissement);
-		$copyObj->setOuvertHoraireEtablissement($this->ouvert_horaire_etablissement);
-
-		$copyObj->setNew(true);
-		$copyObj->setIdHoraireEtablissement(NULL); // this is a auto-increment column, so set to default value
+		$copyObj->setDateHoraireEtablissement($this->getDateHoraireEtablissement());
+		$copyObj->setJourHoraireEtablissement($this->getJourHoraireEtablissement());
+		$copyObj->setOuvertureHoraireEtablissement($this->getOuvertureHoraireEtablissement());
+		$copyObj->setFermetureHoraireEtablissement($this->getFermetureHoraireEtablissement());
+		$copyObj->setPauseHoraireEtablissement($this->getPauseHoraireEtablissement());
+		$copyObj->setOuvertHoraireEtablissement($this->getOuvertHoraireEtablissement());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setIdHoraireEtablissement(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -1132,19 +1039,29 @@ abstract class BaseEdtHorairesEtablissement extends BaseObject  implements Persi
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 		} // if ($deep)
 
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(EdtHorairesEtablissementPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

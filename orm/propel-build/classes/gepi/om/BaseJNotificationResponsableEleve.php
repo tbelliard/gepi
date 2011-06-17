@@ -170,7 +170,7 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 2; // 2 = JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 2; // 2 = JNotificationResponsableElevePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating JNotificationResponsableEleve object", $e);
@@ -528,12 +528,17 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['JNotificationResponsableEleve'][serialize($this->getPrimaryKey())])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['JNotificationResponsableEleve'][serialize($this->getPrimaryKey())] = true;
 		$keys = JNotificationResponsableElevePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getANotificationId(),
@@ -541,10 +546,10 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aAbsenceEleveNotification) {
-				$result['AbsenceEleveNotification'] = $this->aAbsenceEleveNotification->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['AbsenceEleveNotification'] = $this->aAbsenceEleveNotification->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aResponsableEleve) {
-				$result['ResponsableEleve'] = $this->aResponsableEleve->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['ResponsableEleve'] = $this->aResponsableEleve->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -686,14 +691,16 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	 *
 	 * @param      object $copyObj An object of JNotificationResponsableEleve (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setANotificationId($this->a_notification_id);
-		$copyObj->setPersId($this->pers_id);
-
-		$copyObj->setNew(true);
+		$copyObj->setANotificationId($this->getANotificationId());
+		$copyObj->setPersId($this->getPersId());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -773,11 +780,11 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		if ($this->aAbsenceEleveNotification === null && ($this->a_notification_id !== null)) {
 			$this->aAbsenceEleveNotification = AbsenceEleveNotificationQuery::create()->findPk($this->a_notification_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aAbsenceEleveNotification->addJNotificationResponsableEleves($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aAbsenceEleveNotification->addJNotificationResponsableEleves($this);
 			 */
 		}
 		return $this->aAbsenceEleveNotification;
@@ -822,11 +829,11 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 		if ($this->aResponsableEleve === null && (($this->pers_id !== "" && $this->pers_id !== null))) {
 			$this->aResponsableEleve = ResponsableEleveQuery::create()->findPk($this->pers_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aResponsableEleve->addJNotificationResponsableEleves($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aResponsableEleve->addJNotificationResponsableEleves($this);
 			 */
 		}
 		return $this->aResponsableEleve;
@@ -848,13 +855,13 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
@@ -863,6 +870,16 @@ abstract class BaseJNotificationResponsableEleve extends BaseObject  implements 
 
 		$this->aAbsenceEleveNotification = null;
 		$this->aResponsableEleve = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(JNotificationResponsableElevePeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

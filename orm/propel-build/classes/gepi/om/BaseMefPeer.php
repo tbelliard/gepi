@@ -31,6 +31,9 @@ abstract class BaseMefPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 5;
+
 	/** the column name for the ID field */
 	const ID = 'mef.ID';
 
@@ -46,6 +49,9 @@ abstract class BaseMefPeer {
 	/** the column name for the LIBELLE_EDITION field */
 	const LIBELLE_EDITION = 'mef.LIBELLE_EDITION';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of Mef objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -61,7 +67,7 @@ abstract class BaseMefPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'ExtId', 'LibelleCourt', 'LibelleLong', 'LibelleEdition', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'extId', 'libelleCourt', 'libelleLong', 'libelleEdition', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::EXT_ID, self::LIBELLE_COURT, self::LIBELLE_LONG, self::LIBELLE_EDITION, ),
@@ -76,7 +82,7 @@ abstract class BaseMefPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'ExtId' => 1, 'LibelleCourt' => 2, 'LibelleLong' => 3, 'LibelleEdition' => 4, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'extId' => 1, 'libelleCourt' => 2, 'libelleLong' => 3, 'libelleEdition' => 4, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::EXT_ID => 1, self::LIBELLE_COURT => 2, self::LIBELLE_LONG => 3, self::LIBELLE_EDITION => 4, ),
@@ -285,7 +291,7 @@ abstract class BaseMefPeer {
 	 * @param      Mef $value A Mef object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Mef $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -443,7 +449,7 @@ abstract class BaseMefPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + MefPeer::NUM_COLUMNS;
+			$col = $startcol + MefPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = MefPeer::OM_CLASS;
 			$obj = new $cls();
@@ -712,7 +718,7 @@ abstract class BaseMefPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Mef $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

@@ -210,7 +210,7 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -244,8 +244,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterById('fooValue');   // WHERE id = 'fooValue'
+	 * $query->filterById('%fooValue%'); // WHERE id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $id The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -266,8 +272,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
+	 * $query->filterByNom('%fooValue%'); // WHERE nom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -288,8 +300,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the numero column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNumero('fooValue');   // WHERE numero = 'fooValue'
+	 * $query->filterByNumero('%fooValue%'); // WHERE numero LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $numero The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -310,8 +328,19 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the indice_aid column
 	 * 
-	 * @param     int|array $indiceAid The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIndiceAid(1234); // WHERE indice_aid = 1234
+	 * $query->filterByIndiceAid(array(12, 34)); // WHERE indice_aid IN (12, 34)
+	 * $query->filterByIndiceAid(array('min' => 12)); // WHERE indice_aid > 12
+	 * </code>
+	 *
+	 * @see       filterByAidConfiguration()
+	 *
+	 * @param     mixed $indiceAid The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -341,8 +370,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the perso1 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPerso1('fooValue');   // WHERE perso1 = 'fooValue'
+	 * $query->filterByPerso1('%fooValue%'); // WHERE perso1 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $perso1 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -363,8 +398,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the perso2 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPerso2('fooValue');   // WHERE perso2 = 'fooValue'
+	 * $query->filterByPerso2('%fooValue%'); // WHERE perso2 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $perso2 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -385,8 +426,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the perso3 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPerso3('fooValue');   // WHERE perso3 = 'fooValue'
+	 * $query->filterByPerso3('%fooValue%'); // WHERE perso3 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $perso3 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -407,8 +454,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the productions column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByProductions('fooValue');   // WHERE productions = 'fooValue'
+	 * $query->filterByProductions('%fooValue%'); // WHERE productions LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $productions The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -429,8 +482,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the resume column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByResume('fooValue');   // WHERE resume = 'fooValue'
+	 * $query->filterByResume('%fooValue%'); // WHERE resume LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $resume The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -451,8 +510,17 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the famille column
 	 * 
-	 * @param     int|array $famille The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByFamille(1234); // WHERE famille = 1234
+	 * $query->filterByFamille(array(12, 34)); // WHERE famille IN (12, 34)
+	 * $query->filterByFamille(array('min' => 12)); // WHERE famille > 12
+	 * </code>
+	 *
+	 * @param     mixed $famille The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -482,8 +550,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the mots_cles column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByMotsCles('fooValue');   // WHERE mots_cles = 'fooValue'
+	 * $query->filterByMotsCles('%fooValue%'); // WHERE mots_cles LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $motsCles The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -504,8 +578,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the adresse1 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAdresse1('fooValue');   // WHERE adresse1 = 'fooValue'
+	 * $query->filterByAdresse1('%fooValue%'); // WHERE adresse1 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $adresse1 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -526,8 +606,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the adresse2 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAdresse2('fooValue');   // WHERE adresse2 = 'fooValue'
+	 * $query->filterByAdresse2('%fooValue%'); // WHERE adresse2 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $adresse2 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -548,8 +634,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the public_destinataire column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPublicDestinataire('fooValue');   // WHERE public_destinataire = 'fooValue'
+	 * $query->filterByPublicDestinataire('%fooValue%'); // WHERE public_destinataire LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $publicDestinataire The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -570,8 +662,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the contacts column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByContacts('fooValue');   // WHERE contacts = 'fooValue'
+	 * $query->filterByContacts('%fooValue%'); // WHERE contacts LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $contacts The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -592,8 +690,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the divers column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDivers('fooValue');   // WHERE divers = 'fooValue'
+	 * $query->filterByDivers('%fooValue%'); // WHERE divers LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $divers The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -614,8 +718,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the matiere1 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByMatiere1('fooValue');   // WHERE matiere1 = 'fooValue'
+	 * $query->filterByMatiere1('%fooValue%'); // WHERE matiere1 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $matiere1 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -636,8 +746,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the matiere2 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByMatiere2('fooValue');   // WHERE matiere2 = 'fooValue'
+	 * $query->filterByMatiere2('%fooValue%'); // WHERE matiere2 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $matiere2 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -658,8 +774,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the eleve_peut_modifier column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByElevePeutModifier('fooValue');   // WHERE eleve_peut_modifier = 'fooValue'
+	 * $query->filterByElevePeutModifier('%fooValue%'); // WHERE eleve_peut_modifier LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $elevePeutModifier The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -680,8 +802,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the prof_peut_modifier column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByProfPeutModifier('fooValue');   // WHERE prof_peut_modifier = 'fooValue'
+	 * $query->filterByProfPeutModifier('%fooValue%'); // WHERE prof_peut_modifier LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $profPeutModifier The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -702,8 +830,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the cpe_peut_modifier column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCpePeutModifier('fooValue');   // WHERE cpe_peut_modifier = 'fooValue'
+	 * $query->filterByCpePeutModifier('%fooValue%'); // WHERE cpe_peut_modifier LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $cpePeutModifier The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -724,8 +858,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the fiche_publique column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByFichePublique('fooValue');   // WHERE fiche_publique = 'fooValue'
+	 * $query->filterByFichePublique('%fooValue%'); // WHERE fiche_publique LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $fichePublique The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -746,8 +886,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the affiche_adresse1 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAfficheAdresse1('fooValue');   // WHERE affiche_adresse1 = 'fooValue'
+	 * $query->filterByAfficheAdresse1('%fooValue%'); // WHERE affiche_adresse1 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $afficheAdresse1 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -768,8 +914,14 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the en_construction column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEnConstruction('fooValue');   // WHERE en_construction = 'fooValue'
+	 * $query->filterByEnConstruction('%fooValue%'); // WHERE en_construction LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $enConstruction The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
@@ -790,15 +942,25 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AidConfiguration object
 	 *
-	 * @param     AidConfiguration $aidConfiguration  the related object to use as filter
+	 * @param     AidConfiguration|PropelCollection $aidConfiguration The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidDetailsQuery The current query, for fluid interface
 	 */
 	public function filterByAidConfiguration($aidConfiguration, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AidDetailsPeer::INDICE_AID, $aidConfiguration->getIndiceAid(), $comparison);
+		if ($aidConfiguration instanceof AidConfiguration) {
+			return $this
+				->addUsingAlias(AidDetailsPeer::INDICE_AID, $aidConfiguration->getIndiceAid(), $comparison);
+		} elseif ($aidConfiguration instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AidDetailsPeer::INDICE_AID, $aidConfiguration->toKeyValue('PrimaryKey', 'IndiceAid'), $comparison);
+		} else {
+			throw new PropelException('filterByAidConfiguration() only accepts arguments of type AidConfiguration or PropelCollection');
+		}
 	}
 
 	/**
@@ -861,8 +1023,17 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 */
 	public function filterByJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AidDetailsPeer::ID, $jAidUtilisateursProfessionnels->getIdAid(), $comparison);
+		if ($jAidUtilisateursProfessionnels instanceof JAidUtilisateursProfessionnels) {
+			return $this
+				->addUsingAlias(AidDetailsPeer::ID, $jAidUtilisateursProfessionnels->getIdAid(), $comparison);
+		} elseif ($jAidUtilisateursProfessionnels instanceof PropelCollection) {
+			return $this
+				->useJAidUtilisateursProfessionnelsQuery()
+					->filterByPrimaryKeys($jAidUtilisateursProfessionnels->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJAidUtilisateursProfessionnels() only accepts arguments of type JAidUtilisateursProfessionnels or PropelCollection');
+		}
 	}
 
 	/**
@@ -925,8 +1096,17 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 */
 	public function filterByJAidEleves($jAidEleves, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AidDetailsPeer::ID, $jAidEleves->getIdAid(), $comparison);
+		if ($jAidEleves instanceof JAidEleves) {
+			return $this
+				->addUsingAlias(AidDetailsPeer::ID, $jAidEleves->getIdAid(), $comparison);
+		} elseif ($jAidEleves instanceof PropelCollection) {
+			return $this
+				->useJAidElevesQuery()
+					->filterByPrimaryKeys($jAidEleves->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJAidEleves() only accepts arguments of type JAidEleves or PropelCollection');
+		}
 	}
 
 	/**
@@ -989,8 +1169,17 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AidDetailsPeer::ID, $absenceEleveSaisie->getIdAid(), $comparison);
+		if ($absenceEleveSaisie instanceof AbsenceEleveSaisie) {
+			return $this
+				->addUsingAlias(AidDetailsPeer::ID, $absenceEleveSaisie->getIdAid(), $comparison);
+		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveSaisieQuery()
+					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
+		}
 	}
 
 	/**
@@ -1053,8 +1242,17 @@ abstract class BaseAidDetailsQuery extends ModelCriteria
 	 */
 	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AidDetailsPeer::ID, $edtEmplacementCours->getIdAid(), $comparison);
+		if ($edtEmplacementCours instanceof EdtEmplacementCours) {
+			return $this
+				->addUsingAlias(AidDetailsPeer::ID, $edtEmplacementCours->getIdAid(), $comparison);
+		} elseif ($edtEmplacementCours instanceof PropelCollection) {
+			return $this
+				->useEdtEmplacementCoursQuery()
+					->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByEdtEmplacementCours() only accepts arguments of type EdtEmplacementCours or PropelCollection');
+		}
 	}
 
 	/**

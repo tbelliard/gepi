@@ -31,6 +31,9 @@ abstract class BaseEdtCreneauPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 7;
+
 	/** the column name for the ID_DEFINIE_PERIODE field */
 	const ID_DEFINIE_PERIODE = 'edt_creneaux.ID_DEFINIE_PERIODE';
 
@@ -52,6 +55,9 @@ abstract class BaseEdtCreneauPeer {
 	/** the column name for the JOUR_CRENEAU field */
 	const JOUR_CRENEAU = 'edt_creneaux.JOUR_CRENEAU';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of EdtCreneau objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -67,7 +73,7 @@ abstract class BaseEdtCreneauPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('IdDefiniePeriode', 'NomDefiniePeriode', 'HeuredebutDefiniePeriode', 'HeurefinDefiniePeriode', 'SuiviDefiniePeriode', 'TypeCreneaux', 'JourCreneau', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idDefiniePeriode', 'nomDefiniePeriode', 'heuredebutDefiniePeriode', 'heurefinDefiniePeriode', 'suiviDefiniePeriode', 'typeCreneaux', 'jourCreneau', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_DEFINIE_PERIODE, self::NOM_DEFINIE_PERIODE, self::HEUREDEBUT_DEFINIE_PERIODE, self::HEUREFIN_DEFINIE_PERIODE, self::SUIVI_DEFINIE_PERIODE, self::TYPE_CRENEAUX, self::JOUR_CRENEAU, ),
@@ -82,7 +88,7 @@ abstract class BaseEdtCreneauPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('IdDefiniePeriode' => 0, 'NomDefiniePeriode' => 1, 'HeuredebutDefiniePeriode' => 2, 'HeurefinDefiniePeriode' => 3, 'SuiviDefiniePeriode' => 4, 'TypeCreneaux' => 5, 'JourCreneau' => 6, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idDefiniePeriode' => 0, 'nomDefiniePeriode' => 1, 'heuredebutDefiniePeriode' => 2, 'heurefinDefiniePeriode' => 3, 'suiviDefiniePeriode' => 4, 'typeCreneaux' => 5, 'jourCreneau' => 6, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_DEFINIE_PERIODE => 0, self::NOM_DEFINIE_PERIODE => 1, self::HEUREDEBUT_DEFINIE_PERIODE => 2, self::HEUREFIN_DEFINIE_PERIODE => 3, self::SUIVI_DEFINIE_PERIODE => 4, self::TYPE_CRENEAUX => 5, self::JOUR_CRENEAU => 6, ),
@@ -295,7 +301,7 @@ abstract class BaseEdtCreneauPeer {
 	 * @param      EdtCreneau $value A EdtCreneau object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(EdtCreneau $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -456,7 +462,7 @@ abstract class BaseEdtCreneauPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + EdtCreneauPeer::NUM_COLUMNS;
+			$col = $startcol + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = EdtCreneauPeer::OM_CLASS;
 			$obj = new $cls();
@@ -762,7 +768,7 @@ abstract class BaseEdtCreneauPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(EdtCreneau $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

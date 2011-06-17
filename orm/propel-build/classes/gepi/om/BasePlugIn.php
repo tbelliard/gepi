@@ -273,7 +273,7 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 5; // 5 = PlugInPeer::NUM_COLUMNS - PlugInPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 5; // 5 = PlugInPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating PlugIn object", $e);
@@ -639,11 +639,17 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['PlugIn'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['PlugIn'][$this->getPrimaryKey()] = true;
 		$keys = PlugInPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -652,6 +658,14 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 			$keys[3] => $this->getDescription(),
 			$keys[4] => $this->getOuvert(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->collPlugInAutorisations) {
+				$result['PlugInAutorisations'] = $this->collPlugInAutorisations->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collPlugInMiseEnOeuvreMenus) {
+				$result['PlugInMiseEnOeuvreMenus'] = $this->collPlugInMiseEnOeuvreMenus->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+		}
 		return $result;
 	}
 
@@ -799,14 +813,15 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of PlugIn (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setNom($this->nom);
-		$copyObj->setRepertoire($this->repertoire);
-		$copyObj->setDescription($this->description);
-		$copyObj->setOuvert($this->ouvert);
+		$copyObj->setNom($this->getNom());
+		$copyObj->setRepertoire($this->getRepertoire());
+		$copyObj->setDescription($this->getDescription());
+		$copyObj->setOuvert($this->getOuvert());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -827,9 +842,10 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -891,10 +907,16 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initPlugInAutorisations()
+	public function initPlugInAutorisations($overrideExisting = true)
 	{
+		if (null !== $this->collPlugInAutorisations && !$overrideExisting) {
+			return;
+		}
 		$this->collPlugInAutorisations = new PropelObjectCollection();
 		$this->collPlugInAutorisations->setModel('PlugInAutorisation');
 	}
@@ -1000,10 +1022,16 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initPlugInMiseEnOeuvreMenus()
+	public function initPlugInMiseEnOeuvreMenus($overrideExisting = true)
 	{
+		if (null !== $this->collPlugInMiseEnOeuvreMenus && !$overrideExisting) {
+			return;
+		}
 		$this->collPlugInMiseEnOeuvreMenus = new PropelObjectCollection();
 		$this->collPlugInMiseEnOeuvreMenus->setModel('PlugInMiseEnOeuvreMenu');
 	}
@@ -1107,31 +1135,47 @@ abstract class BasePlugIn extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collPlugInAutorisations) {
-				foreach ((array) $this->collPlugInAutorisations as $o) {
+				foreach ($this->collPlugInAutorisations as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collPlugInMiseEnOeuvreMenus) {
-				foreach ((array) $this->collPlugInMiseEnOeuvreMenus as $o) {
+				foreach ($this->collPlugInMiseEnOeuvreMenus as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collPlugInAutorisations instanceof PropelCollection) {
+			$this->collPlugInAutorisations->clearIterator();
+		}
 		$this->collPlugInAutorisations = null;
+		if ($this->collPlugInMiseEnOeuvreMenus instanceof PropelCollection) {
+			$this->collPlugInMiseEnOeuvreMenus->clearIterator();
+		}
 		$this->collPlugInMiseEnOeuvreMenus = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(PlugInPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

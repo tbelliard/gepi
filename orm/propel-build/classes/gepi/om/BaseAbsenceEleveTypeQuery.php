@@ -146,7 +146,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -180,8 +180,17 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
@@ -197,8 +206,14 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
+	 * $query->filterByNom('%fooValue%'); // WHERE nom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
@@ -219,8 +234,17 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the justification_exigible column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByJustificationExigible(true); // WHERE justification_exigible = true
+	 * $query->filterByJustificationExigible('yes'); // WHERE justification_exigible = true
+	 * </code>
+	 *
 	 * @param     boolean|string $justificationExigible The value to use as filter.
-	 *            Accepts strings ('false', 'off', '-', 'no', 'n', and '0' are false, the rest is true)
+	 *              Non-boolean arguments are converted using the following rules:
+	 *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
@@ -236,8 +260,14 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the sous_responsabilite_etablissement column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterBySousResponsabiliteEtablissement('fooValue');   // WHERE sous_responsabilite_etablissement = 'fooValue'
+	 * $query->filterBySousResponsabiliteEtablissement('%fooValue%'); // WHERE sous_responsabilite_etablissement LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $sousResponsabiliteEtablissement The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
@@ -258,8 +288,14 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the manquement_obligation_presence column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByManquementObligationPresence('fooValue');   // WHERE manquement_obligation_presence = 'fooValue'
+	 * $query->filterByManquementObligationPresence('%fooValue%'); // WHERE manquement_obligation_presence LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $manquementObligationPresence The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
@@ -280,8 +316,14 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the retard_bulletin column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRetardBulletin('fooValue');   // WHERE retard_bulletin = 'fooValue'
+	 * $query->filterByRetardBulletin('%fooValue%'); // WHERE retard_bulletin LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $retardBulletin The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
@@ -302,8 +344,14 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the type_saisie column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTypeSaisie('fooValue');   // WHERE type_saisie = 'fooValue'
+	 * $query->filterByTypeSaisie('%fooValue%'); // WHERE type_saisie LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $typeSaisie The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
@@ -324,8 +372,14 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the commentaire column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCommentaire('fooValue');   // WHERE commentaire = 'fooValue'
+	 * $query->filterByCommentaire('%fooValue%'); // WHERE commentaire LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $commentaire The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
@@ -346,8 +400,19 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_lieu column
 	 * 
-	 * @param     int|array $idLieu The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdLieu(1234); // WHERE id_lieu = 1234
+	 * $query->filterByIdLieu(array(12, 34)); // WHERE id_lieu IN (12, 34)
+	 * $query->filterByIdLieu(array('min' => 12)); // WHERE id_lieu > 12
+	 * </code>
+	 *
+	 * @see       filterByAbsenceEleveLieu()
+	 *
+	 * @param     mixed $idLieu The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
@@ -377,8 +442,17 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the sortable_rank column
 	 * 
-	 * @param     int|array $sortableRank The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterBySortableRank(1234); // WHERE sortable_rank = 1234
+	 * $query->filterBySortableRank(array(12, 34)); // WHERE sortable_rank IN (12, 34)
+	 * $query->filterBySortableRank(array('min' => 12)); // WHERE sortable_rank > 12
+	 * </code>
+	 *
+	 * @param     mixed $sortableRank The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
@@ -408,15 +482,25 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AbsenceEleveLieu object
 	 *
-	 * @param     AbsenceEleveLieu $absenceEleveLieu  the related object to use as filter
+	 * @param     AbsenceEleveLieu|PropelCollection $absenceEleveLieu The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeQuery The current query, for fluid interface
 	 */
 	public function filterByAbsenceEleveLieu($absenceEleveLieu, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTypePeer::ID_LIEU, $absenceEleveLieu->getId(), $comparison);
+		if ($absenceEleveLieu instanceof AbsenceEleveLieu) {
+			return $this
+				->addUsingAlias(AbsenceEleveTypePeer::ID_LIEU, $absenceEleveLieu->getId(), $comparison);
+		} elseif ($absenceEleveLieu instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveTypePeer::ID_LIEU, $absenceEleveLieu->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAbsenceEleveLieu() only accepts arguments of type AbsenceEleveLieu or PropelCollection');
+		}
 	}
 
 	/**
@@ -479,8 +563,17 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveTypeStatutAutorise($absenceEleveTypeStatutAutorise, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTypePeer::ID, $absenceEleveTypeStatutAutorise->getIdAType(), $comparison);
+		if ($absenceEleveTypeStatutAutorise instanceof AbsenceEleveTypeStatutAutorise) {
+			return $this
+				->addUsingAlias(AbsenceEleveTypePeer::ID, $absenceEleveTypeStatutAutorise->getIdAType(), $comparison);
+		} elseif ($absenceEleveTypeStatutAutorise instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveTypeStatutAutoriseQuery()
+					->filterByPrimaryKeys($absenceEleveTypeStatutAutorise->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveTypeStatutAutorise() only accepts arguments of type AbsenceEleveTypeStatutAutorise or PropelCollection');
+		}
 	}
 
 	/**
@@ -543,8 +636,17 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveTraitement($absenceEleveTraitement, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTypePeer::ID, $absenceEleveTraitement->getATypeId(), $comparison);
+		if ($absenceEleveTraitement instanceof AbsenceEleveTraitement) {
+			return $this
+				->addUsingAlias(AbsenceEleveTypePeer::ID, $absenceEleveTraitement->getATypeId(), $comparison);
+		} elseif ($absenceEleveTraitement instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveTraitementQuery()
+					->filterByPrimaryKeys($absenceEleveTraitement->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveTraitement() only accepts arguments of type AbsenceEleveTraitement or PropelCollection');
+		}
 	}
 
 	/**

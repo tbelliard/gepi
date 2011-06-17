@@ -31,6 +31,9 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 9;
+
 	/** the column name for the ID_CT field */
 	const ID_CT = 'ct_entry.ID_CT';
 
@@ -58,6 +61,9 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	/** the column name for the ID_SEQUENCE field */
 	const ID_SEQUENCE = 'ct_entry.ID_SEQUENCE';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of CahierTexteCompteRendu objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -73,7 +79,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('IdCt', 'HeureEntry', 'DateCt', 'Contenu', 'Vise', 'Visa', 'IdGroupe', 'IdLogin', 'IdSequence', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt', 'heureEntry', 'dateCt', 'contenu', 'vise', 'visa', 'idGroupe', 'idLogin', 'idSequence', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_CT, self::HEURE_ENTRY, self::DATE_CT, self::CONTENU, self::VISE, self::VISA, self::ID_GROUPE, self::ID_LOGIN, self::ID_SEQUENCE, ),
@@ -88,7 +94,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('IdCt' => 0, 'HeureEntry' => 1, 'DateCt' => 2, 'Contenu' => 3, 'Vise' => 4, 'Visa' => 5, 'IdGroupe' => 6, 'IdLogin' => 7, 'IdSequence' => 8, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt' => 0, 'heureEntry' => 1, 'dateCt' => 2, 'contenu' => 3, 'vise' => 4, 'visa' => 5, 'idGroupe' => 6, 'idLogin' => 7, 'idSequence' => 8, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_CT => 0, self::HEURE_ENTRY => 1, self::DATE_CT => 2, self::CONTENU => 3, self::VISE => 4, self::VISA => 5, self::ID_GROUPE => 6, self::ID_LOGIN => 7, self::ID_SEQUENCE => 8, ),
@@ -305,7 +311,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 * @param      CahierTexteCompteRendu $value A CahierTexteCompteRendu object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(CahierTexteCompteRendu $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -463,7 +469,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + CahierTexteCompteRenduPeer::NUM_COLUMNS;
+			$col = $startcol + CahierTexteCompteRenduPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = CahierTexteCompteRenduPeer::OM_CLASS;
 			$obj = new $cls();
@@ -642,7 +648,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		}
 
 		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-		$startcol = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = CahierTexteCompteRenduPeer::NUM_HYDRATE_COLUMNS;
 		GroupePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
@@ -708,7 +714,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		}
 
 		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-		$startcol = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = CahierTexteCompteRenduPeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -774,7 +780,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		}
 
 		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-		$startcol = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = CahierTexteCompteRenduPeer::NUM_HYDRATE_COLUMNS;
 		CahierTexteSequencePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_SEQUENCE, CahierTexteSequencePeer::ID, $join_behavior);
@@ -894,16 +900,16 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		}
 
 		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CahierTexteCompteRenduPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		CahierTexteSequencePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + CahierTexteSequencePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1167,13 +1173,13 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		}
 
 		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CahierTexteCompteRenduPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		CahierTexteSequencePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + CahierTexteSequencePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1264,13 +1270,13 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		}
 
 		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CahierTexteCompteRenduPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		CahierTexteSequencePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + CahierTexteSequencePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1361,13 +1367,13 @@ abstract class BaseCahierTexteCompteRenduPeer {
 		}
 
 		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-		$startcol2 = (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CahierTexteCompteRenduPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CahierTexteCompteRenduPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1696,7 +1702,7 @@ abstract class BaseCahierTexteCompteRenduPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(CahierTexteCompteRendu $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

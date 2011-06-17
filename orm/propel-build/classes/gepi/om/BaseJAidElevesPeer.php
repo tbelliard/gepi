@@ -31,12 +31,18 @@ abstract class BaseJAidElevesPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 2;
+
 	/** the column name for the ID_AID field */
 	const ID_AID = 'j_aid_eleves.ID_AID';
 
 	/** the column name for the LOGIN field */
 	const LOGIN = 'j_aid_eleves.LOGIN';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of JAidEleves objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -52,7 +58,7 @@ abstract class BaseJAidElevesPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('IdAid', 'Login', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idAid', 'login', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_AID, self::LOGIN, ),
@@ -67,7 +73,7 @@ abstract class BaseJAidElevesPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('IdAid' => 0, 'Login' => 1, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idAid' => 0, 'login' => 1, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_AID => 0, self::LOGIN => 1, ),
@@ -270,7 +276,7 @@ abstract class BaseJAidElevesPeer {
 	 * @param      JAidEleves $value A JAidEleves object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(JAidEleves $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -425,7 +431,7 @@ abstract class BaseJAidElevesPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + JAidElevesPeer::NUM_COLUMNS;
+			$col = $startcol + JAidElevesPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = JAidElevesPeer::OM_CLASS;
 			$obj = new $cls();
@@ -554,7 +560,7 @@ abstract class BaseJAidElevesPeer {
 		}
 
 		JAidElevesPeer::addSelectColumns($criteria);
-		$startcol = (JAidElevesPeer::NUM_COLUMNS - JAidElevesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JAidElevesPeer::NUM_HYDRATE_COLUMNS;
 		AidDetailsPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JAidElevesPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
@@ -620,7 +626,7 @@ abstract class BaseJAidElevesPeer {
 		}
 
 		JAidElevesPeer::addSelectColumns($criteria);
-		$startcol = (JAidElevesPeer::NUM_COLUMNS - JAidElevesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JAidElevesPeer::NUM_HYDRATE_COLUMNS;
 		ElevePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JAidElevesPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
@@ -738,13 +744,13 @@ abstract class BaseJAidElevesPeer {
 		}
 
 		JAidElevesPeer::addSelectColumns($criteria);
-		$startcol2 = (JAidElevesPeer::NUM_COLUMNS - JAidElevesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JAidElevesPeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JAidElevesPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
 
@@ -932,10 +938,10 @@ abstract class BaseJAidElevesPeer {
 		}
 
 		JAidElevesPeer::addSelectColumns($criteria);
-		$startcol2 = (JAidElevesPeer::NUM_COLUMNS - JAidElevesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JAidElevesPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JAidElevesPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
 
@@ -1005,10 +1011,10 @@ abstract class BaseJAidElevesPeer {
 		}
 
 		JAidElevesPeer::addSelectColumns($criteria);
-		$startcol2 = (JAidElevesPeer::NUM_COLUMNS - JAidElevesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JAidElevesPeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JAidElevesPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
 
@@ -1288,7 +1294,7 @@ abstract class BaseJAidElevesPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(JAidEleves $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

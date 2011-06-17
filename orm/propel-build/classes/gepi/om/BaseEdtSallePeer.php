@@ -31,6 +31,9 @@ abstract class BaseEdtSallePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 3;
+
 	/** the column name for the ID_SALLE field */
 	const ID_SALLE = 'salle_cours.ID_SALLE';
 
@@ -40,6 +43,9 @@ abstract class BaseEdtSallePeer {
 	/** the column name for the NOM_SALLE field */
 	const NOM_SALLE = 'salle_cours.NOM_SALLE';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of EdtSalle objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -55,7 +61,7 @@ abstract class BaseEdtSallePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('IdSalle', 'NumeroSalle', 'NomSalle', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idSalle', 'numeroSalle', 'nomSalle', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_SALLE, self::NUMERO_SALLE, self::NOM_SALLE, ),
@@ -70,7 +76,7 @@ abstract class BaseEdtSallePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('IdSalle' => 0, 'NumeroSalle' => 1, 'NomSalle' => 2, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idSalle' => 0, 'numeroSalle' => 1, 'nomSalle' => 2, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_SALLE => 0, self::NUMERO_SALLE => 1, self::NOM_SALLE => 2, ),
@@ -275,7 +281,7 @@ abstract class BaseEdtSallePeer {
 	 * @param      EdtSalle $value A EdtSalle object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(EdtSalle $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -433,7 +439,7 @@ abstract class BaseEdtSallePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + EdtSallePeer::NUM_COLUMNS;
+			$col = $startcol + EdtSallePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = EdtSallePeer::OM_CLASS;
 			$obj = new $cls();
@@ -698,7 +704,7 @@ abstract class BaseEdtSallePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(EdtSalle $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

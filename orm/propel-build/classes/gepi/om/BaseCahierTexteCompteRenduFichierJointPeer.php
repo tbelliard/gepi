@@ -31,6 +31,9 @@ abstract class BaseCahierTexteCompteRenduFichierJointPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 6;
+
 	/** the column name for the ID field */
 	const ID = 'ct_documents.ID';
 
@@ -49,6 +52,9 @@ abstract class BaseCahierTexteCompteRenduFichierJointPeer {
 	/** the column name for the VISIBLE_ELEVE_PARENT field */
 	const VISIBLE_ELEVE_PARENT = 'ct_documents.VISIBLE_ELEVE_PARENT';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of CahierTexteCompteRenduFichierJoint objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -64,7 +70,7 @@ abstract class BaseCahierTexteCompteRenduFichierJointPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'IdCt', 'Titre', 'Taille', 'Emplacement', 'VisibleEleveParent', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'idCt', 'titre', 'taille', 'emplacement', 'visibleEleveParent', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::ID_CT, self::TITRE, self::TAILLE, self::EMPLACEMENT, self::VISIBLE_ELEVE_PARENT, ),
@@ -79,7 +85,7 @@ abstract class BaseCahierTexteCompteRenduFichierJointPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IdCt' => 1, 'Titre' => 2, 'Taille' => 3, 'Emplacement' => 4, 'VisibleEleveParent' => 5, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'idCt' => 1, 'titre' => 2, 'taille' => 3, 'emplacement' => 4, 'visibleEleveParent' => 5, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ID_CT => 1, self::TITRE => 2, self::TAILLE => 3, self::EMPLACEMENT => 4, self::VISIBLE_ELEVE_PARENT => 5, ),
@@ -290,7 +296,7 @@ abstract class BaseCahierTexteCompteRenduFichierJointPeer {
 	 * @param      CahierTexteCompteRenduFichierJoint $value A CahierTexteCompteRenduFichierJoint object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(CahierTexteCompteRenduFichierJoint $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -445,7 +451,7 @@ abstract class BaseCahierTexteCompteRenduFichierJointPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + CahierTexteCompteRenduFichierJointPeer::NUM_COLUMNS;
+			$col = $startcol + CahierTexteCompteRenduFichierJointPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = CahierTexteCompteRenduFichierJointPeer::OM_CLASS;
 			$obj = new $cls();
@@ -524,7 +530,7 @@ abstract class BaseCahierTexteCompteRenduFichierJointPeer {
 		}
 
 		CahierTexteCompteRenduFichierJointPeer::addSelectColumns($criteria);
-		$startcol = (CahierTexteCompteRenduFichierJointPeer::NUM_COLUMNS - CahierTexteCompteRenduFichierJointPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = CahierTexteCompteRenduFichierJointPeer::NUM_HYDRATE_COLUMNS;
 		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(CahierTexteCompteRenduFichierJointPeer::ID_CT, CahierTexteCompteRenduPeer::ID_CT, $join_behavior);
@@ -640,10 +646,10 @@ abstract class BaseCahierTexteCompteRenduFichierJointPeer {
 		}
 
 		CahierTexteCompteRenduFichierJointPeer::addSelectColumns($criteria);
-		$startcol2 = (CahierTexteCompteRenduFichierJointPeer::NUM_COLUMNS - CahierTexteCompteRenduFichierJointPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CahierTexteCompteRenduFichierJointPeer::NUM_HYDRATE_COLUMNS;
 
 		CahierTexteCompteRenduPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + CahierTexteCompteRenduPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CahierTexteCompteRenduFichierJointPeer::ID_CT, CahierTexteCompteRenduPeer::ID_CT, $join_behavior);
 
@@ -909,7 +915,7 @@ abstract class BaseCahierTexteCompteRenduFichierJointPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(CahierTexteCompteRenduFichierJoint $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

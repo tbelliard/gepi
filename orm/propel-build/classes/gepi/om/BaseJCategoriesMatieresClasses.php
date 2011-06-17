@@ -183,15 +183,23 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	} // setClasseId()
 
 	/**
-	 * Set the value of [affiche_moyenne] column.
+	 * Sets the value of the [affiche_moyenne] column. 
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * Nom complet
-	 * @param      boolean $v new value
+	 * @param      boolean|integer|string $v The new value
 	 * @return     JCategoriesMatieresClasses The current object (for fluent API support)
 	 */
 	public function setAfficheMoyenne($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
 		if ($this->affiche_moyenne !== $v || $this->isNew()) {
@@ -270,7 +278,7 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 4; // 4 = JCategoriesMatieresClassesPeer::NUM_COLUMNS - JCategoriesMatieresClassesPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 4; // 4 = JCategoriesMatieresClassesPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating JCategoriesMatieresClasses object", $e);
@@ -634,12 +642,17 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['JCategoriesMatieresClasses'][serialize($this->getPrimaryKey())])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['JCategoriesMatieresClasses'][serialize($this->getPrimaryKey())] = true;
 		$keys = JCategoriesMatieresClassesPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getCategorieId(),
@@ -649,10 +662,10 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aCategorieMatiere) {
-				$result['CategorieMatiere'] = $this->aCategorieMatiere->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['CategorieMatiere'] = $this->aCategorieMatiere->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aClasse) {
-				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -804,16 +817,18 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	 *
 	 * @param      object $copyObj An object of JCategoriesMatieresClasses (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setCategorieId($this->categorie_id);
-		$copyObj->setClasseId($this->classe_id);
-		$copyObj->setAfficheMoyenne($this->affiche_moyenne);
-		$copyObj->setPriority($this->priority);
-
-		$copyObj->setNew(true);
+		$copyObj->setCategorieId($this->getCategorieId());
+		$copyObj->setClasseId($this->getClasseId());
+		$copyObj->setAfficheMoyenne($this->getAfficheMoyenne());
+		$copyObj->setPriority($this->getPriority());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -893,11 +908,11 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		if ($this->aCategorieMatiere === null && ($this->categorie_id !== null)) {
 			$this->aCategorieMatiere = CategorieMatiereQuery::create()->findPk($this->categorie_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aCategorieMatiere->addJCategoriesMatieresClassess($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aCategorieMatiere->addJCategoriesMatieresClassess($this);
 			 */
 		}
 		return $this->aCategorieMatiere;
@@ -942,11 +957,11 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 		if ($this->aClasse === null && ($this->classe_id !== null)) {
 			$this->aClasse = ClasseQuery::create()->findPk($this->classe_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aClasse->addJCategoriesMatieresClassess($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aClasse->addJCategoriesMatieresClassess($this);
 			 */
 		}
 		return $this->aClasse;
@@ -971,13 +986,13 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
@@ -986,6 +1001,16 @@ abstract class BaseJCategoriesMatieresClasses extends BaseObject  implements Per
 
 		$this->aCategorieMatiere = null;
 		$this->aClasse = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(JCategoriesMatieresClassesPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

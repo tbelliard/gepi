@@ -158,7 +158,7 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -192,8 +192,14 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
+	 * $query->filterByNom('%fooValue%'); // WHERE nom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -214,8 +220,14 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom_complet column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNomComplet('fooValue');   // WHERE nom_complet = 'fooValue'
+	 * $query->filterByNomComplet('%fooValue%'); // WHERE nom_complet LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nomComplet The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -236,8 +248,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the note_max column
 	 * 
-	 * @param     int|array $noteMax The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNoteMax(1234); // WHERE note_max = 1234
+	 * $query->filterByNoteMax(array(12, 34)); // WHERE note_max IN (12, 34)
+	 * $query->filterByNoteMax(array('min' => 12)); // WHERE note_max > 12
+	 * </code>
+	 *
+	 * @param     mixed $noteMax The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -267,8 +288,14 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the order_display1 column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByOrderDisplay1('fooValue');   // WHERE order_display1 = 'fooValue'
+	 * $query->filterByOrderDisplay1('%fooValue%'); // WHERE order_display1 LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $orderDisplay1 The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -289,8 +316,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the order_display2 column
 	 * 
-	 * @param     int|array $orderDisplay2 The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByOrderDisplay2(1234); // WHERE order_display2 = 1234
+	 * $query->filterByOrderDisplay2(array(12, 34)); // WHERE order_display2 IN (12, 34)
+	 * $query->filterByOrderDisplay2(array('min' => 12)); // WHERE order_display2 > 12
+	 * </code>
+	 *
+	 * @param     mixed $orderDisplay2 The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -320,8 +356,14 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the type_note column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTypeNote('fooValue');   // WHERE type_note = 'fooValue'
+	 * $query->filterByTypeNote('%fooValue%'); // WHERE type_note LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $typeNote The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -342,8 +384,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the display_begin column
 	 * 
-	 * @param     int|array $displayBegin The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDisplayBegin(1234); // WHERE display_begin = 1234
+	 * $query->filterByDisplayBegin(array(12, 34)); // WHERE display_begin IN (12, 34)
+	 * $query->filterByDisplayBegin(array('min' => 12)); // WHERE display_begin > 12
+	 * </code>
+	 *
+	 * @param     mixed $displayBegin The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -373,8 +424,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the display_end column
 	 * 
-	 * @param     int|array $displayEnd The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDisplayEnd(1234); // WHERE display_end = 1234
+	 * $query->filterByDisplayEnd(array(12, 34)); // WHERE display_end IN (12, 34)
+	 * $query->filterByDisplayEnd(array('min' => 12)); // WHERE display_end > 12
+	 * </code>
+	 *
+	 * @param     mixed $displayEnd The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -404,8 +464,14 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the message column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByMessage('fooValue');   // WHERE message = 'fooValue'
+	 * $query->filterByMessage('%fooValue%'); // WHERE message LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $message The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -426,8 +492,14 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the display_nom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDisplayNom('fooValue');   // WHERE display_nom = 'fooValue'
+	 * $query->filterByDisplayNom('%fooValue%'); // WHERE display_nom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $displayNom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -448,8 +520,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the indice_aid column
 	 * 
-	 * @param     int|array $indiceAid The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIndiceAid(1234); // WHERE indice_aid = 1234
+	 * $query->filterByIndiceAid(array(12, 34)); // WHERE indice_aid IN (12, 34)
+	 * $query->filterByIndiceAid(array('min' => 12)); // WHERE indice_aid > 12
+	 * </code>
+	 *
+	 * @param     mixed $indiceAid The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -465,8 +546,14 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the display_bulletin column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDisplayBulletin('fooValue');   // WHERE display_bulletin = 'fooValue'
+	 * $query->filterByDisplayBulletin('%fooValue%'); // WHERE display_bulletin LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $displayBulletin The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -487,8 +574,14 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the bull_simplifie column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByBullSimplifie('fooValue');   // WHERE bull_simplifie = 'fooValue'
+	 * $query->filterByBullSimplifie('%fooValue%'); // WHERE bull_simplifie LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $bullSimplifie The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -509,8 +602,14 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the outils_complementaires column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByOutilsComplementaires('fooValue');   // WHERE outils_complementaires = 'fooValue'
+	 * $query->filterByOutilsComplementaires('%fooValue%'); // WHERE outils_complementaires LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $outilsComplementaires The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -531,8 +630,14 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the feuille_presence column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByFeuillePresence('fooValue');   // WHERE feuille_presence = 'fooValue'
+	 * $query->filterByFeuillePresence('%fooValue%'); // WHERE feuille_presence LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $feuillePresence The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AidConfigurationQuery The current query, for fluid interface
@@ -560,8 +665,17 @@ abstract class BaseAidConfigurationQuery extends ModelCriteria
 	 */
 	public function filterByAidDetails($aidDetails, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AidConfigurationPeer::INDICE_AID, $aidDetails->getIndiceAid(), $comparison);
+		if ($aidDetails instanceof AidDetails) {
+			return $this
+				->addUsingAlias(AidConfigurationPeer::INDICE_AID, $aidDetails->getIndiceAid(), $comparison);
+		} elseif ($aidDetails instanceof PropelCollection) {
+			return $this
+				->useAidDetailsQuery()
+					->filterByPrimaryKeys($aidDetails->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAidDetails() only accepts arguments of type AidDetails or PropelCollection');
+		}
 	}
 
 	/**

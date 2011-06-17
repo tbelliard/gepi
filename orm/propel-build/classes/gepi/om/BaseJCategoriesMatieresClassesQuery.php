@@ -117,7 +117,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -164,8 +164,19 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	/**
 	 * Filter the query on the categorie_id column
 	 * 
-	 * @param     int|array $categorieId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCategorieId(1234); // WHERE categorie_id = 1234
+	 * $query->filterByCategorieId(array(12, 34)); // WHERE categorie_id IN (12, 34)
+	 * $query->filterByCategorieId(array('min' => 12)); // WHERE categorie_id > 12
+	 * </code>
+	 *
+	 * @see       filterByCategorieMatiere()
+	 *
+	 * @param     mixed $categorieId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
@@ -181,8 +192,19 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	/**
 	 * Filter the query on the classe_id column
 	 * 
-	 * @param     int|array $classeId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByClasseId(1234); // WHERE classe_id = 1234
+	 * $query->filterByClasseId(array(12, 34)); // WHERE classe_id IN (12, 34)
+	 * $query->filterByClasseId(array('min' => 12)); // WHERE classe_id > 12
+	 * </code>
+	 *
+	 * @see       filterByClasse()
+	 *
+	 * @param     mixed $classeId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
@@ -198,8 +220,17 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	/**
 	 * Filter the query on the affiche_moyenne column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAfficheMoyenne(true); // WHERE affiche_moyenne = true
+	 * $query->filterByAfficheMoyenne('yes'); // WHERE affiche_moyenne = true
+	 * </code>
+	 *
 	 * @param     boolean|string $afficheMoyenne The value to use as filter.
-	 *            Accepts strings ('false', 'off', '-', 'no', 'n', and '0' are false, the rest is true)
+	 *              Non-boolean arguments are converted using the following rules:
+	 *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
@@ -215,8 +246,17 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	/**
 	 * Filter the query on the priority column
 	 * 
-	 * @param     int|array $priority The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPriority(1234); // WHERE priority = 1234
+	 * $query->filterByPriority(array(12, 34)); // WHERE priority IN (12, 34)
+	 * $query->filterByPriority(array('min' => 12)); // WHERE priority > 12
+	 * </code>
+	 *
+	 * @param     mixed $priority The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
@@ -246,15 +286,25 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related CategorieMatiere object
 	 *
-	 * @param     CategorieMatiere $categorieMatiere  the related object to use as filter
+	 * @param     CategorieMatiere|PropelCollection $categorieMatiere The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
 	 */
 	public function filterByCategorieMatiere($categorieMatiere, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $categorieMatiere->getId(), $comparison);
+		if ($categorieMatiere instanceof CategorieMatiere) {
+			return $this
+				->addUsingAlias(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $categorieMatiere->getId(), $comparison);
+		} elseif ($categorieMatiere instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JCategoriesMatieresClassesPeer::CATEGORIE_ID, $categorieMatiere->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByCategorieMatiere() only accepts arguments of type CategorieMatiere or PropelCollection');
+		}
 	}
 
 	/**
@@ -310,15 +360,25 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Classe object
 	 *
-	 * @param     Classe $classe  the related object to use as filter
+	 * @param     Classe|PropelCollection $classe The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JCategoriesMatieresClassesQuery The current query, for fluid interface
 	 */
 	public function filterByClasse($classe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JCategoriesMatieresClassesPeer::CLASSE_ID, $classe->getId(), $comparison);
+		if ($classe instanceof Classe) {
+			return $this
+				->addUsingAlias(JCategoriesMatieresClassesPeer::CLASSE_ID, $classe->getId(), $comparison);
+		} elseif ($classe instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JCategoriesMatieresClassesPeer::CLASSE_ID, $classe->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByClasse() only accepts arguments of type Classe or PropelCollection');
+		}
 	}
 
 	/**

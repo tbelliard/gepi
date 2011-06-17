@@ -31,6 +31,9 @@ abstract class BaseResponsableInformationPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 4;
+
 	/** the column name for the ELE_ID field */
 	const ELE_ID = 'responsables2.ELE_ID';
 
@@ -43,6 +46,9 @@ abstract class BaseResponsableInformationPeer {
 	/** the column name for the PERS_CONTACT field */
 	const PERS_CONTACT = 'responsables2.PERS_CONTACT';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of ResponsableInformation objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -58,7 +64,7 @@ abstract class BaseResponsableInformationPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('EleId', 'PersId', 'RespLegal', 'PersContact', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('eleId', 'persId', 'respLegal', 'persContact', ),
 		BasePeer::TYPE_COLNAME => array (self::ELE_ID, self::PERS_ID, self::RESP_LEGAL, self::PERS_CONTACT, ),
@@ -73,7 +79,7 @@ abstract class BaseResponsableInformationPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('EleId' => 0, 'PersId' => 1, 'RespLegal' => 2, 'PersContact' => 3, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('eleId' => 0, 'persId' => 1, 'respLegal' => 2, 'persContact' => 3, ),
 		BasePeer::TYPE_COLNAME => array (self::ELE_ID => 0, self::PERS_ID => 1, self::RESP_LEGAL => 2, self::PERS_CONTACT => 3, ),
@@ -280,7 +286,7 @@ abstract class BaseResponsableInformationPeer {
 	 * @param      ResponsableInformation $value A ResponsableInformation object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(ResponsableInformation $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -435,7 +441,7 @@ abstract class BaseResponsableInformationPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + ResponsableInformationPeer::NUM_COLUMNS;
+			$col = $startcol + ResponsableInformationPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = ResponsableInformationPeer::OM_CLASS;
 			$obj = new $cls();
@@ -564,7 +570,7 @@ abstract class BaseResponsableInformationPeer {
 		}
 
 		ResponsableInformationPeer::addSelectColumns($criteria);
-		$startcol = (ResponsableInformationPeer::NUM_COLUMNS - ResponsableInformationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = ResponsableInformationPeer::NUM_HYDRATE_COLUMNS;
 		ElevePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(ResponsableInformationPeer::ELE_ID, ElevePeer::ELE_ID, $join_behavior);
@@ -630,7 +636,7 @@ abstract class BaseResponsableInformationPeer {
 		}
 
 		ResponsableInformationPeer::addSelectColumns($criteria);
-		$startcol = (ResponsableInformationPeer::NUM_COLUMNS - ResponsableInformationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = ResponsableInformationPeer::NUM_HYDRATE_COLUMNS;
 		ResponsableElevePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(ResponsableInformationPeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
@@ -748,13 +754,13 @@ abstract class BaseResponsableInformationPeer {
 		}
 
 		ResponsableInformationPeer::addSelectColumns($criteria);
-		$startcol2 = (ResponsableInformationPeer::NUM_COLUMNS - ResponsableInformationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = ResponsableInformationPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		ResponsableElevePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ResponsableElevePeer::NUM_COLUMNS - ResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(ResponsableInformationPeer::ELE_ID, ElevePeer::ELE_ID, $join_behavior);
 
@@ -942,10 +948,10 @@ abstract class BaseResponsableInformationPeer {
 		}
 
 		ResponsableInformationPeer::addSelectColumns($criteria);
-		$startcol2 = (ResponsableInformationPeer::NUM_COLUMNS - ResponsableInformationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = ResponsableInformationPeer::NUM_HYDRATE_COLUMNS;
 
 		ResponsableElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ResponsableElevePeer::NUM_COLUMNS - ResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(ResponsableInformationPeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
 
@@ -1015,10 +1021,10 @@ abstract class BaseResponsableInformationPeer {
 		}
 
 		ResponsableInformationPeer::addSelectColumns($criteria);
-		$startcol2 = (ResponsableInformationPeer::NUM_COLUMNS - ResponsableInformationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = ResponsableInformationPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(ResponsableInformationPeer::ELE_ID, ElevePeer::ELE_ID, $join_behavior);
 
@@ -1298,7 +1304,7 @@ abstract class BaseResponsableInformationPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(ResponsableInformation $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

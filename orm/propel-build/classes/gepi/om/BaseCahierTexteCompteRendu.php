@@ -278,46 +278,20 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	/**
 	 * Sets the value of [heure_entry] column to a normalized version of the date/time value specified.
 	 * heure de l'entree
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     CahierTexteCompteRendu The current object (for fluent API support)
 	 */
 	public function setHeureEntry($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->heure_entry !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->heure_entry !== null && $tmpDt = new DateTime($this->heure_entry)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					|| ($dt->format('H:i:s') === '00:00:00') // or the entered value matches the default
-					)
-			{
-				$this->heure_entry = ($dt ? $dt->format('H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->heure_entry !== null || $dt !== null) {
+			$currentDateAsString = ($this->heure_entry !== null && $tmpDt = new DateTime($this->heure_entry)) ? $tmpDt->format('H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('H:i:s') : null;
+			if ( ($currentDateAsString !== $newDateAsString) // normalized values don't match 
+				|| ($dt->format('H:i:s') === '00:00:00') // or the entered value matches the default
+				 ) {
+				$this->heure_entry = $newDateAsString;
 				$this->modifiedColumns[] = CahierTexteCompteRenduPeer::HEURE_ENTRY;
 			}
 		} // if either are not null
@@ -546,7 +520,7 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 9; // 9 = CahierTexteCompteRenduPeer::NUM_COLUMNS - CahierTexteCompteRenduPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 9; // 9 = CahierTexteCompteRenduPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating CahierTexteCompteRendu object", $e);
@@ -968,12 +942,17 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['CahierTexteCompteRendu'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['CahierTexteCompteRendu'][$this->getPrimaryKey()] = true;
 		$keys = CahierTexteCompteRenduPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getIdCt(),
@@ -988,13 +967,16 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aGroupe) {
-				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aUtilisateurProfessionnel) {
-				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aCahierTexteSequence) {
-				$result['CahierTexteSequence'] = $this->aCahierTexteSequence->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['CahierTexteSequence'] = $this->aCahierTexteSequence->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collCahierTexteCompteRenduFichierJoints) {
+				$result['CahierTexteCompteRenduFichierJoints'] = $this->collCahierTexteCompteRenduFichierJoints->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1164,18 +1146,19 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	 *
 	 * @param      object $copyObj An object of CahierTexteCompteRendu (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setHeureEntry($this->heure_entry);
-		$copyObj->setDateCt($this->date_ct);
-		$copyObj->setContenu($this->contenu);
-		$copyObj->setVise($this->vise);
-		$copyObj->setVisa($this->visa);
-		$copyObj->setIdGroupe($this->id_groupe);
-		$copyObj->setIdLogin($this->id_login);
-		$copyObj->setIdSequence($this->id_sequence);
+		$copyObj->setHeureEntry($this->getHeureEntry());
+		$copyObj->setDateCt($this->getDateCt());
+		$copyObj->setContenu($this->getContenu());
+		$copyObj->setVise($this->getVise());
+		$copyObj->setVisa($this->getVisa());
+		$copyObj->setIdGroupe($this->getIdGroupe());
+		$copyObj->setIdLogin($this->getIdLogin());
+		$copyObj->setIdSequence($this->getIdSequence());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1190,9 +1173,10 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setIdCt(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setIdCt(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -1272,11 +1256,11 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
 			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aGroupe->addCahierTexteCompteRendus($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aGroupe->addCahierTexteCompteRendus($this);
 			 */
 		}
 		return $this->aGroupe;
@@ -1321,11 +1305,11 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if ($this->aUtilisateurProfessionnel === null && (($this->id_login !== "" && $this->id_login !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->id_login, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUtilisateurProfessionnel->addCahierTexteCompteRendus($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUtilisateurProfessionnel->addCahierTexteCompteRendus($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -1370,11 +1354,11 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 		if ($this->aCahierTexteSequence === null && ($this->id_sequence !== null)) {
 			$this->aCahierTexteSequence = CahierTexteSequenceQuery::create()->findPk($this->id_sequence, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aCahierTexteSequence->addCahierTexteCompteRendus($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aCahierTexteSequence->addCahierTexteCompteRendus($this);
 			 */
 		}
 		return $this->aCahierTexteSequence;
@@ -1401,10 +1385,16 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initCahierTexteCompteRenduFichierJoints()
+	public function initCahierTexteCompteRenduFichierJoints($overrideExisting = true)
 	{
+		if (null !== $this->collCahierTexteCompteRenduFichierJoints && !$overrideExisting) {
+			return;
+		}
 		$this->collCahierTexteCompteRenduFichierJoints = new PropelObjectCollection();
 		$this->collCahierTexteCompteRenduFichierJoints->setModel('CahierTexteCompteRenduFichierJoint');
 	}
@@ -1513,28 +1503,41 @@ abstract class BaseCahierTexteCompteRendu extends BaseObject  implements Persist
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collCahierTexteCompteRenduFichierJoints) {
-				foreach ((array) $this->collCahierTexteCompteRenduFichierJoints as $o) {
+				foreach ($this->collCahierTexteCompteRenduFichierJoints as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collCahierTexteCompteRenduFichierJoints instanceof PropelCollection) {
+			$this->collCahierTexteCompteRenduFichierJoints->clearIterator();
+		}
 		$this->collCahierTexteCompteRenduFichierJoints = null;
 		$this->aGroupe = null;
 		$this->aUtilisateurProfessionnel = null;
 		$this->aCahierTexteSequence = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(CahierTexteCompteRenduPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

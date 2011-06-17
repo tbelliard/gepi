@@ -158,7 +158,7 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -192,8 +192,17 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
@@ -209,8 +218,14 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the utilisateur_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByUtilisateurId('fooValue');   // WHERE utilisateur_id = 'fooValue'
+	 * $query->filterByUtilisateurId('%fooValue%'); // WHERE utilisateur_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $utilisateurId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
@@ -231,8 +246,19 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the a_type_id column
 	 * 
-	 * @param     int|array $aTypeId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByATypeId(1234); // WHERE a_type_id = 1234
+	 * $query->filterByATypeId(array(12, 34)); // WHERE a_type_id IN (12, 34)
+	 * $query->filterByATypeId(array('min' => 12)); // WHERE a_type_id > 12
+	 * </code>
+	 *
+	 * @see       filterByAbsenceEleveType()
+	 *
+	 * @param     mixed $aTypeId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
@@ -262,8 +288,19 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the a_motif_id column
 	 * 
-	 * @param     int|array $aMotifId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAMotifId(1234); // WHERE a_motif_id = 1234
+	 * $query->filterByAMotifId(array(12, 34)); // WHERE a_motif_id IN (12, 34)
+	 * $query->filterByAMotifId(array('min' => 12)); // WHERE a_motif_id > 12
+	 * </code>
+	 *
+	 * @see       filterByAbsenceEleveMotif()
+	 *
+	 * @param     mixed $aMotifId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
@@ -293,8 +330,19 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the a_justification_id column
 	 * 
-	 * @param     int|array $aJustificationId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAJustificationId(1234); // WHERE a_justification_id = 1234
+	 * $query->filterByAJustificationId(array(12, 34)); // WHERE a_justification_id IN (12, 34)
+	 * $query->filterByAJustificationId(array('min' => 12)); // WHERE a_justification_id > 12
+	 * </code>
+	 *
+	 * @see       filterByAbsenceEleveJustification()
+	 *
+	 * @param     mixed $aJustificationId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
@@ -324,8 +372,14 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the commentaire column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCommentaire('fooValue');   // WHERE commentaire = 'fooValue'
+	 * $query->filterByCommentaire('%fooValue%'); // WHERE commentaire LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $commentaire The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
@@ -346,8 +400,14 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the modifie_par_utilisateur_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByModifieParUtilisateurId('fooValue');   // WHERE modifie_par_utilisateur_id = 'fooValue'
+	 * $query->filterByModifieParUtilisateurId('%fooValue%'); // WHERE modifie_par_utilisateur_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $modifieParUtilisateurId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
@@ -368,8 +428,19 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the created_at column
 	 * 
-	 * @param     string|array $createdAt The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+	 * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+	 * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $createdAt The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
@@ -399,8 +470,19 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the updated_at column
 	 * 
-	 * @param     string|array $updatedAt The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+	 * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+	 * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $updatedAt The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
@@ -430,15 +512,25 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
 	 */
 	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::UTILISATEUR_ID, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByUtilisateurProfessionnel() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**
@@ -494,15 +586,25 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AbsenceEleveType object
 	 *
-	 * @param     AbsenceEleveType $absenceEleveType  the related object to use as filter
+	 * @param     AbsenceEleveType|PropelCollection $absenceEleveType The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
 	 */
 	public function filterByAbsenceEleveType($absenceEleveType, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTraitementPeer::A_TYPE_ID, $absenceEleveType->getId(), $comparison);
+		if ($absenceEleveType instanceof AbsenceEleveType) {
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::A_TYPE_ID, $absenceEleveType->getId(), $comparison);
+		} elseif ($absenceEleveType instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::A_TYPE_ID, $absenceEleveType->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAbsenceEleveType() only accepts arguments of type AbsenceEleveType or PropelCollection');
+		}
 	}
 
 	/**
@@ -558,15 +660,25 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AbsenceEleveMotif object
 	 *
-	 * @param     AbsenceEleveMotif $absenceEleveMotif  the related object to use as filter
+	 * @param     AbsenceEleveMotif|PropelCollection $absenceEleveMotif The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
 	 */
 	public function filterByAbsenceEleveMotif($absenceEleveMotif, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTraitementPeer::A_MOTIF_ID, $absenceEleveMotif->getId(), $comparison);
+		if ($absenceEleveMotif instanceof AbsenceEleveMotif) {
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::A_MOTIF_ID, $absenceEleveMotif->getId(), $comparison);
+		} elseif ($absenceEleveMotif instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::A_MOTIF_ID, $absenceEleveMotif->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAbsenceEleveMotif() only accepts arguments of type AbsenceEleveMotif or PropelCollection');
+		}
 	}
 
 	/**
@@ -622,15 +734,25 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AbsenceEleveJustification object
 	 *
-	 * @param     AbsenceEleveJustification $absenceEleveJustification  the related object to use as filter
+	 * @param     AbsenceEleveJustification|PropelCollection $absenceEleveJustification The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
 	 */
 	public function filterByAbsenceEleveJustification($absenceEleveJustification, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, $absenceEleveJustification->getId(), $comparison);
+		if ($absenceEleveJustification instanceof AbsenceEleveJustification) {
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, $absenceEleveJustification->getId(), $comparison);
+		} elseif ($absenceEleveJustification instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, $absenceEleveJustification->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAbsenceEleveJustification() only accepts arguments of type AbsenceEleveJustification or PropelCollection');
+		}
 	}
 
 	/**
@@ -686,15 +808,25 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTraitementQuery The current query, for fluid interface
 	 */
 	public function filterByModifieParUtilisateur($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTraitementPeer::MODIFIE_PAR_UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::MODIFIE_PAR_UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::MODIFIE_PAR_UTILISATEUR_ID, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByModifieParUtilisateur() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**
@@ -757,8 +889,17 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 */
 	public function filterByJTraitementSaisieEleve($jTraitementSaisieEleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTraitementPeer::ID, $jTraitementSaisieEleve->getATraitementId(), $comparison);
+		if ($jTraitementSaisieEleve instanceof JTraitementSaisieEleve) {
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::ID, $jTraitementSaisieEleve->getATraitementId(), $comparison);
+		} elseif ($jTraitementSaisieEleve instanceof PropelCollection) {
+			return $this
+				->useJTraitementSaisieEleveQuery()
+					->filterByPrimaryKeys($jTraitementSaisieEleve->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJTraitementSaisieEleve() only accepts arguments of type JTraitementSaisieEleve or PropelCollection');
+		}
 	}
 
 	/**
@@ -821,8 +962,17 @@ abstract class BaseAbsenceEleveTraitementQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveNotification($absenceEleveNotification, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTraitementPeer::ID, $absenceEleveNotification->getATraitementId(), $comparison);
+		if ($absenceEleveNotification instanceof AbsenceEleveNotification) {
+			return $this
+				->addUsingAlias(AbsenceEleveTraitementPeer::ID, $absenceEleveNotification->getATraitementId(), $comparison);
+		} elseif ($absenceEleveNotification instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveNotificationQuery()
+					->filterByPrimaryKeys($absenceEleveNotification->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveNotification() only accepts arguments of type AbsenceEleveNotification or PropelCollection');
+		}
 	}
 
 	/**

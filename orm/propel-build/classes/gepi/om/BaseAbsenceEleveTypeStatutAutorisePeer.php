@@ -31,6 +31,9 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 3;
+
 	/** the column name for the ID field */
 	const ID = 'a_types_statut.ID';
 
@@ -40,6 +43,9 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 	/** the column name for the STATUT field */
 	const STATUT = 'a_types_statut.STATUT';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveTypeStatutAutorise objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -55,7 +61,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'IdAType', 'Statut', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'idAType', 'statut', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::ID_A_TYPE, self::STATUT, ),
@@ -70,7 +76,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IdAType' => 1, 'Statut' => 2, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'idAType' => 1, 'statut' => 2, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ID_A_TYPE => 1, self::STATUT => 2, ),
@@ -275,7 +281,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 	 * @param      AbsenceEleveTypeStatutAutorise $value A AbsenceEleveTypeStatutAutorise object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(AbsenceEleveTypeStatutAutorise $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -430,7 +436,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + AbsenceEleveTypeStatutAutorisePeer::NUM_COLUMNS;
+			$col = $startcol + AbsenceEleveTypeStatutAutorisePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = AbsenceEleveTypeStatutAutorisePeer::OM_CLASS;
 			$obj = new $cls();
@@ -509,7 +515,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 		}
 
 		AbsenceEleveTypeStatutAutorisePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveTypeStatutAutorisePeer::NUM_COLUMNS - AbsenceEleveTypeStatutAutorisePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveTypeStatutAutorisePeer::NUM_HYDRATE_COLUMNS;
 		AbsenceEleveTypePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveTypeStatutAutorisePeer::ID_A_TYPE, AbsenceEleveTypePeer::ID, $join_behavior);
@@ -625,10 +631,10 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 		}
 
 		AbsenceEleveTypeStatutAutorisePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveTypeStatutAutorisePeer::NUM_COLUMNS - AbsenceEleveTypeStatutAutorisePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveTypeStatutAutorisePeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveTypePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AbsenceEleveTypePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveTypeStatutAutorisePeer::ID_A_TYPE, AbsenceEleveTypePeer::ID, $join_behavior);
 
@@ -894,7 +900,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorisePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(AbsenceEleveTypeStatutAutorise $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

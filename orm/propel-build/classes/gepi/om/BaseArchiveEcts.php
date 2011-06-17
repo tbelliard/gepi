@@ -494,7 +494,7 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 11; // 11 = ArchiveEctsPeer::NUM_COLUMNS - ArchiveEctsPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 11; // 11 = ArchiveEctsPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating ArchiveEcts object", $e);
@@ -870,12 +870,17 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['ArchiveEcts'][serialize($this->getPrimaryKey())])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['ArchiveEcts'][serialize($this->getPrimaryKey())] = true;
 		$keys = ArchiveEctsPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -892,7 +897,7 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aEleve) {
-				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -1085,23 +1090,25 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of ArchiveEcts (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setAnnee($this->annee);
-		$copyObj->setIne($this->ine);
-		$copyObj->setClasse($this->classe);
-		$copyObj->setNumPeriode($this->num_periode);
-		$copyObj->setNomPeriode($this->nom_periode);
-		$copyObj->setSpecial($this->special);
-		$copyObj->setMatiere($this->matiere);
-		$copyObj->setProfs($this->profs);
-		$copyObj->setValeur($this->valeur);
-		$copyObj->setMention($this->mention);
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		$copyObj->setAnnee($this->getAnnee());
+		$copyObj->setIne($this->getIne());
+		$copyObj->setClasse($this->getClasse());
+		$copyObj->setNumPeriode($this->getNumPeriode());
+		$copyObj->setNomPeriode($this->getNomPeriode());
+		$copyObj->setSpecial($this->getSpecial());
+		$copyObj->setMatiere($this->getMatiere());
+		$copyObj->setProfs($this->getProfs());
+		$copyObj->setValeur($this->getValeur());
+		$copyObj->setMention($this->getMention());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -1183,11 +1190,11 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 				->filterByArchiveEcts($this) // here
 				->findOne($con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aEleve->addArchiveEctss($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aEleve->addArchiveEctss($this);
 			 */
 		}
 		return $this->aEleve;
@@ -1218,13 +1225,13 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
@@ -1232,6 +1239,16 @@ abstract class BaseArchiveEcts extends BaseObject  implements Persistent
 		} // if ($deep)
 
 		$this->aEleve = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(ArchiveEctsPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

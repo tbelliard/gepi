@@ -552,45 +552,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [debut_abs] column to a normalized version of the date/time value specified.
 	 * Debut de l'absence en timestamp UNIX
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
 	 */
 	public function setDebutAbs($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->debut_abs !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->debut_abs !== null && $tmpDt = new DateTime($this->debut_abs)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->debut_abs = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->debut_abs !== null || $dt !== null) {
+			$currentDateAsString = ($this->debut_abs !== null && $tmpDt = new DateTime($this->debut_abs)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->debut_abs = $newDateAsString;
 				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::DEBUT_ABS;
 			}
 		} // if either are not null
@@ -601,45 +574,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [fin_abs] column to a normalized version of the date/time value specified.
 	 * Fin de l'absence en timestamp UNIX
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
 	 */
 	public function setFinAbs($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->fin_abs !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->fin_abs !== null && $tmpDt = new DateTime($this->fin_abs)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->fin_abs = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->fin_abs !== null || $dt !== null) {
+			$currentDateAsString = ($this->fin_abs !== null && $tmpDt = new DateTime($this->fin_abs)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->fin_abs = $newDateAsString;
 				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::FIN_ABS;
 			}
 		} // if either are not null
@@ -838,45 +784,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
 	 */
 	public function setCreatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->created_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->created_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->created_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->created_at = $newDateAsString;
 				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::CREATED_AT;
 			}
 		} // if either are not null
@@ -887,45 +806,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
 	 * 
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
 	 */
 	public function setUpdatedAt($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->updated_at !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->updated_at = ($dt ? $dt->format('Y-m-d H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->updated_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->updated_at = $newDateAsString;
 				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::UPDATED_AT;
 			}
 		} // if either are not null
@@ -989,7 +881,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 16; // 16 = AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 16; // 16 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveSaisie object", $e);
@@ -1546,12 +1438,17 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['AbsenceEleveSaisie'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['AbsenceEleveSaisie'][$this->getPrimaryKey()] = true;
 		$keys = AbsenceEleveSaisiePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -1573,31 +1470,34 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
-				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aEleve) {
-				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aEdtCreneau) {
-				$result['EdtCreneau'] = $this->aEdtCreneau->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['EdtCreneau'] = $this->aEdtCreneau->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aEdtEmplacementCours) {
-				$result['EdtEmplacementCours'] = $this->aEdtEmplacementCours->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['EdtEmplacementCours'] = $this->aEdtEmplacementCours->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aGroupe) {
-				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aClasse) {
-				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aAidDetails) {
-				$result['AidDetails'] = $this->aAidDetails->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['AidDetails'] = $this->aAidDetails->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aModifieParUtilisateur) {
-				$result['ModifieParUtilisateur'] = $this->aModifieParUtilisateur->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['ModifieParUtilisateur'] = $this->aModifieParUtilisateur->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aAbsenceEleveLieu) {
-				$result['AbsenceEleveLieu'] = $this->aAbsenceEleveLieu->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['AbsenceEleveLieu'] = $this->aAbsenceEleveLieu->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collJTraitementSaisieEleves) {
+				$result['JTraitementSaisieEleves'] = $this->collJTraitementSaisieEleves->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1802,25 +1702,26 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of AbsenceEleveSaisie (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setUtilisateurId($this->utilisateur_id);
-		$copyObj->setEleveId($this->eleve_id);
-		$copyObj->setCommentaire($this->commentaire);
-		$copyObj->setDebutAbs($this->debut_abs);
-		$copyObj->setFinAbs($this->fin_abs);
-		$copyObj->setIdEdtCreneau($this->id_edt_creneau);
-		$copyObj->setIdEdtEmplacementCours($this->id_edt_emplacement_cours);
-		$copyObj->setIdGroupe($this->id_groupe);
-		$copyObj->setIdClasse($this->id_classe);
-		$copyObj->setIdAid($this->id_aid);
-		$copyObj->setIdSIncidents($this->id_s_incidents);
-		$copyObj->setModifieParUtilisateurId($this->modifie_par_utilisateur_id);
-		$copyObj->setIdLieu($this->id_lieu);
-		$copyObj->setCreatedAt($this->created_at);
-		$copyObj->setUpdatedAt($this->updated_at);
+		$copyObj->setUtilisateurId($this->getUtilisateurId());
+		$copyObj->setEleveId($this->getEleveId());
+		$copyObj->setCommentaire($this->getCommentaire());
+		$copyObj->setDebutAbs($this->getDebutAbs());
+		$copyObj->setFinAbs($this->getFinAbs());
+		$copyObj->setIdEdtCreneau($this->getIdEdtCreneau());
+		$copyObj->setIdEdtEmplacementCours($this->getIdEdtEmplacementCours());
+		$copyObj->setIdGroupe($this->getIdGroupe());
+		$copyObj->setIdClasse($this->getIdClasse());
+		$copyObj->setIdAid($this->getIdAid());
+		$copyObj->setIdSIncidents($this->getIdSIncidents());
+		$copyObj->setModifieParUtilisateurId($this->getModifieParUtilisateurId());
+		$copyObj->setIdLieu($this->getIdLieu());
+		$copyObj->setCreatedAt($this->getCreatedAt());
+		$copyObj->setUpdatedAt($this->getUpdatedAt());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1835,9 +1736,10 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -1917,11 +1819,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aUtilisateurProfessionnel === null && (($this->utilisateur_id !== "" && $this->utilisateur_id !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->utilisateur_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUtilisateurProfessionnel->addAbsenceEleveSaisies($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUtilisateurProfessionnel->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -1966,11 +1868,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aEleve === null && ($this->eleve_id !== null)) {
 			$this->aEleve = EleveQuery::create()->findPk($this->eleve_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aEleve->addAbsenceEleveSaisies($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aEleve->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aEleve;
@@ -2015,11 +1917,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aEdtCreneau === null && ($this->id_edt_creneau !== null)) {
 			$this->aEdtCreneau = EdtCreneauQuery::create()->findPk($this->id_edt_creneau, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aEdtCreneau->addAbsenceEleveSaisies($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aEdtCreneau->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aEdtCreneau;
@@ -2064,11 +1966,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aEdtEmplacementCours === null && ($this->id_edt_emplacement_cours !== null)) {
 			$this->aEdtEmplacementCours = EdtEmplacementCoursQuery::create()->findPk($this->id_edt_emplacement_cours, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aEdtEmplacementCours->addAbsenceEleveSaisies($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aEdtEmplacementCours->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aEdtEmplacementCours;
@@ -2113,11 +2015,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
 			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aGroupe->addAbsenceEleveSaisies($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aGroupe->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aGroupe;
@@ -2162,11 +2064,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aClasse === null && ($this->id_classe !== null)) {
 			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aClasse->addAbsenceEleveSaisies($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aClasse->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aClasse;
@@ -2211,11 +2113,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aAidDetails === null && ($this->id_aid !== null)) {
 			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aAidDetails->addAbsenceEleveSaisies($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aAidDetails->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aAidDetails;
@@ -2260,11 +2162,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aModifieParUtilisateur === null && (($this->modifie_par_utilisateur_id !== "" && $this->modifie_par_utilisateur_id !== null))) {
 			$this->aModifieParUtilisateur = UtilisateurProfessionnelQuery::create()->findPk($this->modifie_par_utilisateur_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aModifieParUtilisateur->addModifiedAbsenceEleveSaisies($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aModifieParUtilisateur->addModifiedAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aModifieParUtilisateur;
@@ -2309,11 +2211,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->aAbsenceEleveLieu === null && ($this->id_lieu !== null)) {
 			$this->aAbsenceEleveLieu = AbsenceEleveLieuQuery::create()->findPk($this->id_lieu, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aAbsenceEleveLieu->addAbsenceEleveSaisies($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aAbsenceEleveLieu->addAbsenceEleveSaisies($this);
 			 */
 		}
 		return $this->aAbsenceEleveLieu;
@@ -2340,10 +2242,16 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJTraitementSaisieEleves()
+	public function initJTraitementSaisieEleves($overrideExisting = true)
 	{
+		if (null !== $this->collJTraitementSaisieEleves && !$overrideExisting) {
+			return;
+		}
 		$this->collJTraitementSaisieEleves = new PropelObjectCollection();
 		$this->collJTraitementSaisieEleves->setModel('JTraitementSaisieEleve');
 	}
@@ -2596,25 +2504,37 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collJTraitementSaisieEleves) {
-				foreach ((array) $this->collJTraitementSaisieEleves as $o) {
+				foreach ($this->collJTraitementSaisieEleves as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collAbsenceEleveTraitements) {
+				foreach ($this->collAbsenceEleveTraitements as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collJTraitementSaisieEleves instanceof PropelCollection) {
+			$this->collJTraitementSaisieEleves->clearIterator();
+		}
 		$this->collJTraitementSaisieEleves = null;
+		if ($this->collAbsenceEleveTraitements instanceof PropelCollection) {
+			$this->collAbsenceEleveTraitements->clearIterator();
+		}
+		$this->collAbsenceEleveTraitements = null;
 		$this->aUtilisateurProfessionnel = null;
 		$this->aEleve = null;
 		$this->aEdtCreneau = null;
@@ -2624,6 +2544,16 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->aAidDetails = null;
 		$this->aModifieParUtilisateur = null;
 		$this->aAbsenceEleveLieu = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(AbsenceEleveSaisiePeer::DEFAULT_STRING_FORMAT);
 	}
 
 	// timestampable behavior

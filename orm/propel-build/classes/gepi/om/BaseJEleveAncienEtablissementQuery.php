@@ -109,7 +109,7 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,14 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_eleve column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdEleve('fooValue');   // WHERE id_eleve = 'fooValue'
+	 * $query->filterByIdEleve('%fooValue%'); // WHERE id_eleve LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idEleve The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveAncienEtablissementQuery The current query, for fluid interface
@@ -178,8 +184,14 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_etablissement column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdEtablissement('fooValue');   // WHERE id_etablissement = 'fooValue'
+	 * $query->filterByIdEtablissement('%fooValue%'); // WHERE id_etablissement LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idEtablissement The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveAncienEtablissementQuery The current query, for fluid interface
@@ -200,15 +212,25 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Eleve object
 	 *
-	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     Eleve|PropelCollection $eleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveAncienEtablissementQuery The current query, for fluid interface
 	 */
 	public function filterByEleve($eleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveAncienEtablissementPeer::ID_ELEVE, $eleve->getIdEleve(), $comparison);
+		if ($eleve instanceof Eleve) {
+			return $this
+				->addUsingAlias(JEleveAncienEtablissementPeer::ID_ELEVE, $eleve->getIdEleve(), $comparison);
+		} elseif ($eleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveAncienEtablissementPeer::ID_ELEVE, $eleve->toKeyValue('PrimaryKey', 'IdEleve'), $comparison);
+		} else {
+			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
+		}
 	}
 
 	/**
@@ -264,15 +286,25 @@ abstract class BaseJEleveAncienEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AncienEtablissement object
 	 *
-	 * @param     AncienEtablissement $ancienEtablissement  the related object to use as filter
+	 * @param     AncienEtablissement|PropelCollection $ancienEtablissement The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveAncienEtablissementQuery The current query, for fluid interface
 	 */
 	public function filterByAncienEtablissement($ancienEtablissement, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $ancienEtablissement->getId(), $comparison);
+		if ($ancienEtablissement instanceof AncienEtablissement) {
+			return $this
+				->addUsingAlias(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $ancienEtablissement->getId(), $comparison);
+		} elseif ($ancienEtablissement instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveAncienEtablissementPeer::ID_ETABLISSEMENT, $ancienEtablissement->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAncienEtablissement() only accepts arguments of type AncienEtablissement or PropelCollection');
+		}
 	}
 
 	/**

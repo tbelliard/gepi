@@ -170,7 +170,7 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -204,8 +204,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_cours column
 	 * 
-	 * @param     int|array $idCours The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdCours(1234); // WHERE id_cours = 1234
+	 * $query->filterByIdCours(array(12, 34)); // WHERE id_cours IN (12, 34)
+	 * $query->filterByIdCours(array('min' => 12)); // WHERE id_cours > 12
+	 * </code>
+	 *
+	 * @param     mixed $idCours The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -221,8 +230,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_groupe column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdGroupe('fooValue');   // WHERE id_groupe = 'fooValue'
+	 * $query->filterByIdGroupe('%fooValue%'); // WHERE id_groupe LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idGroupe The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -243,8 +258,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_aid column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdAid('fooValue');   // WHERE id_aid = 'fooValue'
+	 * $query->filterByIdAid('%fooValue%'); // WHERE id_aid LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idAid The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -265,8 +286,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_salle column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdSalle('fooValue');   // WHERE id_salle = 'fooValue'
+	 * $query->filterByIdSalle('%fooValue%'); // WHERE id_salle LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idSalle The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -287,8 +314,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the jour_semaine column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByJourSemaine('fooValue');   // WHERE jour_semaine = 'fooValue'
+	 * $query->filterByJourSemaine('%fooValue%'); // WHERE jour_semaine LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $jourSemaine The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -309,8 +342,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_definie_periode column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdDefiniePeriode('fooValue');   // WHERE id_definie_periode = 'fooValue'
+	 * $query->filterByIdDefiniePeriode('%fooValue%'); // WHERE id_definie_periode LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idDefiniePeriode The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -331,8 +370,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the duree column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDuree('fooValue');   // WHERE duree = 'fooValue'
+	 * $query->filterByDuree('%fooValue%'); // WHERE duree LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $duree The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -353,8 +398,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the heuredeb_dec column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByHeuredebDec('fooValue');   // WHERE heuredeb_dec = 'fooValue'
+	 * $query->filterByHeuredebDec('%fooValue%'); // WHERE heuredeb_dec LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $heuredebDec The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -375,8 +426,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_semaine column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTypeSemaine('fooValue');   // WHERE id_semaine = 'fooValue'
+	 * $query->filterByTypeSemaine('%fooValue%'); // WHERE id_semaine LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $typeSemaine The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -397,8 +454,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_calendrier column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdCalendrier('fooValue');   // WHERE id_calendrier = 'fooValue'
+	 * $query->filterByIdCalendrier('%fooValue%'); // WHERE id_calendrier LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idCalendrier The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -419,8 +482,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the modif_edt column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByModifEdt('fooValue');   // WHERE modif_edt = 'fooValue'
+	 * $query->filterByModifEdt('%fooValue%'); // WHERE modif_edt LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $modifEdt The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -441,8 +510,14 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query on the login_prof column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLoginProf('fooValue');   // WHERE login_prof = 'fooValue'
+	 * $query->filterByLoginProf('%fooValue%'); // WHERE login_prof LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $loginProf The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
@@ -463,15 +538,25 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Groupe object
 	 *
-	 * @param     Groupe $groupe  the related object to use as filter
+	 * @param     Groupe|PropelCollection $groupe The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
 	public function filterByGroupe($groupe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $groupe->getId(), $comparison);
+		if ($groupe instanceof Groupe) {
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $groupe->getId(), $comparison);
+		} elseif ($groupe instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_GROUPE, $groupe->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByGroupe() only accepts arguments of type Groupe or PropelCollection');
+		}
 	}
 
 	/**
@@ -527,15 +612,25 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AidDetails object
 	 *
-	 * @param     AidDetails $aidDetails  the related object to use as filter
+	 * @param     AidDetails|PropelCollection $aidDetails The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
 	public function filterByAidDetails($aidDetails, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $aidDetails->getId(), $comparison);
+		if ($aidDetails instanceof AidDetails) {
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $aidDetails->getId(), $comparison);
+		} elseif ($aidDetails instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_AID, $aidDetails->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAidDetails() only accepts arguments of type AidDetails or PropelCollection');
+		}
 	}
 
 	/**
@@ -591,15 +686,25 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related EdtSalle object
 	 *
-	 * @param     EdtSalle $edtSalle  the related object to use as filter
+	 * @param     EdtSalle|PropelCollection $edtSalle The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
 	public function filterByEdtSalle($edtSalle, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $edtSalle->getIdSalle(), $comparison);
+		if ($edtSalle instanceof EdtSalle) {
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $edtSalle->getIdSalle(), $comparison);
+		} elseif ($edtSalle instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_SALLE, $edtSalle->toKeyValue('PrimaryKey', 'IdSalle'), $comparison);
+		} else {
+			throw new PropelException('filterByEdtSalle() only accepts arguments of type EdtSalle or PropelCollection');
+		}
 	}
 
 	/**
@@ -655,15 +760,25 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related EdtCreneau object
 	 *
-	 * @param     EdtCreneau $edtCreneau  the related object to use as filter
+	 * @param     EdtCreneau|PropelCollection $edtCreneau The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
 	public function filterByEdtCreneau($edtCreneau, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $edtCreneau->getIdDefiniePeriode(), $comparison);
+		if ($edtCreneau instanceof EdtCreneau) {
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $edtCreneau->getIdDefiniePeriode(), $comparison);
+		} elseif ($edtCreneau instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, $edtCreneau->toKeyValue('PrimaryKey', 'IdDefiniePeriode'), $comparison);
+		} else {
+			throw new PropelException('filterByEdtCreneau() only accepts arguments of type EdtCreneau or PropelCollection');
+		}
 	}
 
 	/**
@@ -719,15 +834,25 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related EdtCalendrierPeriode object
 	 *
-	 * @param     EdtCalendrierPeriode $edtCalendrierPeriode  the related object to use as filter
+	 * @param     EdtCalendrierPeriode|PropelCollection $edtCalendrierPeriode The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
 	public function filterByEdtCalendrierPeriode($edtCalendrierPeriode, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtEmplacementCoursPeer::ID_CALENDRIER, $edtCalendrierPeriode->getIdCalendrier(), $comparison);
+		if ($edtCalendrierPeriode instanceof EdtCalendrierPeriode) {
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_CALENDRIER, $edtCalendrierPeriode->getIdCalendrier(), $comparison);
+		} elseif ($edtCalendrierPeriode instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_CALENDRIER, $edtCalendrierPeriode->toKeyValue('PrimaryKey', 'IdCalendrier'), $comparison);
+		} else {
+			throw new PropelException('filterByEdtCalendrierPeriode() only accepts arguments of type EdtCalendrierPeriode or PropelCollection');
+		}
 	}
 
 	/**
@@ -783,15 +908,25 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtEmplacementCoursQuery The current query, for fluid interface
 	 */
 	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtEmplacementCoursPeer::LOGIN_PROF, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::LOGIN_PROF, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::LOGIN_PROF, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByUtilisateurProfessionnel() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**
@@ -854,8 +989,17 @@ abstract class BaseEdtEmplacementCoursQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtEmplacementCoursPeer::ID_COURS, $absenceEleveSaisie->getIdEdtEmplacementCours(), $comparison);
+		if ($absenceEleveSaisie instanceof AbsenceEleveSaisie) {
+			return $this
+				->addUsingAlias(EdtEmplacementCoursPeer::ID_COURS, $absenceEleveSaisie->getIdEdtEmplacementCours(), $comparison);
+		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveSaisieQuery()
+					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
+		}
 	}
 
 	/**

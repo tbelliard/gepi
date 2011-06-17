@@ -246,7 +246,7 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 4; // 4 = CategorieMatierePeer::NUM_COLUMNS - CategorieMatierePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 4; // 4 = CategorieMatierePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating CategorieMatiere object", $e);
@@ -628,11 +628,17 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['CategorieMatiere'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['CategorieMatiere'][$this->getPrimaryKey()] = true;
 		$keys = CategorieMatierePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -640,6 +646,17 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 			$keys[2] => $this->getNomComplet(),
 			$keys[3] => $this->getPriority(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->collJGroupesClassess) {
+				$result['JGroupesClassess'] = $this->collJGroupesClassess->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collMatieres) {
+				$result['Matieres'] = $this->collMatieres->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJCategoriesMatieresClassess) {
+				$result['JCategoriesMatieresClassess'] = $this->collJCategoriesMatieresClassess->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+		}
 		return $result;
 	}
 
@@ -782,13 +799,14 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of CategorieMatiere (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setNomCourt($this->nom_court);
-		$copyObj->setNomComplet($this->nom_complet);
-		$copyObj->setPriority($this->priority);
+		$copyObj->setNomCourt($this->getNomCourt());
+		$copyObj->setNomComplet($this->getNomComplet());
+		$copyObj->setPriority($this->getPriority());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -815,9 +833,10 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -879,10 +898,16 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJGroupesClassess()
+	public function initJGroupesClassess($overrideExisting = true)
 	{
+		if (null !== $this->collJGroupesClassess && !$overrideExisting) {
+			return;
+		}
 		$this->collJGroupesClassess = new PropelObjectCollection();
 		$this->collJGroupesClassess->setModel('JGroupesClasses');
 	}
@@ -1038,10 +1063,16 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initMatieres()
+	public function initMatieres($overrideExisting = true)
 	{
+		if (null !== $this->collMatieres && !$overrideExisting) {
+			return;
+		}
 		$this->collMatieres = new PropelObjectCollection();
 		$this->collMatieres->setModel('Matiere');
 	}
@@ -1147,10 +1178,16 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJCategoriesMatieresClassess()
+	public function initJCategoriesMatieresClassess($overrideExisting = true)
 	{
+		if (null !== $this->collJCategoriesMatieresClassess && !$overrideExisting) {
+			return;
+		}
 		$this->collJCategoriesMatieresClassess = new PropelObjectCollection();
 		$this->collJCategoriesMatieresClassess->setModel('JCategoriesMatieresClasses');
 	}
@@ -1391,37 +1428,65 @@ abstract class BaseCategorieMatiere extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collJGroupesClassess) {
-				foreach ((array) $this->collJGroupesClassess as $o) {
+				foreach ($this->collJGroupesClassess as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collMatieres) {
-				foreach ((array) $this->collMatieres as $o) {
+				foreach ($this->collMatieres as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collJCategoriesMatieresClassess) {
-				foreach ((array) $this->collJCategoriesMatieresClassess as $o) {
+				foreach ($this->collJCategoriesMatieresClassess as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collClasses) {
+				foreach ($this->collClasses as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collJGroupesClassess instanceof PropelCollection) {
+			$this->collJGroupesClassess->clearIterator();
+		}
 		$this->collJGroupesClassess = null;
+		if ($this->collMatieres instanceof PropelCollection) {
+			$this->collMatieres->clearIterator();
+		}
 		$this->collMatieres = null;
+		if ($this->collJCategoriesMatieresClassess instanceof PropelCollection) {
+			$this->collJCategoriesMatieresClassess->clearIterator();
+		}
 		$this->collJCategoriesMatieresClassess = null;
+		if ($this->collClasses instanceof PropelCollection) {
+			$this->collClasses->clearIterator();
+		}
+		$this->collClasses = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(CategorieMatierePeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

@@ -31,6 +31,9 @@ abstract class BaseEdtEmplacementCoursPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 12;
+
 	/** the column name for the ID_COURS field */
 	const ID_COURS = 'edt_cours.ID_COURS';
 
@@ -67,6 +70,9 @@ abstract class BaseEdtEmplacementCoursPeer {
 	/** the column name for the LOGIN_PROF field */
 	const LOGIN_PROF = 'edt_cours.LOGIN_PROF';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of EdtEmplacementCours objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -82,7 +88,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('IdCours', 'IdGroupe', 'IdAid', 'IdSalle', 'JourSemaine', 'IdDefiniePeriode', 'Duree', 'HeuredebDec', 'TypeSemaine', 'IdCalendrier', 'ModifEdt', 'LoginProf', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idCours', 'idGroupe', 'idAid', 'idSalle', 'jourSemaine', 'idDefiniePeriode', 'duree', 'heuredebDec', 'typeSemaine', 'idCalendrier', 'modifEdt', 'loginProf', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_COURS, self::ID_GROUPE, self::ID_AID, self::ID_SALLE, self::JOUR_SEMAINE, self::ID_DEFINIE_PERIODE, self::DUREE, self::HEUREDEB_DEC, self::ID_SEMAINE, self::ID_CALENDRIER, self::MODIF_EDT, self::LOGIN_PROF, ),
@@ -97,7 +103,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('IdCours' => 0, 'IdGroupe' => 1, 'IdAid' => 2, 'IdSalle' => 3, 'JourSemaine' => 4, 'IdDefiniePeriode' => 5, 'Duree' => 6, 'HeuredebDec' => 7, 'TypeSemaine' => 8, 'IdCalendrier' => 9, 'ModifEdt' => 10, 'LoginProf' => 11, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idCours' => 0, 'idGroupe' => 1, 'idAid' => 2, 'idSalle' => 3, 'jourSemaine' => 4, 'idDefiniePeriode' => 5, 'duree' => 6, 'heuredebDec' => 7, 'typeSemaine' => 8, 'idCalendrier' => 9, 'modifEdt' => 10, 'loginProf' => 11, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_COURS => 0, self::ID_GROUPE => 1, self::ID_AID => 2, self::ID_SALLE => 3, self::JOUR_SEMAINE => 4, self::ID_DEFINIE_PERIODE => 5, self::DUREE => 6, self::HEUREDEB_DEC => 7, self::ID_SEMAINE => 8, self::ID_CALENDRIER => 9, self::MODIF_EDT => 10, self::LOGIN_PROF => 11, ),
@@ -320,7 +326,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 * @param      EdtEmplacementCours $value A EdtEmplacementCours object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(EdtEmplacementCours $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -478,7 +484,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + EdtEmplacementCoursPeer::NUM_COLUMNS;
+			$col = $startcol + EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = EdtEmplacementCoursPeer::OM_CLASS;
 			$obj = new $cls();
@@ -807,7 +813,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 		GroupePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
@@ -873,7 +879,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 		AidDetailsPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
@@ -939,7 +945,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 		EdtSallePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_SALLE, EdtSallePeer::ID_SALLE, $join_behavior);
@@ -1005,7 +1011,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 		EdtCreneauPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_DEFINIE_PERIODE, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
@@ -1071,7 +1077,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 		EdtCalendrierPeriodePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_CALENDRIER, EdtCalendrierPeriodePeer::ID_CALENDRIER, $join_behavior);
@@ -1137,7 +1143,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::LOGIN_PROF, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -1263,25 +1269,25 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol2 = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtSallePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtSallePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCalendrierPeriodePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + EdtCalendrierPeriodePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1797,22 +1803,22 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol2 = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtSallePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + EdtSallePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCalendrierPeriodePeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtCalendrierPeriodePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
 
@@ -1966,22 +1972,22 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol2 = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtSallePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + EdtSallePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCalendrierPeriodePeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtCalendrierPeriodePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -2135,22 +2141,22 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol2 = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCalendrierPeriodePeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtCalendrierPeriodePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -2304,22 +2310,22 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol2 = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtSallePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtSallePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCalendrierPeriodePeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtCalendrierPeriodePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -2473,22 +2479,22 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol2 = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtSallePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtSallePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -2642,22 +2648,22 @@ abstract class BaseEdtEmplacementCoursPeer {
 		}
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol2 = (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtSallePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtSallePeer::NUM_COLUMNS - EdtSallePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtSallePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCalendrierPeriodePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + EdtCalendrierPeriodePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(EdtEmplacementCoursPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -3044,7 +3050,7 @@ abstract class BaseEdtEmplacementCoursPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(EdtEmplacementCours $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

@@ -110,7 +110,7 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -144,8 +144,14 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	/**
 	 * Filter the query on the login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
+	 * $query->filterByLogin('%fooValue%'); // WHERE login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $login The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveRegimeDoublantQuery The current query, for fluid interface
@@ -166,8 +172,14 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	/**
 	 * Filter the query on the doublant column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDoublant('fooValue');   // WHERE doublant = 'fooValue'
+	 * $query->filterByDoublant('%fooValue%'); // WHERE doublant LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $doublant The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveRegimeDoublantQuery The current query, for fluid interface
@@ -188,8 +200,14 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	/**
 	 * Filter the query on the regime column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRegime('fooValue');   // WHERE regime = 'fooValue'
+	 * $query->filterByRegime('%fooValue%'); // WHERE regime LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $regime The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveRegimeDoublantQuery The current query, for fluid interface
@@ -210,15 +228,25 @@ abstract class BaseEleveRegimeDoublantQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Eleve object
 	 *
-	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     Eleve|PropelCollection $eleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveRegimeDoublantQuery The current query, for fluid interface
 	 */
 	public function filterByEleve($eleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EleveRegimeDoublantPeer::LOGIN, $eleve->getLogin(), $comparison);
+		if ($eleve instanceof Eleve) {
+			return $this
+				->addUsingAlias(EleveRegimeDoublantPeer::LOGIN, $eleve->getLogin(), $comparison);
+		} elseif ($eleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(EleveRegimeDoublantPeer::LOGIN, $eleve->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
+		}
 	}
 
 	/**

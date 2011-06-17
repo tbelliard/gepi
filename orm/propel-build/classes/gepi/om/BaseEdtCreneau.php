@@ -273,45 +273,18 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [heuredebut_definie_periode] column to a normalized version of the date/time value specified.
 	 * Heure de debut du creneau
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     EdtCreneau The current object (for fluent API support)
 	 */
 	public function setHeuredebutDefiniePeriode($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->heuredebut_definie_periode !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->heuredebut_definie_periode !== null && $tmpDt = new DateTime($this->heuredebut_definie_periode)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->heuredebut_definie_periode = ($dt ? $dt->format('H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->heuredebut_definie_periode !== null || $dt !== null) {
+			$currentDateAsString = ($this->heuredebut_definie_periode !== null && $tmpDt = new DateTime($this->heuredebut_definie_periode)) ? $tmpDt->format('H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->heuredebut_definie_periode = $newDateAsString;
 				$this->modifiedColumns[] = EdtCreneauPeer::HEUREDEBUT_DEFINIE_PERIODE;
 			}
 		} // if either are not null
@@ -322,45 +295,18 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	/**
 	 * Sets the value of [heurefin_definie_periode] column to a normalized version of the date/time value specified.
 	 * Heure de fin du creneau
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     EdtCreneau The current object (for fluent API support)
 	 */
 	public function setHeurefinDefiniePeriode($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->heurefin_definie_periode !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->heurefin_definie_periode !== null && $tmpDt = new DateTime($this->heurefin_definie_periode)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->heurefin_definie_periode = ($dt ? $dt->format('H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->heurefin_definie_periode !== null || $dt !== null) {
+			$currentDateAsString = ($this->heurefin_definie_periode !== null && $tmpDt = new DateTime($this->heurefin_definie_periode)) ? $tmpDt->format('H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->heurefin_definie_periode = $newDateAsString;
 				$this->modifiedColumns[] = EdtCreneauPeer::HEUREFIN_DEFINIE_PERIODE;
 			}
 		} // if either are not null
@@ -483,7 +429,7 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 7; // 7 = EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 7; // 7 = EdtCreneauPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating EdtCreneau object", $e);
@@ -855,11 +801,17 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['EdtCreneau'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['EdtCreneau'][$this->getPrimaryKey()] = true;
 		$keys = EdtCreneauPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getIdDefiniePeriode(),
@@ -870,6 +822,14 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 			$keys[5] => $this->getTypeCreneaux(),
 			$keys[6] => $this->getJourCreneau(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->collAbsenceEleveSaisies) {
+				$result['AbsenceEleveSaisies'] = $this->collAbsenceEleveSaisies->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collEdtEmplacementCourss) {
+				$result['EdtEmplacementCourss'] = $this->collEdtEmplacementCourss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+		}
 		return $result;
 	}
 
@@ -1027,16 +987,17 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of EdtCreneau (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setNomDefiniePeriode($this->nom_definie_periode);
-		$copyObj->setHeuredebutDefiniePeriode($this->heuredebut_definie_periode);
-		$copyObj->setHeurefinDefiniePeriode($this->heurefin_definie_periode);
-		$copyObj->setSuiviDefiniePeriode($this->suivi_definie_periode);
-		$copyObj->setTypeCreneaux($this->type_creneaux);
-		$copyObj->setJourCreneau($this->jour_creneau);
+		$copyObj->setNomDefiniePeriode($this->getNomDefiniePeriode());
+		$copyObj->setHeuredebutDefiniePeriode($this->getHeuredebutDefiniePeriode());
+		$copyObj->setHeurefinDefiniePeriode($this->getHeurefinDefiniePeriode());
+		$copyObj->setSuiviDefiniePeriode($this->getSuiviDefiniePeriode());
+		$copyObj->setTypeCreneaux($this->getTypeCreneaux());
+		$copyObj->setJourCreneau($this->getJourCreneau());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1057,9 +1018,10 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setIdDefiniePeriode(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setIdDefiniePeriode(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -1121,10 +1083,16 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initAbsenceEleveSaisies()
+	public function initAbsenceEleveSaisies($overrideExisting = true)
 	{
+		if (null !== $this->collAbsenceEleveSaisies && !$overrideExisting) {
+			return;
+		}
 		$this->collAbsenceEleveSaisies = new PropelObjectCollection();
 		$this->collAbsenceEleveSaisies->setModel('AbsenceEleveSaisie');
 	}
@@ -1430,10 +1398,16 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initEdtEmplacementCourss()
+	public function initEdtEmplacementCourss($overrideExisting = true)
 	{
+		if (null !== $this->collEdtEmplacementCourss && !$overrideExisting) {
+			return;
+		}
 		$this->collEdtEmplacementCourss = new PropelObjectCollection();
 		$this->collEdtEmplacementCourss->setModel('EdtEmplacementCours');
 	}
@@ -1665,31 +1639,47 @@ abstract class BaseEdtCreneau extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collAbsenceEleveSaisies) {
-				foreach ((array) $this->collAbsenceEleveSaisies as $o) {
+				foreach ($this->collAbsenceEleveSaisies as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collEdtEmplacementCourss) {
-				foreach ((array) $this->collEdtEmplacementCourss as $o) {
+				foreach ($this->collEdtEmplacementCourss as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collAbsenceEleveSaisies instanceof PropelCollection) {
+			$this->collAbsenceEleveSaisies->clearIterator();
+		}
 		$this->collAbsenceEleveSaisies = null;
+		if ($this->collEdtEmplacementCourss instanceof PropelCollection) {
+			$this->collEdtEmplacementCourss->clearIterator();
+		}
 		$this->collEdtEmplacementCourss = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(EdtCreneauPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

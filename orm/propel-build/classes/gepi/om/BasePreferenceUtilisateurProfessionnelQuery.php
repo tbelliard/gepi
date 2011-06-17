@@ -109,7 +109,7 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,14 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the name column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByName('fooValue');   // WHERE name = 'fooValue'
+	 * $query->filterByName('%fooValue%'); // WHERE name LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $name The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PreferenceUtilisateurProfessionnelQuery The current query, for fluid interface
@@ -178,8 +184,14 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the value column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByValue('fooValue');   // WHERE value = 'fooValue'
+	 * $query->filterByValue('%fooValue%'); // WHERE value LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $value The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PreferenceUtilisateurProfessionnelQuery The current query, for fluid interface
@@ -200,8 +212,14 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
+	 * $query->filterByLogin('%fooValue%'); // WHERE login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $login The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PreferenceUtilisateurProfessionnelQuery The current query, for fluid interface
@@ -222,15 +240,25 @@ abstract class BasePreferenceUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PreferenceUtilisateurProfessionnelQuery The current query, for fluid interface
 	 */
 	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::LOGIN, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::LOGIN, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(PreferenceUtilisateurProfessionnelPeer::LOGIN, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByUtilisateurProfessionnel() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**

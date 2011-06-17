@@ -31,6 +31,9 @@ abstract class BaseCreditEctsGlobalPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 3;
+
 	/** the column name for the ID field */
 	const ID = 'ects_global_credits.ID';
 
@@ -40,6 +43,9 @@ abstract class BaseCreditEctsGlobalPeer {
 	/** the column name for the MENTION field */
 	const MENTION = 'ects_global_credits.MENTION';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of CreditEctsGlobal objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -55,7 +61,7 @@ abstract class BaseCreditEctsGlobalPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'IdEleve', 'Mention', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'idEleve', 'mention', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::ID_ELEVE, self::MENTION, ),
@@ -70,7 +76,7 @@ abstract class BaseCreditEctsGlobalPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IdEleve' => 1, 'Mention' => 2, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'idEleve' => 1, 'mention' => 2, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ID_ELEVE => 1, self::MENTION => 2, ),
@@ -275,7 +281,7 @@ abstract class BaseCreditEctsGlobalPeer {
 	 * @param      CreditEctsGlobal $value A CreditEctsGlobal object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(CreditEctsGlobal $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -430,7 +436,7 @@ abstract class BaseCreditEctsGlobalPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + CreditEctsGlobalPeer::NUM_COLUMNS;
+			$col = $startcol + CreditEctsGlobalPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = CreditEctsGlobalPeer::OM_CLASS;
 			$obj = new $cls();
@@ -509,7 +515,7 @@ abstract class BaseCreditEctsGlobalPeer {
 		}
 
 		CreditEctsGlobalPeer::addSelectColumns($criteria);
-		$startcol = (CreditEctsGlobalPeer::NUM_COLUMNS - CreditEctsGlobalPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = CreditEctsGlobalPeer::NUM_HYDRATE_COLUMNS;
 		ElevePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(CreditEctsGlobalPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
@@ -625,10 +631,10 @@ abstract class BaseCreditEctsGlobalPeer {
 		}
 
 		CreditEctsGlobalPeer::addSelectColumns($criteria);
-		$startcol2 = (CreditEctsGlobalPeer::NUM_COLUMNS - CreditEctsGlobalPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CreditEctsGlobalPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CreditEctsGlobalPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
 
@@ -910,7 +916,7 @@ abstract class BaseCreditEctsGlobalPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(CreditEctsGlobal $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

@@ -31,6 +31,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 9;
+
 	/** the column name for the ID field */
 	const ID = 'a_traitements.ID';
 
@@ -58,6 +61,9 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	/** the column name for the UPDATED_AT field */
 	const UPDATED_AT = 'a_traitements.UPDATED_AT';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveTraitement objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -73,7 +79,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'ATypeId', 'AMotifId', 'AJustificationId', 'Commentaire', 'ModifieParUtilisateurId', 'CreatedAt', 'UpdatedAt', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'aTypeId', 'aMotifId', 'aJustificationId', 'commentaire', 'modifieParUtilisateurId', 'createdAt', 'updatedAt', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::A_TYPE_ID, self::A_MOTIF_ID, self::A_JUSTIFICATION_ID, self::COMMENTAIRE, self::MODIFIE_PAR_UTILISATEUR_ID, self::CREATED_AT, self::UPDATED_AT, ),
@@ -88,7 +94,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'ATypeId' => 2, 'AMotifId' => 3, 'AJustificationId' => 4, 'Commentaire' => 5, 'ModifieParUtilisateurId' => 6, 'CreatedAt' => 7, 'UpdatedAt' => 8, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'aTypeId' => 2, 'aMotifId' => 3, 'aJustificationId' => 4, 'commentaire' => 5, 'modifieParUtilisateurId' => 6, 'createdAt' => 7, 'updatedAt' => 8, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::A_TYPE_ID => 2, self::A_MOTIF_ID => 3, self::A_JUSTIFICATION_ID => 4, self::COMMENTAIRE => 5, self::MODIFIE_PAR_UTILISATEUR_ID => 6, self::CREATED_AT => 7, self::UPDATED_AT => 8, ),
@@ -305,7 +311,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 * @param      AbsenceEleveTraitement $value A AbsenceEleveTraitement object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(AbsenceEleveTraitement $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -466,7 +472,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + AbsenceEleveTraitementPeer::NUM_COLUMNS;
+			$col = $startcol + AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = AbsenceEleveTraitementPeer::OM_CLASS;
 			$obj = new $cls();
@@ -745,7 +751,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -811,7 +817,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 		AbsenceEleveTypePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
@@ -877,7 +883,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 		AbsenceEleveMotifPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::A_MOTIF_ID, AbsenceEleveMotifPeer::ID, $join_behavior);
@@ -943,7 +949,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::A_JUSTIFICATION_ID, AbsenceEleveJustificationPeer::ID, $join_behavior);
@@ -1009,7 +1015,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::MODIFIE_PAR_UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -1133,22 +1139,22 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveTypePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AbsenceEleveTypePeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveMotifPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (AbsenceEleveMotifPeer::NUM_COLUMNS - AbsenceEleveMotifPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + AbsenceEleveMotifPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (AbsenceEleveJustificationPeer::NUM_COLUMNS - AbsenceEleveJustificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + AbsenceEleveJustificationPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1572,16 +1578,16 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveTypePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AbsenceEleveTypePeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveMotifPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AbsenceEleveMotifPeer::NUM_COLUMNS - AbsenceEleveMotifPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AbsenceEleveMotifPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (AbsenceEleveJustificationPeer::NUM_COLUMNS - AbsenceEleveJustificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + AbsenceEleveJustificationPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
 
@@ -1693,19 +1699,19 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveMotifPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AbsenceEleveMotifPeer::NUM_COLUMNS - AbsenceEleveMotifPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AbsenceEleveMotifPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (AbsenceEleveJustificationPeer::NUM_COLUMNS - AbsenceEleveJustificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + AbsenceEleveJustificationPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1838,19 +1844,19 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveTypePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AbsenceEleveTypePeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (AbsenceEleveJustificationPeer::NUM_COLUMNS - AbsenceEleveJustificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + AbsenceEleveJustificationPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1983,19 +1989,19 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveTypePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AbsenceEleveTypePeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveMotifPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (AbsenceEleveMotifPeer::NUM_COLUMNS - AbsenceEleveMotifPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + AbsenceEleveMotifPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -2128,16 +2134,16 @@ abstract class BaseAbsenceEleveTraitementPeer {
 		}
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveTypePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveTypePeer::NUM_COLUMNS - AbsenceEleveTypePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AbsenceEleveTypePeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveMotifPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AbsenceEleveMotifPeer::NUM_COLUMNS - AbsenceEleveMotifPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AbsenceEleveMotifPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveJustificationPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (AbsenceEleveJustificationPeer::NUM_COLUMNS - AbsenceEleveJustificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + AbsenceEleveJustificationPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveTraitementPeer::A_TYPE_ID, AbsenceEleveTypePeer::ID, $join_behavior);
 
@@ -2493,7 +2499,7 @@ abstract class BaseAbsenceEleveTraitementPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(AbsenceEleveTraitement $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

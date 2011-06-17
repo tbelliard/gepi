@@ -440,45 +440,18 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	/**
 	 * Sets the value of [jourdebut_calendrier] column to a normalized version of the date/time value specified.
 	 * date du debut de la periode
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     EdtCalendrierPeriode The current object (for fluent API support)
 	 */
 	public function setJourdebutCalendrier($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->jourdebut_calendrier !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->jourdebut_calendrier !== null && $tmpDt = new DateTime($this->jourdebut_calendrier)) ? $tmpDt->format('Y-m-d') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->jourdebut_calendrier = ($dt ? $dt->format('Y-m-d') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->jourdebut_calendrier !== null || $dt !== null) {
+			$currentDateAsString = ($this->jourdebut_calendrier !== null && $tmpDt = new DateTime($this->jourdebut_calendrier)) ? $tmpDt->format('Y-m-d') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->jourdebut_calendrier = $newDateAsString;
 				$this->modifiedColumns[] = EdtCalendrierPeriodePeer::JOURDEBUT_CALENDRIER;
 			}
 		} // if either are not null
@@ -489,45 +462,18 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	/**
 	 * Sets the value of [heuredebut_calendrier] column to a normalized version of the date/time value specified.
 	 * heure du debut de la periode
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     EdtCalendrierPeriode The current object (for fluent API support)
 	 */
 	public function setHeuredebutCalendrier($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->heuredebut_calendrier !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->heuredebut_calendrier !== null && $tmpDt = new DateTime($this->heuredebut_calendrier)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->heuredebut_calendrier = ($dt ? $dt->format('H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->heuredebut_calendrier !== null || $dt !== null) {
+			$currentDateAsString = ($this->heuredebut_calendrier !== null && $tmpDt = new DateTime($this->heuredebut_calendrier)) ? $tmpDt->format('H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->heuredebut_calendrier = $newDateAsString;
 				$this->modifiedColumns[] = EdtCalendrierPeriodePeer::HEUREDEBUT_CALENDRIER;
 			}
 		} // if either are not null
@@ -538,45 +484,18 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	/**
 	 * Sets the value of [jourfin_calendrier] column to a normalized version of the date/time value specified.
 	 * date de la fin de la periode
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     EdtCalendrierPeriode The current object (for fluent API support)
 	 */
 	public function setJourfinCalendrier($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->jourfin_calendrier !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->jourfin_calendrier !== null && $tmpDt = new DateTime($this->jourfin_calendrier)) ? $tmpDt->format('Y-m-d') : null;
-			$newNorm = ($dt !== null) ? $dt->format('Y-m-d') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->jourfin_calendrier = ($dt ? $dt->format('Y-m-d') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->jourfin_calendrier !== null || $dt !== null) {
+			$currentDateAsString = ($this->jourfin_calendrier !== null && $tmpDt = new DateTime($this->jourfin_calendrier)) ? $tmpDt->format('Y-m-d') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->jourfin_calendrier = $newDateAsString;
 				$this->modifiedColumns[] = EdtCalendrierPeriodePeer::JOURFIN_CALENDRIER;
 			}
 		} // if either are not null
@@ -587,45 +506,18 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	/**
 	 * Sets the value of [heurefin_calendrier] column to a normalized version of the date/time value specified.
 	 * heure de la fin de la periode
-	 * @param      mixed $v string, integer (timestamp), or DateTime value.  Empty string will
-	 *						be treated as NULL for temporal objects.
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
 	 * @return     EdtCalendrierPeriode The current object (for fluent API support)
 	 */
 	public function setHeurefinCalendrier($v)
 	{
-		// we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
-		// -- which is unexpected, to say the least.
-		if ($v === null || $v === '') {
-			$dt = null;
-		} elseif ($v instanceof DateTime) {
-			$dt = $v;
-		} else {
-			// some string/numeric value passed; we normalize that so that we can
-			// validate it.
-			try {
-				if (is_numeric($v)) { // if it's a unix timestamp
-					$dt = new DateTime('@'.$v, new DateTimeZone('UTC'));
-					// We have to explicitly specify and then change the time zone because of a
-					// DateTime bug: http://bugs.php.net/bug.php?id=43003
-					$dt->setTimeZone(new DateTimeZone(date_default_timezone_get()));
-				} else {
-					$dt = new DateTime($v);
-				}
-			} catch (Exception $x) {
-				throw new PropelException('Error parsing date/time value: ' . var_export($v, true), $x);
-			}
-		}
-
-		if ( $this->heurefin_calendrier !== null || $dt !== null ) {
-			// (nested ifs are a little easier to read in this case)
-
-			$currNorm = ($this->heurefin_calendrier !== null && $tmpDt = new DateTime($this->heurefin_calendrier)) ? $tmpDt->format('H:i:s') : null;
-			$newNorm = ($dt !== null) ? $dt->format('H:i:s') : null;
-
-			if ( ($currNorm !== $newNorm) // normalized values don't match 
-					)
-			{
-				$this->heurefin_calendrier = ($dt ? $dt->format('H:i:s') : null);
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->heurefin_calendrier !== null || $dt !== null) {
+			$currentDateAsString = ($this->heurefin_calendrier !== null && $tmpDt = new DateTime($this->heurefin_calendrier)) ? $tmpDt->format('H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->heurefin_calendrier = $newDateAsString;
 				$this->modifiedColumns[] = EdtCalendrierPeriodePeer::HEUREFIN_CALENDRIER;
 			}
 		} // if either are not null
@@ -745,7 +637,7 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 12; // 12 = EdtCalendrierPeriodePeer::NUM_COLUMNS - EdtCalendrierPeriodePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 12; // 12 = EdtCalendrierPeriodePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating EdtCalendrierPeriode object", $e);
@@ -1106,11 +998,17 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['EdtCalendrierPeriode'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['EdtCalendrierPeriode'][$this->getPrimaryKey()] = true;
 		$keys = EdtCalendrierPeriodePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getIdCalendrier(),
@@ -1126,6 +1024,11 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 			$keys[10] => $this->getEtabfermeCalendrier(),
 			$keys[11] => $this->getEtabvacancesCalendrier(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->collEdtEmplacementCourss) {
+				$result['EdtEmplacementCourss'] = $this->collEdtEmplacementCourss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+		}
 		return $result;
 	}
 
@@ -1308,22 +1211,23 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 *
 	 * @param      object $copyObj An object of EdtCalendrierPeriode (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setIdCalendrier($this->id_calendrier);
-		$copyObj->setClasseConcerneCalendrier($this->classe_concerne_calendrier);
-		$copyObj->setNomCalendrier($this->nom_calendrier);
-		$copyObj->setDebutCalendrierTs($this->debut_calendrier_ts);
-		$copyObj->setFinCalendrierTs($this->fin_calendrier_ts);
-		$copyObj->setJourdebutCalendrier($this->jourdebut_calendrier);
-		$copyObj->setHeuredebutCalendrier($this->heuredebut_calendrier);
-		$copyObj->setJourfinCalendrier($this->jourfin_calendrier);
-		$copyObj->setHeurefinCalendrier($this->heurefin_calendrier);
-		$copyObj->setNumeroPeriode($this->numero_periode);
-		$copyObj->setEtabfermeCalendrier($this->etabferme_calendrier);
-		$copyObj->setEtabvacancesCalendrier($this->etabvacances_calendrier);
+		$copyObj->setIdCalendrier($this->getIdCalendrier());
+		$copyObj->setClasseConcerneCalendrier($this->getClasseConcerneCalendrier());
+		$copyObj->setNomCalendrier($this->getNomCalendrier());
+		$copyObj->setDebutCalendrierTs($this->getDebutCalendrierTs());
+		$copyObj->setFinCalendrierTs($this->getFinCalendrierTs());
+		$copyObj->setJourdebutCalendrier($this->getJourdebutCalendrier());
+		$copyObj->setHeuredebutCalendrier($this->getHeuredebutCalendrier());
+		$copyObj->setJourfinCalendrier($this->getJourfinCalendrier());
+		$copyObj->setHeurefinCalendrier($this->getHeurefinCalendrier());
+		$copyObj->setNumeroPeriode($this->getNumeroPeriode());
+		$copyObj->setEtabfermeCalendrier($this->getEtabfermeCalendrier());
+		$copyObj->setEtabvacancesCalendrier($this->getEtabvacancesCalendrier());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1338,8 +1242,9 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -1401,10 +1306,16 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initEdtEmplacementCourss()
+	public function initEdtEmplacementCourss($overrideExisting = true)
 	{
+		if (null !== $this->collEdtEmplacementCourss && !$overrideExisting) {
+			return;
+		}
 		$this->collEdtEmplacementCourss = new PropelObjectCollection();
 		$this->collEdtEmplacementCourss->setModel('EdtEmplacementCours');
 	}
@@ -1640,25 +1551,38 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collEdtEmplacementCourss) {
-				foreach ((array) $this->collEdtEmplacementCourss as $o) {
+				foreach ($this->collEdtEmplacementCourss as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collEdtEmplacementCourss instanceof PropelCollection) {
+			$this->collEdtEmplacementCourss->clearIterator();
+		}
 		$this->collEdtEmplacementCourss = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(EdtCalendrierPeriodePeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

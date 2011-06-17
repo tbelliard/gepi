@@ -109,7 +109,7 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,19 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the a_notification_id column
 	 * 
-	 * @param     int|array $aNotificationId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByANotificationId(1234); // WHERE a_notification_id = 1234
+	 * $query->filterByANotificationId(array(12, 34)); // WHERE a_notification_id IN (12, 34)
+	 * $query->filterByANotificationId(array('min' => 12)); // WHERE a_notification_id > 12
+	 * </code>
+	 *
+	 * @see       filterByAbsenceEleveNotification()
+	 *
+	 * @param     mixed $aNotificationId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JNotificationResponsableEleveQuery The current query, for fluid interface
@@ -173,8 +184,14 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the pers_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPersId('fooValue');   // WHERE pers_id = 'fooValue'
+	 * $query->filterByPersId('%fooValue%'); // WHERE pers_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $persId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JNotificationResponsableEleveQuery The current query, for fluid interface
@@ -195,15 +212,25 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AbsenceEleveNotification object
 	 *
-	 * @param     AbsenceEleveNotification $absenceEleveNotification  the related object to use as filter
+	 * @param     AbsenceEleveNotification|PropelCollection $absenceEleveNotification The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JNotificationResponsableEleveQuery The current query, for fluid interface
 	 */
 	public function filterByAbsenceEleveNotification($absenceEleveNotification, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, $absenceEleveNotification->getId(), $comparison);
+		if ($absenceEleveNotification instanceof AbsenceEleveNotification) {
+			return $this
+				->addUsingAlias(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, $absenceEleveNotification->getId(), $comparison);
+		} elseif ($absenceEleveNotification instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, $absenceEleveNotification->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAbsenceEleveNotification() only accepts arguments of type AbsenceEleveNotification or PropelCollection');
+		}
 	}
 
 	/**
@@ -259,15 +286,25 @@ abstract class BaseJNotificationResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related ResponsableEleve object
 	 *
-	 * @param     ResponsableEleve $responsableEleve  the related object to use as filter
+	 * @param     ResponsableEleve|PropelCollection $responsableEleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JNotificationResponsableEleveQuery The current query, for fluid interface
 	 */
 	public function filterByResponsableEleve($responsableEleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JNotificationResponsableElevePeer::PERS_ID, $responsableEleve->getPersId(), $comparison);
+		if ($responsableEleve instanceof ResponsableEleve) {
+			return $this
+				->addUsingAlias(JNotificationResponsableElevePeer::PERS_ID, $responsableEleve->getPersId(), $comparison);
+		} elseif ($responsableEleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JNotificationResponsableElevePeer::PERS_ID, $responsableEleve->toKeyValue('PrimaryKey', 'PersId'), $comparison);
+		} else {
+			throw new PropelException('filterByResponsableEleve() only accepts arguments of type ResponsableEleve or PropelCollection');
+		}
 	}
 
 	/**

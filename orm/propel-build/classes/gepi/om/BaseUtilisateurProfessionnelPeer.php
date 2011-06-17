@@ -31,6 +31,9 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 19;
+
 	/** the column name for the LOGIN field */
 	const LOGIN = 'utilisateurs.LOGIN';
 
@@ -88,6 +91,9 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	/** the column name for the AUTH_MODE field */
 	const AUTH_MODE = 'utilisateurs.AUTH_MODE';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of UtilisateurProfessionnel objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -103,7 +109,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Login', 'Nom', 'Prenom', 'Civilite', 'Password', 'Salt', 'Email', 'ShowEmail', 'Statut', 'Etat', 'ChangeMdp', 'DateVerrouillage', 'PasswordTicket', 'TicketExpiration', 'NiveauAlerte', 'ObservationSecurite', 'TempDir', 'Numind', 'AuthMode', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('login', 'nom', 'prenom', 'civilite', 'password', 'salt', 'email', 'showEmail', 'statut', 'etat', 'changeMdp', 'dateVerrouillage', 'passwordTicket', 'ticketExpiration', 'niveauAlerte', 'observationSecurite', 'tempDir', 'numind', 'authMode', ),
 		BasePeer::TYPE_COLNAME => array (self::LOGIN, self::NOM, self::PRENOM, self::CIVILITE, self::PASSWORD, self::SALT, self::EMAIL, self::SHOW_EMAIL, self::STATUT, self::ETAT, self::CHANGE_MDP, self::DATE_VERROUILLAGE, self::PASSWORD_TICKET, self::TICKET_EXPIRATION, self::NIVEAU_ALERTE, self::OBSERVATION_SECURITE, self::TEMP_DIR, self::NUMIND, self::AUTH_MODE, ),
@@ -118,7 +124,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Login' => 0, 'Nom' => 1, 'Prenom' => 2, 'Civilite' => 3, 'Password' => 4, 'Salt' => 5, 'Email' => 6, 'ShowEmail' => 7, 'Statut' => 8, 'Etat' => 9, 'ChangeMdp' => 10, 'DateVerrouillage' => 11, 'PasswordTicket' => 12, 'TicketExpiration' => 13, 'NiveauAlerte' => 14, 'ObservationSecurite' => 15, 'TempDir' => 16, 'Numind' => 17, 'AuthMode' => 18, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('login' => 0, 'nom' => 1, 'prenom' => 2, 'civilite' => 3, 'password' => 4, 'salt' => 5, 'email' => 6, 'showEmail' => 7, 'statut' => 8, 'etat' => 9, 'changeMdp' => 10, 'dateVerrouillage' => 11, 'passwordTicket' => 12, 'ticketExpiration' => 13, 'niveauAlerte' => 14, 'observationSecurite' => 15, 'tempDir' => 16, 'numind' => 17, 'authMode' => 18, ),
 		BasePeer::TYPE_COLNAME => array (self::LOGIN => 0, self::NOM => 1, self::PRENOM => 2, self::CIVILITE => 3, self::PASSWORD => 4, self::SALT => 5, self::EMAIL => 6, self::SHOW_EMAIL => 7, self::STATUT => 8, self::ETAT => 9, self::CHANGE_MDP => 10, self::DATE_VERROUILLAGE => 11, self::PASSWORD_TICKET => 12, self::TICKET_EXPIRATION => 13, self::NIVEAU_ALERTE => 14, self::OBSERVATION_SECURITE => 15, self::TEMP_DIR => 16, self::NUMIND => 17, self::AUTH_MODE => 18, ),
@@ -355,7 +361,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	 * @param      UtilisateurProfessionnel $value A UtilisateurProfessionnel object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(UtilisateurProfessionnel $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -543,7 +549,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + UtilisateurProfessionnelPeer::NUM_COLUMNS;
+			$col = $startcol + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = UtilisateurProfessionnelPeer::OM_CLASS;
 			$obj = new $cls();
@@ -907,7 +913,7 @@ abstract class BaseUtilisateurProfessionnelPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(UtilisateurProfessionnel $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

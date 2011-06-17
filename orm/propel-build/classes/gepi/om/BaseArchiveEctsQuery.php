@@ -141,7 +141,7 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -194,8 +194,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -211,8 +220,14 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the annee column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAnnee('fooValue');   // WHERE annee = 'fooValue'
+	 * $query->filterByAnnee('%fooValue%'); // WHERE annee LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $annee The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -233,8 +248,14 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ine column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIne('fooValue');   // WHERE ine = 'fooValue'
+	 * $query->filterByIne('%fooValue%'); // WHERE ine LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $ine The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -255,8 +276,14 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the classe column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByClasse('fooValue');   // WHERE classe = 'fooValue'
+	 * $query->filterByClasse('%fooValue%'); // WHERE classe LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $classe The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -277,8 +304,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the num_periode column
 	 * 
-	 * @param     int|array $numPeriode The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNumPeriode(1234); // WHERE num_periode = 1234
+	 * $query->filterByNumPeriode(array(12, 34)); // WHERE num_periode IN (12, 34)
+	 * $query->filterByNumPeriode(array('min' => 12)); // WHERE num_periode > 12
+	 * </code>
+	 *
+	 * @param     mixed $numPeriode The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -294,8 +330,14 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom_periode column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNomPeriode('fooValue');   // WHERE nom_periode = 'fooValue'
+	 * $query->filterByNomPeriode('%fooValue%'); // WHERE nom_periode LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nomPeriode The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -316,8 +358,14 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the special column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterBySpecial('fooValue');   // WHERE special = 'fooValue'
+	 * $query->filterBySpecial('%fooValue%'); // WHERE special LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $special The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -338,8 +386,14 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the matiere column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByMatiere('fooValue');   // WHERE matiere = 'fooValue'
+	 * $query->filterByMatiere('%fooValue%'); // WHERE matiere LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $matiere The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -360,8 +414,14 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the profs column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByProfs('fooValue');   // WHERE profs = 'fooValue'
+	 * $query->filterByProfs('%fooValue%'); // WHERE profs LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $profs The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -382,8 +442,17 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the valeur column
 	 * 
-	 * @param     string|array $valeur The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByValeur(1234); // WHERE valeur = 1234
+	 * $query->filterByValeur(array(12, 34)); // WHERE valeur IN (12, 34)
+	 * $query->filterByValeur(array('min' => 12)); // WHERE valeur > 12
+	 * </code>
+	 *
+	 * @param     mixed $valeur The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -413,8 +482,14 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the mention column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByMention('fooValue');   // WHERE mention = 'fooValue'
+	 * $query->filterByMention('%fooValue%'); // WHERE mention LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $mention The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
@@ -435,15 +510,25 @@ abstract class BaseArchiveEctsQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Eleve object
 	 *
-	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     Eleve|PropelCollection $eleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ArchiveEctsQuery The current query, for fluid interface
 	 */
 	public function filterByEleve($eleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ArchiveEctsPeer::INE, $eleve->getNoGep(), $comparison);
+		if ($eleve instanceof Eleve) {
+			return $this
+				->addUsingAlias(ArchiveEctsPeer::INE, $eleve->getNoGep(), $comparison);
+		} elseif ($eleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(ArchiveEctsPeer::INE, $eleve->toKeyValue('PrimaryKey', 'NoGep'), $comparison);
+		} else {
+			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
+		}
 	}
 
 	/**

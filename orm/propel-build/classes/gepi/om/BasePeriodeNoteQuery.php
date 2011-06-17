@@ -121,7 +121,7 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -168,8 +168,14 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom_periode column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNomPeriode('fooValue');   // WHERE nom_periode = 'fooValue'
+	 * $query->filterByNomPeriode('%fooValue%'); // WHERE nom_periode LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nomPeriode The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
@@ -190,8 +196,17 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	/**
 	 * Filter the query on the num_periode column
 	 * 
-	 * @param     int|array $numPeriode The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNumPeriode(1234); // WHERE num_periode = 1234
+	 * $query->filterByNumPeriode(array(12, 34)); // WHERE num_periode IN (12, 34)
+	 * $query->filterByNumPeriode(array('min' => 12)); // WHERE num_periode > 12
+	 * </code>
+	 *
+	 * @param     mixed $numPeriode The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
@@ -207,8 +222,14 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	/**
 	 * Filter the query on the verouiller column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByVerouiller('fooValue');   // WHERE verouiller = 'fooValue'
+	 * $query->filterByVerouiller('%fooValue%'); // WHERE verouiller LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $verouiller The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
@@ -229,8 +250,19 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_classe column
 	 * 
-	 * @param     int|array $idClasse The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdClasse(1234); // WHERE id_classe = 1234
+	 * $query->filterByIdClasse(array(12, 34)); // WHERE id_classe IN (12, 34)
+	 * $query->filterByIdClasse(array('min' => 12)); // WHERE id_classe > 12
+	 * </code>
+	 *
+	 * @see       filterByClasse()
+	 *
+	 * @param     mixed $idClasse The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
@@ -246,8 +278,19 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	/**
 	 * Filter the query on the date_verrouillage column
 	 * 
-	 * @param     string|array $dateVerrouillage The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDateVerrouillage('2011-03-14'); // WHERE date_verrouillage = '2011-03-14'
+	 * $query->filterByDateVerrouillage('now'); // WHERE date_verrouillage = '2011-03-14'
+	 * $query->filterByDateVerrouillage(array('max' => 'yesterday')); // WHERE date_verrouillage > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $dateVerrouillage The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
@@ -277,8 +320,19 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	/**
 	 * Filter the query on the date_fin column
 	 * 
-	 * @param     string|array $dateFin The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDateFin('2011-03-14'); // WHERE date_fin = '2011-03-14'
+	 * $query->filterByDateFin('now'); // WHERE date_fin = '2011-03-14'
+	 * $query->filterByDateFin(array('max' => 'yesterday')); // WHERE date_fin > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $dateFin The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
@@ -308,15 +362,25 @@ abstract class BasePeriodeNoteQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Classe object
 	 *
-	 * @param     Classe $classe  the related object to use as filter
+	 * @param     Classe|PropelCollection $classe The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PeriodeNoteQuery The current query, for fluid interface
 	 */
 	public function filterByClasse($classe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $classe->getId(), $comparison);
+		if ($classe instanceof Classe) {
+			return $this
+				->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $classe->getId(), $comparison);
+		} elseif ($classe instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(PeriodeNotePeer::ID_CLASSE, $classe->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByClasse() only accepts arguments of type Classe or PropelCollection');
+		}
 	}
 
 	/**

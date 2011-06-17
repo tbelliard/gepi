@@ -117,7 +117,7 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -164,8 +164,14 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ele_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEleId('fooValue');   // WHERE ele_id = 'fooValue'
+	 * $query->filterByEleId('%fooValue%'); // WHERE ele_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $eleId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
@@ -186,8 +192,14 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the pers_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPersId('fooValue');   // WHERE pers_id = 'fooValue'
+	 * $query->filterByPersId('%fooValue%'); // WHERE pers_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $persId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
@@ -208,8 +220,14 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the resp_legal column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRespLegal('fooValue');   // WHERE resp_legal = 'fooValue'
+	 * $query->filterByRespLegal('%fooValue%'); // WHERE resp_legal LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $respLegal The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
@@ -230,8 +248,14 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the pers_contact column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPersContact('fooValue');   // WHERE pers_contact = 'fooValue'
+	 * $query->filterByPersContact('%fooValue%'); // WHERE pers_contact LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $persContact The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
@@ -252,15 +276,25 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Eleve object
 	 *
-	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     Eleve|PropelCollection $eleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
 	 */
 	public function filterByEleve($eleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ResponsableInformationPeer::ELE_ID, $eleve->getEleId(), $comparison);
+		if ($eleve instanceof Eleve) {
+			return $this
+				->addUsingAlias(ResponsableInformationPeer::ELE_ID, $eleve->getEleId(), $comparison);
+		} elseif ($eleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(ResponsableInformationPeer::ELE_ID, $eleve->toKeyValue('PrimaryKey', 'EleId'), $comparison);
+		} else {
+			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
+		}
 	}
 
 	/**
@@ -316,15 +350,25 @@ abstract class BaseResponsableInformationQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related ResponsableEleve object
 	 *
-	 * @param     ResponsableEleve $responsableEleve  the related object to use as filter
+	 * @param     ResponsableEleve|PropelCollection $responsableEleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableInformationQuery The current query, for fluid interface
 	 */
 	public function filterByResponsableEleve($responsableEleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ResponsableInformationPeer::PERS_ID, $responsableEleve->getPersId(), $comparison);
+		if ($responsableEleve instanceof ResponsableEleve) {
+			return $this
+				->addUsingAlias(ResponsableInformationPeer::PERS_ID, $responsableEleve->getPersId(), $comparison);
+		} elseif ($responsableEleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(ResponsableInformationPeer::PERS_ID, $responsableEleve->toKeyValue('PrimaryKey', 'PersId'), $comparison);
+		} else {
+			throw new PropelException('filterByResponsableEleve() only accepts arguments of type ResponsableEleve or PropelCollection');
+		}
 	}
 
 	/**

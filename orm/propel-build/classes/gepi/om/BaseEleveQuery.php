@@ -202,7 +202,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -236,8 +236,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the no_gep column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNoGep('fooValue');   // WHERE no_gep = 'fooValue'
+	 * $query->filterByNoGep('%fooValue%'); // WHERE no_gep LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $noGep The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -258,8 +264,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
+	 * $query->filterByLogin('%fooValue%'); // WHERE login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $login The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -280,8 +292,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
+	 * $query->filterByNom('%fooValue%'); // WHERE nom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -302,8 +320,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the prenom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPrenom('fooValue');   // WHERE prenom = 'fooValue'
+	 * $query->filterByPrenom('%fooValue%'); // WHERE prenom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $prenom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -324,8 +348,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the sexe column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterBySexe('fooValue');   // WHERE sexe = 'fooValue'
+	 * $query->filterBySexe('%fooValue%'); // WHERE sexe LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $sexe The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -346,8 +376,19 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the naissance column
 	 * 
-	 * @param     string|array $naissance The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNaissance('2011-03-14'); // WHERE naissance = '2011-03-14'
+	 * $query->filterByNaissance('now'); // WHERE naissance = '2011-03-14'
+	 * $query->filterByNaissance(array('max' => 'yesterday')); // WHERE naissance > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $naissance The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -377,8 +418,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the lieu_naissance column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLieuNaissance('fooValue');   // WHERE lieu_naissance = 'fooValue'
+	 * $query->filterByLieuNaissance('%fooValue%'); // WHERE lieu_naissance LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $lieuNaissance The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -399,8 +446,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the elenoet column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByElenoet('fooValue');   // WHERE elenoet = 'fooValue'
+	 * $query->filterByElenoet('%fooValue%'); // WHERE elenoet LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $elenoet The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -421,8 +474,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ereno column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEreno('fooValue');   // WHERE ereno = 'fooValue'
+	 * $query->filterByEreno('%fooValue%'); // WHERE ereno LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $ereno The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -443,8 +502,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ele_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEleId('fooValue');   // WHERE ele_id = 'fooValue'
+	 * $query->filterByEleId('%fooValue%'); // WHERE ele_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $eleId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -465,8 +530,14 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the email column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
+	 * $query->filterByEmail('%fooValue%'); // WHERE email LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $email The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -487,8 +558,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_eleve column
 	 * 
-	 * @param     int|array $idEleve The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdEleve(1234); // WHERE id_eleve = 1234
+	 * $query->filterByIdEleve(array(12, 34)); // WHERE id_eleve IN (12, 34)
+	 * $query->filterByIdEleve(array('min' => 12)); // WHERE id_eleve > 12
+	 * </code>
+	 *
+	 * @param     mixed $idEleve The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -504,8 +584,19 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the date_sortie column
 	 * 
-	 * @param     string|array $dateSortie The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDateSortie('2011-03-14'); // WHERE date_sortie = '2011-03-14'
+	 * $query->filterByDateSortie('now'); // WHERE date_sortie = '2011-03-14'
+	 * $query->filterByDateSortie(array('max' => 'yesterday')); // WHERE date_sortie > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $dateSortie The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -535,8 +626,19 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_mef column
 	 * 
-	 * @param     int|array $idMef The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdMef(1234); // WHERE id_mef = 1234
+	 * $query->filterByIdMef(array(12, 34)); // WHERE id_mef IN (12, 34)
+	 * $query->filterByIdMef(array('min' => 12)); // WHERE id_mef > 12
+	 * </code>
+	 *
+	 * @see       filterByMef()
+	 *
+	 * @param     mixed $idMef The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
@@ -566,15 +668,25 @@ abstract class BaseEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Mef object
 	 *
-	 * @param     Mef $mef  the related object to use as filter
+	 * @param     Mef|PropelCollection $mef The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
 	public function filterByMef($mef, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::ID_MEF, $mef->getId(), $comparison);
+		if ($mef instanceof Mef) {
+			return $this
+				->addUsingAlias(ElevePeer::ID_MEF, $mef->getId(), $comparison);
+		} elseif ($mef instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(ElevePeer::ID_MEF, $mef->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByMef() only accepts arguments of type Mef or PropelCollection');
+		}
 	}
 
 	/**
@@ -637,8 +749,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByJEleveClasse($jEleveClasse, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::LOGIN, $jEleveClasse->getLogin(), $comparison);
+		if ($jEleveClasse instanceof JEleveClasse) {
+			return $this
+				->addUsingAlias(ElevePeer::LOGIN, $jEleveClasse->getLogin(), $comparison);
+		} elseif ($jEleveClasse instanceof PropelCollection) {
+			return $this
+				->useJEleveClasseQuery()
+					->filterByPrimaryKeys($jEleveClasse->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveClasse() only accepts arguments of type JEleveClasse or PropelCollection');
+		}
 	}
 
 	/**
@@ -701,8 +822,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByJEleveCpe($jEleveCpe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::LOGIN, $jEleveCpe->getELogin(), $comparison);
+		if ($jEleveCpe instanceof JEleveCpe) {
+			return $this
+				->addUsingAlias(ElevePeer::LOGIN, $jEleveCpe->getELogin(), $comparison);
+		} elseif ($jEleveCpe instanceof PropelCollection) {
+			return $this
+				->useJEleveCpeQuery()
+					->filterByPrimaryKeys($jEleveCpe->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveCpe() only accepts arguments of type JEleveCpe or PropelCollection');
+		}
 	}
 
 	/**
@@ -765,8 +895,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByJEleveGroupe($jEleveGroupe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::LOGIN, $jEleveGroupe->getLogin(), $comparison);
+		if ($jEleveGroupe instanceof JEleveGroupe) {
+			return $this
+				->addUsingAlias(ElevePeer::LOGIN, $jEleveGroupe->getLogin(), $comparison);
+		} elseif ($jEleveGroupe instanceof PropelCollection) {
+			return $this
+				->useJEleveGroupeQuery()
+					->filterByPrimaryKeys($jEleveGroupe->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveGroupe() only accepts arguments of type JEleveGroupe or PropelCollection');
+		}
 	}
 
 	/**
@@ -829,8 +968,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByJEleveProfesseurPrincipal($jEleveProfesseurPrincipal, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::LOGIN, $jEleveProfesseurPrincipal->getLogin(), $comparison);
+		if ($jEleveProfesseurPrincipal instanceof JEleveProfesseurPrincipal) {
+			return $this
+				->addUsingAlias(ElevePeer::LOGIN, $jEleveProfesseurPrincipal->getLogin(), $comparison);
+		} elseif ($jEleveProfesseurPrincipal instanceof PropelCollection) {
+			return $this
+				->useJEleveProfesseurPrincipalQuery()
+					->filterByPrimaryKeys($jEleveProfesseurPrincipal->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveProfesseurPrincipal() only accepts arguments of type JEleveProfesseurPrincipal or PropelCollection');
+		}
 	}
 
 	/**
@@ -893,8 +1041,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByEleveRegimeDoublant($eleveRegimeDoublant, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::LOGIN, $eleveRegimeDoublant->getLogin(), $comparison);
+		if ($eleveRegimeDoublant instanceof EleveRegimeDoublant) {
+			return $this
+				->addUsingAlias(ElevePeer::LOGIN, $eleveRegimeDoublant->getLogin(), $comparison);
+		} elseif ($eleveRegimeDoublant instanceof PropelCollection) {
+			return $this
+				->useEleveRegimeDoublantQuery()
+					->filterByPrimaryKeys($eleveRegimeDoublant->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByEleveRegimeDoublant() only accepts arguments of type EleveRegimeDoublant or PropelCollection');
+		}
 	}
 
 	/**
@@ -957,8 +1114,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByResponsableInformation($responsableInformation, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::ELE_ID, $responsableInformation->getEleId(), $comparison);
+		if ($responsableInformation instanceof ResponsableInformation) {
+			return $this
+				->addUsingAlias(ElevePeer::ELE_ID, $responsableInformation->getEleId(), $comparison);
+		} elseif ($responsableInformation instanceof PropelCollection) {
+			return $this
+				->useResponsableInformationQuery()
+					->filterByPrimaryKeys($responsableInformation->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByResponsableInformation() only accepts arguments of type ResponsableInformation or PropelCollection');
+		}
 	}
 
 	/**
@@ -1021,8 +1187,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByJEleveAncienEtablissement($jEleveAncienEtablissement, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::ID_ELEVE, $jEleveAncienEtablissement->getIdEleve(), $comparison);
+		if ($jEleveAncienEtablissement instanceof JEleveAncienEtablissement) {
+			return $this
+				->addUsingAlias(ElevePeer::ID_ELEVE, $jEleveAncienEtablissement->getIdEleve(), $comparison);
+		} elseif ($jEleveAncienEtablissement instanceof PropelCollection) {
+			return $this
+				->useJEleveAncienEtablissementQuery()
+					->filterByPrimaryKeys($jEleveAncienEtablissement->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveAncienEtablissement() only accepts arguments of type JEleveAncienEtablissement or PropelCollection');
+		}
 	}
 
 	/**
@@ -1085,8 +1260,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByJAidEleves($jAidEleves, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::LOGIN, $jAidEleves->getLogin(), $comparison);
+		if ($jAidEleves instanceof JAidEleves) {
+			return $this
+				->addUsingAlias(ElevePeer::LOGIN, $jAidEleves->getLogin(), $comparison);
+		} elseif ($jAidEleves instanceof PropelCollection) {
+			return $this
+				->useJAidElevesQuery()
+					->filterByPrimaryKeys($jAidEleves->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJAidEleves() only accepts arguments of type JAidEleves or PropelCollection');
+		}
 	}
 
 	/**
@@ -1149,8 +1333,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::ID_ELEVE, $absenceEleveSaisie->getEleveId(), $comparison);
+		if ($absenceEleveSaisie instanceof AbsenceEleveSaisie) {
+			return $this
+				->addUsingAlias(ElevePeer::ID_ELEVE, $absenceEleveSaisie->getEleveId(), $comparison);
+		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveSaisieQuery()
+					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
+		}
 	}
 
 	/**
@@ -1213,8 +1406,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByCreditEcts($creditEcts, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::ID_ELEVE, $creditEcts->getIdEleve(), $comparison);
+		if ($creditEcts instanceof CreditEcts) {
+			return $this
+				->addUsingAlias(ElevePeer::ID_ELEVE, $creditEcts->getIdEleve(), $comparison);
+		} elseif ($creditEcts instanceof PropelCollection) {
+			return $this
+				->useCreditEctsQuery()
+					->filterByPrimaryKeys($creditEcts->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCreditEcts() only accepts arguments of type CreditEcts or PropelCollection');
+		}
 	}
 
 	/**
@@ -1277,8 +1479,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByCreditEctsGlobal($creditEctsGlobal, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::ID_ELEVE, $creditEctsGlobal->getIdEleve(), $comparison);
+		if ($creditEctsGlobal instanceof CreditEctsGlobal) {
+			return $this
+				->addUsingAlias(ElevePeer::ID_ELEVE, $creditEctsGlobal->getIdEleve(), $comparison);
+		} elseif ($creditEctsGlobal instanceof PropelCollection) {
+			return $this
+				->useCreditEctsGlobalQuery()
+					->filterByPrimaryKeys($creditEctsGlobal->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCreditEctsGlobal() only accepts arguments of type CreditEctsGlobal or PropelCollection');
+		}
 	}
 
 	/**
@@ -1341,8 +1552,17 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 */
 	public function filterByArchiveEcts($archiveEcts, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ElevePeer::NO_GEP, $archiveEcts->getIne(), $comparison);
+		if ($archiveEcts instanceof ArchiveEcts) {
+			return $this
+				->addUsingAlias(ElevePeer::NO_GEP, $archiveEcts->getIne(), $comparison);
+		} elseif ($archiveEcts instanceof PropelCollection) {
+			return $this
+				->useArchiveEctsQuery()
+					->filterByPrimaryKeys($archiveEcts->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByArchiveEcts() only accepts arguments of type ArchiveEcts or PropelCollection');
+		}
 	}
 
 	/**

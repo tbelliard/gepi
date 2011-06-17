@@ -122,7 +122,7 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,17 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_horaire_etablissement column
 	 * 
-	 * @param     int|array $idHoraireEtablissement The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdHoraireEtablissement(1234); // WHERE id_horaire_etablissement = 1234
+	 * $query->filterByIdHoraireEtablissement(array(12, 34)); // WHERE id_horaire_etablissement IN (12, 34)
+	 * $query->filterByIdHoraireEtablissement(array('min' => 12)); // WHERE id_horaire_etablissement > 12
+	 * </code>
+	 *
+	 * @param     mixed $idHoraireEtablissement The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
@@ -173,8 +182,19 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the date_horaire_etablissement column
 	 * 
-	 * @param     string|array $dateHoraireEtablissement The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDateHoraireEtablissement('2011-03-14'); // WHERE date_horaire_etablissement = '2011-03-14'
+	 * $query->filterByDateHoraireEtablissement('now'); // WHERE date_horaire_etablissement = '2011-03-14'
+	 * $query->filterByDateHoraireEtablissement(array('max' => 'yesterday')); // WHERE date_horaire_etablissement > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $dateHoraireEtablissement The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
@@ -204,8 +224,14 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the jour_horaire_etablissement column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByJourHoraireEtablissement('fooValue');   // WHERE jour_horaire_etablissement = 'fooValue'
+	 * $query->filterByJourHoraireEtablissement('%fooValue%'); // WHERE jour_horaire_etablissement LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $jourHoraireEtablissement The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
@@ -226,8 +252,19 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ouverture_horaire_etablissement column
 	 * 
-	 * @param     string|array $ouvertureHoraireEtablissement The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByOuvertureHoraireEtablissement('2011-03-14'); // WHERE ouverture_horaire_etablissement = '2011-03-14'
+	 * $query->filterByOuvertureHoraireEtablissement('now'); // WHERE ouverture_horaire_etablissement = '2011-03-14'
+	 * $query->filterByOuvertureHoraireEtablissement(array('max' => 'yesterday')); // WHERE ouverture_horaire_etablissement > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $ouvertureHoraireEtablissement The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
@@ -257,8 +294,19 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the fermeture_horaire_etablissement column
 	 * 
-	 * @param     string|array $fermetureHoraireEtablissement The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByFermetureHoraireEtablissement('2011-03-14'); // WHERE fermeture_horaire_etablissement = '2011-03-14'
+	 * $query->filterByFermetureHoraireEtablissement('now'); // WHERE fermeture_horaire_etablissement = '2011-03-14'
+	 * $query->filterByFermetureHoraireEtablissement(array('max' => 'yesterday')); // WHERE fermeture_horaire_etablissement > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $fermetureHoraireEtablissement The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
@@ -288,8 +336,19 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the pause_horaire_etablissement column
 	 * 
-	 * @param     string|array $pauseHoraireEtablissement The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPauseHoraireEtablissement('2011-03-14'); // WHERE pause_horaire_etablissement = '2011-03-14'
+	 * $query->filterByPauseHoraireEtablissement('now'); // WHERE pause_horaire_etablissement = '2011-03-14'
+	 * $query->filterByPauseHoraireEtablissement(array('max' => 'yesterday')); // WHERE pause_horaire_etablissement > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $pauseHoraireEtablissement The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface
@@ -319,8 +378,17 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ouvert_horaire_etablissement column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByOuvertHoraireEtablissement(true); // WHERE ouvert_horaire_etablissement = true
+	 * $query->filterByOuvertHoraireEtablissement('yes'); // WHERE ouvert_horaire_etablissement = true
+	 * </code>
+	 *
 	 * @param     boolean|string $ouvertHoraireEtablissement The value to use as filter.
-	 *            Accepts strings ('false', 'off', '-', 'no', 'n', and '0' are false, the rest is true)
+	 *              Non-boolean arguments are converted using the following rules:
+	 *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtHorairesEtablissementQuery The current query, for fluid interface

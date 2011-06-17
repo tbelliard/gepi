@@ -31,6 +31,9 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 13;
+
 	/** the column name for the ID field */
 	const ID = 'a_notifications.ID';
 
@@ -70,6 +73,9 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	/** the column name for the UPDATED_AT field */
 	const UPDATED_AT = 'a_notifications.UPDATED_AT';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveNotification objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -85,7 +91,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'ATraitementId', 'TypeNotification', 'Email', 'Telephone', 'AdrId', 'Commentaire', 'StatutEnvoi', 'DateEnvoi', 'ErreurMessageEnvoi', 'CreatedAt', 'UpdatedAt', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'aTraitementId', 'typeNotification', 'email', 'telephone', 'adrId', 'commentaire', 'statutEnvoi', 'dateEnvoi', 'erreurMessageEnvoi', 'createdAt', 'updatedAt', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::A_TRAITEMENT_ID, self::TYPE_NOTIFICATION, self::EMAIL, self::TELEPHONE, self::ADR_ID, self::COMMENTAIRE, self::STATUT_ENVOI, self::DATE_ENVOI, self::ERREUR_MESSAGE_ENVOI, self::CREATED_AT, self::UPDATED_AT, ),
@@ -100,7 +106,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'ATraitementId' => 2, 'TypeNotification' => 3, 'Email' => 4, 'Telephone' => 5, 'AdrId' => 6, 'Commentaire' => 7, 'StatutEnvoi' => 8, 'DateEnvoi' => 9, 'ErreurMessageEnvoi' => 10, 'CreatedAt' => 11, 'UpdatedAt' => 12, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'aTraitementId' => 2, 'typeNotification' => 3, 'email' => 4, 'telephone' => 5, 'adrId' => 6, 'commentaire' => 7, 'statutEnvoi' => 8, 'dateEnvoi' => 9, 'erreurMessageEnvoi' => 10, 'createdAt' => 11, 'updatedAt' => 12, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::A_TRAITEMENT_ID => 2, self::TYPE_NOTIFICATION => 3, self::EMAIL => 4, self::TELEPHONE => 5, self::ADR_ID => 6, self::COMMENTAIRE => 7, self::STATUT_ENVOI => 8, self::DATE_ENVOI => 9, self::ERREUR_MESSAGE_ENVOI => 10, self::CREATED_AT => 11, self::UPDATED_AT => 12, ),
@@ -325,7 +331,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	 * @param      AbsenceEleveNotification $value A AbsenceEleveNotification object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(AbsenceEleveNotification $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -483,7 +489,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + AbsenceEleveNotificationPeer::NUM_COLUMNS;
+			$col = $startcol + AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = AbsenceEleveNotificationPeer::OM_CLASS;
 			$obj = new $cls();
@@ -662,7 +668,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 		}
 
 		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveNotificationPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -728,7 +734,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 		}
 
 		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS;
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, AbsenceEleveTraitementPeer::ID, $join_behavior);
@@ -794,7 +800,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 		}
 
 		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS;
 		ResponsableEleveAdressePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveNotificationPeer::ADR_ID, ResponsableEleveAdressePeer::ADR_ID, $join_behavior);
@@ -914,16 +920,16 @@ abstract class BaseAbsenceEleveNotificationPeer {
 		}
 
 		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 
 		ResponsableEleveAdressePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (ResponsableEleveAdressePeer::NUM_COLUMNS - ResponsableEleveAdressePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + ResponsableEleveAdressePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveNotificationPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1187,13 +1193,13 @@ abstract class BaseAbsenceEleveNotificationPeer {
 		}
 
 		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 
 		ResponsableEleveAdressePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ResponsableEleveAdressePeer::NUM_COLUMNS - ResponsableEleveAdressePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ResponsableEleveAdressePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveNotificationPeer::A_TRAITEMENT_ID, AbsenceEleveTraitementPeer::ID, $join_behavior);
 
@@ -1284,13 +1290,13 @@ abstract class BaseAbsenceEleveNotificationPeer {
 		}
 
 		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ResponsableEleveAdressePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ResponsableEleveAdressePeer::NUM_COLUMNS - ResponsableEleveAdressePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ResponsableEleveAdressePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveNotificationPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1381,13 +1387,13 @@ abstract class BaseAbsenceEleveNotificationPeer {
 		}
 
 		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveTraitementPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (AbsenceEleveTraitementPeer::NUM_COLUMNS - AbsenceEleveTraitementPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + AbsenceEleveTraitementPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveNotificationPeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1716,7 +1722,7 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(AbsenceEleveNotification $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

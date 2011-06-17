@@ -198,7 +198,7 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -232,8 +232,17 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -249,8 +258,14 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the utilisateur_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByUtilisateurId('fooValue');   // WHERE utilisateur_id = 'fooValue'
+	 * $query->filterByUtilisateurId('%fooValue%'); // WHERE utilisateur_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $utilisateurId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -271,8 +286,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the eleve_id column
 	 * 
-	 * @param     int|array $eleveId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEleveId(1234); // WHERE eleve_id = 1234
+	 * $query->filterByEleveId(array(12, 34)); // WHERE eleve_id IN (12, 34)
+	 * $query->filterByEleveId(array('min' => 12)); // WHERE eleve_id > 12
+	 * </code>
+	 *
+	 * @see       filterByEleve()
+	 *
+	 * @param     mixed $eleveId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -302,8 +328,14 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the commentaire column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCommentaire('fooValue');   // WHERE commentaire = 'fooValue'
+	 * $query->filterByCommentaire('%fooValue%'); // WHERE commentaire LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $commentaire The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -324,8 +356,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the debut_abs column
 	 * 
-	 * @param     string|array $debutAbs The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDebutAbs('2011-03-14'); // WHERE debut_abs = '2011-03-14'
+	 * $query->filterByDebutAbs('now'); // WHERE debut_abs = '2011-03-14'
+	 * $query->filterByDebutAbs(array('max' => 'yesterday')); // WHERE debut_abs > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $debutAbs The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -355,8 +398,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the fin_abs column
 	 * 
-	 * @param     string|array $finAbs The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByFinAbs('2011-03-14'); // WHERE fin_abs = '2011-03-14'
+	 * $query->filterByFinAbs('now'); // WHERE fin_abs = '2011-03-14'
+	 * $query->filterByFinAbs(array('max' => 'yesterday')); // WHERE fin_abs > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $finAbs The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -386,8 +440,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_edt_creneau column
 	 * 
-	 * @param     int|array $idEdtCreneau The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdEdtCreneau(1234); // WHERE id_edt_creneau = 1234
+	 * $query->filterByIdEdtCreneau(array(12, 34)); // WHERE id_edt_creneau IN (12, 34)
+	 * $query->filterByIdEdtCreneau(array('min' => 12)); // WHERE id_edt_creneau > 12
+	 * </code>
+	 *
+	 * @see       filterByEdtCreneau()
+	 *
+	 * @param     mixed $idEdtCreneau The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -417,8 +482,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_edt_emplacement_cours column
 	 * 
-	 * @param     int|array $idEdtEmplacementCours The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdEdtEmplacementCours(1234); // WHERE id_edt_emplacement_cours = 1234
+	 * $query->filterByIdEdtEmplacementCours(array(12, 34)); // WHERE id_edt_emplacement_cours IN (12, 34)
+	 * $query->filterByIdEdtEmplacementCours(array('min' => 12)); // WHERE id_edt_emplacement_cours > 12
+	 * </code>
+	 *
+	 * @see       filterByEdtEmplacementCours()
+	 *
+	 * @param     mixed $idEdtEmplacementCours The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -448,8 +524,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_groupe column
 	 * 
-	 * @param     int|array $idGroupe The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdGroupe(1234); // WHERE id_groupe = 1234
+	 * $query->filterByIdGroupe(array(12, 34)); // WHERE id_groupe IN (12, 34)
+	 * $query->filterByIdGroupe(array('min' => 12)); // WHERE id_groupe > 12
+	 * </code>
+	 *
+	 * @see       filterByGroupe()
+	 *
+	 * @param     mixed $idGroupe The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -479,8 +566,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_classe column
 	 * 
-	 * @param     int|array $idClasse The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdClasse(1234); // WHERE id_classe = 1234
+	 * $query->filterByIdClasse(array(12, 34)); // WHERE id_classe IN (12, 34)
+	 * $query->filterByIdClasse(array('min' => 12)); // WHERE id_classe > 12
+	 * </code>
+	 *
+	 * @see       filterByClasse()
+	 *
+	 * @param     mixed $idClasse The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -510,8 +608,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_aid column
 	 * 
-	 * @param     int|array $idAid The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdAid(1234); // WHERE id_aid = 1234
+	 * $query->filterByIdAid(array(12, 34)); // WHERE id_aid IN (12, 34)
+	 * $query->filterByIdAid(array('min' => 12)); // WHERE id_aid > 12
+	 * </code>
+	 *
+	 * @see       filterByAidDetails()
+	 *
+	 * @param     mixed $idAid The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -541,8 +650,17 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_s_incidents column
 	 * 
-	 * @param     int|array $idSIncidents The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdSIncidents(1234); // WHERE id_s_incidents = 1234
+	 * $query->filterByIdSIncidents(array(12, 34)); // WHERE id_s_incidents IN (12, 34)
+	 * $query->filterByIdSIncidents(array('min' => 12)); // WHERE id_s_incidents > 12
+	 * </code>
+	 *
+	 * @param     mixed $idSIncidents The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -572,8 +690,14 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the modifie_par_utilisateur_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByModifieParUtilisateurId('fooValue');   // WHERE modifie_par_utilisateur_id = 'fooValue'
+	 * $query->filterByModifieParUtilisateurId('%fooValue%'); // WHERE modifie_par_utilisateur_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $modifieParUtilisateurId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -594,8 +718,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_lieu column
 	 * 
-	 * @param     int|array $idLieu The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdLieu(1234); // WHERE id_lieu = 1234
+	 * $query->filterByIdLieu(array(12, 34)); // WHERE id_lieu IN (12, 34)
+	 * $query->filterByIdLieu(array('min' => 12)); // WHERE id_lieu > 12
+	 * </code>
+	 *
+	 * @see       filterByAbsenceEleveLieu()
+	 *
+	 * @param     mixed $idLieu The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -625,8 +760,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the created_at column
 	 * 
-	 * @param     string|array $createdAt The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+	 * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+	 * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $createdAt The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -656,8 +802,19 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query on the updated_at column
 	 * 
-	 * @param     string|array $updatedAt The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+	 * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+	 * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $updatedAt The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
@@ -687,15 +844,25 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::UTILISATEUR_ID, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByUtilisateurProfessionnel() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**
@@ -751,15 +918,25 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Eleve object
 	 *
-	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     Eleve|PropelCollection $eleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function filterByEleve($eleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleve->getIdEleve(), $comparison);
+		if ($eleve instanceof Eleve) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleve->getIdEleve(), $comparison);
+		} elseif ($eleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ELEVE_ID, $eleve->toKeyValue('PrimaryKey', 'IdEleve'), $comparison);
+		} else {
+			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
+		}
 	}
 
 	/**
@@ -815,15 +992,25 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related EdtCreneau object
 	 *
-	 * @param     EdtCreneau $edtCreneau  the related object to use as filter
+	 * @param     EdtCreneau|PropelCollection $edtCreneau The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function filterByEdtCreneau($edtCreneau, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $edtCreneau->getIdDefiniePeriode(), $comparison);
+		if ($edtCreneau instanceof EdtCreneau) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $edtCreneau->getIdDefiniePeriode(), $comparison);
+		} elseif ($edtCreneau instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, $edtCreneau->toKeyValue('PrimaryKey', 'IdDefiniePeriode'), $comparison);
+		} else {
+			throw new PropelException('filterByEdtCreneau() only accepts arguments of type EdtCreneau or PropelCollection');
+		}
 	}
 
 	/**
@@ -879,15 +1066,25 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related EdtEmplacementCours object
 	 *
-	 * @param     EdtEmplacementCours $edtEmplacementCours  the related object to use as filter
+	 * @param     EdtEmplacementCours|PropelCollection $edtEmplacementCours The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $edtEmplacementCours->getIdCours(), $comparison);
+		if ($edtEmplacementCours instanceof EdtEmplacementCours) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $edtEmplacementCours->getIdCours(), $comparison);
+		} elseif ($edtEmplacementCours instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, $edtEmplacementCours->toKeyValue('PrimaryKey', 'IdCours'), $comparison);
+		} else {
+			throw new PropelException('filterByEdtEmplacementCours() only accepts arguments of type EdtEmplacementCours or PropelCollection');
+		}
 	}
 
 	/**
@@ -943,15 +1140,25 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Groupe object
 	 *
-	 * @param     Groupe $groupe  the related object to use as filter
+	 * @param     Groupe|PropelCollection $groupe The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function filterByGroupe($groupe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $groupe->getId(), $comparison);
+		if ($groupe instanceof Groupe) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $groupe->getId(), $comparison);
+		} elseif ($groupe instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_GROUPE, $groupe->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByGroupe() only accepts arguments of type Groupe or PropelCollection');
+		}
 	}
 
 	/**
@@ -1007,15 +1214,25 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Classe object
 	 *
-	 * @param     Classe $classe  the related object to use as filter
+	 * @param     Classe|PropelCollection $classe The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function filterByClasse($classe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $classe->getId(), $comparison);
+		if ($classe instanceof Classe) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $classe->getId(), $comparison);
+		} elseif ($classe instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_CLASSE, $classe->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByClasse() only accepts arguments of type Classe or PropelCollection');
+		}
 	}
 
 	/**
@@ -1071,15 +1288,25 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AidDetails object
 	 *
-	 * @param     AidDetails $aidDetails  the related object to use as filter
+	 * @param     AidDetails|PropelCollection $aidDetails The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function filterByAidDetails($aidDetails, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $aidDetails->getId(), $comparison);
+		if ($aidDetails instanceof AidDetails) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $aidDetails->getId(), $comparison);
+		} elseif ($aidDetails instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_AID, $aidDetails->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAidDetails() only accepts arguments of type AidDetails or PropelCollection');
+		}
 	}
 
 	/**
@@ -1135,15 +1362,25 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function filterByModifieParUtilisateur($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByModifieParUtilisateur() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**
@@ -1199,15 +1436,25 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AbsenceEleveLieu object
 	 *
-	 * @param     AbsenceEleveLieu $absenceEleveLieu  the related object to use as filter
+	 * @param     AbsenceEleveLieu|PropelCollection $absenceEleveLieu The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
 	 */
 	public function filterByAbsenceEleveLieu($absenceEleveLieu, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveSaisiePeer::ID_LIEU, $absenceEleveLieu->getId(), $comparison);
+		if ($absenceEleveLieu instanceof AbsenceEleveLieu) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_LIEU, $absenceEleveLieu->getId(), $comparison);
+		} elseif ($absenceEleveLieu instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID_LIEU, $absenceEleveLieu->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAbsenceEleveLieu() only accepts arguments of type AbsenceEleveLieu or PropelCollection');
+		}
 	}
 
 	/**
@@ -1270,8 +1517,17 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 	 */
 	public function filterByJTraitementSaisieEleve($jTraitementSaisieEleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveSaisiePeer::ID, $jTraitementSaisieEleve->getASaisieId(), $comparison);
+		if ($jTraitementSaisieEleve instanceof JTraitementSaisieEleve) {
+			return $this
+				->addUsingAlias(AbsenceEleveSaisiePeer::ID, $jTraitementSaisieEleve->getASaisieId(), $comparison);
+		} elseif ($jTraitementSaisieEleve instanceof PropelCollection) {
+			return $this
+				->useJTraitementSaisieEleveQuery()
+					->filterByPrimaryKeys($jTraitementSaisieEleve->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJTraitementSaisieEleve() only accepts arguments of type JTraitementSaisieEleve or PropelCollection');
+		}
 	}
 
 	/**

@@ -110,7 +110,7 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -144,8 +144,17 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_edt_semaine column
 	 * 
-	 * @param     int|array $idEdtSemaine The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdEdtSemaine(1234); // WHERE id_edt_semaine = 1234
+	 * $query->filterByIdEdtSemaine(array(12, 34)); // WHERE id_edt_semaine IN (12, 34)
+	 * $query->filterByIdEdtSemaine(array('min' => 12)); // WHERE id_edt_semaine > 12
+	 * </code>
+	 *
+	 * @param     mixed $idEdtSemaine The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtSemaineQuery The current query, for fluid interface
@@ -161,8 +170,17 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	/**
 	 * Filter the query on the num_edt_semaine column
 	 * 
-	 * @param     int|array $numEdtSemaine The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNumEdtSemaine(1234); // WHERE num_edt_semaine = 1234
+	 * $query->filterByNumEdtSemaine(array(12, 34)); // WHERE num_edt_semaine IN (12, 34)
+	 * $query->filterByNumEdtSemaine(array('min' => 12)); // WHERE num_edt_semaine > 12
+	 * </code>
+	 *
+	 * @param     mixed $numEdtSemaine The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtSemaineQuery The current query, for fluid interface
@@ -192,8 +210,14 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	/**
 	 * Filter the query on the type_edt_semaine column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTypeEdtSemaine('fooValue');   // WHERE type_edt_semaine = 'fooValue'
+	 * $query->filterByTypeEdtSemaine('%fooValue%'); // WHERE type_edt_semaine LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $typeEdtSemaine The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtSemaineQuery The current query, for fluid interface
@@ -214,8 +238,17 @@ abstract class BaseEdtSemaineQuery extends ModelCriteria
 	/**
 	 * Filter the query on the num_semaines_etab column
 	 * 
-	 * @param     int|array $numSemainesEtab The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNumSemainesEtab(1234); // WHERE num_semaines_etab = 1234
+	 * $query->filterByNumSemainesEtab(array(12, 34)); // WHERE num_semaines_etab IN (12, 34)
+	 * $query->filterByNumSemainesEtab(array('min' => 12)); // WHERE num_semaines_etab > 12
+	 * </code>
+	 *
+	 * @param     mixed $numSemainesEtab The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtSemaineQuery The current query, for fluid interface

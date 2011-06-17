@@ -110,7 +110,7 @@ abstract class BaseAbsenceEleveTypeStatutAutoriseQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -144,8 +144,17 @@ abstract class BaseAbsenceEleveTypeStatutAutoriseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeStatutAutoriseQuery The current query, for fluid interface
@@ -161,8 +170,19 @@ abstract class BaseAbsenceEleveTypeStatutAutoriseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_a_type column
 	 * 
-	 * @param     int|array $idAType The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdAType(1234); // WHERE id_a_type = 1234
+	 * $query->filterByIdAType(array(12, 34)); // WHERE id_a_type IN (12, 34)
+	 * $query->filterByIdAType(array('min' => 12)); // WHERE id_a_type > 12
+	 * </code>
+	 *
+	 * @see       filterByAbsenceEleveType()
+	 *
+	 * @param     mixed $idAType The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeStatutAutoriseQuery The current query, for fluid interface
@@ -192,8 +212,14 @@ abstract class BaseAbsenceEleveTypeStatutAutoriseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the statut column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByStatut('fooValue');   // WHERE statut = 'fooValue'
+	 * $query->filterByStatut('%fooValue%'); // WHERE statut LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $statut The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeStatutAutoriseQuery The current query, for fluid interface
@@ -214,15 +240,25 @@ abstract class BaseAbsenceEleveTypeStatutAutoriseQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AbsenceEleveType object
 	 *
-	 * @param     AbsenceEleveType $absenceEleveType  the related object to use as filter
+	 * @param     AbsenceEleveType|PropelCollection $absenceEleveType The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceEleveTypeStatutAutoriseQuery The current query, for fluid interface
 	 */
 	public function filterByAbsenceEleveType($absenceEleveType, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AbsenceEleveTypeStatutAutorisePeer::ID_A_TYPE, $absenceEleveType->getId(), $comparison);
+		if ($absenceEleveType instanceof AbsenceEleveType) {
+			return $this
+				->addUsingAlias(AbsenceEleveTypeStatutAutorisePeer::ID_A_TYPE, $absenceEleveType->getId(), $comparison);
+		} elseif ($absenceEleveType instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(AbsenceEleveTypeStatutAutorisePeer::ID_A_TYPE, $absenceEleveType->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAbsenceEleveType() only accepts arguments of type AbsenceEleveType or PropelCollection');
+		}
 	}
 
 	/**

@@ -118,7 +118,7 @@ abstract class BaseCahierTexteSequenceQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -152,8 +152,17 @@ abstract class BaseCahierTexteSequenceQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteSequenceQuery The current query, for fluid interface
@@ -169,8 +178,14 @@ abstract class BaseCahierTexteSequenceQuery extends ModelCriteria
 	/**
 	 * Filter the query on the titre column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTitre('fooValue');   // WHERE titre = 'fooValue'
+	 * $query->filterByTitre('%fooValue%'); // WHERE titre LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $titre The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteSequenceQuery The current query, for fluid interface
@@ -191,8 +206,14 @@ abstract class BaseCahierTexteSequenceQuery extends ModelCriteria
 	/**
 	 * Filter the query on the description column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDescription('fooValue');   // WHERE description = 'fooValue'
+	 * $query->filterByDescription('%fooValue%'); // WHERE description LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $description The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteSequenceQuery The current query, for fluid interface
@@ -220,8 +241,17 @@ abstract class BaseCahierTexteSequenceQuery extends ModelCriteria
 	 */
 	public function filterByCahierTexteCompteRendu($cahierTexteCompteRendu, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(CahierTexteSequencePeer::ID, $cahierTexteCompteRendu->getIdSequence(), $comparison);
+		if ($cahierTexteCompteRendu instanceof CahierTexteCompteRendu) {
+			return $this
+				->addUsingAlias(CahierTexteSequencePeer::ID, $cahierTexteCompteRendu->getIdSequence(), $comparison);
+		} elseif ($cahierTexteCompteRendu instanceof PropelCollection) {
+			return $this
+				->useCahierTexteCompteRenduQuery()
+					->filterByPrimaryKeys($cahierTexteCompteRendu->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCahierTexteCompteRendu() only accepts arguments of type CahierTexteCompteRendu or PropelCollection');
+		}
 	}
 
 	/**
@@ -284,8 +314,17 @@ abstract class BaseCahierTexteSequenceQuery extends ModelCriteria
 	 */
 	public function filterByCahierTexteTravailAFaire($cahierTexteTravailAFaire, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(CahierTexteSequencePeer::ID, $cahierTexteTravailAFaire->getIdSequence(), $comparison);
+		if ($cahierTexteTravailAFaire instanceof CahierTexteTravailAFaire) {
+			return $this
+				->addUsingAlias(CahierTexteSequencePeer::ID, $cahierTexteTravailAFaire->getIdSequence(), $comparison);
+		} elseif ($cahierTexteTravailAFaire instanceof PropelCollection) {
+			return $this
+				->useCahierTexteTravailAFaireQuery()
+					->filterByPrimaryKeys($cahierTexteTravailAFaire->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCahierTexteTravailAFaire() only accepts arguments of type CahierTexteTravailAFaire or PropelCollection');
+		}
 	}
 
 	/**
@@ -348,8 +387,17 @@ abstract class BaseCahierTexteSequenceQuery extends ModelCriteria
 	 */
 	public function filterByCahierTexteNoticePrivee($cahierTexteNoticePrivee, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(CahierTexteSequencePeer::ID, $cahierTexteNoticePrivee->getIdSequence(), $comparison);
+		if ($cahierTexteNoticePrivee instanceof CahierTexteNoticePrivee) {
+			return $this
+				->addUsingAlias(CahierTexteSequencePeer::ID, $cahierTexteNoticePrivee->getIdSequence(), $comparison);
+		} elseif ($cahierTexteNoticePrivee instanceof PropelCollection) {
+			return $this
+				->useCahierTexteNoticePriveeQuery()
+					->filterByPrimaryKeys($cahierTexteNoticePrivee->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCahierTexteNoticePrivee() only accepts arguments of type CahierTexteNoticePrivee or PropelCollection');
+		}
 	}
 
 	/**

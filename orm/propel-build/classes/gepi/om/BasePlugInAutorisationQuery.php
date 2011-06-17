@@ -118,7 +118,7 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -152,8 +152,17 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
@@ -169,8 +178,19 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the plugin_id column
 	 * 
-	 * @param     int|array $pluginId The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPluginId(1234); // WHERE plugin_id = 1234
+	 * $query->filterByPluginId(array(12, 34)); // WHERE plugin_id IN (12, 34)
+	 * $query->filterByPluginId(array('min' => 12)); // WHERE plugin_id > 12
+	 * </code>
+	 *
+	 * @see       filterByPlugIn()
+	 *
+	 * @param     mixed $pluginId The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
@@ -200,8 +220,14 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the fichier column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByFichier('fooValue');   // WHERE fichier = 'fooValue'
+	 * $query->filterByFichier('%fooValue%'); // WHERE fichier LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $fichier The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
@@ -222,8 +248,14 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the user_statut column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByUserStatut('fooValue');   // WHERE user_statut = 'fooValue'
+	 * $query->filterByUserStatut('%fooValue%'); // WHERE user_statut LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $userStatut The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
@@ -244,8 +276,14 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	/**
 	 * Filter the query on the auth column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAuth('fooValue');   // WHERE auth = 'fooValue'
+	 * $query->filterByAuth('%fooValue%'); // WHERE auth LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $auth The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
@@ -266,15 +304,25 @@ abstract class BasePlugInAutorisationQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related PlugIn object
 	 *
-	 * @param     PlugIn $plugIn  the related object to use as filter
+	 * @param     PlugIn|PropelCollection $plugIn The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInAutorisationQuery The current query, for fluid interface
 	 */
 	public function filterByPlugIn($plugIn, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $plugIn->getId(), $comparison);
+		if ($plugIn instanceof PlugIn) {
+			return $this
+				->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $plugIn->getId(), $comparison);
+		} elseif ($plugIn instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(PlugInAutorisationPeer::PLUGIN_ID, $plugIn->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByPlugIn() only accepts arguments of type PlugIn or PropelCollection');
+		}
 	}
 
 	/**

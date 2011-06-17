@@ -384,7 +384,7 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 8; // 8 = ResponsableEleveAdressePeer::NUM_COLUMNS - ResponsableEleveAdressePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 8; // 8 = ResponsableEleveAdressePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating ResponsableEleveAdresse object", $e);
@@ -751,11 +751,17 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['ResponsableEleveAdresse'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['ResponsableEleveAdresse'][$this->getPrimaryKey()] = true;
 		$keys = ResponsableEleveAdressePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getAdrId(),
@@ -767,6 +773,14 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 			$keys[6] => $this->getPays(),
 			$keys[7] => $this->getCommune(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->collResponsableEleves) {
+				$result['ResponsableEleves'] = $this->collResponsableEleves->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collAbsenceEleveNotifications) {
+				$result['AbsenceEleveNotifications'] = $this->collAbsenceEleveNotifications->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+		}
 		return $result;
 	}
 
@@ -929,18 +943,19 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 *
 	 * @param      object $copyObj An object of ResponsableEleveAdresse (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setAdrId($this->adr_id);
-		$copyObj->setAdr1($this->adr1);
-		$copyObj->setAdr2($this->adr2);
-		$copyObj->setAdr3($this->adr3);
-		$copyObj->setAdr4($this->adr4);
-		$copyObj->setCp($this->cp);
-		$copyObj->setPays($this->pays);
-		$copyObj->setCommune($this->commune);
+		$copyObj->setAdrId($this->getAdrId());
+		$copyObj->setAdr1($this->getAdr1());
+		$copyObj->setAdr2($this->getAdr2());
+		$copyObj->setAdr3($this->getAdr3());
+		$copyObj->setAdr4($this->getAdr4());
+		$copyObj->setCp($this->getCp());
+		$copyObj->setPays($this->getPays());
+		$copyObj->setCommune($this->getCommune());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -961,8 +976,9 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -1024,10 +1040,16 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initResponsableEleves()
+	public function initResponsableEleves($overrideExisting = true)
 	{
+		if (null !== $this->collResponsableEleves && !$overrideExisting) {
+			return;
+		}
 		$this->collResponsableEleves = new PropelObjectCollection();
 		$this->collResponsableEleves->setModel('ResponsableEleve');
 	}
@@ -1133,10 +1155,16 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initAbsenceEleveNotifications()
+	public function initAbsenceEleveNotifications($overrideExisting = true)
 	{
+		if (null !== $this->collAbsenceEleveNotifications && !$overrideExisting) {
+			return;
+		}
 		$this->collAbsenceEleveNotifications = new PropelObjectCollection();
 		$this->collAbsenceEleveNotifications->setModel('AbsenceEleveNotification');
 	}
@@ -1293,31 +1321,47 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collResponsableEleves) {
-				foreach ((array) $this->collResponsableEleves as $o) {
+				foreach ($this->collResponsableEleves as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collAbsenceEleveNotifications) {
-				foreach ((array) $this->collAbsenceEleveNotifications as $o) {
+				foreach ($this->collAbsenceEleveNotifications as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collResponsableEleves instanceof PropelCollection) {
+			$this->collResponsableEleves->clearIterator();
+		}
 		$this->collResponsableEleves = null;
+		if ($this->collAbsenceEleveNotifications instanceof PropelCollection) {
+			$this->collAbsenceEleveNotifications->clearIterator();
+		}
 		$this->collAbsenceEleveNotifications = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(ResponsableEleveAdressePeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

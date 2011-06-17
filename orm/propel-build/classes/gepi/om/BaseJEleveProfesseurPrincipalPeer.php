@@ -31,6 +31,9 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 3;
+
 	/** the column name for the LOGIN field */
 	const LOGIN = 'j_eleves_professeurs.LOGIN';
 
@@ -40,6 +43,9 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	/** the column name for the ID_CLASSE field */
 	const ID_CLASSE = 'j_eleves_professeurs.ID_CLASSE';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of JEleveProfesseurPrincipal objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -55,7 +61,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Login', 'Professeur', 'IdClasse', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('login', 'professeur', 'idClasse', ),
 		BasePeer::TYPE_COLNAME => array (self::LOGIN, self::PROFESSEUR, self::ID_CLASSE, ),
@@ -70,7 +76,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Login' => 0, 'Professeur' => 1, 'IdClasse' => 2, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('login' => 0, 'professeur' => 1, 'idClasse' => 2, ),
 		BasePeer::TYPE_COLNAME => array (self::LOGIN => 0, self::PROFESSEUR => 1, self::ID_CLASSE => 2, ),
@@ -275,7 +281,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	 * @param      JEleveProfesseurPrincipal $value A JEleveProfesseurPrincipal object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(JEleveProfesseurPrincipal $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -430,7 +436,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + JEleveProfesseurPrincipalPeer::NUM_COLUMNS;
+			$col = $startcol + JEleveProfesseurPrincipalPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = JEleveProfesseurPrincipalPeer::OM_CLASS;
 			$obj = new $cls();
@@ -609,7 +615,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		}
 
 		JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		$startcol = (JEleveProfesseurPrincipalPeer::NUM_COLUMNS - JEleveProfesseurPrincipalPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JEleveProfesseurPrincipalPeer::NUM_HYDRATE_COLUMNS;
 		ElevePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
@@ -675,7 +681,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		}
 
 		JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		$startcol = (JEleveProfesseurPrincipalPeer::NUM_COLUMNS - JEleveProfesseurPrincipalPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JEleveProfesseurPrincipalPeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::PROFESSEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -741,7 +747,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		}
 
 		JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		$startcol = (JEleveProfesseurPrincipalPeer::NUM_COLUMNS - JEleveProfesseurPrincipalPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JEleveProfesseurPrincipalPeer::NUM_HYDRATE_COLUMNS;
 		ClassePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
@@ -861,16 +867,16 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		}
 
 		JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		$startcol2 = (JEleveProfesseurPrincipalPeer::NUM_COLUMNS - JEleveProfesseurPrincipalPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JEleveProfesseurPrincipalPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
 
@@ -1134,13 +1140,13 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		}
 
 		JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		$startcol2 = (JEleveProfesseurPrincipalPeer::NUM_COLUMNS - JEleveProfesseurPrincipalPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JEleveProfesseurPrincipalPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::PROFESSEUR, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1231,13 +1237,13 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		}
 
 		JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		$startcol2 = (JEleveProfesseurPrincipalPeer::NUM_COLUMNS - JEleveProfesseurPrincipalPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JEleveProfesseurPrincipalPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
 
@@ -1328,13 +1334,13 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 		}
 
 		JEleveProfesseurPrincipalPeer::addSelectColumns($criteria);
-		$startcol2 = (JEleveProfesseurPrincipalPeer::NUM_COLUMNS - JEleveProfesseurPrincipalPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JEleveProfesseurPrincipalPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JEleveProfesseurPrincipalPeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
 
@@ -1644,7 +1650,7 @@ abstract class BaseJEleveProfesseurPrincipalPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(JEleveProfesseurPrincipal $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

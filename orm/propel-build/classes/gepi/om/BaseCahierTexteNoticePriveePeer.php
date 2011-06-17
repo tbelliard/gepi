@@ -31,6 +31,9 @@ abstract class BaseCahierTexteNoticePriveePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 7;
+
 	/** the column name for the ID_CT field */
 	const ID_CT = 'ct_private_entry.ID_CT';
 
@@ -52,6 +55,9 @@ abstract class BaseCahierTexteNoticePriveePeer {
 	/** the column name for the ID_SEQUENCE field */
 	const ID_SEQUENCE = 'ct_private_entry.ID_SEQUENCE';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of CahierTexteNoticePrivee objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -67,7 +73,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('IdCt', 'HeureEntry', 'DateCt', 'Contenu', 'IdGroupe', 'IdLogin', 'IdSequence', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt', 'heureEntry', 'dateCt', 'contenu', 'idGroupe', 'idLogin', 'idSequence', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_CT, self::HEURE_ENTRY, self::DATE_CT, self::CONTENU, self::ID_GROUPE, self::ID_LOGIN, self::ID_SEQUENCE, ),
@@ -82,7 +88,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('IdCt' => 0, 'HeureEntry' => 1, 'DateCt' => 2, 'Contenu' => 3, 'IdGroupe' => 4, 'IdLogin' => 5, 'IdSequence' => 6, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idCt' => 0, 'heureEntry' => 1, 'dateCt' => 2, 'contenu' => 3, 'idGroupe' => 4, 'idLogin' => 5, 'idSequence' => 6, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_CT => 0, self::HEURE_ENTRY => 1, self::DATE_CT => 2, self::CONTENU => 3, self::ID_GROUPE => 4, self::ID_LOGIN => 5, self::ID_SEQUENCE => 6, ),
@@ -295,7 +301,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 	 * @param      CahierTexteNoticePrivee $value A CahierTexteNoticePrivee object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(CahierTexteNoticePrivee $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -450,7 +456,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + CahierTexteNoticePriveePeer::NUM_COLUMNS;
+			$col = $startcol + CahierTexteNoticePriveePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = CahierTexteNoticePriveePeer::OM_CLASS;
 			$obj = new $cls();
@@ -629,7 +635,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		}
 
 		CahierTexteNoticePriveePeer::addSelectColumns($criteria);
-		$startcol = (CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = CahierTexteNoticePriveePeer::NUM_HYDRATE_COLUMNS;
 		GroupePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(CahierTexteNoticePriveePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
@@ -695,7 +701,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		}
 
 		CahierTexteNoticePriveePeer::addSelectColumns($criteria);
-		$startcol = (CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = CahierTexteNoticePriveePeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(CahierTexteNoticePriveePeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -761,7 +767,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		}
 
 		CahierTexteNoticePriveePeer::addSelectColumns($criteria);
-		$startcol = (CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = CahierTexteNoticePriveePeer::NUM_HYDRATE_COLUMNS;
 		CahierTexteSequencePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(CahierTexteNoticePriveePeer::ID_SEQUENCE, CahierTexteSequencePeer::ID, $join_behavior);
@@ -881,16 +887,16 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		}
 
 		CahierTexteNoticePriveePeer::addSelectColumns($criteria);
-		$startcol2 = (CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CahierTexteNoticePriveePeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		CahierTexteSequencePeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + CahierTexteSequencePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CahierTexteNoticePriveePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1154,13 +1160,13 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		}
 
 		CahierTexteNoticePriveePeer::addSelectColumns($criteria);
-		$startcol2 = (CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CahierTexteNoticePriveePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		CahierTexteSequencePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + CahierTexteSequencePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CahierTexteNoticePriveePeer::ID_LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1251,13 +1257,13 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		}
 
 		CahierTexteNoticePriveePeer::addSelectColumns($criteria);
-		$startcol2 = (CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CahierTexteNoticePriveePeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		CahierTexteSequencePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + CahierTexteSequencePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CahierTexteNoticePriveePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1348,13 +1354,13 @@ abstract class BaseCahierTexteNoticePriveePeer {
 		}
 
 		CahierTexteNoticePriveePeer::addSelectColumns($criteria);
-		$startcol2 = (CahierTexteNoticePriveePeer::NUM_COLUMNS - CahierTexteNoticePriveePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CahierTexteNoticePriveePeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CahierTexteNoticePriveePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1643,7 +1649,7 @@ abstract class BaseCahierTexteNoticePriveePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(CahierTexteNoticePrivee $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

@@ -122,7 +122,7 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,17 @@ abstract class BasePlugInQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
@@ -173,8 +182,14 @@ abstract class BasePlugInQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
+	 * $query->filterByNom('%fooValue%'); // WHERE nom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
@@ -195,8 +210,14 @@ abstract class BasePlugInQuery extends ModelCriteria
 	/**
 	 * Filter the query on the repertoire column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRepertoire('fooValue');   // WHERE repertoire = 'fooValue'
+	 * $query->filterByRepertoire('%fooValue%'); // WHERE repertoire LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $repertoire The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
@@ -217,8 +238,14 @@ abstract class BasePlugInQuery extends ModelCriteria
 	/**
 	 * Filter the query on the description column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDescription('fooValue');   // WHERE description = 'fooValue'
+	 * $query->filterByDescription('%fooValue%'); // WHERE description LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $description The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
@@ -239,8 +266,14 @@ abstract class BasePlugInQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ouvert column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByOuvert('fooValue');   // WHERE ouvert = 'fooValue'
+	 * $query->filterByOuvert('%fooValue%'); // WHERE ouvert LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $ouvert The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    PlugInQuery The current query, for fluid interface
@@ -268,8 +301,17 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 */
 	public function filterByPlugInAutorisation($plugInAutorisation, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(PlugInPeer::ID, $plugInAutorisation->getPluginId(), $comparison);
+		if ($plugInAutorisation instanceof PlugInAutorisation) {
+			return $this
+				->addUsingAlias(PlugInPeer::ID, $plugInAutorisation->getPluginId(), $comparison);
+		} elseif ($plugInAutorisation instanceof PropelCollection) {
+			return $this
+				->usePlugInAutorisationQuery()
+					->filterByPrimaryKeys($plugInAutorisation->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByPlugInAutorisation() only accepts arguments of type PlugInAutorisation or PropelCollection');
+		}
 	}
 
 	/**
@@ -332,8 +374,17 @@ abstract class BasePlugInQuery extends ModelCriteria
 	 */
 	public function filterByPlugInMiseEnOeuvreMenu($plugInMiseEnOeuvreMenu, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(PlugInPeer::ID, $plugInMiseEnOeuvreMenu->getPluginId(), $comparison);
+		if ($plugInMiseEnOeuvreMenu instanceof PlugInMiseEnOeuvreMenu) {
+			return $this
+				->addUsingAlias(PlugInPeer::ID, $plugInMiseEnOeuvreMenu->getPluginId(), $comparison);
+		} elseif ($plugInMiseEnOeuvreMenu instanceof PropelCollection) {
+			return $this
+				->usePlugInMiseEnOeuvreMenuQuery()
+					->filterByPrimaryKeys($plugInMiseEnOeuvreMenu->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByPlugInMiseEnOeuvreMenu() only accepts arguments of type PlugInMiseEnOeuvreMenu or PropelCollection');
+		}
 	}
 
 	/**

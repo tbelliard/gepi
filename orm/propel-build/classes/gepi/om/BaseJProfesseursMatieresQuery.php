@@ -113,7 +113,7 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -160,8 +160,14 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_matiere column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdMatiere('fooValue');   // WHERE id_matiere = 'fooValue'
+	 * $query->filterByIdMatiere('%fooValue%'); // WHERE id_matiere LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idMatiere The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JProfesseursMatieresQuery The current query, for fluid interface
@@ -182,8 +188,14 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_professeur column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdProfesseur('fooValue');   // WHERE id_professeur = 'fooValue'
+	 * $query->filterByIdProfesseur('%fooValue%'); // WHERE id_professeur LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idProfesseur The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JProfesseursMatieresQuery The current query, for fluid interface
@@ -204,8 +216,17 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ordre_matieres column
 	 * 
-	 * @param     int|array $ordreMatieres The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByOrdreMatieres(1234); // WHERE ordre_matieres = 1234
+	 * $query->filterByOrdreMatieres(array(12, 34)); // WHERE ordre_matieres IN (12, 34)
+	 * $query->filterByOrdreMatieres(array('min' => 12)); // WHERE ordre_matieres > 12
+	 * </code>
+	 *
+	 * @param     mixed $ordreMatieres The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JProfesseursMatieresQuery The current query, for fluid interface
@@ -235,15 +256,25 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Matiere object
 	 *
-	 * @param     Matiere $matiere  the related object to use as filter
+	 * @param     Matiere|PropelCollection $matiere The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JProfesseursMatieresQuery The current query, for fluid interface
 	 */
 	public function filterByMatiere($matiere, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JProfesseursMatieresPeer::ID_MATIERE, $matiere->getMatiere(), $comparison);
+		if ($matiere instanceof Matiere) {
+			return $this
+				->addUsingAlias(JProfesseursMatieresPeer::ID_MATIERE, $matiere->getMatiere(), $comparison);
+		} elseif ($matiere instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JProfesseursMatieresPeer::ID_MATIERE, $matiere->toKeyValue('PrimaryKey', 'Matiere'), $comparison);
+		} else {
+			throw new PropelException('filterByMatiere() only accepts arguments of type Matiere or PropelCollection');
+		}
 	}
 
 	/**
@@ -299,15 +330,25 @@ abstract class BaseJProfesseursMatieresQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JProfesseursMatieresQuery The current query, for fluid interface
 	 */
 	public function filterByProfesseur($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JProfesseursMatieresPeer::ID_PROFESSEUR, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(JProfesseursMatieresPeer::ID_PROFESSEUR, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JProfesseursMatieresPeer::ID_PROFESSEUR, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByProfesseur() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**

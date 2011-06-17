@@ -122,7 +122,7 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,17 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AncienEtablissementQuery The current query, for fluid interface
@@ -173,8 +182,14 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
+	 * $query->filterByNom('%fooValue%'); // WHERE nom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AncienEtablissementQuery The current query, for fluid interface
@@ -195,8 +210,14 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the niveau column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNiveau('fooValue');   // WHERE niveau = 'fooValue'
+	 * $query->filterByNiveau('%fooValue%'); // WHERE niveau LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $niveau The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AncienEtablissementQuery The current query, for fluid interface
@@ -217,8 +238,14 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the type column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByType('fooValue');   // WHERE type = 'fooValue'
+	 * $query->filterByType('%fooValue%'); // WHERE type LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $type The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AncienEtablissementQuery The current query, for fluid interface
@@ -239,8 +266,17 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the cp column
 	 * 
-	 * @param     int|array $cp The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCp(1234); // WHERE cp = 1234
+	 * $query->filterByCp(array(12, 34)); // WHERE cp IN (12, 34)
+	 * $query->filterByCp(array('min' => 12)); // WHERE cp > 12
+	 * </code>
+	 *
+	 * @param     mixed $cp The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AncienEtablissementQuery The current query, for fluid interface
@@ -270,8 +306,14 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ville column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByVille('fooValue');   // WHERE ville = 'fooValue'
+	 * $query->filterByVille('%fooValue%'); // WHERE ville LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $ville The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AncienEtablissementQuery The current query, for fluid interface
@@ -299,8 +341,17 @@ abstract class BaseAncienEtablissementQuery extends ModelCriteria
 	 */
 	public function filterByJEleveAncienEtablissement($jEleveAncienEtablissement, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(AncienEtablissementPeer::ID, $jEleveAncienEtablissement->getIdEtablissement(), $comparison);
+		if ($jEleveAncienEtablissement instanceof JEleveAncienEtablissement) {
+			return $this
+				->addUsingAlias(AncienEtablissementPeer::ID, $jEleveAncienEtablissement->getIdEtablissement(), $comparison);
+		} elseif ($jEleveAncienEtablissement instanceof PropelCollection) {
+			return $this
+				->useJEleveAncienEtablissementQuery()
+					->filterByPrimaryKeys($jEleveAncienEtablissement->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveAncienEtablissement() only accepts arguments of type JEleveAncienEtablissement or PropelCollection');
+		}
 	}
 
 	/**

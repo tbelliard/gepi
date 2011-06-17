@@ -130,7 +130,7 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -164,8 +164,17 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_definie_periode column
 	 * 
-	 * @param     int|array $idDefiniePeriode The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdDefiniePeriode(1234); // WHERE id_definie_periode = 1234
+	 * $query->filterByIdDefiniePeriode(array(12, 34)); // WHERE id_definie_periode IN (12, 34)
+	 * $query->filterByIdDefiniePeriode(array('min' => 12)); // WHERE id_definie_periode > 12
+	 * </code>
+	 *
+	 * @param     mixed $idDefiniePeriode The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
@@ -181,8 +190,14 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom_definie_periode column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNomDefiniePeriode('fooValue');   // WHERE nom_definie_periode = 'fooValue'
+	 * $query->filterByNomDefiniePeriode('%fooValue%'); // WHERE nom_definie_periode LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nomDefiniePeriode The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
@@ -203,8 +218,19 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	/**
 	 * Filter the query on the heuredebut_definie_periode column
 	 * 
-	 * @param     string|array $heuredebutDefiniePeriode The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByHeuredebutDefiniePeriode('2011-03-14'); // WHERE heuredebut_definie_periode = '2011-03-14'
+	 * $query->filterByHeuredebutDefiniePeriode('now'); // WHERE heuredebut_definie_periode = '2011-03-14'
+	 * $query->filterByHeuredebutDefiniePeriode(array('max' => 'yesterday')); // WHERE heuredebut_definie_periode > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $heuredebutDefiniePeriode The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
@@ -234,8 +260,19 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	/**
 	 * Filter the query on the heurefin_definie_periode column
 	 * 
-	 * @param     string|array $heurefinDefiniePeriode The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByHeurefinDefiniePeriode('2011-03-14'); // WHERE heurefin_definie_periode = '2011-03-14'
+	 * $query->filterByHeurefinDefiniePeriode('now'); // WHERE heurefin_definie_periode = '2011-03-14'
+	 * $query->filterByHeurefinDefiniePeriode(array('max' => 'yesterday')); // WHERE heurefin_definie_periode > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $heurefinDefiniePeriode The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
@@ -265,8 +302,17 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	/**
 	 * Filter the query on the suivi_definie_periode column
 	 * 
-	 * @param     int|array $suiviDefiniePeriode The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterBySuiviDefiniePeriode(1234); // WHERE suivi_definie_periode = 1234
+	 * $query->filterBySuiviDefiniePeriode(array(12, 34)); // WHERE suivi_definie_periode IN (12, 34)
+	 * $query->filterBySuiviDefiniePeriode(array('min' => 12)); // WHERE suivi_definie_periode > 12
+	 * </code>
+	 *
+	 * @param     mixed $suiviDefiniePeriode The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
@@ -296,8 +342,14 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	/**
 	 * Filter the query on the type_creneaux column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTypeCreneaux('fooValue');   // WHERE type_creneaux = 'fooValue'
+	 * $query->filterByTypeCreneaux('%fooValue%'); // WHERE type_creneaux LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $typeCreneaux The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
@@ -318,8 +370,14 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	/**
 	 * Filter the query on the jour_creneau column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByJourCreneau('fooValue');   // WHERE jour_creneau = 'fooValue'
+	 * $query->filterByJourCreneau('%fooValue%'); // WHERE jour_creneau LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $jourCreneau The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCreneauQuery The current query, for fluid interface
@@ -347,8 +405,17 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtCreneauPeer::ID_DEFINIE_PERIODE, $absenceEleveSaisie->getIdEdtCreneau(), $comparison);
+		if ($absenceEleveSaisie instanceof AbsenceEleveSaisie) {
+			return $this
+				->addUsingAlias(EdtCreneauPeer::ID_DEFINIE_PERIODE, $absenceEleveSaisie->getIdEdtCreneau(), $comparison);
+		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveSaisieQuery()
+					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
+		}
 	}
 
 	/**
@@ -411,8 +478,17 @@ abstract class BaseEdtCreneauQuery extends ModelCriteria
 	 */
 	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtCreneauPeer::ID_DEFINIE_PERIODE, $edtEmplacementCours->getIdDefiniePeriode(), $comparison);
+		if ($edtEmplacementCours instanceof EdtEmplacementCours) {
+			return $this
+				->addUsingAlias(EdtCreneauPeer::ID_DEFINIE_PERIODE, $edtEmplacementCours->getIdDefiniePeriode(), $comparison);
+		} elseif ($edtEmplacementCours instanceof PropelCollection) {
+			return $this
+				->useEdtEmplacementCoursQuery()
+					->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByEdtEmplacementCours() only accepts arguments of type EdtEmplacementCours or PropelCollection');
+		}
 	}
 
 	/**

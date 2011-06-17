@@ -31,12 +31,18 @@ abstract class BaseJNotificationResponsableElevePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 2;
+
 	/** the column name for the A_NOTIFICATION_ID field */
 	const A_NOTIFICATION_ID = 'j_notifications_resp_pers.A_NOTIFICATION_ID';
 
 	/** the column name for the PERS_ID field */
 	const PERS_ID = 'j_notifications_resp_pers.PERS_ID';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of JNotificationResponsableEleve objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -52,7 +58,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('ANotificationId', 'PersId', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('aNotificationId', 'persId', ),
 		BasePeer::TYPE_COLNAME => array (self::A_NOTIFICATION_ID, self::PERS_ID, ),
@@ -67,7 +73,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('ANotificationId' => 0, 'PersId' => 1, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('aNotificationId' => 0, 'persId' => 1, ),
 		BasePeer::TYPE_COLNAME => array (self::A_NOTIFICATION_ID => 0, self::PERS_ID => 1, ),
@@ -270,7 +276,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 	 * @param      JNotificationResponsableEleve $value A JNotificationResponsableEleve object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(JNotificationResponsableEleve $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -425,7 +431,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + JNotificationResponsableElevePeer::NUM_COLUMNS;
+			$col = $startcol + JNotificationResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = JNotificationResponsableElevePeer::OM_CLASS;
 			$obj = new $cls();
@@ -554,7 +560,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 		}
 
 		JNotificationResponsableElevePeer::addSelectColumns($criteria);
-		$startcol = (JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JNotificationResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, AbsenceEleveNotificationPeer::ID, $join_behavior);
@@ -620,7 +626,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 		}
 
 		JNotificationResponsableElevePeer::addSelectColumns($criteria);
-		$startcol = (JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JNotificationResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 		ResponsableElevePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JNotificationResponsableElevePeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
@@ -738,13 +744,13 @@ abstract class BaseJNotificationResponsableElevePeer {
 		}
 
 		JNotificationResponsableElevePeer::addSelectColumns($criteria);
-		$startcol2 = (JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JNotificationResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS;
 
 		ResponsableElevePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ResponsableElevePeer::NUM_COLUMNS - ResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, AbsenceEleveNotificationPeer::ID, $join_behavior);
 
@@ -932,10 +938,10 @@ abstract class BaseJNotificationResponsableElevePeer {
 		}
 
 		JNotificationResponsableElevePeer::addSelectColumns($criteria);
-		$startcol2 = (JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JNotificationResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 
 		ResponsableElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ResponsableElevePeer::NUM_COLUMNS - ResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JNotificationResponsableElevePeer::PERS_ID, ResponsableElevePeer::PERS_ID, $join_behavior);
 
@@ -1005,10 +1011,10 @@ abstract class BaseJNotificationResponsableElevePeer {
 		}
 
 		JNotificationResponsableElevePeer::addSelectColumns($criteria);
-		$startcol2 = (JNotificationResponsableElevePeer::NUM_COLUMNS - JNotificationResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JNotificationResponsableElevePeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveNotificationPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (AbsenceEleveNotificationPeer::NUM_COLUMNS - AbsenceEleveNotificationPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + AbsenceEleveNotificationPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JNotificationResponsableElevePeer::A_NOTIFICATION_ID, AbsenceEleveNotificationPeer::ID, $join_behavior);
 
@@ -1288,7 +1294,7 @@ abstract class BaseJNotificationResponsableElevePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(JNotificationResponsableEleve $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

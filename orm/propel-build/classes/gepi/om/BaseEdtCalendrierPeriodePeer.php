@@ -31,6 +31,9 @@ abstract class BaseEdtCalendrierPeriodePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 12;
+
 	/** the column name for the ID_CALENDRIER field */
 	const ID_CALENDRIER = 'edt_calendrier.ID_CALENDRIER';
 
@@ -67,6 +70,9 @@ abstract class BaseEdtCalendrierPeriodePeer {
 	/** the column name for the ETABVACANCES_CALENDRIER field */
 	const ETABVACANCES_CALENDRIER = 'edt_calendrier.ETABVACANCES_CALENDRIER';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of EdtCalendrierPeriode objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -82,7 +88,7 @@ abstract class BaseEdtCalendrierPeriodePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('IdCalendrier', 'ClasseConcerneCalendrier', 'NomCalendrier', 'DebutCalendrierTs', 'FinCalendrierTs', 'JourdebutCalendrier', 'HeuredebutCalendrier', 'JourfinCalendrier', 'HeurefinCalendrier', 'NumeroPeriode', 'EtabfermeCalendrier', 'EtabvacancesCalendrier', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idCalendrier', 'classeConcerneCalendrier', 'nomCalendrier', 'debutCalendrierTs', 'finCalendrierTs', 'jourdebutCalendrier', 'heuredebutCalendrier', 'jourfinCalendrier', 'heurefinCalendrier', 'numeroPeriode', 'etabfermeCalendrier', 'etabvacancesCalendrier', ),
 		BasePeer::TYPE_COLNAME => array (self::ID_CALENDRIER, self::CLASSE_CONCERNE_CALENDRIER, self::NOM_CALENDRIER, self::DEBUT_CALENDRIER_TS, self::FIN_CALENDRIER_TS, self::JOURDEBUT_CALENDRIER, self::HEUREDEBUT_CALENDRIER, self::JOURFIN_CALENDRIER, self::HEUREFIN_CALENDRIER, self::NUMERO_PERIODE, self::ETABFERME_CALENDRIER, self::ETABVACANCES_CALENDRIER, ),
@@ -97,7 +103,7 @@ abstract class BaseEdtCalendrierPeriodePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('IdCalendrier' => 0, 'ClasseConcerneCalendrier' => 1, 'NomCalendrier' => 2, 'DebutCalendrierTs' => 3, 'FinCalendrierTs' => 4, 'JourdebutCalendrier' => 5, 'HeuredebutCalendrier' => 6, 'JourfinCalendrier' => 7, 'HeurefinCalendrier' => 8, 'NumeroPeriode' => 9, 'EtabfermeCalendrier' => 10, 'EtabvacancesCalendrier' => 11, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('idCalendrier' => 0, 'classeConcerneCalendrier' => 1, 'nomCalendrier' => 2, 'debutCalendrierTs' => 3, 'finCalendrierTs' => 4, 'jourdebutCalendrier' => 5, 'heuredebutCalendrier' => 6, 'jourfinCalendrier' => 7, 'heurefinCalendrier' => 8, 'numeroPeriode' => 9, 'etabfermeCalendrier' => 10, 'etabvacancesCalendrier' => 11, ),
 		BasePeer::TYPE_COLNAME => array (self::ID_CALENDRIER => 0, self::CLASSE_CONCERNE_CALENDRIER => 1, self::NOM_CALENDRIER => 2, self::DEBUT_CALENDRIER_TS => 3, self::FIN_CALENDRIER_TS => 4, self::JOURDEBUT_CALENDRIER => 5, self::HEUREDEBUT_CALENDRIER => 6, self::JOURFIN_CALENDRIER => 7, self::HEUREFIN_CALENDRIER => 8, self::NUMERO_PERIODE => 9, self::ETABFERME_CALENDRIER => 10, self::ETABVACANCES_CALENDRIER => 11, ),
@@ -320,7 +326,7 @@ abstract class BaseEdtCalendrierPeriodePeer {
 	 * @param      EdtCalendrierPeriode $value A EdtCalendrierPeriode object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(EdtCalendrierPeriode $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -478,7 +484,7 @@ abstract class BaseEdtCalendrierPeriodePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + EdtCalendrierPeriodePeer::NUM_COLUMNS;
+			$col = $startcol + EdtCalendrierPeriodePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = EdtCalendrierPeriodePeer::OM_CLASS;
 			$obj = new $cls();
@@ -743,7 +749,7 @@ abstract class BaseEdtCalendrierPeriodePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(EdtCalendrierPeriode $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

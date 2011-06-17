@@ -31,6 +31,9 @@ abstract class BaseClassePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 27;
+
 	/** the column name for the ID field */
 	const ID = 'classes.ID';
 
@@ -112,6 +115,9 @@ abstract class BaseClassePeer {
 	/** the column name for the ECTS_FONCTION_SIGNATAIRE_ATTESTATION field */
 	const ECTS_FONCTION_SIGNATAIRE_ATTESTATION = 'classes.ECTS_FONCTION_SIGNATAIRE_ATTESTATION';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of Classe objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -127,7 +133,7 @@ abstract class BaseClassePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'NomComplet', 'SuiviPar', 'Formule', 'FormatNom', 'DisplayRang', 'DisplayAddress', 'DisplayCoef', 'DisplayMatCat', 'DisplayNbdev', 'DisplayMoyGen', 'ModeleBulletinPdf', 'RnNomdev', 'RnToutcoefdev', 'RnCoefdevSiDiff', 'RnDatedev', 'RnSignChefetab', 'RnSignPp', 'RnSignResp', 'RnSignNblig', 'RnFormule', 'EctsTypeFormation', 'EctsParcours', 'EctsCodeParcours', 'EctsDomainesEtude', 'EctsFonctionSignataireAttestation', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'nomComplet', 'suiviPar', 'formule', 'formatNom', 'displayRang', 'displayAddress', 'displayCoef', 'displayMatCat', 'displayNbdev', 'displayMoyGen', 'modeleBulletinPdf', 'rnNomdev', 'rnToutcoefdev', 'rnCoefdevSiDiff', 'rnDatedev', 'rnSignChefetab', 'rnSignPp', 'rnSignResp', 'rnSignNblig', 'rnFormule', 'ectsTypeFormation', 'ectsParcours', 'ectsCodeParcours', 'ectsDomainesEtude', 'ectsFonctionSignataireAttestation', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::CLASSE, self::NOM_COMPLET, self::SUIVI_PAR, self::FORMULE, self::FORMAT_NOM, self::DISPLAY_RANG, self::DISPLAY_ADDRESS, self::DISPLAY_COEF, self::DISPLAY_MAT_CAT, self::DISPLAY_NBDEV, self::DISPLAY_MOY_GEN, self::MODELE_BULLETIN_PDF, self::RN_NOMDEV, self::RN_TOUTCOEFDEV, self::RN_COEFDEV_SI_DIFF, self::RN_DATEDEV, self::RN_SIGN_CHEFETAB, self::RN_SIGN_PP, self::RN_SIGN_RESP, self::RN_SIGN_NBLIG, self::RN_FORMULE, self::ECTS_TYPE_FORMATION, self::ECTS_PARCOURS, self::ECTS_CODE_PARCOURS, self::ECTS_DOMAINES_ETUDE, self::ECTS_FONCTION_SIGNATAIRE_ATTESTATION, ),
@@ -142,7 +148,7 @@ abstract class BaseClassePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'NomComplet' => 2, 'SuiviPar' => 3, 'Formule' => 4, 'FormatNom' => 5, 'DisplayRang' => 6, 'DisplayAddress' => 7, 'DisplayCoef' => 8, 'DisplayMatCat' => 9, 'DisplayNbdev' => 10, 'DisplayMoyGen' => 11, 'ModeleBulletinPdf' => 12, 'RnNomdev' => 13, 'RnToutcoefdev' => 14, 'RnCoefdevSiDiff' => 15, 'RnDatedev' => 16, 'RnSignChefetab' => 17, 'RnSignPp' => 18, 'RnSignResp' => 19, 'RnSignNblig' => 20, 'RnFormule' => 21, 'EctsTypeFormation' => 22, 'EctsParcours' => 23, 'EctsCodeParcours' => 24, 'EctsDomainesEtude' => 25, 'EctsFonctionSignataireAttestation' => 26, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'nomComplet' => 2, 'suiviPar' => 3, 'formule' => 4, 'formatNom' => 5, 'displayRang' => 6, 'displayAddress' => 7, 'displayCoef' => 8, 'displayMatCat' => 9, 'displayNbdev' => 10, 'displayMoyGen' => 11, 'modeleBulletinPdf' => 12, 'rnNomdev' => 13, 'rnToutcoefdev' => 14, 'rnCoefdevSiDiff' => 15, 'rnDatedev' => 16, 'rnSignChefetab' => 17, 'rnSignPp' => 18, 'rnSignResp' => 19, 'rnSignNblig' => 20, 'rnFormule' => 21, 'ectsTypeFormation' => 22, 'ectsParcours' => 23, 'ectsCodeParcours' => 24, 'ectsDomainesEtude' => 25, 'ectsFonctionSignataireAttestation' => 26, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::CLASSE => 1, self::NOM_COMPLET => 2, self::SUIVI_PAR => 3, self::FORMULE => 4, self::FORMAT_NOM => 5, self::DISPLAY_RANG => 6, self::DISPLAY_ADDRESS => 7, self::DISPLAY_COEF => 8, self::DISPLAY_MAT_CAT => 9, self::DISPLAY_NBDEV => 10, self::DISPLAY_MOY_GEN => 11, self::MODELE_BULLETIN_PDF => 12, self::RN_NOMDEV => 13, self::RN_TOUTCOEFDEV => 14, self::RN_COEFDEV_SI_DIFF => 15, self::RN_DATEDEV => 16, self::RN_SIGN_CHEFETAB => 17, self::RN_SIGN_PP => 18, self::RN_SIGN_RESP => 19, self::RN_SIGN_NBLIG => 20, self::RN_FORMULE => 21, self::ECTS_TYPE_FORMATION => 22, self::ECTS_PARCOURS => 23, self::ECTS_CODE_PARCOURS => 24, self::ECTS_DOMAINES_ETUDE => 25, self::ECTS_FONCTION_SIGNATAIRE_ATTESTATION => 26, ),
@@ -395,7 +401,7 @@ abstract class BaseClassePeer {
 	 * @param      Classe $value A Classe object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Classe $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -571,7 +577,7 @@ abstract class BaseClassePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + ClassePeer::NUM_COLUMNS;
+			$col = $startcol + ClassePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = ClassePeer::OM_CLASS;
 			$obj = new $cls();
@@ -907,7 +913,7 @@ abstract class BaseClassePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Classe $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

@@ -31,12 +31,18 @@ abstract class BaseJScolClassesPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 2;
+
 	/** the column name for the LOGIN field */
 	const LOGIN = 'j_scol_classes.LOGIN';
 
 	/** the column name for the ID_CLASSE field */
 	const ID_CLASSE = 'j_scol_classes.ID_CLASSE';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of JScolClasses objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -52,7 +58,7 @@ abstract class BaseJScolClassesPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Login', 'IdClasse', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('login', 'idClasse', ),
 		BasePeer::TYPE_COLNAME => array (self::LOGIN, self::ID_CLASSE, ),
@@ -67,7 +73,7 @@ abstract class BaseJScolClassesPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Login' => 0, 'IdClasse' => 1, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('login' => 0, 'idClasse' => 1, ),
 		BasePeer::TYPE_COLNAME => array (self::LOGIN => 0, self::ID_CLASSE => 1, ),
@@ -270,7 +276,7 @@ abstract class BaseJScolClassesPeer {
 	 * @param      JScolClasses $value A JScolClasses object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(JScolClasses $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -425,7 +431,7 @@ abstract class BaseJScolClassesPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + JScolClassesPeer::NUM_COLUMNS;
+			$col = $startcol + JScolClassesPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = JScolClassesPeer::OM_CLASS;
 			$obj = new $cls();
@@ -554,7 +560,7 @@ abstract class BaseJScolClassesPeer {
 		}
 
 		JScolClassesPeer::addSelectColumns($criteria);
-		$startcol = (JScolClassesPeer::NUM_COLUMNS - JScolClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JScolClassesPeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JScolClassesPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -620,7 +626,7 @@ abstract class BaseJScolClassesPeer {
 		}
 
 		JScolClassesPeer::addSelectColumns($criteria);
-		$startcol = (JScolClassesPeer::NUM_COLUMNS - JScolClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JScolClassesPeer::NUM_HYDRATE_COLUMNS;
 		ClassePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JScolClassesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
@@ -738,13 +744,13 @@ abstract class BaseJScolClassesPeer {
 		}
 
 		JScolClassesPeer::addSelectColumns($criteria);
-		$startcol2 = (JScolClassesPeer::NUM_COLUMNS - JScolClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JScolClassesPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JScolClassesPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -932,10 +938,10 @@ abstract class BaseJScolClassesPeer {
 		}
 
 		JScolClassesPeer::addSelectColumns($criteria);
-		$startcol2 = (JScolClassesPeer::NUM_COLUMNS - JScolClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JScolClassesPeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JScolClassesPeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
@@ -1005,10 +1011,10 @@ abstract class BaseJScolClassesPeer {
 		}
 
 		JScolClassesPeer::addSelectColumns($criteria);
-		$startcol2 = (JScolClassesPeer::NUM_COLUMNS - JScolClassesPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JScolClassesPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JScolClassesPeer::LOGIN, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -1288,7 +1294,7 @@ abstract class BaseJScolClassesPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(JScolClasses $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

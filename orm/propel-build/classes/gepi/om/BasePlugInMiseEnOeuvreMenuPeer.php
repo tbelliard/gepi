@@ -31,6 +31,9 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 6;
+
 	/** the column name for the ID field */
 	const ID = 'plugins_menus.ID';
 
@@ -49,6 +52,9 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 	/** the column name for the DESCRIPTION_ITEM field */
 	const DESCRIPTION_ITEM = 'plugins_menus.DESCRIPTION_ITEM';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of PlugInMiseEnOeuvreMenu objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -64,7 +70,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'PluginId', 'UserStatut', 'TitreItem', 'LienItem', 'DescriptionItem', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'pluginId', 'userStatut', 'titreItem', 'lienItem', 'descriptionItem', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::PLUGIN_ID, self::USER_STATUT, self::TITRE_ITEM, self::LIEN_ITEM, self::DESCRIPTION_ITEM, ),
@@ -79,7 +85,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'PluginId' => 1, 'UserStatut' => 2, 'TitreItem' => 3, 'LienItem' => 4, 'DescriptionItem' => 5, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'pluginId' => 1, 'userStatut' => 2, 'titreItem' => 3, 'lienItem' => 4, 'descriptionItem' => 5, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::PLUGIN_ID => 1, self::USER_STATUT => 2, self::TITRE_ITEM => 3, self::LIEN_ITEM => 4, self::DESCRIPTION_ITEM => 5, ),
@@ -290,7 +296,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 	 * @param      PlugInMiseEnOeuvreMenu $value A PlugInMiseEnOeuvreMenu object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(PlugInMiseEnOeuvreMenu $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -445,7 +451,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + PlugInMiseEnOeuvreMenuPeer::NUM_COLUMNS;
+			$col = $startcol + PlugInMiseEnOeuvreMenuPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = PlugInMiseEnOeuvreMenuPeer::OM_CLASS;
 			$obj = new $cls();
@@ -524,7 +530,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 		}
 
 		PlugInMiseEnOeuvreMenuPeer::addSelectColumns($criteria);
-		$startcol = (PlugInMiseEnOeuvreMenuPeer::NUM_COLUMNS - PlugInMiseEnOeuvreMenuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = PlugInMiseEnOeuvreMenuPeer::NUM_HYDRATE_COLUMNS;
 		PlugInPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, PlugInPeer::ID, $join_behavior);
@@ -640,10 +646,10 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 		}
 
 		PlugInMiseEnOeuvreMenuPeer::addSelectColumns($criteria);
-		$startcol2 = (PlugInMiseEnOeuvreMenuPeer::NUM_COLUMNS - PlugInMiseEnOeuvreMenuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = PlugInMiseEnOeuvreMenuPeer::NUM_HYDRATE_COLUMNS;
 
 		PlugInPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (PlugInPeer::NUM_COLUMNS - PlugInPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + PlugInPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(PlugInMiseEnOeuvreMenuPeer::PLUGIN_ID, PlugInPeer::ID, $join_behavior);
 
@@ -909,7 +915,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(PlugInMiseEnOeuvreMenu $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

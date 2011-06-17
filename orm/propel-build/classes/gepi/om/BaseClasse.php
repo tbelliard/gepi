@@ -1221,7 +1221,7 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 27; // 27 = ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 27; // 27 = ClassePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating Classe object", $e);
@@ -1744,11 +1744,17 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['Classe'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['Classe'][$this->getPrimaryKey()] = true;
 		$keys = ClassePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -1779,6 +1785,29 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 			$keys[25] => $this->getEctsDomainesEtude(),
 			$keys[26] => $this->getEctsFonctionSignataireAttestation(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->collPeriodeNotes) {
+				$result['PeriodeNotes'] = $this->collPeriodeNotes->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJScolClassess) {
+				$result['JScolClassess'] = $this->collJScolClassess->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJGroupesClassess) {
+				$result['JGroupesClassess'] = $this->collJGroupesClassess->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJEleveClasses) {
+				$result['JEleveClasses'] = $this->collJEleveClasses->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJEleveProfesseurPrincipals) {
+				$result['JEleveProfesseurPrincipals'] = $this->collJEleveProfesseurPrincipals->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collAbsenceEleveSaisies) {
+				$result['AbsenceEleveSaisies'] = $this->collAbsenceEleveSaisies->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJCategoriesMatieresClassess) {
+				$result['JCategoriesMatieresClassess'] = $this->collJCategoriesMatieresClassess->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+		}
 		return $result;
 	}
 
@@ -2036,36 +2065,37 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of Classe (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setNom($this->classe);
-		$copyObj->setNomComplet($this->nom_complet);
-		$copyObj->setSuiviPar($this->suivi_par);
-		$copyObj->setFormule($this->formule);
-		$copyObj->setFormatNom($this->format_nom);
-		$copyObj->setDisplayRang($this->display_rang);
-		$copyObj->setDisplayAddress($this->display_address);
-		$copyObj->setDisplayCoef($this->display_coef);
-		$copyObj->setDisplayMatCat($this->display_mat_cat);
-		$copyObj->setDisplayNbdev($this->display_nbdev);
-		$copyObj->setDisplayMoyGen($this->display_moy_gen);
-		$copyObj->setModeleBulletinPdf($this->modele_bulletin_pdf);
-		$copyObj->setRnNomdev($this->rn_nomdev);
-		$copyObj->setRnToutcoefdev($this->rn_toutcoefdev);
-		$copyObj->setRnCoefdevSiDiff($this->rn_coefdev_si_diff);
-		$copyObj->setRnDatedev($this->rn_datedev);
-		$copyObj->setRnSignChefetab($this->rn_sign_chefetab);
-		$copyObj->setRnSignPp($this->rn_sign_pp);
-		$copyObj->setRnSignResp($this->rn_sign_resp);
-		$copyObj->setRnSignNblig($this->rn_sign_nblig);
-		$copyObj->setRnFormule($this->rn_formule);
-		$copyObj->setEctsTypeFormation($this->ects_type_formation);
-		$copyObj->setEctsParcours($this->ects_parcours);
-		$copyObj->setEctsCodeParcours($this->ects_code_parcours);
-		$copyObj->setEctsDomainesEtude($this->ects_domaines_etude);
-		$copyObj->setEctsFonctionSignataireAttestation($this->ects_fonction_signataire_attestation);
+		$copyObj->setNom($this->getNom());
+		$copyObj->setNomComplet($this->getNomComplet());
+		$copyObj->setSuiviPar($this->getSuiviPar());
+		$copyObj->setFormule($this->getFormule());
+		$copyObj->setFormatNom($this->getFormatNom());
+		$copyObj->setDisplayRang($this->getDisplayRang());
+		$copyObj->setDisplayAddress($this->getDisplayAddress());
+		$copyObj->setDisplayCoef($this->getDisplayCoef());
+		$copyObj->setDisplayMatCat($this->getDisplayMatCat());
+		$copyObj->setDisplayNbdev($this->getDisplayNbdev());
+		$copyObj->setDisplayMoyGen($this->getDisplayMoyGen());
+		$copyObj->setModeleBulletinPdf($this->getModeleBulletinPdf());
+		$copyObj->setRnNomdev($this->getRnNomdev());
+		$copyObj->setRnToutcoefdev($this->getRnToutcoefdev());
+		$copyObj->setRnCoefdevSiDiff($this->getRnCoefdevSiDiff());
+		$copyObj->setRnDatedev($this->getRnDatedev());
+		$copyObj->setRnSignChefetab($this->getRnSignChefetab());
+		$copyObj->setRnSignPp($this->getRnSignPp());
+		$copyObj->setRnSignResp($this->getRnSignResp());
+		$copyObj->setRnSignNblig($this->getRnSignNblig());
+		$copyObj->setRnFormule($this->getRnFormule());
+		$copyObj->setEctsTypeFormation($this->getEctsTypeFormation());
+		$copyObj->setEctsParcours($this->getEctsParcours());
+		$copyObj->setEctsCodeParcours($this->getEctsCodeParcours());
+		$copyObj->setEctsDomainesEtude($this->getEctsDomainesEtude());
+		$copyObj->setEctsFonctionSignataireAttestation($this->getEctsFonctionSignataireAttestation());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -2116,9 +2146,10 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -2180,10 +2211,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initPeriodeNotes()
+	public function initPeriodeNotes($overrideExisting = true)
 	{
+		if (null !== $this->collPeriodeNotes && !$overrideExisting) {
+			return;
+		}
 		$this->collPeriodeNotes = new PropelObjectCollection();
 		$this->collPeriodeNotes->setModel('PeriodeNote');
 	}
@@ -2289,10 +2326,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJScolClassess()
+	public function initJScolClassess($overrideExisting = true)
 	{
+		if (null !== $this->collJScolClassess && !$overrideExisting) {
+			return;
+		}
 		$this->collJScolClassess = new PropelObjectCollection();
 		$this->collJScolClassess->setModel('JScolClasses');
 	}
@@ -2423,10 +2466,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJGroupesClassess()
+	public function initJGroupesClassess($overrideExisting = true)
 	{
+		if (null !== $this->collJGroupesClassess && !$overrideExisting) {
+			return;
+		}
 		$this->collJGroupesClassess = new PropelObjectCollection();
 		$this->collJGroupesClassess->setModel('JGroupesClasses');
 	}
@@ -2582,10 +2631,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJEleveClasses()
+	public function initJEleveClasses($overrideExisting = true)
 	{
+		if (null !== $this->collJEleveClasses && !$overrideExisting) {
+			return;
+		}
 		$this->collJEleveClasses = new PropelObjectCollection();
 		$this->collJEleveClasses->setModel('JEleveClasse');
 	}
@@ -2716,10 +2771,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJEleveProfesseurPrincipals()
+	public function initJEleveProfesseurPrincipals($overrideExisting = true)
 	{
+		if (null !== $this->collJEleveProfesseurPrincipals && !$overrideExisting) {
+			return;
+		}
 		$this->collJEleveProfesseurPrincipals = new PropelObjectCollection();
 		$this->collJEleveProfesseurPrincipals->setModel('JEleveProfesseurPrincipal');
 	}
@@ -2875,10 +2936,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initAbsenceEleveSaisies()
+	public function initAbsenceEleveSaisies($overrideExisting = true)
 	{
+		if (null !== $this->collAbsenceEleveSaisies && !$overrideExisting) {
+			return;
+		}
 		$this->collAbsenceEleveSaisies = new PropelObjectCollection();
 		$this->collAbsenceEleveSaisies->setModel('AbsenceEleveSaisie');
 	}
@@ -3184,10 +3251,16 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJCategoriesMatieresClassess()
+	public function initJCategoriesMatieresClassess($overrideExisting = true)
 	{
+		if (null !== $this->collJCategoriesMatieresClassess && !$overrideExisting) {
+			return;
+		}
 		$this->collJCategoriesMatieresClassess = new PropelObjectCollection();
 		$this->collJCategoriesMatieresClassess->setModel('JCategoriesMatieresClasses');
 	}
@@ -3452,61 +3525,101 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collPeriodeNotes) {
-				foreach ((array) $this->collPeriodeNotes as $o) {
+				foreach ($this->collPeriodeNotes as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collJScolClassess) {
-				foreach ((array) $this->collJScolClassess as $o) {
+				foreach ($this->collJScolClassess as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collJGroupesClassess) {
-				foreach ((array) $this->collJGroupesClassess as $o) {
+				foreach ($this->collJGroupesClassess as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collJEleveClasses) {
-				foreach ((array) $this->collJEleveClasses as $o) {
+				foreach ($this->collJEleveClasses as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collJEleveProfesseurPrincipals) {
-				foreach ((array) $this->collJEleveProfesseurPrincipals as $o) {
+				foreach ($this->collJEleveProfesseurPrincipals as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collAbsenceEleveSaisies) {
-				foreach ((array) $this->collAbsenceEleveSaisies as $o) {
+				foreach ($this->collAbsenceEleveSaisies as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collJCategoriesMatieresClassess) {
-				foreach ((array) $this->collJCategoriesMatieresClassess as $o) {
+				foreach ($this->collJCategoriesMatieresClassess as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collCategorieMatieres) {
+				foreach ($this->collCategorieMatieres as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collPeriodeNotes instanceof PropelCollection) {
+			$this->collPeriodeNotes->clearIterator();
+		}
 		$this->collPeriodeNotes = null;
+		if ($this->collJScolClassess instanceof PropelCollection) {
+			$this->collJScolClassess->clearIterator();
+		}
 		$this->collJScolClassess = null;
+		if ($this->collJGroupesClassess instanceof PropelCollection) {
+			$this->collJGroupesClassess->clearIterator();
+		}
 		$this->collJGroupesClassess = null;
+		if ($this->collJEleveClasses instanceof PropelCollection) {
+			$this->collJEleveClasses->clearIterator();
+		}
 		$this->collJEleveClasses = null;
+		if ($this->collJEleveProfesseurPrincipals instanceof PropelCollection) {
+			$this->collJEleveProfesseurPrincipals->clearIterator();
+		}
 		$this->collJEleveProfesseurPrincipals = null;
+		if ($this->collAbsenceEleveSaisies instanceof PropelCollection) {
+			$this->collAbsenceEleveSaisies->clearIterator();
+		}
 		$this->collAbsenceEleveSaisies = null;
+		if ($this->collJCategoriesMatieresClassess instanceof PropelCollection) {
+			$this->collJCategoriesMatieresClassess->clearIterator();
+		}
 		$this->collJCategoriesMatieresClassess = null;
+		if ($this->collCategorieMatieres instanceof PropelCollection) {
+			$this->collCategorieMatieres->clearIterator();
+		}
+		$this->collCategorieMatieres = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(ClassePeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

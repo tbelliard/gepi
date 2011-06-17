@@ -336,7 +336,7 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 6; // 6 = AncienEtablissementPeer::NUM_COLUMNS - AncienEtablissementPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 6; // 6 = AncienEtablissementPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AncienEtablissement object", $e);
@@ -688,11 +688,17 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['AncienEtablissement'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['AncienEtablissement'][$this->getPrimaryKey()] = true;
 		$keys = AncienEtablissementPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -702,6 +708,11 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 			$keys[4] => $this->getCp(),
 			$keys[5] => $this->getVille(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->collJEleveAncienEtablissements) {
+				$result['JEleveAncienEtablissements'] = $this->collJEleveAncienEtablissements->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+		}
 		return $result;
 	}
 
@@ -854,15 +865,16 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of AncienEtablissement (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setNom($this->nom);
-		$copyObj->setNiveau($this->niveau);
-		$copyObj->setType($this->type);
-		$copyObj->setCp($this->cp);
-		$copyObj->setVille($this->ville);
+		$copyObj->setNom($this->getNom());
+		$copyObj->setNiveau($this->getNiveau());
+		$copyObj->setType($this->getType());
+		$copyObj->setCp($this->getCp());
+		$copyObj->setVille($this->getVille());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -877,9 +889,10 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -941,10 +954,16 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJEleveAncienEtablissements()
+	public function initJEleveAncienEtablissements($overrideExisting = true)
 	{
+		if (null !== $this->collJEleveAncienEtablissements && !$overrideExisting) {
+			return;
+		}
 		$this->collJEleveAncienEtablissements = new PropelObjectCollection();
 		$this->collJEleveAncienEtablissements->setModel('JEleveAncienEtablissement');
 	}
@@ -1188,25 +1207,47 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collJEleveAncienEtablissements) {
-				foreach ((array) $this->collJEleveAncienEtablissements as $o) {
+				foreach ($this->collJEleveAncienEtablissements as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collEleves) {
+				foreach ($this->collEleves as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collJEleveAncienEtablissements instanceof PropelCollection) {
+			$this->collJEleveAncienEtablissements->clearIterator();
+		}
 		$this->collJEleveAncienEtablissements = null;
+		if ($this->collEleves instanceof PropelCollection) {
+			$this->collEleves->clearIterator();
+		}
+		$this->collEleves = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(AncienEtablissementPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

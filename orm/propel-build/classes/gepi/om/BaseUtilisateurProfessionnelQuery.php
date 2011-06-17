@@ -234,7 +234,7 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -268,8 +268,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
+	 * $query->filterByLogin('%fooValue%'); // WHERE login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $login The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -290,8 +296,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
+	 * $query->filterByNom('%fooValue%'); // WHERE nom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -312,8 +324,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the prenom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPrenom('fooValue');   // WHERE prenom = 'fooValue'
+	 * $query->filterByPrenom('%fooValue%'); // WHERE prenom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $prenom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -334,8 +352,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the civilite column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCivilite('fooValue');   // WHERE civilite = 'fooValue'
+	 * $query->filterByCivilite('%fooValue%'); // WHERE civilite LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $civilite The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -356,8 +380,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the password column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPassword('fooValue');   // WHERE password = 'fooValue'
+	 * $query->filterByPassword('%fooValue%'); // WHERE password LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $password The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -378,8 +408,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the salt column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterBySalt('fooValue');   // WHERE salt = 'fooValue'
+	 * $query->filterBySalt('%fooValue%'); // WHERE salt LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $salt The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -400,8 +436,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the email column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEmail('fooValue');   // WHERE email = 'fooValue'
+	 * $query->filterByEmail('%fooValue%'); // WHERE email LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $email The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -422,8 +464,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the show_email column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByShowEmail('fooValue');   // WHERE show_email = 'fooValue'
+	 * $query->filterByShowEmail('%fooValue%'); // WHERE show_email LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $showEmail The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -444,8 +492,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the statut column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByStatut('fooValue');   // WHERE statut = 'fooValue'
+	 * $query->filterByStatut('%fooValue%'); // WHERE statut LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $statut The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -466,8 +520,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the etat column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEtat('fooValue');   // WHERE etat = 'fooValue'
+	 * $query->filterByEtat('%fooValue%'); // WHERE etat LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $etat The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -488,8 +548,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the change_mdp column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByChangeMdp('fooValue');   // WHERE change_mdp = 'fooValue'
+	 * $query->filterByChangeMdp('%fooValue%'); // WHERE change_mdp LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $changeMdp The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -510,8 +576,19 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the date_verrouillage column
 	 * 
-	 * @param     string|array $dateVerrouillage The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDateVerrouillage('2011-03-14'); // WHERE date_verrouillage = '2011-03-14'
+	 * $query->filterByDateVerrouillage('now'); // WHERE date_verrouillage = '2011-03-14'
+	 * $query->filterByDateVerrouillage(array('max' => 'yesterday')); // WHERE date_verrouillage > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $dateVerrouillage The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -541,8 +618,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the password_ticket column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPasswordTicket('fooValue');   // WHERE password_ticket = 'fooValue'
+	 * $query->filterByPasswordTicket('%fooValue%'); // WHERE password_ticket LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $passwordTicket The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -563,8 +646,19 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the ticket_expiration column
 	 * 
-	 * @param     string|array $ticketExpiration The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTicketExpiration('2011-03-14'); // WHERE ticket_expiration = '2011-03-14'
+	 * $query->filterByTicketExpiration('now'); // WHERE ticket_expiration = '2011-03-14'
+	 * $query->filterByTicketExpiration(array('max' => 'yesterday')); // WHERE ticket_expiration > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $ticketExpiration The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -594,8 +688,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the niveau_alerte column
 	 * 
-	 * @param     int|array $niveauAlerte The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNiveauAlerte(1234); // WHERE niveau_alerte = 1234
+	 * $query->filterByNiveauAlerte(array(12, 34)); // WHERE niveau_alerte IN (12, 34)
+	 * $query->filterByNiveauAlerte(array('min' => 12)); // WHERE niveau_alerte > 12
+	 * </code>
+	 *
+	 * @param     mixed $niveauAlerte The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -625,8 +728,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the observation_securite column
 	 * 
-	 * @param     int|array $observationSecurite The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByObservationSecurite(1234); // WHERE observation_securite = 1234
+	 * $query->filterByObservationSecurite(array(12, 34)); // WHERE observation_securite IN (12, 34)
+	 * $query->filterByObservationSecurite(array('min' => 12)); // WHERE observation_securite > 12
+	 * </code>
+	 *
+	 * @param     mixed $observationSecurite The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -656,8 +768,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the temp_dir column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTempDir('fooValue');   // WHERE temp_dir = 'fooValue'
+	 * $query->filterByTempDir('%fooValue%'); // WHERE temp_dir LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $tempDir The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -678,8 +796,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the numind column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNumind('fooValue');   // WHERE numind = 'fooValue'
+	 * $query->filterByNumind('%fooValue%'); // WHERE numind LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $numind The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -700,8 +824,14 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	/**
 	 * Filter the query on the auth_mode column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAuthMode('fooValue');   // WHERE auth_mode = 'fooValue'
+	 * $query->filterByAuthMode('%fooValue%'); // WHERE auth_mode LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $authMode The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    UtilisateurProfessionnelQuery The current query, for fluid interface
@@ -729,8 +859,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByJGroupesProfesseurs($jGroupesProfesseurs, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jGroupesProfesseurs->getLogin(), $comparison);
+		if ($jGroupesProfesseurs instanceof JGroupesProfesseurs) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jGroupesProfesseurs->getLogin(), $comparison);
+		} elseif ($jGroupesProfesseurs instanceof PropelCollection) {
+			return $this
+				->useJGroupesProfesseursQuery()
+					->filterByPrimaryKeys($jGroupesProfesseurs->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJGroupesProfesseurs() only accepts arguments of type JGroupesProfesseurs or PropelCollection');
+		}
 	}
 
 	/**
@@ -793,8 +932,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByJScolClasses($jScolClasses, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jScolClasses->getLogin(), $comparison);
+		if ($jScolClasses instanceof JScolClasses) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jScolClasses->getLogin(), $comparison);
+		} elseif ($jScolClasses instanceof PropelCollection) {
+			return $this
+				->useJScolClassesQuery()
+					->filterByPrimaryKeys($jScolClasses->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJScolClasses() only accepts arguments of type JScolClasses or PropelCollection');
+		}
 	}
 
 	/**
@@ -857,8 +1005,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByCahierTexteCompteRendu($cahierTexteCompteRendu, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $cahierTexteCompteRendu->getIdLogin(), $comparison);
+		if ($cahierTexteCompteRendu instanceof CahierTexteCompteRendu) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $cahierTexteCompteRendu->getIdLogin(), $comparison);
+		} elseif ($cahierTexteCompteRendu instanceof PropelCollection) {
+			return $this
+				->useCahierTexteCompteRenduQuery()
+					->filterByPrimaryKeys($cahierTexteCompteRendu->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCahierTexteCompteRendu() only accepts arguments of type CahierTexteCompteRendu or PropelCollection');
+		}
 	}
 
 	/**
@@ -921,8 +1078,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByCahierTexteTravailAFaire($cahierTexteTravailAFaire, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $cahierTexteTravailAFaire->getIdLogin(), $comparison);
+		if ($cahierTexteTravailAFaire instanceof CahierTexteTravailAFaire) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $cahierTexteTravailAFaire->getIdLogin(), $comparison);
+		} elseif ($cahierTexteTravailAFaire instanceof PropelCollection) {
+			return $this
+				->useCahierTexteTravailAFaireQuery()
+					->filterByPrimaryKeys($cahierTexteTravailAFaire->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCahierTexteTravailAFaire() only accepts arguments of type CahierTexteTravailAFaire or PropelCollection');
+		}
 	}
 
 	/**
@@ -985,8 +1151,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByCahierTexteNoticePrivee($cahierTexteNoticePrivee, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $cahierTexteNoticePrivee->getIdLogin(), $comparison);
+		if ($cahierTexteNoticePrivee instanceof CahierTexteNoticePrivee) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $cahierTexteNoticePrivee->getIdLogin(), $comparison);
+		} elseif ($cahierTexteNoticePrivee instanceof PropelCollection) {
+			return $this
+				->useCahierTexteNoticePriveeQuery()
+					->filterByPrimaryKeys($cahierTexteNoticePrivee->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCahierTexteNoticePrivee() only accepts arguments of type CahierTexteNoticePrivee or PropelCollection');
+		}
 	}
 
 	/**
@@ -1049,8 +1224,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByJEleveCpe($jEleveCpe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jEleveCpe->getCpeLogin(), $comparison);
+		if ($jEleveCpe instanceof JEleveCpe) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jEleveCpe->getCpeLogin(), $comparison);
+		} elseif ($jEleveCpe instanceof PropelCollection) {
+			return $this
+				->useJEleveCpeQuery()
+					->filterByPrimaryKeys($jEleveCpe->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveCpe() only accepts arguments of type JEleveCpe or PropelCollection');
+		}
 	}
 
 	/**
@@ -1113,8 +1297,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByJEleveProfesseurPrincipal($jEleveProfesseurPrincipal, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jEleveProfesseurPrincipal->getProfesseur(), $comparison);
+		if ($jEleveProfesseurPrincipal instanceof JEleveProfesseurPrincipal) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jEleveProfesseurPrincipal->getProfesseur(), $comparison);
+		} elseif ($jEleveProfesseurPrincipal instanceof PropelCollection) {
+			return $this
+				->useJEleveProfesseurPrincipalQuery()
+					->filterByPrimaryKeys($jEleveProfesseurPrincipal->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveProfesseurPrincipal() only accepts arguments of type JEleveProfesseurPrincipal or PropelCollection');
+		}
 	}
 
 	/**
@@ -1177,8 +1370,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByJAidUtilisateursProfessionnels($jAidUtilisateursProfessionnels, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jAidUtilisateursProfessionnels->getIdUtilisateur(), $comparison);
+		if ($jAidUtilisateursProfessionnels instanceof JAidUtilisateursProfessionnels) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jAidUtilisateursProfessionnels->getIdUtilisateur(), $comparison);
+		} elseif ($jAidUtilisateursProfessionnels instanceof PropelCollection) {
+			return $this
+				->useJAidUtilisateursProfessionnelsQuery()
+					->filterByPrimaryKeys($jAidUtilisateursProfessionnels->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJAidUtilisateursProfessionnels() only accepts arguments of type JAidUtilisateursProfessionnels or PropelCollection');
+		}
 	}
 
 	/**
@@ -1241,8 +1443,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveSaisie->getUtilisateurId(), $comparison);
+		if ($absenceEleveSaisie instanceof AbsenceEleveSaisie) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveSaisie->getUtilisateurId(), $comparison);
+		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveSaisieQuery()
+					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
+		}
 	}
 
 	/**
@@ -1305,8 +1516,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByModifiedAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveSaisie->getModifieParUtilisateurId(), $comparison);
+		if ($absenceEleveSaisie instanceof AbsenceEleveSaisie) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveSaisie->getModifieParUtilisateurId(), $comparison);
+		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
+			return $this
+				->useModifiedAbsenceEleveSaisieQuery()
+					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByModifiedAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
+		}
 	}
 
 	/**
@@ -1369,8 +1589,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveTraitement($absenceEleveTraitement, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveTraitement->getUtilisateurId(), $comparison);
+		if ($absenceEleveTraitement instanceof AbsenceEleveTraitement) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveTraitement->getUtilisateurId(), $comparison);
+		} elseif ($absenceEleveTraitement instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveTraitementQuery()
+					->filterByPrimaryKeys($absenceEleveTraitement->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveTraitement() only accepts arguments of type AbsenceEleveTraitement or PropelCollection');
+		}
 	}
 
 	/**
@@ -1433,8 +1662,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByModifiedAbsenceEleveTraitement($absenceEleveTraitement, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveTraitement->getModifieParUtilisateurId(), $comparison);
+		if ($absenceEleveTraitement instanceof AbsenceEleveTraitement) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveTraitement->getModifieParUtilisateurId(), $comparison);
+		} elseif ($absenceEleveTraitement instanceof PropelCollection) {
+			return $this
+				->useModifiedAbsenceEleveTraitementQuery()
+					->filterByPrimaryKeys($absenceEleveTraitement->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByModifiedAbsenceEleveTraitement() only accepts arguments of type AbsenceEleveTraitement or PropelCollection');
+		}
 	}
 
 	/**
@@ -1497,8 +1735,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveNotification($absenceEleveNotification, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveNotification->getUtilisateurId(), $comparison);
+		if ($absenceEleveNotification instanceof AbsenceEleveNotification) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $absenceEleveNotification->getUtilisateurId(), $comparison);
+		} elseif ($absenceEleveNotification instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveNotificationQuery()
+					->filterByPrimaryKeys($absenceEleveNotification->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveNotification() only accepts arguments of type AbsenceEleveNotification or PropelCollection');
+		}
 	}
 
 	/**
@@ -1561,8 +1808,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByJProfesseursMatieres($jProfesseursMatieres, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jProfesseursMatieres->getIdProfesseur(), $comparison);
+		if ($jProfesseursMatieres instanceof JProfesseursMatieres) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $jProfesseursMatieres->getIdProfesseur(), $comparison);
+		} elseif ($jProfesseursMatieres instanceof PropelCollection) {
+			return $this
+				->useJProfesseursMatieresQuery()
+					->filterByPrimaryKeys($jProfesseursMatieres->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJProfesseursMatieres() only accepts arguments of type JProfesseursMatieres or PropelCollection');
+		}
 	}
 
 	/**
@@ -1625,8 +1881,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByPreferenceUtilisateurProfessionnel($preferenceUtilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $preferenceUtilisateurProfessionnel->getLogin(), $comparison);
+		if ($preferenceUtilisateurProfessionnel instanceof PreferenceUtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $preferenceUtilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($preferenceUtilisateurProfessionnel instanceof PropelCollection) {
+			return $this
+				->usePreferenceUtilisateurProfessionnelQuery()
+					->filterByPrimaryKeys($preferenceUtilisateurProfessionnel->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByPreferenceUtilisateurProfessionnel() only accepts arguments of type PreferenceUtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**
@@ -1689,8 +1954,17 @@ abstract class BaseUtilisateurProfessionnelQuery extends ModelCriteria
 	 */
 	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $edtEmplacementCours->getLoginProf(), $comparison);
+		if ($edtEmplacementCours instanceof EdtEmplacementCours) {
+			return $this
+				->addUsingAlias(UtilisateurProfessionnelPeer::LOGIN, $edtEmplacementCours->getLoginProf(), $comparison);
+		} elseif ($edtEmplacementCours instanceof PropelCollection) {
+			return $this
+				->useEdtEmplacementCoursQuery()
+					->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByEdtEmplacementCours() only accepts arguments of type EdtEmplacementCours or PropelCollection');
+		}
 	}
 
 	/**

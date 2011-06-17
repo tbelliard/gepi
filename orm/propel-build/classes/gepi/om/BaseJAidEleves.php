@@ -170,7 +170,7 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 2; // 2 = JAidElevesPeer::NUM_COLUMNS - JAidElevesPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 2; // 2 = JAidElevesPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating JAidEleves object", $e);
@@ -528,12 +528,17 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['JAidEleves'][serialize($this->getPrimaryKey())])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['JAidEleves'][serialize($this->getPrimaryKey())] = true;
 		$keys = JAidElevesPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getIdAid(),
@@ -541,10 +546,10 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aAidDetails) {
-				$result['AidDetails'] = $this->aAidDetails->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['AidDetails'] = $this->aAidDetails->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aEleve) {
-				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -686,14 +691,16 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of JAidEleves (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setIdAid($this->id_aid);
-		$copyObj->setLogin($this->login);
-
-		$copyObj->setNew(true);
+		$copyObj->setIdAid($this->getIdAid());
+		$copyObj->setLogin($this->getLogin());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -773,11 +780,11 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 		if ($this->aAidDetails === null && (($this->id_aid !== "" && $this->id_aid !== null))) {
 			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aAidDetails->addJAidElevess($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aAidDetails->addJAidElevess($this);
 			 */
 		}
 		return $this->aAidDetails;
@@ -824,11 +831,11 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 				->filterByJAidEleves($this) // here
 				->findOne($con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aEleve->addJAidElevess($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aEleve->addJAidElevess($this);
 			 */
 		}
 		return $this->aEleve;
@@ -850,13 +857,13 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
@@ -865,6 +872,16 @@ abstract class BaseJAidEleves extends BaseObject  implements Persistent
 
 		$this->aAidDetails = null;
 		$this->aEleve = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(JAidElevesPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

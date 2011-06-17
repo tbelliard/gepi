@@ -31,6 +31,9 @@ abstract class BaseElevePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 14;
+
 	/** the column name for the NO_GEP field */
 	const NO_GEP = 'eleves.NO_GEP';
 
@@ -73,6 +76,9 @@ abstract class BaseElevePeer {
 	/** the column name for the ID_MEF field */
 	const ID_MEF = 'eleves.ID_MEF';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of Eleve objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -88,7 +94,7 @@ abstract class BaseElevePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('NoGep', 'Login', 'Nom', 'Prenom', 'Sexe', 'Naissance', 'LieuNaissance', 'Elenoet', 'Ereno', 'EleId', 'Email', 'IdEleve', 'DateSortie', 'IdMef', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep', 'login', 'nom', 'prenom', 'sexe', 'naissance', 'lieuNaissance', 'elenoet', 'ereno', 'eleId', 'email', 'idEleve', 'dateSortie', 'idMef', ),
 		BasePeer::TYPE_COLNAME => array (self::NO_GEP, self::LOGIN, self::NOM, self::PRENOM, self::SEXE, self::NAISSANCE, self::LIEU_NAISSANCE, self::ELENOET, self::ERENO, self::ELE_ID, self::EMAIL, self::ID_ELEVE, self::DATE_SORTIE, self::ID_MEF, ),
@@ -103,7 +109,7 @@ abstract class BaseElevePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('NoGep' => 0, 'Login' => 1, 'Nom' => 2, 'Prenom' => 3, 'Sexe' => 4, 'Naissance' => 5, 'LieuNaissance' => 6, 'Elenoet' => 7, 'Ereno' => 8, 'EleId' => 9, 'Email' => 10, 'IdEleve' => 11, 'DateSortie' => 12, 'IdMef' => 13, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'sexe' => 4, 'naissance' => 5, 'lieuNaissance' => 6, 'elenoet' => 7, 'ereno' => 8, 'eleId' => 9, 'email' => 10, 'idEleve' => 11, 'dateSortie' => 12, 'idMef' => 13, ),
 		BasePeer::TYPE_COLNAME => array (self::NO_GEP => 0, self::LOGIN => 1, self::NOM => 2, self::PRENOM => 3, self::SEXE => 4, self::NAISSANCE => 5, self::LIEU_NAISSANCE => 6, self::ELENOET => 7, self::ERENO => 8, self::ELE_ID => 9, self::EMAIL => 10, self::ID_ELEVE => 11, self::DATE_SORTIE => 12, self::ID_MEF => 13, ),
@@ -330,7 +336,7 @@ abstract class BaseElevePeer {
 	 * @param      Eleve $value A Eleve object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(Eleve $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -521,7 +527,7 @@ abstract class BaseElevePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + ElevePeer::NUM_COLUMNS;
+			$col = $startcol + ElevePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = ElevePeer::OM_CLASS;
 			$obj = new $cls();
@@ -600,7 +606,7 @@ abstract class BaseElevePeer {
 		}
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol = (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = ElevePeer::NUM_HYDRATE_COLUMNS;
 		MefPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(ElevePeer::ID_MEF, MefPeer::ID, $join_behavior);
@@ -716,10 +722,10 @@ abstract class BaseElevePeer {
 		}
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol2 = (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		MefPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (MefPeer::NUM_COLUMNS - MefPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + MefPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(ElevePeer::ID_MEF, MefPeer::ID, $join_behavior);
 
@@ -1091,7 +1097,7 @@ abstract class BaseElevePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(Eleve $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

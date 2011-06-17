@@ -31,6 +31,9 @@ abstract class BaseJEleveGroupePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 3;
+
 	/** the column name for the LOGIN field */
 	const LOGIN = 'j_eleves_groupes.LOGIN';
 
@@ -40,6 +43,9 @@ abstract class BaseJEleveGroupePeer {
 	/** the column name for the PERIODE field */
 	const PERIODE = 'j_eleves_groupes.PERIODE';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of JEleveGroupe objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -55,7 +61,7 @@ abstract class BaseJEleveGroupePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Login', 'IdGroupe', 'Periode', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('login', 'idGroupe', 'periode', ),
 		BasePeer::TYPE_COLNAME => array (self::LOGIN, self::ID_GROUPE, self::PERIODE, ),
@@ -70,7 +76,7 @@ abstract class BaseJEleveGroupePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Login' => 0, 'IdGroupe' => 1, 'Periode' => 2, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('login' => 0, 'idGroupe' => 1, 'periode' => 2, ),
 		BasePeer::TYPE_COLNAME => array (self::LOGIN => 0, self::ID_GROUPE => 1, self::PERIODE => 2, ),
@@ -275,7 +281,7 @@ abstract class BaseJEleveGroupePeer {
 	 * @param      JEleveGroupe $value A JEleveGroupe object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(JEleveGroupe $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -430,7 +436,7 @@ abstract class BaseJEleveGroupePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + JEleveGroupePeer::NUM_COLUMNS;
+			$col = $startcol + JEleveGroupePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = JEleveGroupePeer::OM_CLASS;
 			$obj = new $cls();
@@ -559,7 +565,7 @@ abstract class BaseJEleveGroupePeer {
 		}
 
 		JEleveGroupePeer::addSelectColumns($criteria);
-		$startcol = (JEleveGroupePeer::NUM_COLUMNS - JEleveGroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JEleveGroupePeer::NUM_HYDRATE_COLUMNS;
 		ElevePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JEleveGroupePeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
@@ -625,7 +631,7 @@ abstract class BaseJEleveGroupePeer {
 		}
 
 		JEleveGroupePeer::addSelectColumns($criteria);
-		$startcol = (JEleveGroupePeer::NUM_COLUMNS - JEleveGroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = JEleveGroupePeer::NUM_HYDRATE_COLUMNS;
 		GroupePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(JEleveGroupePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
@@ -743,13 +749,13 @@ abstract class BaseJEleveGroupePeer {
 		}
 
 		JEleveGroupePeer::addSelectColumns($criteria);
-		$startcol2 = (JEleveGroupePeer::NUM_COLUMNS - JEleveGroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JEleveGroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JEleveGroupePeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
 
@@ -937,10 +943,10 @@ abstract class BaseJEleveGroupePeer {
 		}
 
 		JEleveGroupePeer::addSelectColumns($criteria);
-		$startcol2 = (JEleveGroupePeer::NUM_COLUMNS - JEleveGroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JEleveGroupePeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JEleveGroupePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1010,10 +1016,10 @@ abstract class BaseJEleveGroupePeer {
 		}
 
 		JEleveGroupePeer::addSelectColumns($criteria);
-		$startcol2 = (JEleveGroupePeer::NUM_COLUMNS - JEleveGroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = JEleveGroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(JEleveGroupePeer::LOGIN, ElevePeer::LOGIN, $join_behavior);
 
@@ -1302,7 +1308,7 @@ abstract class BaseJEleveGroupePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(JEleveGroupe $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

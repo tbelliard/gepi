@@ -170,7 +170,7 @@ abstract class BaseJScolClasses extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 2; // 2 = JScolClassesPeer::NUM_COLUMNS - JScolClassesPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 2; // 2 = JScolClassesPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating JScolClasses object", $e);
@@ -528,12 +528,17 @@ abstract class BaseJScolClasses extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['JScolClasses'][serialize($this->getPrimaryKey())])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['JScolClasses'][serialize($this->getPrimaryKey())] = true;
 		$keys = JScolClassesPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getLogin(),
@@ -541,10 +546,10 @@ abstract class BaseJScolClasses extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
-				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aClasse) {
-				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -686,14 +691,16 @@ abstract class BaseJScolClasses extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of JScolClasses (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setLogin($this->login);
-		$copyObj->setIdClasse($this->id_classe);
-
-		$copyObj->setNew(true);
+		$copyObj->setLogin($this->getLogin());
+		$copyObj->setIdClasse($this->getIdClasse());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -773,11 +780,11 @@ abstract class BaseJScolClasses extends BaseObject  implements Persistent
 		if ($this->aUtilisateurProfessionnel === null && (($this->login !== "" && $this->login !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->login, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUtilisateurProfessionnel->addJScolClassess($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUtilisateurProfessionnel->addJScolClassess($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -822,11 +829,11 @@ abstract class BaseJScolClasses extends BaseObject  implements Persistent
 		if ($this->aClasse === null && ($this->id_classe !== null)) {
 			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aClasse->addJScolClassess($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aClasse->addJScolClassess($this);
 			 */
 		}
 		return $this->aClasse;
@@ -848,13 +855,13 @@ abstract class BaseJScolClasses extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
@@ -863,6 +870,16 @@ abstract class BaseJScolClasses extends BaseObject  implements Persistent
 
 		$this->aUtilisateurProfessionnel = null;
 		$this->aClasse = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(JScolClassesPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

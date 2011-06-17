@@ -472,7 +472,7 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 10; // 10 = ResponsableElevePeer::NUM_COLUMNS - ResponsableElevePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 10; // 10 = ResponsableElevePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating ResponsableEleve object", $e);
@@ -874,12 +874,17 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['ResponsableEleve'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['ResponsableEleve'][$this->getPrimaryKey()] = true;
 		$keys = ResponsableElevePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getPersId(),
@@ -895,7 +900,13 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aResponsableEleveAdresse) {
-				$result['ResponsableEleveAdresse'] = $this->aResponsableEleveAdresse->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['ResponsableEleveAdresse'] = $this->aResponsableEleveAdresse->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collResponsableInformations) {
+				$result['ResponsableInformations'] = $this->collResponsableInformations->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collJNotificationResponsableEleves) {
+				$result['JNotificationResponsableEleves'] = $this->collJNotificationResponsableEleves->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1070,20 +1081,21 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of ResponsableEleve (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setPersId($this->pers_id);
-		$copyObj->setLogin($this->login);
-		$copyObj->setNom($this->nom);
-		$copyObj->setPrenom($this->prenom);
-		$copyObj->setCivilite($this->civilite);
-		$copyObj->setTelPers($this->tel_pers);
-		$copyObj->setTelPort($this->tel_port);
-		$copyObj->setTelProf($this->tel_prof);
-		$copyObj->setMel($this->mel);
-		$copyObj->setAdrId($this->adr_id);
+		$copyObj->setPersId($this->getPersId());
+		$copyObj->setLogin($this->getLogin());
+		$copyObj->setNom($this->getNom());
+		$copyObj->setPrenom($this->getPrenom());
+		$copyObj->setCivilite($this->getCivilite());
+		$copyObj->setTelPers($this->getTelPers());
+		$copyObj->setTelPort($this->getTelPort());
+		$copyObj->setTelProf($this->getTelProf());
+		$copyObj->setMel($this->getMel());
+		$copyObj->setAdrId($this->getAdrId());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1104,8 +1116,9 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -1185,11 +1198,11 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 		if ($this->aResponsableEleveAdresse === null && (($this->adr_id !== "" && $this->adr_id !== null))) {
 			$this->aResponsableEleveAdresse = ResponsableEleveAdresseQuery::create()->findPk($this->adr_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aResponsableEleveAdresse->addResponsableEleves($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aResponsableEleveAdresse->addResponsableEleves($this);
 			 */
 		}
 		return $this->aResponsableEleveAdresse;
@@ -1216,10 +1229,16 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initResponsableInformations()
+	public function initResponsableInformations($overrideExisting = true)
 	{
+		if (null !== $this->collResponsableInformations && !$overrideExisting) {
+			return;
+		}
 		$this->collResponsableInformations = new PropelObjectCollection();
 		$this->collResponsableInformations->setModel('ResponsableInformation');
 	}
@@ -1350,10 +1369,16 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initJNotificationResponsableEleves()
+	public function initJNotificationResponsableEleves($overrideExisting = true)
 	{
+		if (null !== $this->collJNotificationResponsableEleves && !$overrideExisting) {
+			return;
+		}
 		$this->collJNotificationResponsableEleves = new PropelObjectCollection();
 		$this->collJNotificationResponsableEleves->setModel('JNotificationResponsableEleve');
 	}
@@ -1600,32 +1625,57 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collResponsableInformations) {
-				foreach ((array) $this->collResponsableInformations as $o) {
+				foreach ($this->collResponsableInformations as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collJNotificationResponsableEleves) {
-				foreach ((array) $this->collJNotificationResponsableEleves as $o) {
+				foreach ($this->collJNotificationResponsableEleves as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
+			if ($this->collAbsenceEleveNotifications) {
+				foreach ($this->collAbsenceEleveNotifications as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collResponsableInformations instanceof PropelCollection) {
+			$this->collResponsableInformations->clearIterator();
+		}
 		$this->collResponsableInformations = null;
+		if ($this->collJNotificationResponsableEleves instanceof PropelCollection) {
+			$this->collJNotificationResponsableEleves->clearIterator();
+		}
 		$this->collJNotificationResponsableEleves = null;
+		if ($this->collAbsenceEleveNotifications instanceof PropelCollection) {
+			$this->collAbsenceEleveNotifications->clearIterator();
+		}
+		$this->collAbsenceEleveNotifications = null;
 		$this->aResponsableEleveAdresse = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(ResponsableElevePeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

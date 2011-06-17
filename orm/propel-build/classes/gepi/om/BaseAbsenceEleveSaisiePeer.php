@@ -31,6 +31,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 16;
+
 	/** the column name for the ID field */
 	const ID = 'a_saisies.ID';
 
@@ -79,6 +82,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	/** the column name for the UPDATED_AT field */
 	const UPDATED_AT = 'a_saisies.UPDATED_AT';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of AbsenceEleveSaisie objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -94,7 +100,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'EleveId', 'Commentaire', 'DebutAbs', 'FinAbs', 'IdEdtCreneau', 'IdEdtEmplacementCours', 'IdGroupe', 'IdClasse', 'IdAid', 'IdSIncidents', 'ModifieParUtilisateurId', 'IdLieu', 'CreatedAt', 'UpdatedAt', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'eleveId', 'commentaire', 'debutAbs', 'finAbs', 'idEdtCreneau', 'idEdtEmplacementCours', 'idGroupe', 'idClasse', 'idAid', 'idSIncidents', 'modifieParUtilisateurId', 'idLieu', 'createdAt', 'updatedAt', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::ELEVE_ID, self::COMMENTAIRE, self::DEBUT_ABS, self::FIN_ABS, self::ID_EDT_CRENEAU, self::ID_EDT_EMPLACEMENT_COURS, self::ID_GROUPE, self::ID_CLASSE, self::ID_AID, self::ID_S_INCIDENTS, self::MODIFIE_PAR_UTILISATEUR_ID, self::ID_LIEU, self::CREATED_AT, self::UPDATED_AT, ),
@@ -109,7 +115,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'EleveId' => 2, 'Commentaire' => 3, 'DebutAbs' => 4, 'FinAbs' => 5, 'IdEdtCreneau' => 6, 'IdEdtEmplacementCours' => 7, 'IdGroupe' => 8, 'IdClasse' => 9, 'IdAid' => 10, 'IdSIncidents' => 11, 'ModifieParUtilisateurId' => 12, 'IdLieu' => 13, 'CreatedAt' => 14, 'UpdatedAt' => 15, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'eleveId' => 2, 'commentaire' => 3, 'debutAbs' => 4, 'finAbs' => 5, 'idEdtCreneau' => 6, 'idEdtEmplacementCours' => 7, 'idGroupe' => 8, 'idClasse' => 9, 'idAid' => 10, 'idSIncidents' => 11, 'modifieParUtilisateurId' => 12, 'idLieu' => 13, 'createdAt' => 14, 'updatedAt' => 15, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::ELEVE_ID => 2, self::COMMENTAIRE => 3, self::DEBUT_ABS => 4, self::FIN_ABS => 5, self::ID_EDT_CRENEAU => 6, self::ID_EDT_EMPLACEMENT_COURS => 7, self::ID_GROUPE => 8, self::ID_CLASSE => 9, self::ID_AID => 10, self::ID_S_INCIDENTS => 11, self::MODIFIE_PAR_UTILISATEUR_ID => 12, self::ID_LIEU => 13, self::CREATED_AT => 14, self::UPDATED_AT => 15, ),
@@ -340,7 +346,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * @param      AbsenceEleveSaisie $value A AbsenceEleveSaisie object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(AbsenceEleveSaisie $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -498,7 +504,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + AbsenceEleveSaisiePeer::NUM_COLUMNS;
+			$col = $startcol + AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = AbsenceEleveSaisiePeer::OM_CLASS;
 			$obj = new $cls();
@@ -977,7 +983,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -1043,7 +1049,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 		ElevePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
@@ -1109,7 +1115,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 		EdtCreneauPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
@@ -1175,7 +1181,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
@@ -1241,7 +1247,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 		GroupePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
@@ -1307,7 +1313,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 		ClassePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
@@ -1373,7 +1379,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 		AidDetailsPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
@@ -1439,7 +1445,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
@@ -1505,7 +1511,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
@@ -1637,34 +1643,34 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol9 = $startcol8 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol9 = $startcol8 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol10 = $startcol9 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol10 = $startcol9 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol11 = $startcol10 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol11 = $startcol10 + AbsenceEleveLieuPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -2464,28 +2470,28 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol9 = $startcol8 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol9 = $startcol8 + AbsenceEleveLieuPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
 
@@ -2681,31 +2687,31 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol9 = $startcol8 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol9 = $startcol8 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol10 = $startcol9 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol10 = $startcol9 + AbsenceEleveLieuPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -2922,31 +2928,31 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol9 = $startcol8 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol9 = $startcol8 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol10 = $startcol9 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol10 = $startcol9 + AbsenceEleveLieuPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -3163,31 +3169,31 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol9 = $startcol8 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol9 = $startcol8 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol10 = $startcol9 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol10 = $startcol9 + AbsenceEleveLieuPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -3404,31 +3410,31 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol9 = $startcol8 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol9 = $startcol8 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol10 = $startcol9 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol10 = $startcol9 + AbsenceEleveLieuPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -3645,31 +3651,31 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol9 = $startcol8 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol9 = $startcol8 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol10 = $startcol9 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol10 = $startcol9 + AbsenceEleveLieuPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -3886,31 +3892,31 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol9 = $startcol8 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol9 = $startcol8 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol10 = $startcol9 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol10 = $startcol9 + AbsenceEleveLieuPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -4127,28 +4133,28 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		AbsenceEleveLieuPeer::addSelectColumns($criteria);
-		$startcol9 = $startcol8 + (AbsenceEleveLieuPeer::NUM_COLUMNS - AbsenceEleveLieuPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol9 = $startcol8 + AbsenceEleveLieuPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
 
@@ -4344,31 +4350,31 @@ abstract class BaseAbsenceEleveSaisiePeer {
 		}
 
 		AbsenceEleveSaisiePeer::addSelectColumns($criteria);
-		$startcol2 = (AbsenceEleveSaisiePeer::NUM_COLUMNS - AbsenceEleveSaisiePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		EdtCreneauPeer::addSelectColumns($criteria);
-		$startcol5 = $startcol4 + (EdtCreneauPeer::NUM_COLUMNS - EdtCreneauPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol5 = $startcol4 + EdtCreneauPeer::NUM_HYDRATE_COLUMNS;
 
 		EdtEmplacementCoursPeer::addSelectColumns($criteria);
-		$startcol6 = $startcol5 + (EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol6 = $startcol5 + EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol7 = $startcol6 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol7 = $startcol6 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		ClassePeer::addSelectColumns($criteria);
-		$startcol8 = $startcol7 + (ClassePeer::NUM_COLUMNS - ClassePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol8 = $startcol7 + ClassePeer::NUM_HYDRATE_COLUMNS;
 
 		AidDetailsPeer::addSelectColumns($criteria);
-		$startcol9 = $startcol8 + (AidDetailsPeer::NUM_COLUMNS - AidDetailsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol9 = $startcol8 + AidDetailsPeer::NUM_HYDRATE_COLUMNS;
 
 		UtilisateurProfessionnelPeer::addSelectColumns($criteria);
-		$startcol10 = $startcol9 + (UtilisateurProfessionnelPeer::NUM_COLUMNS - UtilisateurProfessionnelPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol10 = $startcol9 + UtilisateurProfessionnelPeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
@@ -4823,7 +4829,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(AbsenceEleveSaisie $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

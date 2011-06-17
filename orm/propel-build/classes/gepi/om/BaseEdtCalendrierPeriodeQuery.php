@@ -146,7 +146,7 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -180,8 +180,17 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_calendrier column
 	 * 
-	 * @param     int|array $idCalendrier The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdCalendrier(1234); // WHERE id_calendrier = 1234
+	 * $query->filterByIdCalendrier(array(12, 34)); // WHERE id_calendrier IN (12, 34)
+	 * $query->filterByIdCalendrier(array('min' => 12)); // WHERE id_calendrier > 12
+	 * </code>
+	 *
+	 * @param     mixed $idCalendrier The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -197,8 +206,14 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the classe_concerne_calendrier column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByClasseConcerneCalendrier('fooValue');   // WHERE classe_concerne_calendrier = 'fooValue'
+	 * $query->filterByClasseConcerneCalendrier('%fooValue%'); // WHERE classe_concerne_calendrier LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $classeConcerneCalendrier The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -219,8 +234,14 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom_calendrier column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNomCalendrier('fooValue');   // WHERE nom_calendrier = 'fooValue'
+	 * $query->filterByNomCalendrier('%fooValue%'); // WHERE nom_calendrier LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nomCalendrier The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -241,8 +262,14 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the debut_calendrier_ts column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDebutCalendrierTs('fooValue');   // WHERE debut_calendrier_ts = 'fooValue'
+	 * $query->filterByDebutCalendrierTs('%fooValue%'); // WHERE debut_calendrier_ts LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $debutCalendrierTs The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -263,8 +290,14 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the fin_calendrier_ts column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByFinCalendrierTs('fooValue');   // WHERE fin_calendrier_ts = 'fooValue'
+	 * $query->filterByFinCalendrierTs('%fooValue%'); // WHERE fin_calendrier_ts LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $finCalendrierTs The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -285,8 +318,19 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the jourdebut_calendrier column
 	 * 
-	 * @param     string|array $jourdebutCalendrier The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByJourdebutCalendrier('2011-03-14'); // WHERE jourdebut_calendrier = '2011-03-14'
+	 * $query->filterByJourdebutCalendrier('now'); // WHERE jourdebut_calendrier = '2011-03-14'
+	 * $query->filterByJourdebutCalendrier(array('max' => 'yesterday')); // WHERE jourdebut_calendrier > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $jourdebutCalendrier The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -316,8 +360,19 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the heuredebut_calendrier column
 	 * 
-	 * @param     string|array $heuredebutCalendrier The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByHeuredebutCalendrier('2011-03-14'); // WHERE heuredebut_calendrier = '2011-03-14'
+	 * $query->filterByHeuredebutCalendrier('now'); // WHERE heuredebut_calendrier = '2011-03-14'
+	 * $query->filterByHeuredebutCalendrier(array('max' => 'yesterday')); // WHERE heuredebut_calendrier > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $heuredebutCalendrier The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -347,8 +402,19 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the jourfin_calendrier column
 	 * 
-	 * @param     string|array $jourfinCalendrier The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByJourfinCalendrier('2011-03-14'); // WHERE jourfin_calendrier = '2011-03-14'
+	 * $query->filterByJourfinCalendrier('now'); // WHERE jourfin_calendrier = '2011-03-14'
+	 * $query->filterByJourfinCalendrier(array('max' => 'yesterday')); // WHERE jourfin_calendrier > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $jourfinCalendrier The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -378,8 +444,19 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the heurefin_calendrier column
 	 * 
-	 * @param     string|array $heurefinCalendrier The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByHeurefinCalendrier('2011-03-14'); // WHERE heurefin_calendrier = '2011-03-14'
+	 * $query->filterByHeurefinCalendrier('now'); // WHERE heurefin_calendrier = '2011-03-14'
+	 * $query->filterByHeurefinCalendrier(array('max' => 'yesterday')); // WHERE heurefin_calendrier > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $heurefinCalendrier The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -409,8 +486,17 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the numero_periode column
 	 * 
-	 * @param     int|array $numeroPeriode The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNumeroPeriode(1234); // WHERE numero_periode = 1234
+	 * $query->filterByNumeroPeriode(array(12, 34)); // WHERE numero_periode IN (12, 34)
+	 * $query->filterByNumeroPeriode(array('min' => 12)); // WHERE numero_periode > 12
+	 * </code>
+	 *
+	 * @param     mixed $numeroPeriode The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -440,8 +526,17 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the etabferme_calendrier column
 	 * 
-	 * @param     int|array $etabfermeCalendrier The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEtabfermeCalendrier(1234); // WHERE etabferme_calendrier = 1234
+	 * $query->filterByEtabfermeCalendrier(array(12, 34)); // WHERE etabferme_calendrier IN (12, 34)
+	 * $query->filterByEtabfermeCalendrier(array('min' => 12)); // WHERE etabferme_calendrier > 12
+	 * </code>
+	 *
+	 * @param     mixed $etabfermeCalendrier The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -471,8 +566,17 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the etabvacances_calendrier column
 	 * 
-	 * @param     int|array $etabvacancesCalendrier The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByEtabvacancesCalendrier(1234); // WHERE etabvacances_calendrier = 1234
+	 * $query->filterByEtabvacancesCalendrier(array(12, 34)); // WHERE etabvacances_calendrier IN (12, 34)
+	 * $query->filterByEtabvacancesCalendrier(array('min' => 12)); // WHERE etabvacances_calendrier > 12
+	 * </code>
+	 *
+	 * @param     mixed $etabvacancesCalendrier The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtCalendrierPeriodeQuery The current query, for fluid interface
@@ -509,8 +613,17 @@ abstract class BaseEdtCalendrierPeriodeQuery extends ModelCriteria
 	 */
 	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtCalendrierPeriodePeer::ID_CALENDRIER, $edtEmplacementCours->getIdCalendrier(), $comparison);
+		if ($edtEmplacementCours instanceof EdtEmplacementCours) {
+			return $this
+				->addUsingAlias(EdtCalendrierPeriodePeer::ID_CALENDRIER, $edtEmplacementCours->getIdCalendrier(), $comparison);
+		} elseif ($edtEmplacementCours instanceof PropelCollection) {
+			return $this
+				->useEdtEmplacementCoursQuery()
+					->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByEdtEmplacementCours() only accepts arguments of type EdtEmplacementCours or PropelCollection');
+		}
 	}
 
 	/**

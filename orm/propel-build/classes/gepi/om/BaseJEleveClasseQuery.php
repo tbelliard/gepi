@@ -117,7 +117,7 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -167,8 +167,14 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
+	 * $query->filterByLogin('%fooValue%'); // WHERE login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $login The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
@@ -189,8 +195,19 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_classe column
 	 * 
-	 * @param     int|array $idClasse The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdClasse(1234); // WHERE id_classe = 1234
+	 * $query->filterByIdClasse(array(12, 34)); // WHERE id_classe IN (12, 34)
+	 * $query->filterByIdClasse(array('min' => 12)); // WHERE id_classe > 12
+	 * </code>
+	 *
+	 * @see       filterByClasse()
+	 *
+	 * @param     mixed $idClasse The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
@@ -206,8 +223,17 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the periode column
 	 * 
-	 * @param     int|array $periode The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPeriode(1234); // WHERE periode = 1234
+	 * $query->filterByPeriode(array(12, 34)); // WHERE periode IN (12, 34)
+	 * $query->filterByPeriode(array('min' => 12)); // WHERE periode > 12
+	 * </code>
+	 *
+	 * @param     mixed $periode The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
@@ -223,8 +249,17 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query on the rang column
 	 * 
-	 * @param     int|array $rang The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRang(1234); // WHERE rang = 1234
+	 * $query->filterByRang(array(12, 34)); // WHERE rang IN (12, 34)
+	 * $query->filterByRang(array('min' => 12)); // WHERE rang > 12
+	 * </code>
+	 *
+	 * @param     mixed $rang The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
@@ -254,15 +289,25 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Eleve object
 	 *
-	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     Eleve|PropelCollection $eleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
 	 */
 	public function filterByEleve($eleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveClassePeer::LOGIN, $eleve->getLogin(), $comparison);
+		if ($eleve instanceof Eleve) {
+			return $this
+				->addUsingAlias(JEleveClassePeer::LOGIN, $eleve->getLogin(), $comparison);
+		} elseif ($eleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveClassePeer::LOGIN, $eleve->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
+		}
 	}
 
 	/**
@@ -318,15 +363,25 @@ abstract class BaseJEleveClasseQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Classe object
 	 *
-	 * @param     Classe $classe  the related object to use as filter
+	 * @param     Classe|PropelCollection $classe The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveClasseQuery The current query, for fluid interface
 	 */
 	public function filterByClasse($classe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveClassePeer::ID_CLASSE, $classe->getId(), $comparison);
+		if ($classe instanceof Classe) {
+			return $this
+				->addUsingAlias(JEleveClassePeer::ID_CLASSE, $classe->getId(), $comparison);
+		} elseif ($classe instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveClassePeer::ID_CLASSE, $classe->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByClasse() only accepts arguments of type Classe or PropelCollection');
+		}
 	}
 
 	/**

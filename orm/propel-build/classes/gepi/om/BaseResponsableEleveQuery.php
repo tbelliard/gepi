@@ -146,7 +146,7 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -180,8 +180,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the pers_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPersId('fooValue');   // WHERE pers_id = 'fooValue'
+	 * $query->filterByPersId('%fooValue%'); // WHERE pers_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $persId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
@@ -202,8 +208,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
+	 * $query->filterByLogin('%fooValue%'); // WHERE login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $login The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
@@ -224,8 +236,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNom('fooValue');   // WHERE nom = 'fooValue'
+	 * $query->filterByNom('%fooValue%'); // WHERE nom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
@@ -246,8 +264,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the prenom column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPrenom('fooValue');   // WHERE prenom = 'fooValue'
+	 * $query->filterByPrenom('%fooValue%'); // WHERE prenom LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $prenom The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
@@ -268,8 +292,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the civilite column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCivilite('fooValue');   // WHERE civilite = 'fooValue'
+	 * $query->filterByCivilite('%fooValue%'); // WHERE civilite LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $civilite The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
@@ -290,8 +320,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the tel_pers column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTelPers('fooValue');   // WHERE tel_pers = 'fooValue'
+	 * $query->filterByTelPers('%fooValue%'); // WHERE tel_pers LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $telPers The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
@@ -312,8 +348,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the tel_port column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTelPort('fooValue');   // WHERE tel_port = 'fooValue'
+	 * $query->filterByTelPort('%fooValue%'); // WHERE tel_port LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $telPort The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
@@ -334,8 +376,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the tel_prof column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByTelProf('fooValue');   // WHERE tel_prof = 'fooValue'
+	 * $query->filterByTelProf('%fooValue%'); // WHERE tel_prof LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $telProf The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
@@ -356,8 +404,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the mel column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByMel('fooValue');   // WHERE mel = 'fooValue'
+	 * $query->filterByMel('%fooValue%'); // WHERE mel LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $mel The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
@@ -378,8 +432,14 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query on the adr_id column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByAdrId('fooValue');   // WHERE adr_id = 'fooValue'
+	 * $query->filterByAdrId('%fooValue%'); // WHERE adr_id LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $adrId The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
@@ -400,15 +460,25 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related ResponsableEleveAdresse object
 	 *
-	 * @param     ResponsableEleveAdresse $responsableEleveAdresse  the related object to use as filter
+	 * @param     ResponsableEleveAdresse|PropelCollection $responsableEleveAdresse The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    ResponsableEleveQuery The current query, for fluid interface
 	 */
 	public function filterByResponsableEleveAdresse($responsableEleveAdresse, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresse->getAdrId(), $comparison);
+		if ($responsableEleveAdresse instanceof ResponsableEleveAdresse) {
+			return $this
+				->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresse->getAdrId(), $comparison);
+		} elseif ($responsableEleveAdresse instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(ResponsableElevePeer::ADR_ID, $responsableEleveAdresse->toKeyValue('PrimaryKey', 'AdrId'), $comparison);
+		} else {
+			throw new PropelException('filterByResponsableEleveAdresse() only accepts arguments of type ResponsableEleveAdresse or PropelCollection');
+		}
 	}
 
 	/**
@@ -471,8 +541,17 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 */
 	public function filterByResponsableInformation($responsableInformation, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ResponsableElevePeer::PERS_ID, $responsableInformation->getPersId(), $comparison);
+		if ($responsableInformation instanceof ResponsableInformation) {
+			return $this
+				->addUsingAlias(ResponsableElevePeer::PERS_ID, $responsableInformation->getPersId(), $comparison);
+		} elseif ($responsableInformation instanceof PropelCollection) {
+			return $this
+				->useResponsableInformationQuery()
+					->filterByPrimaryKeys($responsableInformation->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByResponsableInformation() only accepts arguments of type ResponsableInformation or PropelCollection');
+		}
 	}
 
 	/**
@@ -535,8 +614,17 @@ abstract class BaseResponsableEleveQuery extends ModelCriteria
 	 */
 	public function filterByJNotificationResponsableEleve($jNotificationResponsableEleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(ResponsableElevePeer::PERS_ID, $jNotificationResponsableEleve->getPersId(), $comparison);
+		if ($jNotificationResponsableEleve instanceof JNotificationResponsableEleve) {
+			return $this
+				->addUsingAlias(ResponsableElevePeer::PERS_ID, $jNotificationResponsableEleve->getPersId(), $comparison);
+		} elseif ($jNotificationResponsableEleve instanceof PropelCollection) {
+			return $this
+				->useJNotificationResponsableEleveQuery()
+					->filterByPrimaryKeys($jNotificationResponsableEleve->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJNotificationResponsableEleve() only accepts arguments of type JNotificationResponsableEleve or PropelCollection');
+		}
 	}
 
 	/**

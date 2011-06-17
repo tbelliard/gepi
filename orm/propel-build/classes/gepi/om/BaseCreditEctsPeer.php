@@ -31,6 +31,9 @@ abstract class BaseCreditEctsPeer {
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
+	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
+	const NUM_HYDRATE_COLUMNS = 7;
+
 	/** the column name for the ID field */
 	const ID = 'ects_credits.ID';
 
@@ -52,6 +55,9 @@ abstract class BaseCreditEctsPeer {
 	/** the column name for the MENTION_PROF field */
 	const MENTION_PROF = 'ects_credits.MENTION_PROF';
 
+	/** The default string format for model objects of the related table **/
+	const DEFAULT_STRING_FORMAT = 'YAML';
+	
 	/**
 	 * An identiy map to hold any loaded instances of CreditEcts objects.
 	 * This must be public so that other peer classes can access this when hydrating from JOIN
@@ -67,7 +73,7 @@ abstract class BaseCreditEctsPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
-	private static $fieldNames = array (
+	protected static $fieldNames = array (
 		BasePeer::TYPE_PHPNAME => array ('Id', 'IdEleve', 'NumPeriode', 'IdGroupe', 'Valeur', 'Mention', 'MentionProf', ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'idEleve', 'numPeriode', 'idGroupe', 'valeur', 'mention', 'mentionProf', ),
 		BasePeer::TYPE_COLNAME => array (self::ID, self::ID_ELEVE, self::NUM_PERIODE, self::ID_GROUPE, self::VALEUR, self::MENTION, self::MENTION_PROF, ),
@@ -82,7 +88,7 @@ abstract class BaseCreditEctsPeer {
 	 * first dimension keys are the type constants
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
-	private static $fieldKeys = array (
+	protected static $fieldKeys = array (
 		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'IdEleve' => 1, 'NumPeriode' => 2, 'IdGroupe' => 3, 'Valeur' => 4, 'Mention' => 5, 'MentionProf' => 6, ),
 		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'idEleve' => 1, 'numPeriode' => 2, 'idGroupe' => 3, 'valeur' => 4, 'mention' => 5, 'mentionProf' => 6, ),
 		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::ID_ELEVE => 1, self::NUM_PERIODE => 2, self::ID_GROUPE => 3, self::VALEUR => 4, self::MENTION => 5, self::MENTION_PROF => 6, ),
@@ -295,7 +301,7 @@ abstract class BaseCreditEctsPeer {
 	 * @param      CreditEcts $value A CreditEcts object.
 	 * @param      string $key (optional) key to use for instance map (for performance boost if key was already calculated externally).
 	 */
-	public static function addInstanceToPool(CreditEcts $obj, $key = null)
+	public static function addInstanceToPool($obj, $key = null)
 	{
 		if (Propel::isInstancePoolingEnabled()) {
 			if ($key === null) {
@@ -450,7 +456,7 @@ abstract class BaseCreditEctsPeer {
 			// We no longer rehydrate the object, since this can cause data loss.
 			// See http://www.propelorm.org/ticket/509
 			// $obj->hydrate($row, $startcol, true); // rehydrate
-			$col = $startcol + CreditEctsPeer::NUM_COLUMNS;
+			$col = $startcol + CreditEctsPeer::NUM_HYDRATE_COLUMNS;
 		} else {
 			$cls = CreditEctsPeer::OM_CLASS;
 			$obj = new $cls();
@@ -579,7 +585,7 @@ abstract class BaseCreditEctsPeer {
 		}
 
 		CreditEctsPeer::addSelectColumns($criteria);
-		$startcol = (CreditEctsPeer::NUM_COLUMNS - CreditEctsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = CreditEctsPeer::NUM_HYDRATE_COLUMNS;
 		ElevePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(CreditEctsPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
@@ -645,7 +651,7 @@ abstract class BaseCreditEctsPeer {
 		}
 
 		CreditEctsPeer::addSelectColumns($criteria);
-		$startcol = (CreditEctsPeer::NUM_COLUMNS - CreditEctsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol = CreditEctsPeer::NUM_HYDRATE_COLUMNS;
 		GroupePeer::addSelectColumns($criteria);
 
 		$criteria->addJoin(CreditEctsPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
@@ -763,13 +769,13 @@ abstract class BaseCreditEctsPeer {
 		}
 
 		CreditEctsPeer::addSelectColumns($criteria);
-		$startcol2 = (CreditEctsPeer::NUM_COLUMNS - CreditEctsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CreditEctsPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol4 = $startcol3 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol4 = $startcol3 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CreditEctsPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
 
@@ -957,10 +963,10 @@ abstract class BaseCreditEctsPeer {
 		}
 
 		CreditEctsPeer::addSelectColumns($criteria);
-		$startcol2 = (CreditEctsPeer::NUM_COLUMNS - CreditEctsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CreditEctsPeer::NUM_HYDRATE_COLUMNS;
 
 		GroupePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (GroupePeer::NUM_COLUMNS - GroupePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + GroupePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CreditEctsPeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
@@ -1030,10 +1036,10 @@ abstract class BaseCreditEctsPeer {
 		}
 
 		CreditEctsPeer::addSelectColumns($criteria);
-		$startcol2 = (CreditEctsPeer::NUM_COLUMNS - CreditEctsPeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol2 = CreditEctsPeer::NUM_HYDRATE_COLUMNS;
 
 		ElevePeer::addSelectColumns($criteria);
-		$startcol3 = $startcol2 + (ElevePeer::NUM_COLUMNS - ElevePeer::NUM_LAZY_LOAD_COLUMNS);
+		$startcol3 = $startcol2 + ElevePeer::NUM_HYDRATE_COLUMNS;
 
 		$criteria->addJoin(CreditEctsPeer::ID_ELEVE, ElevePeer::ID_ELEVE, $join_behavior);
 
@@ -1335,7 +1341,7 @@ abstract class BaseCreditEctsPeer {
 	 *
 	 * @return     mixed TRUE if all columns are valid or the error message of the first invalid column.
 	 */
-	public static function doValidate(CreditEcts $obj, $cols = null)
+	public static function doValidate($obj, $cols = null)
 	{
 		$columns = array();
 

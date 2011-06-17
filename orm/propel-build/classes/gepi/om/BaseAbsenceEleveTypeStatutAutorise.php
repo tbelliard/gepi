@@ -198,7 +198,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorise extends BaseObject  implements
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 3; // 3 = AbsenceEleveTypeStatutAutorisePeer::NUM_COLUMNS - AbsenceEleveTypeStatutAutorisePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 3; // 3 = AbsenceEleveTypeStatutAutorisePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveTypeStatutAutorise object", $e);
@@ -550,12 +550,17 @@ abstract class BaseAbsenceEleveTypeStatutAutorise extends BaseObject  implements
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['AbsenceEleveTypeStatutAutorise'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['AbsenceEleveTypeStatutAutorise'][$this->getPrimaryKey()] = true;
 		$keys = AbsenceEleveTypeStatutAutorisePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
@@ -564,7 +569,7 @@ abstract class BaseAbsenceEleveTypeStatutAutorise extends BaseObject  implements
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aAbsenceEleveType) {
-				$result['AbsenceEleveType'] = $this->aAbsenceEleveType->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['AbsenceEleveType'] = $this->aAbsenceEleveType->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -704,15 +709,17 @@ abstract class BaseAbsenceEleveTypeStatutAutorise extends BaseObject  implements
 	 *
 	 * @param      object $copyObj An object of AbsenceEleveTypeStatutAutorise (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setIdAType($this->id_a_type);
-		$copyObj->setStatut($this->statut);
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		$copyObj->setIdAType($this->getIdAType());
+		$copyObj->setStatut($this->getStatut());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -792,11 +799,11 @@ abstract class BaseAbsenceEleveTypeStatutAutorise extends BaseObject  implements
 		if ($this->aAbsenceEleveType === null && ($this->id_a_type !== null)) {
 			$this->aAbsenceEleveType = AbsenceEleveTypeQuery::create()->findPk($this->id_a_type, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aAbsenceEleveType->addAbsenceEleveTypeStatutAutorises($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aAbsenceEleveType->addAbsenceEleveTypeStatutAutorises($this);
 			 */
 		}
 		return $this->aAbsenceEleveType;
@@ -819,13 +826,13 @@ abstract class BaseAbsenceEleveTypeStatutAutorise extends BaseObject  implements
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
@@ -833,6 +840,16 @@ abstract class BaseAbsenceEleveTypeStatutAutorise extends BaseObject  implements
 		} // if ($deep)
 
 		$this->aAbsenceEleveType = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(AbsenceEleveTypeStatutAutorisePeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

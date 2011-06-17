@@ -117,7 +117,7 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -167,8 +167,14 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	/**
 	 * Filter the query on the login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByLogin('fooValue');   // WHERE login = 'fooValue'
+	 * $query->filterByLogin('%fooValue%'); // WHERE login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $login The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
@@ -189,8 +195,14 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	/**
 	 * Filter the query on the professeur column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByProfesseur('fooValue');   // WHERE professeur = 'fooValue'
+	 * $query->filterByProfesseur('%fooValue%'); // WHERE professeur LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $professeur The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
@@ -211,8 +223,19 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_classe column
 	 * 
-	 * @param     int|array $idClasse The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdClasse(1234); // WHERE id_classe = 1234
+	 * $query->filterByIdClasse(array(12, 34)); // WHERE id_classe IN (12, 34)
+	 * $query->filterByIdClasse(array('min' => 12)); // WHERE id_classe > 12
+	 * </code>
+	 *
+	 * @see       filterByClasse()
+	 *
+	 * @param     mixed $idClasse The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
@@ -228,15 +251,25 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Eleve object
 	 *
-	 * @param     Eleve $eleve  the related object to use as filter
+	 * @param     Eleve|PropelCollection $eleve The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
 	public function filterByEleve($eleve, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $eleve->getLogin(), $comparison);
+		if ($eleve instanceof Eleve) {
+			return $this
+				->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $eleve->getLogin(), $comparison);
+		} elseif ($eleve instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveProfesseurPrincipalPeer::LOGIN, $eleve->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByEleve() only accepts arguments of type Eleve or PropelCollection');
+		}
 	}
 
 	/**
@@ -292,15 +325,25 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
 	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveProfesseurPrincipalPeer::PROFESSEUR, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByUtilisateurProfessionnel() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**
@@ -356,15 +399,25 @@ abstract class BaseJEleveProfesseurPrincipalQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Classe object
 	 *
-	 * @param     Classe $classe  the related object to use as filter
+	 * @param     Classe|PropelCollection $classe The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JEleveProfesseurPrincipalQuery The current query, for fluid interface
 	 */
 	public function filterByClasse($classe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $classe->getId(), $comparison);
+		if ($classe instanceof Classe) {
+			return $this
+				->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $classe->getId(), $comparison);
+		} elseif ($classe instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JEleveProfesseurPrincipalPeer::ID_CLASSE, $classe->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByClasse() only accepts arguments of type Classe or PropelCollection');
+		}
 	}
 
 	/**

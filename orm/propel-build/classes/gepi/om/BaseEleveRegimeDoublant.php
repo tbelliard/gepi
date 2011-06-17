@@ -198,7 +198,7 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 3; // 3 = EleveRegimeDoublantPeer::NUM_COLUMNS - EleveRegimeDoublantPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 3; // 3 = EleveRegimeDoublantPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating EleveRegimeDoublant object", $e);
@@ -542,12 +542,17 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['EleveRegimeDoublant'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['EleveRegimeDoublant'][$this->getPrimaryKey()] = true;
 		$keys = EleveRegimeDoublantPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getLogin(),
@@ -556,7 +561,7 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aEleve) {
-				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Eleve'] = $this->aEleve->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -696,15 +701,17 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of EleveRegimeDoublant (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setLogin($this->login);
-		$copyObj->setDoublant($this->doublant);
-		$copyObj->setRegime($this->regime);
-
-		$copyObj->setNew(true);
+		$copyObj->setLogin($this->getLogin());
+		$copyObj->setDoublant($this->getDoublant());
+		$copyObj->setRegime($this->getRegime());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -807,13 +814,13 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
@@ -821,6 +828,16 @@ abstract class BaseEleveRegimeDoublant extends BaseObject  implements Persistent
 		} // if ($deep)
 
 		$this->aEleve = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(EleveRegimeDoublantPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

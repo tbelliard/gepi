@@ -204,7 +204,7 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 3; // 3 = CahierTexteSequencePeer::NUM_COLUMNS - CahierTexteSequencePeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 3; // 3 = CahierTexteSequencePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating CahierTexteSequence object", $e);
@@ -582,17 +582,34 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
+	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['CahierTexteSequence'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['CahierTexteSequence'][$this->getPrimaryKey()] = true;
 		$keys = CahierTexteSequencePeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
 			$keys[1] => $this->getTitre(),
 			$keys[2] => $this->getDescription(),
 		);
+		if ($includeForeignObjects) {
+			if (null !== $this->collCahierTexteCompteRendus) {
+				$result['CahierTexteCompteRendus'] = $this->collCahierTexteCompteRendus->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collCahierTexteTravailAFaires) {
+				$result['CahierTexteTravailAFaires'] = $this->collCahierTexteTravailAFaires->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collCahierTexteNoticePrivees) {
+				$result['CahierTexteNoticePrivees'] = $this->collCahierTexteNoticePrivees->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+		}
 		return $result;
 	}
 
@@ -730,12 +747,13 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of CahierTexteSequence (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setTitre($this->titre);
-		$copyObj->setDescription($this->description);
+		$copyObj->setTitre($this->getTitre());
+		$copyObj->setDescription($this->getDescription());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -762,9 +780,10 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
-		$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		if ($makeNew) {
+			$copyObj->setNew(true);
+			$copyObj->setId(NULL); // this is a auto-increment column, so set to default value
+		}
 	}
 
 	/**
@@ -826,10 +845,16 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initCahierTexteCompteRendus()
+	public function initCahierTexteCompteRendus($overrideExisting = true)
 	{
+		if (null !== $this->collCahierTexteCompteRendus && !$overrideExisting) {
+			return;
+		}
 		$this->collCahierTexteCompteRendus = new PropelObjectCollection();
 		$this->collCahierTexteCompteRendus->setModel('CahierTexteCompteRendu');
 	}
@@ -985,10 +1010,16 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initCahierTexteTravailAFaires()
+	public function initCahierTexteTravailAFaires($overrideExisting = true)
 	{
+		if (null !== $this->collCahierTexteTravailAFaires && !$overrideExisting) {
+			return;
+		}
 		$this->collCahierTexteTravailAFaires = new PropelObjectCollection();
 		$this->collCahierTexteTravailAFaires->setModel('CahierTexteTravailAFaire');
 	}
@@ -1144,10 +1175,16 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initCahierTexteNoticePrivees()
+	public function initCahierTexteNoticePrivees($overrideExisting = true)
 	{
+		if (null !== $this->collCahierTexteNoticePrivees && !$overrideExisting) {
+			return;
+		}
 		$this->collCahierTexteNoticePrivees = new PropelObjectCollection();
 		$this->collCahierTexteNoticePrivees->setModel('CahierTexteNoticePrivee');
 	}
@@ -1299,37 +1336,56 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collCahierTexteCompteRendus) {
-				foreach ((array) $this->collCahierTexteCompteRendus as $o) {
+				foreach ($this->collCahierTexteCompteRendus as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collCahierTexteTravailAFaires) {
-				foreach ((array) $this->collCahierTexteTravailAFaires as $o) {
+				foreach ($this->collCahierTexteTravailAFaires as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 			if ($this->collCahierTexteNoticePrivees) {
-				foreach ((array) $this->collCahierTexteNoticePrivees as $o) {
+				foreach ($this->collCahierTexteNoticePrivees as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collCahierTexteCompteRendus instanceof PropelCollection) {
+			$this->collCahierTexteCompteRendus->clearIterator();
+		}
 		$this->collCahierTexteCompteRendus = null;
+		if ($this->collCahierTexteTravailAFaires instanceof PropelCollection) {
+			$this->collCahierTexteTravailAFaires->clearIterator();
+		}
 		$this->collCahierTexteTravailAFaires = null;
+		if ($this->collCahierTexteNoticePrivees instanceof PropelCollection) {
+			$this->collCahierTexteNoticePrivees->clearIterator();
+		}
 		$this->collCahierTexteNoticePrivees = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(CahierTexteSequencePeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

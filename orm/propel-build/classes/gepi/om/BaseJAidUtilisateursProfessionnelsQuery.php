@@ -109,7 +109,7 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,14 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_aid column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdAid('fooValue');   // WHERE id_aid = 'fooValue'
+	 * $query->filterByIdAid('%fooValue%'); // WHERE id_aid LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idAid The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JAidUtilisateursProfessionnelsQuery The current query, for fluid interface
@@ -178,8 +184,14 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_utilisateur column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdUtilisateur('fooValue');   // WHERE id_utilisateur = 'fooValue'
+	 * $query->filterByIdUtilisateur('%fooValue%'); // WHERE id_utilisateur LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idUtilisateur The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JAidUtilisateursProfessionnelsQuery The current query, for fluid interface
@@ -200,15 +212,25 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related AidDetails object
 	 *
-	 * @param     AidDetails $aidDetails  the related object to use as filter
+	 * @param     AidDetails|PropelCollection $aidDetails The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JAidUtilisateursProfessionnelsQuery The current query, for fluid interface
 	 */
 	public function filterByAidDetails($aidDetails, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JAidUtilisateursProfessionnelsPeer::ID_AID, $aidDetails->getId(), $comparison);
+		if ($aidDetails instanceof AidDetails) {
+			return $this
+				->addUsingAlias(JAidUtilisateursProfessionnelsPeer::ID_AID, $aidDetails->getId(), $comparison);
+		} elseif ($aidDetails instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JAidUtilisateursProfessionnelsPeer::ID_AID, $aidDetails->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByAidDetails() only accepts arguments of type AidDetails or PropelCollection');
+		}
 	}
 
 	/**
@@ -264,15 +286,25 @@ abstract class BaseJAidUtilisateursProfessionnelsQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    JAidUtilisateursProfessionnelsQuery The current query, for fluid interface
 	 */
 	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(JAidUtilisateursProfessionnelsPeer::ID_UTILISATEUR, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByUtilisateurProfessionnel() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**

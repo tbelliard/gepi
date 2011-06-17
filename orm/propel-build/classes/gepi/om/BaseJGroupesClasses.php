@@ -300,15 +300,23 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	} // setCategorieId()
 
 	/**
-	 * Set the value of [saisie_ects] column.
+	 * Sets the value of the [saisie_ects] column. 
+	 * Non-boolean arguments are converted using the following rules:
+	 *   * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
+	 *   * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
+	 * Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
 	 * Active ou non la saisie ECTS pour cet enseignement
-	 * @param      boolean $v new value
+	 * @param      boolean|integer|string $v The new value
 	 * @return     JGroupesClasses The current object (for fluent API support)
 	 */
 	public function setSaisieEcts($v)
 	{
 		if ($v !== null) {
-			$v = (boolean) $v;
+			if (is_string($v)) {
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+			} else {
+				$v = (boolean) $v;
+			}
 		}
 
 		if ($this->saisie_ects !== $v || $this->isNew()) {
@@ -390,7 +398,7 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 7; // 7 = JGroupesClassesPeer::NUM_COLUMNS - JGroupesClassesPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 7; // 7 = JGroupesClassesPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating JGroupesClasses object", $e);
@@ -780,12 +788,17 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['JGroupesClasses'][serialize($this->getPrimaryKey())])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['JGroupesClasses'][serialize($this->getPrimaryKey())] = true;
 		$keys = JGroupesClassesPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getIdGroupe(),
@@ -798,13 +811,13 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aGroupe) {
-				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aClasse) {
-				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Classe'] = $this->aClasse->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aCategorieMatiere) {
-				$result['CategorieMatiere'] = $this->aCategorieMatiere->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['CategorieMatiere'] = $this->aCategorieMatiere->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 		}
 		return $result;
@@ -971,19 +984,21 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of JGroupesClasses (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setIdGroupe($this->id_groupe);
-		$copyObj->setIdClasse($this->id_classe);
-		$copyObj->setPriorite($this->priorite);
-		$copyObj->setCoef($this->coef);
-		$copyObj->setCategorieId($this->categorie_id);
-		$copyObj->setSaisieEcts($this->saisie_ects);
-		$copyObj->setValeurEcts($this->valeur_ects);
-
-		$copyObj->setNew(true);
+		$copyObj->setIdGroupe($this->getIdGroupe());
+		$copyObj->setIdClasse($this->getIdClasse());
+		$copyObj->setPriorite($this->getPriorite());
+		$copyObj->setCoef($this->getCoef());
+		$copyObj->setCategorieId($this->getCategorieId());
+		$copyObj->setSaisieEcts($this->getSaisieEcts());
+		$copyObj->setValeurEcts($this->getValeurEcts());
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -1063,11 +1078,11 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		if ($this->aGroupe === null && ($this->id_groupe !== null)) {
 			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aGroupe->addJGroupesClassess($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aGroupe->addJGroupesClassess($this);
 			 */
 		}
 		return $this->aGroupe;
@@ -1112,11 +1127,11 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		if ($this->aClasse === null && ($this->id_classe !== null)) {
 			$this->aClasse = ClasseQuery::create()->findPk($this->id_classe, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aClasse->addJGroupesClassess($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aClasse->addJGroupesClassess($this);
 			 */
 		}
 		return $this->aClasse;
@@ -1161,11 +1176,11 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		if ($this->aCategorieMatiere === null && ($this->categorie_id !== null)) {
 			$this->aCategorieMatiere = CategorieMatiereQuery::create()->findPk($this->categorie_id, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aCategorieMatiere->addJGroupesClassess($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aCategorieMatiere->addJGroupesClassess($this);
 			 */
 		}
 		return $this->aCategorieMatiere;
@@ -1193,13 +1208,13 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
@@ -1209,6 +1224,16 @@ abstract class BaseJGroupesClasses extends BaseObject  implements Persistent
 		$this->aGroupe = null;
 		$this->aClasse = null;
 		$this->aCategorieMatiere = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(JGroupesClassesPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**

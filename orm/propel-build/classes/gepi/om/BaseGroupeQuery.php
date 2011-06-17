@@ -150,7 +150,7 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -184,8 +184,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
@@ -201,8 +210,14 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the name column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByName('fooValue');   // WHERE name = 'fooValue'
+	 * $query->filterByName('%fooValue%'); // WHERE name LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $name The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
@@ -223,8 +238,14 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the description column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDescription('fooValue');   // WHERE description = 'fooValue'
+	 * $query->filterByDescription('%fooValue%'); // WHERE description LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $description The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
@@ -245,8 +266,14 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	/**
 	 * Filter the query on the recalcul_rang column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByRecalculRang('fooValue');   // WHERE recalcul_rang = 'fooValue'
+	 * $query->filterByRecalculRang('%fooValue%'); // WHERE recalcul_rang LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $recalculRang The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    GroupeQuery The current query, for fluid interface
@@ -274,8 +301,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 */
 	public function filterByJGroupesProfesseurs($jGroupesProfesseurs, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(GroupePeer::ID, $jGroupesProfesseurs->getIdGroupe(), $comparison);
+		if ($jGroupesProfesseurs instanceof JGroupesProfesseurs) {
+			return $this
+				->addUsingAlias(GroupePeer::ID, $jGroupesProfesseurs->getIdGroupe(), $comparison);
+		} elseif ($jGroupesProfesseurs instanceof PropelCollection) {
+			return $this
+				->useJGroupesProfesseursQuery()
+					->filterByPrimaryKeys($jGroupesProfesseurs->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJGroupesProfesseurs() only accepts arguments of type JGroupesProfesseurs or PropelCollection');
+		}
 	}
 
 	/**
@@ -338,8 +374,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 */
 	public function filterByJGroupesMatieres($jGroupesMatieres, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(GroupePeer::ID, $jGroupesMatieres->getIdGroupe(), $comparison);
+		if ($jGroupesMatieres instanceof JGroupesMatieres) {
+			return $this
+				->addUsingAlias(GroupePeer::ID, $jGroupesMatieres->getIdGroupe(), $comparison);
+		} elseif ($jGroupesMatieres instanceof PropelCollection) {
+			return $this
+				->useJGroupesMatieresQuery()
+					->filterByPrimaryKeys($jGroupesMatieres->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJGroupesMatieres() only accepts arguments of type JGroupesMatieres or PropelCollection');
+		}
 	}
 
 	/**
@@ -402,8 +447,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 */
 	public function filterByJGroupesClasses($jGroupesClasses, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(GroupePeer::ID, $jGroupesClasses->getIdGroupe(), $comparison);
+		if ($jGroupesClasses instanceof JGroupesClasses) {
+			return $this
+				->addUsingAlias(GroupePeer::ID, $jGroupesClasses->getIdGroupe(), $comparison);
+		} elseif ($jGroupesClasses instanceof PropelCollection) {
+			return $this
+				->useJGroupesClassesQuery()
+					->filterByPrimaryKeys($jGroupesClasses->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJGroupesClasses() only accepts arguments of type JGroupesClasses or PropelCollection');
+		}
 	}
 
 	/**
@@ -466,8 +520,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 */
 	public function filterByCahierTexteCompteRendu($cahierTexteCompteRendu, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(GroupePeer::ID, $cahierTexteCompteRendu->getIdGroupe(), $comparison);
+		if ($cahierTexteCompteRendu instanceof CahierTexteCompteRendu) {
+			return $this
+				->addUsingAlias(GroupePeer::ID, $cahierTexteCompteRendu->getIdGroupe(), $comparison);
+		} elseif ($cahierTexteCompteRendu instanceof PropelCollection) {
+			return $this
+				->useCahierTexteCompteRenduQuery()
+					->filterByPrimaryKeys($cahierTexteCompteRendu->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCahierTexteCompteRendu() only accepts arguments of type CahierTexteCompteRendu or PropelCollection');
+		}
 	}
 
 	/**
@@ -530,8 +593,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 */
 	public function filterByCahierTexteTravailAFaire($cahierTexteTravailAFaire, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(GroupePeer::ID, $cahierTexteTravailAFaire->getIdGroupe(), $comparison);
+		if ($cahierTexteTravailAFaire instanceof CahierTexteTravailAFaire) {
+			return $this
+				->addUsingAlias(GroupePeer::ID, $cahierTexteTravailAFaire->getIdGroupe(), $comparison);
+		} elseif ($cahierTexteTravailAFaire instanceof PropelCollection) {
+			return $this
+				->useCahierTexteTravailAFaireQuery()
+					->filterByPrimaryKeys($cahierTexteTravailAFaire->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCahierTexteTravailAFaire() only accepts arguments of type CahierTexteTravailAFaire or PropelCollection');
+		}
 	}
 
 	/**
@@ -594,8 +666,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 */
 	public function filterByCahierTexteNoticePrivee($cahierTexteNoticePrivee, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(GroupePeer::ID, $cahierTexteNoticePrivee->getIdGroupe(), $comparison);
+		if ($cahierTexteNoticePrivee instanceof CahierTexteNoticePrivee) {
+			return $this
+				->addUsingAlias(GroupePeer::ID, $cahierTexteNoticePrivee->getIdGroupe(), $comparison);
+		} elseif ($cahierTexteNoticePrivee instanceof PropelCollection) {
+			return $this
+				->useCahierTexteNoticePriveeQuery()
+					->filterByPrimaryKeys($cahierTexteNoticePrivee->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCahierTexteNoticePrivee() only accepts arguments of type CahierTexteNoticePrivee or PropelCollection');
+		}
 	}
 
 	/**
@@ -658,8 +739,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 */
 	public function filterByJEleveGroupe($jEleveGroupe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(GroupePeer::ID, $jEleveGroupe->getIdGroupe(), $comparison);
+		if ($jEleveGroupe instanceof JEleveGroupe) {
+			return $this
+				->addUsingAlias(GroupePeer::ID, $jEleveGroupe->getIdGroupe(), $comparison);
+		} elseif ($jEleveGroupe instanceof PropelCollection) {
+			return $this
+				->useJEleveGroupeQuery()
+					->filterByPrimaryKeys($jEleveGroupe->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJEleveGroupe() only accepts arguments of type JEleveGroupe or PropelCollection');
+		}
 	}
 
 	/**
@@ -722,8 +812,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 */
 	public function filterByAbsenceEleveSaisie($absenceEleveSaisie, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(GroupePeer::ID, $absenceEleveSaisie->getIdGroupe(), $comparison);
+		if ($absenceEleveSaisie instanceof AbsenceEleveSaisie) {
+			return $this
+				->addUsingAlias(GroupePeer::ID, $absenceEleveSaisie->getIdGroupe(), $comparison);
+		} elseif ($absenceEleveSaisie instanceof PropelCollection) {
+			return $this
+				->useAbsenceEleveSaisieQuery()
+					->filterByPrimaryKeys($absenceEleveSaisie->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByAbsenceEleveSaisie() only accepts arguments of type AbsenceEleveSaisie or PropelCollection');
+		}
 	}
 
 	/**
@@ -786,8 +885,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 */
 	public function filterByCreditEcts($creditEcts, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(GroupePeer::ID, $creditEcts->getIdGroupe(), $comparison);
+		if ($creditEcts instanceof CreditEcts) {
+			return $this
+				->addUsingAlias(GroupePeer::ID, $creditEcts->getIdGroupe(), $comparison);
+		} elseif ($creditEcts instanceof PropelCollection) {
+			return $this
+				->useCreditEctsQuery()
+					->filterByPrimaryKeys($creditEcts->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCreditEcts() only accepts arguments of type CreditEcts or PropelCollection');
+		}
 	}
 
 	/**
@@ -850,8 +958,17 @@ abstract class BaseGroupeQuery extends ModelCriteria
 	 */
 	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(GroupePeer::ID, $edtEmplacementCours->getIdGroupe(), $comparison);
+		if ($edtEmplacementCours instanceof EdtEmplacementCours) {
+			return $this
+				->addUsingAlias(GroupePeer::ID, $edtEmplacementCours->getIdGroupe(), $comparison);
+		} elseif ($edtEmplacementCours instanceof PropelCollection) {
+			return $this
+				->useEdtEmplacementCoursQuery()
+					->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByEdtEmplacementCours() only accepts arguments of type EdtEmplacementCours or PropelCollection');
+		}
 	}
 
 	/**

@@ -122,7 +122,7 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -156,8 +156,17 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id column
 	 * 
-	 * @param     int|array $id The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterById(1234); // WHERE id = 1234
+	 * $query->filterById(array(12, 34)); // WHERE id IN (12, 34)
+	 * $query->filterById(array('min' => 12)); // WHERE id > 12
+	 * </code>
+	 *
+	 * @param     mixed $id The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CategorieMatiereQuery The current query, for fluid interface
@@ -173,8 +182,14 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom_court column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNomCourt('fooValue');   // WHERE nom_court = 'fooValue'
+	 * $query->filterByNomCourt('%fooValue%'); // WHERE nom_court LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nomCourt The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CategorieMatiereQuery The current query, for fluid interface
@@ -195,8 +210,14 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom_complet column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNomComplet('fooValue');   // WHERE nom_complet = 'fooValue'
+	 * $query->filterByNomComplet('%fooValue%'); // WHERE nom_complet LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nomComplet The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CategorieMatiereQuery The current query, for fluid interface
@@ -217,8 +238,17 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	/**
 	 * Filter the query on the priority column
 	 * 
-	 * @param     int|array $priority The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByPriority(1234); // WHERE priority = 1234
+	 * $query->filterByPriority(array(12, 34)); // WHERE priority IN (12, 34)
+	 * $query->filterByPriority(array('min' => 12)); // WHERE priority > 12
+	 * </code>
+	 *
+	 * @param     mixed $priority The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CategorieMatiereQuery The current query, for fluid interface
@@ -255,8 +285,17 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	 */
 	public function filterByJGroupesClasses($jGroupesClasses, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(CategorieMatierePeer::ID, $jGroupesClasses->getCategorieId(), $comparison);
+		if ($jGroupesClasses instanceof JGroupesClasses) {
+			return $this
+				->addUsingAlias(CategorieMatierePeer::ID, $jGroupesClasses->getCategorieId(), $comparison);
+		} elseif ($jGroupesClasses instanceof PropelCollection) {
+			return $this
+				->useJGroupesClassesQuery()
+					->filterByPrimaryKeys($jGroupesClasses->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJGroupesClasses() only accepts arguments of type JGroupesClasses or PropelCollection');
+		}
 	}
 
 	/**
@@ -319,8 +358,17 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	 */
 	public function filterByMatiere($matiere, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(CategorieMatierePeer::ID, $matiere->getCategorieId(), $comparison);
+		if ($matiere instanceof Matiere) {
+			return $this
+				->addUsingAlias(CategorieMatierePeer::ID, $matiere->getCategorieId(), $comparison);
+		} elseif ($matiere instanceof PropelCollection) {
+			return $this
+				->useMatiereQuery()
+					->filterByPrimaryKeys($matiere->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByMatiere() only accepts arguments of type Matiere or PropelCollection');
+		}
 	}
 
 	/**
@@ -383,8 +431,17 @@ abstract class BaseCategorieMatiereQuery extends ModelCriteria
 	 */
 	public function filterByJCategoriesMatieresClasses($jCategoriesMatieresClasses, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(CategorieMatierePeer::ID, $jCategoriesMatieresClasses->getCategorieId(), $comparison);
+		if ($jCategoriesMatieresClasses instanceof JCategoriesMatieresClasses) {
+			return $this
+				->addUsingAlias(CategorieMatierePeer::ID, $jCategoriesMatieresClasses->getCategorieId(), $comparison);
+		} elseif ($jCategoriesMatieresClasses instanceof PropelCollection) {
+			return $this
+				->useJCategoriesMatieresClassesQuery()
+					->filterByPrimaryKeys($jCategoriesMatieresClasses->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByJCategoriesMatieresClasses() only accepts arguments of type JCategoriesMatieresClasses or PropelCollection');
+		}
 	}
 
 	/**

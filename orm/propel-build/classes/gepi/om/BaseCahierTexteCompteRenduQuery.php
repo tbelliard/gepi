@@ -146,7 +146,7 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -180,8 +180,17 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_ct column
 	 * 
-	 * @param     int|array $idCt The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdCt(1234); // WHERE id_ct = 1234
+	 * $query->filterByIdCt(array(12, 34)); // WHERE id_ct IN (12, 34)
+	 * $query->filterByIdCt(array('min' => 12)); // WHERE id_ct > 12
+	 * </code>
+	 *
+	 * @param     mixed $idCt The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
@@ -197,8 +206,19 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query on the heure_entry column
 	 * 
-	 * @param     string|array $heureEntry The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByHeureEntry('2011-03-14'); // WHERE heure_entry = '2011-03-14'
+	 * $query->filterByHeureEntry('now'); // WHERE heure_entry = '2011-03-14'
+	 * $query->filterByHeureEntry(array('max' => 'yesterday')); // WHERE heure_entry > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $heureEntry The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
@@ -228,8 +248,17 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query on the date_ct column
 	 * 
-	 * @param     int|array $dateCt The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDateCt(1234); // WHERE date_ct = 1234
+	 * $query->filterByDateCt(array(12, 34)); // WHERE date_ct IN (12, 34)
+	 * $query->filterByDateCt(array('min' => 12)); // WHERE date_ct > 12
+	 * </code>
+	 *
+	 * @param     mixed $dateCt The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
@@ -259,8 +288,14 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query on the contenu column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByContenu('fooValue');   // WHERE contenu = 'fooValue'
+	 * $query->filterByContenu('%fooValue%'); // WHERE contenu LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $contenu The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
@@ -281,8 +316,14 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query on the vise column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByVise('fooValue');   // WHERE vise = 'fooValue'
+	 * $query->filterByVise('%fooValue%'); // WHERE vise LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $vise The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
@@ -303,8 +344,14 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query on the visa column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByVisa('fooValue');   // WHERE visa = 'fooValue'
+	 * $query->filterByVisa('%fooValue%'); // WHERE visa LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $visa The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
@@ -325,8 +372,19 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_groupe column
 	 * 
-	 * @param     int|array $idGroupe The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdGroupe(1234); // WHERE id_groupe = 1234
+	 * $query->filterByIdGroupe(array(12, 34)); // WHERE id_groupe IN (12, 34)
+	 * $query->filterByIdGroupe(array('min' => 12)); // WHERE id_groupe > 12
+	 * </code>
+	 *
+	 * @see       filterByGroupe()
+	 *
+	 * @param     mixed $idGroupe The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
@@ -356,8 +414,14 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_login column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdLogin('fooValue');   // WHERE id_login = 'fooValue'
+	 * $query->filterByIdLogin('%fooValue%'); // WHERE id_login LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $idLogin The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
@@ -378,8 +442,19 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_sequence column
 	 * 
-	 * @param     int|array $idSequence The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdSequence(1234); // WHERE id_sequence = 1234
+	 * $query->filterByIdSequence(array(12, 34)); // WHERE id_sequence IN (12, 34)
+	 * $query->filterByIdSequence(array('min' => 12)); // WHERE id_sequence > 12
+	 * </code>
+	 *
+	 * @see       filterByCahierTexteSequence()
+	 *
+	 * @param     mixed $idSequence The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
@@ -409,15 +484,25 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related Groupe object
 	 *
-	 * @param     Groupe $groupe  the related object to use as filter
+	 * @param     Groupe|PropelCollection $groupe The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
 	public function filterByGroupe($groupe, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $groupe->getId(), $comparison);
+		if ($groupe instanceof Groupe) {
+			return $this
+				->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $groupe->getId(), $comparison);
+		} elseif ($groupe instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(CahierTexteCompteRenduPeer::ID_GROUPE, $groupe->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByGroupe() only accepts arguments of type Groupe or PropelCollection');
+		}
 	}
 
 	/**
@@ -473,15 +558,25 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related UtilisateurProfessionnel object
 	 *
-	 * @param     UtilisateurProfessionnel $utilisateurProfessionnel  the related object to use as filter
+	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
 	public function filterByUtilisateurProfessionnel($utilisateurProfessionnel, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(CahierTexteCompteRenduPeer::ID_LOGIN, $utilisateurProfessionnel->getLogin(), $comparison);
+		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
+			return $this
+				->addUsingAlias(CahierTexteCompteRenduPeer::ID_LOGIN, $utilisateurProfessionnel->getLogin(), $comparison);
+		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(CahierTexteCompteRenduPeer::ID_LOGIN, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
+		} else {
+			throw new PropelException('filterByUtilisateurProfessionnel() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
+		}
 	}
 
 	/**
@@ -537,15 +632,25 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	/**
 	 * Filter the query by a related CahierTexteSequence object
 	 *
-	 * @param     CahierTexteSequence $cahierTexteSequence  the related object to use as filter
+	 * @param     CahierTexteSequence|PropelCollection $cahierTexteSequence The related object(s) to use as filter
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    CahierTexteCompteRenduQuery The current query, for fluid interface
 	 */
 	public function filterByCahierTexteSequence($cahierTexteSequence, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $cahierTexteSequence->getId(), $comparison);
+		if ($cahierTexteSequence instanceof CahierTexteSequence) {
+			return $this
+				->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $cahierTexteSequence->getId(), $comparison);
+		} elseif ($cahierTexteSequence instanceof PropelCollection) {
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+			return $this
+				->addUsingAlias(CahierTexteCompteRenduPeer::ID_SEQUENCE, $cahierTexteSequence->toKeyValue('PrimaryKey', 'Id'), $comparison);
+		} else {
+			throw new PropelException('filterByCahierTexteSequence() only accepts arguments of type CahierTexteSequence or PropelCollection');
+		}
 	}
 
 	/**
@@ -608,8 +713,17 @@ abstract class BaseCahierTexteCompteRenduQuery extends ModelCriteria
 	 */
 	public function filterByCahierTexteCompteRenduFichierJoint($cahierTexteCompteRenduFichierJoint, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(CahierTexteCompteRenduPeer::ID_CT, $cahierTexteCompteRenduFichierJoint->getIdCt(), $comparison);
+		if ($cahierTexteCompteRenduFichierJoint instanceof CahierTexteCompteRenduFichierJoint) {
+			return $this
+				->addUsingAlias(CahierTexteCompteRenduPeer::ID_CT, $cahierTexteCompteRenduFichierJoint->getIdCt(), $comparison);
+		} elseif ($cahierTexteCompteRenduFichierJoint instanceof PropelCollection) {
+			return $this
+				->useCahierTexteCompteRenduFichierJointQuery()
+					->filterByPrimaryKeys($cahierTexteCompteRenduFichierJoint->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByCahierTexteCompteRenduFichierJoint() only accepts arguments of type CahierTexteCompteRenduFichierJoint or PropelCollection');
+		}
 	}
 
 	/**

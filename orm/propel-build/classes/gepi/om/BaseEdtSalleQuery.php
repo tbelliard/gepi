@@ -110,7 +110,7 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 * @return    PropelObjectCollection|array|mixed the list of results, formatted by the current formatter
 	 */
 	public function findPks($keys, $con = null)
-	{	
+	{
 		$criteria = $this->isKeepQuery() ? clone $this : $this;
 		return $this
 			->filterByPrimaryKeys($keys)
@@ -144,8 +144,17 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	/**
 	 * Filter the query on the id_salle column
 	 * 
-	 * @param     int|array $idSalle The value to use as filter.
-	 *            Accepts an associative array('min' => $minValue, 'max' => $maxValue)
+	 * Example usage:
+	 * <code>
+	 * $query->filterByIdSalle(1234); // WHERE id_salle = 1234
+	 * $query->filterByIdSalle(array(12, 34)); // WHERE id_salle IN (12, 34)
+	 * $query->filterByIdSalle(array('min' => 12)); // WHERE id_salle > 12
+	 * </code>
+	 *
+	 * @param     mixed $idSalle The value to use as filter.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtSalleQuery The current query, for fluid interface
@@ -161,8 +170,14 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	/**
 	 * Filter the query on the numero_salle column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNumeroSalle('fooValue');   // WHERE numero_salle = 'fooValue'
+	 * $query->filterByNumeroSalle('%fooValue%'); // WHERE numero_salle LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $numeroSalle The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtSalleQuery The current query, for fluid interface
@@ -183,8 +198,14 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	/**
 	 * Filter the query on the nom_salle column
 	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByNomSalle('fooValue');   // WHERE nom_salle = 'fooValue'
+	 * $query->filterByNomSalle('%fooValue%'); // WHERE nom_salle LIKE '%fooValue%'
+	 * </code>
+	 *
 	 * @param     string $nomSalle The value to use as filter.
-	 *            Accepts wildcards (* and % trigger a LIKE)
+	 *              Accepts wildcards (* and % trigger a LIKE)
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    EdtSalleQuery The current query, for fluid interface
@@ -212,8 +233,17 @@ abstract class BaseEdtSalleQuery extends ModelCriteria
 	 */
 	public function filterByEdtEmplacementCours($edtEmplacementCours, $comparison = null)
 	{
-		return $this
-			->addUsingAlias(EdtSallePeer::ID_SALLE, $edtEmplacementCours->getIdSalle(), $comparison);
+		if ($edtEmplacementCours instanceof EdtEmplacementCours) {
+			return $this
+				->addUsingAlias(EdtSallePeer::ID_SALLE, $edtEmplacementCours->getIdSalle(), $comparison);
+		} elseif ($edtEmplacementCours instanceof PropelCollection) {
+			return $this
+				->useEdtEmplacementCoursQuery()
+					->filterByPrimaryKeys($edtEmplacementCours->getPrimaryKeys())
+				->endUse();
+		} else {
+			throw new PropelException('filterByEdtEmplacementCours() only accepts arguments of type EdtEmplacementCours or PropelCollection');
+		}
 	}
 
 	/**

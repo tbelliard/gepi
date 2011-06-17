@@ -619,7 +619,7 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 12; // 12 = EdtEmplacementCoursPeer::NUM_COLUMNS - EdtEmplacementCoursPeer::NUM_LAZY_LOAD_COLUMNS).
+			return $startcol + 12; // 12 = EdtEmplacementCoursPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating EdtEmplacementCours object", $e);
@@ -1093,12 +1093,17 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 *                    BasePeer::TYPE_COLNAME, BasePeer::TYPE_FIELDNAME, BasePeer::TYPE_NUM.
 	 *                    Defaults to BasePeer::TYPE_PHPNAME.
 	 * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+	 * @param     array $alreadyDumpedObjects List of objects to skip to avoid recursion
 	 * @param     boolean $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
 	 *
 	 * @return    array an associative array containing the field names (as keys) and field values
 	 */
-	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $includeForeignObjects = false)
+	public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
 	{
+		if (isset($alreadyDumpedObjects['EdtEmplacementCours'][$this->getPrimaryKey()])) {
+			return '*RECURSION*';
+		}
+		$alreadyDumpedObjects['EdtEmplacementCours'][$this->getPrimaryKey()] = true;
 		$keys = EdtEmplacementCoursPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getIdCours(),
@@ -1116,22 +1121,25 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aGroupe) {
-				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['Groupe'] = $this->aGroupe->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aAidDetails) {
-				$result['AidDetails'] = $this->aAidDetails->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['AidDetails'] = $this->aAidDetails->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aEdtSalle) {
-				$result['EdtSalle'] = $this->aEdtSalle->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['EdtSalle'] = $this->aEdtSalle->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aEdtCreneau) {
-				$result['EdtCreneau'] = $this->aEdtCreneau->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['EdtCreneau'] = $this->aEdtCreneau->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aEdtCalendrierPeriode) {
-				$result['EdtCalendrierPeriode'] = $this->aEdtCalendrierPeriode->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['EdtCalendrierPeriode'] = $this->aEdtCalendrierPeriode->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
 			}
 			if (null !== $this->aUtilisateurProfessionnel) {
-				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns, true);
+				$result['UtilisateurProfessionnel'] = $this->aUtilisateurProfessionnel->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+			}
+			if (null !== $this->collAbsenceEleveSaisies) {
+				$result['AbsenceEleveSaisies'] = $this->collAbsenceEleveSaisies->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 		}
 		return $result;
@@ -1316,22 +1324,23 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 *
 	 * @param      object $copyObj An object of EdtEmplacementCours (or compatible) type.
 	 * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+	 * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
 	 * @throws     PropelException
 	 */
-	public function copyInto($copyObj, $deepCopy = false)
+	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setIdCours($this->id_cours);
-		$copyObj->setIdGroupe($this->id_groupe);
-		$copyObj->setIdAid($this->id_aid);
-		$copyObj->setIdSalle($this->id_salle);
-		$copyObj->setJourSemaine($this->jour_semaine);
-		$copyObj->setIdDefiniePeriode($this->id_definie_periode);
-		$copyObj->setDuree($this->duree);
-		$copyObj->setHeuredebDec($this->heuredeb_dec);
-		$copyObj->setTypeSemaine($this->id_semaine);
-		$copyObj->setIdCalendrier($this->id_calendrier);
-		$copyObj->setModifEdt($this->modif_edt);
-		$copyObj->setLoginProf($this->login_prof);
+		$copyObj->setIdCours($this->getIdCours());
+		$copyObj->setIdGroupe($this->getIdGroupe());
+		$copyObj->setIdAid($this->getIdAid());
+		$copyObj->setIdSalle($this->getIdSalle());
+		$copyObj->setJourSemaine($this->getJourSemaine());
+		$copyObj->setIdDefiniePeriode($this->getIdDefiniePeriode());
+		$copyObj->setDuree($this->getDuree());
+		$copyObj->setHeuredebDec($this->getHeuredebDec());
+		$copyObj->setTypeSemaine($this->getTypeSemaine());
+		$copyObj->setIdCalendrier($this->getIdCalendrier());
+		$copyObj->setModifEdt($this->getModifEdt());
+		$copyObj->setLoginProf($this->getLoginProf());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1346,8 +1355,9 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 
 		} // if ($deepCopy)
 
-
-		$copyObj->setNew(true);
+		if ($makeNew) {
+			$copyObj->setNew(true);
+		}
 	}
 
 	/**
@@ -1427,11 +1437,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aGroupe === null && (($this->id_groupe !== "" && $this->id_groupe !== null))) {
 			$this->aGroupe = GroupeQuery::create()->findPk($this->id_groupe, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aGroupe->addEdtEmplacementCourss($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aGroupe->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aGroupe;
@@ -1476,11 +1486,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aAidDetails === null && (($this->id_aid !== "" && $this->id_aid !== null))) {
 			$this->aAidDetails = AidDetailsQuery::create()->findPk($this->id_aid, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aAidDetails->addEdtEmplacementCourss($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aAidDetails->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aAidDetails;
@@ -1525,11 +1535,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aEdtSalle === null && (($this->id_salle !== "" && $this->id_salle !== null))) {
 			$this->aEdtSalle = EdtSalleQuery::create()->findPk($this->id_salle, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aEdtSalle->addEdtEmplacementCourss($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aEdtSalle->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aEdtSalle;
@@ -1574,11 +1584,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aEdtCreneau === null && (($this->id_definie_periode !== "" && $this->id_definie_periode !== null))) {
 			$this->aEdtCreneau = EdtCreneauQuery::create()->findPk($this->id_definie_periode, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aEdtCreneau->addEdtEmplacementCourss($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aEdtCreneau->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aEdtCreneau;
@@ -1623,11 +1633,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aEdtCalendrierPeriode === null && (($this->id_calendrier !== "" && $this->id_calendrier !== null))) {
 			$this->aEdtCalendrierPeriode = EdtCalendrierPeriodeQuery::create()->findPk($this->id_calendrier, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aEdtCalendrierPeriode->addEdtEmplacementCourss($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aEdtCalendrierPeriode->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aEdtCalendrierPeriode;
@@ -1672,11 +1682,11 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		if ($this->aUtilisateurProfessionnel === null && (($this->login_prof !== "" && $this->login_prof !== null))) {
 			$this->aUtilisateurProfessionnel = UtilisateurProfessionnelQuery::create()->findPk($this->login_prof, $con);
 			/* The following can be used additionally to
-				 guarantee the related object contains a reference
-				 to this object.  This level of coupling may, however, be
-				 undesirable since it could result in an only partially populated collection
-				 in the referenced object.
-				 $this->aUtilisateurProfessionnel->addEdtEmplacementCourss($this);
+				guarantee the related object contains a reference
+				to this object.  This level of coupling may, however, be
+				undesirable since it could result in an only partially populated collection
+				in the referenced object.
+				$this->aUtilisateurProfessionnel->addEdtEmplacementCourss($this);
 			 */
 		}
 		return $this->aUtilisateurProfessionnel;
@@ -1703,10 +1713,16 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	 * however, you may wish to override this method in your stub class to provide setting appropriate
 	 * to your application -- for example, setting the initial array to the values stored in database.
 	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
 	 * @return     void
 	 */
-	public function initAbsenceEleveSaisies()
+	public function initAbsenceEleveSaisies($overrideExisting = true)
 	{
+		if (null !== $this->collAbsenceEleveSaisies && !$overrideExisting) {
+			return;
+		}
 		$this->collAbsenceEleveSaisies = new PropelObjectCollection();
 		$this->collAbsenceEleveSaisies->setModel('AbsenceEleveSaisie');
 	}
@@ -2018,24 +2034,27 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Resets all collections of referencing foreign keys.
+	 * Resets all references to other model objects or collections of model objects.
 	 *
-	 * This method is a user-space workaround for PHP's inability to garbage collect objects
-	 * with circular references.  This is currently necessary when using Propel in certain
-	 * daemon or large-volumne/high-memory operations.
+	 * This method is a user-space workaround for PHP's inability to garbage collect
+	 * objects with circular references (even in PHP 5.3). This is currently necessary
+	 * when using Propel in certain daemon or large-volumne/high-memory operations.
 	 *
-	 * @param      boolean $deep Whether to also clear the references on all associated objects.
+	 * @param      boolean $deep Whether to also clear the references on all referrer objects.
 	 */
 	public function clearAllReferences($deep = false)
 	{
 		if ($deep) {
 			if ($this->collAbsenceEleveSaisies) {
-				foreach ((array) $this->collAbsenceEleveSaisies as $o) {
+				foreach ($this->collAbsenceEleveSaisies as $o) {
 					$o->clearAllReferences($deep);
 				}
 			}
 		} // if ($deep)
 
+		if ($this->collAbsenceEleveSaisies instanceof PropelCollection) {
+			$this->collAbsenceEleveSaisies->clearIterator();
+		}
 		$this->collAbsenceEleveSaisies = null;
 		$this->aGroupe = null;
 		$this->aAidDetails = null;
@@ -2043,6 +2062,16 @@ abstract class BaseEdtEmplacementCours extends BaseObject  implements Persistent
 		$this->aEdtCreneau = null;
 		$this->aEdtCalendrierPeriode = null;
 		$this->aUtilisateurProfessionnel = null;
+	}
+
+	/**
+	 * Return the string representation of this object
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return (string) $this->exportTo(EdtEmplacementCoursPeer::DEFAULT_STRING_FORMAT);
 	}
 
 	/**
