@@ -310,7 +310,7 @@ class calendar {
 							</a>
 							</div>";
 				$result.="<div class=\"bouton_supprimer\">
-							<a href=\"index.php?action=calendriermanager&operation=delete&id_calendrier=".$calendriers['id'][$i]."\">
+							<a href=\"index.php?action=calendriermanager&operation=delete&id_calendrier=".$calendriers['id'][$i].add_token_in_url()."\">
 							<img src=\"./lib/template/images/erase.png\" alt=\"supprimer\" title=\"supprimer le calendrier\"/>
 							</a>
 							</div>";

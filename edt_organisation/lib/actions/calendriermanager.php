@@ -45,7 +45,8 @@ class calendriermanagerAction extends Action {
 					}
 					else {
 						if ($request->getParam('id_calendrier')) {
-							$delete_confirmation = "<form action=\"index.php?action=calendriermanager\" method=\"post\">
+							$delete_confirmation = "<form action=\"index.php?action=calendriermanager\" method=\"post\">".
+											add_token_field(false)."
 											<input name=\"operation\" type=\"hidden\" value=\"delete\">
 											<input name=\"id_calendrier\" type=\"hidden\" value=\"".$request->getParam('id_calendrier')."\">
 											<p>La suppression d'un calendrier entraîne la suppression de toutes les périodes calendaires qui en dépendent !</p>
@@ -75,7 +76,8 @@ class calendriermanagerAction extends Action {
 					}
 					else {
 						if ($request->getParam('id_calendrier')) {
-							$new_name = "<form action=\"index.php?action=calendriermanager\" method=\"post\">
+							$new_name = "<form action=\"index.php?action=calendriermanager\" method=\"post\">".
+											add_token_field(false)."
 											<input name=\"operation\" type=\"hidden\" value=\"modify_name\">
 											<input name=\"id_calendrier\" type=\"hidden\" value=\"".$request->getParam('id_calendrier')."\">
 											<input name=\"new_name\" type=\"text\" style=\"width:200px;\" value=\"".Calendrier::getNom($request->getParam('id_calendrier'))."\">
