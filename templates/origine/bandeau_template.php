@@ -195,7 +195,7 @@
 					"; */ ?>
 	<div id="menu_barre">
 	<ul class="niveau1">
-		<li class="li_inline"><a href="'.$gepiPath.'/accueil.php">Accueil</a></li>
+		<li class="li_inline"><a href="<?php echo $gepiPath.'/accueil.php' ?>">Accueil</a></li>
 		<?php foreach ($tbs_menu_prof as $value) { if ("$value[texte]"!="") { ?>
 		<li class="li_inline"><a href='<?php echo $tbs_gepiPath.$value['lien']; ?>'>&nbsp;<?php echo $value['texte']; ?></a></li>
 		<?php }} unset($value); ?>
