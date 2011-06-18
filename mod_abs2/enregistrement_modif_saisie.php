@@ -96,13 +96,23 @@ if ( isset($_POST["creation_traitement"])) {
 
 
 //la saisie est-elle modifiable ?
-//Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session,
+//Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session si c'est un prof,
 //elle date de moins d'une heure et l'option a ete coché partie admin
-if (!getSettingValue("abs2_modification_saisie_une_heure")=='y' || !$saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() || !$saisie->getCreatedAt('U') > (time() - 3600)) {
-    $message_enregistrement .= 'Modification non autorisée.';
-    include("visu_saisie.php");
-    die();
+if ($utilisateur->getStatut() == 'professeur') {
+	if (!getSettingValue("abs2_modification_saisie_une_heure")=='y' || !$saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() || !$saisie->getVersionCreatedAt('U') > (time() - 3600)) {
+	    $message_enregistrement .= 'Modification non autorisée.';
+	    include("visu_saisie.php");
+	    die();	
+	}
+} else {
+	if ($utilisateur->getStatut() != 'cpe' && $utilisateur->getStatut() != 'scolarite') {
+	    $message_enregistrement .= 'Modification non autorisée.';
+	    include("visu_saisie.php");
+	    die();
+	}
 }
+$saisie->setVersionCreatedBy($utilisateur->getLogin());
+
 
 $saisie->setCommentaire($commentaire);
 $date_debut = new DateTime(str_replace("/",".",$_POST['date_debut']));

@@ -104,17 +104,19 @@ if ($saisie != null) {
 
 
 //la saisie est-elle modifiable ?
-//Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session,
-//si elle date de moins de 24 heure (sauf pour le statut prof)
-//elle date de moins d'une heure et l'option a ete coché partie admin pour le statut prof
-$modifiable = $saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() && ($saisie->getCreatedAt('U') > (time() - 72*3600));
-if ($modifiable && $utilisateur->getStatut() == 'professeur') {
-    if (getSettingValue("abs2_modification_saisie_une_heure")=='y') {
-	$modifiable =  ($saisie->getCreatedAt('U') > (time() - 3600));
-    } else {
-	$modifiable = false;
-    }
+//Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session si c'est un prof,
+//elle date de moins d'une heure et l'option a ete coché partie admin
+$modifiable = true;
+if ($utilisateur->getStatut() == 'professeur') {
+	if (!getSettingValue("abs2_modification_saisie_une_heure")=='y' || !$saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() || !$saisie->getVersionCreatedAt('U') > (time() - 3600)) {
+	    $modifiable = false;
+	}
+} else {
+	if ($utilisateur->getStatut() != 'cpe' && $utilisateur->getStatut() != 'scolarite') {
+	    $modifiable = false;
+	}
 }
+
 if (!$modifiable) {
     echo "La saisie n'est pas modifiable<br/>";
 }
@@ -131,12 +133,6 @@ echo '<tr><TD>';
 echo 'N° de saisie : ';
 echo '</TD><TD>';
 echo $saisie->getPrimaryKey();
-echo '</TD></tr>';
-
-echo '<tr><TD>';
-echo 'Saisie par : ';
-echo '</TD><TD>';
-echo $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
 echo '</TD></tr>';
 
     echo '<tr>';
@@ -348,6 +344,7 @@ echo '<tr><TD>';
 echo 'Saisie le : ';
 echo '</TD><TD>';
 echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getCreatedAt('U')));
+echo ' par '.  $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
 echo '</TD></tr>';
 
 if ($saisie->getCreatedAt() != $saisie->getUpdatedAt()) {
@@ -355,6 +352,10 @@ if ($saisie->getCreatedAt() != $saisie->getUpdatedAt()) {
     echo 'Modifiée le : ';
     echo '</TD><TD>';
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getUpdatedAt('U')));
+    $modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($saisie->getVersionCreatedBy())->findOne();
+    if ($modifie_par_utilisateur != null) {
+		echo ' par '.  $modifie_par_utilisateur->getCivilite().' '.$modifie_par_utilisateur->getNom().' '.substr($modifie_par_utilisateur->getPrenom(), 0, 1).'.';
+    }
     echo '</TD></tr>';
 }
 

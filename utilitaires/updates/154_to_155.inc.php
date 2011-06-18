@@ -268,28 +268,10 @@ $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'versio
 if ($test_champ>0) {
 	$result .= "<font color=\"blue\">Les versions de saisies existent déjà.</font><br />";
 } else {
-	$query = mysql_query("ALTER TABLE a_saisies ADD version INTEGER DEFAULT 0;");
+	 $query = mysql_query("ALTER TABLE a_saisies ADD (version INTEGER DEFAULT 0, version_created_at DATETIME, version_created_by VARCHAR(100));");
 	if ($query) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
-                $query = mysql_query("ALTER TABLE a_saisies ADD version_created_by VARCHAR(100);");
-                if ($query) {
-                        $result .= "<font color=\"green\">Ok !</font><br />";
-                        $query = mysql_query("ALTER TABLE a_saisies CHANGE created_at version_created_at DATETIME;");
-                        if ($query) {
-                                $result .= "<font color=\"green\">Ok !</font><br />";
-                                $query = mysql_query("ALTER TABLE a_saisies DROP updated_at;");
-                                if ($query) {
-                                                $result .= "<font color=\"green\">Ok !</font><br />";
-                                } else {
-                                                $result .= "<font color=\"red\">Erreur</font><br />";
-                                }
-                        } else {
-                                        $result .= "<font color=\"red\">Erreur</font><br />";
-                        }
-                } else {
-                        $result .= "<font color=\"red\">Erreur</font><br />";
-                }
-	} else {
+ 	} else {
                 $result .= "<font color=\"red\">Erreur</font><br />";
 	}
 }
@@ -314,6 +296,8 @@ if ($test!=0) {
 	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
 	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
+	created_at DATETIME,
+	updated_at DATETIME,
 	version INTEGER DEFAULT 0,
 	version_created_at DATETIME,
 	version_created_by VARCHAR(100),
