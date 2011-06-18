@@ -1823,6 +1823,52 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		return $this->aMef;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('JEleveClasse' == $relationName) {
+			return $this->initJEleveClasses();
+		}
+		if ('JEleveCpe' == $relationName) {
+			return $this->initJEleveCpes();
+		}
+		if ('JEleveGroupe' == $relationName) {
+			return $this->initJEleveGroupes();
+		}
+		if ('JEleveProfesseurPrincipal' == $relationName) {
+			return $this->initJEleveProfesseurPrincipals();
+		}
+		if ('ResponsableInformation' == $relationName) {
+			return $this->initResponsableInformations();
+		}
+		if ('JEleveAncienEtablissement' == $relationName) {
+			return $this->initJEleveAncienEtablissements();
+		}
+		if ('JAidEleves' == $relationName) {
+			return $this->initJAidElevess();
+		}
+		if ('AbsenceEleveSaisie' == $relationName) {
+			return $this->initAbsenceEleveSaisies();
+		}
+		if ('CreditEcts' == $relationName) {
+			return $this->initCreditEctss();
+		}
+		if ('CreditEctsGlobal' == $relationName) {
+			return $this->initCreditEctsGlobals();
+		}
+		if ('ArchiveEcts' == $relationName) {
+			return $this->initArchiveEctss();
+		}
+	}
+
 	/**
 	 * Clears out the collJEleveClasses collection
 	 *

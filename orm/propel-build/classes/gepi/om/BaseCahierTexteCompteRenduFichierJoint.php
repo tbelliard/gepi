@@ -283,7 +283,7 @@ abstract class BaseCahierTexteCompteRenduFichierJoint extends BaseObject  implem
 	{
 		if ($v !== null) {
 			if (is_string($v)) {
-				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
 			} else {
 				$v = (boolean) $v;
 			}

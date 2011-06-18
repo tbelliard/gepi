@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class JEleveAncienEtablissementTableMap extends TableMap {
+class JEleveAncienEtablissementTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class JEleveAncienEtablissementTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_eleves_etablissements');
 		$this->setPhpName('JEleveAncienEtablissement');
 		$this->setClassname('JEleveAncienEtablissement');
@@ -47,8 +48,8 @@ class JEleveAncienEtablissementTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
-    $this->addRelation('AncienEtablissement', 'AncienEtablissement', RelationMap::MANY_TO_ONE, array('id_etablissement' => 'id', ), 'CASCADE', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
+		$this->addRelation('AncienEtablissement', 'AncienEtablissement', RelationMap::MANY_TO_ONE, array('id_etablissement' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JEleveAncienEtablissementTableMap

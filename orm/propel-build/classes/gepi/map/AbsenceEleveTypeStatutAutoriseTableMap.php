@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class AbsenceEleveTypeStatutAutoriseTableMap extends TableMap {
+class AbsenceEleveTypeStatutAutoriseTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class AbsenceEleveTypeStatutAutoriseTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('a_types_statut');
 		$this->setPhpName('AbsenceEleveTypeStatutAutorise');
 		$this->setClassname('AbsenceEleveTypeStatutAutorise');
@@ -48,7 +49,7 @@ class AbsenceEleveTypeStatutAutoriseTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AbsenceEleveType', 'AbsenceEleveType', RelationMap::MANY_TO_ONE, array('id_a_type' => 'id', ), 'CASCADE', null);
+		$this->addRelation('AbsenceEleveType', 'AbsenceEleveType', RelationMap::MANY_TO_ONE, array('id_a_type' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // AbsenceEleveTypeStatutAutoriseTableMap

@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class JEleveCpeTableMap extends TableMap {
+class JEleveCpeTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class JEleveCpeTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_eleves_cpe');
 		$this->setPhpName('JEleveCpe');
 		$this->setClassname('JEleveCpe');
@@ -47,8 +48,8 @@ class JEleveCpeTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('e_login' => 'login', ), 'CASCADE', null);
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('cpe_login' => 'login', ), 'CASCADE', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('e_login' => 'login', ), 'CASCADE', null);
+		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('cpe_login' => 'login', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JEleveCpeTableMap

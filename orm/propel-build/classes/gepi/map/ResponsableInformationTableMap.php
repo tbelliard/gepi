@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class ResponsableInformationTableMap extends TableMap {
+class ResponsableInformationTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class ResponsableInformationTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('responsables2');
 		$this->setPhpName('ResponsableInformation');
 		$this->setClassname('ResponsableInformation');
@@ -49,8 +50,8 @@ class ResponsableInformationTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('ele_id' => 'ele_id', ), 'CASCADE', null);
-    $this->addRelation('ResponsableEleve', 'ResponsableEleve', RelationMap::MANY_TO_ONE, array('pers_id' => 'pers_id', ), 'CASCADE', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('ele_id' => 'ele_id', ), 'CASCADE', null);
+		$this->addRelation('ResponsableEleve', 'ResponsableEleve', RelationMap::MANY_TO_ONE, array('pers_id' => 'pers_id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // ResponsableInformationTableMap

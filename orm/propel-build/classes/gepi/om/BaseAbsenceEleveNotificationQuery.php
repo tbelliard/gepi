@@ -314,6 +314,9 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 				$convertedValues []= array_search($value, $valueSet);
 			}
 			$typeNotification = $convertedValues;
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
 		return $this->addUsingAlias(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION, $typeNotification, $comparison);
 	}
@@ -455,6 +458,9 @@ abstract class BaseAbsenceEleveNotificationQuery extends ModelCriteria
 				$convertedValues []= array_search($value, $valueSet);
 			}
 			$statutEnvoi = $convertedValues;
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
 		}
 		return $this->addUsingAlias(AbsenceEleveNotificationPeer::STATUT_ENVOI, $statutEnvoi, $comparison);
 	}

@@ -1208,6 +1208,25 @@ abstract class BaseResponsableEleve extends BaseObject  implements Persistent
 		return $this->aResponsableEleveAdresse;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('ResponsableInformation' == $relationName) {
+			return $this->initResponsableInformations();
+		}
+		if ('JNotificationResponsableEleve' == $relationName) {
+			return $this->initJNotificationResponsableEleves();
+		}
+	}
+
 	/**
 	 * Clears out the collResponsableInformations collection
 	 *

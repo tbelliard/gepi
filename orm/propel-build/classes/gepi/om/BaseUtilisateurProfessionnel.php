@@ -2120,6 +2120,67 @@ abstract class BaseUtilisateurProfessionnel extends BaseObject  implements Persi
 		return self::$peer;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('JGroupesProfesseurs' == $relationName) {
+			return $this->initJGroupesProfesseurss();
+		}
+		if ('JScolClasses' == $relationName) {
+			return $this->initJScolClassess();
+		}
+		if ('CahierTexteCompteRendu' == $relationName) {
+			return $this->initCahierTexteCompteRendus();
+		}
+		if ('CahierTexteTravailAFaire' == $relationName) {
+			return $this->initCahierTexteTravailAFaires();
+		}
+		if ('CahierTexteNoticePrivee' == $relationName) {
+			return $this->initCahierTexteNoticePrivees();
+		}
+		if ('JEleveCpe' == $relationName) {
+			return $this->initJEleveCpes();
+		}
+		if ('JEleveProfesseurPrincipal' == $relationName) {
+			return $this->initJEleveProfesseurPrincipals();
+		}
+		if ('JAidUtilisateursProfessionnels' == $relationName) {
+			return $this->initJAidUtilisateursProfessionnelss();
+		}
+		if ('AbsenceEleveSaisie' == $relationName) {
+			return $this->initAbsenceEleveSaisies();
+		}
+		if ('ModifiedAbsenceEleveSaisie' == $relationName) {
+			return $this->initModifiedAbsenceEleveSaisies();
+		}
+		if ('AbsenceEleveTraitement' == $relationName) {
+			return $this->initAbsenceEleveTraitements();
+		}
+		if ('ModifiedAbsenceEleveTraitement' == $relationName) {
+			return $this->initModifiedAbsenceEleveTraitements();
+		}
+		if ('AbsenceEleveNotification' == $relationName) {
+			return $this->initAbsenceEleveNotifications();
+		}
+		if ('JProfesseursMatieres' == $relationName) {
+			return $this->initJProfesseursMatieress();
+		}
+		if ('PreferenceUtilisateurProfessionnel' == $relationName) {
+			return $this->initPreferenceUtilisateurProfessionnels();
+		}
+		if ('EdtEmplacementCours' == $relationName) {
+			return $this->initEdtEmplacementCourss();
+		}
+	}
+
 	/**
 	 * Clears out the collJGroupesProfesseurss collection
 	 *

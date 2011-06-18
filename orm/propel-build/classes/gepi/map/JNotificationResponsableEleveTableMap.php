@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class JNotificationResponsableEleveTableMap extends TableMap {
+class JNotificationResponsableEleveTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class JNotificationResponsableEleveTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_notifications_resp_pers');
 		$this->setPhpName('JNotificationResponsableEleve');
 		$this->setClassname('JNotificationResponsableEleve');
@@ -47,8 +48,8 @@ class JNotificationResponsableEleveTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::MANY_TO_ONE, array('a_notification_id' => 'id', ), 'CASCADE', null);
-    $this->addRelation('ResponsableEleve', 'ResponsableEleve', RelationMap::MANY_TO_ONE, array('pers_id' => 'pers_id', ), 'CASCADE', null);
+		$this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::MANY_TO_ONE, array('a_notification_id' => 'id', ), 'CASCADE', null);
+		$this->addRelation('ResponsableEleve', 'ResponsableEleve', RelationMap::MANY_TO_ONE, array('pers_id' => 'pers_id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JNotificationResponsableEleveTableMap

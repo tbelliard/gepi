@@ -933,6 +933,22 @@ abstract class BaseAncienEtablissement extends BaseObject  implements Persistent
 		return self::$peer;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('JEleveAncienEtablissement' == $relationName) {
+			return $this->initJEleveAncienEtablissements();
+		}
+	}
+
 	/**
 	 * Clears out the collJEleveAncienEtablissements collection
 	 *

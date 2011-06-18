@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class PlugInAutorisationTableMap extends TableMap {
+class PlugInAutorisationTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class PlugInAutorisationTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('plugins_autorisations');
 		$this->setPhpName('PlugInAutorisation');
 		$this->setClassname('PlugInAutorisation');
@@ -50,7 +51,7 @@ class PlugInAutorisationTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('PlugIn', 'PlugIn', RelationMap::MANY_TO_ONE, array('plugin_id' => 'id', ), 'CASCADE', null);
+		$this->addRelation('PlugIn', 'PlugIn', RelationMap::MANY_TO_ONE, array('plugin_id' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // PlugInAutorisationTableMap

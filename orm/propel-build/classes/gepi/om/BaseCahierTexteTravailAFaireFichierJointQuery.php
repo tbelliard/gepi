@@ -338,7 +338,7 @@ abstract class BaseCahierTexteTravailAFaireFichierJointQuery extends ModelCriter
 	public function filterByVisibleEleveParent($visibleEleveParent = null, $comparison = null)
 	{
 		if (is_string($visibleEleveParent)) {
-			$visible_eleve_parent = in_array(strtolower($visibleEleveParent), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+			$visible_eleve_parent = in_array(strtolower($visibleEleveParent), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
 		}
 		return $this->addUsingAlias(CahierTexteTravailAFaireFichierJointPeer::VISIBLE_ELEVE_PARENT, $visibleEleveParent, $comparison);
 	}

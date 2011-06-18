@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class EdtEmplacementCoursTableMap extends TableMap {
+class EdtEmplacementCoursTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class EdtEmplacementCoursTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('edt_cours');
 		$this->setPhpName('EdtEmplacementCours');
 		$this->setClassname('EdtEmplacementCours');
@@ -57,13 +58,13 @@ class EdtEmplacementCoursTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
-    $this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'CASCADE', null);
-    $this->addRelation('EdtSalle', 'EdtSalle', RelationMap::MANY_TO_ONE, array('id_salle' => 'id_salle', ), 'SET NULL', null);
-    $this->addRelation('EdtCreneau', 'EdtCreneau', RelationMap::MANY_TO_ONE, array('id_definie_periode' => 'id_definie_periode', ), 'CASCADE', null);
-    $this->addRelation('EdtCalendrierPeriode', 'EdtCalendrierPeriode', RelationMap::MANY_TO_ONE, array('id_calendrier' => 'id_calendrier', ), 'SET NULL', null);
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('login_prof' => 'login', ), 'SET NULL', null);
-    $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id_cours' => 'id_edt_emplacement_cours', ), 'SET NULL', null);
+		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
+		$this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'CASCADE', null);
+		$this->addRelation('EdtSalle', 'EdtSalle', RelationMap::MANY_TO_ONE, array('id_salle' => 'id_salle', ), 'SET NULL', null);
+		$this->addRelation('EdtCreneau', 'EdtCreneau', RelationMap::MANY_TO_ONE, array('id_definie_periode' => 'id_definie_periode', ), 'CASCADE', null);
+		$this->addRelation('EdtCalendrierPeriode', 'EdtCalendrierPeriode', RelationMap::MANY_TO_ONE, array('id_calendrier' => 'id_calendrier', ), 'SET NULL', null);
+		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('login_prof' => 'login', ), 'SET NULL', null);
+		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id_cours' => 'id_edt_emplacement_cours', ), 'SET NULL', null);
 	} // buildRelations()
 
 } // EdtEmplacementCoursTableMap

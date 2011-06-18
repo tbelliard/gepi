@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class JEleveProfesseurPrincipalTableMap extends TableMap {
+class JEleveProfesseurPrincipalTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class JEleveProfesseurPrincipalTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_eleves_professeurs');
 		$this->setPhpName('JEleveProfesseurPrincipal');
 		$this->setClassname('JEleveProfesseurPrincipal');
@@ -48,9 +49,9 @@ class JEleveProfesseurPrincipalTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('professeur' => 'login', ), 'CASCADE', null);
-    $this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'CASCADE', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
+		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('professeur' => 'login', ), 'CASCADE', null);
+		$this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JEleveProfesseurPrincipalTableMap

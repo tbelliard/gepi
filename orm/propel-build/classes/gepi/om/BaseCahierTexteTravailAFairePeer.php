@@ -233,7 +233,7 @@ abstract class BaseCahierTexteTravailAFairePeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -252,7 +252,7 @@ abstract class BaseCahierTexteTravailAFairePeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -473,6 +473,7 @@ abstract class BaseCahierTexteTravailAFairePeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related Groupe table
@@ -1477,7 +1478,7 @@ abstract class BaseCahierTexteTravailAFairePeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a CahierTexteTravailAFaire or Criteria object.
+	 * Performs an INSERT on the database, given a CahierTexteTravailAFaire or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or CahierTexteTravailAFaire object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -1520,7 +1521,7 @@ abstract class BaseCahierTexteTravailAFairePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a CahierTexteTravailAFaire or Criteria object.
+	 * Performs an UPDATE on the database, given a CahierTexteTravailAFaire or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or CahierTexteTravailAFaire object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -1559,11 +1560,12 @@ abstract class BaseCahierTexteTravailAFairePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the ct_devoirs_entry table.
+	 * Deletes all rows from the ct_devoirs_entry table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(CahierTexteTravailAFairePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -1589,7 +1591,7 @@ abstract class BaseCahierTexteTravailAFairePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a CahierTexteTravailAFaire or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a CahierTexteTravailAFaire or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or CahierTexteTravailAFaire object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement

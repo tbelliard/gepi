@@ -1285,6 +1285,22 @@ abstract class BaseEdtCalendrierPeriode extends BaseObject  implements Persisten
 		return self::$peer;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('EdtEmplacementCours' == $relationName) {
+			return $this->initEdtEmplacementCourss();
+		}
+	}
+
 	/**
 	 * Clears out the collEdtEmplacementCourss collection
 	 *

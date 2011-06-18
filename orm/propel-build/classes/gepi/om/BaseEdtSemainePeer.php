@@ -213,7 +213,7 @@ abstract class BaseEdtSemainePeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -232,7 +232,7 @@ abstract class BaseEdtSemainePeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -450,6 +450,7 @@ abstract class BaseEdtSemainePeer {
 		}
 		return array($obj, $col);
 	}
+
 	/**
 	 * Returns the TableMap related to this peer.
 	 * This method is not needed for general use but a specific application could have a need.
@@ -491,7 +492,7 @@ abstract class BaseEdtSemainePeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a EdtSemaine or Criteria object.
+	 * Performs an INSERT on the database, given a EdtSemaine or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or EdtSemaine object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -530,7 +531,7 @@ abstract class BaseEdtSemainePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a EdtSemaine or Criteria object.
+	 * Performs an UPDATE on the database, given a EdtSemaine or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or EdtSemaine object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -569,11 +570,12 @@ abstract class BaseEdtSemainePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the edt_semaines table.
+	 * Deletes all rows from the edt_semaines table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(EdtSemainePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -598,7 +600,7 @@ abstract class BaseEdtSemainePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a EdtSemaine or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a EdtSemaine or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or EdtSemaine object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement

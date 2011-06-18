@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class EdtSemaineTableMap extends TableMap {
+class EdtSemaineTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class EdtSemaineTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('edt_semaines');
 		$this->setPhpName('EdtSemaine');
 		$this->setClassname('EdtSemaine');

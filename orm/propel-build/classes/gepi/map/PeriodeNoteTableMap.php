@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class PeriodeNoteTableMap extends TableMap {
+class PeriodeNoteTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class PeriodeNoteTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('periodes');
 		$this->setPhpName('PeriodeNote');
 		$this->setClassname('PeriodeNote');
@@ -51,7 +52,7 @@ class PeriodeNoteTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'CASCADE', null);
+		$this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // PeriodeNoteTableMap

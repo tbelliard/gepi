@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class JTraitementSaisieEleveTableMap extends TableMap {
+class JTraitementSaisieEleveTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class JTraitementSaisieEleveTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_traitements_saisies');
 		$this->setPhpName('JTraitementSaisieEleve');
 		$this->setClassname('JTraitementSaisieEleve');
@@ -47,8 +48,8 @@ class JTraitementSaisieEleveTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::MANY_TO_ONE, array('a_saisie_id' => 'id', ), 'CASCADE', null);
-    $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_ONE, array('a_traitement_id' => 'id', ), 'CASCADE', null);
+		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::MANY_TO_ONE, array('a_saisie_id' => 'id', ), 'CASCADE', null);
+		$this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_ONE, array('a_traitement_id' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JTraitementSaisieEleveTableMap

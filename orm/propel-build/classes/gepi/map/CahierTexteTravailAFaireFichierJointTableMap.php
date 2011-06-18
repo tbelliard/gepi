@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class CahierTexteTravailAFaireFichierJointTableMap extends TableMap {
+class CahierTexteTravailAFaireFichierJointTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class CahierTexteTravailAFaireFichierJointTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('ct_devoirs_documents');
 		$this->setPhpName('CahierTexteTravailAFaireFichierJoint');
 		$this->setClassname('CahierTexteTravailAFaireFichierJoint');
@@ -51,7 +52,7 @@ class CahierTexteTravailAFaireFichierJointTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::MANY_TO_ONE, array('id_ct_devoir' => 'id_ct', ), 'CASCADE', null);
+		$this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::MANY_TO_ONE, array('id_ct_devoir' => 'id_ct', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // CahierTexteTravailAFaireFichierJointTableMap

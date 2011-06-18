@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class ClasseTableMap extends TableMap {
+class ClasseTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class ClasseTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('classes');
 		$this->setPhpName('Classe');
 		$this->setClassname('Classe');
@@ -72,14 +73,14 @@ class ClasseTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('PeriodeNote', 'PeriodeNote', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
-    $this->addRelation('JScolClasses', 'JScolClasses', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
-    $this->addRelation('JGroupesClasses', 'JGroupesClasses', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
-    $this->addRelation('JEleveClasse', 'JEleveClasse', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
-    $this->addRelation('JEleveProfesseurPrincipal', 'JEleveProfesseurPrincipal', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
-    $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'SET NULL', null);
-    $this->addRelation('JCategoriesMatieresClasses', 'JCategoriesMatieresClasses', RelationMap::ONE_TO_MANY, array('id' => 'classe_id', ), 'CASCADE', null);
-    $this->addRelation('CategorieMatiere', 'CategorieMatiere', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('PeriodeNote', 'PeriodeNote', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
+		$this->addRelation('JScolClasses', 'JScolClasses', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
+		$this->addRelation('JGroupesClasses', 'JGroupesClasses', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
+		$this->addRelation('JEleveClasse', 'JEleveClasse', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
+		$this->addRelation('JEleveProfesseurPrincipal', 'JEleveProfesseurPrincipal', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'CASCADE', null);
+		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_classe', ), 'SET NULL', null);
+		$this->addRelation('JCategoriesMatieresClasses', 'JCategoriesMatieresClasses', RelationMap::ONE_TO_MANY, array('id' => 'classe_id', ), 'CASCADE', null);
+		$this->addRelation('CategorieMatiere', 'CategorieMatiere', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 } // ClasseTableMap

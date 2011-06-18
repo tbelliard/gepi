@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class EdtHorairesEtablissementTableMap extends TableMap {
+class EdtHorairesEtablissementTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class EdtHorairesEtablissementTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('horaires_etablissement');
 		$this->setPhpName('EdtHorairesEtablissement');
 		$this->setClassname('EdtHorairesEtablissement');

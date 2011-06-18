@@ -238,7 +238,7 @@ abstract class BaseJCategoriesMatieresClassesQuery extends ModelCriteria
 	public function filterByAfficheMoyenne($afficheMoyenne = null, $comparison = null)
 	{
 		if (is_string($afficheMoyenne)) {
-			$affiche_moyenne = in_array(strtolower($afficheMoyenne), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+			$affiche_moyenne = in_array(strtolower($afficheMoyenne), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
 		}
 		return $this->addUsingAlias(JCategoriesMatieresClassesPeer::AFFICHE_MOYENNE, $afficheMoyenne, $comparison);
 	}

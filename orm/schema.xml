@@ -460,6 +460,7 @@
     <column name="id_aid" required="false" type="INTEGER" default="null" description="identifiant de l'aid pour lequel la saisie a ete effectuee"/>
     <foreign-key foreignTable="aid" onDelete="setnull"><reference local="id_aid" foreign="id"/></foreign-key>
     <column name="id_s_incidents" required="false" type="INTEGER" default="null" description="identifiant de la saisie d'incident discipline"/>
+    <behavior name="timestampable" />
     <behavior name="versionable">
       <parameter name="log_created_at" value="true" />
       <parameter name="log_created_by" value="true" />

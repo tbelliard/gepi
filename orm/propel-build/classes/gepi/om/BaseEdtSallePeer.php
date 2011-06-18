@@ -208,7 +208,7 @@ abstract class BaseEdtSallePeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -227,7 +227,7 @@ abstract class BaseEdtSallePeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -448,6 +448,7 @@ abstract class BaseEdtSallePeer {
 		}
 		return array($obj, $col);
 	}
+
 	/**
 	 * Returns the TableMap related to this peer.
 	 * This method is not needed for general use but a specific application could have a need.
@@ -489,7 +490,7 @@ abstract class BaseEdtSallePeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a EdtSalle or Criteria object.
+	 * Performs an INSERT on the database, given a EdtSalle or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or EdtSalle object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -528,7 +529,7 @@ abstract class BaseEdtSallePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a EdtSalle or Criteria object.
+	 * Performs an UPDATE on the database, given a EdtSalle or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or EdtSalle object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -567,11 +568,12 @@ abstract class BaseEdtSallePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the salle_cours table.
+	 * Deletes all rows from the salle_cours table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(EdtSallePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -597,7 +599,7 @@ abstract class BaseEdtSallePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a EdtSalle or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a EdtSalle or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or EdtSalle object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement

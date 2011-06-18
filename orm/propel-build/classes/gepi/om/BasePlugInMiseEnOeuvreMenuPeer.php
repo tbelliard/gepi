@@ -223,7 +223,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -242,7 +242,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -460,6 +460,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 		}
 		return array($obj, $col);
 	}
+
 
 	/**
 	 * Returns the number of rows matching criteria, joining the related PlugIn table
@@ -735,7 +736,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a PlugInMiseEnOeuvreMenu or Criteria object.
+	 * Performs an INSERT on the database, given a PlugInMiseEnOeuvreMenu or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or PlugInMiseEnOeuvreMenu object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -778,7 +779,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a PlugInMiseEnOeuvreMenu or Criteria object.
+	 * Performs an UPDATE on the database, given a PlugInMiseEnOeuvreMenu or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or PlugInMiseEnOeuvreMenu object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -817,11 +818,12 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the plugins_menus table.
+	 * Deletes all rows from the plugins_menus table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(PlugInMiseEnOeuvreMenuPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -846,7 +848,7 @@ abstract class BasePlugInMiseEnOeuvreMenuPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a PlugInMiseEnOeuvreMenu or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a PlugInMiseEnOeuvreMenu or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or PlugInMiseEnOeuvreMenu object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement

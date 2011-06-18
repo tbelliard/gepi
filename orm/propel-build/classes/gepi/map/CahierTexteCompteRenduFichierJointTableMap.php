@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class CahierTexteCompteRenduFichierJointTableMap extends TableMap {
+class CahierTexteCompteRenduFichierJointTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class CahierTexteCompteRenduFichierJointTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('ct_documents');
 		$this->setPhpName('CahierTexteCompteRenduFichierJoint');
 		$this->setClassname('CahierTexteCompteRenduFichierJoint');
@@ -51,7 +52,7 @@ class CahierTexteCompteRenduFichierJointTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('CahierTexteCompteRendu', 'CahierTexteCompteRendu', RelationMap::MANY_TO_ONE, array('id_ct' => 'id_ct', ), 'CASCADE', null);
+		$this->addRelation('CahierTexteCompteRendu', 'CahierTexteCompteRendu', RelationMap::MANY_TO_ONE, array('id_ct' => 'id_ct', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // CahierTexteCompteRenduFichierJointTableMap

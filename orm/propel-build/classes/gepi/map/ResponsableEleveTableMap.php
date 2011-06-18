@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class ResponsableEleveTableMap extends TableMap {
+class ResponsableEleveTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class ResponsableEleveTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('resp_pers');
 		$this->setPhpName('ResponsableEleve');
 		$this->setClassname('ResponsableEleve');
@@ -55,10 +56,10 @@ class ResponsableEleveTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('ResponsableEleveAdresse', 'ResponsableEleveAdresse', RelationMap::MANY_TO_ONE, array('adr_id' => 'adr_id', ), 'SET NULL', null);
-    $this->addRelation('ResponsableInformation', 'ResponsableInformation', RelationMap::ONE_TO_MANY, array('pers_id' => 'pers_id', ), 'CASCADE', null);
-    $this->addRelation('JNotificationResponsableEleve', 'JNotificationResponsableEleve', RelationMap::ONE_TO_MANY, array('pers_id' => 'pers_id', ), 'CASCADE', null);
-    $this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('ResponsableEleveAdresse', 'ResponsableEleveAdresse', RelationMap::MANY_TO_ONE, array('adr_id' => 'adr_id', ), 'SET NULL', null);
+		$this->addRelation('ResponsableInformation', 'ResponsableInformation', RelationMap::ONE_TO_MANY, array('pers_id' => 'pers_id', ), 'CASCADE', null);
+		$this->addRelation('JNotificationResponsableEleve', 'JNotificationResponsableEleve', RelationMap::ONE_TO_MANY, array('pers_id' => 'pers_id', ), 'CASCADE', null);
+		$this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 } // ResponsableEleveTableMap

@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class JProfesseursMatieresTableMap extends TableMap {
+class JProfesseursMatieresTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class JProfesseursMatieresTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_professeurs_matieres');
 		$this->setPhpName('JProfesseursMatieres');
 		$this->setClassname('JProfesseursMatieres');
@@ -48,8 +49,8 @@ class JProfesseursMatieresTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_ONE, array('id_matiere' => 'matiere', ), null, null);
-    $this->addRelation('Professeur', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_professeur' => 'login', ), null, null);
+		$this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_ONE, array('id_matiere' => 'matiere', ), null, null);
+		$this->addRelation('Professeur', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_professeur' => 'login', ), null, null);
 	} // buildRelations()
 
 } // JProfesseursMatieresTableMap

@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class JAidElevesTableMap extends TableMap {
+class JAidElevesTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class JAidElevesTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_aid_eleves');
 		$this->setPhpName('JAidEleves');
 		$this->setClassname('JAidEleves');
@@ -47,8 +48,8 @@ class JAidElevesTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'CASCADE', null);
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
+		$this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'CASCADE', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JAidElevesTableMap

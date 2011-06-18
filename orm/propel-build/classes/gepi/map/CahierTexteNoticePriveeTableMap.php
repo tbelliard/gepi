@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class CahierTexteNoticePriveeTableMap extends TableMap {
+class CahierTexteNoticePriveeTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class CahierTexteNoticePriveeTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('ct_private_entry');
 		$this->setPhpName('CahierTexteNoticePrivee');
 		$this->setClassname('CahierTexteNoticePrivee');
@@ -52,9 +53,9 @@ class CahierTexteNoticePriveeTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_login' => 'login', ), 'SET NULL', null);
-    $this->addRelation('CahierTexteSequence', 'CahierTexteSequence', RelationMap::MANY_TO_ONE, array('id_sequence' => 'id', ), 'SET NULL', null);
+		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
+		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_login' => 'login', ), 'SET NULL', null);
+		$this->addRelation('CahierTexteSequence', 'CahierTexteSequence', RelationMap::MANY_TO_ONE, array('id_sequence' => 'id', ), 'SET NULL', null);
 	} // buildRelations()
 
 } // CahierTexteNoticePriveeTableMap

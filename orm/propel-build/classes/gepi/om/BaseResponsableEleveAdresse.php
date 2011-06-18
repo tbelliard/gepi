@@ -1019,6 +1019,25 @@ abstract class BaseResponsableEleveAdresse extends BaseObject  implements Persis
 		return self::$peer;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('ResponsableEleve' == $relationName) {
+			return $this->initResponsableEleves();
+		}
+		if ('AbsenceEleveNotification' == $relationName) {
+			return $this->initAbsenceEleveNotifications();
+		}
+	}
+
 	/**
 	 * Clears out the collResponsableEleves collection
 	 *

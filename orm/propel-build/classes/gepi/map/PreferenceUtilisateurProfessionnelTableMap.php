@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class PreferenceUtilisateurProfessionnelTableMap extends TableMap {
+class PreferenceUtilisateurProfessionnelTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class PreferenceUtilisateurProfessionnelTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('preferences');
 		$this->setPhpName('PreferenceUtilisateurProfessionnel');
 		$this->setClassname('PreferenceUtilisateurProfessionnel');
@@ -48,7 +49,7 @@ class PreferenceUtilisateurProfessionnelTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
+		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // PreferenceUtilisateurProfessionnelTableMap

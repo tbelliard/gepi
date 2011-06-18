@@ -1552,6 +1552,25 @@ abstract class BaseAbsenceEleveTraitement extends BaseObject  implements Persist
 		return $this->aModifieParUtilisateur;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('JTraitementSaisieEleve' == $relationName) {
+			return $this->initJTraitementSaisieEleves();
+		}
+		if ('AbsenceEleveNotification' == $relationName) {
+			return $this->initAbsenceEleveNotifications();
+		}
+	}
+
 	/**
 	 * Clears out the collJTraitementSaisieEleves collection
 	 *

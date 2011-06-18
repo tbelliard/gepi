@@ -109,6 +109,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	protected $id_lieu;
 
 	/**
+	 * The value for the created_at field.
+	 * @var        string
+	 */
+	protected $created_at;
+
+	/**
+	 * The value for the updated_at field.
+	 * @var        string
+	 */
+	protected $updated_at;
+
+	/**
 	 * The value for the version field.
 	 * Note: this column has a database default value of: 0
 	 * @var        int
@@ -416,6 +428,82 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getIdLieu()
 	{
 		return $this->id_lieu;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [created_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getCreatedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->created_at === null) {
+			return null;
+		}
+
+
+		if ($this->created_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->created_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [updated_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getUpdatedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->updated_at === null) {
+			return null;
+		}
+
+
+		if ($this->updated_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->updated_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
 	}
 
 	/**
@@ -797,6 +885,50 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	} // setIdLieu()
 
 	/**
+	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function setCreatedAt($v)
+	{
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->created_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->created_at = $newDateAsString;
+				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::CREATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setCreatedAt()
+
+	/**
+	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function setUpdatedAt($v)
+	{
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->updated_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->updated_at = $newDateAsString;
+				$this->modifiedColumns[] = AbsenceEleveSaisiePeer::UPDATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setUpdatedAt()
+
+	/**
 	 * Set the value of [version] column.
 	 * 
 	 * @param      int $v new value
@@ -908,9 +1040,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->id_s_incidents = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
 			$this->modifie_par_utilisateur_id = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
 			$this->id_lieu = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-			$this->version = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-			$this->version_created_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-			$this->version_created_by = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+			$this->created_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+			$this->updated_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+			$this->version = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
+			$this->version_created_at = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
+			$this->version_created_by = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -919,7 +1053,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 17; // 17 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 19; // 19 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveSaisie object", $e);
@@ -1105,8 +1239,19 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			}
 			if ($isInsert) {
 				$ret = $ret && $this->preInsert($con);
+				// timestampable behavior
+				if (!$this->isColumnModified(AbsenceEleveSaisiePeer::CREATED_AT)) {
+					$this->setCreatedAt(time());
+				}
+				if (!$this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// timestampable behavior
+				if ($this->isModified() && !$this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
 			}
 			if ($ret) {
 				$affectedRows = $this->doSave($con);
@@ -1479,12 +1624,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				return $this->getIdLieu();
 				break;
 			case 14:
-				return $this->getVersion();
+				return $this->getCreatedAt();
 				break;
 			case 15:
-				return $this->getVersionCreatedAt();
+				return $this->getUpdatedAt();
 				break;
 			case 16:
+				return $this->getVersion();
+				break;
+			case 17:
+				return $this->getVersionCreatedAt();
+				break;
+			case 18:
 				return $this->getVersionCreatedBy();
 				break;
 			default:
@@ -1530,9 +1681,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$keys[11] => $this->getIdSIncidents(),
 			$keys[12] => $this->getModifieParUtilisateurId(),
 			$keys[13] => $this->getIdLieu(),
-			$keys[14] => $this->getVersion(),
-			$keys[15] => $this->getVersionCreatedAt(),
-			$keys[16] => $this->getVersionCreatedBy(),
+			$keys[14] => $this->getCreatedAt(),
+			$keys[15] => $this->getUpdatedAt(),
+			$keys[16] => $this->getVersion(),
+			$keys[17] => $this->getVersionCreatedAt(),
+			$keys[18] => $this->getVersionCreatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
@@ -1642,12 +1795,18 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->setIdLieu($value);
 				break;
 			case 14:
-				$this->setVersion($value);
+				$this->setCreatedAt($value);
 				break;
 			case 15:
-				$this->setVersionCreatedAt($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 16:
+				$this->setVersion($value);
+				break;
+			case 17:
+				$this->setVersionCreatedAt($value);
+				break;
+			case 18:
 				$this->setVersionCreatedBy($value);
 				break;
 		} // switch()
@@ -1688,9 +1847,11 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if (array_key_exists($keys[11], $arr)) $this->setIdSIncidents($arr[$keys[11]]);
 		if (array_key_exists($keys[12], $arr)) $this->setModifieParUtilisateurId($arr[$keys[12]]);
 		if (array_key_exists($keys[13], $arr)) $this->setIdLieu($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setVersion($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setVersionCreatedAt($arr[$keys[15]]);
-		if (array_key_exists($keys[16], $arr)) $this->setVersionCreatedBy($arr[$keys[16]]);
+		if (array_key_exists($keys[14], $arr)) $this->setCreatedAt($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setUpdatedAt($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setVersion($arr[$keys[16]]);
+		if (array_key_exists($keys[17], $arr)) $this->setVersionCreatedAt($arr[$keys[17]]);
+		if (array_key_exists($keys[18], $arr)) $this->setVersionCreatedBy($arr[$keys[18]]);
 	}
 
 	/**
@@ -1716,6 +1877,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_S_INCIDENTS)) $criteria->add(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $this->id_s_incidents);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID)) $criteria->add(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID, $this->modifie_par_utilisateur_id);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_LIEU)) $criteria->add(AbsenceEleveSaisiePeer::ID_LIEU, $this->id_lieu);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::CREATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::CREATED_AT, $this->created_at);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::UPDATED_AT, $this->updated_at);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::VERSION)) $criteria->add(AbsenceEleveSaisiePeer::VERSION, $this->version);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::VERSION_CREATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::VERSION_CREATED_AT, $this->version_created_at);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::VERSION_CREATED_BY)) $criteria->add(AbsenceEleveSaisiePeer::VERSION_CREATED_BY, $this->version_created_by);
@@ -1794,6 +1957,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$copyObj->setIdSIncidents($this->getIdSIncidents());
 		$copyObj->setModifieParUtilisateurId($this->getModifieParUtilisateurId());
 		$copyObj->setIdLieu($this->getIdLieu());
+		$copyObj->setCreatedAt($this->getCreatedAt());
+		$copyObj->setUpdatedAt($this->getUpdatedAt());
 		$copyObj->setVersion($this->getVersion());
 		$copyObj->setVersionCreatedAt($this->getVersionCreatedAt());
 		$copyObj->setVersionCreatedBy($this->getVersionCreatedBy());
@@ -2302,6 +2467,25 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		return $this->aAbsenceEleveLieu;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('JTraitementSaisieEleve' == $relationName) {
+			return $this->initJTraitementSaisieEleves();
+		}
+		if ('AbsenceEleveSaisieVersion' == $relationName) {
+			return $this->initAbsenceEleveSaisieVersions();
+		}
+	}
+
 	/**
 	 * Clears out the collJTraitementSaisieEleves collection
 	 *
@@ -2689,6 +2873,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->id_s_incidents = null;
 		$this->modifie_par_utilisateur_id = null;
 		$this->id_lieu = null;
+		$this->created_at = null;
+		$this->updated_at = null;
 		$this->version = null;
 		$this->version_created_at = null;
 		$this->version_created_by = null;
@@ -2763,6 +2949,19 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		return (string) $this->exportTo(AbsenceEleveSaisiePeer::DEFAULT_STRING_FORMAT);
 	}
 
+	// timestampable behavior
+	
+	/**
+	 * Mark the current object so that the update date doesn't get updated during next save
+	 *
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function keepUpdateDateUnchanged()
+	{
+		$this->modifiedColumns[] = AbsenceEleveSaisiePeer::UPDATED_AT;
+		return $this;
+	}
+
 	// versionable behavior
 	
 	/**
@@ -2805,6 +3004,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$version->setIdSIncidents($this->id_s_incidents);
 		$version->setModifieParUtilisateurId($this->modifie_par_utilisateur_id);
 		$version->setIdLieu($this->id_lieu);
+		$version->setCreatedAt($this->created_at);
+		$version->setUpdatedAt($this->updated_at);
 		$version->setVersion($this->version);
 		$version->setVersionCreatedAt($this->version_created_at);
 		$version->setVersionCreatedBy($this->version_created_by);
@@ -2857,6 +3058,8 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->setIdSIncidents($version->getIdSIncidents());
 		$this->setModifieParUtilisateurId($version->getModifieParUtilisateurId());
 		$this->setIdLieu($version->getIdLieu());
+		$this->setCreatedAt($version->getCreatedAt());
+		$this->setUpdatedAt($version->getUpdatedAt());
 		$this->setVersion($version->getVersion());
 		$this->setVersionCreatedAt($version->getVersionCreatedAt());
 		$this->setVersionCreatedBy($version->getVersionCreatedBy());

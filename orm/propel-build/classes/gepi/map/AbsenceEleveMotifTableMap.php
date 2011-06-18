@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class AbsenceEleveMotifTableMap extends TableMap {
+class AbsenceEleveMotifTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class AbsenceEleveMotifTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('a_motifs');
 		$this->setPhpName('AbsenceEleveMotif');
 		$this->setClassname('AbsenceEleveMotif');
@@ -49,7 +50,7 @@ class AbsenceEleveMotifTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('id' => 'a_motif_id', ), 'SET NULL', null);
+		$this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('id' => 'a_motif_id', ), 'SET NULL', null);
 	} // buildRelations()
 
 	/**

@@ -1070,6 +1070,25 @@ abstract class BaseMatiere extends BaseObject  implements Persistent
 		return $this->aCategorieMatiere;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('JGroupesMatieres' == $relationName) {
+			return $this->initJGroupesMatieress();
+		}
+		if ('JProfesseursMatieres' == $relationName) {
+			return $this->initJProfesseursMatieress();
+		}
+	}
+
 	/**
 	 * Clears out the collJGroupesMatieress collection
 	 *

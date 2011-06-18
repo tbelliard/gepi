@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class EdtCreneauTableMap extends TableMap {
+class EdtCreneauTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class EdtCreneauTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('edt_creneaux');
 		$this->setPhpName('EdtCreneau');
 		$this->setClassname('EdtCreneau');
@@ -52,8 +53,8 @@ class EdtCreneauTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id_definie_periode' => 'id_edt_creneau', ), 'SET NULL', null);
-    $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id_definie_periode' => 'id_definie_periode', ), 'CASCADE', null);
+		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id_definie_periode' => 'id_edt_creneau', ), 'SET NULL', null);
+		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id_definie_periode' => 'id_definie_periode', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // EdtCreneauTableMap

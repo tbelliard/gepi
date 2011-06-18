@@ -1107,6 +1107,49 @@ abstract class BaseGroupe extends BaseObject  implements Persistent
 		return self::$peer;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('JGroupesProfesseurs' == $relationName) {
+			return $this->initJGroupesProfesseurss();
+		}
+		if ('JGroupesMatieres' == $relationName) {
+			return $this->initJGroupesMatieress();
+		}
+		if ('JGroupesClasses' == $relationName) {
+			return $this->initJGroupesClassess();
+		}
+		if ('CahierTexteCompteRendu' == $relationName) {
+			return $this->initCahierTexteCompteRendus();
+		}
+		if ('CahierTexteTravailAFaire' == $relationName) {
+			return $this->initCahierTexteTravailAFaires();
+		}
+		if ('CahierTexteNoticePrivee' == $relationName) {
+			return $this->initCahierTexteNoticePrivees();
+		}
+		if ('JEleveGroupe' == $relationName) {
+			return $this->initJEleveGroupes();
+		}
+		if ('AbsenceEleveSaisie' == $relationName) {
+			return $this->initAbsenceEleveSaisies();
+		}
+		if ('CreditEcts' == $relationName) {
+			return $this->initCreditEctss();
+		}
+		if ('EdtEmplacementCours' == $relationName) {
+			return $this->initEdtEmplacementCourss();
+		}
+	}
+
 	/**
 	 * Clears out the collJGroupesProfesseurss collection
 	 *

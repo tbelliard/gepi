@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class JAidUtilisateursProfessionnelsTableMap extends TableMap {
+class JAidUtilisateursProfessionnelsTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class JAidUtilisateursProfessionnelsTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_aid_utilisateurs');
 		$this->setPhpName('JAidUtilisateursProfessionnels');
 		$this->setClassname('JAidUtilisateursProfessionnels');
@@ -47,8 +48,8 @@ class JAidUtilisateursProfessionnelsTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'CASCADE', null);
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_utilisateur' => 'login', ), 'CASCADE', null);
+		$this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'CASCADE', null);
+		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_utilisateur' => 'login', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JAidUtilisateursProfessionnelsTableMap

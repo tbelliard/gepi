@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class AidDetailsTableMap extends TableMap {
+class AidDetailsTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class AidDetailsTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('aid');
 		$this->setPhpName('AidDetails');
 		$this->setClassname('AidDetails');
@@ -69,13 +70,13 @@ class AidDetailsTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AidConfiguration', 'AidConfiguration', RelationMap::MANY_TO_ONE, array('indice_aid' => 'indice_aid', ), 'CASCADE', null);
-    $this->addRelation('JAidUtilisateursProfessionnels', 'JAidUtilisateursProfessionnels', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'CASCADE', null);
-    $this->addRelation('JAidEleves', 'JAidEleves', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'CASCADE', null);
-    $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'SET NULL', null);
-    $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'CASCADE', null);
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('AidConfiguration', 'AidConfiguration', RelationMap::MANY_TO_ONE, array('indice_aid' => 'indice_aid', ), 'CASCADE', null);
+		$this->addRelation('JAidUtilisateursProfessionnels', 'JAidUtilisateursProfessionnels', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'CASCADE', null);
+		$this->addRelation('JAidEleves', 'JAidEleves', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'CASCADE', null);
+		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'SET NULL', null);
+		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id' => 'id_aid', ), 'CASCADE', null);
+		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 } // AidDetailsTableMap

@@ -2190,6 +2190,40 @@ abstract class BaseClasse extends BaseObject  implements Persistent
 		return self::$peer;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('PeriodeNote' == $relationName) {
+			return $this->initPeriodeNotes();
+		}
+		if ('JScolClasses' == $relationName) {
+			return $this->initJScolClassess();
+		}
+		if ('JGroupesClasses' == $relationName) {
+			return $this->initJGroupesClassess();
+		}
+		if ('JEleveClasse' == $relationName) {
+			return $this->initJEleveClasses();
+		}
+		if ('JEleveProfesseurPrincipal' == $relationName) {
+			return $this->initJEleveProfesseurPrincipals();
+		}
+		if ('AbsenceEleveSaisie' == $relationName) {
+			return $this->initAbsenceEleveSaisies();
+		}
+		if ('JCategoriesMatieresClasses' == $relationName) {
+			return $this->initJCategoriesMatieresClassess();
+		}
+	}
+
 	/**
 	 * Clears out the collPeriodeNotes collection
 	 *

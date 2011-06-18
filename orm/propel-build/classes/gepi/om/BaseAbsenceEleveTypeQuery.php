@@ -252,7 +252,7 @@ abstract class BaseAbsenceEleveTypeQuery extends ModelCriteria
 	public function filterByJustificationExigible($justificationExigible = null, $comparison = null)
 	{
 		if (is_string($justificationExigible)) {
-			$justification_exigible = in_array(strtolower($justificationExigible), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+			$justification_exigible = in_array(strtolower($justificationExigible), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
 		}
 		return $this->addUsingAlias(AbsenceEleveTypePeer::JUSTIFICATION_EXIGIBLE, $justificationExigible, $comparison);
 	}

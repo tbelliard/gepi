@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class JGroupesClassesTableMap extends TableMap {
+class JGroupesClassesTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class JGroupesClassesTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_groupes_classes');
 		$this->setPhpName('JGroupesClasses');
 		$this->setClassname('JGroupesClasses');
@@ -52,9 +53,9 @@ class JGroupesClassesTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
-    $this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'CASCADE', null);
-    $this->addRelation('CategorieMatiere', 'CategorieMatiere', RelationMap::MANY_TO_ONE, array('categorie_id' => 'id', ), null, null);
+		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
+		$this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'CASCADE', null);
+		$this->addRelation('CategorieMatiere', 'CategorieMatiere', RelationMap::MANY_TO_ONE, array('categorie_id' => 'id', ), null, null);
 	} // buildRelations()
 
 } // JGroupesClassesTableMap

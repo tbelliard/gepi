@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class GroupeTableMap extends TableMap {
+class GroupeTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class GroupeTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('groupes');
 		$this->setPhpName('Groupe');
 		$this->setClassname('Groupe');
@@ -49,18 +50,18 @@ class GroupeTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('JGroupesProfesseurs', 'JGroupesProfesseurs', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
-    $this->addRelation('JGroupesMatieres', 'JGroupesMatieres', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
-    $this->addRelation('JGroupesClasses', 'JGroupesClasses', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
-    $this->addRelation('CahierTexteCompteRendu', 'CahierTexteCompteRendu', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
-    $this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
-    $this->addRelation('CahierTexteNoticePrivee', 'CahierTexteNoticePrivee', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
-    $this->addRelation('JEleveGroupe', 'JEleveGroupe', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
-    $this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'SET NULL', null);
-    $this->addRelation('CreditEcts', 'CreditEcts', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
-    $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
-    $this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('JGroupesProfesseurs', 'JGroupesProfesseurs', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
+		$this->addRelation('JGroupesMatieres', 'JGroupesMatieres', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
+		$this->addRelation('JGroupesClasses', 'JGroupesClasses', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
+		$this->addRelation('CahierTexteCompteRendu', 'CahierTexteCompteRendu', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
+		$this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
+		$this->addRelation('CahierTexteNoticePrivee', 'CahierTexteNoticePrivee', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
+		$this->addRelation('JEleveGroupe', 'JEleveGroupe', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
+		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'SET NULL', null);
+		$this->addRelation('CreditEcts', 'CreditEcts', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
+		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id' => 'id_groupe', ), 'CASCADE', null);
+		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 } // GroupeTableMap

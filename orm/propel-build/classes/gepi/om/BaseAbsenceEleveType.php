@@ -303,7 +303,7 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 	{
 		if ($v !== null) {
 			if (is_string($v)) {
-				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+				$v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
 			} else {
 				$v = (boolean) $v;
 			}
@@ -1280,6 +1280,25 @@ abstract class BaseAbsenceEleveType extends BaseObject  implements Persistent
 			 */
 		}
 		return $this->aAbsenceEleveLieu;
+	}
+
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('AbsenceEleveTypeStatutAutorise' == $relationName) {
+			return $this->initAbsenceEleveTypeStatutAutorises();
+		}
+		if ('AbsenceEleveTraitement' == $relationName) {
+			return $this->initAbsenceEleveTraitements();
+		}
 	}
 
 	/**

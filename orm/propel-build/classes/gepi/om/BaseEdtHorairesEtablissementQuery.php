@@ -396,7 +396,7 @@ abstract class BaseEdtHorairesEtablissementQuery extends ModelCriteria
 	public function filterByOuvertHoraireEtablissement($ouvertHoraireEtablissement = null, $comparison = null)
 	{
 		if (is_string($ouvertHoraireEtablissement)) {
-			$ouvert_horaire_etablissement = in_array(strtolower($ouvertHoraireEtablissement), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+			$ouvert_horaire_etablissement = in_array(strtolower($ouvertHoraireEtablissement), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
 		}
 		return $this->addUsingAlias(EdtHorairesEtablissementPeer::OUVERT_HORAIRE_ETABLISSEMENT, $ouvertHoraireEtablissement, $comparison);
 	}

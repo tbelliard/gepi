@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class AidConfigurationTableMap extends TableMap {
+class AidConfigurationTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class AidConfigurationTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('aid_config');
 		$this->setPhpName('AidConfiguration');
 		$this->setClassname('AidConfiguration');
@@ -60,7 +61,7 @@ class AidConfigurationTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('AidDetails', 'AidDetails', RelationMap::ONE_TO_MANY, array('indice_aid' => 'indice_aid', ), 'CASCADE', null);
+		$this->addRelation('AidDetails', 'AidDetails', RelationMap::ONE_TO_MANY, array('indice_aid' => 'indice_aid', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // AidConfigurationTableMap

@@ -824,6 +824,28 @@ abstract class BaseCahierTexteSequence extends BaseObject  implements Persistent
 		return self::$peer;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('CahierTexteCompteRendu' == $relationName) {
+			return $this->initCahierTexteCompteRendus();
+		}
+		if ('CahierTexteTravailAFaire' == $relationName) {
+			return $this->initCahierTexteTravailAFaires();
+		}
+		if ('CahierTexteNoticePrivee' == $relationName) {
+			return $this->initCahierTexteNoticePrivees();
+		}
+	}
+
 	/**
 	 * Clears out the collCahierTexteCompteRendus collection
 	 *

@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class CategorieMatiereTableMap extends TableMap {
+class CategorieMatiereTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class CategorieMatiereTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('matieres_categories');
 		$this->setPhpName('CategorieMatiere');
 		$this->setClassname('CategorieMatiere');
@@ -49,10 +50,10 @@ class CategorieMatiereTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('JGroupesClasses', 'JGroupesClasses', RelationMap::ONE_TO_MANY, array('id' => 'categorie_id', ), null, null);
-    $this->addRelation('Matiere', 'Matiere', RelationMap::ONE_TO_MANY, array('id' => 'categorie_id', ), null, null);
-    $this->addRelation('JCategoriesMatieresClasses', 'JCategoriesMatieresClasses', RelationMap::ONE_TO_MANY, array('id' => 'categorie_id', ), 'CASCADE', null);
-    $this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('JGroupesClasses', 'JGroupesClasses', RelationMap::ONE_TO_MANY, array('id' => 'categorie_id', ), null, null);
+		$this->addRelation('Matiere', 'Matiere', RelationMap::ONE_TO_MANY, array('id' => 'categorie_id', ), null, null);
+		$this->addRelation('JCategoriesMatieresClasses', 'JCategoriesMatieresClasses', RelationMap::ONE_TO_MANY, array('id' => 'categorie_id', ), 'CASCADE', null);
+		$this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
 	} // buildRelations()
 
 } // CategorieMatiereTableMap

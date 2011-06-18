@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class EdtSalleTableMap extends TableMap {
+class EdtSalleTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class EdtSalleTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('salle_cours');
 		$this->setPhpName('EdtSalle');
 		$this->setClassname('EdtSalle');
@@ -48,7 +49,7 @@ class EdtSalleTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id_salle' => 'id_salle', ), 'SET NULL', null);
+		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id_salle' => 'id_salle', ), 'SET NULL', null);
 	} // buildRelations()
 
 } // EdtSalleTableMap

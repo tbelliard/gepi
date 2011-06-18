@@ -376,7 +376,7 @@ abstract class BaseJGroupesClassesQuery extends ModelCriteria
 	public function filterBySaisieEcts($saisieEcts = null, $comparison = null)
 	{
 		if (is_string($saisieEcts)) {
-			$saisie_ects = in_array(strtolower($saisieEcts), array('false', 'off', '-', 'no', 'n', '0')) ? false : true;
+			$saisie_ects = in_array(strtolower($saisieEcts), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
 		}
 		return $this->addUsingAlias(JGroupesClassesPeer::SAISIE_ECTS, $saisieEcts, $comparison);
 	}

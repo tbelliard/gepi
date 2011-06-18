@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class CahierTexteTravailAFaireTableMap extends TableMap {
+class CahierTexteTravailAFaireTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class CahierTexteTravailAFaireTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('ct_devoirs_entry');
 		$this->setPhpName('CahierTexteTravailAFaire');
 		$this->setClassname('CahierTexteTravailAFaire');
@@ -53,10 +54,10 @@ class CahierTexteTravailAFaireTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
-    $this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_login' => 'login', ), 'SET NULL', null);
-    $this->addRelation('CahierTexteSequence', 'CahierTexteSequence', RelationMap::MANY_TO_ONE, array('id_sequence' => 'id', ), 'SET NULL', null);
-    $this->addRelation('CahierTexteTravailAFaireFichierJoint', 'CahierTexteTravailAFaireFichierJoint', RelationMap::ONE_TO_MANY, array('id_ct' => 'id_ct_devoir', ), 'CASCADE', null);
+		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
+		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_login' => 'login', ), 'SET NULL', null);
+		$this->addRelation('CahierTexteSequence', 'CahierTexteSequence', RelationMap::MANY_TO_ONE, array('id_sequence' => 'id', ), 'SET NULL', null);
+		$this->addRelation('CahierTexteTravailAFaireFichierJoint', 'CahierTexteTravailAFaireFichierJoint', RelationMap::ONE_TO_MANY, array('id_ct' => 'id_ct_devoir', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // CahierTexteTravailAFaireTableMap

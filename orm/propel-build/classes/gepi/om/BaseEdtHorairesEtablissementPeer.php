@@ -228,7 +228,7 @@ abstract class BaseEdtHorairesEtablissementPeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -247,7 +247,7 @@ abstract class BaseEdtHorairesEtablissementPeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -465,6 +465,7 @@ abstract class BaseEdtHorairesEtablissementPeer {
 		}
 		return array($obj, $col);
 	}
+
 	/**
 	 * Returns the TableMap related to this peer.
 	 * This method is not needed for general use but a specific application could have a need.
@@ -506,7 +507,7 @@ abstract class BaseEdtHorairesEtablissementPeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a EdtHorairesEtablissement or Criteria object.
+	 * Performs an INSERT on the database, given a EdtHorairesEtablissement or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or EdtHorairesEtablissement object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -549,7 +550,7 @@ abstract class BaseEdtHorairesEtablissementPeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a EdtHorairesEtablissement or Criteria object.
+	 * Performs an UPDATE on the database, given a EdtHorairesEtablissement or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or EdtHorairesEtablissement object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -588,11 +589,12 @@ abstract class BaseEdtHorairesEtablissementPeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the horaires_etablissement table.
+	 * Deletes all rows from the horaires_etablissement table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(EdtHorairesEtablissementPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -617,7 +619,7 @@ abstract class BaseEdtHorairesEtablissementPeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a EdtHorairesEtablissement or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a EdtHorairesEtablissement or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or EdtHorairesEtablissement object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement

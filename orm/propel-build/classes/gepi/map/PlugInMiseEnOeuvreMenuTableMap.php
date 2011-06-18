@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class PlugInMiseEnOeuvreMenuTableMap extends TableMap {
+class PlugInMiseEnOeuvreMenuTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class PlugInMiseEnOeuvreMenuTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('plugins_menus');
 		$this->setPhpName('PlugInMiseEnOeuvreMenu');
 		$this->setClassname('PlugInMiseEnOeuvreMenu');
@@ -51,7 +52,7 @@ class PlugInMiseEnOeuvreMenuTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('PlugIn', 'PlugIn', RelationMap::MANY_TO_ONE, array('plugin_id' => 'id', ), 'CASCADE', null);
+		$this->addRelation('PlugIn', 'PlugIn', RelationMap::MANY_TO_ONE, array('plugin_id' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // PlugInMiseEnOeuvreMenuTableMap

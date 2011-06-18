@@ -328,7 +328,7 @@ abstract class BaseClassePeer {
 		return $count;
 	}
 	/**
-	 * Method to select one object from the DB.
+	 * Selects one object from the DB.
 	 *
 	 * @param      Criteria $criteria object used to create the SELECT statement.
 	 * @param      PropelPDO $con
@@ -347,7 +347,7 @@ abstract class BaseClassePeer {
 		return null;
 	}
 	/**
-	 * Method to do selects.
+	 * Selects several row from the DB.
 	 *
 	 * @param      Criteria $criteria The Criteria object used to build the SELECT statement.
 	 * @param      PropelPDO $con
@@ -586,6 +586,7 @@ abstract class BaseClassePeer {
 		}
 		return array($obj, $col);
 	}
+
 	/**
 	 * Returns the TableMap related to this peer.
 	 * This method is not needed for general use but a specific application could have a need.
@@ -627,7 +628,7 @@ abstract class BaseClassePeer {
 	}
 
 	/**
-	 * Method perform an INSERT on the database, given a Classe or Criteria object.
+	 * Performs an INSERT on the database, given a Classe or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Classe object containing data that is used to create the INSERT statement.
 	 * @param      PropelPDO $con the PropelPDO connection to use
@@ -670,7 +671,7 @@ abstract class BaseClassePeer {
 	}
 
 	/**
-	 * Method perform an UPDATE on the database, given a Classe or Criteria object.
+	 * Performs an UPDATE on the database, given a Classe or Criteria object.
 	 *
 	 * @param      mixed $values Criteria or Classe object containing data that is used to create the UPDATE statement.
 	 * @param      PropelPDO $con The connection to use (specify PropelPDO connection object to exert more control over transactions).
@@ -709,11 +710,12 @@ abstract class BaseClassePeer {
 	}
 
 	/**
-	 * Method to DELETE all rows from the classes table.
+	 * Deletes all rows from the classes table.
 	 *
+	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll($con = null)
+	public static function doDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(ClassePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -740,7 +742,7 @@ abstract class BaseClassePeer {
 	}
 
 	/**
-	 * Method perform a DELETE on the database, given a Classe or Criteria object OR a primary key value.
+	 * Performs a DELETE on the database, given a Classe or Criteria object OR a primary key value.
 	 *
 	 * @param      mixed $values Criteria or Classe object or primary key or array of primary keys
 	 *              which is used to create the DELETE statement

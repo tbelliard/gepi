@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class EdtCalendrierPeriodeTableMap extends TableMap {
+class EdtCalendrierPeriodeTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class EdtCalendrierPeriodeTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('edt_calendrier');
 		$this->setPhpName('EdtCalendrierPeriode');
 		$this->setClassname('EdtCalendrierPeriode');
@@ -57,7 +58,7 @@ class EdtCalendrierPeriodeTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id_calendrier' => 'id_calendrier', ), 'SET NULL', null);
+		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id_calendrier' => 'id_calendrier', ), 'SET NULL', null);
 	} // buildRelations()
 
 } // EdtCalendrierPeriodeTableMap

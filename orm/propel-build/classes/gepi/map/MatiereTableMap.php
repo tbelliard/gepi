@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class MatiereTableMap extends TableMap {
+class MatiereTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class MatiereTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('matieres');
 		$this->setPhpName('Matiere');
 		$this->setClassname('Matiere');
@@ -51,11 +52,11 @@ class MatiereTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('CategorieMatiere', 'CategorieMatiere', RelationMap::MANY_TO_ONE, array('categorie_id' => 'id', ), null, null);
-    $this->addRelation('JGroupesMatieres', 'JGroupesMatieres', RelationMap::ONE_TO_MANY, array('matiere' => 'id_matiere', ), 'CASCADE', null);
-    $this->addRelation('JProfesseursMatieres', 'JProfesseursMatieres', RelationMap::ONE_TO_MANY, array('matiere' => 'id_matiere', ), null, null);
-    $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_MANY, array(), null, null);
-    $this->addRelation('Professeur', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), null, null);
+		$this->addRelation('CategorieMatiere', 'CategorieMatiere', RelationMap::MANY_TO_ONE, array('categorie_id' => 'id', ), null, null);
+		$this->addRelation('JGroupesMatieres', 'JGroupesMatieres', RelationMap::ONE_TO_MANY, array('matiere' => 'id_matiere', ), 'CASCADE', null);
+		$this->addRelation('JProfesseursMatieres', 'JProfesseursMatieres', RelationMap::ONE_TO_MANY, array('matiere' => 'id_matiere', ), null, null);
+		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_MANY, array(), null, null);
+		$this->addRelation('Professeur', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), null, null);
 	} // buildRelations()
 
 } // MatiereTableMap

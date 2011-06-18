@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class EleveRegimeDoublantTableMap extends TableMap {
+class EleveRegimeDoublantTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class EleveRegimeDoublantTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_eleves_regime');
 		$this->setPhpName('EleveRegimeDoublant');
 		$this->setClassname('EleveRegimeDoublant');
@@ -48,7 +49,7 @@ class EleveRegimeDoublantTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // EleveRegimeDoublantTableMap

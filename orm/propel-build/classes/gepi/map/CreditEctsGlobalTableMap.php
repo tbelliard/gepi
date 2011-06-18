@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class CreditEctsGlobalTableMap extends TableMap {
+class CreditEctsGlobalTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class CreditEctsGlobalTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('ects_global_credits');
 		$this->setPhpName('CreditEctsGlobal');
 		$this->setClassname('CreditEctsGlobal');
@@ -48,7 +49,7 @@ class CreditEctsGlobalTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // CreditEctsGlobalTableMap

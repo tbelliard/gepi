@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class ArchiveEctsTableMap extends TableMap {
+class ArchiveEctsTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class ArchiveEctsTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('archivage_ects');
 		$this->setPhpName('ArchiveEcts');
 		$this->setClassname('ArchiveEcts');
@@ -56,7 +57,7 @@ class ArchiveEctsTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('ine' => 'no_gep', ), 'CASCADE', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('ine' => 'no_gep', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // ArchiveEctsTableMap

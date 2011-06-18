@@ -14,7 +14,8 @@
  *
  * @package    propel.generator.gepi.map
  */
-class JEleveGroupeTableMap extends TableMap {
+class JEleveGroupeTableMap extends TableMap
+{
 
 	/**
 	 * The (dot-path) name of this class
@@ -30,7 +31,7 @@ class JEleveGroupeTableMap extends TableMap {
 	 */
 	public function initialize()
 	{
-	  // attributes
+		// attributes
 		$this->setName('j_eleves_groupes');
 		$this->setPhpName('JEleveGroupe');
 		$this->setClassname('JEleveGroupe');
@@ -48,8 +49,8 @@ class JEleveGroupeTableMap extends TableMap {
 	 */
 	public function buildRelations()
 	{
-    $this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
-    $this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
+		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
 	} // buildRelations()
 
 } // JEleveGroupeTableMap

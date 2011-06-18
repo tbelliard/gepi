@@ -2018,6 +2018,31 @@ abstract class BaseAidDetails extends BaseObject  implements Persistent
 		return $this->aAidConfiguration;
 	}
 
+
+	/**
+	 * Initializes a collection based on the name of a relation.
+	 * Avoids crafting an 'init[$relationName]s' method name 
+	 * that wouldn't work when StandardEnglishPluralizer is used.
+	 *
+	 * @param      string $relationName The name of the relation to initialize
+	 * @return     void
+	 */
+	public function initRelation($relationName)
+	{
+		if ('JAidUtilisateursProfessionnels' == $relationName) {
+			return $this->initJAidUtilisateursProfessionnelss();
+		}
+		if ('JAidEleves' == $relationName) {
+			return $this->initJAidElevess();
+		}
+		if ('AbsenceEleveSaisie' == $relationName) {
+			return $this->initAbsenceEleveSaisies();
+		}
+		if ('EdtEmplacementCours' == $relationName) {
+			return $this->initEdtEmplacementCourss();
+		}
+	}
+
 	/**
 	 * Clears out the collJAidUtilisateursProfessionnelss collection
 	 *
