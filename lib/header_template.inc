@@ -556,7 +556,8 @@ if (isset($titre_page)) {
 
 
 // ==========> On ajoute la barre de menu <========================= //
-
+$tbs_menu_prof= array();
+$tbs_menu_admin = array();
 if (!isset($nobar)) { $nobar = "non"; }
 if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "professeur" AND $nobar != 'oui') {
 	// On vérifie que l'utilisateur ne l'a pas enlevée
@@ -570,7 +571,19 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 		}
 		include("header_barre_prof_template.php");
 	}
-}else{
+} else if ((getSettingValue("utiliserMenuBarre") == "yes") AND ($_SESSION["statut"] == "administrateur") AND ($nobar != 'oui')) {
+
+		if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+			if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+				require_once($prefix."edt_organisation/fonctions_calendrier.php");
+			} else if(file_exists("fonctions_calendrier.php")) {
+				require_once("./fonctions_calendrier.php");
+			}
+			include("header_barre_admin_template.php");
+		}
+
+	
+} else {
 	$tbs_menu_prof=array();
 }
 

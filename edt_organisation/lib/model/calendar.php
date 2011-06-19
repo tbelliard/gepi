@@ -341,18 +341,18 @@ class calendar {
 					$jointure->id_classe = $classes['id'][$j];
 					if ($jointure->exists()) {
 						$result.="	<p style=\"width:70px;font-size:12px;float:left;\">
-									<input type=\"checkbox\" checked name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
+									<input style=\"border:0px\" type=\"checkbox\" checked name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
 									</p>";
 					}
 					else if ($jointure->bad_calendar()) {
 						$result.="	<p style=\"width:70px;font-size:12px;float:left;\">
-									<input type=\"checkbox\" disabled name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
+									<input style=\"border:0px\" type=\"checkbox\" disabled name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
 									</p>";					
 					
 					}
 					else {
 						$result.="	<p style=\"width:70px;font-size:12px;float:left;\">
-									<input type=\"checkbox\" name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
+									<input style=\"border:0px\" type=\"checkbox\" name=\"classes_".$calendriers['id'][$i]."[]\" value=\"".$classes['id'][$j]."\">".$classes['nom'][$j]."
 									</p>";					
 					}
 					$j++;

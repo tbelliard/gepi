@@ -182,6 +182,18 @@
 </div>
 <?php } } ?>
 
+<!-- menu admin -->
+		<?php if (count($tbs_menu_admin)) : ?>
+		<div id="menu_barre">
+			<ul class="niveau1">
+				<?php foreach ($tbs_menu_admin as $value) { if ("$value[li]"!="") { ?>
+				<?php echo $value['li']; ?>
+				<?php }} unset($value); ?>
+			</ul>
+		</div>
+		<?php endif ?>
+
+
 <!-- fil d'ariane -->
 <?php
   if (isset($messageEnregistrer) && $messageEnregistrer !="" ){

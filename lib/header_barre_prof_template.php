@@ -132,6 +132,9 @@ if (!$_SESSION["login"]) {
 		$tbs_menu_prof[]=array("lien"=> '/eleves/visu_eleve.php' , "texte"=>"Consult.élève");
 	}
 	else{ $barre_consult_eleve = '';}
+	
+	
+
 
 /*
 	echo '
