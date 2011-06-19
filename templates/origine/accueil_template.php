@@ -195,6 +195,9 @@
 	if (count($afficheAccueil->message)) {
 ?>
 	  <div id='messagerie'>
+<?php if ($_SESSION['statut'] == "administrateur"): ?>
+	<div style="float:right;left:0px;"><a href="./messagerie/index.php"><img src="./images/add_message.png" alt="Ajouter un message" title="Ajouter un message"/></a></div>
+<?php endif ?>
 <?php
 		  foreach ($afficheAccueil->message as $value) {
 

@@ -170,29 +170,7 @@
 		<?php
 			if (count($tbs_menu_prof)) {
 				$menu_prof = array_values($tbs_menu_prof);
-				if ("$menu_prof[0][texte]"!="") {
-/*					echo "
-	<ol id='essaiMenu'>
-		<li>
-			<a href='$tbs_gepiPath/accueil.php'>&nbsp;Accueil</a>
-		</li>
-					";
-							foreach ($tbs_menu_prof as $value) {
-								if ("$value[texte]"!="") {
-						echo "
-		<li>
-			<a href='".$tbs_gepiPath."$value[lien]'>&nbsp;$value[texte]</a>
-		</li>
-									";
-								}
-							}
-				unset($value);
-					echo "
-		<li>
-			<a href='$tbs_gepiPath/utilisateurs/mon_compte.php'>&nbsp;Mon compte</a>
-		</li>
-	</ol>	
-					"; */ ?>
+				if ("$menu_prof[0][texte]"!="") { ?>
 	<div id="menu_barre">
 	<ul class="niveau1">
 		<li class="li_inline"><a href="<?php echo $gepiPath.'/accueil.php' ?>">Accueil</a></li>

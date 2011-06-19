@@ -83,11 +83,17 @@ if (!$_SESSION["login"]) {
 	}else{$barre_textes = '';}
 
 	// Module carnet de notes
+
+	
+		
 	if(getSettingValue("active_carnets_notes") == 'y'){
-		//$barre_note = '<li><a href="'.$gepiPath.'/cahier_notes/index.php">Notes</a></li>
-		//<li><a href="'.$gepiPath.'/saisie/index.php">Bulletins</a></li>';		
+		// Cahiers de notes
 		$tbs_menu_prof[]=array("lien"=> '/cahier_notes/index.php' , "texte"=>"Notes");
 		$tbs_menu_prof[]=array("lien"=> '/saisie/index.php' , "texte"=>"Bulletins");
+	
+		
+		
+		
 	}else{$barre_note = '';}
 
 	// Module emploi du temps
