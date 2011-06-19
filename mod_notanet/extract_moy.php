@@ -103,6 +103,8 @@ if(!isset($extract_mode)) {
 		echo "<li><a href='".$_SERVER['PHP_SELF']."?extract_mode=".$lig->type_brevet."'>Extraire les moyennes pour ".$tab_type_brevet[$lig->type_brevet]."</a></li>\n";
 	}
 	echo "</ul>\n";
+
+	echo "<p><i>ATTENTION&nbsp;:</i></p><p style='margin-left: 3em;'>Il ne faut faire l'<b>extraction</b> qu'<b>une seule fois</b> par type de brevet.<br />Lors de l'extraction, les valeurs préalablement saisies/enregistrées sont supprimées/remplacées.<br />Si vous devez corriger une extraction, il faut passer par le choix suivant&nbsp;: <a href='corrige_extract_moy.php'>Corriger l'extraction des moyennes</a>.</p>\n";
 }
 else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."'".insert_confirm_abandon().">Choisir un autre mode d'extraction</a>";
@@ -166,6 +168,10 @@ else {
 	//=========================================================
 
 	if(!isset($_POST['enregistrer_extract_moy'])) {
+		if(isset($_POST['INE'])) {
+			echo "<p style='color:red'>Il semble que des champs INE élèves aient été soumis, mais que cela n'ait pas donné lieu à un enregistrement.<br />C'est une anomalie.<br />Cela peut se produire si un module 'suhosin' est activé.<br />Il peut alors limiter le nombre de variables POSTées dans un formulaire.<br />Vous pouvez contrôler l'activation de 'suhosin' dans <a href='../mod_serveur/test_serveur.php' target='_blank'>Configuration serveur</a></p>\n";
+		}
+
 		$compteur_champs_notes=0;
 
 		if($extract_mode=="tous") {
@@ -387,7 +393,71 @@ else {
 		echo "<ul>\n";
 		echo "<li><p><i>Rappel:</i> Seuls les élèves pour lesquels aucune erreur/indétermination n'est signalée auront leur exportation réalisée.</p></li>\n";
 		echo "<li><p>Si pour une raison ou une autre (<i>départ en cours d'année,...</i>), vous souhaitez ne pas effectuer l'export pour un/des élève(s) particulier(s), il suffit de vider la moyenne dans une matière non optionnelle.</p></li>\n";
+
+		echo "<li><p><i>ATTENTION&nbsp;:</i> Il ne faut faire l'<b>extraction</b> qu'<b>une seule fois</b> par type de brevet.<br />Lors de l'extraction, les valeurs préalablement saisies/enregistrées sont supprimées/remplacées.<br />Si vous devez corriger une extraction, il faut passer par le choix suivant&nbsp;: <a href='corrige_extract_moy.php'>Corriger l'extraction des moyennes</a>.</p>\n";
+		//echo "<p><a href='#' onclick='bourriner_les_notes(); return false;'>Bourriner les notes</a></p>\n";
+		echo "<p id='js_retablir_notes_enregistrees' style='display:none'>Si vous avez déjà fait une extraction, et que vous souhaitez réinjecter vos modifications précédemment enregistrées, vous pouvez cependant utiliser le lien suivant&nbsp;<br /><a href='#' onclick='retablir_notes_enregistrees(); return false;'>Rétablir toutes les notes précédemment enregistrées</a></p>\n";
+		echo "</li>\n";
+
+		$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
+		if($suhosin_post_max_totalname_length!='') {
+			echo "<li>";
+				echo "<p class='bold'>Configuration suhosin</p>\n";
+				echo "<p>Le module suhosin est activé.<br />\nUn paramétrage trop restrictif de ce module peut perturber le fonctionnement de Gepi, particulièrement dans les pages comportant de nombreux champs de formulaire (<i>comme par exemple dans la page de saisie des appréciations par les professeurs</i>)</p>\n";
+				echo "<p>La page d'extraction des moyennes permettant de modifier/corriger des valeurs propose un très grand nombre de champs.<br />Le module suhosin risque de poser des problèmes.</p>";
+
+				$tab_suhosin=array('suhosin.cookie.max_totalname_length', 
+				'suhosin.get.max_totalname_length', 
+				'suhosin.post.max_totalname_length', 
+				'suhosin.post.max_value_length', 
+				'suhosin.request.max_totalname_length', 
+				'suhosin.request.max_value_length', 
+				'suhosin.request.max_vars');
+		
+				for($i=0;$i<count($tab_suhosin);$i++) {
+					echo "- ".$tab_suhosin[$i]." = ".ini_get($tab_suhosin[$i])."<br />\n";
+				}
+		
+				echo "En cas de problème, vous pouvez, soit désactiver le module, soit augmenter les valeurs.<br />\n";
+				echo "Le fichier de configuration de suhosin est habituellement en /etc/php5/conf.d/suhosin.ini<br />\nEn cas de modification de ce fichier, pensez à relancer le service apache ensuite pour prendre en compte la modification.<br />\n";
+			echo "</li>";
+		}
+
 		echo "</ul>\n";
+
+
+		echo "<script type='text/javascript'>
+/*
+function bourriner_les_notes() {
+	for(i=0;i<=$compteur_champs_notes;i++) {
+		if(document.getElementById('n'+i)) {
+			document.getElementById('n'+i).value='AB';
+		}
+	}
+}
+*/
+temoin='n';
+for(i=0;i<=$compteur_champs_notes;i++) {
+	if(document.getElementById('note_precedemment_enregistree_'+i)) {
+		temoin='y';
+		break;
+	}
+}
+if(temoin=='y') {
+	document.getElementById('js_retablir_notes_enregistrees').style.display='';
+}
+
+function retablir_notes_enregistrees() {
+	for(i=0;i<=$compteur_champs_notes;i++) {
+		if(document.getElementById('note_precedemment_enregistree_'+i)) {
+			if(document.getElementById('n'+i)) {
+				document.getElementById('n'+i).value=document.getElementById('note_precedemment_enregistree_'+i).innerHTML;
+			}
+		}
+	}
+}
+</script>\n";
+
 	}
 	else {
 		check_token(false);

@@ -262,11 +262,12 @@ else {
 		}
 		elseif($extract_mode=="select") {
 
-			if(!isset($_POST['valider_select_eleve'])) {
+			//if(!isset($_POST['valider_select_eleve'])) {
+			if(!isset($_POST['afficher_select_eleve'])) {
 				echo "<form action='".$_SERVER['PHP_SELF']."' name='form_extract' method='post'>\n";
 
 				// A FAIRE...
-
+				$cpt=0;
 				$sql="SELECT DISTINCT id_classe FROM j_eleves_classes jec, notanet_ele_type net WHERE (jec.login=net.login) ORDER BY id_classe;";
 				//echo "$sql<br />";
 				$res_clas=mysql_query($sql);
@@ -297,7 +298,7 @@ else {
 						echo "</th>\n";
 						echo "</tr>\n";
 						$alt=1;
-						$cpt=0;
+						//$cpt=0;
 						while($lig_ele=mysql_fetch_object($res_ele)) {
 							$alt=$alt*(-1);
 							echo "<tr class='lig$alt'>\n";
@@ -310,9 +311,11 @@ else {
 						}
 						echo "</table>\n";
 					}
+					echo "<input type='submit' name='valider_select_eleve_$lig_clas->id_classe' value='Afficher les élèves sélectionnés' />\n";
 					echo "</blockquote>\n";
 				}
 				echo "<input type='hidden' name='extract_mode' value='$extract_mode' />\n";
+				echo "<input type='hidden' name='afficher_select_eleve' value='y' />\n";
 				echo "<input type='submit' name='valider_select_eleve' value='Afficher les élèves sélectionnés' />\n";
 				echo "</form>\n";
 				echo "<p><br /></p>\n";
@@ -403,7 +406,43 @@ else {
 		echo "<ul>\n";
 		echo "<li><p><i>Rappel:</i> Seuls les élèves pour lesquels aucune erreur/indétermination n'est signalée auront leur exportation réalisée.</p></li>\n";
 		echo "<li><p>Si pour une raison ou une autre (<i>départ en cours d'année,...</i>), vous souhaitez ne pas effectuer l'export pour un/des élève(s) particulier(s), il suffit de vider la moyenne dans une matière non optionnelle.</p></li>\n";
+		echo "<li><p id='js_retablir_notes_enregistrees' style='display:none'>Si vous souhaitez réinjecter vos modifications précédemment enregistrées, vous pouvez cependant utiliser le lien suivant&nbsp;<br /><a href='#' onclick='retablir_notes_enregistrees(); return false;'>Rétablir toutes les notes précédemment enregistrées</a></p>\n";
+		echo "</li>\n";
 		echo "</ul>\n";
+
+
+		echo "<script type='text/javascript'>
+/*
+function bourriner_les_notes() {
+	for(i=0;i<=$compteur_champs_notes;i++) {
+		if(document.getElementById('n'+i)) {
+			document.getElementById('n'+i).value='AB';
+		}
+	}
+}
+*/
+temoin='n';
+for(i=0;i<=$compteur_champs_notes;i++) {
+	if(document.getElementById('note_precedemment_enregistree_'+i)) {
+		temoin='y';
+		break;
+	}
+}
+if(temoin=='y') {
+	document.getElementById('js_retablir_notes_enregistrees').style.display='';
+}
+
+function retablir_notes_enregistrees() {
+	for(i=0;i<=$compteur_champs_notes;i++) {
+		if(document.getElementById('note_precedemment_enregistree_'+i)) {
+			if(document.getElementById('n'+i)) {
+				document.getElementById('n'+i).value=document.getElementById('note_precedemment_enregistree_'+i).innerHTML;
+			}
+		}
+	}
+}
+</script>\n";
+
 	}
 	else {
 		check_token(false);

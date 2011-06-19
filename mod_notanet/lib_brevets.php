@@ -1411,6 +1411,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 	$info_erreur="";
 
 	echo "<p>\n";
+	echo "<a name='tableau_des_moyennes_eleve_$num_eleve'></a>";
 	if($tab_ele['no_gep']==""){
 		echo "<b style='color:red;'>ERREUR:</b> Numéro INE non attribué: ".$tab_ele['nom']." ".$tab_ele['prenom']."<br />";
 		$temoin_notanet_eleve="ERREUR";
@@ -1622,6 +1623,8 @@ function tab_extract_moy($tab_ele,$id_clas) {
 							}
 						}
 					}
+					// Initialisation
+					$moyenne_arrondie="";
 					if($nbnotes>0){
 						$cpt++;
 						$liste_matieres_gepi.=" ".$id_matiere[$j][$k];
@@ -1667,7 +1670,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='".$moyenne_arrondie."' size='6' /></td>\n";
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='".$moyenne_arrondie."' size='6' />";
 						echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='".$moyenne_arrondie."' size='6' onKeyDown=\"clavier(this.id,event);\" onchange='changement()' autocomplete=\"off\" onfocus=\"javascript:this.select()\" />";
-						$compteur_champs_notes++;
+						//$compteur_champs_notes++;
 						//echo "<input type='hidden' name='matiere_".$j."_[$num_eleve]' value='".$id_matiere[$j][$k]."' size='6' />";
 						echo "</td>\n";
 
@@ -1694,7 +1697,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						//echo "<td><input type='text' name='moy_$j"."_"."$k[$num_eleve]' value='' size='6'></td>\n";
 						//echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' value='' size='6' /></td>\n";
 						echo "<td><input type='text' name='moy_$j"."_".$k."[$num_eleve]' id='n".$compteur_champs_notes."' value='' size='6' onKeyDown=\"clavier(this.id,event);\" onchange='changement()' autocomplete=\"off\" onfocus=\"javascript:this.select()\" /></td>\n";
-						$compteur_champs_notes++;
+						//$compteur_champs_notes++;
 						//echo "<td></td>\n";
 					}
 					/*
@@ -1726,7 +1729,13 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						$enr=mysql_query($sql);
 						if(mysql_num_rows($enr)>0) {
 							$lig_enr=mysql_fetch_object($enr);
-							echo $lig_enr->note;
+
+							if($moyenne_arrondie!=$lig_enr->note) {
+								echo "<a href=\"#tableau_des_moyennes_eleve_$num_eleve\" onclick=\"document.getElementById('n".$compteur_champs_notes."').value='$lig_enr->note'; return false;\"><img src='../images/icons/back.png' width='16' height='16' alt='Rétablir la valeur enregistrée' /></a>";
+								echo "&nbsp;";
+							}
+
+							echo "<span id='note_precedemment_enregistree_$compteur_champs_notes'>".$lig_enr->note."</span>";
 						}
 						else {
 							echo "&nbsp;";
@@ -1734,7 +1743,7 @@ function tab_extract_moy($tab_ele,$id_clas) {
 						echo "</td>\n";
 					}
 
-
+					$compteur_champs_notes++;
 					echo "</tr>\n";
 				}
 				/*
