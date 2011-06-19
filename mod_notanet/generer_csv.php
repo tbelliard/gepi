@@ -43,28 +43,9 @@ if (!checkAccess()) {
 
 check_token();
 
-$nom_fic = "notanet_".date('Y.m.d_H.i.s_').preg_replace("/ /","_",microtime()).".csv";
-/*
-$now = gmdate('D, d M Y H:i:s') . ' GMT';
-header('Content-Type: text/x-csv');
-header('Expires: ' . $now);
-// lem9 & loic1: IE need specific headers
-if (preg_match('MSIE', $_SERVER['HTTP_USER_AGENT'])) {
-	header('Content-Disposition: inline; filename="' . $nom_fic . '"');
-	header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-	header('Pragma: public');
-} else {
-	header('Content-Disposition: attachment; filename="' . $nom_fic . '"');
-	header('Pragma: no-cache');
-}
-*/
-send_file_download_headers('text/x-csv',$nom_fic);
+//$nom_fic = "notanet_".date('Y.m.d_H.i.s_').preg_replace("/ /","_",microtime()).".csv";
+//send_file_download_headers('text/x-csv',$nom_fic);
 
-
-//header('Content-Type: application/octetstream');
-//header('Content-Disposition: filename="' . $nom_fic . '"');
-//header('Pragma: no-cache');
-//header('Expires: 0');
 
 // Fin de ligne
 $eol="\r\n";
@@ -261,5 +242,17 @@ else {
 }
 
 // Génération/envoi au navigateur du fichier
+$nom_fic = "notanet_".date('Y.m.d_H.i.s_').preg_replace("/ /","_",microtime()).".csv";
+send_file_download_headers('text/x-csv',$nom_fic);
+
+if(getSettingValue('notanet_save_export')=='y') {
+	$user_temp_directory=get_user_temp_directory();
+	if($user_temp_directory!="") {
+		$fich=fopen("../temp/".$user_temp_directory."/".$nom_fic,"w+");
+		fwrite($fich, $fd);
+		fclose($fich);
+	}
+}
+
 echo $fd;
 ?>
