@@ -581,7 +581,13 @@ function DecocheColonne(nom_col,num_classe) {
 }
 
 echo "<p><br /></p>\n";
-echo "<p><i>NOTES</i>&nbsp;: Voir <a href='https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet' target='_blank'>https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet</a></p>\n";
+echo "<p><i>NOTES</i>&nbsp;:</p>
+<ul>
+<li>Voir <a href='https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet' target='_blank'>https://www.sylogix.org/projects/gepi/wiki/Gepi_socle_commun_notanet</a></li>
+<li>Les élèves qui ont eu leur brevet l'an dernier, mais ont néanmoins redoublé, peuvent apparaître en erreur.<br />
+De la même façon, les élèves de SEGPA peuvent avoir la saisie de Socle commun faite dans LPC, mais ils ne passent pas le brevet.<br />
+Ils peuvent apparaître en erreur également.</li>
+</ul>\n";
 require("../lib/footer.inc.php");
 die();
 ?>
