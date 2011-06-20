@@ -42,8 +42,46 @@ if (!$_SESSION["login"]) {
     header("Location: ../logout.php?auto=2");
     die();
 }
+/*******************************************************************
+ *
+ *			Fonction pour récupérer la liste complète 
+ *			des plugins classés par profil
+ *
+ *******************************************************************/
+	function getListPlugins($gepiPath)
+	{
+		$item_plugins = array();
+		$req = "SELECT id,nom FROM plugins";
+		$rep = mysql_query($req);
+		if ($rep) {
+			while ($item = mysql_fetch_array($rep)) {
+				$req = "SELECT user_statut, lien_item FROM plugins_menus WHERE plugin_id = '".$item['id']."'";
+				$rep2 = mysql_query($req);
+				if ($rep2) {
+					while ($item2 = mysql_fetch_array($rep2)) {
+						$MyTable = array();
+						$MyTable = explode("/", $item2['lien_item']);
+						$MyTable2 = explode(".", $MyTable[count($MyTable)-1]);
+						$item_plugins[$item2['user_statut']][] = "<li><a href=\"".$gepiPath."/".$item2['lien_item']."\">".$item['nom']."</a></li>\n";
+						unset($MyTable);unset($MyTable2);
+					}
+				}
+			}
+		}
+		return $item_plugins;
+	}
 
-
+	
+/*******************************************************************
+ *
+ *			Construction du menu horizontal de la page d'accueil 
+ *			pour le profil administrateur
+ *
+ *******************************************************************/
+	$item_plugins = array();
+	$item_plugins = getListPlugins($gepiPath);
+	
+	
 	if ($_SESSION['statut'] == "administrateur") {
 		$tbs_menu_admin[]=array("li"=> '<li class="li_inline"><a href="'.$gepiPath.'/accueil.php">Accueil</a></li>'."\n");	
 		$menus = null;
@@ -86,6 +124,48 @@ if (!$_SESSION["login"]) {
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_photos.php">Effacer les photos</a>';
 		$menus .= '    </li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/gestion_temp_dir.php">Dossiers temp.</a>';
+
+		$menus .= '</ul>'."\n";
+		$menus .= '</li>'."\n";
+		$menus .= '<li class="li_inline"><a href="#">&nbsp;Données</a>'."\n";
+		$menus .= '  <ul class="niveau2">'."\n";
+		$menus .= '        <li ><a href="'.$gepiPath.'/responsables/maj_import.php">Maj Sconet</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/etablissements/index.php">Etablissements</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/matieres/index.php">Matières</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/utilisateurs/index.php">Utilisateurs</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/eleves/index.php">Elèves</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/responsables/index.php">Resp. légaux</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/classes/index.php">Classes</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/aid/index.php">AID</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers">Trombinoscopes</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/mef/admin_mef.php">MEF</a></li>'."\n";
+		$menus .= '        <li><a href="'.$gepiPath.'/gestion/gestion_base_test.php">Données de tests</a>'."\n";
+		$menus .= '  </ul>'."\n";
+		$menus .= '</li>'."\n";
+		$menus .= '<li class="li_inline"><a href="#">&nbsp;Modules</a>'."\n";
+		$menus .= '<ul class="niveau2">'."\n";
+		$menus .= '  <li class="plus"><a href="'.$gepiPath.'/accueil_modules.php">Paramétrages</a>'."\n";
+		$menus .= '    <ul class="niveau3">'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/cahier_texte_admin/index.php">Cahier de textes</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/cahier_notes_admin/index.php">Carnets de notes</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_absences/admin/index.php">Absences</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_abs2/admin/index.php">Absences 2</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/edt_organisation/edt.php">Emplois du temps</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php">Trombinoscopes</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_notanet/notanet_admin.php">Notanet/Brevet</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_inscription/inscription_admin.php">Inscription</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/cahier_texte_admin/rss_cdt_admin.php">Flux RSS</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/utilisateurs/creer_statut_admin.php">Statuts perso.</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_annees_anterieures/admin.php">Années antérieures</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_discipline/discipline_admin.php">Discipline</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_ooo/ooo_admin.php">Modèles OpenOffice</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_ects/ects_admin.php">Saisie ECTS</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_genese_classes/admin.php">Génèse des classes</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_epreuve_blanche/admin.php">Epreuves blanches</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_examen_blanc/admin.php">Examens blancs</a></li>'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_gest_aid/admin.php">Gestionnaires AID</a></li>'."\n";
+		$menus .= '    </ul>'."\n";		
+		$menus .= '  </li>'."\n";
 		$menus .= '    </li>'."\n";
 		$menus .= '  </ul>'."\n";
 		$menus .= '</li>'."\n";
@@ -129,7 +209,6 @@ if (!$_SESSION["login"]) {
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_gest_aid/admin.php">Gestionnaires AID</a></li>'."\n";
 		$menus .= '    </ul>'."\n";		
 		$menus .= '  </li>'."\n";
-
 		$menus .= '  <li><a href="#">Absences</a>';
 		$menus .= '  </li>'."\n";		
 		$menus .= '  <li><a href="#">Trombinoscopes</a>';
@@ -160,8 +239,15 @@ if (!$_SESSION["login"]) {
 		$menus .= '  </li>'."\n";
 		$menus .= '</ul>'."\n";	
 		$menus .= '</li>'."\n";
+		
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Plugins</a>';
-		$menus .= '</li>'."\n";
+		$menus .= '    <ul class="niveau2">'."\n";
+		$menus .= '      <li><a href="'.$gepiPath.'/mod_plugins/index.php">Gestion des plugins</a></li>'."\n";
+		foreach ($item_plugins['administrateur'] as $plugin) {
+			$menus .= $plugin;
+		}		
+		$menus .= '    </ul>'."\n";		
+		$menus .= '</li>'."\n";	
 		
 		$menus .= '  <li class="li_inline"><a href="'.$gepiPath.'/gestion/index.php">Sécurité</a>'."\n";
 		$menus .= '    <ul class="niveau2">'."\n";

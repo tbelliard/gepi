@@ -381,7 +381,7 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 
 				genere_degrade($degrade_haut,$degrade_bas,100,"../images/background/degrade1.png");
 				genere_degrade($degrade_haut,$degrade_bas,40,"../images/background/degrade1_small.png");
-
+				genere_degrade($degrade_bas,$degrade_haut,20,"../images/background/degrade1_very_small.png");
 
 				if ($GLOBALS['multisite'] == 'y') {
 					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
@@ -418,9 +418,24 @@ fieldset#login_box div#header {
 }
 
 #menu_barre {
-	background-color: #$degrade_bas;
+	/*background-color: #$degrade_bas;*/
+	position:relative;
+	background-image: url(\"./images/background/degrade1_very_small.png\");
 }
-
+.menu_barre_bottom {
+	position:absolute;
+	bottom:0px;
+	width:100%;
+	height:50%;
+	background-color: #$degrade_haut;
+}
+.menu_barre_container {
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:100%;
+	height:100%;
+}
 /* ul ul pour ne masquer par défaut que les sous-menus */
 #menu_barre ul ul {
 	background-color: #$degrade_bas;
@@ -453,6 +468,7 @@ fieldset#login_box div#header {
 		else {
 			if(file_exists("../images/background/degrade1.png")) {unlink("../images/background/degrade1.png");}
 			if(file_exists("../images/background/degrade1_small.png")) {unlink("../images/background/degrade1_small.png");}
+			if(file_exists("../images/background/degrade1_very_small.png")) {unlink("../images/background/degrade1_very_small.png");}
 			if(!saveSetting('utiliser_degrade','n')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_degrade'. ";
 				$nb_err++;
