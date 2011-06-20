@@ -183,18 +183,18 @@
 <?php } } ?>
 
 <!-- menu admin -->
-		<?php if (count($tbs_menu_admin)) : ?>
-		<div id="menu_barre">
-			<div class="menu_barre_bottom"></div>
-			<div class="menu_barre_container">
-				<ul class="niveau1">
-					<?php foreach ($tbs_menu_admin as $value) { if ("$value[li]"!="") { ?>
-					<?php echo $value['li']; ?>
-					<?php }} unset($value); ?>
-				</ul>
-			</div>
-		</div>
-		<?php endif ?>
+<?php if (count($tbs_menu_admin)) : ?>
+<div id="menu_barre">
+	<div class="menu_barre_bottom"></div>
+	<div class="menu_barre_container">
+		<ul class="niveau1">
+			<?php foreach ($tbs_menu_admin as $value) { if ("$value[li]"!="") { ?>
+			<?php echo $value['li']; ?>
+			<?php }} unset($value); ?>
+		</ul>
+	</div>
+</div>
+<?php endif ?>
 
 
 <!-- fil d'ariane -->
