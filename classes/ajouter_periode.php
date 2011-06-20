@@ -287,10 +287,12 @@ if(!isset($nb_ajout_periodes)) {
 				$cpt++;
 			}
 		}
-	
+
+		echo "<p>La classe de <b>$classe</b> a actuellement <b>$max_per</b> périodes.</p>\n";
 		echo "<p>Combien de périodes voulez-vous ajouter pour <b>$classe</b> et la ou les classes liées?</p>\n";
 	}
 	else {
+		echo "<p>La classe de <b>$classe</b> a actuellement <b>$max_per</b> périodes.</p>\n";
 		echo "<p>Combien de périodes voulez-vous ajouter pour <b>$classe</b>?</p>\n";
 	}
 	
