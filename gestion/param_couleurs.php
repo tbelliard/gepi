@@ -93,7 +93,7 @@ function tab_rvb($couleur) {
 }
 
 
-
+/*
 function genere_degrade($couleur_haut,$couleur_bas,$hauteur,$chemin_img) {
 	//$hauteur=100;
 
@@ -114,6 +114,83 @@ function genere_degrade($couleur_haut,$couleur_bas,$hauteur,$chemin_img) {
 		}
 		$color=imagecolorallocate($im,$ratio['R'],$ratio['V'],$ratio['B']);
 		imagesetpixel($im,0,$x,$color);
+	}
+	imagepng($im,$chemin_img);
+}
+*/
+function genere_degrade($couleur_haut,$couleur_bas,$hauteur,$chemin_img,$mode="") {
+	//$hauteur=100;
+
+	$debug_img="n";
+	if($debug_img=="n") {
+		$im=imagecreate(1,$hauteur);
+	}
+	else {
+		$im=imagecreate(100,$hauteur);
+	}
+
+	$comp=array('R','V','B');
+
+	$tab_haut=array();
+	$tab_haut=tab_rvb($couleur_haut);
+
+	$tab_bas=array();
+	$tab_bas=tab_rvb($couleur_bas);
+
+	if($mode=="") {
+		for($x=0;$x<$hauteur;$x++) {
+			$ratio=array();
+			for($i=0;$i<count($comp);$i++) {
+				$ratio[$comp[$i]]=$tab_haut[$comp[$i]]+$x*($tab_bas[$comp[$i]]-$tab_haut[$comp[$i]])/$hauteur;
+			}
+			$color=imagecolorallocate($im,$ratio['R'],$ratio['V'],$ratio['B']);
+			if($debug_img=="n") {
+				imagesetpixel($im,0,$x,$color);
+			}
+			else {
+				for($j=0;$j<100;$j++) {
+					imagesetpixel($im,$j,$x,$color);
+				}
+			}
+		}
+	}
+	else {
+		$y=round(2*$hauteur/3);
+
+		for($x=0;$x<$y;$x++) {
+			$ratio=array();
+			for($i=0;$i<count($comp);$i++) {
+				//$ratio[$comp[$i]]=$tab_haut[$comp[$i]]+$x*($tab_bas[$comp[$i]]-$tab_haut[$comp[$i]])/$hauteur;
+				$ratio[$comp[$i]]=$tab_bas[$comp[$i]]+($y-$x)*($tab_haut[$comp[$i]]-$tab_bas[$comp[$i]])/$y;
+				//if($i==0) {echo "\$ratio[$comp[$i]]=\$tab_bas[$comp[$i]]+($y-$x)*(\$tab_haut[$comp[$i]]-\$tab_bas[$comp[$i]])/$y=".$tab_bas[$comp[$i]]."+($y-$x)*(".$tab_haut[$comp[$i]]."-".$tab_bas[$comp[$i]].")/$y=".$ratio[$comp[$i]]."<br />";}
+			}
+			$color=imagecolorallocate($im,$ratio['R'],$ratio['V'],$ratio['B']);
+			if($debug_img=="n") {
+				imagesetpixel($im,0,$x,$color);
+			}
+			else {
+				for($j=0;$j<100;$j++) {
+					imagesetpixel($im,$j,$x,$color);
+				}
+			}
+		}
+
+		for($x=$y;$x<$hauteur;$x++) {
+			$ratio=array();
+			for($i=0;$i<count($comp);$i++) {
+				$ratio[$comp[$i]]=$tab_haut[$comp[$i]]+($x-$hauteur)*($tab_haut[$comp[$i]]-$tab_bas[$comp[$i]])/($hauteur-$y);
+			}
+			$color=imagecolorallocate($im,$ratio['R'],$ratio['V'],$ratio['B']);
+			if($debug_img=="n") {
+				imagesetpixel($im,0,$x,$color);
+			}
+			else {
+				for($j=0;$j<100;$j++) {
+					imagesetpixel($im,$j,$x,$color);
+				}
+			}
+		}
+
 	}
 	imagepng($im,$chemin_img);
 }
@@ -326,6 +403,27 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 			$temoin_fichier_regenere++;
 		}
 
+
+		if(isset($_POST['degrade_double_bandeau'])) {
+			saveSetting('degrade_double_bandeau','y');
+		}
+		else {
+			saveSetting('degrade_double_bandeau','n');
+		}
+		if(isset($_POST['degrade_double_bandeau_small'])) {
+			saveSetting('degrade_double_bandeau_small','y');
+		}
+		else {
+			saveSetting('degrade_double_bandeau_small','n');
+		}
+		if(isset($_POST['degrade_double_barre_menu'])) {
+			saveSetting('degrade_double_barre_menu','y');
+		}
+		else {
+			saveSetting('degrade_double_barre_menu','n');
+		}
+
+
 		if(isset($_POST['utiliser_degrade'])) {
 			if(!saveSetting('utiliser_degrade','y')) {
 				$msg.="Erreur lors de la sauvegarde de 'utiliser_degrade'. ";
@@ -379,9 +477,13 @@ ses propriétés écrasent les propriétés définies auparavant dans le </head>.
 
 				// Générer l'image...
 
-				genere_degrade($degrade_haut,$degrade_bas,100,"../images/background/degrade1.png");
-				genere_degrade($degrade_haut,$degrade_bas,40,"../images/background/degrade1_small.png");
-				genere_degrade($degrade_bas,$degrade_haut,20,"../images/background/degrade1_very_small.png");
+				//genere_degrade($degrade_haut,$degrade_bas,100,"../images/background/degrade1.png");
+				if(getSettingValue('degrade_double_bandeau')=='y') {$parametre_double_degrade='double';} else {$parametre_double_degrade='';}
+				genere_degrade($degrade_haut,$degrade_bas,100,"../images/background/degrade1.png",$parametre_double_degrade);
+				if(getSettingValue('degrade_double_bandeau_small')=='y') {$parametre_double_degrade='double';} else {$parametre_double_degrade='';}
+				genere_degrade($degrade_haut,$degrade_bas,40,"../images/background/degrade1_small.png",$parametre_double_degrade);
+				if(getSettingValue('degrade_double_barre_menu')=='y') {$parametre_double_degrade='double';} else {$parametre_double_degrade='';}
+				genere_degrade($degrade_bas,$degrade_haut,20,"../images/background/degrade1_very_small.png",$parametre_double_degrade);
 
 				if ($GLOBALS['multisite'] == 'y') {
 					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
@@ -861,6 +963,8 @@ echo "<div class='norme'>\n";
 	echo "</p>\n";
 echo "</div>\n";
 
+//echo "<img src='../images/background/degrade1_very_small.png' />";
+
 if((isset($_GET['import_couleurs']))&&($_GET['import_couleurs']=='y')) {
 
 	echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -1307,6 +1411,17 @@ echo add_token_field();
 							}
 							echo "<td class='texte_gras'>Aperçu</td>\n";
 							echo "<td class='texte_gras'>Réinitialisation</td>\n";
+							echo "<td rowspan='3' style='text-align: left;'>\n";
+							echo "<input type='checkbox' name='degrade_double_bandeau' id='degrade_double_bandeau' value='y' ";
+							if(getSettingValue('degrade_double_bandeau')=='y') {echo "checked ";}
+							echo "/><label for='degrade_double_bandeau'> Utiliser un double dégradé sur le bandeau d'entête.</label><br />\n";
+							echo "<input type='checkbox' name='degrade_double_bandeau_small' id='degrade_double_bandeau_small' value='y' ";
+							if(getSettingValue('degrade_double_bandeau_small')=='y') {echo "checked ";}
+							echo "/><label for='degrade_double_bandeau_small'> Utiliser un double dégradé sur le bandeau d'entête réduit.</label><br />\n";
+							echo "<input type='checkbox' name='degrade_double_barre_menu' id='degrade_double_barre_menu' value='y' ";
+							if(getSettingValue('degrade_double_barre_menu')=='y') {echo "checked ";}
+							echo "/><label for='degrade_double_barre_menu'> Utiliser un double dégradé sur la barre de menus.</label><br />\n";
+							echo "</td>\n";
 						echo "</tr>\n";
 
 						$tab_degrade=array("degrade_haut","degrade_bas");
