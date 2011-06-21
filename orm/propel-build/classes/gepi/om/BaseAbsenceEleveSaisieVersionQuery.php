@@ -18,7 +18,6 @@
  * @method     AbsenceEleveSaisieVersionQuery orderByIdClasse($order = Criteria::ASC) Order by the id_classe column
  * @method     AbsenceEleveSaisieVersionQuery orderByIdAid($order = Criteria::ASC) Order by the id_aid column
  * @method     AbsenceEleveSaisieVersionQuery orderByIdSIncidents($order = Criteria::ASC) Order by the id_s_incidents column
- * @method     AbsenceEleveSaisieVersionQuery orderByModifieParUtilisateurId($order = Criteria::ASC) Order by the modifie_par_utilisateur_id column
  * @method     AbsenceEleveSaisieVersionQuery orderByIdLieu($order = Criteria::ASC) Order by the id_lieu column
  * @method     AbsenceEleveSaisieVersionQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     AbsenceEleveSaisieVersionQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -38,7 +37,6 @@
  * @method     AbsenceEleveSaisieVersionQuery groupByIdClasse() Group by the id_classe column
  * @method     AbsenceEleveSaisieVersionQuery groupByIdAid() Group by the id_aid column
  * @method     AbsenceEleveSaisieVersionQuery groupByIdSIncidents() Group by the id_s_incidents column
- * @method     AbsenceEleveSaisieVersionQuery groupByModifieParUtilisateurId() Group by the modifie_par_utilisateur_id column
  * @method     AbsenceEleveSaisieVersionQuery groupByIdLieu() Group by the id_lieu column
  * @method     AbsenceEleveSaisieVersionQuery groupByCreatedAt() Group by the created_at column
  * @method     AbsenceEleveSaisieVersionQuery groupByUpdatedAt() Group by the updated_at column
@@ -69,7 +67,6 @@
  * @method     AbsenceEleveSaisieVersion findOneByIdClasse(int $id_classe) Return the first AbsenceEleveSaisieVersion filtered by the id_classe column
  * @method     AbsenceEleveSaisieVersion findOneByIdAid(int $id_aid) Return the first AbsenceEleveSaisieVersion filtered by the id_aid column
  * @method     AbsenceEleveSaisieVersion findOneByIdSIncidents(int $id_s_incidents) Return the first AbsenceEleveSaisieVersion filtered by the id_s_incidents column
- * @method     AbsenceEleveSaisieVersion findOneByModifieParUtilisateurId(string $modifie_par_utilisateur_id) Return the first AbsenceEleveSaisieVersion filtered by the modifie_par_utilisateur_id column
  * @method     AbsenceEleveSaisieVersion findOneByIdLieu(int $id_lieu) Return the first AbsenceEleveSaisieVersion filtered by the id_lieu column
  * @method     AbsenceEleveSaisieVersion findOneByCreatedAt(string $created_at) Return the first AbsenceEleveSaisieVersion filtered by the created_at column
  * @method     AbsenceEleveSaisieVersion findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveSaisieVersion filtered by the updated_at column
@@ -89,7 +86,6 @@
  * @method     array findByIdClasse(int $id_classe) Return AbsenceEleveSaisieVersion objects filtered by the id_classe column
  * @method     array findByIdAid(int $id_aid) Return AbsenceEleveSaisieVersion objects filtered by the id_aid column
  * @method     array findByIdSIncidents(int $id_s_incidents) Return AbsenceEleveSaisieVersion objects filtered by the id_s_incidents column
- * @method     array findByModifieParUtilisateurId(string $modifie_par_utilisateur_id) Return AbsenceEleveSaisieVersion objects filtered by the modifie_par_utilisateur_id column
  * @method     array findByIdLieu(int $id_lieu) Return AbsenceEleveSaisieVersion objects filtered by the id_lieu column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveSaisieVersion objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveSaisieVersion objects filtered by the updated_at column
@@ -663,34 +659,6 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(AbsenceEleveSaisieVersionPeer::ID_S_INCIDENTS, $idSIncidents, $comparison);
-	}
-
-	/**
-	 * Filter the query on the modifie_par_utilisateur_id column
-	 * 
-	 * Example usage:
-	 * <code>
-	 * $query->filterByModifieParUtilisateurId('fooValue');   // WHERE modifie_par_utilisateur_id = 'fooValue'
-	 * $query->filterByModifieParUtilisateurId('%fooValue%'); // WHERE modifie_par_utilisateur_id LIKE '%fooValue%'
-	 * </code>
-	 *
-	 * @param     string $modifieParUtilisateurId The value to use as filter.
-	 *              Accepts wildcards (* and % trigger a LIKE)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    AbsenceEleveSaisieVersionQuery The current query, for fluid interface
-	 */
-	public function filterByModifieParUtilisateurId($modifieParUtilisateurId = null, $comparison = null)
-	{
-		if (null === $comparison) {
-			if (is_array($modifieParUtilisateurId)) {
-				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $modifieParUtilisateurId)) {
-				$modifieParUtilisateurId = str_replace('*', '%', $modifieParUtilisateurId);
-				$comparison = Criteria::LIKE;
-			}
-		}
-		return $this->addUsingAlias(AbsenceEleveSaisieVersionPeer::MODIFIE_PAR_UTILISATEUR_ID, $modifieParUtilisateurId, $comparison);
 	}
 
 	/**

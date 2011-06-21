@@ -933,17 +933,12 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	public function save(PropelPDO $con = null)
 	{
 	    if ($this->isNew()) {
-		if ($this->getUtilisateurId() == null) {
-		    $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
-		    if ($utilisateur != null) {
-			$this->setUtilisateurProfessionnel($utilisateur);
-		    }
-		}
-	    } else {
-		$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
-		if ($utilisateur != null) {
-		    $this->setModifieParUtilisateur($utilisateur);
-		}
+			if ($this->getUtilisateurId() == null) {
+			    $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+			    if ($utilisateur != null) {
+					$this->setUtilisateurProfessionnel($utilisateur);
+			    }
+			}
 	    }
 	    return parent::save($con);
 	}

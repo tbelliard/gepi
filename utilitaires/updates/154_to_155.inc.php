@@ -322,4 +322,18 @@ if ($test!=0) {
 	}
 }
 
+$query = mysql_query("ALTER TABLE `a_saisies` DROP `modifie_par_utilisateur_id` ;");
+if ($query) {
+		$result .= "<font color=\"blue\">Le champ modifie_par_utilisateur_id de la table a_saisies n'existe plus.</font><br />";
+} else {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+}
+
+$query = mysql_query("ALTER TABLE `a_saisies_version` DROP `modifie_par_utilisateur_id` ;");
+if ($query) {
+		$result .= "<font color=\"blue\">Le champ modifie_par_utilisateur_id de la table a_saisies_version n'existe plus.</font><br />";
+} else {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+}
+
 ?>

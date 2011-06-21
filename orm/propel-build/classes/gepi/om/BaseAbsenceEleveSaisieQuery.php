@@ -18,7 +18,6 @@
  * @method     AbsenceEleveSaisieQuery orderByIdClasse($order = Criteria::ASC) Order by the id_classe column
  * @method     AbsenceEleveSaisieQuery orderByIdAid($order = Criteria::ASC) Order by the id_aid column
  * @method     AbsenceEleveSaisieQuery orderByIdSIncidents($order = Criteria::ASC) Order by the id_s_incidents column
- * @method     AbsenceEleveSaisieQuery orderByModifieParUtilisateurId($order = Criteria::ASC) Order by the modifie_par_utilisateur_id column
  * @method     AbsenceEleveSaisieQuery orderByIdLieu($order = Criteria::ASC) Order by the id_lieu column
  * @method     AbsenceEleveSaisieQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     AbsenceEleveSaisieQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -38,7 +37,6 @@
  * @method     AbsenceEleveSaisieQuery groupByIdClasse() Group by the id_classe column
  * @method     AbsenceEleveSaisieQuery groupByIdAid() Group by the id_aid column
  * @method     AbsenceEleveSaisieQuery groupByIdSIncidents() Group by the id_s_incidents column
- * @method     AbsenceEleveSaisieQuery groupByModifieParUtilisateurId() Group by the modifie_par_utilisateur_id column
  * @method     AbsenceEleveSaisieQuery groupByIdLieu() Group by the id_lieu column
  * @method     AbsenceEleveSaisieQuery groupByCreatedAt() Group by the created_at column
  * @method     AbsenceEleveSaisieQuery groupByUpdatedAt() Group by the updated_at column
@@ -78,10 +76,6 @@
  * @method     AbsenceEleveSaisieQuery rightJoinAidDetails($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AidDetails relation
  * @method     AbsenceEleveSaisieQuery innerJoinAidDetails($relationAlias = null) Adds a INNER JOIN clause to the query using the AidDetails relation
  *
- * @method     AbsenceEleveSaisieQuery leftJoinModifieParUtilisateur($relationAlias = null) Adds a LEFT JOIN clause to the query using the ModifieParUtilisateur relation
- * @method     AbsenceEleveSaisieQuery rightJoinModifieParUtilisateur($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ModifieParUtilisateur relation
- * @method     AbsenceEleveSaisieQuery innerJoinModifieParUtilisateur($relationAlias = null) Adds a INNER JOIN clause to the query using the ModifieParUtilisateur relation
- *
  * @method     AbsenceEleveSaisieQuery leftJoinAbsenceEleveLieu($relationAlias = null) Adds a LEFT JOIN clause to the query using the AbsenceEleveLieu relation
  * @method     AbsenceEleveSaisieQuery rightJoinAbsenceEleveLieu($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AbsenceEleveLieu relation
  * @method     AbsenceEleveSaisieQuery innerJoinAbsenceEleveLieu($relationAlias = null) Adds a INNER JOIN clause to the query using the AbsenceEleveLieu relation
@@ -109,7 +103,6 @@
  * @method     AbsenceEleveSaisie findOneByIdClasse(int $id_classe) Return the first AbsenceEleveSaisie filtered by the id_classe column
  * @method     AbsenceEleveSaisie findOneByIdAid(int $id_aid) Return the first AbsenceEleveSaisie filtered by the id_aid column
  * @method     AbsenceEleveSaisie findOneByIdSIncidents(int $id_s_incidents) Return the first AbsenceEleveSaisie filtered by the id_s_incidents column
- * @method     AbsenceEleveSaisie findOneByModifieParUtilisateurId(string $modifie_par_utilisateur_id) Return the first AbsenceEleveSaisie filtered by the modifie_par_utilisateur_id column
  * @method     AbsenceEleveSaisie findOneByIdLieu(int $id_lieu) Return the first AbsenceEleveSaisie filtered by the id_lieu column
  * @method     AbsenceEleveSaisie findOneByCreatedAt(string $created_at) Return the first AbsenceEleveSaisie filtered by the created_at column
  * @method     AbsenceEleveSaisie findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveSaisie filtered by the updated_at column
@@ -129,7 +122,6 @@
  * @method     array findByIdClasse(int $id_classe) Return AbsenceEleveSaisie objects filtered by the id_classe column
  * @method     array findByIdAid(int $id_aid) Return AbsenceEleveSaisie objects filtered by the id_aid column
  * @method     array findByIdSIncidents(int $id_s_incidents) Return AbsenceEleveSaisie objects filtered by the id_s_incidents column
- * @method     array findByModifieParUtilisateurId(string $modifie_par_utilisateur_id) Return AbsenceEleveSaisie objects filtered by the modifie_par_utilisateur_id column
  * @method     array findByIdLieu(int $id_lieu) Return AbsenceEleveSaisie objects filtered by the id_lieu column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveSaisie objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveSaisie objects filtered by the updated_at column
@@ -701,34 +693,6 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $idSIncidents, $comparison);
-	}
-
-	/**
-	 * Filter the query on the modifie_par_utilisateur_id column
-	 * 
-	 * Example usage:
-	 * <code>
-	 * $query->filterByModifieParUtilisateurId('fooValue');   // WHERE modifie_par_utilisateur_id = 'fooValue'
-	 * $query->filterByModifieParUtilisateurId('%fooValue%'); // WHERE modifie_par_utilisateur_id LIKE '%fooValue%'
-	 * </code>
-	 *
-	 * @param     string $modifieParUtilisateurId The value to use as filter.
-	 *              Accepts wildcards (* and % trigger a LIKE)
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
-	 */
-	public function filterByModifieParUtilisateurId($modifieParUtilisateurId = null, $comparison = null)
-	{
-		if (null === $comparison) {
-			if (is_array($modifieParUtilisateurId)) {
-				$comparison = Criteria::IN;
-			} elseif (preg_match('/[\%\*]/', $modifieParUtilisateurId)) {
-				$modifieParUtilisateurId = str_replace('*', '%', $modifieParUtilisateurId);
-				$comparison = Criteria::LIKE;
-			}
-		}
-		return $this->addUsingAlias(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID, $modifieParUtilisateurId, $comparison);
 	}
 
 	/**
@@ -1483,80 +1447,6 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		return $this
 			->joinAidDetails($relationAlias, $joinType)
 			->useQuery($relationAlias ? $relationAlias : 'AidDetails', 'AidDetailsQuery');
-	}
-
-	/**
-	 * Filter the query by a related UtilisateurProfessionnel object
-	 *
-	 * @param     UtilisateurProfessionnel|PropelCollection $utilisateurProfessionnel The related object(s) to use as filter
-	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-	 *
-	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
-	 */
-	public function filterByModifieParUtilisateur($utilisateurProfessionnel, $comparison = null)
-	{
-		if ($utilisateurProfessionnel instanceof UtilisateurProfessionnel) {
-			return $this
-				->addUsingAlias(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID, $utilisateurProfessionnel->getLogin(), $comparison);
-		} elseif ($utilisateurProfessionnel instanceof PropelCollection) {
-			if (null === $comparison) {
-				$comparison = Criteria::IN;
-			}
-			return $this
-				->addUsingAlias(AbsenceEleveSaisiePeer::MODIFIE_PAR_UTILISATEUR_ID, $utilisateurProfessionnel->toKeyValue('PrimaryKey', 'Login'), $comparison);
-		} else {
-			throw new PropelException('filterByModifieParUtilisateur() only accepts arguments of type UtilisateurProfessionnel or PropelCollection');
-		}
-	}
-
-	/**
-	 * Adds a JOIN clause to the query using the ModifieParUtilisateur relation
-	 * 
-	 * @param     string $relationAlias optional alias for the relation
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
-	 */
-	public function joinModifieParUtilisateur($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-	{
-		$tableMap = $this->getTableMap();
-		$relationMap = $tableMap->getRelation('ModifieParUtilisateur');
-		
-		// create a ModelJoin object for this join
-		$join = new ModelJoin();
-		$join->setJoinType($joinType);
-		$join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
-		if ($previousJoin = $this->getPreviousJoin()) {
-			$join->setPreviousJoin($previousJoin);
-		}
-		
-		// add the ModelJoin to the current object
-		if($relationAlias) {
-			$this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
-			$this->addJoinObject($join, $relationAlias);
-		} else {
-			$this->addJoinObject($join, 'ModifieParUtilisateur');
-		}
-		
-		return $this;
-	}
-
-	/**
-	 * Use the ModifieParUtilisateur relation UtilisateurProfessionnel object
-	 *
-	 * @see       useQuery()
-	 * 
-	 * @param     string $relationAlias optional alias for the relation,
-	 *                                   to be used as main alias in the secondary query
-	 * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
-	 *
-	 * @return    UtilisateurProfessionnelQuery A secondary query class using the current class as primary query
-	 */
-	public function useModifieParUtilisateurQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
-	{
-		return $this
-			->joinModifieParUtilisateur($relationAlias, $joinType)
-			->useQuery($relationAlias ? $relationAlias : 'ModifieParUtilisateur', 'UtilisateurProfessionnelQuery');
 	}
 
 	/**

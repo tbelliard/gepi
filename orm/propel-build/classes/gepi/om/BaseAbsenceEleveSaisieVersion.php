@@ -97,12 +97,6 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 	protected $id_s_incidents;
 
 	/**
-	 * The value for the modifie_par_utilisateur_id field.
-	 * @var        string
-	 */
-	protected $modifie_par_utilisateur_id;
-
-	/**
 	 * The value for the id_lieu field.
 	 * @var        int
 	 */
@@ -353,16 +347,6 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 	public function getIdSIncidents()
 	{
 		return $this->id_s_incidents;
-	}
-
-	/**
-	 * Get the [modifie_par_utilisateur_id] column value.
-	 * Login de l'utilisateur professionnel qui a modifie en dernier le traitement
-	 * @return     string
-	 */
-	public function getModifieParUtilisateurId()
-	{
-		return $this->modifie_par_utilisateur_id;
 	}
 
 	/**
@@ -758,26 +742,6 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 	} // setIdSIncidents()
 
 	/**
-	 * Set the value of [modifie_par_utilisateur_id] column.
-	 * Login de l'utilisateur professionnel qui a modifie en dernier le traitement
-	 * @param      string $v new value
-	 * @return     AbsenceEleveSaisieVersion The current object (for fluent API support)
-	 */
-	public function setModifieParUtilisateurId($v)
-	{
-		if ($v !== null) {
-			$v = (string) $v;
-		}
-
-		if ($this->modifie_par_utilisateur_id !== $v) {
-			$this->modifie_par_utilisateur_id = $v;
-			$this->modifiedColumns[] = AbsenceEleveSaisieVersionPeer::MODIFIE_PAR_UTILISATEUR_ID;
-		}
-
-		return $this;
-	} // setModifieParUtilisateurId()
-
-	/**
 	 * Set the value of [id_lieu] column.
 	 * cle etrangere du lieu ou se trouve l'eleve
 	 * @param      int $v new value
@@ -951,13 +915,12 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 			$this->id_classe = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
 			$this->id_aid = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
 			$this->id_s_incidents = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-			$this->modifie_par_utilisateur_id = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->id_lieu = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-			$this->created_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
-			$this->updated_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-			$this->version = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
-			$this->version_created_at = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
-			$this->version_created_by = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
+			$this->id_lieu = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
+			$this->created_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+			$this->updated_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+			$this->version = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+			$this->version_created_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+			$this->version_created_by = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -966,7 +929,7 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 19; // 19 = AbsenceEleveSaisieVersionPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 18; // 18 = AbsenceEleveSaisieVersionPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveSaisieVersion object", $e);
@@ -1322,24 +1285,21 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 				return $this->getIdSIncidents();
 				break;
 			case 12:
-				return $this->getModifieParUtilisateurId();
-				break;
-			case 13:
 				return $this->getIdLieu();
 				break;
-			case 14:
+			case 13:
 				return $this->getCreatedAt();
 				break;
-			case 15:
+			case 14:
 				return $this->getUpdatedAt();
 				break;
-			case 16:
+			case 15:
 				return $this->getVersion();
 				break;
-			case 17:
+			case 16:
 				return $this->getVersionCreatedAt();
 				break;
-			case 18:
+			case 17:
 				return $this->getVersionCreatedBy();
 				break;
 			default:
@@ -1383,13 +1343,12 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 			$keys[9] => $this->getIdClasse(),
 			$keys[10] => $this->getIdAid(),
 			$keys[11] => $this->getIdSIncidents(),
-			$keys[12] => $this->getModifieParUtilisateurId(),
-			$keys[13] => $this->getIdLieu(),
-			$keys[14] => $this->getCreatedAt(),
-			$keys[15] => $this->getUpdatedAt(),
-			$keys[16] => $this->getVersion(),
-			$keys[17] => $this->getVersionCreatedAt(),
-			$keys[18] => $this->getVersionCreatedBy(),
+			$keys[12] => $this->getIdLieu(),
+			$keys[13] => $this->getCreatedAt(),
+			$keys[14] => $this->getUpdatedAt(),
+			$keys[15] => $this->getVersion(),
+			$keys[16] => $this->getVersionCreatedAt(),
+			$keys[17] => $this->getVersionCreatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aAbsenceEleveSaisie) {
@@ -1463,24 +1422,21 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 				$this->setIdSIncidents($value);
 				break;
 			case 12:
-				$this->setModifieParUtilisateurId($value);
-				break;
-			case 13:
 				$this->setIdLieu($value);
 				break;
-			case 14:
+			case 13:
 				$this->setCreatedAt($value);
 				break;
-			case 15:
+			case 14:
 				$this->setUpdatedAt($value);
 				break;
-			case 16:
+			case 15:
 				$this->setVersion($value);
 				break;
-			case 17:
+			case 16:
 				$this->setVersionCreatedAt($value);
 				break;
-			case 18:
+			case 17:
 				$this->setVersionCreatedBy($value);
 				break;
 		} // switch()
@@ -1519,13 +1475,12 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 		if (array_key_exists($keys[9], $arr)) $this->setIdClasse($arr[$keys[9]]);
 		if (array_key_exists($keys[10], $arr)) $this->setIdAid($arr[$keys[10]]);
 		if (array_key_exists($keys[11], $arr)) $this->setIdSIncidents($arr[$keys[11]]);
-		if (array_key_exists($keys[12], $arr)) $this->setModifieParUtilisateurId($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setIdLieu($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setCreatedAt($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setUpdatedAt($arr[$keys[15]]);
-		if (array_key_exists($keys[16], $arr)) $this->setVersion($arr[$keys[16]]);
-		if (array_key_exists($keys[17], $arr)) $this->setVersionCreatedAt($arr[$keys[17]]);
-		if (array_key_exists($keys[18], $arr)) $this->setVersionCreatedBy($arr[$keys[18]]);
+		if (array_key_exists($keys[12], $arr)) $this->setIdLieu($arr[$keys[12]]);
+		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setVersion($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setVersionCreatedAt($arr[$keys[16]]);
+		if (array_key_exists($keys[17], $arr)) $this->setVersionCreatedBy($arr[$keys[17]]);
 	}
 
 	/**
@@ -1549,7 +1504,6 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::ID_CLASSE)) $criteria->add(AbsenceEleveSaisieVersionPeer::ID_CLASSE, $this->id_classe);
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::ID_AID)) $criteria->add(AbsenceEleveSaisieVersionPeer::ID_AID, $this->id_aid);
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::ID_S_INCIDENTS)) $criteria->add(AbsenceEleveSaisieVersionPeer::ID_S_INCIDENTS, $this->id_s_incidents);
-		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::MODIFIE_PAR_UTILISATEUR_ID)) $criteria->add(AbsenceEleveSaisieVersionPeer::MODIFIE_PAR_UTILISATEUR_ID, $this->modifie_par_utilisateur_id);
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::ID_LIEU)) $criteria->add(AbsenceEleveSaisieVersionPeer::ID_LIEU, $this->id_lieu);
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::CREATED_AT)) $criteria->add(AbsenceEleveSaisieVersionPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::UPDATED_AT)) $criteria->add(AbsenceEleveSaisieVersionPeer::UPDATED_AT, $this->updated_at);
@@ -1637,7 +1591,6 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 		$copyObj->setIdClasse($this->getIdClasse());
 		$copyObj->setIdAid($this->getIdAid());
 		$copyObj->setIdSIncidents($this->getIdSIncidents());
-		$copyObj->setModifieParUtilisateurId($this->getModifieParUtilisateurId());
 		$copyObj->setIdLieu($this->getIdLieu());
 		$copyObj->setCreatedAt($this->getCreatedAt());
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -1753,7 +1706,6 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 		$this->id_classe = null;
 		$this->id_aid = null;
 		$this->id_s_incidents = null;
-		$this->modifie_par_utilisateur_id = null;
 		$this->id_lieu = null;
 		$this->created_at = null;
 		$this->updated_at = null;

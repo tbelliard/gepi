@@ -857,7 +857,6 @@ CREATE TABLE a_saisies
 	id_classe INTEGER COMMENT 'identifiant de la classe pour lequel la saisie a ete effectuee',
 	id_aid INTEGER COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
 	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
-	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
 	created_at DATETIME,
 	updated_at DATETIME,
@@ -872,8 +871,7 @@ CREATE TABLE a_saisies
 	INDEX a_saisies_FI_5 (id_groupe),
 	INDEX a_saisies_FI_6 (id_classe),
 	INDEX a_saisies_FI_7 (id_aid),
-	INDEX a_saisies_FI_8 (modifie_par_utilisateur_id),
-	INDEX a_saisies_FI_9 (id_lieu),
+	INDEX a_saisies_FI_8 (id_lieu),
 	CONSTRAINT a_saisies_FK_1
 		FOREIGN KEY (utilisateur_id)
 		REFERENCES utilisateurs (login),
@@ -902,9 +900,6 @@ CREATE TABLE a_saisies
 		REFERENCES aid (id)
 		ON DELETE SET NULL,
 	CONSTRAINT a_saisies_FK_8
-		FOREIGN KEY (modifie_par_utilisateur_id)
-		REFERENCES utilisateurs (login),
-	CONSTRAINT a_saisies_FK_9
 		FOREIGN KEY (id_lieu)
 		REFERENCES a_lieux (id)
 		ON DELETE SET NULL
@@ -1430,7 +1425,6 @@ CREATE TABLE a_saisies_version
 	id_classe INTEGER COMMENT 'identifiant de la classe pour lequel la saisie a ete effectuee',
 	id_aid INTEGER COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
 	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
-	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
 	created_at DATETIME,
 	updated_at DATETIME,

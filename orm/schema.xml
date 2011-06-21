@@ -465,9 +465,6 @@
       <parameter name="log_created_at" value="true" />
       <parameter name="log_created_by" value="true" />
     </behavior>
-    <column name="modifie_par_utilisateur_id" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a modifie en dernier le traitement"/>
-	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
-    <foreign-key foreignTable="utilisateurs" onDelete="none" phpName = "ModifieParUtilisateur" refPhpName = "ModifiedAbsenceEleveSaisie"><reference local="modifie_par_utilisateur_id" foreign="login"/></foreign-key>
     <column name="id_lieu" required="false" type="INTEGER" size="11" default="null" description="cle etrangere du lieu ou se trouve l'eleve"/>
     <foreign-key foreignTable="a_lieux" onDelete="setnull"><reference local="id_lieu" foreign="id"/></foreign-key>
   </table>

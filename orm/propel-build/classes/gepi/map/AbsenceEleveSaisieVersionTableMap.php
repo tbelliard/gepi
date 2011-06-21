@@ -50,7 +50,6 @@ class AbsenceEleveSaisieVersionTableMap extends TableMap
 		$this->addColumn('ID_CLASSE', 'IdClasse', 'INTEGER', false, null, null);
 		$this->addColumn('ID_AID', 'IdAid', 'INTEGER', false, null, null);
 		$this->addColumn('ID_S_INCIDENTS', 'IdSIncidents', 'INTEGER', false, null, null);
-		$this->addColumn('MODIFIE_PAR_UTILISATEUR_ID', 'ModifieParUtilisateurId', 'VARCHAR', false, 100, null);
 		$this->addColumn('ID_LIEU', 'IdLieu', 'INTEGER', false, 11, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
