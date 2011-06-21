@@ -940,6 +940,12 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 			    }
 			}
 	    }
+	    if ($this->getVersionCreatedBy() == null) {
+		    $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+		    if ($utilisateur != null) {
+				$this->setVersionCreatedBy($utilisateur->getLogin());
+		    }
+		}
 	    return parent::save($con);
 	}
 

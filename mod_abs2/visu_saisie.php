@@ -374,16 +374,16 @@ if ($saisie->getIdSIncidents() !== null) {
 	$saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire</a>";
     echo '</TD></tr>';
 }
-$saisies_conflit = $saisie->getSaisiesContradictoiresManquementObligation();
-if (!$saisies_conflit->isEmpty()) {
+$saisies_conflit_col = $saisie->getSaisiesContradictoiresManquementObligation();
+if (!$saisies_conflit_col->isEmpty()) {
     echo '<tr><TD>';
     echo 'La saisie est en contradiction avec : ';
     echo '</TD><TD>';
-    foreach ($saisies_conflit as $saisie) {
-	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style=''> ";
-	echo $saisie->getId();
+    foreach ($saisies_conflit_col as $saisie_conflit) {
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie_conflit->getPrimaryKey()."' style=''> ";
+	echo $saisie_conflit->getId();
 	echo "</a>";
-	if (!$saisies_conflit->isLast()) {
+	if (!$saisies_conflit_col->isLast()) {
 	    echo ' - ';
 	}
     }
@@ -400,6 +400,45 @@ if ($modifiable) {
 if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") {
     echo '<tr><TD colspan="2" style="text-align : center;">';
     echo '<button type="submit" name="creation_traitement" value="oui">Traiter la saisie</button>';
+    echo '</TD></tr>';
+}
+
+if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") && $saisie->getAllVersions()->count()!=1) {
+    echo '<tr><TD colspan="2" style="text-align : center;">';
+    echo 'Versions précédentes';
+    echo '<table>';
+    foreach($saisie->getAllVersions() as $version) {
+    	echo '<tr>';
+    	echo '<td>'.$version->getVersion().'</td>';
+	    echo '<TD>';
+    	if ($saisie->getEleve() == null) {
+		    echo "Marqueur d'appel effectué";
+		} else {
+		    echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
+		    echo ' '.$saisie->getEleve()->getClasseNom();
+		}
+	    echo '</TD>';
+		echo '<td>'.$version->getDateDescription().'</td>';
+	    echo '<TD>';
+	    if ($version->getVersion() == 1) {
+	    	echo 'Créée le : ';
+	    } else {
+	    	echo 'Modifiée le : ';
+	    }
+	    echo (strftime("%a %d/%m/%Y %H:%M", $version->getUpdatedAt('U')));
+	    $modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($version->getVersionCreatedBy())->findOne();
+	    if ($modifie_par_utilisateur != null) {
+			echo ' par '.  $modifie_par_utilisateur->getCivilite().' '.$modifie_par_utilisateur->getNom().' '.substr($modifie_par_utilisateur->getPrenom(), 0, 1).'.';
+	    }
+	    echo '</TD>';
+    	echo '<td>';
+    	if ($version->getVersion() != $saisie->getVersion()) {
+    		echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&version='.$version->getVersion().'">Revenir à cette version</a>';
+    	}
+    	echo '</td>';
+    	echo '</tr>';
+    }
+    echo '</table>';
     echo '</TD></tr>';
 }
 

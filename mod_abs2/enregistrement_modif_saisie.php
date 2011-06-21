@@ -92,6 +92,15 @@ if ( isset($_POST["creation_traitement"])) {
     }
     include("visu_saisie.php");
     die();
+} elseif (isset($_GET["version"])) {
+	if ($utilisateur->getStatut() != 'cpe' && $utilisateur->getStatut() != 'scolarite') {
+	    $message_enregistrement .= 'Modification non autorisée.';
+	    include("visu_saisie.php");
+	    die();
+	}
+	$saisie->toVersion($_GET["version"]);
+	include("visu_saisie.php");
+    die();
 }
 
 
@@ -163,6 +172,10 @@ modif_type($saisie, $utilisateur);
 if ($saisie->validate()) {
     $saisie->save();
     $message_enregistrement .= 'Modification enregistrée';
+    if ($saisie->getEleve() != null) {
+    	$saisie->getEleve()->clearAbsenceEleveSaisiesParJour();
+    	$saisie->getEleve()->clearAbsenceEleveSaisies();
+    }
 } else {
     $no_br = true;
     foreach ($saisie->getValidationFailures() as $erreurs) {
