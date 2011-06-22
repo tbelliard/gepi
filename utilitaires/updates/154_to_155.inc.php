@@ -268,7 +268,7 @@ $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'versio
 if ($test_champ>0) {
 	$result .= "<font color=\"blue\">Les versions de saisies existent déjà.</font><br />";
 } else {
-	 $query = mysql_query("ALTER TABLE a_saisies ADD (version INTEGER DEFAULT 0, version_created_at DATETIME, version_created_by VARCHAR(100));");
+	 $query = mysql_query("ALTER TABLE a_saisies ADD (version INTEGER DEFAULT 1, version_created_at DATETIME, version_created_by VARCHAR(100));");
 	if ($query) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
  	} else {
@@ -298,7 +298,7 @@ if ($test!=0) {
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
 	created_at DATETIME,
 	updated_at DATETIME,
-	version INTEGER DEFAULT 0,
+	version INTEGER DEFAULT 1,
 	version_created_at DATETIME,
 	version_created_by VARCHAR(100),
 	PRIMARY KEY (id,version),
