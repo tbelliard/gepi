@@ -47,12 +47,81 @@
 	<script type="text/javascript">
 		//<![CDATA[
 			var debut=new Date()
+
+			/* =================================================
+			 =
+			 =
+			 =
+			 =================================================== */
+			function display_alert(heure) {
+				if ($('alert_message')) {
+					$('alert_message').update("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
+
+					if (Prototype.Browser.IE) {
+						document.documentElement.scroll = "no";
+						document.documentElement.style.overflow = 'hidden';
+					}
+					else {
+						document.body.scroll = "no";
+						document.body.style.overflow = 'hidden';				
+					}					
+					var viewport = document.viewport.getDimensions(); // Gets the viewport as an object literal
+					var width = viewport.width; // Usable window width
+					var height = viewport.height; // Usable window height
+					if( typeof( window.pageYOffset ) == 'number' ) 
+						{y = window.pageYOffset;}
+					else if (typeof(document.documentElement.scrollTop) == 'number') {
+						y=document.documentElement.scrollTop;
+					}
+					$('alert_cache').setStyle({width: "100%"});
+					$('alert_cache').setStyle({height: height+"px"});
+					$('alert_cache').setStyle({top: y+"px"});
+					$('alert_cache').setStyle({display: 'block'});
+					$('alert_cache').setOpacity(0.5);
+					$('alert_entete').setStyle({top: y-46+Math.abs((height-200)/2)+"px"});
+					$('alert_entete').setStyle({left: Math.abs((width-300)/2)+"px"});
+					$('alert_entete').setOpacity(1);
+					$('alert_entete').setStyle({display: 'block'});
+					$('alert_popup').setStyle({top: y+Math.abs((height-200)/2)+"px"});
+					$('alert_popup').setStyle({left: Math.abs((width-300)/2)+"px"});
+					$('alert_popup').setOpacity(1);
+					$('alert_popup').setStyle({display: 'block'});
+					$('alert_bouton_ok').observe('click', function(event) {
+						$('alert_popup').setStyle({display: 'none'});	
+						$('alert_cache').setStyle({display: 'none'});
+						$('alert_entete').setStyle({display: 'none'});
+						if (Prototype.Browser.IE) {
+							document.documentElement.scroll = "yes";
+							document.documentElement.style.overflow = 'scroll';
+						}
+						else {
+							document.body.scroll = "yes";
+							document.body.style.overflow = 'scroll';				
+						}						
+					
+					});
+					$('alert_bouton_reload').observe('click', function(event) {
+						location.reload(true); 				
+					
+					});	
+				}
+				else {
+					alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
+				}
+			
+			}
+			/* =================================================
+			 =
+			 =
+			 =
+			 =================================================== */			
 			function show_message_deconnexion() {
 				var seconds_before_alert = 180;
 				var seconds_int_betweenn_2_msg = 30;
 
 				var digital=new Date()
 				var seconds=(digital-debut)/1000
+				//if (1==1) {
 				if (seconds>1800 - seconds_before_alert) {
 					var seconds_reste = Math.floor(1800 - seconds);
 					now=new Date()
@@ -61,8 +130,10 @@
 					var secs=now.getSeconds();
 
 					var heure = hrs + " H " + mins + "' " + secs + "'' ";
-					alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
+					//alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
+					display_alert(heure);
 				}
+
 				setTimeout("show_message_deconnexion()",seconds_int_betweenn_2_msg*1000)
 			}
 		//]]>

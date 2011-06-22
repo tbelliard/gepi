@@ -154,6 +154,7 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 			echo "<div id='div_info_formulaires' style='color:red; border:1px solid black; background-color: white; width: 40em; display:none; margin: 1em;'></div>\n";
 		}
 	}
+include('alerte_popup.php');
 ?>
 
 </body>
