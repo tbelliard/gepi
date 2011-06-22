@@ -377,7 +377,12 @@ else {
 						$cpt=0;
 						echo "<p align='left'>";
 						while($lig_tmp=mysql_fetch_object($res_test)) {
-							echo "<input type='checkbox' name='id_matiere".$j."[]' id='id_matiere".$j."_$cpt' value='$lig_tmp->matiere' checked /><label for='id_matiere".$j."_$cpt'>$lig_tmp->matiere</label><br />";
+							echo "<input type='checkbox' name='id_matiere".$j."[]' id='id_matiere".$j."_$cpt' value='$lig_tmp->matiere' checked /><label for='id_matiere".$j."_$cpt'>$lig_tmp->matiere</label>";
+							$sql="SELECT 1=1 FROM matieres WHERE matiere='$lig_tmp->matiere';";
+							//echo "$sql<br />";
+							$test_matiere=mysql_query($sql);
+							if(mysql_num_rows($test_matiere)==0) {echo "<img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Cette matière ne correspond plus à une matière GEPI cette année (un nouveau nom de matière existe peut-être cette année).\" alt=\"Cette matière ne correspond plus à une matière GEPI cette année (un nouveau nom de matière existe peut-être cette année).\" />\n";}
+							echo "<br />";
 							$cpt++;
 
 						}
