@@ -767,6 +767,10 @@ foreach ($results as $saisie) {
 	    echo '<td>';
 	    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
 	    echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
+    	$suppr_utilisateur = UtilisateurProfessionnelQuery::create()->findPK($saisie->getDeletedBy());
+    	if ($suppr_utilisateur != null) {
+    		echo ' par '.  $suppr_utilisateur->getCivilite().' '.$suppr_utilisateur->getNom().' '.substr($suppr_utilisateur->getPrenom(), 0, 1).'.';;
+    	}
 	    echo "</a>";
 	    echo '</td>';
 	}

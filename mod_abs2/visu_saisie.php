@@ -136,6 +136,10 @@ echo $saisie->getPrimaryKey();
     if ($saisie->getDeletedAt()!=null) {
     	echo ' <font color="red">(supprimée le ';
     	echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
+    	$suppr_utilisateur = UtilisateurProfessionnelQuery::create()->findPK($saisie->getDeletedBy());
+    	if ($suppr_utilisateur != null) {
+    		echo ' par '.  $suppr_utilisateur->getCivilite().' '.$suppr_utilisateur->getNom().' '.substr($suppr_utilisateur->getPrenom(), 0, 1).'.';;
+    	}
     	echo ')</font> ';
     }
 echo '</TD></tr>';
@@ -406,9 +410,13 @@ if ($modifiable) {
     	echo '<button>Supprimer la saisie</button>';
     	echo '</a>';
     } else {
-    	echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=restauration">';
-    	echo '<button type="submit">Restaurer la saisie</button>';
-    	echo '</a>';
+    	//on autorise la restauration pour un autre que cpe ou scola uniquement si c'est l'utilisateur en cours qui a fait auparavant la suppression
+		if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite"
+		|| ($saisie->getDeletedBy() == $utilisateur->getLogin())) {
+	    	echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=restauration">';
+	    	echo '<button type="submit">Restaurer la saisie</button>';
+	    	echo '</a>';
+		}
     }
     echo '</td></tr>';
 }
