@@ -176,6 +176,17 @@ if (isFiltreRechercheParam('filter_discipline')) {
 if (isFiltreRechercheParam('filter_type')) {
     $query->useJTraitementSaisieEleveQuery()->useAbsenceEleveTraitementQuery()->filterByATypeId(getFiltreRechercheParam('filter_type'))->endUse()->endUse();
 }
+if (getFiltreRechercheParam('filter_saisies_supprimees')=='y') {
+	$query->includeDeleted()->filterByDeletedAt(null,Criteria::ISNOTNULL);
+	if (isFiltreRechercheParam('filter_date_suppression_saisie_debut_plage')) {
+	    $date_suppression_saisie_debut_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_suppression_saisie_debut_plage')));
+	    $query->filterByDeletedAt($date_suppression_saisie_debut_plage, Criteria::GREATER_EQUAL);
+	}
+	if (isFiltreRechercheParam('filter_date_suppression_saisie_fin_plage')) {
+	    $date_suppression_saisie_fin_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_suppression_saisie_fin_plage')));
+	    $query->filterByDeletedAt($date_suppression_saisie_fin_plage, Criteria::LESS_EQUAL);
+	}
+}
 
 
 $order = getFiltreRechercheParam('order');
@@ -231,6 +242,14 @@ if ($order == "asc_id") {
     $query->orderBy('IdSIncidents', Criteria::ASC);
 } else if ($order == "des_dis") {
     $query->orderBy('IdSIncidents', Criteria::DESC);
+} else if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {
+    if ($order == "asc_date_suppression") {
+		$query->orderBy('DeletedAt', Criteria::ASC);
+	} else if ($order == "des_date_suppression") {
+		$query->orderBy('DeletedAt', Criteria::DESC);
+	}
+} else {
+	$query->orderBy('Id', Criteria::DESC);
 }
 
 $query->distinct();
@@ -259,6 +278,12 @@ echo $saisies_col->count();
 echo "&nbsp;&nbsp;&nbsp;";
 echo '<button type="submit">Rechercher</button>';
 echo '<button type="submit" name="reinit_filtre" value="y">Réinitialiser les filtres</button> ';
+echo '<input type="checkbox" name="filter_saisies_supprimees"  onchange="submit()" value="y"';
+if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo "checked='checked'";}
+echo '/>';
+if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo '<font color="red">';}
+echo 'Voir les saisies supprimées';
+if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo '</font>';}
 echo '</p>';
 
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0; width:100%; font-size:88%">';
@@ -282,19 +307,62 @@ echo '</span>';
 echo '<input type="text" name="filter_saisie_id" value="'.getFiltreRechercheParam('filter_saisie_id').'" size="3"/>';
 echo '</th>';
 
-//en tete filtre utilisateur
-/*echo '<th>';
-echo '<nobr>';
-echo 'Utilisateur';
-echo '<input type="image" src="../images/up.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "asc_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="asc_utilisateur"/>';
-echo '<input type="image" src="../images/down.png" width="15" height="15" title="monter" style="vertical-align: middle;';
-if ($order == "des_utilisateur") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
-echo 'border-width:1px;" alt="" name="order" value="des_utilisateur"/>';
-echo '</nobr>';
-echo '<br /><input type="text" name="filter_utilisateur" value="'.$filter_utilisateur.'" size="12"/>';
-echo '</th>';*/
+if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {
+	//en tete filtre date suppression
+	echo '<th>';
+	//echo '<nobr>';
+	echo '<span style="white-space: nowrap;"> ';
+	echo 'Date suppression';
+	echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
+	if ($order == "asc_date_suppression") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+	echo 'border-width:1px;" alt="" name="order" value="asc_date_suppression"/ onclick="this.form.order.value = this.value">';
+	echo '<input type="image" src="../images/down.png" title="descendre" style="width:15px; height:15px;vertical-align: middle;' ;
+	if ($order == "des_date_suppression") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+	echo 'border-width:1px;" alt="" name="order" value="des_date_suppression"/ onclick="this.form.order.value = this.value">';
+	//echo '</nobr>';
+	echo '</span>';
+	echo '<br />';
+	//echo '<nobr>';
+	echo '<span style="white-space: nowrap;"> ';
+	echo 'Entre : <input size="13" id="filter_date_suppression_saisie_debut_plage" name="filter_date_suppression_saisie_debut_plage" value="';
+	if (isFiltreRechercheParam('filter_date_suppression_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_suppression_saisie_debut_plage');}
+	echo '" />&nbsp;';
+	echo '<img id="trigger_filter_date_suppression_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
+	//echo '</nobr>';
+	echo '</span>';
+	echo '
+	<script type="text/javascript">
+	    Calendar.setup({
+		inputField     :    "filter_date_suppression_saisie_debut_plage",     // id of the input field
+		ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
+		button         :    "trigger_filter_date_suppression_saisie_debut_plage",  // trigger for the calendar (button ID)
+		align          :    "Tl",           // alignment (defaults to "Bl")
+		singleClick    :    true,
+		showsTime	:   true
+	    });
+	</script>';
+	echo '<br />';
+	//echo '<nobr>';
+	echo '<span style="white-space: nowrap;"> ';
+	echo 'Et : <input size="13" id="filter_date_suppression_saisie_fin_plage" name="filter_date_suppression_saisie_fin_plage" value="';
+	if (isFiltreRechercheParam('filter_date_suppression_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_suppression_saisie_fin_plage');}
+	echo '" />&nbsp;';
+	echo '<img id="trigger_filter_date_suppression_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
+	//echo '</nobr>';
+	echo '</span>';
+	echo '
+	<script type="text/javascript">
+	    Calendar.setup({
+		inputField     :    "filter_date_suppression_saisie_fin_plage",     // id of the input field
+		ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
+		button         :    "trigger_filter_date_suppression_saisie_fin_plage",  // trigger for the calendar (button ID)
+		align          :    "Tl",           // alignment (defaults to "Bl")
+		singleClick    :    true,
+		showsTime	:   true
+	    });
+	</script>';
+	echo '</th>';
+}
 
 //en tete filtre eleve
 echo '<th>';
@@ -694,13 +762,14 @@ foreach ($results as $saisie) {
     echo "</a>";
     echo '</td>';
 
-    /*echo '<td>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
-    if ($saisie->getUtilisateurProfessionnel() != null) {
-	echo $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom();
-    }
-    echo "</a>";
-    echo '</td>';*/
+	if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {
+	    echo '</td>';
+	    echo '<td>';
+	    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+	    echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
+	    echo "</a>";
+	    echo '</td>';
+	}
 
     echo '<td>';
     if ($saisie->getEleve() != null) {

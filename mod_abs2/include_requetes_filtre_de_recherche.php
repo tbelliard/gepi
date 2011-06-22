@@ -39,8 +39,8 @@ if ($reinit_filtre == 'y') {
 	'filter_date_fin_saisie_debut_plage', 'filter_date_fin_saisie_fin_plage',
 	'filter_creneau', 'filter_cours', 'filter_date_creation_traitement_debut_plage', 'filter_date_creation_traitement_fin_plage','filter_date_creation_saisie_debut_plage', 'filter_date_creation_saisie_fin_plage','filter_date_creation_notification_debut_plage', 'filter_date_creation_notification_fin_plage',
 	'filter_date_traitement_absence_debut_plage', 'filter_date_traitement_absence_fin_plage', 'filter_statut', 'filter_manqement_obligation', 'filter_sous_responsabilite_etablissement'
-	    , 'filter_recherche_saisie_a_rattacher', 'filter_regime');
-    $liste_parametres_checkbox = array('filter_date_modification', 'filter_discipline', 'filter_marqueur_appel', );
+	    , 'filter_recherche_saisie_a_rattacher', 'filter_regime', 'filter_date_suppression_saisie_debut_plage', 'filter_date_suppression_saisie_fin_plage');
+    $liste_parametres_checkbox = array('filter_date_modification', 'filter_discipline', 'filter_marqueur_appel', 'filter_saisies_supprimees');
 
     //récupération des paramètres de la requète
     foreach ($liste_parametres_sauf_checkbox as $param_name) {

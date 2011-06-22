@@ -83,7 +83,7 @@ include('menu_abs2.inc.php');
 echo "<div class='css-panes' style='background-color:#cae7cb;' id='containDiv' style='overflow : auto;'>\n";
 
 
-$saisie = AbsenceEleveSaisieQuery::create()->findPk($id_saisie);
+$saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($id_saisie);
 if ($saisie == null) {
     $criteria = new Criteria();
     $criteria->addDescendingOrderByColumn(AbsenceEleveSaisiePeer::UPDATED_AT);
@@ -133,6 +133,11 @@ echo '<tr><TD>';
 echo 'N° de saisie : ';
 echo '</TD><TD>';
 echo $saisie->getPrimaryKey();
+    if ($saisie->getDeletedAt()!=null) {
+    	echo ' <font color="red">(supprimée le ';
+    	echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
+    	echo ')</font> ';
+    }
 echo '</TD></tr>';
 
     echo '<tr>';
@@ -392,9 +397,20 @@ if (!$saisies_conflit_col->isEmpty()) {
 
 echo '</TD></tr>';
 if ($modifiable) {
-    echo '<tr><TD colspan="2" style="text-align : center;">';
+    echo '<tr><TD colspan= "2" style="text-align : center;">';
     echo '<button type="submit">Enregistrer les modifications</button>';
-    echo '</TD></tr>';
+    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+    if ($saisie->getDeletedAt()==null) {
+    	echo '<img src="../images/delete16.png"/>';
+    	echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=suppression">';
+    	echo '<button>Supprimer la saisie</button>';
+    	echo '</a>';
+    } else {
+    	echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=restauration">';
+    	echo '<button type="submit">Restaurer la saisie</button>';
+    	echo '</a>';
+    }
+    echo '</td></tr>';
 }
 
 if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") {

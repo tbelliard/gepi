@@ -69,7 +69,7 @@ $date_fin = isset($_POST["date_fin"]) ? $_POST["date_fin"] :(isset($_GET["date_f
 $commentaire = isset($_POST["commentaire"]) ? $_POST["commentaire"] :(isset($_GET["commentaire"]) ? $_GET["commentaire"] :NULL);
 
 $message_enregistrement = '';
-$saisie = AbsenceEleveSaisieQuery::create()->findPk($id_saisie);
+$saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($id_saisie);
 //on charge les traitements
 $saisie->getAbsenceEleveTraitements();
 if ($saisie == null) {
@@ -79,7 +79,10 @@ if ($saisie == null) {
 }
 
 if ( isset($_POST["creation_traitement"])) {
-    $traitement = new AbsenceEleveTraitement();
+	//on charge les traitements
+	$saisie->getAbsenceEleveTraitements();
+
+	$traitement = new AbsenceEleveTraitement();
     $traitement->setUtilisateurProfessionnel($utilisateur);
     $traitement->addAbsenceEleveSaisie($saisie);
     $traitement->save();
@@ -99,6 +102,24 @@ if ( isset($_POST["creation_traitement"])) {
 	    die();
 	}
 	$saisie->toVersion($_GET["version"]);
+	$saisie->unDelete();
+	include("visu_saisie.php");
+    die();
+} elseif (isset($_GET["action"])) {
+	if ($utilisateur->getStatut() == 'cpe' || $utilisateur->getStatut() == 'scolarite'
+		|| ($utilisateur->getStatut() == 'professeur' && $saisie->getUtilisateurId() == $utilisateur->getPrimaryKey()) ) {
+			//ok
+	} else {
+	    $message_enregistrement .= 'Modification non autorisée.';
+	    include("visu_saisie.php");
+	    die();
+	}
+		
+	if ($_GET["action"] == 'suppression') {
+		$saisie->delete();
+	} else if ($_GET["action"] == 'restauration') {
+		$saisie->unDelete();
+	}
 	include("visu_saisie.php");
     die();
 }
@@ -108,7 +129,7 @@ if ( isset($_POST["creation_traitement"])) {
 //Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session si c'est un prof,
 //elle date de moins d'une heure et l'option a ete coché partie admin
 if ($utilisateur->getStatut() == 'professeur') {
-	if (!getSettingValue("abs2_modification_saisie_une_heure")=='y' || !$saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() || !$saisie->getVersionCreatedAt('U') > (time() - 3600)) {
+	if (!getSettingValue("abs2_modification_saisie_une_heure")=='y' || $saisie->getUtilisateurId() != $utilisateur->getPrimaryKey() || $saisie->getVersionCreatedAt('U') < (time() - 3600)) {
 	    $message_enregistrement .= 'Modification non autorisée.';
 	    include("visu_saisie.php");
 	    die();	

@@ -66,6 +66,16 @@ if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
     include('creation_traitement.php');
 }
 
+if (isset($_POST["suppression_saisies"])) {
+    AbsenceEleveSaisiePeer::disableVersioning();
+    AbsenceEleveSaisieQuery::create()->filterByPrimaryKeys($_POST["select_saisie"])->delete();
+	AbsenceEleveSaisiePeer::enableVersioning();
+} else if (isset($_POST["restauration_saisies"])) {
+    AbsenceEleveSaisiePeer::disableVersioning();
+    AbsenceEleveSaisieQuery::create()->includeDeleted()->filterByPrimaryKeys($_POST["select_saisie"])->unDelete();
+	AbsenceEleveSaisiePeer::enableVersioning();
+}
+
 include('include_requetes_filtre_de_recherche.php');
 
 include('include_pagination.php');
@@ -80,6 +90,7 @@ $javascript_specifique[] = "mod_abs2/lib/include";
 $titre_page = "Les absences";
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
+$dojo = true;
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -195,6 +206,17 @@ if (isFiltreRechercheParam('filter_type')) {
 if (isFiltreRechercheParam('filter_manqement_obligation')) {
     $query->filterByManquementObligationPresence(getFiltreRechercheParam('filter_manqement_obligation')=='y');
 }
+if (getFiltreRechercheParam('filter_saisies_supprimees')=='y') {
+	$query->includeDeleted()->filterByDeletedAt(null,Criteria::ISNOTNULL);
+	if (isFiltreRechercheParam('filter_date_suppression_saisie_debut_plage')) {
+	    $date_suppression_saisie_debut_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_suppression_saisie_debut_plage')));
+	    $query->filterByDeletedAt($date_suppression_saisie_debut_plage, Criteria::GREATER_EQUAL);
+	}
+	if (isFiltreRechercheParam('filter_date_suppression_saisie_fin_plage')) {
+	    $date_suppression_saisie_fin_plage = new DateTime(str_replace("/",".",getFiltreRechercheParam('filter_date_suppression_saisie_fin_plage')));
+	    $query->filterByDeletedAt($date_suppression_saisie_fin_plage, Criteria::LESS_EQUAL);
+	}
+}
 
 //on va filtrer sur les saisies possiblement rattachées à un traitement
 $recherche_saisie_a_rattacher = getFiltreRechercheParam('filter_recherche_saisie_a_rattacher');
@@ -276,6 +298,14 @@ if ($order == "asc_id") {
     $query->orderBy('IdSIncidents', Criteria::ASC);
 } else if ($order == "des_dis") {
     $query->orderBy('IdSIncidents', Criteria::DESC);
+} else if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {
+    if ($order == "asc_date_suppression") {
+		$query->orderBy('DeletedAt', Criteria::ASC);
+	} else if ($order == "des_date_suppression") {
+		$query->orderBy('DeletedAt', Criteria::DESC);
+	}
+} else {
+	$query->orderBy('Id', Criteria::DESC);
 }
 
 $query->distinct();
@@ -290,10 +320,96 @@ if (isset($message_erreur_traitement)) {
     echo $message_erreur_traitement;
 }
 
-echo '<form method="post" action="liste_saisies_selection_traitement.php" id="liste_saisies">';
+echo '<form method="post" action="liste_saisies_selection_traitement.php" name="liste_saisies" id="liste_saisies">';
 
+?>    <div id="action_bouton" dojoType="dijit.form.DropDownButton" style="display: inline">
+		<span>Action</span>
+	<div dojoType="dijit.Menu" style="display: inline">
+	    <button type="submit" dojoType="dijit.MenuItem" onClick="document.liste_saisies.submit();">
+		Rechercher
+	    </button>
+	    <button type="submit" name="reinit_filtre" value="y" dojoType="dijit.MenuItem" onClick="
+		//Create an input type dynamically.
+		var element = document.createElement('input');
+		element.setAttribute('type', 'hidden');
+		element.setAttribute('name', 'reinit_filtre');
+		element.setAttribute('value', 'y');
+		document.liste_saisies.appendChild(element);
+		document.liste_saisies.submit();
+				">
+		Réinitialiser les filtres
+	    </button>
+	    <button type="submit" name="creation_traitement" value="yes" dojoType="dijit.MenuItem" onClick="
+		//Create an input type dynamically.
+		var element = document.createElement('input');
+		element.setAttribute('type', 'hidden');
+		element.setAttribute('name', 'creation_traitement');
+		element.setAttribute('value', 'yes');
+		document.liste_saisies.appendChild(element);
+		document.liste_saisies.submit();
+				">
+		Creer un nouveau traitement
+	    </button>
+	    <?php if ($traitement != null) { ?>
+	    <button type="submit" name="creation_traitement" value="yes" dojoType="dijit.MenuItem" onClick="
+		//Create an input type dynamically.
+		var element = document.createElement('input');
+		element.setAttribute('type', 'hidden');
+		element.setAttribute('name', 'ajout_traitement');
+		element.setAttribute('value', 'yes');
+		document.liste_saisies.appendChild(element);
+		var element = document.createElement('input');
+		element.setAttribute('type', 'hidden');
+		element.setAttribute('name', 'id_traitement');
+		element.setAttribute('value', '<?php echo $id_traitement ?>');
+		document.liste_saisies.appendChild(element);
+		document.liste_saisies.submit();
+				">
+		Ajouter les saisies au traitement 
+		<?php 
+	    $desc = $traitement->getDescription();
+	    if (strlen($desc)>300) {
+	    	echo substr($desc,0,300).' ... ';
+	    } else {
+	    	echo $desc;
+	    }
+		?>
+	    </button>
+	    <?php } 
+	    if (getFiltreRechercheParam('filter_saisies_supprimees') != 'y') {
+	    ?>
+	    <button type="submit" name="suppression_saisies" value="yes" dojoType="dijit.MenuItem" onClick="
+		//Create an input type dynamically.
+		var element = document.createElement('input');
+		element.setAttribute('type', 'hidden');
+		element.setAttribute('name', 'suppression_saisies');
+		element.setAttribute('value', 'yes');
+		document.liste_saisies.appendChild(element);
+		document.liste_saisies.submit();
+				">
+		Supprimer la selection
+	    </button>
+	    <?php } else { ?>
+	    <button type="submit" name="restauration_saisies" value="yes" dojoType="dijit.MenuItem" onClick="
+		//Create an input type dynamically.
+		var element = document.createElement('input');
+		element.setAttribute('type', 'hidden');
+		element.setAttribute('name', 'restauration_saisies');
+		element.setAttribute('value', 'yes');
+		document.liste_saisies.appendChild(element);
+		document.liste_saisies.submit();
+				">
+		Restaurer la selection
+	    </button>
+	    <?php } ?>
+	</div>
+    </div>
+<script language="javascript">
+   //on cache les boutons pas très jolis en attendant le parsing dojo
+   dojo.byId("action_bouton").hide();
+</script>
+<?php
 if ($saisies_col->haveToPaginate()) {
-  echo "<p>";
     echo "Page ";
     echo '<input type="submit" name="page_deplacement" value="-"/>';
     echo '<input type="text" name="page_number" size="1" value="'.$page_number.'"/>';
@@ -303,46 +419,29 @@ if ($saisies_col->haveToPaginate()) {
 }
 echo "Voir ";
 echo '<input type="text" name="item_per_page" size="1" value="'.$item_per_page.'"/>';
-echo "par page|  Nombre d'enregistrements : ";
+echo "par page |  Nombre d'enregistrements : ";
 echo $saisies_col->count();
 
-echo "&nbsp;&nbsp;&nbsp;";
-echo '<button type="submit">Rechercher</button>';
-echo '<button type="submit" name="reinit_filtre" value="y">Réinitialiser les filtres</button> ';
+echo ' | <input type="checkbox" name="filter_saisies_supprimees"  onchange="submit()" value="y"';
+if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo "checked='checked'";}
+echo '/>';
+if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo '<font color="red">';}
+echo 'Voir les saisies supprimées';
+if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo '</font>';}
 if (getFiltreRechercheParam('filter_recherche_saisie_a_rattacher') == 'oui' && $traitement != null) {
-    echo 'filtre actif : recherche de saisies a rattacher au traitement n° '.$traitement->getId();
+    echo ' | filtre actif : recherche de saisies a rattacher au traitement n° '.$traitement->getId();
 }
 echo '</p><p>';
-//echo '<br/>';
-echo '<button type="submit" name="creation_traitement" value="yes">Créer un traitement</button>';
-
-if ($traitement != null) {
-    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-    echo '<button type="submit" name="ajout_traitement" value="yes">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
-    echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
-}
 if (isset($message_erreur_traitement)) {
     echo $message_erreur_traitement;
 }
-
-echo '</p><p>';
-//echo '<br/>';
-echo 'Sélectionner: ';
-echo '<a href="" onclick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true); return false;">Tous</a>, ';
-echo '<a href="" onclick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false); return false;">Aucun</a>, ';
-echo '<a href="" onclick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false);
-    SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_vierge\', true);
-    return false;">Non traités</a>, ';
-echo '<a href="" onclick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true);
-    SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_notifie\', false);
-    return false;">Non notifiés</a>';
-
 echo '</p>';
 echo '<table id="table_liste_absents" class="tb_absences" style="border-spacing:0; width:100%; font-size:88%">';
 echo '<thead>';
 echo '<tr>';
 
 echo '<th>';
+echo '<div id="select_shortcut_buttons_container"/>';
 echo '</th>';
 
 //en tete filtre id
@@ -362,6 +461,63 @@ echo '<br/> ';
 echo 'N°';
 echo '<input type="text" name="filter_saisie_id" value="'.getFiltreRechercheParam('filter_saisie_id').'" size="3"/>';
 echo '</th>';
+
+if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {
+	//en tete filtre date suppression
+	echo '<th>';
+	//echo '<nobr>';
+	echo '<span style="white-space: nowrap;"> ';
+	echo 'Date suppression';
+	echo '<input type="image" src="../images/up.png" title="monter" style="width:15px; height:15px;vertical-align: middle;';
+	if ($order == "asc_date_suppression") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+	echo 'border-width:1px;" alt="" name="order" value="asc_date_suppression"/ onclick="this.form.order.value = this.value">';
+	echo '<input type="image" src="../images/down.png" title="descendre" style="width:15px; height:15px;vertical-align: middle;' ;
+	if ($order == "des_date_suppression") {echo "border-style: solid; border-color: red;";} else {echo "border-style: solid; border-color: silver;";}
+	echo 'border-width:1px;" alt="" name="order" value="des_date_suppression"/ onclick="this.form.order.value = this.value">';
+	//echo '</nobr>';
+	echo '</span>';
+	echo '<br />';
+	//echo '<nobr>';
+	echo '<span style="white-space: nowrap;"> ';
+	echo 'Entre : <input size="13" id="filter_date_suppression_saisie_debut_plage" name="filter_date_suppression_saisie_debut_plage" value="';
+	if (isFiltreRechercheParam('filter_date_suppression_saisie_debut_plage')) {echo getFiltreRechercheParam('filter_date_suppression_saisie_debut_plage');}
+	echo '" />&nbsp;';
+	echo '<img id="trigger_filter_date_suppression_saisie_debut_plage" src="../images/icons/calendrier.gif" alt="" />';
+	//echo '</nobr>';
+	echo '</span>';
+	echo '
+	<script type="text/javascript">
+	    Calendar.setup({
+		inputField     :    "filter_date_suppression_saisie_debut_plage",     // id of the input field
+		ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
+		button         :    "trigger_filter_date_suppression_saisie_debut_plage",  // trigger for the calendar (button ID)
+		align          :    "Tl",           // alignment (defaults to "Bl")
+		singleClick    :    true,
+		showsTime	:   true
+	    });
+	</script>';
+	echo '<br />';
+	//echo '<nobr>';
+	echo '<span style="white-space: nowrap;"> ';
+	echo 'Et : <input size="13" id="filter_date_suppression_saisie_fin_plage" name="filter_date_suppression_saisie_fin_plage" value="';
+	if (isFiltreRechercheParam('filter_date_suppression_saisie_fin_plage')) {echo getFiltreRechercheParam('filter_date_suppression_saisie_fin_plage');}
+	echo '" />&nbsp;';
+	echo '<img id="trigger_filter_date_suppression_saisie_fin_plage" src="../images/icons/calendrier.gif" alt="" />';
+	//echo '</nobr>';
+	echo '</span>';
+	echo '
+	<script type="text/javascript">
+	    Calendar.setup({
+		inputField     :    "filter_date_suppression_saisie_fin_plage",     // id of the input field
+		ifFormat       :    "%d/%m/%Y %H:%M",      // format of the input field
+		button         :    "trigger_filter_date_suppression_saisie_fin_plage",  // trigger for the calendar (button ID)
+		align          :    "Tl",           // alignment (defaults to "Bl")
+		singleClick    :    true,
+		showsTime	:   true
+	    });
+	</script>';
+	echo '</th>';
+}
 
 //en tete filtre utilisateur
 echo '<th>';
@@ -861,6 +1017,15 @@ foreach ($results as $saisie) {
     echo "</a>";
     echo '</td>';
 
+	if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {
+	    echo '</td>';
+	    echo '<td>';
+	    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+	    echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDeletedAt('U')));
+	    echo "</a>";
+	    echo '</td>';
+	}
+
     echo '<td>';
 //    echo "<a href='liste_saisies_selection_traitement.php?filter_utilisateur=".$saisie->getUtilisateurProfessionnel()->getNom()."' style='display: block; height: 100%; color: #330033'> ";
     if ($saisie->getUtilisateurProfessionnel() != null) {
@@ -1014,8 +1179,12 @@ foreach ($results as $saisie) {
     foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 	echo "<table width='100%'><tr><td>";
 	echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%;'> ";
-	echo $traitement->getDescription();
-//	echo "</a></div>";
+    $desc = $traitement->getDescription();
+    if (strlen($desc)>300) {
+    	echo substr($desc,0,300).' ... ';
+    } else {
+    	echo $desc;
+    }
 	echo "</a>";
 	echo "</td></tr></table>";
     }
@@ -1034,8 +1203,8 @@ foreach ($results as $saisie) {
 	    echo ' - ';
 	}
     }
-   echo '</td>';
-$created_at = $saisie->getAllVersions()->getFirst()->getVersionCreatedAt('U');
+   	echo '</td>';
+	$created_at = $saisie->getAllVersions()->getFirst()->getVersionCreatedAt('U');
     echo '<td>';
     echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
     echo (strftime("%a %d/%m/%Y %H:%M", $created_at));
@@ -1077,33 +1246,70 @@ echo '</tbody>';
 
 echo '</table>';
 echo '<p>';
-echo 'Sélectionner: ';
-echo '<a href="" onclick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true); return false;">Tous</a>, ';
-echo '<a href="" onclick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false); return false;">Aucun</a>, ';
-echo '<a href="" onclick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false);
-    SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_vierge\', true);
-    return false;">Non traités</a>, ';
-echo '<a href="" onclick="SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true);
-    SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_notifie\', false);
-    return false;">Non notifiés</a>';
-
-echo '</p><p>';
-//echo '<br/>';
-
-echo '<button type="submit" name="creation_traitement" value="yes">Créer un traitement</button>';
-
-$id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
-if ($id_traitement != null && AbsenceEleveTraitementQuery::create()->findPk($id_traitement) != null) {
-    $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
-    echo '<button type="submit" name="ajout_traitement" value="yes">Ajouter les saisies au traitement n° '.$id_traitement.' ('.$traitement->getDescription().')</button>';
-    echo '<input type="hidden" name="id_traitement" value="'.$id_traitement.'"/>';
-}
 if (isset($message_erreur_traitement)) {
     echo $message_erreur_traitement;
 }
 echo '</p>';
 echo '</form>';
 echo '</div>';
+
+$javascript_footer_texte_specifique = '<script type="text/javascript">
+    dojo.require("dijit.form.Button");
+    dojo.require("dijit.Menu");
+    dojo.require("dijit.form.Form");
+    dojo.require("dijit.form.CheckBox");
+    dojo.require("dijit.form.DateTextBox");
+
+    dojo.addOnLoad(function() {
+        var menu = new dijit.Menu({
+            style: "display: none;"
+        });
+
+        var menuItem0 = new dijit.MenuItem({
+            label: "Sélectionner tous",
+            onClick: function() {
+			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true);
+	    }
+        });
+        menu.addChild(menuItem0);
+	
+        var menuItem1 = new dijit.MenuItem({
+            label: "aucun",
+            onClick: function() {
+			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false);
+        }
+        });
+        menu.addChild(menuItem1);
+
+        var menuItem2 = new dijit.MenuItem({
+            label: "non traitées",
+            onClick: function() {
+			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', false);
+			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_vierge\', true);			
+	    }
+        });
+        menu.addChild(menuItem2);
+
+        var menuItem3 = new dijit.MenuItem({
+            label: "non notifiées",
+            onClick: function() {
+			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'\', true);
+			SetAllCheckBoxes(\'liste_saisies\', \'select_saisie[]\', \'saisie_notifie\', false);	    }
+        });
+        menu.addChild(menuItem3);
+
+        var button = new dijit.form.DropDownButton({
+            label: "",
+            name: "programmatic2",
+            dropDown: menu,
+            id: "progButton"
+        });
+        dojo.byId("select_shortcut_buttons_container").appendChild(button.domNode);
+
+	//affichage des boutons d action
+	dojo.query(\'[widgetid=action_bouton]\').style({ visibility:"visible" }).style({ display:"" });
+    });
+</script>';
 
 require_once("../lib/footer.inc.php");
 
