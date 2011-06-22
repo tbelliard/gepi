@@ -991,5 +991,32 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
             return(false);
         }
     }
-
+    
+    /**
+	 * Undelete a row that was soft_deleted with no versionning
+	 *
+	 * @return		 int The number of rows affected by this update and any referring fk objects' save() operations.
+	 */
+	public function unDelete(PropelPDO $con = null)
+	{
+    	AbsenceEleveSaisiePeer::disableVersioning();
+		parent::unDelete($con);
+		AbsenceEleveSaisiePeer::enableVersioning();
+	}
+    
+	/**
+	 * Removes this object from datastore and sets delete attribute.
+	 *
+	 * @param      PropelPDO $con
+	 * @return     void
+	 * @throws     PropelException
+	 * @see        BaseObject::setDeleted()
+	 * @see        BaseObject::isDeleted()
+	 */
+	public function delete(PropelPDO $con = null)
+	{
+    	AbsenceEleveSaisiePeer::disableVersioning();
+		parent::delete($con);
+		AbsenceEleveSaisiePeer::enableVersioning();
+	}
 } // AbsenceEleveSaisie
