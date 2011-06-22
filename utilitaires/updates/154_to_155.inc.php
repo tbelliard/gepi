@@ -350,7 +350,7 @@ if ($test_champ>0) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'deleted_at' à la table 'a_saisies_version'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'deleted_at';"));
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies_version LIKE 'deleted_at';"));
 if ($test_champ>0) {
 	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 } else {
@@ -376,7 +376,7 @@ if ($test_champ>0) {
 }
 
 $result .= "&nbsp;->Ajout d'un champ 'deleted_by' à la table 'a_saisies_version'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'deleted_at';"));
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies_version LIKE 'deleted_by';"));
 if ($test_champ>0) {
 	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 } else {
