@@ -382,6 +382,15 @@ else {
 							//echo "$sql<br />";
 							$test_matiere=mysql_query($sql);
 							if(mysql_num_rows($test_matiere)==0) {echo "<img src='../images/icons/ico_attention.png' width='22' height='19' title=\"Cette matière ne correspond plus à une matière GEPI cette année (un nouveau nom de matière existe peut-être cette année).\" alt=\"Cette matière ne correspond plus à une matière GEPI cette année (un nouveau nom de matière existe peut-être cette année).\" />\n";}
+							else {
+								$sql="SELECT 1=1 FROM notanet n, notanet_ele_type net WHERE n.matiere='$lig_tmp->matiere' AND n.login=net.login AND net.type_brevet='$type_brevet';";
+								//echo "$sql<br />";
+								$test_matiere=mysql_query($sql);
+								$nb_ele_matiere=mysql_num_rows($test_matiere);
+								if($nb_ele_matiere>0) {
+									echo "&nbsp;(<span style='font-style: italic;' title=\"Matière associée à $nb_ele_matiere enregistrement(s) dans l'extraction notanet pour le type de brevet choisi. Si aucune association n'est signalée, c'est soit que la matière n'est associée à aucune note d'élève, soit que l'extraction n'a pas été effectuée (ou pas avec cette matière présente)\">$nb_ele_matiere</span>)";
+								}
+							}
 							echo "<br />";
 							$cpt++;
 
