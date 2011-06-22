@@ -1198,9 +1198,10 @@ if(isset($id_incident)) {
 		//echo "<th>Qualité dans l'incident</th>\n";
 		echo "<th>Rôle dans l'incident</th>\n";
 
-//Eric modèle Ooo
-		if ($gepiSettings['active_mod_ooo'] == 'y') {
-		echo "<th>Retenue</th>\n";
+		//Eric modèle Ooo
+		if(($gepiSettings['active_mod_ooo'] == 'y')&&
+		((($_SESSION['statut']=='professeur')&&($gepiSettings['imprDiscProfRetenueOOo']=='yes'))||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
+			echo "<th>Retenue</th>\n";
 		}
 
 		if($_SESSION['statut']!='professeur') {
@@ -1327,8 +1328,9 @@ if(isset($id_incident)) {
 				}
 				echo "</td>\n";
 			}
-//Eric  modèle Ooo
-			if ($gepiSettings['active_mod_ooo'] == 'y') {
+			//Eric  modèle Ooo
+			if(($gepiSettings['active_mod_ooo'] == 'y')&&
+			((($_SESSION['statut']=='professeur')&&($gepiSettings['imprDiscProfRetenueOOo']=='yes'))||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
 			    echo "<td id='td_retenue_$cpt'>";
 				if ($lig->qualite=='Responsable') { //un retenue seulement pour un responsable !
 		            echo "<a href='../mod_ooo/retenue.php?mode=module_discipline&amp;id_incident=$id_incident&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";

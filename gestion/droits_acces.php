@@ -1116,7 +1116,13 @@ if(getSettingValue('active_mod_discipline')=='y') {
 	<br />(<em>Par défaut un professeur ne voit que les incidents qu'il a déclaré ou le concernant directement comme protagoniste)</em>";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
-  
+
+	if(getSettingValue('active_mod_ooo')=='y') {
+		$titreItem='imprDiscProfRetenueOOo';
+		$texteItem="peut imprimer dans le module Discipline une demande de Retenue au format OpenOffice pour un élève pour lequel le professeur saisit un incident";
+		if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+			$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+	}
 }
 /*
       
