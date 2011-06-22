@@ -108,12 +108,12 @@ function show_message_deconnexion() {
 					$('alert_message').update("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
 
 					if (Prototype.Browser.IE) {
-						document.documentElement.scroll = "no";
-						document.documentElement.style.overflow = 'hidden';
+						//document.documentElement.scroll = "no";
+						//document.documentElement.style.overflow = 'hidden';
 					}
 					else {
-						document.body.scroll = "no";
-						document.body.style.overflow = 'hidden';				
+						//document.body.scroll = "no";
+						//document.body.style.overflow = 'hidden';				
 					}					
 					var viewport = document.viewport.getDimensions(); // Gets the viewport as an object literal
 					var width = viewport.width; // Usable window width
@@ -123,11 +123,11 @@ function show_message_deconnexion() {
 					else if (typeof(document.documentElement.scrollTop) == 'number') {
 						y=document.documentElement.scrollTop;
 					}
-					$('alert_cache').setStyle({width: "100%"});
-					$('alert_cache').setStyle({height: height+"px"});
-					$('alert_cache').setStyle({top: y+"px"});
-					$('alert_cache').setStyle({display: 'block'});
-					$('alert_cache').setOpacity(0.5);
+					//$('alert_cache').setStyle({width: "100%"});
+					//$('alert_cache').setStyle({height: height+"px"});
+					//$('alert_cache').setStyle({top: y+"px"});
+					//$('alert_cache').setStyle({display: 'block'});
+					//$('alert_cache').setOpacity(0.5);
 					$('alert_entete').setStyle({top: y-46+Math.abs((height-200)/2)+"px"});
 					$('alert_entete').setStyle({left: Math.abs((width-300)/2)+"px"});
 					$('alert_entete').setOpacity(1);
@@ -141,12 +141,12 @@ function show_message_deconnexion() {
 						$('alert_cache').setStyle({display: 'none'});
 						$('alert_entete').setStyle({display: 'none'});
 						if (Prototype.Browser.IE) {
-							document.documentElement.scroll = "yes";
-							document.documentElement.style.overflow = 'scroll';
+							//document.documentElement.scroll = "yes";
+							//document.documentElement.style.overflow = 'scroll';
 						}
 						else {
-							document.body.scroll = "yes";
-							document.body.style.overflow = 'scroll';				
+							//document.body.scroll = "yes";
+							//document.body.style.overflow = 'scroll';				
 						}						
 					
 					});
