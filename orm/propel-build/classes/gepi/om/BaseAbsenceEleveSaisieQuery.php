@@ -21,6 +21,7 @@
  * @method     AbsenceEleveSaisieQuery orderByIdLieu($order = Criteria::ASC) Order by the id_lieu column
  * @method     AbsenceEleveSaisieQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     AbsenceEleveSaisieQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
+ * @method     AbsenceEleveSaisieQuery orderByDeletedAt($order = Criteria::ASC) Order by the deleted_at column
  * @method     AbsenceEleveSaisieQuery orderByVersion($order = Criteria::ASC) Order by the version column
  * @method     AbsenceEleveSaisieQuery orderByVersionCreatedAt($order = Criteria::ASC) Order by the version_created_at column
  * @method     AbsenceEleveSaisieQuery orderByVersionCreatedBy($order = Criteria::ASC) Order by the version_created_by column
@@ -40,6 +41,7 @@
  * @method     AbsenceEleveSaisieQuery groupByIdLieu() Group by the id_lieu column
  * @method     AbsenceEleveSaisieQuery groupByCreatedAt() Group by the created_at column
  * @method     AbsenceEleveSaisieQuery groupByUpdatedAt() Group by the updated_at column
+ * @method     AbsenceEleveSaisieQuery groupByDeletedAt() Group by the deleted_at column
  * @method     AbsenceEleveSaisieQuery groupByVersion() Group by the version column
  * @method     AbsenceEleveSaisieQuery groupByVersionCreatedAt() Group by the version_created_at column
  * @method     AbsenceEleveSaisieQuery groupByVersionCreatedBy() Group by the version_created_by column
@@ -106,6 +108,7 @@
  * @method     AbsenceEleveSaisie findOneByIdLieu(int $id_lieu) Return the first AbsenceEleveSaisie filtered by the id_lieu column
  * @method     AbsenceEleveSaisie findOneByCreatedAt(string $created_at) Return the first AbsenceEleveSaisie filtered by the created_at column
  * @method     AbsenceEleveSaisie findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveSaisie filtered by the updated_at column
+ * @method     AbsenceEleveSaisie findOneByDeletedAt(string $deleted_at) Return the first AbsenceEleveSaisie filtered by the deleted_at column
  * @method     AbsenceEleveSaisie findOneByVersion(int $version) Return the first AbsenceEleveSaisie filtered by the version column
  * @method     AbsenceEleveSaisie findOneByVersionCreatedAt(string $version_created_at) Return the first AbsenceEleveSaisie filtered by the version_created_at column
  * @method     AbsenceEleveSaisie findOneByVersionCreatedBy(string $version_created_by) Return the first AbsenceEleveSaisie filtered by the version_created_by column
@@ -125,6 +128,7 @@
  * @method     array findByIdLieu(int $id_lieu) Return AbsenceEleveSaisie objects filtered by the id_lieu column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveSaisie objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveSaisie objects filtered by the updated_at column
+ * @method     array findByDeletedAt(string $deleted_at) Return AbsenceEleveSaisie objects filtered by the deleted_at column
  * @method     array findByVersion(int $version) Return AbsenceEleveSaisie objects filtered by the version column
  * @method     array findByVersionCreatedAt(string $version_created_at) Return AbsenceEleveSaisie objects filtered by the version_created_at column
  * @method     array findByVersionCreatedBy(string $version_created_by) Return AbsenceEleveSaisie objects filtered by the version_created_by column
@@ -133,6 +137,10 @@
  */
 abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 {
+
+	// soft_delete behavior
+	protected static $softDelete = true;
+	protected $localSoftDelete = true;
 
 	/**
 	 * Initializes internal state of BaseAbsenceEleveSaisieQuery object.
@@ -819,6 +827,48 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(AbsenceEleveSaisiePeer::UPDATED_AT, $updatedAt, $comparison);
+	}
+
+	/**
+	 * Filter the query on the deleted_at column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDeletedAt('2011-03-14'); // WHERE deleted_at = '2011-03-14'
+	 * $query->filterByDeletedAt('now'); // WHERE deleted_at = '2011-03-14'
+	 * $query->filterByDeletedAt(array('max' => 'yesterday')); // WHERE deleted_at > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $deletedAt The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function filterByDeletedAt($deletedAt = null, $comparison = null)
+	{
+		if (is_array($deletedAt)) {
+			$useMinMax = false;
+			if (isset($deletedAt['min'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::DELETED_AT, $deletedAt['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($deletedAt['max'])) {
+				$this->addUsingAlias(AbsenceEleveSaisiePeer::DELETED_AT, $deletedAt['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::DELETED_AT, $deletedAt, $comparison);
 	}
 
 	/**
@@ -1702,6 +1752,40 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		return $this;
 	}
 
+	/**
+	 * Code to execute before every SELECT statement
+	 * 
+	 * @param     PropelPDO $con The connection object used by the query
+	 */
+	protected function basePreSelect(PropelPDO $con)
+	{
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled() && $this->localSoftDelete) {
+			$this->addUsingAlias(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
+		
+		return $this->preSelect($con);
+	}
+
+	/**
+	 * Code to execute before every DELETE statement
+	 * 
+	 * @param     PropelPDO $con The connection object used by the query
+	 */
+	protected function basePreDelete(PropelPDO $con)
+	{
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled() && $this->localSoftDelete) {
+			return $this->softDelete($con);
+		} else {
+			return $this->hasWhereClause() ? $this->forceDelete($con) : $this->forceDeleteAll($con);
+		}
+		
+		return $this->preDelete($con);
+	}
+
 	// timestampable behavior
 	
 	/**
@@ -1770,4 +1854,93 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 
 	// versionable behavior
 	
+	// soft_delete behavior
+	
+	/**
+	 * Temporarily disable the filter on deleted rows
+	 * Valid only for the current query
+	 * 
+	 * @see AbsenceEleveSaisieQuery::disableSoftDelete() to disable the filter for more than one query
+	 *
+	 * @return AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function includeDeleted()
+	{
+		$this->localSoftDelete = false;
+		return $this;
+	}
+	
+	/**
+	 * Soft delete the selected rows
+	 *
+	 * @param			PropelPDO $con an optional connection object
+	 *
+	 * @return		int Number of updated rows
+	 */
+	public function softDelete(PropelPDO $con = null)
+	{
+		return $this->update(array('DeletedAt' => time()), $con);
+	}
+	
+	/**
+	 * Bypass the soft_delete behavior and force a hard delete of the selected rows
+	 *
+	 * @param			PropelPDO $con an optional connection object
+	 *
+	 * @return		int Number of deleted rows
+	 */
+	public function forceDelete(PropelPDO $con = null)
+	{
+		return AbsenceEleveSaisiePeer::doForceDelete($this, $con);
+	}
+	
+	/**
+	 * Bypass the soft_delete behavior and force a hard delete of all the rows
+	 *
+	 * @param			PropelPDO $con an optional connection object
+	 *
+	 * @return		int Number of deleted rows
+	 */
+	public function forceDeleteAll(PropelPDO $con = null)
+	{
+		return AbsenceEleveSaisiePeer::doForceDeleteAll($con);}
+	
+	/**
+	 * Undelete selected rows
+	 *
+	 * @param			PropelPDO $con an optional connection object
+	 *
+	 * @return		int The number of rows affected by this update and any referring fk objects' save() operations.
+	 */
+	public function unDelete(PropelPDO $con = null)
+	{
+		return $this->update(array('DeletedAt' => null), $con);
+	}
+		
+	/**
+	 * Enable the soft_delete behavior for this model
+	 */
+	public static function enableSoftDelete()
+	{
+		self::$softDelete = true;
+	}
+	
+	/**
+	 * Disable the soft_delete behavior for this model
+	 */
+	public static function disableSoftDelete()
+	{
+		self::$softDelete = false;
+	}
+	
+	/**
+	 * Check the soft_delete behavior for this model
+	 *
+	 * @return boolean true if the soft_delete behavior is enabled
+	 */
+	public static function isSoftDeleteEnabled()
+	{
+		return self::$softDelete;
+	}
+
 } // BaseAbsenceEleveSaisieQuery

@@ -53,6 +53,7 @@ class AbsenceEleveSaisieVersionTableMap extends TableMap
 		$this->addColumn('ID_LIEU', 'IdLieu', 'INTEGER', false, 11, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
+		$this->addColumn('DELETED_AT', 'DeletedAt', 'TIMESTAMP', false, null, null);
 		$this->addPrimaryKey('VERSION', 'Version', 'INTEGER', false, null, 0);
 		$this->addColumn('VERSION_CREATED_AT', 'VersionCreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('VERSION_CREATED_BY', 'VersionCreatedBy', 'VARCHAR', false, 100, null);

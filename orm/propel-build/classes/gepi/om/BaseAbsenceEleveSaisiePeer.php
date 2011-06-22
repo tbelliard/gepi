@@ -26,13 +26,13 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	const TM_CLASS = 'AbsenceEleveSaisieTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 18;
+	const NUM_COLUMNS = 19;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-	const NUM_HYDRATE_COLUMNS = 18;
+	const NUM_HYDRATE_COLUMNS = 19;
 
 	/** the column name for the ID field */
 	const ID = 'a_saisies.ID';
@@ -79,6 +79,9 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	/** the column name for the UPDATED_AT field */
 	const UPDATED_AT = 'a_saisies.UPDATED_AT';
 
+	/** the column name for the DELETED_AT field */
+	const DELETED_AT = 'a_saisies.DELETED_AT';
+
 	/** the column name for the VERSION field */
 	const VERSION = 'a_saisies.VERSION';
 
@@ -114,12 +117,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'EleveId', 'Commentaire', 'DebutAbs', 'FinAbs', 'IdEdtCreneau', 'IdEdtEmplacementCours', 'IdGroupe', 'IdClasse', 'IdAid', 'IdSIncidents', 'IdLieu', 'CreatedAt', 'UpdatedAt', 'Version', 'VersionCreatedAt', 'VersionCreatedBy', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'eleveId', 'commentaire', 'debutAbs', 'finAbs', 'idEdtCreneau', 'idEdtEmplacementCours', 'idGroupe', 'idClasse', 'idAid', 'idSIncidents', 'idLieu', 'createdAt', 'updatedAt', 'version', 'versionCreatedAt', 'versionCreatedBy', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::ELEVE_ID, self::COMMENTAIRE, self::DEBUT_ABS, self::FIN_ABS, self::ID_EDT_CRENEAU, self::ID_EDT_EMPLACEMENT_COURS, self::ID_GROUPE, self::ID_CLASSE, self::ID_AID, self::ID_S_INCIDENTS, self::ID_LIEU, self::CREATED_AT, self::UPDATED_AT, self::VERSION, self::VERSION_CREATED_AT, self::VERSION_CREATED_BY, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'ELEVE_ID', 'COMMENTAIRE', 'DEBUT_ABS', 'FIN_ABS', 'ID_EDT_CRENEAU', 'ID_EDT_EMPLACEMENT_COURS', 'ID_GROUPE', 'ID_CLASSE', 'ID_AID', 'ID_S_INCIDENTS', 'ID_LIEU', 'CREATED_AT', 'UPDATED_AT', 'VERSION', 'VERSION_CREATED_AT', 'VERSION_CREATED_BY', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'eleve_id', 'commentaire', 'debut_abs', 'fin_abs', 'id_edt_creneau', 'id_edt_emplacement_cours', 'id_groupe', 'id_classe', 'id_aid', 'id_s_incidents', 'id_lieu', 'created_at', 'updated_at', 'version', 'version_created_at', 'version_created_by', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'UtilisateurId', 'EleveId', 'Commentaire', 'DebutAbs', 'FinAbs', 'IdEdtCreneau', 'IdEdtEmplacementCours', 'IdGroupe', 'IdClasse', 'IdAid', 'IdSIncidents', 'IdLieu', 'CreatedAt', 'UpdatedAt', 'DeletedAt', 'Version', 'VersionCreatedAt', 'VersionCreatedBy', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'utilisateurId', 'eleveId', 'commentaire', 'debutAbs', 'finAbs', 'idEdtCreneau', 'idEdtEmplacementCours', 'idGroupe', 'idClasse', 'idAid', 'idSIncidents', 'idLieu', 'createdAt', 'updatedAt', 'deletedAt', 'version', 'versionCreatedAt', 'versionCreatedBy', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::UTILISATEUR_ID, self::ELEVE_ID, self::COMMENTAIRE, self::DEBUT_ABS, self::FIN_ABS, self::ID_EDT_CRENEAU, self::ID_EDT_EMPLACEMENT_COURS, self::ID_GROUPE, self::ID_CLASSE, self::ID_AID, self::ID_S_INCIDENTS, self::ID_LIEU, self::CREATED_AT, self::UPDATED_AT, self::DELETED_AT, self::VERSION, self::VERSION_CREATED_AT, self::VERSION_CREATED_BY, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'UTILISATEUR_ID', 'ELEVE_ID', 'COMMENTAIRE', 'DEBUT_ABS', 'FIN_ABS', 'ID_EDT_CRENEAU', 'ID_EDT_EMPLACEMENT_COURS', 'ID_GROUPE', 'ID_CLASSE', 'ID_AID', 'ID_S_INCIDENTS', 'ID_LIEU', 'CREATED_AT', 'UPDATED_AT', 'DELETED_AT', 'VERSION', 'VERSION_CREATED_AT', 'VERSION_CREATED_BY', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'utilisateur_id', 'eleve_id', 'commentaire', 'debut_abs', 'fin_abs', 'id_edt_creneau', 'id_edt_emplacement_cours', 'id_groupe', 'id_classe', 'id_aid', 'id_s_incidents', 'id_lieu', 'created_at', 'updated_at', 'deleted_at', 'version', 'version_created_at', 'version_created_by', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
 	);
 
 	/**
@@ -129,12 +132,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'EleveId' => 2, 'Commentaire' => 3, 'DebutAbs' => 4, 'FinAbs' => 5, 'IdEdtCreneau' => 6, 'IdEdtEmplacementCours' => 7, 'IdGroupe' => 8, 'IdClasse' => 9, 'IdAid' => 10, 'IdSIncidents' => 11, 'IdLieu' => 12, 'CreatedAt' => 13, 'UpdatedAt' => 14, 'Version' => 15, 'VersionCreatedAt' => 16, 'VersionCreatedBy' => 17, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'eleveId' => 2, 'commentaire' => 3, 'debutAbs' => 4, 'finAbs' => 5, 'idEdtCreneau' => 6, 'idEdtEmplacementCours' => 7, 'idGroupe' => 8, 'idClasse' => 9, 'idAid' => 10, 'idSIncidents' => 11, 'idLieu' => 12, 'createdAt' => 13, 'updatedAt' => 14, 'version' => 15, 'versionCreatedAt' => 16, 'versionCreatedBy' => 17, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::ELEVE_ID => 2, self::COMMENTAIRE => 3, self::DEBUT_ABS => 4, self::FIN_ABS => 5, self::ID_EDT_CRENEAU => 6, self::ID_EDT_EMPLACEMENT_COURS => 7, self::ID_GROUPE => 8, self::ID_CLASSE => 9, self::ID_AID => 10, self::ID_S_INCIDENTS => 11, self::ID_LIEU => 12, self::CREATED_AT => 13, self::UPDATED_AT => 14, self::VERSION => 15, self::VERSION_CREATED_AT => 16, self::VERSION_CREATED_BY => 17, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'ELEVE_ID' => 2, 'COMMENTAIRE' => 3, 'DEBUT_ABS' => 4, 'FIN_ABS' => 5, 'ID_EDT_CRENEAU' => 6, 'ID_EDT_EMPLACEMENT_COURS' => 7, 'ID_GROUPE' => 8, 'ID_CLASSE' => 9, 'ID_AID' => 10, 'ID_S_INCIDENTS' => 11, 'ID_LIEU' => 12, 'CREATED_AT' => 13, 'UPDATED_AT' => 14, 'VERSION' => 15, 'VERSION_CREATED_AT' => 16, 'VERSION_CREATED_BY' => 17, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'eleve_id' => 2, 'commentaire' => 3, 'debut_abs' => 4, 'fin_abs' => 5, 'id_edt_creneau' => 6, 'id_edt_emplacement_cours' => 7, 'id_groupe' => 8, 'id_classe' => 9, 'id_aid' => 10, 'id_s_incidents' => 11, 'id_lieu' => 12, 'created_at' => 13, 'updated_at' => 14, 'version' => 15, 'version_created_at' => 16, 'version_created_by' => 17, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'UtilisateurId' => 1, 'EleveId' => 2, 'Commentaire' => 3, 'DebutAbs' => 4, 'FinAbs' => 5, 'IdEdtCreneau' => 6, 'IdEdtEmplacementCours' => 7, 'IdGroupe' => 8, 'IdClasse' => 9, 'IdAid' => 10, 'IdSIncidents' => 11, 'IdLieu' => 12, 'CreatedAt' => 13, 'UpdatedAt' => 14, 'DeletedAt' => 15, 'Version' => 16, 'VersionCreatedAt' => 17, 'VersionCreatedBy' => 18, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'utilisateurId' => 1, 'eleveId' => 2, 'commentaire' => 3, 'debutAbs' => 4, 'finAbs' => 5, 'idEdtCreneau' => 6, 'idEdtEmplacementCours' => 7, 'idGroupe' => 8, 'idClasse' => 9, 'idAid' => 10, 'idSIncidents' => 11, 'idLieu' => 12, 'createdAt' => 13, 'updatedAt' => 14, 'deletedAt' => 15, 'version' => 16, 'versionCreatedAt' => 17, 'versionCreatedBy' => 18, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::UTILISATEUR_ID => 1, self::ELEVE_ID => 2, self::COMMENTAIRE => 3, self::DEBUT_ABS => 4, self::FIN_ABS => 5, self::ID_EDT_CRENEAU => 6, self::ID_EDT_EMPLACEMENT_COURS => 7, self::ID_GROUPE => 8, self::ID_CLASSE => 9, self::ID_AID => 10, self::ID_S_INCIDENTS => 11, self::ID_LIEU => 12, self::CREATED_AT => 13, self::UPDATED_AT => 14, self::DELETED_AT => 15, self::VERSION => 16, self::VERSION_CREATED_AT => 17, self::VERSION_CREATED_BY => 18, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'UTILISATEUR_ID' => 1, 'ELEVE_ID' => 2, 'COMMENTAIRE' => 3, 'DEBUT_ABS' => 4, 'FIN_ABS' => 5, 'ID_EDT_CRENEAU' => 6, 'ID_EDT_EMPLACEMENT_COURS' => 7, 'ID_GROUPE' => 8, 'ID_CLASSE' => 9, 'ID_AID' => 10, 'ID_S_INCIDENTS' => 11, 'ID_LIEU' => 12, 'CREATED_AT' => 13, 'UPDATED_AT' => 14, 'DELETED_AT' => 15, 'VERSION' => 16, 'VERSION_CREATED_AT' => 17, 'VERSION_CREATED_BY' => 18, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'utilisateur_id' => 1, 'eleve_id' => 2, 'commentaire' => 3, 'debut_abs' => 4, 'fin_abs' => 5, 'id_edt_creneau' => 6, 'id_edt_emplacement_cours' => 7, 'id_groupe' => 8, 'id_classe' => 9, 'id_aid' => 10, 'id_s_incidents' => 11, 'id_lieu' => 12, 'created_at' => 13, 'updated_at' => 14, 'deleted_at' => 15, 'version' => 16, 'version_created_at' => 17, 'version_created_by' => 18, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, )
 	);
 
 	/**
@@ -221,6 +224,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::ID_LIEU);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::CREATED_AT);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::UPDATED_AT);
+			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::DELETED_AT);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::VERSION);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::VERSION_CREATED_AT);
 			$criteria->addSelectColumn(AbsenceEleveSaisiePeer::VERSION_CREATED_BY);
@@ -240,6 +244,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 			$criteria->addSelectColumn($alias . '.ID_LIEU');
 			$criteria->addSelectColumn($alias . '.CREATED_AT');
 			$criteria->addSelectColumn($alias . '.UPDATED_AT');
+			$criteria->addSelectColumn($alias . '.DELETED_AT');
 			$criteria->addSelectColumn($alias . '.VERSION');
 			$criteria->addSelectColumn($alias . '.VERSION_CREATED_AT');
 			$criteria->addSelectColumn($alias . '.VERSION_CREATED_BY');
@@ -277,6 +282,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+		}
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
 		}
 		// BasePeer returns a PDOStatement
 		$stmt = BasePeer::doCount($criteria, $con);
@@ -347,6 +358,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		// Set the correct dbName
 		$criteria->setDbName(self::DATABASE_NAME);
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 
 		// BasePeer returns a PDOStatement
 		return BasePeer::doSelect($criteria, $con);
@@ -573,6 +590,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -623,6 +646,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -673,6 +702,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -723,6 +758,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -773,6 +814,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -823,6 +870,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -873,6 +926,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -923,6 +982,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -959,6 +1024,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::UTILISATEUR_ID, UtilisateurProfessionnelPeer::LOGIN, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
@@ -1025,6 +1096,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ELEVE_ID, ElevePeer::ID_ELEVE, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
@@ -1091,6 +1168,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_CRENEAU, EdtCreneauPeer::ID_DEFINIE_PERIODE, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
@@ -1157,6 +1240,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_EDT_EMPLACEMENT_COURS, EdtEmplacementCoursPeer::ID_COURS, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
@@ -1223,6 +1312,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_GROUPE, GroupePeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
@@ -1289,6 +1384,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_CLASSE, ClassePeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
@@ -1355,6 +1456,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
@@ -1421,6 +1528,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
@@ -1515,6 +1628,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1588,6 +1707,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
 
@@ -1806,6 +1931,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1868,6 +1999,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1930,6 +2067,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -1992,6 +2135,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -2054,6 +2203,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -2116,6 +2271,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -2178,6 +2339,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -2240,6 +2407,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 		$stmt = BasePeer::doCount($criteria, $con);
 
 		if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
@@ -2311,6 +2484,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -2528,6 +2707,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -2745,6 +2930,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -2962,6 +3153,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -3179,6 +3376,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -3396,6 +3599,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -3613,6 +3822,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_LIEU, AbsenceEleveLieuPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -3830,6 +4045,12 @@ abstract class BaseAbsenceEleveSaisiePeer {
 
 		$criteria->addJoin(AbsenceEleveSaisiePeer::ID_AID, AidDetailsPeer::ID, $join_behavior);
 
+		// soft_delete behavior
+		if (AbsenceEleveSaisieQuery::isSoftDeleteEnabled()) {
+			$criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		} else {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -4115,7 +4336,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * @param      PropelPDO $con the connection to use
 	 * @return     int The number of affected rows (if supported by underlying database driver).
 	 */
-	public static function doDeleteAll(PropelPDO $con = null)
+	public static function doForceDeleteAll(PropelPDO $con = null)
 	{
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -4151,7 +4372,7 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	 * @throws     PropelException Any exceptions caught during processing will be
 	 *		 rethrown wrapped into a PropelException.
 	 */
-	 public static function doDelete($values, PropelPDO $con = null)
+	 public static function doForceDelete($values, PropelPDO $con = null)
 	 {
 		if ($con === null) {
 			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
@@ -4357,6 +4578,124 @@ abstract class BaseAbsenceEleveSaisiePeer {
 	public static function disableVersioning()
 	{
 		self::$isVersioningEnabled = false;
+	}
+
+	// soft_delete behavior
+	
+	/**
+	 * Enable the soft_delete behavior for this model
+	 */
+	public static function enableSoftDelete()
+	{
+		AbsenceEleveSaisieQuery::enableSoftDelete();
+		// some soft_deleted objects may be in the instance pool
+		AbsenceEleveSaisiePeer::clearInstancePool();
+	}
+	
+	/**
+	 * Disable the soft_delete behavior for this model
+	 */
+	public static function disableSoftDelete()
+	{
+		AbsenceEleveSaisieQuery::disableSoftDelete();
+	}
+	
+	/**
+	 * Check the soft_delete behavior for this model
+	 * @return boolean true if the soft_delete behavior is enabled
+	 */
+	public static function isSoftDeleteEnabled()
+	{
+		return AbsenceEleveSaisieQuery::isSoftDeleteEnabled();
+	}
+	
+	/**
+	 * Soft delete records, given a AbsenceEleveSaisie or Criteria object OR a primary key value.
+	 *
+	 * @param			 mixed $values Criteria or AbsenceEleveSaisie object or primary key or array of primary keys
+	 *							which is used to create the DELETE statement
+	 * @param			 PropelPDO $con the connection to use
+	 * @return		 int	The number of affected rows (if supported by underlying database driver).
+	 * @throws		 PropelException Any exceptions caught during processing will be
+	 *							rethrown wrapped into a PropelException.
+	 */
+	public static function doSoftDelete($values, PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+		}
+		if ($values instanceof Criteria) {
+			// rename for clarity
+			$selectCriteria = clone $values;
+		} elseif ($values instanceof AbsenceEleveSaisie) {
+			// create criteria based on pk values
+			$selectCriteria = $values->buildPkeyCriteria();
+		} else {
+			// it must be the primary key
+			$selectCriteria = new Criteria(self::DATABASE_NAME);
+			$selectCriteria->add(AbsenceEleveSaisiePeer::ID, (array) $values, Criteria::IN);
+		}
+		// Set the correct dbName
+		$selectCriteria->setDbName(AbsenceEleveSaisiePeer::DATABASE_NAME);
+		$updateCriteria = new Criteria(self::DATABASE_NAME);
+		$updateCriteria->add(AbsenceEleveSaisiePeer::DELETED_AT, time());
+		return BasePeer::doUpdate($selectCriteria, $updateCriteria, $con);
+	}
+	
+	/**
+	 * Delete or soft delete records, depending on AbsenceEleveSaisiePeer::$softDelete
+	 *
+	 * @param			 mixed $values Criteria or AbsenceEleveSaisie object or primary key or array of primary keys
+	 *							which is used to create the DELETE statement
+	 * @param			 PropelPDO $con the connection to use
+	 * @return		 int	The number of affected rows (if supported by underlying database driver).
+	 * @throws		 PropelException Any exceptions caught during processing will be
+	 *							rethrown wrapped into a PropelException.
+	 */
+	public static function doDelete($values, PropelPDO $con = null)
+	{
+		if (AbsenceEleveSaisiePeer::isSoftDeleteEnabled()) {
+			return AbsenceEleveSaisiePeer::doSoftDelete($values, $con);
+		} else {
+			return AbsenceEleveSaisiePeer::doForceDelete($values, $con);
+		} 
+	}
+	/**
+	 * Method to soft delete all rows from the a_saisies table.
+	 *
+	 * @param			 PropelPDO $con the connection to use
+	 * @return		 int The number of affected rows (if supported by underlying database driver).
+	 * @throws		 PropelException Any exceptions caught during processing will be
+	 *							rethrown wrapped into a PropelException.
+	 */
+	public static function doSoftDeleteAll(PropelPDO $con = null)
+	{
+		if ($con === null) {
+			$con = Propel::getConnection(AbsenceEleveSaisiePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+		}
+		$selectCriteria = new Criteria();
+		$selectCriteria->add(AbsenceEleveSaisiePeer::DELETED_AT, null, Criteria::ISNULL);
+		$selectCriteria->setDbName(AbsenceEleveSaisiePeer::DATABASE_NAME);
+		$modifyCriteria = new Criteria();
+		$modifyCriteria->add(AbsenceEleveSaisiePeer::DELETED_AT, time());
+		return BasePeer::doUpdate($selectCriteria, $modifyCriteria, $con);
+	}
+	
+	/**
+	 * Delete or soft delete all records, depending on AbsenceEleveSaisiePeer::$softDelete
+	 *
+	 * @param			 PropelPDO $con the connection to use
+	 * @return		 int	The number of affected rows (if supported by underlying database driver).
+	 * @throws		 PropelException Any exceptions caught during processing will be
+	 *							rethrown wrapped into a PropelException.
+	 */
+	public static function doDeleteAll(PropelPDO $con = null)
+	{
+		if (AbsenceEleveSaisiePeer::isSoftDeleteEnabled()) {
+			return AbsenceEleveSaisiePeer::doSoftDeleteAll($con);
+		} else {
+			return AbsenceEleveSaisiePeer::doForceDeleteAll($con);
+		} 
 	}
 
 } // BaseAbsenceEleveSaisiePeer

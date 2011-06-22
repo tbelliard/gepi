@@ -115,6 +115,12 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 	protected $updated_at;
 
 	/**
+	 * The value for the deleted_at field.
+	 * @var        string
+	 */
+	protected $deleted_at;
+
+	/**
 	 * The value for the version field.
 	 * Note: this column has a database default value of: 0
 	 * @var        int
@@ -422,6 +428,44 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 				$dt = new DateTime($this->updated_at);
 			} catch (Exception $x) {
 				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [deleted_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getDeletedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->deleted_at === null) {
+			return null;
+		}
+
+
+		if ($this->deleted_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->deleted_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->deleted_at, true), $x);
 			}
 		}
 
@@ -806,6 +850,28 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 	} // setUpdatedAt()
 
 	/**
+	 * Sets the value of [deleted_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
+	 * @return     AbsenceEleveSaisieVersion The current object (for fluent API support)
+	 */
+	public function setDeletedAt($v)
+	{
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->deleted_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->deleted_at !== null && $tmpDt = new DateTime($this->deleted_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->deleted_at = $newDateAsString;
+				$this->modifiedColumns[] = AbsenceEleveSaisieVersionPeer::DELETED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setDeletedAt()
+
+	/**
 	 * Set the value of [version] column.
 	 * 
 	 * @param      int $v new value
@@ -918,9 +984,10 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 			$this->id_lieu = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
 			$this->created_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
 			$this->updated_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
-			$this->version = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
-			$this->version_created_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
-			$this->version_created_by = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
+			$this->deleted_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+			$this->version = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
+			$this->version_created_at = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
+			$this->version_created_by = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -929,7 +996,7 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 18; // 18 = AbsenceEleveSaisieVersionPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 19; // 19 = AbsenceEleveSaisieVersionPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveSaisieVersion object", $e);
@@ -1294,12 +1361,15 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 				return $this->getUpdatedAt();
 				break;
 			case 15:
-				return $this->getVersion();
+				return $this->getDeletedAt();
 				break;
 			case 16:
-				return $this->getVersionCreatedAt();
+				return $this->getVersion();
 				break;
 			case 17:
+				return $this->getVersionCreatedAt();
+				break;
+			case 18:
 				return $this->getVersionCreatedBy();
 				break;
 			default:
@@ -1346,9 +1416,10 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 			$keys[12] => $this->getIdLieu(),
 			$keys[13] => $this->getCreatedAt(),
 			$keys[14] => $this->getUpdatedAt(),
-			$keys[15] => $this->getVersion(),
-			$keys[16] => $this->getVersionCreatedAt(),
-			$keys[17] => $this->getVersionCreatedBy(),
+			$keys[15] => $this->getDeletedAt(),
+			$keys[16] => $this->getVersion(),
+			$keys[17] => $this->getVersionCreatedAt(),
+			$keys[18] => $this->getVersionCreatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aAbsenceEleveSaisie) {
@@ -1431,12 +1502,15 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 				$this->setUpdatedAt($value);
 				break;
 			case 15:
-				$this->setVersion($value);
+				$this->setDeletedAt($value);
 				break;
 			case 16:
-				$this->setVersionCreatedAt($value);
+				$this->setVersion($value);
 				break;
 			case 17:
+				$this->setVersionCreatedAt($value);
+				break;
+			case 18:
 				$this->setVersionCreatedBy($value);
 				break;
 		} // switch()
@@ -1478,9 +1552,10 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 		if (array_key_exists($keys[12], $arr)) $this->setIdLieu($arr[$keys[12]]);
 		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
 		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setVersion($arr[$keys[15]]);
-		if (array_key_exists($keys[16], $arr)) $this->setVersionCreatedAt($arr[$keys[16]]);
-		if (array_key_exists($keys[17], $arr)) $this->setVersionCreatedBy($arr[$keys[17]]);
+		if (array_key_exists($keys[15], $arr)) $this->setDeletedAt($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setVersion($arr[$keys[16]]);
+		if (array_key_exists($keys[17], $arr)) $this->setVersionCreatedAt($arr[$keys[17]]);
+		if (array_key_exists($keys[18], $arr)) $this->setVersionCreatedBy($arr[$keys[18]]);
 	}
 
 	/**
@@ -1507,6 +1582,7 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::ID_LIEU)) $criteria->add(AbsenceEleveSaisieVersionPeer::ID_LIEU, $this->id_lieu);
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::CREATED_AT)) $criteria->add(AbsenceEleveSaisieVersionPeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::UPDATED_AT)) $criteria->add(AbsenceEleveSaisieVersionPeer::UPDATED_AT, $this->updated_at);
+		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::DELETED_AT)) $criteria->add(AbsenceEleveSaisieVersionPeer::DELETED_AT, $this->deleted_at);
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::VERSION)) $criteria->add(AbsenceEleveSaisieVersionPeer::VERSION, $this->version);
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::VERSION_CREATED_AT)) $criteria->add(AbsenceEleveSaisieVersionPeer::VERSION_CREATED_AT, $this->version_created_at);
 		if ($this->isColumnModified(AbsenceEleveSaisieVersionPeer::VERSION_CREATED_BY)) $criteria->add(AbsenceEleveSaisieVersionPeer::VERSION_CREATED_BY, $this->version_created_by);
@@ -1594,6 +1670,7 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 		$copyObj->setIdLieu($this->getIdLieu());
 		$copyObj->setCreatedAt($this->getCreatedAt());
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
+		$copyObj->setDeletedAt($this->getDeletedAt());
 		$copyObj->setVersion($this->getVersion());
 		$copyObj->setVersionCreatedAt($this->getVersionCreatedAt());
 		$copyObj->setVersionCreatedBy($this->getVersionCreatedBy());
@@ -1709,6 +1786,7 @@ abstract class BaseAbsenceEleveSaisieVersion extends BaseObject  implements Pers
 		$this->id_lieu = null;
 		$this->created_at = null;
 		$this->updated_at = null;
+		$this->deleted_at = null;
 		$this->version = null;
 		$this->version_created_at = null;
 		$this->version_created_by = null;

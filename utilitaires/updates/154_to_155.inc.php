@@ -336,4 +336,18 @@ if ($query) {
 		$result .= "<font color=\"green\">Ok !</font><br />";
 }
 
+$query = mysql_query("ALTER TABLE `a_saisies` ADD deleted_at DATETIME AFTER updated_at;");
+if ($query) {
+		$result .= "<font color=\"blue\">Le champ deleted_at de la table a_saisies a été ajouté.</font><br />";
+} else {
+		$result .= "<font color=\"red\">Erreur : Le champ deleted_at de la table a_saisies n'a pas été ajouté</font><br />";
+}
+
+$query = mysql_query("ALTER TABLE `a_saisies_version` ADD deleted_at DATETIME AFTER updated_at;");
+if ($query) {
+		$result .= "<font color=\"blue\">Le champ deleted_at de la table a_saisies_version a été ajouté.</font><br />";
+} else {
+		$result .= "<font color=\"red\">Erreur : Le champ deleted_at de la table a_saisies_version n'a pas été ajouté</font><br />";
+}
+
 ?>
