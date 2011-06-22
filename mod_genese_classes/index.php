@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -397,8 +397,8 @@ else {
 
 	echo "<ol>\n";
 	echo "<li><a href='select_classes.php?projet=$projet'>Choisir les classes (<i>actuelles et futures</i>)</a></li>\n";
-	echo "<li><a href='liste_options.php?projet=$projet'>Lister les options actuelles des élèves</a></li>\n";
 	echo "<li><a href='select_options.php?projet=$projet'>Choisir les options</a></li>\n";
+	echo "<li><a href='liste_options.php?projet=$projet'>Lister les options actuelles des élèves</a></li>\n";
 	echo "<li><a href='import_options.php?projet=$projet'>Importer les options futures des élèves d'après un CSV</a></li>\n";
 	echo "<li><a href='select_arriv_red.php?projet=$projet'>Sélection des élèves redoublants et/ou arrivants</a></li>\n";
 	echo "<li><a href='saisie_contraintes_opt_classe.php?projet=$projet'>Saisir les contraintes sur les classes et options</a><br />(<i>pour exclure la présence de certaines options sur certaines classes</i>)</li>\n";
