@@ -1000,6 +1000,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	public function unDelete(PropelPDO $con = null)
 	{
     	AbsenceEleveSaisiePeer::disableVersioning();
+    	$this->setDeletedBy(null);
 		parent::unDelete($con);
 		AbsenceEleveSaisiePeer::enableVersioning();
 	}
@@ -1016,6 +1017,10 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	public function delete(PropelPDO $con = null)
 	{
     	AbsenceEleveSaisiePeer::disableVersioning();
+	    $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+	    if ($utilisateur != null) {
+			$this->setDeletedBy($utilisateur->getLogin());
+	    }
 		parent::delete($con);
 		AbsenceEleveSaisiePeer::enableVersioning();
 	}

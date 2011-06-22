@@ -19,6 +19,7 @@
  * @method     AbsenceEleveSaisieQuery orderByIdAid($order = Criteria::ASC) Order by the id_aid column
  * @method     AbsenceEleveSaisieQuery orderByIdSIncidents($order = Criteria::ASC) Order by the id_s_incidents column
  * @method     AbsenceEleveSaisieQuery orderByIdLieu($order = Criteria::ASC) Order by the id_lieu column
+ * @method     AbsenceEleveSaisieQuery orderByDeletedBy($order = Criteria::ASC) Order by the deleted_by column
  * @method     AbsenceEleveSaisieQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     AbsenceEleveSaisieQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method     AbsenceEleveSaisieQuery orderByDeletedAt($order = Criteria::ASC) Order by the deleted_at column
@@ -39,6 +40,7 @@
  * @method     AbsenceEleveSaisieQuery groupByIdAid() Group by the id_aid column
  * @method     AbsenceEleveSaisieQuery groupByIdSIncidents() Group by the id_s_incidents column
  * @method     AbsenceEleveSaisieQuery groupByIdLieu() Group by the id_lieu column
+ * @method     AbsenceEleveSaisieQuery groupByDeletedBy() Group by the deleted_by column
  * @method     AbsenceEleveSaisieQuery groupByCreatedAt() Group by the created_at column
  * @method     AbsenceEleveSaisieQuery groupByUpdatedAt() Group by the updated_at column
  * @method     AbsenceEleveSaisieQuery groupByDeletedAt() Group by the deleted_at column
@@ -106,6 +108,7 @@
  * @method     AbsenceEleveSaisie findOneByIdAid(int $id_aid) Return the first AbsenceEleveSaisie filtered by the id_aid column
  * @method     AbsenceEleveSaisie findOneByIdSIncidents(int $id_s_incidents) Return the first AbsenceEleveSaisie filtered by the id_s_incidents column
  * @method     AbsenceEleveSaisie findOneByIdLieu(int $id_lieu) Return the first AbsenceEleveSaisie filtered by the id_lieu column
+ * @method     AbsenceEleveSaisie findOneByDeletedBy(string $deleted_by) Return the first AbsenceEleveSaisie filtered by the deleted_by column
  * @method     AbsenceEleveSaisie findOneByCreatedAt(string $created_at) Return the first AbsenceEleveSaisie filtered by the created_at column
  * @method     AbsenceEleveSaisie findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveSaisie filtered by the updated_at column
  * @method     AbsenceEleveSaisie findOneByDeletedAt(string $deleted_at) Return the first AbsenceEleveSaisie filtered by the deleted_at column
@@ -126,6 +129,7 @@
  * @method     array findByIdAid(int $id_aid) Return AbsenceEleveSaisie objects filtered by the id_aid column
  * @method     array findByIdSIncidents(int $id_s_incidents) Return AbsenceEleveSaisie objects filtered by the id_s_incidents column
  * @method     array findByIdLieu(int $id_lieu) Return AbsenceEleveSaisie objects filtered by the id_lieu column
+ * @method     array findByDeletedBy(string $deleted_by) Return AbsenceEleveSaisie objects filtered by the deleted_by column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveSaisie objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveSaisie objects filtered by the updated_at column
  * @method     array findByDeletedAt(string $deleted_at) Return AbsenceEleveSaisie objects filtered by the deleted_at column
@@ -743,6 +747,34 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(AbsenceEleveSaisiePeer::ID_LIEU, $idLieu, $comparison);
+	}
+
+	/**
+	 * Filter the query on the deleted_by column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDeletedBy('fooValue');   // WHERE deleted_by = 'fooValue'
+	 * $query->filterByDeletedBy('%fooValue%'); // WHERE deleted_by LIKE '%fooValue%'
+	 * </code>
+	 *
+	 * @param     string $deletedBy The value to use as filter.
+	 *              Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieQuery The current query, for fluid interface
+	 */
+	public function filterByDeletedBy($deletedBy = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($deletedBy)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $deletedBy)) {
+				$deletedBy = str_replace('*', '%', $deletedBy);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveSaisiePeer::DELETED_BY, $deletedBy, $comparison);
 	}
 
 	/**
@@ -1852,8 +1884,6 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		return $this->addAscendingOrderByColumn(AbsenceEleveSaisiePeer::CREATED_AT);
 	}
 
-	// versionable behavior
-	
 	// soft_delete behavior
 	
 	/**
@@ -1943,4 +1973,6 @@ abstract class BaseAbsenceEleveSaisieQuery extends ModelCriteria
 		return self::$softDelete;
 	}
 
+	// versionable behavior
+	
 } // BaseAbsenceEleveSaisieQuery

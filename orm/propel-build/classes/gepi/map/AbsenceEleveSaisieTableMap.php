@@ -51,6 +51,7 @@ class AbsenceEleveSaisieTableMap extends TableMap
 		$this->addForeignKey('ID_AID', 'IdAid', 'INTEGER', 'aid', 'ID', false, null, null);
 		$this->addColumn('ID_S_INCIDENTS', 'IdSIncidents', 'INTEGER', false, null, null);
 		$this->addForeignKey('ID_LIEU', 'IdLieu', 'INTEGER', 'a_lieux', 'ID', false, 11, null);
+		$this->addColumn('DELETED_BY', 'DeletedBy', 'VARCHAR', false, 100, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('DELETED_AT', 'DeletedAt', 'TIMESTAMP', false, null, null);
@@ -88,8 +89,8 @@ class AbsenceEleveSaisieTableMap extends TableMap
 	{
 		return array(
 			'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
-			'versionable' => array('version_column' => 'version', 'version_table' => '', 'log_created_at' => 'true', 'log_created_by' => 'true', 'log_comment' => 'false', 'version_created_at_column' => 'version_created_at', 'version_created_by_column' => 'version_created_by', 'version_comment_column' => 'version_comment', ),
 			'soft_delete' => array('deleted_column' => 'deleted_at', ),
+			'versionable' => array('version_column' => 'version', 'version_table' => '', 'log_created_at' => 'true', 'log_created_by' => 'true', 'log_comment' => 'false', 'version_created_at_column' => 'version_created_at', 'version_created_by_column' => 'version_created_by', 'version_comment_column' => 'version_comment', ),
 		);
 	} // getBehaviors()
 

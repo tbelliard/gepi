@@ -19,6 +19,7 @@
  * @method     AbsenceEleveSaisieVersionQuery orderByIdAid($order = Criteria::ASC) Order by the id_aid column
  * @method     AbsenceEleveSaisieVersionQuery orderByIdSIncidents($order = Criteria::ASC) Order by the id_s_incidents column
  * @method     AbsenceEleveSaisieVersionQuery orderByIdLieu($order = Criteria::ASC) Order by the id_lieu column
+ * @method     AbsenceEleveSaisieVersionQuery orderByDeletedBy($order = Criteria::ASC) Order by the deleted_by column
  * @method     AbsenceEleveSaisieVersionQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     AbsenceEleveSaisieVersionQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  * @method     AbsenceEleveSaisieVersionQuery orderByDeletedAt($order = Criteria::ASC) Order by the deleted_at column
@@ -39,6 +40,7 @@
  * @method     AbsenceEleveSaisieVersionQuery groupByIdAid() Group by the id_aid column
  * @method     AbsenceEleveSaisieVersionQuery groupByIdSIncidents() Group by the id_s_incidents column
  * @method     AbsenceEleveSaisieVersionQuery groupByIdLieu() Group by the id_lieu column
+ * @method     AbsenceEleveSaisieVersionQuery groupByDeletedBy() Group by the deleted_by column
  * @method     AbsenceEleveSaisieVersionQuery groupByCreatedAt() Group by the created_at column
  * @method     AbsenceEleveSaisieVersionQuery groupByUpdatedAt() Group by the updated_at column
  * @method     AbsenceEleveSaisieVersionQuery groupByDeletedAt() Group by the deleted_at column
@@ -70,6 +72,7 @@
  * @method     AbsenceEleveSaisieVersion findOneByIdAid(int $id_aid) Return the first AbsenceEleveSaisieVersion filtered by the id_aid column
  * @method     AbsenceEleveSaisieVersion findOneByIdSIncidents(int $id_s_incidents) Return the first AbsenceEleveSaisieVersion filtered by the id_s_incidents column
  * @method     AbsenceEleveSaisieVersion findOneByIdLieu(int $id_lieu) Return the first AbsenceEleveSaisieVersion filtered by the id_lieu column
+ * @method     AbsenceEleveSaisieVersion findOneByDeletedBy(string $deleted_by) Return the first AbsenceEleveSaisieVersion filtered by the deleted_by column
  * @method     AbsenceEleveSaisieVersion findOneByCreatedAt(string $created_at) Return the first AbsenceEleveSaisieVersion filtered by the created_at column
  * @method     AbsenceEleveSaisieVersion findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveSaisieVersion filtered by the updated_at column
  * @method     AbsenceEleveSaisieVersion findOneByDeletedAt(string $deleted_at) Return the first AbsenceEleveSaisieVersion filtered by the deleted_at column
@@ -90,6 +93,7 @@
  * @method     array findByIdAid(int $id_aid) Return AbsenceEleveSaisieVersion objects filtered by the id_aid column
  * @method     array findByIdSIncidents(int $id_s_incidents) Return AbsenceEleveSaisieVersion objects filtered by the id_s_incidents column
  * @method     array findByIdLieu(int $id_lieu) Return AbsenceEleveSaisieVersion objects filtered by the id_lieu column
+ * @method     array findByDeletedBy(string $deleted_by) Return AbsenceEleveSaisieVersion objects filtered by the deleted_by column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveSaisieVersion objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveSaisieVersion objects filtered by the updated_at column
  * @method     array findByDeletedAt(string $deleted_at) Return AbsenceEleveSaisieVersion objects filtered by the deleted_at column
@@ -703,6 +707,34 @@ abstract class BaseAbsenceEleveSaisieVersionQuery extends ModelCriteria
 			}
 		}
 		return $this->addUsingAlias(AbsenceEleveSaisieVersionPeer::ID_LIEU, $idLieu, $comparison);
+	}
+
+	/**
+	 * Filter the query on the deleted_by column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByDeletedBy('fooValue');   // WHERE deleted_by = 'fooValue'
+	 * $query->filterByDeletedBy('%fooValue%'); // WHERE deleted_by LIKE '%fooValue%'
+	 * </code>
+	 *
+	 * @param     string $deletedBy The value to use as filter.
+	 *              Accepts wildcards (* and % trigger a LIKE)
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveSaisieVersionQuery The current query, for fluid interface
+	 */
+	public function filterByDeletedBy($deletedBy = null, $comparison = null)
+	{
+		if (null === $comparison) {
+			if (is_array($deletedBy)) {
+				$comparison = Criteria::IN;
+			} elseif (preg_match('/[\%\*]/', $deletedBy)) {
+				$deletedBy = str_replace('*', '%', $deletedBy);
+				$comparison = Criteria::LIKE;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveSaisieVersionPeer::DELETED_BY, $deletedBy, $comparison);
 	}
 
 	/**

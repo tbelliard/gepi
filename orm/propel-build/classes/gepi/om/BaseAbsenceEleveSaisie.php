@@ -103,6 +103,12 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	protected $id_lieu;
 
 	/**
+	 * The value for the deleted_by field.
+	 * @var        string
+	 */
+	protected $deleted_by;
+
+	/**
 	 * The value for the created_at field.
 	 * @var        string
 	 */
@@ -413,6 +419,16 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	public function getIdLieu()
 	{
 		return $this->id_lieu;
+	}
+
+	/**
+	 * Get the [deleted_by] column value.
+	 * Login de l'utilisateur professionnel qui a supprimé la saisie
+	 * @return     string
+	 */
+	public function getDeletedBy()
+	{
+		return $this->deleted_by;
 	}
 
 	/**
@@ -884,6 +900,26 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 	} // setIdLieu()
 
 	/**
+	 * Set the value of [deleted_by] column.
+	 * Login de l'utilisateur professionnel qui a supprimé la saisie
+	 * @param      string $v new value
+	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
+	 */
+	public function setDeletedBy($v)
+	{
+		if ($v !== null) {
+			$v = (string) $v;
+		}
+
+		if ($this->deleted_by !== $v) {
+			$this->deleted_by = $v;
+			$this->modifiedColumns[] = AbsenceEleveSaisiePeer::DELETED_BY;
+		}
+
+		return $this;
+	} // setDeletedBy()
+
+	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
 	 * 
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.
@@ -1060,12 +1096,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$this->id_aid = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
 			$this->id_s_incidents = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
 			$this->id_lieu = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
-			$this->created_at = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
-			$this->updated_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
-			$this->deleted_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
-			$this->version = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
-			$this->version_created_at = ($row[$startcol + 17] !== null) ? (string) $row[$startcol + 17] : null;
-			$this->version_created_by = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
+			$this->deleted_by = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+			$this->created_at = ($row[$startcol + 14] !== null) ? (string) $row[$startcol + 14] : null;
+			$this->updated_at = ($row[$startcol + 15] !== null) ? (string) $row[$startcol + 15] : null;
+			$this->deleted_at = ($row[$startcol + 16] !== null) ? (string) $row[$startcol + 16] : null;
+			$this->version = ($row[$startcol + 17] !== null) ? (int) $row[$startcol + 17] : null;
+			$this->version_created_at = ($row[$startcol + 18] !== null) ? (string) $row[$startcol + 18] : null;
+			$this->version_created_by = ($row[$startcol + 19] !== null) ? (string) $row[$startcol + 19] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -1074,7 +1111,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 19; // 19 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 20; // 20 = AbsenceEleveSaisiePeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveSaisie object", $e);
@@ -1635,21 +1672,24 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				return $this->getIdLieu();
 				break;
 			case 13:
-				return $this->getCreatedAt();
+				return $this->getDeletedBy();
 				break;
 			case 14:
-				return $this->getUpdatedAt();
+				return $this->getCreatedAt();
 				break;
 			case 15:
-				return $this->getDeletedAt();
+				return $this->getUpdatedAt();
 				break;
 			case 16:
-				return $this->getVersion();
+				return $this->getDeletedAt();
 				break;
 			case 17:
-				return $this->getVersionCreatedAt();
+				return $this->getVersion();
 				break;
 			case 18:
+				return $this->getVersionCreatedAt();
+				break;
+			case 19:
 				return $this->getVersionCreatedBy();
 				break;
 			default:
@@ -1694,12 +1734,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			$keys[10] => $this->getIdAid(),
 			$keys[11] => $this->getIdSIncidents(),
 			$keys[12] => $this->getIdLieu(),
-			$keys[13] => $this->getCreatedAt(),
-			$keys[14] => $this->getUpdatedAt(),
-			$keys[15] => $this->getDeletedAt(),
-			$keys[16] => $this->getVersion(),
-			$keys[17] => $this->getVersionCreatedAt(),
-			$keys[18] => $this->getVersionCreatedBy(),
+			$keys[13] => $this->getDeletedBy(),
+			$keys[14] => $this->getCreatedAt(),
+			$keys[15] => $this->getUpdatedAt(),
+			$keys[16] => $this->getDeletedAt(),
+			$keys[17] => $this->getVersion(),
+			$keys[18] => $this->getVersionCreatedAt(),
+			$keys[19] => $this->getVersionCreatedBy(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aUtilisateurProfessionnel) {
@@ -1803,21 +1844,24 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 				$this->setIdLieu($value);
 				break;
 			case 13:
-				$this->setCreatedAt($value);
+				$this->setDeletedBy($value);
 				break;
 			case 14:
-				$this->setUpdatedAt($value);
+				$this->setCreatedAt($value);
 				break;
 			case 15:
-				$this->setDeletedAt($value);
+				$this->setUpdatedAt($value);
 				break;
 			case 16:
-				$this->setVersion($value);
+				$this->setDeletedAt($value);
 				break;
 			case 17:
-				$this->setVersionCreatedAt($value);
+				$this->setVersion($value);
 				break;
 			case 18:
+				$this->setVersionCreatedAt($value);
+				break;
+			case 19:
 				$this->setVersionCreatedBy($value);
 				break;
 		} // switch()
@@ -1857,12 +1901,13 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if (array_key_exists($keys[10], $arr)) $this->setIdAid($arr[$keys[10]]);
 		if (array_key_exists($keys[11], $arr)) $this->setIdSIncidents($arr[$keys[11]]);
 		if (array_key_exists($keys[12], $arr)) $this->setIdLieu($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setCreatedAt($arr[$keys[13]]);
-		if (array_key_exists($keys[14], $arr)) $this->setUpdatedAt($arr[$keys[14]]);
-		if (array_key_exists($keys[15], $arr)) $this->setDeletedAt($arr[$keys[15]]);
-		if (array_key_exists($keys[16], $arr)) $this->setVersion($arr[$keys[16]]);
-		if (array_key_exists($keys[17], $arr)) $this->setVersionCreatedAt($arr[$keys[17]]);
-		if (array_key_exists($keys[18], $arr)) $this->setVersionCreatedBy($arr[$keys[18]]);
+		if (array_key_exists($keys[13], $arr)) $this->setDeletedBy($arr[$keys[13]]);
+		if (array_key_exists($keys[14], $arr)) $this->setCreatedAt($arr[$keys[14]]);
+		if (array_key_exists($keys[15], $arr)) $this->setUpdatedAt($arr[$keys[15]]);
+		if (array_key_exists($keys[16], $arr)) $this->setDeletedAt($arr[$keys[16]]);
+		if (array_key_exists($keys[17], $arr)) $this->setVersion($arr[$keys[17]]);
+		if (array_key_exists($keys[18], $arr)) $this->setVersionCreatedAt($arr[$keys[18]]);
+		if (array_key_exists($keys[19], $arr)) $this->setVersionCreatedBy($arr[$keys[19]]);
 	}
 
 	/**
@@ -1887,6 +1932,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_AID)) $criteria->add(AbsenceEleveSaisiePeer::ID_AID, $this->id_aid);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_S_INCIDENTS)) $criteria->add(AbsenceEleveSaisiePeer::ID_S_INCIDENTS, $this->id_s_incidents);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::ID_LIEU)) $criteria->add(AbsenceEleveSaisiePeer::ID_LIEU, $this->id_lieu);
+		if ($this->isColumnModified(AbsenceEleveSaisiePeer::DELETED_BY)) $criteria->add(AbsenceEleveSaisiePeer::DELETED_BY, $this->deleted_by);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::CREATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::UPDATED_AT)) $criteria->add(AbsenceEleveSaisiePeer::UPDATED_AT, $this->updated_at);
 		if ($this->isColumnModified(AbsenceEleveSaisiePeer::DELETED_AT)) $criteria->add(AbsenceEleveSaisiePeer::DELETED_AT, $this->deleted_at);
@@ -1967,6 +2013,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$copyObj->setIdAid($this->getIdAid());
 		$copyObj->setIdSIncidents($this->getIdSIncidents());
 		$copyObj->setIdLieu($this->getIdLieu());
+		$copyObj->setDeletedBy($this->getDeletedBy());
 		$copyObj->setCreatedAt($this->getCreatedAt());
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
 		$copyObj->setDeletedAt($this->getDeletedAt());
@@ -2834,6 +2881,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->id_aid = null;
 		$this->id_s_incidents = null;
 		$this->id_lieu = null;
+		$this->deleted_by = null;
 		$this->created_at = null;
 		$this->updated_at = null;
 		$this->deleted_at = null;
@@ -2923,6 +2971,33 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		return $this;
 	}
 
+	// soft_delete behavior
+	
+	/**
+	 * Bypass the soft_delete behavior and force a hard delete of the current object
+	 */
+	public function forceDelete(PropelPDO $con = null)
+	{
+		if($isSoftDeleteEnabled = AbsenceEleveSaisiePeer::isSoftDeleteEnabled()) {
+			AbsenceEleveSaisiePeer::disableSoftDelete();
+		}
+		$this->delete($con);
+		if ($isSoftDeleteEnabled) {
+			AbsenceEleveSaisiePeer::enableSoftDelete();
+		}
+	}
+	
+	/**
+	 * Undelete a row that was soft_deleted
+	 *
+	 * @return		 int The number of rows affected by this update and any referring fk objects' save() operations.
+	 */
+	public function unDelete(PropelPDO $con = null)
+	{
+		$this->setDeletedAt(null);
+		return $this->save($con);
+	}
+
 	// versionable behavior
 	
 	/**
@@ -2964,6 +3039,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$version->setIdAid($this->id_aid);
 		$version->setIdSIncidents($this->id_s_incidents);
 		$version->setIdLieu($this->id_lieu);
+		$version->setDeletedBy($this->deleted_by);
 		$version->setCreatedAt($this->created_at);
 		$version->setUpdatedAt($this->updated_at);
 		$version->setDeletedAt($this->deleted_at);
@@ -3018,6 +3094,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 		$this->setIdAid($version->getIdAid());
 		$this->setIdSIncidents($version->getIdSIncidents());
 		$this->setIdLieu($version->getIdLieu());
+		$this->setDeletedBy($version->getDeletedBy());
 		$this->setCreatedAt($version->getCreatedAt());
 		$this->setUpdatedAt($version->getUpdatedAt());
 		$this->setDeletedAt($version->getDeletedAt());
@@ -3135,33 +3212,6 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 			}
 		}
 		return $diff;
-	}
-
-	// soft_delete behavior
-	
-	/**
-	 * Bypass the soft_delete behavior and force a hard delete of the current object
-	 */
-	public function forceDelete(PropelPDO $con = null)
-	{
-		if($isSoftDeleteEnabled = AbsenceEleveSaisiePeer::isSoftDeleteEnabled()) {
-			AbsenceEleveSaisiePeer::disableSoftDelete();
-		}
-		$this->delete($con);
-		if ($isSoftDeleteEnabled) {
-			AbsenceEleveSaisiePeer::enableSoftDelete();
-		}
-	}
-	
-	/**
-	 * Undelete a row that was soft_deleted
-	 *
-	 * @return		 int The number of rows affected by this update and any referring fk objects' save() operations.
-	 */
-	public function unDelete(PropelPDO $con = null)
-	{
-		$this->setDeletedAt(null);
-		return $this->save($con);
 	}
 
 	/**

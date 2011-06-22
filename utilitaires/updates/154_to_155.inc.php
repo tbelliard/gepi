@@ -336,18 +336,56 @@ if ($query) {
 		$result .= "<font color=\"green\">Ok !</font><br />";
 }
 
-$query = mysql_query("ALTER TABLE `a_saisies` ADD deleted_at DATETIME AFTER updated_at;");
-if ($query) {
-		$result .= "<font color=\"blue\">Le champ deleted_at de la table a_saisies a été ajouté.</font><br />";
+$result .= "&nbsp;->Ajout d'un champ 'deleted_at' à la table 'a_saisies'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'deleted_at';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 } else {
-		$result .= "<font color=\"red\">Erreur : Le champ deleted_at de la table a_saisies n'a pas été ajouté</font><br />";
+	$query = mysql_query("ALTER TABLE `a_saisies` ADD deleted_at DATETIME AFTER updated_at;");
+	if ($query) {
+			$result .= "<font color=\"blue\">Le champ deleted_at de la table a_saisies a été ajouté.</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur : Le champ deleted_at de la table a_saisies n'a pas été ajouté</font><br />";
+	}
 }
 
-$query = mysql_query("ALTER TABLE `a_saisies_version` ADD deleted_at DATETIME AFTER updated_at;");
-if ($query) {
-		$result .= "<font color=\"blue\">Le champ deleted_at de la table a_saisies_version a été ajouté.</font><br />";
+$result .= "&nbsp;->Ajout d'un champ 'deleted_at' à la table 'a_saisies_version'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'deleted_at';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 } else {
-		$result .= "<font color=\"red\">Erreur : Le champ deleted_at de la table a_saisies_version n'a pas été ajouté</font><br />";
+	$query = mysql_query("ALTER TABLE `a_saisies_version` ADD deleted_at DATETIME AFTER updated_at;");
+	if ($query) {
+			$result .= "<font color=\"blue\">Le champ deleted_at de la table a_saisies_version a été ajouté.</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur : Le champ deleted_at de la table a_saisies_version n'a pas été ajouté</font><br />";
+	}
+}
+
+$result .= "&nbsp;->Ajout d'un champ 'deleted_by' à la table 'a_saisies'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'deleted_at';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+} else {
+	$query = mysql_query("ALTER TABLE `a_saisies` ADD deleted_by VARCHAR(100) AFTER id_lieu;");
+	if ($query) {
+			$result .= "<font color=\"blue\">Le champ deleted_by de la table a_saisies a été ajouté.</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur : Le champ deleted_by de la table a_saisies n'a pas été ajouté</font><br />";
+	}
+}
+
+$result .= "&nbsp;->Ajout d'un champ 'deleted_by' à la table 'a_saisies_version'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'deleted_at';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+} else {
+	$query = mysql_query("ALTER TABLE `a_saisies_version` ADD deleted_by VARCHAR(100) AFTER id_lieu;");
+	if ($query) {
+			$result .= "<font color=\"blue\">Le champ deleted_by de la table a_saisies_version a été ajouté.</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur : Le champ deleted_by de la table a_saisies_version n'a pas été ajouté</font><br />";
+	}
 }
 
 ?>
