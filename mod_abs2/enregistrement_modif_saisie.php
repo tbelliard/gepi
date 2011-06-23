@@ -105,7 +105,7 @@ if ( isset($_POST["creation_traitement"])) {
 	$saisie->unDelete();
 	include("visu_saisie.php");
     die();
-} elseif (isset($_GET["action"])) {
+} elseif (isset($_POST["action"])) {
 	if ($utilisateur->getStatut() == 'cpe' || $utilisateur->getStatut() == 'scolarite'
 		|| ($utilisateur->getStatut() == 'professeur' && $saisie->getUtilisateurId() == $utilisateur->getPrimaryKey()) ) {
 			//ok
@@ -115,9 +115,10 @@ if ( isset($_POST["creation_traitement"])) {
 	    die();
 	}
 		
-	if ($_GET["action"] == 'suppression') {
+	if ($_POST["action"] == 'suppression') {
+        
 		$saisie->delete();
-	} else if ($_GET["action"] == 'restauration') {
+	} else if ($_POST["action"] == 'restauration') {
 		$saisie->unDelete();
 	}
 	include("visu_saisie.php");

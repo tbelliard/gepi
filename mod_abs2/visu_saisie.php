@@ -406,16 +406,18 @@ if ($modifiable) {
     echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     if ($saisie->getDeletedAt()==null) {
     	echo '<img src="../images/delete16.png"/>';
-    	echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=suppression">';
+    	//echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=suppression">';
+        echo'<input type="hidden" name="action" value="suppression">';
     	echo '<button>Supprimer la saisie</button>';
-    	echo '</a>';
+    	//echo '</a>';
     } else {
     	//on autorise la restauration pour un autre que cpe ou scola uniquement si c'est l'utilisateur en cours qui a fait auparavant la suppression
 		if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite"
 		|| ($saisie->getDeletedBy() == $utilisateur->getLogin())) {
-	    	echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=restauration">';
+	    	//echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=restauration">';
+            echo'<input type="hidden" name="action" value="restauration">';
 	    	echo '<button type="submit">Restaurer la saisie</button>';
-	    	echo '</a>';
+	    	//echo '</a>';
 		}
     }
     echo '</td></tr>';
