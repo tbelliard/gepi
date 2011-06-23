@@ -46,7 +46,7 @@
 	<!-- Gestion de l'expiration des session - Patrick Duthilleul -->
 	<script type="text/javascript">
 		//<![CDATA[
-			var debut=new Date()
+			debut_alert = new Date()
 
 			/* =================================================
 			 =
@@ -128,7 +128,7 @@
 				var seconds_int_betweenn_2_msg = 30;
 
 				var digital=new Date()
-				var seconds=(digital-debut)/1000
+				var seconds=(digital-debut_alert)/1000
 				//if (1==1) {
 				if (seconds>1800 - seconds_before_alert) {
 					var seconds_reste = Math.floor(1800 - seconds);
