@@ -1932,8 +1932,8 @@ else {
 			// Variables récupérées de calcul_moy_gen.inc.php
 			// Tableaux d'indices [$j][$i] (groupe, élève)
 			// A VéRIFIER: Tableaux d'indices [$i][$j] (élève, groupe)
-			$tab_bulletin[$id_classe][$periode_num]['note']=$current_eleve_note;
-			$tab_bulletin[$id_classe][$periode_num]['statut']=$current_eleve_statut;
+			if(isset($current_eleve_note)) {$tab_bulletin[$id_classe][$periode_num]['note']=$current_eleve_note;}
+			if(isset($current_eleve_statut)) {$tab_bulletin[$id_classe][$periode_num]['statut']=$current_eleve_statut;}
 			/*
 			for($j=0;$j<count($current_eleve_statut);$j++) {
 				for($i=0;$i<count($current_eleve_statut[$j]);$i++) {

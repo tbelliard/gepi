@@ -4759,6 +4759,12 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			//================
 
 
+
+		}
+
+
+
+
 			// =============== bloc absence ==================
 			if($tab_modele_pdf["active_bloc_absence"][$classe_id]==='1') {
 				$pdf->SetXY($tab_modele_pdf["X_absence"][$classe_id], $tab_modele_pdf["Y_absence"][$classe_id]);
@@ -5029,7 +5035,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				}
 			}
 
-		}
+//		}
 
 		// Insertion du relevé de notes si réclamé:
 		/*
