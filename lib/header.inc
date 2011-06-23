@@ -128,12 +128,12 @@ function show_message_deconnexion() {
 					//$('alert_cache').setStyle({top: y+"px"});
 					//$('alert_cache').setStyle({display: 'block'});
 					//$('alert_cache').setOpacity(0.5);
-					$('alert_entete').setStyle({top: y-46+Math.abs((height-200)/2)+"px"});
-					$('alert_entete').setStyle({left: Math.abs((width-300)/2)+"px"});
+					$('alert_entete').setStyle({top: y+2+"px"});
+					$('alert_entete').setStyle({left: Math.abs((width-640)/2)+"px"});
 					$('alert_entete').setOpacity(1);
 					$('alert_entete').setStyle({display: 'block'});
-					$('alert_popup').setStyle({top: y+Math.abs((height-200)/2)+"px"});
-					$('alert_popup').setStyle({left: Math.abs((width-300)/2)+"px"});
+					$('alert_popup').setStyle({top: y+50+"px"});
+					$('alert_popup').setStyle({left: Math.abs((width-640)/2)+"px"});
 					$('alert_popup').setOpacity(1);
 					$('alert_popup').setStyle({display: 'block'});
 					$('alert_bouton_ok').observe('click', function(event) {

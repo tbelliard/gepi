@@ -503,11 +503,13 @@
 								position:absolute;"><img   src="./images/alerte_entete.png" alt="alerte" /></div>
 <div id="alert_popup" style="z-index:2000;
 								text-align:justify;
-								width:300px;
-								height:150px;
+								width:600px;
+								height:130px;
 								border:1px solid black;
 								background-color:white;
-								padding:20px;
+								padding-top:10px;
+								padding-left:20px;
+								padding-right:20px;
 								display:none;
 								position:absolute;
 								background-image:url('./images/degrade_noir.png');

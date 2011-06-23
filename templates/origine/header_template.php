@@ -78,12 +78,12 @@
 					//$('alert_cache').setStyle({top: y+"px"});
 					//$('alert_cache').setStyle({display: 'block'});
 					//$('alert_cache').setOpacity(0.5);
-					$('alert_entete').setStyle({top: y-45+Math.abs((height-200)/2)+"px"});
-					$('alert_entete').setStyle({left: Math.abs((width-300)/2)+"px"});
+					$('alert_entete').setStyle({top: y+2+"px"});
+					$('alert_entete').setStyle({left: Math.abs((width-640)/2)+"px"});
 					$('alert_entete').setOpacity(1);
 					$('alert_entete').setStyle({display: 'block'});
-					$('alert_popup').setStyle({top: y+Math.abs((height-200)/2)+"px"});
-					$('alert_popup').setStyle({left: Math.abs((width-300)/2)+"px"});
+					$('alert_popup').setStyle({top: y+50+"px"});
+					$('alert_popup').setStyle({left: Math.abs((width-640)/2)+"px"});
 					$('alert_popup').setOpacity(1);
 					$('alert_popup').setStyle({display: 'block'});
 					$('alert_bouton_ok').observe('click', function(event) {
@@ -99,6 +99,14 @@
 							//document.body.style.overflow = 'scroll';				
 						}						
 					
+					});
+					$('alert_popup').observe('mouseover', function(event) {
+						//$('alert_entete').setOpacity(0.3);
+						//$('alert_popup').setOpacity(0.3);						
+					});
+					$('alert_popup').observe('mouseout', function(event) {
+						//$('alert_entete').setOpacity(1);
+						//$('alert_popup').setOpacity(1);					
 					});
 					$('alert_bouton_reload').observe('click', function(event) {
 						location.reload(true); 				
