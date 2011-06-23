@@ -1150,6 +1150,14 @@ if(getSettingValue('active_mod_discipline')=='y') {
   $texteItem="a accès aux récapitulatifs globaux des crédits ECTS pour ses classes.";
   if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
 	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+if(getSettingValue('active_mod_ooo')=='y') {
+  $titreItem='OOoUploadProf';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice personnels.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
+//=======================================================================================
 /*
  *
  *
@@ -1521,6 +1529,15 @@ $titreItem='GepiAccesRecapitulatifEctsScolarite';
 $texteItem="a accès aux récapitulatifs globaux des crédits ECTS.";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+if(getSettingValue('active_mod_ooo')=='y') {
+  $titreItem='OOoUploadScol';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice personnels.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
+//=======================================================================================
 /*
       
 			</table>
@@ -1637,6 +1654,15 @@ $titreItem='GepiAccesAbsTouteClasseCpe';
 $texteItem="a le droit d'accéder à toutes les classes pour saisir les absences";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+if(getSettingValue('active_mod_ooo')=='y') {
+  $titreItem='OOoUploadCpe';
+  $texteItem="a accès à l'upload de fichiers modèles OpenOffice personnels.";
+  if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+	$tbs_message = 'Erreur lors du chargement de '.$titreItem;
+}
+//=======================================================================================
 
 /*
 

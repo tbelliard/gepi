@@ -755,6 +755,8 @@ $tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/ajax_devoirs_classe.php
 
 $tab_req[] = "INSERT INTO droits SET id='/cahier_texte_2/ajax_liste_notices_privees.php',administrateur='F',professeur='V',cpe='F',scolarite='F',eleve='F',responsable='F',secours='F',autre='F',description='Cahiers de textes : Liste des notices privées',statut='';";
 
+$tab_req[] = "INSERT INTO droits VALUES ( '/mod_ooo/publipostage_ooo.php', 'V', 'V', 'V', 'V', 'F', 'F', 'F', 'V', 'Modèle Ooo : Publipostage', '');";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

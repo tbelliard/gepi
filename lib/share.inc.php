@@ -6977,4 +6977,56 @@ function nb_saisies_bulletin($type, $id_groupe, $periode_num, $mode="") {
 
 	return $retour;
 }
+
+function creation_index_redir_login($chemin_relatif,$niveau_arbo=1) {
+	$retour=true;
+
+	if($niveau_arbo==0) {
+		$pref=".";
+	}
+	else {
+		$pref="";
+		for($i=0;$i<$niveau_arbo;$i++) {
+			if($i>0) {
+				$pref.="/";
+			}
+			$pref.="..";
+		}
+	}
+
+	$fich=fopen($chemin_relatif."/index.html","w+");
+	if(!$fich) {
+		$retour=false;
+	}
+	else {
+		$res=fwrite($fich,'<html><head><script type="text/javascript">
+    document.location.replace("'.$pref.'/login.php")
+</script></head></html>
+');
+		if(!$res) {
+			$retour=false;
+		}
+		fclose($fich);
+	}
+
+	return $retour;
+}
+
+function get_tab_file($path,$tab_exclusion=array(".", "..", "remove.txt", ".htaccess", ".htpasswd", "index.html")) {
+	$tab_file = array();
+
+	$handle=opendir($path);
+	$n=0;
+	while ($file = readdir($handle)) {
+		if (!in_array(strtolower($file), $tab_exclusion)) {
+			$tab_file[] = $file;
+			$n++;
+		}
+	}
+	closedir($handle);
+	//arsort($tab_file);
+	rsort($tab_file);
+
+	return $tab_file;
+}
 ?>

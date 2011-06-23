@@ -1120,6 +1120,17 @@ class class_page_accueil {
 			  "Ce menu permet de vous permet de consulter vos listes d'".$this->gepiSettings['denomination_eleves']." par groupe constitué et enseigné.");
 	}
 
+	if(getSettingValue('active_mod_ooo')=='y') {
+		if(($this->statutUtilisateur=='scolarite')||
+				($this->statutUtilisateur=='administrateur')||
+				($this->statutUtilisateur=='professeur')||
+				($this->statutUtilisateur=='cpe')){
+		$this->creeNouveauItem("/mod_ooo/publipostage_ooo.php",
+				"Publipostage OOo",
+				"Ce menu permet de vous permet d'effectuer des publipostages OpenOffice.org à l'aide des données des tables 'eleves' et 'classes'.");
+		}
+	}
+
 	$this->creeNouveauItem("/eleves/visu_eleve.php",
 			"Consultation d'un ".$this->gepiSettings['denomination_eleve'],
 			"Ce menu vous permet de consulter dans une même page les informations concernant un ".$this->gepiSettings['denomination_eleve']." (enseignements suivis, bulletins, relevés de notes, ".$this->gepiSettings['denomination_responsables'].",...). Certains éléments peuvent n'être accessibles que pour certaines catégories de visiteurs.");
