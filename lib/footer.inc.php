@@ -175,22 +175,22 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 	} elseif ($niveau_arbo == "3") {
 		$chemin_sound="../../../sounds/".$footer_sound;
 	}
-echo $chemin_sound;
+	//echo $chemin_sound;
 	if(file_exists($chemin_sound)) {
 		echo "<audio id='id_footer_sound' preload='auto' autobuffer>
   <source src='$chemin_sound' />
 </audio>\n";
 		// Exemple de code d'appel: document.getElementById('id_footer_sound').play();
 		// Décommenter pour tester:
-		/*
+		//echo "<a href='javascript:play_sound();'>Jouer le son 'footer_sound' : $footer_sound</a>";
 		echo "
-<a href='javascript:play_sound();'>Jouer</a>
+<!--a href='javascript:play_footer_sound();'>Jouer</a-->
 <script type='text/javascript'>
-function play_sound() {
+function play_footer_sound() {
 document.getElementById('id_footer_sound').play();
 }
-</script>";
-		*/
+</script>
+";
 	}
 
 	// Remarque: alerte_popup.php modifie $niveau_arbo
