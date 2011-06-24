@@ -599,6 +599,24 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 				document.getElementById('div_modele_bulletin_pdf').style.display='none';
 			}
 		}
+
+		if(document.getElementById('id_tr_moyennes_periodes_precedentes')) {
+			if(document.getElementById('mode_bulletin_pdf').checked==true) {
+				document.getElementById('id_tr_moyennes_periodes_precedentes').style.display='';
+			}
+			else {
+				document.getElementById('id_tr_moyennes_periodes_precedentes').style.display='none';
+			}
+		}
+
+		if(document.getElementById('id_tr_evolution_moyenne_periode_precedente')) {
+			if(document.getElementById('mode_bulletin_pdf').checked==true) {
+				document.getElementById('id_tr_evolution_moyenne_periode_precedente').style.display='';
+			}
+			else {
+				document.getElementById('id_tr_evolution_moyenne_periode_precedente').style.display='none';
+			}
+		}
 	}
 
 	display_div_modele_bulletin_pdf();
@@ -634,7 +652,10 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 		*/
 		echo "<tr><td valign='top'><input type='checkbox' name='coefficients_a_1' id='coefficients_a_1' value='oui'  /></td><td><label for='coefficients_a_1' style='cursor: pointer;'>Forcer, dans le calcul des moyennes générales, les coefficients des matières à 1, indépendamment des coefficients saisis dans les paramètres de la classe.</label></td></tr>\n";
 
-		echo "<tr><td valign='top'><input type='checkbox' name='moyennes_periodes_precedentes' id='moyennes_periodes_precedentes' value='y'  /></td><td><label for='moyennes_periodes_precedentes' style='cursor: pointer;'>Afficher les moyennes de l'élève pour les périodes précédentes (<i>incompatible avec l'affichage des moyennes min/max/classe dans la même cellule que la moyenne de l'élève</i>).</label></td></tr>\n";
+		// A FAIRE: A déplacer et mettre dans le modèle PDF
+		echo "<tr id='id_tr_moyennes_periodes_precedentes'><td valign='top'><input type='checkbox' name='moyennes_periodes_precedentes' id='moyennes_periodes_precedentes' value='y'  /></td><td><label for='moyennes_periodes_precedentes' style='cursor: pointer;'>Afficher les moyennes de l'élève pour les périodes précédentes (<i>incompatible avec l'affichage des moyennes min/max/classe dans la même cellule que la moyenne de l'élève</i>).</label></td></tr>\n";
+
+		echo "<tr id='id_tr_evolution_moyenne_periode_precedente'><td valign='top'><input type='checkbox' name='evolution_moyenne_periode_precedente' id='evolution_moyenne_periode_precedente' value='y'  /></td><td><label for='evolution_moyenne_periode_precedente' style='cursor: pointer;'>Indiquer par un + ou - l'évolution de la moyenne (<i>hausse/stable/baisse</i>).</label></td></tr>\n";
 
 		echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' /></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les bulletins par établissement d'origine.</label></td></tr>\n";
 
@@ -972,6 +993,7 @@ else {
 
 	// 20100615
 	$moyennes_periodes_precedentes=isset($_POST['moyennes_periodes_precedentes']) ? $_POST['moyennes_periodes_precedentes'] : "n";
+	$evolution_moyenne_periode_precedente=isset($_POST['evolution_moyenne_periode_precedente']) ? $_POST['evolution_moyenne_periode_precedente'] : "n";
 
 	//$bull_pdf_debug=isset($_POST['bull_pdf_debug']) ? $_POST['bull_pdf_debug'] : "n";
 
@@ -1815,7 +1837,7 @@ else {
 			//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 			// 20100615
 			//$moyennes_periodes_precedentes="y";
-			if((isset($moyennes_periodes_precedentes))&&($periode_num>1)&&(!isset($tab_bulletin[$id_classe][$periode_num]['note_prec']))) {
+			if(((isset($moyennes_periodes_precedentes))||(isset($evolution_moyenne_periode_precedente )))&&($periode_num>1)&&(!isset($tab_bulletin[$id_classe][$periode_num]['note_prec']))) {
 				$reserve_periode_num=$periode_num;
 				for($periode_num=1;$periode_num<$reserve_periode_num;$periode_num++) {
 					//echo "\$periode_num=$periode_num<br />";

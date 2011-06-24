@@ -1058,6 +1058,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		//20100615
 		$moyennes_periodes_precedentes,
+		$evolution_moyenne_periode_precedente,
 
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
@@ -2924,7 +2925,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							$largeur_utilise = $largeur_utilise+$tab_modele_pdf["largeur_coef_moyenne"][$classe_id];
 						}
 
-						// nombre de note
+						// nombre de notes
 						// 20081118
 						//if($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1') {
 						if(($tab_modele_pdf["active_nombre_note_case"][$classe_id]==='1')&&($tab_modele_pdf["active_nombre_note"][$classe_id]!='1')) {
@@ -3275,6 +3276,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 				// Si c'est une matière suivie par l'élève
 				if(isset($tab_bull['note'][$m][$i])) {
+					//echo "\$tab_bull['eleve'][$i]['nom']=".$tab_bull['eleve'][$i]['nom']."<br />\n";
 
 					// calcul la taille du titre de la matière
 					$hauteur_caractere_matiere=10;
@@ -3444,7 +3446,14 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 							//20100615
 							if((!isset($moyennes_periodes_precedentes))||($moyennes_periodes_precedentes!="y")) {
-								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',10);
+								if((isset($evolution_moyenne_periode_precedente))&&($evolution_moyenne_periode_precedente=="y")) {
+									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',8);
+								}
+								else {
+									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',10);
+								}
+
+								$fleche_evolution="";
 
 								// On filtre si la moyenne est vide, on affiche seulement un tiret
 								if ($tab_bull['note'][$m][$i]=="-") {
@@ -3455,8 +3464,59 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								}
 								else {
 									$valeur = present_nombre($tab_bull['note'][$m][$i], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+
+									if((isset($evolution_moyenne_periode_precedente))&&($evolution_moyenne_periode_precedente=="y")) {
+										//$fleche_evolution="";
+
+										foreach($tab_bull['login_prec'] as $key => $value) {
+											// Il faut récupérer l'id_groupe et l'indice de l'élève... dans les tableaux récupérés de calcul_moy_gen.inc.php
+											// Tableaux d'indices [$j][$i] (groupe, élève)
+											$indice_eleve=-1;
+											for($loop_l=0;$loop_l<count($tab_bull['login_prec'][$key]);$loop_l++) {
+												//echo "\$tab_bull['login_prec'][$key][$loop_l]=".$tab_bull['login_prec'][$key][$loop_l]." et \$tab_bull['eleve'][$i]['login']=".$tab_bull['eleve'][$i]['login']."<br />\n";
+												if($tab_bull['login_prec'][$key][$loop_l]==$tab_bull['eleve'][$i]['login']) {$indice_eleve=$loop_l;break;}
+											}
+											//echo "\$indice_eleve=$indice_eleve<br />\n";
+		
+											if($indice_eleve!=-1) {
+												// Recherche du groupe
+												$indice_grp=-1;
+												for($loop_l=0;$loop_l<count($tab_bull['group_prec'][$key]);$loop_l++) {
+													//echo "\$tab_bull['group_prec'][$key][$loop_l]['id']=".$tab_bull['group_prec'][$key][$loop_l]['id']." et \$tab_bull['groupe'][$m]['id']=".$tab_bull['groupe'][$m]['id']."<br />\n";
+													if($tab_bull['group_prec'][$key][$loop_l]['id']==$tab_bull['groupe'][$m]['id']) {$indice_grp=$loop_l;break;}
+												}
+												//echo "\$indice_grp=$indice_grp<br />\n";
+		
+												if($indice_grp!=-1) {
+													if(isset($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve])) {
+														if ($tab_bull['statut_prec'][$key][$indice_grp][$indice_eleve]=="") {
+															//echo "\$tab_bull['note'][$m][$i]=".$tab_bull['note'][$m][$i]."<br />\n";
+															//echo "\$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]=".$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]."<br />\n";
+															if($tab_bull['note'][$m][$i]>$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]) {
+																$fleche_evolution="+";
+															}
+															elseif($tab_bull['note'][$m][$i]<$tab_bull['note_prec'][$key][$indice_grp][$indice_eleve]) {
+																$fleche_evolution="-";
+															}
+															else {
+																$fleche_evolution="";
+															}
+															//echo "\$fleche_evolution=".$fleche_evolution."<br />\n";
+
+															//$valeur = present_nombre($tab_bull['note_prec'][$key][$indice_grp][$indice_eleve], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
+														}
+
+													}
+												}
+											}
+		
+										}
+
+
+									}
 								}
-								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
+								if($fleche_evolution!="") {$fleche_evolution=" ".$fleche_evolution;}
+								$pdf->Cell($tab_modele_pdf["largeur_d_une_moyenne"][$classe_id], $espace_entre_matier/$nb_sousaffichage, $valeur.$fleche_evolution,1,2,'C',$tab_modele_pdf["active_reperage_eleve"][$classe_id]);
 								$valeur = "";
 
 								if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') {
