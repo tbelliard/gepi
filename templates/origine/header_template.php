@@ -108,10 +108,10 @@
 						//$('alert_entete').setOpacity(1);
 						//$('alert_popup').setOpacity(1);					
 					});
-					$('alert_bouton_reload').observe('click', function(event) {
-						location.reload(true); 				
-					
-					});	
+					//$('alert_bouton_reload').observe('click', function(event) {
+					//	location.reload(true); 				
+					//
+					//});	
 				}
 				else {
 					alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");

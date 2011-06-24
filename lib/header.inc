@@ -150,10 +150,10 @@ function show_message_deconnexion() {
 						}						
 					
 					});
-					$('alert_bouton_reload').observe('click', function(event) {
-						location.reload(true); 				
-					
-					});	
+					//$('alert_bouton_reload').observe('click', function(event) {
+					//	location.reload(true); 				
+					//
+					//});	
 				}
 				else {
 					alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");				

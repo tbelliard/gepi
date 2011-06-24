@@ -516,9 +516,8 @@
 								background-repeat:repeat-x;
 								background-position: left bottom;">
 	<div id="alert_message"></div>
-	<div id="alert_button" style="margin:5px auto;width:150px;">
-		<div id="alert_bouton_ok" style="float:left;"><img src="./images/bouton_ignore.png" alt="ok" /></div>
-		<div id="alert_bouton_reload" style="float:left;"><img src="./images/bouton_reload.png" alt="recharge" title="recharger la page"/></div>
+	<div id="alert_button" style="margin:5px auto;width:90px;">
+		<div id="alert_bouton_ok" style="float:left;"><img src="./images/bouton_continue.png" alt="ok" /></div>
 	</div>
 </div>
 
