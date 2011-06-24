@@ -53,9 +53,9 @@
 			 =
 			 =
 			 =================================================== */
-			function display_alert(heure) {
+			function display_alert(message) {
 				if ($('alert_message')) {
-					$('alert_message').update("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
+					$('alert_message').update(message);
 
 					if (Prototype.Browser.IE) {
 						//document.documentElement.scroll = "no";
@@ -114,7 +114,7 @@
 					//});	
 				}
 				else {
-					alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
+					alert(message);
 				}
 			
 			}
@@ -130,7 +130,43 @@
 				var digital=new Date()
 				var seconds=(digital-debut_alert)/1000
 				//if (1==1) {
-				if (seconds>1800 - seconds_before_alert) {
+				  if (seconds==<?php echo getSettingValue("sessionMaxLength")*60; ?>) {
+					<?php
+						$logout_path=null;
+						if (isset($niveau_arbo)) {
+							$niveau_arbo_count = $niveau_arbo;
+							while ($niveau_arbo_count != 0) {
+								$logout_path .="../";
+								$niveau_arbo_count--;
+							}
+						}
+						else {
+							$logout_path = "./";
+						}
+						$logout_path.="logout.php";
+					?>  
+				  
+						new Ajax.Request(
+							'<?php echo $logout_path; ?>',
+							{
+								method:'get',
+								parameters: {debut_session: "<?php echo urlencode($_SESSION['start']);?>", 
+											session_id: "<?php echo session_id();?>"
+											},
+								onSuccess: function(transport){
+									
+									var response = transport.responseText || "Le serveur ne répond pas";
+									var message = "vous avez été probablement déconnecté du serveur, votre travail ne pourra pas être enregistré dans gepi depuis cette page, merci de le sauvegarder dans un bloc note.";
+									display_alert(message);
+								},
+								onFailure: function(transport){}
+							}
+						);	 
+				  
+				  
+				  
+				  }
+				else if (seconds>1800 - seconds_before_alert) {
 					var seconds_reste = Math.floor(1800 - seconds);
 					now=new Date()
 					var hrs=now.getHours();
@@ -138,8 +174,8 @@
 					var secs=now.getSeconds();
 
 					var heure = hrs + " H " + mins + "' " + secs + "'' ";
-					//alert("A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !");
-					display_alert(heure);
+					var message = "A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !";
+					display_alert(message);
 				}
 
 				setTimeout("show_message_deconnexion()",seconds_int_betweenn_2_msg*1000)
