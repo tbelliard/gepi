@@ -187,7 +187,9 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 <!--a href='javascript:play_footer_sound();'>Jouer</a-->
 <script type='text/javascript'>
 function play_footer_sound() {
-document.getElementById('id_footer_sound').play();
+	if(document.getElementById('id_footer_sound')) {
+		document.getElementById('id_footer_sound').play();
+	}
 }
 </script>
 ";
