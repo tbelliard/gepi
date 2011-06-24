@@ -195,7 +195,7 @@ function play_footer_sound() {
 ";
 	}
 
-	// Remarque: alerte_popup.php modifie $niveau_arbo
+	
 	include('alerte_popup.php');
 
 ?>

@@ -128,6 +128,7 @@ function show_message_deconnexion() {
 					//$('alert_cache').setStyle({top: y+"px"});
 					//$('alert_cache').setStyle({display: 'block'});
 					//$('alert_cache').setOpacity(0.5);
+					play_footer_sound();
 					$('alert_entete').setStyle({top: y+2+"px"});
 					$('alert_entete').setStyle({left: Math.abs((width-640)/2)+"px"});
 					$('alert_entete').setOpacity(1);
@@ -204,7 +205,7 @@ function show_message_deconnexion() {
   
   
   }
-
+	//if (1==1) {
   else if (seconds><?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds_before_alert) {
     var seconds_reste = Math.floor(<?php echo (getSettingValue("sessionMaxLength"))*60; ?> - seconds);
     now=new Date()

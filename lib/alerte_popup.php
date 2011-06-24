@@ -1,9 +1,11 @@
 <?php
 	$image_path=null;
+	
 	if (isset($niveau_arbo)) {
-		while ($niveau_arbo != 0) {
+		$niveau_arbo_count = $niveau_arbo;
+		while ($niveau_arbo_count != 0) {
 			$image_path .="../";
-			$niveau_arbo--;
+			$niveau_arbo_count--;
 		}
 	}
 	else {
