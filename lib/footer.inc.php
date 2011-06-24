@@ -154,7 +154,48 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 			echo "<div id='div_info_formulaires' style='color:red; border:1px solid black; background-color: white; width: 40em; display:none; margin: 1em;'></div>\n";
 		}
 	}
-include('alerte_popup.php');
+
+	//echo "\$niveau_arbo=$niveau_arbo<br />";
+
+	//include('alerte_popup.php');
+
+	$footer_sound=getSettingValue('footer_sound');
+	if($footer_sound=='') {
+		$footer_sound="KDE_Beep_Pop.wav";
+	}
+
+	//echo "\$niveau_arbo=$niveau_arbo<br />";
+
+	if ($niveau_arbo == "0") {
+		$chemin_sound="./sounds/".$footer_sound;
+	} elseif ($niveau_arbo == "1") {
+		$chemin_sound="../sounds/".$footer_sound;
+	} elseif ($niveau_arbo == "2") {
+		$chemin_sound="../../sounds/".$footer_sound;
+	} elseif ($niveau_arbo == "3") {
+		$chemin_sound="../../../sounds/".$footer_sound;
+	}
+echo $chemin_sound;
+	if(file_exists($chemin_sound)) {
+		echo "<audio id='id_footer_sound' preload='auto' autobuffer>
+  <source src='$chemin_sound' />
+</audio>\n";
+		// Exemple de code d'appel: document.getElementById('id_footer_sound').play();
+		// Décommenter pour tester:
+		/*
+		echo "
+<a href='javascript:play_sound();'>Jouer</a>
+<script type='text/javascript'>
+function play_sound() {
+document.getElementById('id_footer_sound').play();
+}
+</script>";
+		*/
+	}
+
+	// Remarque: alerte_popup.php modifie $niveau_arbo
+	include('alerte_popup.php');
+
 ?>
 
 </body>
