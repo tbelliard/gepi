@@ -87,7 +87,6 @@ if (!$_SESSION["login"]) {
 		$menus = null;
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Initialisation</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
-		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_gen.php">Votre établissement</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/init_csv/index.php">Initialisation csv</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/inti_xml2/index.php">Initialisation xml</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php">Fiches bienvenue</a></li>'."\n";
@@ -95,6 +94,7 @@ if (!$_SESSION["login"]) {
 		$menus .= '</li>'."\n";
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Paramètres</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
+		$menus .= '     <li><a href="'.$gepiPath.'/gestion/param_gen.php">Préférences</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/mod_serveur/test_serveur.php">Votre serveur</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/droits_acces.php">Droits d\'accès</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/options_connect.php">Options connexions</a></li>'."\n";
