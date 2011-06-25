@@ -511,7 +511,7 @@
 ?>
 
 <?php if(file_exists($chemin_sound)) : ?>
-<audio id='id_footer_sound' preload='auto' autobuffer><source src='$chemin_sound' /></audio>
+<audio id='id_footer_sound' preload='auto' autobuffer><source src='<?php echo $chemin_sound; ?>' /></audio>
 <script type='text/javascript'>
 	function play_footer_sound() {
 		if ($('id_footer_sound')) {
