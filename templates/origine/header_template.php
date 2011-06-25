@@ -78,6 +78,7 @@
 					//$('alert_cache').setStyle({top: y+"px"});
 					//$('alert_cache').setStyle({display: 'block'});
 					//$('alert_cache').setOpacity(0.5);
+					play_footer_sound();
 					$('alert_entete').setStyle({top: y+2+"px"});
 					$('alert_entete').setStyle({left: Math.abs((width-640)/2)+"px"});
 					$('alert_entete').setOpacity(1);

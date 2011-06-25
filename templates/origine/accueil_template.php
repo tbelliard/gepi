@@ -490,6 +490,37 @@
    			";
 		}
 ?>
+<?php
+	$footer_sound=getPref($_SESSION['login'],'footer_sound',"");
+	if($footer_sound=='') {
+		$footer_sound=getSettingValue('footer_sound');
+		if($footer_sound=='') {
+			$footer_sound="KDE_Beep_Pop.wav";
+		}
+	}
+
+	if ($niveau_arbo == "0") {
+		$chemin_sound="./sounds/".$footer_sound;
+	} elseif ($niveau_arbo == "1") {
+		$chemin_sound="../sounds/".$footer_sound;
+	} elseif ($niveau_arbo == "2") {
+		$chemin_sound="../../sounds/".$footer_sound;
+	} elseif ($niveau_arbo == "3") {
+		$chemin_sound="../../../sounds/".$footer_sound;
+	}
+?>
+
+<?php if(file_exists($chemin_sound)) : ?>
+<audio id='id_footer_sound' preload='auto' autobuffer><source src='$chemin_sound' /></audio>
+<script type='text/javascript'>
+	function play_footer_sound() {
+		if ($('id_footer_sound')) {
+			$('id_footer_sound').play();
+		}
+	}
+</script>
+<?php endif ?>
+
 <div id="alert_cache" style="z-index:2000;
 							display:none;
 							position:absolute;
