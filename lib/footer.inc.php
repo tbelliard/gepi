@@ -159,9 +159,12 @@ if (isset($utilisation_jsbase) AND $utilisation_jsbase == "non") {
 
 	//include('alerte_popup.php');
 
-	$footer_sound=getSettingValue('footer_sound');
+	$footer_sound=getPref($_SESSION['login'],'footer_sound',"");
 	if($footer_sound=='') {
-		$footer_sound="KDE_Beep_Pop.wav";
+		$footer_sound=getSettingValue('footer_sound');
+		if($footer_sound=='') {
+			$footer_sound="KDE_Beep_Pop.wav";
+		}
 	}
 
 	//echo "\$niveau_arbo=$niveau_arbo<br />";

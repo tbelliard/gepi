@@ -100,8 +100,30 @@ if($_SESSION['statut']!="administrateur"){
 		return $aff_check;
 	} //function eval_checked()
 
+	if (!isset($niveau_arbo)) {$niveau_arbo = 1;}
+	
+	if ($niveau_arbo == "0") {
+		$chemin_sound="./sounds/";
+	} elseif ($niveau_arbo == "1") {
+		$chemin_sound="../sounds/";
+	} elseif ($niveau_arbo == "2") {
+		$chemin_sound="../../sounds/";
+	} elseif ($niveau_arbo == "3") {
+		$chemin_sound="../../../sounds/";
+	}
+	$tab_sound=get_tab_file($chemin_sound);
+
+	if((count($tab_sound)>0)&&(isset($_POST['footer_sound']))&&(in_array($_POST['footer_sound'],$tab_sound))&&(preg_match('/\.wav/i',$_POST['footer_sound']))&&(file_exists($chemin_sound.$_POST['footer_sound']))) {
+		if(!savePref($_SESSION['login'],'footer_sound',$_POST['footer_sound'])) {
+			$msg.="Erreur lors de l'enregistrement de l'alerte sonore de fin de session.<br />";
+		}
+		else {
+			$msg.="Enregistrement de l'alerte sonore de fin de session effectué.<br />";
+		}
+	}
+
 	// On traite si c'est demandé
-			$messageMenu = '';
+$messageMenu = '';
 if ($modifier_le_menu == "ok") {
 	check_token();
 
@@ -1036,6 +1058,66 @@ if ($_SESSION["statut"] == 'administrateur') {
 			</fieldset>
 		</form>';
 }
+
+//============================================
+// Choix de l'alerte sonore de fin de session
+/*
+if (!isset($niveau_arbo)) {$niveau_arbo = 1;}
+
+if ($niveau_arbo == "0") {
+	$chemin_sound="./sounds/";
+} elseif ($niveau_arbo == "1") {
+	$chemin_sound="../sounds/";
+} elseif ($niveau_arbo == "2") {
+	$chemin_sound="../../sounds/";
+} elseif ($niveau_arbo == "3") {
+	$chemin_sound="../../../sounds/";
+}
+$tab_sound=get_tab_file($chemin_sound);
+*/
+if(count($tab_sound)>=0) {
+	$footer_sound_actuel=getPref($_SESSION['login'],'footer_sound',"");
+
+	echo "<form name='change_footer_sound' method='post' action='".$_SERVER['PHP_SELF']."'>\n";
+	echo add_token_field();
+
+	echo "<fieldset style='border: 1px solid grey;'>
+	<legend style='border: 1px solid grey;'>Choix de l'alerte sonore de fin de session</legend>
+	<p><select name='footer_sound' id='footer_sound' onchange='test_play_footer_sound()'>\n";
+	echo "	<option value=''";
+	if($footer_sound_actuel=='') {echo " selected='true'";}
+	echo ">Aucun son</option>\n";
+	for($i=0;$i<count($tab_sound);$i++) {
+		echo "	<option value='".$tab_sound[$i]."'";
+		if($tab_sound[$i]==$footer_sound_actuel) {echo " selected='true'";}
+		echo ">".$tab_sound[$i]."</option>\n";
+	}
+	echo "	</select>
+	</p>
+	<p align='center'><input type='submit' name='enregistrer' value='Enregistrer' style='font-variant: small-caps;' /></p>
+</fieldset>
+</form>\n";
+
+	for($i=0;$i<count($tab_sound);$i++) {
+		echo "<audio id='footer_sound_$i' preload='auto' autobuffer>
+  <source src='$chemin_sound".$tab_sound[$i]."' />
+</audio>\n";
+	}
+
+	echo "<script type='text/javascript'>
+function test_play_footer_sound() {
+	n=document.getElementById('footer_sound').selectedIndex;
+	if(n>0) {
+		n--;
+		if(document.getElementById('footer_sound_'+n)) {
+			document.getElementById('footer_sound_'+n).play();
+		}
+	}
+}
+</script>
+";
+}
+//============================================
 
 echo "<br />\n";
 require("../lib/footer.inc.php");
