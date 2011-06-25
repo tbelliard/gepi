@@ -193,16 +193,39 @@
 
 <!-- messagerie -->
 <?php
-	if (count($afficheAccueil->message)) {
+	if (count($afficheAccueil->message)) :
 ?>
-	 <div id='messagerie'>
-		<?php if ($_SESSION['statut'] == "administrateur"): ?>
-		<div style="float:right;left:0px;">
-			<a href="./messagerie/index.php"><img src="./images/add_message.png" alt="Ajouter un message" title="Ajouter un message"/></a>
+
+	<div class="panneau_affichage">
+		<div class="panneau_liege">
+			<?php if ($_SESSION['statut'] == "administrateur"): ?>
+			<div style="position:absolute;width:30px;">
+				<a href="./messagerie/index.php"><img src="./images/add_message.png" alt="Ajouter un message" title="Ajouter un message"/></a>
+			</div> 
+			<?php endif ?>
+			<div class="panneau_coingh"></div>
+			<div class="panneau_coindh"></div>
+			<div class="panneau_haut"></div>
+			<div class="panneau_droite"></div>
+			<div class="panneau_gauche"></div>
+			<div class="panneau_coingb"></div>
+			<div class="panneau_coindb"></div>
+			<div class="panneau_bas"></div>
+			<div class="panneau_centre">	
+				<?php foreach ($afficheAccueil->message as $value) : ?>
+				<div class="postit"><?php echo $value['message']; ?></div>
+				<?php endforeach; ?>
+				<?php unset ($value); ?>	
+			</div>
 		</div>
-		<?php endif ?>
+	</div>
+	<div style="clear:both;"></div>
+
+	<?php endif; ?>
+
+	<!-- <div id='messagerie'> -->
 <?php
-		  foreach ($afficheAccueil->message as $value) {
+		  /* foreach ($afficheAccueil->message as $value) {
 
 		  if ($value['suite']=='') {
 			  echo "";
@@ -219,11 +242,12 @@
 		  }
 
 		}
-		unset ($value);
+		unset ($value); */
 ?>
-		</div>
+	<!--	</div> -->
+<?php /* } */ ?>
+	
 <?php
-	}
 
 	if ($_SESSION['statut'] =="professeur") {
 ?>
