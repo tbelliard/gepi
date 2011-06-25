@@ -334,7 +334,7 @@ background-color: #F00;
 	top: 0px;
 }
 #menu_barre li.plus {
-	background-image: url("../../../../images/icons/forward.png");
+	background-image: url("../../../images/icons/forward.png");
 	background-position: right 50%;
 	border-bottom: #b0b0b0 1px solid; 
 	background-repeat: no-repeat;
