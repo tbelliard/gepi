@@ -290,7 +290,9 @@ function backupMySql($db,$dumpFile,$duree,$rowlimit) {
         $todump.="# ******* debut du fichier ********\n";
         fwrite ($fileHandle,$todump);
     }
-    $result=mysql_list_tables($db);
+    //$result=mysql_list_tables($db);
+	$sql="SHOW TABLES;";
+    $result=mysql_query($sql);
     $numtab=0;
     while ($t = mysql_fetch_array($result)) {
         $tables[$numtab]=$t[0];
@@ -1268,7 +1270,7 @@ if (isset($action) and ($action == 'dump'))  {
 			saveSetting("backup_duree_portion", $_SESSION['defaulttimeout']);
 		}
 	}
-	// SAuvegarde de la base
+	// Sauvegarde de la base
     $nomsql = $dbDb."_le_".date("Y_m_d_\a_H\hi");
     $cur_time=date("Y-m-d H:i");
     $filename=$path.$nomsql.".".$filetype;
@@ -1299,7 +1301,9 @@ if (isset($action) and ($action == 'dump'))  {
 		}
 
 
-        $tab=mysql_list_tables($dbDb);
+        //$tab=mysql_list_tables($dbDb);
+		$sql="SHOW TABLES;";
+		$tab=mysql_query($sql);
         $tot=mysql_num_rows($tab);
         if(isset($offsettable)){
             if ($offsettable>=0)
