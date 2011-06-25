@@ -185,6 +185,7 @@ $style_specifique = "mod_trombinoscopes/styles/styles";
 //**************** EN-TETE *********************
 $titre_page = "Visualisation des trombinoscopes";
 require_once("../lib/header.inc");
+
 //**************** FIN EN-TETE *****************
 //debug_var();
 ?>
@@ -457,6 +458,7 @@ function reactiver(mavar) {
 
 			//=================================================================
 			// GROUPES
+
 			echo "<span style='margin-left: 15px;'>Par groupe</span><br />\n";
 			echo "<select name='groupe' id='groupe' style='margin-left: 15px;'>\n";
 
@@ -496,7 +498,6 @@ function reactiver(mavar) {
 										ORDER BY name ASC, nom_complet ASC");
 			}
 			$resultat_groupe_prof = mysql_query($requete_groupe_prof) or die('Erreur SQL !'.$requete_groupe_prof.'<br />'.mysql_error());
-
 			echo "<option value=''";
 			if ( empty($classe) ) {
 				echo " selected='selected'";
@@ -526,14 +527,15 @@ function reactiver(mavar) {
 				//modif ERIC
 				echo ucwords($donnee_groupe_prof['description']);
 				//echo ' ('.ucwords($donnee_groupe_prof['classe']).')';
-				$tmp_grp=get_group($donnee_groupe_prof['id_groupe']);
+				$tab[0] = "classes";
+				$tmp_grp=get_group($donnee_groupe_prof['id_groupe'], $tab);
 				echo ' ('.ucwords($tmp_grp['classlist_string']).')';
 
 				echo "</option>\n";
 			}
-
 			echo "</optgroup>\n";
 			echo "</select>\n";
+
 			echo "<br />\n";
 			echo "<span style='margin-left: 15px;'><input type='radio' order_by_alpha' name='order_by' value='alpha' checked /><label for='order_by_alpha'> Tri alphabétique</span></label><br />\n";
 			echo "<span style='margin-left: 15px;'><input type='radio' id='order_by_classe' name='order_by' value='classe' /><label for='order_by_classe'> Tri par classe</span></label><br />\n";
@@ -1355,7 +1357,7 @@ if ( $etape === '2' and $classe != 'toutes' and $groupe != 'toutes' and $discipl
 	echo "<p align='center'><img src='images/barre.gif' width='550' height='2' alt='Barre' /></p>\n";
 	echo "</div>\n";
 }
-mysql_close();
+//mysql_close();
 require("../lib/footer.inc.php");
 ?>
 
