@@ -777,7 +777,19 @@ if (getSettingValue("utiliserMenuBarre") == "yes" AND $_SESSION["statut"] == "pr
 		include("header_barre_menu.php");
 	}
 }
+if ($_SESSION["statut"] == "administrateur") {
 
+	// On vérifie que l'utilisateur ne l'a pas enlevée
+	if (getPref($_SESSION["login"], "utiliserMenuBarre", "yes") == "yes") {
+		// ne pourrait-on pas utiliser $gepiPath plutôt que construire $prefix un peu plus haut ?
+		if (file_exists($prefix."edt_organisation/fonctions_calendrier.php")) {
+			require_once($prefix."edt_organisation/fonctions_calendrier.php");
+		}elseif(file_exists("fonctions_calendrier.php")) {
+			require_once("./fonctions_calendrier.php");
+		}
+		include("header_barre_menu_admin.php");
+	}
+}
 echo "<div id='container'>\n";
 if ((isset($_GET['msg'])) or (isset($_POST['msg'])) or (isset($msg))) {
 	$msg = isset($_POST['msg']) ? unslashes($_POST['msg']) : (isset($_GET['msg']) ? unslashes($_GET['msg']) : $msg);

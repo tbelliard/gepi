@@ -1092,7 +1092,6 @@ input.validation-passed, textarea.validation-passed {
 }
 
 /*================================================*/
-
 #menu_barre {
 	font-weight: bold;
 	font-size: 90%;
@@ -1101,6 +1100,10 @@ input.validation-passed, textarea.validation-passed {
 	color: white;
 	background-color: #4a4a59;
 	margin-top: -3px;
+	background-image: url("./images/degrade_noir.png");
+	background-position: left top;
+	background-repeat: repeat-x;
+	height:20px;
 }
 
 /* ul ul pour ne masquer par défaut que les sous-menus */
