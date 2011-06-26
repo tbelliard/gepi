@@ -126,8 +126,6 @@ if (isset($message_enregistrement)) {
 }
 
 echo '<table class="normal">';
-echo '<form method="post" action="enregistrement_modif_saisie.php">';
-echo '<input type="hidden" name="id_saisie" value="'.$saisie->getPrimaryKey().'"/>';
 echo '<TBODY>';
 echo '<tr><TD>';
 echo 'N° de saisie : ';
@@ -142,16 +140,39 @@ echo $saisie->getPrimaryKey();
     	}
     	echo ')</font> ';
     }
+echo '</TD><TD>';
+if ($modifiable) {
+    echo '<form method="post" action="enregistrement_modif_saisie.php">';
+    echo '<input type="hidden" name="id_saisie" value="' . $saisie->getPrimaryKey() . '"/>';
+    if ($saisie->getDeletedAt() == null) {
+        echo '<img src="../images/delete16.png"/>';
+        //echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=suppression">';
+        echo'<input type="hidden" name="action" value="suppression">';
+        echo '<button>Supprimer la saisie</button>';
+        //echo '</a>';
+    } else {
+        //on autorise la restauration pour un autre que cpe ou scola uniquement si c'est l'utilisateur en cours qui a fait auparavant la suppression
+        if ($utilisateur->getStatut() == "cpe" || $utilisateur->getStatut() == "scolarite"
+                || ($saisie->getDeletedBy() == $utilisateur->getLogin())) {
+            //echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=restauration">';
+            echo'<input type="hidden" name="action" value="restauration">';
+            echo '<button type="submit">Restaurer la saisie</button>';
+            //echo '</a>';
+        }
+    }
+    echo'</form>';
+}
 echo '</TD></tr>';
-
-    echo '<tr>';
+echo '<form method="post" action="enregistrement_modif_saisie.php">';
+echo '<input type="hidden" name="id_saisie" value="' . $saisie->getPrimaryKey() . '"/>';
+echo '<tr>';
 if ($saisie->getEleve() == null) {
-    echo '<TD colspan="2">';
+    echo '<TD colspan="3">';
     echo "Marqueur d'appel effectué";
     echo '</TD>';
 } else {
     echo '<TD>Élève : </td>';
-    echo '<TD>';
+    echo '<TD colspan="2">';
     echo $saisie->getEleve()->getCivilite().' '.$saisie->getEleve()->getNom().' '.$saisie->getEleve()->getPrenom();
     echo ' '.$saisie->getEleve()->getClasseNom();
     if ((getSettingValue("active_module_trombinoscopes")=='y') && $saisie->getEleve() != null) {
@@ -177,7 +198,7 @@ echo '</tr>';
 if ($saisie->getClasse() != null) {
     echo '<tr><TD>';
     echo 'Classe : ';
-    echo '</TD><TD>';
+    echo '</TD><TD colspan="2">';
     echo $saisie->getClasse()->getNom();
     echo '</TD></tr>';
 }
@@ -185,7 +206,7 @@ if ($saisie->getClasse() != null) {
 if ($saisie->getGroupe() != null) {
     echo '<tr><TD>';
     echo 'Groupe : ';
-    echo '</TD><TD>';
+    echo '</TD><TD colspan="2">';
     echo $saisie->getGroupe()->getNameAvecClasses();
     echo '</TD></tr>';
 }
@@ -193,7 +214,7 @@ if ($saisie->getGroupe() != null) {
 if ($saisie->getAidDetails() != null) {
     echo '<tr><TD>';
     echo 'Aid : ';
-    echo '</TD><TD>';
+    echo '</TD><TD colspan="2">';
     echo $saisie->getAidDetails()->getNom();
     echo '</TD></tr>';
 }
@@ -201,7 +222,7 @@ if ($saisie->getAidDetails() != null) {
 if ($saisie->getEdtEmplacementCours() != null) {
     echo '<tr><TD>';
     echo 'Cours : ';
-    echo '</TD><TD>';
+    echo '</TD><TD colspan="2">';
     echo $saisie->getEdtEmplacementCours()->getDescription();
     echo '</TD></tr>';
 }
@@ -209,15 +230,15 @@ if ($saisie->getEdtEmplacementCours() != null) {
 if ($saisie->getEdtCreneau() != null) {
     echo '<tr><TD>';
     echo 'Créneau : ';
-    echo '</TD><TD>';
+    echo '</TD><TD colspan="2">';
     echo $saisie->getEdtCreneau()->getDescription();
     echo '</TD></tr>';
 }
 
 echo '<tr><TD>';
 echo 'Début : ';
-echo '</TD><TD>';
-if (!$modifiable) {
+echo '</TD><TD colspan="2">';
+if (!$modifiable || $saisie->getDeletedAt() != null ) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getDebutAbs('U')));
 } else {
     echo '<nobr><input name="heure_debut" value="'.$saisie->getDebutAbs("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
@@ -245,8 +266,8 @@ echo '</TD></tr>';
 
 echo '<tr><TD>';
 echo 'Fin : ';
-echo '</TD><TD>';
-if (!$modifiable) {
+echo '</TD><TD colspan="2">';
+if (!$modifiable || $saisie->getDeletedAt() != null) {
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getFinAbs('U')));
 } else {
     echo '<nobr><input name="heure_fin" value="'.$saisie->getFinAbs("H:i").'" type="text" maxlength="5" size="4"/>&nbsp;';
@@ -275,7 +296,7 @@ echo '</TD></tr>';
 
 echo '<tr><TD>';
 echo 'Traitement : ';
-echo '</TD><TD style="background-color:#ebedb5;">';
+echo '</TD><TD style="background-color:#ebedb5;" colspan="2">';
 $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
 $total_traitements_modifiable = 0;
 foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
@@ -337,11 +358,11 @@ echo '<input type="hidden" name="total_traitements" value="'.$total_traitements_
 
 echo '</TD></tr>';
 
-if ($modifiable || ($saisie->getCommentaire() != null && $saisie->getCommentaire() != "")) {
+if ($modifiable  || ($saisie->getCommentaire() != null && $saisie->getCommentaire() != "")) {
     echo '<tr><TD>';
     echo 'Commentaire : ';
-    echo '</TD><TD>';
-    if (!$modifiable) {
+    echo '</TD><TD colspan="2">';
+    if (!$modifiable || $saisie->getDeletedAt() != null) {
 	echo ($saisie->getCommentaire());
     } else {
 	echo '<input name="commentaire" value="'.$saisie->getCommentaire().'" type="text" maxlength="150" size="25"/>';
@@ -351,7 +372,7 @@ if ($modifiable || ($saisie->getCommentaire() != null && $saisie->getCommentaire
 
 echo '<tr><TD>';
 echo 'Saisie le : ';
-echo '</TD><TD>';
+echo '</TD><TD colspan="2">';
 echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getCreatedAt('U')));
 echo ' par '.  $saisie->getUtilisateurProfessionnel()->getCivilite().' '.$saisie->getUtilisateurProfessionnel()->getNom().' '.substr($saisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1).'.';
 echo '</TD></tr>';
@@ -359,7 +380,7 @@ echo '</TD></tr>';
 if ($saisie->getCreatedAt() != $saisie->getUpdatedAt()) {
     echo '<tr><TD>';
     echo 'Modifiée le : ';
-    echo '</TD><TD>';
+    echo '</TD><TD colspan="2">';
     echo (strftime("%a %d/%m/%Y %H:%M", $saisie->getUpdatedAt('U')));
     $modifie_par_utilisateur = UtilisateurProfessionnelQuery::create()->filterByLogin($saisie->getVersionCreatedBy())->findOne();
     if ($modifie_par_utilisateur != null) {
@@ -371,14 +392,14 @@ if ($saisie->getCreatedAt() != $saisie->getUpdatedAt()) {
 if ($saisie->getIdSIncidents() !== null) {
     echo '<tr><TD>';
     echo 'Discipline : ';
-    echo '</TD><TD>';
+    echo '</TD><TD colspan="2">';
     echo "<a href='../mod_discipline/saisie_incident.php?id_incident=".
     $saisie->getIdSIncidents()."&step=2&return_url=no_return'>Visualiser l'incident </a>";
     echo '</TD></tr>';
 } elseif ($modifiable && $saisie->hasTypeSaisieDiscipline()) {
     echo '<tr><TD>';
     echo 'Discipline : ';
-    echo '</TD><TD>';
+    echo '</TD><TD colspan="2">';
     echo "<a href='../mod_discipline/saisie_incident_abs2.php?id_absence_eleve_saisie=".
 	$saisie->getId()."&return_url=no_return'>Saisir un incident disciplinaire</a>";
     echo '</TD></tr>';
@@ -387,7 +408,7 @@ $saisies_conflit_col = $saisie->getSaisiesContradictoiresManquementObligation();
 if (!$saisies_conflit_col->isEmpty()) {
     echo '<tr><TD>';
     echo 'La saisie est en contradiction avec : ';
-    echo '</TD><TD>';
+    echo '</TD><TD colspan="2">';
     foreach ($saisies_conflit_col as $saisie_conflit) {
 	echo "<a href='visu_saisie.php?id_saisie=".$saisie_conflit->getPrimaryKey()."' style=''> ";
 	echo $saisie_conflit->getId();
@@ -401,36 +422,24 @@ if (!$saisies_conflit_col->isEmpty()) {
 
 echo '</TD></tr>';
 if ($modifiable) {
-    echo '<tr><TD colspan= "2" style="text-align : center;">';
-    echo '<button type="submit">Enregistrer les modifications</button>';
+    echo '<tr><TD colspan= "3" style="text-align : center;">';
+    echo '<button type="submit"';
+    if ($saisie->getDeletedAt() != null) echo 'disabled';
+    echo '>Enregistrer les modifications</button>';
     echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-    if ($saisie->getDeletedAt()==null) {
-    	echo '<img src="../images/delete16.png"/>';
-    	//echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=suppression">';
-        echo'<input type="hidden" name="action" value="suppression">';
-    	echo '<button>Supprimer la saisie</button>';
-    	//echo '</a>';
-    } else {
-    	//on autorise la restauration pour un autre que cpe ou scola uniquement si c'est l'utilisateur en cours qui a fait auparavant la suppression
-		if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite"
-		|| ($saisie->getDeletedBy() == $utilisateur->getLogin())) {
-	    	//echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=restauration">';
-            echo'<input type="hidden" name="action" value="restauration">';
-	    	echo '<button type="submit">Restaurer la saisie</button>';
-	    	//echo '</a>';
-		}
-    }
     echo '</td></tr>';
 }
 
 if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") {
-    echo '<tr><TD colspan="2" style="text-align : center;">';
-    echo '<button type="submit" name="creation_traitement" value="oui">Traiter la saisie</button>';
+    echo '<tr><TD colspan="3" style="text-align : center;">';
+    echo '<button type="submit" name="creation_traitement" value="oui"';
+    if ($saisie->getDeletedAt() != null) echo 'disabled';
+    echo '>Traiter la saisie</button>';
     echo '</TD></tr>';
 }
 
 if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") && $saisie->getAllVersions()->count()!=1) {
-    echo '<tr><TD colspan="2" style="text-align : center;">';
+    echo '<tr><TD colspan="3" style="text-align : center;">';
     echo 'Versions précédentes';
     echo '<table>';
     foreach($saisie->getAllVersions() as $version) {
@@ -458,7 +467,7 @@ if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite")
 	    }
 	    echo '</TD>';
     	echo '<td>';
-    	if ($version->getVersion() != $saisie->getVersion()) {
+    	if ($version->getVersion() != $saisie->getVersion() && $saisie->getDeletedAt() == null) {
     		echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&version='.$version->getVersion().'">Revenir à cette version</a>';
     	}
     	echo '</td>';
@@ -467,10 +476,9 @@ if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite")
     echo '</table>';
     echo '</TD></tr>';
 }
-
+echo '</form>';
 echo '</TBODY>';
 
-echo '</form>';
 echo '</table>';
 
 //fonction redimensionne les photos petit format

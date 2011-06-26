@@ -101,6 +101,11 @@ if ( isset($_POST["creation_traitement"])) {
 	    include("visu_saisie.php");
 	    die();
 	}
+        if ($saisie->getDeletedAt() != null) {
+        $message_enregistrement .= 'Cette saisie est supprimée. Vous devez la restaurer pour la modifier.';
+        include("visu_saisie.php");
+        die();
+        }
 	$saisie->toVersion($_GET["version"]);
 	$saisie->unDelete();
 	include("visu_saisie.php");

@@ -346,8 +346,10 @@ echo '<form method="post" action="liste_saisies_selection_traitement.php" name="
 		element.setAttribute('name', 'creation_traitement');
 		element.setAttribute('value', 'yes');
 		document.liste_saisies.appendChild(element);
-		document.liste_saisies.submit();
-				">
+		document.liste_saisies.submit();"
+		<?php
+                if (getFiltreRechercheParam('filter_saisies_supprimees')=='y') echo'disabled'
+                ?> >
 		Creer un nouveau traitement
 	    </button>
 	    <?php if ($traitement != null) { ?>
