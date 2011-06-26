@@ -1024,4 +1024,21 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		parent::delete($con);
 		AbsenceEleveSaisiePeer::enableVersioning();
 	}
+        /**
+	 * Retourne une couleur d'affichage en fonction du type de la saisie.
+	 *
+	 * @return     string
+	 * 
+	 */
+        public function getColor() {
+            if ($this->getRetard()) {
+                return 'orange';
+            }elseif($this->getManquementObligationPresence()){
+                return 'red';
+            }elseif (!$this->getManquementObligationPresenceSpecifie_NON_PRECISE()){
+                return 'blue';
+            }else{
+                return 'black';
+            }
+        }
 } // AbsenceEleveSaisie

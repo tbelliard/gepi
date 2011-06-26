@@ -364,7 +364,12 @@ class Groupe extends BaseGroupe {
 	 * @return EdtEmplacementCours l'emplacement de cours actuel ou null si pas de cours actuellement
 	 */
 	public function getEdtEmplacementCours($v = 'now'){
-
+        
+        if (EdtEmplacementCoursQuery::create()->filterByGroupe($this)->count() == 0) {
+			//skip the business logic because there is no edt for this groupe
+			return null;
+		}
+        
 	    $edtCoursCol = $this->getEdtEmplacementCourssPeriodeCalendrierActuelle($v);
 
 	    require_once("helpers/EdtEmplacementCoursHelper.php");

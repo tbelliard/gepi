@@ -42,6 +42,11 @@ class Classe extends BaseClasse {
 	 * @return     PropelObjectCollection EdtEmplacementCours[]
 	 */
 	public function getEdtEmplacementCours($v) {
+        
+        if (EdtEmplacementCoursQuery::create()->useGroupeQuery()->useJGroupesClassesQuery()->filterByClasse($this)->endUse()->endUse()->count()== 0) {
+			//skip the business logic because there is no edt for this classe
+			return new PropelObjectCollection();
+		}
 	    // we treat '' as NULL for temporal objects because DateTime('') == DateTime('now')
 	    // -- which is unexpected, to say the least.
 	    //$dt = new DateTime();

@@ -95,6 +95,32 @@ include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
 ?>
 <div id="contain_div" class="css-panes">
+<div class="legende">
+    <h3 class="legende">Légende  </h3>
+    <table class="legende">
+        <tr >
+            <td width="450px"><h4 class="legende">Saisies  </h4>
+            Les saisies de l'élève sur le créneau sont numérotées après son nom. La couleur dépend du type de la saisie.</td>
+            <td width="300px">
+            <font color="orange">&#9632;</font> Retard<br />
+            <font color="red">&#9632;</font> Manquement aux obligations de présence<br />
+            <font color="blue">&#9632;</font> Non manquement aux obligations de présence
+            </td>
+        </tr>
+        <tr>
+            <td rowspan="2"><h4 class="legende">Appels  </h4>
+            La couleur de fond de cellule indique si un appel enseignant a été effectué ou non.
+            </td>
+            <td style="background-color:#ddd;">
+                Appel non fait.
+            </td>    
+        </tr>
+        <tr>
+            <td style="background-color:green;">Appel fait.
+            </td>
+        </tr>
+    </table>    
+</div>    
 <form name="choix_du_creneau" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 <h2>Les appels du
     <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
@@ -284,25 +310,36 @@ foreach($classe_col as $classe){
 	if (!$abs_col->isEmpty()) {
 	    echo '<br/>';
 	}
+        $current_eleve=Null;
 	foreach ($abs_col as $absenceSaisie) {
         if($absenceSaisie->isSaisieEleveSorti($dt_debut_creneau)){
             continue;
-        }elseif ($absenceSaisie->getManquementObligationPresence()) {
-		echo "<a style='color: red;' href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";
-	    } elseif (!$absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
-		echo "<a href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";
-	    } else {
-                continue;//on affiche pas les saisies du type erreur de saisie
-            }
-	    echo ($absenceSaisie->getEleve()->getCivilite().' '.$absenceSaisie->getEleve()->getNom().' '.$absenceSaisie->getEleve()->getPrenom());
-	    echo "</a>";
-	    if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
-		echo "<a href='../eleves/visu_eleve.php?ele_login=".$absenceSaisie->getEleve()->getLogin()."' target='_blank'>";
-		echo ' (voir fiche)';
-		echo "</a>";
-	    }
-	    echo '<br/>';
-	}
+        }
+        if(!$absenceSaisie->getRetard()&&!$absenceSaisie->getManquementObligationPresence()&&$absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()){
+            continue;
+        }
+        if ($absenceSaisie->getEleve()->getIdEleve() !== $current_eleve) {
+            if($current_eleve !=null) echo '<br/>';
+            $num_saisie=1;
+                if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
+                    echo "<a style='color: ".$absenceSaisie->getColor().";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "' target='_blank'>";
+                    echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom().' : ';
+                    echo "</a>";
+                } else {
+                    echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom().' : ';
+                }
+            }else{
+                echo'-';
+            }        
+            echo "<a style='color: ".$absenceSaisie->getColor().";'  href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";            
+	    echo ($num_saisie);
+	    echo "</a>";	    
+	    $current_eleve=$absenceSaisie->getEleve()->getIdEleve();
+            $num_saisie++;
+        if($abs_col->isLast()){
+            echo '<br /><br />';
+        }    
+	}    
 	echo '</td>';
 	if ($classe_col->isOdd()) {
 	    echo '</tr>';
@@ -319,41 +356,53 @@ foreach($classe_col as $classe){
 	//on affiche les saisies du creneau
 	$abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
 			->filterByIdAid(null, Criteria::NOT_EQUAL)
+                        ->useEleveQuery()->orderByNom()->endUse()
 			->useAidDetailsQuery()->orderByNom()->endUse()
 			->find();
 	if (!$abs_col->isEmpty()) {
-	    $aid_deja_sorties = Array();
-	    foreach ($abs_col as $absenceSaisie) {
-            if($absenceSaisie->isSaisieEleveSorti($dt_debut_creneau)){
-            continue;
+        $aid_deja_sorties = Array();
+        $current_eleve = Null;
+        foreach ($abs_col as $absenceSaisie) {
+            if ($absenceSaisie->isSaisieEleveSorti($dt_debut_creneau)) {
+                continue;
             }
-		    if ($absenceSaisie->getIdAid()!==null && !in_array($absenceSaisie->getIdAid(), $aid_deja_sorties)) {
-			echo  $absenceSaisie->getCreatedAt('H:i').' ';
-			echo  $absenceSaisie->getAidDetails()->getNom().' ';
-			echo  $absenceSaisie->getUtilisateurProfessionnel()->getCivilite().' '
-			    .$absenceSaisie->getUtilisateurProfessionnel()->getNom().' '
-			    .strtoupper(substr($absenceSaisie->getUtilisateurProfessionnel()->getPrenom(), 0 ,1)).'. ';
-			$aid_deja_sorties[] = $absenceSaisie->getAidDetails()->getId();
-			echo '<br/>';
-		    }
-		    if ($absenceSaisie->getEleve() != null) {
-			if ($absenceSaisie->getManquementObligationPresence()) {
-			    echo "<a style='color: red;' href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";
-			} else {
-			    echo "<a href='visu_saisie.php?id_saisie=".$absenceSaisie->getPrimaryKey()."'>";
-			}
-			echo ($absenceSaisie->getEleve()->getCivilite().' '.$absenceSaisie->getEleve()->getNom().' '.$absenceSaisie->getEleve()->getPrenom());
-			echo "</a>";
-			if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
-			    echo "<a href='../eleves/visu_eleve.php?ele_login=".$absenceSaisie->getEleve()->getLogin()."' target='_blank'>";
-			    echo ' (voir fiche)';
-			    echo "</a>";
-			}
-			echo '<br/>';
-		    }
-
-	    }
-	}
+            if (!$absenceSaisie->getRetard() && !$absenceSaisie->getManquementObligationPresence() && $absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
+                continue;
+            }
+            if ($absenceSaisie->getIdAid() !== null && !in_array($absenceSaisie->getIdAid(), $aid_deja_sorties)) {
+                echo $absenceSaisie->getCreatedAt('H:i') . ' ';
+                echo $absenceSaisie->getAidDetails()->getNom() . ' ';
+                echo $absenceSaisie->getUtilisateurProfessionnel()->getCivilite() . ' '
+                . $absenceSaisie->getUtilisateurProfessionnel()->getNom() . ' '
+                . strtoupper(substr($absenceSaisie->getUtilisateurProfessionnel()->getPrenom(), 0, 1)) . '. ';
+                $aid_deja_sorties[] = $absenceSaisie->getAidDetails()->getId();
+                echo '<br/>';
+            }
+            if ($absenceSaisie->getEleve() != null) {
+                if ($absenceSaisie->getEleve()->getIdEleve() !== $current_eleve) {
+                    if($current_eleve !=null) echo '<br/>';
+                    $num_saisie = 1;
+                    if ($utilisateur->getAccesFicheEleve($absenceSaisie->getEleve())) {
+                        echo "<a style='color: " . $absenceSaisie->getColor() . ";' href='../eleves/visu_eleve.php?ele_login=" . $absenceSaisie->getEleve()->getLogin() . "' target='_blank'>";
+                        echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom() . ' : ';
+                        echo "</a>";
+                    } else {
+                        echo $absenceSaisie->getEleve()->getCivilite() . ' ' . $absenceSaisie->getEleve()->getNom() . ' ' . $absenceSaisie->getEleve()->getPrenom() . ' : ';
+                    }
+                } else {
+                    echo'-';
+                }
+                echo "<a style='color: " . $absenceSaisie->getColor() . ";'  href='visu_saisie.php?id_saisie=" . $absenceSaisie->getPrimaryKey() . "'>";
+                echo ($num_saisie);
+                echo "</a>";
+                $current_eleve = $absenceSaisie->getEleve()->getIdEleve();
+                $num_saisie++;
+                if($abs_col->isLast()){
+                    echo '<br /><br />';
+               }
+            }
+        }
+    }
 ?>
 		</td>
 	</tr>

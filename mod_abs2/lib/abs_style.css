@@ -124,3 +124,31 @@ td.couleur_manquement{
 td.couleur_retard{
   background-color:#FFF5AF;
 }
+div.legende{
+    width:760px;
+    background-color: #CCCCCC;
+    border: 2px outset black;
+    font: 10px Verdana;
+}
+h3.legende{
+    font: normal small-caps normal 14pt Verdana;
+    margin:2px;   
+}
+h4.legende{
+    font: normal small-caps normal 10pt Verdana;
+    margin:2px;   
+}
+table.legende {
+    border-collapse: collapse;
+    border-spacing: 0px;
+    margin:4px;
+    
+	
+}
+.legende  td{
+    padding:4px;
+    border-spacing: 0px;
+    border: 1px solid black;
+    font: 11px Verdana ;
+	
+}
