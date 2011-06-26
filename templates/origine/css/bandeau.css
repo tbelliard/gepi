@@ -351,9 +351,9 @@ background-color: #F00;
     background-position: right;
     position:absolute;
     top:0px;
-    right:-28px;
+    right:-40px;
     height:100%;
-    width:28px;
+    width:40px;
 }
 .panneau_affichage{
 	margin: 40px 40px 40px 0px;
@@ -364,7 +364,6 @@ background-color: #F00;
 .panneau_liege {
             position:relative;
 	width:80%; 
-    background-color:white;
 	font-size: 1em;
 	padding:0px 0 0px 0px;
 	margin:0px auto;
@@ -396,7 +395,7 @@ background-color: #F00;
     left:00px;
 }
 .panneau_centre {
-	background-image:url('../../../images/panneau_liege.png');
+	background-image:url('../../../images/center.png');
 	background-repeat: repeat-x repeat-y;
     width:100%;
 	top:0px;
@@ -404,12 +403,12 @@ background-color: #F00;
 	color:black;
 }
 .panneau_bas {
-	height:31px;
+	height:40px;
     position:absolute;
 	background-image:url('../../../images/bottom.png');
 	background-repeat: repeat-x;
     width:100%;
-	bottom:-31px;
+	bottom:-40px;
     left:00px;
 }
 
@@ -425,30 +424,30 @@ background-color: #F00;
 
 .panneau_coindh {
     position:absolute;
-    width:28px;
+    width:40px;
 	height:33px;
 	background-image:url('../../../images/top_right.png');
 	top:-33px;
-    right:-28px;
+    right:-40px;
 	background-repeat: no-repeat;
 }
 
 .panneau_coingb {
     position:absolute;
-    bottom:-31px;
+    bottom:-40px;
     left:-33px;
     width:33px;
-	height:31px;
+	height:40px;
 	background-image:url('../../../images/bottom_left.png');
 	float: left;
 }
 
 .panneau_coindb {
     position:absolute;
-    bottom:-31px;
-    right:-28px;
-    width:28px;
-	height:31px;
+    bottom:-40px;
+    right:-40px;
+    width:40px;
+	height:40px;
 	background-image:url('../../../images/bottom_right.png');
 	float:right;
 }

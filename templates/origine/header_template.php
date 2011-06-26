@@ -128,8 +128,8 @@
 				var seconds_before_alert = 180;
 				var seconds_int_betweenn_2_msg = 30;
 
-				var digital=new Date()
-				var seconds=(digital-debut_alert)/1000
+				digital=new Date()
+				seconds=(digital-debut_alert)/1000
 				//if (1==1) {
 				  if (seconds==<?php echo getSettingValue("sessionMaxLength")*60; ?>) {
 					<?php
@@ -167,8 +167,8 @@
 				  
 				  
 				  }
-				else if (seconds>1800 - seconds_before_alert) {
-					var seconds_reste = Math.floor(1800 - seconds);
+				else if (seconds><?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds_before_alert) {
+					var seconds_reste = Math.floor(<?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds);
 					now=new Date()
 					var hrs=now.getHours();
 					var mins=now.getMinutes();
