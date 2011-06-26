@@ -85,6 +85,12 @@ include('menu_abs2.inc.php');
 include('menu_bilans.inc.php');
 ?>
 <div id="contain_div" class="css-panes">
+<div class="legende">
+    <h3 class="legende">Légende  </h3>
+    <font color="orange">&#9632;</font> Retard<br />
+    <font color="red">&#9632;</font> Manquement aux obligations de présence<br />
+    <font color="blue">&#9632;</font> Non manquement aux obligations de présence<br />     
+</div>        
 <form id="choix_date" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 <h2>Les saisies du
     <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" onchange="document.getElementById('choix_date').submit()" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
@@ -155,19 +161,16 @@ foreach($classe_col as $classe) {
 			$affiche = false;
 			foreach($eleve->getAbsenceEleveSaisiesDuJour($dt_debut) as $abs) {
 			    $affiche = false;
-			    if ($abs->getManquementObligationPresence()) {
+			    if (!$abs->getManquementObligationPresenceSpecifie_NON_PRECISE() ) {
 				$affiche = true;
 				break;
 			    }
-			}
-			/*
+			}			
 			if (!$affiche) {
-			    continue;
-			}
-			 * 
-			 */
-			echo '<tr>
-			<td></td>
+                continue;
+			}	
+            echo '<tr>
+                <td></td>
 			<td>';
 			if ($utilisateur->getAccesFicheEleve($eleve)) {
 			    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
@@ -185,15 +188,13 @@ foreach($classe_col as $classe) {
 				echo '<td></td>';
 			    } else {
 				foreach($abs_col as $abs) {
-				    $red = false;
-				    if ($abs->getManquementObligationPresence()) {
-					echo '<td style="background-color:red;"></td>';
-					$red = true;
-					break;
-				    } else {
-					  echo '<td style="background-color:green;"></td>';
-					}
-			break;
+                    if ($abs->getManquementObligationPresenceSpecifie_NON_PRECISE()){
+                        echo '<td></td>';
+                        break;
+                    }else{
+                        echo '<td style="background-color:'.$abs->getColor().';"></td>';
+                        break; 
+                    }				    
 				}
 				/*
 				if (!$red) {

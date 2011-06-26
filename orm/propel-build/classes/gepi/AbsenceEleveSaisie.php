@@ -1038,7 +1038,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
             }elseif (!$this->getManquementObligationPresenceSpecifie_NON_PRECISE()){
                 return 'blue';
             }else{
-                return 'black';
+                return 'green';
             }
         }
 } // AbsenceEleveSaisie

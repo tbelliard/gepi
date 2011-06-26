@@ -125,10 +125,12 @@ td.couleur_retard{
   background-color:#FFF5AF;
 }
 div.legende{
-    width:760px;
+    
+   display:inline-block; 
     background-color: #CCCCCC;
     border: 2px outset black;
     font: 10px Verdana;
+    padding:4px;
 }
 h3.legende{
     font: normal small-caps normal 14pt Verdana;

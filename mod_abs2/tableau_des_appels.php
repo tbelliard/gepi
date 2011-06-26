@@ -315,7 +315,7 @@ foreach($classe_col as $classe){
         if($absenceSaisie->isSaisieEleveSorti($dt_debut_creneau)){
             continue;
         }
-        if(!$absenceSaisie->getRetard()&&!$absenceSaisie->getManquementObligationPresence()&&$absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()){
+        if($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()){
             continue;
         }
         if ($absenceSaisie->getEleve()->getIdEleve() !== $current_eleve) {
@@ -366,7 +366,7 @@ foreach($classe_col as $classe){
             if ($absenceSaisie->isSaisieEleveSorti($dt_debut_creneau)) {
                 continue;
             }
-            if (!$absenceSaisie->getRetard() && !$absenceSaisie->getManquementObligationPresence() && $absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
+            if ($absenceSaisie->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
                 continue;
             }
             if ($absenceSaisie->getIdAid() !== null && !in_array($absenceSaisie->getIdAid(), $aid_deja_sorties)) {
