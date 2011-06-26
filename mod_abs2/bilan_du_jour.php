@@ -138,7 +138,7 @@ foreach($classe_col as $classe) {
 		';
 	$eleve_query = EleveQuery::create()
 		->orderByNom()
-		->useAbsenceEleveSaisieQuery()->filterByPlageTemps($dt_debut, $dt_fin)->endUse()
+		->useAbsenceEleveSaisieQuery()->filterByPlageTemps($dt_debut, $dt_fin)->where('AbsenceEleveSaisie.DeletedAt is Null')->endUse()
 		->useJEleveClasseQuery()->filterByIdClasse($classe->getId())->endUse()
         ->where('Eleve.DateSortie=?','0')
         ->orWhere('Eleve.DateSortie is NULL')
