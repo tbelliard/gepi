@@ -142,7 +142,8 @@ if (!checkAccess()) {
 				// Bricolage pas chouette pour changer le séparateur du CSV
 				$ligne_tmp=preg_replace("/°/"," ",preg_replace("/;/",",",preg_replace('/,/',' ',$ligne)));
 	
-				$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',$ligne_tmp))));
+				//$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',$ligne_tmp))));
+				$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',preg_replace('/°/','Â°',$ligne_tmp)))));
 				//echo "<p>\$ligne=$ligne<br>\n";
 				//echo "\$ligne_corrigee=$ligne_corrigee</p>\n";
 	
@@ -324,7 +325,8 @@ if (!checkAccess()) {
 				// Bricolage pas chouette pour changer le séparateur du CSV
 				$ligne_tmp=preg_replace("/°/"," ",preg_replace("/;/",",",preg_replace('/,/',' ',$ligne)));
 	
-				$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',$ligne_tmp))));
+				//$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',$ligne_tmp))));
+				$ligne_corrigee=trim(suppr_accents(preg_replace("/'/","&apos;",preg_replace('/"/','',preg_replace('/°/','Â°',$ligne_tmp)))));
 				//echo "<p>\$ligne=$ligne<br>\n";
 				//echo "\$ligne_corrigee=$ligne_corrigee</p>\n";
 	
