@@ -43,7 +43,9 @@ class Classe extends BaseClasse {
 	 */
 	public function getEdtEmplacementCours($v) {
         
-        if (EdtEmplacementCoursQuery::create()->useGroupeQuery()->useJGroupesClassesQuery()->filterByClasse($this)->endUse()->endUse()->count()== 0) {
+        if ( getSettingValue("autorise_edt_tous") != 'y') {
+        	return new PropelObjectCollection();
+        } else if (EdtEmplacementCoursQuery::create()->useGroupeQuery()->useJGroupesClassesQuery()->filterByClasse($this)->endUse()->endUse()->count()== 0) {
 			//skip the business logic because there is no edt for this classe
 			return new PropelObjectCollection();
 		}
@@ -88,7 +90,13 @@ class Classe extends BaseClasse {
 	 * @return PropelObjectCollection EdtEmplacementCours une collection d'emplacement de cours ordonnée chronologiquement
 	 */
 	public function getEdtEmplacementCourssPeriodeCalendrierActuelle($v = 'now'){
-	    $query = EdtEmplacementCoursQuery::create()->filterByIdGroupe($this->getGroupes()->toKeyValue('Id', 'Id'))
+		if ( getSettingValue("autorise_edt_tous") != 'y') {
+        	return null;
+        } else         if (EdtEmplacementCoursQuery::create()->filterByGroupe($this)->count() == 0) {
+			//skip the business logic because there is no edt for this groupe
+			return null;
+		}
+		$query = EdtEmplacementCoursQuery::create()->filterByIdGroupe($this->getGroupes()->toKeyValue('Id', 'Id'))
 		    ->filterByIdCalendrier(0)
 		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
 
