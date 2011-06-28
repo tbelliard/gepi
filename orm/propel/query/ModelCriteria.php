@@ -475,27 +475,27 @@ class ModelCriteria extends Criteria
 	}
 
 	/**
-	* Makes the ModelCriteria return a string, array, or PropelArrayCollection
-	* Examples:
-	*   ArticleQuery::create()->select('Name')->find();
-	*   => PropelArrayCollection Object ('Foo', 'Bar')
-	*
-	*   ArticleQuery::create()->select('Name')->findOne();
-	*   => string 'Foo'
-	*
-	*   ArticleQuery::create()->select(array('Id', 'Name'))->find();
-	*   => PropelArrayCollection Object (
-	*        array('Id' => 1, 'Name' => 'Foo'),
-	*        array('Id' => 2, 'Name' => 'Bar')
-	*      )
-	*
-	*   ArticleQuery::create()->select(array('Id', 'Name'))->findOne();
-	*   => array('Id' => 1, 'Name' => 'Foo')
-	*
-	* @param       mixed $columnArray A list of column names (e.g. array('Title', 'Category.Name', 'c.Content')) or a single column name (e.g. 'Name')
-	*
-	* @return     ModelCriteria The current object, for fluid interface
-	*/
+	 * Makes the ModelCriteria return a string, array, or PropelArrayCollection
+	 * Examples:
+	 *   ArticleQuery::create()->select('Name')->find();
+	 *   => PropelArrayCollection Object ('Foo', 'Bar')
+	 *
+	 *   ArticleQuery::create()->select('Name')->findOne();
+	 *   => string 'Foo'
+	 *
+	 *   ArticleQuery::create()->select(array('Id', 'Name'))->find();
+	 *   => PropelArrayCollection Object (
+	 *        array('Id' => 1, 'Name' => 'Foo'),
+	 *        array('Id' => 2, 'Name' => 'Bar')
+	 *      )
+	 *
+	 *   ArticleQuery::create()->select(array('Id', 'Name'))->findOne();
+	 *   => array('Id' => 1, 'Name' => 'Foo')
+	 *
+	 * @param     mixed $columnArray A list of column names (e.g. array('Title', 'Category.Name', 'c.Content')) or a single column name (e.g. 'Name')
+	 *
+	 * @return    ModelCriteria The current object, for fluid interface
+	 */
 	public function select($columnArray)
 	{
 		if (!count($columnArray) || $columnArray == '') {
@@ -512,6 +512,17 @@ class ModelCriteria extends Criteria
 		$this->select = $columnArray;
 
 		return $this;
+	}
+	
+	/**
+	 * Retrieves the columns defined by a previous call to select().
+	 * @see       select() 
+	 *
+	 * @return    array|string A list of column names (e.g. array('Title', 'Category.Name', 'c.Content')) or a single column name (e.g. 'Name')
+	 */
+	public function getSelect()
+	{
+		return $this->select;
 	}
 
 	protected function configureSelectColumns()
@@ -530,14 +541,16 @@ class ModelCriteria extends Criteria
 		// We need to set the primary table name, since in the case that there are no WHERE columns
 		// it will be impossible for the BasePeer::createSelectSql() method to determine which
 		// tables go into the FROM clause.
-		$this->setPrimaryTableName(constant($this->modelPeerName . '::TABLE_NAME'));
-
+		if (!$this->selectQueries) {
+			$this->setPrimaryTableName(constant($this->modelPeerName . '::TABLE_NAME'));
+		}
+		
 		// Add requested columns which are not withColumns
 		$columnNames = is_array($this->select) ? $this->select : array($this->select);
 		foreach ($columnNames as $columnName) {
 			// check if the column was added by a withColumn, if not add it
 			if (!array_key_exists($columnName, $this->getAsColumns())) {
-				$column = $this->getColumnFromName ($columnName);
+				$column = $this->getColumnFromName($columnName);
 				// always put quotes around the columnName to be safe, we strip them in the formatter
 				$this->addAsColumn('"' . $columnName . '"', $column[1]);
 			}

@@ -30,7 +30,7 @@ class Propel
 	/**
 	 * The Propel version.
 	 */
-	const VERSION = '1.6.1-dev';
+	const VERSION = '1.6.2-dev';
 	
 	/**
 	 * A constant for <code>default</code>.
@@ -670,9 +670,6 @@ class Propel
 		try {
 			$con = new $classname($dsn, $user, $password, $driver_options);
 			$con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-			if (Propel::getConfiguration(PropelConfiguration::TYPE_OBJECT)->getParameter('debugpdo.logging.enabled', false)) {
-				$con->useLogging(true);
-			}
 		} catch (PDOException $e) {
 			throw new PropelException("Unable to open PDO connection", $e);
 		}
