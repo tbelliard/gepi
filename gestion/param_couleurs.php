@@ -196,7 +196,7 @@ function genere_degrade($couleur_haut,$couleur_bas,$hauteur,$chemin_img,$mode=""
 }
 
 
-$tab_items=array('utiliser_couleurs_perso', 'style_body_backgroundcolor', 'utiliser_degrade', 'degrade_haut', 'degrade_bas', 'utiliser_couleurs_perso_infobulles', 'couleur_infobulle_fond_entete', 'couleur_infobulle_fond_corps', 'utiliser_couleurs_perso_lig_tab_alt', 'couleur_lig_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'utiliser_cahier_texte_perso', 'fond_notices_c', 'entete_fond_c', 'cellule_c', 'cellule_alt_c', 'fond_notices_t', 'entete_fond_t', 'cellule_t', 'cellule_alt_t', 'fond_notices_i', 'entete_fond_i', 'cellule_i', 'cellule_alt', 'fond_notices_f', 'cellule_f', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen');
+$tab_items=array('utiliser_couleurs_perso', 'style_body_backgroundcolor', 'utiliser_degrade', 'degrade_haut', 'degrade_bas', 'utiliser_couleurs_perso_infobulles', 'couleur_infobulle_fond_entete', 'couleur_infobulle_fond_corps', 'utiliser_couleurs_perso_lig_tab_alt', 'couleur_lig_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'utiliser_cahier_texte_perso', 'fond_notices_c', 'entete_fond_c', 'cellule_c', 'cellule_alt_c', 'fond_notices_t', 'entete_fond_t', 'cellule_t', 'cellule_alt_t', 'fond_notices_i', 'entete_fond_i', 'cellule_i', 'cellule_alt', 'fond_notices_f', 'cellule_f', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen', 'couleur_fond_postit');
 
 if((isset($_GET['export_couleurs']))&&($_GET['export_couleurs']=='y')) {
 
@@ -822,7 +822,36 @@ div.info_abs {
 		}
 
 
+		if(isset($_POST['couleur_fond_postit'])) {
+			if((strlen(preg_replace("/[0-9A-F]/","",strtoupper($_POST['couleur_fond_postit'])))!=0)||(strlen($_POST['couleur_fond_postit'])!=6)) {
+				$couleur_fond_postit="ffff00";
+			}
+			else {
+				$couleur_fond_postit=$_POST['couleur_fond_postit'];
+			}
 
+			if(saveSetting('couleur_fond_postit',$couleur_fond_postit)) {
+				//$msg.="Enregistrement effectué. ";
+				$temoin_modif++;
+
+				if ($GLOBALS['multisite'] == 'y') {
+					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+				} else {
+					$fich=fopen("../style_screen_ajout.css","a+");
+				}
+				fwrite($fich,"
+.postit {
+	background-color: #$couleur_fond_postit;
+}
+");
+				fclose($fich);
+
+			}
+			else {
+				$msg.="Erreur lors de la sauvegarde de 'couleur_fond_postit'. ";
+				$nb_err++;
+			}
+		}
 
 
 		//=========================================
@@ -1059,7 +1088,7 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 
 	//var liste=new Array('style_body_backgroundcolor');
 	// var liste=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1');
-	var liste=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen', 'fond_notices_c', 'fond_notices_t', 'fond_notices_i', 'fond_notices_f', 'entete_fond_c', 'entete_fond_t', 'entete_fond_i', 'cellule_c', 'cellule_t', 'cellule_i', 'cellule_f', 'cellule_alt_c', 'cellule_alt_t', 'cellule_alt_i');
+	var liste=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1', 'police_travaux', 'police_matieres', 'bord_tableau_notice', 'cellule_gen', 'fond_notices_c', 'fond_notices_t', 'fond_notices_i', 'fond_notices_f', 'entete_fond_c', 'entete_fond_t', 'entete_fond_i', 'cellule_c', 'cellule_t', 'cellule_i', 'cellule_f', 'cellule_alt_c', 'cellule_alt_t', 'cellule_alt_i', 'couleur_fond_postit');
 
 	function init() {
 		for(i=0;i<liste.length;i++) {
@@ -1114,6 +1143,12 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 	tabmotif['couleur_lig_alt_1_V']=255;
 	tabmotif['couleur_lig_alt_1_B']=240;
 
+
+	tabmotif['couleur_fond_postit_R']=255;
+	tabmotif['couleur_fond_postit_V']=255;
+	tabmotif['couleur_fond_postit_B']=0;
+
+
 	// Cahier de texte : Compte rendu
 	// #C7FF99
 	tabmotif['fond_notices_c_R']=199;
@@ -1130,6 +1165,8 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 	tabmotif['cellule_alt_c_R']=211;
 	tabmotif['cellule_alt_c_V']=255;
 	tabmotif['cellule_alt_c_B']=175;
+
+
 
 	// Cahier de texte : Travail à faire
 	//	#FFCCCF
@@ -1784,6 +1821,85 @@ echo add_token_field();
 
 
 
+
+
+
+
+
+
+
+
+
+
+		//=========================================
+
+		$tabcouleurs['couleur_fond_postit']=array();
+		$couleur_fond_postit=getSettingValue('couleur_fond_postit');
+		if($couleur_fond_postit!="") {
+			$tabcouleurs['couleur_fond_postit']=tab_rvb($couleur_fond_postit);
+		}
+		else {
+			// #fff5b1
+			$tabcouleurs['couleur_fond_postit']['R']=255;
+			$tabcouleurs['couleur_fond_postit']['V']=255;
+			$tabcouleurs['couleur_fond_postit']['B']=0;
+		}
+
+
+		echo "<h2><strong>Couleurs diverses:</strong></h2>\n";
+		echo "<div class='tableau_param_couleur'>\n";
+
+			echo "<table class='tableau_change_couleur' summary=\"Tableau de diverses couleurs\">\n";
+
+				echo "<tr class='fond_blanc'>\n";
+					echo "<td class='texte_gras'>Motif</td>\n";
+					for($j=0;$j<count($comp);$j++) {
+						echo "<td class='texte_gras'>$comp[$j]</td>\n";
+					}
+					echo "<td class='texte_gras'>Aperçu</td>\n";
+					echo "<td class='texte_gras'>Réinitialisation</td>\n";
+
+				echo "</tr>\n";
+
+				echo "<tr>\n";
+					echo "<td>Couleur de fond des Messages en Panneau d'affichage";
+					echo "</td>\n";
+					for($j=0;$j<count($comp);$j++) {
+						echo "<td>\n";
+							echo "<label for='id_couleur_fond_postit_".$comp[$j]."' class='invisible'>".$comp[$j]." Panneau ".$comp[$j]."</label>\n";
+							echo "<input type='text' name='couleur_fond_postit_".$comp[$j]."' id='id_couleur_fond_postit_".$comp[$j]."' value='".$tabcouleurs['couleur_fond_postit'][$comp[$j]]."' size='3' onblur='affichecouleur(\"couleur_fond_postit\")' onkeydown=\"clavier_2(this.id,event,0,255);\" />\n";
+						echo "</td>\n";
+					}
+					echo "<td id='couleur_fond_postit'";
+
+					echo " onclick=\"document.getElementById('id_couleur_r').value='id_couleur_fond_postit_R';";
+					echo "document.getElementById('id_couleur_v').value='id_couleur_fond_postit_V';";
+					echo "document.getElementById('id_couleur_b').value='id_couleur_fond_postit_B';";
+					echo "document.getElementById('id_couleur_motif').value='couleur_fond_postit';";
+					echo "afficher_div('div_choix_couleur','y',10,-200)\">";
+
+					// Champ calculé/mis à jour par la fonction JavaScript calcule_et_valide() lors de la validation du formulaire:
+						echo "<input type='hidden' name='couleur_fond_postit' value='couleur_fond_postit' />\n";
+					echo "&nbsp;&nbsp;&nbsp;</td>\n";
+					echo "<td>\n";
+						echo "<a href='#' onclick='reinit_couleurs(\"couleur_fond_postit\");return false;'>Réinitialiser</a>\n";
+					echo "</td>\n";
+				echo "</tr>\n";
+
+			echo "</table>\n";
+		echo "</div>\n";
+
+
+
+
+
+
+
+
+
+
+
+
 /* ===== couleurs du cahier de texte ===== */
 
 	echo "<h2>\n<strong>Notices cahier de textes :</strong>\n</h2>\n";
@@ -1962,6 +2078,7 @@ echo add_token_field();
 
 // Fin couleurs communes
 
+
 	echo "</div>\n";
 
 
@@ -2013,6 +2130,8 @@ echo add_token_field();
 
 // Liste simplifiée
 var liste_style=new Array('style_body_backgroundcolor', 'degrade_haut', 'degrade_bas', 'couleur_infobulle_fond_corps', 'couleur_infobulle_fond_entete', 'couleur_lig_entete', 'couleur_lig_alt1', 'couleur_lig_alt_1');
+
+//,'couleur_fond_postit'
 
 function valide_modele(choix) {
 	var choix_valide='n';
