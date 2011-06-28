@@ -282,7 +282,8 @@ if (getSettingValue("abs2_saisie_prof_decale_journee")!='y'
 } else {
     //on affiche une boite de selection avec les cours
     if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getStatut() == "cpe") {
-	$edt_cours_col = EdtEmplacementCoursQuery::create()->find();
+		//la collection entière des cours est trop grosse et inexploitable sous la forme d'une liste. ça consomme de la ressource donc c'est désactivé
+		$edt_cours_col = new PropelCollection();
     } else {
 	$edt_cours_col = $utilisateur->getEdtEmplacementCourssPeriodeCalendrierActuelle();
     }
