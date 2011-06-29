@@ -1263,65 +1263,45 @@ class Eleve extends BaseEleve {
 
   	/**
 	 *
-	 * Retourne une collection contenant sous forme de DateTime les retards (saisies d'absences inferieures a 30min)
-	 * Un DateTime le 23/05/2010 à 00:00 signifie que l'eleve a ete saisie absent le 23/05/2010 au matin
-	 * Pour l'apres midi la date est 23/05/2010 à 12:30
+	 * Retourne une collection contenant des saisies comptée comme absence pour le décompte officiel
 	 *
 	 * @param      mixed $periode numeric or PeriodeNote value.
 	 *
-	 * @return PropelCollection DateTime[]
+	 * @return PropelCollection AbsenceEleveSaisie[]
 	 */
 	public function getRetards($date_debut=null, $date_fin = null) {
 	    $abs_saisie_col = $this->getAbsColDecompteDemiJournee($date_debut, $date_fin);
 	    if ($abs_saisie_col->isEmpty()) {
-		return new PropelCollection();
+			return new PropelCollection();
 	    }
 
-	    //on filtre les saisie qu'on ne veut pas compter
-	    $abs_saisie_col_filtre = new PropelCollection();
-	    foreach ($abs_saisie_col as $saisie) {
-		if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-		    $abs_saisie_col_filtre->append($saisie);
-		}
-	    }
-
-	    if ($date_fin != null) {
-		$date_fin_iteration = clone $date_fin;
-	    } else {
-		$date_fin_iteration = new DateTime('now');
-		$date_fin_iteration->setTime(23,59);
-	    }
-
-            if ($this->getDateSortie() != null && $this->getDateSortie('U') < $date_fin_iteration->format('U')) {
-                $date_fin_iteration = $this->getDateSortie(null);
-            }
-
-	    require_once("helpers/AbsencesEleveSaisieHelper.php");
-	    $retards_result = AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
-
-	    //on recupere les demi-journees pendant lesquels l'eleve est absent, pour ne pas les compter comme retard
-	    require_once("helpers/AbsencesEleveSaisieHelper.php");
-	    $absences = AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre, $date_debut, $date_fin_iteration);
-	    $abs_saisie_col_filtre_abs = new PropelCollection();
-	    foreach ($abs_saisie_col as $saisie) {
-		if (!$saisie->getRetard() && $saisie->getManquementObligationPresence()) {
-		    $abs_saisie_col_filtre_abs->append($saisie);
-		}
-	    }
-	    require_once("helpers/AbsencesEleveSaisieHelper.php");
-	    $abs_result = AbsencesEleveSaisieHelper::compte_demi_journee($abs_saisie_col_filtre_abs, $date_debut, $date_fin_iteration);
-	    $abs_result_timestamp_array = Array();
-	    foreach ($abs_result as $dateTime) {
-		$abs_result_timestamp_array[] = $dateTime->format('U');
-	    }
-
-
-	    //on va expurger des retard les demi-journees pendant lesquels l'eleve est absent
 	    $result = new PropelCollection();
-	    foreach ($retards_result as $dateTime) {
-		if (!in_array($dateTime->format('U'), $abs_result_timestamp_array)) {
-		    $result->append($dateTime);
-		}
+	    $abs_saisie_col_2 = clone $abs_saisie_col;
+	    //on va faire le décompte officiel des retard
+	    foreach ($abs_saisie_col as $saisie) {
+			if ($saisie->getRetard() && $saisie->getManquementObligationPresence()) {
+			    $contra = false;
+	    		//on va vérifier si il n'y a pas une saisie contradictoire simultanée
+				foreach ($abs_saisie_col_2 as $saisie_contra) {
+				    if ($saisie_contra->getId() != $saisie->getId()
+					    && $saisie->getDebutAbs('U') >= $saisie_contra->getDebutAbs('U')
+					    && $saisie->getFinAbs('U') <= $saisie_contra->getFinAbs('U')
+					    && !$saisie_contra->getManquementObligationPresenceSpecifie_NON_PRECISE()) {
+					    	if ($saisie_contra->getManquementObligationPresence()) {
+					    		//on a une saisie plus large qui est aussi un manquement à l'obligation de présence, donc on ne compte pas celle qui est englobée
+								$contra = true;
+								break;
+					    	} else if (getSettingValue("abs2_saisie_multi_type_sans_manquement")=='y') {
+					    		//on a une saisie plus large qui est comptée comme présente, donc on ne compte pas celle la qui est englobée
+								$contra = true;
+								break;
+					    	}
+					}
+			    }
+			    if (!$contra) {
+					$result->append($saisie);
+			    }
+			}
 	    }
 	    return $result;
 	}
