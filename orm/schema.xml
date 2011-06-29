@@ -461,10 +461,12 @@
     <foreign-key foreignTable="aid" onDelete="setnull"><reference local="id_aid" foreign="id"/></foreign-key>
     <column name="id_s_incidents" required="false" type="INTEGER" default="null" description="identifiant de la saisie d'incident discipline"/>
     <column name="id_lieu" required="false" type="INTEGER" size="11" default="null" description="cle etrangere du lieu ou se trouve l'eleve"/>
+    <column name="deleted_by" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a supprimé la saisie"/>
+    <column name="created_at" type="TIMESTAMP" description="Date de creation de la saisie"/>
+    <column name="updated_at" type="TIMESTAMP" description="Date de modification de la saisie, y compris suppression, restauration et changement de version"/>
     <foreign-key foreignTable="a_lieux" onDelete="setnull"><reference local="id_lieu" foreign="id"/></foreign-key>
     <behavior name="timestampable" />
 	<behavior name="soft_delete" />
-    <column name="deleted_by" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a supprimé la saisie"/>
     <behavior name="versionable">
       <parameter name="log_created_at" value="true" />
       <parameter name="log_created_by" value="true" />

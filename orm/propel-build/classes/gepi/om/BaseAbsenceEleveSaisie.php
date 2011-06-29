@@ -433,7 +433,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [optionally formatted] temporal [created_at] column value.
-	 * 
+	 * Date de creation de la saisie
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
@@ -471,7 +471,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 
 	/**
 	 * Get the [optionally formatted] temporal [updated_at] column value.
-	 * 
+	 * Date de modification de la saisie, y compris suppression, restauration et changement de version
 	 *
 	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
 	 *							If format is NULL, then the raw DateTime object will be returned.
@@ -921,7 +921,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 
 	/**
 	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
-	 * 
+	 * Date de creation de la saisie
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.
 	 *               Empty strings are treated as NULL.
 	 * @return     AbsenceEleveSaisie The current object (for fluent API support)
@@ -943,7 +943,7 @@ abstract class BaseAbsenceEleveSaisie extends BaseObject  implements Persistent
 
 	/**
 	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
-	 * 
+	 * Date de modification de la saisie, y compris suppression, restauration et changement de version
 	 * @param      mixed $v string, integer (timestamp), or DateTime value.
 	 *               Empty strings are treated as NULL.
 	 * @return     AbsenceEleveSaisie The current object (for fluent API support)

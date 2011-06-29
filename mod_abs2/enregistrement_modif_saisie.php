@@ -107,7 +107,13 @@ if ( isset($_POST["creation_traitement"])) {
         die();
         }
 	$saisie->toVersion($_GET["version"]);
-	$saisie->unDelete();
+	if ($saisie->isDeleted()) {
+		$saisie->unDelete();
+	} else {
+		AbsenceEleveSaisiePeer::disableVersioning();
+		$saisie->save();
+		AbsenceEleveSaisiePeer::enableVersioning();
+	}
 	include("visu_saisie.php");
     die();
 } elseif (isset($_POST["action"])) {

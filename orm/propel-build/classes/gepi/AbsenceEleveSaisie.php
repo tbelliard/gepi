@@ -999,8 +999,9 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 */
 	public function unDelete(PropelPDO $con = null)
 	{
-    	AbsenceEleveSaisiePeer::disableVersioning();
-    	$this->setDeletedBy(null);
+		AbsenceEleveSaisiePeer::disableVersioning();
+		$this->setDeletedBy(null);
+		$this->setUpdatedAt('now');
 		parent::unDelete($con);
 		AbsenceEleveSaisiePeer::enableVersioning();
 	}
@@ -1016,13 +1017,14 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	 */
 	public function delete(PropelPDO $con = null)
 	{
-    	AbsenceEleveSaisiePeer::disableVersioning();
+	    AbsenceEleveSaisiePeer::disableVersioning();
 	    $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
 	    if ($utilisateur != null) {
-			$this->setDeletedBy($utilisateur->getLogin());
+		    $this->setDeletedBy($utilisateur->getLogin());
 	    }
-		parent::delete($con);
-		AbsenceEleveSaisiePeer::enableVersioning();
+	    $this->setUpdatedAt('now');
+	    parent::delete($con);
+	    AbsenceEleveSaisiePeer::enableVersioning();
 	}
         /**
 	 * Retourne une couleur d'affichage en fonction du type de la saisie.
@@ -1041,4 +1043,19 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
                 return 'green';
             }
         }
+        
+        /**
+		 * Sets the properties of the curent object to the value they had at a specific version
+		 *
+		 * @param   integer $versionNumber The version number to read
+		 * @param   PropelPDO $con the connection to use
+		 *
+		 * @return  AbsenceEleveSaisie The current object (for fluent API support)
+		 */
+		public function toVersion($versionNumber, $con = null)
+		{
+			parent::toVersion($versionNumber, $con);
+			$this->setUpdatedAt('now');
+		}
+        
 } // AbsenceEleveSaisie
