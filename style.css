@@ -1232,4 +1232,111 @@ input.validation-passed, textarea.validation-passed {
 	display: inline;
 }
 
+/* =================== Création du panneau d'affichage ============= */
+.panneau_droite {
+	background-image:url('./images/right.png');
+	background-repeat: repeat-y;
+    background-position: right;
+    position:absolute;
+    top:0px;
+    right:-40px;
+    height:100%;
+    width:40px;
+}
+.panneau_affichage{
+	margin: 40px 40px 40px 40px;
+    float:left;
+	width:92%;
 
+}
+.panneau_central {
+    position:relative;
+	width:80%; 
+	font-size: 1em;
+	padding:0px 0 0px 0px;
+	margin:0px auto;
+}
+.panneau_gauche {
+	background-image:url('./images/left.png');
+	background-repeat: repeat-y;
+    background-position: right;
+    position:absolute;
+    top:0px;
+    left:-33px;
+    height:100%;
+    width:33px;
+}
+.postit {
+
+	padding:10px;
+	background-color:#FFE92F;
+	width:80%;
+	margin:5px auto 20px auto;
+}
+.panneau_haut {
+	height:33px;
+	background-image:url('./images/top.png');
+	background-repeat: repeat-x;
+    position:absolute;
+    width:100%;
+	top:-33px;
+    left:00px;
+}
+.panneau_centre {
+	background-image:url('./images/center.png');
+	background-repeat: repeat-x repeat-y;
+    width:100%;
+	top:0px;
+    left:00px;
+	color:black;
+
+}
+.panneau_bas {
+	height:40px;
+    position:absolute;
+	background-image:url('./images/bottom.png');
+	background-repeat: repeat-x;
+    width:100%;
+	bottom:-40px;
+    left:00px;
+}
+
+.panneau_coingh {
+    width:33px;
+    position:absolute;
+	height:33px;
+	background-image:url('./images/top_left.png');
+    top:-33px;
+    left:-33px;		
+	background-repeat: no-repeat;
+}
+
+.panneau_coindh {
+    position:absolute;
+    width:40px;
+	height:33px;
+	background-image:url('./images/top_right.png');
+	top:-33px;
+    right:-40px;
+	background-repeat: no-repeat;
+}
+
+.panneau_coingb {
+    position:absolute;
+    bottom:-40px;
+    left:-33px;
+    width:33px;
+	height:40px;
+	background-image:url('./images/bottom_left.png');
+	float: left;
+}
+
+.panneau_coindb {
+    position:absolute;
+    bottom:-40px;
+    right:-40px;
+    width:40px;
+	height:40px;
+	background-image:url('./images/bottom_right.png');
+	float:right;
+}

@@ -852,7 +852,121 @@ div.info_abs {
 				$nb_err++;
 			}
 		}
+		//=========================================
+		// paramétrer le style du panneau d'affichage
+		//=========================================
+		if(isset($_POST['select_panneau_affichage'])) {
+			$selected_panel = $_POST['select_panneau_affichage'];
+			if(saveSetting('style_panneau_affichage',$selected_panel)) {
+				//$msg.="Enregistrement effectué. ";
 
+				if ($GLOBALS['multisite'] == 'y') {
+					$fich=fopen("../style_screen_ajout_".getSettingValue('gepiSchoolRne').".css","w+");
+				} else {
+					$fich=fopen("../style_screen_ajout.css","a+");
+				}
+				fwrite($fich,"
+
+.panneau_droite {
+	background-image:url('./images/modeles/".$selected_panel."/right.png');
+	background-repeat: repeat-y;
+    background-position: right;
+    position:absolute;
+    top:0px;
+    right:-40px;
+    height:100%;
+    width:40px;
+}
+.panneau_gauche {
+	background-image:url('./images/modeles/".$selected_panel."/left.png');
+	background-repeat: repeat-y;
+    background-position: right;
+    position:absolute;
+    top:0px;
+    left:-33px;
+    height:100%;
+    width:33px;
+}
+
+.panneau_haut {
+	height:33px;
+	background-image:url('./images/modeles/".$selected_panel."/top.png');
+	background-repeat: repeat-x;
+    position:absolute;
+    width:100%;
+	top:-33px;
+    left:00px;
+}
+.panneau_centre {
+	background-image:url('./images/modeles/".$selected_panel."/center.png');
+	background-repeat: repeat-x repeat-y;
+    width:100%;
+	top:0px;
+    left:00px;
+	color:black;
+
+}
+.panneau_bas {
+	height:40px;
+    position:absolute;
+	background-image:url('./images/modeles/".$selected_panel."/bottom.png');
+	background-repeat: repeat-x;
+    width:100%;
+	bottom:-40px;
+    left:00px;
+}
+
+.panneau_coingh {
+    width:33px;
+    position:absolute;
+	height:33px;
+	background-image:url('./images/modeles/".$selected_panel."/top_left.png');
+    top:-33px;
+    left:-33px;		
+	background-repeat: no-repeat;
+}
+
+.panneau_coindh {
+    position:absolute;
+    width:40px;
+	height:33px;
+	background-image:url('./images/modeles/".$selected_panel."/top_right.png');
+	top:-33px;
+    right:-40px;
+	background-repeat: no-repeat;
+}
+
+.panneau_coingb {
+    position:absolute;
+    bottom:-40px;
+    left:-33px;
+    width:33px;
+	height:40px;
+	background-image:url('./images/modeles/".$selected_panel."/bottom_left.png');
+	float: left;
+}
+
+.panneau_coindb {
+    position:absolute;
+    bottom:-40px;
+    right:-40px;
+    width:40px;
+	height:40px;
+	background-image:url('./images/modeles/".$selected_panel."/bottom_right.png');
+	float:right;
+}
+				
+				
+				
+");
+				fclose($fich);
+
+			}
+			else {
+				$msg.="Erreur lors de la sauvegarde de 'couleur_fond_postit'. ";
+				$nb_err++;
+			}
+		}
 
 		//=========================================
 		// utiliser_cahier_texte_perso
@@ -949,49 +1063,34 @@ div.info_abs {
 }
 
 //**************** EN-TETE *****************
-$titre_page = "Choix des couleurs GEPI";
+$titre_page = "Couleurs et Modèles GEPI";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-include("../lib/couleurs_ccm.php");
+include("../lib/couleurs_ccm.php"); 
 
-//echo "<div class='norme'><p class='bold'><a href='param_gen.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
-echo "<div class='norme'>\n";
-	echo "<p class='bold'>\n";
-
-	if(!isset($_GET['import_couleurs'])) {
-		echo "<a href='index.php#param_couleurs'>\n";
-			echo "<img src='../images/icons/back.png' alt='' class='back_link'/>\n";
-			echo " Retour\n";
-		echo "</a>\n";
-
-		echo " | Choix modèle&nbsp;: <select name='choix_modele' id='choix_modele' onchange=\"valide_modele(document.getElementById('choix_modele').options[document.getElementById('choix_modele').selectedIndex].value)\">
-	<option value=''>---</option>
-	<option value='rose'>Rose</option>
-	<option value='vert'>Vert</option>
-	<option value='bleu'>Bleu</option>
-	<option value='chocolat'>Chocolat</option>
-	<option value='ngb'>Noir_Gris_Blanc</option>
-</select>\n";
-	}
-	else {
-		echo "<a href='param_couleurs.php'>\n";
-			echo "<img src='../images/icons/back.png' alt='' class='back_link'/>\n";
-			echo " Retour\n";
-		echo "</a>\n";
-	}
-
-	echo " | <a href='param_couleurs.php?export_couleurs=y'>\n";
-	echo "Exporter les couleurs de votre modèle\n";
-	echo "</a>\n";
-
-	echo " | <a href='param_couleurs.php?import_couleurs=y'>\n";
-	echo "Importer les couleurs depuis un CSV\n";
-	echo "</a>\n";
-
-	echo "</p>\n";
-echo "</div>\n";
-
+//echo "<div class='norme'><p class='bold'><a href='param_gen.php'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n"; ?>
+	<div class='norme'>
+	<p class='bold'>
+		<?php if(!isset($_GET['import_couleurs'])) { ?>
+		<a href='index.php#param_couleurs'><img src='../images/icons/back.png' alt='' class='back_link'/> Retour</a>
+		| Choix modèle&nbsp;:
+		<select name='choix_modele' id='choix_modele' onchange="valide_modele($('choix_modele').options[$('choix_modele').selectedIndex].value)">
+			<option value=''>---</option>
+			<option value='rose'>Rose</option>
+			<option value='vert'>Vert</option>
+			<option value='bleu'>Bleu</option>
+			<option value='chocolat'>Chocolat</option>
+			<option value='ngb'>Noir_Gris_Blanc</option>
+		</select>
+		<?php }	else { ?>
+		<a href='param_couleurs.php'><img src='../images/icons/back.png' alt='' class='back_link'/> Retour</a>
+		<?php } ?>
+		| <a href='param_couleurs.php?export_couleurs=y'>Exporter les couleurs de votre modèle</a>
+		| <a href='param_couleurs.php?import_couleurs=y'>Importer les couleurs depuis un CSV</a>
+	</p>
+	</div>
+<?php
 //echo "<img src='../images/background/degrade1_very_small.png' />";
 
 if((isset($_GET['import_couleurs']))&&($_GET['import_couleurs']=='y')) {
@@ -1249,13 +1348,34 @@ aff_tab_couleurs_ccm('div_choix_couleur');
 
 		//return false;
 	}
+	// ========================================================================================
+	//
+	//					Création des observers généraux mousedown, mouseup
+	//
+	// ========================================================================================
+	window.onload = function() {
+		
+		$('select_panneau_affichage').observe('change', function(event) {
+			var selected_panel = $$('select#select_panneau_affichage option').find(function(ele){return ele.selected}).value;
+			$('panneau_coingh').setStyle({backgroundImage: 'url(../images/modeles/'+selected_panel+'/top_left.png)'});
+			$('panneau_haut').setStyle({backgroundImage: 'url(../images/modeles/'+selected_panel+'/top.png)'});
+			$('panneau_coindh').setStyle({backgroundImage: 'url(../images/modeles/'+selected_panel+'/top_right.png)'});
+			$('panneau_gauche').setStyle({backgroundImage: 'url(../images/modeles/'+selected_panel+'/left.png)'});
+			$('panneau_centre').setStyle({backgroundImage: 'url(../images/modeles/'+selected_panel+'/center.png)'});
+			$('panneau_droite').setStyle({backgroundImage: 'url(../images/modeles/'+selected_panel+'/right.png)'});
+			$('panneau_coingb').setStyle({backgroundImage: 'url(../images/modeles/'+selected_panel+'/bottom_left.png)'});
+			$('panneau_bas').setStyle({backgroundImage: 'url(../images/modeles/'+selected_panel+'/bottom.png)'});
+			$('panneau_coindb').setStyle({backgroundImage: 'url(../images/modeles/'+selected_panel+'/bottom_right.png)'});
+		});
+
+	}
 
 //]]>
 </script>
 <!--noscript>
 </noscript-->
 
-<p>Cette page est destinée à choisir les couleurs pour l'interface GEPI.
+<p>Définissez les couleurs pour l'interface GEPI et gérez vos modèles.
 <!--Dans sa version actuelle, seule la couleur de fond de la page peut être paramétrée depuis cette page.-->
 </p>
 
@@ -2081,9 +2201,55 @@ echo add_token_field();
 
 	echo "</div>\n";
 
+?>
+<!-- ====================== Paramétrage du panneau d'affichage ========================== -->	
 
+<?php 	$tab_style = array('fil_blanc','fil_noir','fil_bleu','fil_vert','filet_noir','filet_noir_2','liege'); 
+		$nom_style = array(	'fil_blanc' => 'fil de fer blanc',
+							'fil_noir' => 'fil de fer noir',
+							'fil_bleu' => 'fil de fer bleu',
+							'fil_vert' => 'fil de fer vert',
+							'filet_noir' => 'filet noir',
+							'filet_noir_2' => 'filet noir avec baguette',
+							'liege' => 'plaque de liège'); 
+		$selected_style = null; 
+		if (getSettingValue('style_panneau_affichage')) {
+			$selected_style = getSettingValue('style_panneau_affichage');
+		}
+?>
+	<div style="clear:both;"></div>
+	<div class="panneau_affichage">
+		<div class="panneau_central">
+			<div id="panneau_coingh" class="panneau_coingh"></div>
+			<div id="panneau_coindh" class="panneau_coindh"></div>
+			<div id="panneau_haut" class="panneau_haut"></div>
+			<div id="panneau_droite" class="panneau_droite"></div>
+			<div id="panneau_gauche" class="panneau_gauche"></div>
+			<div id="panneau_coingb" class="panneau_coingb"></div>
+			<div id="panneau_coindb" class="panneau_coindb"></div>
+			<div id="panneau_bas" class="panneau_bas"></div>
+			<div id="panneau_centre" class="panneau_centre">	
+				<div style="margin-bottom:10px;opacity:1;"><strong>Choisissez votre panneau d'affichage</strong></div>
+				<div style="text-align:center;opacity:1;">
 
-
+					<select id="select_panneau_affichage" name="select_panneau_affichage">
+						<option value="---">---</option>
+						<?php foreach ($tab_style as $style) : ?> 
+						<?php if ($style==$selected_style) {
+								$display_selected = " selected";
+							}
+							else {
+								$display_selected = "";
+							} ?>
+						<option value="<?php echo $style; ?>" <?php echo $display_selected; ?>><?php echo $nom_style[$style]; ?></option>
+						<?php endforeach; ?>
+					</select>
+				</div>
+			</div>
+		</div>
+	</div>	
+	<div style="clear:both;"></div>	
+<?php
 /*============================================*/
 /* 	 ça marche, il manque enregistrement    */
 /*============================================*/
@@ -2372,6 +2538,13 @@ function valide_modele(choix) {
 	echo "<a href=\"javascript:valide_modele('bleu')\">Bleu</a><br />";
 	*/
 
+?>	
+	
+	
+	
+	
+	
+<?php	
 echo "</form>\n";
 
 require("../lib/footer.inc.php");

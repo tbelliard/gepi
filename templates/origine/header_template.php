@@ -131,7 +131,7 @@
 				digital=new Date()
 				seconds=(digital-debut_alert)/1000
 				//if (1==1) {
-				  if (seconds==<?php echo getSettingValue("sessionMaxLength")*60; ?>) {
+				  if (seconds>=<?php echo getSettingValue("sessionMaxLength")*60; ?>) {
 					<?php
 						$logout_path=null;
 						if (isset($niveau_arbo)) {
