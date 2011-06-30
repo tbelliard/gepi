@@ -195,7 +195,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 
 	/**
 	 * Get the [type_notification] column value.
-	 * type de notification (0 : email, 1 : courrier, 2 : sms, 3 : telephone
+	 * type de notification (0 : courrier, 1 : email, 2 : sms, 3 : telephone
 	 * @return     string
 	 */
 	public function getTypeNotification()
@@ -461,7 +461,7 @@ abstract class BaseAbsenceEleveNotification extends BaseObject  implements Persi
 
 	/**
 	 * Set the value of [type_notification] column.
-	 * type de notification (0 : email, 1 : courrier, 2 : sms, 3 : telephone
+	 * type de notification (0 : courrier, 1 : email, 2 : sms, 3 : telephone
 	 * @param      string $v new value
 	 * @return     AbsenceEleveNotification The current object (for fluent API support)
 	 */

@@ -43,8 +43,8 @@ class AbsenceEleveNotificationTableMap extends TableMap
 		$this->addForeignKey('A_TRAITEMENT_ID', 'ATraitementId', 'INTEGER', 'a_traitements', 'ID', true, 12, null);
 		$this->addColumn('TYPE_NOTIFICATION', 'TypeNotification', 'ENUM', false, null, null);
 		$this->getColumn('TYPE_NOTIFICATION', false)->setValueSet(array (
-  0 => 'email',
-  1 => 'courrier',
+  0 => 'courrier',
+  1 => 'email',
   2 => 'sms',
   3 => 'communication telephonique',
 ));

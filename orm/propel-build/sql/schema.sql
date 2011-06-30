@@ -983,7 +983,7 @@ CREATE TABLE a_notifications
 	id INTEGER(11) NOT NULL AUTO_INCREMENT,
 	utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui envoi la notification',
 	a_traitement_id INTEGER(12) NOT NULL COMMENT 'cle etrangere du traitement qu\'on notifie',
-	type_notification TINYINT COMMENT 'type de notification (0 : email, 1 : courrier, 2 : sms, 3 : telephone',
+	type_notification TINYINT COMMENT 'type de notification (0 : courrier, 1 : email, 2 : sms, 3 : telephone',
 	email VARCHAR(100) COMMENT 'email de destination (pour le type email)',
 	telephone VARCHAR(100) COMMENT 'numero du telephone de destination (pour le type sms)',
 	adr_id VARCHAR(10) COMMENT 'cle etrangere vers l\'adresse de destination (pour le type courrier)',

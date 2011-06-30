@@ -74,8 +74,8 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	const UPDATED_AT = 'a_notifications.UPDATED_AT';
 
 	/** The enumerated values for the TYPE_NOTIFICATION field */
-	const TYPE_NOTIFICATION_EMAIL = 'email';
 	const TYPE_NOTIFICATION_COURRIER = 'courrier';
+	const TYPE_NOTIFICATION_EMAIL = 'email';
 	const TYPE_NOTIFICATION_SMS = 'sms';
 	const TYPE_NOTIFICATION_COMMUNICATION_TELEPHONIQUE = 'communication telephonique';
 
@@ -132,8 +132,8 @@ abstract class BaseAbsenceEleveNotificationPeer {
 	/** The enumerated values for this table */
 	protected static $enumValueSets = array(
 		self::TYPE_NOTIFICATION => array(
-			AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL,
 			AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER,
+			AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_EMAIL,
 			AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS,
 			AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COMMUNICATION_TELEPHONIQUE,
 		),
