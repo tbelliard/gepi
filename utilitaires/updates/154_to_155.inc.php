@@ -263,18 +263,33 @@ if ($test == -1) {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
-$result .= "&nbsp;->Mise a jour des saisies d'absence avec les versions<br />";
+$result .= "&nbsp;->Ajout des chamds versions a la table a_saisies<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'version';"));
 if ($test_champ>0) {
 	$result .= "<font color=\"blue\">Les versions de saisies existent déjà.</font><br />";
 } else {
-	 $query = mysql_query("ALTER TABLE a_saisies ADD (version INTEGER DEFAULT 1, version_created_at DATETIME, version_created_by VARCHAR(100));");
+	 $query = mysql_query("ALTER TABLE a_saisies ADD (version INTEGER DEFAULT 0, version_created_at DATETIME, version_created_by VARCHAR(100));");
 	if ($query) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
- 	} else {
+				$result .= "&nbsp;->Remplissage des champs version_created_at et version_created_by de la table a_saisies<br />";
+				$query = mysql_query("UPDATE
+												a_saisies
+											SET
+												version_created_at = created_at,
+												version_created_by = utilisateur_id,
+												version = 1
+											WHERE
+												version = 0");
+				if ($query) {
+					$result .= "<font color=\"green\">Ok !</font><br />";
+				} else {
+				    $result .= "<font color=\"red\">Erreur</font><br />";
+				}
+	} else {
                 $result .= "<font color=\"red\">Erreur</font><br />";
 	}
 }
+
 
 $test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'a_saisies_version'"));
 if ($test!=0) {
@@ -294,11 +309,12 @@ if ($test!=0) {
 	id_classe INTEGER COMMENT 'identifiant de la classe pour lequel la saisie a ete effectuee',
 	id_aid INTEGER COMMENT 'identifiant de l\'aid pour lequel la saisie a ete effectuee',
 	id_s_incidents INTEGER COMMENT 'identifiant de la saisie d\'incident discipline',
-	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'eleve',
-	created_at DATETIME,
-	updated_at DATETIME,
-	version INTEGER DEFAULT 1,
+	deleted_by VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a supprimé la saisie',
+	created_at DATETIME COMMENT 'Date de creation de la saisie',
+	updated_at DATETIME COMMENT 'Date de modification de la saisie, y compris suppression, restauration et changement de version',
+	deleted_at DATETIME,
+	version INTEGER DEFAULT 0,
 	version_created_at DATETIME,
 	version_created_by VARCHAR(100),
 	PRIMARY KEY (id,version),
@@ -309,8 +325,10 @@ if ($test!=0) {
 ) ENGINE=MyISAM;");
 	if ($query) {
                 $result .= "<font color=\"green\">Ok !</font><br />";
-                $query = mysql_query("INSERT INTO a_saisies_version (id,utilisateur_id,eleve_id,commentaire,debut_abs,fin_abs,id_edt_creneau,id_edt_emplacement_cours,id_groupe,id_classe,id_aid,id_s_incidents,modifie_par_utilisateur_id,id_lieu,version,version_created_at,version_created_by)
-									SELECT id,utilisateur_id,eleve_id,commentaire,debut_abs,fin_abs,id_edt_creneau,id_edt_emplacement_cours,id_groupe,id_classe,id_aid,id_s_incidents,modifie_par_utilisateur_id,id_lieu,version,version_created_at,version_created_by FROM a_saisies;");
+                
+				$result .= "&nbsp;->Remplissage de la table a_saisies_version<br />";
+				$query = mysql_query("INSERT INTO a_saisies_version (id,utilisateur_id,eleve_id,commentaire,debut_abs,fin_abs,id_edt_creneau,id_edt_emplacement_cours,id_groupe,id_classe,id_aid,id_s_incidents,id_lieu,created_at,updated_at,version,version_created_at,version_created_by)
+									SELECT                           id,utilisateur_id,eleve_id,commentaire,debut_abs,fin_abs,id_edt_creneau,id_edt_emplacement_cours,id_groupe,id_classe,id_aid,id_s_incidents,id_lieu,created_at,updated_at,version,version_created_at,version_created_by FROM a_saisies;");
 				if ($query) {
 					$result .= "<font color=\"green\">Ok !</font><br />";
 				} else {
@@ -322,6 +340,7 @@ if ($test!=0) {
 	}
 }
 
+$result .= "&nbsp;->Suppression du champs inutile modifie_par_utilisateur_id de la table a_saisies<br />";
 $query = mysql_query("ALTER TABLE `a_saisies` DROP `modifie_par_utilisateur_id` ;");
 if ($query) {
 		$result .= "<font color=\"blue\">Le champ modifie_par_utilisateur_id de la table a_saisies n'existe plus.</font><br />";
@@ -329,6 +348,7 @@ if ($query) {
 		$result .= "<font color=\"green\">Ok !</font><br />";
 }
 
+$result .= "&nbsp;->Suppression du champs inutile modifie_par_utilisateur_id de la table a_saisies<br />";
 $query = mysql_query("ALTER TABLE `a_saisies_version` DROP `modifie_par_utilisateur_id` ;");
 if ($query) {
 		$result .= "<font color=\"blue\">Le champ modifie_par_utilisateur_id de la table a_saisies_version n'existe plus.</font><br />";
