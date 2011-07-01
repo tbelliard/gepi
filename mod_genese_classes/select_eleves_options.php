@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -216,6 +216,10 @@ echo "</p>\n";
 //echo "</div>\n";
 
 echo "<h2>Projet $projet</h2>\n";
+
+echo "<p><a href='".$_SERVER['PHP_SELF']."?projet=$projet'";
+echo " onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+echo ">Rafraichir sans enregistrer</a></p>\n";
 
 //=================================
 // Récupération de la liste des classes actuelles et futures et de la liste des options
@@ -582,10 +586,18 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 			else {
 				echo strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
 			}
-			echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
+			//echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
+			echo "<input type='hidden' name='eleve[$cpt]' id='id_eleve_$cpt' value='$lig->login' />\n";
 			echo "<input type='hidden' name='id_classe_actuelle_eleve[$cpt]' value='$id_classe_actuelle[$j]' />\n";
+			//echo " $cpt";
 			echo "</td>\n";
-			echo "<td id='eleve_sexe_$cpt'>$lig->sexe</td>\n";
+			//echo "<td id='eleve_sexe_$cpt'>";
+			echo "<td>";
+			//echo $lig->sexe;
+			//echo "<span style='display:none'>".$lig->sexe."</span>";
+			echo "<span style='display:none' id='eleve_sexe_$cpt'>".$lig->sexe."</span>";
+			echo image_sexe($lig->sexe);
+			echo "</td>\n";
 			echo "<td>$classe_actuelle[$j]</td>\n";
 			//echo "<td>Profil</td>\n";
 			echo "<td>\n";
@@ -737,6 +749,8 @@ for($j=0;$j<count($id_classe_actuelle);$j++) {
 					//echo "title=\"$lig->login/$classe_fut[$i]\" ";
 					echo "onmouseover=\"test_aff_classe3('".$lig->login."','".$classe_fut[$i]."');\" onmouseout=\"cacher_div('div_test_aff_classe2');\" ";
 					echo "/>\n";
+
+					//echo "'classe_fut_".$i."_".$cpt."'";
 				}
 				else {
 					echo "_";
@@ -819,11 +833,13 @@ echo "</form>\n";
 	// Largeur de la bande testée pour la position de la souris:
 	$largeur_survol_infobulle=100;
 	// Délais en ms avant affichage:
-	$delais_affichage_infobulle=500;
+	//$delais_affichage_infobulle=500;
+	$delais_affichage_infobulle=2000;
 
 	echo "<script type='text/javascript'>
 	function test_aff_classe3(login,classe_fut) {
-		new Ajax.Updater($('div_test_aff_classe2'),'liste_classe_fut.php?ele_login='+login+'&classe_fut='+classe_fut+'&projet=$projet',{method: 'get'});
+		//new Ajax.Updater($('div_test_aff_classe2'),'liste_classe_fut.php?ele_login='+login+'&classe_fut='+classe_fut+'&projet=$projet',{method: 'get'});
+		new Ajax.Updater($('div_test_aff_classe2'),'liste_classe_fut.php?ele_login='+login+'&classe_fut='+classe_fut+'&projet=$projet&avec_classe_origine=y',{method: 'get'});
 		delais_afficher_div('div_test_aff_classe2','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);
 	}
 </script>\n";
@@ -1136,24 +1152,58 @@ function lance_colorisation() {
 ";
 
 // probleme: si une classe ou catégorie (red ou arriv) a un effectif nul le rang du premier et du dernier élève ne sont pas affectés et on obtient alors une erreur
+$chaine_reperes_eleves_classes="";
 for($i=0;$i<count($num_eleve1_id_classe_actuelle);$i++) {
-	if($i==0) {echo "var num_eleve1_id_classe_actuelle=new Array('$num_eleve1_id_classe_actuelle[$i]'";}
-	else {echo ",'$num_eleve1_id_classe_actuelle[$i]'";}
+	if($i==0) {$chaine_reperes_eleves_classes.="var num_eleve1_id_classe_actuelle=new Array('$num_eleve1_id_classe_actuelle[$i]'";}
+	else {$chaine_reperes_eleves_classes.=",'$num_eleve1_id_classe_actuelle[$i]'";}
 }
-echo ");\n";
+$chaine_reperes_eleves_classes.=");\n";
 
 for($i=0;$i<count($num_eleve2_id_classe_actuelle);$i++) {
-	if($i==0) {echo "var num_eleve2_id_classe_actuelle=new Array('$num_eleve2_id_classe_actuelle[$i]'";}
-	else {echo ",'$num_eleve2_id_classe_actuelle[$i]'";}
+	if($i==0) {$chaine_reperes_eleves_classes.="var num_eleve2_id_classe_actuelle=new Array('$num_eleve2_id_classe_actuelle[$i]'";}
+	else {$chaine_reperes_eleves_classes.=",'$num_eleve2_id_classe_actuelle[$i]'";}
 }
-echo ");\n";
+$chaine_reperes_eleves_classes.=");\n";
+
+echo $chaine_reperes_eleves_classes;
 
 echo "function modif_colonne(col,j,mode) {
+	/*
+	alert('modif_colonne('+col+','+j+','+mode+')');
+	alert('num_eleve1_id_classe_actuelle['+j+']='+num_eleve1_id_classe_actuelle[j]);
+	alert('num_eleve2_id_classe_actuelle['+j+']='+num_eleve2_id_classe_actuelle[j]);
+	alert('Premier eleve '+document.getElementById('id_eleve_'+num_eleve1_id_classe_actuelle[j]).value);
+	*/
+
 	for(i=num_eleve1_id_classe_actuelle[j];i<=num_eleve2_id_classe_actuelle[j];i++) {
+		//alert(i);
 		if(document.getElementById(col+'_'+i)) {
 			document.getElementById(col+'_'+i).checked=mode;
 		}
+		/*
+		else {
+			alert('Pas de document.getElementById('+col+'_'+i+')')
+		}
+		*/
 	}
+
+	/*
+	i1=num_eleve1_id_classe_actuelle[j];
+	i2=num_eleve2_id_classe_actuelle[j];
+	alert('i1='+i1+' et i2='+i2);
+
+	for(i=i1;i<=i2;i++) {
+		//alert(q);
+		if(document.getElementById(col+'_'+q)) {
+			document.getElementById(col+'_'+q).checked=mode;
+		}
+		else {
+			alert('Pas de document.getElementById('+col+'_'+q+')')
+		}
+	}
+	*/
+
+	//alert('PLOP');
 
 	cat=document.forms[0].elements['colorisation'].options[document.forms[0].elements['colorisation'].selectedIndex].value;
 	if(col.substr(0,cat.length)==cat) {lance_colorisation();}

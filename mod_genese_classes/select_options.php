@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -33,7 +33,7 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 //======================================================================================
 
@@ -328,6 +328,15 @@ echo "<p><input type='submit' name='choix_options' value='Valider' /></p>\n";
 echo "</form>\n";
 
 //echo "</blockquote>\n";
+
+echo "<p><em>NOTES&nbsp;:</em></p>\n";
+echo "<ul>\n";
+echo "<li>Il est possible d'imposer des contraintes pour indiquer que l'on ne veut pas de LATIN en 3A2 et 3B2 (<i>les élèves faisant LATIN pourront alors être cochés dans toutes les colonnes sauf 3A2 et 3B2</i>).<br />
+Pour autant, la solution par exclusion de telle option sur telle classe ne suffit pas toujours.<br />
+Il peut être commode de créer des options comme z_3B1, z_3B2,... pour les élèves qui ne doivent pas être mis dans une autre classe.<br >
+En combinant l'option z_3B1 avec une exclusion du type pas d'option z_3B1 dans les classes autres que 3B1 vous pourrez ajouter des contraintes non gérables autrement.</li>\n";
+echo "<li>Créer une option Z_XXX pour les élèves incertains (<i>départ annoncé mais non confirmé,...</i>) permet de repérer rapidement si on a bien réparti les incertains sur les différentes classes.</li>\n";
+echo "</ul>\n";
 
 require("../lib/footer.inc.php");
 ?>

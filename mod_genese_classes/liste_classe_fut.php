@@ -65,6 +65,7 @@ if (!checkAccess()) {
 $classe_fut=isset($_GET['classe_fut']) ? $_GET['classe_fut'] : NULL;
 $projet=isset($_GET['projet']) ? $_GET['projet'] : NULL;
 $ele_login=isset($_GET['ele_login']) ? $_GET['ele_login'] : NULL;
+$avec_classe_origine=isset($_GET['avec_classe_origine']) ? $_GET['avec_classe_origine'] : 'n';
 
 if((!isset($classe_fut))||(!isset($projet))) {
 	echo "<p><strong>Erreur&nbsp;:</strong> Des param&egrave;tres n'ont pas &eacute;t&eacute; transmis.</p>\n";
@@ -79,13 +80,20 @@ else {
 		if(mysql_num_rows($res_ele_courant)>0) {
 			$lig_ele_courant=mysql_fetch_object($res_ele_courant);
 
-			echo htmlentities(strtoupper($lig_ele_courant->nom))." ".htmlentities(ucfirst(strtolower($lig_ele_courant->prenom)))." -&gt; ";
+			echo htmlentities(strtoupper($lig_ele_courant->nom))." ".htmlentities(ucfirst(strtolower($lig_ele_courant->prenom)));
+			if($avec_classe_origine) {
+				$tmp_tab_clas=get_class_from_ele_login($ele_login);
+				if(isset($tmp_tab_clas['liste'])) {
+					echo " <span style='font-size:x-small'>(".$tmp_tab_clas['liste'].")</span>";
+				}
+			}
+			echo " -&gt; ";
 		}
 	}
 	echo htmlentities($classe_fut)."</p>\n";
 
 	//$sql="SELECT e.nom,e.prenom FROM gc_eleve_fut_classe g, eleves e WHERE g.projet='$projet' AND g.classe='$classe_fut' AND g.login=e.login ORDER BY nom, prenom;";
-	$sql="SELECT e.nom,e.prenom FROM gc_eleves_options g, eleves e WHERE g.projet='$projet' AND g.classe_future='$classe_fut' AND g.login=e.login ORDER BY nom, prenom;";
+	$sql="SELECT e.login,e.nom,e.prenom FROM gc_eleves_options g, eleves e WHERE g.projet='$projet' AND g.classe_future='$classe_fut' AND g.login=e.login ORDER BY nom, prenom;";
 	$res_ele_clas_fut=mysql_query($sql);
 	$eff_ele_clas_fut=mysql_num_rows($res_ele_clas_fut);
 	if($eff_ele_clas_fut>0) {
@@ -106,7 +114,14 @@ else {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
 				//echo "<td style='font-size:x-small;'>".htmlentities(strtoupper($lig_ele_clas_fut->nom))." ".htmlentities(ucfirst(strtolower($lig_ele_clas_fut->prenom)))."</td>\n";
-				echo "<td>".htmlentities(strtoupper($lig_ele_clas_fut->nom))." ".htmlentities(ucfirst(strtolower($lig_ele_clas_fut->prenom)))."</td>\n";
+				echo "<td>".htmlentities(strtoupper($lig_ele_clas_fut->nom))." ".htmlentities(ucfirst(strtolower($lig_ele_clas_fut->prenom)));
+				if($avec_classe_origine) {
+					$tmp_tab_clas=get_class_from_ele_login($lig_ele_clas_fut->login);
+					if(isset($tmp_tab_clas['liste'])) {
+						echo " <span style='font-size:x-small'>(".$tmp_tab_clas['liste'].")</span>";
+					}
+				}
+				echo "</td>\n";
 				echo "</tr>\n";
 			}
 			echo "</table>\n";
@@ -149,7 +164,14 @@ else {
 				$alt=$alt*(-1);
 				echo "<tr class='lig$alt'>\n";
 				//echo "<td style='font-size:x-small;'>".htmlentities(strtoupper($lig_ele_clas_fut->nom))." ".htmlentities(ucfirst(strtolower($lig_ele_clas_fut->prenom)))."</td>\n";
-				echo "<td>".htmlentities(strtoupper($lig_ele_clas_fut->nom))." ".htmlentities(ucfirst(strtolower($lig_ele_clas_fut->prenom)))."</td>\n";
+				echo "<td>".htmlentities(strtoupper($lig_ele_clas_fut->nom))." ".htmlentities(ucfirst(strtolower($lig_ele_clas_fut->prenom)));
+				if($avec_classe_origine) {
+					$tmp_tab_clas=get_class_from_ele_login($lig_ele_clas_fut->login);
+					if(isset($tmp_tab_clas['liste'])) {
+						echo " <span style='font-size:x-small'>(".$tmp_tab_clas['liste'].")</span>";
+					}
+				}
+				echo "</td>\n";
 				echo "</tr>\n";
 
 				$cpt++;

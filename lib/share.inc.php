@@ -5530,7 +5530,7 @@ function get_nom_prenom_eleve($login_ele,$mode='simple') {
 		$ajout="";
 		if($mode=='avec_classe') {
 			$tmp_tab_clas=get_class_from_ele_login($login_ele);
-			if($tmp_tab_clas['liste']!='') {
+			if((isset($tmp_tab_clas['liste']))&&($tmp_tab_clas['liste']!='')) {
 				$ajout=" (".$tmp_tab_clas['liste'].")";
 			}
 		}

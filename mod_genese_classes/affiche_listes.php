@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /*
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -66,6 +66,30 @@ $projet=isset($_POST['projet']) ? $_POST['projet'] : (isset($_GET['projet']) ? $
 
 $user_temp_directory=get_user_temp_directory();
 
+if((isset($projet))&&(isset($_POST['chgt_classe']))&&(isset($_POST['login_ele']))&&(isset($_POST['classe_fut']))) {
+	$temoin="y";
+	if(($_POST['classe_fut']!='')&&($_POST['classe_fut']!='Red')&&($_POST['classe_fut']!='Dep')) {
+		$sql="SELECT 1=1 FROM gc_divisions WHERE statut='future' AND classe='".$_POST['classe_fut']."' AND projet='$projet';";
+		$test=mysql_query($sql);
+		if(mysql_num_rows($test)==0) {
+			$msg="La classe <b>".$_POST['classe_fut']."</b> n'existe pas.<br />";
+			$temoin="n";
+		}
+	}
+
+	if($temoin=="y") {
+		$sql="UPDATE gc_eleves_options SET classe_future='".$_POST['classe_fut']."' WHERE login='".$_POST['login_ele']."' AND projet='$projet';";
+		//$msg=$sql;
+		$res=mysql_query($sql);
+		if(!$res) {
+			$msg="ERREUR lors du changement de classe de ".get_nom_prenom_eleve($_POST['login_ele'])."<br />\n";
+		}
+		else {
+			$msg="Changement de classe de <b>".get_nom_prenom_eleve($_POST['login_ele'])."</b> vers <b>".$_POST['classe_fut']."</b> effectué.<br />\n";
+		}
+	}
+}
+
 //**************** EN-TETE *****************
 $titre_page = "Génèse classe: affichage de listes";
 //echo "<div class='noprint'>\n";
@@ -74,6 +98,30 @@ require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
 //debug_var();
+
+function mediane($tab_notes) {
+	if(count($tab_notes)>0) {
+		$milieu=floor(count($tab_notes)/2);
+		if((count($tab_notes))%2==0){
+			return ($tab_notes[$milieu]+$tab_notes[$milieu-1])/2;
+		}
+		else{
+			return $tab_notes[$milieu];
+		}
+	}
+	else {
+	    return "X";
+	}
+}
+
+function moyenne($tab_notes) {
+	if(count($tab_notes)>0) {
+	    return round(100*(array_sum($tab_notes)/count($tab_notes)))/100;
+	}
+	else {
+	    return "X";
+	}
+}
 
 
 if((!isset($projet))||($projet=="")) {
@@ -825,7 +873,7 @@ else {
 	echo " | <a href='".$_SERVER['PHP_SELF']."?projet=$projet'>Autre sélection</a>";
 
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
-	if((my_ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
+	if((preg_replace("/[0-9]/","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
 	if(!isset($id_aff)) {
 		echo "<p>ERREUR: La variable 'id_aff' n'est pas affectée.</p>\n";
 		require("../lib/footer.inc.php");
@@ -889,7 +937,7 @@ else {
 
 	//$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : NULL;
 	$id_aff=isset($_POST['id_aff']) ? $_POST['id_aff'] : (isset($_GET['id_aff']) ? $_GET['id_aff'] : NULL);
-	if((my_ereg_replace("[0-9]","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
+	if((preg_replace("/[0-9]/","",$id_aff)!="")||($id_aff=="")) {unset($id_aff);}
 	if(!isset($id_aff)) {
 		echo "<p>ERREUR: La variable 'id_aff' n'est pas affectée.</p>\n";
 		require("../lib/footer.inc.php");
@@ -1114,6 +1162,11 @@ else {
 
 	$cpt=0;
 	for($loop=0;$loop<count($tab_id_req);$loop++) {
+		// Initialisation:
+		$contenu_affichage_requete_courante="";
+
+		// Pour lister les classes futures dans la requête courante
+		$tab_classes_fut_de_cette_requete=array();
 
 		$id_req=$tab_id_req[$loop];
 
@@ -1132,7 +1185,10 @@ else {
 		$fich_csv.="Requête n°$id_req\n";
 
 		$lien_affect="<p><a name='requete_$id_req'></a><a href='affect_eleves_classes.php?projet=$projet&amp;choix_affich=1";
-		$fin_lien_affect="' target='_blank'><b>Requête n°$id_req</b></a><br />";
+		$fin_lien_affect="' target='_blank' alt='Modifier la requête n°$id_req' title='Modifier la requête n°$id_req'><b>Requête n°$id_req</b></a>";
+		$fin_lien_affect.=" - <a href='#' onclick=\"afficher_div('div_requete_$id_req','y',100,100); return false;\"><img src='../images/vert.png' width='16' height='16' title='Afficher la requête n°$id_req en infobulle' /></a>";
+		$fin_lien_affect.="<br />";
+
 
 		$tab_requete=array();
 		$tab_requete_csv=array();
@@ -1288,7 +1344,9 @@ else {
 		}
 
 		$lien_affect.=$fin_lien_affect;
-		echo $lien_affect;
+
+		//echo $lien_affect;
+		$contenu_affichage_requete_courante.=$lien_affect;
 		//"<br />\n";
 
 		if(!isset($lignes_requetes)) {
@@ -1301,7 +1359,8 @@ else {
 
 		for($m=0;$m<4;$m++) {
 			if(isset($tab_requete[$m])) {
-				echo $tab_requete[$m]."</span>)<br />\n";
+				//echo $tab_requete[$m]."</span>)<br />\n";
+				$contenu_affichage_requete_courante.=$tab_requete[$m]."</span>)<br />\n";
 				$fich_csv.=$tab_requete_csv[$m].")\n";
 
 				$lignes_requetes.=$tab_requete[$m]."</span>) ";
@@ -1322,6 +1381,16 @@ else {
 		$res_ele=mysql_query($sql_ele);
 		while ($lig_ele=mysql_fetch_object($res_ele)) {
 			$tab_ele[]=$lig_ele->login;
+
+			$sql_tmp="SELECT classe_future FROM gc_eleves_options WHERE projet='$projet' AND login='$lig_ele->login' AND classe_future!='' AND classe_future!='Dep' AND classe_future!='Red';";
+			//echo "$sql_tmp<br />";
+			$res_tmp_ele_clas=mysql_query($sql_tmp);
+			if(mysql_num_rows($res_tmp_ele_clas)>0) {
+				$lig_tmp_ele_clas=mysql_fetch_object($res_tmp_ele_clas);
+				if(!in_array($lig_tmp_ele_clas->classe_future,$tab_classes_fut_de_cette_requete)) {
+					$tab_classes_fut_de_cette_requete[]=$lig_tmp_ele_clas->classe_future;
+				}
+			}
 		}
 		$lignes_requetes.=count($tab_ele)."</p>\n";
 
@@ -1331,46 +1400,47 @@ else {
 
 		// Début du tableau des élèves pour la requête courante
 
-		echo "<table class='boireaus' border='1' summary='Tableau des options'>\n";
+		$contenu_affichage_requete_courante.="<table class='boireaus' border='1' summary='Tableau des options'>\n";
 	
 		//==========================================
-		echo "<tr>\n";
+		$contenu_affichage_requete_courante.="<tr>\n";
 
-		echo "<th>Elève</th>\n";
+		//$contenu_affichage_requete_courante.="<th style='width:15em;'>Elève</th>\n";
+		$contenu_affichage_requete_courante.="<th>Elève</th>\n";
 
-		echo "<th>Profil</th>\n";
-		echo "<th>Niveau</th>\n";
-		echo "<th>Absences</th>\n";
-		echo "<th>Classe<br />actuelle</th>\n";
+		$contenu_affichage_requete_courante.="<th>Profil</th>\n";
+		$contenu_affichage_requete_courante.="<th>Niveau</th>\n";
+		$contenu_affichage_requete_courante.="<th>Absences</th>\n";
+		$contenu_affichage_requete_courante.="<th>Classe<br />actuelle</th>\n";
 		//$fich_csv.="Elève;Classe actuelle;";
 		$fich_csv.="Elève;Clas.act;";
 
-		if(count($lv1)>0) {echo "<th>LV1</th>\n";$fich_csv.="LV1;";}
-		if(count($lv2)>0) {echo "<th>LV2</th>\n";$fich_csv.="LV2;";}
-		if(count($lv3)>0) {echo "<th>LV3</th>\n";$fich_csv.="LV3;";}
-		if(count($autre_opt)>0) {echo "<th>Options</th>\n";$fich_csv.="Options;";}
+		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th>LV1</th>\n";$fich_csv.="LV1;";}
+		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th>LV2</th>\n";$fich_csv.="LV2;";}
+		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th>LV3</th>\n";$fich_csv.="LV3;";}
+		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th>Options</th>\n";$fich_csv.="Options;";}
 
-		echo "<th rowspan='2'>Observations</th>\n";
+		$contenu_affichage_requete_courante.="<th rowspan='2'>Observations</th>\n";
 
-		echo "</tr>\n";
+		$contenu_affichage_requete_courante.="</tr>\n";
 		$fich_csv.="\n";
 
 		//==========================================
 
-		echo "<tr>\n";
-		//echo "<th>Effectifs&nbsp;: <span id='eff_tot'>&nbsp;</span></th>\n";
-		echo "<th>Eff.select&nbsp;: <span id='eff_select$loop'>...</span></th>\n";
-		echo "<th id='eff_select_sexe$loop'>...</th>\n";
+		$contenu_affichage_requete_courante.="<tr>\n";
+		//$contenu_affichage_requete_courante.="<th>Effectifs&nbsp;: <span id='eff_tot'>&nbsp;</span></th>\n";
+		$contenu_affichage_requete_courante.="<th>Eff.select&nbsp;: <span id='eff_select$loop'>...</span></th>\n";
+		$contenu_affichage_requete_courante.="<th id='eff_select_sexe$loop'>...</th>\n";
 
-		echo "<th>&nbsp;</th>\n";
-		echo "<th>&nbsp;</th>\n";
-		echo "<th>&nbsp;</th>\n";
+		$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";
+		$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";
+		$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";
 
-		if(count($lv1)>0) {echo "<th>&nbsp;</th>\n";}
-		if(count($lv2)>0) {echo "<th>&nbsp;</th>\n";}
-		if(count($lv3)>0) {echo "<th>&nbsp;</th>\n";}
-		if(count($autre_opt)>0) {echo "<th>&nbsp;</th>\n";}
-		echo "</tr>\n";
+		if(count($lv1)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
+		if(count($lv2)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
+		if(count($lv3)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
+		if(count($autre_opt)>0) {$contenu_affichage_requete_courante.="<th>&nbsp;</th>\n";}
+		$contenu_affichage_requete_courante.="</tr>\n";
 
 		//==========================================
 		$lignes_tab="";
@@ -1380,6 +1450,11 @@ else {
 		$eff_tot_select_M=0;
 		$eff_tot_select_F=0;
 
+		// Pour effectuer des moyennes, médiane,...
+		$tab_moy_eleves=array();
+
+		// Pour lister les classes futures dans la requête courante
+		//$tab_classes_fut_de_cette_requete=array();
 
 		$chaine_id_classe="";
 		//$cpt=0;
@@ -1407,7 +1482,7 @@ else {
 			else {
 				$sql="SELECT DISTINCT e.* FROM eleves e, gc_ele_arriv_red gc WHERE gc.login=e.login AND gc.statut='$id_classe_actuelle[$j]' AND gc.projet='$projet' ORDER BY e.nom,e.prenom;";
 			}
-			//echo "<tr><td colspan='5'>$sql</tr></tr>\n";
+			//$contenu_affichage_requete_courante.="<tr><td colspan='5'>$sql</tr></tr>\n";
 			$res=mysql_query($sql);
 			//$eff_tot_classe=mysql_num_rows($res);
 			//$eff_tot+=$eff_tot_classe;
@@ -1424,22 +1499,24 @@ else {
 
 						//$num_eleve2_id_classe_actuelle[$j]=$cpt;
 
-						echo "<tr id='tr_eleve_$cpt' class='white_hover'>\n";
-						echo "<td>\n";
-						echo "<a name='eleve$cpt'></a>\n";
+						//$contenu_affichage_requete_courante.="<tr id='tr_eleve_$cpt' class='white_hover'>\n";
+						$contenu_affichage_requete_courante.="<tr id='tr_eleve_$cpt' class='white_hover'>\n";
+						//onmouseover=\"this.style.backgroundColor='white'\" onmouseout=\"this.style.backgroundColor='$tmp_bgcolor'\"
+						$contenu_affichage_requete_courante.="<td>\n";
+						$contenu_affichage_requete_courante.="<a name='eleve$cpt'></a>\n";
 						//if(file_exists("../photos/eleves/".$lig->elenoet.".jpg")) {
 						if(nom_photo($lig->elenoet)) {
-							//echo "<a href='#eleve$cpt' onmouseover=\"affiche_photo('".$lig->elenoet.".jpg','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
-							echo "<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
+							//$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".$lig->elenoet.".jpg','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
+							$contenu_affichage_requete_courante.="<a href='#eleve$cpt' onmouseover=\"affiche_photo('".nom_photo($lig->elenoet)."','".addslashes(strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)))."');afficher_div('div_photo','y',100,100);\" onmouseout=\"cacher_div('div_photo')\" onclick=\"return false;\">";
 
-							echo strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
-							echo "</a>\n";
+							$contenu_affichage_requete_courante.=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+							$contenu_affichage_requete_courante.="</a>\n";
 						}
 						else {
-							echo strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+							$contenu_affichage_requete_courante.=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
 						}
-						echo "<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
-						echo "</td>\n";
+						$contenu_affichage_requete_courante.="<input type='hidden' name='eleve[$cpt]' value='$lig->login' />\n";
+						$contenu_affichage_requete_courante.="</td>\n";
 						$lignes_tab.=strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom)).";";
 
 						//===================================
@@ -1486,140 +1563,223 @@ else {
 						}
 						//===================================
 						// Profil...
-						echo "<td>\n";
-						for($m=0;$m<count($tab_profil);$m++) {if($profil==$tab_profil[$m]) {echo "<span style='color:".$tab_couleur_profil[$m].";'>";break;}}
-						//echo $profil;
-						echo "<span id='div_profil_$cpt' onclick=\"affiche_set_profil($cpt);changement();return false;\">$profil</span>\n";
+						$contenu_affichage_requete_courante.="<td>\n";
+						for($m=0;$m<count($tab_profil);$m++) {if($profil==$tab_profil[$m]) {$contenu_affichage_requete_courante.="<span style='color:".$tab_couleur_profil[$m].";'>";break;}}
+						//$contenu_affichage_requete_courante.=$profil;
+						$contenu_affichage_requete_courante.="<span id='div_profil_$cpt' onclick=\"affiche_set_profil($cpt);changement();return false;\">$profil</span>\n";
 
-						echo "</span>\n";
-						echo "<input type='hidden' name='profil[$cpt]' id='profil_$cpt' value='$profil' />\n";
-						echo "</td>\n";
+						$contenu_affichage_requete_courante.="</span>\n";
+						$contenu_affichage_requete_courante.="<input type='hidden' name='profil[$cpt]' id='profil_$cpt' value='$profil' />\n";
+						$contenu_affichage_requete_courante.="</td>\n";
 
 						// Niveau...
-						echo "<td>\n";
-						if(($moy!="")&&(strlen(my_ereg_replace("[0-9.,]","",$moy))==0)) {
+						$contenu_affichage_requete_courante.="<td>\n";
+						if(($moy!="")&&(strlen(preg_replace("/[0-9\.,]/","",$moy))==0)) {
 							if($num_per2>0) {
-								echo "<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
+								$contenu_affichage_requete_courante.="<a href=\"#\" onclick=\"afficher_div('div_bull_simp','y',-100,40); affiche_bull_simp('$lig->login','".$id_classe_actuelle[$j]."','1','$num_per2');return false;\" style='text-decoration:none;'>";
 							}
 							if($moy<7) {
-								echo "<span style='color:red;'>";
+								$contenu_affichage_requete_courante.="<span style='color:red;'>";
 							}
 							elseif($moy<9) {
-								echo "<span style='color:orange;'>";
+								$contenu_affichage_requete_courante.="<span style='color:orange;'>";
 							}
 							elseif($moy<12) {
-								echo "<span style='color:gray;'>";
+								$contenu_affichage_requete_courante.="<span style='color:gray;'>";
 							}
 							elseif($moy<15) {
-								echo "<span style='color:green;'>";
+								$contenu_affichage_requete_courante.="<span style='color:green;'>";
 							}
 							else {
-								echo "<span style='color:blue;'>";
+								$contenu_affichage_requete_courante.="<span style='color:blue;'>";
 							}
-							echo "$moy\n";
+							$contenu_affichage_requete_courante.="$moy\n";
 							if($num_per2>0) {
-								echo "</a>\n";
+								$contenu_affichage_requete_courante.="</a>\n";
 							}
-							echo "</span>";
-							echo "<input type='hidden' name='moy[$cpt]' id='moy_$cpt' value='$moy' />\n";
+							$contenu_affichage_requete_courante.="</span>";
+							$contenu_affichage_requete_courante.="<input type='hidden' name='moy[$cpt]' id='moy_$cpt' value='$moy' />\n";
+
+							$tab_moy_eleves[]=$moy;
 						}
 						else {
-							echo "-\n";
-							echo "<input type='hidden' name='moy[$cpt]' id='moy_$cpt' value='-' />\n";
+							$contenu_affichage_requete_courante.="-\n";
+							$contenu_affichage_requete_courante.="<input type='hidden' name='moy[$cpt]' id='moy_$cpt' value='-' />\n";
 						}
-						echo "</td>\n";
+						$contenu_affichage_requete_courante.="</td>\n";
 
 						//===================================
-						echo "<td>\n";
-						echo colorise_abs($nb_absences,$non_justifie,$nb_retards);
-						echo "<input type='hidden' name='nb_absences[$cpt]' id='nb_absences_$cpt' value='$nb_absences' />\n";
-						echo "<input type='hidden' name='non_justifie[$cpt]' id='non_justifie_$cpt' value='$non_justifie' />\n";
-						echo "<input type='hidden' name='nb_retards[$cpt]' id='nb_retards_$cpt' value='$nb_retards' />\n";
-						echo "</td>\n";
+						$contenu_affichage_requete_courante.="<td>\n";
+						$contenu_affichage_requete_courante.=colorise_abs($nb_absences,$non_justifie,$nb_retards,'return');
+						$contenu_affichage_requete_courante.="<input type='hidden' name='nb_absences[$cpt]' id='nb_absences_$cpt' value='$nb_absences' />\n";
+						$contenu_affichage_requete_courante.="<input type='hidden' name='non_justifie[$cpt]' id='non_justifie_$cpt' value='$non_justifie' />\n";
+						$contenu_affichage_requete_courante.="<input type='hidden' name='nb_retards[$cpt]' id='nb_retards_$cpt' value='$nb_retards' />\n";
+						$contenu_affichage_requete_courante.="</td>\n";
 
 						//===================================
-						echo "<td>\n";
-						//echo "<input type='hidden' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$fut_classe' />\n";
-						echo "<input type='hidden' name='ele_classe_fut[$cpt]' id='classe_fut_".$cpt."' value='$fut_classe' />\n";
+						$contenu_affichage_requete_courante.="<td>\n";
+						//$contenu_affichage_requete_courante.="<input type='hidden' name='classe_fut[$cpt]' id='classe_fut_".$i."_".$cpt."' value='$fut_classe' />\n";
+						$contenu_affichage_requete_courante.="<input type='hidden' name='ele_classe_fut[$cpt]' id='classe_fut_".$cpt."' value='$fut_classe' />\n";
 
-						echo $classe_actuelle[$j];
-						echo "</td>\n";
+						$contenu_affichage_requete_courante.=$classe_actuelle[$j];
+						$contenu_affichage_requete_courante.="</td>\n";
 						$lignes_tab.=$classe_actuelle[$j].";";
 
 						if(count($lv1)>0) {
-							echo "<td>\n";
+							$contenu_affichage_requete_courante.="<td>\n";
 							for($i=0;$i<count($lv1);$i++) {
 								if(in_array(strtoupper($lv1[$i]),$tab_ele_opt)) {
-									echo $lv1[$i];
+									$contenu_affichage_requete_courante.=$lv1[$i];
 
-									echo "<input type='hidden' name='ele_lv1[$cpt]' id='lv1_".$cpt."' value='$lv1[$i]' />\n";
+									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv1[$cpt]' id='lv1_".$cpt."' value='$lv1[$i]' />\n";
 
 									$lignes_tab.=$lv1[$i].";";
 
 								}
 							}
-							echo "</td>\n";
+							$contenu_affichage_requete_courante.="</td>\n";
 						}
 			
 
 						if(count($lv2)>0) {
-							echo "<td>\n";
+							$contenu_affichage_requete_courante.="<td>\n";
 							for($i=0;$i<count($lv2);$i++) {
 								if(in_array(strtoupper($lv2[$i]),$tab_ele_opt)) {
-									echo $lv2[$i];
-									echo "<input type='hidden' name='ele_lv2[$cpt]' id='lv2_".$cpt."' value='$lv2[$i]' />\n";
+									$contenu_affichage_requete_courante.=$lv2[$i];
+									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv2[$cpt]' id='lv2_".$cpt."' value='$lv2[$i]' />\n";
 
 									$lignes_tab.=$lv2[$i].";";
 								}
 							}
-							echo "</td>\n";
+							$contenu_affichage_requete_courante.="</td>\n";
 						}
 
 						if(count($lv3)>0) {
-							echo "<td>\n";
+							$contenu_affichage_requete_courante.="<td>\n";
 							for($i=0;$i<count($lv3);$i++) {
 								if(in_array(strtoupper($lv3[$i]),$tab_ele_opt)) {
-									echo $lv3[$i];
-									echo "<input type='hidden' name='ele_lv3[$cpt]' id='lv3_".$cpt."' value='$lv3[$i]' />\n";
+									$contenu_affichage_requete_courante.=$lv3[$i];
+									$contenu_affichage_requete_courante.="<input type='hidden' name='ele_lv3[$cpt]' id='lv3_".$cpt."' value='$lv3[$i]' />\n";
 
 									$lignes_tab.=$lv3[$i].";";
 								}
 							}
-							echo "</td>\n";
+							$contenu_affichage_requete_courante.="</td>\n";
 						}
 
 
 						if(count($autre_opt)>0) {
-							echo "<td>\n";
+							$contenu_affichage_requete_courante.="<td>\n";
+							$cpt_autre_opt=0;
 							for($i=0;$i<count($autre_opt);$i++) {
 								if(in_array(strtoupper($autre_opt[$i]),$tab_ele_opt)) {
-									echo $autre_opt[$i];
+									if($cpt_autre_opt>0) {$contenu_affichage_requete_courante.=" ";}
+									$contenu_affichage_requete_courante.=$autre_opt[$i];
 
 									$lignes_tab.=$autre_opt[$i].";";
+									$cpt_autre_opt++;
 								}
 							}
 						}
 
-						echo "<td>\n";
+						$contenu_affichage_requete_courante.="<td>\n";
 						if(($fut_classe!='Red')&&($fut_classe!='Dep')&&($fut_classe!='')) {
 							for($i=0;$i<count($tab_ele_opt);$i++) {
 								if(in_array($tab_ele_opt[$i],$tab_opt_exclue["$fut_classe"])) {
-									echo "<span style='color:red;'>ERREUR: L'option $tab_ele_opt[$i] est exclue en $fut_classe</span>";
+									$contenu_affichage_requete_courante.="<span style='color:red;'>ERREUR: L'option $tab_ele_opt[$i] est exclue en $fut_classe</span>";
 								}
 							}
 						}
-						echo "</td>\n";
 
-						echo "</tr>\n";
+						$titre_chgt_classe="Changement classe ".strtoupper($lig->nom)." ".ucfirst(strtolower($lig->prenom));
+						$texte_chgt_classe="<form action='".$_SERVER['PHP_SELF']."' method='post'>\n";
+						$texte_chgt_classe.="<div align='center'>\n";
+						$texte_chgt_classe.="<table class='boireaus'>\n";
+						$texte_chgt_classe.="<tr>\n";
+						$texte_chgt_classe.=ligne_entete_classe_future();
+						$texte_chgt_classe.="</tr>\n";
+						$texte_chgt_classe.="<tr class='lig1'>\n";
+						$texte_chgt_classe.=ligne_choix_classe_future($lig->login);
+						$texte_chgt_classe.="</tr>\n";
+						$texte_chgt_classe.="</table>\n";
+						$texte_chgt_classe.="<input type='hidden' name='login_ele' value='$lig->login' >\n";
+						$texte_chgt_classe.="<input type='hidden' name='chgt_classe' value='y' >\n";
+						$texte_chgt_classe.="<input type='hidden' name='projet' value='$projet' >\n";
+						$texte_chgt_classe.="<input type='hidden' name='id_aff' value='$id_aff' >\n";
+						$texte_chgt_classe.="<input type='hidden' name='afficher_listes' value='y' >\n";
+						$texte_chgt_classe.="<input type='submit' value='Valider' />\n";
+						$texte_chgt_classe.="</div>\n";
+						$texte_chgt_classe.="</form>\n";
+						$tabdiv_infobulle[]=creer_div_infobulle('div_chgt_classe_'.$cpt,$titre_chgt_classe,"",$texte_chgt_classe,"",30,0,'y','y','n','n');
+
+						$contenu_affichage_requete_courante.="<a href='#' onclick=\"afficher_div('div_chgt_classe_$cpt','y',-100,20);return false;\"><img src='../images/icons/wizard.png' /></a>";
+
+						$contenu_affichage_requete_courante.="</td>\n";
+
+						$contenu_affichage_requete_courante.="</tr>\n";
 						$lignes_tab.="\n";
 						$cpt++;
 					}
 				}
 			}
 		}
+		$contenu_affichage_requete_courante.="</table>\n";
+		if(count($tab_moy_eleves)>0) {
+			$contenu_affichage_requete_courante.="&nbsp;<br />";
+			$contenu_affichage_requete_courante.="<div style='float:left; width:10em;'>\n";
+			$contenu_affichage_requete_courante.="<table class='boireaus' summary='Tableau des moyenne, médiane, min et max'>\n";
+			$contenu_affichage_requete_courante.="<tr class='lig1'>\n";
+			$contenu_affichage_requete_courante.="<th>Moyenne</th>\n";
+			$contenu_affichage_requete_courante.="<td>".moyenne($tab_moy_eleves)."</td>\n";
+			$contenu_affichage_requete_courante.="</tr>\n";
+	
+			$contenu_affichage_requete_courante.="<tr class='lig-1'>\n";
+			$contenu_affichage_requete_courante.="<th>Médiane</th>\n";
+			$contenu_affichage_requete_courante.="<td>".mediane($tab_moy_eleves)."</td>\n";
+			$contenu_affichage_requete_courante.="</tr>\n";
+	
+			$contenu_affichage_requete_courante.="<tr class='lig1'>\n";
+			$contenu_affichage_requete_courante.="<th>Min</th>\n";
+			$contenu_affichage_requete_courante.="<td>".min($tab_moy_eleves)."</td>\n";
+			$contenu_affichage_requete_courante.="</tr>\n";
+	
+			$contenu_affichage_requete_courante.="<tr class='lig-1'>\n";
+			$contenu_affichage_requete_courante.="<th>Max</th>\n";
+			$contenu_affichage_requete_courante.="<td>".max($tab_moy_eleves)."</td>\n";
+			$contenu_affichage_requete_courante.="</tr>\n";
+			$contenu_affichage_requete_courante.="</table>\n";
+			$contenu_affichage_requete_courante.="</div>\n";
 
-		echo "</table>\n";
+
+			if(count($tab_classes_fut_de_cette_requete)>0) {
+				$contenu_affichage_requete_courante.="<div style='float:left; width:20em;'>\n";
+				$contenu_affichage_requete_courante.=afficher_contraintes($tab_classes_fut_de_cette_requete);
+				$contenu_affichage_requete_courante.="</div>\n";
+			}
+
+			$contenu_affichage_requete_courante.="<div style='clear:both;'>&nbsp;</div>\n";
+		}
+
+
+
+
 		$lignes_tab.="\n";
+
+		echo $contenu_affichage_requete_courante;
+
+		//=============================
+		$titre="Requête n°$id_req";
+		//$contenu_affichage_requete_courante=preg_replace("/div_profil_/","div_profil_bis_",$contenu_affichage_requete_courante);
+		$contenu_affichage_requete_courante=preg_replace("/nb_absences_/","nb_absences_bis_",$contenu_affichage_requete_courante);
+		$contenu_affichage_requete_courante=preg_replace("/nb_retards_/","nb_retards_bis_",$contenu_affichage_requete_courante);
+		$contenu_affichage_requete_courante=preg_replace("/non_justifie_/","non_justifie_bis_",$contenu_affichage_requete_courante);
+		$contenu_affichage_requete_courante=preg_replace("/profil_/","profil_bis_",$contenu_affichage_requete_courante);
+		$contenu_affichage_requete_courante=preg_replace("/moy_/","moy_bis_",$contenu_affichage_requete_courante);
+		$texte=$contenu_affichage_requete_courante;
+		$tabdiv_infobulle[]=creer_div_infobulle('div_requete_'.$id_req,$titre,"",$texte,"",42,0,'y','y','n','n');
+		//=============================
+
+		echo "&nbsp;";
 
 		echo "<input type='hidden' name='projet' value='$projet' />\n";
 
