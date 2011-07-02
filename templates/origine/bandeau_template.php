@@ -164,23 +164,80 @@
 
 </div>
 	
-		
+<?php
+
+	echo '<!--[if lt IE 7]>
+<script type=text/javascript>
+	// Fonction destinée à remplacer le "li:hover" pour IE 6
+	sfHover = function() {
+		var sfEls = document.getElementById("menu_barre").getElementsByTagName("li");
+		for (var i=0; i<sfEls.length; i++) {
+			sfEls[i].onmouseover = function() {
+				this.className = this.className.replace(new RegExp(" sfhover"), "");
+				this.className += " sfhover";
+			}
+			sfEls[i].onmouseout = function() {
+				this.className = this.className.replace(new RegExp(" sfhover"), "");
+			}
+		}
+	}
+	if (window.attachEvent) window.attachEvent("onload", sfHover);
+</script>
+
+<style type="text/css">#menu_barre li {
+	width: 164px;
+}
+</style>
+<![endif]-->
+';
+
+	function ligne_menu_barre($tab,$niveau) {
+		global $gepiPath, $themessage;
+
+		if(isset($tab['sous_menu'])) {
+			echo "<li";
+			if($niveau==1) {
+				echo " class='li_inline'";
+			}
+			else {
+				echo " class='plus'";
+			}
+			echo ">\n";
+			//echo "<a href=\"$gepiPath/".$tab['lien']." ".insert_confirm_abandon()."\">".$tab['texte']."</a>\n";
+			echo "<a href=\"$gepiPath".$tab['lien']."\">".$tab['texte']."</a>\n";
+			echo "<ul class='niveau".$tab['niveau_sous_menu']."'>\n";
+			for($i=0;$i<count($tab['sous_menu']);$i++) {
+				ligne_menu_barre($tab['sous_menu'][$i], $tab['niveau_sous_menu']);
+			}
+			echo "</ul>\n";
+			echo "</li>\n";
+		}
+		else {
+			echo "<li";
+			if($niveau==1) {
+				echo " class='li_inline'";
+			}
+			echo ">";
+			//echo "<a href=\"$gepiPath/".$tab['lien']."\" ".insert_confirm_abandon().">".$tab['texte']."</a>";
+			echo "<a href=\"$gepiPath".$tab['lien']."\">".$tab['texte']."</a>";
+			echo "</li>\n";
+		}
+	}
+?>
 	
 <!-- menu prof -->
-		<?php
-			if (count($tbs_menu_prof)) {
-				$menu_prof = array_values($tbs_menu_prof);
-				if ("$menu_prof[0][texte]"!="") { ?>
-	<div id="menu_barre">
-	<ul class="niveau1">
-		<li class="li_inline"><a href="<?php echo $gepiPath.'/accueil.php' ?>">Accueil</a></li>
-		<?php foreach ($tbs_menu_prof as $value) { if ("$value[texte]"!="") { ?>
-		<li class="li_inline"><a href='<?php echo $tbs_gepiPath.$value['lien']; ?>'>&nbsp;<?php echo $value['texte']; ?></a></li>
-		<?php }} unset($value); ?>
-		<li class="li_inline"><a href="<?php echo $gepiPath.'/utilisateurs/mon_compte.php'; ?>">Mon compte</a></li>
-	</ul>
-</div>
-<?php } } ?>
+<?php
+	if (count($tbs_menu_prof)>0) {
+		echo "<div id='menu_barre'>\n";
+		echo "<ul class='niveau1'>\n";
+		foreach($tbs_menu_prof as $key => $value) {
+			//echo "<pre>\$tbs_menu_prof[$i]:<br />".print_r($tbs_menu_prof[$i])."</pre>";
+			ligne_menu_barre($value,1);
+		}
+		echo "</ul>\n";
+		echo "</div>\n";
+	}
+?>
 
 <!-- menu admin -->
 <?php if (count($tbs_menu_admin)) : ?>
