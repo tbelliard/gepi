@@ -899,7 +899,7 @@ div.info_abs {
 }
 .panneau_centre {
 	background-image:url('./images/modeles/".$selected_panel."/center.png');
-	background-repeat: repeat-x repeat-y;
+	background-repeat: repeat;
     width:100%;
 	top:0px;
     left:00px;

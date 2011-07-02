@@ -20,8 +20,53 @@
 <!-- ================= Affichage du favicon =================== -->
 	<link rel="SHORTCUT ICON" href="<?php echo $tbs_gepiPath?>/favicon.ico" />
 
+<!-- Début des styles -->
+	<?php
+		if (count($tbs_CSS)) {
+			foreach ($tbs_CSS as $value) {
+				if ($value!="") {
+					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
+		// [tbs_CSS.title;att=title]
+				}
+			}
+			unset($value);
+		}
+	?>
+	
+<!-- Fin des styles -->
 
 <!-- Début des fichiers en javascript -->
+	<!-- christian -->
+	<script type="text/javascript">
+		//<![CDATA[ 
+		function ouvre_popup(url) {
+				eval("window.open('/mod_miseajour/utilisateur/fenetre.php','fen','width=600,height=500,menubar=no,scrollbars=yes')");
+				fen.focus();
+			}
+		//]]>
+	</script>
+
+
+	<script type="text/javascript" src="<?php echo $tbs_gepiPath ?>/lib/functions.js"></script>
+	<?php
+		if (count($tbs_librairies)) {
+			foreach ($tbs_librairies as $value) {
+				if ($value!="") {
+					echo "<script type=\"text/javascript\" src=\"$value\"></script>\n";
+				}
+			}
+			unset($value);
+		}
+	?>
+
+	<!-- Variable passée à 'ok' en fin de page via le /lib/footer.inc.php -->
+	<script type='text/javascript'>
+		//<![CDATA[ 
+			temporisation_chargement='n';
+		//]]>
+	</script>	
+<!-- fin des fichiers en javascript -->
+
 
 <?php
 	if ($tbs_message_enregistrement!="") {
@@ -34,7 +79,7 @@
 		";
 	}
 ?>
-
+	<script type="text/javascript" src="./lib/cookieClass.js"></script>
 	<script type="text/javascript">
 		//<![CDATA[ 
 		function changement() {
@@ -46,8 +91,14 @@
 	<!-- Gestion de l'expiration des session - Patrick Duthilleul -->
 	<script type="text/javascript">
 		//<![CDATA[
-			debut_alert = new Date()
+		
 
+		
+		
+			debut_alert = new Date()
+			cookie_modified = false;
+			warn_msg1_already_displayed = false;
+			warn_msg2_already_displayed = false;
 			/* =================================================
 			 =
 			 =
@@ -127,56 +178,40 @@
 			function show_message_deconnexion() {
 				var seconds_before_alert = 180;
 				var seconds_int_betweenn_2_msg = 30;
-
+				var gepi_start_session = new Cookies();
+				if (!cookie_modified) {
+					if (gepi_start_session.get('GEPI_start_session')) {
+						gepi_start_session.clear('GEPI_start_session');
+					}
+					gepi_start_session.set('GEPI_start_session', debut_alert.getTime())
+					cookie_modified = true;
+				}
+				if (gepi_start_session.get('GEPI_start_session')) {
+					debut_alert.setTime(parseInt(gepi_start_session.get('GEPI_start_session'),10));
+				}
 				digital=new Date()
 				seconds=(digital-debut_alert)/1000
 				//if (1==1) {
 				  if (seconds>=<?php echo getSettingValue("sessionMaxLength")*60; ?>) {
-					<?php
-						$logout_path=null;
-						if (isset($niveau_arbo)) {
-							$niveau_arbo_count = $niveau_arbo;
-							while ($niveau_arbo_count != 0) {
-								$logout_path .="../";
-								$niveau_arbo_count--;
-							}
-						}
-						else {
-							$logout_path = "./";
-						}
-						$logout_path.="logout.php";
-					?>  
-				  
-						new Ajax.Request(
-							'<?php echo $logout_path; ?>',
-							{
-								method:'get',
-								parameters: {debut_session: "<?php echo urlencode($_SESSION['start']);?>", 
-											session_id: "<?php echo session_id();?>"
-											},
-								onSuccess: function(transport){
-									
-									var response = transport.responseText || "Le serveur ne répond pas";
-									var message = "vous avez été probablement déconnecté du serveur, votre travail ne pourra pas être enregistré dans gepi depuis cette page, merci de le sauvegarder dans un bloc note.";
-									display_alert(message);
-								},
-								onFailure: function(transport){}
-							}
-						);	 
-				  
-				  
-				  
+				  	if (!warn_msg2_already_displayed) {
+						var message = "vous avez été probablement déconnecté du serveur, votre travail ne pourra pas être enregistré dans gepi depuis cette page, merci de le sauvegarder dans un bloc note.";
+						display_alert(message);				  
+						warn_msg2_already_displayed = true;
+					}
 				  }
 				else if (seconds><?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds_before_alert) {
-					var seconds_reste = Math.floor(<?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds);
-					now=new Date()
-					var hrs=now.getHours();
-					var mins=now.getMinutes();
-					var secs=now.getSeconds();
+					if (!warn_msg1_already_displayed) {
+						var seconds_reste = Math.floor(<?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds);
+						now=new Date()
+						var hrs=now.getHours();
+						var mins=now.getMinutes();
+						var secs=now.getSeconds();
 
-					var heure = hrs + " H " + mins + "' " + secs + "'' ";
-					var message = "A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !";
-					display_alert(message);
+						var heure = hrs + " H " + mins + "' " + secs + "'' ";
+						var message = "A "+ heure + ", il vous reste moins de 3 minutes avant d'être déconnecté ! \nPour éviter cela, rechargez cette page en ayant pris soin d'enregistrer votre travail !";
+						display_alert(message);
+						warn_msg1_already_displayed = true;
+					}
 				}
 
 				setTimeout("show_message_deconnexion()",seconds_int_betweenn_2_msg*1000)
@@ -184,51 +219,7 @@
 		//]]>
 	</script>
 
-	<!-- christian -->
-	<script type="text/javascript">
-		//<![CDATA[ 
-		function ouvre_popup(url) {
-				eval("window.open('/mod_miseajour/utilisateur/fenetre.php','fen','width=600,height=500,menubar=no,scrollbars=yes')");
-				fen.focus();
-			}
-		//]]>
-	</script>
 
-
-	<script type="text/javascript" src="<?php echo $tbs_gepiPath ?>/lib/functions.js"></script>
-	<?php
-		if (count($tbs_librairies)) {
-			foreach ($tbs_librairies as $value) {
-				if ($value!="") {
-					echo "<script type=\"text/javascript\" src=\"$value\"></script>\n";
-				}
-			}
-			unset($value);
-		}
-	?>
-
-	<!-- Variable passée à 'ok' en fin de page via le /lib/footer.inc.php -->
-	<script type='text/javascript'>
-		//<![CDATA[ 
-			temporisation_chargement='n';
-		//]]>
-	</script>	
-<!-- fin des fichiers en javascript -->
-
-<!-- Début des styles -->
-	<?php
-		if (count($tbs_CSS)) {
-			foreach ($tbs_CSS as $value) {
-				if ($value!="") {
-					echo "<link rel=\"$value[rel]\" type=\"$value[type]\" href=\"$value[fichier]\" media=\"$value[media]\" />\n";
-		// [tbs_CSS.title;att=title]
-				}
-			}
-			unset($value);
-		}
-	?>
-	
-<!-- Fin des styles -->
 
 
 
