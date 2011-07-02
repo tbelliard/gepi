@@ -214,6 +214,13 @@ debut_alert=new Date()
 cookie_modified = false;
 warn_msg1_already_displayed = false;
 warn_msg2_already_displayed = false;
+gepi_start_session = new Cookies();
+if (gepi_start_session.get('GEPI_start_session')) {
+	gepi_start_session.clear('GEPI_start_session');
+}
+gepi_start_session.set('GEPI_start_session', debut_alert.getTime())
+
+
 function show_message_deconnexion() {
 
 			/* =================================================
@@ -283,14 +290,6 @@ function show_message_deconnexion() {
 			}
 	var seconds_before_alert = 180;
 	var seconds_int_betweenn_2_msg = 30;
-	var gepi_start_session = new Cookies();
-	if (!cookie_modified) {
-		if (gepi_start_session.get('GEPI_start_session')) {
-			gepi_start_session.clear('GEPI_start_session');
-		}
-		gepi_start_session.set('GEPI_start_session', debut_alert.getTime())
-		cookie_modified = true;
-	}
 	if (gepi_start_session.get('GEPI_start_session')) {
 		debut_alert.setTime(parseInt(gepi_start_session.get('GEPI_start_session'),10));
 	}
