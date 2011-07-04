@@ -183,19 +183,19 @@ else {
 		}
 
 		//$sql="CREATE TABLE tempo3 (id_classe int(11) NOT NULL default '0', name varchar(60) NOT NULL default '');";
-		$sql="CREATE TABLE IF NOT EXISTS tempo3 (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '');";
+		$sql="CREATE TABLE IF NOT EXISTS tempo3_cdt (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '');";
 		$res=mysql_query($sql);
 		if(!$res) {
-			echo "<p style='color:red'>ABANDON&nbsp;: Erreur lors de la création de la table temporaire 'tempo3'.</p>\n";
+			echo "<p style='color:red'>ABANDON&nbsp;: Erreur lors de la création de la table temporaire 'tempo3_cdt'.</p>\n";
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
 			die();
 		}
 
-		$sql="TRUNCATE TABLE tempo3;";
+		$sql="TRUNCATE TABLE tempo3_cdt;";
 		$res=mysql_query($sql);
 		if(!$res) {
-			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors du nettoyage de la table 'tempo3'.</p>\n";
+			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors du nettoyage de la table 'tempo3_cdt'.</p>\n";
 			echo "<p><br /></p>\n";
 			require("../lib/footer.inc.php");
 			die();
@@ -473,12 +473,12 @@ else {
 				foreach($current_group["classes"]["classes"] as $key => $value) {
 					// Pour ne créer les liens que pour les cahiers de textes non vides
 					if(count($tab_dates)>0) {
-						$sql="INSERT INTO tempo3 SET id_classe='".$value['id']."', classe='".$value['classe']." (".$value['nom_complet'].")"."', matiere='$nom_complet_matiere', enseignement='$nom_enseignement', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
+						$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".$value['classe']." (".$value['nom_complet'].")"."', matiere='$nom_complet_matiere', enseignement='$nom_enseignement', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
 						$insert=mysql_query($sql);
 						if(!$insert) {
 							$temoin_erreur="y";
 		
-							echo "<p style='color:red'>ERREUR lors de l'enregistrement dans 'tempo3'&nbsp;: $sql</p>\n";
+							echo "<p style='color:red'>ERREUR lors de l'enregistrement dans 'tempo3_cdt'&nbsp;: $sql</p>\n";
 						}
 					}
 				}
@@ -515,8 +515,8 @@ else {
 
 			echo "<p>L'archivage des enseignements est réalisé.<br />Les pages d'index vont maintenant être créées.</p>\n";
 
-			//$sql="SELECT * FROM tempo3 ORDER BY classe, matiere;";
-			$sql="SELECT DISTINCT id_classe, classe FROM tempo3 ORDER BY classe;";
+			//$sql="SELECT * FROM tempo3_cdt ORDER BY classe, matiere;";
+			$sql="SELECT DISTINCT id_classe, classe FROM tempo3_cdt ORDER BY classe;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
 
@@ -535,7 +535,7 @@ else {
 				while($lig_class=mysql_fetch_object($res)) {
 					//$html.="Classe de <a href='classe_".$lig_class->id_classe.".$extension'>".$lig_class->classe."</a><br />";
 					$html.="<tr><td>Classe de </td><td><a href='classe_".$lig_class->id_classe.".$extension'>".$lig_class->classe."</a></td></tr>\n";
-					//$sql="SELECT * FROM tempo3 WHERE classe='$lig_class->classe';";
+					//$sql="SELECT * FROM tempo3_cdt WHERE classe='$lig_class->classe';";
 				}
 				$html.="</table>\n";
 				$html.="</div>\n";
@@ -551,7 +551,7 @@ else {
 			}
 
 
-			$sql="SELECT DISTINCT id_classe, classe FROM tempo3 ORDER BY classe;";
+			$sql="SELECT DISTINCT id_classe, classe FROM tempo3_cdt ORDER BY classe;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
 				while($lig_class=mysql_fetch_object($res)) {
@@ -566,7 +566,7 @@ else {
 	
 					$html.="<h2 style='text-align:center;'>Classe de $lig_class->classe&nbsp;:</h2>\n";
 
-					$sql="SELECT * FROM tempo3 WHERE classe='$lig_class->classe';";
+					$sql="SELECT * FROM tempo3_cdt WHERE classe='$lig_class->classe';";
 					$res2=mysql_query($sql);
 					if(mysql_num_rows($res2)>0) {
 						$html.="<div align='center'>\n";
@@ -574,7 +574,7 @@ else {
 						while($lig_mat=mysql_fetch_object($res2)) {
 							//$html.="<b>$lig_mat->matiere</b>&nbsp;:<a href='$lig_mat->fichier'> $lig_mat->enseignement</a><br />";
 
-							$sql="SELECT DISTINCT u.* FROM utilisateurs u, j_groupes_professeurs jgp, tempo3 t WHERE t.id_groupe=jgp.id_groupe AND u.login=jgp.login AND t.fichier='$lig_mat->fichier';";
+							$sql="SELECT DISTINCT u.* FROM utilisateurs u, j_groupes_professeurs jgp, tempo3_cdt t WHERE t.id_groupe=jgp.id_groupe AND u.login=jgp.login AND t.fichier='$lig_mat->fichier';";
 							$res3=mysql_query($sql);
 							if(mysql_num_rows($res3)>0) {
 								$liste_profs="";
@@ -599,7 +599,7 @@ else {
 				}
 			}
 
-			$sql="SELECT DISTINCT u.* FROM tempo3 t, j_groupes_professeurs jgp, utilisateurs u WHERE jgp.id_groupe=t.id_groupe AND jgp.login=u.login ORDER BY u.nom, u.prenom;";
+			$sql="SELECT DISTINCT u.* FROM tempo3_cdt t, j_groupes_professeurs jgp, utilisateurs u WHERE jgp.id_groupe=t.id_groupe AND jgp.login=u.login ORDER BY u.nom, u.prenom;";
 			$res=mysql_query($sql);
 			if(mysql_num_rows($res)>0) {
 				$html='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index.'.$extension.'\'>Retour</a></div>';
@@ -616,7 +616,7 @@ else {
 				while($lig_prof=mysql_fetch_object($res)) {
 					$html.="<a href='cdt_".$lig_prof->login.".$extension'> $lig_prof->civilite $lig_prof->nom $lig_prof->prenom</a><br />";
 
-					$sql="SELECT * FROM tempo3 t, j_groupes_professeurs jgp WHERE jgp.id_groupe=t.id_groupe AND jgp.login='$lig_prof->login' ORDER BY classe, matiere;";
+					$sql="SELECT * FROM tempo3_cdt t, j_groupes_professeurs jgp WHERE jgp.id_groupe=t.id_groupe AND jgp.login='$lig_prof->login' ORDER BY classe, matiere;";
 					$res2=mysql_query($sql);
 					if(mysql_num_rows($res2)>0) {
 						$html2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index_professeurs.'.$extension.'\'>Retour</a></div>';

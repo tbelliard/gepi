@@ -670,4 +670,57 @@ else {
     $result .= "<p style=\"color:blue;\">Ajout du champ ordre_matiere à la table <strong>archivage_disciplines</strong> : déjà réalisé.</p>";
 }
 
+$test = sql_query1("SHOW TABLES LIKE 'tempo3';");
+if ($test != -1) {
+	// La table existe... est-elle correctement fichue (collision de deux tables tempo3 pendant un temps)
+	$sql="show columns from tempo3 like 'col1';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)==0) {
+		$result .= "<br /><font color=\"red\">ERREUR ! La table 'tempo3' n'a pas la bonne structure.</font><br />";
+		$result .= "Suppression de la table mal 'fichue' : ";
+		$sql="DROP table tempo3;";
+		$menage=mysql_query($sql);
+		if(!$menage) {
+			$result .= "<font color=\"red\">ECHEC !</font><br />";
+		}
+		else {
+			$result .= "<font color=\"green\">SUCCES !</font><br />";
+			$result .= "Re-Création de la table 'tempo3' : ";
+		}
+	}
+}
+else {
+	$result .= "<br /><b>Ajout d'une table temporaire 'tempo3' :</b><br />";
+}
+
+$test = sql_query1("SHOW TABLES LIKE 'tempo3';");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS tempo3 (
+		id int(11) NOT NULL auto_increment,
+		col1 VARCHAR(255) NOT NULL,
+		col2 TEXT,
+		PRIMARY KEY  (id)
+		);");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+}
+
+$test = sql_query1("SHOW TABLES LIKE 'tempo3_cdt';");
+if ($test == -1) {
+	$result .= "<br /><b>Ajout d'une table temporaire 'tempo3_cdt' :</b><br />";
+
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS tempo3_cdt (id_classe int(11) NOT NULL default '0', classe varchar(255) NOT NULL default '', matiere varchar(255) NOT NULL default '', enseignement varchar(255) NOT NULL default '', id_groupe int(11) NOT NULL default '0', fichier varchar(255) NOT NULL default '');");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+}
+
+
 ?>
