@@ -157,6 +157,15 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 		}
 	$login_destinataire=$_POST['login_destinataire'];
 	}
+	
+	// par sécurité les rédacteurs d'un message ne peuvent y insérer la variable _CRSF_ALEA_
+	$pos_crsf_alea=strpos($contenu_cor,"_CRSF_ALEA_");
+    if($pos_crsf_alea!==false)
+		{
+        $contenu_cor=preg_replace("/_CRSF_ALEA_/",$_SESSION['gepi_alea'],$contenu_cor);
+		$msg = "Contenu interdit.";
+		$record = 'no';
+		}
 
     if ($record == 'yes') {
       if (isset($_POST['id_mess'])) {
