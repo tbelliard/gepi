@@ -70,6 +70,7 @@ class EleveTableMap extends TableMap
 		$this->addRelation('JEleveAncienEtablissement', 'JEleveAncienEtablissement', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
 		$this->addRelation('JAidEleves', 'JAidEleves', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
 		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id_eleve' => 'eleve_id', ), 'CASCADE', null);
+		$this->addRelation('AbsenceAgregationDecompte', 'AbsenceAgregationDecompte', RelationMap::ONE_TO_MANY, array('id_eleve' => 'eleve_id', ), 'CASCADE', null);
 		$this->addRelation('CreditEcts', 'CreditEcts', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
 		$this->addRelation('CreditEctsGlobal', 'CreditEctsGlobal', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
 		$this->addRelation('ArchiveEcts', 'ArchiveEcts', RelationMap::ONE_TO_MANY, array('no_gep' => 'ine', ), 'CASCADE', null);

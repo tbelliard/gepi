@@ -162,6 +162,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	protected $collAbsenceEleveSaisies;
 
 	/**
+	 * @var        array AbsenceAgregationDecompte[] Collection to store aggregation of AbsenceAgregationDecompte objects.
+	 */
+	protected $collAbsenceAgregationDecomptes;
+
+	/**
 	 * @var        array CreditEcts[] Collection to store aggregation of CreditEcts objects.
 	 */
 	protected $collCreditEctss;
@@ -857,6 +862,8 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 
 			$this->collAbsenceEleveSaisies = null;
 
+			$this->collAbsenceAgregationDecomptes = null;
+
 			$this->collCreditEctss = null;
 
 			$this->collCreditEctsGlobals = null;
@@ -1080,6 +1087,14 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			if ($this->collAbsenceAgregationDecomptes !== null) {
+				foreach ($this->collAbsenceAgregationDecomptes as $referrerFK) {
+					if (!$referrerFK->isDeleted()) {
+						$affectedRows += $referrerFK->save($con);
+					}
+				}
+			}
+
 			if ($this->collCreditEctss !== null) {
 				foreach ($this->collCreditEctss as $referrerFK) {
 					if (!$referrerFK->isDeleted()) {
@@ -1251,6 +1266,14 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 
 				if ($this->collAbsenceEleveSaisies !== null) {
 					foreach ($this->collAbsenceEleveSaisies as $referrerFK) {
+						if (!$referrerFK->validate($columns)) {
+							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+						}
+					}
+				}
+
+				if ($this->collAbsenceAgregationDecomptes !== null) {
+					foreach ($this->collAbsenceAgregationDecomptes as $referrerFK) {
 						if (!$referrerFK->validate($columns)) {
 							$failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
 						}
@@ -1430,6 +1453,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			}
 			if (null !== $this->collAbsenceEleveSaisies) {
 				$result['AbsenceEleveSaisies'] = $this->collAbsenceEleveSaisies->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+			}
+			if (null !== $this->collAbsenceAgregationDecomptes) {
+				$result['AbsenceAgregationDecomptes'] = $this->collAbsenceAgregationDecomptes->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
 			}
 			if (null !== $this->collCreditEctss) {
 				$result['CreditEctss'] = $this->collCreditEctss->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1710,6 +1736,12 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				}
 			}
 
+			foreach ($this->getAbsenceAgregationDecomptes() as $relObj) {
+				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+					$copyObj->addAbsenceAgregationDecompte($relObj->copy($deepCopy));
+				}
+			}
+
 			foreach ($this->getCreditEctss() as $relObj) {
 				if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
 					$copyObj->addCreditEcts($relObj->copy($deepCopy));
@@ -1857,6 +1889,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		}
 		if ('AbsenceEleveSaisie' == $relationName) {
 			return $this->initAbsenceEleveSaisies();
+		}
+		if ('AbsenceAgregationDecompte' == $relationName) {
+			return $this->initAbsenceAgregationDecomptes();
 		}
 		if ('CreditEcts' == $relationName) {
 			return $this->initCreditEctss();
@@ -3201,6 +3236,121 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
+	 * Clears out the collAbsenceAgregationDecomptes collection
+	 *
+	 * This does not modify the database; however, it will remove any associated objects, causing
+	 * them to be refetched by subsequent calls to accessor method.
+	 *
+	 * @return     void
+	 * @see        addAbsenceAgregationDecomptes()
+	 */
+	public function clearAbsenceAgregationDecomptes()
+	{
+		$this->collAbsenceAgregationDecomptes = null; // important to set this to NULL since that means it is uninitialized
+	}
+
+	/**
+	 * Initializes the collAbsenceAgregationDecomptes collection.
+	 *
+	 * By default this just sets the collAbsenceAgregationDecomptes collection to an empty array (like clearcollAbsenceAgregationDecomptes());
+	 * however, you may wish to override this method in your stub class to provide setting appropriate
+	 * to your application -- for example, setting the initial array to the values stored in database.
+	 *
+	 * @param      boolean $overrideExisting If set to true, the method call initializes
+	 *                                        the collection even if it is not empty
+	 *
+	 * @return     void
+	 */
+	public function initAbsenceAgregationDecomptes($overrideExisting = true)
+	{
+		if (null !== $this->collAbsenceAgregationDecomptes && !$overrideExisting) {
+			return;
+		}
+		$this->collAbsenceAgregationDecomptes = new PropelObjectCollection();
+		$this->collAbsenceAgregationDecomptes->setModel('AbsenceAgregationDecompte');
+	}
+
+	/**
+	 * Gets an array of AbsenceAgregationDecompte objects which contain a foreign key that references this object.
+	 *
+	 * If the $criteria is not null, it is used to always fetch the results from the database.
+	 * Otherwise the results are fetched from the database the first time, then cached.
+	 * Next time the same method is called without $criteria, the cached collection is returned.
+	 * If this Eleve is new, it will return
+	 * an empty collection or the current collection; the criteria is ignored on a new object.
+	 *
+	 * @param      Criteria $criteria optional Criteria object to narrow the query
+	 * @param      PropelPDO $con optional connection object
+	 * @return     PropelCollection|array AbsenceAgregationDecompte[] List of AbsenceAgregationDecompte objects
+	 * @throws     PropelException
+	 */
+	public function getAbsenceAgregationDecomptes($criteria = null, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceAgregationDecomptes || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceAgregationDecomptes) {
+				// return empty collection
+				$this->initAbsenceAgregationDecomptes();
+			} else {
+				$collAbsenceAgregationDecomptes = AbsenceAgregationDecompteQuery::create(null, $criteria)
+					->filterByEleve($this)
+					->find($con);
+				if (null !== $criteria) {
+					return $collAbsenceAgregationDecomptes;
+				}
+				$this->collAbsenceAgregationDecomptes = $collAbsenceAgregationDecomptes;
+			}
+		}
+		return $this->collAbsenceAgregationDecomptes;
+	}
+
+	/**
+	 * Returns the number of related AbsenceAgregationDecompte objects.
+	 *
+	 * @param      Criteria $criteria
+	 * @param      boolean $distinct
+	 * @param      PropelPDO $con
+	 * @return     int Count of related AbsenceAgregationDecompte objects.
+	 * @throws     PropelException
+	 */
+	public function countAbsenceAgregationDecomptes(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+	{
+		if(null === $this->collAbsenceAgregationDecomptes || null !== $criteria) {
+			if ($this->isNew() && null === $this->collAbsenceAgregationDecomptes) {
+				return 0;
+			} else {
+				$query = AbsenceAgregationDecompteQuery::create(null, $criteria);
+				if($distinct) {
+					$query->distinct();
+				}
+				return $query
+					->filterByEleve($this)
+					->count($con);
+			}
+		} else {
+			return count($this->collAbsenceAgregationDecomptes);
+		}
+	}
+
+	/**
+	 * Method called to associate a AbsenceAgregationDecompte object to this object
+	 * through the AbsenceAgregationDecompte foreign key attribute.
+	 *
+	 * @param      AbsenceAgregationDecompte $l AbsenceAgregationDecompte
+	 * @return     void
+	 * @throws     PropelException
+	 */
+	public function addAbsenceAgregationDecompte(AbsenceAgregationDecompte $l)
+	{
+		if ($this->collAbsenceAgregationDecomptes === null) {
+			$this->initAbsenceAgregationDecomptes();
+		}
+		if (!$this->collAbsenceAgregationDecomptes->contains($l)) { // only add it if the **same** object is not already associated
+			$this->collAbsenceAgregationDecomptes[]= $l;
+			$l->setEleve($this);
+		}
+	}
+
+	/**
 	 * Clears out the collCreditEctss collection
 	 *
 	 * This does not modify the database; however, it will remove any associated objects, causing
@@ -3879,6 +4029,11 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 					$o->clearAllReferences($deep);
 				}
 			}
+			if ($this->collAbsenceAgregationDecomptes) {
+				foreach ($this->collAbsenceAgregationDecomptes as $o) {
+					$o->clearAllReferences($deep);
+				}
+			}
 			if ($this->collCreditEctss) {
 				foreach ($this->collCreditEctss as $o) {
 					$o->clearAllReferences($deep);
@@ -3942,6 +4097,10 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->collAbsenceEleveSaisies->clearIterator();
 		}
 		$this->collAbsenceEleveSaisies = null;
+		if ($this->collAbsenceAgregationDecomptes instanceof PropelCollection) {
+			$this->collAbsenceAgregationDecomptes->clearIterator();
+		}
+		$this->collAbsenceAgregationDecomptes = null;
 		if ($this->collCreditEctss instanceof PropelCollection) {
 			$this->collCreditEctss->clearIterator();
 		}

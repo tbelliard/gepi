@@ -1034,6 +1034,32 @@ CREATE TABLE j_notifications_resp_pers
 ) ENGINE=MyISAM COMMENT='Table de jointure entre la notification et les personnes dont on va mettre le nom dans le message.';
 
 -- ---------------------------------------------------------------------
+-- a_agregation_decompte
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS a_agregation_decompte;
+
+CREATE TABLE a_agregation_decompte
+(
+	eleve_id INTEGER(11) NOT NULL COMMENT 'id de l\'eleve',
+	date_demi_jounee DATETIME NOT NULL COMMENT 'Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi',
+	manquement_obligation_presence TINYINT DEFAULT 0 COMMENT 'Cette demi journée est comptée comme absence',
+	justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une justification',
+	notifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une notification à la famille',
+	nb_retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards décomptés dans la demi journée',
+	nb_retards_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards justifiés décomptés dans la demi journée',
+	motifs_absence TEXT COMMENT 'Liste des motifs (table a_motifs) associés à cette demi-journée d\'absence',
+	motifs_retards TEXT COMMENT 'Liste des motifs (table a_motifs) associés aux retard de cette demi-journée',
+	created_at DATETIME,
+	updated_at DATETIME,
+	PRIMARY KEY (eleve_id,date_demi_jounee),
+	CONSTRAINT a_agregation_decompte_FK_1
+		FOREIGN KEY (eleve_id)
+		REFERENCES eleves (id_eleve)
+		ON DELETE CASCADE
+) ENGINE=MyISAM COMMENT='Table d\'agregation des decomptes de demi journees d\'absence et de retard';
+
+-- ---------------------------------------------------------------------
 -- ects_credits
 -- ---------------------------------------------------------------------
 

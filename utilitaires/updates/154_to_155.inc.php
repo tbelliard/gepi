@@ -263,7 +263,8 @@ if ($test == -1) {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
-$result .= "&nbsp;->Ajout des chamds versions a la table a_saisies<br />";
+$result .= "<br /><br /><b>Absence 2 :</b><br />";
+$result .= "&nbsp;->Ajout des champs versions a la table a_saisies<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'version';"));
 if ($test_champ>0) {
 	$result .= "<font color=\"blue\">Les versions de saisies existent déjà.</font><br />";
@@ -348,7 +349,7 @@ if ($query) {
 		$result .= "<font color=\"green\">Ok !</font><br />";
 }
 
-$result .= "&nbsp;->Suppression du champs inutile modifie_par_utilisateur_id de la table a_saisies<br />";
+$result .= "&nbsp;->Suppression du champs inutile modifie_par_utilisateur_id de la table a_saisies_version<br />";
 $query = mysql_query("ALTER TABLE `a_saisies_version` DROP `modifie_par_utilisateur_id` ;");
 if ($query) {
 		$result .= "<font color=\"blue\">Le champ modifie_par_utilisateur_id de la table a_saisies_version n'existe plus.</font><br />";
@@ -405,6 +406,39 @@ if ($test_champ>0) {
 			$result .= "<font color=\"blue\">Le champ deleted_by de la table a_saisies_version a été ajouté.</font><br />";
 	} else {
 			$result .= "<font color=\"red\">Erreur : Le champ deleted_by de la table a_saisies_version n'a pas été ajouté</font><br />";
+	}
+}
+
+
+$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'a_agregation_decompte'"));
+if ($test!=0) {
+	$result .= "<font color=\"blue\">La table des agrégation de décompte de saisies existe déjà.</font><br />";
+} else {
+	$result .= "<font color=\"blue\">Ajout de la table des agrégation de décompte de saisies.</font><br />";
+	$query = mysql_query("CREATE TABLE a_agregation_decompte
+(
+	eleve_id INTEGER(11) NOT NULL COMMENT 'id de l\'eleve',
+	date_demi_jounee DATETIME NOT NULL COMMENT 'Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi',
+	manquement_obligation_presence TINYINT DEFAULT 0 COMMENT 'Cette demi journée est comptée comme absence',
+	justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une justification',
+	notifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une notification à la famille',
+	nb_retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards décomptés dans la demi journée',
+	nb_retards_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards justifiés décomptés dans la demi journée',
+	motifs_absence TEXT COMMENT 'Liste des motifs (table a_motifs) associés à cette demi-journée d\'absence',
+	motifs_retards TEXT COMMENT 'Liste des motifs (table a_motifs) associés aux retard de cette demi-journée',
+	created_at DATETIME,
+	updated_at DATETIME,
+	PRIMARY KEY (eleve_id,date_demi_jounee),
+	CONSTRAINT a_agregation_decompte_FK_1
+		FOREIGN KEY (eleve_id)
+		REFERENCES eleves (id_eleve)
+		ON DELETE CASCADE
+) ENGINE=MyISAM COMMENT='Table d\'agregation des decomptes de demi journees d\'absence et de retard';
+	");
+	if ($query) {
+                $result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+                $result .= "<font color=\"red\">Erreur</font><br />";
 	}
 }
 
