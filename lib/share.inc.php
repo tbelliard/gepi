@@ -31,20 +31,33 @@ function add_token_field($avec_id=false) {
 	// Dans une page, il ne devrait y avoir qu'un seul appel à add_token_field(true), les autres... dans les autres formulaires étant avec add_token_field()
 	// A VOIR... on pourrait utiliser une variable globale pour... si l'id csrf_alea est déjà défini ne plus l'ajouter...
 
-	if($avec_id) {
-		return "<input type='hidden' name='csrf_alea' id='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
-	}
-	else {
-		return "<input type='hidden' name='csrf_alea' value='".$_SESSION['gepi_alea']."' />\n";
-	}
+	// appels pour insérer le champ 'csrf_alea' dans des forumulaires inclus dans le code
+	// de messages du panneau d'affichage (table 'messages') : 
+	// add_token_field(true,false) ou add_token_field(false,false)
+	
+	if ($avec_gepi_alea) $gepi_alea=$_SESSION['gepi_alea']; else $gepi_alea="_CRSF_ALEA_";
+	
+    if($avec_id) {
+        return "<input type='hidden' name='csrf_alea' id='csrf_alea' value='".$gepi_alea."' />\n";
+    }
+    else {
+        return "<input type='hidden' name='csrf_alea' value='".$gepi_alea."' />\n";
+    }
 }
 
 function add_token_in_url($html_chars = true) {
+
+	// appels pour insérer le champ 'csrf_alea' dans des liens inclus dans le code
+	// de messages du panneau d'affichage (table 'messages') : 
+	// add_token_in_url(true,false) ou add_token_in_url(false,false)
+	
+	if ($avec_gepi_alea) $gepi_alea=$_SESSION['gepi_alea']; else $gepi_alea="_CRSF_ALEA_";
+
 	if($html_chars) {
-		return "&amp;csrf_alea=".$_SESSION['gepi_alea'];
+		return "&amp;csrf_alea=".$gepi_alea;
 	}
 	else {
-		return "&csrf_alea=".$_SESSION['gepi_alea'];
+		return "&csrf_alea=".$gepi_alea;
 	}
 }
 
