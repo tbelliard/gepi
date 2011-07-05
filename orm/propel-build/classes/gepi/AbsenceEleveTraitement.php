@@ -194,24 +194,28 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 */
 	public function save(PropelPDO $con = null)
 	{
-	    if ($this->isNew()) {
-		if ($this->getUtilisateurId() == null) {
-		    $utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
-		    if ($utilisateur != null) {
-			$this->setUtilisateurProfessionnel($utilisateur);
-		    }
+		if ($this->isNew()) {
+			if ($this->getUtilisateurId() == null) {
+				$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+				if ($utilisateur != null) {
+					$this->setUtilisateurProfessionnel($utilisateur);
+				}
+			}
+		} else {
+			$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
+			if ($utilisateur != null) {
+				$this->setModifieParUtilisateur($utilisateur);
+			}
 		}
-	    } else {
-		$utilisateur = UtilisateurProfessionnelPeer::getUtilisateursSessionEnCours();
-		if ($utilisateur != null) {
-		    $this->setModifieParUtilisateur($utilisateur);
-		}
-	    }
-	    return parent::save($con);
+	    $result = parent::save($con);
+	    
+	    $this->updateAgregationTable();
+	    
+	    return $result;
 	}
 	
 	/**
-	 * Removes this object from datastore and sets delete attribute. Custom : suppression des notifications associées
+	 * Removes this object from datastore and sets delete attribute. Custom : suppression des notifications et jointures associées et calcul de la table d'agrégation
 	 *
 	 * @param      PropelPDO $con
 	 * @return     void
@@ -221,7 +225,27 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	 */
 	public function delete(PropelPDO $con = null)
 	{
+		$saisieColOld = $this->getAbsenceEleveSaisies();
 		AbsenceEleveNotificationQuery::create()->filterByAbsenceEleveTraitement($this)->delete();
+		JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($this)->delete();
 		parent::delete();
+		foreach($saisieColOld as $saisie) {
+			if ($saisie->getEleve() != null) {
+				$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
+			}
+		}
+	}
+	
+	/**
+	 * Met à jour la table d'agrégation pour toutes les saisies de ce traitement
+	 *
+	 * @return     void
+	 */
+	public function updateAgregationTable() {
+		foreach($this->getAbsenceEleveSaisies() as $saisie) {
+			if ($saisie->getEleve() != null) {
+				$saisie->getEleve()->updateAbsenceAgregationTable($saisie->getDebutAbs(null),$saisie->getFinAbs(null));
+			}
+		}
 	}
 } // AbsenceEleveTraitement
