@@ -192,7 +192,6 @@ if ($notification->getModifiable()) {
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="type"/>';
     echo ("<select name=\"type\" onchange='submit()'>");
-    echo "<option value=''></option>\n";
     foreach (AbsenceEleveNotificationPeer::getValueSet(AbsenceEleveNotificationPeer::TYPE_NOTIFICATION) as $type) {
 	if ($type === AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_SMS && (getSettingValue("abs2_sms") != 'y')) {
 	    //pas d'option sms
