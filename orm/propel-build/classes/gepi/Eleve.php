@@ -1594,8 +1594,75 @@ class Eleve extends BaseEleve {
 	 * @return		Boolean
 	 *
 	 */
-	public function checkSynchroAgregationAbsence(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		return true;
+	public function checkSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+		//on vérifie que le marqueur de fin de l'algorithme de mise à jour de la table d'agrégation est présent
+		if (AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->filterByDateDemiJounee(null)->findOne() == null) {
+			return false;
+		}
+		
+		//on vérifie si on a des dates de début et de fin que entre les deux il y a le bon nombre d'enregistrements dans la table
+		if ($dateDebut != null && $dateFin != null) {
+			$count = AbsenceAgregationDecompteQuery::create()->filterByEleve($this)
+				->filterByDateDemiJounee($dateDebut, Criteria::GREATER_EQUAL)
+				->filterByDateDemiJounee($dateFin, Criteria::LESS_EQUAL)
+				->count();
+			if ($count != (int)(($dateFin->format('U')-$dateDebut->format('U'))/(3600*12))+1) {
+				return false;
+			}
+		}
+		
+		//on vérifie en comparant des dates que aucune mise a jour de la table d'agrégation n'a été oubliée 
+		//on va rechercher la date de dernière modification des saisies, traitements, etc...
+		$date_selection = ' 1=1 ';
+		if ($dateDebut != null) {
+			$date_selection .= ' and a_saisies.fin_abs > "'.$dateDebut->format('Y-m-d H:i:s').'" ';
+		}
+		if ($dateFin != null) {
+			$date_selection .= ' and a_saisies.debut_abs < "'.$dateFin->format('Y-m-d H:i:s').'" ';
+		}
+		$query = "
+				-- selection des date de modification de saisies
+				SELECT updated_at as union_date FROM a_saisies WHERE a_saisies.deleted_at is null and eleve_id='".$this->getIdEleve()."' and ".$date_selection."
+			UNION ALL
+				-- selection des date de suppression de saisies
+				SELECT deleted_at as union_date  FROM a_saisies WHERE a_saisies.deleted_at is not null and eleve_id='".$this->getIdEleve()."' and ".$date_selection."
+			UNION ALL
+				-- selection des date de modification des traitements
+				SELECT a_traitements.updated_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE  a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='".$this->getIdEleve()."' and ".$date_selection."
+			UNION ALL
+				-- selection des date de suppression des traitements
+				SELECT a_traitements.deleted_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is not null and a_saisies.deleted_at is null and a_saisies.eleve_id='".$this->getIdEleve()."' and ".$date_selection."
+			UNION ALL
+				-- selection des date de modification des notifications
+				SELECT a_notifications.updated_at as union_date  FROM a_notifications join a_traitements on a_notifications.a_traitement_id = a_traitements.id join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='".$this->getIdEleve()."' and ".$date_selection."
+			
+			ORDER BY union_date DESC LIMIT 1";
+		
+		$result = mysql_query($query);
+		$row = mysql_fetch_assoc($result);
+		$unionDateString = $row['union_date'];
+
+		//on va rechercher la date de dernière modification des saisies, traitements, etc...
+		$result = mysql_query("
+			-- selection des date de modification dans le table d'agrégation
+			SELECT updated_at FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='".$this->getIdEleve()."'
+					
+			ORDER BY updated_at DESC LIMIT 1");
+		$row = mysql_fetch_assoc($result);
+		$agregationDateString = $row['updated_at'];
+		
+		if ($unionDateString === $agregationDateString) return true;
+		if ($unionDateString < $agregationDateString) return true;
+		return false;
+		
+		/** on ne regarde pas les dates de modification admin des types et autres constantes, c'est trop lourd
+		UNION ALL
+		SELECT a_types.updated_at as union_date  FROM a_types join a_traitements on a_traitements.a_type_id = a_types.id join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='2586'
+		UNION ALL
+		SELECT a_justifications.updated_at as union_date  FROM a_justifications join a_traitements on a_traitements.a_justification_id = a_justifications.id join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='2586'
+		UNION ALL
+		SELECT a_motifs.updated_at as union_date  FROM a_motifs join a_traitements on a_traitements.a_motif_id = a_motifs.id join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='2586'
+		*/
 	}
 	
 	/**
@@ -1613,28 +1680,26 @@ class Eleve extends BaseEleve {
 		//on initialise les date et on vérifie l'intégrité avant et après les dates précisées, si c'est pas bon on change les dates pour faire une mise à jour plus large
 		if ($dateDebut != null) {
 			$dateDebutClone = clone $dateDebut;
-			if ($this->checkSynchroAgregationAbsence(null, $dateDebut)) {
-				$dateDebutClone = null;
-			}
+			$dateDebutClone->setTime(0,0);
+			$this->checkAndUpdateSynchroAbsenceAgregationTable(null, $dateDebut);
 		}
-		if ($dateFin != null) {
+		if ($dateFin != null && $dateDebut != null) {
 			$dateFinClone = clone $dateFin;
-			if ($this->checkSynchroAgregationAbsence($dateFin, null)) {
-				$dateFinClone = null;
-			}
+			$dateFinClone->setTime(23,59);
+			$this->checkAndUpdateSynchroAbsenceAgregationTable($dateFin, null);
 		}
 		
 		//on commence par supprimer les anciennes entrée
 		$queryDelete = AbsenceAgregationDecompteQuery::create()->filterByEleve($this);
 		if ($dateDebutClone != null) {
-			$dateDebutClone->setTime(0,0);
 			$queryDelete->filterByDateDemiJounee($dateDebutClone, Criteria::GREATER_EQUAL);
 		}
 		if ($dateFinClone != null) {
-			$dateFinClone->setTime(23,59);
 			$queryDelete->filterByDateDemiJounee($dateFin, Criteria::LESS_EQUAL);
 		}
 		$queryDelete->delete();
+		//on supprime le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
+		AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->filterByDateDemiJounee(null)->delete();
 		
 		$absenceNonJustifiesCol = $this->getDemiJourneesNonJustifieesAbsence($dateDebutClone,$dateFinClone);
 		$absencesCol			= $this->getDemiJourneesAbsence($dateDebutClone,$dateFinClone);
@@ -1650,86 +1715,103 @@ class Eleve extends BaseEleve {
 	    } catch (Exception $x) {
 	    }
 	    
-	    //on initialise le début de l'itération pour creer les entrées
-		$dateDemiJourneeIteration = null;
-		if (!$absencesCol->isEmpty()) {
-			$dateDemiJourneeIteration= clone $absencesCol->getFirst(null);
-			$dateDemiJourneeIteration->setTime(0,0);
-		}
-		if (!$retards->isEmpty()) {
-			if ($dateDemiJourneeIteration == null || $dateDemiJourneeIteration->format('U') > $retards->getFirst()->getDebutAbs('U')) {
-				$dateDemiJourneeIteration= clone $retards->getFirst()->getDebutAbs(null);
-				$dateDemiJourneeIteration->setTime(0,0);
+	    //on initialise le début de l'itération pour creer les entrées si aucune date n'est précisée
+		if ($dateDebutClone == null) {
+			if (!$absencesCol->isEmpty()) {
+				$dateDebutClone= clone $absencesCol->getFirst(null);
+				$dateDebutClone->setTime(0,0);
+			}
+			if (!$retards->isEmpty()) {
+				if ($dateDebutClone == null || $dateDebutClone->format('U') > $retards->getFirst()->getDebutAbs('U')) {
+					$dateDebutClone= clone $retards->getFirst()->getDebutAbs(null);
+					$dateDebutClone->setTime(0,0);
+				}
 			}
 		}
-		
-		if ($dateDemiJourneeIteration == null) {
-			//aucune absence ni retard
-			return;
-		}
-
-		//on va creer une collections d'entrées dans la table d'agrégation
-		//dans la boucle while on utilise les tests isFirst pour vérifier qu'on a pas fini les collections et qu'on est pas retourné au début
-		do {
-			$newAgregation = null;
-			if (($absencesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $absencesCol->getCurrent()->format('d/m/Y H')) {
+		if ($dateDebutClone == null) {
+			//rien à remplir
+			//on va quand même mettre une entrée pour dire qu'on est passé par la pour une vérification ultérieures
+			$newAgregation = new AbsenceAgregationDecompte();
+			$newAgregation->setEleve($this);
+			if ($dateFinClone != null) {
+				$dateFinClone->setTime(12,0);
+			} else {
+				//on a aucune date ni aucune saisie, on va mettre la date du jour
+				$dateFinClone = new DateTime('now');
+				$dateFinClone->setTime(0,0);
+			}
+			$newAgregation->setDateDemiJounee($dateFinClone);
+			$newAgregation->save();
+		} else {
+			$dateDemiJourneeIteration = clone $dateDebutClone;
+			$absencesCol_start_compute = false;//obligatoire pour tester la fin de la collection car le pointeur retourne au début
+			$retards_start_compute = false;
+			//on va creer une collections d'entrées dans la table d'agrégation
+			//dans la boucle while on utilise les tests isFirst pour vérifier qu'on a pas fini les collections et qu'on est pas retourné au début
+			do {
 				$newAgregation = new AbsenceAgregationDecompte();
 				$newAgregation->setEleve($this);
 				$newAgregation->setDateDemiJounee($dateDemiJourneeIteration);
-				$newAgregation->setManquementObligationPresence(true);
-				$newAgregation->setJustifiee(true);
-				$absencesCol->getNext();
-				//on regarde si l'absence est non justifiée
-				if (($absenceNonJustifiesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $absenceNonJustifiesCol->getCurrent()->format('d/m/Y H')) {
-					$newAgregation->setJustifiee(false);
-					$absenceNonJustifiesCol->getNext();
+				if (($absencesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $absencesCol->getCurrent()->format('d/m/Y H')) {
+					$absencesCol_start_compute = true;
+					$newAgregation->setManquementObligationPresence(true);
+					$newAgregation->setJustifiee(true);
+					$absencesCol->getNext();
+					//on regarde si l'absence est non justifiée
+					if (($absenceNonJustifiesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $absenceNonJustifiesCol->getCurrent()->format('d/m/Y H')) {
+						$newAgregation->setJustifiee(false);
+						$absenceNonJustifiesCol->getNext();
+					}
 				}
-			}
-			//on regarde si il y a des retards pendant cette demijournée
-			$date_fin_decompte_retard = clone $dateDemiJourneeIteration;
-			if ($date_fin_decompte_retard->format('H') == 0) {
-				$date_fin_decompte_retard->setTime($heure_demi_journee,$minute_demi_journee);
-			} else {
-				$date_fin_decompte_retard->setTime(23,59);
-			}
-			while ($retards->getCurrent() != null && $retards->getCurrent()->getDebutAbs('U')<$date_fin_decompte_retard->format('U')) {
-				if ($newAgregation == null) {
-					$newAgregation = new AbsenceAgregationDecompte();
-					$newAgregation->setEleve($this);
-					$newAgregation->setDateDemiJounee($dateDemiJourneeIteration);
+				//on regarde si il y a des retards pendant cette demijournée
+				$date_fin_decompte_retard = clone $dateDemiJourneeIteration;
+				if ($date_fin_decompte_retard->format('H') == 0) {
+					$date_fin_decompte_retard->setTime($heure_demi_journee,$minute_demi_journee);
+				} else {
+					$date_fin_decompte_retard->setTime(23,59);
 				}
-				$newAgregation->setNbRetards($newAgregation->getNbRetards() + 1);
-				if ($retards->getCurrent()->getJustifiee()) {
-					$newAgregation->setNbRetardsJustifies($newAgregation->getNbRetardsJustifies() + 1);
+				while ($retards->getCurrent() != null && $retards->getCurrent()->getDebutAbs('U')<$date_fin_decompte_retard->format('U')) {
+					$retards_start_compute = true;
+					$newAgregation->setNbRetards($newAgregation->getNbRetards() + 1);
+					if ($retards->getCurrent()->getJustifiee()) {
+						$newAgregation->setNbRetardsJustifies($newAgregation->getNbRetardsJustifies() + 1);
+					}
+					$retards->getNext();
 				}
-				$retards->getNext();
-			}
-			if ($newAgregation != null) {
 				$newAgregation->save();
-			}
-			$dateDemiJourneeIteration->modify("+12 hours");
+				
+				$dateDemiJourneeIteration->modify("+12 hours");
+			} while (//on s'arrete si on a dépassé la date de fin
+					($dateFinClone != null && $dateDemiJourneeIteration->format('U') <= $dateFinClone->format('U'))
+					//on s'arrete si la date de fin n'est pas précisé et qu'on a épuisé toutes les absences
+					|| ($dateFinClone == null && (!$absencesCol->isFirst() || !$absencesCol_start_compute) && (!$retards->isFirst() || !$retards_start_compute) )
+					//on mets une limite au cas ou on tourne en boucle infinie
+					&& ($dateDemiJourneeIteration->format('Y') < '2013'));
 			
-		    //on fait un petit saut dans le futur si il n'y a pas d'absences proches
-		    $nextDate = null;
-			if (($absencesCol->getCurrent() != null)) {
-				$nextDate = $absencesCol->getCurrent();
-			}
-			if (($retards->getCurrent() != null) && ($nextDate == null || $nextDate->format('U') > $retards->getCurrent()->getDebutAbs('U'))) {
-				$nextDate = $retards->getCurrent()->getDebutAbs(null);
-			}
-
-			if ($nextDate != null && $dateDemiJourneeIteration->format('U') < $nextDate->format('U')) {
-				$dateDemiJourneeIteration = clone $nextDate;
-			}
-			if ($dateDemiJourneeIteration->format('H') < 12) {
-				$dateDemiJourneeIteration->setTime(0,0);
-			} else {
-				$dateDemiJourneeIteration->setTime(12,0);
-			}
-		} while (//on s'arrete si on a épuisé toute les collections en creant une entrée ou si la date est dépassée
-				(($newAgregation == null) || !$absencesCol->isFirst() || !$retards->isFirst())
-				&& ($dateFinClone == null || $dateDemiJourneeIteration->format('U') <= $dateFinClone->format('U'))
-				&& ($dateDemiJourneeIteration->format('Y') < '2013'));
+		}
+		
+		
+		//on enregistre le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
+		$newAgregation = new AbsenceAgregationDecompte();
+		$newAgregation->setEleve($this);
+		$newAgregation->setDateDemiJounee('0000-00-00 00:00:00');
+		$newAgregation->save();
+	}
+	
+		/**
+	 *
+	 * Mets à jour la table d'agrégation des absences pour cet élève
+	 * @TODO		implement the method
+	 *
+	 * @param      DateTime $dateDebut date de début pour la prise en compte de la mise à jours
+	 * @param      DateTime $dateFin date de fin pour la prise en compte de la mise à jours
+	 * @return		Boolean
+	 *
+	 */
+	public function checkAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
+		if (!$this->checkSynchroAbsenceAgregationTable($dateDebut, $dateFin)) {
+			$this->updateAbsenceAgregationTable($dateDebut, $dateFin);
+		}
 	}
 	
 } // Eleve
