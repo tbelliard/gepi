@@ -497,4 +497,9 @@ if ($test_champ>0) {
 	}
 }
 
+$result .= add_index('a_saisies','a_saisies_I_1','`deleted_at`');
+$result .= add_index('a_saisies','a_saisies_I_2','`debut_abs`');
+$result .= add_index('a_saisies','a_saisies_I_3','`fin_abs`');
+$result .= add_index('a_traitements','a_traitements_I_1','`deleted_at`');
+
 ?>

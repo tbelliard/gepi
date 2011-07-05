@@ -474,6 +474,9 @@
       <parameter name="log_created_at" value="true" />
       <parameter name="log_created_by" value="true" />
     </behavior>
+	<index><index-column name="deleted_at"/></index>
+	<index><index-column name="debut_abs"/></index>
+	<index><index-column name="fin_abs"/></index>
   </table>
 
   <table name="a_traitements" phpName="AbsenceEleveTraitement" description="Un traitement peut gerer plusieurs saisies et consiste à definir les motifs/justifications... de ces absences saisies">
@@ -494,6 +497,7 @@
 	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
     <foreign-key foreignTable="utilisateurs" onDelete="none" phpName = "ModifieParUtilisateur" refPhpName = "ModifiedAbsenceEleveTraitement"><reference local="modifie_par_utilisateur_id" foreign="login"/></foreign-key>
 	<behavior name="soft_delete" />
+	<index><index-column name="deleted_at"/></index>
   </table>
 
   <table name="j_traitements_saisies" phpName="JTraitementSaisieEleve" description="Table de jointure entre la saisie et le traitement des absences" isCrossRef="true">
