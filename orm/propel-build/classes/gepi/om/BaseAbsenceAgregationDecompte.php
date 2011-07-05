@@ -32,6 +32,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 
 	/**
 	 * The value for the date_demi_jounee field.
+	 * Note: this column has a database default value of: NULL
 	 * @var        string
 	 */
 	protected $date_demi_jounee;
@@ -72,17 +73,17 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 	protected $nb_retards_justifies;
 
 	/**
-	 * The value for the motifs_absence field.
+	 * The value for the motifs_absences field.
 	 * @var        array
 	 */
-	protected $motifs_absence;
+	protected $motifs_absences;
 
 	/**
-	 * The unserialized $motifs_absence value - i.e. the persisted object.
+	 * The unserialized $motifs_absences value - i.e. the persisted object.
 	 * This is necessary to avoid repeated calls to unserialize() at runtime.
 	 * @var        object
 	 */
-	protected $motifs_absence_unserialized;
+	protected $motifs_absences_unserialized;
 
 	/**
 	 * The value for the motifs_retards field.
@@ -136,6 +137,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 	 */
 	public function applyDefaultValues()
 	{
+		$this->date_demi_jounee = NULL;
 		$this->manquement_obligation_presence = false;
 		$this->justifiee = false;
 		$this->notifiee = false;
@@ -252,21 +254,32 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 	}
 
 	/**
-	 * Get the [motifs_absence] column value.
+	 * Get the [motifs_absences] column value.
 	 * Liste des motifs (table a_motifs) associés à cette demi-journée d'absence
 	 * @return     array
 	 */
-	public function getMotifsAbsence()
+	public function getMotifsAbsences()
 	{
-		if (null === $this->motifs_absence_unserialized) {
-			$this->motifs_absence_unserialized = array();
+		if (null === $this->motifs_absences_unserialized) {
+			$this->motifs_absences_unserialized = array();
 		}
-		if (!$this->motifs_absence_unserialized && null !== $this->motifs_absence) {
-			$motifs_absence_unserialized = substr($this->motifs_absence, 2, -2);
-			$this->motifs_absence_unserialized = $motifs_absence_unserialized ? explode(' | ', $motifs_absence_unserialized) : array();
+		if (!$this->motifs_absences_unserialized && null !== $this->motifs_absences) {
+			$motifs_absences_unserialized = substr($this->motifs_absences, 2, -2);
+			$this->motifs_absences_unserialized = $motifs_absences_unserialized ? explode(' | ', $motifs_absences_unserialized) : array();
 		}
-		return $this->motifs_absence_unserialized;
+		return $this->motifs_absences_unserialized;
 	}
+
+	/**
+	 * Test the presence of a value in the [motifs_absences] array column value.
+	 * @param      mixed $value
+	 * Liste des motifs (table a_motifs) associés à cette demi-journée d'absence
+	 * @return     Boolean
+	 */
+	public function hasMotifsAbsence($value)
+	{
+		return in_array($value, $this->getMotifsAbsences());
+	} // hasMotifsAbsence()
 
 	/**
 	 * Get the [motifs_retards] column value.
@@ -409,7 +422,9 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		if ($this->date_demi_jounee !== null || $dt !== null) {
 			$currentDateAsString = ($this->date_demi_jounee !== null && $tmpDt = new DateTime($this->date_demi_jounee)) ? $tmpDt->format('Y-m-d H:i:s') : null;
 			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
-			if ($currentDateAsString !== $newDateAsString) {
+			if ( ($currentDateAsString !== $newDateAsString) // normalized values don't match 
+				|| ($dt->format('Y-m-d H:i:s') === NULL) // or the entered value matches the default
+				 ) {
 				$this->date_demi_jounee = $newDateAsString;
 				$this->modifiedColumns[] = AbsenceAgregationDecomptePeer::DATE_DEMI_JOUNEE;
 			}
@@ -543,21 +558,55 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 	} // setNbRetardsJustifies()
 
 	/**
-	 * Set the value of [motifs_absence] column.
+	 * Set the value of [motifs_absences] column.
 	 * Liste des motifs (table a_motifs) associés à cette demi-journée d'absence
 	 * @param      array $v new value
 	 * @return     AbsenceAgregationDecompte The current object (for fluent API support)
 	 */
-	public function setMotifsAbsence($v)
+	public function setMotifsAbsences($v)
 	{
-		if ($this->motifs_absence_unserialized !== $v) {
-			$this->motifs_absence_unserialized = $v;
-			$this->motifs_absence = '| ' . implode(' | ', $v) . ' |';
-			$this->modifiedColumns[] = AbsenceAgregationDecomptePeer::MOTIFS_ABSENCE;
+		if ($this->motifs_absences_unserialized !== $v) {
+			$this->motifs_absences_unserialized = $v;
+			$this->motifs_absences = '| ' . implode(' | ', $v) . ' |';
+			$this->modifiedColumns[] = AbsenceAgregationDecomptePeer::MOTIFS_ABSENCES;
 		}
 
 		return $this;
-	} // setMotifsAbsence()
+	} // setMotifsAbsences()
+
+	/**
+	 * Adds a value to the [motifs_absences] array column value.
+	 * @param      mixed $value
+	 * Liste des motifs (table a_motifs) associés à cette demi-journée d'absence
+	 * @return     AbsenceAgregationDecompte The current object (for fluent API support)
+	 */
+	public function addMotifsAbsence($value)
+	{
+		$currentArray = $this->getMotifsAbsences();
+		$currentArray []= $value;
+		$this->setMotifsAbsences($currentArray);
+		
+		return $this;
+	} // addMotifsAbsence()
+
+	/**
+	 * Removes a value from the [motifs_absences] array column value.
+	 * @param      mixed $value
+	 * Liste des motifs (table a_motifs) associés à cette demi-journée d'absence
+	 * @return     AbsenceAgregationDecompte The current object (for fluent API support)
+	 */
+	public function removeMotifsAbsence($value)
+	{
+		$targetArray = array();
+		foreach ($this->getMotifsAbsences() as $element) {
+			if ($element != $value) {
+				$targetArray []= $element;
+			}
+		}
+		$this->setMotifsAbsences($targetArray);
+
+		return $this;
+	} // removeMotifsAbsence()
 
 	/**
 	 * Set the value of [motifs_retards] column.
@@ -664,6 +713,10 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 	 */
 	public function hasOnlyDefaultValues()
 	{
+			if ($this->date_demi_jounee !== NULL) {
+				return false;
+			}
+
 			if ($this->manquement_obligation_presence !== false) {
 				return false;
 			}
@@ -713,7 +766,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 			$this->notifiee = ($row[$startcol + 4] !== null) ? (boolean) $row[$startcol + 4] : null;
 			$this->nb_retards = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
 			$this->nb_retards_justifies = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
-			$this->motifs_absence = $row[$startcol + 7];
+			$this->motifs_absences = $row[$startcol + 7];
 			$this->motifs_retards = $row[$startcol + 8];
 			$this->created_at = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
 			$this->updated_at = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
@@ -1077,7 +1130,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 				return $this->getNbRetardsJustifies();
 				break;
 			case 7:
-				return $this->getMotifsAbsence();
+				return $this->getMotifsAbsences();
 				break;
 			case 8:
 				return $this->getMotifsRetards();
@@ -1124,7 +1177,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 			$keys[4] => $this->getNotifiee(),
 			$keys[5] => $this->getNbRetards(),
 			$keys[6] => $this->getNbRetardsJustifies(),
-			$keys[7] => $this->getMotifsAbsence(),
+			$keys[7] => $this->getMotifsAbsences(),
 			$keys[8] => $this->getMotifsRetards(),
 			$keys[9] => $this->getCreatedAt(),
 			$keys[10] => $this->getUpdatedAt(),
@@ -1186,7 +1239,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 				$this->setNbRetardsJustifies($value);
 				break;
 			case 7:
-				$this->setMotifsAbsence($value);
+				$this->setMotifsAbsences($value);
 				break;
 			case 8:
 				$this->setMotifsRetards($value);
@@ -1228,7 +1281,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		if (array_key_exists($keys[4], $arr)) $this->setNotifiee($arr[$keys[4]]);
 		if (array_key_exists($keys[5], $arr)) $this->setNbRetards($arr[$keys[5]]);
 		if (array_key_exists($keys[6], $arr)) $this->setNbRetardsJustifies($arr[$keys[6]]);
-		if (array_key_exists($keys[7], $arr)) $this->setMotifsAbsence($arr[$keys[7]]);
+		if (array_key_exists($keys[7], $arr)) $this->setMotifsAbsences($arr[$keys[7]]);
 		if (array_key_exists($keys[8], $arr)) $this->setMotifsRetards($arr[$keys[8]]);
 		if (array_key_exists($keys[9], $arr)) $this->setCreatedAt($arr[$keys[9]]);
 		if (array_key_exists($keys[10], $arr)) $this->setUpdatedAt($arr[$keys[10]]);
@@ -1250,7 +1303,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::NOTIFIEE)) $criteria->add(AbsenceAgregationDecomptePeer::NOTIFIEE, $this->notifiee);
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::NB_RETARDS)) $criteria->add(AbsenceAgregationDecomptePeer::NB_RETARDS, $this->nb_retards);
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::NB_RETARDS_JUSTIFIES)) $criteria->add(AbsenceAgregationDecomptePeer::NB_RETARDS_JUSTIFIES, $this->nb_retards_justifies);
-		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCE)) $criteria->add(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCE, $this->motifs_absence);
+		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCES)) $criteria->add(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCES, $this->motifs_absences);
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::MOTIFS_RETARDS)) $criteria->add(AbsenceAgregationDecomptePeer::MOTIFS_RETARDS, $this->motifs_retards);
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::CREATED_AT)) $criteria->add(AbsenceAgregationDecomptePeer::CREATED_AT, $this->created_at);
 		if ($this->isColumnModified(AbsenceAgregationDecomptePeer::UPDATED_AT)) $criteria->add(AbsenceAgregationDecomptePeer::UPDATED_AT, $this->updated_at);
@@ -1330,7 +1383,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		$copyObj->setNotifiee($this->getNotifiee());
 		$copyObj->setNbRetards($this->getNbRetards());
 		$copyObj->setNbRetardsJustifies($this->getNbRetardsJustifies());
-		$copyObj->setMotifsAbsence($this->getMotifsAbsence());
+		$copyObj->setMotifsAbsences($this->getMotifsAbsences());
 		$copyObj->setMotifsRetards($this->getMotifsRetards());
 		$copyObj->setCreatedAt($this->getCreatedAt());
 		$copyObj->setUpdatedAt($this->getUpdatedAt());
@@ -1438,7 +1491,7 @@ abstract class BaseAbsenceAgregationDecompte extends BaseObject  implements Pers
 		$this->notifiee = null;
 		$this->nb_retards = null;
 		$this->nb_retards_justifies = null;
-		$this->motifs_absence = null;
+		$this->motifs_absences = null;
 		$this->motifs_retards = null;
 		$this->created_at = null;
 		$this->updated_at = null;

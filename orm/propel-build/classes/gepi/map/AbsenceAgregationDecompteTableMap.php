@@ -39,13 +39,13 @@ class AbsenceAgregationDecompteTableMap extends TableMap
 		$this->setUseIdGenerator(false);
 		// columns
 		$this->addForeignPrimaryKey('ELEVE_ID', 'EleveId', 'INTEGER' , 'eleves', 'ID_ELEVE', true, 11, null);
-		$this->addPrimaryKey('DATE_DEMI_JOUNEE', 'DateDemiJounee', 'TIMESTAMP', true, null, null);
+		$this->addPrimaryKey('DATE_DEMI_JOUNEE', 'DateDemiJounee', 'TIMESTAMP', true, null, '0000-00-00 00:00:00');
 		$this->addColumn('MANQUEMENT_OBLIGATION_PRESENCE', 'ManquementObligationPresence', 'BOOLEAN', false, null, false);
 		$this->addColumn('JUSTIFIEE', 'Justifiee', 'BOOLEAN', false, null, false);
 		$this->addColumn('NOTIFIEE', 'Notifiee', 'BOOLEAN', false, null, false);
 		$this->addColumn('NB_RETARDS', 'NbRetards', 'INTEGER', false, null, 0);
 		$this->addColumn('NB_RETARDS_JUSTIFIES', 'NbRetardsJustifies', 'INTEGER', false, null, 0);
-		$this->addColumn('MOTIFS_ABSENCE', 'MotifsAbsence', 'ARRAY', false, null, null);
+		$this->addColumn('MOTIFS_ABSENCES', 'MotifsAbsences', 'ARRAY', false, null, null);
 		$this->addColumn('MOTIFS_RETARDS', 'MotifsRetards', 'ARRAY', false, null, null);
 		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
 		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);

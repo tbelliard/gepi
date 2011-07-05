@@ -13,7 +13,7 @@
  * @method     AbsenceAgregationDecompteQuery orderByNotifiee($order = Criteria::ASC) Order by the notifiee column
  * @method     AbsenceAgregationDecompteQuery orderByNbRetards($order = Criteria::ASC) Order by the nb_retards column
  * @method     AbsenceAgregationDecompteQuery orderByNbRetardsJustifies($order = Criteria::ASC) Order by the nb_retards_justifies column
- * @method     AbsenceAgregationDecompteQuery orderByMotifsAbsence($order = Criteria::ASC) Order by the motifs_absence column
+ * @method     AbsenceAgregationDecompteQuery orderByMotifsAbsences($order = Criteria::ASC) Order by the motifs_absences column
  * @method     AbsenceAgregationDecompteQuery orderByMotifsRetards($order = Criteria::ASC) Order by the motifs_retards column
  * @method     AbsenceAgregationDecompteQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
  * @method     AbsenceAgregationDecompteQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
@@ -25,7 +25,7 @@
  * @method     AbsenceAgregationDecompteQuery groupByNotifiee() Group by the notifiee column
  * @method     AbsenceAgregationDecompteQuery groupByNbRetards() Group by the nb_retards column
  * @method     AbsenceAgregationDecompteQuery groupByNbRetardsJustifies() Group by the nb_retards_justifies column
- * @method     AbsenceAgregationDecompteQuery groupByMotifsAbsence() Group by the motifs_absence column
+ * @method     AbsenceAgregationDecompteQuery groupByMotifsAbsences() Group by the motifs_absences column
  * @method     AbsenceAgregationDecompteQuery groupByMotifsRetards() Group by the motifs_retards column
  * @method     AbsenceAgregationDecompteQuery groupByCreatedAt() Group by the created_at column
  * @method     AbsenceAgregationDecompteQuery groupByUpdatedAt() Group by the updated_at column
@@ -48,7 +48,7 @@
  * @method     AbsenceAgregationDecompte findOneByNotifiee(boolean $notifiee) Return the first AbsenceAgregationDecompte filtered by the notifiee column
  * @method     AbsenceAgregationDecompte findOneByNbRetards(int $nb_retards) Return the first AbsenceAgregationDecompte filtered by the nb_retards column
  * @method     AbsenceAgregationDecompte findOneByNbRetardsJustifies(int $nb_retards_justifies) Return the first AbsenceAgregationDecompte filtered by the nb_retards_justifies column
- * @method     AbsenceAgregationDecompte findOneByMotifsAbsence(array $motifs_absence) Return the first AbsenceAgregationDecompte filtered by the motifs_absence column
+ * @method     AbsenceAgregationDecompte findOneByMotifsAbsences(array $motifs_absences) Return the first AbsenceAgregationDecompte filtered by the motifs_absences column
  * @method     AbsenceAgregationDecompte findOneByMotifsRetards(array $motifs_retards) Return the first AbsenceAgregationDecompte filtered by the motifs_retards column
  * @method     AbsenceAgregationDecompte findOneByCreatedAt(string $created_at) Return the first AbsenceAgregationDecompte filtered by the created_at column
  * @method     AbsenceAgregationDecompte findOneByUpdatedAt(string $updated_at) Return the first AbsenceAgregationDecompte filtered by the updated_at column
@@ -60,7 +60,7 @@
  * @method     array findByNotifiee(boolean $notifiee) Return AbsenceAgregationDecompte objects filtered by the notifiee column
  * @method     array findByNbRetards(int $nb_retards) Return AbsenceAgregationDecompte objects filtered by the nb_retards column
  * @method     array findByNbRetardsJustifies(int $nb_retards_justifies) Return AbsenceAgregationDecompte objects filtered by the nb_retards_justifies column
- * @method     array findByMotifsAbsence(array $motifs_absence) Return AbsenceAgregationDecompte objects filtered by the motifs_absence column
+ * @method     array findByMotifsAbsences(array $motifs_absences) Return AbsenceAgregationDecompte objects filtered by the motifs_absences column
  * @method     array findByMotifsRetards(array $motifs_retards) Return AbsenceAgregationDecompte objects filtered by the motifs_retards column
  * @method     array findByCreatedAt(string $created_at) Return AbsenceAgregationDecompte objects filtered by the created_at column
  * @method     array findByUpdatedAt(string $updated_at) Return AbsenceAgregationDecompte objects filtered by the updated_at column
@@ -414,18 +414,18 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the motifs_absence column
+	 * Filter the query on the motifs_absences column
 	 * 
-	 * @param     array $motifsAbsence The values to use as filter.
+	 * @param     array $motifsAbsences The values to use as filter.
 	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
 	 *
 	 * @return    AbsenceAgregationDecompteQuery The current query, for fluid interface
 	 */
-	public function filterByMotifsAbsence($motifsAbsence = null, $comparison = null)
+	public function filterByMotifsAbsences($motifsAbsences = null, $comparison = null)
 	{
-		$key = $this->getAliasedColName(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCE);
+		$key = $this->getAliasedColName(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCES);
 		if (null === $comparison || $comparison == Criteria::CONTAINS_ALL) {
-			foreach ($motifsAbsence as $value) {
+			foreach ($motifsAbsences as $value) {
 				$value = '%| ' . $value . ' |%';
 				if($this->containsKey($key)) {
 					$this->addAnd($key, $value, Criteria::LIKE);
@@ -435,7 +435,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 			}
 			return $this;
 		} elseif ($comparison == Criteria::CONTAINS_SOME) {
-			foreach ($motifsAbsence as $value) {
+			foreach ($motifsAbsences as $value) {
 				$value = '%| ' . $value . ' |%';
 				if($this->containsKey($key)) {
 					$this->addOr($key, $value, Criteria::LIKE);
@@ -445,7 +445,7 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 			}
 			return $this;
 		} elseif ($comparison == Criteria::CONTAINS_NONE) {
-			foreach ($motifsAbsence as $value) {
+			foreach ($motifsAbsences as $value) {
 				$value = '%| ' . $value . ' |%';
 				if($this->containsKey($key)) {
 					$this->addAnd($key, $value, Criteria::NOT_LIKE);
@@ -456,7 +456,36 @@ abstract class BaseAbsenceAgregationDecompteQuery extends ModelCriteria
 			$this->addOr($key, null, Criteria::ISNULL);
 			return $this;
 		}
-		return $this->addUsingAlias(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCE, $motifsAbsence, $comparison);
+		return $this->addUsingAlias(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCES, $motifsAbsences, $comparison);
+	}
+
+	/**
+	 * Filter the query on the motifs_absences column
+	 * @param     mixed $motifsAbsences The value to use as filter
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::CONTAINS_ALL
+	 *
+	 * @return    AbsenceAgregationDecompteQuery The current query, for fluid interface
+	 */
+	public function filterByMotifsAbsence($motifsAbsences = null, $comparison = null)
+	{
+		if (null === $comparison || $comparison == Criteria::CONTAINS_ALL) {
+			if (is_scalar($motifsAbsences)) {
+				$motifsAbsences = '%| ' . $motifsAbsences . ' |%';
+				$comparison = Criteria::LIKE;
+			}
+		} elseif ($comparison == Criteria::CONTAINS_NONE) {
+			$motifsAbsences = '%| ' . $motifsAbsences . ' |%';
+			$comparison = Criteria::NOT_LIKE;
+			$key = $this->getAliasedColName(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCES);
+			if($this->containsKey($key)) {
+				$this->addAnd($key, $motifsAbsences, $comparison);
+			} else {
+				$this->addAnd($key, $motifsAbsences, $comparison);
+			}
+			$this->addOr($key, null, Criteria::ISNULL);
+			return $this;
+		}
+		return $this->addUsingAlias(AbsenceAgregationDecomptePeer::MOTIFS_ABSENCES, $motifsAbsences, $comparison);
 	}
 
 	/**
