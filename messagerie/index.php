@@ -162,7 +162,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
 	$pos_crsf_alea=strpos($contenu_cor,"_CRSF_ALEA_");
     if($pos_crsf_alea!==false)
 		{
-        $contenu_cor=preg_replace("/_CRSF_ALEA_/",$_SESSION['gepi_alea'],$contenu_cor);
+        $contenu_cor=preg_replace("/_CRSF_ALEA_/","",$contenu_cor);
 		$msg = "Contenu interdit.";
 		$record = 'no';
 		}
