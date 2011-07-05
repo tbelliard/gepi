@@ -345,7 +345,8 @@ else {
 				$nom_groupe=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['name'],'all')));
 				$description_groupe=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['description'],'all')));
 				$classlist_string_groupe=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['classlist_string'],'all')));
-				$nom_page_html_groupe=$id_groupe."_".$nom_groupe."_"."$description_groupe"."_".$classlist_string_groupe.".$extension";
+				//$nom_page_html_groupe=$id_groupe."_".$nom_groupe."_"."$description_groupe"."_".$classlist_string_groupe.".$extension";
+				$nom_page_html_groupe=strtr($id_groupe."_".$nom_groupe."_"."$description_groupe"."_".$classlist_string_groupe.".$extension","/","_");
 
 
 				$nom_complet_matiere=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['matiere']['nom_complet'],'all')));
