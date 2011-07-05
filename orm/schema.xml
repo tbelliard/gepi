@@ -402,6 +402,7 @@
     <column name="nom" required="true" type="VARCHAR" size="250" description="Nom du motif"/>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
     <behavior name="sortable" />
+    <behavior name="timestampable" />
   </table>
 
   <table name="a_justifications" phpName="AbsenceEleveJustification" description="Liste des justifications possibles pour une absence">
@@ -409,6 +410,7 @@
     <column name="nom" required="true" type="VARCHAR" size="250" description="Nom de la justification"/>
     <column name="commentaire" required="false" type="LONGVARCHAR" description="commentaire saisi par l'utilisateur"/>
     <behavior name="sortable" />
+    <behavior name="timestampable" />
   </table>
 
   <table name="a_types" phpName="AbsenceEleveType" description="Liste des types d'absences possibles dans l'etablissement">
@@ -423,6 +425,7 @@
     <column name="id_lieu" required="false" type="INTEGER" size="11" default="null" description="cle etrangere du lieu ou se trouve l'élève"/>
     <foreign-key foreignTable="a_lieux" onDelete="setnull"><reference local="id_lieu" foreign="id"/></foreign-key>
     <behavior name="sortable" />
+    <behavior name="timestampable" />
   </table>
 
   <table name="a_lieux" phpName="AbsenceEleveLieu" description="Lieu pour les types d'absence ou les saisies">

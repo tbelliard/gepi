@@ -10,11 +10,15 @@
  * @method     AbsenceEleveMotifQuery orderByNom($order = Criteria::ASC) Order by the nom column
  * @method     AbsenceEleveMotifQuery orderByCommentaire($order = Criteria::ASC) Order by the commentaire column
  * @method     AbsenceEleveMotifQuery orderBySortableRank($order = Criteria::ASC) Order by the sortable_rank column
+ * @method     AbsenceEleveMotifQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     AbsenceEleveMotifQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
  *
  * @method     AbsenceEleveMotifQuery groupById() Group by the id column
  * @method     AbsenceEleveMotifQuery groupByNom() Group by the nom column
  * @method     AbsenceEleveMotifQuery groupByCommentaire() Group by the commentaire column
  * @method     AbsenceEleveMotifQuery groupBySortableRank() Group by the sortable_rank column
+ * @method     AbsenceEleveMotifQuery groupByCreatedAt() Group by the created_at column
+ * @method     AbsenceEleveMotifQuery groupByUpdatedAt() Group by the updated_at column
  *
  * @method     AbsenceEleveMotifQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     AbsenceEleveMotifQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -31,11 +35,15 @@
  * @method     AbsenceEleveMotif findOneByNom(string $nom) Return the first AbsenceEleveMotif filtered by the nom column
  * @method     AbsenceEleveMotif findOneByCommentaire(string $commentaire) Return the first AbsenceEleveMotif filtered by the commentaire column
  * @method     AbsenceEleveMotif findOneBySortableRank(int $sortable_rank) Return the first AbsenceEleveMotif filtered by the sortable_rank column
+ * @method     AbsenceEleveMotif findOneByCreatedAt(string $created_at) Return the first AbsenceEleveMotif filtered by the created_at column
+ * @method     AbsenceEleveMotif findOneByUpdatedAt(string $updated_at) Return the first AbsenceEleveMotif filtered by the updated_at column
  *
  * @method     array findById(int $id) Return AbsenceEleveMotif objects filtered by the id column
  * @method     array findByNom(string $nom) Return AbsenceEleveMotif objects filtered by the nom column
  * @method     array findByCommentaire(string $commentaire) Return AbsenceEleveMotif objects filtered by the commentaire column
  * @method     array findBySortableRank(int $sortable_rank) Return AbsenceEleveMotif objects filtered by the sortable_rank column
+ * @method     array findByCreatedAt(string $created_at) Return AbsenceEleveMotif objects filtered by the created_at column
+ * @method     array findByUpdatedAt(string $updated_at) Return AbsenceEleveMotif objects filtered by the updated_at column
  *
  * @package    propel.generator.gepi.om
  */
@@ -268,6 +276,90 @@ abstract class BaseAbsenceEleveMotifQuery extends ModelCriteria
 	}
 
 	/**
+	 * Filter the query on the created_at column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByCreatedAt('2011-03-14'); // WHERE created_at = '2011-03-14'
+	 * $query->filterByCreatedAt('now'); // WHERE created_at = '2011-03-14'
+	 * $query->filterByCreatedAt(array('max' => 'yesterday')); // WHERE created_at > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $createdAt The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveMotifQuery The current query, for fluid interface
+	 */
+	public function filterByCreatedAt($createdAt = null, $comparison = null)
+	{
+		if (is_array($createdAt)) {
+			$useMinMax = false;
+			if (isset($createdAt['min'])) {
+				$this->addUsingAlias(AbsenceEleveMotifPeer::CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($createdAt['max'])) {
+				$this->addUsingAlias(AbsenceEleveMotifPeer::CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveMotifPeer::CREATED_AT, $createdAt, $comparison);
+	}
+
+	/**
+	 * Filter the query on the updated_at column
+	 * 
+	 * Example usage:
+	 * <code>
+	 * $query->filterByUpdatedAt('2011-03-14'); // WHERE updated_at = '2011-03-14'
+	 * $query->filterByUpdatedAt('now'); // WHERE updated_at = '2011-03-14'
+	 * $query->filterByUpdatedAt(array('max' => 'yesterday')); // WHERE updated_at > '2011-03-13'
+	 * </code>
+	 *
+	 * @param     mixed $updatedAt The value to use as filter.
+	 *              Values can be integers (unix timestamps), DateTime objects, or strings.
+	 *              Empty strings are treated as NULL.
+	 *              Use scalar values for equality.
+	 *              Use array values for in_array() equivalent.
+	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+	 * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+	 *
+	 * @return    AbsenceEleveMotifQuery The current query, for fluid interface
+	 */
+	public function filterByUpdatedAt($updatedAt = null, $comparison = null)
+	{
+		if (is_array($updatedAt)) {
+			$useMinMax = false;
+			if (isset($updatedAt['min'])) {
+				$this->addUsingAlias(AbsenceEleveMotifPeer::UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
+				$useMinMax = true;
+			}
+			if (isset($updatedAt['max'])) {
+				$this->addUsingAlias(AbsenceEleveMotifPeer::UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
+				$useMinMax = true;
+			}
+			if ($useMinMax) {
+				return $this;
+			}
+			if (null === $comparison) {
+				$comparison = Criteria::IN;
+			}
+		}
+		return $this->addUsingAlias(AbsenceEleveMotifPeer::UPDATED_AT, $updatedAt, $comparison);
+	}
+
+	/**
 	 * Filter the query by a related AbsenceEleveTraitement object
 	 *
 	 * @param     AbsenceEleveTraitement $absenceEleveTraitement  the related object to use as filter
@@ -476,6 +568,72 @@ abstract class BaseAbsenceEleveMotifQuery extends ModelCriteria
 			$con->rollback();
 			throw $e;
 		}
+	}
+
+	// timestampable behavior
+	
+	/**
+	 * Filter by the latest updated
+	 *
+	 * @param      int $nbDays Maximum age of the latest update in days
+	 *
+	 * @return     AbsenceEleveMotifQuery The current query, for fluid interface
+	 */
+	public function recentlyUpdated($nbDays = 7)
+	{
+		return $this->addUsingAlias(AbsenceEleveMotifPeer::UPDATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+	}
+	
+	/**
+	 * Filter by the latest created
+	 *
+	 * @param      int $nbDays Maximum age of in days
+	 *
+	 * @return     AbsenceEleveMotifQuery The current query, for fluid interface
+	 */
+	public function recentlyCreated($nbDays = 7)
+	{
+		return $this->addUsingAlias(AbsenceEleveMotifPeer::CREATED_AT, time() - $nbDays * 24 * 60 * 60, Criteria::GREATER_EQUAL);
+	}
+	
+	/**
+	 * Order by update date desc
+	 *
+	 * @return     AbsenceEleveMotifQuery The current query, for fluid interface
+	 */
+	public function lastUpdatedFirst()
+	{
+		return $this->addDescendingOrderByColumn(AbsenceEleveMotifPeer::UPDATED_AT);
+	}
+	
+	/**
+	 * Order by update date asc
+	 *
+	 * @return     AbsenceEleveMotifQuery The current query, for fluid interface
+	 */
+	public function firstUpdatedFirst()
+	{
+		return $this->addAscendingOrderByColumn(AbsenceEleveMotifPeer::UPDATED_AT);
+	}
+	
+	/**
+	 * Order by create date desc
+	 *
+	 * @return     AbsenceEleveMotifQuery The current query, for fluid interface
+	 */
+	public function lastCreatedFirst()
+	{
+		return $this->addDescendingOrderByColumn(AbsenceEleveMotifPeer::CREATED_AT);
+	}
+	
+	/**
+	 * Order by create date asc
+	 *
+	 * @return     AbsenceEleveMotifQuery The current query, for fluid interface
+	 */
+	public function firstCreatedFirst()
+	{
+		return $this->addAscendingOrderByColumn(AbsenceEleveMotifPeer::CREATED_AT);
 	}
 
 } // BaseAbsenceEleveMotifQuery

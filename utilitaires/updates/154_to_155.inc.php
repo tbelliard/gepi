@@ -455,4 +455,46 @@ if ($test_champ>0) {
 	}
 }
 
+$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' à la table 'a_types'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'created_at';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Les champs existent déjà.</font><br />";
+} else {
+	$query = mysql_query("ALTER TABLE `a_types` ADD (created_at DATETIME, updated_at DATETIME);");
+	if ($query) {
+			$result .= "<font color=\"blue\">Les champs ont étés ajoutés.</font><br />";
+			$query = mysql_query("UPDATE a_types SET created_at = NOW(), updated_at = NOW();");
+	} else {
+			$result .= "<font color=\"red\">Erreur : Les champ created_at' et 'updated_at' de la table a_types n'ont pas étés ajoutés</font><br />";
+	}
+}
+
+$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' à la table 'a_motifs'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_motifs LIKE 'created_at';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Les champs existent déjà.</font><br />";
+} else {
+	$query = mysql_query("ALTER TABLE `a_motifs` ADD (created_at DATETIME, updated_at DATETIME);");
+	if ($query) {
+			$result .= "<font color=\"blue\">Les champs ont étés ajoutés.</font><br />";
+			$query = mysql_query("UPDATE a_motifs SET created_at = NOW(), updated_at = NOW();");
+	} else {
+			$result .= "<font color=\"red\">Erreur : Les champ created_at' et 'updated_at' de la table a_motifs n'ont pas étés ajoutés</font><br />";
+	}
+}
+
+$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' à la table 'a_justifications'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_justifications LIKE 'created_at';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Les champs existent déjà.</font><br />";
+} else {
+	$query = mysql_query("ALTER TABLE `a_justifications` ADD (created_at DATETIME, updated_at DATETIME);");
+	if ($query) {
+			$result .= "<font color=\"blue\">Les champs ont étés ajoutés.</font><br />";
+			$query = mysql_query("UPDATE a_justifications SET created_at = NOW(), updated_at = NOW();");
+	} else {
+			$result .= "<font color=\"red\">Erreur : Les champ created_at' et 'updated_at' de la table a_justifications n'ont pas étés ajoutés</font><br />";
+	}
+}
+
 ?>

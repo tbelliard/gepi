@@ -42,6 +42,8 @@ class AbsenceEleveJustificationTableMap extends TableMap
 		$this->addColumn('NOM', 'Nom', 'VARCHAR', true, 250, null);
 		$this->addColumn('COMMENTAIRE', 'Commentaire', 'LONGVARCHAR', false, null, null);
 		$this->addColumn('SORTABLE_RANK', 'SortableRank', 'INTEGER', false, null, null);
+		$this->addColumn('CREATED_AT', 'CreatedAt', 'TIMESTAMP', false, null, null);
+		$this->addColumn('UPDATED_AT', 'UpdatedAt', 'TIMESTAMP', false, null, null);
 		// validators
 	} // initialize()
 
@@ -63,6 +65,7 @@ class AbsenceEleveJustificationTableMap extends TableMap
 	{
 		return array(
 			'sortable' => array('rank_column' => 'sortable_rank', 'use_scope' => 'false', 'scope_column' => 'sortable_scope', ),
+			'timestampable' => array('create_column' => 'created_at', 'update_column' => 'updated_at', ),
 		);
 	} // getBehaviors()
 

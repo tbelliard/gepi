@@ -26,13 +26,13 @@ abstract class BaseAbsenceEleveJustificationPeer {
 	const TM_CLASS = 'AbsenceEleveJustificationTableMap';
 	
 	/** The total number of columns. */
-	const NUM_COLUMNS = 4;
+	const NUM_COLUMNS = 6;
 
 	/** The number of lazy-loaded columns. */
 	const NUM_LAZY_LOAD_COLUMNS = 0;
 
 	/** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-	const NUM_HYDRATE_COLUMNS = 4;
+	const NUM_HYDRATE_COLUMNS = 6;
 
 	/** the column name for the ID field */
 	const ID = 'a_justifications.ID';
@@ -45,6 +45,12 @@ abstract class BaseAbsenceEleveJustificationPeer {
 
 	/** the column name for the SORTABLE_RANK field */
 	const SORTABLE_RANK = 'a_justifications.SORTABLE_RANK';
+
+	/** the column name for the CREATED_AT field */
+	const CREATED_AT = 'a_justifications.CREATED_AT';
+
+	/** the column name for the UPDATED_AT field */
+	const UPDATED_AT = 'a_justifications.UPDATED_AT';
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
@@ -72,12 +78,12 @@ abstract class BaseAbsenceEleveJustificationPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'Commentaire', 'SortableRank', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'commentaire', 'sortableRank', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::COMMENTAIRE, self::SORTABLE_RANK, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'COMMENTAIRE', 'SORTABLE_RANK', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'commentaire', 'sortable_rank', ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
+		BasePeer::TYPE_PHPNAME => array ('Id', 'Nom', 'Commentaire', 'SortableRank', 'CreatedAt', 'UpdatedAt', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'nom', 'commentaire', 'sortableRank', 'createdAt', 'updatedAt', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::NOM, self::COMMENTAIRE, self::SORTABLE_RANK, self::CREATED_AT, self::UPDATED_AT, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'NOM', 'COMMENTAIRE', 'SORTABLE_RANK', 'CREATED_AT', 'UPDATED_AT', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'nom', 'commentaire', 'sortable_rank', 'created_at', 'updated_at', ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -87,12 +93,12 @@ abstract class BaseAbsenceEleveJustificationPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'Commentaire' => 2, 'SortableRank' => 3, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'sortableRank' => 3, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::COMMENTAIRE => 2, self::SORTABLE_RANK => 3, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'COMMENTAIRE' => 2, 'SORTABLE_RANK' => 3, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'sortable_rank' => 3, ),
-		BasePeer::TYPE_NUM => array (0, 1, 2, 3, )
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'Nom' => 1, 'Commentaire' => 2, 'SortableRank' => 3, 'CreatedAt' => 4, 'UpdatedAt' => 5, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'sortableRank' => 3, 'createdAt' => 4, 'updatedAt' => 5, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::NOM => 1, self::COMMENTAIRE => 2, self::SORTABLE_RANK => 3, self::CREATED_AT => 4, self::UPDATED_AT => 5, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'NOM' => 1, 'COMMENTAIRE' => 2, 'SORTABLE_RANK' => 3, 'CREATED_AT' => 4, 'UPDATED_AT' => 5, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'nom' => 1, 'commentaire' => 2, 'sortable_rank' => 3, 'created_at' => 4, 'updated_at' => 5, ),
+		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, )
 	);
 
 	/**
@@ -168,11 +174,15 @@ abstract class BaseAbsenceEleveJustificationPeer {
 			$criteria->addSelectColumn(AbsenceEleveJustificationPeer::NOM);
 			$criteria->addSelectColumn(AbsenceEleveJustificationPeer::COMMENTAIRE);
 			$criteria->addSelectColumn(AbsenceEleveJustificationPeer::SORTABLE_RANK);
+			$criteria->addSelectColumn(AbsenceEleveJustificationPeer::CREATED_AT);
+			$criteria->addSelectColumn(AbsenceEleveJustificationPeer::UPDATED_AT);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
 			$criteria->addSelectColumn($alias . '.NOM');
 			$criteria->addSelectColumn($alias . '.COMMENTAIRE');
 			$criteria->addSelectColumn($alias . '.SORTABLE_RANK');
+			$criteria->addSelectColumn($alias . '.CREATED_AT');
+			$criteria->addSelectColumn($alias . '.UPDATED_AT');
 		}
 	}
 

@@ -759,6 +759,8 @@ CREATE TABLE a_motifs
 	nom VARCHAR(250) NOT NULL COMMENT 'Nom du motif',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
+	created_at DATETIME,
+	updated_at DATETIME,
 	PRIMARY KEY (id)
 ) ENGINE=MyISAM COMMENT='Liste des motifs possibles pour une absence';
 
@@ -774,6 +776,8 @@ CREATE TABLE a_justifications
 	nom VARCHAR(250) NOT NULL COMMENT 'Nom de la justification',
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	sortable_rank INTEGER,
+	created_at DATETIME,
+	updated_at DATETIME,
 	PRIMARY KEY (id)
 ) ENGINE=MyISAM COMMENT='Liste des justifications possibles pour une absence';
 
@@ -795,6 +799,8 @@ CREATE TABLE a_types
 	commentaire TEXT COMMENT 'commentaire saisi par l\'utilisateur',
 	id_lieu INTEGER(11) COMMENT 'cle etrangere du lieu ou se trouve l\'élève',
 	sortable_rank INTEGER,
+	created_at DATETIME,
+	updated_at DATETIME,
 	PRIMARY KEY (id),
 	INDEX a_types_FI_1 (id_lieu),
 	CONSTRAINT a_types_FK_1

@@ -49,6 +49,18 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 	protected $sortable_rank;
 
 	/**
+	 * The value for the created_at field.
+	 * @var        string
+	 */
+	protected $created_at;
+
+	/**
+	 * The value for the updated_at field.
+	 * @var        string
+	 */
+	protected $updated_at;
+
+	/**
 	 * @var        array AbsenceEleveTraitement[] Collection to store aggregation of AbsenceEleveTraitement objects.
 	 */
 	protected $collAbsenceEleveTraitements;
@@ -113,6 +125,82 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 	public function getSortableRank()
 	{
 		return $this->sortable_rank;
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [created_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getCreatedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->created_at === null) {
+			return null;
+		}
+
+
+		if ($this->created_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->created_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->created_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
+	}
+
+	/**
+	 * Get the [optionally formatted] temporal [updated_at] column value.
+	 * 
+	 *
+	 * @param      string $format The date/time format string (either date()-style or strftime()-style).
+	 *							If format is NULL, then the raw DateTime object will be returned.
+	 * @return     mixed Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+	 * @throws     PropelException - if unable to parse/validate the date/time value.
+	 */
+	public function getUpdatedAt($format = 'Y-m-d H:i:s')
+	{
+		if ($this->updated_at === null) {
+			return null;
+		}
+
+
+		if ($this->updated_at === '0000-00-00 00:00:00') {
+			// while technically this is not a default value of NULL,
+			// this seems to be closest in meaning.
+			return null;
+		} else {
+			try {
+				$dt = new DateTime($this->updated_at);
+			} catch (Exception $x) {
+				throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->updated_at, true), $x);
+			}
+		}
+
+		if ($format === null) {
+			// Because propel.useDateTimeClass is TRUE, we return a DateTime object.
+			return $dt;
+		} elseif (strpos($format, '%') !== false) {
+			return strftime($format, $dt->format('U'));
+		} else {
+			return $dt->format($format);
+		}
 	}
 
 	/**
@@ -196,6 +284,50 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 	} // setSortableRank()
 
 	/**
+	 * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
+	 * @return     AbsenceEleveJustification The current object (for fluent API support)
+	 */
+	public function setCreatedAt($v)
+	{
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->created_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->created_at !== null && $tmpDt = new DateTime($this->created_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->created_at = $newDateAsString;
+				$this->modifiedColumns[] = AbsenceEleveJustificationPeer::CREATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setCreatedAt()
+
+	/**
+	 * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+	 * 
+	 * @param      mixed $v string, integer (timestamp), or DateTime value.
+	 *               Empty strings are treated as NULL.
+	 * @return     AbsenceEleveJustification The current object (for fluent API support)
+	 */
+	public function setUpdatedAt($v)
+	{
+		$dt = PropelDateTime::newInstance($v, null, 'DateTime');
+		if ($this->updated_at !== null || $dt !== null) {
+			$currentDateAsString = ($this->updated_at !== null && $tmpDt = new DateTime($this->updated_at)) ? $tmpDt->format('Y-m-d H:i:s') : null;
+			$newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
+			if ($currentDateAsString !== $newDateAsString) {
+				$this->updated_at = $newDateAsString;
+				$this->modifiedColumns[] = AbsenceEleveJustificationPeer::UPDATED_AT;
+			}
+		} // if either are not null
+
+		return $this;
+	} // setUpdatedAt()
+
+	/**
 	 * Indicates whether the columns in this object are only set to default values.
 	 *
 	 * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -231,6 +363,8 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 			$this->nom = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
 			$this->commentaire = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
 			$this->sortable_rank = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+			$this->created_at = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+			$this->updated_at = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -239,7 +373,7 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 				$this->ensureConsistency();
 			}
 
-			return $startcol + 4; // 4 = AbsenceEleveJustificationPeer::NUM_HYDRATE_COLUMNS.
+			return $startcol + 6; // 6 = AbsenceEleveJustificationPeer::NUM_HYDRATE_COLUMNS.
 
 		} catch (Exception $e) {
 			throw new PropelException("Error populating AbsenceEleveJustification object", $e);
@@ -385,8 +519,19 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 					$this->setSortableRank(AbsenceEleveJustificationQuery::create()->getMaxRank($con) + 1);
 				}
 
+				// timestampable behavior
+				if (!$this->isColumnModified(AbsenceEleveJustificationPeer::CREATED_AT)) {
+					$this->setCreatedAt(time());
+				}
+				if (!$this->isColumnModified(AbsenceEleveJustificationPeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
 			} else {
 				$ret = $ret && $this->preUpdate($con);
+				// timestampable behavior
+				if ($this->isModified() && !$this->isColumnModified(AbsenceEleveJustificationPeer::UPDATED_AT)) {
+					$this->setUpdatedAt(time());
+				}
 			}
 			if ($ret) {
 				$affectedRows = $this->doSave($con);
@@ -580,6 +725,12 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 			case 3:
 				return $this->getSortableRank();
 				break;
+			case 4:
+				return $this->getCreatedAt();
+				break;
+			case 5:
+				return $this->getUpdatedAt();
+				break;
 			default:
 				return null;
 				break;
@@ -613,6 +764,8 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 			$keys[1] => $this->getNom(),
 			$keys[2] => $this->getCommentaire(),
 			$keys[3] => $this->getSortableRank(),
+			$keys[4] => $this->getCreatedAt(),
+			$keys[5] => $this->getUpdatedAt(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->collAbsenceEleveTraitements) {
@@ -661,6 +814,12 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 			case 3:
 				$this->setSortableRank($value);
 				break;
+			case 4:
+				$this->setCreatedAt($value);
+				break;
+			case 5:
+				$this->setUpdatedAt($value);
+				break;
 		} // switch()
 	}
 
@@ -689,6 +848,8 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 		if (array_key_exists($keys[1], $arr)) $this->setNom($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setCommentaire($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setSortableRank($arr[$keys[3]]);
+		if (array_key_exists($keys[4], $arr)) $this->setCreatedAt($arr[$keys[4]]);
+		if (array_key_exists($keys[5], $arr)) $this->setUpdatedAt($arr[$keys[5]]);
 	}
 
 	/**
@@ -704,6 +865,8 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 		if ($this->isColumnModified(AbsenceEleveJustificationPeer::NOM)) $criteria->add(AbsenceEleveJustificationPeer::NOM, $this->nom);
 		if ($this->isColumnModified(AbsenceEleveJustificationPeer::COMMENTAIRE)) $criteria->add(AbsenceEleveJustificationPeer::COMMENTAIRE, $this->commentaire);
 		if ($this->isColumnModified(AbsenceEleveJustificationPeer::SORTABLE_RANK)) $criteria->add(AbsenceEleveJustificationPeer::SORTABLE_RANK, $this->sortable_rank);
+		if ($this->isColumnModified(AbsenceEleveJustificationPeer::CREATED_AT)) $criteria->add(AbsenceEleveJustificationPeer::CREATED_AT, $this->created_at);
+		if ($this->isColumnModified(AbsenceEleveJustificationPeer::UPDATED_AT)) $criteria->add(AbsenceEleveJustificationPeer::UPDATED_AT, $this->updated_at);
 
 		return $criteria;
 	}
@@ -769,6 +932,8 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 		$copyObj->setNom($this->getNom());
 		$copyObj->setCommentaire($this->getCommentaire());
 		$copyObj->setSortableRank($this->getSortableRank());
+		$copyObj->setCreatedAt($this->getCreatedAt());
+		$copyObj->setUpdatedAt($this->getUpdatedAt());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1067,6 +1232,8 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 		$this->nom = null;
 		$this->commentaire = null;
 		$this->sortable_rank = null;
+		$this->created_at = null;
+		$this->updated_at = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();
@@ -1443,6 +1610,19 @@ abstract class BaseAbsenceEleveJustification extends BaseObject  implements Pers
 			call_user_func_array($query['callable'], $query['arguments']);
 		}
 		$this->sortableQueries = array();
+	}
+
+	// timestampable behavior
+	
+	/**
+	 * Mark the current object so that the update date doesn't get updated during next save
+	 *
+	 * @return     AbsenceEleveJustification The current object (for fluent API support)
+	 */
+	public function keepUpdateDateUnchanged()
+	{
+		$this->modifiedColumns[] = AbsenceEleveJustificationPeer::UPDATED_AT;
+		return $this;
 	}
 
 	/**
