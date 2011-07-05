@@ -227,7 +227,7 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	{
 		$saisieColOld = $this->getAbsenceEleveSaisies();
 		AbsenceEleveNotificationQuery::create()->filterByAbsenceEleveTraitement($this)->delete();
-		JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($this)->delete();
+		//JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($this)->delete(); //ne pas supprimer pour pourvoir faire la jointure entre le traitement supprimé et l'élève saisi
 		parent::delete();
 		foreach($saisieColOld as $saisie) {
 			if ($saisie->getEleve() != null) {
