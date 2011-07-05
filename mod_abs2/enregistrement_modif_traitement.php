@@ -83,7 +83,11 @@ if ($modif == 'type') {
 } elseif ($modif == 'motif') {
     $traitement->setAbsenceEleveMotif(AbsenceEleveMotifQuery::create()->findPk($_POST["id_motif"]));
 } elseif ($modif == 'enlever_saisie') {
-    $count_delete = JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($traitement)->filterByASaisieId($_POST["id_saisie"])->limit(1)->delete();
+    $j_saisie_traitement_col = JTraitementSaisieEleveQuery::create()->filterByAbsenceEleveTraitement($traitement)->filterByASaisieId($_POST["id_saisie"])->find();
+    $count_delete = $j_saisie_traitement_col->count();
+    foreach ($j_saisie_traitement_col as $j_saisie_traitement) {
+    	$j_saisie_traitement->delete();
+    }
 } elseif ($modif == 'supprimer') {
     $traitement->delete();
     include("liste_traitements.php");

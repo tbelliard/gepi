@@ -68,12 +68,18 @@ if (isset($_POST["creation_traitement"]) || isset($_POST["ajout_traitement"])) {
 
 if (isset($_POST["suppression_saisies"])) {
     AbsenceEleveSaisiePeer::disableVersioning();
-    AbsenceEleveSaisieQuery::create()->filterByPrimaryKeys($_POST["select_saisie"])->delete();
+    $saisieCol = AbsenceEleveSaisieQuery::create()->filterByPrimaryKeys($_POST["select_saisie"])->find();
+    foreach($saisieCol as $saisie) {
+    	$saisie->delete();
+    }
 	AbsenceEleveSaisiePeer::enableVersioning();
 } else if (isset($_POST["restauration_saisies"])) {
     AbsenceEleveSaisiePeer::disableVersioning();
-    AbsenceEleveSaisieQuery::create()->includeDeleted()->filterByPrimaryKeys($_POST["select_saisie"])->unDelete();
-	AbsenceEleveSaisiePeer::enableVersioning();
+    $saisieCol = AbsenceEleveSaisieQuery::create()->includeDeleted()->filterByPrimaryKeys($_POST["select_saisie"])->find();
+    foreach($saisieCol as $saisie) {
+    	$saisie->unDelete();
+    }
+    AbsenceEleveSaisiePeer::enableVersioning();
 }
 
 include('include_requetes_filtre_de_recherche.php');
