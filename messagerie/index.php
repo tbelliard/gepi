@@ -122,7 +122,7 @@ if ((isset($action)) and ($action == 'message') and (isset($_POST['message'])) a
         $moisf = substr($_POST['display_date_fin'],3,2);
         $jourf = substr($_POST['display_date_fin'],0,2);
         while ((!checkdate($moisf, $jourf, $anneef)) and ($jourf > 0)) $jourf--;
-        $date_fin=mktime(0,0,0,$moisf,$jourf,$anneef);
+        $date_fin=mktime(23,59,0,$moisf,$jourf,$anneef);
     } else {
         $msg = "ATTENTION : La date de fin d'affichage n'est pas valide.<br />L'enregistrement ne peut avoir lieu.";
         $record = 'no';
