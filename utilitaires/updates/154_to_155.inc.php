@@ -442,4 +442,17 @@ if ($test!=0) {
 	}
 }
 
+$result .= "&nbsp;->Ajout d'un champ 'deleted_at' à la table 'a_traitements'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_traitements LIKE 'deleted_at';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+} else {
+	$query = mysql_query("ALTER TABLE `a_traitements` ADD deleted_at DATETIME AFTER updated_at;");
+	if ($query) {
+			$result .= "<font color=\"blue\">Le champ deleted_at de la table a_traitements a été ajouté.</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur : Le champ deleted_at de la table a_traitements n'a pas été ajouté</font><br />";
+	}
+}
+
 ?>

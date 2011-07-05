@@ -105,9 +105,13 @@ echo '<tr><td>';
 echo 'N° de notification';
 echo '</td><td>';
 echo $notification->getPrimaryKey();
-echo " <a style='background-color:#ebedb5;' href='visu_traitement.php?id_traitement=".$notification->getATraitementId()."'>";
-echo '(voir traitement)';
-echo "</a>";
+if ($notification->getAbsenceEleveTraitement() == null) {
+	echo ' (notification orpheline)';
+} else {
+	echo " <a style='background-color:#ebedb5;' href='visu_traitement.php?id_traitement=".$notification->getATraitementId()."'>";
+	echo '(voir traitement)';
+	echo "</a>";
+}
 echo '</td></tr>';
 
 echo '<tr><td>';
@@ -282,17 +286,19 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 	echo '<input type="hidden" name="modif" value="email"/>';
 	echo ("<select name=\"email\" onchange='submit()'>");
 	$selected = false;
-	foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
-	    $responsable = $responsable_information->getResponsableEleve();
-	    if ($responsable->getMel() != null && $responsable->getMel() != '') {
-		//$responsable = new ResponsableEleve();
-		echo '<option value="'.$responsable->getMel().'"';
-		if ($responsable->getMel() == $notification->getEmail()) {
-		    echo " selected='selected' ";
-		    $selected = true;
+	if ($notification->getAbsenceEleveTraitement() != null) {
+		foreach ($notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies() as $responsable_information) {
+		    $responsable = $responsable_information->getResponsableEleve();
+		    if ($responsable->getMel() != null && $responsable->getMel() != '') {
+			//$responsable = new ResponsableEleve();
+			echo '<option value="'.$responsable->getMel().'"';
+			if ($responsable->getMel() == $notification->getEmail()) {
+			    echo " selected='selected' ";
+			    $selected = true;
+			}
+			echo ">".$responsable->getMel().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getRespLegal().")</option>\n";
+		    }
 		}
-		echo ">".$responsable->getMel().' ('.$responsable->getCivilite().' '.$responsable->getNom().' ; Resp '.$responsable_information->getRespLegal().")</option>\n";
-	    }
 	}
 	if (!$selected) {
 	    echo '<option value="'.$notification->getEmail().'"';

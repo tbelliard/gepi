@@ -490,6 +490,7 @@
     <column name="modifie_par_utilisateur_id" type="VARCHAR" size="100" default="null" description="Login de l'utilisateur professionnel qui a modifie en dernier le traitement"/>
 	<!-- si un utilisateur est supprime, on ne supprime pas les traitements saisis par cet utilisateur, le champ utilisateur_id est alors regle sur null -->
     <foreign-key foreignTable="utilisateurs" onDelete="none" phpName = "ModifieParUtilisateur" refPhpName = "ModifiedAbsenceEleveTraitement"><reference local="modifie_par_utilisateur_id" foreign="login"/></foreign-key>
+	<behavior name="soft_delete" />
   </table>
 
   <table name="j_traitements_saisies" phpName="JTraitementSaisieEleve" description="Table de jointure entre la saisie et le traitement des absences" isCrossRef="true">

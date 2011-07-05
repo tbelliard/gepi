@@ -209,4 +209,19 @@ class AbsenceEleveTraitement extends BaseAbsenceEleveTraitement {
 	    }
 	    return parent::save($con);
 	}
+	
+	/**
+	 * Removes this object from datastore and sets delete attribute. Custom : suppression des notifications associées
+	 *
+	 * @param      PropelPDO $con
+	 * @return     void
+	 * @throws     PropelException
+	 * @see        BaseObject::setDeleted()
+	 * @see        BaseObject::isDeleted()
+	 */
+	public function delete(PropelPDO $con = null)
+	{
+		AbsenceEleveNotificationQuery::create()->filterByAbsenceEleveTraitement($this)->delete();
+		parent::delete();
+	}
 } // AbsenceEleveTraitement

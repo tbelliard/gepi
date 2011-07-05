@@ -924,6 +924,7 @@ CREATE TABLE a_traitements
 	modifie_par_utilisateur_id VARCHAR(100) COMMENT 'Login de l\'utilisateur professionnel qui a modifie en dernier le traitement',
 	created_at DATETIME,
 	updated_at DATETIME,
+	deleted_at DATETIME,
 	PRIMARY KEY (id),
 	INDEX a_traitements_FI_1 (utilisateur_id),
 	INDEX a_traitements_FI_2 (a_type_id),
