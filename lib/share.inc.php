@@ -45,7 +45,7 @@ function add_token_field($avec_id=false) {
     }
 }
 
-function add_token_in_url($html_chars = true) {
+function add_token_in_url($html_chars = true,$avec_gepi_alea=true) {
 
 	// appels pour insérer le champ 'csrf_alea' dans des liens inclus dans le code
 	// de messages du panneau d'affichage (table 'messages') : 
