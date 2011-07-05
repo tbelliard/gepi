@@ -67,6 +67,14 @@ while ($ind < $nb_messages) {
 			$content=preg_replace("/_DECOMPTE_/",$decompte_remplace,$content);
 		}
 		// fin _DECOMPTE_
+		
+		// gestion du token (csrf_alea)
+		// si elle est présente la variable _CRSF_ALEA_ est remplacée lors de l'affichage du message
+		// par la valeur du token de l'utilisateur, par exemple on peut ainsi inclure dans un message
+		// un lien appelant un script : <a href="module/script.php?id=33&csrf_alea=_CRSF_ALEA_">Vers le script</a>
+		$pos_crsf_alea=strpos($content,"_CRSF_ALEA_");
+		if($pos_crsf_alea!==false)
+			$content=preg_replace("/_CRSF_ALEA_/",$_SESSION['gepi_alea'],$content);
 
 		//$tbs_message[]=array("suite"=>$autre_message,"message"=>$content);
 		
