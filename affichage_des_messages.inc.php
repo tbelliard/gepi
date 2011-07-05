@@ -4,7 +4,7 @@ $today=mktime(0,0,0,date("m"),date("d"),date("Y"));
 $now=time();
 
 // on supprime les messages obsolètes
-$sql="DELETE FROM `messages` WHERE ((`date_fin`+86400 <= ".$today.") && (`statuts_destinataires`='_') && (UPPER(`login_destinataire`)='".$_SESSION['login']."'));";
+$sql="DELETE FROM `messages` WHERE ((`date_fin`+86400 <= ".$today.") && (`statuts_destinataires`='_') && (`login_destinataire`='".$_SESSION['login']."'));";
 @mysql_query($sql);
 
 $sql="SELECT id, texte, date_debut, date_fin, date_decompte, auteur, statuts_destinataires, login_destinataire FROM messages
