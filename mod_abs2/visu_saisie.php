@@ -481,6 +481,10 @@ echo '</TBODY>';
 
 echo '</table>';
 
+echo "</div>\n";
+
+require_once("../lib/footer.inc.php");
+
 //fonction redimensionne les photos petit format
 function redimensionne_image_petit($photo)
  {
