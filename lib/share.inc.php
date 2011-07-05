@@ -27,7 +27,7 @@ function generate_token() {
     }
 }
 
-function add_token_field($avec_id=false) {
+function add_token_field($avec_id=false,$avec_gepi_alea=true) {
 	// Dans une page, il ne devrait y avoir qu'un seul appel à add_token_field(true), les autres... dans les autres formulaires étant avec add_token_field()
 	// A VOIR... on pourrait utiliser une variable globale pour... si l'id csrf_alea est déjà défini ne plus l'ajouter...
 
