@@ -70,13 +70,13 @@ $commentaire = isset($_POST["commentaire"]) ? $_POST["commentaire"] :(isset($_GE
 
 $message_enregistrement = '';
 $saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($id_saisie);
-//on charge les traitements
-$saisie->getAbsenceEleveTraitements();
 if ($saisie == null) {
     $message_enregistrement .= 'Modification impossible : saisie non trouvée.';
     include("visu_saisie.php");
     die();
 }
+//on charge les traitements
+$saisie->getAbsenceEleveTraitements();
 
 if ( isset($_POST["creation_traitement"])) {
 	//on charge les traitements
