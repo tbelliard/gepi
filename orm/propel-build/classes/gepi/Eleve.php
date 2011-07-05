@@ -1695,15 +1695,16 @@ class Eleve extends BaseEleve {
 			$queryDelete->filterByDateDemiJounee($dateDebutClone, Criteria::GREATER_EQUAL);
 		}
 		if ($dateFinClone != null) {
-			$queryDelete->filterByDateDemiJounee($dateFin, Criteria::LESS_EQUAL);
+			$queryDelete->filterByDateDemiJounee($dateFinClone, Criteria::LESS_EQUAL);
 		}
 		$queryDelete->delete();
 		//on supprime le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
 		AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->filterByDateDemiJounee(null)->delete();
 		
-		$absenceNonJustifiesCol = $this->getDemiJourneesNonJustifieesAbsence($dateDebutClone,$dateFinClone);
-		$absencesCol			= $this->getDemiJourneesAbsence($dateDebutClone,$dateFinClone);
+		$DMabsenceNonJustifiesCol = $this->getDemiJourneesNonJustifieesAbsence($dateDebutClone,$dateFinClone);
+		$DMabsencesCol			= $this->getDemiJourneesAbsence($dateDebutClone,$dateFinClone);
 		$retards				= $this->getRetards($dateDebutClone,$dateFinClone);
+		$saisiesCol				= clone $this->getAbsColDecompteDemiJournee($dateDebutClone, $dateFinClone);//cette collection de saisie va nous permettre de récupérer les notifications et les motifs
 				
 		// préférence admin pour la demi journée
 	    $heure_demi_journee = 11;
@@ -1717,8 +1718,8 @@ class Eleve extends BaseEleve {
 	    
 	    //on initialise le début de l'itération pour creer les entrées si aucune date n'est précisée
 		if ($dateDebutClone == null) {
-			if (!$absencesCol->isEmpty()) {
-				$dateDebutClone= clone $absencesCol->getFirst(null);
+			if (!$DMabsencesCol->isEmpty()) {
+				$dateDebutClone= clone $DMabsencesCol->getFirst(null);
 				$dateDebutClone->setTime(0,0);
 			}
 			if (!$retards->isEmpty()) {
@@ -1744,25 +1745,55 @@ class Eleve extends BaseEleve {
 			$newAgregation->save();
 		} else {
 			$dateDemiJourneeIteration = clone $dateDebutClone;
-			$absencesCol_start_compute = false;//obligatoire pour tester la fin de la collection car le pointeur retourne au début
+			$DMabsencesCol_start_compute = false;//obligatoire pour tester la fin de la collection car le pointeur retourne au début
 			$retards_start_compute = false;
 			//on va creer une collections d'entrées dans la table d'agrégation
-			//dans la boucle while on utilise les tests isFirst pour vérifier qu'on a pas fini les collections et qu'on est pas retourné au début
+			//dans la boucle while on utilise les tests isFirst pour vérifier qu'on a pas fini les collections et qu'on est pas retourné au débxyut
 			do {
 				$newAgregation = new AbsenceAgregationDecompte();
 				$newAgregation->setEleve($this);
 				$newAgregation->setDateDemiJounee($dateDemiJourneeIteration);
-				if (($absencesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $absencesCol->getCurrent()->format('d/m/Y H')) {
-					$absencesCol_start_compute = true;
+				if (($DMabsencesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $DMabsencesCol->getCurrent()->format('d/m/Y H')) {
+					$DMabsencesCol_start_compute = true;
 					$newAgregation->setManquementObligationPresence(true);
 					$newAgregation->setJustifiee(true);
-					$absencesCol->getNext();
+					$DMabsencesCol->getNext();
 					//on regarde si l'absence est non justifiée
-					if (($absenceNonJustifiesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $absenceNonJustifiesCol->getCurrent()->format('d/m/Y H')) {
+					if (($DMabsenceNonJustifiesCol->getCurrent() != null) && $dateDemiJourneeIteration->format('d/m/Y H') == $DMabsenceNonJustifiesCol->getCurrent()->format('d/m/Y H')) {
 						$newAgregation->setJustifiee(false);
-						$absenceNonJustifiesCol->getNext();
+						$DMabsenceNonJustifiesCol->getNext();
+					}
+					
+					//on va voir si il y a eu des motifs et des notifications
+					$date_debut_cherche_motif = clone $dateDemiJourneeIteration;
+					$date_fin_cherche_motif = clone $dateDemiJourneeIteration;
+					if ($dateDemiJourneeIteration->format('H') == 0) {
+						$date_debut_cherche_motif->setTime(0,0);
+						$date_fin_cherche_motif->setTime($heure_demi_journee,$minute_demi_journee);
+					} else {
+						$date_debut_cherche_motif->setTime($heure_demi_journee,$minute_demi_journee);
+						$date_fin_cherche_motif->setTime(23,59);
+					}
+					foreach ($saisiesCol as $saisie) {
+						if ($saisie->getDebutAbs('U') <= $date_fin_cherche_motif->format('U')
+						    && $saisie->getFinAbs('U') >= $date_debut_cherche_motif->format('U')
+						    && $saisie->getManquementObligationPresence()) {
+						    	
+					    	if (!$newAgregation->getNotifiee() && $saisie->getNotifiee()) {
+					    		$newAgregation->setNotifiee(true);
+					    	}
+					    	if ($saisie->getMotif() != null) {
+					            foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
+					                if ($traitement->getAbsenceEleveMotif() != null) {
+					                	$newAgregation->addMotifsAbsence($traitement->getAMotifId());
+					                }
+					            }
+					    	}
+					    }
 					}
 				}
+				
+				
 				//on regarde si il y a des retards pendant cette demijournée
 				$date_fin_decompte_retard = clone $dateDemiJourneeIteration;
 				if ($date_fin_decompte_retard->format('H') == 0) {
@@ -1776,6 +1807,13 @@ class Eleve extends BaseEleve {
 					if ($retards->getCurrent()->getJustifiee()) {
 						$newAgregation->setNbRetardsJustifies($newAgregation->getNbRetardsJustifies() + 1);
 					}
+			    	if ($retards->getCurrent()->getMotif() != null) {
+			    		foreach ($retards->getCurrent()->getAbsenceEleveTraitements() as $traitement) {
+			                if ($traitement->getAbsenceEleveMotif() != null) {
+			                	$newAgregation->addMotifsRetard($traitement->getAMotifId());
+			                }
+			            }
+			    	}
 					$retards->getNext();
 				}
 				$newAgregation->save();
@@ -1784,7 +1822,7 @@ class Eleve extends BaseEleve {
 			} while (//on s'arrete si on a dépassé la date de fin
 					($dateFinClone != null && $dateDemiJourneeIteration->format('U') <= $dateFinClone->format('U'))
 					//on s'arrete si la date de fin n'est pas précisé et qu'on a épuisé toutes les absences
-					|| ($dateFinClone == null && (!$absencesCol->isFirst() || !$absencesCol_start_compute) && (!$retards->isFirst() || !$retards_start_compute) )
+					|| ($dateFinClone == null && (!$DMabsencesCol->isFirst() || !$DMabsencesCol_start_compute) && (!$retards->isFirst() || !$retards_start_compute) )
 					//on mets une limite au cas ou on tourne en boucle infinie
 					&& ($dateDemiJourneeIteration->format('Y') < '2013'));
 			
@@ -1798,7 +1836,7 @@ class Eleve extends BaseEleve {
 		$newAgregation->save();
 	}
 	
-		/**
+	/**
 	 *
 	 * Mets à jour la table d'agrégation des absences pour cet élève
 	 * @TODO		implement the method
