@@ -173,7 +173,9 @@ else {
 			die();
 		}
 
-		$sql="INSERT INTO tempo2 SELECT id,name FROM groupes;";
+		//$sql="INSERT INTO tempo2 SELECT id,name FROM groupes;";
+		// On ne retient que les groupes associés à des classes... les autres sont des scories qui devraient être supprimées par un Nettoyage de la base
+		$sql="INSERT INTO tempo2 SELECT id,name FROM groupes WHERE id IN (SELECT DISTINCT id_groupe FROM j_groupes_classes);";
 		$res=mysql_query($sql);
 		if(!$res) {
 			echo "<p style='color:red'>ABANDON&nbsp;: Il s'est produit un problème lors de l'insertion de la liste des groupes dans la table 'tempo2'.</p>\n";
@@ -336,17 +338,20 @@ else {
 		$sql="SELECT * FROM tempo2 LIMIT $largeur_tranche;";
 		$res_grp=mysql_query($sql);
 		if(mysql_num_rows($res_grp)>0) {
-			echo "<p><b>Archivage de</b>&nbsp;:<br />";
+			echo "<p><b>Archivage de</b>&nbsp;:<br />\n";
 			while($lig_grp=mysql_fetch_object($res_grp)) {
 				$id_groupe=$lig_grp->col1;
-
+				//echo "<p>\$id_groupe=$id_groupe<br />";
 				$current_group=get_group($id_groupe);
-		
+				/*
 				$nom_groupe=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['name'],'all')));
 				$description_groupe=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['description'],'all')));
 				$classlist_string_groupe=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['classlist_string'],'all')));
-				//$nom_page_html_groupe=$id_groupe."_".$nom_groupe."_"."$description_groupe"."_".$classlist_string_groupe.".$extension";
-				$nom_page_html_groupe=strtr($id_groupe."_".$nom_groupe."_"."$description_groupe"."_".$classlist_string_groupe.".$extension","/","_");
+				*/
+				$nom_groupe=preg_replace('/[^A-Za-z0-9\.-]/','_',preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['name'],'all'))));
+				$description_groupe=preg_replace('/[^A-Za-z0-9\.-]/','_',preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['description'],'all'))));
+				$classlist_string_groupe=preg_replace('/[^A-Za-z0-9\.-]/','_',preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['classlist_string'],'all'))));
+				$nom_page_html_groupe=strtr($id_groupe."_".$nom_groupe."_".$description_groupe."_".$classlist_string_groupe.".$extension","/","_");
 
 
 				$nom_complet_matiere=preg_replace('/&/','et',unhtmlentities(remplace_accents($current_group['matiere']['nom_complet'],'all')));
@@ -466,7 +471,9 @@ else {
 
 				$html=html_entete("CDT: ".$nom_detaille_groupe_non_html,1,'y',"$chaine_login_prof").$html;
 				$html.=html_pied_de_page();
-		
+
+				//echo "\$dossier_cdt=$dossier_cdt<br />";
+				//echo "\$nom_fichier=$nom_fichier<br />";
 				$f=fopen($dossier_cdt."/".$nom_fichier,"w+");
 				fwrite($f,$html);
 				fclose($f);
@@ -474,7 +481,8 @@ else {
 				foreach($current_group["classes"]["classes"] as $key => $value) {
 					// Pour ne créer les liens que pour les cahiers de textes non vides
 					if(count($tab_dates)>0) {
-						$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".$value['classe']." (".$value['nom_complet'].")"."', matiere='$nom_complet_matiere', enseignement='$nom_enseignement', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
+						//$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".$value['classe']." (".$value['nom_complet'].")"."', matiere='$nom_complet_matiere', enseignement='$nom_enseignement', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
+						$sql="INSERT INTO tempo3_cdt SET id_classe='".$value['id']."', classe='".addslashes($value['classe'])." (".addslashes($value['nom_complet']).")"."', matiere='".addslashes($nom_complet_matiere)."', enseignement='".addslashes($nom_enseignement)."', id_groupe='".$id_groupe."', fichier='$nom_fichier';";
 						$insert=mysql_query($sql);
 						if(!$insert) {
 							$temoin_erreur="y";
@@ -567,7 +575,8 @@ else {
 	
 					$html.="<h2 style='text-align:center;'>Classe de $lig_class->classe&nbsp;:</h2>\n";
 
-					$sql="SELECT * FROM tempo3_cdt WHERE classe='$lig_class->classe';";
+					$sql="SELECT * FROM tempo3_cdt WHERE classe='".addslashes($lig_class->classe)."';";
+					//echo "$sql<br />";
 					$res2=mysql_query($sql);
 					if(mysql_num_rows($res2)>0) {
 						$html.="<div align='center'>\n";
