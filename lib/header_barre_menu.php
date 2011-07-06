@@ -304,6 +304,45 @@ echo '<!--[if lt IE 7]>
 		$barre_consult_eleve = '<li class="li_inline"><a href="'.$gepiPath.'/eleves/visu_eleve.php"'.insert_confirm_abandon().'>Consult.élève</a></li>'."\n";
 	}
 	else{ $barre_consult_eleve = '';}
+	
+	
+// plugin
+
+$req = "SELECT pl.id, pl.nom, au.fichier FROM plugins pl, plugins_autorisations au
+          WHERE pl.id = au.plugin_id
+	    AND au.user_statut = '".$_SESSION['statut']."'
+	      AND au.auth = 'V'";
+$rep = mysql_query($req);
+
+if ($rep) {
+  $tmp_sous_menu='	<ul class="niveau2">'."\n";
+  $cpt_sous_menu=0;
+  while ($item = mysql_fetch_array($rep)) {
+    //$tmp_sous_menu[$cpt_sous_menu]=array("lien"=> "/".$item['fichier'] , "texte"=> $item['nom']);
+    $cpt_sous_menu++;
+    
+    $tmp_sous_menu .= '	<li><a href="'.$gepiPath.'/'.$item['fichier'].'">'.$item['nom'].'</a>'."\n";
+  }
+  $tmp_sous_menu .= '	</ul>'."\n";
+  
+  if (count($cpt_sous_menu)) {
+    // $tbs_menu_prof[$compteur_menu]=array("lien"=> '#' , "texte"=>"Plugin");
+    // $tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
+    // $tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
+    // $compteur_menu++;  
+    
+    $barre_plugin = '<li class="li_inline"><a href="">Plugins</a>'."\n";
+    $barre_plugin .= $tmp_sous_menu;
+    $barre_plugin .= '</li>'."\n";
+    
+  } else {
+    $barre_plugin = "";
+  }
+  
+}
+
+	
+	
 
 	/*
 	echo '
@@ -330,6 +369,7 @@ echo '<!--[if lt IE 7]>
 		'.$barre_discipline.'
 		'.$barre_notanet.'
 		'.$barre_consult_eleve.'
+		'.$barre_plugin.'		  
 		<li class="li_inline"><a href="'.$gepiPath.'/utilisateurs/mon_compte.php">Mon compte</a></li>
 	</ul>
 </div>

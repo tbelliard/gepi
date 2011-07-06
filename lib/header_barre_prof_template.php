@@ -391,10 +391,6 @@ if (!$_SESSION["login"]) {
 		$compteur_menu++;
 	}
 	else{ $barre_consult_eleve = '';}
-	
-	//=======================================================
-	$tbs_menu_prof[$compteur_menu]=array("lien"=> '/utilisateurs/mon_compte.php' , "texte"=>"Mon compte");
-	$compteur_menu++;
 
 
 
@@ -417,8 +413,6 @@ if (!$_SESSION["login"]) {
 
 	//=======================================================
 	// plugin
-	
-$item_plugins = array();
 
 $req = "SELECT pl.id, pl.nom, au.fichier FROM plugins pl, plugins_autorisations au
           WHERE pl.id = au.plugin_id
@@ -435,13 +429,17 @@ if ($rep) {
   }
   
   if (count($tmp_sous_menu)) {
-    $tbs_menu_prof[$compteur_menu]=array("lien"=> '#' , "texte"=>"Plugin");
+    $tbs_menu_prof[$compteur_menu]=array("lien"=> '#' , "texte"=>"Plugins");
     $tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
     $tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
     $compteur_menu++;  
   }
 }
 
+
 	
+	//=======================================================
+	$tbs_menu_prof[$compteur_menu]=array("lien"=> '/utilisateurs/mon_compte.php' , "texte"=>"Mon compte");
+	$compteur_menu++;
 	
 ?>
