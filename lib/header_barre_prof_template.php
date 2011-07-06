@@ -413,4 +413,35 @@ if (!$_SESSION["login"]) {
 	</ol>
 	';
 */
+
+
+	//=======================================================
+	// plugin
+	
+$item_plugins = array();
+
+$req = "SELECT pl.id, pl.nom, au.fichier FROM plugins pl, plugins_autorisations au
+          WHERE pl.id = au.plugin_id
+	    AND au.user_statut = '".$_SESSION['statut']."'
+	      AND au.auth = 'V'";
+$rep = mysql_query($req);
+if ($rep) {
+  $tmp_sous_menu=array();
+  $cpt_sous_menu=0;
+  while ($item = mysql_fetch_array($rep)) {
+    //$item_plugins[]=$item;
+    $tmp_sous_menu[$cpt_sous_menu]=array("lien"=> "/".$item['fichier'] , "texte"=> $item['nom']);
+    $cpt_sous_menu++;
+  }
+  
+  if (count($tmp_sous_menu)) {
+    $tbs_menu_prof[$compteur_menu]=array("lien"=> '#' , "texte"=>"Plugin");
+    $tbs_menu_prof[$compteur_menu]['sous_menu']=$tmp_sous_menu;
+    $tbs_menu_prof[$compteur_menu]['niveau_sous_menu']=2;
+    $compteur_menu++;  
+  }
+}
+
+	
+	
 ?>
