@@ -79,6 +79,9 @@ echo "<p class='bold'>";
 if($_SESSION['statut']=='professeur') {echo "<a href='../../cahier_texte_2/index.php'>";}
 else {echo "<a href='../../accueil.php'>";}
 echo "<img src='../../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>";
+if($_SESSION['statut']=='administrateur') {
+	echo " | <a href='../../cahier_texte_admin/index.php'>Administration du module Cahiers de textes";
+}
 echo "</p>\n";
 
 // Selon le statut, pointer vers la page annee/index.php ou vers annee/cdt_LOGIN.php
