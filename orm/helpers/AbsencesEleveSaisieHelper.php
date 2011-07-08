@@ -110,7 +110,7 @@ class AbsencesEleveSaisieHelper {
 		    if ($date_compteur->format('Hi') < $heure_demi_journee.$minute_demi_journee) {
 			$date_compteur->setTime(0, 0);
 		    } else {
-			$date_compteur->setTime($heure_demi_journee, $minute_demi_journee);
+			$date_compteur->setTime(12, 0);
 		    }
 		    $date_compteur_suivante = clone $date_compteur;
 		    $date_compteur_suivante->modify("+15 hours");//en ajoutant 15 heure on est sur de passer a la demi-journee suivante
