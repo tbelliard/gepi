@@ -55,14 +55,15 @@ if (isset($is_posted) and ($is_posted == '1')) {
 	if (isset($display_nbdev)) $display_nbdev = 'y'; else $display_nbdev = 'n';
 	if (isset($display_moy_gen)) $display_moy_gen = 'y'; else $display_moy_gen = 'n';
 
-	if (!isset($modele_bulletin)) $$modele_bulletin = 1;
+	//if (!isset($modele_bulletin)) $$modele_bulletin = 1;
+	if (!isset($modele_bulletin)) {$modele_bulletin = 1;}
 
 	// =========================
 	// AJOUT: boireaus
 	//rn_formule
 	//rn_sign_nblig
 
-	if(strlen(my_ereg_replace("[0-9]","",$rn_sign_nblig))!=0){$rn_sign_nblig=3;}
+	if(strlen(preg_replace("/[0-9]/","",$rn_sign_nblig))!=0){$rn_sign_nblig=3;}
 
 	if (isset($rn_nomdev)){$rn_nomdev='y';}else{$rn_nomdev='n';}
 	if (isset($rn_toutcoefdev)){$rn_toutcoefdev='y';}else{$rn_toutcoefdev='n';}
@@ -596,22 +597,35 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 	    // Pour la classe, quel est le modèle de bulletin déja selectionné
 	    $quel_modele=$modele_bulletin_pdf;
 
-		//echo $quel_modele;
-		echo "<select tabindex=\"5\" name=\"modele_bulletin\" onchange='changement()'>";
-		if ($quel_modele == NULL) {
-		   echo "<option value=\"NULL\" selected=\"selected\" >Aucun modèle de sélectionné</option>";
-		}
+
 		// sélection des modèle des bulletins.
 	    //$requete_modele = mysql_query('SELECT id_model_bulletin, nom_model_bulletin FROM '.$prefix_base.'model_bulletin ORDER BY '.$prefix_base.'model_bulletin.nom_model_bulletin ASC');
 		$requete_modele = mysql_query("SELECT id_model_bulletin, valeur as nom_model_bulletin FROM ".$prefix_base."modele_bulletin WHERE nom='nom_model_bulletin' ORDER BY ".$prefix_base."modele_bulletin.valeur ASC;");
-		while($donner_modele = mysql_fetch_array($requete_modele)) {
-		    echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
-			if($quel_modele==$donner_modele['id_model_bulletin']) {
-			    echo "selected=\"selected\"";
+		if(mysql_num_rows($requete_modele)==0) {
+			echo "<p style='color:red'>ANOMALIE&nbsp;: Il n'existe aucun modèle de bulletin PDF.";
+			if($_SESSION['login']=='administrateur') {
+				echo "Vous devriez effectuer/forcer une <a href='../utilitaires/maj.php'>mise à jour de la base</a> pour corriger.<br />Prenez tout de même soin de vérifier que personne d'autre que vous n'est connecté.\n";
 			}
-			echo ">".ucfirst($donner_modele['nom_model_bulletin'])."</option>\n";
+			else {
+				echo "Contactez l'administrateur pour qu'il effectue une mise à jour de la base.\n";
+			}
+			echo "</p>\n";
 		}
-		 echo "</select>\n";
+		else {
+			//echo $quel_modele;
+			echo "<select tabindex=\"5\" name=\"modele_bulletin\" onchange='changement()'>";
+			if ($quel_modele == NULL) {
+			echo "<option value=\"NULL\" selected=\"selected\" >Aucun modèle de sélectionné</option>";
+			}
+			while($donner_modele = mysql_fetch_array($requete_modele)) {
+				echo "<option value=\"".$donner_modele['id_model_bulletin']."\"";
+				if($quel_modele==$donner_modele['id_model_bulletin']) {
+					echo "selected=\"selected\"";
+				}
+				echo ">".ucfirst($donner_modele['nom_model_bulletin'])."</option>\n";
+			}
+			echo "</select>\n";
+		}
 		?>
 	</td>
 </tr>
