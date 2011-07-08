@@ -149,6 +149,8 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
     while ($j < $nombre_groupes) {
         // S'il existe des matières coefficientées et si le champ rang de la table j_eleves_classes n'est pas à jour :
         $current_coef[$j] = $current_group[$j]["classes"]["classes"][$id_classe]["coef"];
+        $current_mode_moy[$j] = $current_group[$j]["classes"]["classes"][$id_classe]["mode_moy"];
+
         // Moyenne de la classe dans la groupe $current_group[$j]
         $current_classe_matiere_moyenne_query = mysql_query("SELECT round(avg(note),1) moyenne
             FROM matieres_notes
@@ -190,9 +192,25 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
                 
                 if ($coef_eleve != 0) {
                     if (($current_eleve_note[$j][$i] != '') and ($current_eleve_statut[$j][$i] == '')) {
-                        $total_coef[$i] += $coef_eleve;
-                        $moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
-                        $moy_gen_eleve[$i] += $coef_eleve*$current_eleve_note[$j][$i];
+                        if($current_mode_moy[$j]=='sup10') {
+                            if($moy_gen_eleve[$i]>=10) {
+                                $total_coef[$i] += $coef_eleve;
+                                $moy_gen_eleve[$i] += $coef_eleve*$current_eleve_note[$j][$i];
+                            }
+                            $moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
+                        }
+                        elseif($current_mode_moy[$j]=='bonus') {
+                            if($moy_gen_eleve[$i]>=10) {
+                                //$total_coef[$i] += $coef_eleve;
+                                $moy_gen_eleve[$i] += $coef_eleve*($current_eleve_note[$j][$i]-10);
+                            }
+                            $moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
+                        }
+                        else {
+                            $total_coef[$i] += $coef_eleve;
+                            $moy_gen_classe[$i] += $coef_eleve*$current_classe_matiere_moyenne[$j];
+                            $moy_gen_eleve[$i] += $coef_eleve*$current_eleve_note[$j][$i];
+                        }
                     }
                }
             }
@@ -201,11 +219,19 @@ if (($test_coef != '0') and ($calcul_moy_gen == 'yes')) {
         $j++;
     }
 
-
     $i = 0;
     while ($i < $nombre_eleves) {
         if ($total_coef[$i] != 0) {
             $temp[$i] = round($moy_gen_eleve[$i]/$total_coef[$i],1);
+			/*
+			if(($current_eleve_login[$i]=='DASILVA_J')||($current_eleve_login[$i]=='BARJON_P')||($current_eleve_login[$i]=='RAOUI_R')) {
+				echo "<p>\$current_eleve_login[$i]=$current_eleve_login[$i]<br />\n";
+				echo "\$temp[$i]=round($moy_gen_eleve[$i]/$total_coef[$i],1)=".$temp[$i]."<br />\n";
+				$tmp_val=$moy_gen_eleve[$i]/$total_coef[$i];
+				echo "$moy_gen_eleve[$i]/$total_coef[$i]=".$tmp_val."</p>\n";
+			}
+			*/
+            //$temp[$i] = round(10*$moy_gen_eleve[$i]/$total_coef[$i],1);
             $moy_gen_eleve[$i] = number_format($moy_gen_eleve[$i]/$total_coef[$i],1, ',', ' ');
             $moy_gen_classe[$i] = number_format($moy_gen_classe[$i]/$total_coef[$i],1, ',', ' ');
         } else {
