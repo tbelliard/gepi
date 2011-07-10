@@ -1632,9 +1632,6 @@ class Eleve extends BaseEleve {
 			UNION ALL
 				-- selection des date de suppression des traitements
 				SELECT a_traitements.deleted_at as union_date  FROM a_traitements join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is not null and a_saisies.deleted_at is null and a_saisies.eleve_id='".$this->getIdEleve()."' and ".$date_selection."
-			UNION ALL
-				-- selection des date de modification des notifications
-				SELECT a_notifications.updated_at as union_date  FROM a_notifications join a_traitements on a_notifications.a_traitement_id = a_traitements.id join j_traitements_saisies on a_traitements.id = j_traitements_saisies.a_traitement_id join a_saisies on a_saisies.id = j_traitements_saisies.a_saisie_id WHERE a_traitements.deleted_at is null and a_saisies.deleted_at is null and a_saisies.eleve_id='".$this->getIdEleve()."' and ".$date_selection."
 			
 			ORDER BY union_date DESC LIMIT 1";
 		
