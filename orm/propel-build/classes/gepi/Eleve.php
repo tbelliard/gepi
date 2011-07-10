@@ -1642,7 +1642,7 @@ class Eleve extends BaseEleve {
 		$row = mysql_fetch_assoc($result);
 		$unionDateString = $row['union_date'];
 
-		//on va rechercher la date de dernière modification des saisies, traitements, etc...
+		//on va comparer avec les dates de la table d'agrégation
 		$result = mysql_query("
 			-- selection des date de modification dans le table d'agrégation
 			SELECT updated_at FROM a_agregation_decompte WHERE a_agregation_decompte.eleve_id='".$this->getIdEleve()."'
@@ -1688,6 +1688,7 @@ class Eleve extends BaseEleve {
 			$dateFinClone->setTime(23,59);
 			$this->checkAndUpdateSynchroAbsenceAgregationTable($dateFin, null);
 		}
+		
 		
 		//on commence par supprimer les anciennes entrée
 		$queryDelete = AbsenceAgregationDecompteQuery::create()->filterByEleve($this);
@@ -1847,9 +1848,70 @@ class Eleve extends BaseEleve {
 	 *
 	 */
 	public function checkAndUpdateSynchroAbsenceAgregationTable(DateTime $dateDebut = null, DateTime $dateFin = null) {
-		if (!$this->checkSynchroAbsenceAgregationTable($dateDebut, $dateFin)) {
-			$this->updateAbsenceAgregationTable($dateDebut, $dateFin);
+		//on va regarder si il y a déjà des entrée dans cet intervalle de temps
+		$dateDebutClone = null;
+		$dateFinClone = null;
+		
+		if ($dateDebut != null) {
+			$absDecomte = AbsenceAgregationDecompteQuery::create()
+				->filterByEleve($this)
+				->filterByDateDemiJounee($dateDebut, Criteria::GREATER_EQUAL)
+				->filterByDateDemiJounee(null, Criteria::NOT_EQUAL)
+				->orderByDateDemiJounee(Criteria::ASC)
+				->findOne();
+			if ($absDecomte != null) {
+				if ($absDecomte->getDateDemiJounee(null) != null && $absDecomte->getDateDemiJounee('U') > $dateDebut->format('U') && 
+						($dateFin == null || $absDecomte->getDateDemiJounee('U') < $dateFin->format('U'))) {
+					$dateDebutClone = clone $absDecomte->getDateDemiJounee(null);
+				}
+			}
 		}
+		if ($dateFin != null) {
+			$absDecomte = null;
+			$absDecomte = AbsenceAgregationDecompteQuery::create()
+				->filterByEleve($this)
+				->filterByDateDemiJounee($dateFin, Criteria::LESS_EQUAL)
+				->filterByDateDemiJounee(null, Criteria::NOT_EQUAL)
+				->orderByDateDemiJounee(Criteria::DESC)
+				->findOne();
+			if ($absDecomte != null) {
+				if ($absDecomte->getDateDemiJounee(null) != null && $absDecomte->getDateDemiJounee('U') < $dateFin->format('U') && 
+						($dateDebut == null || $absDecomte->getDateDemiJounee('U') > $dateDebut->format('U'))) {
+					$dateFinClone = clone $absDecomte->getDateDemiJounee(null);
+				}
+			}
+		}
+		
+		if ($dateDebutClone != null && $dateFinClone != null) {
+			if (!$this->checkSynchroAbsenceAgregationTable($dateDebut, $dateDebutClone)) {
+				$this->updateAbsenceAgregationTable($dateDebut, $dateDebutClone);
+			}
+			if (!$this->checkSynchroAbsenceAgregationTable($dateDebutClone, $dateFinClone)) {
+				$this->updateAbsenceAgregationTable($dateDebutClone, $dateFinClone);
+			}
+			if (!$this->checkSynchroAbsenceAgregationTable($dateFinClone, $dateFin)) {
+				$this->updateAbsenceAgregationTable($dateFinClone, $dateFin);
+			}
+		} elseif ($dateDebutClone != null && $dateFinClone == null) {
+			if (!$this->checkSynchroAbsenceAgregationTable($dateDebut, $dateDebutClone)) {
+				$this->updateAbsenceAgregationTable($dateDebut, $dateDebutClone);
+			}
+			if (!$this->checkSynchroAbsenceAgregationTable($dateDebutClone, $dateFin)) {
+				$this->updateAbsenceAgregationTable($dateDebutClone, $dateFin);
+			}
+		} elseif ($dateDebutClone == null && $dateFinClone != null) {
+			if (!$this->checkSynchroAbsenceAgregationTable($dateDebut, $dateFinClone)) {
+				$this->updateAbsenceAgregationTable($dateDebut, $dateFinClone);
+			}
+			if (!$this->checkSynchroAbsenceAgregationTable($dateFinClone, $dateFin)) {
+				$this->updateAbsenceAgregationTable($dateFinClone, $dateFin);
+			}
+		} else {
+			if (!$this->checkSynchroAbsenceAgregationTable($dateDebut, $dateFin)) {
+				$this->updateAbsenceAgregationTable($dateDebut, $dateFin);
+			}
+		}
+		
 	}
 	
 } // Eleve
