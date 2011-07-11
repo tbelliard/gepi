@@ -6459,7 +6459,8 @@ function affiche_infos_actions() {
 
 				echo "<div id='info_action_corps_$lig->id' style='padding:3px;' class='infobulle_corps'>\n";
 					echo "<div style='float:right; width: 9em; text-align: right;'>\n";
-					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->description)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
+					//echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->description)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
+					echo "<a href=\"".$_SERVER['PHP_SELF']."?del_id_info=$lig->id".add_token_in_url()."\" onclick=\"return confirmlink(this, '".traitement_magic_quotes($lig->titre)."', 'Etes-vous sûr de vouloir supprimer ".traitement_magic_quotes($lig->titre)."')\">Supprimer</span></a>";
 					echo "</div>\n";
 
 					echo nl2br($lig->description);
@@ -6525,8 +6526,9 @@ function enregistre_infos_actions($titre,$texte,$destinataire,$mode) {
 		return false;
 	}
 	else {
-		$return=true;
+		//$return=true;
 		$id_info=mysql_insert_id();
+		$return=$id_info;
 		for($loop=0;$loop<count($tab_dest);$loop++) {
 			$sql="INSERT INTO infos_actions_destinataires SET id_info='$id_info', nature='$mode', valeur='$tab_dest[$loop]';";
 			$insert=mysql_query($sql);
