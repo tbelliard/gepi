@@ -42,35 +42,9 @@ if (!$_SESSION["login"]) {
     header("Location: ../logout.php?auto=2");
     die();
 }
-/*******************************************************************
- *
- *			Fonction pour récupérer la liste complète 
- *			des plugins classés par profil
- *
- *******************************************************************/
-	function getListPlugins($gepiPath)
-	{
-		$item_plugins = array();
-		$req = "SELECT id,nom FROM plugins";
-		$rep = mysql_query($req);
-		if ($rep) {
-			while ($item = mysql_fetch_array($rep)) {
-				$req = "SELECT user_statut, lien_item FROM plugins_menus WHERE plugin_id = '".$item['id']."'";
-				$rep2 = mysql_query($req);
-				if ($rep2) {
-					while ($item2 = mysql_fetch_array($rep2)) {
-						$MyTable = array();
-						$MyTable = explode("/", $item2['lien_item']);
-						$MyTable2 = explode(".", $MyTable[count($MyTable)-1]);
-						$item_plugins[$item2['user_statut']][] = "<li><a href=\"".$gepiPath."/".$item2['lien_item']."\">".$item['nom']."</a></li>\n";
-						unset($MyTable);unset($MyTable2);
-					}
-				}
-			}
-		}
-		return $item_plugins;
-	}
 
+// Fonction générant le menu Plugins
+include("menu_plugins.inc.php");
 	
 /*******************************************************************
  *
@@ -78,8 +52,6 @@ if (!$_SESSION["login"]) {
  *			pour le profil administrateur
  *
  *******************************************************************/
-	$item_plugins = array();
-	$item_plugins = getListPlugins($gepiPath);
 	
 	
 	if ($_SESSION['statut'] == "administrateur") {
@@ -183,9 +155,7 @@ if (!$_SESSION["login"]) {
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Plugins</a>'."\n";
 		$menus .= '    <ul class="niveau2">'."\n";
 		$menus .= '      <li><a href="'.$gepiPath.'/mod_plugins/index.php">Gestion des plugins</a></li>'."\n";
-		foreach ($item_plugins['administrateur'] as $plugin) {
-			$menus .= $plugin;
-		}		
+		$menus.='		'.menu_plugins();
 		$menus .= '    </ul>'."\n";		
 		$menus .= '</li>'."\n";	
 		
