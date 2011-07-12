@@ -204,7 +204,13 @@
 			}
 			echo ">\n";
 			//echo "<a href=\"$gepiPath/".$tab['lien']." ".insert_confirm_abandon()."\">".$tab['texte']."</a>\n";
-			echo "<a href=\"$gepiPath".$tab['lien']."\">".$tab['texte']."</a>\n";
+
+			// éventuellement le lien peut être vide
+			if ($tab['lien']=="")
+				echo $tab['texte']."\n";
+			else 
+				echo "<a href=\"$gepiPath".$tab['lien']."\">".$tab['texte']."</a>\n";
+
 			echo "<ul class='niveau".$tab['niveau_sous_menu']."'>\n";
 			for($i=0;$i<count($tab['sous_menu']);$i++) {
 				ligne_menu_barre($tab['sous_menu'][$i], $tab['niveau_sous_menu']);
@@ -219,7 +225,12 @@
 			}
 			echo ">";
 			//echo "<a href=\"$gepiPath/".$tab['lien']."\" ".insert_confirm_abandon().">".$tab['texte']."</a>";
-			echo "<a href=\"$gepiPath".$tab['lien']."\">".$tab['texte']."</a>";
+
+			// éventuellement le lien peut être vide
+			if ($tab['lien']=="")
+				echo $tab['texte']."\n";
+			else
+				echo "<a href=\"$gepiPath".$tab['lien']."\">".$tab['texte']."</a>";
 			echo "</li>\n";
 		}
 	}
