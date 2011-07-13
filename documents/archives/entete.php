@@ -62,4 +62,31 @@ else {
 	}
 }
 
+// Corriger par la suite les liens de retour Professeur dans l'archivage et mettre avant l'appel entete.php: $liens_retour_ok="y";
+if(!isset($liens_retour_ok)) {
+	echo "<script type='text/javascript'>
+
+function cacher_div_lien_retour() {
+	t=document.title;
+	if(t.substring(0,16)=='CDT: Professeur ') {
+		if(document.getElementById('div_lien_retour')) {
+			document.getElementById('div_lien_retour').style.display='none';
+		}
+	}
+}
+//setTimeout(\"cacher_div_lien_retour()\",1000);
+
+
+function corriger_div_lien_retour() {
+	t=document.title;
+	if(t.substring(0,16)=='CDT: Professeur ') {
+		if(document.getElementById('div_lien_retour')) {
+			document.getElementById('div_lien_retour').innerHTML='<a href=\'$gepiPath/documents/archives/index.php\'>Retour</a>';
+		}
+	}
+}
+setTimeout(\"corriger_div_lien_retour()\",1000);
+
+</script>\n";
+}
 ?>
