@@ -30,9 +30,9 @@ if(!in_array($_SESSION["statut"],$tab_statuts)) {
 	die();
 }
 
-if(isset($chaine_login_prof)) {
+if((isset($chaine_login_prof))&&($chaine_login_prof!='')) {
 	$tab_login=array($chaine_login_prof);
-	if(($_SESSION["statut"]=="professeur")&&(!in_array($_SESSION["login"],$tab_login))) {
+	if(($_SESSION["statut"]=="professeur")&&(!in_array("'".$_SESSION["login"]."'",$tab_login))) {
 		header("Location: $pref_arbo_include/logout.php?auto=1");
 		die();
 	}
