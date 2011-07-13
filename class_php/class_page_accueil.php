@@ -1141,6 +1141,12 @@ class class_page_accueil {
 					"Consultation des cahiers de textes",
 					"Ce menu vous permet de consulter les cahiers de textes.");
 		}
+
+		if($this->statutUtilisateur=="professeur") {
+			$this->creeNouveauItem("/documents/archives/index.php",
+				"Mes archives de cahiers de textes",
+				"Ce menu vous permet de consulter vos cahiers de textes des années précédentes.");
+		}
 	}
 
 	$this->creeNouveauItem("/impression/impression_serie.php",
