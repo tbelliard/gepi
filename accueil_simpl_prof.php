@@ -152,7 +152,7 @@ echo "<a href=\"./accueil.php?accueil_simpl=n\">Accès au menu d'accueil</a>";
 //echo "<a href='index.php'> Carnet de notes </a> | \n";
 echo " | \n";
 //echo "<a href='./gestion/config_prefs.php'> Paramétrer mes interfaces simplifiées </a>\n";
-echo "<a href='./gestion/config_prefs.php'> Paramétrer mes interfaces simplifiées </a>\n";
+echo "<a href='./gestion/config_prefs.php'> Paramétrer mon interface </a>\n";
 echo "</p>\n";
 echo "</div>\n";
 
