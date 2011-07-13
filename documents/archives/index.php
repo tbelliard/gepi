@@ -110,7 +110,8 @@ if(!file_exists($dossier_etab)) {
 
 $suppr_arch_cdt=isset($_POST['suppr_arch_cdt']) ? $_POST['suppr_arch_cdt'] : (isset($_GET['suppr_arch_cdt']) ? $_GET['suppr_arch_cdt'] : NULL);
 $confirmer_suppression=isset($_POST['confirmer_suppression']) ? $_POST['confirmer_suppression'] : "n";
-if(isset($suppr_arch_cdt)) {
+if((isset($suppr_arch_cdt))&&($_SESSION['statut']=='administrateur')) {
+	check_token(false);
 	if($confirmer_suppression=='y') {
 		echo "<p>Suppression de l'archivage de CDT <b>".$suppr_arch_cdt."</b>&nbsp;: \n";
 		if(deltree($dossier_etab."/".$suppr_arch_cdt,true)) {
@@ -156,24 +157,34 @@ if(count($tab_file)==0) {
 	die();
 }
 
-echo "<p><b>Liste des années archivées</b>&nbsp;:<br />\n";
+$lignes="";
 for($i=0;$i<count($tab_file);$i++) {
-	echo "$tab_file[$i]&nbsp;: ";
 	if($_SESSION['statut']!="professeur") {
-		echo "<a href='$dossier_etab/".$tab_file[$i]."/cdt/index_classes.".$extension."'>Index des classes</a>";
-		echo " - ";
-		echo "<a href='$dossier_etab/".$tab_file[$i]."/cdt/index_professeurs.".$extension."'>Index des professeurs</a>";
-	}
-	else {
-		echo "<a href='$dossier_etab/".$tab_file[$i]."/cdt/cdt_".$_SESSION['login'].".".$extension."'>Mon CDT</a>";
-	}
+		$lignes.="$tab_file[$i]&nbsp;: ";
+		$lignes.="<a href='$dossier_etab/".$tab_file[$i]."/cdt/index_classes.".$extension."'>Index des classes</a>";
+		$lignes.=" - ";
+		$lignes.="<a href='$dossier_etab/".$tab_file[$i]."/cdt/index_professeurs.".$extension."'>Index des professeurs</a>";
 
-	if($_SESSION['statut']=='administrateur') {
-		echo " - <a href='".$_SERVER['PHP_SELF']."?suppr_arch_cdt=".$tab_file[$i].add_token_in_url()."'><img src='../../images/delete16.png' width='16' height='16' /> Supprimer</a>";
+		if($_SESSION['statut']=='administrateur') {
+			$lignes.=" - <a href='".$_SERVER['PHP_SELF']."?suppr_arch_cdt=".$tab_file[$i].add_token_in_url()."'><img src='../../images/delete16.png' width='16' height='16' /> Supprimer</a>";
+		}
+		$lignes.="<br />\n";
 	}
-	echo "<br />\n";
+	elseif(file_exists($dossier_etab."/".$tab_file[$i]."/cdt/cdt_".$_SESSION['login'].".".$extension)) {
+		$lignes.="$tab_file[$i]&nbsp;: ";
+		$lignes.="<a href='$dossier_etab/".$tab_file[$i]."/cdt/cdt_".$_SESSION['login'].".".$extension."'>Mon CDT</a>";
+		$lignes.="<br />\n";
+	}
 }
-echo "</p>\n";
+
+if($lignes!="") {
+	echo "<p><b>Liste des années archivées</b>&nbsp;:<br />\n";
+	echo $lignes;
+	echo "</p>\n";
+}
+else {
+	echo "<p>Aucune donnée n'est archivée (<i>pour vous</i>).</p>\n";
+}
 
 echo "<p><br /></p>\n";
 
