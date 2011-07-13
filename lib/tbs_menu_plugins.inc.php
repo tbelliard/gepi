@@ -13,40 +13,45 @@ function tbs_menu_plugins()
 		$t_abr_statuts=array('administrateur'=>'A', 'professeur'=>'P', 'cpe'=>'C', 'scolarite'=>'S', 'secours'=>'sec', 'eleve'=>'E', 'responsable'=>'R', 'autre'=>'autre');
 		while ($plugin=mysql_fetch_assoc($R_plugins))
 			{
-			$tmp_menu_plugins=array();
-			// on parcourt la section <administration><menu> de plugin.xml
-			$plugin_xml = simplexml_load_file($_SERVER['DOCUMENT_ROOT'].$gepiPath."/mod_plugins/".$plugin['repertoire']."/plugin.xml");
-			$nb_items=0;
-			$tmp_sous_menu_plugins=array();
-			foreach($plugin_xml->administration->menu->item as $menu_script)
+			$plugin_xml=$_SERVER['DOCUMENT_ROOT'].$gepiPath."/mod_plugins/".$plugin['repertoire']."/plugin.xml";
+			// on continue uniquement si le plugin est encore présent
+			if (file_exists($plugin_xml))
 				{
-				$t_autorisations=explode("-",$menu_script->attributes()->autorisation);
-				if (in_array($t_abr_statuts[$_SESSION['statut']],$t_autorisations))
+				$tmp_menu_plugins=array();
+				// on parcourt la section <administration><menu> de plugin.xml
+				$plugin_xml = simplexml_load_file($plugin_xml);
+				$nb_items=0;
+				$tmp_sous_menu_plugins=array();
+				foreach($plugin_xml->administration->menu->item as $menu_script)
 					{
-					// si la fonction cacul_autorisation_... existe on vérifie si l'utilisateur est autorisé à accéder au script
-					$autorise=true; // a priori l'utilisateur a acces à ce script
-					$nom_fonction_autorisation = "calcul_autorisation_".$plugin['nom'];
-					if (file_exists($_SERVER['DOCUMENT_ROOT'].$gepiPath."/mod_plugins/".$plugin['nom']."/functions_".$plugin['nom'].".php"))
+					$t_autorisations=explode("-",$menu_script->attributes()->autorisation);
+					if (in_array($t_abr_statuts[$_SESSION['statut']],$t_autorisations))
 						{
-						// on évite de redéclarer la fonction $nom_fonction_autorisation
-						if (!function_exists($nom_fonction_autorisation))
-							include($_SERVER['DOCUMENT_ROOT'].$gepiPath."/mod_plugins/".$plugin['nom']."/functions_".$plugin['nom'].".php");
-						if (function_exists($nom_fonction_autorisation))
-							$autorise = $nom_fonction_autorisation($_SESSION['login'],$menu_script);
-						}
-					if ($autorise)
-						{
-						$nb_items++;
-						$tmp_sous_menu_plugins[]=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'texte'=>"".$menu_script->attributes()->titre);
-						$tmp_sous_menu_plugins_solo=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'texte'=>$plugin['nom']);
+						// si la fonction cacul_autorisation_... existe on vérifie si l'utilisateur est autorisé à accéder au script
+						$autorise=true; // a priori l'utilisateur a acces à ce script
+						$nom_fonction_autorisation = "calcul_autorisation_".$plugin['nom'];
+						if (file_exists($_SERVER['DOCUMENT_ROOT'].$gepiPath."/mod_plugins/".$plugin['nom']."/functions_".$plugin['nom'].".php"))
+							{
+							// on évite de redéclarer la fonction $nom_fonction_autorisation
+							if (!function_exists($nom_fonction_autorisation))
+								include($_SERVER['DOCUMENT_ROOT'].$gepiPath."/mod_plugins/".$plugin['nom']."/functions_".$plugin['nom'].".php");
+							if (function_exists($nom_fonction_autorisation))
+								$autorise = $nom_fonction_autorisation($_SESSION['login'],$menu_script);
+							}
+						if ($autorise)
+							{
+							$nb_items++;
+							$tmp_sous_menu_plugins[]=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'texte'=>"".$menu_script->attributes()->titre);
+							$tmp_sous_menu_plugins_solo=array('lien'=>"/mod_plugins/".$plugin['nom']."/".$menu_script,'texte'=>$plugin['nom']);
+							}
 						}
 					}
+					if ($nb_items>1)
+						$tmp_menu_plugins=array('lien'=>"",'texte'=>$plugin['nom'],'sous_menu'=>$tmp_sous_menu_plugins,'niveau_sous_menu'=>3);
+					else if ($nb_items==1)
+							$tmp_menu_plugins=$tmp_sous_menu_plugins_solo;
+				if (count($tmp_menu_plugins)>0) $menu_plugins[]=$tmp_menu_plugins;
 				}
-				if ($nb_items>1)
-					$tmp_menu_plugins=array('lien'=>"",'texte'=>$plugin['nom'],'sous_menu'=>$tmp_sous_menu_plugins,'niveau_sous_menu'=>3);
-				else if ($nb_items==1)
-						$tmp_menu_plugins=$tmp_sous_menu_plugins_solo;
-			if (count($tmp_menu_plugins)>0) $menu_plugins[]=$tmp_menu_plugins;
 			}
 		}
 return $menu_plugins;
