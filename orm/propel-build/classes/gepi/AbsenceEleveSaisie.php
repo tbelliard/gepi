@@ -590,6 +590,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 				    if (null !== $criteria) {
 					return AbsenceEleveTraitementQuery::create(null, $criteria)
 						->filterByAbsenceEleveSaisie($this)
+                        ->filterByDeletedAt('Null')
 						->find($con);
 				    } else {
 					//on utilise du sql directement pour optimiser la requete
@@ -627,7 +628,7 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 				    $this->collAbsenceEleveTraitements = new PropelObjectCollection();
 				    $this->collAbsenceEleveTraitements->setModel('AbsenceEleveTraitement');
 				    foreach ($this->collJTraitementSaisieEleves as $jTraitementSaisieEleve) {
-					if ($jTraitementSaisieEleve->getAbsenceEleveTraitement() !== null) {
+					if ($jTraitementSaisieEleve->getAbsenceEleveTraitement() !== null && $jTraitementSaisieEleve->getAbsenceEleveTraitement()->getDeletedAt()==Null) {
 					    $this->collAbsenceEleveTraitements->append($jTraitementSaisieEleve->getAbsenceEleveTraitement());
 					}
 				    }
