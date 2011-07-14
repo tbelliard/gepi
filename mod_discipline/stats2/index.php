@@ -97,7 +97,7 @@ switch ($_SESSION['type']) {
 }
 $utilisation_scriptaculous="ok";
 $utilisation_tablekit="ok";
-$utilisation_win = 'oui';
+//$utilisation_win = 'oui';
 $scriptaculous_effet="effects,controls,builder,dragdrop";
 $style_specifique = "mod_discipline/stats2/apps/css/stats";
 $javascript_specifique = "mod_discipline/stats2/apps/js/stats";
