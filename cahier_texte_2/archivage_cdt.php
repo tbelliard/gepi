@@ -629,7 +629,14 @@ else {
 					$sql="SELECT * FROM tempo3_cdt t, j_groupes_professeurs jgp WHERE jgp.id_groupe=t.id_groupe AND jgp.login='$lig_prof->login' ORDER BY classe, matiere;";
 					$res2=mysql_query($sql);
 					if(mysql_num_rows($res2)>0) {
-						$html2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index_professeurs.'.$extension.'\'>Retour</a></div>';
+						//$html2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'index_professeurs.'.$extension.'\'>Retour</a></div>';
+						$html2='<div id=\'div_lien_retour\' class=\'noprint\' style=\'float:right; width:6em\'><a href=\'';
+						$html2.='<?php'."\n";
+						//$html2.='if($_SESSION["statut"]=="professeur") {echo "CDT_".$_SESSION["login"];} else {echo "index_professeurs";}'."\n";
+						$html2.='if($_SESSION["statut"]=="professeur") {echo "index";} else {echo "index_professeurs";}'."\n";
+						$html2.='?>';
+						$html2.='.';
+						$html2.=$extension.'\'>Retour</a></div>';
 
 						$html2.="<h1 style='text-align:center;'>Cahiers de textes (".$gepiSchoolName." - ".$gepiYear.")</h1>\n";
 						$html2.="<p style='text-align:center;'>Extraction du $display_date_debut au $display_date_fin\n";
@@ -721,7 +728,8 @@ echo "<p><br /></p>\n";
 
 // Evaluer le nom du dossier établissement selon le cas multisite ou non.<br />
 // Calculer l'année à archiver selon la date courante ou d'après le paramétrage 'gepiYear'... ou proposer de saisir un autre nom d'année.<br /><br />
-echo "<p style='color:red'>A FAIRE: Ajouter les liens dans le cahier de textes des profs... et scol? cpe?<br /><br />Ne pas proposer le lien vers les années archivées si aucune année n'est archivée pour l'utilisateur courant (variable selon qu'on est prof ou pas)</p>\n";
+//Ajouter les liens dans le cahier de textes des profs... et scol? cpe?<br /><br />
+echo "<p style='color:red'>A FAIRE: Ne pas proposer le lien vers les années archivées si aucune année n'est archivée pour l'utilisateur courant (variable selon qu'on est prof ou pas)</p>\n";
 
 require("../lib/footer.inc.php");
 die();
