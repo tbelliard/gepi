@@ -1674,16 +1674,14 @@ class Eleve extends BaseEleve {
 		$dateDebutClone = null;
 		$dateFinClone = null;
 		
-		//on initialise les date et on vérifie l'intégrité avant et après les dates précisées, si c'est pas bon on change les dates pour faire une mise à jour plus large
+		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
 		if ($dateDebut != null) {
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
-			$this->checkAndUpdateSynchroAbsenceAgregationTable(null, $dateDebut);
 		}
 		if ($dateFin != null && $dateDebut != null) {
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
-			$this->checkAndUpdateSynchroAbsenceAgregationTable($dateFin, null);
 		}
 		
 		
@@ -1849,6 +1847,10 @@ class Eleve extends BaseEleve {
 		$dateDebutClone = null;
 		$dateFinClone = null;
 		
+		//on va regarder si à la date de début du calcul il n'y a pas eu d'entrée mais qu'il y en a au aprés.
+		//auquel cas on va faire deux calculs indépendant : un calul entre la date de début et la date de première entrée (qui correspond 
+		//a la premiere entrée déjà calculé), puis une vérification entre la date de première entrée ($dateDebutClone) et la date de fin. Si cette vérification
+		//est OK ça permettra de ne pas recalculer ces entrées là.
 		if ($dateDebut != null) {
 			$absDecomte = AbsenceAgregationDecompteQuery::create()
 				->filterByEleve($this)
@@ -1863,6 +1865,8 @@ class Eleve extends BaseEleve {
 				}
 			}
 		}
+		
+		//on fait la même chose pour la date de fin.
 		if ($dateFin != null) {
 			$absDecomte = null;
 			$absDecomte = AbsenceAgregationDecompteQuery::create()
@@ -1879,6 +1883,9 @@ class Eleve extends BaseEleve {
 			}
 		}
 		
+		//si $dateDebutClone est null ou $dateFinClone est nul c'est qu'il n'y a eu aucun calcul précédent, donc on ne peut pas racourcir.
+		//si une des date n'est pas nulle on sépare en trois calcel : $dateDebut à $dateDebutClone, puis $dateDebutClone à $dateFinClone,
+		//puis $dateFinClone à $dateFin
 		if ($dateDebutClone != null && $dateFinClone != null) {
 			if (!$this->checkSynchroAbsenceAgregationTable($dateDebut, $dateDebutClone)) {
 				$this->updateAbsenceAgregationTable($dateDebut, $dateDebutClone);
