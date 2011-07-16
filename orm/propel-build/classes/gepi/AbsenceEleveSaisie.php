@@ -637,7 +637,6 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 				    if (null !== $criteria) {
 					return AbsenceEleveTraitementQuery::create(null, $criteria)
 						->filterByAbsenceEleveSaisie($this)
-                        ->filterByDeletedAt('Null')
 						->find($con);
 				    } else {
 					//on utilise du sql directement pour optimiser la requete
