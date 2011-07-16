@@ -109,8 +109,38 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 		}
 	    }
 	    return $result;
-	}
-
+	}    
+    /**
+	 *
+	 * Renvoi une liste intelligible des types de notifications
+	 *
+	 * @return     String description
+	 *
+	 */
+	public function getTypesNotificationsDescription() {
+        $traitement_col = $this->getAbsenceEleveTraitements();
+        $result = '';
+        $besoin_echo_type = true;
+        $besoin_echo_virgule = false;
+        foreach ($traitement_col as $bou_traitement) {
+            foreach ($bou_traitement->getAbsenceEleveNotifications() as $notification) {
+                if ($notification->getTypeNotification() != null) {
+                    if ($besoin_echo_type) {
+                        $result .= 'type : ';
+                        $besoin_echo_type = false;
+                    }
+                    if ($besoin_echo_virgule) {
+                        $result .= ', ';
+                        $besoin_echo_virgule = false;
+                    }
+                    $result .= $notification->getTypeNotification();
+                    $besoin_echo_virgule = true;
+                }
+            }
+        }
+        return $result;
+    } 
+    
     /**
 	 *
 	 * Renvoi une liste des types associes ou non traitée sinon
@@ -561,6 +591,23 @@ class AbsenceEleveSaisie extends BaseAbsenceEleveSaisie {
 	    }
 	    return false;
 	}
+    /**
+	 *
+	 * Renvoi true si une notification est prête à envoyée ou envoyée à la famille
+	 *
+	 * @return     boolean
+	 *
+	 */
+	public function getNotificationEnCours() {
+        foreach ($this->getAbsenceEleveTraitements() as $traitement) {
+            foreach ($traitement->getAbsenceEleveNotifications() as $notification) {               
+                if ($notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL || $notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_EN_COURS) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 	/**
 	 * Gets a collection of AbsenceEleveTraitement objects related by a many-to-many relationship
