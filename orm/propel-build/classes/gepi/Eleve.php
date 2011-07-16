@@ -1678,8 +1678,10 @@ class Eleve extends BaseEleve {
 		if ($dateDebut != null) {
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
+			//on va vérifier si avant la date précisée la table est correcte
+			$this->checkAndUpdateSynchroAbsenceAgregationTable(null, $dateDebut);
 		}
-		if ($dateFin != null && $dateDebut != null) {
+		if ($dateFin != null) {
 			$dateFinClone = clone $dateFin;
 			$dateFinClone->setTime(23,59);
 		}
@@ -1884,7 +1886,7 @@ class Eleve extends BaseEleve {
 		}
 		
 		//si $dateDebutClone est null ou $dateFinClone est nul c'est qu'il n'y a eu aucun calcul précédent, donc on ne peut pas racourcir.
-		//si une des date n'est pas nulle on sépare en trois calcel : $dateDebut à $dateDebutClone, puis $dateDebutClone à $dateFinClone,
+		//si une des date n'est pas nulle on sépare en trois calculs : $dateDebut à $dateDebutClone, puis $dateDebutClone à $dateFinClone,
 		//puis $dateFinClone à $dateFin
 		if ($dateDebutClone != null && $dateFinClone != null) {
 			if (!$this->checkSynchroAbsenceAgregationTable($dateDebut, $dateDebutClone)) {
