@@ -39,7 +39,8 @@ echo '<!--[if lt IE 7]>
 <![endif]-->
 ';
 
-	$mes_groupes=get_groups_for_prof($_SESSION['login']);
+	//$mes_groupes=get_groups_for_prof($_SESSION['login']);
+	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes'));
 	$tmp_mes_classes=array();
 	foreach($mes_groupes as $tmp_group) {
 		foreach($tmp_group["classes"]["classes"] as $key_id_classe => $value_tab_classe) {

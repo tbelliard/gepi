@@ -48,7 +48,8 @@ if (!$_SESSION["login"]) {
 include("tbs_menu_plugins.inc.php");
 
 	//=======================================================
-	$mes_groupes=get_groups_for_prof($_SESSION['login']);
+	//$mes_groupes=get_groups_for_prof($_SESSION['login']);
+	$mes_groupes=get_groups_for_prof($_SESSION['login'],NULL,array('classes', 'periodes'));
 	$tmp_mes_classes=array();
 	foreach($mes_groupes as $tmp_group) {
 		//echo $tmp_group['name']." ".$tmp_group['classlist_string']."<br />";

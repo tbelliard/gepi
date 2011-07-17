@@ -4,7 +4,7 @@
  *
  */
 
-function get_groups_for_prof($_login,$mode=NULL) {
+function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
 	//Modif Eric
     //$query = mysql_query("select id_groupe from j_groupes_professeurs WHERE login = '" . $_login . "'");
 	// Par discipline puis par classe
@@ -29,7 +29,7 @@ function get_groups_for_prof($_login,$mode=NULL) {
 						"GROUP BY jgp.id_groupe ".
 						"ORDER BY jgm.id_matiere, c.classe" ;
 	}
-	else{
+	else {
 		/*
 		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere,  jgc.id_classe
 						FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc
@@ -57,7 +57,13 @@ function get_groups_for_prof($_login,$mode=NULL) {
     $groups = array();
     for ($i=0;$i<$nb;$i++) {
         $_id_groupe = mysql_result($query, $i, "id_groupe");
-        $groups[] = get_group($_id_groupe);
+        //$groups[] = get_group($_id_groupe);
+		if(count($tab_champs)>0) {
+			$groups[] = get_group($_id_groupe,$tab_champs);
+		}
+		else {
+			$groups[] = get_group($_id_groupe);
+		}
     }
 
 	// current_group["classes"]["classes"][$c_id]["classe"]
