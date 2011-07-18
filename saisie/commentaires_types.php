@@ -922,6 +922,6 @@ function tout_decocher(){
 ?>
 </form>
 <p><br /></p>
-</div>
-</body>
-</html>
+<?php
+require("../lib/footer.inc.php");
+?>
