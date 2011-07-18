@@ -65,20 +65,24 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
 //récupération des paramètres de la requète
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :(isset($_SESSION["id_traitement"]) ? $_SESSION["id_traitement"] : NULL));
 if (isset($id_traitement) && $id_traitement != null) $_SESSION['id_traitement'] = $id_traitement;
-
+$menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : Null);
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
-$titre_page = "Les absences";
+if(!$menu){
+   $titre_page = "Les absences"; 
+}
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-include('menu_abs2.inc.php');
+if(!$menu){
+    include('menu_abs2.inc.php');
+}
 //===========================
 echo "<div class='css-panes' style='background-color:#ebedb5;' id='containDiv' style='overflow : auto;'>\n";
 
@@ -126,14 +130,7 @@ echo 'Saisies : ';
 echo '</td><td>';
 echo '<table style="background-color:#cae7cb;">';
 $eleve_prec_id = null;
-if ($traitement->getAbsenceEleveSaisies()->isEmpty() && $traitement->getModifiable()) {
-    echo '<form method="post" action="liste_saisies_selection_traitement.php">';
-	echo '<p>';
-    echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
-    echo '<button type="submit">Ajouter</button>';
-	echo '</p>';
-    echo '</form>';
-}
+
 foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
     //$saisie = new AbsenceEleveSaisie();
     if ($saisie->getEleve() == null) {
@@ -182,8 +179,9 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	    echo "</a>";
 	}
 	echo '<div style="float: right; margin-top:0.35em; margin-left:0.2em;">';
-	if ($traitement->getModifiable()) {
+	if ($traitement->getAbsenceEleveSaisies()->isEmpty() && $traitement->getModifiable()) {
 	    echo '<form method="post" action="liste_saisies_selection_traitement.php">';
+        echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 	    echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 	    echo '<input type="hidden" name="filter_eleve" value="'.$saisie->getEleve()->getNom().'"/>';
@@ -197,7 +195,11 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	$eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
     }
     echo '<div>';
-    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='height: 100%;'> ";
+    echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo"' style='height: 100%;'> ";
     echo $saisie->getDateDescription();
     echo ' ';
     echo $saisie->getTypesDescription();
@@ -205,6 +207,7 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
     echo '<div style="float: right;  margin-top:-0.22em; margin-left:0.2em;">';
     if ($traitement->getModifiable()) {
 	echo '<form method="post" action="enregistrement_modif_traitement.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 	echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="enlever_saisie"/>';
@@ -222,6 +225,7 @@ foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 if (!$traitement->getAbsenceEleveSaisies()->isEmpty()) {
     echo '<br/>';
     echo '<form method="post" action="liste_saisies_selection_traitement.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
     echo '<p>';
     echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="filter_recherche_saisie_a_rattacher" value="oui"/>';
@@ -242,6 +246,7 @@ echo '</td><td>';
     $type_autorises = AbsenceEleveTypeStatutAutoriseQuery::create()->filterByStatut($utilisateur->getStatut())->useAbsenceEleveTypeQuery()->orderBySortableRank()->endUse()->find();
     if ($type_autorises->count() != 0) {
 	echo '<form method="post" action="enregistrement_modif_traitement.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 	echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="type"/>';
@@ -283,6 +288,7 @@ echo 'Motif : ';
 echo '</td><td>';
 $motifs = AbsenceEleveMotifQuery::create()->orderByRank()->find();
 echo '<form method="post" action="enregistrement_modif_traitement.php">';
+echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 echo '<input type="hidden" name="modif" value="motif"/>';
@@ -309,6 +315,7 @@ echo 'Justification : ';
 echo '</td><td>';
 $justifications = AbsenceEleveJustificationQuery::create()->orderByRank()->find();
 echo '<form method="post" action="enregistrement_modif_traitement.php">';
+echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 echo '<input type="hidden" name="modif" value="justification"/>';
@@ -334,6 +341,7 @@ echo '<tr><td>';
 echo 'Commentaire : ';
 echo '</td><td>';
 echo '<form method="post" action="enregistrement_modif_traitement.php">';
+echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 echo '<input type="hidden" name="modif" value="commentaire"/>';
@@ -350,7 +358,11 @@ echo '<table style="background-color:#c7e3ec;">';
 $eleve_prec_id = null;
 foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
     echo '<tr><td>';
-    echo "<a href='visu_notification.php?id_notification=".$notification->getId()."' style='display: block; height: 100%;'> ";
+    echo "<a href='visu_notification.php?id_notification=".$notification->getId()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo"' style='display: block; height: 100%;'> ";
     if ($notification->getDateEnvoi() != null) {
 	echo (strftime("%a %d/%m/%Y %H:%M", $notification->getDateEnvoi('U')));
     } else {
@@ -365,6 +377,7 @@ foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
 }
 echo '<tr><td>';
 echo '<form method="post" action="enregistrement_modif_notification.php">';
+echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
 echo '<input type="hidden" name="creation_notification" value="oui"/>';
@@ -403,6 +416,8 @@ if ($traitement->getCreatedAt() != $traitement->getUpdatedAt()) {
 if ($traitement->getModifiable()) {
     echo '<tr><td colspan="2" align="center">';
     echo '<form method="post" action="enregistrement_modif_traitement.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
+    echo '<input type="hidden" name="id_saisie_appel" value="'.$id_saisie_appel.'"/>';
 	echo '<p>';
     echo '<input type="hidden" name="id_traitement" value="'.$traitement->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="supprimer"/>';

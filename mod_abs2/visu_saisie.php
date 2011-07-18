@@ -64,22 +64,27 @@ if ($utilisateur->getStatut()=="professeur" &&  getSettingValue("active_module_a
 
 //récupération des paramètres de la requète
 $id_saisie = isset($_POST["id_saisie"]) ? $_POST["id_saisie"] :(isset($_GET["id_saisie"]) ? $_GET["id_saisie"] :(isset($_SESSION["id_saisie"]) ? $_SESSION["id_saisie"] : NULL));
+$menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : NULL);
 if (isset($id_saisie) && $id_saisie != null) $_SESSION['id_saisie'] = $id_saisie;
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
-$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+//$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
+//$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
+//$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
+if(!$menu){
 $titre_page = "Les absences";
+}
 $utilisation_jsdivdrag = "non";
+$dojo = true;
 $_SESSION['cacher_header'] = "y";
+
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
-
+if(!$menu){
 include('menu_abs2.inc.php');
-
+}
 echo "<div class='css-panes' style='background-color:#cae7cb;' id='containDiv' style='overflow : auto;'>\n";
 
 
@@ -107,9 +112,9 @@ if ($saisie != null) {
 //Une saisie est modifiable ssi : elle appartient à l'utilisateur de la session si c'est un prof,
 //elle date de moins d'une heure et l'option a ete coché partie admin
 $modifiable = true;
-if ($utilisateur->getStatut() == 'professeur') {
-	if (!getSettingValue("abs2_modification_saisie_une_heure")=='y' || !$saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() || !$saisie->getVersionCreatedAt('U') > (time() - 3600)) {
-	    $modifiable = false;
+if ($utilisateur->getStatut() == 'professeur') {    
+	if (!getSettingValue("abs2_modification_saisie_une_heure")=='y' || !$saisie->getUtilisateurId() == $utilisateur->getPrimaryKey() || !($saisie->getVersionCreatedAt('U') > (time() - 3600))) {
+	   $modifiable = false;
 	}
 } else {
 	if ($utilisateur->getStatut() != 'cpe' && $utilisateur->getStatut() != 'scolarite') {
@@ -141,14 +146,15 @@ echo $saisie->getPrimaryKey();
     	echo ')</font> ';
     }
 echo '</TD><TD>';
-if ($modifiable) {
-    echo '<form method="post" action="enregistrement_modif_saisie.php">';
+if ($modifiable) {   
+    echo '<form dojoType="dijit.form.Form" jsId="suppression_restauration" id="suppression_restauration"  method="post" action="./enregistrement_modif_saisie.php">';
     echo '<input type="hidden" name="id_saisie" value="' . $saisie->getPrimaryKey() . '"/>';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
     if ($saisie->getDeletedAt() == null) {
         echo '<img src="../images/delete16.png"/>';
         //echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=suppression">';
         echo'<input type="hidden" name="action" value="suppression">';
-        echo '<button>Supprimer la saisie</button>';
+        echo '<button dojoType="dijit.form.Button" type="submit">Supprimer la saisie</button>';
         //echo '</a>';
     } else {
         //on autorise la restauration pour un autre que cpe ou scola uniquement si c'est l'utilisateur en cours qui a fait auparavant la suppression
@@ -156,15 +162,21 @@ if ($modifiable) {
                 || ($saisie->getDeletedBy() == $utilisateur->getLogin())) {
             //echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&action=restauration">';
             echo'<input type="hidden" name="action" value="restauration">';
-            echo '<button type="submit">Restaurer la saisie</button>';
+            echo '<button dojoType="dijit.form.Button" type="submit">Restaurer la saisie</button>';
             //echo '</a>';
         }
     }
     echo'</form>';
 }
 echo '</TD></tr>';
-echo '<form method="post" action="enregistrement_modif_saisie.php">';
+echo '</TBODY>';
+
+echo '</table>';
+echo '<form dojoType="dijit.form.Form" jsId="modification" id="modification"  method="post" action="./enregistrement_modif_saisie.php">';
 echo '<input type="hidden" name="id_saisie" value="' . $saisie->getPrimaryKey() . '"/>';
+echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
+echo '<table class="normal">';
+echo '<TBODY>';
 echo '<tr>';
 if ($saisie->getEleve() == null) {
     echo '<TD colspan="3">';
@@ -246,11 +258,11 @@ if (!$modifiable || $saisie->getDeletedAt() != null ) {
 	echo (strftime(" %a %d/%m/%Y", $saisie->getDebutAbs('U')));
 	echo '<input name="date_debut" value="'.$saisie->getDebutAbs('d/m/Y').'" type="hidden"/></nobr> ';
     } else {
-	echo '<input id="trigger_calendrier_debut" name="date_debut" value="'.$saisie->getDebutAbs('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+	echo '<input id="trigger_calendrier_debut" name="date_debut"  type="text" dojoType="dijit.form.DateTextBox"  value="'. $saisie->getDebutAbs('Y-m-d').'"  style="width : 8em"/></nobr> ';
 
     //    echo '<img id="trigger_date_debut" src="../images/icons/calendrier.gif"/>';
 	echo '</nobr>';
-	echo '
+	/*echo '
 	<script type="text/javascript">
 	    Calendar.setup({
 		inputField     :    "trigger_calendrier_debut",     // id of the input field
@@ -259,7 +271,7 @@ if (!$modifiable || $saisie->getDeletedAt() != null ) {
 		align          :    "Tl",           // alignment (defaults to "Bl")
 		singleClick    :    true
 	    });
-	</script>';
+	</script>';*/
     }
 }
 echo '</TD></tr>';
@@ -276,11 +288,11 @@ if (!$modifiable || $saisie->getDeletedAt() != null) {
 	echo (strftime(" %a %d/%m/%Y", $saisie->getFinAbs('U')));
 	echo '<input name="date_fin" value="'.$saisie->getFinAbs('d/m/Y').'" type="hidden"/></nobr> ';
     } else {
-	echo '<input id="trigger_calendrier_fin" name="date_fin" value="'.$saisie->getFinAbs('d/m/Y').'" type="text" maxlength="10" size="8"/></nobr> ';
+	echo '<input id="trigger_calendrier_fin" name="date_fin" type="text" dojoType="dijit.form.DateTextBox"  value="'. $saisie->getFinAbs('Y-m-d').'"  style="width : 8em"/></nobr> ';
 
 	//echo '<img id="trigger_date_debut" src="../images/icons/calendrier.gif"/>';
 	echo '</nobr>';
-	echo '
+	/*echo '
 	<script type="text/javascript">
 	    Calendar.setup({
 		inputField     :    "trigger_calendrier_fin",     // id of the input field
@@ -289,7 +301,7 @@ if (!$modifiable || $saisie->getDeletedAt() != null) {
 		align          :    "Tl",           // alignment (defaults to "Bl")
 		singleClick    :    true
 	    });
-	</script>';
+	</script>';*/
     }
 }
 echo '</TD></tr>';
@@ -325,11 +337,15 @@ foreach ($saisie->getAbsenceEleveTraitements() as $traitement) {
 			echo "</option>\n";
 		}
 		echo "</select>";
-		echo '<button type="submit" name="modifier_type" value="vrai">Mod. le type</button>';
+		echo '<button dojoType="dijit.form.Button" type="submit" name="modifier_type" value="vrai">Mod. le type</button>';
 	}
     }else {
 	if ($utilisateur->getStatut() != 'professeur') {
-	    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."' style='display: block; height: 100%;'> ";
+	    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."&id_saisie_appel=".$id_saisie."";
+        if($menu){
+                echo"&menu=false";
+            } 
+        echo"' style='display: block; height: 100%;'> ";
 	    echo $traitement->getDescription();
 	    echo "</a>";
 	} else {
@@ -351,7 +367,7 @@ if ($total_traitements_modifiable == 0 && $utilisateur->getStatut() == 'professe
 	    echo "</option>\n";
     }
     echo "</select>";
-    echo '<button type="submit" name="modifier_type" value="vrai">Ajouter</button>';
+    echo '<button dojoType="dijit.form.Button" type="submit" name="modifier_type" value="vrai">Ajouter</button>';
 }
 
 echo '<input type="hidden" name="total_traitements" value="'.$total_traitements_modifiable.'"/>';
@@ -423,7 +439,7 @@ if (!$saisies_conflit_col->isEmpty()) {
 echo '</TD></tr>';
 if ($modifiable) {
     echo '<tr><TD colspan= "3" style="text-align : center;">';
-    echo '<button type="submit"';
+    echo '<button dojoType="dijit.form.Button" type="submit"';
     if ($saisie->getDeletedAt() != null) echo 'disabled';
     echo '>Enregistrer les modifications</button>';
     echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -432,7 +448,7 @@ if ($modifiable) {
 
 if ($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite") {
     echo '<tr><TD colspan="3" style="text-align : center;">';
-    echo '<button type="submit" name="creation_traitement" value="oui"';
+    echo '<button dojoType="dijit.form.Button" type="submit" name="creation_traitement" value="oui"';
     if ($saisie->getDeletedAt() != null) echo 'disabled';
     echo '>Traiter la saisie</button>';
     echo '</TD></tr>';
@@ -468,7 +484,11 @@ if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite")
 	    echo '</TD>';
     	echo '<td>';
     	if ($version->getVersion() != $saisie->getVersion() && $saisie->getDeletedAt() == null) {
-    		echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&version='.$version->getVersion().'">Revenir à cette version</a>';
+    		echo '<a href="enregistrement_modif_saisie.php?id_saisie='.$saisie->getPrimaryKey().'&version='.$version->getVersion().'';
+            if($menu){
+                echo'&menu=false';
+            } 
+            echo' ">Revenir à cette version</a>';
     	}
     	echo '</td>';
     	echo '</tr>';
@@ -476,12 +496,22 @@ if (($utilisateur->getStatut()=="cpe" || $utilisateur->getStatut()=="scolarite")
     echo '</table>';
     echo '</TD></tr>';
 }
-echo '</form>';
+
 echo '</TBODY>';
 
 echo '</table>';
-
+echo '</form>';
 echo "</div>\n";
+$javascript_footer_texte_specifique = '<script type="text/javascript">
+    dojo.require("dijit.form.Button");
+    dojo.require("dijit.Menu");
+    dojo.require("dijit.form.Form");
+    dojo.require("dijit.form.CheckBox");
+    dojo.require("dijit.form.DateTextBox");
+    dojo.require("dojo.parser");    
+    dojo.addOnLoad(function() {
+	});	
+</script>';
 
 require_once("../lib/footer.inc.php");
 

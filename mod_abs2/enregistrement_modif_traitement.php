@@ -65,6 +65,7 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
 //récupération des paramètres de la requète
 $id_traitement = isset($_POST["id_traitement"]) ? $_POST["id_traitement"] :(isset($_GET["id_traitement"]) ? $_GET["id_traitement"] :NULL);
 $modif = isset($_POST["modif"]) ? $_POST["modif"] :(isset($_GET["modif"]) ? $_GET["modif"] :null);
+$menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : Null);
 
 $message_enregistrement = '';
 $traitement = AbsenceEleveTraitementQuery::create()->findPk($id_traitement);
@@ -90,7 +91,11 @@ if ($modif == 'type') {
     }
 } elseif ($modif == 'supprimer') {
     $traitement->delete();
-    include("liste_traitements.php");
+    if($menu){
+        include("visu_saisie.php");
+    }else{
+        include("liste_traitements.php");
+    }    
     die;
 }
 

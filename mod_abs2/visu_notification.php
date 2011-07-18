@@ -65,6 +65,7 @@ if ($utilisateur->getStatut()!="cpe" && $utilisateur->getStatut()!="scolarite") 
 //récupération des paramètres de la requète
 $id_notification = isset($_POST["id_notification"]) ? $_POST["id_notification"] :(isset($_GET["id_notification"]) ? $_GET["id_notification"] :(isset($_SESSION["id_notification"]) ? $_SESSION["id_notification"] : NULL));
 if (isset($id_notification) && $id_notification != null) $_SESSION['id_notification'] = $id_notification;
+$menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : NULL);
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
@@ -72,13 +73,17 @@ $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
-$titre_page = "Les absences";
+if(!$menu){
+    $titre_page = "Les absences";
+}
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-include('menu_abs2.inc.php');
+if(!$menu){
+    include('menu_abs2.inc.php');
+}
 //===========================
 echo "<div class='css-panes' style='background-color:#c7e3ec;' id='containDiv' style='overflow : auto;'>\n";
 
@@ -108,7 +113,11 @@ echo $notification->getPrimaryKey();
 if ($notification->getAbsenceEleveTraitement() == null) {
 	echo ' (notification orpheline)';
 } else {
-	echo " <a style='background-color:#ebedb5;' href='visu_traitement.php?id_traitement=".$notification->getATraitementId()."'>";
+	echo " <a style='background-color:#ebedb5;' href='visu_traitement.php?id_traitement=".$notification->getATraitementId()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "';>";
 	echo '(voir traitement)';
 	echo "</a>";
 }
@@ -170,7 +179,11 @@ if ($notification->getAbsenceEleveTraitement() != null) {
 	    $eleve_prec_id = $saisie->getEleve()->getPrimaryKey();
 	}
 	echo '<div>';
-	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'> ";
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%;'> ";
 	echo $saisie->getdateDescription();
 	echo "</a>";
 	echo '</div>';
@@ -188,6 +201,7 @@ echo 'Type de notification : ';
 echo '</td><td>';
 if ($notification->getModifiable()) {
     echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="type"/>';
@@ -232,6 +246,7 @@ foreach ($notification->getResponsableEleves() as $responsable) {
     if ($notification->getModifiable()) {
 	echo '<div style="float: right;">';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="pers_id" value="'.$responsable->getPrimaryKey().'"/>';
@@ -251,6 +266,7 @@ if ($notification->getModifiable()) {
 	if ($notification->getResponsableEleves()->count() != $notification->getAbsenceEleveTraitement()->getResponsablesInformationsSaisies()->count()) {
 	    echo '<div>';
 	    echo '<form method="post" action="enregistrement_modif_notification.php">';
+        echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	    echo '<p>';
 	    echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	    echo '<input type="hidden" name="modif" value="ajout_responsable"/>';
@@ -280,6 +296,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
     } else {
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="email"/>';
@@ -312,6 +329,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 	echo ' ou ';
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="email"/>';
@@ -335,6 +353,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
     } else {
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="tel"/>';
@@ -383,6 +402,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 	echo ' ou ';
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="tel"/>';
@@ -434,6 +454,7 @@ if (($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_
     if ($notification->getModifiable()) {
 	echo '<div>';
 	echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
 	echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
 	echo '<input type="hidden" name="modif" value="adresse"/>';
@@ -494,6 +515,7 @@ echo '</td><td>';
 //on ne modifie manuellement le statut si le type est courrier ou communication téléphonique
 if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER || $notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COMMUNICATION_TELEPHONIQUE) {
     echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="statut"/>';
@@ -514,6 +536,7 @@ if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_N
 	$notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER) {
     //on autorise un changement de statut entre initial et pret a envoyer
     echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
     echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="statut"/>';
@@ -575,6 +598,7 @@ if ($notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_N
 	$notification->getStatutEnvoi() == AbsenceEleveNotificationPeer::STATUT_ENVOI_PRET_A_ENVOYER)) {
     echo '<tr><td colspan="2" style="text-align : center;">';
     echo '<form method="post" action="generer_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
     echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     if ($notification->getTypeNotification() == AbsenceEleveNotificationPeer::TYPE_NOTIFICATION_COURRIER) {
@@ -593,6 +617,7 @@ if ($notification->getTypeNotification() != AbsenceEleveNotificationPeer::TYPE_N
 if ($notification->getStatutEnvoi() != AbsenceEleveNotificationPeer::STATUT_ENVOI_ETAT_INITIAL) {
     echo '<tr><td colspan="2" style="text-align : center;">';
     echo '<form method="post" action="enregistrement_modif_notification.php">';
+    echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 	echo '<p>';
     echo '<input type="hidden" name="id_notification" value="'.$notification->getPrimaryKey().'"/>';
     echo '<input type="hidden" name="modif" value="duplication"/>';

@@ -67,6 +67,7 @@ $id_saisie = isset($_POST["id_saisie"]) ? $_POST["id_saisie"] :(isset($_GET["id_
 $date_debut = isset($_POST["date_debut"]) ? $_POST["date_debut"] :(isset($_GET["date_debut"]) ? $_GET["date_debut"] :NULL);
 $date_fin = isset($_POST["date_fin"]) ? $_POST["date_fin"] :(isset($_GET["date_fin"]) ? $_GET["date_fin"] :NULL);
 $commentaire = isset($_POST["commentaire"]) ? $_POST["commentaire"] :(isset($_GET["commentaire"]) ? $_GET["commentaire"] :NULL);
+$menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : Null);
 
 $message_enregistrement = '';
 $saisie = AbsenceEleveSaisieQuery::create()->includeDeleted()->findPk($id_saisie);
@@ -86,7 +87,7 @@ if ( isset($_POST["creation_traitement"])) {
     $traitement->setUtilisateurProfessionnel($utilisateur);
     $traitement->addAbsenceEleveSaisie($saisie);
     $traitement->save();
-    header("Location: ./visu_traitement.php?id_traitement=".$traitement->getId());
+    header("Location: ./visu_traitement.php?id_traitement=".$traitement->getId().'&menu='.$menu);
     die();
 } elseif ( isset($_POST["modifier_type"])) {
     $message_enregistrement .= modif_type($saisie, $utilisateur);

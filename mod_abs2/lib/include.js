@@ -83,3 +83,41 @@ function refresh(compteur,affichage,tri,sans_commentaire,ods2,non_traitees,nom_e
     window.location.href = './bilan_individuel.php?cpt_classe='+compteur+'&affichage='+affichage+'&tri='+tri+'&sans_commentaire='+sans_commentaire+'&ods2='+ods2+'&non_traitees='+non_traitees+'&nom_eleve='+nom_eleve
     +'&texte_conditionnel='+texte_conditionnel+'&filtrage='+filtrage+'&type_filtrage='+type_filtrage+'&ndj='+ndj+'&ndjnj='+ndjnj+'&nr='+nr;
 }
+function showwindow(url,title){
+ 
+ var Height=document.documentElement.clientHeight-75;
+ var Width=document.documentElement.clientWidth-75;
+ var win = new Window({title: title, width:Width , height:Height, url: url, showEffectOptions: {duration:0.5}}); 
+ win.showCenter(); 
+ myObserver={
+     onClose:function(){
+         Windows.removeObserver(this);
+         window.document.forms['absences_du_jour'].submit();
+     }
+ }
+ Windows.addObserver(myObserver); 
+}
+function postwindow(the_form,title){
+ my_form = eval(the_form)
+ var Height=document.documentElement.clientHeight-75;
+ var Width=document.documentElement.clientWidth-75;
+ var element = document.createElement('input');
+		element.setAttribute('type', 'hidden');
+		element.setAttribute('name', 'menu');
+		element.setAttribute('value', 'false');
+		my_form.appendChild(element);
+ var win = new Window({className:"dialog", title: title, url:'./index.php',width:Width , height:Height, showEffectOptions: {duration:0.5}});
+ win.showCenter();
+ win.name=win.getId()+'_content';
+ my_form.target=win.name;
+ my_form.submit(); 
+ 
+ myObserver={     
+     onClose:function(){
+         Windows.removeObserver(this);
+         window.document.forms['absences_du_jour'].submit();
+     }    
+     
+ }
+ Windows.addObserver(myObserver); 
+}

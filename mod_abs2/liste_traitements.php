@@ -67,6 +67,7 @@ include('include_requetes_filtre_de_recherche.php');
 include('include_pagination.php');
 
 $affichage = isset($_POST["affichage"]) ? $_POST["affichage"] :(isset($_GET["affichage"]) ? $_GET["affichage"] : NULL);
+$menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : Null);
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
@@ -74,7 +75,9 @@ $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
-$titre_page = "Les absences";
+if(!$menu){
+   $titre_page = "Les absences"; 
+}
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 
@@ -309,12 +312,14 @@ if ($affichage == 'tableur') {
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-include('menu_abs2.inc.php');
+if(!$menu){
+    include('menu_abs2.inc.php');
+}
 
 echo "<div class='css-panes' style='background-color:#ebedb5;' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
 echo '<form method="post" action="liste_traitements.php" id="liste_traitements">';
-
+echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
   echo "<p>";
   
 if ($traitements_col->haveToPaginate()) {
@@ -673,7 +678,11 @@ foreach ($results as $traitement) {
 
     //donnees id
     echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%;'> ";
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%;'> ";
     echo $traitement->getId();
     echo "</a>";
     echo '</td>';
@@ -703,14 +712,18 @@ foreach ($results as $traitement) {
 	echo ($eleve->getCivilite().' '.$eleve->getNom().' '.$eleve->getPrenom());
 	echo "</a>";
 	if ($utilisateur->getAccesFicheEleve($eleve)) {
-	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
-	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
+	    echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' target='_blank'>";
+	    //echo "<a href='../eleves/visu_eleve.php?ele_login=".$eleve->getLogin()."' >";
 	    echo ' (voir fiche)';
 	    echo "</a>";
 	}
 	echo "</td>";
 	echo "<td style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%;'>";
-	echo "<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."&order=asc_eleve' style='display: block; height: 100%;'> ";
+	echo "<a href='liste_traitements.php?filter_eleve=".$eleve->getNom()."&order=asc_eleve";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%;'> ";
  	if ((getSettingValue("active_module_trombinoscopes")=='y')) {
 	    $nom_photo = $eleve->getNomPhoto(1);
 	    //$photos = "../photos/eleves/".$nom_photo;
@@ -734,7 +747,11 @@ foreach ($results as $traitement) {
     foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
-	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
+	echo "<a href='visu_saisie.php?id_saisie=".$saisie->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%;'>\n";
 	echo $saisie->getDescription();
 	echo "</a>";
 	echo "</td>";
@@ -747,7 +764,11 @@ foreach ($results as $traitement) {
 
     //donnees classe
     echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%; color: #330033'> ";
     $classe_col = new PropelObjectCollection();
     foreach ($traitement->getAbsenceEleveSaisies() as $saisie) {
 	if ($saisie->getClasse() != null) {
@@ -766,7 +787,11 @@ foreach ($results as $traitement) {
     //donnees type
     //echo '<td><nobr>';
     echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo" ' style='display: block; height: 100%; color: #330033'>\n";
     if ($traitement->getAbsenceEleveType() != null) {
 	echo $traitement->getAbsenceEleveType()->getNom();
     } else {
@@ -802,7 +827,11 @@ foreach ($results as $traitement) {
     //donnees justification
     //echo '<td><nobr>';
     echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%; color: #330033'>\n";
     if ($traitement->getAbsenceEleveJustification() != null) {
 	echo $traitement->getAbsenceEleveJustification()->getNom();
     } else {
@@ -814,14 +843,22 @@ foreach ($results as $traitement) {
 
     //donnees notification
     echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'> ";
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%; color: #330033'> ";
     echo "</a>";
 	if (count($traitement->getAbsenceEleveNotifications())){
     echo "<table style='border-spacing:0px; border-style : none; margin : 0px; padding : 0px; font-size:100%; min-width:150px; width: 100%;'>";
     foreach ($traitement->getAbsenceEleveNotifications() as $notification) {
 	echo "<tr style='border-spacing:0px; border-style : solid; border-size : 1px; margin : 0px; padding : 0px; font-size:100%;'>";
 	echo "<td style='border-spacing:0px; border-style : solid; border-size : 1px; çargin : 0px; padding-top : 3px; font-size:100%;'>";
-	echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."' style='display: block; height: 100%;'>\n";
+	echo "<a href='visu_notification.php?id_notification=".$notification->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%;'>\n";
 	echo $notification->getDescription();
 	echo "</a>";
 	echo "</td>";
@@ -834,20 +871,32 @@ foreach ($results as $traitement) {
 
     //echo '<td><nobr>';
     echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%; color: #330033'>\n";
     echo (strftime("%a %d/%m/%Y %H:%M", $traitement->getCreatedAt('U')));
     echo "</a>";
     //echo '</nobr></td>';
     echo '</td>';
 
     echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%; color: #330033'>\n";
     echo (strftime("%a %d/%m/%Y %H:%M", $traitement->getUpdatedAt('U')));
     echo "</a>";
     echo '</td>';
 
     echo '<td>';
-    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."' style='display: block; height: 100%; color: #330033'>\n";
+    echo "<a href='visu_traitement.php?id_traitement=".$traitement->getPrimaryKey()."";
+    if($menu){
+                echo"&menu=false";
+            } 
+    echo "' style='display: block; height: 100%; color: #330033'>\n";
     echo ($traitement->getCommentaire());
     echo "&nbsp;";
     echo "</a>";

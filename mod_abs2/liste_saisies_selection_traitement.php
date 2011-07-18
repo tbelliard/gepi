@@ -86,6 +86,7 @@ include('include_requetes_filtre_de_recherche.php');
 
 include('include_pagination.php');
 
+$menu = isset($_POST["menu"]) ? $_POST["menu"] :(isset($_GET["menu"]) ? $_GET["menu"] : NULL);
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
 $style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
@@ -93,14 +94,18 @@ $javascript_specifique[] = "lib/DHTMLcalendar/calendar";
 $javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
 $javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 $javascript_specifique[] = "mod_abs2/lib/include";
-$titre_page = "Les absences";
+if(!$menu){
+    $titre_page = "Les absences";
+}
 $utilisation_jsdivdrag = "non";
 $_SESSION['cacher_header'] = "y";
 $dojo = true;
 require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
-include('menu_abs2.inc.php');
+if(!$menu){
+   include('menu_abs2.inc.php'); 
+}
 
 echo "<div class='css-panes' style='background-color:#cae7cb;' id='containDiv' style='overflow : none; float : left; margin-top : -1px; border-width : 1px;'>\n";
 
@@ -327,7 +332,7 @@ if (isset($message_erreur_traitement)) {
 }
 
 echo '<form method="post" action="liste_saisies_selection_traitement.php" name="liste_saisies" id="liste_saisies">';
-
+ echo '<input type="hidden" name="menu" value="'.$menu.'"/>';
 ?>    <div id="action_bouton" dojoType="dijit.form.DropDownButton" style="display: inline">
 		<span>Action</span>
 	<div dojoType="dijit.Menu" style="display: inline">
@@ -437,7 +442,12 @@ if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo '<font co
 echo 'Voir les saisies supprimées';
 if (getFiltreRechercheParam('filter_saisies_supprimees') == 'y') {echo '</font>';}
 if (getFiltreRechercheParam('filter_recherche_saisie_a_rattacher') == 'oui' && $traitement != null) {
-    echo ' | filtre actif : recherche de saisies a rattacher au traitement n° '.$traitement->getId();
+    echo " | filtre actif : recherche de saisies a rattacher au traitement n° ";
+    echo "<a href='./visu_traitement.php?id_traitement=".$traitement->getId()."";
+    if($menu){
+                echo"&menu=false";
+            }
+    echo "'>".$traitement->getId()."</a>";
 }
 echo '</p><p>';
 if (isset($message_erreur_traitement)) {
@@ -993,6 +1003,18 @@ echo '</thead>';
 
 echo '<tbody>';
 $results = $saisies_col->getResults();
+if ($recherche_saisie_a_rattacher == 'oui' && $traitement != null) {
+    if($results->count()==0){
+        echo"<p class='red'>Aucune saisie (de + ou - 24 heures) à rattacher au traitement : ";
+        echo "<a href='visu_traitement.php?id_traitement=".$traitement->getId()."";
+        if($menu){
+                echo"&menu=false";
+            } 
+        echo"'> ";
+	    echo $traitement->getDescription();
+	    echo "</a>";
+    }
+}
 $hier='';
 $numero_couleur=1;
 foreach ($results as $saisie) {
