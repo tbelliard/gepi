@@ -126,15 +126,26 @@ if (isset($_POST['is_posted'])) {
 						//$nom_log = $reg_eleve_login."_t".$i;
 						$nom_log = "avis_eleve_".$i."_".$num_eleve;
 						//=========================
+						// ***** AJOUT POUR LES MENTIONS *****
+						unset($mention);
+						$id_mention = isset($_POST['mention_eleve_'.$j.'_'.$i]) ? $_POST['mention_eleve_'.$j.'_'.$i] : NULL;
+						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 
 						$avis = traitement_magic_quotes(corriger_caracteres($NON_PROTECT[$nom_log]));
 						$test_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$reg_eleve_login' AND periode='$i')");
 						$test = mysql_num_rows($test_eleve_avis_query);
 						if ($test != "0") {
-							$register = mysql_query("UPDATE avis_conseil_classe SET avis='$avis',statut='' WHERE (login='$reg_eleve_login' AND periode='$i')");
+							$sql="UPDATE avis_conseil_classe SET avis='$avis',";
+							if(isset($id_mention)) {$sql.="id_mention='$id_mention',";}
+							$sql.="statut='' WHERE (login='$reg_eleve_login' AND periode='$i')";
+							$register = mysql_query($sql);
 						} else {
-							$register = mysql_query("INSERT INTO avis_conseil_classe SET login='$reg_eleve_login',periode='$i',avis='$avis',statut=''");
+							$sql="INSERT INTO avis_conseil_classe SET login='$reg_eleve_login',periode='$i',avis='$avis',";
+							if(isset($id_mention)) {$sql.="id_mention='$id_mention',";}
+							$sql.="statut=''";
+							$register = mysql_query($sql);
 						}
+
 						if (!$register) {
 							$msg = "Erreur lors de l'enregistrement des données de la période $i";
 							$pb_record = 'yes';
@@ -500,6 +511,9 @@ function focus_suivant(num){
 		while ($k < $nb_periode) {
 			$current_eleve_avis_query[$k]= mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$k')");
 			$current_eleve_avis_t[$k] = @mysql_result($current_eleve_avis_query[$k], 0, "avis");
+			// ***** AJOUT POUR LES MENTIONS *****
+			$current_eleve_mention_t[$k] = @mysql_result($current_eleve_avis_query[$k], 0, "id_mention");
+			// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 			$current_eleve_login_t[$k] = $current_eleve_login."_t".$k;
 			$k++;
 		}
@@ -517,16 +531,6 @@ function focus_suivant(num){
 				$call_eleve = mysql_query("SELECT login FROM j_eleves_classes WHERE (login = '$current_eleve_login' and id_classe='$id_classe' and periode='$k')");
 				$result_test = mysql_num_rows($call_eleve);
 				if ($result_test != 0) {
-					//echo "<td><textarea id=\"".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=2 cols=120 wrap='virtual' onchange=\"changement()\">";
-
-					//echo "<td>\n<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=2 cols=120 wrap='virtual' onchange=\"changement()\">";
-
-					// onchange=\"changement()\" onfocus=\"focus_suivant(".$k.$num_id.");\"
-
-
-					//=========================
-					// MODIF: boireaus 20071010
-					//echo "<td>\n<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_".$current_eleve_login_t[$k]."\" rows=2 cols=120 wrap='virtual' onchange=\"changement()\" onfocus=\"focus_suivant(".$k.$num_id.");\">";
 					echo "<td>\n";
 					echo "<input type='hidden' name='log_eleve_".$k."[$i]' value=\"".$current_eleve_login_t[$k]."\" />\n";
 					echo "<textarea id=\"n".$k.$num_id."\" onKeyDown=\"clavier(this.id,event);\"  name=\"no_anti_inject_avis_eleve_".$k."_".$i."\" rows='2' cols='120' class='wrap' onchange=\"changement()\"";
@@ -540,6 +544,27 @@ function focus_suivant(num){
 
 					echo "$current_eleve_avis_t[$k]";
 					echo "</textarea>\n";
+					// ***** AJOUT POUR LES MENTIONS *****
+					echo "Mention : ";
+					echo champ_select_mention('mention_eleve_'.$i.'_'.$k,$id_classe,$current_eleve_mention_t[$k]);
+					/*
+					$selectedF="";
+					$selectedM="";
+					$selectedE="";
+					$selectedB="";
+					if($current_eleve_mention_t[$k]=='F') {$selectedF=" selected";}
+					else if($current_eleve_mention_t[$k]=='M') {$selectedM=" selected";}
+					else if($current_eleve_mention_t[$k]=='E') {$selectedE=" selected";}
+					else {$selectedB=" selected";}
+					echo "<select name='mention_eleve_".$i."_".$k."'>\n";
+					echo "<option value='B'$selectedB> </option>\n";
+					echo "<option value='E'$selectedE>Encouragements</option>\n";
+					echo "<option value='M'$selectedM>Mention honorable</option>\n";
+					echo "<option value='F'$selectedF>Félicitations</option>\n";
+					echo "</select>\n";
+					*/
+					// **** FIN DE L'AJOUT POUR LES MENTIONS ****
+
 					//echo "<a href='#' onClick=\"document.getElementById('textarea_courant').value='no_anti_inject_".$current_eleve_login_t[$k]."';afficher_div('commentaire_type','y',30,-150);return false;\">Ajout CC</a>";
 
 					if((file_exists('saisie_commentaires_types.php'))
@@ -557,10 +582,23 @@ function focus_suivant(num){
 				} else {
 					echo "<td><p>$current_eleve_avis_t[$k]&nbsp;</p></td>\n";
 				}
-			} else {
+			}
+			else {
 				echo "<td><p class=\"medium\">";
 				echo "$current_eleve_avis_t[$k]";
-				echo "</p></td>\n";
+				echo "</p>\n";
+				// ***** AJOUT POUR LES MENTIONS *****
+				if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+					$tableau_des_mentions_sur_le_bulletin=get_mentions();
+				}
+
+				if(isset($tableau_des_mentions_sur_le_bulletin[$current_eleve_mention_t[$k]])) {
+					echo "<p class=\"medium\"><b> Mention : ";
+					echo $tableau_des_mentions_sur_le_bulletin[$current_eleve_mention_t[$k]];
+					echo "</b></p>\n";
+				}
+				// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+				echo "</td>\n";
 			}
 			echo "</tr>\n";
 			$k++;

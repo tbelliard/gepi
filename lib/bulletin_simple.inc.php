@@ -1222,14 +1222,35 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 	
 		$current_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$current_eleve_login' AND periode='$nb')");
 		$current_eleve_avis[$nb] = @mysql_result($current_eleve_avis_query, 0, "avis");
-	// Test pour savoir si l'élève appartient à la classe pour la période considérée
-	$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
-	if (($current_eleve_avis[$nb]== '') or ($tab_acces_app[$nb]!="y") or ($test_eleve_app == 0)) {$current_eleve_avis[$nb] = ' -';}
-	
-	echo "<tr>\n<td valign=\"top\" width =\"$larg_col1\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>$nom_periode[$nb]</td>\n";
-	
-	echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>$current_eleve_avis[$nb]</td>\n";
-	echo "</tr>\n";
+
+		// **** AJOUT POUR LA MENTION ****
+		$current_eleve_mention[$nb] = @mysql_result($current_eleve_avis_query, 0, "id_mention");
+		// **** FIN D'AJOUT POUR LA MENTION ****
+
+		// Test pour savoir si l'élève appartient à la classe pour la période considérée
+		$test_eleve_app = sql_query1("select count(login) from j_eleves_classes where login='".$current_eleve_login."' and id_classe='".$id_classe."' and periode='".$nb."'");
+		if (($current_eleve_avis[$nb]== '') or ($tab_acces_app[$nb]!="y") or ($test_eleve_app == 0)) {$current_eleve_avis[$nb] = ' -';}
+		
+		echo "<tr>\n<td valign=\"top\" width =\"$larg_col1\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>$nom_periode[$nb]</td>\n";
+		
+		echo "<td valign=\"top\"  width = \"$larg_col1b\" class='bull_simpl' style='text-align:left; $style_bordure_cell'>$current_eleve_avis[$nb]";
+
+		// Ajouter par la suite une option pour faire apparaître les mentions même si c'est "-"
+		//if(($current_eleve_mention[$nb]=="F")||($current_eleve_mention[$nb]=="M")||($current_eleve_mention[$nb]=="E")) {
+		if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+			$tableau_des_mentions_sur_le_bulletin=get_mentions();
+		}
+
+		if(isset($tableau_des_mentions_sur_le_bulletin[$current_eleve_mention[$nb]])) {
+			echo "<br />\n";
+			echo "<br />\n";
+			echo "<b>Mention : </b>";
+			echo $tableau_des_mentions_sur_le_bulletin[$current_eleve_mention[$nb]];
+			//else {echo "-";}
+		}
+
+		echo "</td>\n";
+		echo "</tr>\n";
 		$nb++;
 	}
 	echo "</table>\n";

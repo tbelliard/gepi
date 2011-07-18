@@ -229,8 +229,9 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		//============================================
 		// Paramètre du module trombinoscope
 		// En admin, dans Gestion des modules
-		$active_module_trombinoscopes
-;
+		$active_module_trombinoscopes,
+
+		$avec_coches_mentions;
 
 	// Récupérer avant le nombre de bulletins à imprimer
 	// - que le premier resp
@@ -907,6 +908,19 @@ width:".$largeur1."%;\n";
 				*/
 				echo texte_html_ou_pas($tab_bull['avis'][$i]);
 				echo "</span>";
+
+				// **** AJOUT POUR LES MENTIONS ****
+				if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+					$tableau_des_mentions_sur_le_bulletin=get_mentions();
+				}
+				//if((trim($tab_bull['id_mention'][$i])!="")||($avec_coches_mentions=="y")) {
+				if(isset($tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]])) {
+					echo "<br/>\n";
+					echo "<b>Mention : </b>";
+					echo texte_html_ou_pas(traduction_mention($tab_bull['id_mention'][$i]));
+				}
+				// **** FIN D'AJOUT POUR LES MENTIONS ****
+
 				if($bull_affiche_signature == 'y'){
 					echo "<br />\n";
 				}
@@ -1059,6 +1073,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		//20100615
 		$moyennes_periodes_precedentes,
 		$evolution_moyenne_periode_precedente,
+
+		$avec_coches_mentions,
 
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
@@ -1350,6 +1366,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 		//=========================================
 
+		// ============= DEBUT BLOC ETABLISSEMENT ==========================
+
 		// Bloc identification etablissement
 		$logo = '../images/'.getSettingValue('logo_etab');
 		$format_du_logo = strtolower(str_replace('.','',strstr(getSettingValue('logo_etab'), '.')));
@@ -1484,6 +1502,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 				$text_fax = $tab_modele_pdf["fax_texte"][$classe_id].''.$gepiSchoolFax;
 			}
 			*/
+
+			if( $tab_modele_pdf["entente_tel"][$classe_id]==='1' ) {
+				$text_fax=" ".$text_fax;
+			}
 			$pdf->Cell(90,5, $text_fax,0,$passealaligne,'');
 		}
 
@@ -1515,7 +1537,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->Cell(90,5, $text_mel,0,2,'');
 		}
 
-		// ============= FIN ENTETE BULLETIN ==========================
+		// Lignes supplémentaires à prendre en compte...
+
+
+		// ============= FIN BLOC ETABLISSEMENT ==========================
 
 		//=========================================
 
@@ -1544,6 +1569,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		}
 		$pdf->SetStyle("bppc","arial","B",$taille,"0,0,0");
 		$pdf->SetStyle("ippc","arial","I",$taille,"0,0,0");
+
+		// ============= DEBUT BLOC ADRESSE PARENTS ==========================
 
 		// bloc affichage de l'adresse des parents
 		if($tab_modele_pdf["active_bloc_adresse_parent"][$classe_id]==='1') {
@@ -1706,7 +1733,11 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			}
 		}
 
+		// ============= FIN BLOC ADRESSE PARENTS ==========================
+
 		//=========================================
+
+		// ============= DEBUT BLOC ELEVE ==========================
 
 		// Bloc affichage information sur l'élève
 		if($tab_modele_pdf["active_bloc_eleve"][$classe_id]==='1') {
@@ -1932,7 +1963,11 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			}
 		} // fin du bloc affichage information sur l'élèves
 
+		// ============= FIN BLOC ELEVE ==========================
+
 		//=========================================
+
+		// ============= DEBUT BLOC CLASSE/PERIODE/DATATION ==========================
 
 		// Bloc affichage datation du bulletin:
 		// Classe, période,...
@@ -2042,7 +2077,11 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 			$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 		}
 
+		// ============= FIN BLOC CLASSE/PERIODE/DATATION ==========================
+
 		//=========================================
+
+		// ============= DEBUT BLOC NOTES ET APPRECIATIONS ==========================
 
 		// Bloc notes et appréciations
 		//nombre de matieres à afficher
@@ -5010,18 +5049,42 @@ $hauteur_pris_app_abs=$hauteur_pris;
 
 				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',10);
 				$texteavis = $tab_bull['avis'][$i];
+				// ***** AJOUT POUR LES MENTIONS *****
+				//$textmention = $tab_bull['id_mention'][$i];
+
+				if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+					$tableau_des_mentions_sur_le_bulletin=get_mentions($classe_id);
+				}
+
+				if(isset($tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]])) {
+					$textmention=$tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]];
+				}
+				else {$textmention="-";}
+				// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 
 				//$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
 
+				//$avec_coches_mentions="y";
+				if($avec_coches_mentions=="y") {
+					$marge_droite_avis_cons=40;
+				}
+				else {
+					$marge_droite_avis_cons=5;
+					if(($textmention!="")&&($textmention!="-")) {
+						//$texteavis.="\n".traduction_mention($textmention);
+						$texteavis.="\n"."<b>Mention:</b> ".$textmention;
+					}
+				}
+
 				if($use_cell_ajustee=="n") {
-					$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $hauteur_avis_cons_init-10, 'J', 'M', 0);
+					$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-$marge_droite_avis_cons, $hauteur_avis_cons_init-10, 'J', 'M', 0);
 				}
 				else {
 					$texte=$texteavis;
 					$taille_max_police=10;
 					$taille_min_police=ceil($taille_max_police/3);
 
-					$largeur_dispo=$tab_modele_pdf["longeur_avis_cons"][$classe_id]-5;
+					$largeur_dispo=$tab_modele_pdf["longeur_avis_cons"][$classe_id]-$marge_droite_avis_cons;
 					$h_cell=$hauteur_avis_cons_init-10;
 
 					cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
@@ -5061,6 +5124,71 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				$pdf->MultiCellTag(200, 5, traite_accents_utf8($pp_classe[$i]), '', 'J', '');
 			}
 
+			if($avec_coches_mentions=="y") {
+				// ***** AJOUT POUR LES MENTIONS *****
+				// Essai pour ajouter un bloc renseignant les mentions du CC
+				// A COMPLETER...
+				$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',9);
+				$X_pp_aff=$tab_modele_pdf["X_avis_cons"][$classe_id]+$tab_modele_pdf["longeur_avis_cons"][$classe_id]-35;
+				$Y_pp_aff=$tab_modele_pdf["Y_avis_cons"][$classe_id]+5;
+				$pdf->SetXY($X_pp_aff,$Y_pp_aff);
+
+				/*
+				$pdf->Cell(35,4, 'Félicitations      ',0,2,'R');
+				$pdf->Cell(35,4, 'Mention honorable      ',0,2,'R');
+				$pdf->Cell(35,4, 'Encouragements      ',0,2,'R');
+				*/
+				if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+					$tableau_des_mentions_sur_le_bulletin=get_mentions($classe_id);
+				}
+
+				//for($loop_mention=0;$loop_mention<count($tableau_des_mentions_sur_le_bulletin);$loop_mention++) {
+				$loop_mention=0;
+				foreach($tableau_des_mentions_sur_le_bulletin as $key_mention => $value_mention) {
+					//$pdf->Cell(35,4, $value_mention,0,2,'R');
+					$pdf->Cell(35,4, $value_mention,0,2,'L');
+					$loop_mention++;
+				}
+
+				/*
+				$pdf->Rect($X_pp_aff+30, $Y_pp_aff+0.3, 2.4, 3);
+				$pdf->Rect($X_pp_aff+30, $Y_pp_aff+4.3, 2.4, 3);
+				$pdf->Rect($X_pp_aff+30, $Y_pp_aff+8.3, 2.4, 3);
+				$pdf->Rect($X_pp_aff, $Y_pp_aff+0.1, 0.01, 12);
+				*/
+				//for($loop_mention=0;$loop_mention<count($tableau_des_mentions_sur_le_bulletin);$loop_mention++) {
+				$loop_mention=0;
+				foreach($tableau_des_mentions_sur_le_bulletin as $key_mention => $value_mention) {
+					$pdf->Rect($X_pp_aff+30, $Y_pp_aff+4*$loop_mention+0.3, 2.4, 3);
+
+					if($key_mention==$tab_bull['id_mention'][$i]) {
+						$pdf->SetXY($X_pp_aff-1.73,$Y_pp_aff+$loop_mention*4);
+						$pdf->Cell(35,4, 'X',0,2,'R');
+					}
+					$loop_mention++;
+				}
+				$pdf->Rect($X_pp_aff, $Y_pp_aff+0.1, 0.01, $loop_mention*4);
+	
+				/*
+				// Si félicitations (à modifier...)
+				if($textmention=="F") {
+					$pdf->SetXY($X_pp_aff-1.73,$Y_pp_aff);
+					$pdf->Cell(35,4, 'X',0,2,'R');
+				}
+				// Si mention honorable (à modifier...)
+				if($textmention=="M") {
+					$pdf->SetXY($X_pp_aff-1.73,$Y_pp_aff+4);
+					$pdf->Cell(35,4, 'X',0,2,'R');
+				}
+				// Si encouragements (à modifier...)
+				if($textmention=="E") {
+					$pdf->SetXY($X_pp_aff-1.73,$Y_pp_aff+8);
+					$pdf->Cell(35,4, 'X',0,2,'R');
+				}
+				*/
+				// Fin de l'essai
+				// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+			}
 
 			// ======================= bloc du président du conseil de classe ================
 			if( $tab_modele_pdf["active_bloc_chef"][$classe_id] === '1' ) {
@@ -6057,4 +6185,5 @@ function fich_debug_bull($texte){
 		fclose($fich);
 	}
 }
+
 ?>

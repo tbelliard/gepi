@@ -659,6 +659,8 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 		echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' /></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les bulletins par établissement d'origine.</label></td></tr>\n";
 
+		echo "<tr><td valign='top'><input type='checkbox' name='avec_coches_mentions' id='avec_coches_mentions' value='y' /></td><td><label for='avec_coches_mentions' style='cursor: pointer;'>Faire apparaître des cases à cocher pour les mentions (<i>Félicitations, Mention honorable, Encouragements</i>) sur les bulletins PDF.</label></td></tr>\n";
+
 		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
 			echo "<tr><td valign='top'><input type='checkbox' name='forcer_recalcul_moy_conteneurs' id='forcer_recalcul_moy_conteneurs' value='y' /></td><td><label for='forcer_recalcul_moy_conteneurs' style='cursor: pointer;'>Forcer le recalcul des moyennes de conteneurs.</label></td></tr>\n";
 
@@ -990,6 +992,9 @@ else {
 	$use_cell_ajustee=isset($_POST['use_cell_ajustee']) ? $_POST['use_cell_ajustee'] : "y";
 
 	$tri_par_etab_orig=isset($_POST['tri_par_etab_orig']) ? $_POST['tri_par_etab_orig'] : "n";
+
+	$avec_coches_mentions=isset($_POST['avec_coches_mentions']) ? $_POST['avec_coches_mentions'] : "n";
+
 
 	// 20100615
 	$moyennes_periodes_precedentes=isset($_POST['moyennes_periodes_precedentes']) ? $_POST['moyennes_periodes_precedentes'] : "n";
@@ -2876,17 +2881,19 @@ else {
 					}
 
 					// Avis du conseil de classe
-					$sql="SELECT avis FROM avis_conseil_classe WHERE login='".$current_eleve_login[$i]."' AND periode='$periode_num';";
+					$sql="SELECT * FROM avis_conseil_classe WHERE login='".$current_eleve_login[$i]."' AND periode='$periode_num';";
 					$res_avis=mysql_query($sql);
 					//echo "$sql<br />";
 					if(mysql_num_rows($res_avis)>0) {
 						$lig_avis=mysql_fetch_object($res_avis);
 						$tab_bulletin[$id_classe][$periode_num]['avis'][$i]=$lig_avis->avis;
+						$tab_bulletin[$id_classe][$periode_num]['id_mention'][$i]=$lig_avis->id_mention;
 						//echo $lig_avis->avis;
 					}
 					else {
 						//$tab_bulletin[$id_classe][$periode_num]['avis'][$i]="-";
 						$tab_bulletin[$id_classe][$periode_num]['avis'][$i]="";
+						$tab_bulletin[$id_classe][$periode_num]['id_mention'][$i]="-";
 					}
 
 					// On affecte la partie élève $tab_ele dans $tab_bulletin

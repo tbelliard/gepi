@@ -263,8 +263,7 @@ if ($test == -1) {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
-$result .= "<br /><br /><b>Absence 2 :</b><br />";
-$result .= "&nbsp;->Ajout des champs versions a la table a_saisies<br />";
+$result .= "&nbsp;->Ajout des chamds versions a la table a_saisies<br />";
 $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_saisies LIKE 'version';"));
 if ($test_champ>0) {
 	$result .= "<font color=\"blue\">Les versions de saisies existent déjà.</font><br />";
@@ -349,7 +348,7 @@ if ($query) {
 		$result .= "<font color=\"green\">Ok !</font><br />";
 }
 
-$result .= "&nbsp;->Suppression du champs inutile modifie_par_utilisateur_id de la table a_saisies_version<br />";
+$result .= "&nbsp;->Suppression du champs inutile modifie_par_utilisateur_id de la table a_saisies<br />";
 $query = mysql_query("ALTER TABLE `a_saisies_version` DROP `modifie_par_utilisateur_id` ;");
 if ($query) {
 		$result .= "<font color=\"blue\">Le champ modifie_par_utilisateur_id de la table a_saisies_version n'existe plus.</font><br />";
@@ -410,96 +409,51 @@ if ($test_champ>0) {
 }
 
 
-$test = mysql_num_rows(mysql_query("SHOW TABLES LIKE 'a_agregation_decompte'"));
-if ($test!=0) {
-	$result .= "<font color=\"blue\">La table des agrégation de décompte de saisies existe déjà.</font><br />";
-} else {
-	$result .= "<font color=\"blue\">Ajout de la table des agrégation de décompte de saisies.</font><br />";
-	$query = mysql_query("CREATE TABLE a_agregation_decompte
-(
-	eleve_id INTEGER(11) NOT NULL COMMENT 'id de l\'eleve',
-	date_demi_jounee DATETIME DEFAULT '0000-00-00 00:00:00' NOT NULL COMMENT 'Date de la demi journée agrégée : 00:00 pour une matinée, 12:00 pour une après midi',
-	manquement_obligation_presence TINYINT DEFAULT 0 COMMENT 'Cette demi journée est comptée comme absence',
-	justifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une justification',
-	notifiee TINYINT DEFAULT 0 COMMENT 'Si cette demi journée est compté comme absence, y a-t-il une notification à la famille',
-	nb_retards INTEGER DEFAULT 0 COMMENT 'Nombre de retards décomptés dans la demi journée',
-	nb_retards_justifies INTEGER DEFAULT 0 COMMENT 'Nombre de retards justifiés décomptés dans la demi journée',
-	motifs_absences TEXT COMMENT 'Liste des motifs (table a_motifs) associés à cette demi-journée d\'absence',
-	motifs_retards TEXT COMMENT 'Liste des motifs (table a_motifs) associés aux retard de cette demi-journée',
-	created_at DATETIME,
-	updated_at DATETIME,
-	PRIMARY KEY (eleve_id,date_demi_jounee),
-	CONSTRAINT a_agregation_decompte_FK_1
-		FOREIGN KEY (eleve_id)
-		REFERENCES eleves (id_eleve)
-		ON DELETE CASCADE
-) ENGINE=MyISAM COMMENT='Table d\'agregation des decomptes de demi journees d\'absence et de retard';
-	");
-	if ($query) {
-                $result .= "<font color=\"green\">Ok !</font><br />";
-	} else {
-                $result .= "<font color=\"red\">Erreur</font><br />";
+$result .= "<br /><br /><b>Ajout d'une table mentions :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'mentions'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS mentions (
+	id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+	mention VARCHAR(255) NOT NULL);");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
 	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
-$result .= "&nbsp;->Ajout d'un champ 'deleted_at' à la table 'a_traitements'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_traitements LIKE 'deleted_at';"));
+$result .= "<br /><br /><b>Ajout d'une table j_mentions_classes :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'j_mentions_classes'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS j_mentions_classes (
+id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+id_mention INT(11) NOT NULL ,
+id_classe INT(11) NOT NULL ,
+ordre TINYINT(4) NOT NULL);");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
+$result .= "&nbsp;->Ajout d'un champ 'id_mention' à la table 'avis_conseil_classe'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM avis_conseil_classe LIKE 'id_mention';"));
 if ($test_champ>0) {
 	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 } else {
-	$query = mysql_query("ALTER TABLE `a_traitements` ADD deleted_at DATETIME AFTER updated_at;");
+	$query = mysql_query("ALTER TABLE avis_conseil_classe ADD id_mention INT( 11 ) NOT NULL AFTER avis;");
 	if ($query) {
-			$result .= "<font color=\"blue\">Le champ deleted_at de la table a_traitements a été ajouté.</font><br />";
+		$result .= "<font color=\"blue\">Le champ id_mention de la table avis_conseil_classe a été ajouté.</font><br />";
 	} else {
-			$result .= "<font color=\"red\">Erreur : Le champ deleted_at de la table a_traitements n'a pas été ajouté</font><br />";
+		$result .= "<font color=\"red\">Erreur : Le champ id_mention de la table avis_conseil_classe n'a pas été ajouté</font><br />";
 	}
 }
-
-$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' à la table 'a_types'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_types LIKE 'created_at';"));
-if ($test_champ>0) {
-	$result .= "<font color=\"blue\">Les champs existent déjà.</font><br />";
-} else {
-	$query = mysql_query("ALTER TABLE `a_types` ADD (created_at DATETIME, updated_at DATETIME);");
-	if ($query) {
-			$result .= "<font color=\"blue\">Les champs ont étés ajoutés.</font><br />";
-			$query = mysql_query("UPDATE a_types SET created_at = NOW(), updated_at = NOW();");
-	} else {
-			$result .= "<font color=\"red\">Erreur : Les champ created_at' et 'updated_at' de la table a_types n'ont pas étés ajoutés</font><br />";
-	}
-}
-
-$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' à la table 'a_motifs'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_motifs LIKE 'created_at';"));
-if ($test_champ>0) {
-	$result .= "<font color=\"blue\">Les champs existent déjà.</font><br />";
-} else {
-	$query = mysql_query("ALTER TABLE `a_motifs` ADD (created_at DATETIME, updated_at DATETIME);");
-	if ($query) {
-			$result .= "<font color=\"blue\">Les champs ont étés ajoutés.</font><br />";
-			$query = mysql_query("UPDATE a_motifs SET created_at = NOW(), updated_at = NOW();");
-	} else {
-			$result .= "<font color=\"red\">Erreur : Les champ created_at' et 'updated_at' de la table a_motifs n'ont pas étés ajoutés</font><br />";
-	}
-}
-
-$result .= "&nbsp;->Ajout d'un champ 'created_at' et 'updated_at' à la table 'a_justifications'<br />";
-$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM a_justifications LIKE 'created_at';"));
-if ($test_champ>0) {
-	$result .= "<font color=\"blue\">Les champs existent déjà.</font><br />";
-} else {
-	$query = mysql_query("ALTER TABLE `a_justifications` ADD (created_at DATETIME, updated_at DATETIME);");
-	if ($query) {
-			$result .= "<font color=\"blue\">Les champs ont étés ajoutés.</font><br />";
-			$query = mysql_query("UPDATE a_justifications SET created_at = NOW(), updated_at = NOW();");
-	} else {
-			$result .= "<font color=\"red\">Erreur : Les champ created_at' et 'updated_at' de la table a_justifications n'ont pas étés ajoutés</font><br />";
-	}
-}
-
-$result .= add_index('a_saisies','a_saisies_I_1','`deleted_at`');
-$result .= add_index('a_saisies','a_saisies_I_2','`debut_abs`');
-$result .= add_index('a_saisies','a_saisies_I_3','`fin_abs`');
-$result .= add_index('a_traitements','a_traitements_I_1','`deleted_at`');
 
 ?>

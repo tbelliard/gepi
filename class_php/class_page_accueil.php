@@ -1064,6 +1064,10 @@ class class_page_accueil {
 	  $this->creeNouveauItem("/statistiques/index.php",
 			  "Extractions statistiques",
 			  "Cet outil vous permet d'extraire des données à des fins statistiques (des bulletins, ...).");
+
+	  $this->creeNouveauItem("/saisie/saisie_mentions.php",
+			  "Mentions des bulletins",
+			  "Cet outil vous permet de définir les mentions (<i>Félicitations, Encouragements,...</i>) des bulletins.");
 	}
 
 	if ($this->b>0){

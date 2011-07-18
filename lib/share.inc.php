@@ -7044,4 +7044,78 @@ function get_tab_file($path,$tab_exclusion=array(".", "..", "remove.txt", ".htac
 
 	return $tab_file;
 }
+
+function traduction_mention($code) {
+	global $tableau_des_mentions_sur_le_bulletin;
+
+	if((!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+		$tableau_des_mentions_sur_le_bulletin=get_mentions();
+	}
+
+	$retour="";
+	if(!isset($tableau_des_mentions_sur_le_bulletin[$code])) {$retour="-";}
+	else {$retour=$tableau_des_mentions_sur_le_bulletin[$code];}
+
+	return $retour;
+}
+
+
+function get_mentions($id_classe=NULL) {
+	$tab=array();
+	if(!isset($id_classe)) {
+		$sql="SELECT * FROM mentions ORDER BY id;";
+	}
+	else {
+		$sql="SELECT m.* FROM mentions m, j_mentions_classes j WHERE j.id_mention=m.id AND j.id_classe='$id_classe' ORDER BY j.ordre, m.mention, m.id;";
+	}
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$lig->id]=$lig->mention;
+		}
+	}
+	return $tab;
+}
+
+// Pour interdire la suppression d'une mention saisie pour un élève
+function get_tab_mentions_affectees($id_classe=NULL) {
+	$tab=array();
+	if(!isset($id_classe)) {
+		$sql="SELECT DISTINCT j.id_mention FROM j_mentions_classes j, avis_conseil_classe a WHERE a.id_mention=j.id_mention;";
+	}
+	else {
+		$sql="SELECT DISTINCT j.id_mention FROM j_mentions_classes j, avis_conseil_classe a, j_eleves_classes jec WHERE a.id_mention=j.id_mention AND j.id_classe=jec.id_classe AND jec.periode=a.periode AND jec.login=a.login AND j.id_classe='$id_classe';";
+	}
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		while($lig=mysql_fetch_object($res)) {
+			$tab[]=$lig->id_mention;
+		}
+	}
+	return $tab;
+}
+
+function champ_select_mention($nom_champ_select,$id_classe,$id_mention_selected="") {
+
+	$tab_mentions=get_mentions($id_classe);
+	//$retour="$id_mention_selected<select name='$nom_champ_select'>\n";
+	$retour="<select name='$nom_champ_select' id='$nom_champ_select'>\n";
+	$retour.="<option value=''";
+	if(($id_mention_selected=="")||(!array_key_exists($id_mention_selected,$tab_mentions))) {
+		$retour.=" selected";
+	}
+	$retour.="> </option>\n";
+	foreach($tab_mentions as $key => $value) {
+		$retour.="<option value='$key'";
+		if($id_mention_selected==$key) {
+			$retour.=" selected";
+		}
+		//$retour.=">".$value." ".$key."</option>\n";
+		$retour.=">".$value."</option>\n";
+	}
+	$retour.="</select>\n";
+
+	return $retour;
+}
 ?>

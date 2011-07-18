@@ -310,15 +310,25 @@ if(
 
 			$current_eleve_login_ap = isset($NON_PROTECT["current_eleve_login_ap"]) ? traitement_magic_quotes(corriger_caracteres($NON_PROTECT["current_eleve_login_ap"])) :NULL;
 
+			// ***** AJOUT POUR LES MENTIONS *****
+			$current_eleve_login_me = isset($_POST["current_eleve_login_me"]) ? $_POST["current_eleve_login_me"] : NULL;
+			// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+
 			//echo "\$current_eleve_login_ap=$current_eleve_login_ap<br />";
 
 			$test_eleve_avis_query = mysql_query("SELECT * FROM avis_conseil_classe WHERE (login='$eleve_saisie_avis' AND periode='$num_periode_saisie')");
 			$test = mysql_num_rows($test_eleve_avis_query);
 			if ($test != "0") {
-				$register = mysql_query("UPDATE avis_conseil_classe SET avis='$current_eleve_login_ap',statut='' WHERE (login='$eleve_saisie_avis' AND periode='$num_periode_saisie')");
+				$sql="UPDATE avis_conseil_classe SET avis='$current_eleve_login_ap',";
+				if(isset($current_eleve_login_me)) {$sql.="id_mention='$current_eleve_login_me',";}
+				$sql.="statut='' WHERE (login='$eleve_saisie_avis' AND periode='$num_periode_saisie');";
+				$register = mysql_query($sql);
 			}
 			else {
-				$register = mysql_query("INSERT INTO avis_conseil_classe SET login='$eleve_saisie_avis',periode='$num_periode_saisie',avis='$current_eleve_login_ap',statut=''");
+				$sql="INSERT INTO avis_conseil_classe SET login='$eleve_saisie_avis',periode='$num_periode_saisie',avis='$current_eleve_login_ap',";
+				if(isset($current_eleve_login_me)) {$sql.="id_mention='$current_eleve_login_me',";}
+				$sql.="statut='';";
+				$register = mysql_query($sql);
 			}
 
 			if (!$register) {
@@ -2104,15 +2114,21 @@ function eleve_suivant() {
 					if($lig_verr_per->verouiller!='O') {
 	
 						$current_eleve_avis="";
+						// ***** AJOUT POUR LES MENTIONS *****
+						$current_eleve_mention="";
+						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 						$sql="SELECT * FROM avis_conseil_classe WHERE login='$eleve1' AND periode='$num_periode_choisie';";
 						//echo "$sql<br />";
 						$res_avis=mysql_query($sql);
 						if(mysql_num_rows($res_avis)>0) {
 							$lig_avis=mysql_fetch_object($res_avis);
 							$current_eleve_avis=$lig_avis->avis;
+							// ***** AJOUT POUR LES MENTIONS *****
+							$current_eleve_mention=$lig_avis->id_mention;
+							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 						}
 
-	
+
 						echo "<div style='display:none;'>
 <textarea name='no_anti_inject_current_eleve_login_ap' id='no_anti_inject_current_eleve_login_ap' rows='5' cols='20' wrap='virtual' onchange=\"changement()\">$current_eleve_avis</textarea>
 <input type='hidden' name='num_periode_saisie' value='$num_periode_choisie' />
@@ -2120,10 +2136,22 @@ function eleve_suivant() {
 <input type='hidden' name='enregistrer_avis' id='enregistrer_avis' value='' />
 </div>\n";
 
+						// ***** AJOUT POUR LES MENTIONS *****
+						echo "<div style='display:none;'>
+<textarea name='current_eleve_login_me' id='current_eleve_login_me' rows='1' cols='2' wrap='virtual' onchange=\"changement()\">$current_eleve_mention</textarea>
+<input type='hidden' name='enregistrer_mention' id='enregistrer_mention' value='' />
+</div>\n";
+						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+
 							echo "<script type='text/javascript'>
 		function save_avis(mode) {
 			document.getElementById('no_anti_inject_current_eleve_login_ap').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value;
 			document.getElementById('enregistrer_avis').value='y';
+
+			document.getElementById('current_eleve_login_me').value=document.getElementById('current_eleve_login_me2').value;
+			document.getElementById('enregistrer_mention').value='y';
+			//alert('La mention actuelle est : '+document.getElementById('current_eleve_login_me').value+'.');
+
 			if(mode=='suivant') {
 				eleve_suivant();
 			}
@@ -2141,7 +2169,7 @@ function eleve_suivant() {
 	
 						if($graphe_champ_saisie_avis_fixe!="y") {
 						//================
-							echo "<br />\n<a href=\"#graph\" onClick=\"afficher_div('saisie_avis','y',100,100);\">Saisir l'avis du conseil</a>\n";
+							echo "<br />\n<a href=\"#graph\" onClick=\"afficher_div('saisie_avis','y',100,100);return false;\">Saisir l'avis du conseil</a>\n";
 	
 							$titre="Avis du conseil de classe: $lig_verr_per->nom_periode";
 	
@@ -2153,7 +2181,33 @@ function eleve_suivant() {
 							//$texte.="\n";
 							$texte.="$current_eleve_avis";
 							$texte.="</textarea>\n";
-	
+
+							// ***** AJOUT POUR LES MENTIONS *****
+							$texte.="<br/>\n";
+							$texte.="Mention : ";
+
+							$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
+							/*
+							// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+							$selectedF="";
+							$selectedM="";
+							$selectedE="";
+							$selectedB="";
+							if($current_eleve_mention=='F') {$selectedF=" selected";}
+							else if($current_eleve_mention=='M') {$selectedM=" selected";}
+							else if($current_eleve_mention=='E') {$selectedE=" selected";}
+							else {$selectedB=" selected";}
+							$texte.="<select name='current_eleve_login_me2'>\n";
+							$texte.="<option value='B'$selectedB> </option>\n";
+							$texte.="<option value='E'$selectedE>Encouragements</option>\n";
+							$texte.="<option value='M'$selectedM>Mention honorable</option>\n";
+							$texte.="<option value='F'$selectedF>Félicitations</option>\n";
+							$texte.="</select>\n";
+							*/
+							$texte.="<br/>\n";
+							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+			
+
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
@@ -2182,6 +2236,32 @@ function eleve_suivant() {
 							//$texte_saisie_avis_fixe.="\n";
 							$texte_saisie_avis_fixe.="$current_eleve_avis";
 							$texte_saisie_avis_fixe.="</textarea>\n";
+
+							// ***** AJOUT POUR LES MENTIONS *****
+							$texte_saisie_avis_fixe.="<br/>\n";
+							$texte_saisie_avis_fixe.="Mention : ";
+
+							$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
+							/*
+							// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+							$selectedF="";
+							$selectedM="";
+							$selectedE="";
+							$selectedB="";
+							if($current_eleve_mention=='F') {$selectedF=" selected";}
+							else if($current_eleve_mention=='M') {$selectedM=" selected";}
+							else if($current_eleve_mention=='E') {$selectedE=" selected";}
+							else {$selectedB=" selected";}
+							$texte_saisie_avis_fixe.="<select name='current_eleve_login_me2'>\n";
+							$texte_saisie_avis_fixe.="<option value='B'$selectedB> </option>\n";
+							$texte_saisie_avis_fixe.="<option value='E'$selectedE>Encouragements</option>\n";
+							$texte_saisie_avis_fixe.="<option value='M'$selectedM>Mention honorable</option>\n";
+							$texte_saisie_avis_fixe.="<option value='F'$selectedF>Félicitations</option>\n";
+							$texte_saisie_avis_fixe.="</select>\n";
+							*/
+							$texte_saisie_avis_fixe.="<br/>\n";
+							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+
 	
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
@@ -2266,7 +2346,32 @@ function eleve_suivant() {
 							//$texte.="\n";
 							$texte.="$current_eleve_avis";
 							$texte.="</textarea>\n";
-	
+
+							// ***** AJOUT POUR LES MENTIONS *****
+							$texte.="<br/>\n";
+							$texte.="Mention : ";
+
+							$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
+							/*
+							// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+							$selectedF="";
+							$selectedM="";
+							$selectedE="";
+							$selectedB="";
+							if($current_eleve_mention=='F') {$selectedF=" selected";}
+							else if($current_eleve_mention=='M') {$selectedM=" selected";}
+							else if($current_eleve_mention=='E') {$selectedE=" selected";}
+							else {$selectedB=" selected";}
+							$texte.="<select name='current_eleve_login_me2'>\n";
+							$texte.="<option value='B'$selectedB> </option>\n";
+							$texte.="<option value='E'$selectedE>Encouragements</option>\n";
+							$texte.="<option value='M'$selectedM>Mention honorable</option>\n";
+							$texte.="<option value='F'$selectedF>Félicitations</option>\n";
+							$texte.="</select>\n";
+							*/
+							$texte.="<br/>\n";
+							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte.="<input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
@@ -2295,7 +2400,33 @@ function eleve_suivant() {
 							//$texte_saisie_avis_fixe.="\n";
 							$texte_saisie_avis_fixe.="$current_eleve_avis";
 							$texte_saisie_avis_fixe.="</textarea>\n";
-	
+
+							// ***** AJOUT POUR LES MENTIONS *****
+							$texte_saisie_avis_fixe.="<br/>\n";
+							$texte_saisie_avis_fixe.="Mention : ";
+
+							$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
+							/*
+							// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+							$selectedF="";
+							$selectedM="";
+							$selectedE="";
+							$selectedB="";
+							if($current_eleve_mention=='F') {$selectedF=" selected";}
+							else if($current_eleve_mention=='M') {$selectedM=" selected";}
+							else if($current_eleve_mention=='E') {$selectedE=" selected";}
+							else {$selectedB=" selected";}
+							$texte_saisie_avis_fixe.="<select name='current_eleve_login_me2'>\n";
+							$texte_saisie_avis_fixe.="<option value='B'$selectedB> </option>\n";
+							$texte_saisie_avis_fixe.="<option value='E'$selectedE>Encouragements</option>\n";
+							$texte_saisie_avis_fixe.="<option value='M'$selectedM>Mention honorable</option>\n";
+							$texte_saisie_avis_fixe.="<option value='F'$selectedF>Félicitations</option>\n";
+							$texte_saisie_avis_fixe.="</select>\n";
+							*/
+							$texte_saisie_avis_fixe.="<br/>\n";
+							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
+			
+
 							//$texte_saisie_avis_fixe.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
 							$texte_saisie_avis_fixe.="<br /><input type='button' NAME='ok1' value='Enregistrer' onClick=\"save_avis('');\" />\n";
 							if($suivant<$nombreligne+1) {
@@ -2691,7 +2822,21 @@ function eleve_suivant() {
 						$titre_bulle="Avis du Conseil de classe";
 
 						$texte_bulle="<div align='center'>\n";
-						$texte_bulle.=htmlentities($lig_avis->avis)."\n";
+						//$texte_bulle.=htmlentities($lig_avis->avis)."\n";
+						$texte_bulle.=nl2br($lig_avis->avis)."\n";
+						// ***** AJOUT POUR LES MENTIONS *****
+						if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+							$tableau_des_mentions_sur_le_bulletin=get_mentions();
+						}
+
+						//if(($lig_avis->id_mention!='')&&($lig_avis->mention!='-')&&($lig_avis->mention!='B')) {
+						if(isset($tableau_des_mentions_sur_le_bulletin[$lig_avis->id_mention])) {
+							$texte_bulle.="<br />\n";
+							$texte_bulle.="<b>Mention</b> : ";
+							//$texte_bulle.=htmlentities(traduction_mention($lig_avis->mention))."\n";
+							$texte_bulle.=$tableau_des_mentions_sur_le_bulletin[$lig_avis->id_mention]."\n";
+						}
+						// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 						$texte_bulle.="</div>\n";
 						//$tabdiv_infobulle[]=creer_div_infobulle('div_app_'.$cpt,$titre_bulle,"",$texte_bulle,"",14,0,'y','y','n','n');
 						$tabdiv_infobulle[]=creer_div_infobulle('div_avis_1',$titre_bulle,"",$texte_bulle,"",20,0,'n','n','n','n');
@@ -2700,18 +2845,6 @@ function eleve_suivant() {
 					}
 				}
 			}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 			// ImageMap:
