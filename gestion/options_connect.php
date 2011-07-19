@@ -90,6 +90,15 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 	}
 	saveSetting("auth_ldap", $_POST['auth_ldap']);
 
+	if (isset($_POST['auth_simpleSAML'])) {
+	    if ($_POST['auth_simpleSAML'] != "yes") {
+	    	$_POST['auth_simpleSAML'] = "no";
+	    }
+	} else {
+		$_POST['auth_simpleSAML'] = "no";
+	}
+	saveSetting("auth_simpleSAML", $_POST['auth_simpleSAML']);
+
 	if (isset($_POST['ldap_write_access'])) {
 	    if ($_POST['ldap_write_access'] != "yes") {
 	    	$_POST['ldap_write_access'] = "no";
@@ -142,6 +151,19 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 	saveSetting("sso_scribe", $_POST['sso_scribe']);
 
 
+	if (isset($_POST['gepiEnableIdpSaml20'])) {
+	    if ($_POST['gepiEnableIdpSaml20'] != "yes") {
+	    	$_POST['gepiEnableIdpSaml20'] = "no";
+	    }
+	} else {
+		$_POST['gepiEnableIdpSaml20'] = "no";
+	}
+	saveSetting("gepiEnableIdpSaml20", $_POST['gepiEnableIdpSaml20']);
+	
+  	if (isset($_POST['sacocheUrl'])) {
+	    saveSetting("sacocheUrl", $_POST['sacocheUrl']);
+	}
+		
 	if (isset($_POST['statut_utilisateur_defaut'])) {
 	    if (!in_array($_POST['statut_utilisateur_defaut'], array("professeur","responsable","eleve"))) {
 	    	$_POST['statut_utilisateur_defaut'] = "professeur";
@@ -294,6 +316,11 @@ if (!$ldap_setup_valid) echo " disabled";
 echo " /> <label for='label_auth_ldap' style='cursor: pointer;'>Authentification LDAP";
 if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>\n";
 echo "</label>\n";
+
+echo "<br/><input type='checkbox' name='auth_simpleSAML' value='yes' id='label_auth_simpleSAML'";
+if (getSettingValue("auth_simpleSAML")=='yes') echo " checked ";
+echo " /> <label for='label_auth_simpleSAML' style='cursor: pointer;'>Authentification simpleSAML";
+echo "</label>\n";
 echo "</p>\n";
 
 echo "<p>Service d'authentification unique : ";
@@ -324,6 +351,18 @@ if (getSettingValue("auth_sso")=='lemon') echo " checked ";
 echo " /> <label for='label_3' style='cursor: pointer;'>LemonLDAP</label>\n";
 echo "</p>\n";
 echo "<p>Remarque : les changements n'affectent pas les sessions en cours.";
+
+echo "<p><strong>Fourniture d'identité :</strong></p>\n";
+echo "<p><input type='checkbox' name='gepiEnableIdpSaml20' value='yes' id='gepiEnableIdpSaml20'";
+if (getSettingValue("gepiEnableIdpSaml20")=='yes') echo " checked ";
+echo " /> <label for='gepiEnableIdpSaml20' style='cursor: pointer;'>Fournir un service d'identification SAML 2.0</label>\n";
+echo "<p>\n";
+echo "<label for='sacocheUrl' style='cursor: pointer;'>Adresse du service sacoche si possible en https (exemple : https://localhost/sacoche) </label>\n";
+echo "<input type='text' size='60' name='sacocheUrl' value='".getSettingValue("sacocheUrl")."' id='sacocheUrl' />\n<br/>";
+echo 'pour une configuration manuelle, modifier le fichier /lib/simplesaml/metadate/saml20-sp-remote.php';
+echo "</p>\n";
+
+echo "</p>\n";
 
 echo "<p><strong>Options supplémentaires :</strong></p>\n";
 
