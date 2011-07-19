@@ -65,7 +65,9 @@ class Session {
       # On initialise la session
       session_name("GEPI");
       set_error_handler("my_warning_handler", E_WARNING);
-      session_start();
+		if(!isset($_SESSION)) {
+			session_start();
+		}
       restore_error_handler();
     }
 
@@ -82,6 +84,7 @@ class Session {
 		# On charge des éléments de configuration liés à l'authentification
 		$this->auth_locale = getSettingValue("auth_locale") == 'yes' ? true : false;
 		$this->auth_ldap = getSettingValue("auth_ldap") == 'yes' ? true : false;
+		$this->auth_simpleSAML = getSettingValue("auth_simpleSAML") == 'yes' ? true : false;
 		$this->auth_sso = in_array(getSettingValue("auth_sso"), array("lemon", "cas", "lcs")) ? getSettingValue("auth_sso") : false;
 		if (!$this->is_anonymous()) {
 		  # Il s'agit d'une session non anonyme qui existait déjà.
@@ -145,7 +148,7 @@ class Session {
 		  die();
 		}
 
-		if (strtoupper($_login) != strtoupper($this->login)) {
+		if ($_login != null && strtoupper($_login) != strtoupper($this->login)) {
 			//on a une connexion sous un nouveau login, on purge la session
 			$this->reset("4");
 		}
@@ -170,7 +173,9 @@ class Session {
 			case "ldap":
 			  # Authentification sur un serveur LDAP
 			  $auth = $this->authenticate_ldap($_login,$_password);
-			break;
+		  	case "simpleSAML":
+		  		$auth = $this->authenticate_simpleSAML();
+		  	break;
 			case "sso":
 			  # Authentification gérée par un service de SSO
 			  # On n'a pas besoin du login ni du mot de passe
@@ -183,17 +188,19 @@ class Session {
 			  	break;
 			  	case "lcs":
 			  		$auth = $this->authenticate_lcs();
-			  	break;
+		  		break;
 			  }
 			break;
 			case false:
 			  # L'utilisateur n'existe pas dans la base de données ou bien
 			  # n'a pas été passé en paramètre.
-			  # On va donc tenter d'abord une authentification LDAP,
+			  # On va donc tenter d'abord une authentification simpleSAML, puis LDAP,
 			  # puis une authentification SSO, à condition que celles-ci
 			  # soient bien sûr configurées.
 			  if ($this->auth_ldap && $_login != null && $_password != null) {
 			  	$auth = $this->authenticate_ldap($_login,$_password);
+			  }if ($this->auth_simpleSAML) {
+			  	$auth = $this->authenticate_simpleSAML();
 			  } else if ($this->auth_sso && $_login == null) {
 			  	// L'auth LDAP n'a pas marché, on essaie le SSO
 				 switch ($this->auth_sso) {
@@ -205,7 +212,7 @@ class Session {
 				  	break;
 				  	case "lcs":
 				  		$auth = $this->authenticate_lcs();
-				  	break;
+			  		break;
 				 }
 			  } else {
 			  	$auth = false;
@@ -249,7 +256,7 @@ class Session {
 								}
               }
             }
-          }elseif (LDAPServer::is_setup()) {
+          } elseif (LDAPServer::is_setup()) {
 						// Le RNE n'a pas été transmis. Il faut le récupérer et recharger la page
 						// pour obtenir la bonne base de données
 						$ldap = new LDAPServer;
@@ -395,7 +402,13 @@ class Session {
 		# c = changement forcé de mot de passe
 
 		# D'abord on regarde si on a une tentative d'accès anonyme à une page protégée :
-		if ($this->is_anonymous()) {
+		if ($this->auth_simpleSAML == 'yes') {
+			include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
+			$auth = new SimpleSAML_Auth_Simple('local-gepi-db');
+			if (!$auth->isAuthenticated()) {
+				$this->authenticate();
+			}
+		} else if ($this->is_anonymous()) {
 			tentative_intrusion(1, "Accès à une page sans être logué (peut provenir d'un timeout de session).");
 			return "0";
 			exit;
@@ -488,7 +501,7 @@ class Session {
 	## METHODE PRIVEES ##
 
 	// Création d'une entrée de log
-	private function insert_log() {
+	public function insert_log() {
 		if (!isset($_SERVER['HTTP_REFERRER'])) $_SERVER['HTTP_REFERER'] = '';
 	    $sql = "INSERT INTO log (LOGIN, START, SESSION_ID, REMOTE_ADDR, USER_AGENT, REFERER, AUTOCLOSE, END) values (
 	                '" . $this->login . "',
@@ -650,17 +663,17 @@ class Session {
 	function authenticate_gepi($_login,$_password) {
 		global $debug_test_mdp, $debug_test_mdp_file;
 
-                $sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
+        $sql = "SELECT login, password FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
 		$query = mysql_query($sql);
-                $db_password = mysql_result($query, 0, "password");
-		$sql = "SELECT salt FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
-		$query_salt = mysql_query($sql);
+		if (mysql_num_rows($query) == "1") {
+			$sql = "SELECT salt FROM utilisateurs WHERE (login = '" . $_login . "' and etat != 'inactif')";
+			$query_salt = mysql_query($sql);
                 if ($query_salt !== false) {
                     $db_salt = mysql_result($query_salt, 0, "salt");
                 } else {
                     $db_salt = '';
                 }
-		if (mysql_num_rows($query) == "1") {
+			$db_password = mysql_result($query, 0, "password");
 			# Un compte existe avec ce login
                         if ($db_salt == '') {
                             //on va tester avec le md5
@@ -872,6 +885,25 @@ class Session {
 		return true;
 	}
 
+	private function authenticate_simpleSAML() {
+		include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
+		$auth = new SimpleSAML_Auth_Simple('local-gepi-db');
+		$attributes = $auth->requireAuth();
+		//exploitation des attributs
+		if (isEmpty($attributes)) {
+			//authentification échouée
+			return false;
+		}
+		$this->login = $attributes['login'][0];
+		$_SESSION['login'] = $this->login;
+
+		$this->current_auth_mode = "simpleSAML";
+    
+	    // Extractions des attributs supplémentaires, le cas échéant
+	    // inutile pour le moment
+		return true;
+	}
+	
 	private function authenticate_lemon() {
 		#TODO: Vérifier que ça marche bien comme ça !!
 	  if (isset($_GET['login'])) $login = $_GET['login']; else $login = "";
@@ -938,7 +970,7 @@ class Session {
 
 	# Cette méthode charge en session les données de l'utilisateur,
 	# à la suite d'une authentification réussie.
-	private function load_user_data() {
+	public function load_user_data() {
 		# Petit test de départ pour être sûr :
 		if (!$this->login || $this->login == null) {
 			return false;
@@ -1017,7 +1049,7 @@ class Session {
 	    return true;
 	}
 
-	private function record_failed_login($_login) {
+	public function record_failed_login($_login) {
 		# Une tentative de login avec un mot de passe erronnée a été détectée.
 		$test_login = sql_count(sql_query("SELECT login FROM utilisateurs WHERE (login = '".$_login."')"));
 

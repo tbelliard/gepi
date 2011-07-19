@@ -103,6 +103,11 @@ if (($session_gepi->auth_sso && !$session_gepi->auth_locale && ! $session_gepi->
 	exit();
 }
 
+if ($session_gepi->auth_simpleSAML == 'yes') {
+	//l'authentification est faite pour chaque page par simpleSAML, pas besoin de page d'authentification
+	header("Location: ./accueil.php");
+	die();
+}
 
 // Test de mise à jour : si on détecte que la base n'est à jour avec les nouveaux
 // paramètres utilisés pour l'authentification, on redirige vers maj.php pour

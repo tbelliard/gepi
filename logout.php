@@ -55,17 +55,27 @@ if (isset($_COOKIE["RNE"])) {
 	setcookie('RNE', 'RNE'); // permet d'effacer le contenu du cookie.
 }
 
+if ($session_gepi->auth_simpleSAML == 'yes') {
+		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
+		$auth = new SimpleSAML_Auth_Simple('local-gepi-db');
+		if ($auth->isAuthenticated()) {
+			//on fait le logout de session avec simplesaml et on revient ici pour afficher le message de déconnexion
+			$auth->logout();
+		}
+}
+//$session_gepi->auth_simpleSAML = 'n';
+
 	
     //$message = "<h1 class='gepi'>Déconnexion</h1>";
     $titre= "Déconnexion";
     $message = "";
 	//$message .= "<img src='$gepiPath/images/icons/lock-open.png' alt='lock-open' /><br/><br/>";
     if (!$_GET['auto']) {
-        $session_gepi->close($_GET['auto']);
+    	if ($session_gepi->auth_simpleSAML != 'yes') $session_gepi->close($_GET['auto']);
         $message .= "Vous avez fermé votre session GEPI.";
         //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
     } else if ($_GET['auto']==2) {
-        $session_gepi->close($_GET['auto']);
+        if ($session_gepi->auth_simpleSAML != 'yes') $session_gepi->close($_GET['auto']);
         $message .= "Vous avez été déconnecté. Il peut s'agir d'une mauvaise configuration de la variable \$GepiPath dans le fichier \"connect.inc.php\"<br />
         <a href='aide_gepipath.php'><b>Aide à la configuration de \$GepiPath</b></a>";
         //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
@@ -75,7 +85,7 @@ if (isset($_COOKIE["RNE"])) {
         $sql = "select now() > END TIMEOUT from log where SESSION_ID = '" . $_GET['session_id'] . "' and START = '" . $debut_session . "'";
         if (sql_query1($sql)) {
            // Le temps d'inactivité est dépassé
-           $session_gepi->close($_GET['auto']);
+           if ($session_gepi->auth_simpleSAML != 'yes') $session_gepi->close($_GET['auto']);
            $message .= "Votre session GEPI a expiré car le temps maximum (".getSettingValue("sessionMaxLength")." minutes) sans échange avec le serveur a été atteint.<br /><br />Date et heure de la déconnexion : ".$date_fermeture."";
            //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
         } else {
@@ -91,7 +101,7 @@ if (isset($_COOKIE["RNE"])) {
            //$message .= "<a href=\"$gepiPath/login.php\">Ouvrir une nouvelle session</a>.";
         }
     } else {
-        $session_gepi->close($_GET['auto']);
+        if ($session_gepi->auth_simpleSAML != 'yes') $session_gepi->close($_GET['auto']);
         $message .= "Votre session GEPI a expiré, ou bien vous avez été déconnecté.<br />";
         if ((getSettingValue("disable_login"))=='yes')  {
         	$message .=  "<br /><span class=\"rouge gras\">Le site est momentanément inaccessible. Veuillez nous excuser de ce dérangement !<span>";
