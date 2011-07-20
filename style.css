@@ -1093,7 +1093,7 @@ input.validation-passed, textarea.validation-passed {
 
 /*================================================*/
 #menu_barre {
-	font-weight: bold;
+	/*font-weight: bold;*/
 	font-size: 90%;
 	/*font-family: trebuchet ms,arial,tahoma,verdana,sans-serif;*/
 	z-index: 1000;
