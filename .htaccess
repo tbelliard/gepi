@@ -23,6 +23,8 @@ AddType application/octet-stream .csv
     </FilesMatch>
 </IfModule>
 
+DirectoryIndex login.php
+
 Options FollowSymLinks
 RewriteEngine On
 # acces simplesaml forcé en https.
