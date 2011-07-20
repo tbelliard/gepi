@@ -137,7 +137,7 @@ else{
 	echo "<form name= \"formulaire\" action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">\n";
 	echo add_token_field();
 
-	echo "<table align='center' class='table_annee_anterieure' summary='Tableau des élèves'>\n";
+	echo "<table align='center' class='table_annee_anterieure boireaus' summary='Tableau des élèves'>\n";
 	echo "<tr style='background-color:white;'>\n";
 	echo "<th>Supprimer<br />";
 	echo "<a href='javascript:modif_coche(true)'><img src='../images/enabled.png' width='15' height='15' alt='Tout cocher' /></a>/\n";
@@ -148,8 +148,10 @@ else{
 	echo "<th>N°INE</th>\n";
 	echo "</tr>\n";
 	$cpt=0;
+	$alt=1;
 	while($lig_ele=mysql_fetch_object($res1)){
-		echo "<tr class='white_hover' style='text-align:center;' id='tr_$cpt'>\n";
+		$alt=$alt*(-1);
+		echo "<tr class='lig$alt white_hover' style='text-align:center;' id='tr_$cpt'>\n";
 		echo "<td><input type='checkbox' name='suppr[]' id='suppr_$cpt' value='$lig_ele->ine' onchange=\"modif_une_coche('$cpt');\" /></td>\n";
 		echo "<td>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</td>\n";
 		echo "<td>".formate_date($lig_ele->naissance)."</td>\n";
