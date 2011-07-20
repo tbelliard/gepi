@@ -1698,8 +1698,7 @@ class Eleve extends BaseEleve {
 		$queryDelete->delete();
 		
 		//on supprime le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
-		AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->filterByDateDemiJounee(null)->delete();
-		AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->filterByDateDemiJounee('0000-00-00 00:00:00')->delete();
+		AbsenceAgregationDecompteQuery::create()->filterByEleve($this)->filterByDateDemiJounee(null)->_or()->filterByDateDemiJounee('0000-00-00 00:00:00')->delete();
 		
 		$DMabsenceNonJustifiesCol = $this->getDemiJourneesNonJustifieesAbsence($dateDebutClone,$dateFinClone);
 		$DMabsencesCol			= $this->getDemiJourneesAbsence($dateDebutClone,$dateFinClone);
@@ -1832,7 +1831,7 @@ class Eleve extends BaseEleve {
 		//on enregistre le marqueur qui certifie que le calcul pour cet eleve a été terminé correctement
 		$newAgregation = new AbsenceAgregationDecompte();
 		$newAgregation->setEleve($this);
-		$newAgregation->setDateDemiJounee('0000-00-00 00:00:00');
+		$newAgregation->setDateDemiJounee(null);
 		$newAgregation->save();
 	}
 	
