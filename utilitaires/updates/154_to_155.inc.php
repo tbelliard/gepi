@@ -541,7 +541,7 @@ $test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM avis_conseil_classe LI
 if ($test_champ>0) {
 	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
 } else {
-	$query = mysql_query("ALTER TABLE avis_conseil_classe ADD id_mention INT( 11 ) NOT NULL AFTER avis;");
+	$query = mysql_query("ALTER TABLE avis_conseil_classe ADD id_mention INT( 11 ) NOT NULL DEFAULT '0' AFTER avis;");
 	if ($query) {
 		$result .= "<font color=\"blue\">Le champ id_mention de la table avis_conseil_classe a été ajouté.</font><br />";
 	} else {
