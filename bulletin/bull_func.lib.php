@@ -5072,7 +5072,12 @@ $hauteur_pris_app_abs=$hauteur_pris;
 					$marge_droite_avis_cons=5;
 					if(($textmention!="")&&($textmention!="-")) {
 						//$texteavis.="\n".traduction_mention($textmention);
-						$texteavis.="\n"."<b>Mention :</b> ".$textmention;
+						if($use_cell_ajustee=="n") {
+							$texteavis.="\n"."Mention : ".$textmention;
+						}
+						else {
+							$texteavis.="\n"."<b>Mention :</b> ".$textmention;
+						}
 					}
 				}
 
