@@ -659,7 +659,7 @@ elseif(!isset($_POST['valide_select_eleves'])) {
 
 		echo "<tr><td valign='top'><input type='checkbox' name='tri_par_etab_orig' id='tri_par_etab_orig' value='y' /></td><td><label for='tri_par_etab_orig' style='cursor: pointer;'>Trier les bulletins par établissement d'origine.</label></td></tr>\n";
 
-		echo "<tr><td valign='top'><input type='checkbox' name='avec_coches_mentions' id='avec_coches_mentions' value='y' /></td><td><label for='avec_coches_mentions' style='cursor: pointer;'>Faire apparaître des cases à cocher pour les mentions (<i>Félicitations, Mention honorable, Encouragements</i>) sur les bulletins PDF.</label></td></tr>\n";
+		echo "<tr><td valign='top'><input type='checkbox' name='avec_coches_mentions' id='avec_coches_mentions' value='y' /></td><td><label for='avec_coches_mentions' style='cursor: pointer;'>Faire apparaître des cases à cocher pour les mentions (<i>Félicitations, Mention honorable, Encouragements, ou autre...</i>) sur les bulletins PDF.</label></td></tr>\n";
 
 		if(($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='administrateur')) {
 			echo "<tr><td valign='top'><input type='checkbox' name='forcer_recalcul_moy_conteneurs' id='forcer_recalcul_moy_conteneurs' value='y' /></td><td><label for='forcer_recalcul_moy_conteneurs' style='cursor: pointer;'>Forcer le recalcul des moyennes de conteneurs.</label></td></tr>\n";

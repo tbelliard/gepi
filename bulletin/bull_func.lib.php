@@ -4943,7 +4943,7 @@ $hauteur_pris_app_abs=0;
 				{
 					// supprimer les espaces
 					$text_absences_appreciation = trim(str_replace(array("\r\n","\r","\n"), ' ', unhtmlentities($tab_bull['eleve'][$i]['appreciation_absences'])));
-					$info_absence_appreciation = "<i>Avis CPE:</i> <b>".$text_absences_appreciation."</b>";
+					$info_absence_appreciation = "<i>Avis CPE :</i> <b>".$text_absences_appreciation."</b>";
 					$text_absences_appreciation = '';
 					$pdf->SetXY($tab_modele_pdf["X_absence"][$classe_id], $tab_modele_pdf["Y_absence"][$classe_id]+4);
 					$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',8);
@@ -5040,7 +5040,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				if ( $tab_modele_pdf["titre_bloc_avis_conseil"][$classe_id] != '' ) {
 					$tt_avis = $tab_modele_pdf["titre_bloc_avis_conseil"][$classe_id];
 				} else {
-					$tt_avis = 'Avis du Conseil de classe:';
+					$tt_avis = 'Avis du Conseil de classe :';
 				}
 				$pdf->Cell($tab_modele_pdf["longeur_avis_cons"][$classe_id],5, $tt_avis,0,2,'');
 
@@ -5072,7 +5072,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 					$marge_droite_avis_cons=5;
 					if(($textmention!="")&&($textmention!="-")) {
 						//$texteavis.="\n".traduction_mention($textmention);
-						$texteavis.="\n"."<b>Mention:</b> ".$textmention;
+						$texteavis.="\n"."<b>Mention :</b> ".$textmention;
 					}
 				}
 
@@ -5111,7 +5111,7 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				$pp_classe[$i]="";
 				//if(isset($tab_bull['eleve'][$i]['pp']['login'])) {
 				if(isset($tab_bull['eleve'][$i]['pp'][0]['login'])) {
-					$pp_classe[$i]="<b>".ucfirst($gepi_prof_suivi)."</b> ";
+					$pp_classe[$i]="<b>".ucfirst($gepi_prof_suivi)."</b> : ";
 					$pp_classe[$i].="<i>".affiche_utilisateur($tab_bull['eleve'][$i]['pp'][0]['login'],$tab_bull['eleve'][$i]['id_classe'])."</i>";
 					for($i_pp=1;$i_pp<count($tab_bull['eleve'][$i]['pp']);$i_pp++) {
 						$pp_classe[$i].=", ";
