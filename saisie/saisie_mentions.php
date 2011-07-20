@@ -274,6 +274,10 @@ if(!isset($associer_mentions_classes)) {
 	echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
 	echo "</form>\n";
 
+	echo "<p><br /></p>\n";
+
+	echo "<p><i>NOTE</i>&nbsp;: Pour que le champ de saisie d'une mention n'apparaisse pas (<i>lors de la saisie de l'avis du conseil de classe</i>) pour une classe donnée, il suffit qu'aucune mention ne soit associée à la classe.</p>\n";
+
 	echo "<p style='color:red'>Pour ne pas poser de problèmes sur les bulletins PDF, il est recommandé pour le moment (<i>à améliorer</i>)&nbsp;:</p>
 <ul style='color:red'>
 <li>de ne pas dépasser 18 caractères dans une mention</li>
