@@ -545,24 +545,26 @@ function focus_suivant(num){
 					echo "$current_eleve_avis_t[$k]";
 					echo "</textarea>\n";
 					// ***** AJOUT POUR LES MENTIONS *****
-					echo "Mention : ";
-					echo champ_select_mention('mention_eleve_'.$i.'_'.$k,$id_classe,$current_eleve_mention_t[$k]);
-					/*
-					$selectedF="";
-					$selectedM="";
-					$selectedE="";
-					$selectedB="";
-					if($current_eleve_mention_t[$k]=='F') {$selectedF=" selected";}
-					else if($current_eleve_mention_t[$k]=='M') {$selectedM=" selected";}
-					else if($current_eleve_mention_t[$k]=='E') {$selectedE=" selected";}
-					else {$selectedB=" selected";}
-					echo "<select name='mention_eleve_".$i."_".$k."'>\n";
-					echo "<option value='B'$selectedB> </option>\n";
-					echo "<option value='E'$selectedE>Encouragements</option>\n";
-					echo "<option value='M'$selectedM>Mention honorable</option>\n";
-					echo "<option value='F'$selectedF>Félicitations</option>\n";
-					echo "</select>\n";
-					*/
+					if(test_existence_mentions_classe($id_classe)) {
+						echo "Mention : ";
+						echo champ_select_mention('mention_eleve_'.$i.'_'.$k,$id_classe,$current_eleve_mention_t[$k]);
+						/*
+						$selectedF="";
+						$selectedM="";
+						$selectedE="";
+						$selectedB="";
+						if($current_eleve_mention_t[$k]=='F') {$selectedF=" selected";}
+						else if($current_eleve_mention_t[$k]=='M') {$selectedM=" selected";}
+						else if($current_eleve_mention_t[$k]=='E') {$selectedE=" selected";}
+						else {$selectedB=" selected";}
+						echo "<select name='mention_eleve_".$i."_".$k."'>\n";
+						echo "<option value='B'$selectedB> </option>\n";
+						echo "<option value='E'$selectedE>Encouragements</option>\n";
+						echo "<option value='M'$selectedM>Mention honorable</option>\n";
+						echo "<option value='F'$selectedF>Félicitations</option>\n";
+						echo "</select>\n";
+						*/
+					}
 					// **** FIN DE L'AJOUT POUR LES MENTIONS ****
 
 					//echo "<a href='#' onClick=\"document.getElementById('textarea_courant').value='no_anti_inject_".$current_eleve_login_t[$k]."';afficher_div('commentaire_type','y',30,-150);return false;\">Ajout CC</a>";

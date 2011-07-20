@@ -2148,8 +2148,10 @@ function eleve_suivant() {
 			document.getElementById('no_anti_inject_current_eleve_login_ap').value=document.getElementById('no_anti_inject_current_eleve_login_ap2').value;
 			document.getElementById('enregistrer_avis').value='y';
 
-			document.getElementById('current_eleve_login_me').value=document.getElementById('current_eleve_login_me2').value;
-			document.getElementById('enregistrer_mention').value='y';
+			if(document.getElementById('current_eleve_login_me2')) {
+				document.getElementById('current_eleve_login_me').value=document.getElementById('current_eleve_login_me2').value;
+				document.getElementById('enregistrer_mention').value='y';
+			}
 			//alert('La mention actuelle est : '+document.getElementById('current_eleve_login_me').value+'.');
 
 			if(mode=='suivant') {
@@ -2183,28 +2185,30 @@ function eleve_suivant() {
 							$texte.="</textarea>\n";
 
 							// ***** AJOUT POUR LES MENTIONS *****
-							$texte.="<br/>\n";
-							$texte.="Mention : ";
-
-							$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
-							/*
-							// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
-							$selectedF="";
-							$selectedM="";
-							$selectedE="";
-							$selectedB="";
-							if($current_eleve_mention=='F') {$selectedF=" selected";}
-							else if($current_eleve_mention=='M') {$selectedM=" selected";}
-							else if($current_eleve_mention=='E') {$selectedE=" selected";}
-							else {$selectedB=" selected";}
-							$texte.="<select name='current_eleve_login_me2'>\n";
-							$texte.="<option value='B'$selectedB> </option>\n";
-							$texte.="<option value='E'$selectedE>Encouragements</option>\n";
-							$texte.="<option value='M'$selectedM>Mention honorable</option>\n";
-							$texte.="<option value='F'$selectedF>Félicitations</option>\n";
-							$texte.="</select>\n";
-							*/
-							$texte.="<br/>\n";
+							if(test_existence_mentions_classe($id_classe)) {
+								$texte.="<br/>\n";
+								$texte.="Mention : ";
+	
+								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
+								/*
+								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+								$selectedF="";
+								$selectedM="";
+								$selectedE="";
+								$selectedB="";
+								if($current_eleve_mention=='F') {$selectedF=" selected";}
+								else if($current_eleve_mention=='M') {$selectedM=" selected";}
+								else if($current_eleve_mention=='E') {$selectedE=" selected";}
+								else {$selectedB=" selected";}
+								$texte.="<select name='current_eleve_login_me2'>\n";
+								$texte.="<option value='B'$selectedB> </option>\n";
+								$texte.="<option value='E'$selectedE>Encouragements</option>\n";
+								$texte.="<option value='M'$selectedM>Mention honorable</option>\n";
+								$texte.="<option value='F'$selectedF>Félicitations</option>\n";
+								$texte.="</select>\n";
+								*/
+								$texte.="<br/>\n";
+							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 			
 
@@ -2238,28 +2242,30 @@ function eleve_suivant() {
 							$texte_saisie_avis_fixe.="</textarea>\n";
 
 							// ***** AJOUT POUR LES MENTIONS *****
-							$texte_saisie_avis_fixe.="<br/>\n";
-							$texte_saisie_avis_fixe.="Mention : ";
-
-							$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
-							/*
-							// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
-							$selectedF="";
-							$selectedM="";
-							$selectedE="";
-							$selectedB="";
-							if($current_eleve_mention=='F') {$selectedF=" selected";}
-							else if($current_eleve_mention=='M') {$selectedM=" selected";}
-							else if($current_eleve_mention=='E') {$selectedE=" selected";}
-							else {$selectedB=" selected";}
-							$texte_saisie_avis_fixe.="<select name='current_eleve_login_me2'>\n";
-							$texte_saisie_avis_fixe.="<option value='B'$selectedB> </option>\n";
-							$texte_saisie_avis_fixe.="<option value='E'$selectedE>Encouragements</option>\n";
-							$texte_saisie_avis_fixe.="<option value='M'$selectedM>Mention honorable</option>\n";
-							$texte_saisie_avis_fixe.="<option value='F'$selectedF>Félicitations</option>\n";
-							$texte_saisie_avis_fixe.="</select>\n";
-							*/
-							$texte_saisie_avis_fixe.="<br/>\n";
+							if(test_existence_mentions_classe($id_classe)) {
+								$texte_saisie_avis_fixe.="<br/>\n";
+								$texte_saisie_avis_fixe.="Mention : ";
+	
+								$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
+								/*
+								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+								$selectedF="";
+								$selectedM="";
+								$selectedE="";
+								$selectedB="";
+								if($current_eleve_mention=='F') {$selectedF=" selected";}
+								else if($current_eleve_mention=='M') {$selectedM=" selected";}
+								else if($current_eleve_mention=='E') {$selectedE=" selected";}
+								else {$selectedB=" selected";}
+								$texte_saisie_avis_fixe.="<select name='current_eleve_login_me2'>\n";
+								$texte_saisie_avis_fixe.="<option value='B'$selectedB> </option>\n";
+								$texte_saisie_avis_fixe.="<option value='E'$selectedE>Encouragements</option>\n";
+								$texte_saisie_avis_fixe.="<option value='M'$selectedM>Mention honorable</option>\n";
+								$texte_saisie_avis_fixe.="<option value='F'$selectedF>Félicitations</option>\n";
+								$texte_saisie_avis_fixe.="</select>\n";
+								*/
+								$texte_saisie_avis_fixe.="<br/>\n";
+							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 
 	
@@ -2308,6 +2314,7 @@ function eleve_suivant() {
 						if(mysql_num_rows($res_avis)>0) {
 							$lig_avis=mysql_fetch_object($res_avis);
 							$current_eleve_avis=$lig_avis->avis;
+							$current_eleve_mention=$lig_avis->id_mention;
 						}
 	
 						echo "<div style='display:none;'>
@@ -2348,28 +2355,30 @@ function eleve_suivant() {
 							$texte.="</textarea>\n";
 
 							// ***** AJOUT POUR LES MENTIONS *****
-							$texte.="<br/>\n";
-							$texte.="Mention : ";
-
-							$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
-							/*
-							// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
-							$selectedF="";
-							$selectedM="";
-							$selectedE="";
-							$selectedB="";
-							if($current_eleve_mention=='F') {$selectedF=" selected";}
-							else if($current_eleve_mention=='M') {$selectedM=" selected";}
-							else if($current_eleve_mention=='E') {$selectedE=" selected";}
-							else {$selectedB=" selected";}
-							$texte.="<select name='current_eleve_login_me2'>\n";
-							$texte.="<option value='B'$selectedB> </option>\n";
-							$texte.="<option value='E'$selectedE>Encouragements</option>\n";
-							$texte.="<option value='M'$selectedM>Mention honorable</option>\n";
-							$texte.="<option value='F'$selectedF>Félicitations</option>\n";
-							$texte.="</select>\n";
-							*/
-							$texte.="<br/>\n";
+							if(test_existence_mentions_classe($id_classe)) {
+								$texte.="<br/>\n";
+								$texte.="Mention : ";
+	
+								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
+								/*
+								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+								$selectedF="";
+								$selectedM="";
+								$selectedE="";
+								$selectedB="";
+								if($current_eleve_mention=='F') {$selectedF=" selected";}
+								else if($current_eleve_mention=='M') {$selectedM=" selected";}
+								else if($current_eleve_mention=='E') {$selectedE=" selected";}
+								else {$selectedB=" selected";}
+								$texte.="<select name='current_eleve_login_me2'>\n";
+								$texte.="<option value='B'$selectedB> </option>\n";
+								$texte.="<option value='E'$selectedE>Encouragements</option>\n";
+								$texte.="<option value='M'$selectedM>Mention honorable</option>\n";
+								$texte.="<option value='F'$selectedF>Félicitations</option>\n";
+								$texte.="</select>\n";
+								*/
+								$texte.="<br/>\n";
+							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 
 							//$texte.="<input type='submit' NAME='ok1' value='Enregistrer' />\n";
@@ -2402,28 +2411,30 @@ function eleve_suivant() {
 							$texte_saisie_avis_fixe.="</textarea>\n";
 
 							// ***** AJOUT POUR LES MENTIONS *****
-							$texte_saisie_avis_fixe.="<br/>\n";
-							$texte_saisie_avis_fixe.="Mention : ";
-
-							$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
-							/*
-							// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
-							$selectedF="";
-							$selectedM="";
-							$selectedE="";
-							$selectedB="";
-							if($current_eleve_mention=='F') {$selectedF=" selected";}
-							else if($current_eleve_mention=='M') {$selectedM=" selected";}
-							else if($current_eleve_mention=='E') {$selectedE=" selected";}
-							else {$selectedB=" selected";}
-							$texte_saisie_avis_fixe.="<select name='current_eleve_login_me2'>\n";
-							$texte_saisie_avis_fixe.="<option value='B'$selectedB> </option>\n";
-							$texte_saisie_avis_fixe.="<option value='E'$selectedE>Encouragements</option>\n";
-							$texte_saisie_avis_fixe.="<option value='M'$selectedM>Mention honorable</option>\n";
-							$texte_saisie_avis_fixe.="<option value='F'$selectedF>Félicitations</option>\n";
-							$texte_saisie_avis_fixe.="</select>\n";
-							*/
-							$texte_saisie_avis_fixe.="<br/>\n";
+							if(test_existence_mentions_classe($id_classe)) {
+								$texte_saisie_avis_fixe.="<br/>\n";
+								$texte_saisie_avis_fixe.="Mention : ";
+	
+								$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
+								/*
+								// Essai d'ajout de listes déroulantes en vue de l'intégration des mentions au bulletin :
+								$selectedF="";
+								$selectedM="";
+								$selectedE="";
+								$selectedB="";
+								if($current_eleve_mention=='F') {$selectedF=" selected";}
+								else if($current_eleve_mention=='M') {$selectedM=" selected";}
+								else if($current_eleve_mention=='E') {$selectedE=" selected";}
+								else {$selectedB=" selected";}
+								$texte_saisie_avis_fixe.="<select name='current_eleve_login_me2'>\n";
+								$texte_saisie_avis_fixe.="<option value='B'$selectedB> </option>\n";
+								$texte_saisie_avis_fixe.="<option value='E'$selectedE>Encouragements</option>\n";
+								$texte_saisie_avis_fixe.="<option value='M'$selectedM>Mention honorable</option>\n";
+								$texte_saisie_avis_fixe.="<option value='F'$selectedF>Félicitations</option>\n";
+								$texte_saisie_avis_fixe.="</select>\n";
+								*/
+								$texte_saisie_avis_fixe.="<br/>\n";
+							}
 							// ***** FIN DE L'AJOUT POUR LES MENTIONS *****
 			
 

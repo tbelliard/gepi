@@ -318,7 +318,13 @@ echo "</form>\n";
 	<tr>
 		<th width="20%"><b>Nom Prénom</b></th>
 		<th<?php
-			$avec_mentions="y";
+			if(test_existence_mentions_classe($id_classe)) {
+				$avec_mentions="y";
+			}
+			else {
+				$avec_mentions="n";
+			}
+
 			if($avec_mentions=="y") {
 				echo " width='60%'";
 			}
@@ -541,27 +547,28 @@ if (isset($fiche)) {
 	echo "</textarea>\n";
 
 	// ***** AJOUT POUR LES MENTIONS *****
-	echo "<br />\n";
-	echo "Mention : ";
-	echo champ_select_mention('current_eleve_mention',$id_classe,$current_eleve_mention);
-	/*
-	$selectedF="";
-	$selectedM="";
-	$selectedE="";
-	$selectedB="";
-	if($current_eleve_mention=='F') {$selectedF=" selected";}
-	else if($current_eleve_mention=='M') {$selectedM=" selected";}
-	else if($current_eleve_mention=='E') {$selectedE=" selected";}
-	else {$selectedB=" selected";}
-	echo "<select name='current_eleve_mention'>\n";
-	echo "<option value='B'$selectedB> </option>\n";
-	echo "<option value='E'$selectedE>Encouragements</option>\n";
-	echo "<option value='M'$selectedM>Mention honorable</option>\n";
-	echo "<option value='F'$selectedF>Félicitations</option>\n";
-	echo "</select>\n";
-	*/
-	// **** FIN DE L'AJOUT POUR LES MENTIONS ****
-
+	if(test_existence_mentions_classe($id_classe)) {
+		echo "<br />\n";
+		echo "Mention : ";
+		echo champ_select_mention('current_eleve_mention',$id_classe,$current_eleve_mention);
+		/*
+		$selectedF="";
+		$selectedM="";
+		$selectedE="";
+		$selectedB="";
+		if($current_eleve_mention=='F') {$selectedF=" selected";}
+		else if($current_eleve_mention=='M') {$selectedM=" selected";}
+		else if($current_eleve_mention=='E') {$selectedE=" selected";}
+		else {$selectedB=" selected";}
+		echo "<select name='current_eleve_mention'>\n";
+		echo "<option value='B'$selectedB> </option>\n";
+		echo "<option value='E'$selectedE>Encouragements</option>\n";
+		echo "<option value='M'$selectedM>Mention honorable</option>\n";
+		echo "<option value='F'$selectedF>Félicitations</option>\n";
+		echo "</select>\n";
+		*/
+		// **** FIN DE L'AJOUT POUR LES MENTIONS ****
+	}
 	echo "</td>\n";
 
 

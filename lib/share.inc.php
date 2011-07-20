@@ -7118,4 +7118,16 @@ function champ_select_mention($nom_champ_select,$id_classe,$id_mention_selected=
 
 	return $retour;
 }
+
+function test_existence_mentions_classe($id_classe) {
+	$sql="SELECT 1=1 FROM j_mentions_classes WHERE id_classe='$id_classe';";
+	$test=mysql_query($sql);
+	if(mysql_num_rows($test)>0) {
+		return true;
+	}
+	else {
+		return false;
+	}
+
+}
 ?>
