@@ -95,6 +95,8 @@ if((isset($num_fich))&&((isset($id_classe))||(isset($id_groupe)))) {
 					$tab_eleves_OOo[$nb_eleve]['nom']=$lig->nom;
 					$tab_eleves_OOo[$nb_eleve]['prenom']=$lig->prenom;
 					$tab_eleves_OOo[$nb_eleve]['ine']=$lig->no_gep;
+					$tab_eleves_OOo[$nb_eleve]['elenoet']=$lig->elenoet;
+					$tab_eleves_OOo[$nb_eleve]['ele_id']=$lig->ele_id;
 					$tab_eleves_OOo[$nb_eleve]['fille']="";
 					if($lig->sexe=='F') {$tab_eleves_OOo[$nb_eleve]['fille']="e";} // ajouter un e à née si l'élève est une fille
 					$tab_eleves_OOo[$nb_eleve]['date_nais']=formate_date($lig->naissance);
@@ -428,8 +430,27 @@ if(!isset($num_fich)) {
 		echo "<input type='submit' name='btn' Align='middle' value='Envoyer' /></p>\n";
 		echo "</form>\n";
 
+		echo "<p><i>NOTES&nbsp;:</i></p>\n";
+		echo "<blockquote>\n";
+		echo "<p style='margin-left:3em;'>Le fichier fourni peut utiliser les champs suivants&nbsp;:</p>\n";
+		echo "<ul style='margin-left:3em;'>\n";
+		echo "<li>[eleves.nom]</li>\n";
+		echo "<li>[eleves.prenom]</li>\n";
+		echo "<li>[eleves.sexe]</li>\n";
+		echo "<li>[eleves.date_nais]</li>\n";
+		if(getSettingValue('ele_lieu_naissance')=="y") {
+			echo "<li>[eleves.lieu_nais]</li>\n";
+		}
+		echo "<li>[eleves.classe]</li>\n";
+		echo "<li>[eleves.ine]</li>\n";
+		echo "<li>[eleves.elenoet]</li>\n";
+		echo "<li>[eleves.ele_id]</li>\n";
+		echo "<li>[eleves.login]</li>\n";
+		echo "</ul>\n";
+		echo "</blockquote>\n";
+
 		if($_SESSION['statut']=='administrateur') {
-			echo "<p style='color:red'>A FAIRE : Permettre à l'administrateur de faire le ménage dans les fichiers modèles des autres utilisateurs.</p>\n";
+			echo "<p style='color:red'>A FAIRE : Permettre à l'administrateur de faire le ménage dans les fichiers modèles des autres utilisateurs.<br />Permettre de limiter les champs auxquels ont accès les utilisateurs selon leur statut.</p>\n";
 		}
 	}
 }
