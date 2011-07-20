@@ -613,7 +613,7 @@ Nouvelles fonctionalités
 Corrections de bugs
 -------------------
 - Correction d'un bug dans les carnets de notes lié à la présence de certains caractères spéciaux dans le nom de la matière.
-- correction d'un bug dans classes/modify_class.php : en supprimant tous les professeurs associé à une matière, il était possible de supprimer une matière d'une classe bien que des notes ou appréciations soient attachées à cette matière.
+- correction d'un bug dans classes/modify_class.php : en supprimant tous les professeurs associés à une matière, il était possible de supprimer une matière d'une classe bien que des notes ou appréciations soient attachées à cette matière.
 - correction d'un bug dans classes/eleve_options.php : on pouvait supprimer une option suivi par un élève alors que des notes ou appréciations existaient pour cet élève et pour cette option.
 - correction d'un problème d'affichage sur le bulletin, des "sous-moyennes" issues du carnet de notes dans le cas où une seule boîte devait être affichées.
 - correction du problème d'affichage des moyennes générales par évaluation lors de l'édition d'un PDF depuis le carnet de notes pour des groupes d'élèves dont l'effectif est inférieur à l'effectif total de la classe.
