@@ -728,7 +728,7 @@ function DecocheCheckbox() {
                 $message_alerte.="Vous devriez effectuer/forcer une <a href='../utilitaires/maj.php'>mise à jour de la base</a> pour corriger.<br />Prenez tout de même soin de vérifier que personne d'autre que vous n'est connecté.\n";
             }
             else {
-                $message_alerte.="Contactez l'administrateur pour qu'il effecute une mise à jour de la base.\n";
+                $message_alerte.="Contactez l'administrateur pour qu'il effectue une mise à jour de la base.\n";
             }
             $message_alerte.="</p>\n";
         }
