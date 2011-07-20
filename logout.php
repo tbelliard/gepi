@@ -54,8 +54,15 @@ if (isset($_COOKIE["RNE"])) {
 	unset($_COOKIE['RNE']);
 	setcookie('RNE', 'RNE'); // permet d'effacer le contenu du cookie.
 }
-
-if ($session_gepi->auth_simpleSAML == 'yes') {
+if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
+		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
+		$auth = new SimpleSAML_Auth_Simple('local-gepi-db');
+		if ($auth->isAuthenticated()) {
+			//on fait le logout de session avec simplesaml en tant que fournisseur d'identité. Ça va déconnecter la source d'authentification pour gepi local et aussi pour chaque service associé (sacoche)
+			header("Location:./simplesaml/saml2/idp/SingleLogoutService.php?ReturnTo=".$_SERVER['REQUEST_URI']);
+			exit();
+		}
+} else if ($session_gepi->auth_simpleSAML == 'yes') {
 		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
 		$auth = new SimpleSAML_Auth_Simple('local-gepi-db');
 		if ($auth->isAuthenticated()) {
@@ -63,8 +70,6 @@ if ($session_gepi->auth_simpleSAML == 'yes') {
 			$auth->logout();
 		}
 }
-//$session_gepi->auth_simpleSAML = 'n';
-
 	
     //$message = "<h1 class='gepi'>Déconnexion</h1>";
     $titre= "Déconnexion";
