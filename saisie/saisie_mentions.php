@@ -120,10 +120,12 @@ if(isset($saisie_association_mentions_classes)) {
 
 	$cpt_reg=0;
 	$tab_mentions=get_mentions();
-	$tab_mentions_aff=get_tab_mentions_affectees();
 	for($i=0;$i<count($id_classe);$i++) {
+		$tab_mentions_aff=get_tab_mentions_affectees($id_classe[$i]);
+
 		$tab_mentions_classe=array();
-		$sql="SELECT DISTINCT a.id_mention FROM avis_conseil_classe a, j_eleves_classes j WHERE j.periode=a.periode AND j.login=a.login AND j.id_classe='$id_classe[$i]';";
+		//$sql="SELECT DISTINCT a.id_mention FROM avis_conseil_classe a, j_eleves_classes j WHERE j.periode=a.periode AND j.login=a.login AND j.id_classe='$id_classe[$i]';";
+		$sql="SELECT DISTINCT j.id_mention FROM j_mentions_classes j WHERE j.id_classe='$id_classe[$i]';";
 		//echo "$sql<br />";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
@@ -132,9 +134,26 @@ if(isset($saisie_association_mentions_classes)) {
 			}
 		}
 
+		/*
+		echo "<p>\$tab_mentions_classe:<br />";
+		foreach($tab_mentions_classe as $key => $value) {
+		echo "\$tab_mentions_classe[$key]=$value<br />";
+		}
+		echo "</p>
+		<hr />";
+		echo "<p>\$id_mention:<br />";
+		foreach($id_mention as $key => $value) {
+		echo "\$id_mention[$key]=$value<br />";
+		}
+		echo "</p>
+		<hr />";
+		*/
+
 		foreach($tab_mentions as $key => $value) {
-			if((!in_array($key, $id_mention))&&(in_array($key, $tab_mentions_classe))) {
+			//echo "\$key=$key<br />";
+			if((!in_array($key, $id_mention))&&(in_array($key, $tab_mentions_classe))&&(!in_array($key, $tab_mentions_aff))) {
 				$sql="DELETE FROM j_mentions_classes WHERE id_classe='$id_classe[$i]' AND id_mention='$key';";
+				//echo "$sql<br />";
 				$nettoyage=mysql_query($sql);
 				if(!$nettoyage) {
 					$msg.="Erreur lors de la suppression de la $gepi_denom_mention <b>".$value."</b> pour la classe <b>".get_class_from_id($id_classe[$i])."</b>.<br />";
@@ -143,6 +162,7 @@ if(isset($saisie_association_mentions_classes)) {
 			}
 			elseif((in_array($key, $id_mention))&&(!in_array($key, $tab_mentions_classe))) {
 				$sql="INSERT INTO j_mentions_classes SET id_classe='$id_classe[$i]', id_mention='$key';";
+				//echo "$sql<br />";
 				$insert=mysql_query($sql);
 				if(!$insert) {
 					$msg.="Erreur lors de l'association de la $gepi_denom_mention <b>".$value."</b> avec la classe <b>".get_class_from_id($id_classe[$i])."</b>.<br />";
@@ -189,6 +209,8 @@ if (!loadSettings()) {
 	die("Erreur chargement settings");
 }
 //====================================
+
+//debug_var();
 
 function insere_mentions_par_defaut() {
 	$cpt_erreur=0;
@@ -280,7 +302,25 @@ if(!isset($associer_mentions_classes)) {
 
 	echo "<p><br /></p>\n";
 
-	echo "<p><i>NOTE</i>&nbsp;: Pour que le champ de saisie d'une $gepi_denom_mention n'apparaisse pas (<i>lors de la saisie de l'avis du conseil de classe</i>) pour une classe donnée, il suffit qu'aucune $gepi_denom_mention ne soit associée à la classe.</p>\n";
+	echo "<p><i>NOTES</i>&nbsp;:</p>
+<ul>
+	<li>
+		<p>Pour que le champ de saisie d'une $gepi_denom_mention n'apparaisse pas (<i>lors de la saisie de l'avis du conseil de classe</i>) pour une classe donnée, il suffit qu'aucune $gepi_denom_mention ne soit associée à la classe.</p>
+	</li>
+	<li>
+		<p>L'article Article R511-13 du code de l'éducation rappelle que dans les lycées et collèges relevant du ministre chargé de l'éducation, les sanctions qui peuvent être prononcées à l'encontre des élèves sont les suivantes :</p>
+		<ol>
+			<li>L'avertissement</li>
+			<li>Le blâme ;</li>
+			<li>L'exclusion temporaire, qui ne peut excéder un mois, de l'établissement ou de l'un de ses services annexes ;</li>
+			<li>L'exclusion définitive de l'établissement ou de l'un de ses services annexes.</li>
+		</ol>
+		<p>Les sanctions peuvent être assorties d'un sursis total ou partiel.<br />
+		<b>Toute sanction, hormis l'exclusion définitive, est effacée du dossier administratif de l'élève au bout d'un an</b>
+		Le règlement intérieur reproduit l'échelle des sanctions. En outre, il peut prévoir des mesures de prévention, d'accompagnement et de réparation.<br />
+		<a href='http://www.legifrance.gouv.fr/affichCodeArticle.do?cidTexte=LEGITEXT000006071191&idArticle=LEGIARTI000020663068&dateTexte=&categorieLien=cid'>Le lien sur Légifrance</a>.</p>
+	</li>
+</ul>\n";
 
 	echo "<p style='color:red'>Pour ne pas poser de problèmes sur les bulletins PDF, il est recommandé pour le moment (<i>à améliorer</i>)&nbsp;:</p>
 <ul style='color:red'>
