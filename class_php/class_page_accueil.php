@@ -1061,13 +1061,18 @@ class class_page_accueil {
 	}
 
 	if ($this->statutUtilisateur=='administrateur'){
-	  $this->creeNouveauItem("/statistiques/index.php",
+		$this->creeNouveauItem("/statistiques/index.php",
 			  "Extractions statistiques",
 			  "Cet outil vous permet d'extraire des données à des fins statistiques (des bulletins, ...).");
 
-	  $this->creeNouveauItem("/saisie/saisie_mentions.php",
-			  "Mentions des bulletins",
-			  "Cet outil vous permet de définir les mentions (<i>Félicitations, Encouragements,...</i>) des bulletins.");
+		$gepi_denom_mention=getSettingValue("gepi_denom_mention");
+		if($gepi_denom_mention=="") {
+			$gepi_denom_mention="mention";
+		}
+
+		$this->creeNouveauItem("/saisie/saisie_mentions.php",
+			  ucfirst($gepi_denom_mention)."s des bulletins",
+			  "Cet outil vous permet de définir les ".$gepi_denom_mention."s (<i>Félicitations, Encouragements,...</i>) des bulletins.");
 	}
 
 	if ($this->b>0){

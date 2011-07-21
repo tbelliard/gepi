@@ -231,7 +231,8 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		// En admin, dans Gestion des modules
 		$active_module_trombinoscopes,
 
-		$avec_coches_mentions;
+		$avec_coches_mentions,
+		$gepi_denom_mention;
 
 	// Récupérer avant le nombre de bulletins à imprimer
 	// - que le premier resp
@@ -917,7 +918,7 @@ width:".$largeur1."%;\n";
 					//if((trim($tab_bull['id_mention'][$i])!="")||($avec_coches_mentions=="y")) {
 					if(isset($tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]])) {
 						echo "<br/>\n";
-						echo "<b>Mention : </b>";
+						echo "<b>".ucfirst($gepi_denom_mention)." : </b>";
 						echo texte_html_ou_pas(traduction_mention($tab_bull['id_mention'][$i]));
 					}
 				}
@@ -1077,6 +1078,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$evolution_moyenne_periode_precedente,
 
 		$avec_coches_mentions,
+		$gepi_denom_mention,
 
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
 		$pdf;
@@ -5075,10 +5077,10 @@ $hauteur_pris_app_abs=$hauteur_pris;
 					if(($textmention!="")&&($textmention!="-")) {
 						//$texteavis.="\n".traduction_mention($textmention);
 						if($use_cell_ajustee=="n") {
-							$texteavis.="\n"."Mention : ".$textmention;
+							$texteavis.="\n".ucfirst($gepi_denom_mention)." : ".$textmention;
 						}
 						else {
-							$texteavis.="\n"."<b>Mention :</b> ".$textmention;
+							$texteavis.="\n"."<b>".ucfirst($gepi_denom_mention)." :</b> ".$textmention;
 						}
 					}
 				}

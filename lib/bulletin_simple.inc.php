@@ -109,6 +109,9 @@ global $bull_intitule_app;
 
 global $affiche_deux_moy_gen;
 
+global $gepi_denom_mention;
+if($gepi_denom_mention=='') {$gepi_denom_mention="mention";}
+
 $alt=1;
 
 $tab_statuts_signalement_faute_autorise=array('administrateur', 'professeur', 'cpe', 'scolarite');
@@ -1244,7 +1247,7 @@ $current_group["classe"]["ver_periode"][$id_classe][$nb]
 		if(isset($tableau_des_mentions_sur_le_bulletin[$current_eleve_mention[$nb]])) {
 			echo "<br />\n";
 			echo "<br />\n";
-			echo "<b>Mention : </b>";
+			echo "<b>".$gepi_denom_mention." : </b>";
 			echo $tableau_des_mentions_sur_le_bulletin[$current_eleve_mention[$nb]];
 			//else {echo "-";}
 		}

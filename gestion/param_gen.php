@@ -473,7 +473,18 @@ if (isset($_POST['is_posted'])) {
 				$msg .= "Erreur lors de l'enregistrement de gepi_denom_boite_genre !";
 			}
 		}
-		
+
+		if((isset($_POST['gepi_denom_mention']))&&($_POST['gepi_denom_mention']!="")) {
+			if (!saveSetting("gepi_denom_mention", $_POST['gepi_denom_mention'])) {
+				$msg .= "Erreur lors de l'enregistrement de gepi_denom_mention !";
+			}
+		}
+		else {
+			if (!saveSetting("gepi_denom_mention", "mention")) {
+				$msg .= "Erreur lors de l'initialisation de gepi_denom_mention !";
+			}
+		}
+
 		if (isset($_POST['gepi_stylesheet'])) {
 			if (!saveSetting("gepi_stylesheet", $_POST['gepi_stylesheet'])) {
 				$msg .= "Erreur lors de l'enregistrement de l'année scolaire !";
@@ -843,12 +854,29 @@ echo add_token_field();
 		Désignation des boites/conteneurs/emplacements/sous-matières :</td>
 		<td>
 		<input type="text" name="gepi_denom_boite" size="20" value="<?php echo(getSettingValue("gepi_denom_boite")); ?>" onchange='changement()' /><br />
-		<table summary='Genre'><tr valign='top'><td>Genre:</td><td>
+		<table summary='Genre'><tr valign='top'><td>Genre :</td><td>
 		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_m" value="m" <?php if(getSettingValue("gepi_denom_boite_genre")=="m"){echo 'checked';} ?> onchange='changement()' /> <label for='gepi_denom_boite_genre_m' style='cursor: pointer;'>Masculin</label><br />
 		<input type="radio" name="gepi_denom_boite_genre" id="gepi_denom_boite_genre_f" value="f" <?php if(getSettingValue("gepi_denom_boite_genre")=="f"){echo 'checked';} ?> onchange='changement()' /> <label for='gepi_denom_boite_genre_f' style='cursor: pointer;'>Féminin</label><br />
 		</td></tr></table>
 		</td>
 	</tr>
+
+	<tr>
+		<td style="font-variant: small-caps;" valign='top'>
+		Désignation des "mentions" pouvant être saisies avec l'avis du conseil de classe :</td>
+		<td>
+		<input type="text" name="gepi_denom_mention" size="20" value="<?php
+			
+			$gepi_denom_mention=getSettingValue("gepi_denom_mention");
+			if($gepi_denom_mention=="") {
+				$gepi_denom_mention="mention";
+			}
+
+			echo $gepi_denom_mention;
+		?>" onchange='changement()' /><br />
+		</td>
+	</tr>
+
 	<tr>
 		<td style="font-variant: small-caps;">
 		Mode de génération automatique des logins :</td>

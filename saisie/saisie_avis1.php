@@ -46,6 +46,11 @@ $id_classe = isset($_POST["id_classe"]) ? $_POST["id_classe"] :(isset($_GET["id_
 
 include "../lib/periodes.inc.php";
 
+$gepi_denom_mention=getSettingValue("gepi_denom_mention");
+if($gepi_denom_mention=="") {
+	$gepi_denom_mention="mention";
+}
+
 if (isset($_POST['is_posted'])) {
 	check_token();
 
@@ -546,7 +551,7 @@ function focus_suivant(num){
 					echo "</textarea>\n";
 					// ***** AJOUT POUR LES MENTIONS *****
 					if(test_existence_mentions_classe($id_classe)) {
-						echo "Mention : ";
+						echo ucfirst($gepi_denom_mention)." : ";
 						echo champ_select_mention('mention_eleve_'.$i.'_'.$k,$id_classe,$current_eleve_mention_t[$k]);
 						/*
 						$selectedF="";
@@ -595,7 +600,7 @@ function focus_suivant(num){
 				}
 
 				if(isset($tableau_des_mentions_sur_le_bulletin[$current_eleve_mention_t[$k]])) {
-					echo "<p class=\"medium\"><b> Mention : ";
+					echo "<p class=\"medium\"><b> ".ucfirst($gepi_denom_mention)." : ";
 					echo $tableau_des_mentions_sur_le_bulletin[$current_eleve_mention_t[$k]];
 					echo "</b></p>\n";
 				}

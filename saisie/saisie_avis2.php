@@ -73,6 +73,11 @@ $affiche_message = isset($_GET["affiche_message"]) ? $_GET["affiche_message"] :N
 
 include "../lib/periodes.inc.php";
 
+$gepi_denom_mention=getSettingValue("gepi_denom_mention");
+if($gepi_denom_mention=="") {
+	$gepi_denom_mention="mention";
+}
+
 //*******************************************************************************************************
 $msg = '';
 if (isset($_POST['is_posted'])) {
@@ -331,7 +336,7 @@ echo "</form>\n";
 		?>><b><?php echo ucfirst($nom_periode[$periode_num]) ; ?> : avis du conseil de classe</b></th>
 		<?php
 			if($avec_mentions=="y") {
-				echo "<th><b>Mention</b></th>\n";
+				echo "<th><b>".ucfirst($gepi_denom_mention)."</b></th>\n";
 			}
 		?>
 	</tr>
@@ -549,7 +554,7 @@ if (isset($fiche)) {
 	// ***** AJOUT POUR LES MENTIONS *****
 	if(test_existence_mentions_classe($id_classe)) {
 		echo "<br />\n";
-		echo "Mention : ";
+		echo ucfirst($gepi_denom_mention)." : ";
 		echo champ_select_mention('current_eleve_mention',$id_classe,$current_eleve_mention);
 		/*
 		$selectedF="";

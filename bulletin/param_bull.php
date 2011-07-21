@@ -62,6 +62,11 @@ $tab_polices_avis=Array("Arial","Helvetica","Serif","Times","Times New Roman","V
 // tableau des styles de polices pour avis du CC de classe
 $tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");
 
+$gepi_denom_mention=getSettingValue("gepi_denom_mention");
+if($gepi_denom_mention=="") {
+	$gepi_denom_mention="mention";
+}
+
 if (isset($_POST['is_posted'])) {
 	check_token();
 	if (isset($_POST['textsize'])) {
@@ -1103,7 +1108,7 @@ echo add_token_field();
 
 	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
         <td style="font-variant: small-caps;">
-        Faire apparaitre les mentions (<i>Félicitations, encouragements, avertissements,...</i>) avec l'avis du conseil de classe.
+        Faire apparaitre les <?php echo $gepi_denom_mention;?>s (<i>Félicitations, encouragements, avertissements,...</i>) avec l'avis du conseil de classe.
         </td>
 	<?php
 		if(getSettingValue("bull_affich_mentions")){

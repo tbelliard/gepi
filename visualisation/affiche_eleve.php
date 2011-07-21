@@ -61,6 +61,10 @@ function affiche_debug($texte) {
 	}
 }
 
+$gepi_denom_mention=getSettingValue("gepi_denom_mention");
+if($gepi_denom_mention=="") {
+	$gepi_denom_mention="mention";
+}
 
 /*
 $datay1 = array();
@@ -2187,7 +2191,7 @@ function eleve_suivant() {
 							// ***** AJOUT POUR LES MENTIONS *****
 							if(test_existence_mentions_classe($id_classe)) {
 								$texte.="<br/>\n";
-								$texte.="Mention : ";
+								$texte.=ucfirst($gepi_denom_mention)." : ";
 	
 								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
 								/*
@@ -2244,7 +2248,7 @@ function eleve_suivant() {
 							// ***** AJOUT POUR LES MENTIONS *****
 							if(test_existence_mentions_classe($id_classe)) {
 								$texte_saisie_avis_fixe.="<br/>\n";
-								$texte_saisie_avis_fixe.="Mention : ";
+								$texte_saisie_avis_fixe.=ucfirst($gepi_denom_mention)." : ";
 	
 								$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
 								/*
@@ -2357,7 +2361,7 @@ function eleve_suivant() {
 							// ***** AJOUT POUR LES MENTIONS *****
 							if(test_existence_mentions_classe($id_classe)) {
 								$texte.="<br/>\n";
-								$texte.="Mention : ";
+								$texte.=ucfirst($gepi_denom_mention)." : ";
 	
 								$texte.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
 								/*
@@ -2413,7 +2417,7 @@ function eleve_suivant() {
 							// ***** AJOUT POUR LES MENTIONS *****
 							if(test_existence_mentions_classe($id_classe)) {
 								$texte_saisie_avis_fixe.="<br/>\n";
-								$texte_saisie_avis_fixe.="Mention : ";
+								$texte_saisie_avis_fixe.=ucfirst($gepi_denom_mention)." : ";
 	
 								$texte_saisie_avis_fixe.=champ_select_mention('current_eleve_login_me2',$id_classe,$current_eleve_mention);
 								/*
@@ -2843,7 +2847,7 @@ function eleve_suivant() {
 						//if(($lig_avis->id_mention!='')&&($lig_avis->mention!='-')&&($lig_avis->mention!='B')) {
 						if(isset($tableau_des_mentions_sur_le_bulletin[$lig_avis->id_mention])) {
 							$texte_bulle.="<br />\n";
-							$texte_bulle.="<b>Mention</b> : ";
+							$texte_bulle.="<b>".ucfirst($gepi_denom_mention)."</b> : ";
 							//$texte_bulle.=htmlentities(traduction_mention($lig_avis->mention))."\n";
 							$texte_bulle.=$tableau_des_mentions_sur_le_bulletin[$lig_avis->id_mention]."\n";
 						}
