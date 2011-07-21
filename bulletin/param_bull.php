@@ -55,6 +55,12 @@ $bgcolor = "#DEDEDE";
 // Tableau des couleurs HTML:
 $tabcouleur=Array("aliceblue","antiquewhite","aqua","aquamarine","azure","beige","bisque","black","blanchedalmond","blue","blueviolet","brown","burlywood","cadetblue","chartreuse","chocolate","coral","cornflowerblue","cornsilk","crimson","cyan","darkblue","darkcyan","darkgoldenrod","darkgray","darkgreen","darkkhaki","darkmagenta","darkolivegreen","darkorange","darkorchid","darkred","darksalmon","darkseagreen","darkslateblue","darkslategray","darkturquoise","darkviolet","deeppink","deepskyblue","dimgray","dodgerblue","firebrick","floralwhite","forestgreen","fuchsia","gainsboro","ghostwhite","gold","goldenrod","gray","green","greenyellow","honeydew","hotpink","indianred","indigo","ivory","khaki","lavender","lavenderblush","lawngreen","lemonchiffon","lightblue","lightcoral","lightcyan","lightgoldenrodyellow","lightgreen","lightgrey","lightpink","lightsalmon","lightseagreen","lightskyblue","lightslategray","lightsteelblue","lightyellow","lime","limegreen","linen","magenta","maroon","mediumaquamarine","mediumblue","mediumorchid","mediumpurple","mediumseagreen","mediumslateblue","mediumspringgreen","mediumturquoise","mediumvioletred","midnightblue","mintcream","mistyrose","moccasin","navajowhite","navy","oldlace","olive","olivedrab","orange","orangered","orchid","palegoldenrod","palegreen","paleturquoise","palevioletred","papayawhip","peachpuff","peru","pink","plum","powderblue","purple","red","rosybrown","royalblue","saddlebrown","salmon","sandybrown","seagreen","seashell","sienna","silver","skyblue","slateblue","slategray","snow","springgreen","steelblue","tan","teal","thistle","tomato","turquoise","violet","wheat","white","whitesmoke","yellow","yellowgreen");
 
+// tableau des polices pour avis du CC de classe
+$tab_polices_avis=Array("Arial","Helvetica","Serif","Times","Times New Roman","Verdana",);
+
+//Style des caractères avis
+// tableau des styles de polices pour avis du CC de classe
+$tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");
 
 if (isset($_POST['is_posted'])) {
 	check_token();
@@ -586,8 +592,6 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 	
-	// tableau des polices pour avis du CC de classe
-	$tab_polices_avis=Array("Arial","Helvetica","Serif","Times","Times New Roman","Verdana",);
 	if (isset($_POST['bull_police_avis'])) {
 		if((!in_array($_POST['bull_police_avis'],$tab_polices_avis))&&($_POST['bull_police_avis']!='')){
 			$msg .= "Erreur lors de l'enregistrement de bull_police_avis ! (police invalide)";
@@ -601,9 +605,6 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 	
-	//Style des caractères avis
-	// tableau des styles de polices pour avis du CC de classe
-	$tab_styles_avis=Array("Normal","Gras","Italique","Gras et Italique");
 	if (isset($_POST['bull_font_style_avis'])) {
 		if((!in_array($_POST['bull_font_style_avis'],$tab_styles_avis))&&($_POST['bull_font_style_avis']!='')){
 			$msg .= "Erreur lors de l'enregistrement de bull_font_style_avis ! (police invalide)";
@@ -663,6 +664,20 @@ if (isset($_POST['is_posted'])) {
 			$reg_ok = 'no';
 		}
 	}
+
+	if (isset($_POST['bull_affich_mentions'])) {
+		if($_POST['bull_affich_mentions']=="n") {
+			$bull_affich_mentions="n";
+		}
+		else{
+			$bull_affich_mentions="y";
+		}
+		if (!saveSetting("bull_affich_mentions", $bull_affich_mentions)) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affich_mentions !";
+			$reg_ok = 'no';
+		}
+	}
+
 }
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
@@ -1081,6 +1096,33 @@ echo add_token_field();
         echo "<label for='bull_affich_adr_etab_n' style='cursor: pointer;'>\n";
 		echo "<input type=\"radio\" name=\"bull_affich_adr_etab\" id=\"bull_affich_adr_etab_n\" value=\"n\" ";
         if ($bull_affich_adr_etab == 'n') {echo " checked";}
+        echo " />&nbsp;Non</label>\n";
+        ?>
+	</td>
+    </tr>
+
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Faire apparaitre les mentions (<i>Félicitations, encouragements, avertissements,...</i>) avec l'avis du conseil de classe.
+        </td>
+	<?php
+		if(getSettingValue("bull_affich_mentions")){
+			$bull_affich_mentions=getSettingValue("bull_affich_mentions");
+		}
+		else{
+			$bull_affich_mentions="y";
+		}
+	?>
+        <td>
+	<?php
+        echo "<label for='bull_affich_mentions_y' style='cursor: pointer;'>\n";
+		echo "<input type=\"radio\" name=\"bull_affich_mentions\" id=\"bull_affich_mentions_y\" value=\"y\" ";
+        if ($bull_affich_mentions == 'y') {echo " checked";}
+        echo " />&nbsp;Oui</label>\n";
+		echo "<br />\n";
+        echo "<label for='bull_affich_mentions_n' style='cursor: pointer;'>\n";
+		echo "<input type=\"radio\" name=\"bull_affich_mentions\" id=\"bull_affich_mentions_n\" value=\"n\" ";
+        if ($bull_affich_mentions == 'n') {echo " checked";}
         echo " />&nbsp;Non</label>\n";
         ?>
 	</td>

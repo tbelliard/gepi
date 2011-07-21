@@ -910,14 +910,16 @@ width:".$largeur1."%;\n";
 				echo "</span>";
 
 				// **** AJOUT POUR LES MENTIONS ****
-				if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
-					$tableau_des_mentions_sur_le_bulletin=get_mentions();
-				}
-				//if((trim($tab_bull['id_mention'][$i])!="")||($avec_coches_mentions=="y")) {
-				if(isset($tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]])) {
-					echo "<br/>\n";
-					echo "<b>Mention : </b>";
-					echo texte_html_ou_pas(traduction_mention($tab_bull['id_mention'][$i]));
+				if(getSettingValue('bull_affich_mentions')!="n") {
+					if((!isset($tableau_des_mentions_sur_le_bulletin))||(!is_array($tableau_des_mentions_sur_le_bulletin))||(count($tableau_des_mentions_sur_le_bulletin)==0)) {
+						$tableau_des_mentions_sur_le_bulletin=get_mentions();
+					}
+					//if((trim($tab_bull['id_mention'][$i])!="")||($avec_coches_mentions=="y")) {
+					if(isset($tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]])) {
+						echo "<br/>\n";
+						echo "<b>Mention : </b>";
+						echo texte_html_ou_pas(traduction_mention($tab_bull['id_mention'][$i]));
+					}
 				}
 				// **** FIN D'AJOUT POUR LES MENTIONS ****
 
