@@ -1074,8 +1074,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$nb_releve_par_page,
 
 		//20100615
-		$moyennes_periodes_precedentes,
-		$evolution_moyenne_periode_precedente,
+		//$moyennes_periodes_precedentes,
+		//$evolution_moyenne_periode_precedente,
 
 		//$avec_coches_mentions,
 		$gepi_denom_mention,
@@ -3470,7 +3470,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 							//++++++++++++++
 							//20100615
-							if((isset($moyennes_periodes_precedentes))&&($moyennes_periodes_precedentes=="y")) {
+							//if((isset($moyennes_periodes_precedentes))&&($moyennes_periodes_precedentes=="y")) {
+							if($tab_modele_pdf["moyennes_periodes_precedentes"][$classe_id]=='y') {
 								$nb_sousaffichage+=count($tab_bull['login_prec']); // Il faut récupérer le nombre de périodes...
 							}
 							//++++++++++++++
@@ -3478,7 +3479,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 							if($tab_modele_pdf["active_coef_sousmoyene"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
 
 							//20100615
-							if((!isset($moyennes_periodes_precedentes))||($moyennes_periodes_precedentes!="y")) {
+							//if((!isset($moyennes_periodes_precedentes))||($moyennes_periodes_precedentes!="y")) {
+							if($tab_modele_pdf["moyennes_periodes_precedentes"][$classe_id]!='y') {
 								// On n'affiche pas tout ce qui suit en plus, si on affiche les moyennes de toutes les périodes déjà
 								if($tab_modele_pdf["active_nombre_note"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; }
 								if($tab_modele_pdf["toute_moyenne_meme_col"][$classe_id]==='1') { if($tab_modele_pdf["active_moyenne_classe"][$classe_id]==='1') { $nb_sousaffichage = $nb_sousaffichage + 1; } }
@@ -3488,8 +3490,10 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 
 							//20100615
-							if((!isset($moyennes_periodes_precedentes))||($moyennes_periodes_precedentes!="y")) {
-								if((isset($evolution_moyenne_periode_precedente))&&($evolution_moyenne_periode_precedente=="y")) {
+							//if((!isset($moyennes_periodes_precedentes))||($moyennes_periodes_precedentes!="y")) {
+							if($tab_modele_pdf["moyennes_periodes_precedentes"][$classe_id]!='y') {
+								//if((isset($evolution_moyenne_periode_precedente))&&($evolution_moyenne_periode_precedente=="y")) {
+								if($tab_modele_pdf["evolution_moyenne_periode_precedente"][$classe_id]=='y') {
 									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'B',8);
 								}
 								else {
@@ -3508,7 +3512,8 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 								else {
 									$valeur = present_nombre($tab_bull['note'][$m][$i], $tab_modele_pdf["arrondie_choix"][$classe_id], $tab_modele_pdf["nb_chiffre_virgule"][$classe_id], $tab_modele_pdf["chiffre_avec_zero"][$classe_id]);
 
-									if((isset($evolution_moyenne_periode_precedente))&&($evolution_moyenne_periode_precedente=="y")) {
+									//if((isset($evolution_moyenne_periode_precedente))&&($evolution_moyenne_periode_precedente=="y")) {
+									if ($tab_modele_pdf["evolution_moyenne_periode_precedente"][$classe_id]=='y') {
 										//$fleche_evolution="";
 
 										foreach($tab_bull['login_prec'] as $key => $value) {

@@ -314,6 +314,11 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['H_max_logo'])) { $H_max_logo = $_GET['H_max_logo']; } if (isset($_POST['H_max_logo'])) { $H_max_logo = $_POST['H_max_logo']; } }
 	if (empty($_GET['toute_moyenne_meme_col']) and empty($_POST['toute_moyenne_meme_col'])) { $toute_moyenne_meme_col = ''; }
 	else { if (isset($_GET['toute_moyenne_meme_col'])) { $toute_moyenne_meme_col = $_GET['toute_moyenne_meme_col']; } if (isset($_POST['toute_moyenne_meme_col'])) { $toute_moyenne_meme_col = $_POST['toute_moyenne_meme_col']; } }
+
+	$moyennes_periodes_precedentes=isset($_GET['moyennes_periodes_precedentes']) ? $_GET['moyennes_periodes_precedentes'] : (isset($_POST['moyennes_periodes_precedentes']) ? $_POST['moyennes_periodes_precedentes'] : 'n');
+
+	$evolution_moyenne_periode_precedente=isset($_GET['evolution_moyenne_periode_precedente']) ? $_GET['evolution_moyenne_periode_precedente'] : (isset($_POST['evolution_moyenne_periode_precedente']) ? $_POST['evolution_moyenne_periode_precedente'] : 'n');
+
 	if (empty($_GET['active_coef_sousmoyene']) and empty($_POST['active_coef_sousmoyene'])) { $active_coef_sousmoyene = ''; }
 	else { if (isset($_GET['active_coef_sousmoyene'])) { $active_coef_sousmoyene = $_GET['active_coef_sousmoyene']; } if (isset($_POST['active_coef_sousmoyene'])) { $active_coef_sousmoyene = $_POST['active_coef_sousmoyene']; } }
 	if (empty($_GET['arrondie_choix']) and empty($_POST['arrondie_choix'])) { $arrondie_choix = ''; }
@@ -1280,12 +1285,50 @@ function DecocheCheckbox() {
 			<div style="background: #EFEFEF; font-style:italic;">Moyenne</div>
 			<input name="active_moyenne" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne) and $active_moyenne==='1') { ?>checked="checked"<?php } ?> />&nbsp;Les moyennes<br />
 			&nbsp;&nbsp;&nbsp;- Largeur de la colonne d'une moyenne&nbsp;<input name="largeur_d_une_moyenne" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_d_une_moyenne)) { ?>value="<?php echo $largeur_d_une_moyenne; ?>" <?php } ?> />mm<br />
+
+			<br />
+
 			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_eleve) and $active_moyenne_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne de l'élève&nbsp;&nbsp;&nbsp;(<input name="active_reperage_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_reperage_eleve) and $active_reperage_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_reperage_eleve1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve1)) { ?>value="<?php echo $couleur_reperage_eleve1; ?>" <?php } ?> /> G:<input name="couleur_reperage_eleve2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve2)) { ?>value="<?php echo $couleur_reperage_eleve2; ?>" <?php } ?> /> B:<input name="couleur_reperage_eleve3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_reperage_eleve3)) { ?>value="<?php echo $couleur_reperage_eleve3; ?>" <?php } ?> />)<br />
-			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="toute_moyenne_meme_col" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($toute_moyenne_meme_col) and $toute_moyenne_meme_col==='1') { ?>checked="checked"<?php } ?> />&nbsp;Afficher Moyennes classe/min/max sous la moyenne de l'élève à condition qu'elles soient cochées<br />
+
+
+			<?php
+				$decalage_gauche="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo $decalage_gauche;
+				echo "<input name='toute_moyenne_meme_col' id='toute_moyenne_meme_col' style='border: 1px solid #74748F;' type='checkbox' value='1' ";
+				if(!empty($toute_moyenne_meme_col) and $toute_moyenne_meme_col==='1') {
+					echo "checked='checked' ";
+				}
+				echo "onchange='check_coherence_coches_bulletin_pdf();' ";
+				echo "/><label for='toute_moyenne_meme_col'>&nbsp;Afficher Moyennes classe/min/max sous la moyenne de l'élève à condition qu'elles soient cochées</label><br />\n";
+
+				echo $decalage_gauche;
+				echo "ou<br />\n";
+
+				echo $decalage_gauche;
+				echo "<input name='moyennes_periodes_precedentes' id='moyennes_periodes_precedentes' style='border: 1px solid #74748F;' type='checkbox' value='y' ";
+				if(!empty($moyennes_periodes_precedentes) and $moyennes_periodes_precedentes=='y') {
+					echo "checked='checked' ";
+				}
+				echo "onchange='check_coherence_coches_bulletin_pdf();' ";
+				echo "/><label for='moyennes_periodes_precedentes'>&nbsp;Afficher les moyennes de l'élève pour les périodes précédentes</label><br />\n";
+				echo $decalage_gauche;
+				echo "(<i>incompatible avec le choix \"Moyennes classe/min/max sous la moyenne de l'élève\"</i>)<br />\n";
+
+				echo $decalage_gauche;
+				echo "<input name='evolution_moyenne_periode_precedente' id='evolution_moyenne_periode_precedente' style='border: 1px solid #74748F;' type='checkbox' value='y' ";
+				if(!empty($evolution_moyenne_periode_precedente) and $evolution_moyenne_periode_precedente==='y') {
+					echo "checked='checked' ";
+				}
+				echo "/><label for='evolution_moyenne_periode_precedente'>&nbsp;Indiquer par un + ou - l'évolution de la moyenne (<i>hausse/stable/baisse</i>).</label><br />\n";
+
+			?>
+			<br />
+
 			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_classe" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_classe) and $active_moyenne_classe==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne de la classe<br />
 			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_min" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_min) and $active_moyenne_min==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne la plus basse<br />
 			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_max" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_max) and $active_moyenne_max==='1') { ?>checked="checked"<?php } ?> />&nbsp;Moyenne la plus haute<br />
 
+			<br />
 
 			&nbsp;&nbsp;&nbsp;<input name="active_moyenne_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_moyenne_general) and $active_moyenne_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;Ligne des moyennes générales<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_moyenne_mini_general" id="affiche_moyenne_mini_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_moyenne_mini_general) and $affiche_moyenne_mini_general === '1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="affiche_moyenne_mini_general" style="cursor: pointer;">moyenne générale la plus basse</label><br />
@@ -1331,6 +1374,8 @@ function DecocheCheckbox() {
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ce choix est sans effet, si tous les coefficients sont à 1,<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou si on force tous les coefficients à 1,<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ou encore si on n'affiche pas les moyennes générales.<br />
+
+			<br />
 
 			&nbsp;Arrondir les moyennes à : <input name="arrondie_choix" value="0.01" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.01') { ?>checked="checked"<?php } ?> />0,01 <input name="arrondie_choix" value="0.1" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.1') { ?>checked="checked"<?php } ?> />0,1 <input name="arrondie_choix" value="0.25" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.25') { ?>checked="checked"<?php } ?> />0,25 <input name="arrondie_choix" value="0.5" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='0.5') { ?>checked="checked"<?php } ?> />0,5 <input name="arrondie_choix" value="1" type="radio" <?php if(!empty($arrondie_choix) and $arrondie_choix==='1') { ?>checked="checked"<?php } ?> />1<br />
 			&nbsp;Nombre de zéros après la virgule : <input name="nb_chiffre_virgule" value="2" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='2') { ?>checked="checked"<?php } ?> />2  <input name="nb_chiffre_virgule" value="1" type="radio" <?php if(!empty($nb_chiffre_virgule) and $nb_chiffre_virgule==='1') { ?>checked="checked"<?php } ?> />1 - <input name="chiffre_avec_zero" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($chiffre_avec_zero) and $chiffre_avec_zero==='1') { ?>checked="checked"<?php } ?> /> ne pas afficher le "0" après la virgule<br />
@@ -1430,6 +1475,19 @@ function DecocheCheckbox() {
 		<input type='hidden' name='is_posted' value='y' />
 		</form>
 		<?php
+
+		echo "<script type='text/javascript'>
+// Diverses vérifications
+function check_coherence_coches_bulletin_pdf() {
+	if((document.getElementById('toute_moyenne_meme_col'))&&(document.getElementById('moyennes_periodes_precedentes'))) {
+		if((document.getElementById('toute_moyenne_meme_col').checked==true)&&(document.getElementById('moyennes_periodes_precedentes').checked==true)) {
+			alert('Les choix \"Afficher Moyennes classe/min/max sous la moyenne de l\'élève\" et \"Afficher les moyennes de l\'élève pour les périodes précédentes\" ne sont pas compatibles.\\nLe deuxième choix va être décoché.');
+			document.getElementById('moyennes_periodes_precedentes').checked=false;
+		}
+	}
+}
+</script>\n";
+
 	}
 
 	if($action_model==='supprimer' and empty($valide_modif_model)) {
