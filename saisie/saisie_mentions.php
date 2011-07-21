@@ -305,6 +305,9 @@ if(!isset($associer_mentions_classes)) {
 	echo "<p><i>NOTES</i>&nbsp;:</p>
 <ul>
 	<li>
+		<p>L'intitulé <b>$gepi_denom_mention</b> peut être modifié dans la page <a href='../gestion/param_gen.php#gepi_denom_mention'>Configuration générale</a></p>
+	</li>
+	<li>
 		<p>Pour que le champ de saisie d'une $gepi_denom_mention n'apparaisse pas (<i>lors de la saisie de l'avis du conseil de classe</i>) pour une classe donnée, il suffit qu'aucune $gepi_denom_mention ne soit associée à la classe.</p>
 	</li>
 	<li>

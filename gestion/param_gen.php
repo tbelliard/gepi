@@ -863,7 +863,12 @@ echo add_token_field();
 
 	<tr>
 		<td style="font-variant: small-caps;" valign='top'>
-		Désignation des "mentions" pouvant être saisies avec l'avis du conseil de classe :</td>
+		<a name='gepi_denom_mention'></a>
+		Désignation des "mentions" pouvant être saisies avec l'avis du conseil de classe :<br />
+		(<i>terme au singulier</i>)<br />
+		<a href='../saisie/saisie_mentions.php' <?php 
+			echo "onclick=\"return confirm_abandon (this, change, '$themessage')\"";
+		?>>Définir des "mentions"</a></td>
 		<td>
 		<input type="text" name="gepi_denom_mention" size="20" value="<?php
 			
