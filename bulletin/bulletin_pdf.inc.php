@@ -56,8 +56,11 @@
 	$champ_bull_pdf[]="largeur_d_une_moyenne";
 	$champ_bull_pdf[]="largeur_niveau";
 	$champ_bull_pdf[]="largeur_rang";
+
 	$champ_bull_pdf[]="X_absence";
 	$champ_bull_pdf[]="Y_absence";
+	$champ_bull_pdf[]="largeur_cadre_absences";
+
 	$champ_bull_pdf[]="hauteur_entete_moyenne_general";
 	$champ_bull_pdf[]="X_avis_cons";
 	$champ_bull_pdf[]="Y_avis_cons";
@@ -234,8 +237,11 @@
 	$val_defaut_champ_bull_pdf["largeur_d_une_moyenne"]=10;
 	$val_defaut_champ_bull_pdf["largeur_niveau"]=18;
 	$val_defaut_champ_bull_pdf["largeur_rang"]=5;
+
 	$val_defaut_champ_bull_pdf["X_absence"]=5;
 	$val_defaut_champ_bull_pdf["Y_absence"]=246.3;
+	$val_defaut_champ_bull_pdf["largeur_cadre_absences"]=200;
+
 	$val_defaut_champ_bull_pdf["hauteur_entete_moyenne_general"]=5;
 	$val_defaut_champ_bull_pdf["X_avis_cons"]=5;
 	$val_defaut_champ_bull_pdf["Y_avis_cons"]=250;

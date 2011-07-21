@@ -275,6 +275,9 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['largeur_rang'])) { $largeur_rang = $_GET['largeur_rang']; } if (isset($_POST['largeur_rang'])) { $largeur_rang = $_POST['largeur_rang']; } }
 	if (empty($_GET['X_absence']) and empty($_POST['X_absence'])) { $X_absence = ''; }
 	else { if (isset($_GET['X_absence'])) { $X_absence = $_GET['X_absence']; } if (isset($_POST['X_absence'])) { $X_absence = $_POST['X_absence']; } }
+
+	$largeur_cadre_absences=isset($_GET['largeur_cadre_absences']) ? $_GET['largeur_cadre_absences'] : (isset($_POST['largeur_cadre_absences']) ? $_POST['largeur_cadre_absences'] : 200);
+
 	if (empty($_GET['hauteur_entete_moyenne_general']) and empty($_POST['hauteur_entete_moyenne_general'])) { $hauteur_entete_moyenne_general = ''; }
 	else { if (isset($_GET['hauteur_entete_moyenne_general'])) { $hauteur_entete_moyenne_general = $_GET['hauteur_entete_moyenne_general']; } if (isset($_POST['hauteur_entete_moyenne_general'])) { $hauteur_entete_moyenne_general = $_POST['hauteur_entete_moyenne_general']; } }
 	if (empty($_GET['X_avis_cons']) and empty($_POST['X_avis_cons'])) { $X_avis_cons = ''; }
@@ -943,6 +946,7 @@ function DecocheCheckbox() {
 				$valeur=$lig->valeur;
 
 				$$nom=$valeur;
+				//echo "\$$nom=$valeur<br />";
 				// La valeur de $nom_model_bulletin est écrasée ici par $valeur quand $nom='nom_model_bulletin'
 			}
 
@@ -1346,7 +1350,15 @@ function DecocheCheckbox() {
 			&nbsp;&nbsp;&nbsp;<input name="couleur_moy_general" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($couleur_moy_general) and $couleur_moy_general==='1') { ?>checked="checked"<?php } ?> />&nbsp;Mettre un fond de couleur - R:<input name="couleur_moy_general1" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general1)) { ?>value="<?php echo $couleur_moy_general1; ?>" <?php } ?> /> G:<input name="couleur_moy_general2" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general2)) { ?>value="<?php echo $couleur_moy_general2; ?>" <?php } ?> /> B:<input name="couleur_moy_general3" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($couleur_moy_general3)) { ?>value="<?php echo $couleur_moy_general3; ?>" <?php } ?> /><br /><br />
 			<div style="font-weight: bold; background: #CFCFCF;">Cadre Absences/CPE</div>
 			<input name="active_bloc_absence" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_absence" value="0" type="radio" <?php if(empty($active_bloc_absence) or (!empty($active_bloc_absence) and $active_bloc_absence!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
-			Positionnement X&nbsp;<input name="X_absence" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_absence)) { ?>value="<?php echo $X_absence; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_absence" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_absence)) { ?>value="<?php echo $Y_absence; ?>" <?php } ?> />mm&nbsp;<br /><br />
+			
+			Positionnement X&nbsp;<input name="X_absence" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_absence)) { ?>value="<?php echo $X_absence; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_absence" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_absence)) { ?>value="<?php echo $Y_absence; ?>" <?php } ?> />mm&nbsp;<br />
+			
+			Largeur du cadre Absences&nbsp;: 
+			<?php
+				//$largeur_cadre_absences=200;
+				echo "<input  type='text' name='largeur_cadre_absences' size='3' style='border: 1px solid #74748F;' value='$largeur_cadre_absences' />\n";
+			?>
+			<br /><br />
 			</td>
 		</tr>
 		<tr>
