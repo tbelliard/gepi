@@ -282,8 +282,14 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['hauteur_entete_moyenne_general'])) { $hauteur_entete_moyenne_general = $_GET['hauteur_entete_moyenne_general']; } if (isset($_POST['hauteur_entete_moyenne_general'])) { $hauteur_entete_moyenne_general = $_POST['hauteur_entete_moyenne_general']; } }
 	if (empty($_GET['X_avis_cons']) and empty($_POST['X_avis_cons'])) { $X_avis_cons = ''; }
 	else { if (isset($_GET['X_avis_cons'])) { $X_avis_cons = $_GET['X_avis_cons']; } if (isset($_POST['X_avis_cons'])) { $X_avis_cons = $_POST['X_avis_cons']; } }
+
 	if (empty($_GET['cadre_avis_cons']) and empty($_POST['cadre_avis_cons'])) { $cadre_avis_cons = ''; }
 	else { if (isset($_GET['cadre_avis_cons'])) { $cadre_avis_cons = $_GET['cadre_avis_cons']; } if (isset($_POST['cadre_avis_cons'])) { $cadre_avis_cons = $_POST['cadre_avis_cons']; } }
+
+	$affich_mentions=isset($_GET['affich_mentions']) ? $_GET['affich_mentions'] : (isset($_POST['affich_mentions']) ? $_POST['affich_mentions'] : (isset($_POST['is_posted']) ? 'n' : 'y'));
+	$affich_coches_mentions=isset($_GET['affich_coches_mentions']) ? $_GET['affich_coches_mentions'] : (isset($_POST['affich_coches_mentions']) ? $_POST['affich_coches_mentions'] : (isset($_POST['is_posted']) ? 'n' : 'y'));
+
+
 	if (empty($_GET['X_sign_chef']) and empty($_POST['X_sign_chef'])) { $X_sign_chef = ''; }
 	else { if (isset($_GET['X_sign_chef'])) { $X_sign_chef = $_GET['X_sign_chef']; } if (isset($_POST['X_sign_chef'])) { $X_sign_chef = $_POST['X_sign_chef']; } }
 	if (empty($_GET['cadre_sign_chef']) and empty($_POST['cadre_sign_chef'])) { $cadre_sign_chef = ''; }
@@ -1352,7 +1358,7 @@ function DecocheCheckbox() {
 			<input name="active_bloc_absence" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_absence" value="0" type="radio" <?php if(empty($active_bloc_absence) or (!empty($active_bloc_absence) and $active_bloc_absence!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
 			
 			Positionnement X&nbsp;<input name="X_absence" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_absence)) { ?>value="<?php echo $X_absence; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_absence" size="3" style="border: 1px solid #74748F;" type="text"  <?php if(!empty($Y_absence)) { ?>value="<?php echo $Y_absence; ?>" <?php } ?> />mm&nbsp;<br />
-			
+
 			Largeur du cadre Absences&nbsp;: 
 			<?php
 				//$largeur_cadre_absences=200;
@@ -1370,7 +1376,28 @@ function DecocheCheckbox() {
 			Titre du bloc avis conseil de classe : <input name="titre_bloc_avis_conseil" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_bloc_avis_conseil)) { ?>value="<?php echo $titre_bloc_avis_conseil; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_titre_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_titre_bloc_avis_conseil)) { ?>value="<?php echo $taille_titre_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
 			Taille du texte du professeur principal"&nbsp;<input name="taille_profprincipal_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_profprincipal_bloc_avis_conseil)) { ?>value="<?php echo $taille_profprincipal_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
-			<input name="cadre_avis_cons" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_avis_cons) and $cadre_avis_cons==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br /><br />
+			<input name="cadre_avis_cons" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_avis_cons) and $cadre_avis_cons==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br />
+
+			<?php
+				$gepi_denom_mention=getSettingValue("gepi_denom_mention");
+				if($gepi_denom_mention=="") {
+					$gepi_denom_mention="mention";
+				}
+
+				
+				echo "<input type='checkbox' name='affich_mentions' id='affich_mentions' value='y' ";
+				if($affich_mentions!="n") {echo "checked ";}
+				echo "/> \n";
+				echo "<label for='affich_mentions'>Faire apparaître les ".$gepi_denom_mention."s sur les bulletins.</label><br />\n";
+
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='affich_coches_mentions' id='affich_coches_mentions' value='y' ";
+				if($affich_coches_mentions!="n") {echo "checked ";}
+				echo "/> \n";
+				echo "<label for='affich_coches_mentions'>Faire apparaître des cases à cocher pour les ".$gepi_denom_mention."s sur les bulletins.</label><br />\n";
+
+			?>
+			<br /><br />
+
 			</td>
 				<td style="vertical-align: top; white-space: nowrap; text-align: left; width: 50%;">
 				<div style="font-weight: bold; background: #CFCFCF;">Cadre signature du chef</div>
@@ -1400,6 +1427,7 @@ function DecocheCheckbox() {
 		</tr>
 		</tbody>
 		</table>
+		<input type='hidden' name='is_posted' value='y' />
 		</form>
 		<?php
 	}

@@ -231,7 +231,7 @@ function bulletin_html($tab_bull,$i,$tab_rel) {
 		// En admin, dans Gestion des modules
 		$active_module_trombinoscopes,
 
-		$avec_coches_mentions,
+		//$avec_coches_mentions,
 		$gepi_denom_mention;
 
 	// Récupérer avant le nombre de bulletins à imprimer
@@ -1077,7 +1077,7 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		$moyennes_periodes_precedentes,
 		$evolution_moyenne_periode_precedente,
 
-		$avec_coches_mentions,
+		//$avec_coches_mentions,
 		$gepi_denom_mention,
 
 		// Objet PDF initié hors de la présente fonction donnant la page du bulletin pour un élève
@@ -5071,12 +5071,14 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				//$pdf->drawTextBox(traite_accents_utf8($texteavis), $tab_modele_pdf["longeur_avis_cons"][$classe_id]-5, $tab_modele_pdf["hauteur_avis_cons"][$classe_id]-10, 'J', 'M', 0);
 
 				//$avec_coches_mentions="y";
-				if($avec_coches_mentions=="y") {
+				//if($avec_coches_mentions=="y") {
+				if($tab_modele_pdf["affich_coches_mentions"][$classe_id]!="n") {
 					$marge_droite_avis_cons=40;
 				}
 				else {
 					$marge_droite_avis_cons=5;
-					if(($textmention!="")&&($textmention!="-")) {
+					//if(($textmention!="")&&($textmention!="-")) {
+					if(($tab_modele_pdf["affich_mentions"][$classe_id]!="n")&&($textmention!="")&&($textmention!="-")) {
 						//$texteavis.="\n".traduction_mention($textmention);
 						if($use_cell_ajustee=="n") {
 							$texteavis.="\n".ucfirst($gepi_denom_mention)." : ".$textmention;
@@ -5135,7 +5137,8 @@ $hauteur_pris_app_abs=$hauteur_pris;
 				$pdf->MultiCellTag(200, 5, traite_accents_utf8($pp_classe[$i]), '', 'J', '');
 			}
 
-			if($avec_coches_mentions=="y") {
+			//if($avec_coches_mentions=="y") {
+			if($tab_modele_pdf["affich_coches_mentions"][$classe_id]!="n") {
 				// ***** AJOUT POUR LES MENTIONS *****
 				// Essai pour ajouter un bloc renseignant les mentions du CC
 				// A COMPLETER...

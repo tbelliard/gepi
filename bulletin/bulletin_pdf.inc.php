@@ -62,11 +62,15 @@
 	$champ_bull_pdf[]="largeur_cadre_absences";
 
 	$champ_bull_pdf[]="hauteur_entete_moyenne_general";
+
 	$champ_bull_pdf[]="X_avis_cons";
 	$champ_bull_pdf[]="Y_avis_cons";
 	$champ_bull_pdf[]="longeur_avis_cons";
 	$champ_bull_pdf[]="hauteur_avis_cons";
 	$champ_bull_pdf[]="cadre_avis_cons";
+	$champ_bull_pdf[]="affich_mentions";
+	$champ_bull_pdf[]="affich_coches_mentions";
+
 	$champ_bull_pdf[]="X_sign_chef";
 	$champ_bull_pdf[]="Y_sign_chef";
 	$champ_bull_pdf[]="longeur_sign_chef";
@@ -243,11 +247,15 @@
 	$val_defaut_champ_bull_pdf["largeur_cadre_absences"]=200;
 
 	$val_defaut_champ_bull_pdf["hauteur_entete_moyenne_general"]=5;
+
 	$val_defaut_champ_bull_pdf["X_avis_cons"]=5;
 	$val_defaut_champ_bull_pdf["Y_avis_cons"]=250;
 	$val_defaut_champ_bull_pdf["longeur_avis_cons"]=130;
 	$val_defaut_champ_bull_pdf["hauteur_avis_cons"]=37;
 	$val_defaut_champ_bull_pdf["cadre_avis_cons"]=1;
+	$val_defaut_champ_bull_pdf["affich_mentions"]='y';
+	$val_defaut_champ_bull_pdf["affich_coches_mentions"]='y';
+
 	$val_defaut_champ_bull_pdf["X_sign_chef"]=138;
 	$val_defaut_champ_bull_pdf["Y_sign_chef"]=250;
 	$val_defaut_champ_bull_pdf["longeur_sign_chef"]=67;
