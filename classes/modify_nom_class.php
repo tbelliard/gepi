@@ -629,6 +629,30 @@ if ($gepiSettings['active_mod_ects'] == "y") {
 		?>
 	</td>
 </tr>
+
+<tr>
+	<td>&nbsp;&nbsp;&nbsp;</td>
+	<td style="font-variant: small-caps; vertical-align: top;">
+	   Mentions pouvant apparaître dans l'avis du conseil de classe sur les bulletins&nbsp;:
+	</td>
+	<td><?php
+		$sql="SELECT DISTINCT m.* FROM j_mentions_classes j, mentions m WHERE j.id_classe='$id_classe' AND j.id_mention=m.id ORDER BY j.ordre, m.mention;";
+		//echo "$sql<br />\n";
+		 $res=mysql_query($sql);
+		if(mysql_num_rows($res)==0) {
+			echo "<p>Aucune mention n'est définie pour cette classe.</p>\n";
+		}
+		else {
+			echo "<ol>\n";
+			while($lig=mysql_fetch_object($res)) {
+				echo "<li>".$lig->mention."</li>\n";
+			}
+			echo "</ol>\n";
+		}
+		echo "<p><a href='../saisie/saisie_mentions.php' onclick=\"return confirm_abandon (this, change, '$themessage')\">Paramétrer les mentions</a></p>\n";
+		?>
+	</td>
+</tr>
 <!-- ========================================= -->
 <tr>
 	<td colspan='3'>
