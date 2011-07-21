@@ -918,7 +918,9 @@ width:".$largeur1."%;\n";
 					//if((trim($tab_bull['id_mention'][$i])!="")||($avec_coches_mentions=="y")) {
 					if(isset($tableau_des_mentions_sur_le_bulletin[$tab_bull['id_mention'][$i]])) {
 						echo "<br/>\n";
-						echo "<b>".ucfirst($gepi_denom_mention)." : </b>";
+						if(getSettingValue('bull_affich_intitule_mentions')!="n") {
+							echo "<b>".ucfirst($gepi_denom_mention)." : </b>";
+						}
 						echo texte_html_ou_pas(traduction_mention($tab_bull['id_mention'][$i]));
 					}
 				}
@@ -5101,10 +5103,16 @@ $hauteur_pris_app_abs=$hauteur_pris;
 					if(($tab_modele_pdf["affich_mentions"][$classe_id]!="n")&&($textmention!="")&&($textmention!="-")) {
 						//$texteavis.="\n".traduction_mention($textmention);
 						if($use_cell_ajustee=="n") {
-							$texteavis.="\n".ucfirst($gepi_denom_mention)." : ".$textmention;
+							if($tab_modele_pdf["affich_intitule_mentions"][$classe_id]!="n") {
+								$texteavis.="\n".ucfirst($gepi_denom_mention)." : ";
+							}
+							$texteavis.=$textmention;
 						}
 						else {
-							$texteavis.="\n"."<b>".ucfirst($gepi_denom_mention)." :</b> ".$textmention;
+							if($tab_modele_pdf["affich_intitule_mentions"][$classe_id]!="n") {
+								$texteavis.="\n"."<b>".ucfirst($gepi_denom_mention)." :</b> ";
+							}
+							$texteavis.=$textmention;
 						}
 					}
 				}

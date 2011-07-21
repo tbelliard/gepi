@@ -287,8 +287,8 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['cadre_avis_cons'])) { $cadre_avis_cons = $_GET['cadre_avis_cons']; } if (isset($_POST['cadre_avis_cons'])) { $cadre_avis_cons = $_POST['cadre_avis_cons']; } }
 
 	$affich_mentions=isset($_GET['affich_mentions']) ? $_GET['affich_mentions'] : (isset($_POST['affich_mentions']) ? $_POST['affich_mentions'] : (isset($_POST['is_posted']) ? 'n' : 'y'));
+	$affich_intitule_mentions=isset($_GET['affich_intitule_mentions']) ? $_GET['affich_intitule_mentions'] : (isset($_POST['affich_intitule_mentions']) ? $_POST['affich_intitule_mentions'] : (isset($_POST['is_posted']) ? 'n' : 'y'));
 	$affich_coches_mentions=isset($_GET['affich_coches_mentions']) ? $_GET['affich_coches_mentions'] : (isset($_POST['affich_coches_mentions']) ? $_POST['affich_coches_mentions'] : (isset($_POST['is_posted']) ? 'n' : 'y'));
-
 
 	if (empty($_GET['X_sign_chef']) and empty($_POST['X_sign_chef'])) { $X_sign_chef = ''; }
 	else { if (isset($_GET['X_sign_chef'])) { $X_sign_chef = $_GET['X_sign_chef']; } if (isset($_POST['X_sign_chef'])) { $X_sign_chef = $_POST['X_sign_chef']; } }
@@ -1439,6 +1439,11 @@ function DecocheCheckbox() {
 				if($affich_coches_mentions!="n") {echo "checked ";}
 				echo "/> \n";
 				echo "<label for='affich_coches_mentions'>Faire apparaître des cases à cocher pour les ".$gepi_denom_mention."s sur les bulletins.</label><br />\n";
+
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;Ou sinon, sans cases à cocher :<br />&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' name='affich_intitule_mentions' id='affich_intitule_mentions' value='y' ";
+				if($affich_intitule_mentions!="n") {echo "checked ";}
+				echo "/> \n";
+				echo "<label for='affich_intitule_mentions'>Faire apparaître l'intitulé <b>$gepi_denom_mention</b> avant la $gepi_denom_mention choisie pour un élève.</label><br />\n";
 
 			?>
 			<br /><br />

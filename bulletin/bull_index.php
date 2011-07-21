@@ -1222,7 +1222,11 @@ else {
 		$evolution_moyenne_periode_precedente="n";
 		// Remplissage des paramètres du modèle de bulletin PDF:
 		if($mode_bulletin=="pdf") {
-
+			require_once("bulletin_pdf.inc.php");
+			foreach($val_defaut_champ_bull_pdf as $key => $value) {
+				$tab_modele_pdf[$key][$tab_id_classe[$loop_classe]]=$value;
+			}
+/*
 			// information d'activation des différentes parties du bulletin
 			$tab_modele_pdf["affiche_filigrame"][$tab_id_classe[$loop_classe]]='1'; // affiche un filigramme
 			$tab_modele_pdf["texte_filigrame"][$tab_id_classe[$loop_classe]]='DUPLICATA INTERNET'; // texte du filigrame
@@ -1291,14 +1295,7 @@ else {
 			$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=72;
 			$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=200;
 			$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=175;
-			/*
-			if($tab_modele_pdf["active_regroupement_cote"][$tab_id_classe[$loop_classe]]==='1') {
-				$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["X_note_app"][$tab_id_classe[$loop_classe]]+5;
-				$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["Y_note_app"][$tab_id_classe[$loop_classe]];
-				$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["longeur_note_app"][$tab_id_classe[$loop_classe]]-5;
-				$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]]=$tab_modele_pdf["hauteur_note_app"][$tab_id_classe[$loop_classe]];
-			}
-			*/
+
 			//coef des matiere
 			$tab_modele_pdf["largeur_coef_moyenne"][$tab_id_classe[$loop_classe]] = 8;
 			//nombre de note par matière
@@ -1375,7 +1372,7 @@ else {
 			$tab_modele_pdf["affiche_moyenne_general_coef_1"][$tab_id_classe[$loop_classe]] = '0'; // affichage des moyennes générales avec coef 1 en plus des autres coeff saisis dans Gestion des classes/<Classe> Enseignements
 			
 			$tab_modele_pdf["affiche_numero_responsable"][$tab_id_classe[$loop_classe]] = '0'; // affichage du numéro du responsable legal de l'élève dont le bulletin est imprimé. 1 ==> affiche 0 ==> n'affiche pas
-			
+			*/
 
 			//================================
 			//================================

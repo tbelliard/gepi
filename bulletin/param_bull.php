@@ -683,6 +683,19 @@ if (isset($_POST['is_posted'])) {
 		}
 	}
 
+	if (isset($_POST['bull_affich_intitule_mentions'])) {
+		if($_POST['bull_affich_intitule_mentions']=="n") {
+			$bull_affich_intitule_mentions="n";
+		}
+		else{
+			$bull_affich_intitule_mentions="y";
+		}
+		if (!saveSetting("bull_affich_intitule_mentions", $bull_affich_intitule_mentions)) {
+			$msg .= "Erreur lors de l'enregistrement de bull_affich_intitule_mentions !";
+			$reg_ok = 'no';
+		}
+	}
+
 }
 
 if (($reg_ok == 'yes') and (isset($_POST['ok']))) {
@@ -1128,6 +1141,33 @@ echo add_token_field();
         echo "<label for='bull_affich_mentions_n' style='cursor: pointer;'>\n";
 		echo "<input type=\"radio\" name=\"bull_affich_mentions\" id=\"bull_affich_mentions_n\" value=\"n\" ";
         if ($bull_affich_mentions == 'n') {echo " checked";}
+        echo " />&nbsp;Non</label>\n";
+        ?>
+	</td>
+    </tr>
+
+	<tr <?php if ($nb_ligne % 2) echo "bgcolor=".$bgcolor;$nb_ligne++; ?>>
+        <td style="font-variant: small-caps;">
+        Faire apparaitre l'intitulé <?php echo $gepi_denom_mention;?>s en gras devant la <?php echo $gepi_denom_mention;?> choisie pour un élève avec l'avis du conseil de classe.
+        </td>
+	<?php
+		if(getSettingValue("bull_affich_intitule_mentions")){
+			$bull_affich_intitule_mentions=getSettingValue("bull_affich_intitule_mentions");
+		}
+		else{
+			$bull_affich_intitule_mentions="y";
+		}
+	?>
+        <td>
+	<?php
+        echo "<label for='bull_affich_intitule_mentions_y' style='cursor: pointer;'>\n";
+		echo "<input type=\"radio\" name=\"bull_affich_intitule_mentions\" id=\"bull_affich_intitule_mentions_y\" value=\"y\" ";
+        if ($bull_affich_intitule_mentions == 'y') {echo " checked";}
+        echo " />&nbsp;Oui</label>\n";
+		echo "<br />\n";
+        echo "<label for='bull_affich_intitule_mentions_n' style='cursor: pointer;'>\n";
+		echo "<input type=\"radio\" name=\"bull_affich_intitule_mentions\" id=\"bull_affich_intitule_mentions_n\" value=\"n\" ";
+        if ($bull_affich_intitule_mentions == 'n') {echo " checked";}
         echo " />&nbsp;Non</label>\n";
         ?>
 	</td>
