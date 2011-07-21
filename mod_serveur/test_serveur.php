@@ -98,21 +98,34 @@ if ($test->versionGd()) {
 	<hr />
 	<h4>&nbsp;&nbsp;Liste des modules implémentés avec votre php : </h4>'.$test->listeExtension().'
 	<hr />
+	<a name="reglages_php"></a>
 	<h4>Les réglages php : </h4>
-	- La mémoire maximale allouée à php est de '.$test->memoryLimit().' (<i>memory_limit</i>).
-	<br />
-	- La taille maximum d\'une variable envoyée à Gepi ne doit pas dépasser '.$test->maxSize().' (<i>post_max_size</i>).
-	<br />
-	- Le temps maximum alloué à php pour traiter un script est de '.$test->maxExecution().' secondes'.$warning_maxExec.' (<i>max_execution_time</i>).
-	<br />
-	- La taille maximum d\'un fichier envoyé à Gepi est de '.$test->tailleMaxFichier().' (<i>upload_max_filesize</i>).
-	<br />';
+	<ul style="list-style-type:circle; margin-left:3em;">
+	<li style="list-style-type:circle">La mémoire maximale allouée à php est de '.$test->memoryLimit().' (<i>memory_limit</i>).
+	</li>
+	<li style="list-style-type:circle">La taille maximum d\'une variable envoyée à Gepi ne doit pas dépasser '.$test->maxSize().' (<i>post_max_size</i>).
+	</li>
+	<li style="list-style-type:circle">Le temps maximum alloué à php pour traiter un script est de '.$test->maxExecution().' secondes'.$warning_maxExec.' (<i>max_execution_time</i>).
+	</li>
+	<li style="list-style-type:circle">La taille maximum d\'un fichier envoyé à Gepi est de '.$test->tailleMaxFichier().' (<i>upload_max_filesize</i>).
+	</li>';
 	$max_file_uploads=ini_get('max_file_uploads');
 	echo '
-	- Il peut être uploadé au maximum '.$max_file_uploads.' fichier(s) à la fois (<i>max_file_uploads</i>).
-	<br />';
-	echo '
-	- La durée maximum de session est réglée à '.ini_get("session.gc_maxlifetime").' secondes, soit un maximum de '.(ini_get("session.gc_maxlifetime")/60).' minutes (<i>session.maxlifetime</i> dans le fichier php.ini).';
+	<li style="list-style-type:circle">Il peut être uploadé au maximum '.$max_file_uploads.' fichier(s) à la fois (<i>max_file_uploads</i>).
+	</li>';
+	$session_gc_maxlifetime=ini_get("session.gc_maxlifetime");
+	$session_gc_maxlifetime_minutes=$session_gc_maxlifetime/60;
+	if((getSettingValue("sessionMaxLength")!="")&&($session_gc_maxlifetime_minutes<getSettingValue("sessionMaxLength"))) {
+		echo '
+	<li style="list-style-type:circle">La durée maximum de session est réglée à <span style="color:red; font-weight:bold;">'.$session_gc_maxlifetime.' secondes</span>, soit un maximum de <span style="color:red; font-weight:bold;">'.$session_gc_maxlifetime_minutes.' minutes</span> (<i>session.maxlifetime</i> dans le fichier php.ini).<br />
+	Cela restreint la durée maximale de session davantage que ce qui est paramétré dans <a href="../gestion/param_gen.php#sessionMaxLength">Configuration générale</a>.</li>
+	C\'est la valeur la plus faible/restrictive qui est prise en compte.</li>';
+	}
+	else {
+		echo '
+	<li style="list-style-type:circle">La durée maximum de session est réglée à '.$session_gc_maxlifetime.' secondes, soit un maximum de '.$session_gc_maxlifetime_minutes.' minutes (<i>session.maxlifetime</i> dans le fichier php.ini).</li>';
+	}
+	echo "</ul>\n";
 
 	$suhosin_post_max_totalname_length=ini_get('suhosin.post.max_totalname_length');
 	if($suhosin_post_max_totalname_length!='') {

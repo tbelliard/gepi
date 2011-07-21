@@ -783,8 +783,18 @@ echo add_token_field();
 	</tr>
 	<tr>
 		<td style="font-variant: small-caps;">
-		Durée maximum d'inactivité : <br />
-		<span class='small'>(Durée d'inactivité, en minutes, au bout de laquelle un utilisateur est automatiquement déconnecté de Gepi.) Attention, la variable session.maxlifetime dans le fichier php.ini est réglée à <?php echo(ini_get("session.gc_maxlifetime")); ?> secondes, soit un maximum de <?php echo(ini_get("session.gc_maxlifetime")/60); ?> minutes pour la session.</span>
+		<a name='sessionMaxLength'></a>Durée maximum d'inactivité : <br />
+		<span class='small'>(<i>Durée d'inactivité, en minutes, au bout de laquelle un utilisateur est automatiquement déconnecté de Gepi.</i>) <b>Attention</b>, la variable <b>session.maxlifetime</b> dans le fichier <b>php.ini</b> est réglée à <?php 
+			$session_gc_maxlifetime=ini_get("session.gc_maxlifetime");
+			$session_gc_maxlifetime_minutes=$session_gc_maxlifetime/60;
+
+			if((getSettingValue("sessionMaxLength")!="")&&($session_gc_maxlifetime_minutes<getSettingValue("sessionMaxLength"))) {
+				echo "<span style='color:red; font-weight:bold;'>".$session_gc_maxlifetime." secondes</span>, soit un maximum de <span style='color:red; font-weight:bold;'>".$session_gc_maxlifetime_minutes."minutes</span> pour la session (<a href='../mod_serveur/test_serveur.php#reglages_php'>*</a>).";
+			}
+			else {
+				echo $session_gc_maxlifetime." secondes, soit un maximum de ".$session_gc_maxlifetime_minutes."minutes pour la session.";
+			}
+		?></span>
 		</td>
 		<td><input type="text" name="sessionMaxLength" size="20" value="<?php echo(getSettingValue("sessionMaxLength")); ?>" onchange='changement()' />
 		</td>
