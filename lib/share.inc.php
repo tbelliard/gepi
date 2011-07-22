@@ -6074,7 +6074,7 @@ function affiche_ariane($validation= FALSE,$themessage="" ){
 	echo "<p class='ariane'>";
 	foreach ($_SESSION['ariane']['lien'] as $index=>$lienActuel){
 	  if ($index!="0"){
-		echo " >> ";
+		echo " &gt;&gt; ";
 	  }
 	  if ($validation){
 	  echo "<a class='bold' href='".$lienActuel."' onclick='return confirm_abandon (this, change, \"".$themessage."\")' >";
