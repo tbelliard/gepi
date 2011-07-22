@@ -4,7 +4,7 @@
 $Id$
 */
 
-function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_periode){
+function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_periode,$ine=""){
 	/*
 		$logineleve:      login actuel de l'élève
 		$id_classe:       identifiant de la classe actuelle de l'élève
@@ -15,19 +15,42 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 	//global $gepiPath;
 	global $gecko;
 
-	$sql="SELECT * FROM eleves WHERE login='$logineleve';";
-	$res_ele=mysql_query($sql);
 
-	if(mysql_num_rows($res_ele)==0){
-		// On ne devrait pas arriver là.
-		echo "<p>L'élève dont le login serait $logineleve n'est pas dans la table 'eleves'.</p>\n";
+	$poursuivre="y";
+
+	if($logineleve!="") {
+		$sql="SELECT * FROM eleves WHERE login='$logineleve';";
+		$res_ele=mysql_query($sql);
+	
+		if(mysql_num_rows($res_ele)==0) {
+			// On ne devrait pas arriver là.
+			echo "<p>L'élève dont le login serait $logineleve n'est pas dans la table 'eleves'.</p>\n";
+			$poursuivre="n";
+		}
 	}
-	else{
+	elseif($ine=="") {
+		echo "<p>Aucun login ni INE n'a été proposé.</p>\n";
+		$poursuivre="n";
+	}
+	else {
+		$sql="SELECT * FROM archivage_eleves WHERE ine='$ine';";
+		$res_ele=mysql_query($sql);
+	
+		if(mysql_num_rows($res_ele)==0) {
+			// On ne devrait pas arriver là.
+			echo "<p>L'élève dont l'INE serait $ine n'est pas dans la table 'archivage_eleves'.</p>\n";
+			$poursuivre="n";
+		}
+	}
+
+	if($poursuivre=="y") {
 		$lig_ele=mysql_fetch_object($res_ele);
 
 		// Infos élève
 		//$ine: INE de l'élève (identifiant commun aux tables 'eleves' et 'archivage_disciplines')
-		$ine=$lig_ele->no_gep;
+		if($ine=="") {
+			$ine=$lig_ele->no_gep;
+		}
 		//$nom=$lig_ele->nom;
 		//$prenom=$lig_ele->prenom;
 		$ele_nom=$lig_ele->nom;
@@ -120,12 +143,26 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			if($annee_precedente!=""){
 				// https://127.0.0.1/steph/gepi-trunk/annees_anterieures/consultation_annee_anterieure.php?id_classe=4&logineleve=DUVAL_R&annee_scolaire=2004/2005&num_periode=1
 				//echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve&amp;annee_scolaire=$annee_precedente&amp;num_periode=1'>&lt;</a> ";
-				echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve&amp;annee_scolaire=$annee_precedente&amp;num_periode=$derniere_periode_annee_precedente&amp;mode=bull_simp'><img src='../images/icons/back_.png' width='16' height='14' alt='Année précédente' /></a> ";
+				echo "<a href='".$_SERVER['PHP_SELF']."?";
+				if($logineleve!="") {
+					echo "id_classe=$id_classe&amp;logineleve=$logineleve";
+				}
+				else {
+					echo "ine=$ine";
+				}
+				echo "&amp;annee_scolaire=$annee_precedente&amp;num_periode=$derniere_periode_annee_precedente&amp;mode=bull_simp'><img src='../images/icons/back_.png' width='16' height='14' alt='Année précédente' /></a> ";
 			}
 			echo "<b>$annee_scolaire</b>";
 			if($annee_suivante!=""){
 				//echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve&amp;annee_scolaire=$annee_suivante&amp;num_periode=1'>&gt;</a>";
-				echo " <a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve&amp;annee_scolaire=$annee_suivante&amp;num_periode=1&amp;mode=bull_simp'><img src='../images/icons/forward_.png' width='16' height='14' alt='Année suivante' /></a>";
+				echo " <a href='".$_SERVER['PHP_SELF']."?";
+				if($logineleve!="") {
+					echo "id_classe=$id_classe&amp;logineleve=$logineleve";
+				}
+				else {
+					echo "ine=$ine";
+				}
+				echo "&amp;annee_scolaire=$annee_suivante&amp;num_periode=1&amp;mode=bull_simp'><img src='../images/icons/forward_.png' width='16' height='14' alt='Année suivante' /></a>";
 			}
 
 			echo "</li>\n";
@@ -152,7 +189,14 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 				if($lig_periode->num_periode!=$num_periode){
 					echo "<li style='display:inline; border: 1px solid black; padding: 0.2em 0.2em 0 0.2em;'>\n";
 					//echo "<div style='display:block; border: 1px solid black; width:20%;'>\n";
-					echo "<a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve&amp;annee_scolaire=$annee_scolaire&amp;num_periode=$lig_periode->num_periode&amp;mode=bull_simp'>P".$lig_periode->num_periode."</a>";
+					echo "<a href='".$_SERVER['PHP_SELF']."?";
+					if($logineleve!="") {
+						echo "id_classe=$id_classe&amp;logineleve=$logineleve";
+					}
+					else {
+						echo "ine=$ine";
+					}
+					echo "&amp;annee_scolaire=$annee_scolaire&amp;num_periode=$lig_periode->num_periode&amp;mode=bull_simp'>P".$lig_periode->num_periode."</a>";
 				}
 				else{
 					if($gecko){
@@ -343,7 +387,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 			echo "Aucune information sur l'avis du conseil de classe.</p>\n";
 		}
 		elseif(mysql_num_rows($res_avis)>1){
-			echo "Bizarre: Il y a plus d'un enregistrement pour cette élève, cette période et cette année.</p>\n";
+			echo "Bizarre : Il y a plus d'un enregistrement pour cette élève, cette période et cette année.</p>\n";
 			$prof_suivi="?";
 		}
 		else{
@@ -353,7 +397,7 @@ function bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_
 		}
 		echo "</td>\n";
 		echo "<td align='center'>\n";
-		echo "<p>Classe suivie par: <b>$prof_suivi</b></p>\n";
+		echo "<p>Classe suivie par : <b>$prof_suivi</b></p>\n";
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
@@ -500,20 +544,32 @@ function avis_conseils_de_classes_annee_anterieure($logineleve,$annee_scolaire){
 	}
 }
 
-function tab_choix_anterieure($logineleve,$id_classe=NULL){
+function tab_choix_anterieure($logineleve,$id_classe=NULL,$ine=''){
 
-	$sql="SELECT * FROM eleves WHERE login='$logineleve';";
+	if($logineleve!="") {
+		$sql="SELECT * FROM eleves WHERE login='$logineleve';";
+	}
+	elseif($ine!="") {
+		$sql="SELECT * FROM archivage_eleves WHERE ine='$ine';";
+	}
 	$res_ele=mysql_query($sql);
 
 	if(mysql_num_rows($res_ele)==0){
 		//echo "<p>Aucun élève dans la classe $classe pour la période '$nom_periode'.</p>\n";
-		echo "<p>L'élève dont le login serait $logineleve n'est pas dans la table 'eleves'.</p>\n";
+		if($logineleve!="") {
+			echo "<p>L'élève dont le login serait $logineleve n'est pas dans la table 'eleves'.</p>\n";
+		}
+		elseif($ine!="") {
+			echo "<p>L'élève dont l'INE serait $ine n'est pas dans la table 'archivage_eleves'.</p>\n";
+		}
 	}
 	else{
 		$lig_ele=mysql_fetch_object($res_ele);
 
 		// Infos élève
-		$ine=$lig_ele->no_gep;
+		if($ine=='') {
+			$ine=$lig_ele->no_gep;
+		}
 		//$nom=$lig_ele->nom;
 		//$prenom=$lig_ele->prenom;
 		$ele_nom=$lig_ele->nom;
@@ -523,7 +579,7 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 
 
 		echo "<p>Liste des années scolaires et périodes pour lesquelles des données concernant $ele_prenom $ele_nom ";
-		if(isset($id_classe)){
+		if((isset($id_classe))&&($id_classe!='')) {
 			$classe=get_nom_classe($id_classe);
 			echo "(<i>$classe</i>) ";
 		}
@@ -573,7 +629,16 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 					$cpt=0;
 					while($lig_ant2=mysql_fetch_object($res_ant2)){
 						//if($cpt>0){echo "<td> - </td>\n";}
-						echo "<td style='text-align:center;'><a href='".$_SERVER['PHP_SELF']."?id_classe=$id_classe&amp;logineleve=$logineleve&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp'>$lig_ant2->nom_periode</a></td>\n";
+						echo "<td style='text-align:center;'>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?";
+						if($logineleve!="") {
+							echo "id_classe=$id_classe&amp;logineleve=$logineleve";
+						}
+						else {
+							echo "ine=$ine";
+						}
+						echo "&amp;annee_scolaire=$lig_ant->annee&amp;num_periode=$lig_ant2->num_periode&amp;mode=bull_simp'>$lig_ant2->nom_periode</a>";
+						echo "</td>\n";
 						$cpt++;
 					}
 				}
@@ -600,7 +665,14 @@ function tab_choix_anterieure($logineleve,$id_classe=NULL){
 				//echo "<td style='font-weight:bold;'>\n";
 				echo "<td>\n";
 
-				echo "Année-scolaire <a href='".$_SERVER['PHP_SELF']."?logineleve=$logineleve&amp;annee_scolaire=".$tab_annees[$i]."&amp;mode=avis_conseil";
+				echo "Année-scolaire <a href='".$_SERVER['PHP_SELF']."?";
+				if($logineleve!="") {
+					echo "logineleve=$logineleve";
+				}
+				else {
+					echo "ine=$ine";
+				}
+				echo "&amp;annee_scolaire=".$tab_annees[$i]."&amp;mode=avis_conseil";
 				if(isset($id_classe)){echo "&amp;id_classe=$id_classe";}
 				echo "'>$tab_annees[$i]</a>";
 				//echo "<br />\n";

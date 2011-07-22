@@ -156,9 +156,11 @@ else{
 		echo "<td>".strtoupper($lig_ele->nom)." ".ucfirst(strtolower($lig_ele->prenom))."</td>\n";
 		echo "<td>".formate_date($lig_ele->naissance)."</td>\n";
 		echo "<td>";
+		echo "<a href='consultation_annee_anterieure.php?ine=$lig_ele->ine'>";
 		if(substr($lig_ele->ine,0,6)=="LOGIN_") {echo "<span style='color:red;'>";}
 		echo $lig_ele->ine;
 		if(substr($lig_ele->ine,0,6)=="LOGIN_"){echo "</span>";}
+		echo "</a>";
 		echo "</td>\n";
 		echo "</tr>\n";
 		$cpt++;

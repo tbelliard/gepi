@@ -503,6 +503,60 @@ else{
 }
 echo "'><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
 
+//==================================================================
+if(($_SESSION['statut']=='administrateur')&&(isset($_GET['ine']))) {
+	require("fonctions_annees_anterieures.inc.php");
+
+	echo " | <a href='nettoyer_annee_anterieure.php'>Nettoyage</a>";
+	if(($mode!='bull_simp')&&($mode!='avis_conseil')) {
+		echo "</p>\n";
+		echo "</div>\n";
+
+		echo "<h2 style='text-align: center;'>Choix des informations antérieures</h2>\n";
+		//tab_choix_anterieure($logineleve);
+		tab_choix_anterieure('','',$_GET['ine']);
+	}
+	else {
+		echo " | <a href='".$_SERVER['PHP_SELF']."?ine=".$_GET['ine']."'>Choix des informations</a>\n";
+		echo "</p>\n";
+		echo "</div>\n";
+
+		//if($mode=='bull_simp'){
+			echo "<h2 style='text-align: center;'>Bulletin simplifié d'une année antérieure</h2>\n";
+			if(!isset($annee_scolaire)){
+				echo "<p><strong>ERREUR:</strong> L'année scolaire antérieure ne semble pas avoir été choisie.</p>\n";
+			}
+			elseif(!isset($num_periode)){
+				echo "<p><strong>ERREUR:</strong> La période ne semble pas avoir été choisie.</p>\n";
+			}
+			/*
+			elseif(!isset($id_classe)){
+				echo "<p><strong>ERREUR:</strong> L'identifiant de la classe actuelle de cet ".$gepiSettings['denomination_eleve']." ne semble pas avoir été fourni.</p>\n";
+			}
+			*/
+			else{
+				bull_simp_annee_anterieure('', '', $annee_scolaire, $num_periode, $_GET['ine']);
+			}
+		/*
+		}
+		elseif($mode=='avis_conseil'){
+			echo "<h2 style='text-align: center;'>Avis des Conseils de classe d'une année antérieure</h2>\n";
+			if(!isset($annee_scolaire)){
+				echo "<p><strong>ERREUR:</strong> L'année scolaire antérieure ne semble pas avoir été choisie.</p>\n";
+			}
+			else{
+				avis_conseils_de_classes_annee_anterieure('',$annee_scolaire, $_GET['ine']);
+			}
+		}
+		*/
+	}
+
+	require("../lib/footer.inc.php");
+	die();
+}
+//==================================================================
+
+
 if(!isset($id_classe)){
 	echo "</p></form>\n";
 	echo "</div>\n";
@@ -855,8 +909,7 @@ else{
 					}
 					// Il n'est pas certain que GEPI ait été mis en place dès la période 1 cette année là.
 					*/
-
-					bull_simp_annee_anterieure($logineleve,$id_classe,$annee_scolaire,$num_periode);
+					bull_simp_annee_anterieure($logineleve, $id_classe, $annee_scolaire, $num_periode);
 				}
 			}
 			elseif($mode=='avis_conseil'){
