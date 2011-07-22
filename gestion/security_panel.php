@@ -182,7 +182,17 @@ if(($afficher_les_alertes_d_un_compte=="y")&&($user_login!='')) {
 		//$user=mysql_fetch_object($user_req);
 		$user=mysql_fetch_array($user_req, MYSQL_ASSOC);
 
-		echo "<p>Affichage des alertes concernant le compte <a href='../utilisateurs/modify_user.php?user_login=$user_login'>$user_login</a>";
+		echo "<p>Affichage des alertes concernant le compte ";
+		if($user['statut']=='eleve') {
+			echo "<a href='../eleves/modify_eleve.php?eleve_login=$user_login'>$user_login</a>";
+		}
+		elseif($user['statut']=='responsable') {
+			$infos_user=get_infos_from_login_utilisateur($user_login);
+			echo "<a href='../responsables/modify_resp.php?pers_id=".$infos_user['pers_id']."'>$user_login</a>";
+		}
+		else {
+			echo "<a href='../utilisateurs/modify_user.php?user_login=$user_login'>$user_login</a>";
+		}
 
 		if($user['email']!="") {
 			$lien_mail="<a href=\"mailto:".$user['email']."?subject="."[Gepi]: Votre compte";
