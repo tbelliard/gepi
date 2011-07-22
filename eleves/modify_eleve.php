@@ -1993,6 +1993,17 @@ if(isset($eleve_login)){
 			}
 		}
 		echo "</div>\n";
+
+		//=========================
+		//$test_compte_actif=check_compte_actif($eleve_login);
+		//if($test_compte_actif!=0) {
+		if((isset($compte_eleve_existe))&&($compte_eleve_existe=="y")&&($_SESSION['statut']=="administrateur")) {
+			echo "<div style='margin-top: 0.5em; text-align:center; border: 1px solid black;'>\n";
+			echo affiche_actions_compte($eleve_login);
+			echo "</div>\n";
+		}
+		//=========================
+
 	}
 	echo "</td>\n";
 }

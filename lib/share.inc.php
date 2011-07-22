@@ -7130,4 +7130,172 @@ function test_existence_mentions_classe($id_classe) {
 	}
 
 }
+
+function check_compte_actif($login) {
+	$sql="SELECT etat FROM utilisateurs WHERE login='$login';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		return 0;
+	}
+	else {
+		$lig=mysql_fetch_object($res);
+		if($lig->etat=='actif') {
+			return 1;
+		}
+		else {
+			return 2;
+		}
+	}
+}
+
+function lien_image_compte_utilisateur($login, $statut="", $target="", $avec_lien="y") {
+	global $gepiPath;
+
+	$retour="";
+
+	if($target!="") {$target=" target='$target'";}
+
+	$test=check_compte_actif($login);
+	if($test!=0) {
+		if($statut=="") {
+			$statut=get_statut_from_login($login);
+		}
+
+		if($statut!="") {
+			$refermer_lien="y";
+
+			if($avec_lien=="y") {
+				if($statut=='eleve') {
+					$retour.="<a href='".$gepiPath."/eleves/modify_eleve.php?eleve_login=$login'$target>";
+				}
+				elseif($statut=='responsable') {
+					$infos=get_infos_from_login_utilisateur($login);
+					if(isset($infos['pers_id'])) {
+						$retour.="<a href='".$gepiPath."/responsables/modify_resp.php?pers_id=".$infos['pers_id']."'$target>";
+					}
+					else {
+						$refermer_lien="n";
+					}
+				}
+				elseif($statut=='autre') {
+					$retour.="<a href='".$gepiPath."/utilisateurs/creer_statut.php'$target>";
+				}
+				else {
+					$retour.="<a href='".$gepiPath."/utilisateurs/modify_user.php?user_login=$login'$target>";
+				}
+			}
+
+			if($test==1) {
+				$retour.="<img src='".$gepiPath."/images/icons/buddy.png' width='16' height='16' alt='Compte $login actif' title='Compte $login actif' />";
+			}
+			else {
+				$retour.="<img src='".$gepiPath."/images/icons/buddy_no.png' width='16' height='16' alt='Compte $login inactif' title='Compte $login inactif' />";
+			}
+
+			if($avec_lien=="y") {
+				if($refermer_lien=="y") {
+					$retour.="</a>";
+				}
+			}
+		}
+	}
+
+	return $retour;
+}
+
+function get_statut_from_login($login) {
+	$sql="SELECT statut FROM utilisateurs WHERE login='$login';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)==0) {
+		return "";
+	}
+	else {
+		$lig=mysql_fetch_object($res);
+		return $lig->statut;
+	}
+}
+
+function get_infos_from_login_utilisateur($login, $tab_champs=array()) {
+	$tab=array();
+
+	$tab_champs_utilisateur=array('nom', 'prenom', 'civilite', 'email','show_email','statut','etat','change_mdp','date_verrouillage','ticket_expiration','niveau_alerte','observation_securite','temp_dir','numind','auth_mode');
+	$sql="SELECT * FROM utilisateurs WHERE login='$login';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		foreach($tab_champs_utilisateur as $key => $value) {
+			$tab[$value]=$lig->$value;
+		}
+
+		if($tab['statut']=='responsable') {
+			$sql="SELECT pers_id FROM resp_pers WHERE login='$login';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$lig=mysql_fetch_object($res);
+				$tab['pers_id']=$lig->pers_id;
+
+				if(in_array('enfants', $tab_champs)) {
+					// A compléter
+				}
+			}
+		}
+		elseif($tab['statut']=='eleve') {
+			$sql="SELECT * FROM eleves WHERE login='$login';";
+			$res=mysql_query($sql);
+			if(mysql_num_rows($res)>0) {
+				$lig=mysql_fetch_object($res);
+
+				$tab_champs_eleve=array('no_gep','sexe','naissance','lieu_naissance','elenoet','ereno','ele_id','id_eleve','id_mef','date_sortie');
+				foreach($tab_champs_eleve as $key => $value) {
+					$tab[$value]=$lig->$value;
+				}
+
+				if(in_array('parents', $tab_champs)) {
+					// A compléter
+				}
+			}
+
+		}
+		elseif($tab['statut']=='autre') {
+			// A compléter
+			$tab['statut_autre']="A EXTRAIRE";
+		}
+	}
+	return $tab;
+}
+
+function affiche_actions_compte($login) {
+	global $gepiPath;
+
+	$retour="";
+
+	$user=get_infos_from_login_utilisateur($login);
+
+	$retour.="<p>\n";
+	if ($user['etat'] == "actif") {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=desactiver&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'>Désactiver le compte</a>";
+	} else {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=activer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'>Réactiver le compte</a>";
+	}
+	$retour.="<br />\n";
+	if ($user['observation_securite'] == 0) {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=observer&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'>Placer en observation</a>";
+	} else {
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=stop_observation&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'>Retirer l'observation</a>";
+	}
+	if($user['niveau_alerte']>0) {
+		$retour.="<br />\n";
+		$retour.="Score cumulé&nbsp;: ".$user['niveau_alerte'];
+		$retour.="<br />\n";
+		$retour.="<a style='padding: 2px;' href='$gepiPath/gestion/security_panel.php?action=reinit_cumul&amp;afficher_les_alertes_d_un_compte=y&amp;user_login=".$login;
+		$retour.=add_token_in_url()."'>Réinitialiser cumul</a>";
+	}
+	$retour.="</p>\n";
+
+	return $retour;
+}
 ?>
