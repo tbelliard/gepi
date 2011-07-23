@@ -367,3 +367,5 @@ DROP TABLE IF EXISTS ct_sequences;
 CREATE TABLE IF NOT EXISTS ct_sequences (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,titre VARCHAR( 255 ) NOT NULL , description TEXT NOT NULL);
 DROP TABLE IF EXISTS s_travail_mesure;
 CREATE TABLE IF NOT EXISTS s_travail_mesure (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_incident INT( 11 ) NOT NULL ,login_ele VARCHAR( 50 ) NOT NULL , travail TEXT NOT NULL);
+DROP TABLE IF EXISTS s_natures;
+CREATE TABLE IF NOT EXISTS s_natures ( id INT(11) NOT NULL auto_increment, nature varchar(50) NOT NULL default '', PRIMARY KEY (id));

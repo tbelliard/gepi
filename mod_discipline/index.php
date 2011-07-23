@@ -425,6 +425,18 @@ if($_SESSION['statut']=='administrateur') {
 
 
 	$nouveauItem = new itemGeneral();
+	$nouveauItem->chemin='/mod_discipline/definir_natures.php';
+	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
+	{
+		$nouveauItem->titre="Définition des natures d'incidents" ;
+		$nouveauItem->expli="Définir les natures d'incidents (liste indicative ou liste imposée)." ;
+		$nouveauItem->indexMenu=$a;
+		$menuPage[]=$nouveauItem;
+	}
+	unset($nouveauItem);
+
+
+	$nouveauItem = new itemGeneral();
 	$nouveauItem->chemin='/mod_discipline/definir_categories.php';
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{

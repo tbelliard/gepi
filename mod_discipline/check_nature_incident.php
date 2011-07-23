@@ -79,7 +79,14 @@ if(isset($chaine_rech)) {
 	}
 	$chaine_mysql.=")";
 
-	$sql="SELECT DISTINCT nature FROM s_incidents WHERE $chaine_mysql ORDER BY nature;";
+	$DisciplineNaturesRestreintes=getSettingValue('DisciplineNaturesRestreintes');
+
+	if($DisciplineNaturesRestreintes!=1) {
+		$sql="SELECT DISTINCT nature FROM s_incidents WHERE $chaine_mysql ORDER BY nature;";
+	}
+	else {
+		$sql="SELECT DISTINCT nature FROM s_natures WHERE $chaine_mysql ORDER BY nature;";
+	}
 	//echo "$sql<br />";
 	$res=mysql_query($sql);
 	if(mysql_num_rows($res)>0) {

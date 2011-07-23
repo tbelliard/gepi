@@ -1983,9 +1983,11 @@ elseif($step==2) {
 
 	//$nature="";
 
+	$DisciplineNaturesRestreintes=getSettingValue('DisciplineNaturesRestreintes');
+
 	if($etat_incident!='clos') {
 		$saisie_nature_libre="y";
-		if(getSettingValue('DisciplineNaturesRestreintes')=='y') {
+		if($DisciplineNaturesRestreintes==2) {
 			// On limite les natures d'incident au contenu de s_categories
 			$sql="SELECT DISTINCT categorie FROM s_categories ORDER BY categorie;";
 			$res_cat=mysql_query($sql);
@@ -2017,8 +2019,13 @@ new Ajax.Autocompleter (
 	{method: 'post', paramName: 'nature'}
 );
 </script>\n";
-	
-			$sql="SELECT DISTINCT nature FROM s_incidents WHERE nature!='' ORDER BY nature;";
+
+			if($DisciplineNaturesRestreintes!=1) {
+				$sql="SELECT DISTINCT nature FROM s_incidents WHERE nature!='' ORDER BY nature;";
+			}
+			else {
+				$sql="SELECT DISTINCT nature FROM s_natures WHERE nature!='' ORDER BY nature;";
+			}
 			$res_nat=mysql_query($sql);
 			if(mysql_num_rows($res_nat)>0) {
 				echo " <a href='#' onclick=\"cacher_toutes_les_infobulles();afficher_div('div_choix_nature','y',10,-40); return false;\">Choix</a>";

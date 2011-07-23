@@ -548,4 +548,19 @@ if ($test_champ>0) {
 		$result .= "<font color=\"red\">Erreur : Le champ id_mention de la table avis_conseil_classe n'a pas été ajouté</font><br />";
 	}
 }
+
+$result .= "<br /><b>Ajout d'une table s_natures :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 's_natures'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS s_natures ( id INT(11) NOT NULL auto_increment, nature varchar(50) NOT NULL default '', PRIMARY KEY (id));");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
 ?>

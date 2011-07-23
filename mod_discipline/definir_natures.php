@@ -1,0 +1,229 @@
+<?php
+
+/*
+* $Id$
+*
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun, Didier Blanqui
+*
+* This file is part of GEPI.
+*
+* GEPI is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* GEPI is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with GEPI; if not, write to the Free Software
+* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
+//$variables_non_protegees = 'yes';
+// Initialisations files
+require_once("../lib/initialisations.inc.php");
+// Resume session
+$resultat_session = $session_gepi->security_check();
+if ($resultat_session == 'c') {
+	header("Location: ../utilisateurs/mon_compte.php?change_mdp=yes");
+	die();
+} else if ($resultat_session == '0') {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+$sql = "SELECT 1=1 FROM `droits` WHERE id='/mod_discipline/definir_natures.php';";
+$test = mysql_query($sql);
+if (mysql_num_rows($test) == 0) {
+	$sql = "INSERT INTO droits VALUES ( '/mod_discipline/definir_natures.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les natures', '')";
+	$test = mysql_query($sql);
+}
+
+if (!checkAccess()) {
+	header("Location: ../logout.php?auto=1");
+	die();
+}
+
+if(strtolower(substr(getSettingValue('active_mod_discipline'),0,1))!='y') {
+	$mess=rawurlencode("Vous tentez d accéder au module Discipline qui est désactivé !");
+	tentative_intrusion(1, "Tentative d'accès au module Discipline qui est désactivé.");
+	header("Location: ../accueil.php?msg=$mess");
+	die();
+}
+
+require('sanctions_func_lib.php');
+
+$msg = "";
+
+$suppr_nature = isset($_POST['suppr_nature']) ? $_POST['suppr_nature'] : NULL;
+$nature = isset($_POST['nature']) ? $_POST['nature'] : NULL;
+$cpt = isset($_POST['cpt']) ? $_POST['cpt'] : 0;
+
+if (isset($suppr_nature)) {
+	check_token();
+
+	for ($i = 0; $i < $cpt; $i++) {
+		if (isset($suppr_nature[$i])) {
+			$sql = "DELETE FROM s_natures WHERE id='$suppr_nature[$i]';";
+			$suppr = mysql_query($sql);
+			if (!$suppr) {
+				//$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_lieu[$i].".<br />\n";
+				$msg.="ERREUR lors de la suppression de la nature n°" . $suppr_nature[$i] . ".<br />\n";
+			} else {
+				$msg.="Suppression de la nature n°" . $suppr_nature[$i] . ".<br />\n";
+			}
+		}
+	}
+}
+
+if ((isset($nature)) && ($nature != '')) {
+	check_token();
+
+	$a_enregistrer = 'y';
+
+	$sql = "SELECT nature FROM s_natures ORDER BY nature;";
+	$res = mysql_query($sql);
+	if (mysql_num_rows($res) > 0) {
+		$tab_nature = array();
+		while ($lig = mysql_fetch_object($res)) {
+			$tab_nature[] = $lig->nature;
+		}
+
+		if (in_array($nature, $tab_nature)) {
+			$a_enregistrer = 'n';
+			$msg.="La nature proposée existe déjà.<br />";
+		}
+	}
+
+	if ($a_enregistrer == 'y') {
+		$nature=preg_replace('/(\\\r\\\n)+/',"\r\n",$nature);
+		$nature=preg_replace('/(\\\r)+/',"\r",$nature);
+		$nature=preg_replace('/(\\\n)+/',"\n",$nature);
+
+		$sql = "INSERT INTO s_natures SET nature='" . $nature . "', sigle='" . $sigle . "';";
+		$res = mysql_query($sql);
+		if (!$res) {
+			$msg.="ERREUR lors de l'enregistrement de " . $nature . "<br />\n";
+		} else {
+			$msg.="Enregistrement de " . $nature . "<br />\n";
+		}
+	}
+}
+
+if(isset($_POST['DisciplineNaturesRestreintes'])) {
+	check_token();
+
+	$DisciplineNaturesRestreintes=$_POST['DisciplineNaturesRestreintes'];
+
+	$reg_DisciplineNaturesRestreintes=saveSetting("DisciplineNaturesRestreintes", $DisciplineNaturesRestreintes);
+
+	if(!$reg_DisciplineNaturesRestreintes) {
+		$msg.="Erreur lors de l'enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes'<br />\n";
+	}
+	else {
+		$msg.="Enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes' effectué.<br />\n";
+	}
+}
+
+$DisciplineNaturesRestreintes=getSettingValue('DisciplineNaturesRestreintes');
+if($DisciplineNaturesRestreintes=='') {
+	$DisciplineNaturesRestreintes=1;
+}
+
+$themessage = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
+//**************** EN-TETE *****************
+//$titre_page = "Sanctions: Définition des qualités";
+$titre_page = "Discipline: Définition des natures";
+require_once("../lib/header.inc");
+//**************** FIN EN-TETE *****************
+//debug_var();
+
+echo "<p class='bold'><a href='index.php' onclick=\"return confirm_abandon (this, change, '$themessage')\"><img src='../images/icons/back.png' alt='Retour' class='back_link'/> Retour</a>\n";
+echo "</p>\n";
+
+echo "<form enctype='multipart/form-data' action='" . $_SERVER['PHP_SELF'] . "' method='post' name='formulaire'>\n";
+echo add_token_field();
+
+echo "<p class='bold'>Saisie des natures d'incidents&nbsp;:</p>\n";
+echo "<blockquote>\n";
+
+$cpt = 0;
+$sql = "SELECT * FROM s_natures ORDER BY nature;";
+$res = mysql_query($sql);
+if (mysql_num_rows($res) == 0) {
+	//echo "<p>Aucune qualité n'est encore définie.</p>\n";
+	//echo "<p>Aucune nature n'est encore définie.</p>\n";
+
+	$tab_natures_par_defaut=array('Refus de travail', 'Travail non fait', 'Degradation', 'Retards Répétés', 'Oubli de matériel', 'Insolence et comportement', 'Violence verbale', 'Violence physique', 'Violence verbale et physique', 'Bavardages répétés');
+
+	for($i=0;$i<count($tab_natures_par_defaut);$i++) {
+		$sql="INSERT INTO s_natures SET nature='".$tab_natures_par_defaut[$i]."';";
+		$insert=mysql_query($sql);
+	}
+
+	$sql = "SELECT * FROM s_natures ORDER BY nature;";
+	$res = mysql_query($sql);
+}
+
+echo "<p>Natures existantes&nbsp;:</p>\n";
+echo "<table class='boireaus' border='1' summary='Tableau des natures existantes'>\n";
+echo "<tr>\n";
+echo "<th>Nature</th>\n";
+echo "<th>Supprimer</th>\n";
+echo "</tr>\n";
+$alt = 1;
+while ($lig = mysql_fetch_object($res)) {
+	$alt = $alt * (-1);
+	echo "<tr class='lig$alt'>\n";
+
+	echo "<td>\n";
+	echo "<label for='suppr_nature_$cpt' style='cursor:pointer;'>";
+	echo $lig->nature;
+	echo "</label>";
+	echo "</td>\n";
+
+	echo "<td><input type='checkbox' name='suppr_nature[]' id='suppr_nature_$cpt' value=\"$lig->id\" onchange='changement();' /></td>\n";
+	echo "</tr>\n";
+
+	$cpt++;
+}
+
+echo "</table>\n";
+
+echo "</blockquote>\n";
+
+echo "<p>Nouvelle nature&nbsp;: <input type='text' name='nature' value='' onchange='changement();' /></p>\n";
+echo "<input type='hidden' name='cpt' value='$cpt' />\n";
+
+echo "<p>\n";
+echo "<input type='radio' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes_0' value='0' ";
+if($DisciplineNaturesRestreintes=="0") {echo "checked ";}
+echo "/><label for='DisciplineNaturesRestreintes_0'> Ne pas utiliser la liste de natures proposées ici.<br />Les utilisateurs pourront saisir des natures d'incident librement et ne se verront proposer que des natures parmi celles saisies précédemment lors d'autres incidents.</label><br />\n";
+
+echo "<input type='radio' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes_1' value='1' ";
+if($DisciplineNaturesRestreintes=="1") {echo "checked ";}
+echo "/><label for='DisciplineNaturesRestreintes_1'> Les utilisateurs pourront saisir des natures d'incident librement, mais ne se verront proposer que les natures de la liste ci-dessus.</label><br />\n";
+
+echo "<input type='radio' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes_2' value='2' ";
+if($DisciplineNaturesRestreintes=="2") {echo "checked ";}
+echo "/><label for='DisciplineNaturesRestreintes_2'> Restreindre les natures d'incidents pouvant être sélectionnées aux seules natures ci-dessus.<br />Les utilisateurs devront choisir une des natures de la liste ci-dessus.</label><br />\n";
+echo "</p>\n";
+
+echo "<input type='hidden' name='is_posted' value='y' />\n";
+echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
+echo "</form>\n";
+
+echo "<p><br /></p>\n";
+
+echo "<p><i>NOTES&nbsp;:</i></p>
+<ul>
+	<li>
+		<p>Restreindre les natures d'incidents pouvant être sélectionnées aux seules natures ci-dessus permet d'éviter une trop grande dispersion des natures (<i>on peut sinon avoir 'Insolence', 'Comportement insolent', 'insolent',...</i>).<br />
+		Cependant, trop les restreindre peut gêner les utilisateurs.</p>
+	</li>
+</ul>\n";
+
+require("../lib/footer.inc.php");
+?>
