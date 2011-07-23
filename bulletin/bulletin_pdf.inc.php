@@ -27,6 +27,9 @@
 	$champ_bull_pdf[]="active_regroupement_cote";
 	$champ_bull_pdf[]="active_entete_regroupement";
 	$champ_bull_pdf[]="active_moyenne_regroupement";
+
+	$champ_bull_pdf[]="presentation_proflist";
+
 	$champ_bull_pdf[]="active_rang";
 	$champ_bull_pdf[]="active_graphique_niveau";
 	$champ_bull_pdf[]="active_appreciation";
@@ -69,6 +72,7 @@
 	$champ_bull_pdf[]="hauteur_avis_cons";
 	$champ_bull_pdf[]="cadre_avis_cons";
 	$champ_bull_pdf[]="affich_mentions";
+	$champ_bull_pdf[]="affich_intitule_mentions";
 	$champ_bull_pdf[]="affich_coches_mentions";
 
 	$champ_bull_pdf[]="X_sign_chef";
@@ -82,6 +86,11 @@
 	$champ_bull_pdf[]="entente_mel";
 	$champ_bull_pdf[]="entente_tel";
 	$champ_bull_pdf[]="entente_fax";
+
+	$champ_bull_pdf[]="entete_info_etab_suppl";
+	$champ_bull_pdf[]="entete_info_etab_suppl_texte";
+	$champ_bull_pdf[]="entete_info_etab_suppl_valeur";
+
 	$champ_bull_pdf[]="L_max_logo";
 	$champ_bull_pdf[]="H_max_logo";
 	$champ_bull_pdf[]="toute_moyenne_meme_col";
@@ -215,6 +224,9 @@
 	$val_defaut_champ_bull_pdf["active_regroupement_cote"]=0;
 	$val_defaut_champ_bull_pdf["active_entete_regroupement"]=0;
 	$val_defaut_champ_bull_pdf["active_moyenne_regroupement"]=0;
+
+	$val_defaut_champ_bull_pdf["presentation_proflist"]=1;
+
 	$val_defaut_champ_bull_pdf["active_rang"]=0;
 	$val_defaut_champ_bull_pdf["active_graphique_niveau"]=0;
 	$val_defaut_champ_bull_pdf["active_appreciation"]=1;
@@ -257,6 +269,7 @@
 	$val_defaut_champ_bull_pdf["hauteur_avis_cons"]=37;
 	$val_defaut_champ_bull_pdf["cadre_avis_cons"]=1;
 	$val_defaut_champ_bull_pdf["affich_mentions"]='y';
+	$val_defaut_champ_bull_pdf["affich_intitule_mentions"]='y';
 	$val_defaut_champ_bull_pdf["affich_coches_mentions"]='y';
 
 	$val_defaut_champ_bull_pdf["X_sign_chef"]=138;
@@ -270,6 +283,11 @@
 	$val_defaut_champ_bull_pdf["entente_mel"]=1;
 	$val_defaut_champ_bull_pdf["entente_tel"]=1;
 	$val_defaut_champ_bull_pdf["entente_fax"]=1;
+
+	$val_defaut_champ_bull_pdf["entete_info_etab_suppl"]='n';
+	$val_defaut_champ_bull_pdf["entete_info_etab_suppl_texte"]='Site web';
+	$val_defaut_champ_bull_pdf["entete_info_etab_suppl_valeur"]='http://';
+
 	$val_defaut_champ_bull_pdf["L_max_logo"]=75;
 	$val_defaut_champ_bull_pdf["H_max_logo"]=75;
 	$val_defaut_champ_bull_pdf["toute_moyenne_meme_col"]=0;

@@ -1544,7 +1544,15 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 		}
 
 		// Lignes supplémentaires à prendre en compte...
+		if(($tab_modele_pdf["entete_info_etab_suppl"][$classe_id]=='y')&&(($tab_modele_pdf["entete_info_etab_suppl_texte"][$classe_id]!='')||($tab_modele_pdf["entete_info_etab_suppl_valeur"][$classe_id]!=''))) {
 
+			$y_telecom = $y_telecom + 5;
+			$pdf->SetXY($x_telecom,$y_telecom);
+
+			$texte = $tab_modele_pdf["entete_info_etab_suppl_texte"][$classe_id]." : ".$tab_modele_pdf["entete_info_etab_suppl_valeur"][$classe_id];
+
+			$pdf->Cell(90,5, $texte,0,2,'');
+		}
 
 		// ============= FIN BLOC ETABLISSEMENT ==========================
 
@@ -3390,57 +3398,100 @@ function bulletin_pdf($tab_bull,$i,$tab_rel) {
 
 					if ( isset($tab_bull['groupe'][$m]["profs"]["list"]) )
 					{
-
-						$nb_prof_matiere = count($tab_bull['groupe'][$m]["profs"]["list"]);
-						$espace_matiere_prof = $espace_entre_matier/2;
-						if($nb_prof_matiere>0){
-							$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
+						if($tab_modele_pdf["presentation_proflist"][$classe_id]!="2") {
+							// Présentation en colonne des profs
+							$nb_prof_matiere = count($tab_bull['groupe'][$m]["profs"]["list"]);
+							$espace_matiere_prof = $espace_entre_matier/2;
+							if($nb_prof_matiere>0){
+								$espace_matiere_prof = $espace_matiere_prof/$nb_prof_matiere;
+							}
+							$nb_pass_count = '0';
+							$text_prof = '';
+							while ($nb_prof_matiere > $nb_pass_count)
+							{
+								//$text_prof="";
+								//for($loop_prof_grp=0;$loop_prof_grp<$nb_prof_par_ligne;$loop_prof_grp++) {
+									// calcul de la hauteur du caractère du prof
+									//$tmp_login_prof=$tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count+$loop_prof_grp];
+									$tmp_login_prof=$tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count];
+									/*
+									$text_prof=$tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["civilite"];
+									$text_prof.=" ".$tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["nom"];
+									$text_prof.=" ".substr($tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["prenom"],0,1);
+									*/
+									//if($loop_prof_grp>0) {$text_prof.=", ";}
+									$text_prof=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
+								//}
+	
+								if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 8; }
+								elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 5; }
+								elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
+								$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+								$val = $pdf->GetStringWidth($text_prof);
+								$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
+								$grandeur_texte='test';
+								while($grandeur_texte!='ok') {
+									if($taille_texte<$val)
+									{
+										$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
+										$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+										$val = $pdf->GetStringWidth($text_prof);
+									}
+									else {
+										$grandeur_texte='ok';
+									}
+								}
+								$grandeur_texte='test';
+								$pdf->SetX($X_bloc_matiere);
+								if( empty($tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count+1]) ) {
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LRB',1,'L');
+								}
+								if( !empty($tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count+1]) ) {
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LR',1,'L');
+								}
+								$nb_pass_count = $nb_pass_count + 1;
+							}
 						}
-						$nb_pass_count = '0';
-						$text_prof = '';
-						while ($nb_prof_matiere > $nb_pass_count)
-						{
-							//$text_prof="";
-							//for($loop_prof_grp=0;$loop_prof_grp<$nb_prof_par_ligne;$loop_prof_grp++) {
-								// calcul de la hauteur du caractère du prof
-								//$tmp_login_prof=$tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count+$loop_prof_grp];
-								$tmp_login_prof=$tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count];
-								/*
-								$text_prof=$tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["civilite"];
-								$text_prof.=" ".$tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["nom"];
-								$text_prof.=" ".substr($tab_bull['groupe'][$m]["profs"]["users"]["$tmp_login_prof"]["prenom"],0,1);
-								*/
-								//if($loop_prof_grp>0) {$text_prof.=", ";}
-								$text_prof=affiche_utilisateur($tmp_login_prof,$tab_bull['eleve'][$i]['id_classe']);
-							//}
+						else {
+							// Présentation en ligne des profs
+							$text_prof=$tab_bull['groupe'][$m]["profs"]["proflist_string"]."  ";
+							if($text_prof!="") {
+								$espace_matiere_prof = $espace_entre_matier/2;
+								$hauteur_caractere_prof = 8;
 
-							if ( $nb_prof_matiere <= 2 ) { $hauteur_caractere_prof = 8; }
-							elseif ( $nb_prof_matiere == 3) { $hauteur_caractere_prof = 5; }
-							elseif ( $nb_prof_matiere > 3) { $hauteur_caractere_prof = 2; }
-							$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
-							$val = $pdf->GetStringWidth($text_prof);
-							$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
-							$grandeur_texte='test';
-							while($grandeur_texte!='ok') {
-								if($taille_texte<$val)
-								{
-									$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
+								if($use_cell_ajustee=="n") {
 									$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
 									$val = $pdf->GetStringWidth($text_prof);
+									$taille_texte = ($tab_modele_pdf["largeur_matiere"][$classe_id]);
+									$grandeur_texte='test';
+									while($grandeur_texte!='ok') {
+										if($taille_texte<$val)
+										{
+											$hauteur_caractere_prof = $hauteur_caractere_prof-0.3;
+											$pdf->SetFont($tab_modele_pdf["caractere_utilse"][$classe_id],'',$hauteur_caractere_prof);
+											$val = $pdf->GetStringWidth($text_prof);
+										}
+										else {
+											$grandeur_texte='ok';
+										}
+									}
+									$grandeur_texte='test';
+									$pdf->SetX($X_bloc_matiere);
+									$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LR',1,'L');
 								}
 								else {
-									$grandeur_texte='ok';
+									$texte=$text_prof;
+									$taille_max_police=$hauteur_caractere_prof;
+									$taille_min_police=ceil($hauteur_caractere_prof/3);
+	
+									$largeur_dispo=$tab_modele_pdf["largeur_matiere"][$classe_id];
+									$h_cell=$espace_matiere_prof;
+
+									$pdf->SetX($X_bloc_matiere);
+	
+									cell_ajustee(traite_accents_utf8($texte),$pdf->GetX(),$pdf->GetY(),$largeur_dispo,$h_cell,$taille_max_police,$taille_min_police,'');
 								}
 							}
-							$grandeur_texte='test';
-							$pdf->SetX($X_bloc_matiere);
-							if( empty($tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count+1]) ) {
-								$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LRB',1,'L');
-							}
-							if( !empty($tab_bull['groupe'][$m]["profs"]["list"][$nb_pass_count+1]) ) {
-								$pdf->Cell($tab_modele_pdf["largeur_matiere"][$classe_id], $espace_matiere_prof, traite_accents_utf8($text_prof),'LR',1,'L');
-							}
-							$nb_pass_count = $nb_pass_count + 1;
 						}
 					}
 					$largeur_utilise = $tab_modele_pdf["largeur_matiere"][$classe_id];

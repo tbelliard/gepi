@@ -306,8 +306,14 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['entente_mel'])) { $entente_mel = $_GET['entente_mel']; } if (isset($_POST['entente_mel'])) { $entente_mel = $_POST['entente_mel']; } }
 	if (empty($_GET['entente_tel']) and empty($_POST['entente_tel'])) { $entente_tel = ''; }
 	else { if (isset($_GET['entente_tel'])) { $entente_tel = $_GET['entente_tel']; } if (isset($_POST['entente_tel'])) { $entente_tel = $_POST['entente_tel']; } }
+
 	if (empty($_GET['entente_fax']) and empty($_POST['entente_fax'])) { $entente_fax = ''; }
 	else { if (isset($_GET['entente_fax'])) { $entente_fax = $_GET['entente_fax']; } if (isset($_POST['entente_fax'])) { $entente_fax = $_POST['entente_fax']; } }
+
+	$entete_info_etab_suppl=isset($_POST['entete_info_etab_suppl']) ? $_POST['entete_info_etab_suppl'] : "n";
+	$entete_info_etab_suppl_texte=isset($_POST['entete_info_etab_suppl_texte']) ? $_POST['entete_info_etab_suppl_texte'] : "Site web";
+	$entete_info_etab_suppl_valeur=isset($_POST['entete_info_etab_suppl_valeur']) ? $_POST['entete_info_etab_suppl_valeur'] : "http://";
+
 	if (empty($_GET['L_max_logo']) and empty($_POST['L_max_logo'])) { $L_max_logo = ''; }
 	else { if (isset($_GET['L_max_logo'])) { $L_max_logo = $_GET['L_max_logo']; } if (isset($_POST['L_max_logo'])) { $L_max_logo = $_POST['L_max_logo']; } }
 	if (empty($_GET['H_max_logo']) and empty($_POST['H_max_logo'])) { $H_max_logo = ''; }
@@ -347,6 +353,9 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['taille_texte_date_edition'])) { $taille_texte_date_edition = $_GET['taille_texte_date_edition']; } if (isset($_POST['taille_texte_date_edition'])) { $taille_texte_date_edition = $_POST['taille_texte_date_edition']; } }
 	if (empty($_GET['taille_texte_matiere']) and empty($_POST['taille_texte_matiere'])) { $taille_texte_matiere = ''; }
 	else { if (isset($_GET['taille_texte_matiere'])) { $taille_texte_matiere = $_GET['taille_texte_matiere']; } if (isset($_POST['taille_texte_matiere'])) { $taille_texte_matiere = $_POST['taille_texte_matiere']; } }
+
+	$presentation_proflist=isset($_POST['presentation_proflist']) ? $_POST['presentation_proflist'] : '1';
+
 	if (empty($_GET['active_moyenne_general']) and empty($_POST['active_moyenne_general'])) { $active_moyenne_general = ''; }
 	else { if (isset($_GET['active_moyenne_general'])) { $active_moyenne_general = $_GET['active_moyenne_general']; } if (isset($_POST['active_moyenne_general'])) { $active_moyenne_general = $_POST['active_moyenne_general']; } }
 	if (empty($_GET['titre_bloc_avis_conseil']) and empty($_POST['titre_bloc_avis_conseil'])) { $titre_bloc_avis_conseil = ''; }
@@ -365,10 +374,12 @@ if(isset($_POST['valide_modif_model'])) {
 	else { if (isset($_GET['tel_image'])) { $tel_image = $_GET['tel_image']; } if (isset($_POST['tel_image'])) { $tel_image = $_POST['tel_image']; } }
 	if (empty($_GET['tel_texte']) and empty($_POST['tel_texte'])) { $tel_texte = ''; }
 	else { if (isset($_GET['tel_texte'])) { $tel_texte = $_GET['tel_texte']; } if (isset($_POST['tel_texte'])) { $tel_texte = $_POST['tel_texte']; } }
+
 	if (empty($_GET['fax_image']) and empty($_POST['fax_image'])) { $fax_image = ''; }
 	else { if (isset($_GET['fax_image'])) { $fax_image = $_GET['fax_image']; } if (isset($_POST['fax_image'])) { $fax_image = $_POST['fax_image']; } }
 	if (empty($_GET['fax_texte']) and empty($_POST['fax_texte'])) { $fax_texte = ''; }
 	else { if (isset($_GET['fax_texte'])) { $fax_texte = $_GET['fax_texte']; } if (isset($_POST['fax_texte'])) { $fax_texte = $_POST['fax_texte']; } }
+
 	if (empty($_GET['courrier_image']) and empty($_POST['courrier_image'])) { $courrier_image = ''; }
 	else { if (isset($_GET['courrier_image'])) { $courrier_image = $_GET['courrier_image']; } if (isset($_POST['courrier_image'])) { $courrier_image = $_POST['courrier_image']; } }
 	if (empty($_GET['courrier_texte']) and empty($_POST['courrier_texte'])) { $courrier_texte = ''; }
@@ -1139,13 +1150,32 @@ function DecocheCheckbox() {
 			<input name="fax_image" id="fax_image_1" value="fax" type="radio" <?php if(!empty($fax_image) and $fax_image==='fax') { ?>checked="checked"<?php } ?> /><label for="fax_image_1" style="cursor: pointer;"><img src="../images/imabulle/fax.jpg" style="width: 20px; height: 20px; border: 0px" alt="" title="" /></label>
 			<input name="fax_image" id="fax_image_2" value="" type="radio" <?php if(empty($fax_image) and $fax_image==='') { ?>checked="checked"<?php } ?> /><label for="fax_image_2" style="cursor: pointer;">aucune</label>
 			<br />
+
 			<input name="entente_mel" id="courrier" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($entente_mel) and $entente_mel==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="courrier" style="cursor: pointer;">Courriel</label><br />
 			&nbsp;&nbsp;&nbsp;Texte&nbsp;<input name="courrier_texte" size="4" style="border: 1px solid #74748F;" type="text" <?php if(!empty($courrier_texte)) { ?>value="<?php echo $courrier_texte; ?>" <?php } ?> /> ou
 			<input name="courrier_image" id="courrier_image_1" value="courrier" type="radio" <?php if(!empty($courrier_image) and $courrier_image==='courrier') { ?>checked="checked"<?php } ?> /><label for="courrier_image_1" style="cursor: pointer;"><img src="../images/imabulle/courrier.jpg" style="width: 20px; height: 20px; border: 0px" alt="" title="" /></label>
 			<input name="courrier_image" id="courrier_image_2" value="courrier2" type="radio" <?php if(!empty($courrier_image) and $courrier_image==='courrier2') { ?>checked="checked"<?php } ?> /><label for="courrier_image_2" style="cursor: pointer;"><img src="../images/imabulle/courrier2.jpg" style="width: 20px; height: 20px; border: 0px" alt="" title="" /></label>
 			<input name="courrier_image" id="courrier_image_3" value="sourismel" type="radio" <?php if(!empty($courrier_image) and $courrier_image==='sourismel') { ?>checked="checked"<?php } ?> /><label for="courrier_image_3" style="cursor: pointer;"><img src="../images/imabulle/sourismel.jpg" style="width: 28px; height: 20px; border: 0px" alt="" title="" /></label>
 			<input name="courrier_image" id="courrier_image_4" value="" type="radio" <?php if(empty($courrier_image) and $courrier_image==='') { ?>checked="checked"<?php } ?> /><label for="courrier_image_4" style="cursor: pointer;">aucune</label>
-			<br /><br />
+			<br />
+
+			<?php
+				// Ligne supplémentaire
+				echo "<input type='checkbox' name='entete_info_etab_suppl' id='entete_info_etab_suppl' value='y' ";
+				if($entete_info_etab_suppl=='y') {
+					echo "checked ";
+				}
+				echo "/><label for='entete_info_etab_suppl'>Ligne supplémentaire de votre choix</label><br />\n";
+				echo "&nbsp;&nbsp;&nbsp;Texte&nbsp;: ";
+				echo "<input type='text' name='entete_info_etab_suppl_texte' id='entete_info_etab_suppl_texte' value='$entete_info_etab_suppl_texte' size='6' />\n";
+				echo "&nbsp;&nbsp;&nbsp;Valeur&nbsp;: ";
+				echo "<input type='text' name='entete_info_etab_suppl_valeur' id='entete_info_etab_suppl_valeur' value='$entete_info_etab_suppl_valeur' size='20' /><br />\n";
+			?>
+
+			<br />
+			<br />
+
+
 			Logo de l'établissement<br />
 			<input name="affiche_logo_etab" id="aff_logo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_logo_etab) and $affiche_logo_etab==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="aff_logo" style="cursor: pointer;">Affiche le logo</label><br />
 			<label for="larg_logo" style="cursor: pointer;">Largeur</label>&nbsp;<input name="L_max_logo" id="larg_logo" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($L_max_logo)) { ?>value="<?php echo $L_max_logo; ?>" <?php } ?> />mm&nbsp;/&nbsp;<label for="haut_logo" style="cursor: pointer;">Hauteur</label>&nbsp;<input name="H_max_logo" id="haut_logo" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($H_max_logo)) { ?>value="<?php echo $H_max_logo; ?>" <?php } ?> />mm&nbsp;<br />
@@ -1156,7 +1186,9 @@ function DecocheCheckbox() {
 			<input name="active_bloc_eleve" value="1" type="radio" <?php if(!empty($active_bloc_eleve) and $active_bloc_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_eleve" value="0" type="radio" <?php if(empty($active_bloc_eleve) or (!empty($active_bloc_eleve) and $active_bloc_eleve!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
 			Positionnement X&nbsp;<input name="X_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_eleve)) { ?>value="<?php echo $X_eleve; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_eleve)) { ?>value="<?php echo $Y_eleve; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="largeur_bloc_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_eleve)) { ?>value="<?php echo $largeur_bloc_eleve; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_eleve" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_eleve)) { ?>value="<?php echo $hauteur_bloc_eleve; ?>" <?php } ?> />mm&nbsp;<br />
-			<input name="cadre_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_eleve) and $cadre_eleve==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br />
+
+			<input name="cadre_eleve" id="cadre_eleve" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_eleve) and $cadre_eleve==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_eleve'>&nbsp;Ajouter un encadrement</label><br />
+
 			<input name="active_photo" id="active_photo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($active_photo) and $active_photo==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="active_photo" style="cursor: pointer;">la photo</label> (<input name="ajout_cadre_blanc_photo" id="ajout_cadre_blanc_photo" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($ajout_cadre_blanc_photo) and $ajout_cadre_blanc_photo==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="ajout_cadre_blanc_photo" style="cursor: pointer;">Ajouter un cadre blanc</label> )<br />
 			<input name="affiche_doublement" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_doublement) and $affiche_doublement==='1') { ?>checked="checked"<?php } ?> />&nbsp;si doublement<br />
 			<input name="affiche_date_naissance" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_date_naissance) and $affiche_date_naissance==='1') { ?>checked="checked"<?php } ?> />&nbsp;la date de naissance<br />
@@ -1185,7 +1217,8 @@ function DecocheCheckbox() {
 			<input name="active_bloc_datation" value="1" type="radio" <?php if(!empty($active_bloc_datation) and $active_bloc_datation==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_datation" value="0" type="radio" <?php if(empty($active_bloc_datation) or (!empty($active_bloc_datation) and $active_bloc_datation!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
 			Positionnement X&nbsp;<input name="X_datation_bul" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_datation_bul)) { ?>value="<?php echo $X_datation_bul; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_datation_bul" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_datation_bul)) { ?>value="<?php echo $Y_datation_bul; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="largeur_bloc_datation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_datation)) { ?>value="<?php echo $largeur_bloc_datation; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_datation" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_datation)) { ?>value="<?php echo $hauteur_bloc_datation; ?>" <?php } ?> />mm&nbsp;<br />
-			<input name="cadre_datation_bul" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_datation_bul) and $cadre_datation_bul==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br /><br />
+
+			<input name="cadre_datation_bul" id="cadre_datation_bul" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_datation_bul) and $cadre_datation_bul==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_datation_bul'>&nbsp;Ajouter un encadrement</label><br /><br />
 
 			Taille du texte "classe"&nbsp;<input name="taille_texte_classe" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_classe)) { ?>value="<?php echo $taille_texte_classe; ?>" <?php } ?> />pixel<br />
 			&nbsp;&nbsp;&nbsp;format
@@ -1232,7 +1265,9 @@ function DecocheCheckbox() {
 			<input name="active_bloc_adresse_parent" value="1" type="radio" <?php if(!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent==='1') { ?>checked="checked"<?php } ?> />&nbsp;Activer &nbsp;<input name="active_bloc_adresse_parent" value="0" type="radio" <?php if(empty($active_bloc_adresse_parent) or (!empty($active_bloc_adresse_parent) and $active_bloc_adresse_parent!='1')) { ?>checked="checked"<?php } ?> />&nbsp;Désactiver<br />
 			Positionnement X&nbsp;<input name="X_parent" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($X_parent)) { ?>value="<?php echo $X_parent; ?>" <?php } ?> />mm&nbsp;/&nbsp;Positionnement Y&nbsp;<input name="Y_parent" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($Y_parent)) { ?>value="<?php echo $Y_parent; ?>" <?php } ?> />mm&nbsp;<br />
 			Largeur du bloc&nbsp;<input name="largeur_bloc_adresse" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_bloc_adresse)) { ?>value="<?php echo $largeur_bloc_adresse; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_bloc_adresse" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_bloc_adresse)) { ?>value="<?php echo $hauteur_bloc_adresse; ?>" <?php } ?> />mm&nbsp;<br />
+
 			<input name="cadre_adresse" id="cadre_adresse" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_adresse) and $cadre_adresse==='1') { ?>checked="checked"<?php } ?> />&nbsp;<label for="cadre_adresse" style="cursor: pointer;">Ajouter un encadrement</label><br /><br />
+
 			Imprimer les bulletins pour :<br />
 			<input name="imprime_pour" value="1" type="radio" <?php if( (!empty($imprime_pour) and $imprime_pour==='1') or empty($imprime_pour) ) { ?>checked="checked"<?php } ?> />&nbsp;seulement pour le 1er responsable<br />
 			<input name="imprime_pour" value="2" type="radio" <?php if(!empty($imprime_pour) and $imprime_pour==='2') { ?>checked="checked"<?php } ?> />&nbsp;le 1er et 2ème responsable s'ils n'ont pas la même adresse<br />
@@ -1249,8 +1284,25 @@ function DecocheCheckbox() {
 			Largeur du bloc&nbsp;<input name="longeur_note_app" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($longeur_note_app)) { ?>value="<?php echo $longeur_note_app; ?>" <?php } ?> />mm&nbsp;/&nbsp;Hauteur du bloc&nbsp;<input name="hauteur_note_app" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($hauteur_note_app)) { ?>value="<?php echo $hauteur_note_app; ?>" <?php } ?> />mm&nbsp;<br />
 			Entête<br />
 			&nbsp;&nbsp;&nbsp;Titre de la colonne matière : <input name="titre_entete_matiere" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_matiere)) { ?>value="<?php echo $titre_entete_matiere; ?>" <?php } ?> /><br />
+
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Largeur du bloc matière&nbsp;<input name="largeur_matiere" size="3" style="border: 1px solid #74748F;" type="text" <?php if(!empty($largeur_matiere)) { ?>value="<?php echo $largeur_matiere; ?>" <?php } ?> />mm<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte "matière"&nbsp;<input name="taille_texte_matiere" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_matiere)) { ?>value="<?php echo $taille_texte_matiere; ?>" <?php } ?> />pixel<br />
+
+			<?php
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "Présentation des noms de professeurs&nbsp;:<br />\n";
+
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<input type='radio' name='presentation_proflist' id='presentation_proflist_1' value='1' ";
+				if($presentation_proflist!="2") {echo "checked ";}
+				echo "/><label for='presentation_proflist_1'>en colonne (<i>un par ligne</i>)</label><br />\n";
+
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<input type='radio' name='presentation_proflist' id='presentation_proflist_2' value='2' ";
+				if($presentation_proflist=="2") {echo "checked ";}
+				echo "/><label for='presentation_proflist_2'>en ligne (<i>à la suite</i>)</label><br />\n";
+			?>
+
 			&nbsp;&nbsp;&nbsp;Titre de la colonne coefficient : <input name="titre_entete_coef" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_coef)) { ?>value="<?php echo $titre_entete_coef; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;Titre de la colonne nombre de note : <input name="titre_entete_nbnote" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_nbnote)) { ?>value="<?php echo $titre_entete_nbnote; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;Titre de la colonne rang : <input name="titre_entete_rang" size="20" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_entete_rang)) { ?>value="<?php echo $titre_entete_rang; ?>" <?php } ?> /><br />
@@ -1421,7 +1473,8 @@ function DecocheCheckbox() {
 			Titre du bloc avis conseil de classe : <input name="titre_bloc_avis_conseil" size="19" style="border: 1px solid #74748F;" type="text" <?php if(!empty($titre_bloc_avis_conseil)) { ?>value="<?php echo $titre_bloc_avis_conseil; ?>" <?php } ?> /><br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_titre_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_titre_bloc_avis_conseil)) { ?>value="<?php echo $taille_titre_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
 			Taille du texte du professeur principal"&nbsp;<input name="taille_profprincipal_bloc_avis_conseil" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_profprincipal_bloc_avis_conseil)) { ?>value="<?php echo $taille_profprincipal_bloc_avis_conseil; ?>" <?php } ?> />pixel<br />
-			<input name="cadre_avis_cons" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_avis_cons) and $cadre_avis_cons==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br />
+
+			<input name="cadre_avis_cons" id="cadre_avis_cons" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_avis_cons) and $cadre_avis_cons==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_avis_cons'>&nbsp;Ajouter un encadrement</label><br />
 
 			<?php
 				$gepi_denom_mention=getSettingValue("gepi_denom_mention");
@@ -1458,7 +1511,8 @@ function DecocheCheckbox() {
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_identitee_chef" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_identitee_chef)) { ?>value="<?php echo $taille_texte_identitee_chef; ?>" <?php } ?> />pixel<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input name="affiche_fonction_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($affiche_fonction_chef) and $affiche_fonction_chef==='1') { ?>checked="checked"<?php } ?> />&nbsp;Afficher sa fonction<br />
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Taille du texte&nbsp;<input name="taille_texte_fonction_chef" size="2" style="border: 1px solid #74748F;" type="text" <?php if(!empty($taille_texte_fonction_chef)) { ?>value="<?php echo $taille_texte_fonction_chef; ?>" <?php } ?> />pixel<br />
-			<input name="cadre_sign_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_sign_chef) and $cadre_sign_chef==='1') { ?>checked="checked"<?php } ?> />&nbsp;Ajouter un encadrement<br /><br />
+
+			<input name="cadre_sign_chef" id="cadre_sign_chef" style="border: 1px solid #74748F;" type="checkbox" value="1" <?php if(!empty($cadre_sign_chef) and $cadre_sign_chef==='1') { ?>checked="checked"<?php } ?> /><label for='cadre_sign_chef'>&nbsp;Ajouter un encadrement</label><br /><br />
 			</td>
 		</tr>
 		<tr>
