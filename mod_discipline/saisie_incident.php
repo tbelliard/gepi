@@ -1844,7 +1844,7 @@ elseif($step==2) {
 		}
 	}
 
-	echo "<blockquote>\n";
+	echo "<blockquote style='margin-right: 0.5em;'>\n";
 
 	$alt=1;
 	echo "<table class='boireaus' border='1' summary='Details incident'>\n";
@@ -2134,6 +2134,29 @@ new Ajax.Autocompleter (
 	echo "<td style='text-align:left;'";
 	if($etat_incident!='clos') {if ($autorise_commentaires_mod_disc !="yes") echo " colspan='2'";}
 	echo ">\n";
+
+	if(count($ele_login)>0) {
+		$chaine_avertissement="";
+		for($i=0;$i<count($ele_login);$i++) {
+			if(acces_ele_disc($ele_login[$i])) {
+				if($chaine_avertissement=='') {$chaine_avertissement.="Détails visibles de ";}
+				else {$chaine_avertissement.=", ";}
+				$chaine_avertissement.=get_nom_prenom_eleve($ele_login[$i]);
+			}
+			$tab_resp=get_resp_from_ele_login($ele_login[$i]);
+			for($j=0;$j<count($tab_resp);$j++) {
+				if(acces_resp_disc($tab_resp[$j]['login'])) {
+					if($chaine_avertissement=='') {$chaine_avertissement.="Détails visibles de ";}
+					else {$chaine_avertissement.=", ";}
+					$chaine_avertissement.=$tab_resp[$j]['designation'];
+				}
+			}
+		}
+		if($chaine_avertissement!="") {
+			$chaine_avertissement="<div style='float:right; color:red; width:15em; border: 1px solid red; margin: 1px;'>$chaine_avertissement</div>\n";
+			echo $chaine_avertissement;
+		}
+	}
 
 	if($etat_incident!='clos') {
 		echo "<textarea id=\"description\" class='wrap' name=\"no_anti_inject_description\" rows='8' cols='60' onchange=\"changement()\">$description</textarea>\n";

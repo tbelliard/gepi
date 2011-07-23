@@ -7298,4 +7298,49 @@ function affiche_actions_compte($login) {
 
 	return $retour;
 }
+
+function acces_resp_disc($login_resp) {
+	if((check_compte_actif($login_resp)!=0)&&(getSettingValue('visuRespDisc')=='yes')) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function acces_ele_disc($login_ele) {
+	if((check_compte_actif($login_ele)!=0)&&(getSettingValue('visuEleDisc')=='yes')) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+function get_resp_from_ele_login($ele_login) {
+	$tab="";
+
+	$sql="SELECT rp.* FROM resp_pers rp, responsables2 r, eleves e WHERE e.login='$ele_login' AND rp.pers_id=r.pers_id AND r.ele_id=e.ele_id AND (r.resp_legal='1' OR r.resp_legal='2');";
+	//echo "$sql<br />";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$cpt=0;
+		while($lig=mysql_fetch_object($res)) {
+			$tab[$cpt]=array();
+
+			$tab[$cpt]['login']=$lig->login;
+			$tab[$cpt]['nom']=$lig->nom;
+			$tab[$cpt]['prenom']=$lig->prenom;
+			$tab[$cpt]['civilite']=$lig->civilite;
+
+			$tab[$cpt]['designation']=$lig->civilite." ".$lig->nom." ".$lig->prenom;
+
+			$cpt++;
+		}
+	}
+
+	//print_r($tab);
+
+	return $tab;
+}
 ?>
