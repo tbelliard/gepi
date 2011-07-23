@@ -85,9 +85,9 @@
     ?>
 	  <a class="onglet_0 onglet" id='onglet_<?php echo $StatutItem ;?>' href="#<?php echo $StatutItem ;?>" title="section <?php echo $StatutItem ;?>" onclick="javascript:change_onglet('<?php echo $StatutItem; ?>');return false;">
 	<?php
-		if (my_strtolower($StatutItem) =='responsable') echo $gepiSettings['denomination_responsable'];
-		elseif (my_strtolower($StatutItem) =='eleve') echo $gepiSettings['denomination_eleve'];
-		elseif (my_strtolower($StatutItem) =='professeur_principal') echo getSettingValue("gepi_prof_suivi");
+		if (my_strtolower($StatutItem) =='responsable') echo ucfirst($gepiSettings['denomination_responsable']);
+		elseif (my_strtolower($StatutItem) =='eleve') echo ucfirst($gepiSettings['denomination_eleve']);
+		elseif (my_strtolower($StatutItem) =='professeur_principal') echo ucfirst(getSettingValue("gepi_prof_suivi"));
 		elseif (my_strtolower($StatutItem) =='scolarite') echo "Scolarité";
 		else echo $StatutItem ;
 	 ?>
