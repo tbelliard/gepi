@@ -12,6 +12,9 @@ $Id$
 	-moz-border-radius-topleft: 6px;
 	-moz-border-radius-topright: 20px;
 
+	-moz-border-radius-bottomleft: 0px;
+	-moz-border-radius-bottomright: 0px;
+
 	padding: 0.2em 0.2em 0 0.2em;
 	z-index:100;
 }
