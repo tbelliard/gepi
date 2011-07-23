@@ -29,6 +29,9 @@ Discipline:
 - Possibilité de restreindre les natures d'incident à la seule liste des catégories
 - Accès parents/élèves aux incidents et sanctions (selon le paramétrage en Droits d'accès)
 
+Modèles OpenOffice:
+- Ajout d'un dispositif de publipostage d'après des modèles OpenOffice/LibreOffice.
+
 - A compléter au fur et à mesure;)...
 
 Gepi-1.5.4 (17/04/2011)
