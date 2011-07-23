@@ -1199,8 +1199,12 @@ if(isset($id_incident)) {
 		echo "<th>Rôle dans l'incident</th>\n";
 
 		//Eric modèle Ooo
+		/*
 		if(($gepiSettings['active_mod_ooo'] == 'y')&&
 		((($_SESSION['statut']=='professeur')&&($gepiSettings['imprDiscProfRetenueOOo']=='yes'))||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
+		*/
+		if(($gepiSettings['active_mod_ooo'] == 'y')&&
+		((($_SESSION['statut']=='professeur')&&(getSettingValue('imprDiscProfRetenueOOo')=='yes'))||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
 			echo "<th>Retenue</th>\n";
 		}
 
@@ -1329,8 +1333,12 @@ if(isset($id_incident)) {
 				echo "</td>\n";
 			}
 			//Eric  modèle Ooo
+			/*
 			if(($gepiSettings['active_mod_ooo'] == 'y')&&
 			((($_SESSION['statut']=='professeur')&&($gepiSettings['imprDiscProfRetenueOOo']=='yes'))||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
+			*/
+			if(($gepiSettings['active_mod_ooo'] == 'y')&&
+			((($_SESSION['statut']=='professeur')&&(getSettingValue('imprDiscProfRetenueOOo')=='yes'))||($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($_SESSION['statut']=='cpe'))) {
 			    echo "<td id='td_retenue_$cpt'>";
 				if ($lig->qualite=='Responsable') { //un retenue seulement pour un responsable !
 		            echo "<a href='../mod_ooo/retenue.php?mode=module_discipline&amp;id_incident=$id_incident&amp;ele_login=$lig->login".add_token_in_url()."' title='Imprimer la retenue'><img src='../images/icons/print.png' width='16' height='16' alt='Imprimer Retenue' /></a>\n";
@@ -1976,12 +1984,32 @@ elseif($step==2) {
 	//$nature="";
 
 	if($etat_incident!='clos') {
-		echo "<input type='text' name='nature' id='nature' size='30' value=\"".$nature."\" ";
-		//echo "onkeyup='check_incident()' ";
-		echo "/>\n";
-		echo "<div id='div_completion_nature' class='infobulle_corps'></div>\n";
+		$saisie_nature_libre="y";
+		if(getSettingValue('DisciplineNaturesRestreintes')=='y') {
+			// On limite les natures d'incident au contenu de s_categories
+			$sql="SELECT DISTINCT categorie FROM s_categories ORDER BY categorie;";
+			$res_cat=mysql_query($sql);
+			if(mysql_num_rows($res_cat)>0) {
+				$saisie_nature_libre="n";
 
-		echo "<script type='text/javascript'>
+				echo "<select name='nature' id='nature'>\n";
+				while($lig_cat=mysql_fetch_object($res_cat)) {
+					echo "<option value=\"$lig_cat->categorie\"";
+					if($lig_cat->categorie==$nature) {echo " selected='selected'";}
+					echo ">$lig_cat->categorie</option>\n";
+				}
+				echo "</select>\n";
+
+			}
+		}
+
+		if($saisie_nature_libre=="y") {
+			echo "<input type='text' name='nature' id='nature' size='30' value=\"".$nature."\" ";
+			//echo "onkeyup='check_incident()' ";
+			echo "/>\n";
+			echo "<div id='div_completion_nature' class='infobulle_corps'></div>\n";
+	
+			echo "<script type='text/javascript'>
 new Ajax.Autocompleter (
 	'nature',      // ID of the source field
 	'div_completion_nature',  // ID of the DOM element to update
@@ -1989,69 +2017,69 @@ new Ajax.Autocompleter (
 	{method: 'post', paramName: 'nature'}
 );
 </script>\n";
-
-		$sql="SELECT DISTINCT nature FROM s_incidents WHERE nature!='' ORDER BY nature;";
-		$res_nat=mysql_query($sql);
-		if(mysql_num_rows($res_nat)>0) {
-			echo " <a href='#' onclick=\"cacher_toutes_les_infobulles();afficher_div('div_choix_nature','y',10,-40); return false;\">Choix</a>";
-			//echo " <a href='#' onclick=\"afficher_div('div_choix_nature','y',10,-40); return false;\" onmouseover=\"delais_afficher_div('div_explication_choix_nature','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\">Choix</a>";
-
-			$texte="<table class='boireaus' style='margin: auto;' border='1' summary=\"Choix d'une nature\">\n";
-			$alt2=1;
-			while($lig_nat=mysql_fetch_object($res_nat)) {
-				$alt2=$alt2*(-1);
-				$texte.="<tr class='lig$alt2' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
-				$texte.="<td ><a href='#' onclick=\"document.getElementById('nature').value='$lig_nat->nature';cacher_div('div_choix_nature');return false;\">".$lig_nat->nature."</a></td>\n";
-				$texte.="</tr>\n";
-			}
-			$texte.="</table>\n";
-
-			$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature',"Nature de l'incident","",$texte,"",14,0,'y','y','n','n');
-
-			echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_choix_nature','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
-
-			$texte="Cliquez pour choisir une nature existante.<br />Ou si aucune nature n'est déjà définie, saisissez la nature d'incident de votre choix.";
-			$tabdiv_infobulle[]=creer_div_infobulle('div_explication_choix_nature',"Choix nature de l'incident","",$texte,"",18,0,'y','y','n','n');
-
-			//====================================================
-
-			/*
-			$titre="Nature de l'incident";
-			$texte="Blabla";
-			$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature2',"Nature de l'incident","",$texte,"",30,10,'y','y','y','n');
-			*/
-
-			$id_infobulle_nature2='div_choix_nature2';
-			$largeur_infobulle_nature2=35;
-			$hauteur_infobulle_nature2=10;
-		
-			// Conteneur:
-			echo "<div id='$id_infobulle_nature2' class='infobulle_corps' style='color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; width: ".$largeur_infobulle_nature2."em; height: ".$hauteur_infobulle_nature2."em; left: 1600px;'>\n";
-		
-				// Ligne d'entête/titre
-				echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: ".$largeur_infobulle_nature2."em;' onmousedown=\"dragStart(event, '$id_infobulle_nature2')\">\n";
-
-					echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>
+	
+			$sql="SELECT DISTINCT nature FROM s_incidents WHERE nature!='' ORDER BY nature;";
+			$res_nat=mysql_query($sql);
+			if(mysql_num_rows($res_nat)>0) {
+				echo " <a href='#' onclick=\"cacher_toutes_les_infobulles();afficher_div('div_choix_nature','y',10,-40); return false;\">Choix</a>";
+				//echo " <a href='#' onclick=\"afficher_div('div_choix_nature','y',10,-40); return false;\" onmouseover=\"delais_afficher_div('div_explication_choix_nature','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\">Choix</a>";
+	
+				$texte="<table class='boireaus' style='margin: auto;' border='1' summary=\"Choix d'une nature\">\n";
+				$alt2=1;
+				while($lig_nat=mysql_fetch_object($res_nat)) {
+					$alt2=$alt2*(-1);
+					$texte.="<tr class='lig$alt2' onmouseover=\"this.style.backgroundColor='white';\" onmouseout=\"this.style.backgroundColor='';\">\n";
+					$texte.="<td ><a href='#' onclick=\"document.getElementById('nature').value='$lig_nat->nature';cacher_div('div_choix_nature');return false;\">".$lig_nat->nature."</a></td>\n";
+					$texte.="</tr>\n";
+				}
+				$texte.="</table>\n";
+	
+				$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature',"Nature de l'incident","",$texte,"",14,0,'y','y','n','n');
+	
+				echo " <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_explication_choix_nature','y',10,-40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_explication_choix_nature')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
+	
+				$texte="Cliquez pour choisir une nature existante.<br />Ou si aucune nature n'est déjà définie, saisissez la nature d'incident de votre choix.";
+				$tabdiv_infobulle[]=creer_div_infobulle('div_explication_choix_nature',"Choix nature de l'incident","",$texte,"",18,0,'y','y','n','n');
+	
+				//====================================================
+	
+				/*
+				$titre="Nature de l'incident";
+				$texte="Blabla";
+				$tabdiv_infobulle[]=creer_div_infobulle('div_choix_nature2',"Nature de l'incident","",$texte,"",30,10,'y','y','y','n');
+				*/
+	
+				$id_infobulle_nature2='div_choix_nature2';
+				$largeur_infobulle_nature2=35;
+				$hauteur_infobulle_nature2=10;
+			
+				// Conteneur:
+				echo "<div id='$id_infobulle_nature2' class='infobulle_corps' style='color: #000000; border: 1px solid #000000; padding: 0px; position: absolute; width: ".$largeur_infobulle_nature2."em; height: ".$hauteur_infobulle_nature2."em; left: 1600px;'>\n";
+			
+					// Ligne d'entête/titre
+					echo "<div class='infobulle_entete' style='color: #ffffff; cursor: move; font-weight: bold; padding: 0px; width: ".$largeur_infobulle_nature2."em;' onmousedown=\"dragStart(event, '$id_infobulle_nature2')\">\n";
+	
+						echo "<div style='color: #ffffff; cursor: move; font-weight: bold; float:right; width: 16px; margin-right: 1px;'>
 <a href='#' onClick=\"cacher_div('$id_infobulle_nature2');return false;\">
 <img src='../images/icons/close16.png' width='16' height='16' alt='Fermer' />
 </a>
 </div>\n";
-					echo "<span style='padding-left: 1px; margin-bottom: 3px;'>Natures d'incidents semblables</span>\n";
+						echo "<span style='padding-left: 1px; margin-bottom: 3px;'>Natures d'incidents semblables</span>\n";
+					echo "</div>\n";
+			
+					// Partie texte:
+					$hauteur_hors_titre=$hauteur_infobulle_nature2-1.5;
+					echo "<div id='".$id_infobulle_nature2."_texte' style='width: ".$largeur_infobulle_nature2."em; height: ".$hauteur_hors_titre."em; overflow: auto; padding-left: 1px;'>\n";
+					//$div.=$texte;
+					echo "</div>\n";
 				echo "</div>\n";
-		
-				// Partie texte:
-				$hauteur_hors_titre=$hauteur_infobulle_nature2-1.5;
-				echo "<div id='".$id_infobulle_nature2."_texte' style='width: ".$largeur_infobulle_nature2."em; height: ".$hauteur_hors_titre."em; overflow: auto; padding-left: 1px;'>\n";
-				//$div.=$texte;
-				echo "</div>\n";
-			echo "</div>\n";
-			//=========================================
-
-			/*
-			echo " Bis: <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_choix_nature2','y',10,40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_choix_nature2')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
-			*/
-
-echo "<script type='text/javascript'>
+				//=========================================
+	
+				/*
+				echo " Bis: <a href='#' onclick=\"return false;\" onmouseover=\"delais_afficher_div('div_choix_nature2','y',10,40,$delais_affichage_infobulle,$largeur_survol_infobulle,$hauteur_survol_infobulle);\" onmouseout=\"cacher_div('div_choix_nature2')\"><img src='../images/icons/ico_question_petit.png' width='15' height='15' alt='Choix nature' /></a>";
+				*/
+	
+				echo "<script type='text/javascript'>
 	function check_incident(event) {
 
 		saisie=document.getElementById('nature').value;
@@ -2083,8 +2111,8 @@ echo "<script type='text/javascript'>
 	}
 
 </script>\n";
-			//====================================================
-
+				//====================================================
+			}
 		}
 	}
 	else {
@@ -2362,8 +2390,15 @@ echo "<script type='text/javascript'>
 
 		echo "<script type='text/javascript'>
 	function verif_details_incident() {
-		if(document.getElementById('nature').value=='') {
-			alert(\"La nature de l'incident doit être précisé.\");
+";
+		if($saisie_nature_libre=="y") {
+			echo "if(document.getElementById('nature').value=='') {";
+		}
+		else {
+			echo "if(document.getElementById('nature').options[document.getElementById('nature').selectedIndex].value=='') {";
+		}
+		echo "
+			alert(\"La nature de l'incident doit être précisée.\");
 			return false;
 		}
 		else {

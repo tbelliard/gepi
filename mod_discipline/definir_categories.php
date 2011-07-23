@@ -119,6 +119,29 @@ if ((isset($categorie)) && ($categorie != '')) {
     }
 }
 
+if(isset($_POST['is_posted'])) {
+	check_token();
+
+	if(isset($_POST['DisciplineNaturesRestreintes'])) {
+		$DisciplineNaturesRestreintes="y";
+	}
+	else {
+		$DisciplineNaturesRestreintes="n";
+	}
+	$reg_DisciplineNaturesRestreintes=saveSetting("DisciplineNaturesRestreintes", $DisciplineNaturesRestreintes);
+	if(!$reg_DisciplineNaturesRestreintes) {
+		$msg.="Erreur lors de l'enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes'<br />\n";
+	}
+	else {
+		$msg.="Enregistrement de 'DisciplineNaturesRestreintes' avec la valeur '$DisciplineNaturesRestreintes' effectué.<br />\n";
+	}
+}
+
+$DisciplineNaturesRestreintes=getSettingValue('DisciplineNaturesRestreintes');
+if(($DisciplineNaturesRestreintes!='y')&&($DisciplineNaturesRestreintes!='n')) {
+	$DisciplineNaturesRestreintes="n";
+}
+
 $themessage = 'Des informations ont été modifiées. Voulez-vous vraiment quitter sans enregistrer ?';
 //**************** EN-TETE *****************
 //$titre_page = "Sanctions: Définition des qualités";
@@ -185,6 +208,13 @@ echo "<p>Nouvelle catégorie&nbsp;: <input type='text' name='categorie' value='' 
 echo "<p>Sigle&nbsp;: <input type='text' name='sigle' value='' onchange='changement();' /></p>\n";
 echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 
+echo "<p><input type='checkbox' name='DisciplineNaturesRestreintes' id='DisciplineNaturesRestreintes' value='y' ";
+if($DisciplineNaturesRestreintes=="y") {
+	echo "checked ";
+}
+echo "/><label for='DisciplineNaturesRestreintes'> Restreindre la natures d'incidents pouvant être sélectionnées aux seules catégories ci-dessus.</label></p>\n";
+
+echo "<input type='hidden' name='is_posted' value='y' />\n";
 echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
 echo "</form>\n";
 
