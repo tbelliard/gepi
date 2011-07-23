@@ -212,13 +212,15 @@ echo "<p><input type='checkbox' name='DisciplineNaturesRestreintes' id='Discipli
 if($DisciplineNaturesRestreintes=="y") {
 	echo "checked ";
 }
-echo "/><label for='DisciplineNaturesRestreintes'> Restreindre la natures d'incidents pouvant être sélectionnées aux seules catégories ci-dessus.</label></p>\n";
+echo "/><label for='DisciplineNaturesRestreintes'> Restreindre les natures d'incidents pouvant être sélectionnées aux seules catégories ci-dessus.</label></p>\n";
 
 echo "<input type='hidden' name='is_posted' value='y' />\n";
 echo "<p><input type='submit' name='valider' value='Valider' /></p>\n";
 echo "</form>\n";
 
 echo "<p><br /></p>\n";
+
+echo "<p><i>NOTE&nbsp;:</i> Restreindre les natures d'incidents pouvant être sélectionnées aux seules catégories ci-dessus permet d'éviter une trop grande dispersion des natures (<i>on peut sinon avoir 'Insolence', 'Comportement insolent', 'insolent',...</i>).</p>\n";
 
 require("../lib/footer.inc.php");
 ?>
