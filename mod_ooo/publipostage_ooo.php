@@ -431,23 +431,28 @@ if(!isset($num_fich)) {
 		echo "</form>\n";
 
 		echo "<p><i>NOTES&nbsp;:</i></p>\n";
-		echo "<blockquote>\n";
-		echo "<p style='margin-left:3em;'>Le fichier fourni peut utiliser les champs suivants&nbsp;:</p>\n";
-		echo "<ul style='margin-left:3em;'>\n";
-		echo "<li>[eleves.nom]</li>\n";
-		echo "<li>[eleves.prenom]</li>\n";
-		echo "<li>[eleves.sexe]</li>\n";
-		echo "<li>[eleves.date_nais]</li>\n";
-		if(getSettingValue('ele_lieu_naissance')=="y") {
-			echo "<li>[eleves.lieu_nais]</li>\n";
-		}
-		echo "<li>[eleves.classe]</li>\n";
-		echo "<li>[eleves.ine]</li>\n";
-		echo "<li>[eleves.elenoet]</li>\n";
-		echo "<li>[eleves.ele_id]</li>\n";
-		echo "<li>[eleves.login]</li>\n";
+		echo "<ul>\n";
+			echo "<li>\n";
+				echo "<p style='margin-left:3em;'>Le fichier fourni peut utiliser les champs suivants&nbsp;:</p>\n";
+				echo "<ul style='margin-left:3em;'>\n";
+				echo "<li>[eleves.nom]</li>\n";
+				echo "<li>[eleves.prenom]</li>\n";
+				echo "<li>[eleves.sexe]</li>\n";
+				echo "<li>[eleves.date_nais]</li>\n";
+				if(getSettingValue('ele_lieu_naissance')=="y") {
+					echo "<li>[eleves.lieu_nais]</li>\n";
+				}
+				echo "<li>[eleves.classe]</li>\n";
+				echo "<li>[eleves.ine]</li>\n";
+				echo "<li>[eleves.elenoet]</li>\n";
+				echo "<li>[eleves.ele_id]</li>\n";
+				echo "<li>[eleves.login]</li>\n";
+				echo "</ul>\n";
+			echo "</li>\n";
+			echo "<li>\n";
+				echo "<p>Des exemples de modèles sont disponibles&nbsp;: <a href='http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo'>http://www.sylogix.org/projects/gepi/wiki/Publipostage_ooo</a></p>\n";
+			echo "</li>\n";
 		echo "</ul>\n";
-		echo "</blockquote>\n";
 
 		if($_SESSION['statut']=='administrateur') {
 			echo "<p style='color:red'>A FAIRE : Permettre à l'administrateur de faire le ménage dans les fichiers modèles des autres utilisateurs.<br />Permettre de limiter les champs auxquels ont accès les utilisateurs selon leur statut.</p>\n";
