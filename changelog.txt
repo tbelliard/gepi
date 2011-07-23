@@ -7,16 +7,28 @@
 
 Gepi-trunk (20/04/2011)
 ===========================
+Bulletins:
 - Possibilité de ne pas faire apparaître un enseignement sur les bulletins sans passer par les catégories de matières.
-- Possibilité de mettre en place un accès inspecteur dynamique (pour pouvoir accéder à des notices jusqu'à une date dans le futur). L'accès précédent était un export ne pouvant faire apparaître que ce qui était d'ores et déjà saisi.
-- Possibilité d'exporter/importer son modèle de couleurs de l'interface Gepi.
-- Ajout d'un filtrage sur la page bilan indviduel du module abs2 et ajout d'un texte optionnel sur l'export odt de cette page
 - Possibilité de définir des "mentions" (Félicitations, Encouragements, Avertissement,...) à saisir avec l'avis du conseil de classe.
-- Ajout de paramètres dans les bulletins PDF (mentions, largeur du cadre absences,...)
+- Ajout de paramètres dans les bulletins PDF (mentions, largeur du cadre absences, site web établissement, présentation des noms de professeurs en ligne ou colonne,...)
   Déplacement vers les paramètres de bulletins PDF des choix 'moyennes_periodes_precedentes' et 'id_tr_evolution_moyenne_periode_precedente'.
 - Correctif: On n'affiche plus de colonnes Min/Classe/Max dans les bulletins PDF si le choix est fait de les afficher dans la même cellule que la moyenne de l'élève (sous la moyenne de l'élève).
+
+Cahiers de textes:
+- Possibilité de mettre en place un accès inspecteur dynamique (pour pouvoir accéder à des notices jusqu'à une date dans le futur). L'accès précédent était un export ne pouvant faire apparaître que ce qui était d'ores et déjà saisi.
+
+Interface:
+- Possibilité d'exporter/importer son modèle de couleurs de l'interface Gepi.
 - Ajout de sous-menus à la barre de menu horizontale pour les professeurs.
 - Ajout d'une barre de menu pour l'administrateur.
+
+Absences:
+- Ajout d'un filtrage sur la page bilan indviduel du module abs2 et ajout d'un texte optionnel sur l'export odt de cette page
+
+Discipline:
+- Possibilité de restreindre les natures d'incident à la seule liste des catégories
+- Accès parents/élèves aux incidents et sanctions (selon le paramétrage en Droits d'accès)
+
 - A compléter au fur et à mesure;)...
 
 Gepi-1.5.4 (17/04/2011)

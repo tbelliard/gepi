@@ -196,6 +196,12 @@ class class_page_accueil {
 	if ($this->absencesFamille())
 	$this->chargeAutreNom('bloc_absences_famille');
 
+	if (getSettingAOui("active_mod_discipline")) {
+		// Discipline
+		$this->verif_exist_ordre_menu('bloc_module_discipline_famille');
+		if ($this->modDiscFamille())
+		$this->chargeAutreNom('bloc_module_discipline_famille');
+	}
 /***** Outils complémentaires de gestion des AID *****/
 	$this->verif_exist_ordre_menu('bloc_outil_comp_gestion_aid');
 	if ($this->gestionAID())
@@ -816,6 +822,31 @@ class class_page_accueil {
 				  "Permet de consulter vos relevés de notes détaillés.");
 		}
 	}
+	if ($this->b>0){
+	  $this->creeNouveauTitre('accueil',"Carnet de notes",'images/icons/releve.png');
+	  return true;
+	}
+  }
+
+
+  private function modDiscFamille(){
+	$this->b=0;
+
+	if(($_SESSION['statut']=='eleve')) {
+		if(getSettingValue('visuEleDisc')=='yes') {
+			$this->creeNouveauItem("/mod_discipline/visu_disc.php",
+					"Discipline",
+					"Incidents vous concernant.");
+		}
+	}
+	elseif(($_SESSION['statut']=='responsable')) {
+		if(getSettingValue('visuRespDisc')=='yes') {
+			$this->creeNouveauItem("/mod_discipline/visu_disc.php",
+					"Discipline",
+					"Incidents concernant les élèves/enfants dont vous êtes responsable.");
+		}
+	}
+
 	if ($this->b>0){
 	  $this->creeNouveauTitre('accueil',"Carnet de notes",'images/icons/releve.png');
 	  return true;
@@ -1461,17 +1492,35 @@ class class_page_accueil {
 	}
   }
 
-  protected function discipline(){
-	  $this->b=0;
+  protected function discipline() {
+		$this->b=0;
 
-	  $this->creeNouveauItem("/mod_discipline/index.php",
-			  "Discipline",
-			  "Signaler des incidents, prendre des mesures, des sanctions.");
+		/*
+		if(($_SESSION['statut']=='eleve')) {
+			if(getSettingValue('visuEleDisc')=='y') {
+				$this->creeNouveauItem("/mod_discipline/visu_disc.php",
+						"Discipline",
+						"Incidents vous concernant.");
+			}
+		}
+		elseif(($_SESSION['statut']=='responsable')) {
+			if(getSettingValue('visuRespDisc')=='y') {
+				$this->creeNouveauItem("/mod_discipline/visu_disc.php",
+						"Discipline",
+						"Incidents concernant les élèves/enfants dont vous êtes responsable.");
+			}
+		}
+		else {
+		*/
+			$this->creeNouveauItem("/mod_discipline/index.php",
+					"Discipline",
+					"Signaler des incidents, prendre des mesures, des sanctions.");
+		//}
 
-	  if ($this->b>0){
-		$this->creeNouveauTitre('accueil',"Discipline",'images/icons/document.png');
-		return true;
-	  }
+		if ($this->b>0){
+			$this->creeNouveauTitre('accueil',"Discipline",'images/icons/document.png');
+			return true;
+		}
 
   }
 

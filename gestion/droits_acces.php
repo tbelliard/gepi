@@ -1986,6 +1986,16 @@ $texteItem="a accès au trombinoscope des ".$gepiSettings['denomination_professeu
 				voir aussi le module de gestion du trombinoscope pour une gestion plus fine des droits d'accès)</em>";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+
+
+$titreItem='visuEleDisc';
+$texteItem="a accès dans le module Discipline aux incidents le concernant.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
 /*
 
 			</table>
@@ -2183,6 +2193,15 @@ $titreItem='AAResponsable';
 $texteItem="a accès aux données d'années antérieures des ".$gepiSettings['denomination_eleves']." dont il est responsable";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+
+
+$titreItem='visuRespDisc';
+$texteItem="a accès dans le module Discipline aux incidents concernant les enfants dont il est responsable.";
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
 /*
 
 			</table>
