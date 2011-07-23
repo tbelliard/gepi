@@ -3,7 +3,7 @@
 /*
 * $Id$
 *
-* Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+* Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
 *
 * This file is part of GEPI.
 *
@@ -637,7 +637,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 		
 	$ajout_titre= "";
 	if ($temoin) $ajout_titre= "(<em>avec protagonistes</em>)";
-		  $nouveauItem->titre="Traiter les suites d'un incident".$ajout_titre;
+		  $nouveauItem->titre="Traiter les suites d'un incident ".$ajout_titre;
 		  $nouveauItem->expli="Traiter les suites d'un incident : définir une punition ou une sanction" ;
 		  $nouveauItem->indexMenu=$a;
 		  $menuPage[]=$nouveauItem;
