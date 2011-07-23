@@ -62,6 +62,20 @@ function last_connection() {
 }
 
 
+$sessionMaxLength=24;
+$session_gc_maxlifetime=ini_get("session.gc_maxlifetime");
+$sessionMaxLength=getSettingValue("sessionMaxLength");
+if(($sessionMaxLength!="")&&(preg_match("/^[0-9]*$/",$sessionMaxLength))) {
+	$sessionMaxLength=$sessionMaxLength*60;
+	if(($session_gc_maxlifetime!="")&&(preg_match("/^[0-9]*$/",$session_gc_maxlifetime))&&($session_gc_maxlifetime<$sessionMaxLength)) {
+		$sessionMaxLength=$session_gc_maxlifetime;
+	}
+}
+elseif(($session_gc_maxlifetime!="")&&(preg_match("/^[0-9]*$/",$session_gc_maxlifetime))) {
+	$sessionMaxLength=$session_gc_maxlifetime;
+}
+
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
@@ -71,7 +85,7 @@ function last_connection() {
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Cache-Control" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
-<!-- <meta http-equiv="refresh" content="<?php echo getSettingValue("sessionMaxLength")*60; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;session_id=<?php echo session_id();?>" /> -->
+<!-- <meta http-equiv="refresh" content="<?php echo $sessionMaxLength; ?>; URL=<?php echo($gepiPath); ?>/logout.php?auto=3&amp;debut_session=<?php echo urlencode($_SESSION['start']);?>&amp;session_id=<?php echo session_id();?>" /> -->
 <!-- correction Regis : déclaration par défaut pour les scripts et les mises en page-->
 <meta http-equiv="Content-Script-Type" content="text/javascript" />
 <meta http-equiv="Content-Style-Type" content="text/css" />
@@ -296,7 +310,7 @@ function show_message_deconnexion() {
   var digital=new Date()
   var seconds=(digital-debut_alert)/1000
   //if (1==1) {
-  if (seconds>=<?php echo getSettingValue("sessionMaxLength")*60; ?>) {
+  if (seconds>=<?php echo $sessionMaxLength; ?>) {
 	if (!warn_msg2_already_displayed) {
 		var message = "vous avez été probablement déconnecté du serveur, votre travail ne pourra pas être enregistré dans gepi depuis cette page, merci de le sauvegarder dans un bloc note.";
 		display_alert(message); 
@@ -305,10 +319,10 @@ function show_message_deconnexion() {
   
   }
 	//if (1==1) {
-  else if (seconds><?php echo getSettingValue("sessionMaxLength")*60; ?> - seconds_before_alert) {
+  else if (seconds><?php echo $sessionMaxLength; ?> - seconds_before_alert) {
   
   	if (!warn_msg1_already_displayed) {
-		var seconds_reste = Math.floor(<?php echo (getSettingValue("sessionMaxLength"))*60; ?> - seconds);
+		var seconds_reste = Math.floor(<?php echo $sessionMaxLength; ?> - seconds);
 		now=new Date()
 		var hrs=now.getHours();
 		var mins=now.getMinutes();
@@ -453,6 +467,7 @@ if (isset($use_observeur) AND $use_observeur == 'ok') {
 <body onload="show_message_deconnexion();<?php echo $charger_observeur; ?>" <?php if (isset($dojo)) {echo 'class=" claro " style="font:11pt Verdana,sans-serif;"';}?> >
 
 <?php
+//echo "\$sessionMaxLength=$sessionMaxLength<br />";
 if (getSettingValue("impose_petit_entete_prof") == 'y' AND $_SESSION['statut'] == 'professeur') {
 	$_SESSION['cacher_header']="y";
 }

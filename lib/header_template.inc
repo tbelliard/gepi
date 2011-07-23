@@ -131,7 +131,21 @@ function last_connection() {
     
 }
 
-$tbs_temps_max = getSettingValue("sessionMaxLength")*60;
+//$tbs_temps_max = getSettingValue("sessionMaxLength")*60;
+$sessionMaxLength=24;
+$session_gc_maxlifetime=ini_get("session.gc_maxlifetime");
+$sessionMaxLength=getSettingValue("sessionMaxLength");
+if(($sessionMaxLength!="")&&(preg_match("/^[0-9]*$/",$sessionMaxLength))) {
+	$sessionMaxLength=$sessionMaxLength*60;
+	if(($session_gc_maxlifetime!="")&&(preg_match("/^[0-9]*$/",$session_gc_maxlifetime))&&($session_gc_maxlifetime<$sessionMaxLength)) {
+		$sessionMaxLength=$session_gc_maxlifetime;
+	}
+}
+elseif(($session_gc_maxlifetime!="")&&(preg_match("/^[0-9]*$/",$session_gc_maxlifetime))) {
+	$sessionMaxLength=$session_gc_maxlifetime;
+}
+$tbs_temps_max=$sessionMaxLength;
+
 $tbs_gepiPath = $gepiPath;
 
 //$tbs_refresh[]=array("tempsmax"=> $tbs_temps_max , "lien"=>$gepiPath , "debut"=>urlencode($_SESSION['start']) , "id_session"=>session_id());
