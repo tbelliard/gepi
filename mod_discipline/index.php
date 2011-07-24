@@ -429,7 +429,7 @@ if($_SESSION['statut']=='administrateur') {
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Définition des natures d'incidents" ;
-		$nouveauItem->expli="Définir les natures d'incidents (liste indicative ou liste imposée)." ;
+		$nouveauItem->expli="Définir les natures d'incidents (<em>liste indicative ou liste imposée</em>)." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -441,7 +441,7 @@ if($_SESSION['statut']=='administrateur') {
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Définition des catégories d'incidents" ;
-		$nouveauItem->expli="Définir les catégories d'incidents (à des fins de statistiques)." ;
+		$nouveauItem->expli="Définir les catégories d'incidents (<em>à des fins de statistiques</em>)." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -511,7 +511,7 @@ echo "</tr>\n";
 echo "<tr>\n";
 echo "<td width='30%'><a href='../mod_discipline/saisie_incident.php'>Signaler/saisir un incident</a>";
 echo "</td>\n";
-echo "<td>Signaler et décrire (nature, date, horaire, lieu, ...) un incident.<br/>Indiquer les mesures prises ou demandées</td>\n";
+echo "<td>Signaler et décrire (nature, date, horaire, lieu, ...) un incident.<br />Indiquer les mesures prises ou demandées</td>\n";
 echo "</tr>\n";
 */
 	$nouveauItem = new itemGeneral();
@@ -519,7 +519,7 @@ echo "</tr>\n";
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Signaler/saisir un incident" ;
-		$nouveauItem->expli="Signaler et décrire (nature, date, horaire, lieu, ...) un incident.<br/>Indiquer les mesures prises ou demandées" ;
+		$nouveauItem->expli="Signaler et décrire (<em>nature, date, horaire, lieu,...</em>) un incident.<br />Indiquer les mesures prises ou demandées" ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -692,7 +692,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Liste des sanctions du jour" ;
-		$nouveauItem->expli="Visualiser la liste des sanctions du jour (Exclusion, retenue, ...)" ;
+		$nouveauItem->expli="Visualiser la liste des sanctions du jour (<em>Exclusion, retenue,...</em>)" ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
@@ -709,7 +709,7 @@ if(($_SESSION['statut']=='administrateur') || ($_SESSION['statut']=='cpe') || ($
 	if ($nouveauItem->acces($nouveauItem->chemin,$_SESSION['statut']))
 	{
 		$nouveauItem->titre="Accèder aux statistiques" ;
-		$nouveauItem->expli="Sélectionner la période de traitement, les données à traiter (établissement, classes, elèves, ...) en appliquant (ou non) des filtres afin d'obtenir des bilans plus ou moins détaillés. <br />Visualiser les évolutions sous la forme de graphiques. Editer le Top 10, ..." ;
+		$nouveauItem->expli="Sélectionner la période de traitement, les données à traiter (<em>établissement, classes, elèves,...</em>) en appliquant (<em>ou non</em>) des filtres afin d'obtenir des bilans plus ou moins détaillés. <br />Visualiser les évolutions sous la forme de graphiques. Editer le Top 10, ..." ;
 		$nouveauItem->indexMenu=$a;
 		$menuPage[]=$nouveauItem;
 	}
