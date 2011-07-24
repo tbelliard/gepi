@@ -72,6 +72,7 @@ if (isset($suppr_nature)) {
 	for ($i = 0; $i < $cpt; $i++) {
 		if (isset($suppr_nature[$i])) {
 			$sql = "DELETE FROM s_natures WHERE id='$suppr_nature[$i]';";
+			//echo "$sql<br />";
 			$suppr = mysql_query($sql);
 			if (!$suppr) {
 				//$msg.="ERREUR lors de la suppression de la qualité n°".$suppr_lieu[$i].".<br />\n";
@@ -85,6 +86,7 @@ if (isset($suppr_nature)) {
 
 $tab_categorie=array();
 $sql = "SELECT * FROM s_categories ORDER BY categorie;";
+//echo "$sql<br />";
 $res2 = mysql_query($sql);
 if(mysql_num_rows($res2)>0) {
 	while ($lig2=mysql_fetch_object($res2)) {
@@ -98,6 +100,7 @@ if ((isset($nature))&&($nature != '')) {
 	$a_enregistrer = 'y';
 
 	$sql = "SELECT nature FROM s_natures ORDER BY nature;";
+	//echo "$sql<br />";
 	$res = mysql_query($sql);
 	if (mysql_num_rows($res) > 0) {
 		$tab_nature = array();
@@ -122,21 +125,53 @@ if ((isset($nature))&&($nature != '')) {
 		}
 
 		$sql = "INSERT INTO s_natures SET nature='" . $nature . "', id_categorie='".$id_categorie_nature_nouvelle."';";
+		//echo "$sql<br />";
 		$res = mysql_query($sql);
 		if (!$res) {
 			$msg.="ERREUR lors de l'enregistrement de " . $nature . "<br />\n";
 		} else {
 			$msg.="Enregistrement de " . $nature . "<br />\n";
+			//echo "Ajout de la nouvelle nature avec l'id ".mysql_insert_id()."<br />";
+		}
+	}
+}
+
+
+if((isset($id_nature))&&(count($id_nature)>0)&&(isset($id_categorie))&&(count($id_categorie)>0)) {
+	check_token();
+
+	for($i=0;$i<count($id_nature);$i++) {
+		if(($id_categorie[$i]==0)||(array_key_exists($id_categorie[$i],$tab_categorie))) {
+			$sql="UPDATE s_natures SET id_categorie='$id_categorie[$i]' WHERE id='$id_nature[$i]';";
+			//echo "$sql<br />";
+			$update=mysql_query($sql);
+			if (!$update) {
+				//$msg.="Erreur lors de la mise à jour de la catégorie pour la nature ".$tab_nature[$id_nature[$i]]['nature']."<br />";
+				$msg.="Erreur lors de la mise à jour de la catégorie pour la nature n°".$id_nature[$i]."<br />";
+			}
 		}
 	}
 }
 
 $tab_nature=array();
 //$sql = "(SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie) UNION (SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature);";
-$sql = "(SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature) UNION (SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie);";
+//$sql = "(SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature) UNION (SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie);";
+// Il y a un problème de tri avec UNION SELECT... je passe à deux requêtes
+$sql = "SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie;";
+//echo "$sql<br />";
+$res = mysql_query($sql);
+
+$sql = "SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature;";
+//echo "$sql<br />";
 $res2 = mysql_query($sql);
-if(mysql_num_rows($res2)>0) {
+if((mysql_num_rows($res)>0)||(mysql_num_rows($res2)>0)) {
 	$cpt=0;
+	while ($lig=mysql_fetch_object($res)) {
+		$tab_nature[$cpt]['id']=$lig->id;
+		$tab_nature[$cpt]['nature']=$lig->nature;
+		$tab_nature[$cpt]['id_categorie']=$lig->id_categorie;
+		$cpt++;
+	}
 	while ($lig2=mysql_fetch_object($res2)) {
 		$tab_nature[$cpt]['id']=$lig2->id;
 		$tab_nature[$cpt]['nature']=$lig2->nature;
@@ -149,10 +184,12 @@ else {
 
 	for($i=0;$i<count($tab_natures_par_defaut);$i++) {
 		$sql="INSERT INTO s_natures SET nature='".$tab_natures_par_defaut[$i]."';";
+		//echo "$sql<br />";
 		$insert=mysql_query($sql);
 	}
 
 	$sql = "SELECT * FROM s_natures ORDER BY nature;";
+	//echo "$sql<br />";
 	$res2 = mysql_query($sql);
 	if(mysql_num_rows($res2)>0) {
 		$cpt=0;
@@ -165,12 +202,14 @@ else {
 	}
 }
 
+/*
 if((isset($id_nature))&&(count($id_nature)>0)&&(isset($id_categorie))&&(count($id_categorie)>0)) {
 	check_token();
 
 	for($i=0;$i<count($id_nature);$i++) {
 		if(($id_categorie[$i]==0)||(array_key_exists($id_categorie[$i],$tab_categorie))) {
 			$sql="UPDATE s_natures SET id_categorie='$id_categorie[$i]' WHERE id='$id_nature[$i]';";
+			//echo "$sql<br />";
 			$update=mysql_query($sql);
 			if (!$update) {
 				$msg.="Erreur lors de la mise à jour de la catégorie pour la nature ".$tab_nature[$id_nature[$i]]['nature']."<br />";
@@ -178,6 +217,7 @@ if((isset($id_nature))&&(count($id_nature)>0)&&(isset($id_categorie))&&(count($i
 		}
 	}
 }
+*/
 
 if(isset($_POST['DisciplineNaturesRestreintes'])) {
 	check_token();
