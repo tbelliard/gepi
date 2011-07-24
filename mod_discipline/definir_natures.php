@@ -58,8 +58,13 @@ require('sanctions_func_lib.php');
 $msg = "";
 
 $suppr_nature = isset($_POST['suppr_nature']) ? $_POST['suppr_nature'] : NULL;
-$nature = isset($_POST['nature']) ? $_POST['nature'] : NULL;
+
+$id_nature= isset($_POST['id_nature']) ? $_POST['id_nature'] : NULL;
+$id_categorie= isset($_POST['id_categorie']) ? $_POST['id_categorie'] : NULL;
 $cpt = isset($_POST['cpt']) ? $_POST['cpt'] : 0;
+
+$nature = isset($_POST['nature']) ? $_POST['nature'] : NULL;
+$id_categorie_nature_nouvelle= isset($_POST['id_categorie_nature_nouvelle']) ? $_POST['id_categorie_nature_nouvelle'] : 0;
 
 if (isset($suppr_nature)) {
 	check_token();
@@ -78,7 +83,16 @@ if (isset($suppr_nature)) {
 	}
 }
 
-if ((isset($nature)) && ($nature != '')) {
+$tab_categorie=array();
+$sql = "SELECT * FROM s_categories ORDER BY categorie;";
+$res2 = mysql_query($sql);
+if(mysql_num_rows($res2)>0) {
+	while ($lig2=mysql_fetch_object($res2)) {
+		$tab_categorie[$lig2->id]=$lig2->categorie;
+	}
+}
+
+if ((isset($nature))&&($nature != '')) {
 	check_token();
 
 	$a_enregistrer = 'y';
@@ -102,12 +116,65 @@ if ((isset($nature)) && ($nature != '')) {
 		$nature=preg_replace('/(\\\r)+/',"\r",$nature);
 		$nature=preg_replace('/(\\\n)+/',"\n",$nature);
 
-		$sql = "INSERT INTO s_natures SET nature='" . $nature . "', sigle='" . $sigle . "';";
+		if(!array_key_exists($id_categorie_nature_nouvelle,$tab_categorie)) {
+			$id_categorie_nature_nouvelle=0;
+			$msg.="La catégorie choisie pour la nouvelle nature n'existe pas.<br />";
+		}
+
+		$sql = "INSERT INTO s_natures SET nature='" . $nature . "', id_categorie='".$id_categorie_nature_nouvelle."';";
 		$res = mysql_query($sql);
 		if (!$res) {
 			$msg.="ERREUR lors de l'enregistrement de " . $nature . "<br />\n";
 		} else {
 			$msg.="Enregistrement de " . $nature . "<br />\n";
+		}
+	}
+}
+
+$tab_nature=array();
+//$sql = "(SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie) UNION (SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature);";
+$sql = "(SELECT * FROM s_natures WHERE id_categorie NOT IN (SELECT id FROM s_categories) ORDER BY nature) UNION (SELECT sn.* FROM s_natures sn, s_categories sc WHERE sn.id_categorie=sc.id ORDER BY sc.categorie);";
+$res2 = mysql_query($sql);
+if(mysql_num_rows($res2)>0) {
+	$cpt=0;
+	while ($lig2=mysql_fetch_object($res2)) {
+		$tab_nature[$cpt]['id']=$lig2->id;
+		$tab_nature[$cpt]['nature']=$lig2->nature;
+		$tab_nature[$cpt]['id_categorie']=$lig2->id_categorie;
+		$cpt++;
+	}
+}
+else {
+	$tab_natures_par_defaut=array('Refus de travail', 'Travail non fait', 'Degradation', 'Retards Répétés', 'Oubli de matériel', 'Insolence et comportement', 'Violence verbale', 'Violence physique', 'Violence verbale et physique', 'Bavardages répétés');
+
+	for($i=0;$i<count($tab_natures_par_defaut);$i++) {
+		$sql="INSERT INTO s_natures SET nature='".$tab_natures_par_defaut[$i]."';";
+		$insert=mysql_query($sql);
+	}
+
+	$sql = "SELECT * FROM s_natures ORDER BY nature;";
+	$res2 = mysql_query($sql);
+	if(mysql_num_rows($res2)>0) {
+		$cpt=0;
+		while ($lig2=mysql_fetch_object($res2)) {
+			$tab_nature[$cpt]['id']=$lig2->id;
+			$tab_nature[$cpt]['nature']=$lig2->nature;
+			$tab_nature[$cpt]['id_categorie']=$lig2->id_categorie;
+			$cpt++;
+		}
+	}
+}
+
+if((isset($id_nature))&&(count($id_nature)>0)&&(isset($id_categorie))&&(count($id_categorie)>0)) {
+	check_token();
+
+	for($i=0;$i<count($id_nature);$i++) {
+		if(($id_categorie[$i]==0)||(array_key_exists($id_categorie[$i],$tab_categorie))) {
+			$sql="UPDATE s_natures SET id_categorie='$id_categorie[$i]' WHERE id='$id_nature[$i]';";
+			$update=mysql_query($sql);
+			if (!$update) {
+				$msg.="Erreur lors de la mise à jour de la catégorie pour la nature ".$tab_nature[$id_nature[$i]]['nature']."<br />";
+			}
 		}
 	}
 }
@@ -150,41 +217,40 @@ echo "<p class='bold'>Saisie des natures d'incidents&nbsp;:</p>\n";
 echo "<blockquote>\n";
 
 $cpt = 0;
-$sql = "SELECT * FROM s_natures ORDER BY nature;";
-$res = mysql_query($sql);
-if (mysql_num_rows($res) == 0) {
-	//echo "<p>Aucune qualité n'est encore définie.</p>\n";
-	//echo "<p>Aucune nature n'est encore définie.</p>\n";
-
-	$tab_natures_par_defaut=array('Refus de travail', 'Travail non fait', 'Degradation', 'Retards Répétés', 'Oubli de matériel', 'Insolence et comportement', 'Violence verbale', 'Violence physique', 'Violence verbale et physique', 'Bavardages répétés');
-
-	for($i=0;$i<count($tab_natures_par_defaut);$i++) {
-		$sql="INSERT INTO s_natures SET nature='".$tab_natures_par_defaut[$i]."';";
-		$insert=mysql_query($sql);
-	}
-
-	$sql = "SELECT * FROM s_natures ORDER BY nature;";
-	$res = mysql_query($sql);
-}
 
 echo "<p>Natures existantes&nbsp;:</p>\n";
 echo "<table class='boireaus' border='1' summary='Tableau des natures existantes'>\n";
 echo "<tr>\n";
 echo "<th>Nature</th>\n";
+echo "<th>Catégorie</th>\n";
 echo "<th>Supprimer</th>\n";
 echo "</tr>\n";
 $alt = 1;
-while ($lig = mysql_fetch_object($res)) {
+for($i=0;$i<count($tab_nature);$i++) {
 	$alt = $alt * (-1);
 	echo "<tr class='lig$alt'>\n";
 
 	echo "<td>\n";
 	echo "<label for='suppr_nature_$cpt' style='cursor:pointer;'>";
-	echo $lig->nature;
+	echo $tab_nature[$i]['nature'];
 	echo "</label>";
 	echo "</td>\n";
 
-	echo "<td><input type='checkbox' name='suppr_nature[]' id='suppr_nature_$cpt' value=\"$lig->id\" onchange='changement();' /></td>\n";
+	echo "<td>\n";
+	echo "<input type='hidden' name='id_nature[$cpt]' value='".$tab_nature[$i]['id']."' />\n";
+	echo "<select name='id_categorie[$cpt]'>\n";
+	echo "<option value='0'";
+	if($tab_nature[$i]['id_categorie']==0) {echo " selected='true'";}
+	echo ">---</option>\n";
+	foreach($tab_categorie as $key => $value) {
+		echo "<option value='$key'";
+		if($tab_nature[$i]['id_categorie']==$key) {echo " selected='true'";}
+		echo ">$value</option>\n";
+	}
+	echo "</select>";
+	echo "</td>\n";
+
+	echo "<td><input type='checkbox' name='suppr_nature[]' id='suppr_nature_$cpt' value=\"".$tab_nature[$i]['id']."\" onchange='changement();' /></td>\n";
 	echo "</tr>\n";
 
 	$cpt++;
@@ -194,7 +260,19 @@ echo "</table>\n";
 
 echo "</blockquote>\n";
 
-echo "<p>Nouvelle nature&nbsp;: <input type='text' name='nature' value='' onchange='changement();' /></p>\n";
+echo "<table border='0'>\n";
+echo "<tr><td>Nouvelle nature&nbsp;: </td><td><input type='text' name='nature' value='' onchange='changement();' /></td></tr>\n";
+echo "<tr><td>Catégorie&nbsp;: </td><td>";
+echo "<select name='id_categorie_nature_nouvelle'>\n";
+echo "<option value='0' selected='true'>---</option>\n";
+foreach($tab_categorie as $key => $value) {
+	echo "<option value='$key'";
+	echo ">$value</option>\n";
+}
+echo "</select>";
+echo "</td></tr>\n";
+echo "</table>\n";
+
 echo "<input type='hidden' name='cpt' value='$cpt' />\n";
 
 echo "<p>\n";

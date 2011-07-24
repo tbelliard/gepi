@@ -563,4 +563,17 @@ if ($test == -1) {
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
+$result .= "&nbsp;->Ajout d'un champ 'id_categorie' à la table 's_natures'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM s_natures LIKE 'id_categorie';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ existe déjà.</font><br />";
+} else {
+	$query = mysql_query("alter table s_natures add id_categorie int(11) not null default '0' after nature;");
+	if ($query) {
+		$result .= "<font color=\"blue\">Le champ id_categorie de la table s_natures a été ajouté.</font><br />";
+	} else {
+		$result .= "<font color=\"red\">Erreur : Le champ id_categorie de la table s_natures n'a pas été ajouté</font><br />";
+	}
+}
+
 ?>
