@@ -26,7 +26,7 @@ Absences:
 - Ajout d'un filtrage sur la page bilan indviduel du module abs2 et ajout d'un texte optionnel sur l'export odt de cette page
 
 Discipline:
-- Possibilité de restreindre les natures d'incident à la seule liste des catégories
+- Possibilité de restreindre les natures d'incident à une liste réduite.
 - Accès parents/élèves aux incidents et sanctions (selon le paramétrage en Droits d'accès)
 
 Modèles OpenOffice:
