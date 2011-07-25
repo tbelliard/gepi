@@ -11,7 +11,7 @@ $config = array (
 	 * Setup the following parameters to match the directory of your installation.
 	 * See the user manual for more details.
 	 */
-	'baseurlpath'           => 'gepi/lib/simplesaml/www/',
+	'baseurlpath'           => 'gepi/lib/simplesaml/www/', //voir configuration automatique à la fin de ce fichier
 	'certdir'               => 'cert/',
 	'loggingdir'            => 'log/',
 	'datadir'               => 'data/',
@@ -77,7 +77,7 @@ $config = array (
 	 * also as the technical contact in generated metadata.
 	 */
 	'technicalcontact_name'     => 'Administrateur',
-	'technicalcontact_email'    => 'noemail',
+	'technicalcontact_email'    => 'noemail', //voir configuration automatique à la fin de ce fichier
 
 	/*
 	 * The timezone of the server. This option should be set to the timezone you want
@@ -138,7 +138,7 @@ $config = array (
 	 * one of the functionalities below, but in some cases you could run multiple functionalities.
 	 * In example when you are setting up a federation bridge.
 	 */
-	'enable.saml20-idp'		=> false,
+	'enable.saml20-idp'		=> false, //voir configuration automatique à la fin de ce fichier
 	'enable.shib13-idp'		=> false,
 	'enable.adfs-idp'		=> false,
 	'enable.wsfed-sp'		=> false,
@@ -148,7 +148,7 @@ $config = array (
 	 * This value is the duration of the session in seconds. Make sure that the time duration of
 	 * cookies both at the SP and the IdP exceeds this duration.
 	 */
-	'session.duration'		=>  8 * (60*60), // 8 hours.
+	'session.duration'		=>  8 * (60*60), // 8 hours. //voir configuration automatique à la fin de ce fichier
 	'session.requestcache'	=>  4 * (60*60), // 4 hours
 
 	/*
@@ -469,7 +469,7 @@ $config = array (
 
 
 $path = dirname(dirname(dirname(dirname(__FILE__))));
-require_once("$path/secure/connect.inc.php");
+include("$path/secure/connect.inc.php");
 // Database connection
 require_once("$path/lib/mysql.inc");
 require_once("$path/lib/settings.inc");
@@ -481,8 +481,10 @@ $config['technicalcontact_email'] = getSettingValue('gepiAdminAdress');
 if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 	$config['enable.saml20-idp'] = true;
 }
-if (getSettingValue('gepiEnableIdpShib13') == 'yes') {
-	$config['enable.shib13-idp'] = true;
-}
 
-$config['session.duration'] = getSettingValue("sessionMaxLength") * (60);
+$str = $gepiPath;
+//si le premier caractère est un / on le prend pas en compte
+if (substr($str,0,1) == '/') {
+	$str = substr($str,1);
+}
+$config['baseurlpath'] = $str.'/lib/simplesaml/www/';
