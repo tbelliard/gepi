@@ -71,7 +71,7 @@ class Classe extends BaseClasse {
 		    }
 	    }
 	    
-		$query = EdtEmplacementCoursQuery::create()->filterByIdGroupe($this->getGroupes()->toKeyValue('Id', 'Id'))
+		$query = EdtEmplacementCoursQuery::create()->filterByGroupe($this->getGroupes())
 		    ->filterByIdCalendrier(0)
 		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
 	    
@@ -102,7 +102,7 @@ class Classe extends BaseClasse {
         	return null;
         }
         
-		$query = EdtEmplacementCoursQuery::create()->filterByIdGroupe($this->getGroupes()->toKeyValue('Id', 'Id'))
+		$query = EdtEmplacementCoursQuery::create()->filterByGroupe($this->getGroupes())
 		    ->filterByIdCalendrier(0)
 		    ->addOr(EdtEmplacementCoursPeer::ID_CALENDRIER, NULL);
 
