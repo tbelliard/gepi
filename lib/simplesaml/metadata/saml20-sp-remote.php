@@ -14,25 +14,26 @@ $metadata['nom-arbitraire-monserveur-sacoche'] = array(
 );*/
 
 /* configuration automatique */
-//on va charger l'adresse SACoche configurée en admin gepi si elle est précisée
-$path = dirname(dirname(dirname(dirname(__FILE__))));
-require_once("$path/secure/connect.inc.php");
-// Database connection
-require_once("$path/lib/mysql.inc");
-require_once("$path/lib/settings.inc");
-// Load settings
-if (!loadSettings()) {
-    die("Erreur chargement settings");
-}
-if (getSettingValue('sacocheUrl') != null) {
-	$sacocheUrl = getSettingValue('sacocheUrl');
-	if (substr($sacocheUrl,strlen($sacocheUrl)-1,1) != '/') {$sacocheUrl .= '/';} //on rajout un / a� la fin
-	$firstEntityID = 'sacoche-sp';
-	$firstEntityArray = array();
-	$firstEntityArray['AssertionConsumerService'] = $sacocheUrl.'simplesaml/module.php/saml/sp/saml2-acs.php/distant-gepi-saml';
-	$firstEntityArray['SingleLogoutService'] = $sacocheUrl.'simplesaml/module.php/saml/sp/saml2-logout.php/distant-gepi-saml';
-	$metadata[$firstEntityID]= $firstEntityArray;
+if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
+	//on va charger l'adresse SACoche configurée en admin gepi si elle est précisée
+	$path = dirname(dirname(dirname(dirname(__FILE__))));
+	require_once("$path/secure/connect.inc.php");
+	// Database connection
+	require_once("$path/lib/mysql.inc");
+	require_once("$path/lib/settings.inc");
+	// Load settings
+	if (!loadSettings()) {
+	    die("Erreur chargement settings");
+	}
+	if (getSettingValue('sacocheUrl') != null) {
+		$sacocheUrl = getSettingValue('sacocheUrl');
+		if (substr($sacocheUrl,strlen($sacocheUrl)-1,1) != '/') {$sacocheUrl .= '/';} //on rajout un / a� la fin
+		$firstEntityID = 'sacoche-sp';
+		$firstEntityArray = array();
+		$firstEntityArray['AssertionConsumerService'] = $sacocheUrl.'simplesaml/module.php/saml/sp/saml2-acs.php/distant-gepi-saml';
+		$firstEntityArray['SingleLogoutService'] = $sacocheUrl.'simplesaml/module.php/saml/sp/saml2-logout.php/distant-gepi-saml';
+		$metadata[$firstEntityID]= $firstEntityArray;
+	}
 }
 /* fin de configuration automatique */
-
 ?>
