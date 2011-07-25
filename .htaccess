@@ -25,11 +25,10 @@ AddType application/octet-stream .csv
 
 DirectoryIndex login.php
 
-Options FollowSymLinks
 RewriteEngine On
 # acces simplesaml forcé en https.
 RewriteCond %{HTTPS} off
-RewriteRule ^simplesaml(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [NE,R,L]	# redirige en https pour l'authentification
+RewriteRule ^simplesaml(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [NE,L,R]	# redirige en https pour l'authentification
 # fin forcage https
 
 RewriteRule ^simplesaml(.*)$ lib/simplesaml/www$1
