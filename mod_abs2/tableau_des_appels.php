@@ -203,13 +203,16 @@ foreach($classe_col as $classe){
 //		</td>';
 	echo '	<td><h4>'.$classe->getNom().'</h4></td>';
 
-	//la classe a-t-elle des cours actuellement ?
+	//la classe a-t-elle des cours actuellement ? On récupère la liste des cours pour cette période.
 	//on regarde au debut du creneau et a la fin car il peut y avoir des demi creneau
-	$cours_col = $classe->getEdtEmplacementCours($dt_debut_creneau);
+	//on pourrait appeler $classe->getEdtEmplacementCours deux fois mais on va faire une optimisation à la place.
+	$edtCoursCol = $classe->getEdtEmplacementCourssPeriodeCalendrierActuelle('now');
+	require_once("../orm/helpers/EdtEmplacementCoursHelper.php");
+	$cours_col = EdtEmplacementCoursHelper::getColEdtEmplacementCoursActuel($edtCoursCol, $dt_debut_creneau);
 	$dt_presque_fin_creneau = clone $dt_fin_creneau;
 	$dt_presque_fin_creneau->setTime($choix_creneau_obj->getHeurefinDefiniePeriode('H'), $choix_creneau_obj->getHeurefinDefiniePeriode('i') - 1);
-	$cours_col_2 = $classe->getEdtEmplacementCours($dt_presque_fin_creneau);
-	$cours_col->addCollection($cours_col_2);
+	$cours_col->addCollection( EdtEmplacementCoursHelper::getColEdtEmplacementCoursActuel($edtCoursCol, $dt_presque_fin_creneau));
+	
 
 	//on teste si l'appel a été fait
 	$appel_manquant = false;
@@ -246,10 +249,8 @@ foreach($classe_col as $classe){
 	//$classe = new Classe();
 	//on regarde si il y a d'autres appels
 	$abs_col = AbsenceEleveSaisieQuery::create()->filterByPlageTemps($dt_debut_creneau, $dt_fin_creneau)
-		  ->condition('cond1', 'AbsenceEleveSaisie.IdClasse = ?', $classe->getId()) // create a condition named 'cond1'
-		  ->condition('cond2', 'AbsenceEleveSaisie.IdGroupe IN ?', $classe->getGroupes()->toKeyValue('Id', 'Id'))       // create a condition named 'cond2'
-		  ->where(array('cond1', 'cond2'), 'or')              // combine 'cond1' and 'cond2' with a logical OR
-		  ->find();
+			->filterByClasse($classe)->_or()->filterByGroupe($classe->getGroupes())
+			->find();
     $test_saisies_sorti=false;
     foreach($abs_col as $abs){
         if($abs->isSaisieEleveSorti($dt_debut_creneau)){
