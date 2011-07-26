@@ -81,6 +81,11 @@ include("tbs_menu_plugins.inc.php");
 	}
 
 	$compteur_menu=0;
+	
+	
+	// Lien vers l'accueil
+	$tbs_menu_prof[$compteur_menu]=array("lien"=>'/accueil.php', "texte"=>"Accueil");
+	$compteur_menu++;
 
 	/* On fixe l'ensemble des modules qui sont ouverts pour faire la liste des <li> */
 	//=======================================================
