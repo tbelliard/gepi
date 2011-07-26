@@ -2,7 +2,7 @@
 /*
  * $Id : $
  *
- * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -31,7 +31,8 @@ if ($resultat_session == 'c') {
     die();
 } else if ($resultat_session == '0') {
     header("Location: ../logout.php?auto=1");
-    die();};
+    die();
+}
 
 // INSERT INTO droits VALUES ('/mod_annees_anterieures/index.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'Index données antérieures', '');
 if (!checkAccess()) {
@@ -82,10 +83,10 @@ echo "<p><br /></p>\n";
 echo "<p>Au menu:</p>\n";
 echo "<p>Les pages d'administration:</p>\n";
 echo "<ul>\n";
-echo "<li><p><a href='conservation_annee_anterieure.php'>Conservation des données (*) de l'année qui se termine</a><br />(<i>(*) autres que les AIDs</i>).</p></li>\n";
-echo "<li><p><a href='archivage_aid.php'>Conservation des données des AIDs</a>.</p></li>\n";
 echo "<li><p><a href='nettoyer_annee_anterieure.php'>Nettoyage des données d'élèves ayant quitté l'établissement</a>.</p></li>\n";
 echo "<li><p><a href='corriger_ine.php'>Correction des INE non renseignés ou mal renseignés lors de la conservation</a>.</p></li>\n";
+echo "<li><p><a href='conservation_annee_anterieure.php'>Conservation des données (*) de l'année qui se termine</a><br />(<i>(*) autres que les AIDs</i>).</p></li>\n";
+echo "<li><p><a href='archivage_aid.php'>Conservation des données des AIDs</a>.</p></li>\n";
 echo "</ul>\n";
 
 echo "<p>Les pages de consultation:</p>\n";
