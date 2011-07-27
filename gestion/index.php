@@ -2,7 +2,7 @@
 /*
  * $Id$
  *
- * Copyright 2001, 2007 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
  * This file is part of GEPI.
  *
@@ -74,7 +74,8 @@ $titre_page = "Gestion générale";
 $tbs_last_connection="";
 
 // ====== Inclusion des balises head et du bandeau =====
-include_once("./../lib/header_template.inc");
+//include_once("./../lib/header_template.inc");
+include_once("../lib/header_template.inc");
 // require_once("../lib/header.inc");
 //**************** FIN EN-TETE *****************
 
@@ -435,13 +436,15 @@ if (LDAPServer::is_setup()) {
 
 	$tbs_microtime	="";
 	$tbs_pmv="";
-	require_once ("./../lib/footer_template.inc.php");
+	//require_once ("./../lib/footer_template.inc.php");
+	require_once ("../lib/footer_template.inc.php");
 
 	
 //==================================
 // Décommenter la ligne ci-dessous pour afficher les variables $_GET, $_POST, $_SESSION et $_SERVER pour DEBUG:
 //debug_var();
 
-include('./../templates/origine/gestion_generale_template.php');
+//include('./../templates/origine/gestion_generale_template.php');
+include('../templates/origine/gestion_generale_template.php');
 
 ?>
