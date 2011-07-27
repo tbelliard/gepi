@@ -576,4 +576,47 @@ if ($test_champ>0) {
 	}
 }
 
+$result .= "<br /><b>Ajout d'une table udt_lignes :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'udt_lignes'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS udt_lignes (
+id INT(11) unsigned NOT NULL auto_increment,
+division varchar(255) NOT NULL default '',
+matiere varchar(255) NOT NULL default '',
+prof varchar(255) NOT NULL default '',
+groupe varchar(255) NOT NULL default '',
+regroup varchar(255) NOT NULL default '',
+mo varchar(255) NOT NULL default '', 
+PRIMARY KEY id (id)
+);");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
+$result .= "<br /><b>Ajout d'une table udt_corresp :</b><br />";
+$test = sql_query1("SHOW TABLES LIKE 'udt_corresp'");
+if ($test == -1) {
+	$result_inter = traite_requete("CREATE TABLE IF NOT EXISTS udt_corresp (
+champ varchar(255) NOT NULL default '',
+nom_udt varchar(255) NOT NULL default '',
+nom_gepi varchar(255) NOT NULL default ''
+);");
+	if ($result_inter == '') {
+		$result .= "<font color=\"green\">SUCCES !</font><br />";
+	}
+	else {
+		$result .= "<font color=\"red\">ECHEC !</font><br />";
+	}
+} else {
+		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
+}
+
+
+
 ?>

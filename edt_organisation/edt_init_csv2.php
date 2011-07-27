@@ -63,6 +63,39 @@ require_once("./menu.inc.php");
 $_SESSION["retour"] = "edt_init_csv2";
 // +++++++++++++++++++FIN GESTION RETOUR vers absences++++++++++++++++
 //debug_var();
+
+/*
+$tab_udt_lignes=array();
+$sql="SELECT uc.*, ul.matiere, ul.prof, ul.groupe, ul.regroup, ul.mo FROM udt_lignes ul, udt_corresp uc WHERE ul.division=uc.nom_udt;";
+$res_udt_lignes=mysql_query($sql);
+if(mysql_num_rows($res_udt_lignes)>0) {
+	$cpt=0;
+	$tab_champs=array('nom_gepi', 'nom_udt', 'matiere', 'prof', 'groupe', 'regroup', 'mo');
+	while($lig_udt=mysql_fetch_object($res_udt_lignes)) {
+		$tab_udt_lignes[$cpt]=array();
+		for($loop=0;$loop<count($tab_champs);$loop++) {
+			$champ_courant=$tab_champs[$loop];
+			$tab_udt_lignes[$cpt][$champ_courant]=$lig_udt->$champ_courant;
+		}
+		$cpt++;
+	}
+}
+*/
+function cherche_udt_ligne($nom_regroup) {
+	$retour="";
+	$sql="SELECT uc.*, ul.matiere, ul.prof, ul.groupe, ul.regroup, ul.mo FROM udt_lignes ul, udt_corresp uc WHERE ul.division=uc.nom_udt AND ul.regroup='".addslashes($nom_regroup)."';";
+	$res_udt_ligne=mysql_query($sql);
+	if(mysql_num_rows($res_udt_ligne)>0) {
+		$cpt=0;
+		while($lig_udt=mysql_fetch_object($res_udt_ligne)) {
+			if($cpt>0) {$retour.=", ";}
+			$retour.=$lig_udt->regroup." (".$lig_udt->nom_gepi.") avec ".$lig_udt->prof;
+			$cpt++;
+		}
+	}
+	return $retour;
+}
+
 ?>
 
 
@@ -316,6 +349,13 @@ if ($action == "upload_file") {
                         echo '
 						<input type="hidden" name="' . $nom_select . '" value="none" />';
                     }
+
+					if($etape==7) {
+						$udt_ligne=cherche_udt_ligne($val);
+						if($udt_ligne=="") {$udt_ligne=cherche_udt_ligne($valeur);}
+						echo " <span style='font-size:x-small'>".$udt_ligne."</span>";
+					}
+
 
                     echo '</p>';
                     $l++;

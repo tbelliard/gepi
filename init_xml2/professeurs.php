@@ -122,6 +122,8 @@ $liste_tables_del = array(
 "cn_devoirs",
 "cn_notes_conteneurs",
 "cn_notes_devoirs",
+"udt_lignes",
+"udt_corresp"
 //"setting"
 );
 

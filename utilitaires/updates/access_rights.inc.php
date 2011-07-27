@@ -763,6 +763,18 @@ $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/visu_disc.php', 'F', 
 
 $tab_req[] = "INSERT INTO droits VALUES ( '/mod_discipline/definir_natures.php', 'V', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'Discipline: Définir les natures', '');";
 
+$tab_req[] = "INSERT INTO droits SET id='/init_xml2/traite_csv_udt.php',
+administrateur='V',
+professeur='F',
+cpe='F',
+scolarite='F',
+eleve='F',
+responsable='F',
+secours='F',
+autre='F',
+description='Import des enseignements via un Export CSV UDT',
+statut='';";
+
 $test1 = mysql_num_rows(mysql_query("SHOW COLUMNS FROM droits LIKE 'responsable'"));
 if ($test1 == 1) {
         foreach ($tab_req as $key => $value) {

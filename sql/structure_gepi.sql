@@ -369,3 +369,7 @@ DROP TABLE IF EXISTS s_travail_mesure;
 CREATE TABLE IF NOT EXISTS s_travail_mesure (id INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,id_incident INT( 11 ) NOT NULL ,login_ele VARCHAR( 50 ) NOT NULL , travail TEXT NOT NULL);
 DROP TABLE IF EXISTS s_natures;
 CREATE TABLE IF NOT EXISTS s_natures ( id INT(11) NOT NULL auto_increment, nature varchar(50) NOT NULL default '', id_categorie int(11) not null default '0', PRIMARY KEY (id));
+DROP TABLE IF EXISTS udt_lignes;
+CREATE TABLE IF NOT EXISTS udt_lignes (id INT(11) unsigned NOT NULL auto_increment,division varchar(255) NOT NULL default '',matiere varchar(255) NOT NULL default '',prof varchar(255) NOT NULL default '',groupe varchar(255) NOT NULL default '',regroup varchar(255) NOT NULL default '',mo varchar(255) NOT NULL default '', PRIMARY KEY id (id));
+DROP TABLE IF EXISTS udt_corresp;
+CREATE TABLE IF NOT EXISTS udt_corresp (champ varchar(255) NOT NULL default '',nom_udt varchar(255) NOT NULL default '',nom_gepi varchar(255) NOT NULL default '');
