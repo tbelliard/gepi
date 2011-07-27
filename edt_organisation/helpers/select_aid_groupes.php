@@ -24,6 +24,14 @@ $increment = isset($nom_select) ? $nom_select : "liste_aid_groupes";
 $id_select = isset($nom_id_select) ? ' id="'.$nom_id_select.'"' : NULL;
 $test_selected = isset($nom_selected) ? $nom_selected : NULL;
 
+$id_groupe_defaut="";
+$sql="SELECT id FROM groupes WHERE name LIKE '%$valeur%' LIMIT 1;";
+$res_grp=mysql_query($sql);
+if(mysql_num_rows($res_grp)>0) {
+	$lig_grp_def=mysql_fetch_object($res_grp);
+	$id_groupe_defaut=$lig_grp_def->id;
+}
+
 echo '
 	<select name ="'.$increment.'"'.$id_select.'>
 		<option value="aucun">Liste des AID et des groupes</option>
@@ -68,7 +76,9 @@ echo '
 		// On teste le selected après s'être assuré qu'il n'était pas déjà renseigné
 			if ($id_groupe[$a]["description"] == $test_selected) {
 				$selected = ' selected="selected"';
-			}else{
+			} elseif($id_groupe[$a]["id"] == $id_groupe_defaut) {
+				$selected = ' selected="selected"';
+			} else {
 				$selected = '';
 			}
 
@@ -78,4 +88,5 @@ echo '
 echo '
 			</optgroup>
 	</select>';
+
 ?>
