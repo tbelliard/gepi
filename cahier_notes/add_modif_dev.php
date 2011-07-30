@@ -726,7 +726,8 @@ if($interface_simplifiee=="y"){
     		echo "<td><input type='checkbox' name='ramener_sur_referentiel' value='V' "; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />\n";
 			echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />\n";
 			echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />\n";
-			echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><br /><br />\n";
+			//echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><br /><br />\n";
+			echo "Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span><br /><br />\n";
 			echo "</td>\n";
 			echo "</tr>\n";
 		}
@@ -889,7 +890,8 @@ else{
 	    echo "<tr><td>Ramener la note sur ".getSettingValue("referentiel_note")." lors du calcul de la moyenne : <br />";
 		echo "<span style=\"font-size: x-small;\">Exemple avec 3 notes : 18/20 ; 4/10 ; 1/5<br />";
 		echo "Case cochée : moyenne = 18/20 + 8/20 + 4/20 = 30/60 = 10/20<br />";
-		echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><br /><br />";
+		//echo "Case non cochée : moyenne = 18/20 + 4/10 + 1/5 = 23/35 = 13,1/20</span><br /><br />";
+		echo "Case non cochée : moyenne = (18 + 4 + 1) / (20 + 10 + 5) = 23/35 &asymp; 13,1/20</span><br /><br />\n";
 		echo "</td>";
 		echo "</td><td><input type='checkbox' name='ramener_sur_referentiel' value='V'"; if ($ramener_sur_referentiel == 'V') {echo " checked";} echo " /><br />";
 		echo "</td></tr>\n";
