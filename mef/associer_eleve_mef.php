@@ -173,7 +173,7 @@ if (!$eleve_col->isEmpty()) {
             foreach ($mef_collection as $mef) {
                     echo "<option value='".$mef->getId()."'>";
                     echo $mef->getLibelleEdition().' ';
-                    echo $mef->getExtId();
+                    echo $mef->getMefCode();
                     echo "</option>\n";
             }
             echo "</select>";

@@ -74,7 +74,7 @@ if ($action == 'supprimer') {
 		if ($mef == null) {
 			$mef = new Mef();
 		}
-		$mef->setExtId(stripslashes($EXT_ID));
+		$mef->setMefCode(stripslashes($EXT_ID));
 		$mef->setLibelleCourt(stripslashes($LIBELLE_COURT));
 		$mef->setLibelleLong(stripslashes($LIBELLE_LONG));
 		$mef->setLibelleEdition(stripslashes($LIBELLE_EDITION));
@@ -124,7 +124,7 @@ echo add_token_field();
 	   if ($mef != null) { ?>
 	      <input name="id" type="hidden" id="id" value="<?php echo $id ?>" />
 	   <?php } ?>
-              	<input name="EXT_ID" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getExtId();} ?>" />
+              	<input name="EXT_ID" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getMefCode();} ?>" />
               </td>
               <td><input name="LIBELLE_COURT" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getLibelleCourt();} ?>" /></td>
               <td><input name="LIBELLE_LONG" type="text" size="14" maxlength="50" value="<?php  if ($mef != null) {echo $mef->getLibelleLong();} ?>" /></td>
@@ -159,7 +159,7 @@ echo add_token_field();
  ?>
         <tr>
 	  <td><?php echo $mef->getId(); ?></td>
-          <td><?php echo $mef->getExtId(); ?></td>
+          <td><?php echo $mef->getMefCode(); ?></td>
           <td><?php echo $mef->getLibelleCourt(); ?></td>
           <td><?php echo $mef->getLibelleLong(); ?></td>
           <td><?php echo $mef->getLibelleEdition(); ?></td>
@@ -176,38 +176,38 @@ echo add_token_field();
 
 function ajoutMefParDefaut() {
     $mef = new Mef();
-    $mef->setExtId("1031000111");
+    $mef->setMefCode("1031000111");
     $mef->setLibelleCourt("3G");
     $mef->setLibelleLong("3EME");
     $mef->setLibelleEdition("3eme");
-    if (MefQuery::create()->filterByExtId($mef->getExtId())->find()->isEmpty()) {
+    if (MefQuery::create()->filterByMefCode($mef->getMefCode())->find()->isEmpty()) {
 	$mef->save();
     }
 
     $mef = new Mef();
-    $mef->setExtId("1021000111");
+    $mef->setMefCode("1021000111");
     $mef->setLibelleCourt("4G");
     $mef->setLibelleLong("4EME");
     $mef->setLibelleEdition("4eme");
-    if (MefQuery::create()->filterByExtId($mef->getExtId())->find()->isEmpty()) {
+    if (MefQuery::create()->filterByMefCode($mef->getMefCode())->find()->isEmpty()) {
 	$mef->save();
     }
 
     $mef = new Mef();
-    $mef->setExtId("1011000111");
+    $mef->setMefCode("1011000111");
     $mef->setLibelleCourt("5G");
     $mef->setLibelleLong("5EME");
     $mef->setLibelleEdition("5eme");
-    if (MefQuery::create()->filterByExtId($mef->getExtId())->find()->isEmpty()) {
+    if (MefQuery::create()->filterByMefCode($mef->getMefCode())->find()->isEmpty()) {
 	$mef->save();
     }
 
     $mef = new Mef();
-    $mef->setExtId("1001000111");
+    $mef->setMefCode("1001000111");
     $mef->setLibelleCourt("6G");
     $mef->setLibelleLong("6EME");
     $mef->setLibelleEdition("6eme");
-    if (MefQuery::create()->filterByExtId($mef->getExtId())->find()->isEmpty()) {
+    if (MefQuery::create()->filterByMefCode($mef->getMefCode())->find()->isEmpty()) {
 	$mef->save();
     }
 

@@ -35,8 +35,56 @@ DROP TABLE IF EXISTS `ct_types_documents`;
 CREATE TABLE `ct_types_documents` ( `id_type` bigint(21) NOT NULL auto_increment, `titre` text NOT NULL, `extension` varchar(10) NOT NULL default '', `upload` enum('oui','non') NOT NULL default 'oui', PRIMARY KEY  (`id_type`), UNIQUE KEY `extension` (`extension`));
 DROP TABLE IF EXISTS `droits`;
 CREATE TABLE `droits` ( `id` varchar(200) NOT NULL default '', `administrateur` char(1) NOT NULL default '', `professeur` char(1) NOT NULL default '', `cpe` char(1) NOT NULL default '', `scolarite` char(1) NOT NULL default '', `eleve` char(1) NOT NULL default '', `responsable` char(1) NOT NULL default '', `secours` char(1) NOT NULL default '', `autre` char(1) NOT NULL default 'F', `description` varchar(255) NOT NULL default '', `statut` char(1) NOT NULL default '', PRIMARY KEY  (`id`));
-DROP TABLE IF EXISTS `eleves`;
-CREATE TABLE `eleves` ( `no_gep` text, `login` varchar(50) NOT NULL default '', `nom`  varchar(50) NOT NULL default '', `prenom`  varchar(50) NOT NULL default '', `sexe`  varchar(1) NOT NULL default '', `naissance` date, `lieu_naissance` varchar(50) NOT NULL default '', `elenoet` varchar(50) NOT NULL default '', `ereno` varchar(50) NOT NULL default '', `ele_id` varchar(10) NOT NULL default '', `email` varchar(255) NOT NULL default '', `id_eleve` int(11) NOT NULL auto_increment,id_mef INTEGER   COMMENT 'cle externe pour le jointure avec mef', `date_sortie` DATETIME COMMENT 'Timestamp de sortie de l\'Ã©lÃ¨ve de l\'Ã©tablissement (fin d\'inscription)',PRIMARY KEY  (`id_eleve`), UNIQUE KEY `login` (`login`),INDEX eleves_FI_1 (id_mef), INDEX ele_id ( `ele_id` ));
+
+-- ---------------------------------------------------------------------
+-- eleves
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS eleves;
+
+CREATE TABLE eleves
+(
+	no_gep VARCHAR(50) NOT NULL COMMENT 'Ancien numero GEP, Numero national de l\'eleve',
+	login VARCHAR(50) NOT NULL COMMENT 'Login de l\'eleve, est conserve pour le login utilisateur',
+	nom VARCHAR(50) NOT NULL COMMENT 'Nom eleve',
+	prenom VARCHAR(50) NOT NULL COMMENT 'Prenom eleve',
+	sexe VARCHAR(1) NOT NULL COMMENT 'M ou F',
+	naissance DATE NOT NULL COMMENT 'Date de naissance AAAA-MM-JJ',
+	lieu_naissance VARCHAR(50) DEFAULT '' NOT NULL COMMENT 'Code de Sconet',
+	elenoet VARCHAR(50) NOT NULL COMMENT 'Numero interne de l\'eleve dans l\'etablissement',
+	ereno VARCHAR(50) NOT NULL COMMENT 'Plus utilise',
+	ele_id VARCHAR(10) DEFAULT '' NOT NULL COMMENT 'cle utilise par Sconet dans ses fichiers xml',
+	email VARCHAR(255) DEFAULT '' NOT NULL COMMENT 'Courriel de l\'eleve',
+	id_eleve INTEGER(11) NOT NULL AUTO_INCREMENT COMMENT 'cle primaire autoincremente',
+	date_sortie DATETIME COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)',
+	mef_code INTEGER COMMENT 'code mef de la formation de l\'eleve',
+	PRIMARY KEY (id_eleve),
+	INDEX eleves_FI_1 (mef_code),
+	INDEX I_referenced_j_eleves_classes_FK_1_1 (login),
+	INDEX I_referenced_responsables2_FK_1_2 (ele_id),
+	INDEX I_referenced_archivage_ects_FK_1_3 (no_gep),
+	CONSTRAINT eleves_FK_1
+		FOREIGN KEY (mef_code)
+		REFERENCES mef (mef_code)
+		ON DELETE SET NULL
+) ENGINE=MyISAM COMMENT='Liste des eleves de l\'etablissement';
+
+-- ---------------------------------------------------------------------
+-- mef
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS mef;
+
+CREATE TABLE mef
+(
+	id INTEGER NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire de la classe',
+	mef_code INTEGER COMMENT 'Numero de la nomenclature officielle (numero MEF)',
+	libelle_court VARCHAR(50) NOT NULL COMMENT 'libelle de la formation',
+	libelle_long VARCHAR(300) NOT NULL COMMENT 'libelle de la formation',
+	libelle_edition VARCHAR(300) NOT NULL COMMENT 'libelle de la formation pour presentation',
+	PRIMARY KEY (id)
+) ENGINE=MyISAM COMMENT='Module élémentaire de formation';
+
 DROP TABLE IF EXISTS `etablissements`;
 CREATE TABLE `etablissements` ( `id` char(8) NOT NULL default '', `nom` char(50) NOT NULL default '', `niveau` char(50) NOT NULL default '', `type` char(50) NOT NULL default '', `cp` int(10) NOT NULL default '0', `ville` char(50) NOT NULL default '', PRIMARY KEY  (`id`));
 DROP TABLE IF EXISTS `j_aid_eleves`;

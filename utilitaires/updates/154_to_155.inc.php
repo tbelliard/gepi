@@ -617,6 +617,34 @@ nom_gepi varchar(255) NOT NULL default ''
 		$result .= "<font color=\"blue\">La table existe déjà</font><br />";
 }
 
+$result .= "<br /><br /><b>Mef :</b><br />";
+$result .= "&nbsp;->Modification du champ 'ext_id' de la table 'mef' en 'mef_code'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM mef LIKE 'mef_code';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ est déjà modifié.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE mef CHANGE ext_id mef_code INTEGER COMMENT 'code mef de la formation de l\'eleve';");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+$result .= "&nbsp;->Modification du champ 'id_mef' de la table 'eleves' en 'mef_code'<br />";
+$test_champ=mysql_num_rows(mysql_query("SHOW COLUMNS FROM eleves LIKE 'mef_code';"));
+if ($test_champ>0) {
+	$result .= "<font color=\"blue\">Le champ est déjà modifié.</font><br />";
+}
+else {
+	$query = mysql_query("ALTER TABLE eleves CHANGE id_mef mef_code INTEGER COMMENT 'code mef de la formation de l\'eleve';");
+	if ($query) {
+			$result .= "<font color=\"green\">Ok !</font><br />";
+	} else {
+			$result .= "<font color=\"red\">Erreur</font><br />";
+	}
+}
+
 
 
 ?>
