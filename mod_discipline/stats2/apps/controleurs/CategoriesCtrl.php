@@ -65,12 +65,12 @@ class CategoriesCtrl extends Controleur {
   }
   function save() {
     check_token(false);
-    $this->natures_selected=isset($_REQUEST['natures_incidents'])?$_REQUEST['natures_incidents']:Null;
+    $this->natures_selected=isset($_POST['natures_incidents'])?$_POST['natures_incidents']:(isset($_GET['natures_incidents'])?$_GET['natures_incidents']:Null);
     if(is_null($this->natures_selected)) {
       echo"<script type='text/javascript'>alert('Selectionnez des natures d\'incidents et une catégorie')</script>";
     }
     else {
-      $this->categorie_selected=$_REQUEST['categorie'];
+      $this->categorie_selected=isset($_POST['categorie'])?$_POST['categorie']:(isset($_GET['categorie'])?$_GET['categorie']:Null);
       $this->modele_incidents->update_categorie($this->categorie_selected,$this->natures_selected);
     }
     $this->index();
@@ -78,9 +78,9 @@ class CategoriesCtrl extends Controleur {
 
   function delete() {
     check_token(false);
-    $this->nature_selected=isset($_REQUEST['nature'])?$_REQUEST['nature']:Null;
+    $this->nature_selected=isset($_POST['nature'])?$_POST['nature']:(isset($_GET['nature'])?$_GET['nature']:Null);
     $this->nature[]=html_entity_decode($this->nature_selected,ENT_QUOTES);
-    $this->categorie=isset($_REQUEST['categorie_id'])?$_REQUEST['categorie_id']:Null;
+    $this->categorie=isset($_POST['categorie_id'])?$_POST['categorie_id']:(isset($_GET['categorie_id'])?$_GET['categorie_id']:Null);
     if($this->categorie) {
       $this->modele_incidents->update_categorie('default',Null,$this->categorie);
     }else {

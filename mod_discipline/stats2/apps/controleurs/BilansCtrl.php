@@ -66,7 +66,7 @@ class BilansCtrl extends Controleur {
     parent::__construct();
     $this->objet_periodes=new ClassPeriodes();
     $_SESSION['choix_evolution']=isset($_SESSION['choix_evolution'])?$_SESSION['choix_evolution']:'Catégories';
-    $this->choix_evolution=isset($_REQUEST['evolution'])?$_REQUEST['evolution']:Null;
+    $this->choix_evolution=isset($_POST['evolution'])?$_POST['evolution']:(isset($_GET['evolution'])?$_GET['evolution']:Null);
     if( $this->choix_evolution) $_SESSION['choix_evolution']=$this->choix_evolution;
     $this->current_onglet=isset($_SESSION['current_onglet']['id'])?$_SESSION['current_onglet']['id']:0;
     $this->temp=get_user_temp_directory();    
@@ -102,12 +102,12 @@ class BilansCtrl extends Controleur {
       echo"<script type='text/javascript'>document.location.href='index.php?ctrl=error&action=select'</script>";
   }
   public function affiche_details() {
-    $_SESSION['mode_detaille']=isset($_REQUEST['value'])? $_REQUEST['value']:Null ;
+    $_SESSION['mode_detaille']=isset($_POST['value'])? $_POST['value']:(isset($_GET['value'])? $_GET['value']:Null);
     $this->redirect();
   }
 
   public function choix_filtres() {
-    $this->action_from=isset($_REQUEST['action_from'])?$_REQUEST['action_from']:Null;
+    $this->action_from=isset($_POST['action_from'])?$_POST['action_from']:(isset($_GET['action_from'])?$_GET['action_from']:Null);
     $this->vue->setVar('action_from',$this->action_from);
     $this->traite_filtres();
     $this->liste_categories=$this->objet_filtre->get_liste_categories();
@@ -122,15 +122,15 @@ class BilansCtrl extends Controleur {
 
   }
   public function filtrer() {
-    $_SESSION['filtre']['roles']=(isset($_REQUEST['roles'])?$_REQUEST['roles']:Null);
-    $_SESSION['filtre']['categories']=(isset($_REQUEST['categories'])?$_REQUEST['categories']:Null);
-    $_SESSION['filtre']['mesures']=(isset($_REQUEST['mesures'])?$_REQUEST['mesures']:Null);
-    $_SESSION['filtre']['sanctions']=(isset($_REQUEST['sanctions'])?$_REQUEST['sanctions']:Null);
+    $_SESSION['filtre']['roles']=isset($_POST['roles'])?$_POST['roles']:(isset($_GET['roles'])?$_GET['roles']:Null);
+    $_SESSION['filtre']['categories']=isset($_POST['categories'])?$_POST['categories']:(isset($_GET['categories'])?$_GET['categories']:Null);
+    $_SESSION['filtre']['mesures']=isset($_POST['mesures'])?$_POST['mesures']:(isset($_GET['mesures'])?$_GET['mesures']:Null);
+    $_SESSION['filtre']['sanctions']=isset($_POST['sanctions'])?$_POST['sanctions']:(isset($_GET['sanctions'])?$_GET['sanctions']:Null);
     $this->redirect();
   }
 
   private function redirect() {
-    $this->action_from=isset($_REQUEST['action_from'])?$_REQUEST['action_from']:Null;
+    $this->action_from=isset($_POST['action_from'])?$_POST['action_from']:(isset($_GET['action_from'])?$_GET['action_from']:Null);
     switch($this->action_from) {
       case 'evolutions':
         $this->evolutions();
@@ -147,8 +147,8 @@ class BilansCtrl extends Controleur {
   }
 
   public function maj_filtre() {
-    $this->type=isset($_REQUEST['type'])?$_REQUEST['type']:Null;
-    $this->choix=isset($_REQUEST['choix'])?$_REQUEST['choix']:Null;
+    $this->type=isset($_POST['type'])?$_POST['type']:(isset($_GET['type'])?$_GET['type']:Null);
+    $this->choix=isset($_POST['choix'])?$_POST['choix']:(isset($_GET['choix'])?$_GET['choix']:Null);
     $this->objet_filtre=new ClassFilter();
     $this->objet_filtre->traite_maj_filtre($this->type,$this->choix);
     $this->redirect();
@@ -267,7 +267,7 @@ class BilansCtrl extends Controleur {
   }
 
   public function add_selection() {
-    $this->login_to_add=(isset($_REQUEST['login'])?$_REQUEST['login']:Null);
+    $this->login_to_add=isset($_POST['login'])?$_POST['login']:(isset($_GET['login'])?$_GET['login']:Null);
     $this->objet_select=new SelectCtrl();
     $this->objet_select->set_individus_selected($this->login_to_add,'eleves');
     $this->current_onglet=$this->login_to_add.'-onglet-01';

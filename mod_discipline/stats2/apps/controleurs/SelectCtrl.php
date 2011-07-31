@@ -53,20 +53,20 @@ class SelectCtrl extends Controleur {
     parent::__construct();
     $this->objet_periodes=new ClassPeriodes();
     $this->periodes_calendrier=$this->objet_periodes->get_periodes_calendrier();
-    $_SESSION['stats_choix']=isset($_REQUEST['choix']) ? $_REQUEST['choix'] : 'eleves';
-    $this->id_calendrier=isset($_REQUEST['id_calendrier'])? $_REQUEST['id_calendrier']:null ;
-    $this->posted=isset($_REQUEST['posted'])? $_REQUEST['posted']:null ;
-    $this->month_selected=isset($_REQUEST['month'])? $_REQUEST['month']:null ;
-    $this->login=isset($_REQUEST['login'])? $_REQUEST['login']:null ;
+    $_SESSION['stats_choix']=isset($_POST['choix']) ? $_POST['choix'] :(isset($_GET['choix']) ? $_GET['choix'] : 'eleves');
+    $this->id_calendrier=isset($_POST['id_calendrier'])? $_POST['id_calendrier']:(isset($_GET['id_calendrier'])? $_GET['id_calendrier']:null);
+    $this->posted=isset($_POST['posted'])? $_POST['posted']:(isset($_GET['posted'])? $_GET['posted']:null);
+    $this->month_selected=isset($_POST['month'])? $_POST['month']:(isset($_GET['month'])? $_GET['month']:null);
+    $this->login=isset($_POST['login'])? $_POST['login']:(isset($_GET['login'])? $_GET['login']:null);
     $this->statut=isset($_SESSION['stats_choix'])? $_SESSION['stats_choix']:'eleves' ;
-    $this->du=isset($_REQUEST['du'])? $_REQUEST['du']:Gepi_Date::get_date_begin_yearschool() ;
-    $this->au=isset($_REQUEST['au'])? $_REQUEST['au']:date('d/m/Y') ;
-    $this->etab_all=isset($_REQUEST['etab_all'])? $_REQUEST['etab_all']:null ;
-    $this->eleve_all=isset($_REQUEST['eleve_all'])? $_REQUEST['eleve_all']:null ;
-    $this->pers_all=isset($_REQUEST['pers_all'])? $_REQUEST['pers_all']:null ;
-    $this->classes_selected=isset($_REQUEST['classes'])? $_REQUEST['classes']:null ;
-    $this->del_type=isset($_REQUEST['del_type'])? $_REQUEST['del_type']:null ;
-    $this->del=isset($_REQUEST['del'])? $_REQUEST['del']:null ;    
+    $this->du=isset($_POST['du'])? $_POST['du']:(isset($_GET['du'])? $_GET['du']:Gepi_Date::get_date_begin_yearschool());
+    $this->au=isset($_POST['au'])? $_POST['au']:(isset($_GET['au'])? $_GET['au']:date('d/m/Y'));
+    $this->etab_all=isset($_POST['etab_all'])? $_POST['etab_all']:(isset($_GET['etab_all'])? $_GET['etab_all']:null);
+    $this->eleve_all=isset($_POST['eleve_all'])? $_POST['eleve_all']:(isset($_GET['eleve_all'])? $_GET['eleve_all']:null);
+    $this->pers_all=isset($_POST['pers_all'])? $_POST['pers_all']:(isset($_GET['pers_all'])? $_GET['pers_all']:null);
+    $this->classes_selected=isset($_POST['classes'])? $_POST['classes']:(isset($_GET['classes'])? $_GET['classes']:null);
+    $this->del_type=isset($_POST['del_type'])? $_POST['del_type']:(isset($_GET['del_type'])? $_GET['del_type']:null);
+    $this->del=isset($_POST['del'])? $_POST['del']:(isset($_GET['del'])? $_GET['del']:null);    
   }
 
   function index () {
