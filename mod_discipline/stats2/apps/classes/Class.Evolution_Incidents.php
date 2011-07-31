@@ -168,10 +168,9 @@ class ClassEvolution_Incidents extends ClassIncidents {
         foreach($incidents as $titre=>$incident) {
           if(!$titre['error']) {
             if (isset($this->mesures_mois[$incident->id_incident])) {
-              foreach($this->mesures_mois[$incident->id_incident] as $protagoniste) {
-                  //var_dump($_SESSION['stats_classes_selected']);
+              foreach($this->mesures_mois[$incident->id_incident] as $protagoniste) {                  
                 foreach($protagoniste as $id_mesure) {
-                  if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels') {
+                  if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels' && !is_null($_SESSION['stats_classes_selected'])) {
                      //on a une classe ou un eleve
                     if($this->is_classe($selection)){
                        if(!$this->is_in_classe($id_mesure->login_ele, $selection)){
@@ -253,14 +252,14 @@ class ClassEvolution_Incidents extends ClassIncidents {
             if (isset($this->sanctions_mois[$incident->id_incident])) {
               foreach($this->sanctions_mois[$incident->id_incident] as $protagoniste) {
                 foreach($protagoniste as $id_sanction) {
-                   if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels') {
+                   if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels' && !is_null($_SESSION['stats_classes_selected'])) {
                      //on a une classe ou un eleve
                     if($this->is_classe($selection)){
                        if(!$this->is_in_classe($id_sanction->login, $selection)){
-                         break;  //la mesure ne correspond pas à un eleve de la classe
+                         break;  //la sanction ne correspond pas à un eleve de la classe
                        }
                     }else{
-                        //on a un eleve on verifie si la mesure est à lui
+                        //on a un eleve on verifie si la sanction est à lui
                         if($id_sanction->login!=$selection)break;
                     }
                   }
@@ -331,14 +330,14 @@ class ClassEvolution_Incidents extends ClassIncidents {
                   $this->totaux_par_type[$selection][$protagoniste->qualite]=0;
                   $this->liste_type[]=$protagoniste->qualite;
                 }
-                if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels') {
+                if($selection !='L\'Etablissement' && $selection !='Tous les élèves'&& $selection !='Tous les personnels' && !is_null($_SESSION['stats_classes_selected'])) {
                      //on a une classe ou un eleve
                     if($this->is_classe($selection)){
                        if(!$this->is_in_classe($protagoniste->login, $selection)){
-                         break;  //la mesure ne correspond pas à un eleve de la classe
+                         break;  //le rôle ne correspond pas à un eleve de la classe
                        }
                     }else{
-                        //on a un eleve on verifie si la mesure est à lui
+                        //on a un eleve on verifie si le rôle est à lui
                         if($protagoniste->login!=$selection)break;
                     }
                   }
