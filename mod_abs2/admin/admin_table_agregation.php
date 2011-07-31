@@ -77,7 +77,8 @@ echo "</p>";
                     }
                     $eleve_col = EleveQuery::create()->paginate($page, $maxPerPage);
                     echo'<div id="contain_div" class="css-panes">
-                        <p> Traitement de la tranche d\'élève ' . $page . '/' . $eleve_col->getLastPage() . ' en cours <br /></p>
+                        <p> Traitement de la tranche d\'élève ' . $page . '/' . $eleve_col->getLastPage() . ' en cours... <br />
+                            Attention cette opération peut être longue.</p>
                          </div>';
                     ob_flush();
                     flush();
