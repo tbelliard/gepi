@@ -52,8 +52,8 @@ class AncienEtablissementTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('JEleveAncienEtablissement', 'JEleveAncienEtablissement', RelationMap::ONE_TO_MANY, array('id' => 'id_etablissement', ), 'CASCADE', null);
-		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('JEleveAncienEtablissement', 'JEleveAncienEtablissement', RelationMap::ONE_TO_MANY, array('id' => 'id_etablissement', ), 'CASCADE', null, 'JEleveAncienEtablissements');
+		$this->addRelation('Eleve', 'Eleve', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'Eleves');
 	} // buildRelations()
 
 } // AncienEtablissementTableMap

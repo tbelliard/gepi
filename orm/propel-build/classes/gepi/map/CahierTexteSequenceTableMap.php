@@ -49,9 +49,9 @@ class CahierTexteSequenceTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('CahierTexteCompteRendu', 'CahierTexteCompteRendu', RelationMap::ONE_TO_MANY, array('id' => 'id_sequence', ), 'SET NULL', null);
-		$this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::ONE_TO_MANY, array('id' => 'id_sequence', ), 'SET NULL', null);
-		$this->addRelation('CahierTexteNoticePrivee', 'CahierTexteNoticePrivee', RelationMap::ONE_TO_MANY, array('id' => 'id_sequence', ), 'SET NULL', null);
+		$this->addRelation('CahierTexteCompteRendu', 'CahierTexteCompteRendu', RelationMap::ONE_TO_MANY, array('id' => 'id_sequence', ), 'SET NULL', null, 'CahierTexteCompteRendus');
+		$this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::ONE_TO_MANY, array('id' => 'id_sequence', ), 'SET NULL', null, 'CahierTexteTravailAFaires');
+		$this->addRelation('CahierTexteNoticePrivee', 'CahierTexteNoticePrivee', RelationMap::ONE_TO_MANY, array('id' => 'id_sequence', ), 'SET NULL', null, 'CahierTexteNoticePrivees');
 	} // buildRelations()
 
 } // CahierTexteSequenceTableMap

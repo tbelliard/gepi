@@ -61,7 +61,7 @@ class AidConfigurationTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('AidDetails', 'AidDetails', RelationMap::ONE_TO_MANY, array('indice_aid' => 'indice_aid', ), 'CASCADE', null);
+		$this->addRelation('AidDetails', 'AidDetails', RelationMap::ONE_TO_MANY, array('indice_aid' => 'indice_aid', ), 'CASCADE', null, 'AidDetailss');
 	} // buildRelations()
 
 } // AidConfigurationTableMap

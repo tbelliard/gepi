@@ -50,8 +50,8 @@ class AbsenceEleveLieuTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('AbsenceEleveType', 'AbsenceEleveType', RelationMap::ONE_TO_MANY, array('id' => 'id_lieu', ), 'SET NULL', null);
-		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_lieu', ), 'SET NULL', null);
+		$this->addRelation('AbsenceEleveType', 'AbsenceEleveType', RelationMap::ONE_TO_MANY, array('id' => 'id_lieu', ), 'SET NULL', null, 'AbsenceEleveTypes');
+		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id' => 'id_lieu', ), 'SET NULL', null, 'AbsenceEleveSaisies');
 	} // buildRelations()
 
 	/**

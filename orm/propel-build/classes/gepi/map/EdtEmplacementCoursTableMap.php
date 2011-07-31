@@ -64,7 +64,7 @@ class EdtEmplacementCoursTableMap extends TableMap
 		$this->addRelation('EdtCreneau', 'EdtCreneau', RelationMap::MANY_TO_ONE, array('id_definie_periode' => 'id_definie_periode', ), 'CASCADE', null);
 		$this->addRelation('EdtCalendrierPeriode', 'EdtCalendrierPeriode', RelationMap::MANY_TO_ONE, array('id_calendrier' => 'id_calendrier', ), 'SET NULL', null);
 		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('login_prof' => 'login', ), 'SET NULL', null);
-		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id_cours' => 'id_edt_emplacement_cours', ), 'SET NULL', null);
+		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id_cours' => 'id_edt_emplacement_cours', ), 'SET NULL', null, 'AbsenceEleveSaisies');
 	} // buildRelations()
 
 } // EdtEmplacementCoursTableMap

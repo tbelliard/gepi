@@ -74,9 +74,9 @@ class AbsenceEleveSaisieTableMap extends TableMap
 		$this->addRelation('Classe', 'Classe', RelationMap::MANY_TO_ONE, array('id_classe' => 'id', ), 'SET NULL', null);
 		$this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_ONE, array('id_aid' => 'id', ), 'SET NULL', null);
 		$this->addRelation('AbsenceEleveLieu', 'AbsenceEleveLieu', RelationMap::MANY_TO_ONE, array('id_lieu' => 'id', ), 'SET NULL', null);
-		$this->addRelation('JTraitementSaisieEleve', 'JTraitementSaisieEleve', RelationMap::ONE_TO_MANY, array('id' => 'a_saisie_id', ), 'CASCADE', null);
-		$this->addRelation('AbsenceEleveSaisieVersion', 'AbsenceEleveSaisieVersion', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null);
-		$this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('JTraitementSaisieEleve', 'JTraitementSaisieEleve', RelationMap::ONE_TO_MANY, array('id' => 'a_saisie_id', ), 'CASCADE', null, 'JTraitementSaisieEleves');
+		$this->addRelation('AbsenceEleveSaisieVersion', 'AbsenceEleveSaisieVersion', RelationMap::ONE_TO_MANY, array('id' => 'id', ), 'CASCADE', null, 'AbsenceEleveSaisieVersions');
+		$this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'AbsenceEleveTraitements');
 	} // buildRelations()
 
 	/**

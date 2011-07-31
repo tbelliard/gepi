@@ -57,9 +57,9 @@ class ResponsableEleveTableMap extends TableMap
 	public function buildRelations()
 	{
 		$this->addRelation('ResponsableEleveAdresse', 'ResponsableEleveAdresse', RelationMap::MANY_TO_ONE, array('adr_id' => 'adr_id', ), 'SET NULL', null);
-		$this->addRelation('ResponsableInformation', 'ResponsableInformation', RelationMap::ONE_TO_MANY, array('pers_id' => 'pers_id', ), 'CASCADE', null);
-		$this->addRelation('JNotificationResponsableEleve', 'JNotificationResponsableEleve', RelationMap::ONE_TO_MANY, array('pers_id' => 'pers_id', ), 'CASCADE', null);
-		$this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('ResponsableInformation', 'ResponsableInformation', RelationMap::ONE_TO_MANY, array('pers_id' => 'pers_id', ), 'CASCADE', null, 'ResponsableInformations');
+		$this->addRelation('JNotificationResponsableEleve', 'JNotificationResponsableEleve', RelationMap::ONE_TO_MANY, array('pers_id' => 'pers_id', ), 'CASCADE', null, 'JNotificationResponsableEleves');
+		$this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'AbsenceEleveNotifications');
 	} // buildRelations()
 
 } // ResponsableEleveTableMap

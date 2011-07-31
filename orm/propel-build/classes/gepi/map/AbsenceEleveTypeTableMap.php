@@ -59,8 +59,8 @@ class AbsenceEleveTypeTableMap extends TableMap
 	public function buildRelations()
 	{
 		$this->addRelation('AbsenceEleveLieu', 'AbsenceEleveLieu', RelationMap::MANY_TO_ONE, array('id_lieu' => 'id', ), 'SET NULL', null);
-		$this->addRelation('AbsenceEleveTypeStatutAutorise', 'AbsenceEleveTypeStatutAutorise', RelationMap::ONE_TO_MANY, array('id' => 'id_a_type', ), 'CASCADE', null);
-		$this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('id' => 'a_type_id', ), 'SET NULL', null);
+		$this->addRelation('AbsenceEleveTypeStatutAutorise', 'AbsenceEleveTypeStatutAutorise', RelationMap::ONE_TO_MANY, array('id' => 'id_a_type', ), 'CASCADE', null, 'AbsenceEleveTypeStatutAutorises');
+		$this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('id' => 'a_type_id', ), 'SET NULL', null, 'AbsenceEleveTraitements');
 	} // buildRelations()
 
 	/**

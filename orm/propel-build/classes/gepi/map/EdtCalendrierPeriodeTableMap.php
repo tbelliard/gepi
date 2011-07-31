@@ -58,7 +58,7 @@ class EdtCalendrierPeriodeTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id_calendrier' => 'id_calendrier', ), 'SET NULL', null);
+		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id_calendrier' => 'id_calendrier', ), 'SET NULL', null, 'EdtEmplacementCourss');
 	} // buildRelations()
 
 } // EdtCalendrierPeriodeTableMap

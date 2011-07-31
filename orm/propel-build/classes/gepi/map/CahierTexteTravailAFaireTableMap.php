@@ -57,7 +57,7 @@ class CahierTexteTravailAFaireTableMap extends TableMap
 		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
 		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_login' => 'login', ), 'SET NULL', null);
 		$this->addRelation('CahierTexteSequence', 'CahierTexteSequence', RelationMap::MANY_TO_ONE, array('id_sequence' => 'id', ), 'SET NULL', null);
-		$this->addRelation('CahierTexteTravailAFaireFichierJoint', 'CahierTexteTravailAFaireFichierJoint', RelationMap::ONE_TO_MANY, array('id_ct' => 'id_ct_devoir', ), 'CASCADE', null);
+		$this->addRelation('CahierTexteTravailAFaireFichierJoint', 'CahierTexteTravailAFaireFichierJoint', RelationMap::ONE_TO_MANY, array('id_ct' => 'id_ct_devoir', ), 'CASCADE', null, 'CahierTexteTravailAFaireFichierJoints');
 	} // buildRelations()
 
 } // CahierTexteTravailAFaireTableMap

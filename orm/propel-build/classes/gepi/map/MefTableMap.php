@@ -51,7 +51,7 @@ class MefTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('Eleve', 'Eleve', RelationMap::ONE_TO_MANY, array('id' => 'id_mef', ), 'SET NULL', null);
+		$this->addRelation('Eleve', 'Eleve', RelationMap::ONE_TO_MANY, array('id' => 'id_mef', ), 'SET NULL', null, 'Eleves');
 	} // buildRelations()
 
 } // MefTableMap

@@ -52,7 +52,7 @@ class AbsenceEleveJustificationTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('id' => 'a_justification_id', ), 'SET NULL', null);
+		$this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('id' => 'a_justification_id', ), 'SET NULL', null, 'AbsenceEleveTraitements');
 	} // buildRelations()
 
 	/**

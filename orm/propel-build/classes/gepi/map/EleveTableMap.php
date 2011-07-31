@@ -61,21 +61,21 @@ class EleveTableMap extends TableMap
 	public function buildRelations()
 	{
 		$this->addRelation('Mef', 'Mef', RelationMap::MANY_TO_ONE, array('id_mef' => 'id', ), 'SET NULL', null);
-		$this->addRelation('JEleveClasse', 'JEleveClasse', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
-		$this->addRelation('JEleveCpe', 'JEleveCpe', RelationMap::ONE_TO_MANY, array('login' => 'e_login', ), 'CASCADE', null);
-		$this->addRelation('JEleveGroupe', 'JEleveGroupe', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
-		$this->addRelation('JEleveProfesseurPrincipal', 'JEleveProfesseurPrincipal', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
+		$this->addRelation('JEleveClasse', 'JEleveClasse', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null, 'JEleveClasses');
+		$this->addRelation('JEleveCpe', 'JEleveCpe', RelationMap::ONE_TO_MANY, array('login' => 'e_login', ), 'CASCADE', null, 'JEleveCpes');
+		$this->addRelation('JEleveGroupe', 'JEleveGroupe', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null, 'JEleveGroupes');
+		$this->addRelation('JEleveProfesseurPrincipal', 'JEleveProfesseurPrincipal', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null, 'JEleveProfesseurPrincipals');
 		$this->addRelation('EleveRegimeDoublant', 'EleveRegimeDoublant', RelationMap::ONE_TO_ONE, array('login' => 'login', ), 'CASCADE', null);
-		$this->addRelation('ResponsableInformation', 'ResponsableInformation', RelationMap::ONE_TO_MANY, array('ele_id' => 'ele_id', ), 'CASCADE', null);
-		$this->addRelation('JEleveAncienEtablissement', 'JEleveAncienEtablissement', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
-		$this->addRelation('JAidEleves', 'JAidEleves', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
-		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id_eleve' => 'eleve_id', ), 'CASCADE', null);
-		$this->addRelation('AbsenceAgregationDecompte', 'AbsenceAgregationDecompte', RelationMap::ONE_TO_MANY, array('id_eleve' => 'eleve_id', ), 'CASCADE', null);
-		$this->addRelation('CreditEcts', 'CreditEcts', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
-		$this->addRelation('CreditEctsGlobal', 'CreditEctsGlobal', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null);
-		$this->addRelation('ArchiveEcts', 'ArchiveEcts', RelationMap::ONE_TO_MANY, array('no_gep' => 'ine', ), 'CASCADE', null);
-		$this->addRelation('AncienEtablissement', 'AncienEtablissement', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
-		$this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null);
+		$this->addRelation('ResponsableInformation', 'ResponsableInformation', RelationMap::ONE_TO_MANY, array('ele_id' => 'ele_id', ), 'CASCADE', null, 'ResponsableInformations');
+		$this->addRelation('JEleveAncienEtablissement', 'JEleveAncienEtablissement', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null, 'JEleveAncienEtablissements');
+		$this->addRelation('JAidEleves', 'JAidEleves', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null, 'JAidElevess');
+		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('id_eleve' => 'eleve_id', ), 'CASCADE', null, 'AbsenceEleveSaisies');
+		$this->addRelation('AbsenceAgregationDecompte', 'AbsenceAgregationDecompte', RelationMap::ONE_TO_MANY, array('id_eleve' => 'eleve_id', ), 'CASCADE', null, 'AbsenceAgregationDecomptes');
+		$this->addRelation('CreditEcts', 'CreditEcts', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null, 'CreditEctss');
+		$this->addRelation('CreditEctsGlobal', 'CreditEctsGlobal', RelationMap::ONE_TO_MANY, array('id_eleve' => 'id_eleve', ), 'CASCADE', null, 'CreditEctsGlobals');
+		$this->addRelation('ArchiveEcts', 'ArchiveEcts', RelationMap::ONE_TO_MANY, array('no_gep' => 'ine', ), 'CASCADE', null, 'ArchiveEctss');
+		$this->addRelation('AncienEtablissement', 'AncienEtablissement', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'AncienEtablissements');
+		$this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_MANY, array(), 'CASCADE', null, 'AidDetailss');
 	} // buildRelations()
 
 } // EleveTableMap

@@ -65,24 +65,24 @@ class UtilisateurProfessionnelTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('JGroupesProfesseurs', 'JGroupesProfesseurs', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
-		$this->addRelation('JScolClasses', 'JScolClasses', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
-		$this->addRelation('CahierTexteCompteRendu', 'CahierTexteCompteRendu', RelationMap::ONE_TO_MANY, array('login' => 'id_login', ), 'SET NULL', null);
-		$this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::ONE_TO_MANY, array('login' => 'id_login', ), 'SET NULL', null);
-		$this->addRelation('CahierTexteNoticePrivee', 'CahierTexteNoticePrivee', RelationMap::ONE_TO_MANY, array('login' => 'id_login', ), 'SET NULL', null);
-		$this->addRelation('JEleveCpe', 'JEleveCpe', RelationMap::ONE_TO_MANY, array('login' => 'cpe_login', ), 'CASCADE', null);
-		$this->addRelation('JEleveProfesseurPrincipal', 'JEleveProfesseurPrincipal', RelationMap::ONE_TO_MANY, array('login' => 'professeur', ), 'CASCADE', null);
-		$this->addRelation('JAidUtilisateursProfessionnels', 'JAidUtilisateursProfessionnels', RelationMap::ONE_TO_MANY, array('login' => 'id_utilisateur', ), 'CASCADE', null);
-		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('login' => 'utilisateur_id', ), null, null);
-		$this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('login' => 'utilisateur_id', ), null, null);
-		$this->addRelation('ModifiedAbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('login' => 'modifie_par_utilisateur_id', ), null, null);
-		$this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::ONE_TO_MANY, array('login' => 'utilisateur_id', ), 'SET NULL', null);
-		$this->addRelation('JProfesseursMatieres', 'JProfesseursMatieres', RelationMap::ONE_TO_MANY, array('login' => 'id_professeur', ), null, null);
-		$this->addRelation('PreferenceUtilisateurProfessionnel', 'PreferenceUtilisateurProfessionnel', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null);
-		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('login' => 'login_prof', ), 'SET NULL', null);
-		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
-		$this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
-		$this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null);
+		$this->addRelation('JGroupesProfesseurs', 'JGroupesProfesseurs', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null, 'JGroupesProfesseurss');
+		$this->addRelation('JScolClasses', 'JScolClasses', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null, 'JScolClassess');
+		$this->addRelation('CahierTexteCompteRendu', 'CahierTexteCompteRendu', RelationMap::ONE_TO_MANY, array('login' => 'id_login', ), 'SET NULL', null, 'CahierTexteCompteRendus');
+		$this->addRelation('CahierTexteTravailAFaire', 'CahierTexteTravailAFaire', RelationMap::ONE_TO_MANY, array('login' => 'id_login', ), 'SET NULL', null, 'CahierTexteTravailAFaires');
+		$this->addRelation('CahierTexteNoticePrivee', 'CahierTexteNoticePrivee', RelationMap::ONE_TO_MANY, array('login' => 'id_login', ), 'SET NULL', null, 'CahierTexteNoticePrivees');
+		$this->addRelation('JEleveCpe', 'JEleveCpe', RelationMap::ONE_TO_MANY, array('login' => 'cpe_login', ), 'CASCADE', null, 'JEleveCpes');
+		$this->addRelation('JEleveProfesseurPrincipal', 'JEleveProfesseurPrincipal', RelationMap::ONE_TO_MANY, array('login' => 'professeur', ), 'CASCADE', null, 'JEleveProfesseurPrincipals');
+		$this->addRelation('JAidUtilisateursProfessionnels', 'JAidUtilisateursProfessionnels', RelationMap::ONE_TO_MANY, array('login' => 'id_utilisateur', ), 'CASCADE', null, 'JAidUtilisateursProfessionnelss');
+		$this->addRelation('AbsenceEleveSaisie', 'AbsenceEleveSaisie', RelationMap::ONE_TO_MANY, array('login' => 'utilisateur_id', ), null, null, 'AbsenceEleveSaisies');
+		$this->addRelation('AbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('login' => 'utilisateur_id', ), null, null, 'AbsenceEleveTraitements');
+		$this->addRelation('ModifiedAbsenceEleveTraitement', 'AbsenceEleveTraitement', RelationMap::ONE_TO_MANY, array('login' => 'modifie_par_utilisateur_id', ), null, null, 'ModifiedAbsenceEleveTraitements');
+		$this->addRelation('AbsenceEleveNotification', 'AbsenceEleveNotification', RelationMap::ONE_TO_MANY, array('login' => 'utilisateur_id', ), 'SET NULL', null, 'AbsenceEleveNotifications');
+		$this->addRelation('JProfesseursMatieres', 'JProfesseursMatieres', RelationMap::ONE_TO_MANY, array('login' => 'id_professeur', ), null, null, 'JProfesseursMatieress');
+		$this->addRelation('PreferenceUtilisateurProfessionnel', 'PreferenceUtilisateurProfessionnel', RelationMap::ONE_TO_MANY, array('login' => 'login', ), 'CASCADE', null, 'PreferenceUtilisateurProfessionnels');
+		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('login' => 'login_prof', ), 'SET NULL', null, 'EdtEmplacementCourss');
+		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null, 'Groupes');
+		$this->addRelation('AidDetails', 'AidDetails', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null, 'AidDetailss');
+		$this->addRelation('Matiere', 'Matiere', RelationMap::MANY_TO_MANY, array(), 'SET NULL', null, 'Matieres');
 	} // buildRelations()
 
 } // UtilisateurProfessionnelTableMap

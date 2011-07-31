@@ -53,10 +53,10 @@ class MatiereTableMap extends TableMap
 	public function buildRelations()
 	{
 		$this->addRelation('CategorieMatiere', 'CategorieMatiere', RelationMap::MANY_TO_ONE, array('categorie_id' => 'id', ), null, null);
-		$this->addRelation('JGroupesMatieres', 'JGroupesMatieres', RelationMap::ONE_TO_MANY, array('matiere' => 'id_matiere', ), 'CASCADE', null);
-		$this->addRelation('JProfesseursMatieres', 'JProfesseursMatieres', RelationMap::ONE_TO_MANY, array('matiere' => 'id_matiere', ), null, null);
-		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_MANY, array(), null, null);
-		$this->addRelation('Professeur', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), null, null);
+		$this->addRelation('JGroupesMatieres', 'JGroupesMatieres', RelationMap::ONE_TO_MANY, array('matiere' => 'id_matiere', ), 'CASCADE', null, 'JGroupesMatieress');
+		$this->addRelation('JProfesseursMatieres', 'JProfesseursMatieres', RelationMap::ONE_TO_MANY, array('matiere' => 'id_matiere', ), null, null, 'JProfesseursMatieress');
+		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_MANY, array(), null, null, 'Groupes');
+		$this->addRelation('Professeur', 'UtilisateurProfessionnel', RelationMap::MANY_TO_MANY, array(), null, null, 'Professeurs');
 	} // buildRelations()
 
 } // MatiereTableMap

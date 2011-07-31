@@ -58,7 +58,7 @@ class CahierTexteCompteRenduTableMap extends TableMap
 		$this->addRelation('Groupe', 'Groupe', RelationMap::MANY_TO_ONE, array('id_groupe' => 'id', ), 'CASCADE', null);
 		$this->addRelation('UtilisateurProfessionnel', 'UtilisateurProfessionnel', RelationMap::MANY_TO_ONE, array('id_login' => 'login', ), 'SET NULL', null);
 		$this->addRelation('CahierTexteSequence', 'CahierTexteSequence', RelationMap::MANY_TO_ONE, array('id_sequence' => 'id', ), 'SET NULL', null);
-		$this->addRelation('CahierTexteCompteRenduFichierJoint', 'CahierTexteCompteRenduFichierJoint', RelationMap::ONE_TO_MANY, array('id_ct' => 'id_ct', ), 'CASCADE', null);
+		$this->addRelation('CahierTexteCompteRenduFichierJoint', 'CahierTexteCompteRenduFichierJoint', RelationMap::ONE_TO_MANY, array('id_ct' => 'id_ct', ), 'CASCADE', null, 'CahierTexteCompteRenduFichierJoints');
 	} // buildRelations()
 
 } // CahierTexteCompteRenduTableMap

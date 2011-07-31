@@ -49,7 +49,7 @@ class EdtSalleTableMap extends TableMap
 	 */
 	public function buildRelations()
 	{
-		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id_salle' => 'id_salle', ), 'SET NULL', null);
+		$this->addRelation('EdtEmplacementCours', 'EdtEmplacementCours', RelationMap::ONE_TO_MANY, array('id_salle' => 'id_salle', ), 'SET NULL', null, 'EdtEmplacementCourss');
 	} // buildRelations()
 
 } // EdtSalleTableMap
