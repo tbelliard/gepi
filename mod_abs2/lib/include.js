@@ -121,3 +121,8 @@ function postwindow(the_form,title){
  }
  Windows.addObserver(myObserver); 
 }
+
+function postform(the_form){ 
+ my_form = eval(the_form)
+ my_form.submit();
+}
