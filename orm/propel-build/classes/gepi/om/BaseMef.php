@@ -31,10 +31,10 @@ abstract class BaseMef extends BaseObject  implements Persistent
 	protected $id;
 
 	/**
-	 * The value for the ext_id field.
+	 * The value for the mef_code field.
 	 * @var        int
 	 */
-	protected $ext_id;
+	protected $mef_code;
 
 	/**
 	 * The value for the libelle_court field.
@@ -84,13 +84,13 @@ abstract class BaseMef extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [ext_id] column value.
+	 * Get the [mef_code] column value.
 	 * Numero de la nomenclature officielle (numero MEF)
 	 * @return     int
 	 */
-	public function getExtId()
+	public function getMefCode()
 	{
-		return $this->ext_id;
+		return $this->mef_code;
 	}
 
 	/**
@@ -144,24 +144,24 @@ abstract class BaseMef extends BaseObject  implements Persistent
 	} // setId()
 
 	/**
-	 * Set the value of [ext_id] column.
+	 * Set the value of [mef_code] column.
 	 * Numero de la nomenclature officielle (numero MEF)
 	 * @param      int $v new value
 	 * @return     Mef The current object (for fluent API support)
 	 */
-	public function setExtId($v)
+	public function setMefCode($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->ext_id !== $v) {
-			$this->ext_id = $v;
-			$this->modifiedColumns[] = MefPeer::EXT_ID;
+		if ($this->mef_code !== $v) {
+			$this->mef_code = $v;
+			$this->modifiedColumns[] = MefPeer::MEF_CODE;
 		}
 
 		return $this;
-	} // setExtId()
+	} // setMefCode()
 
 	/**
 	 * Set the value of [libelle_court] column.
@@ -256,7 +256,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 		try {
 
 			$this->id = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-			$this->ext_id = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+			$this->mef_code = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
 			$this->libelle_court = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
 			$this->libelle_long = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
 			$this->libelle_edition = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
@@ -589,7 +589,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 				return $this->getId();
 				break;
 			case 1:
-				return $this->getExtId();
+				return $this->getMefCode();
 				break;
 			case 2:
 				return $this->getLibelleCourt();
@@ -630,7 +630,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 		$keys = MefPeer::getFieldNames($keyType);
 		$result = array(
 			$keys[0] => $this->getId(),
-			$keys[1] => $this->getExtId(),
+			$keys[1] => $this->getMefCode(),
 			$keys[2] => $this->getLibelleCourt(),
 			$keys[3] => $this->getLibelleLong(),
 			$keys[4] => $this->getLibelleEdition(),
@@ -674,7 +674,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 				$this->setId($value);
 				break;
 			case 1:
-				$this->setExtId($value);
+				$this->setMefCode($value);
 				break;
 			case 2:
 				$this->setLibelleCourt($value);
@@ -710,7 +710,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 		$keys = MefPeer::getFieldNames($keyType);
 
 		if (array_key_exists($keys[0], $arr)) $this->setId($arr[$keys[0]]);
-		if (array_key_exists($keys[1], $arr)) $this->setExtId($arr[$keys[1]]);
+		if (array_key_exists($keys[1], $arr)) $this->setMefCode($arr[$keys[1]]);
 		if (array_key_exists($keys[2], $arr)) $this->setLibelleCourt($arr[$keys[2]]);
 		if (array_key_exists($keys[3], $arr)) $this->setLibelleLong($arr[$keys[3]]);
 		if (array_key_exists($keys[4], $arr)) $this->setLibelleEdition($arr[$keys[4]]);
@@ -726,7 +726,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 		$criteria = new Criteria(MefPeer::DATABASE_NAME);
 
 		if ($this->isColumnModified(MefPeer::ID)) $criteria->add(MefPeer::ID, $this->id);
-		if ($this->isColumnModified(MefPeer::EXT_ID)) $criteria->add(MefPeer::EXT_ID, $this->ext_id);
+		if ($this->isColumnModified(MefPeer::MEF_CODE)) $criteria->add(MefPeer::MEF_CODE, $this->mef_code);
 		if ($this->isColumnModified(MefPeer::LIBELLE_COURT)) $criteria->add(MefPeer::LIBELLE_COURT, $this->libelle_court);
 		if ($this->isColumnModified(MefPeer::LIBELLE_LONG)) $criteria->add(MefPeer::LIBELLE_LONG, $this->libelle_long);
 		if ($this->isColumnModified(MefPeer::LIBELLE_EDITION)) $criteria->add(MefPeer::LIBELLE_EDITION, $this->libelle_edition);
@@ -792,7 +792,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 	 */
 	public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
 	{
-		$copyObj->setExtId($this->getExtId());
+		$copyObj->setMefCode($this->getMefCode());
 		$copyObj->setLibelleCourt($this->getLibelleCourt());
 		$copyObj->setLibelleLong($this->getLibelleLong());
 		$copyObj->setLibelleEdition($this->getLibelleEdition());
@@ -991,7 +991,7 @@ abstract class BaseMef extends BaseObject  implements Persistent
 	public function clear()
 	{
 		$this->id = null;
-		$this->ext_id = null;
+		$this->mef_code = null;
 		$this->libelle_court = null;
 		$this->libelle_long = null;
 		$this->libelle_edition = null;

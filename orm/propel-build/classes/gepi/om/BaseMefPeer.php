@@ -37,8 +37,8 @@ abstract class BaseMefPeer {
 	/** the column name for the ID field */
 	const ID = 'mef.ID';
 
-	/** the column name for the EXT_ID field */
-	const EXT_ID = 'mef.EXT_ID';
+	/** the column name for the MEF_CODE field */
+	const MEF_CODE = 'mef.MEF_CODE';
 
 	/** the column name for the LIBELLE_COURT field */
 	const LIBELLE_COURT = 'mef.LIBELLE_COURT';
@@ -68,11 +68,11 @@ abstract class BaseMefPeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('Id', 'ExtId', 'LibelleCourt', 'LibelleLong', 'LibelleEdition', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'extId', 'libelleCourt', 'libelleLong', 'libelleEdition', ),
-		BasePeer::TYPE_COLNAME => array (self::ID, self::EXT_ID, self::LIBELLE_COURT, self::LIBELLE_LONG, self::LIBELLE_EDITION, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'EXT_ID', 'LIBELLE_COURT', 'LIBELLE_LONG', 'LIBELLE_EDITION', ),
-		BasePeer::TYPE_FIELDNAME => array ('id', 'ext_id', 'libelle_court', 'libelle_long', 'libelle_edition', ),
+		BasePeer::TYPE_PHPNAME => array ('Id', 'MefCode', 'LibelleCourt', 'LibelleLong', 'LibelleEdition', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id', 'mefCode', 'libelleCourt', 'libelleLong', 'libelleEdition', ),
+		BasePeer::TYPE_COLNAME => array (self::ID, self::MEF_CODE, self::LIBELLE_COURT, self::LIBELLE_LONG, self::LIBELLE_EDITION, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID', 'MEF_CODE', 'LIBELLE_COURT', 'LIBELLE_LONG', 'LIBELLE_EDITION', ),
+		BasePeer::TYPE_FIELDNAME => array ('id', 'mef_code', 'libelle_court', 'libelle_long', 'libelle_edition', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
 	);
 
@@ -83,11 +83,11 @@ abstract class BaseMefPeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'ExtId' => 1, 'LibelleCourt' => 2, 'LibelleLong' => 3, 'LibelleEdition' => 4, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'extId' => 1, 'libelleCourt' => 2, 'libelleLong' => 3, 'libelleEdition' => 4, ),
-		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::EXT_ID => 1, self::LIBELLE_COURT => 2, self::LIBELLE_LONG => 3, self::LIBELLE_EDITION => 4, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'EXT_ID' => 1, 'LIBELLE_COURT' => 2, 'LIBELLE_LONG' => 3, 'LIBELLE_EDITION' => 4, ),
-		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'ext_id' => 1, 'libelle_court' => 2, 'libelle_long' => 3, 'libelle_edition' => 4, ),
+		BasePeer::TYPE_PHPNAME => array ('Id' => 0, 'MefCode' => 1, 'LibelleCourt' => 2, 'LibelleLong' => 3, 'LibelleEdition' => 4, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('id' => 0, 'mefCode' => 1, 'libelleCourt' => 2, 'libelleLong' => 3, 'libelleEdition' => 4, ),
+		BasePeer::TYPE_COLNAME => array (self::ID => 0, self::MEF_CODE => 1, self::LIBELLE_COURT => 2, self::LIBELLE_LONG => 3, self::LIBELLE_EDITION => 4, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('ID' => 0, 'MEF_CODE' => 1, 'LIBELLE_COURT' => 2, 'LIBELLE_LONG' => 3, 'LIBELLE_EDITION' => 4, ),
+		BasePeer::TYPE_FIELDNAME => array ('id' => 0, 'mef_code' => 1, 'libelle_court' => 2, 'libelle_long' => 3, 'libelle_edition' => 4, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, )
 	);
 
@@ -161,13 +161,13 @@ abstract class BaseMefPeer {
 	{
 		if (null === $alias) {
 			$criteria->addSelectColumn(MefPeer::ID);
-			$criteria->addSelectColumn(MefPeer::EXT_ID);
+			$criteria->addSelectColumn(MefPeer::MEF_CODE);
 			$criteria->addSelectColumn(MefPeer::LIBELLE_COURT);
 			$criteria->addSelectColumn(MefPeer::LIBELLE_LONG);
 			$criteria->addSelectColumn(MefPeer::LIBELLE_EDITION);
 		} else {
 			$criteria->addSelectColumn($alias . '.ID');
-			$criteria->addSelectColumn($alias . '.EXT_ID');
+			$criteria->addSelectColumn($alias . '.MEF_CODE');
 			$criteria->addSelectColumn($alias . '.LIBELLE_COURT');
 			$criteria->addSelectColumn($alias . '.LIBELLE_LONG');
 			$criteria->addSelectColumn($alias . '.LIBELLE_EDITION');
@@ -700,8 +700,8 @@ abstract class BaseMefPeer {
 			// set fkey col in related Eleve rows to NULL
 			$selectCriteria = new Criteria(MefPeer::DATABASE_NAME);
 			$updateValues = new Criteria(MefPeer::DATABASE_NAME);
-			$selectCriteria->add(ElevePeer::ID_MEF, $obj->getId());
-			$updateValues->add(ElevePeer::ID_MEF, null);
+			$selectCriteria->add(ElevePeer::MEF_CODE, $obj->getMefCode());
+			$updateValues->add(ElevePeer::MEF_CODE, null);
 
 			BasePeer::doUpdate($selectCriteria, $updateValues, $con); // use BasePeer because generated Peer doUpdate() methods only update using pkey
 

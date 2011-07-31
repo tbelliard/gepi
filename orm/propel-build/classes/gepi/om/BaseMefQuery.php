@@ -7,13 +7,13 @@
  * Module élémentaire de formation
  *
  * @method     MefQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     MefQuery orderByExtId($order = Criteria::ASC) Order by the ext_id column
+ * @method     MefQuery orderByMefCode($order = Criteria::ASC) Order by the mef_code column
  * @method     MefQuery orderByLibelleCourt($order = Criteria::ASC) Order by the libelle_court column
  * @method     MefQuery orderByLibelleLong($order = Criteria::ASC) Order by the libelle_long column
  * @method     MefQuery orderByLibelleEdition($order = Criteria::ASC) Order by the libelle_edition column
  *
  * @method     MefQuery groupById() Group by the id column
- * @method     MefQuery groupByExtId() Group by the ext_id column
+ * @method     MefQuery groupByMefCode() Group by the mef_code column
  * @method     MefQuery groupByLibelleCourt() Group by the libelle_court column
  * @method     MefQuery groupByLibelleLong() Group by the libelle_long column
  * @method     MefQuery groupByLibelleEdition() Group by the libelle_edition column
@@ -30,13 +30,13 @@
  * @method     Mef findOneOrCreate(PropelPDO $con = null) Return the first Mef matching the query, or a new Mef object populated from the query conditions when no match is found
  *
  * @method     Mef findOneById(int $id) Return the first Mef filtered by the id column
- * @method     Mef findOneByExtId(int $ext_id) Return the first Mef filtered by the ext_id column
+ * @method     Mef findOneByMefCode(int $mef_code) Return the first Mef filtered by the mef_code column
  * @method     Mef findOneByLibelleCourt(string $libelle_court) Return the first Mef filtered by the libelle_court column
  * @method     Mef findOneByLibelleLong(string $libelle_long) Return the first Mef filtered by the libelle_long column
  * @method     Mef findOneByLibelleEdition(string $libelle_edition) Return the first Mef filtered by the libelle_edition column
  *
  * @method     array findById(int $id) Return Mef objects filtered by the id column
- * @method     array findByExtId(int $ext_id) Return Mef objects filtered by the ext_id column
+ * @method     array findByMefCode(int $mef_code) Return Mef objects filtered by the mef_code column
  * @method     array findByLibelleCourt(string $libelle_court) Return Mef objects filtered by the libelle_court column
  * @method     array findByLibelleLong(string $libelle_long) Return Mef objects filtered by the libelle_long column
  * @method     array findByLibelleEdition(string $libelle_edition) Return Mef objects filtered by the libelle_edition column
@@ -176,16 +176,16 @@ abstract class BaseMefQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the ext_id column
+	 * Filter the query on the mef_code column
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByExtId(1234); // WHERE ext_id = 1234
-	 * $query->filterByExtId(array(12, 34)); // WHERE ext_id IN (12, 34)
-	 * $query->filterByExtId(array('min' => 12)); // WHERE ext_id > 12
+	 * $query->filterByMefCode(1234); // WHERE mef_code = 1234
+	 * $query->filterByMefCode(array(12, 34)); // WHERE mef_code IN (12, 34)
+	 * $query->filterByMefCode(array('min' => 12)); // WHERE mef_code > 12
 	 * </code>
 	 *
-	 * @param     mixed $extId The value to use as filter.
+	 * @param     mixed $mefCode The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -193,16 +193,16 @@ abstract class BaseMefQuery extends ModelCriteria
 	 *
 	 * @return    MefQuery The current query, for fluid interface
 	 */
-	public function filterByExtId($extId = null, $comparison = null)
+	public function filterByMefCode($mefCode = null, $comparison = null)
 	{
-		if (is_array($extId)) {
+		if (is_array($mefCode)) {
 			$useMinMax = false;
-			if (isset($extId['min'])) {
-				$this->addUsingAlias(MefPeer::EXT_ID, $extId['min'], Criteria::GREATER_EQUAL);
+			if (isset($mefCode['min'])) {
+				$this->addUsingAlias(MefPeer::MEF_CODE, $mefCode['min'], Criteria::GREATER_EQUAL);
 				$useMinMax = true;
 			}
-			if (isset($extId['max'])) {
-				$this->addUsingAlias(MefPeer::EXT_ID, $extId['max'], Criteria::LESS_EQUAL);
+			if (isset($mefCode['max'])) {
+				$this->addUsingAlias(MefPeer::MEF_CODE, $mefCode['max'], Criteria::LESS_EQUAL);
 				$useMinMax = true;
 			}
 			if ($useMinMax) {
@@ -212,7 +212,7 @@ abstract class BaseMefQuery extends ModelCriteria
 				$comparison = Criteria::IN;
 			}
 		}
-		return $this->addUsingAlias(MefPeer::EXT_ID, $extId, $comparison);
+		return $this->addUsingAlias(MefPeer::MEF_CODE, $mefCode, $comparison);
 	}
 
 	/**
@@ -311,7 +311,7 @@ abstract class BaseMefQuery extends ModelCriteria
 	{
 		if ($eleve instanceof Eleve) {
 			return $this
-				->addUsingAlias(MefPeer::ID, $eleve->getIdMef(), $comparison);
+				->addUsingAlias(MefPeer::MEF_CODE, $eleve->getMefCode(), $comparison);
 		} elseif ($eleve instanceof PropelCollection) {
 			return $this
 				->useEleveQuery()

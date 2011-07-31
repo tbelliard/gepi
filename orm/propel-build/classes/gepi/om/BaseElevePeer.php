@@ -73,8 +73,8 @@ abstract class BaseElevePeer {
 	/** the column name for the DATE_SORTIE field */
 	const DATE_SORTIE = 'eleves.DATE_SORTIE';
 
-	/** the column name for the ID_MEF field */
-	const ID_MEF = 'eleves.ID_MEF';
+	/** the column name for the MEF_CODE field */
+	const MEF_CODE = 'eleves.MEF_CODE';
 
 	/** The default string format for model objects of the related table **/
 	const DEFAULT_STRING_FORMAT = 'YAML';
@@ -95,11 +95,11 @@ abstract class BaseElevePeer {
 	 * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
 	 */
 	protected static $fieldNames = array (
-		BasePeer::TYPE_PHPNAME => array ('NoGep', 'Login', 'Nom', 'Prenom', 'Sexe', 'Naissance', 'LieuNaissance', 'Elenoet', 'Ereno', 'EleId', 'Email', 'IdEleve', 'DateSortie', 'IdMef', ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep', 'login', 'nom', 'prenom', 'sexe', 'naissance', 'lieuNaissance', 'elenoet', 'ereno', 'eleId', 'email', 'idEleve', 'dateSortie', 'idMef', ),
-		BasePeer::TYPE_COLNAME => array (self::NO_GEP, self::LOGIN, self::NOM, self::PRENOM, self::SEXE, self::NAISSANCE, self::LIEU_NAISSANCE, self::ELENOET, self::ERENO, self::ELE_ID, self::EMAIL, self::ID_ELEVE, self::DATE_SORTIE, self::ID_MEF, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('NO_GEP', 'LOGIN', 'NOM', 'PRENOM', 'SEXE', 'NAISSANCE', 'LIEU_NAISSANCE', 'ELENOET', 'ERENO', 'ELE_ID', 'EMAIL', 'ID_ELEVE', 'DATE_SORTIE', 'ID_MEF', ),
-		BasePeer::TYPE_FIELDNAME => array ('no_gep', 'login', 'nom', 'prenom', 'sexe', 'naissance', 'lieu_naissance', 'elenoet', 'ereno', 'ele_id', 'email', 'id_eleve', 'date_sortie', 'id_mef', ),
+		BasePeer::TYPE_PHPNAME => array ('NoGep', 'Login', 'Nom', 'Prenom', 'Sexe', 'Naissance', 'LieuNaissance', 'Elenoet', 'Ereno', 'EleId', 'Email', 'IdEleve', 'DateSortie', 'MefCode', ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep', 'login', 'nom', 'prenom', 'sexe', 'naissance', 'lieuNaissance', 'elenoet', 'ereno', 'eleId', 'email', 'idEleve', 'dateSortie', 'mefCode', ),
+		BasePeer::TYPE_COLNAME => array (self::NO_GEP, self::LOGIN, self::NOM, self::PRENOM, self::SEXE, self::NAISSANCE, self::LIEU_NAISSANCE, self::ELENOET, self::ERENO, self::ELE_ID, self::EMAIL, self::ID_ELEVE, self::DATE_SORTIE, self::MEF_CODE, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('NO_GEP', 'LOGIN', 'NOM', 'PRENOM', 'SEXE', 'NAISSANCE', 'LIEU_NAISSANCE', 'ELENOET', 'ERENO', 'ELE_ID', 'EMAIL', 'ID_ELEVE', 'DATE_SORTIE', 'MEF_CODE', ),
+		BasePeer::TYPE_FIELDNAME => array ('no_gep', 'login', 'nom', 'prenom', 'sexe', 'naissance', 'lieu_naissance', 'elenoet', 'ereno', 'ele_id', 'email', 'id_eleve', 'date_sortie', 'mef_code', ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
 	);
 
@@ -110,11 +110,11 @@ abstract class BaseElevePeer {
 	 * e.g. self::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
 	 */
 	protected static $fieldKeys = array (
-		BasePeer::TYPE_PHPNAME => array ('NoGep' => 0, 'Login' => 1, 'Nom' => 2, 'Prenom' => 3, 'Sexe' => 4, 'Naissance' => 5, 'LieuNaissance' => 6, 'Elenoet' => 7, 'Ereno' => 8, 'EleId' => 9, 'Email' => 10, 'IdEleve' => 11, 'DateSortie' => 12, 'IdMef' => 13, ),
-		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'sexe' => 4, 'naissance' => 5, 'lieuNaissance' => 6, 'elenoet' => 7, 'ereno' => 8, 'eleId' => 9, 'email' => 10, 'idEleve' => 11, 'dateSortie' => 12, 'idMef' => 13, ),
-		BasePeer::TYPE_COLNAME => array (self::NO_GEP => 0, self::LOGIN => 1, self::NOM => 2, self::PRENOM => 3, self::SEXE => 4, self::NAISSANCE => 5, self::LIEU_NAISSANCE => 6, self::ELENOET => 7, self::ERENO => 8, self::ELE_ID => 9, self::EMAIL => 10, self::ID_ELEVE => 11, self::DATE_SORTIE => 12, self::ID_MEF => 13, ),
-		BasePeer::TYPE_RAW_COLNAME => array ('NO_GEP' => 0, 'LOGIN' => 1, 'NOM' => 2, 'PRENOM' => 3, 'SEXE' => 4, 'NAISSANCE' => 5, 'LIEU_NAISSANCE' => 6, 'ELENOET' => 7, 'ERENO' => 8, 'ELE_ID' => 9, 'EMAIL' => 10, 'ID_ELEVE' => 11, 'DATE_SORTIE' => 12, 'ID_MEF' => 13, ),
-		BasePeer::TYPE_FIELDNAME => array ('no_gep' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'sexe' => 4, 'naissance' => 5, 'lieu_naissance' => 6, 'elenoet' => 7, 'ereno' => 8, 'ele_id' => 9, 'email' => 10, 'id_eleve' => 11, 'date_sortie' => 12, 'id_mef' => 13, ),
+		BasePeer::TYPE_PHPNAME => array ('NoGep' => 0, 'Login' => 1, 'Nom' => 2, 'Prenom' => 3, 'Sexe' => 4, 'Naissance' => 5, 'LieuNaissance' => 6, 'Elenoet' => 7, 'Ereno' => 8, 'EleId' => 9, 'Email' => 10, 'IdEleve' => 11, 'DateSortie' => 12, 'MefCode' => 13, ),
+		BasePeer::TYPE_STUDLYPHPNAME => array ('noGep' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'sexe' => 4, 'naissance' => 5, 'lieuNaissance' => 6, 'elenoet' => 7, 'ereno' => 8, 'eleId' => 9, 'email' => 10, 'idEleve' => 11, 'dateSortie' => 12, 'mefCode' => 13, ),
+		BasePeer::TYPE_COLNAME => array (self::NO_GEP => 0, self::LOGIN => 1, self::NOM => 2, self::PRENOM => 3, self::SEXE => 4, self::NAISSANCE => 5, self::LIEU_NAISSANCE => 6, self::ELENOET => 7, self::ERENO => 8, self::ELE_ID => 9, self::EMAIL => 10, self::ID_ELEVE => 11, self::DATE_SORTIE => 12, self::MEF_CODE => 13, ),
+		BasePeer::TYPE_RAW_COLNAME => array ('NO_GEP' => 0, 'LOGIN' => 1, 'NOM' => 2, 'PRENOM' => 3, 'SEXE' => 4, 'NAISSANCE' => 5, 'LIEU_NAISSANCE' => 6, 'ELENOET' => 7, 'ERENO' => 8, 'ELE_ID' => 9, 'EMAIL' => 10, 'ID_ELEVE' => 11, 'DATE_SORTIE' => 12, 'MEF_CODE' => 13, ),
+		BasePeer::TYPE_FIELDNAME => array ('no_gep' => 0, 'login' => 1, 'nom' => 2, 'prenom' => 3, 'sexe' => 4, 'naissance' => 5, 'lieu_naissance' => 6, 'elenoet' => 7, 'ereno' => 8, 'ele_id' => 9, 'email' => 10, 'id_eleve' => 11, 'date_sortie' => 12, 'mef_code' => 13, ),
 		BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, )
 	);
 
@@ -200,7 +200,7 @@ abstract class BaseElevePeer {
 			$criteria->addSelectColumn(ElevePeer::EMAIL);
 			$criteria->addSelectColumn(ElevePeer::ID_ELEVE);
 			$criteria->addSelectColumn(ElevePeer::DATE_SORTIE);
-			$criteria->addSelectColumn(ElevePeer::ID_MEF);
+			$criteria->addSelectColumn(ElevePeer::MEF_CODE);
 		} else {
 			$criteria->addSelectColumn($alias . '.NO_GEP');
 			$criteria->addSelectColumn($alias . '.LOGIN');
@@ -215,7 +215,7 @@ abstract class BaseElevePeer {
 			$criteria->addSelectColumn($alias . '.EMAIL');
 			$criteria->addSelectColumn($alias . '.ID_ELEVE');
 			$criteria->addSelectColumn($alias . '.DATE_SORTIE');
-			$criteria->addSelectColumn($alias . '.ID_MEF');
+			$criteria->addSelectColumn($alias . '.MEF_CODE');
 		}
 	}
 
@@ -577,7 +577,7 @@ abstract class BaseElevePeer {
 			$con = Propel::getConnection(ElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(ElevePeer::ID_MEF, MefPeer::ID, $join_behavior);
+		$criteria->addJoin(ElevePeer::MEF_CODE, MefPeer::MEF_CODE, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -613,7 +613,7 @@ abstract class BaseElevePeer {
 		$startcol = ElevePeer::NUM_HYDRATE_COLUMNS;
 		MefPeer::addSelectColumns($criteria);
 
-		$criteria->addJoin(ElevePeer::ID_MEF, MefPeer::ID, $join_behavior);
+		$criteria->addJoin(ElevePeer::MEF_CODE, MefPeer::MEF_CODE, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();
@@ -693,7 +693,7 @@ abstract class BaseElevePeer {
 			$con = Propel::getConnection(ElevePeer::DATABASE_NAME, Propel::CONNECTION_READ);
 		}
 
-		$criteria->addJoin(ElevePeer::ID_MEF, MefPeer::ID, $join_behavior);
+		$criteria->addJoin(ElevePeer::MEF_CODE, MefPeer::MEF_CODE, $join_behavior);
 
 		$stmt = BasePeer::doCount($criteria, $con);
 
@@ -731,7 +731,7 @@ abstract class BaseElevePeer {
 		MefPeer::addSelectColumns($criteria);
 		$startcol3 = $startcol2 + MefPeer::NUM_HYDRATE_COLUMNS;
 
-		$criteria->addJoin(ElevePeer::ID_MEF, MefPeer::ID, $join_behavior);
+		$criteria->addJoin(ElevePeer::MEF_CODE, MefPeer::MEF_CODE, $join_behavior);
 
 		$stmt = BasePeer::doSelect($criteria, $con);
 		$results = array();

@@ -106,10 +106,10 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	protected $date_sortie;
 
 	/**
-	 * The value for the id_mef field.
+	 * The value for the mef_code field.
 	 * @var        int
 	 */
-	protected $id_mef;
+	protected $mef_code;
 
 	/**
 	 * @var        Mef
@@ -415,13 +415,13 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	}
 
 	/**
-	 * Get the [id_mef] column value.
-	 * cle externe pour le jointure avec mef
+	 * Get the [mef_code] column value.
+	 * code mef de la formation de l'eleve
 	 * @return     int
 	 */
-	public function getIdMef()
+	public function getMefCode()
 	{
-		return $this->id_mef;
+		return $this->mef_code;
 	}
 
 	/**
@@ -689,28 +689,28 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	} // setDateSortie()
 
 	/**
-	 * Set the value of [id_mef] column.
-	 * cle externe pour le jointure avec mef
+	 * Set the value of [mef_code] column.
+	 * code mef de la formation de l'eleve
 	 * @param      int $v new value
 	 * @return     Eleve The current object (for fluent API support)
 	 */
-	public function setIdMef($v)
+	public function setMefCode($v)
 	{
 		if ($v !== null) {
 			$v = (int) $v;
 		}
 
-		if ($this->id_mef !== $v) {
-			$this->id_mef = $v;
-			$this->modifiedColumns[] = ElevePeer::ID_MEF;
+		if ($this->mef_code !== $v) {
+			$this->mef_code = $v;
+			$this->modifiedColumns[] = ElevePeer::MEF_CODE;
 		}
 
-		if ($this->aMef !== null && $this->aMef->getId() !== $v) {
+		if ($this->aMef !== null && $this->aMef->getMefCode() !== $v) {
 			$this->aMef = null;
 		}
 
 		return $this;
-	} // setIdMef()
+	} // setMefCode()
 
 	/**
 	 * Indicates whether the columns in this object are only set to default values.
@@ -769,7 +769,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$this->email = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
 			$this->id_eleve = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
 			$this->date_sortie = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-			$this->id_mef = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+			$this->mef_code = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
 			$this->resetModified();
 
 			$this->setNew(false);
@@ -801,7 +801,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function ensureConsistency()
 	{
 
-		if ($this->aMef !== null && $this->id_mef !== $this->aMef->getId()) {
+		if ($this->aMef !== null && $this->mef_code !== $this->aMef->getMefCode()) {
 			$this->aMef = null;
 		}
 	} // ensureConsistency
@@ -1377,7 +1377,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				return $this->getDateSortie();
 				break;
 			case 13:
-				return $this->getIdMef();
+				return $this->getMefCode();
 				break;
 			default:
 				return null;
@@ -1421,7 +1421,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 			$keys[10] => $this->getEmail(),
 			$keys[11] => $this->getIdEleve(),
 			$keys[12] => $this->getDateSortie(),
-			$keys[13] => $this->getIdMef(),
+			$keys[13] => $this->getMefCode(),
 		);
 		if ($includeForeignObjects) {
 			if (null !== $this->aMef) {
@@ -1537,7 +1537,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 				$this->setDateSortie($value);
 				break;
 			case 13:
-				$this->setIdMef($value);
+				$this->setMefCode($value);
 				break;
 		} // switch()
 	}
@@ -1576,7 +1576,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if (array_key_exists($keys[10], $arr)) $this->setEmail($arr[$keys[10]]);
 		if (array_key_exists($keys[11], $arr)) $this->setIdEleve($arr[$keys[11]]);
 		if (array_key_exists($keys[12], $arr)) $this->setDateSortie($arr[$keys[12]]);
-		if (array_key_exists($keys[13], $arr)) $this->setIdMef($arr[$keys[13]]);
+		if (array_key_exists($keys[13], $arr)) $this->setMefCode($arr[$keys[13]]);
 	}
 
 	/**
@@ -1601,7 +1601,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		if ($this->isColumnModified(ElevePeer::EMAIL)) $criteria->add(ElevePeer::EMAIL, $this->email);
 		if ($this->isColumnModified(ElevePeer::ID_ELEVE)) $criteria->add(ElevePeer::ID_ELEVE, $this->id_eleve);
 		if ($this->isColumnModified(ElevePeer::DATE_SORTIE)) $criteria->add(ElevePeer::DATE_SORTIE, $this->date_sortie);
-		if ($this->isColumnModified(ElevePeer::ID_MEF)) $criteria->add(ElevePeer::ID_MEF, $this->id_mef);
+		if ($this->isColumnModified(ElevePeer::MEF_CODE)) $criteria->add(ElevePeer::MEF_CODE, $this->mef_code);
 
 		return $criteria;
 	}
@@ -1676,7 +1676,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$copyObj->setEleId($this->getEleId());
 		$copyObj->setEmail($this->getEmail());
 		$copyObj->setDateSortie($this->getDateSortie());
-		$copyObj->setIdMef($this->getIdMef());
+		$copyObj->setMefCode($this->getMefCode());
 
 		if ($deepCopy) {
 			// important: temporarily setNew(false) because this affects the behavior of
@@ -1816,9 +1816,9 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	public function setMef(Mef $v = null)
 	{
 		if ($v === null) {
-			$this->setIdMef(NULL);
+			$this->setMefCode(NULL);
 		} else {
-			$this->setIdMef($v->getId());
+			$this->setMefCode($v->getMefCode());
 		}
 
 		$this->aMef = $v;
@@ -1842,8 +1842,10 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 	 */
 	public function getMef(PropelPDO $con = null)
 	{
-		if ($this->aMef === null && ($this->id_mef !== null)) {
-			$this->aMef = MefQuery::create()->findPk($this->id_mef, $con);
+		if ($this->aMef === null && ($this->mef_code !== null)) {
+			$this->aMef = MefQuery::create()
+				->filterByEleve($this) // here
+				->findOne($con);
 			/* The following can be used additionally to
 				guarantee the related object contains a reference
 				to this object.  This level of coupling may, however, be
@@ -3964,7 +3966,7 @@ abstract class BaseEleve extends BaseObject  implements Persistent
 		$this->email = null;
 		$this->id_eleve = null;
 		$this->date_sortie = null;
-		$this->id_mef = null;
+		$this->mef_code = null;
 		$this->alreadyInSave = false;
 		$this->alreadyInValidation = false;
 		$this->clearAllReferences();

@@ -19,7 +19,7 @@
  * @method     EleveQuery orderByEmail($order = Criteria::ASC) Order by the email column
  * @method     EleveQuery orderByIdEleve($order = Criteria::ASC) Order by the id_eleve column
  * @method     EleveQuery orderByDateSortie($order = Criteria::ASC) Order by the date_sortie column
- * @method     EleveQuery orderByIdMef($order = Criteria::ASC) Order by the id_mef column
+ * @method     EleveQuery orderByMefCode($order = Criteria::ASC) Order by the mef_code column
  *
  * @method     EleveQuery groupByNoGep() Group by the no_gep column
  * @method     EleveQuery groupByLogin() Group by the login column
@@ -34,7 +34,7 @@
  * @method     EleveQuery groupByEmail() Group by the email column
  * @method     EleveQuery groupByIdEleve() Group by the id_eleve column
  * @method     EleveQuery groupByDateSortie() Group by the date_sortie column
- * @method     EleveQuery groupByIdMef() Group by the id_mef column
+ * @method     EleveQuery groupByMefCode() Group by the mef_code column
  *
  * @method     EleveQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     EleveQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -112,7 +112,7 @@
  * @method     Eleve findOneByEmail(string $email) Return the first Eleve filtered by the email column
  * @method     Eleve findOneByIdEleve(int $id_eleve) Return the first Eleve filtered by the id_eleve column
  * @method     Eleve findOneByDateSortie(string $date_sortie) Return the first Eleve filtered by the date_sortie column
- * @method     Eleve findOneByIdMef(int $id_mef) Return the first Eleve filtered by the id_mef column
+ * @method     Eleve findOneByMefCode(int $mef_code) Return the first Eleve filtered by the mef_code column
  *
  * @method     array findByNoGep(string $no_gep) Return Eleve objects filtered by the no_gep column
  * @method     array findByLogin(string $login) Return Eleve objects filtered by the login column
@@ -127,7 +127,7 @@
  * @method     array findByEmail(string $email) Return Eleve objects filtered by the email column
  * @method     array findByIdEleve(int $id_eleve) Return Eleve objects filtered by the id_eleve column
  * @method     array findByDateSortie(string $date_sortie) Return Eleve objects filtered by the date_sortie column
- * @method     array findByIdMef(int $id_mef) Return Eleve objects filtered by the id_mef column
+ * @method     array findByMefCode(int $mef_code) Return Eleve objects filtered by the mef_code column
  *
  * @package    propel.generator.gepi.om
  */
@@ -628,18 +628,18 @@ abstract class BaseEleveQuery extends ModelCriteria
 	}
 
 	/**
-	 * Filter the query on the id_mef column
+	 * Filter the query on the mef_code column
 	 * 
 	 * Example usage:
 	 * <code>
-	 * $query->filterByIdMef(1234); // WHERE id_mef = 1234
-	 * $query->filterByIdMef(array(12, 34)); // WHERE id_mef IN (12, 34)
-	 * $query->filterByIdMef(array('min' => 12)); // WHERE id_mef > 12
+	 * $query->filterByMefCode(1234); // WHERE mef_code = 1234
+	 * $query->filterByMefCode(array(12, 34)); // WHERE mef_code IN (12, 34)
+	 * $query->filterByMefCode(array('min' => 12)); // WHERE mef_code > 12
 	 * </code>
 	 *
 	 * @see       filterByMef()
 	 *
-	 * @param     mixed $idMef The value to use as filter.
+	 * @param     mixed $mefCode The value to use as filter.
 	 *              Use scalar values for equality.
 	 *              Use array values for in_array() equivalent.
 	 *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -647,16 +647,16 @@ abstract class BaseEleveQuery extends ModelCriteria
 	 *
 	 * @return    EleveQuery The current query, for fluid interface
 	 */
-	public function filterByIdMef($idMef = null, $comparison = null)
+	public function filterByMefCode($mefCode = null, $comparison = null)
 	{
-		if (is_array($idMef)) {
+		if (is_array($mefCode)) {
 			$useMinMax = false;
-			if (isset($idMef['min'])) {
-				$this->addUsingAlias(ElevePeer::ID_MEF, $idMef['min'], Criteria::GREATER_EQUAL);
+			if (isset($mefCode['min'])) {
+				$this->addUsingAlias(ElevePeer::MEF_CODE, $mefCode['min'], Criteria::GREATER_EQUAL);
 				$useMinMax = true;
 			}
-			if (isset($idMef['max'])) {
-				$this->addUsingAlias(ElevePeer::ID_MEF, $idMef['max'], Criteria::LESS_EQUAL);
+			if (isset($mefCode['max'])) {
+				$this->addUsingAlias(ElevePeer::MEF_CODE, $mefCode['max'], Criteria::LESS_EQUAL);
 				$useMinMax = true;
 			}
 			if ($useMinMax) {
@@ -666,7 +666,7 @@ abstract class BaseEleveQuery extends ModelCriteria
 				$comparison = Criteria::IN;
 			}
 		}
-		return $this->addUsingAlias(ElevePeer::ID_MEF, $idMef, $comparison);
+		return $this->addUsingAlias(ElevePeer::MEF_CODE, $mefCode, $comparison);
 	}
 
 	/**
@@ -681,13 +681,13 @@ abstract class BaseEleveQuery extends ModelCriteria
 	{
 		if ($mef instanceof Mef) {
 			return $this
-				->addUsingAlias(ElevePeer::ID_MEF, $mef->getId(), $comparison);
+				->addUsingAlias(ElevePeer::MEF_CODE, $mef->getMefCode(), $comparison);
 		} elseif ($mef instanceof PropelCollection) {
 			if (null === $comparison) {
 				$comparison = Criteria::IN;
 			}
 			return $this
-				->addUsingAlias(ElevePeer::ID_MEF, $mef->toKeyValue('PrimaryKey', 'Id'), $comparison);
+				->addUsingAlias(ElevePeer::MEF_CODE, $mef->toKeyValue('PrimaryKey', 'MefCode'), $comparison);
 		} else {
 			throw new PropelException('filterByMef() only accepts arguments of type Mef or PropelCollection');
 		}

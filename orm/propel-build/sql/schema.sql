@@ -386,15 +386,15 @@ CREATE TABLE eleves
 	email VARCHAR(255) DEFAULT '' NOT NULL COMMENT 'Courriel de l\'eleve',
 	id_eleve INTEGER(11) NOT NULL AUTO_INCREMENT COMMENT 'cle primaire autoincremente',
 	date_sortie DATETIME COMMENT 'Timestamp de sortie de l\'élève de l\'établissement (fin d\'inscription)',
-	id_mef INTEGER COMMENT 'cle externe pour le jointure avec mef',
+	mef_code INTEGER COMMENT 'code mef de la formation de l\'eleve',
 	PRIMARY KEY (id_eleve),
-	INDEX eleves_FI_1 (id_mef),
+	INDEX eleves_FI_1 (mef_code),
 	INDEX I_referenced_j_eleves_classes_FK_1_1 (login),
 	INDEX I_referenced_responsables2_FK_1_2 (ele_id),
 	INDEX I_referenced_archivage_ects_FK_1_3 (no_gep),
 	CONSTRAINT eleves_FK_1
-		FOREIGN KEY (id_mef)
-		REFERENCES mef (id)
+		FOREIGN KEY (mef_code)
+		REFERENCES mef (mef_code)
 		ON DELETE SET NULL
 ) ENGINE=MyISAM COMMENT='Liste des eleves de l\'etablissement';
 
@@ -407,7 +407,7 @@ DROP TABLE IF EXISTS mef;
 CREATE TABLE mef
 (
 	id INTEGER NOT NULL AUTO_INCREMENT COMMENT 'Cle primaire de la classe',
-	ext_id INTEGER COMMENT 'Numero de la nomenclature officielle (numero MEF)',
+	mef_code INTEGER COMMENT 'Numero de la nomenclature officielle (numero MEF)',
 	libelle_court VARCHAR(50) NOT NULL COMMENT 'libelle de la formation',
 	libelle_long VARCHAR(300) NOT NULL COMMENT 'libelle de la formation',
 	libelle_edition VARCHAR(300) NOT NULL COMMENT 'libelle de la formation pour presentation',
