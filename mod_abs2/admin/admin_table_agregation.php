@@ -51,7 +51,9 @@ $action= isset($_POST['action'])?$_POST['action']:Null;
 $page= isset($_POST['page'])?$_POST['page']:1;
 $maxPerPage=10;
 
-check_token();    
+if ($action == "vidage_regeneration") {
+    check_token(); 
+}
 
 // header
 $titre_page = "Gestion de la table d'agrégation des demi-journées d'absence";
