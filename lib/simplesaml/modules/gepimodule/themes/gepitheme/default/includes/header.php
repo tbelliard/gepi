@@ -4,7 +4,7 @@
 // on reconstitue $gepiPath 
 $gepiPath=$this->data['baseurlpath'].'/../../..'; // par précaution
 if (!strpos($this->data['baseurlpath'],"lib/simplesaml/www/ "))
-	$gepiPath="/".substr($this->data['baseurlpath'],0,strpos($this->data['baseurlpath'],"lib/simplesaml/www/")-1);
+	$gepiPath=substr($this->data['baseurlpath'],0,strpos($this->data['baseurlpath'],"lib/simplesaml/www/")-1);
 // pour afficher les infos dans le header
 $gepiSchoolName=getSettingValue('gepiSchoolName');
 $gepiYear=getSettingValue('gepiYear');

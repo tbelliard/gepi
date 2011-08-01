@@ -1,4 +1,11 @@
 ﻿<?php
+
+// on reconstitue $gepiPath 
+$gepiPath=$this->data['baseurlpath'].'/../../..'; // par précaution
+if (!strpos($this->data['baseurlpath'],"lib/simplesaml/www/ "))
+	$gepiPath=substr($this->data['baseurlpath'],0,strpos($this->data['baseurlpath'],"lib/simplesaml/www/")-1);
+
+
 $this->data['header'] = $this->t('{login:user_pass_header}');
 
 if (strlen($this->data['username']) > 0) {
@@ -32,7 +39,7 @@ if ($this->data['errorcode'] !== NULL) {
 	<form action="?" method="post" name="f">
 	<table style="margin: auto;">
 		<tr>
-			<td rowspan="2"><img src="/<?php echo $gepiPath."/images/icons/lock.png" ?> alt="" /></td>
+			<td rowspan="2"><img src="/<?php echo $gepiPath."/images/icons/lock.png" ?>" alt="" /></td>
 			<td style="padding: .3em;"><?php echo $this->t('{login:username}'); ?></td>
 			<td>
 <?php
