@@ -1,7 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <?php
 
-
+// on reconstitue $gepiPath 
+$gepiPath=$this->data['baseurlpath'].'/../../..'; // par précaution
+if (!strpos($this->data['baseurlpath'],"lib/simplesaml/www/ "))
+	$gepiPath="/".substr($this->data['baseurlpath'],0,strpos($this->data['baseurlpath'],"lib/simplesaml/www/")-1);
+// pour afficher les infos dans le header
+$gepiSchoolName=getSettingValue('gepiSchoolName');
+$gepiYear=getSettingValue('gepiYear');
 
 /**
  * Support the htmlinject hook, which allows modules to change header, pre and post body on all pages.
@@ -35,7 +41,7 @@ if (array_key_exists('pageid', $this->data)) {
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 <script type="text/javascript" src="/<?php echo $this->data['baseurlpath']; ?>resources/script.js"></script>
 <title><?php
 if(array_key_exists('header', $this->data)) {
@@ -46,7 +52,7 @@ if(array_key_exists('header', $this->data)) {
 ?></title>
 
 	<link rel="stylesheet" type="text/css" href="/<?php echo $this->data['baseurlpath']; ?>resources/gepitheme/default.css" />
-	<link rel="icon" type="image/icon" href="/<?php echo $this->data['baseurlpath']; ?>../../../favicon.ico" />
+	<link rel="icon" type="image/icon" href="/<?php echo $gepiPath.'/favicon.ico'?>" />
 
 <?php
 
@@ -121,7 +127,7 @@ if($onLoad !== '') {
 		<!--h1><a style="text-decoration: none; color: white" href="/<?php echo $this->data['baseurlpath']; ?>"><?php 
 			echo (isset($this->data['header']) ? $this->data['header'] : 'simpleSAMLphp'); 
 		?></a></h1-->
-		<h1 style="text-align: center; font-size:40px;"><img src="/<?php echo $this->data['baseurlpath']; ?>resources/gepitheme/logo_gepi_48_2.png" style="display:inline;" />epi</h1>
+		<h1 style="text-align: center;"><img src="/<?php echo $this->data['baseurlpath']; ?>resources/gepitheme/logo_gepi_48_2.png" style="float: left;" /><?php echo $gepiSchoolName."<br />".$gepiYear; ?></h1>
 	</div>
 
 	

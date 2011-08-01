@@ -84,9 +84,9 @@ dt {
 	border: 1px solid #000;
 	position: relative;
 	text-align: left;
-	
+	 
 	margin: 20px auto 2em auto;
-	max-width: 27em;
+	max-width: 950px;
 }
 
 #languagebar {
@@ -115,7 +115,7 @@ dt {
 #header h1 {
 	color: #fff;
 	font-size: 145%;
-	padding: 20px 20px 0px;
+	padding: 10px 20px 0px;
 }
 
 

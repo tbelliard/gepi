@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 $this->data['header'] = $this->t('{login:user_pass_header}');
 
 if (strlen($this->data['username']) > 0) {
@@ -18,7 +18,7 @@ if ($this->data['errorcode'] !== NULL) {
 		<h2><?php echo $this->t('{login:error_header}'); ?></h2>
 		<p><b><?php echo $this->t('{errors:title_' . $this->data['errorcode'] . '}'); ?></b></p>
 		<p><?php echo $this->t('{errors:descr_' . $this->data['errorcode'] . '}'); ?></p-->
-		<p style="color: red;">Vous n'avez pas été authentifié.<br>Vérifiez votre identifiant/mot de passe.</p>
+		<p style="color: red;">Vous n'avez pas Ã©tÃ© authentifiÃ©.<br>VÃ©rifiez votre identifiant/mot de passe.</p>
 	</div>
 <?php
 }
@@ -32,7 +32,7 @@ if ($this->data['errorcode'] !== NULL) {
 	<form action="?" method="post" name="f">
 	<table style="margin: auto;">
 		<tr>
-			<td rowspan="2"><img src="/<?php echo $this->data['baseurlpath']; ?>../../../images/icons/lock.png" alt="" /></td>
+			<td rowspan="2"><img src="/<?php echo $gepiPath."/images/icons/lock.png" ?> alt="" /></td>
 			<td style="padding: .3em;"><?php echo $this->t('{login:username}'); ?></td>
 			<td>
 <?php
@@ -95,8 +95,8 @@ foreach ($this->data['stateparams'] as $name => $value) {
 	</form>
 	
 <p id='mot_passe' title="Cliquez pour demander un nouveau mot de passe" style="text-align: center;padding-top: 10px;">
-	<a class='small' href='/<?php echo $this->data['baseurlpath']; ?>../../../recover_password.php'>
-	Mot de passe oublié ? 
+	<a class='small' href='/<?php echo $gepiPath."/recover_password.php" ?>'>
+	Mot de passe oubliÃ© ? 
 	</a>
 </p>
 
@@ -118,3 +118,7 @@ echo('<p>' . $this->t('{login:help_text}') . '</p>');
 */
 $this->includeAtTemplateBase('includes/footer.php');
 ?>
+<script type="text/javascript">
+ document.getElementById("wrap").style.width = "27em";
+</script>
+
