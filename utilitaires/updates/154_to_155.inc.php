@@ -645,6 +645,20 @@ else {
 	}
 }
 
+$result .= "&nbsp;->Extension du 'mef_code' de la table 'eleves' en BIGINT(20) : ";
+$query = mysql_query("ALTER TABLE eleves CHANGE mef_code mef_code BIGINT( 20 ) NULL DEFAULT NULL COMMENT 'code mef de la formation de l''eleve';");
+if ($query) {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+		$result .= "<font color=\"red\">Erreur</font><br />";
+}
 
+$result .= "&nbsp;->Extension du 'mef_code' de la table 'mef' en BIGINT(20) : ";
+$query = mysql_query("ALTER TABLE mef CHANGE mef_code mef_code BIGINT( 20 ) NULL DEFAULT NULL COMMENT 'code mef de la formation de l''eleve';");
+if ($query) {
+		$result .= "<font color=\"green\">Ok !</font><br />";
+} else {
+		$result .= "<font color=\"red\">Erreur</font><br />";
+}
 
 ?>
