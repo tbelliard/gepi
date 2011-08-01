@@ -49,11 +49,27 @@ if (!checkAccess()) {
 //initialisation des variables 
 $action= isset($_POST['action'])?$_POST['action']:Null;
 $page= isset($_POST['page'])?$_POST['page']:1;
-$maxPerPage=10;
+$maxPerPage=5;
 
-if ($action == "vidage_regeneration") {
+if ($action == "vidage" || $action=="regeneration") {
     check_token(); 
 }
+//gestion des dates
+$date_now=new DateTime('now');
+$date_debut=clone $date_now;
+$date_fin=clone $date_debut;
+
+$semaine_en_cours=$date_now->format(W);
+$annee_en_cours=$date_now->format(Y);
+if($semaine_en_cours < 32 ){
+    $date_debut->setDate($annee_en_cours-1,8,1);
+    $date_fin->setDate($annee_en_cours,7,31);
+}else{
+    $date_debut->setDate($annee_en_cours,8,1);
+    $date_fin->setDate($annee_en_cours+1,7,31);
+}
+$date_debut->setTime(0,0,0);
+$date_fin->setTime(23,59,59);
 
 // header
 $titre_page = "Gestion de la table d'agrégation des demi-journées d'absence";
@@ -70,13 +86,20 @@ echo "</p>";
    <h2>Maintenance de la table d'agrégation des demi-journées d'absence</h2>    
     
     <div style="text-align:center">
-        <?php if ($action == "vidage_regeneration") : ?>
+        <?php if ($action == "vidage" || $action=="regeneration") : ?>
             <h2>Vidage et regénération de la table d'agrégation</h2>
                 <?php
-                if ($action == "vidage_regeneration") {
-                    if ($page == 1) {
-                        $del=AbsenceAgregationDecompteQuery::create()->deleteAll();
+                if ($action == "vidage") {
+                    $del = AbsenceAgregationDecompteQuery::create()->deleteAll();
+                    $nb = AbsenceAgregationDecompteQuery::create()->count();
+                    if ($nb === 0) {
+                        echo"<p>La Table est vide.</p>";
+                        die();
+                    } else {
+                        echo"<p>Un problème est survenu.</p>";
+                        die();
                     }
+                } elseif ($action == "regeneration") {
                     $eleve_col = EleveQuery::create()->paginate($page, $maxPerPage);
                     echo'<div id="contain_div" class="css-panes">
                         <p> Traitement de la tranche d\'élève ' . $page . '/' . $eleve_col->getLastPage() . ' en cours... <br />
@@ -85,28 +108,34 @@ echo "</p>";
                     ob_flush();
                     flush();
                     foreach ($eleve_col as $eleve) {
-                        $eleve->checkAndUpdateSynchroAbsenceAgregationTable();
+                        $eleve->checkAndUpdateSynchroAbsenceAgregationTable($date_debut, $date_fin);
                     }
-                }
-                if ($page != $eleve_col->getLastPage()) {
-                    echo"<p> Traitement de la tranche d'élève " . $page . "/" . $eleve_col->getLastPage() . " terminé <br /></p>";
-                    $page++;
-                } else {
-                    echo"<p>Traitement terminé</p>";
-                    die();
+                    if ($page != $eleve_col->getLastPage()) {
+                        echo"<p> Traitement de la tranche d'élève " . $page . "/" . $eleve_col->getLastPage() . " terminé <br /></p>";
+                        $page++;
+                    } else {
+                        echo"<p>Traitement terminé</p>";
+                        die();
+                    }
                 }
                 ?>
         <?php else : ?>
             <h2>ATTENTION : En cas de modification d'un des types d'absence vous devez vider la table et la reremplir.</h2>
-            <p>En cliquant sur le bouton ci-dessous vous lancerez le vidage et le reremplissage de la table</p>
+            <p>En cliquant sur le bouton ci-dessous vous lancerez le vidage ou le reremplissage de la table.</p>
         <?php endif; ?>
         
         <form action="admin_table_agregation.php" method="post" name="form_table" id="form_table">
             <?php echo add_token_field();?>
-            <input type="hidden" name="action" value="vidage_regeneration" /> 
+            <?php if($action==Null) :?>
+            <input type="radio" name="action" value="vidage" /> Vider la Table <br />
+            <input type="radio" name="action" value="regeneration" />Remplir la Table<br />
+            <?php else :?>
+            <input type="hidden" name="action" value="<?php echo $action; ?>" />
+            <?php endif;?>
             <input type="hidden" name="page" value="<?php echo $page; ?>" />
-            <?php if ($action !== "vidage_regeneration") : ?> 
-                <input type="submit" name="Submit" value="Vider et reremplir" onclick="return(confirm('Etes-vous sûr de vouloir lancer le processus de vidage remplissage ?'));" /> 
+            <br /><br /><br />            
+            <?php if ($action !== "regeneration" &&  $action !== "vidage") : ?> 
+                <input type="submit" name="Submit" value="Valider" onclick="return(confirm('Etes-vous sûr de vouloir lancer le processus ?'));" /> 
             <?php else : ?> 
                 <script type="text/javascript">
                     postform(document.getElementById('form_table'));
