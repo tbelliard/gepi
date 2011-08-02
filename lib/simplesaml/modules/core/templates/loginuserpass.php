@@ -67,7 +67,7 @@ foreach ($this->data['organizations'] as $orgId => $orgDesc) {
 		$orgDesc = $this->t($orgDesc);
 	}
 
-	if ($orgId === $selectedOrg) {
+	if ($orgId == $selectedOrg) {
 		$selected = 'selected="selected" ';
 	} else {
 		$selected = '';
