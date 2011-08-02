@@ -81,6 +81,12 @@ if ($version == 4) {
   $session_class = "lib/Session.class.php";
 }
 
+// Pour le multisite
+if (isset($_GET["rne"])) {
+	setcookie('RNE', $_GET["rne"]);
+}
+
+
 // Pour les scripts situés à la racine de GEPI
 if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
    // Database configuration file
