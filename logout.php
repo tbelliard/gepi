@@ -49,11 +49,6 @@ if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "ca
   die();
 }
 
-// Ajout pour le multisite
-if (isset($_COOKIE["RNE"])) {
-	unset($_COOKIE['RNE']);
-	setcookie('RNE', 'RNE'); // permet d'effacer le contenu du cookie.
-}
 if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
 		$auth = new SimpleSAML_Auth_Simple('local-gepi-db');
@@ -71,7 +66,13 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 		}
 }
 	
-    //$message = "<h1 class='gepi'>Déconnexion</h1>";
+// Ajout pour le multisite
+if (isset($_COOKIE["RNE"])) {
+	unset($_COOKIE['RNE']);
+	setcookie('RNE', 'RNE'); // permet d'effacer le contenu du cookie.
+}
+
+//$message = "<h1 class='gepi'>Déconnexion</h1>";
     $titre= "Déconnexion";
     $message = "";
 	//$message .= "<img src='$gepiPath/images/icons/lock-open.png' alt='lock-open' /><br/><br/>";
