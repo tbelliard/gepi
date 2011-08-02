@@ -9,7 +9,7 @@
  * @package simpleSAMLphp
  * @version $Id$
  */
-class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassBase {
+class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBase {
 
 	/**
 	 * Le statut requis pour cette connexion (utilisé pour l'admin simplesaml
@@ -33,7 +33,34 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassBase 
 			$this->requiredStatut = $config['required_statut'];
 		}
 	}
-
+	
+	/**
+	 * Retrieve list of organizations.
+	 *
+	 * The list of organizations is an associative array. The key of the array is the
+	 * id of the organization, and the value is the description. The value can be another
+	 * array, in which case that array is expected to contain language-code to
+	 * description mappings.
+	 *
+	 * @return array  Associative array with the organizations.
+	 */
+	protected function getOrganizations() {
+		$path = dirname(dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))));
+		if (file_exists($path."/secure/multisite.ini")) { 
+			$init = parse_ini_file($path."/secure/multisite.ini", TRUE);
+			$orgs = Array();
+			foreach($init as $key => $value) {
+				if (isset($value['nometablissement'])) {
+					$orgs[$key] = $value['nometablissement'];
+				} else {
+					$orgs[$key] = $key;
+				}
+			}
+			return $orgs;
+		}
+		return null;
+	}
+	
 	/**
 	 * Attempt to log in using the given username and password.
 	 *
@@ -45,11 +72,18 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassBase 
 	 *
 	 * @param string $username  The username the user wrote.
 	 * @param string $password  The password the user wrote.
+	 * @param string $organization  The id of the organization the user chose.
 	 * @return array  Associative array with the users attributes.
 	 */
-	protected function login($username, $password) {
+	protected function login($username, $password, $organization) {
 		assert('is_string($username)');
 		assert('is_string($password)');
+		assert('is_string($organization)');
+		
+		if ($organization != '') {
+			//$organization contient le numéro de rne
+			setcookie('RNE', $organization);
+		}
 
 		$path = dirname(dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))));
 		require_once("$path/secure/connect.inc.php");
