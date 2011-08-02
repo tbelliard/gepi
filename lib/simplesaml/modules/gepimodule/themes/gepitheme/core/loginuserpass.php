@@ -60,34 +60,41 @@ if ($this->data['forceUsername']) {
 		</tr>
 <?php
 if (array_key_exists('organizations', $this->data)) {
-?>
+	if (array_key_exists('selectedOrg', $this->data) && $this->data['selectedOrg'] != '' ) {
+		//si il y a déjà une sélection, on affiche pas le formulaire
+		echo '<input id="organization" type="hidden" name="organization" value="'.$this->data['selectedOrg'].'" />';
+	} else if (isset($_COOKIE['RNE']) && $_COOKIE['RNE'] != '' ) {
+		//si il y a déjà une sélection, on affiche pas le formulaire
+		echo '<input id="organization" type="hidden" name="organization" value="'.$_COOKIE['RNE'].'" />';
+	} else {
+	?>
 		<tr>
 			<td style="padding: .3em;"><?php echo $this->t('{login:organization}'); ?></td>
 			<td><select name="organization" tabindex="3">
-<?php
-if (array_key_exists('selectedOrg', $this->data)) {
-	$selectedOrg = $this->data['selectedOrg'];
-} else {
-	$selectedOrg = NULL;
-}
-
-foreach ($this->data['organizations'] as $orgId => $orgDesc) {
-	if (is_array($orgDesc)) {
-		$orgDesc = $this->t($orgDesc);
+		<?php
+		$selectedOrg = NULL;
+		
+		foreach ($this->data['organizations'] as $orgId => $orgDesc) {
+			if (is_array($orgDesc)) {
+				$orgDesc = $this->t($orgDesc);
+			}
+		
+			if ($orgId === $selectedOrg) {
+				$selected = 'selected="selected" ';
+			} else {
+				$selected = '';
+			}
+		
+			echo '<option ' . $selected . 'value="' . htmlspecialchars($orgId) . '">' . htmlspecialchars($orgDesc) . '</option>';
+		}
+		?>
+					</select></td>
+				</tr>
+		<?php
+		
 	}
-
-	if ($orgId === $selectedOrg) {
-		$selected = 'selected="selected" ';
-	} else {
-		$selected = '';
-	}
-
-	echo '<option ' . $selected . 'value="' . htmlspecialchars($orgId) . '">' . htmlspecialchars($orgDesc) . '</option>';
-}
-?>
-			</select></td>
-		</tr>
-<?php
+	
+	
 }
 ?>
 
