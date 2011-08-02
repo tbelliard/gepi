@@ -62,6 +62,27 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 	}
 	
 	/**
+	 * Initialize login.
+	 *
+	 * This function saves the information about the login, and redirects to a
+	 * login page.
+	 *
+	 * @param array &$state  Information about the current authentication.
+	 */
+	public function authenticate(&$state) {
+		assert('is_array($state)');
+
+		/* We are going to need the authId in order to retrieve this authentication source later. */
+		$state[self::AUTHID] = $this->authId;
+
+		$id = SimpleSAML_Auth_State::saveState($state, self::STAGEID);
+
+		$url = SimpleSAML_Module::getModuleURL('gepiauth/loginuserpassorg.php');
+		$params = array('AuthState' => $id);
+		SimpleSAML_Utilities::redirect($url, $params);
+	}
+
+	/**
 	 * Attempt to log in using the given username and password.
 	 *
 	 * On a successful login, this function should return the users attributes. On failure,
