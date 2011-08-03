@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 // on reconstitue $gepiPath 
 $gepiPath=$this->data['baseurlpath'].'/../../..'; // par précaution

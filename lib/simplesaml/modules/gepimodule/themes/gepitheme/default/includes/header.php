@@ -127,7 +127,10 @@ if($onLoad !== '') {
 		<!--h1><a style="text-decoration: none; color: white" href="/<?php echo $this->data['baseurlpath']; ?>"><?php 
 			echo (isset($this->data['header']) ? $this->data['header'] : 'simpleSAMLphp'); 
 		?></a></h1-->
-		<h1 style="text-align: center;"><img src="/<?php echo $this->data['baseurlpath']; ?>resources/gepitheme/logo_gepi_48_2.png" style="float: left;" /><?php echo $gepiSchoolName."<br />".$gepiYear; ?></h1>
+        <h1 style="text-align: center;">
+          <img src="/<?php echo $this->data['baseurlpath']; ?>resources/gepitheme/logo_gepi_48_2.png" style="float: left;" alt="logo GEPI" />
+          <?php echo utf8_encode($gepiSchoolName)."<br />".$gepiYear; ?>
+        </h1>
 	</div>
 
 	
