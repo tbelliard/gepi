@@ -1605,8 +1605,13 @@ class Eleve extends BaseEleve {
 			$count = AbsenceAgregationDecompteQuery::create()->filterByEleve($this)
 				->filterByDateDemiJounee($dateDebut, Criteria::GREATER_EQUAL)
 				->filterByDateDemiJounee($dateFin, Criteria::LESS_EQUAL)
-				->count();
-			if ($count != (int)(($dateFin->format('U')-$dateDebut->format('U'))/(3600*12))+1) {
+				->count(); 
+            if(($dateFin->format('U')-$dateDebut->format('U')<(12*3600))){
+                $nbre_demi_journees=(int)(($dateFin->format('U')-$dateDebut->format('U'))/(3600*12));
+            }else{
+                $nbre_demi_journees=(int)(($dateFin->format('U')-$dateDebut->format('U'))/(3600*12)+1);
+            }
+			if ($count != $nbre_demi_journees) {
 				return false;
 			}
 		}
@@ -1879,9 +1884,15 @@ class Eleve extends BaseEleve {
 				->orderByDateDemiJounee(Criteria::DESC)
 				->findOne();
 			if ($absDecomte != null) {
-				if ($absDecomte->getDateDemiJounee(null) != null && $absDecomte->getDateDemiJounee('U') < $dateFin->format('U') && 
-						($dateDebut == null || $absDecomte->getDateDemiJounee('U') > $dateDebut->format('U'))) {
-					$dateFinClone = clone $absDecomte->getDateDemiJounee(null);
+                if ($absDecomte->getDateDemiJounee(null) != null) {
+                    $dateClone = clone $absDecomte->getDateDemiJounee(null);                    
+                    if ('12:00'==$dateClone->format('H:i')) {
+                        $dateClone->setTime(23, 59, 59);
+                    };
+                } 
+				if ($absDecomte->getDateDemiJounee(null) != null && $dateClone->format('U') < $dateFin->format('U') && 
+						($dateDebut == null || $dateClone->format('U') > $dateDebut->format('U'))) {
+					$dateFinClone = $dateClone;
 				}
 			}
 		}
