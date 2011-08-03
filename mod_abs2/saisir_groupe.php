@@ -840,7 +840,7 @@ function redimensionne_image_petit($photo)
 
 	if ($utilisateur->getStatut() != 'professeur' || (getSettingValue("abs2_saisie_prof_decale")=='y' && getSettingValue("abs2_saisie_prof_decale_journee")=='y')) {
 	    $rand_id = rand(0,10000000);
-	    echo '<input size="8" id="date_absence_eleve_'.$rand_id.'" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
+	    echo '<input size="9" id="date_absence_eleve_'.$rand_id.'" name="date_absence_eleve" value="'.$dt_date_absence_eleve->format('d/m/Y').'" />&nbsp;';
 	    echo '
 	    <script type="text/javascript">
 		Calendar.setup({

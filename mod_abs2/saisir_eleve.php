@@ -448,7 +448,7 @@ echo "</td>";
 echo "<td style='width:270px; vertical-align: top;'>";
     echo '<div style="border-width: 1px; border-style: solid; text-align: left; padding : 4px;">';
 	echo '<p>';
-    echo 'Début : <input size="8" id="date_absence_eleve_debut_saisir_eleve" name="date_absence_eleve_debut_saisir_eleve" value="'.$dt_date_absence_eleve_debut_saisir_eleve->format('d/m/Y').'" />&nbsp;';
+    echo 'Début : <input size="9" id="date_absence_eleve_debut_saisir_eleve" name="date_absence_eleve_debut_saisir_eleve" value="'.$dt_date_absence_eleve_debut_saisir_eleve->format('d/m/Y').'" />&nbsp;';
    echo '</p>';
      echo '
     <script type="text/javascript">
@@ -463,7 +463,7 @@ echo "<td style='width:270px; vertical-align: top;'>";
 $edt_creneau_col = EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime();
 echo '<br/>';
 	echo '<p>';
-echo 'Fin : <input size="8" id="date_absence_eleve_fin_saisir_eleve" name="date_absence_eleve_fin_saisir_eleve" value="'.$dt_date_absence_eleve_fin_saisir_eleve->format('d/m/Y').'" />&nbsp;';
+echo 'Fin : <input size="9" id="date_absence_eleve_fin_saisir_eleve" name="date_absence_eleve_fin_saisir_eleve" value="'.$dt_date_absence_eleve_fin_saisir_eleve->format('d/m/Y').'" />&nbsp;';
 
 	echo '</p>';
 	echo '

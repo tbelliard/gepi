@@ -123,7 +123,7 @@ include('menu_bilans.inc.php');
 </div>    
 <form name="choix_du_creneau" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 <h2>Les appels du
-    <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
+    <input size="9" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
     <script type="text/javascript">
 	Calendar.setup({
 	    inputField     :    "date_absence_eleve_1",     // id of the input field

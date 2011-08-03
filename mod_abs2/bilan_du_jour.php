@@ -93,7 +93,7 @@ include('menu_bilans.inc.php');
 </div>        
 <form id="choix_date" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 <h2>Les saisies du
-    <input size="8" id="date_absence_eleve_1" name="date_absence_eleve" onchange="document.getElementById('choix_date').submit()" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
+    <input size="9" id="date_absence_eleve_1" name="date_absence_eleve" onchange="document.getElementById('choix_date').submit()" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
     <script type="text/javascript">
 	Calendar.setup({
 	    inputField     :    "date_absence_eleve_1",     // id of the input field

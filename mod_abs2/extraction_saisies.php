@@ -108,7 +108,7 @@ if ($affichage != 'ods') {// on affiche pas de html
     <div id="contain_div" class="css-panes">
     <form name="choix_extraction" action="<?php $_SERVER['PHP_SELF']?>" method="post">
     <h2>Les saisies du
-	<input size="8" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y')?>" />
+	<input size="9" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y')?>" />
 	<script type="text/javascript">
 	    Calendar.setup({
 		inputField     :    "date_absence_eleve_1",     // id of the input field
@@ -119,7 +119,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 	    });
 	</script>
 	au
-	<input size="8" id="date_absence_eleve_2" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('d/m/Y')?>" />
+	<input size="9" id="date_absence_eleve_2" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('d/m/Y')?>" />
 	<script type="text/javascript">
 	    Calendar.setup({
 		inputField     :    "date_absence_eleve_2",     // id of the input field
