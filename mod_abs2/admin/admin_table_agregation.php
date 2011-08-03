@@ -128,7 +128,11 @@ echo "</p>";
             <?php echo add_token_field();?>
             <?php if($action==Null) :?>
             <input type="radio" name="action" value="vidage" /> Vider la Table <br />
-            <input type="radio" name="action" value="regeneration" />Remplir la Table<br />
+            <input type="radio" name="action" value="regeneration" 
+                   <?php if ($action !== "regeneration" &&  $action !== "vidage") : ?> 
+                   checked 
+                   <?php endif;?>
+                   />Remplir la Table<br />
             <?php else :?>
             <input type="hidden" name="action" value="<?php echo $action; ?>" />
             <?php endif;?>
