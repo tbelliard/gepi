@@ -55,21 +55,9 @@ if ($action == "vidage" || $action=="regeneration") {
     check_token(); 
 }
 //gestion des dates
-$date_now=new DateTime('now');
-$date_debut=clone $date_now;
-$date_fin=clone $date_debut;
-
-$semaine_en_cours=$date_now->format(W);
-$annee_en_cours=$date_now->format(Y);
-if($semaine_en_cours < 32 ){
-    $date_debut->setDate($annee_en_cours-1,8,1);
-    $date_fin->setDate($annee_en_cours,7,31);
-}else{
-    $date_debut->setDate($annee_en_cours,8,1);
-    $date_fin->setDate($annee_en_cours+1,7,31);
-}
-$date_debut->setTime(0,0,0);
-$date_fin->setTime(23,59,59);
+require_once("../../orm/helpers/EdtHelper.php");
+$date_debut =  EdtHelper::getPremierJourAnneeScolaire();
+$date_fin = EdtHelper::getDernierJourAnneeScolaire();
 
 // header
 $titre_page = "Gestion de la table d'agrégation des demi-journées d'absence";
