@@ -133,6 +133,47 @@ class EdtHelper {
         return($DateFinAnneeScolaire);           
     } 
     
-
+   /**
+   * Renvoi le nombre de demi-journées ouvertes entre deux dates de debut ou de fin (ou premier et dernier jour de l'année scolaire si les dates ne sont pas spécifiées
+   *
+   * @param      DateTime $date_debut 
+   * @param      DateTime $date_fin
+   * @return     Int      $nbre_demi_journees_etab_ouvert
+   */
+    public static function getNbreDemiJourneesEtabOuvert($date_debut=Null,$date_fin=Null){
+        
+        //clonage des da&tes de debut et de fin pour ne pas modifier les objets date directement 
+        if($date_debut==Null){
+            $date_debut_clone=EdtHelper::getPremierJourAnneeScolaire();
+        }else{
+            $date_debut_clone=clone($date_debut);
+        }
+        $date_debut_clone->setTime(00, 00, 00);
+        if($date_fin==Null){
+            $date_fin_clone=EdtHelper::getDernierJourAnneeScolaire();
+        }else{
+            $date_fin_clone=clone $date_fin;
+        }
+        $date_fin_clone->setTime(23, 59, 59);
+        // on va tester demi journée par demi journée si l'étab est ouvert
+        
+        $nbre_demi_journees_etab_ouvert=0;
+        while ($date_debut_clone->format('U') < $date_fin_clone->format('U')){
+            $date_clone= clone $date_debut_clone;            
+            if($date_debut_clone->format('h:i')=="00:00"){                
+                $date_clone->setTime(09,00,00); //on met 9 heures au cas ou un étab commence à 8h30 par exemple                
+            }elseif($date_debut_clone->format('h:i')=="12:00"){
+                $date_clone->setTime(15,00,00);//on met 15 heures pour être dans la demi journée de l'après-midi
+            }else {
+                echo'Il y a un problème sur les heures';
+                die();
+            }
+            if(EdtHelper::isEtablissementOuvert($date_clone)){
+                $nbre_demi_journees_etab_ouvert++;                
+            }
+            $date_debut_clone->modify("+12 hours");
+        }
+        return($nbre_demi_journees_etab_ouvert);           
+    }
 }
 ?>
