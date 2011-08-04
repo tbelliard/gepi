@@ -94,5 +94,45 @@ class EdtHelper {
 
             return true;
     }
+    
+   /**
+   * Renvoi le premier jour de l'année scolaire sous forme d'objet DateTime
+   *   * 
+   * @return     DateTime      $DateDebutAnneeScolaire premier septembre de l'année scolaire en cours à 00:00:00 (bascule d'annee semaine 33)
+   *
+   */
+    public static function getPremierJourAnneeScolaire(){
+        
+        $date_now = new DateTime('now');
+        $DateDebutAnneeScolaire=clone ($date_now);
+        $semaine_en_cours = $date_now->format(W);
+        $annee_en_cours = $date_now->format(Y);
+        if ($semaine_en_cours < 33) {
+            $annee_en_cours=$annee_en_cours-1;
+        } 
+        $DateDebutAnneeScolaire->setDate($annee_en_cours,9,1);
+        $DateDebutAnneeScolaire->setTime(0,0,0);
+        return($DateDebutAnneeScolaire);
+    } 
+    
+  /**
+   * Renvoi le dernier jour de l'année scolaire sous forme d'objet DateTime
+   *    
+   * @return     DateTime      $DateDebutAnneeScolaire 31 aout de l'année scolaire en cours à 23:59:59 (bascule d'annee semaine 33)
+   */
+    public static function getDernierJourAnneeScolaire(){
+        $date_now = new DateTime('now');
+        $DateFinAnneeScolaire=clone ($date_now);
+        $semaine_en_cours = $date_now->format(W);
+        $annee_en_cours = $date_now->format(Y);
+        if ($semaine_en_cours > 33) {
+            $annee_en_cours=$annee_en_cours+1;
+        } 
+        $DateFinAnneeScolaire->setDate($annee_en_cours,8,31);
+        $DateFinAnneeScolaire->setTime(23,59,59);
+        return($DateFinAnneeScolaire);           
+    } 
+    
+
 }
 ?>
