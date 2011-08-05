@@ -1683,8 +1683,6 @@ class Eleve extends BaseEleve {
 		if ($dateDebut != null) {
 			$dateDebutClone = clone $dateDebut;
 			$dateDebutClone->setTime(0,0);
-			//on va vérifier si avant la date précisée la table est correcte
-			$this->checkAndUpdateSynchroAbsenceAgregationTable(null, $dateDebut);
 		}
 		if ($dateFin != null) {
 			$dateFinClone = clone $dateFin;
