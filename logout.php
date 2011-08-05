@@ -51,7 +51,7 @@ if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "ca
 
 if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
-		$auth = new SimpleSAML_Auth_Simple('local-gepi-db');
+		$auth = new SimpleSAML_Auth_GepiSimple();
 		if ($auth->isAuthenticated()) {
 			//on fait le logout de session avec simplesaml en tant que fournisseur d'identité. Ça va déconnecter la source d'authentification pour gepi local et aussi pour chaque service associé (sacoche)
 			header("Location:./lib/simplesaml/www/saml2/idp/SingleLogoutService.php?ReturnTo=".$_SERVER['REQUEST_URI']);
@@ -59,7 +59,7 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 		}
 } else if ($session_gepi->auth_simpleSAML == 'yes') {
 		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
-		$auth = new SimpleSAML_Auth_Simple('local-gepi-db');
+		$auth = new SimpleSAML_Auth_GepiSimple();
 		if ($auth->isAuthenticated()) {
 			//on fait le logout de session avec simplesaml et on revient ici pour afficher le message de déconnexion
 			$auth->logout();

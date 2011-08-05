@@ -99,6 +99,10 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 	}
 	saveSetting("auth_simpleSAML", $_POST['auth_simpleSAML']);
 
+	if (isset($_POST['auth_simpleSAML_source'])) {
+		saveSetting("auth_simpleSAML_source", $_POST['auth_simpleSAML_source']);
+	}
+
 	if (isset($_POST['ldap_write_access'])) {
 	    if ($_POST['ldap_write_access'] != "yes") {
 	    	$_POST['ldap_write_access'] = "no";
@@ -317,10 +321,31 @@ echo " /> <label for='label_auth_ldap' style='cursor: pointer;'>Authentification
 if (!$ldap_setup_valid) echo " <em>(sélection impossible : le fichier /secure/config_ldap.inc.php n'est pas présent)</em>\n";
 echo "</label>\n";
 
-echo "<br/><input type='checkbox' name='auth_simpleSAML' value='yes' id='label_auth_simpleSAML'";
-if (getSettingValue("auth_simpleSAML")=='yes') echo " checked ";
-echo " /> <label for='label_auth_simpleSAML' style='cursor: pointer;'>Authentification simpleSAML";
-echo "</label>\n";
+
+//on va voir si il y a simplesaml de configuré
+if (file_exists(__DIR__.'/../lib/simplesaml/config/authsources.php')) {
+	echo "<br/><input type='checkbox' name='auth_simpleSAML' value='yes' id='label_auth_simpleSAML'";
+	if (getSettingValue("auth_simpleSAML")=='yes') echo " checked ";
+	echo " /> <label for='label_auth_simpleSAML' style='cursor: pointer;'>Authentification simpleSAML";
+	echo "</label>\n";
+	
+	echo "<br/>\n<select name=\"auth_simpleSAML_source\" size=\"1\">\n";
+	include_once(__DIR__.'/../lib/simplesaml/lib/_autoload.php');
+	$config = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
+	$sources = $config->getOptions();
+	foreach($sources as $source) {
+		echo "<option value='$source'";
+		if ($source == getSettingValue("auth_simpleSAML_source")) {
+			echo 'selected';
+		}
+		echo ">";
+		echo $source;
+		echo "</option>";
+	}
+	echo "</select>\n";
+} else  {
+	echo "<input type='hidden' name='auth_simpleSAML' value='no' />";
+}
 echo "</p>\n";
 
 echo "<p>Service d'authentification unique : ";

@@ -404,7 +404,7 @@ class Session {
 		# D'abord on regarde si on a une tentative d'accès anonyme à une page protégée :
 		if ($this->auth_simpleSAML == 'yes') {
 			include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
-			$auth = new SimpleSAML_Auth_Simple('local-gepi-db');
+			$auth = new SimpleSAML_Auth_GepiSimple();
 			if (!$auth->isAuthenticated()) {
 				$this->authenticate();
 			}
@@ -887,7 +887,7 @@ class Session {
 
 	private function authenticate_simpleSAML() {
 		include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
-		$auth = new SimpleSAML_Auth_Simple('local-gepi-db');
+		$auth = new SimpleSAML_Auth_GepiSimple();
 		$attributes = $auth->requireAuth();
 		//exploitation des attributs
 		if (isEmpty($attributes)) {
