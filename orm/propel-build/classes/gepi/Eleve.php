@@ -1600,17 +1600,28 @@ class Eleve extends BaseEleve {
 			return false;
 		}
 		
+		$dateDebutClone = null;
+		$dateFinClone = null;
+		
+		//on initialise les date clone qui seront manipulés dans l'algoritme, c'est nécessaire pour ne pas modifier les date passée en paramêtre.
+		if ($dateDebut != null) {
+			$dateDebutClone = clone $dateDebut;
+			$dateDebutClone->setTime(0,0);
+		}
+		if ($dateFin != null) {
+			$dateFinClone = clone $dateFin;
+			$dateFinClone->setTime(23,59);
+		}
+		
 		//on vérifie si on a des dates de début et de fin que entre les deux il y a le bon nombre d'enregistrements dans la table
 		if ($dateDebut != null && $dateFin != null) {
 			$count = AbsenceAgregationDecompteQuery::create()->filterByEleve($this)
-				->filterByDateDemiJounee($dateDebut, Criteria::GREATER_EQUAL)
-				->filterByDateDemiJounee($dateFin, Criteria::LESS_EQUAL)
+				->filterByDateDemiJounee($dateDebutClone, Criteria::GREATER_EQUAL)
+				->filterByDateDemiJounee($dateFinClone, Criteria::LESS_EQUAL)
 				->count(); 
-            if(($dateFin->format('U')-$dateDebut->format('U')<(12*3600))){
-                $nbre_demi_journees=(int)(($dateFin->format('U')-$dateDebut->format('U'))/(3600*12));
-            }else{
-                $nbre_demi_journees=(int)(($dateFin->format('U')-$dateDebut->format('U'))/(3600*12)+1);
-            }
+				
+            $nbre_demi_journees=(int)(($dateFin->format('U')-$dateDebut->format('U'))/(3600*12)+1);
+            
 			if ($count != $nbre_demi_journees) {
 				return false;
 			}
