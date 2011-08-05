@@ -1864,7 +1864,7 @@ class Eleve extends BaseEleve {
 		$dateDebutClone = null;
 		$dateFinClone = null;
 		
-		//on va regarder si à la date de début du calcul il n'y a pas eu d'entrée mais qu'il y en a au aprés.
+		//on va regarder si à la date de début du calcul il n'y a pas eu d'entrée mais qu'il y en a eu aprés.
 		//auquel cas on va faire deux calculs indépendant : un calul entre la date de début et la date de première entrée (qui correspond 
 		//a la premiere entrée déjà calculé), puis une vérification entre la date de première entrée ($dateDebutClone) et la date de fin. Si cette vérification
 		//est OK ça permettra de ne pas recalculer ces entrées là.
