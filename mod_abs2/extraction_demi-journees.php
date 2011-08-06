@@ -85,6 +85,17 @@ if ($date_absence_eleve_fin != null) {
 } else {
     $dt_date_absence_eleve_fin = new DateTime('now');
 }
+
+$inverse_date=false;
+if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format("U")){
+    $date2=clone $dt_date_absence_eleve_fin;
+    $dt_date_absence_eleve_fin= $dt_date_absence_eleve_debut;
+    $dt_date_absence_eleve_debut= $date2;
+    $message="Les dates de début et de fin ont été inversées.";
+    $inverse_date=true;
+    $_SESSION['date_absence_eleve_debut'] = $dt_date_absence_eleve_debut->format('d/m/Y');
+    $_SESSION['date_absence_eleve_fin'] = $dt_date_absence_eleve_fin->format('d/m/Y'); 
+}
 $dt_date_absence_eleve_debut->setTime(0,0,0);
 $dt_date_absence_eleve_fin->setTime(23,59,59);
 
@@ -106,6 +117,9 @@ if ($affichage != 'ods') {// on affiche pas de html
     include('menu_bilans.inc.php');
     ?>
     <div id="contain_div" class="css-panes">
+         <?php if (isset($message)){
+          echo'<h2 class="no">'.$message.'</h2>';
+        }?>
     <p>
       <strong>Précision:</strong> Un manquement à l'obligation de présence sur une heure, entraine le décompte de la demi-journée correspondante pour l'élève.
     </p>
