@@ -14,29 +14,34 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	/**
 	 * Initialise une authentification en utilisant les paramêtre renseignés dans gepi
 	 *
-	 * @param string $auth  The authentication page.
-	 * @param string|NULL $authority  The authority we should validate the login against.
+	 * @param string|NULL $auth  The authentication source. Si non précisé, utilise la source configurée dans gepi.
 	 */
-	public function __construct() {
-		//on va sélectionner la source d'authentification gepi
-		$path = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
-		include_once("$path/secure/connect.inc.php");
-		// Database connection
-		require_once("$path/lib/mysql.inc");
-		require_once("$path/lib/settings.inc");
-		// Load settings
-		if (!loadSettings()) {
-		    die("Erreur chargement settings");
+	public function __construct($auth = null) {
+		if ($auth == null) {
+		    //on va sélectionner la source d'authentification gepi
+		    $path = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+		    include_once("$path/secure/connect.inc.php");
+		    // Database connection
+		    require_once("$path/lib/mysql.inc");
+		    require_once("$path/lib/settings.inc");
+		    // Load settings
+		    if (!loadSettings()) {
+			die("Erreur chargement settings");
+		    }
+		    $auth = getSettingValue('auth_simpleSAML_source');
 		}
-		$selected_authSource = getSettingValue('auth_simpleSAML_source');
+		
 		$config = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
 		$sources = $config->getOptions();
-		if (!in_array($selected_authSource, $sources)) {
-			echo 'Erreur : source '.$selected_authSourcec.' non configurée.';
+		if (!in_array($auth, $sources)) {
+			//en cas d'erreur, pour forcer le choix, décommenter la ligne suivante:
+			//$auth = 'gepi-local-db';
+			//et commenter les deux lignes ci-dessous.
+			echo 'Erreur : source '.$auth.' non configurée.';
 			die;
 		}
 			
-		parent::__construct($selected_authSource);
+		parent::__construct($auth);
 	}
 	
 	/**
