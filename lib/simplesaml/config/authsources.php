@@ -2,7 +2,7 @@
 
 $config = array(
 
-	//authentification admin saml en utilisant un profil administrateur gepi
+	/*authentification admin saml en utilisant un profil administrateur gepi
 	'admin' => array(
 		'gepiauth:LocalDB',
 		'required_statut' => 'administrateur',
@@ -12,7 +12,7 @@ $config = array(
 		'description' => array(
 		    'fr' => 'Authentification spéciale pour l\'administrateur simplesaml',
 		),
-	),
+	),*/
 
 
 
