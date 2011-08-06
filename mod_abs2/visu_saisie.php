@@ -508,9 +508,7 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dijit.form.Form");
     dojo.require("dijit.form.CheckBox");
     dojo.require("dijit.form.DateTextBox");
-    dojo.require("dojo.parser");    
-    dojo.addOnLoad(function() {
-	});	
+    dojo.require("dojo.parser");
 </script>';
 
 require_once("../lib/footer.inc.php");
