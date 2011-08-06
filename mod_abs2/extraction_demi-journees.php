@@ -197,36 +197,23 @@ if ($affichage != null && $affichage != '') {
     
 
     foreach ($eleve_col as $eleve) {
-    	$eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
-		$eleve->setVirtualColumn('DemiJourneesAbsencePreRempli',  AbsenceAgregationDecompteQuery::create()
-				->filterByEleve($eleve)
-				->filterByDateDemiJounee($dt_date_absence_eleve_debut, Criteria::GREATER_EQUAL)
-				->filterByDateDemiJounee($dt_date_absence_eleve_fin, Criteria::LESS_EQUAL)
-				->filterByManquementObligationPresence(true)
-				->count());
-		//$eleve->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count());
-		$eleve->setVirtualColumn('DemiJourneesNonJustifieesPreRempli', AbsenceAgregationDecompteQuery::create()
-				->filterByEleve($eleve)
-				->filterByDateDemiJounee($dt_date_absence_eleve_debut, Criteria::GREATER_EQUAL)
-				->filterByDateDemiJounee($dt_date_absence_eleve_fin, Criteria::LESS_EQUAL)
-				->filterByManquementObligationPresence(true)
-				->filterByJustifiee(false)
-				->count());
-		$eleve_retards = EleveQuery::create()->filterByIdEleve($eleve->getIdEleve())
-				->useAbsenceAgregationDecompteQuery()
-				->filterByDateDemiJounee($dt_date_absence_eleve_debut, Criteria::GREATER_EQUAL)
-				->filterByDateDemiJounee($dt_date_absence_eleve_fin, Criteria::LESS_EQUAL)
-				->endUse()
-				->withColumn('SUM(AbsenceAgregationDecompte.NbRetards)', 'NbRetards')
-				->groupBy('Eleve.IdEleve')
-				->limit(1)
-				->find();
-		if ($eleve_retards->isEmpty()) {
-			$nbretards = 0;
-		} else {
-			$nbretards = $eleve_retards->getFirst()->getNbRetards();
-		}
-		$eleve->setVirtualColumn('RetardsPreRempli', $nbretards);
+        $eleve->checkAndUpdateSynchroAbsenceAgregationTable($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin);
+        $eleve->setVirtualColumn('DemiJourneesAbsencePreRempli', AbsenceAgregationDecompteQuery::create()
+                        ->filterByEleve($eleve)
+                        ->filterByDateIntervalle($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
+                        ->filterByManquementObligationPresence(true)
+                        ->count());
+        //$eleve->getDemiJourneesAbsence($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)->count());
+        $eleve->setVirtualColumn('DemiJourneesNonJustifieesPreRempli', AbsenceAgregationDecompteQuery::create()
+                        ->filterByEleve($eleve)
+                        ->filterByDateIntervalle($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
+                        ->filterByManquementObligationPresence(true)
+                        ->filterByJustifiee(false)
+                        ->count());
+        $eleve->setVirtualColumn('RetardsPreRempli', AbsenceAgregationDecompteQuery::create()
+                        ->filterByEleve($eleve)
+                        ->filterByDateIntervalle($dt_date_absence_eleve_debut, $dt_date_absence_eleve_fin)
+                        ->countRetards());
     }
 }
 
