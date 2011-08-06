@@ -33,12 +33,16 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 		
 		$config = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
 		$sources = $config->getOptions();
+		if (!count($sources)) {
+			echo 'Erreur simplesaml : Aucune source configurée';
+			die;
+		}
 		if (!in_array($auth, $sources)) {
 			//en cas d'erreur, pour forcer le choix, décommenter la ligne suivante:
 			//$auth = 'gepi-local-db';
 			//et commenter les deux lignes ci-dessous.
-			echo 'Erreur : source '.$auth.' non configurée.';
-			die;
+			echo 'Erreur simplesaml : source '.$auth.' non configurée. Utilisation par défaut de la première source configurée.';
+			$auth = $sources[0];
 		}
 			
 		parent::__construct($auth);
