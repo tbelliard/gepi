@@ -117,6 +117,8 @@ if($dt_date_absence_eleve_debut->format("U")>$dt_date_absence_eleve_fin->format(
     $dt_date_absence_eleve_fin= $dt_date_absence_eleve_debut;
     $dt_date_absence_eleve_debut= $date2;
     $inverse_date=true;
+    $_SESSION['date_absence_eleve_debut'] = $dt_date_absence_eleve_debut->format('d/m/Y');
+    $_SESSION['date_absence_eleve_fin'] = $dt_date_absence_eleve_fin->format('d/m/Y');
 }
 // fonction de formatage des dates de debut et de fin
 function getDateDescription($date_debut,$date_fin) {
@@ -231,7 +233,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             <fieldset>
               <legend>Paramétrage de l'export (dates, classes, tri...) et affichage</legend>
             <h3>Bilan individuel du
-                <input size="10" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y') ?>" />
+                <input size="9" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y') ?>" />
                 <script type="text/javascript">
                     Calendar.setup({
                         inputField     :    "date_absence_eleve_1",     // id of the input field
@@ -242,7 +244,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
                     });
                 </script>
                                         	au
-                <input size="10" id="date_absence_eleve_2" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('d/m/Y') ?>" />
+                <input size="9" id="date_absence_eleve_2" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('d/m/Y') ?>" />
             <script type="text/javascript">
                 Calendar.setup({
                     inputField     :    "date_absence_eleve_2",     // id of the input field
