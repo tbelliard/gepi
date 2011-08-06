@@ -377,17 +377,19 @@ echo " /> <label for='label_3' style='cursor: pointer;'>LemonLDAP</label>\n";
 echo "</p>\n";
 echo "<p>Remarque : les changements n'affectent pas les sessions en cours.";
 
-echo "<p><strong>Fourniture d'identité :</strong></p>\n";
-echo "<p><input type='checkbox' name='gepiEnableIdpSaml20' value='yes' id='gepiEnableIdpSaml20'";
-if (getSettingValue("gepiEnableIdpSaml20")=='yes') echo " checked ";
-echo " /> <label for='gepiEnableIdpSaml20' style='cursor: pointer;'>Fournir un service d'identification SAML 2.0</label>\n";
-echo "<p>\n";
-echo "<label for='sacocheUrl' style='cursor: pointer;'>Adresse du service sacoche si possible en https (exemple : https://localhost/sacoche) </label>\n";
-echo "<input type='text' size='60' name='sacocheUrl' value='".getSettingValue("sacocheUrl")."' id='sacocheUrl' />\n<br/>";
-echo 'pour une configuration manuelle, modifier le fichier /lib/simplesaml/metadate/saml20-sp-remote.php';
-echo "</p>\n";
+//on va voir si il y a simplesaml de configuré
+if (file_exists(__DIR__.'/../lib/simplesaml/metadata/saml20-idp-hosted.php')) {
+	echo "<p><strong>Fourniture d'identité :</strong></p>\n";
+	echo "<p><input type='checkbox' name='gepiEnableIdpSaml20' value='yes' id='gepiEnableIdpSaml20'";
+	if (getSettingValue("gepiEnableIdpSaml20")=='yes') echo " checked ";
+	echo " /> <label for='gepiEnableIdpSaml20' style='cursor: pointer;'>Fournir un service d'identification SAML 2.0</label>\n";
+	echo "<p>\n";
+	echo "<label for='sacocheUrl' style='cursor: pointer;'>Adresse du service sacoche si possible en https (exemple : https://localhost/sacoche) </label>\n";
+	echo "<input type='text' size='60' name='sacocheUrl' value='".getSettingValue("sacocheUrl")."' id='sacocheUrl' />\n<br/>";
+	echo 'pour une configuration manuelle, modifier le fichier /lib/simplesaml/metadate/saml20-sp-remote.php';
+	echo "</p>\n";
+}
 
-echo "</p>\n";
 
 echo "<p><strong>Options supplémentaires :</strong></p>\n";
 
