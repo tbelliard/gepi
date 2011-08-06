@@ -37,23 +37,21 @@ class AbsenceAgregationDecompteQuery extends BaseAbsenceAgregationDecompteQuery 
              ->filterByDateDemiJounee($date_fin, Criteria::LESS_EQUAL);
         return $this;
     }
-    
-    /**
-     * Retourne le nombre de retards (somme des demi journées de la requête)     * 
-     * 
-     * @return    int $nbreRetards Nbre de retards 
+       /**
+     * Compte le nombre de retard
+     * Attention, la requete n'est pas réutilisable
+     *
+     * @return    int
      */
     public function countRetards() {
-        
-        $absAgregationCol=$this->find();
-        $nbreRetards=0;
-        if ($absAgregationCol->isEmpty()){
-            return $nbreRetards;
-        }else{
-            foreach($absAgregationCol as $demiJournee){
-                $nbreRetards=$nbreRetards+$demiJournee->getNbRetards();
-            }
-            return($nbreRetards);
-        }        
+        $this->withColumn('SUM(AbsenceAgregationDecompte.NbRetards)', 'NbRetards')
+                ->withColumn('1', 'dummy')
+                ->groupBy('dummy');
+        $retard = $this->find();
+        if ($retard->isEmpty()) {
+            return 0;
+        } else {
+            return $retard->getFirst()->getVirtualColumn('NbRetards');
+        }
     }
 } // AbsenceAgregationDecompteQuery
