@@ -146,8 +146,8 @@ if ($scriptaculous == "ok") {
 
 // Utilisation de dojo
 if (isset($dojo)) {
-    echo '<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dojo/dojo.xd.js" djConfig="parseOnLoad: true"></script>'."\n";
-    echo '<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.5/dijit/themes/claro/claro.css" />';
+    echo '<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/dojo/1.6.1/dojo/dojo.xd.js" djConfig="parseOnLoad: true"></script>'."\n";
+    echo '<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/dojo/1.6.1/dijit/themes/claro/claro.css" />';
 }
 
 // Utilisation de windows.js
