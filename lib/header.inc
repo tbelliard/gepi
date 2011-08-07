@@ -135,11 +135,7 @@ echo '<script type="text/javascript" src="'.$gepiPath.'/lib/functions.js"></scri
 
 // Ajout du framework prototype 1.6.0.3
 echo '<script type="text/javascript" src="'.$gepiPath.'/lib/prototype.js"></script>'."\n";
-$validation = isset($utilisation_validation) ? $utilisation_validation : NULL;
-if ($validation == "ok") {
-  // On affiche le lien qui charge scriptaculous
-  echo '<script type="text/javascript" src="'.$gepiPath.'/lib/validation.js"></script>'."\n";
-}
+
 // Ajout de la librairie Scriptaculous.js conditionné à la variable $utilisation_scriptaculous="ok"
 $scriptaculous = isset($utilisation_scriptaculous) ? $utilisation_scriptaculous : NULL;
 $script_effet = isset($scriptaculous_effet) ? $scriptaculous_effet : NULL;
