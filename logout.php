@@ -69,7 +69,7 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 // Ajout pour le multisite
 if (isset($_COOKIE["RNE"])) {
 	unset($_COOKIE['RNE']);
-	setcookie('RNE', 'RNE'); // permet d'effacer le contenu du cookie.
+	setcookie('RNE', 'RNE', null, '/'); // permet d'effacer le contenu du cookie.
 }
 
 //$message = "<h1 class='gepi'>Déconnexion</h1>";

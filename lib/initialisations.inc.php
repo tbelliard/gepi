@@ -83,7 +83,7 @@ if ($version == 4) {
 
 // Pour le multisite
 if (isset($_GET["rne"])) {
-	setcookie('RNE', $_GET["rne"]);
+	setcookie('RNE', $_GET["rne"], null, '/');
 }
 
 
@@ -347,10 +347,13 @@ if (!isset($mode_debug)) {
     $mode_debug = false;
 }
 
+
 // Initialisaton de la session Gepi :
 if (!isset($prevent_session_init)) {
   $session_gepi = new Session();
 }
+
+//echo 'on est ici';die;
 
 if (!class_exists('Propel')
 	|| !strstr(get_include_path(), '/orm/propel-build/classes')) {
