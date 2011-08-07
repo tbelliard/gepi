@@ -896,7 +896,7 @@ class Session {
 			//authentification échouée
 			return false;
 		}
-		$this->login = $attributes['login'][0];
+		$this->login = $attributes['login_gepi'][0];
 
 		$this->current_auth_mode = "simpleSAML";
     

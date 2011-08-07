@@ -157,7 +157,7 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 		}
 		
 		$attributes = array();
-		$attributes['login'] = array($username);
+		$attributes['login_gepi'] = array($username);
 		$attributes['nom'] = array($row->nom);
 		$attributes['prenom'] = array($row->prenom);
 		$attributes['statut'] = array($row->statut);
