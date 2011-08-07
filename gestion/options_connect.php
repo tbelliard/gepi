@@ -165,7 +165,9 @@ if (isset($_POST['auth_options_posted']) && $_POST['auth_options_posted'] == "1"
 	saveSetting("gepiEnableIdpSaml20", $_POST['gepiEnableIdpSaml20']);
 	
   	if (isset($_POST['sacocheUrl'])) {
-	    saveSetting("sacocheUrl", $_POST['sacocheUrl']);
+		$sacocheUrl = $_POST['sacocheUrl'];
+		if (substr($sacocheUrl,strlen($sacocheUrl)-1,1) == '/') {$sacocheUrl = substr($sacocheUrl,0, strlen($sacocheUrl)-1);} //on enleve le / a  la fin
+  		saveSetting("sacocheUrl", $_POST['sacocheUrl']);
 	}
 		
 	if (isset($_POST['statut_utilisateur_defaut'])) {
