@@ -153,15 +153,11 @@ if ($utilisateur->getStatut() == "professeur" || $utilisateur->getStatut() == "a
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
-$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
-$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 $javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+$dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
-$utilisation_validation="ok";
 //suppression des données en session (sauf dans le cas d'un export html et odt ou d'un clic dur le bouton filtrage)
 if(isset($_SESSION['donnees_bilan']) && (is_null($affichage) || ($affichage=='html'&& is_null($cpt_classe))) && $click_filtrage!="ok" && $raz!=="ok"){
     unset($_SESSION['donnees_bilan']);
@@ -233,27 +229,10 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             <fieldset>
               <legend>Paramétrage de l'export (dates, classes, tri...) et affichage</legend>
             <h3>Bilan individuel du
-                <input size="9" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y') ?>" />
-                <script type="text/javascript">
-                    Calendar.setup({
-                        inputField     :    "date_absence_eleve_1",     // id of the input field
-                        ifFormat       :    "%d/%m/%Y",      // format of the input field
-                        button         :    "date_absence_eleve_1",  // trigger for the calendar (button ID)
-                        align          :    "Bl",           // alignment (defaults to "Bl")
-                        singleClick    :    true
-                    });
-                </script>
-                                        	au
-                <input size="9" id="date_absence_eleve_2" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('d/m/Y') ?>" />
-            <script type="text/javascript">
-                Calendar.setup({
-                    inputField     :    "date_absence_eleve_2",     // id of the input field
-                    ifFormat       :    "%d/%m/%Y",      // format of the input field
-                    button         :    "date_absence_eleve_2",  // trigger for the calendar (button ID)
-                    align          :    "Bl",           // alignment (defaults to "Bl")
-                    singleClick    :    true
-                });
-            </script>
+                du	
+    <input style="width : 7em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
+    au               
+    <input style="width : 7em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d')?>" />
         </h3>
           <?php
             if ($id_eleve!==null && $id_eleve!=''){
@@ -262,7 +241,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
                 $id_classe=$eleve->getClasse()->getId();
             }
             ?>
-            Nom (facultatif) : <input type="text" name="nom_eleve" size="10" value="<?php echo $nom_eleve ?>" onChange="document.bilan_individuel.id_eleve.value='';"/>
+            Nom (facultatif) : <input dojoType="dijit.form.TextBox" type="text" style="width : 10em" name="nom_eleve" size="10" value="<?php echo $nom_eleve ?>" onChange="document.bilan_individuel.id_eleve.value='';"/>
             <input type="hidden" name="id_eleve" value="<?php echo $id_eleve ?>"/>
             <input type="hidden" name="affichage" value="<?php echo $affichage ?>"/>
             <input type="hidden" name="filtrage" value="<?php echo $filtrage ?>"/>
@@ -279,7 +258,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             }
             if (!$classe_col->isEmpty()) {
                 if(isset($_SESSION['classes_bilan'])) unset($_SESSION['classes_bilan']);
-                echo ("Classe : <select name=\"id_classe\" onChange='document.bilan_individuel.id_eleve.value=\"\";'>");
+                echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\" onChange='document.bilan_individuel.id_eleve.value=\"\";'>");
                 if($utilisateur->getStatut() != "autre" && $utilisateur->getStatut() != "professeur" ){
                     echo "<option value='-1'>Toutes les classes</option>\n";
                 }
@@ -298,7 +277,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             }
             ?>
             Type :
-            <select style="width:200px" name="type_extrait">
+            <select style="font-size:12px" dojoType="dijit.form.Select" name="type_extrait">
                 <option value='1' <?php
             if ($type_extrait == '1') {
                 echo 'selected';
@@ -312,7 +291,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             ?>>Liste de toutes les données</option>
             </select><br />            
             
-            <input type="checkbox" name="tri" value="tri"  <?php
+            <input dojoType="dijit.form.CheckBox" type="checkbox" name="tri" value="tri"  <?php
             if($tri=='tri') {
                 echo'checked';
             }            
@@ -320,7 +299,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
 			> Tri des données par manquement aux obligations de présence, retard puis non manquement.
             <br />
             <?php if($utilisateur->getStatut() == "cpe"):?>            
-            <input type="checkbox" name="non_traitees" value="non_traitees"  <?php
+            <input dojoType="dijit.form.CheckBox" type="checkbox" name="non_traitees" value="non_traitees"  <?php
             if($non_traitees) {
                 echo'checked';
             } ?>
@@ -328,34 +307,34 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             <br />
             <?php endif; ?>
             <?php if($utilisateur->getStatut() == "cpe" || $utilisateur->getStatut() == "scolarite"):?>
-            <input type="checkbox" name="ods2" value="ods2"  <?php
+            <input dojoType="dijit.form.CheckBox" type="checkbox" name="ods2" value="ods2"  <?php
             if($ods2) {
                 echo'checked';
             } ?> 
 			> Ne pas répéter les informations globales de l'élève par ligne dans l'export tableur (pour totaux par colonne)
             <br />
-            <input type="checkbox" name="sans_commentaire" value="no"  <?php
+            <input dojoType="dijit.form.CheckBox" type="checkbox" name="sans_commentaire" value="no"  <?php
             if($sans_commentaire) {
                 echo'checked';
             } ?>
 			> Ne pas afficher les commentaires dans l'export ods et odt
             <br />
-            <input type="checkbox" name="texte_conditionnel" value="ok"  <?php
+            <input dojoType="dijit.form.CheckBox" type="checkbox" name="texte_conditionnel" value="ok"  <?php
             if($texte_conditionnel) {
                 echo'checked';
             } ?>
 			> Afficher le texte optionnel en bas de l'export odt
             <br />
             <?php endif; ?>            
-            <button type="submit" name="affichage" value="html">Valider les modifications et afficher à l'écran</button>
+            <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="html">Valider les modifications et afficher à l'écran</button>
         </fieldset>
 		<br />
         <?php if($affichage_liens):?>
         <fieldset style="width:320px; float:left;">
             <legend>Choix du mode de sortie des données</legend>            
-            <button type="submit" name="affichage" value="ods" <?php
+            <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="ods" <?php
                  if($affichage==Null || $affichage=='') echo'disabled';?>>Exporter dans un tableur (ods)</button>
-            <button type="submit" name="affichage" value="odt" <?php
+            <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="affichage" value="odt" <?php
                  if($affichage==Null || $affichage=='') echo'disabled';?>>Exporter dans un traitement de texte (odt)</button>
         </fieldset>
          <?php endif; ?>
@@ -373,16 +352,16 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             <legend>Filtrage des données</legend>
             <p style="color:<?php echo $color;?>">N'afficher que les élèves dont les nombres d'absences ou retards respectent les conditions ci-dessous:<br />
             Choix de la condition si plusieurs conditions sont saisies pour le filtrage : 
-            <select name="type_filtrage"  <?php if($affichage==Null || $affichage=='') echo'disabled';?>>
-                <option <?php if($type_filtrage=="OU") echo 'selected';?>>OU</option>
-                <option <?php if($type_filtrage=="ET") echo 'selected';?>>ET</option>
+            <select dojoType="dijit.form.Select" style="width :3em;font-size:12px;" name="type_filtrage"  <?php if($affichage==Null || $affichage=='') echo'disabled';?>>
+                <option value="OU" <?php if($type_filtrage=="OU") echo 'selected';?>>OU</option>
+                <option value="ET" <?php if($type_filtrage=="ET") echo 'selected';?>>ET</option>
             </select>
             <br />    
-            Nombre total de 1/2 journées &ge;: <INPUT type="text" <?php if($ndj!=Null)echo'value='.$ndj; else echo'value=""'; ?> name="ndj" size="3" maxlength="3" class="validate-number" <?php
+            Nombre total de 1/2 journées &ge;: <INPUT dojoType="dijit.form.NumberTextBox" style="width:3em;" constraints="{min:1}" type="text" <?php if($ndj!=Null)echo'value='.$ndj; else echo'value=""'; ?> name="ndj" size="3" maxlength="3"  <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>/><br />
-            (OU/ET) Nombre de 1/2 journées non justifiées &ge;: <INPUT type="text" <?php if($ndjnj!=Null)echo'value='.$ndjnj; else echo'value=""'; ?> name="ndjnj" size="3" maxlength="3" class="validate-number" <?php
+            (OU/ET) Nombre de 1/2 journées non justifiées &ge;: <INPUT dojoType="dijit.form.NumberTextBox" style="width:3em;" constraints="{min:1}" type="text" <?php if($ndjnj!=Null)echo'value='.$ndjnj; else echo'value=""'; ?> name="ndjnj" size="3" maxlength="3"  <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>><br />
-            (OU/ET) Nombre de retards &ge;: <INPUT type="text" <?php if($nr!=Null)echo'value='.$nr; else echo'value=""'; ?> name="nr" size="3" maxlength="3" class="validate-number" <?php
+            (OU/ET) Nombre de retards &ge;: <INPUT dojoType="dijit.form.NumberTextBox" constraints="{min:1}" style="width:3em;" type="text" <?php if($nr!=Null)echo'value='.$nr; else echo'value=""'; ?> name="nr" size="3" maxlength="3"  <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>><br />
             <input type="hidden" name="nom_eleve"  value="<?php echo $nom_eleve ?>" />
             <input type="hidden" name="affichage" value="html" />
@@ -392,9 +371,9 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
             <input type="hidden" name="texte_conditionnel" value="<?php echo $texte_conditionnel ?>" />
             <input type="hidden" name="sans_commentaire" value="<?php echo $sans_commentaire ?>" />
             <input type="hidden" name="filtrage" value="ok" />
-            <button type="submit" name="click_filtrage" value="ok" <?php
+            <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="click_filtrage" value="ok" <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>>Filtrer</button> 
-            <button type="submit" name="raz" value="ok" <?php
+            <button type="submit"  style="font-size:12px" dojoType="dijit.form.Button" name="raz" value="ok" <?php
              if($affichage==Null || $affichage=='') echo'disabled';?>>Réinitialiser</button></p>
         </fieldset> 
     </form>
@@ -966,25 +945,15 @@ $TBS->Show(OPENTBS_DOWNLOAD + TBS_EXIT, $nom_fichier);
 ?>
 	</div>
  
-<script type="text/javascript">
- 
-
- 
-	function ValidateForm(result,form){
-		if(result){			
-			//new Ajax.Updater('sortie_ecran', 'bilan_individuel.inc.php', {onComplete:function(){ new Effect.Highlight('retour');},asynchronous:true});			
-		}
-	}
- 
-	var valid = new Validation('filtrage', {immediate : true, onFormValidate : ValidateForm});
-        Validation.addAllThese([
-        ['validate-number', 'Utilisez un nombre supérieur à zéro seulement dans ce champ ou laissez vide pour ne pas filtrer sur ce champ', function(v) {
-       return Validation.get('IsEmpty').test(v) || /^0*([1-9][0-9]?|[199][0-9][0-9])$/.test(v);
-     }]
-	]);    
-
-</script>
-
 <?php
-require("../lib/footer.inc.php");
+$javascript_footer_texte_specifique = '<script type="text/javascript">
+    dojo.require("dojo.parser");
+    dojo.require("dijit.form.Button");    
+    dojo.require("dijit.form.Form");
+    dojo.require("dijit.form.CheckBox");
+    dojo.require("dijit.form.DateTextBox");    
+    dojo.require("dijit.form.Select");
+    dojo.require("dijit.form.NumberTextBox");
+    </script>';
+require_once("../lib/footer.inc.php");
 ?>
