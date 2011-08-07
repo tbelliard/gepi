@@ -103,7 +103,7 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 		
 		if ($organization != '') {
 			//$organization contient le numéro de rne
-			setcookie('RNE', $organization);
+			setcookie('RNE', $organization, null, '/');
 		}
 
 		$path = dirname(dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))));
@@ -128,20 +128,8 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 		# L'instance de Session permettant de gérer directement les authentifications
 		# SSO, on ne s'embête pas :
 		$auth = $session_gepi->authenticate_gepi($username, $password);
-		
-		if ($auth == "1") {
-			//le load user data est utilisé pour récupérer les attributs de l'utilisateur et les transemmettre en aval
-			//pour une autentification de gepi vers saml il y a une redondance de l'appel car load user data est appelé en retour de login.
-			$session_gepi->load_user_data();
-			if ($this->requiredStatut != null && $this->requiredStatut != $_SESSION['statut']) {
-				# Echec d'authentification pour ce statut
-				$session_gepi->close('2');
-				session_write_close();
-				SimpleSAML_Logger::error('gepiauth:' . $this->authId .
-					': not authenticated. Probably wrong username/password.');
-				throw new SimpleSAML_Error_Error('WRONGUSERPASS');			
-			}
-		} else {
+				
+		if ($auth != "1") {
 			# Echec d'authentification.
 			$session_gepi->record_failed_login($username);
 			session_write_close();
@@ -149,29 +137,35 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 				': not authenticated. Probably wrong username/password.');
 			throw new SimpleSAML_Error_Error('WRONGUSERPASS');			
 		}
-		
-		SimpleSAML_Logger::info('gepiauth:' . $this->authId . ': authenticated');
 
+		SimpleSAML_Logger::info('gepiauth:' . $this->authId . ': authenticated');
+		
+		# On interroge la base de données pour récupérer des attributs qu'on va retourner
+		$query = mysql_query("SELECT nom, prenom, email, statut FROM utilisateurs WHERE (login = '".$username."')");
+		$row = mysql_fetch_object($query);
+		
+		//on vérifie le status
+		if ($this->requiredStatut != null) {
+			if ($this->requiredStatut != $row->statut) {
+				# Echec d'authentification pour ce statut
+				$session_gepi->close('2');
+				session_write_close();
+				SimpleSAML_Logger::error('gepiauth:' . $this->authId .
+					': not authenticated. Statut is wrong.');
+				throw new SimpleSAML_Error_Error('WRONGUSERPASS');			
+			}
+		}
+		
 		$attributes = array();
-		$attributes['login'] = array($_SESSION['login']);
-		$attributes['nom']= array($_SESSION['nom']);
-		$attributes['prenom']= array($_SESSION['prenom']);
-		$attributes['email']= array($_SESSION['email']);
-		$attributes['statut']= array($_SESSION['statut']);
-		$attributes['start']= array($_SESSION['start']);
-		$attributes['matiere']= array($_SESSION['matiere']);
-		$attributes['rne']= array($_SESSION['rne']);
-		$attributes['current_auth_mode']= array($_SESSION['current_auth_mode']);
+		$attributes['login'] = array($username);
+		$attributes['nom'] = array($row->nom);
+		$attributes['prenom'] = array($row->prenom);
+		$attributes['statut'] = array($row->statut);
+		$attributes['email'] = array($row->email);
 		
 		SimpleSAML_Logger::info('gepiauth:' . $this->authId . ': Attributes: ' .
 			implode(',', array_keys($attributes)));
 			
-		//on commence la session en base de donnée
-		$session_gepi->start = mysql_result(mysql_query("SELECT now();"),0);
-		$_SESSION['start'] = $session_gepi->start;
-		$session_gepi->insert_log();
-			
-
 		return $attributes;
 	}
 
