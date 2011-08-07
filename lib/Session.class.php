@@ -349,7 +349,7 @@ class Session {
 
 			# On teste la cohérence de mode de connexion
 		    $auth_mode = self::user_auth_mode($this->login);
-		    if ($auth_mode != $this->current_auth_mode) {
+		    if ($this->current_auth_mode != 'simpleSAML' && $auth_mode != $this->current_auth_mode) {
 		    	$this->reset(2);
 		    	return "5";
 		    	exit;
@@ -405,7 +405,7 @@ class Session {
 		if ($this->auth_simpleSAML == 'yes') {
 			include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
 			$auth = new SimpleSAML_Auth_GepiSimple();
-			if (!$auth->isAuthenticated()) {
+			if (!$this->login || !$auth->isAuthenticated()) {
 				$this->authenticate();
 			}
 		} else if ($this->is_anonymous()) {
@@ -530,7 +530,7 @@ class Session {
 	// Dans le cas du multisite on vérifie si la session a été initialisée dans la bonne base
 	private function verif_CAS_multisite(){
 
-		if (isset($_GET['rne']) AND $GLOBALS['multisite'] == 'y' AND isset($_SESSION["login"])) {
+		if (isset($_GET['rne']) AND $GLOBALS['multisite'] == 'y' AND isset($_SESSION["login"]) && getSettingValue("auth_simpleSAML") != 'yes') {
 			// Alors, on initialise la session ici
 
 			$this->start = mysql_result(mysql_query("SELECT now();"),0);
@@ -888,14 +888,15 @@ class Session {
 	private function authenticate_simpleSAML() {
 		include_once(dirname(__FILE__).'/simplesaml/lib/_autoload.php');
 		$auth = new SimpleSAML_Auth_GepiSimple();
-		$attributes = $auth->requireAuth();
+		$auth->requireAuth();
+		$attributes = $auth->getAttributes();
+		
 		//exploitation des attributs
-		if (isEmpty($attributes)) {
+		if (empty($attributes)) {
 			//authentification échouée
 			return false;
 		}
 		$this->login = $attributes['login'][0];
-		$_SESSION['login'] = $this->login;
 
 		$this->current_auth_mode = "simpleSAML";
     
