@@ -9,6 +9,11 @@
  * @version $Id$
  */
 
+//hack for gepi rne (organization Id)
+if (isset($_REQUEST['organization'])) {
+	setcookie('RNE', $_REQUEST['organization'], null, '/');	
+}
+
 require_once('../../../www/_include.php');
 
 SimpleSAML_Logger::info('SAML2.0 - IdP.SSOService: Accessing SAML 2.0 IdP endpoint SSOService');
