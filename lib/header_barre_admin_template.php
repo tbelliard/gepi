@@ -60,7 +60,7 @@ include("menu_plugins.inc.php");
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Initialisation</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/init_csv/index.php">Initialisation csv</a></li>'."\n";
-		$menus .= '     <li><a href="'.$gepiPath.'/inti_xml2/index.php">Initialisation xml</a></li>'."\n";
+		$menus .= '     <li><a href="'.$gepiPath.'/init_xml2/index.php">Initialisation xml</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php">Fiches bienvenue</a></li>'."\n";
 		$menus .= '   </ul>'."\n";
 		$menus .= '</li>'."\n";
