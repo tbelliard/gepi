@@ -172,7 +172,7 @@ if (!isset($step1)) {
 		echo "<p>Les tables vidées seront&nbsp;: $chaine_tables</p>\n";
 
 		echo "<ul><li>Seule la table contenant les utilisateurs (professeurs, admin, ...) et la table mettant en relation les matières et les professeurs seront conservées.</li>\n";
-		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans la base CSV de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>\n";
+		echo "<li>Les professeurs de l'année passée présents dans la base GEPI et non présents dans le fichier XML de cette année ne sont pas effacés de la base GEPI mais simplement déclarés \"inactifs\".</li>\n";
 		echo "</ul>\n";
 
 		echo "<form enctype='multipart/form-data' action='".$_SERVER['PHP_SELF']."' method='post'>\n";
@@ -204,6 +204,22 @@ if (!isset($is_posted)) {
 			}
 			else {
 				echo "<p style='color:red'>Echec de la création d'un fichier de sauvegarde de la matière principale de chaque professeur.</p>\n";
+			}
+		}
+
+		$sql="SELECT * FROM j_professeurs_matieres ORDER BY ordre_matieres;";
+		$res_matieres_profs=mysql_query($sql);
+		if(mysql_num_rows($res_matieres_profs)>0) {
+			$fich_mp=fopen("../temp/".$dirname."/matieres_profs_an_dernier.csv","w+");
+			if($fich_mp) {
+				echo "<p>Création d'un fichier de sauvegarde des matières (<i>de l'an dernier</i>) de chaque professeur.</p>\n";
+				while($lig_mp=mysql_fetch_object($res_matieres_profs)) {
+					fwrite($fich_mp,"$lig_mp->id_professeur;$lig_mp->id_matiere\n");
+				}
+				fclose($fich_mp);
+			}
+			else {
+				echo "<p style='color:red'>Echec de la création d'un fichier de sauvegarde des matières (<i>de l'an dernier</i>) de chaque professeur.</p>\n";
 			}
 		}
 
@@ -928,9 +944,26 @@ else {
 
 	} else {
 
-		echo '<p style="text-align: center; font-weight: bold;"><a href="prof_disc_classe_csv.php?a=a'.add_token_in_url().'">Procéder à la cinquième phase d\'initialisation</a></p>'."\n";
+		echo "<p>La création des enseignements peut se faire de trois façon différentes (<i>par ordre de préférence</i>)&nbsp;:</p>\n";
 
-		echo "<p style='text-align: center; font-weight: bold;'>Si la remontée vers STS n'a pas encore été effectuée, vous pouvez effectuer l'initialisation des enseignements à partir d'un export CSV de UnDeuxTemps&nbsp;: <a href='traite_csv_udt.php?a=a".add_token_in_url()."'>Procéder à la cinquième phase d'initialisation</a><br />(<i>procédure encore expérimentale... il se peut que vous ayez des groupes en trop</i>)</p>\n";
+		echo "<ul>\n";
+		echo "<li>\n";
+		//  style="text-align: center; font-weight: bold;"
+		echo "<p>";
+		echo "Si votre emploi du temps est remonté vers STS, vous disposez d'un fichier <b>sts_emp_RNE_ANNEE.xml</b>&nbsp;:";
+		echo "<br />";
+		echo "<a href='prof_disc_classe_csv.php?a=a".add_token_in_url()."'>Procéder à la cinquième phase d'initialisation</a></p>\n";
+		echo "</li>\n";
+
+		echo "<li>\n";
+		echo "<p>Si la remontée vers STS n'a pas encore été effectuée, vous pouvez effectuer l'initialisation des enseignements à partir d'un export CSV de UnDeuxTemps&nbsp;: <br /><a href='traite_csv_udt.php?a=a".add_token_in_url()."'>Procéder à la cinquième phase d'initialisation</a><br />(<i>procédure encore expérimentale... il se peut que vous ayez des groupes en trop</i>)</p>\n";
+		echo "</li>\n";
+
+		echo "<li>\n";
+		echo "<p>Si vous n'avez pas non plus d'export CSV d'UnDeuxTemps&nbsp;: <br /><a href='init_alternatif.php?'>Initialisation alternative des enseignements</a><br />(<i>le mode le plus fastidieux</i>)</p>\n";
+		echo "</li>\n";
+
+		echo "</ul>\n";
 
 	}
 

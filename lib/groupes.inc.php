@@ -195,6 +195,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                             ")";
     //echo "$sql<br />";
     $query = mysql_query($sql);
+	//echo "\$_id_groupe=$_id_groupe<br />";
     $temp["name"] = mysql_result($query, 0, "name");
     $temp["description"] = mysql_result($query, 0, "description");
     $temp["id"] = mysql_result($query, 0, "id");
@@ -367,6 +368,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 }
 
 function create_group($_name, $_description, $_matiere, $_classes, $_categorie = 1) {
+	// En mettant $_categorie=-1 on récupère la catégorie par défaut associées à la matière
 
     $_insert = mysql_query("insert into groupes set name = '" . addslashes($_name) . "', description = '" . addslashes($_description) . "'");
     $_group_id = mysql_insert_id();
@@ -386,9 +388,33 @@ function create_group($_name, $_description, $_matiere, $_classes, $_categorie =
 		} else {
 			$test_cat = mysql_result($temptemp, 0);
 		}
+
 		if ($test_cat == "0") {
 			// La catégorie n'existe pas : on met la catégorie par défaut
-			$_categorie = 1;
+			//$_categorie = 1;
+			// La catégorie 1 peut ne pas exister
+			$sql="SELECT m.categorie_id FROM matieres m, matieres_categories mc WHERE mc.id=m.categorie_id AND m.matiere='".$_matiere."';";
+			$res_cat=mysql_query($sql);
+			if(mysql_num_rows($res_cat)>0) {
+				$_categorie=mysql_result($res_cat, 0);
+			}
+			else {
+				$sql="SELECT 1=1 FROM matieres_categories mc WHERE mc.id='1';";
+				$test_cat=mysql_query($sql);
+				if(mysql_num_rows($test_cat)>0) {
+					$_categorie = 1;
+				}
+				else {
+					$sql="SELECT id FROM matieres_categories mc ORDER BY priority;";
+					$res_cat=mysql_query($sql);
+					if(mysql_num_rows($res_cat)>0) {
+						$_categorie=mysql_result($res_cat, 0);
+					}
+					else {
+						$_categorie = 0;
+					}
+				}
+			}
 		}
 	}
     $_insert2 = mysql_query("insert into j_groupes_matieres set id_groupe = '" . $_group_id . "', id_matiere = '" . $_matiere . "'");
