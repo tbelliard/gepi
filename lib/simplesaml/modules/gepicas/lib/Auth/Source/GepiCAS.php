@@ -4,6 +4,39 @@
  *
  */
 class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
+//class sspmod_gepicas_Auth_Source_GepiCAS  extends SimpleSAML_Auth_Source   {
+
+	/**
+	 * The string used to identify our states.
+	 */
+	const STAGE_INIT = 'sspmod_cas_Auth_Source_CAS.state';
+	//const STAGE_INIT = 'sspmod_elyco_Auth_Source_gepiSSO.state';
+
+	/**
+	 * The key of the AuthId field in the state.
+	 */
+	const AUTHID = 'sspmod_cas_Auth_Source_CAS.AuthId';
+	//const AUTHID = 'sspmod_elyco_Auth_Source_gepiSSO.AuthId';
+
+	/**
+	 * @var array with ldap configuration
+	 */
+	private $_ldapConfig;
+
+	/**
+	 * @var cas configuration
+	 */
+	private $_casConfig;
+
+	/**
+	 * @var cas chosen validation method
+	 */
+	private $_validationMethod;
+	/**
+	 * @var cas login method
+	 */
+	private $_loginMethod;
+
 
 	/**
 	 * @var string search_table_name SQL name of the table
@@ -198,15 +231,14 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 		$result = mysql_query($requete);
 		$valeur = mysql_fetch_array($result);
 		$attributes['login'] = array($valeur[0]);
-		
-		$_SESSION['login'] = $attributes['login'][0];
+		$attributes['login_gepi'][0] = $valeur[0];
 		
 		$state['Attributes'] = $attributes;
 		
-		// die ($_SESSION['login']);
-		
 		SimpleSAML_Auth_Source::completeAuth($state);
 	}
+
+
 
 
 
