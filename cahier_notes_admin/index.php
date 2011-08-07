@@ -104,6 +104,16 @@ if(isset($_POST['is_posted'])) {
 			$msg .= "Erreur lors de l'enregistrement de note_autre_que_sur_referentiel !";
 		}
 	}
+
+	if (isset($_POST['utiliser_sacoche'])) {
+		if (!saveSetting("utiliser_sacoche", 'yes')) {
+			$msg .= "Erreur lors de l'enregistrement de utiliser_sacoche !";
+		}
+	} else {
+		if (!saveSetting("utiliser_sacoche", 'no')) {
+			$msg .= "Erreur lors de l'enregistrement de utiliser_sacoche !";
+		}
+	}
 	
 }
 

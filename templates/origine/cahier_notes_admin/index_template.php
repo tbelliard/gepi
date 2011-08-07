@@ -205,6 +205,18 @@
 	  </label>
 	</fieldset>
 
+	<h2>
+	  Évaluation par compétence
+	</h2>
+	<p>
+	  Utilisation de sacoche pour l'évaluation par compétence
+	  <input type="checkbox" 
+			 name="utiliser_sacoche" 
+			 size="8"
+			 title="utiliser_sacoche"
+			 <?php if (getSettingValue("utiliser_sacoche") == 'yes') {echo 'checked="checked"';} ?> />
+	</p>
+	
 	<p class="center">
 	  <input type="hidden" name="is_posted" value="1" />
 	  <input type="submit" value="Enregistrer" />
