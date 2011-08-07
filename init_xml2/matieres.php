@@ -543,7 +543,13 @@
 							$test=mysql_query($sql);
 							if(mysql_num_rows($test)>0) {
 								$sql="UPDATE mef SET ";
-								if(isset($mefs[$i]["libelle_court"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_court"]."',";} elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
+								if(isset($mefs[$i]["libelle_court"])) {
+									$sql.=" libelle_court='".$mefs[$i]["libelle_court"]."',";
+								}
+								//elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
+								else {
+									$sql.=" libelle_court='',";
+								}
 								if(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_long='".$mefs[$i]["libelle_long"]."',";}
 								if(isset($mefs[$i]["libelle_edition"])) {$sql.=" libelle_edition='".$mefs[$i]["libelle_edition"]."',";}
 								$sql.=" mef_code='".$mefs[$i]["code"]."' WHERE mef_code='".$mefs[$i]["code"]."';";
@@ -552,7 +558,14 @@
 							}
 							else{
 								$sql="INSERT INTO mef SET ";
-								if(isset($mefs[$i]["libelle_court"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_court"]."',";} elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
+								//if(isset($mefs[$i]["libelle_court"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_court"]."',";} elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
+								if(isset($mefs[$i]["libelle_court"])) {
+									$sql.=" libelle_court='".$mefs[$i]["libelle_court"]."',";
+								}
+								//elseif(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_court='".$mefs[$i]["libelle_long"]."',";}
+								else {
+									$sql.=" libelle_court='',";
+								}
 								if(isset($mefs[$i]["libelle_long"])) {$sql.=" libelle_long='".$mefs[$i]["libelle_long"]."',";}
 								if(isset($mefs[$i]["libelle_edition"])) {$sql.=" libelle_edition='".$mefs[$i]["libelle_edition"]."',";}
 								$sql.=" mef_code='".$mefs[$i]["code"]."';";
