@@ -72,12 +72,9 @@ if ($date_absence_eleve != null) {
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
-$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
-$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+$dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 require_once("../lib/header.inc");
@@ -91,19 +88,10 @@ include('menu_bilans.inc.php');
     <font color="red">&#9632;</font> Manquement aux obligations de présence<br />
     <font color="blue">&#9632;</font> Non manquement aux obligations de présence<br />     
 </div>        
-<form id="choix_date" action="<?php $_SERVER['PHP_SELF']?>" method="post">
+<form dojoType="dijit.form.Form" id="choix_date" name="choix_date" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 <h2>Les saisies du
-    <input size="9" id="date_absence_eleve_1" name="date_absence_eleve" onchange="document.getElementById('choix_date').submit()" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
-    <script type="text/javascript">
-	Calendar.setup({
-	    inputField     :    "date_absence_eleve_1",     // id of the input field
-	    ifFormat       :    "%d/%m/%Y",      // format of the input field
-	    button         :    "date_absence_eleve_1",  // trigger for the calendar (button ID)
-	    align          :    "Bl",           // alignment (defaults to "Bl")
-	    singleClick    :    true
-	});
-    </script>
-    <button type="submit">Changer</button>
+    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" onchange="document.choix_date.submit()" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
+    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Changer</button>
 </h2>
 </form>
 
@@ -213,5 +201,11 @@ foreach($classe_col as $classe) {
   <span class="bold">Impression faite le <?php echo date("d/m/Y - H:i"); ?>.</span>
 </div>
 <?php
-require("../lib/footer.inc.php");
+$javascript_footer_texte_specifique = '<script type="text/javascript">
+    dojo.require("dojo.parser");
+    dojo.require("dijit.form.Button");    
+    dojo.require("dijit.form.Form");    
+    dojo.require("dijit.form.DateTextBox");
+    </script>';
+require_once("../lib/footer.inc.php");
 ?>

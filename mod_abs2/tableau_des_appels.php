@@ -82,12 +82,9 @@ if ($choix_creneau === null) {
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
-$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
-$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+$dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 require_once("../lib/header.inc");
@@ -121,22 +118,13 @@ include('menu_bilans.inc.php');
         </tr>
     </table>    
 </div>    
-<form name="choix_du_creneau" action="<?php $_SERVER['PHP_SELF']?>" method="post">
+<form dojoType="dijit.form.Form" id="choix_du_creneau" name="choix_du_creneau" action="<?php $_SERVER['PHP_SELF']?>" method="post">
 <h2>Les appels du
-    <input size="9" id="date_absence_eleve_1" name="date_absence_eleve" value="<?php echo $dt_date_absence_eleve->format('d/m/Y')?>" />
-    <script type="text/javascript">
-	Calendar.setup({
-	    inputField     :    "date_absence_eleve_1",     // id of the input field
-	    ifFormat       :    "%d/%m/%Y",      // format of the input field
-	    button         :    "date_absence_eleve_1",  // trigger for the calendar (button ID)
-	    align          :    "Bl",           // alignment (defaults to "Bl")
-	    singleClick    :    true
-	});
-    </script>
-    <button type="submit">Changer</button></h2>
+    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve" name="date_absence_eleve" onchange="document.choix_date.submit()" value="<?php echo $dt_date_absence_eleve->format('Y-m-d')?>" />
+    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Changer</button></h2>
 
 	<p>Vous devez choisir un cr&eacute;neau pour visionner les absents
-	<select name="choix_creneau" onchange='document.choix_du_creneau.submit();'>
+	<select dojoType="dijit.form.Select"  name="choix_creneau" onchange='document.choix_du_creneau.submit();'>
 		<option value="rien">Choix du cr&eacute;neau</option>
 <?php
 	foreach (EdtCreneauPeer::retrieveAllEdtCreneauxOrderByTime() as $edtCreneau)	 {
@@ -415,5 +403,13 @@ foreach($classe_col as $classe){
 <?php
 }
 echo '</div>';
-require("../lib/footer.inc.php");
+
+$javascript_footer_texte_specifique = '<script type="text/javascript">
+    dojo.require("dojo.parser");
+    dojo.require("dijit.form.Button");    
+    dojo.require("dijit.form.Form");    
+    dojo.require("dijit.form.DateTextBox");    
+    dojo.require("dijit.form.Select");
+    </script>';
+require_once("../lib/footer.inc.php");
 ?>

@@ -164,10 +164,10 @@ if (getSettingValue("GepiAccesAbsTouteClasseCpe")=='yes' && $utilisateur->getSta
 }
 if (!$groupe_col->isEmpty()) {
     echo "<td style='border : 1px solid; padding : 10 px;'>";
-    echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
+    echo "<form dojoType=\"dijit.form.Form\" action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>\n";
     echo '<input type="hidden" name="type_selection" value="id_groupe"/>';
-    echo ("Groupe : <select name=\"id_groupe\" onchange='submit()' class=\"small\">");
+    echo ("Groupe : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"id_groupe\" onchange='submit()' class=\"small\">");
     echo "<option value='-1'>choisissez un groupe</option>\n";
     foreach ($groupe_col as $group) {
 	    echo "<option value='".$group->getId()."'";
@@ -178,7 +178,7 @@ if (!$groupe_col->isEmpty()) {
     }
     echo "</select>&nbsp;";
     echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button type="submit">Afficher les élèves</button>';
+    echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Afficher les élèves</button>';
 	echo "</p>\n";
     echo "</form>";
     echo "</td>";
@@ -195,7 +195,7 @@ if (!$classe_col->isEmpty()) {
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>\n";
     echo '<input type="hidden" name="type_selection" value="id_classe"/>';
-    echo ("Classe : <select name=\"id_classe\" onchange='submit()' class=\"small\">");
+    echo ("Classe : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"id_classe\" onchange='submit()' class=\"small\">");
     echo "<option value='-1'>choisissez une classe</option>\n";
     foreach ($classe_col as $classe) {
 	    echo "<option value='".$classe->getId()."'";
@@ -206,7 +206,7 @@ if (!$classe_col->isEmpty()) {
     }
     echo "</select>&nbsp;";
     echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button type="submit">Afficher les élèves</button>';
+    echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Afficher les élèves</button>';
 	echo "</p>\n";
     echo "</form>";
     echo "</td>";
@@ -226,7 +226,7 @@ if (!$aid_col->isEmpty()) {
     echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>\n";
     echo '<input type="hidden" name="type_selection" value="id_aid"/>';
-    echo ("Aid : <select name=\"id_aid\" onchange='submit()' class=\"small\">");
+    echo ("Aid : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"id_aid\" onchange='submit()' class=\"small\">");
     echo "<option value='-1'>choisissez une aid</option>\n";
     foreach ($aid_col as $aid) {
 	    echo "<option value='".$aid->getPrimaryKey()."'";
@@ -237,7 +237,7 @@ if (!$aid_col->isEmpty()) {
     }
     echo "</select>&nbsp;";
     echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button type="submit">Afficher les élèves</button>';
+    echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Afficher les élèves</button>';
 	echo "</p>\n";
     echo "</form>";
     echo "</td>";
@@ -248,9 +248,9 @@ echo "<td style='border : 1px solid; padding : 10 px;'>";
 echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>\n";
 echo 'Nom : <input type="hidden" name="type_selection" value="nom_eleve"/> ';
-echo '<input type="text" name="nom_eleve" size="10" value="'.$nom_eleve.'"/> ';
+echo '<input dojoType="dijit.form.TextBox" type="text" name="nom_eleve" style="width : 10em" value="'.$nom_eleve.'"/> ';
 echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-echo '<button type="submit">Rechercher</button>';
+echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Rechercher</button>';
 	echo "</p>\n";
 echo '</form>';
 echo '</td>';
@@ -258,7 +258,7 @@ echo '</td>';
 echo "<td style='border : 1px solid; padding : 10 px;'>";
 echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100%;\">\n";
 	echo "<p>\n";
-    echo ("Régime : <select name=\"filter_regime\" onchange='submit()' class=\"small\">");
+    echo ("Régime : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"width :12em;font-size:12px;\" name=\"filter_regime\" onchange='submit()' class=\"small\">");
     echo "<option value='-1'>choisissez un régime</option>\n";
     	    echo "<option value='d/p'";
 	    if (getFiltreRechercheParam('filter_regime') == 'd/p') echo " SELECTED ";
@@ -276,8 +276,8 @@ echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100
     echo "</select>";
     echo "</p>\n";
     echo "<p>\n";
-    echo ("Afficher : <select name=\"filter_manqement_obligation\" onchange='submit()' class=\"small\">");
-    echo "<option value='y'>uniquement les manquements à l'obligation de présence</option>";
+    echo ("Afficher : <select dojoType=\"dijit.form.Select\" maxheight=\"-1\" style=\"font-size:12px;\" name=\"filter_manqement_obligation\" onchange='submit()' class=\"small\">");
+    echo "<option value='y'>Manquements à l'obligation de présence</option>";
     	    echo "<option value='n'";
 	    if (getFiltreRechercheParam('filter_manqement_obligation') == 'n') echo " SELECTED ";
 	    echo ">";
@@ -287,7 +287,7 @@ echo "<form action=\"./absences_du_jour.php\" method=\"post\" style=\"width: 100
     echo "</p>\n";
 
     echo"<input type='hidden' name='date_absence_eleve' value='$date_absence_eleve'/>";
-    echo '<button type="submit">Filtrer</button>';
+    echo '<button style="font-size:12px" dojoType="dijit.form.Button" type="submit">Filtrer</button>';
 echo '</form>';
 echo '</td>';
 
@@ -388,7 +388,7 @@ $eleve_col = $query
 ?>
 	<div style="text-align: center">
 			    <!-- <p class="expli_page choix_fin"> -->
-				    <form action="./absences_du_jour.php" name="absences_du_jour" id="absences_du_jour" method="post" style="width: 100%;">
+				    <form dojoType="dijit.form.Form" action="./absences_du_jour.php" name="absences_du_jour" id="absences_du_jour" method="post" style="width: 100%;">
 			    <p class="expli_page choix_fin">
 				<input type="hidden" name="type_selection" value="<?php echo $type_selection?>"/>
 				<input type="hidden" name="nom_eleve" value="<?php echo $nom_eleve?>"/>
@@ -686,6 +686,8 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dijit.Menu");
     dojo.require("dijit.form.Form");
     dojo.require("dijit.form.CheckBox");
+    dojo.require("dijit.form.TextBox");
+    dojo.require("dijit.form.Select");   
     dojo.require("dijit.form.DateTextBox");
     dojo.require("dojo.parser");
         

@@ -69,10 +69,6 @@ if (isset($id_saisie) && $id_saisie != null) $_SESSION['id_saisie'] = $id_saisie
 
 //==============================================
 $style_specifique[] = "mod_abs2/lib/abs_style";
-$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
-//$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
-//$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
-//$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 if(!$menu){
 $titre_page = "Les absences";
 }

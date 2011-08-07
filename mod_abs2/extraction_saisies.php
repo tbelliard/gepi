@@ -91,12 +91,9 @@ $dt_date_absence_eleve_fin->setTime(23,59,59);
 $style_specifique[] = "edt_organisation/style_edt";
 $style_specifique[] = "templates/DefaultEDT/css/small_edt";
 $style_specifique[] = "mod_abs2/lib/abs_style";
-$style_specifique[] = "lib/DHTMLcalendar/calendarstyle";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar";
-$javascript_specifique[] = "lib/DHTMLcalendar/lang/calendar-fr";
-$javascript_specifique[] = "lib/DHTMLcalendar/calendar-setup";
 //$javascript_specifique[] = "mod_abs2/lib/include";
 $javascript_specifique[] = "edt_organisation/script/fonctions_edt";
+$dojo=true;
 //**************** EN-TETE *****************
 $titre_page = "Les absences";
 if ($affichage != 'ods') {// on affiche pas de html
@@ -106,32 +103,14 @@ if ($affichage != 'ods') {// on affiche pas de html
     include('menu_bilans.inc.php');
     ?>
     <div id="contain_div" class="css-panes">
-    <form name="choix_extraction" action="<?php $_SERVER['PHP_SELF']?>" method="post">
-    <h2>Les saisies du
-	<input size="9" id="date_absence_eleve_1" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('d/m/Y')?>" />
-	<script type="text/javascript">
-	    Calendar.setup({
-		inputField     :    "date_absence_eleve_1",     // id of the input field
-		ifFormat       :    "%d/%m/%Y",      // format of the input field
-		button         :    "date_absence_eleve_1",  // trigger for the calendar (button ID)
-		align          :    "Bl",           // alignment (defaults to "Bl")
-		singleClick    :    true
-	    });
-	</script>
-	au
-	<input size="9" id="date_absence_eleve_2" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('d/m/Y')?>" />
-	<script type="text/javascript">
-	    Calendar.setup({
-		inputField     :    "date_absence_eleve_2",     // id of the input field
-		ifFormat       :    "%d/%m/%Y",      // format of the input field
-		button         :    "date_absence_eleve_2",  // trigger for the calendar (button ID)
-		align          :    "Bl",           // alignment (defaults to "Bl")
-		singleClick    :    true
-	    });
-	</script>
+    <form dojoType="dijit.form.Form" id="choix_extraction" name="choix_extraction" action="<?php $_SERVER['PHP_SELF']?>" method="post">
+    <h2>Les saisies du 		
+    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_debut" name="date_absence_eleve_debut" value="<?php echo $dt_date_absence_eleve_debut->format('Y-m-d')?>" />
+    au               
+    <input style="width : 8em;font-size:14px;" type="text" dojoType="dijit.form.DateTextBox" id="date_absence_eleve_fin" name="date_absence_eleve_fin" value="<?php echo $dt_date_absence_eleve_fin->format('Y-m-d')?>" />
 	</h2>
 	  <p>
-    Nom (facultatif) : <input type="text" name="nom_eleve" size="10" value="<?php echo $nom_eleve?>"/>
+    Nom (facultatif) : <input dojoType="dijit.form.TextBox" type="text" style="width : 10em" name="nom_eleve" size="10" value="<?php echo $nom_eleve?>"/>
 
     <?php
     //on affiche une boite de selection avec les classe
@@ -141,7 +120,7 @@ if ($affichage != 'ods') {// on affiche pas de html
 	$classe_col = $utilisateur->getClasses();
     }
     if (!$classe_col->isEmpty()) {
-	    echo ("Classe : <select name=\"id_classe\">");
+	    echo ("Classe : <select dojoType=\"dijit.form.Select\" style=\"width :12em;font-size:12px;\" name=\"id_classe\">");
 	    echo "<option value='-1'>Toutes les classes</option>\n";
 	    foreach ($classe_col as $classe) {
 		    echo "<option value='".$classe->getId()."'";
@@ -158,13 +137,13 @@ if ($affichage != 'ods') {// on affiche pas de html
 	</p>
     <p>
     Type :
-    <select style="width:200px" name="type_extrait">
+    <select dojoType="dijit.form.Select" style="font-size:12px;" name="type_extrait">
     <option value='1' <?php if ($type_extrait == '1') {echo 'selected';}?>>Liste des saisies occasionnant un manquement aux obligations de présence</option>
     <option value='2' <?php if ($type_extrait == '2') {echo 'selected';}?>>Liste de toutes les saisies</option>
     </select>
-
-    <button type="submit" name="affichage" value="html">Afficher</button>
-    <button type="submit" name="affichage" value="ods">Enregistrer au format ods</button>
+    <br />
+    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="html">Afficher</button>
+    <button style="font-size:12px" dojoType="dijit.form.Button" type="submit" name="affichage" value="ods">Enregistrer au format ods</button>
 	</p>
 	</form>
 
@@ -277,5 +256,13 @@ if ($affichage == 'html') {
 ?>
 	</div>
 <?php
-require("../lib/footer.inc.php");
+$javascript_footer_texte_specifique = '<script type="text/javascript">
+    dojo.require("dojo.parser");
+    dojo.require("dijit.form.Button");    
+    dojo.require("dijit.form.Form");  
+    dojo.require("dijit.form.DateTextBox");  
+    dojo.require("dijit.form.TextBox");
+    dojo.require("dijit.form.Select");
+    </script>';
+require_once("../lib/footer.inc.php");
 ?>

@@ -225,7 +225,7 @@ if ($affichage != 'ods' && $affichage != 'odt' && (!$boucle || $fin_boucle) ) {
         <?php if ($inverse_date) :?>
         <h3 class="no">Les dates de début et de fin ont été inversés.</h3>
         <?php endif; ?>
-        <form name="bilan_individuel" action="bilan_individuel.php" method="post">
+        <form dojoType="dijit.form.Form" id="bilan_individuel" name="bilan_individuel" action="bilan_individuel.php" method="post">
             <fieldset>
               <legend>Paramétrage de l'export (dates, classes, tri...) et affichage</legend>
             <h3>Bilan individuel du
@@ -954,6 +954,7 @@ $javascript_footer_texte_specifique = '<script type="text/javascript">
     dojo.require("dijit.form.DateTextBox");    
     dojo.require("dijit.form.Select");
     dojo.require("dijit.form.NumberTextBox");
+    dojo.require("dijit.form.TextBox");
     </script>';
 require_once("../lib/footer.inc.php");
 ?>
