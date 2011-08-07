@@ -755,7 +755,8 @@ echo "<a href=\"../groupes/signalement_eleves.php?id_groupe=$id_groupe&amp;chemi
 echo "</p>\n";
 echo "</form>\n";
 
-echo "<script type='text/javascript' language='JavaScript'>
+if(isset($num_devoir)) {
+	echo "<script type='text/javascript' language='JavaScript'>
 	if(document.getElementById('span_chgt_dev')) {document.getElementById('span_chgt_dev').style.display='';}
 
 	function confirm_changement_devoir(thechange, themessage) {
@@ -775,6 +776,7 @@ echo "<script type='text/javascript' language='JavaScript'>
 	}
 
 </script>\n";
+}
 
 // Affichage ou non les colonnes "commentaires"
 // Affichage ou non de tous les devoirs
