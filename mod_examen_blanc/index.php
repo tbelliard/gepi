@@ -156,8 +156,30 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mo
 
 //$modif_exam=isset($_POST['modif_exam']) ? $_POST['modif_exam'] : (isset($_GET['modif_exam']) ? $_GET['modif_exam'] : NULL);
 
+$acces_mod_exb_prof="n";
+if($_SESSION['statut']=='professeur') {
 
-if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+	if(!is_pp($_SESSION['login'])) {
+		// A FAIRE: AJOUTER UN tentative_intrusion()...
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+	if(getSettingValue('modExbPP')!='yes') {
+		// A FAIRE: AJOUTER UN tentative_intrusion()...
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+	if((isset($id_exam))&&(!is_pp_proprio_exb($id_exam))) {
+		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'êtes pas propriétaire de l'examen blanc n°$id_exam."));
+		die();
+	}
+
+	$acces_mod_exb_prof="y";
+}
+
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($acces_mod_exb_prof=='y')) {
 
 	if(isset($id_exam)) {
 		$msg="";
@@ -196,7 +218,7 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		$description=isset($_POST['description']) ? $_POST['description'] : "";
 		//$type_anonymat=isset($_POST['type_anonymat']) ? $_POST['type_anonymat'] : "ele_id";
 
-		if(strlen(my_ereg_replace("[A-Za-z0-9 _.-]","",remplace_accents($intitule,'all')))!=0) {$intitule=my_ereg_replace("[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸0-9_.-]"," ",$intitule);}
+		if(strlen(preg_replace("/[A-Za-z0-9 _\.-]/","",remplace_accents($intitule,'all')))!=0) {$intitule=preg_replace("/[^A-Za-zÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚİ¾´áàâäãåçéèêëîïìíñôöğòóõ¨ûüùúıÿ¸0-9_\.-]/"," ",$intitule);}
 		if($intitule=="") {$intitule="Examen blanc";}
 
 		//$tab_anonymat=array('elenoet','ele_id','no_gep','alea');
@@ -253,11 +275,11 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 		for($i=0;$i<count($tab_matiere);$i++) {
 			if(isset($coef[$i])) {
 				$enregistrer='y';
-				if(my_ereg("[^0-9.]",$coef[$i])) {
+				if(preg_match("/[^0-9\.]/",$coef[$i])) {
 					$msg.="$coef[$i] contient des caractères non numériques.<br />\n";
 					$enregistrer='n';
 				}
-				elseif(strlen(my_ereg_replace("[^.]","",$coef[$i]))>1) {
+				elseif(strlen(preg_replace("/[^\.]/","",$coef[$i]))>1) {
 					$msg.="Il y a plusieurs POINTS dans $coef[$i]<br />\n";
 					$enregistrer='n';
 				}
@@ -319,6 +341,16 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 
 		// Ajout de classes pour l'examen sélectionné
 		$id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : array());
+
+		// On contrôle en cas d'accès prof qu'il est bien PP de ces classes
+		if($_SESSION['statut']=='professeur') {
+			for($i=0;$i<count($id_classe);$i++) {
+				if(!is_pp($_SESSION['login'], $id_classe[$i])) {
+					header("Location: ".$_SERVER['PHP_SELF']."?id_exam=$id_exam&msg=".rawurlencode("Vous n'êtes pas ".getSettingValue('gepi_prof_suivi')." dans la classe de ".get_class_from_id($id_classe[$i])));
+					die();
+				}
+			}
+		}
 
 		$nb_classes_supprimees=0;
 		$tab_classes_assoc_old=array();
@@ -796,7 +828,7 @@ echo ">Accueil</a>";
 
 include("../lib/calendrier/calendrier.class.php");
 
-if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($acces_mod_exb_prof=="y")) {
 	if(!isset($id_exam)) {
 
 		//echo "<h2>Epreuve blanche</h2>\n";
@@ -818,18 +850,23 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 				echo "<li>\n";
 				echo "<p><b>Examens blancs&nbsp;:</b><br />\n";
 				while($lig=mysql_fetch_object($res)) {
-					echo "Modifier <a href='".$_SERVER['PHP_SELF']."?id_exam=$lig->id&amp;mode=modif_exam'";
-					if($lig->description!='') {
-						echo " onmouseover=\"delais_afficher_div('div_exam_".$lig->id."','y',-100,20,1000,20,20)\" onmouseout=\"cacher_div('div_exam_".$lig->id."')\"";
+					$afficher_cet_examen_blanc="y";
+					if(($_SESSION['statut']=='professeur')&&(!is_pp_proprio_exb($lig->id))) {$afficher_cet_examen_blanc="n";}
 
-						$titre="Examen n°$lig->id";
-						$texte="<p><b>".$lig->intitule."</b><br />";
-						$texte.=$lig->description;
-						$tabdiv_infobulle[]=creer_div_infobulle('div_exam_'.$lig->id,$titre,"",$texte,"",30,0,'y','y','n','n');
-
+					if($afficher_cet_examen_blanc=="y") {
+						echo "Modifier <a href='".$_SERVER['PHP_SELF']."?id_exam=$lig->id&amp;mode=modif_exam'";
+						if($lig->description!='') {
+							echo " onmouseover=\"delais_afficher_div('div_exam_".$lig->id."','y',-100,20,1000,20,20)\" onmouseout=\"cacher_div('div_exam_".$lig->id."')\"";
+	
+							$titre="Examen n°$lig->id";
+							$texte="<p><b>".$lig->intitule."</b><br />";
+							$texte.=$lig->description;
+							$tabdiv_infobulle[]=creer_div_infobulle('div_exam_'.$lig->id,$titre,"",$texte,"",30,0,'y','y','n','n');
+	
+						}
+						echo ">$lig->intitule</a> (<i>".formate_date($lig->date)."</i>)";
+						echo " - <a href='".$_SERVER['PHP_SELF']."?id_exam=$lig->id&amp;mode=suppr_exam".add_token_in_url()."' onclick=\"return confirm('Etes vous sûr de vouloir supprimer l examen?')\">Supprimer</a><br />\n";
 					}
-					echo ">$lig->intitule</a> (<i>".formate_date($lig->date)."</i>)";
-					echo " - <a href='".$_SERVER['PHP_SELF']."?id_exam=$lig->id&amp;mode=suppr_exam".add_token_in_url()."' onclick=\"return confirm('Etes vous sûr de vouloir supprimer l examen?')\">Supprimer</a><br />\n";
 				}
 				echo "</li>\n";
 			}
@@ -1490,6 +1527,10 @@ if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) 
 			elseif($_SESSION['statut']=='scolarite') {
 				$sql="SELECT DISTINCT c.* FROM classes c, periodes p, j_scol_classes j WHERE p.id_classe = c.id AND j.id_classe=c.id ORDER BY classe";
 				// Permettre aussi de voir toutes les classes...
+			}
+			else {
+				// Accès prof principal
+				$sql="SELECT DISTINCT c.* FROM classes c, j_eleves_professeurs jep WHERE jep.id_classe=c.id AND jep.professeur='".$_SESSION['login']."' ORDER BY classe";
 			}
 			$classes_list = mysql_query($sql);
 			$nb = mysql_num_rows($classes_list);

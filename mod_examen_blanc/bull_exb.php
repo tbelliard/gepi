@@ -70,136 +70,30 @@ $mode=isset($_POST['mode']) ? $_POST['mode'] : (isset($_GET['mode']) ? $_GET['mo
 
 $id_classe=isset($_POST['id_classe']) ? $_POST['id_classe'] : (isset($_GET['id_classe']) ? $_GET['id_classe'] : NULL);
 
-/*
-$id_groupe=isset($_POST['id_groupe']) ? $_POST['id_groupe'] : (isset($_GET['id_groupe']) ? $_GET['id_groupe'] : NULL);
-$matiere=isset($_POST['matiere']) ? $_POST['matiere'] : (isset($_GET['matiere']) ? $_GET['matiere'] : NULL);
+$acces_mod_exb_prof="n";
+if($_SESSION['statut']=='professeur') {
 
-$id_ex_grp=isset($_POST['id_ex_grp']) ? $_POST['id_ex_grp'] : (isset($_GET['id_ex_grp']) ? $_GET['id_ex_grp'] : NULL);
-
-$reg_notes=isset($_POST['reg_notes']) ? $_POST['reg_notes'] : (isset($_GET['reg_notes']) ? $_GET['reg_notes'] : NULL);
-$reg_eleves=isset($_POST['reg_eleves']) ? $_POST['reg_eleves'] : (isset($_GET['reg_eleves']) ? $_GET['reg_eleves'] : NULL);
-
-// ATTENTION: Avec $id_exam/$id_groupe et $id_ex_grp on a une clé de trop...
-
-//$modif_exam=isset($_POST['modif_exam']) ? $_POST['modif_exam'] : (isset($_GET['modif_exam']) ? $_GET['modif_exam'] : NULL);
-
-if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
-
-	//if(isset($id_exam)) {
-	if((isset($id_exam))&&(isset($matiere))) {
-		$msg="";
-
-		$sql="SELECT * FROM ex_examens WHERE id='$id_exam';";
-		//echo "$sql<br />\n";
-		$res=mysql_query($sql);
-		if(mysql_num_rows($res)==0) {
-			$msg="L'examen choisi (<i>$id_exam</i>) n'existe pas.<br />\n";
-			unset($reg_eleves);
-			unset($reg_notes);
-		}
-		else {
-			$sql="SELECT id FROM ex_groupes WHERE id_exam='$id_exam' AND id_groupe='0' AND matiere='$matiere' AND type='hors_enseignement';";
-			//echo "$sql<br />\n";
-			$res=mysql_query($sql);
-			if(mysql_num_rows($res)==0) {
-				$msg="Aucun groupe hors enseignement n'a été trouvé pour cet examen.<br />\n";
-				unset($reg_eleves);
-				unset($reg_notes);
-			}
-			else {
-				$lig=mysql_fetch_object($res);
-				$id_ex_grp=$lig->id;
-			}
-		}
-
-		if($reg_eleves=='y') {
-			$login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : (isset($_GET['login_ele']) ? $_GET['login_ele'] : array());
-
-			//$sql="DELETE FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
-			//$suppr=mysql_query($sql);
-			$sql="SELECT login FROM ex_notes WHERE id_ex_grp='$id_ex_grp';";
-			//echo "$sql<br />\n";
-			$res=mysql_query($sql);
-			$tab_ele_inscrits=array();
-			$nb_suppr_ele=0;
-			while($lig=mysql_fetch_object($res)) {
-				$tab_ele_inscrits[]=$lig->login;
-				if(!in_array($lig->login, $login_ele)) {
-					$sql="DELETE FROM ex_notes WHERE id_ex_grp='$id_ex_grp' AND login='$login_ele[$i]';";
-					//echo "$sql<br />\n";
-					$suppr=mysql_query($sql);
-					if($suppr) {$nb_suppr_ele++;}
-				}
-			}
-			if($nb_suppr_ele>0) {$msg.="$nb_suppr_ele élève(s) retiré(s).<br />";}
-
-			$nb_ajout_ele=0;
-			for($i=0;$i<count($login_ele);$i++) {
-				if(!in_array($login_ele[$i], $tab_ele_inscrits)) {
-					$sql="INSERT INTO ex_notes SET id_ex_grp='$id_ex_grp', login='$login_ele[$i]', statut='v';";
-					//echo "$sql<br />\n";
-					$insert=mysql_query($sql);
-					if($insert) {$nb_ajout_ele++;}
-				}
-			}
-			if($nb_ajout_ele>0) {$msg.="$nb_ajout_ele élève(s) ajouté(s).<br />";}
-		}
-		elseif($reg_notes=='y') {
-
-			$login_ele=isset($_POST['login_ele']) ? $_POST['login_ele'] : (isset($_GET['login_ele']) ? $_GET['login_ele'] : array());
-			$note=isset($_POST['note']) ? $_POST['note'] : (isset($_GET['note']) ? $_GET['note'] : array());
-		
-			$msg="";
-		
-			for($i=0;$i<count($login_ele);$i++) {
-				$elev_statut='';
-				if(($note[$i]=='disp')){
-					$elev_note='0';
-					$elev_statut='disp';
-				}
-				elseif(($note[$i]=='abs')){
-					$elev_note='0';
-					$elev_statut='abs';
-				}
-				elseif(($note[$i]=='-')){
-					$elev_note='0';
-					$elev_statut='-';
-				}
-				elseif(ereg("^[0-9\.\,]{1,}$",$note[$i])) {
-					$elev_note=str_replace(",", ".", "$note[$i]");
-					if(($elev_note<0)||($elev_note>20)){
-						$elev_note='';
-						//$elev_statut='';
-						$elev_statut='v';
-					}
-				}
-				else{
-					$elev_note='';
-					//$elev_statut='';
-					$elev_statut='v';
-				}
-				if(($elev_note!='')or($elev_statut!='')){
-					$sql="UPDATE ex_notes SET note='$elev_note', statut='$elev_statut' WHERE id_ex_grp='$id_ex_grp' AND login='$login_ele[$i]';";
-					//echo "$sql<br />\n";
-					$res=mysql_query($sql);
-					if(!$res) {
-						$msg.="Erreur: $sql<br />";
-					}
-				}
-			}
-		
-			if($msg=='') {
-				$msg="Enregistrement effectué.";
-			}
-
-		}
+	if(!is_pp($_SESSION['login'])) {
+		// A FAIRE: AJOUTER UN tentative_intrusion()...
+		header("Location: ../logout.php?auto=1");
+		die();
 	}
+
+	if(getSettingValue('modExbPP')!='yes') {
+		// A FAIRE: AJOUTER UN tentative_intrusion()...
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+	if((isset($id_exam))&&(!is_pp_proprio_exb($id_exam))) {
+		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'êtes pas propriétaire de l'examen blanc n°$id_exam."));
+		die();
+	}
+
+	$acces_mod_exb_prof="y";
 }
-*/
 
-
-
-if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($acces_mod_exb_prof=='y')) {
 
 	if(isset($id_exam)) {
 		$sql="SELECT * FROM ex_examens WHERE id='$id_exam';";
@@ -1063,7 +957,7 @@ echo ">Examen n°$id_exam</a>";
 //echo "</p>\n";
 //echo "</div>\n";
 
-if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($acces_mod_exb_prof=='y')) {
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//===========================

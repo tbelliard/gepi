@@ -35,6 +35,9 @@ Modèles OpenOffice:
 Initialisation XML:
 - Ajout d'une page pour créer les enseignements si on ne dispose ni d'un XML STS complet, ni d'un export CSV d'UnDeuxTemps.
 
+Examens blancs:
+- Organisation d'examens blancs possible en prof principal (selon le paramétrage en Droits d'accès).
+
 - A compléter au fur et à mesure;)...
 
 Gepi-1.5.4 (17/04/2011)

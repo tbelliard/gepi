@@ -1322,6 +1322,15 @@ $titreItem='GepiAccesEditionDocsEctsPP';
 $texteItem="peut éditer les relevés ECTS pour sa classe";
 if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
   $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
+
+$titreItem='modExbPP';
+$texteItem="peut créer des examens blancs pour les classes dont il est ".getSettingValue('gepi_prof_suivi');
+if (!$droitAffiche->set_entree($statutItem, $titreItem, $texteItem))
+  $tbs_message = 'Erreur lors du chargement de '.$titreItem;
+
+
 /*
 
  * <tr>

@@ -1702,10 +1702,22 @@ class class_page_accueil {
 	$this->b=0;
 
 //insert into setting set name='active_mod_epreuve_blanche', value='y';
+
 	if (getSettingValue("active_mod_examen_blanc")=='y') {
-	  $this->creeNouveauItem("/mod_examen_blanc/index.php",
-			  "Examens blancs",
-			  "Organisation d'examens blancs,...");
+		$acces_mod_examen_blanc="y";
+		if($_SESSION['statut']=='professeur') {
+			$acces_mod_examen_blanc="n";
+
+			if((is_pp($_SESSION['login']))&&(getSettingValue('modExbPP')=='yes')) {
+				$acces_mod_examen_blanc="y";
+			}
+		}
+
+		if($acces_mod_examen_blanc=="y") {
+			$this->creeNouveauItem("/mod_examen_blanc/index.php",
+					"Examens blancs",
+					"Organisation d'examens blancs,...");
+		}
 	}
 
 	if ($this->b>0){

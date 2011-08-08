@@ -2516,4 +2516,25 @@ setTimeout('calcul_moy_med_".$pref_id."()',1000);
 ";
 }
 
+// Fonction destinée à s'assurer en cas d'accès professeur principal que l'examen ne concerne bien que la classe du prof
+function is_pp_proprio_exb($id_exam) {
+	$retour=true;
+
+	$sql="SELECT * FROM ex_classes WHERE id_exam='$id_exam';";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		//$retour=false;
+
+		while($lig=mysql_fetch_object($res)) {
+			$sql="SELECT 1=1 FROM j_eleves_professeurs jep, j_eleves_classes jec WHERE jec.login=jep.login AND jep.id_classe=jec.id_classe AND jec.id_classe='$lig->id_classe';";
+			$test=mysql_query($sql);
+			if(mysql_num_rows($test)==0) {
+				$retour=false;
+				break;
+			}
+		}
+	}
+
+	return $retour;
+}
 ?>

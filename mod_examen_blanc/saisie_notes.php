@@ -85,8 +85,30 @@ $import_csv=isset($_POST['import_csv']) ? $_POST['import_csv'] : "n";
 
 //$modif_exam=isset($_POST['modif_exam']) ? $_POST['modif_exam'] : (isset($_GET['modif_exam']) ? $_GET['modif_exam'] : NULL);
 
+$acces_mod_exb_prof="n";
+if($_SESSION['statut']=='professeur') {
 
-if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+	if(!is_pp($_SESSION['login'])) {
+		// A FAIRE: AJOUTER UN tentative_intrusion()...
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+	if(getSettingValue('modExbPP')!='yes') {
+		// A FAIRE: AJOUTER UN tentative_intrusion()...
+		header("Location: ../logout.php?auto=1");
+		die();
+	}
+
+	if((isset($id_exam))&&(!is_pp_proprio_exb($id_exam))) {
+		header("Location: ../accueil.php?msg=".rawurlencode("Vous n'êtes pas propriétaire de l'examen blanc n°$id_exam."));
+		die();
+	}
+
+	$acces_mod_exb_prof="y";
+}
+
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($acces_mod_exb_prof=='y')) {
 
 	//if(isset($id_exam)) {
 	if((isset($id_exam))&&(isset($matiere))) {
@@ -447,7 +469,7 @@ echo ">Examen n°$id_exam</a>";
 //echo "</p>\n";
 //echo "</div>\n";
 
-if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')) {
+if(($_SESSION['statut']=='administrateur')||($_SESSION['statut']=='scolarite')||($acces_mod_exb_prof=='y')) {
 
 	if(($id_groupe!=NULL)&&($matiere!=NULL)) {
 
