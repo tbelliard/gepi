@@ -45,17 +45,4 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 		parent::__construct($auth);
 	}
 	
-	/**
-	 * Initialise un login en spécifiant automatiquement si besoin un rne
-	 *
-	 * @param array $params  Various options to the authentication request.
-	 */
-	public function login(array $params = array()) {
-		//on rajoute le rne aux paramètres du login
-		$RNE = isset($_GET['rne']) ? $_GET['rne'] : (isset($_COOKIE['RNE']) ? $_COOKIE['RNE'] : (isset($_POST['RNE']) ? $_POST['RNE'] : (isset($_REQUEST['organization']) ? $_REQUEST['organization'] : NULL)));
-		if (isset($RNE)) {
-			$params['core:organization'] = $RNE;
-		}
-		parent::login($params);
-	}
 }
