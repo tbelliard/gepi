@@ -1,6 +1,8 @@
 <?php
-/*
+/** Manipulation de la table setting
+ * 
  * $Id$
+ * 
  *
  * Copyright 2001, 2005 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  *
@@ -19,48 +21,66 @@
  * You should have received a copy of the GNU General Public License
  * along with GEPI; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * 
+ * @package GEPI
+ * @subpackage settings
+ * 
  */
 
 /**
- * Load settings from the database
+ * Tableau des réglages
+ * 
+ * $gepiSettings['name'] = 'value'
+ * 
+ * name le nom du réglage dans setting.name
+ * 
+ * value la valeur du réglage dans setting.value 
  *
- * Query all the settings
- * Fetch the result in the $gepiSettings associative array
+ * @global array $GLOBALS['gepiSettings']
+ * @name $gepiSettings
+ */
+$GLOBALS['gepiSettings'] = array();
+
+/**
+ * Charge les réglages depuis la base de données
  *
- * Returns true if all went good, false otherwise
+ * Recherche tous les réglages
+ * Retourne le résultat dans le tableau associatif $gepiSettings
  *
+ * Retourne TRUE si tout c'est bien passé, FALSE sinon
  *
- * @return bool The settings are loaded
+ * @global array
+ * @return bool TRUE if the settings are loaded
  */
 function loadSettings()
 {
     global $gepiSettings;
-    $sql = "select NAME, VALUE from setting";
+    $sql = "SELECT name, value FROM setting";
     $res = sql_query($sql);
-    if (! $res) return (false);
+    if (! $res) return (FALSE);
     if (sql_count($res) == 0) {
-        return (false);
+        return (FALSE);
     } else {
         for ($i = 0; ($row = sql_row($res, $i)); $i++) {
             $gepiSettings[$row[0]] = $row[1];
         }
-        return (true);
+        return (TRUE);
     }
 }
 
 /**
- * Get the value of a setting by its name
+ * Renvoie la valeur d'un réglage en fonction de son nom
  *
- * Use this function within other functions so you don't have to declare
- * $gepiSettings global
+ * Utilisez cette fonction à l'intérieur des autres fonctions afin de ne pas avoir
+ * à déclarer la variable globale $gepiSettings
  *
- * Returns the value if the name exists
+ * Retourne la valeur si le nom existe
  *
- * @_name               string                  The name of the setting you want
- *
- * @return              mixed                   The value matching _name
+ * @global array 
+ * @param text $_name Le nom du réglage que vous cherchez
+ * @return text La valeur correspondant à $_name
+ * 
  */
-
 function getSettingValue($_name)
 {
     global $gepiSettings;
@@ -68,12 +88,11 @@ function getSettingValue($_name)
 }
 
 /**
- * Return True if getSettingValue() is 'yes' or 'y'
+ * Renvoie TRUE si le réglage est 'yes' ou 'y'
  *
  *
- * @_name               string                  The name of the setting you want to test
- *
- * @return              bool                   True if the setting you test is 'yes' or 'y', False on other case
+ * @param text $_name Le nom du réglage que vous cherchez
+ * @return bool TRUE si le réglage que vous cherchez est 'yes' or 'y', FALSE sinon
  */
 function getSettingAOui($_name)
 {
@@ -85,17 +104,15 @@ function getSettingAOui($_name)
 }
 
 /**
- * Save a name, value pair to the database
+ * Sauvegarde une paire name, value dans la base
  *
- * Use this function ponctually. If you need to save several settings,
- * you'd better write your own code
- *
- * Returns the result of the operation
- *
- * @_name               string                  The name of the setting to save
- * @_value              string                  Its value
- *
- * @return              bool                    The result of the operation
+ * Utilisez cette fonction ponctuellement, Si vous devez sauvegarder plusieurs réglages,
+ * vous devriez plutôt écrire votre propre code
+ * 
+ * @global array
+ * @param text $_name Le nom du réglage
+ * @param text $_value La valeur du réglage
+ * @return bool TRUE si tout s'est bien passé, FALSE sinon
  */
 function saveSetting($_name, $_value)
 {
@@ -103,13 +120,13 @@ function saveSetting($_name, $_value)
    if (isset($gepiSettings[$_name])) {
     $sql = "update setting set VALUE = \"" . $_value . "\" where NAME = \"" . $_name . "\"";
     $res = sql_query($sql);
-         if ( ! $res) return (false);
+         if ( ! $res) return (FALSE);
     } else {
         $sql = "insert into setting set NAME = \"" . $_name . "\", VALUE = \"" . $_value . "\"";
     $res = sql_query($sql);
-        if ( ! $res) return (false);
+        if ( ! $res) return (FALSE);
     }
     $gepiSettings[$_name] = $_value;
-    return (true);
+    return (TRUE);
 }
 ?>
