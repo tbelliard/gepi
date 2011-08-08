@@ -1,24 +1,26 @@
 <?php
-/*
+/** Fonctions de gestion des groupes
+ * 
  * $Id$
+ * 
+ * @package GEPI
+ * @subpackage groupes
  *
  */
 
+/** Renvoie un tableau des groupes d'un enseignant
+ * 
+ * Chaque ligne contient les retours de get_group() d'un des groupes de l'enseignant
+ *
+ * @param text $_login Le login de l'enseignant
+ * @param mixed $mode Tri sur j_groupes_matieres.id_matiere puis classes.classe si NULL, classe puis id_matiere sinon
+ * @param array $tab_champs Les champs qu'on veut récupérer avec get_group()
+ * @return array Le tableau des groupes
+ * @see get_group()
+ */
 function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
-	//Modif Eric
-    //$query = mysql_query("select id_groupe from j_groupes_professeurs WHERE login = '" . $_login . "'");
 	// Par discipline puis par classe
 	if(!isset($mode)){
-		/*
-		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere,  jgc.id_classe
-						FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc
-						WHERE (" .
-						"login = '" . $_login . "'
-						AND jgp.id_groupe=jgm.id_groupe
-						AND jgp.id_groupe=jgc.id_groupe) " .
-						"GROUP BY jgp.id_groupe ".
-						"ORDER BY jgm.id_matiere, jgc.id_classe" ;
-		*/
 		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere,  jgc.id_classe
 						FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc, classes c
 						WHERE (" .
@@ -30,16 +32,6 @@ function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
 						"ORDER BY jgm.id_matiere, c.classe" ;
 	}
 	else {
-		/*
-		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere,  jgc.id_classe
-						FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc
-						WHERE (" .
-						"login = '" . $_login . "'
-						AND jgp.id_groupe=jgm.id_groupe
-						AND jgp.id_groupe=jgc.id_groupe) " .
-						"GROUP BY jgp.id_groupe ".
-						"ORDER BY jgc.id_classe, jgm.id_matiere" ;
-		*/
 		$requete_sql = "SELECT jgp.id_groupe, jgm.id_matiere, jgc.id_classe
 						FROM j_groupes_professeurs jgp, j_groupes_matieres jgm, j_groupes_classes jgc, classes c
 						WHERE (" .
@@ -57,7 +49,6 @@ function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
     $groups = array();
     for ($i=0;$i<$nb;$i++) {
         $_id_groupe = mysql_result($query, $i, "id_groupe");
-        //$groups[] = get_group($_id_groupe);
 		if(count($tab_champs)>0) {
 			$groups[] = get_group($_id_groupe,$tab_champs);
 		}
@@ -65,14 +56,19 @@ function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
 			$groups[] = get_group($_id_groupe);
 		}
     }
-
-	// current_group["classes"]["classes"][$c_id]["classe"]
-
-	//echo $requete_sql;
     return $groups;
 }
 
-//function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="auto") {
+/** Renvoie un tableau des groupes d'une classe
+ * 
+ * ATTENTION: Avec les catégories, les groupes dans aucune catégorie n'apparaissent pas.
+ * 
+ *
+ * @param int $_id_classe Id de la classe
+ * @param string $ordre Détermine l'ordre de tri
+ * @param string $d_apres_categories Détermine comment on prend en compte les catégories
+ * @return array Le tableau des groupes
+ */
 function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 	// ATTENTION: Avec les catégories, les groupes dans aucune catégorie n'apparaissent pas.
 	// Avec le choix "n" sur les catégories, on reste sur un fonctionnement proche de celui d'origine (cf old_way)
@@ -82,9 +78,7 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 	if($d_apres_categories=="auto") {
 		$d_apres_categories="n";
 
-		//$d_apres_categories=sql_query1("SELECT display_mat_cat FROM classes WHERE id='".$_id_classe."';");
 		$sql="SELECT display_mat_cat FROM classes WHERE id='".$_id_classe."';";
-		//echo "$sql<br />";
 		$res=mysql_query($sql);
 		if(mysql_num_rows($res)>0) {
 			$d_apres_categories=mysql_result($res,0,"display_mat_cat");
@@ -130,7 +124,6 @@ function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 				ORDER BY jgc.priorite,jgm.id_matiere, g.name;";
 		}
 	}
-	//echo "$sql<br />";
 	$query = mysql_query($sql);
 
 	$nb = mysql_num_rows($query);
@@ -194,9 +187,7 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
                             "where (" .
                             "id = '" . $_id_groupe . "'".
                             ")";
-    //echo "$sql<br />";
     $query = mysql_query($sql);
-	//echo "\$_id_groupe=$_id_groupe<br />";
 	if(mysql_num_rows($query)==0) {
 		echo "<span style='color:red'>Le groupe n°$_id_groupe n'existe pas.</span><br />";
 	}
@@ -221,13 +212,11 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 		if($get_classes=='y') {
 			// Classes
 		
-			//$get_classes = mysql_query("SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.categorie_id, j.saisie_ects, j.valeur_ects FROM classes c, j_groupes_classes j WHERE (" .
-			$sql="SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.mode_moy, j.categorie_id, j.saisie_ects, j.valeur_ects FROM classes c, j_groupes_classes j WHERE (" .
-											"c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "') ORDER BY c.classe, c.nom_complet;";
-			//                                "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "')");
-			//echo "$sql<br />";
+			$sql="SELECT c.id, c.classe, c.nom_complet, j.priorite, j.coef, j.mode_moy, j.categorie_id, j.saisie_ects, j.valeur_ects 
+              FROM classes c, j_groupes_classes j 
+                WHERE (c.id = j.id_classe AND j.id_groupe = '".$_id_groupe."') 
+                  ORDER BY c.classe, c.nom_complet;";
 			$get_classes = mysql_query($sql);
-			//                                "c.id = j.id_classe and j.id_groupe = '" . $_id_groupe . "')");
 			$nb_classes = mysql_num_rows($get_classes);
 			for ($k=0;$k<$nb_classes;$k++) {
 				$c_id = mysql_result($get_classes, $k, "id");
@@ -236,14 +225,14 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 				$c_priorite = mysql_result($get_classes, $k, "priorite");
 				$c_coef = mysql_result($get_classes, $k, "coef");
 				$c_mode_moy = mysql_result($get_classes, $k, "mode_moy");
-				$c_saisie_ects = mysql_result($get_classes, $k, "saisie_ects") > '0' ? true : false;
+				$c_saisie_ects = mysql_result($get_classes, $k, "saisie_ects") > '0' ? TRUE : FALSE;
 				$c_valeur_ects = mysql_result($get_classes, $k, "valeur_ects");
 				$c_cat_id = mysql_result($get_classes, $k, "categorie_id");
 				$temp["classes"]["list"][] = $c_id;
 				$temp["classes"]["classes"][$c_id] = array("id" => $c_id, "classe" => $c_classe, "nom_complet" => $c_nom_complet, "priorite" => $c_priorite, "coef" => $c_coef, "mode_moy" => $c_mode_moy, "saisie_ects" => $c_saisie_ects, "valeur_ects" => $c_valeur_ects, "categorie_id" => $c_cat_id);
 			}
 		
-			$str = null;
+			$str = NULL;
 			foreach ($temp["classes"]["classes"] as $classe) {
 				$str .= $classe["classe"] . ", ";
 			}
@@ -257,8 +246,10 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
 			$temp["profs"]["users"] = array();
 			$temp["profs"]["proflist_string"] = "";
 		
-			$get_profs = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite FROM utilisateurs u, j_groupes_professeurs j WHERE (" .
-										"u.login = j.login and j.id_groupe = '" . $_id_groupe . "') ORDER BY u.nom, u.prenom");
+			$get_profs = mysql_query("SELECT u.login, u.nom, u.prenom, u.civilite 
+              FROM utilisateurs u, j_groupes_professeurs j 
+              WHERE (u.login = j.login and j.id_groupe = '".$_id_groupe."') 
+                ORDER BY u.nom, u.prenom");
 		
 			$nb = mysql_num_rows($get_profs);
 			for ($i=0;$i<$nb;$i++){
@@ -373,10 +364,19 @@ function get_group($_id_groupe,$tab_champs=array('all')) {
     return $temp;
 }
 
+/** Enregistre un nouveau groupe
+ *
+ * @param text $_name nom du groupe
+ * @param text $_description description du groupe 
+ * @param text $_matiere matière enseignée
+ * @param array $_classes Tableau des Id des classes concernées
+ * @param int $_categorie En mettant $_categorie=-1 on récupère la catégorie par défaut associées à la matière
+ * @return int| mysql_error Le numéro du groupe ou l'erreur lors de la création
+ * @see get_period_number()
+ */
 function create_group($_name, $_description, $_matiere, $_classes, $_categorie = 1) {
-	// En mettant $_categorie=-1 on récupère la catégorie par défaut associées à la matière
 
-    $_insert = mysql_query("insert into groupes set name = '" . addslashes($_name) . "', description = '" . addslashes($_description) . "'");
+    $_insert = mysql_query("INSERT INTO groupes SET name = '" . addslashes($_name) . "', description = '" . addslashes($_description) . "'");
     $_group_id = mysql_insert_id();
 
     if (!$_insert) {
@@ -388,7 +388,7 @@ function create_group($_name, $_description, $_matiere, $_classes, $_categorie =
 	if($_categorie!='0') {
 		// On vérifie que la catégorie existe
 		$temptemp = null;
-		$temptemp = mysql_query("select count(id) from matieres_categories WHERE id = '" . $_categorie . "'");
+		$temptemp = mysql_query("SELECT count(id) FROM matieres_categories WHERE id = '" . $_categorie . "'");
 		if (!$temptemp) {
 			$test_cat = "0";
 		} else {
@@ -423,17 +423,13 @@ function create_group($_name, $_description, $_matiere, $_classes, $_categorie =
 			}
 		}
 	}
-    $_insert2 = mysql_query("insert into j_groupes_matieres set id_groupe = '" . $_group_id . "', id_matiere = '" . $_matiere . "'");
-    //$_priorite = mysql_result(mysql_query("SELECT priority FROM matieres WHERE matiere = '" . $_matiere . "'"), 0);
-    //echo "SELECT priority FROM matieres WHERE matiere = '" . $_matiere . "'";
+    $_insert2 = mysql_query("INSERT INTO j_groupes_matieres SET id_groupe = '" . $_group_id . "', id_matiere = '" . $_matiere . "'");
     $_priorite = mysql_result(mysql_query("SELECT priority FROM matieres WHERE matiere = '" . $_matiere . "'"), 0);
     if (count($_classes) > 0) {
-        //$test_per = get_period_num($_classes[0]);
         $test_per = get_period_number($_classes[0]);
     }
     foreach ($_classes as $_id_classe) {
         // On vérifie que les classes ont bien le même nombre de période
-        //if (get_period_num($_id_classe) == $test_per) {
         if (get_period_number($_id_classe) == $test_per) {
             $sql = "insert into j_groupes_classes set id_groupe = '" . $_group_id . "', id_classe = '" . $_id_classe . "', priorite = '" . $_priorite . "';";
             $_res = mysql_query($sql);
@@ -461,6 +457,14 @@ function create_group($_name, $_description, $_matiere, $_classes, $_categorie =
     }
 }
 
+/**
+ * Met à jour la table de jointure groupes - classes
+ * 
+ * @param int $_id_groupe Id du groupe
+ * @param int $_id_classe Id de la classe
+ * @param type $_options tableau des options à mettre à jour
+ * @return bool TRUE si la mise à jour c'est bien passée, FALSE sinon
+ */
 function update_group_class_options($_id_groupe, $_id_classe, $_options) {
     if (!is_numeric($_id_groupe)) {$_id_groupe = 0;}
     if (!is_numeric($_id_classe)) {$_id_classe = 0;}
@@ -483,19 +487,35 @@ function update_group_class_options($_id_groupe, $_id_classe, $_options) {
                         "WHERE (id_groupe = '" . $_id_groupe . "' and id_classe = '" . $_id_classe . "');";
     $res = mysql_query($sql);
     if (!$res) {
-        return false;
+        return FALSE;
     } else {
-        return true;
+        return TRUE;
     }
 
 }
 
+/** Met à jour un groupe dans la base
+ *
+ * 
+ * 
+ * @param int $_id_groupe Id du groupe
+ * @param text $_name Le nom court
+ * @param text $_description Description du groupe
+ * @param text $_matiere l'id de la matière dans j_groupes_matieres
+ * @param array $_classes tableau des Id des classes
+ * @param type $_professeurs tableau des logins des enseignants
+ * @param type $_eleves tableau des logins des élèves concernés
+ * @return bool TRUE si tout c'est bien passé 
+ * @see get_group()
+ * @see get_period_number()
+ * @see test_before_eleve_removal()
+ */
 function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, $_professeurs, $_eleves) {
     global $msg;
     $former_groupe = get_group($_id_groupe);
     $errors = false;
     if ($_name != $former_groupe["name"] OR $_description != $former_groupe["description"]) {
-        $sql="update groupes set name = '" . $_name . "', description = '" . $_description . "' WHERE id = '" . $_id_groupe . "';";
+        $sql="UPDATE groupes SET name = '" . $_name . "', description = '" . $_description . "' WHERE id = '" . $_id_groupe . "';";
         $update = mysql_query($sql);
         if (!$update) {
 			$errors = true;
@@ -504,7 +524,7 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
     }
 
     if ($_matiere != $former_groupe["matiere"]["matiere"]) {
-        $sql="update j_groupes_matieres set id_matiere = '" . $_matiere . "' WHERE id_groupe = '" . $_id_groupe . "';";
+        $sql="UPDATE j_groupes_matieres SET id_matiere = '" . $_matiere . "' WHERE id_groupe = '" . $_id_groupe . "';";
         $update2=mysql_query($sql);
         if (!$update2) {
 			$errors = true;
@@ -529,7 +549,7 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
     if (!$per_error) {
         $mat_priority = mysql_result(mysql_query("SELECT priority FROM matieres WHERE matiere = '".$_matiere ."'"), 0);
         foreach ($new_classes as $id_classe) {
-            $sql="insert into j_groupes_classes set id_groupe = '" . $_id_groupe . "', id_classe = '" . $id_classe . "', priorite = '".$mat_priority."';";
+            $sql="INSERT into j_groupes_classes SET id_groupe = '" . $_id_groupe . "', id_classe = '" . $id_classe . "', priorite = '".$mat_priority."';";
             $res = mysql_query($sql);
             if (!$res) {
 				$errors = true;
@@ -538,7 +558,7 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
         }
 
         foreach ($deleted_classes as $id_classe) {
-            $sql="delete from j_groupes_classes where (id_groupe = '" . $_id_groupe . "' and id_classe = '" . $id_classe . "');";
+            $sql="DELETE FROM j_groupes_classes WHERE (id_groupe = '" . $_id_groupe . "' AND id_classe = '" . $id_classe . "');";
             $res = mysql_query($sql);
             if (!$res) {
 				$errors = true;
@@ -607,25 +627,37 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
     }
 
     if ($errors) {
-        return false;
+        return FALSE;
     } else {
-        return true;
+        return TRUE;
     }
 }
 
-
+/** Vérifie si on peut supprimer un élève
+ *
+ * @param type $_id_groupe
+ * @return bool TRUE si tout on peut supprimer, FALSE sinon
+ */
 function test_before_group_deletion($_id_groupe) {
 
-    $test = mysql_result(mysql_query("select count(*) FROM matieres_notes WHERE id_groupe = '" . $_id_groupe . "'"), 0);
-    $test2 = mysql_result(mysql_query("select count(*) FROM matieres_appreciations WHERE id_groupe = '" . $_id_groupe . "'"), 0);
+    $test = mysql_result(mysql_query("SELECT count(*) FROM matieres_notes WHERE id_groupe = '" . $_id_groupe . "'"), 0);
+    $test2 = mysql_result(mysql_query("SELECT count(*) FROM matieres_appreciations WHERE id_groupe = '" . $_id_groupe . "'"), 0);
 
     if ($test == 0 and $test2 == 0) {
-        return true;
+        return TRUE;
     } else {
-        return false;
+        return FALSE;
     }
 }
 
+/**
+ * Vérifie si un élève a des notes ou des appréciations
+ *
+ * @param text $_login Login de l'élève
+ * @param int $_id_groupe Id du groupe
+ * @param int $_periode numéro de la période
+ * @return bool TRUE si on peut effacer 
+ */
 function test_before_eleve_removal($_login, $_id_groupe, $_periode) {
     $test = mysql_result(mysql_query("select count(*) FROM matieres_notes WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND periode = '" . $_periode . "')"), 0);
     $test2 = mysql_result(mysql_query("select count(*) FROM matieres_appreciations WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND periode = '" . $_periode . "')"), 0);
@@ -637,7 +669,12 @@ function test_before_eleve_removal($_login, $_id_groupe, $_periode) {
     }
 }
 
-
+/**
+ * Supprime un groupe de la base
+ *
+ * @param int $_id_groupe Id du groupe
+ * @return bool|text  TRUE si tout c'est bien passé, un message d'erreur sinon
+ */
 function delete_group($_id_groupe) {
     $errors = null;
     $del1 = mysql_query("DELETE from j_groupes_matieres WHERE id_groupe = '" . $_id_groupe . "'");
@@ -659,21 +696,22 @@ function delete_group($_id_groupe) {
     if (!$del6) $errors .= "Erreur lors de la suppression des données relatives au carnet de notes lié au groupe.<br/>";
     $text_ct = sql_query1("SELECT count(id_groupe) from ct_entry WHERE (ct_entry.id_groupe = '" . $_id_groupe . "'");
     if ($text_ct > 0) $errors .= "Attention un cahier de textes lié au groupe supprimé est maintenant \"orphelin\". Rendez-vous dans le module \"cahier de textes\" pour régler le problème.<br/>";
-    /*
-    $del7 = mysql_query("DELETE from ct_entry, ct_devoirs_entry, ct_documents WHERE (" .
-            "ct_entry.id_groupe = '" . $_id_groupe . "' AND " .
-            "ct_devoirs_entry.id_groupe = '" . $_id_groupe . "' AND " .
-            "ct_documents.id_ct = ct_entry.id_ct)");
-    if (!$del7) $errors .= "Erreur lors de la suppression des données relatives au cahier de textes lié au groupe.<br/>";
-    */
-
+    
     if (!empty($errors)) {
         return $errors;
     } else {
-        return true;
+        return TRUE;
     }
 }
 
+/**
+ * Renvoie un réglage pour un élève
+ *
+ * @param text $_login Login de l'élève
+ * @param int $_id_groupe groupe de l'élève
+ * @param text $_setting_name le réglage recherché
+ * @return text la valeur du réglage
+ */
 function get_eleve_groupe_setting($_login, $_id_groupe, $_setting_name) {
     $value = null;
     $select = mysql_query("select value from eleves_groupes_settings WHERE (" .
@@ -695,38 +733,56 @@ function get_eleve_groupe_setting($_login, $_id_groupe, $_setting_name) {
     return $value;
 }
 
+/**
+ * Met à jour la table eleves_groupes_settings
+ *
+ * 
+ * @param text $_login Le login de l'élève
+ * @param int $_id_groupe Le groupe concerné
+ * @param text $_setting_name Le réglage à modifier
+ * @param array $_setting_value Tableau des valeurs pour le réglage
+ * @return bool TRUE si tout se passe bien 
+ * @see get_eleve_groupe_setting()
+ */
 function set_eleve_groupe_setting($_login, $_id_groupe, $_setting_name, $_setting_value) {
 
     $test = get_eleve_groupe_setting($_login, $_id_groupe, $_setting_name);
     $queries = array();
 
     if ($test) {
-        $queries[] = "delete from eleves_groupes_settings where (login = '" . $_login . "' and id_groupe = '" . $_id_groupe . "' and name = '" . $_setting_name . "')";
+        $queries[] = "DELETE FROM eleves_groupes_settings WHERE (login = '" . $_login . "' AND id_groupe = '" . $_id_groupe . "' AND name = '" . $_setting_name . "')";
     }
 
     foreach($_setting_value as $value) {
-        if ($value != "") $queries[] = "insert into eleves_groupes_settings set login = '" . $_login . "', id_groupe = '" . $_id_groupe . "', name = '" . $_setting_name . "', value = '" . $value ."'";
+        if ($value != "") $queries[] = "INSERT INTO eleves_groupes_settings SET login = '" . $_login . "', id_groupe = '" . $_id_groupe . "', name = '" . $_setting_name . "', value = '" . $value ."'";
     }
 
     foreach($queries as $query) {
         $res = mysql_query($query);
     }
 	if ($_setting_name == "coef") {
-		$req = mysql_query("update groupes set recalcul_rang = 'y' where (id='".$_id_groupe."')");
+		$req = mysql_query("UPDATE groupes SET recalcul_rang = 'y' WHERE (id='".$_id_groupe."')");
 	}
 
     return true;
 }
 
+/** Vérifie qu'un enseignant fait bien parti d'un groupe
+ *
+ * @param text $_login Login de l'enseignant
+ * @param type $_id_groupe Id du groupe
+ * @return bool TRUE si l'enseignant fait parti du groupe
+ */
 function check_prof_groupe($_login, $_id_groupe) {
     if(empty($_login) || empty($_id_groupe)) {return false;}
     $call_prof = mysql_query("SELECT login FROM j_groupes_professeurs WHERE (id_groupe='".$_id_groupe."' and login='" . $_login . "')");
     $nb = mysql_num_rows($call_prof);
 
     if ($nb == 0) {
-        return false;
+        return FALSE;
     } else {
-        return true;
+        return TRUE;
     }
 }
+
 ?>
