@@ -85,6 +85,11 @@ if ($version == 4) {
 if (isset($_GET["rne"])) {
 	setcookie('RNE', $_GET["rne"], null, '/');
 }
+// Pour le choix de la préférence de source d'authentification pour l'authentification multiauth
+if (isset($_REQUEST["source"])) {
+	setcookie('source', $_REQUEST["source"], null, '/');
+}
+
 
 
 // Pour les scripts situés à la racine de GEPI
