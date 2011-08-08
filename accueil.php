@@ -137,13 +137,22 @@ if($_SESSION['statut']=='professeur'){
 		$accueil_simpl=$pref_accueil_simpl;
 	}
 
-	if($accueil_simpl=="y"){
-		header("Location: ./accueil_simpl_prof.php");
+	//$_SERVER['HTTP_REFERER']=	https://127.0.0.1/steph/gepi-trunk/accueil_simpl_prof.php
+	//$_SERVER['REQUEST_URI']=	/steph/gepi-trunk/accueil.php
+	if((isset($_SERVER['HTTP_REFERER']))&&(preg_match("#$gepiPath/accueil_simpl_prof.php$#",$_SERVER['HTTP_REFERER']))&&(isset($_SERVER['REQUEST_URI']))&&($_SERVER['REQUEST_URI']=="$gepiPath/accueil.php")) {
+		// On ne va accéder à l'accueil.php classique
+	}
+	else {
+		if($accueil_simpl=="y"){
+			header("Location: ./accueil_simpl_prof.php");
+		}
 	}
 }
 else{
 	$accueil_simpl=NULL;
 }
+
+//debug_var();
 
 // ====== Inclusion des fichiers de classes =====
 $_SESSION['gepiPath']=$gepiPath;
