@@ -21,6 +21,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+//=================================================================================
+// Les entrées du menu d'accueil sont dans la page class_php/class_page_accueil.php
+//=================================================================================
 
 /* ---------Variables envoyées au gabarit
 *	$tbs_gere_connect							affichage ou non du nombre de connectés
@@ -490,6 +493,11 @@ if($_SESSION['statut']=="professeur"){
 
 //Affichage des messages
 include("affichage_des_messages.inc.php");
+
+//==========================================================================================
+// La suite (détail du menu de la page d'accueil) est dans class_php/class_page_accueil.php
+//==========================================================================================
+
 
 // modification Régis : utilisation de div plutôt que de table pour la mise en page
 
