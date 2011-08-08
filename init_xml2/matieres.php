@@ -114,10 +114,9 @@
 "ct_devoirs_documents",
 "ct_private_entry",
 "ct_sequences",
-//"setting"
+'edt_classes',
+'edt_cours'
 );
-
-
 
 
 	// On va uploader les fichiers XML dans le tempdir de l'utilisateur (administrateur, ou scolarité pour les màj Sconet)
