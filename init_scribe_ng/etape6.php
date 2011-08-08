@@ -66,6 +66,8 @@ if ($_POST['step'] == "6") {
     if (!is_table_vide("j_eleves_groupes")) { vider_table_seule("j_eleves_groupes"); }
     if (!is_table_vide("j_groupes_matieres")) { vider_table_seule("j_groupes_matieres"); }
     if (!is_table_vide("j_signalement")) { vider_table_seule("j_signalement"); }
+    if (!is_table_vide("edt_classes")) { vider_table_seule("edt_classes"); }
+    if (!is_table_vide("edt_cours")) { vider_table_seule("edt_cours"); }
 
     // On se connecte au LDAP
     $ldap->connect();

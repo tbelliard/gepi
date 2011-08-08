@@ -96,6 +96,8 @@ $liste_tables_del = array(
 //tempo2
 //temp_gep_import
 //utilisateurs
+"edt_classes",
+"edt_cours"
 );
 
 //**************** EN-TETE *****************

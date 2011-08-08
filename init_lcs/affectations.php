@@ -51,7 +51,9 @@ $liste_tables_del = array(
 "j_groupes_matieres",
 "j_groupes_professeurs",
 "eleves_groupes_settings",
-"j_signalement"
+"j_signalement",
+"edt_classes",
+"edt_cours"
 );
 
 

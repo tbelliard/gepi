@@ -91,6 +91,8 @@ $liste_tables_del = array(
 "ct_private_entry",
 "ct_sequences",
 //"setting"
+"edt_classes",
+"edt_cours"
 );
 
 if (!checkAccess()) {
