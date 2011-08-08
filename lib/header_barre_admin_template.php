@@ -59,6 +59,14 @@ include("menu_plugins.inc.php");
 		$menus = null;
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Initialisation</a>'."\n";
 		$menus .= '   <ul class="niveau2">'."\n";
+		if (LDAPServer::is_setup()) {
+			$menus .= '     <li><a href="'.$gepiPath.'/init_scribe_ng/index.php">Init.Ldap Scribe</a></li>'."\n";
+			$menus .= '     <li><a ';
+			if($is_lcs_plugin=='yes') {
+				$menus .= 'style="font-weight:bold" ';
+			}
+			$menus .= 'href="'.$gepiPath.'/init_lcs/index.php">Init.Ldap LCS</a></li>'."\n";
+		}
 		$menus .= '     <li><a href="'.$gepiPath.'/init_csv/index.php">Initialisation csv</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/init_xml2/index.php">Initialisation xml</a></li>'."\n";
 		$menus .= '     <li><a href="'.$gepiPath.'/gestion/modify_impression.php">Fiches bienvenue</a></li>'."\n";
@@ -78,7 +86,7 @@ include("menu_plugins.inc.php");
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Maintenance</a>'."\n";
 		$menus .= '  <ul class="niveau2">'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/accueil_sauve.php">Sauvegardes</a></li>'."\n";
-		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/maj.php">Mise à jour</a></li>'."\n";
+		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/maj.php">Mise à jour base</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/utilitaires/clean_tables.php">Nettoyage</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_base.php">Effacer la base</a></li>'."\n";
 		$menus .= '    <li><a href="'.$gepiPath.'/gestion/efface_photos.php">Effacer les photos</a></li>'."\n";
@@ -87,24 +95,57 @@ include("menu_plugins.inc.php");
 		$menus .= '</li>'."\n";
 		$menus .= '<li class="li_inline"><a href="#">&nbsp;Données</a>'."\n";
 		$menus .= '  <ul class="niveau2">'."\n";
-		$menus .= '        <li ><a href="'.$gepiPath.'/responsables/maj_import.php">Maj Sconet</a></li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/etablissements/index.php">Etablissements</a></li>'."\n";
+		//$menus .= '        <li ><a href="'.$gepiPath.'/responsables/maj_import.php">Maj Sconet</a></li>'."\n";
+
 		$menus .= '        <li><a href="'.$gepiPath.'/matieres/index.php">Matières</a></li>'."\n";
 		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/utilisateurs/index.php">Utilisateurs</a>'."\n";
 		$menus .= '            <ul class="niveau3">'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/index.php?mode=personnels">Personnels</a></li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php">Resp. légaux</a></li>'."\n";
-		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php">Elèves</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/index.php?mode=personnels">Comptes Personnels</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php">Comptes Resp.légaux</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php">Comptes Elèves</a></li>'."\n";
 		$menus .= '            </ul>'."\n";		
 		$menus .= '        </li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php">Equipes péda</a></li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/eleves/index.php">Elèves</a></li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/eleves/visu_eleve.php">Fiches élèves</a></li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/responsables/index.php">Resp. légaux</a></li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/classes/index.php">Classes</a></li>'."\n";
+
+		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/eleves/index.php">Elèves</a>'."\n";
+		$menus .= '            <ul class="niveau3">'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/eleves/index.php">Gestion des élèves</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import.php">Mise à jour Sconet</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/eleves/visu_eleve.php">Consult.fiches élèves</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_eleve.php">Comptes Elèves</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers">Trombinoscopes</a></li>'."\n";
+		$menus .= '            </ul>'."\n";		
+		$menus .= '        </li>'."\n";
+
+		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/responsables/index.php">Resp. légaux</a>'."\n";
+		$menus .= '            <ul class="niveau3">'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/responsables/index.php">Gestion resp.légaux</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/responsables/maj_import.php">Mise à jour Sconet</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/utilisateurs/edit_responsable.php">Comptes Resp.légaux</a></li>'."\n";
+		$menus .= '            </ul>'."\n";
+		$menus .= '        </li>'."\n";
+
+		//$menus .= '        <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers">Trombinoscopes</a></li>'."\n";
+		//$menus .= '        <li><a href="'.$gepiPath.'/eleves/visu_eleve.php">Fiches élèves</a></li>'."\n";
+
+		$menus .= '        <li class="plus"><a href="'.$gepiPath.'/classes/index.php">Classes</a>'."\n";
+		$menus .= '            <ul class="niveau3">'."\n";
+		$menus .= '                <li class="plus"><a href="'.$gepiPath.'/classes/index.php">Gestion des classes</a>'."\n";
+		$menus .= '                    <ul class="niveau4">'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/classes/classes_param.php">Paramétrage par lots</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/classes/cpe_resp.php">Param.CPE resp</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/classes/scol_resp.php">Param.SCOL resp</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/classes/acces_appreciations.php">Accès appréciations</a></li>'."\n";
+		$menus .= '                    </ul>'."\n";
+		$menus .= '                </li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/groupes/visu_profs_class.php">Equipes pédago</a></li>'."\n";
+		$menus .= '                <li><a href="'.$gepiPath.'/mef/admin_mef.php">MEF</a></li>'."\n";
+		$menus .= '            </ul>'."\n";
+		$menus .= '        </li>'."\n";
+
 		$menus .= '        <li><a href="'.$gepiPath.'/aid/index.php">AID</a></li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/mod_trombinoscopes/trombinoscopes_admin.php#gestion_fichiers">Trombinoscopes</a></li>'."\n";
-		$menus .= '        <li><a href="'.$gepiPath.'/mef/admin_mef.php">MEF</a></li>'."\n";
+
+
+		$menus .= '        <li><a href="'.$gepiPath.'/etablissements/index.php">Etablissements</a></li>'."\n";
 		$menus .= '        <li><a href="'.$gepiPath.'/gestion/gestion_base_test.php">Données de tests</a></li>'."\n";
 		$menus .= '  </ul>'."\n";
 		$menus .= '</li>'."\n";
