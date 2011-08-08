@@ -1,198 +1,33 @@
 <?php
-/*
+/** Fonctions accessibles dans toutes les pages
+ * 
  * $Id$
- *
+ * 
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
+ * 
+ * @package Initialisation
+ * @subpackage general
+ *
 */
 
-function generate_token() {
-    if (!isset($_SESSION["gepi_alea"])) {
-		$length = rand(35, 45);
-		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
-		// Virer le gepi_alea par la suite
-		$_SESSION["gepi_alea"] = $r;
-		//$_SESSION["token"] = $r;
-	
-		if(getSettingValue('csrf_log')=='y') {
-			$csrf_log_chemin=getSettingValue('csrf_log_chemin');
-			if($csrf_log_chemin=='') {$csrf_log_chemin="/home/root/csrf";}
-			if(isset($_SESSION['login'])) {
-				$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
-				//$f=fopen("$csrf_log_chemin/csrf_".$login.".log","a+");
-				fwrite($f,"Initialisation de la session ".strftime("%a %d/%m/%Y %H:%M:%S")." avec\n\$_SESSION['gepi_alea']=".$_SESSION['gepi_alea']."\n");
-				fwrite($f,"session_id()=".session_id()."\n");
-				fclose($f);
-			}
-		}
-    }
-}
-
-function add_token_field($avec_id=false,$avec_gepi_alea=true) {
-	// Dans une page, il ne devrait y avoir qu'un seul appel à add_token_field(true), les autres... dans les autres formulaires étant avec add_token_field()
-	// A VOIR... on pourrait utiliser une variable globale pour... si l'id csrf_alea est déjà défini ne plus l'ajouter...
-
-	// appels pour insérer le champ 'csrf_alea' dans des forumulaires inclus dans le code
-	// de messages du panneau d'affichage (table 'messages') : 
-	// add_token_field(true,false) ou add_token_field(false,false)
-	
-	if ($avec_gepi_alea) $gepi_alea=$_SESSION['gepi_alea']; else $gepi_alea="_CRSF_ALEA_";
-	
-    if($avec_id) {
-        return "<input type='hidden' name='csrf_alea' id='csrf_alea' value='".$gepi_alea."' />\n";
-    }
-    else {
-        return "<input type='hidden' name='csrf_alea' value='".$gepi_alea."' />\n";
-    }
-}
-
-function add_token_in_url($html_chars = true,$avec_gepi_alea=true) {
-
-	// appels pour insérer le champ 'csrf_alea' dans des liens inclus dans le code
-	// de messages du panneau d'affichage (table 'messages') : 
-	// add_token_in_url(true,false) ou add_token_in_url(false,false)
-	
-	if ($avec_gepi_alea) $gepi_alea=$_SESSION['gepi_alea']; else $gepi_alea="_CRSF_ALEA_";
-
-	if($html_chars) {
-		return "&amp;csrf_alea=".$gepi_alea;
-	}
-	else {
-		return "&csrf_alea=".$gepi_alea;
-	}
-}
-
-function add_token_in_js_func() {
-	return $_SESSION['gepi_alea'];
-}
-
-function check_token($redirection=true) {
-	// Avant le Header, on appelle check_token()
-	// Après le Header, on appelle check_token(false)
-	global $niveau_arbo;
-	global $gepiPath;
-	global $gepiShowGenTime;
-
-	$csrf_alea=isset($_POST['csrf_alea']) ? $_POST['csrf_alea'] : (isset($_GET['csrf_alea']) ? $_GET['csrf_alea'] : "");
-
-	if(isset($niveau_arbo)) {
-		if($niveau_arbo=="0") {
-		}
-		elseif($niveau_arbo==1) {
-			$pref_arbo="..";
-		}
-		elseif($niveau_arbo==2) {
-			$pref_arbo="../..";
-		}
-		elseif($niveau_arbo==3) {
-			$pref_arbo="../../..";
-		}
-		elseif ($niveau_arbo == "public") {
-			$pref_arbo="..";
-			// A REVOIR... SI C'EST PUBLIC, ON N'EST PAS LOGUé
-			// NORMALEMENT, EN PUBLIC on ne devrait pas avoir de page sensible
-		}
-	}
-	else {
-		$pref_arbo="..";
-	}
-
-	if(getSettingValue('csrf_mode')=='strict') {
-		if($csrf_alea!=$_SESSION['gepi_alea']) {
-			action_alea_invalide();
-			if($redirection) {
-				header("Location: $pref_arbo/accueil.php?msg=Opération non autorisée");
-			}
-			else {
-				echo "<p style='color:red'>Opération non autorisée</p>\n";
-				require("$pref_arbo/lib/footer.inc.php");
-			}
-			die();
-		}
-	}
-	elseif(getSettingValue('csrf_mode')=='mail_seul') {
-		if($csrf_alea!=$_SESSION['gepi_alea']) {
-			action_alea_invalide();
-		}
-	}
-	else {
-		if($csrf_alea!=$_SESSION['gepi_alea']) {
-			// Sans mail
-			action_alea_invalide(false);
-		}
-	}
-}
-
 /**
- * Action en cas d'attaque CSRF
- *
+ * Fonctions de manipulation du gepi_alea contre les attaques CRSF
  */
-function action_alea_invalide($envoyer_mail=true) {
-	//debug_var();
-	/*
-	$_SERVER['REQUEST_URI']=	/steph/gepi-trunk/lib/confirm_query.php
-	$_SERVER['SCRIPT_NAME']=	/steph/gepi-trunk/lib/confirm_query.php
-	$_SERVER['PHP_SELF']=	/steph/gepi-trunk/lib/confirm_query.php
-	*/
-
-	// NE pas donner dans le mail les valeurs du token pour éviter des problèmes lors d'une éventuelle capture du mail.
-
-	$details="La personne victime de l'attaque était ".$_SESSION['login'].".\n";
-	$details.="La page cible était ".$_SERVER['PHP_SELF']." avec les variables suivantes:\n";
-	$details.="Variables en \$_POST:\n";
-	foreach($_POST as $key => $value) {
-		//if(!is_array($value)) {
-			$details.="   \$_POST[$key]=$value\n";
-		/*
-		}
-		else {
-
-		}
-		*/
-	}
-
-	$details.="Variables en \$_GET:\n";
-	foreach($_GET as $key => $value) {
-		$details.="   \$_GET[$key]=$value\n";
-	}
-
-	if($envoyer_mail) {
-		// Envoyer un mail à l'admin
-		$envoi_mail_actif=getSettingValue('envoi_mail_actif');
-		if($envoi_mail_actif!="n") {
-			$destinataire=getSettingValue('gepiAdminAdress');
-			if($destinataire!='') {
-				$sujet="Attaque CSRF";
-				$message="La variable csrf_alea ne coincide pas avec le gepi_alea en SESSION.\n";
-				$message.=$details;
-				envoi_mail($sujet, $message,$destinataire);
-			}
-		}
-	}
-
-	if(getSettingValue('csrf_log')=='y') {
-		$csrf_log_chemin=getSettingValue('csrf_log_chemin');
-		if($csrf_log_chemin=='') {$csrf_log_chemin="/home/root/csrf";}
-		$f=fopen("$csrf_log_chemin/csrf_".$_SESSION['login'].".log","a+");
-		fwrite($f,"Alerte CSRF ".strftime("%a %d/%m/%Y %H:%M:%S")." avec\n");
-		fwrite($f,"\$_SESSION['gepi_alea']=".$_SESSION['gepi_alea']."\n");
-		fwrite($f,$details."\n");
-		fwrite($f,"================================================\n");
-		fclose($f);
-	}
-}
+include_once dirname(__FILE__).'/share-csrf.inc.php';
 
 /**
- * Envoi de mail
+ * Envoi d'un courriel
  *
+ * @param text $sujet Le sujet du message
+ * @param text $message Le message
+ * @param text $destinataire Le destinataire
+ * @param text $ajout_headers Text à ajouter dans le header
  */
 function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 
 	$gepiPrefixeSujetMail=getSettingValue("gepiPrefixeSujetMail") ? getSettingValue("gepiPrefixeSujetMail") : "";
 
 	if($gepiPrefixeSujetMail!='') {$gepiPrefixeSujetMail.=" ";}
-
-	// Si on ajoute un retour à la ligne de plus, l'ajout_headers est mis dans le corps du message
-	//if($ajout_headers!='') {$ajout_headers="\r\n".$ajout_headers;}
 
   $subject = $gepiPrefixeSujetMail."GEPI : $sujet";
   $subject = "=?ISO-8859-1?B?".base64_encode($subject)."?=\r\n";
@@ -223,7 +58,6 @@ function envoi_mail($sujet, $message, $destinataire, $ajout_headers='') {
 function verif_mot_de_passe($password,$flag) {
 	global $char_spec;
 	if ($flag == 1) {
-		//if(ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password)) {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
 			return false;
 		}
@@ -235,7 +69,6 @@ function verif_mot_de_passe($password,$flag) {
 		}
 	}
 	else {
-		//if(ereg("(^[a-zA-Z]*$)|(^[0-9]*$)", $password)) {
 		if(preg_match("/(^[a-zA-Z]*$)|(^[0-9]*$)/", $password)) {
 			return false;
 		}
@@ -275,7 +108,8 @@ function test_unique_login($s) {
 }
 
 /**
- * fonction vérifiant l'unicité du login
+ * Vérifie l'unicité du login
+ * 
  * On vérifie que le login ne figure pas déjà dans une des bases élève des années passées (??)
  *
  * @param string $s le login à vérifier
@@ -283,18 +117,8 @@ function test_unique_login($s) {
  * @return string yes/no
  */
 function test_unique_e_login($s, $indice) {
-    //  $s
-    //
-/*    $test1 = mysql_num_rows(mysql_query("SELECT login FROM a1_eleves WHERE (login='$s')"));
-    $test2 = mysql_num_rows(mysql_query("SELECT login FROM a2_eleves WHERE (login='$s')"));
-    $test3 = mysql_num_rows(mysql_query("SELECT login FROM a3_eleves WHERE (login='$s')"));
-    $test4 = mysql_num_rows(mysql_query("SELECT login FROM a4_eleves WHERE (login='$s')"));
-    $test5 = mysql_num_rows(mysql_query("SELECT login FROM a5_eleves WHERE (login='$s')"));
-    $test6 = mysql_num_rows(mysql_query("SELECT login FROM a6_eleves WHERE (login='$s')"));
-*/
     // On vérifie que le login ne figure pas déjà dans la base utilisateurs
     $test7 = mysql_num_rows(mysql_query("SELECT login FROM utilisateurs WHERE (login='$s' OR login='".strtoupper($s)."')"));
-//    if (($test1 != "0") or ($test2 != "0") or ($test3 != "0") or ($test4 != "0") or ($test5 != "0") or ($test6 != "0") or ($test7 != "0")) {
 
     if ($test7 != "0") {
 
@@ -316,7 +140,8 @@ function test_unique_e_login($s, $indice) {
 
 //
 /**
- * Fonction pour générer le login à partir du nom et du prénom
+ * Génére le login à partir du nom et du prénom
+ * 
  * Le mode de génération doit être passé en argument
  *
  * @param string $_nom
@@ -326,107 +151,70 @@ function test_unique_e_login($s, $indice) {
  */
 function generate_unique_login($_nom, $_prenom, $_mode) {
 
-	if ($_mode == null) {
+	if ($_mode == NULL) {
 		$_mode = "fname8";
 	}
     // On génère le login
-    //$_prenom = strtr($_prenom, "éèëêÉÈËÊüûÜÛïÏäàÄÀ", "eeeeEEEEuuUUiIaaAA");
 	$_prenom = strtr($_prenom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀ", "ceeeeEEEEuuuUUiiIIaaaAAA");
     $_prenom = preg_replace("/[^a-zA-Z.\-]/", "", $_prenom);
-    //$_nom = strtr($_nom, "éèëêÉÈËÊüûÜÛïÏäàÄÀ", "eeeeEEEEuuUUiIaaAA");
 	$_nom = strtr($_nom, "çéèëêÉÈËÊüûùÜÛïîÏÎäâàÄÂÀ", "ceeeeEEEEuuuUUiiIIaaaAAA");
     $_nom = preg_replace("/[^a-zA-Z.\-]/", "", $_nom);
 
-	if($_nom=='') {return false;}
+	if($_nom=='') {return FALSE;}
 
     if ($_mode == "name") {
             $temp1 = $_nom;
-            //$temp1 = strtoupper($temp1);
             $temp1 = preg_replace("/ /","", $temp1);
             $temp1 = preg_replace("/-/","_", $temp1);
             $temp1 = preg_replace("/'/","", $temp1);
-            //$temp1 = substr($temp1,0,8);
         } elseif ($_mode == "name8") {
             $temp1 = $_nom;
-            //$temp1 = strtoupper($temp1);
             $temp1 = preg_replace("/ /","", $temp1);
             $temp1 = preg_replace("/-/","_", $temp1);
             $temp1 = preg_replace("/'/","", $temp1);
             $temp1 = substr($temp1,0,8);
         } elseif ($_mode == "fname8") {
-			if($_prenom=='') {return false;}
+			if($_prenom=='') {return FALSE;}
             $temp1 = $_prenom{0} . $_nom;
-            //$temp1 = strtoupper($temp1);
             $temp1 = preg_replace("/ /","", $temp1);
             $temp1 = preg_replace("/-/","_", $temp1);
             $temp1 = preg_replace("/'/","", $temp1);
             $temp1 = substr($temp1,0,8);
         } elseif ($_mode == "fname19") {
-			if($_prenom=='') {return false;}
+			if($_prenom=='') {return FALSE;}
             $temp1 = $_prenom{0} . $_nom;
-            //$temp1 = strtoupper($temp1);
             $temp1 = preg_replace("/ /","", $temp1);
             $temp1 = preg_replace("/-/","_", $temp1);
             $temp1 = preg_replace("/'/","", $temp1);
             $temp1 = substr($temp1,0,19);
         } elseif ($_mode == "firstdotname") {
-			if($_prenom=='') {return false;}
+			if($_prenom=='') {return FALSE;}
             $temp1 = $_prenom . "." . $_nom;
-            //$temp1 = strtoupper($temp1);
 
             $temp1 = preg_replace("/ /","", $temp1);
             $temp1 = preg_replace("/-/","_", $temp1);
             $temp1 = preg_replace("/'/","", $temp1);
-            //$temp1 = substr($temp1,0,19);
         } elseif ($_mode == "firstdotname19") {
-			if($_prenom=='') {return false;}
+			if($_prenom=='') {return FALSE;}
             $temp1 = $_prenom . "." . $_nom;
-            //$temp1 = strtoupper($temp1);
             $temp1 = preg_replace("/ /","", $temp1);
             $temp1 = preg_replace("/'/","", $temp1);
             $temp1 = substr($temp1,0,19);
         } elseif ($_mode == "namef8") {
-			if($_prenom=='') {return false;}
-			//echo "\$_nom=$_nom<br />";
-			//echo "\$_prenom=$_prenom<br />";
+			if($_prenom=='') {return FALSE;}
             $temp1 =  substr($_nom,0,7) . $_prenom{0};
-            //$temp1 = strtoupper($temp1);
             $temp1 = preg_replace("/ /","", $temp1);
             $temp1 = preg_replace("/-/","_", $temp1);
             $temp1 = preg_replace("/'/","", $temp1);
-            //$temp1 = substr($temp1,0,8);
         } else {
-        	return false;
+        	return FALSE;
         }
 
         $login_user = $temp1;
 
-		//echo "\$login_user=$login_user<br /><hr width='100' />";
-		/*
-        // On teste l'unicité du login que l'on vient de créer
-        $m = '';
-        $test_unicite = 'no';
-        while ($test_unicite != 'yes') {
-            $test_unicite = test_unique_login($login_user.$m);
-            if ($test_unicite != 'yes') {
-            	if ($m == '') {
-            		$m = 2;
-            	} else {
-                	$m++;
-            	}
-            } else {
-            	$login_user = $login_user.$m;
-            }
-        }
-
-		echo "\$login_user=$login_user<br />";
-		*/
-
         // Nettoyage final
         $login_user = substr($login_user, 0, 50);
         $login_user = preg_replace("/[^A-Za-z0-9._\-]/","",trim($login_user));
-
-		//echo "\$login_user=$login_user<br />";
 
         $test1 = $login_user{0};
 		while ($test1 == "_" OR $test1 == "-" OR $test1 == ".") {
@@ -455,8 +243,6 @@ function generate_unique_login($_nom, $_prenom, $_mode) {
             	$login_user = $login_user.$m;
             }
         }
-
-		//echo "\$login_user=$login_user<br />";
 
 		return $login_user;
 }
@@ -518,7 +304,6 @@ function affiche_utilisateur($login,$id_classe) {
 
     }
     return $result;
-    //return $tmp;
 }
 
 /**
@@ -737,21 +522,14 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     if($month == 0) $month = date("m");
     if($year  == 0) $year = date("Y");
 
-	// correction w3c : SELECT NAME -> select name + label + <span>
 	 echo "\n<label for=\"${prefix}jour\"><span style='display:none;'>Jour</span></label>\n";
     echo "<select id=\"${prefix}jour\" name=\"${prefix}day\">\n";
 
-	// correction w3c : OPTION -> option + =\"selected\
     for($i = 1; $i <= 31; $i++)
-        //echo "<option" . ($i == $day ? " selected=\"selected\"" : "") . ">$i</option>\n";
         echo "<option value = \"$i\"" . ($i == $day ? " selected=\"selected\"" : "") . ">$i</option>\n";
 
-        //echo "<OPTION" . ($i == $day ? " SELECTED" : "") . ">$i\n";
-
-	// correction w3c : SELECT NAME -> select name
     echo "</select>\n";
 
-	// correction w3c : SELECT NAME -> select name + label + <span>
 	 echo "\n<label for=\"${prefix}mois\"><span style='display:none;'>Mois</span></label>\n";
     echo "<select id=\"${prefix}mois\" name=\"${prefix}month\">\n";
 
@@ -759,19 +537,11 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     {
         $m = strftime("%b", mktime(0, 0, 0, $i, 1, $year));
 
-        //print "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">$m\n";
-
-        // Si problème avec l'encodage, essayer la ligne suivante
-        //print "<OPTION VALUE=\"$i\"" . ($i == $month ? " SELECTED" : "") . ">".iconv('UTF-8','ISO-8859-1', $m)."</option>\n";
-	// correction w3c : OPTION VALUE -> option value + =\"selected\
         echo "<option value=\"$i\"" . ($i == $month ? " selected=\"selected\"" : "") . ">$m</option>\n";
     }
 
-	// correction w3c : SELECT NAME -> select name
     echo "</select>\n";
 
-    //echo "<select name=\"${prefix}year\">\n";
-	// correction w3c : SELECT NAME -> select name + label + <span>
 	 echo "\n<label for=\"${prefix}annee\"><span style='display:none;'>Année</span></label>\n";
     echo "<select id=\"${prefix}annee\" name=\"${prefix}year\">\n";
 
@@ -782,11 +552,8 @@ function genDateSelector($prefix, $day, $month, $year, $option)
     if ($option == "more_years") $max = date("Y") + 5;
 
     for($i = $min; $i <= $max; $i++)
-	// correction w3c : OPTION SELECTED -> option selected + =\"selected\
         print "<option" . ($i == $year ? " selected=\"selected\"" : "") . ">$i</option>\n";
-        //print "<OPTION" . ($i == $year ? " SELECTED" : "") . ">$i\n";
-
-	// correction w3c : SELECT -> select
+    
     echo "</select>\n";
 }
 
@@ -807,7 +574,6 @@ function test_conteneurs_vides($id_conteneur,$id_racine) {
                 $query_parent = mysql_query("SELECT parent FROM cn_conteneurs WHERE id='$id_conteneur'");
                 $id_par = mysql_result($query_parent, 0, 'parent');
                 $sql = mysql_query("DELETE FROM cn_notes_conteneurs WHERE id_conteneur='$id_conteneur'");
-//                if ($id_conteneur != $id_racine) $sql = mysql_query("DELETE FROM cn_conteneurs WHERE id='$id_conteneur'");
                 test_conteneurs_vides($id_par,$id_racine);
             }
         }
@@ -993,7 +759,6 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
     while ($j < $nb_boucle) {
 		//=========================
 		// MODIF: boireaus 20080202
-        //$appel_dev = mysql_query("SELECT * FROM cn_devoirs WHERE id_conteneur='$id_cont[$j]'");
         $sql="SELECT * FROM cn_devoirs WHERE id_conteneur='$id_cont[$j]' ORDER BY date,id";
 		fdebug("$sql\n");
         $appel_dev = mysql_query($sql);
@@ -1061,11 +826,6 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
                     $exist_dev_fac = 'yes';
 					//=========================
 					// MODIF: boireaus 20080202
-                    /*
-					$total_point = $total_point + $coef[$k]*$note;
-                    $somme_coef = $somme_coef + $coef[$k];
-                    $points[$k] = $coef[$k]*$note;
-                    */
 					// On ne compte pas la note dans la moyenne pour le moment.
 					// On regardera plus loin si cela améliore la moyenne ou non.
 					$f_coef[$m]=$coef[$k];
@@ -1079,11 +839,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
                 }
 				fdebug("\$total_point=$total_point\n");
 				fdebug("\$somme_coef=$somme_coef\n");
-				/*
-				if(isset($points[$k])){
-					fdebug("\$points[$k]=$points[$k]\n");
-				}
-				*/
+				
             }
             $k++;
         }
@@ -1145,21 +901,7 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 		// Pour $mode==1, il faudrait faire la liste de tous les devoirs situés dans le conteneur et les sous-conteneurs triés par date et parcourir ces devoirs plus haut au lieu de faire une boucle sur la liste des sous-conteneurs
         if ($exist_dev_fac == 'yes') {
 			fdebug("\$exist_dev_fac=".$exist_dev_fac."\n");
-			/*
-            $k=0;
-            while ($k < $nb_dev) {
-                if ((($somme_coef - $coef[$k]) != 0) and ($facultatif[$k]=='N')) {
-                    if (isset($points[$k])) {
-                       $points[$k] = ($total_point-$points[$k])/($somme_coef - $coef[$k]);
-						fdebug("\$points[$k]=$points[$k]\n");
-						fdebug("\$moyenne=max($moyenne,$points[$k])=");
-                       $moyenne = max($moyenne,$points[$k]);
-						fdebug("$moyenne\n");
-                    }
-                }
-                $k++;
-            }
-			*/
+			
 			$m=0;
             while ($m<count($points)) {
 				fdebug("count(\$points)=".count($points)."\n");
@@ -1180,21 +922,6 @@ function calcule_moyenne($login, $id_racine, $id_conteneur) {
 
 		fdebug("Moyenne avant arrondi: $moyenne\n");
 
-/*
-if(($login=='RUQUIER_S')&&($id_racine=='2916')&&($id_conteneur=='2917')) {
-	echo "<div style='color:red;'><b> ($login, $id_racine, $id_conteneur)</b>
-Moyenne avant arrondi: $moyenne<br />
-   \$moyenne=$moyenne<br />
-   10*\$moyenne=".(10*$moyenne)."<br />
-   ceil(10*\$moyenne)=".ceil(10*$moyenne)."<br />
-   ceil(10*\$moyenne)/10=".(ceil(10*$moyenne)/10)."<br />
-   number_format(ceil(10*\$moyenne)/10,1,'.','')=".number_format(ceil(10*$moyenne)/10,1,'.','')."<br />
-   number_format(ceil(100*\$moyenne)/100,1,'.','')=".number_format(ceil(100*$moyenne)/100,1,'.','')."<br />
-   printf('%.40f', (10*\$moyenne))=".printf('%.40f', (10*$moyenne))."<br />
-   ceil(strval((10*\$moyenne))=".ceil(strval((10*$moyenne)))."
-<div>\n";
-}
-*/
         //
         // Calcul des arrondis
         //
@@ -1239,9 +966,20 @@ Moyenne avant arrondi: $moyenne<br />
 
 }
 
-//
-// Affichage de la liste des conteneurs
-//
+
+/**
+ * Affichage de la liste des conteneurs
+ *
+ * @global type $tabdiv_infobulle
+ * @global type $gepiClosedPeriodLabel
+ * @global type $id_groupe
+ * @global type $eff_groupe
+ * @param type $id_conteneur
+ * @param type $periode_num
+ * @param type $empty
+ * @param type $ver_periode
+ * @return type 
+ */
 function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_periode) {
 	global $tabdiv_infobulle;
 	global $gepiClosedPeriodLabel;
@@ -1255,26 +993,17 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 	}
 	//
 	// Cas particulier de la racine
-	//
-	//$message_cont = "Etes-vous sûr de vouloir supprimer le conteneur ci-dessous et les évaluations qu\\'il contient ?";
 	$gepi_denom_boite=getSettingValue("gepi_denom_boite");
 	if(getSettingValue("gepi_denom_boite_genre")=='m'){
-		//$lela="le";$il_ou_elle="il";
 		$message_cont = "Etes-vous sûr de vouloir supprimer le ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
 		$message_cont_non_vide = "Le ".getSettingValue("gepi_denom_boite")." est non vide. Il ne peut pas être supprimé.";
 	}
 	else{
-		//$lela="la";$il_ou_elle="elle";
 		$message_cont = "Etes-vous sûr de vouloir supprimer la ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
 		$message_cont_non_vide = "La ".getSettingValue("gepi_denom_boite")." est non vide. Elle ne peut pas être supprimée.";
 	}
-	//$message_cont = "Etes-vous sûr de vouloir supprimer $lela ".getSettingValue("gepi_denom_boite")." ci-dessous et les évaluations qu\\'il contient ?";
-	//$message_cont = "Etes-vous sûr de vouloir supprimer $lela ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
-	//$message_cont_non_vide = ucfirst($lela)." ".getSettingValue("gepi_denom_boite")." est non vide. ".ucfirst($il_ou_elle)." ne peut pas être supprimé.";
 	$message_dev = "Etes-vous sûr de vouloir supprimer l\\'évaluation ci-dessous et les notes qu\\'elle contient ?";
-	//$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')");
 	$sql="SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')";
-	//echo "$sql<br />\n";
 	$appel_conteneurs = mysql_query($sql);
 	$nb_cont = mysql_num_rows($appel_conteneurs);
 	if ($nb_cont != 0) {
@@ -1285,7 +1014,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 		$nom_conteneur = mysql_result($appel_conteneurs, 0, 'nom_court');
 		echo "<li>\n";
 		echo "$nom_conteneur ";
-		//echo "id=$id_cont id_racine=$id_racine parent=$id_parent ";
 		if ($ver_periode <= 1) {
 			echo " (<strong>".$gepiClosedPeriodLabel."</strong>) ";
 		}
@@ -1304,10 +1032,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					echo "<font color='green'>$nom_dev</font>";
 					echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
 
-					//$sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='$id_dev' AND statut!='-' AND statut!='v';";
-					//$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='-' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
 					$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
-					//echo "$sql<br />";
 					$res_eff_dev=mysql_query($sql);
 					$eff_dev=mysql_num_rows($res_eff_dev);
 					echo " <span title=\"Effectif des notes saisies/effectif total de l'enseignement\" style='font-size:small;";
@@ -1318,7 +1043,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 
 					// Pour détecter une anomalie:
 					 $sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$id_groupe' and periode='$periode_num');";
-					//echo "$sql<br />"; // Décommenter et exécuter dans une console mysql ou dans phpMyAdmin
 					$test_anomalie=mysql_query($sql);
 					if(mysql_num_rows($test_anomalie)>0) {
 						$titre_infobulle="Note pour un fantôme";
@@ -1340,7 +1064,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
 					}
 
-					//echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
 
 					$display_parents=mysql_result($appel_dev, $j, 'display_parents');
@@ -1349,7 +1072,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />";}
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
 					echo "</i>)";
-					//echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev&amp;alea=".$_SESSION['gepi_alea']."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 					echo "</li>\n";
 					$j++;
@@ -1371,7 +1093,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 				$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
 				if ($id_cont != $id_parent) {
 					echo "<li>\n";
-					//echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
 					echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a>";
 					echo " - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
 
@@ -1382,7 +1103,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='$gepi_denom_boite non visible sur le bulletin' alt='$gepi_denom_boite non visible sur le bulletin' />\n";}
 					echo "</i>)";
 
-					//$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont'");
 					$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
 					$nb_dev  = mysql_num_rows($appel_dev);
 					if ($nb_dev != 0) {$empty = 'no';}
@@ -1391,11 +1111,8 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 					$sql="SELECT 1=1 FROM cn_conteneurs WHERE (parent='$id_cont')";
 					$test_sous_cont=mysql_query($sql);
 					$nb_sous_cont=mysql_num_rows($test_sous_cont);
-					//echo "<br />$sql<br />$nb_sous_cont<br />";
 
 					if(($nb_dev==0)&&($nb_sous_cont==0)) {
-						//echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
-						//echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont&amp;alea=".$_SESSION['gepi_alea']."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
 						echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
 					}
 					else {
@@ -1411,9 +1128,7 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							echo "<li>\n";
 							echo "<font color='green'>$nom_dev</font> - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
 
-							//$sql="SELECT 1=1 FROM cn_notes_devoirs WHERE id_devoir='$id_dev' AND statut!='-' AND statut!='v';";
 							$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='-' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
-							//echo "$sql<br />";
 							$res_eff_dev=mysql_query($sql);
 							$eff_dev=mysql_num_rows($res_eff_dev);
 							echo " <span title=\"Effectif des notes saisies/effectif total de l'enseignement\" style='font-size:small;";
@@ -1424,7 +1139,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 
 							// Pour détecter une anomalie:
 							$sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$id_groupe' and periode='$periode_num');";
-							//echo "$sql<br />"; // Décommenter et exécuter dans une console mysql ou dans phpMyAdmin
 							$test_anomalie=mysql_query($sql);
 							if(mysql_num_rows($test_anomalie)>0) {
 								$titre_infobulle="Note pour un fantôme";
@@ -1446,7 +1160,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 								echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return false;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
 							}
 
-							//echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a> - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 							echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
 
 							$display_parents=mysql_result($appel_dev, $j, 'display_parents');
@@ -1456,7 +1169,6 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 							else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
 							echo "</i>)";
 
-							//echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev&amp;alea=".$_SESSION['gepi_alea']."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 							echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
 							echo "</li>\n";
 							$j++;
@@ -1476,7 +1188,11 @@ function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_pe
 	if ($empty != 'no') return 'yes';
 }
 
-
+/**
+ *
+ * @global string 
+ * @return type 
+ */
 function checkAccess() {
     global $gepiPath;
     $url = parse_url($_SERVER['REQUEST_URI']);
@@ -1510,6 +1226,12 @@ function checkAccess() {
     }
 }
 
+/**
+ *
+ * @param type $_login
+ * @param type $_id_racine
+ * @return type 
+ */
 function Verif_prof_cahier_notes ($_login,$_id_racine) {
     if(empty($_login) || empty($_id_racine)) {return false;die();}
     $test_prof = mysql_query("SELECT id_groupe FROM cn_cahier_notes WHERE id_cahier_notes ='" . $_id_racine . "'");
@@ -1525,7 +1247,13 @@ function Verif_prof_cahier_notes ($_login,$_id_racine) {
     }
 }
 
-
+/**
+ *
+ * @param type $login
+ * @param type $id_classe
+ * @param type $matiere
+ * @return type 
+ */
 function Verif_prof_classe_matiere ($login,$id_classe,$matiere) {
     if(empty($login) || empty($id_classe) || empty($matiere)) {return false;}
     $call_prof = mysql_query("SELECT id_professeur FROM j_classes_matieres_professeurs WHERE (id_classe='".$id_classe."' AND id_matiere='".$matiere."')");
@@ -1544,6 +1272,22 @@ function Verif_prof_classe_matiere ($login,$id_classe,$matiere) {
     }
 }
 //***********************************************************************************************
+
+/**
+ *
+ * @global type $min_max_moyclas
+ * @param type $affiche_graph
+ * @param type $affiche_rang
+ * @param type $affiche_coef
+ * @param type $test_coef
+ * @param type $affiche_nbdev
+ * @param type $indice_aid
+ * @param type $aid_id
+ * @param type $current_eleve_login
+ * @param type $periode_num
+ * @param type $id_classe
+ * @param type $style_bulletin 
+ */
 function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$affiche_nbdev,$indice_aid, $aid_id,$current_eleve_login,$periode_num,$id_classe,$style_bulletin) {
     //============================
     // AJOUT: boireaus
@@ -1712,12 +1456,23 @@ function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$af
     //------
 }
 
+/**
+ *
+ * @param type $login_u
+ * @return type 
+ */
 function retourne_email ($login_u) {
 $call = mysql_query("SELECT email FROM utilisateurs WHERE login = '$login_u'");
 $email = @mysql_result($call, 0, "email");
 return $email;
 
 }
+
+/**
+ *
+ * @param type $larg_tab
+ * @param type $bord 
+ */
 function parametres_tableau($larg_tab, $bord) {
     echo "<table border='1' width='680' cellspacing='1' cellpadding='1' summary=\"Tableau de paramètres\">\n";
     echo "<tr><td><span class=\"norme\">largeur en pixel : <input type=\"text\" name=\"larg_tab\" size=\"3\" value=\"".$larg_tab."\" />\n";
@@ -1725,22 +1480,32 @@ function parametres_tableau($larg_tab, $bord) {
     echo "<input type=\"submit\" value=\"Valider\" />\n";
     echo "</span></td></tr></table>\n";
 }
+
+/**
+ *
+ * @global type $num_debut_colonnes_matieres
+ * @global type $num_debut_lignes_eleves
+ * @global type $vtn_coloriser_resultats
+ * @global type $vtn_borne_couleur
+ * @global type $vtn_couleur_texte
+ * @global type $vtn_couleur_cellule
+ * @param type $nombre_lignes
+ * @param type $nb_col
+ * @param type $ligne1
+ * @param type $col
+ * @param type $larg_tab
+ * @param type $bord
+ * @param type $col1_centre
+ * @param type $col_centre
+ * @param type $couleur_alterne 
+ */
 function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord, $col1_centre, $col_centre, $couleur_alterne) {
-    // $col1_centre = 1 --> la première colonne est centrée
-    // $col1_centre = 0 --> la première colonne est alignée à gauche
-    // $col_centre = 1 --> toutes les autres colonnes sont centrées.
-    // $col_centre = 0 --> toutes les autres colonnes sont alignées.
-    // $couleur_alterne --> les couleurs de fond des lignes sont alternés
-	global $num_debut_colonnes_matieres, $num_debut_lignes_eleves, $vtn_coloriser_resultats, $vtn_borne_couleur, $vtn_couleur_texte, $vtn_couleur_cellule;
+    global $num_debut_colonnes_matieres, $num_debut_lignes_eleves, $vtn_coloriser_resultats, $vtn_borne_couleur, $vtn_couleur_texte, $vtn_couleur_cellule;
 
-	//echo "\$num_debut_colonnes_matieres=$num_debut_colonnes_matieres<br />";
-	//echo "\$coloriser_resultats=$coloriser_resultats<br />";
-
-    echo "<table border=\"$bord\" class='boireaus' cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\" summary=\"Tableau\">\n";
+	echo "<table border=\"$bord\" class='boireaus' cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\" summary=\"Tableau\">\n";
     echo "<tr>\n";
     $j = 1;
     while($j < $nb_col+1) {
-        //echo "<th class='small'>$ligne1[$j]</th>\n";
         echo "<th class='small' id='td_ligne1_$j'>$ligne1[$j]</th>\n";
         $j++;
     }
@@ -1763,7 +1528,6 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
             if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))) {
 
 				echo "<td class='small' ";
-				//echo $bg_color;
 				if(!preg_match("/Rang de l/",$ligne1[$j])) {
 					if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
 						if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
@@ -1783,7 +1547,6 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
 
             } else {
 				echo "<td align=\"center\" class='small' ";
-				//echo $bg_color;
 				if(!preg_match("/Rang de l/",$ligne1[$j])) {
 					if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
 						if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
@@ -1810,6 +1573,11 @@ function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bor
     echo "</table>\n";
 }
 
+/**
+ *
+ * @param type $s
+ * @return string 
+ */
 function dbase_filter($s){
   for($i = 0; $i < strlen($s); $i++){
     $code = ord($s[$i]);
