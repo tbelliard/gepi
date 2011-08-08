@@ -132,6 +132,7 @@ include("menu_plugins.inc.php");
 		$menus .= '                <li class="plus"><a href="'.$gepiPath.'/classes/index.php">Gestion des classes</a>'."\n";
 		$menus .= '                    <ul class="niveau4">'."\n";
 		$menus .= '                        <li><a href="'.$gepiPath.'/classes/classes_param.php">Paramétrage par lots</a></li>'."\n";
+		$menus .= '                        <li><a href="'.$gepiPath.'/classes/prof_suivi.php">Param.'.getSettingValue('gepi_prof_suivi').'</a></li>'."\n";
 		$menus .= '                        <li><a href="'.$gepiPath.'/classes/cpe_resp.php">Param.CPE resp</a></li>'."\n";
 		$menus .= '                        <li><a href="'.$gepiPath.'/classes/scol_resp.php">Param.SCOL resp</a></li>'."\n";
 		$menus .= '                        <li><a href="'.$gepiPath.'/classes/acces_appreciations.php">Accès appréciations</a></li>'."\n";
