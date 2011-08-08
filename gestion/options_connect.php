@@ -325,14 +325,14 @@ echo "</label>\n";
 
 
 //on va voir si il y a simplesaml de configuré
-if (file_exists(__DIR__.'/../lib/simplesaml/config/authsources.php')) {
+if (file_exists(dirname(__FILE__).'/../lib/simplesaml/config/authsources.php')) {
 	echo "<br/><input type='checkbox' name='auth_simpleSAML' value='yes' id='label_auth_simpleSAML'";
 	if (getSettingValue("auth_simpleSAML")=='yes') echo " checked ";
 	echo " /> <label for='label_auth_simpleSAML' style='cursor: pointer;'>Authentification simpleSAML";
 	echo "</label>\n";
 	
 	echo "<br/>\n<select name=\"auth_simpleSAML_source\" size=\"1\">\n";
-	include_once(__DIR__.'/../lib/simplesaml/lib/_autoload.php');
+	include_once(dirname(__FILE__).'/../lib/simplesaml/lib/_autoload.php');
 	$config = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
 	$sources = $config->getOptions();
 	foreach($sources as $source) {
@@ -380,7 +380,7 @@ echo "</p>\n";
 echo "<p>Remarque : les changements n'affectent pas les sessions en cours.";
 
 //on va voir si il y a simplesaml de configuré
-if (file_exists(__DIR__.'/../lib/simplesaml/metadata/saml20-idp-hosted.php')) {
+if (file_exists(dirname(__FILE__).'/../lib/simplesaml/metadata/saml20-idp-hosted.php')) {
 	echo "<p><strong>Fourniture d'identité :</strong></p>\n";
 	echo "<p><input type='checkbox' name='gepiEnableIdpSaml20' value='yes' id='gepiEnableIdpSaml20'";
 	if (getSettingValue("gepiEnableIdpSaml20")=='yes') echo " checked ";
