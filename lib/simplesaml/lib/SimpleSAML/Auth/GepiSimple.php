@@ -26,7 +26,7 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 		    require_once("$path/lib/settings.inc");
 		    // Load settings
 		    if (!loadSettings()) {
-			die("Erreur chargement settings");
+				die("Erreur chargement settings");
 		    }
 		    $auth = getSettingValue('auth_simpleSAML_source');
 		}
@@ -38,11 +38,8 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 			die;
 		}
 		if (!in_array($auth, $sources)) {
-			//en cas d'erreur, pour forcer le choix, décommenter la ligne suivante:
-			//$auth = 'gepi-local-db';
-			//et commenter les deux lignes ci-dessous.
-			echo 'Erreur simplesaml : source '.$auth.' non configurée. Utilisation par défaut de la première source configurée.';
-			$auth = $sources[0];
+			echo 'Erreur simplesaml : source '.$auth.' non configurée. Utilisation par défaut de la source : «Authentification au choix entre toutes les sources configurees».';
+			$auth = 'Authentification au choix entre toutes les sources configurees';
 		}
 			
 		parent::__construct($auth);

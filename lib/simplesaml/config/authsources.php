@@ -41,3 +41,10 @@ $config = array(
     
     
 );
+
+//configuration d'un choix multiple avec toutes les sources configurées
+$sources_array = array_keys($config);
+if (!empty($sources_array)) {
+	//la source définie ci dessous est utilisé par la classe SimpleSAML_Auth_GepiSimple dans les cas d'erreur de configuration de choix de source
+	$config['Authentification au choix entre toutes les sources configurees'] = array('multiauth:MultiAuth', 'sources' => $sources_array);
+}
