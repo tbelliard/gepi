@@ -36,11 +36,20 @@ if ($resultat_session == 'c') {
 } else if ($resultat_session == '0') {
 	header("Location: ../logout.php?auto=1");
 	die();
-};
+}
 
 if (!checkAccess()) {
 	header("Location: ../logout.php?auto=1");
 	die();
+}
+
+if(!isset($id_classe)) {
+	$sql="SELECT id FROM classes ORDER BY classe LIMIT 1;";
+	$res=mysql_query($sql);
+	if(mysql_num_rows($res)>0) {
+		$lig=mysql_fetch_object($res);
+		$id_classe=$lig->id;
+	}
 }
 
 include "../lib/periodes.inc.php";
