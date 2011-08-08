@@ -25,7 +25,7 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
 		 * Authentication source to use. Must be one that is configured in
 		 * 'config/authsources.php'.
 		 */
-		'auth' => 'local-gepi-db',
+		'auth' => 'Authentification locale gepi',
 
 		/* Uncomment the following to use the uri NameFormat on attributes. */
 		'AttributeNameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
