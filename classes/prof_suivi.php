@@ -192,7 +192,7 @@ if (!isset($nb_prof) or ($nb_prof == '')) {
 
 	<p>
 	<?php
-		echo getSettingValue("gepi_prof_suivi");
+		echo ucfirst(getSettingValue("gepi_prof_suivi"));
 	?> : précisez le nombre dans la classe :</p>
 	<form enctype="multipart/form-data" action="prof_suivi.php" method="post">
 	<select size = '1' name='nb_prof' onchange='changement()'>
