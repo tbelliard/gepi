@@ -6324,13 +6324,17 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
 	return $chaine_options_login_eleves;
 }
 
-function is_pp($login_prof,$id_classe,$login_eleve="") {
+function is_pp($login_prof,$id_classe="",$login_eleve="") {
 	$retour=false;
 	if($login_eleve=='') {
-		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$login_prof';";
+		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE ";
+		if($id_classe!="") {$sql.="id_classe='$id_classe' AND ";}
+		$sql.="professeur='$login_prof';";
 	}
 	else {
-		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE id_classe='$id_classe' AND professeur='$login_prof' AND login='$login_eleve';";
+		$sql="SELECT 1=1 FROM j_eleves_professeurs WHERE ";
+		if($id_classe!="") {$sql.="id_classe='$id_classe' AND ";}
+		$sql.="professeur='$login_prof' AND login='$login_eleve';";
 	}
 	$test=mysql_query($sql);
 	if(mysql_num_rows($test)>0) {$retour=true;}
