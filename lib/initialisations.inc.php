@@ -44,33 +44,13 @@ $tabid_infobulle=array();
 // $chemin_relatif_gepi2 utilisé avec secure/connect.inc.php
 // $chemin_relatif_gepi pour les autres fichiers
 
-// Pour les scripts situés à la racine de GEPI
-if (isset($niveau_arbo) and ($niveau_arbo == "0")) {
-  $chemin_relatif_gepi = $chemin_relatif_gepi2 = './';
-  
+
+$chemin_relatif_gepi = $chemin_relatif_gepi2 = dirname(dirname(__FILE__));
+
+if (isset($niveau_arbo) and ($niveau_arbo == "public")) {
+  $chemin_relatif_gepi2 = './';
 }
-// Pour les scripts situés dans un sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
-else if (isset($niveau_arbo) and ($niveau_arbo == "2")) {
-  $chemin_relatif_gepi = $chemin_relatif_gepi2 = '../../';
-}
-// Pour les scripts situés dans un sous-sous-répertoire à l'intérieur d'une sous-répertoire de GEPI
-else if (isset($niveau_arbo) and ($niveau_arbo == "3")) {
-  $chemin_relatif_gepi = $chemin_relatif_gepi2 = '../../../';
-}
-else if (isset($niveau_arbo) and ($niveau_arbo == "4")) {
-  $chemin_relatif_gepi = $chemin_relatif_gepi2 = '../../../../';
-}
-else if (isset($niveau_arbo) and ($niveau_arbo == "5")) {
-  $chemin_relatif_gepi = $chemin_relatif_gepi2 = '../../../../../';
-} 
-else if (isset($niveau_arbo) and ($niveau_arbo == "public")) {
-  $chemin_relatif_gepi ='../';
-  $chemin_relatif_gepi2 ='./';
-} 
-else {
-  $chemin_relatif_gepi = $chemin_relatif_gepi2 = '../';
-}
-	
+
 $is_lcs_plugin="no";
 
 if (file_exists($chemin_relatif_gepi."secure/config_lcs.inc.php")) {
@@ -95,11 +75,11 @@ if($is_lcs_plugin=='yes') {
 
 $version = substr(phpversion(), 0, 1);
 if ($version == 4) {
-  $ldap_class = "lib/LDAPServer.php4.class.php";
-  $session_class = "lib/Session.php4.class.php";
+  $ldap_class = "/lib/LDAPServer.php4.class.php";
+  $session_class = "/lib/Session.php4.class.php";
 } else {
-  $ldap_class = "lib/LDAPServer.class.php";
-  $session_class = "lib/Session.class.php";
+  $ldap_class = "/lib/LDAPServer.class.php";
+  $session_class = "/lib/Session.class.php";
 }
 
 // Pour le multisite
@@ -114,58 +94,58 @@ if (isset($_REQUEST["source"])) {
 /**
  * Données de connexion à la base
  */
-   require_once($chemin_relatif_gepi2."secure/connect.inc.php");
+   require_once($chemin_relatif_gepi2."/secure/connect.inc.php");
 /**
  * Connection à la base
  */
-   require_once($chemin_relatif_gepi."lib/mysql.inc");
+   require_once($chemin_relatif_gepi."/lib/mysql.inc");
  /**
   * Ajout pour utiliser ou pas les fonctions mb_
   */
-   require_once($chemin_relatif_gepi."lib/mb_ou_pas.php");
+   require_once($chemin_relatif_gepi."/lib/mb_ou_pas.php");
  /**
   * Fichier de configuration générale
   */
-   require_once($chemin_relatif_gepi."lib/global.inc");
+   require_once($chemin_relatif_gepi."/lib/global.inc");
  /**
   * Filtrage html
   */
-   require_once($chemin_relatif_gepi."lib/filtrage_html.inc.php");
+   require_once($chemin_relatif_gepi."/lib/filtrage_html.inc.php");
 	if($filtrage_html=="htmlpurifier") {
  /**
   * Utilisation de HTMLPurifier.standalone pour filtrer les saisies
   */
-		require_once($chemin_relatif_gepi."lib/HTMLPurifier.standalone.php");
+		require_once($chemin_relatif_gepi."/lib/HTMLPurifier.standalone.php");
 	}
 	elseif($filtrage_html=="inputfilter") {
  /**
   * Utilisation de class.inputfilter_clean.php pour filtrer les saisies
   */
-		require_once($chemin_relatif_gepi."lib/class.inputfilter_clean.php");
+		require_once($chemin_relatif_gepi."/lib/class.inputfilter_clean.php");
 	}
 
  /**
   * Traitement des données
   */
-   require_once($chemin_relatif_gepi."lib/traitement_data.inc.php");
+   require_once($chemin_relatif_gepi."/lib/traitement_data.inc.php");
  /**
   * Librairies
   */
-   include $chemin_relatif_gepi."lib/share.inc.php";
+   include $chemin_relatif_gepi."/lib/share.inc.php";
  /**
   * Fonctions relatives aux groupes
   */
-    include $chemin_relatif_gepi."lib/groupes.inc.php";
+    include $chemin_relatif_gepi."/lib/groupes.inc.php";
  /**
   * classes
   */
-    include $chemin_relatif_gepi."lib/classes.inc.php";
+    include $chemin_relatif_gepi."/lib/classes.inc.php";
  /**
   * Fonctions de manipulation de la table settings
   * 
   * @see loadSettings()
   */
-   require_once($chemin_relatif_gepi."lib/settings.inc");
+   require_once($chemin_relatif_gepi."/lib/settings.inc");
    // Load settings
    if (!loadSettings()) {
      die("Erreur chargement settings");
