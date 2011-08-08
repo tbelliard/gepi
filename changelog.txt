@@ -32,6 +32,9 @@ Discipline:
 Modèles OpenOffice:
 - Ajout d'un dispositif de publipostage d'après des modèles OpenOffice/LibreOffice.
 
+Initialisation XML:
+- Ajout d'une page pour créer les enseignements si on ne dispose ni d'un XML STS complet, ni d'un export CSV d'UnDeuxTemps.
+
 - A compléter au fur et à mesure;)...
 
 Gepi-1.5.4 (17/04/2011)
