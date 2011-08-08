@@ -944,7 +944,7 @@ else {
 
 	} else {
 
-		echo "<p>La création des enseignements peut se faire de trois façon différentes (<i>par ordre de préférence</i>)&nbsp;:</p>\n";
+		echo "<p>La création des enseignements peut se faire de trois façons différentes (<i>par ordre de préférence</i>)&nbsp;:</p>\n";
 
 		echo "<ul>\n";
 		echo "<li>\n";
