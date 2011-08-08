@@ -6324,6 +6324,18 @@ function lignes_options_select_eleve($id_classe,$login_eleve_courant,$sql_ele=""
 	return $chaine_options_login_eleves;
 }
 
+/**
+ *
+ * Vérifie si un utilisateur est prof principal (gepi_prof_suivi)
+ *
+ * @var string $login_prof login de l'utilisateur à tester
+ * @var entier $id_classe identifiant de la classe (si vide, on teste juste si le prof est PP (éventuellement pour un élève particulier si login_eleve est non vide))
+ * @var string $login_eleve login de l'élève à tester (si vide, on teste juste si le prof est PP (éventuellement pour la classe si id_classe est non vide))
+ *
+ * @return boolean true/false si l'utilisateur est PP avec les paramètres choisis
+ *
+ *
+ */
 function is_pp($login_prof,$id_classe="",$login_eleve="") {
 	$retour=false;
 	if($login_eleve=='') {
@@ -6344,7 +6356,7 @@ function is_pp($login_prof,$id_classe="",$login_eleve="") {
 
 /**
  *
- * Vérifie qu'un utilisateur à le droit de voir la page en lien
+ * Vérifie qu'un utilisateur a le droit de voir la page en lien
  *
  * @var string $id l'adresse de la page
  * telle qu'enregistrée dans la base droits
