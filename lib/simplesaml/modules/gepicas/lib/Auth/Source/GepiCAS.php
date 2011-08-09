@@ -107,7 +107,17 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 				throw new SimpleSAML_Error_UserNotFound('Utilisateur non trouve dans la base locale');			
 		}
 		$attributes['login'] = array($valeur[0]);
-		$attributes['login_gepi'][0] = $valeur[0];
+		$attributes['login_gepi'] = array($valeur[0]);
+		
+		# On interroge la base de données pour récupérer des attributs qu'on va retourner
+		# Cela ne sert pas à gepi directement mais à des services qui peuvent s'appuyer sur gepi pour l'athentification
+		$query = mysql_query("SELECT nom, prenom, email, statut FROM utilisateurs WHERE (login = '".$attributes['login_gepi'][0]."')");
+		$row = mysql_fetch_object($query);
+		
+		$attributes['nom'] = array($row->nom);
+		$attributes['prenom'] = array($row->prenom);
+		$attributes['statut'] = array($row->statut);
+		$attributes['email'] = array($row->email);
 		
 		$state['Attributes'] = $attributes;
 		
