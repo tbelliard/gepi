@@ -11,6 +11,8 @@
 class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 
 
+	private $source;
+	
 	/**
 	 * Initialise une authentification en utilisant les paramêtre renseignés dans gepi
 	 *
@@ -18,17 +20,23 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 	 */
 	public function __construct($auth = null) {
 		if ($auth == null) {
-		    //on va sélectionner la source d'authentification gepi
-		    $path = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
-		    include_once("$path/secure/connect.inc.php");
-		    // Database connection
-		    require_once("$path/lib/mysql.inc");
-		    require_once("$path/lib/settings.inc");
-		    // Load settings
-		    if (!loadSettings()) {
-				die("Erreur chargement settings");
-		    }
-		    $auth = getSettingValue('auth_simpleSAML_source');
+			if (isset($_SESSION['gepi_setting_saml_source'])) {
+				//on prend la source précisée précedemment en session.
+				//Cela sert si le mode d'authentification a changé au cours de la session de l'utilisateur
+				$auth = $_SESSION['gepi_setting_saml_source'];
+			} else {
+			    //on va sélectionner la source d'authentification gepi
+			    $path = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+			    include_once("$path/secure/connect.inc.php");
+			    // Database connection
+			    require_once("$path/lib/mysql.inc");
+			    require_once("$path/lib/settings.inc");
+			    // Load settings
+			    if (!loadSettings()) {
+					die("Erreur chargement settings");
+			    }
+			    $auth = getSettingValue('auth_simpleSAML_source');
+			}
 		}
 		
 		$config = SimpleSAML_Configuration::getOptionalConfig('authsources.php');
@@ -41,7 +49,9 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 			echo 'Erreur simplesaml : source '.$auth.' non configurée. Utilisation par défaut de la source : «Authentification au choix entre toutes les sources configurees».';
 			$auth = 'Authentification au choix entre toutes les sources configurees';
 		}
-			
+		
+		//on utilise un variable en session pour se souvenir quelle est la source utilisé pour cette session. Utile pour le logout.
+		$_SESSION['gepi_setting_saml_source'] = $auth;
 		parent::__construct($auth);
 	}
 
@@ -86,4 +96,27 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 		
 		parent::login($params);
 	}
+	
+	/**
+	 * Efface la variable de la source d'authentification de la session
+	 * Log the user out.
+	 *
+	 * This function logs the user out. It will never return. By default,
+	 * it will cause a redirect to the current page after logging the user
+	 * out, but a different URL can be given with the $params parameter.
+	 *
+	 * Generic parameters are:
+	 *  - 'ReturnTo': The URL the user should be returned to after logout.
+	 *  - 'ReturnCallback': The function that should be called after logout.
+	 *  - 'ReturnStateParam': The parameter we should return the state in when redirecting.
+	 *  - 'ReturnStateStage': The stage the state array should be saved with.
+	 *
+	 * @param string|array|NULL $params  Either the url the user should be redirected to after logging out,
+	 *                                   or an array with parameters for the logout. If this parameter is
+	 *                                   NULL, we will return to the current page.
+	 */
+	public function logout($params = NULL) {
+		unset($_SESSION['gepi_setting_saml_source']);
+	}
+	
 }
