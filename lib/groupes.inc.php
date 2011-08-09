@@ -3,7 +3,7 @@
  * 
  * $Id$
  * 
- * @package GEPI
+ * @package Initialisation
  * @subpackage groupes
  *
  */
@@ -783,6 +783,148 @@ function check_prof_groupe($_login, $_id_groupe) {
     } else {
         return TRUE;
     }
+}
+
+/**
+ * Verifie si un groupe appartient bien à la personne connectée
+ *
+ * 
+ * @param integer $id_groupe identifiant du groupe
+ * @return int 1 si le prof enseigne dans le groupe, 0 sinon
+ */
+function verif_groupe_appartient_prof($id_groupe) {
+    $test = mysql_query("SELECT 1=1 FROM j_groupes_professeurs WHERE (id_groupe='$id_groupe' and login= '".$_SESSION['login']."');");
+    if (mysql_num_rows($test) == 0) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+/**
+ * Construit un tableau des classes et matières de l'utilisateur connecté (professeur)
+ * 
+ * Recherche les classes de l'enseignant puis pour chacune recherche la matiere, le nom court et le nom long.
+ * 
+ * La correspondance se fait sur l'indice du tableau
+ * 
+ * $tab_class_mat['id_c']  -> classes.id
+ * $tab_class_mat['id_m']  -> matieres.matiere
+ * $tab_class_mat['nom_c'] -> classes.classe
+ * $tab_class_mat['nom_m'] -> classes.nom_complet
+ *
+ * @return array Liste des classes et matières de ce professeur
+ */
+function make_tables_of_classes_matieres () {
+  $tab_class_mat = array();
+  $appel_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+  $nb_classes = mysql_num_rows($appel_classes);
+  $i = 0;
+  while($i < $nb_classes){
+    $id_classe = mysql_result($appel_classes, $i, "id");
+    $appel_mat = mysql_query("SELECT DISTINCT m.matiere, m.nom_complet " .
+            "FROM matieres m, j_groupes_matieres jgm, j_groupes_classes jgc, j_groupes_professeurs jgp" .
+            " WHERE ( " .
+            "m.matiere = jgm.id_matiere and " .
+            "jgm.id_groupe = jgp.id_groupe and " .
+            "jgp.login = '" . $_SESSION['login'] . "' and " .
+            "jgp.id_groupe = jgc.id_groupe and " .
+            "jgc.id_classe='$id_classe')" .
+            " ORDER BY m.nom_complet");
+    $nb_mat = mysql_num_rows($appel_mat);
+    $j = 0;
+    while($j < $nb_mat){
+      $tab_class_mat['id_c'][] = $id_classe;
+      $tab_class_mat['id_m'][] = mysql_result($appel_mat, $j, "matiere");
+      $tab_class_mat['nom_c'][] = mysql_result($appel_classes, $i, "classe");
+      $tab_class_mat['nom_m'][] = mysql_result($appel_mat, $j, "nom_complet");
+      $j++;
+    }
+    $i++;
+  }
+  return $tab_class_mat;
+}
+
+/**
+ * Construit un tableau des classes de l'utilisateur connecté (professeur)
+ *
+ * @return array Liste des classes (id_classe)
+ */
+function make_tables_of_classes () {
+  $tab_class = array();
+  $appel_classes = mysql_query("SELECT DISTINCT c.* FROM classes c, periodes p WHERE p.id_classe = c.id  ORDER BY classe");
+  $nb_classes = mysql_num_rows($appel_classes);
+  $i = 0;
+  $nb=0;
+  while($i < $nb_classes){
+    $id_classe = mysql_result($appel_classes, $i, "id");
+    $test_prof_classe = mysql_query("SELECT DISTINCT jgc.id_classe FROM j_groupes_classes jgc, j_groupes_professeurs jgp WHERE (" .
+            "jgc.id_classe='$id_classe' and " .
+            "jgc.id_groupe = jgp.id_groupe and " .
+            "jgp.login='".$_SESSION['login']."')");
+    $test = mysql_num_rows($test_prof_classe);
+    if ($test != 0) {
+        $tab_class[$nb] = $id_classe;
+        $nb++;
+    }
+    $i++;
+  }
+  return $tab_class;
+}
+
+
+
+/**
+ * Verifie si un élève appartient à un groupe
+ *
+ * @deprecated La requête SQL n'est plus possible
+ * @param integer $id_eleve
+ * @param integer $id_groupe
+ * @return boolean 0/1
+ */
+function verif_eleve_dans_groupe($id_eleve, $id_groupe) {
+    if ($id_groupe != "-1") {
+        // On verifie l'appartenance de id_eleve au groupe id_groupe
+        if (!(verif_groupe_appartient_prof($id_groupe))) {
+            return 0;
+            exit();
+        }
+        $test = mysql_query("select id_eleve from groupe_eleve where (id_eleve='$id_eleve' and id_groupe = '$id_groupe')");
+        if (mysql_num_rows($test) == 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+    } else {
+        // On verifie l'appartenance de id_eleve à un groupe quelconque du professeur connecté
+        $test = mysql_query("select id_eleve from groupe_eleve ge, groupes g where (ge.id_eleve='$id_eleve' and ge.id_groupe = g.id and g.login_user='".$_SESSION['login']."')");
+        if (mysql_num_rows($test) == 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+
+    }
+}
+
+/**
+ * Construit un tableau des groupes de l'utilisateur connecté
+ *
+ * @deprecated La requête SQL n'est plus possible
+ * @return array
+ */
+function make_tables_of_groupes() {
+    $tab_groupes = array();
+    $test = mysql_query("select id, nom_court, nom_complet from groupes where login_user = '".$_SESSION['login']."'");
+    $nb_test = mysql_num_rows($test);
+    $i = 0;
+    while ($i < $nb_test) {
+      $tab_groupes['id'][$i] = mysql_result($test, $i, "id");
+      $tab_groupes['nom'][$i] = mysql_result($test, $i, "nom_court");
+      $tab_groupes['nom_complet'][$i] = mysql_result($test, $i, "nom_complet");
+      $i++;
+    }
+      return $tab_groupes;
 }
 
 ?>
