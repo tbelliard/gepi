@@ -44,5 +44,46 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 			
 		parent::__construct($auth);
 	}
-	
+
+	/**
+	 * Ajouter pour gepi : utilisation des cookies et requetes organisation
+	 * Start an authentication process.
+	 *
+	 * This function never returns.
+	 *
+	 * This function accepts an array $params, which controls some parts of
+	 * the authentication. The accepted parameters depends on the authentication
+	 * source being used. Some parameters are generic:
+	 *  - 'ErrorURL': An URL that should receive errors from the authentication.
+	 *  - 'KeepPost': If the current request is a POST request, keep the POST
+	 *    data until after the authentication.
+	 *  - 'ReturnTo': The URL the user should be returned to after authentication.
+	 *  - 'ReturnCallback': The function we should call after the user has
+	 *    finished authentication.
+	 *
+	 * @param array $params  Various options to the authentication request.
+	 */
+	public function login(array $params = array()) {
+		if (!isset($params['multiauth:preselect'])) {
+			if (isset($_REQUEST['source'])) {
+				$params['multiauth:preselect'] = $_REQUEST['source'];
+			} else if (isset($_COOKIE['source'])) {
+				$params['multiauth:preselect'] = $_COOKIE['source'];
+			}
+		}
+
+		if (!isset($params['core:organization'])) {
+			if (isset($_REQUEST['organization'])) {
+				$params['core:organization'] = $_REQUEST['organization'];
+			} else if (isset($_COOKIE['organization'])) {
+				$params['core:organization'] = $_COOKIE['organization'];
+			} else if (isset($_REQUEST['rne'])) {
+				$params['core:organization'] = $_REQUEST['rne'];
+			} else if (isset($_COOKIE['rne'])) {
+				$params['core:organization'] = $_COOKIE['rne'];
+			}
+		}
+		
+		parent::login($params);
+	}
 }
