@@ -185,15 +185,7 @@ class sspmod_gepiauth_Auth_Source_LocalDB extends sspmod_core_Auth_UserPassOrgBa
 		}
 
 		// Session related functions
-		$path = dirname(dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))));
-		require_once("$path/lib/Session.class.php");
-		
-		$session_gepi = new Session();
-		$auto = 0; //parametre spécifique gepi qui qualifie le type de fin de session
-		if (isset($_GET['auto'])) {
-			$auto = $_GET['auto'];
-		}
-		$session_gepi->close($auto);
+		unset($_SESSION['login']);
 	}
 }
 
