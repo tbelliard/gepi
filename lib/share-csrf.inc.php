@@ -2,7 +2,7 @@
 /** 
  * Fonctions de manipulation du gepi_alea contre les attaques CSRF
  * 
- * $Id: share-csrf.inc.php $
+ * $Id$
  * 
  * Copyright 2001, 2011 Thomas Belliard, Laurent Delineau, Edouard Hue, Eric Lebrun
  * 

@@ -14,6 +14,7 @@
  * Fonctions de manipulation du gepi_alea contre les attaques CRSF
  */
 include_once dirname(__FILE__).'/share-csrf.inc.php';
+include_once dirname(__FILE__).'/share-html.inc.php';
 
 /**
  * Envoi d'un courriel
@@ -341,62 +342,6 @@ function verif_active_dbase() {
     }
 }
 
-
-
-
-/**
- * Construit du html pour les cahiers de textes
- *
- * @deprecated La requête SQL n'est plus valide
- * @param string $link Le lien
- * @param <type> $current_classe
- * @param <type> $current_matiere
- * @param integer $year année
- * @param integer $month le mois
- * @param integer $day le jour
- * @return string echo résultat
- */
-function make_area_list_html($link, $current_classe, $current_matiere, $year, $month, $day) {
-  echo "<strong><em>Cahier&nbsp;de&nbsp;texte&nbsp;de&nbsp;:</em></strong><br />";
-  $appel_donnees = mysql_query("SELECT * FROM classes ORDER BY classe");
-  $lignes = mysql_num_rows($appel_donnees);
-  $i = 0;
-  while($i < $lignes){
-    $id_classe = mysql_result($appel_donnees, $i, "id");
-    $appel_mat = mysql_query("SELECT DISTINCT m.* FROM matieres m, j_classes_matieres_professeurs j WHERE (j.id_classe='$id_classe' AND j.id_matiere=m.matiere) ORDER BY m.nom_complet");
-    $nb_mat = mysql_num_rows($appel_mat);
-    $j = 0;
-    while($j < $nb_mat){
-      $flag2 = "no";
-      $matiere_nom = mysql_result($appel_mat, $j, "nom_complet");
-      $matiere_nom_court = mysql_result($appel_mat, $j, "matiere");
-      $id_matiere = mysql_result($appel_mat, $j, "matiere");
-      $call_profs = mysql_query("SELECT * FROM j_classes_matieres_professeurs WHERE ( id_classe='$id_classe' and id_matiere = '$id_matiere') ORDER BY ordre_prof");
-      $nombre_profs = mysql_num_rows($call_profs);
-      $k = 0;
-      while ($k < $nombre_profs) {
-        $temp = strtoupper(@mysql_result($call_profs, $k, "id_professeur"));
-        if ($temp == $_SESSION['login']) {$flag2 = "yes";}
-        $k++;
-      }
-      if ($flag2 == "yes") {
-        echo "<strong>";
-        $display_class = mysql_result($appel_donnees, $i, "classe");
-        if (($id_classe == $current_classe) and ($id_matiere == $current_matiere)) {
-           echo ">$display_class&nbsp;-&nbsp;$matiere_nom&nbsp;($matiere_nom_court)&nbsp;";
-        } else {
-           //echo "<a href=\"".$link."?id_classe=$id_classe&id_matiere=$id_matiere&year=$year&month=$month&day=$day\">$display_class&nbsp;-&nbsp;$matiere_nom&nbsp;($matiere_nom_court)</a>";
-       echo "<a href=\"".$link."?id_classe=$id_classe&amp;id_matiere=$id_matiere&amp;year=$year&amp;month=$month&amp;day=$day\">$display_class&nbsp;-&nbsp;$matiere_nom&nbsp;($matiere_nom_court)</a>";
-
-        }
-        echo "</strong><br />";
-      }
-      $j++;
-    }
-    $i++;
-  }
-}
-
 /**
  * Ecrit une balise <select> de date jour mois année
  * correction W3C : ajout de la balise de fin </option> à la fin de $out_html
@@ -407,6 +352,7 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
  * @param integer $month
  * @param integer $year
  * @param string $option Si = more_years, on ajoute +5 et -5 années aux années possibles
+ * @see getSettingValue(
  */
 function genDateSelector($prefix, $day, $month, $year, $option)
 {
@@ -450,10 +396,11 @@ function genDateSelector($prefix, $day, $month, $year, $option)
 }
 
 /**
- * Détruit les conteneurs vides qui ne sont pas rattachés à un parent (@à vérifier)
+ * Détruit les conteneurs vides qui ne sont pas rattachés à un parent
  *
- * @param integer $id_conteneur
- * @param <type> $id_racine ??
+ * @param int $id_conteneur Id du conteneur
+ * @param int $id_racine Id du conteneur racine
+ * @todo à vérifier
  */
 function test_conteneurs_vides($id_conteneur,$id_racine) {
         // On teste si le conteneur est vide
@@ -471,6 +418,17 @@ function test_conteneurs_vides($id_conteneur,$id_racine) {
         }
 }
 
+/**
+ * Met à jour les moyennes des conteneurs
+ *
+ * @param array $_current_group les informations du groupes obtenues à partir de get_group()
+ * @param int $periode_num le numéro de la période
+ * @param type $id_racine Id du conteneur racine
+ * @param type $id_conteneur Id du conteneur
+ * @param type $arret si yes, on ne recalcule pas les sous-conteneurs
+ * @see get_group()
+ * @see calcule_moyenne()
+ */
 function mise_a_jour_moyennes_conteneurs($_current_group, $periode_num,$id_racine,$id_conteneur,&$arret) {
     //remarque : les variables $periode_num et id_racine auraient pus être récupérées
     //à partir de $id_conteneur, mais on évite ainsi trop de calculs !
