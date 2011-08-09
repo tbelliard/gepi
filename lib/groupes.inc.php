@@ -68,6 +68,8 @@ function get_groups_for_prof($_login,$mode=NULL,$tab_champs=array()) {
  * @param string $ordre Détermine l'ordre de tri
  * @param string $d_apres_categories Détermine comment on prend en compte les catégories
  * @return array Le tableau des groupes
+ *         (on ne récupère que les indices id, name, description du groupe et les classes associées,
+ *          pas les indices profs, eleves, periodes, matieres)
  */
 function get_groups_for_class($_id_classe, $ordre="", $d_apres_categories="n") {
 	// ATTENTION: Avec les catégories, les groupes dans aucune catégorie n'apparaissent pas.
@@ -633,7 +635,8 @@ function update_group($_id_groupe, $_name, $_description, $_matiere, $_classes, 
     }
 }
 
-/** Vérifie si on peut supprimer un élève
+/** Vérifie si on peut supprimer un groupe 
+ * (possible si matieres_notes et matieres_appreciations ne contiennent pas d'entrées pour ce groupe)
  *
  * @param type $_id_groupe
  * @return bool TRUE si tout on peut supprimer, FALSE sinon
@@ -670,7 +673,7 @@ function test_before_eleve_removal($_login, $_id_groupe, $_periode) {
 }
 
 /**
- * Supprime un groupe de la base
+ * Supprime un groupe de la base (et les données associées)
  *
  * @param int $_id_groupe Id du groupe
  * @return bool|text  TRUE si tout c'est bien passé, un message d'erreur sinon
@@ -767,7 +770,7 @@ function set_eleve_groupe_setting($_login, $_id_groupe, $_setting_name, $_settin
     return true;
 }
 
-/** Vérifie qu'un enseignant fait bien parti d'un groupe
+/** Vérifie qu'un enseignant fait bien partie d'un groupe
  *
  * @param text $_login Login de l'enseignant
  * @param type $_id_groupe Id du groupe
