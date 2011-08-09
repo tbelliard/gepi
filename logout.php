@@ -49,27 +49,22 @@ if ($session_gepi->current_auth_mode == "sso" and $session_gepi->auth_sso == "ca
   die();
 }
 
-if (getSettingValue('gepiEnableIdpSaml20') == 'yes') {
+if (getSettingValue('gepiEnableIdpSaml20') == 'yes' && (!isset($_REQUEST['idploggedout']))) {
 		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
 		$auth = new SimpleSAML_Auth_GepiSimple();
 		if ($auth->isAuthenticated()) {
-			//on fait le logout de session avec simplesaml en tant que fournisseur d'identité. Ça va déconnecter la source d'authentification pour gepi local et aussi pour chaque service associé (sacoche)
-			header("Location:./lib/simplesaml/www/saml2/idp/SingleLogoutService.php?ReturnTo=".$_SERVER['REQUEST_URI']);
+			//on fait le logout de session avec simplesaml en tant que fournisseur d'identité. Ça va déconnecter les services associés.
+			//Si gepi n'est pas connecté en local, il faut revenir à la page de logout et passer à la déconnexion de gepi 
+			$logout_return_url = $_SERVER['REQUEST_URI'];
+			if (strpos($logout_return_url, '?')) {
+				$logout_return_url .= '%26';
+			} else {
+				$logout_return_url .= '?';
+			}
+			$logout_return_url .= 'idploggedout=true';
+			header("Location:./lib/simplesaml/www/saml2/idp/SingleLogoutService.php?ReturnTo=".$logout_return_url);
 			exit();
 		}
-} else if ($session_gepi->auth_simpleSAML == 'yes') {
-		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
-		$auth = new SimpleSAML_Auth_GepiSimple();
-		if ($auth->isAuthenticated()) {
-			//on fait le logout de session avec simplesaml et on revient ici pour afficher le message de déconnexion
-			$auth->logout();
-		}
-}
-	
-// Ajout pour le multisite
-if (isset($_COOKIE["RNE"])) {
-	unset($_COOKIE['RNE']);
-	setcookie('RNE', 'RNE', null, '/'); // permet d'effacer le contenu du cookie.
 }
 
 //$message = "<h1 class='gepi'>Déconnexion</h1>";
@@ -128,4 +123,20 @@ if(getSettingValue('temporary_dir_no_cleaning')!='yes') {
 	unset ($filename);
 	}
 }
+
+if ($session_gepi->auth_simpleSAML == 'yes') {
+		include_once(dirname(__FILE__).'/lib/simplesaml/lib/_autoload.php');
+		$auth = new SimpleSAML_Auth_GepiSimple();
+		if ($auth->isAuthenticated()) {
+			//on fait le logout de session avec simplesaml
+			$auth->logout();
+		}
+}
+
+// Ajout pour le multisite
+unset($_COOKIE['RNE']);
+setcookie('RNE', 'unset', null, '/'); // permet d'effacer le contenu du cookie.
+
+
+
 ?>
