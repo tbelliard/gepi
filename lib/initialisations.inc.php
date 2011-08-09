@@ -9,6 +9,27 @@ if($utiliser_mb=="y") {
 */
 //======================================
 
+/**
+ * Chemin de la racine de GEPI
+ * 
+ * initialisée dans secure/connect.inc.php
+ * 
+ * On la retrouve en tant que global dans share.inc.php
+ *
+ * @global text $GLOBALS['gepiPath']
+ * @name $gepiPath
+ */
+$GLOBALS['gepiPath']=$gepiPath;
+
+/**
+ * Chemin relatif vers la racine de GEPI
+ *
+ * @global text $GLOBALS['relatif_gepi']
+ * @name $chemin_relatif_gepi
+ */
+$GLOBALS['relatif_gepi']='';
+
+
 // Initialisation de variables utilisées si javascript activé
 $tabdiv_infobulle=array();
 $tabid_infobulle=array();

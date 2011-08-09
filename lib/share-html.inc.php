@@ -11,6 +11,43 @@
 */
 
 /**
+ * 
+ * @global int $GLOBALS['num_debut_colonnes_matieres']
+ * @name $num_debut_colonnes_matieres
+ */
+$GLOBALS['num_debut_colonnes_matieres'] = 0;
+/**
+ * 
+ * @global int $GLOBALS['num_debut_lignes_eleves']
+ * @name $num_debut_lignes_eleves
+ */
+$GLOBALS['num_debut_lignes_eleves'] = 0;
+/**
+ * 
+ * @global text $GLOBALS['vtn_coloriser_resultats']
+ * @name $vtn_coloriser_resultats
+ */
+$GLOBALS['vtn_coloriser_resultats'] = '';
+/**
+ * 
+ * @global array $GLOBALS['vtn_borne_couleur']
+ * @name $vtn_borne_couleur
+ */
+$GLOBALS['vtn_borne_couleur']=array();
+/**
+ * 
+ * @global array $GLOBALS['vtn_couleur_texte']
+ * @name $vtn_couleur_texte
+ */
+$GLOBALS['vtn_couleur_texte']=array();
+/**
+ * 
+ * @global array $GLOBALS['vtn_couleur_cellule']
+ * @name $vtn_couleur_cellule
+ */
+$GLOBALS['vtn_couleur_cellule']=array();
+
+/**
  * Construit du html pour les cahiers de textes
  *
  * @deprecated La requête SQL n'est plus valide
@@ -61,5 +98,530 @@ function make_area_list_html($link, $current_classe, $current_matiere, $year, $m
     $i++;
   }
 }
+
+
+
+/**
+ * Affichage de la liste des conteneurs
+ *
+ * @global array 
+ * @global text 
+ * @global int 
+ * @global int 
+ * @param int $id_conteneur Id du conteneur
+ * @param int $periode_num Numéro de la période
+ * @param text $empty existance de notes, no si le conteneur contient des notes (passage par référence) 
+ * @param int $ver_periode Etat du vérouillage de la période
+ * @return text no si le conteneur contient des notes, yes sinon
+ * @see getSettingValue()
+ * @see get_nom_prenom_eleve()
+ * @see creer_div_infobulle()
+ * @see add_token_in_url()
+ * @see traitement_magic_quotes()
+ */
+function affiche_devoirs_conteneurs($id_conteneur,$periode_num, &$empty, $ver_periode) {
+	global $tabdiv_infobulle, $gepiClosedPeriodLabel, $id_groupe, $eff_groupe;
+    
+	if((isset($id_groupe))&&(!isset($eff_groupe))) {
+		$sql="SELECT 1=1 FROM j_eleves_groupes WHERE id_groupe='$id_groupe' AND periode='$periode_num';";
+		//echo "$sql<br />";
+		$res_ele_grp=mysql_query($sql);
+		$eff_groupe=mysql_num_rows($res_ele_grp);
+	}
+	//
+	// Cas particulier de la racine
+	$gepi_denom_boite=getSettingValue("gepi_denom_boite");
+	if(getSettingValue("gepi_denom_boite_genre")=='m'){
+		$message_cont = "Etes-vous sûr de vouloir supprimer le ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
+		$message_cont_non_vide = "Le ".getSettingValue("gepi_denom_boite")." est non vide. Il ne peut pas être supprimé.";
+	}
+	else{
+		$message_cont = "Etes-vous sûr de vouloir supprimer la ".getSettingValue("gepi_denom_boite")." ci-dessous ?";
+		$message_cont_non_vide = "La ".getSettingValue("gepi_denom_boite")." est non vide. Elle ne peut pas être supprimée.";
+	}
+	$message_dev = "Etes-vous sûr de vouloir supprimer l\\'évaluation ci-dessous et les notes qu\\'elle contient ?";
+	$sql="SELECT * FROM cn_conteneurs WHERE (parent='0' and id_racine='$id_conteneur')";
+	$appel_conteneurs = mysql_query($sql);
+	$nb_cont = mysql_num_rows($appel_conteneurs);
+	if ($nb_cont != 0) {
+		echo "<ul>\n";
+		$id_cont = mysql_result($appel_conteneurs, 0, 'id');
+		$id_parent = mysql_result($appel_conteneurs, 0, 'parent');
+		$id_racine = mysql_result($appel_conteneurs, 0, 'id_racine');
+		$nom_conteneur = mysql_result($appel_conteneurs, 0, 'nom_court');
+		echo "<li>\n";
+		echo "$nom_conteneur ";
+		if ($ver_periode <= 1) {
+			echo " (<strong>".$gepiClosedPeriodLabel."</strong>) ";
+		}
+		echo "- <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a> - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
+		$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
+		$nb_dev  = mysql_num_rows($appel_dev);
+		if ($nb_dev != 0) {$empty = 'no';}
+		if ($ver_periode >= 2) {
+			$j = 0;
+			if($nb_dev>0){
+				echo "<ul>\n";
+				while ($j < $nb_dev) {
+					$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
+					$id_dev = mysql_result($appel_dev, $j, 'id');
+					echo "<li>\n";
+					echo "<font color='green'>$nom_dev</font>";
+					echo " - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
+
+					$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
+					$res_eff_dev=mysql_query($sql);
+					$eff_dev=mysql_num_rows($res_eff_dev);
+					echo " <span title=\"Effectif des notes saisies/effectif total de l'enseignement\" style='font-size:small;";
+					if(isset($eff_groupe)) {if($eff_dev==$eff_groupe) {echo "color:green;";} else {echo "color:red;";}}
+					echo "'>($eff_dev";
+					if(isset($eff_groupe)) {echo "/$eff_groupe";}
+					echo ")</span>";
+
+					// Pour détecter une anomalie:
+					 $sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$id_groupe' and periode='$periode_num');";
+					$test_anomalie=mysql_query($sql);
+					if(mysql_num_rows($test_anomalie)>0) {
+						$titre_infobulle="Note pour un fantôme";
+						$texte_infobulle="Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement&nbsp;:<br />";
+						$cpt_ele_anomalie=0;
+						while($lig_anomalie=mysql_fetch_object($test_anomalie)) {
+							if($cpt_ele_anomalie>0) {$texte_infobulle.=", ";}
+							$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i>";
+							if($lig_anomalie->statut=='') {$texte_infobulle.=$lig_anomalie->note;}
+							elseif($lig_anomalie->statut=='v') {$texte_infobulle.="_";}
+							else {$texte_infobulle.=$lig_anomalie->statut;}
+							$texte_infobulle.="</i>)";
+							$cpt_ele_anomalie++;
+						}
+						$texte_infobulle.="<br />";
+						$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
+						$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+
+						echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return FALSE;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
+					}
+
+					echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
+
+					$display_parents=mysql_result($appel_dev, $j, 'display_parents');
+					$coef=mysql_result($appel_dev, $j, 'coef');
+					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
+					if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />";}
+					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
+					echo "</i>)";
+					echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
+					echo "</li>\n";
+					$j++;
+				}
+				echo "</ul>\n";
+			}
+		}
+	}
+	if ($ver_periode >= 2) {
+		$appel_conteneurs = mysql_query("SELECT * FROM cn_conteneurs WHERE (parent='$id_conteneur') order by nom_court");
+		$nb_cont = mysql_num_rows($appel_conteneurs);
+		if($nb_cont>0) {
+			echo "<ul>\n";
+			$i = 0;
+			while ($i < $nb_cont) {
+				$id_cont = mysql_result($appel_conteneurs, $i, 'id');
+				$id_parent = mysql_result($appel_conteneurs, $i, 'parent');
+				$id_racine = mysql_result($appel_conteneurs, $i, 'id_racine');
+				$nom_conteneur = mysql_result($appel_conteneurs, $i, 'nom_court');
+				if ($id_cont != $id_parent) {
+					echo "<li>\n";
+					echo "$nom_conteneur - <a href='saisie_notes.php?id_conteneur=$id_cont'>Visualisation</a>";
+					echo " - <a href = 'add_modif_conteneur.php?id_conteneur=$id_cont&amp;mode_navig=retour_index'>Configuration</a>\n";
+
+					$display_bulletin=mysql_result($appel_conteneurs, $i, 'display_bulletin');
+					$coef=mysql_result($appel_conteneurs, $i, 'coef');
+					echo " (<i><span title='Coefficient $coef'>$coef</span> ";
+					if($display_bulletin==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='$gepi_denom_boite visible sur le bulletin' alt='$gepi_denom_boite visible sur le bulletin' />";}
+					else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='$gepi_denom_boite non visible sur le bulletin' alt='$gepi_denom_boite non visible sur le bulletin' />\n";}
+					echo "</i>)";
+
+					$appel_dev = mysql_query("select * from cn_devoirs where id_conteneur='$id_cont' order by date");
+					$nb_dev  = mysql_num_rows($appel_dev);
+					if ($nb_dev != 0) {$empty = 'no';}
+
+					// Existe-t-il des sous-conteneurs?
+					$sql="SELECT 1=1 FROM cn_conteneurs WHERE (parent='$id_cont')";
+					$test_sous_cont=mysql_query($sql);
+					$nb_sous_cont=mysql_num_rows($test_sous_cont);
+
+					if(($nb_dev==0)&&($nb_sous_cont==0)) {
+						echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_cont=$id_cont".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_conteneur)."', '".$message_cont."')\">Suppression</a>\n";
+					}
+					else {
+						echo " - <a href = '#' onclick='alert(\"$message_cont_non_vide\")'><font color='gray'>Suppression</font></a>\n";
+					}
+
+					$j = 0;
+					if($nb_dev>0) {
+						echo "<ul>\n";
+						while ($j < $nb_dev) {
+							$nom_dev = mysql_result($appel_dev, $j, 'nom_court');
+							$id_dev = mysql_result($appel_dev, $j, 'id');
+							echo "<li>\n";
+							echo "<font color='green'>$nom_dev</font> - <a href='saisie_notes.php?id_conteneur=$id_cont&amp;id_devoir=$id_dev'>Saisie</a>";
+
+							$sql="SELECT 1=1 FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='-' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num';";
+							$res_eff_dev=mysql_query($sql);
+							$eff_dev=mysql_num_rows($res_eff_dev);
+							echo " <span title=\"Effectif des notes saisies/effectif total de l'enseignement\" style='font-size:small;";
+							if(isset($eff_groupe)) {if($eff_dev==$eff_groupe) {echo "color:green;";} else {echo "color:red;";}}
+							echo "'>($eff_dev";
+							if(isset($eff_groupe)) {echo "/$eff_groupe";}
+							echo ")</span>";
+
+							// Pour détecter une anomalie:
+							$sql="SELECT * FROM cn_notes_devoirs cnd, j_eleves_classes jec WHERE cnd.id_devoir='$id_dev' AND cnd.statut!='v' AND jec.login=cnd.login AND jec.periode='$periode_num' AND jec.login not in (select login from j_eleves_groupes where id_groupe='$id_groupe' and periode='$periode_num');";
+							$test_anomalie=mysql_query($sql);
+							if(mysql_num_rows($test_anomalie)>0) {
+								$titre_infobulle="Note pour un fantôme";
+								$texte_infobulle="Une ou des notes existent pour un ou des élèves qui ne sont plus inscrits dans cet enseignement&nbsp;:<br />";
+								$cpt_ele_anomalie=0;
+								while($lig_anomalie=mysql_fetch_object($test_anomalie)) {
+									if($cpt_ele_anomalie>0) {$texte_infobulle.=", ";}
+									$texte_infobulle.=get_nom_prenom_eleve($lig_anomalie->login,'avec_classe')."&nbsp;(<i>";
+									if($lig_anomalie->statut=='') {$texte_infobulle.=$lig_anomalie->note;}
+									elseif($lig_anomalie->statut=='v') {$texte_infobulle.="_";}
+									else {$texte_infobulle.=$lig_anomalie->statut;}
+									$texte_infobulle.="</i>)";
+									$cpt_ele_anomalie++;
+								}
+								$texte_infobulle.="<br />";
+								$texte_infobulle.="Cliquer <a href='".$_SERVER['PHP_SELF']."?id_groupe=$id_groupe&amp;periode_num=$periode_num&amp;clean_anomalie_dev=$id_dev".add_token_in_url()."'>ici</a> pour supprimer les notes associées?";
+								$tabdiv_infobulle[]=creer_div_infobulle('anomalie_'.$id_dev,$titre_infobulle,"",$texte_infobulle,"",35,0,'y','y','n','n');
+		
+								echo " <a href=\"#\" onclick=\"afficher_div('anomalie_$id_dev','y',100,100);return FALSE;\"><img src='../images/icons/flag.png' width='17' height='18' /></a>";
+							}
+
+							echo " - <a href = 'add_modif_dev.php?id_conteneur=$id_conteneur&amp;id_devoir=$id_dev&amp;mode_navig=retour_index'>Configuration</a>";
+
+							$display_parents=mysql_result($appel_dev, $j, 'display_parents');
+							$coef=mysql_result($appel_dev, $j, 'coef');
+							echo " (<i><span title='Coefficient $coef'>$coef</span> ";
+							if($display_parents==1) {echo "<img src='../images/icons/visible.png' width='19' height='16' title='Evaluation visible sur le relevé de notes' alt='Evaluation visible sur le relevé de notes' />";}
+							else {echo " <img src='../images/icons/invisible.png' width='19' height='16' title='Evaluation non visible sur le relevé de notes' alt='Evaluation non visible sur le relevé de notes' />\n";}
+							echo "</i>)";
+
+							echo " - <a href = 'index.php?id_racine=$id_racine&amp;del_dev=$id_dev".add_token_in_url()."' onclick=\"return confirmlink(this, 'suppression de ".traitement_magic_quotes($nom_dev)."', '".$message_dev."')\">Suppression</a>\n";
+							echo "</li>\n";
+							$j++;
+						}
+						echo "</ul>\n";
+					}
+				}
+				if ($id_conteneur != $id_cont) {affiche_devoirs_conteneurs($id_cont,$periode_num, $empty,$ver_periode);}
+				if ($id_cont != $id_parent) {
+					echo "</li>\n";
+				}
+				$i++;
+			}
+			echo "</ul>\n";
+		}
+	}
+	if ($empty != 'no') return 'yes';
+}
+
+
+/**
+ * Affiche l'AID sur le bulletin
+ *
+ * @global type
+ * @param type $affiche_graph
+ * @param type $affiche_rang
+ * @param type $affiche_coef
+ * @param type $test_coef
+ * @param type $affiche_nbdev
+ * @param type $indice_aid
+ * @param type $aid_id
+ * @param type $current_eleve_login
+ * @param type $periode_num
+ * @param type $id_classe
+ * @param type $style_bulletin 
+ */
+function affich_aid($affiche_graph, $affiche_rang, $affiche_coef, $test_coef,$affiche_nbdev,$indice_aid, $aid_id,$current_eleve_login,$periode_num,$id_classe,$style_bulletin) {
+    //============================
+    // AJOUT: boireaus
+    global $min_max_moyclas;
+    //============================
+
+    $call_data = mysql_query("SELECT * FROM aid_config WHERE indice_aid = $indice_aid");
+    $AID_NOM_COMPLET = @mysql_result($call_data, 0, "nom_complet");
+    $note_max = @mysql_result($call_data, 0, "note_max");
+    $type_note = @mysql_result($call_data, 0, "type_note");
+    $message = @mysql_result($call_data, 0, "message");
+    $display_nom = @mysql_result($call_data, 0, "display_nom");
+    $display_end = @mysql_result($call_data, 0, "display_end");
+
+
+    $aid_nom_query = mysql_query("SELECT nom FROM aid WHERE (id='$aid_id' and indice_aid='$indice_aid')");
+    $aid_nom = @mysql_result($aid_nom_query, 0, "nom");
+    //------
+    // On regarde maintenant quelle sont les profs responsables de cette AID
+    $aid_prof_resp_query = mysql_query("SELECT id_utilisateur FROM j_aid_utilisateurs WHERE (id_aid='$aid_id'  and indice_aid='$indice_aid')");
+    $nb_lig = mysql_num_rows($aid_prof_resp_query);
+    $n = '0';
+    while ($n < $nb_lig) {
+        $aid_prof_resp_login[$n] = mysql_result($aid_prof_resp_query, $n, "id_utilisateur");
+        $n++;
+    }
+    //------
+    // On appelle l'appréciation de l'élève, et sa note
+    //------
+    $current_eleve_aid_appreciation_query = mysql_query("SELECT * FROM aid_appreciations WHERE (login='$current_eleve_login' AND periode='$periode_num' and id_aid='$aid_id' and indice_aid='$indice_aid')");
+    $current_eleve_aid_appreciation = @mysql_result($current_eleve_aid_appreciation_query, 0, "appreciation");
+    $periode_query = mysql_query("SELECT * FROM periodes WHERE id_classe = '$id_classe'");
+    $periode_max = mysql_num_rows($periode_query);
+    if ($type_note == 'last') {$last_periode_aid = min($periode_max,$display_end);}
+    if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
+        $place_eleve = "";
+        $current_eleve_aid_note = @mysql_result($current_eleve_aid_appreciation_query, 0, "note");
+        $current_eleve_aid_statut = @mysql_result($current_eleve_aid_appreciation_query, 0, "statut");
+        if (($current_eleve_aid_statut == '') and ($note_max != 20) ) {
+            $current_eleve_aid_appreciation = "(note sur ".$note_max.") ".$current_eleve_aid_appreciation;
+        }
+        if ($current_eleve_aid_note == '') {
+            $current_eleve_aid_note = '-';
+        } else {
+            if ($affiche_graph == 'y')  {
+                if ($current_eleve_aid_note<5) { $place_eleve=6;}
+                if (($current_eleve_aid_note>=5) and ($current_eleve_aid_note<8))  { $place_eleve=5;}
+                if (($current_eleve_aid_note>=8) and ($current_eleve_aid_note<10)) { $place_eleve=4;}
+                if (($current_eleve_aid_note>=10) and ($current_eleve_aid_note<12)) {$place_eleve=3;}
+                if (($current_eleve_aid_note>=12) and ($current_eleve_aid_note<15)) { $place_eleve=2;}
+                if ($current_eleve_aid_note>=15) { $place_eleve=1;}
+            }
+            $current_eleve_aid_note=number_format($current_eleve_aid_note,1, ',', ' ');
+        }
+        $aid_note_min_query = mysql_query("SELECT MIN(note) note_min FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+
+        $aid_note_min = @mysql_result($aid_note_min_query, 0, "note_min");
+        if ($aid_note_min == '') {
+            $aid_note_min = '-';
+        } else {
+            $aid_note_min=number_format($aid_note_min,1, ',', ' ');
+        }
+        $aid_note_max_query = mysql_query("SELECT MAX(note) note_max FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+        $aid_note_max = @mysql_result($aid_note_max_query, 0, "note_max");
+
+        if ($aid_note_max == '') {
+            $aid_note_max = '-';
+        } else {
+            $aid_note_max=number_format($aid_note_max,1, ',', ' ');
+        }
+
+        $aid_note_moyenne_query = mysql_query("SELECT round(avg(note),1) moyenne FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid')");
+        $aid_note_moyenne = @mysql_result($aid_note_moyenne_query, 0, "moyenne");
+        if ($aid_note_moyenne == '') {
+            $aid_note_moyenne = '-';
+        } else {
+            $aid_note_moyenne=number_format($aid_note_moyenne,1, ',', ' ');
+        }
+
+    }
+    //------
+    // On affiche l'appréciation aid :
+    //------
+    echo "<tr>\n<td style=\"height: ".getSettingValue("col_hauteur")."px; width: ".getSettingValue("col_matiere_largeur")."px;\"><span class='$style_bulletin'><strong>$AID_NOM_COMPLET</strong><br />";
+    $chaine_prof="";
+    $n = '0';
+    while ($n < $nb_lig) {
+        $chaine_prof.=affiche_utilisateur($aid_prof_resp_login[$n],$id_classe)."<br />";
+        $n++;
+    }
+    if($n!=0){
+	echo "<em>".$chaine_prof."</em>";
+    }
+    echo "</span></td>\n";
+    if ($test_coef != 0 AND $affiche_coef == "y") echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='".$style_bulletin."'>-</span></td>\n";
+
+    if ($affiche_nbdev=="y"){echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='".$style_bulletin."'>-</span></td>\n";}
+
+    if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid))) {
+	//==========================
+	// MODIF: boireaus
+	if($min_max_moyclas!=1){
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
+		echo "<span class='$style_bulletin'>$aid_note_min</span></td>\n";
+
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
+		echo "<span class='$style_bulletin'>$aid_note_max</span></td>\n";
+
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
+		echo "<span class='$style_bulletin'>$aid_note_moyenne</span></td>\n";
+	}
+	else{
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
+		echo "<span class='$style_bulletin'>$aid_note_min<br />\n";
+		echo "$aid_note_max<br />\n";
+		echo "$aid_note_moyenne</span></td>\n";
+	}
+	//==========================
+
+	echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\">";
+	echo "<span class='$style_bulletin'><strong>";
+	if ($current_eleve_aid_statut == '') {
+		echo $current_eleve_aid_note;
+	} else if ($current_eleve_aid_statut == 'other') {
+		echo "-";
+	} else {
+		echo $current_eleve_aid_statut;
+	}
+	echo "</strong></span></td>\n";
+    } else {
+	//==========================
+	// MODIF: boireaus
+	if($min_max_moyclas!=1){
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
+	}
+	else{
+		// On ne met pas trois tirets.
+		echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
+	}
+	//==========================
+	echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='$style_bulletin'>-</span></td>\n";
+    }
+    if ($affiche_graph == 'y')  {
+      if (($type_note == 'every') or (($type_note == 'last') and ($periode_num == $last_periode_aid)))  {
+        $quartile1_classe = sql_query1("SELECT COUNT( a.note ) as quartile1 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=15)");
+        $quartile2_classe = sql_query1("SELECT COUNT( a.note ) as quartile2 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=12 AND a.note<15)");
+        $quartile3_classe = sql_query1("SELECT COUNT( a.note ) as quartile3 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=10 AND a.note<12)");
+        $quartile4_classe = sql_query1("SELECT COUNT( a.note ) as quartile4 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=8 AND a.note<10)");
+        $quartile5_classe = sql_query1("SELECT COUNT( a.note ) as quartile5 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note>=5 AND a.note<8)");
+        $quartile6_classe = sql_query1("SELECT COUNT( a.note ) as quartile6 FROM aid_appreciations a, j_eleves_classes j WHERE (a.login = j.login and j.id_classe = '$id_classe' and a.statut='' and a.periode = '$periode_num' and j.periode='$periode_num' and a.indice_aid='$indice_aid' AND a.note<5)");
+        echo "<td style=\"text-align: center; \"><img height=40 witdh=40 src='../visualisation/draw_artichow4.php?place_eleve=$place_eleve&temp1=$quartile1_classe&temp2=$quartile2_classe&temp3=$quartile3_classe&temp4=$quartile4_classe&temp5=$quartile5_classe&temp6=$quartile6_classe&nb_data=7' /></td>\n";
+     } else
+      echo "<td style=\"text-align: center; \"><span class='".$style_bulletin."'>-</span></td>\n";
+    }
+    if ($affiche_rang == 'y') echo "<td style=\"text-align: center; width: ".getSettingValue("col_note_largeur")."px;\"><span class='".$style_bulletin."'>-</span></td>\n";
+    if (getSettingValue("bull_affiche_appreciations") == 'y') {
+        echo "<td style=\"\" colspan=\"2\"><span class='$style_bulletin'>";
+        if (($message != '') or ($display_nom == 'y')) {
+            echo "$message ";
+            if ($display_nom == 'y') {echo "<strong>$aid_nom</strong><br />";}
+        }
+    }
+    echo "$current_eleve_aid_appreciation</span></td>\n</tr>\n";
+    //------
+}
+
+/**
+ * Affiche un tableau pour règler la taille d'un tableau
+ * 
+ * Utilisé uniquement dans prepa_conseil/index1.php
+ *
+ * @param int $larg_tab largeur en pixel
+ * @param int $bord bords en pixel
+ */
+function parametres_tableau($larg_tab, $bord) {
+    echo "<table border='1' width='680' cellspacing='1' cellpadding='1' summary=\"Tableau de paramètres\">\n";
+    echo "<tr><td><span class=\"norme\">largeur en pixel : <input type=\"text\" name=\"larg_tab\" size=\"3\" value=\"".$larg_tab."\" />\n";
+    echo "bords en pixel : <input type=\"text\" name=\"bord\" size=\"3\" value=\"".$bord."\" />\n";
+    echo "<input type=\"submit\" value=\"Valider\" />\n";
+    echo "</span></td></tr></table>\n";
+}
+
+/**
+ * Affiche un tableau
+ *
+ * Utilisé uniquement dans prepa_conseil et visu_toutes_notes2.php
+ * 
+ * @global type 
+ * @global type 
+ * @global type 
+ * @global type
+ * @global type 
+ * @global type 
+ * @param type $nombre_lignes
+ * @param type $nb_col
+ * @param type $ligne1
+ * @param type $col
+ * @param type $larg_tab
+ * @param type $bord
+ * @param type $col1_centre
+ * @param type $col_centre
+ * @param type $couleur_alterne 
+ */
+function affiche_tableau($nombre_lignes, $nb_col, $ligne1, $col, $larg_tab, $bord, $col1_centre, $col_centre, $couleur_alterne) {
+    global $num_debut_colonnes_matieres, $num_debut_lignes_eleves, $vtn_coloriser_resultats, $vtn_borne_couleur, $vtn_couleur_texte, $vtn_couleur_cellule;
+
+	echo "<table border=\"$bord\" class='boireaus' cellspacing=\"0\" width=\"$larg_tab\" cellpadding=\"1\" summary=\"Tableau\">\n";
+    echo "<tr>\n";
+    $j = 1;
+    while($j < $nb_col+1) {
+        echo "<th class='small' id='td_ligne1_$j'>$ligne1[$j]</th>\n";
+        $j++;
+    }
+    echo "</tr>\n";
+    $i = "0";
+    $bg_color = "";
+    $flag = "1";
+    $alt=1;
+    while($i < $nombre_lignes) {
+        if((isset($couleur_alterne))&&($couleur_alterne=='y')) {
+            if ($flag==1) {$bg_color = "bgcolor=\"#C0C0C0\"";} else {$bg_color = "     ";}
+        }
+
+	    $alt=$alt*(-1);
+        echo "<tr class='";
+		if((isset($couleur_alterne))&&($couleur_alterne=='y')) {echo "lig$alt ";}
+		echo "white_hover'>\n";
+        $j = 1;
+        while($j < $nb_col+1) {
+            if ((($j == 1) and ($col1_centre == 0)) or (($j != 1) and ($col_centre == 0))) {
+
+				echo "<td class='small' ";
+				if(!preg_match("/Rang de l/",$ligne1[$j])) {
+					if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
+						if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
+							for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
+								if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
+									echo " style='";
+									if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
+									if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
+									echo "'";
+									break;
+								}
+							}
+						}
+					}
+				}
+				echo ">{$col[$j][$i]}</td>\n";
+
+            } else {
+				echo "<td align=\"center\" class='small' ";
+				if(!preg_match("/Rang de l/",$ligne1[$j])) {
+					if(($vtn_coloriser_resultats=='y')&&($j>=$num_debut_colonnes_matieres)&&($i>=$num_debut_lignes_eleves)) {
+						if(strlen(preg_replace('/[0-9.,]/','',$col[$j][$i]))==0) {
+							for($loop=0;$loop<count($vtn_borne_couleur);$loop++) {
+								if(preg_replace('/,/','.',$col[$j][$i])<=preg_replace('/,/','.',$vtn_borne_couleur[$loop])) {
+									echo " style='";
+									if($vtn_couleur_texte[$loop]!='') {echo "color:$vtn_couleur_texte[$loop]; ";}
+									if($vtn_couleur_cellule[$loop]!='') {echo "background-color:$vtn_couleur_cellule[$loop]; ";}
+									echo "'";
+									break;
+								}
+							}
+						}
+					}
+				}
+				echo ">{$col[$j][$i]}</td>\n";
+            }
+            $j++;
+        }
+        echo "</tr>\n";
+        if ($flag == "1") {$flag = "0";} else {$flag = "1";}
+        $i++;
+    }
+    echo "</table>\n";
+}
+
+
+
 
 ?>
