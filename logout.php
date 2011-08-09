@@ -57,12 +57,12 @@ if (getSettingValue('gepiEnableIdpSaml20') == 'yes' && (!isset($_REQUEST['idplog
 			//Si gepi n'est pas connecté en local, il faut revenir à la page de logout et passer à la déconnexion de gepi 
 			$logout_return_url = $_SERVER['REQUEST_URI'];
 			if (strpos($logout_return_url, '?')) {
-				$logout_return_url .= '%26';
+				$logout_return_url .= '&';
 			} else {
 				$logout_return_url .= '?';
 			}
 			$logout_return_url .= 'idploggedout=true';
-			header("Location:./lib/simplesaml/www/saml2/idp/SingleLogoutService.php?ReturnTo=".$logout_return_url);
+			header("Location:./lib/simplesaml/www/saml2/idp/SingleLogoutService.php?ReturnTo=".urlencode($logout_return_url));
 			exit();
 		}
 }
