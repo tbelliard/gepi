@@ -66,6 +66,13 @@ $GLOBALS['gepiRcVersion'] = '';
  */
 $GLOBALS['gepiBetaVersion'] = '';
 
+/**
+ * 
+ * @global int $GLOBALS['totalsize']
+ * @name $totalsize
+ */
+$GLOBALS['totalsize'] = 0;
+
 
 
 /**
@@ -240,7 +247,7 @@ function test_unique_e_login($s, $indice) {
  * @param string $_nom nom de l'utilisateur
  * @param string $_prenom prénom de l'utilisateur
  * @param string $_mode Le mode de génération ou NULL
- * @return string|bool Le login généré ou FALSE si on obtient un login vide
+ * @return string|booleanLe login généré ou FALSE si on obtient un login vide
  * @see test_unique_login()
  */
 function generate_unique_login($_nom, $_prenom, $_mode) {
@@ -487,7 +494,7 @@ function fdebug($texte){
  * Vérifie que la page est bien accessible par l'utilisateur
  *
  * @global string 
- * @return bool TRUE si la page est accessible, FALSE sinon
+ * @return booleanTRUE si la page est accessible, FALSE sinon
  * @see tentative_intrusion()
  */
 function checkAccess() {
@@ -531,7 +538,7 @@ function checkAccess() {
  * @param text $login Login de l'enseignant
  * @param int $id_classe Id de la classe
  * @param type $matiere
- * @return bool 
+ * @return boolean
  */
 function Verif_prof_classe_matiere ($login,$id_classe,$matiere) {
     if(empty($login) || empty($id_classe) || empty($matiere)) {return FALSE;}
@@ -748,7 +755,7 @@ function affiche_date_naissance($date) {
  * @global mixed 
  * @global mixed 
  * @global mixed 
- * @return bool TRUE si on a une nouvelle version 
+ * @return booleanTRUE si on a une nouvelle version 
  */
 function test_maj() {
     global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
@@ -791,7 +798,7 @@ function test_maj() {
  * @global mixed 
  * @global mixed 
  * @param mixed $num le numéro de version
- * @return bool TRUE s'il faut faire la mise à jour
+ * @return booleanTRUE s'il faut faire la mise à jour
  */
 function quelle_maj($num) {
     global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
@@ -820,7 +827,7 @@ function quelle_maj($num) {
 /**
  *
  * @global text
- * @return bool TRUE si tout c'est bien passé 
+ * @return booleanTRUE si tout c'est bien passé 
  * @see getSettingValue()
  * @see saveSetting()
  */
@@ -938,8 +945,7 @@ function get_periode_active($_id_classe){
  * la fonction html_entity_decode() est disponible a partir de la version 4.3.0 de php.
  * 
  * @deprecated GEPI ne fonctionne plus sans php 5.2 et plus
- * @global type $use_function_html_entity_decode
- * @param type $string
+ * @param text $string
  * @return type 
  */
 function html_entity_decode_all_version ($string)
@@ -957,115 +963,20 @@ function html_entity_decode_all_version ($string)
        return html_entity_decode($string);
 }
 
-function make_eleve_select_html($link, $login_resp, $current, $year, $month, $day)
-{
-	global $selected_eleve;
-	// $current est le login de l'élève actuellement sélectionné
-	$sql="SELECT e.login, e.nom, e.prenom " .
-			"FROM eleves e, resp_pers r, responsables2 re " .
-			"WHERE (" .
-			"e.ele_id = re.ele_id AND " .
-			"re.pers_id = r.pers_id AND " .
-			"r.login = '".$login_resp."' AND (re.resp_legal='1' OR re.resp_legal='2'));";
-	//echo "$sql<br />\n";
-	$get_eleves = mysql_query($sql);
-
-	if (mysql_num_rows($get_eleves) == 0) {
-			// Aucun élève associé
-		$out_html = "<p>Vous semblez n'être responsable d'aucun élève ! Contactez l'administrateur pour corriger cette erreur.</p>";
-	} elseif (mysql_num_rows($get_eleves) == 1) {
-			// Un seul élève associé : pas de formulaire nécessaire
-		$selected_eleve = mysql_fetch_object($get_eleves);
-		$out_html = "<p class='bold'>Elève : ".$selected_eleve->prenom." ".$selected_eleve->nom."</p>";
-	} else {
-		// Plusieurs élèves : on affiche un formulaire pour choisir l'élève
-	// correction W3C : onChange = onchange + ajout de balise <p> +fermeture balise <option>
-	  $out_html = "<form id=\"eleve\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n<h2 class='h2_label'>\n<label for=\"choix_eleve\"><strong><em>Elève :</em></strong></label>\n</h2>\n<p>\n<select id=\"choix_eleve\" name=\"eleve\" onchange=\"eleve_go()\">\n";
-	  $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)</option>\n";
-		while ($current_eleve = mysql_fetch_object($get_eleves)) {
-		   if ($current) {
-		   	$selected = ($current_eleve->login == $current->login) ? "selected='selected'" : "";
-		   } else {
-		   	$selected = "";
-		   }
-		   $link2 = "$link?year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=".$current_eleve->login;
-		   $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($current_eleve->prenom . " - ".$current_eleve->nom)."</option>\n";
-		}
-	// ajout de la fermeture de p </p> et de \" pour encadrer submit
-	  $out_html .= "</select></p>
-	  <script type=\"text/javascript\">
-	  <!--
-	  function eleve_go()
-	  {
-	    box = document.forms[\"eleve\"].eleve;
-	    destination = box.options[box.selectedIndex].value;
-	    if (destination) location.href = destination;
-	  }
-	  // -->
-	  </script>
-
-	  <noscript>
-		<p>
-		  <input type=\"hidden\" name=\"year\" value=\"$year\" />
-		  <input type=\"hidden\" name=\"month\" value=\"$month\" />
-		  <input type=\"hidden\" name=\"day\" value=\"$day\" />
-		  <input type=\"submit\" value=\"OK\" />
-		</p>
-		</noscript>
-	  </form>\n";
-	}
-	return $out_html;
-}
-
-function affiche_docs_joints($id_ct,$type_notice) {
-// documents joints
-$html = '';
-$architecture="/documents/cl_dev";
-if ($type_notice == "t") {
-    $sql = "SELECT titre, emplacement, visible_eleve_parent  FROM ct_devoirs_documents WHERE id_ct_devoir='$id_ct' ORDER BY 'titre'";
-} else if ($type_notice == "c") {
-    $sql = "SELECT titre, emplacement, visible_eleve_parent FROM ct_documents WHERE id_ct='$id_ct' ORDER BY 'titre'";
-}
-
-$res = sql_query($sql);
-  if (($res) and (sql_count($res)!=0)) {
-    $html .= "<span class='petit'>Document(s) joint(s):</span>";
-    //$html .= "<ul type=\"disc\" style=\"padding-left: 15px;\">";
-    $html .= "<ul style=\"padding-left: 15px;\">";
-    for ($i=0; ($row = sql_row($res,$i)); $i++) {
-		if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
-			((getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
-			((getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
-		) {
-              $titre = $row[0];
-              $emplacement = $row[1];
-              //$html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a href=\"$emplacement\" target=\"blank\">$titre</a></li>";
-			// Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
-			// alternative, utiliser un javascript
-              $html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
-		}
-    }
-    $html .= "</ul>";
-   }
-  return $html;
- }
-
 /**
  * Cette fonction est à appeler dans tous les cas où une tentative
  * d'utilisation illégale de Gepi est manifestement avérée.
  * Elle est à appeler notamment dans tous les tests de sécurité lorsqu'un test est négatif.
  * Possibilité d'envoyer un mail à l'administrateur et de bloquer l'utilisateur
  *
- * @global array $_SERVER obsolète car $_SERVER est une superglobale
- * @global array $_SESSION obsolète car $_SESSION est une super globale
- * @global string $gepiPath Path de Gepi (connect.inc.php)
+ * @global string
  * @param integer $_niveau Niveau d'intrusion enregistré
  * @param string $_description Message enregistré pour cette tentative
+ * @see getSettingValue()
+ * @see mail()
  */
 function tentative_intrusion($_niveau, $_description) {
-	// On permet l'accès à $_SERVER et $_SESSION
-	global $_SERVER;
-	global $_SESSION;
+
 	global $gepiPath;
 
 	// On commence par enregistrer la tentative en question
@@ -1188,52 +1099,13 @@ function tentative_intrusion($_niveau, $_description) {
 }
 
 /**
- * Fonction destinée à présenter une liste de liens répartis en $nbcol colonnes
- *
- * @param array $tab_txt tableau des textes
- * @param array $tab_lien tableau des liens
- * @param integer $nbcol Nombre de colonnes
- */
-function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL){
-
-	// Nombre d'enregistrements à afficher
-	$nombreligne=count($tab_txt);
-
-	if(!is_int($nbcol)){
-		$nbcol=3;
-	}
-
-	// Nombre de lignes dans chaque colonne:
-	$nb_class_par_colonne=round($nombreligne/$nbcol);
-
-	echo "<table width='100%' summary=\"Tableau de choix\">\n";
-	echo "<tr valign='top' align='center'>\n";
-	echo "<td align='left'>\n";
-
-	$i = 0;
-	while ($i < $nombreligne){
-
-		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
-			echo "</td>\n";
-			echo "<td align='left'>\n";
-		}
-
-		//echo "<br />\n";
-		echo "<a href='".$tab_lien[$i]."'";
-    if ($extra_options) echo ' '.$extra_options;
-    echo ">".$tab_txt[$i]."</a>";
-		echo "<br />\n";
-		$i++;
-	}
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-}
-
-/**
  * Fonction destinée à créer un dossier temporaire aléatoire /temp/<alea>
+ * 
+ * Test le dossier en écriture et le crée au besoin
  *
- * @return boolean TRUE/FALSE
+ * @return booleanTRUE si tout c'est bien passé
+ * @see getSettingValue()
+ * @see saveSetting()
  */
 function check_temp_directory(){
 
@@ -1245,7 +1117,6 @@ function check_temp_directory(){
 		for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 		$dirname = $r;
 		$create = mkdir("./temp/".$dirname, 0700);
-		//chmod("/temp/".$dirname, 0700);
 
 		if ($create) {
 			$fich=fopen("./temp/".$dirname."/index.html","w+");
@@ -1256,7 +1127,6 @@ function check_temp_directory(){
 			fclose($fich);
 
 			saveSetting("temp_directory", $dirname);
-			//return $dirname;
 			return TRUE;
 		} else {
 			return FALSE;
@@ -1265,17 +1135,14 @@ function check_temp_directory(){
 	} else {
 		return TRUE;
 	}
-	/*
-	else{
-		return $dirname;
-	}
-	*/
 }
 
 /**
  * Fonction destinée à créer un dossier /temp/<alea> propre au professeur
+ * 
+ * Test le dossier en écriture et le crée au besoin
  *
- * @return boolean TRUE/FALSE
+ * @return booleanTRUE si tout c'est bien passé
  */
 function check_user_temp_directory(){
 
@@ -1297,7 +1164,6 @@ function check_user_temp_directory(){
 			for($len=$length,$r='';strlen($r)<$len;$r.=chr(!mt_rand(0,2)? mt_rand(48,57):(!mt_rand(0,1) ? mt_rand(65,90) : mt_rand(97,122))));
 			$dirname = $_SESSION['login']."_".$r;
 			$create = mkdir("./temp/".$dirname, 0700);
-			//chmod("/temp/".$dirname, 0700);
 
 			if($create){
 				$fich=fopen("./temp/".$dirname."/index.html","w+");
@@ -1310,7 +1176,6 @@ function check_user_temp_directory(){
 				$sql="UPDATE utilisateurs SET temp_dir='$dirname' WHERE login='".$_SESSION['login']."'";
 				$res_update=mysql_query($sql);
 				if($res_update){
-					//return $dirname;
 					return TRUE;
 				}
 				else{
@@ -1326,7 +1191,6 @@ function check_user_temp_directory(){
 				// Le dossier n'existe pas
 				// On créé le répertoire temp
 				$create = mkdir("./temp/".$dirname, 0700);
-				//chmod("/temp/".$dirname, 0700);
 
 				if($create){
 					$fich=fopen("./temp/".$dirname."/index.html","w+");
@@ -1363,7 +1227,7 @@ function check_user_temp_directory(){
 /**
  * Renvoie le nom du répertoire temporaire de l'utilisateur
  *
- * @return string retourne FALSE s'il n'existe pas et le nom du répertoire s'il existe sans le chemin
+ * @return bool|string retourne FALSE s'il n'existe pas et le nom du répertoire s'il existe, sans le chemin
  */
 function get_user_temp_directory(){
 	$sql="SELECT temp_dir FROM utilisateurs WHERE login='".$_SESSION['login']."'";
@@ -1395,6 +1259,12 @@ function get_user_temp_directory(){
 	}
 }
 
+/**
+ * Retourne un nombre formaté en Mo, ko ou o suivant ça taille
+ *
+ * @param int $volume le nombre à formater
+ * @return text le nombre formaté
+ */
 function volume_human($volume){
 	if($volume>=1048576){
 		$volume=round(10*$volume/1048576)/10;
@@ -1409,6 +1279,15 @@ function volume_human($volume){
 	}
 }
 
+/**
+ * Renvoie la taille d'un répertoire
+ *
+ * @global int $totalsize
+ * @param text $dir Le répertoire à tester
+ * @return text la taille formatée 
+ * @see volume_dir()
+ * @see volume_human()
+ */
 function volume_dir_human($dir){
 	global $totalsize;
 	$totalsize=0;
@@ -1417,6 +1296,13 @@ function volume_dir_human($dir){
 	return volume_human($volume);
 }
 
+/**
+ * Additionne la taille des répertoires et sous-répertoires
+ *
+ * @global int
+ * @param text $dir répertoire à parser
+ * @return int la taille totale du répertoire
+ */
 function volume_dir($dir){
 	global $totalsize;
 
@@ -1424,7 +1310,6 @@ function volume_dir($dir){
 	while ($file = @readdir ($handle)){
 		if (preg_match("/^\.{1,2}$/i",$file))
 			continue;
-		//if(is_dir($dir.$file)){
 		if(is_dir("$dir/$file")){
 			$totalsize+=volume_dir("$dir/$file");
 		}
@@ -1440,6 +1325,13 @@ function volume_dir($dir){
 	return($totalsize);
 }
 
+/**
+ * Supprime les fichiers d'un dossier
+ *
+ * @param text $dir le répertoire à vider
+ * @return boolean TRUE si tout c'est bien passé
+ * @todo En ajoutant un paramètre à la fonction, on pourrait activer la suppression récursive (avec une profondeur par exemple)
+ */
 function vider_dir($dir){
 	$statut=TRUE;
 	$handle = @opendir($dir);
@@ -1447,7 +1339,6 @@ function vider_dir($dir){
 		if (preg_match("/^\.{1,2}$/i",$file)){
 			continue;
 		}
-		//if(is_dir($dir.$file)){
 		if(is_dir("$dir/$file")){
 			// On ne cherche pas à vider récursivement.
 			$statut=FALSE;
@@ -1469,9 +1360,13 @@ function vider_dir($dir){
 }
 
 
-/*
+/**
  * Cette méthode prend une chaîne de caractères et s'assure qu'elle est bien
  * retournée en ISO-8859-1.
+ * 
+ * @param text La chaine à tester
+ * @return text La chaine traitée
+ * @todo On pourrait au moins passer en ISO-8859-15
  */
 function ensure_iso8859_1($str) {
 	$encoding = mb_detect_encoding($str);
@@ -1482,7 +1377,12 @@ function ensure_iso8859_1($str) {
 	}
 }
 
-
+/**
+ * Encode une chaine en utf8
+ * 
+ * @param text $chaine La chaine à tester
+ * @return text La chaine traitée
+ */
 function caract_ooo($chaine){
 	if(function_exists('utf8_encode')){
 		$retour=utf8_encode($chaine);
@@ -1516,12 +1416,37 @@ function caract_ooo($chaine){
 	return $retour;
 }
 
-//================================================
-// Correspondances de caractères accentués/désaccentués
-$liste_caracteres_accentues   ="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõø¨ûüùúýÿ¸";
-$liste_caracteres_desaccentues="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaaceeeeiiiinooooooosuuuuyyz";
-//================================================
+/**
+ * Correspondances de caractères accentués/désaccentués
+ * 
+ * @global text $GLOBALS['liste_caracteres_accentues']
+ * @name $liste_caracteres_accentues
+ */
+$GLOBALS['liste_caracteres_accentues']="ÂÄÀÁÃÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕØ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõø¨ûüùúýÿ¸";
 
+/**
+ * Correspondances de caractères accentués/désaccentués
+ * 
+ * @global text $GLOBALS['liste_caracteres_desaccentues']
+ * @name $liste_caracteres_desaccentues
+ */
+$GLOBALS['liste_caracteres_desaccentues']="AAAAAACEEEEIIIINOOOOOOSUUUUYYZaaaaaaceeeeiiiinooooooosuuuuyyz";
+
+/**
+ * Remplace les accents dans une chaine
+ * 
+ * $mode = 'all' On remplace espaces et apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
+ * 
+ * $mode = 'all_nospace' On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
+ * 
+ *  Sinon, on remplace les caractères accentués par leurs équivalents non accentués.
+ *
+ * @global string 
+ * @global string 
+ * @param type $chaine La chaine à tester
+ * @param type $mode Mode de conversion
+ * @return type 
+ */
 function remplace_accents($chaine,$mode=''){
 	global $liste_caracteres_accentues, $liste_caracteres_desaccentues;
 
@@ -1531,7 +1456,6 @@ function remplace_accents($chaine,$mode=''){
 	}
 	elseif($mode == 'all_nospace'){
 		// On remplace apostrophes par des '_' et les caractères accentués par leurs équivalents non accentués.
-		//$retour1 = strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe","$chaine")))),"'ÂÄÀÁÃÄÅÇÊËÈÉÎÏÌÍÑÔÖÒÓÕ¦ÛÜÙÚÝ¾´áàâäãåçéèêëîïìíñôöðòóõ¨ûüùúýÿ¸"," AAAAAAACEEEEIIIINOOOOOSUUUUYYZaaaaaaceeeeiiiinoooooosuuuuyyz");
 		$retour1=strtr(preg_replace("/Æ/","AE",preg_replace("/æ/","ae",preg_replace("/¼/","OE",preg_replace("/½/","oe","$chaine")))),"'$liste_caracteres_accentues"," $liste_caracteres_desaccentues");
 		// On enlève aussi les guillemets
 		$retour = preg_replace('/"/', '', $retour1);
@@ -1546,7 +1470,7 @@ function remplace_accents($chaine,$mode=''){
 /**
  * Fonction qui renvoie le login d'un élève en échange de son ele_id
  *
- * @param integer $id_eleve ele_id de l'élève
+ * @param int $id_eleve ele_id de l'élève
  * @return string login de l'élève
  */
 function get_login_eleve($id_eleve){
@@ -4542,7 +4466,7 @@ function journal_connexions($login,$duree,$page='mon_compte',$pers_id=NULL) {
 /**
  * Crée les répertoires photos/RNE_Etablissement, photos/RNE_Etablissement/eleves et
  * photos/RNE_Etablissement/personnels s'ils n'existent pas
- * @return bool TRUE si tout se passe bien ou FALSE si la création d'un répertoire échoue
+ * @return boolean TRUE si tout se passe bien ou FALSE si la création d'un répertoire échoue
  */
 function cree_repertoire_multisite() {
   if (isset($GLOBALS['multisite']) AND $GLOBALS['multisite'] == 'y') {
@@ -4681,7 +4605,7 @@ function efface_photos($photos) {
  * gestion du fil d'ariane en remplissant le tableau $_SESSION['ariane']
  * @param text $lien page atteinte par le lien
  * @param text $texte texte à afficher dans le fil d'ariane
- * @return bool True si tout s'est bien passé, False sinon
+ * @return booleanTrue si tout s'est bien passé, False sinon
  */
 function suivi_ariane($lien,$texte){
   if (!isset($_SESSION['ariane'])){

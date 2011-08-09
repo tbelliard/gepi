@@ -16,36 +16,48 @@
  * @name $num_debut_colonnes_matieres
  */
 $GLOBALS['num_debut_colonnes_matieres'] = 0;
+
 /**
  * 
  * @global int $GLOBALS['num_debut_lignes_eleves']
  * @name $num_debut_lignes_eleves
  */
 $GLOBALS['num_debut_lignes_eleves'] = 0;
+
 /**
  * 
  * @global text $GLOBALS['vtn_coloriser_resultats']
  * @name $vtn_coloriser_resultats
  */
 $GLOBALS['vtn_coloriser_resultats'] = '';
+
 /**
  * 
  * @global array $GLOBALS['vtn_borne_couleur']
  * @name $vtn_borne_couleur
  */
-$GLOBALS['vtn_borne_couleur']=array();
+$GLOBALS['vtn_borne_couleur'] = array();
+
 /**
  * 
  * @global array $GLOBALS['vtn_couleur_texte']
  * @name $vtn_couleur_texte
  */
-$GLOBALS['vtn_couleur_texte']=array();
+$GLOBALS['vtn_couleur_texte'] = array();
+
 /**
  * 
  * @global array $GLOBALS['vtn_couleur_cellule']
  * @name $vtn_couleur_cellule
  */
-$GLOBALS['vtn_couleur_cellule']=array();
+$GLOBALS['vtn_couleur_cellule'] = array();
+
+/**
+ * 
+ * @global text $GLOBALS['selected_eleve']
+ * @name $selected_eleve
+ */
+$GLOBALS['selected_eleve'] = '';
 
 /**
  * Construit du html pour les cahiers de textes
@@ -718,7 +730,7 @@ function make_classes_select_html($link, $current, $year, $month, $day)
  * $id_ref peut être soit l'ID d'une classe, auquel cas on affiche tous les groupes pour la classe,
  * soit le login d'un élève, auquel cas on affiche tous les groupes pour l'élève en question
  * 
- * @param type $link lien vers la page à atteindre ensuite
+ * @param text $link lien vers la page à atteindre ensuite
  * @param int|text $id_ref Id d'une classe ou login d'un élève
  * @param int|text $current Id de la classe courante
  * @param int $year Année
@@ -828,6 +840,160 @@ function make_matiere_select_html($link, $id_ref, $current, $year, $month, $day,
 	</form>\n";
 	
 	return $out_html;
+}
+
+/**
+ * Crée un formulaire avec une zone de sélection contenant les élèves 
+ *
+ * @global text 
+ * @param text $link lien vers la page à atteindre ensuite
+ * @param type $login_resp login du responsable
+ * @param type $current login de l'élève actuellement sélectionné
+ * @param type $year Année
+ * @param type $month Mois
+ * @param type $day Jour
+ * @return type la balise <form...>
+ */
+function make_eleve_select_html($link, $login_resp, $current, $year, $month, $day)
+{
+	global $selected_eleve;
+	// $current est le login de l'élève actuellement sélectionné
+	$sql="SELECT e.login, e.nom, e.prenom " .
+			"FROM eleves e, resp_pers r, responsables2 re " .
+			"WHERE (" .
+			"e.ele_id = re.ele_id AND " .
+			"re.pers_id = r.pers_id AND " .
+			"r.login = '".$login_resp."' AND (re.resp_legal='1' OR re.resp_legal='2'));";
+	$get_eleves = mysql_query($sql);
+
+	if (mysql_num_rows($get_eleves) == 0) {
+			// Aucun élève associé
+		$out_html = "<p>Vous semblez n'être responsable d'aucun élève ! Contactez l'administrateur pour corriger cette erreur.</p>";
+	} elseif (mysql_num_rows($get_eleves) == 1) {
+			// Un seul élève associé : pas de formulaire nécessaire
+		$selected_eleve = mysql_fetch_object($get_eleves);
+		$out_html = "<p class='bold'>Elève : ".$selected_eleve->prenom." ".$selected_eleve->nom."</p>";
+	} else {
+		// Plusieurs élèves : on affiche un formulaire pour choisir l'élève
+	  $out_html = "<form id=\"eleve\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">\n<h2 class='h2_label'>\n<label for=\"choix_eleve\"><strong><em>Elève :</em></strong></label>\n</h2>\n<p>\n<select id=\"choix_eleve\" name=\"eleve\" onchange=\"eleve_go()\">\n";
+	  $out_html .= "<option value=\"".$link."?year=".$year."&amp;month=".$month."&amp;day=".$day."\">(Choisissez un élève)</option>\n";
+		while ($current_eleve = mysql_fetch_object($get_eleves)) {
+		   if ($current) {
+		   	$selected = ($current_eleve->login == $current->login) ? "selected='selected'" : "";
+		   } else {
+		   	$selected = "";
+		   }
+		   $link2 = "$link?year=$year&amp;month=$month&amp;day=$day&amp;login_eleve=".$current_eleve->login;
+		   $out_html .= "<option $selected value=\"$link2\">" . htmlspecialchars($current_eleve->prenom . " - ".$current_eleve->nom)."</option>\n";
+		}
+        
+	  $out_html .= "</select></p>
+	  <script type=\"text/javascript\">
+	  <!--
+	  function eleve_go()
+	  {
+	    box = document.forms[\"eleve\"].eleve;
+	    destination = box.options[box.selectedIndex].value;
+	    if (destination) location.href = destination;
+	  }
+	  // -->
+	  </script>
+
+	  <noscript>
+		<p>
+		  <input type=\"hidden\" name=\"year\" value=\"$year\" />
+		  <input type=\"hidden\" name=\"month\" value=\"$month\" />
+		  <input type=\"hidden\" name=\"day\" value=\"$day\" />
+		  <input type=\"submit\" value=\"OK\" />
+		</p>
+		</noscript>
+	  </form>\n";
+	}
+	return $out_html;
+}
+
+/**
+ * Construit une liste à puces des documents joints
+ *
+ * @param int $id_ct Id du cahier de texte
+ * @param type $type_notice c pour ct_documents, t pour ct_devoirs_documents
+ * @return string La liste à puces
+ * @see getSettingValue()
+ */
+function affiche_docs_joints($id_ct,$type_notice) {
+  // documents joints
+  $html = '';
+  $architecture="/documents/cl_dev";
+  if ($type_notice == "t") {
+      $sql = "SELECT titre, emplacement, visible_eleve_parent  FROM ct_devoirs_documents WHERE id_ct_devoir='$id_ct' ORDER BY 'titre'";
+  } else if ($type_notice == "c") {
+      $sql = "SELECT titre, emplacement, visible_eleve_parent FROM ct_documents WHERE id_ct='$id_ct' ORDER BY 'titre'";
+  }
+
+  $res = sql_query($sql);
+    if (($res) and (sql_count($res)!=0)) {
+      $html .= "<span class='petit'>Document(s) joint(s):</span>";
+      $html .= "<ul style=\"padding-left: 15px;\">";
+      for ($i=0; ($row = sql_row($res,$i)); $i++) {
+          if((($_SESSION['statut']!='eleve')&&($_SESSION['statut']!='responsable'))||
+              ((getSettingValue('cdt_possibilite_masquer_pj')!='y')&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))||
+              ((getSettingValue('cdt_possibilite_masquer_pj')=='y')&&($row[2]==TRUE)&&(($_SESSION['statut']=='eleve')||($_SESSION['statut']=='responsable')))
+          ) {
+                $titre = $row[0];
+                $emplacement = $row[1];
+              // Ouverture dans une autre fenêtre conservée parce que si le fichier est un PDF, un TXT, un HTML ou tout autre document susceptible de s'ouvrir dans le navigateur, on risque de refermer sa session en croyant juste refermer le document.
+              // alternative, utiliser un javascript
+                $html .= "<li style=\"padding: 0px; margin: 0px; font-family: arial, sans-serif; font-size: 80%;\"><a onclick=\"window.open(this.href, '_blank'); return FALSE;\" href=\"$emplacement\">$titre</a></li>";
+          }
+      }
+      $html .= "</ul>";
+     }
+   return $html;
+ }
+
+/**
+ * Fonction destinée à présenter une liste de liens répartis en $nbcol colonnes
+ * 
+ *
+ * @param type $tab_txt tableau des textes
+ * @param type $tab_lien tableau des liens
+ * @param int $nbcol Nombre de colonnes
+ * @param type $extra_options Options supplémentaires
+ */
+function tab_liste($tab_txt,$tab_lien,$nbcol,$extra_options = NULL){
+
+	// Nombre d'enregistrements à afficher
+	$nombreligne=count($tab_txt);
+
+	if(!is_int($nbcol)){
+		$nbcol=3;
+	}
+
+	// Nombre de lignes dans chaque colonne:
+	$nb_class_par_colonne=round($nombreligne/$nbcol);
+
+	echo "<table width='100%' summary=\"Tableau de choix\">\n";
+	echo "<tr valign='top' align='center'>\n";
+	echo "<td align='left'>\n";
+
+	$i = 0;
+	while ($i < $nombreligne){
+
+		if(($i>0)&&(round($i/$nb_class_par_colonne)==$i/$nb_class_par_colonne)){
+			echo "</td>\n";
+			echo "<td align='left'>\n";
+		}
+
+		//echo "<br />\n";
+		echo "<a href='".$tab_lien[$i]."'";
+    if ($extra_options) echo ' '.$extra_options;
+    echo ">".$tab_txt[$i]."</a>";
+		echo "<br />\n";
+		$i++;
+	}
+	echo "</td>\n";
+	echo "</tr>\n";
+	echo "</table>\n";
 }
 
 
