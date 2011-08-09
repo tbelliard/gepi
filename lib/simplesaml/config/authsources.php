@@ -22,7 +22,7 @@ $config = array(
 		'cas' => array(
 		    'login' => 'https://cas.e-lyco.fr/login',
 		    'validate' => 'https://cas.e-lyco.fr/validate',
-		    'logout' => 'https://cas.e-lyco.fr/Logout',
+		    'logout' => 'https://cas.e-lyco.fr/logout',
 		),
 		'search_table' => array(
 		    'name' => 'plugin_sso_table',
