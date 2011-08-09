@@ -100,6 +100,12 @@ class sspmod_gepicas_Auth_Source_GepiCAS  extends sspmod_cas_Auth_Source_CAS  {
 		$requete = 'SELECT '.$this->_search_table_gepi_login_column.' FROM '.$this->_search_table_name.' WHERE '.$this->_search_table_cas_uid_column.'=\''.$uid.'\'';
 		$result = mysql_query($requete);
 		$valeur = mysql_fetch_array($result);
+		if (!$valeur) {
+			//utilisateur non trouvé dans la base gepi, l'authentification a échoué
+				SimpleSAML_Logger::error('gepicas:' . $this->authId .
+					': not authenticated. User is in the CAS but not in the gepi local database.');
+				throw new SimpleSAML_Error_UserNotFound('Utilisateur non trouve dans la base locale');			
+		}
 		$attributes['login'] = array($valeur[0]);
 		$attributes['login_gepi'][0] = $valeur[0];
 		
