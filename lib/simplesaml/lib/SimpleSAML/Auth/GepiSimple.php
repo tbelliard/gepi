@@ -79,8 +79,8 @@ class SimpleSAML_Auth_GepiSimple extends SimpleSAML_Auth_Simple {
 				$params['core:organization'] = $_COOKIE['organization'];
 			} else if (isset($_REQUEST['rne'])) {
 				$params['core:organization'] = $_REQUEST['rne'];
-			} else if (isset($_COOKIE['rne'])) {
-				$params['core:organization'] = $_COOKIE['rne'];
+			} else if (isset($_COOKIE['RNE'])) {
+				$params['core:organization'] = $_COOKIE['RNE'];
 			}
 		}
 		
