@@ -42,6 +42,31 @@ $GLOBALS['tabdiv_infobulle'] = array();
  */
 $GLOBALS['gepiClosedPeriodLabel'] = '';
 
+/**
+ * Version de GEPI stable
+ * 
+ * @global mixed $GLOBALS['gepiVersion']
+ * @name $gepiVersion
+ */
+$GLOBALS['gepiVersion'] = '';
+
+/**
+ * Version de GEPI release candidate
+ * 
+ * @global mixed $GLOBALS['gepiRcVersion']
+ * @name $gepiRcVersion
+ */
+$GLOBALS['gepiRcVersion'] = '';
+
+/**
+ * Version de GEPI Beta
+ * 
+ * @global mixed $GLOBALS['gepiBetaVersion']
+ * @name $gepiBetaVersion
+ */
+$GLOBALS['gepiBetaVersion'] = '';
+
+
 
 /**
  * Fonctions de manipulation du gepi_alea contre les attaques CRSF
@@ -530,8 +555,8 @@ function Verif_prof_classe_matiere ($login,$id_classe,$matiere) {
 /**
  * Recherche dans la base l'adresse courriel d'un utilisateur
  *
- * @param type $login_u
- * @return type 
+ * @param text $login_u Login de l'utilisateur
+ * @return text adresse courriel de l'utilisateur
  */
 function retourne_email ($login_u) {
 $call = mysql_query("SELECT email FROM utilisateurs WHERE login = '$login_u'");
@@ -541,9 +566,10 @@ return $email;
 }
 
 /**
+ * Renvoie une chaine débarassée de l'encodage ASCII
  *
- * @param type $s
- * @return string 
+ * @param text $s le texte à convertir
+ * @return string le texte avec les lettres accentuées
  */
 function dbase_filter($s){
   for($i = 0; $i < strlen($s); $i++){
@@ -569,6 +595,14 @@ function dbase_filter($s){
   return $s;
 }
 
+/**
+ * Renvoie le navigateur et sa version
+ * 
+ * 
+ *
+ * @param text $HTTP_USER_AGENT
+ * @return text navigateur - version
+ */
 function detect_browser($HTTP_USER_AGENT) {
 	// D'après le fichier db_details_common.php de phpmyadmin
 	/*
@@ -589,19 +623,6 @@ function detect_browser($HTTP_USER_AGENT) {
 		} elseif(preg_match('/(Konqueror\/)(.*)(;)/', $HTTP_USER_AGENT, $log_version)) {
 			$BROWSER_VER = $log_version[2];
 			$BROWSER_AGENT = 'KONQUEROR';
-		/*
-		} elseif((preg_match('/Mozilla\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version))&&(preg_match('/Chrome\/([0-9.]*)/', $HTTP_USER_AGENT, $log_version2))) {
-		//} elseif(preg_match('/Chrome/', $HTTP_USER_AGENT, $log_version2)) {
-			//$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
-			$BROWSER_VER = $log_version2[1];
-			$BROWSER_AGENT = 'GoogleChrome';
-		} elseif((preg_match('/Mozilla\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version))&&(preg_match('/Safari\/([0-9]*)/', $HTTP_USER_AGENT, $log_version2))) {
-			$BROWSER_VER = $log_version[1] . '.' . $log_version2[1];
-			$BROWSER_AGENT = 'SAFARI';
-		} elseif(preg_match('/Mozilla\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version)) {
-			$BROWSER_VER = $log_version[1];
-			$BROWSER_AGENT = 'MOZILLA';
-		*/
 		} elseif(preg_match('/Mozilla\/([0-9].[0-9]{1,2})/', $HTTP_USER_AGENT, $log_version)) {
 			if(preg_match('/Chrome\/([0-9.]*)/', $HTTP_USER_AGENT, $log_version2)) {
 				$BROWSER_VER = $log_version2[1];
@@ -686,11 +707,18 @@ function detect_browser($HTTP_USER_AGENT) {
 		$BROWSER_AGENT = $HTTP_USER_AGENT;
 	}
 	return  $BROWSER_AGENT." - ".$BROWSER_VER;
-	//return  $BROWSER_AGENT." - ".$BROWSER_VER." ($HTTP_USER_AGENT)";
 }
 
-// Retourne la version de Mysql
-
+/**
+ * Formate une date en jour/mois/année
+ * 
+ * Accepte les dates aux formats YYYY-MM-DD ou YYYYMMDD ou YYYY-MM-DD xx:xx:xx
+ * 
+ * Retourne la date passée en argument si le format n'est pas bon
+ *
+ * @param date $date La date à formater
+ * @return text la date formatée
+ */
 function affiche_date_naissance($date) {
     if (strlen($date) == 10) {
         // YYYY-MM-DD
@@ -718,6 +746,13 @@ function affiche_date_naissance($date) {
     return $jour."/".$mois."/".$annee ;
 }
 
+/**
+ *
+ * @global mixed 
+ * @global mixed 
+ * @global mixed 
+ * @return bool TRUE si on a une nouvelle version 
+ */
 function test_maj() {
     global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
     $version_old = getSettingValue("version");
@@ -752,6 +787,15 @@ function test_maj() {
    return FALSE;
 }
 
+/**
+ * Recherche si la mise à jour est à faire
+ *
+ * @global mixed 
+ * @global mixed 
+ * @global mixed 
+ * @param mixed $num le numéro de version
+ * @return bool TRUE s'il faut faire la mise à jour
+ */
 function quelle_maj($num) {
     global $gepiVersion, $gepiRcVersion, $gepiBetaVersion;
     $version_old = getSettingValue("version");
@@ -776,6 +820,11 @@ function quelle_maj($num) {
     return FALSE;
 }
 
+/**
+ *
+ * @global type $multisite
+ * @return type 
+ */
 function check_backup_directory() {
 
 	global $multisite;
